@@ -764,7 +764,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			if (!gzdoomRenderingEffects) 
 			{
-
 				//store all sectors with effects
 				if(sectordata != null && sectordata.Count > 0) 
 				{
@@ -824,11 +823,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// ========== Thing vertex slope, vertices with UDMF vertex offsets ==========
 				if(s.Sidedefs.Count == 3)
 				{
-					if(General.Map.UDMF) //mxd
-						GetSectorData(s).AddEffectVertexOffset();
-
+					if(General.Map.UDMF) GetSectorData(s).AddEffectVertexOffset(); //mxd
 					List<Thing> slopeceilingthings = new List<Thing>(3);
 					List<Thing> slopefloorthings = new List<Thing>(3);
+					
 					foreach(Sidedef sd in s.Sidedefs) 
 					{
 						Vertex v = sd.IsFront ? sd.Line.End : sd.Line.Start;
@@ -866,122 +864,157 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Find interesting linedefs (such as line slopes)
 			foreach(Linedef l in General.Map.Map.Linedefs)
 			{
-				// ========== Plane Align (see http://zdoom.org/wiki/Plane_Align) ==========
-				if(l.Action == 181)
+				switch(l.Action)
 				{
-					// Slope front
-					if(((l.Args[0] == 1) || (l.Args[1] == 1)) && (l.Front != null))
-					{
-						SectorData sd = GetSectorData(l.Front.Sector);
-						sd.AddEffectLineSlope(l);
-					}
-					
-					// Slope back
-					if(((l.Args[0] == 2) || (l.Args[1] == 2)) && (l.Back != null))
-					{
-						SectorData sd = GetSectorData(l.Back.Sector);
-						sd.AddEffectLineSlope(l);
-					}
-				}
-				// ========== Plane Copy (mxd) (see http://zdoom.org/wiki/Plane_Copy) ==========
-				else if(l.Action == 118)
-				{
-					//check the flags...
-					bool floorCopyToBack = false;
-					bool floorCopyToFront = false;
-					bool ceilingCopyToBack = false;
-					bool ceilingCopyToFront = false;
-
-					if(l.Args[4] > 0 && l.Args[4] != 3 && l.Args[4] != 12) 
-					{
-						floorCopyToBack = (l.Args[4] & 1) == 1;
-						floorCopyToFront = (l.Args[4] & 2) == 2;
-						ceilingCopyToBack = (l.Args[4] & 4) == 4;
-						ceilingCopyToFront = (l.Args[4] & 8) == 8;
-					}
-					
-					// Copy slope to front sector
-					if(l.Front != null) 
-					{
-						if( (l.Args[0] > 0 || l.Args[1] > 0) || (l.Back != null && (floorCopyToFront || ceilingCopyToFront)) ) 
+					// ========== Plane Align (see http://zdoom.org/wiki/Plane_Align) ==========
+					case 181:
+						if(((l.Args[0] == 1) || (l.Args[1] == 1)) && (l.Front != null))
 						{
 							SectorData sd = GetSectorData(l.Front.Sector);
-							sd.AddEffectPlaneClopySlope(l, true);
+							sd.AddEffectLineSlope(l);
 						}
-					}
-
-					// Copy slope to back sector
-					if(l.Back != null) 
-					{
-						if( (l.Args[2] > 0 || l.Args[3] > 0) || (l.Front != null && (floorCopyToBack || ceilingCopyToBack)) ) 
+						if(((l.Args[0] == 2) || (l.Args[1] == 2)) && (l.Back != null))
 						{
 							SectorData sd = GetSectorData(l.Back.Sector);
-							sd.AddEffectPlaneClopySlope(l, false);
+							sd.AddEffectLineSlope(l);
 						}
-					}
-				}
-				// ========== Sector 3D floor (see http://zdoom.org/wiki/Sector_Set3dFloor) ==========
-				else if((l.Action == 160) && (l.Front != null))
-				{
-					//mxd. Added hi-tag/line ID check 
-					int sectortag = (l.Args[1] & (int)Effect3DFloor.FloorTypes.HiTagIsLineID) != 0 ? l.Args[0] : l.Args[0] + (l.Args[4] << 8);
-					if(sectortags.ContainsKey(sectortag))
+						break;
+
+					// ========== Plane Copy (mxd) (see http://zdoom.org/wiki/Plane_Copy) ==========
+					case 118: 
 					{
-						List<Sector> sectors = sectortags[sectortag];
-						foreach(Sector s in sectors)
+						//check the flags...
+						bool floorCopyToBack = false;
+						bool floorCopyToFront = false;
+						bool ceilingCopyToBack = false;
+						bool ceilingCopyToFront = false;
+
+						if(l.Args[4] > 0 && l.Args[4] != 3 && l.Args[4] != 12) 
 						{
-							SectorData sd = GetSectorData(s);
-							sd.AddEffect3DFloor(l);
+							floorCopyToBack = (l.Args[4] & 1) == 1;
+							floorCopyToFront = (l.Args[4] & 2) == 2;
+							ceilingCopyToBack = (l.Args[4] & 4) == 4;
+							ceilingCopyToFront = (l.Args[4] & 8) == 8;
+						}
+					
+						// Copy slope to front sector
+						if(l.Front != null) 
+						{
+							if( (l.Args[0] > 0 || l.Args[1] > 0) || (l.Back != null && (floorCopyToFront || ceilingCopyToFront)) ) 
+							{
+								SectorData sd = GetSectorData(l.Front.Sector);
+								sd.AddEffectPlaneClopySlope(l, true);
+							}
+						}
+
+						// Copy slope to back sector
+						if(l.Back != null) 
+						{
+							if( (l.Args[2] > 0 || l.Args[3] > 0) || (l.Front != null && (floorCopyToBack || ceilingCopyToBack)) ) 
+							{
+								SectorData sd = GetSectorData(l.Back.Sector);
+								sd.AddEffectPlaneClopySlope(l, false);
+							}
 						}
 					}
-				}
-				// ========== Transfer Brightness (see http://zdoom.org/wiki/ExtraFloor_LightOnly) =========
-				else if((l.Action == 50) && (l.Front != null))
-				{
-					if(sectortags.ContainsKey(l.Args[0]))
-					{
-						List<Sector> sectors = sectortags[l.Args[0]];
-						foreach(Sector s in sectors)
+						break;
+
+					// ========== Sector 3D floor (see http://zdoom.org/wiki/Sector_Set3dFloor) ==========
+					case 160:
+						if(l.Front != null)
 						{
-							SectorData sd = GetSectorData(s);
-							sd.AddEffectBrightnessLevel(l);
+							//mxd. Added hi-tag/line ID check 
+							int sectortag = (l.Args[1] & (int)Effect3DFloor.FloorTypes.HiTagIsLineID) != 0 ? l.Args[0] : l.Args[0] + (l.Args[4] << 8);
+							if(sectortags.ContainsKey(sectortag)) 
+							{
+								List<Sector> sectors = sectortags[sectortag];
+								foreach(Sector s in sectors) 
+								{
+									SectorData sd = GetSectorData(s);
+									sd.AddEffect3DFloor(l);
+								}
+							}
 						}
-					}
+						break;
+
+					// ========== Transfer Brightness (see http://zdoom.org/wiki/ExtraFloor_LightOnly) =========
+					case 50:
+						if(l.Front != null && sectortags.ContainsKey(l.Args[0]))
+						{
+							List<Sector> sectors = sectortags[l.Args[0]];
+							foreach(Sector s in sectors) 
+							{
+								SectorData sd = GetSectorData(s);
+								sd.AddEffectBrightnessLevel(l);
+							}
+						}
+						break;
+
+					// ========== mxd. Transfer Floor Brightness (see http://www.zdoom.org/w/index.php?title=Transfer_FloorLight) =========
+					case 210:
+						if(l.Front != null && sectortags.ContainsKey(l.Args[0])) 
+						{
+							List<Sector> sectors = sectortags[l.Args[0]];
+							foreach(Sector s in sectors) 
+							{
+								SectorData sd = GetSectorData(s);
+								sd.AddEffectTransferFloorBrightness(l);
+							}
+						}
+						break;
+
+					// ========== mxd. Transfer Ceiling Brightness (see http://www.zdoom.org/w/index.php?title=Transfer_CeilingLight) =========
+					case 211:
+						if(l.Front != null && sectortags.ContainsKey(l.Args[0])) 
+						{
+							List<Sector> sectors = sectortags[l.Args[0]];
+							foreach(Sector s in sectors) 
+							{
+								SectorData sd = GetSectorData(s);
+								sd.AddEffectTransferCeilingBrightness(l);
+							}
+						}
+						break;
 				}
 			}
 
 			// Find interesting things (such as sector slopes)
 			foreach(Thing t in General.Map.Map.Things)
 			{
-				// ========== Copy slope ==========
-				if((t.Type == 9510) || (t.Type == 9511))
+				switch(t.Type)
 				{
-					t.DetermineSector(blockmap);
-					if(t.Sector != null)
-					{
-						SectorData sd = GetSectorData(t.Sector);
-						sd.AddEffectCopySlope(t);
-					}
-				}
-				// ========== Thing line slope ==========
-				else if((t.Type == 9500) || (t.Type == 9501))
-				{
-					t.DetermineSector(blockmap);
-					if(t.Sector != null)
-					{
-						SectorData sd = GetSectorData(t.Sector);
-						sd.AddEffectThingLineSlope(t);
-					}
-				}
-				// ========== Thing  slope ==========
-				else if((t.Type == 9502) || (t.Type == 9503))
-				{
-					t.DetermineSector(blockmap);
-					if(t.Sector != null)
-					{
-						SectorData sd = GetSectorData(t.Sector);
-						sd.AddEffectThingSlope(t);
-					}
+					// ========== Copy slope ==========
+					case 9511:
+					case 9510:
+						t.DetermineSector(blockmap);
+						if(t.Sector != null)
+						{
+							SectorData sd = GetSectorData(t.Sector);
+							sd.AddEffectCopySlope(t);
+						}
+						break;
+
+					// ========== Thing line slope ==========
+					case 9501:
+					case 9500:
+						t.DetermineSector(blockmap);
+						if(t.Sector != null)
+						{
+							SectorData sd = GetSectorData(t.Sector);
+							sd.AddEffectThingLineSlope(t);
+						}
+						break;
+
+					// ========== Thing slope ==========
+					case 9503:
+					case 9502:
+						t.DetermineSector(blockmap);
+						if(t.Sector != null)
+						{
+							SectorData sd = GetSectorData(t.Sector);
+							sd.AddEffectThingSlope(t);
+						}
+						break;
 				}
 			}
 		}
