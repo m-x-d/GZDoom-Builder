@@ -19,6 +19,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Security.AccessControl;
+using System.Security.Principal;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
@@ -116,6 +118,7 @@ namespace CodeImp.DoomBuilder
 		
 		// Files and Folders
 		private const string SETTINGS_FILE = "GZBuilder.cfg";
+		private const string DEFAULT_SETTINGS_FILE = "GZBuilder.default.cfg"; //mxd
 		private const string SETTINGS_DIR = "Doom Builder";
 		private const string LOG_FILE = "GZBuilder.log";
 		private const string GAME_CONFIGS_DIR = "Configurations";
@@ -192,6 +195,7 @@ namespace CodeImp.DoomBuilder
 		private static DataLocationList autoloadresources;
 		private static bool delaymainwindow;
 		private static bool nosettings;
+		private static bool portablemode; //mxd
 
 		//misc
 		private static readonly Random random = new Random(); //mxd
@@ -572,11 +576,14 @@ namespace CodeImp.DoomBuilder
 			//Uri localpath = new Uri(Path.GetDirectoryName(thisasm.GetName().CodeBase));
 			//apppath = Uri.UnescapeDataString(localpath.AbsolutePath);
 			apppath = Path.GetDirectoryName(Application.ExecutablePath); //mxd. What was the point of using Uri here (other than to prevent lauching from a shared folder)?
-			
+
+			// Parse command-line arguments
+			ParseCommandLineArgs(args);
+
 			// Setup directories
 			temppath = Path.GetTempPath();
 			setuppath = Path.Combine(apppath, SETUP_DIR);
-			settingspath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), SETTINGS_DIR);
+			settingspath = (portablemode ? apppath : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), SETTINGS_DIR)); //mxd
 			configspath = Path.Combine(apppath, GAME_CONFIGS_DIR);
 			compilerspath = Path.Combine(apppath, COMPILERS_DIR);
 			pluginspath = Path.Combine(apppath, PLUGINS_DIR);
@@ -587,7 +594,7 @@ namespace CodeImp.DoomBuilder
 			logfile = Path.Combine(settingspath, LOG_FILE);
 			
 			// Make program settings directory if missing
-			if(!Directory.Exists(settingspath)) Directory.CreateDirectory(settingspath);
+			if(!portablemode && !Directory.Exists(settingspath)) Directory.CreateDirectory(settingspath);
 			
 			// Remove the previous log file and start logging
 			if(File.Exists(logfile)) File.Delete(logfile);
@@ -599,13 +606,10 @@ namespace CodeImp.DoomBuilder
 			for(int i = 0; i < args.Length; i++)
 				General.WriteLogLine("Argument " + i + ":   \"" + args[i] + "\"");
 			
-			// Parse command-line arguments
-			ParseCommandLineArgs(args);
-			
 			// Load configuration
 			General.WriteLogLine("Loading program configuration...");
 			settings = new ProgramConfiguration();
-			string defaultsettingsfile = Path.Combine(apppath, SETTINGS_FILE);
+			string defaultsettingsfile = Path.Combine(apppath, DEFAULT_SETTINGS_FILE);
 			string usersettingsfile = nosettings ? defaultsettingsfile : Path.Combine(settingspath, SETTINGS_FILE);
 			if(settings.Load(usersettingsfile, defaultsettingsfile))
 			{
@@ -832,6 +836,43 @@ namespace CodeImp.DoomBuilder
 				else if(string.Compare(curarg, "-STRICTPATCHES", true) == 0)
 				{
 					autoloadstrictpatches = true;
+				}
+				//mxd. Portable mode?
+				else if(string.Compare(curarg, "-PORTABLE", true) == 0)
+				{
+					// Can we write stuff to apppath?
+					try
+					{
+						WindowsIdentity identity = WindowsIdentity.GetCurrent();
+						if(identity != null)
+						{
+							WindowsPrincipal principal = new WindowsPrincipal(identity);
+							DirectorySecurity security = Directory.GetAccessControl(apppath);
+							AuthorizationRuleCollection authrules = security.GetAccessRules(true, true, typeof(SecurityIdentifier));
+
+							foreach(FileSystemAccessRule accessrule in authrules)
+							{
+								SecurityIdentifier id = accessrule.IdentityReference as SecurityIdentifier;
+								if(id == null || !principal.IsInRole(id)) continue;
+								if((FileSystemRights.WriteData & accessrule.FileSystemRights) != FileSystemRights.WriteData) continue;
+								
+								if(accessrule.AccessControlType == AccessControlType.Allow) 
+								{
+									portablemode = true;
+								} 
+								else if(accessrule.AccessControlType == AccessControlType.Deny) 
+								{
+									//Deny usually overrides any Allow
+									portablemode = false;
+									break;
+								}
+							}
+						}
+					} 
+					catch(UnauthorizedAccessException) { }
+
+					// Warn the user?
+					if(!portablemode) ShowWarningMessage("Failed to enable portable mode.\nMake sure you have write premission for '" + apppath + "' directory.", MessageBoxButtons.OK);
 				}
 				// Resource?
 				else if(string.Compare(curarg, "-RESOURCE", true) == 0)
