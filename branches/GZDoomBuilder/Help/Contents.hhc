@@ -446,5 +446,13 @@
 			<param name="Local" value="gzdb\faq.html">
 			</OBJECT>
 	</UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Compiling GZDoom Builder">
+		<param name="Local" value="compilingtheeditor.html">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Name" value="Command Line Parameters">
+		<param name="Local" value="commandlineparams.html">
+		</OBJECT>
 </UL>
 </BODY></HTML>

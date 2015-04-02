@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<title>About Compiler Configurations</title>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+<link rel="stylesheet" type="text/css" href="default.css" media="screen" title="Default" />
+</head>
+<body>
+<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+  <param name="keyword" value="command line">
+  <param name="keyword" value="arguments">
+</object>
+<div id="gz_title">
+  <h1>Command Line Parameters</h1>
+</div>
+<div id="contents">
+  <p> All command line parameters are case-insensitive.<br />
+    <br />
+    <b class="fat">-portable</b> - <span class="red">GZDB only.</span><br />
+    The editor will be launched in portable mode. It will use the &quot;GZBuilder.cfg&quot; located in the program directory instead of the one located in the &quot;%LocalAppData%\Doom Builder\GZBuilder.cfg&quot; to load and save program settings. Log and crash report files will be also created in the program directory.<br />
+    <br />
+    <b class="fat">-nosettings</b><br />
+    The editor doesn't load or save program settings.<br />
+    <br />
+    <b class="fat">-delaywindow</b><br />
+    Delays showing of the main window.<br />
+    <br />
+    <b class="fat">-map &quot;path\to\mapfile.wad&quot;</b><br />
+    The editor will automatically load the specified map.<br />
+  <h2>The following parameters are used only in conjunction with the &quot;-map&quot; parameter</h2>
+  They replicate the settings, which can be set in the <a href="w_openmapoptions.html">Open Map Window</a>.<br />
+  <br />
+  <b class="fat">-strictpatches</b><br />
+  Enables strict patches rules.<br />
+  <br />
+  <b class="fat">-cfg &quot;path\to\game configuration.cfg&quot;</b><br />
+  <b class="fat">-config &quot;path\to\game configuration.cfg&quot;</b><br />
+  The editor will use the specified game configuration file when loading the map.<br />
+  <br />
+  <b class="fat">-resource &lt;resource type&gt; [flags] &quot;path\to\resource&quot;</b><br />
+  Adds a map resource.<br />
+  <strong>Resource type</strong> (required): &quot;wad&quot;, &quot;dir&quot; or &quot;pk3&quot;.<br />
+  <strong>Flags</strong> (optional):
+  <ul>
+    <li><strong>ROOTTEXTURES</strong> - load images in the root directory of the resource as textures.</li>
+    <li><strong>ROOTFLATS</strong> - load images in the root directory of the resource as flats.</li>
+    <li><strong>STRICTPATCHES</strong> - use strict rules for patches.</li>
+    <li><strong>NOTEST</strong> - exclude this resource from testing parameters.</li>
+  </ul>
+  <strong>Examples:</strong>
+  <pre>
+  -resource pk3 notest "c:\GZDoom\gzdoom.pk3"
+  -resource WAD "c:\Doom\DOOM.WAD"</pre>
+</div>
+</body>

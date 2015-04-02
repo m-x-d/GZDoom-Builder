@@ -1439,8 +1439,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.capitalizetexturenames.Size = new System.Drawing.Size(140, 17);
 			this.capitalizetexturenames.TabIndex = 36;
 			this.capitalizetexturenames.Text = "Capitalize texture names";
-			this.toolTip1.SetToolTip(this.capitalizetexturenames, "When enabled, texture names will be shown \r\nand saved as all caps (DB2 behaviour)" +
-					"");
+			this.toolTip1.SetToolTip(this.capitalizetexturenames, "When enabled, texture names will be shown \r\nand saved as all caps\r\n(Doom Builder " +
+					"2 behaviour)");
 			this.capitalizetexturenames.UseVisualStyleBackColor = true;
 			// 
 			// cbMarkExtraFloors
@@ -1638,7 +1638,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.scripttabwidth.AllowNegative = false;
 			this.scripttabwidth.AllowRelative = false;
 			this.scripttabwidth.ButtonStep = 2;
+			this.scripttabwidth.ButtonStepBig = 10F;
 			this.scripttabwidth.ButtonStepFloat = 1F;
+			this.scripttabwidth.ButtonStepSmall = 0.1F;
+			this.scripttabwidth.ButtonStepsUseModifierKeys = false;
 			this.scripttabwidth.ButtonStepsWrapAround = false;
 			this.scripttabwidth.Location = new System.Drawing.Point(364, 157);
 			this.scripttabwidth.Name = "scripttabwidth";
