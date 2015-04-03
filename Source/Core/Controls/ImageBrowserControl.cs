@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Data;
+using CodeImp.DoomBuilder.Windows;
 
 #endregion
 
@@ -89,6 +90,12 @@ namespace CodeImp.DoomBuilder.Controls
 			StepsList sizes = new StepsList { 4, 8, 16, 32, 48, 64, 96, 128, 196, 256, 512, 1024 };
 			filterWidth.StepValues = sizes;
 			filterHeight.StepValues = sizes;
+
+			//mxd. Looks like SplitterDistance is unaffected by DPI scaling. Let's fix that...
+			if(MainForm.DPIScaler.Height != 1.0f)
+			{
+				splitter.SplitterDistance = splitter.Height - splitter.Panel2.Height - (int)Math.Round(splitter.SplitterWidth * MainForm.DPIScaler.Height);
+			}
 		}
 		
 		// This applies the application settings

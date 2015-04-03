@@ -869,7 +869,7 @@ namespace CodeImp.DoomBuilder
 							}
 						}
 					} 
-					catch(UnauthorizedAccessException) { }
+					catch(Exception) { }
 
 					// Warn the user?
 					if(!portablemode) ShowWarningMessage("Failed to enable portable mode.\nMake sure you have write premission for '" + apppath + "' directory.", MessageBoxButtons.OK);

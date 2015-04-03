@@ -8,10 +8,12 @@
 #region ================== Namespaces
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Reflection;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.Windows;
 
 #endregion
 
@@ -27,6 +29,7 @@ namespace CodeImp.DoomBuilder.Controls
 		private bool collapsed;
 		private readonly Color hotcolor = CalculateColor(SystemColors.Highlight, SystemColors.Window, 70);
 		private Rectangle bounds;
+		private readonly Dictionary<int, int> scaled;
 
 		// Storesome settings
 		private int storedpanel1minsize;
@@ -85,6 +88,11 @@ namespace CodeImp.DoomBuilder.Controls
 
 			// Force the width to 8px so that everything always draws correctly
 			this.SplitterWidth = 8;
+
+			//mxd. Create some scaled coordinates...
+			int[] coords = new[] { 1, 2, 3, 4, 6, 8, 9, 14, 115 };
+			scaled = new Dictionary<int, int>(coords.Length);
+			foreach (int i in coords) scaled[i] = (int)Math.Round(i * MainForm.DPIScaler.Width);
 		}
 
 		#endregion
@@ -162,83 +170,84 @@ namespace CodeImp.DoomBuilder.Controls
 			Rectangle r = this.SplitterRectangle;
 			e.Graphics.FillRectangle(new SolidBrush(this.BackColor), r);
 
-			Pen penlightlight = new Pen(SystemColors.ControlLightLight);
 			Pen pendark = new Pen(SystemColors.ControlDark);
+			SolidBrush brushlightlight = new SolidBrush(SystemColors.ControlLightLight);
+			SolidBrush brushdark = new SolidBrush(SystemColors.ControlDark);
 			SolidBrush brushdarkdark = new SolidBrush(SystemColors.ControlDarkDark);
 
 			// Check the docking style and create the control rectangle accordingly
 			if(this.Orientation == Orientation.Vertical) 
 			{
 				// create a new rectangle in the vertical center of the splitter for our collapse control button
-				bounds = new Rectangle(r.X, r.Y + ((r.Height - 115) / 2), 8, 115);
+				bounds = new Rectangle(r.X, r.Y + ((r.Height - scaled[115]) / 2), scaled[8], scaled[115]);
 
 				// draw the background color for our control image
-				e.Graphics.FillRectangle(new SolidBrush(hot ? hotcolor : this.BackColor), new Rectangle(bounds.X + 1, bounds.Y, 6, 115));
+				e.Graphics.FillRectangle(new SolidBrush(hot ? hotcolor : this.BackColor), new Rectangle(bounds.X + scaled[1], bounds.Y, scaled[6], scaled[115]));
 
 				// draw the top & bottom lines for our control image
-				e.Graphics.DrawLine(pendark, bounds.X + 1, bounds.Y, bounds.X + bounds.Width - 2, bounds.Y);
-				e.Graphics.DrawLine(pendark, bounds.X + 1, bounds.Y + bounds.Height, bounds.X + bounds.Width - 2, bounds.Y + bounds.Height);
+				e.Graphics.DrawLine(pendark, bounds.X + scaled[1], bounds.Y, bounds.X + bounds.Width - scaled[2], bounds.Y);
+				e.Graphics.DrawLine(pendark, bounds.X + scaled[1], bounds.Y + bounds.Height, bounds.X + bounds.Width - scaled[2], bounds.Y + bounds.Height);
 
 				if(this.Enabled) 
 				{
 					// draw the arrows for our control image
 					// the ArrowPointArray is a point array that defines an arrow shaped polygon
-					e.Graphics.FillPolygon(brushdarkdark, ArrowPointArray(bounds.X + 2, bounds.Y + 3));
-					e.Graphics.FillPolygon(brushdarkdark, ArrowPointArray(bounds.X + 2, bounds.Y + bounds.Height - 9));
+					e.Graphics.FillPolygon(brushdarkdark, ArrowPointArray(bounds.X + scaled[2], bounds.Y + scaled[3]));
+					e.Graphics.FillPolygon(brushdarkdark, ArrowPointArray(bounds.X + scaled[2], bounds.Y + bounds.Height - scaled[9]));
 				}
 
 				// draw the dots for our control image using a loop
-				int x = bounds.X + 3;
-				int y = bounds.Y + 14;
+				int x = bounds.X + scaled[3];
+				int y = bounds.Y + scaled[14];
 
 				for(int i = 0; i < 30; i++) 
 				{
 					// light dot
-					e.Graphics.DrawRectangle(penlightlight, x, y + 1 + (i * 3), 1, 1);
+					e.Graphics.FillRectangle(brushlightlight, x, y + scaled[1] + (i * scaled[3]), scaled[2], scaled[2]);
 					// dark dot
-					e.Graphics.DrawRectangle(pendark, x - 1, y + (i * 3), 1, 1);
+					e.Graphics.FillRectangle(brushdark, x - scaled[1], y + (i * scaled[3]), scaled[2], scaled[2]);
 					i++;
 					// light dot
-					e.Graphics.DrawRectangle(penlightlight, x + 2, y + 1 + (i * 3), 1, 1);
+					e.Graphics.FillRectangle(brushlightlight, x + scaled[2], y + scaled[1] + (i * scaled[3]), scaled[2], scaled[2]);
 					// dark dot
-					e.Graphics.DrawRectangle(pendark, x + 1, y + (i * 3), 1, 1);
+					e.Graphics.FillRectangle(brushdark, x + scaled[1], y + (i * scaled[3]), scaled[2], scaled[2]);
 				}
 			} 
 			else // Should be Orientation.Horizontal
 			{
 				// create a new rectangle in the horizontal center of the splitter for our collapse control button
-				bounds = new Rectangle(r.X + ((r.Width - 115) / 2), r.Y, 115, 8);
+				bounds = new Rectangle(r.X + ((r.Width - scaled[115]) / 2), r.Y, scaled[115], scaled[8]);
 
 				// draw the background color for our control image
-				e.Graphics.FillRectangle(new SolidBrush(hot ? hotcolor : this.BackColor), new Rectangle(bounds.X, bounds.Y + 1, 115, 6));
+				e.Graphics.FillRectangle(new SolidBrush(hot ? hotcolor : this.BackColor), new Rectangle(bounds.X, bounds.Y + scaled[1], scaled[115], scaled[6]));
 
 				// draw the left & right lines for our control image
-				e.Graphics.DrawLine(pendark, bounds.X, bounds.Y + 1, bounds.X, bounds.Y + bounds.Height - 2);
-				e.Graphics.DrawLine(pendark, bounds.X + bounds.Width, bounds.Y + 1, bounds.X + bounds.Width, bounds.Y + bounds.Height - 2);
+				e.Graphics.DrawLine(pendark, bounds.X, bounds.Y + scaled[1], bounds.X, bounds.Y + bounds.Height - scaled[2]);
+				e.Graphics.DrawLine(pendark, bounds.X + bounds.Width, bounds.Y + scaled[1], bounds.X + bounds.Width, bounds.Y + bounds.Height - scaled[2]);
 
 				if(this.Enabled) 
 				{
 					// draw the arrows for our control image
 					// the ArrowPointArray is a point array that defines an arrow shaped polygon
-					e.Graphics.FillPolygon(brushdarkdark, ArrowPointArray(bounds.X + 3, bounds.Y + 2));
-					e.Graphics.FillPolygon(brushdarkdark, ArrowPointArray(bounds.X + bounds.Width - 9, bounds.Y + 2));
+					e.Graphics.FillPolygon(brushdarkdark, ArrowPointArray(bounds.X + scaled[3], bounds.Y + scaled[2]));
+					e.Graphics.FillPolygon(brushdarkdark, ArrowPointArray(bounds.X + bounds.Width - scaled[9], bounds.Y + scaled[2]));
 				}
 
 				// draw the dots for our control image using a loop
-				int x = bounds.X + 14;
-				int y = bounds.Y + 3;
+				int x = bounds.X + scaled[14];
+				int y = bounds.Y + scaled[3];
 
 				for(int i = 0; i < 30; i++) 
 				{
 					// light dot
-					e.Graphics.DrawRectangle(penlightlight, x + 1 + (i * 3), y, 1, 1);
+					e.Graphics.FillRectangle(brushlightlight, x + scaled[1] + (i * scaled[3]), y, scaled[2], scaled[2]);
 					// dark dot
-					e.Graphics.DrawRectangle(pendark, x + (i * 3), y - 1, 1, 1);
+					e.Graphics.FillRectangle(brushdark, x + (i * scaled[3]), y - scaled[1], scaled[2], scaled[2]);
 					i++;
 					// light dot
-					e.Graphics.DrawRectangle(penlightlight, x + 1 + (i * 3), y + 2, 1, 1);
+					e.Graphics.FillRectangle(brushlightlight, x + scaled[1] + (i * scaled[3]), y + scaled[2], scaled[2], scaled[2]);
 					// dark dot
-					e.Graphics.DrawRectangle(pendark, x + (i * 3), y + 1, 1, 1);
+					e.Graphics.FillRectangle(brushdark, x + (i * scaled[3]), y + scaled[1], scaled[2], scaled[2]);
 				}
 			} 
 		}
@@ -329,14 +338,14 @@ namespace CodeImp.DoomBuilder.Controls
 				if((FixedPanel == FixedPanel.Panel2 && Panel2.Visible) || (FixedPanel == FixedPanel.Panel1 && !Panel1.Visible)) // Right arrow
 				{
 					points[0] = new Point(x, y);
-					points[1] = new Point(x + 3, y + 3);
-					points[2] = new Point(x, y + 6);
+					points[1] = new Point(x + scaled[3], y + scaled[3]);
+					points[2] = new Point(x, y + scaled[6]);
 				}
 				else // Left arrow
 				{
-					points[0] = new Point(x + 3, y);
-					points[1] = new Point(x, y + 3);
-					points[2] = new Point(x + 3, y + 6);
+					points[0] = new Point(x + scaled[3], y);
+					points[1] = new Point(x, y + scaled[3]);
+					points[2] = new Point(x + scaled[3], y + scaled[6]);
 				}
 			}
 			else // Up or down arrows
@@ -344,14 +353,14 @@ namespace CodeImp.DoomBuilder.Controls
 				if((FixedPanel == FixedPanel.Panel2 && Panel2.Visible) || (FixedPanel == FixedPanel.Panel1 && !Panel1.Visible)) // Down arrow
 				{
 					points[0] = new Point(x, y);
-					points[1] = new Point(x + 6, y);
-					points[2] = new Point(x + 3, y + 3);
+					points[1] = new Point(x + scaled[6], y);
+					points[2] = new Point(x + scaled[3], y + scaled[3]);
 				} 
 				else // Up arrow
 				{
-					points[0] = new Point(x + 3, y);
-					points[1] = new Point(x + 6, y + 4);
-					points[2] = new Point(x, y + 4);
+					points[0] = new Point(x + scaled[3], y);
+					points[1] = new Point(x + scaled[6], y + scaled[4]);
+					points[2] = new Point(x, y + scaled[4]);
 				}
 			}
 

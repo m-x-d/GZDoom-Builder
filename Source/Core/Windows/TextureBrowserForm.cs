@@ -209,7 +209,19 @@ namespace CodeImp.DoomBuilder.Windows
 
 			//mxd. Set splitter position and state (doesn't work when layout is suspended)
 			if(General.Settings.ReadSetting("browserwindow.splittercollapsed", false)) splitter.IsCollapsed = true;
-			splitter.SplitPosition = General.Settings.ReadSetting("browserwindow.splitterdistance", 210);
+
+			//mxd. Looks like SplitterDistance is unaffected by DPI scaling. Let's fix that...
+			int splitterdistance = General.Settings.ReadSetting("browserwindow.splitterdistance", int.MinValue);
+			if(splitterdistance == int.MinValue)
+			{
+				splitterdistance = 210;
+				if(MainForm.DPIScaler.Width != 1.0f)
+				{
+					splitterdistance = (int)Math.Round(splitterdistance * MainForm.DPIScaler.Width);
+				}
+			}
+
+			splitter.SplitPosition = splitterdistance;
 		}
 
 		//mxd
