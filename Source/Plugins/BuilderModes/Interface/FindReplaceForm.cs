@@ -101,16 +101,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Replace (un)checked
 		private void doreplace_CheckedChanged(object sender, EventArgs e)
 		{
-			if(doreplace.Checked)
-			{
-				findbutton.Text = "Replace";
-				groupreplace.Enabled = true;
-			}
-			else
-			{
-				findbutton.Text = "Find";
-				groupreplace.Enabled = false;
-			}
+			findbutton.Text = (doreplace.Checked ? "Replace" : "Find");
+			replaceinput.Enabled = doreplace.Checked;
+			browsereplace.Enabled = doreplace.Checked;
 		}
 
 		// Search type selected
@@ -125,6 +118,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			browsereplace.Enabled = newfinder.Attributes.BrowseButton;
 			browsereplace.Image = newfinder.BrowseImage;
 			if(!newfinder.CanReplace()) doreplace.Checked = false;
+			doreplace_CheckedChanged(this, EventArgs.Empty); //mxd. Update the rest of replace controls
 			doreplace.Enabled = newfinder.CanReplace();
 		}
 		
