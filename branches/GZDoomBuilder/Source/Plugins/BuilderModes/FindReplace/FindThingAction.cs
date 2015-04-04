@@ -19,16 +19,18 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.GZBuilder;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
 using System.Drawing;
 using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.Types;
 
 #endregion
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	[FindReplace("Thing Action", BrowseButton = true)]
+	[FindReplace("Thing Action and Arguments", BrowseButton = true)]
 	internal class FindThingAction : BaseFindThing
 	{
 		#region ================== Constants
@@ -78,10 +80,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Interpret the replacement
 			int replaceaction = 0;
-			if(replace)
+			string replacearg0str = string.Empty; //mxd
+			int[] replaceargs = null; //mxd
+			if(replace) 
 			{
+				string[] replaceparts = replacewith.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
 				// If it cannot be interpreted, set replacewith to null (not replacing at all)
-				if(!int.TryParse(replacewith, out replaceaction)) replacewith = null;
+				if(replaceparts.Length == 0) replacewith = null; //mxd
+				if(!int.TryParse(replaceparts[0], out replaceaction)) replacewith = null;
 				if(replaceaction < 0) replacewith = null;
 				if(replaceaction > Int16.MaxValue) replacewith = null;
 				if(replacewith == null)
@@ -89,36 +96,73 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					MessageBox.Show("Invalid replace value for this search type!", "Find and Replace", MessageBoxButtons.OK, MessageBoxIcon.Error);
 					return objs.ToArray();
 				}
+
+				//mxd. Now try parsing the args
+				if(replaceparts.Length > 1) 
+				{
+					replaceargs = new[] { int.MinValue, int.MinValue, int.MinValue, int.MinValue, int.MinValue };
+					int i = 1;
+
+					//mxd. Named script search support...
+					if(General.Map.UDMF && Array.IndexOf(GZGeneral.ACS_SPECIALS, replaceaction) != -1) 
+					{
+						string possiblescriptname = replaceparts[1].Trim().Replace("\"", "").ToLowerInvariant();
+						int tmp;
+						if(!string.IsNullOrEmpty(possiblescriptname) && possiblescriptname != "*" && !int.TryParse(possiblescriptname, out tmp)) 
+						{
+							replacearg0str = possiblescriptname;
+							i = 2;
+						}
+					}
+
+					for(; i < replaceparts.Length && i < replaceargs.Length + 1; i++) 
+					{
+						int argout;
+						if(replaceparts[i].Trim() == "*") continue; //mxd. Any arg value support
+						if(int.TryParse(replaceparts[i].Trim(), out argout)) replaceargs[i - 1] = argout;
+					}
+				}
 			}
 
 			// Interpret the number given
-			int findaction;
-			int[] args = null;
-			string[] parts = value.Split(';');
-			bool match;
-			string argtext;
-			
-			//For the search, the user may make the following query:
-			//	action;arg0,arg1,arg2,arg3,arg4
+			int action;
+			string[] parts = value.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+			//For the search, the user may make the following queries:
+			//	action arg0 arg1 arg2 arg3 arg4
+			//	action arg0str arg1 arg2 arg3 arg4
 			//
-			//this allows users to search for things that contain actions with specific arguments.
-			//useful for locating enemies that trigger a certain script
-			//
-			//Since the Thing object does not contain a reference to arg0str, this search cannot match named scripts
-			if (int.TryParse(parts[0], out findaction))
+			//this allows users to search for lines that contain actions with specific arguments.
+			//useful for locating script lines
+
+			if(int.TryParse(parts[0], out action)) 
 			{
-				//parse the arg value out
-				if (parts.Length > 1)
+				int[] args = null;
+				string arg0str = string.Empty; //mxd
+
+				//parse the arg values out
+				if(parts.Length > 1) 
 				{
-					args = new[] { 0, 0, 0, 0, 0 };
-					string[] argparts = parts[1].Split(',');
-					int argout;
-					for (int i = 0; i < argparts.Length && i < args.Length; i++)
+					args = new[] { int.MinValue, int.MinValue, int.MinValue, int.MinValue, int.MinValue };
+					int i = 1;
+
+					//mxd. Named script search support...
+					if(General.Map.UDMF && Array.IndexOf(GZGeneral.ACS_SPECIALS, action) != -1) 
 					{
-						if (int.TryParse(argparts[i], out argout))
+						string possiblescriptname = parts[1].Trim().Replace("\"", "").ToLowerInvariant();
+						int tmp;
+						if(!string.IsNullOrEmpty(possiblescriptname) && possiblescriptname != "*" && !int.TryParse(possiblescriptname, out tmp)) 
 						{
-							args[i] = argout;
+							arg0str = possiblescriptname;
+							i = 2;
 						}
+					}
+
+					for(; i < parts.Length && i < args.Length + 1; i++) 
+					{
+						int argout;
+						if(parts[i].Trim() == "*") continue; //mxd. Any arg value support
+						if(int.TryParse(parts[i].Trim(), out argout)) args[i - 1] = argout;
 					}
 				}
 
@@ -126,39 +170,71 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				ICollection<Thing> list = withinselection ? General.Map.Map.GetSelectedThings(true) : General.Map.Map.Things;
 
 				// Go for all things
-				foreach(Thing t in list)
+				foreach(Thing t in list) 
 				{
-					// Match?
-					if(t.Action == findaction)
+					// Action matches?
+					if(t.Action != action) continue;
+
+					bool match = true;
+					string argtext = "";
+
+					//if args were specified, then process them
+					if(args != null) 
 					{
-						match = true;
-						argtext = "";
+						int x = 0;
+						argtext = " args: (";
 
-						//if args were specified, then process them
-						if (args != null) 
+						//mxd. Check script name...
+						if(!string.IsNullOrEmpty(arg0str)) 
 						{
-							argtext = " args: (";
-							for (int x = 0; x < args.Length; x++)
+							string s = t.Fields.GetValue("arg0str", string.Empty);
+							if(s.ToLowerInvariant() != arg0str)
+								match = false;
+							else
+								argtext += "\"" + s + "\"";
+
+							x = 1;
+						}
+
+						for(; x < args.Length; x++) 
+						{
+							if(args[x] != int.MinValue && args[x] != t.Args[x]) 
 							{
-								if (args[x] != 0 && args[x] != t.Args[x]) 
-								{
-									match = false;
-									break;
-								}
-								argtext += (x == 0 ? "" : ",") + t.Args[x];
+								match = false;
+								break;
 							}
-							argtext += ")";
+							argtext += (x == 0 ? "" : ",") + t.Args[x];
 						}
+						argtext += ")";
+					}
 
-						if (match)
+					if(match) 
+					{
+						// Replace
+						if(replace) 
 						{
-							// Replace
-							if (replace) t.Action = replaceaction;
+							t.Action = replaceaction;
 
-							// Add to list
-							ThingTypeInfo ti = General.Map.Data.GetThingInfo(t.Type);
-							objs.Add(new FindReplaceObject(t, "Thing " + t.Index + " (" + ti.Title + ")" + argtext));
+							//mxd. Replace args as well?
+							if(replaceargs != null) 
+							{
+								int i = 0;
+								if(!string.IsNullOrEmpty(replacearg0str)) 
+								{
+									t.Fields["arg0str"] = new UniValue(UniversalType.String, replacearg0str);
+									i = 1;
+								}
+
+								for(; i < replaceargs.Length; i++) 
+								{
+									if(replaceargs[i] != int.MinValue) t.Args[i] = replaceargs[i];
+								}
+							}
 						}
+
+						// Add to list
+						ThingTypeInfo ti = General.Map.Data.GetThingInfo(t.Type);
+						objs.Add(new FindReplaceObject(t, "Thing " + t.Index + " (" + ti.Title + ")" + argtext));
 					}
 				}
 			}
