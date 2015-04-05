@@ -420,7 +420,7 @@
 				</OBJECT>
 			<UL>
 				<LI> <OBJECT type="text/sitemap">
-					<param name="Name" value="New custom filed types">
+					<param name="Name" value="New custom field types">
 					<param name="Local" value="gzdb\features\custom_fields\newfieldtypes.html">
 					</OBJECT>
 			</UL>

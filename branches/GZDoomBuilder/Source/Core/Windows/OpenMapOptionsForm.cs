@@ -144,7 +144,6 @@ namespace CodeImp.DoomBuilder.Windows
 				for(int i = 0; i < General.Configs.Count; i++) 
 				{
 					if(General.Configs[i].Enabled) continue;
-
 					if(General.Configs[i].Filename == gameconfig) 
 					{
 						//add and Select this item
@@ -157,24 +156,30 @@ namespace CodeImp.DoomBuilder.Windows
 			// Still no configuration selected?
 			if(config.SelectedIndex == -1) 
 			{
-				// Then go for all configurations to find a suitable one
+				// Then go for all configurations with resources to find a suitable one
 				for(int i = 0; i < General.Configs.Count; i++)
 				{
 					// Check if a resource location is set for this configuration, if so, match the wad against this configuration
 					if(General.Configs[i].Resources.Count > 0 && MatchConfiguration(General.Configs[i].Configuration, wadfile))
 					{
-						//mxd. Already added?
-						index = config.Items.IndexOf(General.Configs[i]);
-						if (index != -1) 
-						{
-							// Select this item
-							config.SelectedIndex = index;
-						} 
-						else 
-						{
-							// Add and select this item
-							config.SelectedIndex = config.Items.Add(General.Configs[i]);
-						}
+						index = config.Items.IndexOf(General.Configs[i]); //mxd. Already added?
+						config.SelectedIndex = (index != -1 ? index : config.Items.Add(General.Configs[i])); // Select or add and select this item
+						break;
+					}
+				}
+			}
+
+			//mxd. Still no configuration selected?
+			if(config.SelectedIndex == -1) 
+			{
+				// Then go for all configurations without resources to find a suitable one
+				for(int i = 0; i < General.Configs.Count; i++) 
+				{
+					// Check if a resource location is not set for this configuration, if so, match the wad against this configuration
+					if(General.Configs[i].Resources.Count == 0 && MatchConfiguration(General.Configs[i].Configuration, wadfile)) 
+					{
+						index = config.Items.IndexOf(General.Configs[i]); //mxd. Already added?
+						config.SelectedIndex = (index != -1 ? index : config.Items.Add(General.Configs[i])); // Select or add and select this item
 						break;
 					}
 				}
