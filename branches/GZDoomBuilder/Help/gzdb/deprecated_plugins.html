@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	
+	<title>GZDoom Builder features</title>
+	
+	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+	<link rel="stylesheet" type="text/css" href="../default.css" media="screen" title="Default" />
+</head>
+<body>
+	
+	<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<param name="keyword" value="plugins">
+    <param name="keyword" value="deprecated">
+	</object>
+	
+	<div id="gz_title"><h1>List of deprecated plugins</h1></div>
+	
+	<div id="contents">
+    <p><strong>The following plugins, which shipped with either Doom Builder 2 or older versions of GZDoom Builder, are no longer required or supported.</strong><br />They can potentially cause problems in the SVN versions of GZDoom Builder 1.14.<br />It is recommended to delete them from  the &quot;Plugins&quot; folder.</p>
+      <ul>
+        <li><strong>GZDoomEditing.dll</strong> - was merged into BuilderModes.dll in GZDB 1.14. Will cause crash during  startup in the SVN versions of GZDB 1.14.</li>
+        <li><strong>Statistics.dll</strong> - merged into the core in the SVN versions of GZDB 1.14. Statistics are now shown in any editing mode when not highlighting any map elements.</li>
+        <li><strong>UDMFControls.dll</strong> - plugin's functionality was fully replaced by <a href="../w_linedefedit.html">Edit Linedef</a> and <a href="../w_sectoredit.html">Edit Sector</a> windows in the SVN versions of GZDB 1.14.</li>
+        <li><strong>CopyPasteSectorProps.dll</strong> - merged into BuilderModes.dll in the SVN versions of GZDB 1.14.</li>
+      </ul>
+      <p><strong>The following unfinished/example plugins either ship or shipped with GZDB's source code.</strong><br />
+      None of them are required by the end users and can be safely removed from the &quot;Plugins&quot; folder.</p>
+      <ul>
+        <li><strong>ImageDrawingExample.dll</strong></strong> - a simple editing mode example plugin. Can be useful for people interested in making their own plugins for DB2 or GZDB.</li>
+        <li><strong>USDF.dll</strong> - a very unfinished Universal Strife Dialog Format (<a href="http://zdoom.org/wiki/Universal_Strife_Dialog_Format">zdoom.org/wiki/USDF</a>) plugin. Doesn't do anything useful.</li>
+        <li><strong>WadAuthorMode.dll</strong> - another very unfinished plugin, which aimed to replicate WadAuthor's all-in-one editing mode. Doesn't do anything useful.</li>
+      </ul>
+</div>
+</body>
