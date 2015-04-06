@@ -931,6 +931,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			OnMouseMove(e);
 
 			// Redraw screen
+			General.Map.Renderer2D.UpdateExtraFloorFlag(); //mxd
 			General.Interface.RedrawDisplay();
 		}
 

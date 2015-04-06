@@ -442,13 +442,17 @@
 			<param name="Local" value="gzdb\textures.html">
 			</OBJECT>
 		<LI> <OBJECT type="text/sitemap">
-			<param name="Name" value="Frequently asked questions">
-			<param name="Local" value="gzdb\faq.html">
+			<param name="Name" value="List of deprecated plugins">
+			<param name="Local" value="gzdb\deprecated_plugins.html">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Name" value="Compiling GZDoom Builder">
+			<param name="Local" value="gzdb\compilingtheeditor.html">
 			</OBJECT>
 	</UL>
 	<LI> <OBJECT type="text/sitemap">
-		<param name="Name" value="Compiling GZDoom Builder">
-		<param name="Local" value="compilingtheeditor.html">
+		<param name="Name" value="Frequently asked questions">
+		<param name="Local" value="gzdb\faq.html">
 		</OBJECT>
 	<LI> <OBJECT type="text/sitemap">
 		<param name="Name" value="Command Line Parameters">
