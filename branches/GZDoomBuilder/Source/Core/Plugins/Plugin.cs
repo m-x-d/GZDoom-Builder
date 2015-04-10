@@ -136,6 +136,7 @@ namespace CodeImp.DoomBuilder.Plugins
 		public Stream GetResourceStream(string resourcename)
 		{
 			// Find a resource
+			resourcename = "." + resourcename; //mxd. Otherwise, we can get Properties.Resources.SuperCoolMode.png while searching for CoolMode.png
 			string[] resnames = asm.GetManifestResourceNames();
 			foreach(string rn in resnames)
 			{
