@@ -418,26 +418,40 @@ namespace CodeImp.DoomBuilder.Controls
 				backpanel.Visible = false; //mxd
 			}
 
-			//mxd. Flags
-			Dictionary<string, string> activations = new Dictionary<string, string>(StringComparer.Ordinal);
-			foreach(LinedefActivateInfo ai in General.Map.Config.LinedefActivates) 
-				activations.Add(ai.Key, ai.Title);
-
+			//mxd. Flags and activations
 			flags.Items.Clear();
-			foreach(KeyValuePair<string, bool> group in l.Flags) 
+			
+			// Add activations
+			foreach(LinedefActivateInfo ai in General.Map.Config.LinedefActivates)
 			{
-				if(group.Value) 
-				{
-					ListViewItem item;
-					if (General.Map.Config.LinedefFlags.ContainsKey(group.Key))
-						item = new ListViewItem(General.Map.Config.LinedefFlags[group.Key]);
-					else if (activations.ContainsKey(group.Key))
-						item = new ListViewItem(activations[group.Key]);
-					else 
-						item = new ListViewItem(group.Key);
+				if(l.Flags.ContainsKey(ai.Key) && l.Flags[ai.Key])
+					flags.Items.Add(new ListViewItem(ai.Title) { Checked = true, ForeColor = SystemColors.HotTrack });
+			}
 
-					item.Checked = true;
-					flags.Items.Add(item);
+			// And flags
+			foreach(KeyValuePair<string, string> group in General.Map.Config.LinedefFlags) 
+			{
+				if(l.Flags.ContainsKey(group.Key) && l.Flags[group.Key])
+					flags.Items.Add(new ListViewItem(group.Value) { Checked = true });
+			}
+
+			// And front flags
+			if(l.Front != null)
+			{
+				foreach(KeyValuePair<string, string> group in General.Map.Config.SidedefFlags) 
+				{
+					if(l.Front.Flags.ContainsKey(group.Key) && l.Front.Flags[group.Key])
+						flags.Items.Add(new ListViewItem("Front: " + group.Value) { Checked = true });
+				}
+			}
+
+			// And back flags
+			if(l.Back != null) 
+			{
+				foreach(KeyValuePair<string, string> group in General.Map.Config.SidedefFlags) 
+				{
+					if(l.Back.Flags.ContainsKey(group.Key) && l.Back.Flags[group.Key])
+						flags.Items.Add(new ListViewItem("Back: " + group.Value) { Checked = true });
 				}
 			}
 
