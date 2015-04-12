@@ -294,7 +294,7 @@ namespace CodeImp.DoomBuilder.Controls
 				flagsPanel.Visible = (flags.Items.Count > 0);
 				if(flags.Items.Count > 0) 
 				{
-					flags.Width = flags.GetItemRect(0).Width * (int)Math.Ceiling(flags.Items.Count / 5.0f);
+					flags.Width = flags.GetItemRect(0).Width * (int)Math.Ceiling(flags.Items.Count / 4.0f);
 					flagsPanel.Width = flags.Width + flags.Left * 2;
 				}
 
