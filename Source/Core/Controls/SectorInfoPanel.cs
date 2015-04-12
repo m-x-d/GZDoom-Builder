@@ -284,14 +284,10 @@ namespace CodeImp.DoomBuilder.Controls
 
 				//Flags
 				flags.Items.Clear();
-				foreach(KeyValuePair<string, bool> group in s.Flags) 
+				foreach(KeyValuePair<string, string> group in General.Map.Config.SectorFlags) 
 				{
-					if(group.Value) 
-					{
-						ListViewItem item = new ListViewItem(General.Map.Config.SectorFlags.ContainsKey(group.Key) ? General.Map.Config.SectorFlags[group.Key] : group.Key);
-						item.Checked = true;
-						flags.Items.Add(item);
-					}
+					if(s.Flags.ContainsKey(group.Key) && s.Flags[group.Key])
+						flags.Items.Add(new ListViewItem(group.Value) { Checked = true });
 				}
 
 				//mxd. Flags panel visibility and size

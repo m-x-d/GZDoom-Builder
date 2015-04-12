@@ -121,9 +121,10 @@ namespace CodeImp.DoomBuilder.Controls
 			infopanel.Text = " Thing " + t.Index + " ";
 			type.Text = t.Type + " - " + ti.Title;
 			action.Text = actioninfo;
-			labelclass.Enabled = !string.IsNullOrEmpty(ti.ClassName); //mxd
-			classname.Enabled = labelclass.Enabled; //mxd
-			classname.Text = (!string.IsNullOrEmpty(ti.ClassName) ? ti.ClassName : "--"); //mxd
+			bool displayclassname = !string.IsNullOrEmpty(ti.ClassName) && !ti.ClassName.StartsWith("$"); //mxd
+			labelclass.Enabled = displayclassname; //mxd
+			classname.Enabled = displayclassname; //mxd
+			classname.Text = (displayclassname ? ti.ClassName : "--"); //mxd
 			position.Text = t.Position.x.ToString(CultureInfo.InvariantCulture) + ", " + t.Position.y.ToString(CultureInfo.InvariantCulture) + ", " + zinfo;
 			tag.Text = t.Tag + (General.Map.Options.TagLabels.ContainsKey(t.Tag) ? " - " + General.Map.Options.TagLabels[t.Tag] : string.Empty);
 			angle.Text = t.AngleDoom + "\u00B0";
@@ -186,14 +187,10 @@ namespace CodeImp.DoomBuilder.Controls
 
 			//mxd. Flags
 			flags.Items.Clear();
-			foreach(KeyValuePair<string, bool> group in t.Flags)
+			foreach(KeyValuePair<string, string> group in General.Map.Config.ThingFlags)
 			{
-				if(group.Value) 
-				{
-					ListViewItem item = new ListViewItem(General.Map.Config.ThingFlags.ContainsKey(group.Key) ? General.Map.Config.ThingFlags[group.Key] : group.Key);
-					item.Checked = true;
-					flags.Items.Add(item);
-				}
+				if(t.Flags.ContainsKey(group.Key) && t.Flags[group.Key])
+					flags.Items.Add(new ListViewItem(group.Value) { Checked = true });
 			}
 
 			//mxd. Flags panel visibility and size
