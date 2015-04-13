@@ -387,6 +387,30 @@ namespace CodeImp.DoomBuilder.ZDoom
 		}
 
 		//mxd
+		protected bool NextTokenIs(string expectedtoken) 
+		{
+			return NextTokenIs(expectedtoken, true);
+		}
+
+		//mxd
+		protected bool NextTokenIs(string expectedtoken, bool reporterror) 
+		{
+			SkipWhitespace(true);
+			string token = ReadToken();
+
+			if(token != expectedtoken) 
+			{
+				if(reporterror) General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": expected '" + expectedtoken + "', but got '" + token + "'");
+
+				// Rewind so this structure can be read again
+				DataStream.Seek(-token.Length - 1, SeekOrigin.Current);
+				return false;
+			}
+
+			return true;
+		}
+
+		//mxd
 		protected internal bool ReadSignedFloat(string token, ref float value) 
 		{
 			int sign = 1;
@@ -403,7 +427,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		}
 
 		//mxd
-		protected bool ReadSignedInt(string token, ref int value) 
+		protected internal bool ReadSignedInt(string token, ref int value) 
 		{
 			int sign = 1;
 			if (token == "-") 

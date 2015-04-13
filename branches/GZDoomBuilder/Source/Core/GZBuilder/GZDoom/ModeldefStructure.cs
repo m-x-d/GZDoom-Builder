@@ -19,6 +19,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 		{
 			string[] textureNames = new string[4];
 			string[] modelNames = new string[4];
+			bool[] modelsUsed = new bool[MAX_MODELS];
 			string path = "";
 			Vector3 scale = new Vector3(1, 1, 1);
 			Vector3 offset = new Vector3();
@@ -279,7 +280,6 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							{
 								string spriteLump = null;
 								string spriteFrame = null;
-								bool[] modelsUsed = new bool[MAX_MODELS];
 
 								//step back
 								parser.DataStream.Seek(-token.Length - 1, SeekOrigin.Current);
@@ -368,21 +368,23 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 
 										parser.SkipWhitespace(true);
 
-										//should be frame name or index. Currently I have no use for it
+										// Should be frame name or index. Currently I have no use for it
 										token = parser.StripTokenQuotes(parser.ReadToken());
 
 										if(frameIndex) 
 										{
-											int frame;
-											if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out frame)) 
+											int frame = 0;
+											if(!parser.ReadSignedInt(token, ref frame))
 											{
 												// Not numeric!
 												General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected model frame, but got '" + token + "'");
 												gotErrors = true;
 												break;
 											}
-										}
 
+											// Skip the model if frame index is -1
+											if(frame == -1) modelsUsed[modelIndex] = false;
+										}
 									} 
 									else 
 									{
@@ -398,16 +400,17 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 				}
 			}
 
-			//find closing brace, then quit;
+			// Find closing brace, then quit
 			while (parser.SkipWhitespace(true)) 
 			{
 				token = parser.ReadToken();
 				if (token == "}") break;
 			}
 
-			if (gotErrors) return null;
-
-			//classname is set in ModeldefParser
+			// Bail out when got errors or no models are used
+			if (gotErrors || Array.IndexOf(modelsUsed, true) == -1) return null;
+			
+			// Classname is set in ModeldefParser
 			ModelData mde = new ModelData();
 			mde.InheritActorPitch = inheritactorpitch;
 			mde.InheritActorRoll = inheritactorroll;
