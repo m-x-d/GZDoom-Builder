@@ -420,14 +420,14 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 
 			for(int i = 0; i < modelNames.Length; i++) 
 			{
-				if (!string.IsNullOrEmpty(modelNames[i])) 
+				if(!string.IsNullOrEmpty(modelNames[i]) && modelsUsed[i]) 
 				{
 					mde.TextureNames.Add(string.IsNullOrEmpty(textureNames[i]) ? textureNames[i] : textureNames[i].ToLowerInvariant());
 					mde.ModelNames.Add(modelNames[i].ToLowerInvariant());
 				}
 			}
 
-			return mde;
+			return (mde.ModelNames.Count > 0 ? mde : null);
 		}
 	}
 }
