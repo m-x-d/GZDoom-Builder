@@ -40,7 +40,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		private readonly string classname;
 		private readonly string inheritclass;
 		private readonly string replaceclass;
-		private readonly int doomednum = -1;
+		private int doomednum = -1;
 		
 		// Inheriting
 		private ActorStructure baseclass;
@@ -66,7 +66,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		public string InheritsClass { get { return inheritclass; } }
 		public string ReplacesClass { get { return replaceclass; } }
 		public ActorStructure BaseClass { get { return baseclass; } }
-		public int DoomEdNum { get { return doomednum; } }
+		internal int DoomEdNum { get { return doomednum; } set { doomednum = value; } }
 		public List<string> UserVars { get { return userVars; } } //mxd
 		
 		#endregion

@@ -48,7 +48,7 @@ namespace CodeImp.DoomBuilder.Types
 		// When set up for an argument
 		public override void SetupArgument(TypeHandlerAttribute attr, ArgumentInfo arginfo) 
 		{
-			defaultvalue = new EnumItem("0", "0: No Tag");
+			defaultvalue = new EnumItem("0", "0");
 			base.SetupArgument(attr, arginfo);
 
 			// Create enum list reference
@@ -106,7 +106,7 @@ namespace CodeImp.DoomBuilder.Types
 			// Input null?
 			if(value == null) 
 			{
-				this.value = new EnumItem("0", "0: No Tag");
+				this.value = new EnumItem("0", "0");
 			} 
 			else 
 			{

@@ -59,7 +59,17 @@ namespace CodeImp.DoomBuilder.ZDoom
 		/// All actors defined in the loaded DECORATE structures. This includes actors not supported in the current game.
 		/// </summary>
 		public ICollection<ActorStructure> AllActors { get { return archivedactors.Values; } }
-		
+
+		/// <summary>
+		/// mxd. All actors that are supported by the current game.
+		/// </summary>
+		internal Dictionary<string, ActorStructure> ActorsByClass { get { return actors; } }
+
+		/// <summary>
+		/// mxd. All actors defined in the loaded DECORATE structures. This includes actors not supported in the current game.
+		/// </summary>
+		internal Dictionary<string, ActorStructure> AllActorsByClass { get { return archivedactors; } }
+
 		#endregion
 		
 		#region ================== Constructor / Disposer

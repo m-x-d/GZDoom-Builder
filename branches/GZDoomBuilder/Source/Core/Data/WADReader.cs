@@ -906,21 +906,15 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		//mxd
-		public override Dictionary<string, Stream> GetGldefsData(string location) 
-		{
-			if (issuspended) throw new Exception("Data reader is suspended");
-
-			Dictionary<string, Stream> streams = new Dictionary<string, Stream>(StringComparer.Ordinal);
-			int lumpindex = file.FindLumpIndex(location);
-			
-			if (lumpindex != -1) streams.Add(location, file.Lumps[lumpindex].Stream);
-			return streams;
-		}
-
-		//mxd
 		public override Dictionary<string, Stream> GetModeldefData() 
 		{
-			return GetGldefsData("MODELDEF");
+			if(issuspended) throw new Exception("Data reader is suspended");
+
+			Dictionary<string, Stream> streams = new Dictionary<string, Stream>(StringComparer.Ordinal);
+			int lumpindex = file.FindLumpIndex("MODELDEF");
+
+			if(lumpindex != -1) streams.Add("MODELDEF", file.Lumps[lumpindex].Stream);
+			return streams;
 		}
 
 		//mxd

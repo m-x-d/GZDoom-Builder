@@ -32,9 +32,13 @@ namespace CodeImp.DoomBuilder.Config
 
 		#region ================== Variables
 
+		private readonly string name; //mxd
+
 		#endregion
 
 		#region ================== Properties
+
+		public string Name { get { return name; } } //mxd
 
 		#endregion
 
@@ -48,6 +52,8 @@ namespace CodeImp.DoomBuilder.Config
 		// Constructor to load from dictionary
 		internal EnumList(IDictionary dic)
 		{
+			this.name = "<unnamed>"; //mxd
+			
 			// Read the dictionary
 			foreach(DictionaryEntry de in dic)
 			{
@@ -60,6 +66,8 @@ namespace CodeImp.DoomBuilder.Config
 		// Constructor to load from configuration
 		internal EnumList(string name, Configuration cfg)
 		{
+			this.name = name; //mxd
+			
 			// Read the list from configuration
 			IDictionary dic = cfg.ReadSetting("enums." + name, new Hashtable());
 			foreach(DictionaryEntry de in dic)

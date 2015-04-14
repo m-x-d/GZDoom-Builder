@@ -330,8 +330,9 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 
 			//mxd. Update help link
-			classname.Enabled = (thinginfo != null && !string.IsNullOrEmpty(thinginfo.ClassName) && !string.IsNullOrEmpty(General.Map.Config.ThingClassHelp));
-			classname.Text = (thinginfo != null && !string.IsNullOrEmpty(thinginfo.ClassName)) ? thinginfo.ClassName : "--";
+			bool displayclassname = (thinginfo != null && !string.IsNullOrEmpty(thinginfo.ClassName) && !thinginfo.ClassName.StartsWith("$"));
+			classname.Enabled = (displayclassname && !string.IsNullOrEmpty(General.Map.Config.ThingClassHelp));
+			classname.Text = (displayclassname ? thinginfo.ClassName : "--");
 			labelclassname.Enabled = classname.Enabled;
 
 			// Update icon (mxd)

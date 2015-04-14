@@ -430,16 +430,8 @@
 				</OBJECT>
 		</UL>
 		<LI> <OBJECT type="text/sitemap">
-			<param name="Name" value="MAPINFO support">
-			<param name="Local" value="gzdb\mapinfo.html">
-			</OBJECT>
-		<LI> <OBJECT type="text/sitemap">
-			<param name="Name" value="MODELDEF and GLDEFS support">
-			<param name="Local" value="gzdb\gldefs.html">
-			</OBJECT>
-		<LI> <OBJECT type="text/sitemap">
-			<param name="Name" value="TEXTURES support">
-			<param name="Local" value="gzdb\textures.html">
+			<param name="Name" value="(G)ZDoom text lumps support">
+			<param name="Local" value="gzdb\text_lumps.html">
 			</OBJECT>
 		<LI> <OBJECT type="text/sitemap">
 			<param name="Name" value="List of deprecated plugins">

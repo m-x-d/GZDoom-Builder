@@ -48,7 +48,6 @@
         <li><strong><span class="style1">[new]</span></strong> New action:  &quot;Export to Wavefront .obj&quot;,   available as <strong>File -&gt;  Export -&gt; Selection to Wavefront .obj</strong>. It will export selected sectors (or the whole map, if no sectors are selected) to Wavefront .obj model.</li>
         <li>New action: &quot;<strong>Reload MODELDEF/VOXELDEF</strong>&quot; (<strong>Tools -&gt; Reload MODELDEF/VOXELDEF</strong>).</li>
         <li>New action: &quot;<strong>Reload GLDEFS</strong>&quot; (<strong>Tools -&gt; Reload GLDEFS</strong>).</li>
-        <li>New action: &quot;<strong>Reload MAPINFO</strong>&quot; (<strong>Tools -&gt; Reload MAPINFO</strong>).</li>
         <li><span class="red">[new]</span> Info about current selection is  shown at the bottom of program's window.
           <input class="spoilerbutton" type="button" onclick="ToggleSpoiler(this);" href="javascript:void(0);" value="Show image"/>
           <div style="display: none; margin: 0px; padding: 6px; border: 1px inset;"><img src="general/selection_info.jpg" alt="" /></div>
@@ -313,10 +312,11 @@
     <li>
       <h3><a name="formats" id="formats"></a>(G)ZDoom features support:</h3>
       <ul>
-        <li><a href="../gldefs.html">MD2 and MD3 models</a> rendering in 2D and 3D modes.</li>
-        <li><span class="red">[new]</span> VOXLEDEF support.</li>
-        <li>More complete <a href="../textures.html">TEXTURES</a> support.</li>
-        <li>Partial<a href="../mapinfo.html"> MAPINFO</a> support.</li>
+        <li><a href="../text_lumps.html#modeldef">MD2 and MD3 models</a> rendering in 2D and 3D modes.</li>
+        <li><span class="red">[new]</span> <a href="../text_lumps.html#voxeldef">VOXLEDEF</a> support.</li>
+        <li><span class="red">[new]</span> <a href="../text_lumps.html#reverbs">REVERBS</a> support (used in <a href="classic_modes/mode_soundenvironment.html">Sound Environment Mode</a>).</li>
+        <li>More complete <a href="../text_lumps.html#textures">TEXTURES</a> support.</li>
+        <li>Partial <a href="../text_lumps.html#mapinfo">MAPINFO</a> support, including DoomEdNum and SpawnNums overrides.</li>
         <li>ACS scripts with #include directives are compiled properly.</li>
         <li>PNG and PCX image formats are supported.</li>
         <li>PK7 archive format is supported.</li>

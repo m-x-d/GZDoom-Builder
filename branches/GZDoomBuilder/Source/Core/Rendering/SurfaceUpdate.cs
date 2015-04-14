@@ -24,7 +24,7 @@ namespace CodeImp.DoomBuilder.Rendering
 	// of sector vertices, the surface manager will take care of splitting it up in several SurfaceEntries.
 	internal class SurfaceUpdate
 	{
-		public int numvertices;
+		public readonly int numvertices;
 		
 		// Sector geometry (local copy used to quickly refill buffers)
 		// The sector must set these!
@@ -43,15 +43,8 @@ namespace CodeImp.DoomBuilder.Rendering
 			this.floortexture = 0;
 			this.ceiltexture = 0;
 			
-			if(updatefloor)
-				this.floorvertices = new FlatVertex[numvertices];
-			else
-				this.floorvertices = null;
-
-			if(updateceiling)
-				this.ceilvertices = new FlatVertex[numvertices];
-			else
-				this.ceilvertices = null;
+			this.floorvertices = (updatefloor ? new FlatVertex[numvertices] : null);
+			this.ceilvertices = (updateceiling ? new FlatVertex[numvertices] : null);
 		}
 	}
 }

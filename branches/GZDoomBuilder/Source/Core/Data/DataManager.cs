@@ -65,10 +65,11 @@ namespace CodeImp.DoomBuilder.Data
 		private AllTextureSet alltextures;
 
 		//mxd 
-		private Dictionary<int, ModelData> modeldefEntries; //Thing.Type, Model entry
-		private Dictionary<int, DynamicLightData> gldefsEntries; //Thing.Type, Light entry
-		private MapInfo mapInfo; //mapinfo
+		private Dictionary<int, ModelData> modeldefentries; //Thing.Type, Model entry
+		private readonly Dictionary<int, DynamicLightData> gldefsentries; //Thing.Type, Light entry
+		private MapInfo mapinfo;
 		private Dictionary<string, KeyValuePair<int, int>> reverbs; //<name, <arg1, arg2> 
+		private Dictionary<long, GlowingFlatData> glowingflats; // Texture name hash, Glowing Flat Data
 		
 		// Background loading
 		private Queue<ImageData> imageque;
@@ -96,7 +97,6 @@ namespace CodeImp.DoomBuilder.Data
 		private DecorateParser decorate;
 		private List<ThingCategory> thingcategories;
 		private Dictionary<int, ThingTypeInfo> thingtypes;
-		private List<string> invalidDecorateActors;//mxd. List of actors without DoomEdNum
 		
 		// Timing
 		private float loadstarttime;
@@ -110,10 +110,11 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Properties
 
 		//mxd
-		internal Dictionary<int, ModelData> ModeldefEntries { get { return modeldefEntries; } }
-		internal Dictionary<int, DynamicLightData> GldefsEntries { get { return gldefsEntries; } }
-		public MapInfo MapInfo { get { return mapInfo; } }
+		internal Dictionary<int, ModelData> ModeldefEntries { get { return modeldefentries; } }
+		internal Dictionary<int, DynamicLightData> GldefsEntries { get { return gldefsentries; } }
+		public MapInfo MapInfo { get { return mapinfo; } }
 		public Dictionary<string, KeyValuePair<int, int>> Reverbs { get { return reverbs; } }
+		public Dictionary<long, GlowingFlatData> GlowingFlats { get { return glowingflats; } }
 
 		public Playpal Palette { get { return palette; } }
 		public PreviewManager Previews { get { return previews; } }
@@ -156,9 +157,10 @@ namespace CodeImp.DoomBuilder.Data
 			GC.SuppressFinalize(this);
 
 			//mxd.
-			modeldefEntries = new Dictionary<int, ModelData>();
-			gldefsEntries = new Dictionary<int, DynamicLightData>();
+			modeldefentries = new Dictionary<int, ModelData>();
+			gldefsentries = new Dictionary<int, DynamicLightData>();
 			reverbs = new Dictionary<string, KeyValuePair<int, int>>();
+			glowingflats = new Dictionary<long, GlowingFlatData>();
 
 			// Load special images
 			missingtexture3d = new ResourceImage("CodeImp.DoomBuilder.Resources.MissingTexture3D.png");
@@ -200,8 +202,8 @@ namespace CodeImp.DoomBuilder.Data
 				whitetexture = null;
 				unknownimage.Dispose(); //mxd
 				unknownimage = null; //mxd
-				modeldefEntries = null;//mxd
-				mapInfo = null;
+				modeldefentries = null;//mxd
+				mapinfo = null;
 				
 				// Done
 				isdisposed = true;
@@ -317,18 +319,21 @@ namespace CodeImp.DoomBuilder.Data
 			flatcount = LoadFlats(flatsonly, flatnamesshorttofull);
 			colormapcount = LoadColormaps(colormapsonly);
 			LoadSprites();
-			thingcount = LoadDecorateThings();
+
+			//mxd. Load MAPINFO. Should happen before parisng DECORATE
+			Dictionary<int, string> spawnnums;
+			Dictionary<int, string> doomednums;
+			LoadMapInfo(out spawnnums, out doomednums);
+
+			thingcount = LoadDecorateThings(spawnnums, doomednums);
 			spritecount = LoadThingSprites();
 			LoadInternalSprites();
 
 			//mxd. Load more stuff
-			LoadMapInfo();
 			LoadReverbs();
-			ModelReader.Init();
 			LoadVoxels();
-			Dictionary<string, int> actorsByClass = CreateActorsByClassList();
-			LoadModeldefs(actorsByClass);
-			LoadGldefs(actorsByClass);
+			Dictionary<string, List<int>> actorsbyclass = CreateActorsByClassList();
+			LoadModeldefs(actorsbyclass);
 			foreach (Thing t in General.Map.Map.Things) t.UpdateCache();
 			General.MainWindow.DisplayReady();
 			
@@ -406,6 +411,9 @@ namespace CodeImp.DoomBuilder.Data
 				foreach (DataReader dr in containers)
 					dr.TextureSet.MixTexturesAndFlats();
 			}
+
+			//mxd. Should be done after loading textures...
+			LoadGldefs(actorsbyclass);
 			
 			// Sort names
 			texturenames.Sort();
@@ -443,7 +451,11 @@ namespace CodeImp.DoomBuilder.Data
 			StartBackgroundLoader();
 			
 			// Output info
-			General.WriteLogLine("Loaded " + texcount + " textures, " + flatcount + " flats, " + colormapcount + " colormaps, " + spritecount + " sprites, " + thingcount + " decorate things, " + modeldefEntries.Count + " model deinitions, " + gldefsEntries.Count + " dynamic light definitions");
+			General.WriteLogLine("Loaded " + texcount + " textures, " + flatcount + " flats, " + 
+				colormapcount + " colormaps, " + spritecount + " sprites, " + 
+				thingcount + " decorate things, " + modeldefentries.Count + " model/voxel deinitions, " + 
+				gldefsentries.Count + " dynamic light definitions, " + 
+				glowingflats.Count + " glowing flat definitions, " + reverbs.Count + " sound environment definitions");
 		}
 		
 		// This unloads all data
@@ -466,9 +478,9 @@ namespace CodeImp.DoomBuilder.Data
 			palette = null;
 
 			//mxd
-			if (modeldefEntries != null) 
+			if (modeldefentries != null) 
 			{
-				foreach (KeyValuePair<int, ModelData> group in modeldefEntries) 
+				foreach (KeyValuePair<int, ModelData> group in modeldefentries) 
 					group.Value.Dispose();
 			}
 			
@@ -721,18 +733,18 @@ namespace CodeImp.DoomBuilder.Data
 		//mxd. This loads a model
 		internal bool ProcessModel(int type) 
 		{
-			if(modeldefEntries[type].LoadState != ModelLoadState.None) return true;
+			if(modeldefentries[type].LoadState != ModelLoadState.None) return true;
 
 			//create models
-			ModelReader.Load(modeldefEntries[type], containers, General.Map.Graphics.Device);
+			ModelReader.Load(modeldefentries[type], containers, General.Map.Graphics.Device);
 
-			if(modeldefEntries[type].Model != null) 
+			if(modeldefentries[type].Model != null) 
 			{
-				modeldefEntries[type].LoadState = ModelLoadState.Ready;
+				modeldefentries[type].LoadState = ModelLoadState.Ready;
 				return true;
 			}
 
-			modeldefEntries.Remove(type);
+			modeldefentries.Remove(type);
 			return false;
 		}
 
@@ -1322,15 +1334,13 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Things
 		
 		// This loads the things from Decorate
-		private int LoadDecorateThings()
+		private int LoadDecorateThings(Dictionary<int, string> spawnnumsoverride, Dictionary<int, string> doomednumsoverride)
 		{
 			int counter = 0;
 			
 			// Create new parser
 			decorate = new DecorateParser();
 			decorate.OnInclude = LoadDecorateFromLocation;
-
-			invalidDecorateActors = new List<string>(); //mxd
 			
 			// Only load these when the game configuration supports the use of decorate
 			if(!string.IsNullOrEmpty(General.Map.Config.DecorateGames))
@@ -1362,7 +1372,7 @@ namespace CodeImp.DoomBuilder.Data
 				
 				if(!decorate.HasError)
 				{
-					// Go for all actors in the decorate to make things or update things
+					// Step 1. Go for all actors in the decorate to make things or update things
 					foreach(ActorStructure actor in decorate.Actors)
 					{
 						// Check if we want to add this actor
@@ -1380,28 +1390,7 @@ namespace CodeImp.DoomBuilder.Data
 							else
 							{
 								// Find the category to put the actor in
-								// First search by Title, then search by Name
-								ThingCategory cat = null;
-								foreach(ThingCategory c in thingcategories)
-								{
-									if(c.Title.ToLowerInvariant() == catname) cat = c;
-								}
-								if(cat == null)
-								{
-									foreach(ThingCategory c in thingcategories)
-									{
-										if(c.Name.ToLowerInvariant() == catname) cat = c;
-									}
-								}
-
-								// Make the category if needed
-								if(cat == null)
-								{
-									string catfullname = actor.GetPropertyAllValues("$category");
-									if(string.IsNullOrEmpty(catfullname.Trim())) catfullname = "Decorate";
-									cat = new ThingCategory(catname, catfullname);
-									thingcategories.Add(cat);
-								}
+								ThingCategory cat = GetThingCategory(actor, catname);
 								
 								// Add new thing
 								ThingTypeInfo t = new ThingTypeInfo(cat, actor);
@@ -1411,11 +1400,145 @@ namespace CodeImp.DoomBuilder.Data
 							
 							// Count
 							counter++;
-						} 
-						else //mxd
-						{ 
-							if(!invalidDecorateActors.Contains(actor.ClassName))
-								invalidDecorateActors.Add(actor.ClassName);
+						}
+					}
+
+					//mxd. Step 2. Apply DoomEdNum MAPINFO overrides, remove actors disabled in MAPINFO
+					if(doomednumsoverride.Count > 0) 
+					{
+						List<int> toremove = new List<int>();
+						Dictionary<string, ThingTypeInfo> thingtypesbyclass = new Dictionary<string, ThingTypeInfo>();
+						foreach (KeyValuePair<int, ThingTypeInfo> group in thingtypes)
+						{
+							if(string.IsNullOrEmpty(group.Value.ClassName)) continue;
+							thingtypesbyclass[group.Value.ClassName.ToLowerInvariant()] = group.Value;
+						}
+
+						foreach(KeyValuePair<int, string> group in doomednumsoverride) 
+						{
+							// Remove thing from the list?
+							if(group.Value == "none") 
+							{
+								toremove.Add(group.Key);
+								continue;
+							}
+
+							// Skip if already added.
+							if(thingtypes.ContainsKey(group.Key) && thingtypes[group.Key].ClassName.ToLowerInvariant() == group.Value) 
+							{
+								continue;
+							}
+
+							// Try to find the actor...
+							ActorStructure actor = null;
+
+							if(!decorate.HasError)
+							{
+								//... in ActorsByClass
+								if(decorate.ActorsByClass.ContainsKey(group.Value))
+								{
+									actor = decorate.ActorsByClass[group.Value];
+								}
+								// Try finding in ArchivedActors
+								else if(decorate.AllActorsByClass.ContainsKey(group.Value))
+								{
+									actor = decorate.AllActorsByClass[group.Value];
+								}
+							}
+
+							if(actor != null)
+							{
+								// Find the category to put the actor in
+								string catname = actor.GetPropertyAllValues("$category").ToLowerInvariant();
+								if(string.IsNullOrEmpty(catname.Trim())) catname = "decorate";
+								ThingCategory cat = GetThingCategory(actor, catname);
+
+								// Add a new ThingTypeInfo, replacing already existing one if necessary
+								ThingTypeInfo info = new ThingTypeInfo(cat, actor);
+								thingtypes[group.Key] = info;
+							}
+							// Check thingtypes...
+							else if(thingtypesbyclass.ContainsKey(group.Value))
+							{
+								ThingTypeInfo t = new ThingTypeInfo(group.Key, thingtypesbyclass[group.Value]);
+
+								// Add new thing, replacing already existing one if necessary
+								t.Category.AddThing(t);
+								thingtypes[group.Key] = t;
+							}
+							// Loudly give up...
+							else
+							{
+								General.ErrorLogger.Add(ErrorType.Warning, "Failed to apply MAPINFO DoomEdNum override '" + group.Key + " = " + group.Value + ": failed to find corresponding actor class...");
+							}
+						}
+
+						// Remove items
+						foreach(int id in toremove) 
+						{
+							if(thingtypes.ContainsKey(id))
+							{
+								thingtypes[id].Category.RemoveThing(thingtypes[id]);
+								thingtypes.Remove(id);
+							}
+						}
+					}
+
+					//mxd. Step 3. Gather DECORATE SpawnIDs
+					Dictionary<int, EnumItem> configspawnnums = new Dictionary<int, EnumItem>();
+
+					// Update or create the main enums list
+					if(General.Map.Config.Enums.ContainsKey("spawnthing")) 
+					{
+						foreach(EnumItem item in General.Map.Config.Enums["spawnthing"])
+							configspawnnums.Add(item.GetIntValue(), item);
+					}
+
+					bool spawnidschanged = false;
+					if(!decorate.HasError)
+					{
+						foreach(ActorStructure actor in decorate.Actors)
+						{
+							int spawnid = actor.GetPropertyValueInt("spawnid", 0);
+							if(spawnid != 0)
+							{
+								configspawnnums[spawnid] = new EnumItem(spawnid.ToString(), (actor.HasPropertyWithValue("$title") ? actor.GetPropertyAllValues("$title") : actor.ClassName));
+								spawnidschanged = true;
+							}
+						}
+					}
+
+					//mxd. Step 4. Update SpawnNums using MAPINFO overrides
+					if(spawnnumsoverride.Count > 0)
+					{
+						// Modify by MAPINFO data
+						foreach(KeyValuePair<int, string> group in spawnnumsoverride) 
+						{
+							configspawnnums[group.Key] = new EnumItem(group.Key.ToString(), (thingtypes.ContainsKey(group.Key) ? thingtypes[group.Key].Title : group.Value));
+						}
+
+						spawnidschanged = true;
+					}
+
+					if(spawnidschanged)
+					{
+						// Update the main collection
+						EnumList newenums = new EnumList();
+						newenums.AddRange(configspawnnums.Values);
+						newenums.Sort();
+						General.Map.Config.Enums["spawnthing"] = newenums;
+
+						// Update all ArgumentInfos...
+						foreach (ThingTypeInfo info in thingtypes.Values)
+						{
+							foreach(ArgumentInfo ai in info.Args) 
+								if(ai.Enum.Name == "spawnthing") ai.Enum = newenums;
+						}
+
+						foreach (LinedefActionInfo info in General.Map.Config.LinedefActions.Values)
+						{
+							foreach(ArgumentInfo ai in info.Args)
+								if(ai.Enum.Name == "spawnthing") ai.Enum = newenums;
 						}
 					}
 				}
@@ -1423,6 +1546,37 @@ namespace CodeImp.DoomBuilder.Data
 			
 			// Output info
 			return counter;
+		}
+
+		//mxd
+		private ThingCategory GetThingCategory(ActorStructure actor, string catname) 
+		{
+			// Find the category to put the actor in
+			// First search by Title, then search by Name
+			ThingCategory cat = null;
+			foreach(ThingCategory c in thingcategories) 
+			{
+				if(c.Title.ToLowerInvariant() == catname) cat = c;
+			}
+
+			if(cat == null) 
+			{
+				foreach(ThingCategory c in thingcategories) 
+				{
+					if(c.Name.ToLowerInvariant() == catname) cat = c;
+				}
+			}
+
+			// Make the category if needed
+			if(cat == null) 
+			{
+				string catfullname = actor.GetPropertyAllValues("$category");
+				if(string.IsNullOrEmpty(catfullname.Trim())) catfullname = "Decorate";
+				cat = new ThingCategory(catname, catfullname);
+				thingcategories.Add(cat);
+			}
+
+			return cat;
 		}
 		
 		// This loads Decorate data from a specific file or lump name
@@ -1471,24 +1625,19 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== mxd. Modeldef, Voxeldef, Gldefs, Mapinfo
 
 		//mxd. This creates <Actor Class, Thing.Type> dictionary. Should be called after all DECORATE actors are parsed
-		private Dictionary<string, int> CreateActorsByClassList() 
+		private Dictionary<string, List<int>> CreateActorsByClassList() 
 		{
-			Dictionary<string, int> actors = new Dictionary<string, int>(StringComparer.Ordinal);
-			Dictionary<int, ThingTypeInfo> things = General.Map.Config.GetThingTypes();
+			Dictionary<string, List<int>> actors = new Dictionary<string, List<int>>(StringComparer.Ordinal);
 
 			//read our new shiny ClassNames for default game things
-			foreach (KeyValuePair<int, ThingTypeInfo> ti in things) 
+			foreach (KeyValuePair<int, ThingTypeInfo> ti in thingtypes) 
 			{
-				if (!string.IsNullOrEmpty(ti.Value.ClassName))
-					actors.Add(ti.Value.ClassName.ToLowerInvariant(), ti.Key);
-			}
-
-			//and for actors defined in DECORATE
-			ICollection<ActorStructure> ac = decorate.Actors;
-			foreach (ActorStructure actor in ac) 
-			{
-				string classname = actor.ClassName.ToLowerInvariant();
-				if (!actors.ContainsKey(classname)) actors.Add(classname, actor.DoomEdNum);
+				if(!string.IsNullOrEmpty(ti.Value.ClassName))
+				{
+					string classname = ti.Value.ClassName.ToLowerInvariant();
+					if(!actors.ContainsKey(classname)) actors.Add(classname, new List<int>());
+					actors[classname].Add(ti.Key);
+				}
 			}
 
 			if (actors.Count == 0) 
@@ -1500,9 +1649,9 @@ namespace CodeImp.DoomBuilder.Data
 		//mxd
 		public void ReloadModeldef() 
 		{
-			if (modeldefEntries != null) 
+			if (modeldefentries != null) 
 			{
-				foreach (KeyValuePair<int, ModelData> group in modeldefEntries)
+				foreach (KeyValuePair<int, ModelData> group in modeldefentries)
 					group.Value.Dispose();
 			}
 
@@ -1548,36 +1697,11 @@ namespace CodeImp.DoomBuilder.Data
 			General.MainWindow.DisplayReady();
 		}
 
-		//mxd
-		public void ReloadMapInfo() 
-		{
-			General.MainWindow.DisplayStatus(StatusType.Busy, "Reloading (Z)MAPINFO...");
-
-			try 
-			{
-				LoadMapInfo();
-			} 
-			catch (ArgumentNullException) 
-			{
-				MessageBox.Show("(Z)MAPINFO reload failed. Try using 'Reload Resources' instead.\nCheck 'Errors and Warnings' window for more details.");
-				General.MainWindow.DisplayReady();
-				return;
-			}
-
-			//rebuild geometry if in Visual mode
-			if (General.Editing.Mode != null && General.Editing.Mode.GetType().Name == "BaseVisualMode") 
-			{
-				General.Editing.Mode.OnReloadResources();
-			}
-
-			General.MainWindow.DisplayReady();
-		}
-
 		//mxd. This parses modeldefs. Should be called after all DECORATE actors are parsed and actorsByClass dictionary created
-		private void LoadModeldefs(Dictionary<string, int> actorsByClass) 
+		private void LoadModeldefs(Dictionary<string, List<int>> actorsByClass) 
 		{
 			//if no actors defined in DECORATE or game config...
-			if (actorsByClass == null || actorsByClass.Count == 0) return;
+			if (actorsByClass.Count == 0) return;
 
 			Dictionary<string, ModelData> modelDefEntriesByName = new Dictionary<string, ModelData>(StringComparer.Ordinal);
 			ModeldefParser parser = new ModeldefParser();
@@ -1612,10 +1736,14 @@ namespace CodeImp.DoomBuilder.Data
 
 			foreach (KeyValuePair<string, ModelData> e in modelDefEntriesByName) 
 			{
-				if (actorsByClass.ContainsKey(e.Key))
-					modeldefEntries[actorsByClass[e.Key]] = modelDefEntriesByName[e.Key];
-				else if(!invalidDecorateActors.Contains(e.Key))
+				if(actorsByClass.ContainsKey(e.Key))
+				{
+					foreach(int i in actorsByClass[e.Key]) modeldefentries[i] = modelDefEntriesByName[e.Key];
+				}
+				else if(!decorate.ActorsByClass.ContainsKey(e.Key))
+				{
 					General.ErrorLogger.Add(ErrorType.Warning, "Got MODELDEF override for class '" + e.Key + "', but haven't found such class in Decorate");
+				}
 			}
 		}
 
@@ -1678,7 +1806,7 @@ namespace CodeImp.DoomBuilder.Data
 						{
 							if (sc.Key.Contains(entry.Key)) 
 							{
-								foreach(int id in sc.Value) modeldefEntries[id] = entry.Value;
+								foreach(int id in sc.Value) modeldefentries[id] = entry.Value;
 								processed.Add(entry.Key, false);
 							}
 						}
@@ -1700,19 +1828,19 @@ namespace CodeImp.DoomBuilder.Data
 						ModelData data = new ModelData { IsVoxel = true };
 						data.ModelNames.Add(group.Key);
 
-						foreach(int id in sprites[sc.Key]) modeldefEntries[id] = data;
+						foreach(int id in sprites[sc.Key]) modeldefentries[id] = data;
 					}
 				}
 			}
 		}
 
 		//mxd. This parses gldefs. Should be called after all DECORATE actors are parsed and actorsByClass dictionary created
-		private void LoadGldefs(Dictionary<string, int> actorsByClass) 
+		private void LoadGldefs(Dictionary<string, List<int>> actorsByClass) 
 		{
 			//if no actors defined in DECORATE or game config...
-			if (actorsByClass == null || actorsByClass.Count == 0) return;
+			if (actorsByClass.Count == 0) return;
 
-			GldefsParser parser = new GldefsParser { OnInclude = LoadGldefsFromLocation };
+			GldefsParser parser = new GldefsParser { OnInclude = ParseFromLocation };
 
 			//load gldefs from resources
 			foreach (DataReader dr in containers) 
@@ -1728,27 +1856,31 @@ namespace CodeImp.DoomBuilder.Data
 			//create gldefsEntries dictionary
 			foreach (KeyValuePair<string, string> e in parser.Objects) //ClassName, Light name
 			{ 
-				
 				//if we have decorate actor and light definition for given ClassName...
 				if (actorsByClass.ContainsKey(e.Key) && parser.LightsByName.ContainsKey(e.Value)) 
 				{
-					int thingType = actorsByClass[e.Key];
-					if (gldefsEntries.ContainsKey(thingType))
-						gldefsEntries[thingType] = parser.LightsByName[e.Value];
-					else
-						gldefsEntries.Add(thingType, parser.LightsByName[e.Value]);
+					foreach(int i in actorsByClass[e.Key])
+					{
+						if(gldefsentries.ContainsKey(i))
+							gldefsentries[i] = parser.LightsByName[e.Value];
+						else
+							gldefsentries.Add(i, parser.LightsByName[e.Value]);
+					}
 				} 
-				else if(!invalidDecorateActors.Contains(e.Key)) 
+				else if(!decorate.AllActorsByClass.ContainsKey(e.Key))
 				{
 					General.ErrorLogger.Add(ErrorType.Warning, "Got GLDEFS light for class '" + e.Key + "', but haven't found such class in DECORATE");
 				}
 			}
+
+			// Grab them glowy flats!
+			glowingflats = parser.GlowingFlats;
 		}
 
 		//mxd. This loads (Z)MAPINFO
-		private void LoadMapInfo() 
+		private void LoadMapInfo(out Dictionary<int, string> spawnnums, out Dictionary<int, string> doomednums)
 		{
-			MapinfoParser parser = new MapinfoParser();
+			MapinfoParser parser = new MapinfoParser { OnInclude = ParseFromLocation };
 
 			foreach (DataReader dr in containers) 
 			{
@@ -1761,16 +1893,21 @@ namespace CodeImp.DoomBuilder.Data
 					parser.Parse(group.Value, Path.Combine(currentreader.Location.location, group.Key), General.Map.Options.LevelName); 
 				}
 			}
+
+			// Set the output values
+			spawnnums = parser.SpawnNums;
+			doomednums = parser.DoomEdNums;
+
+			// Store to our MapInfo property
 			currentreader = null;
-			mapInfo = parser.MapInfo ?? new MapInfo();
+			mapinfo = parser.MapInfo ?? new MapInfo();
 		}
 
-		private void LoadGldefsFromLocation(GldefsParser parser, string location) 
+		private void ParseFromLocation(ZDTextParser parser, string location)
 		{
-			Dictionary<string, Stream> streams = currentreader.GetGldefsData(location);
-
-			foreach (KeyValuePair<string, Stream> group in streams)
-				parser.Parse(group.Value, group.Key);
+			if(currentreader.IsSuspended) throw new Exception("Data reader is suspended");
+			Stream s = currentreader.LoadFile(location);
+			if(s != null) parser.Parse(s, location);
 		}
 
 		//mxd. This loads REVERBS

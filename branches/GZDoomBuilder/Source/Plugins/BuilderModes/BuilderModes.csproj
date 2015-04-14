@@ -369,6 +369,7 @@
     <Compile Include="VisualModes\Effect3DFloor.cs" />
     <Compile Include="VisualModes\EffectBrightnessLevel.cs" />
     <Compile Include="VisualModes\EffectCopySlope.cs" />
+    <Compile Include="VisualModes\EffectGlowingFlat.cs" />
     <Compile Include="VisualModes\EffectLineSlope.cs" />
     <Compile Include="VisualModes\EffectPlaneCopySlope.cs" />
     <Compile Include="VisualModes\EffectThingLineSlope.cs" />

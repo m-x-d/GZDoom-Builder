@@ -38,23 +38,23 @@ namespace CodeImp.DoomBuilder.Config
 		private List<ThingTypeInfo> things;
 		
 		// Category properties
-		private string name;
-		private string title;
-		private bool sorted;
+		private readonly string name;
+		private readonly string title;
+		private readonly bool sorted;
 
 		// Thing properties for inheritance
-		private string sprite;
-		private int color;
-		private int arrow;
-		private float radius;
-		private float height;
-		private int hangs;
-		private int blocking;
-		private int errorcheck;
-		private bool fixedsize;
-		private bool fixedrotation; //mxd
-		private bool absolutez;
-		private float spritescale;
+		private readonly string sprite;
+		private readonly int color;
+		private readonly int arrow;
+		private readonly float radius;
+		private readonly float height;
+		private readonly int hangs;
+		private readonly int blocking;
+		private readonly int errorcheck;
+		private readonly bool fixedsize;
+		private readonly bool fixedrotation; //mxd
+		private readonly bool absolutez;
+		private readonly float spritescale;
 		
 		// Disposing
 		private bool isdisposed;
@@ -196,6 +196,13 @@ namespace CodeImp.DoomBuilder.Config
 		{
 			// Add
 			things.Add(t);
+		}
+
+		//mxd. This removes a thing from the category
+		internal void RemoveThing(ThingTypeInfo t) 
+		{
+			// Remove
+			if(things.Contains(t)) things.Remove(t);
 		}
 
 		// String representation

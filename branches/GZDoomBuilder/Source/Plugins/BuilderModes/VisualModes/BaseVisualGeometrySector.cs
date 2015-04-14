@@ -219,11 +219,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd
 		protected void OnTextureChanged() 
 		{
+			//mxd. Effects may need updating...
+			mode.RebuildElementData();
+			
 			if(level.sector == this.Sector.Sector) 
 			{
 				this.Setup();
 
-				//check for 3d floors
+				//mxd. 3D floors may need updating...
 				foreach(Sidedef s in level.sector.Sidedefs) 
 				{
 					if(s.Line.Action == 160 && s.Line.Front != null) 
@@ -239,7 +242,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						}
 					}
 				}
-			} 
+			}
+			//mxd. As well as this sector's geometry
 			else if(mode.VisualSectorExists(level.sector)) 
 			{
 				BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(level.sector);
@@ -761,12 +765,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				General.Interface.OnEditFormValuesChanged += Interface_OnEditFormValuesChanged; //mxd
 				mode.StartRealtimeInterfaceUpdate(SelectionType.Sectors); //mxd
-				General.Interface.ShowEditSectors(sectors);
+				DialogResult result = General.Interface.ShowEditSectors(sectors);
 				mode.StopRealtimeInterfaceUpdate(SelectionType.Sectors); //mxd
 				General.Interface.OnEditFormValuesChanged -= Interface_OnEditFormValuesChanged; //mxd
 
 				updateList.Clear(); //mxd
 				updateList = null; //mxd
+
+				if(result == DialogResult.OK) mode.RebuildElementData(); //mxd
 			}
 		}
 

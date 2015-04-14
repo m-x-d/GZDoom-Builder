@@ -181,8 +181,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					&& (prevlight.lighttype == LightLevelType.TYPE1 && l.lighttype != LightLevelType.TYPE1_BOTTOM)) 
 					continue;
 
-				if(l.type == SectorLevelType.Light) prevlight = l;
-
 				if((l != sd.Floor) && (l != sd.Ceiling) && (l.type != SectorLevelType.Floor || l.alpha < 255))
 				{
 					// Go for all polygons
@@ -213,8 +211,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							}
 
 							PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(lightlevel, Sidedef)); //mxd
-							PixelColor wallcolor = PixelColor.Modulate(l.colorbelow, wallbrightness);
-							np.color = wallcolor.WithAlpha(255).ToInt();
+							np.color = PixelColor.Modulate(l.colorbelow, wallbrightness).WithAlpha(255).ToInt();
 							
 							if(p.Count == 0)
 							{
@@ -232,6 +229,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						}
 					}
 				}
+
+				//mxd
+				if(l.type == SectorLevelType.Light) prevlight = l;
 			}
 			
 			// Go for all polygons to make geometry
@@ -239,12 +239,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Find texture coordinates for each vertex in the polygon
 				List<Vector2D> texc = new List<Vector2D>(p.Count);
-				foreach(Vector3D v in p)
-					texc.Add(tp.GetTextureCoordsAt(v));
+				foreach(Vector3D v in p) texc.Add(tp.GetTextureCoordsAt(v));
 				
 				// Now we create triangles from the polygon.
 				// The polygon is convex and clockwise, so this is a piece of cake.
-				if(p.Count >= 3)
+				if(p.Count > 2)
 				{
 					for(int k = 1; k < (p.Count - 1); k++)
 					{
@@ -254,8 +253,53 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 				}
 			}
+
+			//mxd. Interpolate vertex colors?
+			if(sd.CeilingGlow != null || sd.FloorGlow != null) 
+			{
+				for(int i = 0; i < verts.Count; i++)
+					verts[i] = InterpolateVertexColor(verts[i], sd);
+			}
 			
 			return verts;
+		}
+
+		//mxd
+		private static WorldVertex InterpolateVertexColor(WorldVertex v, SectorData data) 
+		{
+			// Apply ceiling glow?
+			if(data.CeilingGlow != null)
+			{
+				float cgz = data.CeilingGlowPlane.GetZ(v.x, v.y);
+
+				// Vertex is above ceiling glow plane?
+				if(v.z > cgz)
+				{
+					float cz = data.Ceiling.plane.GetZ(v.x, v.y);
+					float delta = ((v.z - cgz) / (cz - cgz)) * 0.9f;
+
+					PixelColor vc = PixelColor.FromInt(v.c);
+					v.c = InterpolationTools.InterpolateColor(PixelColor.Add(vc, data.CeilingGlow.Color), vc, delta);
+				}
+			}
+
+			// Apply floor glow?
+			if(data.FloorGlow != null)
+			{
+				float fgz = data.FloorGlowPlane.GetZ(v.x, v.y);
+
+				// Vertex is below floor glow plane?
+				if(v.z < fgz)
+				{
+					float fz = data.Floor.plane.GetZ(v.x, v.y);
+					float delta = ((v.z - fz) / (fgz - fz)) * 0.9f;
+
+					PixelColor vc = PixelColor.FromInt(v.c);
+					v.c = InterpolationTools.InterpolateColor(vc, PixelColor.Add(vc, data.FloorGlow.Color), delta);
+				}
+			}
+
+			return v;
 		}
 		
 		// This splits a polygon with a plane and returns the other part as a new polygon
@@ -1255,25 +1299,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				updateList.Clear();
 				updateList = null;
 
-				if(result == DialogResult.OK)
-				{
-					foreach(Linedef l in linedefs)
-					{
-						if(l.Front != null && mode.VisualSectorExists(l.Front.Sector))
-						{
-							BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(l.Front.Sector);
-							vs.UpdateSectorGeometry(false);
-						}
-						
-						if(l.Back != null && mode.VisualSectorExists(l.Back.Sector))
-						{
-							BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(l.Back.Sector);
-							vs.UpdateSectorGeometry(false);
-						}
-					}
-					
-					mode.RebuildElementData();
-				}
+				//mxd. Effects may need updating...
+				if(result == DialogResult.OK) mode.RebuildElementData();
 			}
 		}
 

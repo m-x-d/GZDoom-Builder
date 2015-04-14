@@ -16,13 +16,14 @@
 
 #region ================== Namespaces
 
+using System;
 using System.Globalization;
 
 #endregion
 
 namespace CodeImp.DoomBuilder.Config
 {
-	public class EnumItem
+	public class EnumItem : IComparable<EnumItem>
 	{
 		#region ================== Constants
 
@@ -60,6 +61,16 @@ namespace CodeImp.DoomBuilder.Config
 		public override string ToString()
 		{
 			return title;
+		}
+
+		//mxd. This compares against another activate info
+		public int CompareTo(EnumItem other)
+		{
+			int thisval = GetIntValue();
+			int otherval = other.GetIntValue();
+			if(thisval < otherval) return -1;
+			if(thisval > otherval) return 1;
+			return 0;
 		}
 
 		// This returns the value as int

@@ -16,6 +16,7 @@
 
 #region ================== Namespaces
 
+using System;
 using System.Drawing;
 using SlimDX;
 
@@ -153,6 +154,18 @@ namespace CodeImp.DoomBuilder.Rendering
 			
 			return c;
 		}
+
+		//mxd. This adds two colors
+		public static PixelColor Add(PixelColor a, PixelColor b)
+		{
+			return new PixelColor
+			{
+				a = (byte)(Math.Min(a.a + b.a, 255)), 
+				r = (byte)(Math.Min(a.r + b.r, 255)), 
+				g = (byte)(Math.Min(a.g + b.g, 255)), 
+				b = (byte)(Math.Min(a.b + b.b, 255))
+			};
+		}
 		
 		// This modulates two colors
 		public static PixelColor Modulate(PixelColor a, PixelColor b)
@@ -165,12 +178,14 @@ namespace CodeImp.DoomBuilder.Rendering
 			float br = b.r * BYTE_TO_FLOAT;
 			float bg = b.g * BYTE_TO_FLOAT;
 			float bb = b.b * BYTE_TO_FLOAT;
-			PixelColor c = new PixelColor();
-			c.a = (byte)((aa * ba) * 255.0f);
-			c.r = (byte)((ar * br) * 255.0f);
-			c.g = (byte)((ag * bg) * 255.0f);
-			c.b = (byte)((ab * bb) * 255.0f);
-			return c;
+			
+			return new PixelColor
+			{
+				a = (byte)((aa * ba) * 255.0f), 
+				r = (byte)((ar * br) * 255.0f), 
+				g = (byte)((ag * bg) * 255.0f), 
+				b = (byte)((ab * bb) * 255.0f)
+			};
 		}
 		
 		#endregion

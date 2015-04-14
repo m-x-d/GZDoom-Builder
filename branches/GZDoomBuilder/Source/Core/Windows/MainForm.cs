@@ -2916,7 +2916,6 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			//mxd
 			itemReloadGldefs.Enabled = enabled;
-			itemReloadMapinfo.Enabled = enabled;
 			itemReloadModedef.Enabled = enabled;
 		}
 		

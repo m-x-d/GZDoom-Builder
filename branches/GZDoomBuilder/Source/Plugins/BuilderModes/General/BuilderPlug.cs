@@ -288,9 +288,22 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					Vector2D scale = new Vector2D(s.Fields.GetValue("xscalefloor", 1.0f),
 												  s.Fields.GetValue("yscalefloor", 1.0f));
 					float rotate = s.Fields.GetValue("rotationfloor", 0.0f);
-					int color = s.Fields.GetValue("lightcolor", -1);
-					int light = s.Fields.GetValue("lightfloor", 0);
-					bool absolute = s.Fields.GetValue("lightfloorabsolute", false);
+					int color, light;
+					bool absolute;
+
+					//mxd. Apply GLDEFS override?
+					if(General.Map.Data.GlowingFlats.ContainsKey(s.LongFloorTexture) && General.Map.Data.GlowingFlats[s.LongFloorTexture].Fullbright)
+					{
+						color = -1;
+						light = 255;
+						absolute = true;
+					}
+					else
+					{
+						color = s.Fields.GetValue("lightcolor", -1);
+						light = s.Fields.GetValue("lightfloor", 0);
+						absolute = s.Fields.GetValue("lightfloorabsolute", false);
+					}
 
 					// Setup the vertices with the given settings
 					SetupSurfaceVertices(vertices, s, img, offset, scale, rotate, color, light, absolute);
@@ -326,9 +339,22 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					Vector2D scale = new Vector2D(s.Fields.GetValue("xscaleceiling", 1.0f),
 												  s.Fields.GetValue("yscaleceiling", 1.0f));
 					float rotate = s.Fields.GetValue("rotationceiling", 0.0f);
-					int color = s.Fields.GetValue("lightcolor", -1);
-					int light = s.Fields.GetValue("lightceiling", 0);
-					bool absolute = s.Fields.GetValue("lightceilingabsolute", false);
+					int color, light;
+					bool absolute;
+
+					//mxd. Apply GLDEFS override?
+					if(General.Map.Data.GlowingFlats.ContainsKey(s.LongCeilTexture) && General.Map.Data.GlowingFlats[s.LongCeilTexture].Fullbright) 
+					{
+						color = -1;
+						light = 255;
+						absolute = true;
+					} 
+					else 
+					{
+						color = s.Fields.GetValue("lightcolor", -1);
+						light = s.Fields.GetValue("lightceiling", 0);
+						absolute = s.Fields.GetValue("lightceilingabsolute", false);
+					}
 
 					// Setup the vertices with the given settings
 					SetupSurfaceVertices(vertices, s, img, offset, scale, rotate, color, light, absolute);
