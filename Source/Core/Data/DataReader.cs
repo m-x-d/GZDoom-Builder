@@ -163,7 +163,6 @@ namespace CodeImp.DoomBuilder.Data
 
 		//mxd. When implemented, this returns the Gldefs lump
 		public virtual Dictionary<string, Stream> GetGldefsData(GameType gameType) { return new Dictionary<string, Stream>(); }
-		public virtual Dictionary<string, Stream> GetGldefsData(string location) { return new Dictionary<string, Stream>(); }
 
 		//mxd. When implemented, this returns the Reverbs lump
 		public virtual Dictionary<string, Stream> GetReverbsData() { return new Dictionary<string, Stream>(); }

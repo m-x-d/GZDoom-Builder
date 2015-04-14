@@ -475,7 +475,7 @@ namespace CodeImp.DoomBuilder.Data
 
 			foreach (string s in files) 
 			{
-				if (s.ToLowerInvariant().IndexOf("modeldef") != -1) 
+				if (Path.GetFileNameWithoutExtension(s).ToUpperInvariant().StartsWith("MODELDEF")) 
 					streams.Add(s, LoadFile(s));
 			}
 
@@ -567,10 +567,10 @@ namespace CodeImp.DoomBuilder.Data
 			//try to load game specific GLDEFS first
 			if (gametype != GameType.UNKNOWN) 
 			{
-				string lumpname = Gldefs.GLDEFS_LUMPS_PER_GAME[(int)gametype].ToLowerInvariant();
+				string lumpname = Gldefs.GLDEFS_LUMPS_PER_GAME[(int)gametype];
 				foreach (string s in files) 
 				{
-					if (s.ToLowerInvariant().IndexOf(lumpname) != -1)
+					if(Path.GetFileNameWithoutExtension(s).ToUpperInvariant() == lumpname)
 						streams.Add(s, LoadFile(s));
 				}
 			}
@@ -578,22 +578,10 @@ namespace CodeImp.DoomBuilder.Data
 			// Can be several entries
 			foreach (string s in files)
 			{
-				if(s.ToLowerInvariant().IndexOf("gldefs") != -1)
+				if(Path.GetFileNameWithoutExtension(s).ToUpperInvariant().StartsWith("GLDEFS"))
 					streams.Add(s, LoadFile(s));
 			}
 
-			return streams;
-		}
-
-		//mxd
-		public override Dictionary<string, Stream> GetGldefsData(string location) 
-		{
-			// Error when suspended
-			if (issuspended) throw new Exception("Data reader is suspended");
-
-			Dictionary<string, Stream> streams = new Dictionary<string, Stream>(StringComparer.Ordinal);
-			Stream s = LoadFile(location);
-			if (s != null) streams.Add(location, s);
 			return streams;
 		}
 

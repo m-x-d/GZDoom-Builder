@@ -1,6 +1,7 @@
 #region === Copyright (c) 2010 Pascal van der Heiden ===
 
 using System.Collections.Generic;
+using CodeImp.DoomBuilder.GZBuilder.Data;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
@@ -31,6 +32,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Effects
 		private readonly List<SectorEffect> alleffects;
 		private readonly List<Effect3DFloor> extrafloors;
+
+		internal GlowingFlatData CeilingGlow; //mxd
+		internal GlowingFlatData FloorGlow; //mxd
+		internal Plane FloorGlowPlane; //mxd
+		internal Plane CeilingGlowPlane; //mxd
 		
 		// Sectors that must be updated when this sector is changed
 		// The boolean value is the 'includeneighbours' of the UpdateSectorGeometry function which
@@ -169,6 +175,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			EffectUDMFVertexOffset e = new EffectUDMFVertexOffset(this);
 			alleffects.Add(e);
 		}
+
+		//mxd.
+		public void AddEffectGlowingFlat(Sector sourcesector) 
+		{
+			EffectGlowingFlat e = new EffectGlowingFlat(this, sourcesector);
+			alleffects.Add(e);
+		}
 		
 		// This adds a sector for updating
 		public void AddUpdateSector(Sector s, bool includeneighbours)
@@ -187,9 +200,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This resets this sector data and all sectors that require updating after me
 		public void Reset()
 		{
-			if(isupdating)
-				return;
-
+			if(isupdating) return;
 			isupdating = true;
 
 			// This is set to false so that this sector is rebuilt the next time it is needed!
@@ -280,8 +291,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			BasicSetup();
 
 			// Update all effects
-			foreach(SectorEffect e in alleffects)
-				e.Update();
+			foreach(SectorEffect e in alleffects) e.Update();
 			
 			// Sort the levels (only if there are more than 2 sector levels - mxd)
 			if (lightlevels.Count > 2) 
@@ -350,6 +360,24 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				if(l.colorbelow.a == 0) l.colorbelow = pl.colorbelow;
 				if(l.brightnessbelow == -1) l.brightnessbelow = pl.brightnessbelow;
+			}
+
+			//mxd. Apply glow effects?
+			if(CeilingGlow != null && CeilingGlow.Fullbright)
+			{
+				ceiling.color = -1;
+			}
+
+			if(FloorGlow != null)
+			{
+				if(FloorGlow.Fullbright) floor.color = -1;
+				floor.brightnessbelow = ((FloorGlow.Fullbright ? 255 : (FloorGlow.Color.r + FloorGlow.Color.g + FloorGlow.Color.b) / 3) + sector.Brightness) / 2;
+				
+				if(floor.colorbelow.ToInt() == 0)
+				{
+					byte bb = (byte)floor.brightnessbelow;
+					floor.colorbelow = PixelColor.Add(floor.colorbelow, new PixelColor(255, bb, bb, bb));
+				}
 			}
 
 			floorchanged = false;
@@ -458,7 +486,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			return found;
 		}
-
 		
 		#endregion
 	}

@@ -1,4 +1,5 @@
 ﻿using System;
+using CodeImp.DoomBuilder.Rendering;
 
 namespace CodeImp.DoomBuilder.Geometry
 {
@@ -56,6 +57,16 @@ namespace CodeImp.DoomBuilder.Geometry
 		public static int EaseInOutSine(float val1, float val2, float delta)
 		{
 			return (int)Math.Round(-(val2 - val1) / 2 * (float)(Math.Cos(Math.PI * delta) - 1) + val1);
+		}
+
+		//mxd
+		public static int InterpolateColor(PixelColor c1, PixelColor c2, float delta)
+		{
+			float invdelta = 1.0f - delta;
+			byte r = (byte)(c1.r * delta + c2.r * invdelta);
+			byte g = (byte)(c1.g * delta + c2.g * invdelta);
+			byte b = (byte)(c1.b * delta + c2.b * invdelta);
+			return new PixelColor(255, r, g, b).ToInt();
 		}
 	}
 }

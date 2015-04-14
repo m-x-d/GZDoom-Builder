@@ -121,7 +121,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.itemreloadresources = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemReloadModedef = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemReloadGldefs = new System.Windows.Forms.ToolStripMenuItem();
-			this.itemReloadMapinfo = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemshowerrors = new System.Windows.Forms.ToolStripMenuItem();
 			this.seperatortoolsresources = new System.Windows.Forms.ToolStripSeparator();
 			this.configurationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -962,7 +961,6 @@ namespace CodeImp.DoomBuilder.Windows
             this.itemreloadresources,
             this.itemReloadModedef,
             this.itemReloadGldefs,
-            this.itemReloadMapinfo,
             this.itemshowerrors,
             this.seperatortoolsresources,
             this.configurationToolStripMenuItem,
@@ -999,14 +997,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.itemReloadGldefs.Tag = "builder_gzreloadgldefs";
 			this.itemReloadGldefs.Text = "Reload GLDEFS";
 			this.itemReloadGldefs.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
-			// itemReloadMapinfo
-			// 
-			this.itemReloadMapinfo.Name = "itemReloadMapinfo";
-			this.itemReloadMapinfo.Size = new System.Drawing.Size(246, 22);
-			this.itemReloadMapinfo.Tag = "builder_gzreloadmapinfo";
-			this.itemReloadMapinfo.Text = "Reload (Z)MAPINFO";
-			this.itemReloadMapinfo.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// itemshowerrors
 			// 
@@ -2422,7 +2412,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.ToolStripStatusLabel warnsLabel;
 		private System.Windows.Forms.ToolStripMenuItem itemReloadModedef;
 		private System.Windows.Forms.ToolStripMenuItem itemReloadGldefs;
-		private System.Windows.Forms.ToolStripMenuItem itemReloadMapinfo;
 		private System.Windows.Forms.ToolStripSeparator separatorDrawModes;
 		private System.Windows.Forms.ToolStripButton buttontoggleeventlines;
 		private System.Windows.Forms.ToolStripButton buttontogglevisualvertices;

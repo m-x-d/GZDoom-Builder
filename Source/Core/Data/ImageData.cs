@@ -326,6 +326,65 @@ namespace CodeImp.DoomBuilder.Data
 							scale.y = 1.0f;
 						}
 					}
+
+					//mxd. Calculate average color?
+					if(General.Map != null && General.Map.Data != null && General.Map.Data.GlowingFlats != null && 
+					   General.Map.Data.GlowingFlats.ContainsKey(longname) &&
+					   General.Map.Data.GlowingFlats[longname].CalculateTextureColor)
+					{
+						BitmapData bmpdata = null;
+
+						try
+						{
+							bmpdata = bitmap.LockBits(new Rectangle(0, 0, bitmap.Size.Width, bitmap.Size.Height), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
+						}
+						catch(Exception e)
+						{
+							General.ErrorLogger.Add(ErrorType.Error, "Cannot lock image '" + this.fullname + "' for glow color calculationt. " + e.GetType().Name + ": " + e.Message);
+						}
+
+						if(bmpdata != null)
+						{
+							PixelColor* pixels = (PixelColor*) (bmpdata.Scan0.ToPointer());
+							int numpixels = bmpdata.Width * bmpdata.Height;
+							uint r = 0;
+							uint g = 0;
+							uint b = 0;
+
+							for(PixelColor* cp = pixels + numpixels - 1; cp >= pixels; cp--)
+							{
+								r += cp->r;
+								g += cp->g;
+								b += cp->b;
+							}
+
+							// Update glow data
+							int br = (int)(r / numpixels);
+							int bg = (int)(g / numpixels);
+							int bb = (int)(b / numpixels);
+
+							int max = Math.Max(br, Math.Max(bg, bb));
+							
+							// Black can't glow...
+							if(max == 0)
+							{
+								General.Map.Data.GlowingFlats.Remove(longname);
+							}
+							else
+							{
+								// That's how it's done in GZDoom (and I may be totally wrong about this)
+								br = Math.Min(255, br * 153 / max);
+								bg = Math.Min(255, bg * 153 / max);
+								bb = Math.Min(255, bb * 153 / max);
+								
+								General.Map.Data.GlowingFlats[longname].Color = new PixelColor(255, (byte)br, (byte)bg, (byte)bb);
+								General.Map.Data.GlowingFlats[longname].CalculateTextureColor = false;
+							}
+
+							// Release the data
+							bitmap.UnlockBits(bmpdata);
+						}
+					}
 				}
 				
 				// Image is ready

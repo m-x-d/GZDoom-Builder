@@ -8,7 +8,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	{
 		Light,
 		Floor,
-		Ceiling
+		Ceiling,
+		Glow
 	}
 
 	//mxd

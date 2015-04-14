@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+	
+	<title>GZDoom Builder features</title>
+	
+	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+	<link rel="stylesheet" type="text/css" href="../default.css" media="screen" title="Default" />
+</head>
+<body>
+	
+	<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<param name="keyword" value="textures">
+    <param name="keyword" value="modeldef">
+    <param name="keyword" value="voxeldef">
+    <param name="keyword" value="reverbs">
+    <param name="keyword" value="gldefs">
+	</object>
+	
+	<div id="gz_title">
+	  <h1>(G)ZDoom text lumps support</h1>
+	</div>
+	
+	<div id="contents">
+    <p>GZDoom Builder will automatically load data from the following lumps if they are present in the map's resources.</p>
+    <a name="textures" id="textures"></a><h2>TEXTURES:</h2>
+    You can use "<strong>//$GZDB_SKIP</strong>" special comment to abort parsing of the current file. Useful if you don't want textures from certain files or parts of files to show up in the <a href="w_imagesbrowser.html">Image Browser</a> or want to increase resource loading speed.<br /><br />
+    GZDoom Builder adds support for the following TEXTURES parameters:
+    <ul><li>FlipX, FlipY, Rotate and Blend (both styles) patch parameters.</li>
+        <li>&quot;Add&quot;, &quot;Modulate&quot;, &quot;Subtract&quot;, &quot;ReverseSubtract&quot; and &quot;Translucent&quot; patch Translucency Styles.</li>
+      </ul>
+    <a name="mapinfo" id="mapinfo"></a>
+    <h2>(Z)MAPINFO:</h2>
+    Both new and old MAPINFO definition styles are supported.<br />
+    You can use "<strong>//$GZDB_SKIP</strong>" special comment to abort parsing of the current file.<br />
+    <strong>DoomEdNum</strong> overrides are supported.<br />
+    <strong>SpawnNums</strong> overrides are supported. The values are used to update "spawnthing" Game Configuration enum.<br /><br />
+    In addition, following values from (Z)MAPINFO are supported by Visual mode:
+<ul>
+  <li>fade;</li>
+  <li>outsidefog;</li>
+  <li>fogdensity;</li>
+  <li>outsidefogdensity;</li>
+  <li>vertwallshade;</li>
+  <li>horizwallshade;</li>
+  <li>evenlighting;</li>
+  <li>smoothlighting.</li>
+</ul>
+
+	<a name="reverbs" id="reverbs"></a>
+    <h2>REVERBS:</h2>
+    Sound environment definitions are loaded and can be used in the <a href="features/classic_modes/mode_soundenvironment.html">Sound Environment Mode</a>.
+         
+    <a name="modeldef" id="modeldef"></a>
+    <h2>MODELDEF:</h2>
+    All relevant MODELDEF properties and flags, except sprite translations are supported.
+    
+    <a name="voxeldef" id="voxeldef"></a>
+    <h2>VOXELDEF:</h2>
+    All relevant VOXELDEF properties and flags  are supported.
+    
+    <a name="gldefs" id="gldefs"></a>
+    <h2>GLDEFS:</h2>
+    Only glowing flat and dynamic light definitions are currently supported. Brightmaps support may be added in the future.<br />You can use &quot;<strong>//$GZDB_SKIP</strong>&quot; special comment to abort parsing of the current file.<br />
+    <br />
+    You can reload GLDEFS and MODELDEF by using &quot;<strong>Reload GLDEFS</strong>&quot; and &quot;<strong>Reload MODELDEF</strong>&quot; actions.<br />
+    To enable GZDoom's built-in GLDEFS dynamic light definitions, you need to add "<strong>lights.pk3</strong>" as a map resource. "<strong>lights.pk3</strong>" can be found in GZDoom folder.
+    <h2>Additional info regarding MODELDEF and GLDEFS support:</h2> 
+    <p>If you are creating maps for Doom or Doom 2, you probably don't need to read this, since required information is already added for those games.<br />
+      <br />
+	  <b>To load models or dynamic lights defined in GLDEFS for things defined in configuration files:</b><br />
+	  To display a model instead of a thing sprite, or to attach a light defined in GLDEFS, GZDB needs to know a thing's class name (because that's how overrides are defined in MODELDEF and GLDEFS). Things defined in Doom Builder configuration files don't have this value. So, if you aren't using configs, which came with GZDoom Builder, or you are creating maps for games other than Doom and Doom 2, you'll need to add a new value named "class" to thing definition in game configuration:<br />
+<pre>3001
+{
+    title = "Imp";
+    sprite = "TROOA2A8";
+    <span class="blue">class = "DoomImp";</span> // <- you'll need to add this value
+}</pre>
+ <br>
+ You can find all thing class names at <a href="http://www.zdoom.org/wiki/Classes">http://www.zdoom.org/wiki/Classes</a>.</p>
+</div>
+</body>

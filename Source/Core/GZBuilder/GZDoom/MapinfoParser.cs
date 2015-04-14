@@ -1,21 +1,59 @@
-﻿using System.Drawing;
+﻿#region ================== Namespaces
+
+using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using SlimDX;
 using CodeImp.DoomBuilder.ZDoom;
 using CodeImp.DoomBuilder.GZBuilder.Data;
 
-namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
-	public sealed class MapinfoParser : ZDTextParser {
+#endregion
 
-		private MapInfo mapInfo;
-		public MapInfo MapInfo { get { return mapInfo; } }
+namespace CodeImp.DoomBuilder.GZBuilder.GZDoom 
+{
+	internal sealed class MapinfoParser : ZDTextParser
+	{
+		#region ================== Delegates
 
-		public bool Parse(Stream stream, string sourcefilename, string mapName) 
+		public delegate void IncludeDelegate(MapinfoParser parser, string includefile);
+		public IncludeDelegate OnInclude;
+
+		#endregion
+
+		#region ================== Variables
+
+		private MapInfo mapinfo;
+		private readonly Dictionary<int, string> spawnnums;
+		private readonly Dictionary<int, string> doomednums; // <DoomEdNum, <lowercase classname, List of default arguments>>
+
+		#endregion
+
+		#region ================== Properties
+
+		public MapInfo MapInfo { get { return mapinfo; } }
+		public Dictionary<int, string> SpawnNums { get { return spawnnums; } }
+		public Dictionary<int, string> DoomEdNums { get { return doomednums; } }
+
+		#endregion
+
+		#region ================== Constructor
+
+		public MapinfoParser()
+		{
+			mapinfo = new MapInfo();
+			spawnnums = new Dictionary<int, string>();
+			doomednums = new Dictionary<int, string>();
+		}
+
+		#endregion
+
+		#region ================== Parsing
+
+		public bool Parse(Stream stream, string sourcefilename, string mapname) 
 		{
 			base.Parse(stream, sourcefilename);
-			mapName = mapName.ToLowerInvariant();
-			mapInfo = new MapInfo();
+			mapname = mapname.ToLowerInvariant();
 
 			while (SkipWhitespace(true)) 
 			{
@@ -23,16 +61,16 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 				if (token != null) 
 				{
 					token = token.ToLowerInvariant();
-					if (ParseBlock(token, mapName)) break;
+					if (ParseBlock(token, mapname)) break;
 				}
 			}
 
 			//check values
-			if (mapInfo.FadeColor.Red > 0 || mapInfo.FadeColor.Green > 0 || mapInfo.FadeColor.Blue > 0)
-				mapInfo.HasFadeColor = true;
+			if (mapinfo.FadeColor.Red > 0 || mapinfo.FadeColor.Green > 0 || mapinfo.FadeColor.Blue > 0)
+				mapinfo.HasFadeColor = true;
 
-			if (mapInfo.OutsideFogColor.Red > 0 || mapInfo.OutsideFogColor.Green > 0 || mapInfo.OutsideFogColor.Blue > 0)
-				mapInfo.HasOutsideFogColor = true;
+			if (mapinfo.OutsideFogColor.Red > 0 || mapinfo.OutsideFogColor.Green > 0 || mapinfo.OutsideFogColor.Blue > 0)
+				mapinfo.HasOutsideFogColor = true;
 
 			//Cannot fail here
 			return true;
@@ -41,6 +79,11 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 		//returns true if parsing is finished
 		private bool ParseBlock(string token, string mapName) 
 		{
+			// Keep local data
+			Stream localstream = datastream;
+			string localsourcename = sourcename;
+			BinaryReader localreader = datareader;
+			
 			if (token == "map" || token == "defaultmap" || token == "adddefaultmap") 
 			{
 				string curBlockName = token;
@@ -55,7 +98,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 
 					case "defaultmap":
 						//reset MapInfo
-						mapInfo = new MapInfo();
+						mapinfo = new MapInfo();
 						break;
 				}
 
@@ -84,9 +127,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 							if (!string.IsNullOrEmpty(skyTexture)) 
 							{
 								if (skyType == "sky1")
-									mapInfo.Sky1 = skyTexture;
+									mapinfo.Sky1 = skyTexture;
 								else
-									mapInfo.Sky2 = skyTexture;
+									mapinfo.Sky2 = skyTexture;
 
 								//check if we have scrollspeed
 								SkipWhitespace(true);
@@ -111,9 +154,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 									}
 
 									if (skyType == "sky1")
-										mapInfo.Sky1ScrollSpeed = scrollSpeed;
+										mapinfo.Sky1ScrollSpeed = scrollSpeed;
 									else
-										mapInfo.Sky2ScrollSpeed = scrollSpeed;
+										mapinfo.Sky2ScrollSpeed = scrollSpeed;
 								} 
 								else 
 								{
@@ -133,9 +176,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 							if (!string.IsNullOrEmpty(token)) 
 							{
 								if (skyType == "sky1")
-									mapInfo.Sky1 = token;
+									mapinfo.Sky1 = token;
 								else
-									mapInfo.Sky2 = token;
+									mapinfo.Sky2 = token;
 
 								//try to read scroll speed
 								SkipWhitespace(true);
@@ -150,9 +193,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 								}
 
 								if (skyType == "sky1")
-									mapInfo.Sky1ScrollSpeed = scrollSpeed;
+									mapinfo.Sky1ScrollSpeed = scrollSpeed;
 								else
-									mapInfo.Sky2ScrollSpeed = scrollSpeed;
+									mapinfo.Sky2ScrollSpeed = scrollSpeed;
 
 							} 
 							else 
@@ -185,9 +228,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 							if(GetColor(colorVal, ref color)) 
 							{
 								if(fadeType == "fade")
-									mapInfo.FadeColor = color;
+									mapinfo.FadeColor = color;
 								else
-									mapInfo.OutsideFogColor = color;
+									mapinfo.OutsideFogColor = color;
 							} 
 							else //...or not
 							{ 
@@ -225,9 +268,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 						}
 
 						if(shadeType == "vertwallshade")
-							mapInfo.VertWallShade = General.Clamp(val, -255, 255);
+							mapinfo.VertWallShade = General.Clamp(val, -255, 255);
 						else
-							mapInfo.HorizWallShade = General.Clamp(val, -255, 255);
+							mapinfo.HorizWallShade = General.Clamp(val, -255, 255);
 					}
 //fogdensity or outsidefogdensity
 					else if(token == "fogdensity" || token == "outsidefogdensity") 
@@ -253,25 +296,25 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 						}
 
 						if (densityType == "fogdensity")
-							mapInfo.FogDensity = (int)(1024 * (256.0f / val));
+							mapinfo.FogDensity = (int)(1024 * (256.0f / val));
 						else
-							mapInfo.OutsideFogDensity = (int)(1024 * (256.0f / val));
+							mapinfo.OutsideFogDensity = (int)(1024 * (256.0f / val));
 					}
 //doublesky
 					else if (token == "doublesky") 
 					{
-						mapInfo.DoubleSky = true;
+						mapinfo.DoubleSky = true;
 
 					}
 //evenlighting
 					else if (token == "evenlighting") 
 					{
-						mapInfo.EvenLighting = true;
+						mapinfo.EvenLighting = true;
 					}
 //smoothlighting
 					else if (token == "smoothlighting") 
 					{
-						mapInfo.SmoothLighting = true;
+						mapinfo.SmoothLighting = true;
 					}
 //block end
 					else if (token == "}") 
@@ -279,9 +322,133 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 						return (curBlockName == "map" || ParseBlock(token, mapName));
 					}
 				}
+			} 
+			else if(token == "#include")
+			{
+				SkipWhitespace(true);
+				string includeLump = StripTokenQuotes(ReadToken()).ToLowerInvariant();
+				if(!string.IsNullOrEmpty(includeLump)) 
+				{
+					// Callback to parse this file
+					if(OnInclude != null)
+						OnInclude(this, includeLump.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar));
+
+					// Set our buffers back to continue parsing
+					datastream = localstream;
+					datareader = localreader;
+					sourcename = localsourcename;
+				} 
+				else 
+				{
+					General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": got #include directive with missing or incorrect path: '" + includeLump + "'.");
+				}
+			} 
+			else if(token == "doomednums")
+			{
+				if(!NextTokenIs("{")) return true; // Finished with this file
+
+				while(SkipWhitespace(true)) 
+				{
+					token = ReadToken();
+					if(string.IsNullOrEmpty(token)) 
+					{
+						General.ErrorLogger.Add(ErrorType.Error, "Error while parisng '" + sourcename + "' at line " + GetCurrentLineNumber() + ": failed to find the end of DoomEdNums block");
+						return true; // Finished with this file
+					}
+					if(token == "}") break;
+
+					// First must be a number
+					int id;
+					if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out id)) 
+					{
+						// Not numeric!
+						General.ErrorLogger.Add(ErrorType.Error, "Unexpected token found in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": expected DoomEdNums entry number, but got '" + token + "'");
+						return true; // Finished with this file
+					}
+
+					// Then "="
+					if(!NextTokenIs("=")) return true; // Finished with this file
+
+					// Then actor class
+					SkipWhitespace(false);
+					string classname = StripTokenQuotes(ReadToken());
+					if(string.IsNullOrEmpty(classname)) 
+					{
+						General.ErrorLogger.Add(ErrorType.Error, "Error while parisng '" + sourcename + "' at line " + GetCurrentLineNumber() + ": unable to get DoomEdNums entry class definition");
+						return true; // Finished with this file
+					}
+
+					// Possible args
+					for (int i = 0; i < 5; i++)
+					{
+						if(!SkipWhitespace(false) || !NextTokenIs(",", false)) break;
+
+						// Read an arg
+						if(!SkipWhitespace(false)) break;
+						token = ReadToken();
+						int arg;
+						if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out arg)) 
+						{
+							// Not numeric!
+							General.ErrorLogger.Add(ErrorType.Error, "Unexpected token found in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": expected SpawnNums actor argument " + (i + 1) + ", but got '" + token + "'");
+							break;
+						}
+					}
+
+					// Add to collection?
+					if(id != 0) doomednums[id] = classname.ToLowerInvariant();
+				}
+			} 
+			else if(token == "spawnnums")
+			{
+				if(!NextTokenIs("{")) return true; // Finished with this file
+
+				while (SkipWhitespace(true))
+				{
+					token = ReadToken();
+					if(string.IsNullOrEmpty(token)) 
+					{
+						General.ErrorLogger.Add(ErrorType.Error, "Error while parisng '" + sourcename + "' at line " + GetCurrentLineNumber() + ": failed to find the end of SpawnNums block");
+						return true; // Finished with this file
+					}
+					if(token == "}") break;
+
+					// First must be a number
+					int id;
+					if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out id)) 
+					{
+						// Not numeric!
+						General.ErrorLogger.Add(ErrorType.Error, "Unexpected token found in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": expected SpawnNums number, but got '" + token + "'");
+						return true; // Finished with this file
+					}
+
+					// Then "="
+					if(!NextTokenIs("=")) return true; // Finished with this file
+
+					// Then actor class
+					SkipWhitespace(false);
+					token = StripTokenQuotes(ReadToken());
+					if(string.IsNullOrEmpty(token))
+					{
+						General.ErrorLogger.Add(ErrorType.Error, "Error while parisng '" + sourcename + "' at line " + GetCurrentLineNumber() + ": unable to get SpawnNums entry class definition");
+						return true;
+					}
+
+					// Add to collection
+					spawnnums[id] = token.ToLowerInvariant();
+				}
+			} 
+			else if(token == "$gzdb_skip")
+			{
+				return true; // Finished with this file
 			}
-			return false;
+
+			return false; // Not done yet
 		}
+
+		#endregion
+
+		#region ================== Methods
 
 		private static bool GetColor(string name, ref Color4 color) 
 		{
@@ -304,5 +471,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom {
 			}
 			return false;
 		}
+
+		#endregion
 	}
 }

@@ -49,7 +49,7 @@ namespace CodeImp.DoomBuilder.Config
 		private string title;
 		private string sprite;
 		private ActorStructure actor;
-		private readonly string classname; //mxd
+		private string classname; //mxd
 		private long spritelongname;
 		private int color;
 		private readonly bool arrow;
@@ -91,10 +91,8 @@ namespace CodeImp.DoomBuilder.Config
 		public bool IsNull { get { return (index == 0); } }
 		public bool AbsoluteZ { get { return absolutez; } }
 		public SizeF SpriteScale { get { return spritescale; } }
+		public string ClassName { get { return classname; } } //mxd. Need this to add model overrides for things defined in configs
 
-		//mxd. Need this to add model overrides for things defined in configs.  
-		public string ClassName { get { return (actor != null ? actor.ClassName : classname); } }
-		
 		#endregion
 
 		#region ================== Constructor / Disposer
@@ -108,6 +106,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.actor = null;
 			this.title = "<" + index.ToString(CultureInfo.InvariantCulture) + ">";
 			this.sprite = DataManager.INTERNAL_PREFIX + "unknownthing";
+			this.classname = string.Empty; //mxd
 			this.color = 0;
 			this.arrow = true;
 			this.radius = 10f;
@@ -156,10 +155,7 @@ namespace CodeImp.DoomBuilder.Config
 			float sscale = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".spritescale", cat.SpriteScale);
 			this.spritescale = new SizeF(sscale, sscale);
 			this.locksprite = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".locksprite", false); //mxd
-
-			//mxd
-			string s_class = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".class", String.Empty);
-			if(s_class != String.Empty) this.classname = s_class; //I actually want to keep null value there if no such property exists...
+			this.classname = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".class", String.Empty); //mxd
 			
 			// Read the args
 			for(int i = 0; i < Linedef.NUM_ARGS; i++)
@@ -187,6 +183,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.category = cat;
 			this.title = title;
 			this.actor = null;
+			this.classname = string.Empty; //mxd
 			this.isknown = true;
 			this.args = new ArgumentInfo[Linedef.NUM_ARGS];
 			for(int i = 0; i < Linedef.NUM_ARGS; i++) this.args[i] = new ArgumentInfo(i);
@@ -228,6 +225,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.category = cat;
 			this.title = "";
 			this.actor = actor;
+			this.classname = actor.ClassName; //mxd
 			this.isknown = true;
 			this.args = new ArgumentInfo[Linedef.NUM_ARGS];
 			for(int i = 0; i < Linedef.NUM_ARGS; i++) this.args[i] = new ArgumentInfo(i);
@@ -257,6 +255,38 @@ namespace CodeImp.DoomBuilder.Config
 			GC.SuppressFinalize(this);
 		}
 
+		// Constructor
+		internal ThingTypeInfo(int index, ThingTypeInfo other) 
+		{
+			// Initialize
+			this.index = index;
+			this.category = other.category;
+			this.title = other.title;
+			this.actor = other.actor;
+			this.classname = other.classname; //mxd
+			this.isknown = true;
+			this.args = new ArgumentInfo[Linedef.NUM_ARGS];
+			for(int i = 0; i < Linedef.NUM_ARGS; i++)
+				this.args[i] = other.args[i];
+
+			// Copy properties
+			this.sprite = other.sprite;
+			this.color = other.color;
+			this.arrow = other.arrow;
+			this.radius = other.radius;
+			this.height = other.height;
+			this.hangs = other.hangs;
+			this.blocking = other.blocking;
+			this.errorcheck = other.errorcheck;
+			this.fixedsize = other.fixedsize;
+			this.fixedrotation = other.fixedrotation; //mxd
+			this.absolutez = other.absolutez;
+			this.spritescale = new SizeF(other.spritescale.Width, other.spritescale.Height);
+
+			// We have no destructor
+			GC.SuppressFinalize(this);
+		}
+
 		#endregion
 
 		#region ================== Methods
@@ -266,6 +296,7 @@ namespace CodeImp.DoomBuilder.Config
 		{
 			// Keep reference to actor
 			this.actor = actor;
+			this.classname = actor.ClassName; //mxd
 			
 			// Set the title
 			if(actor.HasPropertyWithValue("$title"))
@@ -290,7 +321,7 @@ namespace CodeImp.DoomBuilder.Config
 			{
 				if(!actor.HasPropertyWithValue("$arg" + i)) continue;
 				string argtitle = actor.GetPropertyAllValues("$arg" + i);
-				args[i] = new ArgumentInfo(i, ZDTextParser.StripQuotes(argtitle));
+				args[i] = new ArgumentInfo(ZDTextParser.StripQuotes(argtitle));
 			}
 
 			// Remove doublequotes from title
@@ -343,7 +374,7 @@ namespace CodeImp.DoomBuilder.Config
 		// String representation
 		public override string ToString()
 		{
-			return this.title + " (" + index + ")";
+			return title + " (" + index + ")";
 		}
 		
 		#endregion

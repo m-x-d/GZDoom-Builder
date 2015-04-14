@@ -822,6 +822,7 @@
     <Compile Include="GZBuilder\Data\EngineInfo.cs" />
     <Compile Include="GZBuilder\Data\GameType.cs" />
     <Compile Include="GZBuilder\Data\DynamicLight.cs" />
+    <Compile Include="GZBuilder\Data\GlowingFlatData.cs" />
     <Compile Include="GZBuilder\Data\LinedefColorPreset.cs" />
     <Compile Include="GZBuilder\Data\LinksCollector.cs" />
     <Compile Include="GZBuilder\Data\MapInfo.cs" />

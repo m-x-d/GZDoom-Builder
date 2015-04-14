@@ -36,7 +36,7 @@ namespace CodeImp.DoomBuilder.Config
 		private readonly string title;
 		private readonly bool used;
 		private readonly int type;
-		private readonly EnumList enumlist;
+		private EnumList enumlist;
 		private readonly object defaultvalue; //mxd
 
 		#endregion
@@ -46,7 +46,7 @@ namespace CodeImp.DoomBuilder.Config
 		public string Title { get { return title; } }
 		public bool Used { get { return used; } }
 		public int Type { get { return type; } }
-		public EnumList Enum { get { return enumlist; } }
+		public EnumList Enum { get { return enumlist; } internal set { enumlist = value; } }
 		public object DefaultValue { get { return defaultvalue; } } //mxd
 
 		#endregion
@@ -92,7 +92,7 @@ namespace CodeImp.DoomBuilder.Config
 		}
 
 		//mxd. Constructor for an argument info defined in DECORATE
-		internal ArgumentInfo(int argindex, string title) 
+		internal ArgumentInfo(string title)
 		{
 			this.used = true;
 			this.title = title;
