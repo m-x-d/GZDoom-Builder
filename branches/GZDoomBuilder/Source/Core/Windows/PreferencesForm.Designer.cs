@@ -39,6 +39,7 @@ namespace CodeImp.DoomBuilder.Windows
 			System.Windows.Forms.Label label20;
 			System.Windows.Forms.Label label21;
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PreferencesForm));
+			this.cbStoreEditTab = new System.Windows.Forms.CheckBox();
 			this.locatetexturegroup = new System.Windows.Forms.CheckBox();
 			this.recentFiles = new Dotnetrix.Controls.TrackBar();
 			this.labelRecentFiles = new System.Windows.Forms.Label();
@@ -242,6 +243,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// groupBox1
 			// 
+			groupBox1.Controls.Add(this.cbStoreEditTab);
 			groupBox1.Controls.Add(this.locatetexturegroup);
 			groupBox1.Controls.Add(this.recentFiles);
 			groupBox1.Controls.Add(this.labelRecentFiles);
@@ -265,15 +267,25 @@ namespace CodeImp.DoomBuilder.Windows
 			groupBox1.Controls.Add(this.defaultviewmode);
 			groupBox1.Location = new System.Drawing.Point(8, 8);
 			groupBox1.Name = "groupBox1";
-			groupBox1.Size = new System.Drawing.Size(331, 372);
+			groupBox1.Size = new System.Drawing.Size(331, 384);
 			groupBox1.TabIndex = 0;
 			groupBox1.TabStop = false;
 			groupBox1.Text = " Options ";
 			// 
+			// cbStoreEditTab
+			// 
+			this.cbStoreEditTab.AutoSize = true;
+			this.cbStoreEditTab.Location = new System.Drawing.Point(32, 361);
+			this.cbStoreEditTab.Name = "cbStoreEditTab";
+			this.cbStoreEditTab.Size = new System.Drawing.Size(203, 17);
+			this.cbStoreEditTab.TabIndex = 50;
+			this.cbStoreEditTab.Text = "Edit windows remember selected tabs";
+			this.cbStoreEditTab.UseVisualStyleBackColor = true;
+			// 
 			// locatetexturegroup
 			// 
 			this.locatetexturegroup.AutoSize = true;
-			this.locatetexturegroup.Location = new System.Drawing.Point(32, 329);
+			this.locatetexturegroup.Location = new System.Drawing.Point(32, 321);
 			this.locatetexturegroup.Name = "locatetexturegroup";
 			this.locatetexturegroup.Size = new System.Drawing.Size(267, 17);
 			this.locatetexturegroup.TabIndex = 49;
@@ -285,7 +297,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// recentFiles
 			// 
 			this.recentFiles.LargeChange = 1;
-			this.recentFiles.Location = new System.Drawing.Point(127, 238);
+			this.recentFiles.Location = new System.Drawing.Point(127, 233);
 			this.recentFiles.Maximum = 25;
 			this.recentFiles.Minimum = 8;
 			this.recentFiles.Name = "recentFiles";
@@ -298,7 +310,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// labelRecentFiles
 			// 
 			this.labelRecentFiles.AutoSize = true;
-			this.labelRecentFiles.Location = new System.Drawing.Point(249, 250);
+			this.labelRecentFiles.Location = new System.Drawing.Point(249, 245);
 			this.labelRecentFiles.Name = "labelRecentFiles";
 			this.labelRecentFiles.Size = new System.Drawing.Size(13, 13);
 			this.labelRecentFiles.TabIndex = 48;
@@ -307,7 +319,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label25
 			// 
 			this.label25.AutoSize = true;
-			this.label25.Location = new System.Drawing.Point(31, 251);
+			this.label25.Location = new System.Drawing.Point(31, 246);
 			this.label25.Name = "label25";
 			this.label25.Size = new System.Drawing.Size(87, 13);
 			this.label25.TabIndex = 47;
@@ -317,7 +329,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// vertexScaleLabel
 			// 
 			this.vertexScaleLabel.AutoSize = true;
-			this.vertexScaleLabel.Location = new System.Drawing.Point(249, 199);
+			this.vertexScaleLabel.Location = new System.Drawing.Point(249, 198);
 			this.vertexScaleLabel.Name = "vertexScaleLabel";
 			this.vertexScaleLabel.Size = new System.Drawing.Size(74, 13);
 			this.vertexScaleLabel.TabIndex = 45;
@@ -326,7 +338,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label22
 			// 
 			this.label22.AutoSize = true;
-			this.label22.Location = new System.Drawing.Point(26, 199);
+			this.label22.Location = new System.Drawing.Point(26, 198);
 			this.label22.Name = "label22";
 			this.label22.Size = new System.Drawing.Size(91, 13);
 			this.label22.TabIndex = 44;
@@ -336,7 +348,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// vertexScale
 			// 
 			this.vertexScale.LargeChange = 1;
-			this.vertexScale.Location = new System.Drawing.Point(127, 187);
+			this.vertexScale.Location = new System.Drawing.Point(127, 186);
 			this.vertexScale.Minimum = 1;
 			this.vertexScale.Name = "vertexScale";
 			this.vertexScale.Size = new System.Drawing.Size(116, 45);
@@ -348,7 +360,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// cbSynchCameras
 			// 
 			this.cbSynchCameras.AutoSize = true;
-			this.cbSynchCameras.Location = new System.Drawing.Point(32, 349);
+			this.cbSynchCameras.Location = new System.Drawing.Point(32, 341);
 			this.cbSynchCameras.Name = "cbSynchCameras";
 			this.cbSynchCameras.Size = new System.Drawing.Size(260, 17);
 			this.cbSynchCameras.TabIndex = 42;
@@ -358,7 +370,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// showtexturesizes
 			// 
 			this.showtexturesizes.AutoSize = true;
-			this.showtexturesizes.Location = new System.Drawing.Point(32, 309);
+			this.showtexturesizes.Location = new System.Drawing.Point(32, 301);
 			this.showtexturesizes.Name = "showtexturesizes";
 			this.showtexturesizes.Size = new System.Drawing.Size(208, 17);
 			this.showtexturesizes.TabIndex = 41;
@@ -368,7 +380,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// scriptontop
 			// 
 			this.scriptontop.AutoSize = true;
-			this.scriptontop.Location = new System.Drawing.Point(32, 289);
+			this.scriptontop.Location = new System.Drawing.Point(32, 281);
 			this.scriptontop.Name = "scriptontop";
 			this.scriptontop.Size = new System.Drawing.Size(227, 17);
 			this.scriptontop.TabIndex = 40;
@@ -810,9 +822,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.groupBox3.Controls.Add(this.resetscreenshotsdir);
 			this.groupBox3.Controls.Add(this.browsescreenshotsdir);
 			this.groupBox3.Controls.Add(this.screenshotsfolderpath);
-			this.groupBox3.Location = new System.Drawing.Point(8, 449);
+			this.groupBox3.Location = new System.Drawing.Point(8, 452);
 			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Size = new System.Drawing.Size(331, 51);
+			this.groupBox3.Size = new System.Drawing.Size(331, 48);
 			this.groupBox3.TabIndex = 5;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = " Screenshots Folder ";
@@ -970,9 +982,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.groupBox4.Controls.Add(this.collapsedockers);
 			this.groupBox4.Controls.Add(this.dockersposition);
 			this.groupBox4.Controls.Add(this.label17);
-			this.groupBox4.Location = new System.Drawing.Point(8, 386);
+			this.groupBox4.Location = new System.Drawing.Point(8, 398);
 			this.groupBox4.Name = "groupBox4";
-			this.groupBox4.Size = new System.Drawing.Size(331, 57);
+			this.groupBox4.Size = new System.Drawing.Size(331, 48);
 			this.groupBox4.TabIndex = 3;
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = " Side Panels ";
@@ -980,7 +992,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// collapsedockers
 			// 
 			this.collapsedockers.AutoSize = true;
-			this.collapsedockers.Location = new System.Drawing.Point(200, 24);
+			this.collapsedockers.Location = new System.Drawing.Point(188, 20);
 			this.collapsedockers.Name = "collapsedockers";
 			this.collapsedockers.Size = new System.Drawing.Size(71, 17);
 			this.collapsedockers.TabIndex = 2;
@@ -995,7 +1007,7 @@ namespace CodeImp.DoomBuilder.Windows
             "Left",
             "Right",
             "None"});
-			this.dockersposition.Location = new System.Drawing.Point(91, 22);
+			this.dockersposition.Location = new System.Drawing.Point(91, 18);
 			this.dockersposition.Name = "dockersposition";
 			this.dockersposition.Size = new System.Drawing.Size(85, 21);
 			this.dockersposition.TabIndex = 1;
@@ -1003,7 +1015,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label17
 			// 
 			this.label17.AutoSize = true;
-			this.label17.Location = new System.Drawing.Point(29, 25);
+			this.label17.Location = new System.Drawing.Point(29, 21);
 			this.label17.Name = "label17";
 			this.label17.Size = new System.Drawing.Size(47, 13);
 			this.label17.TabIndex = 0;
@@ -2074,5 +2086,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.Label vertexScale3DLabel;
 		private System.Windows.Forms.Label label26;
 		private System.Windows.Forms.CheckBox locatetexturegroup;
+		private System.Windows.Forms.CheckBox cbStoreEditTab;
 	}
 }

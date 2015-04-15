@@ -114,6 +114,7 @@ namespace CodeImp.DoomBuilder.Config
 		private bool gzMarkExtraFloors;
 		private int maxRecentFiles;
 		private bool autoClearSideTextures;
+		private bool storeSelectedEditTab;
 		
 		// These are not stored in the configuration, only used at runtime
 		private int defaultbrightness;
@@ -199,6 +200,7 @@ namespace CodeImp.DoomBuilder.Config
 		public bool GZMarkExtraFloors { get { return gzMarkExtraFloors; } internal set { gzMarkExtraFloors = value; } }
 		public int MaxRecentFiles { get { return maxRecentFiles; } internal set { maxRecentFiles = General.Clamp(value, 8, 25); } }
 		public bool AutoClearSidedefTextures { get { return autoClearSideTextures; } internal set { autoClearSideTextures = value; } }
+		public bool StoreSelectedEditTab { get { return storeSelectedEditTab; } internal set { storeSelectedEditTab = value; } }
 
 		//mxd. Left here for compatibility reasons...
 		public string DefaultTexture { get { return General.Map != null ? General.Map.Options.DefaultWallTexture : "-"; } set { if(General.Map != null) General.Map.Options.DefaultWallTexture = value; } }
@@ -307,6 +309,7 @@ namespace CodeImp.DoomBuilder.Config
 				gzMarkExtraFloors = cfg.ReadSetting("gzmarkextrafloors", true);
 				maxRecentFiles = cfg.ReadSetting("maxrecentfiles", 8);
 				autoClearSideTextures = cfg.ReadSetting("autoclearsidetextures", true);
+				storeSelectedEditTab = cfg.ReadSetting("storeselectededittab", true);
 
 				//mxd. Sector defaults
 				defaultceilheight = cfg.ReadSetting("defaultceilheight", 128);
@@ -399,6 +402,7 @@ namespace CodeImp.DoomBuilder.Config
 				cfg.WriteSetting("lastusedmapfolder", lastUsedMapFolder);
 			cfg.WriteSetting("maxrecentfiles", maxRecentFiles);
 			cfg.WriteSetting("autoclearsidetextures", autoClearSideTextures);
+			cfg.WriteSetting("storeselectededittab", storeSelectedEditTab);
 
 			//mxd. Sector defaults
 			cfg.WriteSetting("defaultceilheight", defaultceilheight);

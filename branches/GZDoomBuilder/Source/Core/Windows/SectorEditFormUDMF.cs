@@ -178,7 +178,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				this.StartPosition = FormStartPosition.Manual;
 				this.Location = location;
-				if(activetab > 0) tabs.SelectTab(activetab);
+				if(General.Settings.StoreSelectedEditTab && activetab > 0) tabs.SelectTab(activetab);
 			}
 
 			// Fill flags list
