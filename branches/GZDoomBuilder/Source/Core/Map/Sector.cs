@@ -596,6 +596,166 @@ namespace CodeImp.DoomBuilder.Map
 			General.Map.IsChanged = true;
 		}
 
+		//mxd
+		public static Geometry.Plane GetFloorPlane(Sector s)
+		{
+			if(General.Map.UDMF)
+			{
+				// UDMF Sector slope?
+				if(s.FloorSlope.GetLengthSq() > 0 && !float.IsNaN(s.FloorSlopeOffset / s.FloorSlope.z)) 
+					return new Geometry.Plane(s.FloorSlope, s.FloorSlopeOffset);
+
+				if(s.sidedefs.Count == 3)
+				{
+					Geometry.Plane floor = new Geometry.Plane(new Vector3D(0, 0, 1), -s.FloorHeight);
+					Vector3D[] verts = new Vector3D[3];
+					bool sloped = false;
+					int index = 0;
+					
+					// Check vertices
+					foreach(Sidedef sd in s.Sidedefs) 
+					{
+						Vertex v = sd.IsFront ? sd.Line.End : sd.Line.Start;
+
+						//create "normal" vertices
+						verts[index] = new Vector3D(v.Position);
+
+						// Check floor
+						if(!float.IsNaN(v.ZFloor)) 
+						{
+							//vertex offset is absolute
+							verts[index].z = v.ZFloor;
+							sloped = true;
+						} 
+						else 
+						{
+							verts[index].z = floor.GetZ(v.Position);
+						}
+
+						index++;
+					}
+
+					// Have slope?
+					return (sloped ? new Geometry.Plane(verts[0], verts[1], verts[2], true) : floor);
+				}
+			}
+
+			// Have line slope?
+			foreach (Sidedef side in s.sidedefs)
+			{
+				// Carbon copy of EffectLineSlope class here...
+				if(side.Line.Action == 181 && ((side.Line.Args[0] == 1 && side == side.Line.Front) || side.Line.Args[0] == 2) && side.Other != null)
+				{
+					Linedef l = side.Line;
+					
+					// Find the vertex furthest from the line
+					Vertex foundv = null;
+					float founddist = -1.0f;
+					foreach(Sidedef sd in s.Sidedefs) 
+					{
+						Vertex v = sd.IsFront ? sd.Line.Start : sd.Line.End;
+						float d = l.DistanceToSq(v.Position, false);
+						if(d > founddist) 
+						{
+							foundv = v;
+							founddist = d;
+						}
+					}
+
+					Vector3D v1 = new Vector3D(l.Start.Position.x, l.Start.Position.y, side.Other.Sector.FloorHeight);
+					Vector3D v2 = new Vector3D(l.End.Position.x, l.End.Position.y, side.Other.Sector.FloorHeight);
+					Vector3D v3 = new Vector3D(foundv.Position.x, foundv.Position.y, s.FloorHeight);
+
+					return (l.SideOfLine(v3) < 0.0f ? new Geometry.Plane(v1, v2, v3, true) : new Geometry.Plane(v2, v1, v3, true));
+				}
+			}
+
+			//TODO: other types of slopes...
+
+			// Normal (flat) floor plane
+			return new Geometry.Plane(new Vector3D(0, 0, 1), -s.FloorHeight);
+		}
+
+		//mxd
+		public static Geometry.Plane GetCeilingPlane(Sector s)
+		{
+			if(General.Map.UDMF) 
+			{
+				// UDMF Sector slope?
+				if(s.CeilSlope.GetLengthSq() > 0 && !float.IsNaN(s.CeilSlopeOffset / s.CeilSlope.z))
+					return new Geometry.Plane(s.CeilSlope, s.CeilSlopeOffset);
+
+				if(s.sidedefs.Count == 3) 
+				{
+					Geometry.Plane ceiling = new Geometry.Plane(new Vector3D(0, 0, -1), s.CeilHeight);
+					Vector3D[] verts = new Vector3D[3];
+					bool sloped = false;
+					int index = 0;
+
+					// Check vertices
+					foreach(Sidedef sd in s.Sidedefs) 
+					{
+						Vertex v = sd.IsFront ? sd.Line.End : sd.Line.Start;
+
+						//create "normal" vertices
+						verts[index] = new Vector3D(v.Position);
+
+						// Check floor
+						if(!float.IsNaN(v.ZCeiling)) 
+						{
+							//vertex offset is absolute
+							verts[index].z = v.ZCeiling;
+							sloped = true;
+						} 
+						else 
+						{
+							verts[index].z = ceiling.GetZ(v.Position);
+						}
+
+						index++;
+					}
+
+					// Have slope?
+					return (sloped ? new Geometry.Plane(verts[0], verts[2], verts[1], false) : ceiling);
+				}
+			}
+
+			// Have line slope?
+			foreach(Sidedef side in s.sidedefs) 
+			{
+				// Carbon copy of EffectLineSlope class here...
+				if(side.Line.Action == 181 && ((side.Line.Args[1] == 1 && side == side.Line.Front) || side.Line.Args[1] == 2) && side.Other != null) 
+				{
+					Linedef l = side.Line;
+
+					// Find the vertex furthest from the line
+					Vertex foundv = null;
+					float founddist = -1.0f;
+					foreach(Sidedef sd in s.Sidedefs) 
+					{
+						Vertex v = sd.IsFront ? sd.Line.Start : sd.Line.End;
+						float d = l.DistanceToSq(v.Position, false);
+						if(d > founddist) 
+						{
+							foundv = v;
+							founddist = d;
+						}
+					}
+
+					Vector3D v1 = new Vector3D(l.Start.Position.x, l.Start.Position.y, side.Other.Sector.CeilHeight);
+					Vector3D v2 = new Vector3D(l.End.Position.x, l.End.Position.y, side.Other.Sector.CeilHeight);
+					Vector3D v3 = new Vector3D(foundv.Position.x, foundv.Position.y, s.CeilHeight);
+
+					return (l.SideOfLine(v3) > 0.0f ? new Geometry.Plane(v1, v2, v3, false) : new Geometry.Plane(v2, v1, v3, false));
+				}
+			}
+
+			//TODO: other types of slopes...
+
+			// Normal (flat) ceiling plane
+			return new Geometry.Plane(new Vector3D(0, 0, -1), s.CeilHeight);
+		}
+
 		// String representation
 		public override string ToString()
 		{

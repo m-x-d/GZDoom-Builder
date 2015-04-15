@@ -10,12 +10,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	internal class EffectLineSlope : SectorEffect
 	{
 		// Linedef that is used to create this effect
-		private Linedef linedef;
+		private readonly Linedef l;
 		
 		// Constructor
 		public EffectLineSlope(SectorData data, Linedef sourcelinedef) : base(data)
 		{
-			linedef = sourcelinedef;
+			l = sourcelinedef;
 			
 			// New effect added: This sector needs an update!
 			if(data.Mode.VisualSectorExists(data.Sector))
@@ -28,7 +28,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This makes sure we are updated with the source linedef information
 		public override void Update()
 		{
-			Linedef l = linedef;
+			if(l.Front == null || l.Back == null) return; //mxd
 			
 			// Find the vertex furthest from the line
 			Vertex foundv = null;
@@ -45,7 +45,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 			
 			// Align floor with back of line
-			if((l.Args[0] == 1) && (l.Front.Sector == data.Sector) && (l.Back != null))
+			if((l.Args[0] == 1) && (l.Front.Sector == data.Sector))
 			{
 				Vector3D v1 = new Vector3D(l.Start.Position.x, l.Start.Position.y, l.Back.Sector.FloorHeight);
 				Vector3D v2 = new Vector3D(l.End.Position.x, l.End.Position.y, l.Back.Sector.FloorHeight);
@@ -58,7 +58,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				sd.AddUpdateSector(data.Sector, true);
 			}
 			// Align floor with front of line
-			else if((l.Args[0] == 2) && (l.Back.Sector == data.Sector) && (l.Front != null))
+			else if((l.Args[0] == 2) && (l.Back.Sector == data.Sector))
 			{
 				Vector3D v1 = new Vector3D(l.Start.Position.x, l.Start.Position.y, l.Front.Sector.FloorHeight);
 				Vector3D v2 = new Vector3D(l.End.Position.x, l.End.Position.y, l.Front.Sector.FloorHeight);
@@ -72,7 +72,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 			
 			// Align ceiling with back of line
-			if((l.Args[1] == 1) && (l.Front.Sector == data.Sector) && (l.Back != null))
+			if((l.Args[1] == 1) && (l.Front.Sector == data.Sector))
 			{
 				Vector3D v1 = new Vector3D(l.Start.Position.x, l.Start.Position.y, l.Back.Sector.CeilHeight);
 				Vector3D v2 = new Vector3D(l.End.Position.x, l.End.Position.y, l.Back.Sector.CeilHeight);
@@ -85,7 +85,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				sd.AddUpdateSector(data.Sector, true);
 			}
 			// Align ceiling with front of line
-			else if((l.Args[1] == 2) && (l.Back.Sector == data.Sector) && (l.Front != null))
+			else if((l.Args[1] == 2) && (l.Back.Sector == data.Sector))
 			{
 				Vector3D v1 = new Vector3D(l.Start.Position.x, l.Start.Position.y, l.Front.Sector.CeilHeight);
 				Vector3D v2 = new Vector3D(l.End.Position.x, l.End.Position.y, l.Front.Sector.CeilHeight);

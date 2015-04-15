@@ -72,7 +72,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// label5
 			// 
 			label5.AutoSize = true;
-			label5.Location = new System.Drawing.Point(165, 64);
+			label5.Location = new System.Drawing.Point(165, 79);
 			label5.Name = "label5";
 			label5.Size = new System.Drawing.Size(37, 13);
 			label5.TabIndex = 8;
@@ -150,7 +150,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			this.anglecontrol.Angle = 0;
 			this.anglecontrol.AngleOffset = 0;
-			this.anglecontrol.Location = new System.Drawing.Point(235, 58);
+			this.anglecontrol.Location = new System.Drawing.Point(235, 73);
 			this.anglecontrol.Name = "anglecontrol";
 			this.anglecontrol.Size = new System.Drawing.Size(24, 24);
 			this.anglecontrol.TabIndex = 38;
@@ -276,7 +276,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// angle
 			// 
 			this.angle.AutoSize = true;
-			this.angle.Location = new System.Drawing.Point(206, 64);
+			this.angle.Location = new System.Drawing.Point(206, 79);
 			this.angle.Name = "angle";
 			this.angle.Size = new System.Drawing.Size(25, 13);
 			this.angle.TabIndex = 11;
@@ -353,6 +353,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			this.spritetex.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.Default;
 			this.spritetex.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.spritetex.Highlighted = false;
 			this.spritetex.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
 			this.spritetex.Location = new System.Drawing.Point(0, 0);
 			this.spritetex.Name = "spritetex";

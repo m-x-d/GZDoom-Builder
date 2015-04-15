@@ -50,7 +50,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private bool preventchanges;
 		private bool preventmapchange; //mxd
 		private bool undocreated; //mxd
-		private static bool useAbsoluteHeight;
+		private static bool useabsoluteheight; //mxd
 		private string arg0str;
 		private bool haveArg0Str;
 		private List<ThingProperties> thingprops; //mxd
@@ -187,14 +187,14 @@ namespace CodeImp.DoomBuilder.Windows
 
 			// Coordination
 			angle.Text = ft.AngleDoom.ToString();
-			cbAbsoluteHeight.Checked = useAbsoluteHeight; //mxd
+			cbAbsoluteHeight.Checked = useabsoluteheight; //mxd
 
 			//mxd
 			ft.DetermineSector();
-			int floorheight = (ft.Sector != null ? ft.Sector.FloorHeight : 0);
+			float floorheight = (ft.Sector != null ? Sector.GetFloorPlane(ft.Sector).GetZ(ft.Position) : 0);
 			posX.Text = (ft.Position.x).ToString();
 			posY.Text = (ft.Position.y).ToString();
-			posZ.Text = useAbsoluteHeight ? (ft.Position.z + floorheight).ToString() : (ft.Position.z).ToString();
+			posZ.Text = (useabsoluteheight ? ((float)Math.Round(ft.Position.z + floorheight, General.Map.FormatInterface.VertexDecimals)).ToString() : (ft.Position.z).ToString());
 			posX.ButtonStep = General.Map.Grid.GridSize;
 			posY.ButtonStep = General.Map.Grid.GridSize;
 			posZ.ButtonStep = General.Map.Grid.GridSize;
@@ -257,9 +257,10 @@ namespace CodeImp.DoomBuilder.Windows
 				//mxd. Position
 				if((t.Position.x).ToString() != posX.Text) posX.Text = "";
 				if((t.Position.y).ToString() != posY.Text) posY.Text = "";
-				if(useAbsoluteHeight && t.Sector != null) 
+				if(useabsoluteheight && t.Sector != null) 
 				{
-					if((t.Position.z + t.Sector.FloorHeight).ToString() != posZ.Text) posZ.Text = "";
+					if(((float)Math.Round(Sector.GetFloorPlane(t.Sector).GetZ(t.Position) + t.Position.z, General.Map.FormatInterface.VertexDecimals)).ToString() != posZ.Text)
+						posZ.Text = "";
 				} 
 				else if((t.Position.z).ToString() != posZ.Text) 
 				{
@@ -695,23 +696,24 @@ namespace CodeImp.DoomBuilder.Windows
 		private void cbAbsoluteHeight_CheckedChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
-			MakeUndo(); //mxd
+			MakeUndo();
 
-			useAbsoluteHeight = cbAbsoluteHeight.Checked;
+			useabsoluteheight = cbAbsoluteHeight.Checked;
 
 			preventchanges = true;
 
 			//update label text
 			Thing ft = General.GetByIndex(things, 0);
 			float z = ft.Position.z;
-			if(useAbsoluteHeight && ft.Sector != null) z += ft.Sector.FloorHeight;
-			posZ.Text = z.ToString();
+			if(useabsoluteheight && ft.Sector != null) z += Sector.GetFloorPlane(ft.Sector).GetZ(ft.Position);
+			posZ.Text = ((float)Math.Round(z, General.Map.FormatInterface.VertexDecimals)).ToString();
 
 			foreach(Thing t in things) 
 			{
 				z = t.Position.z;
-				if(useAbsoluteHeight && t.Sector != null) z += t.Sector.FloorHeight;
-				if(posZ.Text != z.ToString()) 
+				if(useabsoluteheight && t.Sector != null) z += Sector.GetFloorPlane(t.Sector).GetZ(t.Position);
+				string ztext = ((float)Math.Round(z, General.Map.FormatInterface.VertexDecimals)).ToString();
+				if(posZ.Text != ztext) 
 				{
 					posZ.Text = "";
 					break;
@@ -791,8 +793,8 @@ namespace CodeImp.DoomBuilder.Windows
 				foreach(Thing t in things) 
 				{
 					float z = posZ.GetResultFloat(thingprops[i++].Z);
-					if(useAbsoluteHeight && !posZ.CheckIsRelative() && t.Sector != null)
-						z -= t.Sector.FloorHeight;
+					if(useabsoluteheight && !posZ.CheckIsRelative() && t.Sector != null)
+						z -= (float)Math.Round(Sector.GetFloorPlane(t.Sector).GetZ(t.Position.x, t.Position.y), General.Map.FormatInterface.VertexDecimals);
 					t.Move(new Vector3D(t.Position.x, t.Position.y, z));
 				}
 			}
