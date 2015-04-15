@@ -52,7 +52,6 @@ namespace CodeImp.DoomBuilder.Controls
 			LinedefActionInfo act = null;
 			string actioninfo;
 			string zinfo;
-			float zvalue;
 
 			// Show/hide stuff depending on format
 			bool hasArgs = General.Map.FormatInterface.HasActionArgs;
@@ -92,30 +91,18 @@ namespace CodeImp.DoomBuilder.Controls
 			
 			// Determine z info to show
 			t.DetermineSector();
-			if(ti.AbsoluteZ)
+			if(ti.AbsoluteZ || t.Sector == null)
 			{
-				zvalue = t.Position.z;
+				zinfo = t.Position.z.ToString(CultureInfo.InvariantCulture) + " (abs.)"; //mxd
 			}
 			else
 			{
-				if(t.Sector != null)
-				{
-					// Hangs from ceiling?
-					if(ti.Hangs)
-					{
-						zvalue = t.Sector.CeilHeight - t.Position.z - ti.Height; //mxd
-					}
-					else
-					{
-						zvalue = t.Sector.FloorHeight + t.Position.z;
-					}
-				}
+				// Hangs from ceiling?
+				if(ti.Hangs)
+					zinfo = (t.Position.z - ti.Height) + " (" + ((float)Math.Round(Sector.GetCeilingPlane(t.Sector).GetZ(t.Position) - t.Position.z - ti.Height, General.Map.FormatInterface.VertexDecimals)).ToString(CultureInfo.InvariantCulture) + ")"; //mxd
 				else
-				{
-					zvalue = t.Position.z;
-				}
+					zinfo = t.Position.z + " (" + ((float)Math.Round(Sector.GetFloorPlane(t.Sector).GetZ(t.Position) + t.Position.z, General.Map.FormatInterface.VertexDecimals)).ToString(CultureInfo.InvariantCulture) + ")"; //mxd
 			}
-			zinfo = zvalue.ToString(CultureInfo.InvariantCulture); //mxd
 
 			// Thing info
 			infopanel.Text = " Thing " + t.Index + " ";
