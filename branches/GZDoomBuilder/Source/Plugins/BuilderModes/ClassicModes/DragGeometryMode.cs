@@ -425,7 +425,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				//mxd. Update floor/ceiling texture offsets and slopes?
 				if(General.Map.UDMF) 
 				{
-					Vector2D offset = dragitemposition - dragitem.Position;
+					Vector2D offset = dragitem.Position - dragitemposition;
 					
 					// Update floor/ceiling texture offsets?
 					if(BuilderPlug.Me.LockSectorTextureOffsetsWhileDragging)
@@ -446,7 +446,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 									if(scalex != 0 && scaley != 0) 
 									{
-										Vector2D ceiloffset = new Vector2D(offset.x, -offset.y).GetRotated(-Angle2D.DegToRad((int)s.Fields.GetValue("rotationceiling", 0f)));
+										Vector2D ceiloffset = new Vector2D(-offset.x, offset.y).GetRotated(-Angle2D.DegToRad((int)s.Fields.GetValue("rotationceiling", 0f)));
 										ceiloffset.x += s.Fields.GetValue("xpanningceiling", 0f);
 										ceiloffset.y += s.Fields.GetValue("ypanningceiling", 0f);
 
@@ -473,7 +473,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 									if(scalex != 0 && scaley != 0) 
 									{
-										Vector2D flooroffset = new Vector2D(offset.x, -offset.y).GetRotated(-Angle2D.DegToRad((int)s.Fields.GetValue("rotationfloor", 0f)));
+										Vector2D flooroffset = new Vector2D(-offset.x, offset.y).GetRotated(-Angle2D.DegToRad((int)s.Fields.GetValue("rotationfloor", 0f)));
 										flooroffset.x += s.Fields.GetValue("xpanningfloor", 0f);
 										flooroffset.y += s.Fields.GetValue("ypanningfloor", 0f);
 
@@ -499,7 +499,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						{
 							Plane floor = new Plane(s.FloorSlope, s.FloorSlopeOffset);
 							Vector2D center = new Vector2D(s.BBox.X + s.BBox.Width / 2, s.BBox.Y + s.BBox.Height / 2);
-							s.FloorSlopeOffset = -Vector3D.DotProduct(s.FloorSlope, new Vector3D(center - offset, floor.GetZ(center)));
+							s.FloorSlopeOffset = -Vector3D.DotProduct(s.FloorSlope, new Vector3D(center + offset, floor.GetZ(center)));
 						}
 
 						// Update ceiling slope?
@@ -507,7 +507,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						{
 							Plane ceiling = new Plane(s.CeilSlope, s.CeilSlopeOffset);
 							Vector2D center = new Vector2D(s.BBox.X + s.BBox.Width / 2, s.BBox.Y + s.BBox.Height / 2);
-							s.CeilSlopeOffset = -Vector3D.DotProduct(s.CeilSlope, new Vector3D(center - offset, ceiling.GetZ(center)));
+							s.CeilSlopeOffset = -Vector3D.DotProduct(s.CeilSlope, new Vector3D(center + offset, ceiling.GetZ(center)));
 						}
 					}
 				}

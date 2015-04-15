@@ -98,6 +98,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Selection
 		private ICollection<Vertex> selectedvertices;
 		private ICollection<Thing> selectedthings;
+		private ICollection<Sector> selectedsectors; //mxd
 		private List<int> fixedrotationthingtypes; //mxd 
 		private ICollection<Linedef> selectedlines;
 		private List<Vector2D> vertexpos;
@@ -540,15 +541,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						// Snap rotation to grip?
 						if(dosnaptogrid)
 						{
-							// We make 8 vectors that the rotation can snap to
+							// We make 24 vectors that the rotation can snap to
 							float founddistance = float.MaxValue;
 							float foundrotation = rotation;
-							for(int i = 0; i < 8; i++)
+							Vector3D rotvec = Vector2D.FromAngle(rotation);
+							
+							for(int i = 0; i < 24; i++)
 							{
 								// Make the vectors
-								float angle = i * Angle2D.PI * 0.25f;
+								float angle = i * Angle2D.PI * 0.08333f; //mxd. 15-degree increments
 								Vector2D gridvec = Vector2D.FromAngle(angle);
-								Vector3D rotvec = Vector2D.FromAngle(rotation);
 								
 								// Check distance
 								float dist = 2.0f - Vector2D.DotProduct(gridvec, rotvec);
@@ -575,26 +577,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This checks and returns the grip the mouse pointer is in
 		private Grip CheckMouseGrip()
 		{
-			if(PointInRectF(resizegrips[0], mousemappos))
-				return Grip.SizeN;
-			else if(PointInRectF(resizegrips[2], mousemappos))
-				return Grip.SizeS;
-			else if(PointInRectF(resizegrips[1], mousemappos))
-				return Grip.SizeE;
-			else if(PointInRectF(resizegrips[3], mousemappos))
-				return Grip.SizeW;
-			else if(PointInRectF(rotategrips[0], mousemappos))
-				return Grip.RotateLT;
-			else if(PointInRectF(rotategrips[1], mousemappos))
-				return Grip.RotateRT;
-			else if(PointInRectF(rotategrips[2], mousemappos))
-				return Grip.RotateRB;
-			else if(PointInRectF(rotategrips[3], mousemappos))
-				return Grip.RotateLB;
-			else if(Tools.PointInPolygon(corners, mousemappos))
-				return Grip.Main;
-			else
-				return Grip.None;
+			if(PointInRectF(resizegrips[0], mousemappos)) return Grip.SizeN;
+			if(PointInRectF(resizegrips[2], mousemappos)) return Grip.SizeS;
+			if(PointInRectF(resizegrips[1], mousemappos)) return Grip.SizeE;
+			if(PointInRectF(resizegrips[3], mousemappos)) return Grip.SizeW;
+			if(PointInRectF(rotategrips[0], mousemappos)) return Grip.RotateLT;
+			if(PointInRectF(rotategrips[1], mousemappos)) return Grip.RotateRT;
+			if(PointInRectF(rotategrips[2], mousemappos)) return Grip.RotateRB;
+			if(PointInRectF(rotategrips[3], mousemappos)) return Grip.RotateLB;
+			if(Tools.PointInPolygon(corners, mousemappos)) return Grip.Main;
+			return Grip.None;
 		}
 		
 		// This applies the current rotation and resize to a point
@@ -907,8 +899,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Map.Map.MarkSelectedSectors(true, true);
 			ICollection<Vertex> verts = General.Map.Map.GetVerticesFromLinesMarks(true);
 			foreach(Vertex v in verts) v.Marked = true;
-			ICollection<Sector> sects = General.Map.Map.GetSelectedSectors(true);
-			foreach(Sector s in sects)
+			selectedsectors = General.Map.Map.GetSelectedSectors(true); //mxd
+			foreach(Sector s in selectedsectors)
 			{
 				foreach(Sidedef sd in s.Sidedefs)
 				{
@@ -1015,8 +1007,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					UpdateGeometry();
 					General.Map.Data.UpdateUsedTextures();
 
-					if(!autodrag)
-						General.Map.Map.Update();
+					if(!autodrag) General.Map.Map.Update();
 				}
 				
 				// Set presentation
@@ -1173,6 +1164,34 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				// Resume normal undo/redo recording
 				General.Map.UndoRedo.IgnorePropChanges = false;
+
+				//mxd. Update sector slopes?
+				if(General.Map.UDMF)
+				{
+					// We need a different kind of offset...
+					Vector2D relativeoffset = offset - baseoffset;
+					
+					foreach (Sector s in selectedsectors)
+					{
+						// Update floor slope?
+						if(s.FloorSlope.GetLengthSq() > 0 && !float.IsNaN(s.FloorSlopeOffset / s.FloorSlope.z)) 
+						{
+							Plane floor = new Plane(s.FloorSlope, s.FloorSlopeOffset);
+							Vector2D center = new Vector2D(s.BBox.X + s.BBox.Width / 2, s.BBox.Y + s.BBox.Height / 2);
+							s.FloorSlope = new Vector3D(new Vector2D(s.FloorSlope.x, s.FloorSlope.y).GetRotated(rotation), s.FloorSlope.z);
+							s.FloorSlopeOffset = -Vector3D.DotProduct(s.FloorSlope, new Vector3D(center + relativeoffset, floor.GetZ(center)));
+						}
+
+						// Update ceiling slope?
+						if(s.CeilSlope.GetLengthSq() > 0 && !float.IsNaN(s.CeilSlopeOffset / s.CeilSlope.z)) 
+						{
+							Plane ceiling = new Plane(s.CeilSlope, s.CeilSlopeOffset);
+							Vector2D center = new Vector2D(s.BBox.X + s.BBox.Width / 2, s.BBox.Y + s.BBox.Height / 2);
+							s.CeilSlope = new Vector3D(new Vector2D(s.CeilSlope.x, s.CeilSlope.y).GetRotated(rotation), s.CeilSlope.z);
+							s.CeilSlopeOffset = -Vector3D.DotProduct(s.CeilSlope, new Vector3D(center + relativeoffset, ceiling.GetZ(center)));
+						}
+					}
+				}
 
 				// Mark selected geometry
 				General.Map.Map.ClearAllMarks(false);
