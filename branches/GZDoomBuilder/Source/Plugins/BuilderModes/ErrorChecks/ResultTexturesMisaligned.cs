@@ -27,19 +27,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		#region ================== Constructor / Destructor
 
-#if DEBUG //TODO: remove this
-		public ResultTexturesMisaligned(Sidedef side1, Sidedef side2, string texturename, string message)
-		{
-			// Initialize
-			this.side1 = side1;
-			this.side2 = side2;
-			this.texturename = texturename;
-			viewobjects.Add(side1.Line);
-			viewobjects.Add(side2.Line);
-			hidden = (side1.IgnoredErrorChecks.Contains(this.GetType()) && side2.IgnoredErrorChecks.Contains(this.GetType()));
-			description = "Textures are not aligned on given sidedefs. Some players may not like that.\n" + message;
-		}
-#else
 		public ResultTexturesMisaligned(Sidedef side1, Sidedef side2, string texturename)
 		{
 			// Initialize
@@ -51,7 +38,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			hidden = (side1.IgnoredErrorChecks.Contains(this.GetType()) && side2.IgnoredErrorChecks.Contains(this.GetType()));
 			description = "Textures are not aligned on given sidedefs. Some players may not like that.";
 		}
-#endif
 
 		#endregion
 

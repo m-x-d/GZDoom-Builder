@@ -193,16 +193,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				float targetscaley = GetSidedefValue(target, targetparttype, "scaley", 1.0f);
 				if(targetscaley != linescaley) 
 				{
-#if DEBUG //TODO: remove this
-					string msg = "Case 1: '" + texturename + "' source " + sidedef.Line.Index + " (" + (sidedef.IsFront ? "front" : "back")
-						+ "), target " + target.Line.Index + " (" + (target.IsFront ? "front" : "back")
-						+ "): scale mismatch: target: " + targetscaley
-						+ "; source: " + linescaley;
-					SubmitResult(new ResultTexturesMisaligned(sidedef, target, texturename, msg));
-#else
 					SubmitResult(new ResultTexturesMisaligned(sidedef, target, texturename));
-#endif
 				}
+
 				float targetscalex = GetSidedefValue(target, targetparttype, "scalex", 1.0f);
 
 				alignedY %= texture.Height;
@@ -214,16 +207,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Submit result if target offsets don't match expected ones
 				if(offsetx != alignedX || offsety != alignedY) 
 				{
-#if DEBUG //TODO: remove this
-					string msg = "Case 1: '" + texturename + "' source " + sidedef.Line.Index + " (" + (sidedef.IsFront ? "front" : "back")
-						+ "), target " + target.Line.Index + " (" + (target.IsFront ? "front" : "back")
-						+ "): expected: " + alignedX + ", " + alignedY
-						+ "; actual [source]: " + offsetx + ", " + offsety;
-
-					SubmitResult(new ResultTexturesMisaligned(sidedef, target, texturename, msg));
-#else
 					SubmitResult(new ResultTexturesMisaligned(sidedef, target, texturename));
-#endif
 				}
 
 				// Add to collection
@@ -258,15 +242,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				float targetscaley = GetSidedefValue(target, targetparttype, "scaley", 1.0f);
 				if (targetscaley != linescaley)
 				{
-#if DEBUG //TODO: remove this
-					string msg = "Case 2: '" + texturename + "' source " + sidedef.Line.Index + " (" + (sidedef.IsFront ? "front" : "back")
-						+ "), target " + target.Line.Index + " (" + (target.IsFront ? "front" : "back")
-						+ "): scale mismatch: target: " + targetscaley
-						+ "; source: " + linescaley;
-					SubmitResult(new ResultTexturesMisaligned(sidedef, target, texturename, msg));
-#else
 					SubmitResult(new ResultTexturesMisaligned(sidedef, target, texturename));
-#endif
 				}
 
 				alignedY %= texture.Height;
@@ -278,16 +254,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Submit result if target offsets don't match expected ones
 				if(offsetx != alignedX || offsety != alignedY) 
 				{
-#if DEBUG //TODO: remove this
-					string msg = "Case 2: '" + texturename + "' source " + sidedef.Line.Index + " (" + (sidedef.IsFront ? "front" : "back")
-						+ "), target " + target.Line.Index + " (" + (target.IsFront ? "front" : "back")
-						+ "): expected: " + alignedX + ", " + alignedY
-						+ "; actual [source]: " + offsetx + ", " + offsety;
-					
-					SubmitResult(new ResultTexturesMisaligned(sidedef, target, texturename, msg));
-#else
 					SubmitResult(new ResultTexturesMisaligned(sidedef, target, texturename));
-#endif
 				}
 
 				// Add to collection
@@ -334,7 +301,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			donesides[type2][s2.Index][type1].Add(s1.Index, false);
 		}
 
-		private int GetExpectedOffsetY(Sidedef source, Sidedef target, string texturename, int textureheight, float texturescaley, float linescaley, Rectangle partsize, out VisualGeometryType matchingparttype) 
+		private static int GetExpectedOffsetY(Sidedef source, Sidedef target, string texturename, int textureheight, float texturescaley, float linescaley, Rectangle partsize, out VisualGeometryType matchingparttype) 
 		{
 			if(target.MiddleTexture == texturename
 					&& partsize.IntersectsWith(BuilderModesTools.GetSidedefPartSize(target, VisualGeometryType.WALL_MIDDLE)))

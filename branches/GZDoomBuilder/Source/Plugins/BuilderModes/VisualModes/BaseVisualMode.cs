@@ -3825,9 +3825,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 
 				if(!matchbottom && !matchtop && !matchmid) continue; //mxd
-				
-				j.sidedef.Fields.BeforeFieldsChange();
-				j.controlSide.Fields.BeforeFieldsChange(); //mxd
+
+				//mxd. We want to skip realigning of the starting wall part
+				if(matchtop) matchtop = (j.sidedef != start.Sidedef || start.GeometryType != VisualGeometryType.WALL_UPPER);
+				if(matchmid) matchmid = (j.sidedef != start.Sidedef || (start.GeometryType != VisualGeometryType.WALL_MIDDLE && start.GeometryType != VisualGeometryType.WALL_MIDDLE_3D));
+				if(matchbottom) matchbottom = (j.sidedef != start.Sidedef || start.GeometryType != VisualGeometryType.WALL_LOWER);
+
+				if(matchbottom || matchtop || matchmid)
+				{
+					j.sidedef.Fields.BeforeFieldsChange();
+					j.controlSide.Fields.BeforeFieldsChange(); //mxd
+				}
 				
 				//mxd. Apply Scale
 				if(matchtop)
@@ -3874,7 +3882,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					{
 						float offset = ((start.Sidedef.Sector.CeilHeight - j.ceilingHeight) / scaley) * j.scaleY + ystartalign; //mxd
 						offset -= j.sidedef.OffsetY; //mxd
-						offset = (float)Math.Round(offset); //mxd
+						offset = (float)Math.Round(offset, General.Map.FormatInterface.VertexDecimals); //mxd
 						
 						if(matchtop)
 							j.sidedef.Fields["offsety_top"] = new UniValue(UniversalType.Float, Tools.GetSidedefTopOffsetY(j.sidedef, offset, j.scaleY / scaley, true) % General.Map.Data.GetTextureImage(j.sidedef.LongHighTexture).Height); //mxd
@@ -3898,7 +3906,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 								{
 									//mxd. This should be doublesided non-wrapped line. Find the nearset aligned position
 									float curoffset = UDMFTools.GetFloat(j.sidedef.Fields, "offsety_mid");
-									offset += midtex.Height * (int)Math.Round((curoffset - offset) / midtex.Height);
+									offset += midtex.Height * ((curoffset - offset) / midtex.Height);
 
 									// Make sure the surface stays between floor and ceiling
 									if(offset < -midtex.Height)
@@ -3911,12 +3919,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 									}
 								}
 
-								j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, offset); //mxd
+								j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, (float)Math.Round(offset, General.Map.FormatInterface.VertexDecimals)); //mxd
 							}
 						}
 					}
 
-					forwardoffset = j.offsetx + (int)Math.Round(j.sidedef.Line.Length / scalex * first.scaleX);
+					forwardoffset = j.offsetx + (float)Math.Round(j.sidedef.Line.Length / scalex * first.scaleX, General.Map.FormatInterface.VertexDecimals);
 					backwardoffset = j.offsetx;
 
 					// Done this sidedef
@@ -3936,7 +3944,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Apply alignment
 					if(alignx) 
 					{
-						float offset = j.offsetx - (int)Math.Round(j.sidedef.Line.Length / scalex * first.scaleX);
+						float offset = j.offsetx - (float)Math.Round(j.sidedef.Line.Length / scalex * first.scaleX, General.Map.FormatInterface.VertexDecimals);
 						offset -= j.sidedef.OffsetX;
 
 						if(matchtop)
@@ -3954,11 +3962,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							j.sidedef.Fields["offsetx_mid"] = new UniValue(UniversalType.Float, offset % General.Map.Data.GetTextureImage(j.sidedef.LongMiddleTexture).Width);
 						}
 					}
+
 					if(aligny) 
 					{
 						float offset = ((start.Sidedef.Sector.CeilHeight - j.ceilingHeight) / scaley) * j.scaleY + ystartalign; //mxd
 						offset -= j.sidedef.OffsetY; //mxd
-						offset = (float)Math.Round(offset); //mxd
+						offset = (float)Math.Round(offset, General.Map.FormatInterface.VertexDecimals); //mxd
 
 						if(matchtop)
 							j.sidedef.Fields["offsety_top"] = new UniValue(UniversalType.Float, Tools.GetSidedefTopOffsetY(j.sidedef, offset, j.scaleY / scaley, true) % General.Map.Data.GetTextureImage(j.sidedef.LongHighTexture).Height); //mxd
@@ -3982,7 +3991,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 								{
 									//mxd. This should be doublesided non-wrapped line. Find the nearset aligned position
 									float curoffset = UDMFTools.GetFloat(j.sidedef.Fields, "offsety_mid");
-									offset += midtex.Height * (int)Math.Round((curoffset - offset) / midtex.Height);
+									offset += midtex.Height * (float)Math.Round((curoffset - offset) / midtex.Height, General.Map.FormatInterface.VertexDecimals);
 
 									// Make sure the surface stays between floor and ceiling
 									if(offset < -midtex.Height) 
@@ -3999,8 +4008,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							}
 						}
 					}
+
 					forwardoffset = j.offsetx;
-					backwardoffset = j.offsetx - (int)Math.Round(j.sidedef.Line.Length / scalex * first.scaleX);
+					backwardoffset = j.offsetx - (float)Math.Round(j.sidedef.Line.Length / scalex * first.scaleX, General.Map.FormatInterface.VertexDecimals);
 
 					// Done this sidedef
 					j.sidedef.Marked = true;

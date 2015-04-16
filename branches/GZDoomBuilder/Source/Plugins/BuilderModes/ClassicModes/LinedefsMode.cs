@@ -812,6 +812,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Make the highlight the selection
 				highlighted.Selected = true;
+
+				//mxd. Actually, we want it marked, not selected
+				bool result = base.OnCopyBegin();
+				highlighted.Selected = false;
+				return result;
 			}
 
 			return base.OnCopyBegin();
