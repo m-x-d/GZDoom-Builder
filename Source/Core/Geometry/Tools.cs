@@ -1841,9 +1841,7 @@ namespace CodeImp.DoomBuilder.Geometry
 
 			//if we don't have UpperUnpegged flag, normalize offset
 			float surfaceHeight = side.GetHighHeight() * scaleY;
-
-			if(fromNormalized) return (float)Math.Round(offset + surfaceHeight);
-			return (float)Math.Round(offset - surfaceHeight);
+			return (float)Math.Round((fromNormalized ? offset + surfaceHeight : offset - surfaceHeight), General.Map.FormatInterface.VertexDecimals);
 		}
 
 		//mxd. This converts offsetY from/to "normalized" offset for given middle wall
@@ -1882,8 +1880,7 @@ namespace CodeImp.DoomBuilder.Geometry
 				}
 			}
 
-			if(fromNormalized) return (float)Math.Round(offset + surfaceHeight);
-			return (float)Math.Round(offset - surfaceHeight);
+			return (float)Math.Round((fromNormalized ? offset + surfaceHeight : offset - surfaceHeight), General.Map.FormatInterface.VertexDecimals);
 		}
 
 		//mxd. This converts offsetY from/to "normalized" offset for given lower wall
@@ -1905,8 +1902,7 @@ namespace CodeImp.DoomBuilder.Geometry
 				surfaceHeight = (side.Sector.CeilHeight - side.Other.Sector.FloorHeight) * scaleY;
 			}
 
-			if(fromNormalized) return (float)Math.Round(offset + surfaceHeight);
-			return (float)Math.Round(offset - surfaceHeight);
+			return (float)Math.Round((fromNormalized ? offset + surfaceHeight : offset - surfaceHeight), General.Map.FormatInterface.VertexDecimals);
 		}
 		
 		#endregion

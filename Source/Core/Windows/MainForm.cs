@@ -644,56 +644,56 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		// Window is being closed
-		private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+		protected override void OnFormClosing(FormClosingEventArgs e) 
 		{
-			if(e.CloseReason != CloseReason.ApplicationExitCall)
+			base.OnFormClosing(e);
+
+			if(e.CloseReason == CloseReason.ApplicationExitCall) return;
+			if(General.Map != null && General.Map.Launcher.GameEngineRunning)
+				General.Map.Launcher.StopGameEngine(); //mxd
+
+			// Close the map
+			if(General.CloseMap()) 
 			{
-				//mxd
-				if(General.Map != null && General.Map.Launcher.GameEngineRunning) General.Map.Launcher.StopGameEngine();
-				
-				// Close the map
-				if(General.CloseMap())
-				{
-					General.WriteLogLine("Closing main interface window...");
-					
-					// Stop timers
-					statusflasher.Stop();
-					statusresetter.Stop();
-					blinkTimer.Stop(); //mxd
+				General.WriteLogLine("Closing main interface window...");
 
-					// Stop exclusive mode, if any is active
-					StopExclusiveMouseInput();
-					StopProcessing();
+				// Stop timers
+				statusflasher.Stop();
+				statusresetter.Stop();
+				blinkTimer.Stop(); //mxd
 
-					// Unbind methods
-					General.Actions.UnbindMethods(this);
+				// Stop exclusive mode, if any is active
+				StopExclusiveMouseInput();
+				StopProcessing();
 
-					// Determine window state to save
-					int windowstate;
-					if(this.WindowState != FormWindowState.Minimized)
-						windowstate = (int)this.WindowState;
-					else
-						windowstate = (int)FormWindowState.Normal;
+				// Unbind methods
+				General.Actions.UnbindMethods(this);
 
-					// Save window settings
-					General.Settings.WriteSetting("mainwindow.positionx", lastposition.X);
-					General.Settings.WriteSetting("mainwindow.positiony", lastposition.Y);
-					General.Settings.WriteSetting("mainwindow.sizewidth", lastsize.Width);
-					General.Settings.WriteSetting("mainwindow.sizeheight", lastsize.Height);
-					General.Settings.WriteSetting("mainwindow.windowstate", windowstate);
-					General.Settings.WriteSetting("mainwindow.expandedinfopanel", IsInfoPanelExpanded);
-
-					// Save recent files
-					SaveRecentFiles();
-
-					// Terminate the program
-					General.Terminate(true);
-				}
+				// Determine window state to save
+				int windowstate;
+				if(this.WindowState != FormWindowState.Minimized)
+					windowstate = (int)this.WindowState;
 				else
-				{
-					// Cancel the close
-					e.Cancel = true;
-				}
+					windowstate = (int)FormWindowState.Normal;
+
+				// Save window settings
+				General.Settings.WriteSetting("mainwindow.positionx", lastposition.X);
+				General.Settings.WriteSetting("mainwindow.positiony", lastposition.Y);
+				General.Settings.WriteSetting("mainwindow.sizewidth", lastsize.Width);
+				General.Settings.WriteSetting("mainwindow.sizeheight", lastsize.Height);
+				General.Settings.WriteSetting("mainwindow.windowstate", windowstate);
+				General.Settings.WriteSetting("mainwindow.expandedinfopanel", IsInfoPanelExpanded);
+
+				// Save recent files
+				SaveRecentFiles();
+
+				// Terminate the program
+				General.Terminate(true);
+			} 
+			else 
+			{
+				// Cancel the close
+				e.Cancel = true;
 			}
 		}
 

@@ -2244,7 +2244,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Activated += new System.EventHandler(this.MainForm_Activated);
 			this.KeyUp += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyUp);
 			this.Move += new System.EventHandler(this.MainForm_Move);
-			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
 			this.Resize += new System.EventHandler(this.MainForm_Resize);
 			this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyDown);
 			this.ResizeEnd += new System.EventHandler(this.MainForm_ResizeEnd);

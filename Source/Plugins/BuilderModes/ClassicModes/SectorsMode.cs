@@ -1253,8 +1253,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if((General.Map.Map.GetSelectedSectors(true).Count == 0) && (highlighted != null))
 			{
 				// Make the highlight the selection
-				SelectSector(highlighted, true, true);
-				UpdateOverlaySurfaces();//mxd
+				SelectSector(highlighted, true, false);
+
+				//mxd. Actually, we want it marked, not selected
+				bool result = base.OnCopyBegin();
+				SelectSector(highlighted, false, false);
+				return result;
 			}
 
 			return base.OnCopyBegin();
