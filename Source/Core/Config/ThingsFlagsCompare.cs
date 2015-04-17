@@ -152,6 +152,9 @@ namespace CodeImp.DoomBuilder.Config
 						bool t1ignoreflagset = flaggrp.Value.invert ? !t1.Flags[flaggrp.Key] : t1.Flags[flaggrp.Key];
 						bool t2ignoreflagset = flaggrp.Value.invert ? !t2.Flags[flaggrp.Key] : t2.Flags[flaggrp.Key];
 
+						// Can be ignored?
+						if(!t1ignoreflagset && !t2ignoreflagset && flaggrp.Value.IgnoreGroupWhenUnset) continue;
+
 						// Can't compare...
 						if(!t1ignoreflagset || !t2ignoreflagset) return 0;
 					}	
