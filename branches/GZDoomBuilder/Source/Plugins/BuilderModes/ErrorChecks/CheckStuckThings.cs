@@ -221,7 +221,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Checks if the flags of two things overlap (i.e. if they show up at the same time)
 		private static bool FlagsOverlap(Thing t1, Thing t2) 
 		{
-			if (General.Map.Config.ThingFlagsCompare.Count < 1) return false; //mxd. Bail out if no settings...
+			if(General.Map.Config.ThingFlagsCompare.Count < 1) return true; //mxd. Otherwise, no things will ever overlap when ThingFlagsCompare is empty
 			int overlappinggroups = 0;
 
 			// Go through all flags in all groups and check if they overlap
