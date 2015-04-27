@@ -549,7 +549,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							for(int i = 0; i < 24; i++)
 							{
 								// Make the vectors
-								float angle = i * Angle2D.PI * 0.08333f; //mxd. 15-degree increments
+								float angle = i * Angle2D.PI * 0.08333333333f; //mxd. 15-degree increments
 								Vector2D gridvec = Vector2D.FromAngle(angle);
 								
 								// Check distance
