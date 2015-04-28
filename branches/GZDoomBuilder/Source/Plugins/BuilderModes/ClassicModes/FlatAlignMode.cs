@@ -18,15 +18,15 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Data;
-using CodeImp.DoomBuilder.Types;
-using CodeImp.DoomBuilder.Windows;
+using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
-using CodeImp.DoomBuilder.Geometry;
-using System.Drawing;
-using CodeImp.DoomBuilder.Actions;
+using CodeImp.DoomBuilder.Types;
+using CodeImp.DoomBuilder.Windows;
 
 #endregion
 
@@ -34,9 +34,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 {
 	public abstract class FlatAlignMode : BaseClassicMode
 	{
-		#region ================== Constants
+		#region ================== Enums and Structs
 
-		private enum ModifyMode : int
+		private enum ModifyMode
 		{
 			None,
 			Dragging,
@@ -44,7 +44,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Rotating
 		}
 
-		private enum Grip : int
+		private enum Grip
 		{
 			None,
 			Main,
@@ -61,6 +61,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			public Vector2D offset;
 		}
 
+		#endregion
+
+		#region ================== Constants
+
 		private const float GRIP_SIZE = 9.0f;
 		private readonly Cursor[] RESIZE_CURSORS = { Cursors.SizeNS, Cursors.SizeNWSE, Cursors.SizeWE, Cursors.SizeNESW };
 		private const byte RECTANGLE_ALPHA = 60;
@@ -71,7 +75,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Variables
 
 		private ICollection<Sector> selection;
-		protected Sector editsector;
+		private Sector editsector;
 		protected IList<SectorInfo> sectorinfo;
 		private ImageData texture;
 		//private Vector2D selectionoffset;
@@ -88,11 +92,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private Vector2D offset;
 
 		// Rectangle components
-		private Vector2D[] corners = new Vector2D[4]; // lefttop, righttop, rightbottom, leftbottom
+		private readonly Vector2D[] corners = new Vector2D[4]; // lefttop, righttop, rightbottom, leftbottom
 		private FlatVertex[] cornerverts = new FlatVertex[6];
-		private Vector2D[] extends = new Vector2D[2]; // right, bottom
-		private RectangleF[] resizegrips = new RectangleF[2];	// right, bottom
-		private RectangleF[] rotategrips = new RectangleF[2];   // righttop, leftbottom
+		private readonly Vector2D[] extends = new Vector2D[2]; // right, bottom
+		private readonly RectangleF[] resizegrips = new RectangleF[2];	// right, bottom
+		private readonly RectangleF[] rotategrips = new RectangleF[2];   // righttop, leftbottom
 		private Line2D extensionline;
 		
 		// Aligning
@@ -106,6 +110,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private float rotationoffset;
 		private Vector2D rotationcenter;
 
+		//mxd. View mode
+		private ViewMode prevviewmode;
+
 		// Options
 		private bool snaptogrid;		// SHIFT to toggle
 		private bool snaptonearest;		// CTRL to enable
@@ -114,21 +121,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Properties
 
-		public abstract string XScaleName { get; }
-		public abstract string YScaleName { get; }
-		public abstract string XOffsetName { get; }
-		public abstract string YOffsetName { get; }
-		public abstract string RotationName { get; }
-		public abstract string UndoDescription { get; }
-
-		#endregion
-
-		#region ================== Constructor / Disposer
-
-		// Constructor
-		protected FlatAlignMode()
-		{
-		}
+		protected abstract string XScaleName { get; }
+		protected abstract string YScaleName { get; }
+		protected abstract string XOffsetName { get; }
+		protected abstract string YOffsetName { get; }
+		protected abstract string RotationName { get; }
+		protected abstract string UndoDescription { get; }
 
 		#endregion
 
@@ -143,7 +141,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// Transforms p from Texture space into World space
-		protected Vector2D TexToWorld(Vector2D p)
+		private Vector2D TexToWorld(Vector2D p)
 		{
 			return TexToWorld(p, sectorinfo[0]);
 		}
@@ -160,7 +158,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// Transforms p from World space into Texture space
-		protected Vector2D WorldToTex(Vector2D p)
+		private Vector2D WorldToTex(Vector2D p)
 		{
 			return WorldToTex(p, sectorinfo[0]);
 		}
@@ -441,15 +439,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						// Snap to grid?
 						if(dosnaptogrid)
 						{
-							// We make 8 vectors that the rotation can snap to
+							// We make 24 vectors that the rotation can snap to
 							float founddistance = float.MaxValue;
 							float foundrotation = rotation;
-							for(int i = 0; i < 8; i++)
+							Vector3D rotvec = Vector2D.FromAngle(deltaangle + rotationoffset);
+
+							for(int i = 0; i < 24; i++)
 							{
 								// Make the vectors
-								float angle = i * Angle2D.PI * 0.25f;
+								float angle = i * Angle2D.PI * 0.08333333333f; //mxd. 15-degree increments
 								Vector2D gridvec = Vector2D.FromAngle(angle);
-								Vector3D rotvec = Vector2D.FromAngle(deltaangle + rotationoffset);
 
 								// Check distance
 								float dist = 2.0f - Vector2D.DotProduct(gridvec, rotvec);
@@ -544,18 +543,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This checks and returns the grip the mouse pointer is in
 		private Grip CheckMouseGrip()
 		{
-			if(PointInRectF(resizegrips[0], mousemappos))
-				return Grip.SizeH;
-			else if(PointInRectF(resizegrips[1], mousemappos))
-				return Grip.SizeV;
-			else if(PointInRectF(rotategrips[0], mousemappos))
-				return Grip.RotateRT;
-			else if(PointInRectF(rotategrips[1], mousemappos))
-				return Grip.RotateLB;
-			else if(Tools.PointInPolygon(corners, mousemappos))
-				return Grip.Main;
-			else
-				return Grip.None;
+			if(PointInRectF(resizegrips[0], mousemappos)) return Grip.SizeH;
+			if(PointInRectF(resizegrips[1], mousemappos)) return Grip.SizeV;
+			if(PointInRectF(rotategrips[0], mousemappos)) return Grip.RotateRT;
+			if(PointInRectF(rotategrips[1], mousemappos)) return Grip.RotateLB;
+			if(Tools.PointInPolygon(corners, mousemappos)) return Grip.Main;
+			return Grip.None;
 		}
 		
 		#endregion
@@ -565,6 +558,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Mode engages
 		public override void OnEngage()
 		{
+			prevviewmode = General.Map.Renderer2D.ViewMode; //mxd
 			base.OnEngage();
 
 			// We don't want to record this for undoing while we move the geometry around.
@@ -662,6 +656,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Mode disengages
 		public override void OnDisengage()
 		{
+			switch(prevviewmode) 
+			{
+				case ViewMode.Normal: General.Actions.InvokeAction("builder_viewmodenormal"); break;
+				case ViewMode.FloorTextures: General.Actions.InvokeAction("builder_viewmodefloors"); break;
+				case ViewMode.CeilingTextures: General.Actions.InvokeAction("builder_viewmodeceilings"); break;
+				case ViewMode.Brightness: General.Actions.InvokeAction("builder_viewmodebrightness"); break;
+			}
+			
 			base.OnDisengage();
 
 			// When not cancelled manually, we assume it is accepted
@@ -735,7 +737,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void OnMouseMove(MouseEventArgs e)
 		{
 			base.OnMouseMove(e);
-			if(panning) return; //mxd. Skip all this jass while panning
+			if(panning) return; //mxd. Skip all this jazz while panning
 			Update();
 		}
 
@@ -767,11 +769,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected override void OnSelectBegin()
 		{
 			base.OnSelectBegin();
-
 			if(mode != ModifyMode.None) return;
-
-			// Used in many cases
-			//Vector2D delta;
 
 			// Check what grip the mouse is over
 			switch(CheckMouseGrip())
@@ -786,7 +784,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				// Scale
 				case Grip.SizeH:
-					
 					// The resize vector is a unit vector in the direction of the resize.
 					// We multiply this with the sign of the current size, because the
 					// corners may be reversed when the selection is flipped.
@@ -864,9 +861,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This redraws the display
 		public override void OnRedrawDisplay()
 		{
-			if(sectorinfo != null)
-				UpdateRectangleComponents();
-
+			if(sectorinfo != null) UpdateRectangleComponents();
 			renderer.RedrawSurface();
 
 			// Render lines

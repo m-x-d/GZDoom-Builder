@@ -36,34 +36,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 	public class CeilingAlignMode : FlatAlignMode
 	{
-		#region ================== Constants
-
-		#endregion
-
-		#region ================== Variables
-
-		private ViewMode prevviewmode;
-
-		#endregion
-
 		#region ================== Properties
 
-		public override string XScaleName { get { return "xscaleceiling"; } }
-		public override string YScaleName { get { return "yscaleceiling"; } }
-		public override string XOffsetName { get { return "xpanningceiling"; } }
-		public override string YOffsetName { get { return "ypanningceiling"; } }
-		public override string RotationName { get { return "rotationceiling"; } }
-		public override string UndoDescription { get { return "Ceiling Alignment"; } }
+		protected override string XScaleName { get { return "xscaleceiling"; } }
+		protected override string YScaleName { get { return "yscaleceiling"; } }
+		protected override string XOffsetName { get { return "xpanningceiling"; } }
+		protected override string YOffsetName { get { return "ypanningceiling"; } }
+		protected override string RotationName { get { return "rotationceiling"; } }
+		protected override string UndoDescription { get { return "Ceiling Alignment"; } }
 		
-		#endregion
-
-		#region ================== Constructor / Disposer
-
-		// Constructor
-		public CeilingAlignMode()
-		{
-		}
-
 		#endregion
 
 		#region ================== Methods
@@ -81,25 +62,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Mode engages
 		public override void OnEngage()
 		{
-			prevviewmode = General.Map.Renderer2D.ViewMode;
-
 			base.OnEngage();
-			
 			General.Actions.InvokeAction("builder_viewmodeceilings");
-		}
-
-		// Mode disengages
-		public override void OnDisengage()
-		{
-			switch(prevviewmode)
-			{
-				case ViewMode.Normal: General.Actions.InvokeAction("builder_viewmodenormal"); break;
-				case ViewMode.FloorTextures: General.Actions.InvokeAction("builder_viewmodefloors"); break;
-				case ViewMode.CeilingTextures: General.Actions.InvokeAction("builder_viewmodeceilings"); break;
-				case ViewMode.Brightness: General.Actions.InvokeAction("builder_viewmodebrightness"); break;
-			}
-			
-			base.OnDisengage();
 		}
 
 		#endregion
