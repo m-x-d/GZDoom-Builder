@@ -106,6 +106,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 				// Return to base mode
 				General.Editing.ChangeMode(General.Editing.PreviousStableMode.Name);
+				return;
 			}
 			
 			// Update caches
@@ -139,6 +140,13 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 		private bool CreateGeometry(List<Vector3D> verts, List<Face> faces, int maxZ) 
 		{
+			if(verts.Count < 3 || faces.Count == 0)
+			{
+				MessageBox.Show("Cannot import the model: failed to find any suitable polygons!",
+					"Terrain Importer", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				return false;
+			}
+			
 			MapSet map = General.Map.Map;
 			
 			// Capacity checks
@@ -305,6 +313,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 				float x, y, z;
 				int px, py, pz;
 				int counter = 0;
+				float picoarse = (float)Math.Round(Angle2D.PI, 3);
 
 				while((line = reader.ReadLine()) != null) 
 				{
@@ -312,7 +321,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 					if(line.StartsWith("v ")) 
 					{
-						string[] parts = line.Split(space);
+						string[] parts = line.Split(space, StringSplitOptions.RemoveEmptyEntries);
 
 						if(parts.Length != 4 || !float.TryParse(parts[1], NumberStyles.Float, CultureInfo.InvariantCulture, out x) ||
 							!float.TryParse(parts[2], NumberStyles.Float, CultureInfo.InvariantCulture, out y) ||
@@ -357,11 +366,11 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 					} 
 					else if(line.StartsWith("f ")) 
 					{
-						string[] parts = line.Split(space);
+						string[] parts = line.Split(space, StringSplitOptions.RemoveEmptyEntries);
 
 						if(parts.Length != 4) 
 						{
-							MessageBox.Show("Failed to parse face definition at line " + counter + ": only triangle faces are supported!", "Terrain Importer", MessageBoxButtons.OK, MessageBoxIcon.Error);
+							MessageBox.Show("Failed to parse face definition at line " + counter + ": only triangular faces are supported!", "Terrain Importer", MessageBoxButtons.OK, MessageBoxIcon.Error);
 							return false;
 						}
 
@@ -370,7 +379,13 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 						int v2 = ReadVertexIndex(parts[2]) - 1;
 						int v3 = ReadVertexIndex(parts[3]) - 1;
 
+						// Skip face if vertex indexes match
 						if(verts[v1] == verts[v2] || verts[v1] == verts[v3] || verts[v2] == verts[v3]) continue;
+
+						// Skip face if it's vertical
+						Plane p = new Plane(verts[v1], verts[v2], verts[v3], true);
+						if((float)Math.Round(p.Normal.GetAngleZ(), 3) == picoarse) continue;
+
 						faces.Add(new Face(verts[v3], verts[v2], verts[v1]));
 					}
 				}
