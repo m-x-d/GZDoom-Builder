@@ -255,6 +255,44 @@ namespace CodeImp.DoomBuilder.Config
 			GC.SuppressFinalize(this);
 		}
 
+		//mxd. Constructor
+		internal ThingTypeInfo(ThingCategory cat, ActorStructure actor, int index)
+		{
+			// Initialize
+			this.index = index;
+			this.category = cat;
+			this.title = "";
+			this.actor = actor;
+			this.classname = actor.ClassName; //mxd
+			this.isknown = true;
+			this.args = new ArgumentInfo[Linedef.NUM_ARGS];
+			for(int i = 0; i < Linedef.NUM_ARGS; i++) this.args[i] = new ArgumentInfo(i);
+
+			// Read properties
+			this.sprite = cat.Sprite;
+			this.color = cat.Color;
+			this.arrow = (cat.Arrow != 0);
+			this.radius = cat.Radius;
+			this.height = cat.Height;
+			this.hangs = (cat.Hangs != 0);
+			this.blocking = cat.Blocking;
+			this.errorcheck = cat.ErrorCheck;
+			this.fixedsize = cat.FixedSize;
+			this.fixedrotation = cat.FixedRotation; //mxd
+			this.absolutez = cat.AbsoluteZ;
+			this.spritescale = new SizeF(cat.SpriteScale, cat.SpriteScale);
+
+			// Safety
+			if(this.radius < 4f) this.radius = 8f;
+			if(this.hangs && this.absolutez) this.hangs = false; //mxd
+
+			// Apply settings from actor
+			ModifyByDecorateActor(actor);
+
+			// We have no destructor
+			GC.SuppressFinalize(this);
+		}
+
 		// Constructor
 		internal ThingTypeInfo(int index, ThingTypeInfo other) 
 		{
