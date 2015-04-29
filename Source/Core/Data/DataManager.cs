@@ -1432,18 +1432,15 @@ namespace CodeImp.DoomBuilder.Data
 							// Try to find the actor...
 							ActorStructure actor = null;
 
-							if(!decorate.HasError)
+							//... in ActorsByClass
+							if(decorate.ActorsByClass.ContainsKey(group.Value))
 							{
-								//... in ActorsByClass
-								if(decorate.ActorsByClass.ContainsKey(group.Value))
-								{
-									actor = decorate.ActorsByClass[group.Value];
-								}
-								// Try finding in ArchivedActors
-								else if(decorate.AllActorsByClass.ContainsKey(group.Value))
-								{
-									actor = decorate.AllActorsByClass[group.Value];
-								}
+								actor = decorate.ActorsByClass[group.Value];
+							}
+							// Try finding in ArchivedActors
+							else if(decorate.AllActorsByClass.ContainsKey(group.Value))
+							{
+								actor = decorate.AllActorsByClass[group.Value];
 							}
 
 							if(actor != null)
@@ -1454,8 +1451,9 @@ namespace CodeImp.DoomBuilder.Data
 								ThingCategory cat = GetThingCategory(actor, catname);
 
 								// Add a new ThingTypeInfo, replacing already existing one if necessary
-								ThingTypeInfo info = new ThingTypeInfo(cat, actor);
+								ThingTypeInfo info = new ThingTypeInfo(cat, actor, group.Key);
 								thingtypes[group.Key] = info;
+								cat.AddThing(info);
 							}
 							// Check thingtypes...
 							else if(thingtypesbyclass.ContainsKey(group.Value))

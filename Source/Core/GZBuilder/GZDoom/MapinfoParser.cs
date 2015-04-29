@@ -41,6 +41,10 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 
 		public MapinfoParser()
 		{
+			// Syntax
+			whitespace = "\n \t\r\u00A0";
+			specialtokens = ",{}\n";
+			
 			mapinfo = new MapInfo();
 			spawnnums = new Dictionary<int, string>();
 			doomednums = new Dictionary<int, string>();
@@ -378,21 +382,13 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						return true; // Finished with this file
 					}
 
-					// Possible args
-					for (int i = 0; i < 5; i++)
+					// Possible special and args. We'll skip them
+					for (int i = 0; i < 6; i++)
 					{
-						if(!SkipWhitespace(false) || !NextTokenIs(",", false)) break;
+						if(!NextTokenIs(",", false)) break;
 
-						// Read an arg
-						if(!SkipWhitespace(false)) break;
-						token = ReadToken();
-						int arg;
-						if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out arg)) 
-						{
-							// Not numeric!
-							General.ErrorLogger.Add(ErrorType.Error, "Unexpected token found in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": expected SpawnNums actor argument " + (i + 1) + ", but got '" + token + "'");
-							break;
-						}
+						// Read special name or arg value
+						if(!SkipWhitespace(true) || string.IsNullOrEmpty(ReadToken())) return false;
 					}
 
 					// Add to collection?

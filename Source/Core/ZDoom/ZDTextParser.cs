@@ -395,7 +395,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		//mxd
 		protected bool NextTokenIs(string expectedtoken, bool reporterror) 
 		{
-			SkipWhitespace(true);
+			if(!SkipWhitespace(true)) return false;
 			string token = ReadToken();
 
 			if(token != expectedtoken) 
