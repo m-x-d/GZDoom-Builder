@@ -119,6 +119,13 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 		private void UpdateSoundPropagation()
 		{
 			huntingThings.Clear();
+
+			BuilderPlug.Me.BlockingLinedefs.Clear();
+
+			foreach (Linedef ld in General.Map.Map.Linedefs)
+				if (ld.IsFlagSet(General.Map.UDMF ? "blocksound" : "64"))
+					BuilderPlug.Me.BlockingLinedefs.Add(ld);
+
 			if (highlighted == null || highlighted.IsDisposed) return;
 
 			if (!sector2domain.ContainsKey(highlighted))
@@ -126,7 +133,6 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 				SoundPropagationDomain spd = new SoundPropagationDomain(highlighted);
 				foreach (Sector s in spd.Sectors) sector2domain[s] = spd;
 				propagationdomains.Add(spd);
-				BuilderPlug.Me.BlockingLinedefs.AddRange(spd.BlockingLines);
 			}
 
 			foreach (Sector adjacent in sector2domain[highlighted].AdjacentSectors)
@@ -135,11 +141,10 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 				{
 					SoundPropagationDomain aspd = new SoundPropagationDomain(adjacent);
 					foreach (Sector s in aspd.Sectors) sector2domain[s] = aspd;
-					BuilderPlug.Me.BlockingLinedefs.AddRange(aspd.BlockingLines);
 				}
 			}
 
-			//mxd. Create the list of sectors, which will be affected by nose made in highlighted sector
+			//mxd. Create the list of sectors, which will be affected by noise made in highlighted sector
 			SoundPropagationDomain curdomain = sector2domain[highlighted];
 			Dictionary<int, Sector> noisysectors = new Dictionary<int, Sector>(curdomain.Sectors.Count);
 			foreach(Sector s in curdomain.Sectors)
@@ -209,6 +214,9 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 
 			// Convert geometry selection to sectors only
 			General.Map.Map.ConvertSelection(SelectionType.Sectors);
+
+			UpdateSoundPropagation();
+			General.Interface.RedrawDisplay();
 		}
 
 		// Mode disengages
