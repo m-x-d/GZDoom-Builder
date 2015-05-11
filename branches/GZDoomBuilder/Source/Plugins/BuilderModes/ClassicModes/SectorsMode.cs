@@ -2041,7 +2041,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			// Make undo
-			General.Interface.DisplayStatus(StatusType.Action, "Raised sector brightness by 8.");
+			Sector first = General.GetByIndex(selected, 0); //mxd
+			int diff = General.Map.Config.BrightnessLevels.GetNextHigher(first.Brightness) - first.Brightness; //mxd
+			General.Interface.DisplayStatus(StatusType.Action, "Raised sector brightness by " + diff + ".");
 			General.Map.UndoRedo.CreateUndo("Sector brightness change", this, UndoGroup.SectorBrightnessChange, CreateSelectionCRC(selected));
 
 			// Change heights
@@ -2076,7 +2078,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			// Make undo
-			General.Interface.DisplayStatus(StatusType.Action, "Lowered sector brightness by 8.");
+			Sector first = General.GetByIndex(selected, 0); //mxd
+			int diff = first.Brightness - General.Map.Config.BrightnessLevels.GetNextLower(first.Brightness); //mxd
+			General.Interface.DisplayStatus(StatusType.Action, "Lowered sector brightness by " + diff + ".");
 			General.Map.UndoRedo.CreateUndo("Sector brightness change", this, UndoGroup.SectorBrightnessChange, CreateSelectionCRC(selected));
 
 			// Change heights
