@@ -37,7 +37,7 @@ namespace CodeImp.DoomBuilder.Editing
 	{
 		#region ================== Constants
 
-		private const float SCALE_MAX = 30f;
+		private const float SCALE_MAX = 90f;
 		private const float SCALE_MIN = 0.01f;
 		private const float SELECTION_BORDER_SIZE = 2f;
 		private const int SELECTION_ALPHA = 200;
@@ -224,7 +224,7 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 
 		// This sets the view to be centered at x,y
-		private void ScrollTo(float x, float y)
+		/*private void ScrollTo(float x, float y)
 		{
 			// Scroll now
 			renderer2d.PositionView(x, y);
@@ -236,24 +236,23 @@ namespace CodeImp.DoomBuilder.Editing
 			// Determine new unprojected mouse coordinates
 			mousemappos = renderer2d.DisplayToMap(mousepos);
 			General.MainWindow.UpdateCoordinates(mousemappos);
-		}
+		}*/
 
 		// This zooms
 		private void ZoomBy(float deltaz)
 		{
-			Vector2D zoompos, clientsize, diff;
-			float newscale;
-			
+			Vector2D zoompos;
+
 			// This will be the new zoom scale
-			newscale = renderer2d.Scale * deltaz;
+			float newscale = renderer2d.Scale * deltaz;
 
 			// Limit scale
 			if(newscale > SCALE_MAX) newscale = SCALE_MAX;
 			if(newscale < SCALE_MIN) newscale = SCALE_MIN;
 			
 			// Get the dimensions of the display
-			clientsize = new Vector2D(General.Map.Graphics.RenderTarget.ClientSize.Width,
-									  General.Map.Graphics.RenderTarget.ClientSize.Height);
+			Vector2D clientsize = new Vector2D(General.Map.Graphics.RenderTarget.ClientSize.Width,
+			                                   General.Map.Graphics.RenderTarget.ClientSize.Height);
 			
 			// When mouse is inside display
 			if(mouseinside)
@@ -268,7 +267,7 @@ namespace CodeImp.DoomBuilder.Editing
 			}
 
 			// Calculate view position difference
-			diff = ((clientsize / newscale) - (clientsize / renderer2d.Scale)) * zoompos;
+			Vector2D diff = ((clientsize / newscale) - (clientsize / renderer2d.Scale)) * zoompos;
 
 			// Zoom now
 			renderer2d.PositionView(renderer2d.OffsetX - diff.x, renderer2d.OffsetY + diff.y);
@@ -276,7 +275,6 @@ namespace CodeImp.DoomBuilder.Editing
 			this.OnViewChanged();
 
 			// Redraw
-			//General.Map.Map.Update();
 			General.MainWindow.RedrawDisplay();
 			
 			// Give a new mousemove event to update coordinates

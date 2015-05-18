@@ -960,8 +960,6 @@ namespace CodeImp.DoomBuilder.Windows
 		// Zoom to a specified level
 		private void itemzoomto_Click(object sender, EventArgs e)
 		{
-			int zoom;
-
 			if(General.Map == null) return;
 
 			// In classic mode?
@@ -971,7 +969,7 @@ namespace CodeImp.DoomBuilder.Windows
 				if(sender is ToolStripMenuItem)
 				{
 					// Get integral zoom level
-					zoom = int.Parse((sender as ToolStripMenuItem).Tag.ToString(), CultureInfo.InvariantCulture);
+					int zoom = int.Parse((sender as ToolStripMenuItem).Tag.ToString(), CultureInfo.InvariantCulture);
 
 					// Zoom now
 					(General.Editing.Mode as ClassicMode).SetZoom(zoom / 100f);

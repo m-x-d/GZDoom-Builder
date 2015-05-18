@@ -239,6 +239,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.dockerscollapser = new System.Windows.Forms.Timer(this.components);
 			this.flowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
 			this.modecontrolsloolbar = new System.Windows.Forms.ToolStrip();
+			this.item2zoom400 = new System.Windows.Forms.ToolStripMenuItem();
+			this.item2zoom800 = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemzoom800 = new System.Windows.Forms.ToolStripMenuItem();
 			toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
@@ -797,6 +800,8 @@ namespace CodeImp.DoomBuilder.Windows
 			// menuzoom
 			// 
 			this.menuzoom.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.item2zoom800,
+            this.item2zoom400,
             this.item2zoom200,
             this.item2zoom100,
             this.item2zoom50,
@@ -1879,6 +1884,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.buttonzoom.AutoToolTip = false;
 			this.buttonzoom.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.buttonzoom.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.itemzoom800,
             this.itemzoom400,
             this.itemzoom200,
             this.itemzoom100,
@@ -2219,6 +2225,30 @@ namespace CodeImp.DoomBuilder.Windows
 			this.modecontrolsloolbar.Text = "toolStrip1";
 			this.modecontrolsloolbar.Visible = false;
 			// 
+			// item2zoom400
+			// 
+			this.item2zoom400.Name = "item2zoom400";
+			this.item2zoom400.Size = new System.Drawing.Size(102, 22);
+			this.item2zoom400.Tag = "400";
+			this.item2zoom400.Text = "400%";
+			this.item2zoom400.Click += new System.EventHandler(this.itemzoomto_Click);
+			// 
+			// item2zoom800
+			// 
+			this.item2zoom800.Name = "item2zoom800";
+			this.item2zoom800.Size = new System.Drawing.Size(102, 22);
+			this.item2zoom800.Tag = "800";
+			this.item2zoom800.Text = "800%";
+			this.item2zoom800.Click += new System.EventHandler(this.itemzoomto_Click);
+			// 
+			// itemzoom800
+			// 
+			this.itemzoom800.Name = "itemzoom800";
+			this.itemzoom800.Size = new System.Drawing.Size(156, 22);
+			this.itemzoom800.Tag = "800";
+			this.itemzoom800.Text = "800%";
+			this.itemzoom800.Click += new System.EventHandler(this.itemzoomto_Click);
+			// 
 			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -2465,5 +2495,8 @@ namespace CodeImp.DoomBuilder.Windows
 		private ToolStripMenuItem modelsshowselection;
 		private ToolStripMenuItem modelsshowall;
 		private DebugConsole console;
+		private ToolStripMenuItem item2zoom400;
+		private ToolStripMenuItem item2zoom800;
+		private ToolStripMenuItem itemzoom800;
 	}
 }

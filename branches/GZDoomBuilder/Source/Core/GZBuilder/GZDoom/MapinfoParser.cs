@@ -43,7 +43,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 		{
 			// Syntax
 			whitespace = "\n \t\r\u00A0";
-			specialtokens = ",{}\n";
+			specialtokens = ",{}=\n";
 			
 			mapinfo = new MapInfo();
 			spawnnums = new Dictionary<int, string>();
@@ -90,7 +90,6 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 			
 			if (token == "map" || token == "defaultmap" || token == "adddefaultmap") 
 			{
-				string curBlockName = token;
 				switch(token)
 				{
 					case "map":
@@ -308,7 +307,6 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 					else if (token == "doublesky") 
 					{
 						mapinfo.DoubleSky = true;
-
 					}
 //evenlighting
 					else if (token == "evenlighting") 
@@ -323,7 +321,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 //block end
 					else if (token == "}") 
 					{
-						return (curBlockName == "map" || ParseBlock(token, mapName));
+						return ParseBlock(token, mapName);
 					}
 				}
 			} 
