@@ -72,7 +72,7 @@ namespace CodeImp.DoomBuilder.Config
 		private readonly Dictionary<string, bool> makedoorflags;
 		private readonly bool linetagindicatesectors;
 		private readonly string decorategames;
-		private readonly string skyflatname;
+		private string skyflatname;
 		private readonly int maxtexturenamelength;
 		private readonly bool longtexturenames; //mxd
 		private readonly int leftboundary;
@@ -179,7 +179,7 @@ namespace CodeImp.DoomBuilder.Config
 		public int[] MakeDoorArgs { get { return makedoorargs; } }
 		public bool LineTagIndicatesSectors { get { return linetagindicatesectors ; } }
 		public string DecorateGames { get { return decorategames; } }
-		public string SkyFlatName { get { return skyflatname; } }
+		public string SkyFlatName { get { return skyflatname; } internal set { skyflatname = value; } } //mxd. Added setter
 		public int MaxTextureNameLength { get { return maxtexturenamelength; } }
 		public bool UseLongTextureNames { get { return longtexturenames; } } //mxd
 		public int LeftBoundary { get { return leftboundary; } }

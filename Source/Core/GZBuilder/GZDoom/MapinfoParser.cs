@@ -344,7 +344,36 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 				{
 					General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": got #include directive with missing or incorrect path: '" + includeLump + "'.");
 				}
-			} 
+			}
+			else if(token == "gameinfo")
+			{
+				if(!NextTokenIs("{")) return true; // Finished with this file
+
+				while(SkipWhitespace(true))
+				{
+					token = ReadToken();
+					if(string.IsNullOrEmpty(token))
+					{
+						General.ErrorLogger.Add(ErrorType.Error, "Error while parisng '" + sourcename + "' at line " + GetCurrentLineNumber() + ": failed to find the end of GameInfo block");
+						return true; // Finished with this file
+					}
+					if(token == "}") break;
+
+					if(token == "skyflatname")
+					{
+						if(!NextTokenIs("=")) return true; // Finished with this file
+						SkipWhitespace(true);
+						string skyflatname = StripTokenQuotes(ReadToken());
+						if(string.IsNullOrEmpty(skyflatname)) 
+						{
+							General.ErrorLogger.Add(ErrorType.Error, "Error while parisng '" + sourcename + "' at line " + GetCurrentLineNumber() + ": unable to get SkyFlatName value");
+							return true; // Finished with this file
+						}
+
+						General.Map.Config.SkyFlatName = skyflatname.ToUpperInvariant();
+					}
+				}
+			}
 			else if(token == "doomednums")
 			{
 				if(!NextTokenIs("{")) return true; // Finished with this file
