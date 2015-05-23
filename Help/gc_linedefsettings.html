@@ -108,6 +108,19 @@ linedefflagstranslation
   <br />
   <span class="big">Linedef definitions:</span><br />
   <br />
+  <b class="fat">requiresactivation</b> (boolean) - <span class="red">GZDB only</span>.<br />
+  this linedef action requires activation flag(s). When this property is set to true, a warning will be shown when a user selects this linedef action and no activation flags are set.<br />
+  The default value is <strong>true</strong>.<br />
+  <strong>Example:</strong>
+  <pre>1
+{
+    title = "Polyobj Start Line";
+    <span class="blue">requiresactivation = false;</span>
+} 
+</pre>
+<br />
+<span class="big">Linedef action argument definitions:</span><br />
+  <br />
   <b class="fat">default</b> (integer) - <span class="red">GZDB only</span>.<br />
   Sets the default value for a Thing or Linedef argument definition.<br />
   <strong>Example:</strong>
@@ -120,17 +133,17 @@ linedefflagstranslation
         <span class="blue">default = 255;</span>
     }
 }</pre>
-  <br />
-  <b class="fat">requiresactivation</b> (boolean) - <span class="red">GZDB only</span>.<br />
-  this linedef action requires activation flag(s). When this property is set to true, a warning will be shown when a user selects this linedef action and no activation flags are set.<br />
-  The default value is <strong>true</strong>.<br />
+<br />
+  <b class="fat"><a name="argtooltip" id="argtooltip"></a>tooltip</b> (string) - <span class="red">GZDB only</span>.<br />
+  Allows to specify a tooltip text displayed for a <a href="gc_thingsettings.html#argtooltip">Thing</a> or Linedef argument definition. Newline character ("\n") can be used to format the text.<br />
+  Argument tooltips can be also set in <a href="gc_decoratekeys.html#argtooltip">DECORATE</a>.<br />
   <strong>Example:</strong>
-  <pre>1
+  </p>
+  <pre>arg1
 {
-    title = "Polyobj Start Line";
-    <span class="blue">requiresactivation = false;</span>
-} 
-</pre>
+    title = "Mirror Polyobj Number";
+    <span class="blue">tooltip = "Polyobject that will mirror\nthis one's movements.";</span>
+}</pre>
   </p>
 </div>
 </body>

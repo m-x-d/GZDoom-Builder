@@ -359,7 +359,7 @@ namespace CodeImp.DoomBuilder.Config
 			{
 				if(!actor.HasPropertyWithValue("$arg" + i)) continue;
 				string argtitle = actor.GetPropertyAllValues("$arg" + i);
-				args[i] = new ArgumentInfo(ZDTextParser.StripQuotes(argtitle));
+				args[i] = new ArgumentInfo(ZDTextParser.StripQuotes(argtitle), ZDTextParser.StripQuotes(actor.GetPropertyAllValues("$arg" + i + "tooltip").Replace("\\n", Environment.NewLine)));
 			}
 
 			// Remove doublequotes from title

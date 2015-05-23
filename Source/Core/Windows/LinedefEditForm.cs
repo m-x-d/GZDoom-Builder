@@ -421,6 +421,30 @@ namespace CodeImp.DoomBuilder.Windows
 			arg0.Visible = !scriptNumbers.Visible;
 		}
 
+		//mxd
+		private void UpdateArgument(ArgumentBox arg, Label label, ArgumentInfo info) 
+		{
+			label.Text = info.Title + ":";
+			label.Enabled = info.Used;
+			arg.ForeColor = (label.Enabled ? SystemColors.WindowText : SystemColors.GrayText);
+			arg.Setup(info);
+
+			// Update tooltip
+			if(info.Used && !string.IsNullOrEmpty(info.ToolTip)) 
+			{
+				tooltip.SetToolTip(label, info.ToolTip);
+				label.Font = new Font(label.Font, FontStyle.Underline);
+				label.ForeColor = SystemColors.HotTrack;
+			} 
+			else 
+			{
+				tooltip.SetToolTip(label, null);
+				label.Font = new Font(label.Font, FontStyle.Regular);
+				label.ForeColor = SystemColors.WindowText;
+
+			}
+		}
+
 		#endregion
 
 		#region ================== Events
@@ -594,26 +618,11 @@ namespace CodeImp.DoomBuilder.Windows
 			if(General.Map.Config.LinedefActions.ContainsKey(action.Value)) showaction = action.Value;
 			
 			// Change the argument descriptions
-			arg0label.Text = General.Map.Config.LinedefActions[showaction].Args[0].Title + ":";
-			arg1label.Text = General.Map.Config.LinedefActions[showaction].Args[1].Title + ":";
-			arg2label.Text = General.Map.Config.LinedefActions[showaction].Args[2].Title + ":";
-			arg3label.Text = General.Map.Config.LinedefActions[showaction].Args[3].Title + ":";
-			arg4label.Text = General.Map.Config.LinedefActions[showaction].Args[4].Title + ":";
-			arg0label.Enabled = General.Map.Config.LinedefActions[showaction].Args[0].Used;
-			arg1label.Enabled = General.Map.Config.LinedefActions[showaction].Args[1].Used;
-			arg2label.Enabled = General.Map.Config.LinedefActions[showaction].Args[2].Used;
-			arg3label.Enabled = General.Map.Config.LinedefActions[showaction].Args[3].Used;
-			arg4label.Enabled = General.Map.Config.LinedefActions[showaction].Args[4].Used;
-			arg0.ForeColor = (arg0label.Enabled ? SystemColors.WindowText : SystemColors.GrayText);
-			arg1.ForeColor = (arg1label.Enabled ? SystemColors.WindowText : SystemColors.GrayText);
-			arg2.ForeColor = (arg2label.Enabled ? SystemColors.WindowText : SystemColors.GrayText);
-			arg3.ForeColor = (arg3label.Enabled ? SystemColors.WindowText : SystemColors.GrayText);
-			arg4.ForeColor = (arg4label.Enabled ? SystemColors.WindowText : SystemColors.GrayText);
-			arg0.Setup(General.Map.Config.LinedefActions[showaction].Args[0]);
-			arg1.Setup(General.Map.Config.LinedefActions[showaction].Args[1]);
-			arg2.Setup(General.Map.Config.LinedefActions[showaction].Args[2]);
-			arg3.Setup(General.Map.Config.LinedefActions[showaction].Args[3]);
-			arg4.Setup(General.Map.Config.LinedefActions[showaction].Args[4]);
+			UpdateArgument(arg0, arg0label, General.Map.Config.LinedefActions[showaction].Args[0]); //mxd
+			UpdateArgument(arg1, arg1label, General.Map.Config.LinedefActions[showaction].Args[1]); //mxd
+			UpdateArgument(arg2, arg2label, General.Map.Config.LinedefActions[showaction].Args[2]); //mxd
+			UpdateArgument(arg3, arg3label, General.Map.Config.LinedefActions[showaction].Args[3]); //mxd
+			UpdateArgument(arg4, arg4label, General.Map.Config.LinedefActions[showaction].Args[4]); //mxd
 
 			if(!preventchanges) 
 			{

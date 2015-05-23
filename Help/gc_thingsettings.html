@@ -111,9 +111,6 @@ thingrenderstyles
     Sets the sprite graphic to use when rendering this thing or things in this category. This should be fully qualified sprite name without file extension, like &quot;CPOSA2&quot;.<br />
     You can also use  images from the"Sprites" directory by prefixing an image name without extension with &quot;internal:&quot;, like so: &quot;internal:Actor&quot;.<br />
     <br />
-    <b class="fat">title</b> (string)<br />
-    When set to 1, thing angle will be shown as an arrow in Classic and Visual modes.<br />
-    <br />
     <b class="fat">width</b> (integer)<br />
     Sets the width to use when rendering  things in Classic and Visual modes.<br />
     Default value is <strong>10</strong>.<br />
@@ -162,6 +159,19 @@ thingrenderstyles
   <b class="fat">locksprite</b> (boolean) - <span class="red">GZDB only</span>.<br />
   When set to true, the sprite set in the Game Configuration will be used even if a DECORATE actor definition of this thing contains a different sprite.<br />
   <br />
+  <b class="fat">class</b> (string) - <span class="red">GZDB only</span>.<br />
+  Sets  DECORATE class name, which corresponds to this thing. Used internally to attach models and dynamic lights to given thing and when looking for an actor class to inherit from in DECORATE parser.<br />
+  <strong>Example:</strong>
+  <pre>3001
+{
+    title = "Imp";
+    sprite = "TROOA2A8";
+    <span class="blue">class = "DoomImp";</span>
+}</pre>
+<br />
+<span class="big">Thing argument definitions:</span><br />
+  These settings can be used inside of thing argument definitions.<br />
+  <br />
   <b class="fat">default</b> (integer) - <span class="red">GZDB only</span>.<br />
   Sets the default value for a Thing or Linedef argument definition.<br />
   <strong>Example:</strong>
@@ -176,14 +186,15 @@ thingrenderstyles
     }
 }</pre>
   <br />
-  <b class="fat">class</b> (string) - <span class="red">GZDB only</span>.<br />
-  Sets  DECORATE class name, which corresponds to this thing. Used internally to attach models and dynamic lights to given thing and when looking for an actor class to inherit from in DECORATE parser.<br />
+  <b class="fat"><a name="argtooltip" id="argtooltip"></a>tooltip</b> (string) - <span class="red">GZDB only</span>.<br />
+  Allows to specify a tooltip text displayed for a Thing or <a href="gc_linedefsettings.html#argtooltip">Linedef</a> argument definition. Newline character ("\n") can be used to format the text.<br />
+  Argument tooltips can be also set in <a href="gc_decoratekeys.html#argtooltip">DECORATE</a>.<br />
   <strong>Example:</strong>
-  <pre>3001
+  </p>
+  <pre>arg1
 {
-    title = "Imp";
-    sprite = "TROOA2A8";
-    <span class="blue">class = "DoomImp";</span>
+    title = "Mirror Polyobj Number";
+    <span class="blue">tooltip = "Polyobject that will mirror\nthis one's movements.";</span>
 }</pre>
   </p>
 </div>
