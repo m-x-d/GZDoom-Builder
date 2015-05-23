@@ -34,6 +34,7 @@ namespace CodeImp.DoomBuilder.Config
 		#region ================== Variables
 
 		private readonly string title;
+		private readonly string tooltip; //mxd
 		private readonly bool used;
 		private readonly int type;
 		private EnumList enumlist;
@@ -44,6 +45,7 @@ namespace CodeImp.DoomBuilder.Config
 		#region ================== Properties
 
 		public string Title { get { return title; } }
+		public string ToolTip { get { return tooltip; } } //mxd
 		public bool Used { get { return used; } }
 		public int Type { get { return type; } }
 		public EnumList Enum { get { return enumlist; } internal set { enumlist = value; } }
@@ -60,6 +62,7 @@ namespace CodeImp.DoomBuilder.Config
 			string istr = argindex.ToString(CultureInfo.InvariantCulture);
 			this.used = cfg.SettingExists(argspath + ".arg" + istr);
 			this.title = cfg.ReadSetting(argspath + ".arg" + istr + ".title", "Argument " + (argindex + 1));
+			this.tooltip = cfg.ReadSetting(argspath + ".arg" + istr + ".tooltip", string.Empty); //mxd
 			this.type = cfg.ReadSetting(argspath + ".arg" + istr + ".type", 0);
 			this.defaultvalue = cfg.ReadSetting(argspath + ".arg" + istr + ".default", 0); //mxd
 
@@ -92,10 +95,11 @@ namespace CodeImp.DoomBuilder.Config
 		}
 
 		//mxd. Constructor for an argument info defined in DECORATE
-		internal ArgumentInfo(string title)
+		internal ArgumentInfo(string title, string tooltip)
 		{
 			this.used = true;
 			this.title = title;
+			this.tooltip = tooltip;
 			this.type = 0;
 			this.enumlist = new EnumList();
 			this.defaultvalue = 0;
