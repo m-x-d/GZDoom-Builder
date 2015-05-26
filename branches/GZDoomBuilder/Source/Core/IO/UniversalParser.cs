@@ -695,7 +695,7 @@ namespace CodeImp.DoomBuilder.IO
 						db.Append(leveltabs); db.Append("{"); db.Append(newline);
 						db.Append(OutputStructure(c, level + 1, newline, whitespace));
 						db.Append(leveltabs); db.Append("}"); db.Append(newline);
-						if(whitespace) { db.Append(leveltabs); db.Append(newline); }
+						//if(whitespace) { db.Append(leveltabs); db.Append(newline); } //mxd. Let's save a few Kbs by using single line breaks...
 					}
 					// Check if the value is of boolean type
 					else if(cs[i].Value is bool)
