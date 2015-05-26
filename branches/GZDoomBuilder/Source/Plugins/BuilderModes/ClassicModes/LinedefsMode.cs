@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.Map;
@@ -1186,21 +1187,36 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 
 				//mxd. Do it sector-wise
-				List<Sector> sectors = new List<Sector>(1);
+				Dictionary<Sector, int> sectors = new Dictionary<Sector, int>();
 
 				foreach(Linedef l in selected) 
 				{
-					if (l.Front != null && l.Front.Sector != null && !sectors.Contains(l.Front.Sector)) 
-						sectors.Add(l.Front.Sector);
-
-					if (l.Back != null && l.Back.Sector != null && !sectors.Contains(l.Back.Sector)) 
-						sectors.Add(l.Back.Sector);
+					if(l.Front != null && l.Front.Sector != null)
+					{
+						if(!sectors.ContainsKey(l.Front.Sector)) sectors.Add(l.Front.Sector, 0);
+						sectors[l.Front.Sector]++;
+					}
+						
+					if(l.Back != null && l.Back.Sector != null)
+					{
+						if(!sectors.ContainsKey(l.Back.Sector)) sectors.Add(l.Back.Sector, 0);
+						sectors[l.Back.Sector]++;
+					}
 				}
 
-				//mxd. Flip the lines
-				Tools.FlipSectorLinedefs(sectors, true);
+				//mxd. Sort the collection so sectors with the most selected linedefs go first
+				List<KeyValuePair<Sector, int>> sortedlist = sectors.ToList();
+				sortedlist.Sort((firstPair, nextPair) => firstPair.Value.CompareTo(nextPair.Value));
+				sortedlist.Reverse();
 
-				// Remove selection if only one was selected
+				//mxd. Gather our ordered sectors
+				List<Sector> sectorslist = new List<Sector>(sortedlist.Count());
+				sectorslist.AddRange(sortedlist.Select(pair => pair.Key));
+
+				//mxd. Flip the lines
+				Tools.FlipSectorLinedefs(sectorslist, true);
+
+				// Remove selection if only one linedef was selected
 				if(selected.Count == 1)
 				{
 					foreach(Linedef ld in selected) ld.Selected = false;

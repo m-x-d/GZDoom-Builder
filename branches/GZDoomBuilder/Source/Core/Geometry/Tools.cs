@@ -2140,14 +2140,21 @@ namespace CodeImp.DoomBuilder.Geometry
 			{
 				List<Linedef> frontlines = new List<Linedef>();
 				List<Linedef> backlines = new List<Linedef>();
+				int unselectedfrontlines = 0;
+				int unselectedbacklines = 0;
 
 				//sort lines
-				foreach (Sidedef side in s.Sidedefs) 
+				foreach(Sidedef side in s.Sidedefs) 
 				{
-					if (processed.ContainsKey(side.Line) 
-						|| (selectedlinesonly && !side.Line.Selected)) continue;
+					if(processed.ContainsKey(side.Line)) continue;
+					if(selectedlinesonly && !side.Line.Selected)
+					{
+						if(side == side.Line.Front) unselectedfrontlines++;
+						else unselectedbacklines++;
+						continue;
+					}
 					
-					if (side == side.Line.Front) 
+					if(side == side.Line.Front) 
 						frontlines.Add(side.Line);
 					else
 						backlines.Add(side.Line);
@@ -2156,9 +2163,9 @@ namespace CodeImp.DoomBuilder.Geometry
 				}
 
 				//flip lines
-				if (frontlines.Count == 0 || (frontlines.Count > backlines.Count && backlines.Count > 0)) 
+				if(frontlines.Count == 0 || (frontlines.Count + unselectedfrontlines > backlines.Count + unselectedbacklines && backlines.Count > 0)) 
 				{
-					foreach (Linedef l in backlines) 
+					foreach(Linedef l in backlines) 
 					{
 						l.FlipVertices();
 						l.FlipSidedefs();
