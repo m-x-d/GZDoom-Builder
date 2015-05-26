@@ -280,23 +280,23 @@ namespace CodeImp.DoomBuilder.Windows
 		// Nodebuilder selection changed
 		private void nodebuildersave_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			// Leave when no configuration selected
-			if(configinfo == null) return;
+			// Leave during setup or when no configuration selected
+			if(preventchanges || configinfo == null || nodebuildersave.SelectedItem == null) return;
 			
 			// Apply to selected configuration
-			if(nodebuildersave.SelectedItem != null)
-				configinfo.NodebuilderSave = (nodebuildersave.SelectedItem as NodebuilderInfo).Name;
+			configinfo.NodebuilderSave = (nodebuildersave.SelectedItem as NodebuilderInfo).Name;
+			configinfo.Changed = true; //mxd
 		}
 
 		// Nodebuilder selection changed
 		private void nodebuildertest_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			// Leave when no configuration selected
-			if(configinfo == null) return;
+			// Leave during setup or when no configuration selected
+			if(preventchanges || configinfo == null || nodebuildertest.SelectedItem == null) return;
 
 			// Apply to selected configuration
-			if(nodebuildertest.SelectedItem != null)
-				configinfo.NodebuilderTest = (nodebuildertest.SelectedItem as NodebuilderInfo).Name;
+			configinfo.NodebuilderTest = (nodebuildertest.SelectedItem as NodebuilderInfo).Name;
+			configinfo.Changed = true; //mxd
 		}
 		
 		// Test application changed
@@ -320,18 +320,19 @@ namespace CodeImp.DoomBuilder.Windows
 				cbEngineSelector.Items[cbEngineSelector.SelectedIndex] = configinfo.TestProgramName;
 			}
 
-			configinfo.Changed = true;
+			configinfo.Changed = true; //mxd
 		}
 
 		// Test parameters changed
 		private void testparameters_TextChanged(object sender, EventArgs e)
 		{
 			// Leave when no configuration selected
-			if(configinfo == null) return;
+			if(preventchanges || configinfo == null) return;
 
 			// Apply to selected configuration
 			configinfo = listconfigs.SelectedItems[0].Tag as ConfigurationInfo;
 			configinfo.TestParameters = testparameters.Text;
+			configinfo.Changed = true; //mxd
 
 			// Show example result
 			CreateParametersExample();
@@ -396,9 +397,12 @@ namespace CodeImp.DoomBuilder.Windows
 				if(ci.Changed) General.Configs[i].Apply(ci);
 			}
 
-			//mxd. Update linedef color presets
+			//mxd. Update linedef color presets, mark the map as changed.
 			if(General.Map != null && General.Map.Map != null)
+			{
 				General.Map.Map.UpdateCustomLinedefColors();
+				General.Map.IsChanged = true;
+			}
 			
 			// Close
 			this.DialogResult = DialogResult.OK;
