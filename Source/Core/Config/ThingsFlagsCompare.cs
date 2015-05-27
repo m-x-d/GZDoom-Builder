@@ -107,9 +107,6 @@ namespace CodeImp.DoomBuilder.Config
 		//	1 if the flag overlaps
 		public int Compare(Thing t1, Thing t2)
 		{
-			bool t1flag;
-			bool t2flag;
-
 			// Check if the flags exist
 			if (!t1.Flags.ContainsKey(flag) || !t2.Flags.ContainsKey(flag)) return 0;
 
@@ -120,9 +117,9 @@ namespace CodeImp.DoomBuilder.Config
 				bool t2hasrequiredflags = false;
 				foreach(string key in General.Map.Config.ThingFlagsCompare[requiredgroup].Keys)
 				{
-					if(t1.Flags.ContainsKey(key) && (General.Map.Config.ThingFlagsCompare[requiredgroup][key].invert ? !t1.Flags[key] : t1.Flags[key])) 
+					if(General.Map.Config.ThingFlagsCompare[requiredgroup][key].invert ? !t1.IsFlagSet(key) : t1.IsFlagSet(key)) 
 						t1hasrequiredflags = true;
-					if(t2.Flags.ContainsKey(key) && (General.Map.Config.ThingFlagsCompare[requiredgroup][key].invert ? !t2.Flags[key] : t2.Flags[key]))
+					if(General.Map.Config.ThingFlagsCompare[requiredgroup][key].invert ? !t2.IsFlagSet(key) : t2.IsFlagSet(key))
 						t2hasrequiredflags = true;
 				}
 
@@ -135,8 +132,8 @@ namespace CodeImp.DoomBuilder.Config
 			{
 				bool inverted = General.Map.Config.ThingFlagsCompare[group].ContainsKey(requiredflag) && General.Map.Config.ThingFlagsCompare[group][requiredflag].invert;
 
-				bool t1hasrequiredflag = inverted ? !t1.Flags[requiredflag] : t1.Flags[requiredflag];
-				bool t2hasrequiredflag = inverted ? !t2.Flags[requiredflag] : t2.Flags[requiredflag];
+				bool t1hasrequiredflag = (inverted ? !t1.IsFlagSet(requiredflag) : t1.IsFlagSet(requiredflag));
+				bool t2hasrequiredflag = (inverted ? !t2.IsFlagSet(requiredflag) : t2.IsFlagSet(requiredflag));
 
 				// Can't compare...
 				if(!t1hasrequiredflag || !t2hasrequiredflag) return 0;
@@ -149,8 +146,8 @@ namespace CodeImp.DoomBuilder.Config
 				{
 					if (!string.IsNullOrEmpty(flaggrp.Value.ignoredgroup) && group == flaggrp.Value.ignoredgroup)
 					{
-						bool t1ignoreflagset = flaggrp.Value.invert ? !t1.Flags[flaggrp.Key] : t1.Flags[flaggrp.Key];
-						bool t2ignoreflagset = flaggrp.Value.invert ? !t2.Flags[flaggrp.Key] : t2.Flags[flaggrp.Key];
+						bool t1ignoreflagset = flaggrp.Value.invert ? !t1.IsFlagSet(flaggrp.Key) : t1.IsFlagSet(flaggrp.Key);
+						bool t2ignoreflagset = flaggrp.Value.invert ? !t2.IsFlagSet(flaggrp.Key) : t2.IsFlagSet(flaggrp.Key);
 
 						// Can be ignored?
 						if(!t1ignoreflagset && !t2ignoreflagset && flaggrp.Value.IgnoreGroupWhenUnset) continue;
@@ -162,8 +159,8 @@ namespace CodeImp.DoomBuilder.Config
 			}
 			
 			// Take flag inversion into account
-			t1flag = invert ? !t1.Flags[flag] : t1.Flags[flag];
-			t2flag = invert ? !t2.Flags[flag] : t2.Flags[flag];
+			bool t1flag = invert ? !t1.Flags[flag] : t1.Flags[flag];
+			bool t2flag = invert ? !t2.Flags[flag] : t2.Flags[flag];
 
 			if (comparemethod == CompareMethod.And && (t1flag && t2flag)) return 1;
 			if (comparemethod == CompareMethod.Equal && (t1flag == t2flag)) return 1;
