@@ -64,11 +64,6 @@ namespace CodeImp.DoomBuilder.Types
 
 		#region ================== Constructor
 
-		// Constructor
-		public TypeHandler()
-		{
-		}
-
 		// This sets up the handler for arguments
 		public virtual void SetupArgument(TypeHandlerAttribute attr, ArgumentInfo arginfo)
 		{

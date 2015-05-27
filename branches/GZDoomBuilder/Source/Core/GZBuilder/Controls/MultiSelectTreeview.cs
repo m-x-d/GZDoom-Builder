@@ -862,14 +862,17 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 				Update();
 				if (tn.BackColor != SelectionBackColor)
 				{
-					g.DrawRectangle(new Pen(new SolidBrush(SelectionBackColor), 1), rect);
+					using(Pen p = new Pen(SelectionBackColor, 1)) g.DrawRectangle(p, rect);
 				}
 			}
 			else
 			{
 				if (tn.BackColor != SelectionBackColor)
 				{
-					g.DrawRectangle(new Pen(new SolidBrush(BackColor), 1), tnMostRecentSelectedNode.Bounds.X, tnMostRecentSelectedNode.Bounds.Y, tnMostRecentSelectedNode.Bounds.Width, tnMostRecentSelectedNode.Bounds.Height);
+					using (Pen p = new Pen(BackColor, 1))
+					{
+						g.DrawRectangle(p, tnMostRecentSelectedNode.Bounds.X, tnMostRecentSelectedNode.Bounds.Y, tnMostRecentSelectedNode.Bounds.Width, tnMostRecentSelectedNode.Bounds.Height);
+					}
 				}
 				this.Invalidate(rect, false);
 				Update();

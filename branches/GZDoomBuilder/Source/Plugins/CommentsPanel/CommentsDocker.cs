@@ -32,12 +32,12 @@ namespace CodeImp.DoomBuilder.CommentsPanel
 	public partial class CommentsDocker : UserControl
 	{
 		#region ================== Variables
-		
-		Dictionary<string, CommentInfo> v_comments = new Dictionary<string, CommentInfo>(StringComparer.Ordinal);
-		Dictionary<string, CommentInfo> l_comments = new Dictionary<string, CommentInfo>(StringComparer.Ordinal);
-		Dictionary<string, CommentInfo> s_comments = new Dictionary<string, CommentInfo>(StringComparer.Ordinal);
-		Dictionary<string, CommentInfo> t_comments = new Dictionary<string, CommentInfo>(StringComparer.Ordinal);
-		bool preventupdate;
+
+		private readonly Dictionary<string, CommentInfo> v_comments = new Dictionary<string, CommentInfo>(StringComparer.Ordinal);
+		private readonly Dictionary<string, CommentInfo> l_comments = new Dictionary<string, CommentInfo>(StringComparer.Ordinal);
+		private readonly Dictionary<string, CommentInfo> s_comments = new Dictionary<string, CommentInfo>(StringComparer.Ordinal);
+		private readonly Dictionary<string, CommentInfo> t_comments = new Dictionary<string, CommentInfo>(StringComparer.Ordinal);
+		private bool preventupdate;
 		
 		#endregion
 		
@@ -121,14 +121,13 @@ namespace CodeImp.DoomBuilder.CommentsPanel
 			// Update the list with comments
 			foreach(KeyValuePair<string, CommentInfo> c in newcomments)
 			{
-				DataGridViewRow row;
 				CommentInfo cc = c.Value;
 				
 				if(!comments.ContainsKey(c.Key))
 				{
 					// Create grid row
 					int index = grid.Rows.Add();
-					row = grid.Rows[index];
+					DataGridViewRow row = grid.Rows[index];
 					row.Cells[0].Value = icon;
 					row.Cells[0].Style.Alignment = DataGridViewContentAlignment.TopCenter;
 					row.Cells[0].Style.Padding = new Padding(0, 5, 0, 0);
@@ -143,7 +142,7 @@ namespace CodeImp.DoomBuilder.CommentsPanel
 				else
 				{
 					cc = comments[c.Key];
-					row = cc.Row;
+					//row = cc.Row;
 					cc.ReplaceElements(c.Value);
 				}
 			}

@@ -155,8 +155,12 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			g.SmoothingMode = SmoothingMode.HighSpeed; //Make the square edges sharp
 			g.FillRectangle(center, originSquare);
 
+			//mxd. Dispose brushes
 			fill.Dispose();
+			center.Dispose();
 			outline.Dispose();
+			marks.Dispose();
+			needle.Dispose();
 
 			base.OnPaint(e);
 		}
