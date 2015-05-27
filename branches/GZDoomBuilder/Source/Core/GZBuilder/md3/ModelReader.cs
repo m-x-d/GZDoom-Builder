@@ -777,6 +777,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 			wv1.x = v1.x - pivot.x;
 			wv1.y = -v1.y + pivot.y;
 			wv1.z = -v1.z + pivot.z;
+			wv1.c = -1;
 			wv1.u = pu0;
 			wv1.v = pv0;
 			verts.Add(wv1);
@@ -785,6 +786,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 			wv2.x = v2.x - pivot.x;
 			wv2.y = -v2.y + pivot.y;
 			wv2.z = -v2.z + pivot.z;
+			wv2.c = -1;
 			wv2.u = pu1;
 			wv2.v = pv1;
 			verts.Add(wv2);
@@ -793,6 +795,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 			wv4.x = v4.x - pivot.x;
 			wv4.y = -v4.y + pivot.y;
 			wv4.z = -v4.z + pivot.z;
+			wv4.c = -1;
 			wv4.u = pu0;
 			wv4.v = pv0;
 			verts.Add(wv4);
@@ -801,6 +804,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 			wv3.x = v3.x - pivot.x;
 			wv3.y = -v3.y + pivot.y;
 			wv3.z = -v3.z + pivot.z;
+			wv3.c = -1;
 			wv3.u = pu1;
 			wv3.v = pv1;
 			verts.Add(wv3);
