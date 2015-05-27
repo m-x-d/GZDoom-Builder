@@ -61,7 +61,7 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Constructor / Disposer
 		
 		// Constructor
-		public PK3StructuredReader(DataLocation dl) : base(dl)
+		protected PK3StructuredReader(DataLocation dl) : base(dl)
 		{
 			// Initialize
 			this.roottextures = dl.option1;

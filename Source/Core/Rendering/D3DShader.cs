@@ -56,7 +56,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public D3DShader(ShaderManager manager)
+		protected D3DShader(ShaderManager manager)
 		{
 			// Initialize
 			this.manager = manager;

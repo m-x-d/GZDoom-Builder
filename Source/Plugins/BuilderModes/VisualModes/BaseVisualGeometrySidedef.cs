@@ -26,7 +26,6 @@ using CodeImp.DoomBuilder.GZBuilder.Tools;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
-using CodeImp.DoomBuilder.Types;
 using CodeImp.DoomBuilder.VisualModes;
 using System.Globalization;
 
@@ -79,7 +78,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Constructor / Destructor
 		
 		// Constructor for sidedefs
-		public BaseVisualGeometrySidedef(BaseVisualMode mode, VisualSector vs, Sidedef sd) : base(vs, sd)
+		protected BaseVisualGeometrySidedef(BaseVisualMode mode, VisualSector vs, Sidedef sd) : base(vs, sd)
 		{
 			this.mode = mode;
 			this.deltaz = new Vector3D(0.0f, 0.0f, 1.0f);

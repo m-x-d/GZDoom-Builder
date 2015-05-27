@@ -62,7 +62,7 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		internal MapElement()
+		protected MapElement()
 		{
 			// Initialize
 			fields = new UniFields(this);

@@ -52,7 +52,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public BaseClassicMode()
+		protected BaseClassicMode()
 		{
 			// Initialize
 

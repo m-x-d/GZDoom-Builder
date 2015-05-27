@@ -17,17 +17,17 @@
 #region ================== Namespaces
 
 using System;
-using System.Drawing.Drawing2D;
 using System.Drawing;
-using CodeImp.DoomBuilder.Geometry;
-using SlimDX;
-using SlimDX.Direct3D9;
+using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
-using CodeImp.DoomBuilder.Rendering;
-using CodeImp.DoomBuilder.IO;
 using System.IO;
 using System.Runtime.InteropServices;
+using CodeImp.DoomBuilder.Geometry;
+using CodeImp.DoomBuilder.IO;
+using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Windows;
+using SlimDX;
+using SlimDX.Direct3D9;
 
 #endregion
 
@@ -117,7 +117,7 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public ImageData()
+		protected ImageData()
 		{
 			// Defaults
 			usecolorcorrection = true;

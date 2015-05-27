@@ -59,7 +59,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		public bool CeilingVertex { get { return ceilingVertex; } }
 		public bool HaveHeightOffset { get { return haveOffset; } }
 
-		public VisualVertex(Vertex v, bool ceilingVertex) 
+		protected VisualVertex(Vertex v, bool ceilingVertex) 
 		{
 			vertex = v;
 			position = Matrix.Identity;

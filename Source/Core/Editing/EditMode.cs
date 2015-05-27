@@ -70,7 +70,7 @@ namespace CodeImp.DoomBuilder.Editing
 		/// <summary>
 		/// Provides basic user input interface functionality for a Doom Builder editing mode.
 		/// </summary>
-		public EditMode()
+		protected EditMode()
 		{
 			// Fetch attributes
 			object[] attrs = this.GetType().GetCustomAttributes(true);

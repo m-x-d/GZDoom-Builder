@@ -17,11 +17,11 @@
 #region ================== Namespaces
 
 using System;
-using System.Globalization;
-using CodeImp.DoomBuilder.Map;
-using System.Reflection;
-using System.Diagnostics;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
+using System.Reflection;
+using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Types;
 
 #endregion
@@ -93,7 +93,7 @@ namespace CodeImp.DoomBuilder.IO
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		internal MapSetIO(WAD wad, MapManager manager)
+		protected MapSetIO(WAD wad, MapManager manager)
 		{
 			// Initialize
 			this.wad = wad;

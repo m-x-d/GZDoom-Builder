@@ -207,6 +207,8 @@ namespace CodeImp.DoomBuilder
 
 				// We may spend some time to clean things up here
 				GC.Collect();
+				GC.WaitForPendingFinalizers(); //mxd
+				GC.Collect(); //mxd
 
 				// Remove temp file
 				General.WriteLogLine("Removing temporary directory...");
@@ -1863,6 +1865,7 @@ namespace CodeImp.DoomBuilder
 			configinfo = null;
 			GC.Collect();
 			GC.WaitForPendingFinalizers();
+			GC.Collect(); //mxd
 
 			// Clear errors
 			General.ErrorLogger.Clear();

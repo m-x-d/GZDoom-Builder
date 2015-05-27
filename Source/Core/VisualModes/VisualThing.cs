@@ -19,13 +19,13 @@
 using System;
 using System.Collections.Generic;
 using CodeImp.DoomBuilder.Config;
-using CodeImp.DoomBuilder.Map;
-using SlimDX.Direct3D9;
-using SlimDX;
-using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Data;
-using CodeImp.DoomBuilder.Rendering;
+using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.GZBuilder.Data; //mxd
+using CodeImp.DoomBuilder.Map;
+using CodeImp.DoomBuilder.Rendering;
+using SlimDX;
+using SlimDX.Direct3D9;
 
 #endregion
 
@@ -148,7 +148,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		#region ================== Constructor / Destructor
 		
 		// Constructor
-		public VisualThing(Thing t)
+		protected VisualThing(Thing t)
 		{
 			// Initialize
 			this.thing = t;
