@@ -3098,13 +3098,15 @@ namespace CodeImp.DoomBuilder.Windows
 
 					//draw info
 					Font font = new Font("Tahoma", 10);
-					SolidBrush brush = new SolidBrush(Color.White);
 					SizeF rect = g.MeasureString(info, font);
 					float px = bounds.Width - rect.Width - 4;
 					float py = 4;
 
 					g.FillRectangle(Brushes.Black, px, py, rect.Width, rect.Height + 3);
-					g.DrawString(info, font, brush, px + 2, py + 2);
+					using(SolidBrush brush = new SolidBrush(Color.White))
+					{
+						g.DrawString(info, font, brush, px + 2, py + 2);
+					}
 				}
 
 				try 

@@ -200,6 +200,9 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 		{
 			base.Dispose();
 
+			//mxd
+			foreach (Bitmap b in distincticons) b.Dispose();
+
 			// This must be called to remove bound methods for actions.
             General.Actions.UnbindMethods(this);
         }

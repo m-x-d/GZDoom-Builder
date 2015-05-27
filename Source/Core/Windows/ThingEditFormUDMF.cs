@@ -420,7 +420,6 @@ namespace CodeImp.DoomBuilder.Windows
 				tooltip.SetToolTip(label, null);
 				label.Font = new Font(label.Font, FontStyle.Regular);
 				label.ForeColor = SystemColors.WindowText;
-
 			}
 		}
 

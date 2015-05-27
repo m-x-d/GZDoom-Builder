@@ -168,7 +168,10 @@ namespace CodeImp.DoomBuilder.Controls
 			
 			// find the rectangle for the splitter and paint it
 			Rectangle r = this.SplitterRectangle;
-			e.Graphics.FillRectangle(new SolidBrush(this.BackColor), r);
+			using(SolidBrush brushbg = new SolidBrush(this.BackColor))
+			{
+				e.Graphics.FillRectangle(brushbg, r);
+			}
 
 			Pen pendark = new Pen(SystemColors.ControlDark);
 			SolidBrush brushlightlight = new SolidBrush(SystemColors.ControlLightLight);
@@ -182,7 +185,10 @@ namespace CodeImp.DoomBuilder.Controls
 				bounds = new Rectangle(r.X, r.Y + ((r.Height - scaled[115]) / 2), scaled[8], scaled[115]);
 
 				// draw the background color for our control image
-				e.Graphics.FillRectangle(new SolidBrush(hot ? hotcolor : this.BackColor), new Rectangle(bounds.X + scaled[1], bounds.Y, scaled[6], scaled[115]));
+				using (SolidBrush bg = new SolidBrush(hot ? hotcolor : this.BackColor))
+				{
+					e.Graphics.FillRectangle(bg, new Rectangle(bounds.X + scaled[1], bounds.Y, scaled[6], scaled[115]));
+				}
 
 				// draw the top & bottom lines for our control image
 				e.Graphics.DrawLine(pendark, bounds.X + scaled[1], bounds.Y, bounds.X + bounds.Width - scaled[2], bounds.Y);
@@ -219,7 +225,10 @@ namespace CodeImp.DoomBuilder.Controls
 				bounds = new Rectangle(r.X + ((r.Width - scaled[115]) / 2), r.Y, scaled[115], scaled[8]);
 
 				// draw the background color for our control image
-				e.Graphics.FillRectangle(new SolidBrush(hot ? hotcolor : this.BackColor), new Rectangle(bounds.X, bounds.Y + scaled[1], scaled[115], scaled[6]));
+				using (SolidBrush bg = new SolidBrush(hot ? hotcolor : this.BackColor))
+				{
+					e.Graphics.FillRectangle(bg, new Rectangle(bounds.X, bounds.Y + scaled[1], scaled[115], scaled[6]));
+				}
 
 				// draw the left & right lines for our control image
 				e.Graphics.DrawLine(pendark, bounds.X, bounds.Y + scaled[1], bounds.X, bounds.Y + bounds.Height - scaled[2]);
@@ -249,7 +258,13 @@ namespace CodeImp.DoomBuilder.Controls
 					// dark dot
 					e.Graphics.FillRectangle(brushdark, x + (i * scaled[3]), y + scaled[1], scaled[2], scaled[2]);
 				}
-			} 
+			}
+
+			//mxd. Dispose brushes
+			pendark.Dispose();
+			brushlightlight.Dispose();
+			brushdark.Dispose();
+			brushdarkdark.Dispose();
 		}
 
 		#endregion

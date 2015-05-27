@@ -27,8 +27,14 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			LinedefColorPreset preset = (LinedefColorPreset)Items[e.Index];
 
 			//draw color rectangle
-			e.Graphics.FillRectangle(new SolidBrush(preset.Color.ToColor()), 2, e.Bounds.Top + 2, e.Bounds.Height, e.Bounds.Height - 5);
-			e.Graphics.DrawRectangle(new Pen(Color.Black), 2, e.Bounds.Top + 2, e.Bounds.Height, e.Bounds.Height - 5);
+			using(SolidBrush bg = new SolidBrush(preset.Color.ToColor()))
+			{
+				e.Graphics.FillRectangle(bg, 2, e.Bounds.Top + 2, e.Bounds.Height, e.Bounds.Height - 5);
+			}
+			using (Pen outline = new Pen(Color.Black))
+			{
+				e.Graphics.DrawRectangle(outline, 2, e.Bounds.Top + 2, e.Bounds.Height, e.Bounds.Height - 5);
+			}
 
 			//draw text
 			e.Graphics.DrawString(preset.ToString(), e.Font, new SolidBrush(e.ForeColor), e.Bounds.Left + e.Bounds.Height + 4, e.Bounds.Top);

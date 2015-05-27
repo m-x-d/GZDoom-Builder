@@ -175,6 +175,10 @@ namespace CodeImp.DoomBuilder.Controls
 			// Draw item
 			e.Graphics.FillRectangle(backbrush, e.Bounds);
 			e.Graphics.DrawString(displayname, list.Font, displaybrush, e.Bounds.X, e.Bounds.Y);
+
+			//mxd. Dispose brushes
+			backbrush.Dispose();
+			displaybrush.Dispose();
 		}
 
 		// List closed

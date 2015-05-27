@@ -731,12 +731,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 
 			mde.Model.BoundingBox = BoundingBoxTools.CalculateBoundingBox(bbs);
 
-			//create bitmap
-			Bitmap bmp = CreateVoxelTexture(palette);
-
 			//create texture
 			MemoryStream memstream = new MemoryStream((4096 * 4) + 4096);
-			bmp.Save(memstream, ImageFormat.Bmp);
+			using (Bitmap bmp = CreateVoxelTexture(palette)) bmp.Save(memstream, ImageFormat.Bmp);
 			memstream.Seek(0, SeekOrigin.Begin);
 
 			Texture texture = Texture.FromStream(device, memstream, (int)memstream.Length, 64, 64, 0, Usage.None, Format.Unknown, Pool.Managed, Filter.Point, Filter.Box, 0);
@@ -840,6 +837,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 				gs.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
 				gs.DrawImage(bmp, new Rectangle(0, 0, 64, 64), new Rectangle(0, 0, 16, 16), GraphicsUnit.Pixel);
 			}
+			bmp.Dispose();
 
 			return scaled;
 		}

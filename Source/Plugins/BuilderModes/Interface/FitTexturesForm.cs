@@ -265,14 +265,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					foreach(SortedVisualSide side in pair.Value) 
 					{
 						Color c = General.Colors.BrightColors[General.Random(0, General.Colors.BrightColors.Length - 1)].ToColor();
-						Pen p = new Pen(c);
-						Brush b = new SolidBrush(c);
-
 						int x = side.Bounds.X - minx + margin;
 						int y = side.Bounds.Y - miny + margin;
 
-						g.DrawRectangle(p, x, y, side.Bounds.Width, side.Bounds.Height);
-						g.DrawString(i++ + ": line " + side.Side.Sidedef.Line.Index + "; x:" + side.Bounds.X + " y:" + side.Bounds.Y, this.Font, b, x + 2, y + 2);
+						using (Pen p = new Pen(c))
+						{
+							g.DrawRectangle(p, x, y, side.Bounds.Width, side.Bounds.Height);
+						}
+						using (Brush b = new SolidBrush(c))
+						{
+							g.DrawString(i++ + ": line " + side.Side.Sidedef.Line.Index + "; x:" + side.Bounds.X + " y:" + side.Bounds.Y, this.Font, b, x + 2, y + 2);
+						}
 					}
 				}
 

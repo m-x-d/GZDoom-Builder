@@ -151,8 +151,6 @@ namespace CodeImp.DoomBuilder.Controls
 			this.Name = "AngleControl";
 			this.Size = new System.Drawing.Size(84, 84);
 			this.Paint += new System.Windows.Forms.PaintEventHandler(this.AngleControl_Paint);
-			this.Layout += new System.Windows.Forms.LayoutEventHandler(this.AngleControl_Layout);
-			this.Resize += new System.EventHandler(this.AngleControl_Resize);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

@@ -85,25 +85,6 @@ namespace CodeImp.DoomBuilder.Controls
 
 		#region ================== Interface
 
-		// Size changed
-		protected override void OnClientSizeChanged(EventArgs e)
-		{
-			base.OnClientSizeChanged(e);
-			AngleControl_Resize(this, e);
-		}
-
-		// Layout changed
-		private void AngleControl_Layout(object sender, LayoutEventArgs e)
-		{
-			AngleControl_Resize(sender, e);
-		}
-
-		// Size changed
-		private void AngleControl_Resize(object sender, EventArgs e)
-		{
-			//this.Size = new Size(84, 84);
-		}
-
 		// Redraw the control
 		private void AngleControl_Paint(object sender, PaintEventArgs e)
 		{
@@ -125,6 +106,7 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				e.Graphics.DrawLine(linepen, start, start);
 			}
+			linepen.Dispose(); //mxd
 		}
 		
 		#endregion
