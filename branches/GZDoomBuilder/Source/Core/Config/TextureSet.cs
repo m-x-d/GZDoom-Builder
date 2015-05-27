@@ -41,7 +41,7 @@ namespace CodeImp.DoomBuilder.Config
 		
 		#region ================== Constructor / Destructor
 		
-		public TextureSet()
+		protected TextureSet()
 		{
 			this.name = "Unnamed Set";
 			this.filters = new List<string>();

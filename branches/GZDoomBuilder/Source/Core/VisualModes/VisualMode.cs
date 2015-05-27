@@ -96,7 +96,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		/// <summary>
 		/// Provides specialized functionality for a visual (3D) Doom Builder editing mode.
 		/// </summary>
-		public VisualMode()
+		protected VisualMode()
 		{
 			// Initialize
 			this.renderer = General.Map.Renderer3D;

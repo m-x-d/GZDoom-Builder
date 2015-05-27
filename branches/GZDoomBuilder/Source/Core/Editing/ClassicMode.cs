@@ -17,14 +17,14 @@
 #region ================== Namespaces
 
 using System;
+using System.Drawing;
 using System.Windows.Forms;
-using CodeImp.DoomBuilder.Windows;
-using CodeImp.DoomBuilder.Map;
-using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Geometry;
+using CodeImp.DoomBuilder.Map;
+using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.VisualModes;
-using System.Drawing;
+using CodeImp.DoomBuilder.Windows;
 
 #endregion
 
@@ -112,7 +112,7 @@ namespace CodeImp.DoomBuilder.Editing
 		/// <summary>
 		/// Provides specialized functionality for a classic (2D) Doom Builder editing mode.
 		/// </summary>
-		public ClassicMode()
+		protected ClassicMode()
 		{
 			// Initialize
 			this.renderer = General.Map.Renderer2D;
@@ -131,8 +131,9 @@ namespace CodeImp.DoomBuilder.Editing
 				mousebuttons = oldmode.mousebuttons;
 				mouseinside = oldmode.mouseinside;
 				mousedragging = oldmode.mousedragging;
-
-			} else if (General.Settings.GZSynchCameras && General.Editing.Mode is VisualMode) { //mxd 
+			}
+			else if (General.Settings.GZSynchCameras && General.Editing.Mode is VisualMode) //mxd
+			{
 				//center 2d view on camera position in 3d view
 				Vector2D campos = new Vector2D(General.Map.VisualCamera.Position.x, General.Map.VisualCamera.Position.y);
 				renderer2d.PositionView(campos.x, campos.y);

@@ -57,7 +57,7 @@ namespace CodeImp.DoomBuilder.Controls
 		#region ================== Constructor / Destructor
 
 		// Constructor
-		public ImageSelectorControl()
+		protected ImageSelectorControl()
 		{
 			// Initialize
 			InitializeComponent();

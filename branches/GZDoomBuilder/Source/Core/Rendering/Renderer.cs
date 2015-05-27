@@ -52,7 +52,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		internal Renderer(D3DDevice g)
+		protected Renderer(D3DDevice g)
 		{
 			// Initialize
 			this.graphics = g;

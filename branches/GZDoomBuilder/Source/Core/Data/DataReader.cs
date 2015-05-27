@@ -54,7 +54,7 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public DataReader(DataLocation dl)
+		protected DataReader(DataLocation dl)
 		{
 			// Keep information
 			location = dl;

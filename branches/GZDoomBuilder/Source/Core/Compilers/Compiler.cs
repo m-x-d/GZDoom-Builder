@@ -68,7 +68,7 @@ namespace CodeImp.DoomBuilder.Compilers
 		#region ================== Constructor / Disposer
 		
 		// Constructor
-		public Compiler(CompilerInfo info)
+		protected Compiler(CompilerInfo info)
 		{
 			// Initialize
 			this.info = info;

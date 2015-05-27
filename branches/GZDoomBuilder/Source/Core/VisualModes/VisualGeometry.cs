@@ -18,12 +18,12 @@
 
 using System;
 using System.Collections.Generic;
-using CodeImp.DoomBuilder.Map;
-using SlimDX;
-using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Data;
-using CodeImp.DoomBuilder.Rendering;
+using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.GZBuilder.Data; //mxd
+using CodeImp.DoomBuilder.Map;
+using CodeImp.DoomBuilder.Rendering;
+using SlimDX;
 
 #endregion
 
@@ -123,7 +123,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		/// <summary>
 		/// This creates sector-global visual geometry. This geometry is always visible when any of the sector is visible.
 		/// </summary>
-		public VisualGeometry(VisualSector vs)
+		protected VisualGeometry(VisualSector vs)
 		{
 			this.sector = vs;
 			this.ModulateColor = new PixelColor(255, 255, 255, 255);
@@ -134,7 +134,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		/// This creates visual geometry that is bound to a sidedef. This geometry is only visible when the sidedef is visible. It is automatically back-face culled during rendering and automatically XY intersection tested as well as back-face culled during object picking.
 		/// </summary>
 		/// <param name="sd"></param>
-		public VisualGeometry(VisualSector vs, Sidedef sd)
+		protected VisualGeometry(VisualSector vs, Sidedef sd)
 		{
 			this.sector = vs;
 			this.sidedef = sd;

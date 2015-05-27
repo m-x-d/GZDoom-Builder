@@ -3,7 +3,7 @@ using System.Drawing;
 
 namespace CodeImp.DoomBuilder.ColorPicker
 {
-	public class ColorHandler 
+	public static class ColorHandler 
 	{
 		// Handle conversions between RGB and HSV    
 		// (and Color types, as well).
@@ -74,19 +74,15 @@ namespace CodeImp.DoomBuilder.ColorPicker
 			// point within the circle). HSV.Saturation and HSV.value must be 
 			// scaled to be between 0 and 1.
 
-			float h;
-			float s;
-			float v;
-
 			float r = 0;
 			float g = 0;
 			float b = 0;
 
 			// Scale Hue to be between 0 and 360. Saturation
 			// and value scale to be between 0 and 1.
-			h = ((float)HSV.Hue / 255 * 360) % 360;
-			s = (float)HSV.Saturation / 255;
-			v = (float)HSV.value / 255;
+			float h = ((float)HSV.Hue / 255 * 360) % 360;
+			float s = (float)HSV.Saturation / 255;
+			float v = (float)HSV.value / 255;
 
 			if (s == 0) 
 			{
@@ -98,29 +94,21 @@ namespace CodeImp.DoomBuilder.ColorPicker
 			} 
 			else 
 			{
-				float p;
-				float q;
-				float t;
-
-				float fractionalSector;
-				int sectorNumber;
-				float sectorPos;
-
 				// The color wheel consists of 6 sectors.
 				// Figure out which sector you//re in.
-				sectorPos = h / 60;
-				sectorNumber = (int)(Math.Floor(sectorPos));
+				float sectorPos = h / 60;
+				int sectorNumber = (int)(Math.Floor(sectorPos));
 
 				// get the fractional part of the sector.
 				// That is, how many degrees into the sector
 				// are you?
-				fractionalSector = sectorPos - sectorNumber;
+				float fractionalSector = sectorPos - sectorNumber;
 
 				// Calculate values for the three axes
 				// of the color. 
-				p = v * (1 - s);
-				q = v * (1 - (s * fractionalSector));
-				t = v * (1 - (s * (1 - fractionalSector)));
+				float p = v * (1 - s);
+				float q = v * (1 - (s * fractionalSector));
+				float t = v * (1 - (s * (1 - fractionalSector)));
 
 				// Assign the fractional colors to r, g, and b
 				// based on the sector the angle is in.
@@ -177,22 +165,16 @@ namespace CodeImp.DoomBuilder.ColorPicker
 			// The code must scale these to be between 0 and 255 for
 			// the purposes of this application.
 
-			float min;
-			float max;
-			float delta;
-
 			float r = (float)RGB.Red / 255;
 			float g = (float)RGB.Green / 255;
 			float b = (float)RGB.Blue / 255;
 
-			float h;
-			float s;
-			float v;
+			float h, s, v;
 
-			min = Math.Min(Math.Min(r, g), b);
-			max = Math.Max(Math.Max(r, g), b);
+			float min = Math.Min(Math.Min(r, g), b);
+			float max = Math.Max(Math.Max(r, g), b);
 			v = max;
-			delta = max - min;
+			float delta = max - min;
 			if (max == 0 || delta == 0) 
 			{
 				// R, G, and B must be 0, or all the same. In this case, S is 0, and H is undefined.

@@ -77,7 +77,7 @@ namespace CodeImp.DoomBuilder.Controls
 		#region ================== Constructor
 		
 		// Constructor
-		public ScriptDocumentTab(ScriptEditorPanel panel)
+		protected ScriptDocumentTab(ScriptEditorPanel panel)
 		{
 			// Keep panel
 			this.panel = panel;

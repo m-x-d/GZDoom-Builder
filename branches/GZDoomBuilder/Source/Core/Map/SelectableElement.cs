@@ -44,11 +44,6 @@ namespace CodeImp.DoomBuilder.Map
 		
 		#region ================== Constructor / Disposer
 		
-		// Constructor
-		internal SelectableElement()
-		{
-		}
-		
 		// Disposer
 		public override void Dispose()
 		{

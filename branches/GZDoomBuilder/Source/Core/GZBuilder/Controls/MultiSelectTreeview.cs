@@ -68,6 +68,7 @@
 
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
@@ -402,7 +403,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		private void UnselectAllNodesNotBelongingToLevel(int level, TreeViewAction tva)
 		{
 			// First, build list of nodes that need to be unselected
-			ArrayList arrNodesToDeselect = new ArrayList();
+			List<TreeNode> arrNodesToDeselect = new List<TreeNode>(); //mxd
 			foreach (TreeNode selectedTreeNode in htblSelectedNodes.Values)
 			{
 				if (GetNodeLevel(selectedTreeNode) != level)
@@ -426,7 +427,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		private void UnselectAllNodesNotBelongingDirectlyToParent(TreeNode parent, TreeViewAction tva)
 		{
 			// First, build list of nodes that need to be unselected
-			ArrayList arrNodesToDeselect = new ArrayList();
+			List<TreeNode> arrNodesToDeselect = new List<TreeNode>(); //mxd
 			foreach (TreeNode selectedTreeNode in htblSelectedNodes.Values)
 			{
 				if (selectedTreeNode.Parent != parent)
@@ -450,7 +451,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		private void UnselectAllNodesNotBelongingToParent(TreeNode parent, TreeViewAction tva)
 		{
 			// First, build list of nodes that need to be unselected
-			ArrayList arrNodesToDeselect = new ArrayList();
+			List<TreeNode> arrNodesToDeselect = new List<TreeNode>(); //mxd
 			foreach (TreeNode selectedTreeNode in htblSelectedNodes.Values)
 			{
 				if (!IsChildOf(selectedTreeNode, parent))
@@ -474,7 +475,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		private void UnselectAllNodesExceptNode(TreeNode nodeKeepSelected, TreeViewAction tva)
 		{
 			// First, build list of nodes that need to be unselected
-			ArrayList arrNodesToDeselect = new ArrayList();
+			List<TreeNode> arrNodesToDeselect = new List<TreeNode>(); //mxd
 			foreach (TreeNode selectedTreeNode in htblSelectedNodes.Values)
 			{
 				if (nodeKeepSelected == null)
