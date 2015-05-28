@@ -161,9 +161,17 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		//mxd
+		private void buttons_KeyStateChanged(object sender, KeyEventArgs e) 
+		{
+			if(!usemodifierkeys) return;
+			textbox.ControlPressed = e.Control;
+			textbox.ShiftPressed = e.Shift;
+		}
+
+		//mxd
 		private void buttons_MouseEnter(object sender, EventArgs e) 
 		{
-			if(usemodifierkeys) textbox.Focus();
+			if(usemodifierkeys) buttons.Focus();
 		}
 
 		// Mouse wheel used
