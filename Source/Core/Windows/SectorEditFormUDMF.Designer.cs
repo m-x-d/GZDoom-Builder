@@ -46,7 +46,6 @@
 			this.lightColor = new CodeImp.DoomBuilder.GZBuilder.Controls.ColorFieldsControl();
 			this.brightness = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.desaturation = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
-			this.soundsequence = new System.Windows.Forms.TextBox();
 			this.gravity = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.browseeffect = new System.Windows.Forms.Button();
 			this.effect = new CodeImp.DoomBuilder.Controls.ActionSelectorControl();
@@ -104,6 +103,7 @@
 			this.cancel = new System.Windows.Forms.Button();
 			this.apply = new System.Windows.Forms.Button();
 			this.tooltip = new System.Windows.Forms.ToolTip(this.components);
+			this.soundsequence = new System.Windows.Forms.ComboBox();
 			groupaction = new System.Windows.Forms.GroupBox();
 			groupeffect = new System.Windows.Forms.GroupBox();
 			label14 = new System.Windows.Forms.Label();
@@ -153,6 +153,7 @@
 			// 
 			groupeffect.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			groupeffect.Controls.Add(this.soundsequence);
 			groupeffect.Controls.Add(this.resetsoundsequence);
 			groupeffect.Controls.Add(this.fadeColor);
 			groupeffect.Controls.Add(this.lightColor);
@@ -161,7 +162,6 @@
 			groupeffect.Controls.Add(label14);
 			groupeffect.Controls.Add(label9);
 			groupeffect.Controls.Add(label13);
-			groupeffect.Controls.Add(this.soundsequence);
 			groupeffect.Controls.Add(this.gravity);
 			groupeffect.Controls.Add(label2);
 			groupeffect.Controls.Add(this.browseeffect);
@@ -268,15 +268,6 @@
 			label13.TabIndex = 27;
 			label13.Text = "Desaturation:";
 			label13.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			// 
-			// soundsequence
-			// 
-			this.soundsequence.Location = new System.Drawing.Point(125, 55);
-			this.soundsequence.Name = "soundsequence";
-			this.soundsequence.Size = new System.Drawing.Size(325, 20);
-			this.soundsequence.TabIndex = 2;
-			this.soundsequence.TextChanged += new System.EventHandler(this.soundsequence_TextChanged);
-			this.soundsequence.MouseDown += new System.Windows.Forms.MouseEventHandler(this.soundsequence_MouseDown);
 			// 
 			// gravity
 			// 
@@ -585,7 +576,7 @@
 			// 
 			// floorAngleControl
 			// 
-			this.floorAngleControl.Angle = -360;
+			this.floorAngleControl.Angle = 0;
 			this.floorAngleControl.AngleOffset = 90;
 			this.floorAngleControl.Location = new System.Drawing.Point(6, 132);
 			this.floorAngleControl.Name = "floorAngleControl";
@@ -819,7 +810,7 @@
 			// 
 			// ceilAngleControl
 			// 
-			this.ceilAngleControl.Angle = -360;
+			this.ceilAngleControl.Angle = 0;
 			this.ceilAngleControl.AngleOffset = 90;
 			this.ceilAngleControl.Location = new System.Drawing.Point(6, 132);
 			this.ceilAngleControl.Name = "ceilAngleControl";
@@ -1111,6 +1102,16 @@
 			this.tooltip.InitialDelay = 10;
 			this.tooltip.ReshowDelay = 100;
 			// 
+			// soundsequence
+			// 
+			this.soundsequence.FormattingEnabled = true;
+			this.soundsequence.Location = new System.Drawing.Point(125, 54);
+			this.soundsequence.Name = "soundsequence";
+			this.soundsequence.Size = new System.Drawing.Size(325, 21);
+			this.soundsequence.TabIndex = 32;
+			this.soundsequence.MouseDown += new System.Windows.Forms.MouseEventHandler(this.soundsequence_MouseDown);
+			this.soundsequence.TextChanged += new System.EventHandler(this.soundsequence_TextChanged);
+			// 
 			// SectorEditFormUDMF
 			// 
 			this.AcceptButton = this.apply;
@@ -1201,7 +1202,6 @@
 		private System.Windows.Forms.GroupBox groupBox3;
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox gravity;
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox desaturation;
-		private System.Windows.Forms.TextBox soundsequence;
 		private CodeImp.DoomBuilder.GZBuilder.Controls.ColorFieldsControl fadeColor;
 		private CodeImp.DoomBuilder.GZBuilder.Controls.ColorFieldsControl lightColor;
 		private CodeImp.DoomBuilder.Controls.CheckboxArrayControl flags;
@@ -1219,5 +1219,6 @@
 		private System.Windows.Forms.Label labelCeilOffsets;
 		private System.Windows.Forms.Label labelCeilScale;
 		private System.Windows.Forms.Button resetsoundsequence;
+		private System.Windows.Forms.ComboBox soundsequence;
 	}
 }

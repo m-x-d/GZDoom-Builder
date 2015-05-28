@@ -169,7 +169,6 @@ namespace CodeImp.DoomBuilder.Controls
 						backbrush = new SolidBrush(SystemColors.Window);
 					}
 				}
-				
 			}
 
 			// Draw item
@@ -177,8 +176,11 @@ namespace CodeImp.DoomBuilder.Controls
 			e.Graphics.DrawString(displayname, list.Font, displaybrush, e.Bounds.X, e.Bounds.Y);
 
 			//mxd. Dispose brushes
-			backbrush.Dispose();
-			displaybrush.Dispose();
+			if(!this.DesignMode)
+			{
+				backbrush.Dispose();
+				displaybrush.Dispose();
+			}
 		}
 
 		// List closed

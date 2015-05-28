@@ -616,6 +616,34 @@ namespace CodeImp.DoomBuilder.Data
 
 		#endregion
 
+		#region ================== SndSeq
+
+		public override List<Stream> GetSndSeqData() 
+		{
+			// Error when suspended
+			if(issuspended) throw new Exception("Data reader is suspended");
+
+			List<Stream> streams = new List<Stream>();
+
+			// Get from wads first
+			//TODO: is this the correct order?..
+			foreach(WADReader wr in wads) 
+			{
+				streams.AddRange(wr.GetSndSeqData());
+			}
+
+			// Then from our own files
+			string foundfile = FindFirstFile("sndseq", false);
+			if(!string.IsNullOrEmpty(foundfile) && FileExists(foundfile))
+			{
+				streams.Add(LoadFile(foundfile));
+			}
+
+			return streams;
+		}
+
+		#endregion
+
 		#region ================== Methods
 
 		// This loads the images in this directory

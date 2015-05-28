@@ -953,6 +953,7 @@
     <Compile Include="ZDoom\ActorStructure.cs" />
     <Compile Include="ZDoom\PatchStructure.cs" />
     <Compile Include="ZDoom\ReverbsParser.cs" />
+    <Compile Include="ZDoom\SndSeqParser.cs" />
     <Compile Include="ZDoom\StateGoto.cs" />
     <Compile Include="ZDoom\TexturesParser.cs" />
     <Compile Include="ZDoom\TextureStructure.cs" />

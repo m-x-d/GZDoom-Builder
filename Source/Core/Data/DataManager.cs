@@ -70,6 +70,7 @@ namespace CodeImp.DoomBuilder.Data
 		private MapInfo mapinfo;
 		private Dictionary<string, KeyValuePair<int, int>> reverbs; //<name, <arg1, arg2> 
 		private Dictionary<long, GlowingFlatData> glowingflats; // Texture name hash, Glowing Flat Data
+		private List<string> soundsequences;
 		
 		// Background loading
 		private Queue<ImageData> imageque;
@@ -115,6 +116,7 @@ namespace CodeImp.DoomBuilder.Data
 		public MapInfo MapInfo { get { return mapinfo; } }
 		public Dictionary<string, KeyValuePair<int, int>> Reverbs { get { return reverbs; } }
 		public Dictionary<long, GlowingFlatData> GlowingFlats { get { return glowingflats; } }
+		public List<string> SoundSequences { get { return soundsequences; } }
 
 		public Playpal Palette { get { return palette; } }
 		public PreviewManager Previews { get { return previews; } }
@@ -161,6 +163,7 @@ namespace CodeImp.DoomBuilder.Data
 			gldefsentries = new Dictionary<int, DynamicLightData>();
 			reverbs = new Dictionary<string, KeyValuePair<int, int>>();
 			glowingflats = new Dictionary<long, GlowingFlatData>();
+			soundsequences = new List<string>();
 
 			// Load special images
 			missingtexture3d = new ResourceImage("CodeImp.DoomBuilder.Resources.MissingTexture3D.png");
@@ -331,6 +334,7 @@ namespace CodeImp.DoomBuilder.Data
 
 			//mxd. Load more stuff
 			LoadReverbs();
+			LoadSndSeq();
 			LoadVoxels();
 			Dictionary<string, List<int>> actorsbyclass = CreateActorsByClassList();
 			LoadModeldefs(actorsbyclass);
@@ -1927,6 +1931,28 @@ namespace CodeImp.DoomBuilder.Data
 
 			currentreader = null;
 			reverbs = parser.GetReverbs();
+		}
+
+		//mxd. This loads SNDSEQ
+		private void LoadSndSeq()
+		{
+			SndSeqParser parser = new SndSeqParser();
+			soundsequences.Clear();
+
+			foreach(DataReader dr in containers) 
+			{
+				currentreader = dr;
+				List<Stream> streams = dr.GetSndSeqData();
+
+				// Parse the data
+				foreach (Stream s in streams)
+				{
+					if(s != null) parser.Parse(s, "SNDSEQ");
+				}
+			}
+
+			currentreader = null;
+			soundsequences = parser.GetSoundSequences();
 		}
 
 		//mxd
