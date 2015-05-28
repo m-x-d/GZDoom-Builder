@@ -49,8 +49,8 @@ namespace CodeImp.DoomBuilder.Controls
 		public bool AllowRelative { get { return allowrelative; } set { allowrelative = value; UpdateTextboxStyle(); } }
 		public bool AllowDecimal  { get { return allowdecimal; } set { allowdecimal = value; } }
 
-		public bool ControlPressed { get { return controlpressed; } } //mxd
-		public bool ShiftPressed { get { return shiftpressed; } } //mxd
+		public bool ControlPressed { get { return controlpressed; } internal set { controlpressed = value; } } //mxd
+		public bool ShiftPressed { get { return shiftpressed; } internal set { shiftpressed = value; } } //mxd
 
 		#endregion
 
