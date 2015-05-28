@@ -38,7 +38,6 @@ namespace CodeImp.DoomBuilder.Controls
 		private bool allowrelative;		// Allow ++, --, * and / prefix for relative changes
 		private bool allowdecimal;		// Allow decimal (float) numbers
 		private bool controlpressed;
-		private bool shiftpressed; //mxd
 		private readonly ToolTip tooltip; //mxd
 		
 		#endregion
@@ -48,9 +47,6 @@ namespace CodeImp.DoomBuilder.Controls
 		public bool AllowNegative { get { return allownegative; } set { allownegative = value; } }
 		public bool AllowRelative { get { return allowrelative; } set { allowrelative = value; UpdateTextboxStyle(); } }
 		public bool AllowDecimal  { get { return allowdecimal; } set { allowdecimal = value; } }
-
-		public bool ControlPressed { get { return controlpressed; } internal set { controlpressed = value; } } //mxd
-		public bool ShiftPressed { get { return shiftpressed; } internal set { shiftpressed = value; } } //mxd
 
 		#endregion
 
@@ -73,7 +69,6 @@ namespace CodeImp.DoomBuilder.Controls
 		protected override void OnKeyDown(KeyEventArgs e)
 		{
 			controlpressed = e.Control;
-			shiftpressed = e.Shift; //mxd
 			base.OnKeyDown(e);
 		}
 
@@ -81,7 +76,6 @@ namespace CodeImp.DoomBuilder.Controls
 		protected override void OnKeyUp(KeyEventArgs e)
 		{
 			controlpressed = e.Control;
-			shiftpressed = e.Shift; //mxd
 			base.OnKeyUp(e);
 		}
 		

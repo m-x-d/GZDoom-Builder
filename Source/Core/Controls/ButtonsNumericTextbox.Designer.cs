@@ -44,9 +44,6 @@ namespace CodeImp.DoomBuilder.Controls
 			this.buttons.Size = new System.Drawing.Size(18, 24);
 			this.buttons.TabIndex = 1;
 			this.buttons.ValueChanged += new System.EventHandler(this.buttons_ValueChanged);
-			this.buttons.KeyUp += new System.Windows.Forms.KeyEventHandler(this.buttons_KeyStateChanged);
-			this.buttons.MouseEnter += new System.EventHandler(this.buttons_MouseEnter);
-			this.buttons.KeyDown += new System.Windows.Forms.KeyEventHandler(this.buttons_KeyStateChanged);
 			// 
 			// textbox
 			// 

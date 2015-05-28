@@ -118,7 +118,10 @@ namespace CodeImp.DoomBuilder.Controls
 				ignorebuttonchange = true;
 				if(!textbox.CheckIsRelative())
 				{
-					if(steps != null && (!usemodifierkeys || (!textbox.ControlPressed && !textbox.ShiftPressed)))
+					bool ctrl = ((ModifierKeys & Keys.Control) == Keys.Control); //mxd
+					bool shift = ((ModifierKeys & Keys.Shift) == Keys.Shift); //mxd
+
+					if(steps != null && (!usemodifierkeys || (!ctrl && !shift)))
 					{
 						if(buttons.Value < 0)
 							textbox.Text = steps.GetNextHigherWrap(textbox.GetResult(0), wrapsteps).ToString(); //mxd
@@ -129,7 +132,7 @@ namespace CodeImp.DoomBuilder.Controls
 					{
 						float stepsizemod; //mxd
 						if(usemodifierkeys)
-							stepsizemod = (textbox.ControlPressed ? stepsizeSmall : (textbox.ShiftPressed ? stepsizeBig : stepsizeFloat));
+							stepsizemod = (ctrl ? stepsizeSmall : (shift ? stepsizeBig : stepsizeFloat));
 						else
 							stepsizemod = stepsizeFloat;
 						
@@ -141,7 +144,7 @@ namespace CodeImp.DoomBuilder.Controls
 					{
 						int stepsizemod; //mxd
 						if(usemodifierkeys) 
-							stepsizemod = (textbox.ControlPressed ? (int)stepsizeSmall : (textbox.ShiftPressed ? (int)stepsizeBig : stepsize));
+							stepsizemod = (ctrl ? (int)stepsizeSmall : (shift ? (int)stepsizeBig : stepsize));
 						else
 							stepsizemod = stepsize;
 						
@@ -160,24 +163,10 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 		}
 
-		//mxd
-		private void buttons_KeyStateChanged(object sender, KeyEventArgs e) 
-		{
-			if(!usemodifierkeys) return;
-			textbox.ControlPressed = e.Control;
-			textbox.ShiftPressed = e.Shift;
-		}
-
-		//mxd
-		private void buttons_MouseEnter(object sender, EventArgs e) 
-		{
-			if(usemodifierkeys) buttons.Focus();
-		}
-
 		// Mouse wheel used
 		private void textbox_MouseWheel(object sender, MouseEventArgs e)
 		{
-			if(steps != null && (!usemodifierkeys || (!textbox.ControlPressed && !textbox.ShiftPressed)))
+			if(steps != null && (!usemodifierkeys || ((ModifierKeys & Keys.Control) != Keys.Control && (ModifierKeys & Keys.Shift) != Keys.Shift)))
 			{
 				if(e.Delta > 0)
 					textbox.Text = steps.GetNextHigher(textbox.GetResult(0)).ToString();
