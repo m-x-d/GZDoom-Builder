@@ -929,6 +929,17 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		//mxd
+		public override List<Stream> GetSndSeqData() 
+		{
+			if(issuspended) throw new Exception("Data reader is suspended");
+
+			List<Stream> result = new List<Stream>();
+			Lump lump = file.FindLump("SNDSEQ");
+			if(lump != null) result.Add(lump.Stream);
+			return result;
+		}
+
+		//mxd
 		internal override MemoryStream LoadFile(string name) 
 		{
 			Lump l = file.FindLump(name);

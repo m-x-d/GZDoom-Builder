@@ -205,6 +205,10 @@ namespace CodeImp.DoomBuilder.Windows
 			effect.GeneralizedOptions = General.Map.Config.GenEffectOptions; //mxd
 			effect.AddInfo(General.Map.Config.SortedSectorEffects.ToArray());
 
+			// Fill sound sequences list
+			soundsequence.Items.Add(NO_SOUND_SEQUENCE);
+			soundsequence.Items.AddRange(General.Map.Data.SoundSequences.ToArray());
+
 			// Initialize custom fields editor
 			fieldslist.Setup("sector");
 
@@ -806,7 +810,6 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void soundsequence_TextChanged(object sender, EventArgs e) 
 		{
-			soundsequence.ForeColor = (soundsequence.Text == NO_SOUND_SEQUENCE ? SystemColors.GrayText : SystemColors.WindowText);
 			resetsoundsequence.Enabled = (soundsequence.Text != NO_SOUND_SEQUENCE);
 		}
 

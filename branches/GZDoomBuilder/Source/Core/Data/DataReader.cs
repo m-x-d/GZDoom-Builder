@@ -176,6 +176,9 @@ namespace CodeImp.DoomBuilder.Data
 		//mxd
 		public virtual KeyValuePair<string, Stream> GetVoxeldefData() { return new KeyValuePair<string,Stream>(); }
 
+		//mxd. When implemented, this returns the SndSeq lump
+		public virtual List<Stream> GetSndSeqData() { return new List<Stream>(); }
+
 		//mxd
 		internal virtual MemoryStream LoadFile(string name) { return null; }
 		internal virtual bool FileExists(string filename) { return false; }
