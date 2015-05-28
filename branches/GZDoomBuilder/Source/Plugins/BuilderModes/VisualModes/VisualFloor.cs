@@ -122,10 +122,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			//mxd. Sky is always bright
 			int color;
-			if(s.FloorTexture == General.Map.Config.SkyFlatName)
+			if(s.FloorTexture == General.Map.Config.SkyFlatName) 
 				color = -1; // That's white. With alpha. Not very impressive, eh?
-			else
-				color = (int)((level.color | General.Clamp(level.alpha, 0, 255) << 24) & 0xffffffff); // Byte offset shinanigans! Yay!
+			else 
+				color = PixelColor.FromInt(level.color).WithAlpha((byte)General.Clamp(level.alpha, 0, 255)).ToInt();
 
 			// Make vertices
 			ReadOnlyCollection<Vector2D> triverts = base.Sector.Sector.Triangles.Vertices;
@@ -138,7 +138,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Vertex coordinates
 				verts[i].x = triverts[i].x;
 				verts[i].y = triverts[i].y;
-				verts[i].z = level.plane.GetZ(triverts[i]); //(float)s.FloorHeight;
+				verts[i].z = level.plane.GetZ(triverts[i]);
 
 				// Texture coordinates
 				Vector2D pos = triverts[i];

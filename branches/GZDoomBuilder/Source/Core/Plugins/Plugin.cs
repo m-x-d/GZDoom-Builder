@@ -87,7 +87,7 @@ namespace CodeImp.DoomBuilder.Plugins
 				if(FindClasses(typeof(Plug)).Length > 1)
 				{
 					// Show a warning
-					General.ErrorLogger.Add(ErrorType.Warning, "Plugin \"" + shortfilename + "\" has more than one plug. The following class is used to create in instance: " + t.FullName);
+					General.ErrorLogger.Add(ErrorType.Warning, "Plugin \"" + shortfilename + "\" has more than one Plug class. The following class is used to create in instance: " + t.FullName);
 				}
 				
 				// Make plug instance
@@ -99,14 +99,14 @@ namespace CodeImp.DoomBuilder.Plugins
 				if((thisrevision != 0) && (plug.MinimumRevision > thisrevision))
 				{
 					// Can't load this plugin because it is meant for a newer version
-					General.ErrorLogger.Add(ErrorType.Error, "Could not load plugin \"" + shortfilename + "\", the Plugin is made for Doom Builder 2 core revision " + plug.MinimumRevision + " and you are running revision " + thisrevision + ".");
+					General.ErrorLogger.Add(ErrorType.Error, "Could not load plugin \"" + shortfilename + "\", the Plugin is made for GZDoom Builder R" + plug.MinimumRevision + " or newer and you are running R" + thisrevision + ".");
 					throw new InvalidProgramException();
 				}
 			}
 			else
 			{
 				// How can we plug something in without a plug?
-				General.ErrorLogger.Add(ErrorType.Error, "Could not load plugin \"" + shortfilename + "\", plugin is missing the plug. This file is not supposed to be in the Plugins subdirectory.");
+				General.ErrorLogger.Add(ErrorType.Error, "Could not load plugin \"" + shortfilename + "\", plugin is missing the Plug class. This file is not supposed to be in the Plugins subdirectory.");
 				throw new InvalidProgramException();
 			}
 			
