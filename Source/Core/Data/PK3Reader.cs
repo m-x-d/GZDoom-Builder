@@ -422,22 +422,25 @@ namespace CodeImp.DoomBuilder.Data
 			} 
 			else 
 			{
-				UpdateArchive(true);
-
-				foreach (var entry in archive.Entries) 
+				lock (this)
 				{
-					if (entry.IsDirectory) continue;
-					
-					// Is this the entry we are looking for?
-					if(string.Compare(entry.Key, fn, true) == 0)
-					{
-						filedata = new MemoryStream();
-						entry.WriteTo(filedata);
-						break;
-					}
-				}
+					UpdateArchive(true);
 
-				UpdateArchive(false);
+					foreach (var entry in archive.Entries)
+					{
+						if(entry.IsDirectory) continue;
+
+						// Is this the entry we are looking for?
+						if(string.Compare(entry.Key, fn, true) == 0)
+						{
+							filedata = new MemoryStream();
+							entry.WriteTo(filedata);
+							break;
+						}
+					}
+
+					UpdateArchive(false);
+				}
 			}
 			
 			// Nothing found?

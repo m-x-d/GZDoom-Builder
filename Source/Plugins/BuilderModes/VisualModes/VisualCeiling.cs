@@ -123,7 +123,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(s.CeilTexture == General.Map.Config.SkyFlatName)
 				color = -1; // That's white. With alpha. Not very impressive, eh?
 			else
-				color = (int)((level.color | General.Clamp(level.alpha, 0, 255) << 24) & 0xffffffff); // Byte offset shinanigans! Yay!
+				color = PixelColor.FromInt(level.color).WithAlpha((byte)General.Clamp(level.alpha, 0, 255)).ToInt();
 
 			// Make vertices
 			ReadOnlyCollection<Vector2D> triverts = base.Sector.Sector.Triangles.Vertices;
