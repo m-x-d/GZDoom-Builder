@@ -18,7 +18,6 @@ namespace CodeImp.DoomBuilder.Controls
             Brush brush = new SolidBrush(item.ForeColor);
             if ((e.State & DrawItemState.Selected) == DrawItemState.Selected) brush = Brushes.White;
             e.Graphics.DrawString(item.Text, this.Font, brush, e.Bounds.X, e.Bounds.Y);
-			brush.Dispose(); //mxd
         }
 	}
 
