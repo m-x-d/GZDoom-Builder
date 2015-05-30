@@ -29,12 +29,14 @@
     <span class="blue">tooltip = "Polyobject that will mirror\nthis one's movements.";</span>
 }</pre>
   <br />
-  <b class="fat">type</b> (integer)<br />
-  Sets the type of this argument. This changes the behaviour of  Argument inputs in <a href="w_linedefedit.html">Linedef</a> and <a href="w_thingedit.html">Thing Edit</a> windows. Supported values are:<br />
+  <b class="fat"><a name="argtype" id="argtype"></a>type</b> (integer)<br />
+  Sets the type of this argument. This changes the behaviour of  Argument inputs in <a href="w_linedefedit.html">Linedef</a> and <a href="w_thingedit.html">Thing Edit</a> windows.<br />
+  Argument type can be also set in <a href="gc_decoratekeys.html#argtype">DECORATE</a>.<br />
+  <strong>Supported values are:</strong><br />
   <br />
   <ul style="list-style-type:none">
     <li>0 = Integer (default)</li>
-    <li>4 = Linedeftype</li>
+    <li>4 = Action special</li>
     <li>5 = Sector effect</li>
     <li>8 = Angle in degrees</li>
     <li>10 = XXRRGGBB color</li>
@@ -72,6 +74,7 @@ arg0
     }</span> 
 }
 </pre>
+  Enums can be also set in <a href="gc_decoratekeys.html#argenum">DECORATE</a>.<br />
   <br />
   <b class="fat">default</b> (integer) - <span class="red">GZDB only</span>.<br />
   Sets the default value for a Thing or Linedef argument definition.<br />

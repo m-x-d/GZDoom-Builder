@@ -358,8 +358,11 @@ namespace CodeImp.DoomBuilder.Config
 			for(int i = 0; i < args.Length; i++)
 			{
 				if(!actor.HasPropertyWithValue("$arg" + i)) continue;
-				string argtitle = actor.GetPropertyAllValues("$arg" + i);
-				args[i] = new ArgumentInfo(ZDTextParser.StripQuotes(argtitle), ZDTextParser.StripQuotes(actor.GetPropertyAllValues("$arg" + i + "tooltip").Replace("\\n", Environment.NewLine)));
+				string argtitle = ZDTextParser.StripQuotes(actor.GetPropertyAllValues("$arg" + i));
+				string argtooltip = ZDTextParser.StripQuotes(actor.GetPropertyAllValues("$arg" + i + "tooltip").Replace("\\n", Environment.NewLine));
+				int argtype = actor.GetPropertyValueInt("$arg" + i + "type", 0);
+				string argenum = ZDTextParser.StripQuotes(actor.GetPropertyAllValues("$arg" + i + "enum"));
+				args[i] = new ArgumentInfo(title, argtitle, argtooltip, argtype, argenum, General.Map.Config.Enums);
 			}
 
 			// Remove doublequotes from title

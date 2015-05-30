@@ -37,6 +37,12 @@
 	  Allows to specify a tooltip text displayed for this argument. Newline character (&quot;\n&quot;) can be used to format the  text. This property can only be used in conjunction with &quot;<strong>$ArgN</strong>&quot;.<br />
 	  Argument tooltips can be also set for <a href="gc_argumentsettings.html#argtooltip">things and linedefs</a> in a Game Configuration.<br />
       <br />
+      <strong><a name="argtype" id="argtype"></a>//$ArgNType &lt;integer&gt;</strong> - <span class="red">GZDB only</span>.<br />
+	  Allows to specify an <a href="gc_argumentsettings.html#argtype">argument type</a> for this argument.<br />
+      <br />
+      <strong><a name="argenum" id="argenum"></a>//$ArgNEnum &lt;string or structure&gt;</strong> - <span class="red">GZDB only</span>.<br />
+	  Allows to specify an enum for this argument. This can be either a name of an enum defined in the Game Configuration, or an explicit enum definition.<br />
+      <br />
 	  <strong>//$Color &lt;color index&gt;</strong> - <span class="red">GZDB only</span>.<br />
 	  Allows to override category color for this actor. Possible values:
 	<ul>
@@ -75,10 +81,26 @@ Actor ChexShield : ResistanceRune replaces ResistanceRune 5104
   //$Category powerups
   //$Sprite ARMXA0
   //$Title "Chex Shield"
+  //$Color 12
+  
   //$Arg0 "Respawn Delay"
   //$Arg0ToolTip "Positive values specify delay in tics.\nNegative - in seconds."
-  //$Arg1 "Armor Amount"
-  //$Color 12
+  
+  //$Arg1 "Enum Example 1"
+  //$Arg1ToolTip "Config enum example"
+  //$Arg1Type 11
+  //$Arg1Enum "keys"
+	
+  //$Arg2 "Enum Example 2"
+  //$Arg2ToolTip "Explicit enum example"
+  //$Arg2Type 11
+  //$Arg2Enum { 1 = "First option"; 2 = "Second option"; 667 = "Option 667"; }
+  
+  //$Arg3 "Radius"
+  //$Arg3Type 23
+	
+  //$Arg4 "Height"
+  //$Arg4Type 24
 
   Height 44
   Radius 26
