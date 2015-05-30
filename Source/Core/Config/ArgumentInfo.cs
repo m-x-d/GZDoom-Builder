@@ -20,6 +20,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using CodeImp.DoomBuilder.IO;
+using CodeImp.DoomBuilder.Types;
 
 #endregion
 
@@ -95,13 +96,49 @@ namespace CodeImp.DoomBuilder.Config
 		}
 
 		//mxd. Constructor for an argument info defined in DECORATE
-		internal ArgumentInfo(string title, string tooltip)
+		internal ArgumentInfo(string actorname, string argtitle, string tooltip, int type, string enumstr, IDictionary<string, EnumList> enums)
 		{
 			this.used = true;
-			this.title = title;
+			this.title = argtitle;
 			this.tooltip = tooltip;
-			this.type = 0;
-			this.enumlist = new EnumList();
+
+			// Get argument type
+			if(System.Enum.IsDefined(typeof(UniversalType), type))
+			{
+				this.type = type;
+			}
+			else
+			{
+				General.ErrorLogger.Add(ErrorType.Error, actorname + ": action argument \"" + argtitle + "\" has unknown type " + type + "!");
+				this.type = 0;
+			}
+
+			// Get or create enum
+			if(!string.IsNullOrEmpty(enumstr))
+			{
+				if(enums.ContainsKey(enumstr.ToLowerInvariant()))
+				{
+					this.enumlist = enums[enumstr.ToLowerInvariant()];
+				}
+				else
+				{
+					Configuration cfg = new Configuration();
+					if(cfg.InputConfiguration("enum" + enumstr, true)) 
+					{
+						IDictionary argdic = cfg.ReadSetting("enum", new Hashtable());
+						if(argdic.Keys.Count > 0)
+							this.enumlist = new EnumList(argdic);
+						else
+							General.ErrorLogger.Add(ErrorType.Error, actorname + ": unable to parse explicit enum structure for argument \"" + argtitle + "\"!");
+					} 
+					else 
+					{
+						General.ErrorLogger.Add(ErrorType.Error, actorname + ": unable to parse enum structure for argument \"" + argtitle + "\"!");
+					}
+				}
+			}
+
+			if(this.enumlist == null) this.enumlist = new EnumList();
 			this.defaultvalue = 0;
 		}
 
