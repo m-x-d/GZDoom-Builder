@@ -1207,25 +1207,25 @@ namespace CodeImp.DoomBuilder.Rendering
 					{
 						spriteWidth = info.Radius * spriteScale - spriteShrink * spriteScale;
 						spriteHeight = spriteWidth * ((float)sprite.Height / sprite.Width);
-						if(spriteWidth < MINIMUM_SPRITE_RADIUS) continue; //don't render tiny little sprites
 					} 
 					else if(sprite.Width < sprite.Height) 
 					{
 						spriteHeight = info.Radius * spriteScale - spriteShrink * spriteScale;
 						spriteWidth = spriteHeight * ((float)sprite.Width / sprite.Height);
-						if(spriteHeight < MINIMUM_SPRITE_RADIUS) continue; //don't render tiny little sprites
 					} 
 					else 
 					{
 						spriteWidth = info.Radius * spriteScale - spriteShrink * spriteScale;
 						spriteHeight = spriteWidth;
-						if(spriteWidth < MINIMUM_SPRITE_RADIUS) continue; //don't render tiny little sprites
 					}
 
 					foreach(Thing t in group.Value) 
 					{
 						if(t.IsModel && (General.Settings.GZDrawModelsMode == ModelRenderMode.ALL || (General.Settings.GZDrawModelsMode == ModelRenderMode.SELECTION && t.Selected))) continue;
-						CreateThingSpriteVerts(thingsByPosition[t], spriteWidth, spriteHeight, ref verts, buffercount * 6, t.Selected ? selectionColor : 0xFFFFFF);
+						float scaler = t.Size / info.Radius;
+						if(Math.Max(spriteWidth, spriteHeight) * scaler < MINIMUM_SPRITE_RADIUS) continue; //don't render tiny little sprites
+						
+						CreateThingSpriteVerts(thingsByPosition[t], spriteWidth * scaler, spriteHeight * scaler, ref verts, buffercount * 6, t.Selected ? selectionColor : 0xFFFFFF);
 						buffercount++;
 						totalcount++;
 

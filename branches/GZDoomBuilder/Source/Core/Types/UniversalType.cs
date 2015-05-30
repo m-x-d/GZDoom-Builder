@@ -45,5 +45,7 @@ namespace CodeImp.DoomBuilder.Types
 		RandomInteger = 20, //mxd
 		RandomFloat = 21, //mxd
 		AngleByte = 22, //mxd
+		ThingRadius = 23, //mxd
+		ThingHeight = 24, //mxd
 	}
 }

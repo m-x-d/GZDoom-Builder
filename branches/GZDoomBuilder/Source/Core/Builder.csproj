@@ -876,6 +876,8 @@
     <Compile Include="Types\RandomFloatHandler.cs" />
     <Compile Include="Types\RandomIntegerHandler.cs" />
     <Compile Include="Types\ThingClassHandler.cs" />
+    <Compile Include="Types\ThingHeightHandler.cs" />
+    <Compile Include="Types\ThingRadiusHandler.cs" />
     <Compile Include="Types\ThingTypeHandler.cs" />
     <Compile Include="VisualModes\VisualVertex.cs" />
     <Compile Include="Windows\CenterOnCoordinatesForm.cs">
