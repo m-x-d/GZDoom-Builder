@@ -103,17 +103,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			int sectorcolor = new PixelColor(255, 255, 255, 255).ToInt();
 			
 			//mxd. Check thing size 
-			float infoRadius, infoHeight;
-			if((info.Radius < 0.1f) || (info.Height < 0.1f)) 
+			float thingradius = Thing.Size; // Thing.Size has ThingRadius arg override applied
+			float thingheight = Thing.Height; // Thing.Height has ThingHeight arg override applied
+
+			if(thingradius < 0.1f || thingheight < 0.1f) 
 			{
-				infoRadius = FIXED_RADIUS;
-				infoHeight = FIXED_RADIUS;
+				thingradius = FIXED_RADIUS;
+				thingheight = FIXED_RADIUS;
 				sizeless = true;
 			} 
 			else 
 			{
-				infoRadius = info.Radius;
-				infoHeight = info.Height;
 				sizeless = false;
 			}
 
@@ -191,8 +191,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					base.Texture = General.Map.Data.Hourglass3D;
 
 					// Determine sprite size
-					float radius = Math.Min(infoRadius, infoHeight / 2f);
-					float height = Math.Min(infoRadius * 2f, infoHeight);
+					float radius = Math.Min(thingradius, thingheight / 2f);
+					float height = Math.Min(thingradius * 2f, thingheight);
 
 					// Make vertices
 					WorldVertex[] verts = new WorldVertex[6];
@@ -272,23 +272,23 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			// Apply settings
 			SetPosition(pos);
-			SetCageSize(infoRadius, infoHeight);
+			SetCageSize(thingradius, thingheight);
 			SetCageColor(Thing.Color);
 
 			// Keep info for object picking
-			cageradius2 = infoRadius * Angle2D.SQRT2;
+			cageradius2 = thingradius * Angle2D.SQRT2;
 			cageradius2 = cageradius2 * cageradius2;
 			pos2d = pos;
 
 			if(sizeless) //mxd
 			{ 
-				boxp1 = new Vector3D(pos.x - infoRadius, pos.y - infoRadius, pos.z - infoRadius/2);
-				boxp2 = new Vector3D(pos.x + infoRadius, pos.y + infoRadius, pos.z + infoRadius/2);
+				boxp1 = new Vector3D(pos.x - thingradius, pos.y - thingradius, pos.z - thingradius/2);
+				boxp2 = new Vector3D(pos.x + thingradius, pos.y + thingradius, pos.z + thingradius/2);
 			} 
 			else 
 			{
-				boxp1 = new Vector3D(pos.x - infoRadius, pos.y - infoRadius, pos.z);
-				boxp2 = new Vector3D(pos.x + infoRadius, pos.y + infoRadius, pos.z + infoHeight);
+				boxp1 = new Vector3D(pos.x - thingradius, pos.y - thingradius, pos.z);
+				boxp2 = new Vector3D(pos.x + thingradius, pos.y + thingradius, pos.z + thingheight);
 			}
 			
 			// Done

@@ -33,7 +33,7 @@
 			<li><b>2</b> - None of these lumps must exist.
 			<li><b>3</b> - All of these lumps must exist.
 		</ul>
-		Example:<br />
+		<strong>Example:</strong><br />
 <pre>
 gamedetect
 {
@@ -71,7 +71,7 @@ gamedetect
                 <li><b class="fat">scriptbuild</b> (boolean) - <span class="red">GZDB only</span>.<br />
 				When this is set, it indicates that this lump can be edited with the script editor. Currently chosen script configuration will be used to build this lump. The contents of this lump will be loaded in the script editor automatically.<br />
 		</ul>
-		Example:<br />
+		<strong>Example:</strong><br />
 <pre>
 maplumpnames
 {
@@ -161,6 +161,87 @@ maplumpnames
 }
 </pre>
 		<br />
+        <b class="fat">universalfields</b> (structure) - <span class="red">UDMF only</span>.<br />
+        Provides additional UDMF field definitions to show in the <strong>Custom</strong> tab of Edit windows.<br />
+        <span class="red">Warning:</span> only add fields  that Doom Builder does not edit with its own user-interface!<br />
+        <span class="red">Warning:</span> the "default" field must match the UDMF specifications!<br /><br />
+        <strong>Field data types:</strong><br />
+        <ul style="list-style-type:none">
+          <li>0 = Integer</li>
+          <li>1 = Float</li>
+          <li>2 = String</li>
+          <li>3 = Bool</li>
+          <li>4 = Linedef type (integer)</li>
+          <li>5 = Sector effect (integer)</li>
+          <li>6 = Texture (string)</li>
+          <li>7 = Flat (string)</li>
+          <li>8 = Angle in degrees (integer)</li>
+          <li>9 = Angle in radians (float)</li>
+          <li>10 = XXRRGGBB color (integer)</li>
+          <li>11 = Enum option (integer)</li>
+          <li>12 = Enum bits (integer)</li>
+          <li>13 = Sector tag (integer)</li>
+          <li>14 = Thing tag (integer)</li>
+          <li>15 = Linedef tag (integer)</li>
+          <li>16 = Enum option (string)</li>
+          <li>17 = Angle in degrees (float)</li>
+          <li>22 = Byte angle (integer) - <span class="red">GZDB only</span></li>
+      </ul>
+        <strong>Example:</strong><br />
+<pre>
+universalfields
+{
+	linedef
+	{
+		comment
+		{
+			type = 2;
+			default = "";
+		}
+	}
+	
+	sidedef
+	{
+		comment
+		{
+			type = 2;
+			default = "";
+		}
+	}
+	
+	thing
+	{
+		comment
+		{
+			type = 2;
+			default = "";
+		}
+    
+		skill6
+		{
+			type = 3;
+			default = false;
+		}
+
+    
+		class6
+		{
+			type = 3;
+			default = false;
+		}
+
+	}
+	
+	sector
+	{
+		comment
+		{
+			type = 2;
+			default = "";
+		}
+	}
+}
+</pre>
 	</p>
 	</div>
 </body>

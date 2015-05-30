@@ -24,6 +24,7 @@ using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.GZBuilder.Data;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Rendering;
+using CodeImp.DoomBuilder.Types;
 using CodeImp.DoomBuilder.VisualModes;
 
 #endregion
@@ -69,6 +70,7 @@ namespace CodeImp.DoomBuilder.Map
 
 		// Configuration
 		private float size;
+		private float height; //mxd
 		private PixelColor color;
 		private bool fixedsize;
 		private bool directional; //mxd. If true, we need to render an arrow
@@ -93,6 +95,7 @@ namespace CodeImp.DoomBuilder.Map
 		public int Action { get { return action; } set { BeforePropsChange(); action = value; } }
 		public int[] Args { get { return args; } }
 		public float Size { get { return size; } }
+		public float Height { get { return height; } } //mxd
 		public PixelColor Color { get { return color; } }
 		public bool FixedSize { get { return fixedsize; } }
 		public int Tag { get { return tag; } set { BeforePropsChange(); tag = value; if((tag < General.Map.FormatInterface.MinTag) || (tag > General.Map.FormatInterface.MaxTag)) throw new ArgumentOutOfRangeException("Tag", "Invalid tag number"); } }
@@ -228,6 +231,7 @@ namespace CodeImp.DoomBuilder.Map
 			t.action = action;
 			t.args = (int[])args.Clone();
 			t.size = size;
+			t.height = height; //mxd
 			t.color = color;
 			t.directional = directional;
 			t.fixedsize = fixedsize;
@@ -492,8 +496,18 @@ namespace CodeImp.DoomBuilder.Map
 			
 			// Apply size
 			size = ti.Radius;
+			height = ti.Height; //mxd
 			fixedsize = ti.FixedSize;
 			spritescale = ti.SpriteScale; //mxd
+
+			//mxd. Apply radius and height overrides?
+			for(int i = 0; i < ti.Args.Length; i++)
+			{
+				if(ti.Args[i].Type == (int)UniversalType.ThingRadius && args[i] > 0)
+					size = args[i];
+				else if(ti.Args[i].Type == (int)UniversalType.ThingHeight && args[i] > 0)
+					height = args[i];
+			}
 			
 			// Color valid?
 			if((ti.Color >= 0) && (ti.Color < ColorCollection.NUM_THING_COLORS))

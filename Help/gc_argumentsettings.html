@@ -1,0 +1,91 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head>
+<title>Game Configuration - Linedefs Settings</title>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+<link rel="stylesheet" type="text/css" href="default.css" media="screen" title="Default" />
+</head>
+<body>
+<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+  <param name="keyword" value="Configurations">
+  <param name="keyword" value="Game Configurations">
+  <param name="keyword" value="Action">
+  <param name="keyword" value="Argument">
+</object>
+<div id="title">
+  <h1>Game Configuration - Action Argument Settings</h1>
+</div>
+<div id="contents">
+  <p> <b class="fat">title</b> (string)<br />
+    Sets the title of this argument.<br />
+    <br />
+    <b class="fat"><a name="argtooltip" id="argtooltip"></a>tooltip</b> (string) - <span class="red">GZDB only</span>.<br />
+    Allows to specify a tooltip text displayed for a <a href="gc_thingsettings.html#argtooltip">Thing</a> or Linedef argument definition. Newline character ("\n") can be used to format the text.<br />
+    Argument tooltips can be also set in <a href="gc_decoratekeys.html#argtooltip">DECORATE</a>.<br />
+    <strong>Example:</strong> </p>
+  <pre>arg1
+{
+    title = "Mirror Polyobj Number";
+    <span class="blue">tooltip = "Polyobject that will mirror\nthis one's movements.";</span>
+}</pre>
+  <br />
+  <b class="fat">type</b> (integer)<br />
+  Sets the type of this argument. This changes the behaviour of  Argument inputs in <a href="w_linedefedit.html">Linedef</a> and <a href="w_thingedit.html">Thing Edit</a> windows. Supported values are:<br />
+  <br />
+  <ul style="list-style-type:none">
+    <li>0 = Integer (default)</li>
+    <li>4 = Linedeftype</li>
+    <li>5 = Sector effect</li>
+    <li>8 = Angle in degrees</li>
+    <li>10 = XXRRGGBB color</li>
+    <li>11 = Enum option</li>
+    <li>12 = Enum bits</li>
+    <li>13 = Sector tag</li>
+    <li>14 = Thing tag</li>
+    <li>15 = Linedef tag</li>
+    <li>22 = Byte angle (<span class="red">GZDB only</span>)</li>
+    <li>23 = Thing Radius (<span class="red">GZDB only</span>)</li>
+    <li>24 = Thing Height (<span class="red">GZDB only</span>)</li>
+  </ul>
+  <p><b class="fat">enum</b> (structure or string)<br />
+    Provides a list of predefined values to display for this argument. Used only when argument <strong>type</strong> is 11 or 12.<br />
+    The value can be either a name of a predefined enum:<br />
+  <pre>
+arg0
+{
+    title = &quot;Volume&quot;;
+    type = 11;
+    <span class="blue">enum = &quot;sound_volume&quot;;</span>
+}
+</pre>
+  or an explicit  definition:<br />
+  <pre>
+arg0
+{
+    title = "Apply to";
+    type = 11;
+    <span class="blue">enum
+    {
+        0 = "Floor and Ceiling";
+        1 = "Ceiling";
+        2 = "Floor";
+    }</span> 
+}
+</pre>
+  <br />
+  <b class="fat">default</b> (integer) - <span class="red">GZDB only</span>.<br />
+  Sets the default value for a Thing or Linedef argument definition.<br />
+  <strong>Example:</strong>
+  </p>
+  <pre>9038
+{
+    title = "ColorSetter";
+    arg0
+    {
+        title = "Red";
+        <span class="blue">default = 255;</span>
+    }
+}</pre>
+  </p>
+</div>
+</body>

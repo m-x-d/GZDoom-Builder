@@ -28,7 +28,14 @@
 		This game configuration is available by default. You can enable and disable game configurations using <a href="w_gameconfigurations.html">Game Configurations window</a>.<br />
         The default value is <b>false</b>.<br />
 		<br />
-      <b class="fat">basegame</b>  (integer) [0 .. 4] - <span class="red">GZDB only</span>.<br />
+        <b class="fat">actionspecialhelp</b> (string) - <span class="red">GZDB only</span>.<br />
+		The URL used to display action special help. &quot;<strong>%K</strong>&quot; wildcard is replaced by <strong>id</strong> property defined in <a href="gc_linedefsettings.html#actionid">action definition</a>.<br />
+		<br />
+        
+        <b class="fat">thingclasshelp</b> (string) - <span class="red">GZDB only</span>.<br />
+        The URL to  open when thing class name is clicked in the Thing Edit form. &quot;<strong>%K</strong>&quot; wildcard is replaced by <strong>classname</strong> property defined in thing definition or by DECORATE actor name.<br />
+		<br />
+        <b class="fat">basegame</b>  (integer) [0 .. 4] - <span class="red">GZDB only</span>.<br />
 		Indicates which game the current configuration is based on. Used to load game-specific GLDEFS lumps (DOOMDEFS, HTICDEFS, HEXNDEFS or STRFDEFS).
         <br /><b>Possible values:</b> 1 (DOOM), 2 (HERETIC), 3 (HEXEN) or 4 (STRIFE).<br />
         The default value is <b>0</b> (don't load game-specific lumps).<br />
