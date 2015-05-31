@@ -158,7 +158,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Determine render pass
 			if(extrafloor != null)
 			{
-				if((extrafloor.Linedef.Args[2] & (int)Effect3DFloor.Flags.RenderAdditive) != 0) //mxd
+				if(extrafloor.Sloped3dFloor) //mxd
+					this.RenderPass = RenderPass.Mask;
+				else if((extrafloor.Linedef.Args[2] & (int)Effect3DFloor.Flags.RenderAdditive) != 0) //mxd
 					this.RenderPass = RenderPass.Additive;
 				else if(level.alpha < 255)
 					this.RenderPass = RenderPass.Alpha;

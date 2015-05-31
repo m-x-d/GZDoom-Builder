@@ -266,9 +266,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					List<WorldVertex> verts = CreatePolygonVertices(polygons, tp, sd, lightvalue, lightabsolute);
 					if (verts.Count > 2)
 					{
-						if ((extrafloor.Linedef.Args[2] & (int) Effect3DFloor.Flags.RenderAdditive) != 0) //mxd
+						if(extrafloor.Sloped3dFloor) //mxd
+							this.RenderPass = RenderPass.Mask;
+						else if((extrafloor.Linedef.Args[2] & (int) Effect3DFloor.Flags.RenderAdditive) != 0) //mxd
 							this.RenderPass = RenderPass.Additive;
-						else if (extrafloor.Alpha < 255) 
+						else if(extrafloor.Alpha < 255) 
 							this.RenderPass = RenderPass.Alpha;
 						else 
 							this.RenderPass = RenderPass.Mask;

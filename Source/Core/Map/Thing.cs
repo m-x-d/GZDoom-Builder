@@ -503,6 +503,7 @@ namespace CodeImp.DoomBuilder.Map
 			//mxd. Apply radius and height overrides?
 			for(int i = 0; i < ti.Args.Length; i++)
 			{
+				if(ti.Args[i] == null) continue;
 				if(ti.Args[i].Type == (int)UniversalType.ThingRadius && args[i] > 0)
 					size = args[i];
 				else if(ti.Args[i].Type == (int)UniversalType.ThingHeight && args[i] > 0)

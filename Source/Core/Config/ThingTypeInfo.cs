@@ -361,8 +361,9 @@ namespace CodeImp.DoomBuilder.Config
 				string argtitle = ZDTextParser.StripQuotes(actor.GetPropertyAllValues("$arg" + i));
 				string argtooltip = ZDTextParser.StripQuotes(actor.GetPropertyAllValues("$arg" + i + "tooltip").Replace("\\n", Environment.NewLine));
 				int argtype = actor.GetPropertyValueInt("$arg" + i + "type", 0);
+				int defaultvalue = actor.GetPropertyValueInt("$arg" + i + "default", 0);
 				string argenum = ZDTextParser.StripQuotes(actor.GetPropertyAllValues("$arg" + i + "enum"));
-				args[i] = new ArgumentInfo(title, argtitle, argtooltip, argtype, argenum, General.Map.Config.Enums);
+				args[i] = new ArgumentInfo(title, argtitle, argtooltip, argtype, defaultvalue, argenum, General.Map.Config.Enums);
 			}
 
 			// Remove doublequotes from title

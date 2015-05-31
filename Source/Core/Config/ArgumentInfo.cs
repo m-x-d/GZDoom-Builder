@@ -96,11 +96,12 @@ namespace CodeImp.DoomBuilder.Config
 		}
 
 		//mxd. Constructor for an argument info defined in DECORATE
-		internal ArgumentInfo(string actorname, string argtitle, string tooltip, int type, string enumstr, IDictionary<string, EnumList> enums)
+		internal ArgumentInfo(string actorname, string argtitle, string tooltip, int type, int defaultvalue, string enumstr, IDictionary<string, EnumList> enums)
 		{
 			this.used = true;
 			this.title = argtitle;
 			this.tooltip = tooltip;
+			this.defaultvalue = defaultvalue;
 
 			// Get argument type
 			if(System.Enum.IsDefined(typeof(UniversalType), type))
@@ -139,7 +140,6 @@ namespace CodeImp.DoomBuilder.Config
 			}
 
 			if(this.enumlist == null) this.enumlist = new EnumList();
-			this.defaultvalue = 0;
 		}
 
 		// Constructor for unknown argument info
