@@ -1,6 +1,7 @@
 #region === Copyright (c) 2010 Pascal van der Heiden ===
 
 using System;
+using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
 
@@ -27,6 +28,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd. Translucent 3d-floor?
 		private bool renderinside;
 
+		//mxd. Dirty hack to emulate GZDoom behaviour?
+		private bool sloped3dfloor;
+
 		//mxd. Ignore Bottom Height?
 		private bool ignorebottomheight;
 
@@ -38,6 +42,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public bool VavoomType { get { return vavoomtype; } }
 		public bool RenderInside { get { return renderinside; } } //mxd
 		public bool IgnoreBottomHeight { get { return ignorebottomheight; } } //mxd
+		public bool Sloped3dFloor { get { return sloped3dfloor; } } //mxd
 
 		//mxd. 3D-Floor Flags
 		[Flags]
@@ -135,6 +140,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Apply alpha
 			floor.alpha = alpha;
 			ceiling.alpha = alpha;
+
+			//mxd. Check slopes, cause GZDoom can't handle sloped translucent 3d floors...
+			sloped3dfloor = (alpha < 255 &&
+							 (Angle2D.RadToDeg(ceiling.plane.Normal.GetAngleZ()) != 270 ||
+							  Angle2D.RadToDeg(floor.plane.Normal.GetAngleZ()) != 90));
 			
 			// Do not adjust light? (works only for non-vavoom types)
 			if(!vavoomtype)

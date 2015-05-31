@@ -831,7 +831,7 @@ namespace CodeImp.DoomBuilder.IO
 		
 		
 		// This includes another file
-		private void FunctionInclude(IDictionary cs, ArrayList args, ref string file, int line)
+		private void FunctionInclude(IDictionary cs, List<object> args, ref string file, int line)
 		{
 			string data;
 			
@@ -933,7 +933,7 @@ namespace CodeImp.DoomBuilder.IO
 		private void ParseFunction(IDictionary cs, ref string file, ref string data, ref int pos, ref int line, ref string functionname)
 		{
 			// We now parse arguments, separated by commas, until we reach the end of the function
-			ArrayList args = new ArrayList();
+			List<object> args = new List<object>();
 			object val;
 			while((pos < data.Length) && !cpErrorResult)
 			{

@@ -30,18 +30,21 @@
 	  <strong>//$Title &lt;title&gt;</strong><br />
 	  Specifies which name to give to the actor. By default, a custom actor not identified in a configuration file will use the Tag property, and if not present, will default to the class name.<br />
 	  <br />
-	  <strong>//$ArgN &lt;name&gt;</strong> - <span class="red">GZDB only</span>.<br />
+	  <strong><a name="argtitle" id="argtitle"></a>//$ArgN &lt;name&gt;</strong> - <span class="red">GZDB only</span>.<br />
 	  Allows to override default argument names for this actor.<br />
       <br />
+      <strong><a name="argdefault" id="argdefault"></a>//$ArgNDefault &lt;integer&gt;</strong> - <span class="red">GZDB only</span>.<br />
+	  Allows to set the default value for this argument. This property can only be used in conjunction with &quot;<strong>//$ArgN</strong>&quot; property.<br />
+      <br />
 	  <strong><a name="argtooltip" id="argtooltip"></a>//$ArgNTooltip &lt;text&gt;</strong> - <span class="red">GZDB only</span>.<br />
-	  Allows to specify a tooltip text displayed for this argument. Newline character (&quot;\n&quot;) can be used to format the  text. This property can only be used in conjunction with &quot;<strong>$ArgN</strong>&quot;.<br />
+	  Allows to specify a tooltip text displayed for this argument. Newline character (&quot;\n&quot;) can be used to format the  text. This property can only be used in conjunction with &quot;<strong>//$ArgN</strong>&quot; property.<br />
 	  Argument tooltips can be also set for <a href="gc_argumentsettings.html#argtooltip">things and linedefs</a> in a Game Configuration.<br />
       <br />
       <strong><a name="argtype" id="argtype"></a>//$ArgNType &lt;integer&gt;</strong> - <span class="red">GZDB only</span>.<br />
-	  Allows to specify an <a href="gc_argumentsettings.html#argtype">argument type</a> for this argument.<br />
+	  Allows to specify an <a href="gc_argumentsettings.html#argtype">argument type</a> for this argument. This property can only be used in conjunction with &quot;<strong>//$ArgN</strong>&quot; property.<br />
       <br />
       <strong><a name="argenum" id="argenum"></a>//$ArgNEnum &lt;string or structure&gt;</strong> - <span class="red">GZDB only</span>.<br />
-	  Allows to specify an enum for this argument. This can be either a name of an enum defined in the Game Configuration, or an explicit enum definition.<br />
+	  Allows to specify an enum for this argument. This can be either a name of an enum defined in the Game Configuration, or an explicit enum definition. This property can only be used in conjunction with &quot;<strong>//$ArgN</strong>&quot; property.<br />
       <br />
 	  <strong>//$Color &lt;color index&gt;</strong> - <span class="red">GZDB only</span>.<br />
 	  Allows to override category color for this actor. Possible values:
