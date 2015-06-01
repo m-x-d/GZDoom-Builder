@@ -52,7 +52,7 @@ namespace CodeImp.DoomBuilder.Config
 		private string classname; //mxd
 		private long spritelongname;
 		private int color;
-		private readonly bool arrow;
+		private bool arrow;
 		private float radius;
 		private float height;
 		private bool hangs;
@@ -365,6 +365,10 @@ namespace CodeImp.DoomBuilder.Config
 				string argenum = ZDTextParser.StripQuotes(actor.GetPropertyAllValues("$arg" + i + "enum"));
 				args[i] = new ArgumentInfo(title, argtitle, argtooltip, argtype, defaultvalue, argenum, General.Map.Config.Enums);
 			}
+
+			//mxd. Some SLADE compatibility
+			if(actor.HasProperty("$angled")) this.arrow = true;
+			else if(actor.HasProperty("$notangled")) this.arrow = false;
 
 			// Remove doublequotes from title
 			title = ZDTextParser.StripQuotes(title); //mxd

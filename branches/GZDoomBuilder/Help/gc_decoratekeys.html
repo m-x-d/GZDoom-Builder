@@ -1,90 +1,91 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-	
-	<title>Game Configuration - Things Settings</title>
-	
-	<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
-	<link rel="stylesheet" type="text/css" href="default.css" media="screen" title="Default" />
+<title>Game Configuration - Things Settings</title>
+<meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
+<link rel="stylesheet" type="text/css" href="default.css" media="screen" title="Default" />
 </head>
 <body>
-	
-	<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
-	<param name="keyword" value="Configurations">
-	<param name="keyword" value="Game Configurations">
-    <param name="keyword" value="DECORATE">
-	</object>
-	
-	<div id="title"><h1>DECORATE keys</h1></div>
-	
-	<div id="contents">
-	<p>
-	  Doom Builder 2 includes a DECORATE parser used to obtain relevant information (such as editor number, Radius, Height, Scale, and so on) from custom actors. Additional information can be conveyed with keys in the form of special comments inserted within an actor's declaration block:
-	<p><strong>//$Category &lt;category&gt;</strong><br />
-    Specifies in which category (Monsters, Weapons, etc.) it should be sorted. By default, a custom actor not identified in a configuration file will be put in the Decorate category.    
-	<p> <strong>//$Sprite &lt;sprite&gt;</strong><br />
-	  Specifies which sprite to use to represent the actor in the editor. By default, a custom actor not identified in a configuration file will use the first suitable sprite it finds in the actor definition, trying first the states in the sequence Idle, See, Inactive, Spawn, and if all these fail, the first defined state. This key is therefore especially useful for stateless actor definitions. 
-	  
-	  Keep in mind that this sprite name must match an image in the wad (i.e., if the sprite in your wad is named JUNKA0D0, you need to put JUNKA0D0, JUNKA0 won't work). 
-	<br /> <br />  
-	  <strong>//$Title &lt;title&gt;</strong><br />
-	  Specifies which name to give to the actor. By default, a custom actor not identified in a configuration file will use the Tag property, and if not present, will default to the class name.<br />
-	  <br />
-	  <strong><a name="argtitle" id="argtitle"></a>//$ArgN &lt;name&gt;</strong> - <span class="red">GZDB only</span>.<br />
-	  Allows to override default argument names for this actor.<br />
-      <br />
-      <strong><a name="argdefault" id="argdefault"></a>//$ArgNDefault &lt;integer&gt;</strong> - <span class="red">GZDB only</span>.<br />
-	  Allows to set the default value for this argument. This property can only be used in conjunction with &quot;<strong>//$ArgN</strong>&quot; property.<br />
-      <br />
-	  <strong><a name="argtooltip" id="argtooltip"></a>//$ArgNTooltip &lt;text&gt;</strong> - <span class="red">GZDB only</span>.<br />
-	  Allows to specify a tooltip text displayed for this argument. Newline character (&quot;\n&quot;) can be used to format the  text. This property can only be used in conjunction with &quot;<strong>//$ArgN</strong>&quot; property.<br />
-	  Argument tooltips can be also set for <a href="gc_argumentsettings.html#argtooltip">things and linedefs</a> in a Game Configuration.<br />
-      <br />
-      <strong><a name="argtype" id="argtype"></a>//$ArgNType &lt;integer&gt;</strong> - <span class="red">GZDB only</span>.<br />
-	  Allows to specify an <a href="gc_argumentsettings.html#argtype">argument type</a> for this argument. This property can only be used in conjunction with &quot;<strong>//$ArgN</strong>&quot; property.<br />
-      <br />
-      <strong><a name="argenum" id="argenum"></a>//$ArgNEnum &lt;string or structure&gt;</strong> - <span class="red">GZDB only</span>.<br />
-	  Allows to specify an enum for this argument. This can be either a name of an enum defined in the Game Configuration, or an explicit enum definition. This property can only be used in conjunction with &quot;<strong>//$ArgN</strong>&quot; property.<br />
-      <br />
-	  <strong>//$Color &lt;color index&gt;</strong> - <span class="red">GZDB only</span>.<br />
-	  Allows to override category color for this actor. Possible values:
-	<ul>
-	  <li>0 - Dark Gray;</li>
-	  <li>1 - Blue;</li>
-	  <li>2 - Green;</li>
-	  <li>3 - Cyan;</li>
-	  <li>4 - Red;</li>
-	  <li>5 - Magenta;</li>
-	  <li>6 - Brown;</li>
-	  <li>7 - Gray;</li>
-	  <li>8 - Light Gray;</li>
-	  <li>9 - Light Blue;</li>
-	  <li>10 - Light Green;</li>
-	  <li>11 - Light Cyan;</li>
-	  <li>12 - Light Red;</li>
-	  <li>13 - Light Magenta;</li>
-	  <li>14 - Yellow;</li>
-	  <li>15 - White;</li>
-	  <li>16 - Pink;</li>
-	  <li>17 - Light Orange;</li>
-	  <li>18 - Light Brown (default);</li>
-	  <li>19 - Orange;</li>
-	</ul>
-     
-	  Additionaly, you can use the following special comments in the global block:<br /><br />  
-	  <strong>//$GZDB_SKIP</strong> - <span class="red">GZDB only</span>.<br />
-	  DECORATE parser will stop parsing a file after encountering this comment. This can be used to speedup the parsing process by skipping files, which don't contain placeable actor definitions.<br />
-	  <br />
-	  
-	  <strong>Note:</strong> It is a good idea to include the Doom Editor Number after the actor definition if you want it to show in Doom Builder, even if it is replacing a standard Doom actor.<br /> <br /> 
-      <strong>Example:</strong><br /> 
-	  <pre>
+<object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+  <param name="keyword" value="Configurations">
+  <param name="keyword" value="Game Configurations">
+  <param name="keyword" value="DECORATE">
+</object>
+<div id="title">
+  <h1>DECORATE keys</h1>
+</div>
+<div id="contents">
+  <p> Doom Builder 2 includes a DECORATE parser used to obtain relevant information (such as editor number, Radius, Height, Scale, and so on) from custom actors. Additional information can be conveyed with keys in the form of special comments inserted within an actor's declaration block:<br />
+    <br />
+    <strong>//$Angled</strong><br />
+    <strong>//$NotAngled</strong><br />
+    Specifies whether the direction matters (angled) or not. Things that are not angled are represented without a direction arrow.<br />
+    <br />
+    <strong>//$Category &lt;category&gt;</strong><br />
+    Specifies in which category (Monsters, Weapons, etc.) it should be sorted. By default, a custom actor not identified in a configuration file will be put in the Decorate category.<br />
+    <br />
+    <strong>//$Sprite &lt;sprite&gt;</strong><br />
+    Specifies which sprite to use to represent the actor in the editor. By default, a custom actor not identified in a configuration file will use the first suitable sprite it finds in the actor definition, trying first the states in the sequence Idle, See, Inactive, Spawn, and if all these fail, the first defined state. This key is therefore especially useful for stateless actor definitions. Keep in mind that this sprite name must match an image in the wad (i.e., if the sprite in your wad is named JUNKA0D0, you need to put JUNKA0D0, JUNKA0 won't work).<br />
+    <br />
+    <strong>//$Title &lt;title&gt;</strong><br />
+    Specifies which name to give to the actor. By default, a custom actor not identified in a configuration file will use the Tag property, and if not present, will default to the class name.<br />
+    <br />
+    <strong><a name="argtitle" id="argtitle"></a>//$ArgN &lt;name&gt;</strong> - <span class="red">GZDB only</span>.<br />
+    Allows to override default argument names for this actor.<br />
+    <br />
+    <strong><a name="argdefault" id="argdefault"></a>//$ArgNDefault &lt;integer&gt;</strong> - <span class="red">GZDB only</span>.<br />
+    Allows to set the default value for this argument. This property can only be used in conjunction with &quot;<strong>//$ArgN</strong>&quot; property.<br />
+    <br />
+    <strong><a name="argtooltip" id="argtooltip"></a>//$ArgNTooltip &lt;text&gt;</strong> - <span class="red">GZDB only</span>.<br />
+    Allows to specify a tooltip text displayed for this argument. Newline character (&quot;\n&quot;) can be used to format the  text. This property can only be used in conjunction with &quot;<strong>//$ArgN</strong>&quot; property.<br />
+    Argument tooltips can be also set for <a href="gc_argumentsettings.html#argtooltip">things and linedefs</a> in a Game Configuration.<br />
+    <br />
+    <strong><a name="argtype" id="argtype"></a>//$ArgNType &lt;integer&gt;</strong> - <span class="red">GZDB only</span>.<br />
+    Allows to specify an <a href="gc_argumentsettings.html#argtype">argument type</a> for this argument. This property can only be used in conjunction with &quot;<strong>//$ArgN</strong>&quot; property.<br />
+    <br />
+    <strong><a name="argenum" id="argenum"></a>//$ArgNEnum &lt;string or structure&gt;</strong> - <span class="red">GZDB only</span>.<br />
+    Allows to specify an enum for this argument. This can be either a name of an enum defined in the Game Configuration, or an explicit enum definition. This property can only be used in conjunction with &quot;<strong>//$ArgN</strong>&quot; property.<br />
+    <br />
+    <strong>//$Color &lt;color index&gt;</strong> - <span class="red">GZDB only</span>.<br />
+    Allows to override category color for this actor. Possible values:
+  <ul>
+    <li>0 - Dark Gray;</li>
+    <li>1 - Blue;</li>
+    <li>2 - Green;</li>
+    <li>3 - Cyan;</li>
+    <li>4 - Red;</li>
+    <li>5 - Magenta;</li>
+    <li>6 - Brown;</li>
+    <li>7 - Gray;</li>
+    <li>8 - Light Gray;</li>
+    <li>9 - Light Blue;</li>
+    <li>10 - Light Green;</li>
+    <li>11 - Light Cyan;</li>
+    <li>12 - Light Red;</li>
+    <li>13 - Light Magenta;</li>
+    <li>14 - Yellow;</li>
+    <li>15 - White;</li>
+    <li>16 - Pink;</li>
+    <li>17 - Light Orange;</li>
+    <li>18 - Light Brown (default);</li>
+    <li>19 - Orange;</li>
+  </ul>
+  Additionaly, you can use the following special comments in the global block:<br />
+  <br />
+  <strong>//$GZDB_SKIP</strong> - <span class="red">GZDB only</span>.<br />
+  DECORATE parser will stop parsing a file after encountering this comment. This can be used to speedup the parsing process by skipping files, which don't contain placeable actor definitions.<br />
+  <br />
+  <strong>Note:</strong> It is a good idea to include the Doom Editor Number after the actor definition if you want it to show in Doom Builder, even if it is replacing a standard Doom actor.<br />
+  <br />
+  <strong>Example:</strong><br />
+  <pre>
 Actor ChexShield : ResistanceRune replaces ResistanceRune 5104
 {
   //$Category powerups
   //$Sprite ARMXA0
   //$Title "Chex Shield"
   //$Color 12
+  //$NotAngled
   
   //$Arg0 "Respawn Delay"
   //$Arg0ToolTip "Positive values specify delay in tics.\nNegative - in seconds."
@@ -126,6 +127,6 @@ actor SuperGiantImpBall : DoomImpBall
   Damage 30
 }
 </pre>
-	</p>
-	</div>
+  </p>
+</div>
 </body>
