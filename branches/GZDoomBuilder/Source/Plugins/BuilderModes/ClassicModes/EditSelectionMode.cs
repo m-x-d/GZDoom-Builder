@@ -18,16 +18,19 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
-using CodeImp.DoomBuilder.Windows;
-using CodeImp.DoomBuilder.Map;
-using CodeImp.DoomBuilder.Rendering;
-using CodeImp.DoomBuilder.Geometry;
-using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Config;
-using System.Drawing;
 using CodeImp.DoomBuilder.Controls;
+using CodeImp.DoomBuilder.Data;
+using CodeImp.DoomBuilder.Editing;
+using CodeImp.DoomBuilder.Geometry;
+using CodeImp.DoomBuilder.GZBuilder.Tools;
+using CodeImp.DoomBuilder.Map;
+using CodeImp.DoomBuilder.Rendering;
+using CodeImp.DoomBuilder.Types;
+using CodeImp.DoomBuilder.Windows;
 
 #endregion
 
@@ -70,6 +73,56 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#endregion
 
+		#region ================== Structs (mxd)
+
+		private struct SectorTextureInfo
+		{
+			public readonly SurfaceTextureInfo Floor;
+			public readonly SurfaceTextureInfo Ceiling;
+
+			public SectorTextureInfo(Sector s)
+			{
+				// Get transform properties
+				Floor.Offset = new Vector2D(UDMFTools.GetFloat(s.Fields, "xpanningfloor", 0f), UDMFTools.GetFloat(s.Fields, "ypanningfloor", 0f));
+				Ceiling.Offset = new Vector2D(UDMFTools.GetFloat(s.Fields, "xpanningceiling", 0f), UDMFTools.GetFloat(s.Fields, "ypanningceiling", 0f));
+				Floor.Scale = new Vector2D(UDMFTools.GetFloat(s.Fields, "xscalefloor", 1.0f), -UDMFTools.GetFloat(s.Fields, "yscalefloor", 1.0f));
+				Ceiling.Scale = new Vector2D(UDMFTools.GetFloat(s.Fields, "xscaleceiling", 1.0f), -UDMFTools.GetFloat(s.Fields, "yscaleceiling", 1.0f));
+				Floor.Rotation = Angle2D.DegToRad(UDMFTools.GetFloat(s.Fields, "rotationfloor", 0f));
+				Ceiling.Rotation = Angle2D.DegToRad(UDMFTools.GetFloat(s.Fields, "rotationceiling", 0f));
+
+				// Get texture sizes
+				Floor.TextureSize = GetTextureSize(s.LongFloorTexture);
+				Ceiling.TextureSize = GetTextureSize(s.LongCeilTexture);
+
+				// Surface name
+				Floor.Part = "floor";
+				Ceiling.Part = "ceiling";
+			}
+
+			private static Size GetTextureSize(long hash)
+			{
+				ImageData texture = General.Map.Data.GetFlatImage(hash);
+				if((texture == null) || (texture == General.Map.Data.WhiteTexture) ||
+				   (texture.Width <= 0) || (texture.Height <= 0) || !texture.IsImageLoaded) 
+				{
+					return new Size();
+				}
+
+				return new Size((int)Math.Round(texture.ScaledWidth), (int)Math.Round(texture.ScaledHeight));
+			}
+		}
+
+		private struct SurfaceTextureInfo
+		{
+			public Vector2D Offset;
+			public Vector2D Scale;
+			public Size TextureSize;
+			public float Rotation;
+			public string Part;
+		}
+
+		#endregion
+
 		#region ================== Constants
 
 		private const float GRIP_SIZE = 9.0f;
@@ -98,7 +151,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Selection
 		private ICollection<Vertex> selectedvertices;
 		private ICollection<Thing> selectedthings;
-		private ICollection<Sector> selectedsectors; //mxd
+		private Dictionary<Sector, SectorTextureInfo> selectedsectors; //mxd
 		private List<int> fixedrotationthingtypes; //mxd 
 		private ICollection<Linedef> selectedlines;
 		private List<Vector2D> vertexpos;
@@ -111,9 +164,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private float rotation;
 		private Vector2D offset;
 		private Vector2D size;
+		private Vector2D scale = new Vector2D(1.0f, 1.0f); //mxd
 		private Vector2D baseoffset;
 		private Vector2D basesize;
 		private bool linesflipped;
+
+		//mxd. Texture modification
+		private static bool transformflooroffsets;
+		private static bool transformceiloffsets;
+		private static bool rotateflooroffsets;
+		private static bool rotateceiloffsets;
+		private static bool scaleflooroffsets;
+		private static bool scaleceiloffsets;
+		private Vector2D selectioncenter;
+		private Vector2D selectionbasecenter;
 		
 		// Modifying Modes
 		private ModifyMode mode;
@@ -147,6 +211,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public bool Pasting { get { return pasting; } set { pasting = value; } }
 		public PasteOptions PasteOptions { get { return pasteoptions; } set { pasteoptions = value.Copy(); } }
 		
+		//mxd. Texture offset properties
+		internal bool TransformFloorOffsets { get { return transformflooroffsets; } set { transformflooroffsets = value; UpdateAllChanges(); } }
+		internal bool TransformCeilingOffsets { get { return transformceiloffsets; } set { transformceiloffsets = value; UpdateAllChanges(); } }
+		internal bool RotateFloorOffsets { get { return rotateflooroffsets; } set { rotateflooroffsets = value; UpdateAllChanges(); } }
+		internal bool RotateCeilingOffsets { get { return rotateceiloffsets; } set { rotateceiloffsets = value; UpdateAllChanges(); } }
+		internal bool ScaleFloorOffsets { get { return scaleflooroffsets; } set { scaleflooroffsets = value; UpdateAllChanges(); } }
+		internal bool ScaleCeilingOffsets { get { return scaleceiloffsets; } set { scaleceiloffsets = value; UpdateAllChanges(); } }
+
 		#endregion
 
 		#region ================== Constructor / Disposer
@@ -158,8 +230,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			mode = ModifyMode.None;
 		}
 
-		//mxd. Another constructor
-		public EditSelectionMode(bool pasting) 
+		//mxd. Another constructor. Used indirectly from ImportObjAsTerrainMode.OnAccept.
+		public EditSelectionMode(bool pasting)
 		{
 			// Initialize
 			this.pasting = pasting;
@@ -244,23 +316,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			UpdateGeometry();
 			UpdateRectangleComponents();
+			if(General.Map.UDMF) UpdateTextureTransform(); //mxd
 			General.Map.Map.Update();
 			General.Interface.RedrawDisplay();
 		}
-
-		// This returns the position of the highlighted item
-		/*private Vector2D GetHighlightedPosition()
-		{
-			if(highlighted is Vertex)
-				return (highlighted as Vertex).Position;
-			else if(highlighted is Thing)
-				return (highlighted as Thing).Position;
-			else
-				throw new Exception("Highlighted element type is not supported.");
-		}*/
 		
 		// This highlights a new vertex
-		protected void Highlight(MapElement h)
+		private void Highlight(MapElement h)
 		{
 			// Undraw previous highlight
 			if((highlighted != null) && !highlighted.IsDisposed)
@@ -366,7 +428,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					case Grip.SizeS:
 					case Grip.SizeW:
 					case Grip.SizeN:
-
 						// Pick the best matching cursor depending on rotation and side
 						float resizeangle = rotation;
 						if((mousegrip == Grip.SizeE) || (mousegrip == Grip.SizeW)) resizeangle += Angle2D.PIHALF;
@@ -401,7 +462,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					// Dragging
 					case ModifyMode.Dragging:
-
 						// Change offset without snapping
 						offset = mousemappos - dragoffset;
 						
@@ -481,7 +541,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					// Resizing
 					case ModifyMode.Resizing:
-
 						// Snap to nearest vertex?
 						if(snaptonearest)
 						{
@@ -507,8 +566,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						Vector2D oldcorner = corners[stickcorner];
 						
 						// Change size with the scale from the ruler
-						float scale = resizeaxis.GetNearestOnLine(snappedmappos);
-						size = (basesize * resizefilter) * scale + size * (1.0f - resizefilter);
+						float newscale = resizeaxis.GetNearestOnLine(snappedmappos);
+						size = (basesize * resizefilter) * newscale + size * (1.0f - resizefilter);
+
+						//mxd. Update scale
+						newscale = 1f / newscale;
+						if(float.IsInfinity(newscale) || float.IsNaN(newscale)) newscale = 99999f;
+						scale = (newscale * resizefilter) + scale * (1.0f - resizefilter);
+						if(float.IsInfinity(scale.x) || float.IsNaN(scale.x)) scale.x = 99999f;
+						if(float.IsInfinity(scale.y) || float.IsNaN(scale.y)) scale.y = 99999f;
 						
 						// Adjust corner position
 						Vector2D newcorner = TransformedPoint(originalcorners[stickcorner]);
@@ -532,7 +598,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					// Rotating
 					case ModifyMode.Rotating:
-
 						// Get angle from mouse to center
 						Vector2D center = offset + size * 0.5f;
 						Vector2D delta = snappedmappos - center;
@@ -772,6 +837,96 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			UpdatePanel();
 			General.Map.Map.Update(true, false);
 		}
+
+		//mxd. This updates texture transforms for all sectors
+		private void UpdateTextureTransform() 
+		{
+			foreach(KeyValuePair<Sector, SectorTextureInfo> group in selectedsectors) 
+			{
+				group.Key.Fields.BeforeFieldsChange();
+
+				// Apply transforms
+				UpdateTextureTransform(group.Key.Fields, group.Value.Ceiling, transformceiloffsets, rotateceiloffsets, scaleceiloffsets);
+				UpdateTextureTransform(group.Key.Fields, group.Value.Floor, transformflooroffsets, rotateflooroffsets, scaleflooroffsets);
+
+				// Update cache
+				group.Key.UpdateNeeded = true;
+				group.Key.UpdateCache();
+			}
+
+			// Map was changed
+			General.Map.IsChanged = true;
+		}
+
+		//mxd. This updates texture transforms in given UniFields
+		private void UpdateTextureTransform(UniFields fields, SurfaceTextureInfo si, bool transformoffsets, bool rotateoffsets, bool scaleoffsets)
+		{
+			// Get offset-ready values
+			float texrotation = Angle2D.PI2 - rotation;
+
+			// Update texture offsets
+			if(transformoffsets)
+			{
+				Vector2D toffset = (selectionbasecenter - selectioncenter).GetRotated((texrotation + si.Rotation));
+				Vector2D soffset = si.Offset.GetRotated(texrotation + si.Rotation);
+
+				fields["xpanning" + si.Part] = new UniValue(UniversalType.Float, (float)Math.Round(soffset.x + toffset.x, General.Map.FormatInterface.VertexDecimals) % si.TextureSize.Width);
+				fields["ypanning" + si.Part] = new UniValue(UniversalType.Float, (float)Math.Round(-(soffset.y + toffset.y), General.Map.FormatInterface.VertexDecimals) % si.TextureSize.Height);
+			}
+			// Restore texture offsets
+			else 
+			{
+				fields["xpanning" + si.Part] = new UniValue(UniversalType.Float, si.Offset.x);
+				fields["ypanning" + si.Part] = new UniValue(UniversalType.Float, si.Offset.y);
+			}
+
+			// Update rotation
+			if(rotateoffsets)
+				fields["rotation" + si.Part] = new UniValue(UniversalType.AngleDegreesFloat, General.ClampAngle((float)Math.Round(Angle2D.RadToDeg(si.Rotation + texrotation), General.Map.FormatInterface.VertexDecimals)));
+			// Restore rotation
+			else 
+				fields["rotation" + si.Part] = new UniValue(UniversalType.AngleDegreesFloat, si.Rotation);
+
+			// Update scale
+			if(scaleoffsets)
+			{
+				fields["xscale" + si.Part] = new UniValue(UniversalType.Float, (float) Math.Round(si.Scale.x * scale.x, General.Map.FormatInterface.VertexDecimals));
+				fields["yscale" + si.Part] = new UniValue(UniversalType.Float, (float) Math.Round(si.Scale.y * scale.y, General.Map.FormatInterface.VertexDecimals));
+			}
+			// Restore scale
+			else 
+			{
+				fields["xscale" + si.Part] = new UniValue(UniversalType.Float, si.Scale.x);
+				fields["yscale" + si.Part] = new UniValue(UniversalType.Float, si.Scale.y);
+			}
+		}
+
+		//mxd. This restores texture transforms for all sectors
+		private void RestoreTextureTransform() 
+		{
+			foreach(KeyValuePair<Sector, SectorTextureInfo> group in selectedsectors)
+			{
+				group.Key.Fields.BeforeFieldsChange();
+
+				// Revert transforms
+				RestoreTextureTransform(group.Key.Fields, group.Value.Ceiling);
+				RestoreTextureTransform(group.Key.Fields, group.Value.Floor);
+
+				// Update cache
+				group.Key.UpdateNeeded = true;
+				group.Key.UpdateCache();
+			}
+		}
+
+		//mxd. This restores texture transforms in given UniFields
+		private static void RestoreTextureTransform(UniFields fields, SurfaceTextureInfo si)
+		{
+			fields["rotation" + si.Part] = new UniValue(UniversalType.AngleDegreesFloat, Angle2D.RadToDeg(si.Rotation));
+			fields["xscale" + si.Part]   = new UniValue(UniversalType.Float, si.Scale.x);
+			fields["yscale" + si.Part]   = new UniValue(UniversalType.Float, -si.Scale.y);
+			fields["xpanning" + si.Part] = new UniValue(UniversalType.Float, si.Offset.x);
+			fields["ypanning" + si.Part] = new UniValue(UniversalType.Float, si.Offset.y);
+		}
 		
 		// This updates the selection rectangle components
 		private void UpdateRectangleComponents()
@@ -847,6 +1002,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			rotategrips[3] = new RectangleF(corners[3].x - gripsize * 0.5f,
 											corners[3].y - gripsize * 0.5f,
 											gripsize, gripsize);
+
+			//mxd. Update selection center
+			selectioncenter = new Vector2D(offset.x + size.x * 0.5f, offset.y + size.y * 0.5f);
 		}
 		
 		// This flips all linedefs in the selection (used for mirroring)
@@ -899,8 +1057,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Map.Map.MarkSelectedSectors(true, true);
 			ICollection<Vertex> verts = General.Map.Map.GetVerticesFromLinesMarks(true);
 			foreach(Vertex v in verts) v.Marked = true;
-			selectedsectors = General.Map.Map.GetSelectedSectors(true); //mxd
-			foreach(Sector s in selectedsectors)
+			ICollection<Sector> sectors = General.Map.Map.GetSelectedSectors(true); //mxd
+			selectedsectors = new Dictionary<Sector, SectorTextureInfo>(); //mxd
+			foreach(Sector s in sectors)
 			{
 				foreach(Sidedef sd in s.Sidedefs)
 				{
@@ -908,6 +1067,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					sd.Line.Start.Marked = true;
 					sd.Line.End.Marked = true;
 				}
+
+				if(General.Map.UDMF) selectedsectors.Add(s, new SectorTextureInfo(s));
 			}
 			selectedvertices = General.Map.Map.GetMarkedVertices(true);
 			selectedthings = General.Map.Map.GetMarkedThings(true);
@@ -986,6 +1147,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				
 				basesize = size;
 				baseoffset = offset;
+				selectionbasecenter = new Vector2D(offset.x + size.x * 0.5f, offset.y + size.y * 0.5f); //mxd 
 				
 				// When pasting, we want to move the geometry so it is visible
 				if(pasting)
@@ -1018,6 +1180,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				
 				// Update
 				panel.ShowOriginalValues(baseoffset, basesize);
+				panel.SetTextureTransformSettings(General.Map.UDMF); //mxd
 				UpdateRectangleComponents();
 				UpdatePanel();
 				Update();
@@ -1071,6 +1234,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					t.Rotate(thingangle[index]);
 					t.Move(thingpos[index++]);
 				}
+
+				//mxd. Reset texture offsets to original values
+				if(General.Map.UDMF) RestoreTextureTransform();
 				
 				// Resume normal undo/redo recording
 				General.Map.UndoRedo.IgnorePropChanges = false;
@@ -1131,9 +1297,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							t.Move(thingpos[index++]);
 						}
 
+						//mxd. Reset texture offsets to their original position
+						if(General.Map.UDMF) RestoreTextureTransform();
+
 						// Resume normal undo/redo recording
 						General.Map.UndoRedo.IgnorePropChanges = false;
-
 						General.Map.Map.Update(true, true);
 					}
 
@@ -1156,6 +1324,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						t.Rotate(thingangle[index]);
 						t.Move(thingpos[index++]);
 					}
+
+					//mxd. Reset texture offsets to their original position
+					if(General.Map.UDMF) RestoreTextureTransform();
+
 					General.Map.Map.Update(true, true);
 					
 					// Make undo
@@ -1171,7 +1343,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// We need a different kind of offset...
 					Vector2D relativeoffset = offset - baseoffset;
 					
-					foreach (Sector s in selectedsectors)
+					foreach (Sector s in selectedsectors.Keys)
 					{
 						// Update floor slope?
 						if(s.FloorSlope.GetLengthSq() > 0 && !float.IsNaN(s.FloorSlopeOffset / s.FloorSlope.z)) 
@@ -1199,6 +1371,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				
 				// Move geometry to new position
 				UpdateGeometry();
+
+				//mxd. Update floor/ceiling texture settings
+				if(General.Map.UDMF) UpdateTextureTransform();
+				
 				General.Map.Map.Update(true, true);
 				
 				// When pasting, we want to join with the parent sector
@@ -1414,7 +1590,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void OnMouseMove(MouseEventArgs e)
 		{
 			base.OnMouseMove(e);
-			if(panning) return; //mxd. Skip all this jass while panning
+			if(panning) return; //mxd. Skip all this jazz while panning
 			Update();
 		}
 
@@ -1630,6 +1806,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			// No modifying mode
 			mode = ModifyMode.None;
+
+			//mxd. Update floor/ceiling texture settings
+			if(General.Map.UDMF) UpdateTextureTransform();
 			
 			// Redraw
 			General.Map.Map.Update();
