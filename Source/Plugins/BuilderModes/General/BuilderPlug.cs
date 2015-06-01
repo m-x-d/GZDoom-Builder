@@ -114,7 +114,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Properties
 		
-		public override string Name { get { return "Doom Builder"; } }
+		public override string Name { get { return "GZDoom Builder"; } } //mxd
 		public static BuilderPlug Me { get { return me; } }
 
 		// It is only safe to do this dynamically because we compile and distribute both
