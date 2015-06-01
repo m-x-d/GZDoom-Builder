@@ -88,7 +88,7 @@ namespace CodeImp.DoomBuilder.Config
 		#region ================== Constructor / Disposer
 		
 		// Constructor
-		internal ThingCategory(string name, string title)
+		internal ThingCategory(ThingCategory parent, string name, string title)
 		{
 			// Initialize
 			this.name = name;
@@ -96,20 +96,40 @@ namespace CodeImp.DoomBuilder.Config
 			this.things = new List<ThingTypeInfo>();
 			this.children = new List<ThingCategory>();
 			
+			//mxd. Copy properties from the parent
+			if(parent != null)
+			{
+				this.sprite = parent.sprite;
+				this.sorted = parent.sorted;
+				this.color = parent.color;
+				this.arrow = parent.arrow;
+				this.radius = parent.radius;
+				this.height = parent.height;
+				this.hangs = parent.hangs;
+				this.blocking = parent.blocking;
+				this.errorcheck = parent.errorcheck;
+				this.fixedsize = parent.fixedsize;
+				this.fixedrotation = parent.fixedrotation;
+				this.absolutez = parent.absolutez;
+				this.spritescale = parent.spritescale;
+			}
 			// Set default properties
-			this.sprite = "";
-			this.sorted = true;
-			this.color = 18;
-			this.arrow = 1;
-			this.radius = 10;
-			this.height = 20;
-			this.hangs = 0;
-			this.blocking = 0;
-			this.errorcheck = 1;
-			this.fixedsize = false;
-			this.fixedrotation = false; //mxd
-			this.absolutez = false;
-			this.spritescale = 1.0f;
+			else
+			{
+				this.sprite = "";
+				this.sorted = true;
+				this.color = 18;
+				this.arrow = 1;
+				this.radius = 10;
+				this.height = 20;
+				this.hangs = 0;
+				this.blocking = 0;
+				this.errorcheck = 1;
+				this.fixedsize = false;
+				this.fixedrotation = false; //mxd
+				this.absolutez = false;
+				this.spritescale = 1.0f;
+			}
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
