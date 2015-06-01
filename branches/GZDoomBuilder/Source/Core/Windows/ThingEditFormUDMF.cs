@@ -751,7 +751,7 @@ namespace CodeImp.DoomBuilder.Windows
 		// Help
 		private void ThingEditForm_HelpRequested(object sender, HelpEventArgs hlpevent) 
 		{
-			General.ShowHelp("w_thingeditor.html");
+			General.ShowHelp("w_thingedit.html");
 			hlpevent.Handled = true;
 		}
 

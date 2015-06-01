@@ -381,7 +381,7 @@ namespace CodeImp.DoomBuilder.Config
 				sprite = DataManager.INTERNAL_PREFIX + "unknownthing";
 
 			
-			if(this.sprite.Length <= 8)
+			if(this.sprite.Length < 9)
 				this.spritelongname = Lump.MakeLongName(this.sprite);
 			else
 				this.spritelongname = long.MaxValue;

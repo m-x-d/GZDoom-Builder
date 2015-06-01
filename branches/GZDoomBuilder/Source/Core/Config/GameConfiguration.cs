@@ -475,25 +475,31 @@ namespace CodeImp.DoomBuilder.Config
 				if(de.Value is IDictionary)
 				{
 					// Make a category
-					thingcat = new ThingCategory(cfg, de.Key.ToString(), enums);
+					thingcat = new ThingCategory(cfg, null, de.Key.ToString(), enums);
 
 					// Add all things in category to the big list
-					foreach(ThingTypeInfo t in thingcat.Things)
-					{
-						if(!things.ContainsKey(t.Index))
-						{
-							things.Add(t.Index, t);
-						}
-						else
-						{
-							General.ErrorLogger.Add(ErrorType.Warning, "Thing number " + t.Index + " is defined more than once (as '" + things[t.Index].Title + "' and '" + t.Title + "') in game configuration '" + this.Name + "'");
-						}
-					}
+					AddThingsFromCategory(thingcat); //mxd
 
 					// Add category to list
 					thingcategories.Add(thingcat);
 				}
 			}
+		}
+
+		//mxd. This recursively adds all things from a ThingCategory and it's children
+		private void AddThingsFromCategory(ThingCategory thingcat) 
+		{
+			// Add all things in category to the big list
+			foreach(ThingTypeInfo t in thingcat.Things) 
+			{
+				if(!things.ContainsKey(t.Index)) 
+					things.Add(t.Index, t);
+				else 
+					General.ErrorLogger.Add(ErrorType.Warning, "Thing number " + t.Index + " is defined more than once (as '" + things[t.Index].Title + "' and '" + t.Title + "') in game configuration '" + this.Name + "'");
+			}
+
+			// Recursively add things from child categories
+			foreach(ThingCategory c in thingcat.Children) AddThingsFromCategory(c);
 		}
 		
 		// Linedef flags
