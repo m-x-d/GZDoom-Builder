@@ -72,13 +72,27 @@ namespace CodeImp.DoomBuilder.Controls
 			typelist.Nodes.Clear();
 			nodes = new List<TreeNode>();
 			validnodes = new List<TreeNode>(); //mxd
-			foreach(ThingCategory tc in General.Map.Data.ThingCategories)
+			AddThingCategories(General.Map.Data.ThingCategories, typelist.Nodes); //mxd
+			doupdatenode = true;
+			doupdatetextbox = true;
+		}
+
+		//mxd. This recursively creates thing category tree nodes
+		private void AddThingCategories(ICollection<ThingCategory> categories, TreeNodeCollection collection)
+		{
+			foreach(ThingCategory tc in categories) 
 			{
 				// Create category
-				TreeNode cn = typelist.Nodes.Add(tc.Name, tc.Title);
-				if((tc.Color >= 0) && (tc.Color < thingimages.Images.Count)) cn.ImageIndex = tc.Color;
+				TreeNode cn = collection.Add(tc.Name, tc.Title);
+				cn.ImageIndex = thingimages.Images.Count / 2; // Offset to folder icons
+				if((tc.Color >= 0) && (tc.Color < thingimages.Images.Count)) cn.ImageIndex += tc.Color;
 				cn.SelectedImageIndex = cn.ImageIndex;
-				foreach(ThingTypeInfo ti in tc.Things)
+
+				// Create subcategories
+				AddThingCategories(tc.Children, cn.Nodes);
+
+				// Create things
+				foreach(ThingTypeInfo ti in tc.Things) 
 				{
 					// Create thing
 					TreeNode n = cn.Nodes.Add(ti.Title);
@@ -88,9 +102,6 @@ namespace CodeImp.DoomBuilder.Controls
 					nodes.Add(n);
 				}
 			}
-
-			doupdatenode = true;
-			doupdatetextbox = true;
 		}
 
 		#endregion
@@ -299,7 +310,7 @@ namespace CodeImp.DoomBuilder.Controls
 						if((n.Tag as ThingTypeInfo).Index == typeindex)
 						{
 							// Select this
-							if(typelist.Nodes.Contains(n.Parent)) //mxd. Tree node may've been removed during filtering
+							if(n.TreeView != null) //mxd. Tree node may've been removed during filtering
 							{
 								n.Parent.Expand();
 								typelist.SelectedNodes.Add(n);

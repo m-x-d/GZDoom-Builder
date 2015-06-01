@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
 <head>
-<title>Game Configuration - Things Settings</title>
+<title>DECORATE keys</title>
 <meta http-equiv="content-type" content="text/html; charset=iso-8859-1" />
 <link rel="stylesheet" type="text/css" href="default.css" media="screen" title="Default" />
 </head>
@@ -23,6 +23,7 @@
     <br />
     <strong>//$Category &lt;category&gt;</strong><br />
     Specifies in which category (Monsters, Weapons, etc.) it should be sorted. By default, a custom actor not identified in a configuration file will be put in the Decorate category.<br />
+    GZDoom Builder supports hierarchical subgroups, using the backslash separator. For example, <strong>//$Category "Decorations/Tech"</strong> will put the actor within the "Tech" subgroup of the "Decorations" group.<br />
     <br />
     <strong>//$Sprite &lt;sprite&gt;</strong><br />
     Specifies which sprite to use to represent the actor in the editor. By default, a custom actor not identified in a configuration file will use the first suitable sprite it finds in the actor definition, trying first the states in the sequence Idle, See, Inactive, Spawn, and if all these fail, the first defined state. This key is therefore especially useful for stateless actor definitions. Keep in mind that this sprite name must match an image in the wad (i.e., if the sprite in your wad is named JUNKA0D0, you need to put JUNKA0D0, JUNKA0 won't work).<br />
@@ -47,28 +48,28 @@
     Allows to specify an enum for this argument. This can be either a name of an enum defined in the Game Configuration, or an explicit enum definition. This property can only be used in conjunction with &quot;<strong>//$ArgN</strong>&quot; property.<br />
     <br />
     <strong>//$Color &lt;color index&gt;</strong> - <span class="red">GZDB only</span>.<br />
-    Allows to override category color for this actor. Possible values:
+    Allows to override category color for this actor. Possible values are:
   <ul>
-    <li>0 - Dark Gray;</li>
-    <li>1 - Blue;</li>
-    <li>2 - Green;</li>
-    <li>3 - Cyan;</li>
-    <li>4 - Red;</li>
-    <li>5 - Magenta;</li>
-    <li>6 - Brown;</li>
-    <li>7 - Gray;</li>
-    <li>8 - Light Gray;</li>
-    <li>9 - Light Blue;</li>
-    <li>10 - Light Green;</li>
-    <li>11 - Light Cyan;</li>
-    <li>12 - Light Red;</li>
-    <li>13 - Light Magenta;</li>
-    <li>14 - Yellow;</li>
-    <li>15 - White;</li>
-    <li>16 - Pink;</li>
-    <li>17 - Light Orange;</li>
-    <li>18 - Light Brown (default);</li>
-    <li>19 - Orange;</li>
+    <li>&nbsp;&nbsp;0 - <span style="color:#696969">&#9608;</span> Dark Gray;</li>
+    <li>&nbsp;&nbsp;1 - <span style="color:#4169E1">&#9608;</span> Blue;</li>
+    <li>&nbsp;&nbsp;2 - <span style="color:#228B22">&#9608;</span> Green;</li>
+    <li>&nbsp;&nbsp;3 - <span style="color:#20B2AA">&#9608;</span> Cyan;</li>
+    <li>&nbsp;&nbsp;4 - <span style="color:#B22222">&#9608;</span> Red;</li>
+    <li>&nbsp;&nbsp;5 - <span style="color:#9400D3">&#9608;</span> Magenta;</li>
+    <li>&nbsp;&nbsp;6 - <span style="color:#B8860B">&#9608;</span> Brown;</li>
+    <li>&nbsp;&nbsp;7 - <span style="color:#C0C0C0">&#9608;</span> Gray;</li>
+    <li>&nbsp;&nbsp;8 - <span style="color:#808080">&#9608;</span> Light Gray;</li>
+    <li>&nbsp;&nbsp;9 - <span style="color:#00BFFF">&#9608;</span> Light Blue;</li>
+    <li>10 - <span style="color:#32CD32">&#9608;</span> Light Green;</li>
+    <li>11 - <span style="color:#AFEEEE">&#9608;</span> Light Cyan;</li>
+    <li>12 - <span style="color:#FF6347">&#9608;</span> Light Red;</li>
+    <li>13 - <span style="color:#EE82EE">&#9608;</span> Light Magenta;</li>
+    <li>14 - <span style="color:#FFFF00">&#9608;</span> Yellow;</li>
+    <li>15 - <span style="color:#F5F5F5">&#9608;</span> White;</li>
+    <li>16 - <span style="color:#FFB6C1">&#9608;</span> Pink;</li>
+    <li>17 - <span style="color:#FF8C00">&#9608;</span> Light Orange;</li>
+    <li>18 - <span style="color:#BDB76B">&#9608;</span> Light Brown (default);</li>
+    <li>19 - <span style="color:#DAA520">&#9608;</span> Orange;</li>
   </ul>
   Additionaly, you can use the following special comments in the global block:<br />
   <br />
@@ -81,7 +82,7 @@
   <pre>
 Actor ChexShield : ResistanceRune replaces ResistanceRune 5104
 {
-  //$Category powerups
+  //$Category &quot;Pickups/Chex Powerups&quot;
   //$Sprite ARMXA0
   //$Title "Chex Shield"
   //$Color 12

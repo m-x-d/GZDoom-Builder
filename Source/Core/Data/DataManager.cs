@@ -1341,6 +1341,7 @@ namespace CodeImp.DoomBuilder.Data
 		private int LoadDecorateThings(Dictionary<int, string> spawnnumsoverride, Dictionary<int, string> doomednumsoverride)
 		{
 			int counter = 0;
+			char[] catsplitter = new[] {Path.AltDirectorySeparatorChar}; //mxd
 			
 			// Create new parser
 			decorate = new DecorateParser();
@@ -1382,8 +1383,12 @@ namespace CodeImp.DoomBuilder.Data
 						// Check if we want to add this actor
 						if(actor.DoomEdNum > 0)
 						{
-							string catname = actor.GetPropertyAllValues("$category").ToLowerInvariant();
-							if(string.IsNullOrEmpty(catname.Trim())) catname = "decorate";
+							string catname = actor.GetPropertyAllValues("$category");
+							string[] catnames; //mxd
+							if(string.IsNullOrEmpty(catname.Trim()))
+								catnames = new[] { "decorate" };
+							else
+								catnames = catname.Split(catsplitter, StringSplitOptions.RemoveEmptyEntries); //mxd
 							
 							// Check if we can find this thing in our existing collection
 							if(thingtypes.ContainsKey(actor.DoomEdNum))
@@ -1394,7 +1399,7 @@ namespace CodeImp.DoomBuilder.Data
 							else
 							{
 								// Find the category to put the actor in
-								ThingCategory cat = GetThingCategory(actor, catname);
+								ThingCategory cat = GetThingCategory(null, thingcategories, catnames); //mxd
 								
 								// Add new thing
 								ThingTypeInfo t = new ThingTypeInfo(cat, actor);
@@ -1450,9 +1455,14 @@ namespace CodeImp.DoomBuilder.Data
 							if(actor != null)
 							{
 								// Find the category to put the actor in
-								string catname = actor.GetPropertyAllValues("$category").ToLowerInvariant();
-								if(string.IsNullOrEmpty(catname.Trim())) catname = "decorate";
-								ThingCategory cat = GetThingCategory(actor, catname);
+								string catname = actor.GetPropertyAllValues("$category");
+								string[] catnames; //mxd
+								if(string.IsNullOrEmpty(catname.Trim()))
+									catnames = new[] { "decorate" };
+								else
+									catnames = catname.Split(catsplitter, StringSplitOptions.RemoveEmptyEntries); //mxd
+
+								ThingCategory cat = GetThingCategory(null, thingcategories, catnames); //mxd
 
 								// Add a new ThingTypeInfo, replacing already existing one if necessary
 								ThingTypeInfo info = new ThingTypeInfo(cat, actor, group.Key);
@@ -1551,31 +1561,44 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		//mxd
-		private ThingCategory GetThingCategory(ActorStructure actor, string catname) 
+		private static ThingCategory GetThingCategory(ThingCategory parent, List<ThingCategory> categories, string[] catnames) 
 		{
 			// Find the category to put the actor in
-			// First search by Title, then search by Name
 			ThingCategory cat = null;
-			foreach(ThingCategory c in thingcategories) 
+			string catname = catnames[0].ToLowerInvariant().Trim();
+			if(string.IsNullOrEmpty(catname)) catname = "decorate";
+			if(parent != null) catname = parent.Name + "." + catname;
+
+			// First search by Title...
+			foreach(ThingCategory c in categories) 
 			{
 				if(c.Title.ToLowerInvariant() == catname) cat = c;
 			}
 
+			//... then - by Name
 			if(cat == null) 
 			{
-				foreach(ThingCategory c in thingcategories) 
+				foreach(ThingCategory c in categories) 
 				{
 					if(c.Name.ToLowerInvariant() == catname) cat = c;
 				}
 			}
 
 			// Make the category if needed
-			if(cat == null) 
+			if(cat == null)
 			{
-				string catfullname = actor.GetPropertyAllValues("$category");
-				if(string.IsNullOrEmpty(catfullname.Trim())) catfullname = "Decorate";
-				cat = new ThingCategory(catname, catfullname);
-				thingcategories.Add(cat);
+				string cattitle = catnames[0].Trim();
+				if(string.IsNullOrEmpty(cattitle)) cattitle = "Decorate";
+				cat = new ThingCategory(catname, cattitle);
+				categories.Add(cat); // ^.^
+			}
+
+			// Still have subcategories?
+			if(catnames.Length > 1)
+			{
+				string[] remainingnames = new string[catnames.Length - 1];
+				Array.Copy(catnames, 1, remainingnames, 0, remainingnames.Length);
+				return GetThingCategory(cat, cat.Children, remainingnames);
 			}
 
 			return cat;

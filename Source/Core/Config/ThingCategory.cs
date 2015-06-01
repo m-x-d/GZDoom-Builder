@@ -41,6 +41,7 @@ namespace CodeImp.DoomBuilder.Config
 		private readonly string name;
 		private readonly string title;
 		private readonly bool sorted;
+		private List<ThingCategory> children; //mxd 
 
 		// Thing properties for inheritance
 		private readonly string sprite;
@@ -67,6 +68,7 @@ namespace CodeImp.DoomBuilder.Config
 		public string Title { get { return title; } }
 		public string Sprite { get { return sprite; } }
 		public bool Sorted { get { return sorted; } }
+		public List<ThingCategory> Children { get { return children; } } //mxd
 		public int Color { get { return color; } }
 		public int Arrow { get { return arrow; } }
 		public float Radius { get { return radius; } }
@@ -92,6 +94,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.name = name;
 			this.title = title;
 			this.things = new List<ThingTypeInfo>();
+			this.children = new List<ThingCategory>();
 			
 			// Set default properties
 			this.sprite = "";
@@ -113,36 +116,57 @@ namespace CodeImp.DoomBuilder.Config
 		}
 		
 		// Constructor
-		internal ThingCategory(Configuration cfg, string name, IDictionary<string, EnumList> enums)
+		internal ThingCategory(Configuration cfg, ThingCategory parent, string name, IDictionary<string, EnumList> enums)
 		{
-			IDictionary dic;
 			int index;
 			
 			// Initialize
 			this.name = name;
 			this.things = new List<ThingTypeInfo>();
+			this.children = new List<ThingCategory>();
 			
 			// Read properties
 			this.title = cfg.ReadSetting("thingtypes." + name + ".title", "<category>");
-			this.sprite = cfg.ReadSetting("thingtypes." + name + ".sprite", "");
-			this.sorted = (cfg.ReadSetting("thingtypes." + name + ".sort", 0) != 0);
-			this.color = cfg.ReadSetting("thingtypes." + name + ".color", 0);
-			this.arrow = cfg.ReadSetting("thingtypes." + name + ".arrow", 0);
-			this.radius = cfg.ReadSetting("thingtypes." + name + ".width", 10);
-			this.height = cfg.ReadSetting("thingtypes." + name + ".height", 20);
-			this.hangs = cfg.ReadSetting("thingtypes." + name + ".hangs", 0);
-			this.blocking = cfg.ReadSetting("thingtypes." + name + ".blocking", 0);
-			this.errorcheck = cfg.ReadSetting("thingtypes." + name + ".error", 1);
-			this.fixedsize = cfg.ReadSetting("thingtypes." + name + ".fixedsize", false);
-			this.fixedrotation = cfg.ReadSetting("thingtypes." + name + ".fixedrotation", false); //mxd
-			this.absolutez = cfg.ReadSetting("thingtypes." + name + ".absolutez", false);
-			this.spritescale = cfg.ReadSetting("thingtypes." + name + ".spritescale", 1.0f);
+
+			if(parent != null) //mxd
+			{
+				this.sprite = cfg.ReadSetting("thingtypes." + name + ".sprite", parent.sprite);
+				this.sorted = (cfg.ReadSetting("thingtypes." + name + ".sort", (parent.sorted ? 1 : 0)) != 0);
+				this.color = cfg.ReadSetting("thingtypes." + name + ".color", parent.color);
+				this.arrow = cfg.ReadSetting("thingtypes." + name + ".arrow", parent.arrow);
+				this.radius = cfg.ReadSetting("thingtypes." + name + ".width", parent.radius);
+				this.height = cfg.ReadSetting("thingtypes." + name + ".height", parent.height);
+				this.hangs = cfg.ReadSetting("thingtypes." + name + ".hangs", parent.hangs);
+				this.blocking = cfg.ReadSetting("thingtypes." + name + ".blocking", parent.blocking);
+				this.errorcheck = cfg.ReadSetting("thingtypes." + name + ".error", parent.errorcheck);
+				this.fixedsize = cfg.ReadSetting("thingtypes." + name + ".fixedsize", parent.fixedsize);
+				this.fixedrotation = cfg.ReadSetting("thingtypes." + name + ".fixedrotation", parent.fixedrotation); //mxd
+				this.absolutez = cfg.ReadSetting("thingtypes." + name + ".absolutez", parent.absolutez);
+				this.spritescale = cfg.ReadSetting("thingtypes." + name + ".spritescale", parent.spritescale);
+			}
+			else
+			{
+				this.sprite = cfg.ReadSetting("thingtypes." + name + ".sprite", "");
+				this.sorted = (cfg.ReadSetting("thingtypes." + name + ".sort", 0) != 0);
+				this.color = cfg.ReadSetting("thingtypes." + name + ".color", 0);
+				this.arrow = cfg.ReadSetting("thingtypes." + name + ".arrow", 0);
+				this.radius = cfg.ReadSetting("thingtypes." + name + ".width", 10);
+				this.height = cfg.ReadSetting("thingtypes." + name + ".height", 20);
+				this.hangs = cfg.ReadSetting("thingtypes." + name + ".hangs", 0);
+				this.blocking = cfg.ReadSetting("thingtypes." + name + ".blocking", 0);
+				this.errorcheck = cfg.ReadSetting("thingtypes." + name + ".error", 1);
+				this.fixedsize = cfg.ReadSetting("thingtypes." + name + ".fixedsize", false);
+				this.fixedrotation = cfg.ReadSetting("thingtypes." + name + ".fixedrotation", false); //mxd
+				this.absolutez = cfg.ReadSetting("thingtypes." + name + ".absolutez", false);
+				this.spritescale = cfg.ReadSetting("thingtypes." + name + ".spritescale", 1.0f);
+			}
 			
 			// Safety
 			if(this.radius < 4f) this.radius = 8f;
 			
 			// Go for all items in category
-			dic = cfg.ReadSetting("thingtypes." + name, new Hashtable());
+			IDictionary dic = cfg.ReadSetting("thingtypes." + name, new Hashtable());
+			Dictionary<string, ThingCategory> cats = new Dictionary<string, ThingCategory>(StringComparer.Ordinal); //mxd
 			foreach(DictionaryEntry de in dic)
 			{
 				// Check if the item key is numeric
@@ -161,7 +185,21 @@ namespace CodeImp.DoomBuilder.Config
 						things.Add(new ThingTypeInfo(this, index, de.Value.ToString()));
 					}
 				}
+				//mxd. This should be a child category 
+				else if(de.Value is IDictionary)
+				{
+					ThingCategory child = new ThingCategory(cfg, this, name + "." + de.Key, enums);
+					if(child.things.Count > 0)
+					{
+						if(cats.ContainsKey(child.title.ToLowerInvariant()))
+							General.ErrorLogger.Add(ErrorType.Warning, "Thing Category '" + child.title + "' is double-defined in " + this.title);
+						cats[child.title.ToLowerInvariant()] = child;
+					}
+				}
 			}
+
+			//mxd. Add to main collection
+			foreach (ThingCategory tc in cats.Values) children.Add(tc);
 
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -176,6 +214,9 @@ namespace CodeImp.DoomBuilder.Config
 				// Clean up
 				things = null;
 
+				//mxd. Dispose children (oh so cruel!!11)
+				foreach (ThingCategory tc in children) tc.Dispose();
+
 				// Done
 				isdisposed = true;
 			}
@@ -189,6 +230,9 @@ namespace CodeImp.DoomBuilder.Config
 		internal void SortIfNeeded()
 		{
 			if(sorted) things.Sort();
+
+			//mxd. Sort children as well
+			foreach (ThingCategory tc in children) tc.SortIfNeeded();
 		}
 		
 		// This adds a thing to the category

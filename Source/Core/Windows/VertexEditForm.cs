@@ -396,7 +396,7 @@ namespace CodeImp.DoomBuilder.Windows
 		// Help requested
 		private void VertexEditForm_HelpRequested(object sender, HelpEventArgs hlpevent)
 		{
-			General.ShowHelp("w_vertexeditor.html");
+			General.ShowHelp("w_vertexedit.html");
 			hlpevent.Handled = true;
 		}
 

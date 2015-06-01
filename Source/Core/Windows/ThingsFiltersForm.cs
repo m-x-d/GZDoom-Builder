@@ -31,6 +31,27 @@ namespace CodeImp.DoomBuilder.Windows
 {
 	internal partial class ThingsFiltersForm : DelayedForm
 	{
+		#region ================== Structs
+
+		private class ThingCategoryData //mxd
+		{
+			public ThingCategory Category;
+			public string FullName;
+
+			public ThingCategoryData(ThingCategory category, string fullname)
+			{
+				Category = category;
+				FullName = fullname;
+			}
+
+			public override string ToString() 
+			{
+				return FullName;
+			}
+		}
+
+		#endregion
+
 		#region ================== Variables
 
 		private bool settingup;
@@ -55,7 +76,9 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			// Fill the categories combobox
 			filtercategory.Items.Add("(any category)");
-			filtercategory.Items.AddRange(General.Map.Data.ThingCategories.ToArray());
+
+			//mxd. Add ThingCategories with subcategories
+			AddThingFilterCategories(General.Map.Data.ThingCategories, string.Empty);
 			
 			// Fill actions list
 			filteraction.GeneralizedCategories = General.Map.Config.GenActionCategories;
@@ -106,6 +129,17 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			// Done
 			settingup = false;
+		}
+
+		//mxd. This recursively adds ThingCategories
+		private void AddThingFilterCategories(List<ThingCategory> list, string fullname) 
+		{
+			foreach (ThingCategory cat in list)
+			{
+				string catname = (string.IsNullOrEmpty(fullname) ? cat.Title : fullname + " / " + cat.Title);
+				filtercategory.Items.Add(new ThingCategoryData(cat, catname));
+				AddThingFilterCategories(cat.Children, catname);
+			}
 		}
 
 		#endregion
@@ -185,8 +219,8 @@ namespace CodeImp.DoomBuilder.Windows
 				// Properties
 				foreach(object c in filtercategory.Items)
 				{
-					ThingCategory tc = (c as ThingCategory);
-					if((tc != null) && (tc.Name == f.CategoryName)) filtercategory.SelectedItem = tc;
+					ThingCategoryData tc = (c as ThingCategoryData); //mxd
+					if((tc != null) && (tc.Category.Name == f.CategoryName)) filtercategory.SelectedItem = tc;
 				}
 				if(filtercategory.SelectedIndex == -1) filtercategory.SelectedIndex = 0;
 				
@@ -242,7 +276,8 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 				
 				// Custom fields
-				if (General.Map.FormatInterface.HasCustomFields) { //mxd
+				if(General.Map.FormatInterface.HasCustomFields) //mxd 
+				{ 
 					fieldslist.ClearFields();
 					fieldslist.Setup("thing");
 					fieldslist.SetValues(f.ThingCustomFields, true);
@@ -277,16 +312,16 @@ namespace CodeImp.DoomBuilder.Windows
 		private void filtercategory_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			// Anything selected?
-			if(listfilters.SelectedItems.Count > 0)
+			if(!settingup && listfilters.SelectedItems.Count > 0)
 			{
 				// Get selected filter
 				ThingsFilter f = listfilters.SelectedItems[0].Tag as ThingsFilter;
 				
 				// Category selected
-				if((filtercategory.SelectedIndex > -1) && (filtercategory.SelectedItem is ThingCategory))
+				if((filtercategory.SelectedIndex > -1) && (filtercategory.SelectedItem is ThingCategoryData))
 				{
 					// Set new category name
-					f.CategoryName = (filtercategory.SelectedItem as ThingCategory).Name;
+					f.CategoryName = (filtercategory.SelectedItem as ThingCategoryData).Category.Name; //mxd
 				}
 				else
 				{
