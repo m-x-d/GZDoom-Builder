@@ -1575,7 +1575,7 @@ namespace CodeImp.DoomBuilder.Data
 				if(c.Title.ToLowerInvariant() == catname) cat = c;
 			}
 
-			//... then - by Name
+			//...then - by Name
 			if(cat == null) 
 			{
 				foreach(ThingCategory c in categories) 
@@ -1589,7 +1589,7 @@ namespace CodeImp.DoomBuilder.Data
 			{
 				string cattitle = catnames[0].Trim();
 				if(string.IsNullOrEmpty(cattitle)) cattitle = "Decorate";
-				cat = new ThingCategory(catname, cattitle);
+				cat = new ThingCategory(parent, catname, cattitle);
 				categories.Add(cat); // ^.^
 			}
 
