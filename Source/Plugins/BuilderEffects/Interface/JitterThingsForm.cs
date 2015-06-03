@@ -130,7 +130,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 					if(t.Sector == null) t.DetermineSector();
 					if(t.Sector == null) continue;
 
-					d.SectorHeight = Math.Max(0, t.Sector.CeilHeight - (int)General.Map.Data.GetThingInfo(t.Type).Height - t.Sector.FloorHeight);
+					d.SectorHeight = Math.Max(0, t.Sector.CeilHeight - (int)t.Height - t.Sector.FloorHeight);
 					if(MaxSafeHeightDistance < d.SectorHeight) MaxSafeHeightDistance = d.SectorHeight;
 					d.ZOffset = (int)t.Position.z;
 				}
