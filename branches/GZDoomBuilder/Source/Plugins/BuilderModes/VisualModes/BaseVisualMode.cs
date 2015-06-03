@@ -2206,7 +2206,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					if(vt.Thing.Sector == null) continue;
 					SectorData sd = GetSectorData(vt.Thing.Sector);
-					vt.OnMove(new Vector3D(vt.Thing.Position, BuilderModesTools.GetHigherThingZ(sd, vt.Thing.Position, vt.Info.Height, vt.Info.AbsoluteZ, vt.Info.Hangs)));
+					vt.OnMove(new Vector3D(vt.Thing.Position, BuilderModesTools.GetHigherThingZ(sd, vt.Thing.Position, vt.Thing.Height, vt.Info.AbsoluteZ, vt.Info.Hangs)));
 				}
 			}
 
@@ -2418,7 +2418,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					if(vt.Thing.Sector == null) continue;
 					SectorData sd = GetSectorData(vt.Thing.Sector);
-					vt.OnMove(new Vector3D(vt.Thing.Position, BuilderModesTools.GetLowerThingZ(sd, vt.Thing.Position, vt.Info.Height, vt.Info.AbsoluteZ, vt.Info.Hangs)));
+					vt.OnMove(new Vector3D(vt.Thing.Position, BuilderModesTools.GetLowerThingZ(sd, vt.Thing.Position, vt.Thing.Height, vt.Info.AbsoluteZ, vt.Info.Hangs)));
 				}
 			}
 

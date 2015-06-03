@@ -3,7 +3,6 @@ using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.VisualModes;
 using CodeImp.DoomBuilder.GZBuilder.Geometry;
 using CodeImp.DoomBuilder.Geometry;
-using CodeImp.DoomBuilder.Config;
 
 namespace CodeImp.DoomBuilder.GZBuilder.Data 
 {
@@ -25,7 +24,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 			foreach (VisualThing vt in visualThings) things.Add(vt.Thing);
 
 			ThingsCheckResult result = CheckThings(things);
-			if (result.ProcessPathNodes || result.ProcessInterpolationPoints || result.ProcessThingsWithGoal || result.ProcessCameras)
+			if (result.ProcessPathNodes || result.ProcessInterpolationPoints || result.ProcessThingsWithGoal || result.ProcessCameras || result.ProcessPolyobjects)
 				return GetThingLinks(result, true);
 			return new List<Line3D>();
 		}
@@ -280,9 +279,12 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 					foreach(Thing anchor in group.Value)
 					{
 						start = anchor.Position;
+						if(correctHeight) start.z += GetCorrectHeight(anchor);
+
 						foreach(Thing startspot in polyobjectStartSpots[group.Key]) 
 						{
 							end = startspot.Position;
+							if(correctHeight) end.z += GetCorrectHeight(startspot);
 							lines.Add(new Line3D(start, end, Line3DType.ACTIVATOR));
 						}
 					}
@@ -294,8 +296,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 
 		private static float GetCorrectHeight(Thing thing) 
 		{
-			ThingTypeInfo tti = General.Map.Data.GetThingInfo(thing.Type);
-			float height = tti.Height / 2f;
+			float height = thing.Height / 2f;
 			if (thing.Sector != null) height += thing.Sector.FloorHeight;
 			return height;
 		}
