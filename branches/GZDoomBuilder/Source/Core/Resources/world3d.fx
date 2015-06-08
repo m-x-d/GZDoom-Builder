@@ -191,7 +191,7 @@ float4 ps_main_highlight_fog(LitPixelData pd) : COLOR
 	// Blend texture color, vertex color and modulation color
 	float4 ncolor = tcolor * pd.color * modulatecolor;
 	float4 hcolor = float4(highlightcolor.rgb, ncolor.a);
-  return getFogColor(pd, float4(hcolor.rgb * highlightcolor.a + (ncolor.rgb - 0.4f * highlightcolor.a), ncolor.a + 0.25f)); //tcolor.a
+	return getFogColor(pd, float4(hcolor.rgb * highlightcolor.a + (ncolor.rgb - 0.4f * highlightcolor.a), ncolor.a + 0.25f)) * float4(highlightcolor.rgb, 1.0f);
 }
 
 //mxd: used to draw bounding boxes
