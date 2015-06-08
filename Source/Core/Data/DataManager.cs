@@ -1383,7 +1383,7 @@ namespace CodeImp.DoomBuilder.Data
 						// Check if we want to add this actor
 						if(actor.DoomEdNum > 0)
 						{
-							string catname = actor.GetPropertyAllValues("$category");
+							string catname = ZDTextParser.StripQuotes(actor.GetPropertyAllValues("$category"));
 							string[] catnames; //mxd
 							if(string.IsNullOrEmpty(catname.Trim()))
 								catnames = new[] { "decorate" };
@@ -1455,7 +1455,7 @@ namespace CodeImp.DoomBuilder.Data
 							if(actor != null)
 							{
 								// Find the category to put the actor in
-								string catname = actor.GetPropertyAllValues("$category");
+								string catname = ZDTextParser.StripQuotes(actor.GetPropertyAllValues("$category"));
 								string[] catnames; //mxd
 								if(string.IsNullOrEmpty(catname.Trim()))
 									catnames = new[] { "decorate" };
@@ -1567,13 +1567,15 @@ namespace CodeImp.DoomBuilder.Data
 			ThingCategory cat = null;
 			string catname = catnames[0].ToLowerInvariant().Trim();
 			if(string.IsNullOrEmpty(catname)) catname = "decorate";
-			if(parent != null) catname = parent.Name + "." + catname;
 
 			// First search by Title...
 			foreach(ThingCategory c in categories) 
 			{
 				if(c.Title.ToLowerInvariant() == catname) cat = c;
 			}
+
+			// Make full name
+			if(parent != null) catname = parent.Name.ToLowerInvariant() + "." + catname;
 
 			//...then - by Name
 			if(cat == null) 
