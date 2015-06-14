@@ -30,6 +30,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		public float ButtonStepBig { get { return value1.ButtonStepBig; } set { value1.ButtonStepBig = value; value2.ButtonStepBig = value; } }
 		public float ButtonStepSmall { get { return value1.ButtonStepSmall; } set { value1.ButtonStepSmall = value; value2.ButtonStepSmall = value; } }
 		public bool ButtonStepsUseModifierKeys { get { return value1.ButtonStepsUseModifierKeys; } set { value1.ButtonStepsUseModifierKeys = value; value2.ButtonStepsUseModifierKeys = value; } }
+		public bool LinkValues { get { return linkValues; } set { linkValues = value; bLink.Image = (linkValues ? Resources.Link : Resources.Unlink); } }
 
         #endregion
         

@@ -60,6 +60,9 @@ namespace CodeImp.DoomBuilder.Windows
 		private static Point location = Point.Empty;
 		private static int activetab;
 
+		//mxd. Persistent settings
+		private static bool linkscale;
+
 		private struct ThingProperties //mxd
 		{
 			//public readonly int Type;
@@ -153,6 +156,9 @@ namespace CodeImp.DoomBuilder.Windows
 				posY.AllowDecimal = true;
 				posZ.AllowDecimal = true;
 			}
+
+			// Value linking
+			scale.LinkValues = linkscale;
 
 			// Setup types list
 			thingtype.Setup();
@@ -676,6 +682,9 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Settings.DefaultThingType = thingtype.GetResult(General.Settings.DefaultThingType);
 			General.Settings.DefaultThingAngle = Angle2D.DegToRad((float)angle.GetResult((int)Angle2D.RadToDeg(General.Settings.DefaultThingAngle) - 90) + 90);
 			General.Settings.SetDefaultThingFlags(defaultflags);
+
+			// Store value linking
+			linkscale = scale.LinkValues;
 
 			// Done
 			General.Map.IsChanged = true;
