@@ -128,7 +128,7 @@ namespace CodeImp.DoomBuilder
 			DataLocationList locations = new DataLocationList();
 			locations.AddRange(General.Map.ConfigSettings.Resources);
 			locations.AddRange(General.Map.Options.Resources);
-			locations.Add(maplocation);
+			if(!string.IsNullOrEmpty(maplocation.location)) locations.Add(maplocation); //mxd. maplocation.location will be empty when a newly created map was not saved yet.
 			
 			// Go for all data locations
 			foreach(DataLocation dl in locations)
