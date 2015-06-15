@@ -313,23 +313,27 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			new Line2D(from, to).GetIntersection(Sidedef.Line.Line, out u);
 			if(Sidedef != Sidedef.Line.Front) u = 1.0f - u;
 
-			// Get correct vertical offset to texture space...
+			// Get correct offset to texture space...
 			float zoffset;
+			int ox = (int)Math.Floor((u * Sidedef.Line.Length * UDMFTools.GetFloat(Sidedef.Fields, "scalex_mid", 1.0f) + Sidedef.OffsetX + UDMFTools.GetFloat(Sidedef.Fields, "offsetx_mid")) % Texture.Width);
+			int oy;
+
 			if(repeatmidtex)
 			{
 				if(Sidedef.Line.IsFlagSet(General.Map.Config.LowerUnpeggedFlag))
 					zoffset = Sidedef.Sector.FloorHeight;
 				else
 					zoffset = Sidedef.Sector.CeilHeight;
+
+				oy = (int)Math.Floor(((pickintersect.z - zoffset) * UDMFTools.GetFloat(Sidedef.Fields, "scaley_mid", 1.0f) - Sidedef.OffsetY - UDMFTools.GetFloat(Sidedef.Fields, "offsety_mid")) % Texture.Height);
 			}
 			else
 			{
 				zoffset = bottomclipplane.GetZ(pickintersect);
+				oy = (int)Math.Floor(((pickintersect.z - zoffset) * UDMFTools.GetFloat(Sidedef.Fields, "scaley_mid", 1.0f)) % Texture.Height);
 			}
 
-			// Get offsets in texture space
-			int ox = (int)Math.Floor((u * Sidedef.Line.Length * UDMFTools.GetFloat(Sidedef.Fields, "scalex_mid", 1.0f) + Sidedef.OffsetX + UDMFTools.GetFloat(Sidedef.Fields, "offsetx_mid")) % Texture.Width);
-			int oy = (int)Math.Floor(((pickintersect.z - zoffset) * UDMFTools.GetFloat(Sidedef.Fields, "scaley_mid", 1.0f) - Sidedef.OffsetY - UDMFTools.GetFloat(Sidedef.Fields, "offsety_mid")) % Texture.Height);
+			// Make sure offsets are inside of texture dimensions...
 			if(ox < 0) ox = Texture.Width + ox;
 			if(oy < 0) oy = Texture.Height + oy;
 
