@@ -1358,15 +1358,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			float offsety = dragdeltaz.GetLength();
 			if((Math.Sign(dragdeltaxy.x) < 0) || (Math.Sign(dragdeltaxy.y) < 0) || (Math.Sign(dragdeltaxy.z) < 0)) offsetx = -offsetx;
 			if((Math.Sign(dragdeltaz.x) < 0) || (Math.Sign(dragdeltaz.y) < 0) || (Math.Sign(dragdeltaz.z) < 0)) offsety = -offsety;
-
-			//mxd. Modify by surface scale?
-			if (General.Map.UDMF)
-			{
-				float sx = UDMFTools.GetFloat(Sidedef.Fields, "scalex_" + partname, 1.0f);
-				float sy = UDMFTools.GetFloat(Sidedef.Fields, "scaley_" + partname, 1.0f);
-				if (Math.Abs(sx) < 1) offsetx *= sx;
-				if (Math.Abs(sy) < 1) offsety *= sy;
-			}
 			
 			// Apply offsets
 			if(General.Interface.CtrlState && General.Interface.ShiftState) 
