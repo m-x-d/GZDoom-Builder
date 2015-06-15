@@ -295,13 +295,51 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			if(!repeatmidtex)
 			{
-				// Whe nthe texture is not repeated, leave when outside crop planes
+				// When the texture is not repeated, leave when outside crop planes
 				if((pickintersect.z < bottomclipplane.GetZ(pickintersect)) ||
 				   (pickintersect.z > topclipplane.GetZ(pickintersect)))
 				   return false;
 			}
 			
 			return base.PickFastReject(from, to, dir);
+		}
+
+		//mxd. Alpha based picking
+		public override bool PickAccurate(Vector3D from, Vector3D to, Vector3D dir, ref float u_ray) 
+		{
+			if(!Texture.IsImageLoaded) return base.PickAccurate(from, to, dir, ref u_ray);
+
+			float u;
+			new Line2D(from, to).GetIntersection(Sidedef.Line.Line, out u);
+			if(Sidedef != Sidedef.Line.Front) u = 1.0f - u;
+
+			// Get correct vertical offset to texture space...
+			float zoffset;
+			if(repeatmidtex)
+			{
+				if(Sidedef.Line.IsFlagSet(General.Map.Config.LowerUnpeggedFlag))
+					zoffset = Sidedef.Sector.FloorHeight;
+				else
+					zoffset = Sidedef.Sector.CeilHeight;
+			}
+			else
+			{
+				zoffset = bottomclipplane.GetZ(pickintersect);
+			}
+
+			// Get offsets in texture space
+			int ox = (int)Math.Floor((u * Sidedef.Line.Length * UDMFTools.GetFloat(Sidedef.Fields, "scalex_mid", 1.0f) + Sidedef.OffsetX + UDMFTools.GetFloat(Sidedef.Fields, "offsetx_mid")) % Texture.Width);
+			int oy = (int)Math.Floor(((pickintersect.z - zoffset) * UDMFTools.GetFloat(Sidedef.Fields, "scaley_mid", 1.0f) - Sidedef.OffsetY - UDMFTools.GetFloat(Sidedef.Fields, "offsety_mid")) % Texture.Height);
+			if(ox < 0) ox = Texture.Width + ox;
+			if(oy < 0) oy = Texture.Height + oy;
+
+			// Check pixel alpha
+			if(Texture.GetBitmap().GetPixel(General.Clamp(ox, 0, Texture.Width - 1), General.Clamp(Texture.Height - oy, 0, Texture.Height - 1)).A > 0)
+			{
+				return base.PickAccurate(from, to, dir, ref u_ray);
+			}
+
+			return false;
 		}
 		
 		// Return texture name

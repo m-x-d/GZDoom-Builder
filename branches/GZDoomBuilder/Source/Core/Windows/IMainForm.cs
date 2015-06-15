@@ -53,6 +53,7 @@ namespace CodeImp.DoomBuilder.Windows
 		DialogResult ShowEditVertices(ICollection<Vertex> vertices);
 		DialogResult ShowEditVertices(ICollection<Vertex> vertices, bool allowPositionChange); //mxd
 		DialogResult ShowEditLinedefs(ICollection<Linedef> lines);
+		DialogResult ShowEditLinedefs(ICollection<Linedef> lines, bool selectfront, bool selectback); //mxd
 		DialogResult ShowEditSectors(ICollection<Sector> sectors);
 		DialogResult ShowEditThings(ICollection<Thing> things);
 		void ShowLinedefInfo(Linedef l);

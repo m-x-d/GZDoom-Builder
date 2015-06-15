@@ -3524,12 +3524,18 @@ namespace CodeImp.DoomBuilder.Windows
 		// This shows the dialog to edit lines
 		public DialogResult ShowEditLinedefs(ICollection<Linedef> lines)
 		{
+			return ShowEditLinedefs(lines, false, false);
+		}
+		
+		// This shows the dialog to edit lines
+		public DialogResult ShowEditLinedefs(ICollection<Linedef> lines, bool selectfront, bool selectback)
+		{
 			DialogResult result;
 			
 			// Show line edit dialog
 			if(General.Map.UDMF) //mxd
 			{
-				LinedefEditFormUDMF f = new LinedefEditFormUDMF();
+				LinedefEditFormUDMF f = new LinedefEditFormUDMF(selectfront, selectback);
 				DisableProcessing(); //mxd
 				f.Setup(lines);
 				EnableProcessing(); //mxd

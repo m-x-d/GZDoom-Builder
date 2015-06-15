@@ -1291,7 +1291,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				General.Interface.OnEditFormValuesChanged += Interface_OnEditFormValuesChanged;
 				mode.StartRealtimeInterfaceUpdate(SelectionType.Linedefs);
-				DialogResult result = General.Interface.ShowEditLinedefs(linedefs);
+				DialogResult result = General.Interface.ShowEditLinedefs(linedefs, Sidedef.IsFront, !Sidedef.IsFront);
 				mode.StopRealtimeInterfaceUpdate(SelectionType.Linedefs);
 				General.Interface.OnEditFormValuesChanged -= Interface_OnEditFormValuesChanged;
 
