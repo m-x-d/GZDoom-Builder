@@ -86,7 +86,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 				else if (token == "{")
 				{
 					int bracelevel = 1;
-					while(token != null && bracelevel > 0)
+					while(!string.IsNullOrEmpty(token) && bracelevel > 0)
 					{
 						parser.SkipWhitespace(false);
 						token = parser.ReadToken();
@@ -109,14 +109,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 				else
 				{
 					// First part of the sprite name
-					if(string.IsNullOrEmpty(token))
-					{
-						parser.ReportError("Unexpected end of structure");
-						return;
-					}
-
-					//mxd. First part of the sprite name can be quoted
-					token = parser.StripTokenQuotes(token);
+					token = parser.StripTokenQuotes(token); //mxd. First part of the sprite name can be quoted
 					if(string.IsNullOrEmpty(token)) 
 					{
 						parser.ReportError("Unexpected end of structure");
@@ -125,16 +118,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 					
 					// Frames of the sprite name
 					parser.SkipWhitespace(true);
-					string spriteframes = parser.ReadToken();
-					if(spriteframes == null)
-					{
-						parser.ReportError("Unexpected end of structure");
-						return;
-					}
-
-					//mxd. Frames can be quoted
-					spriteframes = parser.StripTokenQuotes(spriteframes);
-					if(spriteframes == null) 
+					string spriteframes = parser.StripTokenQuotes(parser.ReadToken()); //mxd. Frames can be quoted
+					if(string.IsNullOrEmpty(spriteframes))
 					{
 						parser.ReportError("Unexpected end of structure");
 						return;
@@ -163,8 +148,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 					}
 					
 					// Continue until the end of the line
-					string t = "";
-					while((t != "\n") && (t != null))
+					string t = parser.ReadToken();
+					while(!string.IsNullOrEmpty(t) && t != "\n")
 					{
 						parser.SkipWhitespace(false);
 						t = parser.ReadToken();

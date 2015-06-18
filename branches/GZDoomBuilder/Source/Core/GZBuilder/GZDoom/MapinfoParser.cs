@@ -62,7 +62,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 			while (SkipWhitespace(true)) 
 			{
 				string token = ReadToken();
-				if (token != null) 
+				if (!string.IsNullOrEmpty(token)) 
 				{
 					token = token.ToLowerInvariant();
 					if (ParseBlock(token, mapname)) break;

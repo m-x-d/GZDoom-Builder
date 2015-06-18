@@ -203,8 +203,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 		// Returns null when the end of the stream has been reached
 		protected internal string ReadToken()
 		{
-			// Return null when the end of the stream has been reached
-			if(datastream.Position == datastream.Length) return null;
+			//mxd. Return empty string when the end of the stream has been reached
+			if(datastream.Position == datastream.Length) return string.Empty;
 			
 			string token = "";
 			bool quotedstring = false;
