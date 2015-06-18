@@ -885,7 +885,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				fields["rotation" + si.Part] = new UniValue(UniversalType.AngleDegreesFloat, General.ClampAngle((float)Math.Round(Angle2D.RadToDeg(si.Rotation + texrotation), General.Map.FormatInterface.VertexDecimals)));
 			// Restore rotation
 			else 
-				fields["rotation" + si.Part] = new UniValue(UniversalType.AngleDegreesFloat, si.Rotation);
+				fields["rotation" + si.Part] = new UniValue(UniversalType.AngleDegreesFloat, Angle2D.RadToDeg(si.Rotation));
 
 			// Update scale
 			if(scaleoffsets)
