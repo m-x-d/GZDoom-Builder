@@ -212,8 +212,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 						while (parser.SkipWhitespace(true)) 
 						{
 							string t = parser.ReadToken();
-							if ((t == ";") || (t == null))
-								break;
+							if (string.IsNullOrEmpty(t) || t == ";") break;
 						}
 						break;
 
@@ -274,7 +273,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 						while (parser.SkipWhitespace(true)) 
 						{
 							string t = parser.ReadToken();
-							if ((t == ";") || (t == null)) break;
+							if (string.IsNullOrEmpty(t) || t == ";") break;
 							if (t.StartsWith("user_") && !userVars.Contains(t))
 								userVars.Add(t);
 						}
@@ -324,7 +323,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 						while (parser.SkipWhitespace(false)) 
 						{
 							string v = parser.ReadToken();
-							if (v == null) 
+							if (string.IsNullOrEmpty(v)) 
 							{
 								parser.ReportError("Unexpected end of structure");
 								return;
@@ -351,7 +350,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 							while (parser.SkipWhitespace(false)) 
 							{
 								string v = parser.ReadToken();
-								if (v == null) 
+								if (string.IsNullOrEmpty(v)) 
 								{
 									parser.ReportError("Unexpected end of structure");
 									return;

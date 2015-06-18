@@ -38,7 +38,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 						{
 							SkipWhitespace(true);
 							token = ReadToken();
-						} while(token!= "}");
+						} while(!string.IsNullOrEmpty(token) && token != "}");
 					}
 					else 
 					{

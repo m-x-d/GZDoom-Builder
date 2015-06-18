@@ -27,7 +27,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 			while (SkipWhitespace(true)) 
 			{
 				string token = ReadToken();
-				if (token != null) 
+				if (!string.IsNullOrEmpty(token)) 
 				{
 					token = StripTokenQuotes(token).ToLowerInvariant();
 					if (token == "model") //model structure start
@@ -62,7 +62,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							{
 								if (!SkipWhitespace(true)) break;
 								token2 = ReadToken();
-								if (token2 == null) break;
+								if (string.IsNullOrEmpty(token2)) break;
 							} 
 							while (token2 != "{");
 						}
@@ -72,7 +72,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						{
 							if (!SkipWhitespace(true)) break;
 							token2 = ReadToken();
-							if (token2 == null) break;
+							if (string.IsNullOrEmpty(token2)) break;
 							if (token2 == "{") scopelevel++;
 							if (token2 == "}") scopelevel--;
 						}

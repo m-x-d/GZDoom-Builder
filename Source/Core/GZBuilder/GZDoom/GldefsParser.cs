@@ -604,7 +604,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						// Now find closing brace
 						while(SkipWhitespace(true))
 						{
-							if(ReadToken() == "}") break;
+							string t = ReadToken();
+							if(string.IsNullOrEmpty(t) || t == "}") break;
 						}
 					}
 					else if (token == "#include") 
@@ -639,7 +640,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						{
 							if (!SkipWhitespace(true)) break;
 							token2 = ReadToken();
-							if (token2 == null) break;
+							if (string.IsNullOrEmpty(token2)) break;
 						}
 						while (token2 != "{");
 						int scopelevel = 1;
@@ -647,7 +648,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						{
 							if (!SkipWhitespace(true)) break;
 							token2 = ReadToken();
-							if (token2 == null) break;
+							if(string.IsNullOrEmpty(token2)) break;
 							if (token2 == "{") scopelevel++;
 							if (token2 == "}") scopelevel--;
 						}

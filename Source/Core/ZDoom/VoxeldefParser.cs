@@ -30,7 +30,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			{
 				string token = ReadToken();
 
-				if(token != null) 
+				if(!string.IsNullOrEmpty(token)) 
 				{
 					token = StripTokenQuotes(token).ToLowerInvariant();
 

@@ -404,7 +404,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 			while (parser.SkipWhitespace(true)) 
 			{
 				token = parser.ReadToken();
-				if (token == "}") break;
+				if (string.IsNullOrEmpty(token) || token == "}") break;
 			}
 
 			// Bail out when got errors or no models are used

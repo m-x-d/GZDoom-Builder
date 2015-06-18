@@ -86,7 +86,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			{
 				// Read a token
 				string objdeclaration = ReadToken();
-				if(objdeclaration != null)
+				if(!string.IsNullOrEmpty(objdeclaration))
 				{
 					objdeclaration = objdeclaration.ToLowerInvariant();
 					if(objdeclaration == "texture")
@@ -174,7 +174,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 						{
 							if(!SkipWhitespace(true)) break;
 							token2 = ReadToken();
-							if(token2 == null) break;
+							if(string.IsNullOrEmpty(token2)) break;
 						}
 						while(token2 != "{");
 						int scopelevel = 1;
@@ -182,7 +182,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 						{
 							if(!SkipWhitespace(true)) break;
 							token2 = ReadToken();
-							if(token2 == null) break;
+							if(string.IsNullOrEmpty(token2)) break;
 							if(token2 == "{") scopelevel++;
 							if(token2 == "}") scopelevel--;
 						}
