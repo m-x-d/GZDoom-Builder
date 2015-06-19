@@ -168,6 +168,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private Vector2D baseoffset;
 		private Vector2D basesize;
 		private bool linesflipped;
+		private bool usepreciseposition; //mxd
 
 		//mxd. Texture modification
 		private static bool transformflooroffsets;
@@ -210,7 +211,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		public bool Pasting { get { return pasting; } set { pasting = value; } }
 		public PasteOptions PasteOptions { get { return pasteoptions; } set { pasteoptions = value.Copy(); } }
-		
+
+		//mxd. Modification
+		internal bool UsePrecisePosition { get { return usepreciseposition; } set { usepreciseposition = value; } }
+
 		//mxd. Texture offset properties
 		internal bool TransformFloorOffsets { get { return transformflooroffsets; } set { transformflooroffsets = value; UpdateAllChanges(); } }
 		internal bool TransformCeilingOffsets { get { return transformceiloffsets; } set { transformceiloffsets = value; UpdateAllChanges(); } }
@@ -1038,6 +1042,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Add toolbar buttons
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.FlipSelectionH);
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.FlipSelectionV);
+
+			//mxd. Get EditPanel-related settings
+			usepreciseposition = (General.Map.UDMF && General.Settings.ReadPluginSetting("editselectionusespreciseposition", true));
 			
 			// Add docker
 			panel = new EditSelectionPanel(this);
@@ -1471,7 +1478,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				MapSet.FlipBackwardLinedefs(General.Map.Map.Linedefs);
 				
 				// Snap to map format accuracy
-				General.Map.Map.SnapAllToAccuracy();
+				General.Map.Map.SnapAllToAccuracy(usepreciseposition);
 				
 				// Update cached values
 				General.Map.Data.UpdateUsedTextures();
@@ -1508,6 +1515,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Remove toolbar buttons
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.FlipSelectionH);
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.FlipSelectionV);
+
+			//mxd. Save EditPanel-related settings 
+			General.Settings.WritePluginSetting("editselectionusespreciseposition", usepreciseposition);
 			
 			// Remove docker
 			General.Interface.RemoveDocker(docker);
