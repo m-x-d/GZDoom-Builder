@@ -271,9 +271,15 @@ namespace CodeImp.DoomBuilder.Map
 		// This snaps the vertex to the map format accuracy
 		public void SnapToAccuracy()
 		{
+			SnapToAccuracy(true);
+		}
+
+		// This snaps the vertex to the map format accuracy
+		public void SnapToAccuracy(bool usepreciseposition)
+		{
 			// Round the coordinates
-			Vector2D newpos = new Vector2D((float)Math.Round(pos.x, General.Map.FormatInterface.VertexDecimals),
-										   (float)Math.Round(pos.y, General.Map.FormatInterface.VertexDecimals));
+			Vector2D newpos = new Vector2D((float)Math.Round(pos.x, (usepreciseposition ? General.Map.FormatInterface.VertexDecimals : 0)),
+										   (float)Math.Round(pos.y, (usepreciseposition ? General.Map.FormatInterface.VertexDecimals : 0)));
 			this.Move(newpos);
 		}
 

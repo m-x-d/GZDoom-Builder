@@ -2776,8 +2776,14 @@ namespace CodeImp.DoomBuilder.Map
 		/// <summary>This snaps all vertices to the map format accuracy. Call this to ensure the vertices are at valid coordinates.</summary>
 		public void SnapAllToAccuracy()
 		{
-			foreach(Vertex v in vertices) v.SnapToAccuracy();
-			foreach(Thing t in things) t.SnapToAccuracy();
+			SnapAllToAccuracy(true);
+		}
+
+		/// <summary>This snaps all vertices to the map format accuracy. Call this to ensure the vertices are at valid coordinates.</summary>
+		public void SnapAllToAccuracy(bool usepreciseposition)
+		{
+			foreach(Vertex v in vertices) v.SnapToAccuracy(usepreciseposition);
+			foreach(Thing t in things) t.SnapToAccuracy(usepreciseposition);
 		}
 
 		/// <summary>This returns the next unused tag number.</summary>

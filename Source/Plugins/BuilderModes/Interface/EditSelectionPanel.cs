@@ -57,6 +57,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			InitializeComponent();
 			this.mode = mode;
+
+			//mxd
+			if(General.Map.UDMF) preciseposition.Checked = mode.UsePrecisePosition;
+			else preciseposition.Enabled = false;
 		}
 		
 		#endregion
@@ -346,6 +350,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			mode.ScaleCeilingOffsets = ceiltexscale.Checked;
 
 			preventchanges = false;
+		}
+
+		//mxd
+		private void preciseposition_CheckedChanged(object sender, EventArgs e) 
+		{
+			mode.UsePrecisePosition = preciseposition.Checked;
 		}
 		
 		#endregion
