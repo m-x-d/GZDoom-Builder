@@ -172,7 +172,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 
 							//relative path?
 							if(path.IndexOf(Path.DirectorySeparatorChar) == -1)
-								path = Path.Combine(Path.GetDirectoryName(mde.ModelNames[m]), path);
+								path = Path.Combine(Path.GetDirectoryName(mde.ModelNames[useSkins ? i : m]), path);
 
 							Texture t = LoadTexture(containers, path, device);
 
