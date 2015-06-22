@@ -1332,9 +1332,6 @@ namespace CodeImp.DoomBuilder.Rendering
 					foreach(KeyValuePair<int, List<Thing>> group in modelsByType) 
 					{
 						mde = General.Map.Data.ModeldefEntries[group.Key];
-						float maxX = Math.Max(Math.Abs(mde.Model.BoundingBox[4].X), Math.Abs(mde.Model.BoundingBox[1].X));
-						float maxY = Math.Max(Math.Abs(mde.Model.BoundingBox[4].Y), Math.Abs(mde.Model.BoundingBox[1].Y));
-						float maxSize = Math.Max(maxX, maxY);
 
 						foreach(Thing t in group.Value) 
 						{
@@ -1343,8 +1340,8 @@ namespace CodeImp.DoomBuilder.Rendering
 							float modelScale = scale * t.ActorScale.Width * t.ScaleX;
 
 							//should we render this model?
-							if(((screenpos.x + maxSize * modelScale) <= 0.0f) || ((screenpos.x - maxSize * modelScale) >= windowsize.Width) ||
-							((screenpos.y + maxSize * modelScale) <= 0.0f) || ((screenpos.y - maxSize * modelScale) >= windowsize.Height))
+							if(((screenpos.x + mde.Model.Radius * modelScale) <= 0.0f) || ((screenpos.x - mde.Model.Radius * modelScale) >= windowsize.Width) ||
+							((screenpos.y + mde.Model.Radius * modelScale) <= 0.0f) || ((screenpos.y - mde.Model.Radius * modelScale) >= windowsize.Height))
 								continue;
 
 							graphics.Shaders.Things2D.FillColor = t.Selected ? cHighlight : cWire;
