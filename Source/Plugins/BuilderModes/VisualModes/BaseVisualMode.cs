@@ -3834,7 +3834,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(matchbottom || matchtop || matchmid)
 				{
 					j.sidedef.Fields.BeforeFieldsChange();
-					j.controlSide.Fields.BeforeFieldsChange(); //mxd
+					if(j.sidedef.Index != j.controlSide.Index) j.controlSide.Fields.BeforeFieldsChange(); //mxd
 				}
 				
 				//mxd. Apply Scale
@@ -3863,9 +3863,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						offset -= j.sidedef.OffsetX;
 
 						if(matchtop)
-							j.sidedef.Fields["offsetx_top"] = new UniValue(UniversalType.Float, offset % General.Map.Data.GetTextureImage(j.sidedef.LongHighTexture).Width);
+							j.sidedef.Fields["offsetx_top"] = new UniValue(UniversalType.Float, (float)Math.Round(offset % General.Map.Data.GetTextureImage(j.sidedef.LongHighTexture).Width, General.Map.FormatInterface.VertexDecimals));
 						if(matchbottom)
-							j.sidedef.Fields["offsetx_bottom"] = new UniValue(UniversalType.Float, offset % General.Map.Data.GetTextureImage(j.sidedef.LongLowTexture).Width);
+							j.sidedef.Fields["offsetx_bottom"] = new UniValue(UniversalType.Float, (float)Math.Round(offset % General.Map.Data.GetTextureImage(j.sidedef.LongLowTexture).Width, General.Map.FormatInterface.VertexDecimals));
 						if(matchmid) 
 						{
 							if(j.sidedef.Index != j.controlSide.Index) //mxd. if it's a part of 3d-floor 
@@ -3874,7 +3874,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 								offset -= j.controlSide.Fields.GetValue("offsetx_mid", 0.0f);
 							}
 
-							j.sidedef.Fields["offsetx_mid"] = new UniValue(UniversalType.Float, offset % General.Map.Data.GetTextureImage(j.sidedef.LongMiddleTexture).Width);
+							j.sidedef.Fields["offsetx_mid"] = new UniValue(UniversalType.Float, (float)Math.Round(offset % General.Map.Data.GetTextureImage(j.sidedef.LongMiddleTexture).Width, General.Map.FormatInterface.VertexDecimals));
 						}
 					}
 
@@ -3882,12 +3882,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					{
 						float offset = ((start.Sidedef.Sector.CeilHeight - j.ceilingHeight) / scaley) * j.scaleY + ystartalign; //mxd
 						offset -= j.sidedef.OffsetY; //mxd
-						offset = (float)Math.Round(offset, General.Map.FormatInterface.VertexDecimals); //mxd
 						
 						if(matchtop)
-							j.sidedef.Fields["offsety_top"] = new UniValue(UniversalType.Float, Tools.GetSidedefTopOffsetY(j.sidedef, offset, j.scaleY / scaley, true) % General.Map.Data.GetTextureImage(j.sidedef.LongHighTexture).Height); //mxd
+							j.sidedef.Fields["offsety_top"] = new UniValue(UniversalType.Float, (float)Math.Round(Tools.GetSidedefTopOffsetY(j.sidedef, offset, j.scaleY / scaley, true) % General.Map.Data.GetTextureImage(j.sidedef.LongHighTexture).Height, General.Map.FormatInterface.VertexDecimals)); //mxd
 						if(matchbottom)
-							j.sidedef.Fields["offsety_bottom"] = new UniValue(UniversalType.Float, Tools.GetSidedefBottomOffsetY(j.sidedef, offset, j.scaleY / scaley, true) % General.Map.Data.GetTextureImage(j.sidedef.LongLowTexture).Height); //mxd
+							j.sidedef.Fields["offsety_bottom"] = new UniValue(UniversalType.Float, (float)Math.Round(Tools.GetSidedefBottomOffsetY(j.sidedef, offset, j.scaleY / scaley, true) % General.Map.Data.GetTextureImage(j.sidedef.LongLowTexture).Height, General.Map.FormatInterface.VertexDecimals)); //mxd
 						if(matchmid) 
 						{
 							//mxd. Side is part of a 3D floor?
@@ -3895,27 +3894,36 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							{
 								offset -= j.controlSide.OffsetY;
 								offset -= j.controlSide.Fields.GetValue("offsety_mid", 0.0f);
-								j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, offset % General.Map.Data.GetTextureImage(j.sidedef.LongMiddleTexture).Height);
+								j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, (float)Math.Round(offset % General.Map.Data.GetTextureImage(j.sidedef.LongMiddleTexture).Height, General.Map.FormatInterface.VertexDecimals));
 							} 
 							else
 							{
 								ImageData midtex = General.Map.Data.GetTextureImage(j.sidedef.LongMiddleTexture);
 								offset = Tools.GetSidedefMiddleOffsetY(j.sidedef, offset, j.scaleY / scaley, true) % midtex.Height;
 
-								if(j.sidedef.Other != null && !j.sidedef.IsFlagSet("wrapmidtex") && !j.sidedef.Line.IsFlagSet("wrapmidtex"))
+								bool startisnonwrappedmidtex = (start.Sidedef.Other != null && start.GeometryType == VisualGeometryType.WALL_MIDDLE && !start.Sidedef.IsFlagSet("wrapmidtex") && !start.Sidedef.Line.IsFlagSet("wrapmidtex"));
+								bool cursideisnonwrappedmidtex = (j.sidedef.Other != null && !j.sidedef.IsFlagSet("wrapmidtex") && !j.sidedef.Line.IsFlagSet("wrapmidtex"));
+
+								if(!startisnonwrappedmidtex && cursideisnonwrappedmidtex)
 								{
 									//mxd. This should be doublesided non-wrapped line. Find the nearset aligned position
-									float curoffset = UDMFTools.GetFloat(j.sidedef.Fields, "offsety_mid");
-									offset += midtex.Height * ((curoffset - offset) / midtex.Height);
+									float curoffset = UDMFTools.GetFloat(j.sidedef.Fields, "offsety_mid") + j.sidedef.OffsetY;
+									offset += midtex.Height * (float)Math.Round(curoffset / midtex.Height - 0.5f * Math.Sign(j.scaleY));
 
 									// Make sure the surface stays between floor and ceiling
-									if(offset < -midtex.Height)
+									if(j.sidedef.Line.IsFlagSet(General.Map.Config.LowerUnpeggedFlag) || Math.Sign(j.scaleY) == -1)
 									{
-										offset += midtex.Height;
-									} 
-									else if(offset + midtex.Height > j.sidedef.GetMiddleHeight())
+										if(offset < -midtex.Height)
+											offset += midtex.Height;
+										else if(offset > j.sidedef.GetMiddleHeight())
+											offset -= midtex.Height;
+									}
+									else 
 									{
-										offset -= midtex.Height;
+										if(offset < -(j.sidedef.GetMiddleHeight() + midtex.Height))
+											offset += midtex.Height;
+										else if(offset > midtex.Height)
+											offset -= midtex.Height;
 									}
 								}
 
@@ -3948,9 +3956,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						offset -= j.sidedef.OffsetX;
 
 						if(matchtop)
-							j.sidedef.Fields["offsetx_top"] = new UniValue(UniversalType.Float, offset % General.Map.Data.GetTextureImage(j.sidedef.LongHighTexture).Width);
+							j.sidedef.Fields["offsetx_top"] = new UniValue(UniversalType.Float, (float)Math.Round(offset % General.Map.Data.GetTextureImage(j.sidedef.LongHighTexture).Width, General.Map.FormatInterface.VertexDecimals));
 						if(matchbottom)
-							j.sidedef.Fields["offsetx_bottom"] = new UniValue(UniversalType.Float, offset % General.Map.Data.GetTextureImage(j.sidedef.LongLowTexture).Width);
+							j.sidedef.Fields["offsetx_bottom"] = new UniValue(UniversalType.Float, (float)Math.Round(offset % General.Map.Data.GetTextureImage(j.sidedef.LongLowTexture).Width, General.Map.FormatInterface.VertexDecimals));
 						if(matchmid) 
 						{
 							if(j.sidedef.Index != j.controlSide.Index) //mxd
@@ -3959,7 +3967,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 								offset -= j.controlSide.Fields.GetValue("offsetx_mid", 0.0f);
 							}
 
-							j.sidedef.Fields["offsetx_mid"] = new UniValue(UniversalType.Float, offset % General.Map.Data.GetTextureImage(j.sidedef.LongMiddleTexture).Width);
+							j.sidedef.Fields["offsetx_mid"] = new UniValue(UniversalType.Float, (float)Math.Round(offset % General.Map.Data.GetTextureImage(j.sidedef.LongMiddleTexture).Width, General.Map.FormatInterface.VertexDecimals));
 						}
 					}
 
@@ -3967,12 +3975,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					{
 						float offset = ((start.Sidedef.Sector.CeilHeight - j.ceilingHeight) / scaley) * j.scaleY + ystartalign; //mxd
 						offset -= j.sidedef.OffsetY; //mxd
-						offset = (float)Math.Round(offset, General.Map.FormatInterface.VertexDecimals); //mxd
 
 						if(matchtop)
-							j.sidedef.Fields["offsety_top"] = new UniValue(UniversalType.Float, Tools.GetSidedefTopOffsetY(j.sidedef, offset, j.scaleY / scaley, true) % General.Map.Data.GetTextureImage(j.sidedef.LongHighTexture).Height); //mxd
+							j.sidedef.Fields["offsety_top"] = new UniValue(UniversalType.Float, (float)Math.Round(Tools.GetSidedefTopOffsetY(j.sidedef, offset, j.scaleY / scaley, true) % General.Map.Data.GetTextureImage(j.sidedef.LongHighTexture).Height, General.Map.FormatInterface.VertexDecimals)); //mxd
 						if(matchbottom)
-							j.sidedef.Fields["offsety_bottom"] = new UniValue(UniversalType.Float, Tools.GetSidedefBottomOffsetY(j.sidedef, offset, j.scaleY / scaley, true) % General.Map.Data.GetTextureImage(j.sidedef.LongLowTexture).Height); //mxd
+							j.sidedef.Fields["offsety_bottom"] = new UniValue(UniversalType.Float, (float)Math.Round(Tools.GetSidedefBottomOffsetY(j.sidedef, offset, j.scaleY / scaley, true) % General.Map.Data.GetTextureImage(j.sidedef.LongLowTexture).Height, General.Map.FormatInterface.VertexDecimals)); //mxd
 						if(matchmid) 
 						{
 							//mxd. Side is part of a 3D floor?
@@ -3980,31 +3987,40 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							{
 								offset -= j.controlSide.OffsetY;
 								offset -= j.controlSide.Fields.GetValue("offsety_mid", 0.0f);
-								j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, offset % General.Map.Data.GetTextureImage(j.sidedef.LongMiddleTexture).Height); //mxd
+								j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, (float)Math.Round(offset % General.Map.Data.GetTextureImage(j.sidedef.LongMiddleTexture).Height, General.Map.FormatInterface.VertexDecimals)); //mxd
 							} 
 							else 
 							{
 								ImageData midtex = General.Map.Data.GetTextureImage(j.sidedef.LongMiddleTexture);
 								offset = Tools.GetSidedefMiddleOffsetY(j.sidedef, offset, j.scaleY / scaley, true) % midtex.Height;
 
-								if(j.sidedef.Other != null && !j.sidedef.IsFlagSet("wrapmidtex") && !j.sidedef.Line.IsFlagSet("wrapmidtex")) 
+								bool startisnonwrappedmidtex = (start.Sidedef.Other != null && start.GeometryType == VisualGeometryType.WALL_MIDDLE && !start.Sidedef.IsFlagSet("wrapmidtex") && !start.Sidedef.Line.IsFlagSet("wrapmidtex"));
+								bool cursideisnonwrappedmidtex = (j.sidedef.Other != null && !j.sidedef.IsFlagSet("wrapmidtex") && !j.sidedef.Line.IsFlagSet("wrapmidtex"));
+
+								if(!startisnonwrappedmidtex && cursideisnonwrappedmidtex) 
 								{
 									//mxd. This should be doublesided non-wrapped line. Find the nearset aligned position
-									float curoffset = UDMFTools.GetFloat(j.sidedef.Fields, "offsety_mid");
-									offset += midtex.Height * (float)Math.Round((curoffset - offset) / midtex.Height, General.Map.FormatInterface.VertexDecimals);
+									float curoffset = UDMFTools.GetFloat(j.sidedef.Fields, "offsety_mid") + j.sidedef.OffsetY;
+									offset += midtex.Height * (float)Math.Round(curoffset / midtex.Height - 0.5f * Math.Sign(j.scaleY));
 
 									// Make sure the surface stays between floor and ceiling
-									if(offset < -midtex.Height) 
+									if(j.sidedef.Line.IsFlagSet(General.Map.Config.LowerUnpeggedFlag) || Math.Sign(j.scaleY) == -1) 
 									{
-										offset += midtex.Height;
+										if(offset < -midtex.Height)
+											offset += midtex.Height;
+										else if(offset > j.sidedef.GetMiddleHeight())
+											offset -= midtex.Height;
 									} 
-									else if(offset + midtex.Height > j.sidedef.GetMiddleHeight()) 
+									else 
 									{
-										offset -= midtex.Height;
+										if(offset < -(j.sidedef.GetMiddleHeight() + midtex.Height))
+											offset += midtex.Height;
+										else if(offset > midtex.Height)
+											offset -= midtex.Height;
 									}
 								}
 
-								j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, offset);
+								j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, (float)Math.Round(offset, General.Map.FormatInterface.VertexDecimals)); //mxd
 							}
 						}
 					}
