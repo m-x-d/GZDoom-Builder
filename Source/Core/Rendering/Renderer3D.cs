@@ -1241,24 +1241,18 @@ namespace CodeImp.DoomBuilder.Rendering
 		public void AddThingGeometry(VisualThing t)
 		{
 			//mxd. gater lights
-			if (General.Settings.GZDrawLightsMode != LightRenderMode.NONE && !fullbrightness && t.LightType != DynamicLightType.NONE) 
+			if(General.Settings.GZDrawLightsMode != LightRenderMode.NONE && !fullbrightness && t.LightType != DynamicLightType.NONE) 
 			{
 				t.UpdateLightRadius();
 
-				if (t.LightRadius > 0) 
+				if(t.LightRadius > 0) 
 				{
 					t.CalculateCameraDistance3D(D3DDevice.V3(cameraposition));
-					//t.CameraDistance3D is actually squared distance, hence (t.LightRadius * t.LightRadius)
-					if(t.CameraDistance3D < (t.LightRadius * t.LightRadius) || IsThingOnScreen(t.BoundingBox)) //always render light if camera is within it's radius 
-					{
-						if (Array.IndexOf(GZBuilder.GZGeneral.GZ_ANIMATED_LIGHT_TYPES, t.LightType) != -1)
-							t.UpdateBoundingBox();
-						thingsWithLight.Add(t);
-					}
+					if (Array.IndexOf(GZBuilder.GZGeneral.GZ_ANIMATED_LIGHT_TYPES, t.LightType) != -1)
+						t.UpdateBoundingBox();
+					thingsWithLight.Add(t);
 				}
 			}
-
-			if (!IsThingOnScreen(t.BoundingBox)) return;
 
 			//mxd. gather models
 			if(t.Thing.IsModel && General.Settings.GZDrawModelsMode != ModelRenderMode.NONE && (General.Settings.GZDrawModelsMode == ModelRenderMode.ALL || t.Selected)) 
@@ -1293,46 +1287,6 @@ namespace CodeImp.DoomBuilder.Rendering
 		public void AddVisualVertices(VisualVertex[] verts) 
 		{
 			visualvertices = verts;
-		}
-
-		//mxd
-		private bool IsThingOnScreen(Vector3[] bbox) 
-		{
-			Vector3D camNormal = Vector3D.FromAngleXYZ(General.Map.VisualCamera.AngleXY, General.Map.VisualCamera.AngleZ);
-			Vector3D thingNormal = D3DDevice.V3D(bbox[0]) - cameraposition; //bbox[0] is always thing center
-
-			if (Vector3D.DotProduct(camNormal, thingNormal) < 0) return false; //behind camera plane
-
-			int len = bbox.Length;
-			Vector3 screenPos;
-			int behindCount = 0;
-			int leftCount = 0;
-			int rightCount = 0;
-			int topCount = 0;
-			int bottomCount = 0;
-
-			for (int i = 0; i < len; i++) 
-			{
-				//check visibility
-				screenPos = Vector3.Project(bbox[i], 0, 0, 1, 1, PROJ_NEAR_PLANE, General.Settings.ViewDistance, worldviewproj);
-
-				if (screenPos.X > 0 && screenPos.X < 1 && screenPos.Y > 0 && screenPos.Y < 1)
-					return true;
-
-				if (screenPos.Z < 0) behindCount++;
-
-				if (screenPos.X < 0)
-					leftCount++;
-				else if (screenPos.X > 1)
-					rightCount++;
-				if (screenPos.Y < 0)
-					topCount++;
-				else if (screenPos.Y > 1)
-					bottomCount++;
-			}
-
-			bool notOnScreen = (behindCount == len || leftCount == len || rightCount == len || topCount == len || bottomCount == len);
-			return !notOnScreen;
 		}
 
 		//mxd

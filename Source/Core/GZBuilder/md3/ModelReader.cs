@@ -219,7 +219,14 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 				return;
 			}
 
-			mde.Model.BoundingBox = BoundingBoxTools.CalculateBoundingBox(bbs);
+			//scale bbs
+			bbs.MaxX = (int)(bbs.MaxX * mde.Scale.X);
+			bbs.MinX = (int)(bbs.MinX * mde.Scale.X);
+			bbs.MaxY = (int)(bbs.MaxY * mde.Scale.Y);
+			bbs.MinY = (int)(bbs.MinY * mde.Scale.Y);
+
+			//calculate model radius
+			mde.Model.Radius = Math.Max(Math.Max(Math.Abs(bbs.MinY), Math.Abs(bbs.MaxY)), Math.Max(Math.Abs(bbs.MinX), Math.Abs(bbs.MaxX))); 
 		}
 
 		#endregion
@@ -720,16 +727,14 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 				}
 			}
 
-			//create bounding box
-			BoundingBoxSizes bbs = new BoundingBoxSizes();
-			bbs.MinX = (short)((xsize / 2f - pivot.x) * mde.Scale.X);
-			bbs.MaxX = (short)((xsize / 2f + pivot.x) * mde.Scale.X);
-			bbs.MinZ = (short)((zsize / 2f - pivot.z) * mde.Scale.Z);
-			bbs.MaxZ = (short)((zsize / 2f + pivot.z) * mde.Scale.Z);
-			bbs.MinY = (short)((ysize / 2f - pivot.y) * mde.Scale.Y);
-			bbs.MaxY = (short)((ysize / 2f + pivot.y) * mde.Scale.Y);
-
-			mde.Model.BoundingBox = BoundingBoxTools.CalculateBoundingBox(bbs);
+			// get model extents
+			int minX = (int)((xsize / 2f - pivot.x) * mde.Scale.X);
+			int maxX = (int)((xsize / 2f + pivot.x) * mde.Scale.X);
+			int minY = (int)((ysize / 2f - pivot.y) * mde.Scale.Y);
+			int maxY = (int)((ysize / 2f + pivot.y) * mde.Scale.Y);
+			
+			// calculate model radius
+			mde.Model.Radius = Math.Max(Math.Max(Math.Abs(minY), Math.Abs(maxY)), Math.Max(Math.Abs(minX), Math.Abs(maxX)));
 
 			//create texture
 			MemoryStream memstream = new MemoryStream((4096 * 4) + 4096);

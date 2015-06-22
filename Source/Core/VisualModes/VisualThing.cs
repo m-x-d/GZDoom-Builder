@@ -248,19 +248,11 @@ namespace CodeImp.DoomBuilder.VisualModes
 			position_v3 = D3DDevice.V3(pos); //mxd
 			position = Matrix.Translation(position_v3);
 
-			//mxd. update bounding box
-			if (thing.IsModel) 
-			{
-				UpdateBoundingBoxForModel();
-			} 
-			else if (lightType != DynamicLightType.NONE && lightRadius > thing.Size) 
+			//mxd. update bounding box?
+			if(lightType != DynamicLightType.NONE && lightRadius > thing.Size) 
 			{
 				UpdateBoundingBox(lightRadius, lightRadius * 2);
 			} 
-			else 
-			{
-				UpdateBoundingBox((int)thing.Size, thingHeight);
-			}
 		}
 
 		// This sets the vertices for the thing sprite
@@ -326,10 +318,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 			} 
 			else 
 			{
-				if (thing.IsModel)
-					UpdateBoundingBoxForModel();
-				else
-					UpdateBoundingBox((int)thing.Size, thingHeight);
+				UpdateBoundingBox((int)thing.Size, thingHeight);
 
 				lightType = DynamicLightType.NONE;
 				lightRadius = -1;
@@ -494,12 +483,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 		//mxd. update bounding box
 		public void UpdateBoundingBox() 
 		{
-			if (thing.IsModel)
-				UpdateBoundingBoxForModel();
-			else if (lightType != DynamicLightType.NONE && lightRadius > thing.Size)
+			if(lightType != DynamicLightType.NONE && lightRadius > thing.Size)
 				UpdateBoundingBox(lightRadius, lightRadius * 2);
-			else
-				UpdateBoundingBox((int)thing.Size, thingHeight);
 		}
 
 		private void UpdateBoundingBox(float width, float height) 
@@ -517,19 +502,6 @@ namespace CodeImp.DoomBuilder.VisualModes
 			boundingBox[6] = new Vector3(position_v3.X + width, position_v3.Y - width, Center.Z + h2);
 			boundingBox[7] = new Vector3(position_v3.X - width, position_v3.Y + width, Center.Z + h2);
 			boundingBox[8] = new Vector3(position_v3.X + width, position_v3.Y + width, Center.Z + h2);
-		}
-
-		//mxd. update bounding box from model bounding box
-		private void UpdateBoundingBoxForModel() 
-		{
-			ModelData mde = General.Map.Data.ModeldefEntries[thing.Type];
-			int len = mde.Model.BoundingBox.Length;
-			boundingBox = new Vector3[len];
-			for (int i = 0; i < len; i++) 
-			{
-				Vector3 v = mde.Model.BoundingBox[i];
-				boundingBox[i] = new Vector3(v.X + position_v3.X, v.Y + position_v3.Y, v.Z + position_v3.Z);
-			}    
 		}
 		
 		/// <summary>

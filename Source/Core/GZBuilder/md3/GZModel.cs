@@ -1,14 +1,13 @@
 ﻿using System.Collections.Generic;
-using SlimDX;
 using SlimDX.Direct3D9;
 
 namespace CodeImp.DoomBuilder.GZBuilder.MD3
 {
 	internal class GZModel 
 	{
-		internal List<Mesh> Meshes;
-		internal List<Texture> Textures;
-		internal Vector3[] BoundingBox;
+		internal readonly List<Mesh> Meshes;
+		internal readonly List<Texture> Textures;
+		internal float Radius;
 
 		internal GZModel() 
 		{
