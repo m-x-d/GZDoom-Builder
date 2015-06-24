@@ -58,8 +58,6 @@ namespace CodeImp.DoomBuilder.Rendering
 		void Present();
 
 		// Drawing methods
-		void RenderArrow(Line3D line, PixelColor c); //mxd
-		void PlotArrow(Line3D line, PixelColor c); //mxd
 		void PlotLine(Vector2D start, Vector2D end, PixelColor c);
 		void PlotLinedef(Linedef l, PixelColor c);
 		void PlotLinedefSet(ICollection<Linedef> linedefs);
@@ -74,6 +72,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		void RenderRectangleFilled(RectangleF rect, PixelColor c, bool transformrect);
 		void RenderRectangleFilled(RectangleF rect, PixelColor c, bool transformrect, ImageData texture);
 		void RenderLine(Vector2D start, Vector2D end, float thickness, PixelColor c, bool transformcoords);
+		void RenderArrows(List<Line3D> line); //mxd
 		void RenderText(TextLabel text);
 		void RenderGeometry(FlatVertex[] vertices, ImageData texture, bool transformcoords);
 		void RenderHighlight(FlatVertex[] vertices, int color); //mxd

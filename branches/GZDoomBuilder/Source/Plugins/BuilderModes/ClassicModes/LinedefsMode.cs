@@ -21,16 +21,17 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using CodeImp.DoomBuilder.Windows;
+using CodeImp.DoomBuilder.Actions;
+using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.Data;
+using CodeImp.DoomBuilder.Editing;
+using CodeImp.DoomBuilder.Geometry;
+using CodeImp.DoomBuilder.GZBuilder.Geometry;
+using CodeImp.DoomBuilder.GZBuilder.Tools;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
-using CodeImp.DoomBuilder.Geometry;
-using CodeImp.DoomBuilder.Editing;
-using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Types;
-using CodeImp.DoomBuilder.Config;
-using CodeImp.DoomBuilder.GZBuilder.Tools;
-using CodeImp.DoomBuilder.Data;
+using CodeImp.DoomBuilder.Windows;
 
 #endregion
 
@@ -362,17 +363,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void OnRedrawDisplay()
 		{
 			renderer.RedrawSurface();
+			List<Line3D> eventlines = new List<Line3D>(); //mxd
 
 			// Render lines
 			if(renderer.StartPlotter(true))
 			{
 				renderer.PlotLinedefSet(General.Map.Map.Linedefs);
-				if(!panning) //mxd
-					for(int i = 0; i < Linedef.NUM_ARGS; i++) BuilderPlug.Me.PlotAssociations(renderer, association[i]);
+				for(int i = 0; i < Linedef.NUM_ARGS; i++) BuilderPlug.PlotAssociations(renderer, association[i], eventlines);
 				
 				if((highlighted != null) && !highlighted.IsDisposed)
 				{
-					if(!panning) BuilderPlug.Me.PlotReverseAssociations(renderer, highlightasso);
+					BuilderPlug.PlotReverseAssociations(renderer, highlightasso, eventlines);
 					renderer.PlotLinedef(highlighted, General.Colors.Highlight);
 				}
 				renderer.PlotVerticesSet(General.Map.Map.Vertices);
@@ -390,12 +391,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Render selection
 			if(renderer.StartOverlay(true))
 			{
-				if(!panning && !selecting) //mxd
+				if(!selecting) //mxd
 				{ 
-					for (int i = 0; i < Linedef.NUM_ARGS; i++) BuilderPlug.Me.RenderAssociations(renderer, association[i]);
-					if ((highlighted != null) && !highlighted.IsDisposed) BuilderPlug.Me.RenderReverseAssociations(renderer, highlightasso); //mxd
+					for(int i = 0; i < Linedef.NUM_ARGS; i++) BuilderPlug.RenderAssociations(renderer, association[i], eventlines);
+					if((highlighted != null) && !highlighted.IsDisposed) BuilderPlug.RenderReverseAssociations(renderer, highlightasso, eventlines); //mxd
 				}
 				if(selecting) RenderMultiSelection();
+				renderer.RenderArrows(eventlines); //mxd
 				renderer.Finish();
 			}
 
@@ -549,7 +551,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void OnMouseMove(MouseEventArgs e)
 		{
 			base.OnMouseMove(e);
-			if(panning) return; //mxd. Skip all this jass while panning
+			if(panning) return; //mxd. Skip all this jazz while panning
 
 			//mxd
 			if(selectpressed && !editpressed && !selecting) 
@@ -611,15 +613,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					//render preview
 					if(renderer.StartOverlay(true)) 
 					{
-						if(!panning) 
-						{
-							for(int i = 0; i < Linedef.NUM_ARGS; i++) BuilderPlug.Me.RenderAssociations(renderer, association[i]);
-							if((highlighted != null) && !highlighted.IsDisposed) BuilderPlug.Me.RenderReverseAssociations(renderer, highlightasso); //mxd
-						}
+						List<Line3D> eventlines = new List<Line3D>(); //mxd
+						for(int i = 0; i < Linedef.NUM_ARGS; i++) BuilderPlug.RenderAssociations(renderer, association[i], eventlines);
+						if((highlighted != null) && !highlighted.IsDisposed) BuilderPlug.RenderReverseAssociations(renderer, highlightasso, eventlines); //mxd
+
 						float dist = Math.Min(Vector2D.Distance(mousemappos, insertPreview), BuilderPlug.Me.SplitLinedefsRange);
 						byte alpha = (byte)(255 - (dist / BuilderPlug.Me.SplitLinedefsRange) * 128);
 						float vsize = (renderer.VertexSize + 1.0f) / renderer.Scale;
 						renderer.RenderRectangleFilled(new RectangleF(insertPreview.x - vsize, insertPreview.y - vsize, vsize * 2.0f, vsize * 2.0f), General.Colors.InfoLine.WithAlpha(alpha), true);
+						renderer.RenderArrows(eventlines); //mxd
 						renderer.Finish();
 						renderer.Present();
 					}
@@ -631,11 +633,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					//undraw preveiw
 					if(renderer.StartOverlay(true)) 
 					{
-						if(!panning) 
-						{
-							for(int i = 0; i < Linedef.NUM_ARGS; i++) BuilderPlug.Me.RenderAssociations(renderer, association[i]);
-							if((highlighted != null) && !highlighted.IsDisposed) BuilderPlug.Me.RenderReverseAssociations(renderer, highlightasso); //mxd
-						}
+						List<Line3D> eventlines = new List<Line3D>(); //mxd
+						for(int i = 0; i < Linedef.NUM_ARGS; i++) BuilderPlug.RenderAssociations(renderer, association[i], eventlines);
+						if((highlighted != null) && !highlighted.IsDisposed) BuilderPlug.RenderReverseAssociations(renderer, highlightasso, eventlines); //mxd
+
+						renderer.RenderArrows(eventlines); //mxd
 						renderer.Finish();
 						renderer.Present();
 					}

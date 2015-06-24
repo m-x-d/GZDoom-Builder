@@ -151,17 +151,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void OnRedrawDisplay()
 		{
 			renderer.RedrawSurface();
+			List<Line3D> eventlines = new List<Line3D>(); //mxd
 
 			// Render lines and vertices
 			if (renderer.StartPlotter(true)) 
 			{
 				renderer.PlotLinedefSet(General.Map.Map.Linedefs);
 				renderer.PlotVerticesSet(General.Map.Map.Vertices);
-				if(!panning) //mxd
-				{ 
-					for(int i = 0; i < Thing.NUM_ARGS; i++) BuilderPlug.Me.PlotAssociations(renderer, association[i]);
-					if((highlighted != null) && !highlighted.IsDisposed) BuilderPlug.Me.PlotReverseAssociations(renderer, highlightasso);
-				}
+
+				for(int i = 0; i < Thing.NUM_ARGS; i++) BuilderPlug.PlotAssociations(renderer, association[i], eventlines);
+				if((highlighted != null) && !highlighted.IsDisposed) BuilderPlug.PlotReverseAssociations(renderer, highlightasso, eventlines);
+				
 				renderer.Finish();
 			}
 
@@ -170,22 +170,26 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				renderer.RenderThingSet(General.Map.ThingsFilter.HiddenThings, Presentation.THINGS_HIDDEN_ALPHA);
 				renderer.RenderThingSet(General.Map.ThingsFilter.VisibleThings, 1.0f);
-				if(!panning) //mxd
-					for(int i = 0; i < Thing.NUM_ARGS; i++) BuilderPlug.Me.RenderAssociations(renderer, association[i]);
+				for(int i = 0; i < Thing.NUM_ARGS; i++) BuilderPlug.RenderAssociations(renderer, association[i], eventlines);
+				
 				if((highlighted != null) && !highlighted.IsDisposed)
 				{
 					renderer.RenderThing(highlighted, General.Colors.Highlight, 1.0f);
-					if(!panning) BuilderPlug.Me.RenderReverseAssociations(renderer, highlightasso); //mxd
+					BuilderPlug.RenderReverseAssociations(renderer, highlightasso, eventlines); //mxd
 				}
 
 				//mxd
-				if(!panning && General.Settings.GZShowEventLines) 
+				if(General.Settings.GZShowEventLines) 
 				{
-					List<Line3D> lines = GZBuilder.Data.LinksCollector.GetThingLinks(General.Map.ThingsFilter.VisibleThings);
-
-					foreach(Line3D l in lines) 
+					List<List<Line3D>> lines = GZBuilder.Data.LinksCollector.GetThingLinks(General.Map.ThingsFilter.VisibleThings);
+					if(lines != null)
 					{
-						renderer.RenderArrow(l, l.LineType == Line3DType.ACTIVATOR ? General.Colors.Selection : General.Colors.InfoLine);
+						lines[0].AddRange(eventlines);
+						foreach(List<Line3D> list in lines) if(list.Count > 0) renderer.RenderArrows(list);
+					} 
+					else
+					{
+						renderer.RenderArrows(eventlines);
 					}
 				}
  
@@ -471,7 +475,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void OnMouseMove(MouseEventArgs e)
 		{
 			base.OnMouseMove(e);
-			if(panning) return; //mxd. Skip all this jass while panning
+			if(panning) return; //mxd. Skip all this jazz while panning
 
 			//mxd
 			if(selectpressed && !editpressed && !selecting) 

@@ -182,7 +182,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 							if(datastream.Position == datastream.Length) //mxd
 							{
 								// ZDoom doesn't give even a warning message about this, so we shouldn't report error or fail parsing.
-								General.ErrorLogger.Add(ErrorType.Warning, "DECORATE warning in '" + sourcename + "', line " + GetCurrentLineNumber() + ". Block comment is not closed");
+								General.ErrorLogger.Add(ErrorType.Warning, "DECORATE warning in '" + sourcename + "', line " + GetCurrentLineNumber() + ". Block comment is not closed.");
 								return true;
 							}
 
