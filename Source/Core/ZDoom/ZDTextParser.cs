@@ -179,6 +179,13 @@ namespace CodeImp.DoomBuilder.ZDoom
 						char c4, c3 = '\0';
 						do
 						{
+							if(datastream.Position == datastream.Length) //mxd
+							{
+								// ZDoom doesn't give even a warning message about this, so we shouldn't report error or fail parsing.
+								General.ErrorLogger.Add(ErrorType.Warning, "DECORATE warning in '" + sourcename + "', line " + GetCurrentLineNumber() + ". Block comment is not closed");
+								return true;
+							}
+
 							c4 = c3;
 							c3 = (char)datareader.ReadByte();
 						}
