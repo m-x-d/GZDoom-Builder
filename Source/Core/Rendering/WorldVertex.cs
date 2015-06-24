@@ -26,7 +26,7 @@ namespace CodeImp.DoomBuilder.Rendering
 	public struct WorldVertex
 	{
 		// Vertex format
-		public const int Stride = 9 * 4; //mxd: was 6 * 4
+		public const int Stride = 36; //mxd: 9 * 4, was 6 * 4
 
 		// Members
 		public float x;

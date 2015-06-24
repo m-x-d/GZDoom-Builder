@@ -466,26 +466,8 @@ namespace CodeImp.DoomBuilder.Rendering
 			//mxd. LINKS
 			if (General.Settings.GZShowEventLines) 
 			{
-				//mxd. gather links
-				List<Line3D> lines = LinksCollector.GetThingLinks(thingsbydistance);
-				if(lines.Count > 0) 
-				{
-					List<Line3D> normalLines = new List<Line3D>();
-					List<Line3D> activatorLines = new List<Line3D>();
-					
-					foreach(Line3D l in lines)
-					{
-						if(l.LineType == Line3DType.DEFAULT)
-							normalLines.Add(l);
-						else
-							activatorLines.Add(l);
-					}
-
-					if(normalLines.Count > 0)
-						RenderArrows(normalLines, General.Colors.InfoLine.ToColorValue());
-					if(activatorLines.Count > 0)
-						RenderArrows(activatorLines, General.Colors.Selection3D.ToColorValue());
-				}
+				List<List<Line3D>> lines = LinksCollector.GetThingLinks(thingsbydistance);
+				if(lines != null) foreach(List<Line3D> list in lines) if(list.Count > 0) RenderArrows(list);
 			}
 
 			// ADDITIVE PASS
@@ -680,7 +662,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		//mxd
-		private void RenderArrows(List<Line3D> lines, Color4 color) 
+		private void RenderArrows(List<Line3D> lines) 
 		{
 			//create vertices
 			WorldVertex[] verts = new WorldVertex[lines.Count * 6];
@@ -718,7 +700,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			ApplyMatrices3D();
 
 			// Setup color
-			graphics.Shaders.World3D.VertexColor = color;
+			graphics.Shaders.World3D.VertexColor = lines[0].color.ToColorValue();
 
 			//render
 			graphics.Shaders.World3D.ApplySettings();

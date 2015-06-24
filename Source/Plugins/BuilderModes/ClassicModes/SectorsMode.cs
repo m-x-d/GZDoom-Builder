@@ -18,18 +18,19 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
-using CodeImp.DoomBuilder.Windows;
+using CodeImp.DoomBuilder.Actions;
+using CodeImp.DoomBuilder.BuilderModes.Interface;
+using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.Editing;
+using CodeImp.DoomBuilder.Geometry;
+using CodeImp.DoomBuilder.GZBuilder.Geometry;
+using CodeImp.DoomBuilder.GZBuilder.Tools;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
-using CodeImp.DoomBuilder.Geometry;
-using CodeImp.DoomBuilder.Editing;
-using System.Drawing;
-using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Types;
-using CodeImp.DoomBuilder.BuilderModes.Interface;
-using CodeImp.DoomBuilder.GZBuilder.Tools;
-using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.Windows;
 
 #endregion
 
@@ -714,6 +715,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void OnRedrawDisplay()
 		{
 			renderer.RedrawSurface();
+			List<Line3D> eventlines = new List<Line3D>(); //mxd
 			
 			// Render lines and vertices
 			if(renderer.StartPlotter(true))
@@ -723,7 +725,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if((highlighted != null) && !highlighted.IsDisposed)
 				{
 					renderer.PlotSector(highlighted, General.Colors.Highlight);
-					if(!panning) BuilderPlug.Me.PlotReverseAssociations(renderer, highlightasso);
+					BuilderPlug.PlotReverseAssociations(renderer, highlightasso, eventlines);
 				}
 				renderer.Finish();
 			}
@@ -742,8 +744,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Render selection
 			if(renderer.StartOverlay(false)) 
 			{
-				if(!panning && highlighted != null && !highlighted.IsDisposed) BuilderPlug.Me.RenderReverseAssociations(renderer, highlightasso); //mxd
+				if(highlighted != null && !highlighted.IsDisposed) BuilderPlug.RenderReverseAssociations(renderer, highlightasso, eventlines); //mxd
 				if(selecting) RenderMultiSelection();
+				renderer.RenderArrows(eventlines); //mxd
 				renderer.Finish();
 			}
 			

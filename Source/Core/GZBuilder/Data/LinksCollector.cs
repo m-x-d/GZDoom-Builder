@@ -18,7 +18,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 			public bool ProcessPolyobjects;
 		}
 		
-		public static List<Line3D> GetThingLinks(ICollection<VisualThing> visualThings) 
+		public static List<List<Line3D>> GetThingLinks(ICollection<VisualThing> visualThings) 
 		{
 			List<Thing> things = new List<Thing>();
 			foreach (VisualThing vt in visualThings) things.Add(vt.Thing);
@@ -26,15 +26,15 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 			ThingsCheckResult result = CheckThings(things);
 			if (result.ProcessPathNodes || result.ProcessInterpolationPoints || result.ProcessThingsWithGoal || result.ProcessCameras || result.ProcessPolyobjects)
 				return GetThingLinks(result, true);
-			return new List<Line3D>();
+			return null;
 		}
-		
-		public static List<Line3D> GetThingLinks(ICollection<Thing> things) 
+
+		public static List<List<Line3D>> GetThingLinks(ICollection<Thing> things) 
 		{
 			ThingsCheckResult result = CheckThings(things);
 			if (result.ProcessPathNodes || result.ProcessInterpolationPoints || result.ProcessThingsWithGoal || result.ProcessCameras || result.ProcessPolyobjects)
 				return GetThingLinks(result, false);
-			return new List<Line3D>();
+			return null;
 		}
 
 		private static ThingsCheckResult CheckThings(ICollection<Thing> things) 
@@ -62,9 +62,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 			return result;
 		}
 
-		private static List<Line3D> GetThingLinks(ThingsCheckResult result, bool correctHeight) 
+		private static List<List<Line3D>> GetThingLinks(ThingsCheckResult result, bool correctHeight) 
 		{
-			List<Line3D> lines = new List<Line3D>();
+			List<List<Line3D>> lines = new List<List<Line3D>> { new List<Line3D>(), new List<Line3D>() };
 			Dictionary<int, List<Thing>> pathNodes = new Dictionary<int, List<Thing>>();
 			Dictionary<int, List<Thing>> interpolationPoints = new Dictionary<int, List<Thing>>();
 			List<Thing> thingsWithGoal = new List<Thing>();
@@ -152,7 +152,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 							{
 								end = tt.Position;
 								if(correctHeight) end.z += GetCorrectHeight(tt);
-								lines.Add(new Line3D(start, end));
+								lines[0].Add(new Line3D(start, end));
 							}
 						}
 					}
@@ -176,7 +176,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 								end = tt.Position;
 								if(correctHeight) end.z += GetCorrectHeight(tt);
 
-								lines.Add(new Line3D(start, end, Line3DType.ACTIVATOR));
+								lines[1].Add(new Line3D(start, end, General.Colors.Selection));
 							}
 						}
 					}
@@ -202,7 +202,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 							{
 								end = tt.Position;
 								if(correctHeight) end.z += GetCorrectHeight(tt);
-								lines.Add(new Line3D(start, end));
+								lines[0].Add(new Line3D(start, end));
 							}
 						}
 					}
@@ -226,7 +226,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 						{
 							end = tt.Position;
 							if(correctHeight) end.z += GetCorrectHeight(tt);
-							lines.Add(new Line3D(start, end, Line3DType.ACTIVATOR));
+							lines[1].Add(new Line3D(start, end, General.Colors.Selection));
 						}
 					}
 				}
@@ -250,7 +250,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 						{
 							end = tt.Position;
 							if(correctHeight) end.z += GetCorrectHeight(tt);
-							lines.Add(new Line3D(start, end, Line3DType.ACTIVATOR));
+							lines[1].Add(new Line3D(start, end, General.Colors.Selection));
 						}
 					}
 
@@ -264,7 +264,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 						{
 							end = tt.Position;
 							if(correctHeight) end.z += GetCorrectHeight(tt);
-							lines.Add(new Line3D(start, end, Line3DType.ACTIVATOR));
+							lines[1].Add(new Line3D(start, end, General.Colors.Selection));
 						}
 					}
 				}
@@ -285,7 +285,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 						{
 							end = startspot.Position;
 							if(correctHeight) end.z += GetCorrectHeight(startspot);
-							lines.Add(new Line3D(start, end, Line3DType.ACTIVATOR));
+							lines[1].Add(new Line3D(start, end, General.Colors.Selection));
 						}
 					}
 				}

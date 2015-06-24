@@ -522,105 +522,77 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 		
 		// This renders the associated sectors/linedefs with the indication color
-		public void PlotAssociations(IRenderer2D renderer, Association asso)
+		public static void PlotAssociations(IRenderer2D renderer, Association asso, List<Line3D> eventlines) 
 		{
 			// Tag must be above zero
 			if(asso.tag < 1) return;
 			
 			// Sectors?
-			if(asso.type == UniversalType.SectorTag)
+			switch(asso.type)
 			{
-				List<Line3D> lines = new List<Line3D>(); //mxd
-				foreach(Sector s in General.Map.Map.Sectors)
-				{
-					if(s.Tag == asso.tag) 
+				case UniversalType.SectorTag: {
+					foreach(Sector s in General.Map.Map.Sectors)
 					{
+						if(s.Tag != asso.tag) continue;
 						renderer.PlotSector(s, General.Colors.Indication);
-						if (General.Settings.GZShowEventLines) 
-						{
-							Vector2D end = (s.Labels.Count > 0 ? s.Labels[0].position : new Vector2D(s.BBox.X + s.BBox.Width / 2, s.BBox.Y + s.BBox.Height / 2));
-							lines.Add(new Line3D(asso.Center, end)); //mxd
-						}
+						
+						if(!General.Settings.GZShowEventLines) continue;
+						Vector2D end = (s.Labels.Count > 0 ? s.Labels[0].position : new Vector2D(s.BBox.X + s.BBox.Width / 2, s.BBox.Y + s.BBox.Height / 2));
+						eventlines.Add(new Line3D(asso.Center, end)); //mxd
 					}
+					break;
 				}
 
-				if(General.Settings.GZShowEventLines) //mxd
-				{ 
-					foreach(Line3D l in lines)
-						renderer.PlotArrow(l, l.LineType == Line3DType.ACTIVATOR ? General.Colors.Selection : General.Colors.InfoLine);
-				}
-			}
-			// Linedefs?
-			else if(asso.type == UniversalType.LinedefTag)
-			{
-				List<Line3D> lines = new List<Line3D>(); //mxd
-				foreach(Linedef l in General.Map.Map.Linedefs) 
-				{
-					if(l.Tag == asso.tag) 
+				case UniversalType.LinedefTag: {
+					foreach(Linedef l in General.Map.Map.Linedefs) 
 					{
+						if(l.Tag != asso.tag) continue;
 						renderer.PlotLinedef(l, General.Colors.Indication);
-						if(General.Settings.GZShowEventLines)
-							lines.Add(new Line3D(asso.Center, l.GetCenterPoint()));//mxd
+						if(General.Settings.GZShowEventLines) eventlines.Add(new Line3D(asso.Center, l.GetCenterPoint())); //mxd
 					}
-				}
-
-				if(General.Settings.GZShowEventLines) //mxd
-				{ 
-					foreach(Line3D l in lines)
-						renderer.PlotArrow(l, l.LineType == Line3DType.ACTIVATOR ? General.Colors.Selection : General.Colors.InfoLine);
+					break;
 				}
 			}
 		}
-		
 
 		// This renders the associated things with the indication color
-		public void RenderAssociations(IRenderer2D renderer, Association asso)
+		public static void RenderAssociations(IRenderer2D renderer, Association asso, List<Line3D> eventlines)
 		{
 			// Tag must be above zero
 			if(asso.tag < 1) return;
 
 			// Things?
-			if(asso.type == UniversalType.ThingTag)
+			switch(asso.type)
 			{
-				List<Line3D> lines = new List<Line3D>(); //mxd
-				foreach(Thing t in General.Map.Map.Things)
-				{
-					if(t.Tag == asso.tag) 
+				case UniversalType.ThingTag: {
+					foreach(Thing t in General.Map.Map.Things)
 					{
+						if(t.Tag != asso.tag) continue;
 						renderer.RenderThing(t, General.Colors.Indication, 1.0f);
-						if(General.Settings.GZShowEventLines)
-							lines.Add(new Line3D(asso.Center, t.Position));//mxd
+						if(General.Settings.GZShowEventLines) eventlines.Add(new Line3D(asso.Center, t.Position)); //mxd
 					}
+					break;
 				}
-				if(General.Settings.GZShowEventLines) //mxd
-				{ 
-					foreach(Line3D l in lines)
-						renderer.RenderArrow(l, l.LineType == Line3DType.ACTIVATOR ? General.Colors.Selection : General.Colors.InfoLine);
-				}
-			} 
-			else if(asso.type == UniversalType.SectorTag) //mxd. Render sector highlight
-			{ 
-				foreach(Sector s in General.Map.Map.Sectors) 
-				{
-					if(s.Tag == asso.tag) 
+
+				case UniversalType.SectorTag:
+					foreach(Sector s in General.Map.Map.Sectors) 
 					{
+						if(s.Tag != asso.tag) continue;
 						int highlightedColor = General.Colors.Highlight.WithAlpha(128).ToInt();
 						FlatVertex[] verts = new FlatVertex[s.FlatVertices.Length];
 						s.FlatVertices.CopyTo(verts, 0);
 						for(int i = 0; i < verts.Length; i++) verts[i].c = highlightedColor;
 						renderer.RenderGeometry(verts, null, true);
 					}
-				}
+					break;
 			}
 		}
 
 		// This renders the associated sectors/linedefs with the indication color
-		public void PlotReverseAssociations(IRenderer2D renderer, Association asso)
+		public static void PlotReverseAssociations(IRenderer2D renderer, Association asso, List<Line3D> eventlines)
 		{
 			// Tag must be above zero
 			if(asso.tag < 1) return;
-
-			List<Line3D> lines = new List<Line3D>(); //mxd
 			
 			// Doom style referencing to sectors?
 			if(General.Map.Config.LineTagIndicatesSectors && (asso.type == UniversalType.SectorTag))
@@ -629,63 +601,38 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				foreach(Linedef l in General.Map.Map.Linedefs)
 				{
 					// Any action on this line?
-					if(l.Action > 0)
-					{
-						if(l.Tag == asso.tag) 
-						{
-							renderer.PlotLinedef(l, General.Colors.Indication);
-							
-							if(General.Settings.GZShowEventLines) //mxd
-								lines.Add(new Line3D(l.GetCenterPoint(), asso.Center)); //mxd
-						}
-					}
-				}
-				if(General.Settings.GZShowEventLines) //mxd
-				{ 
-					foreach(Line3D l in lines)
-						renderer.PlotArrow(l, l.LineType == Line3DType.ACTIVATOR ? General.Colors.Selection : General.Colors.InfoLine);
+					if(l.Action <= 0 || l.Tag != asso.tag) continue;
+					renderer.PlotLinedef(l, General.Colors.Indication);
+					if(General.Settings.GZShowEventLines) eventlines.Add(new Line3D(l.GetCenterPoint(), asso.Center)); //mxd
 				}
 			}
-			else
+
+			// Linedefs
+			foreach(Linedef l in General.Map.Map.Linedefs)
 			{
-				// Linedefs
-				foreach(Linedef l in General.Map.Map.Linedefs)
+				// Known action on this line?
+				if((l.Action > 0) && General.Map.Config.LinedefActions.ContainsKey(l.Action))
 				{
-					// Known action on this line?
-					if((l.Action > 0) && General.Map.Config.LinedefActions.ContainsKey(l.Action))
+					LinedefActionInfo action = General.Map.Config.LinedefActions[l.Action];
+					if( ((action.Args[0].Type == (int)asso.type) && (l.Args[0] == asso.tag)) ||
+					    ((action.Args[1].Type == (int)asso.type) && (l.Args[1] == asso.tag)) ||
+					    ((action.Args[2].Type == (int)asso.type) && (l.Args[2] == asso.tag)) ||
+					    ((action.Args[3].Type == (int)asso.type) && (l.Args[3] == asso.tag)) ||
+					    ((action.Args[4].Type == (int)asso.type) && (l.Args[4] == asso.tag)) )
 					{
-						LinedefActionInfo action = General.Map.Config.LinedefActions[l.Action];
-						if( ((action.Args[0].Type == (int)asso.type) && (l.Args[0] == asso.tag)) ||
-							((action.Args[1].Type == (int)asso.type) && (l.Args[1] == asso.tag)) ||
-							((action.Args[2].Type == (int)asso.type) && (l.Args[2] == asso.tag)) ||
-							((action.Args[3].Type == (int)asso.type) && (l.Args[3] == asso.tag)) ||
-							((action.Args[4].Type == (int)asso.type) && (l.Args[4] == asso.tag)) )
-						{
 							
-							renderer.PlotLinedef(l, General.Colors.Indication);
-
-							if(General.Settings.GZShowEventLines) //mxd
-								lines.Add(new Line3D(l.GetCenterPoint(), asso.Center));
-						}
+						renderer.PlotLinedef(l, General.Colors.Indication);
+						if(General.Settings.GZShowEventLines) eventlines.Add(new Line3D(l.GetCenterPoint(), asso.Center)); //mxd
 					}
-				}
-
-				if(General.Settings.GZShowEventLines) //mxd
-				{ 
-					foreach(Line3D l in lines) 
-						renderer.PlotArrow(l, l.LineType == Line3DType.ACTIVATOR ? General.Colors.Selection : General.Colors.InfoLine);
 				}
 			}
 		}
-		
 
 		// This renders the associated things with the indication color
-		public void RenderReverseAssociations(IRenderer2D renderer, Association asso)
+		public static void RenderReverseAssociations(IRenderer2D renderer, Association asso, List<Line3D> eventlines)
 		{
 			// Tag must be above zero
 			if(asso.tag < 1) return;
-
-			List<Line3D> lines = new List<Line3D>(); //mxd
 
 			// Things
 			foreach(Thing t in General.Map.Map.Things)
@@ -701,16 +648,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						 ((action.Args[4].Type == (int)asso.type) && (t.Args[4] == asso.tag)) )
 					{
 						renderer.RenderThing(t, General.Colors.Indication, 1.0f);
-						if(General.Settings.GZShowEventLines) //mxd
-							lines.Add(new Line3D(t.Position, asso.Center));
+						if(General.Settings.GZShowEventLines) eventlines.Add(new Line3D(t.Position, asso.Center)); //mxd
 					}
 				}
-			}
-
-			if(General.Settings.GZShowEventLines) //mxd
-			{
-				foreach(Line3D l in lines) 
-					renderer.RenderArrow(l, l.LineType == Line3DType.ACTIVATOR ? General.Colors.Selection : General.Colors.InfoLine);
 			}
 		}
 

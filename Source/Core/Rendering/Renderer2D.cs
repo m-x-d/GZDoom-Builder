@@ -1687,27 +1687,73 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		//mxd
-		public void RenderArrow(Line3D line, PixelColor c) 
+		public void RenderArrows(List<Line3D> lines) 
 		{
-			float scaler = 20f / scale;
-
-			RenderLine(line.v1, line.v2, 0.8f, c, true);
-			float angle = line.GetAngle();
-			//arrowhead
-			RenderLine(line.v2, new Vector2D(line.v2.x - scaler * (float)Math.Sin(angle - 0.46f), line.v2.y + scaler * (float)Math.Cos(angle - 0.46f)), 0.8f, c, true);
-			RenderLine(line.v2, new Vector2D(line.v2.x - scaler * (float)Math.Sin(angle + 0.46f), line.v2.y + scaler * (float)Math.Cos(angle + 0.46f)), 0.8f, c, true);
-		}
-
-		//mxd
-		public void PlotArrow(Line3D line, PixelColor c) 
-		{
+			if(lines.Count == 0) return;
+			FlatVertex[] verts = new FlatVertex[lines.Count * 6]; //2 verts per line * 3 lines
 			float scaler = 16f / scale;
+			int color;
 
-			PlotLine(line.v1, line.v2, c);
-			float angle = line.GetAngle();
-			//arrowhead
-			PlotLine(line.v2, new Vector2D(line.v2.x - scaler * (float)Math.Sin(angle - 0.46f), line.v2.y + scaler * (float)Math.Cos(angle - 0.46f)), c);
-			PlotLine(line.v2, new Vector2D(line.v2.x - scaler * (float)Math.Sin(angle + 0.46f), line.v2.y + scaler * (float)Math.Cos(angle + 0.46f)), c);
+			// Create verts array
+			for(int i = 0; i < lines.Count; i++)
+			{
+				color = lines[i].color.ToInt();
+
+				// Calculate positions
+				Vector2D v1 = ((Vector2D)lines[i].v1).GetTransformed(translatex, translatey, scale, -scale); //start
+				Vector2D v2 = ((Vector2D)lines[i].v2).GetTransformed(translatex, translatey, scale, -scale); //end
+
+				float angle = lines[i].GetAngle();
+				Vector2D v3 = new Vector2D(lines[i].v2.x - scaler * (float)Math.Sin(angle - 0.46f), lines[i].v2.y + scaler * (float)Math.Cos(angle - 0.46f)).GetTransformed(translatex, translatey, scale, -scale); //arrowhead end 1
+				Vector2D v4 = new Vector2D(lines[i].v2.x - scaler * (float)Math.Sin(angle + 0.46f), lines[i].v2.y + scaler * (float)Math.Cos(angle + 0.46f)).GetTransformed(translatex, translatey, scale, -scale); //arrowhead end 2
+
+				verts[i * 6].x = v1.x;
+				verts[i * 6].y = v1.y;
+				verts[i * 6].c = color;
+
+				verts[i * 6 + 1].x = v2.x;
+				verts[i * 6 + 1].y = v2.y;
+				verts[i * 6 + 1].c = color;
+
+				// Arrowhead
+				verts[i * 6 + 2] = verts[i * 6 + 1];
+				verts[i * 6 + 3].x = v3.x;
+				verts[i * 6 + 3].y = v3.y;
+				verts[i * 6 + 3].c = color;
+
+				verts[i * 6 + 4] = verts[i * 6 + 1];
+				verts[i * 6 + 5].x = v4.x;
+				verts[i * 6 + 5].y = v4.y;
+				verts[i * 6 + 5].c = color;
+			}
+
+			// Write to buffer
+			VertexBuffer vb = new VertexBuffer(General.Map.Graphics.Device, FlatVertex.Stride * verts.Length, Usage.WriteOnly | Usage.Dynamic, VertexFormat.None, Pool.Default);
+			DataStream s = vb.Lock(0, FlatVertex.Stride * verts.Length, LockFlags.Discard);
+			s.WriteRange(verts);
+			vb.Unlock();
+			s.Dispose();
+
+			// Set renderstates for rendering
+			graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
+			graphics.Device.SetRenderState(RenderState.ZEnable, false);
+			graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
+			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
+			graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
+			graphics.Device.SetRenderState(RenderState.FogEnable, false);
+			SetWorldTransformation(false);
+			graphics.Device.SetTexture(0, General.Map.Data.WhiteTexture.Texture);
+			graphics.Shaders.Display2D.Texture1 = General.Map.Data.WhiteTexture.Texture;
+			graphics.Shaders.Display2D.SetSettings(1f, 1f, 0f, 1f, General.Settings.ClassicBilinear);
+
+			// Draw
+			graphics.Shaders.Display2D.Begin();
+			graphics.Shaders.Display2D.BeginPass(1);
+			graphics.Device.SetStreamSource(0, vb, 0, FlatVertex.Stride);
+			graphics.Device.DrawPrimitives(PrimitiveType.LineList, 0, lines.Count * 3);
+			graphics.Shaders.Display2D.EndPass();
+			graphics.Shaders.Display2D.End();
+			vb.Dispose();
 		}
 
 		// This renders a line with given color
@@ -1759,7 +1805,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Draw
 			graphics.Shaders.Display2D.Begin();
 			graphics.Shaders.Display2D.BeginPass(0);
-			graphics.Device.DrawUserPrimitives<FlatVertex>(PrimitiveType.TriangleStrip, 0, 2, verts);
+			graphics.Device.DrawUserPrimitives(PrimitiveType.TriangleStrip, 0, 2, verts);
 			graphics.Shaders.Display2D.EndPass();
 			graphics.Shaders.Display2D.End();
 		}
