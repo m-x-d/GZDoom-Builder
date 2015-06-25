@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.Controls;
 using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Map;
@@ -37,7 +38,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private static InterpolationTools.Mode verticalinterpolation = InterpolationTools.Mode.LINEAR;
 
 		private readonly List<DrawnVertex[]> gridpoints;
-		private HintLabel hintLabel;
+		private HintLabel hintlabel;
 		
 		private int width;
 		private int height;
@@ -47,7 +48,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private Vector2D end;
 
 		//interface
-		private readonly DrawGridOptionsPanel panel;
+		private DrawGridOptionsPanel panel;
+		private Docker docker;
 
 		#endregion
 
@@ -57,13 +59,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			snaptogrid = true;
 			gridpoints = new List<DrawnVertex[]>();
-
-			//Options docker
-			panel = new DrawGridOptionsPanel();
-			panel.MaxHorizontalSlices = (int)General.Map.FormatInterface.MaxCoordinate;
-			panel.MaxVerticalSlices = (int)General.Map.FormatInterface.MaxCoordinate;
-			panel.OnValueChanged += OptionsPanelOnValueChanged;
-			panel.OnGridLockChanged += OptionsPanelOnOnGridLockChanged;
 		}
 
 		#endregion
@@ -74,20 +69,34 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			base.OnEngage();
 
-			//setup settings panel
+			// Create and setup settings panel
+			panel = new DrawGridOptionsPanel();
+			panel.MaxHorizontalSlices = (int)General.Map.FormatInterface.MaxCoordinate;
+			panel.MaxVerticalSlices = (int) General.Map.FormatInterface.MaxCoordinate;
 			panel.Triangulate = triangulate;
 			panel.LockToGrid = gridlock;
 			panel.HorizontalSlices = horizontalSlices - 1;
 			panel.VerticalSlices = verticalSlices - 1;
 			panel.HorizontalInterpolationMode = horizontalinterpolation;
 			panel.VerticalInterpolationMode = verticalinterpolation;
-			panel.Register();
+
+			panel.OnValueChanged += OptionsPanelOnValueChanged;
+			panel.OnGridLockChanged += OptionsPanelOnOnGridLockChanged;
+
+			// Add docker
+			docker = new Docker("drawgrid", "Draw Grid", panel);
+			General.Interface.AddDocker(docker);
+			General.Interface.SelectDocker(docker);
 		}
 
 		public override void OnDisengage() 
 		{
 			base.OnDisengage();
-			panel.Unregister();
+
+			// Remove docker
+			General.Interface.RemoveDocker(docker);
+			panel.Dispose();
+			panel = null;
 		}
 
 		override public void OnAccept() 
@@ -235,13 +244,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					//render hint
 					if (horizontalSlices > 1 || verticalSlices > 1) 
 					{
-						hintLabel.Text = "H: " + (slicesH - 1) + "; V: " + (slicesV - 1);
-						if(width > hintLabel.Text.Length * vsize && height > 16 * vsize) 
+						hintlabel.Text = "H: " + (slicesH - 1) + "; V: " + (slicesV - 1);
+						if(width > hintlabel.Text.Length * vsize && height > 16 * vsize) 
 						{
 							float vPos = start.y + height / 2.0f;
-							hintLabel.Start = new Vector2D(start.x, vPos);
-							hintLabel.End = new Vector2D(end.x, vPos);
-							renderer.RenderText(hintLabel.TextLabel);
+							hintlabel.Start = new Vector2D(start.x, vPos);
+							hintlabel.End = new Vector2D(end.x, vPos);
+							renderer.RenderText(hintlabel.TextLabel);
 						}
 					}
 				} 
@@ -276,7 +285,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{ 
 				// Add labels
 				labels.AddRange(new[] { new LineLengthLabel(false), new LineLengthLabel(false), new LineLengthLabel(false), new LineLengthLabel(false) });
-				hintLabel = new HintLabel();
+				hintlabel = new HintLabel();
 				Update();
 			} 
 			else if(points[0].pos == points[1].pos) 
