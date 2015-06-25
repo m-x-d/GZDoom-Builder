@@ -57,7 +57,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private Linedef highlighted;
 		private Association[] association = new Association[Linedef.NUM_ARGS];
 		private Association highlightasso = new Association();
-		private Vector2D insertPreview = new Vector2D(float.NaN, float.NaN); //mxd
+		private Vector2D insertpreview = new Vector2D(float.NaN, float.NaN); //mxd
 		
 		// Interface
 		private bool editpressed;
@@ -396,7 +396,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					for(int i = 0; i < Linedef.NUM_ARGS; i++) BuilderPlug.RenderAssociations(renderer, association[i], eventlines);
 					if((highlighted != null) && !highlighted.IsDisposed) BuilderPlug.RenderReverseAssociations(renderer, highlightasso, eventlines); //mxd
 				}
-				if(selecting) RenderMultiSelection();
+				else
+				{
+					RenderMultiSelection();
+				}
+
+				//mxd. Render vertex insert preview
+				if(insertpreview.IsFinite())
+				{
+					float dist = Math.Min(Vector2D.Distance(mousemappos, insertpreview), BuilderPlug.Me.SplitLinedefsRange);
+					byte alpha = (byte)(255 - (dist / BuilderPlug.Me.SplitLinedefsRange) * 128);
+					float vsize = (renderer.VertexSize + 1.0f) / renderer.Scale;
+					renderer.RenderRectangleFilled(new RectangleF(insertpreview.x - vsize, insertpreview.y - vsize, vsize * 2.0f, vsize * 2.0f), General.Colors.InfoLine.WithAlpha(alpha), true);
+				}
+
 				renderer.RenderArrows(eventlines); //mxd
 				renderer.Finish();
 			}
@@ -608,39 +621,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					bool snaptogrid = General.Interface.ShiftState ^ General.Interface.SnapToGrid;
 					bool snaptonearest = General.Interface.CtrlState ^ General.Interface.AutoMerge;
-					insertPreview = DrawGeometryMode.GetCurrentPosition(mousemappos, snaptonearest, snaptogrid, renderer, new List<DrawnVertex>()).pos;
+					Vector2D v = DrawGeometryMode.GetCurrentPosition(mousemappos, snaptonearest, snaptogrid, renderer, new List<DrawnVertex>()).pos;
 
-					//render preview
-					if(renderer.StartOverlay(true)) 
+					if(v != insertpreview)
 					{
-						List<Line3D> eventlines = new List<Line3D>(); //mxd
-						for(int i = 0; i < Linedef.NUM_ARGS; i++) BuilderPlug.RenderAssociations(renderer, association[i], eventlines);
-						if((highlighted != null) && !highlighted.IsDisposed) BuilderPlug.RenderReverseAssociations(renderer, highlightasso, eventlines); //mxd
-
-						float dist = Math.Min(Vector2D.Distance(mousemappos, insertPreview), BuilderPlug.Me.SplitLinedefsRange);
-						byte alpha = (byte)(255 - (dist / BuilderPlug.Me.SplitLinedefsRange) * 128);
-						float vsize = (renderer.VertexSize + 1.0f) / renderer.Scale;
-						renderer.RenderRectangleFilled(new RectangleF(insertPreview.x - vsize, insertPreview.y - vsize, vsize * 2.0f, vsize * 2.0f), General.Colors.InfoLine.WithAlpha(alpha), true);
-						renderer.RenderArrows(eventlines); //mxd
-						renderer.Finish();
-						renderer.Present();
+						insertpreview = v;
+						General.Interface.RedrawDisplay();
 					}
 				} 
-				else if(insertPreview.IsFinite()) 
+				else if(insertpreview.IsFinite()) 
 				{
-					insertPreview.x = float.NaN;
-
-					//undraw preveiw
-					if(renderer.StartOverlay(true)) 
-					{
-						List<Line3D> eventlines = new List<Line3D>(); //mxd
-						for(int i = 0; i < Linedef.NUM_ARGS; i++) BuilderPlug.RenderAssociations(renderer, association[i], eventlines);
-						if((highlighted != null) && !highlighted.IsDisposed) BuilderPlug.RenderReverseAssociations(renderer, highlightasso, eventlines); //mxd
-
-						renderer.RenderArrows(eventlines); //mxd
-						renderer.Finish();
-						renderer.Present();
-					}
+					insertpreview.x = float.NaN;
+					General.Interface.RedrawDisplay();
 				}
 
 				// Highlight if not the same
@@ -660,9 +652,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd
 		protected override void BeginViewPan() 
 		{
-			if(insertPreview.IsFinite()) 
+			if(insertpreview.IsFinite()) 
 			{
-				insertPreview.x = float.NaN;
+				insertpreview.x = float.NaN;
 
 				//undraw preveiw
 				if(renderer.StartOverlay(true)) 
