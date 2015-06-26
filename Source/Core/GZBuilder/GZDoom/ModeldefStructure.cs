@@ -157,7 +157,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						case "scale":
 							parser.SkipWhitespace(true);
 							token = parser.StripTokenQuotes(parser.ReadToken());
-							if(!parser.ReadSignedFloat(token, ref scale.X)) 
+							if(!parser.ReadSignedFloat(token, ref scale.Y)) 
 							{
 								// Not numeric!
 								General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected Scale X value, but got '" + token + "'");
@@ -167,7 +167,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 
 							parser.SkipWhitespace(true);
 							token = parser.StripTokenQuotes(parser.ReadToken());
-							if(!parser.ReadSignedFloat(token, ref scale.Y)) 
+							if(!parser.ReadSignedFloat(token, ref scale.X)) 
 							{
 								// Not numeric!
 								General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected Scale Y value, but got '" + token + "'");
