@@ -29,6 +29,13 @@ using CodeImp.DoomBuilder.Geometry;
 
 namespace CodeImp.DoomBuilder.Editing
 {
+	public enum ThingsFilterDisplayMode //mxd
+	{
+		ALWAYS,
+		CLASSIC_MODES_ONLY,
+		VISUAL_MODES_ONLY
+	}
+	
 	public class ThingsFilter
 	{
 		#region ================== Constants
@@ -42,6 +49,9 @@ namespace CodeImp.DoomBuilder.Editing
 
 		//mxd. Invert this filter?
 		protected bool invert;
+
+		//mxd. Display mode
+		protected ThingsFilterDisplayMode displaymode;
 		
 		// Filter by category
 		protected string categoryname;
@@ -78,6 +88,7 @@ namespace CodeImp.DoomBuilder.Editing
 		public string Name { get { return name; } internal set { name = value; } }
 		public string CategoryName { get { return categoryname; } internal set { categoryname = value; } }
 		public bool Invert { get { return invert; } internal set { invert = value; } } //mxd
+		public ThingsFilterDisplayMode DisplayMode { get { return displaymode; } internal set { displaymode = value; } } //mxd
 		internal int ThingType { get { return thingtype; } set { thingtype = value; } }
 		internal int ThingAngle { get { return thingangle; } set { thingangle = value; } }
 		internal int ThingZHeight { get { return thingzheight; } set { thingzheight = value; } }
@@ -102,6 +113,7 @@ namespace CodeImp.DoomBuilder.Editing
 			name = f.name;
 			categoryname = f.categoryname;
 			invert = f.invert; //mxd
+			displaymode = f.displaymode; //mxd
 			thingtype = f.thingtype;
 			thingzheight = f.thingzheight;
 			thingangle = f.thingangle;
@@ -131,6 +143,7 @@ namespace CodeImp.DoomBuilder.Editing
 			name = cfg.ReadSetting(path + ".name", "Unnamed filter");
 			categoryname = cfg.ReadSetting(path + ".category", "");
 			invert = cfg.ReadSetting(path + ".invert", false); //mxd
+			displaymode = (ThingsFilterDisplayMode)cfg.ReadSetting(path + ".displaymode", 0); //mxd
 			thingtype = cfg.ReadSetting(path + ".type", -1);
 			thingangle = cfg.ReadSetting(path + ".angle", -1);
 			thingzheight = cfg.ReadSetting(path + ".zheight", int.MinValue);
@@ -284,6 +297,7 @@ namespace CodeImp.DoomBuilder.Editing
 			cfg.WriteSetting(path + ".name", name);
 			cfg.WriteSetting(path + ".category", categoryname);
 			cfg.WriteSetting(path + ".invert", invert); //mxd
+			cfg.WriteSetting(path + ".displaymode", (int)displaymode); //mxd
 			cfg.WriteSetting(path + ".type", thingtype);
 			cfg.WriteSetting(path + ".angle", thingangle);
 			cfg.WriteSetting(path + ".zheight", thingzheight);
@@ -425,9 +439,9 @@ namespace CodeImp.DoomBuilder.Editing
 				//mxd. Apply inversion
 				qualifies ^= invert;
 				
-				// Put the thing in the lists
-				if(qualifies) visiblethings.Add(t); else hiddenthings.Add(t);
-				thingsvisiblestate.Add(t, qualifies);
+				// Put the thing in the lists. mxd: visiblethings and hiddenthings are only used from classic modes, IsThingVisible() is only used from visual mode.
+				if(qualifies || displaymode == ThingsFilterDisplayMode.VISUAL_MODES_ONLY) visiblethings.Add(t); else hiddenthings.Add(t);
+				thingsvisiblestate.Add(t, qualifies || (displaymode == ThingsFilterDisplayMode.CLASSIC_MODES_ONLY));
 			}
 		}
 

@@ -33,6 +33,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.addfilter = new System.Windows.Forms.Button();
 			this.deletefilter = new System.Windows.Forms.Button();
 			this.filtergroup = new System.Windows.Forms.GroupBox();
+			this.filtermode = new System.Windows.Forms.ComboBox();
+			this.label9 = new System.Windows.Forms.Label();
+			this.invert = new System.Windows.Forms.CheckBox();
 			this.tabs = new System.Windows.Forms.TabControl();
 			this.tabbasic = new System.Windows.Forms.TabPage();
 			this.label6 = new System.Windows.Forms.Label();
@@ -73,7 +76,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.label1 = new System.Windows.Forms.Label();
 			this.cancel = new System.Windows.Forms.Button();
 			this.apply = new System.Windows.Forms.Button();
-			this.invert = new System.Windows.Forms.CheckBox();
 			this.filtergroup.SuspendLayout();
 			this.tabs.SuspendLayout();
 			this.tabbasic.SuspendLayout();
@@ -96,7 +98,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.listfilters.MultiSelect = false;
 			this.listfilters.Name = "listfilters";
 			this.listfilters.ShowGroups = false;
-			this.listfilters.Size = new System.Drawing.Size(202, 387);
+			this.listfilters.Size = new System.Drawing.Size(202, 410);
 			this.listfilters.Sorting = System.Windows.Forms.SortOrder.Ascending;
 			this.listfilters.TabIndex = 0;
 			this.listfilters.UseCompatibleStateImageBehavior = false;
@@ -110,7 +112,8 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// addfilter
 			// 
-			this.addfilter.Location = new System.Drawing.Point(12, 405);
+			this.addfilter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.addfilter.Location = new System.Drawing.Point(12, 428);
 			this.addfilter.Name = "addfilter";
 			this.addfilter.Size = new System.Drawing.Size(98, 25);
 			this.addfilter.TabIndex = 1;
@@ -120,8 +123,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// deletefilter
 			// 
+			this.deletefilter.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.deletefilter.Enabled = false;
-			this.deletefilter.Location = new System.Drawing.Point(116, 405);
+			this.deletefilter.Location = new System.Drawing.Point(116, 428);
 			this.deletefilter.Name = "deletefilter";
 			this.deletefilter.Size = new System.Drawing.Size(98, 25);
 			this.deletefilter.TabIndex = 2;
@@ -134,6 +138,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.filtergroup.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.filtergroup.Controls.Add(this.filtermode);
+			this.filtergroup.Controls.Add(this.label9);
 			this.filtergroup.Controls.Add(this.invert);
 			this.filtergroup.Controls.Add(this.tabs);
 			this.filtergroup.Controls.Add(this.filtername);
@@ -141,10 +147,44 @@ namespace CodeImp.DoomBuilder.Windows
 			this.filtergroup.Enabled = false;
 			this.filtergroup.Location = new System.Drawing.Point(220, 6);
 			this.filtergroup.Name = "filtergroup";
-			this.filtergroup.Size = new System.Drawing.Size(465, 394);
+			this.filtergroup.Size = new System.Drawing.Size(465, 417);
 			this.filtergroup.TabIndex = 3;
 			this.filtergroup.TabStop = false;
 			this.filtergroup.Text = " Selected Filter ";
+			// 
+			// filtermode
+			// 
+			this.filtermode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.filtermode.FormattingEnabled = true;
+			this.filtermode.Items.AddRange(new object[] {
+            "Apply always",
+            "Apply in Classic modes only",
+            "Apply in Visual modes only"});
+			this.filtermode.Location = new System.Drawing.Point(92, 50);
+			this.filtermode.Name = "filtermode";
+			this.filtermode.Size = new System.Drawing.Size(232, 21);
+			this.filtermode.TabIndex = 8;
+			this.filtermode.SelectedIndexChanged += new System.EventHandler(this.filtermode_SelectedIndexChanged);
+			// 
+			// label9
+			// 
+			this.label9.AutoSize = true;
+			this.label9.Location = new System.Drawing.Point(49, 53);
+			this.label9.Name = "label9";
+			this.label9.Size = new System.Drawing.Size(37, 13);
+			this.label9.TabIndex = 7;
+			this.label9.Text = "Mode:";
+			// 
+			// invert
+			// 
+			this.invert.AutoSize = true;
+			this.invert.Location = new System.Drawing.Point(352, 26);
+			this.invert.Name = "invert";
+			this.invert.Size = new System.Drawing.Size(75, 17);
+			this.invert.TabIndex = 6;
+			this.invert.Text = "Invert filter";
+			this.invert.UseVisualStyleBackColor = true;
+			this.invert.CheckedChanged += new System.EventHandler(this.invert_CheckedChanged);
 			// 
 			// tabs
 			// 
@@ -155,11 +195,11 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabs.Controls.Add(this.tabaction);
 			this.tabs.Controls.Add(this.tabcustom);
 			this.tabs.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.tabs.Location = new System.Drawing.Point(6, 60);
+			this.tabs.Location = new System.Drawing.Point(6, 82);
 			this.tabs.Name = "tabs";
 			this.tabs.Padding = new System.Drawing.Point(24, 3);
 			this.tabs.SelectedIndex = 0;
-			this.tabs.Size = new System.Drawing.Size(453, 326);
+			this.tabs.Size = new System.Drawing.Size(453, 329);
 			this.tabs.TabIndex = 5;
 			// 
 			// tabbasic
@@ -179,7 +219,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabbasic.Location = new System.Drawing.Point(4, 22);
 			this.tabbasic.Name = "tabbasic";
 			this.tabbasic.Padding = new System.Windows.Forms.Padding(3);
-			this.tabbasic.Size = new System.Drawing.Size(445, 300);
+			this.tabbasic.Size = new System.Drawing.Size(445, 303);
 			this.tabbasic.TabIndex = 0;
 			this.tabbasic.Text = "Properties";
 			this.tabbasic.UseVisualStyleBackColor = true;
@@ -323,7 +363,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabflags.Location = new System.Drawing.Point(4, 22);
 			this.tabflags.Name = "tabflags";
 			this.tabflags.Padding = new System.Windows.Forms.Padding(3);
-			this.tabflags.Size = new System.Drawing.Size(445, 300);
+			this.tabflags.Size = new System.Drawing.Size(445, 303);
 			this.tabflags.TabIndex = 1;
 			this.tabflags.Text = "Flags";
 			this.tabflags.UseVisualStyleBackColor = true;
@@ -337,7 +377,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.filterfields.Columns = 2;
 			this.filterfields.Location = new System.Drawing.Point(20, 39);
 			this.filterfields.Name = "filterfields";
-			this.filterfields.Size = new System.Drawing.Size(402, 240);
+			this.filterfields.Size = new System.Drawing.Size(402, 258);
 			this.filterfields.TabIndex = 5;
 			this.filterfields.VerticalSpacing = 1;
 			// 
@@ -362,15 +402,14 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabaction.Location = new System.Drawing.Point(4, 22);
 			this.tabaction.Name = "tabaction";
 			this.tabaction.Padding = new System.Windows.Forms.Padding(3);
-			this.tabaction.Size = new System.Drawing.Size(445, 290);
+			this.tabaction.Size = new System.Drawing.Size(445, 285);
 			this.tabaction.TabIndex = 2;
 			this.tabaction.Text = "Action";
 			this.tabaction.UseVisualStyleBackColor = true;
 			// 
 			// argumentspanel
 			// 
-			this.argumentspanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
+			this.argumentspanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.argumentspanel.Controls.Add(this.label8);
 			this.argumentspanel.Controls.Add(this.arg2);
@@ -385,7 +424,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.argumentspanel.Controls.Add(this.arg4label);
 			this.argumentspanel.Location = new System.Drawing.Point(6, 70);
 			this.argumentspanel.Name = "argumentspanel";
-			this.argumentspanel.Size = new System.Drawing.Size(418, 164);
+			this.argumentspanel.Size = new System.Drawing.Size(418, 157);
 			this.argumentspanel.TabIndex = 17;
 			// 
 			// label8
@@ -562,7 +601,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabcustom.Location = new System.Drawing.Point(4, 22);
 			this.tabcustom.Name = "tabcustom";
 			this.tabcustom.Padding = new System.Windows.Forms.Padding(3);
-			this.tabcustom.Size = new System.Drawing.Size(445, 290);
+			this.tabcustom.Size = new System.Drawing.Size(445, 285);
 			this.tabcustom.TabIndex = 3;
 			this.tabcustom.Text = "Custom";
 			this.tabcustom.UseVisualStyleBackColor = true;
@@ -580,7 +619,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.fieldslist.Name = "fieldslist";
 			this.fieldslist.PropertyColumnVisible = true;
 			this.fieldslist.PropertyColumnWidth = 150;
-			this.fieldslist.Size = new System.Drawing.Size(426, 272);
+			this.fieldslist.Size = new System.Drawing.Size(426, 276);
 			this.fieldslist.TabIndex = 2;
 			this.fieldslist.TypeColumnVisible = true;
 			this.fieldslist.TypeColumnWidth = 100;
@@ -589,7 +628,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// filtername
 			// 
-			this.filtername.Location = new System.Drawing.Point(70, 26);
+			this.filtername.Location = new System.Drawing.Point(92, 24);
 			this.filtername.MaxLength = 50;
 			this.filtername.Name = "filtername";
 			this.filtername.Size = new System.Drawing.Size(232, 20);
@@ -599,7 +638,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(27, 29);
+			this.label1.Location = new System.Drawing.Point(48, 27);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(38, 13);
 			this.label1.TabIndex = 0;
@@ -609,7 +648,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(573, 405);
+			this.cancel.Location = new System.Drawing.Point(573, 428);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
 			this.cancel.TabIndex = 5;
@@ -620,7 +659,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// apply
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(455, 405);
+			this.apply.Location = new System.Drawing.Point(455, 428);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
 			this.apply.TabIndex = 4;
@@ -628,24 +667,13 @@ namespace CodeImp.DoomBuilder.Windows
 			this.apply.UseVisualStyleBackColor = true;
 			this.apply.Click += new System.EventHandler(this.apply_Click);
 			// 
-			// invert
-			// 
-			this.invert.AutoSize = true;
-			this.invert.Location = new System.Drawing.Point(339, 28);
-			this.invert.Name = "invert";
-			this.invert.Size = new System.Drawing.Size(75, 17);
-			this.invert.TabIndex = 6;
-			this.invert.Text = "Invert filter";
-			this.invert.UseVisualStyleBackColor = true;
-			this.invert.CheckedChanged += new System.EventHandler(this.invert_CheckedChanged);
-			// 
 			// ThingsFiltersForm
 			// 
 			this.AcceptButton = this.apply;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.cancel;
-			this.ClientSize = new System.Drawing.Size(696, 436);
+			this.ClientSize = new System.Drawing.Size(696, 459);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
 			this.Controls.Add(this.filtergroup);
@@ -726,5 +754,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private CodeImp.DoomBuilder.Controls.FieldsEditorControl fieldslist;
 		private System.Windows.Forms.Label label6;
 		private System.Windows.Forms.CheckBox invert;
+		private System.Windows.Forms.ComboBox filtermode;
+		private System.Windows.Forms.Label label9;
 	}
 }
