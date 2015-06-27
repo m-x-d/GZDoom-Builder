@@ -39,6 +39,9 @@ namespace CodeImp.DoomBuilder.Editing
 
 		// Display name of this filter
 		protected string name;
+
+		//mxd. Invert this filter?
+		protected bool invert;
 		
 		// Filter by category
 		protected string categoryname;
@@ -74,6 +77,7 @@ namespace CodeImp.DoomBuilder.Editing
 
 		public string Name { get { return name; } internal set { name = value; } }
 		public string CategoryName { get { return categoryname; } internal set { categoryname = value; } }
+		public bool Invert { get { return invert; } internal set { invert = value; } } //mxd
 		internal int ThingType { get { return thingtype; } set { thingtype = value; } }
 		internal int ThingAngle { get { return thingangle; } set { thingangle = value; } }
 		internal int ThingZHeight { get { return thingzheight; } set { thingzheight = value; } }
@@ -97,6 +101,7 @@ namespace CodeImp.DoomBuilder.Editing
 			// Copy
 			name = f.name;
 			categoryname = f.categoryname;
+			invert = f.invert; //mxd
 			thingtype = f.thingtype;
 			thingzheight = f.thingzheight;
 			thingangle = f.thingangle;
@@ -125,6 +130,7 @@ namespace CodeImp.DoomBuilder.Editing
 			// Read settings from config
 			name = cfg.ReadSetting(path + ".name", "Unnamed filter");
 			categoryname = cfg.ReadSetting(path + ".category", "");
+			invert = cfg.ReadSetting(path + ".invert", false); //mxd
 			thingtype = cfg.ReadSetting(path + ".type", -1);
 			thingangle = cfg.ReadSetting(path + ".angle", -1);
 			thingzheight = cfg.ReadSetting(path + ".zheight", int.MinValue);
@@ -277,6 +283,7 @@ namespace CodeImp.DoomBuilder.Editing
 			// Write settings to config
 			cfg.WriteSetting(path + ".name", name);
 			cfg.WriteSetting(path + ".category", categoryname);
+			cfg.WriteSetting(path + ".invert", invert); //mxd
 			cfg.WriteSetting(path + ".type", thingtype);
 			cfg.WriteSetting(path + ".angle", thingangle);
 			cfg.WriteSetting(path + ".zheight", thingzheight);
@@ -414,6 +421,9 @@ namespace CodeImp.DoomBuilder.Editing
 						}
 					}
 				}
+
+				//mxd. Apply inversion
+				qualifies ^= invert;
 				
 				// Put the thing in the lists
 				if(qualifies) visiblethings.Add(t); else hiddenthings.Add(t);

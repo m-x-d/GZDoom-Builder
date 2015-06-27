@@ -1221,7 +1221,7 @@ namespace CodeImp.DoomBuilder.Rendering
 
 					foreach(Thing t in group.Value) 
 					{
-						if(t.IsModel && (General.Settings.GZDrawModelsMode == ModelRenderMode.ALL || (General.Settings.GZDrawModelsMode == ModelRenderMode.SELECTION && t.Selected))) continue;
+						if(t.IsModel && (General.Settings.GZDrawModelsMode == ModelRenderMode.ALL || (General.Settings.GZDrawModelsMode == ModelRenderMode.SELECTION && t.Selected) || (General.Settings.GZDrawModelsMode == ModelRenderMode.ACTIVE_THINGS_FILTER && alpha == 1.0f))) continue;
 						float scaler = t.Size / info.Radius;
 						if(Math.Max(spriteWidth, spriteHeight) * scaler < MINIMUM_SPRITE_RADIUS) continue; //don't render tiny little sprites
 						
@@ -1335,7 +1335,7 @@ namespace CodeImp.DoomBuilder.Rendering
 
 						foreach(Thing t in group.Value) 
 						{
-							if(General.Settings.GZDrawModelsMode == ModelRenderMode.SELECTION && !t.Selected) continue;
+							if((General.Settings.GZDrawModelsMode == ModelRenderMode.SELECTION && !t.Selected) || (General.Settings.GZDrawModelsMode == ModelRenderMode.ACTIVE_THINGS_FILTER && alpha < 1.0f)) continue;
 							Vector2D screenpos = ((Vector2D)t.Position).GetTransformed(translatex, translatey, scale, -scale);
 							float modelScale = scale * t.ActorScale.Width * t.ScaleX;
 

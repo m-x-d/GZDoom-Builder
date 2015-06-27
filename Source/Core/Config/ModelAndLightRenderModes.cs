@@ -4,6 +4,7 @@
 	{
 		NONE,
 		SELECTION,
+		ACTIVE_THINGS_FILTER,
 		ALL,
 	}
 

@@ -181,6 +181,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.modelrendermode = new System.Windows.Forms.ToolStripSplitButton();
 			this.modelsdontshow = new System.Windows.Forms.ToolStripMenuItem();
 			this.modelsshowselection = new System.Windows.Forms.ToolStripMenuItem();
+			this.modelsshowfiltered = new System.Windows.Forms.ToolStripMenuItem();
 			this.modelsshowall = new System.Windows.Forms.ToolStripMenuItem();
 			this.buttontogglefog = new System.Windows.Forms.ToolStripButton();
 			this.buttontoggleeventlines = new System.Windows.Forms.ToolStripButton();
@@ -1598,6 +1599,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.modelrendermode.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.modelsdontshow,
             this.modelsshowselection,
+			this.modelsshowfiltered,
             this.modelsshowall});
 			this.modelrendermode.Enabled = false;
 			this.modelrendermode.Image = global::CodeImp.DoomBuilder.Properties.Resources.Model;
@@ -1628,13 +1630,23 @@ namespace CodeImp.DoomBuilder.Windows
 			this.modelsshowselection.Text = "Show models for selected things only";
 			this.modelsshowselection.Click += new System.EventHandler(this.ChangeModelRenderingMode);
 			// 
+			// modelsshowfiltered
+			// 
+			this.modelsshowfiltered.CheckOnClick = true;
+			this.modelsshowfiltered.Image = global::CodeImp.DoomBuilder.Properties.Resources.ModelFiltered;
+			this.modelsshowfiltered.Name = "modelsshowfiltered";
+			this.modelsshowfiltered.Size = new System.Drawing.Size(271, 22);
+			this.modelsshowfiltered.Tag = 2;
+			this.modelsshowfiltered.Text = "Show models for current things filter only";
+			this.modelsshowfiltered.Click += new System.EventHandler(this.ChangeModelRenderingMode);
+			// 
 			// modelsshowall
 			// 
 			this.modelsshowall.CheckOnClick = true;
 			this.modelsshowall.Image = global::CodeImp.DoomBuilder.Properties.Resources.Model;
 			this.modelsshowall.Name = "modelsshowall";
 			this.modelsshowall.Size = new System.Drawing.Size(271, 22);
-			this.modelsshowall.Tag = 2;
+			this.modelsshowall.Tag = 3;
 			this.modelsshowall.Text = "Always show models";
 			this.modelsshowall.Click += new System.EventHandler(this.ChangeModelRenderingMode);
 			// 
@@ -2493,6 +2505,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private ToolStripSplitButton modelrendermode;
 		private ToolStripMenuItem modelsdontshow;
 		private ToolStripMenuItem modelsshowselection;
+		private ToolStripMenuItem modelsshowfiltered;
 		private ToolStripMenuItem modelsshowall;
 		private DebugConsole console;
 		private ToolStripMenuItem item2zoom400;
