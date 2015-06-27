@@ -149,13 +149,24 @@ namespace CodeImp.DoomBuilder.Windows
 		// OK clicked
 		private void apply_Click(object sender, EventArgs e)
 		{
+			//mxd. Store current filter name
+			string currentfiltername = string.Empty;
+			if(!(General.Map.ThingsFilter is NullThingsFilter)) currentfiltername = General.Map.ThingsFilter.Name;
+			
 			// Clear all filters and add the new ones
 			General.Map.ConfigSettings.ThingsFilters.Clear();
+			ThingsFilter currentfilter = new NullThingsFilter(); //mxd
 			foreach(ListViewItem item in listfilters.Items)
-				General.Map.ConfigSettings.ThingsFilters.Add(item.Tag as ThingsFilter);
+			{
+				ThingsFilter f = item.Tag as ThingsFilter; //mxd
+				if(!string.IsNullOrEmpty(currentfiltername) && f.Name == currentfiltername) //mxd
+					currentfilter = f; 
+				General.Map.ConfigSettings.ThingsFilters.Add(f);
+			}
+				
 			
 			// Update stuff
-			General.Map.ChangeThingFilter(new NullThingsFilter());
+			General.Map.ChangeThingFilter(currentfilter);
 			General.MainWindow.UpdateThingsFilters();
 			General.Map.ConfigSettings.Changed = true;
 			
@@ -215,6 +226,9 @@ namespace CodeImp.DoomBuilder.Windows
 				
 				// Show name
 				filtername.Text = f.Name;
+
+				//mxd. Set display mode
+				filtermode.SelectedIndex = (int)f.DisplayMode;
 
 				//mxd. Invert?
 				invert.Checked = f.Invert;
@@ -533,6 +547,18 @@ namespace CodeImp.DoomBuilder.Windows
 				// Get selected filter
 				ThingsFilter f = listfilters.SelectedItems[0].Tag as ThingsFilter;
 				f.Invert = invert.Checked;
+			}
+		}
+
+		//mxd
+		private void filtermode_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			// Anything selected?
+			if(!settingup && listfilters.SelectedItems.Count > 0 && filtermode.SelectedIndex != -1) 
+			{
+				// Get selected filter
+				ThingsFilter f = listfilters.SelectedItems[0].Tag as ThingsFilter;
+				f.DisplayMode = (ThingsFilterDisplayMode)filtermode.SelectedIndex;
 			}
 		}
 		
