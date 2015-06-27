@@ -3155,6 +3155,10 @@ namespace CodeImp.DoomBuilder.Windows
 					General.MainWindow.DisplayStatus(StatusType.Action, "Models rendering mode: SELECTION ONLY");
 					break;
 
+				case ModelRenderMode.ACTIVE_THINGS_FILTER:
+					General.MainWindow.DisplayStatus(StatusType.Action, "Models rendering mode: ACTIVE THINGS FILTER ONLY");
+					break;
+
 				case ModelRenderMode.ALL:
 					General.MainWindow.DisplayStatus(StatusType.Action, "Models rendering mode: ALL");
 					break;

@@ -215,6 +215,9 @@ namespace CodeImp.DoomBuilder.Windows
 				
 				// Show name
 				filtername.Text = f.Name;
+
+				//mxd. Invert?
+				invert.Checked = f.Invert;
 				
 				// Properties
 				foreach(object c in filtercategory.Items)
@@ -518,6 +521,18 @@ namespace CodeImp.DoomBuilder.Windows
 				// Get selected filter
 				ThingsFilter f = listfilters.SelectedItems[0].Tag as ThingsFilter;
 				fieldslist.Apply(f.ThingCustomFields);
+			}
+		}
+
+		//mxd
+		private void invert_CheckedChanged(object sender, EventArgs e) 
+		{
+			// Anything selected?
+			if(!settingup && listfilters.SelectedItems.Count > 0) 
+			{
+				// Get selected filter
+				ThingsFilter f = listfilters.SelectedItems[0].Tag as ThingsFilter;
+				f.Invert = invert.Checked;
 			}
 		}
 		

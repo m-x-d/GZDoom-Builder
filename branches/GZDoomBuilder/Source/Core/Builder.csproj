@@ -1058,6 +1058,7 @@
     <None Include="Resources\MixedThings.png" />
     <Content Include="Resources\Model.png" />
     <None Include="Resources\ModelDisabled.png" />
+    <None Include="Resources\ModelFiltered.png" />
     <Content Include="Resources\Model_selected.png" />
     <None Include="Resources\Replace.png" />
     <None Include="Resources\SearchPrev.png" />
