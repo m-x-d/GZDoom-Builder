@@ -852,7 +852,10 @@ namespace CodeImp.DoomBuilder.Rendering
 						foreach(VisualThing t in group.Value)
 						{
 							//mxd
-							if(t.Thing.IsModel && General.Settings.GZDrawModelsMode != ModelRenderMode.NONE && (General.Settings.GZDrawModelsMode == ModelRenderMode.ALL || t.Selected))
+							if(t.Thing.IsModel && 
+								(General.Settings.GZDrawModelsMode == ModelRenderMode.ALL ||
+								 General.Settings.GZDrawModelsMode == ModelRenderMode.ACTIVE_THINGS_FILTER ||
+								(General.Settings.GZDrawModelsMode == ModelRenderMode.SELECTION && t.Selected))) 
 								continue;
 
 							// Update buffer if needed
@@ -1237,7 +1240,10 @@ namespace CodeImp.DoomBuilder.Rendering
 			}
 
 			//mxd. gather models
-			if(t.Thing.IsModel && General.Settings.GZDrawModelsMode != ModelRenderMode.NONE && (General.Settings.GZDrawModelsMode == ModelRenderMode.ALL || t.Selected)) 
+			if(t.Thing.IsModel && 
+				(General.Settings.GZDrawModelsMode == ModelRenderMode.ALL ||
+				 General.Settings.GZDrawModelsMode == ModelRenderMode.ACTIVE_THINGS_FILTER ||
+				(General.Settings.GZDrawModelsMode == ModelRenderMode.SELECTION && t.Selected))) 
 			{
 				ModelData mde = General.Map.Data.ModeldefEntries[t.Thing.Type];
 				if (!thingsWithModel.ContainsKey(mde))
