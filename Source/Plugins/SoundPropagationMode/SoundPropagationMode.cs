@@ -57,6 +57,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 		#region ================== Properties
 
 		public override object HighlightedObject { get { return highlighted; } }
+		internal static string BlockSoundFlag { get { return (General.Map.UDMF ? "blocksound" : "64"); } } //mxd
 
 		#endregion
 
@@ -123,7 +124,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			BuilderPlug.Me.BlockingLinedefs.Clear();
 
 			foreach (Linedef ld in General.Map.Map.Linedefs)
-				if (ld.IsFlagSet(General.Map.UDMF ? "blocksound" : "64"))
+				if (ld.IsFlagSet(BlockSoundFlag))
 					BuilderPlug.Me.BlockingLinedefs.Add(ld);
 
 			if (highlighted == null || highlighted.IsDisposed) return;
@@ -336,8 +337,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			General.Map.UndoRedo.CreateUndo("Toggle Linedef Sound Blocking");
 
 			// Toggle flag
-			string flag = (General.Map.UDMF ? "blocksound" : "64");
-			highlightedline.SetFlag(flag, !highlightedline.IsFlagSet(flag));
+			highlightedline.SetFlag(BlockSoundFlag, !highlightedline.IsFlagSet(BlockSoundFlag));
 			
 			// Update
 			ResetSoundPropagation();
@@ -397,8 +397,8 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 
 				//mxd. Find the nearest linedef within default highlight range
 				l = General.Map.Map.NearestLinedefRange(mousemappos, 20 / renderer.Scale);
-				//mxd. We are not interested in single-sided lines...
-				if(l != null && (l.Front == null || l.Back == null)) l = null;
+				//mxd. We are not interested in single-sided lines (unless they have "blocksound" flag set)...
+				if(l != null && (l.Front == null || l.Back == null) && !l.IsFlagSet(BlockSoundFlag)) l = null;
 				
 				//mxd. Set as highlighted
 				if(highlightedline != l)

@@ -62,6 +62,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 		#region ================== Properties
 
 		public override object HighlightedObject { get { return highlighted; } }
+		internal const string ZoneBoundaryFlag = "zoneboundary"; //mxd
 
 		#endregion
 
@@ -194,7 +195,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			General.Map.UndoRedo.CreateUndo("Toggle Sound Zone Boundary");
 
 			// Toggle flag
-			highlightedline.SetFlag("zoneboundary", !highlightedline.IsFlagSet("zoneboundary"));
+			highlightedline.SetFlag(ZoneBoundaryFlag, !highlightedline.IsFlagSet(ZoneBoundaryFlag));
 
 			// Update
 			UpdateData();
@@ -385,7 +386,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 				//mxd. Find the nearest linedef within default highlight range
 				l = General.Map.Map.NearestLinedefRange(mousemappos, 20 / renderer.Scale);
 				//mxd. We are not interested in single-sided lines, unless they have zoneboundary flag...
-				if(l != null && ((l.Front == null || l.Back == null) && (General.Map.UDMF && !l.IsFlagSet("zoneboundary"))))
+				if(l != null && ((l.Front == null || l.Back == null) && (General.Map.UDMF && !l.IsFlagSet(ZoneBoundaryFlag))))
 				{
 					l = null;
 				}

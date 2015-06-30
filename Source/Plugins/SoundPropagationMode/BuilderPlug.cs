@@ -434,7 +434,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 
 		private static bool LinedefBlocksSoundEnvironment(Linedef linedef)
 		{
-			if(General.Map.UDMF) return linedef.IsFlagSet("zoneboundary"); //mxd. Fancier this way :)
+			if(General.Map.UDMF) return linedef.IsFlagSet(SoundEnvironmentMode.ZoneBoundaryFlag); //mxd. Fancier this way :)
 			
 			// In Hexen format the line must have action 121 (Line_SetIdentification) and bit 1 of
 			// the second argument set (see http://zdoom.org/wiki/Line_SetIdentification)

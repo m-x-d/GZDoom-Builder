@@ -888,6 +888,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				OnMouseMove(e);
 
 				// Redraw screen
+				UpdateSelectionInfo(); //mxd
 				General.Interface.RedrawDisplay();
 			}
 		}

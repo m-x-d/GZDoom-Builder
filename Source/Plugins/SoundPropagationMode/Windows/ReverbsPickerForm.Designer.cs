@@ -44,7 +44,7 @@
 			this.groupBox1.Size = new System.Drawing.Size(190, 351);
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
-			this.groupBox1.Text = " Sound Environments ";
+			this.groupBox1.Text = " Sound Environments: ";
 			// 
 			// list
 			// 
@@ -55,10 +55,12 @@
 			this.list.Size = new System.Drawing.Size(184, 329);
 			this.list.TabIndex = 0;
 			this.list.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.list_MouseDoubleClick);
+			this.list.SelectedIndexChanged += new System.EventHandler(this.list_SelectedIndexChanged);
 			// 
 			// accept
 			// 
 			this.accept.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.accept.Enabled = false;
 			this.accept.Location = new System.Drawing.Point(14, 394);
 			this.accept.Name = "accept";
 			this.accept.Size = new System.Drawing.Size(91, 23);
