@@ -26,6 +26,8 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 				return name;
 			}
 		}
+
+		private static string previousenvironmentname;
 		
 		public ReverbsPickerForm(Thing t) 
 		{
@@ -45,6 +47,19 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 				{
 					list.SelectedItem = item;
 					break;
+				}
+			}
+
+			// Select previously selected item?
+			if(!string.IsNullOrEmpty(previousenvironmentname) && list.SelectedItem == null)
+			{
+				foreach(ReverbListItem item in list.Items)
+				{
+					if(item.ToString() == previousenvironmentname)
+					{
+						list.SelectedItem = item;
+						break;
+					}
 				}
 			}
 
@@ -69,8 +84,14 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 
 		private void accept_Click(object sender, EventArgs e) 
 		{
+			if(list.SelectedItem != null) previousenvironmentname = list.SelectedItem.ToString();
 			this.DialogResult = DialogResult.OK;
 			this.Close();
+		}
+
+		private void list_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			accept.Enabled = (list.SelectedItem != null);
 		}
 	}
 }

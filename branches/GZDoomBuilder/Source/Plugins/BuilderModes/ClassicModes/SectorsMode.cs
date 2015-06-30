@@ -1618,6 +1618,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				UpdateSelectedLabels();
 				
 				// Redraw screen
+				UpdateSelectionInfo(); //mxd
 				General.Map.Renderer2D.UpdateExtraFloorFlag(); //mxd
 				General.Interface.RedrawDisplay();
 			}

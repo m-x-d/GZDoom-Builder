@@ -936,6 +936,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			OnMouseMove(e);
 
 			// Redraw screen
+			UpdateSelectionInfo(); //mxd
 			General.Map.Renderer2D.UpdateExtraFloorFlag(); //mxd
 			General.Interface.RedrawDisplay();
 		}
@@ -1014,6 +1015,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			OnMouseMove(e);
 
 			// Redraw screen
+			UpdateSelectionInfo(); //mxd
 			General.Map.Renderer2D.UpdateExtraFloorFlag(); //mxd
 			General.Interface.RedrawDisplay();
 		}

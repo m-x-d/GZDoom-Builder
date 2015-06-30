@@ -56,7 +56,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 
 				foreach (Sidedef sd in sector.Sidedefs)
 				{
-					bool blocksound = sd.Line.IsFlagSet(General.Map.UDMF ? "blocksound" : "64");
+					bool blocksound = sd.Line.IsFlagSet(SoundPropagationMode.BlockSoundFlag);
 					if (blocksound) blockinglines.Add(sd.Line);
 
 					// If the line is one sided, the sound can travel nowhere, so try the next one
