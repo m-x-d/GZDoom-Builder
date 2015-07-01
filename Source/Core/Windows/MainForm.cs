@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Globalization;
@@ -2747,6 +2748,12 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			itemhelpeditmode.Enabled = ((General.Map != null) && (General.Editing.Mode != null));
 		}
+
+		//mxd. Check updates clicked
+		private void itemhelpcheckupdates_Click(object sender, EventArgs e)
+		{
+			UpdateChecker.PerformCheck();
+		}
 		
 		// About clicked
 		private void itemhelpabout_Click(object sender, EventArgs e)
@@ -3934,5 +3941,31 @@ namespace CodeImp.DoomBuilder.Windows
 		
 		#endregion
 
+		#region ================== Updater (mxd)
+
+		private delegate void UpdateAvailableCallback(int remoterev, string changelog);
+		internal void UpdateAvailable(int remoterev, string changelog)
+		{
+			if(this.InvokeRequired)
+			{
+				UpdateAvailableCallback d = UpdateAvailable;
+				this.Invoke(d, new object[] { remoterev, changelog });
+			} 
+			else 
+			{
+				// Show the window
+				UpdateForm form = new UpdateForm(remoterev, changelog);
+				if(form.ShowDialog(this) == DialogResult.OK && General.AskSaveMap())
+				{
+					// Launch the updater
+					Process.Start(Path.Combine(General.AppPath, "Updater.exe"), "-rev " + remoterev);
+
+					// Close
+					General.Exit(true);
+				}
+			}
+		}
+
+		#endregion
 	}
 }

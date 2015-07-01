@@ -19,28 +19,28 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Drawing;
+using System.IO;
+using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Security.AccessControl;
 using System.Security.Principal;
 using System.Text;
+using System.Threading;
 using System.Windows.Forms;
-using System.IO;
-using System.Reflection;
+using CodeImp.DoomBuilder.Actions;
+using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Data;
-using CodeImp.DoomBuilder.Windows;
+using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Map;
-using System.Runtime.InteropServices;
-using CodeImp.DoomBuilder.Actions;
-using System.Diagnostics;
+using CodeImp.DoomBuilder.Plugins;
 using CodeImp.DoomBuilder.Rendering;
-using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.Types;
+using CodeImp.DoomBuilder.Windows;
 using Microsoft.Win32;
 using SlimDX.Direct3D9;
-using System.Drawing;
-using CodeImp.DoomBuilder.Plugins;
-using CodeImp.DoomBuilder.Types;
-using System.Threading;
-using CodeImp.DoomBuilder.Editing;
 
 #endregion
 
@@ -598,7 +598,7 @@ namespace CodeImp.DoomBuilder
 			
 			// Remove the previous log file and start logging
 			if(File.Exists(logfile)) File.Delete(logfile);
-			General.WriteLogLine("GZDoom Builder " + Application.ProductVersion + " startup"); //mxd
+			General.WriteLogLine("GZDoom Builder R" + thisasm.GetName().Version.Revision + " startup"); //mxd
 			General.WriteLogLine("Application path:        " + apppath);
 			General.WriteLogLine("Temporary path:          " + temppath);
 			General.WriteLogLine("Local settings path:     " + settingspath);
@@ -726,6 +726,23 @@ namespace CodeImp.DoomBuilder
 				{
 					if(MessageBox.Show("No game configurations are currently enabled.\nPlease enable at least one game configuration", "Warning", MessageBoxButtons.OK) == DialogResult.OK) 
 						mainwindow.ShowConfiguration();
+				}
+
+				//mxd. Check for updates?
+				if(General.Settings.CheckForUpdates)
+				{
+					if(!File.Exists(Path.Combine(apppath, "Updater.exe")))
+					{
+						General.ErrorLogger.Add(ErrorType.Warning, "Update check failed: Updater.exe does not exist!");
+					} 
+					else if(!File.Exists(Path.Combine(apppath, "Updater.ini")))
+					{
+						General.ErrorLogger.Add(ErrorType.Warning, "Update check failed: Updater.ini does not exist!");
+					}
+					else
+					{
+						UpdateChecker.PerformCheck();
+					}
 				}
 				
 				// Run application from the main window

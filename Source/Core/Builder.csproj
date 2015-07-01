@@ -768,6 +768,7 @@
     <Compile Include="General\ErrorLogger.cs" />
     <Compile Include="General\MurmurHash2.cs" />
     <Compile Include="General\SavePurpose.cs" />
+    <Compile Include="General\UpdateChecker.cs" />
     <Compile Include="Geometry\CurveTools.cs" />
     <Compile Include="Geometry\InterpolationTools.cs" />
     <Compile Include="GZBuilder\Controls\AngleControl.cs">
@@ -946,6 +947,12 @@
       <DependentUpon>ThingEditFormUDMF.cs</DependentUpon>
     </Compile>
     <Compile Include="Windows\ToolbarSection.cs" />
+    <Compile Include="Windows\UpdateForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\UpdateForm.Designer.cs">
+      <DependentUpon>UpdateForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Windows\VertexEditForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1244,6 +1251,9 @@
     <EmbeddedResource Include="Resources\Font.png" />
     <EmbeddedResource Include="Resources\White.png" />
     <EmbeddedResource Include="Resources\Font.cfg" />
+    <EmbeddedResource Include="Windows\UpdateForm.resx">
+      <DependentUpon>UpdateForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Windows\VertexEditForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>VertexEditForm.cs</DependentUpon>
