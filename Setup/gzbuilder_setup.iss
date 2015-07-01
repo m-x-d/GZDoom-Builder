@@ -37,6 +37,8 @@ Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:Ad
 Source: Setup\dotnetfx35setup.exe; DestDir: {tmp}; Flags: dontcopy
 Source: Builder.exe; DestDir: {app}; Flags: ignoreversion
 Source: GZBuilder.default.cfg; DestDir: {app}; Flags: ignoreversion
+Source: Updater.exe; DestDir: {app}; Flags: ignoreversion
+Source: Updater.ini; DestDir: {app}; Flags: ignoreversion
 Source: Refmanual.chm; DestDir: {app}; Flags: ignoreversion
 Source: DevIL.dll; DestDir: {app}; Flags: ignoreversion
 Source: SharpCompress.3.5.dll; DestDir: {app}; Flags: ignoreversion
