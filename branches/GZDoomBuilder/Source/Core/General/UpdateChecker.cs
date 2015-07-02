@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.IO;
 using System.Net;
 using System.Text;
@@ -121,7 +122,7 @@ namespace CodeImp.DoomBuilder
 						{
 							if(prop.Name == "msg")
 							{
-								sb.Append(prop.InnerText.Trim()).Append(@"\par\par ");
+								sb.Append(prop.InnerText.Trim().Replace(Environment.NewLine, @"\par ")).Append(@"\par\par ");
 								break;
 							}
 						}
