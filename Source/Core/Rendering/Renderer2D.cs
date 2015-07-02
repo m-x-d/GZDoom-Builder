@@ -1326,6 +1326,11 @@ namespace CodeImp.DoomBuilder.Rendering
 
 					Color4 cHighlight = General.Colors.Highlight.ToColorValue();
 					Color4 cWire = General.Colors.ModelWireframe.ToColorValue();
+					if(alpha < 1.0f)
+					{
+						cHighlight.Alpha = alpha * 0.25f;
+						cWire.Alpha = cHighlight.Alpha;
+					}
 					Matrix viewscale = Matrix.Scaling(scale, -scale, 0.0f);
 					ModelData mde;
 

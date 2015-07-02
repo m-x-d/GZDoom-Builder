@@ -264,14 +264,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 		private void ApplyScale() 
 		{
-			if(cbUniformScale.Checked) 
-			{
-				ApplyScale((float)minScaleX.Value, (float)maxScaleX.Value, (float)minScaleX.Value, (float)maxScaleX.Value);
-			} 
-			else 
-			{
-				ApplyScale((float)minScaleX.Value, (float)maxScaleX.Value, (float)minScaleY.Value, (float)maxScaleY.Value);
-			}
+			ApplyScale((float)minScaleX.Value, (float)maxScaleX.Value, (float)minScaleY.Value, (float)maxScaleY.Value);
 
 			//update view
 			if(editingModeName == "ThingsMode") General.Interface.RedrawDisplay();
@@ -279,6 +272,12 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 		private void ApplyScale(float minX, float maxX, float minY, float maxY) 
 		{
+			if(cbUniformScale.Checked)
+			{
+				minY = minX;
+				maxY = maxX;
+			}
+			
 			if(minX > maxX) General.Swap(ref minX, ref maxX);
 			if(minY > maxY) General.Swap(ref minY, ref maxY);
 
@@ -288,15 +287,18 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 			for(int i = 0; i < selection.Count; i++) 
 			{
+				float jitterX = thingData[i].JitterScaleX;
+				float jitterY = (cbUniformScale.Checked ? jitterX : thingData[i].JitterScaleY);
+				
 				if (cbRelativeScale.Checked) 
 				{
-					sx = thingData[i].ScaleX + minX + diffX * thingData[i].JitterScaleX;
-					sy = thingData[i].ScaleY + minY + diffY * thingData[i].JitterScaleY;
+					sx = thingData[i].ScaleX + minX + diffX * jitterX;
+					sy = thingData[i].ScaleY + minY + diffY * jitterY;
 				} 
 				else 
 				{
-					sx = minX + diffX * thingData[i].JitterScaleX;
-					sy = minY + diffY * thingData[i].JitterScaleY;
+					sx = minX + diffX * jitterX;
+					sy = minY + diffY * jitterY;
 				}
 
 				selection[i].SetScale(sx, sy);
