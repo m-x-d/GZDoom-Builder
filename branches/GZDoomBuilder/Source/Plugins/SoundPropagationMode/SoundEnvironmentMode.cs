@@ -52,7 +52,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 		private Thing highlightedthing; //mxd
 
 		// Interface
-		private SoundEnvironmentPanel panel;
+		private static SoundEnvironmentPanel panel;
 		private Docker docker;
 
 		private BackgroundWorker worker;
@@ -63,6 +63,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 
 		public override object HighlightedObject { get { return highlighted; } }
 		internal const string ZoneBoundaryFlag = "zoneboundary"; //mxd
+		internal static SoundEnvironmentPanel SoundEnvironmentPanel { get { return panel; } } //mxd
 
 		#endregion
 
@@ -101,15 +102,8 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 					}
 				}
 			}
-			
-			if (highlightedsoundenvironment != null)
-			{
-				panel.HighlightSoundEnvironment(highlightedsoundenvironment);
-			}
-			else
-			{
-				panel.HighlightSoundEnvironment(null);
-			}
+
+			panel.HighlightSoundEnvironment(highlightedsoundenvironment);
 
 			// Show highlight info
 			if ((highlighted != null) && !highlighted.IsDisposed)
@@ -132,8 +126,12 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			} 
 			else if(!worker.IsBusy) 
 			{
+				panel.BeginUpdate(); //mxd
+				
 				foreach(SoundEnvironment se in BuilderPlug.Me.SoundEnvironments)
 					panel.AddSoundEnvironment(se);
+
+				panel.EndUpdate(); //mxd
 			}
 		}
 
@@ -163,6 +161,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.ColorConfiguration);
 
 			panel = new SoundEnvironmentPanel();
+			panel.OnShowWarningsOnlyChanged += PanelOnOnShowWarningsOnlyChanged;
 			docker = new Docker("soundenvironments", "Sound Environments", panel);
 			General.Interface.AddDocker(docker);
 			General.Interface.SelectDocker(docker);
@@ -186,20 +185,26 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			renderer.SetPresentation(presentation);
 		}
 
-		//mxd. If a linedef is highlighted, toggle the sound blocking flag 
+		//mxd. If a linedef is highlighted, toggle the sound blocking flag, if a sound environment is clicked, select it in the tree view
 		protected override void OnSelectEnd() 
 		{
-			if(highlightedline == null || !General.Map.UDMF) return;
+			if(!General.Map.UDMF) return;
+			if(highlightedline != null)
+			{
+				// Make undo
+				General.Map.UndoRedo.CreateUndo("Toggle Sound Zone Boundary");
 
-			// Make undo
-			General.Map.UndoRedo.CreateUndo("Toggle Sound Zone Boundary");
+				// Toggle flag
+				highlightedline.SetFlag(ZoneBoundaryFlag, !highlightedline.IsFlagSet(ZoneBoundaryFlag));
 
-			// Toggle flag
-			highlightedline.SetFlag(ZoneBoundaryFlag, !highlightedline.IsFlagSet(ZoneBoundaryFlag));
-
-			// Update
-			UpdateData();
-			General.Interface.RedrawDisplay();
+				// Update
+				UpdateData();
+				General.Interface.RedrawDisplay();
+			}
+			else //mxd
+			{
+				panel.SelectSoundEnvironment(highlightedsoundenvironment);
+			}
 		}
 
 		//mxd. Show Reverb selector dialog or add a new sound environment thing
@@ -229,6 +234,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 
 		private void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
 		{
+			panel.HighlightSoundEnvironment(highlightedsoundenvironment); //mxd. Expand highlighted node in the treeview
 			General.Interface.DisplayStatus(StatusType.Ready, "Finished updating sound environments");
 		}
 
@@ -427,6 +433,12 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 
 			// Highlight nothing
 			Highlight(null);
+		}
+
+		//mxd
+		private void PanelOnOnShowWarningsOnlyChanged(object sender, EventArgs eventArgs)
+		{
+			UpdateData();
 		}
 
 		#endregion

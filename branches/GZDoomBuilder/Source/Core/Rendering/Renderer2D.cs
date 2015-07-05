@@ -1324,13 +1324,12 @@ namespace CodeImp.DoomBuilder.Rendering
 
 					graphics.Shaders.Things2D.BeginPass(2);
 
-					Color4 cHighlight = General.Colors.Highlight.ToColorValue();
-					Color4 cWire = General.Colors.ModelWireframe.ToColorValue();
-					if(alpha < 1.0f)
-					{
-						cHighlight.Alpha = alpha * 0.25f;
-						cWire.Alpha = cHighlight.Alpha;
-					}
+					Color4 cSelection = General.Colors.Selection.ToColorValue();
+					Color4 cWire = ((c.ToInt() == General.Colors.Highlight.ToInt()) ? General.Colors.Highlight.ToColorValue() : General.Colors.ModelWireframe.ToColorValue());
+
+					cSelection.Alpha = ((alpha < 1.0f) ? alpha * 0.25f : 0.6f);
+					cWire.Alpha = cSelection.Alpha;
+
 					Matrix viewscale = Matrix.Scaling(scale, -scale, 0.0f);
 					ModelData mde;
 
@@ -1349,7 +1348,7 @@ namespace CodeImp.DoomBuilder.Rendering
 							((screenpos.y + mde.Model.Radius * modelScale) <= 0.0f) || ((screenpos.y - mde.Model.Radius * modelScale) >= windowsize.Height))
 								continue;
 
-							graphics.Shaders.Things2D.FillColor = t.Selected ? cHighlight : cWire;
+							graphics.Shaders.Things2D.FillColor = (t.Selected ? cSelection : cWire);
 
 							for(int i = 0; i < mde.Model.Meshes.Count; i++) 
 							{

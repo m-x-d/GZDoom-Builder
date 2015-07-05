@@ -229,6 +229,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 
 			soundenvironments.Clear();
 			blockinglinedefs.Clear();
+			SoundEnvironmentMode.SoundEnvironmentPanel.BeginUpdate(); //mxd
 
 			// Keep track of all the sectors in the map. Sectors that belong to a sound environment
 			// will be removed from the list, so in the end only sectors that don't belong to any
@@ -368,7 +369,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 					{
 						if(group.Value.Key == activeenv.Args[0] && group.Value.Value == activeenv.Args[1]) 
 						{
-							environment.Name = group.Key + " (" + activeenv.Args[0] + " " + activeenv.Args[1] + ")                                        ";
+							environment.Name = group.Key + " (" + activeenv.Args[0] + " " + activeenv.Args[1] + ")";
 							break;
 						}
 					}
@@ -415,6 +416,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			}
 
 			soundenvironmentisupdated = true;
+			SoundEnvironmentMode.SoundEnvironmentPanel.EndUpdate(); //mxd
 		}
 
 		private static List<Thing> GetSoundEnvironmentThings(List<Sector> sectors)
