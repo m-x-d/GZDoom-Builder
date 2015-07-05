@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Map;
@@ -9,8 +10,13 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 {
 	public partial class SoundEnvironmentPanel : UserControl
 	{
+		public event EventHandler OnShowWarningsOnlyChanged; //mxd
 		public BufferedTreeView SoundEnvironments { get { return soundenvironments; } set { soundenvironments = value; } }
 		private readonly int warningiconindex; //mxd
+		private bool treeisupdating; //mxd
+		private int nodewarningscount; //mxd
+		private string shownodewarningstext = "Show nodes with warnings only (N)";
+		private delegate void UpdateCallback(); //mxd
 
 		public SoundEnvironmentPanel()
 		{
@@ -23,6 +29,42 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			}
 			soundenvironments.ImageList.Images.Add(Properties.Resources.Warning);
 			warningiconindex = soundenvironments.ImageList.Images.Count - 1; //mxd
+		}
+
+		//mxd
+		public void BeginUpdate()
+		{
+			if(treeisupdating) return;
+
+			if(soundenvironments.InvokeRequired)
+			{
+				UpdateCallback d = BeginUpdate;
+				soundenvironments.Invoke(d);
+			}
+			else
+			{
+				soundenvironments.BeginUpdate();
+				nodewarningscount = 0;
+			}
+		}
+
+		//mxd
+		public void EndUpdate()
+		{
+			if(soundenvironments.InvokeRequired)
+			{
+				UpdateCallback d = EndUpdate;
+				soundenvironments.Invoke(d);
+			}
+			else
+			{
+				treeisupdating = false;
+				soundenvironments.EndUpdate();
+
+				// Update the checkbox
+				showwarningsonly.Text = shownodewarningstext.Replace("(N)", "(" + nodewarningscount + ")");
+				showwarningsonly.Enabled = (showwarningsonly.Checked || nodewarningscount > 0);
+			}
 		}
 
 		public void AddSoundEnvironment(SoundEnvironment se) 
@@ -73,6 +115,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 						tn.ImageIndex = warningiconindex;
 						tn.SelectedImageIndex = warningiconindex;
 						tn.ToolTipText = "More than one thing in this\nsound environment is set to be\nactive. Set all but one thing\nto dormant.";
+						nodewarningscount++; //mxd
 					}
 				}
 			}
@@ -106,45 +149,52 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 					linedefsnode.SelectedImageIndex = warningiconindex;
 
 					topindex = warningiconindex;
+					nodewarningscount++; //mxd
 				}
 
 				linedefsnode.Nodes.Add(linedefnode);
 			}
 
-			topnode.Nodes.Add(thingsnode);
-			topnode.Nodes.Add(linedefsnode);
-
-			topnode.Tag = se;
-			topnode.ImageIndex = topindex;
-			topnode.SelectedImageIndex = topindex;
-			topnode.Expand();
-
-			// Sound environments will no be added in consecutive order, so we'll have to find
-			// out where in the tree to add the node
-			int insertionplace = 0;
-
-			foreach (TreeNode tn in soundenvironments.Nodes)
+			//mxd
+			if(!showwarningsonly.Checked || nodewarningscount > 0)
 			{
-				if(se.ID < ((SoundEnvironment)tn.Tag).ID) break;
-				insertionplace++;
-			}
+				topnode.Nodes.Add(thingsnode);
+				topnode.Nodes.Add(linedefsnode);
 
-			soundenvironments.Nodes.Insert(insertionplace, topnode);
+				topnode.Tag = se;
+				topnode.ImageIndex = topindex;
+				topnode.SelectedImageIndex = topindex;
+
+				// Sound environments will no be added in consecutive order, so we'll have to find
+				// out where in the tree to add the node
+				int insertionplace = 0;
+
+				foreach(TreeNode tn in soundenvironments.Nodes)
+				{
+					if(se.ID < ((SoundEnvironment)tn.Tag).ID) break;
+					insertionplace++;
+				}
+
+				soundenvironments.Nodes.Insert(insertionplace, topnode);
+			}
 		}
 
 		public void HighlightSoundEnvironment(SoundEnvironment se)
 		{
-			soundenvironments.BeginUpdate();
+			if(soundenvironments.SelectedNode != null) return; //mxd
+			if(!treeisupdating) soundenvironments.BeginUpdate();
+			soundenvironments.CollapseAll(); //mxd
 
 			foreach (TreeNode tn in soundenvironments.Nodes)
 			{
 				if(se != null && ((SoundEnvironment)tn.Tag).ID == se.ID)
 				{
 					if (tn.NodeFont == null || tn.NodeFont.Style != FontStyle.Bold)
-					{
 						tn.NodeFont = new Font(soundenvironments.Font.FontFamily, soundenvironments.Font.Size, FontStyle.Bold);
-						tn.Text += string.Empty;
-					}
+
+					//mxd
+					tn.Expand();
+					if(soundenvironments.SelectedNode == null) tn.EnsureVisible();
 				}
 				else
 				{
@@ -153,7 +203,29 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 				}
 			}
 
-			soundenvironments.EndUpdate();
+			if(!treeisupdating) soundenvironments.EndUpdate();
+		}
+
+		//mxd. This (de)selects sound environment
+		public void SelectSoundEnvironment(SoundEnvironment se)
+		{
+			if((se == null && soundenvironments.SelectedNode != null) || (se != null && soundenvironments.SelectedNode != null && ((SoundEnvironment)soundenvironments.SelectedNode.Tag).ID == se.ID))
+			{
+				soundenvironments.SelectedNode = null;
+				return;
+			}
+
+			if(se == null) return;
+
+			foreach(TreeNode tn in soundenvironments.Nodes)
+			{
+				if(((SoundEnvironment)tn.Tag).ID == se.ID)
+				{
+					soundenvironments.SelectedNode = tn;
+					tn.EnsureVisible();
+					return;
+				}
+			}
 		}
 
 		private static bool IsClickOnText(TreeView treeView, TreeNode node, Point location)
@@ -239,6 +311,12 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			if(e.Action != TreeViewAction.ByMouse) return;
 			var position = soundenvironments.PointToClient(Cursor.Position);
 			e.Cancel = !IsClickOnText(soundenvironments, e.Node, position);
+		}
+
+		//mxd
+		private void showwarningsonly_CheckedChanged(object sender, EventArgs e)
+		{
+			if(OnShowWarningsOnlyChanged != null) OnShowWarningsOnlyChanged(this, EventArgs.Empty);
 		}
 
 		#endregion
