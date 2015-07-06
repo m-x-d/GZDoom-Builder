@@ -76,6 +76,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			int notdormant = 0;
 			int iconindex = BuilderPlug.Me.DistinctColors.IndexOf(se.Color); //mxd
 			int topindex = iconindex; //mxd
+			bool nodehaswarnings = false; //mxd
 
 			thingsnode.ImageIndex = iconindex; //mxd
 			thingsnode.SelectedImageIndex = iconindex; //mxd
@@ -116,6 +117,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 						tn.SelectedImageIndex = warningiconindex;
 						tn.ToolTipText = "More than one thing in this\nsound environment is set to be\nactive. Set all but one thing\nto dormant.";
 						nodewarningscount++; //mxd
+						nodehaswarnings = true; //mxd
 					}
 				}
 			}
@@ -150,13 +152,14 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 
 					topindex = warningiconindex;
 					nodewarningscount++; //mxd
+					nodehaswarnings = true; //mxd
 				}
 
 				linedefsnode.Nodes.Add(linedefnode);
 			}
 
 			//mxd
-			if(!showwarningsonly.Checked || nodewarningscount > 0)
+			if(!showwarningsonly.Checked || nodehaswarnings)
 			{
 				topnode.Nodes.Add(thingsnode);
 				topnode.Nodes.Add(linedefsnode);
@@ -209,7 +212,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 		//mxd. This (de)selects sound environment
 		public void SelectSoundEnvironment(SoundEnvironment se)
 		{
-			if((se == null && soundenvironments.SelectedNode != null) || (se != null && soundenvironments.SelectedNode != null && ((SoundEnvironment)soundenvironments.SelectedNode.Tag).ID == se.ID))
+			if((se == null && soundenvironments.SelectedNode != null) || (se != null && soundenvironments.SelectedNode != null && soundenvironments.SelectedNode.Tag is SoundEnvironment && ((SoundEnvironment)soundenvironments.SelectedNode.Tag).ID == se.ID))
 			{
 				soundenvironments.SelectedNode = null;
 				return;
@@ -243,7 +246,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 
 			if (node.Parent == null)
 			{
-				if (node.Text.StartsWith("Sound environment"))
+				if (node.Tag is SoundEnvironment)
 				{
 					SoundEnvironment se = (SoundEnvironment)node.Tag;
 
@@ -264,7 +267,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			}
 			else
 			{
-				if (node.Parent.Text.StartsWith("Things"))
+				if (node.Tag is Thing)
 				{
 					Thing t = (Thing)node.Tag;
 
@@ -272,7 +275,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 					points.Add(t.Position - 200);
 					points.Add(t.Position + 200);
 				}
-				else if (node.Parent.Text.StartsWith("Linedefs"))
+				else if (node.Tag is Linedef)
 				{
 					Linedef ld = (Linedef)node.Tag;
 
