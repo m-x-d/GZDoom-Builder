@@ -38,7 +38,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private readonly ListViewGroup usedgroup;
 		private readonly ListViewGroup availgroup;
 		private TreeNode selectedset; //mxd
-		private string selecttextureonfill;
+		private long selecttextureonfill; //mxd. Was string, which wasn't reliable whem dealing with long texture names
 		private readonly bool usedgroupcollapsed; //mxd
 		private readonly bool browseflats; //mxd
 		
@@ -76,8 +76,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 			tvTextureSets.BeginUpdate(); //mxd
 
-			// Texture to select when list is filled
-			selecttextureonfill = selecttexture;
+			//mxd. Texture longname to select when list is filled
+			selecttextureonfill = longname;
 
 			// Make groups
 			usedgroup = browser.AddGroup("Used " + imagetype + ":");
@@ -145,7 +145,7 @@ namespace CodeImp.DoomBuilder.Windows
 				if(match != null)
 				{
 					IFilledTextureSet set = (match.Tag as IFilledTextureSet);
-					foreach(ImageData img in set.Textures)
+					foreach(ImageData img in (browseflats ? set.Flats : set.Textures))
 					{
 						if(img.LongName == longname)
 						{
@@ -547,10 +547,10 @@ namespace CodeImp.DoomBuilder.Windows
 				FillImagesList();
 			
 			// Select texture
-			if(!string.IsNullOrEmpty(selecttextureonfill))
+			if(selecttextureonfill != 0)
 			{
 				browser.SelectItem(selecttextureonfill, (usedgroupcollapsed ? availgroup : usedgroup)); //mxd. availgroup/usedgroup switch.
-				selecttextureonfill = null;
+				selecttextureonfill = 0;
 			}
 
 			//mxd. Focus the textbox. Calling this from TextureBrowserForm_Activated (like it's done in DB2) fails when the form is maximized. Again, I've no idea why...

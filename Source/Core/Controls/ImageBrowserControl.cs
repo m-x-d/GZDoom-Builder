@@ -317,8 +317,8 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 		}
 
-		// This selects an item by name
-		public void SelectItem(string name, ListViewGroup preferredgroup)
+		// This selects an item by longname (mxd - changed from name to longname)
+		public void SelectItem(long longname, ListViewGroup preferredgroup)
 		{
 			ImageBrowserItem lvi = null; //mxd
 
@@ -331,7 +331,7 @@ namespace CodeImp.DoomBuilder.Controls
 				foreach(ListViewItem item in list.Items)
 				{
 					ImageBrowserItem curitem = item as ImageBrowserItem;
-					if(curitem != null && string.Compare(curitem.Icon.Name, name, true) == 0)
+					if(curitem != null && longname == curitem.Icon.LongName) //mxd
 					{
 						lvi = curitem;
 						if(item.Group == preferredgroup) break;

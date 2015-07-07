@@ -59,6 +59,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			else
 			{
 				treeisupdating = false;
+				soundenvironments.Sort();
 				soundenvironments.EndUpdate();
 
 				// Update the checkbox
