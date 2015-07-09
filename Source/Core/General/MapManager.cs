@@ -544,12 +544,16 @@ namespace CodeImp.DoomBuilder
 			//mxd. Restore selection groups
 			options.ReadSelectionGroups();
 
-			// Center map in screen
+			//mxd. Center map in screen or on stored coordinates
 			if (General.Editing.Mode is ClassicMode) 
 			{
 				ClassicMode mode = General.Editing.Mode as ClassicMode;
 				mode.OnRedoEnd();
-				mode.CenterInScreen();
+
+				if(options.ViewPosition.IsFinite() && !float.IsNaN(options.ViewScale))
+					mode.CenterOnCoordinates(options.ViewPosition, options.ViewScale);
+				else
+					mode.CenterInScreen();
 			}
 
 			// Success

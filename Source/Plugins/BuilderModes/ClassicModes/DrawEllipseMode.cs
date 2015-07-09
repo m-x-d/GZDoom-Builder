@@ -32,6 +32,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			undoName = "Ellipse draw";
 			shapeName = "ellipse";
+			usefourcardinaldirections = true;
 		}
 
 		#endregion

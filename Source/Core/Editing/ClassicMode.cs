@@ -363,9 +363,16 @@ namespace CodeImp.DoomBuilder.Editing
 			scaleh = General.Map.Graphics.RenderTarget.ClientSize.Height / area.Height;
 			scale = scalew < scaleh ? scalew : scaleh;
 			
-			// Change the view to see the whole map
+			//mxd. Change the view to see the whole map
+			CenterOnCoordinates(new Vector2D(area.Left + area.Width * 0.5f, area.Top + area.Height * 0.5f), scale);
+		}
+
+		//mxd
+		public void CenterOnCoordinates(Vector2D offset, float scale)
+		{
+			// Change the view
 			renderer2d.ScaleView(scale);
-			renderer2d.PositionView(area.Left + area.Width * 0.5f, area.Top + area.Height * 0.5f);
+			renderer2d.PositionView(offset.x, offset.y);
 			this.OnViewChanged();
 			
 			// Redraw

@@ -55,6 +55,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public DrawRectangleMode() 
 		{
 			snaptogrid = true;
+			usefourcardinaldirections = true;
 			SetupInterface();
 		}
 
@@ -104,7 +105,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			PixelColor stitchcolor = General.Colors.Highlight;
 			PixelColor losecolor = General.Colors.Selection;
 
-			snaptogrid = General.Interface.ShiftState ^ General.Interface.SnapToGrid;
+			snaptocardinaldirection = General.Interface.ShiftState && General.Interface.AltState; //mxd
+			snaptogrid = (snaptocardinaldirection || General.Interface.ShiftState ^ General.Interface.SnapToGrid);
 			snaptonearest = General.Interface.CtrlState ^ General.Interface.AutoMerge;
 
 			DrawnVertex curp = GetCurrentPosition();

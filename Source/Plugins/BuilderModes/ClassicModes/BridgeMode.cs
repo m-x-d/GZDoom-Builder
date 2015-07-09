@@ -198,7 +198,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 				{
 					points = new List<DrawnVertex>();
 					for (int p = 0; p < shapes[i][c].Length; p++)
-						points.Add(DrawGeometryMode.GetCurrentPosition(shapes[i][c][p], true, false, renderer, points));
+						points.Add(DrawGeometryMode.GetCurrentPosition(shapes[i][c][p], true, false, false, renderer, points));
 					shapesRow.Add(points);
 				}
 				drawShapes.Add(shapesRow);

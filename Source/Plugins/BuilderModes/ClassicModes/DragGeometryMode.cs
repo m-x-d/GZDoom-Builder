@@ -83,6 +83,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private bool snaptogrid;		// SHIFT to toggle
 		private bool snaptonearest;		// CTRL to enable
 		private bool snaptogridincrement; //mxd. ALT to toggle 
+		private bool snaptocardinaldirection; //mxd. ALT-SHIFT to enable
 
 		#endregion
 
@@ -214,8 +215,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		// This moves the selected geometry relatively
 		// Returns true when geometry has actually moved
-		private bool MoveGeometryRelative(Vector2D offset, bool snapgrid, bool snapgridincrement, bool snapnearest)
+		private bool MoveGeometryRelative(Vector2D offset, bool snapgrid, bool snapgridincrement, bool snapnearest, bool snapcardinal)
 		{
+			//mxd. If snap to cardinal directions is enabled, modify the offset
+			if(snapcardinal)
+			{
+				float angle = Angle2D.DegToRad((General.ClampAngle((int)Angle2D.RadToDeg(offset.GetAngle()) + 22)) / 45 * 45);
+				offset = new Vector2D(0, -offset.GetLength()).GetRotated(angle);
+			}
+			
 			Vector2D oldpos = dragitem.Position;
 			Vector2D anchorpos = dragitemposition + offset;
 			Vector2D tl, br;
@@ -364,7 +372,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void OnCancel()
 		{
 			// Move geometry back to original position
-			MoveGeometryRelative(new Vector2D(0f, 0f), false, false, false);
+			MoveGeometryRelative(new Vector2D(0f, 0f), false, false, false, false);
 			
 			// Resume normal undo/redo recording
 			General.Map.UndoRedo.IgnorePropChanges = false;
@@ -402,7 +410,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				Cursor.Current = Cursors.AppStarting;
 				
 				// Move geometry back to original position
-				MoveGeometryRelative(new Vector2D(0f, 0f), false, false, false);
+				MoveGeometryRelative(new Vector2D(0f, 0f), false, false, false, false);
 
 				// Resume normal undo/redo recording
 				General.Map.UndoRedo.IgnorePropChanges = false;
@@ -411,7 +419,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Map.UndoRedo.CreateUndo("Drag geometry");
 
 				// Move selected geometry to final position
-				MoveGeometryRelative(mousemappos - dragstartmappos, snaptogrid, snaptogridincrement, snaptonearest);
+				MoveGeometryRelative(mousemappos - dragstartmappos, snaptogrid, snaptogridincrement, snaptonearest, snaptocardinaldirection);
 
 				// Stitch geometry
 				if(snaptonearest) General.Map.Map.StitchGeometry();
@@ -539,12 +547,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This updates the dragging
 		private void Update()
 		{
-			snaptogrid = General.Interface.ShiftState ^ General.Interface.SnapToGrid;
+			snaptocardinaldirection = (General.Interface.ShiftState && General.Interface.AltState); //mxd
+			snaptogrid = (snaptocardinaldirection || General.Interface.ShiftState ^ General.Interface.SnapToGrid);
 			snaptonearest = General.Interface.CtrlState ^ General.Interface.AutoMerge;
-			snaptogridincrement = General.Interface.AltState; //mxd
+			snaptogridincrement = (!snaptocardinaldirection && General.Interface.AltState); //mxd
 			
 			// Move selected geometry
-			if(MoveGeometryRelative(mousemappos - dragstartmappos, snaptogrid, snaptogridincrement, snaptonearest))
+			if(MoveGeometryRelative(mousemappos - dragstartmappos, snaptogrid, snaptogridincrement, snaptonearest, snaptocardinaldirection))
 			{
 				// Update cached values
 				General.Map.Map.Update(true, false);
@@ -580,7 +589,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnKeyUp(e);
 			if((snaptogrid != (General.Interface.ShiftState ^ General.Interface.SnapToGrid)) ||
 			   (snaptonearest != (General.Interface.CtrlState ^ General.Interface.AutoMerge)) ||
-			   (snaptogridincrement != General.Interface.AltState)) Update();
+			   (snaptogridincrement != General.Interface.AltState) ||
+			   (snaptocardinaldirection != (General.Interface.AltState && General.Interface.ShiftState))) Update();
 		}
 
 		// When a key is pressed
@@ -589,7 +599,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnKeyDown(e);
 			if((snaptogrid != (General.Interface.ShiftState ^ General.Interface.SnapToGrid)) ||
 			   (snaptonearest != (General.Interface.CtrlState ^ General.Interface.AutoMerge)) ||
-			   (snaptogridincrement != General.Interface.AltState)) Update();
+			   (snaptogridincrement != General.Interface.AltState) ||
+			   (snaptocardinaldirection != (General.Interface.AltState && General.Interface.ShiftState))) Update();
 		}
 		
 		#endregion

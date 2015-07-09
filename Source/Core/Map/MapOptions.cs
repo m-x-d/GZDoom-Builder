@@ -20,6 +20,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Reflection;
+using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.IO;
 using System.IO;
 using CodeImp.DoomBuilder.Data;
@@ -82,6 +83,10 @@ namespace CodeImp.DoomBuilder.Map
 
 		//mxd.
 		private bool uselongtexturenames;
+
+		//mxd. Position and scale
+		private Vector2D viewposition;
+		private float viewscale;
 		
 		#endregion
 
@@ -136,6 +141,10 @@ namespace CodeImp.DoomBuilder.Map
 		//mxd
 		public bool UseLongTextureNames { get { return uselongtexturenames; } set { uselongtexturenames = value; } }
 
+		//mxd. Position and scale
+		public Vector2D ViewPosition { get { return viewposition; } }
+		public float ViewScale { get { return viewscale; } }
+
 		#endregion
 
 		#region ================== Constructor / Disposer
@@ -153,6 +162,8 @@ namespace CodeImp.DoomBuilder.Map
 			this.scriptfiles = new List<string>();
 			this.scriptcompiler = ""; //mxd
 			this.tagLabels = new Dictionary<int, string>(); //mxd
+			this.viewposition = new Vector2D(float.NaN, float.NaN); //mxd
+			this.viewscale = float.NaN; //mxd
 
 			//mxd. Sector drawing options
 			this.custombrightness = 196;
@@ -221,6 +232,12 @@ namespace CodeImp.DoomBuilder.Map
 
 			//mxd
 			uselongtexturenames = longtexturenamessupported && this.mapconfig.ReadSetting("uselongtexturenames", false);
+
+			//mxd. Position and scale
+			float vpx = this.mapconfig.ReadSetting("viewpositionx", float.NaN);
+			float vpy = this.mapconfig.ReadSetting("viewpositiony", float.NaN);
+			if(!float.IsNaN(vpx) && !float.IsNaN(vpy)) viewposition = new Vector2D(vpx, vpy);
+			viewscale = this.mapconfig.ReadSetting("viewscale", float.NaN);
 
 			// Resources
 			IDictionary reslist = this.mapconfig.ReadSetting("resources", new Hashtable());
@@ -345,6 +362,11 @@ namespace CodeImp.DoomBuilder.Map
 
 			//mxd
 			mapconfig.WriteSetting("uselongtexturenames", uselongtexturenames);
+
+			//mxd. Position and scale
+			mapconfig.WriteSetting("viewpositionx", General.Map.Renderer2D.OffsetX);
+			mapconfig.WriteSetting("viewpositiony", General.Map.Renderer2D.OffsetY);
+			mapconfig.WriteSetting("viewscale", General.Map.Renderer2D.Scale);
 
 			//mxd. Write script compiler
 			if(!string.IsNullOrEmpty(scriptcompiler))

@@ -67,7 +67,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			PixelColor losecolor = General.Colors.Selection;
 			PixelColor color;
 
-			snaptogrid = General.Interface.ShiftState ^ General.Interface.SnapToGrid;
+			snaptocardinaldirection = General.Interface.ShiftState && General.Interface.AltState;
+			snaptogrid = snaptocardinaldirection || General.Interface.ShiftState ^ General.Interface.SnapToGrid;
 			snaptonearest = General.Interface.CtrlState ^ General.Interface.AutoMerge;
 
 			DrawnVertex curp = GetCurrentPosition();
