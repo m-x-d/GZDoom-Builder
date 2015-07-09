@@ -1404,14 +1404,21 @@ namespace CodeImp.DoomBuilder
 
 				// All done
 				mainwindow.SetupInterface();
-				//mainwindow.RedrawDisplay();
 				mainwindow.UpdateThingsFilters();
 				mainwindow.UpdateInterface();
 				mainwindow.HideInfo();
 				mainwindow.AddHintsDocker(); //mxd
 
-				//mxd. Center map in screen. Done here to avoid the view jerking around when updating the interface.
-				if(Editing.Mode is ClassicMode) (Editing.Mode as ClassicMode).CenterInScreen();
+				//mxd. Center map in screen or on stored coordinates. Done here to avoid the view jerking around when updating the interface.
+				if(Editing.Mode is ClassicMode)
+				{
+					ClassicMode mode = Editing.Mode as ClassicMode;
+					if(options != null && options.ViewPosition.IsFinite() && !float.IsNaN(options.ViewScale))
+						mode.CenterOnCoordinates(options.ViewPosition, options.ViewScale);
+					else
+						mode.CenterInScreen();
+				}
+
 				mainwindow.RedrawDisplay();
 			}
 			else

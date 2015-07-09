@@ -32,7 +32,7 @@ using CodeImp.DoomBuilder.Actions;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	[EditMode(DisplayName = "Drawing Mode",
+	[EditMode(DisplayName = "Draw Lines Mode",
 			  SwitchAction = "drawlinesmode",
 			  ButtonImage = "DrawGeometryMode.png", //mxd	
 			  ButtonOrder = int.MinValue + 1, //mxd
@@ -64,6 +64,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Options
 		protected bool snaptogrid;		// SHIFT to toggle
 		protected bool snaptonearest;	// CTRL to enable
+		protected bool snaptocardinaldirection; //mxd. ALT-SHIFT to enable
+		protected static bool usefourcardinaldirections;
 		
 		#endregion
 
@@ -129,7 +131,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			PixelColor losecolor = General.Colors.Selection;
 			PixelColor color;
 
-			snaptogrid = General.Interface.ShiftState ^ General.Interface.SnapToGrid;
+			snaptocardinaldirection = General.Interface.ShiftState && General.Interface.AltState; //mxd
+			snaptogrid = (snaptocardinaldirection || General.Interface.ShiftState ^ General.Interface.SnapToGrid);
 			snaptonearest = General.Interface.CtrlState ^ General.Interface.AutoMerge;
 
 			DrawnVertex curp = GetCurrentPosition();
@@ -216,12 +219,32 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 		
 		// This returns the aligned and snapped draw position
-		public static DrawnVertex GetCurrentPosition(Vector2D mousemappos, bool snaptonearest, bool snaptogrid, IRenderer2D renderer, List<DrawnVertex> points)
+		public static DrawnVertex GetCurrentPosition(Vector2D mousemappos, bool snaptonearest, bool snaptogrid, bool snaptocardinal, IRenderer2D renderer, List<DrawnVertex> points)
 		{
 			DrawnVertex p = new DrawnVertex();
 			p.stitch = true; //mxd. Setting these to false seems to be a good way to create invalid geometry...
 			p.stitchline = true; //mxd
-			Vector2D vm = mousemappos;
+
+			//mxd. If snap to cardinal directions is enabled and we have points, modify mouse position
+			Vector2D vm;
+			if(snaptocardinal && points.Count > 0)
+			{
+				Vector2D offset = mousemappos - points[points.Count - 1].pos;
+				
+				float angle;
+				if(usefourcardinaldirections)
+					angle = Angle2D.DegToRad((General.ClampAngle((int)Angle2D.RadToDeg(offset.GetAngle()))) / 90 * 90 + 45);
+				else
+					angle = Angle2D.DegToRad((General.ClampAngle((int)Angle2D.RadToDeg(offset.GetAngle()) + 22)) / 45 * 45);
+
+				offset = new Vector2D(0, -offset.GetLength()).GetRotated(angle);
+				vm = points[points.Count - 1].pos + offset;
+			}
+			else
+			{
+				vm = mousemappos;
+			}
+			
 			float vrange = BuilderPlug.Me.StitchRange / renderer.Scale;
 
 			// Snap to nearest?
@@ -319,7 +342,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				float u = 0.0f;
 				List<Line2D> blines = new List<Line2D>();
 
-				// lines for left, top, right and bottom bondaries
+				// lines for left, top, right and bottom boundaries
 				blines.Add(new Line2D(General.Map.Config.LeftBoundary, General.Map.Config.BottomBoundary, General.Map.Config.LeftBoundary, General.Map.Config.TopBoundary));
 				blines.Add(new Line2D(General.Map.Config.LeftBoundary, General.Map.Config.TopBoundary, General.Map.Config.RightBoundary, General.Map.Config.TopBoundary));
 				blines.Add(new Line2D(General.Map.Config.RightBoundary, General.Map.Config.TopBoundary, General.Map.Config.RightBoundary, General.Map.Config.BottomBoundary));
@@ -376,7 +399,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This gets the aligned and snapped draw position
 		protected DrawnVertex GetCurrentPosition()
 		{
-			return GetCurrentPosition(mousemappos, snaptonearest, snaptogrid, renderer, points);
+			return GetCurrentPosition(mousemappos, snaptonearest, snaptogrid, snaptocardinaldirection, renderer, points);
 		}
 		
 		// This draws a point at a specific location
@@ -558,7 +581,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			base.OnKeyUp(e);
 			if((snaptogrid != (General.Interface.ShiftState ^ General.Interface.SnapToGrid)) ||
-			   (snaptonearest != (General.Interface.CtrlState ^ General.Interface.AutoMerge))) Update();
+			   (snaptonearest != (General.Interface.CtrlState ^ General.Interface.AutoMerge)) ||
+			   (snaptocardinaldirection != (General.Interface.AltState && General.Interface.ShiftState))) Update();
 		}
 
 		// When a key is pressed
@@ -566,7 +590,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			base.OnKeyDown(e);
 			if((snaptogrid != (General.Interface.ShiftState ^ General.Interface.SnapToGrid)) ||
-			   (snaptonearest != (General.Interface.CtrlState ^ General.Interface.AutoMerge))) Update();
+			   (snaptonearest != (General.Interface.CtrlState ^ General.Interface.AutoMerge)) ||
+			   (snaptocardinaldirection != (General.Interface.AltState && General.Interface.ShiftState))) Update();
 		}
 		
 		#endregion
@@ -581,7 +606,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(General.Interface.MouseInDisplay)
 			{
 				DrawnVertex newpoint = GetCurrentPosition();
-
 				if(!DrawPointAt(newpoint)) General.Interface.DisplayStatus(StatusType.Warning, "Failed to draw point: outside of map boundaries.");
 			}
 		}

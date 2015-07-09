@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Actions;
-using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Controls;
 using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.Geometry;
@@ -58,6 +57,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public DrawGridMode() 
 		{
 			snaptogrid = true;
+			usefourcardinaldirections = true;
 			gridpoints = new List<DrawnVertex[]>();
 		}
 
@@ -191,15 +191,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			PixelColor losecolor = General.Colors.Selection;
 
 			// We WANT snaptogrid and DON'T WANT snaptonearest when lock to grid is enabled
-			snaptogrid = gridlock || (General.Interface.ShiftState ^ General.Interface.SnapToGrid);
-			snaptonearest = !gridlock && (General.Interface.CtrlState ^ General.Interface.AutoMerge);
+			snaptocardinaldirection = General.Interface.ShiftState && General.Interface.AltState; //mxd
+			snaptogrid = (snaptocardinaldirection || gridlock || (General.Interface.ShiftState ^ General.Interface.SnapToGrid));
+			snaptonearest = (!gridlock && (General.Interface.CtrlState ^ General.Interface.AutoMerge));
 
 			DrawnVertex curp;
 			if (points.Count == 1)
 			{
 				// Handle the case when start point is not on current grid.
 				Vector2D gridoffset = General.Map.Grid.SnappedToGrid(points[0].pos) - points[0].pos;
-				curp = GetCurrentPosition(mousemappos + gridoffset, snaptonearest, snaptogrid, renderer, points);
+				curp = GetCurrentPosition(mousemappos + gridoffset, snaptonearest, snaptogrid, snaptocardinaldirection, renderer, points);
 				curp.pos -= gridoffset;
 			}
 			else
@@ -297,7 +298,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Handle the case when start point is not on current grid.
 				Vector2D gridoffset = General.Map.Grid.SnappedToGrid(points[0].pos) - points[0].pos;
-				newpoint = GetCurrentPosition(mousemappos + gridoffset, snaptonearest, snaptogrid, renderer, points);
+				newpoint = GetCurrentPosition(mousemappos + gridoffset, snaptonearest, snaptogrid, snaptocardinaldirection, renderer, new List<DrawnVertex> { points[0] });
 				newpoint.pos -= gridoffset;
 				
 				// Create vertices for final shape.

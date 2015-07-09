@@ -97,6 +97,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private bool snaptogrid;		// SHIFT to toggle
 		private bool snaptonearest;		// CTRL to enable
 		private bool snaptogridincrement; //mxd. ALT to toggle
+		private bool snaptocardinaldirection; //mxd. ALT-SHIFT to enable
 
 		#endregion
 
@@ -173,8 +174,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		// This moves the selected things relatively
 		// Returns true when things has actually moved
-		private bool MoveThingsRelative(Vector2D offset, bool snapgrid, bool snapgridincrement, bool snapnearest)
+		private bool MoveThingsRelative(Vector2D offset, bool snapgrid, bool snapgridincrement, bool snapnearest, bool snapcardinal)
 		{
+			//mxd. If snap to cardinal directions is enabled, modify the offset
+			if(snapcardinal)
+			{
+				float angle = Angle2D.DegToRad((General.ClampAngle((int)Angle2D.RadToDeg(offset.GetAngle()) + 22)) / 45 * 45);
+				offset = new Vector2D(0, -offset.GetLength()).GetRotated(angle);
+			}
+			
 			Vector2D oldpos = dragitem.Position;
 			Thing nearest;
 			Vector2D tl, br;
@@ -321,7 +329,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void OnCancel()
 		{
 			// Move geometry back to original position
-			MoveThingsRelative(new Vector2D(0f, 0f), false, false, false);
+			MoveThingsRelative(new Vector2D(0f, 0f), false, false, false, false);
 
 			// If only a single vertex was selected, deselect it now
 			if(selectedthings.Count == 1) General.Map.Map.ClearSelectedThings();
@@ -353,7 +361,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(!cancelled)
 			{
 				// Move geometry back to original position
-				MoveThingsRelative(new Vector2D(0f, 0f), false, false, false);
+				MoveThingsRelative(new Vector2D(0f, 0f), false, false, false, false);
 
 				if(alignData != null && alignData.Active)
 				{
@@ -377,7 +385,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				} 
 				else 
 				{
-					MoveThingsRelative(mousemappos - dragstartmappos, snaptogrid, snaptogridincrement, snaptonearest);
+					MoveThingsRelative(mousemappos - dragstartmappos, snaptogrid, snaptogridincrement, snaptonearest, snaptocardinaldirection);
 				}
 
 				// Snap to map format accuracy
@@ -415,12 +423,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This updates the dragging
 		private void Update()
 		{
-			snaptogrid = General.Interface.ShiftState ^ General.Interface.SnapToGrid;
+			snaptocardinaldirection = (General.Interface.ShiftState && General.Interface.AltState); //mxd
+			snaptogrid = (snaptocardinaldirection || General.Interface.ShiftState ^ General.Interface.SnapToGrid);
 			snaptonearest = General.Interface.CtrlState;
-			snaptogridincrement = General.Interface.AltState; //mxd
+			snaptogridincrement = (!snaptocardinaldirection && General.Interface.AltState); //mxd
 
 			//mxd. Snap to nearest linedef
-			if(selectedthings.Count == 1 && dragitem.IsModel && snaptonearest && MoveThingsRelative(mousemappos - dragstartmappos, snaptogrid, snaptogridincrement, false)) 
+			if(selectedthings.Count == 1 && dragitem.IsModel && snaptonearest && !snaptocardinaldirection && MoveThingsRelative(mousemappos - dragstartmappos, snaptogrid, snaptogridincrement, false, false)) 
 			{
 				Linedef l = General.Map.Map.NearestLinedefRange(oldpositions[0] + mousemappos - dragstartmappos, BuilderPlug.Me.StitchRange / renderer.Scale);
 				bool restoreSettings = false;
@@ -461,7 +470,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 			
 			// Move selected geometry
-			if(MoveThingsRelative(mousemappos - dragstartmappos, snaptogrid, snaptogridincrement, snaptonearest))
+			if(MoveThingsRelative(mousemappos - dragstartmappos, snaptogrid, snaptogridincrement, snaptonearest, snaptocardinaldirection))
 			{
 				// Update cached values
 				General.Map.Map.Update();
@@ -494,7 +503,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnKeyUp(e);
 			if(snaptogrid != General.Interface.ShiftState ^ General.Interface.SnapToGrid ||
 				snaptonearest != General.Interface.CtrlState || 
-				snaptogridincrement != General.Interface.AltState) Update();
+				snaptogridincrement != General.Interface.AltState ||
+				snaptocardinaldirection != (General.Interface.AltState && General.Interface.ShiftState)) Update();
 		}
 
 		// When a key is pressed
@@ -503,7 +513,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnKeyDown(e);
 			if(snaptogrid != General.Interface.ShiftState ^ General.Interface.SnapToGrid ||
 				snaptonearest != General.Interface.CtrlState ||
-				snaptogridincrement != General.Interface.AltState) Update();
+				snaptogridincrement != General.Interface.AltState ||
+				snaptocardinaldirection != (General.Interface.AltState && General.Interface.ShiftState)) Update();
 		}
 		
 		#endregion
