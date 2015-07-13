@@ -3,16 +3,16 @@ using System.Threading;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	[ErrorChecker("Check unconnected vertices", true, 50)]
-	public class CheckStrayVertices : ErrorChecker
+	[ErrorChecker("Check very short linedefs", false, 10)]
+	public class CheckShortLinedefs : ErrorChecker
 	{
 		private const int PROGRESS_STEP = 1000;
-
+		
 		// Constructor
-		public CheckStrayVertices() 
+		public CheckShortLinedefs() 
 		{
-			// Total progress is done when all vertices are checked
-			SetTotalProgress(General.Map.Map.Vertices.Count / PROGRESS_STEP);
+			// Total progress is done when all linedefs are checked
+			SetTotalProgress(General.Map.Map.Linedefs.Count / PROGRESS_STEP);
 		}
 
 		// This runs the check
@@ -21,10 +21,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			int progress = 0;
 			int stepprogress = 0;
 
-			// Go for all vertices
-			foreach(Vertex v in General.Map.Map.Vertices) 
+			// Go for all linedefs
+			foreach(Linedef l in General.Map.Map.Linedefs) 
 			{
-				if(v.Linedefs == null || v.Linedefs.Count == 0) SubmitResult(new ResultStrayVertex(v));
+				if(l.Length < 1.0f) SubmitResult(new ResultShortLinedef(l));
 
 				// Handle thread interruption
 				try { Thread.Sleep(0); } catch(ThreadInterruptedException) { return; }

@@ -376,9 +376,43 @@ namespace CodeImp.DoomBuilder.IO
 		{
 			offsetx = int.MinValue;
 			offsety = int.MinValue;
-			return ReadAsBitmap(stream);
-		}
+			Bitmap bmp = ReadAsBitmap(stream);
 
+			//mxd. Read PNG offsets
+			if(imagetype == DevilImageType.IL_PNG && bmp != null)
+			{
+				stream.Position = 8;
+				using(BinaryReader reader = new BinaryReader(stream))
+				{
+					// Read chunks untill we encounter either "grAb" or "IDAT"
+					while(reader.BaseStream.Position < reader.BaseStream.Length)
+					{
+						// Big Endian!
+						int chunklength = ToInt32BigEndian(reader.ReadBytes(4));
+						string chunkname = new string(reader.ReadChars(4));
+
+						if(chunkname == "grAb")
+						{
+							offsetx = ToInt32BigEndian(reader.ReadBytes(4));
+							offsety = ToInt32BigEndian(reader.ReadBytes(4));
+							break;
+						}
+						else if(chunkname == "IDAT")
+						{
+							break;
+						}
+						else
+						{
+							// Skip the rest of the chunk
+							reader.BaseStream.Position += chunklength + 4;
+						}
+					}
+				}
+			}
+
+			// Return the image
+			return bmp;
+		}
 
 		// This reads the image and returns a Bitmap
 		public Bitmap ReadAsBitmap(Stream stream)
@@ -477,6 +511,12 @@ namespace CodeImp.DoomBuilder.IO
 			{
 				throw new InvalidDataException();
 			}
+		}
+
+		//mxd
+		private static int ToInt32BigEndian(byte[] buffer)
+		{
+			return (buffer[0] << 24) | (buffer[1] << 16) | (buffer[2] << 8) | buffer[3];
 		}
 		
 		#endregion
