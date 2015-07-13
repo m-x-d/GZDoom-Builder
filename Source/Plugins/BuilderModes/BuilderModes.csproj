@@ -228,6 +228,7 @@
     <Compile Include="ErrorChecks\CheckMissingFlats.cs" />
     <Compile Include="ErrorChecks\CheckMissingTextures.cs" />
     <Compile Include="ErrorChecks\CheckOverlappingVertices.cs" />
+    <Compile Include="ErrorChecks\CheckShortLinedefs.cs" />
     <Compile Include="ErrorChecks\CheckStrayVertices.cs" />
     <Compile Include="ErrorChecks\CheckTextureAlignment.cs" />
     <Compile Include="ErrorChecks\CheckUnknownFlats.cs" />
@@ -238,6 +239,7 @@
     <Compile Include="ErrorChecks\ResultMissingFlat.cs" />
     <Compile Include="ErrorChecks\ResultNoErrors.cs" />
     <Compile Include="ErrorChecks\ResultSectorInvalid.cs" />
+    <Compile Include="ErrorChecks\ResultShortLinedef.cs" />
     <Compile Include="ErrorChecks\ResultStrayVertex.cs" />
     <Compile Include="ErrorChecks\ResultStuckThingInThing.cs" />
     <Compile Include="ErrorChecks\ResultMissingTexture.cs" />

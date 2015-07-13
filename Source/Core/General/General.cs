@@ -1309,6 +1309,9 @@ namespace CodeImp.DoomBuilder
 			mainwindow.ClearDisplay();
 			mainwindow.RemoveHintsDocker(); //mxd
 
+			//mxd. Close the script editor
+			map.CloseScriptEditor(false);
+
 			// Let the plugins know
 			plugins.OnMapOpenBegin();
 
