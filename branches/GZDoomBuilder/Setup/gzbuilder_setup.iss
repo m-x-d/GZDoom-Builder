@@ -3,7 +3,7 @@
 
 [Setup]
 AppName=GZDoom Builder
-AppVerName=GZDoom Builder 1.15
+AppVerName=GZDoom Builder 2.3
 AppPublisher=MaxED
 AppPublisherURL=http://forum.zdoom.org/memberlist.php?mode=viewprofile&u=7012
 AppSupportURL=http://forum.zdoom.org/viewtopic.php?f=3&t=32392

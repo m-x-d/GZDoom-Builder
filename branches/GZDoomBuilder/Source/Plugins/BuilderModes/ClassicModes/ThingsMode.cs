@@ -143,8 +143,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 			}
 
-			// Hide highlight info
+			// Hide highlight info and tooltip
 			General.Interface.HideInfo();
+			General.Interface.Display.HideToolTip(); //mxd
 		}
 
 		// This redraws the display
@@ -291,9 +292,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			// Show highlight info
 			if((highlighted != null) && !highlighted.IsDisposed)
+			{
 				General.Interface.ShowThingInfo(highlighted);
+			}
 			else
+			{
+				General.Interface.Display.HideToolTip(); //mxd
 				General.Interface.HideInfo();
+			}
 		}
 
 		// Selection
@@ -526,6 +532,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Find the nearest thing within highlight range
 				Thing t = MapSet.NearestThingSquareRange(General.Map.ThingsFilter.VisibleThings, mousemappos, BuilderPlug.Me.HighlightThingsRange / renderer.Scale);
+
+				//mxd. Show tooltip?
+				if(General.Map.UDMF && mouselastpos != mousepos && highlighted != null && !highlighted.IsDisposed && highlighted.Fields.ContainsKey("comment"))
+				{
+					string comment = highlighted.Fields.GetValue("comment", string.Empty);
+					General.Interface.Display.ShowToolTip("Comment:", comment, (int)(mousepos.x + 32 * MainForm.DPIScaler.Width), (int)(mousepos.y + 8 * MainForm.DPIScaler.Height));
+				}
 
 				// Highlight if not the same
 				if(t != highlighted) Highlight(t);
