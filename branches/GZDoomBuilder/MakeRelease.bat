@@ -27,10 +27,10 @@ svn revert "Source\Plugins\BuilderModes\Properties\AssemblyInfo.cs" > NUL
 ECHO.
 ECHO Writing SVN log file...
 ECHO.
-IF EXIST "Release\log.xml" DEL /F /Q "Release\log.xml" > NUL
-svn log --xml -r HEAD:1496 > "Release\log.xml"
+IF EXIST "Release\Changelog.xml" DEL /F /Q "Release\Changelog.xml" > NUL
+svn log --xml -r HEAD:1496 > "Release\Changelog.xml"
 IF %ERRORLEVEL% NEQ 0 GOTO ERRORFAIL
-IF NOT EXIST "Release\log.xml" GOTO FILEFAIL
+IF NOT EXIST "Release\Changelog.xml" GOTO FILEFAIL
 
 ECHO.
 ECHO Compiling HTML Help file...
@@ -159,7 +159,7 @@ IF NOT EXIST "Build\Plugins\VisplaneExplorer.dll" GOTO FILEFAIL
 ECHO.
 ECHO Creating changelog...
 ECHO.
-ChangelogMaker.exe "SVN_Build\log.xml" "Build" "m-x-d"
+ChangelogMaker.exe "SVN_Build\Changelog.xml" "Build" "m-x-d"
 IF %ERRORLEVEL% NEQ 0 GOTO LOGFAIL
 
 ECHO.
@@ -170,7 +170,7 @@ IF EXIST "Release\*.exe" DEL /F /Q "Release\*.exe" > NUL
 IF %ERRORLEVEL% NEQ 0 GOTO ERRORFAIL
 IF NOT EXIST "Release\GZDoom Builder Setup.exe" GOTO FILEFAIL
 
-REN "Release\GZDoom Builder Setup.exe" "GZDoom Builder %REVISIONNUMBER% Setup.exe"
+REN "Release\GZDoom Builder Setup.exe" "GZDoom Builder R%REVISIONNUMBER% Setup.exe"
 
 svn revert "Source\Core\Properties\AssemblyInfo.cs" > NUL
 svn revert "Source\Plugins\BuilderModes\Properties\AssemblyInfo.cs" > NUL
