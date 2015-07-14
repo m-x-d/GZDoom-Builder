@@ -329,6 +329,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// Custom fields
 			fieldslist.SetValues(sc.Fields, true);
 
+			//mxd. Comments
+			commenteditor.SetValues(sc.Fields, true);
+
 			anglesteps = new StepsList();
 
 			////////////////////////////////////////////////////////////////////////
@@ -432,6 +435,9 @@ namespace CodeImp.DoomBuilder.Windows
 				// Custom fields
 				fieldslist.SetValues(s.Fields, false);
 
+				//mxd. Comments
+				commenteditor.SetValues(s.Fields, false);
+
 				//mxd. Angle steps
 				int angle;
 				foreach(Sidedef side in s.Sidedefs)
@@ -464,6 +470,9 @@ namespace CodeImp.DoomBuilder.Windows
 			if(useFloorLineAngles) floorRotation.StepValues = anglesteps;
 			if(useCeilSlopeLineAngles) ceilingslopecontrol.StepValues = anglesteps;
 			if(useFloorSlopeLineAngles) floorslopecontrol.StepValues = anglesteps;
+
+			//mxd. Comments
+			commenteditor.FinishSetup();
 
 			preventchanges = false; //mxd
 		}
@@ -677,6 +686,9 @@ namespace CodeImp.DoomBuilder.Windows
 
 				// Fields
 				fieldslist.Apply(s.Fields);
+
+				//mxd. Comments
+				commenteditor.Apply(s.Fields);
 
 				// Alpha
 				if(!string.IsNullOrEmpty(ceilAlpha.Text)) 

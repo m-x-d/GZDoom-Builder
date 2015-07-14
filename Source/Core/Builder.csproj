@@ -697,6 +697,12 @@
     <Compile Include="Controls\ColoredComboBox.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\CommentEditor.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\CommentEditor.Designer.cs">
+      <DependentUpon>CommentEditor.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\DebugConsole.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -868,6 +874,7 @@
     <Compile Include="Map\SelectionType.cs" />
     <Compile Include="Map\MapElementCollection.cs" />
     <Compile Include="Map\SplitLineBehavior.cs" />
+    <Compile Include="Rendering\CommentType.cs" />
     <Compile Include="Rendering\SurfaceBufferSet.cs" />
     <Compile Include="Rendering\SurfaceEntry.cs" />
     <Compile Include="Rendering\SurfaceEntryCollection.cs" />
@@ -974,6 +981,9 @@
     <EmbeddedResource Include="Controls\ActionSpecialHelpButton.resx">
       <DependentUpon>ActionSpecialHelpButton.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls\CommentEditor.resx">
+      <DependentUpon>CommentEditor.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\DebugConsole.resx">
       <DependentUpon>DebugConsole.cs</DependentUpon>
     </EmbeddedResource>
@@ -1039,6 +1049,12 @@
     <None Include="Resources\Brightness.png" />
     <None Include="Resources\Clear.png" />
     <None Include="Resources\Collapse.png" />
+    <EmbeddedResource Include="Resources\CommentInfo.png" />
+    <EmbeddedResource Include="Resources\CommentProblem.png" />
+    <EmbeddedResource Include="Resources\CommentQuestion.png" />
+    <EmbeddedResource Include="Resources\CommentRegular.png" />
+    <EmbeddedResource Include="Resources\CommentSmile.png" />
+    <None Include="Resources\Comment.png" />
     <Content Include="Resources\DB2.ico" />
     <None Include="Resources\GZDB2.ico" />
     <None Include="Resources\fog.png" />

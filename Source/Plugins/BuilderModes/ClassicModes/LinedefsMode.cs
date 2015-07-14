@@ -150,6 +150,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(renderer.StartPlotter(false))
 				{
 					// Undraw previous highlight
+					Linedef possiblecommentline = l ?? highlighted; //mxd
 					if((highlighted != null) && !highlighted.IsDisposed)
 					{
 						renderer.PlotLinedef(highlighted, renderer.DetermineLinedefColor(highlighted));
@@ -168,8 +169,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						renderer.PlotVertex(highlighted.End, renderer.DetermineVertexColor(highlighted.End));
 					}
 
-					// Done
+					// Done with highlight
 					renderer.Finish();
+
+					//mxd. Update comment highlight?
+					if(General.Map.UDMF && General.Settings.RenderComments
+						&& possiblecommentline != null && !possiblecommentline.IsDisposed
+						&& renderer.StartOverlay(false))
+					{
+						RenderComment(possiblecommentline);
+						renderer.Finish();
+					}
+
 					renderer.Present();
 				}
 			}
@@ -417,6 +428,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 
 				renderer.RenderArrows(eventlines); //mxd
+
+				//mxd. Render comments
+				if(General.Map.UDMF && General.Settings.RenderComments) foreach(Linedef l in General.Map.Map.Linedefs) RenderComment(l);
+
 				renderer.Finish();
 			}
 
@@ -648,6 +663,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(General.Map.UDMF && mouselastpos != mousepos && highlighted != null && !highlighted.IsDisposed && highlighted.Fields.ContainsKey("comment"))
 				{
 					string comment = highlighted.Fields.GetValue("comment", string.Empty);
+					if(comment.Length > 2)
+					{
+						string type = comment.Substring(0, 3);
+						int index = Array.IndexOf(CommentType.Types, type);
+						if(index > 0) comment = comment.TrimStart(type.ToCharArray());
+					}
 					General.Interface.Display.ShowToolTip("Comment:", comment, (int)(mousepos.x + 32 * MainForm.DPIScaler.Width), (int)(mousepos.y + 8 * MainForm.DPIScaler.Height));
 				}
 			} 
@@ -837,6 +858,27 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Interface.DisplayStatus(StatusType.Selection, General.Map.Map.SelectedLinedefsCount + (General.Map.Map.SelectedLinedefsCount == 1 ? " linedef" : " linedefs") + " selected.");
 			else
 				General.Interface.DisplayStatus(StatusType.Selection, string.Empty);
+		}
+
+		//mxd
+		private void RenderComment(Linedef l)
+		{
+			if(l.Fields.ContainsKey("comment"))
+			{
+				int iconindex = 0;
+				string comment = l.Fields.GetValue("comment", string.Empty);
+				if(comment.Length > 2)
+				{
+					string type = comment.Substring(0, 3);
+					int index = Array.IndexOf(CommentType.Types, type);
+					if(index != -1) iconindex = index;
+				}
+
+				Vector2D center = l.GetCenterPoint();
+				RectangleF rect = new RectangleF(center.x - 8 / renderer.Scale, center.y + 18 / renderer.Scale, 16 / renderer.Scale, -16 / renderer.Scale);
+				PixelColor c = (l == highlighted ? General.Colors.Highlight : (l.Selected ? General.Colors.Selection : PixelColor.FromColor(Color.White)));
+				renderer.RenderRectangleFilled(rect, c, true, General.Map.Data.CommentTextures[iconindex]);
+			}
 		}
 
 		#endregion

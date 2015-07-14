@@ -47,7 +47,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		private const float FSAA_FACTOR = 0.6f;
 		private const float THING_ARROW_SIZE = 1.5f;
 		private const float THING_ARROW_SHRINK = 2f;
-		private const float THING_CIRCLE_SIZE = 1f;
+		//private const float THING_CIRCLE_SIZE = 1f;
 		private const float THING_SPRITE_SHRINK = 2f;
 		private const int THING_BUFFER_SIZE = 100;
 		private const float MINIMUM_THING_RADIUS = 1.5f; //mxd
@@ -946,7 +946,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			if(t.Size * scale < MINIMUM_THING_RADIUS) return false; //mxd. Don't render tiny little things
 
 			// Determine size
-			float circlesize = (t.FixedSize && (scale > 1.0f) ? t.Size * THING_CIRCLE_SIZE : t.Size * scale * THING_CIRCLE_SIZE);
+			float circlesize = (t.FixedSize && (scale > 1.0f) ? t.Size /* * THING_CIRCLE_SIZE*/ : t.Size * scale /* * THING_CIRCLE_SIZE*/);
 			
 			// Transform to screen coordinates
 			Vector2D screenpos = ((Vector2D)t.Position).GetTransformed(translatex, translatey, scale, -scale);

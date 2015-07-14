@@ -213,6 +213,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if(!BuilderPlug.Me.ViewSelectionNumbers) RenderEffectLabels(selectedEffectLabels);
 					RenderEffectLabels(unselectedEffectLabels);
 				}
+
+				//mxd. Render comments
+				if(General.Map.UDMF && General.Settings.RenderComments) foreach(Sector s in General.Map.Map.Sectors) RenderComment(s);
 				
 				renderer.Finish();
 			}
@@ -422,18 +425,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			else
 			{
 				// Update display
+				Sector possiblecommentsector = s ?? highlighted; //mxd
 				if(renderer.StartPlotter(false))
 				{
 					// Undraw previous highlight
 					if((highlighted != null) && !highlighted.IsDisposed)
 						renderer.PlotSector(highlighted);
-					
-					/*
-					// Undraw highlighted things
-					if(highlighted != null)
-						foreach(Thing t in highlighted.Things)
-							renderer.RenderThing(t, renderer.DetermineThingColor(t));
-					*/
 
 					// Set new highlight
 					highlighted = s;
@@ -441,19 +438,22 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Render highlighted item
 					if((highlighted != null) && !highlighted.IsDisposed)
 						renderer.PlotSector(highlighted, General.Colors.Highlight);
-					
-					/*
-					// Render highlighted things
-					if(highlighted != null)
-						foreach(Thing t in highlighted.Things)
-							renderer.RenderThing(t, General.Colors.Highlight);
-					*/
-
+	
 					// Done
 					renderer.Finish();
 				}
 				
 				UpdateOverlay();
+
+				//mxd. Update comment highlight?
+				if(General.Map.UDMF && General.Settings.RenderComments 
+					&& possiblecommentsector != null && !possiblecommentsector.IsDisposed 
+					&& renderer.StartOverlay(false))
+				{
+					RenderComment(possiblecommentsector);
+					renderer.Finish();
+				}
+
 				renderer.Present();
 			}
 
@@ -1038,6 +1038,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(General.Map.UDMF && mouselastpos != mousepos && highlighted != null && !highlighted.IsDisposed && highlighted.Fields.ContainsKey("comment"))
 				{
 					string comment = highlighted.Fields.GetValue("comment", string.Empty);
+					if(comment.Length > 2)
+					{
+						string type = comment.Substring(0, 3);
+						int index = Array.IndexOf(CommentType.Types, type);
+						if(index > 0) comment = comment.TrimStart(type.ToCharArray());
+					}
 					General.Interface.Display.ShowToolTip("Comment:", comment, (int)(mousepos.x + 32 * MainForm.DPIScaler.Width), (int)(mousepos.y + 8 * MainForm.DPIScaler.Height));
 				}
 			} 
@@ -1325,6 +1331,27 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Interface.DisplayStatus(StatusType.Selection, General.Map.Map.SelectedSectorsCount + (General.Map.Map.SelectedSectorsCount == 1 ? " sector" : " sectors") + " selected.");
 			else
 				General.Interface.DisplayStatus(StatusType.Selection, string.Empty);
+		}
+
+		//mxd
+		private void RenderComment(Sector s)
+		{
+			if(s.Fields.ContainsKey("comment"))
+			{
+				int iconindex = 0;
+				string comment = s.Fields.GetValue("comment", string.Empty);
+				if(comment.Length > 2)
+				{
+					string type = comment.Substring(0, 3);
+					int index = Array.IndexOf(CommentType.Types, type);
+					if(index != -1) iconindex = index;
+				}
+
+				Vector2D center = new Vector2D(s.BBox.Left + s.BBox.Width / 2, s.BBox.Top + s.BBox.Height / 2);
+				RectangleF rect = new RectangleF(center.x - 8 / renderer.Scale, center.y + 16 * renderer.Scale + 16 / renderer.Scale, 16 / renderer.Scale, -16 / renderer.Scale);
+				PixelColor c = (s == highlighted ? General.Colors.Highlight : (s.Selected ? General.Colors.Selection : PixelColor.FromColor(Color.White)));
+				renderer.RenderRectangleFilled(rect, c, true, General.Map.Data.CommentTextures[iconindex]);
+			}
 		}
 		
 		#endregion

@@ -290,6 +290,7 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			fieldslist.SetValues(fl.Fields, true); // Custom fields
+			commenteditor.SetValues(fl.Fields, true); //mxd. Comments
 			renderStyle.SelectedIndex = Array.IndexOf(renderstyles, fl.Fields.GetValue("renderstyle", "translucent"));
 			alpha.Text = General.Clamp(fl.Fields.GetValue("alpha", 1.0f), 0f, 1f).ToString();
 			arg0str = fl.Fields.GetValue("arg0str", string.Empty);
@@ -437,6 +438,9 @@ namespace CodeImp.DoomBuilder.Windows
 
 				// Custom fields
 				fieldslist.SetValues(l.Fields, false);
+
+				//mxd. Comments
+				commenteditor.SetValues(l.Fields, false);
 
 				// Action/tags
 				if(l.Action != action.Value) action.Empty = true;
@@ -589,6 +593,7 @@ namespace CodeImp.DoomBuilder.Windows
 			UpdateScriptControls(); //mxd
 			CheckActivationFlagsRequired(); //mxd
 			actionhelp.UpdateAction(action.GetValue()); //mxd
+			commenteditor.FinishSetup(); //mxd
 
 			//mxd. Update some labels
 			if (frontside.CheckState != CheckState.Unchecked)
@@ -906,6 +911,7 @@ namespace CodeImp.DoomBuilder.Windows
 				//mxd. UDMF Settings
 				fieldslist.Apply(l.Fields);
 				if(setlocknumber) UDMFTools.SetInteger(l.Fields, "locknumber", locknumber, 0);
+				commenteditor.Apply(l.Fields);
 			}
 
 			//mxd. Store value linking
