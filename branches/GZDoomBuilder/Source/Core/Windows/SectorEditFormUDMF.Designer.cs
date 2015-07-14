@@ -41,6 +41,7 @@
 			System.Windows.Forms.Label label6;
 			System.Windows.Forms.Label label5;
 			this.tagSelector = new CodeImp.DoomBuilder.GZBuilder.Controls.TagSelector();
+			this.soundsequence = new System.Windows.Forms.ComboBox();
 			this.resetsoundsequence = new System.Windows.Forms.Button();
 			this.fadeColor = new CodeImp.DoomBuilder.GZBuilder.Controls.ColorFieldsControl();
 			this.lightColor = new CodeImp.DoomBuilder.GZBuilder.Controls.ColorFieldsControl();
@@ -98,12 +99,13 @@
 			this.floorslopecontrol = new CodeImp.DoomBuilder.Controls.SectorSlopeControl();
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
 			this.ceilingslopecontrol = new CodeImp.DoomBuilder.Controls.SectorSlopeControl();
+			this.tabcomment = new System.Windows.Forms.TabPage();
 			this.tabcustom = new System.Windows.Forms.TabPage();
 			this.fieldslist = new CodeImp.DoomBuilder.Controls.FieldsEditorControl();
 			this.cancel = new System.Windows.Forms.Button();
 			this.apply = new System.Windows.Forms.Button();
 			this.tooltip = new System.Windows.Forms.ToolTip(this.components);
-			this.soundsequence = new System.Windows.Forms.ComboBox();
+			this.commenteditor = new CodeImp.DoomBuilder.Controls.CommentEditor();
 			groupaction = new System.Windows.Forms.GroupBox();
 			groupeffect = new System.Windows.Forms.GroupBox();
 			label14 = new System.Windows.Forms.Label();
@@ -127,6 +129,7 @@
 			this.tabslopes.SuspendLayout();
 			this.groupBox5.SuspendLayout();
 			this.groupBox4.SuspendLayout();
+			this.tabcomment.SuspendLayout();
 			this.tabcustom.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -173,6 +176,16 @@
 			groupeffect.TabIndex = 1;
 			groupeffect.TabStop = false;
 			groupeffect.Text = " Effects ";
+			// 
+			// soundsequence
+			// 
+			this.soundsequence.FormattingEnabled = true;
+			this.soundsequence.Location = new System.Drawing.Point(125, 54);
+			this.soundsequence.Name = "soundsequence";
+			this.soundsequence.Size = new System.Drawing.Size(325, 21);
+			this.soundsequence.TabIndex = 32;
+			this.soundsequence.MouseDown += new System.Windows.Forms.MouseEventHandler(this.soundsequence_MouseDown);
+			this.soundsequence.TextChanged += new System.EventHandler(this.soundsequence_TextChanged);
 			// 
 			// resetsoundsequence
 			// 
@@ -458,6 +471,7 @@
 			this.tabs.Controls.Add(this.tabproperties);
 			this.tabs.Controls.Add(this.tabSurfaces);
 			this.tabs.Controls.Add(this.tabslopes);
+			this.tabs.Controls.Add(this.tabcomment);
 			this.tabs.Controls.Add(this.tabcustom);
 			this.tabs.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.tabs.Location = new System.Drawing.Point(10, 10);
@@ -576,7 +590,7 @@
 			// 
 			// floorAngleControl
 			// 
-			this.floorAngleControl.Angle = 0;
+			this.floorAngleControl.Angle = -180;
 			this.floorAngleControl.AngleOffset = 90;
 			this.floorAngleControl.Location = new System.Drawing.Point(6, 132);
 			this.floorAngleControl.Name = "floorAngleControl";
@@ -810,7 +824,7 @@
 			// 
 			// ceilAngleControl
 			// 
-			this.ceilAngleControl.Angle = 0;
+			this.ceilAngleControl.Angle = -180;
 			this.ceilAngleControl.AngleOffset = 90;
 			this.ceilAngleControl.Location = new System.Drawing.Point(6, 132);
 			this.ceilAngleControl.Name = "ceilAngleControl";
@@ -1040,6 +1054,17 @@
 			this.ceilingslopecontrol.OnAnglesChanged += new System.EventHandler(this.ceilingslopecontrol_OnAnglesChanged);
 			this.ceilingslopecontrol.OnPivotModeChanged += new System.EventHandler(this.ceilingslopecontrol_OnPivotModeChanged);
 			// 
+			// tabcomment
+			// 
+			this.tabcomment.Controls.Add(this.commenteditor);
+			this.tabcomment.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+			this.tabcomment.Location = new System.Drawing.Point(4, 22);
+			this.tabcomment.Name = "tabcomment";
+			this.tabcomment.Size = new System.Drawing.Size(503, 419);
+			this.tabcomment.TabIndex = 4;
+			this.tabcomment.Text = "Comment";
+			this.tabcomment.UseVisualStyleBackColor = true;
+			// 
 			// tabcustom
 			// 
 			this.tabcustom.Controls.Add(this.fieldslist);
@@ -1102,15 +1127,12 @@
 			this.tooltip.InitialDelay = 10;
 			this.tooltip.ReshowDelay = 100;
 			// 
-			// soundsequence
+			// commenteditor
 			// 
-			this.soundsequence.FormattingEnabled = true;
-			this.soundsequence.Location = new System.Drawing.Point(125, 54);
-			this.soundsequence.Name = "soundsequence";
-			this.soundsequence.Size = new System.Drawing.Size(325, 21);
-			this.soundsequence.TabIndex = 32;
-			this.soundsequence.MouseDown += new System.Windows.Forms.MouseEventHandler(this.soundsequence_MouseDown);
-			this.soundsequence.TextChanged += new System.EventHandler(this.soundsequence_TextChanged);
+			this.commenteditor.Location = new System.Drawing.Point(3, 3);
+			this.commenteditor.Name = "commenteditor";
+			this.commenteditor.Size = new System.Drawing.Size(497, 413);
+			this.commenteditor.TabIndex = 0;
 			// 
 			// SectorEditFormUDMF
 			// 
@@ -1149,6 +1171,7 @@
 			this.tabslopes.ResumeLayout(false);
 			this.groupBox5.ResumeLayout(false);
 			this.groupBox4.ResumeLayout(false);
+			this.tabcomment.ResumeLayout(false);
 			this.tabcustom.ResumeLayout(false);
 			this.ResumeLayout(false);
 
@@ -1220,5 +1243,7 @@
 		private System.Windows.Forms.Label labelCeilScale;
 		private System.Windows.Forms.Button resetsoundsequence;
 		private System.Windows.Forms.ComboBox soundsequence;
+		private System.Windows.Forms.TabPage tabcomment;
+		private CodeImp.DoomBuilder.Controls.CommentEditor commenteditor;
 	}
 }

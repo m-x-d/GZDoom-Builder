@@ -106,6 +106,8 @@
 			this.hint = new System.Windows.Forms.PictureBox();
 			this.hintlabel = new System.Windows.Forms.Label();
 			this.tooltip = new System.Windows.Forms.ToolTip(this.components);
+			this.tabcomment = new System.Windows.Forms.TabPage();
+			this.commenteditor = new CodeImp.DoomBuilder.Controls.CommentEditor();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.tabs.SuspendLayout();
@@ -124,6 +126,7 @@
 			this.groupBox3.SuspendLayout();
 			this.tabcustom.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.hint)).BeginInit();
+			this.tabcomment.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// groupBox1
@@ -314,6 +317,7 @@
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.tabs.Controls.Add(this.tabproperties);
 			this.tabs.Controls.Add(this.tabeffects);
+			this.tabs.Controls.Add(this.tabcomment);
 			this.tabs.Controls.Add(this.tabcustom);
 			this.tabs.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tabs.ItemSize = new System.Drawing.Size(120, 19);
@@ -698,6 +702,7 @@
 			this.scale.ButtonStepSmall = 0.01F;
 			this.scale.ButtonStepsUseModifierKeys = true;
 			this.scale.DefaultValue = 1F;
+			this.scale.LinkValues = false;
 			this.scale.Location = new System.Drawing.Point(89, 22);
 			this.scale.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
 			this.scale.Name = "scale";
@@ -1042,6 +1047,27 @@
 			this.hintlabel.TabIndex = 4;
 			this.hintlabel.Text = "Select categories or several thing types to randomly assign them to selection";
 			// 
+			// tabcomment
+			// 
+			this.tabcomment.Controls.Add(this.commenteditor);
+			this.tabcomment.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tabcomment.Location = new System.Drawing.Point(4, 23);
+			this.tabcomment.Name = "tabcomment";
+			this.tabcomment.Size = new System.Drawing.Size(627, 402);
+			this.tabcomment.TabIndex = 3;
+			this.tabcomment.Text = "Comment";
+			this.tabcomment.UseVisualStyleBackColor = true;
+			// 
+			// commenteditor
+			// 
+			this.commenteditor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.commenteditor.Location = new System.Drawing.Point(3, 3);
+			this.commenteditor.Name = "commenteditor";
+			this.commenteditor.Size = new System.Drawing.Size(621, 396);
+			this.commenteditor.TabIndex = 0;
+			// 
 			// ThingEditFormUDMF
 			// 
 			this.AcceptButton = this.apply;
@@ -1087,6 +1113,7 @@
 			this.groupBox3.ResumeLayout(false);
 			this.tabcustom.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.hint)).EndInit();
+			this.tabcomment.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -1171,5 +1198,7 @@
 		private System.Windows.Forms.CheckBox cbrandomangle;
 		private System.Windows.Forms.CheckBox cbrandomroll;
 		private System.Windows.Forms.CheckBox cbrandompitch;
+		private System.Windows.Forms.TabPage tabcomment;
+		private CodeImp.DoomBuilder.Controls.CommentEditor commenteditor;
 	}
 }

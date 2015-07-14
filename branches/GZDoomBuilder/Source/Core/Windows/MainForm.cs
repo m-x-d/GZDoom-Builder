@@ -1872,7 +1872,7 @@ namespace CodeImp.DoomBuilder.Windows
 			preventupdateseperators = true;
 			
 			// Show/hide items based on preferences
-			bool maploaded = General.Map != null; //mxd
+			bool maploaded = (General.Map != null); //mxd
 			buttonnewmap.Visible = General.Settings.ToolbarFile;
 			buttonopenmap.Visible = General.Settings.ToolbarFile;
 			buttonsavemap.Visible = General.Settings.ToolbarFile;
@@ -1893,6 +1893,9 @@ namespace CodeImp.DoomBuilder.Windows
 			buttonviewceilings.Visible = General.Settings.ToolbarViewModes && maploaded;
 			buttonviewfloors.Visible = General.Settings.ToolbarViewModes && maploaded;
 			buttonviewnormal.Visible = General.Settings.ToolbarViewModes && maploaded;
+			buttontogglecomments.Visible = General.Settings.ToolbarViewModes && maploaded; //mxd
+			buttontogglecomments.Enabled = maploaded && General.Map.UDMF; //mxd
+			buttontogglecomments.Checked = General.Settings.RenderComments; //mxd
 			buttonsnaptogrid.Visible = General.Settings.ToolbarGeometry && maploaded;
 			buttonautomerge.Visible = General.Settings.ToolbarGeometry && maploaded;
 			buttonautoclearsidetextures.Visible = General.Settings.ToolbarGeometry && maploaded; //mxd
@@ -2634,6 +2637,19 @@ namespace CodeImp.DoomBuilder.Windows
 			clearGroup.Enabled = clearGroup.DropDownItems.Count > 0;
 		}
 
+		//mxd. Action to toggle comments rendering
+		[BeginAction("togglecomments")]
+		internal void ToggleComments()
+		{
+			buttontogglecomments.Checked = !buttontogglecomments.Checked;
+			itemtogglecomments.Checked = buttontogglecomments.Checked;
+			General.Settings.RenderComments = buttontogglecomments.Checked;
+			DisplayStatus(StatusType.Action, "Comment icons are " + (buttontogglecomments.Checked ? "SHOWN" : "HIDDEN"));
+
+			// Redraw display to show changes
+			RedrawDisplay();
+		}
+
 		// Action to toggle snap to grid
 		[BeginAction("togglesnap")]
 		internal void ToggleSnapToGrid()
@@ -2707,6 +2723,8 @@ namespace CodeImp.DoomBuilder.Windows
 			menufullbrightness.Enabled = (General.Map != null); //mxd
 			itemtoggleinfo.Enabled = (General.Map != null); //mxd
 			itemtoggleinfo.Checked = IsInfoPanelExpanded;
+			itemtogglecomments.Enabled = (General.Map != null && General.Map.UDMF); //mxd
+			itemtogglecomments.Checked = General.Settings.RenderComments; //mxd
 			
 			// View mode items
 			for(int i = 0; i < Renderer2D.NUM_VIEW_MODES; i++)
@@ -2888,7 +2906,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 			//open file
 			DisplayStatus(StatusType.Info, "Shortcut reference saved to '" + path + "'");
-			System.Diagnostics.Process.Start(path);
+			Process.Start(path);
 		}
 		
 		#endregion

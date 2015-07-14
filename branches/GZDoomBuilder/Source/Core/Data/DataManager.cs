@@ -90,6 +90,9 @@ namespace CodeImp.DoomBuilder.Data
 		private ImageData crosshairbusy;
 		private Dictionary<string, ImageData> internalsprites;
 		private ImageData whitetexture;
+
+		//mxd. Comment icons
+		private ImageData[] commenttextures;
 		
 		// Used images
 		private Dictionary<long, long> usedimages;
@@ -131,6 +134,7 @@ namespace CodeImp.DoomBuilder.Data
 		public ImageData Crosshair3D { get { return crosshair; } }
 		public ImageData CrosshairBusy3D { get { return crosshairbusy; } }
 		public ImageData WhiteTexture { get { return whitetexture; } }
+		public ImageData[] CommentTextures { get { return commenttextures; } } //mxd
 		public List<ThingCategory> ThingCategories { get { return thingcategories; } }
 		public ICollection<ThingTypeInfo> ThingTypes { get { return thingtypes.Values; } }
 		public DecorateParser Decorate { get { return decorate; } }
@@ -181,6 +185,23 @@ namespace CodeImp.DoomBuilder.Data
 			whitetexture.LoadImage();
 			whitetexture.CreateTexture();
 			unknownimage = new UnknownImage(Properties.Resources.UnknownImage); //mxd. There should be only one!
+
+			//mxd. Create comment icons
+			commenttextures = new ImageData[]
+			                  {
+				                  new ResourceImage("CodeImp.DoomBuilder.Resources.CommentRegular.png"),
+								  new ResourceImage("CodeImp.DoomBuilder.Resources.CommentInfo.png"),
+								  new ResourceImage("CodeImp.DoomBuilder.Resources.CommentQuestion.png"),
+								  new ResourceImage("CodeImp.DoomBuilder.Resources.CommentProblem.png"),
+								  new ResourceImage("CodeImp.DoomBuilder.Resources.CommentSmile.png"),
+			                  };
+
+			//mxd. Load comment icons
+			foreach (ImageData data in commenttextures)
+			{
+				data.LoadImage();
+				data.CreateTexture();
+			}
 		}
 		
 		// Disposer
@@ -205,6 +226,7 @@ namespace CodeImp.DoomBuilder.Data
 				whitetexture = null;
 				unknownimage.Dispose(); //mxd
 				unknownimage = null; //mxd
+				foreach (ImageData data in commenttextures) data.Dispose(); //mxd
 				modeldefentries = null;//mxd
 				mapinfo = null;
 				

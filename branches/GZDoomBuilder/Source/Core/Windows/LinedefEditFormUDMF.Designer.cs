@@ -133,6 +133,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.fieldslist = new CodeImp.DoomBuilder.Controls.FieldsEditorControl();
 			this.imagelist = new System.Windows.Forms.ImageList(this.components);
 			this.tooltip = new System.Windows.Forms.ToolTip(this.components);
+			this.tabcomment = new System.Windows.Forms.TabPage();
+			this.commenteditor = new CodeImp.DoomBuilder.Controls.CommentEditor();
 			label2 = new System.Windows.Forms.Label();
 			label11 = new System.Windows.Forms.Label();
 			label12 = new System.Windows.Forms.Label();
@@ -159,6 +161,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backscalegroup.SuspendLayout();
 			this.groupBox1.SuspendLayout();
 			this.tabcustom.SuspendLayout();
+			this.tabcomment.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// label2
@@ -483,6 +486,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabs.Controls.Add(this.tabproperties);
 			this.tabs.Controls.Add(this.tabfront);
 			this.tabs.Controls.Add(this.tabback);
+			this.tabs.Controls.Add(this.tabcomment);
 			this.tabs.Controls.Add(this.tabcustom);
 			this.tabs.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.tabs.ImageList = this.imagelist;
@@ -1467,6 +1471,27 @@ namespace CodeImp.DoomBuilder.Windows
 			this.imagelist.Images.SetKeyName(0, "Check.png");
 			this.imagelist.Images.SetKeyName(1, "SearchClear.png");
 			// 
+			// tabcomment
+			// 
+			this.tabcomment.Controls.Add(this.commenteditor);
+			this.tabcomment.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+			this.tabcomment.Location = new System.Drawing.Point(4, 23);
+			this.tabcomment.Name = "tabcomment";
+			this.tabcomment.Size = new System.Drawing.Size(549, 621);
+			this.tabcomment.TabIndex = 4;
+			this.tabcomment.Text = "Comment";
+			this.tabcomment.UseVisualStyleBackColor = true;
+			// 
+			// commenteditor
+			// 
+			this.commenteditor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.commenteditor.Location = new System.Drawing.Point(3, 3);
+			this.commenteditor.Name = "commenteditor";
+			this.commenteditor.Size = new System.Drawing.Size(543, 615);
+			this.commenteditor.TabIndex = 0;
+			// 
 			// LinedefEditFormUDMF
 			// 
 			this.AcceptButton = this.apply;
@@ -1516,6 +1541,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backscalegroup.ResumeLayout(false);
 			this.groupBox1.ResumeLayout(false);
 			this.tabcustom.ResumeLayout(false);
+			this.tabcomment.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -1621,5 +1647,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.Label labelBackOffsetBottom;
 		private System.Windows.Forms.Label labelBackOffsetMid;
 		private System.Windows.Forms.Label labelBackOffsetTop;
+		private System.Windows.Forms.TabPage tabcomment;
+		private CodeImp.DoomBuilder.Controls.CommentEditor commenteditor;
 	}
 }

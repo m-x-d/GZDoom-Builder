@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Config;
@@ -198,14 +199,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			// Selecting?
-			if(selecting)
+			if(renderer.StartOverlay(true))
 			{
 				// Render selection
-				if(renderer.StartOverlay(true))
-				{
-					RenderMultiSelection();
-					renderer.Finish();
-				}
+				if(selecting) RenderMultiSelection();
+
+				//mxd. Render comments
+				if(General.Map.UDMF && General.Settings.RenderComments) foreach(Thing t in General.Map.Map.Things) RenderComment(t);
+
+				renderer.Finish();
 			}
 
 			renderer.Present();
@@ -274,6 +276,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(renderer.StartThings(false))
 				{
 					// Undraw previous highlight
+					Thing possiblecommentthing = t ?? highlighted; //mxd
 					if((highlighted != null) && !highlighted.IsDisposed)
 						renderer.RenderThing(highlighted, renderer.DetermineThingColor(highlighted), 1.0f);
 
@@ -284,8 +287,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if((highlighted != null) && !highlighted.IsDisposed)
 						renderer.RenderThing(highlighted, General.Colors.Highlight, 1.0f);
 
-					// Done
+					// Done with highlight
 					renderer.Finish();
+
+					//mxd. Update comment highlight?
+					if(General.Map.UDMF && General.Settings.RenderComments 
+						&& possiblecommentthing != null && !possiblecommentthing.IsDisposed 
+						&& renderer.StartOverlay(false))
+					{
+						RenderComment(possiblecommentthing);
+						renderer.Finish();
+					}
+
 					renderer.Present();
 				}
 			}
@@ -537,6 +550,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(General.Map.UDMF && mouselastpos != mousepos && highlighted != null && !highlighted.IsDisposed && highlighted.Fields.ContainsKey("comment"))
 				{
 					string comment = highlighted.Fields.GetValue("comment", string.Empty);
+					if(comment.Length > 2)
+					{
+						string type = comment.Substring(0, 3);
+						int index = Array.IndexOf(CommentType.Types, type);
+						if(index > 0) comment = comment.TrimStart(type.ToCharArray());
+					}
 					General.Interface.Display.ShowToolTip("Comment:", comment, (int)(mousepos.x + 32 * MainForm.DPIScaler.Width), (int)(mousepos.y + 8 * MainForm.DPIScaler.Height));
 				}
 
@@ -714,6 +733,29 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Interface.DisplayStatus(StatusType.Selection, General.Map.Map.SelectedThingsCount + (General.Map.Map.SelectedThingsCount == 1 ? " thing" : " things") + " selected.");
 			else
 				General.Interface.DisplayStatus(StatusType.Selection, string.Empty);
+		}
+
+		//mxd
+		private void RenderComment(Thing t)
+		{
+			if(t.Fields.ContainsKey("comment"))
+			{
+				float size = ((t.FixedSize && renderer.Scale > 1.0f) ? t.Size / renderer.Scale : t.Size);
+				if(size * renderer.Scale < 1.5f) return; // Thing is too small to render
+
+				int iconindex = 0;
+				string comment = t.Fields.GetValue("comment", string.Empty);
+				if(comment.Length > 2)
+				{
+					string type = comment.Substring(0, 3);
+					int index = Array.IndexOf(CommentType.Types, type);
+					if(index != -1) iconindex = index;
+				}
+
+				RectangleF rect = new RectangleF(t.Position.x + size - 10 / renderer.Scale, t.Position.y + size + 18 / renderer.Scale, 16 / renderer.Scale, -16 / renderer.Scale);
+				PixelColor c = (t == highlighted ? General.Colors.Highlight : (t.Selected ? General.Colors.Selection : PixelColor.FromColor(Color.White)));
+				renderer.RenderRectangleFilled(rect, c, true, General.Map.Data.CommentTextures[iconindex]);
+			}
 		}
 
 		#endregion

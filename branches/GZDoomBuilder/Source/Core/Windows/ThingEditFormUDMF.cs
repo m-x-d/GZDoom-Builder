@@ -211,6 +211,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 			// Custom fields
 			fieldslist.SetValues(ft.Fields, true);
+			commenteditor.SetValues(ft.Fields, true); //mxd. Comments
 			conversationID.Text = ft.Fields.GetValue("conversation", 0).ToString();
 			gravity.Text = ft.Fields.GetValue("gravity", 1.0f).ToString();
 			score.Text = ft.Fields.GetValue("score", 0).ToString();
@@ -288,6 +289,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 				//mxd. Custom fields
 				fieldslist.SetValues(t.Fields, false);
+				commenteditor.SetValues(t.Fields, false); //mxd. Comments
 				if (t.Fields.GetValue("conversation", 0).ToString() != conversationID.Text) conversationID.Text = "";
 				if (t.Fields.GetValue("gravity", 1.0f).ToString() != gravity.Text) gravity.Text = "";
 				if (t.Fields.GetValue("score", 0).ToString() != score.Text) score.Text = "";
@@ -337,6 +339,7 @@ namespace CodeImp.DoomBuilder.Windows
 			UpdateScriptControls(); //mxd
 			actionhelp.UpdateAction(action.GetValue()); //mxd
 			labelScale.Enabled = scale.NonDefaultValue; //mxd
+			commenteditor.FinishSetup(); //mxd
 
 			//mxd. Set intial script-related values, if required
 			if(Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, action.Value) != -1) 
@@ -669,6 +672,9 @@ namespace CodeImp.DoomBuilder.Windows
 					UDMFTools.SetString(t.Fields, "renderstyle", rskeys[renderStyle.SelectedIndex], "normal");
 
 				color.ApplyTo(t.Fields, t.Fields.GetValue("fillcolor", 0));
+
+				//mxd. Comments
+				commenteditor.Apply(t.Fields);
 
 				// Update settings
 				t.UpdateConfiguration();
