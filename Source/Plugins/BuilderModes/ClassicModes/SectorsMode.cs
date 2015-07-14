@@ -459,9 +459,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Show highlight info
 			if((highlighted != null) && !highlighted.IsDisposed)
+			{
 				General.Interface.ShowSectorInfo(highlighted);
+			}
 			else
+			{
+				General.Interface.Display.HideToolTip(); //mxd
 				General.Interface.HideInfo();
+			}
 		}
 
 		// This selectes or deselects a sector
@@ -707,8 +712,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 			}
 			
-			// Hide highlight info
+			// Hide highlight info and tooltip
 			General.Interface.HideInfo();
+			General.Interface.Display.HideToolTip(); //mxd
 		}
 
 		// This redraws the display
@@ -1026,6 +1032,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					// Highlight nothing
 					if(highlighted != null) Highlight(null);
+				}
+
+				//mxd. Show tooltip?
+				if(General.Map.UDMF && mouselastpos != mousepos && highlighted != null && !highlighted.IsDisposed && highlighted.Fields.ContainsKey("comment"))
+				{
+					string comment = highlighted.Fields.GetValue("comment", string.Empty);
+					General.Interface.Display.ShowToolTip("Comment:", comment, (int)(mousepos.x + 32 * MainForm.DPIScaler.Width), (int)(mousepos.y + 8 * MainForm.DPIScaler.Height));
 				}
 			} 
 		}
