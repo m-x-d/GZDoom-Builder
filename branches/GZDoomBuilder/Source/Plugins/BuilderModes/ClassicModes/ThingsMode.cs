@@ -547,7 +547,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				Thing t = MapSet.NearestThingSquareRange(General.Map.ThingsFilter.VisibleThings, mousemappos, BuilderPlug.Me.HighlightThingsRange / renderer.Scale);
 
 				//mxd. Show tooltip?
-				if(General.Map.UDMF && mouselastpos != mousepos && highlighted != null && !highlighted.IsDisposed && highlighted.Fields.ContainsKey("comment"))
+				if(General.Map.UDMF && General.Settings.RenderComments && mouselastpos != mousepos && highlighted != null && !highlighted.IsDisposed && highlighted.Fields.ContainsKey("comment"))
 				{
 					string comment = highlighted.Fields.GetValue("comment", string.Empty);
 					if(comment.Length > 2)

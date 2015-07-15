@@ -31,36 +31,43 @@ namespace CodeImp.DoomBuilder.TagRange
 		{
 			General.Map.Map.ClearAllMarks(false);
 			
-			string modename = General.Editing.Mode.GetType().Name;
-			if(modename == "SectorsMode")
+			switch(General.Editing.Mode.GetType().Name)
 			{
-				General.Map.Map.MarkSelectedSectors(true, true); //mxd
-				selectiontype = UniversalType.SectorTag;
-				ICollection<Sector> list = General.Map.Map.GetSelectedSectors(true);
-				initialtags = new List<int>(list.Count); //mxd
-				foreach(Sector element in list) initialtags.Add(element.Tag); //mxd
-				selectioncount = list.Count;
-				this.Text = "Create tag range for " + selectioncount + (selectioncount > 1 ? " sectors" : " sector");
-			}
-			else if(modename == "LinedefsMode")
-			{
-				General.Map.Map.MarkSelectedLinedefs(true, true); //mxd
-				selectiontype = UniversalType.LinedefTag;
-				ICollection<Linedef> list = General.Map.Map.GetSelectedLinedefs(true);
-				initialtags = new List<int>(list.Count); //mxd
-				foreach(Linedef element in list) initialtags.Add(element.Tag); //mxd
-				selectioncount = list.Count;
-				this.Text = "Create tag range for " + selectioncount + (selectioncount > 1 ? " linedefs" : " linedef");
-			}
-			else if(modename == "ThingsMode")
-			{
-				General.Map.Map.MarkSelectedThings(true, true); //mxd
-				selectiontype = UniversalType.ThingTag;
-				ICollection<Thing> list = General.Map.Map.GetSelectedThings(true);
-				initialtags = new List<int>(list.Count); //mxd
-				foreach(Thing element in list) initialtags.Add(element.Tag); //mxd
-				selectioncount = list.Count;
-				this.Text = "Create tag range for " + selectioncount + (selectioncount > 1 ? " things" : " thing");
+				case "SectorsMode":
+				{
+					General.Map.Map.MarkSelectedSectors(true, true); //mxd
+					selectiontype = UniversalType.SectorTag;
+					ICollection<Sector> list = General.Map.Map.GetSelectedSectors(true);
+					initialtags = new List<int>(list.Count); //mxd
+					foreach(Sector element in list) initialtags.Add(element.Tag); //mxd
+					selectioncount = list.Count;
+					this.Text = "Create tag range for " + selectioncount + (selectioncount > 1 ? " sectors" : " sector");
+				}
+				break;
+
+				case "LinedefsMode":
+				{
+					General.Map.Map.MarkSelectedLinedefs(true, true); //mxd
+					selectiontype = UniversalType.LinedefTag;
+					ICollection<Linedef> list = General.Map.Map.GetSelectedLinedefs(true);
+					initialtags = new List<int>(list.Count); //mxd
+					foreach(Linedef element in list) initialtags.Add(element.Tag); //mxd
+					selectioncount = list.Count;
+					this.Text = "Create tag range for " + selectioncount + (selectioncount > 1 ? " linedefs" : " linedef");
+				}
+				break;
+
+				case "ThingsMode":
+				{
+					General.Map.Map.MarkSelectedThings(true, true); //mxd
+					selectiontype = UniversalType.ThingTag;
+					ICollection<Thing> list = General.Map.Map.GetSelectedThings(true);
+					initialtags = new List<int>(list.Count); //mxd
+					foreach(Thing element in list) initialtags.Add(element.Tag); //mxd
+					selectioncount = list.Count;
+					this.Text = "Create tag range for " + selectioncount + (selectioncount > 1 ? " things" : " thing");
+				}
+				break;
 			}
 			
 			// Find out which tags are used

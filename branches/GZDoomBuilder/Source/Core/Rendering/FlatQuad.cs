@@ -52,10 +52,15 @@ namespace CodeImp.DoomBuilder.Rendering
 			Initialize(type);
 			
 			// Set coordinates
-			if(type == PrimitiveType.TriangleList)
-				SetTriangleListCoordinates(left, top, right, bottom, 0f, 0f, 1f, 1f);
-			else if(type == PrimitiveType.TriangleStrip)
-				SetTriangleStripCoordinates(left, top, right, bottom, 0f, 0f, 1f, 1f);
+			switch (type)
+			{
+				case PrimitiveType.TriangleList:
+					SetTriangleListCoordinates(left, top, right, bottom, 0f, 0f, 1f, 1f);
+					break;
+				case PrimitiveType.TriangleStrip:
+					SetTriangleStripCoordinates(left, top, right, bottom, 0f, 0f, 1f, 1f);
+					break;
+			}
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -74,10 +79,15 @@ namespace CodeImp.DoomBuilder.Rendering
 			thd = 1f / theight;
 			
 			// Set coordinates
-			if(type == PrimitiveType.TriangleList)
-				SetTriangleListCoordinates(left, top, right, bottom, twd, thd, 1f - twd, 1f - thd);
-			else if(type == PrimitiveType.TriangleStrip)
-				SetTriangleStripCoordinates(left, top, right, bottom, twd, thd, 1f - twd, 1f - thd);
+			switch (type)
+			{
+				case PrimitiveType.TriangleList:
+					SetTriangleListCoordinates(left, top, right, bottom, twd, thd, 1f - twd, 1f - thd);
+					break;
+				case PrimitiveType.TriangleStrip:
+					SetTriangleStripCoordinates(left, top, right, bottom, twd, thd, 1f - twd, 1f - thd);
+					break;
+			}
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -90,10 +100,15 @@ namespace CodeImp.DoomBuilder.Rendering
 			Initialize(type);
 
 			// Set coordinates
-			if(type == PrimitiveType.TriangleList)
-				SetTriangleListCoordinates(pos.Left, pos.Top, pos.Right, pos.Bottom, tl, tt, tr, tb);
-			else if(type == PrimitiveType.TriangleStrip)
-				SetTriangleStripCoordinates(pos.Left, pos.Top, pos.Right, pos.Bottom, tl, tt, tr, tb);
+			switch (type)
+			{
+				case PrimitiveType.TriangleList:
+					SetTriangleListCoordinates(pos.Left, pos.Top, pos.Right, pos.Bottom, tl, tt, tr, tb);
+					break;
+				case PrimitiveType.TriangleStrip:
+					SetTriangleStripCoordinates(pos.Left, pos.Top, pos.Right, pos.Bottom, tl, tt, tr, tb);
+					break;
+			}
 
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -106,10 +121,15 @@ namespace CodeImp.DoomBuilder.Rendering
 			Initialize(type);
 			
 			// Set coordinates
-			if(type == PrimitiveType.TriangleList)
-				SetTriangleListCoordinates(left, top, right, bottom, tl, tt, tr, tb);
-			else if(type == PrimitiveType.TriangleStrip)
-				SetTriangleStripCoordinates(left, top, right, bottom, tl, tt, tr, tb);
+			switch (type)
+			{
+				case PrimitiveType.TriangleList:
+					SetTriangleListCoordinates(left, top, right, bottom, tl, tt, tr, tb);
+					break;
+				case PrimitiveType.TriangleStrip:
+					SetTriangleStripCoordinates(left, top, right, bottom, tl, tt, tr, tb);
+					break;
+			}
 
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -131,23 +151,22 @@ namespace CodeImp.DoomBuilder.Rendering
 		public void SetColors(int clt, int crt, int clb, int crb)
 		{
 			// Determine polygon type
-			if(type == PrimitiveType.TriangleList)
+			switch (type)
 			{
-				// Go for all vertices to set the color
-				vertices[0].c = clt;
-				vertices[1].c = crt;
-				vertices[2].c = clb;
-				vertices[3].c = clb;
-				vertices[4].c = crt;
-				vertices[5].c = crb;
-			}
-			else if(type == PrimitiveType.TriangleStrip)
-			{
-				// Go for all vertices to set the color
-				vertices[0].c = clt;
-				vertices[1].c = crt;
-				vertices[2].c = clb;
-				vertices[3].c = crb;
+				case PrimitiveType.TriangleList:
+					vertices[0].c = clt;
+					vertices[1].c = crt;
+					vertices[2].c = clb;
+					vertices[3].c = clb;
+					vertices[4].c = crt;
+					vertices[5].c = crb;
+					break;
+				case PrimitiveType.TriangleStrip:
+					vertices[0].c = clt;
+					vertices[1].c = crt;
+					vertices[2].c = clb;
+					vertices[3].c = crb;
+					break;
 			}
 		}
 
@@ -216,12 +235,12 @@ namespace CodeImp.DoomBuilder.Rendering
 			this.type = type;
 
 			// Determine number of vertices
-			if(type == PrimitiveType.TriangleList)
-				numvertices = 6;
-			else if(type == PrimitiveType.TriangleStrip)
-				numvertices = 4;
-			else
-				throw new NotSupportedException("Unsupported PrimitiveType");
+			switch (type)
+			{
+				case PrimitiveType.TriangleList: numvertices = 6; break;
+				case PrimitiveType.TriangleStrip: numvertices = 4; break;
+				default: throw new NotSupportedException("Unsupported PrimitiveType");
+			}
 			
 			// Make the array
 			vertices = new FlatVertex[numvertices];

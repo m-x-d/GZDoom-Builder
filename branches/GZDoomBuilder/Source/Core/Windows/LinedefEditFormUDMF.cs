@@ -806,8 +806,11 @@ namespace CodeImp.DoomBuilder.Windows
 				foreach(CheckBox c in udmfactivates.Checkboxes)
 				{
 					LinedefActivateInfo ai = (c.Tag as LinedefActivateInfo);
-					if(c.CheckState == CheckState.Checked) l.SetFlag(ai.Key, true);
-					else if(c.CheckState == CheckState.Unchecked) l.SetFlag(ai.Key, false);
+					switch (c.CheckState)
+					{
+						case CheckState.Checked: l.SetFlag(ai.Key, true); break;
+						case CheckState.Unchecked: l.SetFlag(ai.Key, false); break;
+					}
 				}
 				
 				// Action/tags
@@ -1450,13 +1453,14 @@ namespace CodeImp.DoomBuilder.Windows
 					if(l.Front != null) 
 					{
 						bool absolute = false;
-						if(cbLightAbsoluteFront.CheckState == CheckState.Indeterminate) 
+						switch (cbLightAbsoluteFront.CheckState)
 						{
-							absolute = l.Front.Fields.GetValue("lightabsolute", false);
-						} 
-						else if(cbLightAbsoluteFront.CheckState == CheckState.Checked) 
-						{
-							absolute = true;
+							case CheckState.Indeterminate:
+								absolute = l.Front.Fields.GetValue("lightabsolute", false);
+								break;
+							case CheckState.Checked:
+								absolute = true;
+								break;
 						}
 
 						int value = General.Clamp(lightFront.GetResult((linedefprops[i].Front != null ? linedefprops[i].Front.Brightness : 0)), (absolute ? 0 : -255), 255);
@@ -1493,13 +1497,14 @@ namespace CodeImp.DoomBuilder.Windows
 					if(l.Back != null) 
 					{
 						bool absolute = false;
-						if(cbLightAbsoluteBack.CheckState == CheckState.Indeterminate) 
+						switch (cbLightAbsoluteBack.CheckState)
 						{
-							absolute = l.Back.Fields.GetValue("lightabsolute", false);
-						} 
-						else if(cbLightAbsoluteBack.CheckState == CheckState.Checked) 
-						{
-							absolute = true;
+							case CheckState.Indeterminate:
+								absolute = l.Back.Fields.GetValue("lightabsolute", false);
+								break;
+							case CheckState.Checked:
+								absolute = true;
+								break;
 						}
 
 						int value = General.Clamp(lightBack.GetResult((linedefprops[i].Back != null ? linedefprops[i].Back.Brightness : 0)), (absolute ? 0 : -255), 255);

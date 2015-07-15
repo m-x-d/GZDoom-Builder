@@ -607,10 +607,11 @@ namespace CodeImp.DoomBuilder.Windows
 				// Apply all flags
 				foreach(CheckBox c in flags.Checkboxes) 
 				{
-					if(c.CheckState == CheckState.Checked)
-						t.SetFlag(c.Tag.ToString(), true);
-					else if(c.CheckState == CheckState.Unchecked)
-						t.SetFlag(c.Tag.ToString(), false);
+					switch (c.CheckState)
+					{
+						case CheckState.Checked: t.SetFlag(c.Tag.ToString(), true); break;
+						case CheckState.Unchecked: t.SetFlag(c.Tag.ToString(), false); break;
+					}
 				}
 
 				// Action/tags

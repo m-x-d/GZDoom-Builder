@@ -136,17 +136,19 @@ namespace CodeImp.DoomBuilder.Rendering
 
 					} 
 					else //only horizontal/verticel walls are shaded
-					{ 
-						int angle = (int)Angle2D.RadToDeg(sd.Angle);
-						//horizontal wall
-						if(angle == 270 || angle == 90) 
+					{
+						switch((int)Angle2D.RadToDeg(sd.Angle))
 						{
-							level = General.Clamp(level + General.Map.Data.MapInfo.HorizWallShade, 0, 255);
-						}
-						//vertical wall
-						else if(angle == 0 || angle == 180) 
-						{
-							level = General.Clamp(level + General.Map.Data.MapInfo.VertWallShade, 0, 255);
+							// Horizontal wall
+							case 90:
+							case 270:
+								level = General.Clamp(level + General.Map.Data.MapInfo.HorizWallShade, 0, 255);
+								break;
+							// Vertical wall
+							case 180:
+							case 0:
+								level = General.Clamp(level + General.Map.Data.MapInfo.VertWallShade, 0, 255);
+								break;
 						}
 					}
 				}

@@ -673,36 +673,40 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		internal void StartRealtimeInterfaceUpdate(SelectionType selectionType) 
+		internal void StartRealtimeInterfaceUpdate(SelectionType selectiontype)
 		{
-			if (selectionType == SelectionType.Sectors || selectionType == SelectionType.Linedefs || selectionType == SelectionType.All) 
+			switch (selectiontype)
 			{
-				General.Interface.OnEditFormValuesChanged += Interface_OnSectorEditFormValuesChanged;
-			} 
-			else if(selectionType == SelectionType.Things) 
-			{
-				General.Interface.OnEditFormValuesChanged += Interface_OnThingEditFormValuesChanged;
-			} 
-			else 
-			{
-				General.Interface.OnEditFormValuesChanged += Interface_OnEditFormValuesChanged;
+				case SelectionType.All:
+				case SelectionType.Linedefs:
+				case SelectionType.Sectors:
+					General.Interface.OnEditFormValuesChanged += Interface_OnSectorEditFormValuesChanged;
+					break;
+				case SelectionType.Things:
+					General.Interface.OnEditFormValuesChanged += Interface_OnThingEditFormValuesChanged;
+					break;
+				default:
+					General.Interface.OnEditFormValuesChanged += Interface_OnEditFormValuesChanged;
+					break;
 			}
 		}
 
 		//mxd
-		internal void StopRealtimeInterfaceUpdate(SelectionType selectionType) 
+		internal void StopRealtimeInterfaceUpdate(SelectionType selectiontype)
 		{
-			if(selectionType == SelectionType.Sectors || selectionType == SelectionType.Linedefs || selectionType == SelectionType.All) 
+			switch (selectiontype)
 			{
-				General.Interface.OnEditFormValuesChanged -= Interface_OnSectorEditFormValuesChanged;
-			} 
-			else if(selectionType == SelectionType.Things) 
-			{
-				General.Interface.OnEditFormValuesChanged -= Interface_OnThingEditFormValuesChanged;
-			} 
-			else 
-			{
-				General.Interface.OnEditFormValuesChanged -= Interface_OnEditFormValuesChanged;
+				case SelectionType.All:
+				case SelectionType.Linedefs:
+				case SelectionType.Sectors:
+					General.Interface.OnEditFormValuesChanged -= Interface_OnSectorEditFormValuesChanged;
+					break;
+				case SelectionType.Things:
+					General.Interface.OnEditFormValuesChanged -= Interface_OnThingEditFormValuesChanged;
+					break;
+				default:
+					General.Interface.OnEditFormValuesChanged -= Interface_OnEditFormValuesChanged;
+					break;
 			}
 		}
 		
@@ -837,10 +841,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						{
 							if((Vector2D)t.Position == v.Position) 
 							{
-								if(t.Type == 1504)
-									slopefloorthings.Add(t);
-								else if(t.Type == 1505)
-									slopeceilingthings.Add(t);
+								switch (t.Type)
+								{
+									case 1504: slopefloorthings.Add(t); break;
+									case 1505: slopeceilingthings.Add(t); break;
+								}
 							}
 						}
 					}
