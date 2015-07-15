@@ -774,27 +774,35 @@ namespace CodeImp.DoomBuilder.TagExplorer
 					General.Map.Map.ClearAllSelected();
 
 					//make selection
-					if (info.Type == NodeInfoType.THING) 
+					switch (info.Type)
 					{
-						if(General.Editing.Mode.GetType().Name != "ThingsMode") General.Editing.ChangeMode("ThingsMode");
-						Thing t = General.Map.Map.GetThingByIndex(info.Index);
-						if (t != null) t.Selected = true;
-					} 
-					else if (info.Type == NodeInfoType.LINEDEF) 
-					{
-						if(General.Editing.Mode.GetType().Name != "LinedefsMode") General.Editing.ChangeMode("LinedefsMode");
-						Linedef l = General.Map.Map.GetLinedefByIndex(info.Index);
-						if (l != null) l.Selected = true;
-					} 
-					else 
-					{
-						if(General.Editing.Mode.GetType().Name != "SectorsMode") General.Editing.ChangeMode("SectorsMode");
-						Sector s = General.Map.Map.GetSectorByIndex(info.Index);
-						if (s != null) 
+						case NodeInfoType.THING:
 						{
-							((ClassicMode)General.Editing.Mode).SelectMapElement(s);
-							foreach (Sidedef sd in s.Sidedefs) sd.Line.Selected = true;
+							if(General.Editing.Mode.GetType().Name != "ThingsMode") General.Editing.ChangeMode("ThingsMode");
+							Thing t = General.Map.Map.GetThingByIndex(info.Index);
+							if (t != null) t.Selected = true;
 						}
+						break;
+
+						case NodeInfoType.LINEDEF:
+						{
+							if(General.Editing.Mode.GetType().Name != "LinedefsMode") General.Editing.ChangeMode("LinedefsMode");
+							Linedef l = General.Map.Map.GetLinedefByIndex(info.Index);
+							if (l != null) l.Selected = true;
+						}
+						break;
+
+						default:
+						{
+							if(General.Editing.Mode.GetType().Name != "SectorsMode") General.Editing.ChangeMode("SectorsMode");
+							Sector s = General.Map.Map.GetSectorByIndex(info.Index);
+							if (s != null) 
+							{
+								((ClassicMode)General.Editing.Mode).SelectMapElement(s);
+								foreach (Sidedef sd in s.Sidedefs) sd.Line.Selected = true;
+							}
+						}
+						break;
 					}
 				}
 
@@ -804,34 +812,42 @@ namespace CodeImp.DoomBuilder.TagExplorer
 					List<Vector2D> points = new List<Vector2D>();
 					RectangleF area = MapSet.CreateEmptyArea();
 
-					if (info.Type == NodeInfoType.LINEDEF) 
+					switch (info.Type)
 					{
-						Linedef l = General.Map.Map.GetLinedefByIndex(info.Index);
-						points.Add(l.Start.Position);
-						points.Add(l.End.Position);
-					} 
-					else if (info.Type == NodeInfoType.SECTOR) 
-					{
-						Sector s = General.Map.Map.GetSectorByIndex(info.Index);
-						foreach (Sidedef sd in s.Sidedefs) 
+						case NodeInfoType.LINEDEF:
 						{
-							points.Add(sd.Line.Start.Position);
-							points.Add(sd.Line.End.Position);
+							Linedef l = General.Map.Map.GetLinedefByIndex(info.Index);
+							points.Add(l.Start.Position);
+							points.Add(l.End.Position);
 						}
-					} 
-					else if (info.Type == NodeInfoType.THING) 
-					{
-						Thing t = General.Map.Map.GetThingByIndex(info.Index);
-						Vector2D p = t.Position;
-						points.Add(p);
-						points.Add(p + new Vector2D(t.Size * 2.0f, t.Size * 2.0f));
-						points.Add(p + new Vector2D(t.Size * 2.0f, -t.Size * 2.0f));
-						points.Add(p + new Vector2D(-t.Size * 2.0f, t.Size * 2.0f));
-						points.Add(p + new Vector2D(-t.Size * 2.0f, -t.Size * 2.0f));
-					} 
-					else 
-					{
-						General.Fail("Tag Explorer: unknown object type given to zoom in on!");
+						break;
+
+						case NodeInfoType.SECTOR:
+						{
+							Sector s = General.Map.Map.GetSectorByIndex(info.Index);
+							foreach (Sidedef sd in s.Sidedefs) 
+							{
+								points.Add(sd.Line.Start.Position);
+								points.Add(sd.Line.End.Position);
+							}
+						}
+						break;
+
+						case NodeInfoType.THING:
+						{
+							Thing t = General.Map.Map.GetThingByIndex(info.Index);
+							Vector2D p = t.Position;
+							points.Add(p);
+							points.Add(p + new Vector2D(t.Size * 2.0f, t.Size * 2.0f));
+							points.Add(p + new Vector2D(t.Size * 2.0f, -t.Size * 2.0f));
+							points.Add(p + new Vector2D(-t.Size * 2.0f, t.Size * 2.0f));
+							points.Add(p + new Vector2D(-t.Size * 2.0f, -t.Size * 2.0f));
+						}
+						break;
+
+						default:
+							General.Fail("Tag Explorer: unknown object type given to zoom in on!");
+							break;
 					}
 
 					// Make a view area from the points

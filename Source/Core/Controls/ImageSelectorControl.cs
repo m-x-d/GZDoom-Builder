@@ -98,13 +98,10 @@ namespace CodeImp.DoomBuilder.Controls
 		private void preview_Click(object sender, EventArgs e)
 		{
 			imagebox.BackColor = SystemColors.Highlight;
-			if(button == MouseButtons.Right)
+			switch (button)
 			{
-				name.Text = "-";
-			}
-			else if(button == MouseButtons.Left)
-			{
-				name.Text = BrowseImage(name.Text);
+				case MouseButtons.Right: name.Text = "-"; break;
+				case MouseButtons.Left: name.Text = BrowseImage(name.Text); break;
 			}
 		}
 		

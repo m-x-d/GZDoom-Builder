@@ -383,22 +383,22 @@ namespace CodeImp.DoomBuilder.Windows
 					// Get selected filter
 					ThingsFilter f = listfilters.SelectedItems[0].Tag as ThingsFilter;
 					
-					// New state is required?
-					if(box.CheckState == CheckState.Checked)
+					switch (box.CheckState)
 					{
-						f.ForbiddenFields.Remove(box.Tag.ToString());
-						if(!f.RequiredFields.Contains(box.Tag.ToString())) f.RequiredFields.Add(box.Tag.ToString());
-					}
-					// New state is forbidden?
-					else if(box.CheckState == CheckState.Unchecked)
-					{
-						f.RequiredFields.Remove(box.Tag.ToString());
-						if(!f.ForbiddenFields.Contains(box.Tag.ToString())) f.ForbiddenFields.Add(box.Tag.ToString());
-					}
-					else
-					{
-						f.ForbiddenFields.Remove(box.Tag.ToString());
-						f.RequiredFields.Remove(box.Tag.ToString());
+						// New state is required?
+						case CheckState.Checked:
+							f.ForbiddenFields.Remove(box.Tag.ToString());
+							if(!f.RequiredFields.Contains(box.Tag.ToString())) f.RequiredFields.Add(box.Tag.ToString());
+							break;
+						// New state is forbidden?
+						case CheckState.Unchecked:
+							f.RequiredFields.Remove(box.Tag.ToString());
+							if(!f.ForbiddenFields.Contains(box.Tag.ToString())) f.ForbiddenFields.Add(box.Tag.ToString());
+							break;
+						default:
+							f.ForbiddenFields.Remove(box.Tag.ToString());
+							f.RequiredFields.Remove(box.Tag.ToString());
+							break;
 					}
 				}
 			}

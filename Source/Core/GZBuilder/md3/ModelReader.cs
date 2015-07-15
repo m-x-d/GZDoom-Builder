@@ -112,13 +112,18 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 				}
 
 				string ext = Path.GetExtension(mde.ModelNames[i]);
-
-				if(ext == ".md3")
-					result = ReadMD3Model(ref bbs, mde, useSkins, ms, device);
-				else if(ext == ".md2")
-					result = ReadMD2Model(ref bbs, mde, ms, device);
-				else
-					result.Errors = "model format is not supported";
+				switch (ext)
+				{
+					case ".md3":
+						result = ReadMD3Model(ref bbs, mde, useSkins, ms, device);
+						break;
+					case ".md2":
+						result = ReadMD2Model(ref bbs, mde, ms, device);
+						break;
+					default:
+						result.Errors = "model format is not supported";
+						break;
+				}
 
 				ms.Close();
 				ms.Dispose();

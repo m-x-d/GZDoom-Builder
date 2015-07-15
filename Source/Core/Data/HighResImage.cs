@@ -199,12 +199,12 @@ namespace CodeImp.DoomBuilder.Data
 									if(p.rotate != 0) 
 									{
 										RotateFlipType rotate;
-										if(p.rotate == 90)
-											rotate = RotateFlipType.Rotate90FlipNone;
-										else if(p.rotate == 180)
-											rotate = RotateFlipType.Rotate180FlipNone;
-										else
-											rotate = RotateFlipType.Rotate270FlipNone;
+										switch (p.rotate)
+										{
+											case 90: rotate = RotateFlipType.Rotate90FlipNone; break;
+											case 180: rotate = RotateFlipType.Rotate180FlipNone; break;
+											default: rotate = RotateFlipType.Rotate270FlipNone; break;
+										}
 										patchbmp.RotateFlip(rotate);
 									}
 									

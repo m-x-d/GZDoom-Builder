@@ -435,15 +435,13 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				// Ask to save
 				DialogResult result = MessageBox.Show(this.ParentForm, "Do you want to save changes to " + t.Text + "?", "Close File", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
-				if(result == DialogResult.Yes)
+				switch (result)
 				{
-					// Save file
-					if(!SaveScript(t)) return false;
-				}
-				else if(result == DialogResult.Cancel)
-				{
-					// Cancel
-					return false;
+					case DialogResult.Yes:
+						if(!SaveScript(t)) return false;
+						break;
+					case DialogResult.Cancel:
+						return false;
 				}
 			}
 			

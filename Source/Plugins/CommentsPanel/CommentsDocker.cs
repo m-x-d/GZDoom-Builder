@@ -86,11 +86,10 @@ namespace CodeImp.DoomBuilder.CommentsPanel
 		// Before detached from the docker
 		public void Terminate()
 		{
-			if(this.ParentForm != null)
-			{
-				this.ParentForm.Activated -= ParentForm_Activated;
-			}
-
+			preventupdate = true; //mxd
+			if(this.ParentForm != null) this.ParentForm.Activated -= ParentForm_Activated;
+			updatetimer.Tick -= updatetimer_Tick; //mxd
+			enabledtimer.Tick -= enabledtimer_Tick; //mxd
 			updatetimer.Stop();
 			enabledtimer.Stop();
 		}
@@ -607,14 +606,21 @@ namespace CodeImp.DoomBuilder.CommentsPanel
 		private void enabledtimer_Tick(object sender, EventArgs e)
 		{
 			if(General.Editing.Mode == null) return; //mxd
-			if(General.Editing.Mode.GetType().Name == "VerticesMode")
-				addcommentgroup.Enabled = (General.Map.Map.SelectedVerticessCount > 0);
-			else if(General.Editing.Mode.GetType().Name == "LinedefsMode")
-				addcommentgroup.Enabled = (General.Map.Map.SelectedLinedefsCount > 0);
-			else if(General.Editing.Mode.GetType().Name == "SectorsMode")
-				addcommentgroup.Enabled = (General.Map.Map.SelectedSectorsCount > 0);
-			else if(General.Editing.Mode.GetType().Name == "ThingsMode")
-				addcommentgroup.Enabled = (General.Map.Map.SelectedThingsCount > 0);
+			switch (General.Editing.Mode.GetType().Name)
+			{
+				case "VerticesMode":
+					addcommentgroup.Enabled = (General.Map.Map.SelectedVerticessCount > 0);
+					break;
+				case "LinedefsMode":
+					addcommentgroup.Enabled = (General.Map.Map.SelectedLinedefsCount > 0);
+					break;
+				case "SectorsMode":
+					addcommentgroup.Enabled = (General.Map.Map.SelectedSectorsCount > 0);
+					break;
+				case "ThingsMode":
+					addcommentgroup.Enabled = (General.Map.Map.SelectedThingsCount > 0);
+					break;
+			}
 		}
 
 		// Focus lost

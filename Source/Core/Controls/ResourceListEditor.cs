@@ -232,15 +232,15 @@ namespace CodeImp.DoomBuilder.Controls
 				{
 					string ext = Path.GetExtension(path);
 					if(string.IsNullOrEmpty(ext)) continue;
-					
-					ext = ext.ToLower();
-					if(ext == ".wad") 
+					switch(ext.ToLower())
 					{
-						AddItem(new DataLocation(DataLocation.RESOURCE_WAD, path, false, false, false));
-					} 
-					else if(ext == ".pk3" || ext == ".pk7") 
-					{
-						AddItem(new DataLocation(DataLocation.RESOURCE_PK3, path, false, false, false));
+						case ".wad":
+							AddItem(new DataLocation(DataLocation.RESOURCE_WAD, path, false, false, false));
+							break;
+						case ".pk7":
+						case ".pk3":
+							AddItem(new DataLocation(DataLocation.RESOURCE_PK3, path, false, false, false));
+							break;
 					}
 				} 
 				else if(Directory.Exists(path)) 

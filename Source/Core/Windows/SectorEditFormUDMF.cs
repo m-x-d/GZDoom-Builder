@@ -673,8 +673,11 @@ namespace CodeImp.DoomBuilder.Windows
 				// Apply all flags
 				foreach(CheckBox c in flags.Checkboxes) 
 				{
-					if(c.CheckState == CheckState.Checked) s.SetFlag(c.Tag.ToString(), true);
-					else if(c.CheckState == CheckState.Unchecked) s.SetFlag(c.Tag.ToString(), false);
+					switch (c.CheckState)
+					{
+						case CheckState.Checked: s.SetFlag(c.Tag.ToString(), true); break;
+						case CheckState.Unchecked: s.SetFlag(c.Tag.ToString(), false); break;
+					}
 				}
 
 				// Effects
@@ -1122,13 +1125,14 @@ namespace CodeImp.DoomBuilder.Windows
 				foreach(Sector s in sectors) 
 				{
 					bool absolute = false;
-					if(ceilLightAbsolute.CheckState == CheckState.Indeterminate) 
+					switch (ceilLightAbsolute.CheckState)
 					{
-						absolute = s.Fields.GetValue("lightceilingabsolute", false);
-					} 
-					else if(ceilLightAbsolute.CheckState == CheckState.Checked) 
-					{
-						absolute = true;
+						case CheckState.Indeterminate:
+							absolute = s.Fields.GetValue("lightceilingabsolute", false);
+							break;
+						case CheckState.Checked:
+							absolute = true;
+							break;
 					}
 
 					int value = General.Clamp(ceilBrightness.GetResult(sectorprops[s].CeilBrightness), (absolute ? 0 : -255), 255);
@@ -1160,13 +1164,14 @@ namespace CodeImp.DoomBuilder.Windows
 				foreach(Sector s in sectors) 
 				{
 					bool absolute = false;
-					if(floorLightAbsolute.CheckState == CheckState.Indeterminate) 
+					switch (floorLightAbsolute.CheckState)
 					{
-						absolute = s.Fields.GetValue("lightfloorabsolute", false);
-					} 
-					else if(floorLightAbsolute.CheckState == CheckState.Checked) 
-					{
-						absolute = true;
+						case CheckState.Indeterminate:
+							absolute = s.Fields.GetValue("lightfloorabsolute", false);
+							break;
+						case CheckState.Checked:
+							absolute = true;
+							break;
 					}
 
 					int value = General.Clamp(floorBrightness.GetResult(sectorprops[s].FloorBrightness), (absolute ? 0 : -255), 255);

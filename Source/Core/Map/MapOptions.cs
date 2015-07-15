@@ -199,8 +199,11 @@ namespace CodeImp.DoomBuilder.Map
 
 				foreach(DictionaryEntry entry in (ListDictionary)tagLabelsEntry.Value) 
 				{
-					if((string)entry.Key == "tag") tag = (int)entry.Value;
-					else if((string)entry.Key == "label") label = (string)entry.Value;
+					switch ((string)entry.Key)
+					{
+						case "tag": tag = (int)entry.Value; break;
+						case "label": label = (string)entry.Value; break;
+					}
 				}
 
 				if(tag != 0 && !string.IsNullOrEmpty(label))

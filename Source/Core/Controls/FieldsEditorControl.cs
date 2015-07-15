@@ -111,10 +111,15 @@ namespace CodeImp.DoomBuilder.Controls
 			int sortcolumn = General.Settings.ReadSetting("customfieldssortcolumn", 0);
 			int sortorder = General.Settings.ReadSetting("customfieldssortorder", (int)ListSortDirection.Ascending);
 
-			if(sortorder == (int)SortOrder.Ascending)
-				fieldslist.Sort(fieldslist.Columns[sortcolumn], ListSortDirection.Ascending);
-			else if(sortorder == (int)SortOrder.Descending)
-				fieldslist.Sort(fieldslist.Columns[sortcolumn], ListSortDirection.Descending);
+			switch (sortorder)
+			{
+				case (int)SortOrder.Ascending:
+					fieldslist.Sort(fieldslist.Columns[sortcolumn], ListSortDirection.Ascending);
+					break;
+				case (int)SortOrder.Descending:
+					fieldslist.Sort(fieldslist.Columns[sortcolumn], ListSortDirection.Descending);
+					break;
+			}
 		}
 		
 		// This adds a list of fixed fields (in undefined state)

@@ -45,13 +45,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				SectorData sourcesectordata = data.Mode.GetSectorData(sourcesector);
 				if(!sourcesectordata.Updated) sourcesectordata.Update();
 
-				if(thing.Type == 9510)
+				switch (thing.Type)
 				{
-					data.Floor.plane = sourcesectordata.Floor.plane;
-				}
-				else if(thing.Type == 9511)
-				{
-					data.Ceiling.plane = sourcesectordata.Ceiling.plane;
+					case 9510:
+						data.Floor.plane = sourcesectordata.Floor.plane;
+						break;
+					case 9511:
+						data.Ceiling.plane = sourcesectordata.Ceiling.plane;
+						break;
 				}
 				
 				sourcesectordata.AddUpdateSector(data.Sector, true);
