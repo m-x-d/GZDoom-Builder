@@ -625,7 +625,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			{
 				if(l.Action == 160) 
 				{
-					int sectortag = (l.Args[1] & 8) != 0 ? l.Args[0] : l.Args[0] + (l.Args[4] << 8);
+					int sectortag = (General.Map.UDMF || (l.Args[1] & 8) != 0) ? l.Args[0] : l.Args[0] + (l.Args[4] << 8);
 					if(sectortag != 0) tagList.Add(sectortag);
 				}
 			}
