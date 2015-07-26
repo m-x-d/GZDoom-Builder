@@ -741,7 +741,7 @@ namespace CodeImp.DoomBuilder
 					}
 					else
 					{
-						UpdateChecker.PerformCheck();
+						UpdateChecker.PerformCheck(false);
 					}
 				}
 				

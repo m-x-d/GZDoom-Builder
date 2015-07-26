@@ -38,6 +38,7 @@ namespace CodeImp.DoomBuilder.Controls
 		private bool allowrelative;		// Allow ++, --, * and / prefix for relative changes
 		private bool allowdecimal;		// Allow decimal (float) numbers
 		private bool controlpressed;
+		private int incrementstep; //mxd. Step for +++ and  --- prefixes
 		private readonly ToolTip tooltip; //mxd
 		
 		#endregion
@@ -58,7 +59,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.ImeMode = ImeMode.Off;
 
 			//mxd. Setup tooltip
-			this.tooltip = new ToolTip { AutomaticDelay = 100, AutoPopDelay = 4000, InitialDelay = 100, ReshowDelay = 100 };
+			this.tooltip = new ToolTip { AutomaticDelay = 100, AutoPopDelay = 8000, InitialDelay = 100, ReshowDelay = 100 };
 		}
 
 		#endregion
@@ -82,6 +83,7 @@ namespace CodeImp.DoomBuilder.Controls
 		// When a key is pressed
 		protected override void OnKeyPress(KeyPressEventArgs e)
 		{
+			incrementstep = 0; //mxd
 			string allowedchars = "0123456789\b";
 			
 			// Determine allowed chars
@@ -146,17 +148,17 @@ namespace CodeImp.DoomBuilder.Controls
 					
 					// Limit the number of + and - allowed
 					int numprefixes = nonselectedtext.Split(e.KeyChar, otherprefix).Length;
-					if(numprefixes > 2)
+					if(numprefixes > 3)
 					{
-						// Can't have more than 2 prefixes
+						// Can't have more than 3 prefixes (mxd)
 						e.Handled = true;
 					}
 					else if(numprefixes > 1)
 					{
-						// Must have 2 the same prefixes
+						// Must have 2 or 3 same prefixes
 						if(this.Text.IndexOf(e.KeyChar) == -1) e.Handled = true;
 
-						// Double prefix must be allowed
+						// Double or triple prefix must be allowed
 						if(!allowrelative) e.Handled = true;
 					}
 				}
@@ -204,13 +206,20 @@ namespace CodeImp.DoomBuilder.Controls
 		// This checks if the number is relative
 		public bool CheckIsRelative()
 		{
-			// Prefixed with ++, --, * or /?
-			return ( (this.Text.Length > 2 && (this.Text.StartsWith("++") || this.Text.StartsWith("--"))) || 
+			// Prefixed with +++, ---, ++, --, * or /?
+			return ( (this.Text.Length > 3 && (this.Text.StartsWith("+++") || this.Text.StartsWith("---"))) || //mxd
+				(this.Text.Length > 2 && (this.Text.StartsWith("++") || this.Text.StartsWith("--") || this.Text.StartsWith("**") || this.Text.StartsWith("//"))) || //mxd
 				(this.Text.Length > 1 && (this.Text.StartsWith("*") || this.Text.StartsWith("/"))) ); //mxd
 		}
 		
-		// This determines the result value
+		//mxd. This determines the result value
 		public int GetResult(int original)
+		{
+			return GetResult(original, incrementstep++);
+		}
+
+		//mxd. This determines the result value
+		public int GetResult(int original, int step)
 		{
 			string textpart = this.Text;
 			
@@ -221,7 +230,23 @@ namespace CodeImp.DoomBuilder.Controls
 			if(textpart.Length > 0)
 			{
 				int result;
-				
+
+				//mxd. Prefixed with +++?
+				if(this.Text.StartsWith("+++"))
+				{
+					// Add number to original
+					int.TryParse(textpart, out result);
+					return original + result * step;
+				}
+				//mxd. Prefixed with ---?
+				if(this.Text.StartsWith("---"))
+				{
+					// Subtract number from original
+					int.TryParse(textpart, out result);
+					int newvalue = original - result * step;
+					if(!allownegative && (newvalue < 0)) newvalue = 0;
+					return newvalue;
+				}
 				// Prefixed with ++?
 				if(this.Text.StartsWith("++"))
 				{
@@ -270,8 +295,14 @@ namespace CodeImp.DoomBuilder.Controls
 			return original;
 		}
 
-		// This determines the result value
+		//mxd. This determines the result value
 		public float GetResultFloat(float original)
+		{
+			return GetResultFloat(original, incrementstep++);
+		}
+
+		// This determines the result value
+		public float GetResultFloat(float original, int step)
 		{
 			// Strip prefixes
 			string textpart = this.Text.Replace("+", "").Replace("-", "").Replace("*", "").Replace("/", ""); //mxd;
@@ -281,6 +312,22 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				float result;
 				
+				//mxd. Prefixed with +++?
+				if(this.Text.StartsWith("+++"))
+				{
+					// Add number to original
+					if(!float.TryParse(textpart, NumberStyles.Float, CultureInfo.CurrentCulture, out result)) result = 0;
+					return original + result * step;
+				}
+				//mxd. Prefixed with ---?
+				if(this.Text.StartsWith("---"))
+				{
+					// Subtract number from original
+					if(!float.TryParse(textpart, NumberStyles.Float, CultureInfo.CurrentCulture, out result)) result = 0;
+					float newvalue = original - result * step;
+					if(!allownegative && (newvalue < 0)) newvalue = 0;
+					return newvalue;
+				}
 				// Prefixed with ++?
 				if(this.Text.StartsWith("++"))
 				{
@@ -310,7 +357,7 @@ namespace CodeImp.DoomBuilder.Controls
 				if(this.Text.StartsWith("/")) 
 				{
 					// Divide original by number
-					if(!float.TryParse(textpart, NumberStyles.Float, CultureInfo.CurrentCulture, out result)) return original;
+					if(!float.TryParse(textpart, NumberStyles.Float, CultureInfo.CurrentCulture, out result) || result == 0) return original;
 					float newvalue = (float)Math.Round(original / result, 3);
 					if(!allownegative && (newvalue < 0)) newvalue = 0;
 					return newvalue;
@@ -338,7 +385,9 @@ namespace CodeImp.DoomBuilder.Controls
 			this.ForeColor = (allowrelative ? SystemColors.HotTrack : SystemColors.WindowText);
 			if (allowrelative)
 			{
-				tooltip.SetToolTip(this, "Use ++ or -- prefixes to change\r\nexisting values by given value.\r\nUse * or / prefixes to multiply\r\nor divide existing values by given value." + Environment.NewLine + tip);
+				tooltip.SetToolTip(this, "Use ++ or -- prefixes to change by given value." + Environment.NewLine +
+					"Use +++ or --- prefixes to incrementally change by given value." + Environment.NewLine + 
+					"Use * or / prefixes to multiply or divide by given value." + Environment.NewLine + tip);
 			}
 			else if(!string.IsNullOrEmpty(tip))
 			{

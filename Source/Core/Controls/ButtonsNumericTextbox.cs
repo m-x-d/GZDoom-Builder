@@ -202,11 +202,23 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			return textbox.GetResult(original);
 		}
+
+		//mxd. This determines the result value at given inremental step
+		public int GetResult(int original, int step)
+		{
+			return textbox.GetResult(original, step);
+		}
 		
 		// This determines the result value
 		public float GetResultFloat(float original)
 		{
 			return textbox.GetResultFloat(original);
+		}
+
+		//mxd. This determines the result value at given inremental step
+		public float GetResultFloat(float original, int step)
+		{
+			return textbox.GetResultFloat(original, step);
 		}
 
 		//mxd

@@ -16,6 +16,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Text = this.Text.Replace("[rev]", remoterev.ToString());
 			this.label.Text = label.Text.Replace("[rev]", remoterev.ToString());
 			this.changelog.SelectedRtf = changelog;
+		}
+
+		private void UpdateForm_Shown(object sender, EventArgs e)
+		{
 			this.changelog.Focus();
 		}
 
