@@ -934,7 +934,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						if(l.Front != null)
 						{
 							//mxd. Added hi-tag/line ID check 
-							int sectortag = (l.Args[1] & (int)Effect3DFloor.FloorTypes.HiTagIsLineID) != 0 ? l.Args[0] : l.Args[0] + (l.Args[4] << 8);
+							int sectortag = (General.Map.UDMF || (l.Args[1] & (int)Effect3DFloor.FloorTypes.HiTagIsLineID) != 0) ? l.Args[0] : l.Args[0] + (l.Args[4] << 8);
 							if(sectortags.ContainsKey(sectortag)) 
 							{
 								List<Sector> sectors = sectortags[sectortag];
