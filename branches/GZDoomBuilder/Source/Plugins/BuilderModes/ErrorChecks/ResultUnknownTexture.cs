@@ -77,13 +77,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			switch(part)
 			{
 				case SidedefPart.Upper:
-					return "Sidedef " + side.Index + " has unknown upper texture \"" + side.HighTexture + "\"";
+					return "Linedef " + side.Line.Index + " has unknown upper texture \"" + side.HighTexture + "\" (" + (side.IsFront ? "front" : "back") + " side)";
 					
 				case SidedefPart.Middle:
-					return "Sidedef " + side.Index + " has unknown middle texture \"" + side.MiddleTexture + "\"";
+					return "Linedef " + side.Line.Index + " has unknown middle texture \"" + side.MiddleTexture + "\" (" + (side.IsFront ? "front" : "back") + " side)";
 					
 				case SidedefPart.Lower:
-					return "Sidedef " + side.Index + " has unknown lower texture \"" + side.LowTexture + "\"";
+					return "Linedef " + side.Line.Index + " has unknown lower texture \"" + side.LowTexture + "\" (" + (side.IsFront ? "front" : "back") + " side)";
 					
 				default:
 					return "ERROR";

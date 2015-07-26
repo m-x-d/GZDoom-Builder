@@ -74,7 +74,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		private void CheckValues() 
 		{
 			changed = string.IsNullOrEmpty(value1.Text) || string.IsNullOrEmpty(value2.Text) 
-				|| value1.GetResult(defaultValue) != defaultValue || value2.GetResult(defaultValue) != defaultValue;
+				|| value1.GetResult(defaultValue, 0) != defaultValue || value2.GetResult(defaultValue, 0) != defaultValue;
 			bReset.Visible = changed;
 
 			if(!blockUpdate && OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);

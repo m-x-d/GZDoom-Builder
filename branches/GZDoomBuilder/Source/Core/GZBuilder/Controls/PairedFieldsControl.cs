@@ -97,12 +97,12 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		public void ApplyTo(UniFields fields, int min, int max, float oldValue1, float oldValue2) 
 		{
 			if(value1.Text != string.Empty)
-				UDMFTools.SetFloat(fields, field1, General.Clamp(value1.GetResultFloat(defaultValue), min, max), defaultValue);
+				UDMFTools.SetFloat(fields, field1, General.Clamp(value1.GetResultFloat(oldValue1), min, max), defaultValue);
 			else
 				UDMFTools.SetFloat(fields, field1, oldValue1, defaultValue);
 
 			if(value2.Text != string.Empty)
-				UDMFTools.SetFloat(fields, field2, General.Clamp(value2.GetResultFloat(defaultValue), min, max), defaultValue);
+				UDMFTools.SetFloat(fields, field2, General.Clamp(value2.GetResultFloat(oldValue2), min, max), defaultValue);
 			else
 				UDMFTools.SetFloat(fields, field2, oldValue2, defaultValue);
 		}
@@ -110,7 +110,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		private void CheckValues() 
 		{
 			changed = string.IsNullOrEmpty(value1.Text) || string.IsNullOrEmpty(value2.Text)
-				|| value1.GetResultFloat(defaultValue) != defaultValue || value2.GetResultFloat(defaultValue) != defaultValue;
+				|| value1.GetResultFloat(defaultValue, 0) != defaultValue || value2.GetResultFloat(defaultValue, 0) != defaultValue;
 			bReset.Visible = changed;
 
 			if(!blockUpdate && OnValuesChanged != null)	OnValuesChanged(this, EventArgs.Empty);

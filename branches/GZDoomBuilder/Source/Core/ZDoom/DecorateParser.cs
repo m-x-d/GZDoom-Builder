@@ -170,7 +170,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 							break;
 						}
 					}
-					else if((objdeclaration == "const") || (objdeclaration == "native"))
+					else if((objdeclaration == "const") || (objdeclaration == "native") || (objdeclaration == "enum"))
 					{
 						// We don't need this, ignore up to the first next ;
 						while(SkipWhitespace(true))

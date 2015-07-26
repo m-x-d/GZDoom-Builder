@@ -99,7 +99,7 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				// Hangs from ceiling?
 				if(ti.Hangs)
-					zinfo = (t.Position.z - ti.Height) + " (" + ((float)Math.Round(Sector.GetCeilingPlane(t.Sector).GetZ(t.Position) - t.Position.z - ti.Height, General.Map.FormatInterface.VertexDecimals)).ToString(CultureInfo.InvariantCulture) + ")"; //mxd
+					zinfo = t.Position.z + " (" + ((float)Math.Round(Sector.GetCeilingPlane(t.Sector).GetZ(t.Position) - t.Position.z - ti.Height, General.Map.FormatInterface.VertexDecimals)).ToString(CultureInfo.InvariantCulture) + ")"; //mxd
 				else
 					zinfo = t.Position.z + " (" + ((float)Math.Round(Sector.GetFloorPlane(t.Sector).GetZ(t.Position) + t.Position.z, General.Map.FormatInterface.VertexDecimals)).ToString(CultureInfo.InvariantCulture) + ")"; //mxd
 			}

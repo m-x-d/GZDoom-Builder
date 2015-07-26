@@ -111,6 +111,7 @@
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Newsflash (R[rev])!";
+			this.Shown += new System.EventHandler(this.UpdateForm_Shown);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

@@ -668,7 +668,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				string result = string.Join(", ", results.ToArray());
 				int pos = result.LastIndexOf(",");
 				if(pos != -1) result = result.Remove(pos, 1).Insert(pos, " and");
-				General.Interface.DisplayStatus(StatusType.Selection, result + " selected");
+				General.Interface.DisplayStatus(StatusType.Selection, result + " selected.");
 			}
 		}
 
@@ -1937,11 +1937,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			//mxd
 			if((General.Interface.ShiftState || General.Interface.CtrlState) && selectedobjects.Count > 0) 
 			{
-				IVisualEventReceiver[] selection = new IVisualEventReceiver[selectedobjects.Count];
-				selectedobjects.CopyTo(selection);
-
-				foreach(IVisualEventReceiver obj in selection)
-					obj.SelectNeighbours(target.IsSelected(), General.Interface.ShiftState, General.Interface.CtrlState);
+				if(General.Interface.AltState)
+				{
+					target.SelectNeighbours(target.IsSelected(), General.Interface.ShiftState, General.Interface.CtrlState);
+				}
+				else
+				{
+					IVisualEventReceiver[] selection = new IVisualEventReceiver[selectedobjects.Count];
+					selectedobjects.CopyTo(selection);
+					
+					foreach(IVisualEventReceiver obj in selection)
+						obj.SelectNeighbours(target.IsSelected(), General.Interface.ShiftState, General.Interface.CtrlState);
+				}
 			}
 
 			Renderer.ShowSelection = true;

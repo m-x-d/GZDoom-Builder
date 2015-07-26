@@ -841,6 +841,7 @@ namespace CodeImp.DoomBuilder.Windows
 				case StatusType.Info:
 					if(!newstatus.displayed)
 					{
+						newstatus.message = selectionInfo + " " + newstatus.message; //mxd
 						statusresetter.Interval = INFO_RESET_DELAY;
 						statusresetter.Start();
 					}
@@ -850,6 +851,7 @@ namespace CodeImp.DoomBuilder.Windows
 				case StatusType.Action:
 					if(!newstatus.displayed)
 					{
+						newstatus.message = selectionInfo + " " + newstatus.message; //mxd
 						statusflashicon = true;
 						statusflasher.Interval = ACTION_FLASH_INTERVAL;
 						statusflashcount = ACTION_FLASH_COUNT;
@@ -863,6 +865,7 @@ namespace CodeImp.DoomBuilder.Windows
 				case StatusType.Warning:
 					if(!newstatus.displayed)
 					{
+						newstatus.message = selectionInfo + " " + newstatus.message; //mxd
 						MessageBeep(MessageBeepType.Warning);
 						statusflasher.Interval = WARNING_FLASH_INTERVAL;
 						statusflashcount = WARNING_FLASH_COUNT;
@@ -876,8 +879,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// Update status description
 			status = newstatus;
 			status.displayed = true;
-			if(statuslabel.Text != status.message)
-				statuslabel.Text = status.message;
+			statuslabel.Text = status.message;
 			
 			// Update icon as well
 			UpdateStatusIcon();
@@ -2770,7 +2772,7 @@ namespace CodeImp.DoomBuilder.Windows
 		//mxd. Check updates clicked
 		private void itemhelpcheckupdates_Click(object sender, EventArgs e)
 		{
-			UpdateChecker.PerformCheck();
+			UpdateChecker.PerformCheck(true);
 		}
 		
 		// About clicked

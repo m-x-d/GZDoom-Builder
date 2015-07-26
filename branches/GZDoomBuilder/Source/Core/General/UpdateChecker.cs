@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Windows.Forms;
 using System.Xml;
 
 namespace CodeImp.DoomBuilder
@@ -11,16 +12,25 @@ namespace CodeImp.DoomBuilder
 	{
 		private static BackgroundWorker worker;
 		private static string errordesc;
-		
-		internal static void PerformCheck()
+		private static bool verbose;
+
+		internal static void PerformCheck(bool verbosemode)
 		{
 			if(worker != null && worker.IsBusy)
 			{
-				General.ErrorLogger.Add(ErrorType.Warning, "Update check is already running!");
-				General.MainWindow.ShowErrors();
+				if(verbosemode)
+				{
+					General.ShowWarningMessage("Update check is already running!", MessageBoxButtons.OK);
+				}
+				else
+				{
+					General.ErrorLogger.Add(ErrorType.Warning, "Update check is already running!");
+					General.MainWindow.ShowErrors();
+				}
 				return;
 			}
-			
+
+			verbose = verbosemode;
 			worker = new BackgroundWorker();
 			worker.DoWork += DoWork;
 			worker.RunWorkerCompleted += RunWorkerCompleted;
@@ -81,6 +91,10 @@ namespace CodeImp.DoomBuilder
 				// Pass data to MainForm
 				General.MainWindow.UpdateAvailable(remoterev, changelog);
 			}
+			else if(verbose)
+			{
+				errordesc = "Your version is up to date";
+			}
 		}
 
 		private static void RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs runWorkerCompletedEventArgs)
@@ -88,8 +102,15 @@ namespace CodeImp.DoomBuilder
 			worker = null;
 			if(!string.IsNullOrEmpty(errordesc))
 			{
-				General.ErrorLogger.Add(ErrorType.Warning, errordesc);
-				General.MainWindow.ShowErrors();
+				if(verbose)
+				{
+					General.ShowWarningMessage(errordesc, MessageBoxButtons.OK);
+				}
+				else
+				{
+					General.ErrorLogger.Add(ErrorType.Warning, errordesc);
+					General.MainWindow.ShowErrors();
+				}
 			}
 		}
 
