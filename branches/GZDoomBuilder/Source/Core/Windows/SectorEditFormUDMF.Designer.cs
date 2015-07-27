@@ -40,7 +40,6 @@
 			System.Windows.Forms.Label label15;
 			System.Windows.Forms.Label label6;
 			System.Windows.Forms.Label label5;
-			this.tagSelector = new CodeImp.DoomBuilder.GZBuilder.Controls.TagSelector();
 			this.soundsequence = new System.Windows.Forms.ComboBox();
 			this.resetsoundsequence = new System.Windows.Forms.Button();
 			this.fadeColor = new CodeImp.DoomBuilder.GZBuilder.Controls.ColorFieldsControl();
@@ -100,12 +99,13 @@
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
 			this.ceilingslopecontrol = new CodeImp.DoomBuilder.Controls.SectorSlopeControl();
 			this.tabcomment = new System.Windows.Forms.TabPage();
+			this.commenteditor = new CodeImp.DoomBuilder.Controls.CommentEditor();
 			this.tabcustom = new System.Windows.Forms.TabPage();
 			this.fieldslist = new CodeImp.DoomBuilder.Controls.FieldsEditorControl();
 			this.cancel = new System.Windows.Forms.Button();
 			this.apply = new System.Windows.Forms.Button();
 			this.tooltip = new System.Windows.Forms.ToolTip(this.components);
-			this.commenteditor = new CodeImp.DoomBuilder.Controls.CommentEditor();
+			this.tagsselector = new CodeImp.DoomBuilder.GZBuilder.Controls.TagsSelector();
 			groupaction = new System.Windows.Forms.GroupBox();
 			groupeffect = new System.Windows.Forms.GroupBox();
 			label14 = new System.Windows.Forms.Label();
@@ -137,20 +137,13 @@
 			// 
 			groupaction.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			groupaction.Controls.Add(this.tagSelector);
-			groupaction.Location = new System.Drawing.Point(7, 341);
+			groupaction.Controls.Add(this.tagsselector);
+			groupaction.Location = new System.Drawing.Point(7, 327);
 			groupaction.Name = "groupaction";
-			groupaction.Size = new System.Drawing.Size(490, 71);
+			groupaction.Size = new System.Drawing.Size(490, 85);
 			groupaction.TabIndex = 2;
 			groupaction.TabStop = false;
 			groupaction.Text = " Identification ";
-			// 
-			// tagSelector
-			// 
-			this.tagSelector.Location = new System.Drawing.Point(6, 21);
-			this.tagSelector.Name = "tagSelector";
-			this.tagSelector.Size = new System.Drawing.Size(478, 35);
-			this.tagSelector.TabIndex = 0;
 			// 
 			// groupeffect
 			// 
@@ -172,7 +165,7 @@
 			groupeffect.Controls.Add(label8);
 			groupeffect.Location = new System.Drawing.Point(7, 160);
 			groupeffect.Name = "groupeffect";
-			groupeffect.Size = new System.Drawing.Size(490, 175);
+			groupeffect.Size = new System.Drawing.Size(490, 161);
 			groupeffect.TabIndex = 1;
 			groupeffect.TabStop = false;
 			groupeffect.Text = " Effects ";
@@ -203,7 +196,7 @@
 			this.fadeColor.DefaultValue = 0;
 			this.fadeColor.Field = "fadecolor";
 			this.fadeColor.Label = "Fade:";
-			this.fadeColor.Location = new System.Drawing.Point(241, 111);
+			this.fadeColor.Location = new System.Drawing.Point(241, 104);
 			this.fadeColor.Name = "fadeColor";
 			this.fadeColor.Size = new System.Drawing.Size(207, 31);
 			this.fadeColor.TabIndex = 30;
@@ -214,7 +207,7 @@
 			this.lightColor.DefaultValue = 16777215;
 			this.lightColor.Field = "lightcolor";
 			this.lightColor.Label = "Light:";
-			this.lightColor.Location = new System.Drawing.Point(241, 82);
+			this.lightColor.Location = new System.Drawing.Point(241, 77);
 			this.lightColor.Name = "lightColor";
 			this.lightColor.Size = new System.Drawing.Size(207, 29);
 			this.lightColor.TabIndex = 29;
@@ -231,7 +224,7 @@
 			this.brightness.ButtonStepSmall = 1F;
 			this.brightness.ButtonStepsUseModifierKeys = true;
 			this.brightness.ButtonStepsWrapAround = false;
-			this.brightness.Location = new System.Drawing.Point(125, 84);
+			this.brightness.Location = new System.Drawing.Point(125, 79);
 			this.brightness.Name = "brightness";
 			this.brightness.Size = new System.Drawing.Size(81, 24);
 			this.brightness.StepValues = null;
@@ -249,7 +242,7 @@
 			this.desaturation.ButtonStepSmall = 0.01F;
 			this.desaturation.ButtonStepsUseModifierKeys = true;
 			this.desaturation.ButtonStepsWrapAround = false;
-			this.desaturation.Location = new System.Drawing.Point(125, 142);
+			this.desaturation.Location = new System.Drawing.Point(125, 131);
 			this.desaturation.Name = "desaturation";
 			this.desaturation.Size = new System.Drawing.Size(81, 24);
 			this.desaturation.StepValues = null;
@@ -267,7 +260,7 @@
 			// label9
 			// 
 			label9.AutoSize = true;
-			label9.Location = new System.Drawing.Point(57, 89);
+			label9.Location = new System.Drawing.Point(57, 84);
 			label9.Name = "label9";
 			label9.Size = new System.Drawing.Size(59, 13);
 			label9.TabIndex = 2;
@@ -275,7 +268,7 @@
 			// 
 			// label13
 			// 
-			label13.Location = new System.Drawing.Point(45, 147);
+			label13.Location = new System.Drawing.Point(45, 136);
 			label13.Name = "label13";
 			label13.Size = new System.Drawing.Size(74, 14);
 			label13.TabIndex = 27;
@@ -293,7 +286,7 @@
 			this.gravity.ButtonStepSmall = 0.01F;
 			this.gravity.ButtonStepsUseModifierKeys = true;
 			this.gravity.ButtonStepsWrapAround = false;
-			this.gravity.Location = new System.Drawing.Point(125, 112);
+			this.gravity.Location = new System.Drawing.Point(125, 105);
 			this.gravity.Name = "gravity";
 			this.gravity.Size = new System.Drawing.Size(81, 24);
 			this.gravity.StepValues = null;
@@ -301,7 +294,7 @@
 			// 
 			// label2
 			// 
-			label2.Location = new System.Drawing.Point(45, 117);
+			label2.Location = new System.Drawing.Point(45, 110);
 			label2.Name = "label2";
 			label2.Size = new System.Drawing.Size(74, 14);
 			label2.TabIndex = 23;
@@ -590,7 +583,7 @@
 			// 
 			// floorAngleControl
 			// 
-			this.floorAngleControl.Angle = -180;
+			this.floorAngleControl.Angle = -270;
 			this.floorAngleControl.AngleOffset = 90;
 			this.floorAngleControl.Location = new System.Drawing.Point(6, 132);
 			this.floorAngleControl.Name = "floorAngleControl";
@@ -824,7 +817,7 @@
 			// 
 			// ceilAngleControl
 			// 
-			this.ceilAngleControl.Angle = -180;
+			this.ceilAngleControl.Angle = -270;
 			this.ceilAngleControl.AngleOffset = 90;
 			this.ceilAngleControl.Location = new System.Drawing.Point(6, 132);
 			this.ceilAngleControl.Name = "ceilAngleControl";
@@ -1065,6 +1058,13 @@
 			this.tabcomment.Text = "Comment";
 			this.tabcomment.UseVisualStyleBackColor = true;
 			// 
+			// commenteditor
+			// 
+			this.commenteditor.Location = new System.Drawing.Point(3, 3);
+			this.commenteditor.Name = "commenteditor";
+			this.commenteditor.Size = new System.Drawing.Size(497, 413);
+			this.commenteditor.TabIndex = 0;
+			// 
 			// tabcustom
 			// 
 			this.tabcustom.Controls.Add(this.fieldslist);
@@ -1127,12 +1127,12 @@
 			this.tooltip.InitialDelay = 10;
 			this.tooltip.ReshowDelay = 100;
 			// 
-			// commenteditor
+			// tagsselector
 			// 
-			this.commenteditor.Location = new System.Drawing.Point(3, 3);
-			this.commenteditor.Name = "commenteditor";
-			this.commenteditor.Size = new System.Drawing.Size(497, 413);
-			this.commenteditor.TabIndex = 0;
+			this.tagsselector.Location = new System.Drawing.Point(6, 21);
+			this.tagsselector.Name = "tagsselector";
+			this.tagsselector.Size = new System.Drawing.Size(478, 60);
+			this.tagsselector.TabIndex = 0;
 			// 
 			// SectorEditFormUDMF
 			// 
@@ -1181,7 +1181,6 @@
 
 		private System.Windows.Forms.TabControl tabs;
 		private System.Windows.Forms.TabPage tabproperties;
-		private CodeImp.DoomBuilder.GZBuilder.Controls.TagSelector tagSelector;
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox brightness;
 		private System.Windows.Forms.Button browseeffect;
 		private CodeImp.DoomBuilder.Controls.ActionSelectorControl effect;
@@ -1245,5 +1244,6 @@
 		private System.Windows.Forms.ComboBox soundsequence;
 		private System.Windows.Forms.TabPage tabcomment;
 		private CodeImp.DoomBuilder.Controls.CommentEditor commenteditor;
+		private CodeImp.DoomBuilder.GZBuilder.Controls.TagsSelector tagsselector;
 	}
 }

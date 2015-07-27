@@ -299,7 +299,7 @@ namespace CodeImp.DoomBuilder.IO
 					if(Vector2D.ManhattanDistance(vertexlink[v1].Position, vertexlink[v2].Position) > 0.0001f)
 					{
 						Linedef l = map.CreateLinedef(vertexlink[v1], vertexlink[v2]);
-						l.Update(stringflags, (flags & manager.Config.LinedefActivationsFilter), 0, action, args);
+						l.Update(stringflags, (flags & manager.Config.LinedefActivationsFilter), new List<int> { 0 }, action, args);
 						l.UpdateCache();
 
 						Sidedef s;

@@ -280,12 +280,16 @@
 			// 
 			// labelGravity
 			// 
+			this.labelGravity.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.labelGravity.ForeColor = System.Drawing.SystemColors.HotTrack;
 			this.labelGravity.Location = new System.Drawing.Point(52, 27);
 			this.labelGravity.Name = "labelGravity";
 			this.labelGravity.Size = new System.Drawing.Size(50, 14);
 			this.labelGravity.TabIndex = 18;
 			this.labelGravity.Text = "Gravity:";
 			this.labelGravity.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.tooltip.SetToolTip(this.labelGravity, "Positive values are multiplied with the class\'s property.\r\nNegative values are us" +
+					"ed as their absolute.\r\nDefault is 1.0.");
 			// 
 			// label7
 			// 
@@ -350,7 +354,7 @@
 			// 
 			this.missingflags.BackColor = System.Drawing.SystemColors.Window;
 			this.missingflags.Image = global::CodeImp.DoomBuilder.Properties.Resources.Warning;
-			this.missingflags.Location = new System.Drawing.Point(42, -1);
+			this.missingflags.Location = new System.Drawing.Point(42, -2);
 			this.missingflags.Name = "missingflags";
 			this.missingflags.Size = new System.Drawing.Size(16, 16);
 			this.missingflags.TabIndex = 5;
@@ -606,12 +610,16 @@
 			// 
 			// label10
 			// 
+			this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.label10.ForeColor = System.Drawing.SystemColors.HotTrack;
 			this.label10.Location = new System.Drawing.Point(52, 91);
 			this.label10.Name = "label10";
 			this.label10.Size = new System.Drawing.Size(50, 14);
 			this.label10.TabIndex = 22;
 			this.label10.Text = "Health:";
 			this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			this.tooltip.SetToolTip(this.label10, "Positive values are multiplied with the class\'s property.\r\nNegative values are us" +
+					"ed as their absolute.\r\nDefault is 1.");
 			// 
 			// score
 			// 
@@ -918,6 +926,13 @@
 			this.hintlabel.Size = new System.Drawing.Size(365, 13);
 			this.hintlabel.TabIndex = 4;
 			this.hintlabel.Text = "Select categories or several thing types to randomly assign them to selection";
+			// 
+			// tooltip
+			// 
+			this.tooltip.AutomaticDelay = 10;
+			this.tooltip.AutoPopDelay = 10000;
+			this.tooltip.InitialDelay = 10;
+			this.tooltip.ReshowDelay = 100;
 			// 
 			// ThingEditFormUDMF
 			// 

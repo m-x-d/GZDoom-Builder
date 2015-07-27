@@ -193,6 +193,17 @@ namespace CodeImp.DoomBuilder.IO
 				coll.Add("v1", vertexids[l.Start]);
 				coll.Add("v2", vertexids[l.End]);
 				coll.Comment = l.Index.ToString();
+
+				//mxd. MoreIDs
+				if(l.Tags.Count > 1) //first entry is saved as "id"
+				{
+					string[] moreidscol = new string[l.Tags.Count - 1];
+					for(int i = 1; i < l.Tags.Count; i++)
+					{
+						moreidscol[i - 1] = l.Tags[i].ToString();
+					}
+					coll.Add("moreids", string.Join(",", moreidscol));
+				}
 				
 				// Sidedef references
 				if((l.Front != null) && sidedefids.ContainsKey(l.Front))
@@ -269,6 +280,17 @@ namespace CodeImp.DoomBuilder.IO
 				if(s.Effect != 0) coll.Add("special", s.Effect);
 				if(s.Tag != 0) coll.Add("id", s.Tag);
 				coll.Comment = s.Index.ToString();
+
+				//mxd. MoreIDs
+				if(s.Tags.Count > 1) //first entry is saved as "id"
+				{
+					string[] moreidscol = new string[s.Tags.Count - 1];
+					for(int i = 1; i < s.Tags.Count; i++) 
+					{
+						moreidscol[i - 1] = s.Tags[i].ToString();
+					}
+					coll.Add("moreids", string.Join(",", moreidscol));
+				}
 
 				//mxd. Slopes
 				if (s.FloorSlope.GetLengthSq() > 0) 

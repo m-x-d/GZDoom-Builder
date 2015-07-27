@@ -2802,6 +2802,23 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		//mxd
+		/// <summary>This returns the next unused tag number.</summary>
+		public int GetNewTag(List<int> moreusedtags)
+		{
+			Dictionary<int, bool> usedtags = new Dictionary<int, bool>();
+			foreach(int t in moreusedtags) if(!usedtags.ContainsKey(t)) usedtags.Add(t, true); 
+			ForAllTags(NewTagHandler, false, usedtags);
+			ForAllTags(NewTagHandler, true, usedtags);
+
+			// Now find the first unused index
+			for(int i = 1; i <= General.Map.FormatInterface.MaxTag; i++)
+				if(!usedtags.ContainsKey(i)) return i;
+
+			// All tags used!
+			return 0;
+		}
+
+		//mxd
 		/// <summary>This returns the tag number, which is not used by any map element of given type. This method doesn't check action arguments!</summary>
 		public int GetNewTag(UniversalType elementType) 
 		{

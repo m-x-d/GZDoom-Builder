@@ -36,7 +36,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		private List<TagInfo> infos;
 		private bool valid;
 		private int tag;
-		private UniversalType elementType;
+		private UniversalType elementtype;
 		private int rangemode; //0 - none, 1 - positive (>=), -1 - negative (<=)
 		private int offsetmode; //0 - none, 1 - positive (++), -1 - negative (--)
 
@@ -53,37 +53,50 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 
 		#region ================== Methods
 
-		public void Setup(UniversalType elementType) 
+		public void Setup(UniversalType mapelementtype) 
 		{
 			tags = new List<int>();
 			infos = new List<TagInfo>();
-			this.elementType = elementType;
+			this.elementtype = mapelementtype;
 
-			//collect used tags from sectors...
-			foreach(Sector s in General.Map.Map.Sectors) 
+			//collect used tags from appropriate element type...
+			switch(elementtype)
 			{
-				if(s.Tag == 0 || tags.Contains(s.Tag)) continue;
-				tags.Add(s.Tag);
-			}
+				case UniversalType.SectorTag:
+					foreach(Sector s in General.Map.Map.Sectors)
+					{
+						foreach(int t in s.Tags)
+						{
+							if(t == 0 || tags.Contains(t)) continue;
+							tags.Add(t);
+						}
+					}
+					break;
 
-			//...and linedefs...
-			if(General.Map.FormatInterface.HasLinedefTag) 
-			{
-				foreach(Linedef l in General.Map.Map.Linedefs) 
-				{
-					if(l.Tag == 0 || tags.Contains(l.Tag)) continue;
-					tags.Add(l.Tag);
-				}
-			}
+				case UniversalType.LinedefTag:
+					if(General.Map.FormatInterface.HasLinedefTag)
+					{
+						foreach(Linedef l in General.Map.Map.Linedefs)
+						{
+							foreach(int t in l.Tags)
+							{
+								if(t == 0 || tags.Contains(t)) continue;
+								tags.Add(t);
+							}
+						}
+					}
+					break;
 
-			//...and things...
-			if(General.Map.FormatInterface.HasThingTag) 
-			{
-				foreach(Thing t in General.Map.Map.Things) 
-				{
-					if(t.Tag == 0 || tags.Contains(t.Tag)) continue;
-					tags.Add(t.Tag);
-				}
+				case UniversalType.ThingTag:
+					if(General.Map.FormatInterface.HasThingTag)
+					{
+						foreach(Thing t in General.Map.Map.Things)
+						{
+							if(t.Tag == 0 || tags.Contains(t.Tag)) continue;
+							tags.Add(t.Tag);
+						}
+					}
+					break;
 			}
 
 			//now sort them in descending order
@@ -224,7 +237,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 
 		private void unusedTag_Click(object sender, EventArgs e) 
 		{
-			tag = General.Map.Map.GetNewTag(elementType);
+			tag = General.Map.Map.GetNewTag(elementtype);
 			cbTagPicker.SelectedIndex = -1;
 			cbTagPicker.Text = tag.ToString();
 			valid = true;
