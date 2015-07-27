@@ -59,8 +59,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.mode = mode;
 
 			//mxd
-			if(General.Map.UDMF) preciseposition.Checked = mode.UsePrecisePosition;
-			else preciseposition.Enabled = false;
+			if(General.Map.UDMF)
+			{
+				preciseposition.Checked = mode.UsePrecisePosition;
+				preciseposition.Enabled = true;
+				preciseposition.CheckedChanged += preciseposition_CheckedChanged;
+			}
+			else
+			{
+				preciseposition.Checked = false;
+				preciseposition.Enabled = false;
+			}
 		}
 		
 		#endregion
@@ -356,6 +365,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private void preciseposition_CheckedChanged(object sender, EventArgs e) 
 		{
 			mode.UsePrecisePosition = preciseposition.Checked;
+			General.Interface.FocusDisplay();
 		}
 		
 		#endregion

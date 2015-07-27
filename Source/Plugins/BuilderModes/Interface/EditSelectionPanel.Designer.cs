@@ -30,12 +30,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			this.components = new System.ComponentModel.Container();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.preciseposition = new System.Windows.Forms.CheckBox();
 			this.orgposy = new System.Windows.Forms.Button();
 			this.orgposx = new System.Windows.Forms.Button();
 			this.label16 = new System.Windows.Forms.Label();
 			this.label19 = new System.Windows.Forms.Label();
 			this.label6 = new System.Windows.Forms.Label();
 			this.label5 = new System.Windows.Forms.Label();
+			this.relposy = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
+			this.relposx = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
+			this.absposy = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
+			this.absposx = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.label2 = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
@@ -45,7 +50,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.label9 = new System.Windows.Forms.Label();
 			this.label8 = new System.Windows.Forms.Label();
 			this.label7 = new System.Windows.Forms.Label();
+			this.relsizey = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
+			this.relsizex = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.label4 = new System.Windows.Forms.Label();
+			this.abssizey = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
+			this.abssizex = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.label3 = new System.Windows.Forms.Label();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
 			this.label14 = new System.Windows.Forms.Label();
@@ -53,6 +62,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.fliph = new System.Windows.Forms.Button();
 			this.label13 = new System.Windows.Forms.Label();
 			this.label11 = new System.Windows.Forms.Label();
+			this.absrot = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.ceiltexgroup = new System.Windows.Forms.GroupBox();
 			this.ceiltexoffset = new System.Windows.Forms.CheckBox();
 			this.ceiltexrotation = new System.Windows.Forms.CheckBox();
@@ -63,17 +73,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.floortexscale = new System.Windows.Forms.CheckBox();
 			this.floortexall = new System.Windows.Forms.CheckBox();
 			this.floortexgroup = new System.Windows.Forms.GroupBox();
-			this.preciseposition = new System.Windows.Forms.CheckBox();
 			this.tooltip = new System.Windows.Forms.ToolTip(this.components);
-			this.absrot = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
-			this.relsizey = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
-			this.relsizex = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
-			this.abssizey = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
-			this.abssizex = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
-			this.relposy = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
-			this.relposx = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
-			this.absposy = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
-			this.absposx = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -104,6 +104,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = "Position:";
+			// 
+			// preciseposition
+			// 
+			this.preciseposition.AutoSize = true;
+			this.preciseposition.Location = new System.Drawing.Point(58, 115);
+			this.preciseposition.Name = "preciseposition";
+			this.preciseposition.Size = new System.Drawing.Size(146, 17);
+			this.preciseposition.TabIndex = 36;
+			this.preciseposition.Text = "High precision positioning";
+			this.tooltip.SetToolTip(this.preciseposition, "When checked, thing and vertex positions will be set using floating point precisi" +
+					"on.\r\nOtherwise, they will be rounded to the nearest integer.");
+			this.preciseposition.UseVisualStyleBackColor = true;
 			// 
 			// orgposy
 			// 
@@ -162,6 +174,90 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.label5.Size = new System.Drawing.Size(21, 13);
 			this.label5.TabIndex = 12;
 			this.label5.Text = "mp";
+			// 
+			// relposy
+			// 
+			this.relposy.AllowDecimal = true;
+			this.relposy.AllowNegative = true;
+			this.relposy.AllowRelative = true;
+			this.relposy.ButtonStep = 1;
+			this.relposy.ButtonStepBig = 10F;
+			this.relposy.ButtonStepFloat = 1F;
+			this.relposy.ButtonStepSmall = 0.1F;
+			this.relposy.ButtonStepsUseModifierKeys = false;
+			this.relposy.ButtonStepsWrapAround = false;
+			this.relposy.Location = new System.Drawing.Point(136, 83);
+			this.relposy.Name = "relposy";
+			this.relposy.Size = new System.Drawing.Size(72, 24);
+			this.relposy.StepValues = null;
+			this.relposy.TabIndex = 11;
+			this.relposy.WhenEnterPressed += new System.EventHandler(this.relposy_Validated);
+			this.relposy.Validated += new System.EventHandler(this.relposy_Validated);
+			this.relposy.WhenButtonsClicked += new System.EventHandler(this.relposy_Validated);
+			this.relposy.WhenTextChanged += new System.EventHandler(this.WhenTextChanged);
+			// 
+			// relposx
+			// 
+			this.relposx.AllowDecimal = true;
+			this.relposx.AllowNegative = true;
+			this.relposx.AllowRelative = true;
+			this.relposx.ButtonStep = 1;
+			this.relposx.ButtonStepBig = 10F;
+			this.relposx.ButtonStepFloat = 1F;
+			this.relposx.ButtonStepSmall = 0.1F;
+			this.relposx.ButtonStepsUseModifierKeys = false;
+			this.relposx.ButtonStepsWrapAround = false;
+			this.relposx.Location = new System.Drawing.Point(58, 83);
+			this.relposx.Name = "relposx";
+			this.relposx.Size = new System.Drawing.Size(72, 24);
+			this.relposx.StepValues = null;
+			this.relposx.TabIndex = 10;
+			this.relposx.WhenEnterPressed += new System.EventHandler(this.relposx_Validated);
+			this.relposx.Validated += new System.EventHandler(this.relposx_Validated);
+			this.relposx.WhenButtonsClicked += new System.EventHandler(this.relposx_Validated);
+			this.relposx.WhenTextChanged += new System.EventHandler(this.WhenTextChanged);
+			// 
+			// absposy
+			// 
+			this.absposy.AllowDecimal = true;
+			this.absposy.AllowNegative = true;
+			this.absposy.AllowRelative = true;
+			this.absposy.ButtonStep = 1;
+			this.absposy.ButtonStepBig = 10F;
+			this.absposy.ButtonStepFloat = 1F;
+			this.absposy.ButtonStepSmall = 0.1F;
+			this.absposy.ButtonStepsUseModifierKeys = false;
+			this.absposy.ButtonStepsWrapAround = false;
+			this.absposy.Location = new System.Drawing.Point(136, 53);
+			this.absposy.Name = "absposy";
+			this.absposy.Size = new System.Drawing.Size(72, 24);
+			this.absposy.StepValues = null;
+			this.absposy.TabIndex = 9;
+			this.absposy.WhenEnterPressed += new System.EventHandler(this.absposy_Validated);
+			this.absposy.Validated += new System.EventHandler(this.absposy_Validated);
+			this.absposy.WhenButtonsClicked += new System.EventHandler(this.absposy_Validated);
+			this.absposy.WhenTextChanged += new System.EventHandler(this.WhenTextChanged);
+			// 
+			// absposx
+			// 
+			this.absposx.AllowDecimal = true;
+			this.absposx.AllowNegative = true;
+			this.absposx.AllowRelative = true;
+			this.absposx.ButtonStep = 1;
+			this.absposx.ButtonStepBig = 10F;
+			this.absposx.ButtonStepFloat = 1F;
+			this.absposx.ButtonStepSmall = 0.1F;
+			this.absposx.ButtonStepsUseModifierKeys = false;
+			this.absposx.ButtonStepsWrapAround = false;
+			this.absposx.Location = new System.Drawing.Point(58, 53);
+			this.absposx.Name = "absposx";
+			this.absposx.Size = new System.Drawing.Size(72, 24);
+			this.absposx.StepValues = null;
+			this.absposx.TabIndex = 8;
+			this.absposx.WhenEnterPressed += new System.EventHandler(this.absposx_Validated);
+			this.absposx.Validated += new System.EventHandler(this.absposx_Validated);
+			this.absposx.WhenButtonsClicked += new System.EventHandler(this.absposx_Validated);
+			this.absposx.WhenTextChanged += new System.EventHandler(this.WhenTextChanged);
 			// 
 			// label2
 			// 
@@ -262,6 +358,48 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.label7.TabIndex = 16;
 			this.label7.Text = "mp";
 			// 
+			// relsizey
+			// 
+			this.relsizey.AllowDecimal = true;
+			this.relsizey.AllowNegative = true;
+			this.relsizey.AllowRelative = true;
+			this.relsizey.ButtonStep = 1;
+			this.relsizey.ButtonStepBig = 10F;
+			this.relsizey.ButtonStepFloat = 1F;
+			this.relsizey.ButtonStepSmall = 0.1F;
+			this.relsizey.ButtonStepsUseModifierKeys = false;
+			this.relsizey.ButtonStepsWrapAround = false;
+			this.relsizey.Location = new System.Drawing.Point(136, 83);
+			this.relsizey.Name = "relsizey";
+			this.relsizey.Size = new System.Drawing.Size(72, 24);
+			this.relsizey.StepValues = null;
+			this.relsizey.TabIndex = 15;
+			this.relsizey.WhenEnterPressed += new System.EventHandler(this.relsizey_Validated);
+			this.relsizey.Validated += new System.EventHandler(this.relsizey_Validated);
+			this.relsizey.WhenButtonsClicked += new System.EventHandler(this.relsizey_Validated);
+			this.relsizey.WhenTextChanged += new System.EventHandler(this.WhenTextChanged);
+			// 
+			// relsizex
+			// 
+			this.relsizex.AllowDecimal = true;
+			this.relsizex.AllowNegative = true;
+			this.relsizex.AllowRelative = true;
+			this.relsizex.ButtonStep = 1;
+			this.relsizex.ButtonStepBig = 10F;
+			this.relsizex.ButtonStepFloat = 1F;
+			this.relsizex.ButtonStepSmall = 0.1F;
+			this.relsizex.ButtonStepsUseModifierKeys = false;
+			this.relsizex.ButtonStepsWrapAround = false;
+			this.relsizex.Location = new System.Drawing.Point(58, 83);
+			this.relsizex.Name = "relsizex";
+			this.relsizex.Size = new System.Drawing.Size(72, 24);
+			this.relsizex.StepValues = null;
+			this.relsizex.TabIndex = 14;
+			this.relsizex.WhenEnterPressed += new System.EventHandler(this.relsizex_Validated);
+			this.relsizex.Validated += new System.EventHandler(this.relsizex_Validated);
+			this.relsizex.WhenButtonsClicked += new System.EventHandler(this.relsizex_Validated);
+			this.relsizex.WhenTextChanged += new System.EventHandler(this.WhenTextChanged);
+			// 
 			// label4
 			// 
 			this.label4.AutoSize = true;
@@ -270,6 +408,48 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.label4.Size = new System.Drawing.Size(37, 13);
 			this.label4.TabIndex = 13;
 			this.label4.Text = "Scale:";
+			// 
+			// abssizey
+			// 
+			this.abssizey.AllowDecimal = true;
+			this.abssizey.AllowNegative = true;
+			this.abssizey.AllowRelative = true;
+			this.abssizey.ButtonStep = 1;
+			this.abssizey.ButtonStepBig = 10F;
+			this.abssizey.ButtonStepFloat = 1F;
+			this.abssizey.ButtonStepSmall = 0.1F;
+			this.abssizey.ButtonStepsUseModifierKeys = false;
+			this.abssizey.ButtonStepsWrapAround = false;
+			this.abssizey.Location = new System.Drawing.Point(136, 53);
+			this.abssizey.Name = "abssizey";
+			this.abssizey.Size = new System.Drawing.Size(72, 24);
+			this.abssizey.StepValues = null;
+			this.abssizey.TabIndex = 12;
+			this.abssizey.WhenEnterPressed += new System.EventHandler(this.abssizey_Validated);
+			this.abssizey.Validated += new System.EventHandler(this.abssizey_Validated);
+			this.abssizey.WhenButtonsClicked += new System.EventHandler(this.abssizey_Validated);
+			this.abssizey.WhenTextChanged += new System.EventHandler(this.WhenTextChanged);
+			// 
+			// abssizex
+			// 
+			this.abssizex.AllowDecimal = true;
+			this.abssizex.AllowNegative = true;
+			this.abssizex.AllowRelative = true;
+			this.abssizex.ButtonStep = 1;
+			this.abssizex.ButtonStepBig = 10F;
+			this.abssizex.ButtonStepFloat = 1F;
+			this.abssizex.ButtonStepSmall = 0.1F;
+			this.abssizex.ButtonStepsUseModifierKeys = false;
+			this.abssizex.ButtonStepsWrapAround = false;
+			this.abssizex.Location = new System.Drawing.Point(58, 53);
+			this.abssizex.Name = "abssizex";
+			this.abssizex.Size = new System.Drawing.Size(72, 24);
+			this.abssizex.StepValues = null;
+			this.abssizex.TabIndex = 11;
+			this.abssizex.WhenEnterPressed += new System.EventHandler(this.abssizex_Validated);
+			this.abssizex.Validated += new System.EventHandler(this.abssizex_Validated);
+			this.abssizex.WhenButtonsClicked += new System.EventHandler(this.abssizex_Validated);
+			this.abssizex.WhenTextChanged += new System.EventHandler(this.WhenTextChanged);
 			// 
 			// label3
 			// 
@@ -345,6 +525,27 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.label11.Size = new System.Drawing.Size(13, 13);
 			this.label11.TabIndex = 22;
 			this.label11.Text = "º";
+			// 
+			// absrot
+			// 
+			this.absrot.AllowDecimal = true;
+			this.absrot.AllowNegative = true;
+			this.absrot.AllowRelative = true;
+			this.absrot.ButtonStep = 1;
+			this.absrot.ButtonStepBig = 10F;
+			this.absrot.ButtonStepFloat = 1F;
+			this.absrot.ButtonStepSmall = 0.1F;
+			this.absrot.ButtonStepsUseModifierKeys = false;
+			this.absrot.ButtonStepsWrapAround = false;
+			this.absrot.Location = new System.Drawing.Point(58, 23);
+			this.absrot.Name = "absrot";
+			this.absrot.Size = new System.Drawing.Size(82, 24);
+			this.absrot.StepValues = null;
+			this.absrot.TabIndex = 24;
+			this.absrot.WhenEnterPressed += new System.EventHandler(this.absrot_Validated);
+			this.absrot.Validated += new System.EventHandler(this.absrot_Validated);
+			this.absrot.WhenButtonsClicked += new System.EventHandler(this.absrot_Validated);
+			this.absrot.WhenTextChanged += new System.EventHandler(this.WhenTextChanged);
 			// 
 			// ceiltexgroup
 			// 
@@ -461,208 +662,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.floortexgroup.TabIndex = 38;
 			this.floortexgroup.TabStop = false;
 			this.floortexgroup.Text = "  ";
-			// 
-			// preciseposition
-			// 
-			this.preciseposition.AutoSize = true;
-			this.preciseposition.Location = new System.Drawing.Point(58, 115);
-			this.preciseposition.Name = "preciseposition";
-			this.preciseposition.Size = new System.Drawing.Size(146, 17);
-			this.preciseposition.TabIndex = 36;
-			this.preciseposition.Text = "High precision positioning";
-			this.tooltip.SetToolTip(this.preciseposition, "When checked, thing and vertex positions will be set using floating point precisi" +
-					"on.\r\nOtherwise, they will be rounded to the nearest integer.");
-			this.preciseposition.UseVisualStyleBackColor = true;
-			this.preciseposition.CheckedChanged += new System.EventHandler(this.preciseposition_CheckedChanged);
-			// 
-			// absrot
-			// 
-			this.absrot.AllowDecimal = true;
-			this.absrot.AllowNegative = true;
-			this.absrot.AllowRelative = true;
-			this.absrot.ButtonStep = 1;
-			this.absrot.ButtonStepBig = 10F;
-			this.absrot.ButtonStepFloat = 1F;
-			this.absrot.ButtonStepSmall = 0.1F;
-			this.absrot.ButtonStepsUseModifierKeys = false;
-			this.absrot.ButtonStepsWrapAround = false;
-			this.absrot.Location = new System.Drawing.Point(58, 23);
-			this.absrot.Name = "absrot";
-			this.absrot.Size = new System.Drawing.Size(82, 24);
-			this.absrot.StepValues = null;
-			this.absrot.TabIndex = 24;
-			this.absrot.WhenEnterPressed += new System.EventHandler(this.absrot_Validated);
-			this.absrot.Validated += new System.EventHandler(this.absrot_Validated);
-			this.absrot.WhenButtonsClicked += new System.EventHandler(this.absrot_Validated);
-			this.absrot.WhenTextChanged += new System.EventHandler(this.WhenTextChanged);
-			// 
-			// relsizey
-			// 
-			this.relsizey.AllowDecimal = true;
-			this.relsizey.AllowNegative = true;
-			this.relsizey.AllowRelative = true;
-			this.relsizey.ButtonStep = 1;
-			this.relsizey.ButtonStepBig = 10F;
-			this.relsizey.ButtonStepFloat = 1F;
-			this.relsizey.ButtonStepSmall = 0.1F;
-			this.relsizey.ButtonStepsUseModifierKeys = false;
-			this.relsizey.ButtonStepsWrapAround = false;
-			this.relsizey.Location = new System.Drawing.Point(136, 83);
-			this.relsizey.Name = "relsizey";
-			this.relsizey.Size = new System.Drawing.Size(72, 24);
-			this.relsizey.StepValues = null;
-			this.relsizey.TabIndex = 15;
-			this.relsizey.WhenEnterPressed += new System.EventHandler(this.relsizey_Validated);
-			this.relsizey.Validated += new System.EventHandler(this.relsizey_Validated);
-			this.relsizey.WhenButtonsClicked += new System.EventHandler(this.relsizey_Validated);
-			this.relsizey.WhenTextChanged += new System.EventHandler(this.WhenTextChanged);
-			// 
-			// relsizex
-			// 
-			this.relsizex.AllowDecimal = true;
-			this.relsizex.AllowNegative = true;
-			this.relsizex.AllowRelative = true;
-			this.relsizex.ButtonStep = 1;
-			this.relsizex.ButtonStepBig = 10F;
-			this.relsizex.ButtonStepFloat = 1F;
-			this.relsizex.ButtonStepSmall = 0.1F;
-			this.relsizex.ButtonStepsUseModifierKeys = false;
-			this.relsizex.ButtonStepsWrapAround = false;
-			this.relsizex.Location = new System.Drawing.Point(58, 83);
-			this.relsizex.Name = "relsizex";
-			this.relsizex.Size = new System.Drawing.Size(72, 24);
-			this.relsizex.StepValues = null;
-			this.relsizex.TabIndex = 14;
-			this.relsizex.WhenEnterPressed += new System.EventHandler(this.relsizex_Validated);
-			this.relsizex.Validated += new System.EventHandler(this.relsizex_Validated);
-			this.relsizex.WhenButtonsClicked += new System.EventHandler(this.relsizex_Validated);
-			this.relsizex.WhenTextChanged += new System.EventHandler(this.WhenTextChanged);
-			// 
-			// abssizey
-			// 
-			this.abssizey.AllowDecimal = true;
-			this.abssizey.AllowNegative = true;
-			this.abssizey.AllowRelative = true;
-			this.abssizey.ButtonStep = 1;
-			this.abssizey.ButtonStepBig = 10F;
-			this.abssizey.ButtonStepFloat = 1F;
-			this.abssizey.ButtonStepSmall = 0.1F;
-			this.abssizey.ButtonStepsUseModifierKeys = false;
-			this.abssizey.ButtonStepsWrapAround = false;
-			this.abssizey.Location = new System.Drawing.Point(136, 53);
-			this.abssizey.Name = "abssizey";
-			this.abssizey.Size = new System.Drawing.Size(72, 24);
-			this.abssizey.StepValues = null;
-			this.abssizey.TabIndex = 12;
-			this.abssizey.WhenEnterPressed += new System.EventHandler(this.abssizey_Validated);
-			this.abssizey.Validated += new System.EventHandler(this.abssizey_Validated);
-			this.abssizey.WhenButtonsClicked += new System.EventHandler(this.abssizey_Validated);
-			this.abssizey.WhenTextChanged += new System.EventHandler(this.WhenTextChanged);
-			// 
-			// abssizex
-			// 
-			this.abssizex.AllowDecimal = true;
-			this.abssizex.AllowNegative = true;
-			this.abssizex.AllowRelative = true;
-			this.abssizex.ButtonStep = 1;
-			this.abssizex.ButtonStepBig = 10F;
-			this.abssizex.ButtonStepFloat = 1F;
-			this.abssizex.ButtonStepSmall = 0.1F;
-			this.abssizex.ButtonStepsUseModifierKeys = false;
-			this.abssizex.ButtonStepsWrapAround = false;
-			this.abssizex.Location = new System.Drawing.Point(58, 53);
-			this.abssizex.Name = "abssizex";
-			this.abssizex.Size = new System.Drawing.Size(72, 24);
-			this.abssizex.StepValues = null;
-			this.abssizex.TabIndex = 11;
-			this.abssizex.WhenEnterPressed += new System.EventHandler(this.abssizex_Validated);
-			this.abssizex.Validated += new System.EventHandler(this.abssizex_Validated);
-			this.abssizex.WhenButtonsClicked += new System.EventHandler(this.abssizex_Validated);
-			this.abssizex.WhenTextChanged += new System.EventHandler(this.WhenTextChanged);
-			// 
-			// relposy
-			// 
-			this.relposy.AllowDecimal = true;
-			this.relposy.AllowNegative = true;
-			this.relposy.AllowRelative = true;
-			this.relposy.ButtonStep = 1;
-			this.relposy.ButtonStepBig = 10F;
-			this.relposy.ButtonStepFloat = 1F;
-			this.relposy.ButtonStepSmall = 0.1F;
-			this.relposy.ButtonStepsUseModifierKeys = false;
-			this.relposy.ButtonStepsWrapAround = false;
-			this.relposy.Location = new System.Drawing.Point(136, 83);
-			this.relposy.Name = "relposy";
-			this.relposy.Size = new System.Drawing.Size(72, 24);
-			this.relposy.StepValues = null;
-			this.relposy.TabIndex = 11;
-			this.relposy.WhenEnterPressed += new System.EventHandler(this.relposy_Validated);
-			this.relposy.Validated += new System.EventHandler(this.relposy_Validated);
-			this.relposy.WhenButtonsClicked += new System.EventHandler(this.relposy_Validated);
-			this.relposy.WhenTextChanged += new System.EventHandler(this.WhenTextChanged);
-			// 
-			// relposx
-			// 
-			this.relposx.AllowDecimal = true;
-			this.relposx.AllowNegative = true;
-			this.relposx.AllowRelative = true;
-			this.relposx.ButtonStep = 1;
-			this.relposx.ButtonStepBig = 10F;
-			this.relposx.ButtonStepFloat = 1F;
-			this.relposx.ButtonStepSmall = 0.1F;
-			this.relposx.ButtonStepsUseModifierKeys = false;
-			this.relposx.ButtonStepsWrapAround = false;
-			this.relposx.Location = new System.Drawing.Point(58, 83);
-			this.relposx.Name = "relposx";
-			this.relposx.Size = new System.Drawing.Size(72, 24);
-			this.relposx.StepValues = null;
-			this.relposx.TabIndex = 10;
-			this.relposx.WhenEnterPressed += new System.EventHandler(this.relposx_Validated);
-			this.relposx.Validated += new System.EventHandler(this.relposx_Validated);
-			this.relposx.WhenButtonsClicked += new System.EventHandler(this.relposx_Validated);
-			this.relposx.WhenTextChanged += new System.EventHandler(this.WhenTextChanged);
-			// 
-			// absposy
-			// 
-			this.absposy.AllowDecimal = true;
-			this.absposy.AllowNegative = true;
-			this.absposy.AllowRelative = true;
-			this.absposy.ButtonStep = 1;
-			this.absposy.ButtonStepBig = 10F;
-			this.absposy.ButtonStepFloat = 1F;
-			this.absposy.ButtonStepSmall = 0.1F;
-			this.absposy.ButtonStepsUseModifierKeys = false;
-			this.absposy.ButtonStepsWrapAround = false;
-			this.absposy.Location = new System.Drawing.Point(136, 53);
-			this.absposy.Name = "absposy";
-			this.absposy.Size = new System.Drawing.Size(72, 24);
-			this.absposy.StepValues = null;
-			this.absposy.TabIndex = 9;
-			this.absposy.WhenEnterPressed += new System.EventHandler(this.absposy_Validated);
-			this.absposy.Validated += new System.EventHandler(this.absposy_Validated);
-			this.absposy.WhenButtonsClicked += new System.EventHandler(this.absposy_Validated);
-			this.absposy.WhenTextChanged += new System.EventHandler(this.WhenTextChanged);
-			// 
-			// absposx
-			// 
-			this.absposx.AllowDecimal = true;
-			this.absposx.AllowNegative = true;
-			this.absposx.AllowRelative = true;
-			this.absposx.ButtonStep = 1;
-			this.absposx.ButtonStepBig = 10F;
-			this.absposx.ButtonStepFloat = 1F;
-			this.absposx.ButtonStepSmall = 0.1F;
-			this.absposx.ButtonStepsUseModifierKeys = false;
-			this.absposx.ButtonStepsWrapAround = false;
-			this.absposx.Location = new System.Drawing.Point(58, 53);
-			this.absposx.Name = "absposx";
-			this.absposx.Size = new System.Drawing.Size(72, 24);
-			this.absposx.StepValues = null;
-			this.absposx.TabIndex = 8;
-			this.absposx.WhenEnterPressed += new System.EventHandler(this.absposx_Validated);
-			this.absposx.Validated += new System.EventHandler(this.absposx_Validated);
-			this.absposx.WhenButtonsClicked += new System.EventHandler(this.absposx_Validated);
-			this.absposx.WhenTextChanged += new System.EventHandler(this.WhenTextChanged);
 			// 
 			// EditSelectionPanel
 			// 

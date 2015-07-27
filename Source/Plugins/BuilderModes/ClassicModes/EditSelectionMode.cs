@@ -1044,7 +1044,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.FlipSelectionV);
 
 			//mxd. Get EditPanel-related settings
-			usepreciseposition = (General.Map.UDMF && General.Settings.ReadPluginSetting("editselectionusespreciseposition", true));
+			usepreciseposition = General.Settings.ReadPluginSetting("editselectionusespreciseposition", true);
 			
 			// Add docker
 			panel = new EditSelectionPanel(this);
@@ -1478,7 +1478,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				MapSet.FlipBackwardLinedefs(General.Map.Map.Linedefs);
 				
 				// Snap to map format accuracy
-				General.Map.Map.SnapAllToAccuracy(usepreciseposition);
+				General.Map.Map.SnapAllToAccuracy(General.Map.UDMF && usepreciseposition);
 				
 				// Update cached values
 				General.Map.Data.UpdateUsedTextures();
