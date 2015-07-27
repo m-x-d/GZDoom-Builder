@@ -690,6 +690,12 @@
     <Compile Include="Controls\ActionSpecialHelpButton.Designer.cs">
       <DependentUpon>ActionSpecialHelpButton.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ArgumentsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ArgumentsControl.Designer.cs">
+      <DependentUpon>ArgumentsControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Controls\ButtonsNumericTextboxDesigner.cs" />
     <Compile Include="Controls\CollapsibleSplitContainer.cs">
       <SubType>Component</SubType>
@@ -980,6 +986,9 @@
     <Compile Include="Editing\EditingManager.cs" />
     <EmbeddedResource Include="Controls\ActionSpecialHelpButton.resx">
       <DependentUpon>ActionSpecialHelpButton.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ArgumentsControl.resx">
+      <DependentUpon>ArgumentsControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\CommentEditor.resx">
       <DependentUpon>CommentEditor.cs</DependentUpon>

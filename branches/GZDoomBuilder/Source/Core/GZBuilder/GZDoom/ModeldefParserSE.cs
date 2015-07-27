@@ -43,7 +43,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 
 						if (token == "{") 
 						{
-							ScriptItem i = new ScriptItem(0, modelName, startPos, false);
+							ScriptItem i = new ScriptItem(modelName, startPos, false);
 							models.Add(i);
 						}
 					}

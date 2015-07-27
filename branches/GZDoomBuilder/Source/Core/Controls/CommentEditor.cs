@@ -130,6 +130,12 @@ namespace CodeImp.DoomBuilder.Controls
 			commenttype = (int)((Control)sender).Tag;
 		}
 
+		// We don't want to close the parent form when user presses Enter while typing the text
+		private void textbox_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+		{
+			if(e.KeyCode == Keys.Enter) e.IsInputKey = true;
+		}
+
 		#endregion
 	}
 }

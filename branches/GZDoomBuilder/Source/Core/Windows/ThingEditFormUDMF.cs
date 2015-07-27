@@ -20,12 +20,10 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using CodeImp.DoomBuilder.Controls;
-using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Geometry;
-using CodeImp.DoomBuilder.GZBuilder.Data;
 using CodeImp.DoomBuilder.GZBuilder.Tools;
+using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Types;
 
 #endregion
@@ -51,8 +49,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private bool preventmapchange; //mxd
 		private bool undocreated; //mxd
 		private static bool useabsoluteheight; //mxd
-		private string arg0str;
-		private bool haveArg0Str;
 		private List<ThingProperties> thingprops; //mxd
 		private readonly string[] renderstyles; //mxd
 
@@ -132,18 +128,6 @@ namespace CodeImp.DoomBuilder.Windows
 			// Fill universal fields list
 			fieldslist.ListFixedFields(General.Map.Config.ThingFields);
 
-			// Tag/Effects
-			scriptNumbers.Location = new Point(arg0.Location.X, arg0.Location.Y + 2);
-			scriptNames.Location = scriptNumbers.Location;
-
-			// Setup script names
-			foreach(ScriptItem nsi in General.Map.NamedScripts)
-				scriptNames.Items.Add(new ColoredComboBoxItem(nsi, nsi.IsInclude ? SystemColors.HotTrack : SystemColors.WindowText));
-			foreach(ScriptItem si in General.Map.NumberedScripts)
-				scriptNumbers.Items.Add(new ColoredComboBoxItem(si, si.IsInclude ? SystemColors.HotTrack : SystemColors.WindowText));
-			scriptNames.DropDownWidth = Tools.GetDropDownWidth(scriptNames);
-			scriptNumbers.DropDownWidth = Tools.GetDropDownWidth(scriptNumbers);
-
 			// Thing height?
 			posZ.Visible = General.Map.FormatInterface.HasThingHeight;
 			zlabel.Visible = General.Map.FormatInterface.HasThingHeight;
@@ -218,8 +202,6 @@ namespace CodeImp.DoomBuilder.Windows
 			health.Text = ft.Fields.GetValue("health", 1).ToString();
 			alpha.Text = ft.Fields.GetValue("alpha", 1.0f).ToString();
 			color.SetValueFrom(ft.Fields);
-			arg0str = ft.Fields.GetValue("arg0str", string.Empty);
-			haveArg0Str = !string.IsNullOrEmpty(arg0str);
 			scale.SetValues(ft.ScaleX, ft.ScaleY, true);
 			pitch.Text = ft.Pitch.ToString();
 			roll.Text = ft.Roll.ToString();
@@ -229,11 +211,9 @@ namespace CodeImp.DoomBuilder.Windows
 			action.Value = ft.Action;
 			tagSelector.Setup(UniversalType.ThingTag);
 			tagSelector.SetTag(ft.Tag);
-			arg0.SetValue(ft.Args[0]);
-			arg1.SetValue(ft.Args[1]);
-			arg2.SetValue(ft.Args[2]);
-			arg3.SetValue(ft.Args[3]);
-			arg4.SetValue(ft.Args[4]);
+
+			//mxd. Args
+			argscontrol.SetValue(ft, true);
 
 			////////////////////////////////////////////////////////////////////////
 			// Now go for all lines and change the options when a setting is different
@@ -281,11 +261,9 @@ namespace CodeImp.DoomBuilder.Windows
 				// Action/tags
 				if(t.Action != action.Value) action.Empty = true;
 				if(t.Tag != ft.Tag) tagSelector.ClearTag(); //mxd
-				if(t.Args[0] != arg0.GetResult(-1)) arg0.ClearValue();
-				if(t.Args[1] != arg1.GetResult(-1)) arg1.ClearValue();
-				if(t.Args[2] != arg2.GetResult(-1)) arg2.ClearValue();
-				if(t.Args[3] != arg3.GetResult(-1)) arg3.ClearValue();
-				if(t.Args[4] != arg4.GetResult(-1)) arg4.ClearValue();
+
+				//mxd. Arguments
+				argscontrol.SetValue(t, false);
 
 				//mxd. Custom fields
 				fieldslist.SetValues(t.Fields, false);
@@ -305,12 +283,6 @@ namespace CodeImp.DoomBuilder.Windows
 				//Render style
 				if(renderStyle.SelectedIndex > -1 && renderStyle.SelectedIndex != Array.IndexOf(renderstyles, t.Fields.GetValue("renderstyle", "normal")))
 					renderStyle.SelectedIndex = -1;
-
-				if (arg0str != t.Fields.GetValue("arg0str", string.Empty)) 
-				{
-					haveArg0Str = true;
-					arg0str = string.Empty;
-				}
 
 				//mxd. Store initial properties
 				thingprops.Add(new ThingProperties(t));
@@ -336,44 +308,10 @@ namespace CodeImp.DoomBuilder.Windows
 			flags_OnValueChanged(flags, EventArgs.Empty);
 			preventmapchange = false;
 
-			UpdateScriptControls(); //mxd
+			argscontrol.UpdateScriptControls(); //mxd
 			actionhelp.UpdateAction(action.GetValue()); //mxd
 			labelScale.Enabled = scale.NonDefaultValue; //mxd
 			commenteditor.FinishSetup(); //mxd
-
-			//mxd. Set intial script-related values, if required
-			if(Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, action.Value) != -1) 
-			{
-				if(haveArg0Str) 
-				{
-					scriptNames.Text = arg0str;
-					arg0label.Text = "Script Name:";
-				} 
-				else 
-				{
-					int a0 = arg0.GetResult(0);
-					if(a0 > 0) 
-					{
-						for(int i = 0; i < General.Map.NumberedScripts.Count; i++) 
-						{
-							if(General.Map.NumberedScripts[i].Index == a0) 
-							{
-								scriptNumbers.SelectedIndex = i;
-								break;
-							}
-						}
-					} 
-
-					if(scriptNumbers.SelectedIndex == -1) 
-					{
-						scriptNumbers.Text = a0.ToString();
-					}
-				}
-			} 
-			else 
-			{
-				scriptNumbers.Text = "0";
-			}
 		}
 
 		//mxd
@@ -385,51 +323,6 @@ namespace CodeImp.DoomBuilder.Windows
 			//mxd. Make undo
 			General.Map.UndoRedo.CreateUndo("Edit " + (things.Count > 1 ? things.Count + " things" : "thing"));
 			foreach(Thing t in things) t.Fields.BeforeFieldsChange();
-		}
-
-		//mxd
-		private void UpdateScriptControls() 
-		{
-			if(Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, action.Value) != -1) 
-			{
-				bool showNamedScripts = haveArg0Str;
-				cbArgStr.Visible = true;
-				cbArgStr.Checked = showNamedScripts;
-				scriptNames.Visible = showNamedScripts;
-				scriptNumbers.Visible = !showNamedScripts;
-			} 
-			else 
-			{
-				cbArgStr.Visible = false;
-				scriptNames.Visible = false;
-				scriptNumbers.Visible = false;
-				cbArgStr.Checked = false;
-			}
-
-			arg0.Visible = (!scriptNames.Visible && !scriptNumbers.Visible);
-		}
-
-		//mxd
-		private void UpdateArgument(ArgumentBox arg, Label label, ArgumentInfo info) 
-		{
-			label.Text = info.Title + ":";
-			label.Enabled = info.Used;
-			arg.ForeColor = (label.Enabled ? SystemColors.WindowText : SystemColors.GrayText);
-			arg.Setup(info);
-
-			// Update tooltip
-			if(info.Used && !string.IsNullOrEmpty(info.ToolTip)) 
-			{
-				tooltip.SetToolTip(label, info.ToolTip);
-				label.Font = new Font(label.Font, FontStyle.Underline);
-				label.ForeColor = SystemColors.HotTrack;
-			} 
-			else 
-			{
-				tooltip.SetToolTip(label, null);
-				label.Font = new Font(label.Font, FontStyle.Regular);
-				label.ForeColor = SystemColors.WindowText;
-			}
 		}
 
 		#endregion
@@ -446,44 +339,19 @@ namespace CodeImp.DoomBuilder.Windows
 		private void action_ValueChanges(object sender, EventArgs e) 
 		{
 			int showaction = 0;
-			ArgumentInfo[] arginfo;
 
 			// Only when line type is known, otherwise use the thing arguments
 			if(General.Map.Config.LinedefActions.ContainsKey(action.Value)) showaction = action.Value;
-			if((showaction == 0) && (thinginfo != null)) arginfo = thinginfo.Args;
-			else arginfo = General.Map.Config.LinedefActions[showaction].Args;
 
-			// Change the argument descriptions
-			UpdateArgument(arg0, arg0label, arginfo[0]); //mxd
-			UpdateArgument(arg1, arg1label, arginfo[1]); //mxd
-			UpdateArgument(arg2, arg2label, arginfo[2]); //mxd
-			UpdateArgument(arg3, arg3label, arginfo[3]); //mxd
-			UpdateArgument(arg4, arg4label, arginfo[4]); //mxd
+			//mxd. Change the argument descriptions
+			argscontrol.UpdateAction(showaction, preventchanges, (action.Empty ? null : thinginfo));
 
 			if(!preventchanges) 
 			{
 				MakeUndo(); //mxd
-				
-				// mxd. Apply action's or thing's default arguments
-				if(showaction != 0 || thinginfo != null) 
-				{
-					arg0.SetDefaultValue();
-					arg1.SetDefaultValue();
-					arg2.SetDefaultValue();
-					arg3.SetDefaultValue();
-					arg4.SetDefaultValue();
-				} 
-				else //or set them to 0
-				{
-					arg0.SetValue(0);
-					arg1.SetValue(0);
-					arg2.SetValue(0);
-					arg3.SetValue(0);
-					arg4.SetValue(0);
-				}
 
 				//mxd. Update what must be updated
-				UpdateScriptControls();
+				argscontrol.UpdateScriptControls();
 				actionhelp.UpdateAction(showaction);
 			}
 		}
@@ -579,8 +447,6 @@ namespace CodeImp.DoomBuilder.Windows
 				return;
 			}
 
-			bool hasAcs = !action.Empty && Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, action.Value) != -1; //mxd
-
 			//mxd
 			string[] rskeys = null;
 			if(General.Map.Config.ThingRenderStyles.Count > 0) 
@@ -616,46 +482,10 @@ namespace CodeImp.DoomBuilder.Windows
 
 				// Action/tags
 				t.Tag = General.Clamp(tagSelector.GetSmartTag(t.Tag, tagoffset++), General.Map.FormatInterface.MinTag, General.Map.FormatInterface.MaxTag); //mxd
-				if(!action.Empty) 
-				{
-					t.Action = action.Value;
+				if(!action.Empty) t.Action = action.Value;
 
-					//mxd. Script name/number handling
-					if(hasAcs) 
-					{
-						if(!cbArgStr.Checked) //apply script number
-						{ 
-							if(!string.IsNullOrEmpty(scriptNumbers.Text)) 
-							{
-								if(scriptNumbers.SelectedItem != null)
-									t.Args[0] = ((ScriptItem)((ColoredComboBoxItem)scriptNumbers.SelectedItem).Value).Index;
-								else if(!int.TryParse(scriptNumbers.Text.Trim(), out t.Args[0]))
-									t.Args[0] = 0;
-
-								if(t.Fields.ContainsKey("arg0str")) t.Fields.Remove("arg0str");
-							}
-						} 
-						else //apply arg0str
-						{ 
-							if(!string.IsNullOrEmpty(scriptNames.Text))
-								t.Fields["arg0str"] = new UniValue(UniversalType.String, scriptNames.Text);
-						}
-					} 
-					else 
-					{
-						t.Args[0] = arg0.GetResult(t.Args[0]);
-						if(t.Fields.ContainsKey("arg0str")) t.Fields.Remove("arg0str");
-					}
-				} 
-				else 
-				{
-					t.Args[0] = arg0.GetResult(t.Args[0]);
-				}
-
-				t.Args[1] = arg1.GetResult(t.Args[1]);
-				t.Args[2] = arg2.GetResult(t.Args[2]);
-				t.Args[3] = arg3.GetResult(t.Args[3]);
-				t.Args[4] = arg4.GetResult(t.Args[4]);
+				//mxd. Apply args
+				argscontrol.Apply(t);
 
 				//mxd. Custom fields
 				fieldslist.Apply(t.Fields);
@@ -709,15 +539,6 @@ namespace CodeImp.DoomBuilder.Windows
 			// Be gone
 			this.DialogResult = DialogResult.Cancel;
 			this.Close();
-		}
-
-		//mxd
-		private void cbArgStr_CheckedChanged(object sender, EventArgs e) 
-		{
-			if(!cbArgStr.Visible) return;
-			scriptNames.Visible = cbArgStr.Checked;
-			scriptNumbers.Visible = !cbArgStr.Checked;
-			arg0label.Text = cbArgStr.Checked ? "Script Name:" : "Script Number:";
 		}
 
 		//mxd

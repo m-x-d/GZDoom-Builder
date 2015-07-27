@@ -226,8 +226,8 @@ namespace CodeImp.DoomBuilder.Controls
 			// Setup layout
 			ArgumentBox_Resize(this, EventArgs.Empty);
 			
-			// Re-apply value
-			SetValue(oldvalue);
+			//mxd. If not mixed values, re-apply the old value
+			if(!string.IsNullOrEmpty(combobox.Text)) SetValue(oldvalue);
 		}
 
 		// This sets the value

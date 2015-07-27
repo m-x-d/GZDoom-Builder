@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.GZBuilder.Data;
 using CodeImp.DoomBuilder.GZBuilder.Tools;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Config;
@@ -152,31 +153,60 @@ namespace CodeImp.DoomBuilder.Controls
 			action.Enabled = (act.Index != 0);
 			actionlabel.Enabled = (act.Index != 0);
 
-			//mxd
-			bool hasArg0Str = General.Map.UDMF && Array.IndexOf(GZGeneral.ACS_SPECIALS, l.Action) != -1 && l.Fields.ContainsKey("arg0str");
-			
-			// Arguments
-			arglbl1.Text = hasArg0Str ? "Script name:" : act.Args[0].Title + ":"; //mxd
-			arglbl2.Text = act.Args[1].Title + ":";
-			arglbl3.Text = act.Args[2].Title + ":";
-			arglbl4.Text = act.Args[3].Title + ":";
-			arglbl5.Text = act.Args[4].Title + ":";
-			arglbl1.Enabled = act.Args[0].Used;
-			arglbl2.Enabled = act.Args[1].Used;
-			arglbl3.Enabled = act.Args[2].Used;
-			arglbl4.Enabled = act.Args[3].Used;
-			arglbl5.Enabled = act.Args[4].Used;
-			arg1.Enabled = act.Args[0].Used;
-			arg2.Enabled = act.Args[1].Used;
-			arg3.Enabled = act.Args[2].Used;
-			arg4.Enabled = act.Args[3].Used;
-			arg5.Enabled = act.Args[4].Used;
+			//mxd. ACS script argument names
+			bool isacsscript = (Array.IndexOf(GZGeneral.ACS_SPECIALS, l.Action) != -1);
+			bool isnamedacsscript = (isacsscript && General.Map.UDMF && l.Fields.ContainsKey("arg0str"));
+			string scriptname = (isnamedacsscript ? l.Fields.GetValue("arg0str", string.Empty) : string.Empty);
+			ScriptItem scriptitem = null;
 
-			//mxd
-			if (hasArg0Str) 
-				arg1.Text = '"' + l.Fields["arg0str"].Value.ToString() + '"';
-			else 
-				SetArgumentText(act.Args[0], arg1, l.Args[0]);
+			// Named script?
+			if(isnamedacsscript && General.Map.NamedScripts.ContainsKey(scriptname.ToLowerInvariant()))
+			{
+				scriptitem = General.Map.NamedScripts[scriptname.ToLowerInvariant()];
+			}
+			// Script number?
+			else if(isacsscript && General.Map.NumberedScripts.ContainsKey(l.Args[0]))
+			{
+				scriptitem = General.Map.NumberedScripts[l.Args[0]];
+				scriptname = scriptitem.Name;
+			}
+
+			// Apply script args?
+			Label[] arglabels = new[] { arglbl1, arglbl2, arglbl3, arglbl4, arglbl5 };
+			Label[] args = new[] { arg1, arg2, arg3, arg4, arg5 };
+
+			if(scriptitem != null)
+			{
+				string[] argnames = scriptitem.GetArgumentsDescriptions(l.Action);
+				for(int i = 0; i < argnames.Length; i++)
+				{
+					if(!string.IsNullOrEmpty(argnames[i]))
+					{
+						arglabels[i].Text = argnames[i] + ":";
+						arglabels[i].Enabled = true;
+						args[i].Enabled = true;
+					}
+					else
+					{
+						arglabels[i].Text = act.Args[i].Title + ":";
+						arglabels[i].Enabled = act.Args[i].Used;
+						args[i].Enabled = act.Args[i].Used;
+					}
+				}
+			}
+			else
+			{
+				for(int i = 0; i < act.Args.Length; i++)
+				{
+					arglabels[i].Text = act.Args[i].Title + ":";
+					arglabels[i].Enabled = act.Args[i].Used;
+					args[i].Enabled = act.Args[i].Used;
+				}
+			}
+
+			//mxd. Set argument value and label
+			if(!string.IsNullOrEmpty(scriptname)) arg1.Text = scriptname;
+			else SetArgumentText(act.Args[0], arg1, l.Args[0]);
 			SetArgumentText(act.Args[1], arg2, l.Args[1]);
 			SetArgumentText(act.Args[2], arg3, l.Args[2]);
 			SetArgumentText(act.Args[3], arg4, l.Args[3]);
