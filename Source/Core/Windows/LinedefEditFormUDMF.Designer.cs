@@ -41,20 +41,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.apply = new System.Windows.Forms.Button();
 			this.actiongroup = new System.Windows.Forms.GroupBox();
 			this.actionhelp = new CodeImp.DoomBuilder.Controls.ActionSpecialHelpButton();
-			this.argspanel = new System.Windows.Forms.Panel();
-			this.scriptNumbers = new CodeImp.DoomBuilder.Controls.ColoredComboBox();
-			this.scriptNames = new CodeImp.DoomBuilder.Controls.ColoredComboBox();
-			this.arg2 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
-			this.arg1 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
-			this.arg0 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
-			this.arg3 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
-			this.arg4 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
-			this.arg1label = new System.Windows.Forms.Label();
-			this.arg3label = new System.Windows.Forms.Label();
-			this.arg2label = new System.Windows.Forms.Label();
-			this.arg4label = new System.Windows.Forms.Label();
-			this.cbArgStr = new System.Windows.Forms.CheckBox();
-			this.arg0label = new System.Windows.Forms.Label();
 			this.action = new CodeImp.DoomBuilder.Controls.ActionSelectorControl();
 			this.browseaction = new System.Windows.Forms.Button();
 			this.udmfactivates = new CodeImp.DoomBuilder.Controls.CheckboxArrayControl();
@@ -129,18 +115,18 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backlow = new CodeImp.DoomBuilder.Controls.TextureSelectorControl();
 			this.backmid = new CodeImp.DoomBuilder.Controls.TextureSelectorControl();
 			this.backhigh = new CodeImp.DoomBuilder.Controls.TextureSelectorControl();
+			this.tabcomment = new System.Windows.Forms.TabPage();
+			this.commenteditor = new CodeImp.DoomBuilder.Controls.CommentEditor();
 			this.tabcustom = new System.Windows.Forms.TabPage();
 			this.fieldslist = new CodeImp.DoomBuilder.Controls.FieldsEditorControl();
 			this.imagelist = new System.Windows.Forms.ImageList(this.components);
 			this.tooltip = new System.Windows.Forms.ToolTip(this.components);
-			this.tabcomment = new System.Windows.Forms.TabPage();
-			this.commenteditor = new CodeImp.DoomBuilder.Controls.CommentEditor();
+			this.argscontrol = new CodeImp.DoomBuilder.Controls.ArgumentsControl();
 			label2 = new System.Windows.Forms.Label();
 			label11 = new System.Windows.Forms.Label();
 			label12 = new System.Windows.Forms.Label();
 			label6 = new System.Windows.Forms.Label();
 			this.actiongroup.SuspendLayout();
-			this.argspanel.SuspendLayout();
 			this.flagsgroup.SuspendLayout();
 			this.tabs.SuspendLayout();
 			this.tabproperties.SuspendLayout();
@@ -160,8 +146,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backflagsgroup.SuspendLayout();
 			this.backscalegroup.SuspendLayout();
 			this.groupBox1.SuspendLayout();
-			this.tabcustom.SuspendLayout();
 			this.tabcomment.SuspendLayout();
+			this.tabcustom.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// label2
@@ -255,8 +241,8 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.actiongroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.actiongroup.Controls.Add(this.argscontrol);
 			this.actiongroup.Controls.Add(this.actionhelp);
-			this.actiongroup.Controls.Add(this.argspanel);
 			this.actiongroup.Controls.Add(label2);
 			this.actiongroup.Controls.Add(this.action);
 			this.actiongroup.Controls.Add(this.browseaction);
@@ -273,145 +259,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.actionhelp.Name = "actionhelp";
 			this.actionhelp.Size = new System.Drawing.Size(28, 25);
 			this.actionhelp.TabIndex = 10;
-			// 
-			// argspanel
-			// 
-			this.argspanel.Controls.Add(this.scriptNumbers);
-			this.argspanel.Controls.Add(this.scriptNames);
-			this.argspanel.Controls.Add(this.arg2);
-			this.argspanel.Controls.Add(this.arg1);
-			this.argspanel.Controls.Add(this.arg0);
-			this.argspanel.Controls.Add(this.arg3);
-			this.argspanel.Controls.Add(this.arg4);
-			this.argspanel.Controls.Add(this.arg1label);
-			this.argspanel.Controls.Add(this.arg3label);
-			this.argspanel.Controls.Add(this.arg2label);
-			this.argspanel.Controls.Add(this.arg4label);
-			this.argspanel.Controls.Add(this.cbArgStr);
-			this.argspanel.Controls.Add(this.arg0label);
-			this.argspanel.Location = new System.Drawing.Point(6, 54);
-			this.argspanel.Name = "argspanel";
-			this.argspanel.Size = new System.Drawing.Size(521, 83);
-			this.argspanel.TabIndex = 2;
-			// 
-			// scriptNumbers
-			// 
-			this.scriptNumbers.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
-			this.scriptNumbers.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-			this.scriptNumbers.BackColor = System.Drawing.Color.LemonChiffon;
-			this.scriptNumbers.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-			this.scriptNumbers.FormattingEnabled = true;
-			this.scriptNumbers.Location = new System.Drawing.Point(407, 57);
-			this.scriptNumbers.Name = "scriptNumbers";
-			this.scriptNumbers.Size = new System.Drawing.Size(120, 21);
-			this.scriptNumbers.TabIndex = 39;
-			// 
-			// scriptNames
-			// 
-			this.scriptNames.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
-			this.scriptNames.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-			this.scriptNames.BackColor = System.Drawing.Color.Honeydew;
-			this.scriptNames.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-			this.scriptNames.FormattingEnabled = true;
-			this.scriptNames.Location = new System.Drawing.Point(283, 57);
-			this.scriptNames.Name = "scriptNames";
-			this.scriptNames.Size = new System.Drawing.Size(120, 21);
-			this.scriptNames.TabIndex = 38;
-			// 
-			// arg2
-			// 
-			this.arg2.Location = new System.Drawing.Point(153, 57);
-			this.arg2.Name = "arg2";
-			this.arg2.Size = new System.Drawing.Size(120, 24);
-			this.arg2.TabIndex = 2;
-			// 
-			// arg1
-			// 
-			this.arg1.Location = new System.Drawing.Point(153, 30);
-			this.arg1.Name = "arg1";
-			this.arg1.Size = new System.Drawing.Size(120, 24);
-			this.arg1.TabIndex = 1;
-			// 
-			// arg0
-			// 
-			this.arg0.Location = new System.Drawing.Point(153, 3);
-			this.arg0.Name = "arg0";
-			this.arg0.Size = new System.Drawing.Size(120, 24);
-			this.arg0.TabIndex = 0;
-			// 
-			// arg3
-			// 
-			this.arg3.Location = new System.Drawing.Point(398, 3);
-			this.arg3.Name = "arg3";
-			this.arg3.Size = new System.Drawing.Size(120, 24);
-			this.arg3.TabIndex = 3;
-			// 
-			// arg4
-			// 
-			this.arg4.Location = new System.Drawing.Point(398, 30);
-			this.arg4.Name = "arg4";
-			this.arg4.Size = new System.Drawing.Size(120, 24);
-			this.arg4.TabIndex = 4;
-			// 
-			// arg1label
-			// 
-			this.arg1label.Location = new System.Drawing.Point(-32, 35);
-			this.arg1label.Name = "arg1label";
-			this.arg1label.Size = new System.Drawing.Size(179, 14);
-			this.arg1label.TabIndex = 33;
-			this.arg1label.Text = "Argument 2:";
-			this.arg1label.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			this.arg1label.UseMnemonic = false;
-			// 
-			// arg3label
-			// 
-			this.arg3label.Location = new System.Drawing.Point(213, 8);
-			this.arg3label.Name = "arg3label";
-			this.arg3label.Size = new System.Drawing.Size(179, 14);
-			this.arg3label.TabIndex = 36;
-			this.arg3label.Text = "Argument 4:";
-			this.arg3label.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			this.arg3label.UseMnemonic = false;
-			// 
-			// arg2label
-			// 
-			this.arg2label.Location = new System.Drawing.Point(-32, 62);
-			this.arg2label.Name = "arg2label";
-			this.arg2label.Size = new System.Drawing.Size(179, 14);
-			this.arg2label.TabIndex = 35;
-			this.arg2label.Text = "Argument 3:";
-			this.arg2label.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			this.arg2label.UseMnemonic = false;
-			// 
-			// arg4label
-			// 
-			this.arg4label.Location = new System.Drawing.Point(213, 35);
-			this.arg4label.Name = "arg4label";
-			this.arg4label.Size = new System.Drawing.Size(179, 14);
-			this.arg4label.TabIndex = 34;
-			this.arg4label.Text = "Argument 5:";
-			this.arg4label.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			this.arg4label.UseMnemonic = false;
-			// 
-			// cbArgStr
-			// 
-			this.cbArgStr.Location = new System.Drawing.Point(8, -4);
-			this.cbArgStr.Name = "cbArgStr";
-			this.cbArgStr.Size = new System.Drawing.Size(63, 40);
-			this.cbArgStr.TabIndex = 37;
-			this.cbArgStr.Text = "Named script";
-			this.cbArgStr.UseVisualStyleBackColor = true;
-			this.cbArgStr.CheckedChanged += new System.EventHandler(this.cbArgStr_CheckedChanged);
-			// 
-			// arg0label
-			// 
-			this.arg0label.Location = new System.Drawing.Point(-32, 8);
-			this.arg0label.Name = "arg0label";
-			this.arg0label.Size = new System.Drawing.Size(179, 14);
-			this.arg0label.TabIndex = 32;
-			this.arg0label.Text = "Argument 1:";
-			this.arg0label.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			this.arg0label.UseMnemonic = false;
 			// 
 			// action
 			// 
@@ -1432,6 +1279,27 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backhigh.UsePreviews = false;
 			this.backhigh.OnValueChanged += new System.EventHandler(this.backhigh_OnValueChanged);
 			// 
+			// tabcomment
+			// 
+			this.tabcomment.Controls.Add(this.commenteditor);
+			this.tabcomment.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+			this.tabcomment.Location = new System.Drawing.Point(4, 23);
+			this.tabcomment.Name = "tabcomment";
+			this.tabcomment.Size = new System.Drawing.Size(549, 621);
+			this.tabcomment.TabIndex = 4;
+			this.tabcomment.Text = "Comment";
+			this.tabcomment.UseVisualStyleBackColor = true;
+			// 
+			// commenteditor
+			// 
+			this.commenteditor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.commenteditor.Location = new System.Drawing.Point(3, 3);
+			this.commenteditor.Name = "commenteditor";
+			this.commenteditor.Size = new System.Drawing.Size(543, 615);
+			this.commenteditor.TabIndex = 0;
+			// 
 			// tabcustom
 			// 
 			this.tabcustom.Controls.Add(this.fieldslist);
@@ -1471,26 +1339,12 @@ namespace CodeImp.DoomBuilder.Windows
 			this.imagelist.Images.SetKeyName(0, "Check.png");
 			this.imagelist.Images.SetKeyName(1, "SearchClear.png");
 			// 
-			// tabcomment
+			// argscontrol
 			// 
-			this.tabcomment.Controls.Add(this.commenteditor);
-			this.tabcomment.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.tabcomment.Location = new System.Drawing.Point(4, 23);
-			this.tabcomment.Name = "tabcomment";
-			this.tabcomment.Size = new System.Drawing.Size(549, 621);
-			this.tabcomment.TabIndex = 4;
-			this.tabcomment.Text = "Comment";
-			this.tabcomment.UseVisualStyleBackColor = true;
-			// 
-			// commenteditor
-			// 
-			this.commenteditor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.commenteditor.Location = new System.Drawing.Point(3, 3);
-			this.commenteditor.Name = "commenteditor";
-			this.commenteditor.Size = new System.Drawing.Size(543, 615);
-			this.commenteditor.TabIndex = 0;
+			this.argscontrol.Location = new System.Drawing.Point(6, 56);
+			this.argscontrol.Name = "argscontrol";
+			this.argscontrol.Size = new System.Drawing.Size(521, 80);
+			this.argscontrol.TabIndex = 11;
 			// 
 			// LinedefEditFormUDMF
 			// 
@@ -1515,7 +1369,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.HelpRequested += new System.Windows.Forms.HelpEventHandler(this.LinedefEditForm_HelpRequested);
 			this.actiongroup.ResumeLayout(false);
 			this.actiongroup.PerformLayout();
-			this.argspanel.ResumeLayout(false);
 			this.flagsgroup.ResumeLayout(false);
 			this.tabs.ResumeLayout(false);
 			this.tabproperties.ResumeLayout(false);
@@ -1540,8 +1393,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backflagsgroup.ResumeLayout(false);
 			this.backscalegroup.ResumeLayout(false);
 			this.groupBox1.ResumeLayout(false);
-			this.tabcustom.ResumeLayout(false);
 			this.tabcomment.ResumeLayout(false);
+			this.tabcustom.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -1572,23 +1425,10 @@ namespace CodeImp.DoomBuilder.Windows
 		private CodeImp.DoomBuilder.Controls.FieldsEditorControl fieldslist;
 		private System.Windows.Forms.GroupBox idgroup;
 		private CodeImp.DoomBuilder.Controls.CheckboxArrayControl udmfactivates;
-		private System.Windows.Forms.Panel argspanel;
-		private CodeImp.DoomBuilder.Controls.ArgumentBox arg2;
-		private CodeImp.DoomBuilder.Controls.ArgumentBox arg1;
-		private CodeImp.DoomBuilder.Controls.ArgumentBox arg0;
-		private CodeImp.DoomBuilder.Controls.ArgumentBox arg3;
-		private CodeImp.DoomBuilder.Controls.ArgumentBox arg4;
-		private System.Windows.Forms.Label arg1label;
-		private System.Windows.Forms.Label arg0label;
-		private System.Windows.Forms.Label arg3label;
-		private System.Windows.Forms.Label arg2label;
-		private System.Windows.Forms.Label arg4label;
 		private System.Windows.Forms.Button customfrontbutton;
 		private System.Windows.Forms.Button custombackbutton;
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox frontsector;
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox backsector;
-		private System.Windows.Forms.CheckBox cbArgStr;
-		private CodeImp.DoomBuilder.Controls.ColoredComboBox scriptNames;
 		private CodeImp.DoomBuilder.GZBuilder.Controls.TagSelector tagSelector;
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox lightFront;
 		private System.Windows.Forms.CheckBox cbLightAbsoluteFront;
@@ -1615,7 +1455,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private CodeImp.DoomBuilder.GZBuilder.Controls.PairedIntControl backTextureOffset;
 		private CodeImp.DoomBuilder.Controls.CheckboxArrayControl flagsFront;
 		private CodeImp.DoomBuilder.Controls.CheckboxArrayControl flagsBack;
-		private CodeImp.DoomBuilder.Controls.ColoredComboBox scriptNumbers;
 		private System.Windows.Forms.GroupBox activationGroup;
 		private System.Windows.Forms.PictureBox missingactivation;
 		private System.Windows.Forms.ToolTip tooltip;
@@ -1649,5 +1488,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.Label labelBackOffsetTop;
 		private System.Windows.Forms.TabPage tabcomment;
 		private CodeImp.DoomBuilder.Controls.CommentEditor commenteditor;
+		private CodeImp.DoomBuilder.Controls.ArgumentsControl argscontrol;
 	}
 }

@@ -20,11 +20,8 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using CodeImp.DoomBuilder.Controls;
-using CodeImp.DoomBuilder.Geometry;
-using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Config;
-using CodeImp.DoomBuilder.GZBuilder.Data; //mxd
+using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Types;
 
 #endregion
@@ -36,11 +33,6 @@ namespace CodeImp.DoomBuilder.Windows
 		#region ================== Events
 
 		public event EventHandler OnValuesChanged; //mxd
-
-		#endregion
-
-		#region ================== Constants
-
 
 		#endregion
 
@@ -124,29 +116,20 @@ namespace CodeImp.DoomBuilder.Windows
 			backhigh.Initialize();
 			backmid.Initialize();
 			backlow.Initialize();
-
-			//mxd. Setup script numbers
-			scriptNumbers.Location = new Point(arg0.Location.X, arg0.Location.Y + 2);
-
-			foreach(ScriptItem si in General.Map.NumberedScripts)
-				scriptNumbers.Items.Add(new ColoredComboBoxItem(si, si.IsInclude ? SystemColors.HotTrack : SystemColors.WindowText));
-
-			scriptNumbers.DropDownWidth = Tools.GetDropDownWidth(scriptNumbers);
 			
 			// Mixed activations?
 			if(General.Map.FormatInterface.HasPresetActivations)
 				hexenpanel.Visible = true;
 			
 			// Action arguments?
-			if(General.Map.FormatInterface.HasActionArgs)
-				argspanel.Visible = true;
+			if(General.Map.FormatInterface.HasActionArgs) argscontrol.Visible = true;
 			
 			// Arrange panels
 			if(!General.Map.FormatInterface.HasMixedActivations &&
 					!General.Map.FormatInterface.HasActionArgs &&
 					!General.Map.FormatInterface.HasPresetActivations)
 			{
-				actiongroup.Height = argspanel.Top + argspanel.Margin.Top; //mxd
+				actiongroup.Height = argscontrol.Top + argscontrol.Margin.Top; //mxd
 			}
 			
 			// Arrange or hide Identification panel
@@ -208,11 +191,8 @@ namespace CodeImp.DoomBuilder.Windows
 				tagSelector.SetTag(fl.Tag);
 			}
 
-			arg0.SetValue(fl.Args[0]);
-			arg1.SetValue(fl.Args[1]);
-			arg2.SetValue(fl.Args[2]);
-			arg3.SetValue(fl.Args[3]);
-			arg4.SetValue(fl.Args[4]);
+			//mxd. Args
+			argscontrol.SetValue(fl, true);
 			
 			// Front side and back side checkboxes
 			frontside.Checked = (fl.Front != null);
@@ -274,11 +254,9 @@ namespace CodeImp.DoomBuilder.Windows
 				// Action/tags
 				if(l.Action != action.Value) action.Empty = true;
 				if(General.Map.FormatInterface.HasLinedefTag && l.Tag != fl.Tag) tagSelector.ClearTag(); //mxd
-				if(l.Args[0] != arg0.GetResult(-1)) arg0.ClearValue();
-				if(l.Args[1] != arg1.GetResult(-1)) arg1.ClearValue();
-				if(l.Args[2] != arg2.GetResult(-1)) arg2.ClearValue();
-				if(l.Args[3] != arg3.GetResult(-1)) arg3.ClearValue();
-				if(l.Args[4] != arg4.GetResult(-1)) arg4.ClearValue();
+
+				//mxd. Arguments
+				argscontrol.SetValue(l, false);
 				
 				// Front side checkbox
 				if((l.Front != null) != frontside.Checked)
@@ -364,7 +342,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 			preventchanges = false;
 
-			UpdateScriptControls(); //mxd
+			argscontrol.UpdateScriptControls(); //mxd
 			actionhelp.UpdateAction(action.GetValue()); //mxd
 
 			//mxd. Update some labels
@@ -376,32 +354,6 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				labelBackTextureOffset.Enabled = backTextureOffset.NonDefaultValue;
 			}
-
-			//mxd. Set intial script-related values, if required
-			if(Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, action.Value) != -1) 
-			{
-				int a0 = arg0.GetResult(0);
-				if(a0 > 0) 
-				{
-					for(int i = 0; i < General.Map.NumberedScripts.Count; i++) 
-					{
-						if(General.Map.NumberedScripts[i].Index == a0) 
-						{
-							scriptNumbers.SelectedIndex = i;
-							break;
-						}
-					}
-				}
-
-				if(scriptNumbers.SelectedIndex == -1) 
-				{
-					scriptNumbers.Text = a0.ToString();
-				}
-			} 
-			else 
-			{
-				scriptNumbers.Text = "0";
-			}
 		}
 
 		//mxd
@@ -412,36 +364,6 @@ namespace CodeImp.DoomBuilder.Windows
 
 			//mxd. Make undo
 			General.Map.UndoRedo.CreateUndo("Edit " + (lines.Count > 1 ? lines.Count + " linedefs" : "linedef"));
-		}
-
-		//mxd
-		private void UpdateScriptControls()
-		{
-			scriptNumbers.Visible = (Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, action.Value) != -1);
-			arg0.Visible = !scriptNumbers.Visible;
-		}
-
-		//mxd
-		private void UpdateArgument(ArgumentBox arg, Label label, ArgumentInfo info) 
-		{
-			label.Text = info.Title + ":";
-			label.Enabled = info.Used;
-			arg.ForeColor = (label.Enabled ? SystemColors.WindowText : SystemColors.GrayText);
-			arg.Setup(info);
-
-			// Update tooltip
-			if(info.Used && !string.IsNullOrEmpty(info.ToolTip)) 
-			{
-				tooltip.SetToolTip(label, info.ToolTip);
-				label.Font = new Font(label.Font, FontStyle.Underline);
-				label.ForeColor = SystemColors.HotTrack;
-			} 
-			else 
-			{
-				tooltip.SetToolTip(label, null);
-				label.Font = new Font(label.Font, FontStyle.Regular);
-				label.ForeColor = SystemColors.WindowText;
-			}
 		}
 
 		#endregion
@@ -473,9 +395,6 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			MakeUndo(); //mxd
-
-			//mxd
-			bool hasAcs = !action.Empty && Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, action.Value) != -1;
 			
 			// Go for all the lines
 			int tagoffset = 0; //mxd
@@ -487,35 +406,10 @@ namespace CodeImp.DoomBuilder.Windows
 				
 				// Action/tags
 				l.Tag = General.Clamp(tagSelector.GetSmartTag(l.Tag, tagoffset++), General.Map.FormatInterface.MinTag, General.Map.FormatInterface.MaxTag); //mxd
-				if(!action.Empty) 
-				{
-					l.Action = action.Value;
+				if(!action.Empty) l.Action = action.Value;
 
-					//mxd. Script name/number handling
-					if(hasAcs) 
-					{
-						if(!string.IsNullOrEmpty(scriptNumbers.Text)) 
-						{
-							if(scriptNumbers.SelectedItem != null)
-								l.Args[0] = ((ScriptItem)((ColoredComboBoxItem)scriptNumbers.SelectedItem).Value).Index;
-							else if(!int.TryParse(scriptNumbers.Text.Trim(), out l.Args[0]))
-								l.Args[0] = 0;
-						}
-					} 
-					else 
-					{
-						l.Args[0] = arg0.GetResult(l.Args[0]);
-					}
-				}
-				else
-				{
-					l.Args[0] = arg0.GetResult(l.Args[0]);
-				}
-
-				l.Args[1] = arg1.GetResult(l.Args[1]);
-				l.Args[2] = arg2.GetResult(l.Args[2]);
-				l.Args[3] = arg3.GetResult(l.Args[3]);
-				l.Args[4] = arg4.GetResult(l.Args[4]);
+				//mxd. Apply args
+				argscontrol.Apply(l);
 				
 				// Remove front side?
 				if((l.Front != null) && (frontside.CheckState == CheckState.Unchecked))
@@ -616,37 +510,15 @@ namespace CodeImp.DoomBuilder.Windows
 			// Only when line type is known
 			if(General.Map.Config.LinedefActions.ContainsKey(action.Value)) showaction = action.Value;
 			
-			// Change the argument descriptions
-			UpdateArgument(arg0, arg0label, General.Map.Config.LinedefActions[showaction].Args[0]); //mxd
-			UpdateArgument(arg1, arg1label, General.Map.Config.LinedefActions[showaction].Args[1]); //mxd
-			UpdateArgument(arg2, arg2label, General.Map.Config.LinedefActions[showaction].Args[2]); //mxd
-			UpdateArgument(arg3, arg3label, General.Map.Config.LinedefActions[showaction].Args[3]); //mxd
-			UpdateArgument(arg4, arg4label, General.Map.Config.LinedefActions[showaction].Args[4]); //mxd
+			//mxd. Change the argument descriptions
+			argscontrol.UpdateAction(showaction, preventchanges);
 
 			if(!preventchanges) 
 			{
 				MakeUndo(); //mxd
-				
-				// mxd. Apply action's default arguments 
-				if(showaction != 0) 
-				{
-					arg0.SetDefaultValue();
-					arg1.SetDefaultValue();
-					arg2.SetDefaultValue();
-					arg3.SetDefaultValue();
-					arg4.SetDefaultValue();
-				} 
-				else //or set them to 0
-				{ 
-					arg0.SetValue(0);
-					arg1.SetValue(0);
-					arg2.SetValue(0);
-					arg3.SetValue(0);
-					arg4.SetValue(0);
-				}
 
 				//mxd. Update what must be updated
-				UpdateScriptControls();
+				argscontrol.UpdateScriptControls();
 				actionhelp.UpdateAction(showaction);
 			} 
 		}

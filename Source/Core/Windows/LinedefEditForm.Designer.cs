@@ -44,19 +44,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.cancel = new System.Windows.Forms.Button();
 			this.apply = new System.Windows.Forms.Button();
 			this.actiongroup = new System.Windows.Forms.GroupBox();
+			this.argscontrol = new CodeImp.DoomBuilder.Controls.ArgumentsControl();
 			this.actionhelp = new CodeImp.DoomBuilder.Controls.ActionSpecialHelpButton();
-			this.argspanel = new System.Windows.Forms.Panel();
-			this.scriptNumbers = new CodeImp.DoomBuilder.Controls.ColoredComboBox();
-			this.arg2 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
-			this.arg1 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
-			this.arg0 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
-			this.arg3 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
-			this.arg4 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
-			this.arg1label = new System.Windows.Forms.Label();
-			this.arg3label = new System.Windows.Forms.Label();
-			this.arg2label = new System.Windows.Forms.Label();
-			this.arg4label = new System.Windows.Forms.Label();
-			this.arg0label = new System.Windows.Forms.Label();
 			this.hexenpanel = new System.Windows.Forms.Panel();
 			this.activation = new System.Windows.Forms.ComboBox();
 			this.action = new CodeImp.DoomBuilder.Controls.ActionSelectorControl();
@@ -92,7 +81,6 @@ namespace CodeImp.DoomBuilder.Windows
 			label12 = new System.Windows.Forms.Label();
 			activationlabel = new System.Windows.Forms.Label();
 			this.actiongroup.SuspendLayout();
-			this.argspanel.SuspendLayout();
 			this.hexenpanel.SuspendLayout();
 			this.flagsgroup.SuspendLayout();
 			this.idgroup.SuspendLayout();
@@ -236,8 +224,8 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.actiongroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.actiongroup.Controls.Add(this.argscontrol);
 			this.actiongroup.Controls.Add(this.actionhelp);
-			this.actiongroup.Controls.Add(this.argspanel);
 			this.actiongroup.Controls.Add(this.hexenpanel);
 			this.actiongroup.Controls.Add(label2);
 			this.actiongroup.Controls.Add(this.action);
@@ -249,128 +237,20 @@ namespace CodeImp.DoomBuilder.Windows
 			this.actiongroup.TabStop = false;
 			this.actiongroup.Text = " Action ";
 			// 
+			// argscontrol
+			// 
+			this.argscontrol.Location = new System.Drawing.Point(9, 52);
+			this.argscontrol.Name = "argscontrol";
+			this.argscontrol.Size = new System.Drawing.Size(526, 76);
+			this.argscontrol.TabIndex = 12;
+			this.argscontrol.Visible = false;
+			// 
 			// actionhelp
 			// 
-			this.actionhelp.Location = new System.Drawing.Point(497, 21);
+			this.actionhelp.Location = new System.Drawing.Point(505, 21);
 			this.actionhelp.Name = "actionhelp";
 			this.actionhelp.Size = new System.Drawing.Size(28, 25);
 			this.actionhelp.TabIndex = 11;
-			// 
-			// argspanel
-			// 
-			this.argspanel.Controls.Add(this.scriptNumbers);
-			this.argspanel.Controls.Add(this.arg2);
-			this.argspanel.Controls.Add(this.arg1);
-			this.argspanel.Controls.Add(this.arg0);
-			this.argspanel.Controls.Add(this.arg3);
-			this.argspanel.Controls.Add(this.arg4);
-			this.argspanel.Controls.Add(this.arg1label);
-			this.argspanel.Controls.Add(this.arg3label);
-			this.argspanel.Controls.Add(this.arg2label);
-			this.argspanel.Controls.Add(this.arg4label);
-			this.argspanel.Controls.Add(this.arg0label);
-			this.argspanel.Location = new System.Drawing.Point(6, 50);
-			this.argspanel.Name = "argspanel";
-			this.argspanel.Size = new System.Drawing.Size(521, 83);
-			this.argspanel.TabIndex = 2;
-			this.argspanel.Visible = false;
-			// 
-			// scriptNumbers
-			// 
-			this.scriptNumbers.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
-			this.scriptNumbers.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-			this.scriptNumbers.BackColor = System.Drawing.Color.LemonChiffon;
-			this.scriptNumbers.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-			this.scriptNumbers.FormattingEnabled = true;
-			this.scriptNumbers.Location = new System.Drawing.Point(398, 57);
-			this.scriptNumbers.Name = "scriptNumbers";
-			this.scriptNumbers.Size = new System.Drawing.Size(120, 21);
-			this.scriptNumbers.TabIndex = 39;
-			// 
-			// arg2
-			// 
-			this.arg2.Location = new System.Drawing.Point(153, 55);
-			this.arg2.Name = "arg2";
-			this.arg2.Size = new System.Drawing.Size(120, 24);
-			this.arg2.TabIndex = 2;
-			// 
-			// arg1
-			// 
-			this.arg1.Location = new System.Drawing.Point(153, 29);
-			this.arg1.Name = "arg1";
-			this.arg1.Size = new System.Drawing.Size(120, 24);
-			this.arg1.TabIndex = 1;
-			// 
-			// arg0
-			// 
-			this.arg0.Location = new System.Drawing.Point(153, 3);
-			this.arg0.Name = "arg0";
-			this.arg0.Size = new System.Drawing.Size(120, 24);
-			this.arg0.TabIndex = 0;
-			// 
-			// arg3
-			// 
-			this.arg3.Location = new System.Drawing.Point(398, 3);
-			this.arg3.Name = "arg3";
-			this.arg3.Size = new System.Drawing.Size(120, 24);
-			this.arg3.TabIndex = 3;
-			// 
-			// arg4
-			// 
-			this.arg4.Location = new System.Drawing.Point(398, 29);
-			this.arg4.Name = "arg4";
-			this.arg4.Size = new System.Drawing.Size(120, 24);
-			this.arg4.TabIndex = 4;
-			// 
-			// arg1label
-			// 
-			this.arg1label.Location = new System.Drawing.Point(-32, 34);
-			this.arg1label.Name = "arg1label";
-			this.arg1label.Size = new System.Drawing.Size(179, 14);
-			this.arg1label.TabIndex = 33;
-			this.arg1label.Text = "Argument 2:";
-			this.arg1label.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			this.arg1label.UseMnemonic = false;
-			// 
-			// arg3label
-			// 
-			this.arg3label.Location = new System.Drawing.Point(213, 8);
-			this.arg3label.Name = "arg3label";
-			this.arg3label.Size = new System.Drawing.Size(179, 14);
-			this.arg3label.TabIndex = 36;
-			this.arg3label.Text = "Argument 4:";
-			this.arg3label.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			this.arg3label.UseMnemonic = false;
-			// 
-			// arg2label
-			// 
-			this.arg2label.Location = new System.Drawing.Point(-32, 60);
-			this.arg2label.Name = "arg2label";
-			this.arg2label.Size = new System.Drawing.Size(179, 14);
-			this.arg2label.TabIndex = 35;
-			this.arg2label.Text = "Argument 3:";
-			this.arg2label.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			this.arg2label.UseMnemonic = false;
-			// 
-			// arg4label
-			// 
-			this.arg4label.Location = new System.Drawing.Point(213, 34);
-			this.arg4label.Name = "arg4label";
-			this.arg4label.Size = new System.Drawing.Size(179, 14);
-			this.arg4label.TabIndex = 34;
-			this.arg4label.Text = "Argument 5:";
-			this.arg4label.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			this.arg4label.UseMnemonic = false;
-			// 
-			// arg0label
-			// 
-			this.arg0label.Location = new System.Drawing.Point(-32, 8);
-			this.arg0label.Name = "arg0label";
-			this.arg0label.Size = new System.Drawing.Size(179, 14);
-			this.arg0label.TabIndex = 32;
-			this.arg0label.Text = "Argument 1:";
-			this.arg0label.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			this.arg0label.UseMnemonic = false;
 			// 
 			// hexenpanel
 			// 
@@ -378,7 +258,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.hexenpanel.Controls.Add(activationlabel);
 			this.hexenpanel.Location = new System.Drawing.Point(6, 134);
 			this.hexenpanel.Name = "hexenpanel";
-			this.hexenpanel.Size = new System.Drawing.Size(521, 36);
+			this.hexenpanel.Size = new System.Drawing.Size(529, 36);
 			this.hexenpanel.TabIndex = 3;
 			this.hexenpanel.Visible = false;
 			// 
@@ -388,7 +268,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.activation.FormattingEnabled = true;
 			this.activation.Location = new System.Drawing.Point(56, 7);
 			this.activation.Name = "activation";
-			this.activation.Size = new System.Drawing.Size(463, 21);
+			this.activation.Size = new System.Drawing.Size(470, 21);
 			this.activation.TabIndex = 0;
 			// 
 			// action
@@ -400,7 +280,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.action.GeneralizedOptions = null;
 			this.action.Location = new System.Drawing.Point(62, 23);
 			this.action.Name = "action";
-			this.action.Size = new System.Drawing.Size(402, 21);
+			this.action.Size = new System.Drawing.Size(412, 21);
 			this.action.TabIndex = 0;
 			this.action.Value = 402;
 			this.action.ValueChanges += new System.EventHandler(this.action_ValueChanges);
@@ -408,7 +288,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// browseaction
 			// 
 			this.browseaction.Image = global::CodeImp.DoomBuilder.Properties.Resources.List;
-			this.browseaction.Location = new System.Drawing.Point(467, 21);
+			this.browseaction.Location = new System.Drawing.Point(476, 21);
 			this.browseaction.Name = "browseaction";
 			this.browseaction.Size = new System.Drawing.Size(28, 25);
 			this.browseaction.TabIndex = 1;
@@ -436,9 +316,9 @@ namespace CodeImp.DoomBuilder.Windows
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.flags.AutoScroll = true;
 			this.flags.Columns = 3;
-			this.flags.Location = new System.Drawing.Point(18, 17);
+			this.flags.Location = new System.Drawing.Point(8, 17);
 			this.flags.Name = "flags";
-			this.flags.Size = new System.Drawing.Size(517, 96);
+			this.flags.Size = new System.Drawing.Size(532, 96);
 			this.flags.TabIndex = 0;
 			this.flags.VerticalSpacing = 1;
 			this.flags.OnValueChanged += new System.EventHandler(this.flags_OnValueChanged);
@@ -700,7 +580,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.HelpRequested += new System.Windows.Forms.HelpEventHandler(this.LinedefEditForm_HelpRequested);
 			this.actiongroup.ResumeLayout(false);
 			this.actiongroup.PerformLayout();
-			this.argspanel.ResumeLayout(false);
 			this.hexenpanel.ResumeLayout(false);
 			this.hexenpanel.PerformLayout();
 			this.flagsgroup.ResumeLayout(false);
@@ -735,27 +614,16 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.ComboBox activation;
 		private System.Windows.Forms.Panel hexenpanel;
 		private System.Windows.Forms.GroupBox idgroup;
-		private System.Windows.Forms.Panel argspanel;
-		private CodeImp.DoomBuilder.Controls.ArgumentBox arg2;
-		private CodeImp.DoomBuilder.Controls.ArgumentBox arg1;
-		private CodeImp.DoomBuilder.Controls.ArgumentBox arg0;
-		private CodeImp.DoomBuilder.Controls.ArgumentBox arg3;
-		private CodeImp.DoomBuilder.Controls.ArgumentBox arg4;
-		private System.Windows.Forms.Label arg1label;
-		private System.Windows.Forms.Label arg0label;
-		private System.Windows.Forms.Label arg3label;
-		private System.Windows.Forms.Label arg2label;
-		private System.Windows.Forms.Label arg4label;
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox frontsector;
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox backsector;
 		private CodeImp.DoomBuilder.GZBuilder.Controls.TagSelector tagSelector;
 		private CodeImp.DoomBuilder.GZBuilder.Controls.PairedIntControl frontTextureOffset;
 		private CodeImp.DoomBuilder.GZBuilder.Controls.PairedIntControl backTextureOffset;
-		private CodeImp.DoomBuilder.Controls.ColoredComboBox scriptNumbers;
 		private System.Windows.Forms.Panel panel;
 		private CodeImp.DoomBuilder.Controls.ActionSpecialHelpButton actionhelp;
 		private System.Windows.Forms.ToolTip tooltip;
 		private System.Windows.Forms.Label labelFrontTextureOffset;
 		private System.Windows.Forms.Label labelBackTextureOffset;
+		private CodeImp.DoomBuilder.Controls.ArgumentsControl argscontrol;
 	}
 }

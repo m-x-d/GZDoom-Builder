@@ -20,14 +20,11 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
-using CodeImp.DoomBuilder.Geometry;
-using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Config;
-using CodeImp.DoomBuilder.GZBuilder.Data; //mxd
-using CodeImp.DoomBuilder.Types;
-using CodeImp.DoomBuilder.GZBuilder.Tools;
 using CodeImp.DoomBuilder.GZBuilder.Controls;
-using CodeImp.DoomBuilder.Controls;
+using CodeImp.DoomBuilder.GZBuilder.Tools;
+using CodeImp.DoomBuilder.Map;
+using CodeImp.DoomBuilder.Types;
 
 #endregion
 
@@ -41,19 +38,12 @@ namespace CodeImp.DoomBuilder.Windows
 
 		#endregion
 
-		#region ================== Constants
-
-
-		#endregion
-
 		#region ================== Variables
 
 		private ICollection<Linedef> lines;
 		private List<LinedefProperties> linedefprops; //mxd
 		private bool preventchanges;
 		private bool undocreated; //mxd
-		private string arg0str; //mxd
-		private bool haveArg0Str; //mxd
 		private readonly string[] renderstyles; //mxd
 		private readonly List<int> keynumbers; //mxd 
 
@@ -216,18 +206,6 @@ namespace CodeImp.DoomBuilder.Windows
 			backmid.Initialize();
 			backlow.Initialize();
 
-			//mxd. Setup script numbers
-			scriptNumbers.Location = new Point(arg0.Location.X, arg0.Location.Y + 2);
-			foreach (ScriptItem si in General.Map.NumberedScripts)
-				scriptNumbers.Items.Add(new ColoredComboBoxItem(si, si.IsInclude ? SystemColors.HotTrack : SystemColors.WindowText));
-			scriptNumbers.DropDownWidth = Tools.GetDropDownWidth(scriptNumbers);
-
-			//mxd. Setup script names
-			scriptNames.Location = scriptNumbers.Location;
-			foreach (ScriptItem nsi in General.Map.NamedScripts)
-				scriptNames.Items.Add(new ColoredComboBoxItem(nsi, nsi.IsInclude ? SystemColors.HotTrack : SystemColors.WindowText));
-			scriptNames.DropDownWidth = Tools.GetDropDownWidth(scriptNames);
-
 			// Initialize custom fields editor
 			fieldslist.Setup("linedef");
 
@@ -293,8 +271,6 @@ namespace CodeImp.DoomBuilder.Windows
 			commenteditor.SetValues(fl.Fields, true); //mxd. Comments
 			renderStyle.SelectedIndex = Array.IndexOf(renderstyles, fl.Fields.GetValue("renderstyle", "translucent"));
 			alpha.Text = General.Clamp(fl.Fields.GetValue("alpha", 1.0f), 0f, 1f).ToString();
-			arg0str = fl.Fields.GetValue("arg0str", string.Empty);
-			haveArg0Str = !string.IsNullOrEmpty(arg0str);
 
 			// Locknumber
 			int locknumber = fl.Fields.GetValue("locknumber", 0);
@@ -310,11 +286,8 @@ namespace CodeImp.DoomBuilder.Windows
 				tagSelector.SetTag(fl.Tag);
 			}
 
-			arg0.SetValue(fl.Args[0]);
-			arg1.SetValue(fl.Args[1]);
-			arg2.SetValue(fl.Args[2]);
-			arg3.SetValue(fl.Args[3]);
-			arg4.SetValue(fl.Args[4]);
+			//mxd. Args
+			argscontrol.SetValue(fl, true);
 			
 			// Front side and back side checkboxes
 			frontside.Checked = (fl.Front != null);
@@ -429,13 +402,6 @@ namespace CodeImp.DoomBuilder.Windows
 					}
 				}
 
-				// arg0str
-				if(arg0str != l.Fields.GetValue("arg0str", string.Empty)) 
-				{
-					haveArg0Str = true;
-					arg0str = string.Empty;
-				}
-
 				// Custom fields
 				fieldslist.SetValues(l.Fields, false);
 
@@ -445,11 +411,9 @@ namespace CodeImp.DoomBuilder.Windows
 				// Action/tags
 				if(l.Action != action.Value) action.Empty = true;
 				if(General.Map.FormatInterface.HasLinedefTag && l.Tag != fl.Tag) tagSelector.ClearTag(); //mxd
-				if(l.Args[0] != arg0.GetResult(-1)) arg0.ClearValue();
-				if(l.Args[1] != arg1.GetResult(-1)) arg1.ClearValue();
-				if(l.Args[2] != arg2.GetResult(-1)) arg2.ClearValue();
-				if(l.Args[3] != arg3.GetResult(-1)) arg3.ClearValue();
-				if(l.Args[4] != arg4.GetResult(-1)) arg4.ClearValue();
+
+				//mxd. Arguments
+				argscontrol.SetValue(l, false);
 				
 				// Front side checkbox
 				if((l.Front != null) != frontside.Checked)
@@ -590,8 +554,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 			preventchanges = false;
 
-			UpdateScriptControls(); //mxd
 			CheckActivationFlagsRequired(); //mxd
+			argscontrol.UpdateScriptControls(); //mxd
 			actionhelp.UpdateAction(action.GetValue()); //mxd
 			commenteditor.FinishSetup(); //mxd
 
@@ -622,40 +586,6 @@ namespace CodeImp.DoomBuilder.Windows
 				labelBackScaleMid.Enabled = pfcBackScaleMid.NonDefaultValue;
 				labelBackScaleBottom.Enabled = pfcBackScaleBottom.NonDefaultValue;
 			}
-
-			//mxd. Set intial script-related values, if required
-			if(Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, action.Value) != -1) 
-			{
-				if(haveArg0Str) 
-				{
-					scriptNames.Text = arg0str;
-					arg0label.Text = "Script Name:";
-				} 
-				else 
-				{
-					int a0 = arg0.GetResult(0);
-					if(a0 > 0) 
-					{
-						for(int i = 0; i < General.Map.NumberedScripts.Count; i++) 
-						{
-							if(General.Map.NumberedScripts[i].Index == a0) 
-							{
-								scriptNumbers.SelectedIndex = i;
-								break;
-							}
-						}
-					} 
-
-					if(scriptNumbers.SelectedIndex == -1)
-					{
-						scriptNumbers.Text = a0.ToString();
-					}
-				}
-			} 
-			else 
-			{
-				scriptNumbers.Text = "0";
-			}
 		}
 
 		//mxd
@@ -675,51 +605,6 @@ namespace CodeImp.DoomBuilder.Windows
 					if(l.Front != null) l.Front.Fields.BeforeFieldsChange();
 					if(l.Back != null) l.Back.Fields.BeforeFieldsChange();
 				}
-			}
-		}
-
-		//mxd
-		private void UpdateScriptControls() 
-		{
-			if(Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, action.Value) != -1) 
-			{
-				bool showNamedScripts = General.Map.UDMF && haveArg0Str;
-				cbArgStr.Visible = General.Map.UDMF;
-				cbArgStr.Checked = showNamedScripts;
-				scriptNames.Visible = showNamedScripts;
-				scriptNumbers.Visible = !showNamedScripts;
-			} 
-			else 
-			{
-				cbArgStr.Visible = false;
-				scriptNames.Visible = false;
-				scriptNumbers.Visible = false;
-				cbArgStr.Checked = false;
-			}
-
-			arg0.Visible = (!scriptNames.Visible && !scriptNumbers.Visible);
-		}
-
-		//mxd
-		private void UpdateArgument(ArgumentBox arg, Label label, ArgumentInfo info) 
-		{
-			label.Text = info.Title + ":";
-			label.Enabled = info.Used;
-			arg.ForeColor = (label.Enabled ? SystemColors.WindowText : SystemColors.GrayText);
-			arg.Setup(info);
-
-			// Update tooltip
-			if(info.Used && !string.IsNullOrEmpty(info.ToolTip)) 
-			{
-				tooltip.SetToolTip(label, info.ToolTip);
-				label.Font = new Font(label.Font, FontStyle.Underline);
-				label.ForeColor = SystemColors.HotTrack;
-			} 
-			else 
-			{
-				tooltip.SetToolTip(label, null);
-				label.Font = new Font(label.Font, FontStyle.Regular);
-				label.ForeColor = SystemColors.WindowText;
 			}
 		}
 
@@ -782,7 +667,6 @@ namespace CodeImp.DoomBuilder.Windows
 			MakeUndo();
 
 			//mxd
-			bool hasAcs = !action.Empty && Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, action.Value) != -1;
 			int locknumber = 0;
 			bool setlocknumber = false;
 			if(!string.IsNullOrEmpty(lockpick.Text)) 
@@ -815,47 +699,10 @@ namespace CodeImp.DoomBuilder.Windows
 				
 				// Action/tags
 				l.Tag = General.Clamp(tagSelector.GetSmartTag(l.Tag, tagoffset++), General.Map.FormatInterface.MinTag, General.Map.FormatInterface.MaxTag); //mxd
-				if(!action.Empty) 
-				{
-					l.Action = action.Value;
+				if(!action.Empty) l.Action = action.Value;
 
-					//mxd. Script name/number handling
-					if(hasAcs) 
-					{
-						//apply script number
-						if(!cbArgStr.Checked) 
-						{ 
-							if(!string.IsNullOrEmpty(scriptNumbers.Text)) 
-							{
-								if(scriptNumbers.SelectedItem != null)
-									l.Args[0] = ((ScriptItem)((ColoredComboBoxItem)scriptNumbers.SelectedItem).Value).Index;
-								else if(!int.TryParse(scriptNumbers.Text.Trim(), out l.Args[0]))
-									l.Args[0] = 0;
-
-								if(l.Fields.ContainsKey("arg0str")) l.Fields.Remove("arg0str");
-							}
-						} 
-						else //apply arg0str
-						{ 
-							if(!string.IsNullOrEmpty(scriptNames.Text)) 
-								l.Fields["arg0str"] = new UniValue(UniversalType.String, scriptNames.Text);
-						}
-					} 
-					else 
-					{
-						l.Args[0] = arg0.GetResult(l.Args[0]);
-						if(l.Fields.ContainsKey("arg0str")) l.Fields.Remove("arg0str");
-					}
-				}
-				else
-				{
-					l.Args[0] = arg0.GetResult(l.Args[0]);
-				}
-
-				l.Args[1] = arg1.GetResult(l.Args[1]);
-				l.Args[2] = arg2.GetResult(l.Args[2]);
-				l.Args[3] = arg3.GetResult(l.Args[3]);
-				l.Args[4] = arg4.GetResult(l.Args[4]);
+				//mxd. Apply args
+				argscontrol.Apply(l);
 				
 				// Remove front side?
 				if((l.Front != null) && (frontside.CheckState == CheckState.Unchecked))
@@ -971,39 +818,17 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			// Only when line type is known
 			if(General.Map.Config.LinedefActions.ContainsKey(action.Value)) showaction = action.Value;
-			
-			// Change the argument descriptions
-			UpdateArgument(arg0, arg0label, General.Map.Config.LinedefActions[showaction].Args[0]); //mxd
-			UpdateArgument(arg1, arg1label, General.Map.Config.LinedefActions[showaction].Args[1]); //mxd
-			UpdateArgument(arg2, arg2label, General.Map.Config.LinedefActions[showaction].Args[2]); //mxd
-			UpdateArgument(arg3, arg3label, General.Map.Config.LinedefActions[showaction].Args[3]); //mxd
-			UpdateArgument(arg4, arg4label, General.Map.Config.LinedefActions[showaction].Args[4]); //mxd
+
+			//mxd. Change the argument descriptions
+			argscontrol.UpdateAction(showaction, preventchanges);
 
 			if(!preventchanges) 
 			{
 				MakeUndo(); //mxd
-				
-				// mxd. Apply action's default arguments 
-				if(showaction != 0) 
-				{
-					arg0.SetDefaultValue();
-					arg1.SetDefaultValue();
-					arg2.SetDefaultValue();
-					arg3.SetDefaultValue();
-					arg4.SetDefaultValue();
-				} 
-				else //or set them to 0
-				{ 
-					arg0.SetValue(0);
-					arg1.SetValue(0);
-					arg2.SetValue(0);
-					arg3.SetValue(0);
-					arg4.SetValue(0);
-				}
 
 				//mxd. Update what must be updated
-				UpdateScriptControls();
 				CheckActivationFlagsRequired();
+				argscontrol.UpdateScriptControls();
 				actionhelp.UpdateAction(showaction);
 			}
 		}
@@ -1012,15 +837,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private void browseaction_Click(object sender, EventArgs e)
 		{
 			action.Value = ActionBrowserForm.BrowseAction(this, action.Value);
-		}
-
-		//mxd
-		private void cbArgStr_CheckedChanged(object sender, EventArgs e) 
-		{
-			if(!cbArgStr.Visible) return;
-			scriptNames.Visible = cbArgStr.Checked;
-			scriptNumbers.Visible = !cbArgStr.Checked;
-			arg0label.Text = cbArgStr.Checked ? "Script Name:" : "Script Number:";
 		}
 
 		//mxd

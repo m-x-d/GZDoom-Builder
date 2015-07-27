@@ -31,6 +31,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 			functions = new List<ScriptItem>();
 			parsedlumps = new List<string>();
 			includes = new List<string>();
+			specialtokens += "(,)";
 		}
 
 		public override bool Parse(Stream stream, string sourcefilename) 
@@ -76,23 +77,25 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						if (token.IndexOf('"') != -1) 
 						{
 							startpos += 1;
-							//check if we have something like '"mycoolscript"(void)' as a token
-							if(token.LastIndexOf('"') != token.Length - 1)
-								token = token.Substring(0, token.LastIndexOf('"'));
+							string scriptname = StripTokenQuotes(token);
 
-							token = StripTokenQuotes(token);
-							ScriptItem i = new ScriptItem(0, token, startpos, isinclude);
-							namedscripts.Add(i);
+							// Try to parse argument names
+							List<KeyValuePair<string, string>> args = ParseArgs();
+							List<string> argnames = new List<string>();
+							foreach(KeyValuePair<string, string> group in args) argnames.Add(group.Value);
+
+							// Add to collection
+							namedscripts.Add(new ScriptItem(scriptname, argnames, startpos, isinclude));
 						} 
 						else //should be numbered script
 						{ 
-							//check if we have something like "999(void)" as a token
-							if (token.Contains("(")) token = token.Substring(0, token.IndexOf("("));
-
 							int n;
 							if (int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out n)) 
 							{
-								//now find opening brace
+								// Try to parse argument names
+								List<KeyValuePair<string, string>> args = ParseArgs();
+								
+								// Now find the opening brace
 								do 
 								{
 									if(!SkipWhitespace(true)) break;
@@ -114,8 +117,12 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 								}
 
 								name = (name.Length > 0 ? name + " [" + n + "]" : "Script " + n);
-								ScriptItem i = new ScriptItem(n, name, startpos, isinclude);
-								numberedscripts.Add(i);
+								
+								List<string> argnames = new List<string>();
+								foreach(KeyValuePair<string, string> group in args) argnames.Add(group.Value);
+
+								// Add to collection
+								numberedscripts.Add(new ScriptItem(n, name, argnames, startpos, isinclude));
 							}
 						}
 					}
@@ -129,30 +136,13 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						SkipWhitespace(true);
 						funcname += " " + ReadToken(); //read function name
 
-						//look for opening brace
-						if (!funcname.Contains("(")) 
-						{
-							SkipWhitespace(true);
-							funcname += " " + ReadToken();
-						} 
-						else 
-						{
-							funcname = funcname.Replace("(", " (");
-						}
+						// Try to parse argument names
+						List<KeyValuePair<string, string>> args = ParseArgs();
+						List<string> argnames = new List<string>();
+						foreach(KeyValuePair<string, string> group in args) argnames.Add(group.Value);
 
-						//look for closing brace
-						if(!funcname.Contains(")")) 
-						{
-							do 
-							{
-								if(!SkipWhitespace(true)) break;
-								token = ReadToken();
-								funcname += " " + token;
-							} while(!string.IsNullOrEmpty(token) && !token.Contains(")"));
-						}
-
-						ScriptItem i = new ScriptItem(0, funcname, startpos, isinclude);
-						functions.Add(i);
+						// Add to collection
+						functions.Add(new ScriptItem(funcname, argnames, startpos, isinclude));
 					}
 					break;
 
@@ -186,6 +176,41 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 				}
 			}
 			return true;
+		}
+
+		private List<KeyValuePair<string, string>> ParseArgs() //type, name
+		{
+			List<KeyValuePair<string, string>> argnames = new List<KeyValuePair<string, string>>();
+			SkipWhitespace(true);
+			string token = ReadToken();
+			
+			// Should be ENTER/OPEN etc. script type
+			if(token != "(")
+			{
+				argnames.Add(new KeyValuePair<string, string>(token.ToUpperInvariant(), string.Empty));
+				return argnames;
+			}
+
+			while(SkipWhitespace(true))
+			{
+				string argtype = ReadToken(); // should be type
+				if(IsSpecialToken(argtype)) break;
+				if(argtype.ToUpperInvariant() == "VOID")
+				{
+					argnames.Add(new KeyValuePair<string, string>("(void)", string.Empty));
+					break;
+				}
+
+				SkipWhitespace(true);
+				token = ReadToken(); // should be arg name
+				argnames.Add(new KeyValuePair<string, string>(argtype, token));
+
+				SkipWhitespace(true);
+				token = ReadToken(); // should be comma or ")"
+				if(token != ",") break;
+			}
+
+			return argnames;
 		}
 	}
 }

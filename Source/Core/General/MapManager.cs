@@ -83,8 +83,8 @@ namespace CodeImp.DoomBuilder
 		private VisualCamera visualcamera;
 
 		//mxd
-		private List<ScriptItem> namedScripts;
-		private List<ScriptItem> numberedScripts;
+		private Dictionary<string, ScriptItem> namedscripts;
+		private Dictionary<int, ScriptItem> numberedscripts;
 		private List<string> scriptincludes;
 
 		// Disposing
@@ -122,8 +122,8 @@ namespace CodeImp.DoomBuilder
 
 		//mxd
 		public bool UDMF { get { return config.FormatInterface == "UniversalMapSetIO"; } }
-		internal List<ScriptItem> NamedScripts { get { return namedScripts; } }
-		internal List<ScriptItem> NumberedScripts { get { return numberedScripts; } }
+		internal Dictionary<string, ScriptItem> NamedScripts { get { return namedscripts; } }
+		internal Dictionary<int, ScriptItem> NumberedScripts { get { return numberedscripts; } }
 		internal List<string> ScriptIncludes { get { return scriptincludes; } }
 	   
 		public ViewMode ViewMode { get { return renderer2d.ViewMode; } }
@@ -152,8 +152,8 @@ namespace CodeImp.DoomBuilder
 			errors = new List<CompilerError>();
 
 			//mxd
-			numberedScripts = new List<ScriptItem>();
-			namedScripts = new List<ScriptItem>();
+			numberedscripts = new Dictionary<int, ScriptItem>();
+			namedscripts = new Dictionary<string, ScriptItem>();
 			scriptincludes = new List<string>();
 		}
 
@@ -308,8 +308,8 @@ namespace CodeImp.DoomBuilder
 			map.Update();
 			thingsfilter.Update();
 
-			namedScripts = new List<ScriptItem>(); //mxd
-			numberedScripts = new List<ScriptItem>(); //mxd
+			namedscripts = new Dictionary<string, ScriptItem>(); //mxd
+			numberedscripts = new Dictionary<int, ScriptItem>(); //mxd
 
 			// Bind any methods
 			General.Actions.BindMethods(this);
@@ -1485,6 +1485,8 @@ namespace CodeImp.DoomBuilder
 					scriptwindow.Show();
 				}
 			}
+
+			if(scriptwindow.WindowState == FormWindowState.Minimized) scriptwindow.WindowState = FormWindowState.Normal; //mxd
 			scriptwindow.Activate();
 			scriptwindow.Focus();
 			Cursor.Current = Cursors.Default;
@@ -1718,8 +1720,8 @@ namespace CodeImp.DoomBuilder
 		//mxd
 		internal void UpdateScriptNames() 
 		{
-			namedScripts = new List<ScriptItem>();
-			numberedScripts = new List<ScriptItem>();
+			List<ScriptItem> namedscriptslist = new List<ScriptItem>();
+			List<ScriptItem> numberedscriptslist = new List<ScriptItem>();
 
 			// Load the script lumps
 			foreach (MapLumpInfo maplumpinfo in config.MapLumps.Values) 
@@ -1737,16 +1739,31 @@ namespace CodeImp.DoomBuilder
 						parser.Parse(stream, "SCRIPTS", true, false);
 
 						// Add them to arrays
-						namedScripts.AddRange(parser.NamedScripts);
-						numberedScripts.AddRange(parser.NumberedScripts);
+						namedscriptslist.AddRange(parser.NamedScripts);
+						numberedscriptslist.AddRange(parser.NumberedScripts);
 						scriptincludes.AddRange(parser.Includes);
 					}
 				}
 			}
 
 			// Sort script names
-			namedScripts.Sort(ScriptItem.SortByName);
-			numberedScripts.Sort(ScriptItem.SortByIndex);
+			namedscriptslist.Sort(ScriptItem.SortByName);
+			numberedscriptslist.Sort(ScriptItem.SortByIndex);
+
+			// Add to collections
+			namedscripts = new Dictionary<string, ScriptItem>(namedscriptslist.Count);
+			numberedscripts = new Dictionary<int, ScriptItem>(numberedscriptslist.Count);
+
+			foreach (ScriptItem item in namedscriptslist)
+			{
+				if(!namedscripts.ContainsKey(item.Name.ToLowerInvariant()))
+					namedscripts.Add(item.Name.ToLowerInvariant(), item);
+			}
+			foreach(ScriptItem item in numberedscriptslist)
+			{
+				if(!numberedscripts.ContainsKey(item.Index))
+					numberedscripts.Add(item.Index, item);
+			}
 		}
 
 		//mxd
