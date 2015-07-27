@@ -70,7 +70,7 @@ namespace CodeImp.DoomBuilder.Map
 		private Dictionary<string, bool> flags;
 		private int action;
 		private int activate;
-		private int tag;
+		private List<int> tags; //mxd
 		private int[] args;
 		private bool frontinterior;		// for drawing only
 		private int colorPresetIndex;//mxd
@@ -92,7 +92,8 @@ namespace CodeImp.DoomBuilder.Map
 		public int Action { get { return action; } set { BeforePropsChange(); action = value; UpdateColorPreset(); } }
 		public int Activate { get { return activate; } set { BeforePropsChange(); activate = value; UpdateColorPreset(); } }
 
-		public int Tag { get { return tag; } set { BeforePropsChange(); tag = value; if((tag < General.Map.FormatInterface.MinTag) || (tag > General.Map.FormatInterface.MaxTag)) throw new ArgumentOutOfRangeException("Tag", "Invalid tag number"); } }
+		public int Tag { get { return tags[0]; } set { BeforePropsChange(); tags[0] = value; if((value < General.Map.FormatInterface.MinTag) || (value > General.Map.FormatInterface.MaxTag)) throw new ArgumentOutOfRangeException("Tag", "Invalid tag number"); } } //mxd
+		public List<int> Tags { get { return tags; } } //mxd
 		public float LengthSq { get { return lengthsq; } }
 		public float Length { get { return length; } }
 		public float LengthInv { get { return lengthinv; } }
@@ -118,6 +119,7 @@ namespace CodeImp.DoomBuilder.Map
 			this.listindex = listindex;
 			this.updateneeded = true;
 			this.args = new int[NUM_ARGS];
+			this.tags = new List<int> { 0 }; //mxd
 			this.flags = new Dictionary<string, bool>(StringComparer.Ordinal);
 			this.colorPresetIndex = -1;//mxd
 			
@@ -220,7 +222,24 @@ namespace CodeImp.DoomBuilder.Map
 
 			s.rwInt(ref action);
 			s.rwInt(ref activate);
-			s.rwInt(ref tag);
+
+			//mxd
+			if(s.IsWriting)
+			{
+				s.wInt(tags.Count);
+				foreach (int tag in tags) s.wInt(tag);
+			}
+			else
+			{
+				int c; s.rInt(out c);
+				tags = new List<int>(c);
+				for(int i = 0; i < c; i++) 
+				{
+					int t; s.rInt(out t);
+					tags.Add(t);
+				}
+			}
+
 			for(int i = 0; i < NUM_ARGS; i++) s.rwInt(ref args[i]);
 
 			//mxd
@@ -283,7 +302,7 @@ namespace CodeImp.DoomBuilder.Map
 			l.action = action;
 			l.args = (int[])args.Clone();
 			l.flags = new Dictionary<string, bool>(flags);
-			l.tag = tag;
+			l.tags = new List<int>(tags); //mxd
 			l.updateneeded = true;
 			l.activate = activate;
 			l.impassableflag = impassableflag;
@@ -438,7 +457,7 @@ namespace CodeImp.DoomBuilder.Map
 				{
 					case 121: //Line_SetIdentification
 						//Convert arg0 to tag
-						tag = args[0] + args[4] * 256;
+						tags[0] = args[0] + args[4] * 256;
 
 						//Convert arg1 to flags
 						ConvertArgToFlags(1);
@@ -450,7 +469,7 @@ namespace CodeImp.DoomBuilder.Map
 
 					case 208: //TranslucentLine
 						//Convert arg0 to tag
-						tag = args[0];
+						tags[0] = args[0];
 
 						//Convert arg3 to flags
 						ConvertArgToFlags(3);
@@ -466,7 +485,7 @@ namespace CodeImp.DoomBuilder.Map
 						// Convert to UDMF
 						if ((args[1] & 8) == 8) // arg4 is LineID?
 						{
-							tag = args[4];
+							tags[0] = args[4];
 							args[1] &= ~8; // Unset flag
 						}
 						else // It's sector's HiTag then
@@ -569,13 +588,13 @@ namespace CodeImp.DoomBuilder.Map
 				{
 					case 208: //TranslucentLine
 						//Convert tag to arg0
-						if(tag < General.Map.FormatInterface.MinArgument || tag > General.Map.FormatInterface.MaxArgument)
+						if(tags[0] < General.Map.FormatInterface.MinArgument || tags[0] > General.Map.FormatInterface.MaxArgument)
 						{
-							General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + Index + ": unable to convert Tag (" + tag + ") to LineID because it's outside of supported argument range [" + General.Map.FormatInterface.MinArgument + ".." + General.Map.FormatInterface.MaxArgument + "].");
+							General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + Index + ": unable to convert Tag (" + tags[0] + ") to LineID because it's outside of supported argument range [" + General.Map.FormatInterface.MinArgument + ".." + General.Map.FormatInterface.MaxArgument + "].");
 						}
 						else
 						{
-							args[0] = tag;
+							args[0] = tags[0];
 						}
 
 						//Convert flags to arg3
@@ -597,40 +616,40 @@ namespace CodeImp.DoomBuilder.Map
 							args[0] = lotag;
 							args[4] = hitag;
 
-							if (tag != 0)
+							if(tags[0] != 0)
 							{
-								General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + Index + ": unable to convert Tag (" + tag + ") to LineID, because target sector tag (arg0) is greater than " + General.Map.FormatInterface.MaxArgument + ".");
+								General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + Index + ": unable to convert Tag (" + tags[0] + ") to LineID, because target sector tag (arg0) is greater than " + General.Map.FormatInterface.MaxArgument + ".");
 							}
 						}
 						else if(args[0] < General.Map.FormatInterface.MinArgument) 
 						{
 							General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + Index + ": unable to convert arg0 (" + args[0] + "), because it's outside of supported argument range [" + General.Map.FormatInterface.MinArgument + ".." + General.Map.FormatInterface.MaxArgument + "].");
 						} 
-						else if(tag > General.Map.FormatInterface.MinArgument) // Convert to LineID?
+						else if(tags[0] > General.Map.FormatInterface.MinArgument) // Convert to LineID?
 						{
-							if(tag > General.Map.FormatInterface.MaxArgument)
+							if(tags[0] > General.Map.FormatInterface.MaxArgument)
 							{
-								General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + Index + ": unable to convert Tag (" + tag + ") to LineID, because linedef tag is greater than " + General.Map.FormatInterface.MaxArgument + ".");
+								General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + Index + ": unable to convert Tag (" + tags[0] + ") to LineID, because linedef tag is greater than " + General.Map.FormatInterface.MaxArgument + ".");
 							}
 							else
 							{
-								args[4] = tag;
+								args[4] = tags[0];
 								args[1] |= 8; // Add "Use arg4 as LineID" flag
 							}
 						}
 						break;
 
 					default: // Convert tag to Line_SetIdentification?
-						if(tag > General.Map.FormatInterface.MinArgument)
+						if(tags[0] > General.Map.FormatInterface.MinArgument)
 						{
 							if (action != 0)
 							{
-								General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + Index + ": unable to convert Tag (" + tag + ") to LineID, because linedef already has an action.");
+								General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + Index + ": unable to convert Tag (" + tags[0] + ") to LineID, because linedef already has an action.");
 							}
 							else // Convert to Line_SetIdentification
 							{
-								int hiid = tag / 256;
-								int loid = tag - hiid;
+								int hiid = tags[0] / 256;
+								int loid = tags[0] - hiid;
 
 								action = 121;
 								args[0] = loid;
@@ -638,15 +657,15 @@ namespace CodeImp.DoomBuilder.Map
 								ConvertFlagsToArg(oldfields, 1);
 							}
 						} 
-						else if(tag < General.Map.FormatInterface.MinArgument) 
+						else if(tags[0] < General.Map.FormatInterface.MinArgument) 
 						{
-							General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + Index + ": unable to convert Tag (" + tag + ") to LineID, because it's outside of supported argument range [" + General.Map.FormatInterface.MinArgument + ".." + General.Map.FormatInterface.MaxArgument + "].");
+							General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + Index + ": unable to convert Tag (" + tags[0] + ") to LineID, because it's outside of supported argument range [" + General.Map.FormatInterface.MinArgument + ".." + General.Map.FormatInterface.MaxArgument + "].");
 						}
 						break;
 				}
 
 				// Clear tag
-				tag = 0;
+				tags[0] = 0;
 			}
 
 			//mxd. Update cached flags
@@ -660,7 +679,7 @@ namespace CodeImp.DoomBuilder.Map
 		private void ConvertArgToTag(int argnum, bool cleararg) 
 		{
 			// Convert arg to tag
-			tag = args[argnum];
+			tags[0] = args[argnum];
 
 			// Clear obsolete arg
 			if(cleararg) args[argnum] = 0;
@@ -669,13 +688,13 @@ namespace CodeImp.DoomBuilder.Map
 		//mxd
 		private void ConvertTagToArg(int argnum) 
 		{
-			if(tag < General.Map.FormatInterface.MinArgument || tag > General.Map.FormatInterface.MaxArgument)
+			if(tags[0] < General.Map.FormatInterface.MinArgument || tags[0] > General.Map.FormatInterface.MaxArgument)
 			{
-				General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + Index + ": unable to convert Tag (" + tag + ") to LineID because it's outside of supported argument range [" + General.Map.FormatInterface.MinArgument + ".." + General.Map.FormatInterface.MaxArgument + "].");
+				General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + Index + ": unable to convert Tag (" + tags[0] + ") to LineID because it's outside of supported argument range [" + General.Map.FormatInterface.MinArgument + ".." + General.Map.FormatInterface.MaxArgument + "].");
 			}
 			else
 			{
-				args[argnum] = tag;
+				args[argnum] = tags[0];
 			}
 		}
 
@@ -1275,13 +1294,13 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Changes
 		
 		// This updates all properties
-		public void Update(Dictionary<string, bool> flags, int activate, int tag, int action, int[] args)
+		public void Update(Dictionary<string, bool> flags, int activate, List<int> tags, int action, int[] args)
 		{
 			BeforePropsChange();
 			
 			// Apply changes
 			this.flags = new Dictionary<string, bool>(flags);
-			this.tag = tag;
+			this.tags = new List<int>(tags); //mxd
 			this.activate = activate;
 			this.action = action;
 			this.args = new int[NUM_ARGS];

@@ -121,10 +121,23 @@ namespace CodeImp.DoomBuilder.Controls
 				taglabel.Visible = true;
 				tag.Visible = true;
 
-				//set tag
-				tag.Text = l.Tag + (General.Map.Options.TagLabels.ContainsKey(l.Tag) ? " - " + General.Map.Options.TagLabels[l.Tag] : string.Empty);
-				tag.Enabled = (l.Tag != 0);
-				taglabel.Enabled = (l.Tag != 0);
+				//mxd. Set tag(s)
+				if(l.Tags.Count > 1)
+				{
+					string[] tags = new string[l.Tags.Count];
+					for (int i = 0; i < l.Tags.Count; i++) tags[i] = l.Tags[i].ToString();
+					tag.Text = string.Join(", ", tags);
+					tag.Enabled = true;
+					taglabel.Enabled = true;
+					taglabel.Text = "Tags:";
+				}
+				else
+				{
+					tag.Text = l.Tag + (General.Map.Options.TagLabels.ContainsKey(l.Tag) ? " - " + General.Map.Options.TagLabels[l.Tag] : string.Empty);
+					tag.Enabled = (l.Tag != 0);
+					taglabel.Enabled = (l.Tag != 0);
+					taglabel.Text = "Tag:";
+				}
 			}
 			
 			// Get line action information

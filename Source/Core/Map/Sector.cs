@@ -57,7 +57,7 @@ namespace CodeImp.DoomBuilder.Map
 		private long longfloortexname;
 		private long longceiltexname;
 		private int effect;
-		private int tag;
+		private List<int> tags; //mxd
 		private int brightness;
 
 		//mxd. UDMF properties
@@ -106,7 +106,8 @@ namespace CodeImp.DoomBuilder.Map
 		public long LongCeilTexture { get { return longceiltexname; } }
 		internal Dictionary<string, bool> Flags { get { return flags; } } //mxd
 		public int Effect { get { return effect; } set { BeforePropsChange(); effect = value; } }
-		public int Tag { get { return tag; } set { BeforePropsChange(); tag = value; if((tag < General.Map.FormatInterface.MinTag) || (tag > General.Map.FormatInterface.MaxTag)) throw new ArgumentOutOfRangeException("Tag", "Invalid tag number"); } }
+		public int Tag { get { return tags[0]; } set { BeforePropsChange(); tags[0] = value; if((value < General.Map.FormatInterface.MinTag) || (value > General.Map.FormatInterface.MaxTag)) throw new ArgumentOutOfRangeException("Tag", "Invalid tag number"); } } //mxd
+		public List<int> Tags { get { return tags; } } //mxd
 		public int Brightness { get { return brightness; } set { BeforePropsChange(); brightness = value; updateneeded = true; } }
 		public bool UpdateNeeded { get { return updateneeded; } set { updateneeded |= value; triangulationneeded |= value; } }
 		public RectangleF BBox { get { return bbox; } }
@@ -144,6 +145,7 @@ namespace CodeImp.DoomBuilder.Map
 			this.longfloortexname = MapSet.EmptyLongName;
 			this.longceiltexname = MapSet.EmptyLongName;
 			this.flags = new Dictionary<string, bool>(StringComparer.Ordinal); //mxd
+			this.tags = new List<int> { 0 }; //mxd
 			this.updateneeded = true;
 			this.triangulationneeded = true;
 			this.surfaceentries = new SurfaceEntryCollection();
@@ -246,8 +248,26 @@ namespace CodeImp.DoomBuilder.Map
 			s.rwLong(ref longfloortexname);
 			s.rwLong(ref longceiltexname);
 			s.rwInt(ref effect);
-			s.rwInt(ref tag);
 			s.rwInt(ref brightness);
+
+			//mxd. (Re)store tags
+			if(s.IsWriting) 
+			{
+				s.wInt(tags.Count);
+				foreach(int tag in tags) s.wInt(tag);
+			} 
+			else 
+			{
+				int c;
+				s.rInt(out c);
+				tags = new List<int>(c);
+				for(int i = 0; i < c; i++)
+				{
+					int t;
+					s.rInt(out t);
+					tags.Add(t);
+				}
+			}
 
 			//mxd. Slopes
 			s.rwFloat(ref flooroffset);
@@ -277,7 +297,7 @@ namespace CodeImp.DoomBuilder.Map
 			s.floortexname = floortexname;
 			s.longfloortexname = longfloortexname;
 			s.effect = effect;
-			s.tag = tag;
+			s.tags = new List<int>(tags); //mxd
 			s.flags = new Dictionary<string, bool>(flags); //mxd
 			s.brightness = brightness;
 			s.flooroffset = flooroffset; //mxd
@@ -769,11 +789,11 @@ namespace CodeImp.DoomBuilder.Map
 		//mxd. This updates all properties (Doom/Hexen version)
 		public void Update(int hfloor, int hceil, string tfloor, string tceil, int effect, int tag, int brightness) 
 		{
-			Update(hfloor, hceil, tfloor, tceil, effect, new Dictionary<string, bool>(StringComparer.Ordinal), tag, brightness, 0, new Vector3D(), 0, new Vector3D());
+			Update(hfloor, hceil, tfloor, tceil, effect, new Dictionary<string, bool>(StringComparer.Ordinal), new List<int> { tag }, brightness, 0, new Vector3D(), 0, new Vector3D());
 		}
 
 		//mxd. This updates all properties (UDMF version)
-		public void Update(int hfloor, int hceil, string tfloor, string tceil, int effect, Dictionary<string, bool> flags, int tag, int brightness, float flooroffset, Vector3D floorslope, float ceiloffset, Vector3D ceilslope)
+		public void Update(int hfloor, int hceil, string tfloor, string tceil, int effect, Dictionary<string, bool> flags, List<int> tags, int brightness, float flooroffset, Vector3D floorslope, float ceiloffset, Vector3D ceilslope)
 		{
 			BeforePropsChange();
 			
@@ -783,7 +803,7 @@ namespace CodeImp.DoomBuilder.Map
 			//SetFloorTexture(tfloor);
 			//SetCeilTexture(tceil);
 			this.effect = effect;
-			this.tag = tag;
+			this.tags = new List<int>(tags); //mxd
 			this.flags = new Dictionary<string, bool>(flags); //mxd
 			this.brightness = brightness;
 			this.flooroffset = flooroffset; //mxd

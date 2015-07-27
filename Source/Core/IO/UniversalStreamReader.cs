@@ -246,6 +246,7 @@ namespace CodeImp.DoomBuilder.IO
 
 			// Go for all lines
 			map.SetCapacity(0, map.Linedefs.Count + linescolls.Count, map.Sidedefs.Count + sidescolls.Count, 0, 0);
+			char[] splitter = new[] { ',' }; //mxd
 			for(int i = 0; i < linescolls.Count; i++)
 			{
 				// Read fields
@@ -270,6 +271,22 @@ namespace CodeImp.DoomBuilder.IO
 				int s1 = GetCollectionEntry(lc, "sidefront", true, -1, where);
 				int s2 = GetCollectionEntry(lc, "sideback", false, -1, where);
 
+				//mxd. MoreIDs
+				List<int> tags = new List<int> { tag };
+				string moreids = GetCollectionEntry(lc, "moreids", false, string.Empty, where);
+				if(!string.IsNullOrEmpty(moreids))
+				{
+					string[] moreidscol = moreids.Split(splitter, StringSplitOptions.RemoveEmptyEntries);
+					int id;
+					foreach (string sid in moreidscol)
+					{
+						if(int.TryParse(sid.Trim(), out id) && id != 0 && !tags.Contains(id))
+						{
+							tags.Add(id);
+						}
+					}
+				}
+
 				// Flags
 				Dictionary<string, bool> stringflags = new Dictionary<string, bool>(StringComparer.Ordinal);
 				foreach(KeyValuePair<string, string> flag in General.Map.Config.LinedefFlags)
@@ -291,7 +308,7 @@ namespace CodeImp.DoomBuilder.IO
 					Linedef l = map.CreateLinedef(vertexlink[v1], vertexlink[v2]);
 					if(l != null)
 					{
-						l.Update(stringflags, 0, tag, special, args);
+						l.Update(stringflags, 0, tags, special, args);
 						l.UpdateCache();
 
 						// Custom fields
@@ -369,6 +386,7 @@ namespace CodeImp.DoomBuilder.IO
 
 			// Go for all collections
 			map.SetCapacity(0, 0, 0, map.Sectors.Count + collections.Count, 0);
+			char[] splitter = new[] { ',' }; //mxd
 			for(int i = 0; i < collections.Count; i++)
 			{
 				// Read fields
@@ -381,6 +399,22 @@ namespace CodeImp.DoomBuilder.IO
 				int bright = GetCollectionEntry(c, "lightlevel", false, 160, where);
 				int special = GetCollectionEntry(c, "special", false, 0, where);
 				int tag = GetCollectionEntry(c, "id", false, 0, where);
+
+				//mxd. MoreIDs
+				List<int> tags = new List<int> { tag };
+				string moreids = GetCollectionEntry(c, "moreids", false, string.Empty, where);
+				if(!string.IsNullOrEmpty(moreids)) 
+				{
+					string[] moreidscol = moreids.Split(splitter, StringSplitOptions.RemoveEmptyEntries);
+					int id;
+					foreach(string sid in moreidscol) 
+					{
+						if(int.TryParse(sid.Trim(), out id) && id != 0 && !tags.Contains(id)) 
+						{
+							tags.Add(id);
+						}
+					}
+				}
 
 				//mxd. Read slopes
 				float fslopex = GetCollectionEntry(c, "floorplane_a", false, 0.0f, where);
@@ -402,7 +436,7 @@ namespace CodeImp.DoomBuilder.IO
 				Sector s = map.CreateSector();
 				if(s != null)
 				{
-					s.Update(hfloor, hceil, tfloor, tceil, special, stringflags, tag, bright, foffset, new Vector3D(fslopex, fslopey, fslopez).GetNormal(), coffset, new Vector3D(cslopex, cslopey, cslopez).GetNormal());
+					s.Update(hfloor, hceil, tfloor, tceil, special, stringflags, tags, bright, foffset, new Vector3D(fslopex, fslopey, fslopez).GetNormal(), coffset, new Vector3D(cslopex, cslopey, cslopez).GetNormal());
 
 					// Custom fields
 					ReadCustomFields(c, s, "sector");

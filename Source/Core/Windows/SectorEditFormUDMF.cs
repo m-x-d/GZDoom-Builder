@@ -323,8 +323,8 @@ namespace CodeImp.DoomBuilder.Windows
 			SetupCeilingSlope(sc, true);
 
 			// Action
-			tagSelector.Setup(UniversalType.SectorTag); //mxd
-			tagSelector.SetTag(sc.Tag);//mxd
+			tagsselector.Setup(UniversalType.SectorTag); //mxd
+			tagsselector.SetValue(sc.Tags, true);//mxd
 
 			// Custom fields
 			fieldslist.SetValues(sc.Fields, true);
@@ -430,7 +430,7 @@ namespace CodeImp.DoomBuilder.Windows
 				SetupCeilingSlope(s, false);
 
 				// Action
-				if(s.Tag != sc.Tag) tagSelector.ClearTag(); //mxd
+				tagsselector.SetValue(s.Tags, false); //mxd
 
 				// Custom fields
 				fieldslist.SetValues(s.Fields, false);
@@ -471,8 +471,9 @@ namespace CodeImp.DoomBuilder.Windows
 			if(useCeilSlopeLineAngles) ceilingslopecontrol.StepValues = anglesteps;
 			if(useFloorSlopeLineAngles) floorslopecontrol.StepValues = anglesteps;
 
-			//mxd. Comments
+			//mxd. Comments and Tags
 			commenteditor.FinishSetup();
+			tagsselector.FinishSetup();
 
 			preventchanges = false; //mxd
 		}
@@ -641,14 +642,6 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void apply_Click(object sender, EventArgs e) 
 		{
-			// Verify the tag
-			tagSelector.ValidateTag(); //mxd
-			if((tagSelector.GetTag(0) < General.Map.FormatInterface.MinTag) || (tagSelector.GetTag(0) > General.Map.FormatInterface.MaxTag)) 
-			{
-				General.ShowWarningMessage("Sector tag must be between " + General.Map.FormatInterface.MinTag + " and " + General.Map.FormatInterface.MaxTag + ".", MessageBoxButtons.OK);
-				return;
-			}
-
 			// Verify the effect
 			if((effect.Value < General.Map.FormatInterface.MinEffect) || (effect.Value > General.Map.FormatInterface.MaxEffect)) 
 			{
@@ -684,8 +677,8 @@ namespace CodeImp.DoomBuilder.Windows
 				if(!effect.Empty) s.Effect = effect.Value;
 				s.Brightness = General.Clamp(brightness.GetResult(s.Brightness), General.Map.FormatInterface.MinBrightness, General.Map.FormatInterface.MaxBrightness);
 
-				// Action
-				s.Tag = General.Clamp(tagSelector.GetSmartTag(s.Tag, tagoffset++), General.Map.FormatInterface.MinTag, General.Map.FormatInterface.MaxTag); //mxd
+				//mxd. Tag
+				tagsselector.ApplyTo(s, tagoffset++);
 
 				// Fields
 				fieldslist.Apply(s.Fields);

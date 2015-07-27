@@ -139,7 +139,6 @@ namespace CodeImp.DoomBuilder.IO
 			foreach(Linedef l in linedefs) 
 			{
 				//write "static" properties
-				writer.Write(l.Tag);
 				writer.Write(vertexids[l.Start]);
 				writer.Write(vertexids[l.End]);
 
@@ -150,6 +149,10 @@ namespace CodeImp.DoomBuilder.IO
 				//action and args
 				writer.Write(l.Action);
 				for(int i = 0; i < l.Args.Length; i++) writer.Write(l.Args[i]);
+
+				//mxd. Tags
+				writer.Write(l.Tags.Count);
+				for(int i = 0; i < l.Tags.Count; i++) writer.Write(l.Tags[i]);
 
 				AddFlags(l.Flags, writer);
 				AddCustomFields(l.Fields, "linedef", writer);
@@ -191,11 +194,14 @@ namespace CodeImp.DoomBuilder.IO
 			foreach(Sector s in sectors) 
 			{
 				//write "static" properties
-				writer.Write(s.Tag);
 				writer.Write(s.Effect);
 				writer.Write(s.FloorHeight);
 				writer.Write(s.CeilHeight);
 				writer.Write(s.Brightness);
+
+				//mxd. Tags
+				writer.Write(s.Tags.Count);
+				for(int i = 0; i < s.Tags.Count; i++) writer.Write(s.Tags[i]);
 
 				//textures
 				writer.Write(s.FloorTexture.Length);

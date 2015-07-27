@@ -795,6 +795,12 @@
     <Compile Include="GZBuilder\Controls\ColorFieldsControl.Designer.cs">
       <DependentUpon>ColorFieldsControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="GZBuilder\Controls\TagsSelector.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="GZBuilder\Controls\TagsSelector.Designer.cs">
+      <DependentUpon>TagsSelector.cs</DependentUpon>
+    </Compile>
     <Compile Include="GZBuilder\Controls\CustomLinedefColorProperties.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -1021,6 +1027,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="GZBuilder\Controls\ColorFieldsControl.resx">
       <DependentUpon>ColorFieldsControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GZBuilder\Controls\TagsSelector.resx">
+      <DependentUpon>TagsSelector.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="GZBuilder\Controls\CustomLinedefColorProperties.resx">
       <DependentUpon>CustomLinedefColorProperties.cs</DependentUpon>

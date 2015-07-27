@@ -277,14 +277,12 @@ namespace CodeImp.DoomBuilder.Windows
 			lockpick.SelectedIndex = keynumbers.IndexOf(locknumber);
 			if(lockpick.SelectedIndex == -1) lockpick.Text = locknumber.ToString();
 
-			// Action/tags
+			// Action
 			action.Value = fl.Action;
 
-			if(General.Map.FormatInterface.HasLinedefTag) //mxd 
-			{
-				tagSelector.Setup(UniversalType.LinedefTag);
-				tagSelector.SetTag(fl.Tag);
-			}
+			//mxd. Tags
+			tagsselector.Setup(UniversalType.LinedefTag);
+			tagsselector.SetValue(fl.Tags, true);
 
 			//mxd. Args
 			argscontrol.SetValue(fl, true);
@@ -410,7 +408,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 				// Action/tags
 				if(l.Action != action.Value) action.Empty = true;
-				if(General.Map.FormatInterface.HasLinedefTag && l.Tag != fl.Tag) tagSelector.ClearTag(); //mxd
+				tagsselector.SetValue(l.Tags, false);
 
 				//mxd. Arguments
 				argscontrol.SetValue(l, false);
@@ -557,6 +555,7 @@ namespace CodeImp.DoomBuilder.Windows
 			CheckActivationFlagsRequired(); //mxd
 			argscontrol.UpdateScriptControls(); //mxd
 			actionhelp.UpdateAction(action.GetValue()); //mxd
+			tagsselector.FinishSetup(); //mxd
 			commenteditor.FinishSetup(); //mxd
 
 			//mxd. Update some labels
@@ -646,17 +645,6 @@ namespace CodeImp.DoomBuilder.Windows
 			Sector s;
 			int index;
 			
-			// Verify the tag
-			if(General.Map.FormatInterface.HasLinedefTag)
-			{
-				tagSelector.ValidateTag(); //mxd
-				if(((tagSelector.GetTag(0) < General.Map.FormatInterface.MinTag) || (tagSelector.GetTag(0) > General.Map.FormatInterface.MaxTag))) 
-				{
-					General.ShowWarningMessage("Linedef tag must be between " + General.Map.FormatInterface.MinTag + " and " + General.Map.FormatInterface.MaxTag + ".", MessageBoxButtons.OK);
-					return;
-				}
-			}
-			
 			// Verify the action
 			if((action.Value < General.Map.FormatInterface.MinAction) || (action.Value > General.Map.FormatInterface.MaxAction))
 			{
@@ -698,8 +686,8 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 				
 				// Action/tags
-				l.Tag = General.Clamp(tagSelector.GetSmartTag(l.Tag, tagoffset++), General.Map.FormatInterface.MinTag, General.Map.FormatInterface.MaxTag); //mxd
 				if(!action.Empty) l.Action = action.Value;
+				tagsselector.ApplyTo(l, tagoffset++); //mxd
 
 				//mxd. Apply args
 				argscontrol.Apply(l);

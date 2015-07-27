@@ -110,11 +110,16 @@ namespace CodeImp.DoomBuilder.IO
 
 			for (int i = 0; i < count; i++) 
 			{
-				int tag = reader.ReadInt32();
 				int effect = reader.ReadInt32();
 				int hfloor = reader.ReadInt32();
 				int hceil = reader.ReadInt32();
 				int bright = reader.ReadInt32();
+
+				//mxd. Tags
+				int numtags = reader.ReadInt32(); //mxd
+				List<int> tags = new List<int>(numtags); //mxd
+				for(int a = 0; a < numtags; a++) tags.Add(reader.ReadInt32()); //mxd
+
 				string tfloor = ReadString(reader);
 				string tceil = ReadString(reader);
 
@@ -141,7 +146,7 @@ namespace CodeImp.DoomBuilder.IO
 				Sector s = map.CreateSector();
 				if(s != null) 
 				{
-					s.Update(hfloor, hceil, tfloor, tceil, effect, stringflags, tag, bright, foffset, fslope, coffset, cslope);
+					s.Update(hfloor, hceil, tfloor, tceil, effect, stringflags, tags, bright, foffset, fslope, coffset, cslope);
 
 					// Add custom fields
 					s.Fields.BeforeFieldsChange();
@@ -169,13 +174,15 @@ namespace CodeImp.DoomBuilder.IO
 			for(int i = 0; i < count; i++) 
 			{
 				int[] args = new int[Linedef.NUM_ARGS];
-				int tag = reader.ReadInt32();
 				int v1 = reader.ReadInt32();
 				int v2 = reader.ReadInt32();
 				int s1 = reader.ReadInt32();
 				int s2 = reader.ReadInt32();
 				int special = reader.ReadInt32();
 				for(int a = 0; a < Linedef.NUM_ARGS; a++) args[a] = reader.ReadInt32();
+				int numtags = reader.ReadInt32(); //mxd
+				List<int> tags = new List<int>(numtags); //mxd
+				for(int a = 0; a < numtags; a++) tags.Add(reader.ReadInt32()); //mxd
 
 				//flags
 				Dictionary<string, bool> stringflags = new Dictionary<string, bool>(StringComparer.Ordinal);
@@ -206,7 +213,7 @@ namespace CodeImp.DoomBuilder.IO
 					Linedef l = map.CreateLinedef(vertexlink[v1], vertexlink[v2]);
 					if (l != null) 
 					{
-						l.Update(stringflags, 0, tag, special, args);
+						l.Update(stringflags, 0, tags, special, args);
 						l.UpdateCache();
 
 						// Add custom fields

@@ -65,17 +65,32 @@ namespace CodeImp.DoomBuilder.Controls
 			effect.Text = effectinfo;
 			ceiling.Text = s.CeilHeight.ToString();
 			floor.Text = s.FloorHeight.ToString();
-			tag.Text = s.Tag + (General.Map.Options.TagLabels.ContainsKey(s.Tag) ? " - " + General.Map.Options.TagLabels[s.Tag] : string.Empty);
 			height.Text = sheight.ToString();
 			brightness.Text = s.Brightness.ToString();
 			floorname.Text = s.FloorTexture;
 			ceilingname.Text = s.CeilTexture;
 
+			//mxd. Set tags
+			if(s.Tags.Count > 1)
+			{
+				string[] tags = new string[s.Tags.Count];
+				for(int i = 0; i < s.Tags.Count; i++) tags[i] = s.Tags[i].ToString();
+				tag.Text = string.Join(", ", tags);
+				tag.Enabled = true;
+				taglabel.Enabled = true;
+				taglabel.Text = "Tags:";
+			}
+			else
+			{
+				tag.Text = s.Tag + (General.Map.Options.TagLabels.ContainsKey(s.Tag) ? " - " + General.Map.Options.TagLabels[s.Tag] : string.Empty);
+				tag.Enabled = (s.Tag != 0);
+				taglabel.Enabled = (s.Tag != 0);
+				taglabel.Text = "Tag:";
+			}
+
 			//mxd
 			effect.Enabled = (s.Effect != 0);
-			labelEffect.Enabled = (s.Effect != 0);
-			tag.Enabled = (s.Tag != 0);
-			labelTag.Enabled = (s.Tag != 0);
+			effectlabel.Enabled = (s.Effect != 0);
 
 			//mxd. Texture size
 			if (s.LongFloorTexture == MapSet.EmptyLongName)

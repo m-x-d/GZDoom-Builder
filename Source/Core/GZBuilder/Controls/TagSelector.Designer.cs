@@ -33,18 +33,23 @@
 			this.cbTagPicker = new System.Windows.Forms.ComboBox();
 			this.newTag = new System.Windows.Forms.Button();
 			this.unusedTag = new System.Windows.Forms.Button();
-			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+			this.tooltip = new System.Windows.Forms.ToolTip(this.components);
 			this.clear = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// label1
 			// 
 			this.label1.AutoSize = true;
+			this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+			this.label1.ForeColor = System.Drawing.SystemColors.HotTrack;
 			this.label1.Location = new System.Drawing.Point(7, 10);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(29, 13);
 			this.label1.TabIndex = 0;
 			this.label1.Text = "Tag:";
+			this.tooltip.SetToolTip(this.label1, "Use \">=\" or \"<=\" prefixes to create\r\nacsending or descending tags range.\r\nUse \"++" +
+					"\" or \"--\" prefixes to increment\r\nor decrement already existing tags \r\nby given v" +
+					"alue.");
 			// 
 			// cbTagPicker
 			// 
@@ -66,7 +71,7 @@
 			this.newTag.Size = new System.Drawing.Size(54, 24);
 			this.newTag.TabIndex = 2;
 			this.newTag.Text = "New";
-			this.toolTip1.SetToolTip(this.newTag, "Finds a tag, which is not used as a tag or tag action argument \r\nby any map eleme" +
+			this.tooltip.SetToolTip(this.newTag, "Finds a tag, which is not used as a tag or tag action argument \r\nby any map eleme" +
 					"nt");
 			this.newTag.UseVisualStyleBackColor = true;
 			this.newTag.Click += new System.EventHandler(this.newTag_Click);
@@ -79,9 +84,16 @@
 			this.unusedTag.Size = new System.Drawing.Size(54, 24);
 			this.unusedTag.TabIndex = 3;
 			this.unusedTag.Text = "Unused";
-			this.toolTip1.SetToolTip(this.unusedTag, "Finds a tag, which is not used as a tag \r\nby any map element of this type");
+			this.tooltip.SetToolTip(this.unusedTag, "Finds a tag, which is not used as a tag \r\nby any map element of this type");
 			this.unusedTag.UseVisualStyleBackColor = true;
 			this.unusedTag.Click += new System.EventHandler(this.unusedTag_Click);
+			// 
+			// tooltip
+			// 
+			this.tooltip.AutomaticDelay = 10;
+			this.tooltip.AutoPopDelay = 10000;
+			this.tooltip.InitialDelay = 10;
+			this.tooltip.ReshowDelay = 100;
 			// 
 			// clear
 			// 
@@ -91,7 +103,7 @@
 			this.clear.Name = "clear";
 			this.clear.Size = new System.Drawing.Size(26, 24);
 			this.clear.TabIndex = 4;
-			this.toolTip1.SetToolTip(this.clear, "Sets tag to 0");
+			this.tooltip.SetToolTip(this.clear, "Sets tag to 0");
 			this.clear.UseVisualStyleBackColor = true;
 			this.clear.Click += new System.EventHandler(this.clear_Click);
 			// 
@@ -117,7 +129,7 @@
 		private System.Windows.Forms.ComboBox cbTagPicker;
 		private System.Windows.Forms.Button newTag;
 		private System.Windows.Forms.Button unusedTag;
-		private System.Windows.Forms.ToolTip toolTip1;
+		private System.Windows.Forms.ToolTip tooltip;
 		private System.Windows.Forms.Button clear;
 	}
 }

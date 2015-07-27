@@ -40,6 +40,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.cancel = new System.Windows.Forms.Button();
 			this.apply = new System.Windows.Forms.Button();
 			this.actiongroup = new System.Windows.Forms.GroupBox();
+			this.argscontrol = new CodeImp.DoomBuilder.Controls.ArgumentsControl();
 			this.actionhelp = new CodeImp.DoomBuilder.Controls.ActionSpecialHelpButton();
 			this.action = new CodeImp.DoomBuilder.Controls.ActionSelectorControl();
 			this.browseaction = new System.Windows.Forms.Button();
@@ -55,7 +56,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.activationGroup = new System.Windows.Forms.GroupBox();
 			this.missingactivation = new System.Windows.Forms.PictureBox();
 			this.idgroup = new System.Windows.Forms.GroupBox();
-			this.tagSelector = new CodeImp.DoomBuilder.GZBuilder.Controls.TagSelector();
 			this.tabfront = new System.Windows.Forms.TabPage();
 			this.frontside = new System.Windows.Forms.CheckBox();
 			this.frontgroup = new System.Windows.Forms.GroupBox();
@@ -121,7 +121,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.fieldslist = new CodeImp.DoomBuilder.Controls.FieldsEditorControl();
 			this.imagelist = new System.Windows.Forms.ImageList(this.components);
 			this.tooltip = new System.Windows.Forms.ToolTip(this.components);
-			this.argscontrol = new CodeImp.DoomBuilder.Controls.ArgumentsControl();
+			this.tagsselector = new CodeImp.DoomBuilder.GZBuilder.Controls.TagsSelector();
 			label2 = new System.Windows.Forms.Label();
 			label11 = new System.Windows.Forms.Label();
 			label12 = new System.Windows.Forms.Label();
@@ -153,7 +153,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label2
 			// 
 			label2.AutoSize = true;
-			label2.Location = new System.Drawing.Point(15, 30);
+			label2.Location = new System.Drawing.Point(15, 22);
 			label2.Name = "label2";
 			label2.Size = new System.Drawing.Size(40, 13);
 			label2.TabIndex = 9;
@@ -180,7 +180,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label6
 			// 
 			label6.AutoSize = true;
-			label6.Location = new System.Drawing.Point(199, 24);
+			label6.Location = new System.Drawing.Point(199, 21);
 			label6.Name = "label6";
 			label6.Size = new System.Drawing.Size(37, 13);
 			label6.TabIndex = 17;
@@ -189,7 +189,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// labelrenderstyle
 			// 
 			this.labelrenderstyle.AutoSize = true;
-			this.labelrenderstyle.Location = new System.Drawing.Point(15, 24);
+			this.labelrenderstyle.Location = new System.Drawing.Point(15, 21);
 			this.labelrenderstyle.Name = "labelrenderstyle";
 			this.labelrenderstyle.Size = new System.Drawing.Size(69, 13);
 			this.labelrenderstyle.TabIndex = 11;
@@ -198,7 +198,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// labellockpick
 			// 
 			this.labellockpick.AutoSize = true;
-			this.labellockpick.Location = new System.Drawing.Point(330, 24);
+			this.labellockpick.Location = new System.Drawing.Point(330, 21);
 			this.labellockpick.Name = "labellockpick";
 			this.labellockpick.Size = new System.Drawing.Size(72, 13);
 			this.labellockpick.TabIndex = 15;
@@ -246,16 +246,23 @@ namespace CodeImp.DoomBuilder.Windows
 			this.actiongroup.Controls.Add(label2);
 			this.actiongroup.Controls.Add(this.action);
 			this.actiongroup.Controls.Add(this.browseaction);
-			this.actiongroup.Location = new System.Drawing.Point(8, 253);
+			this.actiongroup.Location = new System.Drawing.Point(8, 245);
 			this.actiongroup.Name = "actiongroup";
-			this.actiongroup.Size = new System.Drawing.Size(533, 142);
+			this.actiongroup.Size = new System.Drawing.Size(533, 126);
 			this.actiongroup.TabIndex = 1;
 			this.actiongroup.TabStop = false;
 			this.actiongroup.Text = " Action ";
 			// 
+			// argscontrol
+			// 
+			this.argscontrol.Location = new System.Drawing.Point(6, 44);
+			this.argscontrol.Name = "argscontrol";
+			this.argscontrol.Size = new System.Drawing.Size(521, 80);
+			this.argscontrol.TabIndex = 11;
+			// 
 			// actionhelp
 			// 
-			this.actionhelp.Location = new System.Drawing.Point(497, 25);
+			this.actionhelp.Location = new System.Drawing.Point(497, 17);
 			this.actionhelp.Name = "actionhelp";
 			this.actionhelp.Size = new System.Drawing.Size(28, 25);
 			this.actionhelp.TabIndex = 10;
@@ -267,7 +274,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.action.Empty = false;
 			this.action.GeneralizedCategories = null;
 			this.action.GeneralizedOptions = null;
-			this.action.Location = new System.Drawing.Point(62, 27);
+			this.action.Location = new System.Drawing.Point(62, 19);
 			this.action.Name = "action";
 			this.action.Size = new System.Drawing.Size(402, 21);
 			this.action.TabIndex = 0;
@@ -277,7 +284,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// browseaction
 			// 
 			this.browseaction.Image = global::CodeImp.DoomBuilder.Properties.Resources.List;
-			this.browseaction.Location = new System.Drawing.Point(467, 25);
+			this.browseaction.Location = new System.Drawing.Point(467, 17);
 			this.browseaction.Name = "browseaction";
 			this.browseaction.Size = new System.Drawing.Size(28, 25);
 			this.browseaction.TabIndex = 1;
@@ -306,7 +313,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.flagsgroup.Controls.Add(this.flags);
 			this.flagsgroup.Location = new System.Drawing.Point(8, 3);
 			this.flagsgroup.Name = "flagsgroup";
-			this.flagsgroup.Size = new System.Drawing.Size(533, 186);
+			this.flagsgroup.Size = new System.Drawing.Size(533, 184);
 			this.flagsgroup.TabIndex = 0;
 			this.flagsgroup.TabStop = false;
 			this.flagsgroup.Text = " Flags";
@@ -318,9 +325,9 @@ namespace CodeImp.DoomBuilder.Windows
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.flags.AutoScroll = true;
 			this.flags.Columns = 3;
-			this.flags.Location = new System.Drawing.Point(18, 17);
+			this.flags.Location = new System.Drawing.Point(18, 15);
 			this.flags.Name = "flags";
-			this.flags.Size = new System.Drawing.Size(509, 164);
+			this.flags.Size = new System.Drawing.Size(509, 162);
 			this.flags.TabIndex = 0;
 			this.flags.VerticalSpacing = 0;
 			this.flags.OnValueChanged += new System.EventHandler(this.flags_OnValueChanged);
@@ -371,9 +378,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.groupsettings.Controls.Add(this.labellockpick);
 			this.groupsettings.Controls.Add(this.renderStyle);
 			this.groupsettings.Controls.Add(this.labelrenderstyle);
-			this.groupsettings.Location = new System.Drawing.Point(8, 195);
+			this.groupsettings.Location = new System.Drawing.Point(8, 193);
 			this.groupsettings.Name = "groupsettings";
-			this.groupsettings.Size = new System.Drawing.Size(533, 52);
+			this.groupsettings.Size = new System.Drawing.Size(533, 46);
 			this.groupsettings.TabIndex = 3;
 			this.groupsettings.TabStop = false;
 			this.groupsettings.Text = " Settings";
@@ -381,7 +388,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// lockpick
 			// 
 			this.lockpick.FormattingEnabled = true;
-			this.lockpick.Location = new System.Drawing.Point(408, 20);
+			this.lockpick.Location = new System.Drawing.Point(408, 17);
 			this.lockpick.Name = "lockpick";
 			this.lockpick.Size = new System.Drawing.Size(115, 21);
 			this.lockpick.TabIndex = 19;
@@ -397,7 +404,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.alpha.ButtonStepSmall = 0.01F;
 			this.alpha.ButtonStepsUseModifierKeys = true;
 			this.alpha.ButtonStepsWrapAround = false;
-			this.alpha.Location = new System.Drawing.Point(243, 19);
+			this.alpha.Location = new System.Drawing.Point(243, 16);
 			this.alpha.Name = "alpha";
 			this.alpha.Size = new System.Drawing.Size(65, 24);
 			this.alpha.StepValues = null;
@@ -408,7 +415,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.renderStyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.renderStyle.FormattingEnabled = true;
-			this.renderStyle.Location = new System.Drawing.Point(92, 20);
+			this.renderStyle.Location = new System.Drawing.Point(92, 17);
 			this.renderStyle.Name = "renderStyle";
 			this.renderStyle.Size = new System.Drawing.Size(86, 21);
 			this.renderStyle.TabIndex = 12;
@@ -418,7 +425,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.activationGroup.Controls.Add(this.missingactivation);
 			this.activationGroup.Controls.Add(this.udmfactivates);
-			this.activationGroup.Location = new System.Drawing.Point(8, 401);
+			this.activationGroup.Location = new System.Drawing.Point(8, 375);
 			this.activationGroup.Name = "activationGroup";
 			this.activationGroup.Size = new System.Drawing.Size(533, 152);
 			this.activationGroup.TabIndex = 1;
@@ -429,7 +436,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.missingactivation.BackColor = System.Drawing.SystemColors.Window;
 			this.missingactivation.Image = global::CodeImp.DoomBuilder.Properties.Resources.Warning;
-			this.missingactivation.Location = new System.Drawing.Point(64, -2);
+			this.missingactivation.Location = new System.Drawing.Point(64, -1);
 			this.missingactivation.Name = "missingactivation";
 			this.missingactivation.Size = new System.Drawing.Size(16, 16);
 			this.missingactivation.TabIndex = 4;
@@ -441,20 +448,13 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.idgroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.idgroup.Controls.Add(this.tagSelector);
-			this.idgroup.Location = new System.Drawing.Point(8, 559);
+			this.idgroup.Controls.Add(this.tagsselector);
+			this.idgroup.Location = new System.Drawing.Point(8, 533);
 			this.idgroup.Name = "idgroup";
-			this.idgroup.Size = new System.Drawing.Size(533, 58);
+			this.idgroup.Size = new System.Drawing.Size(533, 85);
 			this.idgroup.TabIndex = 2;
 			this.idgroup.TabStop = false;
 			this.idgroup.Text = " Identification ";
-			// 
-			// tagSelector
-			// 
-			this.tagSelector.Location = new System.Drawing.Point(6, 19);
-			this.tagSelector.Name = "tagSelector";
-			this.tagSelector.Size = new System.Drawing.Size(444, 35);
-			this.tagSelector.TabIndex = 0;
 			// 
 			// tabfront
 			// 
@@ -1339,12 +1339,12 @@ namespace CodeImp.DoomBuilder.Windows
 			this.imagelist.Images.SetKeyName(0, "Check.png");
 			this.imagelist.Images.SetKeyName(1, "SearchClear.png");
 			// 
-			// argscontrol
+			// tagsselector
 			// 
-			this.argscontrol.Location = new System.Drawing.Point(6, 56);
-			this.argscontrol.Name = "argscontrol";
-			this.argscontrol.Size = new System.Drawing.Size(521, 80);
-			this.argscontrol.TabIndex = 11;
+			this.tagsselector.Location = new System.Drawing.Point(6, 21);
+			this.tagsselector.Name = "tagsselector";
+			this.tagsselector.Size = new System.Drawing.Size(524, 60);
+			this.tagsselector.TabIndex = 0;
 			// 
 			// LinedefEditFormUDMF
 			// 
@@ -1429,7 +1429,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.Button custombackbutton;
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox frontsector;
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox backsector;
-		private CodeImp.DoomBuilder.GZBuilder.Controls.TagSelector tagSelector;
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox lightFront;
 		private System.Windows.Forms.CheckBox cbLightAbsoluteFront;
 		private CodeImp.DoomBuilder.GZBuilder.Controls.PairedFieldsControl pfcFrontOffsetTop;
@@ -1489,5 +1488,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.TabPage tabcomment;
 		private CodeImp.DoomBuilder.Controls.CommentEditor commenteditor;
 		private CodeImp.DoomBuilder.Controls.ArgumentsControl argscontrol;
+		private CodeImp.DoomBuilder.GZBuilder.Controls.TagsSelector tagsselector;
 	}
 }

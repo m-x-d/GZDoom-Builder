@@ -32,8 +32,8 @@ namespace CodeImp.DoomBuilder.Controls
 			System.Windows.Forms.Label label5;
 			this.labelfloor = new System.Windows.Forms.Label();
 			this.labelceiling = new System.Windows.Forms.Label();
-			this.labelTag = new System.Windows.Forms.Label();
-			this.labelEffect = new System.Windows.Forms.Label();
+			this.taglabel = new System.Windows.Forms.Label();
+			this.effectlabel = new System.Windows.Forms.Label();
 			this.ceilingLightLabel = new System.Windows.Forms.Label();
 			this.ceilingScaleLabel = new System.Windows.Forms.Label();
 			this.ceilingAngleLabel = new System.Windows.Forms.Label();
@@ -119,23 +119,23 @@ namespace CodeImp.DoomBuilder.Controls
 			this.labelceiling.Text = "Ceiling:";
 			this.labelceiling.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
-			// labelTag
+			// taglabel
 			// 
-			this.labelTag.Location = new System.Drawing.Point(8, 79);
-			this.labelTag.Name = "labelTag";
-			this.labelTag.Size = new System.Drawing.Size(44, 14);
-			this.labelTag.TabIndex = 4;
-			this.labelTag.Text = "Tag:";
-			this.labelTag.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			this.taglabel.Location = new System.Drawing.Point(8, 79);
+			this.taglabel.Name = "taglabel";
+			this.taglabel.Size = new System.Drawing.Size(44, 14);
+			this.taglabel.TabIndex = 4;
+			this.taglabel.Text = "Tag:";
+			this.taglabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// labelEffect
 			// 
-			this.labelEffect.Location = new System.Drawing.Point(8, 19);
-			this.labelEffect.Name = "labelEffect";
-			this.labelEffect.Size = new System.Drawing.Size(44, 14);
-			this.labelEffect.TabIndex = 0;
-			this.labelEffect.Text = "Effect:";
-			this.labelEffect.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			this.effectlabel.Location = new System.Drawing.Point(8, 19);
+			this.effectlabel.Name = "effectlabel";
+			this.effectlabel.Size = new System.Drawing.Size(44, 14);
+			this.effectlabel.TabIndex = 0;
+			this.effectlabel.Text = "Effect:";
+			this.effectlabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// ceilingLightLabel
 			// 
@@ -222,11 +222,11 @@ namespace CodeImp.DoomBuilder.Controls
 			this.sectorinfo.Controls.Add(this.tag);
 			this.sectorinfo.Controls.Add(this.floor);
 			this.sectorinfo.Controls.Add(this.ceiling);
-			this.sectorinfo.Controls.Add(this.labelTag);
+			this.sectorinfo.Controls.Add(this.taglabel);
 			this.sectorinfo.Controls.Add(this.labelfloor);
 			this.sectorinfo.Controls.Add(this.labelceiling);
 			this.sectorinfo.Controls.Add(this.effect);
-			this.sectorinfo.Controls.Add(this.labelEffect);
+			this.sectorinfo.Controls.Add(this.effectlabel);
 			this.sectorinfo.Location = new System.Drawing.Point(0, 0);
 			this.sectorinfo.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
 			this.sectorinfo.Name = "sectorinfo";
@@ -601,8 +601,8 @@ namespace CodeImp.DoomBuilder.Controls
 		private System.Windows.Forms.Label labelLight;
 		private System.Windows.Forms.GroupBox flagsPanel;
 		private System.Windows.Forms.ListView flags;
-		private System.Windows.Forms.Label labelTag;
-		private System.Windows.Forms.Label labelEffect;
+		private System.Windows.Forms.Label taglabel;
+		private System.Windows.Forms.Label effectlabel;
 		private System.Windows.Forms.Label labelfloor;
 		private System.Windows.Forms.Label labelceiling;
 	}
