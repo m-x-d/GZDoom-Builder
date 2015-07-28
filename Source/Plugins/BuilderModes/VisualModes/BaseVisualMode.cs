@@ -814,10 +814,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Find all sector who's tag is not 0 and hash them so that we can find them quicly
 			foreach(Sector s in General.Map.Map.Sectors)
 			{
-				if(s.Tag != 0)
+				foreach (int tag in s.Tags)
 				{
-					if(!sectortags.ContainsKey(s.Tag)) sectortags[s.Tag] = new List<Sector>();
-					sectortags[s.Tag].Add(s);
+					if(tag == 0) continue;
+					if(!sectortags.ContainsKey(tag)) sectortags[tag] = new List<Sector>();
+					sectortags[tag].Add(s);
 				}
 			}
 

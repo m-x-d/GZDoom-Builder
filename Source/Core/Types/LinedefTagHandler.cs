@@ -33,12 +33,14 @@ namespace CodeImp.DoomBuilder.Types
 		{
 			//collect tags
 			List<int> tags = new List<int>();
+			HashSet<int> tagshash = new HashSet<int>();
 			EnumList taglist = new EnumList();
 
-			foreach(Linedef t in General.Map.Map.Linedefs) 
+			foreach(Linedef l in General.Map.Map.Linedefs)
 			{
-				if(t.Tag == 0 || tags.Contains(t.Tag)) continue;
-				tags.Add(t.Tag);
+				if(l.Tag == 0 || tagshash.IsSupersetOf(l.Tags)) continue;
+				tags.AddRange(l.Tags);
+				foreach(int i in l.Tags) tagshash.Add(i);
 			}
 
 			//now sort them in descending order

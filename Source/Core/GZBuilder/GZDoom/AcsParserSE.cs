@@ -116,13 +116,14 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 									}
 								}
 
-								name = (name.Length > 0 ? name + " [" + n + "]" : "Script " + n);
+								bool customname = (name.Length > 0);
+								name = (customname ? name + " [" + n + "]" : "Script " + n);
 								
 								List<string> argnames = new List<string>();
 								foreach(KeyValuePair<string, string> group in args) argnames.Add(group.Value);
 
 								// Add to collection
-								numberedscripts.Add(new ScriptItem(n, name, argnames, startpos, isinclude));
+								numberedscripts.Add(new ScriptItem(n, name, argnames, startpos, isinclude, customname));
 							}
 						}
 					}

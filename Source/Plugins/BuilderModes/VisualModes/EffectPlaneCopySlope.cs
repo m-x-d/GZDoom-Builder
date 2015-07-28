@@ -37,7 +37,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				foreach(Sector s in General.Map.Map.Sectors) 
 				{
-					if(s.Tag == linedef.Args[floorArg]) 
+					if(s.Tags.Contains(linedef.Args[floorArg]))
 					{
 						sourcesector = s;
 						break;
@@ -63,7 +63,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					foreach(Sector s in General.Map.Map.Sectors) 
 					{
-						if(s.Tag == linedef.Args[ceilingArg]) 
+						if(s.Tags.Contains(linedef.Args[ceilingArg]))
 						{
 							sourcesector = s;
 							break;

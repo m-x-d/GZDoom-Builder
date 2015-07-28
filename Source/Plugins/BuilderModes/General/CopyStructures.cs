@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.GZBuilder.Tools;
@@ -95,7 +96,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public bool CeilingSlope = true;
 		[FieldDescription("Floor Slope")]
 		public bool FloorSlope = true;
-		[FieldDescription("Tag")]
+		[FieldDescription("Tags")]
 		public bool Tag = true;
 		[FieldDescription("Effect")]
 		public bool Special = true;
@@ -121,7 +122,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private readonly float floorslopeoffset;
 		private readonly Vector3D ceilslope;
 		private readonly Vector3D floorslope;
-		private readonly int tag;
+		private readonly List<int> tags;
 		private readonly UniFields fields;
 		private readonly Dictionary<string, bool> flags; //mxd
 		
@@ -137,7 +138,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			floorslopeoffset = s.FloorSlopeOffset;
 			ceilslope = s.CeilSlope;
 			floorslope = s.FloorSlope;
-			tag = s.Tag;
+			tags = new List<int>(s.Tags); //mxd
 			fields = new UniFields(s.Fields);
 			flags = s.GetFlags(); //mxd
 		}
@@ -149,7 +150,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(CopySettings.FloorTexture) s.SetFloorTexture(floortexture);
 			if(CopySettings.CeilingTexture) s.SetCeilTexture(ceilingtexture);
 			if(CopySettings.Brightness) s.Brightness = brightness;
-			if(CopySettings.Tag) s.Tag = tag;
+			if(CopySettings.Tag) s.Tags = new List<int>(tags); //mxd
 			if(CopySettings.Special) s.Effect = effect;
 			if (CopySettings.CeilingSlope) 
 			{
@@ -255,7 +256,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public bool Arguments = true;
 		[FieldDescription("Activation")]
 		public bool Activation = true;
-		[FieldDescription("Tag")]
+		[FieldDescription("Tags")]
 		public bool Tag = true;
 		[FieldDescription("Flags")]
 		public bool Flags = true;
@@ -274,7 +275,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private readonly Dictionary<string, bool> flags;
 		private readonly int action;
 		private readonly int activate;
-		private readonly int tag;
+		private readonly List<int> tags;
 		private readonly int[] args;
 		private readonly UniFields fields;
 
@@ -286,7 +287,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			flags = l.GetFlags();
 			action = l.Action;
 			activate = l.Activate;
-			tag = l.Tag;
+			tags = new List<int>(l.Tags); //mxd
 			args = (int[])(l.Args.Clone());
 			fields = new UniFields(l.Fields);
 		}
@@ -305,7 +306,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					l.SetFlag(f.Key, f.Value);
 			}
 			if(CopySettings.Activation) l.Activate = activate;
-			if(CopySettings.Tag) l.Tag = tag;
+			if(CopySettings.Tag) l.Tags = new List<int>(tags); //mxd
 			if(CopySettings.Action) l.Action = action;
 			if(CopySettings.Arguments) 
 			{
@@ -434,7 +435,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(flags.FloorTexture && source.FloorTexture != target.FloorTexture) return false;
 			if(flags.CeilingTexture && source.CeilTexture != target.CeilTexture) return false;
 			if(flags.Brightness && source.Brightness != target.Brightness) return false;
-			if(flags.Tag && source.Tag != target.Tag) return false;
+			if(flags.Tag && TagsMatch(source.Tags, target.Tags)) return false; //mxd
 			if(flags.Special && source.Effect != target.Effect) return false;
 			if(flags.Flags && !FlagsMatch(source.GetFlags(), target.GetFlags())) return false;
 			return !flags.Fields || UDMFTools.FieldsMatch(source.Fields, target.Fields);
@@ -448,7 +449,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			if(linedefflags.Action && source.Action != target.Action) return false;
 			if(linedefflags.Activation && source.Activate != target.Activate) return false;
-			if(linedefflags.Tag && source.Tag != target.Tag) return false;
+			if(linedefflags.Tag && TagsMatch(source.Tags, target.Tags)) return false; //mxd
 			if(linedefflags.Arguments) 
 			{
 				for(int i = 0; i < source.Args.Length; i++)
@@ -513,6 +514,27 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			foreach (KeyValuePair<string, bool> group in flags1)
 				if (!flags2.ContainsKey(group.Key) || flags2[group.Key] != flags1[group.Key]) return false;
 			return true;
+		}
+
+		//mxd
+		private static bool TagsMatch(List<int> tags1, List<int> tags2)
+		{
+			if(tags1.Count != tags2.Count) return false;
+			Dictionary<int, int> count = new Dictionary<int, int>();
+
+			foreach(int s in tags1)
+			{
+				if(count.ContainsKey(s)) count[s]++;
+				else count.Add(s, 1);
+			}
+
+			foreach(int s in tags2)
+			{
+				if(count.ContainsKey(s)) count[s]--;
+				else return false;
+			}
+
+			return count.Values.All(c => c == 0);
 		}
 	}
 }

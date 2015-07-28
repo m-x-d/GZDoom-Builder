@@ -17,6 +17,7 @@
 #region ================== Namespaces
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Config;
@@ -79,11 +80,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				foreach(Sector s in list)
 				{
 					// Tag matches?
-					if(s.Tag == tag)
+					int index = s.Tags.IndexOf(tag);
+					if(index != -1)
 					{
 						// Replace
-						if(replace) s.Tag = replacetag;
-						
+						if(replace)
+						{
+							s.Tags[index] = replacetag; //mxd
+							s.Tags = s.Tags.Distinct().ToList(); //mxd. We don't want duplicates
+						}
+
+						// Add to list
 						SectorEffectInfo info = General.Map.Config.GetSectorEffectInfo(s.Effect);
 						if(!info.IsNull)
 							objs.Add(new FindReplaceObject(s, "Sector " + s.Index + " (" + info.Title + ")"));

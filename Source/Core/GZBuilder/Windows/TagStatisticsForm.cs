@@ -43,7 +43,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 		private void Setup() 
 		{
 			//collect all tags
-			List<int> tags = new List<int>();
+			HashSet<int> tags = new HashSet<int>();
 			Dictionary<int, int> sectorsCountByTag = new Dictionary<int, int>();
 			Dictionary<int, int> linedefsCountByTag = new Dictionary<int, int>();
 			Dictionary<int, int> thingsCountByTag = new Dictionary<int, int>();
@@ -52,12 +52,12 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 			foreach(Sector s in General.Map.Map.Sectors) 
 			{
 				if(s.Tag == 0) continue;
-				if(!tags.Contains(s.Tag)) tags.Add(s.Tag);
-
-				if(!sectorsCountByTag.ContainsKey(s.Tag))
-					sectorsCountByTag.Add(s.Tag, 1);
-				else
-					sectorsCountByTag[s.Tag] += 1;
+				tags.UnionWith(s.Tags);
+				foreach (int tag in s.Tags)
+				{
+					if(!sectorsCountByTag.ContainsKey(tag)) sectorsCountByTag.Add(tag, 0);
+					sectorsCountByTag[tag]++;
+				}
 			}
 
 			//...and linedefs...
@@ -66,12 +66,12 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 				foreach(Linedef l in General.Map.Map.Linedefs) 
 				{
 					if(l.Tag == 0) continue;
-					if(!tags.Contains(l.Tag)) tags.Add(l.Tag);
-
-					if(!linedefsCountByTag.ContainsKey(l.Tag))
-						linedefsCountByTag.Add(l.Tag, 1);
-					else
-						linedefsCountByTag[l.Tag] += 1;
+					tags.UnionWith(l.Tags);
+					foreach (int tag in l.Tags)
+					{
+						if(!linedefsCountByTag.ContainsKey(tag)) linedefsCountByTag.Add(tag, 0);
+						linedefsCountByTag[tag]++;
+					}
 				}
 			} 
 			else 
@@ -87,10 +87,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 					if(t.Tag == 0) continue;
 					if(!tags.Contains(t.Tag)) tags.Add(t.Tag);
 
-					if(!thingsCountByTag.ContainsKey(t.Tag))
-						thingsCountByTag.Add(t.Tag, 1);
-					else
-						thingsCountByTag[t.Tag] += 1;
+					if(!thingsCountByTag.ContainsKey(t.Tag)) thingsCountByTag.Add(t.Tag, 0);
+					thingsCountByTag[t.Tag]++;
 				}
 			} 
 			else 
@@ -130,7 +128,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 			List<Sector> list = new List<Sector>();
 			foreach(Sector s in General.Map.Map.Sectors) 
 			{
-				if(s.Tag == tag) 
+				if(s.Tags.Contains(tag))
 				{
 					list.Add(s);
 					if(list.Count == count) break;
@@ -145,7 +143,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 			List<Linedef> list = new List<Linedef>();
 			foreach(Linedef l in General.Map.Map.Linedefs) 
 			{
-				if(l.Tag == tag) 
+				if(l.Tags.Contains(tag))
 				{
 					list.Add(l);
 					if(list.Count == count) break;

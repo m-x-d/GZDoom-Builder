@@ -93,7 +93,7 @@ namespace CodeImp.DoomBuilder.Map
 		public int Activate { get { return activate; } set { BeforePropsChange(); activate = value; UpdateColorPreset(); } }
 
 		public int Tag { get { return tags[0]; } set { BeforePropsChange(); tags[0] = value; if((value < General.Map.FormatInterface.MinTag) || (value > General.Map.FormatInterface.MaxTag)) throw new ArgumentOutOfRangeException("Tag", "Invalid tag number"); } } //mxd
-		public List<int> Tags { get { return tags; } } //mxd
+		public List<int> Tags { get { return tags; } set { BeforePropsChange(); tags = value; } } //mxd
 		public float LengthSq { get { return lengthsq; } }
 		public float Length { get { return length; } }
 		public float LengthInv { get { return lengthinv; } }

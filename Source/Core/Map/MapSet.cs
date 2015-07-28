@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.IO;
@@ -2837,16 +2838,22 @@ namespace CodeImp.DoomBuilder.Map
 				case UniversalType.LinedefTag:
 					for(int i = 0; i < linedefs.Length; i++) 
 					{
-						if(linedefs[i].Tag > 0 && !usedtags.ContainsKey(linedefs[i].Tag))
-							usedtags.Add(linedefs[i].Tag, false);
+						foreach (int tag in linedefs[i].Tags)
+						{
+							if(tag == 0) continue;
+							if(!usedtags.ContainsKey(tag)) usedtags.Add(tag, false);
+						}
 					}
 					break;
 
 				case UniversalType.SectorTag:
 					for(int i = 0; i < sectors.Length; i++) 
 					{
-						if(sectors[i].Tag > 0 && !usedtags.ContainsKey(sectors[i].Tag))
-							usedtags.Add(sectors[i].Tag, false);
+						foreach(int tag in sectors[i].Tags)
+						{
+							if(tag == 0) continue;
+							if(!usedtags.ContainsKey(tag)) usedtags.Add(tag, false);
+						}
 					}
 					break;
 			}
@@ -2929,30 +2936,44 @@ namespace CodeImp.DoomBuilder.Map
 		/// <summary>This calls a function for all tag fields in the marked or unmarked geometry. The obj parameter can be anything you wish to pass on to your TagHandler function.</summary>
 		public void ForAllTags<T>(TagHandler<T> handler, bool marked, T obj)
 		{
-			// Remove tags from sectors
+			// Call handler on sectors tags
 			foreach(Sector s in sectors)
+			{
 				if(s.Marked == marked)
 				{
-					int tag = s.Tag;
-					handler(s, false, UniversalType.SectorTag, ref tag, obj);
-					if(tag != s.Tag) s.Tag = tag;
+					//mxd. Multiple tags support...
+					bool changed = false;
+					for(int i = 0; i < s.Tags.Count; i++)
+					{
+						int tag = s.Tags[i];
+						handler(s, false, UniversalType.SectorTag, ref tag, obj);
+						if(tag != s.Tags[i])
+						{
+							s.Tags[i] = tag;
+							changed = true;
+						}
+					}
+
+					if(changed) s.Tags = s.Tags.Distinct().ToList();
 				}
-			
-			// Remove tags from things
+			}
+
+			// Call handler on things tags
 			if(General.Map.FormatInterface.HasThingTag)
 			{
 				foreach(Thing t in things)
+				{
 					if(t.Marked == marked)
 					{
 						int tag = t.Tag;
 						handler(t, false, UniversalType.ThingTag, ref tag, obj);
 						if(tag != t.Tag) t.Tag = tag;
 					}
+				}
 			}
 
-			// Remove tags from thing actions
-			if(General.Map.FormatInterface.HasThingAction &&
-			   General.Map.FormatInterface.HasActionArgs)
+			// Call handler on things action
+			if(General.Map.FormatInterface.HasThingAction && General.Map.FormatInterface.HasActionArgs)
 			{
 				foreach(Thing t in things)
 				{
@@ -2960,29 +2981,44 @@ namespace CodeImp.DoomBuilder.Map
 					{
 						LinedefActionInfo info = General.Map.Config.GetLinedefActionInfo(t.Action);
 						for(int i = 0; i < Thing.NUM_ARGS; i++)
+						{
 							if(info.Args[i].Used && CheckIsTagType(info.Args[i].Type))
 							{
 								int tag = t.Args[i];
 								handler(t, true, (UniversalType)(info.Args[i].Type), ref tag, obj);
 								if(tag != t.Args[i]) t.Args[i] = tag;
 							}
+						}
 					}
 				}
 			}
 
-			// Remove tags from linedefs
+			// Call handler on linedefs tags
 			if(General.Map.FormatInterface.HasLinedefTag)
 			{
 				foreach(Linedef l in linedefs)
+				{
 					if(l.Marked == marked)
 					{
-						int tag = l.Tag;
-						handler(l, false, UniversalType.LinedefTag, ref tag, obj);
-						if(tag != l.Tag) l.Tag = tag;
+						//mxd. Multiple tags support...
+						bool changed = false;
+						for(int i = 0; i < l.Tags.Count; i++)
+						{
+							int tag = l.Tags[i];
+							handler(l, false, UniversalType.LinedefTag, ref tag, obj);
+							if(tag != l.Tags[i])
+							{
+								l.Tags[i] = tag;
+								changed = true;
+							}
+						}
+
+						if(changed) l.Tags = l.Tags.Distinct().ToList();
 					}
+				}
 			}
 
-			// Remove tags from linedef actions
+			// Call handler on linedefs action
 			if(General.Map.FormatInterface.HasActionArgs)
 			{
 				foreach(Linedef l in linedefs)
@@ -2991,12 +3027,14 @@ namespace CodeImp.DoomBuilder.Map
 					{
 						LinedefActionInfo info = General.Map.Config.GetLinedefActionInfo(l.Action);
 						for(int i = 0; i < Linedef.NUM_ARGS; i++)
+						{
 							if(info.Args[i].Used && CheckIsTagType(info.Args[i].Type))
 							{
 								int tag = l.Args[i];
 								handler(l, true, (UniversalType)(info.Args[i].Type), ref tag, obj);
 								if(tag != l.Args[i]) l.Args[i] = tag;
 							}
+						}
 					}
 				}
 			}

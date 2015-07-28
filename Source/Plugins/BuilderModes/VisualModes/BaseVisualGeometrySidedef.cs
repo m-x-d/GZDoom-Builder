@@ -465,12 +465,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			//check for 3d floors
 			if(Sidedef.Line.Action == 160) 
 			{
-				int sectortag = Sidedef.Line.Args[0] + (Sidedef.Line.Args[4] << 8);
+				int sectortag = ((General.Map.UDMF || (Sidedef.Line.Args[1] & 8) != 0) ? Sidedef.Line.Args[0] : Sidedef.Line.Args[0] + (Sidedef.Line.Args[4] << 8));
 				if(sectortag == 0) return;
 
 				foreach(Sector sector in General.Map.Map.Sectors) 
 				{
-					if(sector.Tag == sectortag) 
+					if(sector.Tags.Contains(sectortag))
 					{
 						BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(sector);
 						vs.UpdateSectorGeometry(true);

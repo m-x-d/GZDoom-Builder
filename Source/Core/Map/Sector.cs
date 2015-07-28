@@ -107,7 +107,7 @@ namespace CodeImp.DoomBuilder.Map
 		internal Dictionary<string, bool> Flags { get { return flags; } } //mxd
 		public int Effect { get { return effect; } set { BeforePropsChange(); effect = value; } }
 		public int Tag { get { return tags[0]; } set { BeforePropsChange(); tags[0] = value; if((value < General.Map.FormatInterface.MinTag) || (value > General.Map.FormatInterface.MaxTag)) throw new ArgumentOutOfRangeException("Tag", "Invalid tag number"); } } //mxd
-		public List<int> Tags { get { return tags; } } //mxd
+		public List<int> Tags { get { return tags; } set { BeforePropsChange(); tags = value; } } //mxd
 		public int Brightness { get { return brightness; } set { BeforePropsChange(); brightness = value; updateneeded = true; } }
 		public bool UpdateNeeded { get { return updateneeded; } set { updateneeded |= value; triangulationneeded |= value; } }
 		public RectangleF BBox { get { return bbox; } }

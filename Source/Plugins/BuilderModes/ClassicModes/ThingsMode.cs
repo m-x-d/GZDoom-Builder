@@ -70,6 +70,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Constructor / Disposer
 
+		public ThingsMode()
+		{
+			//mxd. Associations now requre initializing...
+			for(int i = 0; i < association.Length; i++) association[i].Set(new Vector2D(), 0, 0);
+		}
+
 		#endregion
 
 		#region ================== Methods
@@ -224,16 +230,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// are or were drawn we need to redraw the entire display.
 
 			// Previous association highlights something?
-			if((highlighted != null) && (highlighted.Tag > 0)) completeredraw = true;
+			if((highlighted != null) && (highlighted.Tag != 0)) completeredraw = true;
 			
 			// Set highlight association
-			if(t != null)
+			if(t != null && t.Tag != 0)
 				highlightasso.Set(t.Position, t.Tag, UniversalType.ThingTag);
 			else
 				highlightasso.Set(new Vector2D(), 0, 0);
 
 			// New association highlights something?
-			if((t != null) && (t.Tag > 0)) completeredraw = true;
+			if((t != null) && (t.Tag != 0)) completeredraw = true;
 
 			if(t != null)
 			{
@@ -246,9 +252,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			for(int i = 0; i < Thing.NUM_ARGS; i++)
 			{
 				// Previous association highlights something?
-				if((association[i].type == UniversalType.SectorTag) ||
-				   (association[i].type == UniversalType.LinedefTag) ||
-				   (association[i].type == UniversalType.ThingTag)) completeredraw = true;
+				if((association[i].Type == UniversalType.SectorTag) ||
+				   (association[i].Type == UniversalType.LinedefTag) ||
+				   (association[i].Type == UniversalType.ThingTag)) completeredraw = true;
 				
 				// Make new association
 				if(action != null)
@@ -257,9 +263,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					association[i].Set(new Vector2D(), 0, 0);
 				
 				// New association highlights something?
-				if((association[i].type == UniversalType.SectorTag) ||
-				   (association[i].type == UniversalType.LinedefTag) ||
-				   (association[i].type == UniversalType.ThingTag)) completeredraw = true;
+				if((association[i].Type == UniversalType.SectorTag) ||
+				   (association[i].Type == UniversalType.LinedefTag) ||
+				   (association[i].Type == UniversalType.ThingTag)) completeredraw = true;
 			}
 			
 			// If we're changing associations, then we

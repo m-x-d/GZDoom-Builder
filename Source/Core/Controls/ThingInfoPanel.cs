@@ -148,7 +148,7 @@ namespace CodeImp.DoomBuilder.Controls
 			else if(isacsscript && General.Map.NumberedScripts.ContainsKey(t.Args[0]))
 			{
 				scriptitem = General.Map.NumberedScripts[t.Args[0]];
-				scriptname = scriptitem.Name;
+				scriptname = (scriptitem.HasCustomName ? scriptitem.Name : scriptitem.Index.ToString());
 			}
 
 			// Apply script args?

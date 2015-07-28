@@ -231,10 +231,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					if(s.Line.Action == 160 && s.Line.Front != null) 
 					{
-						int sectortag = s.Line.Args[0] + (s.Line.Args[4] << 8);
+						int sectortag = ((General.Map.UDMF || (s.Line.Args[1] & 8) != 0) ? s.Line.Args[0] : s.Line.Args[0] + (s.Line.Args[4] << 8));
 						foreach(Sector sector in General.Map.Map.Sectors) 
 						{
-							if(sector.Tag == sectortag) 
+							if(sector.Tags.Contains(sectortag))
 							{
 								BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(sector);
 								vs.UpdateSectorGeometry(false);
