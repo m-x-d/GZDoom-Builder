@@ -72,12 +72,14 @@ namespace CodeImp.DoomBuilder.Types
 		{
 			//collect tags
 			List<int> tags = new List<int>();
+			HashSet<int> tagshash = new HashSet<int>();
 			EnumList taglist = new EnumList();
 
-			foreach(Sector t in General.Map.Map.Sectors) 
+			foreach(Sector s in General.Map.Map.Sectors)
 			{
-				if(t.Tag == 0 || tags.Contains(t.Tag)) continue;
-				tags.Add(t.Tag);
+				if(s.Tag == 0 || tagshash.IsSupersetOf(s.Tags)) continue;
+				tags.AddRange(s.Tags);
+				foreach (int i in s.Tags) tagshash.Add(i);
 			}
 
 			//now sort them in descending order

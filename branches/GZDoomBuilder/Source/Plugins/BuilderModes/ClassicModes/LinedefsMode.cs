@@ -72,6 +72,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Constructor / Disposer
 
+		public LinedefsMode()
+		{
+			//mxd. Associations now requre initializing...
+			for(int i = 0; i < association.Length; i++) association[i].Set(new Vector2D(), 0, 0);
+		}
+
 		#endregion
 
 		#region ================== Methods
@@ -87,22 +93,22 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// are or were drawn we need to redraw the entire display.
 			
 			// Previous association highlights something?
-			if((highlighted != null) && (highlighted.Tag > 0)) completeredraw = true;
+			if((highlighted != null) && (highlighted.Tag != 0)) completeredraw = true;
 			
 			// Set highlight association
-			if(l != null)
-				highlightasso.Set(new Vector2D((l.Start.Position  + l.End.Position)/2), l.Tag, UniversalType.LinedefTag);
+			if(l != null && l.Tag != 0)
+				highlightasso.Set(new Vector2D((l.Start.Position  + l.End.Position)/2), l.Tags, UniversalType.LinedefTag);
 			else
 				highlightasso.Set(new Vector2D(), 0, 0);
 
 			// New association highlights something?
-			if((l != null) && (l.Tag > 0)) completeredraw = true;
+			if((l != null) && (l.Tag != 0)) completeredraw = true;
 
 			// Use the line tag to highlight sectors (Doom style)
 			if(General.Map.Config.LineTagIndicatesSectors)
 			{
 				if(l != null)
-					association[0].Set(new Vector2D((l.Start.Position  + l.End.Position)/2), l.Tag, UniversalType.SectorTag);
+					association[0].Set(new Vector2D((l.Start.Position  + l.End.Position)/2), l.Tags, UniversalType.SectorTag);
 				else
 					association[0].Set(new Vector2D(), 0, 0);
 			}
@@ -119,9 +125,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				for(int i = 0; i < Linedef.NUM_ARGS; i++)
 				{
 					// Previous association highlights something?
-					if((association[i].type == UniversalType.SectorTag) ||
-					   (association[i].type == UniversalType.LinedefTag) ||
-					   (association[i].type == UniversalType.ThingTag)) completeredraw = true;
+					if((association[i].Type == UniversalType.SectorTag) ||
+					   (association[i].Type == UniversalType.LinedefTag) ||
+					   (association[i].Type == UniversalType.ThingTag)) completeredraw = true;
 
 					// Make new association
 					if(action != null)
@@ -130,9 +136,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						association[i].Set(new Vector2D(), 0, 0);
 
 					// New association highlights something?
-					if((association[i].type == UniversalType.SectorTag) ||
-					   (association[i].type == UniversalType.LinedefTag) ||
-					   (association[i].type == UniversalType.ThingTag)) completeredraw = true;
+					if((association[i].Type == UniversalType.SectorTag) ||
+					   (association[i].Type == UniversalType.LinedefTag) ||
+					   (association[i].Type == UniversalType.ThingTag)) completeredraw = true;
 				}
 			}
 			

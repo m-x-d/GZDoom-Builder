@@ -618,7 +618,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		//mxd. This collects indices of linedefs, which are parts of sectors with 3d floors
 		public void UpdateExtraFloorFlag() 
 		{
-			List<int> tagList = new List<int>();
+			HashSet<int> tags = new HashSet<int>();
 			
 			//find lines with 3d floor action and collect sector tags
 			foreach(Linedef l in General.Map.Map.Linedefs)
@@ -626,22 +626,19 @@ namespace CodeImp.DoomBuilder.Rendering
 				if(l.Action == 160) 
 				{
 					int sectortag = (General.Map.UDMF || (l.Args[1] & 8) != 0) ? l.Args[0] : l.Args[0] + (l.Args[4] << 8);
-					if(sectortag != 0) tagList.Add(sectortag);
+					if(sectortag != 0 && !tags.Contains(sectortag)) tags.Add(sectortag);
 				}
 			}
-
-			tagList.Sort();
-			int[] tags = tagList.ToArray();
 
 			//find lines, which are related to sectors with 3d floors, and collect their valuable indices
 			foreach(Linedef l in General.Map.Map.Linedefs) 
 			{
-				if(l.Front != null && l.Front.Sector != null && l.Front.Sector.Tag != 0 && Array.BinarySearch(tags, l.Front.Sector.Tag) > -1) 
+				if(l.Front != null && l.Front.Sector != null && l.Front.Sector.Tag != 0 && tags.Overlaps(l.Front.Sector.Tags)) 
 				{
 					l.ExtraFloorFlag = true;
 					continue;
 				}
-				if(l.Back != null && l.Back.Sector != null && l.Back.Sector.Tag != 0 && Array.BinarySearch(tags, l.Back.Sector.Tag) > -1) 
+				if(l.Back != null && l.Back.Sector != null && l.Back.Sector.Tag != 0 && tags.Overlaps(l.Back.Sector.Tags)) 
 				{
 					l.ExtraFloorFlag = true;
 					continue;

@@ -277,6 +277,13 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 
 		private void addtag_Click(object sender, EventArgs e)
 		{
+			// When an item has no tags, act like "New Tag" button
+			if(tags.Count == 1 && tags[0] == 0)
+			{
+				newtag_Click(sender, e);
+				return;
+			}
+			
 			int nt = General.Map.Map.GetNewTag(tags);
 			tags.Add(nt);
 			rangemodes.Add(0);

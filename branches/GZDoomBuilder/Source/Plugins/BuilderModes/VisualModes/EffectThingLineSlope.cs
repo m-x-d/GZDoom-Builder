@@ -37,7 +37,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Linedef ld = null;
 			foreach(Linedef l in General.Map.Map.Linedefs)
 			{
-				if(l.Tag == t.Args[0])
+				if(l.Tags.Contains(t.Args[0]))
 				{
 					ld = l;
 					break;

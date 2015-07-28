@@ -525,15 +525,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public static void PlotAssociations(IRenderer2D renderer, Association asso, List<Line3D> eventlines) 
 		{
 			// Tag must be above zero
-			if(asso.tag < 1) return;
+			if(General.GetByIndex(asso.Tags, 0) < 1) return;
 			
 			// Sectors?
-			switch(asso.type)
+			switch(asso.Type)
 			{
 				case UniversalType.SectorTag: {
 					foreach(Sector s in General.Map.Map.Sectors)
 					{
-						if(s.Tag != asso.tag) continue;
+						if(!asso.Tags.Overlaps(s.Tags))continue;
 						renderer.PlotSector(s, General.Colors.Indication);
 						
 						if(!General.Settings.GZShowEventLines) continue;
@@ -546,7 +546,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				case UniversalType.LinedefTag: {
 					foreach(Linedef l in General.Map.Map.Linedefs) 
 					{
-						if(l.Tag != asso.tag) continue;
+						if(!asso.Tags.Overlaps(l.Tags)) continue;
 						renderer.PlotLinedef(l, General.Colors.Indication);
 						if(General.Settings.GZShowEventLines) eventlines.Add(new Line3D(asso.Center, l.GetCenterPoint())); //mxd
 					}
@@ -559,25 +559,24 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public static void RenderAssociations(IRenderer2D renderer, Association asso, List<Line3D> eventlines)
 		{
 			// Tag must be above zero
-			if(asso.tag < 1) return;
+			if(General.GetByIndex(asso.Tags, 0) < 1) return;
 
 			// Things?
-			switch(asso.type)
+			switch(asso.Type)
 			{
-				case UniversalType.ThingTag: {
+				case UniversalType.ThingTag:
 					foreach(Thing t in General.Map.Map.Things)
 					{
-						if(t.Tag != asso.tag) continue;
+						if(!asso.Tags.Contains(t.Tag)) continue;
 						renderer.RenderThing(t, General.Colors.Indication, 1.0f);
 						if(General.Settings.GZShowEventLines) eventlines.Add(new Line3D(asso.Center, t.Position)); //mxd
 					}
 					break;
-				}
 
 				case UniversalType.SectorTag:
 					foreach(Sector s in General.Map.Map.Sectors) 
 					{
-						if(s.Tag != asso.tag) continue;
+						if(!asso.Tags.Overlaps(s.Tags)) continue;
 						int highlightedColor = General.Colors.Highlight.WithAlpha(128).ToInt();
 						FlatVertex[] verts = new FlatVertex[s.FlatVertices.Length];
 						s.FlatVertices.CopyTo(verts, 0);
@@ -592,16 +591,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public static void PlotReverseAssociations(IRenderer2D renderer, Association asso, List<Line3D> eventlines)
 		{
 			// Tag must be above zero
-			if(asso.tag < 1) return;
+			if(General.GetByIndex(asso.Tags, 0) < 1) return;
 			
 			// Doom style referencing to sectors?
-			if(General.Map.Config.LineTagIndicatesSectors && (asso.type == UniversalType.SectorTag))
+			if(General.Map.Config.LineTagIndicatesSectors && (asso.Type == UniversalType.SectorTag))
 			{
 				// Linedefs
 				foreach(Linedef l in General.Map.Map.Linedefs)
 				{
 					// Any action on this line?
-					if(l.Action <= 0 || l.Tag != asso.tag) continue;
+					if(l.Action <= 0 || !asso.Tags.Overlaps(l.Tags)) continue;
 					renderer.PlotLinedef(l, General.Colors.Indication);
 					if(General.Settings.GZShowEventLines) eventlines.Add(new Line3D(l.GetCenterPoint(), asso.Center)); //mxd
 				}
@@ -614,11 +613,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if((l.Action > 0) && General.Map.Config.LinedefActions.ContainsKey(l.Action))
 				{
 					LinedefActionInfo action = General.Map.Config.LinedefActions[l.Action];
-					if( ((action.Args[0].Type == (int)asso.type) && (l.Args[0] == asso.tag)) ||
-					    ((action.Args[1].Type == (int)asso.type) && (l.Args[1] == asso.tag)) ||
-					    ((action.Args[2].Type == (int)asso.type) && (l.Args[2] == asso.tag)) ||
-					    ((action.Args[3].Type == (int)asso.type) && (l.Args[3] == asso.tag)) ||
-					    ((action.Args[4].Type == (int)asso.type) && (l.Args[4] == asso.tag)) )
+					if( ((action.Args[0].Type == (int)asso.Type) && (asso.Tags.Contains(l.Args[0]))) ||
+						((action.Args[1].Type == (int)asso.Type) && (asso.Tags.Contains(l.Args[1]))) ||
+						((action.Args[2].Type == (int)asso.Type) && (asso.Tags.Contains(l.Args[2]))) ||
+						((action.Args[3].Type == (int)asso.Type) && (asso.Tags.Contains(l.Args[3]))) ||
+						((action.Args[4].Type == (int)asso.Type) && (asso.Tags.Contains(l.Args[4]))))
 					{
 							
 						renderer.PlotLinedef(l, General.Colors.Indication);
@@ -632,7 +631,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public static void RenderReverseAssociations(IRenderer2D renderer, Association asso, List<Line3D> eventlines)
 		{
 			// Tag must be above zero
-			if(asso.tag < 1) return;
+			if(General.GetByIndex(asso.Tags, 0) < 1) return;
 
 			// Things
 			foreach(Thing t in General.Map.Map.Things)
@@ -641,11 +640,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if((t.Action > 0) && General.Map.Config.LinedefActions.ContainsKey(t.Action))
 				{
 					LinedefActionInfo action = General.Map.Config.LinedefActions[t.Action];
-					if(  ((action.Args[0].Type == (int)asso.type) && (t.Args[0] == asso.tag)) ||
-						 ((action.Args[1].Type == (int)asso.type) && (t.Args[1] == asso.tag)) ||
-						 ((action.Args[2].Type == (int)asso.type) && (t.Args[2] == asso.tag)) ||
-						 ((action.Args[3].Type == (int)asso.type) && (t.Args[3] == asso.tag)) ||
-						 ((action.Args[4].Type == (int)asso.type) && (t.Args[4] == asso.tag)) )
+					if(  ((action.Args[0].Type == (int)asso.Type) && (asso.Tags.Contains(t.Args[0]))) ||
+						 ((action.Args[1].Type == (int)asso.Type) && (asso.Tags.Contains(t.Args[1]))) ||
+						 ((action.Args[2].Type == (int)asso.Type) && (asso.Tags.Contains(t.Args[2]))) ||
+						 ((action.Args[3].Type == (int)asso.Type) && (asso.Tags.Contains(t.Args[3]))) ||
+						 ((action.Args[4].Type == (int)asso.Type) && (asso.Tags.Contains(t.Args[4]))))
 					{
 						renderer.RenderThing(t, General.Colors.Indication, 1.0f);
 						if(General.Settings.GZShowEventLines) eventlines.Add(new Line3D(t.Position, asso.Center)); //mxd

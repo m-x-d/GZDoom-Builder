@@ -10,12 +10,15 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 		private readonly int index;
 		private readonly int cursorposition;
 		private readonly bool isinclude;
+		private readonly bool customname;
 
 		internal string Name { get { return name; } }
 		internal int Index { get { return index; } }
 		internal int CursorPosition { get { return cursorposition; } }
 		internal bool IsInclude { get { return isinclude; } }
+		internal bool HasCustomName { get { return customname; } }
 
+		// Constructor for misc usage
 		internal ScriptItem(string name, int cursorposition, bool isinclude)
 		{
 			this.name = name;
@@ -23,17 +26,21 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 			this.index = int.MinValue;
 			this.cursorposition = cursorposition;
 			this.isinclude = isinclude;
+			this.customname = true;
 		}
 
-		internal ScriptItem(int index, string name, List<string> argnames, int cursorposition, bool isinclude)
+		// Constructor for numbered script
+		internal ScriptItem(int index, string name, List<string> argnames, int cursorposition, bool isinclude, bool customname)
 		{
 			this.name = name;
 			this.argnames = argnames;
 			this.index = index;
 			this.cursorposition = cursorposition;
 			this.isinclude = isinclude;
+			this.customname = customname;
 		}
 
+		// Constructor for named script
 		internal ScriptItem(string name, List<string> argnames, int cursorposition, bool isinclude)
 		{
 			this.name = name;
@@ -41,6 +48,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 			this.index = int.MinValue;
 			this.cursorposition = cursorposition;
 			this.isinclude = isinclude;
+			this.customname = true;
 		}
 
 		internal static int SortByIndex(ScriptItem i1, ScriptItem i2) 

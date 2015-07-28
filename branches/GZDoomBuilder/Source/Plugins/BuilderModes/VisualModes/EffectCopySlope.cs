@@ -33,7 +33,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Sector sourcesector = null;
 			foreach(Sector s in General.Map.Map.Sectors)
 			{
-				if(s.Tag == thing.Args[0])
+				if(s.Tags.Contains(thing.Args[0]))
 				{
 					sourcesector = s;
 					break;

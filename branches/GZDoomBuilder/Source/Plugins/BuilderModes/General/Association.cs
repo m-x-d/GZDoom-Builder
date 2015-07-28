@@ -16,6 +16,7 @@
 
 #region ================== Namespaces
 
+using System.Collections.Generic;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Types;
 
@@ -25,15 +26,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 {
 	public struct Association
 	{
-		public int tag;
-		public UniversalType type;
-		public Vector2D Center { get { return center; } }
+		private HashSet<int> tags;
 		private Vector2D center;
+		private UniversalType type;
+
+		public HashSet<int> Tags { get { return tags; } }
+		public Vector2D Center { get { return center; } }
+		public UniversalType Type { get { return type; } }
 
 		// This sets up the association
 		public Association(Vector2D center, int tag, int type)
 		{
-			this.tag = tag;
+			this.tags = new HashSet<int>(); //mxd
+			tags.Add(tag); //mxd
 			this.type = (UniversalType)type;
 			this.center = center;
 		}
@@ -41,7 +46,24 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This sets up the association
 		public Association(Vector2D center, int tag, UniversalType type)
 		{
-			this.tag = tag;
+			this.tags = new HashSet<int>(); //mxd
+			tags.Add(tag); //mxd
+			this.type = type;
+			this.center = center;
+		}
+
+		//mxd. This also sets up the association
+		public Association(Vector2D center, IEnumerable<int> tags, int type)
+		{
+			this.tags = new HashSet<int>(tags); //mxd
+			this.type = (UniversalType)type;
+			this.center = center;
+		}
+
+		//mxd. This also sets up the association
+		public Association(Vector2D center, IEnumerable<int> tags, UniversalType type)
+		{
+			this.tags = new HashSet<int>(tags); //mxd
 			this.type = type;
 			this.center = center;
 		}
@@ -49,7 +71,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This sets up the association
 		public void Set(Vector2D center, int tag, int type)
 		{
-			this.tag = tag;
+			this.tags = new HashSet<int>(); //mxd
+			tags.Add(tag); //mxd
 			this.type = (UniversalType)type;
 			this.center = center;
 		}
@@ -57,7 +80,24 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This sets up the association
 		public void Set(Vector2D center, int tag, UniversalType type)
 		{
-			this.tag = tag;
+			this.tags = new HashSet<int>(); //mxd
+			tags.Add(tag); //mxd
+			this.type = type;
+			this.center = center;
+		}
+
+		//mxd. This also sets up the association
+		public void Set(Vector2D center, IEnumerable<int> tags, int type)
+		{
+			this.tags = new HashSet<int>(tags); //mxd
+			this.type = (UniversalType)type;
+			this.center = center;
+		}
+
+		//mxd. This also sets up the association
+		public void Set(Vector2D center, IEnumerable<int> tags, UniversalType type)
+		{
+			this.tags = new HashSet<int>(tags); //mxd
 			this.type = type;
 			this.center = center;
 		}
@@ -65,13 +105,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This compares an association
 		public static bool operator ==(Association a, Association b)
 		{
-			return (a.tag == b.tag) && (a.type == b.type);
+			return (a.type == b.type) && a.tags.SetEquals(b.tags);
 		}
 
 		// This compares an association
 		public static bool operator !=(Association a, Association b)
 		{
-			return (a.tag != b.tag) || (a.type != b.type);
+			return (a.type != b.type) || !a.tags.SetEquals(b.tags);
 		}
 
 		//mxd 
@@ -86,7 +126,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(!(obj is Association)) return false;
 
 			Association b = (Association)obj;
-			return (tag == b.tag) && (type == b.type);
+			return (type == b.type) && tags.SetEquals(b.tags);
 		}
 	}
 }

@@ -17,6 +17,7 @@
 #region ================== Namespaces
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Config;
@@ -85,10 +86,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				foreach(Linedef l in list)
 				{
 					// Tag matches?
-					if(l.Tag == tag)
+					int index = l.Tags.IndexOf(tag);
+					if(index != -1)
 					{
 						// Replace
-						if(replace) l.Tag = replacetag;
+						if(replace)
+						{
+							l.Tags[index] = replacetag; //mxd
+							l.Tags = l.Tags.Distinct().ToList(); //mxd. We don't want duplicates
+						}
 
 						// Add to list
 						LinedefActionInfo info = General.Map.Config.GetLinedefActionInfo(l.Action);

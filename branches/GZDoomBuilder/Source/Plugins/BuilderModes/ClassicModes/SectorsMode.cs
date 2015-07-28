@@ -253,42 +253,54 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd
 		private string[] GetEffectText(Sector s) 
 		{
-			string[] result = new []{string.Empty, string.Empty};
+			string tagstr = string.Empty;
+			string tagstrshort = string.Empty;
+			string effectstr = string.Empty;
+			string effectstrshort = string.Empty;
 
-			if(s.Effect != 0) 
+			// Make effect text
+			if(s.Effect != 0)
 			{
-				if(effects.ContainsKey(s.Effect)) 
+				if(effects.ContainsKey(s.Effect))
+					effectstr = effects[s.Effect][0];
+				else
+					effectstr = s.Effect + " - " + General.Map.Config.GetGeneralizedSectorEffectName(s.Effect);
+				effectstrshort = "E" + s.Effect;
+			}
+
+			// Make tag text
+			if(s.Tag != 0)
+			{
+				if(s.Tags.Count > 1)
 				{
-					if(s.Tag != 0) 
-					{
-						result[0] = "Tag " + s.Tag + ", " + effects[s.Effect][0];
-						result[1] = "T" + s.Tag + " " + "E" + s.Effect;
-					} 
-					else 
-					{
-						result[0] = effects[s.Effect][0];
-						result[1] = "E" + s.Effect;
-					}
-				} 
-				else 
-				{
-					string effect = s.Effect + " - " + General.Map.Config.GetGeneralizedSectorEffectName(s.Effect);
-					if(s.Tag != 0) 
-					{
-						result[0] = "Tag " + s.Tag + ", Effect " + effect;
-						result[1] = "T" + s.Tag + " " + "E" + s.Effect;
-					} 
-					else 
-					{
-						result[0] = "Effect " + effect;
-						result[1] = "E" + s.Effect;
-					}
+					string[] stags = new string[s.Tags.Count];
+					for(int i = 0; i < s.Tags.Count; i++) stags[i] = s.Tags[i].ToString();
+					tagstr = "Tags " + string.Join(", ", stags);
+					tagstrshort = "T" + string.Join(",", stags);
 				}
-			} 
-			else if(s.Tag != 0) 
+				else
+				{
+					tagstr = "Tag " + s.Tag;
+					tagstrshort = "T" + s.Tag;
+				}
+			}
+
+			// Combine them
+			string[] result = new[] { string.Empty, string.Empty };
+			if(s.Effect != 0 && s.Tag != 0)
 			{
-				result[0] = "Tag " + s.Tag;
-				result[1] = "T" + s.Tag;
+				result[0] = tagstr + "; " + effectstr;
+				result[1] = tagstrshort + " " + effectstrshort;
+			}
+			else if(s.Effect != 0)
+			{
+				result[0] = effectstr;
+				result[1] = effectstrshort;
+			} 
+			else if(s.Tag != 0)
+			{
+				result[0] = tagstr;
+				result[1] = tagstrshort;
 			}
 
 			return result;
@@ -384,13 +396,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// are or were drawn we need to redraw the entire display.
 
 			// Previous association highlights something?
-			bool completeredraw = (highlighted != null) && (highlighted.Tag > 0);
+			bool completeredraw = (highlighted != null) && (highlighted.Tag != 0);
 
 			// Set highlight association
-			if (s != null) 
+			if (s != null && s.Tag != 0) 
 			{
 				Vector2D center = (s.Labels.Count > 0 ? s.Labels[0].position : new Vector2D(s.BBox.X + s.BBox.Width / 2, s.BBox.Y + s.BBox.Height / 2));
-				highlightasso.Set(center, s.Tag, UniversalType.SectorTag);
+				highlightasso.Set(center, s.Tags, UniversalType.SectorTag);
 			} 
 			else 
 			{
@@ -398,7 +410,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			// New association highlights something?
-			if((s != null) && (s.Tag > 0)) completeredraw = true;
+			if((s != null) && (s.Tag != 0)) completeredraw = true;
 
 			// Change label color
 			if((highlighted != null) && !highlighted.IsDisposed)

@@ -103,7 +103,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			findbutton.Text = (doreplace.Checked ? "Replace" : "Find");
 			replaceinput.Enabled = doreplace.Checked;
-			browsereplace.Enabled = doreplace.Checked;
+			browsereplace.Enabled = doreplace.Checked && newfinder != null && newfinder.Attributes.BrowseButton;
 		}
 
 		// Search type selected
