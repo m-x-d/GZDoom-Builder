@@ -101,6 +101,7 @@ namespace CodeImp.DoomBuilder.Editing
 		public ICollection<Thing> VisibleThings { get { return visiblethings; } }
 		public ICollection<Thing> HiddenThings { get { return hiddenthings; } }
 		internal bool IsDisposed { get { return isdisposed; } }
+		public const string DEFAULT_NAME = "Unnamed filter"; //mxd
 		
 		#endregion
 		
@@ -140,7 +141,7 @@ namespace CodeImp.DoomBuilder.Editing
 			customfields = new UniFields();
 			
 			// Read settings from config
-			name = cfg.ReadSetting(path + ".name", "Unnamed filter");
+			name = cfg.ReadSetting(path + ".name", DEFAULT_NAME);
 			categoryname = cfg.ReadSetting(path + ".category", "");
 			invert = cfg.ReadSetting(path + ".invert", false); //mxd
 			displaymode = (ThingsFilterDisplayMode)cfg.ReadSetting(path + ".displaymode", 0); //mxd
@@ -194,7 +195,7 @@ namespace CodeImp.DoomBuilder.Editing
 			thingargs = new int[Thing.NUM_ARGS];
 			for(int i = 0 ; i < Thing.NUM_ARGS; i++) thingargs[i] = -1;
 			thingtag = -1;
-			name = "Unnamed filter";
+			name = DEFAULT_NAME;
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -273,12 +274,22 @@ namespace CodeImp.DoomBuilder.Editing
 			AdjustForMapFormat();
 
 			//Integrity check
-			if(string.IsNullOrEmpty(categoryname) && thingtype == -1 && thingangle == -1
-				&& thingzheight == int.MinValue && thingaction == -1 && thingtag == -1
-				&& requiredfields.Count == 0 && forbiddenfields.Count == 0 && customfields.Count == 0) 
-			{
+			if(!IsValid())
 				General.ErrorLogger.Add(ErrorType.Warning, "Things filter '" + name + "' has invalid properties. Configure the thing filter to fix this!");
-			}
+		}
+
+		//mxd
+		public bool IsValid()
+		{
+			return (!string.IsNullOrEmpty(categoryname) 
+				|| thingtype > 0 
+				|| thingangle != -1
+				|| thingzheight != int.MinValue 
+				|| thingaction != -1 
+				|| thingtag != -1
+				|| requiredfields.Count > 0 
+				|| forbiddenfields.Count > 0 
+				|| customfields.Count > 0);
 		}
 		
 		/// <summary>

@@ -1,116 +1,101 @@
-﻿using System.Collections.Generic;
-using CodeImp.DoomBuilder.Rendering;
+﻿#region ================== Namespaces
+
+using System.Collections.Generic;
 using CodeImp.DoomBuilder.Map;
+using CodeImp.DoomBuilder.Rendering;
+
+#endregion
 
 namespace CodeImp.DoomBuilder.GZBuilder.Data
 {
 	public class LinedefColorPreset
 	{
-		public bool Valid { get { return valid; } }
-		private bool valid;
-
-		public string ErrorDescription { get { return errorDescription; } }
-		private string errorDescription;
-		public string WarningDescription;
+		#region ================== Properties
 
 		public string Name;
 		public PixelColor Color;
+		public bool Enabled;
 		public int Action;
 		public int Activation; //Hexen activation type
-		public List<string> Flags;
-		public List<string> RestrictedFlags;
-		private const string NOT_VALID = "invalid";
-		private const string DUPLICATE = "duplicate";
+		public readonly List<string> Flags;
+		public readonly List<string> RestrictedFlags;
 
-		public LinedefColorPreset(string name, PixelColor lineColor) 
+		#endregion
+
+		#region ================== Constructors
+
+		public LinedefColorPreset(string name, PixelColor linecolor) 
 		{
 			Name = name;
-			Color = lineColor;
+			Color = linecolor;
 			Flags = new List<string>();
 			RestrictedFlags = new List<string>();
+			Enabled = true;
 		}
 
-		public LinedefColorPreset(string name, PixelColor lineColor, int action, int activation, List<string> flags, List<string> restrictedFlags) 
+		public LinedefColorPreset(string name, PixelColor linecolor, int action, int activation, List<string> flags, List<string> restrictedFlags, bool enabled) 
 		{
 			Name = name;
-			Color = lineColor;
+			Color = linecolor;
 			Action = action;
 			Activation = activation;
 			Flags = flags;
 			RestrictedFlags = restrictedFlags;
+			Enabled = enabled;
 		}
 
-		public LinedefColorPreset(LinedefColorPreset copyFrom) 
+		public LinedefColorPreset(LinedefColorPreset other) 
 		{
-			Name = copyFrom.Name;
-			Color = copyFrom.Color;
-			Action = copyFrom.Action;
-			Activation = copyFrom.Activation;
-
-			Flags = new List<string>();
-			Flags.AddRange(copyFrom.Flags);
-
-			RestrictedFlags = new List<string>();
-			RestrictedFlags.AddRange(copyFrom.RestrictedFlags);
+			Name = other.Name;
+			Color = other.Color;
+			Action = other.Action;
+			Activation = other.Activation;
+			Enabled = other.Enabled;
+			Flags = new List<string>(other.Flags);
+			RestrictedFlags = new List<string>(other.RestrictedFlags);
 		}
 
-		public bool Matches(Linedef l) 
+		#endregion
+
+		#region ================== Methods
+
+		public bool Matches(Linedef l)
 		{
-			//check action; -1 means Any Action
+			if(!Enabled) return false;
+			
+			// Check action; -1 means Any Action
 			if(Action != 0) 
 			{
 				if((Action == -1 && l.Action == 0) || (Action != -1 && l.Action != Action))
 					return false;
 			}
 
-			//check activation; -1 means Any Activation
+			// Check activation; -1 means Any Activation
 			if(Activation != 0) 
 			{
 				if(!General.Map.UDMF && (l.Activate != Activation || (Activation == -1 && l.Activate == 0)))
 					return false;
 			}
 
-			//check flags
-			if(Flags.Count > 0) 
-			{
-				foreach(string s in Flags) 
-				{
-					if(!l.IsFlagSet(s)) return false;
-				}
-			}
+			// Check flags
+			if(Flags.Count > 0) foreach(string s in Flags) if(!l.IsFlagSet(s)) return false;
 
-			//check flags, which should be disabled
-			if(RestrictedFlags.Count > 0) 
-			{
-				foreach(string s in RestrictedFlags) 
-				{
-					if(l.IsFlagSet(s)) return false;
-				}
-			}
+			// Check flags, which should be disabled
+			if(RestrictedFlags.Count > 0) foreach(string s in RestrictedFlags) if(l.IsFlagSet(s)) return false;
 
 			return true;
 		}
 
-		public void SetValid() 
+		public bool IsValid()
 		{
-			valid = true;
-			errorDescription = "";
-			WarningDescription = "";
-		}
-
-		public void SetInvalid(string reason) 
-		{
-			valid = false;
-			errorDescription = reason;
+			return Action != 0 || Flags.Count > 0 || RestrictedFlags.Count > 0 || Activation != 0;
 		}
 
 		public override string ToString() 
 		{
-			List<string> rest = new List<string>();
-			if(!valid) rest.Add(NOT_VALID);
-			if(!string.IsNullOrEmpty(WarningDescription)) rest.Add(DUPLICATE);
-			if(rest.Count > 0) return Name + " (" + string.Join(", ", rest.ToArray()) + ")";
 			return Name;
 		}
+
+		#endregion
 	}
 }

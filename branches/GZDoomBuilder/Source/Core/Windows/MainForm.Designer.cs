@@ -89,6 +89,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.itemviewthingtypes = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuview = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemthingsfilter = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemlinedefcolors = new System.Windows.Forms.ToolStripMenuItem();
 			this.seperatorviewthings = new System.Windows.Forms.ToolStripSeparator();
 			this.itemviewnormal = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemviewbrightness = new System.Windows.Forms.ToolStripMenuItem();
@@ -109,6 +110,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.menugotocoords = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemfittoscreen = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemtoggleinfo = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemtogglecomments = new System.Windows.Forms.ToolStripMenuItem();
 			this.seperatorviewzoom = new System.Windows.Forms.ToolStripSeparator();
 			this.itemscripteditor = new System.Windows.Forms.ToolStripMenuItem();
 			this.menumode = new System.Windows.Forms.ToolStripMenuItem();
@@ -163,7 +165,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.buttoninsertprefabfile = new System.Windows.Forms.ToolStripButton();
 			this.buttoninsertpreviousprefab = new System.Windows.Forms.ToolStripButton();
 			this.buttonthingsfilter = new System.Windows.Forms.ToolStripButton();
-			this.thingfilters = new System.Windows.Forms.ToolStripComboBox();
+			this.separatorlinecolors = new System.Windows.Forms.ToolStripSeparator();
+			this.buttonlinededfcolors = new System.Windows.Forms.ToolStripButton();
 			this.separatorfilters = new System.Windows.Forms.ToolStripSeparator();
 			this.buttonfullbrightness = new System.Windows.Forms.ToolStripButton();
 			this.separatorfullbrightness = new System.Windows.Forms.ToolStripSeparator();
@@ -172,10 +175,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.buttonviewfloors = new System.Windows.Forms.ToolStripButton();
 			this.buttonviewceilings = new System.Windows.Forms.ToolStripButton();
 			this.seperatorviews = new System.Windows.Forms.ToolStripSeparator();
+			this.buttontogglecomments = new System.Windows.Forms.ToolStripButton();
 			this.buttonsnaptogrid = new System.Windows.Forms.ToolStripButton();
 			this.buttonautomerge = new System.Windows.Forms.ToolStripButton();
 			this.buttonautoclearsidetextures = new System.Windows.Forms.ToolStripButton();
-			this.buttontogglecomments = new System.Windows.Forms.ToolStripButton();
 			this.seperatorgeometry = new System.Windows.Forms.ToolStripSeparator();
 			this.buttontogglefx = new System.Windows.Forms.ToolStripButton();
 			this.dynamiclightmode = new System.Windows.Forms.ToolStripSplitButton();
@@ -245,7 +248,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.dockerscollapser = new System.Windows.Forms.Timer(this.components);
 			this.flowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
 			this.modecontrolsloolbar = new System.Windows.Forms.ToolStrip();
-			this.itemtogglecomments = new System.Windows.Forms.ToolStripMenuItem();
+			this.linedefcolorpresets = new System.Windows.Forms.ToolStripDropDownButton();
+			this.thingfilters = new System.Windows.Forms.ToolStripDropDownButton();
 			toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
@@ -687,7 +691,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.itemmapoptions.Name = "itemmapoptions";
 			this.itemmapoptions.Size = new System.Drawing.Size(219, 22);
 			this.itemmapoptions.Tag = "builder_mapoptions";
-			this.itemmapoptions.Text = "Map &Options....";
+			this.itemmapoptions.Text = "Map &Options...";
 			this.itemmapoptions.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// itemviewusedtags
@@ -712,6 +716,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.menuview.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.itemthingsfilter,
+            this.itemlinedefcolors,
             this.seperatorviewthings,
             this.itemviewnormal,
             this.itemviewbrightness,
@@ -735,22 +740,31 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.itemthingsfilter.Image = global::CodeImp.DoomBuilder.Properties.Resources.Filter;
 			this.itemthingsfilter.Name = "itemthingsfilter";
-			this.itemthingsfilter.Size = new System.Drawing.Size(209, 22);
+			this.itemthingsfilter.Size = new System.Drawing.Size(215, 22);
 			this.itemthingsfilter.Tag = "builder_thingsfilterssetup";
 			this.itemthingsfilter.Text = "Configure &Things Filters...";
 			this.itemthingsfilter.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// itemlinedefcolors
+			// 
+			this.itemlinedefcolors.Image = global::CodeImp.DoomBuilder.Properties.Resources.LinedefColorPresets;
+			this.itemlinedefcolors.Name = "itemlinedefcolors";
+			this.itemlinedefcolors.Size = new System.Drawing.Size(215, 22);
+			this.itemlinedefcolors.Tag = "builder_linedefcolorssetup";
+			this.itemlinedefcolors.Text = "Configure &Linedef Colors...";
+			this.itemlinedefcolors.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// seperatorviewthings
 			// 
 			this.seperatorviewthings.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
 			this.seperatorviewthings.Name = "seperatorviewthings";
-			this.seperatorviewthings.Size = new System.Drawing.Size(206, 6);
+			this.seperatorviewthings.Size = new System.Drawing.Size(212, 6);
 			// 
 			// itemviewnormal
 			// 
 			this.itemviewnormal.Image = global::CodeImp.DoomBuilder.Properties.Resources.ViewNormal;
 			this.itemviewnormal.Name = "itemviewnormal";
-			this.itemviewnormal.Size = new System.Drawing.Size(209, 22);
+			this.itemviewnormal.Size = new System.Drawing.Size(215, 22);
 			this.itemviewnormal.Tag = "builder_viewmodenormal";
 			this.itemviewnormal.Text = "&Wireframe";
 			this.itemviewnormal.Click += new System.EventHandler(this.InvokeTaggedAction);
@@ -759,7 +773,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.itemviewbrightness.Image = global::CodeImp.DoomBuilder.Properties.Resources.ViewBrightness;
 			this.itemviewbrightness.Name = "itemviewbrightness";
-			this.itemviewbrightness.Size = new System.Drawing.Size(209, 22);
+			this.itemviewbrightness.Size = new System.Drawing.Size(215, 22);
 			this.itemviewbrightness.Tag = "builder_viewmodebrightness";
 			this.itemviewbrightness.Text = "&Brightness Levels";
 			this.itemviewbrightness.Click += new System.EventHandler(this.InvokeTaggedAction);
@@ -768,7 +782,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.itemviewfloors.Image = global::CodeImp.DoomBuilder.Properties.Resources.ViewTextureFloor;
 			this.itemviewfloors.Name = "itemviewfloors";
-			this.itemviewfloors.Size = new System.Drawing.Size(209, 22);
+			this.itemviewfloors.Size = new System.Drawing.Size(215, 22);
 			this.itemviewfloors.Tag = "builder_viewmodefloors";
 			this.itemviewfloors.Text = "&Floor Textures";
 			this.itemviewfloors.Click += new System.EventHandler(this.InvokeTaggedAction);
@@ -777,7 +791,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.itemviewceilings.Image = global::CodeImp.DoomBuilder.Properties.Resources.ViewTextureCeiling;
 			this.itemviewceilings.Name = "itemviewceilings";
-			this.itemviewceilings.Size = new System.Drawing.Size(209, 22);
+			this.itemviewceilings.Size = new System.Drawing.Size(215, 22);
 			this.itemviewceilings.Tag = "builder_viewmodeceilings";
 			this.itemviewceilings.Text = "&Ceiling Textures";
 			this.itemviewceilings.Click += new System.EventHandler(this.InvokeTaggedAction);
@@ -785,14 +799,14 @@ namespace CodeImp.DoomBuilder.Windows
 			// seperatorviewviews
 			// 
 			this.seperatorviewviews.Name = "seperatorviewviews";
-			this.seperatorviewviews.Size = new System.Drawing.Size(206, 6);
+			this.seperatorviewviews.Size = new System.Drawing.Size(212, 6);
 			// 
 			// menufullbrightness
 			// 
 			this.menufullbrightness.CheckOnClick = true;
 			this.menufullbrightness.Image = global::CodeImp.DoomBuilder.Properties.Resources.Brightness;
 			this.menufullbrightness.Name = "menufullbrightness";
-			this.menufullbrightness.Size = new System.Drawing.Size(209, 22);
+			this.menufullbrightness.Size = new System.Drawing.Size(215, 22);
 			this.menufullbrightness.Tag = "builder_togglebrightness";
 			this.menufullbrightness.Text = "Full Brightness";
 			this.menufullbrightness.Click += new System.EventHandler(this.InvokeTaggedAction);
@@ -800,7 +814,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// toolStripSeparator4
 			// 
 			this.toolStripSeparator4.Name = "toolStripSeparator4";
-			this.toolStripSeparator4.Size = new System.Drawing.Size(206, 6);
+			this.toolStripSeparator4.Size = new System.Drawing.Size(212, 6);
 			// 
 			// menuzoom
 			// 
@@ -815,7 +829,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.item2zoom5});
 			this.menuzoom.Image = global::CodeImp.DoomBuilder.Properties.Resources.Zoom;
 			this.menuzoom.Name = "menuzoom";
-			this.menuzoom.Size = new System.Drawing.Size(209, 22);
+			this.menuzoom.Size = new System.Drawing.Size(215, 22);
 			this.menuzoom.Text = "&Zoom";
 			// 
 			// item2zoom800
@@ -885,7 +899,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// menugotocoords
 			// 
 			this.menugotocoords.Name = "menugotocoords";
-			this.menugotocoords.Size = new System.Drawing.Size(209, 22);
+			this.menugotocoords.Size = new System.Drawing.Size(215, 22);
 			this.menugotocoords.Tag = "builder_centeroncoordinates";
 			this.menugotocoords.Text = "Go To Coordinates...";
 			this.menugotocoords.Click += new System.EventHandler(this.InvokeTaggedAction);
@@ -893,7 +907,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// itemfittoscreen
 			// 
 			this.itemfittoscreen.Name = "itemfittoscreen";
-			this.itemfittoscreen.Size = new System.Drawing.Size(209, 22);
+			this.itemfittoscreen.Size = new System.Drawing.Size(215, 22);
 			this.itemfittoscreen.Tag = "builder_centerinscreen";
 			this.itemfittoscreen.Text = "Fit to Screen";
 			this.itemfittoscreen.Click += new System.EventHandler(this.InvokeTaggedAction);
@@ -901,22 +915,31 @@ namespace CodeImp.DoomBuilder.Windows
 			// itemtoggleinfo
 			// 
 			this.itemtoggleinfo.Name = "itemtoggleinfo";
-			this.itemtoggleinfo.Size = new System.Drawing.Size(209, 22);
+			this.itemtoggleinfo.Size = new System.Drawing.Size(215, 22);
 			this.itemtoggleinfo.Tag = "builder_toggleinfopanel";
 			this.itemtoggleinfo.Text = "&Expanded Info Panel";
 			this.itemtoggleinfo.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// itemtogglecomments
+			// 
+			this.itemtogglecomments.CheckOnClick = true;
+			this.itemtogglecomments.Name = "itemtogglecomments";
+			this.itemtogglecomments.Size = new System.Drawing.Size(215, 22);
+			this.itemtogglecomments.Tag = "builder_togglecomments";
+			this.itemtogglecomments.Text = "Show Comments";
+			this.itemtogglecomments.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// seperatorviewzoom
 			// 
 			this.seperatorviewzoom.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
 			this.seperatorviewzoom.Name = "seperatorviewzoom";
-			this.seperatorviewzoom.Size = new System.Drawing.Size(206, 6);
+			this.seperatorviewzoom.Size = new System.Drawing.Size(212, 6);
 			// 
 			// itemscripteditor
 			// 
 			this.itemscripteditor.Image = global::CodeImp.DoomBuilder.Properties.Resources.Script2;
 			this.itemscripteditor.Name = "itemscripteditor";
-			this.itemscripteditor.Size = new System.Drawing.Size(209, 22);
+			this.itemscripteditor.Size = new System.Drawing.Size(215, 22);
 			this.itemscripteditor.Tag = "builder_openscripteditor";
 			this.itemscripteditor.Text = "&Script Editor...";
 			this.itemscripteditor.Click += new System.EventHandler(this.InvokeTaggedAction);
@@ -1176,6 +1199,9 @@ namespace CodeImp.DoomBuilder.Windows
             this.seperatorprefabs,
             this.buttonthingsfilter,
             this.thingfilters,
+            this.separatorlinecolors,
+            this.buttonlinededfcolors,
+            this.linedefcolorpresets,
             this.separatorfilters,
             this.buttonfullbrightness,
             this.separatorfullbrightness,
@@ -1261,7 +1287,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.toggleFilter.Name = "toggleFilter";
 			this.toggleFilter.Size = new System.Drawing.Size(173, 22);
-			this.toggleFilter.Text = "Things Filter";
+			this.toggleFilter.Text = "Things Filter / Linedef Colors";
 			this.toggleFilter.Click += new System.EventHandler(this.toggleFilter_Click);
 			// 
 			// toggleViewModes
@@ -1425,21 +1451,22 @@ namespace CodeImp.DoomBuilder.Windows
 			this.buttonthingsfilter.Text = "Configure Things Filters";
 			this.buttonthingsfilter.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
-			// thingfilters
+			// separatorlinecolors
 			// 
-			this.thingfilters.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.thingfilters.Items.AddRange(new object[] {
-            "(none)",
-            "(custom)",
-            "Easy skill items only",
-            "Medium skill items only",
-            "Hard skill items only"});
-			this.thingfilters.Margin = new System.Windows.Forms.Padding(1, 0, 6, 0);
-			this.thingfilters.Name = "thingfilters";
-			this.thingfilters.Size = new System.Drawing.Size(100, 25);
-			this.thingfilters.ToolTipText = "Things Filter";
-			this.thingfilters.SelectedIndexChanged += new System.EventHandler(this.thingfilters_SelectedIndexChanged);
-			this.thingfilters.DropDownClosed += new System.EventHandler(this.LoseFocus);
+			this.separatorlinecolors.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+			this.separatorlinecolors.Name = "separatorlinecolors";
+			this.separatorlinecolors.Size = new System.Drawing.Size(6, 25);
+			// 
+			// buttonlinededfcolors
+			// 
+			this.buttonlinededfcolors.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttonlinededfcolors.Image = global::CodeImp.DoomBuilder.Properties.Resources.LinedefColorPresets;
+			this.buttonlinededfcolors.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttonlinededfcolors.Name = "buttonlinededfcolors";
+			this.buttonlinededfcolors.Size = new System.Drawing.Size(23, 22);
+			this.buttonlinededfcolors.Tag = "builder_linedefcolorssetup";
+			this.buttonlinededfcolors.Text = "Configure Linedef Colors";
+			this.buttonlinededfcolors.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// separatorfilters
 			// 
@@ -1519,6 +1546,19 @@ namespace CodeImp.DoomBuilder.Windows
 			this.seperatorviews.Name = "seperatorviews";
 			this.seperatorviews.Size = new System.Drawing.Size(6, 25);
 			// 
+			// buttontogglecomments
+			// 
+			this.buttontogglecomments.Checked = true;
+			this.buttontogglecomments.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.buttontogglecomments.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttontogglecomments.Image = global::CodeImp.DoomBuilder.Properties.Resources.Comment;
+			this.buttontogglecomments.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttontogglecomments.Name = "buttontogglecomments";
+			this.buttontogglecomments.Size = new System.Drawing.Size(23, 22);
+			this.buttontogglecomments.Tag = "builder_togglecomments";
+			this.buttontogglecomments.Text = "Show Comments";
+			this.buttontogglecomments.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
 			// buttonsnaptogrid
 			// 
 			this.buttonsnaptogrid.Checked = true;
@@ -1557,19 +1597,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.buttonautoclearsidetextures.Tag = "builder_toggleautoclearsidetextures";
 			this.buttonautoclearsidetextures.Text = "Auto Clear Sidedef Textures";
 			this.buttonautoclearsidetextures.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
-			// buttontogglecomments
-			// 
-			this.buttontogglecomments.Checked = true;
-			this.buttontogglecomments.CheckState = System.Windows.Forms.CheckState.Checked;
-			this.buttontogglecomments.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.buttontogglecomments.Image = global::CodeImp.DoomBuilder.Properties.Resources.Comment;
-			this.buttontogglecomments.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.buttontogglecomments.Name = "buttontogglecomments";
-			this.buttontogglecomments.Size = new System.Drawing.Size(23, 22);
-			this.buttontogglecomments.Tag = "builder_togglecomments";
-			this.buttontogglecomments.Text = "Show Comments";
-			this.buttontogglecomments.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// seperatorgeometry
 			// 
@@ -2287,14 +2314,34 @@ namespace CodeImp.DoomBuilder.Windows
 			this.modecontrolsloolbar.Text = "toolStrip1";
 			this.modecontrolsloolbar.Visible = false;
 			// 
-			// itemtogglecomments
+			// linedefcolorpresets
 			// 
-			this.itemtogglecomments.Name = "itemtogglecomments";
-			this.itemtogglecomments.Size = new System.Drawing.Size(209, 22);
-			this.itemtogglecomments.Tag = "builder_togglecomments";
-			this.itemtogglecomments.Text = "Show Comments";
-			this.itemtogglecomments.CheckOnClick = true;
-			this.itemtogglecomments.Click += new System.EventHandler(this.InvokeTaggedAction);
+			this.linedefcolorpresets.AutoSize = false;
+			this.linedefcolorpresets.AutoToolTip = false;
+			this.linedefcolorpresets.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.linedefcolorpresets.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.linedefcolorpresets.Margin = new System.Windows.Forms.Padding(1, 1, 0, 2);
+			this.linedefcolorpresets.Name = "linedefcolorpresets";
+			this.linedefcolorpresets.Size = new System.Drawing.Size(120, 22);
+			this.linedefcolorpresets.Text = "No presets";
+			this.linedefcolorpresets.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.linedefcolorpresets.Click += new System.EventHandler(this.linedefcolorpresets_MouseLeave);
+			this.linedefcolorpresets.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.linedefcolorpresets_DropDownItemClicked);
+			this.linedefcolorpresets.DropDownClosed += new System.EventHandler(this.LoseFocus);
+			// 
+			// thingfilters
+			// 
+			this.thingfilters.AutoSize = false;
+			this.thingfilters.AutoToolTip = false;
+			this.thingfilters.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.thingfilters.Image = ((System.Drawing.Image)(resources.GetObject("thingfilters.Image")));
+			this.thingfilters.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.thingfilters.Margin = new System.Windows.Forms.Padding(1, 1, 0, 2);
+			this.thingfilters.Name = "thingfilters";
+			this.thingfilters.Size = new System.Drawing.Size(120, 22);
+			this.thingfilters.Text = "(show all)";
+			this.thingfilters.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.thingfilters.DropDownClosed += new System.EventHandler(this.LoseFocus);
 			// 
 			// MainForm
 			// 
@@ -2386,7 +2433,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private CodeImp.DoomBuilder.Controls.SectorInfoPanel sectorinfo;
 		private CodeImp.DoomBuilder.Controls.ThingInfoPanel thinginfo;
 		private System.Windows.Forms.ToolStripButton buttonthingsfilter;
-		private System.Windows.Forms.ToolStripComboBox thingfilters;
 		private System.Windows.Forms.ToolStripSeparator seperatorviews;
 		private System.Windows.Forms.ToolStripStatusLabel gridlabel;
 		private System.Windows.Forms.ToolStripDropDownButton buttongrid;
@@ -2549,5 +2595,10 @@ namespace CodeImp.DoomBuilder.Windows
 		private ToolStripMenuItem itemzoom800;
 		private ToolStripButton buttontogglecomments;
 		private ToolStripMenuItem itemtogglecomments;
+		private ToolStripMenuItem itemlinedefcolors;
+		private ToolStripSeparator separatorlinecolors;
+		private ToolStripButton buttonlinededfcolors;
+		private ToolStripDropDownButton linedefcolorpresets;
+		private ToolStripDropDownButton thingfilters;
 	}
 }

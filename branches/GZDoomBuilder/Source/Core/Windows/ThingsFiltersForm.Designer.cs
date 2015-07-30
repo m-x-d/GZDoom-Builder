@@ -28,8 +28,11 @@ namespace CodeImp.DoomBuilder.Windows
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ThingsFiltersForm));
 			this.listfilters = new System.Windows.Forms.ListView();
 			this.columnname = new System.Windows.Forms.ColumnHeader();
+			this.imagelist = new System.Windows.Forms.ImageList(this.components);
 			this.addfilter = new System.Windows.Forms.Button();
 			this.deletefilter = new System.Windows.Forms.Button();
 			this.filtergroup = new System.Windows.Forms.GroupBox();
@@ -99,6 +102,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.listfilters.Name = "listfilters";
 			this.listfilters.ShowGroups = false;
 			this.listfilters.Size = new System.Drawing.Size(202, 410);
+			this.listfilters.SmallImageList = this.imagelist;
 			this.listfilters.Sorting = System.Windows.Forms.SortOrder.Ascending;
 			this.listfilters.TabIndex = 0;
 			this.listfilters.UseCompatibleStateImageBehavior = false;
@@ -109,6 +113,12 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.columnname.Text = "Configuration";
 			this.columnname.Width = 177;
+			// 
+			// imagelist
+			// 
+			this.imagelist.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imagelist.ImageStream")));
+			this.imagelist.TransparentColor = System.Drawing.Color.Transparent;
+			this.imagelist.Images.SetKeyName(0, "Warning.png");
 			// 
 			// addfilter
 			// 
@@ -377,7 +387,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.filterfields.Columns = 2;
 			this.filterfields.Location = new System.Drawing.Point(20, 39);
 			this.filterfields.Name = "filterfields";
-			this.filterfields.Size = new System.Drawing.Size(402, 258);
+			this.filterfields.Size = new System.Drawing.Size(402, 233);
 			this.filterfields.TabIndex = 5;
 			this.filterfields.VerticalSpacing = 1;
 			// 
@@ -402,7 +412,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabaction.Location = new System.Drawing.Point(4, 22);
 			this.tabaction.Name = "tabaction";
 			this.tabaction.Padding = new System.Windows.Forms.Padding(3);
-			this.tabaction.Size = new System.Drawing.Size(445, 285);
+			this.tabaction.Size = new System.Drawing.Size(445, 303);
 			this.tabaction.TabIndex = 2;
 			this.tabaction.Text = "Action";
 			this.tabaction.UseVisualStyleBackColor = true;
@@ -601,7 +611,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabcustom.Location = new System.Drawing.Point(4, 22);
 			this.tabcustom.Name = "tabcustom";
 			this.tabcustom.Padding = new System.Windows.Forms.Padding(3);
-			this.tabcustom.Size = new System.Drawing.Size(445, 285);
+			this.tabcustom.Size = new System.Drawing.Size(445, 303);
 			this.tabcustom.TabIndex = 3;
 			this.tabcustom.Text = "Custom";
 			this.tabcustom.UseVisualStyleBackColor = true;
@@ -619,7 +629,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.fieldslist.Name = "fieldslist";
 			this.fieldslist.PropertyColumnVisible = true;
 			this.fieldslist.PropertyColumnWidth = 150;
-			this.fieldslist.Size = new System.Drawing.Size(426, 276);
+			this.fieldslist.Size = new System.Drawing.Size(426, 251);
 			this.fieldslist.TabIndex = 2;
 			this.fieldslist.TypeColumnVisible = true;
 			this.fieldslist.TypeColumnWidth = 100;
@@ -633,6 +643,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.filtername.Name = "filtername";
 			this.filtername.Size = new System.Drawing.Size(232, 20);
 			this.filtername.TabIndex = 0;
+			this.filtername.Enter += new System.EventHandler(this.filtername_Enter);
 			this.filtername.Validating += new System.ComponentModel.CancelEventHandler(this.filtername_Validating);
 			// 
 			// label1
@@ -756,5 +767,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.CheckBox invert;
 		private System.Windows.Forms.ComboBox filtermode;
 		private System.Windows.Forms.Label label9;
+		private System.Windows.Forms.ImageList imagelist;
 	}
 }

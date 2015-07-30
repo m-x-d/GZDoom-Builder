@@ -801,19 +801,7 @@
     <Compile Include="GZBuilder\Controls\TagsSelector.Designer.cs">
       <DependentUpon>TagsSelector.cs</DependentUpon>
     </Compile>
-    <Compile Include="GZBuilder\Controls\CustomLinedefColorProperties.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="GZBuilder\Controls\CustomLinedefColorProperties.designer.cs">
-      <DependentUpon>CustomLinedefColorProperties.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GZBuilder\Controls\CustomLinedefColorsControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="GZBuilder\Controls\CustomLinedefColorsControl.designer.cs">
-      <DependentUpon>CustomLinedefColorsControl.cs</DependentUpon>
-    </Compile>
-    <Compile Include="GZBuilder\Controls\IconListBox.cs">
+    <Compile Include="Controls\CheckedColoredListBox.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="GZBuilder\Controls\MultiSelectTreeview.cs">
@@ -925,6 +913,12 @@
     <Compile Include="Windows\FlagsForm.Designer.cs">
       <DependentUpon>FlagsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="Windows\LinedefColorPresetsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\LinedefColorPresetsForm.Designer.cs">
+      <DependentUpon>LinedefColorPresetsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Windows\LinedefEditFormUDMF.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1031,12 +1025,6 @@
     <EmbeddedResource Include="GZBuilder\Controls\TagsSelector.resx">
       <DependentUpon>TagsSelector.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GZBuilder\Controls\CustomLinedefColorProperties.resx">
-      <DependentUpon>CustomLinedefColorProperties.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="GZBuilder\Controls\CustomLinedefColorsControl.resx">
-      <DependentUpon>CustomLinedefColorsControl.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="GZBuilder\Controls\PairedFieldsControl.resx">
       <DependentUpon>PairedFieldsControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -1097,6 +1085,7 @@
     <EmbeddedResource Include="Resources\MissingThing.png" />
     <None Include="Resources\MCrash.png" />
     <None Include="Resources\MixedThings.png" />
+    <None Include="Resources\LinedefColorPresets.png" />
     <Content Include="Resources\Model.png" />
     <None Include="Resources\ModelDisabled.png" />
     <None Include="Resources\ModelFiltered.png" />
@@ -1241,6 +1230,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\FlagsForm.resx">
       <DependentUpon>FlagsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\LinedefColorPresetsForm.resx">
+      <DependentUpon>LinedefColorPresetsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\LinedefEditFormUDMF.resx">
       <DependentUpon>LinedefEditFormUDMF.cs</DependentUpon>

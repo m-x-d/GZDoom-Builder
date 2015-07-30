@@ -142,13 +142,18 @@ namespace CodeImp.DoomBuilder.Windows
 				{
 					// Select it again
 					item.Selected = true;
+					item.EnsureVisible();
 					break;
 				}
 			}
 
 			mapslist.EndUpdate();
-			apply.Focus();    //"creative" way
-			mapslist.Focus(); //to set keyboard focus to the maplist
+
+			// Do some focus managing
+			if(mapslist.SelectedItems.Count > 0)
+			{
+				mapslist.FocusedItem = mapslist.SelectedItems[0];
+			}
 			
 			// Done
 			Cursor.Current = Cursors.Default;

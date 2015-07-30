@@ -33,6 +33,7 @@ using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Controls;
 using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Editing;
+using CodeImp.DoomBuilder.GZBuilder.Data;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.GZBuilder.Windows;
 using CodeImp.DoomBuilder.IO;
@@ -264,6 +265,7 @@ namespace CodeImp.DoomBuilder.Windows
 			display.OnKeyReleased += display_OnKeyReleased;
 			toolbarContextMenu.KeyDown += toolbarContextMenu_KeyDown;
 			toolbarContextMenu.KeyUp += toolbarContextMenu_KeyUp;
+			linedefcolorpresets.DropDown.MouseLeave += linedefcolorpresets_MouseLeave;
 			
 			// Apply shortcut keys
 			ApplyShortcutKeys();
@@ -1615,72 +1617,110 @@ namespace CodeImp.DoomBuilder.Windows
 			this.ActiveControl = null;
 		}
 
-		// Things filter selected
-		private void thingfilters_SelectedIndexChanged(object sender, EventArgs e)
+		//mxd. Things filter selected
+		private void thingfilters_DropDownItemClicked(object sender, EventArgs e)
 		{
 			// Only possible when a map is open
 			if((General.Map != null) && !updatingfilters)
 			{
 				updatingfilters = true;
-				
+				ToolStripMenuItem clickeditem = sender as ToolStripMenuItem;
+
+				// Keep already selected items selected
+				if(!clickeditem.Checked)
+				{
+					clickeditem.Checked = true;
+					updatingfilters = false;
+					return;
+				}
+
 				// Change filter
-				General.Map.ChangeThingFilter(thingfilters.SelectedItem as ThingsFilter);
+				ThingsFilter f = clickeditem.Tag as ThingsFilter;
+				General.Map.ChangeThingFilter(f);
+
+				// Deselect other items...
+				foreach(var item in thingfilters.DropDown.Items)
+				{
+					if(item != clickeditem) ((ToolStripMenuItem)item).Checked = false;
+				}
+
+				// Update button text
+				thingfilters.Text = f.Name;
 
 				updatingfilters = false;
 			}
 			
 			// Lose focus
-			if(!thingfilters.DroppedDown) LoseFocus(sender, e);
+			LoseFocus(sender, e);
 		}
 		
-		// This updates the things filter on the toolbar
+		//mxd. This updates the things filter on the toolbar
 		internal void UpdateThingsFilters()
 		{
 			// Only possible to list filters when a map is open
 			if(General.Map != null)
 			{
 				ThingsFilter oldfilter = null;
-				if(thingfilters.SelectedIndex > -1)
-					oldfilter = thingfilters.SelectedItem as ThingsFilter;
+
+				// Anything selected?
+				foreach(var item in thingfilters.DropDown.Items)
+				{
+					if(((ToolStripMenuItem)item).Checked)
+					{
+						oldfilter = ((ToolStripMenuItem)item).Tag as ThingsFilter;
+						break;
+					}
+				}
 				
 				updatingfilters = true;
 
 				// Clear the list
-				thingfilters.Items.Clear();
+				thingfilters.DropDown.Items.Clear();
 
 				// Add null filter
 				if(General.Map.ThingsFilter is NullThingsFilter)
-					thingfilters.Items.Add(General.Map.ThingsFilter);
+					thingfilters.DropDown.Items.Add(CreateThingsFilterMenuItem(General.Map.ThingsFilter));
 				else
-					thingfilters.Items.Add(new NullThingsFilter());
+					thingfilters.DropDown.Items.Add(CreateThingsFilterMenuItem(new NullThingsFilter()));
 
-				// Add all filters
+				// Add all filters, select current one
 				foreach(ThingsFilter f in General.Map.ConfigSettings.ThingsFilters)
-					thingfilters.Items.Add(f);
-
-				// Select current filter
-				foreach(ThingsFilter f in thingfilters.Items)
-					if(f == General.Map.ThingsFilter) thingfilters.SelectedItem = f;
+					thingfilters.DropDown.Items.Add(CreateThingsFilterMenuItem(f));
 
 				updatingfilters = false;
 				
 				// No filter selected?
-				if(thingfilters.SelectedIndex == -1)
+				ToolStripMenuItem selecteditem = null;
+				foreach(var i in thingfilters.DropDown.Items)
 				{
-					// Select the first and update
-					thingfilters.SelectedIndex = 0;
+					ToolStripMenuItem item = i as ToolStripMenuItem;
+					if(item.Checked)
+					{
+						selecteditem = item;
+						break;
+					}
+				}
+
+				if(selecteditem == null)
+				{
+					ToolStripMenuItem first = thingfilters.DropDown.Items[0] as ToolStripMenuItem;
+					first.Checked = true;
 				}
 				// Another filter got selected?
-				else if(oldfilter != (thingfilters.SelectedItem as ThingsFilter))
+				else if(selecteditem.Tag != oldfilter)
 				{
-					// Update!
-					thingfilters_SelectedIndexChanged(this, EventArgs.Empty);
+					selecteditem.Checked = true;
 				}
+
+				// Update button text
+				if(selecteditem != null)
+					thingfilters.Text = ((ThingsFilter)selecteditem.Tag).Name;
 			}
 			else
 			{
 				// Clear the list
-				thingfilters.Items.Clear();
+				thingfilters.DropDown.Items.Clear();
+				thingfilters.Text = "(show all)";
 			}
 		}
 
@@ -1693,12 +1733,20 @@ namespace CodeImp.DoomBuilder.Windows
 				
 				// Select current filter
 				bool selecteditemfound = false;
-				foreach(ThingsFilter f in thingfilters.Items)
+				foreach(var i in thingfilters.DropDown.Items)
 				{
+					ToolStripMenuItem item = i as ToolStripMenuItem;
+					ThingsFilter f = item.Tag as ThingsFilter;
+
 					if(f == General.Map.ThingsFilter)
 					{
-						thingfilters.SelectedItem = f;
+						item.Checked = true;
+						thingfilters.Text = f.Name;
 						selecteditemfound = true;
+					}
+					else
+					{
+						item.Checked = false;
 					}
 				}
 
@@ -1706,13 +1754,140 @@ namespace CodeImp.DoomBuilder.Windows
 				if(!selecteditemfound)
 				{
 					// Select nothing
-					thingfilters.SelectedIndex = -1;
+					thingfilters.Text = "(show all)"; //mxd
 				}
 
 				updatingfilters = false;
 			}
 		}
-		
+
+		//mxd
+		private ToolStripMenuItem CreateThingsFilterMenuItem(ThingsFilter f)
+		{
+			// Make decorated name
+			string name = f.Name;
+			if(f.Invert) name = "!" + name;
+			switch(f.DisplayMode)
+			{
+				case ThingsFilterDisplayMode.CLASSIC_MODES_ONLY: name += " [2D]"; break;
+				case ThingsFilterDisplayMode.VISUAL_MODES_ONLY: name += " [3D]"; break;
+			}
+
+			// Create and select the item
+			ToolStripMenuItem item = new ToolStripMenuItem(name) { CheckOnClick = true, Tag = f };
+			item.CheckedChanged += thingfilters_DropDownItemClicked;
+			item.Checked = (f == General.Map.ThingsFilter);
+			
+			// Update icon
+			if(!(f is NullThingsFilter) && !f.IsValid())
+			{
+				item.Image = Resources.Warning;
+				item.ImageScaling = ToolStripItemImageScaling.None;
+			}
+
+			return item;
+		}
+
+		//mxd. Linedef color preset (de)selected
+		private void linedefcolorpresets_ItemClicked(object sender, EventArgs e)
+		{
+			ToolStripMenuItem item = sender as ToolStripMenuItem;
+			((LinedefColorPreset)item.Tag).Enabled = item.Checked;
+
+			List<string> enablednames = new List<string>();
+			foreach (LinedefColorPreset p in General.Map.ConfigSettings.LinedefColorPresets)
+			{
+				if(p.Enabled) enablednames.Add(p.Name);
+			}
+
+			// Update button text
+			UpdateColorPresetsButtonText(linedefcolorpresets, enablednames);
+			
+			General.Map.Map.UpdateCustomLinedefColors();
+			General.Map.ConfigSettings.Changed = true;
+
+			// Update display
+			if(General.Editing.Mode is ClassicMode) General.Interface.RedrawDisplay();
+		}
+
+		//mxd. Handle Shift key...
+		private void linedefcolorpresets_DropDownItemClicked(object sender, ToolStripItemClickedEventArgs e)
+		{
+			linedefcolorpresets.DropDown.AutoClose = (ModifierKeys != Keys.Shift);
+		}
+
+		//mxd. Handles the mouse leaving linedefcolorpresets.DropDown and clicking on linedefcolorpresets button
+		private void linedefcolorpresets_MouseLeave(object sender, EventArgs e)
+		{
+			linedefcolorpresets.DropDown.AutoClose = true;
+		}
+
+		//mxd. This updates linedef color presets selector on the toolbar
+		internal void UpdateLinedefColorPresets()
+		{
+			// Refill the list
+			List<string> enablednames = new List<string>();
+			linedefcolorpresets.DropDown.Items.Clear();
+
+			if(General.Map != null)
+			{
+				foreach(LinedefColorPreset p in General.Map.ConfigSettings.LinedefColorPresets)
+				{
+					// Create menu item
+					ToolStripMenuItem item = new ToolStripMenuItem(p.Name)
+					{
+						CheckOnClick = true,
+						Tag = p,
+						ImageScaling = ToolStripItemImageScaling.None,
+						Checked = p.Enabled,
+						ToolTipText = "Hold Shift to toggle several items at once"
+					};
+
+					// Create icon
+					if(p.IsValid())
+					{
+						Bitmap icon = new Bitmap(16, 16);
+						using(Graphics g = Graphics.FromImage(icon))
+						{
+							g.FillRectangle(new SolidBrush(p.Color.ToColor()), 2, 3, 12, 10);
+							g.DrawRectangle(Pens.Black, 2, 3, 11, 9);
+						}
+
+						item.Image = icon;
+					}
+					// Or use the warning icon
+					else
+					{
+						item.Image = Resources.Warning;
+					}
+
+					item.CheckedChanged += linedefcolorpresets_ItemClicked;
+					linedefcolorpresets.DropDown.Items.Add(item);
+					if(p.Enabled) enablednames.Add(p.Name);
+				}
+			}
+
+			// Update button text
+			UpdateColorPresetsButtonText(linedefcolorpresets, enablednames);
+		}
+
+		//mxd
+		private static void UpdateColorPresetsButtonText(ToolStripItem button, List<string> names)
+		{
+			if(names.Count == 0)
+			{
+				button.Text = "No active presets";
+			}
+			else
+			{
+				string text = string.Join(", ", names.ToArray());
+				if(TextRenderer.MeasureText(text, button.Font).Width > button.Width)
+					button.Text = names.Count + (names.Count.ToString(CultureInfo.InvariantCulture).EndsWith("1") ? " preset" : " presets") + " active";
+				else
+					button.Text = text;
+			}
+		}
+
 		// This adds a button to the toolbar
 		public void AddButton(ToolStripItem button) { AddButton(button, ToolbarSection.Custom, General.Plugins.FindPluginByAssembly(Assembly.GetCallingAssembly())); }
 		public void AddButton(ToolStripItem button, ToolbarSection section) { AddButton(button, section, General.Plugins.FindPluginByAssembly(Assembly.GetCallingAssembly())); }
@@ -1888,6 +2063,9 @@ namespace CodeImp.DoomBuilder.Windows
 			buttoninsertpreviousprefab.Visible = General.Settings.ToolbarPrefabs && maploaded;
 			buttonthingsfilter.Visible = General.Settings.ToolbarFilter && maploaded;
 			thingfilters.Visible = General.Settings.ToolbarFilter && maploaded;
+			separatorlinecolors.Visible = General.Settings.ToolbarFilter && maploaded; //mxd
+			buttonlinededfcolors.Visible = General.Settings.ToolbarFilter && maploaded; //mxd
+			linedefcolorpresets.Visible = General.Settings.ToolbarFilter && maploaded; //mxd
 			separatorfilters.Visible = General.Settings.ToolbarViewModes && maploaded; //mxd
 			buttonfullbrightness.Visible = General.Settings.ToolbarViewModes && maploaded; //mxd
 			separatorfullbrightness.Visible = General.Settings.ToolbarViewModes && maploaded; //mxd
@@ -2718,6 +2896,7 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			// Menu items
 			itemthingsfilter.Enabled = (General.Map != null);
+			itemlinedefcolors.Enabled = (General.Map != null); //mxd
 			itemscripteditor.Enabled = (General.Map != null);
 			itemfittoscreen.Enabled = (General.Map != null);
 			menuzoom.Enabled = (General.Map != null);

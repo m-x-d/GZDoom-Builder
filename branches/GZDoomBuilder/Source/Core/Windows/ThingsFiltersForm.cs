@@ -85,7 +85,8 @@ namespace CodeImp.DoomBuilder.Windows
 			filteraction.AddInfo(General.Map.Config.SortedLinedefActions.ToArray());
 			
 			// Initialize custom fields editor
-			if (General.Map.FormatInterface.HasCustomFields) { //mxd
+			if(General.Map.FormatInterface.HasCustomFields) //mxd
+			{
 				fieldslist.ListNoFixedFields();
 				fieldslist.Setup("thing");
 			}
@@ -107,6 +108,7 @@ namespace CodeImp.DoomBuilder.Windows
 				// Make item in list
 				ListViewItem item = new ListViewItem(nf.Name);
 				item.Tag = nf;
+				item.ImageIndex = (nf.IsValid() ? -1 : 0); //mxd
 				listfilters.Items.Add(item);
 				
 				// Select item if this is the current filter
@@ -139,6 +141,17 @@ namespace CodeImp.DoomBuilder.Windows
 				string catname = (string.IsNullOrEmpty(fullname) ? cat.Title : fullname + " / " + cat.Title);
 				filtercategory.Items.Add(new ThingCategoryData(cat, catname));
 				AddThingFilterCategories(cat.Children, catname);
+			}
+		}
+
+		//mxd
+		private void ValidateFilter(ListViewItem item, ThingsFilter f)
+		{
+			int imageindex = (f.IsValid() ? -1 : 0);
+			if(item.ImageIndex != imageindex)
+			{
+				item.ImageIndex = imageindex;
+				listfilters.Invalidate();
 			}
 		}
 
@@ -195,8 +208,8 @@ namespace CodeImp.DoomBuilder.Windows
 			item.Selected = true;
 
 			// Focus on the name field
-			filtername.Focus();
-			filtername.SelectAll();
+			//filtername.Focus();
+			//filtername.SelectAll();
 		}
 
 		// Delete Selected clicked
@@ -345,6 +358,8 @@ namespace CodeImp.DoomBuilder.Windows
 					// Unset category name
 					f.CategoryName = "";
 				}
+
+				ValidateFilter(listfilters.SelectedItems[0], f); //mxd
 			}
 		}
 		
@@ -358,6 +373,7 @@ namespace CodeImp.DoomBuilder.Windows
 				ThingsFilter f = listfilters.SelectedItems[0].Tag as ThingsFilter;
 
 				// Name changed?
+				if(string.IsNullOrEmpty(filtername.Text)) filtername.Text = ThingsFilter.DEFAULT_NAME; //mxd
 				if(f.Name != filtername.Text)
 				{
 					// Update name
@@ -366,6 +382,12 @@ namespace CodeImp.DoomBuilder.Windows
 					listfilters.Sort();
 				}
 			}
+		}
+
+		//mxd
+		private void filtername_Enter(object sender, EventArgs e)
+		{
+			if(filtername.Text == ThingsFilter.DEFAULT_NAME) filtername.Text = string.Empty;
 		}
 
 		// Field clicked
@@ -400,6 +422,8 @@ namespace CodeImp.DoomBuilder.Windows
 							f.RequiredFields.Remove(box.Tag.ToString());
 							break;
 					}
+
+					ValidateFilter(listfilters.SelectedItems[0], f); //mxd
 				}
 			}
 		}
@@ -415,6 +439,8 @@ namespace CodeImp.DoomBuilder.Windows
 					f.ThingType = -1;
 				else
 					f.ThingType = filtertype.GetValue();
+
+				ValidateFilter(listfilters.SelectedItems[0], f); //mxd
 			}
 		}
 		
@@ -431,6 +457,8 @@ namespace CodeImp.DoomBuilder.Windows
 				// Get selected filter
 				ThingsFilter f = listfilters.SelectedItems[0].Tag as ThingsFilter;
 				f.ThingAngle = filterangle.GetResult(-1);
+
+				ValidateFilter(listfilters.SelectedItems[0], f); //mxd
 			}
 		}
 		
@@ -450,6 +478,8 @@ namespace CodeImp.DoomBuilder.Windows
 				// Get selected filter
 				ThingsFilter f = listfilters.SelectedItems[0].Tag as ThingsFilter;
 				f.ThingZHeight = filterzheight.GetResult(int.MinValue);
+
+				ValidateFilter(listfilters.SelectedItems[0], f); //mxd
 			}
 		}
 
@@ -467,6 +497,8 @@ namespace CodeImp.DoomBuilder.Windows
 					f.ThingAction = -1;
 				else
 					f.ThingAction = filteraction.GetValue();
+
+				ValidateFilter(listfilters.SelectedItems[0], f); //mxd
 			}
 			
 			// Only when line type is known, otherwise use the thing arguments
@@ -509,6 +541,8 @@ namespace CodeImp.DoomBuilder.Windows
 				// Get selected filter
 				ThingsFilter f = listfilters.SelectedItems[0].Tag as ThingsFilter;
 				f.ThingTag = filtertag.GetResult(-1);
+
+				ValidateFilter(listfilters.SelectedItems[0], f); //mxd
 			}
 		}
 
@@ -524,6 +558,8 @@ namespace CodeImp.DoomBuilder.Windows
 				int.TryParse((sender as Control).Tag.ToString(), out index);
 				ArgumentBox filterarg = (sender as ArgumentBox);
 				f.ThingArgs[index] = filterarg.GetResult(-1);
+
+				ValidateFilter(listfilters.SelectedItems[0], f); //mxd
 			}
 		}
 		
@@ -535,6 +571,9 @@ namespace CodeImp.DoomBuilder.Windows
 				// Get selected filter
 				ThingsFilter f = listfilters.SelectedItems[0].Tag as ThingsFilter;
 				fieldslist.Apply(f.ThingCustomFields);
+
+				//mxd. Validate filter
+				ValidateFilter(listfilters.SelectedItems[0], f); //mxd
 			}
 		}
 

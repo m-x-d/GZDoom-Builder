@@ -95,7 +95,7 @@ namespace CodeImp.DoomBuilder
 		#region ================== Properties
 
 		public string FilePathName { get { return filepathname; } }
-		public string FileTitle { get { return filetitle; } }
+		public string FileTitle { get { return filetitle; } internal set { filetitle = value; } } //mxd. Added setter
 		public string TempPath { get { return temppath; } }
 		public MapOptions Options { get { return options; } }
 		public MapSet Map { get { return map; } }
@@ -246,7 +246,7 @@ namespace CodeImp.DoomBuilder
 #endif
 			
 			// Apply settings
-			this.filetitle = "unnamed.wad";
+			this.filetitle = options.CurrentName + ".wad";
 			this.filepathname = "";
 			this.changed = false;
 			this.options = options;
@@ -1996,6 +1996,7 @@ namespace CodeImp.DoomBuilder
 				// Update interface
 				General.MainWindow.SetupInterface();
 				General.MainWindow.UpdateThingsFilters();
+				General.MainWindow.UpdateLinedefColorPresets(); //mxd
 				General.MainWindow.UpdateInterface();
 
 				// Reload resources
@@ -2007,7 +2008,7 @@ namespace CodeImp.DoomBuilder
 				grid.TranslateBackgroundName(config.UseLongTextureNames);
 				
 				//mxd. Sector textures may've been changed 
-				if (nameschanged) data.UpdateUsedTextures();
+				if(nameschanged) data.UpdateUsedTextures();
 
 				// Done
 				General.MainWindow.DisplayReady();
@@ -2022,11 +2023,15 @@ namespace CodeImp.DoomBuilder
 		[BeginAction("thingsfilterssetup")]
 		internal void ShowThingsFiltersSetup() 
 		{
+			new ThingsFiltersForm().ShowDialog(General.MainWindow);
+		}
+
+		//mxd. This shows the linedef color presets window
+		[BeginAction("linedefcolorssetup")]
+		internal void ShowLinedefColorsSetup()
+		{
 			// Show things filter dialog
-			ThingsFiltersForm f = new ThingsFiltersForm();
-			f.ShowDialog(General.MainWindow);
-			f.Dispose();
-			General.MainWindow.UpdateThingsFilters();
+			new LinedefColorPresetsForm().ShowDialog(General.MainWindow);
 		}
 
 		// This returns true is the given type matches

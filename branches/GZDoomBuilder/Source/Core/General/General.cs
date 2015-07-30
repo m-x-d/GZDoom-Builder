@@ -1125,6 +1125,7 @@ namespace CodeImp.DoomBuilder
 						mainwindow.SetupInterface();
 						mainwindow.RedrawDisplay();
 						mainwindow.UpdateThingsFilters();
+						mainwindow.UpdateLinedefColorPresets(); //mxd
 						mainwindow.UpdateInterface();
 						mainwindow.AddHintsDocker(); //mxd
 						mainwindow.UpdateGZDoomPanel(); //mxd
@@ -1200,6 +1201,7 @@ namespace CodeImp.DoomBuilder
 				mainwindow.HideInfo();
 				mainwindow.UpdateThingsFilters();
 				//mxd
+				mainwindow.UpdateLinedefColorPresets();
 				mainwindow.RemoveHintsDocker();
 				mainwindow.UpdateGZDoomPanel();
 				mainwindow.UpdateInterface();
@@ -1333,6 +1335,7 @@ namespace CodeImp.DoomBuilder
 			mainwindow.SetupInterface();
 			mainwindow.RedrawDisplay();
 			mainwindow.UpdateThingsFilters();
+			mainwindow.UpdateLinedefColorPresets(); //mxd
 			mainwindow.UpdateInterface();
 			mainwindow.HideInfo();
 			mainwindow.AddHintsDocker(); //mxd
@@ -1408,6 +1411,7 @@ namespace CodeImp.DoomBuilder
 				// All done
 				mainwindow.SetupInterface();
 				mainwindow.UpdateThingsFilters();
+				mainwindow.UpdateLinedefColorPresets(); //mxd
 				mainwindow.UpdateInterface();
 				mainwindow.HideInfo();
 				mainwindow.AddHintsDocker(); //mxd
