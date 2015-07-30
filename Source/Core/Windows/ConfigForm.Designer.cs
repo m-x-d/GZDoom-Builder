@@ -78,8 +78,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.listmodes = new System.Windows.Forms.ListView();
 			this.colmodename = new System.Windows.Forms.ColumnHeader();
 			this.colmodeplugin = new System.Windows.Forms.ColumnHeader();
-			this.tabcustomcolors = new System.Windows.Forms.TabPage();
-			this.colorsControl = new CodeImp.DoomBuilder.GZBuilder.Controls.CustomLinedefColorsControl();
 			this.listconfigs = new System.Windows.Forms.ListView();
 			this.columnname = new System.Windows.Forms.ColumnHeader();
 			this.copypastemenu = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -109,7 +107,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabtesting.SuspendLayout();
 			this.tabtextures.SuspendLayout();
 			this.tabmodes.SuspendLayout();
-			this.tabcustomcolors.SuspendLayout();
 			this.copypastemenu.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.hint)).BeginInit();
 			this.SuspendLayout();
@@ -265,13 +262,12 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabs.Controls.Add(this.tabtesting);
 			this.tabs.Controls.Add(this.tabtextures);
 			this.tabs.Controls.Add(this.tabmodes);
-			this.tabs.Controls.Add(this.tabcustomcolors);
 			this.tabs.Enabled = false;
 			this.tabs.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tabs.ItemSize = new System.Drawing.Size(64, 20);
+			this.tabs.ItemSize = new System.Drawing.Size(108, 18);
 			this.tabs.Location = new System.Drawing.Point(277, 12);
 			this.tabs.Name = "tabs";
-			this.tabs.Padding = new System.Drawing.Point(12, 3);
+			this.tabs.Padding = new System.Drawing.Point(24, 3);
 			this.tabs.SelectedIndex = 0;
 			this.tabs.Size = new System.Drawing.Size(506, 358);
 			this.tabs.TabIndex = 1;
@@ -282,10 +278,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabresources.Controls.Add(this.configdata);
 			this.tabresources.Controls.Add(label5);
 			this.tabresources.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tabresources.Location = new System.Drawing.Point(4, 24);
+			this.tabresources.Location = new System.Drawing.Point(4, 22);
 			this.tabresources.Name = "tabresources";
 			this.tabresources.Padding = new System.Windows.Forms.Padding(6);
-			this.tabresources.Size = new System.Drawing.Size(498, 330);
+			this.tabresources.Size = new System.Drawing.Size(498, 332);
 			this.tabresources.TabIndex = 0;
 			this.tabresources.Text = "Resources";
 			this.tabresources.UseVisualStyleBackColor = true;
@@ -308,10 +304,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabnodebuilder.Controls.Add(this.nodebuildersave);
 			this.tabnodebuilder.Controls.Add(label3);
 			this.tabnodebuilder.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tabnodebuilder.Location = new System.Drawing.Point(4, 24);
+			this.tabnodebuilder.Location = new System.Drawing.Point(4, 22);
 			this.tabnodebuilder.Name = "tabnodebuilder";
 			this.tabnodebuilder.Padding = new System.Windows.Forms.Padding(6);
-			this.tabnodebuilder.Size = new System.Drawing.Size(498, 330);
+			this.tabnodebuilder.Size = new System.Drawing.Size(498, 332);
 			this.tabnodebuilder.TabIndex = 1;
 			this.tabnodebuilder.Text = "Nodebuilder";
 			this.tabnodebuilder.UseVisualStyleBackColor = true;
@@ -362,10 +358,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabtesting.Controls.Add(label1);
 			this.tabtesting.Controls.Add(label9);
 			this.tabtesting.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tabtesting.Location = new System.Drawing.Point(4, 24);
+			this.tabtesting.Location = new System.Drawing.Point(4, 22);
 			this.tabtesting.Name = "tabtesting";
 			this.tabtesting.Padding = new System.Windows.Forms.Padding(6);
-			this.tabtesting.Size = new System.Drawing.Size(498, 330);
+			this.tabtesting.Size = new System.Drawing.Size(498, 332);
 			this.tabtesting.TabIndex = 2;
 			this.tabtesting.Text = "Testing";
 			this.tabtesting.UseVisualStyleBackColor = true;
@@ -524,9 +520,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabtextures.Controls.Add(this.addtextureset);
 			this.tabtextures.Controls.Add(label4);
 			this.tabtextures.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tabtextures.Location = new System.Drawing.Point(4, 24);
+			this.tabtextures.Location = new System.Drawing.Point(4, 22);
 			this.tabtextures.Name = "tabtextures";
-			this.tabtextures.Size = new System.Drawing.Size(498, 330);
+			this.tabtextures.Size = new System.Drawing.Size(498, 332);
 			this.tabtextures.TabIndex = 3;
 			this.tabtextures.Text = "Textures";
 			this.tabtextures.UseVisualStyleBackColor = true;
@@ -633,9 +629,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabmodes.Controls.Add(this.listmodes);
 			this.tabmodes.Controls.Add(label10);
 			this.tabmodes.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tabmodes.Location = new System.Drawing.Point(4, 24);
+			this.tabmodes.Location = new System.Drawing.Point(4, 22);
 			this.tabmodes.Name = "tabmodes";
-			this.tabmodes.Size = new System.Drawing.Size(498, 330);
+			this.tabmodes.Size = new System.Drawing.Size(498, 332);
 			this.tabmodes.TabIndex = 4;
 			this.tabmodes.Text = "Modes";
 			this.tabmodes.UseVisualStyleBackColor = true;
@@ -690,26 +686,6 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.colmodeplugin.Text = "Plugin";
 			this.colmodeplugin.Width = 221;
-			// 
-			// tabcustomcolors
-			// 
-			this.tabcustomcolors.Controls.Add(this.colorsControl);
-			this.tabcustomcolors.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tabcustomcolors.Location = new System.Drawing.Point(4, 24);
-			this.tabcustomcolors.Name = "tabcustomcolors";
-			this.tabcustomcolors.Padding = new System.Windows.Forms.Padding(3);
-			this.tabcustomcolors.Size = new System.Drawing.Size(498, 330);
-			this.tabcustomcolors.TabIndex = 5;
-			this.tabcustomcolors.Text = "Linedef Colors";
-			this.tabcustomcolors.UseVisualStyleBackColor = true;
-			// 
-			// colorsControl
-			// 
-			this.colorsControl.Location = new System.Drawing.Point(6, 6);
-			this.colorsControl.Name = "colorsControl";
-			this.colorsControl.Size = new System.Drawing.Size(486, 318);
-			this.colorsControl.TabIndex = 0;
-			this.colorsControl.PresetsChanged += new System.EventHandler(this.colorsControl_PresetsChanged);
 			// 
 			// listconfigs
 			// 
@@ -865,7 +841,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabtextures.ResumeLayout(false);
 			this.tabmodes.ResumeLayout(false);
 			this.tabmodes.PerformLayout();
-			this.tabcustomcolors.ResumeLayout(false);
 			this.copypastemenu.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.hint)).EndInit();
 			this.ResumeLayout(false);
@@ -916,8 +891,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.Button btnNewEngine;
 		private System.Windows.Forms.ComboBox cbEngineSelector;
 		private System.Windows.Forms.Label label13;
-		private System.Windows.Forms.TabPage tabcustomcolors;
-		private CodeImp.DoomBuilder.GZBuilder.Controls.CustomLinedefColorsControl colorsControl;
 		private System.Windows.Forms.ContextMenuStrip copypastemenu;
 		private System.Windows.Forms.ToolStripMenuItem copyall;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;

@@ -229,6 +229,12 @@ namespace CodeImp.DoomBuilder.Windows
 					}
 				}
 
+				//mxd. If the map was never saved and it's name was changed, update filename
+				if((levelname.Text != options.CurrentName) && (General.Map != null) && (string.IsNullOrEmpty(General.Map.FilePathName)))
+				{
+					General.Map.FileTitle = levelname.Text + ".wad";
+				}
+
 				// When the user changed the configuration to one that has a different read/write interface,
 				// we have to warn the user that the map may not be compatible.
 				

@@ -170,9 +170,7 @@ namespace CodeImp.DoomBuilder.Config
 			//no presets? add "classic" ones then.
 			if(list.Count == 0) 
 			{
-				LinedefColorPreset anyActionPreset = new LinedefColorPreset("Any action", PixelColor.FromColor(System.Drawing.Color.PaleGreen), -1, 0, new List<string>(), new List<string>());
-				anyActionPreset.SetValid();
-				colorPresets.Add(anyActionPreset);
+				colorPresets.Add(new LinedefColorPreset("Any action", PixelColor.FromColor(System.Drawing.Color.PaleGreen), -1, 0, new List<string>(), new List<string>(), true));
 			} 
 			else 
 			{
@@ -181,6 +179,7 @@ namespace CodeImp.DoomBuilder.Config
 				{
 					string path = "configurations." + settingskey + ".linedefcolorpresets." + de.Key;
 					string presetname = General.Settings.ReadSetting(path + ".name", "Unnamed");
+					bool presetenabled = General.Settings.ReadSetting(path + ".enabled", true);
 					PixelColor color = PixelColor.FromInt(General.Settings.ReadSetting(path + ".color", -1));
 					int action = General.Settings.ReadSetting(path + ".action", 0);
 					int activation = General.Settings.ReadSetting(path + ".activation", 0);
@@ -188,7 +187,7 @@ namespace CodeImp.DoomBuilder.Config
 					flags.AddRange(General.Settings.ReadSetting(path + ".flags", "").Split(LINEDEF_COLOR_PRESET_FLAGS_SEPARATOR, StringSplitOptions.RemoveEmptyEntries));
 					List<string> restrictedFlags = new List<string>();
 					restrictedFlags.AddRange(General.Settings.ReadSetting(path + ".restrictedflags", "").Split(LINEDEF_COLOR_PRESET_FLAGS_SEPARATOR, StringSplitOptions.RemoveEmptyEntries));
-					LinedefColorPreset preset = new LinedefColorPreset(presetname, color, action, activation, flags, restrictedFlags);
+					LinedefColorPreset preset = new LinedefColorPreset(presetname, color, action, activation, flags, restrictedFlags, presetenabled);
 					colorPresets.Add(preset);
 				}
 			}
@@ -336,6 +335,7 @@ namespace CodeImp.DoomBuilder.Config
 			{
 				rlinfo = new ListDictionary();
 				rlinfo.Add("name", linedefColorPresets[i].Name);
+				rlinfo.Add("enabled", linedefColorPresets[i].Enabled);
 				rlinfo.Add("color", linedefColorPresets[i].Color.ToInt());
 				rlinfo.Add("action", linedefColorPresets[i].Action);
 				rlinfo.Add("activation", linedefColorPresets[i].Activation);

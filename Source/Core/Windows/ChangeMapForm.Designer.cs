@@ -63,7 +63,7 @@
 			this.mapslist.MultiSelect = false;
 			this.mapslist.Name = "mapslist";
 			this.mapslist.ShowGroups = false;
-			this.mapslist.Size = new System.Drawing.Size(396, 116);
+			this.mapslist.Size = new System.Drawing.Size(396, 125);
 			this.mapslist.Sorting = System.Windows.Forms.SortOrder.Ascending;
 			this.mapslist.TabIndex = 1;
 			this.mapslist.UseCompatibleStateImageBehavior = false;
@@ -74,7 +74,7 @@
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(296, 152);
+			this.cancel.Location = new System.Drawing.Point(296, 161);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
 			this.cancel.TabIndex = 2;
@@ -85,7 +85,7 @@
 			// apply
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(178, 152);
+			this.apply.Location = new System.Drawing.Point(178, 161);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
 			this.apply.TabIndex = 3;
@@ -99,7 +99,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.cancel;
-			this.ClientSize = new System.Drawing.Size(420, 183);
+			this.ClientSize = new System.Drawing.Size(420, 192);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
 			this.Controls.Add(this.mapslist);
@@ -108,6 +108,7 @@
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "ChangeMapForm";
+			this.Opacity = 1;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

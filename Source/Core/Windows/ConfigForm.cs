@@ -221,9 +221,6 @@ namespace CodeImp.DoomBuilder.Windows
 				// Fill start modes
 				RefillStartModes();
 
-				//mxd. Initialise custom linedef colors panel
-				colorsControl.Setup(gameconfig, configinfo);
-
 				// Done
 				preventchanges = false;
 			}
@@ -395,13 +392,6 @@ namespace CodeImp.DoomBuilder.Windows
 				// Apply settings
 				General.Configs[i].Enabled = ci.Enabled;
 				if(ci.Changed) General.Configs[i].Apply(ci);
-			}
-
-			//mxd. Update linedef color presets, mark the map as changed.
-			if(General.Map != null && General.Map.Map != null)
-			{
-				General.Map.Map.UpdateCustomLinedefColors();
-				General.Map.IsChanged = true;
 			}
 			
 			// Close
@@ -780,14 +770,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private void cbEngineSelector_DropDown(object sender, EventArgs e) 
 		{
 			ApplyTestEngineNameChange();
-		}
-
-		//mxd
-		private void colorsControl_PresetsChanged(object sender, EventArgs e) 
-		{
-			if(configinfo == null) return;
-			configinfo.LinedefColorPresets = colorsControl.GetPresets();
-			configinfo.Changed = true; //mxd
 		}
 
 		//mxd
