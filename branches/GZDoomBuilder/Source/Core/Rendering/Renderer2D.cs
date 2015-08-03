@@ -45,8 +45,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Constants
 
 		private const float FSAA_FACTOR = 0.6f;
-		private const float THING_ARROW_SIZE = 1.5f;
-		private const float THING_ARROW_SHRINK = 2f;
+		private const float THING_ARROW_SIZE = 1.4f;
+		//private const float THING_ARROW_SHRINK = 2f;
 		//private const float THING_CIRCLE_SIZE = 1f;
 		private const float THING_SPRITE_SHRINK = 2f;
 		private const int THING_BUFFER_SIZE = 100;
@@ -57,7 +57,6 @@ namespace CodeImp.DoomBuilder.Rendering
 		private const int FONT_WIDTH = 0;
 		private const int FONT_HEIGHT = 0;
 
-		private const int NUM_THING_TEXTURES = 2;
 		internal const int NUM_VIEW_MODES = 4;
 		
 		#endregion
@@ -103,7 +102,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		private SurfaceManager surfaces;
 		
 		// Images
-		private ResourceImage[] thingtexture;
+		private ResourceImage thingtexture;
 		
 		// View settings (world coordinates)
 		private ViewMode viewmode;
@@ -146,15 +145,10 @@ namespace CodeImp.DoomBuilder.Rendering
 		// Constructor
 		internal Renderer2D(D3DDevice graphics) : base(graphics)
 		{
-			// Load thing textures
-			thingtexture = new ResourceImage[NUM_THING_TEXTURES];
-			for(int i = 0; i < NUM_THING_TEXTURES; i++)
-			{
-				thingtexture[i] = new ResourceImage("CodeImp.DoomBuilder.Resources.Thing2D_" + i.ToString(CultureInfo.InvariantCulture) + ".png");
-				thingtexture[i].UseColorCorrection = false;
-				thingtexture[i].LoadImage();
-				thingtexture[i].CreateTexture();
-			}
+			//mxd. Load thing texture
+			thingtexture = new ResourceImage("CodeImp.DoomBuilder.Resources.Thing2D.png") { UseColorCorrection = false };
+			thingtexture.LoadImage();
+			thingtexture.CreateTexture();
 
 			// Create surface manager
 			surfaces = new SurfaceManager();
@@ -174,7 +168,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			{
 				// Destroy rendertargets
 				DestroyRendertargets();
-				foreach(ResourceImage i in thingtexture) i.Dispose();
+				thingtexture.Dispose(); //mxd
 				
 				// Dispose surface manager
 				surfaces.Dispose();
@@ -996,7 +990,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		private void CreateThingArrowVerts(Thing t, ref FlatVertex[] verts, Vector2D screenpos, int offset) 
 		{
 			// Determine size
-			float arrowsize = (t.FixedSize && (scale > 1.0f) ? (t.Size - THING_ARROW_SHRINK) * THING_ARROW_SIZE : (t.Size - THING_ARROW_SHRINK) * scale * THING_ARROW_SIZE);
+			float arrowsize = (t.FixedSize && (scale > 1.0f) ? t.Size : t.Size * scale) * THING_ARROW_SIZE; //mxd
 
 			// Setup rotated rect for arrow
 			float sinarrowsize = (float)Math.Sin(t.Angle + Angle2D.PI * 0.25f) * arrowsize;
@@ -1005,20 +999,20 @@ namespace CodeImp.DoomBuilder.Rendering
 			verts[offset].x = screenpos.x + sinarrowsize;
 			verts[offset].y = screenpos.y + cosarrowsize;
 			verts[offset].c = -1;
-			verts[offset].u = 0.51f;
-			verts[offset].v = 0.01f;
+			verts[offset].u = 0.501f;
+			verts[offset].v = 0.001f;
 			offset++;
 			verts[offset].x = screenpos.x - cosarrowsize;
 			verts[offset].y = screenpos.y + sinarrowsize;
 			verts[offset].c = -1;
-			verts[offset].u = 0.99f;
-			verts[offset].v = 0.01f;
+			verts[offset].u = 0.999f;
+			verts[offset].v = 0.001f;
 			offset++;
 			verts[offset].x = screenpos.x + cosarrowsize;
 			verts[offset].y = screenpos.y - sinarrowsize;
 			verts[offset].c = -1;
-			verts[offset].u = 0.51f;
-			verts[offset].v = 0.99f;
+			verts[offset].u = 0.501f;
+			verts[offset].v = 0.999f;
 			offset++;
 			verts[offset] = verts[offset - 2];
 			offset++;
@@ -1027,8 +1021,8 @@ namespace CodeImp.DoomBuilder.Rendering
 			verts[offset].x = screenpos.x - sinarrowsize;
 			verts[offset].y = screenpos.y - cosarrowsize;
 			verts[offset].c = -1;
-			verts[offset].u = 0.99f;
-			verts[offset].v = 0.99f;
+			verts[offset].u = 0.999f;
+			verts[offset].v = 0.999f;
 		}
 
 		//mxd
@@ -1067,13 +1061,12 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This draws a set of things
 		private void RenderThingsBatch(ICollection<Thing> things, float alpha, bool fixedcolor, PixelColor c)
 		{
-			int thingtextureindex = 0;
-			PixelColor tc;
-			DataStream stream;
-			
 			// Anything to render?
 			if(things.Count > 0)
 			{
+				PixelColor tc;
+				DataStream stream;
+				
 				// Make alpha color
 				Color4 alphacolor = new Color4(alpha, 1.0f, 1.0f, 1.0f);
 				
@@ -1088,10 +1081,9 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Device.SetRenderState(RenderState.TextureFactor, alphacolor.ToArgb());
 				graphics.Device.SetStreamSource(0, thingsvertices, 0, FlatVertex.Stride);
 				
-				// Determine things texture to use
-				if(General.Settings.SquareThings) thingtextureindex = 1;
-				graphics.Device.SetTexture(0, thingtexture[thingtextureindex].Texture);
-				graphics.Shaders.Things2D.Texture1 = thingtexture[thingtextureindex].Texture;
+				// Set things texture
+				graphics.Device.SetTexture(0, thingtexture.Texture);
+				graphics.Shaders.Things2D.Texture1 = thingtexture.Texture;
 				SetWorldTransformation(false);
 				graphics.Shaders.Things2D.SetSettings(alpha);
 				
@@ -1113,6 +1105,9 @@ namespace CodeImp.DoomBuilder.Rendering
 				int totalcount = 0;
 				foreach(Thing t in things)
 				{
+					//mxd. Highlighted thing should be rendered separately
+					if(!fixedcolor && t.Highlighted) continue;
+					
 					//collect models
 					if (t.IsModel) 
 					{
@@ -1167,7 +1162,6 @@ namespace CodeImp.DoomBuilder.Rendering
 				//mxd. Render sprites
 				int selectionColor = General.Colors.Selection.ToInt();
 				graphics.Shaders.Things2D.BeginPass(1);
-				float spriteShrink = General.Settings.SquareThings ? THING_SPRITE_SHRINK : THING_SPRITE_SHRINK * 2;
 
 				foreach(KeyValuePair<int, List<Thing>> group in thingsByType)
 				{
@@ -1202,17 +1196,17 @@ namespace CodeImp.DoomBuilder.Rendering
 
 					if(sprite.Width > sprite.Height) 
 					{
-						spriteWidth = info.Radius * spriteScale - spriteShrink * spriteScale;
+						spriteWidth = info.Radius * spriteScale - THING_SPRITE_SHRINK * spriteScale;
 						spriteHeight = spriteWidth * ((float)sprite.Height / sprite.Width);
 					} 
 					else if(sprite.Width < sprite.Height) 
 					{
-						spriteHeight = info.Radius * spriteScale - spriteShrink * spriteScale;
+						spriteHeight = info.Radius * spriteScale - THING_SPRITE_SHRINK * spriteScale;
 						spriteWidth = spriteHeight * ((float)sprite.Width / sprite.Height);
 					} 
 					else 
 					{
-						spriteWidth = info.Radius * spriteScale - spriteShrink * spriteScale;
+						spriteWidth = info.Radius * spriteScale - THING_SPRITE_SHRINK * spriteScale;
 						spriteHeight = spriteWidth;
 					}
 
@@ -1260,8 +1254,8 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Shaders.Things2D.EndPass();
 
 				//mxd. Render thing arrows
-				graphics.Device.SetTexture(0, thingtexture[thingtextureindex].Texture);
-				graphics.Shaders.Things2D.Texture1 = thingtexture[thingtextureindex].Texture;
+				graphics.Device.SetTexture(0, thingtexture.Texture);
+				graphics.Shaders.Things2D.Texture1 = thingtexture.Texture;
 				graphics.Shaders.Things2D.BeginPass(0);
 
 				// Determine next lock size

@@ -139,7 +139,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Render things
 			if(renderer.StartThings(true))
 			{
-				renderer.RenderThingSet(General.Map.Map.Things, 1.0f);
+				renderer.RenderThingSet(General.Map.Map.Things, Presentation.THINGS_ALPHA);
 				if(BuilderPlug.Me.FindReplaceForm.Finder != null)
 					BuilderPlug.Me.FindReplaceForm.Finder.RenderThingsSelection(renderer, selection);
 				renderer.Finish();

@@ -34,7 +34,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void RenderThingsSelection(IRenderer2D renderer, FindReplaceObject[] selection) 
 		{
 			foreach(FindReplaceObject o in selection)
-				renderer.RenderThing(o.Thing, General.Colors.Selection, 1.0f);
+				renderer.RenderThing(o.Thing, General.Colors.Selection, Presentation.THINGS_ALPHA);
 		}
 
 		// Edit objects

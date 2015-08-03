@@ -568,7 +568,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					foreach(Thing t in General.Map.Map.Things)
 					{
 						if(!asso.Tags.Contains(t.Tag)) continue;
-						renderer.RenderThing(t, General.Colors.Indication, 1.0f);
+						renderer.RenderThing(t, General.Colors.Indication, Presentation.THINGS_ALPHA);
 						if(General.Settings.GZShowEventLines) eventlines.Add(new Line3D(asso.Center, t.Position)); //mxd
 					}
 					break;
@@ -646,7 +646,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						 ((action.Args[3].Type == (int)asso.Type) && (asso.Tags.Contains(t.Args[3]))) ||
 						 ((action.Args[4].Type == (int)asso.Type) && (asso.Tags.Contains(t.Args[4]))))
 					{
-						renderer.RenderThing(t, General.Colors.Indication, 1.0f);
+						renderer.RenderThing(t, General.Colors.Indication, Presentation.THINGS_ALPHA);
 						if(General.Settings.GZShowEventLines) eventlines.Add(new Line3D(t.Position, asso.Center)); //mxd
 					}
 				}
