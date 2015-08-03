@@ -312,13 +312,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Render things
 				renderer.RenderThingSet(General.Map.ThingsFilter.HiddenThings, Presentation.THINGS_HIDDEN_ALPHA);
-				renderer.RenderThingSet(unselectedthings, 1.0f);
-				renderer.RenderThingSet(selectedthings, 1.0f);
+				renderer.RenderThingSet(unselectedthings, Presentation.THINGS_ALPHA);
+				renderer.RenderThingSet(selectedthings, Presentation.THINGS_ALPHA);
 
 				// Draw the dragged item highlighted
 				// This is important to know, because this item is used
 				// for snapping to the grid and snapping to nearest items
-				renderer.RenderThing(dragitem, General.Colors.Highlight, 1.0f);
+				renderer.RenderThing(dragitem, General.Colors.Highlight, Presentation.THINGS_ALPHA);
 
 				// Done
 				renderer.Finish();

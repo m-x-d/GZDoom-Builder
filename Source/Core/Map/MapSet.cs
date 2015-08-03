@@ -2745,7 +2745,8 @@ namespace CodeImp.DoomBuilder.Map
 			RectangleF range = RectangleF.FromLTRB(pos.x - maxrange, pos.y - maxrange, pos.x + maxrange, pos.y + maxrange);
 			Thing closest = null;
 			float distance = float.MaxValue;
-			float d, px, py;
+			float size = float.MaxValue; //mxd
+			float d, px, py, s;
 
 			// Go for all things in selection
 			foreach(Thing t in selection)
@@ -2756,13 +2757,15 @@ namespace CodeImp.DoomBuilder.Map
 				//mxd. Within range?
 				if(px < range.Left - t.Size || px > range.Right + t.Size || py < range.Top - t.Size || py > range.Bottom + t.Size) continue;
 
-				// Close than previous find?
+				// Closer than previous find? mxd. Or smaller when distance is the same?
 				d = Math.Abs(px - pos.x) + Math.Abs(py - pos.y);
-				if(d < distance) 
+				s = ((t.FixedSize && General.Map.Renderer2D.Scale > 1.0f) ? t.Size / General.Map.Renderer2D.Scale : t.Size); //mxd
+				if(d < distance || (d == distance && s < size))
 				{
 					// This one is closer
 					closest = t;
 					distance = d;
+					size = s; //mxd
 				}
 			}
 

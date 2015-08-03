@@ -67,6 +67,7 @@ namespace CodeImp.DoomBuilder.Map
 		private float pitchrad; //mxd
 		private float rollrad; //mxd
 		private bool isModel; //mxd
+		private bool highlighted; //mxd
 
 		// Configuration
 		private float size;
@@ -102,6 +103,7 @@ namespace CodeImp.DoomBuilder.Map
 		public Sector Sector { get { return sector; } }
 		public bool IsModel { get { return isModel; } } //mxd
 		public bool IsDirectional { get { return directional; } } //mxd
+		public bool Highlighted { get { return highlighted; } set { highlighted = value; } } //mxd
 
 		#endregion
 

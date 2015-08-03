@@ -148,6 +148,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						highlighted.Selected = true;
 					}
 				}
+			} 
+			else if(highlighted != null) //mxd
+			{
+				highlighted.Highlighted = false;
 			}
 
 			// Hide highlight info and tooltip
@@ -177,12 +181,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(renderer.StartThings(true))
 			{
 				renderer.RenderThingSet(General.Map.ThingsFilter.HiddenThings, Presentation.THINGS_HIDDEN_ALPHA);
-				renderer.RenderThingSet(General.Map.ThingsFilter.VisibleThings, 1.0f);
+				renderer.RenderThingSet(General.Map.ThingsFilter.VisibleThings, Presentation.THINGS_ALPHA);
 				for(int i = 0; i < Thing.NUM_ARGS; i++) BuilderPlug.RenderAssociations(renderer, association[i], eventlines);
 				
 				if((highlighted != null) && !highlighted.IsDisposed)
 				{
-					renderer.RenderThing(highlighted, General.Colors.Highlight, 1.0f);
+					renderer.RenderThing(highlighted, General.Colors.Highlight, Presentation.THINGS_ALPHA);
 					BuilderPlug.RenderReverseAssociations(renderer, highlightasso, eventlines); //mxd
 				}
 
@@ -222,15 +226,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This highlights a new item
 		protected void Highlight(Thing t)
 		{
-			bool completeredraw = false;
 			LinedefActionInfo action = null;
-
-			// Often we can get away by simply undrawing the previous
-			// highlight and drawing the new highlight. But if associations
-			// are or were drawn we need to redraw the entire display.
-
-			// Previous association highlights something?
-			if((highlighted != null) && (highlighted.Tag != 0)) completeredraw = true;
 			
 			// Set highlight association
 			if(t != null && t.Tag != 0)
@@ -238,11 +234,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			else
 				highlightasso.Set(new Vector2D(), 0, 0);
 
-			// New association highlights something?
-			if((t != null) && (t.Tag != 0)) completeredraw = true;
+			if(highlighted != null) highlighted.Highlighted = false; //mxd
 
 			if(t != null)
 			{
+				t.Highlighted = true; //mxd
+				
 				// Check if we can find the linedefs action
 				if((t.Action > 0) && General.Map.Config.LinedefActions.ContainsKey(t.Action))
 					action = General.Map.Config.LinedefActions[t.Action];
@@ -251,63 +248,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Determine linedef associations
 			for(int i = 0; i < Thing.NUM_ARGS; i++)
 			{
-				// Previous association highlights something?
-				if((association[i].Type == UniversalType.SectorTag) ||
-				   (association[i].Type == UniversalType.LinedefTag) ||
-				   (association[i].Type == UniversalType.ThingTag)) completeredraw = true;
-				
 				// Make new association
 				if(action != null)
 					association[i].Set(t.Position, t.Args[i], action.Args[i].Type);
 				else
 					association[i].Set(new Vector2D(), 0, 0);
-				
-				// New association highlights something?
-				if((association[i].Type == UniversalType.SectorTag) ||
-				   (association[i].Type == UniversalType.LinedefTag) ||
-				   (association[i].Type == UniversalType.ThingTag)) completeredraw = true;
 			}
 			
-			// If we're changing associations, then we
-			// need to redraw the entire display
-			if(completeredraw)
-			{
-				// Set new highlight and redraw completely
-				highlighted = t;
-				General.Interface.RedrawDisplay();
-			}
-			else
-			{
-				// Update display
-				if(renderer.StartThings(false))
-				{
-					// Undraw previous highlight
-					Thing possiblecommentthing = t ?? highlighted; //mxd
-					if((highlighted != null) && !highlighted.IsDisposed)
-						renderer.RenderThing(highlighted, renderer.DetermineThingColor(highlighted), 1.0f);
-
-					// Set new highlight
-					highlighted = t;
-
-					// Render highlighted item
-					if((highlighted != null) && !highlighted.IsDisposed)
-						renderer.RenderThing(highlighted, General.Colors.Highlight, 1.0f);
-
-					// Done with highlight
-					renderer.Finish();
-
-					//mxd. Update comment highlight?
-					if(General.Map.UDMF && General.Settings.RenderComments 
-						&& possiblecommentthing != null && !possiblecommentthing.IsDisposed 
-						&& renderer.StartOverlay(false))
-					{
-						RenderComment(possiblecommentthing);
-						renderer.Finish();
-					}
-
-					renderer.Present();
-				}
-			}
+			// Set new highlight and redraw display
+			highlighted = t;
+			General.Interface.RedrawDisplay();
 			
 			// Show highlight info
 			if((highlighted != null) && !highlighted.IsDisposed)
@@ -339,7 +289,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(renderer.StartThings(false))
 				{
 					// Redraw highlight to show selection
-					renderer.RenderThing(highlighted, renderer.DetermineThingColor(highlighted), 1.0f);
+					renderer.RenderThing(highlighted, renderer.DetermineThingColor(highlighted), Presentation.THINGS_ALPHA);
 					renderer.Finish();
 					renderer.Present();
 				}
@@ -364,7 +314,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if(renderer.StartThings(false))
 					{
 						// Render highlighted item
-						renderer.RenderThing(highlighted, General.Colors.Highlight, 1.0f);
+						renderer.RenderThing(highlighted, General.Colors.Highlight, Presentation.THINGS_ALPHA);
 						renderer.Finish();
 						renderer.Present();
 					}
@@ -407,7 +357,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(renderer.StartThings(false))
 				{
 					// Redraw highlight to show selection
-					renderer.RenderThing(highlighted, renderer.DetermineThingColor(highlighted), 1.0f);
+					renderer.RenderThing(highlighted, renderer.DetermineThingColor(highlighted), Presentation.THINGS_ALPHA);
 					renderer.Finish();
 					renderer.Present();
 				}

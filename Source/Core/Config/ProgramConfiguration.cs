@@ -53,7 +53,6 @@ namespace CodeImp.DoomBuilder.Config
 		private byte doublesidedalphabyte;
 		private float backgroundalpha;
 		private bool qualitydisplay;
-		private bool squarethings;
 		private bool testmonsters;
 		private int defaultviewmode;
 		private bool classicbilinear;
@@ -141,7 +140,6 @@ namespace CodeImp.DoomBuilder.Config
 		public float VisualMouseSensX { get { return visualmousesensx; } internal set { visualmousesensx = value; } }
 		public float VisualMouseSensY { get { return visualmousesensy; } internal set { visualmousesensy = value; } }
 		public bool QualityDisplay { get { return qualitydisplay; } internal set { qualitydisplay = value; } }
-		public bool SquareThings { get { return squarethings; } internal set { squarethings = value; } }
 		public bool TestMonsters { get { return testmonsters; } internal set { testmonsters = value; } }
 		public int DefaultViewMode { get { return defaultviewmode; } internal set { defaultviewmode = value; } }
 		public bool ClassicBilinear { get { return classicbilinear; } internal set { classicbilinear = value; } }
@@ -252,7 +250,6 @@ namespace CodeImp.DoomBuilder.Config
 				doublesidedalphabyte = (byte)(doublesidedalpha * 255f);
 				backgroundalpha = cfg.ReadSetting("backgroundalpha", 1.0f);
 				qualitydisplay = cfg.ReadSetting("qualitydisplay", true);
-				squarethings = cfg.ReadSetting("squarethings", false);
 				testmonsters = cfg.ReadSetting("testmonsters", true);
 				defaultviewmode = cfg.ReadSetting("defaultviewmode", (int)ViewMode.Normal);
 				classicbilinear = cfg.ReadSetting("classicbilinear", false);
@@ -343,7 +340,6 @@ namespace CodeImp.DoomBuilder.Config
 			cfg.WriteSetting("visualmousesensy", visualmousesensy);
 			cfg.WriteSetting("imagebrightness", imagebrightness);
 			cfg.WriteSetting("qualitydisplay", qualitydisplay);
-			cfg.WriteSetting("squarethings", squarethings);
 			cfg.WriteSetting("testmonsters", testmonsters);
 			cfg.WriteSetting("doublesidedalpha", doublesidedalpha);
 			cfg.WriteSetting("backgroundalpha", backgroundalpha);

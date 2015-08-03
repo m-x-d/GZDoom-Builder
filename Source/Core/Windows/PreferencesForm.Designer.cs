@@ -79,7 +79,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorhighlight = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.colorlinedefs = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.cbStretchView = new System.Windows.Forms.CheckBox();
-			this.squarethings = new System.Windows.Forms.CheckBox();
 			this.qualitydisplay = new System.Windows.Forms.CheckBox();
 			this.cancel = new System.Windows.Forms.Button();
 			this.apply = new System.Windows.Forms.Button();
@@ -750,16 +749,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.toolTip1.SetToolTip(this.cbStretchView, "When enabled, visual mode will emulate \r\n(G)ZDoom\'s way of rendering by increasin" +
 					"g\r\nvertical scale of the world geometry and \r\nsprites by 15%.\r\n");
 			this.cbStretchView.UseVisualStyleBackColor = true;
-			// 
-			// squarethings
-			// 
-			this.squarethings.AutoSize = true;
-			this.squarethings.Location = new System.Drawing.Point(25, 170);
-			this.squarethings.Name = "squarethings";
-			this.squarethings.Size = new System.Drawing.Size(91, 17);
-			this.squarethings.TabIndex = 8;
-			this.squarethings.Text = "Square things";
-			this.squarethings.UseVisualStyleBackColor = true;
 			// 
 			// qualitydisplay
 			// 
@@ -1432,7 +1421,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.appearancegroup1.Controls.Add(label21);
 			this.appearancegroup1.Controls.Add(this.labelDynLightIntensity);
 			this.appearancegroup1.Controls.Add(this.cbStretchView);
-			this.appearancegroup1.Controls.Add(this.squarethings);
 			this.appearancegroup1.Controls.Add(this.tbDynLightIntensity);
 			this.appearancegroup1.Controls.Add(label20);
 			this.appearancegroup1.Controls.Add(this.qualitydisplay);
@@ -1458,7 +1446,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// capitalizetexturenames
 			// 
 			this.capitalizetexturenames.AutoSize = true;
-			this.capitalizetexturenames.Location = new System.Drawing.Point(236, 212);
+			this.capitalizetexturenames.Location = new System.Drawing.Point(236, 191);
 			this.capitalizetexturenames.Name = "capitalizetexturenames";
 			this.capitalizetexturenames.Size = new System.Drawing.Size(140, 17);
 			this.capitalizetexturenames.TabIndex = 36;
@@ -1482,7 +1470,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// cbOldHighlightMode
 			// 
 			this.cbOldHighlightMode.AutoSize = true;
-			this.cbOldHighlightMode.Location = new System.Drawing.Point(236, 254);
+			this.cbOldHighlightMode.Location = new System.Drawing.Point(236, 233);
 			this.cbOldHighlightMode.Name = "cbOldHighlightMode";
 			this.cbOldHighlightMode.Size = new System.Drawing.Size(207, 17);
 			this.cbOldHighlightMode.TabIndex = 33;
@@ -1560,7 +1548,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// animatevisualselection
 			// 
 			this.animatevisualselection.AutoSize = true;
-			this.animatevisualselection.Location = new System.Drawing.Point(236, 233);
+			this.animatevisualselection.Location = new System.Drawing.Point(236, 212);
 			this.animatevisualselection.Name = "animatevisualselection";
 			this.animatevisualselection.Size = new System.Drawing.Size(184, 17);
 			this.animatevisualselection.TabIndex = 23;
@@ -1570,7 +1558,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// blackbrowsers
 			// 
 			this.blackbrowsers.AutoSize = true;
-			this.blackbrowsers.Location = new System.Drawing.Point(236, 191);
+			this.blackbrowsers.Location = new System.Drawing.Point(25, 170);
 			this.blackbrowsers.Name = "blackbrowsers";
 			this.blackbrowsers.Size = new System.Drawing.Size(195, 17);
 			this.blackbrowsers.TabIndex = 4;
@@ -2025,7 +2013,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private Dotnetrix.Controls.TrackBar previewsize;
 		private System.Windows.Forms.Label previewsizelabel;
 		private System.Windows.Forms.Label label12;
-		private System.Windows.Forms.CheckBox squarethings;
 		private Dotnetrix.Controls.TrackBar autoscrollspeed;
 		private System.Windows.Forms.Label autoscrollspeedlabel;
 		private System.Windows.Forms.Label label15;
