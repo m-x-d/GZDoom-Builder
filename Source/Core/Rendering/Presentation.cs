@@ -30,7 +30,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		// Constants for static instances
 		public const float THINGS_BACK_ALPHA = 0.3f;
 		public const float THINGS_HIDDEN_ALPHA = 0.66f;
-		public const float THINGS_ALPHA = 0.8f; //mxd
+		public const float THINGS_ALPHA = 1.0f; //mxd
 		
 		// Static instances
 		private static Presentation standard;

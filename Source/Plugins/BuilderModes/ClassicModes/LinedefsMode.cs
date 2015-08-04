@@ -692,18 +692,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd
 		protected override void BeginViewPan() 
 		{
-			if(insertpreview.IsFinite()) 
-			{
-				insertpreview.x = float.NaN;
-
-				//undraw preveiw
-				if(renderer.StartOverlay(true)) 
-				{
-					renderer.Finish();
-					renderer.Present();
-				}
-			}
-
+			// We don't want vertex preview while panning
+			insertpreview.x = float.NaN;
 			base.BeginViewPan();
 		}
 

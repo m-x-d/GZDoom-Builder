@@ -49,7 +49,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		// Highlighted item
 		protected Vertex highlighted;
-		private Vector2D insertPreview = new Vector2D(float.NaN, float.NaN); //mxd
+		private Vector2D insertpreview = new Vector2D(float.NaN, float.NaN); //mxd
 
 		// Interface
 		private bool editpressed;
@@ -472,18 +472,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						List<Vector2D> points = l.GetGridIntersections();
 						if(points.Count == 0) 
 						{
-							insertPreview = l.NearestOnLine(mousemappos);
+							insertpreview = l.NearestOnLine(mousemappos);
 						} 
 						else 
 						{
-							insertPreview = mousemappos;
+							insertpreview = mousemappos;
 							float distance = float.MaxValue;
 							foreach(Vector2D p in points) 
 							{
 								float pdist = Vector2D.DistanceSq(p, mousemappos);
 								if(pdist < distance) 
 								{
-									insertPreview = p;
+									insertpreview = p;
 									distance = pdist;
 								}
 							}
@@ -492,23 +492,23 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					else 
 					{
 						// Just use the nearest point on line
-						insertPreview = l.NearestOnLine(mousemappos);
+						insertpreview = l.NearestOnLine(mousemappos);
 					}
 
 					//render preview
 					if(renderer.StartOverlay(true)) 
 					{
-						float dist = Math.Min(Vector2D.Distance(mousemappos, insertPreview), BuilderPlug.Me.SplitLinedefsRange);
+						float dist = Math.Min(Vector2D.Distance(mousemappos, insertpreview), BuilderPlug.Me.SplitLinedefsRange);
 						byte alpha = (byte)(255 - (dist / BuilderPlug.Me.SplitLinedefsRange) * 128);
 						float vsize = (renderer.VertexSize + 1.0f) / renderer.Scale;
-						renderer.RenderRectangleFilled(new RectangleF(insertPreview.x - vsize, insertPreview.y - vsize, vsize * 2.0f, vsize * 2.0f), General.Colors.InfoLine.WithAlpha(alpha), true);
+						renderer.RenderRectangleFilled(new RectangleF(insertpreview.x - vsize, insertpreview.y - vsize, vsize * 2.0f, vsize * 2.0f), General.Colors.InfoLine.WithAlpha(alpha), true);
 						renderer.Finish();
 						renderer.Present();
 					}
 				} 
-				else if(insertPreview.IsFinite()) 
+				else if(insertpreview.IsFinite()) 
 				{
-					insertPreview.x = float.NaN;
+					insertpreview.x = float.NaN;
 
 					//undraw preveiw
 					if(renderer.StartOverlay(true)) 
@@ -538,9 +538,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd
 		protected override void BeginViewPan() 
 		{
-			if (insertPreview.IsFinite()) 
+			if (insertpreview.IsFinite()) 
 			{
-				insertPreview.x = float.NaN;
+				insertpreview.x = float.NaN;
 
 				//undraw preveiw
 				if (renderer.StartOverlay(true)) 

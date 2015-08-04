@@ -165,8 +165,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.buttoninsertprefabfile = new System.Windows.Forms.ToolStripButton();
 			this.buttoninsertpreviousprefab = new System.Windows.Forms.ToolStripButton();
 			this.buttonthingsfilter = new System.Windows.Forms.ToolStripButton();
+			this.thingfilters = new System.Windows.Forms.ToolStripDropDownButton();
 			this.separatorlinecolors = new System.Windows.Forms.ToolStripSeparator();
 			this.buttonlinededfcolors = new System.Windows.Forms.ToolStripButton();
+			this.linedefcolorpresets = new System.Windows.Forms.ToolStripDropDownButton();
 			this.separatorfilters = new System.Windows.Forms.ToolStripSeparator();
 			this.buttonfullbrightness = new System.Windows.Forms.ToolStripButton();
 			this.separatorfullbrightness = new System.Windows.Forms.ToolStripSeparator();
@@ -248,8 +250,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.dockerscollapser = new System.Windows.Forms.Timer(this.components);
 			this.flowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
 			this.modecontrolsloolbar = new System.Windows.Forms.ToolStrip();
-			this.linedefcolorpresets = new System.Windows.Forms.ToolStripDropDownButton();
-			this.thingfilters = new System.Windows.Forms.ToolStripDropDownButton();
+			this.menutogglegrid = new System.Windows.Forms.ToolStripMenuItem();
+			this.buttontogglegrid = new System.Windows.Forms.ToolStripButton();
 			toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
@@ -633,7 +635,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.itemgridinc.Name = "itemgridinc";
 			this.itemgridinc.Size = new System.Drawing.Size(219, 22);
 			this.itemgridinc.Tag = "builder_griddec";
-			this.itemgridinc.Text = "&Increase Grid";
+			this.itemgridinc.Text = "&Increase Grid Size";
 			this.itemgridinc.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// itemgriddec
@@ -641,7 +643,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.itemgriddec.Name = "itemgriddec";
 			this.itemgriddec.Size = new System.Drawing.Size(219, 22);
 			this.itemgriddec.Tag = "builder_gridinc";
-			this.itemgriddec.Text = "&Decrease Grid";
+			this.itemgriddec.Text = "&Decrease Grid Size";
 			this.itemgriddec.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// itemdosnaptogrid
@@ -724,6 +726,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.itemviewceilings,
             this.seperatorviewviews,
             this.menufullbrightness,
+            this.menutogglegrid,
             this.toolStripSeparator4,
             this.menuzoom,
             this.menugotocoords,
@@ -1204,6 +1207,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.linedefcolorpresets,
             this.separatorfilters,
             this.buttonfullbrightness,
+            this.buttontogglegrid,
             this.separatorfullbrightness,
             this.buttonviewnormal,
             this.buttonviewbrightness,
@@ -1243,7 +1247,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.toggleTesting,
             this.toggleRendering});
 			this.toolbarContextMenu.Name = "toolbarContextMenu";
-			this.toolbarContextMenu.Size = new System.Drawing.Size(174, 224);
+			this.toolbarContextMenu.Size = new System.Drawing.Size(227, 224);
 			this.toolbarContextMenu.ImageScalingSize = MainForm.ScaledIconSize;
 			this.toolbarContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.toolbarContextMenu_Opening);
 			this.toolbarContextMenu.Closing += new System.Windows.Forms.ToolStripDropDownClosingEventHandler(this.toolbarContextMenu_Closing);
@@ -1251,70 +1255,70 @@ namespace CodeImp.DoomBuilder.Windows
 			// toggleFile
 			// 
 			this.toggleFile.Name = "toggleFile";
-			this.toggleFile.Size = new System.Drawing.Size(173, 22);
+			this.toggleFile.Size = new System.Drawing.Size(226, 22);
 			this.toggleFile.Text = "New / Open / Save";
 			this.toggleFile.Click += new System.EventHandler(this.toggleFile_Click);
 			// 
 			// toggleScript
 			// 
 			this.toggleScript.Name = "toggleScript";
-			this.toggleScript.Size = new System.Drawing.Size(173, 22);
+			this.toggleScript.Size = new System.Drawing.Size(226, 22);
 			this.toggleScript.Text = "Script Editor";
 			this.toggleScript.Click += new System.EventHandler(this.toggleScript_Click);
 			// 
 			// toggleUndo
 			// 
 			this.toggleUndo.Name = "toggleUndo";
-			this.toggleUndo.Size = new System.Drawing.Size(173, 22);
+			this.toggleUndo.Size = new System.Drawing.Size(226, 22);
 			this.toggleUndo.Text = "Undo / Redo";
 			this.toggleUndo.Click += new System.EventHandler(this.toggleUndo_Click);
 			// 
 			// toggleCopy
 			// 
 			this.toggleCopy.Name = "toggleCopy";
-			this.toggleCopy.Size = new System.Drawing.Size(173, 22);
+			this.toggleCopy.Size = new System.Drawing.Size(226, 22);
 			this.toggleCopy.Text = "Cut / Copy / Paste";
 			this.toggleCopy.Click += new System.EventHandler(this.toggleCopy_Click);
 			// 
 			// togglePrefabs
 			// 
 			this.togglePrefabs.Name = "togglePrefabs";
-			this.togglePrefabs.Size = new System.Drawing.Size(173, 22);
+			this.togglePrefabs.Size = new System.Drawing.Size(226, 22);
 			this.togglePrefabs.Text = "Prefabs";
 			this.togglePrefabs.Click += new System.EventHandler(this.togglePrefabs_Click);
 			// 
 			// toggleFilter
 			// 
 			this.toggleFilter.Name = "toggleFilter";
-			this.toggleFilter.Size = new System.Drawing.Size(173, 22);
+			this.toggleFilter.Size = new System.Drawing.Size(226, 22);
 			this.toggleFilter.Text = "Things Filter / Linedef Colors";
 			this.toggleFilter.Click += new System.EventHandler(this.toggleFilter_Click);
 			// 
 			// toggleViewModes
 			// 
 			this.toggleViewModes.Name = "toggleViewModes";
-			this.toggleViewModes.Size = new System.Drawing.Size(173, 22);
+			this.toggleViewModes.Size = new System.Drawing.Size(226, 22);
 			this.toggleViewModes.Text = "View Modes";
 			this.toggleViewModes.Click += new System.EventHandler(this.toggleViewModes_Click);
 			// 
 			// toggleGeometry
 			// 
 			this.toggleGeometry.Name = "toggleGeometry";
-			this.toggleGeometry.Size = new System.Drawing.Size(173, 22);
+			this.toggleGeometry.Size = new System.Drawing.Size(226, 22);
 			this.toggleGeometry.Text = "Snap / Merge";
 			this.toggleGeometry.Click += new System.EventHandler(this.toggleGeometry_Click);
 			// 
 			// toggleTesting
 			// 
 			this.toggleTesting.Name = "toggleTesting";
-			this.toggleTesting.Size = new System.Drawing.Size(173, 22);
+			this.toggleTesting.Size = new System.Drawing.Size(226, 22);
 			this.toggleTesting.Text = "Testing";
 			this.toggleTesting.Click += new System.EventHandler(this.toggleTesting_Click);
 			// 
 			// toggleRendering
 			// 
 			this.toggleRendering.Name = "toggleRendering";
-			this.toggleRendering.Size = new System.Drawing.Size(173, 22);
+			this.toggleRendering.Size = new System.Drawing.Size(226, 22);
 			this.toggleRendering.Text = "Rendering";
 			this.toggleRendering.Click += new System.EventHandler(this.toggleRendering_Click);
 			// 
@@ -1451,6 +1455,20 @@ namespace CodeImp.DoomBuilder.Windows
 			this.buttonthingsfilter.Text = "Configure Things Filters";
 			this.buttonthingsfilter.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
+			// thingfilters
+			// 
+			this.thingfilters.AutoSize = false;
+			this.thingfilters.AutoToolTip = false;
+			this.thingfilters.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.thingfilters.Image = ((System.Drawing.Image)(resources.GetObject("thingfilters.Image")));
+			this.thingfilters.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.thingfilters.Margin = new System.Windows.Forms.Padding(1, 1, 0, 2);
+			this.thingfilters.Name = "thingfilters";
+			this.thingfilters.Size = new System.Drawing.Size(120, 22);
+			this.thingfilters.Text = "(show all)";
+			this.thingfilters.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.thingfilters.DropDownClosed += new System.EventHandler(this.LoseFocus);
+			// 
 			// separatorlinecolors
 			// 
 			this.separatorlinecolors.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
@@ -1467,6 +1485,21 @@ namespace CodeImp.DoomBuilder.Windows
 			this.buttonlinededfcolors.Tag = "builder_linedefcolorssetup";
 			this.buttonlinededfcolors.Text = "Configure Linedef Colors";
 			this.buttonlinededfcolors.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// linedefcolorpresets
+			// 
+			this.linedefcolorpresets.AutoSize = false;
+			this.linedefcolorpresets.AutoToolTip = false;
+			this.linedefcolorpresets.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+			this.linedefcolorpresets.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.linedefcolorpresets.Margin = new System.Windows.Forms.Padding(1, 1, 0, 2);
+			this.linedefcolorpresets.Name = "linedefcolorpresets";
+			this.linedefcolorpresets.Size = new System.Drawing.Size(120, 22);
+			this.linedefcolorpresets.Text = "No presets";
+			this.linedefcolorpresets.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.linedefcolorpresets.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.linedefcolorpresets_DropDownItemClicked);
+			this.linedefcolorpresets.DropDownClosed += new System.EventHandler(this.LoseFocus);
+			this.linedefcolorpresets.Click += new System.EventHandler(this.linedefcolorpresets_MouseLeave);
 			// 
 			// separatorfilters
 			// 
@@ -1627,7 +1660,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.dynamiclightmode.Image = global::CodeImp.DoomBuilder.Properties.Resources.Light;
 			this.dynamiclightmode.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.dynamiclightmode.Name = "dynamiclightmode";
-			this.dynamiclightmode.Size = new System.Drawing.Size(32, 22);
+			this.dynamiclightmode.Size = new System.Drawing.Size(32, 20);
 			this.dynamiclightmode.Tag = "builder_gztogglelights";
 			this.dynamiclightmode.Text = "Dynamic light mode";
 			this.dynamiclightmode.ButtonClick += new System.EventHandler(this.InvokeTaggedAction);
@@ -1674,7 +1707,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.modelrendermode.Image = global::CodeImp.DoomBuilder.Properties.Resources.Model;
 			this.modelrendermode.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.modelrendermode.Name = "modelrendermode";
-			this.modelrendermode.Size = new System.Drawing.Size(32, 22);
+			this.modelrendermode.Size = new System.Drawing.Size(32, 20);
 			this.modelrendermode.Tag = "builder_gztogglemodels";
 			this.modelrendermode.Text = "Model rendering mode";
 			this.modelrendermode.ButtonClick += new System.EventHandler(this.InvokeTaggedAction);
@@ -1727,7 +1760,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.buttontogglefog.Image = global::CodeImp.DoomBuilder.Properties.Resources.fog;
 			this.buttontogglefog.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.buttontogglefog.Name = "buttontogglefog";
-			this.buttontogglefog.Size = new System.Drawing.Size(23, 22);
+			this.buttontogglefog.Size = new System.Drawing.Size(23, 20);
 			this.buttontogglefog.Tag = "builder_gztogglefog";
 			this.buttontogglefog.Text = "Toggle Fog Rendering";
 			this.buttontogglefog.Click += new System.EventHandler(this.InvokeTaggedAction);
@@ -1739,7 +1772,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.buttontoggleeventlines.Image = global::CodeImp.DoomBuilder.Properties.Resources.InfoLine;
 			this.buttontoggleeventlines.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.buttontoggleeventlines.Name = "buttontoggleeventlines";
-			this.buttontoggleeventlines.Size = new System.Drawing.Size(23, 22);
+			this.buttontoggleeventlines.Size = new System.Drawing.Size(23, 20);
 			this.buttontoggleeventlines.Tag = "builder_gztoggleeventlines";
 			this.buttontoggleeventlines.Text = "Toggle Event Lines";
 			this.buttontoggleeventlines.Click += new System.EventHandler(this.InvokeTaggedAction);
@@ -1751,7 +1784,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.buttontogglevisualvertices.Image = global::CodeImp.DoomBuilder.Properties.Resources.VisualVertices;
 			this.buttontogglevisualvertices.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.buttontogglevisualvertices.Name = "buttontogglevisualvertices";
-			this.buttontogglevisualvertices.Size = new System.Drawing.Size(23, 22);
+			this.buttontogglevisualvertices.Size = new System.Drawing.Size(23, 20);
 			this.buttontogglevisualvertices.Tag = "builder_gztogglevisualvertices";
 			this.buttontogglevisualvertices.Text = "Show Editable Vertices in Visual Mode";
 			this.buttontogglevisualvertices.Click += new System.EventHandler(this.InvokeTaggedAction);
@@ -1769,7 +1802,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.buttontest.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
 			this.buttontest.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.buttontest.Name = "buttontest";
-			this.buttontest.Size = new System.Drawing.Size(32, 22);
+			this.buttontest.Size = new System.Drawing.Size(32, 20);
 			this.buttontest.Tag = "builder_testmap";
 			this.buttontest.Text = "Test Map";
 			this.buttontest.ButtonClick += new System.EventHandler(this.InvokeTaggedAction);
@@ -2314,34 +2347,27 @@ namespace CodeImp.DoomBuilder.Windows
 			this.modecontrolsloolbar.Text = "toolStrip1";
 			this.modecontrolsloolbar.Visible = false;
 			// 
-			// linedefcolorpresets
+			// menutogglegrid
 			// 
-			this.linedefcolorpresets.AutoSize = false;
-			this.linedefcolorpresets.AutoToolTip = false;
-			this.linedefcolorpresets.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-			this.linedefcolorpresets.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.linedefcolorpresets.Margin = new System.Windows.Forms.Padding(1, 1, 0, 2);
-			this.linedefcolorpresets.Name = "linedefcolorpresets";
-			this.linedefcolorpresets.Size = new System.Drawing.Size(120, 22);
-			this.linedefcolorpresets.Text = "No presets";
-			this.linedefcolorpresets.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.linedefcolorpresets.Click += new System.EventHandler(this.linedefcolorpresets_MouseLeave);
-			this.linedefcolorpresets.DropDownItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.linedefcolorpresets_DropDownItemClicked);
-			this.linedefcolorpresets.DropDownClosed += new System.EventHandler(this.LoseFocus);
+			this.menutogglegrid.CheckOnClick = true;
+			this.menutogglegrid.Image = global::CodeImp.DoomBuilder.Properties.Resources.Grid2;
+			this.menutogglegrid.Name = "menutogglegrid";
+			this.menutogglegrid.Size = new System.Drawing.Size(215, 22);
+			this.menutogglegrid.Tag = "builder_togglegrid";
+			this.menutogglegrid.Text = "&Render Grid";
+			this.menutogglegrid.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
-			// thingfilters
+			// buttontogglegrid
 			// 
-			this.thingfilters.AutoSize = false;
-			this.thingfilters.AutoToolTip = false;
-			this.thingfilters.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-			this.thingfilters.Image = ((System.Drawing.Image)(resources.GetObject("thingfilters.Image")));
-			this.thingfilters.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.thingfilters.Margin = new System.Windows.Forms.Padding(1, 1, 0, 2);
-			this.thingfilters.Name = "thingfilters";
-			this.thingfilters.Size = new System.Drawing.Size(120, 22);
-			this.thingfilters.Text = "(show all)";
-			this.thingfilters.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-			this.thingfilters.DropDownClosed += new System.EventHandler(this.LoseFocus);
+			this.buttontogglegrid.CheckOnClick = true;
+			this.buttontogglegrid.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttontogglegrid.Image = global::CodeImp.DoomBuilder.Properties.Resources.Grid2;
+			this.buttontogglegrid.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttontogglegrid.Name = "buttontogglegrid";
+			this.buttontogglegrid.Size = new System.Drawing.Size(23, 22);
+			this.buttontogglegrid.Tag = "builder_togglegrid";
+			this.buttontogglegrid.Text = "Render Grid";
+			this.buttontogglegrid.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// MainForm
 			// 
@@ -2600,5 +2626,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private ToolStripButton buttonlinededfcolors;
 		private ToolStripDropDownButton linedefcolorpresets;
 		private ToolStripDropDownButton thingfilters;
+		private ToolStripMenuItem menutogglegrid;
+		private ToolStripButton buttontogglegrid;
 	}
 }
