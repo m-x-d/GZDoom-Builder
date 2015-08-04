@@ -116,6 +116,7 @@ namespace CodeImp.DoomBuilder.Config
 		private bool storeSelectedEditTab;
 		private bool checkforupdates;
 		private bool rendercomments;
+		private bool rendergrid;
 		
 		// These are not stored in the configuration, only used at runtime
 		private int defaultbrightness;
@@ -203,6 +204,7 @@ namespace CodeImp.DoomBuilder.Config
 		public bool StoreSelectedEditTab { get { return storeSelectedEditTab; } internal set { storeSelectedEditTab = value; } }
 		internal bool CheckForUpdates { get { return checkforupdates; } set { checkforupdates = value; } } //mxd
 		public bool RenderComments { get { return rendercomments; } internal set { rendercomments = value; } } //mxd
+		public bool RenderGrid { get { return rendergrid; } internal set { rendergrid = value; } } //mxd
 
 		//mxd. Left here for compatibility reasons...
 		public string DefaultTexture { get { return General.Map != null ? General.Map.Options.DefaultWallTexture : "-"; } set { if(General.Map != null) General.Map.Options.DefaultWallTexture = value; } }
@@ -313,6 +315,7 @@ namespace CodeImp.DoomBuilder.Config
 				storeSelectedEditTab = cfg.ReadSetting("storeselectededittab", true);
 				checkforupdates = cfg.ReadSetting("checkforupdates", true); //mxd
 				rendercomments = cfg.ReadSetting("rendercomments", true); //mxd
+				rendergrid = cfg.ReadSetting("rendergrid", true); //mxd
 
 				//mxd. Sector defaults
 				defaultceilheight = cfg.ReadSetting("defaultceilheight", 128);
@@ -407,6 +410,7 @@ namespace CodeImp.DoomBuilder.Config
 			cfg.WriteSetting("storeselectededittab", storeSelectedEditTab);
 			cfg.WriteSetting("checkforupdates", checkforupdates); //mxd
 			cfg.WriteSetting("rendercomments", rendercomments); //mxd
+			cfg.WriteSetting("rendergrid", rendergrid); //mxd
 
 			//mxd. Sector defaults
 			cfg.WriteSetting("defaultceilheight", defaultceilheight);

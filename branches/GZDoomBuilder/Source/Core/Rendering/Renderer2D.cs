@@ -18,7 +18,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Drawing;
 using CodeImp.DoomBuilder.Map;
 using SlimDX.Direct3D9;
@@ -45,6 +44,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Constants
 
 		private const float FSAA_FACTOR = 0.6f;
+		private const int MAP_CENTER_SIZE = 16; //mxd
 		private const float THING_ARROW_SIZE = 1.4f;
 		//private const float THING_ARROW_SHRINK = 2f;
 		//private const float THING_CIRCLE_SIZE = 1f;
@@ -822,34 +822,44 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This renders all grid
 		private unsafe void RenderBackgroundGrid()
 		{
-			Plotter gridplotter;
-			DataRectangle lockedrect;
-			
 			// Do we need to redraw grid?
 			if((lastgridsize != General.Map.Grid.GridSize) || (lastgridscale != scale) ||
 			   (lastgridx != offsetx) || (lastgridy != offsety))
 			{
 				// Lock background rendertarget memory
-				lockedrect = backtex.LockRectangle(0, LockFlags.NoSystemLock);
+				DataRectangle lockedrect = backtex.LockRectangle(0, LockFlags.NoSystemLock);
 
 				// Create a plotter
-				gridplotter = new Plotter((PixelColor*)lockedrect.Data.DataPointer.ToPointer(), lockedrect.Pitch / sizeof(PixelColor), backsize.Height, backsize.Width, backsize.Height);
+				Plotter gridplotter = new Plotter((PixelColor*)lockedrect.Data.DataPointer.ToPointer(), lockedrect.Pitch / sizeof(PixelColor), backsize.Height, backsize.Width, backsize.Height);
 				gridplotter.Clear();
 
-				// Render normal grid
-				RenderGrid(General.Map.Grid.GridSize, General.Colors.Grid, gridplotter);
+				if(General.Settings.RenderGrid) //mxd
+				{
+					// Render normal grid
+					RenderGrid(General.Map.Grid.GridSize, General.Colors.Grid, gridplotter);
 
-				// Render 64 grid
-				if(General.Map.Grid.GridSize <= 64) RenderGrid(64f, General.Colors.Grid64, gridplotter);
+					// Render 64 grid
+					if(General.Map.Grid.GridSize <= 64) RenderGrid(64f, General.Colors.Grid64, gridplotter);
+				}
+				else
+				{
+					//mxd. Render map format bounds
+					Vector2D tl = new Vector2D(General.Map.Config.LeftBoundary, General.Map.Config.TopBoundary).GetTransformed(translatex, translatey, scale, -scale);
+					Vector2D rb = new Vector2D(General.Map.Config.RightBoundary, General.Map.Config.BottomBoundary).GetTransformed(translatex, translatey, scale, -scale);
+					PixelColor g = General.Colors.Grid64;
+					gridplotter.DrawGridLineH((int)tl.y, (int)tl.x, (int)rb.x, ref g);
+					gridplotter.DrawGridLineH((int)rb.y, (int)tl.x, (int)rb.x, ref g);
+					gridplotter.DrawGridLineV((int)tl.x, (int)tl.y, (int)rb.y, ref g);
+					gridplotter.DrawGridLineV((int)rb.x, (int)tl.y, (int)rb.y, ref g);
+				}
 
 				//mxd. Render center of map
-				int size = 16;
 				Vector2D center = new Vector2D().GetTransformed(translatex, translatey, scale, -scale);
 				int cx = (int)center.x;
 				int cy = (int)center.y;
 				PixelColor c = General.Colors.Highlight;
-				gridplotter.DrawLineSolid(cx, cy + size, cx, cy - size, ref c);
-				gridplotter.DrawLineSolid(cx - size, cy, cx + size, cy, ref c);
+				gridplotter.DrawLineSolid(cx, cy + MAP_CENTER_SIZE, cx, cy - MAP_CENTER_SIZE, ref c);
+				gridplotter.DrawLineSolid(cx - MAP_CENTER_SIZE, cy, cx + MAP_CENTER_SIZE, cy, ref c);
 
 				// Done
 				backtex.UnlockRectangle(0);
@@ -924,6 +934,12 @@ namespace CodeImp.DoomBuilder.Rendering
 				// Note: I'm not using Math.Ceiling in this case, because that doesn't work right.
 				gridplotter.DrawGridLineV((int)pos.x, (int)Math.Round(from + 0.49999f), (int)Math.Round(to + 0.49999f), ref c);
 			}
+		}
+
+		//mxd
+		internal void GridVisibilityChanged()
+		{
+			lastgridscale = -1;
 		}
 
 		#endregion

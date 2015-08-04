@@ -2068,6 +2068,8 @@ namespace CodeImp.DoomBuilder.Windows
 			linedefcolorpresets.Visible = General.Settings.ToolbarFilter && maploaded; //mxd
 			separatorfilters.Visible = General.Settings.ToolbarViewModes && maploaded; //mxd
 			buttonfullbrightness.Visible = General.Settings.ToolbarViewModes && maploaded; //mxd
+			buttontogglegrid.Visible = General.Settings.ToolbarViewModes && maploaded; //mxd
+			buttontogglegrid.Checked = General.Settings.RenderGrid; //mxd
 			separatorfullbrightness.Visible = General.Settings.ToolbarViewModes && maploaded; //mxd
 			buttonviewbrightness.Visible = General.Settings.ToolbarViewModes && maploaded;
 			buttonviewceilings.Visible = General.Settings.ToolbarViewModes && maploaded;
@@ -2862,6 +2864,20 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
+		[BeginAction("togglegrid")]
+		protected void ToggleGrid()
+		{
+			General.Settings.RenderGrid = !General.Settings.RenderGrid;
+			menutogglegrid.Checked = General.Settings.RenderGrid;
+			buttontogglegrid.Checked = General.Settings.RenderGrid;
+			General.Interface.DisplayStatus(StatusType.Action, "Grid rendering is " + (General.Settings.RenderGrid ? "ENABLED" : "DISABLED"));
+
+			// Redraw display to show changes
+			General.Map.CRenderer2D.GridVisibilityChanged();
+			General.Interface.RedrawDisplay();
+		}
+
+		//mxd
 		[BeginAction("toggleautoclearsidetextures")]
 		internal void ToggleAutoClearSideTextures() 
 		{
@@ -2902,6 +2918,8 @@ namespace CodeImp.DoomBuilder.Windows
 			menuzoom.Enabled = (General.Map != null);
 			menugotocoords.Enabled = (General.Map != null); //mxd
 			menufullbrightness.Enabled = (General.Map != null); //mxd
+			menutogglegrid.Enabled = (General.Map != null); //mxd
+			menutogglegrid.Checked = General.Settings.RenderGrid; //mxd
 			itemtoggleinfo.Enabled = (General.Map != null); //mxd
 			itemtoggleinfo.Checked = IsInfoPanelExpanded;
 			itemtogglecomments.Enabled = (General.Map != null && General.Map.UDMF); //mxd
