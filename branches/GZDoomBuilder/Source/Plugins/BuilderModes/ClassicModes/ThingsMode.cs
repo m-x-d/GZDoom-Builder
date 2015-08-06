@@ -134,6 +134,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.SeparatorCopyPaste); //mxd
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.AlignThingsToWall); //mxd
 			
+			//mxd. Do some highlight management...
+			if(highlighted != null) highlighted.Highlighted = false;
+
 			// Going to EditSelectionMode?
 			if(General.Editing.NewMode is EditSelectionMode)
 			{
@@ -149,10 +152,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 				}
 			} 
-			else if(highlighted != null) //mxd
-			{
-				highlighted.Highlighted = false;
-			}
 
 			// Hide highlight info and tooltip
 			General.Interface.HideInfo();
@@ -704,14 +703,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			return base.OnCopyBegin();
-		}
-
-		//mxd. Needs more highlight management...
-		public override bool OnPasteBegin(PasteOptions options)
-		{
-			bool result = base.OnPasteBegin(options);
-			if(result && highlighted != null) highlighted.Highlighted = false;
-			return result;
 		}
 
 		//mxd
