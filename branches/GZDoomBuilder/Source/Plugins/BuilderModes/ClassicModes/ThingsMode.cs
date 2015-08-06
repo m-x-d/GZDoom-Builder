@@ -566,6 +566,30 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							{
 								Thing clone = InsertThing(t.Position);
 								t.CopyPropertiesTo(clone);
+
+								// If the cloned item is an interpolation point or patrol point, then insert the point in the path
+								ThingTypeInfo info = General.Map.Data.GetThingInfo(t.Type);
+								int nextpointtagargnum = -1;
+
+								// Thing type can be changed in MAPINFO DoomEdNums block...
+								switch (info.ClassName.ToLowerInvariant())
+								{
+									case "interpolationpoint":
+										nextpointtagargnum = 3;
+										break;
+
+									case "patrolpoint":
+										nextpointtagargnum = 0;
+										break;
+								}
+
+								// Apply changes?
+								if(nextpointtagargnum != -1)
+								{
+									if(t.Tag == 0) t.Tag = General.Map.Map.GetNewTag();
+									t.Args[nextpointtagargnum] = clone.Tag = General.Map.Map.GetNewTag();
+								}
+
 								t.Selected = false;
 								clone.Selected = true;
 							}
@@ -680,6 +704,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			return base.OnCopyBegin();
+		}
+
+		//mxd. Needs more highlight management...
+		public override bool OnPasteBegin(PasteOptions options)
+		{
+			bool result = base.OnPasteBegin(options);
+			if(result && highlighted != null) highlighted.Highlighted = false;
+			return result;
 		}
 
 		//mxd
