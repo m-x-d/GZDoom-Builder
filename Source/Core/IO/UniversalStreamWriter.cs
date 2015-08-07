@@ -202,7 +202,7 @@ namespace CodeImp.DoomBuilder.IO
 					{
 						moreidscol[i - 1] = l.Tags[i].ToString();
 					}
-					coll.Add("moreids", string.Join(",", moreidscol));
+					coll.Add("moreids", string.Join(" ", moreidscol));
 				}
 				
 				// Sidedef references
@@ -289,7 +289,7 @@ namespace CodeImp.DoomBuilder.IO
 					{
 						moreidscol[i - 1] = s.Tags[i].ToString();
 					}
-					coll.Add("moreids", string.Join(",", moreidscol));
+					coll.Add("moreids", string.Join(" ", moreidscol));
 				}
 
 				//mxd. Slopes

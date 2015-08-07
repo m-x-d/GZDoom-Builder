@@ -246,7 +246,7 @@ namespace CodeImp.DoomBuilder.IO
 
 			// Go for all lines
 			map.SetCapacity(0, map.Linedefs.Count + linescolls.Count, map.Sidedefs.Count + sidescolls.Count, 0, 0);
-			char[] splitter = new[] { ',' }; //mxd
+			char[] splitter = new[] { ' ' }; //mxd
 			for(int i = 0; i < linescolls.Count; i++)
 			{
 				// Read fields
@@ -286,6 +286,7 @@ namespace CodeImp.DoomBuilder.IO
 						}
 					}
 				}
+				if(tag == 0 && tags.Count > 1) tags.RemoveAt(0);
 
 				// Flags
 				Dictionary<string, bool> stringflags = new Dictionary<string, bool>(StringComparer.Ordinal);
@@ -386,7 +387,7 @@ namespace CodeImp.DoomBuilder.IO
 
 			// Go for all collections
 			map.SetCapacity(0, 0, 0, map.Sectors.Count + collections.Count, 0);
-			char[] splitter = new[] { ',' }; //mxd
+			char[] splitter = new[] { ' ' }; //mxd
 			for(int i = 0; i < collections.Count; i++)
 			{
 				// Read fields
@@ -415,6 +416,7 @@ namespace CodeImp.DoomBuilder.IO
 						}
 					}
 				}
+				if(tag == 0 && tags.Count > 1) tags.RemoveAt(0);
 
 				//mxd. Read slopes
 				float fslopex = GetCollectionEntry(c, "floorplane_a", false, 0.0f, where);
