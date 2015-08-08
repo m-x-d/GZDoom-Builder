@@ -463,12 +463,8 @@ namespace CodeImp.DoomBuilder.Rendering
 			//mxd. Visual vertices
 			RenderVertices();
 
-			//mxd. LINKS
-			if (General.Settings.GZShowEventLines) 
-			{
-				List<List<Line3D>> lines = LinksCollector.GetThingLinks(thingsbydistance);
-				if(lines != null) foreach(List<Line3D> list in lines) if(list.Count > 0) RenderArrows(list);
-			}
+			//mxd. Event lines
+			if(General.Settings.GZShowEventLines) RenderArrows(LinksCollector.GetThingLinks(thingsbydistance));
 
 			// ADDITIVE PASS
 			world = Matrix.Identity;
@@ -662,23 +658,59 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		//mxd
-		private void RenderArrows(List<Line3D> lines) 
+		private void RenderArrows(ICollection<Line3D> lines) 
 		{
-			//create vertices
-			WorldVertex[] verts = new WorldVertex[lines.Count * 6];
-			const float scaler = 20f;
+			// Calculate required points count
+			if(lines.Count == 0) return;
+			int pointscount = 0;
+			foreach(Line3D line in lines) pointscount += (line.renderarrowhead ? 6 : 2); // 4 extra points for the arrowhead
+			if(pointscount < 2) return;
 			
-			for (int i = 0; i < lines.Count; i++) 
+			//create vertices
+			WorldVertex[] verts = new WorldVertex[pointscount];
+			const float scaler = 20f;
+			int color;
+			pointscount = 0;
+
+			foreach(Line3D line in lines)
 			{
-				WorldVertex endPoint = new WorldVertex(lines[i].v2);
-				float nz = lines[i].GetDelta().GetNormal().z * scaler;
-				float angle = lines[i].GetAngle();
-				verts[i * 6] = new WorldVertex(lines[i].v1);
-				verts[i * 6 + 1] = endPoint;
-				verts[i * 6 + 2] = endPoint;
-				verts[i * 6 + 3] = new WorldVertex(new Vector3D(lines[i].v2.x - scaler * (float)Math.Sin(angle - 0.46f), lines[i].v2.y + scaler * (float)Math.Cos(angle - 0.46f), lines[i].v2.z - nz));
-				verts[i * 6 + 4] = endPoint;
-				verts[i * 6 + 5] = new WorldVertex(new Vector3D(lines[i].v2.x - scaler * (float)Math.Sin(angle + 0.46f), lines[i].v2.y + scaler * (float)Math.Cos(angle + 0.46f), lines[i].v2.z - nz));
+				color = line.color.ToInt();
+
+				// Add regular points
+				verts[pointscount].x = line.v1.x;
+				verts[pointscount].y = line.v1.y;
+				verts[pointscount].z = line.v1.z;
+				verts[pointscount].c = color;
+				pointscount++;
+
+				verts[pointscount].x = line.v2.x;
+				verts[pointscount].y = line.v2.y;
+				verts[pointscount].z = line.v2.z;
+				verts[pointscount].c = color;
+				pointscount++;
+
+				// Add arrowhead
+				if(line.renderarrowhead)
+				{
+					float nz = line.GetDelta().GetNormal().z * scaler;
+					float angle = line.GetAngle();
+					Vector3D a1 = new Vector3D(line.v2.x - scaler * (float)Math.Sin(angle - 0.46f), line.v2.y + scaler * (float)Math.Cos(angle - 0.46f), line.v2.z - nz);
+					Vector3D a2 = new Vector3D(line.v2.x - scaler * (float)Math.Sin(angle + 0.46f), line.v2.y + scaler * (float)Math.Cos(angle + 0.46f), line.v2.z - nz);
+
+					verts[pointscount] = verts[pointscount - 1];
+					verts[pointscount + 1].x = a1.x;
+					verts[pointscount + 1].y = a1.y;
+					verts[pointscount + 1].z = a1.z;
+					verts[pointscount + 1].c = color;
+
+					verts[pointscount + 2] = verts[pointscount - 1];
+					verts[pointscount + 3].x = a2.x;
+					verts[pointscount + 3].y = a2.y;
+					verts[pointscount + 3].z = a2.z;
+					verts[pointscount + 3].c = color;
+
+					pointscount += 4;
+				}
 			}
 
 			VertexBuffer vb = new VertexBuffer(General.Map.Graphics.Device, WorldVertex.Stride * verts.Length, Usage.WriteOnly | Usage.Dynamic, VertexFormat.None, Pool.Default);
@@ -694,18 +726,15 @@ namespace CodeImp.DoomBuilder.Rendering
 			graphics.Device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
 			graphics.Device.SetRenderState(RenderState.DestinationBlend, Blend.SourceAlpha);
 
-			graphics.Shaders.World3D.BeginPass(16);
+			graphics.Shaders.World3D.BeginPass(15);
 
 			world = Matrix.Identity;
 			ApplyMatrices3D();
 
-			// Setup color
-			graphics.Shaders.World3D.VertexColor = lines[0].color.ToColorValue();
-
 			//render
 			graphics.Shaders.World3D.ApplySettings();
 			graphics.Device.SetStreamSource(0, vb, 0, WorldVertex.Stride);
-			graphics.Device.DrawPrimitives(PrimitiveType.LineList, 0, lines.Count * 3);
+			graphics.Device.DrawPrimitives(PrimitiveType.LineList, 0, pointscount / 2);
 
 			// Done
 			graphics.Shaders.World3D.EndPass();

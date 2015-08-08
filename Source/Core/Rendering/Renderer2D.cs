@@ -1698,44 +1698,57 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		//mxd
-		public void RenderArrows(List<Line3D> lines) 
+		public void RenderArrows(ICollection<Line3D> lines) 
 		{
 			if(lines.Count == 0) return;
-			FlatVertex[] verts = new FlatVertex[lines.Count * 6]; //2 verts per line * 3 lines
+			int pointscount = 0;
+			foreach(Line3D line in lines) pointscount += (line.renderarrowhead ? 6 : 2); // 4 extra points for the arrowhead
+			if(pointscount < 2) return;
+
+			FlatVertex[] verts = new FlatVertex[pointscount];
 			float scaler = 16f / scale;
 			int color;
 
 			// Create verts array
-			for(int i = 0; i < lines.Count; i++)
+			pointscount = 0;
+			foreach(Line3D line in lines)
 			{
-				color = lines[i].color.ToInt();
+				color = line.color.ToInt();
 
 				// Calculate positions
-				Vector2D v1 = ((Vector2D)lines[i].v1).GetTransformed(translatex, translatey, scale, -scale); //start
-				Vector2D v2 = ((Vector2D)lines[i].v2).GetTransformed(translatex, translatey, scale, -scale); //end
+				Vector2D v1 = ((Vector2D)line.v1).GetTransformed(translatex, translatey, scale, -scale); //start
+				Vector2D v2 = ((Vector2D)line.v2).GetTransformed(translatex, translatey, scale, -scale); //end
 
-				float angle = lines[i].GetAngle();
-				Vector2D v3 = new Vector2D(lines[i].v2.x - scaler * (float)Math.Sin(angle - 0.46f), lines[i].v2.y + scaler * (float)Math.Cos(angle - 0.46f)).GetTransformed(translatex, translatey, scale, -scale); //arrowhead end 1
-				Vector2D v4 = new Vector2D(lines[i].v2.x - scaler * (float)Math.Sin(angle + 0.46f), lines[i].v2.y + scaler * (float)Math.Cos(angle + 0.46f)).GetTransformed(translatex, translatey, scale, -scale); //arrowhead end 2
+				// Add regular points
+				verts[pointscount].x = v1.x;
+				verts[pointscount].y = v1.y;
+				verts[pointscount].c = color;
+				pointscount++;
 
-				verts[i * 6].x = v1.x;
-				verts[i * 6].y = v1.y;
-				verts[i * 6].c = color;
+				verts[pointscount].x = v2.x;
+				verts[pointscount].y = v2.y;
+				verts[pointscount].c = color;
+				pointscount++;
 
-				verts[i * 6 + 1].x = v2.x;
-				verts[i * 6 + 1].y = v2.y;
-				verts[i * 6 + 1].c = color;
+				// Add arrowhead
+				if(line.renderarrowhead)
+				{
+					float angle = line.GetAngle();
+					Vector2D a1 = new Vector2D(line.v2.x - scaler * (float)Math.Sin(angle - 0.46f), line.v2.y + scaler * (float)Math.Cos(angle - 0.46f)).GetTransformed(translatex, translatey, scale, -scale); //arrowhead end 1
+					Vector2D a2 = new Vector2D(line.v2.x - scaler * (float)Math.Sin(angle + 0.46f), line.v2.y + scaler * (float)Math.Cos(angle + 0.46f)).GetTransformed(translatex, translatey, scale, -scale); //arrowhead end 2
+					
+					verts[pointscount] = verts[pointscount - 1];
+					verts[pointscount + 1].x = a1.x;
+					verts[pointscount + 1].y = a1.y;
+					verts[pointscount + 1].c = color;
 
-				// Arrowhead
-				verts[i * 6 + 2] = verts[i * 6 + 1];
-				verts[i * 6 + 3].x = v3.x;
-				verts[i * 6 + 3].y = v3.y;
-				verts[i * 6 + 3].c = color;
+					verts[pointscount + 2] = verts[pointscount - 1];
+					verts[pointscount + 3].x = a2.x;
+					verts[pointscount + 3].y = a2.y;
+					verts[pointscount + 3].c = color;
 
-				verts[i * 6 + 4] = verts[i * 6 + 1];
-				verts[i * 6 + 5].x = v4.x;
-				verts[i * 6 + 5].y = v4.y;
-				verts[i * 6 + 5].c = color;
+					pointscount += 4;
+				}
 			}
 
 			// Write to buffer
@@ -1761,7 +1774,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			graphics.Shaders.Display2D.Begin();
 			graphics.Shaders.Display2D.BeginPass(1);
 			graphics.Device.SetStreamSource(0, vb, 0, FlatVertex.Stride);
-			graphics.Device.DrawPrimitives(PrimitiveType.LineList, 0, lines.Count * 3);
+			graphics.Device.DrawPrimitives(PrimitiveType.LineList, 0, pointscount / 2);
 			graphics.Shaders.Display2D.EndPass();
 			graphics.Shaders.Display2D.End();
 			vb.Dispose();
