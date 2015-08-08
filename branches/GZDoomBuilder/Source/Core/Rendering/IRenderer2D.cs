@@ -72,7 +72,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		void RenderRectangleFilled(RectangleF rect, PixelColor c, bool transformrect);
 		void RenderRectangleFilled(RectangleF rect, PixelColor c, bool transformrect, ImageData texture);
 		void RenderLine(Vector2D start, Vector2D end, float thickness, PixelColor c, bool transformcoords);
-		void RenderArrows(List<Line3D> line); //mxd
+		void RenderArrows(ICollection<Line3D> line); //mxd
 		void RenderText(TextLabel text);
 		void RenderGeometry(FlatVertex[] vertices, ImageData texture, bool transformcoords);
 		void RenderHighlight(FlatVertex[] vertices, int color); //mxd

@@ -10,6 +10,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Geometry
 		public Vector3D v1;
 		public Vector3D v2;
 		public PixelColor color;
+		public readonly bool renderarrowhead;
 
 		// Constructors
 		public Line3D(Vector3D v1, Vector3D v2) 
@@ -17,6 +18,15 @@ namespace CodeImp.DoomBuilder.GZBuilder.Geometry
 			this.v1 = v1;
 			this.v2 = v2;
 			this.color = General.Colors.InfoLine;
+			this.renderarrowhead = true;
+		}
+
+		public Line3D(Vector3D v1, Vector3D v2, bool renderarrowhead)
+		{
+			this.v1 = v1;
+			this.v2 = v2;
+			this.color = General.Colors.InfoLine;
+			this.renderarrowhead = renderarrowhead;
 		}
 
 		public Line3D(Vector3D v1, Vector3D v2, PixelColor color) 
@@ -24,6 +34,15 @@ namespace CodeImp.DoomBuilder.GZBuilder.Geometry
 			this.v1 = v1;
 			this.v2 = v2;
 			this.color = color;
+			this.renderarrowhead = true;
+		}
+
+		public Line3D(Vector3D v1, Vector3D v2, PixelColor color, bool renderarrowhead)
+		{
+			this.v1 = v1;
+			this.v2 = v2;
+			this.color = color;
+			this.renderarrowhead = renderarrowhead;
 		}
 
 		public Vector3D GetDelta() { return v2 - v1; }

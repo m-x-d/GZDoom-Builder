@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.VisualModes;
 using CodeImp.DoomBuilder.GZBuilder.Geometry;
@@ -8,290 +9,368 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 {
 	public static class LinksCollector 
 	{
-		private struct ThingsCheckResult 
+		private class SpecialThings 
 		{
-			public bool ProcessPathNodes;
-			public bool ProcessInterpolationPoints;
-			public bool ProcessThingsWithGoal;
-			public bool ProcessCameras;
-			public bool ProcessActorMovers;
-			public bool ProcessPolyobjects;
+			public readonly Dictionary<int, List<Thing>> PatrolPoints; // PatrolPoint tag, list of PatrolPoints
+			public readonly Dictionary<int, List<PathNode>> InterpolationPoints; // InterpolationPoint tag, list of InterpolationPoints
+			public readonly List<Thing> ThingsWithGoal;
+			public readonly List<Thing> Cameras;
+			public readonly Dictionary<int, List<Thing>> ActorMovers; // ActorMover target tag, list of ActorMovers
+			public readonly List<Thing> PathFollowers;
+			public readonly Dictionary<int, List<Thing>> PolyobjectAnchors; //angle, list of PolyobjectAnchors
+			public readonly Dictionary<int, List<Thing>> PolyobjectStartSpots; //angle, list of PolyobjectStartSpots
+
+			public SpecialThings()
+			{
+				PatrolPoints = new Dictionary<int, List<Thing>>();
+				InterpolationPoints = new Dictionary<int, List<PathNode>>();
+				ThingsWithGoal = new List<Thing>();
+				Cameras = new List<Thing>();
+				ActorMovers = new Dictionary<int, List<Thing>>();
+				PathFollowers = new List<Thing>();
+				PolyobjectAnchors = new Dictionary<int, List<Thing>>();
+				PolyobjectStartSpots = new Dictionary<int, List<Thing>>();
+			}
+		}
+
+		private class PathNode
+		{
+			private readonly Thing thing;
+			private readonly Vector3D position;
+			private readonly Dictionary<int, PathNode> nextnodes;
+			private readonly Dictionary<int, PathNode> prevnodes;
+
+			public Thing Thing { get { return thing; } }
+			public Dictionary<int, PathNode> NextNodes { get { return nextnodes; } } // Thing index, PathNode
+			public Dictionary<int, PathNode> PreviousNodes { get { return prevnodes; } } // Thing index, PathNode
+			public Vector3D Position { get { return position; } }
+			public bool IsCurved;
+
+			public PathNode(Thing t, bool correctzheight)
+			{
+				thing = t;
+				position = new Vector3D(t.Position, (correctzheight ? t.Position.z + GetCorrectHeight(t) : t.Position.z));
+				nextnodes = new Dictionary<int, PathNode>();
+				prevnodes = new Dictionary<int, PathNode>();
+			}
 		}
 		
-		public static List<List<Line3D>> GetThingLinks(ICollection<VisualThing> visualThings) 
+		public static List<Line3D> GetThingLinks(IEnumerable<VisualThing> visualthings) 
 		{
 			List<Thing> things = new List<Thing>();
-			foreach (VisualThing vt in visualThings) things.Add(vt.Thing);
-
-			ThingsCheckResult result = CheckThings(things);
-			if (result.ProcessPathNodes || result.ProcessInterpolationPoints || result.ProcessThingsWithGoal || result.ProcessCameras || result.ProcessPolyobjects)
-				return GetThingLinks(result, true);
-			return null;
+			foreach (VisualThing vt in visualthings) things.Add(vt.Thing);
+			return GetThingLinks(GetSpecialThings(things, true), true);
 		}
 
-		public static List<List<Line3D>> GetThingLinks(ICollection<Thing> things) 
+		public static List<Line3D> GetThingLinks(IEnumerable<Thing> things) 
 		{
-			ThingsCheckResult result = CheckThings(things);
-			if (result.ProcessPathNodes || result.ProcessInterpolationPoints || result.ProcessThingsWithGoal || result.ProcessCameras || result.ProcessPolyobjects)
-				return GetThingLinks(result, false);
-			return null;
+			return GetThingLinks(GetSpecialThings(things, false), false);
 		}
 
-		private static ThingsCheckResult CheckThings(ICollection<Thing> things) 
+		private static SpecialThings GetSpecialThings(IEnumerable<Thing> things, bool correctheight) 
 		{
-			ThingsCheckResult result = new ThingsCheckResult();
+			SpecialThings result = new SpecialThings();
 
-			foreach (Thing t in things) 
+			// Process oh so special things
+			foreach (Thing t in things)
 			{
-				if(t.Type == 9024) //zdoom path node
-					result.ProcessPathNodes = true;
-				else if(t.Type == 9070) //zdoom camera interpolation point
-					result.ProcessInterpolationPoints = true;
-				else if(t.Type > 9299 && t.Type < 9304) //polyobjects
-					result.ProcessPolyobjects = true;
-				else if(t.Action == 229 && t.Args[1] != 0) //Thing_SetGoal
-					result.ProcessThingsWithGoal = true;
-				else if(t.Type == 9072 && (t.Args[0] != 0 || t.Args[1] != 0)) //camera with a path
-					result.ProcessCameras = true;
-				else if(t.Type == 9074 && (t.Args[0] != 0 || t.Args[1] != 0) && t.Args[3] != 0) //actor mover
-					result.ProcessActorMovers = true;
+				ThingTypeInfo info = General.Map.Data.GetThingInfo(t.Type);
+				switch (info.ClassName.ToLowerInvariant())
+				{
+					case "patrolpoint":
+						if(t.Args[0] != 0)
+						{
+							if(!result.PatrolPoints.ContainsKey(t.Tag)) result.PatrolPoints.Add(t.Tag, new List<Thing>());
+							result.PatrolPoints[t.Tag].Add(t);
+						}
+						break;
+
+					case "$polyanchor":
+						if(!result.PolyobjectAnchors.ContainsKey(t.AngleDoom)) result.PolyobjectAnchors[t.AngleDoom] = new List<Thing>();
+						result.PolyobjectAnchors[t.AngleDoom].Add(t);
+						break;
+
+					case "$polyspawn":
+					case "$polyspawncrush":
+					case "$polyspawnhurt":
+						if(!result.PolyobjectStartSpots.ContainsKey(t.AngleDoom)) result.PolyobjectStartSpots[t.AngleDoom] = new List<Thing>();
+						result.PolyobjectStartSpots[t.AngleDoom].Add(t);
+						break;
+
+					case "movingcamera":
+						if(t.Args[0] != 0 || t.Args[1] != 0) result.Cameras.Add(t);
+						break;
+
+					case "pathfollower":
+						if(t.Args[0] != 0 || t.Args[1] != 0) result.PathFollowers.Add(t);
+						break;
+
+					case "actormover":
+						if((t.Args[0] != 0 || t.Args[1] != 0) && t.Args[3] != 0)
+						{
+							if(!result.ActorMovers.ContainsKey(t.Args[3])) result.ActorMovers.Add(t.Args[3], new List<Thing>());
+							result.ActorMovers[t.Args[3]].Add(t);
+						}
+						break;
+				}
+
+				// Process Thing_SetGoal action
+				if(t.Action != 0 
+					&& General.Map.Config.LinedefActions.ContainsKey(t.Action) 
+					&& General.Map.Config.LinedefActions[t.Action].Id.ToLowerInvariant() == "thing_setgoal"
+					&& (t.Args[0] == 0 || t.Args[0] == t.Tag)
+					&& t.Args[1] != 0)
+				{
+					result.ThingsWithGoal.Add(t);
+				}
 			}
 
-			if(result.ProcessActorMovers || result.ProcessCameras) result.ProcessInterpolationPoints = true;
-			if(result.ProcessThingsWithGoal) result.ProcessPathNodes = true;
+			// We may need all InterpolationPoints...
+			foreach (Thing t in General.Map.Map.Things)
+			{
+				ThingTypeInfo info = General.Map.Data.GetThingInfo(t.Type);
+				switch (info.ClassName.ToLowerInvariant())
+				{
+					case "interpolationpoint":
+						if(!result.InterpolationPoints.ContainsKey(t.Tag)) result.InterpolationPoints.Add(t.Tag, new List<PathNode>());
+						result.InterpolationPoints[t.Tag].Add(new PathNode(t, correctheight));
+						break;
+				}
+			}
+
 			return result;
 		}
 
-		private static List<List<Line3D>> GetThingLinks(ThingsCheckResult result, bool correctHeight) 
+		private static List<Line3D> GetThingLinks(SpecialThings result, bool correctheight) 
 		{
-			List<List<Line3D>> lines = new List<List<Line3D>> { new List<Line3D>(), new List<Line3D>() };
-			Dictionary<int, List<Thing>> pathNodes = new Dictionary<int, List<Thing>>();
-			Dictionary<int, List<Thing>> interpolationPoints = new Dictionary<int, List<Thing>>();
-			List<Thing> thingsWithGoal = new List<Thing>();
-			List<Thing> cameras = new List<Thing>();
-			List<Thing> actorMovers = new List<Thing>();
-			Dictionary<int, List<Thing>> actorMoverTargets = new Dictionary<int, List<Thing>>();
-			Dictionary<int, List<Thing>> polyobjectAnchors = new Dictionary<int, List<Thing>>(); //angle, list of PolyobjectAnchor things (9300)
-			Dictionary<int, List<Thing>> polyobjectStartSpots = new Dictionary<int, List<Thing>>(); //angle, list of PolyobjectStartSpot things (9301-9303)
+			List<Line3D> lines = new List<Line3D>();
+			Dictionary<int, List<Thing>> actormovertargets = new Dictionary<int, List<Thing>>();
 
-			//collect relevant things
-			foreach (Thing t in General.Map.Map.Things) 
+			// Get ActorMover targets
+			if(result.ActorMovers.Count > 0)
 			{
-				if(result.ProcessPathNodes && t.Type == 9024) 
-				{
-					if(!pathNodes.ContainsKey(t.Tag))
-						pathNodes[t.Tag] = new List<Thing>();
-					pathNodes[t.Tag].Add(t);
-				}
-
-				if(result.ProcessInterpolationPoints && t.Type == 9070) 
-				{
-					if(!interpolationPoints.ContainsKey(t.Tag))
-						interpolationPoints[t.Tag] = new List<Thing>();
-					interpolationPoints[t.Tag].Add(t);
-				}
-
-				if (result.ProcessThingsWithGoal && t.Action == 229 && t.Args[1] != 0) 
-					thingsWithGoal.Add(t);
-
-				if (result.ProcessCameras && t.Type == 9072 && (t.Args[0] != 0 || t.Args[1] != 0)) 
-					cameras.Add(t);
-
-				if(result.ProcessActorMovers && t.Type == 9074 && (t.Args[0] != 0 || t.Args[1] != 0) && t.Args[3] != 0) 
-					actorMovers.Add(t);
-
-				if(result.ProcessPolyobjects)
-				{
-					if(t.Type == 9300)
-					{
-						if(!polyobjectAnchors.ContainsKey(t.AngleDoom))
-							polyobjectAnchors[t.AngleDoom] = new List<Thing>();
-						polyobjectAnchors[t.AngleDoom].Add(t);
-					}
-					else if(t.Type > 9300 && t.Type < 9304)
-					{
-						if(!polyobjectStartSpots.ContainsKey(t.AngleDoom))
-							polyobjectStartSpots[t.AngleDoom] = new List<Thing>();
-						polyobjectStartSpots[t.AngleDoom].Add(t);
-					}
-				}
-			}
-
-			if(actorMovers.Count > 0) 
-			{
-				List<int> targetedTags = new List<int>();
-				foreach(Thing t in actorMovers) targetedTags.Add(t.Args[3]);
 				foreach(Thing t in General.Map.Map.Things) 
 				{
-					if(targetedTags.Contains(t.Tag)) 
-					{
-						if(!actorMoverTargets.ContainsKey(t.Tag))
-							actorMoverTargets[t.Tag] = new List<Thing>();
-						actorMoverTargets[t.Tag].Add(t);
-					}
+					if(t.Tag == 0 || !result.ActorMovers.ContainsKey(t.Tag)) continue;
+					if(!actormovertargets.ContainsKey(t.Tag)) actormovertargets[t.Tag] = new List<Thing>();
+					actormovertargets[t.Tag].Add(t);
 				}
 			}
 
 			Vector3D start, end;
 
-			//process path nodes
-			if (result.ProcessPathNodes) 
+			// Process patrol points
+			foreach (KeyValuePair<int, List<Thing>> group in result.PatrolPoints) 
 			{
-				foreach (KeyValuePair<int, List<Thing>> group in pathNodes) 
+				foreach(Thing t in group.Value) 
 				{
-					foreach(Thing t in group.Value) 
-					{
-						if(t.Args[0] == 0) continue; //no goal
-						
-						if(pathNodes.ContainsKey(t.Args[0])) 
-						{
-							start = t.Position;
-							if(correctHeight) start.z += GetCorrectHeight(t);
+					if(!result.PatrolPoints.ContainsKey(t.Args[0])) continue;
+					
+					start = t.Position;
+					if(correctheight) start.z += GetCorrectHeight(t);
 
-							foreach(Thing tt in pathNodes[t.Args[0]]) 
-							{
-								end = tt.Position;
-								if(correctHeight) end.z += GetCorrectHeight(tt);
-								lines[0].Add(new Line3D(start, end));
-							}
-						}
+					foreach(Thing tt in result.PatrolPoints[t.Args[0]]) 
+					{
+						end = tt.Position;
+						if(correctheight) end.z += GetCorrectHeight(tt);
+						lines.Add(new Line3D(start, end));
 					}
 				}
 			}
 
-			//process things with Thing_SetGoal
-			if (result.ProcessThingsWithGoal) 
+			// Process things with Thing_SetGoal
+			foreach (Thing t in result.ThingsWithGoal) 
 			{
-				foreach (Thing t in thingsWithGoal) 
+				if(!result.PatrolPoints.ContainsKey(t.Args[1])) continue;
+
+				start = t.Position;
+				if (correctheight) start.z += GetCorrectHeight(t);
+
+				foreach(Thing tt in result.PatrolPoints[t.Args[1]]) 
 				{
-					if (pathNodes.ContainsKey(t.Args[1])) 
-					{
-						if (t.Args[0] == 0 || t.Args[0] == t.Tag) 
-						{
-							start = t.Position;
-							if (correctHeight) start.z += GetCorrectHeight(t);
+					end = tt.Position;
+					if(correctheight) end.z += GetCorrectHeight(tt);
 
-							foreach(Thing tt in pathNodes[t.Args[1]]) 
-							{
-								end = tt.Position;
-								if(correctHeight) end.z += GetCorrectHeight(tt);
-
-								lines[1].Add(new Line3D(start, end, General.Colors.Selection));
-							}
-						}
-					}
+					lines.Add(new Line3D(start, end, General.Colors.Selection));
 				}
 			}
 
-			//process interpolation points
-			if (result.ProcessInterpolationPoints) 
+			// Process cameras [CAN USE INTERPOLATION]
+			foreach (Thing t in result.Cameras)
 			{
-				foreach (KeyValuePair<int, List<Thing>> group in interpolationPoints) 
+				int targettag = t.Args[0] + (t.Args[1] << 8);
+				if(targettag == 0 || !result.InterpolationPoints.ContainsKey(targettag)) continue; //no target / target desn't exist
+				bool interpolatepath = ((t.Args[2] & 1) != 1);
+
+				start = t.Position;
+				if(correctheight) start.z += GetCorrectHeight(t);
+
+				foreach(PathNode node in result.InterpolationPoints[targettag]) 
 				{
-					foreach(Thing t in group.Value) 
-					{
-						int targetTag = t.Args[3] + (t.Args[4] << 8);
-						if(targetTag == 0) continue; //no goal
-
-						if(interpolationPoints.ContainsKey(targetTag)) 
-						{
-							start = t.Position;
-							if(correctHeight) start.z += GetCorrectHeight(t);
-
-							foreach(Thing tt in interpolationPoints[targetTag]) 
-							{
-								end = tt.Position;
-								if(correctHeight) end.z += GetCorrectHeight(tt);
-								lines[0].Add(new Line3D(start, end));
-							}
-						}
-					}
+					node.IsCurved = interpolatepath;
+					lines.Add(new Line3D(start, node.Position, General.Colors.Selection));
 				}
 			}
 
-			//process cameras
-			if (result.ProcessCameras) 
+			//process actor movers [CAN USE INTERPOLATION]
+			foreach(List<Thing> things in result.ActorMovers.Values) 
 			{
-				foreach (Thing t in cameras) 
+				foreach (Thing t in things)
 				{
-					int targetTag = t.Args[0] + (t.Args[1] << 8);
-					if (targetTag == 0) continue; //no goal
+					int targettag = t.Args[0] + (t.Args[1] << 8);
 
-					if(interpolationPoints.ContainsKey(targetTag)) 
+					// Add interpolation point targets
+					if(targettag != 0 && result.InterpolationPoints.ContainsKey(targettag))
+					{
+						bool interpolatepath = ((t.Args[2] & 1) != 1);
+						start = t.Position;
+						if(correctheight) start.z += GetCorrectHeight(t);
+
+						foreach(PathNode node in result.InterpolationPoints[targettag])
+						{
+							node.IsCurved = interpolatepath;
+							lines.Add(new Line3D(start, node.Position, General.Colors.Selection));
+						}
+					}
+
+					// Add thing-to-move targets
+					if(actormovertargets.ContainsKey(t.Args[3]))
 					{
 						start = t.Position;
-						if(correctHeight) start.z += GetCorrectHeight(t);
+						if(correctheight) start.z += GetCorrectHeight(t);
 
-						foreach(Thing tt in interpolationPoints[targetTag]) 
+						foreach(Thing tt in actormovertargets[t.Args[3]])
 						{
 							end = tt.Position;
-							if(correctHeight) end.z += GetCorrectHeight(tt);
-							lines[1].Add(new Line3D(start, end, General.Colors.Selection));
+							if(correctheight) end.z += GetCorrectHeight(tt);
+							lines.Add(new Line3D(start, end, General.Colors.Selection));
 						}
 					}
 				}
 			}
 
-			//process actor movers
-			if(result.ProcessActorMovers) 
+			// Process path followers [CAN USE INTERPOLATION]
+			foreach(Thing t in result.PathFollowers)
 			{
-				foreach(Thing t in actorMovers) 
+				int targettag = t.Args[0] + (t.Args[1] << 8);
+				if(targettag == 0 || !result.InterpolationPoints.ContainsKey(targettag)) continue; //no target / target desn't exist
+				bool interpolatepath = (t.Args[2] & 1) != 1;
+
+				start = t.Position;
+				if(correctheight) start.z += GetCorrectHeight(t);
+
+				foreach(PathNode node in result.InterpolationPoints[targettag])
 				{
-					int targetTag = t.Args[0] + (t.Args[1] << 8);
-					if(targetTag == 0) continue; //no goal
+					node.IsCurved = interpolatepath;
+					lines.Add(new Line3D(start, node.Position, General.Colors.Selection));
+				}
+			}
 
-					//add interpolation point target
-					if(interpolationPoints.ContainsKey(targetTag)) 
+			// Process polyobjects
+			foreach(KeyValuePair<int, List<Thing>> group in result.PolyobjectAnchors)
+			{
+				if(!result.PolyobjectStartSpots.ContainsKey(group.Key)) continue;
+				foreach(Thing anchor in group.Value)
+				{
+					start = anchor.Position;
+					if(correctheight) start.z += GetCorrectHeight(anchor);
+
+					foreach(Thing startspot in result.PolyobjectStartSpots[group.Key]) 
 					{
-						start = t.Position;
-						if(correctHeight) start.z += GetCorrectHeight(t);
-
-						foreach(Thing tt in interpolationPoints[targetTag]) 
-						{
-							end = tt.Position;
-							if(correctHeight) end.z += GetCorrectHeight(tt);
-							lines[1].Add(new Line3D(start, end, General.Colors.Selection));
-						}
+						end = startspot.Position;
+						if(correctheight) end.z += GetCorrectHeight(startspot);
+						lines.Add(new Line3D(start, end, General.Colors.Selection));
 					}
+				}
+			}
 
-					//add thing-to-move target
-					if(actorMoverTargets.ContainsKey(t.Args[3])) 
+			// Process interpolation points [CAN BE INTERPOLATED]
+			// 1. Connect PathNodes
+			foreach(KeyValuePair<int, List<PathNode>> group in result.InterpolationPoints)
+			{
+				foreach(PathNode node in group.Value)
+				{
+					int targettag = node.Thing.Args[3] + (node.Thing.Args[4] << 8);
+					if(targettag == 0 || !result.InterpolationPoints.ContainsKey(targettag)) continue;
+
+					foreach(PathNode targetnode in result.InterpolationPoints[targettag])
 					{
-						start = t.Position;
-						if(correctHeight) start.z += GetCorrectHeight(t);
-
-						foreach(Thing tt in actorMoverTargets[t.Args[3]]) 
+						// Connect both ways
+						if(!node.NextNodes.ContainsKey(targetnode.Thing.Index))
 						{
-							end = tt.Position;
-							if(correctHeight) end.z += GetCorrectHeight(tt);
-							lines[1].Add(new Line3D(start, end, General.Colors.Selection));
+							node.NextNodes.Add(targetnode.Thing.Index, targetnode);
+							if(targetnode.IsCurved) node.IsCurved = true;
+						}
+						if(!targetnode.PreviousNodes.ContainsKey(node.Thing.Index))
+						{
+							targetnode.PreviousNodes.Add(node.Thing.Index, node);
+							if(node.IsCurved) targetnode.IsCurved = true;
 						}
 					}
 				}
 			}
 
-			//process polyobjects
-			if(result.ProcessPolyobjects)
+			// 2. Make lines
+			HashSet<int> processedindices = new HashSet<int>();
+			foreach(KeyValuePair<int, List<PathNode>> group in result.InterpolationPoints)
 			{
-				foreach(KeyValuePair<int, List<Thing>> group in polyobjectAnchors)
+				foreach(PathNode node in group.Value)
 				{
-					if(!polyobjectStartSpots.ContainsKey(group.Key)) continue;
-					foreach(Thing anchor in group.Value)
+					// Draw as a curve?
+					if(node.IsCurved && !processedindices.Contains(node.Thing.Index) && node.NextNodes.Count > 0 && node.PreviousNodes.Count > 0)
 					{
-						start = anchor.Position;
-						if(correctHeight) start.z += GetCorrectHeight(anchor);
-
-						foreach(Thing startspot in polyobjectStartSpots[group.Key]) 
+						PathNode prev = General.GetByIndex(node.PreviousNodes, 0).Value;
+						PathNode next = General.GetByIndex(node.NextNodes, 0).Value;
+						if(next.NextNodes.Count > 0)
 						{
-							end = startspot.Position;
-							if(correctHeight) end.z += GetCorrectHeight(startspot);
-							lines[1].Add(new Line3D(start, end, General.Colors.Selection));
+							PathNode nextnext = General.GetByIndex(next.NextNodes, 0).Value;
+								
+								// Generate curve points
+								List<Vector3D> points = new List<Vector3D>(11);
+								for(int i = 0; i < 11; i++)
+								{
+									float u = i * 0.1f;
+									points.Add(new Vector3D(
+										SplineLerp(u, prev.Position.x, node.Position.x, next.Position.x, nextnext.Position.x),
+										SplineLerp(u, prev.Position.y, node.Position.y, next.Position.y, nextnext.Position.y),
+										(!correctheight ? 0 : SplineLerp(u, prev.Position.z, node.Position.z, next.Position.z, nextnext.Position.z))
+									));
+								}
+
+								// Add line segments
+								for(int i = 1; i < 11; i++)
+								{
+									lines.Add(new Line3D(points[i - 1], points[i], i == 10));
+								}
+
+								continue;
 						}
+					}
+
+					// Draw regular lines
+					bool startnode = (node.IsCurved && node.PreviousNodes.Count == 0); // When using curves, this node won't be used by camera (the last node won't be used as well), so draw them using different color
+					foreach(PathNode targetnode in node.NextNodes.Values)
+					{
+						bool isskipped = (startnode || (targetnode.IsCurved && targetnode.NextNodes.Count == 0));
+						lines.Add(new Line3D(node.Position, targetnode.Position, (isskipped ? General.Colors.Highlight : General.Colors.InfoLine), !isskipped));
 					}
 				}
 			}
 
 			return lines;
+		}
+
+		// Taken from Xabis' "curved interpolation points paths" patch.
+		private static float SplineLerp(float u, float p1, float p2, float p3, float p4)
+		{
+			float t2 = u;
+			float res = 2 * p2;
+			res += (p3 - p1) * u;
+			t2 *= u;
+			res += (2 * p1 - 5 * p2 + 4 * p3 - p4) * t2;
+			t2 *= u;
+			res += (3 * p2 - 3 * p3 + p4 - p1) * t2;
+			return 0.5f * res;
 		}
 
 		private static float GetCorrectHeight(Thing thing) 

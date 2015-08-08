@@ -200,6 +200,12 @@ float4 ps_constant_color(PixelData pd) : COLOR
 	return vertexColor;
 }
 
+//mxd: used to draw event lines
+float4 ps_vertex_color(PixelData pd) : COLOR 
+{
+	return pd.color;
+}
+
 //mxd. dynamic light pixel shader pass, dood!
 float4 ps_lightpass(LitPixelData pd) : COLOR 
 {
@@ -318,8 +324,12 @@ technique SM20
 		PixelShader = compile ps_2_0 ps_main_highlight_fog();
 	}
 
-
-	pass p15 {} //mxd. need this only to maintain offset
+	//mxd. Used to render event lines
+	pass p15
+	{
+		VertexShader = compile vs_2_0 vs_main();
+		PixelShader  = compile ps_2_0 ps_vertex_color();
+	}
 	
 	//mxd. Just fills everything with vertexColor. Used in ThingCage rendering.
 	pass p16 

@@ -192,16 +192,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				//mxd
 				if(General.Settings.GZShowEventLines) 
 				{
-					List<List<Line3D>> lines = GZBuilder.Data.LinksCollector.GetThingLinks(General.Map.ThingsFilter.VisibleThings);
-					if(lines != null)
-					{
-						lines[0].AddRange(eventlines);
-						foreach(List<Line3D> list in lines) if(list.Count > 0) renderer.RenderArrows(list);
-					} 
-					else
-					{
-						renderer.RenderArrows(eventlines);
-					}
+					List<Line3D> lines = GZBuilder.Data.LinksCollector.GetThingLinks(General.Map.ThingsFilter.VisibleThings);
+					lines.AddRange(eventlines);
+					if(lines.Count > 0) renderer.RenderArrows(lines);
 				}
  
 				renderer.Finish();
@@ -909,7 +902,56 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Map.Map.BeginAddRemove(); //mxd
 
 				// Dispose selected things
-				foreach(Thing t in selected) t.Dispose();
+				foreach(Thing t in selected)
+				{
+					//mxd. Do some path reconnecting shenanigans...
+					ThingTypeInfo info = General.Map.Data.GetThingInfo(t.Type);
+					string targetclass = string.Empty;
+					int targetarg = -1;
+
+					// Thing type can be changed in MAPINFO DoomEdNums block...
+					switch (info.ClassName.ToLowerInvariant())
+					{
+						case "interpolationpoint":
+							if(t.Tag != 0 && t.Args[3] != 0)
+							{
+								targetclass = "interpolationpoint";
+								targetarg = 3;
+							}
+							break;
+
+						case "patrolpoint":
+							if(t.Tag != 0 && t.Args[0] != 0)
+							{
+								targetclass = "patrolpoint";
+								targetarg = 0;
+							}
+							break;
+					}
+
+					// Try to reconnect path...
+					if(!string.IsNullOrEmpty(targetclass) && targetarg > -1)
+					{
+						General.Map.Map.EndAddRemove(); // We'll need to unlock the things array...
+						
+						foreach(Thing other in General.Map.Map.Things)
+						{
+							if(other.Index == t.Index) continue;
+							info = General.Map.Data.GetThingInfo(other.Type);
+							if(info.ClassName.ToLowerInvariant() == targetclass && other.Args[targetarg] == t.Tag)
+							{
+								other.Move(other.Position); //hacky way to call BeforePropsChange()...
+								other.Args[targetarg] = t.Args[targetarg];
+								break;
+							}
+						}
+
+						General.Map.Map.BeginAddRemove(); // We'll need to lock it again...
+					}
+
+					// Get rid of the thing
+					t.Dispose();
+				}
 
 				General.Map.Map.EndAddRemove(); //mxd
 				
