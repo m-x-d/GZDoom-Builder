@@ -53,6 +53,23 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 				nextnodes = new Dictionary<int, PathNode>();
 				prevnodes = new Dictionary<int, PathNode>();
 			}
+
+			internal void PropagateCurvedFlag()
+			{
+				if(!IsCurved) return;
+				foreach(PathNode node in nextnodes.Values)
+				{
+					if(node.IsCurved) continue;
+					node.IsCurved = true;
+					node.PropagateCurvedFlag();
+				}
+				foreach(PathNode node in prevnodes.Values)
+				{
+					if(node.IsCurved) continue;
+					node.IsCurved = true;
+					node.PropagateCurvedFlag();
+				}
+			}
 		}
 		
 		public static List<Line3D> GetThingLinks(IEnumerable<VisualThing> visualthings) 
@@ -296,21 +313,19 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 					foreach(PathNode targetnode in result.InterpolationPoints[targettag])
 					{
 						// Connect both ways
-						if(!node.NextNodes.ContainsKey(targetnode.Thing.Index))
-						{
-							node.NextNodes.Add(targetnode.Thing.Index, targetnode);
-							if(targetnode.IsCurved) node.IsCurved = true;
-						}
-						if(!targetnode.PreviousNodes.ContainsKey(node.Thing.Index))
-						{
-							targetnode.PreviousNodes.Add(node.Thing.Index, node);
-							if(node.IsCurved) targetnode.IsCurved = true;
-						}
+						if(!node.NextNodes.ContainsKey(targetnode.Thing.Index)) node.NextNodes.Add(targetnode.Thing.Index, targetnode);
+						if(!targetnode.PreviousNodes.ContainsKey(node.Thing.Index)) targetnode.PreviousNodes.Add(node.Thing.Index, node);
 					}
 				}
 			}
 
-			// 2. Make lines
+			// 2. Propagate IsCurved flag
+			foreach(KeyValuePair<int, List<PathNode>> group in result.InterpolationPoints)
+			{
+				foreach(PathNode node in group.Value) node.PropagateCurvedFlag();
+			}
+
+			// 3. Make lines
 			HashSet<int> processedindices = new HashSet<int>();
 			foreach(KeyValuePair<int, List<PathNode>> group in result.InterpolationPoints)
 			{
