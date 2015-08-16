@@ -113,6 +113,29 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 						if(!result.PolyobjectStartSpots.ContainsKey(t.AngleDoom)) result.PolyobjectStartSpots[t.AngleDoom] = new List<Thing>();
 						result.PolyobjectStartSpots[t.AngleDoom].Add(t);
 						break;
+				}
+
+				// Process Thing_SetGoal action
+				if(t.Action != 0 
+					&& General.Map.Config.LinedefActions.ContainsKey(t.Action) 
+					&& General.Map.Config.LinedefActions[t.Action].Id.ToLowerInvariant() == "thing_setgoal"
+					&& (t.Args[0] == 0 || t.Args[0] == t.Tag)
+					&& t.Args[1] != 0)
+				{
+					result.ThingsWithGoal.Add(t);
+				}
+			}
+
+			// We may need all of these actors...
+			foreach (Thing t in General.Map.Map.Things)
+			{
+				ThingTypeInfo info = General.Map.Data.GetThingInfo(t.Type);
+				switch (info.ClassName.ToLowerInvariant())
+				{
+					case "interpolationpoint":
+						if(!result.InterpolationPoints.ContainsKey(t.Tag)) result.InterpolationPoints.Add(t.Tag, new List<PathNode>());
+						result.InterpolationPoints[t.Tag].Add(new PathNode(t, correctheight));
+						break;
 
 					case "movingcamera":
 						if(t.Args[0] != 0 || t.Args[1] != 0) result.Cameras.Add(t);
@@ -128,29 +151,6 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 							if(!result.ActorMovers.ContainsKey(t.Args[3])) result.ActorMovers.Add(t.Args[3], new List<Thing>());
 							result.ActorMovers[t.Args[3]].Add(t);
 						}
-						break;
-				}
-
-				// Process Thing_SetGoal action
-				if(t.Action != 0 
-					&& General.Map.Config.LinedefActions.ContainsKey(t.Action) 
-					&& General.Map.Config.LinedefActions[t.Action].Id.ToLowerInvariant() == "thing_setgoal"
-					&& (t.Args[0] == 0 || t.Args[0] == t.Tag)
-					&& t.Args[1] != 0)
-				{
-					result.ThingsWithGoal.Add(t);
-				}
-			}
-
-			// We may need all InterpolationPoints...
-			foreach (Thing t in General.Map.Map.Things)
-			{
-				ThingTypeInfo info = General.Map.Data.GetThingInfo(t.Type);
-				switch (info.ClassName.ToLowerInvariant())
-				{
-					case "interpolationpoint":
-						if(!result.InterpolationPoints.ContainsKey(t.Tag)) result.InterpolationPoints.Add(t.Tag, new List<PathNode>());
-						result.InterpolationPoints[t.Tag].Add(new PathNode(t, correctheight));
 						break;
 				}
 			}

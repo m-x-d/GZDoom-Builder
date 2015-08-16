@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.Windows.Forms;
 
 #endregion
@@ -140,21 +141,16 @@ namespace CodeImp.DoomBuilder
 
 		public static void StopTimer(string message) 
 		{
-			if (starttime == -1) 
-			{
-				Write(DebugMessageType.WARNING, "Call General.Console.StartTimer before General.Console.StopTimer!");
-			}
-			else 
-			{
-				long endtime = SlimDX.Configuration.Timer.ElapsedMilliseconds;
-				
-				if (message.Contains("%"))
-					message = message.Replace("&", (endtime - starttime) + " ms.");
-				else 
-					message = message.TrimEnd() + " " + (endtime - starttime) + " ms.";
+			if(starttime == -1) throw new InvalidOperationException("DebugConsole.StartTimer() must be called before DebugConsole.StopTimer()!");
 
-				Write(DebugMessageType.SPECIAL, message);
-			}
+			long duration = SlimDX.Configuration.Timer.ElapsedMilliseconds - starttime;
+			
+			if (message.Contains("%"))
+				message = message.Replace("%", duration.ToString(CultureInfo.InvariantCulture));
+			else
+				message = message.TrimEnd() + " " + duration + " ms.";
+
+			WriteLine(DebugMessageType.SPECIAL, message);
 
 			starttime = -1;
 		}
