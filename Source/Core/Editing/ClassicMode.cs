@@ -275,11 +275,39 @@ namespace CodeImp.DoomBuilder.Editing
 			renderer2d.ScaleView(newscale);
 			this.OnViewChanged();
 
+			//mxd. Change grid size?
+			MatchGridSizeToDisplayScale();
+
 			// Redraw
 			General.MainWindow.RedrawDisplay();
 			
 			// Give a new mousemove event to update coordinates
 			if(mouseinside) OnMouseMove(new MouseEventArgs(mousebuttons, 0, (int)mousepos.x, (int)mousepos.y, 0));
+		}
+
+		//mxd. This changes current grid size based on current zoom level
+		internal void MatchGridSizeToDisplayScale()
+		{
+			if(!General.Settings.DynamicGridSize) return;
+
+			// Get the dimensions of the display
+			Vector2D clientsize = new Vector2D(General.Map.Graphics.RenderTarget.ClientSize.Width,
+											   General.Map.Graphics.RenderTarget.ClientSize.Height);
+
+			Vector2D clientscale = clientsize / renderer2d.Scale;
+			int targetsize = (int)Math.Ceiling(Math.Min(clientscale.x, clientscale.y) / 32);
+
+			// Convert to nearest power of 2
+			targetsize--;
+			targetsize |= targetsize >> 1;
+			targetsize |= targetsize >> 2;
+			targetsize |= targetsize >> 4;
+			targetsize |= targetsize >> 8;
+			targetsize |= targetsize >> 16;
+			targetsize++;
+
+			// Apply changes
+			General.Map.Grid.SetGridSize(targetsize);
 		}
 
 		// This zooms to a specific level
@@ -288,6 +316,9 @@ namespace CodeImp.DoomBuilder.Editing
 			// Zoom now
 			renderer2d.ScaleView(newscale);
 			this.OnViewChanged();
+
+			//mxd. Change grid size?
+			MatchGridSizeToDisplayScale();
 
 			// Redraw
 			//General.Map.Map.Update();
@@ -374,6 +405,9 @@ namespace CodeImp.DoomBuilder.Editing
 			renderer2d.ScaleView(scale);
 			renderer2d.PositionView(offset.x, offset.y);
 			this.OnViewChanged();
+
+			//mxd. Change grid size?
+			MatchGridSizeToDisplayScale();
 			
 			// Redraw
 			General.MainWindow.RedrawDisplay();
@@ -389,6 +423,11 @@ namespace CodeImp.DoomBuilder.Editing
 			renderer2d.ScaleView(0.5f);
 			renderer2d.PositionView(0.0f, 0.0f);
 			this.OnViewChanged();
+
+			//mxd. Change grid size?
+			MatchGridSizeToDisplayScale();
+			
+			// Redraw
 			General.MainWindow.RedrawDisplay();
 
 			// Give a new mousemove event to update coordinates
