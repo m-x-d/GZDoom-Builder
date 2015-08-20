@@ -1074,6 +1074,7 @@
     <None Include="Resources\DockerExpand.png" />
     <None Include="Resources\InfoPanelCollapse.png" />
     <None Include="Resources\InfoPanelExpand.png" />
+    <None Include="Resources\GridDynamic.png" />
     <Content Include="Resources\Light.png" />
     <None Include="Resources\Lightbulb.png" />
     <None Include="Resources\LightDisabled.png" />

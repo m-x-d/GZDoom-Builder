@@ -882,7 +882,8 @@ namespace CodeImp.DoomBuilder.Rendering
 			float from, to;
 
 			//mxd. Increase rendered grid size if needed
-			if(size * scale <= 6f) do { size *= 2; } while(size * scale <= 6f);
+			if(!General.Settings.DynamicGridSize && size * scale <= 6f)
+				do { size *= 2; } while(size * scale <= 6f);
 			float sizeinv = 1f / size;
 
 			// Determine map coordinates for view window

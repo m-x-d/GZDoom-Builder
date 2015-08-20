@@ -2070,6 +2070,8 @@ namespace CodeImp.DoomBuilder.Windows
 			buttonfullbrightness.Visible = General.Settings.ToolbarViewModes && maploaded; //mxd
 			buttontogglegrid.Visible = General.Settings.ToolbarViewModes && maploaded; //mxd
 			buttontogglegrid.Checked = General.Settings.RenderGrid; //mxd
+			buttontoggledynamicgrid.Visible = General.Settings.ToolbarViewModes && maploaded; //mxd
+			buttontoggledynamicgrid.Checked = General.Settings.DynamicGridSize; //mxd
 			separatorfullbrightness.Visible = General.Settings.ToolbarViewModes && maploaded; //mxd
 			buttonviewbrightness.Visible = General.Settings.ToolbarViewModes && maploaded;
 			buttonviewceilings.Visible = General.Settings.ToolbarViewModes && maploaded;
@@ -2878,6 +2880,20 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
+		[BeginAction("toggledynamicgrid")]
+		protected void ToggleDynamicGrid()
+		{
+			General.Settings.DynamicGridSize = !General.Settings.DynamicGridSize;
+			menutoggledynamicgrid.Checked = General.Settings.DynamicGridSize;
+			buttontoggledynamicgrid.Checked = General.Settings.DynamicGridSize;
+			General.Interface.DisplayStatus(StatusType.Action, "Dynamic grid size is " + (General.Settings.DynamicGridSize ? "ENABLED" : "DISABLED"));
+
+			// Redraw display to show changes
+			if(General.Editing.Mode is ClassicMode) ((ClassicMode)General.Editing.Mode).MatchGridSizeToDisplayScale();
+			General.Interface.RedrawDisplay();
+		}
+
+		//mxd
 		[BeginAction("toggleautoclearsidetextures")]
 		internal void ToggleAutoClearSideTextures() 
 		{
@@ -2920,6 +2936,8 @@ namespace CodeImp.DoomBuilder.Windows
 			menufullbrightness.Enabled = (General.Map != null); //mxd
 			menutogglegrid.Enabled = (General.Map != null); //mxd
 			menutogglegrid.Checked = General.Settings.RenderGrid; //mxd
+			menutoggledynamicgrid.Enabled = (General.Map != null); //mxd
+			menutoggledynamicgrid.Checked = General.Settings.DynamicGridSize; //mxd
 			itemtoggleinfo.Enabled = (General.Map != null); //mxd
 			itemtoggleinfo.Checked = IsInfoPanelExpanded;
 			itemtogglecomments.Enabled = (General.Map != null && General.Map.UDMF); //mxd
