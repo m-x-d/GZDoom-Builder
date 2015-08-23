@@ -281,11 +281,11 @@ namespace CodeImp.DoomBuilder.Config
 				dockerswidth = cfg.ReadSetting("dockerswidth", 300);
 				pasteoptions.ReadConfiguration(cfg, "pasteoptions");
 				toolbarscript = cfg.ReadSetting("toolbarscript", true);
-				toolbarundo = cfg.ReadSetting("toolbarundo", false);
-				toolbarcopy = cfg.ReadSetting("toolbarcopy", false);
+				toolbarundo = cfg.ReadSetting("toolbarundo", true);
+				toolbarcopy = cfg.ReadSetting("toolbarcopy", true);
 				toolbarprefabs = cfg.ReadSetting("toolbarprefabs", true);
 				toolbarfilter = cfg.ReadSetting("toolbarfilter", true);
-				toolbarviewmodes = cfg.ReadSetting("toolbarviewmodes", false);
+				toolbarviewmodes = cfg.ReadSetting("toolbarviewmodes", true);
 				toolbargeometry = cfg.ReadSetting("toolbargeometry", true);
 				toolbartesting = cfg.ReadSetting("toolbartesting", true);
 				toolbarfile = cfg.ReadSetting("toolbarfile", true);

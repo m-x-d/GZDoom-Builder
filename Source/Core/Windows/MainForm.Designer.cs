@@ -96,9 +96,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.itemviewfloors = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemviewceilings = new System.Windows.Forms.ToolStripMenuItem();
 			this.seperatorviewviews = new System.Windows.Forms.ToolStripSeparator();
-			this.menufullbrightness = new System.Windows.Forms.ToolStripMenuItem();
-			this.menutogglegrid = new System.Windows.Forms.ToolStripMenuItem();
-			this.menutoggledynamicgrid = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemfullbrightness = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemtogglegrid = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
 			this.menuzoom = new System.Windows.Forms.ToolStripMenuItem();
 			this.item2zoom800 = new System.Windows.Forms.ToolStripMenuItem();
@@ -109,10 +108,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.item2zoom25 = new System.Windows.Forms.ToolStripMenuItem();
 			this.item2zoom10 = new System.Windows.Forms.ToolStripMenuItem();
 			this.item2zoom5 = new System.Windows.Forms.ToolStripMenuItem();
-			this.menugotocoords = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemgotocoords = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemfittoscreen = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemtoggleinfo = new System.Windows.Forms.ToolStripMenuItem();
-			this.itemtogglecomments = new System.Windows.Forms.ToolStripMenuItem();
 			this.seperatorviewzoom = new System.Windows.Forms.ToolStripSeparator();
 			this.itemscripteditor = new System.Windows.Forms.ToolStripMenuItem();
 			this.menumode = new System.Windows.Forms.ToolStripMenuItem();
@@ -174,6 +172,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.separatorfilters = new System.Windows.Forms.ToolStripSeparator();
 			this.buttonfullbrightness = new System.Windows.Forms.ToolStripButton();
 			this.buttontogglegrid = new System.Windows.Forms.ToolStripButton();
+			this.buttontoggledynamicgrid = new System.Windows.Forms.ToolStripButton();
 			this.separatorfullbrightness = new System.Windows.Forms.ToolStripSeparator();
 			this.buttonviewnormal = new System.Windows.Forms.ToolStripButton();
 			this.buttonviewbrightness = new System.Windows.Forms.ToolStripButton();
@@ -253,7 +252,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.dockerscollapser = new System.Windows.Forms.Timer(this.components);
 			this.flowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
 			this.modecontrolsloolbar = new System.Windows.Forms.ToolStrip();
-			this.buttontoggledynamicgrid = new System.Windows.Forms.ToolStripButton();
+			this.itemtogglecomments = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemdynamicgridsize = new System.Windows.Forms.ToolStripMenuItem();
 			toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
@@ -513,6 +513,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.itempastespecial,
             this.seperatoreditcopypaste,
             this.itemsnaptogrid,
+            this.itemdynamicgridsize,
             this.itemautomerge,
             this.itemautoclearsidetextures,
             this.seperatoreditgeometry,
@@ -727,15 +728,14 @@ namespace CodeImp.DoomBuilder.Windows
             this.itemviewfloors,
             this.itemviewceilings,
             this.seperatorviewviews,
-            this.menufullbrightness,
-            this.menutogglegrid,
-            this.menutoggledynamicgrid,
+            this.itemfullbrightness,
+            this.itemtogglegrid,
+            this.itemtogglecomments,
             this.toolStripSeparator4,
             this.menuzoom,
-            this.menugotocoords,
+            this.itemgotocoords,
             this.itemfittoscreen,
             this.itemtoggleinfo,
-            this.itemtogglecomments,
             this.seperatorviewzoom,
             this.itemscripteditor});
 			this.menuview.Name = "menuview";
@@ -807,35 +807,29 @@ namespace CodeImp.DoomBuilder.Windows
 			this.seperatorviewviews.Name = "seperatorviewviews";
 			this.seperatorviewviews.Size = new System.Drawing.Size(212, 6);
 			// 
-			// menufullbrightness
+			// itemfullbrightness
 			// 
-			this.menufullbrightness.CheckOnClick = true;
-			this.menufullbrightness.Image = global::CodeImp.DoomBuilder.Properties.Resources.Brightness;
-			this.menufullbrightness.Name = "menufullbrightness";
-			this.menufullbrightness.Size = new System.Drawing.Size(215, 22);
-			this.menufullbrightness.Tag = "builder_togglebrightness";
-			this.menufullbrightness.Text = "Full Brightness";
-			this.menufullbrightness.Click += new System.EventHandler(this.InvokeTaggedAction);
+			this.itemfullbrightness.Checked = true;
+			this.itemfullbrightness.CheckOnClick = true;
+			this.itemfullbrightness.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.itemfullbrightness.Image = global::CodeImp.DoomBuilder.Properties.Resources.Brightness;
+			this.itemfullbrightness.Name = "itemfullbrightness";
+			this.itemfullbrightness.Size = new System.Drawing.Size(215, 22);
+			this.itemfullbrightness.Tag = "builder_togglebrightness";
+			this.itemfullbrightness.Text = "Full Brightness";
+			this.itemfullbrightness.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
-			// menutogglegrid
+			// itemtogglegrid
 			// 
-			this.menutogglegrid.CheckOnClick = true;
-			this.menutogglegrid.Image = global::CodeImp.DoomBuilder.Properties.Resources.Grid2;
-			this.menutogglegrid.Name = "menutogglegrid";
-			this.menutogglegrid.Size = new System.Drawing.Size(215, 22);
-			this.menutogglegrid.Tag = "builder_togglegrid";
-			this.menutogglegrid.Text = "&Render Grid";
-			this.menutogglegrid.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
-			// menutoggledynamicgrid
-			// 
-			this.menutoggledynamicgrid.CheckOnClick = true;
-			this.menutoggledynamicgrid.Image = global::CodeImp.DoomBuilder.Properties.Resources.GridDynamic;
-			this.menutoggledynamicgrid.Name = "menutoggledynamicgrid";
-			this.menutoggledynamicgrid.Size = new System.Drawing.Size(215, 22);
-			this.menutoggledynamicgrid.Tag = "builder_toggledynamicgrid";
-			this.menutoggledynamicgrid.Text = "&Dynamic Grid Size";
-			this.menutoggledynamicgrid.Click += new System.EventHandler(this.InvokeTaggedAction);
+			this.itemtogglegrid.Checked = true;
+			this.itemtogglegrid.CheckOnClick = true;
+			this.itemtogglegrid.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.itemtogglegrid.Image = global::CodeImp.DoomBuilder.Properties.Resources.Grid2;
+			this.itemtogglegrid.Name = "itemtogglegrid";
+			this.itemtogglegrid.Size = new System.Drawing.Size(215, 22);
+			this.itemtogglegrid.Tag = "builder_togglegrid";
+			this.itemtogglegrid.Text = "&Render Grid";
+			this.itemtogglegrid.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// toolStripSeparator4
 			// 
@@ -922,13 +916,13 @@ namespace CodeImp.DoomBuilder.Windows
 			this.item2zoom5.Text = "5%";
 			this.item2zoom5.Click += new System.EventHandler(this.itemzoomto_Click);
 			// 
-			// menugotocoords
+			// itemgotocoords
 			// 
-			this.menugotocoords.Name = "menugotocoords";
-			this.menugotocoords.Size = new System.Drawing.Size(215, 22);
-			this.menugotocoords.Tag = "builder_centeroncoordinates";
-			this.menugotocoords.Text = "Go To Coordinates...";
-			this.menugotocoords.Click += new System.EventHandler(this.InvokeTaggedAction);
+			this.itemgotocoords.Name = "itemgotocoords";
+			this.itemgotocoords.Size = new System.Drawing.Size(215, 22);
+			this.itemgotocoords.Tag = "builder_centeroncoordinates";
+			this.itemgotocoords.Text = "Go To Coordinates...";
+			this.itemgotocoords.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// itemfittoscreen
 			// 
@@ -945,15 +939,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.itemtoggleinfo.Tag = "builder_toggleinfopanel";
 			this.itemtoggleinfo.Text = "&Expanded Info Panel";
 			this.itemtoggleinfo.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
-			// itemtogglecomments
-			// 
-			this.itemtogglecomments.CheckOnClick = true;
-			this.itemtogglecomments.Name = "itemtogglecomments";
-			this.itemtogglecomments.Size = new System.Drawing.Size(215, 22);
-			this.itemtogglecomments.Tag = "builder_togglecomments";
-			this.itemtogglecomments.Text = "Show Comments";
-			this.itemtogglecomments.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// seperatorviewzoom
 			// 
@@ -1231,15 +1216,15 @@ namespace CodeImp.DoomBuilder.Windows
             this.separatorfilters,
             this.buttonfullbrightness,
             this.buttontogglegrid,
-            this.buttontoggledynamicgrid,
+            this.buttontogglecomments,
             this.separatorfullbrightness,
             this.buttonviewnormal,
             this.buttonviewbrightness,
             this.buttonviewfloors,
             this.buttonviewceilings,
             this.seperatorviews,
-            this.buttontogglecomments,
             this.buttonsnaptogrid,
+            this.buttontoggledynamicgrid,
             this.buttonautomerge,
             this.buttonautoclearsidetextures,
             this.seperatorgeometry,
@@ -1533,7 +1518,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// buttonfullbrightness
 			// 
+			this.buttonfullbrightness.Checked = true;
 			this.buttonfullbrightness.CheckOnClick = true;
+			this.buttonfullbrightness.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.buttonfullbrightness.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.buttonfullbrightness.Image = global::CodeImp.DoomBuilder.Properties.Resources.Brightness;
 			this.buttonfullbrightness.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -1545,7 +1532,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// buttontogglegrid
 			// 
+			this.buttontogglegrid.Checked = true;
 			this.buttontogglegrid.CheckOnClick = true;
+			this.buttontogglegrid.CheckState = System.Windows.Forms.CheckState.Checked;
 			this.buttontogglegrid.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.buttontogglegrid.Image = global::CodeImp.DoomBuilder.Properties.Resources.Grid2;
 			this.buttontogglegrid.ImageTransparentColor = System.Drawing.Color.Magenta;
@@ -1554,6 +1543,20 @@ namespace CodeImp.DoomBuilder.Windows
 			this.buttontogglegrid.Tag = "builder_togglegrid";
 			this.buttontogglegrid.Text = "Render Grid";
 			this.buttontogglegrid.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// buttontoggledynamicgrid
+			// 
+			this.buttontoggledynamicgrid.Checked = true;
+			this.buttontoggledynamicgrid.CheckOnClick = true;
+			this.buttontoggledynamicgrid.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.buttontoggledynamicgrid.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttontoggledynamicgrid.Image = global::CodeImp.DoomBuilder.Properties.Resources.GridDynamic;
+			this.buttontoggledynamicgrid.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttontoggledynamicgrid.Name = "buttontoggledynamicgrid";
+			this.buttontoggledynamicgrid.Size = new System.Drawing.Size(23, 22);
+			this.buttontoggledynamicgrid.Tag = "builder_toggledynamicgrid";
+			this.buttontoggledynamicgrid.Text = "Dynamic Grid Size";
+			this.buttontoggledynamicgrid.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// separatorfullbrightness
 			// 
@@ -2383,17 +2386,29 @@ namespace CodeImp.DoomBuilder.Windows
 			this.modecontrolsloolbar.Text = "toolStrip1";
 			this.modecontrolsloolbar.Visible = false;
 			// 
-			// buttontoggledynamicgrid
+			// itemtogglecomments
 			// 
-			this.buttontoggledynamicgrid.CheckOnClick = true;
-			this.buttontoggledynamicgrid.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.buttontoggledynamicgrid.Image = global::CodeImp.DoomBuilder.Properties.Resources.GridDynamic;
-			this.buttontoggledynamicgrid.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.buttontoggledynamicgrid.Name = "buttontoggledynamicgrid";
-			this.buttontoggledynamicgrid.Size = new System.Drawing.Size(23, 22);
-			this.buttontoggledynamicgrid.Tag = "builder_toggledynamicgrid";
-			this.buttontoggledynamicgrid.Text = "Dynamic Grid Size";
-			this.buttontoggledynamicgrid.Click += new System.EventHandler(this.InvokeTaggedAction);
+			this.itemtogglecomments.Checked = true;
+			this.itemtogglecomments.CheckOnClick = true;
+			this.itemtogglecomments.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.itemtogglecomments.Image = global::CodeImp.DoomBuilder.Properties.Resources.Comment;
+			this.itemtogglecomments.Name = "itemtogglecomments";
+			this.itemtogglecomments.Size = new System.Drawing.Size(215, 22);
+			this.itemtogglecomments.Tag = "builder_togglecomments";
+			this.itemtogglecomments.Text = "Show Comments";
+			this.itemtogglecomments.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// itemdynamicgridsize
+			// 
+			this.itemdynamicgridsize.Checked = true;
+			this.itemdynamicgridsize.CheckOnClick = true;
+			this.itemdynamicgridsize.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.itemdynamicgridsize.Image = global::CodeImp.DoomBuilder.Properties.Resources.GridDynamic;
+			this.itemdynamicgridsize.Name = "itemdynamicgridsize";
+			this.itemdynamicgridsize.Size = new System.Drawing.Size(219, 22);
+			this.itemdynamicgridsize.Tag = "builder_toggledynamicgrid";
+			this.itemdynamicgridsize.Text = "Dynamic Grid Size";
+			this.itemdynamicgridsize.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// MainForm
 			// 
@@ -2616,13 +2631,13 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.Label modename;
 		private System.Windows.Forms.ToolStripMenuItem itemautoclearsidetextures;
 		private System.Windows.Forms.ToolStripButton buttonautoclearsidetextures;
-		private System.Windows.Forms.ToolStripMenuItem menugotocoords;
+		private System.Windows.Forms.ToolStripMenuItem itemgotocoords;
 		private System.Windows.Forms.ToolStripSeparator separatorTransformModes;
 		private System.Windows.Forms.ToolStripMenuItem itemdosnaptogrid;
 		private System.Windows.Forms.ToolStrip modestoolbar;
 		private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel;
 		private System.Windows.Forms.ToolStrip modecontrolsloolbar;
-		private System.Windows.Forms.ToolStripMenuItem menufullbrightness;
+		private System.Windows.Forms.ToolStripMenuItem itemfullbrightness;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
 		private System.Windows.Forms.ToolStripButton buttonfullbrightness;
 		private System.Windows.Forms.ToolStripSeparator separatorfullbrightness;
@@ -2646,15 +2661,15 @@ namespace CodeImp.DoomBuilder.Windows
 		private ToolStripMenuItem item2zoom800;
 		private ToolStripMenuItem itemzoom800;
 		private ToolStripButton buttontogglecomments;
-		private ToolStripMenuItem itemtogglecomments;
 		private ToolStripMenuItem itemlinedefcolors;
 		private ToolStripSeparator separatorlinecolors;
 		private ToolStripButton buttonlinededfcolors;
 		private ToolStripDropDownButton linedefcolorpresets;
 		private ToolStripDropDownButton thingfilters;
-		private ToolStripMenuItem menutogglegrid;
+		private ToolStripMenuItem itemtogglegrid;
 		private ToolStripButton buttontogglegrid;
-		private ToolStripMenuItem menutoggledynamicgrid;
 		private ToolStripButton buttontoggledynamicgrid;
+		private ToolStripMenuItem itemdynamicgridsize;
+		private ToolStripMenuItem itemtogglecomments;
 	}
 }
