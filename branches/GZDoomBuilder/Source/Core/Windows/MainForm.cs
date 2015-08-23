@@ -1008,8 +1008,6 @@ namespace CodeImp.DoomBuilder.Windows
 		// Set grid to a specified size
 		private void itemgridsize_Click(object sender, EventArgs e)
 		{
-			int size;
-
 			if(General.Map == null) return;
 
 			// In classic mode?
@@ -1019,7 +1017,7 @@ namespace CodeImp.DoomBuilder.Windows
 				if(sender is ToolStripMenuItem)
 				{
 					// Get integral zoom level
-					size = int.Parse((sender as ToolStripMenuItem).Tag.ToString(), CultureInfo.InvariantCulture);
+					int size = int.Parse((sender as ToolStripMenuItem).Tag.ToString(), CultureInfo.InvariantCulture);
 
 					// Change grid size
 					General.Map.Grid.SetGridSize(size);
@@ -2070,17 +2068,17 @@ namespace CodeImp.DoomBuilder.Windows
 			buttonfullbrightness.Visible = General.Settings.ToolbarViewModes && maploaded; //mxd
 			buttontogglegrid.Visible = General.Settings.ToolbarViewModes && maploaded; //mxd
 			buttontogglegrid.Checked = General.Settings.RenderGrid; //mxd
-			buttontoggledynamicgrid.Visible = General.Settings.ToolbarViewModes && maploaded; //mxd
-			buttontoggledynamicgrid.Checked = General.Settings.DynamicGridSize; //mxd
+			buttontogglecomments.Visible = General.Settings.ToolbarViewModes && maploaded; //mxd
+			buttontogglecomments.Enabled = maploaded && General.Map.UDMF; //mxd
+			buttontogglecomments.Checked = General.Settings.RenderComments; //mxd
 			separatorfullbrightness.Visible = General.Settings.ToolbarViewModes && maploaded; //mxd
 			buttonviewbrightness.Visible = General.Settings.ToolbarViewModes && maploaded;
 			buttonviewceilings.Visible = General.Settings.ToolbarViewModes && maploaded;
 			buttonviewfloors.Visible = General.Settings.ToolbarViewModes && maploaded;
 			buttonviewnormal.Visible = General.Settings.ToolbarViewModes && maploaded;
-			buttontogglecomments.Visible = General.Settings.ToolbarViewModes && maploaded; //mxd
-			buttontogglecomments.Enabled = maploaded && General.Map.UDMF; //mxd
-			buttontogglecomments.Checked = General.Settings.RenderComments; //mxd
 			buttonsnaptogrid.Visible = General.Settings.ToolbarGeometry && maploaded;
+			buttontoggledynamicgrid.Visible = General.Settings.ToolbarGeometry && maploaded; //mxd
+			buttontoggledynamicgrid.Checked = General.Settings.DynamicGridSize; //mxd
 			buttonautomerge.Visible = General.Settings.ToolbarGeometry && maploaded;
 			buttonautoclearsidetextures.Visible = General.Settings.ToolbarGeometry && maploaded; //mxd
 			buttontest.Visible = General.Settings.ToolbarTesting && maploaded;
@@ -2747,6 +2745,8 @@ namespace CodeImp.DoomBuilder.Windows
 			itempaste.Enabled = (General.Map != null) && (General.Editing.Mode != null) && General.Editing.Mode.Attributes.AllowCopyPaste;
 			itempastespecial.Enabled = (General.Map != null) && (General.Editing.Mode != null) && General.Editing.Mode.Attributes.AllowCopyPaste;
 			itemautoclearsidetextures.Checked = General.Settings.AutoClearSidedefTextures; //mxd
+			itemdynamicgridsize.Enabled = (General.Map != null); //mxd
+			itemdynamicgridsize.Checked = General.Settings.DynamicGridSize; //mxd
 
 			// Determine undo description
 			if(itemundo.Enabled)
@@ -2858,7 +2858,7 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			Renderer.FullBrightness = !Renderer.FullBrightness;
 			buttonfullbrightness.Checked = Renderer.FullBrightness;
-			menufullbrightness.Checked = Renderer.FullBrightness;
+			itemfullbrightness.Checked = Renderer.FullBrightness;
 			General.Interface.DisplayStatus(StatusType.Action, "Full Brightness is now " + (Renderer.FullBrightness ? "ON" : "OFF"));
 
 			// Redraw display to show changes
@@ -2870,7 +2870,7 @@ namespace CodeImp.DoomBuilder.Windows
 		protected void ToggleGrid()
 		{
 			General.Settings.RenderGrid = !General.Settings.RenderGrid;
-			menutogglegrid.Checked = General.Settings.RenderGrid;
+			itemtogglegrid.Checked = General.Settings.RenderGrid;
 			buttontogglegrid.Checked = General.Settings.RenderGrid;
 			General.Interface.DisplayStatus(StatusType.Action, "Grid rendering is " + (General.Settings.RenderGrid ? "ENABLED" : "DISABLED"));
 
@@ -2884,7 +2884,7 @@ namespace CodeImp.DoomBuilder.Windows
 		protected void ToggleDynamicGrid()
 		{
 			General.Settings.DynamicGridSize = !General.Settings.DynamicGridSize;
-			menutoggledynamicgrid.Checked = General.Settings.DynamicGridSize;
+			itemdynamicgridsize.Checked = General.Settings.DynamicGridSize;
 			buttontoggledynamicgrid.Checked = General.Settings.DynamicGridSize;
 			General.Interface.DisplayStatus(StatusType.Action, "Dynamic grid size is " + (General.Settings.DynamicGridSize ? "ENABLED" : "DISABLED"));
 
@@ -2926,36 +2926,18 @@ namespace CodeImp.DoomBuilder.Windows
 		// This sets up the modes menu
 		private void UpdateViewMenu()
 		{
+			menuview.Visible = (General.Map != null); //mxd
+			
 			// Menu items
-			itemthingsfilter.Enabled = (General.Map != null);
-			itemlinedefcolors.Enabled = (General.Map != null); //mxd
-			itemscripteditor.Enabled = (General.Map != null);
-			itemfittoscreen.Enabled = (General.Map != null);
-			menuzoom.Enabled = (General.Map != null);
-			menugotocoords.Enabled = (General.Map != null); //mxd
-			menufullbrightness.Enabled = (General.Map != null); //mxd
-			menutogglegrid.Enabled = (General.Map != null); //mxd
-			menutogglegrid.Checked = General.Settings.RenderGrid; //mxd
-			menutoggledynamicgrid.Enabled = (General.Map != null); //mxd
-			menutoggledynamicgrid.Checked = General.Settings.DynamicGridSize; //mxd
-			itemtoggleinfo.Enabled = (General.Map != null); //mxd
+			itemtogglegrid.Checked = General.Settings.RenderGrid; //mxd
 			itemtoggleinfo.Checked = IsInfoPanelExpanded;
 			itemtogglecomments.Enabled = (General.Map != null && General.Map.UDMF); //mxd
 			itemtogglecomments.Checked = General.Settings.RenderComments; //mxd
 			
 			// View mode items
-			for(int i = 0; i < Renderer2D.NUM_VIEW_MODES; i++)
+			if(General.Map != null)
 			{
-				// NOTE: We only disable them when no map is loaded, because they may
-				// need to be disabled for non-classic modes
-				if(General.Map == null)
-				{
-					viewmodesbuttons[i].Enabled = false;
-					viewmodesbuttons[i].Checked = false;
-					viewmodesitems[i].Enabled = false;
-					viewmodesitems[i].Checked = false;
-				}
-				else
+				for(int i = 0; i < Renderer2D.NUM_VIEW_MODES; i++)
 				{
 					// Check the correct item
 					viewmodesbuttons[i].Checked = (i == (int)General.Map.CRenderer2D.ViewMode);
@@ -3133,6 +3115,8 @@ namespace CodeImp.DoomBuilder.Windows
 		// This sets up the prefabs menu
 		private void UpdatePrefabsMenu()
 		{
+			menuprefabs.Visible = (General.Map != null); //mxd
+			
 			// Enable/disable items
 			itemcreateprefab.Enabled = (General.Map != null) && (General.Editing.Mode != null) && General.Editing.Mode.Attributes.AllowCopyPaste;
 			iteminsertprefabfile.Enabled = (General.Map != null) && (General.Editing.Mode != null) && General.Editing.Mode.Attributes.AllowCopyPaste;

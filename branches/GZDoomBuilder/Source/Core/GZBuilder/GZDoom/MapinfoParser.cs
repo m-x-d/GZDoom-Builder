@@ -105,6 +105,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						break;
 				}
 
+				// Track brace level
+				int bracelevel = 0;
+
 				//search for required keys
 				while (SkipWhitespace(true)) 
 				{
@@ -322,6 +325,22 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 					else if (token == "}") 
 					{
 						return ParseBlock(token, mapName);
+					}
+//child block
+					else if(token == "{")
+					{
+						// Skip inner properties
+						bracelevel++;
+						if(bracelevel > 1)
+						{
+							do
+							{
+								SkipWhitespace(true);
+								token = ReadToken();
+								if(token == "{") bracelevel++;
+								else if(token == "}") bracelevel--;
+							} while(!string.IsNullOrEmpty(token) && bracelevel > 1);
+						}
 					}
 				}
 			} 

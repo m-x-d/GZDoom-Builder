@@ -11,6 +11,9 @@ game = "ZDoom: Game (map format)";
 // This is the simplified game engine/sourceport name
 engine = "zdoom";
 
+// Should this configuration be initially available?
+enabledbydefault = true;
+
 // *******************************************************
 // *                                                     *
 // *   Note: all the elements that could be factorized   *
@@ -23,8 +26,17 @@ engine = "zdoom";
 // Settings common to all games and all map formats
 include("Includes\\ZDoom_common.cfg", "common");
 
-!!!!!!!!!! MAP FORMAT STUFF !!!!!!!!!!
-!Keep only the one that's appropriate!
+// Default thing filters
+// (these are not required, just useful for new users)
+thingsfilters
+{
+	// Keep only the one that's appropriate!
+	include("Includes\\Doom_misc.cfg", "thingsfilters"); // Thing filters for Doom/Hexen map formats
+	include("Includes\\ZDoom_misc.cfg", "thingsfilters_udmf"); // Thing filters for UDMF map format
+}
+
+// ---------------- MAP FORMAT STUFF ----------------
+// Keep only the one that's appropriate!
 // Settings common to Doom map format
 include("Includes\\ZDoom_common.cfg", "mapformat_doom");
 
@@ -33,10 +45,12 @@ include("Includes\\ZDoom_common.cfg", "mapformat_hexen");
 
 // Settings common to text map format
 include("Includes\\ZDoom_common.cfg", "mapformat_udmf");
-!!!!!!!!!! MAP FORMAT STUFF !!!!!!!!!!
+// ---------------- MAP FORMAT STUFF ----------------
 
-!!!!!!!!!!!!! GAME STUFF !!!!!!!!!!!!!
-!Keep only the one that's appropriate!
+
+
+// ---------------- GAME STUFF ----------------
+//Keep only the one that's appropriate!
 // Settings common to Doom games
 include("Includes\\Game_Doom.cfg");
 
@@ -60,27 +74,9 @@ include("Includes\\Game_Harmony.cfg");
 
 // Settings common to Action Doom 2 games
 include("Includes\\Game_Action2.cfg");
-!!!!!!!!!!!!! GAME STUFF !!!!!!!!!!!!!
+// ---------------- GAME STUFF ----------------
 
-!!!!Keep only one of each category!!!!
-// Depends on both game and map format
-gamedetect
-{
-	// Map format
-	include("Includes\\ZDoom_misc.cfg", "gamedetect_doom");
-	include("Includes\\ZDoom_misc.cfg", "gamedetect_hexen");
-	include("Includes\\ZDoom_misc.cfg", "gamedetect_udmf");
-	// Game scheme
-	include("Includes\\Doom_misc.cfg", "gamedetect_exmx");
-	include("Includes\\Doom_misc.cfg", "gamedetect_mapxx");
-	include("Includes\\Doom_misc.cfg", "gamedetect_either");
-	include("Includes\\Heretic_misc.cfg", "gamedetect");
-	include("Includes\\Hexen_misc.cfg", "gamedetect");
-	include("Includes\\Strife_misc.cfg", "gamedetect");
-	include("Includes\\Chex_misc.cfg", "gamedetect_chex1");
-	include("Includes\\Chex_misc.cfg", "gamedetect_chex3");
-	include("Includes\\Harmony_misc.cfg", "gamedetect");
-}
+
 
 // THING TYPES
 // Each engine has its own additional thing types
@@ -96,14 +92,17 @@ thingtypes
 	include("Includes\\Chex_things.cfg");
 	include("Includes\\Chex3_things.cfg");
 	include("Includes\\Harmony_things.cfg");
+	
 	// Additional ZDoom actors for that game
 	include("Includes\\ZDoom_things.cfg", "doom");
 	include("Includes\\ZDoom_things.cfg", "heretic");
 	include("Includes\\ZDoom_things.cfg", "hexen");
 	include("Includes\\ZDoom_things.cfg", "strife");
 	include("Includes\\ZDoom_things.cfg", "default");
+	
 	// Standard ZDoom actors
 	include("Includes\\ZDoom_things.cfg", "zdoom");
+	
 	// Additional actors from the engine
 	include("Includes\\GZDoom_things.cfg", "gzdoom");
 	include("Includes\\Zandronum_things.cfg", "doom");
@@ -120,8 +119,10 @@ enums
 {
 	// Basic game enums
 	include("Includes\\Doom_misc.cfg", "enums");
+	
 	// Standard ZDoom enums
 	include("Includes\\ZDoom_misc.cfg", "enums");
+	
 	// Additional ZDoom enums for that game
 	include("Includes\\ZDoom_misc.cfg", "enums_doom");
 	include("Includes\\ZDoom_misc.cfg", "enums_heretic");
@@ -130,6 +131,7 @@ enums
 	include("Includes\\ZDoom_misc.cfg", "enums_chex");
 	include("Includes\\ZDoom_misc.cfg", "enums_chex3");
 	include("Includes\\ZDoom_misc.cfg", "enums_harmony");
+	
 	// Additional enums from the engine
 	include("Includes\\Zandronum_misc.cfg", "enums_doom");
 	include("Includes\\Zandronum_misc.cfg", "enums_notdoom");
