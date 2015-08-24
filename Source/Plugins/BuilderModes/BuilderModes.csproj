@@ -225,6 +225,7 @@
     <Compile Include="ClassicModes\DrawRectangleMode.cs" />
     <Compile Include="ClassicModes\FlatAlignMode.cs" />
     <Compile Include="ClassicModes\FloorAlignMode.cs" />
+    <Compile Include="ErrorChecks\CheckMapSize.cs" />
     <Compile Include="ErrorChecks\CheckMissingFlats.cs" />
     <Compile Include="ErrorChecks\CheckMissingTextures.cs" />
     <Compile Include="ErrorChecks\CheckOverlappingVertices.cs" />
@@ -236,6 +237,7 @@
     <Compile Include="ErrorChecks\CheckUnknownThings.cs" />
     <Compile Include="ErrorChecks\CheckUnusedTextures.cs" />
     <Compile Include="ErrorChecks\CheckUnusedThings.cs" />
+    <Compile Include="ErrorChecks\ResultMapTooBig.cs" />
     <Compile Include="ErrorChecks\ResultMissingFlat.cs" />
     <Compile Include="ErrorChecks\ResultNoErrors.cs" />
     <Compile Include="ErrorChecks\ResultSectorInvalid.cs" />

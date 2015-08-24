@@ -62,8 +62,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 		
 		#region ================== Methods
-
-
 		
 		// When the first button is clicked
 		// Return true when map geometry or things have been added/removed so that the checker can restart
@@ -93,22 +91,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// This is called for rendering
-		public virtual void PlotSelection(IRenderer2D renderer)
+		public virtual void PlotSelection(IRenderer2D renderer) { }
+
+		// This is called for rendering (mxd. And never used!)
+		/*public virtual void RenderThingsSelection(IRenderer2D renderer)
 		{
-		}
+		}*/
 
 		// This is called for rendering
-		public virtual void RenderThingsSelection(IRenderer2D renderer)
-		{
-		}
-
-		// This is called for rendering
-		public virtual void RenderOverlaySelection(IRenderer2D renderer)
-		{
-		}
+		public virtual void RenderOverlaySelection(IRenderer2D renderer) { }
 		
 		// Call this to zoom in on the given selection
-		public RectangleF GetZoomArea()
+		public virtual RectangleF GetZoomArea()
 		{
 			List<Vector2D> points = new List<Vector2D>();
 			RectangleF area = MapSet.CreateEmptyArea();
