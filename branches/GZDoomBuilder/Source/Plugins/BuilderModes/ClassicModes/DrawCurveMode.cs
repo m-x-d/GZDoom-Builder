@@ -74,9 +74,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			DrawnVertex curp = GetCurrentPosition();
 			float vsize = (renderer.VertexSize + 1.0f) / renderer.Scale;
 
-			// Update active label position (mxd)
-			if(labels.Count > 0) 
+			// Update label positions (mxd)
+			if(labels.Count > 0)
+			{
+				// Update labels for already drawn lines
+				for(int i = 0; i < labels.Count - 1; i++)
+					SetLabelPosition(labels[i], points[i].pos, points[i + 1].pos);
+
+				// Update label for active line
 				SetLabelPosition(labels[labels.Count - 1], points[points.Count - 1].pos, curp.pos);
+			}
 
 			// Render drawing lines
 			if(renderer.StartOverlay(true)) 

@@ -17,6 +17,7 @@
 #region ================== Namespaces
 
 using System;
+using System.Drawing;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Geometry;
 
@@ -46,6 +47,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		// Disposing
 		public bool IsDisposed { get { return isdisposed; } }
 		public static bool FullBrightness { get { return fullbrightness; } set { fullbrightness = value; } } //mxd
+		public Size ViewportSize { get { return graphics.RenderTarget.Size; } } //mxd
 
 		#endregion
 
