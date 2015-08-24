@@ -604,8 +604,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Render things
 			if(renderer.StartThings(true))
 			{
-				renderer.RenderThingSet(General.Map.ThingsFilter.SortedHiddenThings, Presentation.THINGS_HIDDEN_ALPHA);
-				renderer.RenderThingSet(General.Map.ThingsFilter.SortedVisibleThings, Presentation.THINGS_ALPHA);
+				renderer.RenderThingSet(General.Map.Map.Things, Presentation.THINGS_ALPHA);
 				renderer.Finish();
 			}
 
