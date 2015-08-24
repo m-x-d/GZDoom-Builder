@@ -137,7 +137,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(renderer.StartThings(true))
 			{
 				renderer.RenderThingSet(General.Map.Map.Things, Presentation.THINGS_ALPHA);
-				foreach(ErrorResult result in selection) result.RenderThingsSelection(renderer); //mxd
+				//foreach(ErrorResult result in selection) result.RenderThingsSelection(renderer); //mxd
 				renderer.Finish();
 			}
 			
