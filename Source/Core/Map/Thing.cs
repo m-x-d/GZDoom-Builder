@@ -39,6 +39,18 @@ namespace CodeImp.DoomBuilder.Map
 
 		#endregion
 
+		#region ================== Enums
+
+		public enum SpriteRenderMode
+		{
+			NORMAL,
+			WALL_SPRITE,
+			FLOOR_SPRITE,
+			CEILING_SPRITE
+		}
+
+		#endregion
+
 		#region ================== Variables
 
 		// Map
@@ -66,8 +78,11 @@ namespace CodeImp.DoomBuilder.Map
 		private int roll; //mxd. Used in model rendering
 		private float pitchrad; //mxd
 		private float rollrad; //mxd
-		private bool isModel; //mxd
+		private bool ismodel; //mxd
 		private bool highlighted; //mxd
+
+		//mxd. GLOOME rendering settings
+		private bool rollsprite; //mxd
 
 		// Configuration
 		private float size;
@@ -101,7 +116,7 @@ namespace CodeImp.DoomBuilder.Map
 		public bool FixedSize { get { return fixedsize; } }
 		public int Tag { get { return tag; } set { BeforePropsChange(); tag = value; if((tag < General.Map.FormatInterface.MinTag) || (tag > General.Map.FormatInterface.MaxTag)) throw new ArgumentOutOfRangeException("Tag", "Invalid tag number"); } }
 		public Sector Sector { get { return sector; } }
-		public bool IsModel { get { return isModel; } } //mxd
+		public bool IsModel { get { return ismodel; } } //mxd
 		public bool IsDirectional { get { return directional; } } //mxd
 		public bool Highlighted { get { return highlighted; } set { highlighted = value; } } //mxd
 
@@ -237,7 +252,8 @@ namespace CodeImp.DoomBuilder.Map
 			t.color = color;
 			t.directional = directional;
 			t.fixedsize = fixedsize;
-			t.isModel = isModel; //mxd
+			t.ismodel = ismodel; //mxd
+			t.rollsprite = rollsprite; //mxd
 
 			base.CopyPropertiesTo(t);
 		}
@@ -437,7 +453,7 @@ namespace CodeImp.DoomBuilder.Map
 			BeforePropsChange();
 
 			pitch = General.ClampAngle(newpitch);
-			pitchrad = ((isModel && General.Map.Data.ModeldefEntries[type].InheritActorPitch) ? Angle2D.DegToRad(pitch) : 0);
+			pitchrad = ((ismodel && General.Map.Data.ModeldefEntries[type].InheritActorPitch) ? Angle2D.DegToRad(pitch) : 0);
 
 			if (type != General.Map.Config.Start3DModeThingType)
 				General.Map.IsChanged = true;
@@ -449,7 +465,7 @@ namespace CodeImp.DoomBuilder.Map
 			BeforePropsChange();
 
 			roll = General.ClampAngle(newroll);
-			rollrad = ((isModel && General.Map.Data.ModeldefEntries[type].InheritActorRoll) ? Angle2D.DegToRad(roll) : 0);
+			rollrad = ( (rollsprite || (ismodel && General.Map.Data.ModeldefEntries[type].InheritActorRoll)) ? Angle2D.DegToRad(roll) : 0);
 
 			if (type != General.Map.Config.Start3DModeThingType)
 				General.Map.IsChanged = true;
@@ -525,6 +541,7 @@ namespace CodeImp.DoomBuilder.Map
 			}
 			
 			directional = ti.Arrow; //mxd
+			rollsprite = ti.RollSprite; //mxd
 			UpdateCache(); //mxd
 		}
 
@@ -533,20 +550,25 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			if (General.Map.Data == null)
 			{
-				isModel = false;
+				ismodel = false;
 				return;
 			}
 
-			isModel = General.Map.Data.ModeldefEntries.ContainsKey(type);
-			if (isModel && General.Map.Data.ModeldefEntries[type].LoadState == ModelLoadState.None)
-				isModel = General.Map.Data.ProcessModel(type);
+			ismodel = General.Map.Data.ModeldefEntries.ContainsKey(type);
+			if (ismodel && General.Map.Data.ModeldefEntries[type].LoadState == ModelLoadState.None)
+				ismodel = General.Map.Data.ProcessModel(type);
 
-			if (isModel) 
+			if(ismodel) 
 			{
 				rollrad = (General.Map.Data.ModeldefEntries[type].InheritActorRoll ? Angle2D.DegToRad(roll) : 0);
 				pitchrad = (General.Map.Data.ModeldefEntries[type].InheritActorPitch ? Angle2D.DegToRad(pitch) : 0);
-			} 
-			else 
+			}
+			else if(rollsprite)
+			{
+				rollrad = Angle2D.DegToRad(roll);
+				pitchrad = 0;
+			}
+			else
 			{
 				rollrad = 0;
 				pitchrad = 0;

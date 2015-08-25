@@ -25,7 +25,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	// This doesn't do jack shit.
 	internal class NullVisualEventReceiver : IVisualEventReceiver
 	{
-		public NullVisualEventReceiver() { }
 		public void OnSelectBegin() { }
 		public void OnSelectEnd() { }
 		public void OnEditBegin() {	}
@@ -34,7 +33,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void OnChangeTargetHeight(int amount) { }
 		public void OnChangeTargetBrightness(bool up) { }
 		public void OnChangeTextureOffset(int horizontal, int vertical, bool doSurfaceAngleCorrection) { }
-		public virtual void OnChangeScale(int incrementX, int incrementY) { } //mxd
+		public void OnChangeScale(int incrementX, int incrementY) { } //mxd
 		public void OnResetTextureOffset() { }
 		public void OnResetLocalTextureOffset() { } //mxd
 		public void OnSelectTexture() { }

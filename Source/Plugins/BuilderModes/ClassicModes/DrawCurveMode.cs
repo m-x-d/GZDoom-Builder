@@ -29,11 +29,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	{
 		#region ================== Variables
 
-		private readonly HintLabel hintLabel;
+		private readonly HintLabel hintlabel;
 		private Curve curve;
 		private static int segmentLength = 32;
-		private const int minSegmentLength = 16;
-		private const int maxSegmentLength = 4096; //just some arbitrary number
+		private const int MIN_SEGMENT_LENGTH = 16;
+		private const int MAX_SEGMENT_LENGTH = 4096; //just some arbitrary number
 
 		//interface
 		private readonly DrawCurveOptionsPanel panel;
@@ -44,16 +44,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		public DrawCurveMode() 
 		{
-			hintLabel = new HintLabel();
+			hintlabel = new HintLabel(General.Colors.InfoLine);
+			labeluseoffset = false;
 
 			//Options docker
-			panel = new DrawCurveOptionsPanel(minSegmentLength, maxSegmentLength);
+			panel = new DrawCurveOptionsPanel(MIN_SEGMENT_LENGTH, MAX_SEGMENT_LENGTH);
 			panel.OnValueChanged += OptionsPanelOnValueChanged;
 		}
 
 		public override void Dispose() 
 		{
-			if(!isdisposed && hintLabel != null) hintLabel.Dispose();
+			if(!isdisposed && hintlabel != null) hintlabel.Dispose();
 			base.Dispose();
 		}
 
@@ -79,10 +80,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Update labels for already drawn lines
 				for(int i = 0; i < labels.Count - 1; i++)
-					SetLabelPosition(labels[i], points[i].pos, points[i + 1].pos);
+					labels[i].Move(points[i].pos, points[i + 1].pos);
 
 				// Update label for active line
-				SetLabelPosition(labels[labels.Count - 1], points[points.Count - 1].pos, curp.pos);
+				labels[labels.Count - 1].Move(points[points.Count - 1].pos, curp.pos);
 			}
 
 			// Render drawing lines
@@ -141,10 +142,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				foreach(LineLengthLabel l in labels) renderer.RenderText(l.TextLabel);
 
 				//Render info label
-				hintLabel.Start = new Vector2D(mousemappos.x + (32 / renderer.Scale), mousemappos.y - (16 / renderer.Scale));
-				hintLabel.End = new Vector2D(mousemappos.x + (96 / renderer.Scale), mousemappos.y);
-				hintLabel.Text = "SEG LEN: " + segmentLength;
-				renderer.RenderText(hintLabel.TextLabel);
+				Vector2D start = new Vector2D(mousemappos.x + (32 / renderer.Scale), mousemappos.y - (16 / renderer.Scale));
+				Vector2D end = new Vector2D(mousemappos.x + (96 / renderer.Scale), mousemappos.y);
+				hintlabel.Move(start, end);
+				hintlabel.Text = "SEG LEN: " + segmentLength;
+				renderer.RenderText(hintlabel.TextLabel);
 
 				// Done
 				renderer.Finish();
@@ -298,12 +300,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("increasesubdivlevel")]
 		protected virtual void IncreaseSubdivLevel() 
 		{
-			if(segmentLength < maxSegmentLength) 
+			if(segmentLength < MAX_SEGMENT_LENGTH) 
 			{
-				int increment = Math.Max(minSegmentLength, segmentLength / 32 * 16);
+				int increment = Math.Max(MIN_SEGMENT_LENGTH, segmentLength / 32 * 16);
 				segmentLength += increment;
 
-				if(segmentLength > maxSegmentLength) segmentLength = maxSegmentLength;
+				if(segmentLength > MAX_SEGMENT_LENGTH) segmentLength = MAX_SEGMENT_LENGTH;
 				panel.SegmentLength = segmentLength;
 				Update();
 			}
@@ -312,12 +314,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("decreasesubdivlevel")]
 		protected virtual void DecreaseSubdivLevel() 
 		{
-			if(segmentLength > minSegmentLength) 
+			if(segmentLength > MIN_SEGMENT_LENGTH) 
 			{
-				int increment = Math.Max(minSegmentLength, segmentLength / 32 * 16);
+				int increment = Math.Max(MIN_SEGMENT_LENGTH, segmentLength / 32 * 16);
 				segmentLength -= increment;
 
-				if(segmentLength < minSegmentLength) segmentLength = minSegmentLength;
+				if(segmentLength < MIN_SEGMENT_LENGTH) segmentLength = MIN_SEGMENT_LENGTH;
 				panel.SegmentLength = segmentLength;
 				Update();
 			}

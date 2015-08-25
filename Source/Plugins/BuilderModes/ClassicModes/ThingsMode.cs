@@ -216,7 +216,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 		
 		// This highlights a new item
-		protected void Highlight(Thing t)
+		private void Highlight(Thing t)
 		{
 			LinedefActionInfo action = null;
 			
@@ -805,7 +805,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		// This creates a new thing at the mouse position
 		[BeginAction("insertitem", BaseAction = true)]
-		public virtual void InsertThing()
+		public void InsertThing()
 		{
 			// Mouse in window?
 			if(mouseinside)

@@ -48,7 +48,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Variables
 
 		// Highlighted item
-		protected Vertex highlighted;
+		private Vertex highlighted;
 		private Vector2D insertpreview = new Vector2D(float.NaN, float.NaN); //mxd
 
 		// Interface
@@ -775,7 +775,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		// This creates a new vertex at the mouse position
 		[BeginAction("insertitem", BaseAction = true)]
-		public virtual void InsertVertexAction() { VerticesMode.InsertVertex(mousemappos, renderer.Scale); }
+		public void InsertVertexAction() { VerticesMode.InsertVertex(mousemappos, renderer.Scale); }
 		public static void InsertVertex(Vector2D mousemappos, float rendererscale)
 		{
 			bool snaptogrid = General.Interface.ShiftState ^ General.Interface.SnapToGrid;

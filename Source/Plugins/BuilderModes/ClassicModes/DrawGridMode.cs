@@ -238,7 +238,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					Vector2D[] labelCoords = new[] { start, new Vector2D(end.x, start.y), end, new Vector2D(start.x, end.y), start };
 					for(int i = 1; i < 5; i++) 
 					{
-						SetLabelPosition(labels[i - 1], labelCoords[i], labelCoords[i - 1]);
+						labels[i - 1].Move(labelCoords[i], labelCoords[i - 1]);
 						renderer.RenderText(labels[i - 1].TextLabel);
 					}
 
@@ -248,9 +248,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						hintlabel.Text = "H: " + (slicesH - 1) + "; V: " + (slicesV - 1);
 						if(width > hintlabel.Text.Length * vsize && height > 16 * vsize) 
 						{
-							float vPos = start.y + height / 2.0f;
-							hintlabel.Start = new Vector2D(start.x, vPos);
-							hintlabel.End = new Vector2D(end.x, vPos);
+							hintlabel.Move(start, end);
 							renderer.RenderText(hintlabel.TextLabel);
 						}
 					}
@@ -285,8 +283,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(points.Count == 1) 
 			{ 
 				// Add labels
-				labels.AddRange(new[] { new LineLengthLabel(false), new LineLengthLabel(false), new LineLengthLabel(false), new LineLengthLabel(false) });
-				hintlabel = new HintLabel();
+				labels.AddRange(new[] { new LineLengthLabel(false, true), new LineLengthLabel(false, true), new LineLengthLabel(false, true), new LineLengthLabel(false, true) });
+				hintlabel = new HintLabel(General.Colors.InfoLine);
 				Update();
 			} 
 			else if(points[0].pos == points[1].pos) 

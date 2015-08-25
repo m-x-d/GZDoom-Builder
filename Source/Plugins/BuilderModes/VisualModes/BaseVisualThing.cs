@@ -41,7 +41,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		private readonly BaseVisualMode mode;
 		
-		private ThingTypeInfo info;
 		private bool isloaded;
 		private bool nointeraction; //mxd
 		private ImageData sprite;
@@ -55,14 +54,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private int undoticket;
 
 		// If this is set to true, the thing will be rebuilt after the action is performed.
-		protected bool changed;
+		private bool changed;
 
 		#endregion
 		
 		#region ================== Properties
 
 		public bool Changed { get { return changed; } set { changed |= value; } }
-		public ThingTypeInfo Info { get { return info; } } //mxd
 
 		#endregion
 		
@@ -98,7 +96,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 		
 		// This builds the thing geometry. Returns false when nothing was created.
-		public virtual bool Setup()
+		public bool Setup()
 		{
 			int sectorcolor = new PixelColor(255, 255, 255, 255).ToInt();
 			
@@ -122,10 +120,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			if(sprite != null)
 			{
+				Plane floor = new Plane(); //mxd
+				Plane ceiling = new Plane(); //mxd
 				if(Thing.Sector != null)
 				{
 					SectorData sd = mode.GetSectorData(Thing.Sector);
-					SectorLevel level = sd.GetLevelAboveOrAt(new Vector3D(Thing.Position.x, Thing.Position.y, Thing.Position.z + Thing.Sector.FloorHeight));
+					floor = sd.Floor.plane; //mxd
+					ceiling = sd.Ceiling.plane; //mxd
+					SectorLevel level = sd.GetLevelAboveOrAt(new Vector3D(Thing.Position.x, Thing.Position.y, Thing.Position.z + sd.Floor.plane.GetZ(Thing.Position))); //mxd. Let's use point on floor plane instead of Thing.Sector.FloorHeight;
 					if(nointeraction && level == null && sd.LightLevels.Count > 0) level = sd.LightLevels[sd.LightLevels.Count - 1]; //mxd. Use the light level of the highest surface when a thing is above highest sector level.
 					if(level != null)
 					{
@@ -184,7 +186,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						verts[4] = verts[2];
 						verts[5] = new WorldVertex(+radius + offsetx, 0.0f, offsety, sectorcolor, 1.0f, 1.0f);
 					}
-					SetVertices(verts);
+					SetVertices(verts, floor, ceiling);
 				}
 				else
 				{
@@ -202,7 +204,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					verts[3] = verts[0];
 					verts[4] = verts[2];
 					verts[5] = new WorldVertex(+radius, 0.0f, 0.0f, sectorcolor, 1.0f, 1.0f);
-					SetVertices(verts);
+					SetVertices(verts, floor, ceiling);
 				}
 			}
 			
@@ -446,7 +448,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		public virtual bool IsSelected() 
+		public bool IsSelected() 
 		{
 			return selected;
 		}
@@ -456,33 +458,33 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Events
 
 		// Unused
-		public virtual void OnSelectBegin() { }
-		public virtual void OnEditBegin() { }
-		public virtual void OnMouseMove(MouseEventArgs e) { }
-		public virtual void OnChangeTargetBrightness(bool up) { }
-		public virtual void OnChangeTextureOffset(int horizontal, int vertical, bool doSurfaceAngleCorrection) { }
-		public virtual void OnSelectTexture() { }
-		public virtual void OnCopyTexture() { }
-		public virtual void OnPasteTexture() { }
-		public virtual void OnCopyTextureOffsets() { }
-		public virtual void OnPasteTextureOffsets() { }
-		public virtual void OnTextureAlign(bool alignx, bool aligny) { }
-		public virtual void OnToggleUpperUnpegged() { }
-		public virtual void OnToggleLowerUnpegged() { }
-		public virtual void OnProcess(float deltatime) { }
-		public virtual void OnTextureFloodfill() { }
-		public virtual void OnInsert() { }
-		public virtual void OnTextureFit(FitTextureOptions options) { } //mxd
-		public virtual void ApplyTexture(string texture) { }
-		public virtual void ApplyUpperUnpegged(bool set) { }
-		public virtual void ApplyLowerUnpegged(bool set) { }
-		public virtual void SelectNeighbours(bool select, bool withSameTexture, bool withSameHeight) { } //mxd
+		public void OnSelectBegin() { }
+		public void OnEditBegin() { }
+		public void OnMouseMove(MouseEventArgs e) { }
+		public void OnChangeTargetBrightness(bool up) { }
+		public void OnChangeTextureOffset(int horizontal, int vertical, bool doSurfaceAngleCorrection) { }
+		public void OnSelectTexture() { }
+		public void OnCopyTexture() { }
+		public void OnPasteTexture() { }
+		public void OnCopyTextureOffsets() { }
+		public void OnPasteTextureOffsets() { }
+		public void OnTextureAlign(bool alignx, bool aligny) { }
+		public void OnToggleUpperUnpegged() { }
+		public void OnToggleLowerUnpegged() { }
+		public void OnProcess(float deltatime) { }
+		public void OnTextureFloodfill() { }
+		public void OnInsert() { }
+		public void OnTextureFit(FitTextureOptions options) { } //mxd
+		public void ApplyTexture(string texture) { }
+		public void ApplyUpperUnpegged(bool set) { }
+		public void ApplyLowerUnpegged(bool set) { }
+		public void SelectNeighbours(bool select, bool withSameTexture, bool withSameHeight) { } //mxd
 		
 		// Return texture name
-		public virtual string GetTextureName() { return ""; }
+		public string GetTextureName() { return ""; }
 
 		// Select or deselect
-		public virtual void OnSelectEnd()
+		public void OnSelectEnd()
 		{
 			if(this.selected)
 			{
@@ -497,7 +499,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd. Delete thing
-		public virtual void OnDelete() 
+		public void OnDelete() 
 		{
 			mode.CreateUndo("Delete thing");
 			mode.SetActionResult("Deleted a thing.");
@@ -511,14 +513,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 		
 		// Copy properties
-		public virtual void OnCopyProperties()
+		public void OnCopyProperties()
 		{
 			BuilderPlug.Me.CopiedThingProps = new ThingProperties(Thing);
 			mode.SetActionResult("Copied thing properties.");
 		}
 		
 		// Paste properties
-		public virtual void OnPasteProperties()
+		public void OnPasteProperties()
 		{
 			if(BuilderPlug.Me.CopiedThingProps != null)
 			{
@@ -532,7 +534,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 		
 		// Edit button released
-		public virtual void OnEditEnd()
+		public void OnEditEnd()
 		{
 			if(General.Interface.IsActiveWindow)
 			{
@@ -564,7 +566,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		public virtual void OnResetTextureOffset() 
+		public void OnResetTextureOffset() 
 		{
 			mode.CreateUndo("Reset thing scale");
 			mode.SetActionResult("Thing scale reset.");
@@ -576,7 +578,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		public virtual void OnResetLocalTextureOffset() 
+		public void OnResetLocalTextureOffset() 
 		{
 			mode.CreateUndo("Reset thing scale, pitch and roll");
 			mode.SetActionResult("Thing scale, pitch and roll reset.");
@@ -590,7 +592,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 		
 		// Raise/lower thing
-		public virtual void OnChangeTargetHeight(int amount)
+		public void OnChangeTargetHeight(int amount)
 		{
 			if(General.Map.FormatInterface.HasThingHeight)
 			{
@@ -617,7 +619,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		public virtual void OnChangeScale(int incrementX, int incrementY)
+		public void OnChangeScale(int incrementX, int incrementY)
 		{
 			if(!General.Map.UDMF || !sprite.IsImageLoaded) return;
 			

@@ -83,7 +83,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Methods
 
 		// This highlights a new item
-		protected void Highlight(Linedef l)
+		private void Highlight(Linedef l)
 		{
 			bool completeredraw = false;
 			LinedefActionInfo action = null;
@@ -988,7 +988,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		// This creates a new vertex at the mouse position
 		[BeginAction("insertitem", BaseAction = true)]
-		public virtual void InsertVertexAction()
+		public void InsertVertexAction()
 		{
 			// Start drawing mode
 			DrawGeometryMode drawmode = new DrawGeometryMode();
