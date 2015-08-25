@@ -19,7 +19,6 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
@@ -66,6 +65,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected bool snaptonearest;	// CTRL to enable
 		protected bool snaptocardinaldirection; //mxd. ALT-SHIFT to enable
 		protected static bool usefourcardinaldirections;
+
+		//mxd. Labels display style
+		protected bool labelshowangle = true;
+		protected bool labeluseoffset = true;
 		
 		#endregion
 
@@ -129,7 +132,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			PixelColor stitchcolor = General.Colors.Highlight;
 			PixelColor losecolor = General.Colors.Selection;
-			PixelColor color;
 
 			snaptocardinaldirection = General.Interface.ShiftState && General.Interface.AltState; //mxd
 			snaptogrid = (snaptocardinaldirection || General.Interface.ShiftState ^ General.Interface.SnapToGrid);
@@ -142,17 +144,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(labels.Count > 0)
 			{
 				// Update labels for already drawn lines
-				for(int i = 0; i < labels.Count - 1; i++) 
-					SetLabelPosition(labels[i], points[i].pos, points[i + 1].pos);
+				for(int i = 0; i < labels.Count - 1; i++)
+					labels[i].Move(points[i].pos, points[i + 1].pos);
 
 				// Update label for active line
-				SetLabelPosition(labels[labels.Count - 1], points[points.Count - 1].pos, curp.pos);
+				labels[labels.Count - 1].Move(points[points.Count - 1].pos, curp.pos);
 			}
 
 			// Render drawing lines
 			if(renderer.StartOverlay(true))
 			{
 				// Go for all points to draw lines
+				PixelColor color;
 				if(points.Count > 0)
 				{
 					// Render lines
@@ -211,55 +214,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Vector2D middlePoint = new Vector2D(start.x + delta.x / 2, start.y + delta.y / 2);
 			Vector2D scaledPerpendicular = delta.GetPerpendicular().GetNormal().GetScaled(18f / renderer.Scale);
 			renderer.RenderLine(middlePoint, new Vector2D(middlePoint.x - scaledPerpendicular.x, middlePoint.y - scaledPerpendicular.y), LINE_THICKNESS, color, true);
-		}
-
-		//mxd
-		protected void SetLabelPosition(LineLengthLabel label, Vector2D start, Vector2D end)
-		{
-			// Check if start/end point is on screen...
-			Vector2D lt = General.Map.Renderer2D.DisplayToMap(new Vector2D(0.0f, General.Map.Renderer2D.ViewportSize.Height));
-			Vector2D rb = General.Map.Renderer2D.DisplayToMap(new Vector2D(General.Map.Renderer2D.ViewportSize.Width, 0.0f));
-			RectangleF viewport = new RectangleF(lt.x, lt.y, rb.x - lt.x, rb.y - lt.y);
-			bool startvisible = viewport.Contains(start.x, start.y);
-			bool endvisible = viewport.Contains(end.x, end.y);
-
-			// Do this only when one point is visible, an the other isn't 
-			if((!startvisible && endvisible) || (startvisible && !endvisible))
-			{
-				Line2D drawnline = new Line2D(start, end);
-				Line2D[] viewportsides = new[] {
-					new Line2D(lt, rb.x, lt.y), // top
-					new Line2D(lt.x, rb.y, rb.x, rb.y), // bottom
-					new Line2D(lt, lt.x, rb.y), // left
-					new Line2D(rb.x, lt.y, rb.x, rb.y), // right
-				};
-
-				float u;
-				foreach(Line2D side in viewportsides)
-				{
-					// Modify the start point so it stays on screen
-					if(!startvisible && side.GetIntersection(drawnline, out u))
-					{
-						start = drawnline.GetCoordinatesAt(u);
-						break;
-					}
-
-					// Modify the end point so it stays on screen
-					if(!endvisible && side.GetIntersection(drawnline, out u))
-					{
-						end = drawnline.GetCoordinatesAt(u);
-						break;
-					}
-				}
-			}
-			
-			Vector2D perpendicular = (end - start).GetPerpendicular();
-			float angle = perpendicular.GetAngle();
-			float offset = label.TextLabel.TextSize.Width * Math.Abs((float)Math.Sin(angle)) + label.TextLabel.TextSize.Height * Math.Abs((float)Math.Cos(angle));
-			perpendicular = perpendicular.GetNormal().GetScaled(offset / 2.0f / renderer.Scale);
-
-			label.Start = start + perpendicular;
-			label.End = end + perpendicular;
 		}
 		
 		// This returns the aligned and snapped draw position
@@ -464,7 +418,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			newpoint.stitch = stitch;
 			newpoint.stitchline = stitchline;
 			points.Add(newpoint);
-			labels.Add(new LineLengthLabel(true));
+			labels.Add(new LineLengthLabel(labelshowangle, labeluseoffset));
 			Update();
 
 			// Check if point stitches with the first

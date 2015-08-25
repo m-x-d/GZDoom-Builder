@@ -40,24 +40,42 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected TextLabel label;
 		protected Vector2D start;
 		protected Vector2D end;
-		private readonly bool showAngle; //mxd
+
+		//mxd. Display options
+		private bool showangle;
+		private bool offsetposition;
 		
 		#endregion
 
 		#region ================== Properties
 
 		public TextLabel TextLabel { get { return label; } }
-		public Vector2D Start { get { return start; } set { start = value; Update(); } }
-		public Vector2D End { get { return end; } set { end = value; Update(); } }
+
+		//mxd. Display options
+		public bool ShowAngle { get { return showangle; } set { showangle = value; UpdateText(); } }
+		public bool OffsetPosition { get { return offsetposition; } set { offsetposition = value; Move(start, end); } }
+		public PixelColor TextColor { get { return label.Color; } set { label.Color = value; } }
 
 		#endregion
 
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public LineLengthLabel(bool showAngle)
+		public LineLengthLabel()
 		{
-			this.showAngle = showAngle; //mxd
+			this.showangle = true;
+			this.offsetposition = true;
+			
+			// Initialize
+			Initialize();
+		}
+
+		//mxd. Constructor
+		public LineLengthLabel(bool showangle, bool offsetposition)
+		{
+			this.showangle = showangle;
+			this.offsetposition = offsetposition;
+
 			// Initialize
 			Initialize();
 		}
@@ -65,13 +83,27 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Constructor
 		public LineLengthLabel(Vector2D start, Vector2D end)
 		{
+			this.showangle = true; //mxd
+			this.offsetposition = true; //mxd
+			
+			// Initialize
+			Initialize();
+			Move(start, end);
+		}
+
+		//mxd. Constructor
+		public LineLengthLabel(Vector2D start, Vector2D end, bool showangle, bool offsetposition)
+		{
+			this.showangle = showangle;
+			this.offsetposition = offsetposition;
+			
 			// Initialize
 			Initialize();
 			Move(start, end);
 		}
 
 		// Initialization
-		protected virtual void Initialize()
+		private void Initialize()
 		{
 			label = new TextLabel(TEXT_CAPACITY);
 			label.AlignX = TextAlignmentX.Center;
@@ -93,31 +125,85 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Methods
 
 		// This updates the text
-		protected virtual void Update()
+		protected virtual void UpdateText()
 		{
 			Vector2D delta = end - start;
-			float length = delta.GetLength();
 
-			//mxd
-			if(showAngle)
+			// Update label text
+			float length = delta.GetLength();
+			if(showangle)
 			{
-				int angle = General.ClampAngle((int)Math.Round(Angle2D.RadToDeg(delta.GetAngle())));
-				label.Text = "l:" + length.ToString(VALUE_FORMAT) + "; a:" + angle;
+				int displayangle = General.ClampAngle((int)Math.Round(Angle2D.RadToDeg(delta.GetAngle())));
+				label.Text = "l:" + length.ToString(VALUE_FORMAT) + "; a:" + displayangle;
 			}
 			else
 			{
 				label.Text = length.ToString(VALUE_FORMAT);
 			}
-
-			label.Rectangle = new RectangleF(start.x + delta.x * 0.5f, start.y + delta.y * 0.5f, 0f, 0f);
 		}
 
-		// This moves the label
-		public void Move(Vector2D start, Vector2D end)
+		//mxd. This moves the label so it stays on screen and offsets it vertically so it doesn't overlap the line
+		public virtual void Move(Vector2D start, Vector2D end)
 		{
+			// Store before making any adjustments to start/end...
 			this.start = start;
 			this.end = end;
-			Update();
+
+			// Update text label
+			UpdateText();
+
+			// Check if start/end point is on screen...
+			Vector2D lt = General.Map.Renderer2D.DisplayToMap(new Vector2D(0.0f, General.Map.Renderer2D.ViewportSize.Height));
+			Vector2D rb = General.Map.Renderer2D.DisplayToMap(new Vector2D(General.Map.Renderer2D.ViewportSize.Width, 0.0f));
+			RectangleF viewport = new RectangleF(lt.x, lt.y, rb.x - lt.x, rb.y - lt.y);
+			bool startvisible = viewport.Contains(start.x, start.y);
+			bool endvisible = viewport.Contains(end.x, end.y);
+
+			// Do this only when one point is visible, an the other isn't 
+			if((!startvisible && endvisible) || (startvisible && !endvisible))
+			{
+				Line2D drawnline = new Line2D(start, end);
+				Line2D[] viewportsides = new[] {
+					new Line2D(lt, rb.x, lt.y), // top
+					new Line2D(lt.x, rb.y, rb.x, rb.y), // bottom
+					new Line2D(lt, lt.x, rb.y), // left
+					new Line2D(rb.x, lt.y, rb.x, rb.y), // right
+				};
+
+				float u;
+				foreach(Line2D side in viewportsides)
+				{
+					// Modify the start point so it stays on screen
+					if(!startvisible && side.GetIntersection(drawnline, out u))
+					{
+						start = drawnline.GetCoordinatesAt(u);
+						break;
+					}
+
+					// Modify the end point so it stays on screen
+					if(!endvisible && side.GetIntersection(drawnline, out u))
+					{
+						end = drawnline.GetCoordinatesAt(u);
+						break;
+					}
+				}
+			}
+
+			// Update label position
+			if(offsetposition)
+			{
+				Vector2D perpendicular = (end - start).GetPerpendicular();
+				float angle = perpendicular.GetAngle();
+				SizeF textsize = General.Map.GetTextSize(label.Text, label.Scale);
+				float offset = textsize.Width * Math.Abs((float)Math.Sin(angle)) + textsize.Height * Math.Abs((float)Math.Cos(angle));
+				perpendicular = perpendicular.GetNormal().GetScaled(offset / 2.0f / General.Map.Renderer2D.Scale);
+				start += perpendicular;
+				end += perpendicular;
+			}
+
+			// Apply changes
+			Vector2D delta = end - start;
+			label.Rectangle = new RectangleF(start.x + delta.x * 0.5f, start.y + delta.y * 0.5f, 0f, 0f);
 		}
 		
 		#endregion

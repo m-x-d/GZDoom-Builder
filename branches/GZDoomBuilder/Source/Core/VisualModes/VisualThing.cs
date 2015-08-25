@@ -26,6 +26,7 @@ using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
 using SlimDX;
 using SlimDX.Direct3D9;
+using Plane = CodeImp.DoomBuilder.Geometry.Plane;
 
 #endregion
 
@@ -42,7 +43,10 @@ namespace CodeImp.DoomBuilder.VisualModes
 		#region ================== Variables
 		
 		// Thing
-		private Thing thing;
+		private readonly Thing thing;
+
+		//mxd. Info
+		protected ThingTypeInfo info;
 		
 		// Texture
 		private ImageData texture;
@@ -70,7 +74,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 
 		//mxd
 		private int cameraDistance3D;
-		private int thingHeight;
+		private int thingheight;
 
 		//mxd. light properties
 		private DynamicLightType lightType;
@@ -82,6 +86,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		private Vector3 position_v3;
 		private float lightDelta; //used in light animation
 		private Vector3[] boundingBox;
+		
 		//gldefs light
 		private Vector3 lightOffset;
 		private int lightInterval;
@@ -98,6 +103,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		internal Matrix Position { get { return position; } }
 		internal Matrix CageScales { get { return cagescales; } }
 		internal int CageColor { get { return cagecolor; } }
+		public ThingTypeInfo Info { get { return info; } } //mxd
 		
 		//mxd
 		internal int VertexColor { get { return vertices.Length > 0 ? vertices[0].c : 0;} }
@@ -106,10 +112,11 @@ namespace CodeImp.DoomBuilder.VisualModes
 		public Vector3 Center { 
 			get {
 				if (isGldefsLight) return position_v3 + lightOffset;
-				return new Vector3(position_v3.X, position_v3.Y, position_v3.Z + thingHeight / 2); 
+				return new Vector3(position_v3.X, position_v3.Y, position_v3.Z + thingheight / 2f); 
 			} 
 		}
 		public Vector3D CenterV3D { get { return D3DDevice.V3D(Center); } }
+		public float LocalCenterZ { get { return thingheight / 2f; } } //mxd
 		public Vector3 PositionV3 { get { return position_v3; } }
 		public Vector3[] BoundingBox { get { return boundingBox; } }
 		//mxd. light properties
@@ -227,8 +234,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		public void SetCageSize(float radius, float height)
 		{
 			cagescales = Matrix.Scaling(radius, radius, height);
-			//mxd
-			thingHeight = (int)height;
+			thingheight = (int)height; //mxd
 		}
 
 		/// <summary>
@@ -256,13 +262,123 @@ namespace CodeImp.DoomBuilder.VisualModes
 		}
 
 		// This sets the vertices for the thing sprite
-		protected void SetVertices(ICollection<WorldVertex> verts)
+		protected void SetVertices(ICollection<WorldVertex> verts, Plane floor, Plane ceiling)
 		{
 			// Copy vertices
 			vertices = new WorldVertex[verts.Count];
 			verts.CopyTo(vertices, 0);
 			triangles = vertices.Length / 3;
 			updategeo = true;
+			
+			//mxd. Do some GLOOME shenanigans...
+			int localcenterz = (int)(Thing.Height / 2);
+			Matrix m;
+			switch(info.RenderMode)
+			{
+				// Appied only when ROLLSPRITE flag is set (?)
+				case Thing.SpriteRenderMode.WALL_SPRITE:
+					m = Matrix.Translation(0f, 0f, -localcenterz) * Matrix.RotationY(Thing.RollRad) * Matrix.RotationZ(thing.Angle) * Matrix.Translation(0f, 0f, localcenterz);
+					for(int i = 0; i < vertices.Length; i++)
+					{
+						Vector4 transformed = Vector3.Transform(new Vector3(vertices[i].x, vertices[i].y, vertices[i].z), m);
+						vertices[i].x = transformed.X;
+						vertices[i].y = transformed.Y;
+						vertices[i].z = transformed.Z;
+					}
+					break;
+
+				case Thing.SpriteRenderMode.FLOOR_SPRITE:
+					// TODO: thing angle is involved in this... somehow
+					Matrix floorrotation = (info.RollSprite ? Matrix.RotationY(Thing.RollRad) * Matrix.RotationX(Angle2D.PIHALF) : Matrix.RotationX(Angle2D.PIHALF));
+					m = Matrix.Translation(0f, 0f, -localcenterz) * floorrotation * Matrix.Translation(0f, 0f, localcenterz);
+					for(int i = 0; i < vertices.Length; i++)
+					{
+						Vector4 transformed = Vector3.Transform(new Vector3(vertices[i].x, vertices[i].y, vertices[i].z), m);
+						vertices[i].x = transformed.X;
+						vertices[i].y = transformed.Y;
+						vertices[i].z = transformed.Z;
+					}
+
+					// TODO: this won't work on things with AbsoluteZ flag
+					if(info.StickToPlane)
+					{
+						// Calculate vertical offset
+						float floorz = floor.GetZ(Thing.Position);
+						float ceilz = ceiling.GetZ(Thing.Position);
+
+						if(!float.IsNaN(floorz) && !float.IsNaN(ceilz))
+						{
+							float voffset;
+							if(info.Hangs)
+							{
+								float thingz = ceilz - Thing.Position.z + Thing.Height;
+								voffset = 0.01f - floorz - General.Clamp(thingz, 0, ceilz - floorz);
+							}
+							else
+							{
+								voffset = 0.01f - floorz - General.Clamp(Thing.Position.z, 0, ceilz - floorz);
+							}
+
+							// Apply it
+							for(int i = 0; i < vertices.Length; i++)
+								vertices[i].z = floor.GetZ(vertices[i].x + Thing.Position.x, vertices[i].y + Thing.Position.y) + voffset;
+						}
+					}
+					break;
+
+				case Thing.SpriteRenderMode.CEILING_SPRITE:
+					// TODO: thing angle is involved in this... somehow
+					Matrix ceilrotation = (info.RollSprite ? Matrix.RotationY(Thing.RollRad) * Matrix.RotationX(-Angle2D.PIHALF) : Matrix.RotationX(-Angle2D.PIHALF));
+					m = Matrix.Translation(0f, 0f, -localcenterz) * ceilrotation * Matrix.Translation(0f, 0f, localcenterz);
+					for(int i = 0; i < vertices.Length; i++)
+					{
+						Vector4 transformed = Vector3.Transform(new Vector3(vertices[i].x, vertices[i].y, vertices[i].z), m);
+						vertices[i].x = transformed.X;
+						vertices[i].y = transformed.Y;
+						vertices[i].z = transformed.Z;
+					}
+
+					// TODO: this won't work on things with AbsoluteZ flag
+					if(info.StickToPlane)
+					{
+						// Calculate vertical offset
+						float floorz = floor.GetZ(Thing.Position);
+						float ceilz = ceiling.GetZ(Thing.Position);
+						
+						if(!float.IsNaN(floorz) && !float.IsNaN(ceilz))
+						{
+							float voffset;
+							if(info.Hangs)
+							{
+								float thingz = ceilz - Math.Max(0, Thing.Position.z) - Thing.Height;
+								voffset = -0.01f - General.Clamp(thingz, 0, ceilz - floorz);
+							}
+							else
+							{
+								voffset = -0.01f - floorz - General.Clamp(Thing.Position.z, 0, ceilz - floorz);
+							}
+
+							// Apply it
+							for(int i = 0; i < vertices.Length; i++)
+								vertices[i].z = ceiling.GetZ(vertices[i].x + Thing.Position.x, vertices[i].y + Thing.Position.y) + voffset;
+						}
+					}
+					break;
+
+				default:
+					if(info.RollSprite)
+					{
+						m = Matrix.Translation(0f, 0f, -localcenterz) * Matrix.RotationY(Thing.RollRad) * Matrix.Translation(0f, 0f, localcenterz);
+						for(int i = 0; i < vertices.Length; i++)
+						{
+							Vector4 transformed = Vector3.Transform(new Vector3(vertices[i].x, vertices[i].y, vertices[i].z), m);
+							vertices[i].x = transformed.X;
+							vertices[i].y = transformed.Y;
+							vertices[i].z = transformed.Z;
+						}
+					}
+					break;
+			}
 		}
 		
 		// This updates the visual thing
@@ -318,7 +434,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 			} 
 			else 
 			{
-				UpdateBoundingBox((int)thing.Size, thingHeight);
+				UpdateBoundingBox((int)thing.Size, thingheight);
 
 				lightType = DynamicLightType.NONE;
 				lightRadius = -1;

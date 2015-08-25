@@ -29,7 +29,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	{
 		#region ================== Variables
 
-		protected HintLabel hintLabel;
+		protected HintLabel hintlabel;
 		protected int bevelWidth;
 		protected int currentBevelWidth;
 		protected int subdivisions;
@@ -61,8 +61,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		public override void Dispose() 
 		{
-			if (!isdisposed && hintLabel != null)
-				hintLabel.Dispose();
+			if (!isdisposed && hintlabel != null) hintlabel.Dispose();
 
 			base.Dispose();
 		}
@@ -134,7 +133,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					Vector2D[] labelCoords = new[] { start, new Vector2D(end.x, start.y), end, new Vector2D(start.x, end.y), start };
 					for (int i = 1; i < 5; i++) 
 					{
-						SetLabelPosition(labels[i - 1], labelCoords[i], labelCoords[i - 1]);
+						labels[i - 1].Move(labelCoords[i], labelCoords[i - 1]);
 						renderer.RenderText(labels[i - 1].TextLabel);
 					}
 
@@ -144,11 +143,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						//render hint
 						if (width > 64 * vsize && height > 16 * vsize) 
 						{
-							float vPos = start.y + height / 2.0f;
-							hintLabel.Start = new Vector2D(start.x, vPos);
-							hintLabel.End = new Vector2D(end.x, vPos);
-							hintLabel.Text = GetHintText();
-							renderer.RenderText(hintLabel.TextLabel);
+							hintlabel.Move(start, end);
+							hintlabel.Text = GetHintText();
+							renderer.RenderText(hintlabel.TextLabel);
 						}
 						
 						//and shape corners
@@ -294,8 +291,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			if (points.Count == 1) //add point and labels
 			{ 
-				labels.AddRange(new[] { new LineLengthLabel(false), new LineLengthLabel(false), new LineLengthLabel(false), new LineLengthLabel(false) });
-				hintLabel = new HintLabel();
+				labels.AddRange(new[] { new LineLengthLabel(false, true), new LineLengthLabel(false, true), new LineLengthLabel(false, true), new LineLengthLabel(false, true) });
+				hintlabel = new HintLabel(General.Colors.InfoLine);
 				Update();
 			} 
 			else if (points[0].pos == points[1].pos) //nothing is drawn

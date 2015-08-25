@@ -179,8 +179,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			//mxd. If snap to cardinal directions is enabled, modify the offset
 			if(snapcardinal)
 			{
-				float angle = Angle2D.DegToRad((General.ClampAngle((int)Angle2D.RadToDeg(offset.GetAngle()) + 22)) / 45 * 45);
+				float angle = Angle2D.DegToRad((General.ClampAngle((int)Angle2D.RadToDeg(offset.GetAngle()) + 44)) / 90 * 90);
 				offset = new Vector2D(0, -offset.GetLength()).GetRotated(angle);
+				snapgridincrement = true; // We don't want to move Things away from the cardinal directions
 			}
 			
 			Vector2D oldpos = dragitem.Position;

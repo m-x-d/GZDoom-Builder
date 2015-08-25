@@ -14,7 +14,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	{
 		#region ================== Variables
 
-		protected BaseVisualMode mode;
+		private BaseVisualMode mode;
 		private float cageradius2;
 		private Vector3D boxp1;
 		private Vector3D boxp2;
@@ -111,7 +111,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		public virtual bool IsSelected() 
+		public bool IsSelected() 
 		{
 			return selected;
 		}
@@ -226,38 +226,38 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Unused events
 
 		// Unused
-		public virtual void OnSelectBegin() { }
-		public virtual void OnEditBegin() { }
-		public virtual void OnMouseMove(MouseEventArgs e) { }
-		public virtual void OnChangeTargetBrightness(bool up) { }
-		public virtual void OnChangeTextureOffset(int horizontal, int vertical, bool doSurfaceAngleCorrection) { }
-		public virtual void OnChangeScale(int incrementX, int incrementY) { }
-		public virtual void OnSelectTexture() { }
-		public virtual void OnCopyTexture() { }
-		public virtual void OnPasteTexture() { }
-		public virtual void OnCopyTextureOffsets() { }
-		public virtual void OnPasteTextureOffsets() { }
-		public virtual void OnTextureAlign(bool alignx, bool aligny) { }
-		public virtual void OnTextureFit(FitTextureOptions options) { } //mxd
-		public virtual void OnToggleUpperUnpegged() { }
-		public virtual void OnToggleLowerUnpegged() { }
-		public virtual void OnResetTextureOffset() { }
-		public virtual void OnResetLocalTextureOffset() { } //mxd
-		public virtual void OnProcess(float deltatime) { }
-		public virtual void OnTextureFloodfill() { }
-		public virtual void OnInsert() { }
-		public virtual void ApplyTexture(string texture) { }
-		public virtual void ApplyUpperUnpegged(bool set) { }
-		public virtual void ApplyLowerUnpegged(bool set) { }
-		public virtual string GetTextureName() { return ""; }
-		public virtual void SelectNeighbours(bool select, bool withSameTexture, bool withSameHeight) { } //mxd
+		public void OnSelectBegin() { }
+		public void OnEditBegin() { }
+		public void OnMouseMove(MouseEventArgs e) { }
+		public void OnChangeTargetBrightness(bool up) { }
+		public void OnChangeTextureOffset(int horizontal, int vertical, bool doSurfaceAngleCorrection) { }
+		public void OnChangeScale(int incrementX, int incrementY) { }
+		public void OnSelectTexture() { }
+		public void OnCopyTexture() { }
+		public void OnPasteTexture() { }
+		public void OnCopyTextureOffsets() { }
+		public void OnPasteTextureOffsets() { }
+		public void OnTextureAlign(bool alignx, bool aligny) { }
+		public void OnTextureFit(FitTextureOptions options) { } //mxd
+		public void OnToggleUpperUnpegged() { }
+		public void OnToggleLowerUnpegged() { }
+		public void OnResetTextureOffset() { }
+		public void OnResetLocalTextureOffset() { } //mxd
+		public void OnProcess(float deltatime) { }
+		public void OnTextureFloodfill() { }
+		public void OnInsert() { }
+		public void ApplyTexture(string texture) { }
+		public void ApplyUpperUnpegged(bool set) { }
+		public void ApplyLowerUnpegged(bool set) { }
+		public string GetTextureName() { return ""; }
+		public void SelectNeighbours(bool select, bool withSameTexture, bool withSameHeight) { } //mxd
 
 		#endregion
 
 		#region ================== Events
 
 		// Select or deselect
-		public virtual void OnSelectEnd() 
+		public void OnSelectEnd() 
 		{
 			if(this.selected) 
 			{
@@ -272,14 +272,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// Copy properties
-		public virtual void OnCopyProperties() 
+		public void OnCopyProperties() 
 		{
 			BuilderPlug.Me.CopiedVertexProps = new VertexProperties(vertex);
 			mode.SetActionResult("Copied vertex properties.");
 		}
 
 		// Paste properties
-		public virtual void OnPasteProperties() 
+		public void OnPasteProperties() 
 		{
 			if(BuilderPlug.Me.CopiedVertexProps != null) 
 			{
@@ -295,7 +295,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//Delete key pressed - remove zoffset field
-		public virtual void OnDelete() 
+		public void OnDelete() 
 		{
 			mode.CreateUndo("Clear vertex height offset");
 			mode.SetActionResult("Cleared vertex height offset.");
@@ -323,7 +323,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// Edit button released
-		public virtual void OnEditEnd() 
+		public void OnEditEnd() 
 		{
 			if(General.Interface.IsActiveWindow) 
 			{
@@ -365,7 +365,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// Raise/lower thing
-		public virtual void OnChangeTargetHeight(int amount) 
+		public void OnChangeTargetHeight(int amount) 
 		{
 			if((General.Map.UndoRedo.NextUndo == null) || (General.Map.UndoRedo.NextUndo.TicketID != undoticket))
 				undoticket = mode.CreateUndo("Change vertex height");

@@ -64,8 +64,14 @@ namespace CodeImp.DoomBuilder.Config
 		private readonly ArgumentInfo[] args;
 		private readonly bool isknown;
 		private readonly bool absolutez;
+		private bool xybillboard; //mxd
 		private SizeF spritescale;
 		private readonly bool locksprite; //mxd
+
+		//mxd. GLOOME rendering settings
+		private Thing.SpriteRenderMode rendermode;
+		private bool rollsprite;
+		private bool sticktoplane;
 		
 		#endregion
 
@@ -90,8 +96,14 @@ namespace CodeImp.DoomBuilder.Config
 		public bool IsKnown { get { return isknown; } }
 		public bool IsNull { get { return (index == 0); } }
 		public bool AbsoluteZ { get { return absolutez; } }
+		public bool XYBillboard { get { return xybillboard; } } //mxd
 		public SizeF SpriteScale { get { return spritescale; } }
 		public string ClassName { get { return classname; } } //mxd. Need this to add model overrides for things defined in configs
+
+		//mxd. GLOOME rendering flags
+		public Thing.SpriteRenderMode RenderMode { get { return rendermode; } }
+		public bool RollSprite { get { return rollsprite; } }
+		public bool StickToPlane { get { return sticktoplane; } }
 
 		#endregion
 
@@ -121,6 +133,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.args = new ArgumentInfo[Linedef.NUM_ARGS];
 			this.isknown = false;
 			this.absolutez = false;
+			this.xybillboard = false;
 			this.locksprite = false; //mxd
 			
 			// We have no destructor
@@ -319,7 +332,13 @@ namespace CodeImp.DoomBuilder.Config
 			this.fixedsize = other.fixedsize;
 			this.fixedrotation = other.fixedrotation; //mxd
 			this.absolutez = other.absolutez;
+			this.xybillboard = other.xybillboard; //mxd
 			this.spritescale = new SizeF(other.spritescale.Width, other.spritescale.Height);
+
+			//mxd. Copy GLOOME properties
+			this.rendermode = other.rendermode;
+			this.sticktoplane = other.sticktoplane;
+			this.rollsprite = other.rollsprite;
 
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -406,6 +425,16 @@ namespace CodeImp.DoomBuilder.Config
 			hangs = actor.GetFlagValue("spawnceiling", hangs);
 			int blockvalue = (blocking > 0) ? blocking : 2;
 			blocking = actor.GetFlagValue("solid", (blocking != 0)) ? blockvalue : 0;
+			xybillboard = actor.GetFlagValue("forcexybillboard", false); //mxd
+
+			//mxd. GLOOME rendering flags. ORDER: WALLSPRITE -> FLOORSPRITE || CEILSPRITE
+			rollsprite = actor.GetFlagValue("rollsprite", false); 
+			//TODO: in GLOOME +WALLSPRITE works only when +ROLLSPRITE is set?
+			if(rollsprite && actor.GetFlagValue("wallsprite", false)) rendermode = Thing.SpriteRenderMode.WALL_SPRITE;
+			else if(actor.GetFlagValue("floorsprite", false))		  rendermode = Thing.SpriteRenderMode.FLOOR_SPRITE;
+			else if(actor.GetFlagValue("ceilsprite", false))		  rendermode = Thing.SpriteRenderMode.CEILING_SPRITE;
+			if(rendermode == Thing.SpriteRenderMode.FLOOR_SPRITE || rendermode == Thing.SpriteRenderMode.CEILING_SPRITE)
+				sticktoplane = actor.GetFlagValue("sticktoplane", false); // Works only for Floor/Ceil sprites
 
 			//mxd
 			if(blocking > THING_BLOCKING_NONE) errorcheck = THING_ERROR_INSIDE_STUCK;

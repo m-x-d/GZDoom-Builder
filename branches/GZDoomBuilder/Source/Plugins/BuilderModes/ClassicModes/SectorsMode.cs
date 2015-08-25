@@ -53,11 +53,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Variables
 
 		// Highlighted item
-		protected Sector highlighted;
+		private Sector highlighted;
 		private Association highlightasso = new Association();
 
 		// Interface
-		protected bool editpressed;
+		private bool editpressed;
 
 		// Labels
 		private Dictionary<Sector, TextLabel[]> labels;
@@ -389,7 +389,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// This highlights a new item
-		protected void Highlight(Sector s)
+		private void Highlight(Sector s)
 		{
 			// Often we can get away by simply undrawing the previous
 			// highlight and drawing the new highlight. But if associations
@@ -482,7 +482,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// This selectes or deselects a sector
-		protected void SelectSector(Sector s, bool selectstate, bool update)
+		private void SelectSector(Sector s, bool selectstate, bool update)
 		{
 			bool selectionchanged = false;
 
@@ -1429,7 +1429,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		// This creates a new vertex at the mouse position
 		[BeginAction("insertitem", BaseAction = true)]
-		public virtual void InsertVertexAction()
+		public void InsertVertexAction()
 		{
 			// Start drawing mode
 			DrawGeometryMode drawmode = new DrawGeometryMode();

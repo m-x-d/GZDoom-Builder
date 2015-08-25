@@ -938,10 +938,28 @@ namespace CodeImp.DoomBuilder.Rendering
 									graphics.Shaders.World3D.SetHighlightColor(CalculateHighlightColor((t == highlighted) && showhighlight, (t.Selected && showselection)).ToArgb());
 								}
 
-								// Create the matrix for positioning / rotation
-								world = billboard
-										* Matrix.Scaling(t.Thing.ScaleX, t.Thing.ScaleX, t.Thing.ScaleY) 
-										* t.Position; //mxd
+								//mxd. Create the matrix for positioning 
+								if(t.Info.RenderMode == Thing.SpriteRenderMode.NORMAL) // Apply billboarding?
+								{
+									if(t.Info.XYBillboard)
+									{
+										world = Matrix.Translation(0f, 0f, -t.LocalCenterZ) * Matrix.RotationX(Angle2D.PI - General.Map.VisualCamera.AngleZ) * Matrix.Translation(0f, 0f, t.LocalCenterZ)
+											* billboard
+											* Matrix.Scaling(t.Thing.ScaleX, t.Thing.ScaleX, t.Thing.ScaleY)
+											* t.Position;
+									}
+									else
+									{
+										world = billboard
+											* Matrix.Scaling(t.Thing.ScaleX, t.Thing.ScaleX, t.Thing.ScaleY)
+											* t.Position;
+									}
+								}
+								else
+								{
+									world = Matrix.Scaling(t.Thing.ScaleX, t.Thing.ScaleX, t.Thing.ScaleY)
+										* t.Position;
+								}
 
 								ApplyMatrices3D();
 
