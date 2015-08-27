@@ -1060,6 +1060,8 @@
     <EmbeddedResource Include="Resources\CommentRegular.png" />
     <EmbeddedResource Include="Resources\CommentSmile.png" />
     <None Include="Resources\Comment.png" />
+    <None Include="Resources\About.png" />
+    <None Include="Resources\Configuration.png" />
     <Content Include="Resources\DB2.ico" />
     <None Include="Resources\GZDB2.ico" />
     <None Include="Resources\fog.png" />
@@ -1075,6 +1077,11 @@
     <None Include="Resources\InfoPanelCollapse.png" />
     <None Include="Resources\InfoPanelExpand.png" />
     <None Include="Resources\GridDynamic.png" />
+    <None Include="Resources\Group.png" />
+    <None Include="Resources\GroupAdd.png" />
+    <None Include="Resources\GroupRemove.png" />
+    <None Include="Resources\GridDecrease.png" />
+    <None Include="Resources\GridIncrease.png" />
     <Content Include="Resources\Light.png" />
     <None Include="Resources\Lightbulb.png" />
     <None Include="Resources\LightDisabled.png" />
@@ -1090,6 +1097,9 @@
     <None Include="Resources\ModelDisabled.png" />
     <None Include="Resources\ModelFiltered.png" />
     <Content Include="Resources\Model_selected.png" />
+    <None Include="Resources\Update.png" />
+    <None Include="Resources\Reload.png" />
+    <None Include="Resources\Preferences.png" />
     <None Include="Resources\Replace.png" />
     <None Include="Resources\SearchPrev.png" />
     <None Include="Resources\SearchNext.png" />

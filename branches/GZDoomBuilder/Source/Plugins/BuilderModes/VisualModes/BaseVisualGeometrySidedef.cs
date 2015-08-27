@@ -19,15 +19,16 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Geometry;
+using CodeImp.DoomBuilder.GZBuilder.Data;
 using CodeImp.DoomBuilder.GZBuilder.Tools;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.VisualModes;
-using System.Globalization;
 
 #endregion
 
@@ -257,7 +258,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(sd.CeilingGlow != null || sd.FloorGlow != null) 
 			{
 				for(int i = 0; i < verts.Count; i++)
+				{
+					if(verts[i].c == PixelColor.INT_WHITE) continue; // Fullbright verts are not affected by glows.
 					verts[i] = InterpolateVertexColor(verts[i], sd);
+				}
 			}
 			
 			return verts;
@@ -276,9 +280,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					float cz = data.Ceiling.plane.GetZ(v.x, v.y);
 					float delta = ((v.z - cgz) / (cz - cgz)) * 0.9f;
-
 					PixelColor vc = PixelColor.FromInt(v.c);
-					v.c = InterpolationTools.InterpolateColor(PixelColor.Add(vc, data.CeilingGlow.Color), vc, delta);
+					v.c = InterpolationTools.InterpolateColor(GetGlowColor(data.CeilingGlow, vc), vc, delta);
 				}
 			}
 
@@ -292,13 +295,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					float fz = data.Floor.plane.GetZ(v.x, v.y);
 					float delta = ((v.z - fz) / (fgz - fz)) * 0.9f;
-
 					PixelColor vc = PixelColor.FromInt(v.c);
-					v.c = InterpolationTools.InterpolateColor(vc, PixelColor.Add(vc, data.FloorGlow.Color), delta);
+					v.c = InterpolationTools.InterpolateColor(vc, GetGlowColor(data.FloorGlow, vc), delta);
 				}
 			}
 
 			return v;
+		}
+
+		//mxd
+		private static PixelColor GetGlowColor(GlowingFlatData data, PixelColor vertexcolor)
+		{
+			if(data.Subtractive) return PixelColor.Subtract(vertexcolor, data.Color);
+			return PixelColor.Add(vertexcolor, data.Color);
 		}
 		
 		// This splits a polygon with a plane and returns the other part as a new polygon

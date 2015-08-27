@@ -213,6 +213,22 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			ceiling = ceiling ?? new VisualCeiling(mode, this);
 			if(ceiling.Setup(data.Ceiling, null))
 				base.AddGeometry(ceiling);
+
+			//mxd. Calculate fogdistance
+			float brightness = Math.Max(30, Sector.Brightness);
+			if(Sector.HasFogColor)
+			{
+				if(Sector.UsesOutsideFog && General.Map.Data.MapInfo.OutsideFogDensity > 0)
+					fogdistance = General.Map.Data.MapInfo.OutsideFogDensity;
+				else if(!Sector.UsesOutsideFog && General.Map.Data.MapInfo.FogDensity > 0)
+					fogdistance = General.Map.Data.MapInfo.FogDensity;
+				else
+					fogdistance = brightness * 11.0f;
+			}
+			else
+			{
+				fogdistance = MAXIMUM_FOG_DISTANCE;
+			}
 			
 			// Create 3D floors
 			for(int i = 0; i < data.ExtraFloors.Count; i++)

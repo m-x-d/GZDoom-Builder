@@ -18,6 +18,12 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 	{
 		#region ================== Structs
 
+		private const int DEFAULT_GLOW_HEIGHT = 64;
+
+		#endregion
+
+		#region ================== Structs
+
 		private struct GldefsLightType
 		{
 			public const string POINT = "pointlight";
@@ -509,16 +515,42 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 
 									// Add glow data
 									glowingflats[General.Map.Data.GetFullLongFlatName(Lump.MakeLongName(token, General.Map.Options.UseLongTextureNames))] = new GlowingFlatData {
-										Height = 128,
+										Height = DEFAULT_GLOW_HEIGHT * 2,
 										Fullbright = true,
 										Color = new PixelColor(255, 255, 255, 255),
 										CalculateTextureColor = true
 									};
 								}
 							} 
-							else if(token == "texture") 
+							// GLOOME subtractive flats
+							else if(token == "subflats" || token == "subwalls")
 							{
+								// Next sould be opening brace
+								if(!NextTokenIs("{")) break;
+
+								// Read flat names
+								while(SkipWhitespace(true))
+								{
+									token = ReadToken();
+									if(token == "}") break;
+
+									// Add glow data
+									glowingflats[General.Map.Data.GetFullLongFlatName(Lump.MakeLongName(token, General.Map.Options.UseLongTextureNames))] = new GlowingFlatData {
+										Height = DEFAULT_GLOW_HEIGHT * 2,
+										Fullblack = true,
+										Subtractive = true,
+										Color = new PixelColor(255, 0, 0, 0),
+										CalculateTextureColor = false
+									};
+								}
+							}
+							else if(token == "texture" || token == "subtexture")
+							{
+								int color;
+								int glowheight = DEFAULT_GLOW_HEIGHT;
+								bool subtractivetexture = (token == "subtexture");
 								string texturename = StripTokenQuotes(ReadToken());
+
 								if(string.IsNullOrEmpty(texturename))
 								{
 									General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected a texture name.");
@@ -532,7 +564,6 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 								SkipWhitespace(true);
 								token = ReadToken();
 
-								int color;
 								if(!int.TryParse(token, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out color)) 
 								{
 									//probably it's a color name?
@@ -556,8 +587,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 								{
 									// Add glow data
 									glowingflats[texturehash] = new GlowingFlatData {
-										Height = 128,
-										Fullbright = false,
+										Height = glowheight * 2,
+										Subtractive = subtractivetexture,
 										Color = PixelColor.FromInt(color).WithAlpha(255),
 										CalculateTextureColor = false
 									};
@@ -565,36 +596,52 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 									continue;
 								}
 
-								// Should be glow height
-								int height;
-								if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out height)) 
+								// Can be glow height
+								SkipWhitespace(true);
+								token = ReadToken();
+
+								int h;
+								if(int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out h))
 								{
-									General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected glow height value, but got '" + token + "'.");
+									// Can't pass glowheight directly cause TryParse will unconditionally set it to 0
+									glowheight = h;
+									
+									// Now we can find a comma
+									if(!NextTokenIs(",", false))
+									{
+										// Add glow data
+										glowingflats[texturehash] = new GlowingFlatData {
+											Height = glowheight * 2,
+											Subtractive = subtractivetexture,
+											Color = PixelColor.FromInt(color).WithAlpha(255),
+											CalculateTextureColor = false
+										};
+
+										continue;
+									}
+
+									// Read the flag
+									SkipWhitespace(true);
+									token = ReadToken().ToLowerInvariant();
+								}
+
+								// Next is "fullbright" or "fullblack" flag
+								bool fullbright = (token == "fullbright");
+								bool fullblack = (!subtractivetexture && token == "fullblack");
+
+								if(!fullblack && !fullbright)
+								{
+									string expectedflags = (subtractivetexture ? "'fullbright'" : "'fullbright' or 'fullblack'");
+									General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected " + expectedflags + " flag, but got '" + token + "'.");
 									break;
 								}
 
-								// Now we can find a comma
-								if(!NextTokenIs(",", false)) 
-								{
-									// Add glow data
-									glowingflats[texturehash] = new GlowingFlatData {
-										Height = height * 2,
-										Fullbright = false,
-										Color = PixelColor.FromInt(color).WithAlpha(255),
-										CalculateTextureColor = false
-									};
-
-									continue;
-								}
-
-								// Next is "fullbright" flag
-								SkipWhitespace(true);
-								bool fullbright = (ReadToken().ToLowerInvariant() == "fullbright");
-
 								// Add glow data
 								glowingflats[texturehash] = new GlowingFlatData {
-									Height = height,
+									Height = glowheight * 2,
 									Fullbright = fullbright,
+									Fullblack = fullblack,
+									Subtractive = subtractivetexture,
 									Color = PixelColor.FromInt(color).WithAlpha(255),
 									CalculateTextureColor = false
 								};
@@ -604,8 +651,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						// Now find closing brace
 						while(SkipWhitespace(true))
 						{
-							string t = ReadToken();
-							if(string.IsNullOrEmpty(t) || t == "}") break;
+							token = ReadToken();
+							if(string.IsNullOrEmpty(token) || token == "}") break;
 						}
 					}
 					else if (token == "#include") 

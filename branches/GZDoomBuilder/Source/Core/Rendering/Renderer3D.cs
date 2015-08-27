@@ -40,7 +40,7 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		private const int RENDER_PASSES = 4;
 		private const float PROJ_NEAR_PLANE = 1f;
-		private const float CROSSHAIR_SCALE = 0.06f;
+		//private const float CROSSHAIR_SCALE = 0.06f;
 		private const float FOG_RANGE = 0.9f;
 		internal const float GZDOOM_VERTICAL_VIEW_STRETCH = 1.2f;
 		internal const float GZDOOM_INVERTED_VERTICAL_VIEW_STRETCH = 1.0f / GZDOOM_VERTICAL_VIEW_STRETCH;
@@ -187,31 +187,26 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Determine coordinates
 			float width = windowsize.Width;
 			float height = windowsize.Height;
-			float size = height * CROSSHAIR_SCALE;
-			RectangleF rect = new RectangleF((width - size) / 2, (height - size) / 2, size, size);
+			RectangleF rect = new RectangleF((float)Math.Round((width - texturesize.Width) * 0.5f), (float)Math.Round((height - texturesize.Height) * 0.5f), texturesize.Width, texturesize.Height);
 			
 			// Make vertices
 			crosshairverts = new FlatVertex[4];
 			crosshairverts[0].x = rect.Left;
 			crosshairverts[0].y = rect.Top;
 			crosshairverts[0].c = -1;
-			crosshairverts[0].u = 1f / texturesize.Width;
-			crosshairverts[0].v = 1f / texturesize.Height;
 			crosshairverts[1].x = rect.Right;
 			crosshairverts[1].y = rect.Top;
 			crosshairverts[1].c = -1;
-			crosshairverts[1].u = 1f - 1f / texturesize.Width;
-			crosshairverts[1].v = 1f / texturesize.Height;
+			crosshairverts[1].u = 1.0f;
 			crosshairverts[2].x = rect.Left;
 			crosshairverts[2].y = rect.Bottom;
 			crosshairverts[2].c = -1;
-			crosshairverts[2].u = 1f / texturesize.Width;
-			crosshairverts[2].v = 1f - 1f / texturesize.Height;
+			crosshairverts[2].v = 1.0f;
 			crosshairverts[3].x = rect.Right;
 			crosshairverts[3].y = rect.Bottom;
 			crosshairverts[3].c = -1;
-			crosshairverts[3].u = 1f - 1f / texturesize.Width;
-			crosshairverts[3].v = 1f - 1f / texturesize.Height;
+			crosshairverts[3].u = 1.0f;
+			crosshairverts[3].v = 1.0f;
 		}
 		
 		#endregion
@@ -808,7 +803,7 @@ namespace CodeImp.DoomBuilder.Rendering
 						// Determine the shader pass we want to use for this object
 						int wantedshaderpass = (((g == highlighted) && showhighlight) || (g.Selected && showselection)) ? highshaderpass : shaderpass;
 
-						//mxd
+						//mxd. Render fog?
 						if( !(!General.Settings.GZDrawFog || fullbrightness || sector.Sector.Brightness > 247) )
 							wantedshaderpass += 8;
 
@@ -833,7 +828,7 @@ namespace CodeImp.DoomBuilder.Rendering
 							{
 								graphics.Shaders.World3D.World = world;
 								graphics.Shaders.World3D.LightColor = sector.Sector.FogColor;
-								graphics.Shaders.World3D.CameraPosition = new Vector4(cameraposition.x, cameraposition.y, cameraposition.z, GetFogEnd(sector.Sector, true));
+								graphics.Shaders.World3D.CameraPosition = new Vector4(cameraposition.x, cameraposition.y, cameraposition.z, sector.FogDistance);
 							}
 							
 							graphics.Shaders.World3D.SetHighlightColor(CalculateHighlightColor((g == highlighted) && showhighlight, (g.Selected && showselection)).ToArgb());
@@ -968,7 +963,8 @@ namespace CodeImp.DoomBuilder.Rendering
 								{
 									graphics.Shaders.World3D.World = world;
 									graphics.Shaders.World3D.LightColor = t.Thing.Sector.FogColor;
-									graphics.Shaders.World3D.CameraPosition = new Vector4(cameraposition.x, cameraposition.y, cameraposition.z, GetFogEnd(t.Thing.Sector, (litcolor.ToArgb() != 0)));
+									float fogdistance = (litcolor.ToArgb() != 0 ? VisualSector.MAXIMUM_FOG_DISTANCE : t.FogDistance);
+									graphics.Shaders.World3D.CameraPosition = new Vector4(cameraposition.x, cameraposition.y, cameraposition.z, fogdistance);
 								}
 
 								graphics.Shaders.World3D.ApplySettings();
@@ -1155,9 +1151,9 @@ namespace CodeImp.DoomBuilder.Rendering
 					if (wantedshaderpass > 7) 
 					{
 						graphics.Shaders.World3D.World = world;
-
 						graphics.Shaders.World3D.LightColor = t.Thing.Sector.FogColor;
-						graphics.Shaders.World3D.CameraPosition = new Vector4(cameraposition.x, cameraposition.y, cameraposition.z, GetFogEnd(t.Thing.Sector, (litcolor.ToArgb() != 0)));
+						float fogdistance = (litcolor.ToArgb() != 0 ? VisualSector.MAXIMUM_FOG_DISTANCE : t.FogDistance);
+						graphics.Shaders.World3D.CameraPosition = new Vector4(cameraposition.x, cameraposition.y, cameraposition.z, fogdistance);
 					}
 
 					for(int i = 0; i < group.Key.Model.Meshes.Count; i++) 
@@ -1202,24 +1198,6 @@ namespace CodeImp.DoomBuilder.Rendering
 				}
 			}
 			return litColor;
-		}
-
-		//mxd. This returns distance, at which fog color completely replaces texture color for given sector
-		private static float GetFogEnd(Sector s, bool skipwhennofog)
-		{
-			float brightness = Math.Max(30, s.Brightness);
-			
-			if (s.HasFogColor) 
-			{
-				if(s.UsesOutsideFog && General.Map.Data.MapInfo.OutsideFogDensity > 0)
-					return General.Map.Data.MapInfo.OutsideFogDensity;
-				if(!s.UsesOutsideFog && General.Map.Data.MapInfo.FogDensity > 0)
-					return General.Map.Data.MapInfo.FogDensity;
-				return brightness * 11.0f;
-			}
-
-			if(skipwhennofog) return 2805f; //255 * 11
-			return (float)Math.Pow(2.0f, brightness / 11.0f);
 		}
 
 		// This calculates the highlight/selection color
@@ -1368,7 +1346,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			graphics.Shaders.Display2D.Begin();
 			graphics.Shaders.Display2D.SetSettings(1.0f, 1.0f, 0.0f, 1.0f, true);
 			graphics.Shaders.Display2D.BeginPass(1);
-			graphics.Device.DrawUserPrimitives<FlatVertex>(PrimitiveType.TriangleStrip, 0, 2, crosshairverts);
+			graphics.Device.DrawUserPrimitives(PrimitiveType.TriangleStrip, 0, 2, crosshairverts);
 			graphics.Shaders.Display2D.EndPass();
 			graphics.Shaders.Display2D.End();
 		}

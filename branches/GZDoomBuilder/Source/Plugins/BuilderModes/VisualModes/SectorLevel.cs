@@ -35,6 +35,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public PixelColor colorbelow;
 		public bool disablelighting; //mxd
 		public bool restrictlighting; //mxd
+		public bool affectedbyglow; //mxd
 		
 		// Constructor
 		public SectorLevel(Sector s, SectorLevelType type)

@@ -514,4 +514,34 @@
   <data name="GridDynamic" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\GridDynamic.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="About" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\About.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Configuration" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Configuration.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Preferences" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Preferences.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Reload" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Reload.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Update" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Update.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Group" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Group.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="GroupAdd" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\GroupAdd.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="GroupRemove" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\GroupRemove.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="GridDecrease" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\GridDecrease.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="GridIncrease" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\GridIncrease.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

@@ -865,7 +865,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						sd.AddEffectThingVertexSlope(slopeceilingthings, false);
 					}
 				}
-				else if(General.Map.Data.GlowingFlats.ContainsKey(s.LongFloorTexture) || General.Map.Data.GlowingFlats.ContainsKey(s.LongCeilTexture))
+				
+				if(General.Map.Data.GlowingFlats.ContainsKey(s.LongFloorTexture) || General.Map.Data.GlowingFlats.ContainsKey(s.LongCeilTexture))
 				{
 					SectorData sd = GetSectorData(s);
 					sd.AddEffectGlowingFlat(s);

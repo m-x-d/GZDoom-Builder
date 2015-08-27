@@ -292,10 +292,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					bool absolute;
 
 					//mxd. Apply GLDEFS override?
-					if(General.Map.Data.GlowingFlats.ContainsKey(s.LongFloorTexture) && General.Map.Data.GlowingFlats[s.LongFloorTexture].Fullbright)
+					if(General.Map.Data.GlowingFlats.ContainsKey(s.LongFloorTexture) 
+						&& (General.Map.Data.GlowingFlats[s.LongFloorTexture].Fullbright || General.Map.Data.GlowingFlats[s.LongFloorTexture].Fullblack))
 					{
 						color = -1;
-						light = 255;
+						light = (General.Map.Data.GlowingFlats[s.LongFloorTexture].Fullbright ? 255 : 0);
 						absolute = true;
 					}
 					else
@@ -343,10 +344,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					bool absolute;
 
 					//mxd. Apply GLDEFS override?
-					if(General.Map.Data.GlowingFlats.ContainsKey(s.LongCeilTexture) && General.Map.Data.GlowingFlats[s.LongCeilTexture].Fullbright) 
+					if(General.Map.Data.GlowingFlats.ContainsKey(s.LongCeilTexture)
+						&& (General.Map.Data.GlowingFlats[s.LongCeilTexture].Fullbright || General.Map.Data.GlowingFlats[s.LongCeilTexture].Fullblack))
 					{
 						color = -1;
-						light = 255;
+						light = (General.Map.Data.GlowingFlats[s.LongCeilTexture].Fullbright ? 255 : 0);
 						absolute = true;
 					} 
 					else 

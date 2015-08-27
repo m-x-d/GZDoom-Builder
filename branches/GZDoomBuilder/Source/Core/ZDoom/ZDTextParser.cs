@@ -16,6 +16,7 @@
 
 #region ================== Namespaces
 
+using System;
 using System.Globalization;
 using System.Text;
 using System.IO;
@@ -45,6 +46,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		private int errorline;
 		private string errordesc;
 		private string errorsource;
+		private long prevstreamposition; //mxd. Text stream position storted before poerforming ReadToken.
 		
 		#endregion
 		
@@ -213,6 +215,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 			//mxd. Return empty string when the end of the stream has been reached
 			if(datastream.Position == datastream.Length) return string.Empty;
 			
+			//mxd. Store starting position 
+			prevstreamposition = datastream.Position;
+			
 			string token = "";
 			bool quotedstring = false;
 			
@@ -294,6 +299,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 		{
 			// Return null when the end of the stream has been reached
 			if(datastream.Position == datastream.Length) return null;
+
+			//mxd. Store starting position 
+			prevstreamposition = datastream.Position;
 			
 			string token = "";
 			bool quotedstring = false;
@@ -461,9 +469,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 		//mxd 
 		protected internal int GetCurrentLineNumber() 
 		{
-			long position = datastream.Position;
+			long position = Math.Min(prevstreamposition, datastream.Position);
 			long readpos = 0;
-			int linenumber = 1;
+			int linenumber = 0;
 
 			// Find the line on which we found this error
 			datastream.Seek(0, SeekOrigin.Begin);

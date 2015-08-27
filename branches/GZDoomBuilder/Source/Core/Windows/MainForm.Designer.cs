@@ -635,6 +635,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// itemgridinc
 			// 
+			this.itemgridinc.Image = global::CodeImp.DoomBuilder.Properties.Resources.GridIncrease;
 			this.itemgridinc.Name = "itemgridinc";
 			this.itemgridinc.Size = new System.Drawing.Size(219, 22);
 			this.itemgridinc.Tag = "builder_griddec";
@@ -643,6 +644,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// itemgriddec
 			// 
+			this.itemgriddec.Image = global::CodeImp.DoomBuilder.Properties.Resources.GridDecrease;
 			this.itemgriddec.Name = "itemgriddec";
 			this.itemgriddec.Size = new System.Drawing.Size(219, 22);
 			this.itemgriddec.Tag = "builder_gridinc";
@@ -674,18 +676,21 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// addToGroup
 			// 
+			this.addToGroup.Image = global::CodeImp.DoomBuilder.Properties.Resources.GroupAdd;
 			this.addToGroup.Name = "addToGroup";
 			this.addToGroup.Size = new System.Drawing.Size(219, 22);
 			this.addToGroup.Text = "Add Selection to Group";
 			// 
 			// selectGroup
 			// 
+			this.selectGroup.Image = global::CodeImp.DoomBuilder.Properties.Resources.Group;
 			this.selectGroup.Name = "selectGroup";
 			this.selectGroup.Size = new System.Drawing.Size(219, 22);
 			this.selectGroup.Text = "Select Group";
 			// 
 			// clearGroup
 			// 
+			this.clearGroup.Image = global::CodeImp.DoomBuilder.Properties.Resources.GroupRemove;
 			this.clearGroup.Name = "clearGroup";
 			this.clearGroup.Size = new System.Drawing.Size(219, 22);
 			this.clearGroup.Text = "Clear Group";
@@ -987,6 +992,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// iteminsertprefabfile
 			// 
+			this.iteminsertprefabfile.Image = global::CodeImp.DoomBuilder.Properties.Resources.Prefab;
 			this.iteminsertprefabfile.Name = "iteminsertprefabfile";
 			this.iteminsertprefabfile.Size = new System.Drawing.Size(199, 22);
 			this.iteminsertprefabfile.Tag = "builder_insertprefabfile";
@@ -995,6 +1001,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// iteminsertpreviousprefab
 			// 
+			this.iteminsertpreviousprefab.Image = global::CodeImp.DoomBuilder.Properties.Resources.Prefab2;
 			this.iteminsertpreviousprefab.Name = "iteminsertpreviousprefab";
 			this.iteminsertpreviousprefab.Size = new System.Drawing.Size(199, 22);
 			this.iteminsertpreviousprefab.Tag = "builder_insertpreviousprefab";
@@ -1036,6 +1043,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// itemreloadresources
 			// 
+			this.itemreloadresources.Image = global::CodeImp.DoomBuilder.Properties.Resources.Reload;
 			this.itemreloadresources.Name = "itemreloadresources";
 			this.itemreloadresources.Size = new System.Drawing.Size(246, 22);
 			this.itemreloadresources.Tag = "builder_reloadresources";
@@ -1044,6 +1052,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// itemReloadModedef
 			// 
+			this.itemReloadModedef.Image = global::CodeImp.DoomBuilder.Properties.Resources.Reload;
 			this.itemReloadModedef.Name = "itemReloadModedef";
 			this.itemReloadModedef.Size = new System.Drawing.Size(246, 22);
 			this.itemReloadModedef.Tag = "builder_gzreloadmodeldef";
@@ -1052,6 +1061,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// itemReloadGldefs
 			// 
+			this.itemReloadGldefs.Image = global::CodeImp.DoomBuilder.Properties.Resources.Reload;
 			this.itemReloadGldefs.Name = "itemReloadGldefs";
 			this.itemReloadGldefs.Size = new System.Drawing.Size(246, 22);
 			this.itemReloadGldefs.Tag = "builder_gzreloadgldefs";
@@ -1075,6 +1085,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// configurationToolStripMenuItem
 			// 
+			this.configurationToolStripMenuItem.Image = global::CodeImp.DoomBuilder.Properties.Resources.Configuration;
 			this.configurationToolStripMenuItem.Name = "configurationToolStripMenuItem";
 			this.configurationToolStripMenuItem.Size = new System.Drawing.Size(246, 22);
 			this.configurationToolStripMenuItem.Tag = "builder_configuration";
@@ -1083,6 +1094,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// preferencesToolStripMenuItem
 			// 
+			this.preferencesToolStripMenuItem.Image = global::CodeImp.DoomBuilder.Properties.Resources.Preferences;
 			this.preferencesToolStripMenuItem.Name = "preferencesToolStripMenuItem";
 			this.preferencesToolStripMenuItem.Size = new System.Drawing.Size(246, 22);
 			this.preferencesToolStripMenuItem.Tag = "builder_preferences";
@@ -1167,6 +1179,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// itemhelpcheckupdates
 			// 
+			this.itemhelpcheckupdates.Image = global::CodeImp.DoomBuilder.Properties.Resources.Update;
 			this.itemhelpcheckupdates.Name = "itemhelpcheckupdates";
 			this.itemhelpcheckupdates.Size = new System.Drawing.Size(232, 22);
 			this.itemhelpcheckupdates.Text = "&Check for updates...";
@@ -1180,6 +1193,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// itemhelpabout
 			// 
+			this.itemhelpabout.Image = global::CodeImp.DoomBuilder.Properties.Resources.About;
 			this.itemhelpabout.Name = "itemhelpabout";
 			this.itemhelpabout.Size = new System.Drawing.Size(232, 22);
 			this.itemhelpabout.Text = "&About GZDoom Builder...";
