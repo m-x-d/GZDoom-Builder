@@ -27,7 +27,7 @@
 		/// </summary>
 		private void InitializeComponent() 
 		{
-			this.trackBar1 = new Dotnetrix.Controls.TrackBar();
+			this.trackBar1 = new System.Windows.Forms.TrackBar();
 			this.label1 = new System.Windows.Forms.Label();
 			this.numericUpDown1 = new CodeImp.DoomBuilder.BuilderEffects.NumericUpDownEx();
 			this.labelMaximum = new System.Windows.Forms.Label();
@@ -97,7 +97,7 @@
 
 		#endregion
 
-		private Dotnetrix.Controls.TrackBar trackBar1;
+		private System.Windows.Forms.TrackBar trackBar1;
 		private System.Windows.Forms.Label label1;
 		private NumericUpDownEx numericUpDown1;
 		private System.Windows.Forms.Label labelMaximum;

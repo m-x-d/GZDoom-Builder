@@ -42,22 +42,22 @@ namespace CodeImp.DoomBuilder.Windows
 			this.checkforupdates = new System.Windows.Forms.CheckBox();
 			this.cbStoreEditTab = new System.Windows.Forms.CheckBox();
 			this.locatetexturegroup = new System.Windows.Forms.CheckBox();
-			this.recentFiles = new Dotnetrix.Controls.TrackBar();
+			this.recentFiles = new System.Windows.Forms.TrackBar();
 			this.labelRecentFiles = new System.Windows.Forms.Label();
 			this.label25 = new System.Windows.Forms.Label();
 			this.vertexScaleLabel = new System.Windows.Forms.Label();
 			this.label22 = new System.Windows.Forms.Label();
-			this.vertexScale = new Dotnetrix.Controls.TrackBar();
+			this.vertexScale = new System.Windows.Forms.TrackBar();
 			this.cbSynchCameras = new System.Windows.Forms.CheckBox();
 			this.showtexturesizes = new System.Windows.Forms.CheckBox();
 			this.scriptontop = new System.Windows.Forms.CheckBox();
-			this.zoomfactor = new Dotnetrix.Controls.TrackBar();
+			this.zoomfactor = new System.Windows.Forms.TrackBar();
 			this.zoomfactorlabel = new System.Windows.Forms.Label();
 			this.label19 = new System.Windows.Forms.Label();
-			this.autoscrollspeed = new Dotnetrix.Controls.TrackBar();
+			this.autoscrollspeed = new System.Windows.Forms.TrackBar();
 			this.autoscrollspeedlabel = new System.Windows.Forms.Label();
 			this.label15 = new System.Windows.Forms.Label();
-			this.previewsize = new Dotnetrix.Controls.TrackBar();
+			this.previewsize = new System.Windows.Forms.TrackBar();
 			this.previewsizelabel = new System.Windows.Forms.Label();
 			this.label12 = new System.Windows.Forms.Label();
 			this.label14 = new System.Windows.Forms.Label();
@@ -67,7 +67,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.color3dFloors = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.colorInfo = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.colorMD3 = new CodeImp.DoomBuilder.Controls.ColorControl();
-			this.doublesidedalpha = new Dotnetrix.Controls.TrackBar();
+			this.doublesidedalpha = new System.Windows.Forms.TrackBar();
 			this.colorgrid64 = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.colorgrid = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.colorindication = new CodeImp.DoomBuilder.Controls.ColorControl();
@@ -104,13 +104,13 @@ namespace CodeImp.DoomBuilder.Windows
 			this.dockersposition = new System.Windows.Forms.ComboBox();
 			this.label17 = new System.Windows.Forms.Label();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
-			this.vertexScale3D = new Dotnetrix.Controls.TrackBar();
+			this.vertexScale3D = new System.Windows.Forms.TrackBar();
 			this.vertexScale3DLabel = new System.Windows.Forms.Label();
 			this.label26 = new System.Windows.Forms.Label();
-			this.viewdistance = new Dotnetrix.Controls.TrackBar();
-			this.movespeed = new Dotnetrix.Controls.TrackBar();
-			this.mousespeed = new Dotnetrix.Controls.TrackBar();
-			this.fieldofview = new Dotnetrix.Controls.TrackBar();
+			this.viewdistance = new System.Windows.Forms.TrackBar();
+			this.movespeed = new System.Windows.Forms.TrackBar();
+			this.mousespeed = new System.Windows.Forms.TrackBar();
+			this.fieldofview = new System.Windows.Forms.TrackBar();
 			this.viewdistancelabel = new System.Windows.Forms.Label();
 			this.label13 = new System.Windows.Forms.Label();
 			this.invertyaxis = new System.Windows.Forms.CheckBox();
@@ -141,17 +141,17 @@ namespace CodeImp.DoomBuilder.Windows
 			this.cbMarkExtraFloors = new System.Windows.Forms.CheckBox();
 			this.cbOldHighlightMode = new System.Windows.Forms.CheckBox();
 			this.labelDynLightIntensity = new System.Windows.Forms.Label();
-			this.tbDynLightIntensity = new Dotnetrix.Controls.TrackBar();
+			this.tbDynLightIntensity = new System.Windows.Forms.TrackBar();
 			this.labelDynLightSize = new System.Windows.Forms.Label();
-			this.tbDynLightSize = new Dotnetrix.Controls.TrackBar();
+			this.tbDynLightSize = new System.Windows.Forms.TrackBar();
 			this.labelDynLightCount = new System.Windows.Forms.Label();
-			this.tbDynLightCount = new Dotnetrix.Controls.TrackBar();
+			this.tbDynLightCount = new System.Windows.Forms.TrackBar();
 			this.animatevisualselection = new System.Windows.Forms.CheckBox();
 			this.blackbrowsers = new System.Windows.Forms.CheckBox();
 			this.visualbilinear = new System.Windows.Forms.CheckBox();
 			this.classicbilinear = new System.Windows.Forms.CheckBox();
 			this.imagebrightnesslabel = new System.Windows.Forms.Label();
-			this.imagebrightness = new Dotnetrix.Controls.TrackBar();
+			this.imagebrightness = new System.Windows.Forms.TrackBar();
 			this.colorsgroup3 = new System.Windows.Forms.GroupBox();
 			this.snippetsallmanstyle = new System.Windows.Forms.CheckBox();
 			this.scripttabwidth = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
@@ -307,6 +307,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// recentFiles
 			// 
+			this.recentFiles.BackColor = System.Drawing.SystemColors.Window;
 			this.recentFiles.LargeChange = 1;
 			this.recentFiles.Location = new System.Drawing.Point(127, 233);
 			this.recentFiles.Maximum = 25;
@@ -358,6 +359,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// vertexScale
 			// 
+			this.vertexScale.BackColor = System.Drawing.SystemColors.Window;
 			this.vertexScale.LargeChange = 1;
 			this.vertexScale.Location = new System.Drawing.Point(127, 186);
 			this.vertexScale.Minimum = 1;
@@ -400,6 +402,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// zoomfactor
 			// 
+			this.zoomfactor.BackColor = System.Drawing.SystemColors.Window;
 			this.zoomfactor.LargeChange = 1;
 			this.zoomfactor.Location = new System.Drawing.Point(127, 139);
 			this.zoomfactor.Minimum = 1;
@@ -430,6 +433,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// autoscrollspeed
 			// 
+			this.autoscrollspeed.BackColor = System.Drawing.SystemColors.Window;
 			this.autoscrollspeed.LargeChange = 1;
 			this.autoscrollspeed.Location = new System.Drawing.Point(127, 92);
 			this.autoscrollspeed.Maximum = 5;
@@ -459,6 +463,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// previewsize
 			// 
+			this.previewsize.BackColor = System.Drawing.SystemColors.Window;
 			this.previewsize.LargeChange = 1;
 			this.previewsize.Location = new System.Drawing.Point(127, 45);
 			this.previewsize.Maximum = 5;
@@ -1049,6 +1054,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// vertexScale3D
 			// 
+			this.vertexScale3D.BackColor = System.Drawing.SystemColors.Window;
 			this.vertexScale3D.LargeChange = 1;
 			this.vertexScale3D.Location = new System.Drawing.Point(116, 181);
 			this.vertexScale3D.Maximum = 15;
@@ -1081,6 +1087,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// viewdistance
 			// 
+			this.viewdistance.BackColor = System.Drawing.SystemColors.Window;
 			this.viewdistance.LargeChange = 2;
 			this.viewdistance.Location = new System.Drawing.Point(116, 230);
 			this.viewdistance.Maximum = 45;
@@ -1095,6 +1102,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// movespeed
 			// 
+			this.movespeed.BackColor = System.Drawing.SystemColors.Window;
 			this.movespeed.Location = new System.Drawing.Point(116, 131);
 			this.movespeed.Maximum = 20;
 			this.movespeed.Minimum = 1;
@@ -1107,6 +1115,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// mousespeed
 			// 
+			this.mousespeed.BackColor = System.Drawing.SystemColors.Window;
 			this.mousespeed.Location = new System.Drawing.Point(116, 79);
 			this.mousespeed.Maximum = 20;
 			this.mousespeed.Minimum = 1;
@@ -1119,6 +1128,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// fieldofview
 			// 
+			this.fieldofview.BackColor = System.Drawing.SystemColors.Window;
 			this.fieldofview.LargeChange = 1;
 			this.fieldofview.Location = new System.Drawing.Point(116, 29);
 			this.fieldofview.Maximum = 17;
@@ -1998,22 +2008,22 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.CheckBox invertyaxis;
 		private System.Windows.Forms.ComboBox defaultviewmode;
 		private System.Windows.Forms.Label label14;
-		private Dotnetrix.Controls.TrackBar fieldofview;
-		private Dotnetrix.Controls.TrackBar movespeed;
-		private Dotnetrix.Controls.TrackBar mousespeed;
-		private Dotnetrix.Controls.TrackBar viewdistance;
-		private Dotnetrix.Controls.TrackBar doublesidedalpha;
-		private Dotnetrix.Controls.TrackBar imagebrightness;
+		private System.Windows.Forms.TrackBar fieldofview;
+		private System.Windows.Forms.TrackBar movespeed;
+		private System.Windows.Forms.TrackBar mousespeed;
+		private System.Windows.Forms.TrackBar viewdistance;
+		private System.Windows.Forms.TrackBar doublesidedalpha;
+		private System.Windows.Forms.TrackBar imagebrightness;
 		private System.Windows.Forms.Label disregardshiftlabel;
 		private System.Windows.Forms.ListBox keyusedlist;
 		private System.Windows.Forms.Label keyusedlabel;
 		private System.Windows.Forms.CheckBox qualitydisplay;
 		private System.Windows.Forms.CheckBox visualbilinear;
 		private System.Windows.Forms.CheckBox classicbilinear;
-		private Dotnetrix.Controls.TrackBar previewsize;
+		private System.Windows.Forms.TrackBar previewsize;
 		private System.Windows.Forms.Label previewsizelabel;
 		private System.Windows.Forms.Label label12;
-		private Dotnetrix.Controls.TrackBar autoscrollspeed;
+		private System.Windows.Forms.TrackBar autoscrollspeed;
 		private System.Windows.Forms.Label autoscrollspeedlabel;
 		private System.Windows.Forms.Label label15;
 		private System.Windows.Forms.CheckBox animatevisualselection;
@@ -2025,7 +2035,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.ComboBox dockersposition;
 		private System.Windows.Forms.Label label17;
 		private System.Windows.Forms.CheckBox collapsedockers;
-		private Dotnetrix.Controls.TrackBar zoomfactor;
+		private System.Windows.Forms.TrackBar zoomfactor;
 		private System.Windows.Forms.Label zoomfactorlabel;
 		private System.Windows.Forms.Label label19;
 		private System.Windows.Forms.GroupBox groupBox5;
@@ -2051,15 +2061,15 @@ namespace CodeImp.DoomBuilder.Windows
 		private CodeImp.DoomBuilder.Controls.ColorControl colorMD3;
 		private System.Windows.Forms.CheckBox toolbar_gzdoom;
 		private System.Windows.Forms.Label labelDynLightCount;
-		private Dotnetrix.Controls.TrackBar tbDynLightCount;
+		private System.Windows.Forms.TrackBar tbDynLightCount;
 		private System.Windows.Forms.Label labelDynLightSize;
-		private Dotnetrix.Controls.TrackBar tbDynLightSize;
+		private System.Windows.Forms.TrackBar tbDynLightSize;
 		private System.Windows.Forms.Label labelDynLightIntensity;
-		private Dotnetrix.Controls.TrackBar tbDynLightIntensity;
+		private System.Windows.Forms.TrackBar tbDynLightIntensity;
 		private System.Windows.Forms.CheckBox cbSynchCameras;
 		private System.Windows.Forms.CheckBox cbStretchView;
 		private System.Windows.Forms.ToolTip toolTip1;
-		private Dotnetrix.Controls.TrackBar vertexScale;
+		private System.Windows.Forms.TrackBar vertexScale;
 		private System.Windows.Forms.Label vertexScaleLabel;
 		private System.Windows.Forms.Label label22;
 		private CodeImp.DoomBuilder.Controls.ColorControl colorInfo;
@@ -2071,7 +2081,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.TextBox actiondescription;
 		private System.Windows.Forms.RichTextBox fontpreview;
 		private System.Windows.Forms.CheckBox cbMarkExtraFloors;
-		private Dotnetrix.Controls.TrackBar recentFiles;
+		private System.Windows.Forms.TrackBar recentFiles;
 		private System.Windows.Forms.Label labelRecentFiles;
 		private System.Windows.Forms.Label label25;
 		private System.Windows.Forms.CheckBox snippetsallmanstyle;
@@ -2081,7 +2091,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.TextBox screenshotsfolderpath;
 		private System.Windows.Forms.Button resetscreenshotsdir;
 		private System.Windows.Forms.FolderBrowserDialog browseScreenshotsFolderDialog;
-		private Dotnetrix.Controls.TrackBar vertexScale3D;
+		private System.Windows.Forms.TrackBar vertexScale3D;
 		private System.Windows.Forms.Label vertexScale3DLabel;
 		private System.Windows.Forms.Label label26;
 		private System.Windows.Forms.CheckBox locatetexturegroup;
