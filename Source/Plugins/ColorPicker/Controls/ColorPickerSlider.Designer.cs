@@ -24,7 +24,7 @@
 		/// </summary>
 		private void InitializeComponent() {
 			this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
-			this.trackBar1 = new Dotnetrix.Controls.TrackBar();
+			this.trackBar1 = new System.Windows.Forms.TrackBar();
 			this.label1 = new System.Windows.Forms.Label();
 			this.labelMin = new System.Windows.Forms.Label();
 			this.labelMax = new System.Windows.Forms.Label();
@@ -55,7 +55,7 @@
 			// 
 			// label1
 			// 
-			this.label1.Location = new System.Drawing.Point(3, 15);
+			this.label1.Location = new System.Drawing.Point(3, 17);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(106, 14);
 			this.label1.TabIndex = 3;
@@ -101,7 +101,7 @@
 		#endregion
 
 		private System.Windows.Forms.NumericUpDown numericUpDown1;
-		private Dotnetrix.Controls.TrackBar trackBar1;
+		private System.Windows.Forms.TrackBar trackBar1;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.Label labelMin;
 		private System.Windows.Forms.Label labelMax;
