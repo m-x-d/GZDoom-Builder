@@ -30,6 +30,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 	{
 		#region ================== Constants
 
+		public const float MAXIMUM_FOG_DISTANCE = 2805f; //mxd. 255 * 11. Straight from GZDoom source.
+
 		#endregion
 
 		#region ================== Variables
@@ -40,6 +42,9 @@ namespace CodeImp.DoomBuilder.VisualModes
 		private Dictionary<Sidedef, List<VisualGeometry>> sidedefgeometry;
 		private VertexBuffer geobuffer;
 		private bool updategeo;
+
+		//mxd. Rendering
+		protected float fogdistance; // Distance, at which fog color completely replaces texture color of this thing
 		
 		// Original sector
 		private Sector sector;
@@ -55,6 +60,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		internal List<VisualGeometry> AllGeometry { get { return allgeometry; } }
 		internal VertexBuffer GeometryBuffer { get { return geobuffer; } }
 		internal bool NeedsUpdateGeo { get { return updategeo; } set { updategeo |= value; } }
+		public float FogDistance { get { return fogdistance; } } //mxd
 		
 		public bool IsDisposed { get { return isdisposed; } }
 		public Sector Sector { get { return sector; } }

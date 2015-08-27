@@ -29,6 +29,10 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Constants
 		
 		public const float BYTE_TO_FLOAT = 0.00392156862745098f;
+
+		//mxd. Some color constants, full alpha
+		public const int INT_BLACK = -16777216;
+		public const int INT_WHITE = -1;
 		
 		#endregion
 
@@ -166,6 +170,18 @@ namespace CodeImp.DoomBuilder.Rendering
 				b = (byte)(Math.Min(a.b + b.b, 255))
 			};
 		}
+
+		//mxd. This subtracts two colors
+		public static PixelColor Subtract(PixelColor a, PixelColor b)
+		{
+			return new PixelColor
+			{
+				a = (byte)(Math.Max(a.a , b.a)), // Not sure about that...
+				r = (byte)(Math.Max(a.r - b.r, 0)),
+				g = (byte)(Math.Max(a.g - b.g, 0)),
+				b = (byte)(Math.Max(a.b - b.b, 0))
+			};
+		}
 		
 		// This modulates two colors
 		public static PixelColor Modulate(PixelColor a, PixelColor b)
@@ -186,6 +202,12 @@ namespace CodeImp.DoomBuilder.Rendering
 				g = (byte)((ag * bg) * 255.0f), 
 				b = (byte)((ab * bb) * 255.0f)
 			};
+		}
+
+		//mxd. Handy while debugging
+		public override string ToString()
+		{
+			return "[A=" + a + ", R=" + r + ", G=" + g + ", B=" + b + "]";
 		}
 		
 		#endregion

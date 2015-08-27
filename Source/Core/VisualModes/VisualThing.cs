@@ -65,6 +65,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		private float cameradistance;
 		private int cagecolor;
 		protected bool sizeless; //mxd. Used to render visual things with 0 width and height
+		protected float fogdistance; //mxd. Distance, at which fog color completely replaces texture color of this thing
 
 		// Selected?
 		protected bool selected;
@@ -109,6 +110,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		internal int VertexColor { get { return vertices.Length > 0 ? vertices[0].c : 0;} }
 		public int CameraDistance3D { get { return cameraDistance3D; } }
 		public bool Sizeless { get { return sizeless; } }
+		public float FogDistance { get { return fogdistance; } }
 		public Vector3 Center { 
 			get {
 				if (isGldefsLight) return position_v3 + lightOffset;
@@ -119,6 +121,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		public float LocalCenterZ { get { return thingheight / 2f; } } //mxd
 		public Vector3 PositionV3 { get { return position_v3; } }
 		public Vector3[] BoundingBox { get { return boundingBox; } }
+		
 		//mxd. light properties
 		public DynamicLightType LightType { get { return lightType; } }
 		public float LightRadius { get { return lightRadius; } }

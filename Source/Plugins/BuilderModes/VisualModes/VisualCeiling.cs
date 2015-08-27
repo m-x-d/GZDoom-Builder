@@ -262,7 +262,24 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				mode.CreateUndo("Paste ceiling '" + BuilderPlug.Me.CopiedFlat + "'");
 				mode.SetActionResult("Pasted flat '" + BuilderPlug.Me.CopiedFlat + "' on ceiling.");
+
+				//mxd. Glow effect may require SectorData and geometry update
+				bool prevtextureglows = General.Map.Data.GlowingFlats.ContainsKey(Sector.Sector.LongCeilTexture);
+
 				SetTexture(BuilderPlug.Me.CopiedFlat);
+
+				//mxd. Glow effect may require SectorData and geometry update
+				if(prevtextureglows && !General.Map.Data.GlowingFlats.ContainsKey(Sector.Sector.LongCeilTexture))
+				{
+					SectorData sd = mode.GetSectorData(level.sector);
+					sd.UpdateForced();
+
+					if(mode.VisualSectorExists(level.sector))
+					{
+						BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(level.sector);
+						vs.UpdateSectorGeometry(false);
+					}
+				}
 
 				//mxd. 3D floors may need updating...
 				OnTextureChanged();

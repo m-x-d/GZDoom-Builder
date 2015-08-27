@@ -2066,6 +2066,7 @@ namespace CodeImp.DoomBuilder.Windows
 			linedefcolorpresets.Visible = General.Settings.ToolbarFilter && maploaded; //mxd
 			separatorfilters.Visible = General.Settings.ToolbarViewModes && maploaded; //mxd
 			buttonfullbrightness.Visible = General.Settings.ToolbarViewModes && maploaded; //mxd
+			buttonfullbrightness.Checked = Renderer.FullBrightness; //mxd
 			buttontogglegrid.Visible = General.Settings.ToolbarViewModes && maploaded; //mxd
 			buttontogglegrid.Checked = General.Settings.RenderGrid; //mxd
 			buttontogglecomments.Visible = General.Settings.ToolbarViewModes && maploaded; //mxd
@@ -2929,6 +2930,7 @@ namespace CodeImp.DoomBuilder.Windows
 			menuview.Visible = (General.Map != null); //mxd
 			
 			// Menu items
+			itemfullbrightness.Checked = Renderer.FullBrightness; //mxd
 			itemtogglegrid.Checked = General.Settings.RenderGrid; //mxd
 			itemtoggleinfo.Checked = IsInfoPanelExpanded;
 			itemtogglecomments.Enabled = (General.Map != null && General.Map.UDMF); //mxd

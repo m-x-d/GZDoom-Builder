@@ -99,6 +99,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public bool Setup()
 		{
 			int sectorcolor = new PixelColor(255, 255, 255, 255).ToInt();
+			fogdistance = VisualSector.MAXIMUM_FOG_DISTANCE; //mxd
 			
 			//mxd. Check thing size 
 			float thingradius = Thing.Size; // Thing.Size has ThingRadius arg override applied
@@ -127,14 +128,40 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					SectorData sd = mode.GetSectorData(Thing.Sector);
 					floor = sd.Floor.plane; //mxd
 					ceiling = sd.Ceiling.plane; //mxd
-					SectorLevel level = sd.GetLevelAboveOrAt(new Vector3D(Thing.Position.x, Thing.Position.y, Thing.Position.z + sd.Floor.plane.GetZ(Thing.Position))); //mxd. Let's use point on floor plane instead of Thing.Sector.FloorHeight;
-					if(nointeraction && level == null && sd.LightLevels.Count > 0) level = sd.LightLevels[sd.LightLevels.Count - 1]; //mxd. Use the light level of the highest surface when a thing is above highest sector level.
+					SectorLevel level = sd.GetLevelAboveOrAt(new Vector3D(Thing.Position.x, Thing.Position.y, Thing.Position.z + sd.Floor.plane.GetZ(Thing.Position)));
+					
+					//mxd. Let's use point on floor plane instead of Thing.Sector.FloorHeight;
+					if(nointeraction && level == null && sd.LightLevels.Count > 0) level = sd.LightLevels[sd.LightLevels.Count - 1];
+					
+					//mxd. Use the light level of the highest surface when a thing is above highest sector level.
 					if(level != null)
 					{
 						// Use sector brightness for color shading
 						PixelColor areabrightness = PixelColor.FromInt(mode.CalculateBrightness(level.brightnessbelow));
 						PixelColor areacolor = PixelColor.Modulate(level.colorbelow, areabrightness);
 						sectorcolor = areacolor.WithAlpha(255).ToInt();
+
+						//mxd. Calculate fogdistance
+						int brightness = Math.Max((byte)30, areabrightness.r); // R, G and B of areabrightness are the same
+						if(Thing.Sector.HasFogColor)
+						{
+							if(Thing.Sector.UsesOutsideFog && General.Map.Data.MapInfo.OutsideFogDensity > 0)
+								fogdistance = General.Map.Data.MapInfo.OutsideFogDensity;
+							else if(!Thing.Sector.UsesOutsideFog && General.Map.Data.MapInfo.FogDensity > 0)
+								fogdistance = General.Map.Data.MapInfo.FogDensity;
+							else
+								fogdistance = brightness * 11.0f;
+						}
+						// Thing is affected by floor glow
+						else if(level.affectedbyglow)
+						{
+							fogdistance = (float)Math.Pow(2.0f, brightness / 9.0f);
+						}
+						// Thing is not affected by floor glow
+						else
+						{
+							fogdistance = (float)Math.Pow(2.0f, brightness / 9.0f) * 2.0f;
+						}
 					}
 				}
 				

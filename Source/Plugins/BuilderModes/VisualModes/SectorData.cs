@@ -1,5 +1,6 @@
 #region === Copyright (c) 2010 Pascal van der Heiden ===
 
+using System;
 using System.Collections.Generic;
 using CodeImp.DoomBuilder.GZBuilder.Data;
 using CodeImp.DoomBuilder.Geometry;
@@ -362,23 +363,33 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(l.brightnessbelow == -1) l.brightnessbelow = pl.brightnessbelow;
 			}
 
-			//mxd. Apply glow effects?
-			if(CeilingGlow != null && CeilingGlow.Fullbright)
+			//mxd. Apply ceiling glow effect?
+			if(CeilingGlow != null)
 			{
-				ceiling.color = -1;
+				if(CeilingGlow.Fullbright)     ceiling.color = PixelColor.INT_WHITE;
+				else if(CeilingGlow.Fullblack) ceiling.color = PixelColor.INT_BLACK;
 			}
 
+			//mxd. Apply floor glow effect?
 			if(FloorGlow != null)
 			{
-				if(FloorGlow.Fullbright) floor.color = -1;
-				floor.brightnessbelow = ((FloorGlow.Fullbright ? 255 : (FloorGlow.Color.r + FloorGlow.Color.g + FloorGlow.Color.b) / 3) + sector.Brightness) / 2;
+				// Update floor color
+				if(FloorGlow.Fullbright)     floor.color = PixelColor.INT_WHITE;
+				else if(FloorGlow.Fullblack) floor.color = PixelColor.INT_BLACK;
+
+				// Update brightness
+				floor.brightnessbelow = (FloorGlow.Fullbright ? 255 : Math.Max(128, floor.brightnessbelow));
 				
 				if(floor.colorbelow.ToInt() == 0)
 				{
 					byte bb = (byte)floor.brightnessbelow;
-					floor.colorbelow = PixelColor.Add(floor.colorbelow, new PixelColor(255, bb, bb, bb));
+					floor.colorbelow = new PixelColor(255, bb, bb, bb);
 				}
 			}
+
+			//mxd
+			floor.affectedbyglow = (FloorGlow != null);
+			ceiling.affectedbyglow = (CeilingGlow != null);
 
 			floorchanged = false;
 			ceilingchanged = false;

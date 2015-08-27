@@ -701,12 +701,29 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				mode.CreateUndo("Paste sector properties");
 				mode.SetActionResult("Pasted sector properties.");
+
+				//mxd. Glow effect may require SectorData update
+				bool oldfloortextureglows = (SectorProperties.CopySettings.FloorTexture && General.Map.Data.GlowingFlats.ContainsKey(level.sector.LongFloorTexture));
+				bool oldceiltextureglows = (SectorProperties.CopySettings.CeilingTexture && General.Map.Data.GlowingFlats.ContainsKey(level.sector.LongCeilTexture));
+
 				BuilderPlug.Me.CopiedSectorProps.Apply(level.sector);
+
+				//mxd. Glow effect may require SectorData update
+				if(oldfloortextureglows || oldceiltextureglows
+					|| (SectorProperties.CopySettings.FloorTexture && General.Map.Data.GlowingFlats.ContainsKey(level.sector.LongFloorTexture))
+					|| (SectorProperties.CopySettings.CeilingTexture && General.Map.Data.GlowingFlats.ContainsKey(level.sector.LongCeilTexture)))
+				{
+					mode.RebuildElementData();
+					SectorData sd = mode.GetSectorData(level.sector);
+					sd.UpdateForced();
+				}
+
 				if(mode.VisualSectorExists(level.sector))
 				{
 					BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(level.sector);
 					vs.UpdateSectorGeometry(true);
 				}
+
 				mode.ShowTargetInfo();
 			}
 		}

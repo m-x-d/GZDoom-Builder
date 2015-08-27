@@ -581,8 +581,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void OnMouseMove(MouseEventArgs e)
 		{
 			base.OnMouseMove(e);
-			if(panning) return; //mxd. Skip all this jazz while panning
-			Update();
+
+			//mxd. Skip most of update jazz while panning
+			if(panning)
+			{
+				// Update labels
+				int index = 0;
+				foreach (Linedef l in unstablelines)
+					labels[index++].Move(l.Start.Position, l.End.Position);
+			}
+			else
+			{
+				Update();
+			}
 		}
 		// When a key is released
 		public override void OnKeyUp(KeyEventArgs e)
