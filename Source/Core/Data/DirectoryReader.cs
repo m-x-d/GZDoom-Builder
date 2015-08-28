@@ -375,7 +375,7 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			string title = Path.GetFileNameWithoutExtension(beginswith);
 			string ext = Path.GetExtension(beginswith);
-			if(ext.Length > 1) ext = ext.Substring(1); else ext = "";
+			ext = (!string.IsNullOrEmpty(ext) && ext.Length > 1 ? ext.Substring(1) : string.Empty);
 			return files.GetFirstFile(path, title, subfolders, ext);
 		}
 		
@@ -387,7 +387,10 @@ namespace CodeImp.DoomBuilder.Data
 
 			try 
 			{
-				s = new MemoryStream(File.ReadAllBytes(Path.Combine(location.location, filename)));
+				lock(this)
+				{
+					s = new MemoryStream(File.ReadAllBytes(Path.Combine(location.location, filename)));
+				}
 			} 
 			catch(Exception e) 
 			{
