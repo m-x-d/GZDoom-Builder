@@ -338,7 +338,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(oy < 0) oy = Texture.Height + oy;
 
 			// Check pixel alpha
-			if(Texture.GetBitmap().GetPixel(General.Clamp(ox, 0, Texture.Width - 1), General.Clamp(Texture.Height - oy, 0, Texture.Height - 1)).A > 0)
+			if(Texture.GetBitmap().GetPixel(General.Clamp(ox, 0, Texture.Width - 1), General.Clamp(Texture.Height - oy - 1, 0, Texture.Height - 1)).A > 0)
 			{
 				return base.PickAccurate(from, to, dir, ref u_ray);
 			}

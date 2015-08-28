@@ -523,12 +523,13 @@ namespace CodeImp.DoomBuilder.VisualModes
 			//apply settings
 			lightRenderStyle = light.Subtractive ? DynamicLightRenderStyle.NEGATIVE : DynamicLightRenderStyle.NORMAL;
 			lightColor = new Color4((float)lightRenderStyle / 100.0f, light.Color.Red * intensity_mod, light.Color.Green * intensity_mod, light.Color.Blue * intensity_mod);
-			lightOffset = light.Offset;
+			Vector2D o = new Vector2D(light.Offset.X, light.Offset.Y).GetRotated(thing.Angle - Angle2D.PIHALF);
+			lightOffset = new Vector3(o.x, o.y, light.Offset.Z);
 			lightType = light.Type;
 
 			if (lightType == DynamicLightType.SECTOR) 
 			{
-				lightPrimaryRadius = light.Interval * thing.Sector.Brightness / 5;
+				lightPrimaryRadius = light.Interval * thing.Sector.Brightness / 5.0f;
 			} 
 			else 
 			{
