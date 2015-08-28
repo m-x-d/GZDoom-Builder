@@ -146,6 +146,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		{
 			int offset = skipnewline ? 0 : 1;
 			char c;
+			prevstreamposition = datastream.Position; //mxd
 			
 			do
 			{
@@ -179,13 +180,14 @@ namespace CodeImp.DoomBuilder.ZDoom
 					{
 						// Skip until */
 						char c4, c3 = '\0';
+						prevstreamposition = datastream.Position; //mxd
 						do
 						{
 							if(datastream.Position == datastream.Length) //mxd
 							{
 								// ZDoom doesn't give even a warning message about this, so we shouldn't report error or fail parsing.
 								General.ErrorLogger.Add(ErrorType.Warning, "DECORATE warning in '" + sourcename + "', line " + GetCurrentLineNumber() + ". Block comment is not closed.");
-								return true;
+								return false;
 							}
 
 							c4 = c3;
