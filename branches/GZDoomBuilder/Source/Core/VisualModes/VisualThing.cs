@@ -274,11 +274,13 @@ namespace CodeImp.DoomBuilder.VisualModes
 			updategeo = true;
 			
 			//mxd. Do some GLOOME shenanigans...
-			int localcenterz = (int)(Thing.Height / 2);
+			if(triangles < 2) return;
+			float localcenterz = vertices[1].z * 0.5f;
 			Matrix m;
+
 			switch(info.RenderMode)
 			{
-				// Appied only when ROLLSPRITE flag is set (?)
+				// TODO: Currently broken in GLOOME...
 				case Thing.SpriteRenderMode.WALL_SPRITE:
 					m = Matrix.Translation(0f, 0f, -localcenterz) * Matrix.RotationY(Thing.RollRad) * Matrix.RotationZ(thing.Angle) * Matrix.Translation(0f, 0f, localcenterz);
 					for(int i = 0; i < vertices.Length; i++)
@@ -291,9 +293,12 @@ namespace CodeImp.DoomBuilder.VisualModes
 					break;
 
 				case Thing.SpriteRenderMode.FLOOR_SPRITE:
-					// TODO: thing angle is involved in this... somehow
-					Matrix floorrotation = (info.RollSprite ? Matrix.RotationY(Thing.RollRad) * Matrix.RotationX(Angle2D.PIHALF) : Matrix.RotationX(Angle2D.PIHALF));
+					Matrix floorrotation = Matrix.RotationZ(info.RollSprite ? Thing.RollRad : 0f)
+										 * Matrix.RotationY(Thing.Angle) 
+										 * Matrix.RotationX(Angle2D.PIHALF);
+
 					m = Matrix.Translation(0f, 0f, -localcenterz) * floorrotation * Matrix.Translation(0f, 0f, localcenterz);
+					
 					for(int i = 0; i < vertices.Length; i++)
 					{
 						Vector4 transformed = Vector3.Transform(new Vector3(vertices[i].x, vertices[i].y, vertices[i].z), m);
@@ -303,7 +308,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 					}
 
 					// TODO: this won't work on things with AbsoluteZ flag
-					if(info.StickToPlane)
+					// TODO: +ROLLSPRITE implies +STICKTOPLANE?
+					if(info.StickToPlane || info.RollSprite)
 					{
 						// Calculate vertical offset
 						float floorz = floor.GetZ(Thing.Position);
@@ -330,9 +336,12 @@ namespace CodeImp.DoomBuilder.VisualModes
 					break;
 
 				case Thing.SpriteRenderMode.CEILING_SPRITE:
-					// TODO: thing angle is involved in this... somehow
-					Matrix ceilrotation = (info.RollSprite ? Matrix.RotationY(Thing.RollRad) * Matrix.RotationX(-Angle2D.PIHALF) : Matrix.RotationX(-Angle2D.PIHALF));
+					Matrix ceilrotation = Matrix.RotationZ(info.RollSprite ? Thing.RollRad : 0f)
+										* Matrix.RotationY(Thing.Angle)
+										* Matrix.RotationX(Angle2D.PIHALF);
+
 					m = Matrix.Translation(0f, 0f, -localcenterz) * ceilrotation * Matrix.Translation(0f, 0f, localcenterz);
+					
 					for(int i = 0; i < vertices.Length; i++)
 					{
 						Vector4 transformed = Vector3.Transform(new Vector3(vertices[i].x, vertices[i].y, vertices[i].z), m);
@@ -342,7 +351,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 					}
 
 					// TODO: this won't work on things with AbsoluteZ flag
-					if(info.StickToPlane)
+					// TODO: +ROLLSPRITE implies +STICKTOPLANE?
+					if(info.StickToPlane || info.RollSprite)
 					{
 						// Calculate vertical offset
 						float floorz = floor.GetZ(Thing.Position);

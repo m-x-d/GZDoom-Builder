@@ -179,7 +179,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				ICollection<Sector> orderedselection = General.Map.Map.GetSelectedSectors(true);
 				
 				//mxd. Render selected sectors
-				if (BuilderPlug.Me.UseHighlight) 
+				if(BuilderPlug.Me.UseHighlight) 
 				{
 					renderer.RenderHighlight(overlayGeometry, General.Colors.Selection.WithAlpha(64).ToInt());
 				}
@@ -190,32 +190,35 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					renderer.RenderHighlight(highlighted.FlatVertices, General.Colors.Highlight.WithAlpha(64).ToInt());
 				}
 
-				if (BuilderPlug.Me.ViewSelectionNumbers) 
+				//mxd. Render comments
+				if(General.Map.UDMF && General.Settings.RenderComments)
 				{
-					foreach (Sector s in orderedselection) 
+					foreach(Sector s in General.Map.Map.Sectors) RenderComment(s);
+				}
+
+				if(BuilderPlug.Me.ViewSelectionNumbers) 
+				{
+					foreach(Sector s in orderedselection) 
 					{
 						// Render labels
 						TextLabel[] labelarray = labels[s];
-						for (int i = 0; i < s.Labels.Count; i++) 
+						for(int i = 0; i < s.Labels.Count; i++) 
 						{
 							TextLabel l = labelarray[i];
 
 							// Render only when enough space for the label to see
 							float requiredsize = (l.TextSize.Height / 2) / renderer.Scale;
-							if (requiredsize < s.Labels[i].radius) renderer.RenderText(l);
+							if(requiredsize < s.Labels[i].radius) renderer.RenderText(l);
 						}
 					}
 				}
 
 				//mxd. Render effect labels
-				if (BuilderPlug.Me.ViewSelectionEffects) 
+				if(BuilderPlug.Me.ViewSelectionEffects) 
 				{
 					if(!BuilderPlug.Me.ViewSelectionNumbers) RenderEffectLabels(selectedEffectLabels);
 					RenderEffectLabels(unselectedEffectLabels);
 				}
-
-				//mxd. Render comments
-				if(General.Map.UDMF && General.Settings.RenderComments) foreach(Sector s in General.Map.Map.Sectors) RenderComment(s);
 				
 				renderer.Finish();
 			}
@@ -437,7 +440,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			else
 			{
 				// Update display
-				Sector possiblecommentsector = s ?? highlighted; //mxd
 				if(renderer.StartPlotter(false))
 				{
 					// Undraw previous highlight
@@ -456,16 +458,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 				
 				UpdateOverlay();
-
-				//mxd. Update comment highlight?
-				if(General.Map.UDMF && General.Settings.RenderComments 
-					&& possiblecommentsector != null && !possiblecommentsector.IsDisposed 
-					&& renderer.StartOverlay(false))
-				{
-					RenderComment(possiblecommentsector);
-					renderer.Finish();
-				}
-
 				renderer.Present();
 			}
 
@@ -1348,22 +1340,29 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd
 		private void RenderComment(Sector s)
 		{
-			if(s.Fields.ContainsKey("comment"))
-			{
-				int iconindex = 0;
-				string comment = s.Fields.GetValue("comment", string.Empty);
-				if(comment.Length > 2)
-				{
-					string type = comment.Substring(0, 3);
-					int index = Array.IndexOf(CommentType.Types, type);
-					if(index != -1) iconindex = index;
-				}
+			if(s.Selected || !s.Fields.ContainsKey("comment")) return;
 
-				Vector2D center = new Vector2D(s.BBox.Left + s.BBox.Width / 2, s.BBox.Top + s.BBox.Height / 2);
-				RectangleF rect = new RectangleF(center.x - 8 / renderer.Scale, center.y + 16 * renderer.Scale + 16 / renderer.Scale, 16 / renderer.Scale, -16 / renderer.Scale);
-				PixelColor c = (s == highlighted ? General.Colors.Highlight : (s.Selected ? General.Colors.Selection : PixelColor.FromColor(Color.White)));
-				renderer.RenderRectangleFilled(rect, c, true, General.Map.Data.CommentTextures[iconindex]);
+			int iconindex = 0;
+			string comment = s.Fields.GetValue("comment", string.Empty);
+			if(comment.Length > 2)
+			{
+				string type = comment.Substring(0, 3);
+				int index = Array.IndexOf(CommentType.Types, type);
+				if(index != -1) iconindex = index;
 			}
+
+			if(s.Labels.Count > 0)
+				foreach(LabelPositionInfo info in s.Labels) RenderComment(s, info.position, iconindex);
+			else
+				RenderComment(s, new Vector2D(s.BBox.Left + s.BBox.Width / 2, s.BBox.Top + s.BBox.Height / 2), iconindex);
+		}
+
+		//mxd
+		private void RenderComment(Sector s, Vector2D center, int iconindex)
+		{
+			RectangleF rect = new RectangleF(center.x - 8 / renderer.Scale, center.y + 8 / renderer.Scale, 16 / renderer.Scale, -16 / renderer.Scale);
+			PixelColor c = (s == highlighted ? General.Colors.Highlight : PixelColor.FromColor(Color.White));
+			renderer.RenderRectangleFilled(rect, c, true, General.Map.Data.CommentTextures[iconindex]);
 		}
 		
 		#endregion

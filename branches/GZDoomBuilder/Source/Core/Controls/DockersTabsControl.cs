@@ -18,10 +18,10 @@
 
 using System;
 using System.Drawing;
-using System.Windows.Forms;
-using System.Windows.Forms.VisualStyles;
 using System.Drawing.Imaging;
 using System.Drawing.Text;
+using System.Windows.Forms;
+using System.Windows.Forms.VisualStyles;
 
 #endregion
 
@@ -35,8 +35,8 @@ namespace CodeImp.DoomBuilder.Controls
 
 		#region ================== Variables
 		
-		private Bitmap tabsimage;
 		private int highlighttab;
+		private readonly StringFormat stringformat;
 		
 		#endregion
 
@@ -48,170 +48,95 @@ namespace CodeImp.DoomBuilder.Controls
 			if(VisualStyleInformation.IsSupportedByOS && VisualStyleInformation.IsEnabledByUser)
 			{
 				// Style settings
-				this.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
-				this.SetStyle(ControlStyles.SupportsTransparentBackColor, false);
-				this.SetStyle(ControlStyles.UserPaint, true);
-				this.SetStyle(ControlStyles.AllPaintingInWmPaint, true);
-				this.SetStyle(ControlStyles.Opaque, true);
-				this.UpdateStyles();
+				this.SetStyle(ControlStyles.UserPaint | ControlStyles.AllPaintingInWmPaint | ControlStyles.DoubleBuffer, true);
+				this.DrawMode = TabDrawMode.OwnerDrawFixed;
 			}
 			
+			stringformat = new StringFormat {Alignment = StringAlignment.Center, HotkeyPrefix = HotkeyPrefix.None, LineAlignment = StringAlignment.Center};
 			highlighttab = -1;
-		}
-
-		// Disposer
-		protected override void Dispose(bool disposing)
-		{
-			if(tabsimage != null)
-			{
-				tabsimage.Dispose();
-				tabsimage = null;
-			}
-			
-			base.Dispose(disposing);
 		}
 		
 		#endregion
 
 		#region ================== Methods
-		
-		// This redraws the tabs
-		protected unsafe void RedrawTabs()
-		{
-			// Determine length and width in pixels
-			int tabslength = 0;
-			for(int i = 0; i < this.TabPages.Count; i++)
-			{
-				Rectangle r = this.GetTabRect(i);
-				tabslength += r.Height;
-			}
-			tabslength += 4;
-			int tabswidth = this.ItemSize.Height + 2;
-			
-			// Dispose old image
-			if(tabsimage != null)
-			{
-				tabsimage.Dispose();
-				tabsimage = null;
-			}
-			
-			if(VisualStyleInformation.IsSupportedByOS && VisualStyleInformation.IsEnabledByUser)
-			{
-				StringFormat drawformat = new StringFormat();
-				drawformat.Alignment = StringAlignment.Center;
-				drawformat.HotkeyPrefix = HotkeyPrefix.None;
-				drawformat.LineAlignment = StringAlignment.Center;
-				
-				// Create images
-				tabsimage = new Bitmap(tabswidth, tabslength, PixelFormat.Format32bppArgb);
-				Bitmap drawimage = new Bitmap(tabslength, tabswidth, PixelFormat.Format32bppArgb);
-				Graphics g = Graphics.FromImage(drawimage);
-				
-				// Render the tabs (backwards when right-aligned)
-				int posoffset = 0;
-				int selectedposoffset = -1;
-				int start = (this.Alignment == TabAlignment.Left) ? 0 : (this.TabPages.Count - 1);
-				int end = (this.Alignment == TabAlignment.Left) ? this.TabPages.Count : -1;
-				int step = (this.Alignment == TabAlignment.Left) ? 1 : -1;
-				for(int i = start; i != end; i += step)
-				{
-					VisualStyleRenderer renderer;
-					Rectangle tr = this.GetTabRect(i);
 
-					// Tab selected?
-					if(i == this.SelectedIndex)
-					{
-						// We will draw this later
-						selectedposoffset = posoffset;
-					}
-					else
-					{
-						if(i == highlighttab)
-							renderer = new VisualStyleRenderer(VisualStyleElement.Tab.TabItem.Hot);
-						else
-							renderer = new VisualStyleRenderer(VisualStyleElement.Tab.TabItem.Normal);
-						
-						// Draw tab
-						Rectangle r = new Rectangle(posoffset + 2, 2, tr.Height, tr.Width - 2);
-						renderer.DrawBackground(g, r);
-						g.DrawString(this.TabPages[i].Text, this.Font, SystemBrushes.ControlText, new RectangleF(r.Location, r.Size), drawformat);
-					}
-					
-					posoffset += tr.Height;
-				}
-				
-				// Render the selected tab, because it is slightly larger and overlapping the others
-				if(selectedposoffset > -1)
-				{
-					VisualStyleRenderer renderer = new VisualStyleRenderer(VisualStyleElement.Tab.TabItem.Pressed);
-					Rectangle tr = this.GetTabRect(this.SelectedIndex);
-					Rectangle r = new Rectangle(selectedposoffset, 0, tr.Height + 4, tr.Width);
-					renderer.DrawBackground(g, r);
-					g.DrawString(this.TabPages[this.SelectedIndex].Text, this.Font, SystemBrushes.ControlText, new RectangleF(r.X, r.Y, r.Width, r.Height - 2), drawformat);
-				}
-				
-				// Rotate the image and copy to tabsimage
-				BitmapData drawndata = drawimage.LockBits(new Rectangle(0, 0, drawimage.Size.Width, drawimage.Size.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
-				BitmapData targetdata = tabsimage.LockBits(new Rectangle(0, 0, tabsimage.Size.Width, tabsimage.Size.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
-				int* dd = (int*)drawndata.Scan0.ToPointer();
-				int* td = (int*)targetdata.Scan0.ToPointer();
-				if(this.Alignment == TabAlignment.Right)
-				{
-					for(int y = 0; y < drawndata.Height; y++)
-					{
-						for(int x = 0; x < drawndata.Width; x++)
-						{
-							td[(drawndata.Width - 1 - x) * targetdata.Width + y] = *dd;
-							dd++;
-						}
-					}
-				}
-				else
-				{
-					for(int y = 0; y < drawndata.Height; y++)
-					{
-						for(int x = 0; x < drawndata.Width; x++)
-						{
-							td[x * targetdata.Width + (drawndata.Height - 1 - y)] = *dd;
-							dd++;
-						}
-					}
-				}
-				drawimage.UnlockBits(drawndata);
-				tabsimage.UnlockBits(targetdata);
-				
-				// Clean up
-				g.Dispose();
-				drawimage.Dispose();
+		//mxd
+		private void DrawTab(Graphics graphics, int index)
+		{
+			Rectangle bounds = this.GetTabRect(index);
+			VisualStyleRenderer renderer;
+			bool selected = (index == this.SelectedIndex);
+
+			// Transform bounds?
+			switch(this.Alignment)
+			{
+				case TabAlignment.Right:
+					bounds = new Rectangle((selected ? bounds.X - 1 : bounds.X + 1), bounds.Y, bounds.Height, bounds.Width);
+					break;
+
+				case TabAlignment.Left:
+					bounds = new Rectangle(bounds.X, bounds.Y, bounds.Height, bounds.Width);
+					break;
+
+				default:
+					if(selected) bounds.Y -= 2;
+					break;
 			}
+
+			if(selected)
+			{
+				bounds.Height += 2;
+				renderer = new VisualStyleRenderer(VisualStyleElement.Tab.TabItem.Pressed);
+			}
+			else
+			{
+				renderer = new VisualStyleRenderer(index == highlighttab ? VisualStyleElement.Tab.TabItem.Hot : VisualStyleElement.Tab.TabItem.Normal);
+			}
+
+			Bitmap drawimage = new Bitmap(bounds.Width, bounds.Height, PixelFormat.Format32bppArgb);
+
+			// Draw tab
+			using(Graphics g = Graphics.FromImage(drawimage))
+			{
+				Rectangle bgbounds = new Rectangle(0, 0, bounds.Width, bounds.Height + 1);
+				bgbounds.Inflate(-1, 0);
+				renderer.DrawBackground(g, bgbounds);
+				g.DrawString(this.TabPages[index].Text, this.Font, SystemBrushes.ControlText, new RectangleF(bgbounds.Location, bounds.Size), stringformat);
+			}
+
+			// Rotate image?
+			switch(this.Alignment)
+			{
+				case TabAlignment.Right:
+					drawimage.RotateFlip(RotateFlipType.Rotate270FlipNone);
+					break;
+
+				case TabAlignment.Left:
+					drawimage.RotateFlip(RotateFlipType.Rotate90FlipNone);
+					break;
+			}
+
+			graphics.DrawImage(drawimage, bounds.X, bounds.Y);
 		}
 		
 		#endregion
 		
 		#region ================== Events
 		
-		// Redrawing needed
+		//mxd. Redrawing needed
 		protected override void OnPaint(PaintEventArgs e)
 		{
 			if(VisualStyleInformation.IsSupportedByOS && VisualStyleInformation.IsEnabledByUser)
 			{
-				RedrawTabs();
-				
-				e.Graphics.Clear(SystemColors.Control);
+				// Draw tabs
+				for(int i = 0; i < this.TabPages.Count; i++)
+				{
+					if(i == this.SelectedIndex) continue;
+					DrawTab(e.Graphics, i);
+				}
 
-				Point p;
-				if(this.Alignment == TabAlignment.Left)
-				{
-					p = new Point(0, 0);
-				}
-				else
-				{
-					int left = this.ClientSize.Width - tabsimage.Size.Width;
-					if(left < 0) left = 0;
-					p = new Point(left, 0);
-				}
-				
-				e.Graphics.DrawImage(tabsimage, p);
+				// Draw selected tab
+				if(this.SelectedIndex != -1) DrawTab(e.Graphics, this.SelectedIndex);
 			}
 			else
 			{

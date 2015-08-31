@@ -3929,11 +3929,31 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd. Warnings panel
+		private delegate void SetWarningsCountCallback(int count, bool blink);
 		internal void SetWarningsCount(int count, bool blink) 
 		{
+			if(this.InvokeRequired)
+			{
+				SetWarningsCountCallback d = SetWarningsCount;
+				this.Invoke(d, new object[] { count, blink });
+				return;
+			}
+
+			// Start annoying blinking!
+			if(blink)
+			{
+				if(!blinkTimer.Enabled) blinkTimer.Start();
+			}
+			else
+			{
+				blinkTimer.Stop();
+				warnsLabel.BackColor = SystemColors.Control;
+			}
+			
+			// Update icon
 			if(count > 0) 
 			{
-				if (warnsLabel.Image != Resources.Warning) warnsLabel.Image = Resources.Warning;
+				warnsLabel.Image = Resources.Warning;
 			} 
 			else 
 			{
@@ -3941,18 +3961,8 @@ namespace CodeImp.DoomBuilder.Windows
 				warnsLabel.BackColor = SystemColors.Control;
 			}
 
+			// Update errors count
 			warnsLabel.Text = count.ToString();
-			
-			//start annoying blinking!
-			if (blink) 
-			{
-				if(!blinkTimer.Enabled) blinkTimer.Start();
-			} 
-			else 
-			{
-				blinkTimer.Stop();
-				warnsLabel.BackColor = SystemColors.Control;
-			}
 		}
 
 		//mxd. Bliks warnings indicator

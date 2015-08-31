@@ -113,6 +113,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		private float translatex;
 		private float translatey;
 		private float linenormalsize;
+		private float minlinelength; //mxd. Linedef should be longer than this to be rendered
+		private float minlinenormallength; //mxd. Linedef direction indicator should be longer than this to be rendered 
 		private float lastgridscale = -1f;
 		private int lastgridsize;
 		private float lastgridx;
@@ -513,6 +515,8 @@ namespace CodeImp.DoomBuilder.Rendering
 			translatex = -offsetx + (windowsize.Width * 0.5f) * scaleinv;
 			translatey = -offsety - (windowsize.Height * 0.5f) * scaleinv;
 			linenormalsize = 10f * scaleinv;
+			minlinelength = linenormalsize * 0.0625f; //mxd
+			minlinenormallength = linenormalsize * 2f; //mxd
 
 			vertexsize = (int)(1.7f * General.Settings.GZVertexScale2D * scale + 0.5f); //mxd. added GZVertexScale2D
 			if(vertexsize < 0) vertexsize = 0;
@@ -1875,6 +1879,9 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Transform coordinates
 			Vector2D v1 = start.GetTransformed(translatex, translatey, scale, -scale);
 			Vector2D v2 = end.GetTransformed(translatex, translatey, scale, -scale);
+			
+			//mxd. Should we bother?
+			if((v2 - v1).GetLengthSq() < linenormalsize * 0.0625f) return;
 
 			// Draw line
 			plotter.DrawLineSolid((int)v1.x, (int)v1.y, (int)v2.x, (int)v2.y, ref c);
@@ -1886,12 +1893,19 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Transform vertex coordinates
 			Vector2D v1 = l.Start.Position.GetTransformed(translatex, translatey, scale, -scale);
 			Vector2D v2 = l.End.Position.GetTransformed(translatex, translatey, scale, -scale);
+			
+			//mxd. Should we bother?
+			float lengthsq = (v2 - v1).GetLengthSq();
+			if(lengthsq < minlinelength) return; //mxd
 
 			// Draw line. mxd: added 3d-floor indication
 			if(l.ExtraFloorFlag && General.Settings.GZMarkExtraFloors)
 				plotter.DrawLine3DFloor(v1, v2, ref c, General.Colors.ThreeDFloor);
 			else
 				plotter.DrawLineSolid((int)v1.x, (int)v1.y, (int)v2.x, (int)v2.y, ref c);
+
+			//mxd. Should we bother?
+			if(lengthsq < minlinenormallength) return; //mxd
 
 			// Calculate normal indicator
 			float mx = (v2.x - v1.x) * 0.5f;
@@ -1907,7 +1921,37 @@ namespace CodeImp.DoomBuilder.Rendering
 		public void PlotLinedefSet(ICollection<Linedef> linedefs)
 		{
 			// Go for all linedefs
-			foreach(Linedef l in linedefs) PlotLinedef(l, DetermineLinedefColor(l));
+			foreach(Linedef l in linedefs)
+			{
+				// Transform vertex coordinates
+				Vector2D v1 = l.Start.Position.GetTransformed(translatex, translatey, scale, -scale);
+				Vector2D v2 = l.End.Position.GetTransformed(translatex, translatey, scale, -scale);
+
+				//mxd. Should we bother?
+				float lengthsq = (v2 - v1).GetLengthSq();
+				if(lengthsq < minlinelength) continue; //mxd
+
+				// Determine color
+				PixelColor c = DetermineLinedefColor(l);
+
+				// Draw line. mxd: added 3d-floor indication
+				if(l.ExtraFloorFlag && General.Settings.GZMarkExtraFloors)
+					plotter.DrawLine3DFloor(v1, v2, ref c, General.Colors.ThreeDFloor);
+				else
+					plotter.DrawLineSolid((int)v1.x, (int)v1.y, (int)v2.x, (int)v2.y, ref c);
+
+				//mxd. Should we bother?
+				if(lengthsq < minlinenormallength) continue; //mxd
+
+				// Calculate normal indicator
+				float mx = (v2.x - v1.x) * 0.5f;
+				float my = (v2.y - v1.y) * 0.5f;
+
+				// Draw normal indicator
+				plotter.DrawLineSolid((int)(v1.x + mx), (int)(v1.y + my),
+									  (int)((v1.x + mx) - (my * l.LengthInv) * linenormalsize),
+									  (int)((v1.y + my) + (mx * l.LengthInv) * linenormalsize), ref c);
+			}
 		}
 
 		// This renders a single vertex
