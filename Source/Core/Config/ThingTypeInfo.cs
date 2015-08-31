@@ -429,10 +429,9 @@ namespace CodeImp.DoomBuilder.Config
 
 			//mxd. GLOOME rendering flags. ORDER: WALLSPRITE -> FLOORSPRITE || CEILSPRITE
 			rollsprite = actor.GetFlagValue("rollsprite", false); 
-			//TODO: in GLOOME +WALLSPRITE works only when +ROLLSPRITE is set?
-			if(rollsprite && actor.GetFlagValue("wallsprite", false)) rendermode = Thing.SpriteRenderMode.WALL_SPRITE;
-			else if(actor.GetFlagValue("floorsprite", false))		  rendermode = Thing.SpriteRenderMode.FLOOR_SPRITE;
-			else if(actor.GetFlagValue("ceilsprite", false))		  rendermode = Thing.SpriteRenderMode.CEILING_SPRITE;
+			if(actor.GetFlagValue("wallsprite", false)) rendermode = Thing.SpriteRenderMode.WALL_SPRITE;
+			else if(actor.GetFlagValue("floorsprite", false)) rendermode = Thing.SpriteRenderMode.FLOOR_SPRITE;
+			else if(actor.GetFlagValue("ceilsprite", false)) rendermode = Thing.SpriteRenderMode.CEILING_SPRITE;
 			if(rendermode == Thing.SpriteRenderMode.FLOOR_SPRITE || rendermode == Thing.SpriteRenderMode.CEILING_SPRITE)
 				sticktoplane = actor.GetFlagValue("sticktoplane", false); // Works only for Floor/Ceil sprites
 

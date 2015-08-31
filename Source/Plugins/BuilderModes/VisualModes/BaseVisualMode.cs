@@ -866,6 +866,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 				}
 				
+				// ========== mxd. Glowing flats ==========
 				if(General.Map.Data.GlowingFlats.ContainsKey(s.LongFloorTexture) || General.Map.Data.GlowingFlats.ContainsKey(s.LongCeilTexture))
 				{
 					SectorData sd = GetSectorData(s);
