@@ -68,7 +68,7 @@ namespace CodeImp.DoomBuilder.Data
 		//mxd: filepathname is relative path to the image ("Textures\sometexture.png")
 		protected override void SetName(string filepathname) 
 		{
-			if(!General.Map.Config.UseLongTextureNames) 
+			if(!General.Map.Config.UseLongTextureNames || string.IsNullOrEmpty(Path.GetDirectoryName(filepathname))) 
 			{
 				this.name = Path.GetFileNameWithoutExtension(filepathname.ToUpperInvariant());
 				if (this.name.Length > DataManager.CLASIC_IMAGE_NAME_LENGTH)

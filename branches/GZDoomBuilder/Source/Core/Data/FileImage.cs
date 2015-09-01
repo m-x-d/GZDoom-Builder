@@ -78,7 +78,7 @@ namespace CodeImp.DoomBuilder.Data
 		internal FileImage(string name, string filepathname)
 		{
 			// Initialize
-			SetName(name, filepathname, true);
+			SetName(name, filepathname, true, true);
 
 			probableformat = ImageDataFormat.DOOMPICTURE;
 
@@ -93,16 +93,17 @@ namespace CodeImp.DoomBuilder.Data
 		//mxd: name is relative path to the image ("\Textures\sometexture.png")
 		//mxd: filepathname is absolute path to the image ("D:\Doom\MyCoolProject\Textures\sometexture.png")
 		//mxd: also, zdoom uses '/' as directory separator char.
+		//mxd: and doesn't recognize long texture names in a root folder / pk3/7 root
 		private void SetName(string name, string filepathname)
 		{
-			SetName(name, filepathname, General.Map.Config.UseLongTextureNames);
+			SetName(name, filepathname, General.Map.Config.UseLongTextureNames, false);
 		}
 
-		private void SetName(string name, string filepathname, bool uselongtexturenames)
+		private void SetName(string name, string filepathname, bool uselongtexturenames, bool forcelongtexturename)
 		{
 			name = name.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
 
-			if(!uselongtexturenames)
+			if(!uselongtexturenames || (!forcelongtexturename && string.IsNullOrEmpty(Path.GetDirectoryName(name))))
 			{
 				this.name = Path.GetFileNameWithoutExtension(name.ToUpperInvariant());
 				if (this.name.Length > DataManager.CLASIC_IMAGE_NAME_LENGTH)

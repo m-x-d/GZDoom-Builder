@@ -315,7 +315,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Get correct offset to texture space...
 			float zoffset;
-			int ox = (int)Math.Floor((u * Sidedef.Line.Length * UDMFTools.GetFloat(Sidedef.Fields, "scalex_mid", 1.0f) + Sidedef.OffsetX + UDMFTools.GetFloat(Sidedef.Fields, "offsetx_mid")) % Texture.Width);
+			int ox = (int)Math.Floor((u * Sidedef.Line.Length * UDMFTools.GetFloat(Sidedef.Fields, "scalex_mid", 1.0f) / Texture.Scale.x + Sidedef.OffsetX + UDMFTools.GetFloat(Sidedef.Fields, "offsetx_mid")) % Texture.Width);
 			int oy;
 
 			if(repeatmidtex)
@@ -325,20 +325,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				else
 					zoffset = Sidedef.Sector.CeilHeight;
 
-				oy = (int)Math.Floor(((pickintersect.z - zoffset) * UDMFTools.GetFloat(Sidedef.Fields, "scaley_mid", 1.0f) - Sidedef.OffsetY - UDMFTools.GetFloat(Sidedef.Fields, "offsety_mid")) % Texture.Height);
+				oy = (int)Math.Floor(((pickintersect.z - zoffset) * UDMFTools.GetFloat(Sidedef.Fields, "scaley_mid", 1.0f) / Texture.Scale.y - Sidedef.OffsetY - UDMFTools.GetFloat(Sidedef.Fields, "offsety_mid")) % Texture.Height);
 			}
 			else
 			{
 				zoffset = bottomclipplane.GetZ(pickintersect);
-				oy = (int)Math.Floor(((pickintersect.z - zoffset) * UDMFTools.GetFloat(Sidedef.Fields, "scaley_mid", 1.0f)) % Texture.Height);
+				oy = (int)Math.Ceiling(((pickintersect.z - zoffset) * UDMFTools.GetFloat(Sidedef.Fields, "scaley_mid", 1.0f) / Texture.Scale.y) % Texture.Height);
 			}
 
 			// Make sure offsets are inside of texture dimensions...
-			if(ox < 0) ox = Texture.Width + ox;
-			if(oy < 0) oy = Texture.Height + oy;
+			while(ox < 0) ox += Texture.Width;
+			while(oy < 0) oy += Texture.Height;
 
 			// Check pixel alpha
-			if(Texture.GetBitmap().GetPixel(General.Clamp(ox, 0, Texture.Width - 1), General.Clamp(Texture.Height - oy - 1, 0, Texture.Height - 1)).A > 0)
+			if(Texture.GetBitmap().GetPixel(General.Clamp(ox, 0, Texture.Width - 1), General.Clamp(Texture.Height - oy, 0, Texture.Height - 1)).A > 0)
 			{
 				return base.PickAccurate(from, to, dir, ref u_ray);
 			}
