@@ -29,29 +29,29 @@ namespace CodeImp.DoomBuilder.Actions
 		#region ================== Variables
 
 		// Description
-		private string name;
-		private string shortname;
-		private string title;
-		private string description;
-		private string category;
+		private readonly string name;
+		private readonly string shortname;
+		private readonly string title;
+		private readonly string description;
+		private readonly string category;
 
 		// Shortcut key
 		private int key;
-		private int keymask;
-		private int defaultkey;
+		private readonly int keymask;
+		private readonly int defaultkey;
 		
 		// Shortcut options
-		private bool allowkeys;
-		private bool allowmouse;
-		private bool allowscroll;
-		private bool disregardshift;
-		private bool disregardcontrol;
-		private bool disregardalt; //mxd
-		private bool repeat;
+		private readonly bool allowkeys;
+		private readonly bool allowmouse;
+		private readonly bool allowscroll;
+		private readonly bool disregardshift;
+		private readonly bool disregardcontrol;
+		private readonly bool disregardalt; //mxd
+		private readonly bool repeat;
 		
 		// Delegate
-		private List<ActionDelegate> begindelegates;
-		private List<ActionDelegate> enddelegates;
+		private readonly List<ActionDelegate> begindelegates;
+		private readonly List<ActionDelegate> enddelegates;
 		
 		#endregion
 
@@ -113,12 +113,6 @@ namespace CodeImp.DoomBuilder.Actions
 			{
 				this.key = key & keymask;
 			}
-		}
-
-		// Destructor
-		~Action()
-		{
-			// Moo.
 		}
 		
 		#endregion

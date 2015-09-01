@@ -376,6 +376,9 @@ namespace CodeImp.DoomBuilder.Data
 				if(!textures.ContainsKey(t.Key))
 				{
 					textures.Add(t.Key, t.Value);
+
+					//mxd. Add both short and long names?
+					if(t.Value.HasLongName) texturenames.Add(t.Value.ShortName);
 					texturenames.Add(t.Value.Name);
 				}
 			}
@@ -384,11 +387,14 @@ namespace CodeImp.DoomBuilder.Data
 			foreach(KeyValuePair<long, ImageData> f in flatsonly) 
 			{
 				flats.Add(f.Key, f.Value);
+
+				//mxd. Add both short and long names?
+				if(f.Value.HasLongName) flatnames.Add(f.Value.ShortName);
 				flatnames.Add(f.Value.Name);
 			}
 
 			// Mixed textures and flats?
-			if (General.Map.Config.MixTexturesFlats) 
+			if(General.Map.Config.MixTexturesFlats) 
 			{
 				// Add textures to flats
 				foreach(KeyValuePair<long, ImageData> t in texturesonly) 
@@ -396,6 +402,9 @@ namespace CodeImp.DoomBuilder.Data
 					if(!flats.ContainsKey(t.Key)) 
 					{
 						flats.Add(t.Key, t.Value);
+
+						//mxd. Add both short and long names?
+						if(t.Value.HasLongName) flatnames.Add(t.Value.ShortName);
 						flatnames.Add(t.Value.Name);
 					}
 					else if(t.Value is HighResImage || t.Value is SimpleTextureImage) //mxd. Textures defined in TEXTURES or placed between TX_START and TX_END markers override "regular" flats in ZDoom
@@ -406,13 +415,8 @@ namespace CodeImp.DoomBuilder.Data
 				}
 
 				//mxd
-				foreach (KeyValuePair<long, long> t in texturenamesshorttofull)
-				{
-					if (!flatnamesshorttofull.ContainsKey(t.Key))
-					{
-						flatnamesshorttofull.Add(t.Key, t.Value);
-					}
-				}
+				foreach(KeyValuePair<long, long> t in texturenamesshorttofull)
+					if(!flatnamesshorttofull.ContainsKey(t.Key)) flatnamesshorttofull.Add(t.Key, t.Value);
 
 				// Add flats to textures
 				foreach(KeyValuePair<long, ImageData> f in flatsonly) 
@@ -420,21 +424,19 @@ namespace CodeImp.DoomBuilder.Data
 					if(!textures.ContainsKey(f.Key)) 
 					{
 						textures.Add(f.Key, f.Value);
+
+						//mxd. Add both short and long names?
+						if(f.Value.HasLongName) texturenames.Add(f.Value.ShortName);
 						texturenames.Add(f.Value.Name);
 					}
 				}
 
 				//mxd
-				foreach (KeyValuePair<long, long> t in flatnamesshorttofull)
-				{
-					if (!texturenamesshorttofull.ContainsKey(t.Key))
-					{
-						texturenamesshorttofull.Add(t.Key, t.Value);
-					}
-				}
+				foreach(KeyValuePair<long, long> t in flatnamesshorttofull)
+					if(!texturenamesshorttofull.ContainsKey(t.Key)) texturenamesshorttofull.Add(t.Key, t.Value);
 
 				// Do the same on the data readers
-				foreach (DataReader dr in containers)
+				foreach(DataReader dr in containers)
 					dr.TextureSet.MixTexturesAndFlats();
 			}
 
