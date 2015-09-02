@@ -964,6 +964,7 @@ namespace CodeImp.DoomBuilder.Config
 					{
 						title = option.Name + ": " + bit.Title;
 						matches++;
+						break;
 					}
 				}
 			}
