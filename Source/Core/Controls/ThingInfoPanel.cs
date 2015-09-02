@@ -79,10 +79,11 @@ namespace CodeImp.DoomBuilder.Controls
 			ThingTypeInfo ti = General.Map.Data.GetThingInfo(t.Type);
 
 			// Get thing action information
-			LinedefActionInfo act = General.Map.Config.LinedefActions[t.Action];
-			if(General.Map.Config.LinedefActions.ContainsKey(t.Action)) actioninfo = act.ToString();
-			else if(t.Action == 0) actioninfo = t.Action + " - None";
-			else actioninfo = t.Action + " - Unknown";
+			LinedefActionInfo act;
+			if(General.Map.Config.LinedefActions.ContainsKey(t.Action)) act = General.Map.Config.LinedefActions[t.Action];
+			else if(t.Action == 0) act = new LinedefActionInfo(0, "None", true, false);
+			else act = new LinedefActionInfo(t.Action, "Unknown", false, false);
+			actioninfo = act.ToString();
 			
 			// Determine z info to show
 			t.DetermineSector();
