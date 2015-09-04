@@ -5,6 +5,8 @@ namespace CodeImp.DoomBuilder.Windows
 {
 	public partial class UpdateForm : Form
 	{
+		public bool IgnoreThisUpdate { get { return ignorethisupdate.Checked; } }
+
 		public UpdateForm(int remoterev, string changelog)
 		{
 			InitializeComponent();

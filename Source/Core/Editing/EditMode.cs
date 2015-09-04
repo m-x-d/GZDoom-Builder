@@ -24,6 +24,7 @@ using System.Diagnostics;
 using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.Windows;
 
 #endregion
 
@@ -128,6 +129,16 @@ namespace CodeImp.DoomBuilder.Editing
 			}
 		}
 		
+		#endregion
+
+		#region ================== Methods
+
+		//mxd
+		public virtual void UpdateSelectionInfo()
+		{
+			General.Interface.DisplayStatus(StatusType.Selection, string.Empty);
+		}
+
 		#endregion
 
 		#region ================== Events

@@ -50,6 +50,7 @@ namespace CodeImp.DoomBuilder
 
 			// Get local revision number
 			int localrev = General.ThisAssembly.GetName().Version.Revision;
+			if(!verbose) localrev = Math.Max(localrev, General.Settings.IgnoredRemoteRevision);
 
 			// Get remote revision number
 			int remoterev;

@@ -339,6 +339,7 @@ namespace CodeImp.DoomBuilder.CommentsPanel
 				}
 			}
 
+			General.Editing.Mode.UpdateSelectionInfo(); //mxd
 			General.Interface.RedrawDisplay();
 		}
 		

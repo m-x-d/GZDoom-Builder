@@ -137,6 +137,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		// Modes
 		private bool modealreadyswitching;
+		private bool clearselection; //mxd
 		private bool pasting;
 		private PasteOptions pasteoptions;
 		
@@ -901,7 +902,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			else 
 			{
 				fields["xscale" + si.Part] = new UniValue(UniversalType.Float, si.Scale.x);
-				fields["yscale" + si.Part] = new UniValue(UniversalType.Float, si.Scale.y);
+				fields["yscale" + si.Part] = new UniValue(UniversalType.Float, -si.Scale.y);
 			}
 		}
 
@@ -1485,11 +1486,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Map.Map.Update();
 				General.Map.ThingsFilter.Update();
 				
-				// Make normal selection
+				// Make normal selection?
 				General.Map.Map.ClearAllSelected();
-				foreach(Vertex v in selectedvertices) if(!v.IsDisposed) v.Selected = true;
-				foreach(Linedef l in selectedlines) { if(!l.IsDisposed) { l.Start.Selected = true; l.End.Selected = true; } }
-				foreach(Thing t in selectedthings) if(!t.IsDisposed) t.Selected = true;
+				if(!clearselection) //mxd
+				{
+					foreach(Vertex v in selectedvertices) if(!v.IsDisposed) v.Selected = true;
+					foreach(Linedef l in selectedlines) { if(!l.IsDisposed) { l.Start.Selected = true; l.End.Selected = true; } }
+					foreach(Thing t in selectedthings) if(!t.IsDisposed) t.Selected = true;
+				}
 				General.Map.Map.SelectionType = SelectionType.Vertices | SelectionType.Things;
 				
 				// Done
@@ -1851,10 +1855,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("clearselection", BaseAction = true)]
 		public void ClearSelection()
 		{
-			// Accept changes
+			//mxd. Accept changes
+			clearselection = true;
 			General.Editing.AcceptMode();
-			General.Map.Map.ClearAllSelected();
-			General.Interface.RedrawDisplay();
+
+			//mxd. Clear selection info
+			General.Interface.DisplayStatus(StatusType.Selection, string.Empty);
 		}
 
 		// Flip vertically

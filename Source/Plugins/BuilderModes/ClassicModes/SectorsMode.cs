@@ -54,7 +54,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		// Highlighted item
 		private Sector highlighted;
-		private Association highlightasso = new Association();
+		private readonly Association highlightasso = new Association();
 
 		// Interface
 		private bool editpressed;
@@ -668,7 +668,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			UpdateSelectedLabels();
 			UpdateOverlaySurfaces();//mxd
 			UpdateSelectionInfo(); //mxd
-			UpdateOverlay();
 		}
 		
 		// Mode disengages
@@ -985,7 +984,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					} 
 					else if(highlighted != null) 
 					{
-						highlighted = null;
 						Highlight(null);
 
 						// Update entire display
@@ -1849,8 +1847,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				// Update
 				General.Map.Map.Update();
-				UpdateOverlay();
-				renderer.Present();
 				General.Interface.RedrawDisplay();
 				General.Interface.RefreshInfo();
 				General.Map.IsChanged = true;
