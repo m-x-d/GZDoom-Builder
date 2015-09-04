@@ -31,6 +31,9 @@
 			this.label = new System.Windows.Forms.Label();
 			this.label2 = new System.Windows.Forms.Label();
 			this.changelog = new System.Windows.Forms.RichTextBox();
+			this.hint = new System.Windows.Forms.PictureBox();
+			this.ignorethisupdate = new System.Windows.Forms.CheckBox();
+			((System.ComponentModel.ISupportInitialize)(this.hint)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// cancel
@@ -70,11 +73,11 @@
 			// 
 			this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(15, 235);
+			this.label2.Location = new System.Drawing.Point(33, 226);
 			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(348, 13);
+			this.label2.Size = new System.Drawing.Size(219, 26);
 			this.label2.TabIndex = 6;
-			this.label2.Text = "Notice: the editor will be closed and restarted during the update process.";
+			this.label2.Text = "Notice: the editor will be closed and restarted\r\nduring the update process.";
 			// 
 			// changelog
 			// 
@@ -91,6 +94,26 @@
 			this.changelog.TabIndex = 7;
 			this.changelog.Text = "";
 			// 
+			// hint
+			// 
+			this.hint.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.hint.Image = global::CodeImp.DoomBuilder.Properties.Resources.Lightbulb;
+			this.hint.Location = new System.Drawing.Point(13, 231);
+			this.hint.Name = "hint";
+			this.hint.Size = new System.Drawing.Size(16, 16);
+			this.hint.TabIndex = 8;
+			this.hint.TabStop = false;
+			// 
+			// ignorethisupdate
+			// 
+			this.ignorethisupdate.AutoSize = true;
+			this.ignorethisupdate.Location = new System.Drawing.Point(306, 233);
+			this.ignorethisupdate.Name = "ignorethisupdate";
+			this.ignorethisupdate.Size = new System.Drawing.Size(111, 17);
+			this.ignorethisupdate.TabIndex = 9;
+			this.ignorethisupdate.Text = "Ignore this update";
+			this.ignorethisupdate.UseVisualStyleBackColor = true;
+			// 
 			// UpdateForm
 			// 
 			this.AcceptButton = this.downloadupdate;
@@ -98,6 +121,8 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.cancel;
 			this.ClientSize = new System.Drawing.Size(651, 262);
+			this.Controls.Add(this.ignorethisupdate);
+			this.Controls.Add(this.hint);
 			this.Controls.Add(this.changelog);
 			this.Controls.Add(this.label2);
 			this.Controls.Add(this.label);
@@ -112,6 +137,7 @@
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Newsflash (R[rev])!";
 			this.Shown += new System.EventHandler(this.UpdateForm_Shown);
+			((System.ComponentModel.ISupportInitialize)(this.hint)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -124,5 +150,7 @@
 		private System.Windows.Forms.Label label;
 		private System.Windows.Forms.Label label2;
 		private System.Windows.Forms.RichTextBox changelog;
+		private System.Windows.Forms.PictureBox hint;
+		private System.Windows.Forms.CheckBox ignorethisupdate;
 	}
 }

@@ -55,8 +55,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		// Highlighted item
 		private Linedef highlighted;
-		private Association[] association = new Association[Linedef.NUM_ARGS];
-		private Association highlightasso = new Association();
+		private readonly Association[] association = new Association[Linedef.NUM_ARGS];
+		private readonly Association highlightasso = new Association();
 		private Vector2D insertpreview = new Vector2D(float.NaN, float.NaN); //mxd
 		
 		// Interface
@@ -75,7 +75,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public LinedefsMode()
 		{
 			//mxd. Associations now requre initializing...
-			for(int i = 0; i < association.Length; i++) association[i].Set(new Vector2D(), 0, 0);
+			for(int i = 0; i < association.Length; i++) association[i] = new Association();
 		}
 
 		#endregion
@@ -631,7 +631,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				} 
 				else if(highlighted != null) 
 				{
-					highlighted = null;
 					Highlight(null);
 
 					// Update entire display
@@ -700,7 +699,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd
 		protected override void OnPaintSelectBegin() 
 		{
-			highlighted = null;
+			// Highlight nothing
+			Highlight(null);
+
 			base.OnPaintSelectBegin();
 		}
 

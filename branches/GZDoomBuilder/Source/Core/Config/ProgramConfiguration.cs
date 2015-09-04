@@ -118,6 +118,7 @@ namespace CodeImp.DoomBuilder.Config
 		private bool rendercomments;
 		private bool rendergrid;
 		private bool dynamicgridsize;
+		private int ignoredremoterevision;
 		
 		// These are not stored in the configuration, only used at runtime
 		private int defaultbrightness;
@@ -207,6 +208,7 @@ namespace CodeImp.DoomBuilder.Config
 		public bool RenderComments { get { return rendercomments; } internal set { rendercomments = value; } } //mxd
 		public bool RenderGrid { get { return rendergrid; } internal set { rendergrid = value; } } //mxd
 		public bool DynamicGridSize { get { return dynamicgridsize; } internal set { dynamicgridsize = value; } } //mxd
+		internal int IgnoredRemoteRevision { get { return ignoredremoterevision; } set { ignoredremoterevision = value; } } //mxd
 
 		//mxd. Left here for compatibility reasons...
 		public string DefaultTexture { get { return General.Map != null ? General.Map.Options.DefaultWallTexture : "-"; } set { if(General.Map != null) General.Map.Options.DefaultWallTexture = value; } }
@@ -319,6 +321,7 @@ namespace CodeImp.DoomBuilder.Config
 				rendercomments = cfg.ReadSetting("rendercomments", true); //mxd
 				rendergrid = cfg.ReadSetting("rendergrid", true); //mxd
 				dynamicgridsize = cfg.ReadSetting("dynamicgridsize", true); //mxd
+				ignoredremoterevision = cfg.ReadSetting("ignoredremoterevision", 0); //mxd
 
 				//mxd. Sector defaults
 				defaultceilheight = cfg.ReadSetting("defaultceilheight", 128);
@@ -415,6 +418,7 @@ namespace CodeImp.DoomBuilder.Config
 			cfg.WriteSetting("rendercomments", rendercomments); //mxd
 			cfg.WriteSetting("rendergrid", rendergrid); //mxd
 			cfg.WriteSetting("dynamicgridsize", dynamicgridsize); //mxd
+			cfg.WriteSetting("ignoredremoterevision", ignoredremoterevision); //mxd
 
 			//mxd. Sector defaults
 			cfg.WriteSetting("defaultceilheight", defaultceilheight);

@@ -52,8 +52,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		// Highlighted item
 		private Thing highlighted;
-		private Association[] association = new Association[Thing.NUM_ARGS];
-		private Association highlightasso = new Association();
+		private readonly Association[] association = new Association[Thing.NUM_ARGS];
+		private readonly Association highlightasso = new Association();
 
 		// Interface
 		private bool editpressed;
@@ -73,7 +73,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public ThingsMode()
 		{
 			//mxd. Associations now requre initializing...
-			for(int i = 0; i < association.Length; i++) association[i].Set(new Vector2D(), 0, 0);
+			for(int i = 0; i < association.Length; i++) association[i] = new Association();
 		}
 
 		#endregion
@@ -482,7 +482,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				} 
 				else if(highlighted != null) 
 				{
-					highlighted = null;
 					Highlight(null);
 					
 					// Update entire display
@@ -524,7 +523,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd
 		protected override void OnPaintSelectBegin() 
 		{
-			highlighted = null;
+			// Highlight nothing
+			Highlight(null);
+
 			base.OnPaintSelectBegin();
 		}
 

@@ -24,7 +24,7 @@ using CodeImp.DoomBuilder.Types;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	public struct Association
+	public class Association
 	{
 		private HashSet<int> tags;
 		private Vector2D center;
@@ -34,11 +34,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public Vector2D Center { get { return center; } }
 		public UniversalType Type { get { return type; } }
 
+		//mxd. This sets up the association
+		public Association()
+		{
+			this.tags = new HashSet<int> { 0 };
+		}
+
 		// This sets up the association
 		public Association(Vector2D center, int tag, int type)
 		{
-			this.tags = new HashSet<int>(); //mxd
-			tags.Add(tag); //mxd
+			this.tags = new HashSet<int> { tag }; //mxd
 			this.type = (UniversalType)type;
 			this.center = center;
 		}
@@ -46,8 +51,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This sets up the association
 		public Association(Vector2D center, int tag, UniversalType type)
 		{
-			this.tags = new HashSet<int>(); //mxd
-			tags.Add(tag); //mxd
+			this.tags = new HashSet<int> { tag }; //mxd
 			this.type = type;
 			this.center = center;
 		}
@@ -71,8 +75,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This sets up the association
 		public void Set(Vector2D center, int tag, int type)
 		{
-			this.tags = new HashSet<int>(); //mxd
-			tags.Add(tag); //mxd
+			this.tags = new HashSet<int> { tag }; //mxd
 			this.type = (UniversalType)type;
 			this.center = center;
 		}
@@ -80,8 +83,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This sets up the association
 		public void Set(Vector2D center, int tag, UniversalType type)
 		{
-			this.tags = new HashSet<int>(); //mxd
-			tags.Add(tag); //mxd
+			this.tags = new HashSet<int> { tag }; //mxd
 			this.type = type;
 			this.center = center;
 		}
@@ -105,12 +107,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This compares an association
 		public static bool operator ==(Association a, Association b)
 		{
+			if(!(a is Association) || !(b is Association)) return false; //mxd
 			return (a.type == b.type) && a.tags.SetEquals(b.tags);
 		}
 
 		// This compares an association
 		public static bool operator !=(Association a, Association b)
 		{
+			if(!(a is Association) || !(b is Association)) return true; //mxd
 			return (a.type != b.type) || !a.tags.SetEquals(b.tags);
 		}
 

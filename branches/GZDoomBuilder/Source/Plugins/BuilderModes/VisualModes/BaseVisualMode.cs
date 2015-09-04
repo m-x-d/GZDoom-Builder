@@ -632,7 +632,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		private void UpdateSelectionInfo() 
+		public override void UpdateSelectionInfo() 
 		{
 			int numWalls = 0;
 			int numFloors = 0;

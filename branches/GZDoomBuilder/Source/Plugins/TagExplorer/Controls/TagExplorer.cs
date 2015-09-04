@@ -875,7 +875,8 @@ namespace CodeImp.DoomBuilder.TagExplorer
 					editmode.CenterOnArea(area, 0.6f);
 				}
 
-				//update view
+				// Update info and view
+				General.Editing.Mode.UpdateSelectionInfo();
 				General.Interface.RedrawDisplay();
 			}
 		}

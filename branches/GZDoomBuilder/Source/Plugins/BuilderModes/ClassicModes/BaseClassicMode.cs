@@ -152,7 +152,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			General.Map.Renderer2D.UpdateExtraFloorFlag();
 			base.OnUndoEnd();
-			UpdateSelectionInfo();
 		}
 
 		//mxd
@@ -160,7 +159,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			General.Map.Renderer2D.UpdateExtraFloorFlag();
 			base.OnRedoEnd();
-			UpdateSelectionInfo();
 		}
 
 		//mxd
@@ -168,12 +166,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			base.OnMapTestEnd(testFromCurrentPosition);
 			General.Interface.RedrawDisplay(); // Redraw display to hide changes :)
-		}
-
-		//mxd
-		public virtual void UpdateSelectionInfo() 
-		{
-			General.Interface.DisplayStatus(StatusType.Selection, string.Empty);
 		}
 
 		//mxd

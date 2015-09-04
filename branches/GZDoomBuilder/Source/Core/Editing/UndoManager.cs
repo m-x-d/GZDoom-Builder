@@ -709,6 +709,7 @@ namespace CodeImp.DoomBuilder.Editing
 
 							// Update interface
 							General.MainWindow.RedrawDisplay(); //mxd
+							General.Editing.Mode.UpdateSelectionInfo(); //mxd
 							dobackgroundwork = true;
 							General.MainWindow.UpdateInterface();
 						}
@@ -852,6 +853,7 @@ namespace CodeImp.DoomBuilder.Editing
 
 							// Update interface
 							General.MainWindow.RedrawDisplay(); //mxd
+							General.Editing.Mode.UpdateSelectionInfo(); //mxd
 							dobackgroundwork = true;
 							General.MainWindow.UpdateInterface();
 						}

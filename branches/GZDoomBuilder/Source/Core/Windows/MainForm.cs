@@ -4186,7 +4186,12 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				// Show the window
 				UpdateForm form = new UpdateForm(remoterev, changelog);
-				if(form.ShowDialog(this) == DialogResult.OK && General.AskSaveMap())
+				DialogResult result = form.ShowDialog(this);
+
+				// Update ignored revision number
+				General.Settings.IgnoredRemoteRevision = (form.IgnoreThisUpdate ? remoterev : 0);
+
+				if(result == DialogResult.OK && General.AskSaveMap())
 				{
 					// Launch the updater
 					Process.Start(Path.Combine(General.AppPath, "Updater.exe"), "-rev " + remoterev);
