@@ -729,21 +729,7 @@ namespace CodeImp.DoomBuilder
 				}
 
 				//mxd. Check for updates?
-				if(General.Settings.CheckForUpdates)
-				{
-					if(!File.Exists(Path.Combine(apppath, "Updater.exe")))
-					{
-						General.ErrorLogger.Add(ErrorType.Warning, "Update check failed: Updater.exe does not exist!");
-					} 
-					else if(!File.Exists(Path.Combine(apppath, "Updater.ini")))
-					{
-						General.ErrorLogger.Add(ErrorType.Warning, "Update check failed: Updater.ini does not exist!");
-					}
-					else
-					{
-						UpdateChecker.PerformCheck(false);
-					}
-				}
+				if(General.Settings.CheckForUpdates) UpdateChecker.PerformCheck(false);
 				
 				// Run application from the main window
 				Application.Run(mainwindow);
@@ -1076,13 +1062,6 @@ namespace CodeImp.DoomBuilder
 		[BeginAction("newmap")]
 		internal static void NewMap()
 		{
-			//mxd
-			if(map != null && map.Launcher.GameEngineRunning) 
-			{
-				ShowWarningMessage("Cannot create a map while game engine is running" + Environment.NewLine + "Please close '" + map.ConfigSettings.TestProgram + "' first.", MessageBoxButtons.OK);
-				return;
-			}
-			
 			MapOptions newoptions = new MapOptions();
 
 			// Cancel volatile mode, if any
@@ -1160,13 +1139,6 @@ namespace CodeImp.DoomBuilder
 		internal static void ActionCloseMap() { CloseMap(); }
 		internal static bool CloseMap()
 		{
-			//mxd
-			if(map != null && map.Launcher.GameEngineRunning) 
-			{
-				ShowWarningMessage("Cannot close the map while game engine is running" + Environment.NewLine + "Please close '" + map.ConfigSettings.TestProgram + "' first.", MessageBoxButtons.OK);
-				return false;
-			}
-			
 			// Cancel volatile mode, if any
 			editing.DisengageVolatileMode();
 
@@ -1220,12 +1192,6 @@ namespace CodeImp.DoomBuilder
 		[BeginAction("openmap")]
 		internal static void OpenMap()
 		{
-			if(map != null && map.Launcher.GameEngineRunning) //mxd
-			{
-				ShowWarningMessage("Cannot open a map while game engine is running" + Environment.NewLine + "Please close '" + map.ConfigSettings.TestProgram + "' first.", MessageBoxButtons.OK);
-				return;
-			}
-			
 			// Cancel volatile mode, if any
 			editing.DisengageVolatileMode();
 
@@ -1261,13 +1227,6 @@ namespace CodeImp.DoomBuilder
 			if (map == null || string.IsNullOrEmpty(map.FilePathName) || !File.Exists(map.FilePathName))
 			{
 				Interface.DisplayStatus(StatusType.Warning, "Unable to open map from current WAD!");
-				return;
-			}
-
-			//mxd
-			if(map.Launcher.GameEngineRunning) 
-			{
-				ShowWarningMessage("Cannot change the map while game engine is running" + Environment.NewLine + "Please close '" + map.ConfigSettings.TestProgram + "' first.", MessageBoxButtons.OK);
 				return;
 			}
 
@@ -1457,14 +1416,6 @@ namespace CodeImp.DoomBuilder
 		internal static bool SaveMap()
 		{
 			if(map == null) return false;
-
-			//mxd
-			if (map.Launcher.GameEngineRunning) 
-			{
-				ShowWarningMessage("Cannot save the map while game engine is running" + Environment.NewLine + "Please close '" + map.ConfigSettings.TestProgram + "' first.", MessageBoxButtons.OK);
-				return false;
-			}
-
 			bool result = false;
 			
 			// Cancel volatile mode, if any
@@ -1535,14 +1486,6 @@ namespace CodeImp.DoomBuilder
 		internal static bool SaveMapAs()
 		{
 			if(map == null) return false;
-
-			//mxd
-			if(map.Launcher.GameEngineRunning)
-			{
-				ShowWarningMessage("Cannot save the map while a game engine is running" + Environment.NewLine + "Please close '" + map.ConfigSettings.TestProgram + "' first.", MessageBoxButtons.OK);
-				return false;
-			}
-
 			bool result = false;
 
 			// Cancel volatile mode, if any
@@ -1615,14 +1558,6 @@ namespace CodeImp.DoomBuilder
 		internal static bool SaveMapInto()
 		{
 			if(map == null) return false;
-
-			//mxd
-			if(map.Launcher.GameEngineRunning) 
-			{
-				ShowWarningMessage("Cannot save the map while game engine is running" + Environment.NewLine + "Please close '" + map.ConfigSettings.TestProgram + "' first.", MessageBoxButtons.OK);
-				return false;
-			}
-
 			bool result = false;
 
 			// Cancel volatile mode, if any
