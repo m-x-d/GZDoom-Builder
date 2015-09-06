@@ -49,7 +49,6 @@ namespace CodeImp.DoomBuilder
 		#region ================== Properties
 
 		public string TempWAD { get { return tempwad; } }
-		public bool GameEngineRunning { get { return process != null; } } //mxd
 
 		#endregion
 
@@ -251,16 +250,9 @@ namespace CodeImp.DoomBuilder
 			General.Editing.Mode.OnMapTestEnd(true);
 		}
 		
-		// This saves the map to a temporary file and launches a test wit hthe given skill
+		// This saves the map to a temporary file and launches a test with the given skill
 		public void TestAtSkill(int skill)
 		{
-			//mxd
-			if (process != null) 
-			{
-				General.ShowWarningMessage("Game engine is already running." + Environment.NewLine + " Please close '" + General.Map.ConfigSettings.TestProgram + "' before testing again", MessageBoxButtons.OK);
-				return;
-			}
-			
 			Cursor oldcursor = Cursor.Current;
 
 			// Check if configuration is OK
@@ -360,21 +352,6 @@ namespace CodeImp.DoomBuilder
 			General.Plugins.OnMapSaveEnd(SavePurpose.Testing);
 			General.MainWindow.FocusDisplay();
 			if(General.Editing.Mode is ClassicMode) General.MainWindow.RedrawDisplay();
-		}
-
-		//mxd
-		public void StopGameEngine() 
-		{
-			//mxd. Terminate process?
-			if(process != null) 
-			{
-				process.CloseMainWindow();
-				process.Close();
-				process = null;
-
-				// Remove temporary file
-				try { if(File.Exists(tempwad)) File.Delete(tempwad); } catch(Exception) { }
-			}
 		}
 
 		//mxd

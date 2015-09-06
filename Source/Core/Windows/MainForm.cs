@@ -650,10 +650,7 @@ namespace CodeImp.DoomBuilder.Windows
 		protected override void OnFormClosing(FormClosingEventArgs e) 
 		{
 			base.OnFormClosing(e);
-
 			if(e.CloseReason == CloseReason.ApplicationExitCall) return;
-			if(General.Map != null && General.Map.Launcher.GameEngineRunning)
-				General.Map.Launcher.StopGameEngine(); //mxd
 
 			// Close the map
 			if(General.CloseMap()) 

@@ -577,13 +577,29 @@ namespace CodeImp.DoomBuilder
 		// Initializes for an existing map
 		internal bool SaveMap(string newfilepathname, SavePurpose purpose) 
 		{
-			MapSet outputset;
-			string nodebuildername, settingsfile;
-			StatusInfo oldstatus;
+			//mxd. Check if the target file is locked
+			FileLockChecker.FileLockCheckResult checkresult = FileLockChecker.CheckFile(newfilepathname);
+			if(!string.IsNullOrEmpty(checkresult.Error))
+			{
+				General.ShowErrorMessage("Unable to save the map: target file is locked by another process. "
+					+ Environment.NewLine + "Also, unable to get the name of the offending process:" 
+					+ Environment.NewLine + Environment.NewLine + checkresult.Error
+					, MessageBoxButtons.OK);
+				return false;
+			}
+			if(checkresult.ProcessInfos.Count > 0)
+			{
+				General.ShowErrorMessage("Unable to save the map: target file is locked by the following process" + (checkresult.ProcessInfos.Count > 1 ? "es" : "") + ":"
+					+ Environment.NewLine + Environment.NewLine
+					+ string.Join(Environment.NewLine + Environment.NewLine, checkresult.ProcessInfos.ToArray())
+					, MessageBoxButtons.OK);
+				return false;
+			}
+
+			string settingsfile;
 			WAD targetwad;
 			int index;
 			bool includenodes;
-			string origmapname;
 
 			General.WriteLogLine("Saving map to file: " + newfilepathname);
 
@@ -614,7 +630,7 @@ namespace CodeImp.DoomBuilder
 			if (changed) 
 			{
 				// Make a copy of the map data
-				outputset = map.Clone();
+				MapSet outputset = map.Clone();
 
 				// Remove all flags from all 3D Start things
 				foreach (Thing t in outputset.Things) 
@@ -629,6 +645,7 @@ namespace CodeImp.DoomBuilder
 				}
 
 				// Do we need sidedefs compression?
+				StatusInfo oldstatus;
 				if (map.Sidedefs.Count > io.MaxSidedefs) 
 				{
 					// Compress sidedefs
@@ -684,15 +701,12 @@ namespace CodeImp.DoomBuilder
 				outputset.Dispose();
 
 				// Get the corresponding nodebuilder
-				nodebuildername = (purpose == SavePurpose.Testing) ? configinfo.NodebuilderTest : configinfo.NodebuilderSave;
+				string nodebuildername = (purpose == SavePurpose.Testing) ? configinfo.NodebuilderTest : configinfo.NodebuilderSave;
 
 				// Build the nodes
 				oldstatus = General.MainWindow.Status;
 				General.MainWindow.DisplayStatus(StatusType.Busy, "Building map nodes...");
-				if (!string.IsNullOrEmpty(nodebuildername))
-					includenodes = BuildNodes(nodebuildername, true);
-				else
-					includenodes = false;
+				includenodes = (!string.IsNullOrEmpty(nodebuildername) && BuildNodes(nodebuildername, true));
 				General.MainWindow.DisplayStatus(oldstatus);
 			}
 			else 
@@ -705,7 +719,7 @@ namespace CodeImp.DoomBuilder
 			data.Suspend();
 
 			// Determine original map name
-			origmapname = (options.PreviousName != "" && purpose != SavePurpose.IntoFile) ? options.PreviousName : options.CurrentName;
+			string origmapname = (options.PreviousName != "" && purpose != SavePurpose.IntoFile) ? options.PreviousName : options.CurrentName;
 			string origwadfile = string.Empty; //mxd
 
 			try 

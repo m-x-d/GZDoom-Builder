@@ -16,6 +16,7 @@ namespace CodeImp.DoomBuilder
 
 		internal static void PerformCheck(bool verbosemode)
 		{
+			// Update check already runing?
 			if(worker != null && worker.IsBusy)
 			{
 				if(verbosemode)
@@ -30,6 +31,7 @@ namespace CodeImp.DoomBuilder
 				return;
 			}
 
+			// Start checking
 			verbose = verbosemode;
 			worker = new BackgroundWorker();
 			worker.DoWork += DoWork;
@@ -40,7 +42,23 @@ namespace CodeImp.DoomBuilder
 
 		private static void DoWork(object sender, DoWorkEventArgs e)
 		{
-			string url = GetDownloadUrl(Path.Combine(General.AppPath, "Updater.ini"));
+			string updaterpath = Path.Combine(General.AppPath, "Updater.exe");
+			if(!File.Exists(updaterpath))
+			{
+				errordesc = "Update check failed: '" + updaterpath + "' does not exist!";
+				e.Cancel = true;
+				return;
+			} 
+			
+			string inipath = Path.Combine(General.AppPath, "Updater.ini");
+			if(!File.Exists(inipath))
+			{
+				errordesc = "Update check failed: '" + inipath + "' does not exist!";
+				e.Cancel = true;
+				return;
+			}
+
+			string url = GetDownloadUrl(inipath);
 			if(string.IsNullOrEmpty(url))
 			{
 				errordesc = "Update check failed: failed to get update url from Updater.ini!";
@@ -50,6 +68,7 @@ namespace CodeImp.DoomBuilder
 
 			// Get local revision number
 			int localrev = General.ThisAssembly.GetName().Version.Revision;
+			int actuallocalrev = localrev;
 			if(!verbose) localrev = Math.Max(localrev, General.Settings.IgnoredRemoteRevision);
 
 			// Get remote revision number
@@ -80,7 +99,7 @@ namespace CodeImp.DoomBuilder
 			if(remoterev > localrev)
 			{
 				// Get changelog info
-				string changelog = GetChangelog(url, localrev);
+				string changelog = GetChangelog(url, actuallocalrev);
 
 				if(string.IsNullOrEmpty(changelog))
 				{
