@@ -11,7 +11,7 @@ namespace CodeImp.DoomBuilder
 		internal class FileLockCheckResult //mxd
 		{
 			public string Error;
-			public List<string> ProcessInfos = new List<string>();
+			public List<Process> Processes = new List<Process>();
 		}
 		
 		[StructLayout(LayoutKind.Sequential)]
@@ -88,14 +88,36 @@ namespace CodeImp.DoomBuilder
 		/// </remarks>
 		static public FileLockCheckResult CheckFile(string path)
 		{
+			//mxd. Do it the clunky way? (WinXP)
+			if(Environment.OSVersion.Version.Major < 6)
+			{
+				bool locked = false;
+				
+				try
+				{
+					using(File.Open(path, FileMode.Open)) { }
+				}
+				catch(IOException e)
+				{
+					int errorcode = Marshal.GetHRForException(e) & ((1 << 16) - 1);
+					locked = (errorcode == 32 || errorcode == 33);
+				}
+
+				return new FileLockCheckResult { Error = (locked ? "Unable to save the map. Map file is locked by another process." : string.Empty) };
+			}
+
+			//mxd. Needs Vista or newer...
 			uint handle;
 			string key = Guid.NewGuid().ToString();
 			FileLockCheckResult result = new FileLockCheckResult(); //mxd
+			string errorstart = "Unable to save the map: target file is locked by another process."
+			                    + Environment.NewLine + "Also, unable to get the name of the offending process:"
+			                    + Environment.NewLine + Environment.NewLine;
 
 			int res = RmStartSession(out handle, 0, key);
 			if(res != 0)
 			{
-				result.Error = "Could not begin restart session. Unable to determine file locker."; //mxd
+				result.Error = errorstart + "Error " + res + ". Could not begin restart session. Unable to determine file locker."; //mxd
 				return result;
 			}
 
@@ -110,7 +132,7 @@ namespace CodeImp.DoomBuilder
 				res = RmRegisterResources(handle, (uint)resources.Length, resources, 0, null, 0, null);
 				if(res != 0)
 				{
-					result.Error = "Could not register resource."; //mxd
+					result.Error = errorstart + "Error " + res + ". Could not register resource."; //mxd
 					return result;
 				}
 
@@ -128,7 +150,7 @@ namespace CodeImp.DoomBuilder
 					res = RmGetList(handle, out pnProcInfoNeeded, ref pnProcInfo, processInfo, ref lpdwRebootReasons);
 					if(res == 0)
 					{
-						List<Process> processes = new List<Process>((int)pnProcInfo);
+						result.Processes = new List<Process>((int)pnProcInfo);
 
 						// Enumerate all of the results and add them to the 
 						// list to be returned
@@ -136,30 +158,39 @@ namespace CodeImp.DoomBuilder
 						{
 							try
 							{
-								processes.Add(Process.GetProcessById(processInfo[i].Process.dwProcessId));
+								Process process = Process.GetProcessById(processInfo[i].Process.dwProcessId);
+								if(General.ThisAssembly.Location == process.MainModule.FileName) continue; //mxd. don't count ourselves
+								result.Processes.Add(process);
 							}
 							// catch the error -- in case the process is no longer running
 							catch(ArgumentException) {}
 						}
 
 						//mxd
-						foreach(Process process in processes)
+						if(result.Processes.Count > 0)
 						{
-							if(General.ThisAssembly.Location == process.MainModule.FileName) continue; //don't count ourselves
-							result.ProcessInfos.Add(Path.GetFileName(process.MainModule.FileName) 
-								+ " ('" + process.MainModule.FileName 
-								+ "', started at " + process.StartTime + ")");
+							result.Error = "Unable to save the map: target file is locked by the following process"
+							               + (result.Processes.Count > 1 ? "es" : "") + ":"
+							               + Environment.NewLine + Environment.NewLine;
+
+							foreach(Process process in result.Processes)
+							{
+								result.Error += Path.GetFileName(process.MainModule.FileName)
+									+ " ('" + process.MainModule.FileName
+									+ "', started at " + process.StartTime + ")" 
+									+ Environment.NewLine + Environment.NewLine;
+							}
 						}
 					}
 					else
 					{
-						result.Error = "ERROR " + res + ". Could not list processes locking resource."; //mxd
+						result.Error = "Error " + res + ". Could not list processes locking resource."; //mxd
 						return result;
 					}
 				}
 				else if(res != 0)
 				{
-					result.Error = "ERROR " + res + ". Could not list processes locking resource. Failed to get size of result."; //mxd
+					result.Error = "Error " + res + ". Could not list processes locking resource. Failed to get size of result."; //mxd
 					return result;
 				}
 			}

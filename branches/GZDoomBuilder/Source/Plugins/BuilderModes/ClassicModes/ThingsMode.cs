@@ -218,8 +218,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This highlights a new item
 		private void Highlight(Thing t)
 		{
-			LinedefActionInfo action = null;
-			
 			// Set highlight association
 			if(t != null && t.Tag != 0)
 				highlightasso.Set(t.Position, t.Tag, UniversalType.ThingTag);
@@ -228,24 +226,36 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			if(highlighted != null) highlighted.Highlighted = false; //mxd
 
+			//mxd. Determine thing associations
+			bool clearassociations = true; //mxd
 			if(t != null)
 			{
 				t.Highlighted = true; //mxd
 				
 				// Check if we can find the linedefs action
 				if((t.Action > 0) && General.Map.Config.LinedefActions.ContainsKey(t.Action))
-					action = General.Map.Config.LinedefActions[t.Action];
+				{
+					clearassociations = false;
+					LinedefActionInfo action = General.Map.Config.LinedefActions[t.Action];
+					for(int i = 0; i < Thing.NUM_ARGS; i++)
+						association[i].Set(t.Position, t.Args[i], action.Args[i].Type);
+				}
+				//mxd. Check if we can use thing arguments
+				else if(t.Action == 0)
+				{
+					ThingTypeInfo ti = General.Map.Data.GetThingInfoEx(t.Type);
+					if(ti != null)
+					{
+						clearassociations = false;
+						for(int i = 0; i < Thing.NUM_ARGS; i++)
+							association[i].Set(t.Position, t.Args[i], ti.Args[i].Type);
+					}
+				}
 			}
-			
-			// Determine linedef associations
-			for(int i = 0; i < Thing.NUM_ARGS; i++)
-			{
-				// Make new association
-				if(action != null)
-					association[i].Set(t.Position, t.Args[i], action.Args[i].Type);
-				else
-					association[i].Set(new Vector2D(), 0, 0);
-			}
+
+			// mxd. Clear associations?
+			if(clearassociations)
+				for(int i = 0; i < Thing.NUM_ARGS; i++) association[i].Set(new Vector2D(), 0, 0);
 			
 			// Set new highlight and redraw display
 			highlighted = t;

@@ -160,7 +160,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private StatusInfo status;
 		private int statusflashcount;
 		private bool statusflashicon;
-		private string selectionInfo = STATUS_NO_SELECTION_TEXT; //mxd
+		private string selectioninfo = STATUS_NO_SELECTION_TEXT; //mxd
 		
 		// Properties
 		private IntPtr windowptr;
@@ -815,9 +815,9 @@ namespace CodeImp.DoomBuilder.Windows
 				// When no particular information is to be displayed.
 				// The messages displayed depends on running background processes.
 				case StatusType.Ready:
-					if ((General.Map != null) && (General.Map.Data != null)) 
+					if((General.Map != null) && (General.Map.Data != null)) 
 					{
-						newstatus.message = General.Map.Data.IsLoading ? STATUS_LOADING_TEXT : selectionInfo;
+						newstatus.message = General.Map.Data.IsLoading ? STATUS_LOADING_TEXT : selectioninfo;
 					} 
 					else 
 					{
@@ -826,21 +826,21 @@ namespace CodeImp.DoomBuilder.Windows
 					break;
 
 				case StatusType.Selection: //mxd
-					if (statusresetter.Enabled) //don't change the message right now if info or warning is displayed
+					if(statusresetter.Enabled) //don't change the message right now if info or warning is displayed
 					{ 
-						selectionInfo = (string.IsNullOrEmpty(newstatus.message) ? STATUS_NO_SELECTION_TEXT : newstatus.message);
+						selectioninfo = (string.IsNullOrEmpty(newstatus.message) ? STATUS_NO_SELECTION_TEXT : newstatus.message);
 						return;
 					}
-					if(string.IsNullOrEmpty(newstatus.message))
-						newstatus.message = STATUS_NO_SELECTION_TEXT;
-					selectionInfo = newstatus.message;
+					if(string.IsNullOrEmpty(newstatus.message)) newstatus.message = STATUS_NO_SELECTION_TEXT;
+					if(selectioninfo == newstatus.message) return; // Selection info didn't change
+					selectioninfo = newstatus.message;
 					break;
 
 				// Shows information without flashing the icon.
 				case StatusType.Info:
 					if(!newstatus.displayed)
 					{
-						newstatus.message = selectionInfo + " " + newstatus.message; //mxd
+						newstatus.message = selectioninfo + " " + newstatus.message; //mxd
 						statusresetter.Interval = INFO_RESET_DELAY;
 						statusresetter.Start();
 					}
@@ -850,7 +850,7 @@ namespace CodeImp.DoomBuilder.Windows
 				case StatusType.Action:
 					if(!newstatus.displayed)
 					{
-						newstatus.message = selectionInfo + " " + newstatus.message; //mxd
+						newstatus.message = selectioninfo + " " + newstatus.message; //mxd
 						statusflashicon = true;
 						statusflasher.Interval = ACTION_FLASH_INTERVAL;
 						statusflashcount = ACTION_FLASH_COUNT;
@@ -864,7 +864,7 @@ namespace CodeImp.DoomBuilder.Windows
 				case StatusType.Warning:
 					if(!newstatus.displayed)
 					{
-						newstatus.message = selectionInfo + " " + newstatus.message; //mxd
+						newstatus.message = selectioninfo + " " + newstatus.message; //mxd
 						MessageBeep(MessageBeepType.Warning);
 						statusflasher.Interval = WARNING_FLASH_INTERVAL;
 						statusflashcount = WARNING_FLASH_COUNT;
@@ -895,7 +895,7 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 		
 		// This updates the status icon
-		internal void UpdateStatusIcon()
+		private void UpdateStatusIcon()
 		{
 			int statusicon = 0;
 			int statusflashindex = statusflashicon ? 1 : 0;
@@ -928,44 +928,24 @@ namespace CodeImp.DoomBuilder.Windows
 		public void UpdateCoordinates(Vector2D coords)
 		{
 			// X position
-			if(float.IsNaN(coords.x))
-				xposlabel.Text = "--";
-			else
-				xposlabel.Text = coords.x.ToString("####0");
+			xposlabel.Text = (float.IsNaN(coords.x) ? "--" : coords.x.ToString("####0"));
 
 			// Y position
-			if(float.IsNaN(coords.y))
-				yposlabel.Text = "--";
-			else
-				yposlabel.Text = coords.y.ToString("####0");
-			
-			// Update status bar
-			//statusbar.Update();
+			yposlabel.Text = (float.IsNaN(coords.y) ? "--" : coords.y.ToString("####0"));
 		}
 
 		// This changes zoom display
 		internal void UpdateZoom(float scale)
 		{
 			// Update scale label
-			if(float.IsNaN(scale))
-				zoomlabel.Text = "--";
-			else
-			{
-				scale *= 100;
-				zoomlabel.Text = scale.ToString("##0") + "%";
-			}
-
-			// Update status bar
-			//statusbar.Update();
+			zoomlabel.Text = (float.IsNaN(scale) ? "--" : (scale * 100).ToString("##0") + "%");
 		}
 
 		// Zoom to a specified level
 		private void itemzoomto_Click(object sender, EventArgs e)
 		{
-			if(General.Map == null) return;
-
 			// In classic mode?
-			if(General.Editing.Mode is ClassicMode)
+			if(General.Map != null && General.Editing.Mode is ClassicMode)
 			{
 				// Requested from menu?
 				if(sender is ToolStripMenuItem)
@@ -982,10 +962,8 @@ namespace CodeImp.DoomBuilder.Windows
 		// Zoom to fit in screen
 		private void itemzoomfittoscreen_Click(object sender, EventArgs e)
 		{
-			if(General.Map == null) return;
-			
 			// In classic mode?
-			if(General.Editing.Mode is ClassicMode)
+			if(General.Map != null && General.Editing.Mode is ClassicMode)
 				(General.Editing.Mode as ClassicMode).CenterInScreen();
 		}
 
@@ -993,13 +971,7 @@ namespace CodeImp.DoomBuilder.Windows
 		internal void UpdateGrid(int gridsize)
 		{
 			// Update grid label
-			if(gridsize == 0)
-				gridlabel.Text = "--";
-			else
-				gridlabel.Text = gridsize.ToString("###0") + " mp";
-
-			// Update status bar
-			//statusbar.Update();
+			gridlabel.Text = (gridsize == 0 ? "--" : gridsize.ToString("###0") + " mp");
 		}
 
 		// Set grid to a specified size
@@ -1028,9 +1000,7 @@ namespace CodeImp.DoomBuilder.Windows
 		// Show grid setup
 		private void itemgridcustom_Click(object sender, EventArgs e)
 		{
-			if(General.Map == null) return;
-
-			GridSetup.ShowGridSetup();
+			if(General.Map != null) GridSetup.ShowGridSetup();
 		}
 		
 		#endregion
