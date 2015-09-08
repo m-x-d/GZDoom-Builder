@@ -528,7 +528,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label18
 			// 
 			label18.AutoSize = true;
-			label18.Location = new System.Drawing.Point(22, 61);
+			label18.Location = new System.Drawing.Point(22, 63);
 			label18.Name = "label18";
 			label18.Size = new System.Drawing.Size(147, 13);
 			label18.TabIndex = 25;
@@ -540,7 +540,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label20
 			// 
 			label20.AutoSize = true;
-			label20.Location = new System.Drawing.Point(76, 93);
+			label20.Location = new System.Drawing.Point(76, 97);
 			label20.Name = "label20";
 			label20.Size = new System.Drawing.Size(94, 13);
 			label20.TabIndex = 28;
@@ -550,7 +550,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label21
 			// 
 			label21.AutoSize = true;
-			label21.Location = new System.Drawing.Point(55, 125);
+			label21.Location = new System.Drawing.Point(55, 131);
 			label21.Name = "label21";
 			label21.Size = new System.Drawing.Size(114, 13);
 			label21.TabIndex = 31;
@@ -628,6 +628,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// doublesidedalpha
 			// 
+			this.doublesidedalpha.BackColor = System.Drawing.SystemColors.Window;
 			this.doublesidedalpha.LargeChange = 3;
 			this.doublesidedalpha.Location = new System.Drawing.Point(11, 349);
 			this.doublesidedalpha.Name = "doublesidedalpha";
@@ -1492,7 +1493,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// labelDynLightIntensity
 			// 
 			this.labelDynLightIntensity.AutoSize = true;
-			this.labelDynLightIntensity.Location = new System.Drawing.Point(337, 123);
+			this.labelDynLightIntensity.Location = new System.Drawing.Point(337, 129);
 			this.labelDynLightIntensity.Name = "labelDynLightIntensity";
 			this.labelDynLightIntensity.Size = new System.Drawing.Size(22, 13);
 			this.labelDynLightIntensity.TabIndex = 32;
@@ -1500,8 +1501,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// tbDynLightIntensity
 			// 
+			this.tbDynLightIntensity.BackColor = System.Drawing.SystemColors.Window;
 			this.tbDynLightIntensity.LargeChange = 1;
-			this.tbDynLightIntensity.Location = new System.Drawing.Point(176, 113);
+			this.tbDynLightIntensity.Location = new System.Drawing.Point(176, 119);
 			this.tbDynLightIntensity.Minimum = 1;
 			this.tbDynLightIntensity.Name = "tbDynLightIntensity";
 			this.tbDynLightIntensity.Size = new System.Drawing.Size(154, 45);
@@ -1513,7 +1515,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// labelDynLightSize
 			// 
 			this.labelDynLightSize.AutoSize = true;
-			this.labelDynLightSize.Location = new System.Drawing.Point(337, 92);
+			this.labelDynLightSize.Location = new System.Drawing.Point(337, 96);
 			this.labelDynLightSize.Name = "labelDynLightSize";
 			this.labelDynLightSize.Size = new System.Drawing.Size(22, 13);
 			this.labelDynLightSize.TabIndex = 29;
@@ -1521,8 +1523,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// tbDynLightSize
 			// 
+			this.tbDynLightSize.BackColor = System.Drawing.SystemColors.Window;
 			this.tbDynLightSize.LargeChange = 1;
-			this.tbDynLightSize.Location = new System.Drawing.Point(176, 81);
+			this.tbDynLightSize.Location = new System.Drawing.Point(176, 85);
 			this.tbDynLightSize.Maximum = 20;
 			this.tbDynLightSize.Minimum = 1;
 			this.tbDynLightSize.Name = "tbDynLightSize";
@@ -1535,7 +1538,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// labelDynLightCount
 			// 
 			this.labelDynLightCount.AutoSize = true;
-			this.labelDynLightCount.Location = new System.Drawing.Point(337, 60);
+			this.labelDynLightCount.Location = new System.Drawing.Point(337, 62);
 			this.labelDynLightCount.Name = "labelDynLightCount";
 			this.labelDynLightCount.Size = new System.Drawing.Size(19, 13);
 			this.labelDynLightCount.TabIndex = 26;
@@ -1543,8 +1546,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// tbDynLightCount
 			// 
+			this.tbDynLightCount.BackColor = System.Drawing.SystemColors.Window;
 			this.tbDynLightCount.LargeChange = 3;
-			this.tbDynLightCount.Location = new System.Drawing.Point(176, 49);
+			this.tbDynLightCount.Location = new System.Drawing.Point(176, 51);
 			this.tbDynLightCount.Maximum = 32;
 			this.tbDynLightCount.Minimum = 1;
 			this.tbDynLightCount.Name = "tbDynLightCount";
@@ -1606,6 +1610,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// imagebrightness
 			// 
+			this.imagebrightness.BackColor = System.Drawing.SystemColors.Window;
 			this.imagebrightness.LargeChange = 3;
 			this.imagebrightness.Location = new System.Drawing.Point(176, 18);
 			this.imagebrightness.Name = "imagebrightness";

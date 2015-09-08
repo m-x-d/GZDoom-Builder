@@ -621,7 +621,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						((action.Args[3].Type == (int)asso.Type) && (asso.Tags.Contains(l.Args[3]))) ||
 						((action.Args[4].Type == (int)asso.Type) && (asso.Tags.Contains(l.Args[4]))))
 					{
-							
 						renderer.PlotLinedef(l, General.Colors.Indication);
 						if(General.Settings.GZShowEventLines) eventlines.Add(new Line3D(l.GetCenterPoint(), asso.Center)); //mxd
 					}
@@ -650,6 +649,23 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					{
 						renderer.RenderThing(t, General.Colors.Indication, Presentation.THINGS_ALPHA);
 						if(General.Settings.GZShowEventLines) eventlines.Add(new Line3D(t.Position, asso.Center)); //mxd
+					}
+				}
+				//mxd. Thing action on this thing?
+				else if(t.Action == 0)
+				{
+					ThingTypeInfo ti = General.Map.Data.GetThingInfoEx(t.Type);
+					if(ti != null)
+					{
+						if(  ((ti.Args[0].Type == (int)asso.Type) && (asso.Tags.Contains(t.Args[0]))) ||
+						     ((ti.Args[1].Type == (int)asso.Type) && (asso.Tags.Contains(t.Args[1]))) ||
+						     ((ti.Args[2].Type == (int)asso.Type) && (asso.Tags.Contains(t.Args[2]))) ||
+						     ((ti.Args[3].Type == (int)asso.Type) && (asso.Tags.Contains(t.Args[3]))) ||
+						     ((ti.Args[4].Type == (int)asso.Type) && (asso.Tags.Contains(t.Args[4]))))
+						{
+							renderer.RenderThing(t, General.Colors.Indication, Presentation.THINGS_ALPHA);
+							if(General.Settings.GZShowEventLines) eventlines.Add(new Line3D(t.Position, asso.Center));
+						}
 					}
 				}
 			}

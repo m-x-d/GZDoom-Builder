@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
@@ -581,19 +582,38 @@ namespace CodeImp.DoomBuilder
 			FileLockChecker.FileLockCheckResult checkresult = FileLockChecker.CheckFile(newfilepathname);
 			if(!string.IsNullOrEmpty(checkresult.Error))
 			{
-				General.ShowErrorMessage("Unable to save the map: target file is locked by another process. "
-					+ Environment.NewLine + "Also, unable to get the name of the offending process:" 
-					+ Environment.NewLine + Environment.NewLine + checkresult.Error
-					, MessageBoxButtons.OK);
-				return false;
-			}
-			if(checkresult.ProcessInfos.Count > 0)
-			{
-				General.ShowErrorMessage("Unable to save the map: target file is locked by the following process" + (checkresult.ProcessInfos.Count > 1 ? "es" : "") + ":"
-					+ Environment.NewLine + Environment.NewLine
-					+ string.Join(Environment.NewLine + Environment.NewLine, checkresult.ProcessInfos.ToArray())
-					, MessageBoxButtons.OK);
-				return false;
+				if(checkresult.Processes.Count > 0)
+				{
+					string rest = "Press 'Retry' to close " + (checkresult.Processes.Count > 1 ? "all processes" : "the process") + " and retry." + Environment.NewLine + "Press 'Cancel' to cancel saving.";
+					if(General.ShowErrorMessage(checkresult.Error + rest, MessageBoxButtons.RetryCancel) == DialogResult.Retry)
+					{
+						// Close all processes
+						foreach (Process process in checkresult.Processes)
+						{
+							try
+							{
+								if(!process.HasExited) process.Kill();
+							}
+							catch(Exception e)
+							{
+								General.ShowErrorMessage("Failed to close " + Path.GetFileName(process.MainModule.FileName) + ":" + Environment.NewLine + Environment.NewLine + e.Message, MessageBoxButtons.OK);
+								return false;
+							}
+						}
+
+						// Retry
+						return SaveMap(newfilepathname, purpose);
+					}
+					else
+					{
+						return false;
+					}
+				}
+				else
+				{
+					General.ShowErrorMessage(checkresult.Error, MessageBoxButtons.OK);
+					return false;
+				}
 			}
 
 			string settingsfile;
