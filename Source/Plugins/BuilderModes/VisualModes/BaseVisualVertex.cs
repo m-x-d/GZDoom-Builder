@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Map;
+using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.VisualModes;
 
 #endregion
@@ -14,8 +15,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	{
 		#region ================== Variables
 
-		private BaseVisualMode mode;
-		private float cageradius2;
+		private readonly BaseVisualMode mode;
+		private readonly float cageradius2;
 		private Vector3D boxp1;
 		private Vector3D boxp2;
 
@@ -35,6 +36,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.mode = mode;
 			cageradius2 = DEFAULT_SIZE * General.Settings.GZVertexScale3D * Angle2D.SQRT2;
 			cageradius2 = cageradius2 * cageradius2;
+
+			// Synchronize selection?
+			if(mode.UseSelectionFromClassicMode && v.Selected
+				&& (General.Map.ViewMode == ViewMode.Normal ||
+				 (!ceilingVertex && General.Map.ViewMode == ViewMode.FloorTextures) 
+				 || (ceilingVertex && General.Map.ViewMode == ViewMode.CeilingTextures)))
+			{
+				this.selected = true;
+				mode.AddSelectedObject(this);
+			}
 
 			changed = true;
 			Update();
