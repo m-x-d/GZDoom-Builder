@@ -89,9 +89,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		// List of selected objects when an action is performed
 		private List<IVisualEventReceiver> selectedobjects;
+		
 		//mxd. Used in Cut/PasteSelection actions
-		private List<ThingCopyData> copyBuffer;
-		private Type lasthighlighttype; //mxd
+		private readonly List<ThingCopyData> copybuffer;
+		private Type lasthighlighttype;
 
 		private static bool gzdoomRenderingEffects = true; //mxd
 
@@ -174,8 +175,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Initialize
 			this.gravity = new Vector3D(0.0f, 0.0f, 0.0f);
 			this.selectedobjects = new List<IVisualEventReceiver>();
+			
 			//mxd
-			this.copyBuffer = new List<ThingCopyData>();
+			this.copybuffer = new List<ThingCopyData>();
 			this.selectioninfoupdatetimer = new Timer();
 			selectioninfoupdatetimer.Interval = 100;
 			selectioninfoupdatetimer.Tick += SelectioninfoupdatetimerOnTick;
@@ -1070,9 +1072,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Map.Map.ClearAllSelected();
 				
 				//refill selection
-				List<Sector> selectedSectors = new List<Sector>();
-				List<Linedef> selectedLines = new List<Linedef>();
-				List<Vertex> selectedVertices = new List<Vertex>();
+				List<int> selectedsectorindices = new List<int>();
+				List<int> selectedlineindices = new List<int>();
+				List<int> selectedvertexindices = new List<int>();
 
 				foreach(IVisualEventReceiver obj in selectedobjects)
 				{
@@ -1083,35 +1085,34 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					else if(obj is VisualFloor || obj is VisualCeiling) 
 					{
 						VisualGeometry vg = obj as VisualGeometry;
-
-						if(vg.Sector != null && vg.Sector.Sector != null && !selectedSectors.Contains(vg.Sector.Sector)) 
-							selectedSectors.Add(vg.Sector.Sector);
+						if(vg.Sector != null && vg.Sector.Sector != null && !selectedsectorindices.Contains(vg.Sector.Sector.Index))
+						{
+							selectedsectorindices.Add(vg.Sector.Sector.Index);
+							vg.Sector.Sector.Selected = true;
+						}
 					}
 					else if(obj is VisualLower || obj is VisualUpper || obj is VisualMiddleDouble 
 						|| obj is VisualMiddleSingle || obj is VisualMiddle3D) 
 					{
 						VisualGeometry vg = obj as VisualGeometry;
-
-						if(vg.Sidedef != null && !selectedLines.Contains(vg.Sidedef.Line))
-							selectedLines.Add(vg.Sidedef.Line);
+						if(vg.Sidedef != null && !selectedlineindices.Contains(vg.Sidedef.Line.Index))
+						{
+							selectedlineindices.Add(vg.Sidedef.Line.Index);
+							vg.Sidedef.Line.Selected = true;
+						}
 					}
-					else if (obj is VisualVertex)
+					else if(obj is VisualVertex)
 					{
 						VisualVertex v = obj as VisualVertex;
-						if(!selectedVertices.Contains(v.Vertex)) selectedVertices.Add(v.Vertex);
+						if(!selectedvertexindices.Contains(v.Vertex.Index))
+						{
+							selectedvertexindices.Add(v.Vertex.Index);
+							v.Vertex.Selected = true;
+						}
 					}
-				}
-
-				foreach(Sector s in selectedSectors) s.Selected = true;
-				foreach(Linedef l in selectedLines) l.Selected = true;
-
-				if (selectedSectors.Count == 0)
-				{
-					foreach (Vertex v in selectedVertices) v.Selected = true;
 				}
 			}
 
-			copyBuffer.Clear(); //mxd
 			General.Map.Map.Update();
 		}
 		
@@ -3082,13 +3083,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			List<IVisualEventReceiver> objs = GetSelectedObjects(false, false, true, false);
 			if (objs.Count == 0) return;
 
-			copyBuffer.Clear();
+			copybuffer.Clear();
 			foreach (IVisualEventReceiver i in objs) 
 			{
 				VisualThing vt = i as VisualThing;
-				if (vt != null) copyBuffer.Add(new ThingCopyData(vt.Thing));
+				if (vt != null) copybuffer.Add(new ThingCopyData(vt.Thing));
 			}
-			General.Interface.DisplayStatus(StatusType.Info, "Copied " + copyBuffer.Count + " Things");
+			General.Interface.DisplayStatus(StatusType.Info, "Copied " + copybuffer.Count + " Things");
 		}
 
 		//mxd
@@ -3098,7 +3099,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			CopySelection();
 
 			//Create undo
-			string rest = copyBuffer.Count + " thing" + (copyBuffer.Count > 1 ? "s." : ".");
+			string rest = copybuffer.Count + " thing" + (copybuffer.Count > 1 ? "s." : ".");
 			CreateUndo("Cut " + rest);
 			General.Interface.DisplayStatus(StatusType.Info, "Cut " + rest);
 
@@ -3119,7 +3120,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("pasteselection", BaseAction = true)]
 		public void PasteSelection() 
 		{
-			if(copyBuffer.Count == 0)
+			if(copybuffer.Count == 0)
 			{
 				General.Interface.DisplayStatus(StatusType.Warning, "Nothing to paste, cut or copy some Things first!");
 				return;
@@ -3133,7 +3134,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				return;
 			}
 
-			string rest = copyBuffer.Count + " thing" + (copyBuffer.Count > 1 ? "s." : ".");
+			string rest = copybuffer.Count + " thing" + (copybuffer.Count > 1 ? "s." : ".");
 			General.Map.UndoRedo.CreateUndo("Paste " + rest);
 			General.Interface.DisplayStatus(StatusType.Info, "Pasted " + rest);
 			
@@ -3141,19 +3142,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			ClearSelection();
 
 			//get translated positions
-			Vector3D[] coords = new Vector3D[copyBuffer.Count];
-			for (int i = 0; i < copyBuffer.Count; i++ )
-				coords[i] = copyBuffer[i].Position;
+			Vector3D[] coords = new Vector3D[copybuffer.Count];
+			for (int i = 0; i < copybuffer.Count; i++ )
+				coords[i] = copybuffer[i].Position;
 
 			Vector3D[] translatedCoords = TranslateCoordinates(coords, hitpos, true);
 
 			//create things from copyBuffer
-			for (int i = 0; i < copyBuffer.Count; i++) 
+			for (int i = 0; i < copybuffer.Count; i++) 
 			{
 				Thing t = CreateThing(new Vector2D());
 				if (t != null) 
 				{
-					copyBuffer[i].ApplyTo(t);
+					copybuffer[i].ApplyTo(t);
 					t.Move(translatedCoords[i]);
 					//add thing to blockmap
 					blockmap.AddThing(t);
