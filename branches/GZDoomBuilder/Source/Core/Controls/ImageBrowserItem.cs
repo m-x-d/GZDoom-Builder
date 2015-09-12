@@ -112,7 +112,7 @@ namespace CodeImp.DoomBuilder.Controls
 				backcolor = new LinearGradientBrush(new Point(0, bounds.Top - 1), new Point(0, bounds.Bottom + 1),
 					AdjustedColor(SystemColors.Highlight, 0.2f),
 					AdjustedColor(SystemColors.Highlight, -0.1f));
-				forecolor = SystemBrushes.HighlightText;
+				forecolor = new SolidBrush(SystemColors.HighlightText);
 			}
 			else
 			{
@@ -126,8 +126,12 @@ namespace CodeImp.DoomBuilder.Controls
 			Icon.DrawPreview(g, imagerect.Location);
 			g.DrawString(Text, this.ListView.Font, forecolor, textpos, format);
 
+			//mxd. Dispose brushes
+			backcolor.Dispose();
+			forecolor.Dispose();
+
 			//mxd. Draw size label?
-			if (ImageBrowserControl.ShowTextureSizes && !string.IsNullOrEmpty(imagesize))
+			if(ImageBrowserControl.ShowTextureSizes && !string.IsNullOrEmpty(imagesize))
 			{
 				// Setup
 				Font sizefont = new Font(this.ListView.Font.FontFamily, this.ListView.Font.SizeInPoints - 1);
@@ -136,11 +140,11 @@ namespace CodeImp.DoomBuilder.Controls
 				imagerect = new Rectangle(bounds.Left + 1, bounds.Top + 1, (int)textsize.Width, (int)textsize.Height);
 
 				// Draw
-				using (SolidBrush labelbg = new SolidBrush(Color.FromArgb(196, base.ListView.ForeColor)))
+				using(SolidBrush labelbg = new SolidBrush(Color.FromArgb(196, base.ListView.ForeColor)))
 				{
 					g.FillRectangle(labelbg, imagerect);
 				}
-				using (SolidBrush labelcolor = new SolidBrush(base.ListView.BackColor))
+				using(SolidBrush labelcolor = new SolidBrush(base.ListView.BackColor))
 				{
 					g.DrawString(imagesize, sizefont, labelcolor, textpos, format);
 				}

@@ -159,7 +159,6 @@ namespace CodeImp.DoomBuilder
 							try
 							{
 								Process process = Process.GetProcessById(processInfo[i].Process.dwProcessId);
-								if(General.ThisAssembly.Location == process.MainModule.FileName) continue; //mxd. don't count ourselves
 								result.Processes.Add(process);
 							}
 							// catch the error -- in case the process is no longer running

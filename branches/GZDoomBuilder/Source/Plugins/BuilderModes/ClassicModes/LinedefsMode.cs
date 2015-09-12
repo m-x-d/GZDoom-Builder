@@ -427,8 +427,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				//mxd. Render vertex insert preview
 				if(insertpreview.IsFinite())
 				{
-					float dist = Math.Min(Vector2D.Distance(mousemappos, insertpreview), BuilderPlug.Me.SplitLinedefsRange);
-					byte alpha = (byte)(255 - (dist / BuilderPlug.Me.SplitLinedefsRange) * 128);
+					float dist = Math.Min(Vector2D.Distance(mousemappos, insertpreview), BuilderPlug.Me.HighlightRange);
+					byte alpha = (byte)(255 - (dist / BuilderPlug.Me.HighlightRange) * 128);
 					float vsize = (renderer.VertexSize + 1.0f) / renderer.Scale;
 					renderer.RenderRectangleFilled(new RectangleF(insertpreview.x - vsize, insertpreview.y - vsize, vsize * 2.0f, vsize * 2.0f), General.Colors.InfoLine.WithAlpha(alpha), true);
 				}
