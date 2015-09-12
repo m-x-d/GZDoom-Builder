@@ -185,6 +185,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			usegravity = false;
 			usehighlight = true;
 			LoadSettings();
+			LoadUISettings(); //mxd
 			
 			// Load menus form and register it
 			menusform = new MenusForm();
@@ -245,8 +246,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			additiveselect = General.Settings.ReadPluginSetting("additiveselect", false);
 			autoclearselection = General.Settings.ReadPluginSetting("autoclearselection", false);
 			visualmodeclearselection = General.Settings.ReadPluginSetting("visualmodeclearselection", false);
-			viewselectionnumbers = General.Settings.ReadPluginSetting("viewselectionnumbers", true);
-			viewselectioneffects = General.Settings.ReadPluginSetting("viewselectioneffects", true); //mxd
 			stitchrange = General.Settings.ReadPluginSetting("stitchrange", 20);
 			highlightrange = General.Settings.ReadPluginSetting("highlightrange", 20);
 			highlightthingsrange = General.Settings.ReadPluginSetting("highlightthingsrange", 10);
@@ -256,12 +255,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			autoAlignTextureOffsetsOnCreate = General.Settings.ReadPluginSetting("autoaligntextureoffsetsoncreate", false); //mxd
 			dontMoveGeometryOutsideMapBoundary = General.Settings.ReadPluginSetting("dontmovegeometryoutsidemapboundary", false); //mxd
 			syncSelection = General.Settings.ReadPluginSetting("syncselection", false); //mxd
+		}
+
+		//mxd. Load settings, which can be changed via UI
+		private void LoadUISettings()
+		{
 			lockSectorTextureOffsetsWhileDragging = General.Settings.ReadPluginSetting("locktextureoffsets", false); //mxd
+			viewselectionnumbers = General.Settings.ReadPluginSetting("viewselectionnumbers", true);
+			viewselectioneffects = General.Settings.ReadPluginSetting("viewselectioneffects", true); //mxd
 			dragThingsInSectorsMode = General.Settings.ReadPluginSetting("dragthingsinsectorsmode", true); //mxd
 		}
 
 		//mxd. Save settings, which can be changed via UI
-		private void SaveSettings() 
+		private void SaveUISettings() 
 		{
 			General.Settings.WritePluginSetting("locktextureoffsets", lockSectorTextureOffsetsWhileDragging);
 			General.Settings.WritePluginSetting("viewselectionnumbers", viewselectionnumbers);
@@ -444,7 +450,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.RemoveDocker(drawingOverridesDocker);
 
 			//mxd. Save settings
-			SaveSettings();
+			SaveUISettings();
 		}
 		
 		// Redo performed

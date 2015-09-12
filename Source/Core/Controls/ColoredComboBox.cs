@@ -7,18 +7,19 @@ namespace CodeImp.DoomBuilder.Controls
 	{
 		public ColoredComboBox() 
 		{ 
-            this.DrawMode = DrawMode.OwnerDrawFixed; 
-        }
+			this.DrawMode = DrawMode.OwnerDrawFixed; 
+		}
 
-        protected override void OnDrawItem(DrawItemEventArgs e)
-        {
-            base.OnDrawItem(e);
-            e.DrawBackground();
+		protected override void OnDrawItem(DrawItemEventArgs e)
+		{
+			base.OnDrawItem(e);
+			e.DrawBackground();
 			ColoredComboBoxItem item = (ColoredComboBoxItem)this.Items[e.Index];
-            Brush brush = new SolidBrush(item.ForeColor);
-            if ((e.State & DrawItemState.Selected) == DrawItemState.Selected) brush = Brushes.White;
-            e.Graphics.DrawString(item.Text, this.Font, brush, e.Bounds.X, e.Bounds.Y);
-        }
+			using(Brush brush = new SolidBrush(((e.State & DrawItemState.Selected) == DrawItemState.Selected) ? Color.White : item.ForeColor))
+			{
+				e.Graphics.DrawString(item.Text, this.Font, brush, e.Bounds.X, e.Bounds.Y);
+			}
+		}
 	}
 
 	public class ColoredComboBoxItem

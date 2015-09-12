@@ -578,44 +578,6 @@ namespace CodeImp.DoomBuilder
 		// Initializes for an existing map
 		internal bool SaveMap(string newfilepathname, SavePurpose purpose) 
 		{
-			//mxd. Check if the target file is locked
-			FileLockChecker.FileLockCheckResult checkresult = FileLockChecker.CheckFile(newfilepathname);
-			if(!string.IsNullOrEmpty(checkresult.Error))
-			{
-				if(checkresult.Processes.Count > 0)
-				{
-					string rest = "Press 'Retry' to close " + (checkresult.Processes.Count > 1 ? "all processes" : "the process") + " and retry." + Environment.NewLine + "Press 'Cancel' to cancel saving.";
-					if(General.ShowErrorMessage(checkresult.Error + rest, MessageBoxButtons.RetryCancel) == DialogResult.Retry)
-					{
-						// Close all processes
-						foreach (Process process in checkresult.Processes)
-						{
-							try
-							{
-								if(!process.HasExited) process.Kill();
-							}
-							catch(Exception e)
-							{
-								General.ShowErrorMessage("Failed to close " + Path.GetFileName(process.MainModule.FileName) + ":" + Environment.NewLine + Environment.NewLine + e.Message, MessageBoxButtons.OK);
-								return false;
-							}
-						}
-
-						// Retry
-						return SaveMap(newfilepathname, purpose);
-					}
-					else
-					{
-						return false;
-					}
-				}
-				else
-				{
-					General.ShowErrorMessage(checkresult.Error, MessageBoxButtons.OK);
-					return false;
-				}
-			}
-
 			string settingsfile;
 			WAD targetwad;
 			int index;
@@ -737,6 +699,54 @@ namespace CodeImp.DoomBuilder
 
 			// Suspend data resources
 			data.Suspend();
+
+			//mxd. Check if the target file is locked
+			FileLockChecker.FileLockCheckResult checkresult = FileLockChecker.CheckFile(newfilepathname);
+			if(!string.IsNullOrEmpty(checkresult.Error))
+			{
+				if(checkresult.Processes.Count > 0)
+				{
+					string rest = "Press 'Retry' to close " + (checkresult.Processes.Count > 1 ? "all processes" : "the process") 
+						+ " and retry." + Environment.NewLine + "Press 'Cancel' to cancel saving.";
+					
+					if(General.ShowErrorMessage(checkresult.Error + rest, MessageBoxButtons.RetryCancel) == DialogResult.Retry)
+					{
+						// Close all processes
+						foreach(Process process in checkresult.Processes)
+						{
+							try
+							{
+								if(!process.HasExited) process.Kill();
+							}
+							catch(Exception e)
+							{
+								General.ShowErrorMessage("Failed to close " + Path.GetFileName(process.MainModule.FileName) + ":" + Environment.NewLine + Environment.NewLine + e.Message, MessageBoxButtons.OK);
+								data.Resume();
+								General.WriteLogLine("Map saving failed: failed to close " + Path.GetFileName(process.MainModule.FileName));
+								return false;
+							}
+						}
+
+						// Retry
+						data.Resume();
+						General.WriteLogLine("Map saving restarted...");
+						return SaveMap(newfilepathname, purpose);
+					}
+					else
+					{
+						data.Resume();
+						General.WriteLogLine("Map saving cancelled...");
+						return false;
+					}
+				}
+				else
+				{
+					General.ShowErrorMessage(checkresult.Error, MessageBoxButtons.OK);
+					data.Resume();
+					General.WriteLogLine("Map saving failed: " + checkresult.Error);
+					return false;
+				}
+			}
 
 			// Determine original map name
 			string origmapname = (options.PreviousName != "" && purpose != SavePurpose.IntoFile) ? options.PreviousName : options.CurrentName;

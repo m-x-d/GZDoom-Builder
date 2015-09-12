@@ -122,7 +122,7 @@ namespace CodeImp.DoomBuilder.Controls
 			scriptedit.IsBufferedDraw = true;
 			scriptedit.IsCaretLineVisible = false;
 			scriptedit.IsHScrollBar = true;
-			scriptedit.IndentationGuides = (int)ScriptIdentGuides.Real;
+			scriptedit.IndentationGuides = (int)ScriptIdentGuides.None;
 			scriptedit.IsMouseDownCaptures = true;
 			scriptedit.IsTabIndents = true;
 			scriptedit.IsUndoCollection = true;
