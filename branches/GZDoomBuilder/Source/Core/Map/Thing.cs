@@ -149,9 +149,6 @@ namespace CodeImp.DoomBuilder.Map
 			// Not already disposed?
 			if(!isdisposed)
 			{
-				// Already set isdisposed so that changes can be prohibited
-				isdisposed = true;
-
 				if(map == General.Map.Map)
 					General.Map.UndoRedo.RecRemThing(this);
 
