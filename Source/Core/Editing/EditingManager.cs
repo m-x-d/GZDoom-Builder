@@ -126,6 +126,7 @@ namespace CodeImp.DoomBuilder.Editing
 				General.Actions.UnbindMethods(this);
 				
 				// Clean up
+				foreach(EditModeInfo i in allmodes) i.Dispose(); //mxd
 				
 				// Done
 				isdisposed = true;

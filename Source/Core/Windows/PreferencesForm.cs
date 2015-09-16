@@ -269,8 +269,8 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Settings.ScreenshotsPath = screenshotsfolderpath.Text.Trim(); //mxd
 			
 			// Script font size
-			int fontsize = 8;
-			int.TryParse(scriptfontsize.Text, out fontsize);
+			int fontsize;
+			if(!int.TryParse(scriptfontsize.Text, out fontsize)) fontsize = 10;
 			General.Settings.ScriptFontSize = fontsize;
 			
 			// Apply control keys to actions

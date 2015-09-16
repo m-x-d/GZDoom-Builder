@@ -200,6 +200,7 @@ namespace CodeImp.DoomBuilder.Windows
 			//TODO: are there other settings which should stay unchanged?..
 			MapOptions newoptions = new MapOptions(mapsettings, mapslist.SelectedItems[0].Text, options.UseLongTextureNames);
 			newoptions.ConfigFile = options.ConfigFile;
+			newoptions.ScriptCompiler = options.ScriptCompiler;
 			options = newoptions;
 			
 			// Hide window

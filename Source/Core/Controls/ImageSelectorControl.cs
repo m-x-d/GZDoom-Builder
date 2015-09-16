@@ -172,6 +172,12 @@ namespace CodeImp.DoomBuilder.Controls
 			ShowPreview(FindImage(name.Text));
 			base.Refresh();
 		}
+
+		//mxd
+		public void StopUpdate()
+		{
+			timer.Stop();
+		}
 		
 		// This redraws the image preview
 		private void ShowPreview(Image image)

@@ -93,6 +93,7 @@ namespace CodeImp.DoomBuilder.Data
 			this.longname = Lump.MakeLongName(this.name);
 			this.virtualname = filepathname.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
 			this.fullname = filepathname;
+			this.level = virtualname.Split(new[] { Path.AltDirectorySeparatorChar }).Length - 1;
 
 			if(General.Settings.CapitalizeTextureNames && !string.IsNullOrEmpty(this.displayname)) 
 			{

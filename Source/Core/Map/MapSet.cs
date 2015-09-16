@@ -2746,26 +2746,26 @@ namespace CodeImp.DoomBuilder.Map
 			Thing closest = null;
 			float distance = float.MaxValue;
 			float size = float.MaxValue; //mxd
-			float d, px, py, s;
+			float d, px, py, ts;
 
 			// Go for all things in selection
 			foreach(Thing t in selection)
 			{
 				px = t.Position.x;
 				py = t.Position.y;
+				ts = ((t.FixedSize && General.Map.Renderer2D.Scale > 1.0f) ? t.Size / General.Map.Renderer2D.Scale : t.Size); //mxd
 
 				//mxd. Within range?
-				if(px < range.Left - t.Size || px > range.Right + t.Size || py < range.Top - t.Size || py > range.Bottom + t.Size) continue;
+				if(px < range.Left - ts || px > range.Right + ts || py < range.Top - ts || py > range.Bottom + ts) continue;
 
 				// Closer than previous find? mxd. Or smaller when distance is the same?
 				d = Math.Abs(px - pos.x) + Math.Abs(py - pos.y);
-				s = ((t.FixedSize && General.Map.Renderer2D.Scale > 1.0f) ? t.Size / General.Map.Renderer2D.Scale : t.Size); //mxd
-				if(d < distance || (d == distance && s < size))
+				if(d < distance || (d == distance && ts < size))
 				{
 					// This one is closer
 					closest = t;
 					distance = d;
-					size = s; //mxd
+					size = ts; //mxd
 				}
 			}
 

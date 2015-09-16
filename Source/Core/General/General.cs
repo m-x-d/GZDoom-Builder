@@ -1025,18 +1025,15 @@ namespace CodeImp.DoomBuilder
 				
 				// Save settings configuration
 				if(!General.NoSettings)
-				{
-					General.WriteLogLine("Saving program configuration...");
 					settings.Save(Path.Combine(settingspath, SETTINGS_FILE));
-				}
 				
 				// Clean up
-				if(map != null) map.Dispose(); map = null;
-				if(editing != null) editing.Dispose(); editing = null;
-				if(mainwindow != null) mainwindow.Dispose();
-				if(actions != null) actions.Dispose();
-				if(plugins != null) plugins.Dispose();
-				if(types != null) types.Dispose();
+				if(map != null) { map.Dispose(); map = null; }
+				if(editing != null) { editing.Dispose(); editing = null; }
+				if(mainwindow != null) { mainwindow.Dispose(); mainwindow = null; }
+				if(actions != null) { actions.Dispose(); actions = null; }
+				if(plugins != null) { plugins.Dispose(); plugins = null; }
+				if(types != null) { types.Dispose(); types = null; }
 				try { D3DDevice.Terminate(); } catch(Exception) { }
 
 				// Application ends here and now
@@ -1266,6 +1263,9 @@ namespace CodeImp.DoomBuilder
 			
 			Cursor.Current = Cursors.WaitCursor;
 
+			// Let the plugins know
+			plugins.OnMapCloseBegin();
+
 			// Clear the display
 			mainwindow.ClearDisplay();
 			mainwindow.RemoveHintsDocker(); //mxd
@@ -1274,6 +1274,7 @@ namespace CodeImp.DoomBuilder
 			map.CloseScriptEditor(false);
 
 			// Let the plugins know
+			plugins.OnMapCloseEnd();
 			plugins.OnMapOpenBegin();
 
 			// Clear old errors

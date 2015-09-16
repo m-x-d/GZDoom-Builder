@@ -54,8 +54,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		public override void Dispose() 
 		{
-			if(!isdisposed && hintlabel != null) hintlabel.Dispose();
-			base.Dispose();
+			// Not already disposed?
+			if(!isdisposed)
+			{
+				// Clean up
+				if(hintlabel != null) hintlabel.Dispose();
+
+				// Done
+				base.Dispose();
+			}
 		}
 
 		#endregion

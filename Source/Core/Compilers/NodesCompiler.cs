@@ -125,7 +125,7 @@ namespace CodeImp.DoomBuilder.Compilers
 			bool errorsInErrorOutput = (outErr.Length > 0 && outErr.ToLowerInvariant().IndexOf("error") != -1);
 
 			deltatime = TimeSpan.FromTicks(process.ExitTime.Ticks - process.StartTime.Ticks);
-			General.WriteLogLine("Compiler process has finished " + (errorsInNormalOurput || errorsInErrorOutput ? "with errors." : ".")); //mxd
+			General.WriteLogLine("Compiler process has finished" + (errorsInNormalOurput || errorsInErrorOutput ? " with errors." : ".")); //mxd
 			General.WriteLogLine("Compile time: " + deltatime.TotalSeconds.ToString("########0.00") + " seconds");
 
 			//mxd

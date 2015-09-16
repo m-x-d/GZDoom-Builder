@@ -6,6 +6,10 @@ using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
 
+#if PROFILE
+using JetBrains.Profiler.Core.Api;
+#endif
+
 #endregion
 
 namespace CodeImp.DoomBuilder
@@ -153,6 +157,45 @@ namespace CodeImp.DoomBuilder
 			WriteLine(DebugMessageType.SPECIAL, message);
 
 			starttime = -1;
+		}
+
+		public static void StartProfiler()
+		{
+#if PROFILE
+			if(PerformanceProfiler.IsActive)
+			{
+				WriteLine(DebugMessageType.SPECIAL, "Starting the Profiler...");
+				PerformanceProfiler.Begin();
+				PerformanceProfiler.Start();
+			}
+			else
+			{
+				WriteLine(DebugMessageType.SPECIAL, "Unable to start the Profiler...");
+			}
+#else
+			WriteLine(DebugMessageType.SPECIAL, "Unable to start the Profiler: incorrect build configuration selected!");
+#endif
+		}
+
+		public static void StopProfiler() { StopProfiler(true); }
+		public static void StopProfiler(bool savesnapshot)
+		{
+#if PROFILE
+			if(PerformanceProfiler.IsActive)
+			{
+				PerformanceProfiler.Stop();
+				if(savesnapshot) PerformanceProfiler.EndSave();
+				else PerformanceProfiler.EndDrop();
+
+				WriteLine(DebugMessageType.SPECIAL, "Profiler Stopped...");
+			}
+			else
+			{
+				WriteLine(DebugMessageType.SPECIAL, "Unable to stop the Profiler...");
+			}
+#else
+			WriteLine(DebugMessageType.SPECIAL, "Unable to stop the Profiler: incorrect build configuration selected!");
+#endif
 		}
 
 		private void AddMessage(DebugMessageType type, string text, bool scroll)

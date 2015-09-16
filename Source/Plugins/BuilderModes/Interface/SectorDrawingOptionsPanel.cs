@@ -54,6 +54,15 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 			brightness.Enabled = cbBrightness.Checked;
 		}
 
+		internal void Terminate()
+		{
+			ceiling.StopUpdate();
+			floor.StopUpdate();
+			top.StopUpdate();
+			middle.StopUpdate();
+			bottom.StopUpdate();
+		}
+
 		#endregion
 
 		#region ================== Checkbox Events

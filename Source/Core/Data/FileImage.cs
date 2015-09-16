@@ -127,8 +127,9 @@ namespace CodeImp.DoomBuilder.Data
 				hasLongName = true;
 			}
 
-			this.longname = Lump.MakeLongName(this.name, uselongtexturenames); //mxd
+			this.longname = Lump.MakeLongName(this.name, uselongtexturenames);
 			this.fullname = filepathname;
+			this.level = virtualname.Split(new[] { Path.AltDirectorySeparatorChar }).Length - 1;
 
 			if(General.Settings.CapitalizeTextureNames && !string.IsNullOrEmpty(this.displayname))
 			{

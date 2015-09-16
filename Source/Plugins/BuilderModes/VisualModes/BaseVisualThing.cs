@@ -335,9 +335,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					sprite.RemoveReference();
 					sprite = null;
 				}
+
+				base.Dispose();
 			}
-			
-			base.Dispose();
 		}
 		
 		#endregion
