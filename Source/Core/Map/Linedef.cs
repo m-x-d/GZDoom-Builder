@@ -170,6 +170,9 @@ namespace CodeImp.DoomBuilder.Map
 				back = null;
 				map = null;
 
+				//mxd. Restore isdisposed so base classes can do their disposal job
+				isdisposed = false;
+
 				// Clean up base
 				base.Dispose();
 			}

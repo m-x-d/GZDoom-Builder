@@ -188,6 +188,9 @@ namespace CodeImp.DoomBuilder.Map
 				// Clean up
 				sidedefs = null;
 				map = null;
+
+				//mxd. Restore isdisposed so base classes can do their disposal job
+				isdisposed = false;
 				
 				// Dispose base
 				base.Dispose();
