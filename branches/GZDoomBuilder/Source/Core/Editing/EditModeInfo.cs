@@ -17,10 +17,10 @@
 #region ================== Namespaces
 
 using System;
+using System.Drawing;
 using System.IO;
 using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Plugins;
-using System.Drawing;
 using CodeImp.DoomBuilder.VisualModes;
 
 #endregion
@@ -37,18 +37,20 @@ namespace CodeImp.DoomBuilder.Editing
 
 		// Mode type
 		private Plugin plugin;
-		private Type type;
-		private EditModeAttribute attribs;
+		private readonly Type type;
+		private readonly EditModeAttribute attribs;
 		
 		// Mode switching
-		private BeginActionAttribute switchactionattr;
+		private readonly BeginActionAttribute switchactionattr;
 		private ActionDelegate switchactiondel;
 
 		// Mode button
-		private Stream buttonimagestream;
-		private Image buttonimage;
-		private string buttondesc;
-		private int buttonorder = int.MaxValue;
+		private readonly Image buttonimage;
+		private readonly string buttondesc;
+		private readonly int buttonorder = int.MaxValue;
+
+		//mxd. Disposing
+		private bool isdisposed;
 		
 		#endregion
 
@@ -79,14 +81,16 @@ namespace CodeImp.DoomBuilder.Editing
 				switchactionattr = new BeginActionAttribute(attribs.SwitchAction);
 			
 			// Make button info
-			if(attr.ButtonImage != null)
+			if(!string.IsNullOrEmpty(attr.ButtonImage))
 			{
-				buttonimagestream = plugin.GetResourceStream(attr.ButtonImage);
-				if(buttonimagestream != null)
+				using(Stream stream = plugin.GetResourceStream(attr.ButtonImage))
 				{
-					buttonimage = Image.FromStream(buttonimagestream);
-					buttondesc = attr.DisplayName;
-					buttonorder = attr.ButtonOrder;
+					if(stream != null)
+					{
+						buttonimage = Image.FromStream(stream);
+						buttondesc = attr.DisplayName;
+						buttonorder = attr.ButtonOrder;
+					}
 				}
 			}
 			
@@ -97,13 +101,19 @@ namespace CodeImp.DoomBuilder.Editing
 		// Disposer
 		public void Dispose()
 		{
-			// Dispose
-			UnbindSwitchAction();
-			buttonimage.Dispose();
-			buttonimagestream.Dispose();
+			// Not already disposed?
+			if(!isdisposed)
+			{
+				// Dispose
+				UnbindSwitchAction();
+				if(buttonimage != null) buttonimage.Dispose();
 
-			// Clean up
-			plugin = null;
+				// Clean up
+				plugin = null;
+
+				// Done
+				isdisposed = true;
+			}
 		}
 		
 		#endregion

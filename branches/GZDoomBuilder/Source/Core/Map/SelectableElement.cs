@@ -47,11 +47,15 @@ namespace CodeImp.DoomBuilder.Map
 		// Disposer
 		public override void Dispose()
 		{
-			// Remove from selection
-			if(selected) Selected = false;
-			
-			// Done
-			base.Dispose();
+			// Not already disposed?
+			if(!isdisposed)
+			{
+				// Remove from selection
+				if(selected) Selected = false;
+
+				// Done
+				base.Dispose();
+			}
 		}
 		
 		#endregion

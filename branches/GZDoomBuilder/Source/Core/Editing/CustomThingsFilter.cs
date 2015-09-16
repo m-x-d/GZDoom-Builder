@@ -14,7 +14,7 @@
 
 #endregion
 
-#region ================== Namespaces
+/*#region ================== Namespaces
 
 using System;
 using System.Collections.Generic;
@@ -67,4 +67,4 @@ namespace CodeImp.DoomBuilder.Editing
 
 		#endregion
 	}
-}
+}*/

@@ -53,14 +53,8 @@ namespace CodeImp.DoomBuilder.Windows
 		
 		// Recent files
 		private const int MAX_RECENT_FILES_PIXELS = 250;
-
-		// Dockers
-		//private const int DOCKER_TAB_WIDTH = 20;
 		
 		// Status bar
-		private const string STATUS_READY_TEXT = "Ready.";
-		private const string STATUS_NO_SELECTION_TEXT = "Nothing selected."; //mxd
-		private const string STATUS_LOADING_TEXT = "Loading resources...";
 		private const int WARNING_FLASH_COUNT = 10;
 		private const int WARNING_FLASH_INTERVAL = 100;
 		private const int WARNING_RESET_DELAY = 5000;
@@ -160,7 +154,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private StatusInfo status;
 		private int statusflashcount;
 		private bool statusflashicon;
-		private string selectioninfo = STATUS_NO_SELECTION_TEXT; //mxd
 		
 		// Properties
 		private IntPtr windowptr;
@@ -798,11 +791,8 @@ namespace CodeImp.DoomBuilder.Windows
 		public void DisplayStatus(StatusType type, string message) { DisplayStatus(new StatusInfo(type, message)); }
 		public void DisplayStatus(StatusInfo newstatus)
 		{
-			//mxd. New message is the same as the one being displayed?
-			if(newstatus.type != StatusType.Ready && status.displayed && newstatus.type == status.type && newstatus.message == status.message) return;
-			
 			// Stop timers
-			if(newstatus.type != StatusType.Selection && !newstatus.displayed) //mxd
+			if(!newstatus.displayed)
 			{
 				statusresetter.Stop();
 				statusflasher.Stop();
@@ -812,35 +802,12 @@ namespace CodeImp.DoomBuilder.Windows
 			// Determine what to do specifically for this status type
 			switch(newstatus.type)
 			{
-				// When no particular information is to be displayed.
-				// The messages displayed depends on running background processes.
-				case StatusType.Ready:
-					if((General.Map != null) && (General.Map.Data != null)) 
-					{
-						newstatus.message = General.Map.Data.IsLoading ? STATUS_LOADING_TEXT : selectioninfo;
-					} 
-					else 
-					{
-						newstatus.message = STATUS_READY_TEXT;
-					}
-					break;
-
-				case StatusType.Selection: //mxd
-					if(statusresetter.Enabled) //don't change the message right now if info or warning is displayed
-					{ 
-						selectioninfo = (string.IsNullOrEmpty(newstatus.message) ? STATUS_NO_SELECTION_TEXT : newstatus.message);
-						return;
-					}
-					if(string.IsNullOrEmpty(newstatus.message)) newstatus.message = STATUS_NO_SELECTION_TEXT;
-					if(selectioninfo == newstatus.message) return; // Selection info didn't change
-					selectioninfo = newstatus.message;
-					break;
-
 				// Shows information without flashing the icon.
+				case StatusType.Ready: //mxd
+				case StatusType.Selection: //mxd
 				case StatusType.Info:
 					if(!newstatus.displayed)
 					{
-						newstatus.message = selectioninfo + " " + newstatus.message; //mxd
 						statusresetter.Interval = INFO_RESET_DELAY;
 						statusresetter.Start();
 					}
@@ -850,7 +817,6 @@ namespace CodeImp.DoomBuilder.Windows
 				case StatusType.Action:
 					if(!newstatus.displayed)
 					{
-						newstatus.message = selectioninfo + " " + newstatus.message; //mxd
 						statusflashicon = true;
 						statusflasher.Interval = ACTION_FLASH_INTERVAL;
 						statusflashcount = ACTION_FLASH_COUNT;
@@ -864,7 +830,6 @@ namespace CodeImp.DoomBuilder.Windows
 				case StatusType.Warning:
 					if(!newstatus.displayed)
 					{
-						newstatus.message = selectioninfo + " " + newstatus.message; //mxd
 						MessageBeep(MessageBeepType.Warning);
 						statusflasher.Interval = WARNING_FLASH_INTERVAL;
 						statusflashcount = WARNING_FLASH_COUNT;
@@ -878,7 +843,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// Update status description
 			status = newstatus;
 			status.displayed = true;
-			statuslabel.Text = status.message;
+			statuslabel.Text = status.ToString(); //mxd. message -> ToString()
 			
 			// Update icon as well
 			UpdateStatusIcon();

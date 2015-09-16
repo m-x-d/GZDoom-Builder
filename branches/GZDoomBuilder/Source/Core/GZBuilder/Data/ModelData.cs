@@ -36,6 +36,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 
 		internal bool IsVoxel;
 
+		// Disposing
+		private bool isdisposed;
+
 		public ModelLoadState LoadState { get { return loadstate; } internal set { loadstate = value; } }
 
 		#endregion
@@ -52,11 +55,19 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 
 		internal void Dispose() 
 		{
-			if (Model != null) 
+			// Not already disposed?
+			if(!isdisposed) 
 			{
-				foreach (Mesh mesh in Model.Meshes) mesh.Dispose();
-				foreach (Texture t in Model.Textures) t.Dispose();
-				loadstate = ModelLoadState.None;
+				// Clean up
+				if(Model != null)
+				{
+					foreach (Mesh mesh in Model.Meshes) mesh.Dispose();
+					foreach (Texture t in Model.Textures) t.Dispose();
+					loadstate = ModelLoadState.None;
+				}
+
+				// Done
+				isdisposed = true;
 			}
 		}
 

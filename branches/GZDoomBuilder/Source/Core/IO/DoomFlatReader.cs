@@ -164,7 +164,7 @@ namespace CodeImp.DoomBuilder.IO
 		// Returns null on failure
 		private PixelColorBlock ReadAsPixelData(Stream stream, out int width, out int height)
 		{
-			new BinaryReader(stream);
+			//new BinaryReader(stream);
 			PixelColorBlock pixeldata;
 			float sqrlength;
 			byte[] bytes;

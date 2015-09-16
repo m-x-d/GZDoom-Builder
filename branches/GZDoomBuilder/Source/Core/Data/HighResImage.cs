@@ -52,7 +52,8 @@ namespace CodeImp.DoomBuilder.Data
 
 			//mxd
 			SetName(name);
-			this.virtualname = "[TEXTURES]/" + (!string.IsNullOrEmpty(virtualpath) ? virtualpath + "/" : "") + this.name;
+			this.virtualname = "[TEXTURES]" + Path.AltDirectorySeparatorChar + (!string.IsNullOrEmpty(virtualpath) ? virtualpath + Path.AltDirectorySeparatorChar : "") + this.name;
+			this.level = virtualname.Split(new[] { Path.AltDirectorySeparatorChar }).Length - 1;
 			this.isFlat = isflat;
 			
 			// We have no destructor

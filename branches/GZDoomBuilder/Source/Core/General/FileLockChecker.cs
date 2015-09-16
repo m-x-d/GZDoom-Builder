@@ -117,6 +117,7 @@ namespace CodeImp.DoomBuilder
 			int res = RmStartSession(out handle, 0, key);
 			if(res != 0)
 			{
+				RmEndSession(handle); //mxd
 				result.Error = errorstart + "Error " + res + ". Could not begin restart session. Unable to determine file locker."; //mxd
 				return result;
 			}

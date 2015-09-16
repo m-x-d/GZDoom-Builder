@@ -66,7 +66,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Text = "Browse " + imagetype;
 
 			// Setup texture browser
-			ImageBrowserControl.ShowTextureSizes = General.Settings.ReadSetting("browserwindow.showtexturesizes", General.Settings.ShowTextureSizes);
+			ImageBrowserControl.ShowTexturesFromSubDirectories = General.Settings.ReadSetting("browserwindow.showtexturesfromsubdirs", true);
 			ImageBrowserControl.UseLongTextureNames = General.Map.Options.UseLongTextureNames;
 			browser.BrowseFlats = browseflats;
 			browser.ApplySettings();
@@ -245,16 +245,8 @@ namespace CodeImp.DoomBuilder.Windows
 			//then - in current node
 			IFilledTextureSet set = (node.Tag as IFilledTextureSet);
 
-			if (browseflats)
-			{
-				foreach(ImageData img in set.Flats)
-					if(img.LongName == longname) return node;
-			}
-			else 
-			{
-				foreach(ImageData img in set.Textures)
-					if(img.LongName == longname) return node;
-			}
+			foreach(ImageData img in (browseflats ? set.Flats : set.Textures))
+				if(img.LongName == longname) return node;
 
 			return null;
 		}
@@ -306,9 +298,11 @@ namespace CodeImp.DoomBuilder.Windows
 				if (parts.Length == 1) continue;
 				int localindex = (parts[0] == "[TEXTURES]" ? 8 : imageIndex);
 
-				for (int i = 0; i < parts.Length - 1; i++) 
+				string category = set.Name;
+				for(int i = 0; i < parts.Length - 1; i++) 
 				{
-					string category = parts[i];
+					//string category = parts[i];
+					category += (Path.DirectorySeparatorChar + parts[i]);
 					
 					//already got such category?
 					if (curNode.Nodes.Count > 0 && curNode.Nodes.ContainsKey(category)) 
@@ -316,18 +310,19 @@ namespace CodeImp.DoomBuilder.Windows
 						curNode = curNode.Nodes[category];
 					} 
 					else //create a new one
-					{ 
-						TreeNode n = new TreeNode(category) { Name = category, ImageIndex = localindex, SelectedImageIndex = localindex };
+					{
+						TreeNode n = new TreeNode(parts[i]) { Name = category, ImageIndex = localindex, SelectedImageIndex = localindex };
 
 						curNode.Nodes.Add(n);
 						curNode = n;
 
 						ResourceTextureSet ts = new ResourceTextureSet(category, set.Location);
+						ts.Level = i + 1;
 						curNode.Tag = ts;
 					}
 
 					//add to current and parent nodes
-					if (i == parts.Length - 2) 
+					if(i == parts.Length - 2) 
 					{
 						TreeNode cn = curNode;
 						while (cn != root) 
@@ -343,12 +338,13 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 			}
 
-			if (root.Nodes.Count == 1 && root.Nodes[0].Nodes.Count > 0) 
+			if(root.Nodes.Count == 1 && root.Nodes[0].Nodes.Count > 0) 
 			{
 				TreeNode[] children = new TreeNode[root.Nodes[0].Nodes.Count];
 				root.Nodes[0].Nodes.CopyTo(children, 0);
 				root.Nodes.Clear();
 				root.Nodes.AddRange(children);
+				((ResourceTextureSet)root.Tag).Level++;
 			}
 
 			foreach (TreeNode n in root.Nodes) SetItemsCount(n);
@@ -476,7 +472,7 @@ namespace CodeImp.DoomBuilder.Windows
 				General.Settings.WriteSetting("browserwindow.textureset", tvTextureSets.SelectedNodes[0].Name);
 
 			//mxd. Save ImageBrowserControl settings
-			General.Settings.WriteSetting("browserwindow.showtexturesizes", ImageBrowserControl.ShowTextureSizes);
+			General.Settings.WriteSetting("browserwindow.showtexturesfromsubdirs", ImageBrowserControl.ShowTexturesFromSubDirectories);
 			if(General.Map.Config.UseLongTextureNames) General.Map.Options.UseLongTextureNames = ImageBrowserControl.UseLongTextureNames;
 			
 			// Clean up
@@ -507,7 +503,7 @@ namespace CodeImp.DoomBuilder.Windows
 			IFilledTextureSet set = (selectedset.Tag as IFilledTextureSet);
 
 			// Start adding
-			browser.BeginAdding(false);
+			browser.BeginAdding(set.Level, false); //mxd. Pass current folder level
 
 			if (browseflats) 
 			{

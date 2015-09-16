@@ -127,13 +127,14 @@ namespace CodeImp.DoomBuilder.Editing
 			forbiddenfields = new List<string>(f.forbiddenfields);
 			
 			AdjustForMapFormat();
+			
+			// We have no destructor
+			GC.SuppressFinalize(this);
 		}
 		
 		// Constructor for filter from configuration
 		internal ThingsFilter(Configuration cfg, string path)
 		{
-			IDictionary fields;
-			
 			// Initialize
 			requiredfields = new List<string>();
 			forbiddenfields = new List<string>();
@@ -156,7 +157,7 @@ namespace CodeImp.DoomBuilder.Editing
 			// Read flags
 			// key is string, value must be boolean which indicates if
 			// its a required field (true) or forbidden field (false).
-			fields = cfg.ReadSetting(path + ".fields", new Hashtable());
+			IDictionary fields = cfg.ReadSetting(path + ".fields", new Hashtable());
 			foreach(DictionaryEntry de in fields)
 			{
 				// Add to the corresponding list

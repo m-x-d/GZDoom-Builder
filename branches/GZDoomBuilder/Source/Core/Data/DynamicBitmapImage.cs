@@ -45,8 +45,15 @@ namespace CodeImp.DoomBuilder.Data
 		// Disposer
 		public override void Dispose()
 		{
-			General.Map.Graphics.UnregisterResource(this);
-			base.Dispose();
+			// Not already disposed?
+			if(!isdisposed)
+			{
+				// Clean up
+				General.Map.Graphics.UnregisterResource(this);
+
+				// Done
+				base.Dispose();
+			}
 		}
 
 		#endregion

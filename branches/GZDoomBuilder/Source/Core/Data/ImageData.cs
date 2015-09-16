@@ -56,6 +56,7 @@ namespace CodeImp.DoomBuilder.Data
 		protected bool isFlat; //mxd. if false, it's a texture
 		protected bool hasLongName; //mxd. Texture name is longer than DataManager.CLASIC_IMAGE_NAME_LENGTH
 		protected bool hasPatchWithSameName; //mxd
+		protected int level; //mxd. Folder depth of this item
 		
 		// Loading
 		private volatile ImageLoadState previewstate;
@@ -111,7 +112,8 @@ namespace CodeImp.DoomBuilder.Data
 		public float ScaledHeight { get { return height * scale.y; } }
 		public Vector2D Scale { get { return scale; } }
 		public bool WorldPanning { get { return worldpanning; } }
-		
+		public int Level { get { return level; } } //mxd
+
 		#endregion
 
 		#region ================== Constructor / Disposer

@@ -131,7 +131,7 @@ namespace CodeImp.DoomBuilder.Controls
 			forecolor.Dispose();
 
 			//mxd. Draw size label?
-			if(ImageBrowserControl.ShowTextureSizes && !string.IsNullOrEmpty(imagesize))
+			if(General.Settings.ShowTextureSizes && !string.IsNullOrEmpty(imagesize))
 			{
 				// Setup
 				Font sizefont = new Font(this.ListView.Font.FontFamily, this.ListView.Font.SizeInPoints - 1);

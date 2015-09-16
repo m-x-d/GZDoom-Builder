@@ -226,9 +226,8 @@ namespace CodeImp.DoomBuilder.Data
 				whitetexture = null;
 				unknownimage.Dispose(); //mxd
 				unknownimage = null; //mxd
-				foreach (ImageData data in commenttextures) data.Dispose(); //mxd
-				modeldefentries = null;//mxd
-				mapinfo = null;
+				foreach(ImageData i in commenttextures) i.Dispose(); //mxd
+				commenttextures = null;
 				
 				// Done
 				isdisposed = true;
@@ -505,13 +504,9 @@ namespace CodeImp.DoomBuilder.Data
 			foreach(KeyValuePair<long, ImageData> i in sprites) i.Value.Dispose();
 			palette = null;
 
-			//mxd
-			if (modeldefentries != null) 
-			{
-				foreach (KeyValuePair<int, ModelData> group in modeldefentries) 
-					group.Value.Dispose();
-			}
-			
+			//mxd. Dispose models
+			foreach(KeyValuePair<int, ModelData> i in modeldefentries) i.Value.Dispose();
+		
 			// Dispose containers
 			foreach(DataReader c in containers) c.Dispose();
 			containers.Clear();
@@ -522,10 +517,12 @@ namespace CodeImp.DoomBuilder.Data
 			textures = null;
 			flats = null;
 			sprites = null;
+			modeldefentries = null;//mxd
 			texturenames = null;
 			flatnames = null;
 			imageque = null;
 			internalsprites = null;
+			mapinfo = null; //mxd
 		}
 		
 		#endregion

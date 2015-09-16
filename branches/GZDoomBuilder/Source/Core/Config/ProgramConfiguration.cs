@@ -426,15 +426,13 @@ namespace CodeImp.DoomBuilder.Config
 			cfg.WriteSetting("defaultbrightness", defaultbrightness);
 			
 			// Save settings configuration
-			General.WriteLogLine("Saving program configuration...");
+			General.WriteLogLine("Saving program configuration to '" + filepathname + "'...");
 			cfg.SaveConfiguration(filepathname);
 		}
 		
 		// This reads the configuration
 		private bool Read(string cfgfilepathname, string defaultfilepathname)
 		{
-			DialogResult result;
-
 			// Check if no config for this user exists yet
 			if(!File.Exists(cfgfilepathname))
 			{
@@ -450,7 +448,7 @@ namespace CodeImp.DoomBuilder.Config
 			{
 				// Error in configuration
 				// Ask user for a new copy
-				result = General.ShowErrorMessage("Error in program configuration near line " + cfg.ErrorLine + ": " + cfg.ErrorDescription + "\n\nWould you like to overwrite your settings with a new configuration to restore the default settings?", MessageBoxButtons.YesNoCancel);
+				DialogResult result = General.ShowErrorMessage("Error in program configuration near line " + cfg.ErrorLine + ": " + cfg.ErrorDescription + "\n\nWould you like to overwrite your settings with a new configuration to restore the default settings?", MessageBoxButtons.YesNoCancel);
 				if(result == DialogResult.Yes)
 				{
 					// Remove old configuration and make a new copy

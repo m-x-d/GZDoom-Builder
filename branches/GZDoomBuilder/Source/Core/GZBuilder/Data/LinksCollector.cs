@@ -89,13 +89,14 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 			SpecialThings result = new SpecialThings();
 
 			// Process oh so special things
-			foreach (Thing t in things)
+			foreach(Thing t in things)
 			{
-				ThingTypeInfo info = General.Map.Data.GetThingInfo(t.Type);
+				ThingTypeInfo info = General.Map.Data.GetThingInfoEx(t.Type);
+				if(info == null) continue;
 				switch (info.ClassName.ToLowerInvariant())
 				{
 					case "patrolpoint":
-						if(t.Args[0] != 0)
+						if(t.Tag != 0 || t.Args[0] != 0)
 						{
 							if(!result.PatrolPoints.ContainsKey(t.Tag)) result.PatrolPoints.Add(t.Tag, new List<Thing>());
 							result.PatrolPoints[t.Tag].Add(t);
@@ -129,7 +130,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 			// We may need all of these actors...
 			foreach (Thing t in General.Map.Map.Things)
 			{
-				ThingTypeInfo info = General.Map.Data.GetThingInfo(t.Type);
+				ThingTypeInfo info = General.Map.Data.GetThingInfoEx(t.Type);
+				if(info == null) continue;
 				switch (info.ClassName.ToLowerInvariant())
 				{
 					case "interpolationpoint":

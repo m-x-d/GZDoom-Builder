@@ -53,7 +53,8 @@ namespace CodeImp.DoomBuilder.Controls
 		private int keepselected;
 		private bool browseFlats; //mxd
 		private static bool uselongtexturenames; //mxd
-		private static bool showtexturesizes; //mxd
+		private static bool showtexturesfromsubdirs; //mxd
+		private int currentlevel; //mxd
 		
 		// All items
 		private readonly List<ImageBrowserItem> items;
@@ -71,7 +72,7 @@ namespace CodeImp.DoomBuilder.Controls
 		public bool PreventSelection { get { return preventselection; } set { preventselection = value; } }
 		public bool HideInputBox { get { return splitter.Panel2Collapsed; } set { splitter.Panel2Collapsed = value; } }
 		public bool BrowseFlats { get { return browseFlats; } set { browseFlats = value; } } //mxd
-		public static bool ShowTextureSizes { get { return showtexturesizes; } internal set { showtexturesizes = value; } } //mxd
+		public static bool ShowTexturesFromSubDirectories { get { return showtexturesfromsubdirs; } internal set { showtexturesfromsubdirs = value; } } //mxd
 		public static bool UseLongTextureNames { get { return uselongtexturenames; } internal set { uselongtexturenames = value; } } //mxd
 		public ListViewItem SelectedItem { get { if(list.SelectedItems.Count > 0) return list.SelectedItems[0]; else return null; } }
 		
@@ -132,7 +133,7 @@ namespace CodeImp.DoomBuilder.Controls
 					filterwidthlabel.Left -= offset;
 					filterHeight.Left -= offset;
 					filterheightlabel.Left -= offset;
-					showtexturesize.Left -= offset;
+					showsubdirtextures.Left -= offset;
 					longtexturenames.Left -= offset;
 					
 					mixMode = 0;
@@ -152,8 +153,8 @@ namespace CodeImp.DoomBuilder.Controls
 			if(!General.Settings.CapitalizeTextureNames)
 				objectname.CharacterCasing = CharacterCasing.Normal;
 
-			//mxd. Show texture sizes?
-			showtexturesize.Checked = showtexturesizes;
+			//mxd. Show textures in subfolders?
+			showsubdirtextures.Checked = showtexturesfromsubdirs;
 		}
 
 		// This cleans everything up
@@ -284,10 +285,10 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		//mxd
-		private void showtexturesize_CheckedChanged(object sender, EventArgs e)
+		private void showsubdirtextures_CheckedChanged(object sender, EventArgs e)
 		{
-			showtexturesizes = showtexturesize.Checked;
-			list.Invalidate();
+			showtexturesfromsubdirs = showsubdirtextures.Checked;
+			RefillList(false);
 		}
 		
 		#endregion
@@ -438,12 +439,15 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 		
 		// This begins adding items
-		public void BeginAdding(bool keepselectedindex)
+		public void BeginAdding(bool keepselectedindex) { BeginAdding(0, keepselectedindex); } //mxd
+		public void BeginAdding(int selectedlevel, bool keepselectedindex)
 		{
 			if(keepselectedindex && (list.SelectedItems.Count > 0))
 				keepselected = list.SelectedIndices[0];
 			else
 				keepselected = -1;
+
+			currentlevel = selectedlevel;
 			
 			// Clean list
 			items.Clear();
@@ -559,6 +563,7 @@ namespace CodeImp.DoomBuilder.Controls
 				if(mixMode == 1 && item.Icon.IsFlat) return false;
 				if(mixMode == 2 && !item.Icon.IsFlat) return false;
 				if(mixMode == 3 && (browseFlats != item.Icon.IsFlat)) return false;
+				if(!showtexturesfromsubdirs && currentlevel > 0 && item.Icon.Level > currentlevel) return false;
 			}
 
 			return item.Text.ToUpperInvariant().Contains(objectname.Text.ToUpperInvariant());

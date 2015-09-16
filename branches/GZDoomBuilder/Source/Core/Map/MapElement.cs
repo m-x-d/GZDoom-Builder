@@ -72,12 +72,15 @@ namespace CodeImp.DoomBuilder.Map
 		// Disposer
 		public virtual void Dispose()
 		{
-			// Clean up
-			fields.Owner = null;
-			fields = null;
-			
-			// Done
-			isdisposed = true;
+			if(!isdisposed)
+			{
+				// Clean up
+				fields.Owner = null;
+				fields = null;
+
+				// Done
+				isdisposed = true;
+			}
 		}
 
 		#endregion

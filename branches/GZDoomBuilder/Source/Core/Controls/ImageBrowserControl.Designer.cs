@@ -34,7 +34,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.label = new System.Windows.Forms.Label();
 			this.splitter = new System.Windows.Forms.SplitContainer();
 			this.list = new CodeImp.DoomBuilder.Controls.OptimizedListView();
-			this.showtexturesize = new System.Windows.Forms.CheckBox();
+			this.showsubdirtextures = new System.Windows.Forms.CheckBox();
 			this.longtexturenames = new System.Windows.Forms.CheckBox();
 			this.filterheightlabel = new System.Windows.Forms.Label();
 			this.filterHeight = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
@@ -81,7 +81,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// splitter.Panel2
 			// 
-			this.splitter.Panel2.Controls.Add(this.showtexturesize);
+			this.splitter.Panel2.Controls.Add(this.showsubdirtextures);
 			this.splitter.Panel2.Controls.Add(this.longtexturenames);
 			this.splitter.Panel2.Controls.Add(this.filterheightlabel);
 			this.splitter.Panel2.Controls.Add(this.filterHeight);
@@ -116,22 +116,22 @@ namespace CodeImp.DoomBuilder.Controls
 			this.list.DoubleClick += new System.EventHandler(this.list_DoubleClick);
 			this.list.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.list_ItemSelectionChanged);
 			// 
-			// showtexturesize
+			// showsubdirtextures
 			// 
-			this.showtexturesize.AutoSize = true;
-			this.showtexturesize.Location = new System.Drawing.Point(470, 9);
-			this.showtexturesize.Name = "showtexturesize";
-			this.showtexturesize.Size = new System.Drawing.Size(105, 17);
-			this.showtexturesize.TabIndex = 0;
-			this.showtexturesize.TabStop = false;
-			this.showtexturesize.Text = "Show image size";
-			this.showtexturesize.UseVisualStyleBackColor = true;
-			this.showtexturesize.CheckedChanged += new System.EventHandler(this.showtexturesize_CheckedChanged);
+			this.showsubdirtextures.AutoSize = true;
+			this.showsubdirtextures.Location = new System.Drawing.Point(595, 9);
+			this.showsubdirtextures.Name = "showsubdirtextures";
+			this.showsubdirtextures.Size = new System.Drawing.Size(172, 17);
+			this.showsubdirtextures.TabIndex = 0;
+			this.showsubdirtextures.TabStop = false;
+			this.showsubdirtextures.Text = "Show textures in subdirectories";
+			this.showsubdirtextures.UseVisualStyleBackColor = true;
+			this.showsubdirtextures.CheckedChanged += new System.EventHandler(this.showsubdirtextures_CheckedChanged);
 			// 
 			// longtexturenames
 			// 
 			this.longtexturenames.AutoSize = true;
-			this.longtexturenames.Location = new System.Drawing.Point(585, 9);
+			this.longtexturenames.Location = new System.Drawing.Point(470, 9);
 			this.longtexturenames.Name = "longtexturenames";
 			this.longtexturenames.Size = new System.Drawing.Size(119, 17);
 			this.longtexturenames.TabIndex = 0;
@@ -259,7 +259,7 @@ namespace CodeImp.DoomBuilder.Controls
 		private ButtonsNumericTextbox filterHeight;
 		private System.Windows.Forms.Label filterwidthlabel;
 		private System.Windows.Forms.CheckBox longtexturenames;
-		private System.Windows.Forms.CheckBox showtexturesize;
+		private System.Windows.Forms.CheckBox showsubdirtextures;
 
 	}
 }

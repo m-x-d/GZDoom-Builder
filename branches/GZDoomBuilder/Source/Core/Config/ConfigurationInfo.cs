@@ -225,6 +225,12 @@ namespace CodeImp.DoomBuilder.Config
 		private ConfigurationInfo()
 		{
 		}
+
+		//mxd. Destructor
+		~ConfigurationInfo()
+		{
+			foreach(ThingsFilter tf in thingsfilters) tf.Dispose();
+		}
 		
 		#endregion
 

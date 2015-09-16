@@ -439,15 +439,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			drawingOverridesPanel.Setup();
 			General.Map.Renderer2D.UpdateExtraFloorFlag(); //mxd
 		}
+
+		//mxd
+		public override void OnMapCloseBegin()
+		{
+			drawingOverridesPanel.Terminate();
+			General.Interface.RemoveDocker(drawingOverridesDocker);
+		}
 		
 		// Map closed
 		public override void OnMapCloseEnd()
 		{
 			base.OnMapCloseEnd();
 			undoredopanel.UpdateList();
-
-			//mxd
-			General.Interface.RemoveDocker(drawingOverridesDocker);
 
 			//mxd. Save settings
 			SaveUISettings();
