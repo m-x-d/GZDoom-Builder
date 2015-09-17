@@ -1075,6 +1075,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// Resizing
 			//if(!displayresized) General.LockWindowUpdate(display.Handle);
 			displayresized = true;
+
+			//mxd. Separators may need updating
+			UpdateSeparators();
 			
 			// Request redraw
 			if(!redrawtimer.Enabled) redrawtimer.Enabled = true;

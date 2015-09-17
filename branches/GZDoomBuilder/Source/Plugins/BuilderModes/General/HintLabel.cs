@@ -25,8 +25,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.end = end;
 
 			// Check if start/end point is on screen...
-			Vector2D lt = General.Map.Renderer2D.DisplayToMap(new Vector2D(0.0f, General.Map.Renderer2D.ViewportSize.Height));
-			Vector2D rb = General.Map.Renderer2D.DisplayToMap(new Vector2D(General.Map.Renderer2D.ViewportSize.Width, 0.0f));
+			Vector2D lt = General.Map.Renderer2D.DisplayToMap(new Vector2D(0.0f, General.Interface.Display.Size.Height));
+			Vector2D rb = General.Map.Renderer2D.DisplayToMap(new Vector2D(General.Interface.Display.Size.Width, 0.0f));
 			RectangleF viewport = new RectangleF(lt.x, lt.y, rb.x - lt.x, rb.y - lt.y);
 			bool startvisible = viewport.Contains(start.x, start.y);
 			bool endvisible = viewport.Contains(end.x, end.y);

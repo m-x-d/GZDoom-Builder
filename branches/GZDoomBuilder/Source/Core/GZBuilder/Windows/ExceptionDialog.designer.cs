@@ -41,23 +41,27 @@
 			// 
 			// bQuit
 			// 
-			this.bQuit.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.bQuit.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.bQuit.Location = new System.Drawing.Point(537, 195);
+			this.bQuit.Image = global::CodeImp.DoomBuilder.Properties.Resources.SearchClear;
+			this.bQuit.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.bQuit.Location = new System.Drawing.Point(537, 212);
 			this.bQuit.Name = "bQuit";
-			this.bQuit.Size = new System.Drawing.Size(75, 23);
+			this.bQuit.Size = new System.Drawing.Size(75, 28);
 			this.bQuit.TabIndex = 0;
 			this.bQuit.Text = "Quit";
+			this.bQuit.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.bQuit.UseVisualStyleBackColor = true;
 			// 
 			// bContinue
 			// 
-			this.bContinue.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.bContinue.Location = new System.Drawing.Point(456, 195);
+			this.bContinue.Image = global::CodeImp.DoomBuilder.Properties.Resources.Test;
+			this.bContinue.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.bContinue.Location = new System.Drawing.Point(446, 212);
 			this.bContinue.Name = "bContinue";
-			this.bContinue.Size = new System.Drawing.Size(75, 23);
+			this.bContinue.Size = new System.Drawing.Size(85, 28);
 			this.bContinue.TabIndex = 1;
 			this.bContinue.Text = "Continue";
+			this.bContinue.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.bContinue.UseVisualStyleBackColor = true;
 			this.bContinue.Click += new System.EventHandler(this.bContinue_Click);
 			// 
@@ -67,7 +71,7 @@
 			this.errorMessage.Multiline = true;
 			this.errorMessage.Name = "errorMessage";
 			this.errorMessage.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.errorMessage.Size = new System.Drawing.Size(535, 119);
+			this.errorMessage.Size = new System.Drawing.Size(535, 151);
 			this.errorMessage.TabIndex = 3;
 			this.errorMessage.Text = "Stack trace";
 			// 
@@ -85,7 +89,7 @@
 			this.reportLink.AutoSize = true;
 			this.reportLink.LinkArea = new System.Windows.Forms.LinkArea(53, 4);
 			this.reportLink.LinkColor = System.Drawing.SystemColors.HotTrack;
-			this.reportLink.Location = new System.Drawing.Point(77, 157);
+			this.reportLink.Location = new System.Drawing.Point(77, 188);
 			this.reportLink.Name = "reportLink";
 			this.reportLink.Size = new System.Drawing.Size(286, 17);
 			this.reportLink.TabIndex = 5;
@@ -99,7 +103,7 @@
 			this.threadLink.AutoSize = true;
 			this.threadLink.LinkArea = new System.Windows.Forms.LinkArea(101, 28);
 			this.threadLink.LinkColor = System.Drawing.SystemColors.HotTrack;
-			this.threadLink.Location = new System.Drawing.Point(77, 178);
+			this.threadLink.Location = new System.Drawing.Point(77, 210);
 			this.threadLink.Name = "threadLink";
 			this.threadLink.Size = new System.Drawing.Size(349, 30);
 			this.threadLink.TabIndex = 8;
@@ -112,9 +116,11 @@
 			// bToClipboard
 			// 
 			this.bToClipboard.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.bToClipboard.Location = new System.Drawing.Point(512, 151);
+			this.bToClipboard.Image = global::CodeImp.DoomBuilder.Properties.Resources.Copy;
+			this.bToClipboard.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.bToClipboard.Location = new System.Drawing.Point(446, 184);
 			this.bToClipboard.Name = "bToClipboard";
-			this.bToClipboard.Size = new System.Drawing.Size(100, 23);
+			this.bToClipboard.Size = new System.Drawing.Size(166, 24);
 			this.bToClipboard.TabIndex = 9;
 			this.bToClipboard.Text = "Copy to clipboard";
 			this.bToClipboard.UseVisualStyleBackColor = true;
@@ -136,7 +142,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.bQuit;
-			this.ClientSize = new System.Drawing.Size(624, 224);
+			this.ClientSize = new System.Drawing.Size(624, 244);
 			this.Controls.Add(this.reportLink);
 			this.Controls.Add(this.errorDescription);
 			this.Controls.Add(this.bToClipboard);

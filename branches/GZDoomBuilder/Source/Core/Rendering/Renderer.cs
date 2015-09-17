@@ -47,7 +47,6 @@ namespace CodeImp.DoomBuilder.Rendering
 		// Disposing
 		public bool IsDisposed { get { return isdisposed; } }
 		public static bool FullBrightness { get { return fullbrightness; } set { fullbrightness = value; } } //mxd
-		public Size ViewportSize { get { return graphics.RenderTarget.Size; } } //mxd
 
 		#endregion
 
