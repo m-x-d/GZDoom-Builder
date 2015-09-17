@@ -162,11 +162,11 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			}
 
 			//position and show form
-			if(formLocation.X == 0 && formLocation.Y == 0) 
+			if(formLocation.X == 0 && formLocation.Y == 0)
 			{
-				Size displaySize = DisplaySize;
-				Point displayLocation = DisplayLocationAbs;
-				formLocation = new Point(displayLocation.X + displaySize.Width - form.Width - 16, displayLocation.Y + 32);
+				Size displaySize = General.Interface.Display.Size;
+				Point displayLocation = General.Interface.Display.LocationAbs;
+				formLocation = new Point(displayLocation.X + displaySize.Width - form.Width - 16, displayLocation.Y + 16);
 			}
 
 			form.Location = formLocation;

@@ -45,6 +45,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		private int adapter;
 		private Filter postfilter;
 		private Filter mipgeneratefilter;
+		private static bool isrendering; //mxd
 		
 		// Main objects
 		private static Direct3D d3d;
@@ -68,6 +69,7 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		internal Device Device { get { return device; } }
 		public bool IsDisposed { get { return isdisposed; } }
+		public static bool IsRendering { get { return isrendering; } } //mxd
 		internal RenderTargetControl RenderTarget { get { return rendertarget; } }
 		internal Viewport Viewport { get { return viewport; } }
 		internal ShaderManager Shaders { get { return shaders; } }
@@ -110,6 +112,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				if(device != null) device.Dispose();
 				if(font != null) font.Dispose();
 				if(fonttexture != null) fonttexture.Dispose();
+				isrendering = false; //mxd
 				
 				// Done
 				isdisposed = true;
@@ -445,7 +448,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		public bool StartRendering(bool clear, Color4 backcolor, Surface target, Surface depthbuffer)
 		{
 			// Check if we can render
-			if(CheckAvailability())
+			if(CheckAvailability() && !isrendering) //mxd. Added isrendering check
 			{
 				// Set rendertarget
 				device.DepthStencilSurface = depthbuffer;
@@ -462,11 +465,13 @@ namespace CodeImp.DoomBuilder.Rendering
 
 				// Ready to render
 				device.BeginScene();
+				isrendering = true; //mxd
 				return true;
 			}
 			else
 			{
 				// Minimized, you cannot see anything
+				isrendering = false; //mxd
 				return false;
 			}
 		}
@@ -491,6 +496,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			{
 				// Done
 				device.EndScene();
+				isrendering = false; //mxd
 			}
 			// Errors are not a problem here
 			catch(Exception) { }
@@ -502,6 +508,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			try
 			{
 				device.Present();
+				isrendering = false; //mxd
 			}
 			// Errors are not a problem here
 			catch(Exception) { }

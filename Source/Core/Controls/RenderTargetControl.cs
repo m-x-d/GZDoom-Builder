@@ -18,6 +18,7 @@
 
 using System.Drawing;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.Rendering;
 
 #endregion
 
@@ -36,7 +37,10 @@ namespace CodeImp.DoomBuilder.Controls
 		#endregion
 
 		#region ================== Properties
+		
 		public event KeyEventHandler OnKeyReleased; //mxd. Sometimes it's handeled here, not by MainForm
+		public Point LocationAbs { get { return this.PointToScreen(new Point(-(General.MainWindow.Width - General.MainWindow.ClientSize.Width) / 2, 0)); } } //mxd
+
 		#endregion
 
 		#region ================== Constructor / Disposer
@@ -65,7 +69,7 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			// Pass on to base
 			// Do we really want this?
-			base.RaisePaintEvent(this, pe);
+			if(!D3DDevice.IsRendering) base.RaisePaintEvent(this, pe); //mxd. Dont raise event when in the middle of rendering
 		}
 
 		//mxd

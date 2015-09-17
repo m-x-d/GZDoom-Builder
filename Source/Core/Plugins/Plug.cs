@@ -33,18 +33,6 @@ namespace CodeImp.DoomBuilder.Plugins
 		// Disposing
 		private bool isdisposed;
 
-		//mxd. It's nice to have these avaliable to plugins...
-		public static Point DisplayLocationAbs {
-			get {
-				if (General.MainWindow == null || General.MainWindow.Display == null)
-					return new Point();
-				return new Point(General.MainWindow.Location.X + General.MainWindow.ClientRectangle.X + General.MainWindow.Display.Location.X, General.MainWindow.Location.Y + General.MainWindow.ClientRectangle.Y + General.MainWindow.Display.Location.Y);
-			}
-		}
-
-		//mxd. It's nice to have these avaliable to plugins...
-		public static Size DisplaySize { get { return (General.MainWindow == null || General.MainWindow.Display == null) ? new Size() : General.MainWindow.Display.Size; } }
-
 		#endregion
 		
 		#region ================== Properties

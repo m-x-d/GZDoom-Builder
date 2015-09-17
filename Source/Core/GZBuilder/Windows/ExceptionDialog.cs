@@ -2,6 +2,7 @@
 
 using System;
 using System.IO;
+using System.Management;
 using System.Windows.Forms;
 using System.Threading;
 
@@ -36,12 +37,14 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 
 			logPath = Path.Combine(General.SettingsPath, @"GZCrash.txt");
 			errorDescription.Text = "Error in " + e.Exception.Source + ":";
+			string sysinfo = GetSystemInfo();
 			using(StreamWriter sw = File.CreateText(logPath)) 
 			{
-				sw.Write(GetExceptionDescription(e.Exception));
+				sw.Write(sysinfo + GetExceptionDescription(e.Exception));
 			}
 
-			errorMessage.Text = e.Exception.Message + Environment.NewLine + e.Exception.StackTrace;
+			errorMessage.Text = sysinfo + "********EXCEPTION DETAILS********" + Environment.NewLine 
+				+ e.Exception.Message + Environment.NewLine + e.Exception.StackTrace;
 		}
 
 		public void Setup() 
@@ -114,10 +117,41 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 								  "It's CRASHENING!",
 								  "W-W-W-WIPEOUT!",
 								  "EVERYTHING IS LOST!",
-                                  "Your empty is full!",
-                                  "Let's see how far this infinite loop goes...",
+								  "Your empty is full!",
+								  "Let's see how far this infinite loop goes...",
 							  };
 			this.Text = titles[new Random().Next(0, titles.Length - 1)];
+		}
+
+		private static string GetSystemInfo()
+		{
+			string result = "***********SYSTEM INFO***********" + Environment.NewLine;
+			
+			// Get OS name
+			ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT Caption FROM Win32_OperatingSystem");
+			foreach(ManagementObject mo in searcher.Get())
+			{
+				result += "OS: " + mo["Caption"] + Environment.NewLine;
+				break;
+			}
+
+			// Get GPU name
+			searcher = new ManagementObjectSearcher("SELECT * FROM Win32_VideoController");
+			foreach(ManagementObject mo in searcher.Get())
+			{
+				PropertyData bpp = mo.Properties["CurrentBitsPerPixel"];
+				PropertyData description = mo.Properties["Description"];
+				if(bpp != null && description != null && bpp.Value != null)
+				{
+					result += "GPU: " + description.Value + Environment.NewLine;
+					break;
+				}
+			}
+
+			// Get GZDB version
+			result += "GZDB: R" + General.ThisAssembly.GetName().Version.Revision + Environment.NewLine + Environment.NewLine;
+
+			return result;
 		}
 
 		private static string GetExceptionDescription(Exception ex) 
