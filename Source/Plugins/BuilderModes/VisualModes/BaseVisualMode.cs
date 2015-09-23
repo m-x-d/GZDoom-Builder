@@ -3134,7 +3134,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				return;
 			}
 
-			string rest = copybuffer.Count + " thing" + (copybuffer.Count > 1 ? "s." : ".");
+			string rest = copybuffer.Count + " thing" + (copybuffer.Count > 1 ? "s" : "");
 			General.Map.UndoRedo.CreateUndo("Paste " + rest);
 			General.Interface.DisplayStatus(StatusType.Info, "Pasted " + rest);
 			
@@ -3890,7 +3890,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 								offset -= j.controlSide.Fields.GetValue("offsetx_mid", 0.0f);
 							}
 
-							j.sidedef.Fields["offsetx_mid"] = new UniValue(UniversalType.Float, (float)Math.Round(offset % General.Map.Data.GetTextureImage(j.sidedef.LongMiddleTexture).Width, General.Map.FormatInterface.VertexDecimals));
+							j.sidedef.Fields["offsetx_mid"] = new UniValue(UniversalType.Float, (float)Math.Round(offset % General.Map.Data.GetTextureImage(j.controlSide.LongMiddleTexture).Width, General.Map.FormatInterface.VertexDecimals));
 						}
 					}
 
@@ -3910,7 +3910,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							{
 								offset -= j.controlSide.OffsetY;
 								offset -= j.controlSide.Fields.GetValue("offsety_mid", 0.0f);
-								j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, (float)Math.Round(offset % General.Map.Data.GetTextureImage(j.sidedef.LongMiddleTexture).Height, General.Map.FormatInterface.VertexDecimals));
+								j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, (float)Math.Round(offset % General.Map.Data.GetTextureImage(j.controlSide.LongMiddleTexture).Height, General.Map.FormatInterface.VertexDecimals));
 							} 
 							else
 							{
@@ -3983,7 +3983,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 								offset -= j.controlSide.Fields.GetValue("offsetx_mid", 0.0f);
 							}
 
-							j.sidedef.Fields["offsetx_mid"] = new UniValue(UniversalType.Float, (float)Math.Round(offset % General.Map.Data.GetTextureImage(j.sidedef.LongMiddleTexture).Width, General.Map.FormatInterface.VertexDecimals));
+							j.sidedef.Fields["offsetx_mid"] = new UniValue(UniversalType.Float, (float)Math.Round(offset % General.Map.Data.GetTextureImage(j.controlSide.LongMiddleTexture).Width, General.Map.FormatInterface.VertexDecimals));
 						}
 					}
 
@@ -4003,7 +4003,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							{
 								offset -= j.controlSide.OffsetY;
 								offset -= j.controlSide.Fields.GetValue("offsety_mid", 0.0f);
-								j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, (float)Math.Round(offset % General.Map.Data.GetTextureImage(j.sidedef.LongMiddleTexture).Height, General.Map.FormatInterface.VertexDecimals)); //mxd
+								j.sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, (float)Math.Round(offset % General.Map.Data.GetTextureImage(j.controlSide.LongMiddleTexture).Height, General.Map.FormatInterface.VertexDecimals)); //mxd
 							} 
 							else 
 							{

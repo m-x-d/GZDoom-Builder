@@ -87,11 +87,11 @@ namespace CodeImp.DoomBuilder.Controls
 			string allowedchars = "0123456789\b";
 			
 			// Determine allowed chars
-			if(allownegative) allowedchars += CultureInfo.CurrentUICulture.NumberFormat.NegativeSign;
+			if(allownegative) allowedchars += CultureInfo.CurrentCulture.NumberFormat.NegativeSign;
 			if(allowrelative) allowedchars += "+-*/"; //mxd
 			if(controlpressed) allowedchars += "\u0018\u0003\u0016";
 			if(allowdecimal || this.Text.StartsWith("*") || this.Text.StartsWith("/")) //mxd
-				allowedchars += CultureInfo.CurrentUICulture.NumberFormat.NumberDecimalSeparator;
+				allowedchars += CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
 			
 			// Check if key is not allowed
 			if(allowedchars.IndexOf(e.KeyChar) == -1)
@@ -189,15 +189,6 @@ namespace CodeImp.DoomBuilder.Controls
 				// Make the textbox empty
 				this.Text = "";
 			} 
-			else if(allowdecimal) //mxd
-			{ 
-				float value;
-				if(float.TryParse(textpart, NumberStyles.Float, CultureInfo.CurrentCulture, out value)) 
-				{
-					if(value == Math.Round(value))
-						this.Text = this.Text.Replace(textpart, value.ToString());
-				}
-			}
 			
 			// Call base
 			base.OnValidating(e);

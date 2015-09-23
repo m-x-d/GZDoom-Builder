@@ -322,6 +322,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tbFilter.Size = new System.Drawing.Size(135, 20);
 			this.tbFilter.TabIndex = 28;
 			this.tbFilter.TextChanged += new System.EventHandler(this.tbFilter_TextChanged);
+			this.tbFilter.KeyUp += new System.Windows.Forms.KeyEventHandler(this.tbFilter_KeyUp);
 			// 
 			// btnClearFilter
 			// 
@@ -395,10 +396,12 @@ namespace CodeImp.DoomBuilder.Windows
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "EffectBrowserForm";
+			this.Opacity = 1;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Edit Effect";
+			this.Shown += new System.EventHandler(this.EffectBrowserForm_Shown);
 			groupBox2.ResumeLayout(false);
 			this.tabs.ResumeLayout(false);
 			this.tabeffects.ResumeLayout(false);

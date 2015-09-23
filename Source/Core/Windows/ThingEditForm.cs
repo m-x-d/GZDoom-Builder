@@ -456,6 +456,12 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
+		private void ThingEditForm_Shown(object sender, EventArgs e)
+		{
+			thingtype.FocusTextbox();
+		}
+
+		//mxd
 		private void ThingEditForm_FormClosing(object sender, FormClosingEventArgs e) 
 		{
 			location = this.Location;

@@ -152,6 +152,12 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		//mxd
+		public void FocusTextbox()
+		{
+			tbFilter.Focus();
+		}
+
+		//mxd
 		private List<TreeNode> GetValidNodes() 
 		{
 			Dictionary<string, TreeNode> vn = new Dictionary<string, TreeNode>(StringComparer.Ordinal);
@@ -376,7 +382,7 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			typelist.SuspendLayout();
 
-			if(string.IsNullOrEmpty(tbFilter.Text)) 
+			if(string.IsNullOrEmpty(tbFilter.Text.Trim()))
 			{
 				Setup();
 				typeid_TextChanged(this, EventArgs.Empty);
@@ -402,6 +408,17 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 
 			typelist.ResumeLayout();
+		}
+
+		//mxd. Switch focus to types list?
+		private void tbFilter_KeyUp(object sender, KeyEventArgs e)
+		{
+			if(e.KeyCode == Keys.Down && typelist.Nodes.Count > 0)
+			{
+				typelist.SelectedNodes.Clear();
+				typelist.SelectedNodes.Add(typelist.Nodes[0]);
+				typelist.Focus();
+			}
 		}
 
 		//mxd. Because anchor-based alignment fails when using high-Dpi settings...

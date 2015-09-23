@@ -955,6 +955,7 @@
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Edit Thing";
+			this.Shown += new System.EventHandler(this.ThingEditFormUDMF_Shown);
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ThingEditForm_FormClosing);
 			this.HelpRequested += new System.Windows.Forms.HelpEventHandler(this.ThingEditForm_HelpRequested);
 			this.groupBox1.ResumeLayout(false);

@@ -226,8 +226,8 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			if(usemodifierkeys)
 			{
-				string tip = "Hold Ctrl to change value by " + stepsizeSmall.ToString(CultureInfo.InvariantCulture) + "." + Environment.NewLine +
-				             "Hold Shift to change value by " + stepsizeBig.ToString(CultureInfo.InvariantCulture) + ".";
+				string tip = "Hold Ctrl to change value by " + stepsizeSmall.ToString(CultureInfo.CurrentCulture) + "." + Environment.NewLine +
+							 "Hold Shift to change value by " + stepsizeBig.ToString(CultureInfo.CurrentCulture) + ".";
 				tooltip.SetToolTip(buttons, tip);
 				textbox.UpdateTextboxStyle(tip);
 			}
