@@ -43,9 +43,7 @@ namespace CodeImp.DoomBuilder.Windows
 		public EffectBrowserForm(int effect)
 		{
 			GeneralizedOption o;
-			//ListViewItem n;
-			bool selected;
-			
+
 			// Initialize
 			InitializeComponent();
 
@@ -55,7 +53,7 @@ namespace CodeImp.DoomBuilder.Windows
 									   option5label, option6label, option7label };
 			
 			// Go for all predefined effects
-			selected = CreateEffects(effect); //mxd
+			bool selected = CreateEffects(effect); //mxd
 			allItems = new ListViewItem[effects.Items.Count]; //mxd
 			effects.Items.CopyTo(allItems, 0); //mxd
 			
@@ -214,14 +212,24 @@ namespace CodeImp.DoomBuilder.Windows
 		//mxd
 		private void tbFilter_TextChanged(object sender, EventArgs e) 
 		{
-			if (tbFilter.Text.Length > 1) 
+			if(!string.IsNullOrEmpty(tbFilter.Text.Trim()))
 			{
 				FilterEffects(tbFilter.Text);
 			} 
-			else if (String.IsNullOrEmpty(tbFilter.Text.ToLowerInvariant())) 
+			else
 			{
 				effects.Items.Clear();
 				CreateEffects(effects.SelectedItems.Count > 0 ? ((SectorEffectInfo)effects.SelectedItems[0].Tag).Index : 0);
+			}
+		}
+
+		//mxd. Switch focus to effects list?
+		private void tbFilter_KeyUp(object sender, KeyEventArgs e)
+		{
+			if(e.KeyCode == Keys.Down && effects.Items.Count > 0)
+			{
+				effects.Items[0].Selected = true;
+				effects.Focus();
 			}
 		}
 
@@ -230,5 +238,12 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			tbFilter.Clear();
 		}
+
+		//mxd
+		private void EffectBrowserForm_Shown(object sender, EventArgs e)
+		{
+			if(tabs.SelectedTab == tabeffects) tbFilter.Focus();
+		}
+
 	}
 }

@@ -579,6 +579,16 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
+		private void ThingEditFormUDMF_Shown(object sender, EventArgs e)
+		{
+			if(activetab == 0)
+			{
+				thingtype.Focus();
+				thingtype.FocusTextbox();
+			}
+		}
+
+		//mxd
 		private void ThingEditForm_FormClosing(object sender, FormClosingEventArgs e) 
 		{
 			location = this.Location;

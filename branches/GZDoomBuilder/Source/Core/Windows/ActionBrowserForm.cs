@@ -108,8 +108,6 @@ namespace CodeImp.DoomBuilder.Windows
 				// Remove generalized tab
 				tabs.TabPages.Remove(tabgeneralized);
 			}
-
-			//tbFilter.Focus(); //mxd
 		}
 		
 		// This browses for an action
@@ -300,14 +298,24 @@ namespace CodeImp.DoomBuilder.Windows
 		//mxd
 		private void tbFilter_TextChanged(object sender, EventArgs e) 
 		{
-			if (tbFilter.Text.Length > 1) 
+			if(!string.IsNullOrEmpty(tbFilter.Text.Trim()))
 			{
 				FilterActions(tbFilter.Text);
 			} 
-			else if (String.IsNullOrEmpty(tbFilter.Text.ToLowerInvariant())) 
+			else
 			{
 				actions.Nodes.Clear();
 				CreateActionCategories(actions.SelectedNode != null ? ((LinedefActionInfo)actions.SelectedNode.Tag).Index : 0);
+			}
+		}
+
+		//mxd. Switch focus to actions list?
+		private void tbFilter_KeyUp(object sender, KeyEventArgs e)
+		{
+			if(e.KeyCode == Keys.Down && actions.Nodes.Count > 0)
+			{
+				actions.SelectedNode = actions.Nodes[0];
+				actions.Focus();
 			}
 		}
 
@@ -320,7 +328,7 @@ namespace CodeImp.DoomBuilder.Windows
 		//mxd
 		private void ActionBrowserForm_Shown(object sender, EventArgs e) 
 		{
-			tbFilter.Focus();
+			if(tabs.SelectedTab == tabactions) tbFilter.Focus();
 		}
 	}
 }
