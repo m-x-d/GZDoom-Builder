@@ -409,6 +409,17 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			}
 		}
 
+		//mxd. Because anchor-based alignment fails when using high-Dpi settings...
+		private void TagsSelector_Resize(object sender, EventArgs e)
+		{
+			clear.Left = this.Width - clear.Width - clear.Margin.Right;
+			unusedtag.Left = clear.Left - clear.Margin.Left - unusedtag.Margin.Right - unusedtag.Width;
+			newtag.Left = unusedtag.Left - unusedtag.Margin.Left - newtag.Margin.Right - newtag.Width;
+			tagpicker.Width = newtag.Left - newtag.Margin.Left - tagpicker.Margin.Right - tagpicker.Left;
+			removetag.Left = clear.Left;
+			addtag.Left = removetag.Left - removetag.Margin.Left - addtag.Margin.Right - addtag.Width;
+		}
+
 		#endregion
 	}
 }

@@ -7,7 +7,7 @@ namespace CodeImp.DoomBuilder.Controls
 {
 	public class CheckedColoredListBox : CheckedListBox
 	{
-		public Image WarningIcon { private get; set; }
+		public Image WarningIcon { get; set; }
 		
 		public CheckedColoredListBox() 
 		{

@@ -148,6 +148,7 @@ namespace CodeImp.DoomBuilder.Map
 			this.tags = new List<int> { 0 }; //mxd
 			this.updateneeded = true;
 			this.triangulationneeded = true;
+			this.triangles = new Triangulation(); //mxd
 			this.surfaceentries = new SurfaceEntryCollection();
 
 			if(map == General.Map.Map)

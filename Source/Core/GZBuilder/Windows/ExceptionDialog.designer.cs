@@ -51,6 +51,7 @@
 			this.bQuit.Text = "Quit";
 			this.bQuit.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.bQuit.UseVisualStyleBackColor = true;
+			this.bQuit.Click += new System.EventHandler(this.bQuit_Click);
 			// 
 			// bContinue
 			// 

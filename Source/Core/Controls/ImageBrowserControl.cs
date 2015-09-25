@@ -142,11 +142,14 @@ namespace CodeImp.DoomBuilder.Controls
 				//mxd. Use long texture names?
 				longtexturenames.Checked = (uselongtexturenames && General.Map.Config.UseLongTextureNames);
 				longtexturenames.Visible = General.Map.Config.UseLongTextureNames;
+				if(!General.Map.Config.UseLongTextureNames) 
+					showsubdirtextures.Left = longtexturenames.Left; //mxd
 			}
 			else
 			{
 				longtexturenames.Visible = false; //mxd
 				uselongtexturenames = false; //mxd
+				showsubdirtextures.Left = longtexturenames.Left; //mxd
 			}
 
 			//mxd

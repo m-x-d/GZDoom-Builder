@@ -71,6 +71,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Initialize
 			base.StartDrag(dragstartmappos);
+			undodescription = (selectedlines.Count == 1 ? "Drag linedef" : "Drag " + selectedlines.Count + " linedefs"); //mxd
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);

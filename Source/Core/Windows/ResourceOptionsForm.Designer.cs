@@ -99,7 +99,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabs.Controls.Add(this.directorytab);
 			this.tabs.Controls.Add(this.pk3filetab);
 			this.tabs.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.tabs.ItemSize = new System.Drawing.Size(110, 19);
 			this.tabs.Location = new System.Drawing.Point(9, 11);
 			this.tabs.Name = "tabs";
 			this.tabs.Padding = new System.Drawing.Point(16, 3);

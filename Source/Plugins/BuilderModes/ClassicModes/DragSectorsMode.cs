@@ -71,6 +71,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			// Initialize
 			base.StartDrag(dragstartmappos);
+			undodescription = (selectedsectors.Count == 1 ? "Drag sector" : "Drag " + selectedsectors.Count + " sectors"); //mxd
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);

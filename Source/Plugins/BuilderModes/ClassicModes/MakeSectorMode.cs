@@ -19,7 +19,6 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
-using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Geometry;
@@ -323,17 +322,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnDisengage();
 
 			// Check which mode we are switching to
-			if(General.Editing.NewMode is VerticesMode)
+			if(General.Editing.NewMode is VerticesMode || General.Editing.NewMode is LinedefsMode)
 			{
-				// Convert selection to vertices
-
-				// Clear selected sectors
-				General.Map.Map.ClearSelectedSectors();
-			}
-			else if(General.Editing.NewMode is LinedefsMode)
-			{
-				// Convert selection to linedefs
-
 				// Clear selected sectors
 				General.Map.Map.ClearSelectedSectors();
 			}

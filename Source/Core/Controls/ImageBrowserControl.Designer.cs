@@ -119,7 +119,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// showsubdirtextures
 			// 
 			this.showsubdirtextures.AutoSize = true;
-			this.showsubdirtextures.Location = new System.Drawing.Point(595, 9);
+			this.showsubdirtextures.Location = new System.Drawing.Point(595, 8);
 			this.showsubdirtextures.Name = "showsubdirtextures";
 			this.showsubdirtextures.Size = new System.Drawing.Size(172, 17);
 			this.showsubdirtextures.TabIndex = 0;
@@ -131,7 +131,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// longtexturenames
 			// 
 			this.longtexturenames.AutoSize = true;
-			this.longtexturenames.Location = new System.Drawing.Point(470, 9);
+			this.longtexturenames.Location = new System.Drawing.Point(470, 8);
 			this.longtexturenames.Name = "longtexturenames";
 			this.longtexturenames.Size = new System.Drawing.Size(119, 17);
 			this.longtexturenames.TabIndex = 0;

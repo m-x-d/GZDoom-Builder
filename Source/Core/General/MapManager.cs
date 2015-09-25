@@ -101,7 +101,7 @@ namespace CodeImp.DoomBuilder
 		public MapOptions Options { get { return options; } }
 		public MapSet Map { get { return map; } }
 		public DataManager Data { get { return data; } }
-		public bool IsChanged { get { return changed | CheckScriptChanged(); } set { changed |= value; } }
+		public bool IsChanged { get { return changed | CheckScriptChanged(); } set { changed |= value; General.MainWindow.UpdateMapChangedStatus(); } }
 		public bool IsDisposed { get { return isdisposed; } }
 		internal D3DDevice Graphics { get { return graphics; } }
 		public IRenderer2D Renderer2D { get { return renderer2d; } }
@@ -326,6 +326,7 @@ namespace CodeImp.DoomBuilder
 			// Success
 			this.changed = false;
 			General.WriteLogLine("Map creation done");
+			General.MainWindow.UpdateMapChangedStatus(); //mxd
 			return true;
 		}
 
@@ -400,22 +401,9 @@ namespace CodeImp.DoomBuilder
 			// Close the map file
 			mapwad.Dispose();
 
-			// Read the map from temp file
-			map.BeginAddRemove();
-			General.WriteLogLine("Initializing map format interface " + config.FormatInterface + "...");
-			io = MapSetIO.Create(config.FormatInterface, tempwad, this);
-			General.WriteLogLine("Reading map data structures from file...");
-#if DEBUG
-			map = io.Read(map, TEMP_MAP_HEADER);
-#else
-			try { map = io.Read(map, TEMP_MAP_HEADER); } catch(Exception e) 
-			{
-				General.ErrorLogger.Add(ErrorType.Error, "Unable to read the map data structures with the specified configuration. " + e.GetType().Name + ": " + e.Message);
-				General.ShowErrorMessage("Unable to read the map data structures with the specified configuration.", MessageBoxButtons.OK);
-				return false;
-			}
-#endif
-			map.EndAddRemove();
+			//mxd. Create MapSet
+			bool maprestored;
+			if(!CreateMapSet(map, filepathname, options, out maprestored)) return false;
 
 			// Load data manager
 			General.WriteLogLine("Loading data resources...");
@@ -459,8 +447,9 @@ namespace CodeImp.DoomBuilder
 			//if (General.Editing.Mode is ClassicMode) (General.Editing.Mode as ClassicMode).CenterInScreen();
 
 			// Success
-			this.changed = false;
+			this.changed = maprestored; //mxd
 			General.WriteLogLine("Map loading done");
+			General.MainWindow.UpdateMapChangedStatus(); //mxd
 			return true;
 		}
 
@@ -513,23 +502,11 @@ namespace CodeImp.DoomBuilder
 			// Close the map file
 			mapwad.Dispose();
 
-			// Read the map from temp file
-			newmap.BeginAddRemove();
-			General.WriteLogLine("Initializing map format interface " + config.FormatInterface + "...");
-			io = MapSetIO.Create(config.FormatInterface, tempwad, this);
-			General.WriteLogLine("Reading map data structures from file...");
-#if DEBUG
-			newmap = io.Read(newmap, TEMP_MAP_HEADER);
-#else
-			try { newmap = io.Read(newmap, TEMP_MAP_HEADER); } catch(Exception e) 
-			{
-				General.ErrorLogger.Add(ErrorType.Error, "Unable to read the map data structures with the specified configuration. " + e.GetType().Name + ": " + e.Message);
-				General.ShowErrorMessage("Unable to read the map data structures with the specified configuration.", MessageBoxButtons.OK);
-				return false;
-			}
-#endif
-			newmap.EndAddRemove();
+			//mxd. Create MapSet
+			bool maprestored;
+			if(!CreateMapSet(newmap, filepathname, options, out maprestored)) return false;
 
+			//mxd. And switch to it
 			ChangeMapSet(newmap);
 
 			//mxd. Translate texture names
@@ -546,7 +523,7 @@ namespace CodeImp.DoomBuilder
 			options.ReadSelectionGroups();
 
 			//mxd. Center map in screen or on stored coordinates
-			if (General.Editing.Mode is ClassicMode) 
+			if(General.Editing.Mode is ClassicMode) 
 			{
 				ClassicMode mode = General.Editing.Mode as ClassicMode;
 				mode.OnRedoEnd();
@@ -558,8 +535,76 @@ namespace CodeImp.DoomBuilder
 			}
 
 			// Success
-			this.changed = false;
+			this.changed = maprestored;
 			General.WriteLogLine("Map switching done");
+			General.MainWindow.UpdateMapChangedStatus(); //mxd
+			return true;
+		}
+
+		//mxd
+		private bool CreateMapSet(MapSet newmap, string filepathname, MapOptions options, out bool maprestored)
+		{
+			maprestored = false;
+			string wadname = Path.GetFileNameWithoutExtension(filepathname);
+			if(!string.IsNullOrEmpty(wadname))
+			{
+				string hash = MurmurHash2.Hash(wadname + options.LevelName + File.GetLastWriteTime(filepathname)).ToString();
+				string backuppath = Path.Combine(General.MapRestorePath, wadname + "." + hash + ".restore");
+
+				// Backup exists and it's newer than the map itself?
+				if(File.Exists(backuppath) && File.GetLastWriteTime(backuppath) > File.GetLastWriteTime(filepathname))
+				{
+					if(General.ShowWarningMessage("Looks like your previous editing session has gone terribly wrong." + Environment.NewLine
+						   + "Would you like to restore the map from the backup?", MessageBoxButtons.YesNo) == DialogResult.Yes)
+					{
+						General.WriteLogLine("Initializing map format interface " + config.FormatInterface + "...");
+						io = MapSetIO.Create(config.FormatInterface, tempwad, this);
+						General.WriteLogLine("Restoring map from '" + backuppath + "'...");
+						
+#if DEBUG
+						// Restore map
+						newmap.Deserialize(SharpCompressHelper.DecompressStream(new MemoryStream(File.ReadAllBytes(backuppath))));
+#else
+						try
+						{
+							// Restore map
+							newmap.Deserialize(SharpCompressHelper.DecompressStream(new MemoryStream(File.ReadAllBytes(backuppath))));
+
+							// Delete the backup
+							File.Delete(backuppath);
+						}
+						catch(Exception e) 
+						{
+							General.ErrorLogger.Add(ErrorType.Error, "Unable to restore the map data structures from the backup. " + e.GetType().Name + ": " + e.Message);
+							General.ShowErrorMessage("Unable to restore the map data structures from the backup.", MessageBoxButtons.OK);
+							return false;
+						}	
+#endif
+						maprestored = true;
+					}
+				}
+			}
+
+			// Read the map from temp file
+			if(!maprestored)
+			{
+				newmap.BeginAddRemove();
+				General.WriteLogLine("Initializing map format interface " + config.FormatInterface + "...");
+				io = MapSetIO.Create(config.FormatInterface, tempwad, this);
+				General.WriteLogLine("Reading map data structures from file...");
+#if DEBUG
+				newmap = io.Read(map, TEMP_MAP_HEADER);
+#else
+				try { newmap = io.Read(map, TEMP_MAP_HEADER); } catch(Exception e) 
+				{
+					General.ErrorLogger.Add(ErrorType.Error, "Unable to read the map data structures with the specified configuration. " + e.GetType().Name + ": " + e.Message);
+					General.ShowErrorMessage("Unable to read the map data structures with the specified configuration.", MessageBoxButtons.OK);
+					return false;
+				}
+#endif
+				newmap.EndAddRemove();
+			}
+
 			return true;
 		}
 
@@ -918,6 +963,7 @@ namespace CodeImp.DoomBuilder
 
 			// Success!
 			General.WriteLogLine("Map saving done");
+			General.MainWindow.UpdateMapChangedStatus(); //mxd
 			return true;
 		}
 
@@ -944,6 +990,50 @@ namespace CodeImp.DoomBuilder
 			}
 
 			return true;
+		}
+
+		//mxd
+		internal void SaveMapBackup()
+		{
+			if(isdisposed || map == null || map.IsDisposed || string.IsNullOrEmpty(filepathname) || options == null)
+			{
+				General.WriteLogLine("Map backup saving failed: required structures already disposed...");
+				return;
+			}
+
+#if !DEBUG
+			try
+			{
+#endif
+				string wadname = Path.GetFileNameWithoutExtension(filepathname);
+				if(!string.IsNullOrEmpty(wadname))
+				{
+					// Make backup file path
+					if(!Directory.Exists(General.MapRestorePath)) Directory.CreateDirectory(General.MapRestorePath);
+					string hash = MurmurHash2.Hash(wadname + options.LevelName + File.GetLastWriteTime(filepathname)).ToString();
+					string backuppath = Path.Combine(General.MapRestorePath, wadname + "." + hash + ".restore");
+
+					// Export map
+					MemoryStream ms = map.Serialize();
+					ms.Seek(0, SeekOrigin.Begin);
+					File.WriteAllBytes(backuppath, SharpCompressHelper.CompressStream(ms).ToArray());
+
+					// Log it
+					General.WriteLogLine("Map backup saved to '" + backuppath + "'");
+				}
+				else
+				{
+					// Log it
+					General.WriteLogLine("Map backup saving failed: invalid map WAD name");
+				}
+#if !DEBUG
+			}
+			catch(Exception e)
+			{
+				// Log it
+				General.WriteLogLine("Map backup saving failed: " + e.Source + ": " + e.Message);
+			}
+#endif
 		}
 
 		#endregion
@@ -1858,7 +1948,7 @@ namespace CodeImp.DoomBuilder
 		}
 
 		// This sets a new mapset for editing
-		internal void ChangeMapSet(MapSet newmap) 
+		private void ChangeMapSet(MapSet newmap) 
 		{
 			// Let the plugin and editing mode know
 			General.Plugins.OnMapSetChangeBegin();

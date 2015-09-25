@@ -127,7 +127,6 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			this.buttonnew.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.buttonnew.Image = global::CodeImp.DoomBuilder.Properties.Resources.NewScript;
-			this.buttonnew.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
 			this.buttonnew.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.buttonnew.Margin = new System.Windows.Forms.Padding(6, 1, 0, 2);
 			this.buttonnew.Name = "buttonnew";
@@ -138,7 +137,6 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			this.buttonopen.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.buttonopen.Image = global::CodeImp.DoomBuilder.Properties.Resources.OpenScript;
-			this.buttonopen.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
 			this.buttonopen.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.buttonopen.Margin = new System.Windows.Forms.Padding(3, 1, 0, 2);
 			this.buttonopen.Name = "buttonopen";
@@ -278,7 +276,6 @@ namespace CodeImp.DoomBuilder.Controls
 			this.buttonclose.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
 			this.buttonclose.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.buttonclose.Image = global::CodeImp.DoomBuilder.Properties.Resources.Close;
-			this.buttonclose.ImageScaling = System.Windows.Forms.ToolStripItemImageScaling.None;
 			this.buttonclose.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.buttonclose.Name = "buttonclose";
 			this.buttonclose.Size = new System.Drawing.Size(23, 22);

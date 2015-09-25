@@ -867,6 +867,7 @@ namespace CodeImp.DoomBuilder.Map
 				s.SerializedIndex = index++;
 
 				s.ReadWrite(stream);
+				s.Triangles.ReadWrite(stream); //mxd
 			}
 		}
 
@@ -874,8 +875,8 @@ namespace CodeImp.DoomBuilder.Map
 
 		#region ================== Deserialization
 
-		// This serializes the MapSet
-		private void Deserialize(MemoryStream stream)
+		// This deserializes the MapSet
+		internal void Deserialize(MemoryStream stream)
 		{
 			stream.Seek(0, SeekOrigin.Begin);
 			DeserializerStream deserializer = new DeserializerStream(stream);
@@ -999,6 +1000,7 @@ namespace CodeImp.DoomBuilder.Map
 			{
 				array[i] = CreateSector();
 				array[i].ReadWrite(stream);
+				array[i].Triangles.ReadWrite(stream); //mxd
 			}
 
 			return array;

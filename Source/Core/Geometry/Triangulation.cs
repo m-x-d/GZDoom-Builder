@@ -146,7 +146,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		#region ================== Serialization
 		
 		// Serialize / deserialize
-		/*internal void ReadWrite(IReadWriteStream s)
+		internal void ReadWrite(IReadWriteStream s)
 		{
 			if(s.IsWriting)
 			{
@@ -183,7 +183,7 @@ namespace CodeImp.DoomBuilder.Geometry
 				sidedefindices = new int[c];
 				for(int i = 0; i < c; i++) s.rInt(out sidedefindices[i]);
 			}
-		}*/
+		}
 		
 		// After deserialization we need to find the actual sidedefs back
 		internal void PostDeserialize(MapSet map)
