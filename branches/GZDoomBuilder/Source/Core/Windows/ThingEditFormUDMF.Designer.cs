@@ -84,7 +84,7 @@
 			this.actionhelp = new CodeImp.DoomBuilder.Controls.ActionSpecialHelpButton();
 			this.action = new CodeImp.DoomBuilder.Controls.ActionSelectorControl();
 			this.browseaction = new System.Windows.Forms.Button();
-			this.groupBox3 = new System.Windows.Forms.GroupBox();
+			this.grouptag = new System.Windows.Forms.GroupBox();
 			this.tagSelector = new CodeImp.DoomBuilder.GZBuilder.Controls.TagSelector();
 			this.tabcomment = new System.Windows.Forms.TabPage();
 			this.commenteditor = new CodeImp.DoomBuilder.Controls.CommentEditor();
@@ -109,7 +109,7 @@
 			this.groupbehaviour.SuspendLayout();
 			this.grouprendering.SuspendLayout();
 			this.actiongroup.SuspendLayout();
-			this.groupBox3.SuspendLayout();
+			this.grouptag.SuspendLayout();
 			this.tabcomment.SuspendLayout();
 			this.tabcustom.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.hint)).BeginInit();
@@ -310,7 +310,6 @@
 			this.tabs.Controls.Add(this.tabcomment);
 			this.tabs.Controls.Add(this.tabcustom);
 			this.tabs.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tabs.ItemSize = new System.Drawing.Size(120, 19);
 			this.tabs.Location = new System.Drawing.Point(10, 10);
 			this.tabs.Margin = new System.Windows.Forms.Padding(1);
 			this.tabs.Name = "tabs";
@@ -339,8 +338,6 @@
 			// 
 			// settingsgroup
 			// 
-			this.settingsgroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)));
 			this.settingsgroup.Controls.Add(this.missingflags);
 			this.settingsgroup.Controls.Add(this.flags);
 			this.settingsgroup.Location = new System.Drawing.Point(242, 6);
@@ -538,7 +535,7 @@
 			this.tabeffects.Controls.Add(this.groupbehaviour);
 			this.tabeffects.Controls.Add(this.grouprendering);
 			this.tabeffects.Controls.Add(this.actiongroup);
-			this.tabeffects.Controls.Add(this.groupBox3);
+			this.tabeffects.Controls.Add(this.grouptag);
 			this.tabeffects.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tabeffects.Location = new System.Drawing.Point(4, 23);
 			this.tabeffects.Name = "tabeffects";
@@ -815,21 +812,21 @@
 			this.browseaction.UseVisualStyleBackColor = true;
 			this.browseaction.Click += new System.EventHandler(this.browseaction_Click);
 			// 
-			// groupBox3
+			// grouptag
 			// 
-			this.groupBox3.Controls.Add(this.tagSelector);
-			this.groupBox3.Location = new System.Drawing.Point(3, 330);
-			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Size = new System.Drawing.Size(615, 66);
-			this.groupBox3.TabIndex = 0;
-			this.groupBox3.TabStop = false;
-			this.groupBox3.Text = " Identification ";
+			this.grouptag.Controls.Add(this.tagSelector);
+			this.grouptag.Location = new System.Drawing.Point(3, 330);
+			this.grouptag.Name = "grouptag";
+			this.grouptag.Size = new System.Drawing.Size(615, 66);
+			this.grouptag.TabIndex = 0;
+			this.grouptag.TabStop = false;
+			this.grouptag.Text = " Identification ";
 			// 
 			// tagSelector
 			// 
 			this.tagSelector.Location = new System.Drawing.Point(6, 21);
 			this.tagSelector.Name = "tagSelector";
-			this.tagSelector.Size = new System.Drawing.Size(569, 35);
+			this.tagSelector.Size = new System.Drawing.Size(603, 35);
 			this.tagSelector.TabIndex = 8;
 			// 
 			// tabcomment
@@ -845,9 +842,6 @@
 			// 
 			// commenteditor
 			// 
-			this.commenteditor.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
 			this.commenteditor.Location = new System.Drawing.Point(3, 3);
 			this.commenteditor.Name = "commenteditor";
 			this.commenteditor.Size = new System.Drawing.Size(621, 396);
@@ -976,7 +970,7 @@
 			this.grouprendering.ResumeLayout(false);
 			this.actiongroup.ResumeLayout(false);
 			this.actiongroup.PerformLayout();
-			this.groupBox3.ResumeLayout(false);
+			this.grouptag.ResumeLayout(false);
 			this.tabcomment.ResumeLayout(false);
 			this.tabcustom.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.hint)).EndInit();
@@ -993,7 +987,7 @@
 		private System.Windows.Forms.Button cancel;
 		private System.Windows.Forms.Button apply;
         private System.Windows.Forms.TabPage tabcustom;
-		private System.Windows.Forms.GroupBox groupBox3;
+		private System.Windows.Forms.GroupBox grouptag;
 		private System.Windows.Forms.GroupBox actiongroup;
 		private CodeImp.DoomBuilder.Controls.ActionSelectorControl action;
 		private System.Windows.Forms.Button browseaction;

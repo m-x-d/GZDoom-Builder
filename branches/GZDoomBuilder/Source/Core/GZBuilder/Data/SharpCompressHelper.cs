@@ -22,6 +22,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 
 		internal static MemoryStream DecompressStream(Stream stream) 
 		{
+			stream.Seek(0, SeekOrigin.Begin);
 			BZip2Stream bzip = new BZip2Stream(stream, CompressionMode.Decompress, false, false);
 
 			byte[] buffer = new byte[16 * 1024];

@@ -33,9 +33,7 @@ namespace CodeImp.DoomBuilder.Controls
 		#region ================== Delegates / Events
 
 		public delegate void ContentChanged();
-
 		public event ContentChanged OnContentChanged;
-
 		public string StartPath; //mxd
 
 		#endregion
@@ -589,6 +587,30 @@ namespace CodeImp.DoomBuilder.Controls
 				CopySelectedResources();
 				DeleteSelectedResources();
 			}
+		}
+
+		#endregion
+
+		#region ================== Events (mxd)
+
+		//mxd. Because anchor-based alignment fails when using high-Dpi settings...
+		private void ResourceListEditor_Resize(object sender, EventArgs e)
+		{
+			resourceitems.Width = this.Width;
+			resourceitems.Height = this.Height - addresource.Height - addresource.Margin.Top - addresource.Margin.Bottom;
+			
+			addresource.Top = resourceitems.Bottom + addresource.Margin.Top;
+			editresource.Top = addresource.Top;
+			deleteresources.Top = addresource.Top;
+
+			int buttonwidth = (this.Width - addresource.Margin.Left * 2) / 3;
+			addresource.Width = buttonwidth;
+			editresource.Width = buttonwidth;
+			deleteresources.Width = buttonwidth;
+
+			addresource.Left = 0;
+			editresource.Left = addresource.Right + addresource.Margin.Left;
+			deleteresources.Left = editresource.Right + addresource.Margin.Left;
 		}
 
 		#endregion

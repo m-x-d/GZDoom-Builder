@@ -127,6 +127,7 @@ namespace CodeImp.DoomBuilder
 		private const string SCRIPTS_DIR = "Scripting";
 		private const string SCREENSHOTS_DIR = "Screenshots"; //mxd
 		private const string SNIPPETS_DIR = "Snippets"; //mxd
+		private const string MAP_RESTORE_DIR = "Restore"; //mxd
 		private const string SETUP_DIR = "Setup";
 		private const string SPRITES_DIR = "Sprites";
 		private const string HELP_FILE = "Refmanual.chm";
@@ -151,6 +152,7 @@ namespace CodeImp.DoomBuilder
 		private static string apppath;
 		private static string setuppath;
 		private static string settingspath;
+		private static string restorepath; //mxd
 		private static string logfile;
 		private static string temppath;
 		private static string configspath;
@@ -174,7 +176,7 @@ namespace CodeImp.DoomBuilder
 		private static TypesManager types;
 		private static Clock clock;
 		private static ErrorLogger errorlogger;
-		private static Mutex appmutex;
+		//private static Mutex appmutex;
 		
 		// Configurations
 		private static List<ConfigurationInfo> configs;
@@ -209,6 +211,7 @@ namespace CodeImp.DoomBuilder
 		public static string TempPath { get { return temppath; } }
 		public static string ConfigsPath { get { return configspath; } }
 		internal static string SettingsPath { get { return settingspath; } } //mxd
+		internal static string MapRestorePath { get { return restorepath; } } //mxd
 		internal static string LogFile { get { return logfile; } } //mxd
 		public static string CompilersPath { get { return compilerspath; } }
 		public static string PluginsPath { get { return pluginspath; } }
@@ -567,7 +570,7 @@ namespace CodeImp.DoomBuilder
 			Thread.CurrentThread.Name = "Main Application";
 
 			// Application is running
-			appmutex = new Mutex(false, "gzdoombuilder"); //"doombuilder2"
+			//appmutex = new Mutex(false, "gzdoombuilder"); //"doombuilder2"
 			
 			// Get a reference to this assembly
 			thisasm = Assembly.GetExecutingAssembly();
@@ -584,6 +587,7 @@ namespace CodeImp.DoomBuilder
 			temppath = Path.GetTempPath();
 			setuppath = Path.Combine(apppath, SETUP_DIR);
 			settingspath = (portablemode ? apppath : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), SETTINGS_DIR)); //mxd
+			restorepath = Path.Combine(settingspath, MAP_RESTORE_DIR);
 			configspath = Path.Combine(apppath, GAME_CONFIGS_DIR);
 			compilerspath = Path.Combine(apppath, COMPILERS_DIR);
 			pluginspath = Path.Combine(apppath, PLUGINS_DIR);
@@ -726,6 +730,20 @@ namespace CodeImp.DoomBuilder
 				{
 					if(MessageBox.Show("No game configurations are currently enabled.\nPlease enable at least one game configuration", "Warning", MessageBoxButtons.OK) == DialogResult.OK) 
 						mainwindow.ShowConfiguration();
+				}
+
+				//mxd. Check backup files
+				if(Directory.Exists(restorepath))
+				{
+					foreach(string backup in Directory.GetFiles(restorepath, "*.restore"))
+					{
+						// Remove if created more than a month ago
+						if((DateTime.Now - File.GetLastWriteTime(backup)).TotalDays > 30)
+						{
+							File.Delete(backup);
+							WriteLogLine("Removed '" + backup + "' map backup.");
+						}
+					}
 				}
 
 				//mxd. Check for updates?

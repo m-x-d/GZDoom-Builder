@@ -61,6 +61,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Initialize
 			base.StartDrag(dragstartmappos);
+			undodescription = (selectedverts.Count == 1 ? "Drag vertex" : "Drag " + selectedverts.Count + " vertices"); //mxd
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);

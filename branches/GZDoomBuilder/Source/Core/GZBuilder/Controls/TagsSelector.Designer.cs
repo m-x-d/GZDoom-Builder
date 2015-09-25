@@ -34,9 +34,9 @@
 			this.removetag = new System.Windows.Forms.Button();
 			this.addtag = new System.Windows.Forms.Button();
 			this.clear = new System.Windows.Forms.Button();
+			this.clearalltags = new System.Windows.Forms.Button();
 			this.tagslist = new System.Windows.Forms.LinkLabel();
 			this.label1 = new System.Windows.Forms.Label();
-			this.clearalltags = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
 			// curtaglabel
@@ -55,8 +55,6 @@
 			// 
 			// tagpicker
 			// 
-			this.tagpicker.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
 			this.tagpicker.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
 			this.tagpicker.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
 			this.tagpicker.FormattingEnabled = true;
@@ -68,7 +66,6 @@
 			// 
 			// newtag
 			// 
-			this.newtag.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.newtag.Location = new System.Drawing.Point(299, 5);
 			this.newtag.Name = "newtag";
 			this.newtag.Size = new System.Drawing.Size(54, 24);
@@ -81,7 +78,6 @@
 			// 
 			// unusedtag
 			// 
-			this.unusedtag.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.unusedtag.Location = new System.Drawing.Point(356, 5);
 			this.unusedtag.Name = "unusedtag";
 			this.unusedtag.Size = new System.Drawing.Size(54, 24);
@@ -93,7 +89,6 @@
 			// 
 			// removetag
 			// 
-			this.removetag.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.removetag.Image = global::CodeImp.DoomBuilder.Properties.Resources.SearchClear;
 			this.removetag.Location = new System.Drawing.Point(413, 33);
 			this.removetag.Name = "removetag";
@@ -105,7 +100,6 @@
 			// 
 			// addtag
 			// 
-			this.addtag.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.addtag.Image = global::CodeImp.DoomBuilder.Properties.Resources.Add;
 			this.addtag.Location = new System.Drawing.Point(384, 33);
 			this.addtag.Name = "addtag";
@@ -117,7 +111,6 @@
 			// 
 			// clear
 			// 
-			this.clear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.clear.Image = global::CodeImp.DoomBuilder.Properties.Resources.Reset;
 			this.clear.Location = new System.Drawing.Point(413, 5);
 			this.clear.Name = "clear";
@@ -126,6 +119,17 @@
 			this.tooltip.SetToolTip(this.clear, "Set current tag to 0");
 			this.clear.UseVisualStyleBackColor = true;
 			this.clear.Click += new System.EventHandler(this.clear_Click);
+			// 
+			// clearalltags
+			// 
+			this.clearalltags.Image = global::CodeImp.DoomBuilder.Properties.Resources.Clear;
+			this.clearalltags.Location = new System.Drawing.Point(0, 33);
+			this.clearalltags.Name = "clearalltags";
+			this.clearalltags.Size = new System.Drawing.Size(24, 24);
+			this.clearalltags.TabIndex = 10;
+			this.tooltip.SetToolTip(this.clearalltags, "Remove all tags");
+			this.clearalltags.UseVisualStyleBackColor = true;
+			this.clearalltags.Click += new System.EventHandler(this.clearalltags_Click);
 			// 
 			// tagslist
 			// 
@@ -147,17 +151,6 @@
 			this.label1.TabIndex = 6;
 			this.label1.Text = "Tags:";
 			// 
-			// clearalltags
-			// 
-			this.clearalltags.Image = global::CodeImp.DoomBuilder.Properties.Resources.Clear;
-			this.clearalltags.Location = new System.Drawing.Point(0, 33);
-			this.clearalltags.Name = "clearalltags";
-			this.clearalltags.Size = new System.Drawing.Size(24, 24);
-			this.clearalltags.TabIndex = 10;
-			this.tooltip.SetToolTip(this.clearalltags, "Remove all tags");
-			this.clearalltags.UseVisualStyleBackColor = true;
-			this.clearalltags.Click += new System.EventHandler(this.clearalltags_Click);
-			// 
 			// TagsSelector
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -174,6 +167,7 @@
 			this.Controls.Add(this.curtaglabel);
 			this.Name = "TagsSelector";
 			this.Size = new System.Drawing.Size(442, 60);
+			this.Resize += new System.EventHandler(this.TagsSelector_Resize);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

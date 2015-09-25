@@ -39,9 +39,6 @@
 			// 
 			// textbox
 			// 
-			this.textbox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
 			this.textbox.Location = new System.Drawing.Point(3, 29);
 			this.textbox.Multiline = true;
 			this.textbox.Name = "textbox";
@@ -56,7 +53,6 @@
 			// 
 			// clear
 			// 
-			this.clear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.clear.Image = global::CodeImp.DoomBuilder.Properties.Resources.Clear;
 			this.clear.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.clear.Location = new System.Drawing.Point(424, 2);
@@ -156,14 +152,15 @@
 			// 
 			// CommentEditor
 			// 
-			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.Controls.Add(this.clear);
 			this.Controls.Add(this.panel1);
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.textbox);
 			this.Name = "CommentEditor";
 			this.Size = new System.Drawing.Size(487, 300);
+			this.Resize += new System.EventHandler(this.CommentEditor_Resize);
 			this.panel1.ResumeLayout(false);
 			this.ResumeLayout(false);
 			this.PerformLayout();

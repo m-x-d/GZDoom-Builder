@@ -67,7 +67,6 @@
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.tabs.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tabs.ItemSize = new System.Drawing.Size(100, 26);
 			this.tabs.Location = new System.Drawing.Point(0, 18);
 			this.tabs.Margin = new System.Windows.Forms.Padding(0);
 			this.tabs.Multiline = true;

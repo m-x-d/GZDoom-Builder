@@ -138,7 +138,6 @@ namespace CodeImp.DoomBuilder.Editing
 				MemoryStream instream = new MemoryStream(File.ReadAllBytes(filename));
 				
 				// Decompress data
-				instream.Seek(0, SeekOrigin.Begin);
 				MemoryStream outstream = SharpCompressHelper.DecompressStream(instream); //mxd
 				recstream = new MemoryStream(outstream.ToArray());
 				

@@ -53,8 +53,6 @@
 			// 
 			// cbTagPicker
 			// 
-			this.cbTagPicker.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
 			this.cbTagPicker.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
 			this.cbTagPicker.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
 			this.cbTagPicker.FormattingEnabled = true;
@@ -65,7 +63,6 @@
 			// 
 			// newTag
 			// 
-			this.newTag.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.newTag.Location = new System.Drawing.Point(213, 5);
 			this.newTag.Name = "newTag";
 			this.newTag.Size = new System.Drawing.Size(54, 24);
@@ -78,7 +75,6 @@
 			// 
 			// unusedTag
 			// 
-			this.unusedTag.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.unusedTag.Location = new System.Drawing.Point(270, 5);
 			this.unusedTag.Name = "unusedTag";
 			this.unusedTag.Size = new System.Drawing.Size(54, 24);
@@ -97,7 +93,6 @@
 			// 
 			// clear
 			// 
-			this.clear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.clear.Image = global::CodeImp.DoomBuilder.Properties.Resources.Reset;
 			this.clear.Location = new System.Drawing.Point(327, 5);
 			this.clear.Name = "clear";
@@ -118,6 +113,7 @@
 			this.Controls.Add(this.label1);
 			this.Name = "TagSelector";
 			this.Size = new System.Drawing.Size(356, 35);
+			this.Resize += new System.EventHandler(this.TagSelector_Resize);
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

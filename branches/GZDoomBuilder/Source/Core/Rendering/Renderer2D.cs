@@ -138,7 +138,6 @@ namespace CodeImp.DoomBuilder.Rendering
 		public ViewMode ViewMode { get { return viewmode; } }
 		public SurfaceManager Surfaces { get { return surfaces; } }
 		public RectangleF Viewport { get { return viewport; } } //mxd
-		new public bool FullBrightness { get { return fullbrightness; } set { fullbrightness = value; } } //mxd
 
 		#endregion
 

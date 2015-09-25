@@ -16,6 +16,7 @@
 
 #region ================== Namespaces
 
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
@@ -89,11 +90,11 @@ namespace CodeImp.DoomBuilder.IO
 		}
 
 		// Destructor
-		~WAD()
+		/*~WAD()
 		{
 			// Make sure everything is disposed
 			this.Dispose();
-		}
+		}*/
 		
 		// Disposer
 		public void Dispose()
@@ -101,8 +102,13 @@ namespace CodeImp.DoomBuilder.IO
 			// Not already disposed?
 			if(!isdisposed)
 			{
-				// Flush all changes
-				Flush();
+				// Only possible when not read-only
+				if(!isreadonly)
+				{
+					// Flush writing changes
+					if(writer != null) writer.Flush();
+					if(file != null) file.Flush();
+				}
 				
 				// Clean up
 				if(lumps != null) foreach(Lump l in lumps) l.Dispose();
@@ -112,6 +118,7 @@ namespace CodeImp.DoomBuilder.IO
 				
 				// Done
 				isdisposed = true;
+				GC.SuppressFinalize(this); //mxd
 			}
 		}
 
@@ -248,7 +255,7 @@ namespace CodeImp.DoomBuilder.IO
 		}
 		
 		// This flushes writing changes
-		public void Flush()
+		/*public void Flush()
 		{
 			// Only possible when not read-only
 			if(!isreadonly)
@@ -257,7 +264,7 @@ namespace CodeImp.DoomBuilder.IO
 				if(writer != null) writer.Flush();
 				if(file != null) file.Flush();
 			}
-		}
+		}*/
 		
 		#endregion
 		

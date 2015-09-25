@@ -203,6 +203,13 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 			this.Close();
 		}
 
+		private void bQuit_Click(object sender, EventArgs e)
+		{
+			if(General.Map != null) General.Map.SaveMapBackup();
+			this.DialogResult = DialogResult.Cancel;
+			this.Close();
+		}
+
 		private void bToClipboard_Click(object sender, EventArgs e) 
 		{
 			errorMessage.SelectAll();

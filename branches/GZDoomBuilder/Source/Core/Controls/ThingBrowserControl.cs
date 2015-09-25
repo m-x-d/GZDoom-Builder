@@ -429,6 +429,8 @@ namespace CodeImp.DoomBuilder.Controls
 			spritepanel.Left = infopanel.Width - spritepanel.Width;
 			typelist.Height = infopanel.Top - typelist.Top;
 			typelist.Width = this.Width;
+			bClear.Left = this.Width - bClear.Width - bClear.Margin.Right;
+			tbFilter.Width = bClear.Left - tbFilter.Left - bClear.Margin.Left;
 		}
 
 		//mxd. If it's clickable, all data is valid.

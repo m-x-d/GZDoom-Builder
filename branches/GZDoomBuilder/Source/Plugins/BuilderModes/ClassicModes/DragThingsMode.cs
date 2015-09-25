@@ -371,7 +371,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 
 				// Make undo for the dragging
-				General.Map.UndoRedo.CreateUndo("Drag things");
+				General.Map.UndoRedo.CreateUndo((selectedthings.Count == 1 ? "Drag thing" : "Drag " + selectedthings.Count + " things"));
 
 				// Move selected geometry to final position
 				if(aligndata != null && aligndata.Active) //mxd. Apply aligning

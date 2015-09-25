@@ -136,6 +136,14 @@ namespace CodeImp.DoomBuilder.Controls
 			if(e.KeyCode == Keys.Enter) e.IsInputKey = true;
 		}
 
+		//mxd. Because anchor-based alignment fails when using high-Dpi settings...
+		private void CommentEditor_Resize(object sender, EventArgs e)
+		{
+			clear.Left = this.Width - clear.Margin.Right - clear.Width;
+			textbox.Width = this.Width - textbox.Left - textbox.Margin.Right;
+			textbox.Height = this.Height - textbox.Top - textbox.Margin.Bottom;
+		}
+
 		#endregion
 	}
 }

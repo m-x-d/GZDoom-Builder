@@ -73,6 +73,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		// Text labels for all unstable lines
 		protected LineLengthLabel[] labels;
+
+		//mxd. Undo description
+		protected string undodescription = "Drag geometry";
 		
 		// Keep track of view changes
 		private float lastoffsetx;
@@ -417,7 +420,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Map.UndoRedo.IgnorePropChanges = false;
 
 				// Make undo for the dragging
-				General.Map.UndoRedo.CreateUndo("Drag geometry");
+				General.Map.UndoRedo.CreateUndo(undodescription);
 
 				// Move selected geometry to final position
 				MoveGeometryRelative(mousemappos - dragstartmappos, snaptogrid, snaptogridincrement, snaptonearest, snaptocardinaldirection);

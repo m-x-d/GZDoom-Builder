@@ -163,7 +163,6 @@ namespace CodeImp.DoomBuilder.Editing
 			
 			// Decompress stream
 			MemoryStream memstream; //mxd
-			filedata.Seek(0, SeekOrigin.Begin);
 			
 			try 
 			{

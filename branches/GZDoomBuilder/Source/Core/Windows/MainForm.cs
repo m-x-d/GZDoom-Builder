@@ -164,6 +164,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 		// Updating
 		private int lockupdatecount;
+		private bool mapchanged; //mxd
 
 		//mxd. Hints
 		private Docker hintsDocker;
@@ -398,21 +399,8 @@ namespace CodeImp.DoomBuilder.Windows
 		// This updates all menus for the current status
 		internal void UpdateInterface()
 		{
-			// Map opened?
-			if(General.Map != null)
-			{
-				// Show map name and filename in caption
-				this.Text = General.Map.FileTitle + " (" + General.Map.Options.CurrentName + ") - " + Application.ProductName;
-			}
-			else
-			{
-				// Show normal caption
-#if DEBUG
-				this.Text = Application.ProductName + " - DEVBUILD";
-#else
-				this.Text = Application.ProductName + " R" + General.ThisAssembly.GetName().Version.Revision;
-#endif
-			}
+			//mxd. Update title
+			UpdateTitle();
 
 			// Update the status bar
 			UpdateStatusbar();
@@ -427,6 +415,26 @@ namespace CodeImp.DoomBuilder.Windows
 			UpdateToolbar();
 			UpdateSkills();
 			UpdateHelpMenu();
+		}
+
+		//mxd
+		private void UpdateTitle()
+		{
+			// Map opened?
+			if(General.Map != null)
+			{
+				// Show map name and filename in caption
+				this.Text = General.Map.FileTitle + (mapchanged ? "* (" : " (") + General.Map.Options.CurrentName + ") - " + Application.ProductName;
+			}
+			else
+			{
+				// Show normal caption
+#if DEBUG
+				this.Text = Application.ProductName + " - DEVBUILD";
+#else
+				this.Text = Application.ProductName + " R" + General.ThisAssembly.GetName().Version.Revision;
+#endif
+			}
 		}
 		
 		// Generic event that invokes the tagged action
@@ -469,6 +477,14 @@ namespace CodeImp.DoomBuilder.Windows
 			if(lockupdatecount > 0) General.LockWindowUpdate(IntPtr.Zero);
 			lockupdatecount = 0;
 		}*/
+
+		//mxd
+		internal void UpdateMapChangedStatus()
+		{
+			if(General.Map == null || General.Map.IsChanged == mapchanged) return;
+			mapchanged = General.Map.IsChanged;
+			UpdateTitle();
+		}
 		
 		// This sets the focus on the display for correct key input
 		public bool FocusDisplay()
@@ -1715,7 +1731,7 @@ namespace CodeImp.DoomBuilder.Windows
 			if(!(f is NullThingsFilter) && !f.IsValid())
 			{
 				item.Image = Resources.Warning;
-				item.ImageScaling = ToolStripItemImageScaling.None;
+				//item.ImageScaling = ToolStripItemImageScaling.None;
 			}
 
 			return item;
@@ -1771,7 +1787,7 @@ namespace CodeImp.DoomBuilder.Windows
 					{
 						CheckOnClick = true,
 						Tag = p,
-						ImageScaling = ToolStripItemImageScaling.None,
+						//ImageScaling = ToolStripItemImageScaling.None,
 						Checked = p.Enabled,
 						ToolTipText = "Hold Shift to toggle several items at once"
 					};

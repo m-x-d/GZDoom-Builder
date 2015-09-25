@@ -799,7 +799,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabs.Controls.Add(this.tabcolors);
 			this.tabs.Controls.Add(this.tabpasting);
 			this.tabs.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tabs.ItemSize = new System.Drawing.Size(110, 19);
 			this.tabs.Location = new System.Drawing.Point(11, 13);
 			this.tabs.Name = "tabs";
 			this.tabs.Padding = new System.Drawing.Point(24, 3);
