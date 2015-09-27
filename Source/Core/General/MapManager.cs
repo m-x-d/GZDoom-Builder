@@ -593,9 +593,9 @@ namespace CodeImp.DoomBuilder
 				io = MapSetIO.Create(config.FormatInterface, tempwad, this);
 				General.WriteLogLine("Reading map data structures from file...");
 #if DEBUG
-				newmap = io.Read(map, TEMP_MAP_HEADER);
+				newmap = io.Read(newmap, TEMP_MAP_HEADER);
 #else
-				try { newmap = io.Read(map, TEMP_MAP_HEADER); } catch(Exception e) 
+				try { newmap = io.Read(newmap, TEMP_MAP_HEADER); } catch(Exception e) 
 				{
 					General.ErrorLogger.Add(ErrorType.Error, "Unable to read the map data structures with the specified configuration. " + e.GetType().Name + ": " + e.Message);
 					General.ShowErrorMessage("Unable to read the map data structures with the specified configuration.", MessageBoxButtons.OK);
