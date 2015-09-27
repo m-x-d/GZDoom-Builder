@@ -14,7 +14,7 @@
 
 #endregion
 
-#region ================== Namespaces
+/*#region ================== Namespaces
 
 using System;
 using System.Collections;
@@ -254,4 +254,4 @@ namespace CodeImp.DoomBuilder
 		
 		#endregion
 	}
-}
+}*/

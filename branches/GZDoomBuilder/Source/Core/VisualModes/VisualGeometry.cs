@@ -29,7 +29,7 @@ using SlimDX;
 
 namespace CodeImp.DoomBuilder.VisualModes
 {
-	public abstract class VisualGeometry : IVisualPickable, IComparable<VisualGeometry>
+	public abstract class VisualGeometry : IVisualPickable
 	{
 		#region ================== Variables
 
@@ -62,13 +62,13 @@ namespace CodeImp.DoomBuilder.VisualModes
 		protected float pickrayu;
 		
 		// Rendering
-		private int renderpass = (int)RenderPass.Solid;
+		private RenderPass renderpass = RenderPass.Solid;
 		
 		// Sector buffer info
 		private int vertexoffset;
 
 		//mxd
-		private Vector3[] boundingBox;
+		private Vector3D[] boundingBox;
 		protected VisualGeometryType geometrytype;
 		protected string partname; //UDMF part name
 		
@@ -80,16 +80,15 @@ namespace CodeImp.DoomBuilder.VisualModes
 		public WorldVertex[] Vertices { get { return vertices; } } //mxd
 		internal int VertexOffset { get { return vertexoffset; } set { vertexoffset = value; } }
 		internal int Triangles { get { return triangles; } }
-		internal int RenderPassInt { get { return renderpass; } }
 
 		//mxd
-		public Vector3[] BoundingBox { get { return boundingBox; } }
+		public Vector3D[] BoundingBox { get { return boundingBox; } }
 		public VisualGeometryType GeometryType { get { return geometrytype; } }
 
 		/// <summary>
 		/// Render pass in which this geometry must be rendered. Default is Solid.
 		/// </summary>
-		public RenderPass RenderPass { get { return (RenderPass)renderpass; } set { renderpass = (int)value; } }
+		public RenderPass RenderPass { get { return renderpass; } set { renderpass = value; } }
 
 		/// <summary>
 		/// Image to use as texture on this geometry.
@@ -213,13 +212,6 @@ namespace CodeImp.DoomBuilder.VisualModes
 		public virtual Linedef GetControlLinedef() 
 		{
 			return sidedef.Line;
-		}
-		
-		// This compares for sorting by sector
-		public int CompareTo(VisualGeometry other)
-		{
-			// Compare sectors
-			return this.sector.Sector.FixedIndex - other.sector.Sector.FixedIndex;
 		}
 
 		// This keeps the results for a sidedef intersection

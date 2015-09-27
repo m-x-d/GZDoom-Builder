@@ -1,4 +1,5 @@
-﻿using CodeImp.DoomBuilder.Rendering;
+﻿using CodeImp.DoomBuilder.Geometry;
+using CodeImp.DoomBuilder.Rendering;
 using SlimDX;
 
 namespace CodeImp.DoomBuilder.GZBuilder.Data
@@ -23,12 +24,12 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 
 	public static class BoundingBoxTools
 	{
-		public static Vector3[] CalculateBoundingPlane(BoundingBoxSizes bbs) 
+		public static Vector3D[] CalculateBoundingPlane(BoundingBoxSizes bbs) 
 		{
 			//mxd. looks like I need only these 2 points, so...
 			//center
-			Vector3 v0 = new Vector3(bbs.MinX + (bbs.MaxX - bbs.MinX) / 2, bbs.MinY + (bbs.MaxY - bbs.MinY) / 2, bbs.MinZ + (bbs.MaxZ - bbs.MinZ) / 2);
-			Vector3 v1 = new Vector3(bbs.MinX, bbs.MinY, bbs.MinZ);
+			Vector3D v0 = new Vector3D(bbs.MinX + (bbs.MaxX - bbs.MinX) / 2, bbs.MinY + (bbs.MaxY - bbs.MinY) / 2, bbs.MinZ + (bbs.MaxZ - bbs.MinZ) / 2);
+			Vector3D v1 = new Vector3D(bbs.MinX, bbs.MinY, bbs.MinZ);
 			return new[] { v0, v1 };
 		}
 

@@ -482,16 +482,16 @@ namespace CodeImp.DoomBuilder.VisualModes
 			delta = delta.GetFixedLength(General.Settings.ViewDistance * 0.98f);
 			VisualPickResult target = PickObject(start, start + delta);
 
-			if (target.picked == null) return new Vector2D(float.NaN, float.NaN);
+			if(target.picked == null) return new Vector2D(float.NaN, float.NaN);
 
 			//now find where exactly did we hit
-			if (target.picked is VisualGeometry) 
+			if(target.picked is VisualGeometry) 
 			{
 				VisualGeometry vg = target.picked as VisualGeometry;
-				return GetIntersection(start, start + delta, new Vector3D(vg.BoundingBox[0].X, vg.BoundingBox[0].Y, vg.BoundingBox[0].Z), new Vector3D(vg.Vertices[0].nx, vg.Vertices[0].ny, vg.Vertices[0].nz));
+				return GetIntersection(start, start + delta, vg.BoundingBox[0], new Vector3D(vg.Vertices[0].nx, vg.Vertices[0].ny, vg.Vertices[0].nz));
 			} 
 			
-			if (target.picked is VisualThing) 
+			if(target.picked is VisualThing) 
 			{
 				VisualThing vt = target.picked as VisualThing;
 				return GetIntersection(start, start + delta, vt.CenterV3D, D3DDevice.V3D(vt.Center - vt.PositionV3));

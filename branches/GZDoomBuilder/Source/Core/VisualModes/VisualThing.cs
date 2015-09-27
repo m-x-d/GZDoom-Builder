@@ -32,7 +32,7 @@ using Plane = CodeImp.DoomBuilder.Geometry.Plane;
 
 namespace CodeImp.DoomBuilder.VisualModes
 {
-	public abstract class VisualThing : IVisualPickable, ID3DResource, IComparable<VisualThing>
+	public abstract class VisualThing : IVisualPickable, ID3DResource
 	{
 		#region ================== Constants
 
@@ -58,12 +58,11 @@ namespace CodeImp.DoomBuilder.VisualModes
 		private int triangles;
 		
 		// Rendering
-		private int renderpass;
+		private RenderPass renderpass;
 		private Matrix position;
 		private Matrix cagescales;
-		private Vector2D pos2d;
-		private float cameradistance;
-		private int cagecolor;
+		private int cameradistance;
+		private Color4 cagecolor;
 		protected bool sizeless; //mxd. Used to render visual things with 0 width and height
 		protected float fogdistance; //mxd. Distance, at which fog color completely replaces texture color of this thing
 
@@ -74,7 +73,6 @@ namespace CodeImp.DoomBuilder.VisualModes
 		private bool isdisposed;
 
 		//mxd
-		private int cameraDistance3D;
 		private int thingheight;
 
 		//mxd. light properties
@@ -86,7 +84,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		private float lightSecondaryRadius;
 		private Vector3 position_v3;
 		private float lightDelta; //used in light animation
-		private Vector3[] boundingBox;
+		private Vector3D[] boundingBox;
 		
 		//gldefs light
 		private Vector3 lightOffset;
@@ -100,27 +98,28 @@ namespace CodeImp.DoomBuilder.VisualModes
 		internal VertexBuffer GeometryBuffer { get { return geobuffer; } }
 		internal bool NeedsUpdateGeo { get { return updategeo; } }
 		internal int Triangles { get { return triangles; } }
-		internal int RenderPassInt { get { return renderpass; } }
 		internal Matrix Position { get { return position; } }
 		internal Matrix CageScales { get { return cagescales; } }
-		internal int CageColor { get { return cagecolor; } }
+		internal Color4 CageColor { get { return cagecolor; } }
 		public ThingTypeInfo Info { get { return info; } } //mxd
 		
 		//mxd
 		internal int VertexColor { get { return vertices.Length > 0 ? vertices[0].c : 0;} }
-		public int CameraDistance3D { get { return cameraDistance3D; } }
+		public int CameraDistance { get { return cameradistance; } }
 		public bool Sizeless { get { return sizeless; } }
 		public float FogDistance { get { return fogdistance; } }
-		public Vector3 Center { 
-			get {
-				if (isGldefsLight) return position_v3 + lightOffset;
+		public Vector3 Center
+		{ 
+			get
+			{
+				if(isGldefsLight) return position_v3 + lightOffset;
 				return new Vector3(position_v3.X, position_v3.Y, position_v3.Z + thingheight / 2f); 
 			} 
 		}
 		public Vector3D CenterV3D { get { return D3DDevice.V3D(Center); } }
 		public float LocalCenterZ { get { return thingheight / 2f; } } //mxd
 		public Vector3 PositionV3 { get { return position_v3; } }
-		public Vector3[] BoundingBox { get { return boundingBox; } }
+		public Vector3D[] BoundingBox { get { return boundingBox; } }
 		
 		//mxd. light properties
 		public DynamicLightType LightType { get { return lightType; } }
@@ -134,9 +133,9 @@ namespace CodeImp.DoomBuilder.VisualModes
 		public Thing Thing { get { return thing; } }
 
 		/// <summary>
-		/// Render pass in which this geometry must be rendered. Default is Solid.
+		/// Render pass in which this geometry must be rendered. Default is Mask.
 		/// </summary>
-		public RenderPass RenderPass { get { return (RenderPass)renderpass; } set { renderpass = (int)value; } }
+		public RenderPass RenderPass { get { return renderpass; } set { renderpass = value; } }
 		
 		/// <summary>
 		/// Image to use as texture on the geometry.
@@ -162,7 +161,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		{
 			// Initialize
 			this.thing = t;
-			this.renderpass = (int)RenderPass.Mask;
+			this.renderpass = RenderPass.Mask;
 			this.position = Matrix.Identity;
 			this.cagescales = Matrix.Identity;
 
@@ -173,7 +172,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 			lightSecondaryRadius = -1;
 			lightInterval = -1;
 			lightColor = new Color4();
-			boundingBox = new Vector3[9];
+			boundingBox = new Vector3D[9];
 			
 			// Register as resource
 			General.Map.Graphics.RegisterResource(this);
@@ -200,21 +199,14 @@ namespace CodeImp.DoomBuilder.VisualModes
 		#endregion
 		
 		#region ================== Methods
-	
-		// This sets the distance from the camera
-		internal void CalculateCameraDistance(Vector2D campos)
-		{
-			cameradistance = Vector2D.DistanceSq(pos2d, campos);
-		}
 
 		//mxd
-		internal void CalculateCameraDistance3D(Vector3 campos) 
+		internal void CalculateCameraDistance(Vector3D campos) 
 		{
-			cameraDistance3D = (int)Vector3.DistanceSquared(PositionV3, campos);
+			cameradistance = (int)((CenterV3D - campos).GetLengthSq());
 		}
 		
-		// This is called before a device is reset
-		// (when resized or display adapter was changed)
+		// This is called before a device is reset (when resized or display adapter was changed)
 		public void UnloadResource()
 		{
 			// Trash geometry buffer
@@ -234,7 +226,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		/// <summary>
 		/// Sets the size of the cage around the thing geometry.
 		/// </summary>
-		public void SetCageSize(float radius, float height)
+		protected void SetCageSize(float radius, float height)
 		{
 			cagescales = Matrix.Scaling(radius, radius, height);
 			thingheight = (int)height; //mxd
@@ -243,9 +235,9 @@ namespace CodeImp.DoomBuilder.VisualModes
 		/// <summary>
 		/// Sets the color of the cage around the thing geometry.
 		/// </summary>
-		public void SetCageColor(PixelColor color)
+		protected void SetCageColor(PixelColor color)
 		{
-			cagecolor = color.ToInt();
+			cagecolor = color.ToColorValue();
 		}
 
 		/// <summary>
@@ -253,7 +245,6 @@ namespace CodeImp.DoomBuilder.VisualModes
 		/// </summary>
 		public void SetPosition(Vector3D pos)
 		{
-			pos2d = new Vector2D(pos);
 			position_v3 = D3DDevice.V3(pos); //mxd
 			position = Matrix.Translation(position_v3);
 
@@ -459,7 +450,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 			}
 		}
 
-		//used in ColorPicker to update light 
+		//mxd. Used in ColorPicker to update light 
 		public void UpdateLight() 
 		{
 			int light_id = Array.IndexOf(GZBuilder.GZGeneral.GZ_LIGHTS, thing.Type);
@@ -470,7 +461,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 			}
 		}
 
-		//mxd update light info
+		//mxd. Update light info
 		private void UpdateLight(int lightId) 
 		{
 			float scaled_intensity = 255.0f / General.Settings.GZDynamicLightIntensity;
@@ -510,7 +501,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 					lightPrimaryRadius = (thing.Args[3] * 2) * General.Settings.GZDynamicLightRadius; //works... that.. way in GZDoom
 					if (lightType > 0) lightSecondaryRadius = (thing.Args[4] * 2) * General.Settings.GZDynamicLightRadius;
 				}
-			} else //it's one of vavoom lights
+			}
+			else //it's one of vavoom lights
 			{ 
 				lightRenderStyle = DynamicLightRenderStyle.VAVOOM;
 				lightType = (DynamicLightType)thing.Type;
@@ -520,6 +512,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 					lightColor = new Color4((float)lightRenderStyle / 100.0f, General.Settings.GZDynamicLightIntensity, General.Settings.GZDynamicLightIntensity, General.Settings.GZDynamicLightIntensity);
 				lightPrimaryRadius = (thing.Args[0] * 8) * General.Settings.GZDynamicLightRadius;
 			}
+
 			UpdateLightRadius();
 		}
 
@@ -619,19 +612,19 @@ namespace CodeImp.DoomBuilder.VisualModes
 
 		private void UpdateBoundingBox(float width, float height) 
 		{
-			boundingBox = new Vector3[9];
-			boundingBox[0] = Center;
+			boundingBox = new Vector3D[9];
+			boundingBox[0] = CenterV3D;
 			float h2 = height / 2.0f;
 
-			boundingBox[1] = new Vector3(position_v3.X - width, position_v3.Y - width, Center.Z - h2);
-			boundingBox[2] = new Vector3(position_v3.X + width, position_v3.Y - width, Center.Z - h2);
-			boundingBox[3] = new Vector3(position_v3.X - width, position_v3.Y + width, Center.Z - h2);
-			boundingBox[4] = new Vector3(position_v3.X + width, position_v3.Y + width, Center.Z - h2);
+			boundingBox[1] = new Vector3D(position_v3.X - width, position_v3.Y - width, Center.Z - h2);
+			boundingBox[2] = new Vector3D(position_v3.X + width, position_v3.Y - width, Center.Z - h2);
+			boundingBox[3] = new Vector3D(position_v3.X - width, position_v3.Y + width, Center.Z - h2);
+			boundingBox[4] = new Vector3D(position_v3.X + width, position_v3.Y + width, Center.Z - h2);
 
-			boundingBox[5] = new Vector3(position_v3.X - width, position_v3.Y - width, Center.Z + h2);
-			boundingBox[6] = new Vector3(position_v3.X + width, position_v3.Y - width, Center.Z + h2);
-			boundingBox[7] = new Vector3(position_v3.X - width, position_v3.Y + width, Center.Z + h2);
-			boundingBox[8] = new Vector3(position_v3.X + width, position_v3.Y + width, Center.Z + h2);
+			boundingBox[5] = new Vector3D(position_v3.X - width, position_v3.Y - width, Center.Z + h2);
+			boundingBox[6] = new Vector3D(position_v3.X + width, position_v3.Y - width, Center.Z + h2);
+			boundingBox[7] = new Vector3D(position_v3.X - width, position_v3.Y + width, Center.Z + h2);
+			boundingBox[8] = new Vector3D(position_v3.X + width, position_v3.Y + width, Center.Z + h2);
 		}
 		
 		/// <summary>
@@ -650,14 +643,6 @@ namespace CodeImp.DoomBuilder.VisualModes
 		public virtual bool PickAccurate(Vector3D from, Vector3D to, Vector3D dir, ref float u_ray)
 		{
 			return false;
-		}
-		
-		/// <summary>
-		/// This sorts things by distance from the camera. Farthest first.
-		/// </summary>
-		public int CompareTo(VisualThing other)
-		{
-			return Math.Sign(other.cameradistance - this.cameradistance);
 		}
 		
 		#endregion

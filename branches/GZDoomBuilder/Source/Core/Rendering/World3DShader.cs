@@ -29,25 +29,24 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Variables
 
 		// Property handlers
-		private EffectHandle texture1;
-		private EffectHandle worldviewproj;
-		private EffectHandle minfiltersettings;
-		private EffectHandle magfiltersettings;
-		private EffectHandle mipfiltersettings;
-		private EffectHandle maxanisotropysetting;
-		private EffectHandle modulatecolor;
-		private EffectHandle highlightcolor;
+		private readonly EffectHandle texture1;
+		private readonly EffectHandle worldviewproj;
+		private readonly EffectHandle minfiltersettings;
+		private readonly EffectHandle magfiltersettings;
+		private readonly EffectHandle mipfiltersettings;
+		private readonly EffectHandle maxanisotropysetting;
+		private readonly EffectHandle highlightcolor;
 
 		//mxd
-		private EffectHandle vertexColorHadle;
+		private readonly EffectHandle vertexColorHadle;
 		//lights
-		private EffectHandle lightPositionAndRadiusHandle;
-		private EffectHandle lightColorHandle;
-		private EffectHandle worldHandle;
+		private readonly EffectHandle lightPositionAndRadiusHandle;
+		private readonly EffectHandle lightColorHandle;
+		private readonly EffectHandle worldHandle;
 		//fog
-		private EffectHandle camPosHandle;
+		private readonly EffectHandle camPosHandle;
 		//used in ModelReader
-		private VertexElement[] vertexElements;
+		private readonly VertexElement[] vertexElements;
 
 		
 		#endregion
@@ -87,7 +86,6 @@ namespace CodeImp.DoomBuilder.Rendering
 				minfiltersettings = effect.GetParameter(null, "minfiltersettings");
 				magfiltersettings = effect.GetParameter(null, "magfiltersettings");
 				mipfiltersettings = effect.GetParameter(null, "mipfiltersettings");
-				modulatecolor = effect.GetParameter(null, "modulatecolor");
 				highlightcolor = effect.GetParameter(null, "highlightcolor");
 				maxanisotropysetting = effect.GetParameter(null, "maxanisotropysetting");
 
@@ -142,16 +140,15 @@ namespace CodeImp.DoomBuilder.Rendering
 				if(minfiltersettings != null) minfiltersettings.Dispose();
 				if(magfiltersettings != null) magfiltersettings.Dispose();
 				if(mipfiltersettings != null) mipfiltersettings.Dispose();
-				if(modulatecolor != null) modulatecolor.Dispose();
 				if(highlightcolor != null) highlightcolor.Dispose();
 				if(maxanisotropysetting != null) maxanisotropysetting.Dispose();
 
 				//mxd
-				if (vertexColorHadle != null) vertexColorHadle.Dispose();
-				if (lightColorHandle != null) lightColorHandle.Dispose();
-				if (lightPositionAndRadiusHandle != null) lightPositionAndRadiusHandle.Dispose();
-				if (camPosHandle != null) camPosHandle.Dispose();
-				if (worldHandle != null) worldHandle.Dispose();
+				if(vertexColorHadle != null) vertexColorHadle.Dispose();
+				if(lightColorHandle != null) lightColorHandle.Dispose();
+				if(lightPositionAndRadiusHandle != null) lightPositionAndRadiusHandle.Dispose();
+				if(camPosHandle != null) camPosHandle.Dispose();
+				if(worldHandle != null) worldHandle.Dispose();
 
 
 				// Done
@@ -192,15 +189,6 @@ namespace CodeImp.DoomBuilder.Rendering
 					effect.SetValue(mipfiltersettings, (int)TextureFilter.Linear);
 					effect.SetValue(maxanisotropysetting, 1.0f);
 				}
-			}
-		}
-
-		// This sets the modulation color
-		public void SetModulateColor(int modcolor)
-		{
-			if(manager.Enabled)
-			{
-				effect.SetValue(modulatecolor, new Color4(modcolor));
 			}
 		}
 

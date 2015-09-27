@@ -29,9 +29,6 @@ struct LitPixelData
 	float3 normal   : TEXCOORD2; //mxd. normal
 };
 
-// Modulation color
-float4 modulatecolor;
-
 // Highlight color
 float4 highlightcolor;
 
@@ -125,7 +122,7 @@ LitPixelData vs_lightpass(VertexData vd)
 float4 ps_main(PixelData pd) : COLOR
 {
 	float4 tcolor = tex2D(texturesamp, pd.uv);
-	return tcolor * pd.color * modulatecolor;
+	return tcolor * pd.color;
 }
 
 // Full-bright pixel shader
@@ -133,9 +130,7 @@ float4 ps_fullbright(PixelData pd) : COLOR
 {
 	float4 tcolor = tex2D(texturesamp, pd.uv);
 	tcolor.a *= pd.color.a;
-	
-	// Blend texture color and modulation color
-	return tcolor * modulatecolor;
+	return tcolor;
 }
 
 // Normal pixel shader with highlight
@@ -143,25 +138,22 @@ float4 ps_main_highlight(PixelData pd) : COLOR
 {
 	float4 tcolor = tex2D(texturesamp, pd.uv);
 	
-	// Blend texture color, vertex color and modulation color
-	float4 ncolor = tcolor * pd.color * modulatecolor;
+	// Blend texture color and vertex color
+	float4 ncolor = tcolor * pd.color;
 	float4 hcolor = float4(highlightcolor.rgb, ncolor.a);
 	
 	//return lerp(ncolor, hcolor, highlightcolor.a);
-	return float4(hcolor.rgb * highlightcolor.a + (ncolor.rgb - 0.4f * highlightcolor.a), ncolor.a + 0.25f); //tcolor.a
+	return float4(hcolor.rgb * highlightcolor.a + (ncolor.rgb - 0.4f * highlightcolor.a), ncolor.a + 0.25f);
 }
 
 // Full-bright pixel shader with highlight
 float4 ps_fullbright_highlight(PixelData pd) : COLOR
 {
 	float4 tcolor = tex2D(texturesamp, pd.uv);
-	
-	// Blend texture color and modulation color
-	float4 ncolor = tcolor * modulatecolor;
-	float4 hcolor = float4(highlightcolor.rgb, ncolor.a);
+	float4 hcolor = float4(highlightcolor.rgb, tcolor.a);
 	
 	//return lerp(ncolor, hcolor, highlightcolor.a);
-	return float4(hcolor.rgb * highlightcolor.a + (ncolor.rgb - 0.4f * highlightcolor.a), ncolor.a + 0.25f); //tcolor.a
+	return float4(hcolor.rgb * highlightcolor.a + (tcolor.rgb - 0.4f * highlightcolor.a), tcolor.a + 0.25f);
 }
 
 //mxd. This adds fog color to current pixel color
@@ -180,7 +172,7 @@ float4 getFogColor(LitPixelData pd, float4 color)
 float4 ps_main_fog(LitPixelData pd) : COLOR 
 {
 	float4 tcolor = tex2D(texturesamp, pd.uv);
-	return getFogColor(pd, tcolor * pd.color * modulatecolor);
+	return getFogColor(pd, tcolor * pd.color);
 }
 
 // Normal pixel shader with highlight
@@ -188,10 +180,11 @@ float4 ps_main_highlight_fog(LitPixelData pd) : COLOR
 {
 	float4 tcolor = tex2D(texturesamp, pd.uv);
 	
-	// Blend texture color, vertex color and modulation color
-	float4 ncolor = tcolor * pd.color * modulatecolor;
+	// Blend texture color and vertex color
+	float4 ncolor = getFogColor(pd, tcolor * pd.color);
 	float4 hcolor = float4(highlightcolor.rgb, ncolor.a);
-	return getFogColor(pd, float4(hcolor.rgb * highlightcolor.a + (ncolor.rgb - 0.4f * highlightcolor.a), ncolor.a + 0.25f)) * float4(highlightcolor.rgb, 1.0f);
+	
+	return float4(hcolor.rgb * highlightcolor.a + (ncolor.rgb - 0.4f * highlightcolor.a), ncolor.a + 0.25f);
 }
 
 //mxd: used to draw bounding boxes

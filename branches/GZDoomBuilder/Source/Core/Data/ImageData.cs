@@ -54,6 +54,7 @@ namespace CodeImp.DoomBuilder.Data
 		protected string virtualname; //mxd. Path of this name is used in TextureBrowserForm
 		protected string displayname; //mxd. Name to display in TextureBrowserForm
 		protected bool isFlat; //mxd. if false, it's a texture
+		protected bool istranslucent; //mxd
 		protected bool hasLongName; //mxd. Texture name is longer than DataManager.CLASIC_IMAGE_NAME_LENGTH
 		protected bool hasPatchWithSameName; //mxd
 		protected int level; //mxd. Folder depth of this item
@@ -91,6 +92,7 @@ namespace CodeImp.DoomBuilder.Data
 		public string VirtualName { get { return virtualname; } } //mxd
 		public string DisplayName { get { return displayname; } } //mxd
 		public bool IsFlat { get { return isFlat; } } //mxd
+		public bool IsTranslucent { get { return istranslucent; } } //mxd
 		public bool HasPatchWithSameName { get { return hasPatchWithSameName; } } //mxd
 		internal bool HasLongName { get { return hasLongName; } } //mxd
 		public bool UseColorCorrection { get { return usecolorcorrection; } set { usecolorcorrection = value; } }
@@ -289,7 +291,7 @@ namespace CodeImp.DoomBuilder.Data
 						{
 							// Apply color correction
 							PixelColor* pixels = (PixelColor*)(bmpdata.Scan0.ToPointer());
-							General.Colors.ApplColorCorrection(pixels, bmpdata.Width * bmpdata.Height);
+							General.Colors.ApplyColorCorrection(pixels, bmpdata.Width * bmpdata.Height);
 							bitmap.UnlockBits(bmpdata);
 						}
 					}
@@ -335,15 +337,8 @@ namespace CodeImp.DoomBuilder.Data
 					   General.Map.Data.GlowingFlats[longname].CalculateTextureColor)
 					{
 						BitmapData bmpdata = null;
-
-						try
-						{
-							bmpdata = bitmap.LockBits(new Rectangle(0, 0, bitmap.Size.Width, bitmap.Size.Height), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
-						}
-						catch(Exception e)
-						{
-							General.ErrorLogger.Add(ErrorType.Error, "Cannot lock image '" + this.fullname + "' for glow color calculationt. " + e.GetType().Name + ": " + e.Message);
-						}
+						try { bmpdata = bitmap.LockBits(new Rectangle(0, 0, bitmap.Size.Width, bitmap.Size.Height), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb); }
+						catch(Exception e) { General.ErrorLogger.Add(ErrorType.Error, "Cannot lock image '" + this.fullname + "' for glow color calculation. " + e.GetType().Name + ": " + e.Message); }
 
 						if(bmpdata != null)
 						{
@@ -358,6 +353,9 @@ namespace CodeImp.DoomBuilder.Data
 								r += cp->r;
 								g += cp->g;
 								b += cp->b;
+
+								// Also check alpha
+								if(cp->a > 0 && cp->a < 255) istranslucent = true;
 							}
 
 							// Update glow data
@@ -381,6 +379,32 @@ namespace CodeImp.DoomBuilder.Data
 								
 								General.Map.Data.GlowingFlats[longname].Color = new PixelColor(255, (byte)br, (byte)bg, (byte)bb);
 								General.Map.Data.GlowingFlats[longname].CalculateTextureColor = false;
+							}
+
+							// Release the data
+							bitmap.UnlockBits(bmpdata);
+						}
+					}
+					//mxd. Check if the texture is translucent
+					else
+					{
+						BitmapData bmpdata = null;
+						try { bmpdata = bitmap.LockBits(new Rectangle(0, 0, bitmap.Size.Width, bitmap.Size.Height), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb); }
+						catch(Exception e) { General.ErrorLogger.Add(ErrorType.Error, "Cannot lock image '" + this.fullname + "' for translucency check. " + e.GetType().Name + ": " + e.Message); }
+
+						if(bmpdata != null)
+						{
+							PixelColor* pixels = (PixelColor*)(bmpdata.Scan0.ToPointer());
+							int numpixels = bmpdata.Width * bmpdata.Height;
+
+							for(PixelColor* cp = pixels + numpixels - 1; cp >= pixels; cp--)
+							{
+								// Check alpha
+								if(cp->a > 0 && cp->a < 255)
+								{
+									istranslucent = true;
+									break;
+								}
 							}
 
 							// Release the data

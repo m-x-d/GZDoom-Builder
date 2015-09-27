@@ -102,31 +102,31 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected byte SetLinedefRenderstyle(bool solidasmask)
 		{
 			byte alpha;
+			bool canhavealpha = (this is VisualMiddleDouble || this is VisualMiddle3D || this is VisualMiddleBack); //mxd
 
 			// From TranslucentLine action
 			if(Sidedef.Line.Action == 208)
 			{
 				alpha = (byte)General.Clamp(Sidedef.Line.Args[1], 0, 255);
-				
-				if(Sidedef.Line.Args[2] == 1)
+
+				if(canhavealpha && Sidedef.Line.Args[2] == 1)
 					this.RenderPass = RenderPass.Additive;
-				else if(alpha < 255)
+				else if(canhavealpha && (alpha < 255 || Texture.IsTranslucent))
 					this.RenderPass = RenderPass.Alpha;
 				else if(solidasmask)
 					this.RenderPass = RenderPass.Mask;
 				else
 					this.RenderPass = RenderPass.Solid;
 			}
+			// From UDMF field
 			else
 			{
-				// From UDMF field
-				string field = Sidedef.Line.Fields.GetValue("renderstyle", "translucent");
 				alpha = (byte)(Sidedef.Line.Fields.GetValue("alpha", 1.0f) * 255.0f);
 				if(alpha == 255 && Sidedef.Line.IsFlagSet("transparent")) alpha = 64; //mxd
 
-				if(field == "add")
+				if(canhavealpha && Sidedef.Line.Fields.GetValue("renderstyle", "translucent") == "add")
 					this.RenderPass = RenderPass.Additive;
-				else if(alpha < 255)
+				else if(canhavealpha && (alpha < 255 || Texture.IsTranslucent))
 					this.RenderPass = RenderPass.Alpha;
 				else if(solidasmask)
 					this.RenderPass = RenderPass.Mask;
