@@ -468,26 +468,34 @@ namespace CodeImp.DoomBuilder.ZDoom
 			errorsource = sourcename;
 		}
 
+		//mxd. This reports a warning
+		protected internal void ReportWarning(string message)
+		{
+			// Add a warning
+			General.ErrorLogger.Add(ErrorType.Warning, "DECORATE warning in '" + sourcename + "', line " + GetCurrentLineNumber() + ". " + message + ".");
+		}
+
 		//mxd 
 		protected internal int GetCurrentLineNumber() 
 		{
-			long position = Math.Min(prevstreamposition, datastream.Position);
+			long pos = datastream.Position;
+			long finishpos = Math.Min(prevstreamposition, pos);
 			long readpos = 0;
 			int linenumber = 0;
 
 			// Find the line on which we found this error
 			datastream.Seek(0, SeekOrigin.Begin);
 			StreamReader textreader = new StreamReader(datastream, Encoding.ASCII);
-			while (readpos < position) 
+			while(readpos < finishpos) 
 			{
 				string line = textreader.ReadLine();
-				if (line == null) break;
+				if(line == null) break;
 				readpos += line.Length + 2;
 				linenumber++;
 			}
 
 			// Return to original position
-			datastream.Seek(position, SeekOrigin.Begin);
+			datastream.Seek(pos, SeekOrigin.Begin);
 
 			return linenumber;
 		}
