@@ -123,6 +123,13 @@ namespace CodeImp.DoomBuilder.ZDoom
  
 							// Find the actor to inherit from
 							baseclass = parser.GetArchivedActorByName(inheritclass);
+
+							//mxd. Does it exist?
+							if(baseclass == null)
+							{
+								parser.ReportError("Parent class '" + inheritclass + "' does not exist");
+								return;
+							}
 							break;
 
 						case "replaces":

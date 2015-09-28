@@ -328,10 +328,10 @@
 			this.tabproperties.Controls.Add(this.groupBox2);
 			this.tabproperties.Controls.Add(this.groupBox1);
 			this.tabproperties.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tabproperties.Location = new System.Drawing.Point(4, 23);
+			this.tabproperties.Location = new System.Drawing.Point(4, 22);
 			this.tabproperties.Name = "tabproperties";
 			this.tabproperties.Padding = new System.Windows.Forms.Padding(3);
-			this.tabproperties.Size = new System.Drawing.Size(627, 402);
+			this.tabproperties.Size = new System.Drawing.Size(627, 403);
 			this.tabproperties.TabIndex = 0;
 			this.tabproperties.Text = "Properties";
 			this.tabproperties.UseVisualStyleBackColor = true;
@@ -537,10 +537,10 @@
 			this.tabeffects.Controls.Add(this.actiongroup);
 			this.tabeffects.Controls.Add(this.grouptag);
 			this.tabeffects.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tabeffects.Location = new System.Drawing.Point(4, 23);
+			this.tabeffects.Location = new System.Drawing.Point(4, 22);
 			this.tabeffects.Name = "tabeffects";
 			this.tabeffects.Padding = new System.Windows.Forms.Padding(3);
-			this.tabeffects.Size = new System.Drawing.Size(627, 402);
+			this.tabeffects.Size = new System.Drawing.Size(627, 403);
 			this.tabeffects.TabIndex = 1;
 			this.tabeffects.Text = "Action / Tag / Misc.";
 			this.tabeffects.UseVisualStyleBackColor = true;
@@ -727,6 +727,7 @@
 			this.alpha.Size = new System.Drawing.Size(72, 24);
 			this.alpha.StepValues = null;
 			this.alpha.TabIndex = 23;
+			this.alpha.WhenTextChanged += new System.EventHandler(this.alpha_WhenTextChanged);
 			// 
 			// label8
 			// 
@@ -745,6 +746,7 @@
 			this.renderStyle.Name = "renderStyle";
 			this.renderStyle.Size = new System.Drawing.Size(156, 21);
 			this.renderStyle.TabIndex = 24;
+			this.renderStyle.SelectedIndexChanged += new System.EventHandler(this.renderStyle_SelectedIndexChanged);
 			// 
 			// labelrenderstyle
 			// 
@@ -833,9 +835,9 @@
 			// 
 			this.tabcomment.Controls.Add(this.commenteditor);
 			this.tabcomment.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tabcomment.Location = new System.Drawing.Point(4, 23);
+			this.tabcomment.Location = new System.Drawing.Point(4, 22);
 			this.tabcomment.Name = "tabcomment";
-			this.tabcomment.Size = new System.Drawing.Size(627, 402);
+			this.tabcomment.Size = new System.Drawing.Size(627, 403);
 			this.tabcomment.TabIndex = 3;
 			this.tabcomment.Text = "Comment";
 			this.tabcomment.UseVisualStyleBackColor = true;
@@ -851,9 +853,9 @@
 			// 
 			this.tabcustom.Controls.Add(this.fieldslist);
 			this.tabcustom.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tabcustom.Location = new System.Drawing.Point(4, 23);
+			this.tabcustom.Location = new System.Drawing.Point(4, 22);
 			this.tabcustom.Name = "tabcustom";
-			this.tabcustom.Size = new System.Drawing.Size(627, 402);
+			this.tabcustom.Size = new System.Drawing.Size(627, 403);
 			this.tabcustom.TabIndex = 2;
 			this.tabcustom.Text = "Custom";
 			this.tabcustom.UseVisualStyleBackColor = true;

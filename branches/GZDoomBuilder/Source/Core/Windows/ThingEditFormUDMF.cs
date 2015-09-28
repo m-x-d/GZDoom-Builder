@@ -67,9 +67,11 @@ namespace CodeImp.DoomBuilder.Windows
 			public readonly int Roll;
 			public readonly float ScaleX;
 			public readonly float ScaleY;
+			public readonly float Alpha;
 			public readonly float X;
 			public readonly float Y;
 			public readonly float Z;
+			public readonly Dictionary<string, bool> Flags;
 
 			public ThingProperties(Thing t) 
 			{
@@ -82,6 +84,8 @@ namespace CodeImp.DoomBuilder.Windows
 				Roll = t.Roll;
 				ScaleX = t.ScaleX;
 				ScaleY = t.ScaleY;
+				Alpha = UDMFTools.GetFloat(t.Fields, "alpha", 1.0f);
+				Flags = t.GetFlags();
 			}
 		}
 
@@ -268,11 +272,11 @@ namespace CodeImp.DoomBuilder.Windows
 				//mxd. Custom fields
 				fieldslist.SetValues(t.Fields, false);
 				commenteditor.SetValues(t.Fields, false); //mxd. Comments
-				if (t.Fields.GetValue("conversation", 0).ToString() != conversationID.Text) conversationID.Text = "";
-				if (t.Fields.GetValue("gravity", 1.0f).ToString() != gravity.Text) gravity.Text = "";
-				if (t.Fields.GetValue("score", 0).ToString() != score.Text) score.Text = "";
-				if (t.Fields.GetValue("health", 1).ToString() != health.Text) health.Text = "";
-				if (t.Fields.GetValue("alpha", 1.0f).ToString() != alpha.Text) alpha.Text = "";
+				if(t.Fields.GetValue("conversation", 0).ToString() != conversationID.Text) conversationID.Text = "";
+				if(t.Fields.GetValue("gravity", 1.0f).ToString() != gravity.Text) gravity.Text = "";
+				if(t.Fields.GetValue("score", 0).ToString() != score.Text) score.Text = "";
+				if(t.Fields.GetValue("health", 1).ToString() != health.Text) health.Text = "";
+				if(t.Fields.GetValue("alpha", 1.0f).ToString() != alpha.Text) alpha.Text = "";
 
 				scale.SetValues(t.ScaleX, t.ScaleY, false);
 				color.SetValueFrom(t.Fields);
@@ -470,16 +474,6 @@ namespace CodeImp.DoomBuilder.Windows
 				float py = General.Clamp(t.Position.y, General.Map.Config.BottomBoundary, General.Map.Config.TopBoundary);
 				if(t.Position.x != px || t.Position.y != py) t.Move(new Vector2D(px, py));
 
-				// Apply all flags
-				foreach(CheckBox c in flags.Checkboxes) 
-				{
-					switch (c.CheckState)
-					{
-						case CheckState.Checked: t.SetFlag(c.Tag.ToString(), true); break;
-						case CheckState.Unchecked: t.SetFlag(c.Tag.ToString(), false); break;
-					}
-				}
-
 				// Action/tags
 				t.Tag = General.Clamp(tagSelector.GetSmartTag(t.Tag, tagoffset++), General.Map.FormatInterface.MinTag, General.Map.FormatInterface.MaxTag); //mxd
 				if(!action.Empty) t.Action = action.Value;
@@ -489,18 +483,14 @@ namespace CodeImp.DoomBuilder.Windows
 
 				//mxd. Custom fields
 				fieldslist.Apply(t.Fields);
-				if (!string.IsNullOrEmpty(conversationID.Text))
+				if(!string.IsNullOrEmpty(conversationID.Text))
 					UDMFTools.SetInteger(t.Fields, "conversation", conversationID.GetResult(t.Fields.GetValue("conversation", 0)), 0);
-				if (!string.IsNullOrEmpty(gravity.Text))
+				if(!string.IsNullOrEmpty(gravity.Text))
 					UDMFTools.SetFloat(t.Fields, "gravity", gravity.GetResultFloat(t.Fields.GetValue("gravity", 1.0f)), 1.0f);
-				if (!string.IsNullOrEmpty(health.Text))
+				if(!string.IsNullOrEmpty(health.Text))
 					UDMFTools.SetInteger(t.Fields, "health", health.GetResult(t.Fields.GetValue("health", 1)), 1);
-				if (!string.IsNullOrEmpty(score.Text))
+				if(!string.IsNullOrEmpty(score.Text))
 					UDMFTools.SetInteger(t.Fields, "score", score.GetResult(t.Fields.GetValue("score", 0)), 0);
-				if (!string.IsNullOrEmpty(alpha.Text))
-					UDMFTools.SetFloat(t.Fields, "alpha", alpha.GetResultFloat(t.Fields.GetValue("alpha", 1.0f)), 1.0f);
-				if (rskeys != null && renderStyle.SelectedIndex > -1)
-					UDMFTools.SetString(t.Fields, "renderstyle", rskeys[renderStyle.SelectedIndex], "normal");
 
 				color.ApplyTo(t.Fields, t.Fields.GetValue("fillcolor", 0));
 
@@ -778,18 +768,44 @@ namespace CodeImp.DoomBuilder.Windows
 		private void flags_OnValueChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
+			MakeUndo(); //mxd
+			int i = 0;
 
+			// Apply flags
+			foreach(Thing t in things)
+			{
+				// Apply all flags
+				foreach(CheckBox c in flags.Checkboxes)
+				{
+					if(c.CheckState == CheckState.Checked)
+						t.SetFlag(c.Tag.ToString(), true);
+					else if(c.CheckState == CheckState.Unchecked)
+						t.SetFlag(c.Tag.ToString(), false);
+					else if(thingprops[i].Flags.ContainsKey(c.Tag.ToString()))
+						t.SetFlag(c.Tag.ToString(), thingprops[i].Flags[c.Tag.ToString()]);
+					else //things created in the editor have empty Flags by default
+						t.SetFlag(c.Tag.ToString(), false);
+				}
+
+				i++;
+			}
+
+			// Dispatch event
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+
+			// Validate flags
 			string warn = ThingFlagsCompare.CheckThingEditFormFlags(flags.Checkboxes);
 			if(!string.IsNullOrEmpty(warn)) 
 			{
-				//got missing flags
+				// Got missing flags
 				tooltip.SetToolTip(missingflags, warn);
 				missingflags.Visible = true;
 				settingsgroup.ForeColor = Color.DarkRed;
 				return;
 			}
 
-			//everything is OK
+			// Everything is OK
 			missingflags.Visible = false;
 			settingsgroup.ForeColor = SystemColors.ControlText;
 		}
@@ -810,6 +826,43 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			roll.Enabled = !cbrandomroll.Checked;
 			grouproll.Enabled = !cbrandomroll.Checked;
+		}
+
+		private void renderStyle_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if(preventchanges) return;
+			MakeUndo(); //mxd
+
+			//update values
+			foreach(Thing t in things)
+				UDMFTools.SetString(t.Fields, "renderstyle", renderstyles[renderStyle.SelectedIndex], "normal");
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		private void alpha_WhenTextChanged(object sender, EventArgs e)
+		{
+			if(preventchanges) return;
+			MakeUndo(); //mxd
+			int i = 0;
+
+			//restore values
+			if(string.IsNullOrEmpty(alpha.Text))
+			{
+				foreach(Thing t in things) UDMFTools.SetFloat(t.Fields, "alpha", thingprops[i++].Alpha, 1.0f);
+			}
+			else //update values
+			{
+				foreach(Thing t in things)
+				{
+					float value = General.Clamp(alpha.GetResultFloat(t.Fields.GetValue("alpha", 1.0f)), 0f, 1.0f);
+					UDMFTools.SetFloat(t.Fields, "alpha", value, 1.0f);
+				}
+			}
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
 
 		#endregion

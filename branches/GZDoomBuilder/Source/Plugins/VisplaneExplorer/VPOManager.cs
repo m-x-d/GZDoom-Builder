@@ -155,7 +155,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 			try
 			{
 				// Load the map
-				bool isHexen = (General.Map.Config.FormatInterface == "HexenMapSetIO");
+				bool isHexen = General.Map.HEXEN;
 				if(LoadWAD(filename) != 0) throw new Exception("VPO is unable to read this file.");
 				if(OpenMap(mapname, ref isHexen) != 0) throw new Exception("VPO is unable to open this map.");
 				OpenDoors(BuilderPlug.InterfaceForm.OpenDoors ? 1 : -1); //mxd

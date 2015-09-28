@@ -780,7 +780,7 @@ namespace CodeImp.DoomBuilder.Rendering
 						}
 					}
 
-					if (sector != null) 
+					if(sector != null) 
 					{
 						// Determine the shader pass we want to use for this object
 						int wantedshaderpass = (((g == highlighted) && showhighlight) || (g.Selected && showselection)) ? highshaderpass : shaderpass;
@@ -1015,7 +1015,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			else
 			{
 				translucentgeo.Sort((vg1, vg2) => (int)((General.Map.VisualCamera.Position - vg2.BoundingBox[0]).GetLengthSq()
-														- (General.Map.VisualCamera.Position - vg1.BoundingBox[0]).GetLengthSq()));
+													  - (General.Map.VisualCamera.Position - vg1.BoundingBox[0]).GetLengthSq()));
 			}
 
 			// Begin rendering with this shader
@@ -1132,7 +1132,176 @@ namespace CodeImp.DoomBuilder.Rendering
 				}
 			}
 
-			//TODO: render things
+			// Get things for this pass
+			if(thingspass.Count > 0)
+			{
+				// Texture addressing
+				graphics.Device.SetSamplerState(0, SamplerState.AddressU, TextureAddress.Clamp);
+				graphics.Device.SetSamplerState(0, SamplerState.AddressV, TextureAddress.Clamp);
+				graphics.Device.SetSamplerState(0, SamplerState.AddressW, TextureAddress.Clamp);
+				graphics.Device.SetRenderState(RenderState.CullMode, Cull.None); //mxd. Disable backside culling, because otherwise sprites with positive ScaleY and negative ScaleX will be facing away from the camera...
+
+				// Sort geometry by camera distance. First vertex of the BoundingBox is it's center
+				thingspass.Sort((vt1, vt2) => (int)((General.Map.VisualCamera.Position - vt2.BoundingBox[0]).GetLengthSq()
+												  - (General.Map.VisualCamera.Position - vt1.BoundingBox[0]).GetLengthSq()));
+
+				// Reset vars
+				currentpass = RenderPass.Solid;
+				curtexturename = 0;
+
+				// Render things collected
+				foreach(VisualThing t in thingspass)
+				{
+					if(t.Texture is UnknownImage) continue;
+					
+					// Change blend mode?
+					if(t.RenderPass != currentpass)
+					{
+						switch(t.RenderPass)
+						{
+							case RenderPass.Additive:
+								graphics.Device.SetRenderState(RenderState.DestinationBlend, Blend.One);
+								break;
+
+							case RenderPass.Alpha:
+								graphics.Device.SetRenderState(RenderState.DestinationBlend, Blend.InverseSourceAlpha);
+								break;
+						}
+
+						currentpass = t.RenderPass;
+					}
+
+					// Change texture?
+					if(t.Texture.LongName != curtexturename)
+					{
+						// What texture to use?
+						if(t.Texture.IsImageLoaded && !t.Texture.IsDisposed)
+							curtexture = t.Texture;
+						else
+							curtexture = General.Map.Data.Hourglass3D;
+
+						// Create Direct3D texture if still needed
+						if((curtexture.Texture == null) || curtexture.Texture.Disposed)
+							curtexture.CreateTexture();
+
+						// Apply texture
+						if(!graphics.Shaders.Enabled)
+							graphics.Device.SetTexture(0, curtexture.Texture);
+						graphics.Shaders.World3D.Texture1 = curtexture.Texture;
+
+						curtexturename = t.Texture.LongName;
+					}
+
+					//mxd
+					if(t.Thing.IsModel &&
+					   (General.Settings.GZDrawModelsMode == ModelRenderMode.ALL ||
+						General.Settings.GZDrawModelsMode == ModelRenderMode.ACTIVE_THINGS_FILTER ||
+						(General.Settings.GZDrawModelsMode == ModelRenderMode.SELECTION && t.Selected)))
+						continue;
+
+					// Update buffer if needed
+					t.Update();
+
+					// Only do this sector when a vertexbuffer is created
+					if(t.GeometryBuffer != null)
+					{
+						// Determine the shader pass we want to use for this object
+						int wantedshaderpass = (((t == highlighted) && showhighlight) || (t.Selected && showselection)) ? highshaderpass : shaderpass;
+
+						//mxd. if fog is enagled, switch to shader, which calculates it
+						if(General.Settings.GZDrawFog && !fullbrightness && t.Thing.Sector != null && (t.Thing.Sector.HasFogColor || t.Thing.Sector.Brightness < 248))
+							wantedshaderpass += 8;
+
+						//mxd. if current thing is light - set it's color to light color
+						Color4 litcolor = new Color4();
+						if(Array.IndexOf(GZBuilder.GZGeneral.GZ_LIGHTS, t.Thing.Type) != -1 && !fullbrightness)
+						{
+							wantedshaderpass += 4; //render using one of passes, which uses World3D.VertexColor
+							graphics.Shaders.World3D.VertexColor = t.LightColor;
+							litcolor = t.LightColor;
+						}
+						//mxd. check if Thing is affected by dynamic lights and set color accordingly
+						else if(General.Settings.GZDrawLightsMode != LightRenderMode.NONE && !fullbrightness && lightthings.Count > 0)
+						{
+							litcolor = GetLitColorForThing(t);
+							if(litcolor.ToArgb() != 0)
+							{
+								wantedshaderpass += 4; //render using one of passes, which uses World3D.VertexColor
+								graphics.Shaders.World3D.VertexColor = new Color4(t.VertexColor) + litcolor;
+							}
+						}
+
+						// Switch shader pass?
+						if(currentshaderpass != wantedshaderpass)
+						{
+							graphics.Shaders.World3D.EndPass();
+							graphics.Shaders.World3D.BeginPass(wantedshaderpass);
+							currentshaderpass = wantedshaderpass;
+						}
+
+						// Set the colors to use
+						if(!graphics.Shaders.Enabled)
+						{
+							graphics.Device.SetTexture(2, (t.Selected && showselection) ? selectionimage.Texture : null);
+							graphics.Device.SetTexture(3, ((t == highlighted) && showhighlight) ? highlightimage.Texture : null);
+						}
+						else
+						{
+							graphics.Shaders.World3D.SetHighlightColor(CalculateHighlightColor((t == highlighted) && showhighlight, (t.Selected && showselection)).ToArgb());
+						}
+
+						//mxd. Create the matrix for positioning 
+						if(t.Info.RenderMode == Thing.SpriteRenderMode.NORMAL) // Apply billboarding?
+						{
+							if(t.Info.XYBillboard)
+							{
+								world = Matrix.Translation(0f, 0f, -t.LocalCenterZ)
+									* Matrix.RotationX(Angle2D.PI - General.Map.VisualCamera.AngleZ)
+									* Matrix.Translation(0f, 0f, t.LocalCenterZ)
+									* billboard
+									* Matrix.Scaling(t.Thing.ScaleX, t.Thing.ScaleX, t.Thing.ScaleY)
+									* t.Position;
+							}
+							else
+							{
+								world = billboard
+										* Matrix.Scaling(t.Thing.ScaleX, t.Thing.ScaleX, t.Thing.ScaleY)
+										* t.Position;
+							}
+						}
+						else
+						{
+							world = Matrix.Scaling(t.Thing.ScaleX, t.Thing.ScaleX, t.Thing.ScaleY)
+									* t.Position;
+						}
+
+						ApplyMatrices3D();
+
+						//mxd. Set variables for fog rendering
+						if(wantedshaderpass > 7)
+						{
+							graphics.Shaders.World3D.World = world;
+							graphics.Shaders.World3D.LightColor = t.Thing.Sector.FogColor;
+							float fogdistance = (litcolor.ToArgb() != 0 ? VisualSector.MAXIMUM_FOG_DISTANCE : t.FogDistance);
+							graphics.Shaders.World3D.CameraPosition = new Vector4(cameraposition.x, cameraposition.y, cameraposition.z, fogdistance);
+						}
+
+						graphics.Shaders.World3D.ApplySettings();
+
+						// Apply buffer
+						graphics.Device.SetStreamSource(0, t.GeometryBuffer, 0, WorldVertex.Stride);
+
+						// Render!
+						graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, 0, t.Triangles);
+					}
+				}
+
+				// Texture addressing
+				graphics.Device.SetSamplerState(0, SamplerState.AddressU, TextureAddress.Wrap);
+				graphics.Device.SetSamplerState(0, SamplerState.AddressV, TextureAddress.Wrap);
+				graphics.Device.SetSamplerState(0, SamplerState.AddressW, TextureAddress.Wrap);
+				graphics.Device.SetRenderState(RenderState.CullMode, Cull.Counterclockwise); //mxd
+			}
 
 			// Done rendering with this shader
 			graphics.Shaders.World3D.EndPass();

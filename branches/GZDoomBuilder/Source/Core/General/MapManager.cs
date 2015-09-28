@@ -121,12 +121,16 @@ namespace CodeImp.DoomBuilder
 		public VisualCamera VisualCamera { get { return visualcamera; } set { visualcamera = value; } }
 		public bool IsScriptsWindowOpen { get { return (scriptwindow != null) && !scriptwindow.IsDisposed; } }
 
-		//mxd
-		public bool UDMF { get { return config.FormatInterface == "UniversalMapSetIO"; } }
+		//mxd. Map format
+		public bool UDMF { get { return config.UDMF; } }
+		public bool HEXEN { get { return config.HEXEN; } }
+		public bool DOOM { get { return config.DOOM; } }
+
+		//mxd. Scripts
 		internal Dictionary<string, ScriptItem> NamedScripts { get { return namedscripts; } }
 		internal Dictionary<int, ScriptItem> NumberedScripts { get { return numberedscripts; } }
 		internal List<string> ScriptIncludes { get { return scriptincludes; } }
-	   
+
 		public ViewMode ViewMode { get { return renderer2d.ViewMode; } }
 
 		#endregion

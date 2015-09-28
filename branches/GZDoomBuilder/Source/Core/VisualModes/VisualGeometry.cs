@@ -39,9 +39,6 @@ namespace CodeImp.DoomBuilder.VisualModes
 		// Vertices
 		private WorldVertex[] vertices;
 		private int triangles;
-
-		// Desired modulate color
-		private PixelColor modulatecolor;
 		
 		// Selected?
 		protected bool selected;
@@ -96,11 +93,6 @@ namespace CodeImp.DoomBuilder.VisualModes
 		public ImageData Texture { get { return texture; } set { texture = value; } }
 
 		/// <summary>
-		/// Color to modulate the texture pixels with.
-		/// </summary>
-		public PixelColor ModulateColor { get { return modulatecolor; } set { modulatecolor = value; } }
-
-		/// <summary>
 		/// Returns the VisualSector this geometry has been added to.
 		/// </summary>
 		public VisualSector Sector { get { return sector; } internal set { sector = value; } }
@@ -125,7 +117,6 @@ namespace CodeImp.DoomBuilder.VisualModes
 		protected VisualGeometry(VisualSector vs)
 		{
 			this.sector = vs;
-			this.ModulateColor = new PixelColor(255, 255, 255, 255);
 			this.geometrytype = VisualGeometryType.UNKNOWN; //mxd
 		}
 
@@ -137,7 +128,6 @@ namespace CodeImp.DoomBuilder.VisualModes
 		{
 			this.sector = vs;
 			this.sidedef = sd;
-			this.ModulateColor = new PixelColor(255, 255, 255, 255);
 			this.geometrytype = VisualGeometryType.UNKNOWN; //mxd
 		}
 

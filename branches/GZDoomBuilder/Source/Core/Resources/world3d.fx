@@ -68,10 +68,12 @@ sampler2D texturesamp = sampler_state
 PixelData vs_main(VertexData vd) 
 {
 	PixelData pd;
+	
 	// Fill pixel data input
 	pd.pos = mul(float4(vd.pos, 1.0f), worldviewproj);
 	pd.color = vd.color;
 	pd.uv = vd.uv;
+	
 	// Return result
 	return pd;
 }
@@ -80,11 +82,13 @@ PixelData vs_main(VertexData vd)
 PixelData vs_customvertexcolor(VertexData vd) 
 {
 	PixelData pd;
+	
 	// Fill pixel data input
 	pd.pos = mul(float4(vd.pos, 1.0f), worldviewproj);
 	pd.color = vertexColor;
 	pd.color.a = 1.0f;
 	pd.uv = vd.uv;
+	
 	// Return result
 	return pd;
 }
@@ -92,6 +96,7 @@ PixelData vs_customvertexcolor(VertexData vd)
 LitPixelData vs_customvertexcolor_fog(VertexData vd) 
 {
 	LitPixelData pd;
+	
 	// Fill pixel data input
 	pd.pos = mul(float4(vd.pos, 1.0f), worldviewproj);
 	pd.pos_w = mul(float4(vd.pos, 1.0f), world);
@@ -99,6 +104,7 @@ LitPixelData vs_customvertexcolor_fog(VertexData vd)
 	pd.color.a = 1.0f;
 	pd.uv = vd.uv;
 	pd.normal = vd.normal;
+	
 	// Return result
 	return pd;
 }
@@ -108,7 +114,6 @@ LitPixelData vs_lightpass(VertexData vd)
 {
 	LitPixelData pd;
 	pd.pos = mul(float4(vd.pos, 1.0f), worldviewproj);
-	//pd.pos_w = mul(vd.pos, (float3x3)world);
 	pd.pos_w = mul(float4(vd.pos, 1.0f), world);
 	pd.color = vd.color;
 	pd.uv = vd.uv;
@@ -137,34 +142,35 @@ float4 ps_fullbright(PixelData pd) : COLOR
 float4 ps_main_highlight(PixelData pd) : COLOR
 {
 	float4 tcolor = tex2D(texturesamp, pd.uv);
+	if(tcolor.a == 0) clip(-1);
 	
 	// Blend texture color and vertex color
 	float4 ncolor = tcolor * pd.color;
-	float4 hcolor = float4(highlightcolor.rgb, ncolor.a);
 	
-	//return lerp(ncolor, hcolor, highlightcolor.a);
-	return float4(hcolor.rgb * highlightcolor.a + (ncolor.rgb - 0.4f * highlightcolor.a), ncolor.a + 0.25f);
+	return float4(highlightcolor.rgb * highlightcolor.a + (ncolor.rgb - 0.4f * highlightcolor.a), ncolor.a + 0.25f);
 }
 
 // Full-bright pixel shader with highlight
 float4 ps_fullbright_highlight(PixelData pd) : COLOR
 {
 	float4 tcolor = tex2D(texturesamp, pd.uv);
-	float4 hcolor = float4(highlightcolor.rgb, tcolor.a);
+	if(tcolor.a == 0) clip(-1);
 	
-	//return lerp(ncolor, hcolor, highlightcolor.a);
-	return float4(hcolor.rgb * highlightcolor.a + (tcolor.rgb - 0.4f * highlightcolor.a), tcolor.a + 0.25f);
+	// Blend texture color and vertex color
+	float4 ncolor = tcolor * pd.color;
+	
+	return float4(highlightcolor.rgb * highlightcolor.a + (tcolor.rgb - 0.4f * highlightcolor.a), ncolor.a + 0.25f);
 }
 
 //mxd. This adds fog color to current pixel color
 float4 getFogColor(LitPixelData pd, float4 color)
 {
-   float fogdist = max(16.0f, distance(pd.pos_w, cameraPos.xyz));
-   float fogfactor = min(1.0f, fogdist / cameraPos.w);
-   //float fogfactor = exp2(cameraPos.w * fogdist);
-   if(fogfactor == 1.0f) //texture color completly replaced by fog color
-	   return float4(lightColor.rgb, color.a);
-   return float4(lightColor.rgb * fogfactor + color.rgb * (1.0f - fogfactor), color.a);
+	float fogdist = max(16.0f, distance(pd.pos_w, cameraPos.xyz));
+	float fogfactor = min(1.0f, fogdist / cameraPos.w);
+	
+	//texture color completly replaced by fog color
+	if(fogfactor == 1.0f) return float4(lightColor.rgb, color.a);
+	return float4(lightColor.rgb * fogfactor + color.rgb * (1.0f - fogfactor), color.a);
 }
 
 //mxd. Shaders with fog calculation
@@ -172,6 +178,8 @@ float4 getFogColor(LitPixelData pd, float4 color)
 float4 ps_main_fog(LitPixelData pd) : COLOR 
 {
 	float4 tcolor = tex2D(texturesamp, pd.uv);
+	if(tcolor.a == 0) clip(-1);
+	
 	return getFogColor(pd, tcolor * pd.color);
 }
 
@@ -179,12 +187,12 @@ float4 ps_main_fog(LitPixelData pd) : COLOR
 float4 ps_main_highlight_fog(LitPixelData pd) : COLOR 
 {
 	float4 tcolor = tex2D(texturesamp, pd.uv);
+	if(tcolor.a == 0) clip(-1);
 	
 	// Blend texture color and vertex color
 	float4 ncolor = getFogColor(pd, tcolor * pd.color);
-	float4 hcolor = float4(highlightcolor.rgb, ncolor.a);
 	
-	return float4(hcolor.rgb * highlightcolor.a + (ncolor.rgb - 0.4f * highlightcolor.a), ncolor.a + 0.25f);
+	return float4(highlightcolor.rgb * highlightcolor.a + (ncolor.rgb - 0.4f * highlightcolor.a), ncolor.a + 0.25f);
 }
 
 //mxd: used to draw bounding boxes
@@ -202,33 +210,33 @@ float4 ps_vertex_color(PixelData pd) : COLOR
 //mxd. dynamic light pixel shader pass, dood!
 float4 ps_lightpass(LitPixelData pd) : COLOR 
 {
-	  //is face facing away from light source?
-	  if(dot(pd.normal, (lightPosAndRadius.xyz - pd.pos_w)) < -0.1f) // (lightPosAndRadius.xyz - pd.pos_w) == direction from light to current pixel
-		  clip(-1);
+	//is face facing away from light source?
+	if(dot(pd.normal, (lightPosAndRadius.xyz - pd.pos_w)) < -0.1f) // (lightPosAndRadius.xyz - pd.pos_w) == direction from light to current pixel
+		clip(-1);
 
-	  //is pixel in light range?
-	  float dist = distance(pd.pos_w, lightPosAndRadius.xyz);
-	  if(dist > lightPosAndRadius.w)
-		  clip(-1);
-	  
-	  //is pixel tranparent?
-	  float4 tcolor = tex2D(texturesamp, pd.uv);
-	  if(tcolor.a == 0.0f)
-		  clip(-1);
+	//is pixel in light range?
+	float dist = distance(pd.pos_w, lightPosAndRadius.xyz);
+	if(dist > lightPosAndRadius.w)
+		clip(-1);
+	
+	//is pixel tranparent?
+	float4 tcolor = tex2D(texturesamp, pd.uv);
+	if(tcolor.a == 0.0f)
+		clip(-1);
 
-	  //if it is - calculate color at current pixel
-	  float4 lightColorMod = float4(0.0f, 0.0f, 0.0f, 0.0f);
+	//if it is - calculate color at current pixel
+	float4 lightColorMod = float4(0.0f, 0.0f, 0.0f, 0.0f);
 
-	  lightColorMod.rgb = lightColor.rgb * max(lightPosAndRadius.w - dist, 0.0f) / lightPosAndRadius.w;
-	  if(lightColorMod.r > 0.0f || lightColorMod.g > 0.0f || lightColorMod.b > 0.0f)
-	  {
-		  lightColorMod.rgb *= lightColor.a;
-		  if(lightColor.a > 0.4f) //Normal, vavoom or negative light
-			  return tcolor * lightColorMod;
-		  return lightColorMod; //Additive light
-	  }
-	  clip(-1);
-	  return lightColorMod; //should never get here
+	lightColorMod.rgb = lightColor.rgb * max(lightPosAndRadius.w - dist, 0.0f) / lightPosAndRadius.w;
+	if(lightColorMod.r > 0.0f || lightColorMod.g > 0.0f || lightColorMod.b > 0.0f)
+	{
+		lightColorMod.rgb *= lightColor.a;
+		if(lightColor.a > 0.4f) //Normal, vavoom or negative light
+			return tcolor * lightColorMod;
+		return lightColorMod; //Additive light
+	}
+	clip(-1);
+	return lightColorMod; //should never get here
 }
 
 // Technique for shader model 2.0

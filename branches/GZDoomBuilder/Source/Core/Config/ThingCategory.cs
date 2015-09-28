@@ -46,6 +46,8 @@ namespace CodeImp.DoomBuilder.Config
 		// Thing properties for inheritance
 		private readonly string sprite;
 		private readonly int color;
+		private readonly float alpha; //mxd
+		private readonly string renderstyle; //mxd
 		private readonly int arrow;
 		private readonly float radius;
 		private readonly float height;
@@ -70,6 +72,8 @@ namespace CodeImp.DoomBuilder.Config
 		public bool Sorted { get { return sorted; } }
 		public List<ThingCategory> Children { get { return children; } } //mxd
 		public int Color { get { return color; } }
+		public float Alpha { get { return alpha; } } //mxd
+		public string RenderStyle { get { return renderstyle; } } //mxd
 		public int Arrow { get { return arrow; } }
 		public float Radius { get { return radius; } }
 		public float Height { get { return height; } }
@@ -102,6 +106,8 @@ namespace CodeImp.DoomBuilder.Config
 				this.sprite = parent.sprite;
 				this.sorted = parent.sorted;
 				this.color = parent.color;
+				this.alpha = parent.alpha;
+				this.renderstyle = parent.renderstyle;
 				this.arrow = parent.arrow;
 				this.radius = parent.radius;
 				this.height = parent.height;
@@ -119,6 +125,8 @@ namespace CodeImp.DoomBuilder.Config
 				this.sprite = "";
 				this.sorted = true;
 				this.color = 18;
+				this.alpha = 1f; //mxd
+				this.renderstyle = "normal"; //mxd
 				this.arrow = 1;
 				this.radius = 10;
 				this.height = 20;
@@ -153,6 +161,8 @@ namespace CodeImp.DoomBuilder.Config
 				this.sprite = cfg.ReadSetting("thingtypes." + name + ".sprite", parent.sprite);
 				this.sorted = (cfg.ReadSetting("thingtypes." + name + ".sort", (parent.sorted ? 1 : 0)) != 0);
 				this.color = cfg.ReadSetting("thingtypes." + name + ".color", parent.color);
+				this.alpha = cfg.ReadSetting("thingtypes." + name + ".alpha", parent.alpha);
+				this.renderstyle = cfg.ReadSetting("thingtypes." + name + ".renderstyle", parent.renderstyle).ToLower();
 				this.arrow = cfg.ReadSetting("thingtypes." + name + ".arrow", parent.arrow);
 				this.radius = cfg.ReadSetting("thingtypes." + name + ".width", parent.radius);
 				this.height = cfg.ReadSetting("thingtypes." + name + ".height", parent.height);
@@ -160,7 +170,7 @@ namespace CodeImp.DoomBuilder.Config
 				this.blocking = cfg.ReadSetting("thingtypes." + name + ".blocking", parent.blocking);
 				this.errorcheck = cfg.ReadSetting("thingtypes." + name + ".error", parent.errorcheck);
 				this.fixedsize = cfg.ReadSetting("thingtypes." + name + ".fixedsize", parent.fixedsize);
-				this.fixedrotation = cfg.ReadSetting("thingtypes." + name + ".fixedrotation", parent.fixedrotation); //mxd
+				this.fixedrotation = cfg.ReadSetting("thingtypes." + name + ".fixedrotation", parent.fixedrotation);
 				this.absolutez = cfg.ReadSetting("thingtypes." + name + ".absolutez", parent.absolutez);
 				this.spritescale = cfg.ReadSetting("thingtypes." + name + ".spritescale", parent.spritescale);
 			}
@@ -169,6 +179,8 @@ namespace CodeImp.DoomBuilder.Config
 				this.sprite = cfg.ReadSetting("thingtypes." + name + ".sprite", "");
 				this.sorted = (cfg.ReadSetting("thingtypes." + name + ".sort", 0) != 0);
 				this.color = cfg.ReadSetting("thingtypes." + name + ".color", 0);
+				this.alpha = General.Clamp(cfg.ReadSetting("thingtypes." + name + ".alpha", 1f), 0f, 1f);
+				this.renderstyle = cfg.ReadSetting("thingtypes." + name + ".renderstyle", "normal").ToLower();
 				this.arrow = cfg.ReadSetting("thingtypes." + name + ".arrow", 0);
 				this.radius = cfg.ReadSetting("thingtypes." + name + ".width", 10);
 				this.height = cfg.ReadSetting("thingtypes." + name + ".height", 20);

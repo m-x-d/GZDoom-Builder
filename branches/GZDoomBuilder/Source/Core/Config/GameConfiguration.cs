@@ -88,6 +88,11 @@ namespace CodeImp.DoomBuilder.Config
 
 		// Map lumps
 		private readonly Dictionary<string, MapLumpInfo> maplumps;
+
+		//mxd. Map format
+		private bool doommapformat;
+		private bool hexenmapformat;
+		private bool universalmapformat;
 		
 		// Texture/flat/voxel sources
 		private readonly IDictionary textureranges;
@@ -195,6 +200,11 @@ namespace CodeImp.DoomBuilder.Config
 		
 		// Map lumps
 		public Dictionary<string, MapLumpInfo> MapLumps { get { return maplumps; } }
+
+		//mxd. Map format
+		public bool UDMF { get { return universalmapformat; } }
+		public bool HEXEN { get { return hexenmapformat; } }
+		public bool DOOM { get { return doommapformat; } }
 
 		// Texture/flat/voxel sources
 		public IDictionary TextureRanges { get { return textureranges; } }
@@ -327,6 +337,11 @@ namespace CodeImp.DoomBuilder.Config
 			thingclasshelp = cfg.ReadSetting("thingclasshelp", string.Empty); //mxd
 			defaultLinedefActivation = cfg.ReadSetting("defaultlinedefactivation", ""); //mxd
 			for(int i = 0; i < Linedef.NUM_ARGS; i++) makedoorargs[i] = cfg.ReadSetting("makedoorarg" + i.ToString(CultureInfo.InvariantCulture), 0);
+
+			//mxd. Update map format flags
+			universalmapformat = (formatinterface == "UniversalMapSetIO");
+			hexenmapformat = (formatinterface == "HexenMapSetIO");
+			doommapformat = (formatinterface == "DoomMapSetIO");
 
 			//mxd. Texture names length
 			longtexturenames = cfg.ReadSetting("longtexturenames", false);
