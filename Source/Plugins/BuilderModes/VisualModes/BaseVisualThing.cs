@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.GZBuilder.Data;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Geometry;
@@ -98,7 +99,72 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This builds the thing geometry. Returns false when nothing was created.
 		public bool Setup()
 		{
-			int sectorcolor = new PixelColor(255, 255, 255, 255).ToInt();
+			//mxd. Apply DECORATE/UDMF alpha/renderstyle overrides
+			string renderstyle = info.RenderStyle;
+			byte alpha = info.AlphaByte;
+			if(General.Map.UDMF)
+			{
+				if(Thing.IsFlagSet("translucent"))
+				{
+					renderstyle = "translucent";
+					alpha = 64;
+				}
+				else if(Thing.IsFlagSet("invisible"))
+				{
+					renderstyle = "none";
+					alpha = 0;
+				}
+				else if(Thing.Fields.ContainsKey("renderstyle"))
+				{
+					renderstyle = Thing.Fields.GetValue("renderstyle", renderstyle);
+					
+					if(Thing.Fields.ContainsKey("alpha"))
+						alpha = (byte)(General.Clamp(Thing.Fields.GetValue("alpha", info.Alpha), 0f, 1f) * 255);
+				}
+			}
+			else if(General.Map.HEXEN)
+			{
+				if(Thing.IsFlagSet("2048"))
+				{
+					renderstyle = "translucent";
+					alpha = 64;
+				}
+				else if(Thing.IsFlagSet("4096"))
+				{
+					renderstyle = "none";
+					alpha = 0;
+				}
+			}
+
+			// Set appropriate RenderPass
+			switch(renderstyle)
+			{
+				case "translucent":
+				case "subtract":
+				case "stencil":
+					RenderPass = RenderPass.Alpha;
+					break;
+
+				case "add":
+					RenderPass = RenderPass.Additive;
+					break;
+
+				case "none":
+					RenderPass = RenderPass.Mask;
+					alpha = 0;
+					break;
+
+				// Many render styles are not supported yet...
+				default:
+					RenderPass = RenderPass.Mask;
+					alpha = 255;
+					break;
+			}
+
+			// Don't bother when alpha is unchanged
+			if(alpha == 255) RenderPass = RenderPass.Mask;
+
+			int sectorcolor = new PixelColor(alpha, 255, 255, 255).ToInt();
 			fogdistance = VisualSector.MAXIMUM_FOG_DISTANCE; //mxd
 			
 			//mxd. Check thing size 
@@ -128,40 +194,46 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					SectorData sd = mode.GetSectorData(Thing.Sector);
 					floor = sd.Floor.plane; //mxd
 					ceiling = sd.Ceiling.plane; //mxd
-					SectorLevel level = sd.GetLevelAboveOrAt(new Vector3D(Thing.Position.x, Thing.Position.y, Thing.Position.z + sd.Floor.plane.GetZ(Thing.Position)));
-					
-					//mxd. Let's use point on floor plane instead of Thing.Sector.FloorHeight;
-					if(nointeraction && level == null && sd.LightLevels.Count > 0) level = sd.LightLevels[sd.LightLevels.Count - 1];
-					
-					//mxd. Use the light level of the highest surface when a thing is above highest sector level.
-					if(level != null)
-					{
-						// Use sector brightness for color shading
-						PixelColor areabrightness = PixelColor.FromInt(mode.CalculateBrightness(level.brightnessbelow));
-						PixelColor areacolor = PixelColor.Modulate(level.colorbelow, areabrightness);
-						sectorcolor = areacolor.WithAlpha(255).ToInt();
 
-						//mxd. Calculate fogdistance
-						int brightness = Math.Max((byte)30, areabrightness.r); // R, G and B of areabrightness are the same
-						if(Thing.Sector.HasFogColor)
+					if(!info.Bright)
+					{
+						SectorLevel level = sd.GetLevelAboveOrAt(new Vector3D(Thing.Position.x, Thing.Position.y, Thing.Position.z + sd.Floor.plane.GetZ(Thing.Position)));
+
+						//mxd. Let's use point on floor plane instead of Thing.Sector.FloorHeight;
+						if(nointeraction && level == null && sd.LightLevels.Count > 0) level = sd.LightLevels[sd.LightLevels.Count - 1];
+
+						//mxd. Use the light level of the highest surface when a thing is above highest sector level.
+						if(level != null)
 						{
-							if(Thing.Sector.UsesOutsideFog && General.Map.Data.MapInfo.OutsideFogDensity > 0)
-								fogdistance = General.Map.Data.MapInfo.OutsideFogDensity;
-							else if(!Thing.Sector.UsesOutsideFog && General.Map.Data.MapInfo.FogDensity > 0)
-								fogdistance = General.Map.Data.MapInfo.FogDensity;
+							// Use sector brightness for color shading
+							PixelColor areabrightness = PixelColor.FromInt(mode.CalculateBrightness(level.brightnessbelow));
+							PixelColor areacolor = PixelColor.Modulate(level.colorbelow, areabrightness);
+							sectorcolor = areacolor.WithAlpha(alpha).ToInt();
+							int brightness = Math.Max((byte) 30, areabrightness.r); // R, G and B of areabrightness are the same
+
+							//mxd. Calculate fogdistance
+							if(Thing.Sector.HasFogColor)
+							{
+								if(Thing.Sector.UsesOutsideFog && General.Map.Data.MapInfo.OutsideFogDensity > 0) fogdistance = General.Map.Data.MapInfo.OutsideFogDensity;
+								else if(!Thing.Sector.UsesOutsideFog && General.Map.Data.MapInfo.FogDensity > 0) fogdistance = General.Map.Data.MapInfo.FogDensity;
+								else fogdistance = brightness * 11.0f;
+							}
+							// Thing is affected by floor glow
+							else if(level.affectedbyglow)
+							{
+								fogdistance = (float) Math.Pow(2.0f, brightness / 9.0f);
+							}
+							// Thing is not affected by floor glow
 							else
-								fogdistance = brightness * 11.0f;
+							{
+								fogdistance = (float) Math.Pow(2.0f, brightness / 9.0f) * 2.0f;
+							}
 						}
-						// Thing is affected by floor glow
-						else if(level.affectedbyglow)
-						{
-							fogdistance = (float)Math.Pow(2.0f, brightness / 9.0f);
-						}
-						// Thing is not affected by floor glow
-						else
-						{
-							fogdistance = (float)Math.Pow(2.0f, brightness / 9.0f) * 2.0f;
-						}
+					}
+					else
+					{
+						// +BRIGHT things are not affected by fog
+						fogdistance = float.MaxValue;
 					}
 				}
 				
@@ -678,18 +750,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		public void OnMove(Vector3D newPosition) 
+		public void OnMove(Vector3D newposition) 
 		{
-			if ((General.Map.UndoRedo.NextUndo == null) || (General.Map.UndoRedo.NextUndo.TicketID != undoticket))
+			if((General.Map.UndoRedo.NextUndo == null) || (General.Map.UndoRedo.NextUndo.TicketID != undoticket))
 				undoticket = mode.CreateUndo("Move thing");
-			Thing.Move(newPosition);
+			Thing.Move(newposition);
 			mode.SetActionResult("Changed thing position to " + Thing.Position + ".");
 
 			// Update what must be updated
 			ThingData td = mode.GetThingData(this.Thing);
-			foreach (KeyValuePair<Sector, bool> s in td.UpdateAlso) 
+			foreach(KeyValuePair<Sector, bool> s in td.UpdateAlso) 
 			{
-				if (mode.VisualSectorExists(s.Key)) 
+				if(mode.VisualSectorExists(s.Key)) 
 				{
 					BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(s.Key);
 					vs.UpdateSectorGeometry(s.Value);

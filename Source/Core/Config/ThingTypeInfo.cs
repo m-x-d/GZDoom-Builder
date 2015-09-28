@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using CodeImp.DoomBuilder.GZBuilder.Data;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.ZDoom;
@@ -52,6 +53,10 @@ namespace CodeImp.DoomBuilder.Config
 		private string classname; //mxd
 		private long spritelongname;
 		private int color;
+		private float alpha; //mxd
+		private byte alphabyte; //mxd
+		private string renderstyle; //mxd
+		private bool bright; //mxd
 		private bool arrow;
 		private float radius;
 		private float height;
@@ -83,6 +88,10 @@ namespace CodeImp.DoomBuilder.Config
 		public ActorStructure Actor { get { return actor; } }
 		public long SpriteLongName { get { return spritelongname; } }
 		public int Color { get { return color; } }
+		public float Alpha { get { return alpha; } } //mxd
+		public byte AlphaByte { get { return alphabyte; } } //mxd
+		public string RenderStyle { get { return renderstyle; } } //mxd
+		public bool Bright { get { return bright; } } //mxd
 		public bool Arrow { get { return arrow; } }
 		public float Radius { get { return radius; } }
 		public float Height { get { return height; } }
@@ -120,6 +129,10 @@ namespace CodeImp.DoomBuilder.Config
 			this.sprite = DataManager.INTERNAL_PREFIX + "unknownthing";
 			this.classname = string.Empty; //mxd
 			this.color = 0;
+			this.alpha = 1f; //mxd
+			this.alphabyte = 255; //mxd
+			this.renderstyle = "normal"; //mxd
+			this.bright = false; //mxd
 			this.arrow = true;
 			this.radius = 10f;
 			this.height = 20f;
@@ -151,11 +164,15 @@ namespace CodeImp.DoomBuilder.Config
 			this.args = new ArgumentInfo[Linedef.NUM_ARGS];
 			this.isknown = true;
 			this.actor = null;
+			this.bright = false; //mxd
 		
 			// Read properties
 			this.title = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".title", "<" + key + ">");
 			this.sprite = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".sprite", cat.Sprite);
 			this.color = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".color", cat.Color);
+			this.alpha = General.Clamp(cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".alpha", cat.Alpha), 0f, 1f); //mxd
+			this.alphabyte = (byte)(this.alpha * 255); //mxd
+			this.renderstyle = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".renderstyle", cat.RenderStyle).ToLower(); //mxd
 			this.arrow = (cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".arrow", cat.Arrow) != 0);
 			this.radius = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".width", cat.Radius);
 			this.height = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".height", cat.Height);
@@ -198,6 +215,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.actor = null;
 			this.classname = string.Empty; //mxd
 			this.isknown = true;
+			this.bright = false; //mxd
 			this.args = new ArgumentInfo[Linedef.NUM_ARGS];
 			for(int i = 0; i < Linedef.NUM_ARGS; i++) this.args[i] = new ArgumentInfo(i);
 			
@@ -205,6 +223,9 @@ namespace CodeImp.DoomBuilder.Config
 			this.sprite = cat.Sprite;
 			this.color = cat.Color;
 			this.arrow = (cat.Arrow != 0);
+			this.alpha = cat.Alpha; //mxd
+			this.alphabyte = (byte)(this.alpha * 255); //mxd
+			this.renderstyle = cat.RenderStyle; //mxd
 			this.radius = cat.Radius;
 			this.height = cat.Height;
 			this.hangs = (cat.Hangs != 0);
@@ -240,12 +261,16 @@ namespace CodeImp.DoomBuilder.Config
 			this.actor = actor;
 			this.classname = actor.ClassName; //mxd
 			this.isknown = true;
+			this.bright = false; //mxd
 			this.args = new ArgumentInfo[Linedef.NUM_ARGS];
 			for(int i = 0; i < Linedef.NUM_ARGS; i++) this.args[i] = new ArgumentInfo(i);
 			
 			// Read properties
 			this.sprite = cat.Sprite;
 			this.color = cat.Color;
+			this.alpha = cat.Alpha; //mxd
+			this.alphabyte = (byte)(this.alpha * 255); //mxd
+			this.renderstyle = cat.RenderStyle; //mxd
 			this.arrow = (cat.Arrow != 0);
 			this.radius = cat.Radius;
 			this.height = cat.Height;
@@ -278,12 +303,16 @@ namespace CodeImp.DoomBuilder.Config
 			this.actor = actor;
 			this.classname = actor.ClassName; //mxd
 			this.isknown = true;
+			this.bright = false; //mxd
 			this.args = new ArgumentInfo[Linedef.NUM_ARGS];
 			for(int i = 0; i < Linedef.NUM_ARGS; i++) this.args[i] = new ArgumentInfo(i);
 
 			// Read properties
 			this.sprite = cat.Sprite;
 			this.color = cat.Color;
+			this.alpha = cat.Alpha; //mxd
+			this.alphabyte = (byte)(this.alpha * 255); //mxd
+			this.renderstyle = cat.RenderStyle; //mxd
 			this.arrow = (cat.Arrow != 0);
 			this.radius = cat.Radius;
 			this.height = cat.Height;
@@ -323,6 +352,10 @@ namespace CodeImp.DoomBuilder.Config
 			// Copy properties
 			this.sprite = other.sprite;
 			this.color = other.color;
+			this.alpha = other.alpha; //mxd
+			this.alphabyte = other.alphabyte; //mxd
+			this.renderstyle = other.renderstyle; //mxd
+			this.bright = other.bright; //mxd
 			this.arrow = other.arrow;
 			this.radius = other.radius;
 			this.height = other.height;
@@ -399,7 +432,6 @@ namespace CodeImp.DoomBuilder.Config
 			else if(string.IsNullOrEmpty(sprite))//mxd
 				sprite = DataManager.INTERNAL_PREFIX + "unknownthing";
 
-			
 			if(this.sprite.Length < 9)
 				this.spritelongname = Lump.MakeLongName(this.sprite);
 			else
@@ -415,6 +447,24 @@ namespace CodeImp.DoomBuilder.Config
 			// Size
 			if(actor.HasPropertyWithValue("radius")) radius = actor.GetPropertyValueInt("radius", 0);
 			if(actor.HasPropertyWithValue("height")) height = actor.GetPropertyValueInt("height", 0);
+
+			//mxd. Renderstyle
+			if(actor.HasPropertyWithValue("renderstyle")) renderstyle = actor.GetPropertyValueString("renderstyle", 0).ToLower();
+
+			//mxd. Alpha
+			if(actor.HasPropertyWithValue("alpha"))
+			{
+				this.alpha = General.Clamp(actor.GetPropertyValueFloat("alpha", 0), 0f, 1f);
+				this.alphabyte = (byte)(this.alpha * 255);
+			}
+			else if(actor.HasProperty("defaultalpha"))
+			{
+				this.alpha = (General.Map.Config.GameType == GameType.HERETIC ? 0.4f : 0.6f);
+				this.alphabyte = (byte)(this.alpha * 255);
+			}
+
+			//mxd. BRIGHT
+			this.bright = actor.GetFlagValue("bright", false);
 			
 			// Safety
 			if(this.radius < 4f) this.radius = 8f;

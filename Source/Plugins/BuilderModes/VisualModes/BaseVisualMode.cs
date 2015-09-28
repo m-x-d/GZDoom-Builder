@@ -522,24 +522,27 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		protected override void MoveSelectedThings(Vector2D direction, bool absolutePosition) 
+		protected override void MoveSelectedThings(Vector2D direction, bool absoluteposition) 
 		{
-			List<VisualThing> visualThings = GetSelectedVisualThings(true);
-			if (visualThings.Count == 0) return;
+			List<VisualThing> visualthings = GetSelectedVisualThings(true);
+			if (visualthings.Count == 0) return;
 
 			PreAction(UndoGroup.ThingMove);
 
-			Vector3D[] coords = new Vector3D[visualThings.Count];
-			for (int i = 0; i < visualThings.Count; i++)
-				coords[i] = visualThings[i].Thing.Position;
+			Vector3D[] coords = new Vector3D[visualthings.Count];
+			for(int i = 0; i < visualthings.Count; i++)
+				coords[i] = visualthings[i].Thing.Position;
 
 			//move things...
-			Vector3D[] translatedCoords = TranslateCoordinates(coords, direction, absolutePosition);
-			for (int i = 0; i < visualThings.Count; i++) 
+			Vector3D[] translatedcoords = TranslateCoordinates(coords, direction, absoluteposition);
+			for(int i = 0; i < visualthings.Count; i++) 
 			{
-				BaseVisualThing t = visualThings[i] as BaseVisualThing;
-				t.OnMove(translatedCoords[i]);
+				BaseVisualThing t = visualthings[i] as BaseVisualThing;
+				t.OnMove(translatedcoords[i]);
 			}
+
+			// Things may've changed sectors...
+			FillBlockMap();
 
 			PostAction();
 		}
