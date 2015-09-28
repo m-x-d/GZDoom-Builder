@@ -120,16 +120,12 @@ namespace CodeImp.DoomBuilder.ZDoom
 								parser.ReportError("Expected class name to inherit from");
 								return;
 							}
- 
+
 							// Find the actor to inherit from
 							baseclass = parser.GetArchivedActorByName(inheritclass);
 
-							//mxd. Does it exist?
-							if(baseclass == null)
-							{
-								parser.ReportError("Parent class '" + inheritclass + "' does not exist");
-								return;
-							}
+							//mxd. Does it exist? (We can carry on regardless, so add a warning) 
+							if(baseclass == null) parser.ReportWarning("Parent class '" + inheritclass + "' does not exist");
 							break;
 
 						case "replaces":
