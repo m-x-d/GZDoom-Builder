@@ -595,14 +595,14 @@ namespace CodeImp.DoomBuilder
 				newmap.BeginAddRemove();
 				General.WriteLogLine("Initializing map format interface " + config.FormatInterface + "...");
 				io = MapSetIO.Create(config.FormatInterface, tempwad, this);
-				General.WriteLogLine("Reading map data structures from file...");
+				General.WriteLogLine("Reading map data from file...");
 #if DEBUG
 				newmap = io.Read(newmap, TEMP_MAP_HEADER);
 #else
 				try { newmap = io.Read(newmap, TEMP_MAP_HEADER); } catch(Exception e) 
 				{
-					General.ErrorLogger.Add(ErrorType.Error, "Unable to read the map data structures with the specified configuration. " + e.GetType().Name + ": " + e.Message);
-					General.ShowErrorMessage("Unable to read the map data structures with the specified configuration.", MessageBoxButtons.OK);
+					General.ErrorLogger.Add(ErrorType.Error, "Unable to read the map data with the specified configuration. " + e.GetType().Name + ": " + e.Message);
+					General.ShowErrorMessage("Unable to read the map data with the specified configuration." + Environment.NewLine + Environment.NewLine + e.Message, MessageBoxButtons.OK);
 					return false;
 				}
 #endif

@@ -21,6 +21,7 @@ using System.IO;
 using System.Text;
 using System.Globalization;
 using System.Collections.Generic;
+using CodeImp.DoomBuilder.Map;
 
 #endregion
 
@@ -31,10 +32,10 @@ namespace CodeImp.DoomBuilder.IO
 		#region ================== Constants
 		
 		// Path seperator
-		public const string DEFAULT_SEPERATOR = ".";
+		//public const string DEFAULT_SEPERATOR = ".";
 		
 		// Allowed characters in a key
-		public const string KEY_CHARACTERS = "abcdefghijklmnopqrstuvwxyz0123456789_";
+		private const string KEY_CHARACTERS = "abcdefghijklmnopqrstuvwxyz0123456789_";
 		
 		// Parse mode constants
 		private const int PM_NOTHING = 0;
@@ -185,7 +186,7 @@ namespace CodeImp.DoomBuilder.IO
 			// Go through all of the data until
 			// the end or until the struct closes
 			// or when an arror occurred
-			while ((cpErrorResult == 0) && (endofstruct == false))
+			while((cpErrorResult == 0) && (endofstruct == false))
 			{
 				// Get current character
 				if(line == data.Length - 1) break;
@@ -193,6 +194,7 @@ namespace CodeImp.DoomBuilder.IO
 				{
 					pos = 0;
 					line++;
+					if(string.IsNullOrEmpty(data[line])) continue; //mxd. Skip empty lines here so correct line number is displayed on errors
 				}
 
 				c = data[line][pos];
@@ -283,7 +285,7 @@ namespace CodeImp.DoomBuilder.IO
 							{
 								// Block comment closes on the same line?.. (mxd)
 								int np = data[line].IndexOf("*/", pos);
-								if (np > -1)
+								if(np > -1)
 								{
 									pos = np + 1;
 								}
@@ -310,7 +312,7 @@ namespace CodeImp.DoomBuilder.IO
 							break;
 							
 						default: // Everything else
-							if (!topLevel && pos == 0) 
+							if(!topLevel && pos == 0) 
 							{
 								while(matches.ContainsKey(data[line])) 
 								{
@@ -415,17 +417,18 @@ namespace CodeImp.DoomBuilder.IO
 								catch(FormatException)
 								{
 									// ERROR: Invalid value in assignment
-									RaiseError(line, ERROR_VALUEINVALID);
+									RaiseError(line, ERROR_VALUEINVALID + "\n\nUnrecognized token: '" + s.Trim() + "'");
 								}
 							}
 							catch(FormatException)
 							{
 								// ERROR: Invalid value in assignment
-								RaiseError(line, ERROR_VALUEINVALID);
+								RaiseError(line, ERROR_VALUEINVALID + "\n\nUnrecognized token: '" + s.Trim() + "'");
 							}
 						}
 						// Floating point?
-						else if(s.IndexOf('.') > -1)
+						//mxd. Can be in scientific notation (like "1E-06")
+						else if(s.IndexOf('.') > -1 || s.ToLowerInvariant().Contains("e-"))
 						{
 							float fval = 0;
 							
@@ -434,7 +437,7 @@ namespace CodeImp.DoomBuilder.IO
 							catch(FormatException)
 							{ 
 								// ERROR: Invalid value in assignment
-								RaiseError(line, ERROR_VALUEINVALID);
+								RaiseError(line, ERROR_VALUEINVALID + "\n\nUnrecognized token: '" + s.Trim() + "'");
 							}
 							
 							// Add it to struct
@@ -476,13 +479,13 @@ namespace CodeImp.DoomBuilder.IO
 								catch(FormatException)
 								{ 
 									// ERROR: Invalid value in assignment
-									RaiseError(line, ERROR_VALUEINVALID);
+									RaiseError(line, ERROR_VALUEINVALID + "\n\nUnrecognized token: '" + s.Trim() + "'");
 								}
 							}
 							catch(FormatException)
 							{ 
 								// ERROR: Invalid value in assignment
-								RaiseError(line, ERROR_VALUEINVALID);
+								RaiseError(line, ERROR_VALUEINVALID + "\n\nUnrecognized token: '" + s.Trim() + "'");
 							}
 						}
 						
@@ -533,7 +536,7 @@ namespace CodeImp.DoomBuilder.IO
 									catch(FormatException)
 									{ 
 										// ERROR: Invalid value in assignment
-										RaiseError(line, ERROR_VALUEINVALID);
+										RaiseError(line, ERROR_VALUEINVALID + "\n\nUnrecognized token: '" + v.Trim() + "'");
 									}
 									
 									// Convert the number to a char
@@ -541,7 +544,7 @@ namespace CodeImp.DoomBuilder.IO
 									catch(FormatException)
 									{ 
 										// ERROR: Invalid value in assignment
-										RaiseError(line, ERROR_VALUEINVALID);
+										RaiseError(line, ERROR_VALUEINVALID + "\n\nUnrecognized token: '" + v.Trim() + "'");
 									}
 									
 									// Add the char
@@ -623,7 +626,7 @@ namespace CodeImp.DoomBuilder.IO
 								
 							default:
 								// Unknown keyword
-								RaiseError(line, ERROR_KEYWORDUNKNOWN + "\nUnrecognized token: '" + val.ToString().Trim().ToLowerInvariant() + "'");
+								RaiseError(line, ERROR_KEYWORDUNKNOWN + "\n\nUnrecognized token: '" + val.ToString().Trim() + "'");
 								break;
 						}
 						
@@ -710,6 +713,14 @@ namespace CodeImp.DoomBuilder.IO
 						float f = (float)cs[i].Value;
 						db.Append(leveltabs); db.Append(cs[i].Key); db.Append(spacing); db.Append("=");
 						db.Append(spacing); db.Append(f.ToString("0.000", CultureInfo.InvariantCulture)); db.Append(";"); db.Append(newline);
+					}
+					//mxd. Check if value is of double type
+					else if(cs[i].Value is double)
+					{
+						// Output the value as double (7 decimals)
+						double d = (double)cs[i].Value;
+						db.Append(leveltabs); db.Append(cs[i].Key); db.Append(spacing); db.Append("=");
+						db.Append(spacing); db.Append(d.ToString("0.0000000", CultureInfo.InvariantCulture)); db.Append(";"); db.Append(newline);
 					}
 					// Check if value is of other numeric type
 					else if(cs[i].Value.GetType().IsPrimitive)

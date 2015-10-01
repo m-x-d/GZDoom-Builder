@@ -184,8 +184,22 @@ namespace CodeImp.DoomBuilder.Editing
 			UniversalStreamReader reader = new UniversalStreamReader(General.Map.FormatInterface.UIFields); //mxd
 			reader.StrictChecking = false;
 			General.Map.Map.BeginAddRemove();
-			reader.Read(General.Map.Map, memstream);
-			General.Map.Map.EndAddRemove();
+
+			//mxd. UniversalStreamReader can now throw errors
+			try
+			{
+				reader.Read(General.Map.Map, memstream);
+			}
+			catch(Exception e)
+			{
+				General.ErrorLogger.Add(ErrorType.Error, "Unable to load prefab. " + e.GetType().Name + ": " + e.Message);
+				General.ShowErrorMessage("Unable to load prefab." + Environment.NewLine + Environment.NewLine + e.Message, MessageBoxButtons.OK);
+				return;
+			}
+			finally
+			{
+				General.Map.Map.EndAddRemove();
+			}
 			
 			// The new geometry is not marked, so invert the marks to get it marked
 			General.Map.Map.InvertAllMarks();
