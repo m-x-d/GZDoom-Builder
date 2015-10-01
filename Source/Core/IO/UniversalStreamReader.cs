@@ -22,7 +22,6 @@ using System.Text;
 using System.IO;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Geometry;
-using System.Windows.Forms;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Types;
 
@@ -41,10 +40,10 @@ namespace CodeImp.DoomBuilder.IO
 
 		#region ================== Variables
 
-		private Configuration config;
+		private readonly Configuration config;
 		private bool setknowncustomtypes;
 		private bool strictchecking = true;
-		private Dictionary<string, Dictionary<string, UniversalType>> uifields; //mxd
+		private readonly Dictionary<string, Dictionary<string, UniversalType>> uifields; //mxd
 		
 		#endregion
 
@@ -130,50 +129,31 @@ namespace CodeImp.DoomBuilder.IO
 		#region ================== Reading
 
 		// This reads from a stream
-		public MapSet Read(MapSet map, Stream stream)
+		public void Read(MapSet map, Stream stream)
 		{
 			StreamReader reader = new StreamReader(stream, Encoding.ASCII);
 			UniversalParser textmap = new UniversalParser();
 			textmap.StrictChecking = strictchecking;
 			
-#if !DEBUG
-			try
+			// Read UDMF from stream
+			List<string> data = new List<string>(1000);
+			while(!reader.EndOfStream) data.Add(reader.ReadLine());
+
+			// Parse it
+			textmap.InputConfiguration(data.ToArray());
+
+			// Check for errors
+			if(textmap.ErrorResult != 0)
 			{
-#endif
-				// Read UDMF from stream
-				List<string> data = new List<string>(100);
-				while(!reader.EndOfStream) 
-				{
-					string line = reader.ReadLine();
-					if(string.IsNullOrEmpty(line)) continue;
-					data.Add(line);
-				}
-
-				textmap.InputConfiguration(data.ToArray());
-
-				// Check for errors
-				if(textmap.ErrorResult != 0)
-				{
-					// Show parse error
-					General.ShowErrorMessage("Error on line " + textmap.ErrorLine + " while parsing UDMF map data:\n" + textmap.ErrorDescription, MessageBoxButtons.OK);
-				}
-				else
-				{
-					// Read the map
-					Dictionary<int, Vertex> vertexlink = ReadVertices(map, textmap);
-					Dictionary<int, Sector> sectorlink = ReadSectors(map, textmap);
-					ReadLinedefs(map, textmap, vertexlink, sectorlink);
-					ReadThings(map, textmap);
-				}
-#if !DEBUG
+				//mxd. Throw parse error
+				throw new Exception("Error on line " + textmap.ErrorLine + " while parsing UDMF map data:\n" + textmap.ErrorDescription);
 			}
-			catch(Exception e)
-			{
-				General.ShowErrorMessage("Unexpected error reading UDMF map data. " + e.GetType().Name + ": " + e.Message, MessageBoxButtons.OK);
-			}
-#endif
 
-			return map;
+			// Read the map
+			Dictionary<int, Vertex> vertexlink = ReadVertices(map, textmap);
+			Dictionary<int, Sector> sectorlink = ReadSectors(map, textmap);
+			ReadLinedefs(map, textmap, vertexlink, sectorlink);
+			ReadThings(map, textmap);
 		}
 
 		// This reads the things
