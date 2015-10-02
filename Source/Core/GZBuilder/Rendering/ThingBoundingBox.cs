@@ -1,4 +1,4 @@
-﻿#region ================== Namespaces
+﻿/*#region ================== Namespaces
 
 using System;
 using SlimDX.Direct3D9;
@@ -121,4 +121,4 @@ namespace CodeImp.DoomBuilder.GZBuilder.Rendering
 
 		#endregion
 	}
-}
+}*/

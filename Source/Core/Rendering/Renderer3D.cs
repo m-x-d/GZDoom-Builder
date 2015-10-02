@@ -20,15 +20,15 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using CodeImp.DoomBuilder.Config;
-using SlimDX;
-using CodeImp.DoomBuilder.Geometry;
-using SlimDX.Direct3D9;
 using CodeImp.DoomBuilder.Data;
-using CodeImp.DoomBuilder.VisualModes;
-using CodeImp.DoomBuilder.Map;
+using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.GZBuilder.Data; //mxd
 using CodeImp.DoomBuilder.GZBuilder.Geometry; //mxd
 using CodeImp.DoomBuilder.GZBuilder.Rendering; //mxd
+using CodeImp.DoomBuilder.Map;
+using CodeImp.DoomBuilder.VisualModes;
+using SlimDX;
+using SlimDX.Direct3D9;
 
 #endregion
 
@@ -50,8 +50,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		// Matrices
 		private Matrix projection;
 		private Matrix view3d;
+		private Matrix viewproj; //mxd
 		private Matrix billboard;
-		private Matrix worldviewproj;
 		private Matrix view2d;
 		private Matrix world;
 		private Vector3D cameraposition;
@@ -66,9 +66,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		// Thing cage
 		private bool renderthingcages;
 		//mxd
-		private ThingBoundingBox bbox;
 		private VisualVertexHandle vertexHandle;
-		private SizelessVisualThingCage sizelessThingHandle;
 		private List<VisualThing> lightthings;
 		private int[] lightOffsets;
 		private Dictionary<ModelData, List<VisualThing>> modelthings;
@@ -108,7 +106,10 @@ namespace CodeImp.DoomBuilder.Rendering
 		private List<VisualThing> allthings;
 
 		//mxd. Visual vertices
-		private VisualVertex[] visualvertices;
+		private List<VisualVertex> visualvertices;
+
+		//mxd. Event lines
+		private List<Line3D> eventlines;
 		
 		#endregion
 
@@ -134,6 +135,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			renderthingcages = true;
 			showselection = true;
 			showhighlight = true;
+			eventlines = new List<Line3D>(); //mxd
 			
 			// Dummy frustum
 			frustum = new ProjectedFrustum2D(new Vector2D(), 0.0f, 0.0f, PROJ_NEAR_PLANE,
@@ -234,8 +236,6 @@ namespace CodeImp.DoomBuilder.Rendering
 		//mxd
 		private void SetupHelperObjects() 
 		{
-			bbox = new ThingBoundingBox();
-			sizelessThingHandle = new SizelessVisualThingCage();
 			vertexHandle = new VisualVertexHandle();
 		}
 
@@ -289,6 +289,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			
 			// Make the view matrix
 			view3d = Matrix.LookAtRH(D3DDevice.V3(pos), D3DDevice.V3(lookat), new Vector3(0f, 0f, 1f));
+			viewproj = view3d * projection; //mxd
 			
 			// Make the billboard matrix
 			billboard = Matrix.RotationZ(anglexy + Angle2D.PI);
@@ -300,17 +301,13 @@ namespace CodeImp.DoomBuilder.Rendering
 			windowsize = graphics.RenderTarget.ClientSize;
 			Matrix scaling = Matrix.Scaling((1f / windowsize.Width) * 2f, (1f / windowsize.Height) * -2f, 1f);
 			Matrix translate = Matrix.Translation(-(float)windowsize.Width * 0.5f, -(float)windowsize.Height * 0.5f, 0f);
-			view2d = Matrix.Multiply(translate, scaling);
+			view2d = translate * scaling;
 		}
 		
 		// This applies the matrices
 		private void ApplyMatrices3D()
 		{
-			worldviewproj = world * view3d * projection;
-			graphics.Shaders.World3D.WorldViewProj = worldviewproj;
-			graphics.Device.SetTransform(TransformState.World, world);
-			graphics.Device.SetTransform(TransformState.Projection, projection);
-			graphics.Device.SetTransform(TransformState.View, view3d);
+			graphics.Shaders.World3D.WorldViewProj = world * viewproj; //mxd. Multiplication is ~2x faster than "world * view3d * projection";
 		}
 
 		// This sets the appropriate view matrix
@@ -346,7 +343,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Device.SetRenderState(RenderState.FogTableMode, FogMode.Linear);
 				graphics.Device.SetRenderState(RenderState.RangeFogEnable, false);
 				graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
-				graphics.Shaders.World3D.SetHighlightColor(0);
+				graphics.Shaders.World3D.HighlightColor = new Color4(); //mxd
 
 				// Texture addressing
 				graphics.Device.SetSamplerState(0, SamplerState.AddressU, TextureAddress.Wrap);
@@ -456,13 +453,15 @@ namespace CodeImp.DoomBuilder.Rendering
 			RenderTranslucentPass(translucentgeo, translucentthings);
 
 			// THING CAGES
+			world = Matrix.Identity;
+			ApplyMatrices3D();
 			if(renderthingcages) RenderThingCages();
 
 			//mxd. Visual vertices
 			RenderVertices();
 
 			//mxd. Event lines
-			if(General.Settings.GZShowEventLines) RenderArrows(LinksCollector.GetThingLinks(allthings));
+			if(General.Settings.GZShowEventLines) RenderArrows(eventlines);
 			
 			// Remove references
 			graphics.Shaders.World3D.Texture1 = null;
@@ -535,10 +534,6 @@ namespace CodeImp.DoomBuilder.Rendering
 
 			foreach(VisualThing t in allthings)
 			{
-				// Setup matrix
-				world = Matrix.Multiply(t.CageScales, t.Position);
-				ApplyMatrices3D();
-
 				// Setup color
 				Color4 thingcolor;
 				if(t.Selected && showselection) 
@@ -554,35 +549,8 @@ namespace CodeImp.DoomBuilder.Rendering
 
 				//Render cage
 				graphics.Shaders.World3D.ApplySettings();
-
-				if(t.Sizeless) 
-				{
-					graphics.Device.SetStreamSource(0, sizelessThingHandle.Shape, 0, WorldVertex.Stride);
-					graphics.Device.DrawPrimitives(PrimitiveType.LineList, 0, 3);
-				} 
-				else 
-				{
-					graphics.Device.SetStreamSource(0, bbox.Cage, 0, WorldVertex.Stride);
-					graphics.Device.DrawPrimitives(PrimitiveType.LineList, 0, 12);
-				}
-
-				//and arrow
-				if(t.Thing.IsDirectional) 
-				{
-					float sx = t.CageScales.M11;
-					Matrix arrowScaler = Matrix.Scaling(sx, sx, sx); //scale arrow evenly based on thing width\depth
-					if(t.Sizeless) 
-						world = Matrix.Multiply(arrowScaler, t.Position);
-					else 
-						world = Matrix.Multiply(arrowScaler, t.Position * Matrix.Translation(0.0f, 0.0f, t.CageScales.M33 / 2));
-					Matrix rot = Matrix.RotationY(-t.Thing.RollRad) * Matrix.RotationX(-t.Thing.PitchRad) * Matrix.RotationZ(t.Thing.Angle);
-					world = Matrix.Multiply(rot, world);
-					ApplyMatrices3D();
-
-					graphics.Shaders.World3D.ApplySettings();
-					graphics.Device.SetStreamSource(0, bbox.Arrow, 0, WorldVertex.Stride);
-					graphics.Device.DrawPrimitives(PrimitiveType.LineList, 0, 5);
-				}
+				graphics.Device.SetStreamSource(0, t.CageBuffer, 0, WorldVertex.Stride);
+				graphics.Device.DrawPrimitives(PrimitiveType.LineList, 0, t.CageLength);
 			}
 
 			// Done
@@ -723,8 +691,10 @@ namespace CodeImp.DoomBuilder.Rendering
 			//mxd. Anything to render?
 			if(geopass.Count == 0 && thingspass.Count == 0) return;
 			
+			ImageData curtexture;
 			int currentshaderpass = shaderpass;
 			int highshaderpass = shaderpass + 2;
+			float fogfactor = -1; //mxd
 
 			// Begin rendering with this shader
 			graphics.Shaders.World3D.BeginPass(shaderpass);
@@ -732,8 +702,6 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Render the geometry collected
 			foreach(KeyValuePair<ImageData, List<VisualGeometry>> group in geopass)
 			{
-				ImageData curtexture;
-
 				// What texture to use?
 				if(group.Key is UnknownImage)
 					curtexture = General.Map.Data.UnknownTexture3D;
@@ -765,7 +733,7 @@ namespace CodeImp.DoomBuilder.Rendering
 						if(g.Sector.NeedsUpdateGeo) g.Sector.Update();
 
 						// Only do this sector when a vertexbuffer is created
-						//mxd. no Map means that sector was deleted recently, I suppose
+						//mxd. No Map means that sector was deleted recently, I suppose
 						if (g.Sector.GeometryBuffer != null && g.Sector.Sector.Map != null) 
 						{
 							// Change current sector
@@ -786,7 +754,7 @@ namespace CodeImp.DoomBuilder.Rendering
 						int wantedshaderpass = (((g == highlighted) && showhighlight) || (g.Selected && showselection)) ? highshaderpass : shaderpass;
 
 						//mxd. Render fog?
-						if( !(!General.Settings.GZDrawFog || fullbrightness || sector.Sector.Brightness > 247) )
+						if(General.Settings.GZDrawFog && !fullbrightness && sector.Sector.Brightness < 248)
 							wantedshaderpass += 8;
 
 						// Switch shader pass?
@@ -795,27 +763,31 @@ namespace CodeImp.DoomBuilder.Rendering
 							graphics.Shaders.World3D.EndPass();
 							graphics.Shaders.World3D.BeginPass(wantedshaderpass);
 							currentshaderpass = wantedshaderpass;
-						}
-						
-						// Set the colors to use
-						if(!graphics.Shaders.Enabled)
-						{
-							graphics.Device.SetTexture(2, (g.Selected && showselection) ? selectionimage.Texture : null);
-							graphics.Device.SetTexture(3, ((g == highlighted) && showhighlight) ? highlightimage.Texture : null);
-						}
-						else
-						{
-							//mxd. set variables for fog rendering
-							if (wantedshaderpass > 7) 
+
+							//mxd. Set variables for fog rendering?
+							if(wantedshaderpass > 7)
 							{
 								graphics.Shaders.World3D.World = world;
-								graphics.Shaders.World3D.LightColor = sector.Sector.FogColor;
-								graphics.Shaders.World3D.CameraPosition = new Vector4(cameraposition.x, cameraposition.y, cameraposition.z, sector.FogDistance);
+							}
+						}
+
+						//mxd. Set variables for fog rendering?
+						if(wantedshaderpass > 7)
+						{
+							if(g.FogFactor != fogfactor)
+							{
+								graphics.Shaders.World3D.CameraPosition = new Vector4(cameraposition.x, cameraposition.y, cameraposition.z, g.FogFactor);
+								fogfactor = g.FogFactor;
 							}
 							
-							graphics.Shaders.World3D.SetHighlightColor(CalculateHighlightColor((g == highlighted) && showhighlight, (g.Selected && showselection)).ToArgb());
-							graphics.Shaders.World3D.ApplySettings();
+							graphics.Shaders.World3D.LightColor = sector.Sector.FogColor;
 						}
+
+						// Set the colors to use
+						graphics.Shaders.World3D.HighlightColor = CalculateHighlightColor((g == highlighted) && showhighlight, (g.Selected && showselection));
+
+						// Apply changes
+						graphics.Shaders.World3D.ApplySettings();
 						
 						// Render!
 						graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, g.VertexOffset, g.Triangles);
@@ -832,13 +804,15 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Device.SetSamplerState(0, SamplerState.AddressW, TextureAddress.Clamp);
 				graphics.Device.SetRenderState(RenderState.CullMode, Cull.None); //mxd. Disable backside culling, because otherwise sprites with positive ScaleY and negative ScaleX will be facing away from the camera...
 
+				Color4 litcolor; //mxd
+				Color4 vertexcolor = new Color4(); //mxd
+				fogfactor = -1; //mxd
+
 				// Render things collected
 				foreach(KeyValuePair<ImageData, List<VisualThing>> group in thingspass)
 				{
 					if(group.Key is UnknownImage) continue;
 					
-					ImageData curtexture;
-						
 					// What texture to use?
 					if(!group.Key.IsImageLoaded || group.Key.IsDisposed)
 						curtexture = General.Map.Data.Hourglass3D;
@@ -850,7 +824,6 @@ namespace CodeImp.DoomBuilder.Rendering
 						curtexture.CreateTexture();
 
 					// Apply texture
-					if(!graphics.Shaders.Enabled) graphics.Device.SetTexture(0, curtexture.Texture);
 					graphics.Shaders.World3D.Texture1 = curtexture.Texture;
 
 					// Render all things with this texture
@@ -872,27 +845,34 @@ namespace CodeImp.DoomBuilder.Rendering
 							// Determine the shader pass we want to use for this object
 							int wantedshaderpass = (((t == highlighted) && showhighlight) || (t.Selected && showselection)) ? highshaderpass : shaderpass;
 
-							//mxd. if fog is enagled, switch to shader, which calculates it
+							//mxd. If fog is enagled, switch to shader, which calculates it
 							if(General.Settings.GZDrawFog && !fullbrightness && t.Thing.Sector != null && (t.Thing.Sector.HasFogColor || t.Thing.Sector.Brightness < 248))
 								wantedshaderpass += 8;
 
-							//mxd. if current thing is light - set it's color to light color
-							Color4 litcolor = new Color4();
+							//mxd. Create the matrix for positioning 
+							world = CreateThingPositionMatrix(t);
+
+							//mxd. If current thing is light - set it's color to light color
 							if(Array.IndexOf(GZBuilder.GZGeneral.GZ_LIGHTS, t.Thing.Type) != -1 && !fullbrightness) 
 							{
-								wantedshaderpass += 4; //render using one of passes, which uses World3D.VertexColor
-								graphics.Shaders.World3D.VertexColor = t.LightColor;
+								wantedshaderpass += 4; // Render using one of passes, which uses World3D.VertexColor
 								litcolor = t.LightColor;
+								vertexcolor = t.LightColor;
 							}
-							//mxd. check if Thing is affected by dynamic lights and set color accordingly
-							else if(General.Settings.GZDrawLightsMode != LightRenderMode.NONE && !fullbrightness && lightthings.Count > 0) 
+							//mxd. Check if Thing is affected by dynamic lights and set color accordingly
+							else if(General.Settings.GZDrawLightsMode != LightRenderMode.NONE && !fullbrightness && lightthings.Count > 0)
 							{
 								litcolor = GetLitColorForThing(t);
-								if(litcolor.ToArgb() != 0) 
+								if(litcolor.ToArgb() != 0)
 								{
-									wantedshaderpass += 4; //render using one of passes, which uses World3D.VertexColor
-									graphics.Shaders.World3D.VertexColor = new Color4(t.VertexColor) + litcolor;
+									wantedshaderpass += 4; // Render using one of passes, which uses World3D.VertexColor
+									vertexcolor = new Color4(t.VertexColor) + litcolor;
 								}
+							}
+							else
+							{
+								litcolor = new Color4();
+								vertexcolor = new Color4();
 							}
 
 							// Switch shader pass?
@@ -903,53 +883,26 @@ namespace CodeImp.DoomBuilder.Rendering
 								currentshaderpass = wantedshaderpass;
 							}
 
-							// Set the colors to use
-							if(!graphics.Shaders.Enabled) 
-							{
-								graphics.Device.SetTexture(2, (t.Selected && showselection) ? selectionimage.Texture : null);
-								graphics.Device.SetTexture(3, ((t == highlighted) && showhighlight) ? highlightimage.Texture : null);
-							} 
-							else 
-							{
-								graphics.Shaders.World3D.SetHighlightColor(CalculateHighlightColor((t == highlighted) && showhighlight, (t.Selected && showselection)).ToArgb());
-							}
-
-							//mxd. Create the matrix for positioning 
-							if(t.Info.RenderMode == Thing.SpriteRenderMode.NORMAL) // Apply billboarding?
-							{
-								if(t.Info.XYBillboard)
-								{
-									world = Matrix.Translation(0f, 0f, -t.LocalCenterZ) 
-										* Matrix.RotationX(Angle2D.PI - General.Map.VisualCamera.AngleZ)
-										* Matrix.Translation(0f, 0f, t.LocalCenterZ)
-									    * billboard
-									    * Matrix.Scaling(t.Thing.ScaleX, t.Thing.ScaleX, t.Thing.ScaleY)
-									    * t.Position;
-								}
-								else
-								{
-									world = billboard
-									        * Matrix.Scaling(t.Thing.ScaleX, t.Thing.ScaleX, t.Thing.ScaleY)
-									        * t.Position;
-								}
-							}
-							else
-							{
-								world = Matrix.Scaling(t.Thing.ScaleX, t.Thing.ScaleX, t.Thing.ScaleY)
-								        * t.Position;
-							}
-
-							ApplyMatrices3D();
-
-							//mxd. Set variables for fog rendering
-							if(wantedshaderpass > 7) 
+							//mxd. Set variables for fog rendering?
+							if(wantedshaderpass > 7)
 							{
 								graphics.Shaders.World3D.World = world;
-								graphics.Shaders.World3D.LightColor = t.Thing.Sector.FogColor;
-								float fogdistance = (litcolor.ToArgb() != 0 ? VisualSector.MAXIMUM_FOG_DISTANCE : t.FogDistance);
-								graphics.Shaders.World3D.CameraPosition = new Vector4(cameraposition.x, cameraposition.y, cameraposition.z, fogdistance);
+
+								float curfogfactor = (litcolor.ToArgb() != 0 ? VisualThing.LIT_FOG_DENSITY_SCALER : t.FogFactor);
+								if(curfogfactor != fogfactor)
+								{
+									graphics.Shaders.World3D.CameraPosition = new Vector4(cameraposition.x, cameraposition.y, cameraposition.z, curfogfactor);
+									fogfactor = curfogfactor;
+								}
 							}
 
+							// Set the colors to use
+							if(t.Thing.Sector != null) graphics.Shaders.World3D.LightColor = t.Thing.Sector.FogColor;
+							graphics.Shaders.World3D.VertexColor = vertexcolor;
+							graphics.Shaders.World3D.HighlightColor = CalculateHighlightColor((t == highlighted) && showhighlight, (t.Selected && showselection));
+
+							// Apply changes
+							ApplyMatrices3D();
 							graphics.Shaders.World3D.ApplySettings();
 
 							// Apply buffer
@@ -1018,13 +971,14 @@ namespace CodeImp.DoomBuilder.Rendering
 													  - (General.Map.VisualCamera.Position - vg1.BoundingBox[0]).GetLengthSq()));
 			}
 
-			// Begin rendering with this shader
-			graphics.Shaders.World3D.BeginPass(shaderpass);
-
+			ImageData curtexture;
 			VisualSector sector = null;
 			RenderPass currentpass = RenderPass.Solid;
 			long curtexturename = 0;
-			ImageData curtexture;
+			float fogfactor = -1;
+
+			// Begin rendering with this shader
+			graphics.Shaders.World3D.BeginPass(shaderpass);
 
 			// Go for all geometry
 			foreach(VisualGeometry g in geopass)
@@ -1062,9 +1016,7 @@ namespace CodeImp.DoomBuilder.Rendering
 						curtexture.CreateTexture();
 
 					// Apply texture
-					if(!graphics.Shaders.Enabled) graphics.Device.SetTexture(0, curtexture.Texture);
 					graphics.Shaders.World3D.Texture1 = curtexture.Texture;
-
 					curtexturename = g.Texture.LongName;
 				}
 
@@ -1075,7 +1027,7 @@ namespace CodeImp.DoomBuilder.Rendering
 					if(g.Sector.NeedsUpdateGeo) g.Sector.Update();
 
 					// Only do this sector when a vertexbuffer is created
-					//mxd. no Map means that sector was deleted recently, I suppose
+					//mxd. No Map means that sector was deleted recently, I suppose
 					if(g.Sector.GeometryBuffer != null && g.Sector.Sector.Map != null)
 					{
 						// Change current sector
@@ -1096,7 +1048,7 @@ namespace CodeImp.DoomBuilder.Rendering
 					int wantedshaderpass = (((g == highlighted) && showhighlight) || (g.Selected && showselection)) ? highshaderpass : shaderpass;
 
 					//mxd. Render fog?
-					if(!(!General.Settings.GZDrawFog || fullbrightness || sector.Sector.Brightness > 247))
+					if(General.Settings.GZDrawFog && !fullbrightness && sector.Sector.Brightness < 248)
 						wantedshaderpass += 8;
 
 					// Switch shader pass?
@@ -1105,27 +1057,27 @@ namespace CodeImp.DoomBuilder.Rendering
 						graphics.Shaders.World3D.EndPass();
 						graphics.Shaders.World3D.BeginPass(wantedshaderpass);
 						currentshaderpass = wantedshaderpass;
-					}
 
-					// Set the colors to use
-					if(!graphics.Shaders.Enabled)
-					{
-						graphics.Device.SetTexture(2, (g.Selected && showselection) ? selectionimage.Texture : null);
-						graphics.Device.SetTexture(3, ((g == highlighted) && showhighlight) ? highlightimage.Texture : null);
-					}
-					else
-					{
-						//mxd. set variables for fog rendering
+						//mxd. Set variables for fog rendering?
 						if(wantedshaderpass > 7)
 						{
 							graphics.Shaders.World3D.World = world;
-							graphics.Shaders.World3D.LightColor = sector.Sector.FogColor;
-							graphics.Shaders.World3D.CameraPosition = new Vector4(cameraposition.x, cameraposition.y, cameraposition.z, sector.FogDistance);
 						}
-
-						graphics.Shaders.World3D.SetHighlightColor(CalculateHighlightColor((g == highlighted) && showhighlight, (g.Selected && showselection)).ToArgb());
-						graphics.Shaders.World3D.ApplySettings();
 					}
+
+					// Set variables for fog rendering?
+					if(wantedshaderpass > 7 && g.FogFactor != fogfactor)
+					{
+						graphics.Shaders.World3D.CameraPosition = new Vector4(cameraposition.x, cameraposition.y, cameraposition.z, g.FogFactor);
+						fogfactor = g.FogFactor;
+					}
+
+					// Set the colors to use
+					graphics.Shaders.World3D.LightColor = sector.Sector.FogColor;
+					graphics.Shaders.World3D.HighlightColor = CalculateHighlightColor((g == highlighted) && showhighlight, (g.Selected && showselection));
+
+					// Apply changes
+					graphics.Shaders.World3D.ApplySettings();
 
 					// Render!
 					graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, g.VertexOffset, g.Triangles);
@@ -1145,9 +1097,13 @@ namespace CodeImp.DoomBuilder.Rendering
 				thingspass.Sort((vt1, vt2) => (int)((General.Map.VisualCamera.Position - vt2.BoundingBox[0]).GetLengthSq()
 												  - (General.Map.VisualCamera.Position - vt1.BoundingBox[0]).GetLengthSq()));
 
+				Color4 litcolor;
+				
 				// Reset vars
 				currentpass = RenderPass.Solid;
 				curtexturename = 0;
+				Color4 vertexcolor = new Color4();
+				fogfactor = -1;
 
 				// Render things collected
 				foreach(VisualThing t in thingspass)
@@ -1185,10 +1141,7 @@ namespace CodeImp.DoomBuilder.Rendering
 							curtexture.CreateTexture();
 
 						// Apply texture
-						if(!graphics.Shaders.Enabled)
-							graphics.Device.SetTexture(0, curtexture.Texture);
 						graphics.Shaders.World3D.Texture1 = curtexture.Texture;
-
 						curtexturename = t.Texture.LongName;
 					}
 
@@ -1196,7 +1149,7 @@ namespace CodeImp.DoomBuilder.Rendering
 					if(t.Thing.IsModel &&
 					   (General.Settings.GZDrawModelsMode == ModelRenderMode.ALL ||
 						General.Settings.GZDrawModelsMode == ModelRenderMode.ACTIVE_THINGS_FILTER ||
-						(General.Settings.GZDrawModelsMode == ModelRenderMode.SELECTION && t.Selected)))
+					   (General.Settings.GZDrawModelsMode == ModelRenderMode.SELECTION && t.Selected)))
 						continue;
 
 					// Update buffer if needed
@@ -1212,23 +1165,30 @@ namespace CodeImp.DoomBuilder.Rendering
 						if(General.Settings.GZDrawFog && !fullbrightness && t.Thing.Sector != null && (t.Thing.Sector.HasFogColor || t.Thing.Sector.Brightness < 248))
 							wantedshaderpass += 8;
 
-						//mxd. if current thing is light - set it's color to light color
-						Color4 litcolor = new Color4();
+						//mxd. Create the matrix for positioning 
+						world = CreateThingPositionMatrix(t);
+
+						//mxd. If current thing is light - set it's color to light color
 						if(Array.IndexOf(GZBuilder.GZGeneral.GZ_LIGHTS, t.Thing.Type) != -1 && !fullbrightness)
 						{
-							wantedshaderpass += 4; //render using one of passes, which uses World3D.VertexColor
-							graphics.Shaders.World3D.VertexColor = t.LightColor;
+							wantedshaderpass += 4; // Render using one of passes, which uses World3D.VertexColor
 							litcolor = t.LightColor;
+							vertexcolor = t.LightColor;
 						}
-						//mxd. check if Thing is affected by dynamic lights and set color accordingly
+						//mxd. Check if Thing is affected by dynamic lights and set color accordingly
 						else if(General.Settings.GZDrawLightsMode != LightRenderMode.NONE && !fullbrightness && lightthings.Count > 0)
 						{
 							litcolor = GetLitColorForThing(t);
 							if(litcolor.ToArgb() != 0)
 							{
-								wantedshaderpass += 4; //render using one of passes, which uses World3D.VertexColor
-								graphics.Shaders.World3D.VertexColor = new Color4(t.VertexColor) + litcolor;
+								wantedshaderpass += 4; // Render using one of passes, which uses World3D.VertexColor
+								vertexcolor = new Color4(t.VertexColor) + litcolor;
 							}
+						}
+						else
+						{
+							litcolor = new Color4();
+							vertexcolor = new Color4();
 						}
 
 						// Switch shader pass?
@@ -1239,53 +1199,26 @@ namespace CodeImp.DoomBuilder.Rendering
 							currentshaderpass = wantedshaderpass;
 						}
 
-						// Set the colors to use
-						if(!graphics.Shaders.Enabled)
-						{
-							graphics.Device.SetTexture(2, (t.Selected && showselection) ? selectionimage.Texture : null);
-							graphics.Device.SetTexture(3, ((t == highlighted) && showhighlight) ? highlightimage.Texture : null);
-						}
-						else
-						{
-							graphics.Shaders.World3D.SetHighlightColor(CalculateHighlightColor((t == highlighted) && showhighlight, (t.Selected && showselection)).ToArgb());
-						}
-
-						//mxd. Create the matrix for positioning 
-						if(t.Info.RenderMode == Thing.SpriteRenderMode.NORMAL) // Apply billboarding?
-						{
-							if(t.Info.XYBillboard)
-							{
-								world = Matrix.Translation(0f, 0f, -t.LocalCenterZ)
-									* Matrix.RotationX(Angle2D.PI - General.Map.VisualCamera.AngleZ)
-									* Matrix.Translation(0f, 0f, t.LocalCenterZ)
-									* billboard
-									* Matrix.Scaling(t.Thing.ScaleX, t.Thing.ScaleX, t.Thing.ScaleY)
-									* t.Position;
-							}
-							else
-							{
-								world = billboard
-										* Matrix.Scaling(t.Thing.ScaleX, t.Thing.ScaleX, t.Thing.ScaleY)
-										* t.Position;
-							}
-						}
-						else
-						{
-							world = Matrix.Scaling(t.Thing.ScaleX, t.Thing.ScaleX, t.Thing.ScaleY)
-									* t.Position;
-						}
-
-						ApplyMatrices3D();
-
-						//mxd. Set variables for fog rendering
+						//mxd. set variables for fog rendering?
 						if(wantedshaderpass > 7)
 						{
 							graphics.Shaders.World3D.World = world;
-							graphics.Shaders.World3D.LightColor = t.Thing.Sector.FogColor;
-							float fogdistance = (litcolor.ToArgb() != 0 ? VisualSector.MAXIMUM_FOG_DISTANCE : t.FogDistance);
-							graphics.Shaders.World3D.CameraPosition = new Vector4(cameraposition.x, cameraposition.y, cameraposition.z, fogdistance);
+
+							float curfogfactor = (litcolor.ToArgb() != 0 ? VisualThing.LIT_FOG_DENSITY_SCALER : t.FogFactor);
+							if(curfogfactor != fogfactor)
+							{
+								graphics.Shaders.World3D.CameraPosition = new Vector4(cameraposition.x, cameraposition.y, cameraposition.z, curfogfactor);
+								fogfactor = curfogfactor;
+							}
 						}
 
+						// Set the colors to use
+						graphics.Shaders.World3D.LightColor = t.Thing.Sector.FogColor;
+						graphics.Shaders.World3D.VertexColor = vertexcolor;
+						graphics.Shaders.World3D.HighlightColor = CalculateHighlightColor((t == highlighted) && showhighlight, (t.Selected && showselection));
+
+						// Apply changes
+						ApplyMatrices3D();
 						graphics.Shaders.World3D.ApplySettings();
 
 						// Apply buffer
@@ -1305,6 +1238,39 @@ namespace CodeImp.DoomBuilder.Rendering
 
 			// Done rendering with this shader
 			graphics.Shaders.World3D.EndPass();
+		}
+
+		//mxd
+		private Matrix CreateThingPositionMatrix(VisualThing t)
+		{
+			Matrix result;
+
+			//mxd. Create the matrix for positioning 
+			if(t.Info.RenderMode == Thing.SpriteRenderMode.NORMAL) // Apply billboarding?
+			{
+				if(t.Info.XYBillboard)
+				{
+					result = Matrix.Translation(0f, 0f, -t.LocalCenterZ)
+						* Matrix.RotationX(Angle2D.PI - General.Map.VisualCamera.AngleZ)
+						* Matrix.Translation(0f, 0f, t.LocalCenterZ)
+						* billboard
+						* Matrix.Scaling(t.Thing.ScaleX, t.Thing.ScaleX, t.Thing.ScaleY)
+						* t.Position;
+				}
+				else
+				{
+					result = billboard
+							* Matrix.Scaling(t.Thing.ScaleX, t.Thing.ScaleX, t.Thing.ScaleY)
+							* t.Position;
+				}
+			}
+			else
+			{
+				result = Matrix.Scaling(t.Thing.ScaleX, t.Thing.ScaleX, t.Thing.ScaleY)
+						* t.Position;
+			}
+
+			return result;
 		}
 
 		//mxd. Dynamic lights pass!
@@ -1428,18 +1394,17 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Begin rendering with this shader
 			graphics.Shaders.World3D.BeginPass(currentshaderpass);
 
-			foreach (KeyValuePair<ModelData, List<VisualThing>> group in modelthings) 
+			foreach(KeyValuePair<ModelData, List<VisualThing>> group in modelthings) 
 			{
-				foreach (VisualThing t in group.Value) 
+				foreach(VisualThing t in group.Value) 
 				{
 					t.Update();
 					
 					Color4 vertexcolor = new Color4(t.VertexColor);
-					vertexcolor.Alpha = 1.0f;
-					
+
 					//check if model is affected by dynamic lights and set color accordingly
-					Color4 litcolor = new Color4();
-					if (General.Settings.GZDrawLightsMode != LightRenderMode.NONE && !fullbrightness && lightthings.Count > 0) 
+					Color4 litcolor;
+					if(General.Settings.GZDrawLightsMode != LightRenderMode.NONE && !fullbrightness && lightthings.Count > 0) 
 					{
 						litcolor = GetLitColorForThing(t);
 						graphics.Shaders.World3D.VertexColor = vertexcolor + litcolor;
@@ -1447,18 +1412,18 @@ namespace CodeImp.DoomBuilder.Rendering
 					else 
 					{
 						graphics.Shaders.World3D.VertexColor = vertexcolor;
-						litcolor = vertexcolor;
+						litcolor = new Color4();
 					}
 
 					// Determine the shader pass we want to use for this object
 					int wantedshaderpass = ((((t == highlighted) && showhighlight) || (t.Selected && showselection)) ? highshaderpass : shaderpass);
 
 					//mxd. if fog is enagled, switch to shader, which calculates it
-					if (General.Settings.GZDrawFog && !fullbrightness && t.Thing.Sector != null && (t.Thing.Sector.HasFogColor || t.Thing.Sector.Brightness < 248))
+					if(General.Settings.GZDrawFog && !fullbrightness && t.Thing.Sector != null && (t.Thing.Sector.HasFogColor || t.Thing.Sector.Brightness < 248))
 						wantedshaderpass += 8;
 
 					// Switch shader pass?
-					if (currentshaderpass != wantedshaderpass) 
+					if(currentshaderpass != wantedshaderpass) 
 					{
 						graphics.Shaders.World3D.EndPass();
 						graphics.Shaders.World3D.BeginPass(wantedshaderpass);
@@ -1466,15 +1431,7 @@ namespace CodeImp.DoomBuilder.Rendering
 					}
 
 					// Set the colors to use
-					if (!graphics.Shaders.Enabled) 
-					{
-						graphics.Device.SetTexture(2, (t.Selected && showselection) ? selectionimage.Texture : null);
-						graphics.Device.SetTexture(3, ((t == highlighted) && showhighlight) ? highlightimage.Texture : null);
-					} 
-					else 
-					{
-						graphics.Shaders.World3D.SetHighlightColor(CalculateHighlightColor((t == highlighted) && showhighlight, (t.Selected && showselection)).ToArgb());
-					}
+					graphics.Shaders.World3D.HighlightColor = CalculateHighlightColor((t == highlighted) && showhighlight, (t.Selected && showselection));
 
 					// Create the matrix for positioning / rotation
 					float sx = t.Thing.ScaleX * t.Thing.ActorScale.Width;
@@ -1487,12 +1444,12 @@ namespace CodeImp.DoomBuilder.Rendering
 					ApplyMatrices3D();
 
 					//mxd. set variables for fog rendering
-					if (wantedshaderpass > 7) 
+					if(wantedshaderpass > 7)
 					{
 						graphics.Shaders.World3D.World = world;
-						graphics.Shaders.World3D.LightColor = t.Thing.Sector.FogColor;
-						float fogdistance = (litcolor.ToArgb() != 0 ? VisualSector.MAXIMUM_FOG_DISTANCE : t.FogDistance);
-						graphics.Shaders.World3D.CameraPosition = new Vector4(cameraposition.x, cameraposition.y, cameraposition.z, fogdistance);
+						if(t.Thing.Sector != null) graphics.Shaders.World3D.LightColor = t.Thing.Sector.FogColor;
+						float fogfactor = (litcolor.ToArgb() != 0 ? VisualThing.LIT_FOG_DENSITY_SCALER : t.FogFactor);
+						graphics.Shaders.World3D.CameraPosition = new Vector4(cameraposition.x, cameraposition.y, cameraposition.z, fogfactor);
 					}
 
 					for(int i = 0; i < group.Key.Model.Meshes.Count; i++) 
@@ -1618,7 +1575,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				(General.Settings.GZDrawModelsMode == ModelRenderMode.SELECTION && t.Selected))) 
 			{
 				ModelData mde = General.Map.Data.ModeldefEntries[t.Thing.Type];
-				if (!modelthings.ContainsKey(mde))
+				if(!modelthings.ContainsKey(mde))
 					modelthings.Add(mde, new List<VisualThing> { t });
 				else
 					modelthings[mde].Add(t);
@@ -1654,10 +1611,10 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		//mxd
-		public void AddVisualVertices(VisualVertex[] verts) 
-		{
-			visualvertices = verts;
-		}
+		public void SetVisualVertices(List<VisualVertex> verts) { visualvertices = verts; }
+
+		//mxd
+		public void SetEventLines(List<Line3D> lines) { eventlines = lines; }
 
 		//mxd
 		private static bool BoundingBoxesIntersect(Vector3D[] bbox1, Vector3D[] bbox2) 

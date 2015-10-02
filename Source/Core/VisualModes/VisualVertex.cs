@@ -66,12 +66,6 @@ namespace CodeImp.DoomBuilder.VisualModes
 			this.ceilingVertex = ceilingVertex;
 		}
 
-		// This sets the distance from the camera
-		internal void CalculateCameraDistance(Vector2D campos) 
-		{
-			cameradistance = Vector2D.DistanceSq(vertex.Position, campos);
-		}
-
 		public void SetPosition(Vector3D pos) 
 		{
 			position = Matrix.Translation(pos.x, pos.y, pos.z);

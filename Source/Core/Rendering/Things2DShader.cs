@@ -109,17 +109,18 @@ namespace CodeImp.DoomBuilder.Rendering
 				effect.SetValue(rendersettings, values);
 				Matrix world = manager.D3DDevice.Device.GetTransform(TransformState.World);
 				Matrix view = manager.D3DDevice.Device.GetTransform(TransformState.View);
-				effect.SetValue(transformsettings, Matrix.Multiply(world, view));
+				effect.SetValue(transformsettings, world * view);
 			}
 		}
 
 		//mxd. Used to render models
 		public void SetTransformSettings(Matrix world)
 		{
-			if (manager.Enabled) 
+			if(manager.Enabled) 
 			{
 				Matrix view = manager.D3DDevice.Device.GetTransform(TransformState.View);
-				effect.SetValue(transformsettings, Matrix.Multiply(world, view));
+				effect.SetValue(transformsettings, world * view);
+				settingschanged = true;
 			}
 		}
 		

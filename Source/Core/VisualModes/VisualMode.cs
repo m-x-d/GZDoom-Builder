@@ -562,26 +562,24 @@ namespace CodeImp.DoomBuilder.VisualModes
 					// Things
 					foreach(Thing t in block.Things)
 					{
-						VisualThing vt;
-
 						// Not filtered out?
-						if(General.Map.ThingsFilter.IsThingVisible(t))
-						{
-							if(allthings.ContainsKey(t))
-							{
-								vt = allthings[t];
-							}
-							else
-							{
-								// Create new visual thing
-								vt = CreateVisualThing(t);
-								allthings.Add(t, vt);
-							}
+						if(!General.Map.ThingsFilter.IsThingVisible(t)) continue;
 
-							if(vt != null)
-							{
-								visiblethings.Add(vt);
-							}
+						VisualThing vt;
+						if(allthings.ContainsKey(t))
+						{
+							vt = allthings[t];
+						}
+						else
+						{
+							// Create new visual thing
+							vt = CreateVisualThing(t);
+							allthings.Add(t, vt);
+						}
+
+						if(vt != null)
+						{
+							visiblethings.Add(vt);
 						}
 					}
 				}

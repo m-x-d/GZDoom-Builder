@@ -121,9 +121,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			//mxd. Sky is always bright
 			int color;
 			if(s.CeilTexture == General.Map.Config.SkyFlatName)
+			{
 				color = -1; // That's white. With alpha. Not very impressive, eh?
+				fogfactor = 0; // No fog
+			}
 			else
+			{
 				color = PixelColor.FromInt(level.color).WithAlpha((byte)General.Clamp(level.alpha, 0, 255)).ToInt();
+				fogfactor = CalculateFogDensity(level.brightnessbelow);
+			}
 
 			// Make vertices
 			ReadOnlyCollection<Vector2D> triverts = base.Sector.Sector.Triangles.Vertices;

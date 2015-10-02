@@ -464,6 +464,10 @@ namespace CodeImp.DoomBuilder.Windows
 			labelFloorOffsets.Enabled = floorOffsets.NonDefaultValue;
 			labelFloorScale.Enabled = floorScale.NonDefaultValue;
 
+			//mxd. Update brightness reset buttons
+			resetceillight.Visible = (ceilLightAbsolute.CheckState != CheckState.Unchecked || ceilBrightness.GetResult(0) != 0);
+			resetfloorlight.Visible = (floorLightAbsolute.CheckState != CheckState.Unchecked || floorBrightness.GetResult(0) != 0);
+
 			//mxd. Angle steps
 			anglesteps.Sort();
 			if(useCeilLineAngles) ceilRotation.StepValues = anglesteps;
@@ -1134,6 +1138,7 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 			}
 
+			resetceillight.Visible = (ceilLightAbsolute.CheckState != CheckState.Unchecked || ceilBrightness.Text != "0");
 			General.Map.IsChanged = true;
 			if(OnValuesChanged != null)	OnValuesChanged(this, EventArgs.Empty);
 		}
@@ -1173,6 +1178,7 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 			}
 
+			resetfloorlight.Visible = (floorLightAbsolute.CheckState != CheckState.Unchecked || floorBrightness.Text != "0");
 			General.Map.IsChanged = true;
 			if(OnValuesChanged != null)	OnValuesChanged(this, EventArgs.Empty);
 		}
@@ -1218,6 +1224,7 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 			}
 
+			resetceillight.Visible = (ceilLightAbsolute.CheckState != CheckState.Unchecked || ceilBrightness.Text != "0");
 			General.Map.IsChanged = true;
 			if(OnValuesChanged != null)	OnValuesChanged(this, EventArgs.Empty);
 		}
@@ -1263,8 +1270,55 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 			}
 
+			resetfloorlight.Visible = (floorLightAbsolute.CheckState != CheckState.Unchecked || floorBrightness.Text != "0");
 			General.Map.IsChanged = true;
 			if(OnValuesChanged != null)	OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		private void resetceillight_Click(object sender, EventArgs e)
+		{
+			MakeUndo(); //mxd
+
+			preventchanges = true;
+
+			ceilLightAbsolute.Checked = false;
+			ceilBrightness.Text = "0";
+
+			foreach(Sector s in sectors)
+			{
+				if(s.Fields.ContainsKey("lightceilingabsolute")) s.Fields.Remove("lightceilingabsolute");
+				if(s.Fields.ContainsKey("lightceiling")) s.Fields.Remove("lightceiling");
+			}
+
+			preventchanges = false;
+
+			resetceillight.Visible = false;
+			ceilBrightness.Focus();
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		private void resetfloorlight_Click(object sender, EventArgs e)
+		{
+			MakeUndo(); //mxd
+
+			preventchanges = true;
+
+			floorLightAbsolute.Checked = false;
+			floorBrightness.Text = "0";
+
+			foreach(Sector s in sectors)
+			{
+				if(s.Fields.ContainsKey("lightfloorabsolute")) s.Fields.Remove("lightfloorabsolute");
+				if(s.Fields.ContainsKey("lightfloor")) s.Fields.Remove("lightfloor");
+			}
+
+			preventchanges = false;
+
+			resetfloorlight.Visible = false;
+			floorBrightness.Focus();
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
 
 		#endregion

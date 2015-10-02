@@ -58,6 +58,10 @@ namespace CodeImp.DoomBuilder.Data
 		protected bool hasLongName; //mxd. Texture name is longer than DataManager.CLASIC_IMAGE_NAME_LENGTH
 		protected bool hasPatchWithSameName; //mxd
 		protected int level; //mxd. Folder depth of this item
+
+		//mxd. Hashing
+		private static int hashcounter;
+		private readonly int hashcode;
 		
 		// Loading
 		private volatile ImageLoadState previewstate;
@@ -126,6 +130,9 @@ namespace CodeImp.DoomBuilder.Data
 			// Defaults
 			usecolorcorrection = true;
 			allowunload = true;
+
+			//mxd. Hashing
+			hashcode = hashcounter++;
 		}
 
 		// Destructor
@@ -379,6 +386,8 @@ namespace CodeImp.DoomBuilder.Data
 								
 								General.Map.Data.GlowingFlats[longname].Color = new PixelColor(255, (byte)br, (byte)bg, (byte)bb);
 								General.Map.Data.GlowingFlats[longname].CalculateTextureColor = false;
+								if(!General.Map.Data.GlowingFlats[longname].Fullbright)
+									General.Map.Data.GlowingFlats[longname].Brightness = (br + bg + bb) / 3;
 							}
 
 							// Release the data
@@ -556,6 +565,12 @@ namespace CodeImp.DoomBuilder.Data
 				// Return loading bitmap
 				return Properties.Resources.Hourglass;
 			}
+		}
+
+		//mxd. This greatly speeds up Dictionary lookups
+		public override int GetHashCode()
+		{
+			return hashcode;
 		}
 		
 		#endregion

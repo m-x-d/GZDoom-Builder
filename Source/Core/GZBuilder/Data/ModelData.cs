@@ -36,6 +36,10 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 
 		internal bool IsVoxel;
 
+		// Hashing
+		private static int hashcounter;
+		private readonly int hashcode;
+
 		// Disposing
 		private bool isdisposed;
 
@@ -51,6 +55,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 			TextureNames = new List<string>();
 			transform = Matrix.Identity;
 			transformstretched = Matrix.Identity;
+			hashcode = hashcounter++;
 		}
 
 		internal void Dispose() 
@@ -76,6 +81,12 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 			this.scale = scale;
 			this.transform = rotation * Matrix.Scaling(scale) * offset;
 			this.transformstretched = rotation * Matrix.Scaling(scale.X, scale.Y, scale.Z * Renderer3D.GZDOOM_INVERTED_VERTICAL_VIEW_STRETCH) * offset;
+		}
+
+		//mxd. This greatly speeds up Dictionary lookups
+		public override int GetHashCode()
+		{
+			return hashcode;
 		}
 
 		#endregion

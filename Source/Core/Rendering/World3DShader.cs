@@ -42,7 +42,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		//lights
 		private readonly EffectHandle lightPositionAndRadiusHandle;
 		private readonly EffectHandle lightColorHandle;
-		private readonly EffectHandle worldHandle;
+		private readonly EffectHandle world;
 		//fog
 		private readonly EffectHandle camPosHandle;
 		//used in ModelReader
@@ -53,20 +53,96 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		#region ================== Properties
 
-		public Matrix WorldViewProj { set { if(manager.Enabled) effect.SetValue<Matrix>(worldviewproj, value); } }
-		public Texture Texture1 { set { if(manager.Enabled) effect.SetTexture(texture1, value); } }
+		public Matrix WorldViewProj { set { if(manager.Enabled) effect.SetValue(worldviewproj, value); settingschanged = true; } }
+		public Texture Texture1 { set { if(manager.Enabled) effect.SetTexture(texture1, value); settingschanged = true; } }
 
 		//mxd
-		public Color4 VertexColor { set { if (manager.Enabled) effect.SetValue<Color4>(vertexColorHadle, value); } }
+		private Color4 vertexcolor;
+		public Color4 VertexColor
+		{
+			set 
+			{
+				if(manager.Enabled && vertexcolor != value)
+				{
+					effect.SetValue(vertexColorHadle, value);
+					vertexcolor = value;
+					settingschanged = true; 
+				}
+			} 
+		}
 		
 		//lights
-		public Color4 LightColor { set { if (manager.Enabled) effect.SetValue<Color4>(lightColorHandle, value); } }
-		public Vector4 LightPositionAndRadius { set { if (manager.Enabled) effect.SetValue(lightPositionAndRadiusHandle, value); } }
+		private Color4 lightcolor;
+		public Color4 LightColor
+		{
+			set
+			{
+				if(manager.Enabled && lightcolor != value)
+				{
+					effect.SetValue(lightColorHandle, value);
+					lightcolor = value;
+					settingschanged = true;
+				}
+			}
+		}
+
+		private Vector4 lightpos;
+		public Vector4 LightPositionAndRadius
+		{
+			set
+			{
+				if(manager.Enabled && value != lightpos)
+				{
+					effect.SetValue(lightPositionAndRadiusHandle, value);
+					lightpos = value;
+					settingschanged = true;
+				} 
+			}
+		}
 		
 		//fog
-		public Vector4 CameraPosition { set { if (manager.Enabled) effect.SetValue(camPosHandle, value); } }
+		private Vector4 campos;
+		public Vector4 CameraPosition
+		{
+			set
+			{
+				if(manager.Enabled && campos != value)
+				{
+					effect.SetValue(camPosHandle, value);
+					campos = value;
+					settingschanged = true;
+				}
+			}
+		}
 
-		public Matrix World { set { if (manager.Enabled) effect.SetValue<Matrix>(worldHandle, value); } }
+		private Matrix mworld;
+		public Matrix World
+		{
+			set
+			{
+				if(manager.Enabled && mworld != value)
+				{
+					effect.SetValue(world, value);
+					mworld = value;
+					settingschanged = true;
+				}
+			}
+		}
+
+		//mxd. This sets the highlight color
+		private Color4 hicolor;
+		public Color4 HighlightColor
+		{
+			set
+			{
+				if(manager.Enabled && hicolor != value)
+				{
+					effect.SetValue(highlightcolor, value);
+					hicolor = value;
+					settingschanged = true;
+				}
+			}
+		}
 
 		#endregion
 
@@ -97,7 +173,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				//fog
 				camPosHandle = effect.GetParameter(null, "cameraPos");
 
-				worldHandle = effect.GetParameter(null, "world");
+				world = effect.GetParameter(null, "world");
 			}
 
 			// Initialize world vertex declaration
@@ -148,8 +224,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				if(lightColorHandle != null) lightColorHandle.Dispose();
 				if(lightPositionAndRadiusHandle != null) lightPositionAndRadiusHandle.Dispose();
 				if(camPosHandle != null) camPosHandle.Dispose();
-				if(worldHandle != null) worldHandle.Dispose();
-
+				if(world != null) world.Dispose();
 
 				// Done
 				base.Dispose();
@@ -189,15 +264,6 @@ namespace CodeImp.DoomBuilder.Rendering
 					effect.SetValue(mipfiltersettings, (int)TextureFilter.Linear);
 					effect.SetValue(maxanisotropysetting, 1.0f);
 				}
-			}
-		}
-
-		// This sets the highlight color
-		public void SetHighlightColor(int hicolor)
-		{
-			if(manager.Enabled)
-			{
-				effect.SetValue(highlightcolor, new Color4(hicolor));
 			}
 		}
 

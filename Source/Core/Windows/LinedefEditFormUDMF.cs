@@ -558,6 +558,10 @@ namespace CodeImp.DoomBuilder.Windows
 			tagsselector.FinishSetup(); //mxd
 			commenteditor.FinishSetup(); //mxd
 
+			//mxd. Update brightness reset buttons
+			resetfrontlight.Visible = (cbLightAbsoluteFront.CheckState != CheckState.Unchecked || lightFront.GetResult(0) != 0);
+			resetbacklight.Visible = (cbLightAbsoluteBack.CheckState != CheckState.Unchecked || lightBack.GetResult(0) != 0);
+
 			//mxd. Update some labels
 			if (frontside.CheckState != CheckState.Unchecked)
 			{
@@ -1274,6 +1278,7 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 			}
 
+			resetfrontlight.Visible = (cbLightAbsoluteFront.CheckState != CheckState.Unchecked || lightFront.Text != "0");
 			General.Map.IsChanged = true;
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
@@ -1301,7 +1306,7 @@ namespace CodeImp.DoomBuilder.Windows
 					if(l.Back != null) 
 					{
 						bool absolute = false;
-						switch (cbLightAbsoluteBack.CheckState)
+						switch(cbLightAbsoluteBack.CheckState)
 						{
 							case CheckState.Indeterminate:
 								absolute = l.Back.Fields.GetValue("lightabsolute", false);
@@ -1318,6 +1323,7 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 			}
 
+			resetbacklight.Visible = (cbLightAbsoluteBack.CheckState != CheckState.Unchecked || lightBack.Text != "0");
 			General.Map.IsChanged = true;
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
@@ -1364,6 +1370,7 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 			}
 
+			resetfrontlight.Visible = (cbLightAbsoluteFront.CheckState != CheckState.Unchecked || lightFront.Text != "0");
 			General.Map.IsChanged = true;
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
@@ -1410,6 +1417,55 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 			}
 
+			resetbacklight.Visible = (cbLightAbsoluteBack.CheckState != CheckState.Unchecked || lightBack.Text != "0");
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		private void resetfrontlight_Click(object sender, EventArgs e)
+		{
+			MakeUndo(); //mxd
+
+			preventchanges = true;
+
+			cbLightAbsoluteFront.Checked = false;
+			lightFront.Text = "0";
+
+			foreach(Linedef l in lines)
+			{
+				if(l.Front == null) continue;
+				if(l.Front.Fields.ContainsKey("lightabsolute")) l.Front.Fields.Remove("lightabsolute");
+				if(l.Front.Fields.ContainsKey("light")) l.Front.Fields.Remove("light");
+			}
+
+			preventchanges = false;
+
+			resetfrontlight.Visible = false;
+			lightFront.Focus();
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		private void resetbacklight_Click(object sender, EventArgs e)
+		{
+			MakeUndo(); //mxd
+
+			preventchanges = true;
+
+			cbLightAbsoluteBack.Checked = false;
+			lightBack.Text = "0";
+
+			foreach(Linedef l in lines)
+			{
+				if(l.Back == null) continue;
+				if(l.Back.Fields.ContainsKey("lightabsolute")) l.Back.Fields.Remove("lightabsolute");
+				if(l.Back.Fields.ContainsKey("light")) l.Back.Fields.Remove("light");
+			}
+
+			preventchanges = false;
+
+			resetbacklight.Visible = false;
+			lightBack.Focus();
 			General.Map.IsChanged = true;
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}

@@ -20,12 +20,10 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Windows.Forms;
-using CodeImp.DoomBuilder.GZBuilder.Data;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.VisualModes;
-using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Data;
 
 #endregion
@@ -165,11 +163,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(alpha == 255) RenderPass = RenderPass.Mask;
 
 			int sectorcolor = new PixelColor(alpha, 255, 255, 255).ToInt();
-			fogdistance = VisualSector.MAXIMUM_FOG_DISTANCE; //mxd
+			fogfactor = 0f; //mxd
 			
 			//mxd. Check thing size 
 			float thingradius = Thing.Size; // Thing.Size has ThingRadius arg override applied
-			float thingheight = Thing.Height; // Thing.Height has ThingHeight arg override applied
+			thingheight = Thing.Height; // Thing.Height has ThingHeight arg override applied
 
 			if(thingradius < 0.1f || thingheight < 0.1f) 
 			{
@@ -197,7 +195,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					if(!info.Bright)
 					{
-						SectorLevel level = sd.GetLevelAboveOrAt(new Vector3D(Thing.Position.x, Thing.Position.y, Thing.Position.z + sd.Floor.plane.GetZ(Thing.Position)));
+						Vector3D thingpos = new Vector3D(Thing.Position.x, Thing.Position.y, Thing.Position.z + sd.Floor.plane.GetZ(Thing.Position));
+						SectorLevel level = sd.GetLevelAboveOrAt(thingpos);
 
 						//mxd. Let's use point on floor plane instead of Thing.Sector.FloorHeight;
 						if(nointeraction && level == null && sd.LightLevels.Count > 0) level = sd.LightLevels[sd.LightLevels.Count - 1];
@@ -205,35 +204,77 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						//mxd. Use the light level of the highest surface when a thing is above highest sector level.
 						if(level != null)
 						{
+							// TECH: In GZDoom, ceiling glow doesn't affect thing brightness 
 							// Use sector brightness for color shading
-							PixelColor areabrightness = PixelColor.FromInt(mode.CalculateBrightness(level.brightnessbelow));
+							int brightness = level.brightnessbelow;
+
+							// Level is glowing
+							if(level.affectedbyglow && level.type == SectorLevelType.Floor)
+							{
+								// Get glow brightness
+								SectorData glowdata = (level.sector != Thing.Sector ? mode.GetSectorData(level.sector) : sd);
+								float planez = level.plane.GetZ(thingpos);
+
+								int glowbrightness = glowdata.FloorGlow.Brightness / 2;
+								SectorLevel nexthigher = sd.GetLevelAbove(new Vector3D(thingpos, planez));
+
+								// Interpolate thing brightness between glow and regular ones
+								if(nexthigher != null)
+								{
+									float higherz = nexthigher.plane.GetZ(thingpos);
+									float delta = General.Clamp(1.0f - (thingpos.z - planez) / (higherz - planez), 0f, 1f);
+									brightness = (int)((glowbrightness + level.sector.Brightness / 2) * delta + nexthigher.sector.Brightness * (1.0f - delta));
+								}
+							}
+							// Level below this one is glowing. Only possible for floor glow(?)
+							else if(level.type == SectorLevelType.Glow)
+							{
+								// Interpolate thing brightness between glow and regular ones
+								float planez = level.plane.GetZ(thingpos);
+								SectorLevel nextlower = sd.GetLevelBelow(new Vector3D(thingpos, planez));
+
+								if(nextlower != null && nextlower.affectedbyglow)
+								{
+									// Get glow brightness
+									SectorData glowdata = (nextlower.sector != Thing.Sector ? mode.GetSectorData(nextlower.sector) : sd);
+									int glowbrightness = (level.type == SectorLevelType.Ceiling ? glowdata.CeilingGlow.Brightness : glowdata.FloorGlow.Brightness) / 2;
+									
+									float lowerz = nextlower.plane.GetZ(thingpos);
+									float delta = General.Clamp((thingpos.z - lowerz) / (planez - lowerz), 0f, 1f);
+									brightness = (int)((glowbrightness + nextlower.sector.Brightness / 2) * (1.0f - delta) + level.sector.Brightness * delta);
+								}
+							}
+
+							PixelColor areabrightness = PixelColor.FromInt(mode.CalculateBrightness(brightness));
 							PixelColor areacolor = PixelColor.Modulate(level.colorbelow, areabrightness);
 							sectorcolor = areacolor.WithAlpha(alpha).ToInt();
-							int brightness = Math.Max((byte) 30, areabrightness.r); // R, G and B of areabrightness are the same
 
-							//mxd. Calculate fogdistance
-							if(Thing.Sector.HasFogColor)
+							//mxd. Calculate fogfactor
+							float density;
+							if(Thing.Sector.UsesOutsideFog && General.Map.Data.MapInfo.OutsideFogDensity > 0)
 							{
-								if(Thing.Sector.UsesOutsideFog && General.Map.Data.MapInfo.OutsideFogDensity > 0) fogdistance = General.Map.Data.MapInfo.OutsideFogDensity;
-								else if(!Thing.Sector.UsesOutsideFog && General.Map.Data.MapInfo.FogDensity > 0) fogdistance = General.Map.Data.MapInfo.FogDensity;
-								else fogdistance = brightness * 11.0f;
+								density = General.Map.Data.MapInfo.OutsideFogDensity;
 							}
-							// Thing is affected by floor glow
-							else if(level.affectedbyglow)
+							else if(!Thing.Sector.UsesOutsideFog && General.Map.Data.MapInfo.FogDensity > 0)
 							{
-								fogdistance = (float) Math.Pow(2.0f, brightness / 9.0f);
+								density = General.Map.Data.MapInfo.FogDensity;
 							}
-							// Thing is not affected by floor glow
+							else if(brightness < 248)
+							{
+								density = General.Clamp(255 - brightness, 30, 255);
+							}
 							else
 							{
-								fogdistance = (float) Math.Pow(2.0f, brightness / 9.0f) * 2.0f;
+								density = 0f;
 							}
+
+							if(level.sector.HasFogColor)
+							{
+								density *= 4;
+							}
+
+							fogfactor = density * VisualGeometry.FOG_DENSITY_SCALER;
 						}
-					}
-					else
-					{
-						// +BRIGHT things are not affected by fog
-						fogdistance = float.MaxValue;
 					}
 				}
 				
@@ -373,7 +414,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			// Apply settings
 			SetPosition(pos);
-			SetCageSize(thingradius, thingheight);
 			SetCageColor(Thing.Color);
 
 			// Keep info for object picking

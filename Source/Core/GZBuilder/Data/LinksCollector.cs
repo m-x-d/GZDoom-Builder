@@ -72,16 +72,16 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 			}
 		}
 		
-		public static List<Line3D> GetThingLinks(IEnumerable<VisualThing> visualthings) 
+		/*public static List<Line3D> GetThingLinks(IEnumerable<VisualThing> visualthings) 
 		{
 			List<Thing> things = new List<Thing>();
 			foreach (VisualThing vt in visualthings) things.Add(vt.Thing);
 			return GetThingLinks(GetSpecialThings(things, true), true);
-		}
+		}*/
 
-		public static List<Line3D> GetThingLinks(IEnumerable<Thing> things) 
+		public static List<Line3D> GetThingLinks(IEnumerable<Thing> things, bool correctheight) 
 		{
-			return GetThingLinks(GetSpecialThings(things, false), false);
+			return GetThingLinks(GetSpecialThings(things, correctheight), correctheight);
 		}
 
 		private static SpecialThings GetSpecialThings(IEnumerable<Thing> things, bool correctheight) 

@@ -46,6 +46,10 @@ namespace CodeImp.DoomBuilder.Map
 		
 		// Error Ignoring (mxd)
 		private List<Type> ignorederrorchecks;
+
+		//mxd. Hashing
+		private static int hashcounter;
+		private readonly int hashcode;
 		
 		#endregion
 		
@@ -67,6 +71,7 @@ namespace CodeImp.DoomBuilder.Map
 			// Initialize
 			fields = new UniFields(this);
 			ignorederrorchecks = new List<Type>(); //mxd
+			hashcode = hashcounter++; //mxd
 		}
 
 		// Disposer
@@ -127,6 +132,12 @@ namespace CodeImp.DoomBuilder.Map
 		internal void BeforeFieldsChange()
 		{
 			BeforePropsChange();
+		}
+
+		//mxd. This greatly speeds up Dictionary lookups
+		public override int GetHashCode()
+		{
+			return hashcode;
 		}
 		
 		#endregion

@@ -31,6 +31,12 @@ namespace CodeImp.DoomBuilder.VisualModes
 {
 	public abstract class VisualGeometry : IVisualPickable
 	{
+		#region ================== Constants
+
+		public const float FOG_DENSITY_SCALER = -1.442692f / 256000f; //-1.442692f / 64000f; //mxd
+
+		#endregion
+
 		#region ================== Variables
 
 		// Texture
@@ -60,6 +66,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		
 		// Rendering
 		private RenderPass renderpass = RenderPass.Solid;
+		protected float fogfactor;
 		
 		// Sector buffer info
 		private int vertexoffset;
@@ -81,6 +88,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		//mxd
 		public Vector3D[] BoundingBox { get { return boundingBox; } }
 		public VisualGeometryType GeometryType { get { return geometrytype; } }
+		public float FogFactor { get { return fogfactor; } }
 
 		/// <summary>
 		/// Render pass in which this geometry must be rendered. Default is Solid.
@@ -190,6 +198,38 @@ namespace CodeImp.DoomBuilder.VisualModes
 			}
 
 			boundingBox = BoundingBoxTools.CalculateBoundingPlane(bbs);
+		}
+
+		//mxd. Calculate fogdistance
+		//TODO: this doesn't match any GZDoom light mode...
+		//GZDoom: gl_renderstate.h, SetFog();
+		//GZDoom: gl_lightlevel.cpp gl_SetFog();
+		protected float CalculateFogDensity(int brightness)
+		{
+			float density;
+			if(Sector.Sector.UsesOutsideFog && General.Map.Data.MapInfo.OutsideFogDensity > 0)
+			{
+				density = General.Map.Data.MapInfo.OutsideFogDensity;
+			}
+			else if(!Sector.Sector.UsesOutsideFog && General.Map.Data.MapInfo.FogDensity > 0)
+			{
+				density = General.Map.Data.MapInfo.FogDensity;
+			}
+			else if(brightness < 248)
+			{
+				density = General.Clamp(255 - brightness, 30, 255);
+			}
+			else
+			{
+				density = 0f;
+			}
+
+			if(Sector.Sector.HasFogColor)
+			{
+				density *= 4;
+			}
+
+			return density * FOG_DENSITY_SCALER;
 		}
 
 		//mxd. Used to get proper sector from 3d-floors
