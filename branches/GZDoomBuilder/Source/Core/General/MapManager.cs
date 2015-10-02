@@ -56,6 +56,7 @@ namespace CodeImp.DoomBuilder
 		// Status
 		private bool changed;
 		private bool scriptschanged;
+		private bool maploading; //mxd
 
 		// Map information
 		private string filetitle;
@@ -101,7 +102,7 @@ namespace CodeImp.DoomBuilder
 		public MapOptions Options { get { return options; } }
 		public MapSet Map { get { return map; } }
 		public DataManager Data { get { return data; } }
-		public bool IsChanged { get { return changed | CheckScriptChanged(); } set { changed |= value; General.MainWindow.UpdateMapChangedStatus(); } }
+		public bool IsChanged { get { return changed | CheckScriptChanged(); } set { changed |= value; if(!maploading) General.MainWindow.UpdateMapChangedStatus(); } }
 		public bool IsDisposed { get { return isdisposed; } }
 		internal D3DDevice Graphics { get { return graphics; } }
 		public IRenderer2D Renderer2D { get { return renderer2d; } }
@@ -166,7 +167,7 @@ namespace CodeImp.DoomBuilder
 		internal bool Dispose() 
 		{
 			// Not already disposed?
-			if (!isdisposed) 
+			if(!isdisposed) 
 			{
 				// Let the plugins know
 				General.Plugins.OnMapCloseBegin();
@@ -184,20 +185,21 @@ namespace CodeImp.DoomBuilder
 				General.Actions.UnbindMethods(this);
 
 				// Dispose
-				if (grid != null) grid.Dispose();
-				if (launcher != null) launcher.Dispose();
-				if (copypaste != null) copypaste.Dispose();
-				if (undoredo != null) undoredo.Dispose();
+				maploading = true; //mxd
+				if(grid != null) grid.Dispose();
+				if(launcher != null) launcher.Dispose();
+				if(copypaste != null) copypaste.Dispose();
+				if(undoredo != null) undoredo.Dispose();
 				General.WriteLogLine("Unloading data resources...");
-				if (data != null) data.Dispose();
+				if(data != null) data.Dispose();
 				General.WriteLogLine("Closing temporary file...");
-				if (tempwad != null) tempwad.Dispose();
+				if(tempwad != null) tempwad.Dispose();
 				General.WriteLogLine("Unloading map data...");
-				if (map != null) map.Dispose();
+				if(map != null) map.Dispose();
 				General.WriteLogLine("Stopping graphics device...");
-				if (renderer2d != null) renderer2d.Dispose();
-				if (renderer3d != null) renderer3d.Dispose();
-				if (graphics != null) graphics.Dispose();
+				if(renderer2d != null) renderer2d.Dispose();
+				if(renderer3d != null) renderer3d.Dispose();
+				if(graphics != null) graphics.Dispose();
 				visualcamera = null;
 				grid = null;
 				launcher = null;
@@ -221,7 +223,7 @@ namespace CodeImp.DoomBuilder
 				{
 					Directory.Delete(temppath, true);
 				} 
-				catch (Exception e) 
+				catch(Exception e) 
 				{
 					General.WriteLogLine(e.GetType().Name + ": " + e.Message);
 					General.WriteLogLine("Failed to remove temporary directory!");
@@ -253,6 +255,7 @@ namespace CodeImp.DoomBuilder
 			// Apply settings
 			this.filetitle = options.CurrentName + ".wad";
 			this.filepathname = "";
+			this.maploading = true; //mxd
 			this.changed = false;
 			this.options = options;
 
@@ -261,7 +264,7 @@ namespace CodeImp.DoomBuilder
 			// Initiate graphics
 			General.WriteLogLine("Initializing graphics device...");
 			graphics = new D3DDevice(General.MainWindow.Display);
-			if (!graphics.Initialize()) return false;
+			if(!graphics.Initialize()) return false;
 
 			// Create renderers
 			renderer2d = new Renderer2D(graphics);
@@ -323,12 +326,13 @@ namespace CodeImp.DoomBuilder
 			this.visualcamera = new VisualCamera();
 			General.Editing.ChangeMode(configinfo.StartMode);
 			ClassicMode cmode = (General.Editing.Mode as ClassicMode);
-			if (cmode != null) cmode.SetZoom(0.5f);
+			if(cmode != null) cmode.SetZoom(0.5f);
 			renderer2d.SetViewMode((ViewMode)General.Settings.DefaultViewMode);
 			General.Settings.SetDefaultThingFlags(config.DefaultThingFlags);
 
 			// Success
 			this.changed = false;
+			this.maploading = false; //mxd
 			General.WriteLogLine("Map creation done");
 			General.MainWindow.UpdateMapChangedStatus(); //mxd
 			return true;
@@ -348,6 +352,7 @@ namespace CodeImp.DoomBuilder
 			this.filetitle = Path.GetFileName(filepathname);
 			this.filepathname = filepathname;
 			this.changed = false;
+			this.maploading = true; //mxd
 			this.options = options;
 
 			General.WriteLogLine("Opening map '" + options.CurrentName + "' with configuration '" + options.ConfigFile + "'");
@@ -355,7 +360,7 @@ namespace CodeImp.DoomBuilder
 			// Initiate graphics
 			General.WriteLogLine("Initializing graphics device...");
 			graphics = new D3DDevice(General.MainWindow.Display);
-			if (!graphics.Initialize()) return false;
+			if(!graphics.Initialize()) return false;
 
 			// Create renderers
 			renderer2d = new Renderer2D(graphics);
@@ -423,7 +428,7 @@ namespace CodeImp.DoomBuilder
 			grid.TranslateBackgroundName(config.UseLongTextureNames);
 
 			//mxd. Sector textures may've been changed 
-			if (nameschanged) data.UpdateUsedTextures();
+			if(nameschanged) data.UpdateUsedTextures();
 
 			// Update structures
 			options.ApplyGridSettings();
@@ -452,6 +457,7 @@ namespace CodeImp.DoomBuilder
 
 			// Success
 			this.changed = maprestored; //mxd
+			this.maploading = false; //mxd
 			General.WriteLogLine("Map loading done");
 			General.MainWindow.UpdateMapChangedStatus(); //mxd
 			return true;
@@ -465,6 +471,7 @@ namespace CodeImp.DoomBuilder
 #endif
 			
 			this.changed = false;
+			this.maploading = true; //mxd
 			this.options = options;
 
 			// Create map data
@@ -540,6 +547,7 @@ namespace CodeImp.DoomBuilder
 
 			// Success
 			this.changed = maprestored;
+			this.maploading = false; //mxd
 			General.WriteLogLine("Map switching done");
 			General.MainWindow.UpdateMapChangedStatus(); //mxd
 			return true;

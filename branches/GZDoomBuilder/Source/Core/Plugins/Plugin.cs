@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
+using System.Windows.Forms;
 
 #endregion
 
@@ -174,7 +175,7 @@ namespace CodeImp.DoomBuilder.Plugins
 		public Type FindSingleClass(Type t)
 		{
 			Type[] types = FindClasses(t);
-			if(types.Length > 0) return types[0]; else return null;
+			return (types.Length > 0 ? types[0] : null);
 		}
 		
 		// This creates an instance of a class
@@ -194,13 +195,19 @@ namespace CodeImp.DoomBuilder.Plugins
 			catch(TargetInvocationException e)
 			{
 				// Error!
-				General.ErrorLogger.Add(ErrorType.Error, "Failed to create class instance '" + t.Name + "' from plugin '" + name + "' " + e.InnerException.GetType().Name + " at target: " + e.InnerException.Message);
+				string error = "Failed to create class instance '" + t.Name + "' from plugin '" + name + "'.";
+				General.ShowErrorMessage(error + Environment.NewLine + Environment.NewLine + "See the error log for more details", MessageBoxButtons.OK, false);
+				General.WriteLogLine(error + " " + e.InnerException.GetType().Name + " at target: " 
+					+ e.InnerException.Message + Environment.NewLine + "Stacktrace: " + e.InnerException.StackTrace.Trim());
 				return default(T);
 			}
 			catch(Exception e)
 			{
 				// Error!
-				General.ErrorLogger.Add(ErrorType.Error, "Failed to create class instance '" + t.Name + "' from plugin '" + name + "' " + e.GetType().Name + ": " + e.Message);
+				string error = "Failed to create class instance '" + t.Name + "' from plugin '" + name + "'.";
+				General.ShowErrorMessage(error + Environment.NewLine + Environment.NewLine + "See the error log for more details", MessageBoxButtons.OK, false);
+				General.WriteLogLine(error + " " + e.GetType().Name + ": " + e.Message + Environment.NewLine
+					+ "Stacktrace: " + e.StackTrace.Trim());
 				return default(T);
 			}
 		}

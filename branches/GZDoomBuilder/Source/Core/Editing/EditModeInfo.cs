@@ -165,8 +165,8 @@ namespace CodeImp.DoomBuilder.Editing
 					// Create instance
 					EditMode newmode = plugin.CreateObject<EditMode>(type);
 					
-					// Switch mode
-					General.Editing.ChangeMode(newmode);
+					//mxd. Switch mode?
+					if(newmode != null) General.Editing.ChangeMode(newmode);
 				}
 			}
 		}
@@ -180,8 +180,8 @@ namespace CodeImp.DoomBuilder.Editing
 				// Create instance
 				EditMode newmode = plugin.CreateObject<EditMode>(type);
 
-				// Switch mode
-				General.Editing.ChangeMode(newmode);
+				//mxd. Switch mode?
+				if(newmode != null) General.Editing.ChangeMode(newmode);
 			}
 		}
 
