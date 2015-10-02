@@ -86,7 +86,7 @@ PixelData vs_customvertexcolor(VertexData vd)
 	// Fill pixel data input
 	pd.pos = mul(float4(vd.pos, 1.0f), worldviewproj);
 	pd.color = vertexColor;
-	pd.color.a = 1.0f;
+	pd.color.a = vd.color.a;
 	pd.uv = vd.uv;
 	
 	// Return result
@@ -101,7 +101,7 @@ LitPixelData vs_customvertexcolor_fog(VertexData vd)
 	pd.pos = mul(float4(vd.pos, 1.0f), worldviewproj);
 	pd.pos_w = mul(float4(vd.pos, 1.0f), world);
 	pd.color = vertexColor;
-	pd.color.a = 1.0f;
+	pd.color.a = vd.color.a;
 	pd.uv = vd.uv;
 	pd.normal = vd.normal;
 	
@@ -166,11 +166,10 @@ float4 ps_fullbright_highlight(PixelData pd) : COLOR
 float4 getFogColor(LitPixelData pd, float4 color)
 {
 	float fogdist = max(16.0f, distance(pd.pos_w, cameraPos.xyz));
-	float fogfactor = min(1.0f, fogdist / cameraPos.w);
-	
-	//texture color completly replaced by fog color
-	if(fogfactor == 1.0f) return float4(lightColor.rgb, color.a);
-	return float4(lightColor.rgb * fogfactor + color.rgb * (1.0f - fogfactor), color.a);
+	float fogfactor = exp2(cameraPos.w * fogdist);
+
+	color.rgb = lerp(lightColor.rgb, color.rgb, fogfactor);
+	return color;
 }
 
 //mxd. Shaders with fog calculation

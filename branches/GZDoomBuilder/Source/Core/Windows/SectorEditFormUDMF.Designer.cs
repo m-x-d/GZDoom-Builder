@@ -40,6 +40,7 @@
 			System.Windows.Forms.Label label15;
 			System.Windows.Forms.Label label6;
 			System.Windows.Forms.Label label5;
+			this.tagsselector = new CodeImp.DoomBuilder.GZBuilder.Controls.TagsSelector();
 			this.soundsequence = new System.Windows.Forms.ComboBox();
 			this.resetsoundsequence = new System.Windows.Forms.Button();
 			this.fadeColor = new CodeImp.DoomBuilder.GZBuilder.Controls.ColorFieldsControl();
@@ -60,6 +61,7 @@
 			this.flags = new CodeImp.DoomBuilder.Controls.CheckboxArrayControl();
 			this.tabSurfaces = new System.Windows.Forms.TabPage();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.resetfloorlight = new System.Windows.Forms.Button();
 			this.labelFloorOffsets = new System.Windows.Forms.Label();
 			this.labelFloorScale = new System.Windows.Forms.Label();
 			this.cbUseFloorLineAngles = new System.Windows.Forms.CheckBox();
@@ -77,6 +79,7 @@
 			this.floorOffsets = new CodeImp.DoomBuilder.GZBuilder.Controls.PairedFieldsControl();
 			this.floortex = new CodeImp.DoomBuilder.Controls.FlatSelectorControl();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.resetceillight = new System.Windows.Forms.Button();
 			this.labelCeilOffsets = new System.Windows.Forms.Label();
 			this.labelCeilScale = new System.Windows.Forms.Label();
 			this.cbUseCeilLineAngles = new System.Windows.Forms.CheckBox();
@@ -105,7 +108,6 @@
 			this.cancel = new System.Windows.Forms.Button();
 			this.apply = new System.Windows.Forms.Button();
 			this.tooltip = new System.Windows.Forms.ToolTip(this.components);
-			this.tagsselector = new CodeImp.DoomBuilder.GZBuilder.Controls.TagsSelector();
 			groupaction = new System.Windows.Forms.GroupBox();
 			groupeffect = new System.Windows.Forms.GroupBox();
 			label14 = new System.Windows.Forms.Label();
@@ -144,6 +146,13 @@
 			groupaction.TabIndex = 2;
 			groupaction.TabStop = false;
 			groupaction.Text = " Identification ";
+			// 
+			// tagsselector
+			// 
+			this.tagsselector.Location = new System.Drawing.Point(6, 21);
+			this.tagsselector.Name = "tagsselector";
+			this.tagsselector.Size = new System.Drawing.Size(478, 60);
+			this.tagsselector.TabIndex = 0;
 			// 
 			// groupeffect
 			// 
@@ -526,6 +535,7 @@
 			// 
 			this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox2.Controls.Add(this.resetfloorlight);
 			this.groupBox2.Controls.Add(this.labelFloorOffsets);
 			this.groupBox2.Controls.Add(this.labelFloorScale);
 			this.groupBox2.Controls.Add(this.cbUseFloorLineAngles);
@@ -548,6 +558,17 @@
 			this.groupBox2.TabIndex = 55;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = " Floor ";
+			// 
+			// resetfloorlight
+			// 
+			this.resetfloorlight.Image = global::CodeImp.DoomBuilder.Properties.Resources.Reset;
+			this.resetfloorlight.Location = new System.Drawing.Point(246, 114);
+			this.resetfloorlight.Name = "resetfloorlight";
+			this.resetfloorlight.Size = new System.Drawing.Size(23, 23);
+			this.resetfloorlight.TabIndex = 60;
+			this.tooltip.SetToolTip(this.resetfloorlight, "Reset Floor Brightness");
+			this.resetfloorlight.UseVisualStyleBackColor = true;
+			this.resetfloorlight.Click += new System.EventHandler(this.resetfloorlight_Click);
 			// 
 			// labelFloorOffsets
 			// 
@@ -572,7 +593,7 @@
 			// cbUseFloorLineAngles
 			// 
 			this.cbUseFloorLineAngles.AutoSize = true;
-			this.cbUseFloorLineAngles.Location = new System.Drawing.Point(181, 147);
+			this.cbUseFloorLineAngles.Location = new System.Drawing.Point(181, 148);
 			this.cbUseFloorLineAngles.Name = "cbUseFloorLineAngles";
 			this.cbUseFloorLineAngles.Size = new System.Drawing.Size(113, 17);
 			this.cbUseFloorLineAngles.TabIndex = 57;
@@ -583,7 +604,7 @@
 			// 
 			// floorAngleControl
 			// 
-			this.floorAngleControl.Angle = -270;
+			this.floorAngleControl.Angle = -450;
 			this.floorAngleControl.AngleOffset = 90;
 			this.floorAngleControl.Location = new System.Drawing.Point(6, 132);
 			this.floorAngleControl.Name = "floorAngleControl";
@@ -661,7 +682,7 @@
 			// floorLightAbsolute
 			// 
 			this.floorLightAbsolute.AutoSize = true;
-			this.floorLightAbsolute.Location = new System.Drawing.Point(181, 117);
+			this.floorLightAbsolute.Location = new System.Drawing.Point(181, 118);
 			this.floorLightAbsolute.Name = "floorLightAbsolute";
 			this.floorLightAbsolute.Size = new System.Drawing.Size(67, 17);
 			this.floorLightAbsolute.TabIndex = 49;
@@ -760,6 +781,7 @@
 			// 
 			this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox1.Controls.Add(this.resetceillight);
 			this.groupBox1.Controls.Add(this.labelCeilOffsets);
 			this.groupBox1.Controls.Add(this.labelCeilScale);
 			this.groupBox1.Controls.Add(this.cbUseCeilLineAngles);
@@ -782,6 +804,17 @@
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = " Ceiling ";
+			// 
+			// resetceillight
+			// 
+			this.resetceillight.Image = global::CodeImp.DoomBuilder.Properties.Resources.Reset;
+			this.resetceillight.Location = new System.Drawing.Point(246, 114);
+			this.resetceillight.Name = "resetceillight";
+			this.resetceillight.Size = new System.Drawing.Size(23, 23);
+			this.resetceillight.TabIndex = 62;
+			this.tooltip.SetToolTip(this.resetceillight, "Reset Ceiling Brightness");
+			this.resetceillight.UseVisualStyleBackColor = true;
+			this.resetceillight.Click += new System.EventHandler(this.resetceillight_Click);
 			// 
 			// labelCeilOffsets
 			// 
@@ -806,7 +839,7 @@
 			// cbUseCeilLineAngles
 			// 
 			this.cbUseCeilLineAngles.AutoSize = true;
-			this.cbUseCeilLineAngles.Location = new System.Drawing.Point(181, 147);
+			this.cbUseCeilLineAngles.Location = new System.Drawing.Point(181, 148);
 			this.cbUseCeilLineAngles.Name = "cbUseCeilLineAngles";
 			this.cbUseCeilLineAngles.Size = new System.Drawing.Size(113, 17);
 			this.cbUseCeilLineAngles.TabIndex = 56;
@@ -817,7 +850,7 @@
 			// 
 			// ceilAngleControl
 			// 
-			this.ceilAngleControl.Angle = -270;
+			this.ceilAngleControl.Angle = -450;
 			this.ceilAngleControl.AngleOffset = 90;
 			this.ceilAngleControl.Location = new System.Drawing.Point(6, 132);
 			this.ceilAngleControl.Name = "ceilAngleControl";
@@ -895,7 +928,7 @@
 			// ceilLightAbsolute
 			// 
 			this.ceilLightAbsolute.AutoSize = true;
-			this.ceilLightAbsolute.Location = new System.Drawing.Point(181, 117);
+			this.ceilLightAbsolute.Location = new System.Drawing.Point(181, 118);
 			this.ceilLightAbsolute.Name = "ceilLightAbsolute";
 			this.ceilLightAbsolute.Size = new System.Drawing.Size(67, 17);
 			this.ceilLightAbsolute.TabIndex = 49;
@@ -1127,13 +1160,6 @@
 			this.tooltip.InitialDelay = 10;
 			this.tooltip.ReshowDelay = 100;
 			// 
-			// tagsselector
-			// 
-			this.tagsselector.Location = new System.Drawing.Point(6, 21);
-			this.tagsselector.Name = "tagsselector";
-			this.tagsselector.Size = new System.Drawing.Size(478, 60);
-			this.tagsselector.TabIndex = 0;
-			// 
 			// SectorEditFormUDMF
 			// 
 			this.AcceptButton = this.apply;
@@ -1245,5 +1271,7 @@
 		private System.Windows.Forms.TabPage tabcomment;
 		private CodeImp.DoomBuilder.Controls.CommentEditor commenteditor;
 		private CodeImp.DoomBuilder.GZBuilder.Controls.TagsSelector tagsselector;
+		private System.Windows.Forms.Button resetfloorlight;
+		private System.Windows.Forms.Button resetceillight;
 	}
 }

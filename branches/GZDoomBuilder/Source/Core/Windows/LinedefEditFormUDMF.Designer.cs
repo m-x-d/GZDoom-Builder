@@ -56,6 +56,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.activationGroup = new System.Windows.Forms.GroupBox();
 			this.missingactivation = new System.Windows.Forms.PictureBox();
 			this.idgroup = new System.Windows.Forms.GroupBox();
+			this.tagsselector = new CodeImp.DoomBuilder.GZBuilder.Controls.TagsSelector();
 			this.tabfront = new System.Windows.Forms.TabPage();
 			this.frontside = new System.Windows.Forms.CheckBox();
 			this.frontgroup = new System.Windows.Forms.GroupBox();
@@ -78,6 +79,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.pfcFrontOffsetMid = new CodeImp.DoomBuilder.GZBuilder.Controls.PairedFieldsControl();
 			this.pfcFrontOffsetBottom = new CodeImp.DoomBuilder.GZBuilder.Controls.PairedFieldsControl();
 			this.groupBox5 = new System.Windows.Forms.GroupBox();
+			this.resetfrontlight = new System.Windows.Forms.Button();
 			this.frontsector = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.customfrontbutton = new System.Windows.Forms.Button();
 			this.lightFront = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
@@ -89,6 +91,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backside = new System.Windows.Forms.CheckBox();
 			this.backgroup = new System.Windows.Forms.GroupBox();
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
+			this.resetbacklight = new System.Windows.Forms.Button();
 			this.backsector = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.custombackbutton = new System.Windows.Forms.Button();
 			this.lightBack = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
@@ -121,7 +124,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.fieldslist = new CodeImp.DoomBuilder.Controls.FieldsEditorControl();
 			this.imagelist = new System.Windows.Forms.ImageList(this.components);
 			this.tooltip = new System.Windows.Forms.ToolTip(this.components);
-			this.tagsselector = new CodeImp.DoomBuilder.GZBuilder.Controls.TagsSelector();
 			label2 = new System.Windows.Forms.Label();
 			label11 = new System.Windows.Forms.Label();
 			label12 = new System.Windows.Forms.Label();
@@ -456,6 +458,13 @@ namespace CodeImp.DoomBuilder.Windows
 			this.idgroup.TabStop = false;
 			this.idgroup.Text = " Identification ";
 			// 
+			// tagsselector
+			// 
+			this.tagsselector.Location = new System.Drawing.Point(6, 21);
+			this.tagsselector.Name = "tagsselector";
+			this.tagsselector.Size = new System.Drawing.Size(524, 60);
+			this.tagsselector.TabIndex = 0;
+			// 
 			// tabfront
 			// 
 			this.tabfront.Controls.Add(this.frontside);
@@ -757,6 +766,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// groupBox5
 			// 
+			this.groupBox5.Controls.Add(this.resetfrontlight);
 			this.groupBox5.Controls.Add(this.frontsector);
 			this.groupBox5.Controls.Add(label11);
 			this.groupBox5.Controls.Add(this.customfrontbutton);
@@ -768,6 +778,17 @@ namespace CodeImp.DoomBuilder.Windows
 			this.groupBox5.Size = new System.Drawing.Size(290, 117);
 			this.groupBox5.TabIndex = 42;
 			this.groupBox5.TabStop = false;
+			// 
+			// resetfrontlight
+			// 
+			this.resetfrontlight.Image = global::CodeImp.DoomBuilder.Properties.Resources.Reset;
+			this.resetfrontlight.Location = new System.Drawing.Point(233, 50);
+			this.resetfrontlight.Name = "resetfrontlight";
+			this.resetfrontlight.Size = new System.Drawing.Size(23, 23);
+			this.resetfrontlight.TabIndex = 28;
+			this.tooltip.SetToolTip(this.resetfrontlight, "Reset Front Brightness");
+			this.resetfrontlight.UseVisualStyleBackColor = true;
+			this.resetfrontlight.Click += new System.EventHandler(this.resetfrontlight_Click);
 			// 
 			// frontsector
 			// 
@@ -818,7 +839,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// cbLightAbsoluteFront
 			// 
 			this.cbLightAbsoluteFront.AutoSize = true;
-			this.cbLightAbsoluteFront.Location = new System.Drawing.Point(164, 53);
+			this.cbLightAbsoluteFront.Location = new System.Drawing.Point(164, 54);
 			this.cbLightAbsoluteFront.Name = "cbLightAbsoluteFront";
 			this.cbLightAbsoluteFront.Size = new System.Drawing.Size(67, 17);
 			this.cbLightAbsoluteFront.TabIndex = 27;
@@ -910,6 +931,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// groupBox4
 			// 
+			this.groupBox4.Controls.Add(this.resetbacklight);
 			this.groupBox4.Controls.Add(this.backsector);
 			this.groupBox4.Controls.Add(label12);
 			this.groupBox4.Controls.Add(this.custombackbutton);
@@ -921,6 +943,17 @@ namespace CodeImp.DoomBuilder.Windows
 			this.groupBox4.Size = new System.Drawing.Size(290, 117);
 			this.groupBox4.TabIndex = 46;
 			this.groupBox4.TabStop = false;
+			// 
+			// resetbacklight
+			// 
+			this.resetbacklight.Image = global::CodeImp.DoomBuilder.Properties.Resources.Reset;
+			this.resetbacklight.Location = new System.Drawing.Point(233, 50);
+			this.resetbacklight.Name = "resetbacklight";
+			this.resetbacklight.Size = new System.Drawing.Size(23, 23);
+			this.resetbacklight.TabIndex = 31;
+			this.tooltip.SetToolTip(this.resetbacklight, "Reset Back Brightness");
+			this.resetbacklight.UseVisualStyleBackColor = true;
+			this.resetbacklight.Click += new System.EventHandler(this.resetbacklight_Click);
 			// 
 			// backsector
 			// 
@@ -981,7 +1014,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// cbLightAbsoluteBack
 			// 
 			this.cbLightAbsoluteBack.AutoSize = true;
-			this.cbLightAbsoluteBack.Location = new System.Drawing.Point(164, 53);
+			this.cbLightAbsoluteBack.Location = new System.Drawing.Point(164, 54);
 			this.cbLightAbsoluteBack.Name = "cbLightAbsoluteBack";
 			this.cbLightAbsoluteBack.Size = new System.Drawing.Size(67, 17);
 			this.cbLightAbsoluteBack.TabIndex = 30;
@@ -1339,13 +1372,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.imagelist.Images.SetKeyName(0, "Check.png");
 			this.imagelist.Images.SetKeyName(1, "SearchClear.png");
 			// 
-			// tagsselector
-			// 
-			this.tagsselector.Location = new System.Drawing.Point(6, 21);
-			this.tagsselector.Name = "tagsselector";
-			this.tagsselector.Size = new System.Drawing.Size(524, 60);
-			this.tagsselector.TabIndex = 0;
-			// 
 			// LinedefEditFormUDMF
 			// 
 			this.AcceptButton = this.apply;
@@ -1489,5 +1515,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private CodeImp.DoomBuilder.Controls.CommentEditor commenteditor;
 		private CodeImp.DoomBuilder.Controls.ArgumentsControl argscontrol;
 		private CodeImp.DoomBuilder.GZBuilder.Controls.TagsSelector tagsselector;
+		private System.Windows.Forms.Button resetfrontlight;
+		private System.Windows.Forms.Button resetbacklight;
 	}
 }

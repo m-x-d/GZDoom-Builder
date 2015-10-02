@@ -17,6 +17,7 @@
 #region ================== Namespaces
 
 using System;
+using SlimDX;
 
 #endregion
 
@@ -232,6 +233,28 @@ namespace CodeImp.DoomBuilder.Geometry
 
 			// Return vector
 			return new Vector3D(ax, ay, az);
+		}
+
+		//mxd
+		public static Vector3D Transform(Vector3D v, Matrix m)
+		{
+			return new Vector3D
+			{
+				x = m.M11 * v.x + m.M21 * v.y + m.M31 * v.z + m.M41,
+				y = m.M12 * v.x + m.M22 * v.y + m.M32 * v.z + m.M42,
+				z = m.M13 * v.x + m.M23 * v.y + m.M33 * v.z + m.M43,
+			};
+		}
+
+		//mxd
+		public static Vector3D Transform(float x, float y, float z, Matrix m)
+		{
+			return new Vector3D
+			{
+				x = m.M11 * x + m.M21 * y + m.M31 * z + m.M41,
+				y = m.M12 * x + m.M22 * y + m.M32 * z + m.M42,
+				z = m.M13 * x + m.M23 * y + m.M33 * z + m.M43,
+			};
 		}
 		
 		#endregion

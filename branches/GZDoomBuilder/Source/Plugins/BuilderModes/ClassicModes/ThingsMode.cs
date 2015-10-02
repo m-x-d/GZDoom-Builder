@@ -23,6 +23,7 @@ using System.Windows.Forms;
 using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Editing;
+using CodeImp.DoomBuilder.GZBuilder.Data;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.GZBuilder.Geometry;
 using CodeImp.DoomBuilder.Map;
@@ -59,6 +60,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private bool editpressed;
 		private bool thinginserted;
 		private bool awaitingMouseClick; //mxd
+
+		//mxd. Event lines
+		private List<Line3D> persistenteventlines;
 		
 		#endregion
 
@@ -120,6 +124,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Map.Map.ConvertSelection(SelectionType.Linedefs);
 			General.Map.Map.SelectionType = SelectionType.Things;
 			UpdateSelectionInfo(); //mxd
+
+			//mxd. Update event lines
+			persistenteventlines = LinksCollector.GetThingLinks(General.Map.ThingsFilter.VisibleThings, false);
 		}
 
 		// Mode disengages
@@ -190,11 +197,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 
 				//mxd
-				if(General.Settings.GZShowEventLines) 
+				if(General.Settings.GZShowEventLines)
 				{
-					List<Line3D> lines = GZBuilder.Data.LinksCollector.GetThingLinks(General.Map.ThingsFilter.VisibleThings);
-					lines.AddRange(eventlines);
-					if(lines.Count > 0) renderer.RenderArrows(lines);
+					eventlines.AddRange(persistenteventlines);
+					if(eventlines.Count > 0) renderer.RenderArrows(eventlines);
 				}
  
 				renderer.Finish();
@@ -411,24 +417,48 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							General.Interface.OnEditFormValuesChanged -= thingEditForm_OnValuesChanged;
 
 							// When a single thing was selected, deselect it now
-							if (selected.Count == 1) 
+							if(selected.Count == 1) 
 							{
 								General.Map.Map.ClearSelectedThings();
 							} 
 							else if(result == DialogResult.Cancel) //mxd. Restore selection...
 							{ 
-								foreach (Thing t in selected) t.Selected = true;
+								foreach(Thing t in selected) t.Selected = true;
 							}
+
+							//mxd. Update event lines
+							persistenteventlines = LinksCollector.GetThingLinks(General.Map.ThingsFilter.VisibleThings, false);
+
+							// Update display
 							General.Interface.RedrawDisplay();
 						}
 					}
 				}
 
-				UpdateSelectionInfo(); //mxd
+				//mxd. Update selection info
+				UpdateSelectionInfo();
 			}
 
 			editpressed = false;
 			base.OnEditEnd();
+		}
+
+		//mxd
+		public override void OnUndoEnd()
+		{
+			base.OnUndoEnd();
+
+			// Update event lines
+			persistenteventlines = LinksCollector.GetThingLinks(General.Map.ThingsFilter.VisibleThings, false);
+		}
+
+		//mxd
+		public override void OnRedoEnd()
+		{
+			base.OnRedoEnd();
+
+			// Update event lines
+			persistenteventlines = LinksCollector.GetThingLinks(General.Map.ThingsFilter.VisibleThings, false);
 		}
 
 		//mxd. Otherwise event lines won't be drawn after panning finishes.
@@ -844,6 +874,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Update things filter
 				General.Map.ThingsFilter.Update();
 
+				//mxd. Update event lines
+				persistenteventlines = LinksCollector.GetThingLinks(General.Map.ThingsFilter.VisibleThings, false);
+
 				// Redraw screen
 				General.Interface.RedrawDisplay();
 			}
@@ -969,6 +1002,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Update cache values
 				General.Map.IsChanged = true;
 				General.Map.ThingsFilter.Update();
+
+				//mxd. Update event lines
+				persistenteventlines = LinksCollector.GetThingLinks(General.Map.ThingsFilter.VisibleThings, false);
 
 				// Invoke a new mousemove so that the highlighted item updates
 				MouseEventArgs e = new MouseEventArgs(MouseButtons.None, 0, (int)mousepos.x, (int)mousepos.y, 0);

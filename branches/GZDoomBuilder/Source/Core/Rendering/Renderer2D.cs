@@ -523,7 +523,7 @@ namespace CodeImp.DoomBuilder.Rendering
 
 			Matrix scaling = Matrix.Scaling((1f / windowsize.Width) * 2f, (1f / windowsize.Height) * -2f, 1f);
 			Matrix translate = Matrix.Translation(-(float)windowsize.Width * 0.5f, -(float)windowsize.Height * 0.5f, 0f);
-			graphics.Device.SetTransform(TransformState.View, Matrix.Multiply(translate, scaling));
+			graphics.Device.SetTransform(TransformState.View, translate * scaling);
 			graphics.Device.SetTransform(TransformState.Projection, Matrix.Identity);
 			Vector2D lt = DisplayToMap(new Vector2D(0.0f, 0.0f));
 			Vector2D rb = DisplayToMap(new Vector2D(windowsize.Width, windowsize.Height));
@@ -538,7 +538,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			{
 				Matrix translate = Matrix.Translation(translatex, translatey, 0f);
 				Matrix scaling = Matrix.Scaling(scale, -scale, 1f);
-				graphics.Device.SetTransform(TransformState.World, Matrix.Multiply(translate, scaling));
+				graphics.Device.SetTransform(TransformState.World, translate * scaling);
 			}
 			else
 			{

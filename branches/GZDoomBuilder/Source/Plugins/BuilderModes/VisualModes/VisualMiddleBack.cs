@@ -192,9 +192,10 @@ namespace CodeImp.DoomBuilder.BuilderModes {
 				else
 					lightlevel = lightabsolute ? lightvalue : sourceside.Sector.Brightness + lightvalue;
 
-				//mxd
+				//mxd. This calculates light with doom-style wall shading
 				PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(lightlevel, Sidedef));
 				PixelColor wallcolor = PixelColor.Modulate(sd.Ceiling.colorbelow, wallbrightness);
+				fogfactor = CalculateFogDensity(lightlevel);
 				poly.color = wallcolor.WithAlpha(255).ToInt();
 
 				// Cut off the part above the 3D floor and below the 3D ceiling
@@ -238,25 +239,25 @@ namespace CodeImp.DoomBuilder.BuilderModes {
 				}
 
 				// Process the polygon and create vertices
-				if (polygons.Count > 0)
+				if(polygons.Count > 0)
 				{
 					List<WorldVertex> verts = CreatePolygonVertices(polygons, tp, sd, lightvalue, lightabsolute);
-					if (verts.Count > 2)
+					if(verts.Count > 2)
 					{
-						if ((extrafloor.Linedef.Args[2] & (int) Effect3DFloor.Flags.RenderAdditive) != 0) //mxd
+						if((extrafloor.Linedef.Args[2] & (int) Effect3DFloor.Flags.RenderAdditive) != 0) //mxd
 							this.RenderPass = RenderPass.Additive;
-						else if (extrafloor.Alpha < 255) 
+						else if(extrafloor.Alpha < 255) 
 							this.RenderPass = RenderPass.Alpha;
 						else 
 							this.RenderPass = RenderPass.Mask;
 
-						if (extrafloor.Alpha < 255)
+						if(extrafloor.Alpha < 255)
 						{
 							// Apply alpha to vertices
 							byte alpha = (byte) General.Clamp(extrafloor.Alpha, 0, 255);
-							if (alpha < 255)
+							if(alpha < 255)
 							{
-								for (int i = 0; i < verts.Count; i++)
+								for(int i = 0; i < verts.Count; i++)
 								{
 									WorldVertex v = verts[i];
 									PixelColor c = PixelColor.FromInt(v.c);

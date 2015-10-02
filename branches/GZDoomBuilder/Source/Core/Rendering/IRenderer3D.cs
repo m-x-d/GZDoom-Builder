@@ -16,6 +16,8 @@
 
 #region ================== Namespaces
 
+using System.Collections.Generic;
+using CodeImp.DoomBuilder.GZBuilder.Geometry;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.VisualModes;
@@ -48,7 +50,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		void SetHighlightedObject(IVisualPickable obj);
 		void AddSectorGeometry(VisualGeometry g);
 		void AddThingGeometry(VisualThing t);
-		void AddVisualVertices(VisualVertex[] verts);
+		void SetVisualVertices(List<VisualVertex> verts);
+		void SetEventLines(List<Line3D> lines);
 		void RenderCrosshair();
 		void SetFogMode(bool usefog);
 		void SetCrosshairBusy(bool busy);

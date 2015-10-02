@@ -93,7 +93,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 										  s.Fields.GetValue("yscalefloor", 1.0f));
 			
 			//Load floor texture
-			if (s.LongFloorTexture != MapSet.EmptyLongName)
+			if(s.LongFloorTexture != MapSet.EmptyLongName)
 			{
 				base.Texture = General.Map.Data.GetFlatImage(s.LongFloorTexture);
 				if(base.Texture == null || base.Texture is UnknownImage)
@@ -103,7 +103,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 				else
 				{
-					if (!base.Texture.IsImageLoaded)
+					if(!base.Texture.IsImageLoaded)
 						setuponloadedtexture = s.LongFloorTexture;
 				}
 			}
@@ -122,10 +122,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			//mxd. Sky is always bright
 			int color;
-			if(s.FloorTexture == General.Map.Config.SkyFlatName) 
+			if(s.FloorTexture == General.Map.Config.SkyFlatName)
+			{
 				color = -1; // That's white. With alpha. Not very impressive, eh?
-			else 
+				fogfactor = 0; // No fog
+			}
+			else
+			{
 				color = PixelColor.FromInt(level.color).WithAlpha((byte)General.Clamp(level.alpha, 0, 255)).ToInt();
+				fogfactor = CalculateFogDensity(level.brightnessbelow);
+			}
 
 			// Make vertices
 			ReadOnlyCollection<Vector2D> triverts = base.Sector.Sector.Triangles.Vertices;

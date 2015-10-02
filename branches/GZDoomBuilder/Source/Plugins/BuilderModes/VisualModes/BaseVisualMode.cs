@@ -106,7 +106,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			public float scaleY; //mxd
 
 			private Sidedef controlside; //mxd
-			public Sidedef controlSide { //mxd
+			public Sidedef controlSide
+			{
 				get
 				{
 					return controlside;
@@ -519,6 +520,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				foreach(KeyValuePair<Vertex, VisualVertexPair> pair in vertices)
 					pair.Value.Update();
 			}
+
+			//mxd. Update event lines (still better than updating them on every frame redraw)
+			renderer.SetEventLines(LinksCollector.GetThingLinks(General.Map.ThingsFilter.VisibleThings, true));
 		}
 
 		//mxd
@@ -658,13 +662,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			List<string> results = new List<string>();
-			if (numWalls > 0) results.Add(numWalls + (numWalls > 1 ? " sidedefs" : " sidedef"));
-			if (numFloors > 0) results.Add(numFloors + (numFloors > 1 ? " floors" : " floor"));
-			if (numCeilings > 0) results.Add(numCeilings + (numCeilings > 1 ? " ceilings" : " ceiling"));
-			if (numThings > 0) results.Add(numThings + (numThings > 1 ? " things" : " thing"));
-			if (numVerts > 0) results.Add(numVerts + (numVerts > 1 ? " vertices" : " vertex"));
+			if(numWalls > 0) results.Add(numWalls + (numWalls > 1 ? " sidedefs" : " sidedef"));
+			if(numFloors > 0) results.Add(numFloors + (numFloors > 1 ? " floors" : " floor"));
+			if(numCeilings > 0) results.Add(numCeilings + (numCeilings > 1 ? " ceilings" : " ceiling"));
+			if(numThings > 0) results.Add(numThings + (numThings > 1 ? " things" : " thing"));
+			if(numVerts > 0) results.Add(numVerts + (numVerts > 1 ? " vertices" : " vertex"));
 
-			if (results.Count == 0) 
+			if(results.Count == 0) 
 			{
 				General.Interface.DisplayStatus(StatusType.Selection, string.Empty);
 			} 
@@ -699,7 +703,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd
 		internal void StopRealtimeInterfaceUpdate(SelectionType selectiontype)
 		{
-			switch (selectiontype)
+			switch(selectiontype)
 			{
 				case SelectionType.All:
 				case SelectionType.Linedefs:
@@ -1060,7 +1064,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			cameraflooroffset = General.Map.Config.ReadSetting("cameraflooroffset", cameraflooroffset);
 			cameraceilingoffset = General.Map.Config.ReadSetting("cameraceilingoffset", cameraceilingoffset);
 
+			// (Re)create special effects
 			RebuildElementData();
+
+			//mxd. Update event lines
+			renderer.SetEventLines(LinksCollector.GetThingLinks(General.Map.ThingsFilter.VisibleThings, true));
 		}
 
 		// When returning to another mode
@@ -1248,7 +1256,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					foreach(KeyValuePair<Vertex, VisualVertexPair> pair in vertices)
 						verts.AddRange(pair.Value.Vertices);
 
-					renderer.AddVisualVertices(verts.ToArray());
+					renderer.SetVisualVertices(verts);
 				}
 				
 				// Done rendering geometry
@@ -1424,7 +1432,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			//mxd. As well as geometry...
 			foreach(KeyValuePair<Sector, VisualSector> group in visiblesectors)
 			{
-				if (group.Value is BaseVisualSector)
+				if(group.Value is BaseVisualSector)
 					(group.Value as BaseVisualSector).Rebuild();
 			}
 
@@ -1444,9 +1452,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				RebuildElementData();
 
 			//mxd. As well as geometry...
-			foreach (KeyValuePair<Sector, VisualSector> group in visiblesectors) 
+			foreach(KeyValuePair<Sector, VisualSector> group in visiblesectors) 
 			{
-				if (group.Value is BaseVisualSector) (group.Value as BaseVisualSector).Rebuild();
+				if(group.Value is BaseVisualSector) (group.Value as BaseVisualSector).Rebuild();
 			}
 
 			RebuildSelectedObjectsList();
@@ -3117,6 +3125,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			General.Map.IsChanged = true;
 			General.Map.ThingsFilter.Update();
+
+			// Update event lines
+			renderer.SetEventLines(LinksCollector.GetThingLinks(General.Map.ThingsFilter.VisibleThings, true));
 		}
 
 		//mxd. We'll just use currently selected objects 
@@ -3152,7 +3163,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Vector3D[] translatedCoords = TranslateCoordinates(coords, hitpos, true);
 
 			//create things from copyBuffer
-			for (int i = 0; i < copybuffer.Count; i++) 
+			for(int i = 0; i < copybuffer.Count; i++) 
 			{
 				Thing t = CreateThing(new Vector2D());
 				if (t != null) 
@@ -3163,6 +3174,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					blockmap.AddThing(t);
 				}
 			}
+
+			General.Map.IsChanged = true;
+			General.Map.ThingsFilter.Update();
+
 			PostAction();
 		}
 

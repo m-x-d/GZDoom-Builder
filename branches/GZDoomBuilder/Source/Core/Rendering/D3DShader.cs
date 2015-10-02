@@ -44,6 +44,9 @@ namespace CodeImp.DoomBuilder.Rendering
 		// Disposing
 		protected bool isdisposed;
 
+		//mxd. Settings changes
+		protected bool settingschanged;
+
 		#endregion
 
 		#region ================== Properties
@@ -166,7 +169,11 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This applies properties during a pass
 		public void ApplySettings()
 		{
-			if(manager.Enabled) effect.CommitChanges();
+			if(manager.Enabled && settingschanged)
+			{
+				effect.CommitChanges();
+				settingschanged = false; //mxd
+			}
 		}
 		
 		#endregion

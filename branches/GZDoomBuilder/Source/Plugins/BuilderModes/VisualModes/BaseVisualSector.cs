@@ -35,21 +35,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Variables
 		
-		protected BaseVisualMode mode;
-		
-		protected VisualFloor floor;
-		protected VisualCeiling ceiling;
-		protected List<VisualFloor> extrafloors;
-		protected List<VisualCeiling> extraceilings;
-		protected List<VisualFloor> extrabackfloors; //mxd
-		protected List<VisualCeiling> extrabackceilings; //mxd
-		protected Dictionary<Sidedef, VisualSidedefParts> sides;
+		private BaseVisualMode mode;
+
+		private VisualFloor floor;
+		private VisualCeiling ceiling;
+		private List<VisualFloor> extrafloors;
+		private List<VisualCeiling> extraceilings;
+		private List<VisualFloor> extrabackfloors; //mxd
+		private List<VisualCeiling> extrabackceilings; //mxd
+		private Dictionary<Sidedef, VisualSidedefParts> sides;
 		
 		// If this is set to true, the sector will be rebuilt after the action is performed.
-		protected bool changed;
+		private bool changed;
 		
 		// Prevent recursion
-		protected bool isupdating;
+		private bool isupdating;
 
 		#endregion
 
@@ -205,30 +205,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(!data.Updated) data.Update();
 			
 			// Create floor
-			floor = floor ?? new VisualFloor(mode, this);
-			if(floor.Setup(data.Floor, null))
-				base.AddGeometry(floor);
+			floor = (floor ?? new VisualFloor(mode, this));
+			if(floor.Setup(data.Floor, null)) AddGeometry(floor);
 			
 			// Create ceiling
-			ceiling = ceiling ?? new VisualCeiling(mode, this);
-			if(ceiling.Setup(data.Ceiling, null))
-				base.AddGeometry(ceiling);
-
-			//mxd. Calculate fogdistance
-			float brightness = Math.Max(30, Sector.Brightness);
-			if(Sector.HasFogColor)
-			{
-				if(Sector.UsesOutsideFog && General.Map.Data.MapInfo.OutsideFogDensity > 0)
-					fogdistance = General.Map.Data.MapInfo.OutsideFogDensity;
-				else if(!Sector.UsesOutsideFog && General.Map.Data.MapInfo.FogDensity > 0)
-					fogdistance = General.Map.Data.MapInfo.FogDensity;
-				else
-					fogdistance = brightness * 11.0f;
-			}
-			else
-			{
-				fogdistance = MAXIMUM_FOG_DISTANCE;
-			}
+			ceiling = (ceiling ?? new VisualCeiling(mode, this));
+			if(ceiling.Setup(data.Ceiling, null)) AddGeometry(ceiling);
 			
 			// Create 3D floors
 			for(int i = 0; i < data.ExtraFloors.Count; i++)
