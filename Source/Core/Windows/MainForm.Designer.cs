@@ -137,6 +137,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.menuhelp = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemhelprefmanual = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemShortcutReference = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemopenconfigfolder = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemhelpeditmode = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemhelpcheckupdates = new System.Windows.Forms.ToolStripMenuItem();
 			this.seperatorhelpmanual = new System.Windows.Forms.ToolStripSeparator();
@@ -1144,6 +1145,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.menuhelp.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.itemhelprefmanual,
             this.itemShortcutReference,
+			this.itemopenconfigfolder,
             this.itemhelpeditmode,
             this.itemhelpcheckupdates,
             this.seperatorhelpmanual,
@@ -1168,6 +1170,15 @@ namespace CodeImp.DoomBuilder.Windows
 			this.itemShortcutReference.Tag = "";
 			this.itemShortcutReference.Text = "Keyboard Shortcuts Reference";
 			this.itemShortcutReference.Click += new System.EventHandler(this.itemShortcutReference_Click);
+			// 
+			// itemopenconfigfolder
+			//
+			this.itemopenconfigfolder.Image = global::CodeImp.DoomBuilder.Properties.Resources.FolderExplore;
+			this.itemopenconfigfolder.Name = "itemopenconfigfolder";
+			this.itemopenconfigfolder.Size = new System.Drawing.Size(232, 22);
+			this.itemopenconfigfolder.Tag = "";
+			this.itemopenconfigfolder.Text = "Program Configuration Folder";
+			this.itemopenconfigfolder.Click += new System.EventHandler(this.itemopenconfigfolder_Click);
 			// 
 			// itemhelpeditmode
 			// 
@@ -2636,6 +2647,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.ToolStripMenuItem screenshotToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem editAreaScreenshotToolStripMenuItem;
 		private System.Windows.Forms.ToolStripMenuItem itemShortcutReference;
+		private System.Windows.Forms.ToolStripMenuItem itemopenconfigfolder;
 		private System.Windows.Forms.ToolStripMenuItem itemopenmapincurwad;
 		private System.Windows.Forms.ToolStripMenuItem itemgrid1;
 		private System.Windows.Forms.ToolStripMenuItem itemzoom400;

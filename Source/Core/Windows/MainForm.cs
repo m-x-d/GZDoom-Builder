@@ -3060,6 +3060,14 @@ namespace CodeImp.DoomBuilder.Windows
 			DisplayStatus(StatusType.Info, "Shortcut reference saved to '" + path + "'");
 			Process.Start(path);
 		}
+
+		//mxd
+		private void itemopenconfigfolder_Click(object sender, EventArgs e)
+		{
+			if(Directory.Exists(General.SettingsPath)) Process.Start(General.SettingsPath);
+			else General.ShowErrorMessage("Huh? Where did Settings folder go?.." + Environment.NewLine 
+				+ "I swear it was here: '" + General.SettingsPath + "'!", MessageBoxButtons.OK); // I don't think this will ever happen
+		}
 		
 		#endregion
 

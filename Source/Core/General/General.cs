@@ -1845,8 +1845,14 @@ namespace CodeImp.DoomBuilder
 		// This shows a message and logs the message
 		public static DialogResult ShowErrorMessage(string message, MessageBoxButtons buttons)
 		{
-			// Log the message
-			WriteLogLine(message);
+			return ShowErrorMessage(message, buttons, true);
+		}
+
+		// This shows a message and logs the message
+		public static DialogResult ShowErrorMessage(string message, MessageBoxButtons buttons, bool log)
+		{
+			//mxd. Log the message?
+			if(log) WriteLogLine(message);
 			
 			// Use normal cursor
 			Cursor oldcursor = Cursor.Current;
@@ -1867,14 +1873,20 @@ namespace CodeImp.DoomBuilder
 		// This shows a message and logs the message
 		public static DialogResult ShowWarningMessage(string message, MessageBoxButtons buttons)
 		{
-			return ShowWarningMessage(message, buttons, MessageBoxDefaultButton.Button1);
+			return ShowWarningMessage(message, buttons, MessageBoxDefaultButton.Button1, true);
 		}
 
 		// This shows a message and logs the message
 		public static DialogResult ShowWarningMessage(string message, MessageBoxButtons buttons, MessageBoxDefaultButton defaultbutton)
 		{
-			// Log the message
-			WriteLogLine(message);
+			return ShowWarningMessage(message, buttons, defaultbutton, true);
+		}
+
+		// This shows a message and logs the message
+		public static DialogResult ShowWarningMessage(string message, MessageBoxButtons buttons, MessageBoxDefaultButton defaultbutton, bool log)
+		{
+			//mxd. Log the message?
+			if(log) WriteLogLine(message);
 
 			// Use normal cursor
 			Cursor oldcursor = Cursor.Current;
