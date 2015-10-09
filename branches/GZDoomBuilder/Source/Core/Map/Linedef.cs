@@ -20,7 +20,6 @@ using System;
 using System.Collections.Generic;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Data;
-using CodeImp.DoomBuilder.GZBuilder.Tools;
 using CodeImp.DoomBuilder.Geometry;
 using System.Drawing;
 using CodeImp.DoomBuilder.IO;
@@ -115,6 +114,7 @@ namespace CodeImp.DoomBuilder.Map
 		internal Linedef(MapSet map, int listindex, Vertex start, Vertex end)
 		{
 			// Initialize
+			this.elementtype = MapElementType.LINEDEF; //mxd
 			this.map = map;
 			this.listindex = listindex;
 			this.updateneeded = true;
@@ -1392,13 +1392,13 @@ namespace CodeImp.DoomBuilder.Map
 						//mxd. Copy UDMF offsets as well
 						if(General.Map.UDMF) 
 						{
-							UDMFTools.SetFloat(newline.front.Fields, "offsetx_top", oldline.front.Fields.GetValue("offsetx_top", 0f));
-							UDMFTools.SetFloat(newline.front.Fields, "offsetx_mid", oldline.front.Fields.GetValue("offsetx_mid", 0f));
-							UDMFTools.SetFloat(newline.front.Fields, "offsetx_bottom", oldline.front.Fields.GetValue("offsetx_bottom", 0f));
+							UniFields.SetFloat(newline.front.Fields, "offsetx_top", oldline.front.Fields.GetValue("offsetx_top", 0f));
+							UniFields.SetFloat(newline.front.Fields, "offsetx_mid", oldline.front.Fields.GetValue("offsetx_mid", 0f));
+							UniFields.SetFloat(newline.front.Fields, "offsetx_bottom", oldline.front.Fields.GetValue("offsetx_bottom", 0f));
 
-							UDMFTools.SetFloat(newline.front.Fields, "offsety_top", oldline.front.Fields.GetValue("offsety_top", 0f));
-							UDMFTools.SetFloat(newline.front.Fields, "offsety_mid", oldline.front.Fields.GetValue("offsety_mid", 0f));
-							UDMFTools.SetFloat(newline.front.Fields, "offsety_bottom", oldline.front.Fields.GetValue("offsety_bottom", 0f));
+							UniFields.SetFloat(newline.front.Fields, "offsety_top", oldline.front.Fields.GetValue("offsety_top", 0f));
+							UniFields.SetFloat(newline.front.Fields, "offsety_mid", oldline.front.Fields.GetValue("offsety_mid", 0f));
+							UniFields.SetFloat(newline.front.Fields, "offsety_bottom", oldline.front.Fields.GetValue("offsety_bottom", 0f));
 						}
 					}
 
@@ -1410,13 +1410,13 @@ namespace CodeImp.DoomBuilder.Map
 						//mxd. Copy UDMF offsets as well
 						if(General.Map.UDMF) 
 						{
-							UDMFTools.SetFloat(newline.back.Fields, "offsetx_top", oldline.back.Fields.GetValue("offsetx_top", 0f));
-							UDMFTools.SetFloat(newline.back.Fields, "offsetx_mid", oldline.back.Fields.GetValue("offsetx_mid", 0f));
-							UDMFTools.SetFloat(newline.back.Fields, "offsetx_bottom", oldline.back.Fields.GetValue("offsetx_bottom", 0f));
+							UniFields.SetFloat(newline.back.Fields, "offsetx_top", oldline.back.Fields.GetValue("offsetx_top", 0f));
+							UniFields.SetFloat(newline.back.Fields, "offsetx_mid", oldline.back.Fields.GetValue("offsetx_mid", 0f));
+							UniFields.SetFloat(newline.back.Fields, "offsetx_bottom", oldline.back.Fields.GetValue("offsetx_bottom", 0f));
 
-							UDMFTools.SetFloat(newline.back.Fields, "offsety_top", oldline.back.Fields.GetValue("offsety_top", 0f));
-							UDMFTools.SetFloat(newline.back.Fields, "offsety_mid", oldline.back.Fields.GetValue("offsety_mid", 0f));
-							UDMFTools.SetFloat(newline.back.Fields, "offsety_bottom", oldline.back.Fields.GetValue("offsety_bottom", 0f));
+							UniFields.SetFloat(newline.back.Fields, "offsety_top", oldline.back.Fields.GetValue("offsety_top", 0f));
+							UniFields.SetFloat(newline.back.Fields, "offsety_mid", oldline.back.Fields.GetValue("offsety_mid", 0f));
+							UniFields.SetFloat(newline.back.Fields, "offsety_bottom", oldline.back.Fields.GetValue("offsety_bottom", 0f));
 						}
 					}
 					break;
@@ -1430,9 +1430,9 @@ namespace CodeImp.DoomBuilder.Map
 						//mxd. Reset UDMF X offset as well
 						if(General.Map.UDMF) 
 						{
-							UDMFTools.SetFloat(newline.front.Fields, "offsetx_top", 0f);
-							UDMFTools.SetFloat(newline.front.Fields, "offsetx_mid", 0f);
-							UDMFTools.SetFloat(newline.front.Fields, "offsetx_bottom", 0f);
+							UniFields.SetFloat(newline.front.Fields, "offsetx_top", 0f);
+							UniFields.SetFloat(newline.front.Fields, "offsetx_mid", 0f);
+							UniFields.SetFloat(newline.front.Fields, "offsetx_bottom", 0f);
 						}
 					}
 
@@ -1444,13 +1444,13 @@ namespace CodeImp.DoomBuilder.Map
 						//mxd. Reset UDMF X offset and copy Y offset as well
 						if(General.Map.UDMF) 
 						{
-							UDMFTools.SetFloat(newline.back.Fields, "offsetx_top", 0f);
-							UDMFTools.SetFloat(newline.back.Fields, "offsetx_mid", 0f);
-							UDMFTools.SetFloat(newline.back.Fields, "offsetx_bottom", 0f);
+							UniFields.SetFloat(newline.back.Fields, "offsetx_top", 0f);
+							UniFields.SetFloat(newline.back.Fields, "offsetx_mid", 0f);
+							UniFields.SetFloat(newline.back.Fields, "offsetx_bottom", 0f);
 
-							UDMFTools.SetFloat(newline.back.Fields, "offsety_top", oldline.back.Fields.GetValue("offsety_top", 0f));
-							UDMFTools.SetFloat(newline.back.Fields, "offsety_mid", oldline.back.Fields.GetValue("offsety_mid", 0f));
-							UDMFTools.SetFloat(newline.back.Fields, "offsety_bottom", oldline.back.Fields.GetValue("offsety_bottom", 0f));
+							UniFields.SetFloat(newline.back.Fields, "offsety_top", oldline.back.Fields.GetValue("offsety_top", 0f));
+							UniFields.SetFloat(newline.back.Fields, "offsety_mid", oldline.back.Fields.GetValue("offsety_mid", 0f));
+							UniFields.SetFloat(newline.back.Fields, "offsety_bottom", oldline.back.Fields.GetValue("offsety_bottom", 0f));
 						}
 					}
 					break;
@@ -1463,13 +1463,13 @@ namespace CodeImp.DoomBuilder.Map
 
 						if(General.Map.UDMF) 
 						{
-							UDMFTools.SetFloat(newline.front.Fields, "offsetx_top", 0f);
-							UDMFTools.SetFloat(newline.front.Fields, "offsetx_mid", 0f);
-							UDMFTools.SetFloat(newline.front.Fields, "offsetx_bottom", 0f);
+							UniFields.SetFloat(newline.front.Fields, "offsetx_top", 0f);
+							UniFields.SetFloat(newline.front.Fields, "offsetx_mid", 0f);
+							UniFields.SetFloat(newline.front.Fields, "offsetx_bottom", 0f);
 
-							UDMFTools.SetFloat(newline.front.Fields, "offsety_top", 0f);
-							UDMFTools.SetFloat(newline.front.Fields, "offsety_mid", 0f);
-							UDMFTools.SetFloat(newline.front.Fields, "offsety_bottom", 0f);
+							UniFields.SetFloat(newline.front.Fields, "offsety_top", 0f);
+							UniFields.SetFloat(newline.front.Fields, "offsety_mid", 0f);
+							UniFields.SetFloat(newline.front.Fields, "offsety_bottom", 0f);
 						}
 					}
 
@@ -1480,13 +1480,13 @@ namespace CodeImp.DoomBuilder.Map
 
 						if(General.Map.UDMF) 
 						{
-							UDMFTools.SetFloat(newline.back.Fields, "offsetx_top", 0f);
-							UDMFTools.SetFloat(newline.back.Fields, "offsetx_mid", 0f);
-							UDMFTools.SetFloat(newline.back.Fields, "offsetx_bottom", 0f);
+							UniFields.SetFloat(newline.back.Fields, "offsetx_top", 0f);
+							UniFields.SetFloat(newline.back.Fields, "offsetx_mid", 0f);
+							UniFields.SetFloat(newline.back.Fields, "offsetx_bottom", 0f);
 
-							UDMFTools.SetFloat(newline.back.Fields, "offsety_top", 0f);
-							UDMFTools.SetFloat(newline.back.Fields, "offsety_mid", 0f);
-							UDMFTools.SetFloat(newline.back.Fields, "offsety_bottom", 0f);
+							UniFields.SetFloat(newline.back.Fields, "offsety_top", 0f);
+							UniFields.SetFloat(newline.back.Fields, "offsety_mid", 0f);
+							UniFields.SetFloat(newline.back.Fields, "offsety_bottom", 0f);
 						}
 					}
 					break;

@@ -24,7 +24,6 @@ using System.Windows.Forms;
 using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.GZBuilder.Data;
-using CodeImp.DoomBuilder.GZBuilder.Tools;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
@@ -728,14 +727,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					offsetx = -Sidedef.OffsetX - options.ControlSideOffsetX;
 				}
 
-				UDMFTools.SetFloat(controlside.Fields, "scalex_" + partname, (float)Math.Round(scalex, General.Map.FormatInterface.VertexDecimals), 1.0f);
-				UDMFTools.SetFloat(Sidedef.Fields, "offsetx_" + partname, offsetx, 0.0f);
+				UniFields.SetFloat(controlside.Fields, "scalex_" + partname, (float)Math.Round(scalex, General.Map.FormatInterface.VertexDecimals), 1.0f);
+				UniFields.SetFloat(Sidedef.Fields, "offsetx_" + partname, offsetx, 0.0f);
 			} 
 			else 
 			{
 				// Restore initial offsets
-				UDMFTools.SetFloat(controlside.Fields, "scalex_" + partname, options.InitialScaleX, 1.0f);
-				UDMFTools.SetFloat(Sidedef.Fields, "offsetx_" + partname, options.InitialOffsetX, 0.0f);
+				UniFields.SetFloat(controlside.Fields, "scalex_" + partname, options.InitialScaleX, 1.0f);
+				UniFields.SetFloat(Sidedef.Fields, "offsetx_" + partname, options.InitialOffsetX, 0.0f);
 			}
 
 			// Fit height
@@ -779,15 +778,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							offsety = Tools.GetSidedefOffsetY(Sidedef, geometrytype, -Sidedef.OffsetY - options.ControlSideOffsetY, scaley, true) % Texture.Height;
 					}
 
-					UDMFTools.SetFloat(controlside.Fields, "scaley_" + partname, (float)Math.Round(scaley, General.Map.FormatInterface.VertexDecimals), 1.0f);
-					UDMFTools.SetFloat(Sidedef.Fields, "offsety_" + partname, (float)Math.Round(offsety, General.Map.FormatInterface.VertexDecimals), 0.0f);
+					UniFields.SetFloat(controlside.Fields, "scaley_" + partname, (float)Math.Round(scaley, General.Map.FormatInterface.VertexDecimals), 1.0f);
+					UniFields.SetFloat(Sidedef.Fields, "offsety_" + partname, (float)Math.Round(offsety, General.Map.FormatInterface.VertexDecimals), 0.0f);
 				}
 			} 
 			else 
 			{
 				// Restore initial offsets
-				UDMFTools.SetFloat(controlside.Fields, "scaley_" + partname, options.InitialScaleY, 1.0f);
-				UDMFTools.SetFloat(Sidedef.Fields, "offsety_" + partname, options.InitialOffsetY, 0.0f);
+				UniFields.SetFloat(controlside.Fields, "scaley_" + partname, options.InitialScaleY, 1.0f);
+				UniFields.SetFloat(Sidedef.Fields, "offsety_" + partname, options.InitialOffsetY, 0.0f);
 			}
 		}
 
@@ -1215,18 +1214,22 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Copy properties
 		public virtual void OnCopyProperties()
 		{
+			BuilderPlug.Me.CopiedLinedefProps = new LinedefProperties(Sidedef.Line); //mxd
 			BuilderPlug.Me.CopiedSidedefProps = new SidedefProperties(Sidedef);
-			mode.SetActionResult("Copied sidedef properties.");
+			mode.SetActionResult("Copied linedef and sidedef properties.");
 		}
 
 		// Paste properties
-		public virtual void OnPasteProperties()
+		public virtual void OnPasteProperties(bool usecopysettings)
 		{
-			if(BuilderPlug.Me.CopiedSidedefProps != null)
+			if(BuilderPlug.Me.CopiedLinedefProps != null)
 			{
-				mode.CreateUndo("Paste sidedef properties");
-				mode.SetActionResult("Pasted sidedef properties.");
-				BuilderPlug.Me.CopiedSidedefProps.Apply(Sidedef);
+				bool pastesideprops = (LinedefProperties.CopySettings.SidedefProperties && BuilderPlug.Me.CopiedSidedefProps != null); //mxd
+				string pastetarget = (pastesideprops ? "linedef and sidedef" : "linedef"); //mxd
+				mode.CreateUndo("Paste " + pastetarget + " properties");
+				mode.SetActionResult("Pasted " + pastetarget + " properties.");
+				BuilderPlug.Me.CopiedLinedefProps.Apply(Sidedef.Line, usecopysettings, false); //mxd
+				if(pastesideprops) BuilderPlug.Me.CopiedSidedefProps.Apply(Sidedef, usecopysettings); //mxd. Added "usecopysettings"
 				
 				// Update sectors on both sides
 				BaseVisualSector front = (BaseVisualSector)mode.GetVisualSector(Sidedef.Sector);
@@ -1434,7 +1437,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				Sidedef.Fields.BeforeFieldsChange();
 
 				//apply changes
-				UDMFTools.SetInteger(Sidedef.Fields, "light", newlight, (absolute ? int.MinValue : 0));
+				UniFields.SetInteger(Sidedef.Fields, "light", newlight, (absolute ? int.MinValue : 0));
 				Tools.UpdateLightFogFlag(Sidedef);
 				mode.SetActionResult("Changed wall brightness to " + newlight + ".");
 				Sector.Sector.UpdateCache();
@@ -1548,7 +1551,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				float pix = (int)Math.Round(Texture.Width * scaleX) - incrementX;
 				float newscaleX = (float)Math.Round(pix / Texture.Width, 3);
 				scaleX = (newscaleX == 0 ? scaleX * -1 : newscaleX);
-				UDMFTools.SetFloat(Sidedef.Fields, keyX, scaleX, 1.0f);
+				UniFields.SetFloat(Sidedef.Fields, keyX, scaleX, 1.0f);
 			}
 
 			if(incrementY != 0) 
@@ -1556,7 +1559,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				float pix = (int)Math.Round(Texture.Height * scaleY) - incrementY;
 				float newscaleY = (float)Math.Round(pix / Texture.Height, 3);
 				scaleY = (newscaleY == 0 ? scaleY * -1 : newscaleY);
-				UDMFTools.SetFloat(Sidedef.Fields, keyY, scaleY, 1.0f);
+				UniFields.SetFloat(Sidedef.Fields, keyY, scaleY, 1.0f);
 			}
 
 			//update geometry

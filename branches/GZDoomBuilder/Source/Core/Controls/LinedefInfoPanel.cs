@@ -22,7 +22,6 @@ using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.GZBuilder.Data;
-using CodeImp.DoomBuilder.GZBuilder.Tools;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Types;
@@ -535,8 +534,8 @@ namespace CodeImp.DoomBuilder.Controls
 		//mxd
 		private static bool SetPairedUDMFFieldsLabel(UniFields fields, string paramX, string paramY, float defaultvalue, Label namelabel, Label valuelabel, bool highlight)
 		{
-			float x = UDMFTools.GetFloat(fields, paramX, defaultvalue);
-			float y = UDMFTools.GetFloat(fields, paramY, defaultvalue);
+			float x = UniFields.GetFloat(fields, paramX, defaultvalue);
+			float y = UniFields.GetFloat(fields, paramY, defaultvalue);
 
 			if(fields.ContainsKey(paramX)) x = (float)fields[paramX].Value;
 			if(fields.ContainsKey(paramY)) y = (float)fields[paramY].Value;

@@ -45,7 +45,7 @@ namespace CodeImp.DoomBuilder.Windows
 				case StatusType.Ready:
 					bool mapopened = (General.Map != null) && (General.Map.Data != null);
 					bool mapisloading = mapopened && General.Map.Data.IsLoading;
-					this.selectioninfo = ((string.IsNullOrEmpty(message) && mapopened) ? NO_SELECTION : message);
+					this.selectioninfo = ((string.IsNullOrEmpty(message) && mapopened) ? (string.IsNullOrEmpty(General.MainWindow.Status.selectioninfo) ? NO_SELECTION : General.MainWindow.Status.selectioninfo) : message);
 					this.message = (mapisloading ? LOADING_TEXT : (mapopened ? string.Empty : READY_TEXT));
 					break;
 

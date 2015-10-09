@@ -316,9 +316,10 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			{
 				VisualMode vm = ((VisualMode)General.Editing.Mode);
 
-				for(int i = 0; i < selection.Count; i++) 
+				for(int i = 0; i < selection.Count; i++)
 				{
 					visualSelection[i].SetPosition(new Vector3D(selection[i].Position.x, selection[i].Position.y, selection[i].Sector.FloorHeight + selection[i].Position.z));
+					visualSelection[i].Update();
 
 					if(vm.VisualSectorExists(visualSelection[i].Thing.Sector))
 						vm.GetVisualSector(visualSelection[i].Thing.Sector).UpdateSectorGeometry(true);

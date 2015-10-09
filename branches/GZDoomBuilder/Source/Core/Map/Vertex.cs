@@ -94,6 +94,7 @@ namespace CodeImp.DoomBuilder.Map
 		internal Vertex(MapSet map, int listindex, Vector2D pos)
 		{
 			// Initialize
+			this.elementtype = MapElementType.VERTEX; //mxd
 			this.map = map;
 			this.linedefs = new LinkedList<Linedef>();
 			this.listindex = listindex;

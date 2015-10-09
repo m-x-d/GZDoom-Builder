@@ -60,11 +60,18 @@ namespace CodeImp.DoomBuilder.IO
 						
 						// Load configuration from stream
 						config.InputConfiguration(udmfcfgreader.ReadToEnd());
-						string[] elements = new[] { "vertex", "linedef", "sidedef", "sector", "thing" };
+						Dictionary<string, MapElementType> elements = new Dictionary<string, MapElementType>
+						                                              {
+							                                              { "vertex", MapElementType.VERTEX },
+																		  { "linedef", MapElementType.LINEDEF },
+																		  { "sidedef", MapElementType.SIDEDEF },
+																		  { "sector", MapElementType.SECTOR },
+																		  { "thing", MapElementType.THING }
+						                                              };
 
-						foreach(string elementname in elements) 
+						foreach(KeyValuePair<string, MapElementType> group in elements) 
 						{
-							IDictionary dic = config.ReadSetting("uifields." + elementname, new Hashtable());
+							IDictionary dic = config.ReadSetting("uifields." + group.Key, new Hashtable());
 
 							Dictionary<string, UniversalType> values = new Dictionary<string, UniversalType>(StringComparer.Ordinal);
 							foreach(DictionaryEntry de in dic) 
@@ -72,7 +79,7 @@ namespace CodeImp.DoomBuilder.IO
 								values.Add(de.Key.ToString(), (UniversalType)de.Value);
 							}
 
-							uifields.Add(elementname, values);
+							uifields.Add(group.Value, values);
 						}
 						
 						// Done
@@ -125,7 +132,7 @@ namespace CodeImp.DoomBuilder.IO
 		public override float MinCoordinate { get { return short.MinValue; } } //mxd
 		public override int MaxThingAngle { get { return int.MaxValue; } }
 		public override int MinThingAngle { get { return int.MinValue; } }
-		public override Dictionary<string, Dictionary<string, UniversalType>> UIFields { get { return uifields; } } //mxd
+		public override Dictionary<MapElementType, Dictionary<string, UniversalType>> UIFields { get { return uifields; } } //mxd
 		
 		#endregion
 

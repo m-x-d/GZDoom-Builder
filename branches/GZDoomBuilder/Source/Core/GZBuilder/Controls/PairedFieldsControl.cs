@@ -4,7 +4,6 @@ using System;
 using System.Globalization;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Map;
-using CodeImp.DoomBuilder.GZBuilder.Tools;
 using CodeImp.DoomBuilder.Properties;
 
 #endregion
@@ -70,13 +69,13 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 
 			if(AllowDecimal) 
 			{
-				newValue1 = ((float)Math.Round(UDMFTools.GetFloat(fields, field1, defaultValue), 2)).ToString();
-				newValue2 = ((float)Math.Round(UDMFTools.GetFloat(fields, field2, defaultValue), 2)).ToString();
+				newValue1 = ((float)Math.Round(UniFields.GetFloat(fields, field1, defaultValue), 2)).ToString();
+				newValue2 = ((float)Math.Round(UniFields.GetFloat(fields, field2, defaultValue), 2)).ToString();
 			} 
 			else 
 			{
-				newValue1 = ((float)Math.Round(UDMFTools.GetFloat(fields, field1, defaultValue))).ToString();
-				newValue2 = ((float)Math.Round(UDMFTools.GetFloat(fields, field2, defaultValue))).ToString();
+				newValue1 = ((float)Math.Round(UniFields.GetFloat(fields, field1, defaultValue))).ToString();
+				newValue2 = ((float)Math.Round(UniFields.GetFloat(fields, field2, defaultValue))).ToString();
 			}
 
 			if(first) 
@@ -97,14 +96,14 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		public void ApplyTo(UniFields fields, int min, int max, float oldValue1, float oldValue2) 
 		{
 			if(value1.Text != string.Empty)
-				UDMFTools.SetFloat(fields, field1, General.Clamp(value1.GetResultFloat(oldValue1), min, max), defaultValue);
+				UniFields.SetFloat(fields, field1, General.Clamp(value1.GetResultFloat(oldValue1), min, max), defaultValue);
 			else
-				UDMFTools.SetFloat(fields, field1, oldValue1, defaultValue);
+				UniFields.SetFloat(fields, field1, oldValue1, defaultValue);
 
 			if(value2.Text != string.Empty)
-				UDMFTools.SetFloat(fields, field2, General.Clamp(value2.GetResultFloat(oldValue2), min, max), defaultValue);
+				UniFields.SetFloat(fields, field2, General.Clamp(value2.GetResultFloat(oldValue2), min, max), defaultValue);
 			else
-				UDMFTools.SetFloat(fields, field2, oldValue2, defaultValue);
+				UniFields.SetFloat(fields, field2, oldValue2, defaultValue);
 		}
 
 		private void CheckValues() 

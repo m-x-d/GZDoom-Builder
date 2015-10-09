@@ -43,7 +43,7 @@ namespace CodeImp.DoomBuilder.IO
 		protected MapManager manager;
 
 		//mxd
-		protected Dictionary<string, Dictionary<string, UniversalType>> uifields;
+		protected Dictionary<MapElementType, Dictionary<string, UniversalType>> uifields;
 
 		#endregion
 
@@ -86,7 +86,7 @@ namespace CodeImp.DoomBuilder.IO
 		public abstract float MinCoordinate { get; }
 		public abstract int MaxThingAngle { get; }
 		public abstract int MinThingAngle { get; }
-		public abstract Dictionary<string, Dictionary<string, UniversalType>> UIFields { get; } //mxd
+		public abstract Dictionary<MapElementType, Dictionary<string, UniversalType>> UIFields { get; } //mxd
 		
 		#endregion
 
@@ -98,7 +98,7 @@ namespace CodeImp.DoomBuilder.IO
 			// Initialize
 			this.wad = wad;
 			this.manager = manager;
-			this.uifields = new Dictionary<string, Dictionary<string, UniversalType>>(StringComparer.Ordinal); //mxd
+			this.uifields = new Dictionary<MapElementType, Dictionary<string, UniversalType>>(); //mxd
 		}
 		
 		#endregion
@@ -163,6 +163,33 @@ namespace CodeImp.DoomBuilder.IO
 		// Required implementations
 		public abstract MapSet Read(MapSet map, string mapname);
 		public abstract void Write(MapSet map, string mapname, int position);
+
+		//mxd.
+		public string GetElementName(MapElementType elementtype)
+		{
+			switch(elementtype)
+			{
+				case MapElementType.VERTEX:  return "vertex";
+				case MapElementType.LINEDEF: return "linedef";
+				case MapElementType.SIDEDEF: return "sidedef";
+				case MapElementType.SECTOR:  return "sector";
+				case MapElementType.THING:   return "thing";
+				default: throw new NotSupportedException("Tried to get element name of unsupported map element type!");
+			}
+		}
+
+		public MapElementType GetElementType(string elementname)
+		{
+			switch(elementname)
+			{
+				case "vertex":  return MapElementType.VERTEX;
+				case "linedef": return MapElementType.LINEDEF;
+				case "sidedef": return MapElementType.SIDEDEF;
+				case "sector":  return MapElementType.SECTOR;
+				case "thing":   return MapElementType.THING;
+				default: throw new NotSupportedException("Tried to get element type of unsupported map element type!");
+			}
+		}
 		
 		#endregion
 	}

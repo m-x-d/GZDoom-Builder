@@ -2020,8 +2020,7 @@ namespace CodeImp.DoomBuilder.Windows
 			buttonfullbrightness.Checked = Renderer.FullBrightness; //mxd
 			buttontogglegrid.Visible = General.Settings.ToolbarViewModes && maploaded; //mxd
 			buttontogglegrid.Checked = General.Settings.RenderGrid; //mxd
-			buttontogglecomments.Visible = General.Settings.ToolbarViewModes && maploaded; //mxd
-			buttontogglecomments.Enabled = maploaded && General.Map.UDMF; //mxd
+			buttontogglecomments.Visible = General.Settings.ToolbarViewModes && maploaded && General.Map.UDMF; //mxd
 			buttontogglecomments.Checked = General.Settings.RenderComments; //mxd
 			separatorfullbrightness.Visible = General.Settings.ToolbarViewModes && maploaded; //mxd
 			buttonviewbrightness.Visible = General.Settings.ToolbarViewModes && maploaded;
@@ -2044,15 +2043,13 @@ namespace CodeImp.DoomBuilder.Windows
 			buttontogglevisualvertices.Visible = General.Settings.GZToolbarGZDoom && maploaded;
 			separatorgzmodes.Visible = General.Settings.GZToolbarGZDoom && maploaded;
 
-			// Enable/disable all edit mode items
-			//foreach(ToolStripItem i in editmodeitems) i.Enabled = (General.Map != null);
-
 			//mxd. Show/hide additional panels
-			modestoolbar.Visible = (General.Map != null);
-			panelinfo.Visible = (General.Map != null);
-			modecontrolsloolbar.Visible = (General.Map != null && modecontrolsloolbar.Items.Count > 0);
+			modestoolbar.Visible = maploaded;
+			panelinfo.Visible = maploaded;
+			modecontrolsloolbar.Visible = (maploaded && modecontrolsloolbar.Items.Count > 0);
 			
-			//mxd. modestoolbar index in Controls gets messed up when it's invisible. This fixes it. TODO: find why this happens in the first place
+			//mxd. modestoolbar index in Controls gets messed up when it's invisible. This fixes it.
+			//TODO: find out why this happens in the first place
 			if(modestoolbar.Visible) 
 			{
 				int toolbarpos = this.Controls.IndexOf(toolbar);
@@ -2180,42 +2177,25 @@ namespace CodeImp.DoomBuilder.Windows
 		//mxd
 		public void UpdateGZDoomPanel() 
 		{
-			if (General.Map != null) 
+			if(General.Map != null && General.Settings.GZToolbarGZDoom) 
 			{
-				modelrendermode.Enabled = true;
-				dynamiclightmode.Enabled = true;
-				buttontogglefog.Enabled = true;
-				buttontogglefx.Enabled = true;
-				buttontoggleeventlines.Enabled = true;
-				buttontogglevisualvertices.Enabled = General.Map.UDMF;
-
-				if (General.Settings.GZToolbarGZDoom) 
+				foreach(ToolStripMenuItem item in modelrendermode.DropDownItems)
 				{
-					foreach(ToolStripMenuItem item in modelrendermode.DropDownItems)
-					{
-						item.Checked = ((ModelRenderMode)item.Tag == General.Settings.GZDrawModelsMode);
-						if (item.Checked) modelrendermode.Image = item.Image;
-					}
-					foreach(ToolStripMenuItem item in dynamiclightmode.DropDownItems)
-					{
-						item.Checked = ((LightRenderMode)item.Tag == General.Settings.GZDrawLightsMode);
-						if(item.Checked) dynamiclightmode.Image = item.Image;
-					}
-					
-					buttontogglefog.Checked = General.Settings.GZDrawFog;
-					buttontoggleeventlines.Checked = General.Settings.GZShowEventLines;
-					buttontogglevisualvertices.Checked = General.Settings.GZShowVisualVertices;
+					item.Checked = ((ModelRenderMode)item.Tag == General.Settings.GZDrawModelsMode);
+					if(item.Checked) modelrendermode.Image = item.Image;
 				}
+
+				foreach(ToolStripMenuItem item in dynamiclightmode.DropDownItems)
+				{
+					item.Checked = ((LightRenderMode)item.Tag == General.Settings.GZDrawLightsMode);
+					if(item.Checked) dynamiclightmode.Image = item.Image;
+				}
+				
+				buttontogglefog.Checked = General.Settings.GZDrawFog;
+				buttontoggleeventlines.Checked = General.Settings.GZShowEventLines;
+				buttontogglevisualvertices.Visible = General.Map.UDMF;
+				buttontogglevisualvertices.Checked = General.Settings.GZShowVisualVertices;
 			} 
-			else
-			{
-				modelrendermode.Enabled = false;
-				dynamiclightmode.Enabled = false;
-				buttontogglefog.Enabled = false;
-				buttontogglefx.Enabled = false;
-				buttontoggleeventlines.Enabled = false;
-				buttontogglevisualvertices.Enabled = false;
-			}
 		}
 
 		#endregion
@@ -2352,9 +2332,9 @@ namespace CodeImp.DoomBuilder.Windows
 		#region ================== Menus
 
 		// This adds a menu to the menus bar
-		public void AddMenu(ToolStripMenuItem menu) { AddMenu(menu, MenuSection.Top, General.Plugins.FindPluginByAssembly(Assembly.GetCallingAssembly())); }
-		public void AddMenu(ToolStripMenuItem menu, MenuSection section) { AddMenu(menu, section, General.Plugins.FindPluginByAssembly(Assembly.GetCallingAssembly())); }
-		private void AddMenu(ToolStripMenuItem menu, MenuSection section, Plugin plugin)
+		public void AddMenu(ToolStripItem menu) { AddMenu(menu, MenuSection.Top, General.Plugins.FindPluginByAssembly(Assembly.GetCallingAssembly())); }
+		public void AddMenu(ToolStripItem menu, MenuSection section) { AddMenu(menu, section, General.Plugins.FindPluginByAssembly(Assembly.GetCallingAssembly())); }
+		private void AddMenu(ToolStripItem menu, MenuSection section, Plugin plugin)
 		{
 			// Fix tags to full action names
 			ToolStripItemCollection items = new ToolStripItemCollection(this.menumain, new ToolStripItem[0]);
@@ -2393,7 +2373,7 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		public void AddModesMenu(ToolStripMenuItem menu, string group) 
+		public void AddModesMenu(ToolStripItem menu, string group) 
 		{
 			// Fix tags to full action names
 			ToolStripItemCollection items = new ToolStripItemCollection(this.menumain, new ToolStripItem[0]);
@@ -2414,7 +2394,7 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 		
 		// Removes a menu
-		public void RemoveMenu(ToolStripMenuItem menu)
+		public void RemoveMenu(ToolStripItem menu)
 		{
 			// We actually have no idea in which menu this item is,
 			// so try removing from all menus and the top strip
@@ -2884,7 +2864,7 @@ namespace CodeImp.DoomBuilder.Windows
 			itemfullbrightness.Checked = Renderer.FullBrightness; //mxd
 			itemtogglegrid.Checked = General.Settings.RenderGrid; //mxd
 			itemtoggleinfo.Checked = IsInfoPanelExpanded;
-			itemtogglecomments.Enabled = (General.Map != null && General.Map.UDMF); //mxd
+			itemtogglecomments.Visible = (General.Map != null && General.Map.UDMF); //mxd
 			itemtogglecomments.Checked = General.Settings.RenderComments; //mxd
 			
 			// View mode items

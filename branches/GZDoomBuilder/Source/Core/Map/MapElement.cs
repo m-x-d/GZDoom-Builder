@@ -24,6 +24,16 @@ using CodeImp.DoomBuilder.IO;
 
 namespace CodeImp.DoomBuilder.Map
 {
+	public enum MapElementType
+	{
+		UNKNOWN,
+		VERTEX,
+		SIDEDEF,
+		LINEDEF,
+		SECTOR,
+		THING
+	}
+	
 	public abstract class MapElement : IDisposable
 	{
 		#region ================== Constants
@@ -50,6 +60,9 @@ namespace CodeImp.DoomBuilder.Map
 		//mxd. Hashing
 		private static int hashcounter;
 		private readonly int hashcode;
+
+		//mxd. Element type
+		protected MapElementType elementtype;
 		
 		#endregion
 		
@@ -60,7 +73,8 @@ namespace CodeImp.DoomBuilder.Map
 		public bool Marked { get { return marked; } set { marked = value; } }
 		public bool IsDisposed { get { return isdisposed; } }
 		public List<Type> IgnoredErrorChecks { get { return ignorederrorchecks; } } //mxd
-		
+		public MapElementType ElementType { get { return elementtype; } } //mxd
+
 		#endregion
 
 		#region ================== Constructor / Disposer

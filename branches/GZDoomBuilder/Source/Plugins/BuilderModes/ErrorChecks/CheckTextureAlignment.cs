@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Threading;
 using CodeImp.DoomBuilder.Data;
-using CodeImp.DoomBuilder.GZBuilder.Tools;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.VisualModes;
@@ -267,13 +266,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			switch (targetparttype)
 			{
 				case VisualGeometryType.WALL_UPPER:
-					return (float)Math.Round(UDMFTools.GetFloat(target.Fields, key + "_top", defaultvalue), 3);
+					return (float)Math.Round(UniFields.GetFloat(target.Fields, key + "_top", defaultvalue), 3);
 
 				case VisualGeometryType.WALL_MIDDLE:
-					return (float)Math.Round(UDMFTools.GetFloat(target.Fields, key + "_mid", defaultvalue), 3);
+					return (float)Math.Round(UniFields.GetFloat(target.Fields, key + "_mid", defaultvalue), 3);
 
 				case VisualGeometryType.WALL_LOWER:
-					return (float)Math.Round(UDMFTools.GetFloat(target.Fields, key + "_bottom", defaultvalue), 3);
+					return (float)Math.Round(UniFields.GetFloat(target.Fields, key + "_bottom", defaultvalue), 3);
 			}
 
 			return 0;

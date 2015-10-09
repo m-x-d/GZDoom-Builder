@@ -1704,7 +1704,6 @@ namespace CodeImp.DoomBuilder.Windows
 			// buttontogglefx
 			// 
 			this.buttontogglefx.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.buttontogglefx.Enabled = false;
 			this.buttontogglefx.Image = global::CodeImp.DoomBuilder.Properties.Resources.fx;
 			this.buttontogglefx.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.buttontogglefx.Name = "buttontogglefx";
@@ -1720,7 +1719,6 @@ namespace CodeImp.DoomBuilder.Windows
             this.sightsdontshow,
             this.lightsshow,
             this.lightsshowanimated});
-			this.dynamiclightmode.Enabled = false;
 			this.dynamiclightmode.Image = global::CodeImp.DoomBuilder.Properties.Resources.Light;
 			this.dynamiclightmode.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.dynamiclightmode.Name = "dynamiclightmode";
@@ -1767,7 +1765,6 @@ namespace CodeImp.DoomBuilder.Windows
             this.modelsshowselection,
             this.modelsshowfiltered,
             this.modelsshowall});
-			this.modelrendermode.Enabled = false;
 			this.modelrendermode.Image = global::CodeImp.DoomBuilder.Properties.Resources.Model;
 			this.modelrendermode.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.modelrendermode.Name = "modelrendermode";
@@ -1820,7 +1817,6 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.buttontogglefog.CheckOnClick = true;
 			this.buttontogglefog.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.buttontogglefog.Enabled = false;
 			this.buttontogglefog.Image = global::CodeImp.DoomBuilder.Properties.Resources.fog;
 			this.buttontogglefog.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.buttontogglefog.Name = "buttontogglefog";
@@ -1832,7 +1828,6 @@ namespace CodeImp.DoomBuilder.Windows
 			// buttontoggleeventlines
 			// 
 			this.buttontoggleeventlines.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.buttontoggleeventlines.Enabled = false;
 			this.buttontoggleeventlines.Image = global::CodeImp.DoomBuilder.Properties.Resources.InfoLine;
 			this.buttontoggleeventlines.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.buttontoggleeventlines.Name = "buttontoggleeventlines";
@@ -1844,7 +1839,6 @@ namespace CodeImp.DoomBuilder.Windows
 			// buttontogglevisualvertices
 			// 
 			this.buttontogglevisualvertices.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.buttontogglevisualvertices.Enabled = false;
 			this.buttontogglevisualvertices.Image = global::CodeImp.DoomBuilder.Properties.Resources.VisualVertices;
 			this.buttontogglevisualvertices.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.buttontogglevisualvertices.Name = "buttontogglevisualvertices";

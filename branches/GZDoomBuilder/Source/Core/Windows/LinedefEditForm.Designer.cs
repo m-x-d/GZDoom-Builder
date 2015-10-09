@@ -339,7 +339,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.tagSelector.Location = new System.Drawing.Point(19, 19);
 			this.tagSelector.Name = "tagSelector";
-			this.tagSelector.Size = new System.Drawing.Size(445, 34);
+			this.tagSelector.Size = new System.Drawing.Size(518, 34);
 			this.tagSelector.TabIndex = 0;
 			// 
 			// frontside

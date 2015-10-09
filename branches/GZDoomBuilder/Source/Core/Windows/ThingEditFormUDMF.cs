@@ -22,7 +22,6 @@ using System.Drawing;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Geometry;
-using CodeImp.DoomBuilder.GZBuilder.Tools;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Types;
 
@@ -84,7 +83,7 @@ namespace CodeImp.DoomBuilder.Windows
 				Roll = t.Roll;
 				ScaleX = t.ScaleX;
 				ScaleY = t.ScaleY;
-				Alpha = UDMFTools.GetFloat(t.Fields, "alpha", 1.0f);
+				Alpha = UniFields.GetFloat(t.Fields, "alpha", 1.0f);
 				Flags = t.GetFlags();
 			}
 		}
@@ -484,13 +483,13 @@ namespace CodeImp.DoomBuilder.Windows
 				//mxd. Custom fields
 				fieldslist.Apply(t.Fields);
 				if(!string.IsNullOrEmpty(conversationID.Text))
-					UDMFTools.SetInteger(t.Fields, "conversation", conversationID.GetResult(t.Fields.GetValue("conversation", 0)), 0);
+					UniFields.SetInteger(t.Fields, "conversation", conversationID.GetResult(t.Fields.GetValue("conversation", 0)), 0);
 				if(!string.IsNullOrEmpty(gravity.Text))
-					UDMFTools.SetFloat(t.Fields, "gravity", gravity.GetResultFloat(t.Fields.GetValue("gravity", 1.0f)), 1.0f);
+					UniFields.SetFloat(t.Fields, "gravity", gravity.GetResultFloat(t.Fields.GetValue("gravity", 1.0f)), 1.0f);
 				if(!string.IsNullOrEmpty(health.Text))
-					UDMFTools.SetInteger(t.Fields, "health", health.GetResult(t.Fields.GetValue("health", 1)), 1);
+					UniFields.SetInteger(t.Fields, "health", health.GetResult(t.Fields.GetValue("health", 1)), 1);
 				if(!string.IsNullOrEmpty(score.Text))
-					UDMFTools.SetInteger(t.Fields, "score", score.GetResult(t.Fields.GetValue("score", 0)), 0);
+					UniFields.SetInteger(t.Fields, "score", score.GetResult(t.Fields.GetValue("score", 0)), 0);
 
 				color.ApplyTo(t.Fields, t.Fields.GetValue("fillcolor", 0));
 
@@ -835,7 +834,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 			//update values
 			foreach(Thing t in things)
-				UDMFTools.SetString(t.Fields, "renderstyle", renderstyles[renderStyle.SelectedIndex], "normal");
+				UniFields.SetString(t.Fields, "renderstyle", renderstyles[renderStyle.SelectedIndex], "normal");
 
 			General.Map.IsChanged = true;
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
@@ -850,14 +849,14 @@ namespace CodeImp.DoomBuilder.Windows
 			//restore values
 			if(string.IsNullOrEmpty(alpha.Text))
 			{
-				foreach(Thing t in things) UDMFTools.SetFloat(t.Fields, "alpha", thingprops[i++].Alpha, 1.0f);
+				foreach(Thing t in things) UniFields.SetFloat(t.Fields, "alpha", thingprops[i++].Alpha, 1.0f);
 			}
 			else //update values
 			{
 				foreach(Thing t in things)
 				{
 					float value = General.Clamp(alpha.GetResultFloat(t.Fields.GetValue("alpha", 1.0f)), 0f, 1.0f);
-					UDMFTools.SetFloat(t.Fields, "alpha", value, 1.0f);
+					UniFields.SetFloat(t.Fields, "alpha", value, 1.0f);
 				}
 			}
 

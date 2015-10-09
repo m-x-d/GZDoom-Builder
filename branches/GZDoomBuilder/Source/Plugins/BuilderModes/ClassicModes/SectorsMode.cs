@@ -26,7 +26,6 @@ using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.GZBuilder.Geometry;
-using CodeImp.DoomBuilder.GZBuilder.Tools;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Types;
@@ -1373,16 +1372,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			// Determine source sectors
 			ICollection<Sector> sel = null;
-			if(General.Map.Map.SelectedSectorsCount > 0)
-				sel = General.Map.Map.GetSelectedSectors(true);
-			else if(highlighted != null)
-				sel = new List<Sector> {highlighted};
+			if(General.Map.Map.SelectedSectorsCount > 0) sel = General.Map.Map.GetSelectedSectors(true);
+			else if(highlighted != null) sel = new List<Sector> { highlighted };
 			
 			if(sel != null)
 			{
-				// Copy properties from first source sectors
+				// Copy properties from the first source sector
 				BuilderPlug.Me.CopiedSectorProps = new SectorProperties(General.GetByIndex(sel, 0));
 				General.Interface.DisplayStatus(StatusType.Action, "Copied sector properties.");
+			}
+			else
+			{
+				//mxd
+				General.Interface.DisplayStatus(StatusType.Warning, "This action requires highlight or selection!");
 			}
 		}
 
@@ -1394,25 +1396,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Determine target sectors
 				ICollection<Sector> sel = null;
-				if(General.Map.Map.SelectedSectorsCount > 0)
-					sel = General.Map.Map.GetSelectedSectors(true);
-				else if(highlighted != null)
-				{
-					sel = new List<Sector>();
-					sel.Add(highlighted);
-				}
+				if(General.Map.Map.SelectedSectorsCount > 0) sel = General.Map.Map.GetSelectedSectors(true);
+				else if(highlighted != null) sel = new List<Sector> { highlighted };
 				
 				if(sel != null)
 				{
 					// Apply properties to selection
-					General.Map.UndoRedo.CreateUndo("Paste sector properties");
+					string rest = (sel.Count == 1 ? "a single sector" : sel.Count + " sectors"); //mxd
+					General.Map.UndoRedo.CreateUndo("Paste properties to " + rest);
 					foreach(Sector s in sel)
 					{
-						BuilderPlug.Me.CopiedSectorProps.Apply(s);
+						BuilderPlug.Me.CopiedSectorProps.Apply(s, false);
 						s.UpdateCeilingSurface();
 						s.UpdateFloorSurface();
 					}
-					General.Interface.DisplayStatus(StatusType.Action, "Pasted sector properties.");
+					General.Interface.DisplayStatus(StatusType.Action, "Pasted properties to " + rest + ".");
 					
 					// Update and redraw
 					General.Map.IsChanged = true;
@@ -1421,6 +1419,62 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					UpdateEffectLabels(); //mxd
 					General.Interface.RedrawDisplay();
 				}
+				else
+				{
+					//mxd
+					General.Interface.DisplayStatus(StatusType.Warning, "This action requires highlight or selection!");
+				}
+			}
+			else
+			{
+				//mxd
+				General.Interface.DisplayStatus(StatusType.Warning, "Copy sector properties first!");
+			}
+		}
+
+		//mxd. This pastes the properties with options
+		[BeginAction("classicpastepropertieswithoptions")]
+		public void PastePropertiesWithOptions()
+		{
+			if(BuilderPlug.Me.CopiedSectorProps != null)
+			{
+				// Determine target sectors
+				ICollection<Sector> sel = null;
+				if(General.Map.Map.SelectedSectorsCount > 0) sel = General.Map.Map.GetSelectedSectors(true);
+				else if(highlighted != null) sel = new List<Sector> { highlighted };
+
+				if(sel != null)
+				{
+					PastePropertiesOptionsForm form = new PastePropertiesOptionsForm();
+					if(form.Setup(MapElementType.SECTOR) && form.ShowDialog(Form.ActiveForm) == DialogResult.OK)
+					{
+						// Apply properties to selection
+						string rest = (sel.Count == 1 ? "a single sector" : sel.Count + " sectors");
+						General.Map.UndoRedo.CreateUndo("Paste properties with options to " + rest);
+						foreach(Sector s in sel)
+						{
+							BuilderPlug.Me.CopiedSectorProps.Apply(s, true);
+							s.UpdateCeilingSurface();
+							s.UpdateFloorSurface();
+						}
+						General.Interface.DisplayStatus(StatusType.Action, "Pasted properties with options to " + rest + ".");
+
+						// Update and redraw
+						General.Map.IsChanged = true;
+						General.Interface.RefreshInfo();
+						General.Map.Renderer2D.UpdateExtraFloorFlag(); //mxd
+						UpdateEffectLabels(); //mxd
+						General.Interface.RedrawDisplay();
+					}
+				}
+				else
+				{
+					General.Interface.DisplayStatus(StatusType.Warning, "This action requires highlight or selection!");
+				}
+			}
+			else
+			{
+				General.Interface.DisplayStatus(StatusType.Warning, "Copy sector properties first!");
 			}
 		}
 
@@ -1812,7 +1866,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							}
 							else 
 							{
-								UDMFTools.SetInteger(s.Fields, lightKey, (int) b - s.Brightness, 0);
+								UniFields.SetInteger(s.Fields, lightKey, (int) b - s.Brightness, 0);
 							}
 
 							s.UpdateNeeded = true;
@@ -1890,7 +1944,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						                         General.Clamp(InterpolationTools.Interpolate(startColor.G, endColor.G, u, interpolationmode), 0, 255),
 						                         General.Clamp(InterpolationTools.Interpolate(startColor.B, endColor.B, u, interpolationmode), 0, 255));
 
-						UDMFTools.SetInteger(s.Fields, key, c.ToArgb(), defaultvalue);
+						UniFields.SetInteger(s.Fields, key, c.ToArgb(), defaultvalue);
 						s.UpdateNeeded = true;
 					}
 					index++;
@@ -2281,14 +2335,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				//floor
 				if(General.Map.Renderer2D.ViewMode == ViewMode.FloorTextures || General.Map.Renderer2D.ViewMode != ViewMode.CeilingTextures)
 				{
-					UDMFTools.SetFloat(s.Fields, "rotationfloor", General.ClampAngle(UDMFTools.GetFloat(s.Fields, "rotationfloor") + increment));
+					UniFields.SetFloat(s.Fields, "rotationfloor", General.ClampAngle(UniFields.GetFloat(s.Fields, "rotationfloor") + increment));
 					s.UpdateNeeded = true;
 				}
 
 				//ceiling
 				if(General.Map.Renderer2D.ViewMode == ViewMode.CeilingTextures || General.Map.Renderer2D.ViewMode != ViewMode.FloorTextures) 
 				{
-					UDMFTools.SetFloat(s.Fields, "rotationceiling", General.ClampAngle(UDMFTools.GetFloat(s.Fields, "rotationceiling") + increment));
+					UniFields.SetFloat(s.Fields, "rotationceiling", General.ClampAngle(UniFields.GetFloat(s.Fields, "rotationceiling") + increment));
 					s.UpdateNeeded = true;
 				}
 			}

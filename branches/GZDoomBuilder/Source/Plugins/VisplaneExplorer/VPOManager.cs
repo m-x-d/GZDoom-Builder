@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -18,26 +19,21 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		public const int POINTS_PER_ITERATION = 100;
 		private const int EXPECTED_RESULTS_BUFFER = 200000;
 
-		private readonly int[] TEST_ANGLES = new int[] { 0, 90, 180, 270, 45, 135, 225, 315 /*, 22, 67, 112, 157, 202, 247, 292, 337 */ };
+		private readonly int[] TEST_ANGLES = new[] { 0, 90, 180, 270, 45, 135, 225, 315 /*, 22, 67, 112, 157, 202, 247, 292, 337 */ };
 		private const int TEST_HEIGHT = 41 + 8;
-
-		private const int RESULT_OK = 0;
-		private const int RESULT_BAD_Z = -1;
-		private const int RESULT_IN_VOID = -2;
-		private const int RESULT_OVERFLOW = -3;
 		
 		#endregion
 
 		#region ================== APIs
 
-		[DllImport("kernel32.dll")]
-		public static extern IntPtr LoadLibrary(string filename);
+		[DllImport("kernel32.dll", SetLastError = true)]
+		private static extern IntPtr LoadLibrary(string filename);
 
 		[DllImport("kernel32.dll")]
-		public static extern IntPtr GetProcAddress(IntPtr modulehandle, string procedurename);
+		private static extern IntPtr GetProcAddress(IntPtr modulehandle, string procedurename);
 
 		[DllImport("kernel32.dll")]
-		public static extern bool FreeLibrary(IntPtr modulehandle);
+		private static extern bool FreeLibrary(IntPtr modulehandle);
 		
 		#endregion
 
@@ -116,7 +112,11 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 				
 				// Load it
 				dlls[i] = LoadLibrary(tempfiles[i]);
-				if(dlls[i] == IntPtr.Zero) throw new Exception("Unable to load vpo.dll");
+				if(dlls[i] == IntPtr.Zero)
+				{
+					int error = Marshal.GetLastWin32Error(); //mxd
+					throw new Exception("Error " + error + " while loading vpo.dll: " + new Win32Exception(error).Message);
+				}
 			}
 		}
 

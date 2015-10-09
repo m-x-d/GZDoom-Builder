@@ -1227,9 +1227,6 @@ namespace CodeImp.DoomBuilder
 
 				// Open map file
 				OpenMapFile(openfile.FileName, null);
-
-				//mxd
-				mainwindow.UpdateGZDoomPanel();
 			}
 
 			openfile.Dispose();

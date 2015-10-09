@@ -95,7 +95,8 @@ namespace CodeImp.DoomBuilder.Data
 		private ImageData[] commenttextures;
 		
 		// Used images
-		private Dictionary<long, long> usedimages;
+		private Dictionary<long, long> usedtextures; //mxd
+		private Dictionary<long, long> usedflats; //mxd. Used only when MixTextursFlats is disabled
 		
 		// Things combined with things created from Decorate
 		private DecorateParser decorate;
@@ -274,7 +275,8 @@ namespace CodeImp.DoomBuilder.Data
 			imageque = new Queue<ImageData>();
 			previews = new PreviewManager();
 			texturesets = new List<MatchingTextureSet>();
-			usedimages = new Dictionary<long, long>();
+			usedtextures = new Dictionary<long, long>(); //mxd
+			usedflats = new Dictionary<long, long>(); //mxd
 			internalsprites = new Dictionary<string, ImageData>(StringComparer.Ordinal);
 			thingcategories = General.Map.Config.GetThingCategories();
 			thingtypes = General.Map.Config.GetThingTypes();
@@ -776,20 +778,49 @@ namespace CodeImp.DoomBuilder.Data
 		// This updates the used-in-map status on all textures and flats
 		private void BackgroundUpdateUsedTextures()
 		{
-			lock(usedimages)
+			if(General.Map.Config.MixTexturesFlats)
 			{
-				// Set used on all textures
-				foreach(KeyValuePair<long, ImageData> i in textures)
+				lock(usedtextures)
 				{
-					i.Value.SetUsedInMap(usedimages.ContainsKey(i.Key));
-					if(i.Value.IsImageLoaded != i.Value.IsReferenced) ProcessImage(i.Value);
+					// Set used on all textures
+					foreach(KeyValuePair<long, ImageData> i in textures)
+					{
+						i.Value.SetUsedInMap(usedtextures.ContainsKey(i.Key));
+						if(i.Value.IsImageLoaded != i.Value.IsReferenced) ProcessImage(i.Value);
+					}
+
+					// Set used on all flats
+					foreach(KeyValuePair<long, ImageData> i in flats)
+					{
+						i.Value.SetUsedInMap(usedtextures.ContainsKey(i.Key));
+						if(i.Value.IsImageLoaded != i.Value.IsReferenced) ProcessImage(i.Value);
+					}
+
+					// Done
+					updatedusedtextures = false;
+				}
+			}
+			//mxd. Use separate collections
+			else
+			{
+				lock(usedtextures)
+				{
+					// Set used on all textures
+					foreach(KeyValuePair<long, ImageData> i in textures)
+					{
+						i.Value.SetUsedInMap(usedtextures.ContainsKey(i.Key));
+						if(i.Value.IsImageLoaded != i.Value.IsReferenced) ProcessImage(i.Value);
+					}
 				}
 
-				// Set used on all flats
-				foreach(KeyValuePair<long, ImageData> i in flats) 
+				lock(usedflats)
 				{
-					i.Value.SetUsedInMap(usedimages.ContainsKey(i.Key));
-					if(i.Value.IsImageLoaded != i.Value.IsReferenced) ProcessImage(i.Value);
+					// Set used on all flats
+					foreach(KeyValuePair<long, ImageData> i in flats)
+					{
+						i.Value.SetUsedInMap(usedflats.ContainsKey(i.Key));
+						if(i.Value.IsImageLoaded != i.Value.IsReferenced) ProcessImage(i.Value);
+					}
 				}
 				
 				// Done
@@ -2046,25 +2077,61 @@ namespace CodeImp.DoomBuilder.Data
 		// used-in-map status on all textures and flats
 		public void UpdateUsedTextures()
 		{
-			lock(usedimages)
+			if(General.Map.Config.MixTexturesFlats)
 			{
-				usedimages.Clear();
-
-				// Go through the map to find the used textures
-				foreach(Sidedef sd in General.Map.Map.Sidedefs)
+				lock(usedtextures)
 				{
-					// Add used textures to dictionary
-					if(sd.LongHighTexture != MapSet.EmptyLongName) usedimages[sd.LongHighTexture] = 0;
-					if(sd.LongMiddleTexture != MapSet.EmptyLongName) usedimages[sd.LongMiddleTexture] = 0;
-					if(sd.LongLowTexture != MapSet.EmptyLongName) usedimages[sd.LongLowTexture] = 0;
+					usedtextures.Clear();
+
+					// Go through the map to find the used textures
+					foreach(Sidedef sd in General.Map.Map.Sidedefs)
+					{
+						// Add used textures to dictionary
+						if(sd.LongHighTexture != MapSet.EmptyLongName) usedtextures[sd.LongHighTexture] = 0;
+						if(sd.LongMiddleTexture != MapSet.EmptyLongName) usedtextures[sd.LongMiddleTexture] = 0;
+						if(sd.LongLowTexture != MapSet.EmptyLongName) usedtextures[sd.LongLowTexture] = 0;
+					}
+
+					// Go through the map to find the used flats
+					foreach(Sector s in General.Map.Map.Sectors)
+					{
+						// Add used flats to dictionary
+						usedtextures[s.LongFloorTexture] = 0;
+						usedtextures[s.LongCeilTexture] = 0;
+					}
+
+					// Notify the background thread that it needs to update the images
+					updatedusedtextures = true;
+				}
+			}
+			//mxd. Use separate collections
+			else
+			{
+				lock(usedtextures)
+				{
+					usedtextures.Clear();
+
+					// Go through the map to find the used textures
+					foreach(Sidedef sd in General.Map.Map.Sidedefs)
+					{
+						// Add used textures to dictionary
+						if(sd.LongHighTexture != MapSet.EmptyLongName) usedtextures[sd.LongHighTexture] = 0;
+						if(sd.LongMiddleTexture != MapSet.EmptyLongName) usedtextures[sd.LongMiddleTexture] = 0;
+						if(sd.LongLowTexture != MapSet.EmptyLongName) usedtextures[sd.LongLowTexture] = 0;
+					}
 				}
 
-				// Go through the map to find the used flats
-				foreach(Sector s in General.Map.Map.Sectors)
+				lock(usedflats)
 				{
-					// Add used flats to dictionary
-					usedimages[s.LongFloorTexture] = 0;
-					usedimages[s.LongCeilTexture] = 0;
+					usedflats.Clear();
+
+					// Go through the map to find the used flats
+					foreach(Sector s in General.Map.Map.Sectors)
+					{
+						// Add used flats to dictionary
+						usedflats[s.LongFloorTexture] = 0;
+						usedflats[s.LongCeilTexture] = 0;
+					}
 				}
 				
 				// Notify the background thread that it needs to update the images

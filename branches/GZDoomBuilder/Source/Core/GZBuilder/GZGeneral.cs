@@ -34,7 +34,6 @@ namespace CodeImp.DoomBuilder.GZBuilder
 		{
 			//bind actions
 			General.Actions.BindMethods(typeof(GZGeneral));
-			General.MainWindow.UpdateGZDoomPanel();
 		}
 
 		#endregion
