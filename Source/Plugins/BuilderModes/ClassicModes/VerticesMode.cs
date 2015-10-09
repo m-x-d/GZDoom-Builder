@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.BuilderModes.Interface;
 using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
@@ -712,16 +713,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			// Determine source vertices
 			ICollection<Vertex> sel = null;
-			if(General.Map.Map.SelectedVerticessCount > 0)
-				sel = General.Map.Map.GetSelectedVertices(true);
-			else if(highlighted != null)
-				sel = new List<Vertex> {highlighted};
+			if(General.Map.Map.SelectedVerticessCount > 0) sel = General.Map.Map.GetSelectedVertices(true);
+			else if(highlighted != null) sel = new List<Vertex> { highlighted };
 
 			if(sel != null)
 			{
 				// Copy properties from first source vertex
 				BuilderPlug.Me.CopiedVertexProps = new VertexProperties(General.GetByIndex(sel, 0));
 				General.Interface.DisplayStatus(StatusType.Action, "Copied vertex properties.");
+			}
+			else
+			{
+				//mxd
+				General.Interface.DisplayStatus(StatusType.Warning, "This action requires highlight or selection!");
 			}
 		}
 
@@ -733,29 +737,77 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Determine target vertices
 				ICollection<Vertex> sel = null;
-				if(General.Map.Map.SelectedVerticessCount > 0)
-					sel = General.Map.Map.GetSelectedVertices(true);
-				else if(highlighted != null)
-				{
-					sel = new List<Vertex>();
-					sel.Add(highlighted);
-				}
+				if(General.Map.Map.SelectedVerticessCount > 0) sel = General.Map.Map.GetSelectedVertices(true);
+				else if(highlighted != null) sel = new List<Vertex> { highlighted };
 
 				if(sel != null)
 				{
 					// Apply properties to selection
-					General.Map.UndoRedo.CreateUndo("Paste vertex properties");
+					string rest = (sel.Count == 1 ? "a single vertex" : sel.Count + " vertices"); //mxd
+					General.Map.UndoRedo.CreateUndo("Paste properties to " + rest);
 					foreach(Vertex v in sel)
 					{
-						BuilderPlug.Me.CopiedVertexProps.Apply(v);
+						BuilderPlug.Me.CopiedVertexProps.Apply(v, false);
 					}
-					General.Interface.DisplayStatus(StatusType.Action, "Pasted vertex properties.");
+					General.Interface.DisplayStatus(StatusType.Action, "Pasted properties to " + rest + ".");
 
 					// Update and redraw
 					General.Map.IsChanged = true;
 					General.Interface.RefreshInfo();
 					General.Interface.RedrawDisplay();
 				}
+				else
+				{
+					//mxd
+					General.Interface.DisplayStatus(StatusType.Warning, "This action requires highlight or selection!");
+				}
+			}
+			else
+			{
+				//mxd
+				General.Interface.DisplayStatus(StatusType.Warning, "Copy vertex properties first!");
+			}
+		}
+
+		//mxd. This pastes the properties with options
+		[BeginAction("classicpastepropertieswithoptions")]
+		public void PastePropertiesWithOptions()
+		{
+			if(BuilderPlug.Me.CopiedVertexProps != null)
+			{
+				// Determine target vertices
+				ICollection<Vertex> sel = null;
+				if(General.Map.Map.SelectedVerticessCount > 0) sel = General.Map.Map.GetSelectedVertices(true);
+				else if(highlighted != null) sel = new List<Vertex> { highlighted };
+
+				if(sel != null)
+				{
+					PastePropertiesOptionsForm form = new PastePropertiesOptionsForm();
+					if(form.Setup(MapElementType.VERTEX) && form.ShowDialog(Form.ActiveForm) == DialogResult.OK)
+					{
+						// Apply properties to selection
+						string rest = (sel.Count == 1 ? "a single vertex" : sel.Count + " vertices");
+						General.Map.UndoRedo.CreateUndo("Paste properties with options to " + rest);
+						foreach(Vertex v in sel)
+						{
+							BuilderPlug.Me.CopiedVertexProps.Apply(v, true);
+						}
+						General.Interface.DisplayStatus(StatusType.Action, "Pasted properties with options to " + rest + ".");
+
+						// Update and redraw
+						General.Map.IsChanged = true;
+						General.Interface.RefreshInfo();
+						General.Interface.RedrawDisplay();
+					}
+				}
+				else
+				{
+					General.Interface.DisplayStatus(StatusType.Warning, "This action requires highlight or selection!");
+				}
+			}
+			else
+			{
+				General.Interface.DisplayStatus(StatusType.Warning, "Copy vertex properties first!");
 			}
 		}
 

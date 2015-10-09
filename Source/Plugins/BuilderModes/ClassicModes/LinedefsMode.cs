@@ -22,12 +22,12 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Actions;
+using CodeImp.DoomBuilder.BuilderModes.Interface;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.GZBuilder.Geometry;
-using CodeImp.DoomBuilder.GZBuilder.Tools;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Types;
@@ -244,7 +244,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(!alignToFrontSide) sourceAngle = General.ClampAngle(sourceAngle + 180);
 
 				//update angle
-				UDMFTools.SetFloat(s.Fields, (alignFloors ? "rotationfloor" : "rotationceiling"), sourceAngle, 0f);
+				UniFields.SetFloat(s.Fields, (alignFloors ? "rotationfloor" : "rotationceiling"), sourceAngle, 0f);
 
 				//update offset
 				Vector2D offset = (alignToFrontSide ? l.Start.Position : l.End.Position).GetRotated(Angle2D.DegToRad(sourceAngle));
@@ -261,8 +261,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					offset.y %= texture.Height / s.Fields.GetValue((alignFloors ? "yscalefloor" : "yscaleceiling"), 1.0f);
 				}
 
-				UDMFTools.SetFloat(s.Fields, (alignFloors ? "xpanningfloor" : "xpanningceiling"), (float)Math.Round(-offset.x), 0f);
-				UDMFTools.SetFloat(s.Fields, (alignFloors ? "ypanningfloor" : "ypanningceiling"), (float)Math.Round(offset.y), 0f);
+				UniFields.SetFloat(s.Fields, (alignFloors ? "xpanningfloor" : "xpanningceiling"), (float)Math.Round(-offset.x), 0f);
+				UniFields.SetFloat(s.Fields, (alignFloors ? "ypanningfloor" : "ypanningceiling"), (float)Math.Round(offset.y), 0f);
 
 				//update
 				s.UpdateNeeded = true;
@@ -888,16 +888,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			// Determine source linedefs
 			ICollection<Linedef> sel = null;
-			if(General.Map.Map.SelectedLinedefsCount > 0)
-				sel = General.Map.Map.GetSelectedLinedefs(true);
-			else if(highlighted != null)
-				sel = new List<Linedef> {highlighted};
+			if(General.Map.Map.SelectedLinedefsCount > 0) sel = General.Map.Map.GetSelectedLinedefs(true);
+			else if(highlighted != null) sel = new List<Linedef> { highlighted };
 			
 			if(sel != null)
 			{
 				// Copy properties from first source linedef
 				BuilderPlug.Me.CopiedLinedefProps = new LinedefProperties(General.GetByIndex(sel, 0));
 				General.Interface.DisplayStatus(StatusType.Action, "Copied linedef properties.");
+			}
+			else
+			{
+				//mxd
+				General.Interface.DisplayStatus(StatusType.Warning, "This action requires highlight or selection!");
 			}
 		}
 
@@ -909,24 +912,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Determine target linedefs
 				ICollection<Linedef> sel = null;
-				if(General.Map.Map.SelectedLinedefsCount > 0)
-					sel = General.Map.Map.GetSelectedLinedefs(true);
-				else if(highlighted != null)
-				{
-					sel = new List<Linedef>();
-					sel.Add(highlighted);
-				}
+				if(General.Map.Map.SelectedLinedefsCount > 0) sel = General.Map.Map.GetSelectedLinedefs(true);
+				else if(highlighted != null) sel = new List<Linedef> { highlighted };
 				
 				if(sel != null)
 				{
 					// Apply properties to selection
-					General.Map.UndoRedo.CreateUndo("Paste linedef properties");
+					string rest = (sel.Count == 1 ? "a single linedef" : sel.Count + " linedefs"); //mxd
+					General.Map.UndoRedo.CreateUndo("Paste properties to " + rest);
 					foreach(Linedef l in sel)
 					{
-						BuilderPlug.Me.CopiedLinedefProps.Apply(l);
+						BuilderPlug.Me.CopiedLinedefProps.Apply(l, false);
 						l.UpdateCache();
 					}
-					General.Interface.DisplayStatus(StatusType.Action, "Pasted linedef properties.");
+					General.Interface.DisplayStatus(StatusType.Action, "Pasted properties to " + rest + ".");
 					
 					// Update and redraw
 					General.Map.IsChanged = true;
@@ -934,6 +933,60 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					General.Map.Renderer2D.UpdateExtraFloorFlag(); //mxd
 					General.Interface.RedrawDisplay();
 				}
+				else
+				{
+					//mxd
+					General.Interface.DisplayStatus(StatusType.Warning, "This action requires highlight or selection!");
+				}
+			}
+			else
+			{
+				//mxd
+				General.Interface.DisplayStatus(StatusType.Warning, "Copy linedef properties first!");
+			}
+		}
+
+		//mxd. This pastes the properties with options
+		[BeginAction("classicpastepropertieswithoptions")]
+		public void PastePropertiesWithOptions()
+		{
+			if(BuilderPlug.Me.CopiedLinedefProps != null)
+			{
+				// Determine target linedefs
+				ICollection<Linedef> sel = null;
+				if(General.Map.Map.SelectedLinedefsCount > 0) sel = General.Map.Map.GetSelectedLinedefs(true);
+				else if(highlighted != null) sel = new List<Linedef> { highlighted };
+
+				if(sel != null)
+				{
+					PastePropertiesOptionsForm form = new PastePropertiesOptionsForm();
+					if(form.Setup(MapElementType.LINEDEF) && form.ShowDialog(Form.ActiveForm) == DialogResult.OK)
+					{
+						// Apply properties to selection
+						string rest = (sel.Count == 1 ? "a single linedef" : sel.Count + " linedefs");
+						General.Map.UndoRedo.CreateUndo("Paste properties with options to " + rest);
+						foreach(Linedef l in sel)
+						{
+							BuilderPlug.Me.CopiedLinedefProps.Apply(l, true);
+							l.UpdateCache();
+						}
+						General.Interface.DisplayStatus(StatusType.Action, "Pasted properties with options to " + rest + ".");
+
+						// Update and redraw
+						General.Map.IsChanged = true;
+						General.Interface.RefreshInfo();
+						General.Map.Renderer2D.UpdateExtraFloorFlag(); //mxd
+						General.Interface.RedrawDisplay();
+					}
+				}
+				else
+				{
+					General.Interface.DisplayStatus(StatusType.Warning, "This action requires highlight or selection!");
+				}
+			}
+			else
+			{
+				General.Interface.DisplayStatus(StatusType.Warning, "Copy linedef properties first!");
 			}
 		}
 
@@ -1430,7 +1483,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(side.Fields.GetValue("lightabsolute", false))
 				side.Fields["light"].Value = brightness;
 			else
-				UDMFTools.SetInteger(side.Fields, "light", brightness - side.Sector.Brightness, 0);
+				UniFields.SetInteger(side.Fields, "light", brightness - side.Sector.Brightness, 0);
 
 			//apply lightfog flag?
 			if(General.Map.UDMF) Tools.UpdateLightFogFlag(side);

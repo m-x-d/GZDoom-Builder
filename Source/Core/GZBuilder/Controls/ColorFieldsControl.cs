@@ -6,7 +6,6 @@ using System.Windows.Forms;
 using System.Globalization;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Map;
-using CodeImp.DoomBuilder.GZBuilder.Tools;
 
 #endregion
 
@@ -43,7 +42,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 
 		public void SetValueFrom(UniFields fields) 
 		{
-			string newValue = String.Format("{0:X6}", UDMFTools.GetInteger(fields, field, defaultValue));
+			string newValue = String.Format("{0:X6}", UniFields.GetInteger(fields, field, defaultValue));
 			tbColor.Text = ((!string.IsNullOrEmpty(tbColor.Text) && tbColor.Text != newValue) ? "" : newValue);
 			CheckColor();
 		}
@@ -52,11 +51,11 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		{
 			if(string.IsNullOrEmpty(tbColor.Text)) 
 			{
-				UDMFTools.SetInteger(fields, field, oldValue, defaultValue);
+				UniFields.SetInteger(fields, field, oldValue, defaultValue);
 			} 
 			else 
 			{
-				UDMFTools.SetInteger(fields, field, (cpColor.Color.ToInt() & 0x00ffffff), defaultValue);
+				UniFields.SetInteger(fields, field, (cpColor.Color.ToInt() & 0x00ffffff), defaultValue);
 			}
 		}
 

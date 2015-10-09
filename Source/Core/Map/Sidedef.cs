@@ -21,7 +21,6 @@ using System.Collections.Generic;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Data;
-using CodeImp.DoomBuilder.GZBuilder.Tools;
 
 #endregion
 
@@ -88,6 +87,7 @@ namespace CodeImp.DoomBuilder.Map
 		internal Sidedef(MapSet map, int listindex, Linedef l, bool front, Sector s)
 		{
 			// Initialize
+			this.elementtype = MapElementType.SIDEDEF; //mxd
 			this.map = map;
 			this.listindex = listindex;
 			this.texnamehigh = "-";
@@ -278,18 +278,18 @@ namespace CodeImp.DoomBuilder.Map
 			// Try to translate UDMF texture offsets to regular ones
 			if (longtexnamemid != MapSet.EmptyLongName && MiddleRequired()) 
 			{
-				offsetx += (int)UDMFTools.GetFloat(this.Fields, "offsetx_mid");
-				offsety += (int)UDMFTools.GetFloat(this.Fields, "offsety_mid");
+				offsetx += (int)UniFields.GetFloat(this.Fields, "offsetx_mid");
+				offsety += (int)UniFields.GetFloat(this.Fields, "offsety_mid");
 			}
 			else if (longtexnamehigh != MapSet.EmptyLongName && HighRequired()) 
 			{
-				offsetx += (int)UDMFTools.GetFloat(this.Fields, "offsetx_top");
-				offsety += (int)UDMFTools.GetFloat(this.Fields, "offsety_top");
+				offsetx += (int)UniFields.GetFloat(this.Fields, "offsetx_top");
+				offsety += (int)UniFields.GetFloat(this.Fields, "offsety_top");
 			}
 			else if (longtexnamelow != MapSet.EmptyLongName && LowRequired()) 
 			{
-				offsetx += (int)UDMFTools.GetFloat(this.Fields, "offsetx_bottom");
-				offsety += (int)UDMFTools.GetFloat(this.Fields, "offsety_bottom");
+				offsetx += (int)UniFields.GetFloat(this.Fields, "offsetx_bottom");
+				offsety += (int)UniFields.GetFloat(this.Fields, "offsety_bottom");
 			}
 			
 			// Clear UDMF-related properties
@@ -743,7 +743,7 @@ namespace CodeImp.DoomBuilder.Map
 
 				float value = Fields.GetValue("offsetx_top", 0f);
 				float result = (float)(Math.Round(value + offset * scaleTop) % texture.Width);
-				UDMFTools.SetFloat(Fields, "offsetx_top", result);
+				UniFields.SetFloat(Fields, "offsetx_top", result);
 			}
 
 			//middle
@@ -754,7 +754,7 @@ namespace CodeImp.DoomBuilder.Map
 
 				float value = Fields.GetValue("offsetx_mid", 0f);
 				float result = (float)(Math.Round(value + offset * scaleMid) % texture.Width);
-				UDMFTools.SetFloat(Fields, "offsetx_mid", result);
+				UniFields.SetFloat(Fields, "offsetx_mid", result);
 			}
 
 			//bottom
@@ -765,7 +765,7 @@ namespace CodeImp.DoomBuilder.Map
 
 				float value = Fields.GetValue("offsetx_bottom", 0f);
 				float result = (float)(Math.Round(value + offset * scaleLow) % texture.Width);
-				UDMFTools.SetFloat(Fields, "offsetx_bottom", result);
+				UniFields.SetFloat(Fields, "offsetx_bottom", result);
 			}
 		}
 		

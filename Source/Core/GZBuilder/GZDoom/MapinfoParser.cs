@@ -1,5 +1,6 @@
 ﻿#region ================== Namespaces
 
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
@@ -24,6 +25,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 		#region ================== Variables
 
 		private MapInfo mapinfo;
+		private string mapname;
 		private readonly Dictionary<int, string> spawnnums;
 		private readonly Dictionary<int, string> doomednums; // <DoomEdNum, <lowercase classname, List of default arguments>>
 
@@ -54,26 +56,33 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 
 		#region ================== Parsing
 
+
+		override public bool Parse(Stream stream, string sourcefilename)
+		{
+			if(string.IsNullOrEmpty(mapname)) throw new NotSupportedException("MapName is required!");
+			return Parse(stream, sourcefilename, mapname);
+		}
+
 		public bool Parse(Stream stream, string sourcefilename, string mapname) 
 		{
 			base.Parse(stream, sourcefilename);
-			mapname = mapname.ToLowerInvariant();
+			this.mapname = mapname.ToLowerInvariant();
 
-			while (SkipWhitespace(true)) 
+			while(SkipWhitespace(true)) 
 			{
 				string token = ReadToken();
-				if (!string.IsNullOrEmpty(token)) 
+				if(!string.IsNullOrEmpty(token)) 
 				{
 					token = token.ToLowerInvariant();
-					if (ParseBlock(token, mapname)) break;
+					if(ParseBlock(token)) break;
 				}
 			}
 
 			//check values
-			if (mapinfo.FadeColor.Red > 0 || mapinfo.FadeColor.Green > 0 || mapinfo.FadeColor.Blue > 0)
+			if(mapinfo.FadeColor.Red > 0 || mapinfo.FadeColor.Green > 0 || mapinfo.FadeColor.Blue > 0)
 				mapinfo.HasFadeColor = true;
 
-			if (mapinfo.OutsideFogColor.Red > 0 || mapinfo.OutsideFogColor.Green > 0 || mapinfo.OutsideFogColor.Blue > 0)
+			if(mapinfo.OutsideFogColor.Red > 0 || mapinfo.OutsideFogColor.Green > 0 || mapinfo.OutsideFogColor.Blue > 0)
 				mapinfo.HasOutsideFogColor = true;
 
 			//Cannot fail here
@@ -81,14 +90,14 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 		}
 
 		//returns true if parsing is finished
-		private bool ParseBlock(string token, string mapName) 
+		private bool ParseBlock(string token) 
 		{
 			// Keep local data
 			Stream localstream = datastream;
 			string localsourcename = sourcename;
 			BinaryReader localreader = datareader;
 			
-			if (token == "map" || token == "defaultmap" || token == "adddefaultmap") 
+			if(token == "map" || token == "defaultmap" || token == "adddefaultmap") 
 			{
 				switch(token)
 				{
@@ -96,7 +105,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						//get map name
 						SkipWhitespace(true);
 						token = ReadToken().ToLowerInvariant();
-						if (token != mapName) return false; //not finished, search for next "map", "defaultmap" or "adddefaultmap" block
+						if(token != mapname) return false; //not finished, search for next "map", "defaultmap" or "adddefaultmap" block
 						break;
 
 					case "defaultmap":
@@ -324,7 +333,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 //block end
 					else if (token == "}") 
 					{
-						return ParseBlock(token, mapName);
+						return ParseBlock(token);
 					}
 //child block
 					else if(token == "{")
@@ -344,7 +353,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 					}
 				}
 			} 
-			else if(token == "#include")
+			else if(token == "include")
 			{
 				SkipWhitespace(true);
 				string includeLump = StripTokenQuotes(ReadToken()).ToLowerInvariant();

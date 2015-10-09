@@ -84,9 +84,9 @@ namespace CodeImp.DoomBuilder.Windows
 			groupBox2.Controls.Add(this.posY);
 			groupBox2.Controls.Add(this.posZ);
 			groupBox2.Controls.Add(this.zlabel);
-			groupBox2.Location = new System.Drawing.Point(279, 242);
+			groupBox2.Location = new System.Drawing.Point(260, 242);
 			groupBox2.Name = "groupBox2";
-			groupBox2.Size = new System.Drawing.Size(158, 134);
+			groupBox2.Size = new System.Drawing.Size(177, 134);
 			groupBox2.TabIndex = 2;
 			groupBox2.TabStop = false;
 			groupBox2.Text = " Position ";
@@ -197,7 +197,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.typegroup.Controls.Add(this.thingtype);
 			this.typegroup.Location = new System.Drawing.Point(4, 3);
 			this.typegroup.Name = "typegroup";
-			this.typegroup.Size = new System.Drawing.Size(269, 373);
+			this.typegroup.Size = new System.Drawing.Size(250, 373);
 			this.typegroup.TabIndex = 0;
 			this.typegroup.TabStop = false;
 			this.typegroup.Text = " Thing ";
@@ -209,7 +209,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.thingtype.Location = new System.Drawing.Point(9, 13);
 			this.thingtype.Margin = new System.Windows.Forms.Padding(6);
 			this.thingtype.Name = "thingtype";
-			this.thingtype.Size = new System.Drawing.Size(251, 357);
+			this.thingtype.Size = new System.Drawing.Size(232, 357);
 			this.thingtype.TabIndex = 0;
 			this.thingtype.UseMultiSelection = true;
 			this.thingtype.OnTypeDoubleClicked += new CodeImp.DoomBuilder.Controls.ThingBrowserControl.TypeDoubleClickDeletegate(this.thingtype_OnTypeDoubleClicked);
@@ -270,9 +270,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.settingsgroup.Controls.Add(this.missingflags);
 			this.settingsgroup.Controls.Add(this.flags);
-			this.settingsgroup.Location = new System.Drawing.Point(279, 3);
+			this.settingsgroup.Location = new System.Drawing.Point(260, 3);
 			this.settingsgroup.Name = "settingsgroup";
-			this.settingsgroup.Size = new System.Drawing.Size(271, 233);
+			this.settingsgroup.Size = new System.Drawing.Size(290, 233);
 			this.settingsgroup.TabIndex = 1;
 			this.settingsgroup.TabStop = false;
 			this.settingsgroup.Text = " Settings ";
@@ -297,7 +297,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.flags.Columns = 2;
 			this.flags.Location = new System.Drawing.Point(14, 19);
 			this.flags.Name = "flags";
-			this.flags.Size = new System.Drawing.Size(251, 211);
+			this.flags.Size = new System.Drawing.Size(270, 211);
 			this.flags.TabIndex = 0;
 			this.flags.VerticalSpacing = 1;
 			this.flags.OnValueChanged += new System.EventHandler(this.flags_OnValueChanged);
@@ -370,7 +370,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.tagSelector.Location = new System.Drawing.Point(6, 19);
 			this.tagSelector.Name = "tagSelector";
-			this.tagSelector.Size = new System.Drawing.Size(430, 35);
+			this.tagSelector.Size = new System.Drawing.Size(534, 35);
 			this.tagSelector.TabIndex = 8;
 			// 
 			// cancel

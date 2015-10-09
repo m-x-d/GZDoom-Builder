@@ -493,11 +493,15 @@ namespace CodeImp.DoomBuilder.Config
 					// Make a category
 					thingcat = new ThingCategory(cfg, null, de.Key.ToString(), enums);
 
-					// Add all things in category to the big list
-					AddThingsFromCategory(thingcat); //mxd
+					//mxd. Otherwise nesting problems might occure
+					if(thingcat.IsValid)
+					{
+						// Add all things in category to the big list
+						AddThingsFromCategory(thingcat); //mxd
 
-					// Add category to list
-					thingcategories.Add(thingcat);
+						// Add category to list
+						thingcategories.Add(thingcat);
+					}
 				}
 			}
 		}
@@ -505,13 +509,15 @@ namespace CodeImp.DoomBuilder.Config
 		//mxd. This recursively adds all things from a ThingCategory and it's children
 		private void AddThingsFromCategory(ThingCategory thingcat) 
 		{
+			if(!thingcat.IsValid) return;
+			
 			// Add all things in category to the big list
 			foreach(ThingTypeInfo t in thingcat.Things) 
 			{
 				if(!things.ContainsKey(t.Index)) 
 					things.Add(t.Index, t);
 				else 
-					General.ErrorLogger.Add(ErrorType.Warning, "Thing number " + t.Index + " is defined more than once (as '" + things[t.Index].Title + "' and '" + t.Title + "') in game configuration '" + this.Name + "'");
+					General.ErrorLogger.Add(ErrorType.Warning, "Thing number " + t.Index + " is defined more than once (as '" + things[t.Index].Title + "' and '" + t.Title + "') in the '" + this.Name + "' game configuration");
 			}
 
 			// Recursively add things from child categories

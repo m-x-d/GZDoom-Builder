@@ -3,11 +3,11 @@
 
 [Setup]
 AppName=GZDoom Builder
-AppVerName=GZDoom Builder 2.3
+AppVerName=GZDoom Builder 2.4
 AppPublisher=MaxED
 AppPublisherURL=http://forum.zdoom.org/memberlist.php?mode=viewprofile&u=7012
 AppSupportURL=http://forum.zdoom.org/viewtopic.php?f=3&t=32392
-AppUpdatesURL=http://forum.zdoom.org/viewtopic.php?f=3&t=32392
+AppUpdatesURL=http://devbuilds.drdteam.org/doombuilder2-gzdb/
 DefaultDirName={pf}\GZDoom Builder
 DefaultGroupName=GZDoom Builder
 AllowNoIcons=true
@@ -23,7 +23,7 @@ PrivilegesRequired=admin
 ShowLanguageDialog=no
 LanguageDetectionMethod=none
 MinVersion=0,5.01.2600
-UninstallDisplayIcon={app}\Builder.exe
+UninstallDisplayIcon={app}\Updater.exe
 WizardImageFile=..\Setup\WizModernImage-IS.bmp
 WizardSmallImageFile=..\Setup\WizModernSmallImage-IS.bmp
 
@@ -35,6 +35,8 @@ Name: desktopicon; Description: {cm:CreateDesktopIcon}; GroupDescription: {cm:Ad
 
 [Files]
 Source: Setup\dotnetfx35setup.exe; DestDir: {tmp}; Flags: dontcopy
+Source: Setup\dxwebsetup.exe; DestDir: {tmp}; Flags: dontcopy
+Source: Setup\vcredist_x86.exe; DestDir: {tmp}; Flags: dontcopy
 Source: Builder.exe; DestDir: {app}; Flags: ignoreversion
 Source: GZBuilder.default.cfg; DestDir: {app}; Flags: ignoreversion
 Source: Updater.exe; DestDir: {app}; Flags: ignoreversion
@@ -43,7 +45,6 @@ Source: Refmanual.chm; DestDir: {app}; Flags: ignoreversion
 Source: DevIL.dll; DestDir: {app}; Flags: ignoreversion
 Source: SharpCompress.3.5.dll; DestDir: {app}; Flags: ignoreversion
 Source: Scintilla.dll; DestDir: {app}; Flags: ignoreversion
-Source: Trackbar.dll; DestDir: {app}; Flags: ignoreversion
 Source: SlimDX.dll; DestDir: {app}; Flags: ignoreversion
 Source: GPL.txt; DestDir: {app}; Flags: ignoreversion
 Source: Compilers\*; DestDir: {app}\Compilers; Flags: ignoreversion recursesubdirs
@@ -87,14 +88,19 @@ var
 	page_info_net: TOutputMsgWizardPage;
 	page_info_netfailed: TOutputMsgWizardPage;
 	page_setup_net: TOutputProgressWizardPage;
-  page_info_dx: TOutputMsgWizardPage;
+	page_info_dx: TOutputMsgWizardPage;
 	page_info_dxfailed: TOutputMsgWizardPage;
 	page_setup_dx: TOutputProgressWizardPage;
+	page_info_vc: TOutputMsgWizardPage;
+	page_info_vcfailed: TOutputMsgWizardPage;
+	page_setup_vc: TOutputProgressWizardPage;
 	restartneeded: Boolean;
 	netinstallfailed: Boolean;
 	netisinstalled: Boolean;
-  dxinstallfailed: Boolean;
+	dxinstallfailed: Boolean;
 	dxisinstalled: Boolean;
+	vcinstallfailed: Boolean;
+	vcisinstalled: Boolean;
 
 // Prerequisites checks
 function CheckNetIsInstalled(): Boolean;
@@ -105,26 +111,31 @@ end;
 
 function CheckDXVersion(): Boolean;
 var
-  MajorVer, MinorVer: Integer;
-  StartPos: Integer;
-  TempStr, VerStr: string;
+	MajorVer, MinorVer: Integer;
+	StartPos: Integer;
+	TempStr, VerStr: string;
 begin
-  if (RegQueryStringValue(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\DirectX', 'Version', VerStr)) then begin
-    (* Extract major version *)
-    StartPos := Pos('.', VerStr);
-    MajorVer := StrToInt(Copy(VerStr, 1, StartPos - 1));
-    (* Remove major version and decimal point that follows *)
-    TempStr := Copy(VerStr, StartPos + 1, MaxInt);
-    (* Find next decimal point *)
-    StartPos := Pos('.', TempStr); 
-    (* Extract minor version *)
-    MinorVer := StrToInt(Copy(TempStr, 1, StartPos - 1));
+	if (RegQueryStringValue(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\DirectX', 'Version', VerStr)) then begin
+		(* Extract major version *)
+		StartPos := Pos('.', VerStr);
+		MajorVer := StrToInt(Copy(VerStr, 1, StartPos - 1));
+		(* Remove major version and decimal point that follows *)
+		TempStr := Copy(VerStr, StartPos + 1, MaxInt);
+		(* Find next decimal point *)
+		StartPos := Pos('.', TempStr); 
+		(* Extract minor version *)
+		MinorVer := StrToInt(Copy(TempStr, 1, StartPos - 1));
 
-    Result := (MajorVer > 4) or ((MajorVer = 4) and (MinorVer >= 9));
-  end
-  else begin
-    Result := false;
-  end;
+		Result := (MajorVer > 4) or ((MajorVer = 4) and (MinorVer >= 9));
+	end
+	else begin
+		Result := false;
+	end;
+end;
+
+function CheckVCIsInstalled(): Boolean;
+begin
+	Result := RegKeyExists(HKLM, 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{9BE518E6-ECC6-35A9-88E4-87755C07200F}');
 end;
 
 // When the wizard initializes
@@ -133,10 +144,12 @@ begin
 	restartneeded := false;
 	netinstallfailed := false;
 	netisinstalled := CheckNetIsInstalled();
-  dxinstallfailed := false;
+	dxinstallfailed := false;
 	dxisinstalled := CheckDXVersion();
+	vcinstallfailed := false;
+	vcisinstalled := CheckVCIsInstalled();
 
-  // Create .NET Framework pages
+	// Create .NET Framework pages
 	page_info_net := CreateOutputMsgPage(wpPreparing,
 		'Installing Microsoft .NET Framework 3.5', '',
 		'Setup has detected that your system is missing the required version of the Microsoft .NET Framework. ' +
@@ -150,10 +163,10 @@ begin
 		'Setup could not install the Microsoft .NET Framework  3.5.' + #10 + #10 +
 		'Click Back to try again, or Cancel to exit Setup.');
 
-	page_setup_net := CreateOutputProgressPage('Installing Microsoft .NET Framework 3.5', 'Setup is installing Microsoft .NET Framework 3.5, please wait.....');
+	page_setup_net := CreateOutputProgressPage('Installing Microsoft .NET Framework 3.5', 'Setup is installing Microsoft .NET Framework 3.5, please wait...');
 
-  // Create DirectX pages
-  page_info_dx := CreateOutputMsgPage(wpPreparing,
+	// Create DirectX pages
+	page_info_dx := CreateOutputMsgPage(wpPreparing,
 		'Installing DirectX 9.0', '',
 		'Setup has detected that your system is missing the required version of the DirectX. ' +
 		'Setup will now install or update your DirectX. This may take several minutes to complete.' + #10 + #10 +
@@ -166,7 +179,21 @@ begin
 		'Setup could not install DirectX 9.0.' + #10 + #10 +
 		'Click Back to try again, or Cancel to exit Setup.');
 
-	page_setup_dx := CreateOutputProgressPage('Installing DirectX 9.0', 'Setup is installing DirectX 9.0, please wait.....');
+	page_setup_dx := CreateOutputProgressPage('Installing DirectX 9.0', 'Setup is installing DirectX 9.0, please wait...');
+
+	// Create VC++ 2008 pages
+	page_info_vc := CreateOutputMsgPage(wpPreparing,
+		'Installing Visual C++ 2008 SP1 ATL Security Update', '',
+		'Setup has detected that your system is missing the required version of the Visual C++ Runtime. ' +
+		'Setup will now install or update your Visual C++ Runtime. This may take several minutes to complete.' + #10 + #10 +
+		'Click Install to begin.');
+
+	page_info_vcfailed := CreateOutputMsgPage(page_info_net.ID,
+		'Installing Visual C++ 2008 SP1 ATL Security Update', '',
+		'Setup could not install Visual C++ 2008 SP1 ATL Security Update.' + #10 + #10 +
+		'Click Back to try again, or Cancel to exit Setup.');
+
+	page_setup_vc := CreateOutputProgressPage('Installing Visual C++ 2008 SP1 ATL Security Update', 'Setup is installing Visual C++ 2008 SP1 ATL Security Update, please wait...');
 end;
 
 // This is called to check if a page must be skipped
@@ -176,10 +203,14 @@ begin
 		Result := netisinstalled
 	else if(PageID = page_info_netfailed.ID) then
 		Result := (not netinstallfailed) and netisinstalled
-  else if(PageID = page_info_dx.ID) then // Skip DX pages?
+	else if(PageID = page_info_dx.ID) then // Skip DX pages?
 		Result := dxisinstalled
 	else if(PageID = page_info_dxfailed.ID) then
 		Result := (not dxinstallfailed) and dxisinstalled
+	else if(PageID = page_info_vc.ID) then // Skip VC++ pages?
+		Result := vcisinstalled
+	else if(PageID = page_info_vcfailed.ID) then
+		Result := (not vcinstallfailed) and vcisinstalled
 	else
 		Result := false;
 end;
@@ -194,13 +225,13 @@ end;
 procedure CurPageChanged(CurPageID: Integer);
 begin
 	if(CurPageID = wpReady) then begin
-		if(netisinstalled = false) or (dxisinstalled = false) then
+		if(netisinstalled = false) or (dxisinstalled = false) or (vcisinstalled = false) then
 			WizardForm.NextButton.Caption := 'Next';
 	end
-	else if(CurPageID = page_info_net.ID) or (CurPageID = page_info_dx.ID) then begin
+	else if(CurPageID = page_info_net.ID) or (CurPageID = page_info_dx.ID) or (CurPageID = page_info_vc.ID) then begin
 		WizardForm.NextButton.Caption := 'Install';
 	end
-	else if(CurPageID = page_info_netfailed.ID) or (CurPageID = page_info_dxfailed.ID) then begin
+	else if(CurPageID = page_info_netfailed.ID) or (CurPageID = page_info_dxfailed.ID) or (CurPageID = page_info_vcfailed.ID) then begin
 		WizardForm.NextButton.Visible := true;
 		WizardForm.NextButton.Enabled := false;
 		WizardForm.BackButton.Visible := true;
@@ -245,10 +276,10 @@ begin
 		finally
 			page_setup_net.Hide;
 		end;
-  end
-  // Next pressed on DX info page?
-  else if(CurPage = page_info_dx.ID) then begin
-     // Show progress page and run setup
+	end
+	// Next pressed on DX info page?
+	else if(CurPage = page_info_dx.ID) then begin
+		// Show progress page and run setup
 		page_setup_dx.Show;
 		try
 		begin
@@ -274,6 +305,35 @@ begin
 		finally
 			page_setup_dx.Hide;
 		end;
+	end
+	// Next pressed on VC info page?
+	else if(CurPage = page_info_vc.ID) then begin
+		// Show progress page and run setup
+		page_setup_vc.Show;
+		try
+		begin
+			vcinstallfailed := false;
+			ExtractTemporaryFile('vcredist_x86.exe');
+			// We copy the file to the real temp directory so that it isn't removed when Setup is closed.
+			// Judging from the return codes, this installer may want to run again after a reboot.
+			// See the return codes here: http://blogs.msdn.com/b/astebner/archive/2010/10/20/10078468.aspx
+			tempfile := RemoveBackslash(GetTempDir()) + '\vcredist_x86.exe';
+			FileCopy(ExpandConstant('{tmp}\vcredist_x86.exe'), tempfile, false);
+			Exec(tempfile, '/q /norestart', '', SW_SHOW, ewWaitUntilTerminated, errorcode);
+
+			if(errorcode = 3010) then begin
+				// Success, but restart needed!
+				restartneeded := true;
+			end
+			else if(errorcode <> 0) then begin
+				vcinstallfailed := true;
+			end;
+
+			vcisinstalled := CheckVCIsInstalled();
+		end
+		finally
+			page_setup_vc.Hide;
+		end;
 	end;
 
 	Result := True;
@@ -282,10 +342,10 @@ end;
 //Remove configs?
 procedure DeinitializeUninstall();
 begin
-  if MsgBox('Delete program configuration files?', mbConfirmation, MB_YESNO) = IDYES then
-  begin
-     DeleteFile(ExpandConstant('{localappdata}\Doom Builder\GZBuilder.cfg'));
-     DeleteFile(ExpandConstant('{localappdata}\Doom Builder\GZBuilder.log'));
-     DeleteFile(ExpandConstant('{localappdata}\Doom Builder\GZCrash.txt'));
-  end;
+	if MsgBox('Delete program configuration files?', mbConfirmation, MB_YESNO) = IDYES then
+	begin
+		DeleteFile(ExpandConstant('{localappdata}\Doom Builder\GZBuilder.cfg'));
+		DeleteFile(ExpandConstant('{localappdata}\Doom Builder\GZBuilder.log'));
+		DeleteFile(ExpandConstant('{localappdata}\Doom Builder\GZCrash.txt'));
+	end;
 end;

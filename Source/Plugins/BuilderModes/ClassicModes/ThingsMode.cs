@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Actions;
+using CodeImp.DoomBuilder.BuilderModes.Interface;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.GZBuilder.Data;
@@ -126,7 +127,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			UpdateSelectionInfo(); //mxd
 
 			//mxd. Update event lines
-			persistenteventlines = LinksCollector.GetThingLinks(General.Map.ThingsFilter.VisibleThings, false);
+			persistenteventlines = LinksCollector.GetThingLinks(General.Map.ThingsFilter.VisibleThings);
 		}
 
 		// Mode disengages
@@ -427,7 +428,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							}
 
 							//mxd. Update event lines
-							persistenteventlines = LinksCollector.GetThingLinks(General.Map.ThingsFilter.VisibleThings, false);
+							persistenteventlines = LinksCollector.GetThingLinks(General.Map.ThingsFilter.VisibleThings);
 
 							// Update display
 							General.Interface.RedrawDisplay();
@@ -449,7 +450,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnUndoEnd();
 
 			// Update event lines
-			persistenteventlines = LinksCollector.GetThingLinks(General.Map.ThingsFilter.VisibleThings, false);
+			persistenteventlines = LinksCollector.GetThingLinks(General.Map.ThingsFilter.VisibleThings);
 		}
 
 		//mxd
@@ -458,7 +459,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnRedoEnd();
 
 			// Update event lines
-			persistenteventlines = LinksCollector.GetThingLinks(General.Map.ThingsFilter.VisibleThings, false);
+			persistenteventlines = LinksCollector.GetThingLinks(General.Map.ThingsFilter.VisibleThings);
 		}
 
 		//mxd. Otherwise event lines won't be drawn after panning finishes.
@@ -781,16 +782,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			// Determine source things
 			ICollection<Thing> sel = null;
-			if(General.Map.Map.SelectedThingsCount > 0)
-				sel = General.Map.Map.GetSelectedThings(true);
-			else if(highlighted != null)
-				sel = new List<Thing> {highlighted};
-			
+			if(General.Map.Map.SelectedThingsCount > 0) sel = General.Map.Map.GetSelectedThings(true);
+			else if(highlighted != null) sel = new List<Thing> { highlighted };
+
 			if(sel != null)
 			{
-				// Copy properties from first source thing
+				// Copy properties from the first source thing
 				BuilderPlug.Me.CopiedThingProps = new ThingProperties(General.GetByIndex(sel, 0));
 				General.Interface.DisplayStatus(StatusType.Action, "Copied thing properties.");
+			}
+			else
+			{
+				//mxd
+				General.Interface.DisplayStatus(StatusType.Warning, "This action requires highlight or selection!");
 			}
 		}
 
@@ -802,31 +806,91 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Determine target things
 				ICollection<Thing> sel = null;
-				if(General.Map.Map.SelectedThingsCount > 0)
-					sel = General.Map.Map.GetSelectedThings(true);
-				else if(highlighted != null)
-				{
-					sel = new List<Thing>();
-					sel.Add(highlighted);
-				}
-				
+				if(General.Map.Map.SelectedThingsCount > 0) sel = General.Map.Map.GetSelectedThings(true);
+				else if(highlighted != null) sel = new List<Thing> {highlighted};
+
 				if(sel != null)
 				{
 					// Apply properties to selection
-					General.Map.UndoRedo.CreateUndo("Paste thing properties");
+					string rest = (sel.Count == 1 ? "a single thing" : sel.Count + " things"); //mxd
+					General.Map.UndoRedo.CreateUndo("Paste properties to " + rest);
 					foreach(Thing t in sel)
 					{
-						BuilderPlug.Me.CopiedThingProps.Apply(t);
+						BuilderPlug.Me.CopiedThingProps.Apply(t, false);
 						t.UpdateConfiguration();
 					}
-					General.Interface.DisplayStatus(StatusType.Action, "Pasted thing properties.");
+					General.Interface.DisplayStatus(StatusType.Action, "Pasted properties to" + rest + ".");
 					
-					// Update and redraw
+					// Update
 					General.Map.IsChanged = true;
 					General.Map.ThingsFilter.Update();
 					General.Interface.RefreshInfo();
+
+					//mxd. Update event lines
+					persistenteventlines = LinksCollector.GetThingLinks(General.Map.ThingsFilter.VisibleThings);
+
+					// Redraw
 					General.Interface.RedrawDisplay();
 				}
+				else
+				{
+					//mxd
+					General.Interface.DisplayStatus(StatusType.Warning, "This action requires highlight or selection!");
+				}
+			}
+			else
+			{
+				//mxd
+				General.Interface.DisplayStatus(StatusType.Warning, "Copy thing properties first!");
+			}
+		}
+
+		//mxd. This pastes the properties with options
+		[BeginAction("classicpastepropertieswithoptions")]
+		public void PastePropertiesWithOptions()
+		{
+			if(BuilderPlug.Me.CopiedThingProps != null)
+			{
+				// Determine target things
+				ICollection<Thing> sel = null;
+				if(General.Map.Map.SelectedThingsCount > 0) sel = General.Map.Map.GetSelectedThings(true);
+				else if(highlighted != null) sel = new List<Thing> { highlighted };
+
+				if(sel != null)
+				{
+					PastePropertiesOptionsForm form = new PastePropertiesOptionsForm();
+					if(form.Setup(MapElementType.THING) && form.ShowDialog(Form.ActiveForm) == DialogResult.OK)
+					{
+						// Apply properties to selection
+						string rest = (sel.Count == 1 ? "a single thing" : sel.Count + " things");
+						General.Map.UndoRedo.CreateUndo("Paste properties with options to " + rest);
+						foreach(Thing t in sel)
+						{
+							BuilderPlug.Me.CopiedThingProps.Apply(t, true);
+							t.UpdateConfiguration();
+						}
+						General.Interface.DisplayStatus(StatusType.Action, "Pasted properties with options to " + rest + ".");
+
+						// Update
+						General.Map.IsChanged = true;
+						General.Map.ThingsFilter.Update();
+						General.Interface.RefreshInfo();
+
+						//mxd. Update event lines
+						persistenteventlines = LinksCollector.GetThingLinks(General.Map.ThingsFilter.VisibleThings);
+
+						// Redraw
+						General.Interface.RedrawDisplay();
+					}
+				}
+				else
+				{
+					General.Interface.DisplayStatus(StatusType.Warning, "This action requires highlight or selection!");
+				}
+			}
+			else
+			{
+				General.Interface.DisplayStatus(StatusType.Warning, "Copy thing properties first!");
 			}
 		}
 
@@ -875,7 +939,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Map.ThingsFilter.Update();
 
 				//mxd. Update event lines
-				persistenteventlines = LinksCollector.GetThingLinks(General.Map.ThingsFilter.VisibleThings, false);
+				persistenteventlines = LinksCollector.GetThingLinks(General.Map.ThingsFilter.VisibleThings);
 
 				// Redraw screen
 				General.Interface.RedrawDisplay();
@@ -1004,7 +1068,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Map.ThingsFilter.Update();
 
 				//mxd. Update event lines
-				persistenteventlines = LinksCollector.GetThingLinks(General.Map.ThingsFilter.VisibleThings, false);
+				persistenteventlines = LinksCollector.GetThingLinks(General.Map.ThingsFilter.VisibleThings);
 
 				// Invoke a new mousemove so that the highlighted item updates
 				MouseEventArgs e = new MouseEventArgs(MouseButtons.None, 0, (int)mousepos.x, (int)mousepos.y, 0);

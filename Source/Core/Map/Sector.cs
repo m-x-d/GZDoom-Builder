@@ -136,6 +136,7 @@ namespace CodeImp.DoomBuilder.Map
 		internal Sector(MapSet map, int listindex, int index)
 		{
 			// Initialize
+			this.elementtype = MapElementType.SECTOR; //mxd
 			this.map = map;
 			this.listindex = listindex;
 			this.sidedefs = new LinkedList<Sidedef>();

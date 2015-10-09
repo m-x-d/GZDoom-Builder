@@ -3,7 +3,6 @@
 using System;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
-using CodeImp.DoomBuilder.GZBuilder.Tools;
 
 #endregion
 
@@ -88,12 +87,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				case SidedefPart.Upper: 
 					side.SetTextureHigh("-");
-					if(General.Map.UDMF) UDMFTools.ClearFields(side.Fields, new[] { "scalex_top", "scaley_top", "offsetx_top", "offsety_top" }); 
+					if(General.Map.UDMF) UniFields.RemoveFields(side.Fields, new[] { "scalex_top", "scaley_top", "offsetx_top", "offsety_top" }); 
 					break;
 
 				case SidedefPart.Lower: 
 					side.SetTextureLow("-");
-					if(General.Map.UDMF) UDMFTools.ClearFields(side.Fields, new[] { "scalex_bottom", "scaley_bottom", "offsetx_bottom", "offsety_bottom" }); 
+					if(General.Map.UDMF) UniFields.RemoveFields(side.Fields, new[] { "scalex_bottom", "scaley_bottom", "offsetx_bottom", "offsety_bottom" }); 
 					break;
 			}
 			

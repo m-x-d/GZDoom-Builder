@@ -290,13 +290,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// Paste properties
-		public void OnPasteProperties() 
+		public void OnPasteProperties(bool usecopysettings)
 		{
 			if(BuilderPlug.Me.CopiedVertexProps != null) 
 			{
 				mode.CreateUndo("Paste vertex properties");
 				mode.SetActionResult("Pasted vertex properties.");
-				BuilderPlug.Me.CopiedVertexProps.Apply(vertex);
+				BuilderPlug.Me.CopiedVertexProps.Apply(vertex, usecopysettings);
 				
 				//update affected sectors
 				UpdateGeometry(vertex);

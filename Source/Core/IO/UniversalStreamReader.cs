@@ -43,7 +43,7 @@ namespace CodeImp.DoomBuilder.IO
 		private readonly Configuration config;
 		private bool setknowncustomtypes;
 		private bool strictchecking = true;
-		private readonly Dictionary<string, Dictionary<string, UniversalType>> uifields; //mxd
+		private readonly Dictionary<MapElementType, Dictionary<string, UniversalType>> uifields; //mxd
 		
 		#endregion
 
@@ -57,7 +57,7 @@ namespace CodeImp.DoomBuilder.IO
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public UniversalStreamReader(Dictionary<string, Dictionary<string, UniversalType>> uifields)
+		public UniversalStreamReader(Dictionary<MapElementType, Dictionary<string, UniversalType>> uifields)
 		{
 			this.uifields = uifields;
 			
@@ -480,9 +480,9 @@ namespace CodeImp.DoomBuilder.IO
 			foreach(UniversalEntry e in collection)
 			{
 				// mxd. Check if uifield
-				if(uifields.ContainsKey(elementname) && uifields[elementname].ContainsKey(e.Key)) 
+				if(uifields.ContainsKey(element.ElementType) && uifields[element.ElementType].ContainsKey(e.Key)) 
 				{
-					int type = (int)uifields[elementname][e.Key];
+					int type = (int)uifields[element.ElementType][e.Key];
 
 					//mxd. Check type
 					object value = e.Value;

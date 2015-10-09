@@ -30,13 +30,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Variables
 
 		// Menus list
-		private ToolStripItem[] menus;
+		private readonly ToolStripItem[] menus;
 
 		// mxd. More menus
-		private ToolStripItem[] exportmenuitems;
+		private readonly ToolStripItem[] exportmenuitems;
+
+		// mxd. Even more menus!
+		private readonly ToolStripItem[] propsmenuitems;
 
 		// Buttons list
-		private ToolStripItem[] buttons;
+		private readonly ToolStripItem[] buttons;
 
 		//mxd
 		public struct BrightnessGradientModes
@@ -62,8 +65,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Properties
 
-		public ToolStripMenuItem LinedefsMenu { get { return linedefsmenu; } }
-		public ToolStripMenuItem SectorsMenu { get { return sectorsmenu; } }
 		public ToolStripButton ViewSelectionNumbers { get { return buttonselectionnumbers; } }
 		public ToolStripButton ViewSelectionEffects { get { return buttonselectioneffects; } }
 		public ToolStripSeparator SeparatorSectors1 { get { return separatorsectors1; } }
@@ -111,10 +112,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			menus = new ToolStripItem[menustrip.Items.Count];
 			for(int i = 0; i < menustrip.Items.Count; i++) menus[i] = menustrip.Items[i];
 
-			//mxd
+			//mxd. Export menu
 			exportmenuitems = new ToolStripItem[exportStripMenuItem.DropDownItems.Count];
 			for(int i = 0; i < exportStripMenuItem.DropDownItems.Count; i++)
 				exportmenuitems[i] = exportStripMenuItem.DropDownItems[i];
+
+			//mxd. Copy-paste propserties items
+			propsmenuitems = new ToolStripItem[] { separatorcopyprops, itemcopyprops, itempasteprops, itempastepropsoptions };
 
 			// List all buttons
 			buttons = new ToolStripItem[globalstrip.Items.Count];
@@ -129,32 +133,40 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void Register()
 		{
 			// Add the menus to the core
-			foreach(ToolStripMenuItem m in menus)
-				General.Interface.AddMenu(m);
+			foreach(ToolStripMenuItem i in menus)
+				General.Interface.AddMenu(i);
 			
 			// Add the buttons to the core
 			foreach(ToolStripItem b in buttons)
 				General.Interface.AddButton(b);
 
-			//mxd
-			foreach(ToolStripMenuItem menu in exportmenuitems)
-				General.Interface.AddMenu(menu, MenuSection.FileExport);
+			//mxd. Export menu
+			foreach(ToolStripMenuItem i in exportmenuitems)
+				General.Interface.AddMenu(i, MenuSection.FileExport);
+
+			//mxd. Copy-paste propserties items
+			foreach(ToolStripItem i in propsmenuitems)
+				General.Interface.AddMenu(i, MenuSection.EditCopyPaste);
 		}
 
 		// This unregisters from the core
 		public void Unregister()
 		{
 			// Remove the menus from the core
-			foreach(ToolStripMenuItem m in menus)
-				General.Interface.RemoveMenu(m);
+			foreach(ToolStripMenuItem i in menus)
+				General.Interface.RemoveMenu(i);
 
 			// Remove the buttons from the core
 			foreach(ToolStripItem b in buttons)
 				General.Interface.RemoveButton(b);
 
-			//mxd
-			foreach(ToolStripMenuItem menu in exportmenuitems)
-				General.Interface.RemoveMenu(menu);
+			//mxd. Export menu
+			foreach(ToolStripMenuItem i in exportmenuitems)
+				General.Interface.RemoveMenu(i);
+
+			//mxd. Copy-paste propserties items
+			foreach(ToolStripItem i in propsmenuitems)
+				General.Interface.RemoveMenu(i);
 		}
 
 		// This hides all menus
@@ -183,11 +195,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 			
 			// Final decision
+			bool showcopyprops = true; //mxd
 			if(sourcemode == typeof(LinedefsMode)) HideAllMenusExcept(linedefsmenu);
 			else if(sourcemode == typeof(SectorsMode)) HideAllMenusExcept(sectorsmenu);
 			else if(sourcemode == typeof(ThingsMode)) HideAllMenusExcept(thingsmenu); //mxd
 			else if(sourcemode == typeof(VerticesMode)) HideAllMenusExcept(vertsmenu); //mxd
-			else HideAllMenus();
+			else
+			{
+				HideAllMenus();
+				showcopyprops = false; //mxd
+			}
+
+			//mxd. Copy-paste properties items
+			foreach(ToolStripItem i in propsmenuitems)
+				i.Visible = showcopyprops;
 		}
 
 		// This invokes an action from control event

@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using CodeImp.DoomBuilder.GZBuilder.Tools;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.VisualModes;
@@ -57,34 +56,34 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			switch (side.GeometryType)
 			{
 				case VisualGeometryType.WALL_UPPER:
-					OffsetX = UDMFTools.GetFloat(side.Sidedef.Fields, "offsetx_top");
-					OffsetY = UDMFTools.GetFloat(side.Sidedef.Fields, "offsety_top");
-					ScaleX = UDMFTools.GetFloat(side.Sidedef.Fields, "scalex_top", 1.0f);
-					ScaleY = UDMFTools.GetFloat(side.Sidedef.Fields, "scaley_top", 1.0f);
+					OffsetX = UniFields.GetFloat(side.Sidedef.Fields, "offsetx_top");
+					OffsetY = UniFields.GetFloat(side.Sidedef.Fields, "offsety_top");
+					ScaleX = UniFields.GetFloat(side.Sidedef.Fields, "scalex_top", 1.0f);
+					ScaleY = UniFields.GetFloat(side.Sidedef.Fields, "scaley_top", 1.0f);
 					break;
 
 				case VisualGeometryType.WALL_MIDDLE:
-					OffsetX = UDMFTools.GetFloat(side.Sidedef.Fields, "offsetx_mid");
-					OffsetY = UDMFTools.GetFloat(side.Sidedef.Fields, "offsety_mid");
-					ScaleX = UDMFTools.GetFloat(side.Sidedef.Fields, "scalex_mid", 1.0f);
-					ScaleY = UDMFTools.GetFloat(side.Sidedef.Fields, "scaley_mid", 1.0f);
+					OffsetX = UniFields.GetFloat(side.Sidedef.Fields, "offsetx_mid");
+					OffsetY = UniFields.GetFloat(side.Sidedef.Fields, "offsety_mid");
+					ScaleX = UniFields.GetFloat(side.Sidedef.Fields, "scalex_mid", 1.0f);
+					ScaleY = UniFields.GetFloat(side.Sidedef.Fields, "scaley_mid", 1.0f);
 					break;
 
 				case VisualGeometryType.WALL_MIDDLE_3D:
 					Sidedef cs = side.GetControlLinedef().Front;
-					ControlSideOffsetX = cs.OffsetX + UDMFTools.GetFloat(cs.Fields, "offsetx_mid");
-					OffsetX = UDMFTools.GetFloat(side.Sidedef.Fields, "offsetx_mid");
-					ControlSideOffsetY = cs.OffsetY + UDMFTools.GetFloat(cs.Fields, "offsety_mid");
-					OffsetY = UDMFTools.GetFloat(side.Sidedef.Fields, "offsety_mid");
-					ScaleX = UDMFTools.GetFloat(cs.Fields, "scalex_mid", 1.0f);
-					ScaleY = UDMFTools.GetFloat(cs.Fields, "scaley_mid", 1.0f);
+					ControlSideOffsetX = cs.OffsetX + UniFields.GetFloat(cs.Fields, "offsetx_mid");
+					OffsetX = UniFields.GetFloat(side.Sidedef.Fields, "offsetx_mid");
+					ControlSideOffsetY = cs.OffsetY + UniFields.GetFloat(cs.Fields, "offsety_mid");
+					OffsetY = UniFields.GetFloat(side.Sidedef.Fields, "offsety_mid");
+					ScaleX = UniFields.GetFloat(cs.Fields, "scalex_mid", 1.0f);
+					ScaleY = UniFields.GetFloat(cs.Fields, "scaley_mid", 1.0f);
 					break;
 
 				case VisualGeometryType.WALL_LOWER:
-					OffsetX = UDMFTools.GetFloat(side.Sidedef.Fields, "offsetx_bottom");
-					OffsetY = UDMFTools.GetFloat(side.Sidedef.Fields, "offsety_bottom");
-					ScaleX = UDMFTools.GetFloat(side.Sidedef.Fields, "scalex_bottom", 1.0f);
-					ScaleY = UDMFTools.GetFloat(side.Sidedef.Fields, "scaley_bottom", 1.0f);
+					OffsetX = UniFields.GetFloat(side.Sidedef.Fields, "offsetx_bottom");
+					OffsetY = UniFields.GetFloat(side.Sidedef.Fields, "offsety_bottom");
+					ScaleX = UniFields.GetFloat(side.Sidedef.Fields, "scalex_bottom", 1.0f);
+					ScaleY = UniFields.GetFloat(side.Sidedef.Fields, "scaley_bottom", 1.0f);
 					break;
 			}
 

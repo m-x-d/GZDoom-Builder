@@ -101,6 +101,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.fileMenuStrip = new System.Windows.Forms.MenuStrip();
 			this.exportStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripMenuItem();
+			this.editmenuitem = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemcopyprops = new System.Windows.Forms.ToolStripMenuItem();
+			this.itempasteprops = new System.Windows.Forms.ToolStripMenuItem();
+			this.itempastepropsoptions = new System.Windows.Forms.ToolStripMenuItem();
+			this.separatorcopyprops = new System.Windows.Forms.ToolStripSeparator();
 			this.menustrip.SuspendLayout();
 			this.manualstrip.SuspendLayout();
 			this.fileMenuStrip.SuspendLayout();
@@ -571,8 +576,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.buttonpastepropertiesoptions.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.buttonpastepropertiesoptions.Name = "buttonpastepropertiesoptions";
 			this.buttonpastepropertiesoptions.Size = new System.Drawing.Size(23, 22);
-			this.buttonpastepropertiesoptions.Tag = "pastepropertiesoptions";
-			this.buttonpastepropertiesoptions.Text = "Choose Properties to Paste";
+			this.buttonpastepropertiesoptions.Tag = "classicpastepropertieswithoptions";
+			this.buttonpastepropertiesoptions.Text = "Paste Properties Special...";
+			this.buttonpastepropertiesoptions.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			this.buttonpastepropertiesoptions.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// seperatorcopypaste
@@ -766,7 +772,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// fileMenuStrip
 			// 
 			this.fileMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.exportStripMenuItem});
+            this.exportStripMenuItem,
+            this.editmenuitem});
 			this.fileMenuStrip.Location = new System.Drawing.Point(0, 0);
 			this.fileMenuStrip.Name = "fileMenuStrip";
 			this.fileMenuStrip.Size = new System.Drawing.Size(794, 24);
@@ -788,6 +795,49 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.toolStripMenuItem5.Tag = "exporttoobj";
 			this.toolStripMenuItem5.Text = "Selection to Wavefront .obj...";
 			this.toolStripMenuItem5.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// editmenuitem
+			// 
+			this.editmenuitem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.separatorcopyprops,
+            this.itemcopyprops,
+            this.itempasteprops,
+            this.itempastepropsoptions});
+			this.editmenuitem.Name = "editmenuitem";
+			this.editmenuitem.Size = new System.Drawing.Size(39, 20);
+			this.editmenuitem.Text = "Edit";
+			// 
+			// itemcopyprops
+			// 
+			this.itemcopyprops.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.CopyProperties;
+			this.itemcopyprops.Name = "itemcopyprops";
+			this.itemcopyprops.Size = new System.Drawing.Size(207, 22);
+			this.itemcopyprops.Tag = "classiccopyproperties";
+			this.itemcopyprops.Text = "Copy Properties";
+			this.itemcopyprops.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// itempasteprops
+			// 
+			this.itempasteprops.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.PasteProperties;
+			this.itempasteprops.Name = "itempasteprops";
+			this.itempasteprops.Size = new System.Drawing.Size(207, 22);
+			this.itempasteprops.Tag = "classicpasteproperties";
+			this.itempasteprops.Text = "Paste Properties";
+			this.itempasteprops.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// itempastepropsoptions
+			// 
+			this.itempastepropsoptions.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.PastePropertiesOptions;
+			this.itempastepropsoptions.Name = "itempastepropsoptions";
+			this.itempastepropsoptions.Size = new System.Drawing.Size(207, 22);
+			this.itempastepropsoptions.Tag = "classicpastepropertieswithoptions";
+			this.itempastepropsoptions.Text = "Paste Properties Special...";
+			this.itempastepropsoptions.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// separatorcopyprops
+			// 
+			this.separatorcopyprops.Name = "separatorcopyprops";
+			this.separatorcopyprops.Size = new System.Drawing.Size(204, 6);
 			// 
 			// MenusForm
 			// 
@@ -892,5 +942,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private System.Windows.Forms.ToolStripSeparator separatorsectors2;
 		private System.Windows.Forms.ToolStripSeparator separatorsectors3;
 		private System.Windows.Forms.ToolStripMenuItem updatelightfogitem;
+		private System.Windows.Forms.ToolStripMenuItem editmenuitem;
+		private System.Windows.Forms.ToolStripMenuItem itemcopyprops;
+		private System.Windows.Forms.ToolStripMenuItem itempasteprops;
+		private System.Windows.Forms.ToolStripMenuItem itempastepropsoptions;
+		private System.Windows.Forms.ToolStripSeparator separatorcopyprops;
 	}
 }

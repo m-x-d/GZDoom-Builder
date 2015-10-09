@@ -128,6 +128,7 @@ namespace CodeImp.DoomBuilder.Map
 		internal Thing(MapSet map, int listindex)
 		{
 			// Initialize
+			this.elementtype = MapElementType.THING; //mxd
 			this.map = map;
 			this.listindex = listindex;
 			this.flags = new Dictionary<string, bool>(StringComparer.Ordinal);

@@ -41,7 +41,7 @@ namespace CodeImp.DoomBuilder.Config
 		private readonly string name;
 		private readonly string title;
 		private readonly bool sorted;
-		private List<ThingCategory> children; //mxd 
+		private readonly List<ThingCategory> children; //mxd 
 
 		// Thing properties for inheritance
 		private readonly string sprite;
@@ -61,6 +61,9 @@ namespace CodeImp.DoomBuilder.Config
 		
 		// Disposing
 		private bool isdisposed;
+
+		//mxd. Validity
+		private bool isinvalid;
 		
 		#endregion
 
@@ -83,6 +86,7 @@ namespace CodeImp.DoomBuilder.Config
 		public bool FixedSize { get { return fixedsize; } }
 		public bool FixedRotation { get { return fixedrotation; } } //mxd
 		public bool IsDisposed { get { return isdisposed; } }
+		public bool IsValid { get { return !isinvalid; } } //mxd
 		public bool AbsoluteZ { get { return absolutez; } }
 		public float SpriteScale { get { return spritescale; } }
 		public List<ThingTypeInfo> Things { get { return things; } }
@@ -154,7 +158,26 @@ namespace CodeImp.DoomBuilder.Config
 			this.children = new List<ThingCategory>();
 			
 			// Read properties
-			this.title = cfg.ReadSetting("thingtypes." + name + ".title", "<category>");
+			this.title = cfg.ReadSetting("thingtypes." + name + ".title", name);
+
+			//mxd. If current block has no settings, it should be a grouping block, not a thing category.
+			if(this.title == name)
+			{
+				string[] props = new[] { "sprite", "sort", "color", "alpha", "renderstyle", "arrow", "width", 
+					"height", "hangs", "blocking", "error", "fixedsize", "fixedrotation", "absolutez", "spritescale" };
+
+				isinvalid = true;
+				foreach(string prop in props)
+				{
+					if(cfg.SettingExists("thingtypes." + name + "." + prop))
+					{
+						isinvalid = false;
+						break;
+					}
+				}
+
+				if(isinvalid) return;
+			}
 
 			if(parent != null) //mxd
 			{
@@ -221,7 +244,7 @@ namespace CodeImp.DoomBuilder.Config
 				else if(de.Value is IDictionary)
 				{
 					ThingCategory child = new ThingCategory(cfg, this, name + "." + de.Key, enums);
-					if(child.things.Count > 0)
+					if(child.IsValid && child.things.Count > 0)
 					{
 						if(cats.ContainsKey(child.title.ToLowerInvariant()))
 							General.ErrorLogger.Add(ErrorType.Warning, "Thing Category '" + child.title + "' is double-defined in " + this.title);
@@ -231,7 +254,7 @@ namespace CodeImp.DoomBuilder.Config
 			}
 
 			//mxd. Add to main collection
-			foreach (ThingCategory tc in cats.Values) children.Add(tc);
+			foreach(ThingCategory tc in cats.Values) children.Add(tc);
 
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -247,7 +270,7 @@ namespace CodeImp.DoomBuilder.Config
 				things = null;
 
 				//mxd. Dispose children (oh so cruel!!11)
-				foreach (ThingCategory tc in children) tc.Dispose();
+				foreach(ThingCategory tc in children) tc.Dispose();
 
 				// Done
 				isdisposed = true;
@@ -264,7 +287,7 @@ namespace CodeImp.DoomBuilder.Config
 			if(sorted) things.Sort();
 
 			//mxd. Sort children as well
-			foreach (ThingCategory tc in children) tc.SortIfNeeded();
+			foreach(ThingCategory tc in children) tc.SortIfNeeded();
 		}
 		
 		// This adds a thing to the category

@@ -241,6 +241,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		{
 			position_v3 = D3DDevice.V3(pos); //mxd
 			position = Matrix.Translation(position_v3);
+			updategeo = true;
 
 			//mxd. update bounding box?
 			if(lightType != DynamicLightType.NONE && lightRadius > thing.Size) 

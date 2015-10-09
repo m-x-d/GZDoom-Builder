@@ -120,7 +120,7 @@ namespace CodeImp.DoomBuilder.Windows
 		/// </para>
 		/// </summary>
 		/// <param name="menu">The menu to add to Doom Builder.</param>
-		void AddMenu(ToolStripMenuItem menu);
+		void AddMenu(ToolStripItem menu);
 		
 		/// <summary>
 		/// This adds a menu or menu item to the Doom Builder menu strip in a specific location.
@@ -131,7 +131,7 @@ namespace CodeImp.DoomBuilder.Windows
 		/// </summary>
 		/// <param name="menu">The menu to add to Doom Builder.</param>
 		/// <param name="section">The location where to insert the menu or item.</param>
-		void AddMenu(ToolStripMenuItem menu, MenuSection section);
+		void AddMenu(ToolStripItem menu, MenuSection section);
 
 		/// <summary>
 		/// This adds a menu or menu item to the speicfied group inside of "Modes" menu strip.
@@ -142,13 +142,13 @@ namespace CodeImp.DoomBuilder.Windows
 		/// </summary>
 		/// <param name="menu">The menu to add to Doom Builder.</param>
 		/// <param name="group">The group in the "Modes" menu in which to insert the menu.</param>
-		void AddModesMenu(ToolStripMenuItem menu, string group);
+		void AddModesMenu(ToolStripItem menu, string group);
 		
 		/// <summary>
 		/// This removes a menu from the Doom Builder menu strip.
 		/// </summary>
 		/// <param name="menu">The menu to remove.</param>
-		void RemoveMenu(ToolStripMenuItem menu);
+		void RemoveMenu(ToolStripItem menu);
 		
 		/// <summary>
 		/// This method invokes the action specified on the Tag property of the given menu item.

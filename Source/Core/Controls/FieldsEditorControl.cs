@@ -97,7 +97,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.elementname = elementname;
 
 			//mxd. get proper UIFields
-			uifields = General.Map.FormatInterface.UIFields[elementname];
+			uifields = General.Map.FormatInterface.UIFields[General.Map.FormatInterface.GetElementType(elementname)];
 			
 			// Make types list
 			fieldtype.Items.Clear();

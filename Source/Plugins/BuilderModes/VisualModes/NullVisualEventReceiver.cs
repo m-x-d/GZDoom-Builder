@@ -42,7 +42,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void OnCopyTextureOffsets() { }
 		public void OnPasteTextureOffsets() { }
 		public void OnCopyProperties() { }
-		public void OnPasteProperties() { }
+		public void OnPasteProperties(bool useoptions) { } //mxd. Added "useoptions"
 		public void OnTextureAlign(bool alignx, bool aligny) { }
 		public void OnTextureFit(FitTextureOptions options) { } //mxd
 		public void OnTextureFloodfill() { }

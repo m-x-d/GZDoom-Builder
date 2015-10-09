@@ -22,7 +22,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		                                };
 
 		private BaseClassicMode mode;
-		private TabPage[] activeTabs;
+		private List<TabPage> showntabs;
 		private readonly Dictionary<CheckboxArrayControl, object> typecontrols;
 		
 		public SelectSimilarElementOptionsPanel() 
@@ -38,12 +38,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			//create a collection
-			typecontrols = new Dictionary<CheckboxArrayControl, object> {
-				{sectorflags, flags[0]},
-				{lineflags, flags[1]},
-				{sideflags, flags[2]},
-				{thingflags, flags[3]},
-				{vertexflags, flags[4]}
+			typecontrols = new Dictionary<CheckboxArrayControl, object>
+			{
+				{ sectorflags, flags[0] },
+				{ lineflags, flags[1] },
+				{ sideflags, flags[2] },
+				{ thingflags, flags[3] },
+				{ vertexflags, flags[4] }
 			};
 		}
 
@@ -52,59 +53,73 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.mode = mode;
 
 			//which tabs should we display?
-			if(General.Editing.Mode is ThingsMode) 
+			TabPage[] activetabs = null;
+			if(General.Editing.Mode is ThingsMode)
 			{
-				activeTabs = new[] {things};
+				if(General.Map.Map.GetSelectedThings(true).Count == 0) return SetupFailed("This action requires selection...");
+				activetabs = new[] { things };
 			} 
-			else if(General.Editing.Mode is VerticesMode) 
+			else if(General.Editing.Mode is VerticesMode && General.Map.UDMF) 
 			{
-				activeTabs = new[] { vertices };
+				if(General.Map.Map.GetSelectedVertices(true).Count == 0) return SetupFailed("This action requires selection...");
+				activetabs = new[] { vertices };
 			} 
 			else if(General.Editing.Mode is LinedefsMode) 
 			{
-				activeTabs = new[] { linedefs, sidedefs };
+				if(General.Map.Map.GetSelectedLinedefs(true).Count == 0) return SetupFailed("This action requires selection...");
+				activetabs = new[] { linedefs, sidedefs };
 			} 
 			else if(mode is SectorsMode) 
 			{
-				activeTabs = new[] { sectors };
-			} 
-			else 
-			{
-				General.Interface.DisplayStatus(StatusType.Warning, "This action doesn't support current editing mode...");
-				return false;
+				if(General.Map.Map.GetSelectedSectors(true).Count == 0) return SetupFailed("This action requires selection...");
+				activetabs = new[] { sectors };
 			}
 
+			if(activetabs == null) return SetupFailed("This action doesn't support current editing mode...");
+
 			//fill flags
-			foreach(TabPage page in activeTabs) 
+			showntabs = new List<TabPage>();
+			foreach(TabPage page in activetabs) 
 			{
 				CheckboxArrayControl curControl = page.Controls[0] as CheckboxArrayControl;
 				if(curControl == null) continue; //just a piece of boilerplate...
 
 				FieldInfo[] props = typecontrols[curControl].GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
-				string title = "<unknown flag>";
 				foreach(var prop in props) 
 				{
 					foreach(Attribute attr in Attribute.GetCustomAttributes(prop)) 
 					{
 						if(attr.GetType() == typeof(FieldDescription)) 
 						{
-							title = ((FieldDescription)attr).Description;
-							break;
+							FieldDescription fd = (FieldDescription)attr;
+							if(fd.SupportsCurrentMapFormat)
+								curControl.Add(fd.Description, prop.Name).Checked = (bool)prop.GetValue(typecontrols[curControl]);
 						}
 					}
-
-					curControl.Add(title, prop.Name).Checked = (bool)prop.GetValue(typecontrols[curControl]);
 				}
 
-				curControl.PositionCheckboxes();
+				if(curControl.Checkboxes.Count > 0)
+				{
+					curControl.PositionCheckboxes();
+					showntabs.Add(page);
+				}
 			}
 
-			//hide unused tab pages
-			tabControl.SelectTab(activeTabs[0]);
+			// Got anything to show?
+			if(showntabs.Count == 0) return SetupFailed("This action doesn't support current editing mode...");
+
+			// Hide unused tab pages
 			tabControl.TabPages.Clear();
-			tabControl.TabPages.AddRange(activeTabs);
+			tabControl.TabPages.AddRange(showntabs.ToArray());
+			tabControl.SelectTab(showntabs[0]);
 
 			return true;
+		}
+
+		private static bool SetupFailed(string message)
+		{
+			General.Interface.DisplayStatus(StatusType.Warning, message);
+			return false;
 		}
 
 		private void SelectSimilarElementOptionsPanel_FormClosing(object sender, FormClosingEventArgs e) 
@@ -129,7 +144,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private void apply_Click(object sender, EventArgs e) 
 		{
 			//save flags states
-			foreach (TabPage page in activeTabs) 
+			foreach(TabPage page in showntabs)
 			{
 				CheckboxArrayControl curControl = page.Controls[0] as CheckboxArrayControl;
 				if(curControl == null) continue; //just a piece of boilerplate...
@@ -146,15 +161,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				ICollection<Thing> selected = General.Map.Map.GetSelectedThings(true);
 				ICollection<Thing> unselected = General.Map.Map.GetSelectedThings(false);
 
-				foreach (Thing target in unselected) 
+				foreach(Thing target in unselected) 
 				{
-					foreach (Thing source in selected) 
+					foreach(Thing source in selected) 
 					{
-						if (PropertiesComparer.PropertiesMatch((ThingPropertiesCopySettings) typecontrols[thingflags], source, target))
+						if(PropertiesComparer.PropertiesMatch((ThingPropertiesCopySettings) typecontrols[thingflags], source, target))
 							mode.SelectMapElement(target);
 					}
 				}
-
 			} 
 			else if(mode is LinedefsMode) 
 			{

@@ -132,12 +132,6 @@ namespace CodeImp.DoomBuilder.Editing
 				mouseinside = oldmode.mouseinside;
 				mousedragging = oldmode.mousedragging;
 			}
-			else if (General.Settings.GZSynchCameras && General.Editing.Mode is VisualMode) //mxd
-			{
-				//center 2d view on camera position in 3d view
-				Vector2D campos = new Vector2D(General.Map.VisualCamera.Position.x, General.Map.VisualCamera.Position.y);
-				renderer2d.PositionView(campos.x, campos.y);
-			}
 		}
 
 		// Disposer
@@ -636,9 +630,19 @@ namespace CodeImp.DoomBuilder.Editing
 		/// </summary>
 		public override void OnEngage()
 		{
-			// Clear display overlay
-			renderer.StartOverlay(true);
-			renderer.Finish();
+			//mxd. Clear display overlay
+			if(renderer.StartOverlay(true))
+			{
+				//mxd. Center 2d view on camera position in 3d view
+				if(General.Settings.GZSynchCameras && General.Editing.PreviousMode != null && General.Editing.PreviousMode.IsSubclassOf(typeof (VisualMode)))
+				{
+					Vector2D campos = new Vector2D(General.Map.VisualCamera.Position.x, General.Map.VisualCamera.Position.y);
+					renderer2d.PositionView(campos.x, campos.y);
+				}
+
+				renderer.Finish();
+			}
+			
 			base.OnEngage();
 		}
 

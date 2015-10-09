@@ -12,7 +12,6 @@ using System;
 using System.Drawing;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Map;
-using CodeImp.DoomBuilder.GZBuilder.Tools;
 using CodeImp.DoomBuilder.Rendering;
 
 #endregion
@@ -88,7 +87,7 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			if(mixedvalues) return;
 			string text = (!string.IsNullOrEmpty(textbox.Text) && textbox.Text != DEFAULT_TEXT ? CommentType.Types[commenttype] + textbox.Text : String.Empty);
-			UDMFTools.SetString(fields, "comment", text, string.Empty);
+			UniFields.SetString(fields, "comment", text, string.Empty);
 		}
 
 		#endregion

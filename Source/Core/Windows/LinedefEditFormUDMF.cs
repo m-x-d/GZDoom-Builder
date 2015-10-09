@@ -22,7 +22,6 @@ using System.Drawing;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.GZBuilder.Controls;
-using CodeImp.DoomBuilder.GZBuilder.Tools;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Types;
 
@@ -74,7 +73,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				Front = (line.Front != null ? new SidedefProperties(line.Front) : null);
 				Back = (line.Back != null ? new SidedefProperties(line.Back) : null);
-				Alpha = UDMFTools.GetFloat(line.Fields, "alpha", 1.0f);
+				Alpha = UniFields.GetFloat(line.Fields, "alpha", 1.0f);
 				Flags = line.GetFlags();
 			}
 		}
@@ -115,24 +114,24 @@ namespace CodeImp.DoomBuilder.Windows
 				OffsetX = side.OffsetX;
 				OffsetY = side.OffsetY;
 
-				Brightness = UDMFTools.GetInteger(side.Fields, "light", 0);
+				Brightness = UniFields.GetInteger(side.Fields, "light", 0);
 				AbsoluteBrightness = side.Fields.GetValue("lightabsolute", false);
 
 				//scales
-				ScaleTopX = UDMFTools.GetFloat(side.Fields, "scalex_top", 1.0f);
-				ScaleTopY = UDMFTools.GetFloat(side.Fields, "scaley_top", 1.0f);
-				ScaleMidX = UDMFTools.GetFloat(side.Fields, "scalex_mid", 1.0f);
-				ScaleMidY = UDMFTools.GetFloat(side.Fields, "scaley_mid", 1.0f);
-				ScaleBottomX = UDMFTools.GetFloat(side.Fields, "scalex_bottom", 1.0f);
-				ScaleBottomY = UDMFTools.GetFloat(side.Fields, "scaley_bottom", 1.0f);
+				ScaleTopX = UniFields.GetFloat(side.Fields, "scalex_top", 1.0f);
+				ScaleTopY = UniFields.GetFloat(side.Fields, "scaley_top", 1.0f);
+				ScaleMidX = UniFields.GetFloat(side.Fields, "scalex_mid", 1.0f);
+				ScaleMidY = UniFields.GetFloat(side.Fields, "scaley_mid", 1.0f);
+				ScaleBottomX = UniFields.GetFloat(side.Fields, "scalex_bottom", 1.0f);
+				ScaleBottomY = UniFields.GetFloat(side.Fields, "scaley_bottom", 1.0f);
 
 				//offsets
-				OffsetTopX = UDMFTools.GetFloat(side.Fields, "offsetx_top", 0f);
-				OffsetTopY = UDMFTools.GetFloat(side.Fields, "offsety_top", 0f);
-				OffsetMidX = UDMFTools.GetFloat(side.Fields, "offsetx_mid", 0f);
-				OffsetMidY = UDMFTools.GetFloat(side.Fields, "offsety_mid", 0f);
-				OffsetBottomX = UDMFTools.GetFloat(side.Fields, "offsetx_bottom", 0f);
-				OffsetBottomY = UDMFTools.GetFloat(side.Fields, "offsety_bottom", 0f);
+				OffsetTopX = UniFields.GetFloat(side.Fields, "offsetx_top", 0f);
+				OffsetTopY = UniFields.GetFloat(side.Fields, "offsety_top", 0f);
+				OffsetMidX = UniFields.GetFloat(side.Fields, "offsetx_mid", 0f);
+				OffsetMidY = UniFields.GetFloat(side.Fields, "offsety_mid", 0f);
+				OffsetBottomX = UniFields.GetFloat(side.Fields, "offsetx_bottom", 0f);
+				OffsetBottomY = UniFields.GetFloat(side.Fields, "offsety_bottom", 0f);
 
 				//textures
 				TextureTop = side.HighTexture;
@@ -310,7 +309,7 @@ namespace CodeImp.DoomBuilder.Windows
 				foreach(PairedFieldsControl pfc in frontUdmfControls)
 					pfc.SetValuesFrom(fl.Front.Fields, true);
 
-				lightFront.Text = UDMFTools.GetInteger(fl.Front.Fields, "light", 0).ToString();
+				lightFront.Text = UniFields.GetInteger(fl.Front.Fields, "light", 0).ToString();
 				cbLightAbsoluteFront.Checked = fl.Front.Fields.GetValue("lightabsolute", false);
 
 				frontTextureOffset.SetValues(fl.Front.OffsetX, fl.Front.OffsetY, true); //mxd
@@ -335,7 +334,7 @@ namespace CodeImp.DoomBuilder.Windows
 				foreach(PairedFieldsControl pfc in backUdmfControls)
 					pfc.SetValuesFrom(fl.Back.Fields, true);
 
-				lightBack.Text = UDMFTools.GetInteger(fl.Back.Fields, "light", 0).ToString();
+				lightBack.Text = UniFields.GetInteger(fl.Back.Fields, "light", 0).ToString();
 				cbLightAbsoluteBack.Checked = fl.Back.Fields.GetValue("lightabsolute", false);
  
 				backTextureOffset.SetValues(fl.Back.OffsetX, fl.Back.OffsetY, true); //mxd
@@ -470,7 +469,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 					if(!string.IsNullOrEmpty(lightFront.Text)) 
 					{
-						int light = UDMFTools.GetInteger(l.Front.Fields, "light", 0);
+						int light = UniFields.GetInteger(l.Front.Fields, "light", 0);
 						if(light != lightFront.GetResult(light)) lightFront.Text = string.Empty;
 					}
 
@@ -524,7 +523,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 					if(!string.IsNullOrEmpty(lightBack.Text)) 
 					{
-						int light = UDMFTools.GetInteger(l.Back.Fields, "light", 0);
+						int light = UniFields.GetInteger(l.Back.Fields, "light", 0);
 						if(light != lightBack.GetResult(light))
 							lightBack.Text = string.Empty;
 					}
@@ -752,7 +751,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 				//mxd. UDMF Settings
 				fieldslist.Apply(l.Fields);
-				if(setlocknumber) UDMFTools.SetInteger(l.Fields, "locknumber", locknumber, 0);
+				if(setlocknumber) UniFields.SetInteger(l.Fields, "locknumber", locknumber, 0);
 				commenteditor.Apply(l.Fields);
 			}
 
@@ -862,7 +861,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 			//update values
 			foreach(Linedef l in lines)
-				UDMFTools.SetString(l.Fields, "renderstyle", renderstyles[renderStyle.SelectedIndex], "translucent");
+				UniFields.SetString(l.Fields, "renderstyle", renderstyles[renderStyle.SelectedIndex], "translucent");
 
 			General.Map.IsChanged = true;
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
@@ -878,14 +877,14 @@ namespace CodeImp.DoomBuilder.Windows
 			if(string.IsNullOrEmpty(alpha.Text)) 
 			{
 				foreach(Linedef l in lines) 
-					UDMFTools.SetFloat(l.Fields, "alpha", linedefprops[i++].Alpha, 1.0f);
+					UniFields.SetFloat(l.Fields, "alpha", linedefprops[i++].Alpha, 1.0f);
 			} 
 			else //update values
 			{
 				foreach(Linedef l in lines) 
 				{
 					float value = General.Clamp(alpha.GetResultFloat(l.Fields.GetValue("alpha", 1.0f)), 0f, 1.0f);
-					UDMFTools.SetFloat(l.Fields, "alpha", value, 1.0f);
+					UniFields.SetFloat(l.Fields, "alpha", value, 1.0f);
 				}
 			}
 
@@ -950,7 +949,7 @@ namespace CodeImp.DoomBuilder.Windows
 			foreach(PairedFieldsControl pfc in frontUdmfControls)
 				pfc.SetValuesFrom(fs.Fields, true);
 
-			lightFront.Text = UDMFTools.GetInteger(fs.Fields, "light", 0).ToString();
+			lightFront.Text = UniFields.GetInteger(fs.Fields, "light", 0).ToString();
 			cbLightAbsoluteFront.ThreeState = false;
 			cbLightAbsoluteFront.Checked = fs.Fields.GetValue("lightabsolute", false);
 					
@@ -966,7 +965,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 				if(!string.IsNullOrEmpty(lightFront.Text)) 
 				{
-					int light = UDMFTools.GetInteger(s.Fields, "light", 0);
+					int light = UniFields.GetInteger(s.Fields, "light", 0);
 					if(light != lightFront.GetResult(light)) lightFront.Text = string.Empty;
 				}
 
@@ -1013,7 +1012,7 @@ namespace CodeImp.DoomBuilder.Windows
 			foreach(PairedFieldsControl pfc in backUdmfControls)
 				pfc.SetValuesFrom(fs.Fields, true);
 
-			lightBack.Text = UDMFTools.GetInteger(fs.Fields, "light", 0).ToString();
+			lightBack.Text = UniFields.GetInteger(fs.Fields, "light", 0).ToString();
 			cbLightAbsoluteBack.ThreeState = false;
 			cbLightAbsoluteBack.Checked = fs.Fields.GetValue("lightabsolute", false);
 
@@ -1029,7 +1028,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 				if(!string.IsNullOrEmpty(lightBack.Text)) 
 				{
-					int light = UDMFTools.GetInteger(s.Fields, "light", 0);
+					int light = UniFields.GetInteger(s.Fields, "light", 0);
 					if(light != lightBack.GetResult(light)) lightBack.Text = string.Empty;
 				}
 
@@ -1250,7 +1249,7 @@ namespace CodeImp.DoomBuilder.Windows
 				foreach(Linedef l in lines) 
 				{
 					if(l.Front != null)
-						UDMFTools.SetInteger(l.Front.Fields, "light", (linedefprops[i].Front != null ? linedefprops[i].Front.Brightness : 0), 0);
+						UniFields.SetInteger(l.Front.Fields, "light", (linedefprops[i].Front != null ? linedefprops[i].Front.Brightness : 0), 0);
 					i++;
 				}
 			} 
@@ -1272,7 +1271,7 @@ namespace CodeImp.DoomBuilder.Windows
 						}
 
 						int value = General.Clamp(lightFront.GetResult((linedefprops[i].Front != null ? linedefprops[i].Front.Brightness : 0)), (absolute ? 0 : -255), 255);
-						UDMFTools.SetInteger(l.Front.Fields, "light", value, 0);
+						UniFields.SetInteger(l.Front.Fields, "light", value, 0);
 					}
 					i++;
 				}
@@ -1295,7 +1294,7 @@ namespace CodeImp.DoomBuilder.Windows
 				foreach(Linedef l in lines) 
 				{
 					if(l.Back != null)
-						UDMFTools.SetInteger(l.Back.Fields, "light", (linedefprops[i].Back != null ? linedefprops[i].Back.Brightness : 0), 0);
+						UniFields.SetInteger(l.Back.Fields, "light", (linedefprops[i].Back != null ? linedefprops[i].Back.Brightness : 0), 0);
 					i++;
 				}
 			} 
@@ -1317,7 +1316,7 @@ namespace CodeImp.DoomBuilder.Windows
 						}
 
 						int value = General.Clamp(lightBack.GetResult((linedefprops[i].Back != null ? linedefprops[i].Back.Brightness : 0)), (absolute ? 0 : -255), 255);
-						UDMFTools.SetInteger(l.Back.Fields, "light", value, 0);
+						UniFields.SetInteger(l.Back.Fields, "light", value, 0);
 					}
 					i++;
 				}

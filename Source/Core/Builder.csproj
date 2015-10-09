@@ -877,7 +877,6 @@
     <Compile Include="GZBuilder\md3\GZModel.cs" />
     <Compile Include="GZBuilder\md3\ModelReader.cs" />
     <Compile Include="GZBuilder\GZDoom\AcsParserSE.cs" />
-    <Compile Include="GZBuilder\Tools\UDMFTools.cs" />
     <Compile Include="GZBuilder\Windows\ExceptionDialog.cs">
       <SubType>Form</SubType>
     </Compile>

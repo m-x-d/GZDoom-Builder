@@ -53,9 +53,9 @@
 			// enableall
 			// 
 			this.enableall.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.enableall.Location = new System.Drawing.Point(11, 144);
+			this.enableall.Location = new System.Drawing.Point(12, 194);
 			this.enableall.Name = "enableall";
-			this.enableall.Size = new System.Drawing.Size(70, 23);
+			this.enableall.Size = new System.Drawing.Size(120, 25);
 			this.enableall.TabIndex = 7;
 			this.enableall.Text = "Toggle All";
 			this.enableall.UseVisualStyleBackColor = true;
@@ -64,9 +64,9 @@
 			// apply
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(122, 144);
+			this.apply.Location = new System.Drawing.Point(212, 194);
 			this.apply.Name = "apply";
-			this.apply.Size = new System.Drawing.Size(75, 23);
+			this.apply.Size = new System.Drawing.Size(112, 25);
 			this.apply.TabIndex = 6;
 			this.apply.Text = "OK";
 			this.apply.UseVisualStyleBackColor = true;
@@ -76,9 +76,9 @@
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(203, 144);
+			this.cancel.Location = new System.Drawing.Point(330, 194);
 			this.cancel.Name = "cancel";
-			this.cancel.Size = new System.Drawing.Size(75, 23);
+			this.cancel.Size = new System.Drawing.Size(112, 25);
 			this.cancel.TabIndex = 5;
 			this.cancel.Text = "Cancel";
 			this.cancel.UseVisualStyleBackColor = true;
@@ -93,10 +93,12 @@
 			this.tabControl.Controls.Add(this.sidedefs);
 			this.tabControl.Controls.Add(this.things);
 			this.tabControl.Controls.Add(this.vertices);
+			this.tabControl.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.tabControl.Location = new System.Drawing.Point(12, 12);
 			this.tabControl.Name = "tabControl";
+			this.tabControl.Padding = new System.Drawing.Point(20, 3);
 			this.tabControl.SelectedIndex = 0;
-			this.tabControl.Size = new System.Drawing.Size(266, 127);
+			this.tabControl.Size = new System.Drawing.Size(430, 178);
 			this.tabControl.TabIndex = 8;
 			// 
 			// sectors
@@ -105,7 +107,7 @@
 			this.sectors.Location = new System.Drawing.Point(4, 22);
 			this.sectors.Name = "sectors";
 			this.sectors.Padding = new System.Windows.Forms.Padding(3);
-			this.sectors.Size = new System.Drawing.Size(258, 101);
+			this.sectors.Size = new System.Drawing.Size(422, 152);
 			this.sectors.TabIndex = 0;
 			this.sectors.Text = "Sectors";
 			this.sectors.UseVisualStyleBackColor = true;
@@ -115,19 +117,20 @@
 			this.sectorflags.AutoScroll = true;
 			this.sectorflags.Columns = 2;
 			this.sectorflags.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.sectorflags.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.sectorflags.Location = new System.Drawing.Point(3, 3);
 			this.sectorflags.Name = "sectorflags";
-			this.sectorflags.Size = new System.Drawing.Size(252, 95);
+			this.sectorflags.Size = new System.Drawing.Size(416, 146);
 			this.sectorflags.TabIndex = 3;
 			this.sectorflags.VerticalSpacing = 1;
 			// 
 			// linedefs
 			// 
 			this.linedefs.Controls.Add(this.lineflags);
-			this.linedefs.Location = new System.Drawing.Point(4, 23);
+			this.linedefs.Location = new System.Drawing.Point(4, 22);
 			this.linedefs.Name = "linedefs";
 			this.linedefs.Padding = new System.Windows.Forms.Padding(3);
-			this.linedefs.Size = new System.Drawing.Size(258, 100);
+			this.linedefs.Size = new System.Drawing.Size(422, 152);
 			this.linedefs.TabIndex = 1;
 			this.linedefs.Text = "Linedefs";
 			this.linedefs.UseVisualStyleBackColor = true;
@@ -137,19 +140,20 @@
 			this.lineflags.AutoScroll = true;
 			this.lineflags.Columns = 2;
 			this.lineflags.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.lineflags.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.lineflags.Location = new System.Drawing.Point(3, 3);
 			this.lineflags.Name = "lineflags";
-			this.lineflags.Size = new System.Drawing.Size(252, 94);
+			this.lineflags.Size = new System.Drawing.Size(416, 146);
 			this.lineflags.TabIndex = 3;
 			this.lineflags.VerticalSpacing = 1;
 			// 
 			// sidedefs
 			// 
 			this.sidedefs.Controls.Add(this.sideflags);
-			this.sidedefs.Location = new System.Drawing.Point(4, 23);
+			this.sidedefs.Location = new System.Drawing.Point(4, 22);
 			this.sidedefs.Name = "sidedefs";
 			this.sidedefs.Padding = new System.Windows.Forms.Padding(3);
-			this.sidedefs.Size = new System.Drawing.Size(258, 100);
+			this.sidedefs.Size = new System.Drawing.Size(422, 152);
 			this.sidedefs.TabIndex = 2;
 			this.sidedefs.Text = "Sidedefs";
 			this.sidedefs.UseVisualStyleBackColor = true;
@@ -159,19 +163,20 @@
 			this.sideflags.AutoScroll = true;
 			this.sideflags.Columns = 2;
 			this.sideflags.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.sideflags.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.sideflags.Location = new System.Drawing.Point(3, 3);
 			this.sideflags.Name = "sideflags";
-			this.sideflags.Size = new System.Drawing.Size(252, 94);
+			this.sideflags.Size = new System.Drawing.Size(416, 146);
 			this.sideflags.TabIndex = 2;
 			this.sideflags.VerticalSpacing = 1;
 			// 
 			// things
 			// 
 			this.things.Controls.Add(this.thingflags);
-			this.things.Location = new System.Drawing.Point(4, 23);
+			this.things.Location = new System.Drawing.Point(4, 22);
 			this.things.Name = "things";
 			this.things.Padding = new System.Windows.Forms.Padding(3);
-			this.things.Size = new System.Drawing.Size(258, 100);
+			this.things.Size = new System.Drawing.Size(422, 152);
 			this.things.TabIndex = 3;
 			this.things.Text = "Things";
 			this.things.UseVisualStyleBackColor = true;
@@ -181,19 +186,20 @@
 			this.thingflags.AutoScroll = true;
 			this.thingflags.Columns = 2;
 			this.thingflags.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.thingflags.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.thingflags.Location = new System.Drawing.Point(3, 3);
 			this.thingflags.Name = "thingflags";
-			this.thingflags.Size = new System.Drawing.Size(252, 94);
+			this.thingflags.Size = new System.Drawing.Size(416, 146);
 			this.thingflags.TabIndex = 2;
 			this.thingflags.VerticalSpacing = 1;
 			// 
 			// vertices
 			// 
 			this.vertices.Controls.Add(this.vertexflags);
-			this.vertices.Location = new System.Drawing.Point(4, 23);
+			this.vertices.Location = new System.Drawing.Point(4, 22);
 			this.vertices.Name = "vertices";
 			this.vertices.Padding = new System.Windows.Forms.Padding(3);
-			this.vertices.Size = new System.Drawing.Size(258, 100);
+			this.vertices.Size = new System.Drawing.Size(422, 152);
 			this.vertices.TabIndex = 4;
 			this.vertices.Text = "Vertices";
 			this.vertices.UseVisualStyleBackColor = true;
@@ -203,9 +209,10 @@
 			this.vertexflags.AutoScroll = true;
 			this.vertexflags.Columns = 2;
 			this.vertexflags.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.vertexflags.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.vertexflags.Location = new System.Drawing.Point(3, 3);
 			this.vertexflags.Name = "vertexflags";
-			this.vertexflags.Size = new System.Drawing.Size(252, 94);
+			this.vertexflags.Size = new System.Drawing.Size(416, 146);
 			this.vertexflags.TabIndex = 1;
 			this.vertexflags.VerticalSpacing = 1;
 			// 
@@ -215,18 +222,18 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.cancel;
-			this.ClientSize = new System.Drawing.Size(290, 171);
+			this.ClientSize = new System.Drawing.Size(454, 222);
 			this.Controls.Add(this.tabControl);
 			this.Controls.Add(this.enableall);
 			this.Controls.Add(this.apply);
 			this.Controls.Add(this.cancel);
-			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
+			this.MinimumSize = new System.Drawing.Size(300, 200);
 			this.Name = "SelectSimilarElementOptionsPanel";
-			this.Opacity = 1;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
+			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Selection Options";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SelectSimilarElementOptionsPanel_FormClosing);
 			this.tabControl.ResumeLayout(false);

@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.BuilderModes.Interface;
 using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
@@ -30,7 +31,6 @@ using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.GZBuilder.Data;
 using CodeImp.DoomBuilder.Types;
 using CodeImp.DoomBuilder.Data;
-using CodeImp.DoomBuilder.GZBuilder.Tools;
 
 #endregion
 
@@ -522,7 +522,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			//mxd. Update event lines (still better than updating them on every frame redraw)
-			renderer.SetEventLines(LinksCollector.GetThingLinks(General.Map.ThingsFilter.VisibleThings, true));
+			renderer.SetEventLines(LinksCollector.GetThingLinks(General.Map.ThingsFilter.VisibleThings, blockmap));
 		}
 
 		//mxd
@@ -1068,7 +1068,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			RebuildElementData();
 
 			//mxd. Update event lines
-			renderer.SetEventLines(LinksCollector.GetThingLinks(General.Map.ThingsFilter.VisibleThings, true));
+			renderer.SetEventLines(LinksCollector.GetThingLinks(General.Map.ThingsFilter.VisibleThings, blockmap));
 		}
 
 		// When returning to another mode
@@ -2549,7 +2549,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					} 
 					else 
 					{
-						UDMFTools.SetInteger(v.Level.sector.Fields, "lightfloor", targetbrightness - v.Level.sector.Brightness, 0);
+						UniFields.SetInteger(v.Level.sector.Fields, "lightfloor", targetbrightness - v.Level.sector.Brightness, 0);
 					}
 
 					v.Sector.UpdateSectorGeometry(false);
@@ -2567,7 +2567,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					} 
 					else 
 					{
-						UDMFTools.SetInteger(v.Level.sector.Fields, "lightceiling", targetbrightness - v.Level.sector.Brightness, 0);
+						UniFields.SetInteger(v.Level.sector.Fields, "lightceiling", targetbrightness - v.Level.sector.Brightness, 0);
 					}
 
 					v.Sector.UpdateSectorGeometry(false);
@@ -2584,7 +2584,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					} 
 					else 
 					{
-						UDMFTools.SetInteger(v.Sidedef.Fields, "light", targetbrightness - v.Sidedef.Sector.Brightness, 0);
+						UniFields.SetInteger(v.Sidedef.Fields, "light", targetbrightness - v.Sidedef.Sector.Brightness, 0);
 					}
 
 					//Update 'lightfog' flag
@@ -3035,8 +3035,111 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			PreAction(UndoGroup.None);
 			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true, true);
-			foreach(IVisualEventReceiver i in objs) i.OnPasteProperties();
+			foreach(IVisualEventReceiver i in objs) i.OnPasteProperties(false);
 			PostAction();
+		}
+
+		//mxd
+		[BeginAction("pastepropertieswithoptions")]
+		public void PastePropertiesWithOptions()
+		{
+			// Which options to show?
+			HashSet<int> added;
+			var targettypes = new List<MapElementType>();
+			var selection = new List<IVisualEventReceiver>();
+
+			// Sectors selected?
+			var obj = GetSelectedObjects(true, false, false, false);
+			if(obj.Count > 0)
+			{
+				targettypes.Add(MapElementType.SECTOR);
+
+				// Don't add duplicates
+				added = new HashSet<int>();
+				foreach(IVisualEventReceiver receiver in obj)
+				{
+					VisualGeometry vg = receiver as VisualGeometry;
+					if(vg != null && !added.Contains(vg.Sector.GetHashCode()))
+					{
+						selection.Add(receiver);
+						added.Add(vg.Sector.GetHashCode());
+					}
+				}
+			}
+
+			// Sidedefs selected?
+			obj = GetSelectedObjects(false, true, false, false);
+			if(obj.Count > 0)
+			{
+				targettypes.Add(MapElementType.SIDEDEF);
+
+				// Don't add duplicates
+				added = new HashSet<int>();
+				foreach(IVisualEventReceiver receiver in obj)
+				{
+					VisualGeometry vg = receiver as VisualGeometry;
+					if(vg != null && !added.Contains(vg.Sidedef.Line.GetHashCode()))
+					{
+						selection.Add(receiver);
+						added.Add(vg.Sidedef.Line.GetHashCode());
+					}
+				}
+			}
+
+			// Things selected?
+			obj = GetSelectedObjects(false, false, true, false);
+			if(obj.Count > 0)
+			{
+				targettypes.Add(MapElementType.THING);
+
+				// Don't add duplicates
+				added = new HashSet<int>();
+				foreach(IVisualEventReceiver receiver in obj)
+				{
+					VisualThing vt = receiver as VisualThing;
+					if(vt != null && !added.Contains(vt.Thing.GetHashCode()))
+					{
+						selection.Add(receiver);
+						added.Add(vt.Thing.GetHashCode());
+					}
+				}
+			}
+
+			// Vertices selected?
+			obj = GetSelectedObjects(false, false, false, true);
+			if(obj.Count > 0)
+			{
+				targettypes.Add(MapElementType.VERTEX);
+
+				// Don't add duplicates
+				added = new HashSet<int>();
+				foreach(IVisualEventReceiver receiver in obj)
+				{
+					VisualVertex vv = receiver as VisualVertex;
+					if(vv != null && !added.Contains(vv.Vertex.GetHashCode()))
+					{
+						selection.Add(receiver);
+						added.Add(vv.Vertex.GetHashCode());
+					}
+				}
+			}
+
+			// Anything selected?
+			if(selection.Count == 0)
+			{
+				General.Interface.DisplayStatus(StatusType.Warning, "This action requires highlight or selection!");
+				return;
+			}
+
+			// Show the form
+			PastePropertiesOptionsForm form = new PastePropertiesOptionsForm();
+			if(form.Setup(targettypes) && form.ShowDialog(General.Interface) == DialogResult.OK)
+			{
+				// Paste properties
+				PreAction(UndoGroup.None);
+				foreach(IVisualEventReceiver i in selection)i.OnPasteProperties(true);
+				PostAction();
+			}
 		}
 
 		//mxd. now we can insert things in Visual modes
@@ -3045,7 +3148,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			Vector2D hitpos = GetHitPosition();
 
-			if (!hitpos.IsFinite()) 
+			if(!hitpos.IsFinite()) 
 			{
 				General.Interface.DisplayStatus(StatusType.Warning, "Cannot insert thing here!");
 				return;
@@ -3058,15 +3161,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			Thing t = CreateThing(new Vector2D(hitpos.x, hitpos.y));
 
-			if (t == null) 
+			if(t == null) 
 			{
 				General.Map.UndoRedo.WithdrawUndo();
 				return;
 			}
 
 			// Edit the thing?
-			if (BuilderPlug.Me.EditNewThing)
-				General.Interface.ShowEditThings(new List<Thing> { t });
+			if(BuilderPlug.Me.EditNewThing) General.Interface.ShowEditThings(new List<Thing> { t });
 
 			//add thing to blockmap
 			blockmap.AddThing(t);
@@ -3127,7 +3229,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Map.ThingsFilter.Update();
 
 			// Update event lines
-			renderer.SetEventLines(LinksCollector.GetThingLinks(General.Map.ThingsFilter.VisibleThings, true));
+			renderer.SetEventLines(LinksCollector.GetThingLinks(General.Map.ThingsFilter.VisibleThings, blockmap));
 		}
 
 		//mxd. We'll just use currently selected objects 
@@ -3874,18 +3976,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				//mxd. Apply Scale
 				if(matchtop)
 				{
-					UDMFTools.SetFloat(j.sidedef.Fields, "scalex_top", first.scaleX, 1.0f);
-					UDMFTools.SetFloat(j.sidedef.Fields, "scaley_top", j.scaleY, 1.0f);
+					UniFields.SetFloat(j.sidedef.Fields, "scalex_top", first.scaleX, 1.0f);
+					UniFields.SetFloat(j.sidedef.Fields, "scaley_top", j.scaleY, 1.0f);
 				}
 				if(matchmid)
 				{
-					UDMFTools.SetFloat(j.controlSide.Fields, "scalex_mid", first.scaleX, 1.0f);
-					UDMFTools.SetFloat(j.controlSide.Fields, "scaley_mid", j.scaleY, 1.0f);
+					UniFields.SetFloat(j.controlSide.Fields, "scalex_mid", first.scaleX, 1.0f);
+					UniFields.SetFloat(j.controlSide.Fields, "scaley_mid", j.scaleY, 1.0f);
 				}
 				if(matchbottom)
 				{
-					UDMFTools.SetFloat(j.sidedef.Fields, "scalex_bottom", first.scaleX, 1.0f);
-					UDMFTools.SetFloat(j.sidedef.Fields, "scaley_bottom", j.scaleY, 1.0f);
+					UniFields.SetFloat(j.sidedef.Fields, "scalex_bottom", first.scaleX, 1.0f);
+					UniFields.SetFloat(j.sidedef.Fields, "scaley_bottom", j.scaleY, 1.0f);
 				}
 
 				if(j.forward) 
@@ -3941,7 +4043,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 								if(!startisnonwrappedmidtex && cursideisnonwrappedmidtex)
 								{
 									//mxd. This should be doublesided non-wrapped line. Find the nearset aligned position
-									float curoffset = UDMFTools.GetFloat(j.sidedef.Fields, "offsety_mid") + j.sidedef.OffsetY;
+									float curoffset = UniFields.GetFloat(j.sidedef.Fields, "offsety_mid") + j.sidedef.OffsetY;
 									offset += midtex.Height * (float)Math.Round(curoffset / midtex.Height - 0.5f * Math.Sign(j.scaleY));
 
 									// Make sure the surface stays between floor and ceiling
@@ -4034,7 +4136,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 								if(!startisnonwrappedmidtex && cursideisnonwrappedmidtex) 
 								{
 									//mxd. This should be doublesided non-wrapped line. Find the nearset aligned position
-									float curoffset = UDMFTools.GetFloat(j.sidedef.Fields, "offsety_mid") + j.sidedef.OffsetY;
+									float curoffset = UniFields.GetFloat(j.sidedef.Fields, "offsety_mid") + j.sidedef.OffsetY;
 									offset += midtex.Height * (float)Math.Round(curoffset / midtex.Height - 0.5f * Math.Sign(j.scaleY));
 
 									// Make sure the surface stays between floor and ceiling

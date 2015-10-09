@@ -659,13 +659,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 		
 		// Paste properties
-		public void OnPasteProperties()
+		public void OnPasteProperties(bool usecopysettings)
 		{
 			if(BuilderPlug.Me.CopiedThingProps != null)
 			{
 				mode.CreateUndo("Paste thing properties");
 				mode.SetActionResult("Pasted thing properties.");
-				BuilderPlug.Me.CopiedThingProps.Apply(Thing);
+				BuilderPlug.Me.CopiedThingProps.Apply(Thing, usecopysettings); //mxd. Added "usecopysettings"
 				Thing.UpdateConfiguration();
 				this.Rebuild();
 				mode.ShowTargetInfo();

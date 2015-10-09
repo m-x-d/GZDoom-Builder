@@ -26,7 +26,6 @@ using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Types;
 using CodeImp.DoomBuilder.VisualModes;
-using CodeImp.DoomBuilder.GZBuilder.Tools;
 using CodeImp.DoomBuilder.Data;
 
 #endregion
@@ -223,7 +222,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				float pix = (int)Math.Round(Texture.Width * scaleX) - incrementX;
 				float newscaleX = (float)Math.Round(pix / Texture.Width, 3);
 				scaleX = (newscaleX == 0 ? scaleX * -1 : newscaleX);
-				UDMFTools.SetFloat(s.Fields, "xscaleceiling", scaleX, 1.0f);
+				UniFields.SetFloat(s.Fields, "xscaleceiling", scaleX, 1.0f);
 			}
 
 			if(incrementY != 0) 
@@ -231,7 +230,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				float pix = (int)Math.Round(Texture.Height * scaleY) - incrementY;
 				float newscaleY = (float)Math.Round(pix / Texture.Height, 3);
 				scaleY = (newscaleY == 0 ? scaleY * -1 : newscaleY);
-				UDMFTools.SetFloat(s.Fields, "yscaleceiling", scaleY, 1.0f);
+				UniFields.SetFloat(s.Fields, "yscaleceiling", scaleY, 1.0f);
 			}
 
 			//update geometry
@@ -400,7 +399,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				Sector.Sector.Fields.BeforeFieldsChange();
 
 				//apply changes
-				UDMFTools.SetInteger(Sector.Sector.Fields, "lightceiling", newLight, (absolute ? int.MinValue : 0));
+				UniFields.SetInteger(Sector.Sector.Fields, "lightceiling", newLight, (absolute ? int.MinValue : 0));
 				mode.SetActionResult("Changed ceiling brightness to " + newLight + ".");
 				Sector.Sector.UpdateNeeded = true;
 				Sector.Sector.UpdateCache();
