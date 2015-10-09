@@ -30,7 +30,6 @@ namespace CodeImp.DoomBuilder.VisualModes
 		private float anglexy, anglez;
 		private Sector sector;
 		private float gravity = 1.0f; //mxd
-		private bool udmf; //mxd
 		
 		#endregion
 
@@ -56,7 +55,6 @@ namespace CodeImp.DoomBuilder.VisualModes
 			anglexy = 0.0f;
 			anglez = Angle2D.PI;
 			sector = null;
-			udmf = General.Map.UDMF; //mxd
 			
 			PositionAtThing();
 		}
@@ -101,12 +99,18 @@ namespace CodeImp.DoomBuilder.VisualModes
 		// Returns false when it couldn't find a 3D Camera Thing
 		public virtual bool PositionAtThing()
 		{
+			if(General.Settings.GZSynchCameras) return true; //mxd
 			Thing modething = null;
-			Vector3D delta;
-			
+
 			// Find a 3D Mode thing
 			foreach(Thing t in General.Map.Map.Things)
-				if(t.Type == General.Map.Config.Start3DModeThingType) modething = t;
+			{
+				if(t.Type == General.Map.Config.Start3DModeThingType)
+				{
+					modething = t;
+					break; //mxd
+				}
+			}
 
 			// Found one?
 			if(modething != null)
@@ -118,7 +122,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 				
 				// Position camera here
 				Vector3D wantedposition = new Vector3D(modething.Position.x, modething.Position.y, z + THING_Z_OFFSET);
-				delta = position - wantedposition;
+				Vector3D delta = position - wantedposition;
 				if(delta.GetLength() > 1.0f) position = wantedposition;
 				
 				// Change angle
@@ -138,11 +142,18 @@ namespace CodeImp.DoomBuilder.VisualModes
 		// Returns false when it couldn't find a 3D Camera Thing
 		public virtual bool ApplyToThing()
 		{
+			if(General.Settings.GZSynchCameras) return true; //mxd
 			Thing modething = null;
 			
 			// Find a 3D Mode thing
 			foreach(Thing t in General.Map.Map.Things)
-				if(t.Type == General.Map.Config.Start3DModeThingType) modething = t;
+			{
+				if(t.Type == General.Map.Config.Start3DModeThingType)
+				{
+					modething = t;
+					break; //mxd
+				}
+			}
 
 			// Found one?
 			if(modething != null)
@@ -162,7 +173,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		//mxd
 		private void UpdateGravity() 
 		{
-			if(!udmf || sector == null) return;
+			if(!General.Map.UDMF || sector == null) return;
 			gravity = sector.Fields.GetValue("gravity", 1.0f);
 		}
 		

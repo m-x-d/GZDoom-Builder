@@ -414,7 +414,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			// Apply settings
 			SetPosition(pos);
-			SetCageColor(Thing.Color);
+			UpdateThingCage(Thing.Color);
 
 			// Keep info for object picking
 			cageradius2 = thingradius * Angle2D.SQRT2;

@@ -4018,6 +4018,7 @@ namespace CodeImp.DoomBuilder.Windows
 		#endregion
 
 		#region ================== Dockers
+		
 		// This adds a docker
 		public void AddDocker(Docker d)
 		{
@@ -4033,9 +4034,11 @@ namespace CodeImp.DoomBuilder.Windows
 		// This removes a docker
 		public bool RemoveDocker(Docker d)
 		{
+			if(!dockerspanel.Contains(d)) return true; //mxd. Already removed/never added
+			
 			// Make sure the full name is set with the plugin name as prefix
-			Plugin plugin = General.Plugins.FindPluginByAssembly(Assembly.GetCallingAssembly());
-			d.MakeFullName(plugin.Name.ToLowerInvariant());
+			//Plugin plugin = General.Plugins.FindPluginByAssembly(Assembly.GetCallingAssembly());
+			//d.MakeFullName(plugin.Name.ToLowerInvariant());
 			
 			// We must release all keys because the focus may be stolen when
 			// this was the selected docker (the previous docker is automatically selected)
@@ -4047,6 +4050,8 @@ namespace CodeImp.DoomBuilder.Windows
 		// This selects a docker
 		public bool SelectDocker(Docker d)
 		{
+			if(!dockerspanel.Contains(d)) return false; //mxd
+			
 			// Make sure the full name is set with the plugin name as prefix
 			Plugin plugin = General.Plugins.FindPluginByAssembly(Assembly.GetCallingAssembly());
 			d.MakeFullName(plugin.Name.ToLowerInvariant());
