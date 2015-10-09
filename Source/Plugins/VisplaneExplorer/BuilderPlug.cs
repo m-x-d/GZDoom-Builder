@@ -17,6 +17,7 @@
 #region ================== Namespaces
 
 using System;
+using System.Globalization;
 using System.IO;
 using CodeImp.DoomBuilder.Plugins.VisplaneExplorer.Properties;
 using CodeImp.DoomBuilder.Windows;
@@ -33,6 +34,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		private static BuilderPlug me;
 		private VPOManager vpo;
 		private InterfaceForm interfaceform;
+		private bool enabled; //mxd
 
 		// Palettes
 		private Palette[] palettes;
@@ -42,55 +44,31 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		#region ================== Properties
 		
 		// Properties
-		public static BuilderPlug Me { get { return me; } }
 		public override string Name { get { return "VisplaneExplorer"; } }
 		internal static VPOManager VPO { get { return me.vpo; } }
 		internal static InterfaceForm InterfaceForm { get { return me.interfaceform; } }
-		internal static Palette[] Palettes { get { return me.palettes; } }
-		public override int MinimumRevision { get { return 1545; } }
+		internal static Palette[] Palettes { get { return me.GetPalettes(); } }
+		public override int MinimumRevision { get { return 2411; } }
 		
 		#endregion
 
 		#region ================== Initialize / Dispose
 
-		// This event is called when the plugin is initialized
-		public override void OnInitialize()
+		//mxd. Initialize when we can check the map format
+		public override void OnMapNewEnd() { OnMapOpenEnd(); }
+		public override void OnMapOpenEnd()
 		{
-			base.OnInitialize();
-			
-			//General.Actions.BindMethods(this); //mxd. But... we have no methods to bind!
-			
-			// Load interface controls
-			interfaceform = new InterfaceForm();
-
-			// Load VPO manager (manages multithreading and communication with vpo.dll)
-			vpo = new VPOManager();
-
-			// Keep a static reference
-			me = this;
-		}
-
-        //mxd. This, actually, can also happen
-        public override void OnMapNewBegin() 
-		{
-            OnMapOpenBegin();
-        }
-
-		// Some things cannot be initialized at plugin start, so we do them here
-		public override void OnMapOpenBegin()
-		{
-			base.OnMapOpenBegin();
-
-            if (palettes == null)
+			enabled = (General.Map.DOOM || General.Map.HEXEN);
+			if(enabled)
 			{
-				// Load palettes
-				palettes = new Palette[(int)ViewStats.NumStats];
-				palettes[(int)ViewStats.Visplanes] = new Palette(Resources.Visplanes_pal);
-				palettes[(int)ViewStats.Drawsegs] = new Palette(Resources.Drawsegs_pal);
-				palettes[(int)ViewStats.Solidsegs] = new Palette(Resources.Solidsegs_pal);
-				palettes[(int)ViewStats.Openings] = new Palette(Resources.Openings_pal);
-				palettes[(int)ViewStats.Heatmap] = new Palette(Resources.Heatmap_pal); //mxd
-				ApplyUserColors();
+				// Load interface controls
+				interfaceform = new InterfaceForm();
+
+				// Load VPO manager (manages multithreading and communication with vpo.dll)
+				vpo = new VPOManager();
+
+				// Keep a static reference
+				me = this;
 			}
 		}
 
@@ -104,45 +82,69 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		// This is called when the plugin is terminated
 		public override void Dispose()
 		{
-			// Clean up
-			interfaceform.Dispose();
-			interfaceform = null;
-			vpo.Dispose();
-			vpo = null;
-			base.Dispose();
+			//mxd. Active and not already disposed?
+			if(!IsDisposed)
+			{
+				if(enabled)
+				{
+					// Clean up
+					interfaceform.Dispose();
+					interfaceform = null;
+					vpo.Dispose();
+					vpo = null;
+
+					// Done
+					me = null;
+				}
+
+				base.Dispose();
+			}
 		}
 
 		#endregion
 
 		#region ================== Methods
 
+		//mxd
+		private Palette[] GetPalettes()
+		{
+			if(palettes == null)
+			{
+				// Load palettes
+				palettes = new Palette[(int)ViewStats.NumStats];
+				palettes[(int)ViewStats.Visplanes] = new Palette(Resources.Visplanes_pal);
+				palettes[(int)ViewStats.Drawsegs] = new Palette(Resources.Drawsegs_pal);
+				palettes[(int)ViewStats.Solidsegs] = new Palette(Resources.Solidsegs_pal);
+				palettes[(int)ViewStats.Openings] = new Palette(Resources.Openings_pal);
+				palettes[(int)ViewStats.Heatmap] = new Palette(Resources.Heatmap_pal); //mxd
+				ApplyUserColors();
+			}
+			return palettes;
+		}
+
 		// This applies user-defined appearance colors to the palettes
 		private void ApplyUserColors()
 		{
-            if(palettes != null)
+			//mxd
+			if(palettes == null)
 			{
-				// Override special palette indices with user-defined colors
-				for(int i = 0; i < palettes.Length; i++)
-				{
-					palettes[i].SetColor(Tile.POINT_VOID_B, General.Colors.Background.WithAlpha(0).ToInt());
-				}
+				GetPalettes();
+				return;
 			}
+			
+			// Override special palette indices with user-defined colors
+			foreach(Palette p in palettes) p.SetColor(Tile.POINT_VOID_B, General.Colors.Background.WithAlpha(0).ToInt());
 		}
 
 		// This returns a unique temp filename
 		public static string MakeTempFilename(string extension)
 		{
 			string filename;
-			string chars = "abcdefghijklmnopqrstuvwxyz1234567890";
-			Random rnd = new Random();
-			int i;
 
 			do
 			{
-				// Generate a filename
-				filename = "";
-				for(i = 0; i < 8; i++) filename += chars[rnd.Next(chars.Length)];
-				filename = Path.Combine(General.TempPath, filename + extension);
+				//mxd. Generate a filename
+				filename = Path.Combine(General.TempPath, MurmurHash2.Hash(DateTime.Now.Ticks.ToString(CultureInfo.InvariantCulture)) + extension);
 			}
 			// Continue while file is not unique
 			while(File.Exists(filename) || Directory.Exists(filename));

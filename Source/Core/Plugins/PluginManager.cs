@@ -217,7 +217,7 @@ namespace CodeImp.DoomBuilder.Plugins
 			// Go for all plugins the find the one with matching assembly
 			foreach(Plugin p in plugins)
 			{
-				if(p.Assembly == assembly) return p;
+				if(Equals(p.Assembly, assembly)) return p;
 			}
 
 			// Nothing found

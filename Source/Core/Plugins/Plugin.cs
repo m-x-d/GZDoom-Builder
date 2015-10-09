@@ -42,7 +42,7 @@ namespace CodeImp.DoomBuilder.Plugins
 		private Plug plug;
 		
 		// Unique name used to refer to this assembly
-		private string name;
+		private readonly string name;
 		
 		// Disposing
 		private bool isdisposed;
@@ -122,6 +122,8 @@ namespace CodeImp.DoomBuilder.Plugins
 			if(!isdisposed)
 			{
 				// Clean up
+				plug.Dispose(); //mxd
+				plug = null; //mxd
 				asm = null;
 				
 				// Done

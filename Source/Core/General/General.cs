@@ -1048,9 +1048,9 @@ namespace CodeImp.DoomBuilder
 				// Clean up
 				if(map != null) { map.Dispose(); map = null; }
 				if(editing != null) { editing.Dispose(); editing = null; }
+				if(plugins != null) { plugins.Dispose(); plugins = null; }
 				if(mainwindow != null) { mainwindow.Dispose(); mainwindow = null; }
 				if(actions != null) { actions.Dispose(); actions = null; }
-				if(plugins != null) { plugins.Dispose(); plugins = null; }
 				if(types != null) { types.Dispose(); types = null; }
 				try { D3DDevice.Terminate(); } catch(Exception) { }
 

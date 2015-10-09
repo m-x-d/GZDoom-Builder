@@ -44,7 +44,7 @@ using System.Text;
 
 namespace CodeImp.DoomBuilder
 {
-	internal static class MurmurHash2
+	public static class MurmurHash2
 	{
 		private const UInt32 m = 0x5bd1e995;
 		private const Int32 r = 24;

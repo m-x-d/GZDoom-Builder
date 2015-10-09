@@ -220,12 +220,23 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				menusform.Unregister();
 				menusform.Dispose();
 				menusform = null;
-				curvelinedefsform.Dispose();
-				curvelinedefsform = null;
-				findreplaceform.Dispose();
-				findreplaceform = null;
-				errorcheckform.Dispose();
-				errorcheckform = null;
+
+				//mxd. These are created on demand, so they may be nulls.
+				if(curvelinedefsform != null)
+				{
+					curvelinedefsform.Dispose();
+					curvelinedefsform = null;
+				}
+				if(findreplaceform != null)
+				{
+					findreplaceform.Dispose();
+					findreplaceform = null;
+				}
+				if(errorcheckform != null)
+				{
+					errorcheckform.Dispose();
+					errorcheckform = null;
+				}
 				
 				// Done
 				me = null;
