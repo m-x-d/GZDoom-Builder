@@ -72,6 +72,8 @@ namespace CodeImp.DoomBuilder.Config
 		private bool xybillboard; //mxd
 		private SizeF spritescale;
 		private readonly bool locksprite; //mxd
+		private bool obsolete; //mxd
+		private string obsoletemessage; //mxd
 
 		//mxd. GLOOME rendering settings
 		private Thing.SpriteRenderMode rendermode;
@@ -104,6 +106,8 @@ namespace CodeImp.DoomBuilder.Config
 		public ArgumentInfo[] Args { get { return args; } }
 		public bool IsKnown { get { return isknown; } }
 		public bool IsNull { get { return (index == 0); } }
+		public bool IsObsolete { get { return obsolete; } } //mxd
+		public string ObsoleteMessage { get { return obsoletemessage; } } //mxd
 		public bool AbsoluteZ { get { return absolutez; } }
 		public bool XYBillboard { get { return xybillboard; } } //mxd
 		public SizeF SpriteScale { get { return spritescale; } }
@@ -391,7 +395,7 @@ namespace CodeImp.DoomBuilder.Config
 			// Set the title
 			if(actor.HasPropertyWithValue("$title"))
 				title = actor.GetPropertyAllValues("$title");
-			else if (actor.HasPropertyWithValue("tag")) 
+			else if(actor.HasPropertyWithValue("tag")) 
 			{
 				string tag = actor.GetPropertyAllValues("tag");
 				if(!tag.StartsWith("\"$")) title = tag; //mxd. Don't use LANGUAGE keywords.
@@ -400,7 +404,7 @@ namespace CodeImp.DoomBuilder.Config
 			if(string.IsNullOrEmpty(title)) title = actor.ClassName;
 				
 			//mxd. Color override?
-			if (actor.HasPropertyWithValue("$color")) 
+			if(actor.HasPropertyWithValue("$color")) 
 			{
 				int ci = actor.GetPropertyValueInt("$color", 0);
 				color = (ci == 0 || ci > 19 ? 18 : ci) ;
@@ -421,6 +425,14 @@ namespace CodeImp.DoomBuilder.Config
 			//mxd. Some SLADE compatibility
 			if(actor.HasProperty("$angled")) this.arrow = true;
 			else if(actor.HasProperty("$notangled")) this.arrow = false;
+
+			//mxd. Marked as obsolete?
+			if(actor.HasPropertyWithValue("$obsolete"))
+			{
+				obsoletemessage = ZDTextParser.StripQuotes(actor.GetPropertyValueString("$obsolete", 0));
+				obsolete = true;
+				color = 4; //red
+			}
 
 			// Remove doublequotes from title
 			title = ZDTextParser.StripQuotes(title); //mxd

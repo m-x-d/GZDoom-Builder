@@ -103,6 +103,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// Thing info
 			infopanel.Text = " Thing " + t.Index + " ";
 			type.Text = t.Type + " - " + ti.Title;
+			if(ti.IsObsolete) type.Text += " - OBSOLETE"; //mxd
 			action.Text = actioninfo;
 			bool displayclassname = !string.IsNullOrEmpty(ti.ClassName) && !ti.ClassName.StartsWith("$"); //mxd
 			labelclass.Enabled = displayclassname; //mxd

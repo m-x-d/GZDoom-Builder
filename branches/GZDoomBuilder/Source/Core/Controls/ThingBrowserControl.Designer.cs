@@ -161,6 +161,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.thingimages.Images.SetKeyName(37, "category17.png");
 			this.thingimages.Images.SetKeyName(38, "category18.png");
 			this.thingimages.Images.SetKeyName(39, "category19.png");
+			this.thingimages.Images.SetKeyName(40, "Warning.png");
 			// 
 			// infopanel
 			// 
@@ -286,6 +287,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.typelist.SelectedImageIndex = 0;
 			this.typelist.SelectionBackColor = System.Drawing.SystemColors.Highlight;
 			this.typelist.SelectionMode = CodeImp.DoomBuilder.GZBuilder.Controls.TreeViewSelectionMode.SingleSelect;
+			this.typelist.ShowNodeToolTips = true;
 			this.typelist.Size = new System.Drawing.Size(304, 203);
 			this.typelist.TabIndex = 22;
 			this.typelist.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.typelist_MouseDoubleClick);

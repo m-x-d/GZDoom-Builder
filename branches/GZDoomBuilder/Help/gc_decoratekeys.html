@@ -17,8 +17,8 @@
 <div id="contents">
   <p> Doom Builder 2 includes a DECORATE parser used to obtain relevant information (such as editor number, Radius, Height, Scale, and so on) from custom actors. Additional information can be conveyed with keys in the form of special comments inserted within an actor's declaration block:<br />
     <br />
-    <strong>//$Angled</strong><br />
-    <strong>//$NotAngled</strong><br />
+    <strong>//$Angled</strong> - <span class="red">GZDB only</span>.<br />
+    <strong>//$NotAngled</strong> - <span class="red">GZDB only</span>.<br />
     Specifies whether the direction matters (angled) or not. Things that are not angled are represented without a direction arrow.<br />
     <br />
     <strong>//$Category &lt;category&gt;</strong><br />
@@ -71,8 +71,11 @@
     <li>18 - <span style="color:#BDB76B">&#9608;</span> Light Brown (default);</li>
     <li>19 - <span style="color:#DAA520">&#9608;</span> Orange;</li>
   </ul>
-  Additionaly, you can use the following special comments in the global block:<br />
-  <br />
+    <strong>//$Obsolete &lt;reason&gt;</strong> - <span class="red">GZDB only</span>.<br />
+    Marks the thing as obsolete. It will be detected by &quot;Check obsolete things&quot; <a href="e_mapanalysis.html">Map Analysis Mode</a> check and will be marked in the <a href="w_thingedit.html">Thing Properties Window</a> and the Thing Info panel.<br />
+    <br /><br />
+  
+  <h3>Additionaly, you can use the following special comments in the global block:</h3><br />
   <strong>//$GZDB_SKIP</strong> - <span class="red">GZDB only</span>.<br />
   DECORATE parser will stop parsing a file after encountering this comment. This can be used to speedup the parsing process by skipping files, which don't contain placeable actor definitions.<br />
   <br />
@@ -87,6 +90,7 @@ Actor ChexShield : ResistanceRune replaces ResistanceRune 5104
   //$Title "Chex Shield"
   //$Color 12
   //$NotAngled
+  //$Obsolete "That's a strange powerup. Consider replacing it with something else..."
   
   //$Arg0 "Respawn Delay"
   //$Arg0ToolTip "Positive values specify delay in tics.\nNegative - in seconds."
