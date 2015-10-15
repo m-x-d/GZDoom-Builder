@@ -247,6 +247,7 @@
     <Compile Include="ErrorChecks\CheckMapSize.cs" />
     <Compile Include="ErrorChecks\CheckMissingFlats.cs" />
     <Compile Include="ErrorChecks\CheckMissingTextures.cs" />
+    <Compile Include="ErrorChecks\CheckObsoleteThings.cs" />
     <Compile Include="ErrorChecks\CheckOverlappingVertices.cs" />
     <Compile Include="ErrorChecks\CheckShortLinedefs.cs" />
     <Compile Include="ErrorChecks\CheckStrayVertices.cs" />
@@ -259,6 +260,7 @@
     <Compile Include="ErrorChecks\ResultMapTooBig.cs" />
     <Compile Include="ErrorChecks\ResultMissingFlat.cs" />
     <Compile Include="ErrorChecks\ResultNoErrors.cs" />
+    <Compile Include="ErrorChecks\ResultObsoleteThing.cs" />
     <Compile Include="ErrorChecks\ResultSectorInvalid.cs" />
     <Compile Include="ErrorChecks\ResultShortLinedef.cs" />
     <Compile Include="ErrorChecks\ResultStrayVertex.cs" />

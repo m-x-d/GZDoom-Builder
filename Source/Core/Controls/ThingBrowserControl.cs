@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Data;
@@ -29,6 +30,12 @@ namespace CodeImp.DoomBuilder.Controls
 {
 	public partial class ThingBrowserControl : UserControl
 	{
+		#region ================== Constants
+
+		private const int WARNING_ICON_INDEX = 40; //mxd
+
+		#endregion
+
 		#region ================== Events
 
 		public delegate void TypeChangedDeletegate(ThingTypeInfo value);
@@ -77,31 +84,64 @@ namespace CodeImp.DoomBuilder.Controls
 			doupdatetextbox = true;
 		}
 
-		//mxd. This recursively creates thing category tree nodes
-		private void AddThingCategories(ICollection<ThingCategory> categories, TreeNodeCollection collection)
+		//mxd. This recursively creates thing category tree nodes. Returns true when a thing in this category is obsolete
+		private bool AddThingCategories(ICollection<ThingCategory> categories, TreeNodeCollection collection)
 		{
+			bool containsobsoletethings = false;
+			
 			foreach(ThingCategory tc in categories) 
 			{
 				// Create category
 				TreeNode cn = collection.Add(tc.Name, tc.Title);
-				cn.ImageIndex = thingimages.Images.Count / 2; // Offset to folder icons
-				if((tc.Color >= 0) && (tc.Color < thingimages.Images.Count)) cn.ImageIndex += tc.Color;
-				cn.SelectedImageIndex = cn.ImageIndex;
 
 				// Create subcategories
-				AddThingCategories(tc.Children, cn.Nodes);
+				bool isobsolete = AddThingCategories(tc.Children, cn.Nodes);
 
 				// Create things
 				foreach(ThingTypeInfo ti in tc.Things) 
 				{
 					// Create thing
 					TreeNode n = cn.Nodes.Add(ti.Title);
-					if((ti.Color >= 0) && (ti.Color < thingimages.Images.Count)) n.ImageIndex = ti.Color;
-					n.SelectedImageIndex = n.ImageIndex;
 					n.Tag = ti;
+
+					if(ti.IsObsolete)
+					{
+						n.Text += " - OBSOLETE";
+						n.BackColor = Color.MistyRose;
+						n.ToolTipText = ti.ObsoleteMessage;
+
+						// Set warning icon
+						n.ImageIndex = WARNING_ICON_INDEX;
+						n.SelectedImageIndex = WARNING_ICON_INDEX;
+						isobsolete = true;
+					}
+					else
+					{
+						// Set regular icon
+						if((ti.Color >= 0) && (ti.Color < thingimages.Images.Count)) n.ImageIndex = ti.Color;
+						n.SelectedImageIndex = n.ImageIndex;
+					}
+
 					nodes.Add(n);
 				}
+
+				// Set category icon
+				containsobsoletethings |= isobsolete;
+				if(isobsolete)
+				{
+					cn.BackColor = Color.MistyRose;
+					cn.ImageIndex = WARNING_ICON_INDEX;
+					cn.SelectedImageIndex = WARNING_ICON_INDEX;
+				}
+				else
+				{
+					cn.ImageIndex = thingimages.Images.Count / 2; // Offset to folder icons
+					if((tc.Color >= 0) && (tc.Color < thingimages.Images.Count)) cn.ImageIndex += tc.Color;
+					cn.SelectedImageIndex = cn.ImageIndex;
+				}
 			}
+
+			return containsobsoletethings;
 		}
 
 		#endregion
