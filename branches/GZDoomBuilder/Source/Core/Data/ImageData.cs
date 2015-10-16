@@ -114,8 +114,9 @@ namespace CodeImp.DoomBuilder.Data
 		public int Width { get { return width; } }
 		public int Height { get { return height; } }
 		internal int PreviewIndex { get { return previewindex; } set { previewindex = value; } }
-		public float ScaledWidth { get { return width * scale.x; } }
-		public float ScaledHeight { get { return height * scale.y; } }
+		//mxd. Scaled texture size is integer in ZDoom.
+		public float ScaledWidth { get { return (float)Math.Round(width * scale.x); } }
+		public float ScaledHeight { get { return (float)Math.Round(height * scale.y); } }
 		public Vector2D Scale { get { return scale; } }
 		public bool WorldPanning { get { return worldpanning; } }
 		public int Level { get { return level; } } //mxd
