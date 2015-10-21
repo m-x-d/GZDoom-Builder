@@ -783,7 +783,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(sel != null)
 				{
 					PastePropertiesOptionsForm form = new PastePropertiesOptionsForm();
-					if(form.Setup(MapElementType.VERTEX) && form.ShowDialog(Form.ActiveForm) == DialogResult.OK)
+					if(form.Setup(MapElementType.VERTEX) && form.ShowDialog(General.Interface) == DialogResult.OK)
 					{
 						// Apply properties to selection
 						string rest = (sel.Count == 1 ? "a single vertex" : sel.Count + " vertices");

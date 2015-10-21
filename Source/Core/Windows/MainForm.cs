@@ -2499,7 +2499,6 @@ namespace CodeImp.DoomBuilder.Windows
 			itemsavemap.Enabled = (General.Map != null);
 			itemsavemapas.Enabled = (General.Map != null);
 			itemsavemapinto.Enabled = (General.Map != null);
-			itemtestmap.Enabled = (General.Map != null);
 			itemopenmapincurwad.Enabled = (General.Map != null); //mxd
 			itemimport.Enabled = (General.Map != null); //mxd
 			itemexport.Enabled = (General.Map != null); //mxd
@@ -3075,13 +3074,18 @@ namespace CodeImp.DoomBuilder.Windows
 		// This sets up the tools menu
 		private void UpdateToolsMenu()
 		{
-			// Enable/disable items
+			//mxd. Enable/disable items
 			bool enabled = (General.Map != null);
-			itemreloadresources.Enabled = enabled;
-			
-			//mxd
-			itemReloadGldefs.Enabled = enabled;
-			itemReloadModedef.Enabled = enabled;
+			itemreloadresources.Visible = enabled;
+			seperatortoolsconfig.Visible = enabled;
+			itemsavescreenshot.Visible = enabled;
+			itemsaveeditareascreenshot.Visible = enabled;
+			separatortoolsscreenshots.Visible = enabled;
+			itemtestmap.Visible = enabled;
+
+			bool supported = (enabled && !string.IsNullOrEmpty(General.Map.Config.DecorateGames));
+			itemReloadGldefs.Visible = supported;
+			itemReloadModedef.Visible = supported;
 		}
 		
 		// Errors and Warnings

@@ -69,11 +69,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private Dictionary<Sector, string[]> selectedEffectLabels;
 		private Dictionary<Sector, string[]> unselectedEffectLabels; 
 		
-		//mxd. "Make Door" textures
-		private static string doortex = "-";
-		private static string tracktex = "-";
-		private static bool resetoffsets = true;
-		
 		#endregion
 
 		#region ================== Properties
@@ -1446,7 +1441,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(sel != null)
 				{
 					PastePropertiesOptionsForm form = new PastePropertiesOptionsForm();
-					if(form.Setup(MapElementType.SECTOR) && form.ShowDialog(Form.ActiveForm) == DialogResult.OK)
+					if(form.Setup(MapElementType.SECTOR) && form.ShowDialog(General.Interface) == DialogResult.OK)
 					{
 						// Apply properties to selection
 						string rest = (sel.Count == 1 ? "a single sector" : sel.Count + " sectors");
@@ -1508,16 +1503,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			if(orderedselection.Count > 0)
 			{
-				if(doortex == "-") doortex = General.Map.Config.MakeDoorDoor; //mxd
-				if(tracktex == "-") tracktex = General.Map.Config.MakeDoorTrack; //mxd
+				string doortex = BuilderPlug.Me.MakeDoor.DoorTexture;
+				string tracktex = BuilderPlug.Me.MakeDoor.TrackTexture;
+				string ceiltex = BuilderPlug.Me.MakeDoor.CeilingTexture;
 				string floortex = null;
-				string ceiltex = null;
-				
-				// Find ceiling and floor textures
+				bool resetoffsets = BuilderPlug.Me.MakeDoor.ResetOffsets;
+
+				// Find floor texture
 				foreach(Sector s in orderedselection)
 				{
 					if(floortex == null) floortex = s.FloorTexture; else if(floortex != s.FloorTexture) floortex = "";
-					if(ceiltex == null) ceiltex = s.CeilTexture; else if(ceiltex != s.CeilTexture) ceiltex = "";
 				}
 				
 				// Show the dialog
@@ -1529,6 +1524,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					ceiltex = form.CeilingTexture;
 					floortex = form.FloorTexture;
 					resetoffsets = form.ResetOffsets;
+
+					//mxd. Store new settings
+					BuilderPlug.Me.MakeDoor = new BuilderPlug.MakeDoorSettings(doortex, tracktex, ceiltex, resetoffsets);
 					
 					// Create undo
 					General.Map.UndoRedo.CreateUndo("Make door (" + doortex + ")");
@@ -1551,7 +1549,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							{
 								// Make this a doortrak
 								sd.SetTextureHigh("-");
-								sd.SetTextureMid(tracktex);
+								if(!string.IsNullOrEmpty(tracktex)) sd.SetTextureMid(tracktex);
 								sd.SetTextureLow("-");
 
 								// Set upper/lower unpegged flags
@@ -1561,9 +1559,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							else
 							{
 								// Set textures
-								if(floortex.Length > 0) s.SetFloorTexture(floortex);
-								if(ceiltex.Length > 0) s.SetCeilTexture(ceiltex);
-								if(doortex.Length > 0) sd.Other.SetTextureHigh(doortex);
+								if(!string.IsNullOrEmpty(floortex)) s.SetFloorTexture(floortex);
+								if(!string.IsNullOrEmpty(ceiltex)) s.SetCeilTexture(ceiltex);
+								if(!string.IsNullOrEmpty(doortex)) sd.Other.SetTextureHigh(doortex);
 
 								// Set upper/lower unpegged flags
 								sd.Line.SetFlag(General.Map.Config.UpperUnpeggedFlag, false);
@@ -1605,12 +1603,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							}
 
 							// Reset the texture offsets if required
-							if (resetoffsets)
+							if(resetoffsets)
 							{
 								sd.OffsetX = 0;
 								sd.OffsetY = 0;
 
-								if (sd.Other != null)
+								if(sd.Other != null)
 								{
 									sd.Other.OffsetX = 0;
 									sd.Other.OffsetY = 0;
@@ -1631,7 +1629,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 			else //mxd
 			{
-				General.Interface.DisplayStatus(StatusType.Warning, "This action requires a selection!");
+				General.Interface.DisplayStatus(StatusType.Warning, "This action requires a highlight or selection!");
 			}
 		}
 		

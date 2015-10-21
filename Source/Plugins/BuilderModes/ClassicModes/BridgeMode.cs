@@ -88,14 +88,14 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 			ICollection<Linedef> selection = General.Map.Map.GetSelectedLinedefs(true);
 
 			List<Line> lines = new List<Line>();
-			foreach (Linedef ld in selection) 
+			foreach(Linedef ld in selection) 
 			{
 				Line l = new Line(ld);
 				lines.Add(l);
 			}
 
 			//do we have valid selection?
-			if (!Setup(lines)) 
+			if(!Setup(lines)) 
 			{
 				FinishDraw();
 				return;
@@ -107,7 +107,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 			form.OnOkClick += form_OnOkClick;
 			form.OnFlipClick += form_OnFlipClick;
 			form.OnSubdivisionChanged += form_OnSubdivisionChanged;
-			form.Show(Form.ActiveForm);
+			form.Show(General.Interface);
 			General.Interface.FocusDisplay();
 
 			handleColor = General.Colors.BrightColors[new Random().Next(General.Colors.BrightColors.Length - 1)];

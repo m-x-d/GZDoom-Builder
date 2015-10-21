@@ -126,13 +126,13 @@ namespace CodeImp.DoomBuilder.Config
 			this.startmode = General.Settings.ReadSetting("configurations." + settingskey + ".startmode", "VerticesMode");
 			this.enabled = General.Settings.ReadSetting("configurations." + settingskey + ".enabled", config.ReadSetting("enabledbydefault", false)); //mxd
 			
-			//mxd. read test engines
+			//mxd. Read test engines
 			testEngines = new List<EngineInfo>();
 			IDictionary list = General.Settings.ReadSetting("configurations." + settingskey + ".engines", new ListDictionary());
 			currentEngineIndex = Math.Max(0, General.Settings.ReadSetting("configurations." + settingskey + ".currentengineindex", 0));
 			
-			//no engine list found? use old engine properties
-			if (list.Count == 0) 
+			// No engine list found? Use old engine properties
+			if(list.Count == 0) 
 			{
 				EngineInfo info = new EngineInfo();
 				info.TestProgram = General.Settings.ReadSetting("configurations." + settingskey + ".testprogram", "");
@@ -147,7 +147,7 @@ namespace CodeImp.DoomBuilder.Config
 			else 
 			{
 				//read engines settings from config
-				foreach (DictionaryEntry de in list) 
+				foreach(DictionaryEntry de in list) 
 				{
 					string path = "configurations." + settingskey + ".engines." + de.Key;
 					EngineInfo info = new EngineInfo();
@@ -248,7 +248,7 @@ namespace CodeImp.DoomBuilder.Config
 		public int CompareTo(ConfigurationInfo other)
 		{
 			// Compare
-			return name.CompareTo(other.name);
+			return String.Compare(name, other.name, StringComparison.Ordinal);
 		}
 
 		// This saves the settings to program configuration

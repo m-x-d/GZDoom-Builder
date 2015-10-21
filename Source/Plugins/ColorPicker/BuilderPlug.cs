@@ -148,7 +148,7 @@ namespace CodeImp.DoomBuilder.ColorPicker
 				} 
 				form.Location = formLocation;
 				form.FormClosed += form_FormClosed;
-				form.ShowDialog(Form.ActiveForm);
+				form.ShowDialog(General.Interface);
 			} 
 			else 
 			{

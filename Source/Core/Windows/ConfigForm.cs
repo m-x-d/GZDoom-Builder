@@ -793,9 +793,9 @@ namespace CodeImp.DoomBuilder.Windows
 			bool formatinterfacesmatch = havecopiedconfig && current.FormatInterface == configinfocopy.FormatInterface;
 
 			pasteall.Enabled = formatinterfacesmatch;
-			pasteengines.Enabled = havecopiedconfig;
-			pasteresources.Enabled = havecopiedconfig;
-			pastecolorpresets.Enabled = formatinterfacesmatch;
+			pasteengines.Enabled = (havecopiedconfig && configinfocopy.TestEngines.Count > 0);
+			pasteresources.Enabled = (havecopiedconfig && configinfocopy.Resources.Count > 0);
+			pastecolorpresets.Enabled = (formatinterfacesmatch && configinfocopy.LinedefColorPresets.Length > 0);
 		}
 
 		private void copyall_Click(object sender, EventArgs e) 
@@ -817,6 +817,7 @@ namespace CodeImp.DoomBuilder.Windows
 			current.PasteFrom(configinfocopy);
 
 			//update display
+			cbEngineSelector.Text = string.Empty; // Otherwise current text from cbEngineSelector will override the pasted one
 			listconfigs_SelectedIndexChanged(listconfigs, EventArgs.Empty);
 			General.Interface.DisplayStatus(StatusType.Info, "Pasted game configuration from '" + configinfocopy.Name + "'");
 		}
@@ -843,6 +844,7 @@ namespace CodeImp.DoomBuilder.Windows
 			current.PasteTestEnginesFrom(configinfocopy);
 
 			//update display
+			cbEngineSelector.Text = string.Empty; // Otherwise current text from cbEngineSelector will override the pasted one
 			listconfigs_SelectedIndexChanged(listconfigs, EventArgs.Empty);
 			General.Interface.DisplayStatus(StatusType.Info, "Pasted engines list from '" + configinfocopy.Name + "'");
 		}

@@ -109,7 +109,7 @@ namespace CodeImp.DoomBuilder.Windows
 				mapsettings = new Configuration(true);
 			
 			// Check strict patches box, check what game configuration is preferred
-			if (options != null) 
+			if(options != null) 
 			{
 				strictpatches.Checked = options.StrictPatches;
 				gameconfig = options.ConfigFile;
@@ -251,7 +251,7 @@ namespace CodeImp.DoomBuilder.Windows
 					}
 
 					// Map found? Let's call it a day :)
-					if (lumpsfound >= lumpsrequired) return true;
+					if(lumpsfound >= lumpsrequired) return true;
 				}
 			}
 
@@ -380,13 +380,22 @@ namespace CodeImp.DoomBuilder.Windows
 				config.Focus();
 				return;
 			}
+
+			//mxd. Script configuration selected?
+			if(scriptcompiler.Enabled && scriptcompiler.SelectedIndex == -1)
+			{
+				// Select a configuration!
+				MessageBox.Show(this, "Please select a script type to use for editing your map.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+				scriptcompiler.Focus();
+				return;
+			}
 			
 			// Collect information
 			ConfigurationInfo configinfo = (config.SelectedItem as ConfigurationInfo); //mxd
 			DataLocationList locations = datalocations.GetResources();
 
 			// Resources are valid? (mxd)
-			if (!datalocations.ResourcesAreValid())
+			if(!datalocations.ResourcesAreValid())
 			{
 				MessageBox.Show(this, "Cannot open map: at least one resource doesn't exist!", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Warning);
 				datalocations.Focus();
@@ -430,10 +439,9 @@ namespace CodeImp.DoomBuilder.Windows
 			options.CopyResources(locations);
 
 			//mxd. Store script compiler
-			if(scriptcompiler.Enabled && scriptcompiler.SelectedIndex > -1) 
+			if(scriptcompiler.Enabled) 
 			{
 				ScriptConfiguration scriptcfg = scriptcompiler.SelectedItem as ScriptConfiguration;
-
 				foreach(KeyValuePair<string, ScriptConfiguration> group in General.CompiledScriptConfigs) 
 				{
 					if(group.Value == scriptcfg) 
@@ -486,7 +494,7 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			DataLocationList locations;
 			DataLocationList listedlocations;
-			string scriptconfig = string.Empty;
+			string scriptconfig = string.Empty; //mxd
 			
 			// Map previously selected?
 			if(!string.IsNullOrEmpty(selectedmapname))
@@ -525,26 +533,28 @@ namespace CodeImp.DoomBuilder.Windows
 				datalocations.EditResourceLocationList(listedlocations);
 
 				//mxd. Select script compiler
-				if (!string.IsNullOrEmpty(options.ScriptCompiler) && General.CompiledScriptConfigs.ContainsKey(options.ScriptCompiler)) 
+				ConfigurationInfo info = config.SelectedItem as ConfigurationInfo;
+				if(info != null)
 				{
-					scriptconfig = options.ScriptCompiler;
-				} 
-				else 
-				{
-					string defaultscriptconfig = (config.SelectedItem as ConfigurationInfo).Configuration.ReadSetting("defaultscriptcompiler", string.Empty);
-					if(!string.IsNullOrEmpty(defaultscriptconfig) && General.CompiledScriptConfigs.ContainsKey(defaultscriptconfig))
-						scriptconfig = defaultscriptconfig;
+					if(!string.IsNullOrEmpty(options.ScriptCompiler) && General.CompiledScriptConfigs.ContainsKey(options.ScriptCompiler))
+					{
+						scriptconfig = options.ScriptCompiler;
+					}
+					else if(!string.IsNullOrEmpty(info.DefaultScriptCompiler) && General.CompiledScriptConfigs.ContainsKey(info.DefaultScriptCompiler))
+					{
+						scriptconfig = info.DefaultScriptCompiler;
+					}
 				}
 			}
 
 			//mxd. Select proper script compiler
-			if (!string.IsNullOrEmpty(scriptconfig)) 
+			if(!string.IsNullOrEmpty(scriptconfig))
 			{
 				scriptcompiler.Enabled = true;
 				scriptcompiler.SelectedItem = General.CompiledScriptConfigs[scriptconfig];
 				scriptcompilerlabel.Enabled = true;
-			} 
-			else 
+			}
+			else
 			{
 				scriptcompiler.Enabled = false;
 				scriptcompiler.SelectedIndex = -1;

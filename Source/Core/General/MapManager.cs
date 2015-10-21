@@ -646,7 +646,7 @@ namespace CodeImp.DoomBuilder
 			bool localscriptschanged = CheckScriptChanged();
 
 			// If the scripts window is open, save the scripts first
-			if (IsScriptsWindowOpen) scriptwindow.Editor.ImplicitSave();
+			if(IsScriptsWindowOpen) scriptwindow.Editor.ImplicitSave();
 
 			// Only recompile scripts when the scripts have changed
 			// (not when only the map changed)
@@ -661,20 +661,20 @@ namespace CodeImp.DoomBuilder
 
 			// Show script window if there are any errors and we are going to test the map
 			// and always update the errors on the scripts window.
-			if ((errors.Count > 0) && (scriptwindow == null) && (purpose == SavePurpose.Testing)) ShowScriptEditor();
-			if (scriptwindow != null) scriptwindow.Editor.ShowErrors(errors);
+			if((errors.Count > 0) && (scriptwindow == null) && (purpose == SavePurpose.Testing)) ShowScriptEditor();
+			if(scriptwindow != null) scriptwindow.Editor.ShowErrors(errors);
 
 			// Only write the map and rebuild nodes when the actual map has changed
 			// (not when only scripts have changed)
-			if (changed) 
+			if(changed) 
 			{
 				// Make a copy of the map data
 				MapSet outputset = map.Clone();
 
 				// Remove all flags from all 3D Start things
-				foreach (Thing t in outputset.Things) 
+				foreach(Thing t in outputset.Things) 
 				{
-					if (t.Type == config.Start3DModeThingType) 
+					if(t.Type == config.Start3DModeThingType) 
 					{
 						// We're not using SetFlag here, this doesn't have to be undone.
 						// Please note that this is totally exceptional!
@@ -685,7 +685,7 @@ namespace CodeImp.DoomBuilder
 
 				// Do we need sidedefs compression?
 				StatusInfo oldstatus;
-				if (map.Sidedefs.Count > io.MaxSidedefs) 
+				if(map.Sidedefs.Count > io.MaxSidedefs) 
 				{
 					// Compress sidedefs
 					oldstatus = General.MainWindow.Status;
@@ -694,7 +694,7 @@ namespace CodeImp.DoomBuilder
 					General.MainWindow.DisplayStatus(oldstatus);
 
 					// Check if it still doesnt fit
-					if (outputset.Sidedefs.Count > io.MaxSidedefs) 
+					if(outputset.Sidedefs.Count > io.MaxSidedefs) 
 					{
 						// Problem! Can't save the map like this!
 						General.ShowErrorMessage("Unable to save the map: There are too many unique sidedefs!", MessageBoxButtons.OK);
@@ -703,28 +703,28 @@ namespace CodeImp.DoomBuilder
 				}
 
 				// Check things
-				if (map.Things.Count > io.MaxThings) 
+				if(map.Things.Count > io.MaxThings) 
 				{
 					General.ShowErrorMessage("Unable to save the map: There are too many things!", MessageBoxButtons.OK);
 					return false;
 				}
 
 				// Check sectors
-				if (map.Sectors.Count > io.MaxSectors) 
+				if(map.Sectors.Count > io.MaxSectors) 
 				{
 					General.ShowErrorMessage("Unable to save the map: There are too many sectors!", MessageBoxButtons.OK);
 					return false;
 				}
 
 				// Check linedefs
-				if (map.Linedefs.Count > io.MaxLinedefs) 
+				if(map.Linedefs.Count > io.MaxLinedefs) 
 				{
 					General.ShowErrorMessage("Unable to save the map: There are too many linedefs!", MessageBoxButtons.OK);
 					return false;
 				}
 
 				// Check vertices
-				if (map.Vertices.Count > io.MaxVertices) 
+				if(map.Vertices.Count > io.MaxVertices) 
 				{
 					General.ShowErrorMessage("Unable to save the map: There are too many vertices!", MessageBoxButtons.OK);
 					return false;
@@ -1061,7 +1061,7 @@ namespace CodeImp.DoomBuilder
 
 			// Find the nodebuilder
 			NodebuilderInfo nodebuilder = General.GetNodebuilderByName(nodebuildername);
-			if (nodebuilder == null) 
+			if(nodebuilder == null) 
 			{
 				// Problem! Can't find that nodebuilder!
 				General.ShowWarningMessage("Unable to build the nodes: The configured nodebuilder cannot be found.\nPlease check your game configuration settings!", MessageBoxButtons.OK);
@@ -1103,7 +1103,7 @@ namespace CodeImp.DoomBuilder
 				buildwad.Dispose();
 
 				// Does the nodebuilder require an output file?
-				if (nodebuilder.HasSpecialOutputFile) 
+				if(nodebuilder.HasSpecialOutputFile) 
 				{
 					// Make a temporary output file for the nodebuilder
 					tempfile2 = General.MakeTempFilename(compiler.Location);
@@ -1121,23 +1121,23 @@ namespace CodeImp.DoomBuilder
 				compiler.OutputFile = Path.GetFileName(tempfile2);
 				compiler.SourceFile = sourcefile;
 				compiler.WorkingDirectory = Path.GetDirectoryName(tempfile1);
-				if (compiler.Run()) 
+				if(compiler.Run()) 
 				{
 					// Open the output file
 					try { buildwad = new WAD(tempfile2); } 
-					catch (Exception e) 
+					catch(Exception e) 
 					{
 						General.WriteLogLine(e.GetType().Name + " while reading build wad file: " + e.Message);
 						buildwad = null;
 					}
 
-					if (buildwad != null) 
+					if(buildwad != null) 
 					{
 						// Output lumps complete?
 						lumpscomplete = VerifyNodebuilderLumps(buildwad, BUILD_MAP_HEADER);
 					}
 
-					if (lumpscomplete) 
+					if(lumpscomplete) 
 					{
 						// Copy nodebuilder lumps to temp file
 						General.WriteLogLine("Copying nodebuilder lumps to temporary file...");
@@ -1151,20 +1151,20 @@ namespace CodeImp.DoomBuilder
 							compilererrors += Environment.NewLine + e.description;
 
 						// Nodebuilder did not build the lumps!
-						if (failaswarning)
+						if(failaswarning)
 							General.ShowWarningMessage("Unable to build the nodes: The nodebuilder failed to build the expected data structures.\nThe map will be saved without the nodes." + (compiler.Errors.Length > 0 ? Environment.NewLine + compilererrors : ""), MessageBoxButtons.OK);
 						else
 							General.ShowErrorMessage("Unable to build the nodes: The nodebuilder failed to build the expected data structures." + (compiler.Errors.Length > 0 ? Environment.NewLine + compilererrors : ""), MessageBoxButtons.OK);
 					}
 
 					// Done with the build wad
-					if (buildwad != null) buildwad.Dispose();
+					if(buildwad != null) buildwad.Dispose();
 				}
 				else //mxd
 				{
 					//collect errors
 					string compilererrors = "";
-					foreach (CompilerError e in compiler.Errors)
+					foreach(CompilerError e in compiler.Errors)
 						compilererrors += Environment.NewLine + e.description;
 
 					// Nodebuilder did not build the lumps!
@@ -1187,19 +1187,19 @@ namespace CodeImp.DoomBuilder
 			// Find the map header in source
 			int srcindex = wad.FindLumpIndex(mapheader);
 			
-			if (srcindex > -1) 
+			if(srcindex > -1) 
 			{
 				// Go for all the map lump names
 				lumpscomplete = true;
 				
-				foreach (KeyValuePair<string, MapLumpInfo> group in config.MapLumps) 
+				foreach(KeyValuePair<string, MapLumpInfo> group in config.MapLumps) 
 				{
 					// Check if this lump should exist
 					if(group.Value.NodeBuild && !group.Value.AllowEmpty && group.Value.Required) 
 					{
 						//mxd
 						string lumpname = group.Key;
-						if (lumpname.Contains(CONFIG_MAP_HEADER)) lumpname = lumpname.Replace(CONFIG_MAP_HEADER, mapheader);
+						if(lumpname.Contains(CONFIG_MAP_HEADER)) lumpname = lumpname.Replace(CONFIG_MAP_HEADER, mapheader);
 						
 						// Find the lump in the source
 						if(wad.FindLump(lumpname, srcindex, srcindex + config.MapLumps.Count + 2) == null) 
@@ -1224,7 +1224,7 @@ namespace CodeImp.DoomBuilder
 		public MemoryStream GetLumpData(string lumpname) 
 		{
 			Lump l = tempwad.FindLump(lumpname);
-			if (l != null) 
+			if(l != null) 
 			{
 				l.Stream.Seek(0, SeekOrigin.Begin);
 				return new MemoryStream(l.Stream.ReadAllBytes());
@@ -1239,7 +1239,7 @@ namespace CodeImp.DoomBuilder
 
 			// Remove the lump if it already exists
 			int li = tempwad.FindLumpIndex(lumpname);
-			if (li > -1)
+			if(li > -1)
 			{
 				insertindex = li;
 				tempwad.RemoveAt(li);
@@ -1262,7 +1262,7 @@ namespace CodeImp.DoomBuilder
 		{
 			// Find the map header in target
 			int headerindex = target.FindLumpIndex(mapname);
-			if (headerindex == -1) 
+			if(headerindex == -1) 
 			{
 				// If this header doesnt exists in the target
 				// then insert at the end of the target
@@ -1273,7 +1273,7 @@ namespace CodeImp.DoomBuilder
 			int insertindex = headerindex;
 
 			// Go for all the map lump names
-			foreach (KeyValuePair<string, MapLumpInfo> group in config.MapLumps)
+			foreach(KeyValuePair<string, MapLumpInfo> group in config.MapLumps)
 			{
 				// Check if this lump is required
 				if(group.Value.Required) 
@@ -1283,7 +1283,7 @@ namespace CodeImp.DoomBuilder
 
 					// Check if the lump is missing at the target
 					int targetindex = FindSpecificLump(target, lumpname, headerindex, mapname, config.MapLumps);
-					if (targetindex == -1) 
+					if(targetindex == -1) 
 					{
 						// Determine target index
 						insertindex++;
@@ -1321,8 +1321,8 @@ namespace CodeImp.DoomBuilder
 
 			//Remove lumps, which are not required
 			List<Lump> toRemove = new List<Lump>();
-			foreach (Lump lump in target.Lumps)
-				if (!requiredLumps.Contains(lump.Name)) toRemove.Add(lump);
+			foreach(Lump lump in target.Lumps)
+				if(!requiredLumps.Contains(lump.Name)) toRemove.Add(lump);
 
 			foreach (Lump lump in toRemove) target.Remove(lump);
 		}
@@ -1332,16 +1332,16 @@ namespace CodeImp.DoomBuilder
 		{
 			// Go for all lumps
 			bool skipping = false;
-			foreach (Lump srclump in source.Lumps)
+			foreach(Lump srclump in source.Lumps)
 			{
 				// Check if we should stop skipping lumps here
-				if (skipping) 
+				if(skipping) 
 				{
 					//mxd
 					string srclumpname = srclump.Name;
-					if (srclumpname.Contains(sourcemapname)) srclumpname = srclumpname.Replace(sourcemapname, CONFIG_MAP_HEADER);
+					if(srclumpname.Contains(sourcemapname)) srclumpname = srclumpname.Replace(sourcemapname, CONFIG_MAP_HEADER);
 
-					if (!mapconfig.MapLumps.ContainsKey(srclumpname)) 
+					if(!mapconfig.MapLumps.ContainsKey(srclumpname)) 
 					{
 						// Stop skipping
 						skipping = false;
@@ -1349,14 +1349,14 @@ namespace CodeImp.DoomBuilder
 				}
 
 				// Check if we should start skipping lumps here
-				if (!skipping && (srclump.Name == sourcemapname)) 
+				if(!skipping && (srclump.Name == sourcemapname)) 
 				{
 					// We have encountered the map header, start skipping!
 					skipping = true;
 				}
 
 				// Not skipping this lump?
-				if (!skipping) 
+				if(!skipping) 
 				{
 					// Copy lump over!
 					Lump tgtlump = target.Insert(srclump.Name, target.Lumps.Count, srclump.Length);
@@ -1373,7 +1373,7 @@ namespace CodeImp.DoomBuilder
 		{
 			// Find the map header in target
 			int tgtheaderindex = target.FindLumpIndex(targetmapname);
-			if (tgtheaderindex == -1) 
+			if(tgtheaderindex == -1) 
 			{
 				// If this header doesnt exists in the target
 				// then insert at the end of the target
@@ -1385,10 +1385,10 @@ namespace CodeImp.DoomBuilder
 
 			// Find the map header in source
 			int srcheaderindex = source.FindLumpIndex(sourcemapname);
-			if (srcheaderindex > -1) 
+			if(srcheaderindex > -1) 
 			{
 				// Go for all the map lump names
-				foreach (KeyValuePair<string, MapLumpInfo> group in config.MapLumps) 
+				foreach(KeyValuePair<string, MapLumpInfo> group in config.MapLumps) 
 				{
 					// Check if this lump should be copied
 					if((group.Value.Required && copyrequired) || (group.Value.BlindCopy && copyblindcopy) ||
@@ -1400,7 +1400,7 @@ namespace CodeImp.DoomBuilder
 
 						// Find the lump in the source
 						int sourceindex = FindSpecificLump(source, srclumpname, srcheaderindex, sourcemapname, config.MapLumps);
-						if (sourceindex > -1) 
+						if(sourceindex > -1) 
 						{
 							// Remove lump at target
 							int lumpindex = RemoveSpecificLump(target, tgtlumpname, tgtheaderindex, targetmapname, config.MapLumps);
@@ -1439,19 +1439,19 @@ namespace CodeImp.DoomBuilder
 			// because when an unknown lump is met, this search must stop.
 
 			// Go for all lumps in order to find the specified lump
-			for (int i = 0; i < maplumps.Count + 1; i++) 
+			for(int i = 0; i < maplumps.Count + 1; i++) 
 			{
 				// Still within bounds?
-				if ((mapheaderindex + i) < source.Lumps.Count) 
+				if((mapheaderindex + i) < source.Lumps.Count) 
 				{
 					// Check if this is a known lump name
 					string srclumpname = source.Lumps[mapheaderindex + i].Name; //mxd
-					if (srclumpname.Contains(mapheadername)) srclumpname = srclumpname.Replace(mapheadername, CONFIG_MAP_HEADER);
+					if(srclumpname.Contains(mapheadername)) srclumpname = srclumpname.Replace(mapheadername, CONFIG_MAP_HEADER);
 
-					if (maplumps.ContainsKey(srclumpname)) //mxd
+					if(maplumps.ContainsKey(srclumpname)) //mxd
 					{
 						// Is this the lump we are looking for?
-						if (source.Lumps[mapheaderindex + i].Name == lumpname) 
+						if(source.Lumps[mapheaderindex + i].Name == lumpname) 
 						{
 							// Return this index
 							return mapheaderindex + i;
@@ -1475,7 +1475,7 @@ namespace CodeImp.DoomBuilder
 		{
 			// Find the specific lump index
 			int lumpindex = FindSpecificLump(source, lumpname, mapheaderindex, mapheadername, maplumps);
-			if (lumpindex > -1) 
+			if(lumpindex > -1) 
 			{
 				// Remove this lump
 				//General.WriteLogLine(lumpname + " removed");
@@ -1610,24 +1610,24 @@ namespace CodeImp.DoomBuilder
 		{
 			Cursor.Current = Cursors.WaitCursor;
 
-			if (scriptwindow == null) 
+			if(scriptwindow == null) 
 			{
 				// Load the window
 				scriptwindow = new ScriptEditorForm();
 			}
 
 			// Window not yet visible?
-			if (!scriptwindow.Visible) 
+			if(!scriptwindow.Visible) 
 			{
 				// Show the window
-				if (General.Settings.ScriptOnTop) 
+				if(General.Settings.ScriptOnTop) 
 				{
-					if (scriptwindow.Visible && (scriptwindow.Owner == null)) scriptwindow.Hide();
+					if(scriptwindow.Visible && (scriptwindow.Owner == null)) scriptwindow.Hide();
 					scriptwindow.Show(General.MainWindow);
 				}
 				else 
 				{
-					if (scriptwindow.Visible && (scriptwindow.Owner != null)) scriptwindow.Hide();
+					if(scriptwindow.Visible && (scriptwindow.Owner != null)) scriptwindow.Hide();
 					scriptwindow.Show();
 				}
 			}
@@ -1643,7 +1643,7 @@ namespace CodeImp.DoomBuilder
 		internal bool AskSaveScriptChanges() 
 		{
 			// Window open?
-			if (scriptwindow != null) 
+			if(scriptwindow != null) 
 			{
 				// Ask to save changes
 				// This also saves implicitly
@@ -1666,15 +1666,15 @@ namespace CodeImp.DoomBuilder
 		// the window is already in the closing process
 		internal void CloseScriptEditor(bool closing) 
 		{
-			if (scriptwindow != null) 
+			if(scriptwindow != null) 
 			{
-				if (!scriptwindow.IsDisposed) 
+				if(!scriptwindow.IsDisposed) 
 				{
 					// Remember what files were open
 					scriptwindow.Editor.WriteOpenFilesToConfiguration();
 
 					// Close now
-					if (!closing) scriptwindow.Close();
+					if(!closing) scriptwindow.Close();
 				}
 
 				// Done
@@ -1685,7 +1685,7 @@ namespace CodeImp.DoomBuilder
 		// This checks if the scripts are changed
 		internal bool CheckScriptChanged() 
 		{
-			if (scriptwindow != null) 
+			if(scriptwindow != null) 
 			{
 				// Check if scripts are changed			
 				return scriptschanged || scriptwindow.Editor.CheckImplicitChanges();
@@ -1702,7 +1702,7 @@ namespace CodeImp.DoomBuilder
 			errors.Clear();
 
 			// Go for all the map lumps
-			foreach (MapLumpInfo lumpinfo in config.MapLumps.Values) 
+			foreach(MapLumpInfo lumpinfo in config.MapLumps.Values) 
 			{
 				// Is this a script lump?
 				if(lumpinfo.Script != null || lumpinfo.ScriptBuild) 
@@ -1750,9 +1750,9 @@ namespace CodeImp.DoomBuilder
 			if (scriptconfig.Compiler == null) return true;
 
 			// Find the lump
-			if (lumpname == CONFIG_MAP_HEADER) reallumpname = TEMP_MAP_HEADER;
+			if(lumpname == CONFIG_MAP_HEADER) reallumpname = TEMP_MAP_HEADER;
 			Lump lump = tempwad.FindLump(reallumpname);
-			if (lump == null) throw new Exception("No such lump in temporary wad file '" + reallumpname + "'.");
+			if(lump == null) throw new Exception("No such lump in temporary wad file '" + reallumpname + "'.");
 
 			// Determine source file
 			string sourcefile = (filepathname.Length > 0 ? filepathname : tempwad.Filename);
@@ -1870,14 +1870,14 @@ namespace CodeImp.DoomBuilder
 			List<ScriptItem> numberedscriptslist = new List<ScriptItem>();
 
 			// Load the script lumps
-			foreach (MapLumpInfo maplumpinfo in config.MapLumps.Values) 
+			foreach(MapLumpInfo maplumpinfo in config.MapLumps.Values) 
 			{
 				// Is this a script lump?
-				if ((maplumpinfo.ScriptBuild || maplumpinfo.Script != null) && maplumpinfo.Name == "SCRIPTS") 
+				if((maplumpinfo.ScriptBuild || maplumpinfo.Script != null) && maplumpinfo.Name == "SCRIPTS") 
 				{
 					// Load the lump data
 					MemoryStream stream = GetLumpData(maplumpinfo.Name);
-					if (stream != null) 
+					if(stream != null) 
 					{
 						// Get script names
 						AcsParserSE parser = new AcsParserSE();
@@ -1941,10 +1941,10 @@ namespace CodeImp.DoomBuilder
 		public void ChangeThingFilter(ThingsFilter newfilter) 
 		{
 			// We have a special filter for null
-			if (newfilter == null) newfilter = new NullThingsFilter();
+			if(newfilter == null) newfilter = new NullThingsFilter();
 
 			// Deactivate old filter
-			if (thingsfilter != null) thingsfilter.Deactivate();
+			if(thingsfilter != null) thingsfilter.Deactivate();
 
 			// Change
 			thingsfilter = newfilter;
@@ -1964,7 +1964,7 @@ namespace CodeImp.DoomBuilder
 		{
 			// Let the plugin and editing mode know
 			General.Plugins.OnMapSetChangeBegin();
-			if (General.Editing.Mode != null) General.Editing.Mode.OnMapSetChangeBegin();
+			if(General.Editing.Mode != null) General.Editing.Mode.OnMapSetChangeBegin();
 			this.visualcamera.Sector = null;
 
 			// Can't have a selection in an old map set
@@ -1983,7 +1983,7 @@ namespace CodeImp.DoomBuilder
 
 			// Let the plugin and editing mode know
 			General.Plugins.OnMapSetChangeEnd();
-			if (General.Editing.Mode != null) General.Editing.Mode.OnMapSetChangeEnd();
+			if(General.Editing.Mode != null) General.Editing.Mode.OnMapSetChangeEnd();
 		}
 
 		// This reloads resources
@@ -2002,11 +2002,11 @@ namespace CodeImp.DoomBuilder
 
 			ReloadResources();
 
-			if (General.ErrorLogger.IsErrorAdded)
+			if(General.ErrorLogger.IsErrorAdded)
 			{
 				// Show any errors if preferred
 				General.MainWindow.DisplayStatus(StatusType.Warning, "There were errors during resources loading!");
-				if (General.Settings.ShowErrorsWindow) General.MainWindow.ShowErrors();
+				if(General.Settings.ShowErrorsWindow) General.MainWindow.ShowErrors();
 			}
 			else
 			{
@@ -2046,7 +2046,7 @@ namespace CodeImp.DoomBuilder
 			// Reload data resources
 			General.WriteLogLine("Reloading data resources...");
 			data = new DataManager();
-			if (!string.IsNullOrEmpty(filepathname)) 
+			if(!string.IsNullOrEmpty(filepathname)) 
 			{
 				DataLocation maplocation = new DataLocation(DataLocation.RESOURCE_WAD, filepathname, false, false, false);
 				data.Load(configinfo.Resources, options.Resources, maplocation);
@@ -2066,7 +2066,7 @@ namespace CodeImp.DoomBuilder
 			General.Plugins.ReloadResources();
 
 			// Inform editing mode that the resources are reloaded
-			if (General.Editing.Mode != null) General.Editing.Mode.OnReloadResources();
+			if(General.Editing.Mode != null) General.Editing.Mode.OnReloadResources();
 
 			// Reset status
 			General.MainWindow.DisplayStatus(oldstatus);
@@ -2085,7 +2085,7 @@ namespace CodeImp.DoomBuilder
 
 			// Show map options dialog
 			MapOptionsForm optionsform = new MapOptionsForm(options, false);
-			if (optionsform.ShowDialog(General.MainWindow) == DialogResult.OK) 
+			if(optionsform.ShowDialog(General.MainWindow) == DialogResult.OK) 
 			{
 				// Update interface
 				//General.MainWindow.UpdateInterface();
@@ -2211,7 +2211,7 @@ namespace CodeImp.DoomBuilder
 			}
 
 			// Anything to snap?
-			if (vertstosnap.Count == 0 && things.Count == 0) 
+			if(vertstosnap.Count == 0 && things.Count == 0) 
 			{
 				General.Interface.DisplayStatus(StatusType.Warning, "Select any map element first!");
 				return;
@@ -2235,17 +2235,17 @@ namespace CodeImp.DoomBuilder
 			if(snappedthings > 0) message.Add(snappedthings + " things");
 
 			// Map changed?
-			if (message.Count > 0) 
+			if(message.Count > 0) 
 			{
 				// Display status
 				General.Interface.DisplayStatus(StatusType.Info, "Snapped " + string.Join(" and ", message.ToArray()));
 
 				// Warn the user
-				if(snappedverts > 0) 
+				/*if(snappedverts > 0) 
 				{
 					MessageBox.Show("Snapped " + snappedverts + " vertices to grid." + Environment.NewLine +
 					                "It's a good idea to run Map Analysis Mode now.");
-				}
+				}*/
 
 				// Invoke clear selection to update sector highlight overlay
 				General.Actions.InvokeAction("builder_clearselection");

@@ -58,6 +58,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		private VertexBuffer cagebuffer; //mxd
 		private int cagelength; //mxd
 		private bool updategeo;
+		private bool updatecage; //mxd
 		private int triangles;
 		
 		// Rendering
@@ -212,10 +213,13 @@ namespace CodeImp.DoomBuilder.VisualModes
 		// This is called before a device is reset (when resized or display adapter was changed)
 		public void UnloadResource()
 		{
-			// Trash geometry buffer
+			// Trash geometry buffers
 			if(geobuffer != null) geobuffer.Dispose();
 			geobuffer = null;
+			if(cagebuffer != null) cagebuffer.Dispose(); //mxd
+			cagebuffer = null; //mxd
 			updategeo = true;
+			updatecage = true; //mxd
 		}
 		
 		// This is called resets when the device is reset
@@ -229,83 +233,10 @@ namespace CodeImp.DoomBuilder.VisualModes
 		/// <summary>
 		/// Sets the color of the cage around the thing geometry and rebuilds the thing cage.
 		/// </summary>
-		protected void UpdateThingCage(PixelColor color)
+		protected void SetCageColor(PixelColor color)
 		{
 			cagecolor = color.ToColorValue();
-
-			// Trash cage buffer
-			if(cagebuffer != null) cagebuffer.Dispose();
-			cagebuffer = null;
-
-			// Make a new cage
-			List<WorldVertex> cageverts;
-			if(sizeless)
-			{
-				WorldVertex v0 = new WorldVertex(-info.Radius + position_v3.X, -info.Radius + position_v3.Y, position_v3.Z);
-				WorldVertex v1 = new WorldVertex(info.Radius + position_v3.X, info.Radius + position_v3.Y, position_v3.Z);
-				WorldVertex v2 = new WorldVertex(info.Radius + position_v3.X, -info.Radius + position_v3.Y, position_v3.Z);
-				WorldVertex v3 = new WorldVertex(-info.Radius + position_v3.X, info.Radius + position_v3.Y, position_v3.Z);
-				WorldVertex v4 = new WorldVertex(position_v3.X, position_v3.Y, info.Radius + position_v3.Z);
-				WorldVertex v5 = new WorldVertex(position_v3.X, position_v3.Y, -info.Radius + position_v3.Z);
-
-				cageverts = new List<WorldVertex>(new[] { v0, v1, v2, v3, v4, v5 });
-			}
-			else
-			{
-				float top = position_v3.Z + info.Height;
-				float bottom = position_v3.Z;
-
-				WorldVertex v0 = new WorldVertex(-info.Radius + position_v3.X, -info.Radius + position_v3.Y, bottom);
-				WorldVertex v1 = new WorldVertex(-info.Radius + position_v3.X, info.Radius + position_v3.Y, bottom);
-				WorldVertex v2 = new WorldVertex(info.Radius + position_v3.X, info.Radius + position_v3.Y, bottom);
-				WorldVertex v3 = new WorldVertex(info.Radius + position_v3.X, -info.Radius + position_v3.Y, bottom);
-
-				WorldVertex v4 = new WorldVertex(-info.Radius + position_v3.X, -info.Radius + position_v3.Y, top);
-				WorldVertex v5 = new WorldVertex(-info.Radius + position_v3.X, info.Radius + position_v3.Y, top);
-				WorldVertex v6 = new WorldVertex(info.Radius + position_v3.X, info.Radius + position_v3.Y, top);
-				WorldVertex v7 = new WorldVertex(info.Radius + position_v3.X, -info.Radius + position_v3.Y, top);
-
-				cageverts = new List<WorldVertex>(new[] { v0, v1,
-														  v1, v2,
-														  v2, v3,
-														  v3, v0,
-														  v4, v5, 
-														  v5, v6,
-														  v6, v7,
-														  v7, v4,
-														  v0, v4,
-														  v1, v5,
-														  v2, v6,
-														  v3, v7 });
-			}
-
-			// Make new arrow
-			if(Thing.IsDirectional)
-			{
-				Matrix transform = Matrix.Scaling(info.Radius, info.Radius, info.Radius)
-					* (Matrix.RotationY(-Thing.RollRad) * Matrix.RotationX(-Thing.PitchRad) * Matrix.RotationZ(Thing.Angle))
-					* (sizeless ? position : position * Matrix.Translation(0.0f, 0.0f, thingheight / 2f));
-
-				WorldVertex a0 = new WorldVertex(Vector3D.Transform(0.0f, 0.0f, 0.0f, transform)); //start
-				WorldVertex a1 = new WorldVertex(Vector3D.Transform(0.0f, -1.5f, 0.0f, transform)); //end
-				WorldVertex a2 = new WorldVertex(Vector3D.Transform(0.2f, -1.1f, 0.2f, transform));
-				WorldVertex a3 = new WorldVertex(Vector3D.Transform(-0.2f, -1.1f, 0.2f, transform));
-				WorldVertex a4 = new WorldVertex(Vector3D.Transform(0.2f, -1.1f, -0.2f, transform));
-				WorldVertex a5 = new WorldVertex(Vector3D.Transform(-0.2f, -1.1f, -0.2f, transform));
-
-				cageverts.AddRange(new[] { a0, a1,
-										   a1, a2,
-										   a1, a3,
-										   a1, a4,
-										   a1, a5 });
-			}
-
-			// Create buffer
-			WorldVertex[] cv = cageverts.ToArray();
-			cagelength = cv.Length / 2;
-			cagebuffer = new VertexBuffer(General.Map.Graphics.Device, WorldVertex.Stride * cv.Length, Usage.WriteOnly | Usage.Dynamic, VertexFormat.None, Pool.Default);
-			cagebuffer.Lock(0, WorldVertex.Stride * cv.Length, LockFlags.None).WriteRange(cv);
-			cagebuffer.Unlock();
+			updatecage = true;
 		}
 
 		/// <summary>
@@ -316,6 +247,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 			position_v3 = D3DDevice.V3(pos); //mxd
 			position = Matrix.Translation(position_v3);
 			updategeo = true;
+			updatecage = true; //mxd
 
 			//mxd. update bounding box?
 			if(lightType != DynamicLightType.NONE && lightRadius > thing.Size) 
@@ -483,6 +415,87 @@ namespace CodeImp.DoomBuilder.VisualModes
 
 				// Done
 				updategeo = false;
+			}
+
+			//mxd. Need to update thing cage?
+			if(updatecage)
+			{
+				// Trash cage buffer
+				if(cagebuffer != null) cagebuffer.Dispose();
+				cagebuffer = null;
+
+				// Make a new cage
+				List<WorldVertex> cageverts;
+				if(sizeless)
+				{
+					WorldVertex v0 = new WorldVertex(-info.Radius + position_v3.X, -info.Radius + position_v3.Y, position_v3.Z);
+					WorldVertex v1 = new WorldVertex(info.Radius + position_v3.X, info.Radius + position_v3.Y, position_v3.Z);
+					WorldVertex v2 = new WorldVertex(info.Radius + position_v3.X, -info.Radius + position_v3.Y, position_v3.Z);
+					WorldVertex v3 = new WorldVertex(-info.Radius + position_v3.X, info.Radius + position_v3.Y, position_v3.Z);
+					WorldVertex v4 = new WorldVertex(position_v3.X, position_v3.Y, info.Radius + position_v3.Z);
+					WorldVertex v5 = new WorldVertex(position_v3.X, position_v3.Y, -info.Radius + position_v3.Z);
+
+					cageverts = new List<WorldVertex>(new[] { v0, v1, v2, v3, v4, v5 });
+				}
+				else
+				{
+					float top = position_v3.Z + info.Height;
+					float bottom = position_v3.Z;
+
+					WorldVertex v0 = new WorldVertex(-info.Radius + position_v3.X, -info.Radius + position_v3.Y, bottom);
+					WorldVertex v1 = new WorldVertex(-info.Radius + position_v3.X, info.Radius + position_v3.Y, bottom);
+					WorldVertex v2 = new WorldVertex(info.Radius + position_v3.X, info.Radius + position_v3.Y, bottom);
+					WorldVertex v3 = new WorldVertex(info.Radius + position_v3.X, -info.Radius + position_v3.Y, bottom);
+
+					WorldVertex v4 = new WorldVertex(-info.Radius + position_v3.X, -info.Radius + position_v3.Y, top);
+					WorldVertex v5 = new WorldVertex(-info.Radius + position_v3.X, info.Radius + position_v3.Y, top);
+					WorldVertex v6 = new WorldVertex(info.Radius + position_v3.X, info.Radius + position_v3.Y, top);
+					WorldVertex v7 = new WorldVertex(info.Radius + position_v3.X, -info.Radius + position_v3.Y, top);
+
+					cageverts = new List<WorldVertex>(new[] { v0, v1,	
+															  v1, v2,
+															  v2, v3,
+															  v3, v0,
+															  v4, v5, 
+															  v5, v6,
+															  v6, v7,
+															  v7, v4,
+															  v0, v4,
+															  v1, v5,
+															  v2, v6,
+															  v3, v7 });
+				}
+
+				// Make new arrow
+				if(Thing.IsDirectional)
+				{
+					Matrix transform = Matrix.Scaling(info.Radius, info.Radius, info.Radius)
+						* (Matrix.RotationY(-Thing.RollRad) * Matrix.RotationX(-Thing.PitchRad) * Matrix.RotationZ(Thing.Angle))
+						* (sizeless ? position : position * Matrix.Translation(0.0f, 0.0f, thingheight / 2f));
+
+					WorldVertex a0 = new WorldVertex(Vector3D.Transform(0.0f, 0.0f, 0.0f, transform)); //start
+					WorldVertex a1 = new WorldVertex(Vector3D.Transform(0.0f, -1.5f, 0.0f, transform)); //end
+					WorldVertex a2 = new WorldVertex(Vector3D.Transform(0.2f, -1.1f, 0.2f, transform));
+					WorldVertex a3 = new WorldVertex(Vector3D.Transform(-0.2f, -1.1f, 0.2f, transform));
+					WorldVertex a4 = new WorldVertex(Vector3D.Transform(0.2f, -1.1f, -0.2f, transform));
+					WorldVertex a5 = new WorldVertex(Vector3D.Transform(-0.2f, -1.1f, -0.2f, transform));
+
+					cageverts.AddRange(new[] { a0, a1,
+											   a1, a2,
+											   a1, a3,
+											   a1, a4,
+											   a1, a5 });
+				}
+
+				// Create buffer
+				WorldVertex[] cv = cageverts.ToArray();
+				cagelength = cv.Length / 2;
+				cagebuffer = new VertexBuffer(General.Map.Graphics.Device, WorldVertex.Stride * cv.Length, Usage.WriteOnly | Usage.Dynamic, VertexFormat.None, Pool.Default);
+				cagebuffer.Lock(0, WorldVertex.Stride * cv.Length, LockFlags.None).WriteRange(cv);
+				cagebuffer.Unlock();
+
+				// Done
+				updatecage = false;
 			}
 		}
 
