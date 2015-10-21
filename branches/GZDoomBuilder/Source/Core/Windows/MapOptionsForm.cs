@@ -34,7 +34,6 @@ namespace CodeImp.DoomBuilder.Windows
 		// Variables
 		private readonly MapOptions options;
 		private readonly bool newmap;
-		private string previousdefaultmaplumpname; //mxd
 		
 		// Properties
 		public MapOptions Options { get { return options; } }
@@ -50,6 +49,12 @@ namespace CodeImp.DoomBuilder.Windows
 			// Keep settings
 			this.options = options;
 
+			//mxd. Add script compilers
+			foreach(KeyValuePair<string, ScriptConfiguration> group in General.CompiledScriptConfigs)
+			{
+				scriptcompiler.Items.Add(group.Value);
+			}
+
 			//mxd. Go for all enabled configurations
 			for(int i = 0; i < General.Configs.Count; i++)
 			{
@@ -59,13 +64,13 @@ namespace CodeImp.DoomBuilder.Windows
 				// Add config name to list
 				int index = config.Items.Add(General.Configs[i]);
 
-				//mxd. 
+				//mxd 
 				if(newmap && !string.IsNullOrEmpty(General.Settings.LastUsedConfigName) && General.Configs[i].Name == General.Settings.LastUsedConfigName) 
 				{
 					// Select this item
 					config.SelectedIndex = index;
-
-				} // Is this configuration currently selected?
+				}
+				// Is this configuration currently selected?
 				else if(string.Compare(General.Configs[i].Filename, options.ConfigFile, true) == 0) // Is this configuration currently selected?
 				{
 					// Select this item
@@ -97,48 +102,8 @@ namespace CodeImp.DoomBuilder.Windows
 			//mxd
 			if(General.Map != null) datalocations.StartPath = General.Map.FilePathName;
 
-			//mxd. Set script compiler
-			if (config.SelectedIndex != -1) 
-			{
-				ConfigurationInfo ci = config.SelectedItem as ConfigurationInfo;
-
-				foreach(KeyValuePair<string, ScriptConfiguration> group in General.CompiledScriptConfigs) 
-				{
-					scriptcompiler.Items.Add(group.Value);
-					if(group.Key == options.ScriptCompiler)
-						scriptcompiler.SelectedIndex = scriptcompiler.Items.Count - 1;
-				}
-
-				//Nothing selected? Let's try default one form the game configuration, if we have any
-				if(scriptcompiler.SelectedIndex == -1 && !string.IsNullOrEmpty(ci.DefaultScriptCompiler)) 
-				{
-					int cfgindex = 0;
-
-					foreach(KeyValuePair<string, ScriptConfiguration> group in General.CompiledScriptConfigs) 
-					{
-						if(group.Key == ci.DefaultScriptCompiler) 
-						{
-							scriptcompiler.SelectedIndex = cfgindex;
-							break;
-						}
-						cfgindex++;
-					}
-				}
-
-				if(General.CompiledScriptConfigs.Count == 0 || string.IsNullOrEmpty(ci.DefaultScriptCompiler)) 
-				{
-					scriptcompiler.Enabled = false;
-					scriptcompilerlabel.Enabled = false;
-				} 
-				else if (scriptcompiler.SelectedIndex == -1 && scriptcompiler.Items.Count > 0) 
-				{
-					scriptcompiler.SelectedIndex = 0;
-				}
-			}
-
-
 			// Set the level name
-			if (!string.IsNullOrEmpty(options.CurrentName)) levelname.Text = options.CurrentName;  //mxd
+			if(!string.IsNullOrEmpty(options.CurrentName)) levelname.Text = options.CurrentName;  //mxd
 
 			// Set strict patches loading
 			strictpatches.Checked = options.StrictPatches;
@@ -156,6 +121,15 @@ namespace CodeImp.DoomBuilder.Windows
 				// Select a configuration!
 				MessageBox.Show(this, "Please select a game configuration to use for editing your map.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Warning);
 				config.Focus();
+				return;
+			}
+
+			//mxd. Script configuration selected?
+			if(scriptcompiler.Enabled && scriptcompiler.SelectedIndex == -1)
+			{
+				// Select a configuration!
+				MessageBox.Show(this, "Please select a script type to use for editing your map.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+				scriptcompiler.Focus();
 				return;
 			}
 			
@@ -274,10 +248,9 @@ namespace CodeImp.DoomBuilder.Windows
 			options.CopyResources(datalocations.GetResources());
 
 			//mxd. Store script compiler
-			if(scriptcompiler.Enabled && scriptcompiler.SelectedIndex > -1) 
+			if(scriptcompiler.Enabled) 
 			{
 				ScriptConfiguration scriptcfg = scriptcompiler.SelectedItem as ScriptConfiguration;
-
 				foreach(KeyValuePair<string, ScriptConfiguration> group in General.CompiledScriptConfigs) 
 				{
 					if(group.Value == scriptcfg)
@@ -311,38 +284,47 @@ namespace CodeImp.DoomBuilder.Windows
 			if(config.SelectedIndex < 0) return;
 				
 			// Get the info
-			ConfigurationInfo ci = config.SelectedItem as ConfigurationInfo;
+			ConfigurationInfo info = config.SelectedItem as ConfigurationInfo;
+			if(info == null) return; //mxd. Some boilerplate
 
 			// No lump name in the name field?
-			if(levelname.Text.Trim().Length == 0 || levelname.Text.Trim() == previousdefaultmaplumpname) 
+			if(newmap || levelname.Text.Trim().Length == 0) 
 			{
 				// Get default lump name from configuration
-				levelname.Text = ci.DefaultLumpName;
-				examplelabel.Text = ci.DefaultLumpName; //mxd
+				levelname.Text = info.DefaultLumpName;
+			}
+			examplelabel.Text = info.DefaultLumpName; //mxd
+
+			//mxd. Select script compiler
+			string scriptconfig = string.Empty;
+			if(!string.IsNullOrEmpty(options.ScriptCompiler) && General.CompiledScriptConfigs.ContainsKey(options.ScriptCompiler))
+			{
+				scriptconfig = options.ScriptCompiler;
+			}
+			else if(!string.IsNullOrEmpty(info.DefaultScriptCompiler) && General.CompiledScriptConfigs.ContainsKey(info.DefaultScriptCompiler))
+			{
+				scriptconfig = info.DefaultScriptCompiler;
 			}
 
-			//mxd
-			bool enablescriptcompiler = !string.IsNullOrEmpty(ci.DefaultScriptCompiler);
-			scriptcompiler.Enabled = enablescriptcompiler;
-			scriptcompilerlabel.Enabled = enablescriptcompiler;
-			previousdefaultmaplumpname = ci.DefaultLumpName;
-
-			//mxd. Select default script compiler for this game configuration
-			if(scriptcompiler.Enabled) 
+			//mxd. Select proper script compiler
+			if(!string.IsNullOrEmpty(scriptconfig))
 			{
-				if(General.CompiledScriptConfigs.ContainsKey(ci.DefaultScriptCompiler))
-					scriptcompiler.SelectedItem = General.CompiledScriptConfigs[ci.DefaultScriptCompiler];
-			} 
-			else 
+				scriptcompiler.Enabled = true;
+				scriptcompiler.SelectedItem = General.CompiledScriptConfigs[scriptconfig];
+				scriptcompilerlabel.Enabled = true;
+			}
+			else
 			{
+				scriptcompiler.Enabled = false;
 				scriptcompiler.SelectedIndex = -1;
+				scriptcompilerlabel.Enabled = false;
 			}
 
 			// Show resources
-			datalocations.FixedResourceLocationList(ci.Resources);
+			datalocations.FixedResourceLocationList(info.Resources);
 
 			// Update long texture names checkbox (mxd)
-			longtexturenames.Enabled = ci.Configuration.ReadSetting("longtexturenames", false);
+			longtexturenames.Enabled = info.Configuration.ReadSetting("longtexturenames", false);
 			longtexturenames.Checked = longtexturenames.Enabled && options.UseLongTextureNames;
 		}
 

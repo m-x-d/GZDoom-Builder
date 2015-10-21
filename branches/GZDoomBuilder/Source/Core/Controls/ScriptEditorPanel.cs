@@ -505,6 +505,7 @@ namespace CodeImp.DoomBuilder.Controls
 			buttonsave.Enabled = (t != null) && t.ExplicitSave;
 			buttonsaveall.Enabled = (explicitsavescripts > 0);
 			buttoncompile.Enabled = (t != null) && (t.Config.Compiler != null);
+			buttonsearch.Enabled = (t != null); //mxd
 			buttonkeywordhelp.Enabled = (t != null) && !string.IsNullOrEmpty(t.Config.KeywordHelp);
 			buttonscriptconfig.Enabled = (t != null) && t.IsReconfigurable;
 			buttonundo.Enabled = (t != null);

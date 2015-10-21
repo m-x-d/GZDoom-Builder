@@ -1707,9 +1707,10 @@ namespace CodeImp.DoomBuilder.Data
 		private Dictionary<string, List<int>> CreateActorsByClassList() 
 		{
 			Dictionary<string, List<int>> actors = new Dictionary<string, List<int>>(StringComparer.Ordinal);
+			if(string.IsNullOrEmpty(General.Map.Config.DecorateGames)) return actors;
 
 			//read our new shiny ClassNames for default game things
-			foreach (KeyValuePair<int, ThingTypeInfo> ti in thingtypes) 
+			foreach(KeyValuePair<int, ThingTypeInfo> ti in thingtypes) 
 			{
 				if(!string.IsNullOrEmpty(ti.Value.ClassName))
 				{
@@ -1719,7 +1720,7 @@ namespace CodeImp.DoomBuilder.Data
 				}
 			}
 
-			if (actors.Count == 0) 
+			if(actors.Count == 0) 
 				General.ErrorLogger.Add(ErrorType.Warning, "Warning: unable to find any DECORATE actor definitions!");
 
 			return actors;
@@ -1728,11 +1729,14 @@ namespace CodeImp.DoomBuilder.Data
 		//mxd
 		public void ReloadModeldef() 
 		{
-			if (modeldefentries != null) 
+			if(modeldefentries != null) 
 			{
-				foreach (KeyValuePair<int, ModelData> group in modeldefentries)
+				foreach(KeyValuePair<int, ModelData> group in modeldefentries)
 					group.Value.Dispose();
 			}
+
+			// Bail out when not supported by currect game configuration
+			if(string.IsNullOrEmpty(General.Map.Config.DecorateGames)) return;
 
 			General.MainWindow.DisplayStatus(StatusType.Busy, "Reloading model definitions...");
 			LoadModeldefs(CreateActorsByClassList());
@@ -1743,7 +1747,7 @@ namespace CodeImp.DoomBuilder.Data
 			foreach(Thing t in General.Map.Map.Things) t.UpdateCache();
 
 			//rebuild geometry if in Visual mode
-			if (General.Editing.Mode != null && General.Editing.Mode.GetType().Name == "BaseVisualMode") 
+			if(General.Editing.Mode != null && General.Editing.Mode.GetType().Name == "BaseVisualMode") 
 			{
 				General.Editing.Mode.OnReloadResources();
 			}
@@ -1754,6 +1758,9 @@ namespace CodeImp.DoomBuilder.Data
 		//mxd
 		public void ReloadGldefs() 
 		{
+			// Bail out when not supported by currect game configuration
+			if(string.IsNullOrEmpty(General.Map.Config.DecorateGames)) return;
+			
 			General.MainWindow.DisplayStatus(StatusType.Busy, "Reloading GLDEFS...");
 
 			try 
@@ -1768,7 +1775,7 @@ namespace CodeImp.DoomBuilder.Data
 			}
 
 			//rebuild geometry if in Visual mode
-			if (General.Editing.Mode != null && General.Editing.Mode.GetType().Name == "BaseVisualMode") 
+			if(General.Editing.Mode != null && General.Editing.Mode.GetType().Name == "BaseVisualMode") 
 			{
 				General.Editing.Mode.OnReloadResources();
 			}
@@ -1780,24 +1787,24 @@ namespace CodeImp.DoomBuilder.Data
 		private void LoadModeldefs(Dictionary<string, List<int>> actorsByClass) 
 		{
 			//if no actors defined in DECORATE or game config...
-			if (actorsByClass.Count == 0) return;
+			if(actorsByClass.Count == 0) return;
 
 			Dictionary<string, ModelData> modelDefEntriesByName = new Dictionary<string, ModelData>(StringComparer.Ordinal);
 			ModeldefParser parser = new ModeldefParser();
 
-			foreach (DataReader dr in containers) 
+			foreach(DataReader dr in containers) 
 			{
 				currentreader = dr;
 
 				Dictionary<string, Stream> streams = dr.GetModeldefData();
-				foreach (KeyValuePair<string, Stream> group in streams) 
+				foreach(KeyValuePair<string, Stream> group in streams) 
 				{
 					// Parse the data
 					if(parser.Parse(group.Value, currentreader.Location.location + "\\" + group.Key)) 
 					{
 						foreach(KeyValuePair<string, ModelData> g in parser.Entries) 
 						{
-							if (modelDefEntriesByName.ContainsKey(g.Key)) 
+							if(modelDefEntriesByName.ContainsKey(g.Key)) 
 							{
 								General.ErrorLogger.Add(ErrorType.Warning, "Model definition for actor '" + g.Key + "' is double-defined in '" + group.Key + "'");
 								modelDefEntriesByName[g.Key] = g.Value;
@@ -1813,7 +1820,7 @@ namespace CodeImp.DoomBuilder.Data
 
 			currentreader = null;
 
-			foreach (KeyValuePair<string, ModelData> e in modelDefEntriesByName) 
+			foreach(KeyValuePair<string, ModelData> e in modelDefEntriesByName) 
 			{
 				if(actorsByClass.ContainsKey(e.Key))
 				{
@@ -1829,6 +1836,9 @@ namespace CodeImp.DoomBuilder.Data
 		//mxd
 		private void LoadVoxels() 
 		{
+			// Bail out when not supported by currect game configuration
+			if(string.IsNullOrEmpty(General.Map.Config.DecorateGames)) return;
+			
 			//Get names of all voxel models, which can be used "as is"
 			Dictionary<string, bool> voxelNames = new Dictionary<string, bool>(StringComparer.Ordinal);
 			
@@ -1863,7 +1873,7 @@ namespace CodeImp.DoomBuilder.Data
 					sprite = ti.Sprite;
 				}
 
-				if (string.IsNullOrEmpty(sprite)) continue;
+				if(string.IsNullOrEmpty(sprite)) continue;
 				if(!sprites.ContainsKey(sprite)) sprites.Add(sprite, new List<int>());
 				sprites[sprite].Add(ti.Index);
 			}
@@ -1883,7 +1893,7 @@ namespace CodeImp.DoomBuilder.Data
 					{
 						foreach(KeyValuePair<string, List<int>> sc in sprites) 
 						{
-							if (sc.Key.Contains(entry.Key)) 
+							if(sc.Key.Contains(entry.Key)) 
 							{
 								foreach(int id in sc.Value) modeldefentries[id] = entry.Value;
 								processed.Add(entry.Key, false);
@@ -1899,7 +1909,7 @@ namespace CodeImp.DoomBuilder.Data
 			foreach(KeyValuePair<string, bool> group in voxelNames) 
 			{
 				if(processed.ContainsKey(group.Key)) continue;
-				foreach (KeyValuePair<string, List<int>> sc in sprites) 
+				foreach(KeyValuePair<string, List<int>> sc in sprites) 
 				{
 					if(sc.Key.Contains(group.Key)) 
 					{
@@ -1917,26 +1927,26 @@ namespace CodeImp.DoomBuilder.Data
 		private void LoadGldefs(Dictionary<string, List<int>> actorsByClass) 
 		{
 			//if no actors defined in DECORATE or game config...
-			if (actorsByClass.Count == 0) return;
+			if(actorsByClass.Count == 0) return;
 
 			GldefsParser parser = new GldefsParser { OnInclude = ParseFromLocation };
 
 			//load gldefs from resources
-			foreach (DataReader dr in containers) 
+			foreach(DataReader dr in containers) 
 			{
 				currentreader = dr;
 				parser.ClearIncludesList();
 				Dictionary<string, Stream> streams = dr.GetGldefsData(General.Map.Config.GameType);
 
-				foreach (KeyValuePair<string, Stream> group in streams)
+				foreach(KeyValuePair<string, Stream> group in streams)
 					parser.Parse(group.Value, group.Key);
 			}
 
 			//create gldefsEntries dictionary
-			foreach (KeyValuePair<string, string> e in parser.Objects) //ClassName, Light name
+			foreach(KeyValuePair<string, string> e in parser.Objects) //ClassName, Light name
 			{ 
 				//if we have decorate actor and light definition for given ClassName...
-				if (actorsByClass.ContainsKey(e.Key) && parser.LightsByName.ContainsKey(e.Value)) 
+				if(actorsByClass.ContainsKey(e.Key) && parser.LightsByName.ContainsKey(e.Value)) 
 				{
 					foreach(int i in actorsByClass[e.Key])
 					{
@@ -1961,12 +1971,12 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			MapinfoParser parser = new MapinfoParser { OnInclude = ParseFromLocation };
 
-			foreach (DataReader dr in containers) 
+			foreach(DataReader dr in containers)
 			{
 				currentreader = dr;
 
 				Dictionary<string, Stream> streams = dr.GetMapinfoData();
-				foreach (KeyValuePair<string, Stream> group in streams) 
+				foreach(KeyValuePair<string, Stream> group in streams) 
 				{
 					// Parse the data
 					parser.Parse(group.Value, Path.Combine(currentreader.Location.location, group.Key), General.Map.Options.LevelName); 
@@ -1992,9 +2002,12 @@ namespace CodeImp.DoomBuilder.Data
 		//mxd. This loads REVERBS
 		private void LoadReverbs() 
 		{
-			ReverbsParser parser = new ReverbsParser();
 			reverbs.Clear();
-			
+
+			// Bail out when not supported by currect game configuration
+			if(string.IsNullOrEmpty(General.Map.Config.DecorateGames)) return;
+
+			ReverbsParser parser = new ReverbsParser();
 			foreach(DataReader dr in containers) 
 			{
 				currentreader = dr;
@@ -2013,16 +2026,19 @@ namespace CodeImp.DoomBuilder.Data
 		//mxd. This loads SNDSEQ
 		private void LoadSndSeq()
 		{
-			SndSeqParser parser = new SndSeqParser();
 			soundsequences.Clear();
 
+			// Bail out when not supported by currect game configuration
+			if(string.IsNullOrEmpty(General.Map.Config.DecorateGames)) return;
+
+			SndSeqParser parser = new SndSeqParser();
 			foreach(DataReader dr in containers) 
 			{
 				currentreader = dr;
 				List<Stream> streams = dr.GetSndSeqData();
 
 				// Parse the data
-				foreach (Stream s in streams)
+				foreach(Stream s in streams)
 				{
 					if(s != null) parser.Parse(s, "SNDSEQ");
 				}

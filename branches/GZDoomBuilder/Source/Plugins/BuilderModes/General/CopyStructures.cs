@@ -332,6 +332,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					s.SetFlag(f.Key, f.Value);
 			}
 
+			// Should we bother?
+			if(!General.Map.UDMF) return;
+
 			// Apply fields
 			s.Fields.BeforeFieldsChange();
 
@@ -455,6 +458,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					s.SetFlag(f.Key, f.Value);
 			}
 
+			// Should we bother?
+			if(!General.Map.UDMF) return;
+
 			// Apply fields
 			s.Fields.BeforeFieldsChange();
 
@@ -572,6 +578,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				for(int i = 0; i < l.Args.Length; i++)
 					l.Args[i] = args[i];
 			}
+
+			// Should we bother?
+			if(!General.Map.UDMF) return;
 
 			// Apply fields
 			l.Fields.BeforeFieldsChange();
@@ -726,6 +735,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				for(int i = 0; i < t.Args.Length; i++)
 					t.Args[i] = args[i];
 			}
+
+			// Should we bother?
+			if(!General.Map.UDMF) return;
 
 			// Apply fields
 			t.Fields.BeforeFieldsChange();

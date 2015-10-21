@@ -66,6 +66,7 @@ namespace CodeImp.DoomBuilder.Config
 		private readonly bool testshortpaths;
 		private readonly string makedoortrack;
 		private readonly string makedoordoor; //mxd
+		private readonly string makedoorceil; //mxd
 		private readonly int makedooraction;
 		private readonly int makedooractivate;
 		private readonly int[] makedoorargs;
@@ -178,6 +179,7 @@ namespace CodeImp.DoomBuilder.Config
 		public bool TestShortPaths { get { return testshortpaths; } }
 		public string MakeDoorTrack { get { return makedoortrack; } }
 		public string MakeDoorDoor { get { return makedoordoor; } } //mxd
+		public string MakeDoorCeiling { get { return makedoorceil; } } //mxd
 		public int MakeDoorAction { get { return makedooraction; } }
 		public int MakeDoorActivate { get { return makedooractivate; } }
 		public Dictionary<string, bool> MakeDoorFlags { get { return makedoorflags; } }
@@ -323,6 +325,7 @@ namespace CodeImp.DoomBuilder.Config
 			testshortpaths = cfg.ReadSetting("testshortpaths", false);
 			makedoortrack = cfg.ReadSetting("makedoortrack", "-");
 			makedoordoor = cfg.ReadSetting("makedoordoor", "-"); //mxd
+			makedoorceil = cfg.ReadSetting("makedoorceil", "-"); //mxd
 			makedooraction = cfg.ReadSetting("makedooraction", 0);
 			makedooractivate = cfg.ReadSetting("makedooractivate", 0);
 			linetagindicatesectors = cfg.ReadSetting("linetagindicatesectors", false);

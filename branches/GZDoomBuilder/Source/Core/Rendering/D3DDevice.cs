@@ -377,67 +377,53 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This resets the device and returns true on success
 		internal bool Reset()
 		{
-			// Test the cooperative level
-			//Result coopresult = device.TestCooperativeLevel();
-			
-			// Can we reset?
-			//if(coopresult.Name != "D3DERR_DEVICENOTRESET")
+			// Unload all Direct3D resources
+			foreach(ID3DResource res in resources.Values) res.UnloadResource();
+
+			// Lose backbuffers
+			if(backbuffer != null) backbuffer.Dispose();
+			if(depthbuffer != null) depthbuffer.Dispose();
+			backbuffer = null;
+			depthbuffer = null;
+
+			try
 			{
-				// Unload all Direct3D resources
-				foreach(ID3DResource res in resources.Values) res.UnloadResource();
-
-				// Lose backbuffers
-				if(backbuffer != null) backbuffer.Dispose();
-				if(depthbuffer != null) depthbuffer.Dispose();
-				backbuffer = null;
-				depthbuffer = null;
-
-				try
-				{
-					// Make present parameters
-					PresentParameters displaypp = CreatePresentParameters(adapter);
-					
-					// Reset the device
-					device.Reset(displaypp);
-				}
-#if DEBUG
-				catch(Exception e)
-				{
-					// Failed to re-initialize
-					Console.WriteLine("Device reset failed: " + e.Message);
-					return false;
-				}
-#else
-				catch (Exception) 
-				{
-					// Failed to re-initialize
-					return false;
-				}
-#endif
-
-				// Keep a reference to the original buffers
-				backbuffer = device.GetBackBuffer(0, 0);
-				depthbuffer = device.DepthStencilSurface;
-
-				// Get the viewport
-				viewport = device.Viewport;
-
-				// Reload all Direct3D resources
-				foreach(ID3DResource res in resources.Values) res.ReloadResource();
-
-				// Re-apply settings
-				SetupSettings();
+				// Make present parameters
+				PresentParameters displaypp = CreatePresentParameters(adapter);
 				
-				// Success
-				return true;
+				// Reset the device
+				device.Reset(displaypp);
 			}
-			/*
-			else
+#if DEBUG
+			catch(Exception e)
 			{
-				// Failed
+				// Failed to re-initialize
+				Console.WriteLine("Device reset failed: " + e.Message);
 				return false;
 			}
-			*/
+#else
+			catch(Exception) 
+			{
+				// Failed to re-initialize
+				return false;
+			}
+#endif
+
+			// Keep a reference to the original buffers
+			backbuffer = device.GetBackBuffer(0, 0);
+			depthbuffer = device.DepthStencilSurface;
+
+			// Get the viewport
+			viewport = device.Viewport;
+
+			// Reload all Direct3D resources
+			foreach(ID3DResource res in resources.Values) res.ReloadResource();
+
+			// Re-apply settings
+			SetupSettings();
+			
+			// Success
+			return true;
 		}
 
 		#endregion

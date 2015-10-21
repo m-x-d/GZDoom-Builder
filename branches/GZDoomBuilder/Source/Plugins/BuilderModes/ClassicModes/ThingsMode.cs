@@ -859,7 +859,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(sel != null)
 				{
 					PastePropertiesOptionsForm form = new PastePropertiesOptionsForm();
-					if(form.Setup(MapElementType.THING) && form.ShowDialog(Form.ActiveForm) == DialogResult.OK)
+					if(form.Setup(MapElementType.THING) && form.ShowDialog(General.Interface) == DialogResult.OK)
 					{
 						// Apply properties to selection
 						string rest = (sel.Count == 1 ? "a single thing" : sel.Count + " things");

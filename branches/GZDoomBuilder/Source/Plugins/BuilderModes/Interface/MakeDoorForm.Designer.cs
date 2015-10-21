@@ -140,7 +140,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 			this.tracktexture.Location = new System.Drawing.Point(101, 29);
 			this.tracktexture.MultipleTextures = false;
 			this.tracktexture.Name = "tracktexture";
-			this.tracktexture.Required = true;
+			this.tracktexture.Required = false;
 			this.tracktexture.Size = new System.Drawing.Size(83, 105);
 			this.tracktexture.TabIndex = 6;
 			this.tracktexture.TextureName = "";

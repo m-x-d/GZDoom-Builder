@@ -130,8 +130,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.configurationToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.preferencesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.seperatortoolsconfig = new System.Windows.Forms.ToolStripSeparator();
-			this.screenshotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-			this.editAreaScreenshotToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemsavescreenshot = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemsaveeditareascreenshot = new System.Windows.Forms.ToolStripMenuItem();
 			this.separatortoolsscreenshots = new System.Windows.Forms.ToolStripSeparator();
 			this.itemtestmap = new System.Windows.Forms.ToolStripMenuItem();
 			this.menuhelp = new System.Windows.Forms.ToolStripMenuItem();
@@ -1034,8 +1034,8 @@ namespace CodeImp.DoomBuilder.Windows
             this.configurationToolStripMenuItem,
             this.preferencesToolStripMenuItem,
             this.seperatortoolsconfig,
-            this.screenshotToolStripMenuItem,
-            this.editAreaScreenshotToolStripMenuItem,
+            this.itemsavescreenshot,
+            this.itemsaveeditareascreenshot,
             this.separatortoolsscreenshots,
             this.itemtestmap});
 			this.menutools.Name = "menutools";
@@ -1108,23 +1108,23 @@ namespace CodeImp.DoomBuilder.Windows
 			this.seperatortoolsconfig.Name = "seperatortoolsconfig";
 			this.seperatortoolsconfig.Size = new System.Drawing.Size(243, 6);
 			// 
-			// screenshotToolStripMenuItem
+			// itemsavescreenshot
 			// 
-			this.screenshotToolStripMenuItem.Image = global::CodeImp.DoomBuilder.Properties.Resources.Screenshot;
-			this.screenshotToolStripMenuItem.Name = "screenshotToolStripMenuItem";
-			this.screenshotToolStripMenuItem.Size = new System.Drawing.Size(246, 22);
-			this.screenshotToolStripMenuItem.Tag = "builder_savescreenshot";
-			this.screenshotToolStripMenuItem.Text = "Save Screenshot";
-			this.screenshotToolStripMenuItem.Click += new System.EventHandler(this.InvokeTaggedAction);
+			this.itemsavescreenshot.Image = global::CodeImp.DoomBuilder.Properties.Resources.Screenshot;
+			this.itemsavescreenshot.Name = "itemsavescreenshot";
+			this.itemsavescreenshot.Size = new System.Drawing.Size(246, 22);
+			this.itemsavescreenshot.Tag = "builder_savescreenshot";
+			this.itemsavescreenshot.Text = "Save Screenshot";
+			this.itemsavescreenshot.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
-			// editAreaScreenshotToolStripMenuItem
+			// itemsaveeditareascreenshot
 			// 
-			this.editAreaScreenshotToolStripMenuItem.Image = global::CodeImp.DoomBuilder.Properties.Resources.ScreenshotActiveWindow;
-			this.editAreaScreenshotToolStripMenuItem.Name = "editAreaScreenshotToolStripMenuItem";
-			this.editAreaScreenshotToolStripMenuItem.Size = new System.Drawing.Size(246, 22);
-			this.editAreaScreenshotToolStripMenuItem.Tag = "builder_saveeditareascreenshot";
-			this.editAreaScreenshotToolStripMenuItem.Text = "Save Screenshot (active window)";
-			this.editAreaScreenshotToolStripMenuItem.Click += new System.EventHandler(this.InvokeTaggedAction);
+			this.itemsaveeditareascreenshot.Image = global::CodeImp.DoomBuilder.Properties.Resources.ScreenshotActiveWindow;
+			this.itemsaveeditareascreenshot.Name = "itemsaveeditareascreenshot";
+			this.itemsaveeditareascreenshot.Size = new System.Drawing.Size(246, 22);
+			this.itemsaveeditareascreenshot.Tag = "builder_saveeditareascreenshot";
+			this.itemsaveeditareascreenshot.Text = "Save Screenshot (active window)";
+			this.itemsaveeditareascreenshot.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// separatortoolsscreenshots
 			// 
@@ -2638,8 +2638,8 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.ToolStripMenuItem toggleTesting;
 		private System.Windows.Forms.ToolStripMenuItem toggleRendering;
 		private System.Windows.Forms.ToolStripSeparator separatortoolsscreenshots;
-		private System.Windows.Forms.ToolStripMenuItem screenshotToolStripMenuItem;
-		private System.Windows.Forms.ToolStripMenuItem editAreaScreenshotToolStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem itemsavescreenshot;
+		private System.Windows.Forms.ToolStripMenuItem itemsaveeditareascreenshot;
 		private System.Windows.Forms.ToolStripMenuItem itemShortcutReference;
 		private System.Windows.Forms.ToolStripMenuItem itemopenconfigfolder;
 		private System.Windows.Forms.ToolStripMenuItem itemopenmapincurwad;

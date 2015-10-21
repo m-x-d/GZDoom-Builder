@@ -171,7 +171,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 			form.Location = formLocation;
 			form.FormClosed += form_FormClosed;
-			form.ShowDialog(Form.ActiveForm);
+			form.ShowDialog(General.Interface);
 		}
 
 //events

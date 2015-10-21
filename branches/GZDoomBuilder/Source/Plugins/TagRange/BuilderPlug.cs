@@ -79,10 +79,10 @@ namespace CodeImp.DoomBuilder.TagRange
 			TagRangeForm f = new TagRangeForm();
 			f.Setup();
 			if(f.SelectionCount > 0)
-				f.ShowDialog(Form.ActiveForm);
+				f.ShowDialog(General.Interface);
 			else
 				General.Interface.DisplayStatus(StatusType.Warning, "This action requires a selection!"); //mxd
 			f.Dispose();
 		}
-    }
+	}
 }

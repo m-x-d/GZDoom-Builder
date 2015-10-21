@@ -59,6 +59,26 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		#endregion
 
+		#region ================== Structs (mxd)
+
+		public struct MakeDoorSettings
+		{
+			public readonly string DoorTexture;
+			public readonly string TrackTexture;
+			public readonly string CeilingTexture;
+			public readonly bool ResetOffsets;
+
+			public MakeDoorSettings(string doortexture, string tracktexture, string ceilingtexture, bool resetoffsets)
+			{
+				DoorTexture = doortexture;
+				TrackTexture = tracktexture;
+				CeilingTexture = ceilingtexture;
+				ResetOffsets = resetoffsets;
+			}
+		}
+
+		#endregion
+
 		#region ================== Variables
 
 		// Static instance
@@ -151,11 +171,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public float HighlightRange { get { return highlightrange; } }
 		public float HighlightThingsRange { get { return highlightthingsrange; } }
 		public float SplitLinedefsRange { get { return splitlinedefsrange; } }
-		public bool UseHighlight { 
-			get { 
-				return usehighlight; 
-			} 
-			set { 
+		public bool UseHighlight
+		{ 
+			get { return usehighlight; } 
+			set
+			{ 
 				usehighlight = value;
 				General.Map.Renderer3D.ShowSelection = usehighlight;
 				General.Map.Renderer3D.ShowHighlight = usehighlight;
@@ -169,7 +189,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public bool SyncSelection { get { return syncSelection; } set { syncSelection = value; } } //mxd
 		public bool LockSectorTextureOffsetsWhileDragging { get { return lockSectorTextureOffsetsWhileDragging; } internal set { lockSectorTextureOffsetsWhileDragging = value; } } //mxd
 		public bool DragThingsInSectorsMode { get { return dragThingsInSectorsMode; } internal set { dragThingsInSectorsMode = value; } } //mxd
-		
+
+		//mxd. "Make Door" action persistent settings
+		internal MakeDoorSettings MakeDoor;
+
 		#endregion
 
 		#region ================== Initialize / Dispose
@@ -284,6 +307,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Settings.WritePluginSetting("viewselectionnumbers", viewselectionnumbers);
 			General.Settings.WritePluginSetting("viewselectioneffects", viewselectioneffects);
 			General.Settings.WritePluginSetting("dragthingsinsectorsmode", dragThingsInSectorsMode);
+		}
+
+		//mxd. These should be reset when changing maps
+		private void ResetCopyProperties()
+		{
+			copiedvertexprops = null;
+			copiedthingprops = null;
+			copiedlinedefprops = null;
+			copiedsidedefprops = null;
+			copiedsectorprops = null;
 		}
 
 		#endregion
@@ -436,6 +469,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			//mxd
 			General.Interface.AddDocker(drawingOverridesDocker);
 			drawingOverridesPanel.Setup();
+			MakeDoor = new MakeDoorSettings(General.Map.Config.MakeDoorDoor, General.Map.Config.MakeDoorTrack, General.Map.Config.MakeDoorCeiling, MakeDoor.ResetOffsets);
+			ResetCopyProperties();
 		}
 		
 		// Map opened
@@ -448,7 +483,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			//mxd
 			General.Interface.AddDocker(drawingOverridesDocker);
 			drawingOverridesPanel.Setup();
-			General.Map.Renderer2D.UpdateExtraFloorFlag(); //mxd
+			General.Map.Renderer2D.UpdateExtraFloorFlag();
+			MakeDoor = new MakeDoorSettings(General.Map.Config.MakeDoorDoor, General.Map.Config.MakeDoorTrack, General.Map.Config.MakeDoorCeiling, MakeDoor.ResetOffsets);
+			ResetCopyProperties();
 		}
 
 		//mxd
