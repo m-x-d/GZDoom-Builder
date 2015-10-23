@@ -651,8 +651,8 @@ namespace CodeImp.DoomBuilder
 				// Start Direct3D
 				General.WriteLogLine("Starting Direct3D graphics driver...");
 				try { D3DDevice.Startup(); }
-				catch(Direct3D9NotFoundException) { AskDownloadDirectX(); return; }
-				catch(Direct3DX9NotFoundException) { AskDownloadDirectX(); return; }
+				catch(Direct3D9NotFoundException e) { AskDownloadDirectX(e.Message); return; }
+				catch(Direct3DX9NotFoundException e) { AskDownloadDirectX(e.Message); return; }
 				
 				// Load plugin manager
 				General.WriteLogLine("Loading plugins...");
@@ -770,7 +770,7 @@ namespace CodeImp.DoomBuilder
 		}
 		
 		// This asks the user to download DirectX
-		private static void AskDownloadDirectX()
+		private static void AskDownloadDirectX(string message)
 		{
 			// Cancel loading map from command-line parameters, if any.
 			// This causes problems, because when the window is shown, the map will
@@ -778,8 +778,8 @@ namespace CodeImp.DoomBuilder
 			CancelAutoMapLoad();
 			
 			// Ask the user to download DirectX
-			if(MessageBox.Show("This application requires the latest version of Microsoft DirectX 9.0 installed on your computer." + Environment.NewLine +
-				"Do you want to install and/or update Microsoft DirectX 9.0 now?", "DirectX Error", MessageBoxButtons.YesNo,
+			if(MessageBox.Show("Unable to initialize DirectX: " + message + Environment.NewLine + Environment.NewLine +
+				"Do you want to install and/or update Microsoft DirectX 9.0 now?", "DirectX 9.0 Error", MessageBoxButtons.YesNo,
 				MessageBoxIcon.Exclamation) == DialogResult.Yes)
 			{
 				// Go to DirectX End-User Runtime Web Installer page (mxd)
