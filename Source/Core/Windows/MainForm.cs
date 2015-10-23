@@ -2494,19 +2494,20 @@ namespace CodeImp.DoomBuilder.Windows
 		// This sets up the file menu
 		private void UpdateFileMenu()
 		{
-			// Enable/disable items
-			itemclosemap.Enabled = (General.Map != null);
-			itemsavemap.Enabled = (General.Map != null);
-			itemsavemapas.Enabled = (General.Map != null);
-			itemsavemapinto.Enabled = (General.Map != null);
-			itemopenmapincurwad.Enabled = (General.Map != null); //mxd
-			itemimport.Enabled = (General.Map != null); //mxd
-			itemexport.Enabled = (General.Map != null); //mxd
+			//mxd. Show/hide items
+			bool show = (General.Map != null); //mxd
+			itemclosemap.Visible = show;
+			itemsavemap.Visible = show;
+			itemsavemapas.Visible = show;
+			itemsavemapinto.Visible = show;
+			itemopenmapincurwad.Visible = show; //mxd
+			itemimport.Visible = show; //mxd
+			itemexport.Visible = show; //mxd
+			seperatorfileopen.Visible = show; //mxd
+			seperatorfilesave.Visible = show; //mxd
 
 			// Toolbar icons
-			buttonnewmap.Enabled = itemnewmap.Enabled;
-			buttonopenmap.Enabled = itemopenmap.Enabled;
-			buttonsavemap.Enabled = itemsavemap.Enabled;
+			buttonsavemap.Enabled = show;
 		}
 
 		// This sets the recent files from configuration
@@ -2895,7 +2896,8 @@ namespace CodeImp.DoomBuilder.Windows
 		// This sets up the help menu
 		private void UpdateHelpMenu()
 		{
-			itemhelpeditmode.Enabled = ((General.Map != null) && (General.Editing.Mode != null));
+			itemhelpeditmode.Visible = (General.Map != null); //mxd
+			itemhelpeditmode.Enabled = (General.Map != null && General.Editing.Mode != null);
 		}
 
 		//mxd. Check updates clicked
