@@ -866,7 +866,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		//mxd. This sets texture lookup
-		internal void SetCeilTexture(long hash) 
+		internal void SetCeilTexture(long hash)
 		{
 			BeforePropsChange();
 
@@ -878,7 +878,8 @@ namespace CodeImp.DoomBuilder.Map
 		//mxd
 		public void UpdateFogColor() 
 		{
-			useOutsideFog = General.Map.Data.MapInfo.HasOutsideFogColor && ceiltexname == General.Map.Config.SkyFlatName;
+			// Sector uses outisde fog when it's ceiling is sky or Sector_Outside effect (87) is set
+			useOutsideFog = (General.Map.Data.MapInfo.HasOutsideFogColor && (ceiltexname == General.Map.Config.SkyFlatName || (effect == 87 && General.Map.Config.SectorEffects.ContainsKey(effect))));
 
 			if(General.Map.UDMF && Fields.ContainsKey("fadecolor"))
 				fogColor = new Color4((int)Fields["fadecolor"].Value);

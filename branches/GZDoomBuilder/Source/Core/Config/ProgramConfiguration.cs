@@ -604,29 +604,36 @@ namespace CodeImp.DoomBuilder.Config
 				foundone = false;
 				foreach(Sidedef sd in General.Map.Map.Sidedefs)
 				{
-					if(sd.MiddleTexture != "-")
+					if(sd.MiddleTexture != "-" && General.Map.Data.GetTextureExists(sd.MiddleTexture))
 					{
+						foundone = true;
 						General.Map.Options.DefaultWallTexture = sd.MiddleTexture;
-						if(General.Map.Data.GetTextureExists(sd.MiddleTexture))
-						{
-							foundone = true;
-							break;
-						}
+						break;
 					}
 				}
 				
 				// Not found yet?
 				if(!foundone)
 				{
+					//mxd. Use the wall texture from the game configuration?
+					if(!string.IsNullOrEmpty(General.Map.Config.DefaultWallTexture) && General.Map.Data.GetTextureExists(General.Map.Config.DefaultWallTexture))
+					{
+						General.Map.Options.DefaultWallTexture = General.Map.Config.DefaultWallTexture;
+						foundone = true;
+					}
+					
 					// Pick the first STARTAN from the list.
 					// I love the STARTAN texture as default for some reason.
-					foreach(string s in General.Map.Data.TextureNames)
+					if(!foundone)
 					{
-						if(s.StartsWith("STARTAN"))
+						foreach(string s in General.Map.Data.TextureNames)
 						{
-							foundone = true;
-							General.Map.Options.DefaultWallTexture = s;
-							break;
+							if(s.StartsWith("STARTAN"))
+							{
+								foundone = true;
+								General.Map.Options.DefaultWallTexture = s;
+								break;
+							}
 						}
 					}
 					
@@ -639,10 +646,6 @@ namespace CodeImp.DoomBuilder.Config
 				}
 			}
 
-			//mxd.
-			if(!General.Map.Options.OverrideTopTexture) General.Map.Options.DefaultTopTexture = General.Map.Options.DefaultWallTexture;
-			if(!General.Map.Options.OverrideBottomTexture) General.Map.Options.DefaultBottomTexture = General.Map.Options.DefaultWallTexture;
-
 			// Default floor missing?
 			if(!General.Map.Options.OverrideFloorTexture || string.IsNullOrEmpty(General.Map.Options.DefaultFloorTexture))
 			{
@@ -653,13 +656,20 @@ namespace CodeImp.DoomBuilder.Config
 					// Find one that is known
 					foreach(Sector s in General.Map.Map.Sectors)
 					{
-						General.Map.Options.DefaultFloorTexture = s.FloorTexture;
-						if(General.Map.Data.GetFlatExists(General.Map.Options.DefaultFloorTexture))
+						if(General.Map.Data.GetFlatExists(s.FloorTexture))
 						{
 							foundone = true;
+							General.Map.Options.DefaultFloorTexture = s.FloorTexture;
 							break;
 						}
 					}
+				}
+
+				//mxd. Use the floor flat from the game configuration?
+				if(!foundone && !string.IsNullOrEmpty(General.Map.Config.DefaultFloorTexture) && General.Map.Data.GetFlatExists(General.Map.Config.DefaultFloorTexture))
+				{
+					General.Map.Options.DefaultFloorTexture = General.Map.Config.DefaultFloorTexture;
+					foundone = true;
 				}
 				
 				// Pick the first FLOOR from the list.
@@ -694,13 +704,20 @@ namespace CodeImp.DoomBuilder.Config
 					// Find one that is known
 					foreach(Sector s in General.Map.Map.Sectors)
 					{
-						General.Map.Options.DefaultCeilingTexture = s.CeilTexture;
-						if(General.Map.Data.GetFlatExists(General.Map.Options.DefaultCeilingTexture))
+						if(General.Map.Data.GetFlatExists(s.CeilTexture))
 						{
 							foundone = true;
+							General.Map.Options.DefaultCeilingTexture = s.CeilTexture;
 							break;
 						}
 					}
+				}
+
+				//mxd. Use the floor flat from the game configuration?
+				if(!foundone && !string.IsNullOrEmpty(General.Map.Config.DefaultCeilingTexture) && General.Map.Data.GetFlatExists(General.Map.Config.DefaultCeilingTexture))
+				{
+					General.Map.Options.DefaultCeilingTexture = General.Map.Config.DefaultCeilingTexture;
+					foundone = true;
 				}
 				
 				// Pick the first CEIL from the list.
@@ -726,9 +743,9 @@ namespace CodeImp.DoomBuilder.Config
 			}
 
 			// Texture names may not be null
-			if(string.IsNullOrEmpty(General.Map.Options.DefaultTopTexture)) General.Map.Options.DefaultTopTexture = "-";
 			if(string.IsNullOrEmpty(General.Map.Options.DefaultWallTexture)) General.Map.Options.DefaultWallTexture = "-";
-			if(string.IsNullOrEmpty(General.Map.Options.DefaultBottomTexture)) General.Map.Options.DefaultBottomTexture = "-";
+			if(string.IsNullOrEmpty(General.Map.Options.DefaultTopTexture) || !General.Map.Options.OverrideTopTexture) General.Map.Options.DefaultTopTexture = General.Map.Options.DefaultWallTexture; //mxd
+			if(string.IsNullOrEmpty(General.Map.Options.DefaultBottomTexture) || !General.Map.Options.OverrideBottomTexture) General.Map.Options.DefaultBottomTexture = General.Map.Options.DefaultWallTexture; //mxd
 			if(string.IsNullOrEmpty(General.Map.Options.DefaultFloorTexture)) General.Map.Options.DefaultFloorTexture = "-";
 			if(string.IsNullOrEmpty(General.Map.Options.DefaultCeilingTexture)) General.Map.Options.DefaultCeilingTexture = "-";
 		}

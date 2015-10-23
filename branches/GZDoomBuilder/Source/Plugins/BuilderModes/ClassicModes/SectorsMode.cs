@@ -1321,12 +1321,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		public override void UpdateSelectionInfo() 
+		public override void UpdateSelectionInfo()
 		{
+			List<string> info = new List<string>();
+
 			if(General.Map.Map.SelectedSectorsCount > 0)
-				General.Interface.DisplayStatus(StatusType.Selection, General.Map.Map.SelectedSectorsCount + (General.Map.Map.SelectedSectorsCount == 1 ? " sector" : " sectors") + " selected.");
-			else
-				General.Interface.DisplayStatus(StatusType.Selection, string.Empty);
+				info.Add(General.Map.Map.SelectedSectorsCount + (General.Map.Map.SelectedSectorsCount == 1 ? " sector" : " sectors"));
+
+			if(General.Map.Map.SelectedThingsCount > 0)
+				info.Add(General.Map.Map.SelectedThingsCount + (General.Map.Map.SelectedThingsCount == 1 ? " thing" : " things"));
+
+			General.Interface.DisplayStatus(StatusType.Selection, (info.Count > 0 ? string.Join(" and ", info.ToArray()) + " selected." : string.Empty));
 		}
 
 		//mxd
