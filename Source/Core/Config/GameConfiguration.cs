@@ -47,6 +47,9 @@ namespace CodeImp.DoomBuilder.Config
 		private readonly string enginename;
 		private readonly float defaulttexturescale;
 		private readonly float defaultflatscale;
+		private readonly string defaultwalltexture; //mxd
+		private readonly string defaultfloortexture; //mxd
+		private readonly string defaultceilingtexture; //mxd
 		private readonly bool scaledtextureoffsets;
 		private readonly string defaultsavecompiler;
 		private readonly string defaulttestcompiler;
@@ -162,6 +165,9 @@ namespace CodeImp.DoomBuilder.Config
 		public string DefaultTestCompiler { get { return defaulttestcompiler; } }
 		public float DefaultTextureScale { get { return defaulttexturescale; } }
 		public float DefaultFlatScale { get { return defaultflatscale; } }
+		public string DefaultWallTexture { get { return defaultwalltexture; } } //mxd
+		public string DefaultFloorTexture { get { return defaultfloortexture; } } //mxd
+		public string DefaultCeilingTexture { get { return defaultceilingtexture; } } //mxd
 		public bool ScaledTextureOffsets { get { return scaledtextureoffsets; } }
 		public string FormatInterface { get { return formatinterface; } }
 		public string DefaultLinedefActivationFlag { get { return defaultLinedefActivation; } } //mxd
@@ -314,6 +320,9 @@ namespace CodeImp.DoomBuilder.Config
 			defaulttestcompiler = cfg.ReadSetting("defaulttestcompiler", "");
 			defaulttexturescale = cfg.ReadSetting("defaulttexturescale", 1f);
 			defaultflatscale = cfg.ReadSetting("defaultflatscale", 1f);
+			defaultwalltexture = cfg.ReadSetting("defaultwalltexture", "STARTAN"); //mxd
+			defaultfloortexture = cfg.ReadSetting("defaultfloortexture", "FLOOR0_1"); //mxd
+			defaultceilingtexture = cfg.ReadSetting("defaultceilingtexture", "CEIL1_1"); //mxd
 			scaledtextureoffsets = cfg.ReadSetting("scaledtextureoffsets", true);
 			formatinterface = cfg.ReadSetting("formatinterface", "");
 			mixtexturesflats = cfg.ReadSetting("mixtexturesflats", false);
@@ -1006,45 +1015,35 @@ namespace CodeImp.DoomBuilder.Config
 		// This returns information on a linedef type
 		public LinedefActionInfo GetLinedefActionInfo(int action)
 		{
+			// No action?
+			if(action == 0) return new LinedefActionInfo(0, "None", true, false);
+			
 			// Known type?
-			if(linedefactions.ContainsKey(action))
-			{
-				return linedefactions[action];
-			}
-			else if(action == 0)
-			{
-				return new LinedefActionInfo(0, "None", true, false);
-			}
-			else if(IsGeneralized(action, genactioncategories))
-			{
+			if(linedefactions.ContainsKey(action)) return linedefactions[action];
+
+			// Generalized action?
+			if(IsGeneralized(action, genactioncategories))
 				return new LinedefActionInfo(action, "Generalized (" + GetGeneralizedActionCategory(action) + ")", true, true);
-			}
-			else
-			{
-				return new LinedefActionInfo(action, "Unknown", false, false);
-			}
+
+			// Unknown action...
+			return new LinedefActionInfo(action, "Unknown", false, false);
 		}
 
 		// This returns information on a sector effect
 		public SectorEffectInfo GetSectorEffectInfo(int effect)
 		{
+			// No effect?
+			if(effect == 0) return new SectorEffectInfo(0, "None", true, false);
+			
 			// Known type?
-			if(sectoreffects.ContainsKey(effect))
-			{
-				return sectoreffects[effect];
-			}
-			else if(effect == 0)
-			{
-				return new SectorEffectInfo(0, "None", true, false);
-			} 
-			else if(IsGeneralizedSectorEffect(effect, geneffectoptions)) //mxd
-			{
+			if(sectoreffects.ContainsKey(effect)) return sectoreffects[effect];
+	
+			//mxd. Generalized sector effect?
+			if(IsGeneralizedSectorEffect(effect, geneffectoptions))
 				return new SectorEffectInfo(effect, GetGeneralizedSectorEffectName(effect), true, true);
-			}
-			else
-			{
-				return new SectorEffectInfo(effect, "Unknown", false, false);
-			}
+
+			// Unknown sector effect...
+			return new SectorEffectInfo(effect, "Unknown", false, false);
 		}
 		
 		#endregion

@@ -90,12 +90,24 @@ skills
 		<b class="fat">impassableflag</b> (integer or string)<br />
 		This lets Doom Builder know the <a href="gc_linedefflags.html">linedef flag</a> that indicates a line which blocks players and monsters. Doom Builder uses this to give the line a special color and plugins can use this information to perform operations related to blocking sound lines. For map formats that use numeric flags (Doom and Hexen) this must be an integer specifying the flag value of the Impassable flag. For map formats that use named flags (UDMF), this must be a string indicating the name of the Impassable flag.<br />
 		<br />
-		<b class="fat">makedoortrack</b> (string)<br />
+        <b class="fat">defaultwalltexture</b> (string) - <span class="red">GZDB only</span>.<br />
+		Name of a   texture to use on sidedefs when creating a new sector.<br />
+        <br />
+        <b class="fat">defaultfloortexture</b> (string) - <span class="red">GZDB only</span>.<br />
+		Name of a   flat to use on the floor when creating a new sector.<br />
+        <br />
+        <b class="fat">defaultceilingtexture</b> (string) - <span class="red">GZDB only</span>.<br />
+		Name of a   flat to use on the ceiling when creating a new sector.<br />
+        <br />
+        <b class="fat">makedoortrack</b> (string)<br />
 		Name of a texture to use on the walls when making a door.<br />
         <br />
 		<b class="fat">makedoordoor</b> (string) - <span class="red">GZDB only</span>.<br />
 		Name of a texture to use as the door texture when making a door.<br />
 		<br />
+        <b class="fat">makedoorceil</b> (string) - <span class="red">GZDB only</span>.<br />
+		Name of a texture to use as the door's ceiling texture when making a door.<br />
+        <br />
 		<b class="fat">makedooraction</b> (integer)<br />
 		Linedef action number to put on the lines when making a door.<br />
 		<br />
@@ -114,8 +126,6 @@ skills
 <b class="fat">longtexturenames</b> (boolean) - <span class="red">GZDB only</span>.<br />
 		Enables support for long (> 8 chars) texture names. This is used by GZDoom Builder to limit the input fields in the user interface and to check the validity of texture names in resources. This setting should only be enabled for UDMF game configurations. Enabling this setting will make maps incompatible with Doom Builder 2 and can lead to problems in Slade 3 This does NOT determine the actual limitation on the texture names in the map file format.<br />Default value is <b>false</b>.<br />
 		<br />
-		
-		
 	</p>
 	</div>
 </body>

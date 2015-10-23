@@ -102,10 +102,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.exportStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripMenuItem();
 			this.editmenuitem = new System.Windows.Forms.ToolStripMenuItem();
+			this.separatorcopyprops = new System.Windows.Forms.ToolStripSeparator();
 			this.itemcopyprops = new System.Windows.Forms.ToolStripMenuItem();
 			this.itempasteprops = new System.Windows.Forms.ToolStripMenuItem();
 			this.itempastepropsoptions = new System.Windows.Forms.ToolStripMenuItem();
-			this.separatorcopyprops = new System.Windows.Forms.ToolStripSeparator();
 			this.menustrip.SuspendLayout();
 			this.manualstrip.SuspendLayout();
 			this.fileMenuStrip.SuspendLayout();
@@ -337,6 +337,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.selectInSectorsItem2.Size = new System.Drawing.Size(245, 22);
 			this.selectInSectorsItem2.Tag = "thingsselectinsectors";
 			this.selectInSectorsItem2.Text = "&Select Things in Selected Sectors";
+			this.selectInSectorsItem2.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// toolStripSeparator1
 			// 
@@ -807,6 +808,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.editmenuitem.Size = new System.Drawing.Size(39, 20);
 			this.editmenuitem.Text = "Edit";
 			// 
+			// separatorcopyprops
+			// 
+			this.separatorcopyprops.Name = "separatorcopyprops";
+			this.separatorcopyprops.Size = new System.Drawing.Size(204, 6);
+			// 
 			// itemcopyprops
 			// 
 			this.itemcopyprops.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.CopyProperties;
@@ -833,11 +839,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.itempastepropsoptions.Tag = "classicpastepropertieswithoptions";
 			this.itempastepropsoptions.Text = "Paste Properties Special...";
 			this.itempastepropsoptions.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
-			// separatorcopyprops
-			// 
-			this.separatorcopyprops.Name = "separatorcopyprops";
-			this.separatorcopyprops.Size = new System.Drawing.Size(204, 6);
 			// 
 			// MenusForm
 			// 

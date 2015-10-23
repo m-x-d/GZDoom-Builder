@@ -329,33 +329,28 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		//mxd
 		[BeginAction("thingsselectinsectors")]
-		public void SelectThingsInSelectedSectors() 
+		public void SelectThingsInSelectedSectors()
 		{
-			General.Map.Map.ConvertSelection(SelectionType.Sectors);
+			bool convertselection = !(this is SectorsMode);
+			if(convertselection) General.Map.Map.ConvertSelection(SelectionType.Sectors);
 
 			if(General.Map.Map.SelectedSectorsCount == 0) 
 			{
-				General.Interface.DisplayStatus(StatusType.Warning, "No Sectors are Selected!");
-				General.Map.Map.ConvertSelection(SelectionType.Linedefs);
+				General.Interface.DisplayStatus(StatusType.Warning, "This action requires a!");
+				if(convertselection) General.Map.Map.ConvertSelection(SelectionType.Linedefs);
 				return;
 			}
 
-			int selectedCount = 0;
 			ICollection<Sector> sectors = General.Map.Map.GetSelectedSectors(true);
-
 			foreach(Thing t in General.Map.Map.Things) 
 			{
 				t.DetermineSector();
-
-				if(!t.Selected && t.Sector != null && sectors.Contains(t.Sector)) 
-				{
-					t.Selected = true;
-					selectedCount++;
-				}
+				if(!t.Selected && t.Sector != null && sectors.Contains(t.Sector)) t.Selected = true;
 			}
 
-			General.Interface.DisplayStatus(StatusType.Info, "Selected " + selectedCount + (selectedCount == 1 ? " Thing" : " Things"));
-			General.Map.Map.ConvertSelection(SelectionType.Linedefs);
+			// Update info
+			if(convertselection) General.Map.Map.ConvertSelection(SelectionType.Linedefs);
+			UpdateSelectionInfo();
 
 			// Redraw screen
 			General.Interface.RedrawDisplay();

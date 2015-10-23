@@ -372,6 +372,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.btnRemoveEngine.Name = "btnRemoveEngine";
 			this.btnRemoveEngine.Size = new System.Drawing.Size(26, 24);
 			this.btnRemoveEngine.TabIndex = 40;
+			this.tooltip.SetToolTip(this.btnRemoveEngine, "Remove currently selected game engine");
 			this.btnRemoveEngine.UseVisualStyleBackColor = true;
 			this.btnRemoveEngine.Click += new System.EventHandler(this.btnRemoveEngine_Click);
 			// 
@@ -382,6 +383,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.btnNewEngine.Name = "btnNewEngine";
 			this.btnNewEngine.Size = new System.Drawing.Size(26, 24);
 			this.btnNewEngine.TabIndex = 39;
+			this.tooltip.SetToolTip(this.btnNewEngine, "Add new game engine");
 			this.btnNewEngine.UseVisualStyleBackColor = true;
 			this.btnNewEngine.Click += new System.EventHandler(this.btnNewEngine_Click);
 			// 
@@ -450,6 +452,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.browsetestprogram.Size = new System.Drawing.Size(30, 24);
 			this.browsetestprogram.TabIndex = 1;
 			this.browsetestprogram.Text = " ";
+			this.tooltip.SetToolTip(this.browsetestprogram, "Browse game engine");
 			this.browsetestprogram.UseVisualStyleBackColor = true;
 			this.browsetestprogram.Click += new System.EventHandler(this.browsetestprogram_Click);
 			// 

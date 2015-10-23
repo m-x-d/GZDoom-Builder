@@ -310,11 +310,24 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				ApplyTestEngineNameChange();
 			}
+			// Update engine name
 			else
 			{
-				// Update engine name
-				configinfo.TestProgramName = Path.GetFileNameWithoutExtension(configinfo.TestProgram);
-				cbEngineSelector.Items[cbEngineSelector.SelectedIndex] = configinfo.TestProgramName;
+				// Use engine directory name?
+				string enginename = Path.GetDirectoryName(configinfo.TestProgram);
+				if(!string.IsNullOrEmpty(enginename))
+				{
+					int pos = enginename.LastIndexOf(Path.DirectorySeparatorChar);
+					if(pos != -1) enginename = enginename.Substring(pos + 1);
+				}
+				// Use engine filename
+				else
+				{
+					enginename = Path.GetFileNameWithoutExtension(configinfo.TestProgram);
+				}
+				
+				configinfo.TestProgramName = enginename;
+				cbEngineSelector.Items[cbEngineSelector.SelectedIndex] = enginename;
 			}
 
 			configinfo.Changed = true; //mxd
@@ -693,7 +706,7 @@ namespace CodeImp.DoomBuilder.Windows
 			EngineInfo newInfo = new EngineInfo();
 			newInfo.TestSkill = (int)Math.Ceiling(gameconfig.Skills.Count / 2f); //set Medium skill level
 			configinfo.TestEngines.Add(newInfo);
-			configinfo.Changed = true; //mxd
+			configinfo.Changed = true;
 			
 			//store current engine name
 			if(!String.IsNullOrEmpty(cbEngineSelector.Text))
@@ -705,10 +718,12 @@ namespace CodeImp.DoomBuilder.Windows
 				cbEngineSelector.Items.Add(info.TestProgramName);
 
 			cbEngineSelector.SelectedIndex = configinfo.TestEngines.Count - 1;
-			
 			btnRemoveEngine.Enabled = true;
 
 			preventchanges = false;
+
+			// Open engine browser
+			browsetestprogram_Click(this, EventArgs.Empty);
 		}
 
 		//mxd
