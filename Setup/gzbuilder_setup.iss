@@ -58,6 +58,7 @@ Source: Plugins\ColorPicker.dll; DestDir: {app}\Plugins; Flags: ignoreversion
 Source: Plugins\CommentsPanel.dll; DestDir: {app}\Plugins; Flags: ignoreversion
 Source: Plugins\NodesViewer.dll; DestDir: {app}\Plugins; Flags: ignoreversion
 Source: Plugins\SoundPropagationMode.dll; DestDir: {app}\Plugins; Flags: ignoreversion
+Source: Plugins\StairSectorBuilder.dll; DestDir: {app}\Plugins; Flags: ignoreversion
 Source: Plugins\TagExplorer.dll; DestDir: {app}\Plugins; Flags: ignoreversion
 Source: Plugins\TagRange.dll; DestDir: {app}\Plugins; Flags: ignoreversion
 Source: Plugins\VisplaneExplorer.dll; DestDir: {app}\Plugins; Flags: ignoreversion
@@ -77,7 +78,7 @@ Name: {app}\Builder.pdb; Type: files
 Name: {app}\Builder.xml; Type: files
 
 [Registry]
-Root: HKLM; Subkey: SOFTWARE\CodeImp\GZDoom Builder\; ValueType: string; ValueName: Location; ValueData: {app}; Flags: uninsdeletevalue
+Root: HKLM; Subkey: SOFTWARE\MaxED\GZDoom Builder\; ValueType: string; ValueName: Location; ValueData: {app}; Flags: uninsdeletevalue
 
 [Messages]
 ReadyLabel2a=Continue to begin with the installation, or click Back if you want to review or change any settings.
@@ -114,6 +115,7 @@ var
 	MajorVer, MinorVer: Integer;
 	StartPos: Integer;
 	TempStr, VerStr: string;
+	HasRequiredDll : Boolean;
 begin
 	if (RegQueryStringValue(HKEY_LOCAL_MACHINE, 'SOFTWARE\Microsoft\DirectX', 'Version', VerStr)) then begin
 		(* Extract major version *)
@@ -126,7 +128,10 @@ begin
 		(* Extract minor version *)
 		MinorVer := StrToInt(Copy(TempStr, 1, StartPos - 1));
 
-		Result := (MajorVer > 4) or ((MajorVer = 4) and (MinorVer >= 9));
+		//mxd. The DX version alone is not accurate enough...
+		HasRequiredDll := FileExists(ExpandConstant('{syswow64}\d3dx9_43.dll'));
+
+		Result := ((MajorVer > 4) or ((MajorVer = 4) and (MinorVer >= 9))) and HasRequiredDll;
 	end
 	else begin
 		Result := false;
@@ -135,7 +140,11 @@ end;
 
 function CheckVCIsInstalled(): Boolean;
 begin
-	Result := RegKeyExists(HKLM, 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{9BE518E6-ECC6-35A9-88E4-87755C07200F}');
+	//mxd. Any VC++ 2008 package will do, I assume...
+	//mxd. Registry values gartered from http://blogs.msdn.com/b/astebner/archive/2009/01/29/9384143.aspx
+	Result := RegKeyExists(HKLM, 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{1F1C2DFC-2D24-3E06-BCB8-725134ADF989}') or
+			  RegKeyExists(HKLM, 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{9A25302D-30C0-39D9-BD6F-21E6EC160475}') or
+			  RegKeyExists(HKLM, 'SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{FF66E9F6-83E7-3A3E-AF14-8DE9A809A6A4}');
 end;
 
 // When the wizard initializes
@@ -290,7 +299,7 @@ begin
 			// See the return codes here: http://support.microsoft.com/kb/177430
 			tempfile := RemoveBackslash(GetTempDir()) + '\dxwebsetup.exe';
 			FileCopy(ExpandConstant('{tmp}\dxwebsetup.exe'), tempfile, false);
-			Exec(tempfile, '/silent', '', SW_SHOW, ewWaitUntilTerminated, errorcode);
+			Exec(tempfile, '/Q', '', SW_SHOW, ewWaitUntilTerminated, errorcode);
 
 			if(errorcode = 1) then begin
 				// Success, but restart needed!
@@ -342,8 +351,12 @@ end;
 //Remove configs?
 procedure DeinitializeUninstall();
 begin
-	if MsgBox('Delete program configuration files?', mbConfirmation, MB_YESNO) = IDYES then
+	if MsgBox('Delete map restore data and program configuration files?', mbConfirmation, MB_YESNO) = IDYES then
 	begin
+		// Remove restore data
+		DelTree(ExpandConstant('{localappdata}\Doom Builder\Restore'), True, True, True);
+
+		// Remove configs
 		DeleteFile(ExpandConstant('{localappdata}\Doom Builder\GZBuilder.cfg'));
 		DeleteFile(ExpandConstant('{localappdata}\Doom Builder\GZBuilder.log'));
 		DeleteFile(ExpandConstant('{localappdata}\Doom Builder\GZCrash.txt'));
