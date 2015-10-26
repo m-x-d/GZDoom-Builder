@@ -22,7 +22,6 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Config;
-using CodeImp.DoomBuilder.Controls;
 using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.GZBuilder.Data;
@@ -112,8 +111,6 @@ namespace CodeImp.DoomBuilder.Windows
 		// Configuration item selected
 		private void listconfigs_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			NodebuilderInfo ni;
-			
 			// Item selected?
 			if(listconfigs.SelectedItems.Count > 0)
 			{
@@ -143,10 +140,10 @@ namespace CodeImp.DoomBuilder.Windows
 				for(int i = 0; i < nodebuildersave.Items.Count; i++)
 				{
 					// Get item
-					ni = nodebuildersave.Items[i] as NodebuilderInfo;
+					NodebuilderInfo ni = nodebuildersave.Items[i] as NodebuilderInfo;
 					
 					// Item matches configuration setting?
-					if(string.Compare(ni.Name, configinfo.NodebuilderSave, false) == 0)
+					if(String.CompareOrdinal(ni.Name, configinfo.NodebuilderSave) == 0)
 					{
 						// Select this item
 						nodebuildersave.SelectedIndex = i;
@@ -159,10 +156,10 @@ namespace CodeImp.DoomBuilder.Windows
 				for(int i = 0; i < nodebuildertest.Items.Count; i++)
 				{
 					// Get item
-					ni = nodebuildertest.Items[i] as NodebuilderInfo;
+					NodebuilderInfo ni = nodebuildertest.Items[i] as NodebuilderInfo;
 					
 					// Item matches configuration setting?
-					if(string.Compare(ni.Name, configinfo.NodebuilderTest, false) == 0)
+					if(String.CompareOrdinal(ni.Name, configinfo.NodebuilderTest) == 0)
 					{
 						// Select this item
 						nodebuildertest.SelectedIndex = i;

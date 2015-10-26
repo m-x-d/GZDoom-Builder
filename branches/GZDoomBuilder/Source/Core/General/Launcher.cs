@@ -74,7 +74,7 @@ namespace CodeImp.DoomBuilder
 				General.Actions.UnbindMethods(this);
 
 				//mxd. Terminate process?
-				if (process != null) 
+				if(process != null) 
 				{
 					process.CloseMainWindow();
 					process.Close();
@@ -228,6 +228,18 @@ namespace CodeImp.DoomBuilder
 			return outp;
 		}
 
+		//mxd
+		private bool AlreadyTesting()
+		{
+			if(process != null)
+			{
+				General.ShowWarningMessage("Game engine is already running." + Environment.NewLine + "Please close '" + process.MainModule.FileName + "' first.", MessageBoxButtons.OK);
+				return true;
+			}
+
+			return false;
+		}
+
 		#endregion
 
 		#region ================== Test
@@ -236,7 +248,7 @@ namespace CodeImp.DoomBuilder
 		[BeginAction("testmap")]
 		public void Test()
 		{
-			if(!General.Editing.Mode.OnMapTestBegin(false)) return; //mxd
+			if(AlreadyTesting() || !General.Editing.Mode.OnMapTestBegin(false)) return; //mxd
 			TestAtSkill(General.Map.ConfigSettings.TestSkill);
 			General.Editing.Mode.OnMapTestEnd(false); //mxd
 		}
@@ -245,7 +257,7 @@ namespace CodeImp.DoomBuilder
 		[BeginAction("testmapfromview")]
 		public void TestFromView() 
 		{
-			if(!General.Editing.Mode.OnMapTestBegin(true)) return;
+			if(AlreadyTesting() || !General.Editing.Mode.OnMapTestBegin(true)) return;
 			TestAtSkill(General.Map.ConfigSettings.TestSkill);
 			General.Editing.Mode.OnMapTestEnd(true);
 		}
