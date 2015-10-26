@@ -223,22 +223,30 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			if(General.Map.Config.ThingFlagsCompare.Count < 1) return true; //mxd. Otherwise, no things will ever overlap when ThingFlagsCompare is empty
 			int overlappinggroups = 0;
+			int totalgroupscount = General.Map.Config.ThingFlagsCompare.Count; //mxd. Some groups can be ignored when unset...
 
 			// Go through all flags in all groups and check if they overlap
 			foreach(KeyValuePair<string, Dictionary<string, ThingFlagsCompare>> group in General.Map.Config.ThingFlagsCompare) 
 			{
-				foreach(ThingFlagsCompare tfc in group.Value.Values) 
+				foreach(ThingFlagsCompare tfc in group.Value.Values)
 				{
-					if(tfc.Compare(t1, t2) > 0) 
+					int compareresult = tfc.Compare(t1, t2); //mxd
+					if(compareresult > 0) 
 					{
 						overlappinggroups++;
 						break;
+					}
+
+					//mxd. Some groups can be ignored when unset...
+					if(compareresult == 0 && tfc.IgnoreGroupWhenUnset)
+					{
+						totalgroupscount--;
 					}
 				}
 			}
 
 			// All groups have to overlap for the things to show up at the same time
-			return (overlappinggroups == General.Map.Config.ThingFlagsCompare.Count);
+			return (totalgroupscount > 0 && overlappinggroups == totalgroupscount);
 		}
 		
 		#endregion
