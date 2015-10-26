@@ -117,8 +117,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 			{
 				modething.DetermineSector();
 				float z = modething.Position.z;
-				if(modething.Sector != null)
-					z = modething.Position.z + modething.Sector.FloorHeight;
+				if(modething.Sector != null) z += modething.Sector.FloorHeight;
 				
 				// Position camera here
 				Vector3D wantedposition = new Vector3D(modething.Position.x, modething.Position.y, z + THING_Z_OFFSET);
@@ -158,8 +157,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 			// Found one?
 			if(modething != null)
 			{
-				int z = 0;
-				if(sector != null) z = (int)position.z - sector.FloorHeight;
+				int z = (int)position.z; //mxd
+				if(sector != null) z -= sector.FloorHeight;
 
 				// Position the thing to match camera
 				modething.Move((int)position.x, (int)position.y, z - THING_Z_OFFSET);
