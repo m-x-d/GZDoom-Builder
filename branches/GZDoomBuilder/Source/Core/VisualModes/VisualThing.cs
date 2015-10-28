@@ -428,29 +428,29 @@ namespace CodeImp.DoomBuilder.VisualModes
 				List<WorldVertex> cageverts;
 				if(sizeless)
 				{
-					WorldVertex v0 = new WorldVertex(-info.Radius + position_v3.X, -info.Radius + position_v3.Y, position_v3.Z);
-					WorldVertex v1 = new WorldVertex(info.Radius + position_v3.X, info.Radius + position_v3.Y, position_v3.Z);
-					WorldVertex v2 = new WorldVertex(info.Radius + position_v3.X, -info.Radius + position_v3.Y, position_v3.Z);
-					WorldVertex v3 = new WorldVertex(-info.Radius + position_v3.X, info.Radius + position_v3.Y, position_v3.Z);
-					WorldVertex v4 = new WorldVertex(position_v3.X, position_v3.Y, info.Radius + position_v3.Z);
-					WorldVertex v5 = new WorldVertex(position_v3.X, position_v3.Y, -info.Radius + position_v3.Z);
+					WorldVertex v0 = new WorldVertex(-thing.Size + position_v3.X, -thing.Size + position_v3.Y, position_v3.Z);
+					WorldVertex v1 = new WorldVertex(thing.Size + position_v3.X, thing.Size + position_v3.Y, position_v3.Z);
+					WorldVertex v2 = new WorldVertex(thing.Size + position_v3.X, -thing.Size + position_v3.Y, position_v3.Z);
+					WorldVertex v3 = new WorldVertex(-thing.Size + position_v3.X, thing.Size + position_v3.Y, position_v3.Z);
+					WorldVertex v4 = new WorldVertex(position_v3.X, position_v3.Y, thing.Size + position_v3.Z);
+					WorldVertex v5 = new WorldVertex(position_v3.X, position_v3.Y, -thing.Size + position_v3.Z);
 
 					cageverts = new List<WorldVertex>(new[] { v0, v1, v2, v3, v4, v5 });
 				}
 				else
 				{
-					float top = position_v3.Z + info.Height;
+					float top = position_v3.Z + thing.Height;
 					float bottom = position_v3.Z;
 
-					WorldVertex v0 = new WorldVertex(-info.Radius + position_v3.X, -info.Radius + position_v3.Y, bottom);
-					WorldVertex v1 = new WorldVertex(-info.Radius + position_v3.X, info.Radius + position_v3.Y, bottom);
-					WorldVertex v2 = new WorldVertex(info.Radius + position_v3.X, info.Radius + position_v3.Y, bottom);
-					WorldVertex v3 = new WorldVertex(info.Radius + position_v3.X, -info.Radius + position_v3.Y, bottom);
+					WorldVertex v0 = new WorldVertex(-thing.Size + position_v3.X, -thing.Size + position_v3.Y, bottom);
+					WorldVertex v1 = new WorldVertex(-thing.Size + position_v3.X, thing.Size + position_v3.Y, bottom);
+					WorldVertex v2 = new WorldVertex(thing.Size + position_v3.X, thing.Size + position_v3.Y, bottom);
+					WorldVertex v3 = new WorldVertex(thing.Size + position_v3.X, -thing.Size + position_v3.Y, bottom);
 
-					WorldVertex v4 = new WorldVertex(-info.Radius + position_v3.X, -info.Radius + position_v3.Y, top);
-					WorldVertex v5 = new WorldVertex(-info.Radius + position_v3.X, info.Radius + position_v3.Y, top);
-					WorldVertex v6 = new WorldVertex(info.Radius + position_v3.X, info.Radius + position_v3.Y, top);
-					WorldVertex v7 = new WorldVertex(info.Radius + position_v3.X, -info.Radius + position_v3.Y, top);
+					WorldVertex v4 = new WorldVertex(-thing.Size + position_v3.X, -thing.Size + position_v3.Y, top);
+					WorldVertex v5 = new WorldVertex(-thing.Size + position_v3.X, thing.Size + position_v3.Y, top);
+					WorldVertex v6 = new WorldVertex(thing.Size + position_v3.X, thing.Size + position_v3.Y, top);
+					WorldVertex v7 = new WorldVertex(thing.Size + position_v3.X, -thing.Size + position_v3.Y, top);
 
 					cageverts = new List<WorldVertex>(new[] { v0, v1,	
 															  v1, v2,
@@ -469,7 +469,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 				// Make new arrow
 				if(Thing.IsDirectional)
 				{
-					Matrix transform = Matrix.Scaling(info.Radius, info.Radius, info.Radius)
+					Matrix transform = Matrix.Scaling(thing.Size, thing.Size, thing.Size)
 						* (Matrix.RotationY(-Thing.RollRad) * Matrix.RotationX(-Thing.PitchRad) * Matrix.RotationZ(Thing.Angle))
 						* (sizeless ? position : position * Matrix.Translation(0.0f, 0.0f, thingheight / 2f));
 
@@ -504,7 +504,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		{
 			//mxd. Check if thing is light
 			int light_id = Array.IndexOf(GZBuilder.GZGeneral.GZ_LIGHTS, thing.Type);
-			if (light_id != -1) 
+			if(light_id != -1) 
 			{
 				isGldefsLight = false;
 				lightInterval = -1;
@@ -512,7 +512,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 				UpdateBoundingBox(lightRadius, lightRadius * 2);
 			}
 			//check if we have light from GLDEFS
-			else if (General.Map.Data.GldefsEntries.ContainsKey(thing.Type)) 
+			else if(General.Map.Data.GldefsEntries.ContainsKey(thing.Type)) 
 			{
 				isGldefsLight = true;
 				UpdateGldefsLight();
@@ -536,7 +536,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		public void UpdateLight() 
 		{
 			int light_id = Array.IndexOf(GZBuilder.GZGeneral.GZ_LIGHTS, thing.Type);
-			if (light_id != -1) 
+			if(light_id != -1) 
 			{
 				UpdateLight(light_id);
 				UpdateBoundingBox(lightRadius, lightRadius * 2);
@@ -548,17 +548,17 @@ namespace CodeImp.DoomBuilder.VisualModes
 		{
 			float scaled_intensity = 255.0f / General.Settings.GZDynamicLightIntensity;
 
-			if (lightId < GZBuilder.GZGeneral.GZ_LIGHT_TYPES[2]) //if it's gzdoom light
+			if(lightId < GZBuilder.GZGeneral.GZ_LIGHT_TYPES[2]) //if it's gzdoom light
 			{ 
 				int n;
-				if (lightId < GZBuilder.GZGeneral.GZ_LIGHT_TYPES[0]) 
+				if(lightId < GZBuilder.GZGeneral.GZ_LIGHT_TYPES[0]) 
 				{
 					n = 0;
 					lightRenderStyle = DynamicLightRenderStyle.NORMAL;
 					//lightColor.Alpha used in shader to perform some calculations based on light type
 					lightColor = new Color4((float)lightRenderStyle / 100.0f, thing.Args[0] / scaled_intensity, thing.Args[1] / scaled_intensity, thing.Args[2] / scaled_intensity);
 				} 
-				else if (lightId < GZBuilder.GZGeneral.GZ_LIGHT_TYPES[1]) 
+				else if(lightId < GZBuilder.GZGeneral.GZ_LIGHT_TYPES[1]) 
 				{
 					n = 10;
 					lightRenderStyle = DynamicLightRenderStyle.ADDITIVE;
@@ -572,23 +572,23 @@ namespace CodeImp.DoomBuilder.VisualModes
 				}
 				lightType = (DynamicLightType)(thing.Type - 9800 - n);
 
-				if (lightType == DynamicLightType.SECTOR) 
+				if(lightType == DynamicLightType.SECTOR) 
 				{
 					int scaler = 1;
-					if (thing.Sector != null) scaler = thing.Sector.Brightness / 4;
+					if(thing.Sector != null) scaler = thing.Sector.Brightness / 4;
 					lightPrimaryRadius = (thing.Args[3] * scaler) * General.Settings.GZDynamicLightRadius;
 				} 
 				else 
 				{
 					lightPrimaryRadius = (thing.Args[3] * 2) * General.Settings.GZDynamicLightRadius; //works... that.. way in GZDoom
-					if (lightType > 0) lightSecondaryRadius = (thing.Args[4] * 2) * General.Settings.GZDynamicLightRadius;
+					if(lightType > 0) lightSecondaryRadius = (thing.Args[4] * 2) * General.Settings.GZDynamicLightRadius;
 				}
 			}
 			else //it's one of vavoom lights
 			{ 
 				lightRenderStyle = DynamicLightRenderStyle.VAVOOM;
 				lightType = (DynamicLightType)thing.Type;
-				if (lightType == DynamicLightType.VAVOOM_COLORED)
+				if(lightType == DynamicLightType.VAVOOM_COLORED)
 					lightColor = new Color4((float)lightRenderStyle / 100.0f, thing.Args[1] / scaled_intensity, thing.Args[2] / scaled_intensity, thing.Args[3] / scaled_intensity);
 				else
 					lightColor = new Color4((float)lightRenderStyle / 100.0f, General.Settings.GZDynamicLightIntensity, General.Settings.GZDynamicLightIntensity, General.Settings.GZDynamicLightIntensity);
@@ -612,7 +612,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 			lightOffset = new Vector3(o.x, o.y, light.Offset.Z);
 			lightType = light.Type;
 
-			if (lightType == DynamicLightType.SECTOR) 
+			if(lightType == DynamicLightType.SECTOR) 
 			{
 				lightPrimaryRadius = light.Interval * thing.Sector.Brightness / 5.0f;
 			} 
@@ -635,13 +635,13 @@ namespace CodeImp.DoomBuilder.VisualModes
 		//mxd
 		private void UpdateLightRadius(int interval) 
 		{
-			if (lightType == DynamicLightType.NONE) 
+			if(lightType == DynamicLightType.NONE) 
 			{
 				General.ErrorLogger.Add(ErrorType.Error, "Please check that thing is light before accessing it's PositionAndRadius! You can use lightType, which is -1 if thing isn't light");
 				return;
 			}
 
-			if (General.Settings.GZDrawLightsMode == LightRenderMode.ALL || Array.IndexOf(GZBuilder.GZGeneral.GZ_ANIMATED_LIGHT_TYPES, lightType) == -1) 
+			if(General.Settings.GZDrawLightsMode == LightRenderMode.ALL || Array.IndexOf(GZBuilder.GZGeneral.GZ_ANIMATED_LIGHT_TYPES, lightType) == -1) 
 			{
 				lightRadius = lightPrimaryRadius;
 				return;
@@ -658,7 +658,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 			float rMax = Math.Max(lightPrimaryRadius, lightSecondaryRadius);
 			float diff = rMax - rMin;
 
-			switch (lightType) 
+			switch(lightType) 
 			{
 				case DynamicLightType.PULSE:
 					lightDelta = ((float)Math.Sin(time / (interval * 4.0f)) + 1.0f) / 2.0f; //just playing by the eye here... in [0.0 ... 1.0] interval
@@ -667,7 +667,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 
 				case DynamicLightType.FLICKER: 
 					float fdelta = (float)Math.Sin(time / 0.1f); //just playing by the eye here...
-					if (Math.Sign(fdelta) != Math.Sign(lightDelta)) 
+					if(Math.Sign(fdelta) != Math.Sign(lightDelta)) 
 					{
 						lightDelta = fdelta;
 						lightRadius = (General.Random(0, 359) < interval ? rMax : rMin);
@@ -676,7 +676,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 
 				case DynamicLightType.RANDOM:
 					float rdelta = (float)Math.Sin(time / (interval * 9.0f)); //just playing by the eye here...
-					if (Math.Sign(rdelta) != Math.Sign(lightDelta)) 
+					if(Math.Sign(rdelta) != Math.Sign(lightDelta)) 
 					{
 						lightRadius = rMin + (General.Random(0, (int) (diff * 10))) / 10.0f;
 					}
