@@ -85,7 +85,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public ToolStripButton MarqueSelectTouching { get { return buttonMarqueSelectTouching; } } //mxd
 		public ToolStripButton AlignThingsToWall { get { return buttonAlignThingsToWall; } } //mxd
 		public ToolStripButton TextureOffsetLock { get { return buttonTextureOffsetLock; } } //mxd
-		public ToolStripButton DragThingsInSelectedSectors { get { return buttonDragThingsInSelectedSectors; } } //mxd
+		public ToolStripButton SyncronizeThingEditButton { get { return syncthingteditbutton; } } //mxd
+		public ToolStripMenuItem SyncronizeThingEditSectorsItem { get { return syncthingeditsectorsitem; } } //mxd
+		public ToolStripMenuItem SyncronizeThingEditLinedefsItem { get { return syncthingeditlinedefsitem; } } //mxd
 		public ToolStripButton MakeDoor { get { return buttonMakeDoor; } } //mxd
 
 		#endregion
@@ -266,15 +268,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private void gradientMode_DropDownClosed(object sender, EventArgs e) 
 		{
 			General.Interface.FocusDisplay();
-		}
-
-		//mxd
-		private void buttonDragThingsInSelectedSectors_Click(object sender, EventArgs e) 
-		{
-			BuilderPlug.Me.DragThingsInSectorsMode = buttonDragThingsInSelectedSectors.Checked;
-			General.Interface.DisplayStatus(StatusType.Info, (buttonDragThingsInSelectedSectors.Checked ? 
-				"Drag things in selected sectors" : 
-				"Don't drag things in selected sectors"));
 		}
 
 		#endregion

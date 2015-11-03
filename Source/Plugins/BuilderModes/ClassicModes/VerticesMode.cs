@@ -693,15 +693,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			return base.OnCopyBegin();
 		}
-
-		//mxd
-		public override void UpdateSelectionInfo() 
-		{
-			if(General.Map.Map.SelectedVerticessCount > 0)
-				General.Interface.DisplayStatus(StatusType.Selection, General.Map.Map.SelectedVerticessCount + (General.Map.Map.SelectedVerticessCount == 1 ? " vertex" : " vertices") + " selected.");
-			else
-				General.Interface.DisplayStatus(StatusType.Selection, string.Empty);
-		}
 		
 		#endregion
 

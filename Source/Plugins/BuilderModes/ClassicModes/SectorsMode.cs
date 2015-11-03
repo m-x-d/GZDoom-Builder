@@ -525,7 +525,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 
 					//mxd. Also (de)select things?
-					if (General.Interface.AltState) 
+					if(General.Interface.AltState ^ BuilderPlug.Me.SyncronizeThingEdit)
 					{
 						foreach(Thing t in General.Map.ThingsFilter.VisibleThings) 
 						{
@@ -649,11 +649,29 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.MakeGradientCeilings);
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.SeparatorSectors3); //mxd
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.MarqueSelectTouching); //mxd
-			General.Interface.AddButton(BuilderPlug.Me.MenusForm.DragThingsInSelectedSectors); //mxd
+			General.Interface.AddButton(BuilderPlug.Me.MenusForm.SyncronizeThingEditButton); //mxd
 			if(General.Map.UDMF) General.Interface.AddButton(BuilderPlug.Me.MenusForm.TextureOffsetLock, ToolbarSection.Geometry); //mxd
 			
 			// Convert geometry selection to sectors only
 			General.Map.Map.ConvertSelection(SelectionType.Sectors);
+
+			//mxd. Update the tooltip
+			BuilderPlug.Me.MenusForm.SyncronizeThingEditButton.ToolTipText = "Synchronized Things Editing" + Environment.NewLine + BuilderPlug.Me.MenusForm.SyncronizeThingEditSectorsItem.ToolTipText;
+
+			//mxd. Select things as well?
+			if(BuilderPlug.Me.SyncronizeThingEdit)
+			{
+				ICollection<Sector> sectors = General.Map.Map.GetSelectedSectors(true);
+				if(sectors.Count > 0)
+				{
+					foreach(Thing t in General.Map.Map.Things)
+					{
+						t.DetermineSector();
+						if(!t.Selected && t.Sector != null && sectors.Contains(t.Sector))
+							t.Selected = true;
+					}
+				}
+			}
 
 			// Make text labels for sectors
 			SetupLabels();
@@ -686,7 +704,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.MakeGradientCeilings);
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.SeparatorSectors3); //mxd
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.MarqueSelectTouching); //mxd
-			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.DragThingsInSelectedSectors); //mxd
+			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.SyncronizeThingEditButton); //mxd
 			if(General.Map.UDMF) General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.TextureOffsetLock); //mxd
 			
 			// Keep only sectors selected
@@ -804,13 +822,23 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					renderer.Present();
 
 					//mxd. Thing selection state may've changed
-					if(General.Interface.AltState) General.Interface.RedrawDisplay();
-				} 
-				else if(BuilderPlug.Me.AutoClearSelection && General.Map.Map.SelectedSectorsCount > 0) //mxd
+					if(General.Interface.AltState ^ BuilderPlug.Me.SyncronizeThingEdit) General.Interface.RedrawDisplay();
+				}
+				else if(BuilderPlug.Me.AutoClearSelection && (General.Map.Map.SelectedSectorsCount > 0 || (BuilderPlug.Me.SyncronizeThingEdit && General.Map.Map.SelectedThingsCount > 0))) //mxd
 				{
-					General.Map.Map.ClearSelectedLinedefs();
-					General.Map.Map.ClearSelectedSectors();
-					UpdateOverlaySurfaces(); //mxd
+					if(General.Map.Map.SelectedSectorsCount > 0)
+					{
+						General.Map.Map.ClearSelectedLinedefs();
+						General.Map.Map.ClearSelectedSectors();
+						UpdateOverlaySurfaces(); //mxd
+					}
+
+					//mxd
+					if(BuilderPlug.Me.SyncronizeThingEdit && General.Map.Map.SelectedThingsCount > 0)
+					{
+						General.Map.Map.ClearSelectedThings();
+					}
+					
 					General.Interface.RedrawDisplay();
 				}
 
@@ -1156,24 +1184,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				switch(marqueSelectionMode) 
 				{
 					case MarqueSelectionMode.SELECT:
-						bool select;
-						foreach(Sector s in General.Map.Map.Sectors) 
+						foreach(Sector s in General.Map.Map.Sectors)
 						{
-							select = IsInSelectionRect(s, selectionOutline);
-
+							bool select = IsInSelectionRect(s, selectionOutline);
 							if(select && !s.Selected) SelectSector(s, true, false);
 							else if(!select && s.Selected) SelectSector(s, false, false);
-						}
-						if (marqueSelectionIncludesThings) 
-						{
-							ICollection<Sector> selected = General.Map.Map.GetSelectedSectors(true);
-
-							foreach (Thing t in General.Map.ThingsFilter.VisibleThings) 
-							{
-								t.DetermineSector();
-								if(t.Sector == null) continue;
-								t.Selected = selectionrect.Contains(t.Position.x, t.Position.y) && selected.Contains(t.Sector);
-							}
 						}
 						break;
 
@@ -1182,17 +1197,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						{
 							if(!s.Selected && IsInSelectionRect(s, selectionOutline))
 								SelectSector(s, true, false);
-						}
-						if (marqueSelectionIncludesThings) 
-						{
-							ICollection<Sector> selected = General.Map.Map.GetSelectedSectors(true);
-
-							foreach (Thing t in General.Map.ThingsFilter.VisibleThings) 
-							{
-								t.DetermineSector();
-								if(t.Sector == null) continue;
-								t.Selected |= selectionrect.Contains(t.Position.x, t.Position.y) && selected.Contains(t.Sector);
-							}
 						}
 						break;
 
@@ -1203,11 +1207,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							if(IsInSelectionRect(s, selectionOutline))
 								SelectSector(s, false, false);
 						}
-						if (marqueSelectionIncludesThings) 
-						{
-							foreach (Thing t in General.Map.ThingsFilter.VisibleThings)
-								if (selectionrect.Contains(t.Position.x, t.Position.y)) t.Selected = false;
-						}
 						break;
 
 					default: //should be Intersect
@@ -1216,11 +1215,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							if(!s.Selected) continue;
 							if(!IsInSelectionRect(s, selectionOutline))
 								SelectSector(s, false, false);
-						}
-						if (marqueSelectionIncludesThings) 
-						{
-							foreach(Thing t in General.Map.ThingsFilter.VisibleThings)
-								if(!selectionrect.Contains(t.Position.x, t.Position.y)) t.Selected = false;
 						}
 						break;
 				}
@@ -1318,20 +1312,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			UpdateEffectLabels(); //mxd
 			UpdateOverlaySurfaces(); //mxd
 			base.OnRedoEnd(); //mxd
-		}
-
-		//mxd
-		public override void UpdateSelectionInfo()
-		{
-			List<string> info = new List<string>();
-
-			if(General.Map.Map.SelectedSectorsCount > 0)
-				info.Add(General.Map.Map.SelectedSectorsCount + (General.Map.Map.SelectedSectorsCount == 1 ? " sector" : " sectors"));
-
-			if(General.Map.Map.SelectedThingsCount > 0)
-				info.Add(General.Map.Map.SelectedThingsCount + (General.Map.Map.SelectedThingsCount == 1 ? " thing" : " things"));
-
-			General.Interface.DisplayStatus(StatusType.Selection, (info.Count > 0 ? string.Join(" and ", info.ToArray()) + " selected." : string.Empty));
 		}
 
 		//mxd
@@ -1641,29 +1621,61 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("deleteitem", BaseAction = true)]
 		public void DeleteItem()
 		{
+			//mxd. Make list of selected things
+			List<Thing> selectedthings = (BuilderPlug.Me.SyncronizeThingEdit ? new List<Thing>(General.Map.Map.GetSelectedThings(true)) : new List<Thing>());
+			
 			// Make list of selected sectors
-			List<Sector> selected = new List<Sector>(General.Map.Map.GetSelectedSectors(true));
-			if((selected.Count == 0) && (highlighted != null) && !highlighted.IsDisposed) selected.Add(highlighted);
+			List<Sector> selectedsectors = new List<Sector>(General.Map.Map.GetSelectedSectors(true));
+			if((selectedsectors.Count == 0) && (highlighted != null) && !highlighted.IsDisposed)
+			{
+				selectedsectors.Add(highlighted);
+
+				//mxd. Add things?
+				if(BuilderPlug.Me.SyncronizeThingEdit)
+				{
+					foreach(Thing t in General.Map.ThingsFilter.VisibleThings)
+					{
+						if(t.Sector == null) t.DetermineSector();
+						if(t.Sector == highlighted) selectedthings.Add(t);
+					}
+				}
+			}
+			if(selectedsectors.Count == 0 && selectedthings.Count == 0) return; //mxd
+
+			//mxd. Create undo info text
+			List<string> info = new List<string>();
+
+			//mxd. Create linedef info text
+			if(selectedsectors.Count > 1)
+				info.Add(selectedsectors.Count + " sectors");
+			else
+				info.Add("a sector");
+
+			//mxd. Create things info text
+			if(selectedthings.Count > 1)
+				info.Add(selectedthings.Count + " things");
+			else
+				info.Add("a thing");
+
+			//mxd. Make undo
+			string rest = string.Join(" and ", info.ToArray());
+			General.Map.UndoRedo.CreateUndo("Delete " + rest);
+			General.Interface.DisplayStatus(StatusType.Action, "Deleted " + rest + ".");
+
+			//mxd. Delete things
+			if(selectedthings.Count > 0)
+			{
+				DeleteThings(selectedthings);
+				General.Map.ThingsFilter.Update();
+			}
 
 			// Anything to do?
-			if(selected.Count > 0)
+			if(selectedsectors.Count > 0)
 			{
-				// Make undo
-				if(selected.Count > 1)
-				{
-					General.Map.UndoRedo.CreateUndo("Delete " + selected.Count + " sectors");
-					General.Interface.DisplayStatus(StatusType.Action, "Deleted " + selected.Count + " sectors.");
-				}
-				else
-				{
-					General.Map.UndoRedo.CreateUndo("Delete sector");
-					General.Interface.DisplayStatus(StatusType.Action, "Deleted sector.");
-				}
-
 				General.Map.Map.BeginAddRemove(); //mxd
 
 				// Dispose selected sectors
-				foreach(Sector s in selected)
+				foreach(Sector s in selectedsectors)
 				{
 					//mxd. Get all the linedefs
 					List<Linedef> lines = new List<Linedef>(s.Sidedefs.Count);
@@ -1713,7 +1725,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 
 				General.Map.Map.EndAddRemove(); //mxd
+			}
 
+			if(selectedthings.Count > 0 || selectedsectors.Count > 0)
+			{
 				// Update cache values
 				General.Map.IsChanged = true;
 				General.Map.Map.Update();
