@@ -333,10 +333,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Interface.AddButton(BuilderPlug.Me.MenusForm.MakeGradientBrightness);
 				General.Interface.AddButton(BuilderPlug.Me.MenusForm.GradientInterpolationMenu);
 			}
-			General.Interface.AddButton(BuilderPlug.Me.MenusForm.MarqueSelectTouching); //mxd
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.CurveLinedefs);
+			General.Interface.AddButton(BuilderPlug.Me.MenusForm.MarqueSelectTouching); //mxd
+			General.Interface.AddButton(BuilderPlug.Me.MenusForm.SyncronizeThingEditButton); //mxd
 			if(General.Map.UDMF) General.Interface.AddButton(BuilderPlug.Me.MenusForm.TextureOffsetLock, ToolbarSection.Geometry); //mxd
 			
+			//mxd. Update the tooltip
+			BuilderPlug.Me.MenusForm.SyncronizeThingEditButton.ToolTipText = "Synchronized Things Editing" + Environment.NewLine + BuilderPlug.Me.MenusForm.SyncronizeThingEditLinedefsItem.ToolTipText;
+
 			// Convert geometry selection to linedefs selection
 			General.Map.Map.ConvertSelection(SelectionType.Linedefs);
 			UpdateSelectionInfo(); //mxd
@@ -357,8 +361,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.MakeGradientBrightness);
 				General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.GradientInterpolationMenu);
 			}
-			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.MarqueSelectTouching); //mxd
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.CurveLinedefs);
+			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.MarqueSelectTouching); //mxd
+			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.SyncronizeThingEditButton); //mxd
 			if(General.Map.UDMF) General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.TextureOffsetLock); //mxd
 
 			// Going to EditSelectionMode?
@@ -780,26 +785,47 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				};
 				
 				//mxd
+				bool selectthings = (marqueSelectionIncludesThings ^ BuilderPlug.Me.SyncronizeThingEdit);
 				switch(marqueSelectionMode) 
 				{
 					case MarqueSelectionMode.SELECT:
 						foreach(Linedef l in General.Map.Map.Linedefs)
 							l.Selected = IsInSelectionRect(l, selectionOutline);
+						if(selectthings)
+						{
+							foreach(Thing t in General.Map.ThingsFilter.VisibleThings)
+								t.Selected = selectionrect.Contains(t.Position.x, t.Position.y);
+						}
 						break;
 
 					case MarqueSelectionMode.ADD:
 						foreach(Linedef l in General.Map.Map.Linedefs)
 							l.Selected |= IsInSelectionRect(l, selectionOutline);
+						if(selectthings)
+						{
+							foreach(Thing t in General.Map.ThingsFilter.VisibleThings)
+								t.Selected |= selectionrect.Contains(t.Position.x, t.Position.y);
+						}
 						break;
 
 					case MarqueSelectionMode.SUBTRACT:
 						foreach(Linedef l in General.Map.Map.Linedefs)
 							if(IsInSelectionRect(l, selectionOutline)) l.Selected = false;
+						if(selectthings)
+						{
+							foreach(Thing t in General.Map.ThingsFilter.VisibleThings)
+								if(selectionrect.Contains(t.Position.x, t.Position.y)) t.Selected = false;
+						}
 						break;
 
 					default:
 						foreach(Linedef l in General.Map.Map.Linedefs)
 							if(!IsInSelectionRect(l, selectionOutline)) l.Selected = false;
+						if(selectthings)
+						{
+							foreach(Thing t in General.Map.ThingsFilter.VisibleThings)
+								if(!selectionrect.Contains(t.Position.x, t.Position.y)) t.Selected = false;
+						}
 						break;
 				}
 
@@ -846,15 +872,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			return base.OnCopyBegin();
-		}
-
-		//mxd
-		public override void UpdateSelectionInfo() 
-		{
-			if(General.Map.Map.SelectedLinedefsCount > 0)
-				General.Interface.DisplayStatus(StatusType.Selection, General.Map.Map.SelectedLinedefsCount + (General.Map.Map.SelectedLinedefsCount == 1 ? " linedef" : " linedefs") + " selected.");
-			else
-				General.Interface.DisplayStatus(StatusType.Selection, string.Empty);
 		}
 
 		//mxd

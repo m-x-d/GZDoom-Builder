@@ -60,7 +60,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected ICollection<Thing> unselectedthings; //mxd
 
 		// List of things, which should be moved
-		protected ICollection<Thing> thingstodrag; //mxd
+		private ICollection<Thing> thingstodrag; //mxd
 
 		//mxd. List of sectors
 		private List<Sector> selectedsectors;
@@ -133,7 +133,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Make list of selected vertices and things
 			selectedverts = General.Map.Map.GetMarkedVertices(true);
 			selectedthings = General.Map.Map.GetSelectedThings(true); //mxd
-			thingstodrag = GetThingsToDrag(); //mxd
+			thingstodrag = (BuilderPlug.Me.SyncronizeThingEdit ? selectedthings : new List<Thing>()); //mxd
 
 			// Make list of non-selected vertices and things
 			// Non-selected vertices will be used for snapping to nearest items
@@ -208,12 +208,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				labels[index++] = new LineLengthLabel(l.Start.Position, l.End.Position);
 			
 			Cursor.Current = Cursors.Default;
-		}
-
-		//mxd
-		protected virtual ICollection<Thing> GetThingsToDrag() 
-		{
-			return selectedthings;
 		}
 
 		// This moves the selected geometry relatively

@@ -991,7 +991,6 @@ namespace CodeImp.DoomBuilder
 			try 
 			{
 				string settingsfile = newfilepathname.Substring(0, newfilepathname.Length - 4) + ".dbs";
-				if(File.Exists(settingsfile)) File.Delete(settingsfile);
 				options.WriteConfiguration(settingsfile);
 			} 
 			catch(Exception e) 

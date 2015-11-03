@@ -215,6 +215,69 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 			General.Interface.OnEditFormValuesChanged -= thingEditForm_OnValuesChanged;
 		}
+
+		//mxd
+		protected static void DeleteThings(ICollection<Thing> things)
+		{
+			if(things.Count == 0) return;
+
+			General.Map.Map.BeginAddRemove(); //mxd
+
+			// Dispose selected things
+			foreach(Thing t in things)
+			{
+				//mxd. Do some path reconnecting shenanigans...
+				ThingTypeInfo info = General.Map.Data.GetThingInfo(t.Type);
+				string targetclass = string.Empty;
+				int targetarg = -1;
+
+				// Thing type can be changed in MAPINFO DoomEdNums block...
+				switch(info.ClassName.ToLowerInvariant())
+				{
+					case "interpolationpoint":
+						if(t.Tag != 0 && t.Args[3] != 0)
+						{
+							targetclass = "interpolationpoint";
+							targetarg = 3;
+						}
+						break;
+
+					case "patrolpoint":
+						if(t.Tag != 0 && t.Args[0] != 0)
+						{
+							targetclass = "patrolpoint";
+							targetarg = 0;
+						}
+						break;
+				}
+
+				// Try to reconnect path...
+				if(!string.IsNullOrEmpty(targetclass) && targetarg > -1)
+				{
+					General.Map.Map.EndAddRemove(); // We'll need to unlock the things array...
+
+					foreach(Thing other in General.Map.Map.Things)
+					{
+						if(other.Index == t.Index)
+							continue;
+						info = General.Map.Data.GetThingInfo(other.Type);
+						if(info.ClassName.ToLowerInvariant() == targetclass && other.Args[targetarg] == t.Tag)
+						{
+							other.Move(other.Position); //hacky way to call BeforePropsChange()...
+							other.Args[targetarg] = t.Args[targetarg];
+							break;
+						}
+					}
+
+					General.Map.Map.BeginAddRemove(); // We'll need to lock it again...
+				}
+
+				// Get rid of the thing
+				t.Dispose();
+			}
+
+			General.Map.Map.EndAddRemove(); //mxd
+		}
 		
 		#endregion
 
@@ -328,32 +391,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		[BeginAction("thingsselectinsectors")]
-		public void SelectThingsInSelectedSectors()
+		[BeginAction("syncedthingedit")]
+		public void ToggleSyncronizedThingsEdit()
 		{
-			bool convertselection = !(this is SectorsMode);
-			if(convertselection) General.Map.Map.ConvertSelection(SelectionType.Sectors);
+			BuilderPlug.Me.SyncronizeThingEdit = !BuilderPlug.Me.SyncronizeThingEdit;
+			General.Interface.DisplayStatus(StatusType.Info, (BuilderPlug.Me.SyncronizeThingEdit ?
+				"Things editing is SYNCRONIZED" :
+				"Things editing is not syncronized"));
 
-			if(General.Map.Map.SelectedSectorsCount == 0) 
-			{
-				General.Interface.DisplayStatus(StatusType.Warning, "This action requires a!");
-				if(convertselection) General.Map.Map.ConvertSelection(SelectionType.Linedefs);
-				return;
-			}
-
-			ICollection<Sector> sectors = General.Map.Map.GetSelectedSectors(true);
-			foreach(Thing t in General.Map.Map.Things) 
-			{
-				t.DetermineSector();
-				if(!t.Selected && t.Sector != null && sectors.Contains(t.Sector)) t.Selected = true;
-			}
-
-			// Update info
-			if(convertselection) General.Map.Map.ConvertSelection(SelectionType.Linedefs);
-			UpdateSelectionInfo();
-
-			// Redraw screen
-			General.Interface.RedrawDisplay();
+			// Update interface
+			BuilderPlug.Me.MenusForm.SyncronizeThingEditButton.Checked = BuilderPlug.Me.SyncronizeThingEdit;
+			BuilderPlug.Me.MenusForm.SyncronizeThingEditLinedefsItem.Checked = BuilderPlug.Me.SyncronizeThingEdit;
+			BuilderPlug.Me.MenusForm.SyncronizeThingEditSectorsItem.Checked = BuilderPlug.Me.SyncronizeThingEdit;
 		}
 
 		#endregion

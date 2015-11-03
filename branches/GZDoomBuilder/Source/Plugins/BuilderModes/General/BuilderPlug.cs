@@ -128,7 +128,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private bool marqueSelectTouching; //mxd. Select elements partially/fully inside of marque selection?
 		private bool syncSelection; //mxd. Sync selection between Visual and Classic modes.
 		private bool lockSectorTextureOffsetsWhileDragging; //mxd
-		private bool dragThingsInSectorsMode; //mxd
+		private bool syncthingedit; //mxd
 		
 		#endregion
 
@@ -188,7 +188,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public bool MarqueSelectTouching { get { return marqueSelectTouching; } set { marqueSelectTouching = value; } } //mxd
 		public bool SyncSelection { get { return syncSelection; } set { syncSelection = value; } } //mxd
 		public bool LockSectorTextureOffsetsWhileDragging { get { return lockSectorTextureOffsetsWhileDragging; } internal set { lockSectorTextureOffsetsWhileDragging = value; } } //mxd
-		public bool DragThingsInSectorsMode { get { return dragThingsInSectorsMode; } internal set { dragThingsInSectorsMode = value; } } //mxd
+		public bool SyncronizeThingEdit { get { return syncthingedit; } internal set { syncthingedit = value; } } //mxd
 
 		//mxd. "Make Door" action persistent settings
 		internal MakeDoorSettings MakeDoor;
@@ -214,7 +214,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			menusform = new MenusForm();
 			menusform.Register();
 			menusform.TextureOffsetLock.Checked = lockSectorTextureOffsetsWhileDragging; //mxd
-			menusform.DragThingsInSelectedSectors.Checked = dragThingsInSectorsMode; //mxd
+			menusform.SyncronizeThingEditButton.Checked = syncthingedit; //mxd
+			menusform.SyncronizeThingEditSectorsItem.Checked = syncthingedit; //mxd
+			menusform.SyncronizeThingEditLinedefsItem.Checked = syncthingedit; //mxd
 			
 			// Load Undo\Redo docker
 			undoredopanel = new UndoRedoPanel();
@@ -297,7 +299,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			lockSectorTextureOffsetsWhileDragging = General.Settings.ReadPluginSetting("locktextureoffsets", false); //mxd
 			viewselectionnumbers = General.Settings.ReadPluginSetting("viewselectionnumbers", true);
 			viewselectioneffects = General.Settings.ReadPluginSetting("viewselectioneffects", true); //mxd
-			dragThingsInSectorsMode = General.Settings.ReadPluginSetting("dragthingsinsectorsmode", true); //mxd
+			syncthingedit = General.Settings.ReadPluginSetting("syncthingedit", true); //mxd
 		}
 
 		//mxd. Save settings, which can be changed via UI
@@ -306,7 +308,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Settings.WritePluginSetting("locktextureoffsets", lockSectorTextureOffsetsWhileDragging);
 			General.Settings.WritePluginSetting("viewselectionnumbers", viewselectionnumbers);
 			General.Settings.WritePluginSetting("viewselectioneffects", viewselectioneffects);
-			General.Settings.WritePluginSetting("dragthingsinsectorsmode", dragThingsInSectorsMode);
+			General.Settings.WritePluginSetting("syncthingedit", syncthingedit);
 		}
 
 		//mxd. These should be reset when changing maps

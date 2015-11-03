@@ -187,25 +187,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				renderer.Finish();
 			}
 		}
-
-		//mxd
-		protected override ICollection<Thing> GetThingsToDrag() 
-		{
-			if (BuilderPlug.Me.DragThingsInSectorsMode) 
-			{
-				thingstodrag = new List<Thing>();
-
-				foreach (Thing t in General.Map.ThingsFilter.VisibleThings) 
-				{
-					t.DetermineSector();
-					if (selectedsectors.Contains(t.Sector)) thingstodrag.Add(t);
-				}
-
-				return thingstodrag;
-			} 
-
-			return base.GetThingsToDrag();
-		}
 		
 		#endregion
 	}

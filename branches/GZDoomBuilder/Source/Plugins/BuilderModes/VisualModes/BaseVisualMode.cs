@@ -643,6 +643,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd
 		public override void UpdateSelectionInfo() 
 		{
+			// Collect info
 			int numWalls = 0;
 			int numFloors = 0;
 			int numCeilings = 0;
@@ -668,17 +669,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(numThings > 0) results.Add(numThings + (numThings > 1 ? " things" : " thing"));
 			if(numVerts > 0) results.Add(numVerts + (numVerts > 1 ? " vertices" : " vertex"));
 
-			if(results.Count == 0) 
+			// Display results
+			string result = string.Empty;
+			if(results.Count > 0) 
 			{
-				General.Interface.DisplayStatus(StatusType.Selection, string.Empty);
-			} 
-			else 
-			{
-				string result = string.Join(", ", results.ToArray());
-				int pos = result.LastIndexOf(",");
+				result = string.Join(", ", results.ToArray());
+				int pos = result.LastIndexOf(",", StringComparison.Ordinal);
 				if(pos != -1) result = result.Remove(pos, 1).Insert(pos, " and");
-				General.Interface.DisplayStatus(StatusType.Selection, result + " selected.");
+				result += " selected.";
 			}
+
+			General.Interface.DisplayStatus(StatusType.Selection, result);
 		}
 
 		//mxd

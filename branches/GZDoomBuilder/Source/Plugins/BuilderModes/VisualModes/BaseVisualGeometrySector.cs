@@ -753,8 +753,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Copy texture
 		public virtual void OnCopyTexture()
 		{
-			if(Texture == null) return; //mxd
-			string texturename = ((!General.Map.Options.UseLongTextureNames && Texture.UsedInMap) ? Texture.ShortName : GetTextureName()); //mxd
+			//mxd. When UseLongTextureNames is disabled, use texture name as stored in Sidedef, otherwise use full name.
+			string texturename = ((General.Map.Options.UseLongTextureNames && Texture != null && Texture.UsedInMap) ? Texture.FullName : GetTextureName());
 			BuilderPlug.Me.CopiedFlat = texturename;
 			if(General.Map.Config.MixTexturesFlats) BuilderPlug.Me.CopiedTexture = texturename;
 			mode.SetActionResult("Copied flat '" + texturename + "'.");

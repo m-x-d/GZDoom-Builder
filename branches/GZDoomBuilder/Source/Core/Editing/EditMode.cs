@@ -17,6 +17,7 @@
 #region ================== Namespaces
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Windows.Forms;
 using System.Reflection;
@@ -136,7 +137,32 @@ namespace CodeImp.DoomBuilder.Editing
 		//mxd
 		public virtual void UpdateSelectionInfo()
 		{
-			General.Interface.DisplayStatus(StatusType.Selection, string.Empty);
+			// Collect info
+			List<string> info = new List<string>();
+
+			if(General.Map.Map.SelectedSectorsCount > 0)
+				info.Add(General.Map.Map.SelectedSectorsCount + (General.Map.Map.SelectedSectorsCount == 1 ? " sector" : " sectors"));
+
+			if(General.Map.Map.SelectedLinedefsCount > 0)
+				info.Add(General.Map.Map.SelectedLinedefsCount + (General.Map.Map.SelectedLinedefsCount == 1 ? " linedef" : " linedefs"));
+
+			if(General.Map.Map.SelectedVerticessCount > 0)
+				info.Add(General.Map.Map.SelectedVerticessCount + (General.Map.Map.SelectedVerticessCount == 1 ? " vertex" : " vertices"));
+
+			if(General.Map.Map.SelectedThingsCount > 0)
+				info.Add(General.Map.Map.SelectedThingsCount + (General.Map.Map.SelectedThingsCount == 1 ? " thing" : " things"));
+
+			// Display results
+			string result = string.Empty;
+			if(info.Count > 0)
+			{
+				result = string.Join(", ", info.ToArray());
+				int pos = result.LastIndexOf(",", StringComparison.Ordinal);
+				if(pos != -1) result = result.Remove(pos, 1).Insert(pos, " and");
+				result += " selected.";
+			}
+
+			General.Interface.DisplayStatus(StatusType.Selection, result);
 		}
 
 		#endregion

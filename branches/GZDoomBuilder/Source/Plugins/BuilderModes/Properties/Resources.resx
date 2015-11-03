@@ -190,9 +190,6 @@
   <data name="SelectTouching" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\SelectTouching.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="MoveThingsInSectors" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\MoveThingsInSectors.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
   <data name="Merge" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Merge.png;System.Drawing.Bitmap, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
