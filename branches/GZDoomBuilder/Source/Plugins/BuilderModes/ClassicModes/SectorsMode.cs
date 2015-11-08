@@ -529,7 +529,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					{
 						foreach(Thing t in General.Map.ThingsFilter.VisibleThings) 
 						{
-							t.DetermineSector();
 							if(t.Sector != s) continue;
 							t.Selected = s.Selected;
 						}
@@ -658,6 +657,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			//mxd. Update the tooltip
 			BuilderPlug.Me.MenusForm.SyncronizeThingEditButton.ToolTipText = "Synchronized Things Editing" + Environment.NewLine + BuilderPlug.Me.MenusForm.SyncronizeThingEditSectorsItem.ToolTipText;
 
+			//mxd. Determine thing sectors. Cause SyncronizeThingEdit requires that
+			foreach(Thing t in General.Map.Map.Things) t.DetermineSector();
+
 			//mxd. Select things as well?
 			if(BuilderPlug.Me.SyncronizeThingEdit)
 			{
@@ -666,7 +668,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					foreach(Thing t in General.Map.Map.Things)
 					{
-						t.DetermineSector();
 						if(!t.Selected && t.Sector != null && sectors.Contains(t.Sector))
 							t.Selected = true;
 					}
@@ -1180,7 +1181,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					new Line2D(selectionrect.Left, selectionrect.Bottom, selectionrect.Left, selectionrect.Top)
 				};
 				
-				//mxd. collect changed sectors
+				//mxd. (de)select sectors
 				switch(marqueSelectionMode) 
 				{
 					case MarqueSelectionMode.SELECT:

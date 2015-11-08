@@ -520,7 +520,7 @@ namespace CodeImp.DoomBuilder.Map
 		// This checks if the given point is inside the sector polygon
 		public bool Intersect(Vector2D p) 
 		{
-			if (MapSet.GetCSFieldBits(p, bbox) != 0) return false; //mxd. Check bounding box
+			if(!bbox.Contains(p.x, p.y)) return false; //mxd. Check bounding box first
 			
 			uint c = 0;
 			

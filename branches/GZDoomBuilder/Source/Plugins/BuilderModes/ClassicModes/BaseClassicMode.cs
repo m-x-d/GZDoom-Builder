@@ -148,20 +148,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		public override void OnUndoEnd() 
-		{
-			General.Map.Renderer2D.UpdateExtraFloorFlag();
-			base.OnUndoEnd();
-		}
-
-		//mxd
-		public override void OnRedoEnd() 
-		{
-			General.Map.Renderer2D.UpdateExtraFloorFlag();
-			base.OnRedoEnd();
-		}
-
-		//mxd
 		public override void OnMapTestEnd(bool testFromCurrentPosition) 
 		{
 			base.OnMapTestEnd(testFromCurrentPosition);
