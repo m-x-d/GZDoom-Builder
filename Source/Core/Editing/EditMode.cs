@@ -224,8 +224,8 @@ namespace CodeImp.DoomBuilder.Editing
 		// Return false to cancel undo action
 		public virtual bool OnUndoBegin() { return true; }
 		public virtual bool OnRedoBegin() { return true; }
-		public virtual void OnUndoEnd() { }
-		public virtual void OnRedoEnd() { }
+		public virtual void OnUndoEnd() { General.Map.Renderer2D.UpdateExtraFloorFlag(); } //mxd
+		public virtual void OnRedoEnd() { General.Map.Renderer2D.UpdateExtraFloorFlag(); } //mxd
 		
 		// Interface events
 		public virtual void OnMouseClick(MouseEventArgs e) { }

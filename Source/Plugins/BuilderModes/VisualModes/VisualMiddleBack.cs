@@ -40,10 +40,13 @@ namespace CodeImp.DoomBuilder.BuilderModes {
 		public override bool Setup() { return this.Setup(this.extrafloor); }
 		public bool Setup(Effect3DFloor extrafloor)
 		{
-			Vector2D vl, vr;
-
 			Sidedef sourceside = extrafloor.Linedef.Front;
 			this.extrafloor = extrafloor;
+
+			//mxd. Extrafloor may've become invalid during undo/redo...
+			if(sourceside == null) return false;
+
+			Vector2D vl, vr;
 
 			//mxd. lightfog flag support
 			int lightvalue;
