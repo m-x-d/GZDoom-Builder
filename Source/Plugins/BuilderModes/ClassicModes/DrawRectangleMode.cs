@@ -388,6 +388,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Update the used textures
 				General.Map.Data.UpdateUsedTextures();
 
+				//mxd
+				General.Map.Renderer2D.UpdateExtraFloorFlag();
+
 				// Map is changed
 				General.Map.IsChanged = true;
 			}

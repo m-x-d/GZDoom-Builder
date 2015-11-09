@@ -97,66 +97,72 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This builds the thing geometry. Returns false when nothing was created.
 		public bool Setup()
 		{
-			//mxd. Apply DECORATE/UDMF alpha/renderstyle overrides
-			string renderstyle = info.RenderStyle;
-			byte alpha = info.AlphaByte;
-			if(General.Map.UDMF)
+			// Find the sector in which the thing resides
+			Thing.DetermineSector(mode.BlockMap);
+			
+			//mxd. If the thing is inside a sector, apply DECORATE/UDMF alpha/renderstyle overrides
+			byte alpha = 255;
+			if(Thing.Sector != null)
 			{
-				if(Thing.IsFlagSet("translucent"))
+				string renderstyle = info.RenderStyle;
+				alpha = info.AlphaByte;
+				
+				if(General.Map.UDMF)
 				{
-					renderstyle = "translucent";
-					alpha = 64;
+					if(Thing.IsFlagSet("translucent"))
+					{
+						renderstyle = "translucent";
+						alpha = 64;
+					}
+					else if(Thing.IsFlagSet("invisible"))
+					{
+						renderstyle = "none";
+						alpha = 0;
+					}
+					else if(Thing.Fields.ContainsKey("renderstyle"))
+					{
+						renderstyle = Thing.Fields.GetValue("renderstyle", renderstyle);
+						if(Thing.Fields.ContainsKey("alpha")) alpha = (byte)(General.Clamp(Thing.Fields.GetValue("alpha", info.Alpha), 0f, 1f) * 255);
+					}
 				}
-				else if(Thing.IsFlagSet("invisible"))
+				else if(General.Map.HEXEN)
 				{
-					renderstyle = "none";
-					alpha = 0;
+					if(Thing.IsFlagSet("2048"))
+					{
+						renderstyle = "translucent";
+						alpha = 64;
+					}
+					else if(Thing.IsFlagSet("4096"))
+					{
+						renderstyle = "none";
+						alpha = 0;
+					}
 				}
-				else if(Thing.Fields.ContainsKey("renderstyle"))
-				{
-					renderstyle = Thing.Fields.GetValue("renderstyle", renderstyle);
-					
-					if(Thing.Fields.ContainsKey("alpha"))
-						alpha = (byte)(General.Clamp(Thing.Fields.GetValue("alpha", info.Alpha), 0f, 1f) * 255);
-				}
-			}
-			else if(General.Map.HEXEN)
-			{
-				if(Thing.IsFlagSet("2048"))
-				{
-					renderstyle = "translucent";
-					alpha = 64;
-				}
-				else if(Thing.IsFlagSet("4096"))
-				{
-					renderstyle = "none";
-					alpha = 0;
-				}
-			}
 
-			// Set appropriate RenderPass
-			switch(renderstyle)
-			{
-				case "translucent":
-				case "subtract":
-				case "stencil":
-					RenderPass = RenderPass.Alpha;
-					break;
+				// Set appropriate RenderPass
+				switch(renderstyle)
+				{
+					case "translucent":
+					case "subtract":
+					case "stencil":
+						RenderPass = RenderPass.Alpha;
+						break;
 
-				case "add":
-					RenderPass = RenderPass.Additive;
-					break;
+					case "add":
+						RenderPass = RenderPass.Additive;
+						break;
 
-				case "none":
-					RenderPass = RenderPass.Mask;
-					alpha = 0;
-					break;
+					case "none":
+						RenderPass = RenderPass.Mask;
+						alpha = 0;
+						break;
 
-				// Many render styles are not supported yet...
-				default:
-					RenderPass = RenderPass.Mask;
-					alpha = 255;
-					break;
+					// Many render styles are not supported yet...
+					default:
+						RenderPass = RenderPass.Mask;
+						alpha = 255;
+						break;
+				}
 			}
 
 			// Don't bother when alpha is unchanged
@@ -179,9 +185,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				sizeless = false;
 			}
-
-			// Find the sector in which the thing resides
-			Thing.DetermineSector(mode.BlockMap);
 
 			if(sprite != null)
 			{
