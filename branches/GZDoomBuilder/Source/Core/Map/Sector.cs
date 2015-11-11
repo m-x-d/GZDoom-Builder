@@ -520,7 +520,8 @@ namespace CodeImp.DoomBuilder.Map
 		// This checks if the given point is inside the sector polygon
 		public bool Intersect(Vector2D p) 
 		{
-			if(!bbox.Contains(p.x, p.y)) return false; //mxd. Check bounding box first
+			//mxd. Check bounding box first
+			if(p.x < bbox.Left || p.x > bbox.Right || p.y < bbox.Top || p.y > bbox.Bottom) return false;
 			
 			uint c = 0;
 			
