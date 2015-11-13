@@ -12,8 +12,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 		internal delegate void IncludeDelegate(AcsParserSE parser, string includefile);
 		internal IncludeDelegate OnInclude;
 
-		private readonly List<string> parsedlumps;
-		private readonly List<string> includes;
+		private readonly HashSet<string> parsedlumps;
+		private readonly HashSet<string> includes;
+		private List<string> includestoskip; 
 
 		private readonly List<ScriptItem> namedscripts;
 		private readonly List<ScriptItem> numberedscripts;
@@ -29,24 +30,37 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 			namedscripts = new List<ScriptItem>();
 			numberedscripts = new List<ScriptItem>();
 			functions = new List<ScriptItem>();
-			parsedlumps = new List<string>();
-			includes = new List<string>();
+			parsedlumps = new HashSet<string>();
+			includes = new HashSet<string>();
+			includestoskip = new List<string>();
 			specialtokens += "(,)";
 		}
 
 		public override bool Parse(Stream stream, string sourcefilename) 
 		{
-			return Parse(stream, sourcefilename, false, false);
+			return Parse(stream, sourcefilename, new List<string>(), false, false);
 		}
 
-		public bool Parse(Stream stream, string sourcefilename, bool processincludes, bool isinclude) 
+		public bool Parse(Stream stream, string sourcefilename, bool processincludes, bool isinclude)
 		{
+			return Parse(stream, sourcefilename, includestoskip, processincludes, isinclude);
+		}
+
+		public bool Parse(Stream stream, string sourcefilename, List<string> configincludes, bool processincludes, bool isinclude) 
+		{
+			if(stream == null || stream.Length == 0)
+			{
+				ReportError("Unable to load " + (isinclude ? "include" : "") + " file '" + sourcefilename + "'!");
+				return false;
+			}
+			
 			base.Parse(stream, sourcefilename);
 
-			//already parsed this?
-			if (parsedlumps.Contains(sourcefilename)) return false;
+			// Already parsed this?
+			if(parsedlumps.Contains(sourcefilename)) return false;
 			parsedlumps.Add(sourcefilename);
-			if (isinclude) includes.Add(sourcefilename);
+			if(isinclude && !includes.Contains(sourcefilename)) includes.Add(sourcefilename);
+			includestoskip = configincludes;
 			int bracelevel = 0;
 
 			// Keep local data
@@ -55,7 +69,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 			BinaryReader localreader = datareader;
 
 			// Continue until at the end of the stream
-			while (SkipWhitespace(true)) 
+			while(SkipWhitespace(true)) 
 			{
 				string token = ReadToken();
 				if(string.IsNullOrEmpty(token)) continue;
@@ -65,7 +79,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 				if(token == "}") { bracelevel--; continue; }
 				if(bracelevel > 0) continue;
 
-				switch (token.ToLowerInvariant())
+				switch(token.ToLowerInvariant())
 				{
 					case "script":
 					{
@@ -74,7 +88,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						token = ReadToken();
 
 						//is it named script?
-						if (token.IndexOf('"') != -1) 
+						if(token.IndexOf('"') != -1) 
 						{
 							startpos += 1;
 							string scriptname = StripTokenQuotes(token);
@@ -90,7 +104,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						else //should be numbered script
 						{ 
 							int n;
-							if (int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out n)) 
+							if(int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out n)) 
 							{
 								// Try to parse argument names
 								List<KeyValuePair<string, string>> args = ParseArgs();
@@ -106,10 +120,10 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 								string name = "";
 								bracelevel = 1;
 
-								if (!string.IsNullOrEmpty(token))
+								if(!string.IsNullOrEmpty(token))
 								{
 									int commentstart = token.IndexOf("//");
-									if (commentstart != -1) //found comment
+									if(commentstart != -1) //found comment
 									{ 
 										commentstart += 2;
 										name = token.Substring(commentstart, token.Length - commentstart).Trim();
@@ -148,20 +162,18 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 					break;
 
 					default:
-						if (processincludes && (token == "#include" || token == "#import")) 
+						if(processincludes && (token == "#include" || token == "#import")) 
 						{
 							SkipWhitespace(true);
 							string includelump = StripTokenQuotes(ReadToken()).ToLowerInvariant();
 
-							if (!string.IsNullOrEmpty(includelump)) 
+							if(!string.IsNullOrEmpty(includelump)) 
 							{
 								string includename = Path.GetFileName(includelump);
-
-								if (includename == "zcommon.acs" || includename == "common.acs" || includes.Contains(includename))
-									continue;
+								if(includestoskip.Contains(includename) || includes.Contains(includename)) continue;
 							
 								// Callback to parse this file
-								if (OnInclude != null) OnInclude(this, includelump.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar));
+								if(OnInclude != null) OnInclude(this, includelump.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar));
 
 								// Set our buffers back to continue parsing
 								datastream = localstream;
@@ -170,7 +182,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							} 
 							else 
 							{
-								General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": got #include directive without include path!");
+								ReportError("Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": got #include directive without include path!");
+								return false;
 							}
 						}
 						break;

@@ -87,7 +87,7 @@ namespace CodeImp.DoomBuilder
 		//mxd
 		private Dictionary<string, ScriptItem> namedscripts;
 		private Dictionary<int, ScriptItem> numberedscripts;
-		private List<string> scriptincludes;
+		private readonly HashSet<string> scriptincludes;
 
 		// Disposing
 		private bool isdisposed;
@@ -130,7 +130,7 @@ namespace CodeImp.DoomBuilder
 		//mxd. Scripts
 		internal Dictionary<string, ScriptItem> NamedScripts { get { return namedscripts; } }
 		internal Dictionary<int, ScriptItem> NumberedScripts { get { return numberedscripts; } }
-		internal List<string> ScriptIncludes { get { return scriptincludes; } }
+		internal HashSet<string> ScriptIncludes { get { return scriptincludes; } }
 
 		public ViewMode ViewMode { get { return renderer2d.ViewMode; } }
 
@@ -160,7 +160,7 @@ namespace CodeImp.DoomBuilder
 			//mxd
 			numberedscripts = new Dictionary<int, ScriptItem>();
 			namedscripts = new Dictionary<string, ScriptItem>();
-			scriptincludes = new List<string>();
+			scriptincludes = new HashSet<string>();
 		}
 
 		// Disposer
@@ -437,8 +437,8 @@ namespace CodeImp.DoomBuilder
 			map.Update();
 			thingsfilter.Update();
 
-			//mxd. check script names
-			UpdateScriptNames();
+			//mxd. Update includes list and script names
+			UpdateScriptNames(true);
 
 			//mxd. Restore selection groups
 			options.ReadSelectionGroups();
@@ -527,8 +527,8 @@ namespace CodeImp.DoomBuilder
 			//mxd. Sector textures may've been changed 
 			data.UpdateUsedTextures();
 
-			//mxd. check script names
-			UpdateScriptNames();
+			//mxd. Update includes list and script names
+			UpdateScriptNames(true);
 
 			//mxd. Restore selection groups
 			options.ReadSelectionGroups();
@@ -1746,7 +1746,7 @@ namespace CodeImp.DoomBuilder
 			{
 				scriptconfig = config.MapLumps[lumpname].Script;
 			}
-			if (scriptconfig.Compiler == null) return true;
+			if(scriptconfig.Compiler == null) return true;
 
 			// Find the lump
 			if(lumpname == CONFIG_MAP_HEADER) reallumpname = TEMP_MAP_HEADER;
@@ -1757,7 +1757,7 @@ namespace CodeImp.DoomBuilder
 			string sourcefile = (filepathname.Length > 0 ? filepathname : tempwad.Filename);
 
 			// New list of errors
-			if (clearerrors) errors.Clear();
+			if(clearerrors) errors.Clear();
 
 			// Determine the script configuration to use
 			try 
@@ -1862,11 +1862,29 @@ namespace CodeImp.DoomBuilder
 			errors.Clear();
 		}*/
 
-		//mxd
-		internal void UpdateScriptNames() 
+		//mxd. Update includes list and script names
+		internal List<CompilerError> UpdateScriptNames(bool logerrors)
+		{
+			List<CompilerError> compilererrors = UpdateScriptNames();
+			if(logerrors && compilererrors.Count > 0)
+			{
+				foreach(CompilerError error in compilererrors)
+				{
+					General.ErrorLogger.Add(ErrorType.Error, "ACS error in '" + error.filename
+								+ "', line " + error.linenumber + ". " + error.description + ".");
+				}
+			}
+
+			return compilererrors;
+		}
+
+		//mxd. Update includes list and script names
+		internal List<CompilerError> UpdateScriptNames()
 		{
 			List<ScriptItem> namedscriptslist = new List<ScriptItem>();
 			List<ScriptItem> numberedscriptslist = new List<ScriptItem>();
+			List<string> scripincludeslist = new List<string>();
+			List<CompilerError> compilererrors = new List<CompilerError>();
 
 			// Load the script lumps
 			foreach(MapLumpInfo maplumpinfo in config.MapLumps.Values) 
@@ -1874,48 +1892,78 @@ namespace CodeImp.DoomBuilder
 				// Is this a script lump?
 				if((maplumpinfo.ScriptBuild || maplumpinfo.Script != null) && maplumpinfo.Name == "SCRIPTS") 
 				{
+					ScriptConfiguration scriptconfig;
+					if(maplumpinfo.ScriptBuild)
+					{
+						//mxd. More boilderplate
+						if(!General.CompiledScriptConfigs.ContainsKey(General.Map.Options.ScriptCompiler))
+						{
+							compilererrors.Add(new CompilerError("Unable to compile lump '" + maplumpinfo.Name + "'. Unable to find required script compiler configuration ('" + General.Map.Options.ScriptCompiler + "')."));
+							return compilererrors;
+						}
+
+						scriptconfig = General.CompiledScriptConfigs[General.Map.Options.ScriptCompiler];
+					}
+					else
+					{
+						scriptconfig = maplumpinfo.Script;
+					}
+					
 					// Load the lump data
 					MemoryStream stream = GetLumpData(maplumpinfo.Name);
-					if(stream != null) 
+					if(stream != null && scriptconfig != null && scriptconfig.Compiler != null)
 					{
 						// Get script names
-						AcsParserSE parser = new AcsParserSE();
-						parser.OnInclude = UpdateScriptsFromLocation;
-						parser.Parse(stream, "SCRIPTS", true, false);
-
-						// Add them to arrays
-						namedscriptslist.AddRange(parser.NamedScripts);
-						numberedscriptslist.AddRange(parser.NumberedScripts);
-						scriptincludes.AddRange(parser.Includes);
+						AcsParserSE parser = new AcsParserSE { OnInclude = UpdateScriptsFromLocation };
+						if(parser.Parse(stream, "SCRIPTS", scriptconfig.Compiler.Files, true, false))
+						{
+							// Add them to arrays
+							namedscriptslist.AddRange(parser.NamedScripts);
+							numberedscriptslist.AddRange(parser.NumberedScripts);
+							scripincludeslist.AddRange(parser.Includes);
+						}
+						// Check for errors
+						else if(parser.HasError)
+						{
+							compilererrors.Add(new CompilerError(parser.ErrorDescription, parser.ErrorSource, parser.ErrorLine));
+							break;
+						}
 					}
 				}
 			}
 
-			// Sort script names
-			namedscriptslist.Sort(ScriptItem.SortByName);
-			numberedscriptslist.Sort(ScriptItem.SortByIndex);
-
 			// Add to collections
-			namedscripts = new Dictionary<string, ScriptItem>(namedscriptslist.Count);
-			numberedscripts = new Dictionary<int, ScriptItem>(numberedscriptslist.Count);
+			scriptincludes.Clear();
+			if(compilererrors.Count == 0)
+			{
+				namedscripts = new Dictionary<string, ScriptItem>(namedscriptslist.Count);
+				numberedscripts = new Dictionary<int, ScriptItem>(numberedscriptslist.Count);
 
-			foreach (ScriptItem item in namedscriptslist)
-			{
-				if(!namedscripts.ContainsKey(item.Name.ToLowerInvariant()))
-					namedscripts.Add(item.Name.ToLowerInvariant(), item);
+				// Sort script names
+				namedscriptslist.Sort(ScriptItem.SortByName);
+				numberedscriptslist.Sort(ScriptItem.SortByIndex);
+
+				foreach(ScriptItem item in namedscriptslist)
+					if(!namedscripts.ContainsKey(item.Name.ToLowerInvariant())) namedscripts.Add(item.Name.ToLowerInvariant(), item);
+				foreach(ScriptItem item in numberedscriptslist)
+					if(!numberedscripts.ContainsKey(item.Index)) numberedscripts.Add(item.Index, item);
+				foreach(string include in scripincludeslist)
+					if(!scriptincludes.Contains(include)) scriptincludes.Add(include);
 			}
-			foreach(ScriptItem item in numberedscriptslist)
+			else
 			{
-				if(!numberedscripts.ContainsKey(item.Index))
-					numberedscripts.Add(item.Index, item);
+				// Clear collections
+				namedscripts.Clear();
+				numberedscripts.Clear();
 			}
+
+			return compilererrors;
 		}
 
 		//mxd
 		private static void UpdateScriptsFromLocation(AcsParserSE parser, string path) 
 		{
-			MemoryStream s = General.Map.Data.LoadFile(path);
-			if(s != null && s.Length > 0) parser.Parse(s, path, true, true);
+			parser.Parse(General.Map.Data.LoadFile(path), path, true, true);
 		}
 
 		#endregion
@@ -2071,8 +2119,8 @@ namespace CodeImp.DoomBuilder
 			General.MainWindow.DisplayStatus(oldstatus);
 			Cursor.Current = oldcursor;
 
-			//mxd
-			UpdateScriptNames();
+			//mxd. Update includes list and script names
+			UpdateScriptNames(true);
 		}
 
 		// Game Configuration action
@@ -2146,7 +2194,6 @@ namespace CodeImp.DoomBuilder
 
 				// Reload resources
 				ReloadResources();
-				UpdateScriptNames(); //mxd
 
 				//mxd. Translate texture names
 				bool nameschanged = map.TranslateTextureNames(config.UseLongTextureNames, false);

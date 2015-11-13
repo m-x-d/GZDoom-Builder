@@ -425,10 +425,12 @@ namespace CodeImp.DoomBuilder.Controls
 			navigator.Items.Clear();
 
 			AcsParserSE parser = new AcsParserSE();
-			parser.Parse(stream, "ACS");
-			navigator.Items.AddRange(parser.NamedScripts.ToArray());
-			navigator.Items.AddRange(parser.NumberedScripts.ToArray());
-			navigator.Items.AddRange(parser.Functions.ToArray());
+			if(parser.Parse(stream, "ACS"))
+			{
+				navigator.Items.AddRange(parser.NamedScripts.ToArray());
+				navigator.Items.AddRange(parser.NumberedScripts.ToArray());
+				navigator.Items.AddRange(parser.Functions.ToArray());
+			}
 		}
 		
 		//mxd

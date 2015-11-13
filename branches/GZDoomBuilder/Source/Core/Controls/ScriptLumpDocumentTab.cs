@@ -16,10 +16,10 @@
 
 #region ================== Namespaces
 
+using System.Collections.Generic;
 using CodeImp.DoomBuilder.Config;
 using System.IO;
 using CodeImp.DoomBuilder.Compilers;
-using CodeImp.DoomBuilder.GZBuilder.Data; //mxd
 
 #endregion
 
@@ -33,8 +33,8 @@ namespace CodeImp.DoomBuilder.Controls
 
 		#region ================== Variables
 
-		private string lumpname;
-		private bool ismapheader;
+		private readonly string lumpname;
+		private readonly bool ismapheader;
 		
 		#endregion
 		
@@ -87,16 +87,21 @@ namespace CodeImp.DoomBuilder.Controls
 		// Compile script
 		public override void Compile()
 		{
-			bool success; //mxd
+			//mxd. List of errors. UpdateScriptNames can return errors and also updates acs includes list
+			List<CompilerError> errors = (config.ScriptType == ScriptType.ACS ? General.Map.UpdateScriptNames() : new List<CompilerError>());
+
+			//mxd. Errors already?..
+			if(errors.Count > 0)
+			{
+				// Feed errors to panel
+				panel.ShowErrors(errors);
+				return;
+			}
 
 			// Compile
-			if(ismapheader)
-				success = General.Map.CompileLump(MapManager.CONFIG_MAP_HEADER, true);
-			else
-				success = General.Map.CompileLump(lumpname, true);
-
-			//mxd. Update script names cache and script navigator
-			if(success && config.ScriptType == ScriptType.ACS) General.Map.UpdateScriptNames();
+			General.Map.CompileLump((ismapheader ? MapManager.CONFIG_MAP_HEADER : lumpname), true);
+			
+			//mxd. Update script navigator
 			UpdateNavigator();
 
 			// Feed errors to panel
