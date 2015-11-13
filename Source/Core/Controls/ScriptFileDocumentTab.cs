@@ -22,7 +22,6 @@ using System.Windows.Forms;
 using CodeImp.DoomBuilder.Config;
 using System.IO;
 using CodeImp.DoomBuilder.Compilers;
-using CodeImp.DoomBuilder.GZBuilder.Data; //mxd
 
 #endregion
 
@@ -72,11 +71,18 @@ namespace CodeImp.DoomBuilder.Controls
 		// This compiles the script file
 		public override void Compile()
 		{
-			string inputfile, outputfile;
+			//mxd. List of errors. UpdateScriptNames can return errors and also updates acs includes list
+			List<CompilerError> errors = (config.ScriptType == ScriptType.ACS ? General.Map.UpdateScriptNames() : new List<CompilerError>());
+
+			//mxd. Errors already?..
+			if(errors.Count > 0)
+			{
+				// Feed errors to panel
+				panel.ShowErrors(errors);
+				return;
+			}
+
 			Compiler compiler;
-			
-			// List of errors
-			List<CompilerError> errors = new List<CompilerError>();
 			
 			try
 			{
@@ -91,11 +97,11 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 			
 			// Copy the source file into the temporary directory
-			inputfile = Path.Combine(compiler.Location, Path.GetFileName(filepathname));
+			string inputfile = Path.Combine(compiler.Location, Path.GetFileName(filepathname));
 			File.Copy(filepathname, inputfile);
 			
 			// Make random output filename
-			outputfile = General.MakeTempFilename(compiler.Location, "tmp");
+			string outputfile = General.MakeTempFilename(compiler.Location, "tmp");
 
 			// Run compiler
 			compiler.Parameters = config.Parameters;
@@ -117,15 +123,13 @@ namespace CodeImp.DoomBuilder.Controls
 
 					errors.Add(newerr);
 				}
-
-				//mxd. Should be called only if current script is compiled successfully
-				if (compiler.Errors.Length == 0 && config.ScriptType == ScriptType.ACS)
-					General.Map.UpdateScriptNames();
-				UpdateNavigator();
 			}
 			
 			// Dispose compiler
 			compiler.Dispose();
+
+			//mxd. Update script navigator
+			UpdateNavigator();
 			
 			// Feed errors to panel
 			panel.ShowErrors(errors);

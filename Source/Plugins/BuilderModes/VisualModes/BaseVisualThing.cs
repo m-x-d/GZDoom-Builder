@@ -165,8 +165,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 			}
 
-			// Don't bother when alpha is unchanged
-			if(alpha == 255) RenderPass = RenderPass.Mask;
+			// Don't bother when alpha is unchanged, unless Additive RenderStyle is used
+			if(RenderPass != RenderPass.Additive && alpha == 255) RenderPass = RenderPass.Mask;
 
 			int sectorcolor = new PixelColor(alpha, 255, 255, 255).ToInt();
 			fogfactor = 0f; //mxd

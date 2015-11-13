@@ -66,7 +66,6 @@ namespace CodeImp.DoomBuilder.Compilers
 		// This runs the compiler
 		public override bool Run()
 		{
-			ProcessStartInfo processinfo;
 			Process process;
 			TimeSpan deltatime;
 			int line = 0;
@@ -74,24 +73,23 @@ namespace CodeImp.DoomBuilder.Compilers
 
 			//xabis
 			// Copy includes from the resources into the compiler's folder, preserving relative pathing and naming
-			foreach (string include in General.Map.ScriptIncludes) 
+			foreach(string include in General.Map.ScriptIncludes) 
 			{
 				//grab the script text from the resources
 				MemoryStream s = General.Map.Data.LoadFile(include);
 				
-				if (s != null) 
+				if(s != null) 
 				{
 					//pull the pk3 or directory sub folder out if applicable
 					FileInfo fi = new FileInfo(Path.Combine(this.tempdir.FullName, include));
 
 					//do not allow files to be overwritten, either accidentally or maliciously
-					if (!fi.Exists) 
+					if(!fi.Exists) 
 					{
 						General.WriteLogLine("Copying script include: " + include);
 
 						//create the directory path as needed
-						if (fi.DirectoryName != "")
-							Directory.CreateDirectory(fi.DirectoryName);
+						if(!string.IsNullOrEmpty(fi.DirectoryName)) Directory.CreateDirectory(fi.DirectoryName);
 
 						//dump the script into the target file
 						BinaryReader reader = new BinaryReader(s);
@@ -110,7 +108,7 @@ namespace CodeImp.DoomBuilder.Compilers
 			args = args.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar); //mxd. This fixes include path when the map is in a root directory
 			
 			// Setup process info
-			processinfo = new ProcessStartInfo();
+			ProcessStartInfo processinfo = new ProcessStartInfo();
 			processinfo.Arguments = args;
 			//processinfo.FileName = Path.Combine(this.tempdir.FullName, info.ProgramFile);
 			processinfo.FileName = Path.Combine(info.Path, info.ProgramFile); //mxd
