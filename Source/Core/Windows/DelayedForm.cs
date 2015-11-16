@@ -76,7 +76,7 @@ namespace CodeImp.DoomBuilder.Windows
 			if(!this.IsDisposed)
 			{
 				// Make the form visible
-				this.Opacity = 100;
+				this.Opacity = 1.0;
 			}
 		}
 

@@ -292,6 +292,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.typelist.TabIndex = 22;
 			this.typelist.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.typelist_MouseDoubleClick);
 			this.typelist.MouseEnter += new System.EventHandler(this.typelist_MouseEnter);
+			this.typelist.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.typelist_KeyPress);
 			this.typelist.SelectionsChanged += new System.EventHandler(this.typelist_SelectionsChanged);
 			// 
 			// ThingBrowserControl
