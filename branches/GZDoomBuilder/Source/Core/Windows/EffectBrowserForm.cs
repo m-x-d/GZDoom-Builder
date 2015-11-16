@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Config;
 
@@ -243,6 +244,31 @@ namespace CodeImp.DoomBuilder.Windows
 		private void EffectBrowserForm_Shown(object sender, EventArgs e)
 		{
 			if(tabs.SelectedTab == tabeffects) tbFilter.Focus();
+		}
+
+		//mxd
+		private void effects_MouseEnter(object sender, EventArgs e)
+		{
+			effects.Focus();
+		}
+
+		//mxd. Transfer focus to Filter textbox
+		private void effects_KeyPress(object sender, KeyPressEventArgs e)
+		{
+			tbFilter.Focus();
+			if(e.KeyChar == '\b') // Any better way to check for Backspace?..
+			{
+				if(!string.IsNullOrEmpty(tbFilter.Text) && tbFilter.SelectionStart > 0 && tbFilter.SelectionLength == 0)
+				{
+					int s = tbFilter.SelectionStart - 1;
+					tbFilter.Text = tbFilter.Text.Remove(s, 1);
+					tbFilter.SelectionStart = s;
+				}
+			}
+			else
+			{
+				tbFilter.AppendText(e.KeyChar.ToString(CultureInfo.InvariantCulture));
+			}
 		}
 
 	}

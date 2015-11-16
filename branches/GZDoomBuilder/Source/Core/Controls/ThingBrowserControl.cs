@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Data;
@@ -409,6 +410,25 @@ namespace CodeImp.DoomBuilder.Controls
 		private void typelist_MouseEnter(object sender, EventArgs e) 
 		{
 			typelist.Focus();
+		}
+
+		//mxd. Transfer focus to Filter textbox
+		private void typelist_KeyPress(object sender, KeyPressEventArgs e)
+		{
+			tbFilter.Focus();
+			if(e.KeyChar == '\b') // Any better way to check for Backspace?..
+			{
+				if(!string.IsNullOrEmpty(tbFilter.Text) && tbFilter.SelectionStart > 0 && tbFilter.SelectionLength == 0)
+				{
+					int s = tbFilter.SelectionStart - 1;
+					tbFilter.Text = tbFilter.Text.Remove(s, 1);
+					tbFilter.SelectionStart = s;
+				}
+			}
+			else
+			{
+				tbFilter.AppendText(e.KeyChar.ToString(CultureInfo.InvariantCulture));
+			}
 		}
 
 		//mxd

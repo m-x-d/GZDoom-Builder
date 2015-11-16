@@ -87,6 +87,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Choose Thing Type";
+			this.Shown += new System.EventHandler(this.ThingBrowserForm_Shown);
 			this.ResumeLayout(false);
 
 		}

@@ -359,6 +359,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.effects.UseCompatibleStateImageBehavior = false;
 			this.effects.View = System.Windows.Forms.View.Details;
 			this.effects.DoubleClick += new System.EventHandler(this.effects_DoubleClick);
+			this.effects.MouseEnter += new System.EventHandler(this.effects_MouseEnter);
+			this.effects.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.effects_KeyPress);
 			// 
 			// colnumber
 			// 

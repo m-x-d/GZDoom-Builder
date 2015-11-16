@@ -26,7 +26,7 @@ namespace CodeImp.DoomBuilder.Windows
 	public partial class ThingBrowserForm : DelayedForm
 	{
 		// Variables
-		public int selectedtype;
+		private int selectedtype;
 		
 		// Properties
 		public int SelectedType { get { return selectedtype; } }
@@ -77,6 +77,12 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			// OK
 			apply_Click(this, EventArgs.Empty);
+		}
+
+		//mxd
+		private void ThingBrowserForm_Shown(object sender, EventArgs e)
+		{
+			thingslist.FocusTextbox();
 		}
 	}
 }

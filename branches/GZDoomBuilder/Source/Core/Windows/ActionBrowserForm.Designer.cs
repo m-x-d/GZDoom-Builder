@@ -391,6 +391,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.actions.Size = new System.Drawing.Size(379, 335);
 			this.actions.TabIndex = 0;
 			this.actions.DoubleClick += new System.EventHandler(this.actions_DoubleClick);
+			this.actions.MouseEnter += new System.EventHandler(this.actions_MouseEnter);
+			this.actions.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.actions_KeyPress);
 			// 
 			// tabs
 			// 
@@ -414,10 +416,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabactions.Controls.Add(this.actions);
 			this.tabactions.Controls.Add(this.prefixespanel);
 			this.tabactions.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tabactions.Location = new System.Drawing.Point(4, 23);
+			this.tabactions.Location = new System.Drawing.Point(4, 22);
 			this.tabactions.Name = "tabactions";
 			this.tabactions.Padding = new System.Windows.Forms.Padding(3);
-			this.tabactions.Size = new System.Drawing.Size(391, 409);
+			this.tabactions.Size = new System.Drawing.Size(391, 410);
 			this.tabactions.TabIndex = 0;
 			this.tabactions.Text = "Predefined Actions";
 			this.tabactions.UseVisualStyleBackColor = true;
@@ -478,10 +480,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabgeneralized.Controls.Add(groupBox2);
 			this.tabgeneralized.Controls.Add(groupBox1);
 			this.tabgeneralized.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tabgeneralized.Location = new System.Drawing.Point(4, 23);
+			this.tabgeneralized.Location = new System.Drawing.Point(4, 22);
 			this.tabgeneralized.Name = "tabgeneralized";
 			this.tabgeneralized.Padding = new System.Windows.Forms.Padding(3);
-			this.tabgeneralized.Size = new System.Drawing.Size(391, 409);
+			this.tabgeneralized.Size = new System.Drawing.Size(391, 410);
 			this.tabgeneralized.TabIndex = 1;
 			this.tabgeneralized.Text = "Generalized Actions";
 			this.tabgeneralized.UseVisualStyleBackColor = true;
