@@ -74,7 +74,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 			// Setup preset controls
 			// Add flags
-			foreach (KeyValuePair<string, string> lf in General.Map.Config.LinedefFlags)
+			foreach(KeyValuePair<string, string> lf in General.Map.Config.LinedefFlags)
 			{
 				CheckBox box = flags.Add(lf.Value, lf.Key);
 				box.ThreeState = true;
@@ -84,9 +84,8 @@ namespace CodeImp.DoomBuilder.Windows
 			// Fill actions list
 			action.GeneralizedCategories = General.Map.Config.GenActionCategories;
 
-			LinedefActionInfo anyAction = new LinedefActionInfo(-1, "Any action", true, false);
-			List<LinedefActionInfo> infos = General.Map.Config.SortedLinedefActions;
-			infos.Insert(0, anyAction);
+			List<LinedefActionInfo> infos = new List<LinedefActionInfo> { new LinedefActionInfo(-1, "Any action", true, false) };
+			infos.AddRange(General.Map.Config.SortedLinedefActions);
 
 			action.AddInfo(infos.ToArray());
 			action.Value = -1;
@@ -96,7 +95,7 @@ namespace CodeImp.DoomBuilder.Windows
 			activation.Visible = !General.Map.UDMF;
 
 			//get activates
-			List<LinedefActivateInfo> activations = General.Map.Config.LinedefActivates;
+			List<LinedefActivateInfo> activations = new List<LinedefActivateInfo>(General.Map.Config.LinedefActivates);
 
 			if(activations.Count > 0)
 			{
@@ -104,7 +103,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 				if(General.Map.UDMF)
 				{
-					foreach (LinedefActivateInfo ai in General.Map.Config.LinedefActivates)
+					foreach(LinedefActivateInfo ai in General.Map.Config.LinedefActivates)
 					{
 						CheckBox box = udmfactivates.Add(ai.Title, ai.Key);
 						box.ThreeState = true;
@@ -159,12 +158,12 @@ namespace CodeImp.DoomBuilder.Windows
 					if(other.Preset.Flags.Count != item.Preset.Flags.Count) continue;
 					if(other.Preset.RestrictedFlags.Count != item.Preset.RestrictedFlags.Count) continue;
 
-					bool gotMismatch = false;
+					bool gotmismatch = false;
 					foreach(string flag in other.Preset.Flags) 
 					{
 						if(!item.Preset.Flags.Contains(flag)) 
 						{
-							gotMismatch = true;
+							gotmismatch = true;
 							break;
 						}
 					}
@@ -173,12 +172,12 @@ namespace CodeImp.DoomBuilder.Windows
 					{
 						if(!item.Preset.RestrictedFlags.Contains(flag)) 
 						{
-							gotMismatch = true;
+							gotmismatch = true;
 							break;
 						}
 					}
 
-					if(gotMismatch) continue;
+					if(gotmismatch) continue;
 
 					//we have a match
 					warning = "Preset matches '" + other.Preset.Name + "'!";
@@ -225,7 +224,7 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 			else
 			{
-				foreach (CheckBox box in source.Checkboxes)
+				foreach(CheckBox box in source.Checkboxes)
 				{
 					string flag = box.Tag.ToString();
 					if(preset.Flags.Contains(flag)) preset.Flags.Remove(flag);
