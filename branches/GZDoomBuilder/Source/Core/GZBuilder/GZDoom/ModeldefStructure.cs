@@ -15,10 +15,15 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 	{
 		private const int MAX_MODELS = 4; //maximum models per modeldef entry, zero-based
 
-		internal ModelData Parse(ModeldefParser parser) 
+		internal ModelData Parse(ModeldefParser parser)
 		{
-			string[] textureNames = new string[4];
-			string[] modelNames = new string[4];
+
+#region ================== Vars
+
+			string[] textureNames = new string[MAX_MODELS];
+			string[] modelNames = new string[MAX_MODELS];
+			string[] frameNames = new string[MAX_MODELS];
+			int[] frameIndices = new int[MAX_MODELS];
 			bool[] modelsUsed = new bool[MAX_MODELS];
 			string path = "";
 			Vector3 scale = new Vector3(1, 1, 1);
@@ -33,27 +38,33 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 			bool gotErrors = false;
 			bool allParsed = false;
 
+#endregion
+
 			//read modeldef structure contents
 			while(!gotErrors && !allParsed && parser.SkipWhitespace(true)) 
 			{
 				token = parser.ReadToken();
-
-				if (!string.IsNullOrEmpty(token)) 
+				if(!string.IsNullOrEmpty(token)) 
 				{
 					token = parser.StripTokenQuotes(token).ToLowerInvariant(); //ANYTHING can be quoted...
-
-					switch (token) 
+					switch(token)
 					{
+
+#region ================== Path
+
 						case "path":
 							parser.SkipWhitespace(true);
 							path = parser.StripTokenQuotes(parser.ReadToken()).Replace("/", "\\");
-
 							if(string.IsNullOrEmpty(path)) 
 							{
 								General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected path to model, but got '" + token + "'");
 								gotErrors = true;
 							}
 							break;
+
+#endregion
+
+#region ================== Model
 
 						case "model":
 							parser.SkipWhitespace(true);
@@ -107,6 +118,10 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							}
 							break;
 
+#endregion
+
+#region ================== Skin
+
 						case "skin":
 							parser.SkipWhitespace(true);
 
@@ -154,6 +169,10 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							}
 							break;
 
+#endregion
+
+#region ================== Scale
+
 						case "scale":
 							parser.SkipWhitespace(true);
 							token = parser.StripTokenQuotes(parser.ReadToken());
@@ -184,6 +203,10 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 								gotErrors = true;
 							}
 							break;
+
+#endregion
+
+#region ================== Offset
 
 						case "offset":
 							parser.SkipWhitespace(true);
@@ -216,9 +239,12 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							}
 							break;
 
+#endregion
+
+#region ================== ZOffset
+
 						case "zoffset":
 							parser.SkipWhitespace(true);
-
 							token = parser.StripTokenQuotes(parser.ReadToken());
 							if(!parser.ReadSignedFloat(token, ref offset.Z)) 
 							{
@@ -228,9 +254,12 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							}
 							break;
 
+#endregion
+
+#region ================== AngleOffset
+
 						case "angleoffset":
 							parser.SkipWhitespace(true);
-
 							token = parser.StripTokenQuotes(parser.ReadToken());
 							if(!parser.ReadSignedFloat(token, ref angleOffset)) 
 							{
@@ -240,9 +269,12 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							}
 							break;
 
+#endregion
+
+#region ================== PitchOffset
+
 						case "pitchoffset":
 							parser.SkipWhitespace(true);
-
 							token = parser.StripTokenQuotes(parser.ReadToken());
 							if(!parser.ReadSignedFloat(token, ref pitchOffset)) 
 							{
@@ -252,9 +284,12 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							}
 							break;
 
+#endregion
+
+#region ================== RollOffset
+
 						case "rolloffset":
 							parser.SkipWhitespace(true);
-
 							token = parser.StripTokenQuotes(parser.ReadToken());
 							if(!parser.ReadSignedFloat(token, ref rollOffset)) 
 							{
@@ -264,13 +299,25 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							}
 							break;
 
+#endregion
+
+#region ================== InheritActorPitch
+
 						case "inheritactorpitch":
 							inheritactorpitch = true;
 							break;
 
+#endregion
+
+#region ================== InheritActorRoll
+
 						case "inheritactorroll":
 							inheritactorroll = true;
 							break;
+
+#endregion
+
+#region ================== Frame / FrameIndex
 
 						case "frameindex":
 						case "frame":
@@ -288,7 +335,6 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 								while(parser.SkipWhitespace(true)) 
 								{
 									token = parser.StripTokenQuotes(parser.ReadToken()).ToLowerInvariant();
-
 									if(token == "frameindex" || token == "frame") 
 									{
 										bool frameIndex = (token == "frameindex");
@@ -296,7 +342,6 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 
 										//should be sprite lump
 										token = parser.StripTokenQuotes(parser.ReadToken()).ToLowerInvariant();
-
 										if(string.IsNullOrEmpty(spriteLump)) 
 										{
 											spriteLump = token;
@@ -318,7 +363,6 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 
 										//should be sprite frame
 										token = parser.StripTokenQuotes(parser.ReadToken()).ToLowerInvariant();
-
 										if(string.IsNullOrEmpty(spriteFrame)) 
 										{
 											spriteFrame = token;
@@ -368,22 +412,34 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 
 										parser.SkipWhitespace(true);
 
-										// Should be frame name or index. Currently I have no use for it
+										// Should be frame name or index
 										token = parser.StripTokenQuotes(parser.ReadToken());
-
-										if(frameIndex) 
+										if(frameIndex)
 										{
 											int frame = 0;
 											if(!parser.ReadSignedInt(token, ref frame))
 											{
 												// Not numeric!
-												General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected model frame, but got '" + token + "'");
+												General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected model frame index, but got '" + token + "'");
 												gotErrors = true;
 												break;
 											}
 
 											// Skip the model if frame index is -1
 											if(frame == -1) modelsUsed[modelIndex] = false;
+											else frameIndices[modelIndex] = frame;
+										}
+										else
+										{
+											if(string.IsNullOrEmpty(token))
+											{
+												// Missing!
+												General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected model frame name");
+												gotErrors = true;
+												break;
+											}
+
+											frameNames[modelIndex] = token.ToLowerInvariant();
 										}
 									} 
 									else 
@@ -394,21 +450,24 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 									}
 								}
 							}
+
 							allParsed = true;
 							break;
+
+#endregion
 					}
 				}
 			}
 
 			// Find closing brace, then quit
-			while (parser.SkipWhitespace(true)) 
+			while(parser.SkipWhitespace(true)) 
 			{
 				token = parser.ReadToken();
-				if (string.IsNullOrEmpty(token) || token == "}") break;
+				if(string.IsNullOrEmpty(token) || token == "}") break;
 			}
 
 			// Bail out when got errors or no models are used
-			if (gotErrors || Array.IndexOf(modelsUsed, true) == -1) return null;
+			if(gotErrors || Array.IndexOf(modelsUsed, true) == -1) return null;
 			
 			// Classname is set in ModeldefParser
 			ModelData mde = new ModelData();
@@ -422,8 +481,10 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 			{
 				if(!string.IsNullOrEmpty(modelNames[i]) && modelsUsed[i]) 
 				{
-					mde.TextureNames.Add(string.IsNullOrEmpty(textureNames[i]) ? textureNames[i] : textureNames[i].ToLowerInvariant());
+					mde.TextureNames.Add(string.IsNullOrEmpty(textureNames[i]) ? string.Empty : textureNames[i].ToLowerInvariant());
 					mde.ModelNames.Add(modelNames[i].ToLowerInvariant());
+					mde.FrameNames.Add(frameNames[i]);
+					mde.FrameIndices.Add(frameIndices[i]);
 				}
 			}
 

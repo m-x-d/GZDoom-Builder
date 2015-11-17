@@ -1320,7 +1320,7 @@
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
-    <PostBuildEvent>call "$(DevEnvDir)..\tools\vsvars32.bat"
-EDITBIN.EXE /LARGEADDRESSAWARE "$(TargetPath)"</PostBuildEvent>
+    <PostBuildEvent>call "%25VS90COMNTOOLS%25\vsvars32.bat"
+EDITBIN.EXE /NOLOGO /LARGEADDRESSAWARE "$(TargetPath)"</PostBuildEvent>
   </PropertyGroup>
 </Project>
