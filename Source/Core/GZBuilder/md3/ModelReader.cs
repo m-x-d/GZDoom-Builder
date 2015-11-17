@@ -51,10 +51,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 
 		public static void Load(ModelData mde, List<DataReader> containers, Device device) 
 		{
-			if(mde.IsVoxel) 
-				LoadKVX(mde, containers, device);
-			else
-				LoadModel(mde, containers, device);
+			if(mde.IsVoxel) LoadKVX(mde, containers, device);
+			else LoadModel(mde, containers, device);
 		}
 
 		private static void LoadKVX(ModelData mde, List<DataReader> containers, Device device) 
@@ -105,20 +103,25 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 			
 				//load mesh
 				MemoryStream ms = LoadFile(containers, mde.ModelNames[i], true);
-				if (ms == null) 
+				if(ms == null) 
 				{
 					General.ErrorLogger.Add(ErrorType.Error, "Error while loading '" + mde.ModelNames[i] + "': unable to find file.");
 					continue;
 				}
 
 				string ext = Path.GetExtension(mde.ModelNames[i]);
-				switch (ext)
+				switch(ext)
 				{
 					case ".md3":
-						result = ReadMD3Model(ref bbs, mde, useSkins, ms, device);
+						if(!string.IsNullOrEmpty(mde.FrameNames[i]))
+						{
+							General.ErrorLogger.Add(ErrorType.Error, "Error while loading '" + mde.ModelNames[i] + "': frame names are not supported for MD3 models!");
+							continue;
+						}
+						result = ReadMD3Model(ref bbs, useSkins, ms, device, mde.FrameIndices[i]);
 						break;
 					case ".md2":
-						result = ReadMD2Model(ref bbs, mde, ms, device);
+						result = ReadMD2Model(ref bbs, ms, device, mde.FrameIndices[i], mde.FrameNames[i]);
 						break;
 					default:
 						result.Errors = "model format is not supported";
@@ -148,7 +151,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 					//texture has unsupported extension?
 					if(mde.TextureNames[i] == TextureData.INVALID_TEXTURE) 
 					{
-						for (int c = 0; c < result.Meshes.Count; c++)
+						for(int c = 0; c < result.Meshes.Count; c++)
 							mde.Model.Textures.Add(General.Map.Data.UnknownTexture3D.Texture);
 					
 					//texture not defined in MODELDEF?
@@ -238,21 +241,28 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 
 		#region ================== MD3
 
-		private static MD3LoadResult ReadMD3Model(ref BoundingBoxSizes bbs, ModelData mde, bool useSkins, MemoryStream s, Device device) 
+		private static MD3LoadResult ReadMD3Model(ref BoundingBoxSizes bbs, bool useSkins, MemoryStream s, Device device, int frame) 
 		{
 			long start = s.Position;
 			MD3LoadResult result = new MD3LoadResult();
 
-			using (var br = new BinaryReader(s, Encoding.ASCII)) 
+			using(var br = new BinaryReader(s, Encoding.ASCII)) 
 			{
 				string magic = ReadString(br, 4);
-				if (magic != "IDP3")
+				if(magic != "IDP3")
 				{
-					result.Errors = "magic should be 'IDP3', not '" + magic + "'";
+					result.Errors = "unknown header: expected 'IDP3', but got '" + magic + "'";
 					return result;
 				}
 
-				s.Position += 80;
+				int modelVersion = br.ReadInt32();
+				if(modelVersion != 15) //MD3 version. Must be equal to 15
+				{
+					result.Errors = "expected MD3 version 15, but got " + modelVersion;
+					return result;
+				}
+
+				s.Position += 76;
 				int numSurfaces = br.ReadInt32();
 				s.Position += 12;
 				int ofsSurfaces = br.ReadInt32();
@@ -266,11 +276,10 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 				Dictionary<string, List<WorldVertex>> vertListsPerTexture = new Dictionary<string, List<WorldVertex>>(StringComparer.Ordinal);
 				Dictionary<string, List<int>> vertexOffsets = new Dictionary<string, List<int>>(StringComparer.Ordinal);
 
-				string error;
-				for (int c = 0; c < numSurfaces; c++) 
+				for(int c = 0; c < numSurfaces; c++) 
 				{
 					string skin = "";
-					error = ReadSurface(ref bbs, ref skin, br, polyIndecesList, vertList, mde);
+					string error = ReadSurface(ref bbs, ref skin, br, polyIndecesList, vertList, frame);
 
 					if(!string.IsNullOrEmpty(error)) 
 					{
@@ -335,15 +344,18 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 			return result;
 		}
 
-		private static string ReadSurface(ref BoundingBoxSizes bbs, ref string skin, BinaryReader br, List<int> polyIndecesList, List<WorldVertex> vertList, ModelData mde) 
+		private static string ReadSurface(ref BoundingBoxSizes bbs, ref string skin, BinaryReader br, List<int> polyIndecesList, List<WorldVertex> vertList, int frame) 
 		{
 			int vertexOffset = vertList.Count;
 			long start = br.BaseStream.Position;
+			
 			string magic = ReadString(br, 4);
-			if (magic != "IDP3")
-				return "error while reading surface: Magic should be 'IDP3', not '" + magic + "'";
+			if(magic != "IDP3") return "error while reading surface. Unknown header: expected 'IDP3', but got '" + magic + "'";
 
-			br.BaseStream.Position += 76;
+			string name = ReadString(br, 64);
+			int flags = br.ReadInt32();
+			int numFrames = br.ReadInt32(); //Number of animation frames. This should match NUM_FRAMES in the MD3 header.
+			int numShaders = br.ReadInt32(); //Number of Shader objects defined in this Surface, with a limit of MD3_MAX_SHADERS. Current value of MD3_MAX_SHADERS is 256.
 			int numVerts = br.ReadInt32(); //Number of Vertex objects defined in this Surface, up to MD3_MAX_VERTS. Current value of MD3_MAX_VERTS is 4096.
 			int numTriangles = br.ReadInt32(); //Number of Triangle objects defined in this Surface, maximum of MD3_MAX_TRIANGLES. Current value of MD3_MAX_TRIANGLES is 8192.
 			int ofsTriangles = br.ReadInt32(); //Relative offset from SURFACE_START where the list of Triangle objects starts.
@@ -352,24 +364,30 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 			int ofsNormal = br.ReadInt32(); //Relative offset from SURFACE_START where the list of Vertex objects (X-Y-Z-N vertices) starts.
 			int ofsEnd = br.ReadInt32(); //Relative offset from SURFACE_START to where the Surface object ends.
 
-			//polygons
-			if (start + ofsTriangles != br.BaseStream.Position)
+			// Sanity check
+			if(frame < 0 || frame > numFrames)
+			{
+				return "invalid frame number! (frame number: " + frame + ", total frames: " + numFrames + ")";
+			}
+
+			// Polygons
+			if(start + ofsTriangles != br.BaseStream.Position)
 				br.BaseStream.Position = start + ofsTriangles;
 
-			for (int i = 0; i < numTriangles * 3; i++)
-				polyIndecesList.Add( vertexOffset + br.ReadInt32() );
+			for(int i = 0; i < numTriangles * 3; i++)
+				polyIndecesList.Add(vertexOffset + br.ReadInt32());
 
-			//shaders
+			// Shaders
 			if(start + ofsShaders != br.BaseStream.Position)
 				br.BaseStream.Position = start + ofsShaders;
 
 			skin = ReadString(br, 64); //we are interested only in the first one
 
-			//Vertices
-			if (start + ofsST != br.BaseStream.Position)
+			// Vertices
+			if(start + ofsST != br.BaseStream.Position)
 				br.BaseStream.Position = start + ofsST;
 
-			for (int i = 0; i < numVerts; i++) 
+			for(int i = 0; i < numVerts; i++) 
 			{
 				WorldVertex v = new WorldVertex();
 				v.c = -1; //white
@@ -379,11 +397,11 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 				vertList.Add(v);
 			}
 
-			//Normals
-			if (start + ofsNormal != br.BaseStream.Position)
-				br.BaseStream.Position = start + ofsNormal;
+			// Positions and normals
+			long vertoffset = start + ofsNormal + numVerts * 8 * frame; // The length of Vertex struct is 8 bytes
+			if(br.BaseStream.Position != vertoffset) br.BaseStream.Position = vertoffset;
 
-			for (int i = vertexOffset; i < vertexOffset + numVerts; i++) 
+			for(int i = vertexOffset; i < vertexOffset + numVerts; i++) 
 			{
 				WorldVertex v = vertList[i];
 
@@ -405,71 +423,56 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 				vertList[i] = v;
 			}
 
-			if (start + ofsEnd != br.BaseStream.Position)
+			if(start + ofsEnd != br.BaseStream.Position)
 				br.BaseStream.Position = start + ofsEnd;
 			return "";
-		}
-
-		private static void CreateMesh(Device device, ref MD3LoadResult result, List<WorldVertex> verts, List<int> indices) 
-		{
-			//create mesh
-			Mesh mesh = new Mesh(device, indices.Count / 3, verts.Count, MeshFlags.Use32Bit | MeshFlags.IndexBufferManaged | MeshFlags.VertexBufferManaged, vertexElements);
-
-			using(DataStream stream = mesh.LockVertexBuffer(LockFlags.None)) 
-			{
-				stream.WriteRange(verts.ToArray());
-			}
-			mesh.UnlockVertexBuffer();
-
-			using(DataStream stream = mesh.LockIndexBuffer(LockFlags.None)) 
-			{
-				stream.WriteRange(indices.ToArray());
-			}
-			mesh.UnlockIndexBuffer();
-
-			mesh.OptimizeInPlace(MeshOptimizeFlags.AttributeSort);
-
-			//store in result
-			result.Meshes.Add(mesh);
 		}
 
 		#endregion
 
 		#region ================== MD2
 
-		private static MD3LoadResult ReadMD2Model(ref BoundingBoxSizes bbs, ModelData mde, MemoryStream s, Device device) 
+		private static MD3LoadResult ReadMD2Model(ref BoundingBoxSizes bbs, MemoryStream s, Device device, int frame, string framename) 
 		{
 			long start = s.Position;
 			MD3LoadResult result = new MD3LoadResult();
 
-			using (var br = new BinaryReader(s, Encoding.ASCII)) 
+			using(var br = new BinaryReader(s, Encoding.ASCII)) 
 			{
 				string magic = ReadString(br, 4);
 				if(magic != "IDP2") //magic number: "IDP2"
 				{  
-					result.Errors = "magic should be 'IDP2', not '" + magic + "'";
+					result.Errors = "unknown header: expected 'IDP2', but got '" + magic + "'";
 					return result;
 				}
 
 				int modelVersion = br.ReadInt32();
 				if(modelVersion != 8) //MD2 version. Must be equal to 8
 				{ 
-					result.Errors = "MD2 version must be 8 but is " + modelVersion;
+					result.Errors = "expected MD3 version 15, but got " + modelVersion;
 					return result;
 				}
 
 				int texWidth = br.ReadInt32();
 				int texHeight = br.ReadInt32();
-				s.Position += 8; //Size of one frame in bytes
-				//s.Position += 4; //Number of textures
+				int framesize = br.ReadInt32(); // Size of one frame in bytes
+				s.Position += 4; //Number of textures
 				int num_verts = br.ReadInt32(); //Number of vertices
 				int num_uv = br.ReadInt32(); //The number of UV coordinates in the model
 				int num_tris = br.ReadInt32(); //Number of triangles
 				s.Position += 4; //Number of OpenGL commands
+				int num_frames = br.ReadInt32(); //Total number of frames
 
-				if(br.ReadInt32() == 0) //Total number of frames
-				{  
+				// Sanity checks
+				if(num_frames == 0) 
+				{
 					result.Errors = "model has 0 frames.";
+					return result;
+				}
+
+				if(num_frames < frame || frame < 0)
+				{
+					result.Errors = "invalid target frame! (target frame: " + frame + ", total frames: " + num_frames + ")";
 					return result;
 				}
 
@@ -483,10 +486,10 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 				List<Vector2> uvCoordsList = new List<Vector2>();
 				List<WorldVertex> vertList = new List<WorldVertex>();
 
-				//polygons
+				// Polygons
 				s.Position = ofs_tris + start;
 
-				for (int i = 0; i < num_tris; i++) 
+				for(int i = 0; i < num_tris; i++) 
 				{
 					polyIndecesList.Add(br.ReadUInt16());
 					polyIndecesList.Add(br.ReadUInt16());
@@ -497,27 +500,57 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 					uvIndecesList.Add(br.ReadUInt16());
 				}
 
-				//UV coords
+				// UV coords
 				s.Position = ofs_uv + start;
 
-				for (int i = 0; i < num_uv; i++) 
+				for(int i = 0; i < num_uv; i++) 
 					uvCoordsList.Add(new Vector2((float)br.ReadInt16() / texWidth, (float)br.ReadInt16() / texHeight));
 
-				//first frame
-				//header
-				s.Position = ofs_animFrame + start;
+				// Frames
+				// Find correct frame
+				if(!string.IsNullOrEmpty(framename))
+				{
+					// Skip frames untill frame name matches
+					bool framefound = false;
+					for(int i = 0; i < num_frames; i++)
+					{
+						s.Position = ofs_animFrame + start + i * framesize;
+						s.Position += 24; // Skip scale and translate
+						string curframename = ReadString(br, 16).ToLowerInvariant();
+
+						if(curframename == framename)
+						{
+							// Step back so scale and translate can be read
+							s.Position -= 40;
+							framefound = true;
+							break;
+						}
+					}
+
+					// No dice? Bail out!
+					if(!framefound)
+					{
+						result.Errors = "unable to find frame '" + framename + "'!";
+						return result;
+					}
+				}
+				else
+				{
+					// If we have frame number, we can go directly to target frame
+					s.Position = ofs_animFrame + start + frame * framesize;
+				}
 
 				Vector3 scale = new Vector3(br.ReadSingle(), br.ReadSingle(), br.ReadSingle());
 				Vector3 translate = new Vector3(br.ReadSingle(), br.ReadSingle(), br.ReadSingle());
 
-				s.Position += 16; //frame name
+				s.Position += 16; // Skip frame name
 
 				// Prepare to fix rotation angle
 				float angleOfsetCos = (float)Math.Cos(-Angle2D.PIHALF);
 				float angleOfsetSin = (float)Math.Sin(-Angle2D.PIHALF);
 
 				//verts
-				for (int i = 0; i < num_verts; i++) 
+				for(int i = 0; i < num_verts; i++) 
 				{
 					WorldVertex v = new WorldVertex();
 
@@ -535,7 +568,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 					s.Position += 1; //vertex normal
 				}
 
-				for (int i = 0; i < polyIndecesList.Count; i++) 
+				for(int i = 0; i < polyIndecesList.Count; i++) 
 				{
 					WorldVertex v = vertList[polyIndecesList[i]];
 					
@@ -567,13 +600,13 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 				//mesh
 				Mesh mesh = new Mesh(device, polyIndecesList.Count / 3, vertList.Count, MeshFlags.Use32Bit | MeshFlags.IndexBufferManaged | MeshFlags.VertexBufferManaged, vertexElements);
 
-				using (DataStream stream = mesh.LockVertexBuffer(LockFlags.None)) 
+				using(DataStream stream = mesh.LockVertexBuffer(LockFlags.None)) 
 				{
 					stream.WriteRange(vertList.ToArray());
 				}
 				mesh.UnlockVertexBuffer();
 
-				using (DataStream stream = mesh.LockIndexBuffer(LockFlags.None)) 
+				using(DataStream stream = mesh.LockIndexBuffer(LockFlags.None)) 
 				{
 					stream.WriteRange(polyIndecesList.ToArray());
 				}
@@ -913,25 +946,47 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 			return texture;
 		}
 
+		private static void CreateMesh(Device device, ref MD3LoadResult result, List<WorldVertex> verts, List<int> indices)
+		{
+			//create mesh
+			Mesh mesh = new Mesh(device, indices.Count / 3, verts.Count, MeshFlags.Use32Bit | MeshFlags.IndexBufferManaged | MeshFlags.VertexBufferManaged, vertexElements);
+
+			using(DataStream stream = mesh.LockVertexBuffer(LockFlags.None))
+			{
+				stream.WriteRange(verts.ToArray());
+			}
+			mesh.UnlockVertexBuffer();
+
+			using(DataStream stream = mesh.LockIndexBuffer(LockFlags.None))
+			{
+				stream.WriteRange(indices.ToArray());
+			}
+			mesh.UnlockIndexBuffer();
+
+			mesh.OptimizeInPlace(MeshOptimizeFlags.AttributeSort);
+
+			//store in result
+			result.Meshes.Add(mesh);
+		}
+
 		private static string ReadString(BinaryReader br, int len) 
 		{
-			var NAME = string.Empty;
+			string result = string.Empty;
 			int i;
-			for (i = 0; i < len; ++i) 
+
+			for(i = 0; i < len; ++i) 
 			{
 				var c = br.ReadChar();
-				if (c == '\0') 
+				if(c == '\0') 
 				{
 					++i;
 					break;
 				}
-				NAME += c;
+				result += c;
 			}
-			for (; i < len; ++i) 
-			{
-				br.ReadChar();
-			}
-			return NAME;
+
+			for(; i < len; ++i) br.ReadChar();
+			return result;
 		}
 
 		#endregion

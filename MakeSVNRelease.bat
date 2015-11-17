@@ -61,12 +61,6 @@ IF %ERRORLEVEL% NEQ 0 GOTO ERRORFAIL
 IF NOT EXIST "Build\Builder.exe" GOTO FILEFAIL
 
 ECHO.
-ECHO Setting /LARGEADDRESSAWARE flag...
-ECHO.
-"%STUDIODIR%\VC\bin\editbin.exe" /LARGEADDRESSAWARE "Build\Builder.exe"
-IF %ERRORLEVEL% NEQ 0 GOTO ERRORFAIL
-
-ECHO.
 ECHO Compiling Builder Effects plugin...
 ECHO.
 IF EXIST "Build\Plugins\BuilderEffects.dll" DEL /F /Q "Build\Plugins\BuilderEffects.dll" > NUL

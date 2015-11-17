@@ -25,6 +25,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 
 		internal List<string> ModelNames;
 		internal List<string> TextureNames;
+		internal List<string> FrameNames;
+		internal List<int> FrameIndices;
 
 		internal GZModel Model;
 
@@ -53,6 +55,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 		{
 			ModelNames = new List<string>();
 			TextureNames = new List<string>();
+			FrameNames = new List<string>();
+			FrameIndices = new List<int>();
 			transform = Matrix.Identity;
 			transformstretched = Matrix.Identity;
 			hashcode = hashcounter++;
