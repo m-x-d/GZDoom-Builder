@@ -71,7 +71,7 @@ namespace CodeImp.DoomBuilder.Data
 			if(!General.Map.Config.UseLongTextureNames || string.IsNullOrEmpty(Path.GetDirectoryName(filepathname))) 
 			{
 				this.name = Path.GetFileNameWithoutExtension(filepathname.ToUpperInvariant());
-				if (this.name.Length > DataManager.CLASIC_IMAGE_NAME_LENGTH)
+				if(this.name.Length > DataManager.CLASIC_IMAGE_NAME_LENGTH)
 				{
 					this.name = this.name.Substring(0, DataManager.CLASIC_IMAGE_NAME_LENGTH);
 				}
@@ -83,7 +83,7 @@ namespace CodeImp.DoomBuilder.Data
 				this.name = filepathname.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
 				this.displayname = Path.GetFileNameWithoutExtension(name);
 				this.shortname = this.displayname.ToUpperInvariant();
-				if (this.shortname.Length > DataManager.CLASIC_IMAGE_NAME_LENGTH)
+				if(this.shortname.Length > DataManager.CLASIC_IMAGE_NAME_LENGTH)
 				{
 					this.shortname = this.shortname.Substring(0, DataManager.CLASIC_IMAGE_NAME_LENGTH);
 				}
@@ -92,7 +92,7 @@ namespace CodeImp.DoomBuilder.Data
 
 			this.longname = Lump.MakeLongName(this.name);
 			this.virtualname = filepathname.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-			this.fullname = filepathname;
+			this.filepathname = filepathname;
 			this.level = virtualname.Split(new[] { Path.AltDirectorySeparatorChar }).Length - 1;
 
 			if(General.Settings.CapitalizeTextureNames && !string.IsNullOrEmpty(this.displayname)) 
@@ -116,7 +116,7 @@ namespace CodeImp.DoomBuilder.Data
 			{
 				// Load file data
 				if(bitmap != null) bitmap.Dispose(); bitmap = null;
-				MemoryStream filedata = datareader.LoadFile(fullname); //mxd
+				MemoryStream filedata = datareader.LoadFile(filepathname); //mxd
 				
 				if(filedata != null)
 				{
@@ -140,7 +140,7 @@ namespace CodeImp.DoomBuilder.Data
 					// Not loaded?
 					if(bitmap == null)
 					{
-						General.ErrorLogger.Add(ErrorType.Error, "Image file '" + fullname + "' data format could not be read, while loading texture '" + this.Name + "'");
+						General.ErrorLogger.Add(ErrorType.Error, "Image file '" + filepathname + "' data format could not be read, while loading texture '" + this.Name + "'");
 						loadfailed = true;
 					}
 					else

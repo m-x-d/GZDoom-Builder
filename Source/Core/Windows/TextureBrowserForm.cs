@@ -227,7 +227,7 @@ namespace CodeImp.DoomBuilder.Windows
 		//mxd
 		private static int SortImageData(ImageData img1, ImageData img2) 
 		{
-			return img1.FullName.CompareTo(img2.FullName);
+			return String.Compare(img1.FilePathName, img2.FilePathName, StringComparison.Ordinal);
 		}
 
 		//mxd

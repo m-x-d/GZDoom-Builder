@@ -128,7 +128,7 @@ namespace CodeImp.DoomBuilder.Data
 			}
 
 			this.longname = Lump.MakeLongName(this.name, uselongtexturenames);
-			this.fullname = filepathname;
+			this.filepathname = filepathname;
 			this.level = virtualname.Split(new[] { Path.AltDirectorySeparatorChar }).Length - 1;
 
 			if(General.Settings.CapitalizeTextureNames && !string.IsNullOrEmpty(this.displayname))
@@ -153,7 +153,7 @@ namespace CodeImp.DoomBuilder.Data
 				// Load file data
 				if(bitmap != null) bitmap.Dispose(); bitmap = null;
 
-				MemoryStream filedata = new MemoryStream(File.ReadAllBytes(fullname));
+				MemoryStream filedata = new MemoryStream(File.ReadAllBytes(filepathname));
 
 				// Get a reader for the data
 				IImageReader reader = ImageDataFormat.GetImageReader(filedata, probableformat, General.Map.Data.Palette);
@@ -172,7 +172,7 @@ namespace CodeImp.DoomBuilder.Data
 				// Not loaded?
 				if(bitmap == null) 
 				{
-					General.ErrorLogger.Add(ErrorType.Error, "Image file '" + fullname + "' data format could not be read, while loading image '" + this.Name + "'. Is this a valid picture file at all?");
+					General.ErrorLogger.Add(ErrorType.Error, "Image file '" + filepathname + "' data format could not be read, while loading image '" + this.Name + "'. Is this a valid picture file at all?");
 					loadfailed = true;
 				} 
 				else 
