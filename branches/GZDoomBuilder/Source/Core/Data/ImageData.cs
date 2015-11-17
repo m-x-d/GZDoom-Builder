@@ -49,7 +49,7 @@ namespace CodeImp.DoomBuilder.Data
 		protected Vector2D scale;
 		protected bool worldpanning;
 		private bool usecolorcorrection;
-		protected string fullname; //mxd. name with path;
+		protected string filepathname; //mxd. Absolute path to the image;
 		protected string shortname; //mxd. Name in uppercase and clamped to DataManager.CLASIC_IMAGE_NAME_LENGTH
 		protected string virtualname; //mxd. Path of this name is used in TextureBrowserForm
 		protected string displayname; //mxd. Name to display in TextureBrowserForm
@@ -92,7 +92,7 @@ namespace CodeImp.DoomBuilder.Data
 		public string Name { get { return name; } }
 		public long LongName { get { return longname; } }
 		public string ShortName { get { return shortname; } } //mxd
-		public string FullName { get { return fullname; } } //mxd
+		public string FilePathName { get { return filepathname; } } //mxd
 		public string VirtualName { get { return virtualname; } } //mxd
 		public string DisplayName { get { return displayname; } } //mxd
 		public bool IsFlat { get { return isFlat; } } //mxd
@@ -198,7 +198,7 @@ namespace CodeImp.DoomBuilder.Data
 		protected virtual void SetName(string name)
 		{
 			this.name = name;
-			this.fullname = name; //mxd
+			this.filepathname = name; //mxd
 			this.shortname = name; //mxd
 			this.virtualname = name; //mxd
 			this.displayname = name; //mxd
@@ -346,7 +346,7 @@ namespace CodeImp.DoomBuilder.Data
 					{
 						BitmapData bmpdata = null;
 						try { bmpdata = bitmap.LockBits(new Rectangle(0, 0, bitmap.Size.Width, bitmap.Size.Height), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb); }
-						catch(Exception e) { General.ErrorLogger.Add(ErrorType.Error, "Cannot lock image '" + this.fullname + "' for glow color calculation. " + e.GetType().Name + ": " + e.Message); }
+						catch(Exception e) { General.ErrorLogger.Add(ErrorType.Error, "Cannot lock image '" + this.filepathname + "' for glow color calculation. " + e.GetType().Name + ": " + e.Message); }
 
 						if(bmpdata != null)
 						{
@@ -400,7 +400,7 @@ namespace CodeImp.DoomBuilder.Data
 					{
 						BitmapData bmpdata = null;
 						try { bmpdata = bitmap.LockBits(new Rectangle(0, 0, bitmap.Size.Width, bitmap.Size.Height), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb); }
-						catch(Exception e) { General.ErrorLogger.Add(ErrorType.Error, "Cannot lock image '" + this.fullname + "' for translucency check. " + e.GetType().Name + ": " + e.Message); }
+						catch(Exception e) { General.ErrorLogger.Add(ErrorType.Error, "Cannot lock image '" + this.filepathname + "' for translucency check. " + e.GetType().Name + ": " + e.Message); }
 
 						if(bmpdata != null)
 						{

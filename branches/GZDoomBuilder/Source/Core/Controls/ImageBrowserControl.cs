@@ -303,6 +303,7 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			if(list.SelectedItems.Count > 0)
 			{
+				list.Focus(); //mxd
 				ListViewItem selected = list.SelectedItems[0];
 
 				//mxd

@@ -72,7 +72,7 @@ namespace CodeImp.DoomBuilder.Controls
 				ImageData texture = General.Map.Data.GetTextureImage(imagename); //mxd
 				UpdateToggleImageNameButton(texture); //mxd
 
-				if(string.IsNullOrEmpty(texture.FullName) || texture is UnknownImage) DisplayImageSize(0, 0); //mxd
+				if(string.IsNullOrEmpty(texture.FilePathName) || texture is UnknownImage) DisplayImageSize(0, 0); //mxd
 				else DisplayImageSize(texture.ScaledWidth, texture.ScaledHeight); //mxd
 				if(usepreviews ? !texture.IsPreviewLoaded : !texture.IsImageLoaded) timer.Start(); //mxd
 				
