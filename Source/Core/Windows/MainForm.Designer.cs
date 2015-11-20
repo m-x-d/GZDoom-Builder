@@ -1899,6 +1899,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.statuslabel.Image = global::CodeImp.DoomBuilder.Properties.Resources.Status2;
 			this.statuslabel.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
+			this.statuslabel.Margin = new System.Windows.Forms.Padding(2, 3, 0, 2);
 			this.statuslabel.Name = "statuslabel";
 			this.statuslabel.Size = new System.Drawing.Size(340, 18);
 			this.statuslabel.Spring = true;

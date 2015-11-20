@@ -12,7 +12,8 @@ using CodeImp.DoomBuilder.Data;
 
 #endregion
 
-namespace CodeImp.DoomBuilder.BuilderModes {
+namespace CodeImp.DoomBuilder.BuilderModes
+{
 	//mxd. Used to render translucent 3D floor's inner sides
 	internal sealed class VisualMiddleBack : BaseVisualGeometrySidedef 
 	{
@@ -77,23 +78,23 @@ namespace CodeImp.DoomBuilder.BuilderModes {
 
 			//mxd. which texture we must use?
 			long longtexture = 0;
-			if ((sourceside.Line.Args[2] & (int)Effect3DFloor.Flags.UseUpperTexture) != 0) 
+			if((sourceside.Line.Args[2] & (int)Effect3DFloor.Flags.UseUpperTexture) != 0) 
 			{
-				if (Sidedef.Other.LongHighTexture != MapSet.EmptyLongName)
+				if(Sidedef.Other.LongHighTexture != MapSet.EmptyLongName)
 					longtexture = Sidedef.Other.LongHighTexture;
 			} 
-			else if ((sourceside.Line.Args[2] & (int)Effect3DFloor.Flags.UseLowerTexture) != 0) 
+			else if((sourceside.Line.Args[2] & (int)Effect3DFloor.Flags.UseLowerTexture) != 0) 
 			{
 				if(Sidedef.Other.LongLowTexture != MapSet.EmptyLongName)
 					longtexture = Sidedef.Other.LongLowTexture;
 			} 
-			else if ((sourceside.LongMiddleTexture != MapSet.EmptyLongName)) 
+			else if((sourceside.LongMiddleTexture != MapSet.EmptyLongName)) 
 			{
 				longtexture = sourceside.LongMiddleTexture;
 			}
 
 			// Texture given?
-			if (longtexture != 0) 
+			if(longtexture != 0) 
 			{
 				// Load texture
 				base.Texture = General.Map.Data.GetTextureImage(longtexture);
@@ -102,7 +103,7 @@ namespace CodeImp.DoomBuilder.BuilderModes {
 					base.Texture = General.Map.Data.UnknownTexture3D;
 					setuponloadedtexture = longtexture;
 				} 
-				else if (!base.Texture.IsImageLoaded) 
+				else if(!base.Texture.IsImageLoaded) 
 				{
 					setuponloadedtexture = longtexture;
 				}
@@ -190,53 +191,62 @@ namespace CodeImp.DoomBuilder.BuilderModes {
 				
 				// Determine initial color
 				int lightlevel;
+				PixelColor levelcolor; //mxd
 				if(((sourceside.Line.Args[2] & (int)Effect3DFloor.Flags.DisableLighting) != 0))
+				{
 					lightlevel = lightabsolute ? lightvalue : sd.Ceiling.brightnessbelow + lightvalue;
+					levelcolor = sd.Ceiling.colorbelow; //mxd
+				}
 				else
+				{
 					lightlevel = lightabsolute ? lightvalue : sourceside.Sector.Brightness + lightvalue;
+					levelcolor = extrafloor.Floor.colorbelow; //mxd
+				}
 
 				//mxd. This calculates light with doom-style wall shading
 				PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(lightlevel, Sidedef));
-				PixelColor wallcolor = PixelColor.Modulate(sd.Ceiling.colorbelow, wallbrightness);
+				int wallcolor = PixelColor.Modulate(levelcolor, wallbrightness).WithAlpha((byte)extrafloor.Alpha).ToInt();
 				fogfactor = CalculateFogDensity(lightlevel);
-				poly.color = wallcolor.WithAlpha(255).ToInt();
 
 				// Cut off the part above the 3D floor and below the 3D ceiling
 				CropPoly(ref poly, bottom, false);
 				CropPoly(ref poly, top, false);
 
 				// Cut out pieces that overlap 3D floors in this sector
-				List<WallPolygon> polygons = new List<WallPolygon>(1);
-				polygons.Add(poly);
-
+				List<WallPolygon> polygons = new List<WallPolygon> { poly };
 				foreach(Effect3DFloor ef in sd.ExtraFloors) 
 				{
-					int num = polygons.Count;
-					for(int pi = 0; pi < num; pi++) 
+					//mxd. Our poly should be clipped when our ond other extrafloors are both solid or both translucent,
+					// or when only our extrafloor is translucent
+					if(ef.ClipSidedefs == extrafloor.ClipSidedefs || ef.ClipSidedefs)
 					{
-						// Split by floor plane of 3D floor
-						WallPolygon p = polygons[pi];
-						WallPolygon np = SplitPoly(ref p, ef.Ceiling.plane, true);
-
-						if(np.Count > 0) 
+						int num = polygons.Count;
+						for(int pi = 0; pi < num; pi++)
 						{
-							// Split part below floor by the ceiling plane of 3D floor
-							// and keep only the part below the ceiling (front)
-							SplitPoly(ref np, ef.Floor.plane, true);
+							// Split by floor plane of 3D floor
+							WallPolygon p = polygons[pi];
+							WallPolygon np = SplitPoly(ref p, ef.Ceiling.plane, true);
 
-							if(p.Count == 0) 
+							if(np.Count > 0)
 							{
-								polygons[pi] = np;
-							} 
-							else 
+								// Split part below floor by the ceiling plane of 3D floor
+								// and keep only the part below the ceiling (front)
+								SplitPoly(ref np, ef.Floor.plane, true);
+
+								if(p.Count == 0)
+								{
+									polygons[pi] = np;
+								}
+								else
+								{
+									polygons[pi] = p;
+									polygons.Add(np);
+								}
+							}
+							else
 							{
 								polygons[pi] = p;
-								polygons.Add(np);
 							}
-						} 
-						else 
-						{
-							polygons[pi] = p;
 						}
 					}
 				}
@@ -247,27 +257,17 @@ namespace CodeImp.DoomBuilder.BuilderModes {
 					List<WorldVertex> verts = CreatePolygonVertices(polygons, tp, sd, lightvalue, lightabsolute);
 					if(verts.Count > 2)
 					{
-						if((extrafloor.Linedef.Args[2] & (int) Effect3DFloor.Flags.RenderAdditive) != 0) //mxd
-							this.RenderPass = RenderPass.Additive;
-						else if(extrafloor.Alpha < 255) 
-							this.RenderPass = RenderPass.Alpha;
-						else 
-							this.RenderPass = RenderPass.Mask;
+						if(extrafloor.Sloped3dFloor) this.RenderPass = RenderPass.Mask; //mxd
+						else if(extrafloor.RenderAdditive) this.RenderPass = RenderPass.Additive; //mxd
+						else if(extrafloor.Alpha < 255) this.RenderPass = RenderPass.Alpha;
+						else this.RenderPass = RenderPass.Mask;
 
-						if(extrafloor.Alpha < 255)
+						//mxd. Inner sides always have extrafloor color
+						for(int i = 0; i < verts.Count; i++)
 						{
-							// Apply alpha to vertices
-							byte alpha = (byte) General.Clamp(extrafloor.Alpha, 0, 255);
-							if(alpha < 255)
-							{
-								for(int i = 0; i < verts.Count; i++)
-								{
-									WorldVertex v = verts[i];
-									PixelColor c = PixelColor.FromInt(v.c);
-									v.c = c.WithAlpha(alpha).ToInt();
-									verts[i] = v;
-								}
-							}
+							WorldVertex v = verts[i];
+							v.c = wallcolor;
+							verts[i] = v;
 						}
 
 						base.SetVertices(verts);
@@ -288,9 +288,9 @@ namespace CodeImp.DoomBuilder.BuilderModes {
 		public override string GetTextureName() 
 		{
 			//mxd
-			if ((extrafloor.Linedef.Args[2] & (int)Effect3DFloor.Flags.UseUpperTexture) != 0)
+			if((extrafloor.Linedef.Args[2] & (int)Effect3DFloor.Flags.UseUpperTexture) != 0)
 				return Sidedef.HighTexture;
-			if ((extrafloor.Linedef.Args[2] & (int)Effect3DFloor.Flags.UseLowerTexture) != 0)
+			if((extrafloor.Linedef.Args[2] & (int)Effect3DFloor.Flags.UseLowerTexture) != 0)
 				return Sidedef.LowTexture;
 			return extrafloor.Linedef.Front.MiddleTexture;
 		}
@@ -299,9 +299,9 @@ namespace CodeImp.DoomBuilder.BuilderModes {
 		protected override void SetTexture(string texturename) 
 		{
 			//mxd
-			if ((extrafloor.Linedef.Args[2] & (int)Effect3DFloor.Flags.UseUpperTexture) != 0)
+			if((extrafloor.Linedef.Args[2] & (int)Effect3DFloor.Flags.UseUpperTexture) != 0)
 				Sidedef.Other.SetTextureHigh(texturename);
-			if ((extrafloor.Linedef.Args[2] & (int)Effect3DFloor.Flags.UseLowerTexture) != 0)
+			if((extrafloor.Linedef.Args[2] & (int)Effect3DFloor.Flags.UseLowerTexture) != 0)
 				Sidedef.Other.SetTextureLow(texturename);
 			else
 				extrafloor.Linedef.Front.SetTextureMid(texturename);

@@ -36,6 +36,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public bool disablelighting; //mxd
 		public bool restrictlighting; //mxd
 		public bool affectedbyglow; //mxd
+		public bool extrafloor; //mxd
+		public bool splitsides; //mxd
 		
 		// Constructor
 		public SectorLevel(Sector s, SectorLevelType type)
@@ -43,6 +45,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.type = type;
 			this.sector = s;
 			this.alpha = 255;
+			this.splitsides = true; //mxd
 		}
 		
 		// Copy constructor
@@ -62,8 +65,46 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			target.color = this.color;
 			target.brightnessbelow = this.brightnessbelow;
 			target.colorbelow = this.colorbelow;
+			target.affectedbyglow = this.affectedbyglow; //mxd
 			target.disablelighting = this.disablelighting; //mxd
 			target.restrictlighting = this.restrictlighting; //mxd
+			target.splitsides = this.splitsides; //mxd
 		}
+
+		//mxd. Compare light properties
+		public bool LightPropertiesMatch(SectorLevel other)
+		{
+			return (this.type == other.type && this.lighttype == other.lighttype && this.alpha == other.alpha && this.splitsides == other.splitsides
+				&& this.color == other.color && this.brightnessbelow == other.brightnessbelow && this.colorbelow.ToInt() == other.colorbelow.ToInt()
+				&& this.disablelighting == other.disablelighting && this.restrictlighting == other.restrictlighting);
+		}
+
+#if DEBUG
+		//mxd. Handy when debugging
+		public override string ToString()
+		{
+			switch(type)
+			{
+				case SectorLevelType.Ceiling: return (extrafloor ? "ExtraCeiling" : "Ceiling");
+				case SectorLevelType.Floor: return (extrafloor ? "ExtraFloor" : "Floor");
+				case SectorLevelType.Glow: return "Glow Level";
+				case SectorLevelType.Light: return "Light Level (" + GetLightType() + ")";
+				default: return "Unknown Level Type!!!";
+			}
+		}
+
+		//mxd. Handy when debugging
+		private string GetLightType()
+		{
+			switch(lighttype)
+			{
+				case LightLevelType.TYPE0: return "Type 0";
+				case LightLevelType.TYPE1: return "Type 1";
+				case LightLevelType.TYPE1_BOTTOM: return "Type 1 (bottom)";
+				case LightLevelType.TYPE2: return "Type 2";
+				default: return "Unknown";
+			}
+		}
+#endif
 	}
 }

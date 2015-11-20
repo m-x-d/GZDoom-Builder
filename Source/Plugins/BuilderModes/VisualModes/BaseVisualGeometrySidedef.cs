@@ -167,72 +167,70 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			List<WallPolygon> polygons = new List<WallPolygon>(poly);
 			List<WorldVertex> verts = new List<WorldVertex>();
-			SectorLevel prevlight = null; //mxd
 
-			// Go for all levels to build geometry
-			for(int i = sd.LightLevels.Count - 1; i >= 0; i--)
+			//mxd. Do complicated light level shenanigans only when there are extrafloors
+			if(sd.LightLevels.Count > 2)
 			{
-				SectorLevel l = sd.LightLevels[i];
+				SectorLevel prevlight = null; //mxd
 
-				//mxd. Skip current light level when it's between TYPE1 and TYPE1_BOTTOM
-				if(prevlight != null 
-					&& prevlight.type == SectorLevelType.Light && l.type == SectorLevelType.Light 
-					&& (prevlight.lighttype == LightLevelType.TYPE1 && l.lighttype != LightLevelType.TYPE1_BOTTOM)) 
-					continue;
-
-				if((l != sd.Floor) && (l != sd.Ceiling) && (l.type != SectorLevelType.Floor || l.alpha < 255))
+				// Go for all levels to build geometry
+				for(int i = sd.LightLevels.Count - 1; i >= 0; i--)
 				{
-					// Go for all polygons
-					int num = polygons.Count;
-					Plane plane = (l.type == SectorLevelType.Floor ? l.plane.GetInverted() : l.plane); //mxd
-					
-					for(int pi = 0; pi < num; pi++)
+					SectorLevel l = sd.LightLevels[i];
+
+					//mxd. Skip current light level when it's between TYPE1 and TYPE1_BOTTOM
+					if(prevlight != null
+					   && prevlight.type == SectorLevelType.Light && l.type == SectorLevelType.Light
+					   && (prevlight.lighttype == LightLevelType.TYPE1 && l.lighttype != LightLevelType.TYPE1_BOTTOM)) continue;
+
+					if((l != sd.Floor) && (l != sd.Ceiling) && (l.type != SectorLevelType.Floor || l.splitsides /*(l.alpha < 255)*/))
 					{
-						// Split by plane
-						WallPolygon p = polygons[pi];
-						WallPolygon np = SplitPoly(ref p, plane, false);
-						if(np.Count > 0)
+						// Go for all polygons
+						int num = polygons.Count;
+						Plane plane = (l.type == SectorLevelType.Floor ? l.plane.GetInverted() : l.plane); //mxd
+
+						for(int pi = 0; pi < num; pi++)
 						{
-							//mxd. Determine color
-							int lightlevel;
+							// Split by plane
+							WallPolygon p = polygons[pi];
+							WallPolygon np = SplitPoly(ref p, plane, false);
+							if(np.Count > 0)
+							{
+								//mxd. Determine color
+								int lightlevel;
 
-							if(l.disablelighting) //sidedef part is not affected by 3d floor brightness 
-							{
-								lightlevel = lightabsolute ? lightvalue : l.brightnessbelow + lightvalue;
-							} 
-							else if(l.restrictlighting || (l.type == SectorLevelType.Floor && l.alpha < 255)) //only happens to a sidedef part inside of a non-opaque 3d floor.
-							{
-								lightlevel = l.sector.Brightness;
-							}
-							else // "Regular" 3d floor transfers brightness below it ignoring sidedef's brightness.
-							{
-								lightlevel = l.brightnessbelow;
-							}
+								// Sidedef part is not affected by 3d floor brightness
+								if(l.disablelighting || !l.extrafloor)
+									lightlevel = (lightabsolute ? lightvalue : l.brightnessbelow + lightvalue);
+								// 3d floor transfers brightness below it ignoring sidedef's brightness
+								else
+									lightlevel = l.brightnessbelow;
 
-							PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(lightlevel, Sidedef)); //mxd
-							np.color = PixelColor.Modulate(l.colorbelow, wallbrightness).WithAlpha(255).ToInt();
-							
-							if(p.Count == 0)
-							{
-								polygons[pi] = np;
+								PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(lightlevel, Sidedef)); //mxd
+								np.color = PixelColor.Modulate(l.colorbelow, wallbrightness).WithAlpha(255).ToInt();
+
+								if(p.Count == 0)
+								{
+									polygons[pi] = np;
+								}
+								else
+								{
+									polygons[pi] = p;
+									polygons.Add(np);
+								}
 							}
 							else
 							{
 								polygons[pi] = p;
-								polygons.Add(np);
 							}
 						}
-						else
-						{
-							polygons[pi] = p;
-						}
 					}
-				}
 
-				//mxd
-				if(l.type == SectorLevelType.Light) prevlight = l;
+					//mxd
+					if(l.type == SectorLevelType.Light) prevlight = l;
+				}
 			}
-			
+
 			// Go for all polygons to make geometry
 			foreach(WallPolygon p in polygons)
 			{
@@ -444,6 +442,46 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 			
 			poly = newp;
+		}
+
+		//mxd. This clips given polys by extrafloors
+		protected void ClipExtraFloors(List<WallPolygon> polygons, List<Effect3DFloor> extrafloors, bool clipalways)
+		{
+			foreach(Effect3DFloor ef in extrafloors)
+			{
+				//mxd. Walls should be clipped by 3D floors
+				if(ef.ClipSidedefs || clipalways)
+				{
+					int num = polygons.Count;
+					for(int pi = 0; pi < num; pi++)
+					{
+						// Split by floor plane of 3D floor
+						WallPolygon p = polygons[pi];
+						WallPolygon np = SplitPoly(ref p, ef.Ceiling.plane, true);
+
+						if(np.Count > 0)
+						{
+							// Split part below floor by the ceiling plane of 3D floor
+							// and keep only the part below the ceiling (front)
+							SplitPoly(ref np, ef.Floor.plane, true);
+
+							if(p.Count == 0)
+							{
+								polygons[pi] = np;
+							}
+							else
+							{
+								polygons[pi] = p;
+								polygons.Add(np);
+							}
+						}
+						else
+						{
+							polygons[pi] = p;
+						}
+					}
+				}
+			}
 		}
 
 		//mxd
@@ -754,14 +792,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						}
 						else if(this is VisualMiddleDouble)
 						{
-							if (Sidedef.Line.IsFlagSet(General.Map.Config.LowerUnpeggedFlag))
-							{
+							if(Sidedef.Line.IsFlagSet(General.Map.Config.LowerUnpeggedFlag))
 								offsety = (options.Bounds.Y - Sidedef.GetHighHeight() - Sidedef.GetLowHeight()) * scaley - Sidedef.OffsetY;
-							}
 							else
-							{
 								offsety = options.Bounds.Y * scaley - Sidedef.OffsetY;
-							}
 						}
 						else
 						{
@@ -878,22 +912,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Change ceiling
 				case 1:
-					if(!this.Sector.Ceiling.Changed)
-						this.Sector.Ceiling.OnChangeTargetHeight(amount);
+					if(!this.Sector.Ceiling.Changed) this.Sector.Ceiling.OnChangeTargetHeight(amount);
 					break;
 
 				// Change floor
 				case 2:
-					if(!this.Sector.Floor.Changed)
-						this.Sector.Floor.OnChangeTargetHeight(amount);
+					if(!this.Sector.Floor.Changed) this.Sector.Floor.OnChangeTargetHeight(amount);
 					break;
 
 				// Change both
 				case 3:
-					if(!this.Sector.Floor.Changed)
-						this.Sector.Floor.OnChangeTargetHeight(amount);
-					if(!this.Sector.Ceiling.Changed)
-						this.Sector.Ceiling.OnChangeTargetHeight(amount);
+					if(!this.Sector.Floor.Changed) this.Sector.Floor.OnChangeTargetHeight(amount);
+					if(!this.Sector.Ceiling.Changed) this.Sector.Ceiling.OnChangeTargetHeight(amount);
 					break;
 			}
 		}
@@ -1131,7 +1161,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Update the parts for this sidedef!
 				if(mode.VisualSectorExists(sd.Sector))
 				{
-					BaseVisualSector vs = (mode.GetVisualSector(sd.Sector) as BaseVisualSector);
+					BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(sd.Sector);
 					VisualSidedefParts parts = vs.GetSidedefParts(sd);
 					parts.SetupAllParts();
 				}

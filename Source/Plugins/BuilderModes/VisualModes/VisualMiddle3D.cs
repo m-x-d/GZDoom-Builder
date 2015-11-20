@@ -228,12 +228,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				CropPoly(ref poly, extrafloor.Ceiling.plane, false);
 
 				// Cut out pieces that overlap 3D floors in this sector
-				List<WallPolygon> polygons = new List<WallPolygon>(1);
-				polygons.Add(poly);
+				List<WallPolygon> polygons = new List<WallPolygon> { poly };
+				bool translucent = (extrafloor.RenderAdditive || extrafloor.Alpha < 255);
 				foreach(Effect3DFloor ef in sd.ExtraFloors)
 				{
-					//mxd. Walls of solid 3D floors shouldn't be clipped by translucent 3D floors
-					if(extrafloor.Alpha < 255 || (!extrafloor.RenderInside && !ef.RenderInside && extrafloor.Alpha == 255 && ef.Alpha == 255)) 
+					//mxd. Our poly should be clipped when our ond other extrafloors are both solid or both translucent,
+					// or when only our extrafloor is translucent.
+					// Our poly should not be clipped when our extrafloor is translucent and the other one isn't and both have renderinside setting.
+					bool othertranslucent = (ef.RenderAdditive || ef.Alpha < 255);
+					if(translucent && !othertranslucent && !ef.ClipSidedefs) continue;
+					if(ef.ClipSidedefs == extrafloor.ClipSidedefs || ef.ClipSidedefs) 
 					{
 						int num = polygons.Count;
 						for(int pi = 0; pi < num; pi++)
@@ -267,31 +271,26 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 				
 				// Process the polygon and create vertices
-				if (polygons.Count > 0)
+				if(polygons.Count > 0)
 				{
 					List<WorldVertex> verts = CreatePolygonVertices(polygons, tp, sd, lightvalue, lightabsolute);
-					if (verts.Count > 2)
+					if(verts.Count > 2)
 					{
-						if(extrafloor.Sloped3dFloor) //mxd
-							this.RenderPass = RenderPass.Mask;
-						else if((extrafloor.Linedef.Args[2] & (int) Effect3DFloor.Flags.RenderAdditive) != 0) //mxd
-							this.RenderPass = RenderPass.Additive;
-						else if(extrafloor.Alpha < 255) 
-							this.RenderPass = RenderPass.Alpha;
-						else 
-							this.RenderPass = RenderPass.Mask;
+						if(extrafloor.Sloped3dFloor) this.RenderPass = RenderPass.Mask; //mxd
+						else if(extrafloor.RenderAdditive) this.RenderPass = RenderPass.Additive; //mxd
+						else if(extrafloor.Alpha < 255) this.RenderPass = RenderPass.Alpha;
+						else this.RenderPass = RenderPass.Mask;
 
-						if (extrafloor.Alpha < 255)
+						if(extrafloor.Alpha < 255)
 						{
 							// Apply alpha to vertices
-							byte alpha = (byte) General.Clamp(extrafloor.Alpha, 0, 255);
-							if (alpha < 255)
+							byte alpha = (byte)General.Clamp(extrafloor.Alpha, 0, 255);
+							if(alpha < 255)
 							{
-								for (int i = 0; i < verts.Count; i++)
+								for(int i = 0; i < verts.Count; i++)
 								{
 									WorldVertex v = verts[i];
-									PixelColor c = PixelColor.FromInt(v.c);
-									v.c = c.WithAlpha(alpha).ToInt();
+									v.c = PixelColor.FromInt(v.c).WithAlpha(alpha).ToInt();
 									verts[i] = v;
 								}
 							}
