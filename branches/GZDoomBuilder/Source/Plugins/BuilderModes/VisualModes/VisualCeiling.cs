@@ -163,7 +163,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				if(extrafloor.Sloped3dFloor) //mxd
 					this.RenderPass = RenderPass.Mask;
-				else if((extrafloor.Linedef.Args[2] & (int)Effect3DFloor.Flags.RenderAdditive) != 0) //mxd
+				else if(extrafloor.RenderAdditive) //mxd
 					this.RenderPass = RenderPass.Additive;
 				else if(level.alpha < 255)
 					this.RenderPass = RenderPass.Alpha;
@@ -187,10 +187,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Return texture coordinates
 		protected override Point GetTextureOffset()
 		{
-			Point p = new Point();
-			p.X = (int)Sector.Sector.Fields.GetValue("xpanningceiling", 0.0f);
-			p.Y = (int)Sector.Sector.Fields.GetValue("ypanningceiling", 0.0f);
-			return p;
+			return new Point { X = (int)Sector.Sector.Fields.GetValue("xpanningceiling", 0.0f), 
+							   Y = (int)Sector.Sector.Fields.GetValue("ypanningceiling", 0.0f) };
 		}
 
 		// Move texture coordinates
@@ -357,19 +355,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd. Sector brightness change
 		public override void OnChangeTargetBrightness(bool up) 
 		{
-			if (level != null && level.sector != Sector.Sector) 
+			if(level != null && level.sector != Sector.Sector) 
 			{
 				int index = -1;
-				for (int i = 0; i < Sector.ExtraCeilings.Count; i++) 
+				for(int i = 0; i < Sector.ExtraCeilings.Count; i++) 
 				{
-					if (Sector.ExtraCeilings[i] == this) 
+					if(Sector.ExtraCeilings[i] == this) 
 					{
 						index = i + 1;
 						break;
 					}
 				}
 
-				if (index > -1 && index < Sector.ExtraCeilings.Count)
+				if(index > -1 && index < Sector.ExtraCeilings.Count)
 					((BaseVisualSector)mode.GetVisualSector(Sector.ExtraCeilings[index].level.sector)).Floor.OnChangeTargetBrightness(up);
 				else
 					base.OnChangeTargetBrightness(up);
@@ -377,7 +375,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			else 
 			{
 				//if a map is not in UDMF format, or this ceiling is part of 3D-floor...
-				if(!General.Map.UDMF || Sector.Sector != level.sector) 
+				if(!General.Map.UDMF || (level != null && Sector.Sector != level.sector)) 
 				{
 					base.OnChangeTargetBrightness(up);
 					return;
@@ -594,8 +592,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							slopeSource = side.Line;
 							isFront = true;
 							break;
-						} 
-						else if(side.Line.Args[1] == 2 && side.Line.Back != null && side.Line.Back == side) 
+						}
+
+						if(side.Line.Args[1] == 2 && side.Line.Back != null && side.Line.Back == side) 
 						{
 							slopeSource = side.Line;
 							break;

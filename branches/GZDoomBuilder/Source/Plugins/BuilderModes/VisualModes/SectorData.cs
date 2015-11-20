@@ -46,7 +46,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		// Original floor and ceiling levels
 		private readonly SectorLevel floor;
+		private readonly SectorLevel floorbase; // mxd. Sector floor level, unaffected by glow / light properties transfer
 		private readonly SectorLevel ceiling;
+		private readonly SectorLevel ceilingbase; // mxd. Sector ceiling level, unaffected by glow / light properties transfer 
 		
 		// This helps keeping track of changes
 		// otherwise we update ceiling/floor too much
@@ -86,7 +88,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.alleffects = new List<SectorEffect>(1);
 			this.updatesectors = new Dictionary<Sector, bool>(2);
 			this.floor = new SectorLevel(sector, SectorLevelType.Floor);
+			this.floorbase = new SectorLevel(sector, SectorLevelType.Floor); //mxd
 			this.ceiling = new SectorLevel(sector, SectorLevelType.Ceiling);
+			this.ceilingbase = new SectorLevel(sector, SectorLevelType.Ceiling); //mxd
 			
 			BasicSetup();
 			
@@ -271,6 +275,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			ceiling.color = ceilingcolor.WithAlpha(255).ToInt();
 			ceiling.brightnessbelow = sector.Brightness;
 			ceiling.colorbelow = lightcolor.WithAlpha(255);
+
+			//mxd. Store a copy of initial settings
+			floor.CopyProperties(floorbase);
+			ceiling.CopyProperties(ceilingbase);
 		}
 
 		//mxd
@@ -294,73 +302,122 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Update all effects
 			foreach(SectorEffect e in alleffects) e.Update();
 			
-			// Sort the levels (only if there are more than 2 sector levels - mxd)
-			if (lightlevels.Count > 2) 
+			//mxd. Do complicated light level shenanigans only when there are extrafloors
+			if(lightlevels.Count > 2)
 			{
+				// Sort the levels
 				SectorLevelComparer comparer = new SectorLevelComparer(sector);
-				lightlevels.Sort(0, lightlevels.Count, comparer); //mxd. Was lightlevels.Sort(1, lightlevels.Count - 2, comparer); 
-			}
+				lightlevels.Sort(0, lightlevels.Count, comparer);
 
-			//mxd. 3d floors can be above the real ceiling, so let's find it first... 
-			int startindex = lightlevels.Count - 2;
-			for(int i = lightlevels.Count - 2; i >= 0; i--)
-			{
-				if(lightlevels[i].type == SectorLevelType.Ceiling && lightlevels[i].sector.Index == sector.Index)
+				// Now that we know the levels in this sector (and in the right order)
+				// we can determine the lighting in between and on the levels.
+				SectorLevel stored = ceilingbase;
+
+				//mxd. Special cases...
+				if(lightlevels[lightlevels.Count - 1].disablelighting)
 				{
-					startindex = i;
-					break;
+					lightlevels[lightlevels.Count - 1].colorbelow = stored.colorbelow;
+					lightlevels[lightlevels.Count - 1].brightnessbelow = stored.brightnessbelow;
+					lightlevels[lightlevels.Count - 1].color = stored.colorbelow.ToInt();
 				}
-			}
 
-			// Now that we know the levels in this sector (and in the right order) we
-			// can determine the lighting in between and on the levels.
-			// Start from the absolute ceiling and go down to 'cast' the lighting
-			SectorLevel stored = ceiling; //mxd
-			for(int i = startindex; i >= 0; i--)
-			{
-				SectorLevel l = lightlevels[i];
-				SectorLevel pl = lightlevels[i + 1];
-
-				if(l.lighttype == LightLevelType.TYPE1) stored = pl; //mxd
-
-				//mxd. If the real floor has "lightfloor" value and the 3d floor above it doesn't cast down light, use real floor's brightness
-				if(General.Map.UDMF && l == floor && lightlevels.Count > 2 && (pl.disablelighting || pl.restrictlighting) && l.sector.Fields.ContainsKey("lightfloor"))
+				//mxd. Cast light properties from top to bottom
+				for(int i = lightlevels.Count - 2; i >= 0; i--)
 				{
-					int light = l.sector.Fields.GetValue("lightfloor", pl.brightnessbelow);
-					pl.brightnessbelow = (l.sector.Fields.GetValue("lightfloorabsolute", false) ? light : l.sector.Brightness + light);
-				}
-				
-				// Set color when no color is specified, or when a 3D floor is placed above the absolute floor
-				//mxd. Or when lightlevel is above a floor/ceiling level
-				bool uselightlevellight = ((l.type != SectorLevelType.Light) && pl != null && pl.type == SectorLevelType.Light); //mxd
-				if((l.color == 0) || ((l == floor) && (lightlevels.Count > 2)) || uselightlevellight)
-				{
-					PixelColor floorbrightness = PixelColor.FromInt(mode.CalculateBrightness(pl.brightnessbelow));
-					PixelColor floorcolor = PixelColor.Modulate(pl.colorbelow, floorbrightness);
-					l.color = floorcolor.WithAlpha(255).ToInt();
+					SectorLevel l = lightlevels[i];
+					SectorLevel pl = lightlevels[i + 1];
 
-					if(uselightlevellight) l.brightnessbelow = pl.brightnessbelow;
-				}
-				//mxd. Bottom TYPE1 border requires special handling...
-				else if(l.lighttype == LightLevelType.TYPE1_BOTTOM)
-				{
-					//Use brightness and color from previous light level when it's between TYPE1 and TYPE1_BOTTOM levels
-					if(pl.type == SectorLevelType.Light && pl.lighttype != LightLevelType.TYPE1)
+					if(l.lighttype == LightLevelType.TYPE1)
 					{
-						l.brightnessbelow = pl.brightnessbelow;
-						l.colorbelow = pl.colorbelow;
+						stored = pl;
 					}
-					//Use brightness and color from the light level above TYPE1 level
-					else if(stored.type == SectorLevelType.Light)
+					// Use stored light params when "disablelighting" flag is set
+					else if(l.disablelighting)
 					{
-						l.brightnessbelow = stored.brightnessbelow;
 						l.colorbelow = stored.colorbelow;
+						l.brightnessbelow = stored.brightnessbelow;
+						l.color = stored.colorbelow.ToInt();
 					}
-					// Otherwise light values from the real ceiling are used 
-				}
+					else if(l.restrictlighting)
+					{
+						if(!pl.restrictlighting && pl != ceiling) stored = pl;
+						l.color = stored.color;
 
-				if(l.colorbelow.a == 0) l.colorbelow = pl.colorbelow;
-				if(l.brightnessbelow == -1) l.brightnessbelow = pl.brightnessbelow;
+						// This is the bottom side of extrafloor with "restrict lighting" flag. Make it cast stored light props. 
+						if(l.type == SectorLevelType.Ceiling)
+						{
+							// Special case: 2 intersecting extrafloors with "restrictlighting" flag...
+							if(pl.restrictlighting && pl.type == SectorLevelType.Floor && pl.sector.Index != l.sector.Index)
+							{
+								// Use light and color settings from previous layer
+								l.colorbelow = pl.colorbelow;
+								l.brightnessbelow = pl.brightnessbelow;
+								l.color = pl.colorbelow.ToInt();
+
+								// Also colorize previous layer using next higher level color 
+								if(i + 2 < lightlevels.Count)
+									pl.color = lightlevels[i + 2].colorbelow.ToInt();
+							}
+							else
+							{
+								l.colorbelow = stored.colorbelow;
+								l.brightnessbelow = stored.brightnessbelow;
+							}
+						}
+					}
+					// Bottom TYPE1 border requires special handling...
+					else if(l.lighttype == LightLevelType.TYPE1_BOTTOM)
+					{
+						// Use brightness and color from previous light level when it's between TYPE1 and TYPE1_BOTTOM levels
+						if(pl.type == SectorLevelType.Light && pl.lighttype != LightLevelType.TYPE1)
+						{
+							l.brightnessbelow = pl.brightnessbelow;
+							l.colorbelow = pl.colorbelow;
+						}
+						// Use brightness and color from the light level above TYPE1 level
+						else if(stored.type == SectorLevelType.Light)
+						{
+							l.brightnessbelow = stored.brightnessbelow;
+							l.colorbelow = stored.colorbelow;
+						}
+						// Otherwise light values from the real ceiling are used 
+					}
+					else if(l.lighttype == LightLevelType.UNKNOWN)
+					{
+						// Use stored light level when previous one has "disablelighting" flag
+						// or is the lower boundary of an extrafloor with "restrictlighting" flag
+						SectorLevel src = (pl.disablelighting || (pl.restrictlighting && pl.type == SectorLevelType.Ceiling) ? stored : pl);
+						
+						if((src == l) || (src == ceiling && l == floor && src.LightPropertiesMatch(ceilingbase)))
+						{
+							// Don't change anything when light properties were reset before hitting floor
+							// (otherwise floor UDMF brightness will be lost)
+							continue;
+						}
+						
+						// Transfer color and brightness if previous level has them
+						if(src.colorbelow.a > 0 && src.brightnessbelow != -1)
+						{
+							// Only surface brightness is retained when a glowing flat is used as extrafloor texture
+							if(!l.affectedbyglow)
+							{
+								PixelColor brightness = PixelColor.FromInt(mode.CalculateBrightness(src.brightnessbelow));
+								PixelColor color = PixelColor.Modulate(src.colorbelow, brightness);
+								l.color = color.WithAlpha(255).ToInt();
+							}
+
+							// Transfer brightnessbelow and colorbelow if current level is not extrafloor top
+							if(!(l.extrafloor && l.type == SectorLevelType.Floor))
+							{
+								l.brightnessbelow = src.brightnessbelow;
+								l.colorbelow = src.colorbelow;
+							}
+						}
+
+						// Store bottom extrafloor level if it doesn't have "restrictlighting" or "restrictlighting" flags set
+						if(l.extrafloor && l.type == SectorLevelType.Ceiling && !l.restrictlighting && !l.disablelighting) stored = l;
+					}
+				}
 			}
 
 			//mxd. Apply ceiling glow effect?

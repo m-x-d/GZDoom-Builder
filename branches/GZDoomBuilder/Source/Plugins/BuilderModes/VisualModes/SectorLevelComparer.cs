@@ -27,6 +27,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			float diff = (float)Math.Round(x.plane.GetZ(center) - y.plane.GetZ(center), 3);
 			if(diff == 0)
 			{
+				//mxd. Push extrafloors above extraceilings
+				if(x.extrafloor && y.extrafloor && x.lighttype == LightLevelType.UNKNOWN && y.lighttype == LightLevelType.UNKNOWN)
+				{
+					if(x.type == SectorLevelType.Floor) return (y.type == SectorLevelType.Ceiling ? 1 : 0);
+					return (y.type == SectorLevelType.Floor ? -1 : 0);
+				}
+				
 				bool xislight = (x.type == SectorLevelType.Light || x.type == SectorLevelType.Glow);
 				bool yislight = (y.type == SectorLevelType.Light || y.type == SectorLevelType.Glow);
 				

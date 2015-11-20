@@ -2771,6 +2771,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.RedrawDisplay();
 			GetTargetEventReceiver(false).OnSelectTexture();
 			UpdateChangedObjects();
+			RebuildElementData(); //mxd. Extrafloors or Glow effects may've been changed
 			renderer.SetCrosshairBusy(false);
 			PostAction();
 		}

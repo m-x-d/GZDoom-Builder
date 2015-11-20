@@ -42,7 +42,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Variables
 
-		protected BaseVisualMode mode;
+		protected readonly BaseVisualMode mode;
 		protected long setuponloadedtexture;
 
 		// This is only used to see if this object has already received a change
@@ -632,11 +632,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							// Update the visual sector
 							if(mode.VisualSectorExists(s))
 							{
-								BaseVisualSector vs = (mode.GetVisualSector(s) as BaseVisualSector);
-								if(fillceilings)
-									vs.Ceiling.Setup();
-								else
-									vs.Floor.Setup();
+								BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(s);
+								if(fillceilings) vs.Ceiling.Setup();
+								else vs.Floor.Setup();
 							}
 						}
 
@@ -909,6 +907,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Sector.Rebuild();
 		}
 
+		//mxd
 		public virtual void OnChangeTextureRotation(float angle) 
 		{
 			if(!General.Map.UDMF) return;

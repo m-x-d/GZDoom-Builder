@@ -165,7 +165,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				if(extrafloor.Sloped3dFloor) //mxd
 					this.RenderPass = RenderPass.Mask;
-				else if((extrafloor.Linedef.Args[2] & (int)Effect3DFloor.Flags.RenderAdditive) != 0) //mxd
+				else if(extrafloor.RenderAdditive) //mxd
 					this.RenderPass = RenderPass.Additive;
 				else if(level.alpha < 255)
 					this.RenderPass = RenderPass.Alpha;
@@ -189,10 +189,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Return texture coordinates
 		protected override Point GetTextureOffset()
 		{
-			Point p = new Point();
-			p.X = (int)Sector.Sector.Fields.GetValue("xpanningfloor", 0.0f);
-			p.Y = (int)Sector.Sector.Fields.GetValue("ypanningfloor", 0.0f);
-			return p;
+			return new Point { X = (int)Sector.Sector.Fields.GetValue("xpanningfloor", 0.0f), 
+							   Y = (int)Sector.Sector.Fields.GetValue("ypanningfloor", 0.0f) };
 		}
 
 		// Move texture coordinates
@@ -359,11 +357,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd. Sector brightness change
 		public override void OnChangeTargetBrightness(bool up) 
 		{
-			if (level != null) 
+			if(level != null) 
 			{
-				if (level.sector != Sector.Sector)  //this floor is part of 3D-floor
+				if(level.sector != Sector.Sector)  //this floor is part of 3D-floor
 					((BaseVisualSector)mode.GetVisualSector(level.sector)).Floor.OnChangeTargetBrightness(up);
-				else if (Sector.ExtraFloors.Count > 0)  //this is actual floor of a sector with extrafloors
+				else if(Sector.ExtraFloors.Count > 0 && !Sector.ExtraFloors[0].ExtraFloor.Floor.restrictlighting)  //this is actual floor of a sector with extrafloors
 					Sector.ExtraFloors[0].OnChangeTargetBrightness(up);
 				else
 					base.OnChangeTargetBrightness(up);

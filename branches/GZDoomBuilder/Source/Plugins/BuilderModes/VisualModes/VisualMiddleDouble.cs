@@ -147,7 +147,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(Sidedef.Line.IsFlagSet(General.Map.Config.LowerUnpeggedFlag)) 
 				tp.tlt.y = tsz.y - (geotop - geobottom);
 			
-			if (zoffset > 0) tp.tlt.y -= zoffset; //mxd
+			if(zoffset > 0) tp.tlt.y -= zoffset; //mxd
 			tp.trb.x = tp.tlt.x + Sidedef.Line.Length;
 			tp.trb.y = tp.tlt.y + (Sidedef.Sector.CeilHeight - (Sidedef.Sector.FloorHeight + floorbias));
 
@@ -216,47 +216,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				CropPoly(ref poly, bottomclipplane, true);
 			}
 
-			// Cut out pieces that overlap 3D floors in this sector
-			List<WallPolygon> polygons = new List<WallPolygon>(1);
-			polygons.Add(poly);
-			foreach(Effect3DFloor ef in sd.ExtraFloors) 
-			{
-				//mxd. Walls should be clipped by solid 3D floors
-				if(!ef.RenderInside && ef.Alpha == 255) 
-				{
-					int num = polygons.Count;
-					for(int pi = 0; pi < num; pi++) 
-					{
-						// Split by floor plane of 3D floor
-						WallPolygon p = polygons[pi];
-						WallPolygon np = SplitPoly(ref p, ef.Ceiling.plane, true);
+			//mxd. In(G)ZDoom, middle sidedef parts are not clipped by extrafloors of any type...
+			List<WallPolygon> polygons = new List<WallPolygon> { poly };
+			//ClipExtraFloors(polygons, sd.ExtraFloors, true); //mxd
+			//ClipExtraFloors(polygons, osd.ExtraFloors, true); //mxd
 
-						if(np.Count > 0) 
-						{
-							// Split part below floor by the ceiling plane of 3D floor
-							// and keep only the part below the ceiling (front)
-							SplitPoly(ref np, ef.Floor.plane, true);
-
-							if(p.Count == 0) 
-							{
-								polygons[pi] = np;
-							} 
-							else 
-							{
-								polygons[pi] = p;
-								polygons.Add(np);
-							}
-						} 
-						else 
-						{
-							polygons[pi] = p;
-						}
-					}
-				}
-			}
-
-			if(polygons.Count > 0) 
-			{
+			//if(polygons.Count > 0) 
+			//{
 				// Keep top and bottom planes for intersection testing
 				top = osd.Ceiling.plane;
 				bottom = osd.Floor.plane;
@@ -272,8 +238,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						for(int i = 0; i < verts.Count; i++) 
 						{
 							WorldVertex v = verts[i];
-							PixelColor c = PixelColor.FromInt(v.c);
-							v.c = c.WithAlpha(alpha).ToInt();
+							v.c = PixelColor.FromInt(v.c).WithAlpha(alpha).ToInt();
 							verts[i] = v;
 						}
 					}
@@ -281,7 +246,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					base.SetVertices(verts);
 					return true;
 				}
-			}
+			//}
 			
 			base.SetVertices(null); //mxd
 			return false;

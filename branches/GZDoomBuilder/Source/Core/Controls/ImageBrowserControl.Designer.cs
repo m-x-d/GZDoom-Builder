@@ -115,6 +115,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.list.DrawItem += new System.Windows.Forms.DrawListViewItemEventHandler(this.list_DrawItem);
 			this.list.DoubleClick += new System.EventHandler(this.list_DoubleClick);
 			this.list.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.list_ItemSelectionChanged);
+			this.list.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.list_KeyPress);
 			// 
 			// showsubdirtextures
 			// 

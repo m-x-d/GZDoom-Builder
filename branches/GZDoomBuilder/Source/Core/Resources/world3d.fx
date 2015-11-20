@@ -147,7 +147,7 @@ float4 ps_main_highlight(PixelData pd) : COLOR
 	// Blend texture color and vertex color
 	float4 ncolor = tcolor * pd.color;
 	
-	return float4(highlightcolor.rgb * highlightcolor.a + (ncolor.rgb - 0.4f * highlightcolor.a), ncolor.a + 0.25f);
+	return float4(highlightcolor.rgb * highlightcolor.a + (ncolor.rgb - 0.4f * highlightcolor.a), max(pd.color.a + 0.25f, 0.5f));
 }
 
 // Full-bright pixel shader with highlight
@@ -159,7 +159,7 @@ float4 ps_fullbright_highlight(PixelData pd) : COLOR
 	// Blend texture color and vertex color
 	float4 ncolor = tcolor * pd.color;
 	
-	return float4(highlightcolor.rgb * highlightcolor.a + (tcolor.rgb - 0.4f * highlightcolor.a), ncolor.a + 0.25f);
+	return float4(highlightcolor.rgb * highlightcolor.a + (tcolor.rgb - 0.4f * highlightcolor.a), max(pd.color.a + 0.25f, 0.5f));
 }
 
 //mxd. This adds fog color to current pixel color

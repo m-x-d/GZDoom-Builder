@@ -13,7 +13,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	{
 		// Linedef that is used to create this effect
 		// The sector can be found by linedef.Front.Sector
-		private Linedef linedef;
+		private readonly Linedef linedef;
 		
 		// Floor and ceiling planes
 		private SectorLevel floor;
@@ -25,11 +25,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Vavoom type?
 		private bool vavoomtype;
 
-		//mxd. Translucent 3d-floor?
+		//mxd. Render backsides?
 		private bool renderinside;
 
 		//mxd. Dirty hack to emulate GZDoom behaviour?
 		private bool sloped3dfloor;
+
+		//mxd. Render using Additive pass?
+		private bool renderadditive;
+
+		//mxd. Sidedef should be clipped by floor/ceiling?
+		private bool clipsides;
 
 		//mxd. Ignore Bottom Height?
 		private bool ignorebottomheight;
@@ -41,8 +47,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public Linedef Linedef { get { return linedef; } }
 		public bool VavoomType { get { return vavoomtype; } }
 		public bool RenderInside { get { return renderinside; } } //mxd
+		public bool RenderAdditive { get { return renderadditive; } } //mxd
 		public bool IgnoreBottomHeight { get { return ignorebottomheight; } } //mxd
 		public bool Sloped3dFloor { get { return sloped3dfloor; } } //mxd
+		public bool ClipSidedefs { get { return clipsides; } } //mxd
 
 		//mxd. 3D-Floor Flags
 		[Flags]
@@ -107,26 +115,33 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// For non-vavoom types, we must switch the level types
 			if(linedef.Args[1] != (int)FloorTypes.VavoomStyle)
 			{
+				//mxd. check for Swimmable/RenderInside/RenderAdditive flags
+				renderadditive = (linedef.Args[2] & (int)Flags.RenderAdditive) == (int)Flags.RenderAdditive;
+				renderinside = ((((linedef.Args[1] & (int)FloorTypes.Swimmable) == (int)FloorTypes.Swimmable) && (linedef.Args[1] & (int)FloorTypes.NonSolid) != (int)FloorTypes.NonSolid))
+							  || ((linedef.Args[1] & (int)FloorTypes.RenderInside) == (int)FloorTypes.RenderInside);
+				ignorebottomheight = ((linedef.Args[2] & (int)Flags.IgnoreBottomHeight) == (int)Flags.IgnoreBottomHeight);
+				
 				vavoomtype = false;
-				alpha = linedef.Args[3];
+				alpha = General.Clamp(linedef.Args[3], 0, 255);
 				sd.Ceiling.CopyProperties(floor);
 				sd.Floor.CopyProperties(ceiling);
 				floor.type = SectorLevelType.Floor;
 				floor.plane = sd.Ceiling.plane.GetInverted();
 				ceiling.type = SectorLevelType.Ceiling;
-				ceiling.plane = sd.Floor.plane.GetInverted();
+				ceiling.plane = (ignorebottomheight ? sd.Ceiling.plane : sd.Floor.plane.GetInverted()); //mxd. Use upper plane when "ignorebottomheight" flag is set
 
-				//mxd. check for Swimmable/RenderInside setting
-				renderinside = ( (((linedef.Args[1] & (int)FloorTypes.Swimmable) == (int)FloorTypes.Swimmable) && (linedef.Args[1] & (int)FloorTypes.NonSolid) != (int)FloorTypes.NonSolid) )
-							|| ((linedef.Args[1] & (int)FloorTypes.RenderInside) == (int)FloorTypes.RenderInside);
-				ignorebottomheight = ((linedef.Args[2] & (int)Flags.IgnoreBottomHeight) == (int)Flags.IgnoreBottomHeight);
+				//mxd
+				clipsides = (!renderinside && !renderadditive && alpha > 254 && !ignorebottomheight);
 
 				// A 3D floor's color is always that of the sector it is placed in
-				floor.color = 0;
+				// (unless it's affected by glow) - mxd
+				if(sd.CeilingGlow == null || !sd.CeilingGlow.Fullbright) floor.color = 0;
 			}
 			else
 			{
 				vavoomtype = true;
+				renderadditive = false; //mxd
+				clipsides = true; //mxd
 				floor.type = SectorLevelType.Ceiling;
 				floor.plane = sd.Ceiling.plane;
 				ceiling.type = SectorLevelType.Floor;
@@ -134,33 +149,48 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				alpha = 255;
 				
 				// A 3D floor's color is always that of the sector it is placed in
-				ceiling.color = 0;
+				// (unless it's affected by glow) - mxd
+				if(sd.FloorGlow == null || !sd.FloorGlow.Fullbright) ceiling.color = 0;
 			}
 
 			// Apply alpha
 			floor.alpha = alpha;
 			ceiling.alpha = alpha;
 
+			//mxd
+			floor.extrafloor = true;
+			ceiling.extrafloor = true;
+			floor.splitsides = !clipsides;
+			ceiling.splitsides = (!clipsides && !ignorebottomheight); // if "ignorebottomheight" flag is set, both ceiling and floor will be at the same level and sidedef clipping with floor level will fail resulting in incorrect light props transfer in some cases
+
 			//mxd. Check slopes, cause GZDoom can't handle sloped translucent 3d floors...
-			sloped3dfloor = (alpha < 255 &&
+			sloped3dfloor = ((alpha < 255 || renderadditive) &&
 							 (Angle2D.RadToDeg(ceiling.plane.Normal.GetAngleZ()) != 270 ||
 							  Angle2D.RadToDeg(floor.plane.Normal.GetAngleZ()) != 90));
 			
 			// Do not adjust light? (works only for non-vavoom types)
 			if(!vavoomtype)
 			{
-				bool disablelighting = ((linedef.Args[2] & (int) Flags.DisableLighting) == (int) Flags.DisableLighting); //mxd
-				bool restrictlighting = alpha < 255 && ((linedef.Args[2] & (int) Flags.RestrictLighting) == (int) Flags.RestrictLighting); //mxd
+				bool disablelighting = ((linedef.Args[2] & (int)Flags.DisableLighting) == (int)Flags.DisableLighting); //mxd
+				bool restrictlighting = (alpha < 255 || renderadditive || renderinside) && ((linedef.Args[2] & (int)Flags.RestrictLighting) == (int)Flags.RestrictLighting); //mxd
 
 				if(disablelighting || restrictlighting)
 				{
-					floor.brightnessbelow = -1;
 					floor.restrictlighting = restrictlighting; //mxd
 					floor.disablelighting = disablelighting; //mxd
-					floor.colorbelow = PixelColor.FromInt(0);
+					
+					if(disablelighting) //mxd
+					{
+						floor.color = 0;
+						floor.brightnessbelow = -1;
+						floor.colorbelow = PixelColor.FromInt(0);
+					}
+
+					ceiling.disablelighting = disablelighting; //mxd
+					ceiling.restrictlighting = restrictlighting; //mxd
+					
 					ceiling.color = 0;
 					ceiling.brightnessbelow = -1;
-					ceiling.disablelighting = true; //mxd
 					ceiling.colorbelow = PixelColor.FromInt(0);
 				}
 			}
