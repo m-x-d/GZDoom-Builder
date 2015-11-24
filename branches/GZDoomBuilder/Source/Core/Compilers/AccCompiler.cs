@@ -151,6 +151,7 @@ namespace CodeImp.DoomBuilder.Compilers
 					Regex errlinematcher = new Regex(":[0-9]+: ", RegexOptions.Compiled | RegexOptions.CultureInvariant);
 					
 					// Read all lines
+					bool erroradded = false; //mxd
 					string[] errlines = File.ReadAllLines(errfile);
 					while(line < errlines.Length)
 					{
@@ -181,10 +182,17 @@ namespace CodeImp.DoomBuilder.Compilers
 							
 							// Report the error
 							ReportError(err);
+							erroradded = true; //mxd
 						}
 						
 						// Next line
 						line++;
+					}
+
+					//mxd. Some ACC errors are not properly formatted. If that's the case, threat the whole acs.err as an error...
+					if(!erroradded && errlines.Length > 0)
+					{
+						ReportError(new CompilerError(string.Join(Environment.NewLine, errlines)));
 					}
 				}
 				catch(Exception e)

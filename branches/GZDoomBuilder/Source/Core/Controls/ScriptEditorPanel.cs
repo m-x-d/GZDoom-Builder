@@ -383,10 +383,9 @@ namespace CodeImp.DoomBuilder.Controls
 				ListViewItem ei = new ListViewItem(listindex.ToString());
 				ei.ImageIndex = 0;
 				ei.SubItems.Add(e.description);
-				if(e.filename.StartsWith("?"))
-					ei.SubItems.Add(e.filename.Replace("?", "") + " (line " + (e.linenumber + 1) + ")");
-				else
-					ei.SubItems.Add(Path.GetFileName(e.filename) + " (line " + (e.linenumber + 1) + ")");
+				string filename = (e.filename.StartsWith("?") ? e.filename.Replace("?", "") : Path.GetFileName(e.filename)); //mxd
+				string linenumber = (e.linenumber != CompilerError.NO_LINE_NUMBER ? " (line " + (e.linenumber + 1) + ")" : String.Empty); //mxd
+				ei.SubItems.Add(filename + linenumber);
 				ei.Tag = e;
 				errorlist.Items.Add(ei);
 				listindex++;

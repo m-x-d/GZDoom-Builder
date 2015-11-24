@@ -984,6 +984,11 @@
 #define FHF_NORANDOMPUFFZ	1
 #define FHF_NOIMPACTDECAL	2
 
+// PickActor flags
+
+#define	PICKAF_FORCETID			1
+#define	PICKAF_RETURNTID		2
+
 // Actor flags
 #define MF_SPECIAL          0x00000001
 #define MF_SOLID            0x00000002
