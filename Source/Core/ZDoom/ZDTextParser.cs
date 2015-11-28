@@ -20,6 +20,7 @@ using System;
 using System.Globalization;
 using System.Text;
 using System.IO;
+using CodeImp.DoomBuilder.Compilers;
 
 #endregion
 
@@ -464,7 +465,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		{
 			// Set error information
 			errordesc = message;
-			errorline = GetCurrentLineNumber();
+			errorline = (datastream != null ? GetCurrentLineNumber() : CompilerError.NO_LINE_NUMBER); //mxd
 			errorsource = sourcename;
 		}
 

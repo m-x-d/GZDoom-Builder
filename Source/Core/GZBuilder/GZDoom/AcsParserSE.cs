@@ -49,11 +49,13 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 		public bool Parse(Stream stream, string sourcefilename, List<string> configincludes, bool processincludes, bool isinclude) 
 		{
 			// Integrity check
-			if(!base.Parse(stream, sourcefilename) || stream == null || stream.Length == 0)
+			if(stream == null || stream.Length == 0)
 			{
 				ReportError("Unable to load " + (isinclude ? "include" : "") + " file '" + sourcefilename + "'!");
 				return false;
 			}
+
+			base.Parse(stream, sourcefilename);
 
 			// Already parsed this?
 			if(parsedlumps.Contains(sourcefilename)) return false;
