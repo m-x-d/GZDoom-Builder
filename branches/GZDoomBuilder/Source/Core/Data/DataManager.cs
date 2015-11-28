@@ -19,16 +19,17 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Windows.Forms;
-using CodeImp.DoomBuilder.IO;
-using CodeImp.DoomBuilder.Config;
 using System.Threading;
-using CodeImp.DoomBuilder.Map;
-using CodeImp.DoomBuilder.Windows;
-using CodeImp.DoomBuilder.ZDoom;
+using System.Windows.Forms;
+using CodeImp.DoomBuilder.Compilers;
+using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.GZBuilder.Data;
 using CodeImp.DoomBuilder.GZBuilder.GZDoom;
 using CodeImp.DoomBuilder.GZBuilder.MD3;
+using CodeImp.DoomBuilder.IO;
+using CodeImp.DoomBuilder.Map;
+using CodeImp.DoomBuilder.Windows;
+using CodeImp.DoomBuilder.ZDoom;
 
 #endregion
 
@@ -1418,8 +1419,8 @@ namespace CodeImp.DoomBuilder.Data
 						// Check for errors
 						if(decorate.HasError)
 						{
-							General.ErrorLogger.Add(ErrorType.Error, "DECORATE error in '" + decorate.ErrorSource 
-								+ "', line " + decorate.ErrorLine + ". " + decorate.ErrorDescription + ".");
+							General.ErrorLogger.Add(ErrorType.Error, "DECORATE error in '" + decorate.ErrorSource
+								+ (decorate.ErrorLine != CompilerError.NO_LINE_NUMBER ? "', line " + decorate.ErrorLine : "'") + ". " + decorate.ErrorDescription + ".");
 							break;
 						}
 					}
