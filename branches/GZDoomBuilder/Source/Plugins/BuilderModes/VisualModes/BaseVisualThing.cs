@@ -238,18 +238,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							else if(level.type == SectorLevelType.Glow)
 							{
 								// Interpolate thing brightness between glow and regular ones
-								float planez = level.plane.GetZ(thingpos);
-								SectorLevel nextlower = sd.GetLevelBelow(new Vector3D(thingpos, planez));
-
-								if(nextlower != null && nextlower.affectedbyglow)
+								if(sd.Floor != null && sd.FloorGlow != null)
 								{
 									// Get glow brightness
-									SectorData glowdata = (nextlower.sector != Thing.Sector ? mode.GetSectorData(nextlower.sector) : sd);
-									int glowbrightness = (level.type == SectorLevelType.Ceiling ? glowdata.CeilingGlow.Brightness : glowdata.FloorGlow.Brightness) / 2;
-									
-									float lowerz = nextlower.plane.GetZ(thingpos);
-									float delta = General.Clamp((thingpos.z - lowerz) / (planez - lowerz), 0f, 1f);
-									brightness = (int)((glowbrightness + nextlower.sector.Brightness / 2) * (1.0f - delta) + level.sector.Brightness * delta);
+									float glowz = level.plane.GetZ(thingpos);
+									float floorz = floor.GetZ(thingpos);
+									float delta = General.Clamp((thingpos.z - floorz) / (glowz - floorz), 0f, 1f);
+
+									brightness = (int)((sd.FloorGlow.Brightness / 2 + sd.Floor.sector.Brightness / 2) * (1.0f - delta) + sd.Floor.sector.Brightness * delta);
 								}
 							}
 
