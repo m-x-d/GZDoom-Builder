@@ -1911,7 +1911,7 @@ namespace CodeImp.DoomBuilder
 					
 					// Load the lump data
 					MemoryStream stream = GetLumpData(maplumpinfo.Name);
-					if(stream != null && scriptconfig != null && scriptconfig.Compiler != null)
+					if(stream != null && stream.Length > 0 && scriptconfig != null && scriptconfig.Compiler != null)
 					{
 						// Get script names
 						AcsParserSE parser = new AcsParserSE { OnInclude = UpdateScriptsFromLocation };
