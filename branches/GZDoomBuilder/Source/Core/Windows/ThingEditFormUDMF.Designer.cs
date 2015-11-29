@@ -64,6 +64,8 @@
 			this.zlabel = new System.Windows.Forms.Label();
 			this.tabeffects = new System.Windows.Forms.TabPage();
 			this.groupbehaviour = new System.Windows.Forms.GroupBox();
+			this.floatbobphase = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
+			this.label1 = new System.Windows.Forms.Label();
 			this.conversationID = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.labelID = new System.Windows.Forms.Label();
 			this.health = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
@@ -280,14 +282,14 @@
 			// 
 			// labelGravity
 			// 
+			this.labelGravity.AutoSize = true;
 			this.labelGravity.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.labelGravity.ForeColor = System.Drawing.SystemColors.HotTrack;
-			this.labelGravity.Location = new System.Drawing.Point(52, 27);
+			this.labelGravity.Location = new System.Drawing.Point(19, 27);
 			this.labelGravity.Name = "labelGravity";
-			this.labelGravity.Size = new System.Drawing.Size(50, 14);
+			this.labelGravity.Size = new System.Drawing.Size(43, 13);
 			this.labelGravity.TabIndex = 18;
 			this.labelGravity.Text = "Gravity:";
-			this.labelGravity.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.tooltip.SetToolTip(this.labelGravity, "Positive values are multiplied with the class\'s property.\r\nNegative values are us" +
 					"ed as their absolute.\r\nDefault is 1.0.");
 			// 
@@ -547,6 +549,8 @@
 			// 
 			// groupbehaviour
 			// 
+			this.groupbehaviour.Controls.Add(this.floatbobphase);
+			this.groupbehaviour.Controls.Add(this.label1);
 			this.groupbehaviour.Controls.Add(this.conversationID);
 			this.groupbehaviour.Controls.Add(this.labelID);
 			this.groupbehaviour.Controls.Add(this.health);
@@ -562,6 +566,32 @@
 			this.groupbehaviour.TabStop = false;
 			this.groupbehaviour.Text = " Behaviour ";
 			// 
+			// floatbobphase
+			// 
+			this.floatbobphase.AllowDecimal = false;
+			this.floatbobphase.AllowNegative = true;
+			this.floatbobphase.AllowRelative = false;
+			this.floatbobphase.ButtonStep = 1;
+			this.floatbobphase.ButtonStepBig = 8F;
+			this.floatbobphase.ButtonStepFloat = 1F;
+			this.floatbobphase.ButtonStepSmall = 1F;
+			this.floatbobphase.ButtonStepsUseModifierKeys = false;
+			this.floatbobphase.ButtonStepsWrapAround = false;
+			this.floatbobphase.Location = new System.Drawing.Point(251, 52);
+			this.floatbobphase.Name = "floatbobphase";
+			this.floatbobphase.Size = new System.Drawing.Size(72, 24);
+			this.floatbobphase.StepValues = null;
+			this.floatbobphase.TabIndex = 28;
+			// 
+			// label1
+			// 
+			this.label1.AutoSize = true;
+			this.label1.Location = new System.Drawing.Point(159, 57);
+			this.label1.Name = "label1";
+			this.label1.Size = new System.Drawing.Size(86, 13);
+			this.label1.TabIndex = 27;
+			this.label1.Text = "Float bob phase:";
+			// 
 			// conversationID
 			// 
 			this.conversationID.AllowDecimal = false;
@@ -573,7 +603,7 @@
 			this.conversationID.ButtonStepSmall = 1F;
 			this.conversationID.ButtonStepsUseModifierKeys = false;
 			this.conversationID.ButtonStepsWrapAround = false;
-			this.conversationID.Location = new System.Drawing.Point(108, 119);
+			this.conversationID.Location = new System.Drawing.Point(251, 22);
 			this.conversationID.Name = "conversationID";
 			this.conversationID.Size = new System.Drawing.Size(72, 24);
 			this.conversationID.StepValues = null;
@@ -582,7 +612,7 @@
 			// labelID
 			// 
 			this.labelID.AutoSize = true;
-			this.labelID.Location = new System.Drawing.Point(16, 124);
+			this.labelID.Location = new System.Drawing.Point(159, 27);
 			this.labelID.Name = "labelID";
 			this.labelID.Size = new System.Drawing.Size(86, 13);
 			this.labelID.TabIndex = 25;
@@ -599,7 +629,7 @@
 			this.health.ButtonStepSmall = 1F;
 			this.health.ButtonStepsUseModifierKeys = true;
 			this.health.ButtonStepsWrapAround = false;
-			this.health.Location = new System.Drawing.Point(108, 87);
+			this.health.Location = new System.Drawing.Point(68, 82);
 			this.health.Name = "health";
 			this.health.Size = new System.Drawing.Size(72, 24);
 			this.health.StepValues = null;
@@ -607,14 +637,14 @@
 			// 
 			// label10
 			// 
+			this.label10.AutoSize = true;
 			this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.label10.ForeColor = System.Drawing.SystemColors.HotTrack;
-			this.label10.Location = new System.Drawing.Point(52, 91);
+			this.label10.Location = new System.Drawing.Point(21, 87);
 			this.label10.Name = "label10";
-			this.label10.Size = new System.Drawing.Size(50, 14);
+			this.label10.Size = new System.Drawing.Size(41, 13);
 			this.label10.TabIndex = 22;
 			this.label10.Text = "Health:";
-			this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.tooltip.SetToolTip(this.label10, "Positive values are multiplied with the class\'s property.\r\nNegative values are us" +
 					"ed as their absolute.\r\nDefault is 1.");
 			// 
@@ -629,7 +659,7 @@
 			this.score.ButtonStepSmall = 1F;
 			this.score.ButtonStepsUseModifierKeys = true;
 			this.score.ButtonStepsWrapAround = false;
-			this.score.Location = new System.Drawing.Point(108, 55);
+			this.score.Location = new System.Drawing.Point(68, 52);
 			this.score.Name = "score";
 			this.score.Size = new System.Drawing.Size(72, 24);
 			this.score.StepValues = null;
@@ -637,12 +667,12 @@
 			// 
 			// label9
 			// 
-			this.label9.Location = new System.Drawing.Point(52, 59);
+			this.label9.AutoSize = true;
+			this.label9.Location = new System.Drawing.Point(24, 57);
 			this.label9.Name = "label9";
-			this.label9.Size = new System.Drawing.Size(50, 14);
+			this.label9.Size = new System.Drawing.Size(38, 13);
 			this.label9.TabIndex = 20;
 			this.label9.Text = "Score:";
-			this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
 			// gravity
 			// 
@@ -655,7 +685,7 @@
 			this.gravity.ButtonStepSmall = 0.01F;
 			this.gravity.ButtonStepsUseModifierKeys = true;
 			this.gravity.ButtonStepsWrapAround = false;
-			this.gravity.Location = new System.Drawing.Point(108, 23);
+			this.gravity.Location = new System.Drawing.Point(68, 22);
 			this.gravity.Name = "gravity";
 			this.gravity.Size = new System.Drawing.Size(72, 24);
 			this.gravity.StepValues = null;
@@ -731,12 +761,12 @@
 			// 
 			// label8
 			// 
-			this.label8.Location = new System.Drawing.Point(5, 90);
+			this.label8.AutoSize = true;
+			this.label8.Location = new System.Drawing.Point(48, 89);
 			this.label8.Name = "label8";
-			this.label8.Size = new System.Drawing.Size(80, 14);
+			this.label8.Size = new System.Drawing.Size(37, 13);
 			this.label8.TabIndex = 25;
 			this.label8.Text = "Alpha:";
-			this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
 			// renderStyle
 			// 
@@ -750,12 +780,12 @@
 			// 
 			// labelrenderstyle
 			// 
-			this.labelrenderstyle.Location = new System.Drawing.Point(5, 59);
+			this.labelrenderstyle.AutoSize = true;
+			this.labelrenderstyle.Location = new System.Drawing.Point(16, 60);
 			this.labelrenderstyle.Name = "labelrenderstyle";
-			this.labelrenderstyle.Size = new System.Drawing.Size(80, 14);
+			this.labelrenderstyle.Size = new System.Drawing.Size(69, 13);
 			this.labelrenderstyle.TabIndex = 23;
 			this.labelrenderstyle.Text = "Render style:";
-			this.labelrenderstyle.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
 			// actiongroup
 			// 
@@ -970,6 +1000,7 @@
 			this.groupbehaviour.ResumeLayout(false);
 			this.groupbehaviour.PerformLayout();
 			this.grouprendering.ResumeLayout(false);
+			this.grouprendering.PerformLayout();
 			this.actiongroup.ResumeLayout(false);
 			this.actiongroup.PerformLayout();
 			this.grouptag.ResumeLayout(false);
@@ -1049,5 +1080,7 @@
 		private System.Windows.Forms.TabPage tabcomment;
 		private CodeImp.DoomBuilder.Controls.CommentEditor commenteditor;
 		private CodeImp.DoomBuilder.Controls.ArgumentsControl argscontrol;
+		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox floatbobphase;
+		private System.Windows.Forms.Label label1;
 	}
 }
