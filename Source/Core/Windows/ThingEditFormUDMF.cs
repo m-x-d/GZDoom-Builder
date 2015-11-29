@@ -198,8 +198,9 @@ namespace CodeImp.DoomBuilder.Windows
 
 			// Custom fields
 			fieldslist.SetValues(ft.Fields, true);
-			commenteditor.SetValues(ft.Fields, true); //mxd. Comments
+			commenteditor.SetValues(ft.Fields, true);
 			conversationID.Text = ft.Fields.GetValue("conversation", 0).ToString();
+			floatbobphase.Text = ft.Fields.GetValue("floatbobphase", -1).ToString();
 			gravity.Text = ft.Fields.GetValue("gravity", 1.0f).ToString();
 			score.Text = ft.Fields.GetValue("score", 0).ToString();
 			health.Text = ft.Fields.GetValue("health", 1).ToString();
@@ -272,6 +273,7 @@ namespace CodeImp.DoomBuilder.Windows
 				fieldslist.SetValues(t.Fields, false);
 				commenteditor.SetValues(t.Fields, false); //mxd. Comments
 				if(t.Fields.GetValue("conversation", 0).ToString() != conversationID.Text) conversationID.Text = "";
+				if(t.Fields.GetValue("floatbobphase", -1).ToString() != floatbobphase.Text) floatbobphase.Text = "";
 				if(t.Fields.GetValue("gravity", 1.0f).ToString() != gravity.Text) gravity.Text = "";
 				if(t.Fields.GetValue("score", 0).ToString() != score.Text) score.Text = "";
 				if(t.Fields.GetValue("health", 1).ToString() != health.Text) health.Text = "";
@@ -484,6 +486,8 @@ namespace CodeImp.DoomBuilder.Windows
 				fieldslist.Apply(t.Fields);
 				if(!string.IsNullOrEmpty(conversationID.Text))
 					UniFields.SetInteger(t.Fields, "conversation", conversationID.GetResult(t.Fields.GetValue("conversation", 0)), 0);
+				if(!string.IsNullOrEmpty(floatbobphase.Text))
+					UniFields.SetInteger(t.Fields, "floatbobphase", General.Clamp(floatbobphase.GetResult(t.Fields.GetValue("floatbobphase", -1)), -1, 63), -1);
 				if(!string.IsNullOrEmpty(gravity.Text))
 					UniFields.SetFloat(t.Fields, "gravity", gravity.GetResultFloat(t.Fields.GetValue("gravity", 1.0f)), 1.0f);
 				if(!string.IsNullOrEmpty(health.Text))
