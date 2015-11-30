@@ -17,11 +17,13 @@
 #region ================== Namespaces
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using CodeImp.DoomBuilder.Config;
 using System.Windows.Forms;
 using System.Text.RegularExpressions;
+using CodeImp.DoomBuilder.Data;
 
 #endregion
 
@@ -73,27 +75,30 @@ namespace CodeImp.DoomBuilder.Compilers
 
 			//xabis
 			// Copy includes from the resources into the compiler's folder, preserving relative pathing and naming
-			foreach(string include in General.Map.ScriptIncludes) 
+			if(CopyIncludesToWorkingDirectory) //mxd
 			{
-				//grab the script text from the resources
-				MemoryStream s = General.Map.Data.LoadFile(include);
-				
-				if(s != null) 
+				foreach(string include in includes)
 				{
-					//pull the pk3 or directory sub folder out if applicable
-					FileInfo fi = new FileInfo(Path.Combine(this.tempdir.FullName, include));
+					// Grab the script text from the resources
+					MemoryStream s = General.Map.Data.LoadFile(include);
 
-					//do not allow files to be overwritten, either accidentally or maliciously
-					if(!fi.Exists) 
+					if(s != null)
 					{
-						General.WriteLogLine("Copying script include: " + include);
+						// Pull the pk3 or directory sub folder out if applicable
+						FileInfo fi = new FileInfo(Path.Combine(this.tempdir.FullName, include));
 
-						//create the directory path as needed
-						if(!string.IsNullOrEmpty(fi.DirectoryName)) Directory.CreateDirectory(fi.DirectoryName);
+						// Do not allow files to be overwritten, either accidentally or maliciously
+						if(!fi.Exists)
+						{
+							General.WriteLogLine("Copying script include: " + include);
 
-						//dump the script into the target file
-						BinaryReader reader = new BinaryReader(s);
-						File.WriteAllBytes(fi.FullName, reader.ReadBytes((int)s.Length));
+							// Create the directory path as needed
+							if(!string.IsNullOrEmpty(fi.DirectoryName)) Directory.CreateDirectory(fi.DirectoryName);
+
+							// Dump the script into the target file
+							BinaryReader reader = new BinaryReader(s);
+							File.WriteAllBytes(fi.FullName, reader.ReadBytes((int)s.Length));
+						}
 					}
 				}
 			}
@@ -170,11 +175,26 @@ namespace CodeImp.DoomBuilder.Compilers
 								err.linenumber--;
 							
 							// Everything before the match is the filename
-							err.filename = linestr.Substring(0, match.Index);
+							err.filename = linestr.Substring(0, match.Index).Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
 							if(!Path.IsPathRooted(err.filename))
 							{
-								// Add working directory to filename
-								err.filename = Path.Combine(processinfo.WorkingDirectory, err.filename);
+								//mxd. If the error is in an include file, try to find it in loaded resources
+								if(includes.Contains(err.filename.ToLowerInvariant()))
+								{
+									foreach(DataReader dr in General.Map.Data.Containers)
+									{
+										if(dr is DirectoryReader && dr.FileExists(err.filename))
+										{
+											err.filename = Path.Combine(dr.Location.location, err.filename);
+											break;
+										}
+									}
+								}
+								else
+								{
+									// Add working directory to filename, so it could be recognized as map namespace lump in MapManager.CompileLump()
+									err.filename = Path.Combine(processinfo.WorkingDirectory, err.filename);
+								}
 							}
 							
 							// Everything after the match is the description

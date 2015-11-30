@@ -16,6 +16,8 @@
 
 #region ================== Namespaces
 
+using System;
+
 #endregion
 
 namespace CodeImp.DoomBuilder.Windows
@@ -94,6 +96,63 @@ namespace CodeImp.DoomBuilder.Windows
 		/// </summary>
 		Busy,
 		
+		/// <summary>
+		/// Shows a warning, makes a warning sound and flashes a warning icon.
+		/// </summary>
+		Warning
+	}
+
+	//mxd. StatusInfo used by Script Editor
+	public struct ScriptStatusInfo
+	{
+		public const string READY_TEXT = "Ready.";
+
+		public readonly ScriptStatusType type;
+		public readonly string message;
+		internal bool displayed;
+
+		internal ScriptStatusInfo(ScriptStatusType type, string message)
+		{
+			this.type = type;
+
+			switch(type)
+			{
+				case ScriptStatusType.Ready:
+					this.message = READY_TEXT;
+					break;
+
+				case ScriptStatusType.Info:
+				case ScriptStatusType.Warning:
+				case ScriptStatusType.Busy:
+					this.message = message;
+					break;
+
+				default:
+					throw new NotImplementedException("Unsupported Script Status Type!");
+			}
+
+			this.displayed = false;
+		}
+	}
+
+	//mxd. StatusType used by Script Editor
+	public enum ScriptStatusType
+	{
+		/// <summary>
+		/// When no particular information is to be displayed.
+		/// </summary>
+		Ready,
+
+		/// <summary>
+		/// Shows information without flashing the icon.
+		/// </summary>
+		Info,
+
+		/// <summary>
+		/// Shows information with the busy icon.
+		/// </summary>
+		Busy,
+
 		/// <summary>
 		/// Shows a warning, makes a warning sound and flashes a warning icon.
 		/// </summary>

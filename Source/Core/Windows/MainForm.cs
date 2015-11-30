@@ -55,15 +55,15 @@ namespace CodeImp.DoomBuilder.Windows
 		private const int MAX_RECENT_FILES_PIXELS = 250;
 		
 		// Status bar
-		private const int WARNING_FLASH_COUNT = 10;
-		private const int WARNING_FLASH_INTERVAL = 100;
-		private const int WARNING_RESET_DELAY = 5000;
-		private const int INFO_RESET_DELAY = 5000;
-		private const int ACTION_FLASH_COUNT = 3;
-		private const int ACTION_FLASH_INTERVAL = 50;
-		private const int ACTION_RESET_DELAY = 5000;
+		internal const int WARNING_FLASH_COUNT = 10;
+		internal const int WARNING_FLASH_INTERVAL = 100;
+		internal const int WARNING_RESET_DELAY = 5000;
+		internal const int INFO_RESET_DELAY = 5000;
+		internal const int ACTION_FLASH_COUNT = 3;
+		internal const int ACTION_FLASH_INTERVAL = 50;
+		internal const int ACTION_RESET_DELAY = 5000;
 		
-		private readonly Image[,] STATUS_IMAGES = new Image[,]
+		internal readonly Image[,] STATUS_IMAGES = new Image[,]
 		{
 			// Normal versions
 			{
@@ -424,7 +424,7 @@ namespace CodeImp.DoomBuilder.Windows
 			if(General.Map != null)
 			{
 				// Show map name and filename in caption
-				this.Text = General.Map.FileTitle + (mapchanged ? "* (" : " (") + General.Map.Options.CurrentName + ") - " + Application.ProductName;
+				this.Text = (mapchanged ? "\u25CF " : "") + General.Map.FileTitle + " (" + General.Map.Options.CurrentName + ") - " + Application.ProductName;
 			}
 			else
 			{

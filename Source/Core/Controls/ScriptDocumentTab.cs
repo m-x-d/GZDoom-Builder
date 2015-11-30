@@ -25,7 +25,6 @@ using System.Windows.Forms;
 using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Compilers;
-//mxd
 using CodeImp.DoomBuilder.GZBuilder.Data;
 using CodeImp.DoomBuilder.GZBuilder.GZDoom;
 
@@ -50,6 +49,8 @@ namespace CodeImp.DoomBuilder.Controls
 		// The script edit control
 		protected readonly ScriptEditorControl editor;
 		protected readonly ComboBox navigator; //mxd
+		private bool preventchanges; //mxd
+		private string title; //mxd
 
 		// Derived classes must set this!
 		protected ScriptConfiguration config;
@@ -67,13 +68,20 @@ namespace CodeImp.DoomBuilder.Controls
 		public virtual bool IsReconfigurable { get { return true; } }
 		public virtual string Filename { get { return null; } }
 		public ScriptEditorPanel Panel { get { return panel; } }
-		public bool IsChanged { get { return editor.IsChanged; } }
+		public new string Text { get { return title; } } //mxd
+		public bool IsChanged { get { return editor.IsChanged; } internal set { editor.IsChanged = value; } } //mxd. Added setter
 		public int SelectionStart { get { return editor.SelectionStart; } set { editor.SelectionStart = value; } }
 		public int SelectionEnd { get { return editor.SelectionEnd; } set { editor.SelectionEnd = value; } }
 		public ScriptConfiguration Config { get { return config; } }
 		
 		#endregion
 		
+		#region ================== Events (mxd)
+
+		public new event EventHandler OnTextChanged; //mxd
+
+		#endregion
+
 		#region ================== Constructor
 		
 		// Constructor
@@ -112,6 +120,7 @@ namespace CodeImp.DoomBuilder.Controls
 			editor.OnOpenFindAndReplace += panel.OpenFindAndReplace;
 			editor.OnFindNext += panel.FindNext;
 			editor.OnFindPrevious += panel.FindPrevious; //mxd
+			editor.OnTextChanged += editor_TextChanged; //mxd
 		}
 		
 		// Disposer
@@ -123,6 +132,7 @@ namespace CodeImp.DoomBuilder.Controls
 			editor.OnOpenFindAndReplace -= panel.OpenFindAndReplace;
 			editor.OnFindNext -= panel.FindNext;
 			editor.OnFindPrevious -= panel.FindPrevious; //mxd
+			editor.OnTextChanged -= editor_TextChanged; //mxd
 			
 			base.Dispose(disposing);
 		}
@@ -204,7 +214,14 @@ namespace CodeImp.DoomBuilder.Controls
 		// Call this to set the tab title
 		protected void SetTitle(string title)
 		{
-			this.Text = title;
+			this.title = title; //mxd
+			base.Text = (editor.IsChanged ? "\u25CF " + title : title); //mxd
+		}
+
+		//mxd
+		protected void UpdateTitle()
+		{
+			SetTitle(title);
 		}
 
 		// Perform undo
@@ -391,6 +408,14 @@ namespace CodeImp.DoomBuilder.Controls
 					navigator.Items.Clear();
 					break;
 			}
+
+			// Put some text in the navigator (but don't actually trigger selection event)
+			if(navigator.Items.Count > 0)
+			{
+				preventchanges = true;
+				navigator.Text = navigator.Items[0].ToString();
+				preventchanges = false;
+			}
 		}
 
 		//mxd
@@ -424,8 +449,8 @@ namespace CodeImp.DoomBuilder.Controls
 			
 			navigator.Items.Clear();
 
-			AcsParserSE parser = new AcsParserSE();
-			if(parser.Parse(stream, "ACS"))
+			AcsParserSE parser = new AcsParserSE { AddArgumentsToScriptNames = true, IsMapScriptsLump = this is ScriptLumpDocumentTab };
+			if(parser.Parse(stream, "SCRIPTS"))
 			{
 				navigator.Items.AddRange(parser.NamedScripts.ToArray());
 				navigator.Items.AddRange(parser.NumberedScripts.ToArray());
@@ -478,7 +503,7 @@ namespace CodeImp.DoomBuilder.Controls
 		//mxd
 		private void navigator_SelectedIndexChanged(object sender, EventArgs e) 
 		{
-			if (navigator.SelectedItem is ScriptItem) 
+			if(!preventchanges && navigator.SelectedItem is ScriptItem) 
 			{
 				ScriptItem si = navigator.SelectedItem as ScriptItem;
 				editor.EnsureLineVisible(editor.LineFromPosition(si.CursorPosition));
@@ -494,7 +519,14 @@ namespace CodeImp.DoomBuilder.Controls
 		//mxd
 		private void navigator_DropDown(object sender, EventArgs e) 
 		{
-			if(editor.IsChanged) UpdateNavigator();
+			if(!preventchanges && editor.IsChanged) UpdateNavigator();
+		}
+
+		//mxd
+		private void editor_TextChanged(object sender, EventArgs eventArgs)
+		{
+			UpdateTitle();
+			if(OnTextChanged != null) OnTextChanged(this, EventArgs.Empty);
 		}
 		
 		#endregion

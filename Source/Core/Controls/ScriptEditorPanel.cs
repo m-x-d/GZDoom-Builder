@@ -19,13 +19,12 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Windows.Forms;
-using CodeImp.DoomBuilder.Windows;
-using CodeImp.DoomBuilder.Config;
 using System.Globalization;
 using System.IO;
+using System.Windows.Forms;
 using CodeImp.DoomBuilder.Compilers;
-using CodeImp.DoomBuilder.GZBuilder.Data;
+using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.Windows;
 
 #endregion
 
@@ -49,6 +48,11 @@ namespace CodeImp.DoomBuilder.Controls
 		// Quick search bar settings (mxd)
 		private static bool matchwholeword;
 		private static bool matchcase;
+
+		//mxd. Status update
+		private ScriptStatusInfo status;
+		private int statusflashcount;
+		private bool statusflashicon;
 		
 		#endregion
 		
@@ -140,18 +144,8 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 
 			//mxd. Select "Scripts" tab, because that's what user will want 99% of time
-			if (tabs.TabPages.Count > 0) 
-			{
-				foreach (TabPage p in tabs.TabPages) 
-				{
-					if (p.Text == "SCRIPTS") 
-					{
-						tabs.SelectedTab = p;
-						break;
-					}
-				}
-				if (tabs.SelectedIndex == -1) tabs.SelectedIndex = 0;
-			}
+			int scriptsindex = GetTabPageIndex("SCRIPTS");
+			tabs.SelectedIndex = (scriptsindex == -1 ? 0 : scriptsindex);
 
 			//mxd. Apply quick search settings
 			searchmatchcase.Checked = matchcase;
@@ -203,9 +197,7 @@ namespace CodeImp.DoomBuilder.Controls
 			if(!string.IsNullOrEmpty(findoptions.FindText) && (ActiveTab != null))
 			{
 				if(!ActiveTab.FindNext(findoptions))
-				{
-					General.MainWindow.DisplayStatus(StatusType.Warning, "Can't find any occurence of \"" + findoptions.FindText + "\".");
-				}
+					DisplayStatus(ScriptStatusType.Warning, "Can't find any occurence of \"" + findoptions.FindText + "\".");
 			}
 			else
 			{
@@ -226,10 +218,8 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			if(!string.IsNullOrEmpty(findoptions.FindText) && (ActiveTab != null)) 
 			{
-				if (!ActiveTab.FindPrevious(findoptions))
-				{
-					General.MainWindow.DisplayStatus(StatusType.Warning, "Can't find any occurence of \"" + findoptions.FindText + "\".");
-				}
+				if(!ActiveTab.FindPrevious(findoptions))
+					DisplayStatus(ScriptStatusType.Warning, "Can't find any occurence of \"" + findoptions.FindText + "\".");
 			} 
 			else 
 			{
@@ -299,9 +289,9 @@ namespace CodeImp.DoomBuilder.Controls
 				
 				// Show result
 				if(replacements == 0)
-					General.MainWindow.DisplayStatus(StatusType.Warning, "Can't find any occurence of \"" + findoptions.FindText + "\".");
+					DisplayStatus(ScriptStatusType.Warning, "Can't find any occurence of \"" + findoptions.FindText + "\".");
 				else
-					General.MainWindow.DisplayStatus(StatusType.Info, "Replaced " + replacements + " occurences of \"" + findoptions.FindText + "\" with \"" + findoptions.ReplaceWith + "\".");
+					DisplayStatus(ScriptStatusType.Info, "Replaced " + replacements + " occurences of \"" + findoptions.FindText + "\" with \"" + findoptions.ReplaceWith + "\".");
 			}
 			else
 			{
@@ -446,6 +436,10 @@ namespace CodeImp.DoomBuilder.Controls
 			
 			if(!saveonly)
 			{
+				//mxd. Select tab to the left of the one we are going to close
+				if(t == tabs.SelectedTab && tabs.SelectedIndex > 0)
+					tabs.SelectedIndex--;
+				
 				// Close file
 				tabs.TabPages.Remove(t);
 				t.Dispose();
@@ -456,12 +450,11 @@ namespace CodeImp.DoomBuilder.Controls
 		// This returns true when any of the implicit-save scripts are changed
 		public bool CheckImplicitChanges()
 		{
-			bool changes = false;
 			foreach(ScriptDocumentTab t in tabs.TabPages)
 			{
-				if(!t.ExplicitSave && t.IsChanged) changes = true;
+				if(!t.ExplicitSave && t.IsChanged) return true;
 			}
-			return changes;
+			return false;
 		}
 		
 		// This forces the focus to the script editor
@@ -501,7 +494,7 @@ namespace CodeImp.DoomBuilder.Controls
 				t = (tabs.SelectedTab as ScriptDocumentTab);
 			
 			// Enable/disable buttons
-			buttonsave.Enabled = (t != null) && t.ExplicitSave;
+			buttonsave.Enabled = (t != null) && t.ExplicitSave && t.IsChanged;
 			buttonsaveall.Enabled = (explicitsavescripts > 0);
 			buttoncompile.Enabled = (t != null) && (t.Config.Compiler != null);
 			buttonsearch.Enabled = (t != null); //mxd
@@ -526,15 +519,30 @@ namespace CodeImp.DoomBuilder.Controls
 				}
 
 				//mxd. Add snippets
-				if(t.Config.Snippets.Count > 0) 
+				if(t.Config != null && t.Config.Snippets.Count > 0)
 				{
-					foreach(KeyValuePair<string, string[]> group in t.Config.Snippets)
-						buttonsnippets.DropDownItems.Add(group.Key).Click += OnInsertSnippetClick;
+					if(t.Config.Snippets.Count > 0) foreach(KeyValuePair<string, string[]> group in t.Config.Snippets) buttonsnippets.DropDownItems.Add(group.Key).Click += OnInsertSnippetClick;
 				}
 				
 				// Focus to script editor
 				if(focuseditor) ForceFocus();
 			}
+
+			//mxd. Update script type description
+			scripttype.Text = ((t != null && t.Config != null) ? t.Config.Description : "Plain Text");
+		}
+
+		//mxd
+		private int GetTabPageIndex(string title)
+		{
+			if(tabs.TabPages.Count == 0) return -1;
+
+			for(int i = 0; i < tabs.TabPages.Count; i++)
+			{
+				if(tabs.TabPages[i].Text == title) return i;
+			}
+
+			return -1;
 		}
 
 		// This opens the given file, returns null when failed
@@ -562,11 +570,11 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				//mxd
 				ScriptType st = t.VerifyScriptType();
-				if (st != ScriptType.UNKNOWN) 
+				if(st != ScriptType.UNKNOWN) 
 				{
-					foreach (ScriptConfiguration cfg in scriptconfigs) 
+					foreach(ScriptConfiguration cfg in scriptconfigs) 
 					{
-						if (cfg.ScriptType == st) 
+						if(cfg.ScriptType == st) 
 						{
 							t.ChangeScriptConfig(cfg);
 							break;
@@ -582,6 +590,8 @@ namespace CodeImp.DoomBuilder.Controls
 				tabs.SelectedTab = t;
 
 				// Done
+				t.OnTextChanged += tabpage_OnTextChanged; //mxd
+				t.IsChanged = false; //mxd. Not changed yet
 				UpdateToolbar(true);
 				return t;
 			}
@@ -619,6 +629,84 @@ namespace CodeImp.DoomBuilder.Controls
 			ScriptDocumentTab t = (tabs.SelectedTab as ScriptDocumentTab);
 			return t.LaunchKeywordHelp();
 		}
+
+		//mxd. This changes status text
+		private void DisplayStatus(ScriptStatusType type, string message) { DisplayStatus(new ScriptStatusInfo(type, message)); }
+		private void DisplayStatus(ScriptStatusInfo newstatus)
+		{
+			// Stop timers
+			if(!newstatus.displayed)
+			{
+				statusresetter.Stop();
+				statusflasher.Stop();
+				statusflashicon = false;
+			}
+
+			// Determine what to do specifically for this status type
+			switch(newstatus.type)
+			{
+				// Shows information without flashing the icon.
+				case ScriptStatusType.Ready:
+				case ScriptStatusType.Info:
+					if(!newstatus.displayed)
+					{
+						statusresetter.Interval = MainForm.INFO_RESET_DELAY;
+						statusresetter.Start();
+					}
+					break;
+
+				// Shows a warning, makes a warning sound and flashes a warning icon.
+				case ScriptStatusType.Warning:
+					if(!newstatus.displayed)
+					{
+						General.MessageBeep(MessageBeepType.Warning);
+						statusflasher.Interval = MainForm.WARNING_FLASH_INTERVAL;
+						statusflashcount = MainForm.WARNING_FLASH_COUNT;
+						statusflasher.Start();
+						statusresetter.Interval = MainForm.WARNING_RESET_DELAY;
+						statusresetter.Start();
+					}
+					break;
+			}
+
+			// Update status description
+			status = newstatus;
+			status.displayed = true;
+			statuslabel.Text = status.message;
+
+			// Update icon as well
+			UpdateStatusIcon();
+
+			// Refresh
+			statusbar.Invalidate();
+			this.Update();
+		}
+
+		// This updates the status icon
+		private void UpdateStatusIcon()
+		{
+			int statusflashindex = (statusflashicon ? 1 : 0);
+
+			// Status type
+			switch(status.type)
+			{
+				case ScriptStatusType.Ready:
+				case ScriptStatusType.Info:
+					statuslabel.Image = General.MainWindow.STATUS_IMAGES[statusflashindex, 0];
+					break;
+
+				case ScriptStatusType.Busy:
+					statuslabel.Image = General.MainWindow.STATUS_IMAGES[statusflashindex, 2];
+					break;
+
+				case ScriptStatusType.Warning:
+					statuslabel.Image = General.MainWindow.STATUS_IMAGES[statusflashindex, 3];
+					break;
+
+				default:
+					throw new NotImplementedException("Unsupported Script Status Type!");
+			}
+		}
 		
 		#endregion
 		
@@ -630,6 +718,10 @@ namespace CodeImp.DoomBuilder.Controls
 			//mxd. Store quick search settings
 			matchcase = searchmatchcase.Checked;
 			matchwholeword = searchwholeword.Checked;
+
+			//mxd. Stop status timers
+			statusresetter.Stop();
+			statusflasher.Stop();
 			
 			// Close the sub windows now
 			if(findreplaceform != null) findreplaceform.Dispose();
@@ -650,6 +742,9 @@ namespace CodeImp.DoomBuilder.Controls
 			
 			// Change script config
 			t.ChangeScriptConfig(scriptconfig);
+
+			//mxd. Update script type description
+			scripttype.Text = scriptconfig.Description;
 
 			// Done
 			UpdateToolbar(true);
@@ -676,8 +771,30 @@ namespace CodeImp.DoomBuilder.Controls
 			// Show open file dialog
 			if(openfile.ShowDialog(this.ParentForm) == DialogResult.OK)
 			{
-				// TODO: Make multi-select possible
-				OpenFile(openfile.FileName);
+				//mxd. Gather already opened file names
+				List<string> openedfiles = new List<string>();
+				foreach(var page in tabs.TabPages)
+				{
+					var scriptpage = page as ScriptFileDocumentTab;
+					if(scriptpage != null) openedfiles.Add(scriptpage.Filename);
+				}
+
+				//mxd. Add new tabs
+				foreach(string name in openfile.FileNames)
+				{
+					if(!openedfiles.Contains(name)) OpenFile(name);
+				}
+
+				// Select the last new item
+				foreach(var page in tabs.TabPages)
+				{
+					var scriptpage = page as ScriptFileDocumentTab;
+					if(scriptpage != null && scriptpage.Filename == openfile.FileNames[openfile.FileNames.Length - 1])
+					{
+						tabs.SelectedTab = scriptpage;
+						break;
+					}
+				}
 			}
 		}
 
@@ -772,25 +889,22 @@ namespace CodeImp.DoomBuilder.Controls
 					return;
 				}
 			}
-			else
+			else if(t.ExplicitSave && t.IsChanged)
 			{
-				if(t.ExplicitSave && t.IsChanged)
-				{
-					// We can only compile when the script is saved
-					if(!SaveScript(t)) return;
-				}
+				// We can only compile when the script is saved
+				if(!SaveScript(t)) return;
 			}
 
 			// Compile now
-			General.MainWindow.DisplayStatus(StatusType.Busy, "Compiling script " + t.Text + "...");
+			DisplayStatus(ScriptStatusType.Busy, "Compiling script \"" + t.Text + "\"...");
 			Cursor.Current = Cursors.WaitCursor;
 			t.Compile();
 
 			// Show warning
 			if((compilererrors != null) && (compilererrors.Count > 0))
-				General.MainWindow.DisplayStatus(StatusType.Warning, compilererrors.Count + " errors while compiling " + t.Text + "!");
+				DisplayStatus(ScriptStatusType.Warning, compilererrors.Count + " errors while compiling \"" + t.Text + "\"!");
 			else
-				General.MainWindow.DisplayStatus(StatusType.Info, "Script " + t.Text + " compiled without errors.");
+				DisplayStatus(ScriptStatusType.Info, "Script \"" + t.Text + "\" compiled without errors.");
 
 			Cursor.Current = Cursors.Default;
 			UpdateToolbar(true);
@@ -853,6 +967,16 @@ namespace CodeImp.DoomBuilder.Controls
 		private void tabs_MouseUp(object sender, MouseEventArgs e)
 		{
 			ForceFocus();
+		}
+
+		//mxd
+		private void tabpage_OnTextChanged(object sender, EventArgs eventArgs)
+		{
+			if(tabs.SelectedTab != null)
+			{
+				ScriptDocumentTab curtab = tabs.SelectedTab as ScriptDocumentTab;
+				buttonsave.Enabled = (curtab != null && curtab.ExplicitSave && curtab.IsChanged);
+			}
 		}
 		
 		// User double-clicks and error in the list
@@ -918,6 +1042,21 @@ namespace CodeImp.DoomBuilder.Controls
 		private void searchprev_Click(object sender, EventArgs e) 
 		{
 			ActiveTab.FindPrevious(GetQuickSearchOptions());
+		}
+
+		//mxd. This flashes the status icon
+		private void statusflasher_Tick(object sender, EventArgs e)
+		{
+			statusflashicon = !statusflashicon;
+			UpdateStatusIcon();
+			statusflashcount--;
+			if(statusflashcount == 0) statusflasher.Stop();
+		}
+
+		//mxd. This resets the status to ready
+		private void statusresetter_Tick(object sender, EventArgs e)
+		{
+			DisplayStatus(ScriptStatusType.Ready, null);
 		}
 
 		#endregion

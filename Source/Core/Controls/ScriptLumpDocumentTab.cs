@@ -44,6 +44,7 @@ namespace CodeImp.DoomBuilder.Controls
 		public override bool IsSaveAsRequired { get { return false; } }
 		public override bool IsClosable { get { return false; } }
 		public override bool IsReconfigurable { get { return false; } }
+		public override string Filename { get { return lumpname; } } //mxd
 		
 		#endregion
 		
@@ -75,8 +76,9 @@ namespace CodeImp.DoomBuilder.Controls
 				editor.ClearUndoRedo();
 				UpdateNavigator(); //mxd
 			}
-			
-			// Done
+
+			// Set title
+			IsChanged = false; //mxd. Not changed yet
 			SetTitle(ismapheader ? General.Map.Options.CurrentName : this.lumpname.ToUpper());
 		}
 		
@@ -115,6 +117,7 @@ namespace CodeImp.DoomBuilder.Controls
 			MemoryStream stream = new MemoryStream(editor.GetText());
 			General.Map.SetLumpData(lumpname, stream);
 			editor.IsChanged = false;
+			UpdateTitle(); //mxd
 			return true;
 		}
 

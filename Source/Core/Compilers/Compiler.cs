@@ -40,6 +40,7 @@ namespace CodeImp.DoomBuilder.Compilers
 		protected string sourcefile;
 		protected string outputfile;
 		protected string inputfile;
+		protected HashSet<string> includes; //mxd
 		
 		// Files
 		protected readonly DirectoryInfo tempdir;
@@ -60,6 +61,8 @@ namespace CodeImp.DoomBuilder.Compilers
 		public string InputFile { get { return inputfile; } set { inputfile = value; } }
 		public string OutputFile { get { return outputfile; } set { outputfile = value; } }
 		public string Location { get { return tempdir.FullName; } }
+		public HashSet<string> Includes { get { return includes; } set { includes = value; } } //mxd
+		public bool CopyIncludesToWorkingDirectory; //mxd
 		public bool IsDisposed { get { return isdisposed; } }
 		public CompilerError[] Errors { get { return errors.ToArray(); } }
 		
@@ -73,6 +76,7 @@ namespace CodeImp.DoomBuilder.Compilers
 			// Initialize
 			this.info = info;
 			this.errors = new List<CompilerError>();
+			this.includes = new HashSet<string>(); //mxd
 			
 			General.WriteLogLine("Creating compiler '" + info.Name + "' on interface '" + this.GetType().Name + "'...");
 			
@@ -134,15 +138,15 @@ namespace CodeImp.DoomBuilder.Compilers
 			// Copy files
 			foreach(string f in info.Files)
 			{
-				string sourcefile = Path.Combine(info.Path, f);
-				if (!File.Exists(sourcefile)) 
+				string srcfile = Path.Combine(info.Path, f);
+				if(!File.Exists(srcfile)) 
 				{
 					General.ErrorLogger.Add(ErrorType.Error, "The file '" + f + "' required by the '" + info.Name + "' compiler is missing. According to the compiler configuration in '" + info.FileName + "', the was expected to be found in the following path: " + info.Path);
 				} 
 				else 
 				{
-					string targetfile = Path.Combine(tempdir.FullName, f);
-					File.Copy(sourcefile, targetfile, true);
+					string tgtfile = Path.Combine(tempdir.FullName, f);
+					File.Copy(srcfile, tgtfile, true);
 				}
 			}
 		}

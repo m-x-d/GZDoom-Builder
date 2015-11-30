@@ -14,7 +14,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 
 		private readonly HashSet<string> parsedlumps;
 		private readonly HashSet<string> includes;
-		private List<string> includestoskip; 
+		private List<string> includestoskip;
+		private string libraryname;
 
 		private readonly List<ScriptItem> namedscripts;
 		private readonly List<ScriptItem> numberedscripts;
@@ -23,7 +24,12 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 		internal List<ScriptItem> NamedScripts { get { return namedscripts; } }
 		internal List<ScriptItem> NumberedScripts { get { return numberedscripts; } }
 		internal List<ScriptItem> Functions { get { return functions; } }
-		internal IEnumerable<string> Includes { get { return includes; } }
+		internal HashSet<string> Includes { get { return includes; } }
+		internal bool IsLibrary { get { return !string.IsNullOrEmpty(libraryname); } }
+		internal string LibraryName { get { return libraryname; } }
+
+		internal bool AddArgumentsToScriptNames;
+		internal bool IsMapScriptsLump;
 
 		internal AcsParserSE() 
 		{
@@ -99,6 +105,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							List<string> argnames = new List<string>();
 							foreach(KeyValuePair<string, string> group in args) argnames.Add(group.Value);
 
+							// Make full name
+							if(AddArgumentsToScriptNames) scriptname += " " + GetArgumentNames(args);
+
 							// Add to collection
 							namedscripts.Add(new ScriptItem(scriptname, argnames, startpos, isinclude));
 						} 
@@ -123,7 +132,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 
 								if(!string.IsNullOrEmpty(token))
 								{
-									int commentstart = token.IndexOf("//");
+									int commentstart = token.IndexOf("//", System.StringComparison.Ordinal);
 									if(commentstart != -1) //found comment
 									{ 
 										commentstart += 2;
@@ -132,10 +141,13 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 								}
 
 								bool customname = (name.Length > 0);
-								name = (customname ? name + " [" + n + "]" : "Script " + n);
+								name = (customname ? name + " [Script " + n + "]" : "Script " + n);
 								
 								List<string> argnames = new List<string>();
 								foreach(KeyValuePair<string, string> group in args) argnames.Add(group.Value);
+
+								// Make full name
+								if(AddArgumentsToScriptNames) name += " " + GetArgumentNames(args);
 
 								// Add to collection
 								numberedscripts.Add(new ScriptItem(n, name, argnames, startpos, isinclude, customname));
@@ -157,10 +169,32 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						List<string> argnames = new List<string>();
 						foreach(KeyValuePair<string, string> group in args) argnames.Add(group.Value);
 
+						// Make full name
+						if(AddArgumentsToScriptNames) funcname += GetArgumentNames(args);
+
 						// Add to collection
 						functions.Add(new ScriptItem(funcname, argnames, startpos, isinclude));
 					}
 					break;
+
+					case "#library":
+						if(IsMapScriptsLump)
+						{
+							ReportError("Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": SCRIPTS lump can not be compiled as library!");
+							return false;
+						}
+						
+						SkipWhitespace(true);
+						libraryname = ReadToken();
+
+						if(string.IsNullOrEmpty(libraryname) || !libraryname.StartsWith("\"") || !libraryname.EndsWith("\""))
+						{
+							ReportError("Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": invalid #library directive!");
+							return false;
+						}
+
+						libraryname = StripTokenQuotes(libraryname);
+						break;
 
 					default:
 						if(processincludes && (token == "#include" || token == "#import")) 
@@ -212,7 +246,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 				if(IsSpecialToken(argtype)) break;
 				if(argtype.ToUpperInvariant() == "VOID")
 				{
-					argnames.Add(new KeyValuePair<string, string>("(void)", string.Empty));
+					argnames.Add(new KeyValuePair<string, string>("void", string.Empty));
 					break;
 				}
 
@@ -226,6 +260,21 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 			}
 
 			return argnames;
+		}
+
+		private static string GetArgumentNames(List<KeyValuePair<string, string>> args)
+		{
+			// Make full name
+			if(args.Count > 0)
+			{
+				List<string> argdescs = new List<string>(args.Count);
+				foreach(KeyValuePair<string, string> group in args)
+					argdescs.Add((group.Key + " " + group.Value).TrimEnd());
+
+				return "(" + string.Join(", ", argdescs.ToArray()) + ")";
+			}
+
+			return "(void)";
 		}
 	}
 }
