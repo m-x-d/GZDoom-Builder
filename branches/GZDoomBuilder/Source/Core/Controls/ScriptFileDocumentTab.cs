@@ -18,10 +18,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
-using CodeImp.DoomBuilder.Config;
 using System.IO;
+using System.Windows.Forms;
 using CodeImp.DoomBuilder.Compilers;
+using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.GZBuilder.GZDoom;
 
 #endregion
 
@@ -60,8 +61,7 @@ namespace CodeImp.DoomBuilder.Controls
 			if(config.Extensions.Length > 0) ext = "." + config.Extensions[0];
 			SetTitle("Untitled" + ext);
 			editor.ClearUndoRedo();
-			//mxd
-			navigator.Enabled = (config.ScriptType != ScriptType.UNKNOWN);
+			navigator.Enabled = (config.ScriptType != ScriptType.UNKNOWN); //mxd
 		}
 		
 		#endregion
@@ -71,18 +71,15 @@ namespace CodeImp.DoomBuilder.Controls
 		// This compiles the script file
 		public override void Compile()
 		{
-			//mxd. List of errors. UpdateScriptNames can return errors and also updates acs includes list
-			List<CompilerError> errors = (config.ScriptType == ScriptType.ACS ? General.Map.UpdateScriptNames() : new List<CompilerError>());
-
-			//mxd. Errors already?..
-			if(errors.Count > 0)
+			//mxd. ACS requires special handling...
+			if(config.ScriptType == ScriptType.ACS)
 			{
-				// Feed errors to panel
-				panel.ShowErrors(errors);
+				CompileACS();
 				return;
 			}
 
 			Compiler compiler;
+			List<CompilerError> errors = new List<CompilerError>();
 			
 			try
 			{
@@ -93,6 +90,7 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				// Fail
 				errors.Add(new CompilerError("Unable to initialize compiler. " + e.GetType().Name + ": " + e.Message));
+				panel.ShowErrors(errors); //mxd
 				return;
 			}
 			
@@ -135,6 +133,136 @@ namespace CodeImp.DoomBuilder.Controls
 			panel.ShowErrors(errors);
 		}
 
+		//mxd. ACS requires special handling...
+		private void CompileACS()
+		{
+			Compiler compiler;
+			List<CompilerError> errors = new List<CompilerError>();
+			string inputfile = Path.GetFileName(filepathname);
+
+			// Which compiler to use?
+			ScriptConfiguration scriptconfig;
+			if(!string.IsNullOrEmpty(General.Map.Options.ScriptCompiler))
+			{
+				// Boilderplate
+				if(!General.CompiledScriptConfigs.ContainsKey(General.Map.Options.ScriptCompiler))
+				{
+					General.ShowErrorMessage("Unable to compile '" + inputfile + "'. Unable to find required script compiler configuration ('" + General.Map.Options.ScriptCompiler + "').", MessageBoxButtons.OK);
+					return;
+				}
+
+				scriptconfig = General.CompiledScriptConfigs[General.Map.Options.ScriptCompiler];
+			}
+			else
+			{
+				scriptconfig = config;
+			}
+
+			// Initialize compiler
+			try
+			{
+				compiler = scriptconfig.Compiler.Create();
+			}
+			catch(Exception e)
+			{
+				// Fail
+				errors.Add(new CompilerError("Unable to initialize compiler. " + e.GetType().Name + ": " + e.Message));
+				panel.ShowErrors(errors);
+				return;
+			}
+
+			// Preprocess the file
+			AcsParserSE parser = new AcsParserSE { OnInclude = (se, path) => se.Parse(General.Map.Data.LoadFile(path), path, true, true) };
+			using(FileStream stream = File.OpenRead(filepathname))
+			{
+				if(!parser.Parse(stream, inputfile, scriptconfig.Compiler.Files, true, false))
+				{
+					// Check for errors
+					if(parser.HasError)
+					{
+						errors.Add(new CompilerError(parser.ErrorDescription, parser.ErrorSource, parser.ErrorLine));
+						panel.ShowErrors(errors);
+						compiler.Dispose();
+						return;
+					}
+				}
+			}
+
+			// Only works for libraries
+			if(!parser.IsLibrary)
+			{
+				errors.Add(new CompilerError("External ACS files can only be compiled as libraries!", inputfile));
+				panel.ShowErrors(errors);
+				compiler.Dispose();
+				return;
+			}
+
+			// Make random output filename
+			string outputfile = General.MakeTempFilename(compiler.Location, "tmp");
+
+			// Run compiler
+			compiler.Parameters = config.Parameters;
+			compiler.InputFile = inputfile;
+			compiler.OutputFile = outputfile;
+			compiler.SourceFile = filepathname;
+			compiler.WorkingDirectory = Path.GetDirectoryName(filepathname);
+			compiler.Includes = parser.Includes;
+			compiler.CopyIncludesToWorkingDirectory = false;
+			if(compiler.Run())
+			{
+				// Fetch errors
+				foreach(CompilerError e in compiler.Errors)
+				{
+					CompilerError newerr = e;
+
+					// If the error's filename equals our temporary file,
+					// replace it with the original source filename
+					if(string.Compare(e.filename, inputfile, true) == 0)
+						newerr.filename = filepathname;
+
+					errors.Add(newerr);
+				}
+
+				// No errors and output file exists?
+				if(compiler.Errors.Length == 0)
+				{
+					// Output file exists?
+					if(!File.Exists(outputfile))
+					{
+						// Fail
+						compiler.Dispose();
+						errors.Add(new CompilerError("Output file '" + outputfile + "' doesn't exist."));
+						panel.ShowErrors(errors);
+						return;
+					}
+
+					// Rename and copy to source file directory
+					string targetfilename = Path.Combine(Path.GetDirectoryName(filepathname), parser.LibraryName + ".o");
+					try
+					{
+						File.Copy(outputfile, targetfilename, true);
+					}
+					catch(Exception e)
+					{
+						// Fail
+						compiler.Dispose();
+						errors.Add(new CompilerError("Unable to create library file '" + targetfilename + "'. " + e.GetType().Name + ": " + e.Message));
+						panel.ShowErrors(errors);
+						return;
+					}
+				}
+			}
+
+			// Dispose compiler
+			compiler.Dispose();
+
+			// Update script navigator
+			UpdateNavigator();
+
+			// Feed errors to panel
+			panel.ShowErrors(errors);
+		}
+
 		// This checks if a script error applies to this script
 		public override bool VerifyErrorForScript(CompilerError e)
 		{
@@ -161,6 +289,7 @@ namespace CodeImp.DoomBuilder.Controls
 			
 			// Done
 			editor.IsChanged = false;
+			UpdateTitle(); //mxd
 			return true;
 		}
 		
@@ -201,8 +330,10 @@ namespace CodeImp.DoomBuilder.Controls
 			
 			// Setup
 			this.filepathname = filepathname;
-			SetTitle(Path.GetFileName(filepathname));
 			editor.ClearUndoRedo();
+			editor.IsChanged = false; //mxd. Not changed yet
+			SetTitle(Path.GetFileName(filepathname));
+			UpdateNavigator(); //mxd
 
 			return true;
 		}
@@ -210,14 +341,12 @@ namespace CodeImp.DoomBuilder.Controls
 		// This changes the script configurations
 		public override void ChangeScriptConfig(ScriptConfiguration newconfig)
 		{
-			string ext = "";
-
 			this.config = newconfig;
 			editor.SetupStyles(config);
 
 			if(filepathname.Length == 0)
 			{
-				if(config.Extensions.Length > 0) ext = "." + config.Extensions[0];
+				string ext = (config.Extensions.Length > 0 ? "." + config.Extensions[0] : "");
 				SetTitle("Untitled" + ext);
 			}
 

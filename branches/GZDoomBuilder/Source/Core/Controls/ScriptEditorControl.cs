@@ -65,6 +65,7 @@ namespace CodeImp.DoomBuilder.Controls
 		public event OpenFindReplaceDelegate OnOpenFindAndReplace;
 		public event FindNextDelegate OnFindNext;
 		public event FindPreviousDelegate OnFindPrevious; //mxd
+		public new event EventHandler OnTextChanged; //mxd
 
 		#endregion
 
@@ -163,7 +164,10 @@ namespace CodeImp.DoomBuilder.Controls
 
 			// Events
 			scriptedit.ModEventMask = 0x7FFFF;	// Which events to receive (see also ScriptModificationFlags)
-			scriptedit.Modified += scriptedit_Modified;
+			scriptedit.TextDeleted += scriptedit_TextChanged; //mxd
+			scriptedit.TextInserted += scriptedit_TextChanged; //mxd
+			scriptedit.UndoPerformed += scriptedit_UndoRedoPerformed; //mxd
+			scriptedit.RedoPerformed += scriptedit_UndoRedoPerformed; //mxd
 		}
 		
 		#endregion
@@ -752,10 +756,18 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 		}
 
-		// Script modified
-		private void scriptedit_Modified(ScintillaControl pSender, int position, int modificationType, string text, int length, int linesAdded, int line, int foldLevelNow, int foldLevelPrev)
+		//mxd. Script text changed
+		private void scriptedit_UndoRedoPerformed(ScintillaControl pSender)
 		{
 			changed = true;
+			if(OnTextChanged != null) OnTextChanged(this, EventArgs.Empty);
+		}
+
+		//mxd. Script text changed
+		private void scriptedit_TextChanged(ScintillaControl pSender, int position, int length, int linesAdded)
+		{
+			changed = true;
+			if(OnTextChanged != null) OnTextChanged(this, EventArgs.Empty);
 		}
 		
 		// Key pressed down

@@ -122,6 +122,7 @@ namespace CodeImp.DoomBuilder.Data
 		public Dictionary<string, KeyValuePair<int, int>> Reverbs { get { return reverbs; } }
 		public Dictionary<long, GlowingFlatData> GlowingFlats { get { return glowingflats; } }
 		public List<string> SoundSequences { get { return soundsequences; } }
+		internal List<DataReader> Containers { get { return containers; } } //mxd
 
 		public Playpal Palette { get { return palette; } }
 		public PreviewManager Previews { get { return previews; } }
@@ -2052,11 +2053,11 @@ namespace CodeImp.DoomBuilder.Data
 		//mxd
 		internal MemoryStream LoadFile(string name) 
 		{
-			//relative path?
+			// Relative path?
 			if(name.StartsWith("..\\")) name = name.Replace("..\\", "");
 			
-			foreach (DataReader dr in containers)
-				if (dr.FileExists(name)) return dr.LoadFile(name);
+			foreach(DataReader dr in containers)
+				if(dr.FileExists(name)) return dr.LoadFile(name);
 			return null;
 		}
 

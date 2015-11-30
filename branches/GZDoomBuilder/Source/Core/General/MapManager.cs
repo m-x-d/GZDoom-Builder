@@ -1054,7 +1054,6 @@ namespace CodeImp.DoomBuilder
 		// This builds the nodes in the temproary file with the given configuration name
 		private bool BuildNodes(string nodebuildername, bool failaswarning) 
 		{
-			string tempfile2;
 			bool lumpscomplete = false;
 			WAD buildwad;
 
@@ -1102,6 +1101,7 @@ namespace CodeImp.DoomBuilder
 				buildwad.Dispose();
 
 				// Does the nodebuilder require an output file?
+				string tempfile2;
 				if(nodebuilder.HasSpecialOutputFile) 
 				{
 					// Make a temporary output file for the nodebuilder
@@ -1146,7 +1146,7 @@ namespace CodeImp.DoomBuilder
 					{
 						//mxd. collect errors
 						string compilererrors = "";
-						foreach (CompilerError e in compiler.Errors)
+						foreach(CompilerError e in compiler.Errors)
 							compilererrors += Environment.NewLine + e.description;
 
 						// Nodebuilder did not build the lumps!
@@ -1232,7 +1232,7 @@ namespace CodeImp.DoomBuilder
 		}
 
 		// This writes a copy of the data to a lump in the temp file
-		public void SetLumpData(string lumpname, MemoryStream data) 
+		public void SetLumpData(string lumpname, MemoryStream lumpdata) 
 		{
 			int insertindex = tempwad.Lumps.Count;
 
@@ -1245,9 +1245,12 @@ namespace CodeImp.DoomBuilder
 			}
 
 			// Insert new lump
-			Lump l = tempwad.Insert(lumpname, insertindex, (int)data.Length);
+			Lump l = tempwad.Insert(lumpname, insertindex, (int)lumpdata.Length);
 			l.Stream.Seek(0, SeekOrigin.Begin);
-			data.WriteTo(l.Stream);
+			lumpdata.WriteTo(l.Stream);
+
+			//mxd. Mark the map as changed (will also update the title)
+			IsChanged = true;
 		}
 
 		// This checks if the specified lump exists in the temp file
@@ -1682,7 +1685,7 @@ namespace CodeImp.DoomBuilder
 		}
 
 		// This checks if the scripts are changed
-		internal bool CheckScriptChanged() 
+		private bool CheckScriptChanged() 
 		{
 			if(scriptwindow != null) 
 			{
@@ -1797,6 +1800,14 @@ namespace CodeImp.DoomBuilder
 			compiler.OutputFile = Path.GetFileName(outputfile);
 			compiler.SourceFile = sourcefile;
 			compiler.WorkingDirectory = Path.GetDirectoryName(inputfile);
+
+			//mxd
+			if(scriptconfig.ScriptType == ScriptType.ACS)
+			{
+				compiler.Includes = General.Map.ScriptIncludes;
+				compiler.CopyIncludesToWorkingDirectory = true;
+			}
+
 			if(compiler.Run()) 
 			{
 				// Process errors
@@ -1871,7 +1882,8 @@ namespace CodeImp.DoomBuilder
 				foreach(CompilerError error in compilererrors)
 				{
 					General.ErrorLogger.Add(ErrorType.Error, "ACS error in '" + error.filename
-								+ "', line " + error.linenumber + ". " + error.description + ".");
+						+ (error.linenumber != CompilerError.NO_LINE_NUMBER ? "', line " + error.linenumber : "'") 
+						+ ". " + error.description + ".");
 				}
 			}
 
@@ -1914,7 +1926,7 @@ namespace CodeImp.DoomBuilder
 					if(stream != null && stream.Length > 0 && scriptconfig != null && scriptconfig.Compiler != null)
 					{
 						// Get script names
-						AcsParserSE parser = new AcsParserSE { OnInclude = UpdateScriptsFromLocation };
+						AcsParserSE parser = new AcsParserSE { OnInclude = (se, path) => se.Parse(General.Map.Data.LoadFile(path), path, true, true) };
 						if(parser.Parse(stream, "SCRIPTS", scriptconfig.Compiler.Files, true, false))
 						{
 							// Add them to arrays
@@ -1958,12 +1970,6 @@ namespace CodeImp.DoomBuilder
 			}
 
 			return compilererrors;
-		}
-
-		//mxd
-		private static void UpdateScriptsFromLocation(AcsParserSE parser, string path) 
-		{
-			parser.Parse(General.Map.Data.LoadFile(path), path, true, true);
 		}
 
 		#endregion

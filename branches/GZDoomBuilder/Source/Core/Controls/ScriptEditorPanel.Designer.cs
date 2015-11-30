@@ -66,10 +66,16 @@ namespace CodeImp.DoomBuilder.Controls
 			this.colDescription = new System.Windows.Forms.ColumnHeader();
 			this.colFile = new System.Windows.Forms.ColumnHeader();
 			this.errorimages = new System.Windows.Forms.ImageList(this.components);
+			this.statusbar = new System.Windows.Forms.StatusStrip();
+			this.statuslabel = new System.Windows.Forms.ToolStripStatusLabel();
+			this.scripttype = new System.Windows.Forms.ToolStripStatusLabel();
+			this.statusflasher = new System.Windows.Forms.Timer(this.components);
+			this.statusresetter = new System.Windows.Forms.Timer(this.components);
 			this.toolbar.SuspendLayout();
 			this.splitter.Panel1.SuspendLayout();
 			this.splitter.Panel2.SuspendLayout();
 			this.splitter.SuspendLayout();
+			this.statusbar.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// tabs
@@ -82,7 +88,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.tabs.Name = "tabs";
 			this.tabs.Padding = new System.Drawing.Point(12, 3);
 			this.tabs.SelectedIndex = 0;
-			this.tabs.Size = new System.Drawing.Size(720, 401);
+			this.tabs.Size = new System.Drawing.Size(720, 379);
 			this.tabs.TabIndex = 0;
 			this.tabs.TabStop = false;
 			this.tabs.Selecting += new System.Windows.Forms.TabControlCancelEventHandler(this.tabs_Selecting);
@@ -361,6 +367,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// openfile
 			// 
+			this.openfile.Multiselect = true;
 			this.openfile.Title = "Open Script";
 			// 
 			// savefile
@@ -384,8 +391,8 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			this.splitter.Panel2.Controls.Add(this.label1);
 			this.splitter.Panel2.Controls.Add(this.errorlist);
-			this.splitter.Size = new System.Drawing.Size(726, 538);
-			this.splitter.SplitterDistance = 412;
+			this.splitter.Size = new System.Drawing.Size(726, 516);
+			this.splitter.SplitterDistance = 390;
 			this.splitter.TabIndex = 2;
 			this.splitter.TabStop = false;
 			// 
@@ -449,12 +456,49 @@ namespace CodeImp.DoomBuilder.Controls
 			this.errorimages.TransparentColor = System.Drawing.Color.Transparent;
 			this.errorimages.Images.SetKeyName(0, "ScriptError3.png");
 			// 
+			// statusbar
+			// 
+			this.statusbar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.statuslabel,
+            this.scripttype});
+			this.statusbar.Location = new System.Drawing.Point(0, 541);
+			this.statusbar.Name = "statusbar";
+			this.statusbar.Size = new System.Drawing.Size(726, 22);
+			this.statusbar.TabIndex = 3;
+			this.statusbar.Text = "statusStrip1";
+			// 
+			// statuslabel
+			// 
+			this.statuslabel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+			this.statuslabel.Image = global::CodeImp.DoomBuilder.Properties.Resources.Status0;
+			this.statuslabel.Margin = new System.Windows.Forms.Padding(3, 3, 0, 2);
+			this.statuslabel.Name = "statuslabel";
+			this.statuslabel.Size = new System.Drawing.Size(60, 17);
+			this.statuslabel.Text = "Ready.";
+			// 
+			// scripttype
+			// 
+			this.scripttype.Name = "scripttype";
+			this.scripttype.Size = new System.Drawing.Size(648, 17);
+			this.scripttype.Spring = true;
+			this.scripttype.Text = "Plain Text";
+			this.scripttype.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			// 
+			// statusflasher
+			// 
+			this.statusflasher.Tick += new System.EventHandler(this.statusflasher_Tick);
+			// 
+			// statusresetter
+			// 
+			this.statusresetter.Tick += new System.EventHandler(this.statusresetter_Tick);
+			// 
 			// ScriptEditorPanel
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.BackColor = System.Drawing.SystemColors.Control;
 			this.Controls.Add(this.splitter);
+			this.Controls.Add(this.statusbar);
 			this.Controls.Add(this.toolbar);
 			this.Name = "ScriptEditorPanel";
 			this.Size = new System.Drawing.Size(726, 563);
@@ -463,6 +507,8 @@ namespace CodeImp.DoomBuilder.Controls
 			this.splitter.Panel1.ResumeLayout(false);
 			this.splitter.Panel2.ResumeLayout(false);
 			this.splitter.ResumeLayout(false);
+			this.statusbar.ResumeLayout(false);
+			this.statusbar.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -506,5 +552,10 @@ namespace CodeImp.DoomBuilder.Controls
 		private System.Windows.Forms.ToolStripButton searchprev;
 		private System.Windows.Forms.ToolStripButton searchmatchcase;
 		private System.Windows.Forms.ToolStripButton searchwholeword;
+		private System.Windows.Forms.StatusStrip statusbar;
+		private System.Windows.Forms.ToolStripStatusLabel statuslabel;
+		private System.Windows.Forms.ToolStripStatusLabel scripttype;
+		private System.Windows.Forms.Timer statusflasher;
+		private System.Windows.Forms.Timer statusresetter;
 	}
 }
