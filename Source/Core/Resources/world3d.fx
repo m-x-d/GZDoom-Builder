@@ -38,9 +38,11 @@ float4x4 worldviewproj;
 //mxd
 float4x4 world;
 float4 vertexColor;
+
 //light
 float4 lightPosAndRadius;
 float4 lightColor; //also used as fog color
+
 //fog
 float4 cameraPos;  //w is set to fade factor (distance, at wich fog color completely overrides pixel color)
 
@@ -86,7 +88,6 @@ PixelData vs_customvertexcolor(VertexData vd)
 	// Fill pixel data input
 	pd.pos = mul(float4(vd.pos, 1.0f), worldviewproj);
 	pd.color = vertexColor;
-	pd.color.a = vd.color.a;
 	pd.uv = vd.uv;
 	
 	// Return result
@@ -101,7 +102,6 @@ LitPixelData vs_customvertexcolor_fog(VertexData vd)
 	pd.pos = mul(float4(vd.pos, 1.0f), worldviewproj);
 	pd.pos_w = mul(float4(vd.pos, 1.0f), world);
 	pd.color = vertexColor;
-	pd.color.a = vd.color.a;
 	pd.uv = vd.uv;
 	pd.normal = vd.normal;
 	
@@ -191,7 +191,7 @@ float4 ps_main_highlight_fog(LitPixelData pd) : COLOR
 	// Blend texture color and vertex color
 	float4 ncolor = getFogColor(pd, tcolor * pd.color);
 	
-	return float4(highlightcolor.rgb * highlightcolor.a + (ncolor.rgb - 0.4f * highlightcolor.a), ncolor.a + 0.25f);
+	return float4(highlightcolor.rgb * highlightcolor.a + (ncolor.rgb - 0.4f * highlightcolor.a), max(ncolor.a + 0.25f, 0.5f));
 }
 
 //mxd: used to draw bounding boxes
@@ -289,7 +289,7 @@ technique SM20
 	pass p7 {} //mxd. need this only to maintain offset
 	
 	//mxd. same as p0-p3, but with fog calculation
-	 // Normal
+	// Normal
 	pass p8 
 	{
 		VertexShader = compile vs_2_0 vs_lightpass();

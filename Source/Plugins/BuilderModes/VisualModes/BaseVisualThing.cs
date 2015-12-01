@@ -280,6 +280,36 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							fogfactor = density * VisualGeometry.FOG_DENSITY_SCALER;
 						}
 					}
+					//TECH: even Bright Thing frames are affected by custom fade...
+					else
+					{
+						Vector3D thingpos = new Vector3D(Thing.Position.x, Thing.Position.y, Thing.Position.z + sd.Floor.plane.GetZ(Thing.Position));
+						SectorLevel level = sd.GetLevelAboveOrAt(thingpos);
+
+						if(level != null && level.sector.HasFogColor)
+						{
+							//mxd. Calculate fogfactor
+							float density;
+							if(Thing.Sector.UsesOutsideFog && General.Map.Data.MapInfo.OutsideFogDensity > 0)
+							{
+								density = General.Map.Data.MapInfo.OutsideFogDensity;
+							}
+							else if(!Thing.Sector.UsesOutsideFog && General.Map.Data.MapInfo.FogDensity > 0)
+							{
+								density = General.Map.Data.MapInfo.FogDensity;
+							}
+							else if(level.brightnessbelow < 248)
+							{
+								density = General.Clamp(255 - level.brightnessbelow, 30, 255);
+							}
+							else
+							{
+								density = 0f;
+							}
+
+							fogfactor = density * VisualGeometry.FOG_DENSITY_SCALER * 4;
+						}
+					}
 				}
 				
 				// Check if the texture is loaded
