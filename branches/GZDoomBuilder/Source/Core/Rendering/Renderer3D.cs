@@ -22,9 +22,10 @@ using System.Drawing;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Geometry;
-using CodeImp.DoomBuilder.GZBuilder.Data; //mxd
-using CodeImp.DoomBuilder.GZBuilder.Geometry; //mxd
-using CodeImp.DoomBuilder.GZBuilder.Rendering; //mxd
+using CodeImp.DoomBuilder.GZBuilder.Data;
+using CodeImp.DoomBuilder.GZBuilder.Geometry;
+using CodeImp.DoomBuilder.GZBuilder.MD3;
+using CodeImp.DoomBuilder.GZBuilder.Rendering;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.VisualModes;
 using SlimDX;
@@ -67,9 +68,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		private bool renderthingcages;
 		//mxd
 		private VisualVertexHandle vertexHandle;
-		private List<VisualThing> lightthings;
 		private int[] lightOffsets;
-		private Dictionary<ModelData, List<VisualThing>> modelthings;
 		
 		// Crosshair
 		private FlatVertex[] crosshairverts;
@@ -90,7 +89,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		//mxd. Masked geometry to be rendered. Must be sorted by sector.
 		private Dictionary<ImageData, List<VisualGeometry>> maskedgeo;
 
-		// mxd. Translucent geometry to be rendered. Must be sorted by camera distance.
+		//mxd. Translucent geometry to be rendered. Must be sorted by camera distance.
 		private List<VisualGeometry> translucentgeo;
 
 		//mxd. Solid things to be rendered (currently(?) there won't be any). Must be sorted by sector.
@@ -101,6 +100,15 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		//mxd. Translucent things to be rendered. Must be sorted by camera distance.
 		private List<VisualThing> translucentthings;
+
+		//mxd. Things with attached dynamic lights
+		private List<VisualThing> lightthings;
+		
+		//mxd. Things, which should be rendered as models
+		private Dictionary<ModelData, List<VisualThing>> maskedmodelthings;
+
+		//mxd. Things, which should be rendered as translucent models
+		private List<VisualThing> translucentmodelthings;
 
 		//mxd. All things. Used to render thing cages
 		private List<VisualThing> allthings;
@@ -396,7 +404,8 @@ namespace CodeImp.DoomBuilder.Rendering
 			maskedthings = new Dictionary<ImageData, List<VisualThing>>(); //mxd
 			translucentthings = new List<VisualThing>(); //mxd
 			
-			modelthings = new Dictionary<ModelData, List<VisualThing>>(); //mxd
+			maskedmodelthings = new Dictionary<ModelData, List<VisualThing>>(); //mxd
+			translucentmodelthings = new List<VisualThing>(); //mxd
 			lightthings = new List<VisualThing>(); //mxd
 			allthings = new List<VisualThing>(); //mxd
 		}
@@ -422,40 +431,67 @@ namespace CodeImp.DoomBuilder.Rendering
 			ApplyMatrices3D();
 			RenderSinglePass(solidgeo, solidthings);
 
-			//mxd. Render models, without culling.
-			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, true);
-			graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
-			RenderModels();
-			graphics.Device.SetRenderState(RenderState.CullMode, Cull.Counterclockwise);
+			//mxd. Render models, without backface culling
+			if(maskedmodelthings.Count > 0)
+			{
+				graphics.Device.SetRenderState(RenderState.AlphaTestEnable, true);
+				graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
+				RenderModels();
+				graphics.Device.SetRenderState(RenderState.CullMode, Cull.Counterclockwise);
+			}
 
 			// MASK PASS
-			world = Matrix.Identity;
-			ApplyMatrices3D();
-			RenderSinglePass(maskedgeo, maskedthings);
+			if(maskedgeo.Count > 0 || maskedthings.Count > 0)
+			{
+				world = Matrix.Identity;
+				ApplyMatrices3D();
+				graphics.Device.SetRenderState(RenderState.AlphaTestEnable, true);
+				RenderSinglePass(maskedgeo, maskedthings);
+			}
 
 			//mxd. LIGHT PASS
-			world = Matrix.Identity;
-			ApplyMatrices3D();
-			graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, true);
-			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
-			graphics.Device.SetRenderState(RenderState.ZWriteEnable, false);
-			graphics.Device.SetRenderState(RenderState.DestinationBlend, Blend.One);
 			if(General.Settings.GZDrawLightsMode != LightRenderMode.NONE && !fullbrightness && lightthings.Count > 0)
 			{
+				world = Matrix.Identity;
+				ApplyMatrices3D();
+				graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, true);
+				graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
+				graphics.Device.SetRenderState(RenderState.ZWriteEnable, false);
+				graphics.Device.SetRenderState(RenderState.DestinationBlend, Blend.One);
+				
 				RenderLights(solidgeo, lightthings);
 				RenderLights(maskedgeo, lightthings);
 			}
 
 			// ALPHA AND ADDITIVE PASS
-			world = Matrix.Identity;
-			ApplyMatrices3D();
-			graphics.Device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
-			RenderTranslucentPass(translucentgeo, translucentthings);
+			if(translucentgeo.Count > 0 || translucentthings.Count > 0)
+			{
+				world = Matrix.Identity;
+				ApplyMatrices3D();
+				graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, true);
+				graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
+				graphics.Device.SetRenderState(RenderState.ZWriteEnable, false);
+				graphics.Device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
+				RenderTranslucentPass(translucentgeo, translucentthings);
+			}
+
+			//mxd. Render translucent models, with backface culling
+			if(translucentmodelthings.Count > 0)
+			{
+				graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, true);
+				graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
+				graphics.Device.SetRenderState(RenderState.ZWriteEnable, false);
+				graphics.Device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
+				RenderTranslucentModels();
+			}
 
 			// THING CAGES
-			world = Matrix.Identity;
-			ApplyMatrices3D();
-			if(renderthingcages) RenderThingCages();
+			if(renderthingcages)
+			{
+				world = Matrix.Identity;
+				ApplyMatrices3D();
+				RenderThingCages();
+			}
 
 			//mxd. Visual vertices
 			RenderVertices();
@@ -480,7 +516,8 @@ namespace CodeImp.DoomBuilder.Rendering
 			
 			allthings = null;
 			lightthings = null;
-			modelthings = null;
+			maskedmodelthings = null;
+			translucentmodelthings = null;
 
 			visualvertices = null;
 		}
@@ -688,13 +725,9 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This performs a single render pass
 		private void RenderSinglePass(Dictionary<ImageData, List<VisualGeometry>> geopass, Dictionary<ImageData, List<VisualThing>> thingspass)
 		{
-			//mxd. Anything to render?
-			if(geopass.Count == 0 && thingspass.Count == 0) return;
-			
 			ImageData curtexture;
 			int currentshaderpass = shaderpass;
 			int highshaderpass = shaderpass + 2;
-			float fogfactor = -1; //mxd
 
 			// Begin rendering with this shader
 			graphics.Shaders.World3D.BeginPass(shaderpass);
@@ -774,12 +807,7 @@ namespace CodeImp.DoomBuilder.Rendering
 						//mxd. Set variables for fog rendering?
 						if(wantedshaderpass > 7)
 						{
-							if(g.FogFactor != fogfactor)
-							{
-								graphics.Shaders.World3D.CameraPosition = new Vector4(cameraposition.x, cameraposition.y, cameraposition.z, g.FogFactor);
-								fogfactor = g.FogFactor;
-							}
-							
+							graphics.Shaders.World3D.CameraPosition = new Vector4(cameraposition.x, cameraposition.y, cameraposition.z, g.FogFactor);
 							graphics.Shaders.World3D.LightColor = sector.Sector.FogColor;
 						}
 
@@ -806,7 +834,6 @@ namespace CodeImp.DoomBuilder.Rendering
 
 				Color4 litcolor; //mxd
 				Color4 vertexcolor = new Color4(); //mxd
-				fogfactor = -1; //mxd
 
 				// Render things collected
 				foreach(KeyValuePair<ImageData, List<VisualThing>> group in thingspass)
@@ -829,13 +856,6 @@ namespace CodeImp.DoomBuilder.Rendering
 					// Render all things with this texture
 					foreach(VisualThing t in group.Value)
 					{
-						//mxd
-						if(t.Thing.IsModel && 
-						   (General.Settings.GZDrawModelsMode == ModelRenderMode.ALL ||
-						    General.Settings.GZDrawModelsMode == ModelRenderMode.ACTIVE_THINGS_FILTER ||
-						    (General.Settings.GZDrawModelsMode == ModelRenderMode.SELECTION && t.Selected))) 
-							continue;
-
 						// Update buffer if needed
 						t.Update();
 
@@ -887,13 +907,8 @@ namespace CodeImp.DoomBuilder.Rendering
 							if(wantedshaderpass > 7)
 							{
 								graphics.Shaders.World3D.World = world;
-
-								float curfogfactor = (litcolor.ToArgb() != 0 ? VisualThing.LIT_FOG_DENSITY_SCALER : t.FogFactor);
-								if(curfogfactor != fogfactor)
-								{
-									graphics.Shaders.World3D.CameraPosition = new Vector4(cameraposition.x, cameraposition.y, cameraposition.z, curfogfactor);
-									fogfactor = curfogfactor;
-								}
+								float fogfactor = (litcolor.ToArgb() != 0 ? VisualThing.LIT_FOG_DENSITY_SCALER : t.FogFactor);
+								graphics.Shaders.World3D.CameraPosition = new Vector4(cameraposition.x, cameraposition.y, cameraposition.z, fogfactor);
 							}
 
 							// Set the colors to use
@@ -928,9 +943,6 @@ namespace CodeImp.DoomBuilder.Rendering
 		//mxd
 		private void RenderTranslucentPass(List<VisualGeometry> geopass, List<VisualThing> thingspass)
 		{
-			// Anything to render?
-			if(geopass.Count == 0 && thingspass.Count == 0) return;
-			
 			int currentshaderpass = shaderpass;
 			int highshaderpass = shaderpass + 2;
 
@@ -1144,13 +1156,6 @@ namespace CodeImp.DoomBuilder.Rendering
 						graphics.Shaders.World3D.Texture1 = curtexture.Texture;
 						curtexturename = t.Texture.LongName;
 					}
-
-					//mxd
-					if(t.Thing.IsModel &&
-					   (General.Settings.GZDrawModelsMode == ModelRenderMode.ALL ||
-						General.Settings.GZDrawModelsMode == ModelRenderMode.ACTIVE_THINGS_FILTER ||
-					   (General.Settings.GZDrawModelsMode == ModelRenderMode.SELECTION && t.Selected)))
-						continue;
 
 					// Update buffer if needed
 					t.Update();
@@ -1387,14 +1392,14 @@ namespace CodeImp.DoomBuilder.Rendering
 		//mxd. render models
 		private void RenderModels() 
 		{
-			int shaderpass = fullbrightness ? 1 : 4;
+			int shaderpass = (fullbrightness ? 1 : 4);
 			int currentshaderpass = shaderpass;
 			int highshaderpass = shaderpass + 2;
 
 			// Begin rendering with this shader
 			graphics.Shaders.World3D.BeginPass(currentshaderpass);
 
-			foreach(KeyValuePair<ModelData, List<VisualThing>> group in modelthings) 
+			foreach(KeyValuePair<ModelData, List<VisualThing>> group in maskedmodelthings) 
 			{
 				foreach(VisualThing t in group.Value) 
 				{
@@ -1454,7 +1459,6 @@ namespace CodeImp.DoomBuilder.Rendering
 
 					for(int i = 0; i < group.Key.Model.Meshes.Count; i++) 
 					{
-						if (!graphics.Shaders.Enabled) graphics.Device.SetTexture(0, group.Key.Model.Textures[i]);
 						graphics.Shaders.World3D.Texture1 = group.Key.Model.Textures[i];
 						graphics.Shaders.World3D.ApplySettings();
 
@@ -1463,6 +1467,108 @@ namespace CodeImp.DoomBuilder.Rendering
 					}
 				}
 			}
+
+			graphics.Shaders.World3D.EndPass();
+		}
+
+		//mxd. Render additive/translucent models
+		private void RenderTranslucentModels()
+		{
+			int shaderpass = (fullbrightness ? 1 : 4);
+			int currentshaderpass = shaderpass;
+			int highshaderpass = shaderpass + 2;
+			RenderPass currentpass = RenderPass.Solid;
+
+			// Sort models by camera distance. First vertex of the BoundingBox is it's center
+			translucentmodelthings.Sort((vt1, vt2) => (int)((General.Map.VisualCamera.Position - vt2.BoundingBox[0]).GetLengthSq()
+										  - (General.Map.VisualCamera.Position - vt1.BoundingBox[0]).GetLengthSq()));
+
+			// Begin rendering with this shader
+			graphics.Shaders.World3D.BeginPass(currentshaderpass);
+
+			foreach(VisualThing t in translucentmodelthings)
+			{
+				// Change blend mode?
+				if(t.RenderPass != currentpass)
+				{
+					switch(t.RenderPass)
+					{
+						case RenderPass.Additive:
+							graphics.Device.SetRenderState(RenderState.DestinationBlend, Blend.One);
+							break;
+
+						case RenderPass.Alpha:
+							graphics.Device.SetRenderState(RenderState.DestinationBlend, Blend.InverseSourceAlpha);
+							break;
+					}
+
+					currentpass = t.RenderPass;
+				}
+				
+				t.Update();
+				Color4 vertexcolor = new Color4(t.VertexColor);
+
+				//check if model is affected by dynamic lights and set color accordingly
+				Color4 litcolor;
+				if(General.Settings.GZDrawLightsMode != LightRenderMode.NONE && !fullbrightness && lightthings.Count > 0)
+				{
+					litcolor = GetLitColorForThing(t);
+					graphics.Shaders.World3D.VertexColor = vertexcolor + litcolor;
+				}
+				else
+				{
+					graphics.Shaders.World3D.VertexColor = vertexcolor;
+					litcolor = new Color4();
+				}
+
+				// Determine the shader pass we want to use for this object
+				int wantedshaderpass = ((((t == highlighted) && showhighlight) || (t.Selected && showselection)) ? highshaderpass : shaderpass);
+
+				//mxd. if fog is enagled, switch to shader, which calculates it
+				if(General.Settings.GZDrawFog && !fullbrightness && t.Thing.Sector != null && (t.Thing.Sector.HasFogColor || t.Thing.Sector.Brightness < 248))
+					wantedshaderpass += 8;
+
+				// Switch shader pass?
+				if(currentshaderpass != wantedshaderpass)
+				{
+					graphics.Shaders.World3D.EndPass();
+					graphics.Shaders.World3D.BeginPass(wantedshaderpass);
+					currentshaderpass = wantedshaderpass;
+				}
+
+				// Set the colors to use
+				graphics.Shaders.World3D.HighlightColor = CalculateHighlightColor((t == highlighted) && showhighlight, (t.Selected && showselection));
+
+				// Create the matrix for positioning / rotation
+				float sx = t.Thing.ScaleX * t.Thing.ActorScale.Width;
+				float sy = t.Thing.ScaleY * t.Thing.ActorScale.Height;
+
+				Matrix modelscale = Matrix.Scaling(sx, sx, sy);
+				Matrix modelrotation = Matrix.RotationY(-t.Thing.RollRad) * Matrix.RotationX(-t.Thing.PitchRad) * Matrix.RotationZ(t.Thing.Angle);
+
+				world = General.Map.Data.ModeldefEntries[t.Thing.Type].Transform * modelscale * modelrotation * t.Position;
+				ApplyMatrices3D();
+
+				//mxd. set variables for fog rendering
+				if(wantedshaderpass > 7)
+				{
+					graphics.Shaders.World3D.World = world;
+					if(t.Thing.Sector != null) graphics.Shaders.World3D.LightColor = t.Thing.Sector.FogColor;
+					float fogfactor = (litcolor.ToArgb() != 0 ? VisualThing.LIT_FOG_DENSITY_SCALER : t.FogFactor);
+					graphics.Shaders.World3D.CameraPosition = new Vector4(cameraposition.x, cameraposition.y, cameraposition.z, fogfactor);
+				}
+
+				GZModel model = General.Map.Data.ModeldefEntries[t.Thing.Type].Model;
+				for(int i = 0; i < model.Meshes.Count; i++)
+				{
+					graphics.Shaders.World3D.Texture1 = model.Textures[i];
+					graphics.Shaders.World3D.ApplySettings();
+
+					// Render!
+					model.Meshes[i].DrawSubset(0);
+				}
+			}
+
 			graphics.Shaders.World3D.EndPass();
 		}
 
@@ -1472,25 +1578,24 @@ namespace CodeImp.DoomBuilder.Rendering
 		private Color4 GetLitColorForThing(VisualThing t) 
 		{
 			Color4 litColor = new Color4();
-			float radius, radiusSquared, distSquared, scaler;
+			float radiusSquared, distSquared, scaler;
 			int sign;
 
-			for(int i = 0; i < lightthings.Count; i++ ) 
+			foreach(VisualThing lt in lightthings)
 			{
-				//don't light self
-				if(General.Map.Data.GldefsEntries.ContainsKey(t.Thing.Type) && General.Map.Data.GldefsEntries[t.Thing.Type].DontLightSelf && t.Thing.Index == lightthings[i].Thing.Index)
+				// Don't light self
+				if(General.Map.Data.GldefsEntries.ContainsKey(t.Thing.Type) && General.Map.Data.GldefsEntries[t.Thing.Type].DontLightSelf && t.Thing.Index == lt.Thing.Index)
 					continue;
 
-				distSquared = Vector3.DistanceSquared(lightthings[i].Center, t.PositionV3);
-				radius = lightthings[i].LightRadius;
-				radiusSquared = radius * radius;
+				distSquared = Vector3.DistanceSquared(lt.Center, t.PositionV3);
+				radiusSquared = lt.LightRadius * lt.LightRadius;
 				if(distSquared < radiusSquared) 
 				{
-					sign = lightthings[i].LightRenderStyle == DynamicLightRenderStyle.NEGATIVE ? -1 : 1;
-					scaler = 1 - distSquared / radiusSquared * lightthings[i].LightColor.Alpha;
-					litColor.Red += lightthings[i].LightColor.Red * scaler * sign;
-					litColor.Green += lightthings[i].LightColor.Green * scaler * sign;
-					litColor.Blue += lightthings[i].LightColor.Blue * scaler * sign;
+					sign = (lt.LightRenderStyle == DynamicLightRenderStyle.NEGATIVE ? -1 : 1);
+					scaler = 1 - distSquared / radiusSquared * lt.LightColor.Alpha;
+					litColor.Red += lt.LightColor.Red * scaler * sign;
+					litColor.Green += lt.LightColor.Green * scaler * sign;
+					litColor.Blue += lt.LightColor.Blue * scaler * sign;
 				}
 			}
 			return litColor;
@@ -1556,7 +1661,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This collects a visual sector's geometry for rendering
 		public void AddThingGeometry(VisualThing t)
 		{
-			//mxd. gater lights
+			//mxd. Gather lights
 			if(General.Settings.GZDrawLightsMode != LightRenderMode.NONE && !fullbrightness && t.LightType != DynamicLightType.NONE) 
 			{
 				t.UpdateLightRadius();
@@ -1568,24 +1673,32 @@ namespace CodeImp.DoomBuilder.Rendering
 				}
 			}
 
-			//mxd. gather models
+			//mxd. Gather models
 			if(t.Thing.IsModel && 
 				(General.Settings.GZDrawModelsMode == ModelRenderMode.ALL ||
 				 General.Settings.GZDrawModelsMode == ModelRenderMode.ACTIVE_THINGS_FILTER ||
 				(General.Settings.GZDrawModelsMode == ModelRenderMode.SELECTION && t.Selected))) 
 			{
-				ModelData mde = General.Map.Data.ModeldefEntries[t.Thing.Type];
-				if(!modelthings.ContainsKey(mde))
-					modelthings.Add(mde, new List<VisualThing> { t });
-				else
-					modelthings[mde].Add(t);
+				switch(t.RenderPass)
+				{
+					case RenderPass.Mask:
+					case RenderPass.Solid:
+						ModelData mde = General.Map.Data.ModeldefEntries[t.Thing.Type];
+						if(!maskedmodelthings.ContainsKey(mde)) maskedmodelthings.Add(mde, new List<VisualThing>());
+						maskedmodelthings[mde].Add(t);
+						break;
+
+					case RenderPass.Additive:
+					case RenderPass.Alpha:
+						translucentmodelthings.Add(t);
+						break;
+
+					default:
+						throw new NotImplementedException("Thing model rendering of " + t.RenderPass + " render pass is not implemented!");
+				}
 			}
-
-			//mxd. Add to the plain list
-			allthings.Add(t);
-
-			// Must have a texture!
-			if(t.Texture != null) 
+			// Gather regular things
+			else if(t.Texture != null) //Must have a texture!
 			{
 				//mxd
 				switch(t.RenderPass)
@@ -1600,7 +1713,8 @@ namespace CodeImp.DoomBuilder.Rendering
 						maskedthings[t.Texture].Add(t);
 						break;
 
-					case RenderPass.Additive: case RenderPass.Alpha:
+					case RenderPass.Additive:
+					case RenderPass.Alpha:
 						translucentthings.Add(t);
 						break;
 
@@ -1608,6 +1722,9 @@ namespace CodeImp.DoomBuilder.Rendering
 						throw new NotImplementedException("Thing rendering of " + t.RenderPass + " render pass is not implemented!");
 				}
 			}
+
+			//mxd. Add to the plain list
+			allthings.Add(t);
 		}
 
 		//mxd

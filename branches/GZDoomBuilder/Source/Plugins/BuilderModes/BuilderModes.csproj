@@ -553,9 +553,6 @@
     <None Include="Resources\Similar.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\MoveThingsInSectors.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\Save.png" />
   </ItemGroup>
   <ItemGroup>
