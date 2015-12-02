@@ -4037,10 +4037,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							else
 							{
 								ImageData midtex = General.Map.Data.GetTextureImage(j.sidedef.LongMiddleTexture);
-								offset = Tools.GetSidedefMiddleOffsetY(j.sidedef, offset, j.scaleY / scaley, true) % midtex.Height;
+								offset = Tools.GetSidedefMiddleOffsetY(j.sidedef, offset, j.scaleY / scaley, true);
 
 								bool startisnonwrappedmidtex = (start.Sidedef.Other != null && start.GeometryType == VisualGeometryType.WALL_MIDDLE && !start.Sidedef.IsFlagSet("wrapmidtex") && !start.Sidedef.Line.IsFlagSet("wrapmidtex"));
 								bool cursideisnonwrappedmidtex = (j.sidedef.Other != null && !j.sidedef.IsFlagSet("wrapmidtex") && !j.sidedef.Line.IsFlagSet("wrapmidtex"));
+
+								//mxd. Only clamp when the texture is wrapped 
+								if(!cursideisnonwrappedmidtex) offset %= midtex.Height;
 
 								if(!startisnonwrappedmidtex && cursideisnonwrappedmidtex)
 								{
@@ -4130,10 +4133,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							else 
 							{
 								ImageData midtex = General.Map.Data.GetTextureImage(j.sidedef.LongMiddleTexture);
-								offset = Tools.GetSidedefMiddleOffsetY(j.sidedef, offset, j.scaleY / scaley, true) % midtex.Height;
+								offset = Tools.GetSidedefMiddleOffsetY(j.sidedef, offset, j.scaleY / scaley, true);
 
 								bool startisnonwrappedmidtex = (start.Sidedef.Other != null && start.GeometryType == VisualGeometryType.WALL_MIDDLE && !start.Sidedef.IsFlagSet("wrapmidtex") && !start.Sidedef.Line.IsFlagSet("wrapmidtex"));
 								bool cursideisnonwrappedmidtex = (j.sidedef.Other != null && !j.sidedef.IsFlagSet("wrapmidtex") && !j.sidedef.Line.IsFlagSet("wrapmidtex"));
+
+								//mxd. Only clamp when the texture is wrapped 
+								if(!cursideisnonwrappedmidtex) offset %= midtex.Height;
 
 								if(!startisnonwrappedmidtex && cursideisnonwrappedmidtex) 
 								{
