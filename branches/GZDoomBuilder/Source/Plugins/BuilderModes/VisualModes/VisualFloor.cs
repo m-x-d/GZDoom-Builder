@@ -359,9 +359,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			if(level != null) 
 			{
-				if(level.sector != Sector.Sector)  //this floor is part of 3D-floor
+				// This floor is part of 3D-floor
+				if(level.sector != Sector.Sector)
 					((BaseVisualSector)mode.GetVisualSector(level.sector)).Floor.OnChangeTargetBrightness(up);
-				else if(Sector.ExtraFloors.Count > 0 && !Sector.ExtraFloors[0].ExtraFloor.Floor.restrictlighting)  //this is actual floor of a sector with extrafloors
+				// This is actual floor of a sector with extrafloors
+				else if(Sector.ExtraFloors.Count > 0 && !Sector.ExtraFloors[0].ExtraFloor.Floor.restrictlighting && !Sector.ExtraFloors[0].ExtraFloor.Floor.disablelighting)
 					Sector.ExtraFloors[0].OnChangeTargetBrightness(up);
 				else
 					base.OnChangeTargetBrightness(up);

@@ -336,7 +336,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					{
 						l.colorbelow = stored.colorbelow;
 						l.brightnessbelow = stored.brightnessbelow;
-						l.color = stored.colorbelow.ToInt();
+						l.color = stored.color;
 					}
 					else if(l.restrictlighting)
 					{
