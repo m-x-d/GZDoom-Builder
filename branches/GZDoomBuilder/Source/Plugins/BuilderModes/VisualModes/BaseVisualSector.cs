@@ -74,9 +74,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.mode = mode;
 			this.extrafloors = new List<VisualFloor>(2);
 			this.extraceilings = new List<VisualCeiling>(2);
-			//mxd
-			this.extrabackfloors = new List<VisualFloor>(2);
-			this.extrabackceilings = new List<VisualCeiling>(2);
+			this.extrabackfloors = new List<VisualFloor>(2); //mxd
+			this.extrabackceilings = new List<VisualCeiling>(2); //mxd
 			
 			// Initialize
 			Rebuild();
@@ -319,6 +318,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Create middle part
 					VisualMiddleDouble vm = parts.middledouble ?? new VisualMiddleDouble(mode, this, sd);
 					if(vm.Setup()) base.AddGeometry(vm);
+
+					//mxd. Create fog boundary
+					VisualFogBoundary vb = parts.fogboundary ?? new VisualFogBoundary(mode, this, sd);
+					if(vb.Setup())
+					{
+						vm.FogFactor = 0; // Avoid double-fogging the middle part
+						base.AddGeometry(vb);
+					}
 					
 					// Create 3D wall parts
 					SectorData osd = mode.GetSectorData(sd.Other.Sector);
@@ -336,20 +343,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					//mxd. Create backsides
 					List<VisualMiddleBack> middlebacks = new List<VisualMiddleBack>();
-					for (int i = 0; i < data.ExtraFloors.Count; i++) 
+					for(int i = 0; i < data.ExtraFloors.Count; i++) 
 					{
 						Effect3DFloor ef = data.ExtraFloors[i];
 
-						if (!ef.VavoomType && ef.RenderInside && !ef.IgnoreBottomHeight) 
+						if(!ef.VavoomType && ef.RenderInside && !ef.IgnoreBottomHeight) 
 						{
 							VisualMiddleBack vms = new VisualMiddleBack(mode, this, sd);
-							if (vms.Setup(ef)) base.AddGeometry(vms);
+							if(vms.Setup(ef)) base.AddGeometry(vms);
 							middlebacks.Add(vms);
 						}
 					}
 					
 					// Store
-					sides.Add(sd, new VisualSidedefParts(vu, vl, vm, middles, middlebacks));
+					sides.Add(sd, new VisualSidedefParts(vu, vl, vm, vb, middles, middlebacks));
 				}
 				else
 				{
@@ -369,8 +376,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This returns the visual sidedef parts for a given sidedef
 		public VisualSidedefParts GetSidedefParts(Sidedef sd)
 		{
-			if(sides.ContainsKey(sd)) return sides[sd];
-			return new VisualSidedefParts();
+			return (sides.ContainsKey(sd) ? sides[sd] : new VisualSidedefParts());
 		}
 
 		//mxd. Checks if given plane is between given floor and ceiling vertices
@@ -381,14 +387,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			//check floor
 			for(int c = 0; c < floorverts.Length; c++) 
 			{
-				if (plane.GetZ(new Vector2D(floorverts[c].x, floorverts[c].y)) > Math.Round(floorverts[c].z, 3)) 
+				if(plane.GetZ(new Vector2D(floorverts[c].x, floorverts[c].y)) > Math.Round(floorverts[c].z, 3)) 
 				{
 					show = true;
 					break;
 				}
 			}
 
-			if (!show) return false;
+			if(!show) return false;
 
 			//check ceiling
 			for(int c = 0; c < ceilingverts.Length; c++) 

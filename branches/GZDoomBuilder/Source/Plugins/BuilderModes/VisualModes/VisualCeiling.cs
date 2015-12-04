@@ -127,7 +127,29 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			else
 			{
 				color = PixelColor.FromInt(level.color).WithAlpha((byte)General.Clamp(level.alpha, 0, 255)).ToInt();
-				fogfactor = CalculateFogDensity(level.brightnessbelow);
+
+				//mxd. Top extrafloor level should calculate fogdensity
+				//from the brightness of the level above it
+				int targetbrightness;
+				if(extrafloor != null && !extrafloor.VavoomType && !level.disablelighting)
+				{
+					targetbrightness = 0;
+					SectorData sd = mode.GetSectorData(this.Sector.Sector);
+					for(int i = 0; i < sd.LightLevels.Count - 1; i++)
+					{
+						if(sd.LightLevels[i] == level)
+						{
+							targetbrightness = sd.LightLevels[i + 1].brightnessbelow;
+							break;
+						}
+					}
+				}
+				else
+				{
+					targetbrightness = level.brightnessbelow;
+				}
+
+				fogfactor = CalculateFogDensity(targetbrightness);
 			}
 
 			// Make vertices

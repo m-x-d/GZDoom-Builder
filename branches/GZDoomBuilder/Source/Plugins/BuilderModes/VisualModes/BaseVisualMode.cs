@@ -391,7 +391,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		internal BaseVisualSector CreateBaseVisualSector(Sector s) 
 		{
 			BaseVisualSector vs = new BaseVisualSector(this, s);
-			if(vs != null) allsectors.Add(s, vs);
+			allsectors.Add(s, vs);
 			return vs;
 		}
 
@@ -399,7 +399,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected override VisualSector CreateVisualSector(Sector s)
 		{
 			BaseVisualSector vs = new BaseVisualSector(this, s);
-			if (vs != null) allsectors.Add(s, vs); //mxd
+			allsectors.Add(s, vs); //mxd
 			return vs;
 		}
 		
@@ -824,7 +824,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Find all sector who's tag is not 0 and hash them so that we can find them quicly
 			foreach(Sector s in General.Map.Map.Sectors)
 			{
-				foreach (int tag in s.Tags)
+				s.UpdateFogColor(); //mxd. Also update fog color
+				foreach(int tag in s.Tags)
 				{
 					if(tag == 0) continue;
 					if(!sectortags.ContainsKey(tag)) sectortags[tag] = new List<Sector>();

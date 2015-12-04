@@ -30,15 +30,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public readonly VisualMiddleDouble middledouble;
 		public readonly VisualMiddleSingle middlesingle;
 		public readonly List<VisualMiddle3D> middle3d;
-		public readonly List<VisualMiddleBack> middleback;//mxd
+		public readonly List<VisualMiddleBack> middleback; //mxd
+		public readonly VisualFogBoundary fogboundary; //mxd
 		
 		// Constructor
-		public VisualSidedefParts(VisualUpper u, VisualLower l, VisualMiddleDouble m, List<VisualMiddle3D> e, List<VisualMiddleBack> eb)
+		public VisualSidedefParts(VisualUpper u, VisualLower l, VisualMiddleDouble m, VisualFogBoundary f, List<VisualMiddle3D> e, List<VisualMiddleBack> eb)
 		{
 			this.upper = u;
 			this.lower = l;
 			this.middledouble = m;
 			this.middlesingle = null;
+			this.fogboundary = f;
 			this.middle3d = e;
 			this.middleback = eb; //mxd
 		}
@@ -52,6 +54,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.middlesingle = m;
 			this.middle3d = null;
 			this.middleback = null; //mxd
+			this.fogboundary = null; //mxd
 		}
 		
 		// This calls Setup() on all parts
@@ -60,12 +63,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(lower != null) lower.Setup();
 			if(middledouble != null) middledouble.Setup();
 			if(middlesingle != null) middlesingle.Setup();
+			if(fogboundary != null) fogboundary.Setup(); //mxd
 			if(upper != null) upper.Setup();
 			if(middle3d != null)
 			{
 				foreach(VisualMiddle3D m in middle3d) m.Setup();
 			}
-			if(middleback != null) 
+			if(middleback != null) //mxd
 			{
 				foreach(VisualMiddleBack m in middleback) m.Setup();
 			}

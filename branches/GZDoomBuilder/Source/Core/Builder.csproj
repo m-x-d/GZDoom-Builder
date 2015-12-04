@@ -1085,6 +1085,7 @@
     <None Include="Resources\Comment.png" />
     <None Include="Resources\About.png" />
     <None Include="Resources\Configuration.png" />
+    <EmbeddedResource Include="Resources\Black.png" />
     <Content Include="Resources\DB2.ico" />
     <None Include="Resources\GZDB2.ico" />
     <None Include="Resources\fog.png" />

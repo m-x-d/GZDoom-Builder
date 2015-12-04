@@ -97,11 +97,15 @@ namespace CodeImp.DoomBuilder.Data
 			//mxd. Check data so we don't perform unneeded operations later on
 			if(this.alpha == 1.0f) 
 			{
-				if(this.style == TexturePathRenderStyle.Blend 
-					|| this.style == TexturePathRenderStyle.CopyAlpha 
-					|| this.style == TexturePathRenderStyle.CopyNewAlpha 
-					|| this.style == TexturePathRenderStyle.Overlay)
-					this.style = TexturePathRenderStyle.Copy;
+				switch(this.style)
+				{
+					case TexturePathRenderStyle.Blend:
+					case TexturePathRenderStyle.CopyAlpha:
+					case TexturePathRenderStyle.CopyNewAlpha:
+					case TexturePathRenderStyle.Overlay:
+						this.style = TexturePathRenderStyle.Copy;
+						break;
+				}
 			}
 
 			//mxd. and get rid of render styles we don't support
