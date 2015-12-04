@@ -90,7 +90,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		{
 			if((object.Equals(a, null)) && (object.Equals(b, null))) return true;
 			if((!object.Equals(a, null)) && (object.Equals(b, null))) return false;
-			if((object.Equals(a, null)) && (!object.Equals(b, null))) return false;
+			if(object.Equals(a, null)) return false;
 			return (a.line == b.line) && (a.front == b.front);
 		}
 
@@ -99,7 +99,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		{
 			if((object.Equals(a, null)) && (object.Equals(b, null))) return false;
 			if((!object.Equals(a, null)) && (object.Equals(b, null))) return true;
-			if((object.Equals(a, null)) && (!object.Equals(b, null))) return true;
+			if(object.Equals(a, null)) return true;
 			return (a.line != b.line) || (a.front != b.front);
 		}
 

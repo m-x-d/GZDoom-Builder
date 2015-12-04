@@ -91,6 +91,7 @@ namespace CodeImp.DoomBuilder.Data
 		private ImageData crosshairbusy;
 		private Dictionary<string, ImageData> internalsprites;
 		private ImageData whitetexture;
+		private ImageData blacktexture; //mxd
 
 		//mxd. Comment icons
 		private ImageData[] commenttextures;
@@ -137,6 +138,7 @@ namespace CodeImp.DoomBuilder.Data
 		public ImageData Crosshair3D { get { return crosshair; } }
 		public ImageData CrosshairBusy3D { get { return crosshairbusy; } }
 		public ImageData WhiteTexture { get { return whitetexture; } }
+		public ImageData BlackTexture { get { return blacktexture; } } //mxd
 		public ImageData[] CommentTextures { get { return commenttextures; } } //mxd
 		public List<ThingCategory> ThingCategories { get { return thingcategories; } }
 		public ICollection<ThingTypeInfo> ThingTypes { get { return thingtypes.Values; } }
@@ -183,10 +185,12 @@ namespace CodeImp.DoomBuilder.Data
 			crosshair.LoadImage();
 			crosshairbusy = new ResourceImage("CodeImp.DoomBuilder.Resources.CrosshairBusy.png");
 			crosshairbusy.LoadImage();
-			whitetexture = new ResourceImage("CodeImp.DoomBuilder.Resources.White.png");
-			whitetexture.UseColorCorrection = false;
+			whitetexture = new ResourceImage("CodeImp.DoomBuilder.Resources.White.png") { UseColorCorrection = false };
 			whitetexture.LoadImage();
 			whitetexture.CreateTexture();
+			blacktexture = new ResourceImage("CodeImp.DoomBuilder.Resources.Black.png") { UseColorCorrection = false }; //mxd
+			blacktexture.LoadImage(); //mxd
+			blacktexture.CreateTexture(); //mxd
 			unknownimage = new UnknownImage(Properties.Resources.UnknownImage); //mxd. There should be only one!
 
 			//mxd. Create comment icons
@@ -227,6 +231,8 @@ namespace CodeImp.DoomBuilder.Data
 				crosshairbusy = null;
 				whitetexture.Dispose();
 				whitetexture = null;
+				blacktexture.Dispose(); //mxd
+				blacktexture = null; //mxd
 				unknownimage.Dispose(); //mxd
 				unknownimage = null; //mxd
 				foreach(ImageData i in commenttextures) i.Dispose(); //mxd

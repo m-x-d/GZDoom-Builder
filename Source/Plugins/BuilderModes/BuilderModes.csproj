@@ -416,6 +416,7 @@
     <Compile Include="VisualModes\VisualActionResult.cs" />
     <Compile Include="VisualModes\VisualCeiling.cs" />
     <Compile Include="VisualModes\VisualFloor.cs" />
+    <Compile Include="VisualModes\VisualFogBoundary.cs" />
     <Compile Include="VisualModes\VisualLower.cs" />
     <Compile Include="VisualModes\VisualMiddle3D.cs" />
     <Compile Include="VisualModes\VisualMiddleBack.cs" />

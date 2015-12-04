@@ -88,7 +88,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		//mxd
 		public Vector3D[] BoundingBox { get { return boundingBox; } }
 		public VisualGeometryType GeometryType { get { return geometrytype; } }
-		public float FogFactor { get { return fogfactor; } }
+		public float FogFactor { get { return fogfactor; } set { fogfactor = value; } }
 
 		/// <summary>
 		/// Render pass in which this geometry must be rendered. Default is Solid.
@@ -165,9 +165,9 @@ namespace CodeImp.DoomBuilder.VisualModes
 		}
 
 		//mxd. Normals calculation algorithm taken from OpenGl wiki 
-		protected void CalculateNormals() 
+		private void CalculateNormals() 
 		{
-			if (triangles == 0) return;
+			if(triangles == 0) return;
 			
 			int startIndex;
 			Vector3 U, V;
@@ -281,6 +281,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		WALL_MIDDLE,
 		WALL_MIDDLE_3D,
 		WALL_LOWER,
+		FOG_BOUNDARY,
 		UNKNOWN,
 	}
 }

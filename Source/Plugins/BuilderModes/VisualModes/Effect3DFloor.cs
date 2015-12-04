@@ -171,8 +171,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Do not adjust light? (works only for non-vavoom types)
 			if(!vavoomtype)
 			{
-				bool disablelighting = ((linedef.Args[2] & (int)Flags.DisableLighting) == (int)Flags.DisableLighting); //mxd
-				bool restrictlighting = (alpha < 255 || renderadditive || renderinside) && ((linedef.Args[2] & (int)Flags.RestrictLighting) == (int)Flags.RestrictLighting); //mxd
+				bool disablelighting =  ((linedef.Args[2] & (int)Flags.DisableLighting)  == (int)Flags.DisableLighting); //mxd
+				bool restrictlighting = ((linedef.Args[2] & (int)Flags.RestrictLighting) == (int)Flags.RestrictLighting); //mxd
 
 				if(disablelighting || restrictlighting)
 				{
