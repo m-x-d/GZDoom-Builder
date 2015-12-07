@@ -293,7 +293,7 @@ special
 	-48:Sqrt(1),
 	-49:FixedSqrt(1),
 	-50:VectorLength(2),
-	-51:SetHUDClipRect(4,5),
+	-51:SetHUDClipRect(4,6),
 	-52:SetHUDWrapWidth(1),
 	-53:SetCVar(2),
 	-54:GetUserCVar(2),

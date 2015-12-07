@@ -587,7 +587,7 @@ namespace CodeImp.DoomBuilder.Controls
 				if(mixMode == 1 && item.Icon.IsFlat) return false;
 				if(mixMode == 2 && !item.Icon.IsFlat) return false;
 				if(mixMode == 3 && (browseFlats != item.Icon.IsFlat)) return false;
-				if(!showtexturesfromsubdirs && currentlevel > 0 && item.Icon.Level > currentlevel) return false;
+				if(!showtexturesfromsubdirs && item.Icon.Level > currentlevel) return false;
 			}
 
 			return item.Text.ToUpperInvariant().Contains(objectname.Text.ToUpperInvariant());
