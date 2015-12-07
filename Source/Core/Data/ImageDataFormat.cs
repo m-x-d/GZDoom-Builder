@@ -61,7 +61,7 @@ namespace CodeImp.DoomBuilder.Data
 				// Check for GIF signature
 				data.Seek(0, SeekOrigin.Begin);
 				if(CheckSignature(data, GIF_SIGNATURE))
-					return new FileImageReader(DevilImageType.IL_GIF);
+					return new UnknownImageReader(); //mxd. Not supported by (G)ZDoom
 
 				//mxd. Check for PCX signature
 				data.Seek(0, SeekOrigin.Begin);
@@ -81,7 +81,7 @@ namespace CodeImp.DoomBuilder.Data
 				// Check for BMP signature
 				data.Seek(0, SeekOrigin.Begin);
 				if(CheckSignature(data, BMP_SIGNATURE))
-					return new UnknownImageReader(); //mxd. Not supported in (G)ZDoom
+					return new UnknownImageReader(); //mxd. Not supported by (G)ZDoom
 			}
 				
 			// Could it be a doom picture?
