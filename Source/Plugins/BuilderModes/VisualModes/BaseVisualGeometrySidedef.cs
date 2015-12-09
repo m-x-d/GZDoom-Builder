@@ -526,7 +526,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		protected void SelectNeighbours(string texture, bool select, bool withSameTexture, bool withSameHeight) 
+		protected void SelectNeighbours(long longtexture, bool select, bool withSameTexture, bool withSameHeight) 
 		{
 			if(Sidedef.Sector == null || (!withSameTexture && !withSameHeight)) return;
 
@@ -575,19 +575,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				List<VisualMiddle3D> extrasides = new List<VisualMiddle3D>();
 
 				// Gather 3d floor sides
-				if (doublesided) 
+				if(doublesided) 
 				{
 					BaseVisualSector s = mode.GetVisualSector(line.Front.Sector) as BaseVisualSector;
-					if (s != null)
-					{
-						extrasides.AddRange(s.GetSidedefParts(line.Front).middle3d.ToArray());
-					}
+					if(s != null) extrasides.AddRange(s.GetSidedefParts(line.Front).middle3d.ToArray());
 
 					s = mode.GetVisualSector(line.Back.Sector) as BaseVisualSector;
-					if(s != null) 
-					{
-						extrasides.AddRange(s.GetSidedefParts(line.Back).middle3d.ToArray());
-					}
+					if(s != null) extrasides.AddRange(s.GetSidedefParts(line.Back).middle3d.ToArray());
 				}
 
 				// Add regular sides
@@ -595,16 +589,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					if(line.Front != null) 
 					{
-						addFrontTop = (line.Front.HighTexture == texture 
+						addFrontTop = (line.Front.LongHighTexture == longtexture 
 							&& line.Front.HighRequired()
 							&& BuilderModesTools.GetSidedefPartSize(line.Front, VisualGeometryType.WALL_UPPER).IntersectsWith(rect));
-						
-						addFrontMiddle = (line.Front.MiddleTexture == texture
-							&& (line.Front.MiddleRequired() || (line.Back != null && texture != "-"))
+
+						addFrontMiddle = (line.Front.LongMiddleTexture == longtexture
+							&& (line.Front.MiddleRequired() || (line.Back != null && longtexture != MapSet.EmptyLongName))
 							&& line.Front.GetMiddleHeight() > 0
 							&& BuilderModesTools.GetSidedefPartSize(line.Front, VisualGeometryType.WALL_MIDDLE).IntersectsWith(rect));
-						
-						addFrontBottom = (line.Front.LowTexture == texture 
+
+						addFrontBottom = (line.Front.LongLowTexture == longtexture 
 							&& line.Front.LowRequired()
 							&& BuilderModesTools.GetSidedefPartSize(line.Front, VisualGeometryType.WALL_LOWER).IntersectsWith(rect));
 
@@ -612,16 +606,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					if(line.Back != null) 
 					{
-						addBackTop = (line.Back.HighTexture == texture 
+						addBackTop = (line.Back.LongHighTexture == longtexture 
 							&& line.Back.HighRequired()
 							&& BuilderModesTools.GetSidedefPartSize(line.Back, VisualGeometryType.WALL_UPPER).IntersectsWith(rect));
-						
-						addBackMiddle = (line.Back.MiddleTexture == texture
-							&& (line.Back.MiddleRequired() || (line.Front != null && texture != "-"))
+
+						addBackMiddle = (line.Back.LongMiddleTexture == longtexture
+							&& (line.Back.MiddleRequired() || (line.Front != null && longtexture != MapSet.EmptyLongName))
 							&& line.Back.GetMiddleHeight() > 0
 							&& BuilderModesTools.GetSidedefPartSize(line.Back, VisualGeometryType.WALL_MIDDLE).IntersectsWith(rect));
 
-						addBackBottom = (line.Back.LowTexture == texture 
+						addBackBottom = (line.Back.LongLowTexture == longtexture 
 							&& line.Back.LowRequired()
 							&& BuilderModesTools.GetSidedefPartSize(line.Back, VisualGeometryType.WALL_LOWER).IntersectsWith(rect));
 					}
@@ -631,7 +625,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					foreach(VisualMiddle3D side3d in extrasides) 
 					{
 						Sidedef controlside = side3d.GetControlLinedef().Front;
-						if (controlside.MiddleTexture == texture && BuilderModesTools.GetSidedefPartSize(controlside, VisualGeometryType.WALL_MIDDLE).IntersectsWith(rect)) 
+						if(controlside.LongMiddleTexture == longtexture && BuilderModesTools.GetSidedefPartSize(controlside, VisualGeometryType.WALL_MIDDLE).IntersectsWith(rect)) 
 						{
 							filtered.Add(side3d);
 						}
