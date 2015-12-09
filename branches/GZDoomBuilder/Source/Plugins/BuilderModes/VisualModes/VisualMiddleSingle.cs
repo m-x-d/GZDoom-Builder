@@ -270,7 +270,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd
 		public override void SelectNeighbours(bool select, bool withSameTexture, bool withSameHeight) 
 		{
-			SelectNeighbours(Sidedef.MiddleTexture, select, withSameTexture, withSameHeight);
+			SelectNeighbours(Sidedef.LongMiddleTexture, select, withSameTexture, withSameHeight);
 		}
 		
 		#endregion
