@@ -349,7 +349,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						if(mode.VisualSectorExists(s.Key)) 
 						{
 							BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(s.Key);
-							updateList.Add(vs, s.Value);
+							if(!updateList.ContainsKey(vs)) updateList.Add(vs, s.Value);
 						}
 					}
 				}
