@@ -803,7 +803,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(flags.FloorTexture && source.FloorTexture != target.FloorTexture) return false;
 			if(flags.CeilingTexture && source.CeilTexture != target.CeilTexture) return false;
 			if(flags.Brightness && source.Brightness != target.Brightness) return false;
-			if(flags.Tag && TagsMatch(source.Tags, target.Tags)) return false;
+			if(flags.Tag && !TagsMatch(source.Tags, target.Tags)) return false;
 			if(flags.Special && source.Effect != target.Effect) return false;
 			if(flags.Flags && !FlagsMatch(source.GetFlags(), target.GetFlags())) return false;
 			if(!General.Map.UDMF) return true;
@@ -841,7 +841,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Built-in properties
 			if(linedefflags.Action && source.Action != target.Action) return false;
 			if(linedefflags.Activation && source.Activate != target.Activate) return false;
-			if(linedefflags.Tag && TagsMatch(source.Tags, target.Tags)) return false; //mxd
+			if(linedefflags.Tag && !TagsMatch(source.Tags, target.Tags)) return false; //mxd
 			if(linedefflags.Arguments) 
 			{
 				// Classic args
