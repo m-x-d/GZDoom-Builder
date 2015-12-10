@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.VisualModes;
@@ -366,13 +367,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Things
 
-		internal static float GetHigherThingZ(SectorData sd, Vector3D pos, float thingheight, bool absolute, bool hangs) 
+		internal static float GetHigherThingZ(BaseVisualMode mode, SectorData sd, VisualThing thing)
 		{
+			Vector3D pos = thing.Thing.Position;
+			float thingheight = thing.Thing.Height;
+			bool absolute = thing.Info.AbsoluteZ;
+			bool hangs = thing.Info.Hangs;
+			
 			if(absolute && hangs)
 			{
 				General.Interface.DisplayStatus(StatusType.Warning, "Sorry, can't have both 'absolute' and 'hangs' flags...");
 				return pos.z;
 			}
+
+			// Get things, which bounding boxes intersect with target thing
+			IEnumerable<Thing> intersectingthings = GetIntersectingThings(mode, thing.Thing);
 			
 			float fz = (absolute ? 0 : sd.Floor.plane.GetZ(pos));
 			float cz = sd.Ceiling.plane.GetZ(pos);
@@ -381,40 +390,94 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Transform to floor-aligned position
 				Vector3D floorpos = new Vector3D(pos, (cz - fz) - pos.z - thingheight);
-				
-				// Unlike sd.ExtraFloors, these are sorted by height
-				foreach (SectorLevel level in sd.LightLevels)
+				float highertingz = GetNextHigherThingZ(mode, intersectingthings, floorpos.z, thingheight);
+				float higherfloorz = float.MinValue;
+
+				// Do it only when there are extrafloors
+				if(sd.LightLevels.Count > 2)
 				{
-					if(level.type == SectorLevelType.Light) continue; // Skip lights
-					float z = level.plane.GetZ(floorpos) - fz;
-					if(level.type == SectorLevelType.Ceiling) z -= thingheight;
-					if(z > floorpos.z) return cz - fz - z - thingheight; // Transform back to ceiling-aligned position
+					// Unlike sd.ExtraFloors, these are sorted by height
+					foreach(SectorLevel level in sd.LightLevels)
+					{
+						if(level.type == SectorLevelType.Light || level.type == SectorLevelType.Glow) continue; // Skip lights and glows
+						float z = level.plane.GetZ(floorpos) - fz;
+						if(level.type == SectorLevelType.Ceiling) z -= thingheight;
+						if(z > floorpos.z)
+						{
+							higherfloorz = z;
+							break;
+						}
+					}
+				}
+
+				if(higherfloorz != float.MinValue && highertingz != float.MaxValue)
+				{
+					// Transform back to ceiling-aligned position
+					return cz - fz - Math.Max(Math.Min(higherfloorz, highertingz), 0) - thingheight; 
+				}
+				
+				if(higherfloorz != float.MinValue)
+				{
+					// Transform back to ceiling-aligned position
+					return Math.Max(cz - fz - higherfloorz - thingheight, 0); 
+				}
+				
+				if(highertingz != float.MaxValue)
+				{
+					// Transform back to ceiling-aligned position
+					return Math.Max(cz - fz - highertingz - thingheight, 0); 
 				}
 
 				return 0; // Align to real ceiling
 			}
 			else
 			{
-				// Unlike sd.ExtraFloors, these are sorted by height
-				foreach(SectorLevel level in sd.LightLevels) 
+				float highertingz = GetNextHigherThingZ(mode, intersectingthings, (absolute ? pos.z - fz : pos.z), thingheight);
+				float higherfloorz = float.MinValue;
+				
+				// Do it only when there are extrafloors
+				if(sd.LightLevels.Count > 2)
 				{
-					if(level.type == SectorLevelType.Light) continue; // Skip lights
-					float z = level.plane.GetZ(pos) - fz;
-					if(level.type == SectorLevelType.Ceiling) z -= thingheight;
-					if(z > pos.z) return z;
+					// Unlike sd.ExtraFloors, these are sorted by height
+					foreach(SectorLevel level in sd.LightLevels)
+					{
+						if(level.type == SectorLevelType.Light || level.type == SectorLevelType.Glow) continue; // Skip lights and glows
+						float z = level.plane.GetZ(pos) - fz;
+						if(level.type == SectorLevelType.Ceiling) z -= thingheight;
+						if(z > pos.z)
+						{
+							higherfloorz = z;
+							break;
+						}
+					}
 				}
 
-				return cz - fz - thingheight; // Align to real ceiling
+				float floorz = sd.Floor.plane.GetZ(pos);
+				float ceilpos = cz - floorz - thingheight; // Ceiling-aligned relative target thing z
+				
+				if(higherfloorz != float.MinValue && highertingz != float.MaxValue) ceilpos = Math.Min(ceilpos, Math.Min(higherfloorz, highertingz));
+				if(higherfloorz != float.MinValue) ceilpos = Math.Min(ceilpos, higherfloorz);
+				if(highertingz != float.MaxValue) ceilpos = Math.Min(ceilpos, highertingz);
+				
+				return (absolute ? ceilpos + floorz : ceilpos); // Convert to absolute position if necessary
 			}
 		}
 
-		internal static float GetLowerThingZ(SectorData sd, Vector3D pos, float thingheight, bool absolute, bool hangs) 
+		internal static float GetLowerThingZ(BaseVisualMode mode, SectorData sd, VisualThing thing) 
 		{
+			Vector3D pos = thing.Thing.Position;
+			float thingheight = thing.Thing.Height;
+			bool absolute = thing.Info.AbsoluteZ;
+			bool hangs = thing.Info.Hangs;
+			
 			if(absolute && hangs)
 			{
 				General.Interface.DisplayStatus(StatusType.Warning, "Sorry, can't have both 'absolute' and 'hangs' flags...");
 				return pos.z;
 			}
+
+			// Get things, which bounding boxes intersect with target thing
+			IEnumerable<Thing> intersectingthings = GetIntersectingThings(mode, thing.Thing);
 
 			float fz = (absolute ? 0 : sd.Floor.plane.GetZ(pos));
 			float cz = sd.Ceiling.plane.GetZ(pos);
@@ -423,33 +486,198 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Transform to floor-aligned position
 				Vector3D floorpos = new Vector3D(pos, (cz - fz) - pos.z - thingheight);
+				float lowertingz = GetNextLowerThingZ(mode, intersectingthings, floorpos.z, thingheight);
+				float lowerfloorz = float.MaxValue;
 
-				// Unlike sd.ExtraFloors, these are sorted by height
-				for(int i = sd.LightLevels.Count - 1; i > -1; i--)
+				// Do it only when there are extrafloors
+				if(sd.LightLevels.Count > 2)
 				{
-					SectorLevel level = sd.LightLevels[i];
-					if(level.type == SectorLevelType.Light) continue; // Skip lights
-					float z = level.plane.GetZ(floorpos) - fz;
-					if(level.type == SectorLevelType.Ceiling) z -= thingheight;
-					if(z < floorpos.z) return cz - fz - z - thingheight; // Transform back to ceiling-aligned position
+					// Unlike sd.ExtraFloors, these are sorted by height
+					for(int i = sd.LightLevels.Count - 1; i > -1; i--)
+					{
+						SectorLevel level = sd.LightLevels[i];
+						if(level.type == SectorLevelType.Light || level.type == SectorLevelType.Glow) continue; // Skip lights and glows
+						float z = level.plane.GetZ(floorpos) - fz;
+						if(level.type == SectorLevelType.Ceiling) z -= thingheight;
+						if(z < floorpos.z)
+						{
+							lowerfloorz = z;
+							break;
+						}
+					}
 				}
 
-				return cz - fz - thingheight; // Align to real floor
+				float floorz = cz - fz; // Floor height when counted from ceiling
+
+				if(lowerfloorz != float.MaxValue && lowertingz != float.MinValue)
+				{
+					// Transform back to ceiling-aligned position
+					return cz - fz - Math.Min(Math.Max(lowerfloorz, lowertingz), floorz) - thingheight;
+				}
+
+				if(lowerfloorz != float.MaxValue)
+				{
+					// Transform back to ceiling-aligned position
+					return cz - fz - Math.Min(lowerfloorz, floorz) - thingheight;
+				}
+
+				if(lowertingz != float.MinValue)
+				{
+					// Transform back to ceiling-aligned position
+					return cz - fz - Math.Min(lowertingz, floorz) - thingheight;
+				}
+
+				return floorz - thingheight; // Align to real floor
 			} 
 			else 
 			{
-				// Unlike sd.ExtraFloors, these are sorted by height
-				for(int i = sd.LightLevels.Count - 1; i > -1; i--)
+				float lowertingz = GetNextLowerThingZ(mode, intersectingthings, (absolute ? pos.z - fz : pos.z), thingheight);
+				float lowerfloorz = float.MaxValue;
+				
+				// Do it only when there are extrafloors
+				if(sd.LightLevels.Count > 2)
 				{
-					SectorLevel level = sd.LightLevels[i];
-					if(level.type == SectorLevelType.Light) continue; // Skip lights
-					float z = level.plane.GetZ(pos) - fz;
-					if(level.type == SectorLevelType.Ceiling) z -= thingheight;
-					if(z < pos.z) return z;
+					// Unlike sd.ExtraFloors, these are sorted by height
+					for(int i = sd.LightLevels.Count - 1; i > -1; i--)
+					{
+						SectorLevel level = sd.LightLevels[i];
+						if(level.type == SectorLevelType.Light || level.type == SectorLevelType.Glow) continue; // Skip lights and glows
+						float z = level.plane.GetZ(pos) - fz;
+						if(level.type == SectorLevelType.Ceiling) z -= thingheight;
+						if(z < pos.z)
+						{
+							lowerfloorz = z;
+							break;
+						}
+					}
 				}
 
-				return (absolute ? sd.Floor.plane.GetZ(pos) : 0); // Align to real floor
+				float floorz = sd.Floor.plane.GetZ(pos); // Floor-aligned relative target thing z
+				float floorpos = 0;
+
+				if(lowerfloorz != float.MaxValue && lowertingz != float.MinValue) floorpos = Math.Max(Math.Max(lowerfloorz, lowertingz), floorz);
+				if(lowerfloorz != float.MaxValue) floorpos = Math.Max(lowerfloorz, floorz);
+				if(lowertingz != float.MinValue) floorpos = Math.Max(lowertingz, floorz);
+
+				return (absolute ? floorpos + floorz : floorpos); // Convert to absolute position if necessary
 			}
+		}
+
+		//mxd. Gets thing z next higher to target thing z
+		private static float GetNextHigherThingZ(BaseVisualMode mode, IEnumerable<Thing> things, float thingz, float thingheight)
+		{
+			float higherthingz = float.MaxValue;
+			foreach(Thing t in things)
+			{
+				float neighbourz = GetAlignedThingZ(mode, t, thingheight);
+				if(neighbourz > thingz && neighbourz < higherthingz) higherthingz = neighbourz;
+			}
+			return higherthingz;
+		}
+
+		//mxd. Gets thing z next lower to target thing z
+		private static float GetNextLowerThingZ(BaseVisualMode mode, IEnumerable<Thing> things, float thingz, float thingheight)
+		{
+			float lowerthingz = float.MinValue;
+			foreach(Thing t in things)
+			{
+				float neighbourz = GetAlignedThingZ(mode, t, thingheight);
+				if(neighbourz < thingz && neighbourz > lowerthingz) lowerthingz = neighbourz;
+			}
+
+			return lowerthingz;
+		}
+
+		private static float GetAlignedThingZ(BaseVisualMode mode, Thing t, float targtthingheight)
+		{
+			ThingTypeInfo info = General.Map.Data.GetThingInfoEx(t.Type);
+			if(info != null)
+			{
+				if(info.AbsoluteZ && info.Hangs) return t.Position.z; // Not sure what to do here...
+				if(info.AbsoluteZ)
+				{
+					// Transform to floor-aligned position
+					SectorData nsd = mode.GetSectorData(t.Sector);
+					return t.Position.z - nsd.Floor.plane.GetZ(t.Position) + t.Height;
+				}
+
+				if(info.Hangs)
+				{
+					// Transform to floor-aligned position. Align top of target thing to the bottom of the hanging thing
+					SectorData nsd = mode.GetSectorData(t.Sector);
+					return (nsd.Ceiling.plane.GetZ(t.Position) - nsd.Floor.plane.GetZ(t.Position)) - t.Position.z - t.Height - targtthingheight;
+				}
+			}
+
+			return t.Position.z + t.Height;
+		}
+
+		private static IEnumerable<Thing> GetIntersectingThings(VisualMode mode, Thing thing)
+		{
+			// Get nearby things
+			List<Thing> neighbours = new List<Thing>();
+			RectangleF bbox = new RectangleF(thing.Position.x - thing.Size, thing.Position.y - thing.Size, thing.Size * 2, thing.Size * 2);
+			Point p1 = mode.BlockMap.GetBlockCoordinates(new Vector2D(bbox.Left, bbox.Top));
+			Point p2 = mode.BlockMap.GetBlockCoordinates(new Vector2D(bbox.Right, bbox.Bottom));
+			for(int x = p1.X; x <= p2.X; x++)
+			{
+				for(int y = p1.Y; y <= p2.Y; y++)
+				{
+					neighbours.AddRange(mode.BlockMap.GetBlock(new Point(x, y)).Things);
+				}
+			}
+
+			// Collect things intersecting with target thing
+			List<Thing> intersectingthings = new List<Thing>();
+			
+			foreach(Thing t in neighbours)
+			{
+				if(t != thing && t.Sector != null && bbox.IntersectsWith(new RectangleF(t.Position.x - t.Size, t.Position.y - t.Size, t.Size * 2, t.Size * 2)))
+					intersectingthings.Add(t);
+			}
+
+			return intersectingthings;
+		} 
+
+		#endregion
+
+		#region ================== Sectors
+
+		// This gets sectors which surround given sectors
+		internal static IEnumerable<Sector> GetSectorsAround(IEnumerable<Sector> selected)
+		{
+			HashSet<int> processedsectors = new HashSet<int>();
+			HashSet<Vertex> verts = new HashSet<Vertex>();
+			List<Sector> result = new List<Sector>();
+
+			foreach(Sector s in selected)
+			{
+				processedsectors.Add(s.Index);
+				foreach(Sidedef side in s.Sidedefs)
+				{
+					if(!verts.Contains(side.Line.Start)) verts.Add(side.Line.Start);
+					if(!verts.Contains(side.Line.End)) verts.Add(side.Line.End);
+				}
+			}
+
+			foreach(Vertex v in verts)
+			{
+				foreach(Linedef l in v.Linedefs)
+				{
+					if(l.Front != null && l.Front.Sector != null && !processedsectors.Contains(l.Front.Sector.Index))
+					{
+						result.Add(l.Front.Sector);
+						processedsectors.Add(l.Front.Sector.Index);
+					}
+					if(l.Back != null && l.Back.Sector != null && !processedsectors.Contains(l.Back.Sector.Index))
+					{
+						result.Add(l.Back.Sector);
+						processedsectors.Add(l.Back.Sector.Index);
+					}
+				}
+			}
+
+			return result;
 		}
 
 		#endregion

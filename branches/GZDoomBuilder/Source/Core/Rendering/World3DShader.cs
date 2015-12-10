@@ -53,7 +53,20 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		#region ================== Properties
 
-		public Matrix WorldViewProj { set { if(manager.Enabled) effect.SetValue(worldviewproj, value); settingschanged = true; } }
+		private Matrix wwp;
+		public Matrix WorldViewProj
+		{
+			set
+			{
+				if(manager.Enabled && wwp != value)
+				{
+					effect.SetValue(worldviewproj, value);
+					wwp = value;
+					settingschanged = true;
+				}
+			}
+		}
+
 		public Texture Texture1 { set { if(manager.Enabled) effect.SetTexture(texture1, value); settingschanged = true; } }
 
 		//mxd
@@ -264,6 +277,8 @@ namespace CodeImp.DoomBuilder.Rendering
 					effect.SetValue(mipfiltersettings, (int)TextureFilter.Linear);
 					effect.SetValue(maxanisotropysetting, 1.0f);
 				}
+
+				settingschanged = true; //mxd
 			}
 		}
 

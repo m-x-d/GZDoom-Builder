@@ -29,16 +29,16 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Variables
 
 		// Property handlers
-		private EffectHandle texture1;
-		private EffectHandle rendersettings;
-		private EffectHandle transformsettings;
-		private EffectHandle filtersettings;
+		private readonly EffectHandle texture1;
+		private readonly EffectHandle rendersettings;
+		private readonly EffectHandle transformsettings;
+		private readonly EffectHandle filtersettings;
 		
 		#endregion
 
 		#region ================== Properties
 
-		public Texture Texture1 { set { if(manager.Enabled) effect.SetTexture(texture1, value); } }
+		public Texture Texture1 { set { if(manager.Enabled) effect.SetTexture(texture1, value); settingschanged = true; } }
 		
 		#endregion
 
@@ -60,7 +60,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			}
 			
 			// Initialize world vertex declaration
-			VertexElement[] elements = new VertexElement[]
+			VertexElement[] elements = new[]
 			{
 				new VertexElement(0, 0, DeclarationType.Float3, DeclarationMethod.Default, DeclarationUsage.Position, 0),
 				new VertexElement(0, 12, DeclarationType.Color, DeclarationMethod.Default, DeclarationUsage.Color, 0),
@@ -106,6 +106,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				effect.SetValue(transformsettings, world * view);
 				TextureFilter filter = (bilinear ? TextureFilter.Linear : TextureFilter.Point);
 				effect.SetValue(filtersettings, (int)filter);
+				settingschanged = true; //mxd
 			}
 		}
 

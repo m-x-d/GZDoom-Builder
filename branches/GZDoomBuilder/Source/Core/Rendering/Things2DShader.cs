@@ -29,20 +29,31 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Variables
 
 		// Property handlers
-		private EffectHandle texture1;
-		private EffectHandle rendersettings;
-		private EffectHandle transformsettings;
-
-		//mxd
-		private EffectHandle fillColorHandle;
+		private readonly EffectHandle texture1;
+		private readonly EffectHandle rendersettings;
+		private readonly EffectHandle transformsettings;
+		private readonly EffectHandle fillcolor; //mxd
 
 		#endregion
 
 		#region ================== Properties
 
-		public Texture Texture1 { set { if(manager.Enabled) effect.SetTexture(texture1, value); } }
+		public Texture Texture1 { set { if(manager.Enabled) effect.SetTexture(texture1, value); settingschanged = true; } }
+		
 		//mxd
-		public Color4 FillColor { set { if (manager.Enabled) effect.SetValue<Color4>(fillColorHandle, value); } }
+		private Color4 fc;
+		public Color4 FillColor
+		{
+			set
+			{
+				if(manager.Enabled && fc != value)
+				{
+					effect.SetValue(fillcolor, value);
+					fc = value;
+					settingschanged = true;
+				}
+			}
+		}
 
 		#endregion
 
@@ -60,12 +71,11 @@ namespace CodeImp.DoomBuilder.Rendering
 				texture1 = effect.GetParameter(null, "texture1");
 				rendersettings = effect.GetParameter(null, "rendersettings");
 				transformsettings = effect.GetParameter(null, "transformsettings");
-				//mxd
-				fillColorHandle = effect.GetParameter(null, "fillColor");
+				fillcolor = effect.GetParameter(null, "fillColor"); //mxd
 			}
 
 			// Initialize world vertex declaration
-			VertexElement[] elements = new VertexElement[]
+			VertexElement[] elements = new[]
 			{
 				new VertexElement(0, 0, DeclarationType.Float3, DeclarationMethod.Default, DeclarationUsage.Position, 0),
 				new VertexElement(0, 12, DeclarationType.Color, DeclarationMethod.Default, DeclarationUsage.Color, 0),
@@ -88,8 +98,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				if(texture1 != null) texture1.Dispose();
 				if(rendersettings != null) rendersettings.Dispose();
 				if(transformsettings != null) transformsettings.Dispose();
-				//mxd
-				if (fillColorHandle != null) fillColorHandle.Dispose();
+				if(fillcolor != null) fillcolor.Dispose(); //mxd
 
 				// Done
 				base.Dispose();
@@ -110,6 +119,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				Matrix world = manager.D3DDevice.Device.GetTransform(TransformState.World);
 				Matrix view = manager.D3DDevice.Device.GetTransform(TransformState.View);
 				effect.SetValue(transformsettings, world * view);
+				settingschanged = true; //mxd
 			}
 		}
 
