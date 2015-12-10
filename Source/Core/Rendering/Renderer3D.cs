@@ -164,6 +164,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				if(highlightimage != null) highlightimage.Dispose();
 				selectionimage = null;
 				highlightimage = null;
+				vertexHandle.Dispose(); //mxd
 				
 				// Done
 				base.Dispose();
@@ -748,7 +749,6 @@ namespace CodeImp.DoomBuilder.Rendering
 					curtexture.CreateTexture();
 
 				// Apply texture
-				if(!graphics.Shaders.Enabled) graphics.Device.SetTexture(0, curtexture.Texture);
 				graphics.Shaders.World3D.Texture1 = curtexture.Texture;
 				
 				//mxd. Sort geometry by sector index
@@ -1248,14 +1248,12 @@ namespace CodeImp.DoomBuilder.Rendering
 		//mxd
 		private Matrix CreateThingPositionMatrix(VisualThing t)
 		{
-			Matrix result;
-
 			//mxd. Create the matrix for positioning 
 			if(t.Info.RenderMode == Thing.SpriteRenderMode.NORMAL) // Apply billboarding?
 			{
 				if(t.Info.XYBillboard)
 				{
-					result = Matrix.Translation(0f, 0f, -t.LocalCenterZ)
+					return Matrix.Translation(0f, 0f, -t.LocalCenterZ)
 						* Matrix.RotationX(Angle2D.PI - General.Map.VisualCamera.AngleZ)
 						* Matrix.Translation(0f, 0f, t.LocalCenterZ)
 						* billboard
@@ -1264,18 +1262,16 @@ namespace CodeImp.DoomBuilder.Rendering
 				}
 				else
 				{
-					result = billboard
+					return billboard
 							* Matrix.Scaling(t.Thing.ScaleX, t.Thing.ScaleX, t.Thing.ScaleY)
 							* t.Position;
 				}
 			}
 			else
 			{
-				result = Matrix.Scaling(t.Thing.ScaleX, t.Thing.ScaleX, t.Thing.ScaleY)
+				return Matrix.Scaling(t.Thing.ScaleX, t.Thing.ScaleX, t.Thing.ScaleY)
 						* t.Position;
 			}
-
-			return result;
 		}
 
 		//mxd. Dynamic lights pass!
@@ -1328,12 +1324,12 @@ namespace CodeImp.DoomBuilder.Rendering
 					{
 						graphics.Device.SetRenderState(RenderState.BlendOperation, BlendOperation.Add);
 
-						for (i = 0; i < count; i++) 
+						for(i = 0; i < count; i++) 
 						{
-							if (BoundingBoxesIntersect(g.BoundingBox, lights[i].BoundingBox)) 
+							if(BoundingBoxesIntersect(g.BoundingBox, lights[i].BoundingBox)) 
 							{
 								lpr = new Vector4(lights[i].Center, lights[i].LightRadius);
-								if (lpr.W == 0) continue;
+								if(lpr.W == 0) continue;
 								graphics.Shaders.World3D.LightColor = lights[i].LightColor;
 								graphics.Shaders.World3D.LightPositionAndRadius = lpr;
 								graphics.Shaders.World3D.ApplySettings();
@@ -1348,12 +1344,12 @@ namespace CodeImp.DoomBuilder.Rendering
 						count += lightOffsets[1];
 						graphics.Device.SetRenderState(RenderState.BlendOperation, BlendOperation.Add);
 
-						for (i = lightOffsets[0]; i < count; i++) 
+						for(i = lightOffsets[0]; i < count; i++) 
 						{
-							if (BoundingBoxesIntersect(g.BoundingBox, lights[i].BoundingBox)) 
+							if(BoundingBoxesIntersect(g.BoundingBox, lights[i].BoundingBox)) 
 							{
 								lpr = new Vector4(lights[i].Center, lights[i].LightRadius);
-								if (lpr.W == 0) continue;
+								if(lpr.W == 0) continue;
 								graphics.Shaders.World3D.LightColor = lights[i].LightColor;
 								graphics.Shaders.World3D.LightPositionAndRadius = lpr;
 								graphics.Shaders.World3D.ApplySettings();
@@ -1368,12 +1364,12 @@ namespace CodeImp.DoomBuilder.Rendering
 						count += lightOffsets[2];
 						graphics.Device.SetRenderState(RenderState.BlendOperation, BlendOperation.ReverseSubtract);
 
-						for (i = lightOffsets[0] + lightOffsets[1]; i < count; i++) 
+						for(i = lightOffsets[0] + lightOffsets[1]; i < count; i++) 
 						{
-							if (BoundingBoxesIntersect(g.BoundingBox, lights[i].BoundingBox)) 
+							if(BoundingBoxesIntersect(g.BoundingBox, lights[i].BoundingBox)) 
 							{
 								lpr = new Vector4(lights[i].Center, lights[i].LightRadius);
-								if (lpr.W == 0) continue;
+								if(lpr.W == 0) continue;
 								Color4 lc = lights[i].LightColor;
 								graphics.Shaders.World3D.LightColor = new Color4(lc.Alpha, (lc.Green + lc.Blue) / 2, (lc.Red + lc.Blue) / 2, (lc.Green + lc.Red) / 2);
 								graphics.Shaders.World3D.LightPositionAndRadius = lpr;

@@ -33,7 +33,7 @@ struct LitPixelData
 float4 highlightcolor;
 
 // Matrix for final transformation
-float4x4 worldviewproj;
+const float4x4 worldviewproj;
 
 //mxd
 float4x4 world;
@@ -44,16 +44,16 @@ float4 lightPosAndRadius;
 float4 lightColor; //also used as fog color
 
 //fog
-float4 cameraPos;  //w is set to fade factor (distance, at wich fog color completely overrides pixel color)
+const float4 cameraPos;  //w is set to fade factor (distance, at wich fog color completely overrides pixel color)
 
 // Texture input
-texture texture1;
+const texture texture1;
 
 // Filter settings
-dword minfiltersettings;
-dword magfiltersettings;
-dword mipfiltersettings;
-float maxanisotropysetting;
+const dword minfiltersettings;
+const dword magfiltersettings;
+const dword mipfiltersettings;
+const float maxanisotropysetting;
 
 // Texture sampler settings
 sampler2D texturesamp = sampler_state

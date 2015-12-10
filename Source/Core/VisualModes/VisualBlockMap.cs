@@ -268,9 +268,17 @@ namespace CodeImp.DoomBuilder.VisualModes
 		// This puts a thing in the blockmap
 		public void AddThing(Thing t)
 		{
-			Point p = GetBlockCoordinates(t.Position);
-			VisualBlockEntry block = GetBlock(p);
-			block.Things.Add(t);
+			//mxd
+			Point p1 = GetBlockCoordinates(new Vector2D(t.Position.x - t.Size, t.Position.y - t.Size));
+			Point p2 = GetBlockCoordinates(new Vector2D(t.Position.x + t.Size, t.Position.y + t.Size));
+			for(int x = p1.X; x <= p2.X; x++)
+			{
+				for(int y = p1.Y; y <= p2.Y; y++)
+				{
+					VisualBlockEntry block = GetBlock(new Point(x, y));
+					block.Things.Add(t);
+				}
+			}
 		}
 
 		// This puts a secotr in the blockmap
