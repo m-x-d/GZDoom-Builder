@@ -123,6 +123,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					General.Map.Map.ClearSelectedSectors();
 					General.Map.Map.ClearSelectedLinedefs();
+
+					//mxd. Also (de)select things?
+					if(BuilderPlug.Me.SyncronizeThingEdit)
+					{
+						Sector s = General.GetByIndex(selectedsectors, 0);
+						foreach(Thing t in General.Map.Map.Things)
+							if(t.Sector == s && t.Selected) t.Selected = false;
+					}
 				}
 			}
 		}

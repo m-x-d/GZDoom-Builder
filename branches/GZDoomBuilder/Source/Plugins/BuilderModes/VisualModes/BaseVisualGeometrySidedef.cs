@@ -1248,7 +1248,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			if(BuilderPlug.Me.CopiedLinedefProps != null)
 			{
-				bool pastesideprops = (LinedefProperties.CopySettings.SidedefProperties && BuilderPlug.Me.CopiedSidedefProps != null); //mxd
+				bool pastesideprops = (BuilderPlug.Me.CopiedSidedefProps != null); //mxd
 				string pastetarget = (pastesideprops ? "linedef and sidedef" : "linedef"); //mxd
 				mode.CreateUndo("Paste " + pastetarget + " properties");
 				mode.SetActionResult("Pasted " + pastetarget + " properties.");

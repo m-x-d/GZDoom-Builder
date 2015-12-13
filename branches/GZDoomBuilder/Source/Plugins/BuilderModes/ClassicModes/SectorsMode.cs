@@ -527,11 +527,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					//mxd. Also (de)select things?
 					if(General.Interface.AltState ^ BuilderPlug.Me.SyncronizeThingEdit)
 					{
-						foreach(Thing t in General.Map.ThingsFilter.VisibleThings) 
-						{
-							if(t.Sector != s) continue;
-							t.Selected = s.Selected;
-						}
+						foreach(Thing t in General.Map.Map.Things) 
+							if(t.Sector == s && t.Selected != s.Selected) t.Selected = s.Selected;
 					}
 
 					if(update) 
@@ -825,7 +822,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					//mxd. Thing selection state may've changed
 					if(General.Interface.AltState ^ BuilderPlug.Me.SyncronizeThingEdit) General.Interface.RedrawDisplay();
 				}
-				else if(BuilderPlug.Me.AutoClearSelection && (General.Map.Map.SelectedSectorsCount > 0 || (BuilderPlug.Me.SyncronizeThingEdit && General.Map.Map.SelectedThingsCount > 0))) //mxd
+				else if(BuilderPlug.Me.AutoClearSelection) //mxd
 				{
 					if(General.Map.Map.SelectedSectorsCount > 0)
 					{
@@ -916,15 +913,24 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						General.Map.Renderer2D.UpdateExtraFloorFlag(); //mxd
 
 						// When a single sector was selected, deselect it now
-						if (selected.Count == 1) 
+						if(selected.Count == 1) 
 						{
 							General.Map.Map.ClearSelectedSectors();
 							General.Map.Map.ClearSelectedLinedefs();
+
+							//mxd. Also deselect things?
+							if(BuilderPlug.Me.SyncronizeThingEdit)
+							{
+								Sector s = General.GetByIndex(selected, 0);
+								foreach(Thing t in General.Map.Map.Things)
+									if(t.Sector == s && t.Selected) t.Selected = false;
+							}
+
 							UpdateEffectLabels(); //mxd
 						} 
 						else if(result == DialogResult.Cancel) //mxd. Restore selection...
 						{ 
-							foreach (Sector s in selected) SelectSector(s, true, false);
+							foreach(Sector s in selected) SelectSector(s, true, false);
 							UpdateSelectedLabels(); //mxd
 						}
 
@@ -1634,7 +1640,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				//mxd. Add things?
 				if(BuilderPlug.Me.SyncronizeThingEdit)
 				{
-					foreach(Thing t in General.Map.ThingsFilter.VisibleThings)
+					foreach(Thing t in General.Map.Map.Things)
 					{
 						if(t.Sector == null) t.DetermineSector();
 						if(t.Sector == highlighted) selectedthings.Add(t);
@@ -1758,19 +1764,25 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void JoinSectors()
 		{
 			// Worth our money?
-			int count = General.Map.Map.GetSelectedSectors(true).Count;
-			if(count > 1)
+			ICollection<Sector> selected = General.Map.Map.GetSelectedSectors(true); //mxd
+			if(selected.Count > 1)
 			{
 				// Make undo
-				General.Map.UndoRedo.CreateUndo("Join " + count + " sectors");
-				General.Interface.DisplayStatus(StatusType.Action, "Joined " + count + " sectors.");
+				General.Map.UndoRedo.CreateUndo("Join " + selected.Count + " sectors");
+				General.Interface.DisplayStatus(StatusType.Action, "Joined " + selected.Count + " sectors.");
 
+				//mxd. Things may require updating
+				List<Thing> affectedthings = new List<Thing>();
+				foreach(Thing t in General.Map.Map.Things)
+					if(t.Sector != null && selected.Contains(t.Sector)) affectedthings.Add(t);
+					
 				// Merge
 				JoinMergeSectors(false);
 
-				// Deselect
-				General.Map.Map.ClearSelectedSectors();
-				General.Map.Map.ClearSelectedLinedefs();
+				//mxd. Things may require updating
+				foreach(Thing t in affectedthings) t.DetermineSector();
+
+				// Map was changed
 				General.Map.IsChanged = true;
 
 				//mxd. Clear selection info
@@ -1791,19 +1803,25 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void MergeSectors()
 		{
 			// Worth our money?
-			int count = General.Map.Map.GetSelectedSectors(true).Count;
-			if(count > 1)
+			ICollection<Sector> selected = General.Map.Map.GetSelectedSectors(true); //mxd
+			if(selected.Count > 1)
 			{
 				// Make undo
-				General.Map.UndoRedo.CreateUndo("Merge " + count + " sectors");
-				General.Interface.DisplayStatus(StatusType.Action, "Merged " + count + " sectors.");
+				General.Map.UndoRedo.CreateUndo("Merge " + selected.Count + " sectors");
+				General.Interface.DisplayStatus(StatusType.Action, "Merged " + selected.Count + " sectors.");
+
+				//mxd. Things may require updating
+				List<Thing> affectedthings = new List<Thing>();
+				foreach(Thing t in General.Map.Map.Things)
+					if(t.Sector != null && selected.Contains(t.Sector)) affectedthings.Add(t);
 
 				// Merge
 				JoinMergeSectors(true);
 
-				// Deselect
-				General.Map.Map.ClearSelectedSectors();
-				General.Map.Map.ClearSelectedLinedefs();
+				//mxd. Things may require updating
+				foreach(Thing t in affectedthings) t.DetermineSector();
+
+				// Map was changed
 				General.Map.IsChanged = true;
 
 				//mxd. Clear selection info
