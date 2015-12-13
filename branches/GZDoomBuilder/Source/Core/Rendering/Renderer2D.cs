@@ -717,7 +717,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This begins a drawing session
 		public bool StartOverlay(bool clear)
 		{
-			if(renderlayer != RenderLayers.None) throw new InvalidOperationException("Renderer starting called before finished previous layer. Call Finish() first!");
+			if(renderlayer != RenderLayers.None) return false; //mxd. Can't render. Most probably because previous frame or render layer wasn't finished yet.
 			renderlayer = RenderLayers.Overlay;
 			try { graphics.Device.SetRenderState(RenderState.FogEnable, false); } catch(Exception) { }
 			
