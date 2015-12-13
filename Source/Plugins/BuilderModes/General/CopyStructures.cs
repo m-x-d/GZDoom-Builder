@@ -485,9 +485,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	//mxd
 	public class LinedefPropertiesCopySettings : MapElementPropertiesCopySettings
 	{
-		[FieldDescription(Description = "Sidedef Properties")]
-		public bool SidedefProperties = true;
-		
 		[FieldDescription(Description = "Action")]
 		public bool Action = true;
 		
@@ -559,7 +556,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd. Applies selected linededf and sidedef settings
 		public void Apply(Linedef l, LinedefPropertiesCopySettings settings, SidedefPropertiesCopySettings sidesettings)
 		{
-			if(settings.SidedefProperties && sidesettings != null) 
+			if(sidesettings != null)
 			{
 				if((front != null) && (l.Front != null)) front.Apply(l.Front, sidesettings);
 				if((back != null) && (l.Back != null)) back.Apply(l.Back, sidesettings);
@@ -859,25 +856,24 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 			}
 			if(linedefflags.Flags && !FlagsMatch(source.GetFlags(), target.GetFlags())) return false;
-			if(linedefflags.SidedefProperties) 
+
+			if(General.Map.UDMF)
 			{
-				if((source.Front == null && target.Front != null) || (source.Front != null && target.Front == null) ||
-					(source.Back == null && target.Back != null) || (source.Back != null && target.Back == null)) 
-					return false;
+				// UI fields
+				if(linedefflags.Alpha && !UniFields.ValuesMatch("alpha", source, target)) return false;
+				if(linedefflags.RenderStyle && !UniFields.ValuesMatch("renderstyle", source, target)) return false;
+				if(linedefflags.LockNumber && !UniFields.ValuesMatch("locknumber", source, target)) return false;
+				if(linedefflags.Comment && !UniFields.ValuesMatch("comment", source, target)) return false;
 
-				if(source.Front != null && !PropertiesMatch(sideflags, source.Front, target.Front)) return false;
-				if(source.Back != null && !PropertiesMatch(sideflags, source.Back, target.Back)) return false;
+				// Custom fields
+				if(linedefflags.Fields && !UniFields.CustomFieldsMatch(source.Fields, target.Fields)) return false;
 			}
-			if(!General.Map.UDMF) return true;
 
-			// UI fields
-			if(linedefflags.Alpha && !UniFields.ValuesMatch("alpha", source, target)) return false;
-			if(linedefflags.RenderStyle && !UniFields.ValuesMatch("renderstyle", source, target)) return false;
-			if(linedefflags.LockNumber && !UniFields.ValuesMatch("locknumber", source, target)) return false;
-			if(linedefflags.Comment && !UniFields.ValuesMatch("comment", source, target)) return false;
-
-			// Custom fields
-			return !linedefflags.Fields || UniFields.CustomFieldsMatch(source.Fields, target.Fields);
+			// Sidedef properties
+			return (source.Front != null && target.Front != null && PropertiesMatch(sideflags, source.Front, target.Front)) ||
+				   (source.Front != null && target.Back != null && PropertiesMatch(sideflags, source.Front, target.Back)) ||
+				   (source.Back != null && target.Front != null && PropertiesMatch(sideflags, source.Back, target.Front)) ||
+				   (source.Back != null && target.Back != null && PropertiesMatch(sideflags, source.Back, target.Back));
 		}
 
 		#endregion
