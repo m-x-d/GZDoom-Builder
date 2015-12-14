@@ -64,6 +64,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		//mxd. Event lines
 		private List<Line3D> persistenteventlines;
+
+		//mxd. Dynamic light shapes
+		private List<Line3D> dynamiclightshapes;
 		
 		#endregion
 
@@ -125,9 +128,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Map.Map.ConvertSelection(SelectionType.Linedefs);
 			General.Map.Map.SelectionType = SelectionType.Things;
 			UpdateSelectionInfo(); //mxd
-
-			//mxd. Update event lines
-			persistenteventlines = LinksCollector.GetThingLinks(General.Map.ThingsFilter.VisibleThings);
+			UpdateHelperObjects(); //mxd
 		}
 
 		// Mode disengages
@@ -173,7 +174,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			List<Line3D> eventlines = new List<Line3D>(); //mxd
 
 			// Render lines and vertices
-			if (renderer.StartPlotter(true)) 
+			if(renderer.StartPlotter(true)) 
 			{
 				renderer.PlotLinedefSet(General.Map.Map.Linedefs);
 				renderer.PlotVerticesSet(General.Map.Map.Vertices);
@@ -197,13 +198,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					BuilderPlug.RenderReverseAssociations(renderer, highlightasso, eventlines); //mxd
 				}
 
+				//mxd. Event lines
+				if(General.Settings.GZShowEventLines) eventlines.AddRange(persistenteventlines);
+
+				//mxd. Dynamic light radii
+				if(!General.Map.DOOM && General.Settings.GZDrawLightsMode != LightRenderMode.NONE)
+					eventlines.AddRange(dynamiclightshapes);
+
 				//mxd
-				if(General.Settings.GZShowEventLines)
-				{
-					eventlines.AddRange(persistenteventlines);
-					if(eventlines.Count > 0) renderer.RenderArrows(eventlines);
-				}
- 
+				if(eventlines.Count > 0) renderer.RenderArrows(eventlines);
+
 				renderer.Finish();
 			}
 
@@ -427,8 +431,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 								foreach(Thing t in selected) t.Selected = true;
 							}
 
-							//mxd. Update event lines
-							persistenteventlines = LinksCollector.GetThingLinks(General.Map.ThingsFilter.VisibleThings);
+							//mxd. Update helper lines
+							UpdateHelperObjects();
 
 							// Update display
 							General.Interface.RedrawDisplay();
@@ -449,8 +453,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			base.OnUndoEnd();
 
-			// Update event lines
-			persistenteventlines = LinksCollector.GetThingLinks(General.Map.ThingsFilter.VisibleThings);
+			//mxd. Update helper lines
+			UpdateHelperObjects();
 		}
 
 		//mxd
@@ -458,8 +462,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			base.OnRedoEnd();
 
-			// Update event lines
-			persistenteventlines = LinksCollector.GetThingLinks(General.Map.ThingsFilter.VisibleThings);
+			//mxd. Update helper lines
+			UpdateHelperObjects();
 		}
 
 		//mxd. Otherwise event lines won't be drawn after panning finishes.
@@ -763,6 +767,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 		}
 
+		//mxd
+		private void UpdateHelperObjects()
+		{
+			// Update event lines
+			persistenteventlines = LinksCollector.GetThingLinks(General.Map.ThingsFilter.VisibleThings);
+
+			// Update light radii
+			dynamiclightshapes = Tools.GetDynamicLightShapes();
+		}
+
 		#endregion
 
 		#region ================== Actions
@@ -817,8 +831,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					General.Map.ThingsFilter.Update();
 					General.Interface.RefreshInfo();
 
-					//mxd. Update event lines
-					persistenteventlines = LinksCollector.GetThingLinks(General.Map.ThingsFilter.VisibleThings);
+					//mxd. Update helper lines
+					UpdateHelperObjects();
 
 					// Redraw
 					General.Interface.RedrawDisplay();
@@ -867,8 +881,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						General.Map.ThingsFilter.Update();
 						General.Interface.RefreshInfo();
 
-						//mxd. Update event lines
-						persistenteventlines = LinksCollector.GetThingLinks(General.Map.ThingsFilter.VisibleThings);
+						//mxd. Update helper lines
+						UpdateHelperObjects();
 
 						// Redraw
 						General.Interface.RedrawDisplay();
@@ -929,8 +943,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Update things filter
 				General.Map.ThingsFilter.Update();
 
-				//mxd. Update event lines
-				persistenteventlines = LinksCollector.GetThingLinks(General.Map.ThingsFilter.VisibleThings);
+				//mxd. Update helper lines
+				UpdateHelperObjects();
 
 				// Redraw screen
 				General.Interface.RedrawDisplay();
@@ -940,8 +954,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This creates a new thing
 		private static Thing InsertThing(Vector2D pos)
 		{
-			if (pos.x < General.Map.Config.LeftBoundary || pos.x > General.Map.Config.RightBoundary ||
-				pos.y > General.Map.Config.TopBoundary || pos.y < General.Map.Config.BottomBoundary)
+			if(pos.x < General.Map.Config.LeftBoundary || pos.x > General.Map.Config.RightBoundary ||
+			   pos.y > General.Map.Config.TopBoundary || pos.y < General.Map.Config.BottomBoundary)
 			{
 				General.Interface.DisplayStatus(StatusType.Warning, "Failed to insert thing: outside of map boundaries.");
 				return null;
@@ -952,9 +966,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(t != null)
 			{
 				General.Settings.ApplyDefaultThingSettings(t);
-				
 				t.Move(pos);
-				
 				t.UpdateConfiguration();
 
 				// Update things filter so that it includes this thing
@@ -1004,8 +1016,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Map.IsChanged = true;
 				General.Map.ThingsFilter.Update();
 
-				//mxd. Update event lines
-				persistenteventlines = LinksCollector.GetThingLinks(General.Map.ThingsFilter.VisibleThings);
+				//mxd. Update helper lines
+				UpdateHelperObjects();
 
 				// Invoke a new mousemove so that the highlighted item updates
 				MouseEventArgs e = new MouseEventArgs(MouseButtons.None, 0, (int)mousepos.x, (int)mousepos.y, 0);

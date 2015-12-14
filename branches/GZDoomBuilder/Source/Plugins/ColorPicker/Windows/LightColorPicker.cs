@@ -268,6 +268,12 @@ namespace CodeImp.DoomBuilder.ColorPicker.Windows
 				foreach (VisualThing t in visualSelection)
 					t.UpdateLight();
 			}
+			else if (editingModeName == "ThingsMode")
+			{
+				// Hacky way to call ThingsMode.UpdateHelperObjects() without referenceing BuilderModes.dll
+				General.Editing.Mode.OnRedoEnd();
+				General.Interface.RedrawDisplay();
+			}
 		}
 
 		//switch between absolute and relative mode
