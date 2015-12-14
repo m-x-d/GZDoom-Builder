@@ -7,45 +7,50 @@ namespace CodeImp.DoomBuilder.GZBuilder.Geometry
 	public class Line3D 
 	{
 		// Coordinates
-		public Vector3D v1;
-		public Vector3D v2;
-		public PixelColor color;
-		public readonly bool renderarrowhead;
+		public Vector3D Start;
+		public Vector3D End;
+		public PixelColor Color;
+		public readonly bool RenderArrowhead;
+
+		// Changed by Renderer2D.RenderArrows()
+		internal Vector2D Start2D;
+		internal Vector2D End2D;
+		internal bool SkipRendering;
 
 		// Constructors
-		public Line3D(Vector3D v1, Vector3D v2) 
+		public Line3D(Vector3D start, Vector3D end) 
 		{
-			this.v1 = v1;
-			this.v2 = v2;
-			this.color = General.Colors.InfoLine;
-			this.renderarrowhead = true;
+			this.Start = start;
+			this.End = end;
+			this.Color = General.Colors.InfoLine;
+			this.RenderArrowhead = true;
 		}
 
-		public Line3D(Vector3D v1, Vector3D v2, bool renderarrowhead)
+		public Line3D(Vector3D start, Vector3D end, bool renderArrowhead)
 		{
-			this.v1 = v1;
-			this.v2 = v2;
-			this.color = General.Colors.InfoLine;
-			this.renderarrowhead = renderarrowhead;
+			this.Start = start;
+			this.End = end;
+			this.Color = General.Colors.InfoLine;
+			this.RenderArrowhead = renderArrowhead;
 		}
 
-		public Line3D(Vector3D v1, Vector3D v2, PixelColor color) 
+		public Line3D(Vector3D start, Vector3D end, PixelColor color) 
 		{
-			this.v1 = v1;
-			this.v2 = v2;
-			this.color = color;
-			this.renderarrowhead = true;
+			this.Start = start;
+			this.End = end;
+			this.Color = color;
+			this.RenderArrowhead = true;
 		}
 
-		public Line3D(Vector3D v1, Vector3D v2, PixelColor color, bool renderarrowhead)
+		public Line3D(Vector3D start, Vector3D end, PixelColor color, bool renderArrowhead)
 		{
-			this.v1 = v1;
-			this.v2 = v2;
-			this.color = color;
-			this.renderarrowhead = renderarrowhead;
+			this.Start = start;
+			this.End = end;
+			this.Color = color;
+			this.RenderArrowhead = renderArrowhead;
 		}
 
-		public Vector3D GetDelta() { return v2 - v1; }
+		public Vector3D GetDelta() { return End - Start; }
 
 		// This calculates the angle
 		public float GetAngle() 

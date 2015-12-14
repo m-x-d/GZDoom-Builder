@@ -644,7 +644,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Calculate required points count
 			if(lines.Count == 0) return;
 			int pointscount = 0;
-			foreach(Line3D line in lines) pointscount += (line.renderarrowhead ? 6 : 2); // 4 extra points for the arrowhead
+			foreach(Line3D line in lines) pointscount += (line.RenderArrowhead ? 6 : 2); // 4 extra points for the arrowhead
 			if(pointscount < 2) return;
 			
 			//create vertices
@@ -655,28 +655,28 @@ namespace CodeImp.DoomBuilder.Rendering
 
 			foreach(Line3D line in lines)
 			{
-				color = line.color.ToInt();
+				color = line.Color.ToInt();
 
 				// Add regular points
-				verts[pointscount].x = line.v1.x;
-				verts[pointscount].y = line.v1.y;
-				verts[pointscount].z = line.v1.z;
+				verts[pointscount].x = line.Start.x;
+				verts[pointscount].y = line.Start.y;
+				verts[pointscount].z = line.Start.z;
 				verts[pointscount].c = color;
 				pointscount++;
 
-				verts[pointscount].x = line.v2.x;
-				verts[pointscount].y = line.v2.y;
-				verts[pointscount].z = line.v2.z;
+				verts[pointscount].x = line.End.x;
+				verts[pointscount].y = line.End.y;
+				verts[pointscount].z = line.End.z;
 				verts[pointscount].c = color;
 				pointscount++;
 
 				// Add arrowhead
-				if(line.renderarrowhead)
+				if(line.RenderArrowhead)
 				{
 					float nz = line.GetDelta().GetNormal().z * scaler;
 					float angle = line.GetAngle();
-					Vector3D a1 = new Vector3D(line.v2.x - scaler * (float)Math.Sin(angle - 0.46f), line.v2.y + scaler * (float)Math.Cos(angle - 0.46f), line.v2.z - nz);
-					Vector3D a2 = new Vector3D(line.v2.x - scaler * (float)Math.Sin(angle + 0.46f), line.v2.y + scaler * (float)Math.Cos(angle + 0.46f), line.v2.z - nz);
+					Vector3D a1 = new Vector3D(line.End.x - scaler * (float)Math.Sin(angle - 0.46f), line.End.y + scaler * (float)Math.Cos(angle - 0.46f), line.End.z - nz);
+					Vector3D a2 = new Vector3D(line.End.x - scaler * (float)Math.Sin(angle + 0.46f), line.End.y + scaler * (float)Math.Cos(angle + 0.46f), line.End.z - nz);
 
 					verts[pointscount] = verts[pointscount - 1];
 					verts[pointscount + 1].x = a1.x;

@@ -387,10 +387,6 @@ namespace CodeImp.DoomBuilder.Rendering
 		// Allocates new image memory to render on
 		public unsafe void CreateRendertargets()
 		{
-			SurfaceDescription sd;
-			DataStream stream;
-			FlatVertex[] verts;
-			
 			// Destroy rendertargets
 			DestroyRendertargets();
 			
@@ -406,7 +402,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			surfacetex = new Texture(graphics.Device, windowsize.Width, windowsize.Height, 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
 			
 			// Get the real surface sizes
-			sd = plottertex.GetLevelDescription(0);
+			SurfaceDescription sd = plottertex.GetLevelDescription(0);
 			structsize.Width = sd.Width;
 			structsize.Height = sd.Height;
 			sd = thingstex.GetLevelDescription(0);
@@ -436,9 +432,9 @@ namespace CodeImp.DoomBuilder.Rendering
 			thingsvertices = new VertexBuffer(graphics.Device, THING_BUFFER_SIZE * 12 * sizeof(FlatVertex), Usage.Dynamic | Usage.WriteOnly, VertexFormat.None, Pool.Default);
 
 			// Make screen vertices
-			stream = screenverts.Lock(0, 4 * sizeof(FlatVertex), LockFlags.Discard | LockFlags.NoSystemLock);
-			verts = CreateScreenVerts(structsize);
-			stream.WriteRange<FlatVertex>(verts);
+			DataStream stream = screenverts.Lock(0, 4 * sizeof(FlatVertex), LockFlags.Discard | LockFlags.NoSystemLock);
+			FlatVertex[] verts = CreateScreenVerts(structsize);
+			stream.WriteRange(verts);
 			screenverts.Unlock();
 			stream.Dispose();
 			
@@ -570,14 +566,14 @@ namespace CodeImp.DoomBuilder.Rendering
 		public PixelColor DetermineThingColor(Thing t)
 		{
 			// Determine color
-			if (t.Selected) return General.Colors.Selection;
-		   
-			//mxd. if thing is light, set it's color to light color:
+			if(t.Selected) return General.Colors.Selection;
+			
+			//mxd. If thing is light, set it's color to light color:
 			if(Array.IndexOf(GZBuilder.GZGeneral.GZ_LIGHTS, t.Type) != -1)
 			{
-				if (t.Type == 1502) //vavoom light
+				if(t.Type == 1502) //vavoom light
 					return new PixelColor(255, 255, 255, 255);
-				if (t.Type == 1503) //vavoom colored light
+				if(t.Type == 1503) //vavoom colored light
 					return new PixelColor(255, (byte)t.Args[1], (byte)t.Args[2], (byte)t.Args[3]);
 				return new PixelColor(255, (byte)t.Args[0], (byte)t.Args[1], (byte)t.Args[2]);
 			}
@@ -652,7 +648,14 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This begins a drawing session
 		public unsafe bool StartPlotter(bool clear)
 		{
-			if(renderlayer != RenderLayers.None) return false; //mxd. Can't render. Most probably because previous frame or render layer wasn't finished yet.
+			if(renderlayer != RenderLayers.None)
+			{
+#if DEBUG
+				throw new InvalidOperationException("Renderer starting called before finished previous layer. Call Finish() first!");
+#else
+				return false; //mxd. Can't render. Most probably because previous frame or render layer wasn't finished yet.
+#endif
+			}
 
 			renderlayer = RenderLayers.Plotter;
 			try { graphics.Device.SetRenderState(RenderState.FogEnable, false); } catch(Exception) { }
@@ -687,7 +690,14 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This begins a drawing session
 		public bool StartThings(bool clear)
 		{
-			if(renderlayer != RenderLayers.None) return false;  //mxd. Can't render. Most probably because previous frame or render layer wasn't finished yet.
+			if(renderlayer != RenderLayers.None)
+			{
+#if DEBUG
+				throw new InvalidOperationException("Renderer starting called before finished previous layer. Call Finish() first!");
+#else
+				return false; //mxd. Can't render. Most probably because previous frame or render layer wasn't finished yet.
+#endif
+			}
 
 			renderlayer = RenderLayers.Things;
 			try { graphics.Device.SetRenderState(RenderState.FogEnable, false); } catch(Exception) { }
@@ -717,7 +727,15 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This begins a drawing session
 		public bool StartOverlay(bool clear)
 		{
-			if(renderlayer != RenderLayers.None) return false; //mxd. Can't render. Most probably because previous frame or render layer wasn't finished yet.
+			if(renderlayer != RenderLayers.None)
+			{
+#if DEBUG
+				throw new InvalidOperationException("Renderer starting called before finished previous layer. Call Finish() first!");
+#else
+				return false; //mxd. Can't render. Most probably because previous frame or render layer wasn't finished yet.
+#endif
+			}
+
 			renderlayer = RenderLayers.Overlay;
 			try { graphics.Device.SetRenderState(RenderState.FogEnable, false); } catch(Exception) { }
 			
@@ -963,8 +981,8 @@ namespace CodeImp.DoomBuilder.Rendering
 			Vector2D screenpos = ((Vector2D)t.Position).GetTransformed(translatex, translatey, scale, -scale);
 			
 			// Check if the thing is actually on screen
-			if (((screenpos.x + circlesize) <= 0.0f) || ((screenpos.x - circlesize) >= windowsize.Width) ||
-			    ((screenpos.y + circlesize) <= 0.0f) || ((screenpos.y - circlesize) >= windowsize.Height))
+			if(((screenpos.x + circlesize) <= 0.0f) || ((screenpos.x - circlesize) >= windowsize.Width) ||
+			   ((screenpos.y + circlesize) <= 0.0f) || ((screenpos.y - circlesize) >= windowsize.Height))
 				return false;
 
 			// Get integral color
@@ -1129,7 +1147,7 @@ namespace CodeImp.DoomBuilder.Rendering
 					if(!fixedcolor && t.Highlighted) continue;
 					
 					//collect models
-					if (t.IsModel) 
+					if(t.IsModel) 
 					{
 						if(!modelsByType.ContainsKey(t.Type)) modelsByType.Add(t.Type, new List<Thing>());
 						modelsByType[t.Type].Add(t);
@@ -1706,7 +1724,32 @@ namespace CodeImp.DoomBuilder.Rendering
 		{
 			if(lines.Count == 0) return;
 			int pointscount = 0;
-			foreach(Line3D line in lines) pointscount += (line.renderarrowhead ? 6 : 2); // 4 extra points for the arrowhead
+
+			// Translate to screen coords, determine renderability
+			foreach(Line3D line in lines)
+			{
+				// Calculate screen positions
+				line.Start2D = ((Vector2D)line.Start).GetTransformed(translatex, translatey, scale, -scale); //start
+				line.End2D = ((Vector2D)line.End).GetTransformed(translatex, translatey, scale, -scale); //end
+
+				float maxx = Math.Max(line.Start2D.x, line.End2D.x);
+				float minx = Math.Min(line.Start2D.x, line.End2D.x);
+				float maxy = Math.Max(line.Start2D.y, line.End2D.y);
+				float miny = Math.Min(line.Start2D.y, line.End2D.y);
+
+				// Too small / not on screen?
+				if(((line.End2D - line.Start2D).GetLengthSq() < MINIMUM_SPRITE_RADIUS) || ((maxx <= 0.0f) || (minx >= windowsize.Width) || (maxy <= 0.0f) || (miny >= windowsize.Height)))
+				{
+					line.SkipRendering = true;
+				}
+				else
+				{
+					pointscount += (line.RenderArrowhead ? 6 : 2); // 4 extra points for the arrowhead
+					line.SkipRendering = false;
+				}
+			}
+
+			// Anything to do?
 			if(pointscount < 2) return;
 
 			FlatVertex[] verts = new FlatVertex[pointscount];
@@ -1717,29 +1760,26 @@ namespace CodeImp.DoomBuilder.Rendering
 			pointscount = 0;
 			foreach(Line3D line in lines)
 			{
-				color = line.color.ToInt();
-
-				// Calculate positions
-				Vector2D v1 = ((Vector2D)line.v1).GetTransformed(translatex, translatey, scale, -scale); //start
-				Vector2D v2 = ((Vector2D)line.v2).GetTransformed(translatex, translatey, scale, -scale); //end
+				if(line.SkipRendering) continue;
+				color = line.Color.ToInt();
 
 				// Add regular points
-				verts[pointscount].x = v1.x;
-				verts[pointscount].y = v1.y;
+				verts[pointscount].x = line.Start2D.x;
+				verts[pointscount].y = line.Start2D.y;
 				verts[pointscount].c = color;
 				pointscount++;
 
-				verts[pointscount].x = v2.x;
-				verts[pointscount].y = v2.y;
+				verts[pointscount].x = line.End2D.x;
+				verts[pointscount].y = line.End2D.y;
 				verts[pointscount].c = color;
 				pointscount++;
 
 				// Add arrowhead
-				if(line.renderarrowhead)
+				if(line.RenderArrowhead)
 				{
 					float angle = line.GetAngle();
-					Vector2D a1 = new Vector2D(line.v2.x - scaler * (float)Math.Sin(angle - 0.46f), line.v2.y + scaler * (float)Math.Cos(angle - 0.46f)).GetTransformed(translatex, translatey, scale, -scale); //arrowhead end 1
-					Vector2D a2 = new Vector2D(line.v2.x - scaler * (float)Math.Sin(angle + 0.46f), line.v2.y + scaler * (float)Math.Cos(angle + 0.46f)).GetTransformed(translatex, translatey, scale, -scale); //arrowhead end 2
+					Vector2D a1 = new Vector2D(line.End.x - scaler * (float)Math.Sin(angle - 0.46f), line.End.y + scaler * (float)Math.Cos(angle - 0.46f)).GetTransformed(translatex, translatey, scale, -scale); //arrowhead end 1
+					Vector2D a2 = new Vector2D(line.End.x - scaler * (float)Math.Sin(angle + 0.46f), line.End.y + scaler * (float)Math.Cos(angle + 0.46f)).GetTransformed(translatex, translatey, scale, -scale); //arrowhead end 2
 					
 					verts[pointscount] = verts[pointscount - 1];
 					verts[pointscount + 1].x = a1.x;
