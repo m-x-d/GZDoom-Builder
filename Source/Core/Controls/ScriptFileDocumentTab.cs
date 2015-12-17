@@ -175,23 +175,24 @@ namespace CodeImp.DoomBuilder.Controls
 			AcsParserSE parser = new AcsParserSE { OnInclude = (se, path) => se.Parse(General.Map.Data.LoadFile(path), path, true, true) };
 			using(FileStream stream = File.OpenRead(filepathname))
 			{
-				if(!parser.Parse(stream, inputfile, scriptconfig.Compiler.Files, true, false))
+				if(!parser.Parse(stream, filepathname, scriptconfig.Compiler.Files, true, false))
 				{
 					// Check for errors
 					if(parser.HasError)
 					{
 						errors.Add(new CompilerError(parser.ErrorDescription, parser.ErrorSource, parser.ErrorLine));
 						panel.ShowErrors(errors);
-						compiler.Dispose();
-						return;
 					}
+
+					compiler.Dispose();
+					return;
 				}
 			}
 
-			// Only works for libraries
+			//mxd. Only works for libraries
 			if(!parser.IsLibrary)
 			{
-				errors.Add(new CompilerError("External ACS files can only be compiled as libraries!", inputfile));
+				errors.Add(new CompilerError("External ACS files can only be compiled as libraries!", filepathname));
 				panel.ShowErrors(errors);
 				compiler.Dispose();
 				return;
@@ -348,6 +349,10 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				string ext = (config.Extensions.Length > 0 ? "." + config.Extensions[0] : "");
 				SetTitle("Untitled" + ext);
+			}
+			else
+			{
+				UpdateTitle(); //mxd
 			}
 
 			//mxd

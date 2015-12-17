@@ -12,6 +12,12 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 {
 	internal sealed class ModelData
 	{
+		#region ================== Constants
+
+		public static readonly string[] SUPPORTED_TEXTURE_EXTENSIONS = { ".jpg", ".tga", ".png", ".dds", ".pcx" };
+
+		#endregion
+
 		#region ================== Variables
 
 		private ModelLoadState loadstate;

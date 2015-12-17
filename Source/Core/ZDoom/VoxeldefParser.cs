@@ -49,17 +49,15 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 						if(string.IsNullOrEmpty(token)) 
 						{
-							General.ErrorLogger.Add(ErrorType.Error, "Unable to get voxel model name from '" + sourcefilename + "', line " + GetCurrentLineNumber());
-							spriteNames.Clear();
-							continue;
+							ReportError("Expected voxel name");
+							return false;
 						}
 
 						modelName = StripTokenQuotes(token).ToLowerInvariant();
 					} 
 					else if(token == "{") //read the settings
 					{
-						ModelData mde = new ModelData();
-						mde.IsVoxel = true;
+						ModelData mde = new ModelData { IsVoxel = true };
 						float scale = 1.0f;
 						float angleoffset = 0;
 
@@ -109,15 +107,16 @@ namespace CodeImp.DoomBuilder.ZDoom
 									token = StripTokenQuotes(ReadToken());
 									if(token != "=") 
 									{
-										General.ErrorLogger.Add(ErrorType.Error, "Error in " + sourcefilename + " at line " + GetCurrentLineNumber() + ": expected '=', but got '" + token + "'");
-										break;
+										ReportError("expected '=', but got '" + token + "'");
+										return false;
 									}
 
 									token = StripTokenQuotes(ReadToken());
 									if(!ReadSignedFloat(token, ref angleoffset)) 
 									{
 										// Not numeric!
-										General.ErrorLogger.Add(ErrorType.Error, "Error in " + sourcefilename + " at line " + GetCurrentLineNumber() + ": expected AngleOffset value, but got '" + token + "'");
+										ReportError("expected AngleOffset value, but got '" + token + "'");
+										return false;
 									}
 								} 
 								else if(token == "scale") 
@@ -127,17 +126,19 @@ namespace CodeImp.DoomBuilder.ZDoom
 									token = StripTokenQuotes(ReadToken());
 									if(token != "=") 
 									{
-										General.ErrorLogger.Add(ErrorType.Error, "Error in " + sourcefilename + " at line " + GetCurrentLineNumber() + ": expected '=', but got '" + token + "'");
-										break;
+										ReportError("expected '=', but got '" + token + "'");
+										return false;
 									}
 
 									token = StripTokenQuotes(ReadToken());
 									if(!ReadSignedFloat(token, ref scale)) 
 									{
 										// Not numeric!
-										General.ErrorLogger.Add(ErrorType.Error, "Error in " + sourcefilename + " at line " + GetCurrentLineNumber() + ": expected Scale value, but got '" + token + "'");
+										ReportError("expected Scale value, but got '" + token + "'");
+										return false;
 									}
 								}
+
 								prevToken = token.ToUpperInvariant();
 							}
 						}
@@ -150,6 +151,11 @@ namespace CodeImp.DoomBuilder.ZDoom
 			}
 
 			return entries.Count > 0;
+		}
+
+		protected override string GetLanguageType()
+		{
+			return "VOXELDEF";
 		}
 	}
 }

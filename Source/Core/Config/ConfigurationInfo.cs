@@ -454,13 +454,14 @@ namespace CodeImp.DoomBuilder.Config
 				{
 					// Copy the things filters from game configuration
 					foreach(ThingsFilter f in gameconfig.ThingsFilters)
-					{
 						thingsfilters.Add(new ThingsFilter(f));
-					}
 				}
 
-				//mxd. Validate filters
-				foreach(ThingsFilter f in thingsfilters) f.Validate();
+				//mxd. Validate filters. Do it only for currently used ConfigInfo
+				if(General.Map != null && General.Map.ConfigSettings == this)
+				{
+					foreach(ThingsFilter f in thingsfilters) f.Validate();
+				}
 			}
 			
 			// Go for all available editing modes

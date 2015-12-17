@@ -86,6 +86,11 @@ namespace CodeImp.DoomBuilder.ZDoom
 			return result;
 		}
 
+		protected override string GetLanguageType()
+		{
+			return "SNDSEQ";
+		}
+
 		#endregion
 	}
 }

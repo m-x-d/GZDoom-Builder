@@ -47,7 +47,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		private int errorline;
 		private string errordesc;
 		private string errorsource;
-		private long prevstreamposition; //mxd. Text stream position storted before poerforming ReadToken.
+		private long prevstreamposition; //mxd. Text stream position storted before performing ReadToken.
 		
 		#endregion
 		
@@ -213,7 +213,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 		
 		// This reads a token (all sequential non-whitespace characters or a single character)
 		// Returns null when the end of the stream has been reached
-		protected internal string ReadToken()
+		protected internal string ReadToken() { return ReadToken(true); } //mxd. Added "multiline" param
+		protected internal string ReadToken(bool multiline)
 		{
 			//mxd. Return empty string when the end of the stream has been reached
 			if(datastream.Position == datastream.Length) return string.Empty;
@@ -228,6 +229,14 @@ namespace CodeImp.DoomBuilder.ZDoom
 			char c = (char)datareader.ReadByte();
 			while(!IsWhitespace(c) || quotedstring || IsSpecialToken(c))
 			{
+				//mxd. Break at newline?
+				if(!multiline && c == '\r')
+				{
+					// Go one character back so line number is correct
+					datastream.Seek(-1, SeekOrigin.Current);
+					return token;
+				}
+				
 				// Special token?
 				if(!quotedstring && IsSpecialToken(c))
 				{
@@ -418,7 +427,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 			if(token != expectedtoken) 
 			{
-				if(reporterror) General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcename + "' at line " + GetCurrentLineNumber() + ": expected '" + expectedtoken + "', but got '" + token + "'");
+				if(reporterror) ReportError("expected '" + expectedtoken + "', but got '" + token + "'");
 
 				// Rewind so this structure can be read again
 				DataStream.Seek(-token.Length - 1, SeekOrigin.Current);
@@ -469,20 +478,39 @@ namespace CodeImp.DoomBuilder.ZDoom
 			errorsource = sourcename;
 		}
 
-		//mxd. This reports a warning
-		protected internal void ReportWarning(string message)
+		//mxd. This adds a warning to the ErrorLogger
+		protected internal void LogWarning(string message)
 		{
 			// Add a warning
-			General.ErrorLogger.Add(ErrorType.Warning, "DECORATE warning in '" + sourcename + "', line " + GetCurrentLineNumber() + ". " + message + ".");
+			int errline = GetCurrentLineNumber();
+			General.ErrorLogger.Add(ErrorType.Warning, GetLanguageType() + " warning in '" + sourcename
+								+ (errline != CompilerError.NO_LINE_NUMBER ? "', line " + (errline + 1) : "'") + ". " 
+								+ message + ".");
+		}
+
+		//mxd. This adds an error to the ErrorLogger
+		public void LogError()
+		{
+			General.ErrorLogger.Add(ErrorType.Error, GetLanguageType() + " error in '" + errorsource
+								+ (errorline != CompilerError.NO_LINE_NUMBER ? "', line " + (errorline + 1) : "'") + ". "
+								+ errordesc + ".");
+		}
+
+		//mxd
+		internal void ClearError()
+		{
+			errorline = 0;
+			errordesc = null;
+			errorsource = null;
 		}
 
 		//mxd 
-		protected internal int GetCurrentLineNumber() 
+		protected int GetCurrentLineNumber()
 		{
 			long pos = datastream.Position;
 			long finishpos = Math.Min(prevstreamposition, pos);
 			long readpos = 0;
-			int linenumber = 0;
+			int linenumber = -1;
 
 			// Find the line on which we found this error
 			datastream.Seek(0, SeekOrigin.Begin);
@@ -498,9 +526,12 @@ namespace CodeImp.DoomBuilder.ZDoom
 			// Return to original position
 			datastream.Seek(pos, SeekOrigin.Begin);
 
-			return linenumber;
+			return Math.Max(linenumber, 0);
 		}
-		
+
+		//mxd. Language type
+		protected abstract string GetLanguageType();
+
 		#endregion
 	}
 }

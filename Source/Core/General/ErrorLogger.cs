@@ -81,29 +81,38 @@ namespace CodeImp.DoomBuilder
 			
 			lock(this)
 			{
-				errors.Add(new ErrorItem(type, message));
-				switch(type)
+				//mxd. Don't add duplicate messages
+				if(errors.Count == 0 || message != errors[errors.Count - 1].message || type != errors[errors.Count - 1].type)
 				{
-					case ErrorType.Error:
-						erroradded = true;
-						prefix = "ERROR: ";
+					errors.Add(new ErrorItem(type, message));
+					switch(type)
+					{
+						case ErrorType.Error:
+							erroradded = true;
+							prefix = "ERROR: ";
 #if DEBUG
-						DebugConsole.WriteLine(DebugMessageType.ERROR, message);
+							DebugConsole.WriteLine(DebugMessageType.ERROR, message);
 #endif
-						break;
-						
-					case ErrorType.Warning:
-						warningadded = true;
-						prefix = "WARNING: ";
-#if DEBUG
-						DebugConsole.WriteLine(DebugMessageType.WARNING, message);
-#endif
-						break;
-				}
-				changed = true;
+							break;
 
-				General.WriteLogLine(prefix + message);
-				General.MainWindow.SetWarningsCount(errors.Count, erroradded); //mxd
+						case ErrorType.Warning:
+							warningadded = true;
+							prefix = "WARNING: ";
+#if DEBUG
+							DebugConsole.WriteLine(DebugMessageType.WARNING, message);
+#endif
+							break;
+					}
+
+					changed = true;
+					General.WriteLogLine(prefix + message);
+					General.MainWindow.SetWarningsCount(errors.Count, erroradded); //mxd
+				}
+				//mxd. But still blink the indicator on errors
+				else if(type == ErrorType.Error)
+				{
+					General.MainWindow.SetWarningsCount(errors.Count, true);
+				}
 			}
 		}
 		

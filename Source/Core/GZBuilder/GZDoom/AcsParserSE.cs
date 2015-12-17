@@ -63,8 +63,6 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 
 			base.Parse(stream, sourcefilename);
 
-			// Already parsed this?
-			if(parsedlumps.Contains(sourcefilename)) return false;
 			parsedlumps.Add(sourcefilename);
 			if(isinclude && !includes.Contains(sourcefilename)) includes.Add(sourcefilename);
 			includestoskip = configincludes;
@@ -180,46 +178,68 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 					case "#library":
 						if(IsMapScriptsLump)
 						{
-							ReportError("Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": SCRIPTS lump can not be compiled as library!");
+							ReportError("SCRIPTS lump can not be compiled as a library");
 							return false;
 						}
 						
 						SkipWhitespace(true);
-						libraryname = ReadToken();
+						libraryname = ReadToken(false); // Don't skip newline
 
-						if(string.IsNullOrEmpty(libraryname) || !libraryname.StartsWith("\"") || !libraryname.EndsWith("\""))
+						if(!libraryname.StartsWith("\"") || !libraryname.EndsWith("\""))
 						{
-							ReportError("Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": invalid #library directive!");
+							ReportError("#library name should be quoted");
 							return false;
 						}
 
 						libraryname = StripTokenQuotes(libraryname);
+
+						if(string.IsNullOrEmpty(libraryname))
+						{
+							ReportError("Expected library name");
+							return false;
+						}
+
 						break;
 
 					default:
 						if(processincludes && (token == "#include" || token == "#import")) 
 						{
 							SkipWhitespace(true);
-							string includelump = StripTokenQuotes(ReadToken()).ToLowerInvariant();
+							string includelump = ReadToken(false); // Don't skip newline
 
-							if(!string.IsNullOrEmpty(includelump)) 
+							if(!includelump.StartsWith("\"") || !includelump.EndsWith("\""))
 							{
-								string includename = Path.GetFileName(includelump);
-								if(includestoskip.Contains(includename) || includes.Contains(includename)) continue;
-							
-								// Callback to parse this file
-								if(OnInclude != null) OnInclude(this, includelump.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar));
-
-								// Set our buffers back to continue parsing
-								datastream = localstream;
-								datareader = localreader;
-								sourcename = localsourcename;
-							} 
-							else 
-							{
-								ReportError("Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": got #include directive without include path!");
+								ReportError(token + " filename should be quoted");
 								return false;
 							}
+
+							includelump = StripTokenQuotes(includelump).ToLowerInvariant();
+
+							if(string.IsNullOrEmpty(includelump))
+							{
+								ReportError("Expected file name to " + token);
+								return false;
+							}
+
+							string includename = Path.GetFileName(includelump);
+
+							// Compiler files?
+							if(includestoskip.Contains(includename)) continue;
+
+							// Already parsed this?
+							if(includes.Contains(includename))
+							{
+								ReportError("already parsed '" + includename + "'. Check your #include directives");
+								return false;
+							}
+						
+							// Callback to parse this file
+							if(OnInclude != null) OnInclude(this, includelump.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar));
+
+							// Set our buffers back to continue parsing
+							datastream = localstream;
+							datareader = localreader;
+							sourcename = localsourcename;
 						}
 						break;
 				}
@@ -275,6 +295,11 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 			}
 
 			return "(void)";
+		}
+
+		protected override string GetLanguageType()
+		{
+			return "ACS";
 		}
 	}
 }

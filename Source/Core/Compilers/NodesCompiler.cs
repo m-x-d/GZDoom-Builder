@@ -43,7 +43,7 @@ namespace CodeImp.DoomBuilder.Compilers
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public NodesCompiler(CompilerInfo info) : base(info)
+		public NodesCompiler(CompilerInfo info) : base(info, true)
 		{
 			// Initialize
 

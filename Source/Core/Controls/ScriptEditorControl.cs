@@ -250,8 +250,6 @@ namespace CodeImp.DoomBuilder.Controls
 		// This sets up the script editor with a script configuration
 		public void SetupStyles(ScriptConfiguration config)
 		{
-			Stream lexersdata;
-			StreamReader lexersreader;
 			Configuration lexercfg = new Configuration();
 
 			// Make collections
@@ -259,7 +257,7 @@ namespace CodeImp.DoomBuilder.Controls
 			SortedList<string, string> autocompletelist = new SortedList<string, string>(StringComparer.Ordinal);
 			
 			// Keep script configuration
-			if(scriptconfig != config) scriptconfig = config;
+			scriptconfig = config;
 			
 			// Find a resource named Lexers.cfg
 			string[] resnames = General.ThisAssembly.GetManifestResourceNames();
@@ -269,8 +267,8 @@ namespace CodeImp.DoomBuilder.Controls
 				if(rn.EndsWith(LEXERS_RESOURCE, StringComparison.InvariantCultureIgnoreCase))
 				{
 					// Get a stream from the resource
-					lexersdata = General.ThisAssembly.GetManifestResourceStream(rn);
-					lexersreader = new StreamReader(lexersdata, Encoding.ASCII);
+					Stream lexersdata = General.ThisAssembly.GetManifestResourceStream(rn);
+					StreamReader lexersreader = new StreamReader(lexersdata, Encoding.ASCII);
 
 					// Load configuration from stream
 					lexercfg.InputConfiguration(lexersreader.ReadToEnd());
@@ -426,8 +424,10 @@ namespace CodeImp.DoomBuilder.Controls
 			functionbar.Visible = (scriptconfig.FunctionRegEx.Length > 0);
 
 			// Rearrange the layout
+			bool ischanged = changed; //mxd. Don't want the "changed" status to change when changing text styles
 			scriptedit.ClearDocumentStyle();
 			scriptedit.SetText(scriptedit.GetText(scriptedit.TextSize));
+			changed = ischanged; //mxd
 			this.PerformLayout();
 		}
 		

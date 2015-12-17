@@ -28,18 +28,18 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 			{
 				string token = ReadToken();
 
-				if (!string.IsNullOrEmpty(token)) 
+				if(!string.IsNullOrEmpty(token)) 
 				{
 					token = token.ToUpperInvariant();
 
-					if (token == "MODEL") 
+					if(token == "MODEL") 
 					{
 						SkipWhitespace(true);
 						ReadToken(); //should be model name
 						SkipWhitespace(true);
 						token = ReadToken();//should be opening brace
 						
-						if (token == "{") 
+						if(token == "{") 
 						{
 							scriptType = ScriptType.MODELDEF;
 							return true;
@@ -55,7 +55,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						SkipWhitespace(true);
 						token = ReadToken(); //should be opening brace
 						
-						if (token == "{") 
+						if(token == "{") 
 						{
 							scriptType = ScriptType.ACS;
 							return true;
@@ -70,7 +70,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						SkipWhitespace(true);
 						token = ReadToken();
 
-						if (token == ":" || token == "{" || token == "REPLACES") 
+						if(token == ":" || token == "{" || token == "REPLACES") 
 						{
 							scriptType = ScriptType.DECORATE;
 							return true;
@@ -79,7 +79,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						SkipWhitespace(true);
 						token = ReadToken(); //should be actor name
 
-						if (token == "{") 
+						if(token == "{") 
 						{
 							scriptType = ScriptType.DECORATE;
 							return true;
@@ -89,6 +89,11 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 			}
 
 			return false;
+		}
+
+		protected override string GetLanguageType()
+		{
+			return "SCRIPT TYPE CHECKER";
 		}
 	}
 }

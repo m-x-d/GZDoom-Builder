@@ -1879,10 +1879,12 @@ namespace CodeImp.DoomBuilder
 			List<CompilerError> compilererrors = UpdateScriptNames();
 			if(logerrors && compilererrors.Count > 0)
 			{
+				//INFO: CompileLump() prepends lumpname with "?" to distinguish between temporary files and files compiled in place
+				//INFO: also, error.linenumber is zero-based
 				foreach(CompilerError error in compilererrors)
 				{
-					General.ErrorLogger.Add(ErrorType.Error, "ACS error in '" + error.filename
-						+ (error.linenumber != CompilerError.NO_LINE_NUMBER ? "', line " + error.linenumber : "'") 
+					General.ErrorLogger.Add(ErrorType.Error, "ACS error in '" + (error.filename.StartsWith("?") ? error.filename.Replace("?", "") : error.filename)
+						+ (error.linenumber != CompilerError.NO_LINE_NUMBER ? "', line " + (error.linenumber + 1) : "'") 
 						+ ". " + error.description + ".");
 				}
 			}
@@ -1927,15 +1929,18 @@ namespace CodeImp.DoomBuilder
 					{
 						// Get script names
 						AcsParserSE parser = new AcsParserSE { OnInclude = (se, path) => se.Parse(General.Map.Data.LoadFile(path), path, true, true) };
-						if(parser.Parse(stream, "SCRIPTS", scriptconfig.Compiler.Files, true, false))
+
+						//INFO: CompileLump() prepends lumpname with "?" to distinguish between temporary files and files compiled in place
+						if(parser.Parse(stream, "?SCRIPTS", scriptconfig.Compiler.Files, true, false))
 						{
 							// Add them to arrays
 							namedscriptslist.AddRange(parser.NamedScripts);
 							numberedscriptslist.AddRange(parser.NumberedScripts);
 							scripincludeslist.AddRange(parser.Includes);
 						}
+						
 						// Check for errors
-						else if(parser.HasError)
+						if(parser.HasError)
 						{
 							compilererrors.Add(new CompilerError(parser.ErrorDescription, parser.ErrorSource, parser.ErrorLine));
 							break;

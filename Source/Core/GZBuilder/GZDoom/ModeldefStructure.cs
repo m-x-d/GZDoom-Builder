@@ -14,8 +14,12 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 	internal sealed class ModeldefStructure 
 	{
 		private const int MAX_MODELS = 4; //maximum models per modeldef entry, zero-based
+		private bool parsingfinished;
 
-		internal ModelData Parse(ModeldefParser parser)
+		internal ModelData ModelData;
+		internal bool ParsingFinished { get { return parsingfinished; } }
+
+		internal bool Parse(ModeldefParser parser, string classname)
 		{
 
 #region ================== Vars
@@ -35,13 +39,12 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 			bool inheritactorroll = false;
 
 			string token;
-			bool gotErrors = false;
-			bool allParsed = false;
 
 #endregion
 
 			//read modeldef structure contents
-			while(!gotErrors && !allParsed && parser.SkipWhitespace(true)) 
+			parsingfinished = false;
+			while(!parsingfinished && parser.SkipWhitespace(true)) 
 			{
 				token = parser.ReadToken();
 				if(!string.IsNullOrEmpty(token)) 
@@ -54,11 +57,11 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 
 						case "path":
 							parser.SkipWhitespace(true);
-							path = parser.StripTokenQuotes(parser.ReadToken()).Replace("/", "\\");
-							if(string.IsNullOrEmpty(path)) 
+							path = parser.StripTokenQuotes(parser.ReadToken(false)).Replace("/", "\\"); // Don't skip newline
+							if(string.IsNullOrEmpty(path))
 							{
-								General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected path to model, but got '" + token + "'");
-								gotErrors = true;
+								parser.ReportError("expected model path, but got '" + token + "'");
+								return false;
 							}
 							break;
 
@@ -75,47 +78,42 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out index)) 
 							{
 								// Not numeric!
-								General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected model index, but got '" + token + "'");
-								gotErrors = true;
-								break;
+								parser.ReportError("expected model index, but got '" + token + "'");
+								return false;
 							}
 
 							if(index >= MAX_MODELS) 
 							{
-								General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": GZDoom doesn't allow more than " + MAX_MODELS + " models per MODELDEF entry!");
-								gotErrors = true;
-								break;
+								parser.ReportError("GZDoom doesn't allow more than " + MAX_MODELS + " models per MODELDEF entry");
+								return false;
 							}
 
 							parser.SkipWhitespace(true);
 
 							//model path
-							token = parser.StripTokenQuotes(parser.ReadToken()).ToLowerInvariant();
+							token = parser.StripTokenQuotes(parser.ReadToken(false)).ToLowerInvariant(); // Don't skip newline
 							if(string.IsNullOrEmpty(token)) 
 							{
-								General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected model name, but got '" + token + "'");
-								gotErrors = true;
+								parser.ReportError("model name required");
+								return false;
 							} 
-							else 
-							{
-								//check extension
-								string fileExt = Path.GetExtension(token);
-								if(string.IsNullOrEmpty(fileExt)) 
-								{
-									General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": model '" + token + "' won't be loaded. Models without extension are not supported by GZDoom.");
-									gotErrors = true;
-									break;
-								}
-								if(fileExt != ".md3" && fileExt != ".md2") 
-								{
-									General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": model '" + token + "' won't be loaded. Only MD2 and MD3 models are supported.");
-									gotErrors = true;
-									break;
-								}
 
-								//GZDoom allows models with identical modelIndex, it uses the last one encountered
-								modelNames[index] = Path.Combine(path, token);
+							//check extension
+							string fileExt = Path.GetExtension(token);
+							if(string.IsNullOrEmpty(fileExt)) 
+							{
+								parser.ReportError("model '" + token + "' won't be loaded. Models without extension are not supported by GZDoom");
+								return false;
 							}
+
+							if(fileExt != ".md3" && fileExt != ".md2") 
+							{
+								parser.ReportError("model '" + token + "' won't be loaded. Only MD2 and MD3 models are supported");
+								return false;
+							}
+
+							//GZDoom allows models with identical modelIndex, it uses the last one encountered
+							modelNames[index] = Path.Combine(path, token);
 							break;
 
 #endregion
@@ -131,42 +129,36 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out skinIndex)) 
 							{
 								// Not numeric!
-								General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected skin index, but got '" + token + "'");
-								gotErrors = true;
-								break;
+								parser.ReportError("expected skin index, but got '" + token + "'");
+								return false;
 							}
 
 							if(skinIndex >= MAX_MODELS) 
 							{
-								General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": GZDoom doesn't allow more than " + MAX_MODELS + " skins per MODELDEF entry!");
-								gotErrors = true;
-								break;
+								parser.ReportError("GZDoom doesn't allow more than " + MAX_MODELS + " skins per MODELDEF entry");
+								return false;
 							}
 
 							parser.SkipWhitespace(true);
 
 							//skin path
-							token = parser.StripTokenQuotes(parser.ReadToken()).ToLowerInvariant();
+							token = parser.StripTokenQuotes(parser.ReadToken(false)).ToLowerInvariant(); // Don't skip newline
 							if(string.IsNullOrEmpty(token)) 
 							{
-								General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected skin name, but got '" + token + "'");
-								gotErrors = true;
+								parser.ReportError("skin path required");
+								return false;
 							} 
-							else 
+
+							//check extension
+							string ext = Path.GetExtension(token);
+							if(Array.IndexOf(ModelData.SUPPORTED_TEXTURE_EXTENSIONS, ext) == -1) 
 							{
-								//check extension
-								string ext = Path.GetExtension(token);
-								if(Array.IndexOf(TextureData.SUPPORTED_TEXTURE_EXTENSIONS, ext) == -1) 
-								{
-									General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": image format '" + ext + "' is not supported!");
-									textureNames[skinIndex] = TextureData.INVALID_TEXTURE;
-								} 
-								else 
-								{
-									//GZDoom allows skins with identical modelIndex, it uses the last one encountered
-									textureNames[skinIndex] = Path.Combine(path, token);
-								}
-							}
+								parser.ReportError("image format '" + ext + "' is not supported!");
+								return false;
+							} 
+
+							//GZDoom allows skins with identical modelIndex, it uses the last one encountered
+							textureNames[skinIndex] = Path.Combine(path, token);
 							break;
 
 #endregion
@@ -179,9 +171,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							if(!parser.ReadSignedFloat(token, ref scale.Y)) 
 							{
 								// Not numeric!
-								General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected Scale X value, but got '" + token + "'");
-								gotErrors = true;
-								break;
+								parser.ReportError("expected Scale X value, but got '" + token + "'");
+								return false;
 							}
 
 							parser.SkipWhitespace(true);
@@ -189,9 +180,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							if(!parser.ReadSignedFloat(token, ref scale.X)) 
 							{
 								// Not numeric!
-								General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected Scale Y value, but got '" + token + "'");
-								gotErrors = true;
-								break;
+								parser.ReportError("expected Scale Y value, but got '" + token + "'");
+								return false;
 							}
 
 							parser.SkipWhitespace(true);
@@ -199,8 +189,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							if(!parser.ReadSignedFloat(token, ref scale.Z)) 
 							{
 								// Not numeric!
-								General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected Scale Z value, but got '" + token + "'");
-								gotErrors = true;
+								parser.ReportError("expected Scale Z value, but got '" + token + "'");
+								return false;
 							}
 							break;
 
@@ -214,9 +204,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							if(!parser.ReadSignedFloat(token, ref offset.X)) 
 							{
 								// Not numeric!
-								General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected Offset X value, but got '" + token + "'");
-								gotErrors = true;
-								break;
+								parser.ReportError("expected Offset X value, but got '" + token + "'");
+								return false;
 							}
 
 							parser.SkipWhitespace(true);
@@ -224,9 +213,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							if(!parser.ReadSignedFloat(token, ref offset.Y)) 
 							{
 								// Not numeric!
-								General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected Offset Y value, but got '" + token + "'");
-								gotErrors = true;
-								break;
+								parser.ReportError("expected Offset Y value, but got '" + token + "'");
+								return false;
 							}
 
 							parser.SkipWhitespace(true);
@@ -234,8 +222,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							if(!parser.ReadSignedFloat(token, ref offset.Z)) 
 							{
 								// Not numeric!
-								General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected Offset Z value, but got '" + token + "'");
-								gotErrors = true;
+								parser.ReportError("expected Offset Z value, but got '" + token + "'");
+								return false;
 							}
 							break;
 
@@ -249,8 +237,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							if(!parser.ReadSignedFloat(token, ref offset.Z)) 
 							{
 								// Not numeric!
-								General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected ZOffset value, but got '" + token + "'");
-								gotErrors = true;
+								parser.ReportError("expected ZOffset value, but got '" + token + "'");
+								return false;
 							}
 							break;
 
@@ -264,8 +252,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							if(!parser.ReadSignedFloat(token, ref angleOffset)) 
 							{
 								// Not numeric!
-								General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected AngleOffset value, but got '" + token + "'");
-								gotErrors = true;
+								parser.ReportError("expected AngleOffset value, but got '" + token + "'");
+								return false;
 							}
 							break;
 
@@ -279,8 +267,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							if(!parser.ReadSignedFloat(token, ref pitchOffset)) 
 							{
 								// Not numeric!
-								General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected PitchOffset value, but got '" + token + "'");
-								gotErrors = true;
+								parser.ReportError("expected PitchOffset value, but got '" + token + "'");
+								return false;
 							}
 							break;
 
@@ -294,8 +282,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							if(!parser.ReadSignedFloat(token, ref rollOffset)) 
 							{
 								// Not numeric!
-								General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected RollOffset value, but got '" + token + "'");
-								gotErrors = true;
+								parser.ReportError("expected RollOffset value, but got '" + token + "'");
+								return false;
 							}
 							break;
 
@@ -322,8 +310,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						case "frameindex":
 						case "frame":
 							//parsed all required fields. if got more than one model - find which one(s) should be displayed 
-							int len = modelNames.GetLength(0);
-							if(!gotErrors && len > 1) 
+							if(modelNames.GetLength(0) > 1) 
 							{
 								string spriteLump = null;
 								string spriteFrame = null;
@@ -389,23 +376,20 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 										if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out modelIndex)) 
 										{
 											// Not numeric!
-											General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected model index, but got '" + token + "'");
-											gotErrors = true;
-											break;
+											parser.ReportError("expected model index, but got '" + token + "'");
+											return false;
 										}
 
 										if(modelIndex >= MAX_MODELS) 
 										{
-											General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": GZDoom doesn't allow more than " + MAX_MODELS + " models per MODELDEF entry!");
-											gotErrors = true;
-											break;
+											parser.ReportError("GZDoom doesn't allow more than " + MAX_MODELS + " models per MODELDEF entry");
+											return false;
 										}
 
 										if(modelNames[modelIndex] == null) 
 										{
-											General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": got model index, which doesn't correspond to any defined model!");
-											gotErrors = true;
-											break;
+											parser.ReportError("got model index, which doesn't correspond to any defined model");
+											return false;
 										}
 
 										modelsUsed[modelIndex] = true;
@@ -420,9 +404,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 											if(!parser.ReadSignedInt(token, ref frame))
 											{
 												// Not numeric!
-												General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected model frame index, but got '" + token + "'");
-												gotErrors = true;
-												break;
+												parser.ReportError("expected model frame index, but got '" + token + "'");
+												return false;
 											}
 
 											// Skip the model if frame index is -1
@@ -434,9 +417,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 											if(string.IsNullOrEmpty(token))
 											{
 												// Missing!
-												General.ErrorLogger.Add(ErrorType.Error, "Error in " + parser.Source + " at line " + parser.GetCurrentLineNumber() + ": expected model frame name");
-												gotErrors = true;
-												break;
+												parser.ReportError("expected model frame name");
+												return false;
 											}
 
 											frameNames[modelIndex] = token.ToLowerInvariant();
@@ -451,7 +433,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 								}
 							}
 
-							allParsed = true;
+							parsingfinished = true;
 							break;
 
 #endregion
@@ -467,28 +449,38 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 			}
 
 			// Bail out when got errors or no models are used
-			if(gotErrors || Array.IndexOf(modelsUsed, true) == -1) return null;
+			if(Array.IndexOf(modelsUsed, true) == -1)
+			{
+				parser.ReportError("no models are used by '" + classname + "'");
+				return false;
+			}
 			
 			// Classname is set in ModeldefParser
-			ModelData mde = new ModelData();
-			mde.InheritActorPitch = inheritactorpitch;
-			mde.InheritActorRoll = inheritactorroll;
+			ModelData = new ModelData();
+			ModelData.InheritActorPitch = inheritactorpitch;
+			ModelData.InheritActorRoll = inheritactorroll;
 			Matrix moffset = Matrix.Translation(offset.Y, -offset.X, offset.Z); // Things are complicated in GZDoom...
 			Matrix mrotation = Matrix.RotationY(-Angle2D.DegToRad(rollOffset)) * Matrix.RotationX(-Angle2D.DegToRad(pitchOffset)) * Matrix.RotationZ(Angle2D.DegToRad(angleOffset));
-			mde.SetTransform(mrotation, moffset, scale);
+			ModelData.SetTransform(mrotation, moffset, scale);
 
 			for(int i = 0; i < modelNames.Length; i++) 
 			{
 				if(!string.IsNullOrEmpty(modelNames[i]) && modelsUsed[i]) 
 				{
-					mde.TextureNames.Add(string.IsNullOrEmpty(textureNames[i]) ? string.Empty : textureNames[i].ToLowerInvariant());
-					mde.ModelNames.Add(modelNames[i].ToLowerInvariant());
-					mde.FrameNames.Add(frameNames[i]);
-					mde.FrameIndices.Add(frameIndices[i]);
+					ModelData.TextureNames.Add(string.IsNullOrEmpty(textureNames[i]) ? string.Empty : textureNames[i].ToLowerInvariant());
+					ModelData.ModelNames.Add(modelNames[i].ToLowerInvariant());
+					ModelData.FrameNames.Add(frameNames[i]);
+					ModelData.FrameIndices.Add(frameIndices[i]);
 				}
 			}
 
-			return (mde.ModelNames.Count > 0 ? mde : null);
+			if(ModelData.ModelNames.Count == 0)
+			{
+				parser.ReportError("'" + classname + "' has no models");
+				return false;
+			}
+
+			return true;
 		}
 	}
 }

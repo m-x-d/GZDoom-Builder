@@ -119,41 +119,55 @@ namespace CodeImp.DoomBuilder.ZDoom
 				if(!string.IsNullOrEmpty(objdeclaration))
 				{
 					objdeclaration = objdeclaration.ToLowerInvariant();
-					if(objdeclaration == "actor")
+					switch(objdeclaration)
 					{
-						// Read actor structure
-						ActorStructure actor = new ActorStructure(this);
-						if(this.HasError) break;
-						
-						// Add the actor
-						archivedactors[actor.ClassName.ToLowerInvariant()] = actor;
-						if(actor.CheckActorSupported())
-							actors[actor.ClassName.ToLowerInvariant()] = actor;
-						
-						// Replace an actor?
-						if(actor.ReplacesClass != null)
+						case "actor":
 						{
-							if(GetArchivedActorByName(actor.ReplacesClass) != null)
-								archivedactors[actor.ReplacesClass.ToLowerInvariant()] = actor;
-							else
-								General.ErrorLogger.Add(ErrorType.Warning, "Unable to find the DECORATE class '" + actor.ReplacesClass + "' to replace, while parsing '" + actor.ClassName + "'");
-							
+							// Read actor structure
+							ActorStructure actor = new ActorStructure(this);
+							if(this.HasError) return false;
+						
+							// Add the actor
+							archivedactors[actor.ClassName.ToLowerInvariant()] = actor;
 							if(actor.CheckActorSupported())
+								actors[actor.ClassName.ToLowerInvariant()] = actor;
+						
+							// Replace an actor?
+							if(actor.ReplacesClass != null)
 							{
-								if(GetActorByName(actor.ReplacesClass) != null)
+								if(GetArchivedActorByName(actor.ReplacesClass) != null)
+									archivedactors[actor.ReplacesClass.ToLowerInvariant()] = actor;
+								else
+									LogWarning("Unable to find '" + actor.ReplacesClass + "' class to replace, while parsing '" + actor.ClassName + "'");
+							
+								if(actor.CheckActorSupported() && GetActorByName(actor.ReplacesClass) != null)
 									actors[actor.ReplacesClass.ToLowerInvariant()] = actor;
 							}
 						}
-					}
-					else if(objdeclaration == "#include")
-					{
-						// Include a file
-						SkipWhitespace(true);
-						string filename = ReadToken();
-						if(!string.IsNullOrEmpty(filename))
+						break;
+
+						case "#include":
 						{
+							// Include a file
+							SkipWhitespace(true);
+							string filename = ReadToken(false); //mxd. Don't skip newline
+
+							//mxd. Sanity checks
+							if(!filename.StartsWith("\"") || !filename.EndsWith("\""))
+							{
+								ReportError("#include filename should be quoted");
+								return false;
+							}
+
 							// Strip the quotes
 							filename = filename.Replace("\"", "");
+
+							//mxd. More sanity checks
+							if(string.IsNullOrEmpty(filename))
+							{
+								ReportError("Expected file name to include");
+								return false;
+							}
 
 							// Callback to parse this file now
 							if(OnInclude != null) OnInclude(this, filename);
@@ -162,50 +176,48 @@ namespace CodeImp.DoomBuilder.ZDoom
 							datastream = localstream;
 							datareader = localreader;
 							sourcename = localsourcename;
-							if(HasError) break;
+							if(this.HasError) return false;
 						}
-						else
-						{
-							ReportError("Expected file name to include");
-							break;
-						}
-					}
-					else if((objdeclaration == "const") || (objdeclaration == "native") || (objdeclaration == "enum"))
-					{
-						// We don't need this, ignore up to the first next ;
-						while(SkipWhitespace(true))
-						{
-							string t = ReadToken();
-							if(string.IsNullOrEmpty(t) || t == ";") break;
-						}
-					}
-					else if(objdeclaration == "$gzdb_skip") //mxd
-					{
 						break;
-					}
-					else
-					{
-						// Unknown structure!
-						// Best we can do now is just find the first { and then
-						// follow the scopes until the matching } is found
-						string token2;
-						do
+
+						case "enum":
+						case "native":
+						case "const":
+							while(SkipWhitespace(true))
+							{
+								string t = ReadToken();
+								if(string.IsNullOrEmpty(t) || t == ";") break;
+							}
+							break;
+
+						case "$gzdb_skip": break;
+
+						default:
 						{
-							if(!SkipWhitespace(true)) break;
-							token2 = ReadToken();
-							if(string.IsNullOrEmpty(token2)) break;
+							// Unknown structure!
+							// Best we can do now is just find the first { and then
+							// follow the scopes until the matching } is found
+							string token2;
+							do
+							{
+								if(!SkipWhitespace(true)) break;
+								token2 = ReadToken();
+								if(string.IsNullOrEmpty(token2)) break;
+							}
+							while(token2 != "{");
+
+							int scopelevel = 1;
+							do
+							{
+								if(!SkipWhitespace(true)) break;
+								token2 = ReadToken();
+								if(string.IsNullOrEmpty(token2)) break;
+								if(token2 == "{") scopelevel++;
+								if(token2 == "}") scopelevel--;
+							}
+							while(scopelevel > 0);
 						}
-						while(token2 != "{");
-						int scopelevel = 1;
-						do
-						{
-							if(!SkipWhitespace(true)) break;
-							token2 = ReadToken();
-							if(string.IsNullOrEmpty(token2)) break;
-							if(token2 == "{") scopelevel++;
-							if(token2 == "}") scopelevel--;
-						}
-						while(scopelevel > 0);
+						break;
 					}
 				}
 			}
@@ -224,10 +236,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		public ActorStructure GetActorByName(string name)
 		{
 			name = name.ToLowerInvariant();
-			if(actors.ContainsKey(name))
-				return actors[name];
-			else
-				return null;
+			return actors.ContainsKey(name) ? actors[name] : null;
 		}
 
 		/// <summary>
@@ -235,12 +244,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 		/// </summary>
 		public ActorStructure GetActorByDoomEdNum(int doomednum)
 		{
-			ICollection<ActorStructure> collection = actors.Values;
-			foreach(ActorStructure a in collection)
-			{
-				if(a.DoomEdNum == doomednum)
-					return a;
-			}
+			foreach(ActorStructure a in actors.Values)
+				if(a.DoomEdNum == doomednum) return a;
 			return null;
 		}
 
@@ -250,6 +255,12 @@ namespace CodeImp.DoomBuilder.ZDoom
 		{
 			name = name.ToLowerInvariant();
 			return (archivedactors.ContainsKey(name) ? archivedactors[name] : null);
+		}
+
+		//mxd
+		protected override string GetLanguageType()
+		{
+			return "DECORATE";
 		}
 		
 		#endregion

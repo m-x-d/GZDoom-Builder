@@ -17,7 +17,6 @@
 #region ================== Namespaces
 
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using CodeImp.DoomBuilder.Config;
@@ -44,7 +43,7 @@ namespace CodeImp.DoomBuilder.Compilers
 		#region ================== Constructor
 		
 		// Constructor
-		public AccCompiler(CompilerInfo info) : base(info)
+		public AccCompiler(CompilerInfo info) : base(info, false)
 		{
 		}
 

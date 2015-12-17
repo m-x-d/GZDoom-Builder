@@ -408,21 +408,14 @@ namespace CodeImp.DoomBuilder.Data
 			// Parse the data
 			TexturesParser parser = new TexturesParser();
 			parser.Parse(stream, filename);
+			if(parser.HasError) parser.LogError(); //mxd
 
 			// Make the textures
 			foreach(TextureStructure t in parser.Textures)
 			{
-				if(t.Name.Length > 0)
-				{
-					// Add the texture
-					ImageData img = t.MakeImage();
-					images.Add(img);
-				}
-				else
-				{
-					// Can't load image without name
-					General.ErrorLogger.Add(ErrorType.Error, "Can't load an unnamed texture from \"" + filename + "\". Please consider giving names to your resources.");
-				}
+				// Add the texture
+				ImageData img = t.MakeImage();
+				images.Add(img);
 			}
 		}
 		
@@ -655,21 +648,14 @@ namespace CodeImp.DoomBuilder.Data
 			// Parse the data
 			TexturesParser parser = new TexturesParser();
 			parser.Parse(stream, filename);
+			if(parser.HasError) parser.LogError(); //mxd
 
 			// Make the textures
 			foreach(TextureStructure t in parser.Flats)
 			{
-				if(t.Name.Length > 0)
-				{
-					// Add the texture
-					ImageData img = t.MakeImage();
-					images.Add(img);
-				}
-				else
-				{
-					// Can't load image without name
-					General.ErrorLogger.Add(ErrorType.Error, "Can't load an unnamed flat from \"" + filename + "\". Please consider giving names to your resources.");
-				}
+				// Add the texture
+				ImageData img = t.MakeImage();
+				images.Add(img);
 			}
 		}
 		
@@ -725,21 +711,14 @@ namespace CodeImp.DoomBuilder.Data
 			// Parse the data
 			TexturesParser parser = new TexturesParser();
 			parser.Parse(stream, filename);
+			if(parser.HasError) parser.LogError(); //mxd
 			
 			// Make the textures
 			foreach(TextureStructure t in parser.Sprites)
 			{
-				if(t.Name.Length > 0)
-				{
-					// Add the sprite
-					ImageData img = t.MakeImage();
-					images.Add(img);
-				}
-				else
-				{
-					// Can't load image without name
-					General.ErrorLogger.Add(ErrorType.Error, "Can't load an unnamed sprite from \"" + filename + "\". Please consider giving names to your resources.");
-				}
+				// Add the sprite
+				ImageData img = t.MakeImage();
+				images.Add(img);
 			}
 		}
 		

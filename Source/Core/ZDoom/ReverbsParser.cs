@@ -47,7 +47,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 						if(string.IsNullOrEmpty(name))
 						{
-							ReportError("Got empty sound environment name!");
+							ReportError("Got empty sound environment name");
 							break;
 						}
 
@@ -57,7 +57,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 						int arg1;
 						if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out arg1))
 						{
-							ReportError("Failed to parse the first part of '" + name + "' sound environment ID!");
+							ReportError("Failed to parse the first part of '" + name + "' sound environment ID");
 							break;
 						}
 
@@ -67,7 +67,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 						int arg2;
 						if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out arg2)) 
 						{
-							ReportError("Failed to parse the second part of '" + name + "' sound environment ID!");
+							ReportError("Failed to parse the second part of '" + name + "' sound environment ID");
 							break;
 						}
 
@@ -75,7 +75,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 						int combinedindex = combinedargs.IndexOf(combined);
 						if(combinedindex != -1)
 						{
-							General.ErrorLogger.Add(ErrorType.Warning, "'" + names[combinedindex] + "' and '" + name + "' sound environments share the same ID (" + arg1 + " " + arg2 + ")!");
+							LogWarning("'" + names[combinedindex] + "' and '" + name + "' sound environments share the same ID (" + arg1 + " " + arg2 + ")");
 						}
 						else
 						{
@@ -84,7 +84,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 							// Add to collections
 							if(names.Contains(name)) 
 							{
-								General.ErrorLogger.Add(ErrorType.Warning, "'" + name + "' sound environment is double-defined in '" + sourcefilename + "'!");
+								LogWarning("'" + name + "' sound environment is double-defined in '" + sourcefilename + "'");
 								int index = names.IndexOf(name);
 								firstargs[index] = arg1;
 								secondargs[index] = arg2;
@@ -118,6 +118,11 @@ namespace CodeImp.DoomBuilder.ZDoom
 			}
 
 			return result;
+		}
+
+		protected override string GetLanguageType()
+		{
+			return "REVERBS";
 		}
 	}
 }

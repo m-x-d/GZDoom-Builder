@@ -71,7 +71,7 @@ namespace CodeImp.DoomBuilder.Compilers
 		#region ================== Constructor / Disposer
 		
 		// Constructor
-		protected Compiler(CompilerInfo info)
+		protected Compiler(CompilerInfo info, bool copyrequiredfiles)
 		{
 			// Initialize
 			this.info = info;
@@ -83,10 +83,15 @@ namespace CodeImp.DoomBuilder.Compilers
 			// Create temporary directory
 			tempdir = Directory.CreateDirectory(General.MakeTempDirname());
 			workingdir = tempdir.FullName;
-			
-			// Copy required files to the temp directory
-			General.WriteLogLine("Copying required files for compiler...");
-			CopyRequiredFiles();
+
+			//mxd. ACC compiler itself is not copied to tempdir anymore, so we don't need to move it's include files
+			//but we still need tempdir to compile SCRIPTS lump.
+			if(copyrequiredfiles)
+			{
+				// Copy required files to the temp directory
+				General.WriteLogLine("Copying required files for compiler...");
+				CopyRequiredFiles();
+			}
 		}
 		
 		// Disposer

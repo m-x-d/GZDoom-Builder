@@ -148,15 +148,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 					//load texture
 					List<string> errors = new List<string>();
 
-					//texture has unsupported extension?
-					if(mde.TextureNames[i] == TextureData.INVALID_TEXTURE) 
-					{
-						for(int c = 0; c < result.Meshes.Count; c++)
-							mde.Model.Textures.Add(General.Map.Data.UnknownTexture3D.Texture);
-					
-					//texture not defined in MODELDEF?
-					} 
-					else if(useSkins) 
+					// Texture not defined in MODELDEF?
+					if(useSkins) 
 					{
 						//try to use model's own skins 
 						for(int m = 0; m < result.Meshes.Count; m++) 
@@ -171,7 +164,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 							string path = result.Skins[m].Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
 							ext = Path.GetExtension(path);
 
-							if(Array.IndexOf(TextureData.SUPPORTED_TEXTURE_EXTENSIONS, ext) == -1) 
+							if(Array.IndexOf(ModelData.SUPPORTED_TEXTURE_EXTENSIONS, ext) == -1) 
 							{
 								mde.Model.Textures.Add(General.Map.Data.UnknownTexture3D.Texture);
 								errors.Add("image format '" + ext + "' is not supported!");
@@ -193,8 +186,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 
 							mde.Model.Textures.Add(t);
 						}
-					} 
-					else //try to use texture loaded from MODELDEFS
+					}
+					//Try to use texture loaded from MODELDEFS
+					else
 					{
 						Texture t = LoadTexture(containers, mde.TextureNames[i], device);
 						if(t == null) 
