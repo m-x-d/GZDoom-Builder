@@ -83,7 +83,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 			// First token is the class name
 			parser.SkipWhitespace(true);
-			name = parser.StripTokenQuotes(parser.ReadToken());
+			name = parser.StripTokenQuotes(parser.ReadToken(false)); //mxd. Don't skip newline
 			if(string.IsNullOrEmpty(name))
 			{
 				parser.ReportError("Expected patch name");
@@ -163,36 +163,36 @@ namespace CodeImp.DoomBuilder.ZDoom
 						break;
 
 					case "rotate":
-						if (!ReadTokenInt(parser, token, out rotation)) return;
+						if(!ReadTokenInt(parser, token, out rotation)) return;
 						rotation = rotation % 360; //Coalesce multiples
-						if (rotation < 0) rotation += 360; //Force positive
+						if(rotation < 0) rotation += 360; //Force positive
 
-						if (rotation != 0 && rotation != 90 && rotation != 180 && rotation != 270) 
+						if(rotation != 0 && rotation != 90 && rotation != 180 && rotation != 270) 
 						{
-							General.ErrorLogger.Add(ErrorType.Warning, "Got unsupported rotation (" + rotation + ") in patch " + name);
+							parser.LogWarning("Got unsupported rotation (" + rotation + ") in patch '" + name + "'");
 							rotation = 0;
 						}
 						break;
 
 					case "style": //mxd
 						string s;
-						if (!ReadTokenString(parser, token, out s)) return;
+						if(!ReadTokenString(parser, token, out s)) return;
 						int index = Array.IndexOf(renderStyles, s.ToLowerInvariant());
 						renderStyle = index == -1 ? TexturePathRenderStyle.Copy : (TexturePathRenderStyle) index;
 						break;
 
 					case "blend": //mxd
 						int val;
-						if (!ReadTokenColor(parser, token, out val)) return;
+						if(!ReadTokenColor(parser, token, out val)) return;
 						blendColor = PixelColor.FromInt(val);
 
 						parser.SkipWhitespace(false);
 						token = parser.ReadToken();
 
-						if (token == ",") //read tint ammount
+						if(token == ",") //read tint ammount
 						{ 
 							parser.SkipWhitespace(false);
-							if (!ReadTokenFloat(parser, token, out tintAmmount)) return;
+							if(!ReadTokenFloat(parser, token, out tintAmmount)) return;
 							tintAmmount = General.Clamp(tintAmmount, 0.0f, 1.0f);
 							blendStyle = TexturePathBlendStyle.Tint;
 						} 
@@ -278,6 +278,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 				parser.ReportError("Expected a value for property '" + propertyname + "'");
 				return false;
 			}
+
 			return true;
 		}
 
@@ -306,7 +307,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 			{
 				parser.ReportError("Expected color value for property '" + propertyname + "'");
 				return false;
-			} 
+			}
+
 			return true;
 		}
 

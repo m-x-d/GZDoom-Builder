@@ -410,6 +410,7 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 
 			// Put some text in the navigator (but don't actually trigger selection event)
+			navigator.Enabled = (navigator.Items.Count > 0);
 			if(navigator.Items.Count > 0)
 			{
 				preventchanges = true;
@@ -421,32 +422,43 @@ namespace CodeImp.DoomBuilder.Controls
 		//mxd
 		private void UpdateNavigatorDecorate(MemoryStream stream) 
 		{
-			if (stream == null) return;
-
+			if(stream == null) return;
 			navigator.Items.Clear();
 
 			DecorateParserSE parser = new DecorateParserSE();
-			parser.Parse(stream, "DECORATE");
-			navigator.Items.AddRange(parser.Actors.ToArray());
+			if(parser.Parse(stream, "DECORATE"))
+			{
+				navigator.Items.AddRange(parser.Actors.ToArray());
+			}
+
+			if(parser.HasError)
+			{
+				panel.ShowErrors(new List<CompilerError> { new CompilerError(parser.ErrorDescription, parser.ErrorSource, parser.ErrorLine) });
+			}
 		}
 
 		//mxd
 		private void UpdateNavigatorModeldef(MemoryStream stream) 
 		{
-			if (stream == null) return;
-
+			if(stream == null) return;
 			navigator.Items.Clear();
 
 			ModeldefParserSE parser = new ModeldefParserSE();
-			parser.Parse(stream, "MODELDEF");
-			navigator.Items.AddRange(parser.Models.ToArray());
+			if(parser.Parse(stream, "MODELDEF"))
+			{
+				navigator.Items.AddRange(parser.Models.ToArray());
+			}
+
+			if(parser.HasError)
+			{
+				panel.ShowErrors(new List<CompilerError> { new CompilerError(parser.ErrorDescription, parser.ErrorSource, parser.ErrorLine) });
+			}
 		}
 
 		//mxd
 		private void UpdateNavigatorAcs(MemoryStream stream) 
 		{
-			if (stream == null) return;
-			
+			if(stream == null) return;
 			navigator.Items.Clear();
 
 			AcsParserSE parser = new AcsParserSE { AddArgumentsToScriptNames = true, IsMapScriptsLump = this is ScriptLumpDocumentTab };
@@ -456,17 +468,28 @@ namespace CodeImp.DoomBuilder.Controls
 				navigator.Items.AddRange(parser.NumberedScripts.ToArray());
 				navigator.Items.AddRange(parser.Functions.ToArray());
 			}
+
+			if(parser.HasError)
+			{
+				panel.ShowErrors(new List<CompilerError> { new CompilerError(parser.ErrorDescription, parser.ErrorSource, parser.ErrorLine) });
+			}
 		}
 		
 		//mxd
 		internal ScriptType VerifyScriptType() 
 		{
 			ScriptTypeParserSE parser = new ScriptTypeParserSE();
-			if (parser.Parse(new MemoryStream(editor.GetText()), config.Description)) 
+			if(parser.Parse(new MemoryStream(editor.GetText()), config.Description)) 
 			{
-				if (parser.ScriptType != ScriptType.UNKNOWN && config.ScriptType != parser.ScriptType)
+				if(parser.ScriptType != ScriptType.UNKNOWN && config.ScriptType != parser.ScriptType)
 					return parser.ScriptType;
 			}
+
+			if(parser.HasError)
+			{
+				panel.ShowErrors(new List<CompilerError> { new CompilerError(parser.ErrorDescription, parser.ErrorSource, parser.ErrorLine) });
+			}
+
 			return ScriptType.UNKNOWN;
 		}
 

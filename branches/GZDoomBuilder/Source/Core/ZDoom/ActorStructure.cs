@@ -109,7 +109,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 				{
 					token = token.ToLowerInvariant();
 
-					switch (token) 
+					switch(token) 
 					{
 						case ":":
 							// The next token must be the class to inherit from
@@ -123,9 +123,6 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 							// Find the actor to inherit from
 							baseclass = parser.GetArchivedActorByName(inheritclass);
-
-							//mxd. Does it exist? (We can carry on regardless, so add a warning) 
-							if(baseclass == null) parser.ReportWarning("Parent class '" + inheritclass + "' does not exist");
 							break;
 
 						case "replaces":
@@ -171,7 +168,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 							break;
 					}
 
-					if (done) break; //mxd
+					if(done) break; //mxd
 				}
 				else
 				{
@@ -188,7 +185,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 				string token = parser.ReadToken();
 				token = token.ToLowerInvariant();
 
-				switch (token) 
+				switch(token) 
 				{
 					case "+":
 					case "-":
@@ -196,7 +193,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 						bool flagvalue = (token == "+");
 						parser.SkipWhitespace(true);
 						string flagname = parser.ReadToken();
-						if (!string.IsNullOrEmpty(flagname)) 
+						if(!string.IsNullOrEmpty(flagname)) 
 						{
 							// Add the flag with its value
 							flagname = flagname.ToLowerInvariant();
@@ -212,10 +209,10 @@ namespace CodeImp.DoomBuilder.ZDoom
 					case "action":
 					case "native":
 						// We don't need this, ignore up to the first next ;
-						while (parser.SkipWhitespace(true)) 
+						while(parser.SkipWhitespace(true)) 
 						{
 							string t = parser.ReadToken();
-							if (string.IsNullOrEmpty(t) || t == ";") break;
+							if(string.IsNullOrEmpty(t) || t == ";") break;
 						}
 						break;
 
@@ -225,31 +222,31 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 					case "states":
 						// Now parse actor states until we reach the end of the states structure
-						while (parser.SkipWhitespace(true)) 
+						while(parser.SkipWhitespace(true)) 
 						{
 							string statetoken = parser.ReadToken();
-							if (!string.IsNullOrEmpty(statetoken)) 
+							if(!string.IsNullOrEmpty(statetoken)) 
 							{
 								// Start of scope?
-								if (statetoken == "{") 
+								if(statetoken == "{") 
 								{
 									// This is fine
 								}
 								// End of scope?
-								else if (statetoken == "}") 
+								else if(statetoken == "}") 
 								{
 									// Done with the states,
 									// break out of this parse loop
 									break;
 								}
 								// State label?
-								else if (statetoken == ":") 
+								else if(statetoken == ":") 
 								{
-									if (!string.IsNullOrEmpty(previoustoken)) 
+									if(!string.IsNullOrEmpty(previoustoken)) 
 									{
 										// Parse actor state
 										StateStructure st = new StateStructure(this, parser);
-										if (parser.HasError) return;
+										if(parser.HasError) return;
 										states[previoustoken.ToLowerInvariant()] = st;
 									} 
 									else 
@@ -273,11 +270,11 @@ namespace CodeImp.DoomBuilder.ZDoom
 						break;
 
 					case "var": //mxd
-						while (parser.SkipWhitespace(true)) 
+						while(parser.SkipWhitespace(true)) 
 						{
 							string t = parser.ReadToken();
-							if (string.IsNullOrEmpty(t) || t == ";") break;
-							if (t.StartsWith("user_") && !userVars.Contains(t))
+							if(string.IsNullOrEmpty(t) || t == ";") break;
+							if(t.StartsWith("user_") && !userVars.Contains(t))
 								userVars.Add(t);
 						}
 						break;
@@ -323,17 +320,17 @@ namespace CodeImp.DoomBuilder.ZDoom
 					case "game":
 						// Include all tokens on the same line
 						List<string> games = new List<string>();
-						while (parser.SkipWhitespace(false)) 
+						while(parser.SkipWhitespace(false)) 
 						{
 							string v = parser.ReadToken();
-							if (string.IsNullOrEmpty(v)) 
+							if(string.IsNullOrEmpty(v)) 
 							{
 								parser.ReportError("Unexpected end of structure");
 								return;
 							}
-							if (v == "\n") break;
-							if (v == "}") return; //mxd
-							if (v != ",") games.Add(v.ToLowerInvariant());
+							if(v == "\n") break;
+							if(v == "}") return; //mxd
+							if(v != ",") games.Add(v.ToLowerInvariant());
 						}
 						props[token] = games;
 						break;
@@ -341,7 +338,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 					// Property
 					default:
 						// Property begins with $? Then the whole line is a single value
-						if (token.StartsWith("$")) 
+						if(token.StartsWith("$")) 
 						{
 							// This is for editor-only properties such as $sprite and $category
 							props[token] = new List<string> { (parser.SkipWhitespace(false) ? parser.ReadLine() : "") };
@@ -350,17 +347,17 @@ namespace CodeImp.DoomBuilder.ZDoom
 						{
 							// Next tokens up until the next newline are values
 							List<string> values = new List<string>();
-							while (parser.SkipWhitespace(false)) 
+							while(parser.SkipWhitespace(false)) 
 							{
 								string v = parser.ReadToken();
-								if (string.IsNullOrEmpty(v)) 
+								if(string.IsNullOrEmpty(v)) 
 								{
 									parser.ReportError("Unexpected end of structure");
 									return;
 								}
-								if (v == "\n") break;
-								if (v == "}") return; //mxd
-								if (v != ",") values.Add(v);
+								if(v == "\n") break;
+								if(v == "}") return; //mxd
+								if(v != ",") values.Add(v);
 							}
 
 							//mxd. Translate scale to xscale and yscale
@@ -377,7 +374,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 						break;
 				}
 
-				if (done) break; //mxd
+				if(done) break; //mxd
 
 				// Keep token
 				previoustoken = token;
@@ -407,16 +404,16 @@ namespace CodeImp.DoomBuilder.ZDoom
 						
 						//properties
 						if(!props.ContainsKey("height"))
-							props["height"] = new List<string>() { ti.Value.Height.ToString() };
+							props["height"] = new List<string> { ti.Value.Height.ToString() };
 
 						if(!props.ContainsKey("radius"))
-							props["radius"] = new List<string>() { ti.Value.Radius.ToString() };
+							props["radius"] = new List<string> { ti.Value.Radius.ToString() };
 
 						return;
 					}
 				}
 
-				General.ErrorLogger.Add(ErrorType.Warning, "Unable to find the DECORATE class '" + inheritclass + "' to inherit from, while parsing '" + classname + ":" + doomednum + "'");
+				parser.LogWarning("Unable to find '" + inheritclass + "' class to inherit from, while parsing '" + classname + ":" + doomednum + "'");
 			}
 		}
 		
@@ -438,12 +435,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 		/// </summary>
 		public bool HasProperty(string propname)
 		{
-			if(props.ContainsKey(propname))
-				return true;
-			else if(!skipsuper && (baseclass != null))
-				return baseclass.HasProperty(propname);
-			else
-				return false;
+			if(props.ContainsKey(propname)) return true;
+			if(!skipsuper && (baseclass != null)) return baseclass.HasProperty(propname);
+			return false;
 		}
 		
 		/// <summary>
@@ -451,12 +445,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 		/// </summary>
 		public bool HasPropertyWithValue(string propname)
 		{
-			if(props.ContainsKey(propname) && (props[propname].Count > 0))
-				return true;
-			else if(!skipsuper && (baseclass != null))
-				return baseclass.HasPropertyWithValue(propname);
-			else
-				return false;
+			if(props.ContainsKey(propname) && (props[propname].Count > 0)) return true;
+			if(!skipsuper && (baseclass != null)) return baseclass.HasPropertyWithValue(propname);
+			return false;
 		}
 		
 		/// <summary>
@@ -466,10 +457,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 		{
 			if(props.ContainsKey(propname) && (props[propname].Count > 0))
 				return string.Join(" ", props[propname].ToArray());
-			else if(!skipsuper && (baseclass != null))
+			if(!skipsuper && (baseclass != null))
 				return baseclass.GetPropertyAllValues(propname);
-			else
-				return "";
+			return "";
 		}
 		
 		/// <summary>
@@ -479,10 +469,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 		{
 			if(props.ContainsKey(propname) && (props[propname].Count > valueindex))
 				return props[propname][valueindex];
-			else if(!skipsuper && (baseclass != null))
+			if(!skipsuper && (baseclass != null))
 				return baseclass.GetPropertyValueString(propname, valueindex);
-			else
-				return "";
+			return "";
 		}
 		
 		/// <summary>
@@ -524,10 +513,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 		/// </summary>
 		public bool HasFlagValue(string flag)
 		{
-			if(flags.ContainsKey(flag))
-				return true;
-			if(!skipsuper && (baseclass != null))
-				return baseclass.HasFlagValue(flag);
+			if(flags.ContainsKey(flag)) return true;
+			if(!skipsuper && (baseclass != null)) return baseclass.HasFlagValue(flag);
 			return false;
 		}
 		
@@ -536,10 +523,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 		/// </summary>
 		public bool GetFlagValue(string flag, bool defaultvalue)
 		{
-			if(flags.ContainsKey(flag))
-				return flags[flag];
-			if(!skipsuper && (baseclass != null))
-				return baseclass.GetFlagValue(flag, defaultvalue);
+			if(flags.ContainsKey(flag)) return flags[flag];
+			if(!skipsuper && (baseclass != null)) return baseclass.GetFlagValue(flag, defaultvalue);
 			return defaultvalue;
 		}
 		
@@ -548,10 +533,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 		/// </summary>
 		public bool HasState(string statename)
 		{
-			if(states.ContainsKey(statename))
-				return true;
-			if(!skipsuper && (baseclass != null))
-				return baseclass.HasState(statename);
+			if(states.ContainsKey(statename)) return true;
+			if(!skipsuper && (baseclass != null)) return baseclass.HasState(statename);
 			return false;
 		}
 		
@@ -560,10 +543,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 		/// </summary>
 		public StateStructure GetState(string statename)
 		{
-			if(states.ContainsKey(statename))
-				return states[statename];
-			if(!skipsuper && (baseclass != null))
-				return baseclass.GetState(statename);
+			if(states.ContainsKey(statename)) return states[statename];
+			if(!skipsuper && (baseclass != null)) return baseclass.GetState(statename);
 			return null;
 		}
 		
@@ -734,7 +715,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 			if(!string.IsNullOrEmpty(result)) 
 			{
-				if (voxels.ContainsKey(result)) return result;
+				if(voxels.ContainsKey(result)) return result;
 
 				// The sprite name may be incomplete. Find an existing sprite with direction.
 				foreach(string postfix in SPRITE_POSTFIXES)

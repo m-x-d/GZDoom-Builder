@@ -84,20 +84,20 @@ namespace CodeImp.DoomBuilder.ZDoom
 			// There should be 3 tokens separated by 2 commas now:
 			// Name, Width, Height
 
-			// First token is the class name
+			// First token is the texture name
 			parser.SkipWhitespace(true);
-			name = parser.StripTokenQuotes(parser.ReadToken());
+			name = parser.StripTokenQuotes(parser.ReadToken(false)); //mxd. Don't skip newline
 
 			//mxd. It can also be "optional" keyword.
 			if(name.ToLowerInvariant() == "optional")
 			{
 				parser.SkipWhitespace(true);
-				name = parser.StripTokenQuotes(parser.ReadToken());
+				name = parser.StripTokenQuotes(parser.ReadToken(false)); //mxd. Don't skip newline
 			}
 
 			if(string.IsNullOrEmpty(name))
 			{
-				parser.ReportError("Expected texture or sprite name");
+				parser.ReportError("Expected " + typename + " name");
 				return;
 			}
 
@@ -153,14 +153,14 @@ namespace CodeImp.DoomBuilder.ZDoom
 				string token = parser.ReadToken();
 				token = token.ToLowerInvariant();
 
-				switch (token) 
+				switch(token) 
 				{
 					case "xscale":
-						if (!ReadTokenFloat(parser, token, out xscale)) return;
+						if(!ReadTokenFloat(parser, token, out xscale)) return;
 						break;
 
 					case "yscale":
-						if (!ReadTokenFloat(parser, token, out yscale)) return;
+						if(!ReadTokenFloat(parser, token, out yscale)) return;
 						break;
 
 					case "worldpanning":
@@ -169,25 +169,25 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 					case "offset":
 						// Read x offset
-						if (!ReadTokenInt(parser, token, out xoffset)) return;
+						if(!ReadTokenInt(parser, token, out xoffset)) return;
 
 						// Now we should find a comma
 						parser.SkipWhitespace(true);
 						tokenstr = parser.ReadToken();
-						if (tokenstr != ",") 
+						if(tokenstr != ",") 
 						{
 							parser.ReportError("Expected a comma");
 							return;
 						}
 
 						// Read y offset
-						if (!ReadTokenInt(parser, token, out yoffset)) return;
+						if(!ReadTokenInt(parser, token, out yoffset)) return;
 						break;
 
 					case "patch":
 						// Read patch structure
 						PatchStructure pt = new PatchStructure(parser);
-						if (parser.HasError) break;
+						if(parser.HasError) break;
 
 						//mxd. Let's ignore TNT1A0
 						if(pt.Name == IGNORE_SPRITE) break;

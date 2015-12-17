@@ -4,6 +4,7 @@ using CodeImp.DoomBuilder.ZDoom;
 using CodeImp.DoomBuilder.GZBuilder.Data;
 
 //mxd. Decorate parser used to create ScriptItems for use in script editor's navigator
+//Should be able to parse actor definitions even from invalid DECORATE and should never fail parsing
 namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 {
 	internal sealed class DecorateParserSE : ZDTextParser
@@ -21,38 +22,35 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 			base.Parse(stream, sourcefilename);
 
 			// Continue until at the end of the stream
-			while (SkipWhitespace(true)) 
+			while(SkipWhitespace(true)) 
 			{
 				string token = ReadToken();
+				if(string.IsNullOrEmpty(token) || token.ToUpperInvariant() != "ACTOR") continue;
 
-				if (!string.IsNullOrEmpty(token)) 
+				SkipWhitespace(true);
+				int startpos = (int)stream.Position;
+
+				List<string> definition = new List<string>();
+
+				do
 				{
-					token = token.ToLowerInvariant();
+					token = ReadToken(false); // Don't skip newline
+					if(string.IsNullOrEmpty(token) || token == "{" || token == "}") break;
+					definition.Add(token);
+				} while(SkipWhitespace(false)); // Don't skip newline
 
-					if (token == "actor") 
-					{
-						SkipWhitespace(true);
-						int startPos = (int)stream.Position;
-
-						List<string> definition = new List<string>();
-
-						do
-						{
-							token = ReadToken();
-							if(string.IsNullOrEmpty(token) || token == "{") break;
-							definition.Add(token);
-						} while(SkipWhitespace(true));
-
-						string name = "";
-						foreach (string s in definition) name += s + " ";
-						actors.Add(new ScriptItem(name.TrimEnd(), startPos, false));
-					}
-				}
+				string name = string.Join(" ", definition.ToArray());
+				if(!string.IsNullOrEmpty(name)) actors.Add(new ScriptItem(name, startpos, false));
 			}
 
-			//sort nodes
+			// Sort nodes
 			actors.Sort(ScriptItem.SortByName);
 			return true;
+		}
+
+		protected override string GetLanguageType()
+		{
+			return "DECORATE";
 		}
 	}
 }

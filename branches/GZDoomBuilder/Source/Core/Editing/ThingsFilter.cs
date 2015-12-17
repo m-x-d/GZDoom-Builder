@@ -236,36 +236,6 @@ namespace CodeImp.DoomBuilder.Editing
 					for(int i = 0; i < Thing.NUM_ARGS; i++) thingargs[i] = -1;
 				}
 				if(!General.Map.FormatInterface.HasCustomFields) customfields.Clear();
-
-				//mxd. We don't want to keep unknown flags (like flags from different map format)
-				if(General.Map.Config != null && General.Map.Config.ThingFlags != null) 
-				{
-					List<String> unknownfields = new List<string>();
-					foreach(String s in forbiddenfields) 
-					{
-						if(!General.Map.Config.ThingFlags.ContainsKey(s))
-							unknownfields.Add(s);
-					}
-
-					if(unknownfields.Count > 0) 
-					{
-						foreach(String s in unknownfields)
-							forbiddenfields.Remove(s);
-					}
-
-					unknownfields = new List<string>();
-					foreach(String s in requiredfields) 
-					{
-						if(!General.Map.Config.ThingFlags.ContainsKey(s))
-							unknownfields.Add(s);
-					}
-
-					if(unknownfields.Count > 0) 
-					{
-						foreach(String s in unknownfields)
-							requiredfields.Remove(s);
-					}
-				}
 			}
 		}
 
@@ -273,6 +243,32 @@ namespace CodeImp.DoomBuilder.Editing
 		public void Validate() 
 		{
 			AdjustForMapFormat();
+
+			//mxd. We don't want to keep unknown flags (like flags from different map format)
+			if(General.Map.Config != null && General.Map.Config.ThingFlags != null)
+			{
+				List<String> unknownfields = new List<string>();
+				foreach(String s in forbiddenfields)
+				{
+					if(!General.Map.Config.ThingFlags.ContainsKey(s)) unknownfields.Add(s);
+				}
+
+				if(unknownfields.Count > 0)
+				{
+					foreach(String s in unknownfields) forbiddenfields.Remove(s);
+				}
+
+				unknownfields.Clear();
+				foreach(String s in requiredfields)
+				{
+					if(!General.Map.Config.ThingFlags.ContainsKey(s)) unknownfields.Add(s);
+				}
+
+				if(unknownfields.Count > 0)
+				{
+					foreach(String s in unknownfields) requiredfields.Remove(s);
+				}
+			}
 
 			//Integrity check
 			if(!IsValid())
@@ -298,8 +294,7 @@ namespace CodeImp.DoomBuilder.Editing
 		/// </summary>
 		public bool IsThingVisible(Thing t)
 		{
-			if (t.IsDisposed) return false; //mxd
-			return thingsvisiblestate[t];
+			return (!t.IsDisposed && thingsvisiblestate[t]);
 		}
 
 		// This writes the filter to configuration

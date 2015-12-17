@@ -32,9 +32,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 		#region ================== Variables
 		
 		// All we care about is the first sprite in the sequence
-		private List<string> sprites;
-		private StateGoto gotostate;
-		private DecorateParser parser;
+		private readonly List<string> sprites;
+		private readonly StateGoto gotostate;
+		private readonly DecorateParser parser;
 		
 		#endregion
 
@@ -77,20 +77,21 @@ namespace CodeImp.DoomBuilder.ZDoom
 				else if(token == ":")
 				{
 					// Rewind so that this label can be read again
-					parser.DataStream.Seek(-(lasttoken.Length + 1), SeekOrigin.Current);
+					if(!string.IsNullOrEmpty(lasttoken)) 
+						parser.DataStream.Seek(-(lasttoken.Length + 1), SeekOrigin.Current);
 					
 					// Done here
 					return;
 				}
 				//mxd. Start of inner scope?
-				else if (token == "{")
+				else if(token == "{")
 				{
 					int bracelevel = 1;
 					while(!string.IsNullOrEmpty(token) && bracelevel > 0)
 					{
 						parser.SkipWhitespace(false);
 						token = parser.ReadToken();
-						switch (token)
+						switch(token)
 						{
 							case "{": bracelevel++; break;
 							case "}": bracelevel--; break;
@@ -143,7 +144,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 						spritename = spritename.ToUpperInvariant();
 						
 						// Ignore some odd ZDoom things
-						if (!spritename.StartsWith("TNT1") && !spritename.StartsWith("----") && !spritename.Contains("#")) 
+						if(!spritename.StartsWith("TNT1") && !spritename.StartsWith("----") && !spritename.Contains("#")) 
 							sprites.Add(spritename);
 					}
 					
@@ -202,10 +203,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		private string GetSprite(int index, List<StateStructure> prevstates)
 		{
 			// If we have sprite of our own, see if we can return this index
-			if(index < sprites.Count)
-			{
-				return sprites[index];
-			}
+			if(index < sprites.Count) return sprites[index];
 			
 			// Otherwise, continue searching where goto tells us to go
 			if(gotostate != null)

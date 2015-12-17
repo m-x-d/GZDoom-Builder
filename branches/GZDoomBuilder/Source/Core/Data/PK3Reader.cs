@@ -71,7 +71,7 @@ namespace CodeImp.DoomBuilder.Data
 				IReader reader = archive.ExtractAllEntries();
 				while(reader.MoveToNextEntry()) 
 				{
-					if(reader.Entry.IsDirectory) continue;
+					if(reader.Entry.IsDirectory || !CheckInvalidPathChars(reader.Entry.Key)) continue;
 
 					MemoryStream s = new MemoryStream();
 					reader.WriteEntryTo(s);
@@ -83,8 +83,8 @@ namespace CodeImp.DoomBuilder.Data
 			{
 				foreach(IArchiveEntry entry in archive.Entries) 
 				{
-					if(entry.IsDirectory) continue;
-					fileentries.Add(new DirectoryFileEntry(entry.Key));
+					if(!entry.IsDirectory && CheckInvalidPathChars(entry.Key))
+						fileentries.Add(new DirectoryFileEntry(entry.Key));
 				}
 			}
 
@@ -415,18 +415,18 @@ namespace CodeImp.DoomBuilder.Data
 			string fn = filename.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar); //mxd
 
 			//mxd. This works waaaaaay faster with 7z archive
-			if (archivetype == ArchiveType.SevenZip)
+			if(archivetype == ArchiveType.SevenZip)
 			{
 				fn = fn.ToLowerInvariant();
 				if (sevenzipentries.ContainsKey(fn)) filedata = new MemoryStream(sevenzipentries[fn]);
 			} 
 			else 
 			{
-				lock (this)
+				lock(this)
 				{
 					UpdateArchive(true);
 
-					foreach (var entry in archive.Entries)
+					foreach(var entry in archive.Entries)
 					{
 						if(entry.IsDirectory) continue;
 
@@ -444,7 +444,7 @@ namespace CodeImp.DoomBuilder.Data
 			}
 			
 			// Nothing found?
-			if (filedata == null)
+			if(filedata == null)
 			{
 				//mxd
 				General.ErrorLogger.Add(ErrorType.Error, "Cannot find the file '" + filename + "' in archive '" + location.location + "'.");
@@ -466,7 +466,31 @@ namespace CodeImp.DoomBuilder.Data
 			filedata.Dispose();
 			return tempfile;
 		}
-		
+
+		//mxd. This replicates System.IO.Path.CheckInvalidPathChars() internal function
+		private bool CheckInvalidPathChars(string path)
+		{
+			foreach(char c in path)
+			{
+				int num = c;
+				switch(num)
+				{
+					case 34:
+					case 60:
+					case 62:
+					case 124:
+						General.ErrorLogger.Add(ErrorType.Error, "Error in \"" + location.location + "\": unsupported character \"" + c + "\" in path \"" + path + "\". File loading was skipped.");
+						return false;
+
+					default:
+						if(num >= 32) continue;
+						else goto case 34;
+				}
+			}
+
+			return true;
+		}
+
 		#endregion
 	}
 }

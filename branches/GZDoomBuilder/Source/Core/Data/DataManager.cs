@@ -1404,9 +1404,8 @@ namespace CodeImp.DoomBuilder.Data
 			char[] catsplitter = new[] {Path.AltDirectorySeparatorChar}; //mxd
 			
 			// Create new parser
-			decorate = new DecorateParser();
-			decorate.OnInclude = LoadDecorateFromLocation;
-			
+			decorate = new DecorateParser { OnInclude = LoadDecorateFromLocation };
+
 			// Only load these when the game configuration supports the use of decorate
 			if(!string.IsNullOrEmpty(General.Map.Config.DecorateGames))
 			{
@@ -1423,12 +1422,11 @@ namespace CodeImp.DoomBuilder.Data
 						group.Value.Seek(0, SeekOrigin.Begin);
 						decorate.Parse(group.Value, group.Key, true);
 						
-						// Check for errors
+						//mxd. DECORATE lumps are interdepandable. Can't carry on...
 						if(decorate.HasError)
 						{
-							General.ErrorLogger.Add(ErrorType.Error, "DECORATE error in '" + decorate.ErrorSource
-								+ (decorate.ErrorLine != CompilerError.NO_LINE_NUMBER ? "', line " + decorate.ErrorLine : "'") + ". " + decorate.ErrorDescription + ".");
-							break;
+							decorate.LogError(); //mxd
+							return counter;
 						}
 					}
 				}
@@ -1823,6 +1821,13 @@ namespace CodeImp.DoomBuilder.Data
 							}
 						}
 					}
+
+					// Modeldefs are independable, so parsing fail in one file should not affect the others
+					if(parser.HasError)
+					{
+						parser.LogError();
+						parser.ClearError();
+					}
 				}
 			}
 
@@ -1895,18 +1900,28 @@ namespace CodeImp.DoomBuilder.Data
 				currentreader = dr;
 
 				KeyValuePair<string, Stream> group = dr.GetVoxeldefData();
-				if(group.Value != null && parser.Parse(group.Value, group.Key)) 
+				if(group.Value != null) 
 				{
-					foreach(KeyValuePair<string, ModelData> entry in parser.Entries)
+					if(parser.Parse(group.Value, group.Key))
 					{
-						foreach(KeyValuePair<string, List<int>> sc in sprites) 
+						foreach(KeyValuePair<string, ModelData> entry in parser.Entries)
 						{
-							if(sc.Key.Contains(entry.Key)) 
+							foreach(KeyValuePair<string, List<int>> sc in sprites)
 							{
-								foreach(int id in sc.Value) modeldefentries[id] = entry.Value;
-								processed.Add(entry.Key, false);
+								if(sc.Key.Contains(entry.Key))
+								{
+									foreach(int id in sc.Value) modeldefentries[id] = entry.Value;
+									processed.Add(entry.Key, false);
+								}
 							}
 						}
+					}
+
+					// Report errors?
+					if(parser.HasError)
+					{
+						parser.LogError();
+						parser.ClearError();
 					}
 				}
 			}
@@ -1939,7 +1954,7 @@ namespace CodeImp.DoomBuilder.Data
 
 			GldefsParser parser = new GldefsParser { OnInclude = ParseFromLocation };
 
-			//load gldefs from resources
+			// Load gldefs from resources
 			foreach(DataReader dr in containers) 
 			{
 				currentreader = dr;
@@ -1947,7 +1962,16 @@ namespace CodeImp.DoomBuilder.Data
 				Dictionary<string, Stream> streams = dr.GetGldefsData(General.Map.Config.GameType);
 
 				foreach(KeyValuePair<string, Stream> group in streams)
+				{
 					parser.Parse(group.Value, group.Key);
+					
+					// Gldefs can be interdependable. Can't carry on
+					if(parser.HasError)
+					{
+						parser.LogError();
+						return;
+					}
+				}
 			}
 
 			//create gldefsEntries dictionary
@@ -1957,12 +1981,7 @@ namespace CodeImp.DoomBuilder.Data
 				if(actorsByClass.ContainsKey(e.Key) && parser.LightsByName.ContainsKey(e.Value)) 
 				{
 					foreach(int i in actorsByClass[e.Key])
-					{
-						if(gldefsentries.ContainsKey(i))
-							gldefsentries[i] = parser.LightsByName[e.Value];
-						else
-							gldefsentries.Add(i, parser.LightsByName[e.Value]);
-					}
+						gldefsentries[i] = parser.LightsByName[e.Value];
 				} 
 				else if(!decorate.AllActorsByClass.ContainsKey(e.Key))
 				{
@@ -1978,7 +1997,7 @@ namespace CodeImp.DoomBuilder.Data
 		private void LoadMapInfo(out Dictionary<int, string> spawnnums, out Dictionary<int, string> doomednums)
 		{
 			MapinfoParser parser = new MapinfoParser { OnInclude = ParseFromLocation };
-
+			
 			foreach(DataReader dr in containers)
 			{
 				currentreader = dr;
@@ -1987,7 +2006,20 @@ namespace CodeImp.DoomBuilder.Data
 				foreach(KeyValuePair<string, Stream> group in streams) 
 				{
 					// Parse the data
-					parser.Parse(group.Value, Path.Combine(currentreader.Location.location, group.Key), General.Map.Options.LevelName); 
+					parser.Parse(group.Value, Path.Combine(currentreader.Location.location, group.Key), General.Map.Options.LevelName);
+
+					//MAPINFO lumps are interdependable. Can't carry on...
+					if(parser.HasError)
+					{
+						parser.LogError();
+
+						// No nulls allowed!
+						spawnnums = new Dictionary<int, string>();
+						doomednums = new Dictionary<int, string>();
+						mapinfo = new MapInfo();
+
+						return;
+					}
 				}
 			}
 
@@ -2024,6 +2056,13 @@ namespace CodeImp.DoomBuilder.Data
 				{
 					// Parse the data
 					parser.Parse(group.Value, group.Key);
+
+					// Report errors?
+					if(parser.HasError)
+					{
+						parser.LogError();
+						parser.ClearError();
+					}
 				}
 			}
 
@@ -2049,6 +2088,13 @@ namespace CodeImp.DoomBuilder.Data
 				foreach(Stream s in streams)
 				{
 					if(s != null) parser.Parse(s, "SNDSEQ");
+
+					// Report errors?
+					if(parser.HasError)
+					{
+						parser.LogError();
+						parser.ClearError();
+					}
 				}
 			}
 

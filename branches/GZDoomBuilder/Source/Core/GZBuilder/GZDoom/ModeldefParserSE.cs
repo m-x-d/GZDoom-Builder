@@ -1,13 +1,14 @@
 ﻿#region ================== Namespaces
 
-using System.IO;
 using System.Collections.Generic;
-using CodeImp.DoomBuilder.ZDoom;
+using System.IO;
 using CodeImp.DoomBuilder.GZBuilder.Data;
+using CodeImp.DoomBuilder.ZDoom;
 
 #endregion
 
 //mxd. Modeldef parser used to create ScriptItems for use in script editor's navigator
+//Should be parse model definitions even from invalid MODELDEF and should never fail parsing
 namespace CodeImp.DoomBuilder.GZBuilder.GZDoom 
 {
 	internal sealed class ModeldefParserSE : ZDTextParser 
@@ -25,34 +26,39 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 			base.Parse(stream, sourcefilename);
 
 			// Continue until at the end of the stream
-			while (SkipWhitespace(true)) 
+			while(SkipWhitespace(true)) 
 			{
 				string token = ReadToken();
+				if(string.IsNullOrEmpty(token) || token.ToUpperInvariant() != "MODEL") continue; 
 
-				if (!string.IsNullOrEmpty(token)) 
+				SkipWhitespace(true);
+				int startpos = (int)stream.Position;
+				string modelname = ReadToken();
+
+				SkipWhitespace(true);
+				token = ReadToken(); //this should be "{"
+
+				if(token == "{") 
 				{
-					token = token.ToUpperInvariant();
+					ScriptItem i = new ScriptItem(modelname, startpos, false);
+					models.Add(i);
+				}
 
-					if(token == "MODEL")
-					{
-						SkipWhitespace(true);
-						int startPos = (int)stream.Position;
-						string modelName = ReadToken();
-						SkipWhitespace(true);
-						token = ReadToken(); //this should be "{"
-
-						if (token == "{") 
-						{
-							ScriptItem i = new ScriptItem(modelName, startPos, false);
-							models.Add(i);
-						}
-					}
+				while(SkipWhitespace(true))
+				{
+					token = ReadToken();
+					if(string.IsNullOrEmpty(token) || token == "}") break;
 				}
 			}
 
-			//sort nodes
+			// Sort nodes
 			models.Sort(ScriptItem.SortByName);
 			return true;
+		}
+
+		protected override string GetLanguageType()
+		{
+			return "MODELDEF";
 		}
 	}
 }

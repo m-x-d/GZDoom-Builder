@@ -16,7 +16,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 {
 	internal sealed class GldefsParser : ZDTextParser
 	{
-		#region ================== Structs
+		#region ================== Constants
 
 		private const int DEFAULT_GLOW_HEIGHT = 64;
 
@@ -82,12 +82,6 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 		public override bool Parse(Stream stream, string sourcefilename) 
 		{
 			base.Parse(stream, sourcefilename);
-
-			if (parsedlumps.IndexOf(sourcefilename) != -1) 
-			{
-				General.ErrorLogger.Add(ErrorType.Error, "already parsed '" + sourcefilename + "'. Check your #include directives!");
-				return false;
-			}
 			parsedlumps.Add(sourcefilename);
 
 			// Keep local data
@@ -96,18 +90,17 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 			BinaryReader localreader = datareader;
 
 			// Continue until at the end of the stream
-			while (SkipWhitespace(true)) 
+			while(SkipWhitespace(true)) 
 			{
 				string token = ReadToken();
-				if (!string.IsNullOrEmpty(token)) 
+				if(!string.IsNullOrEmpty(token)) 
 				{
 					token = StripTokenQuotes(token.ToLowerInvariant()); //Quotes can be anywhere! ANYWHERE!!! And GZDoom will still parse data correctly
 
 					//got light structure
-					if (token == GldefsLightType.POINT || token == GldefsLightType.PULSE || token == GldefsLightType.FLICKER 
+					if(token == GldefsLightType.POINT || token == GldefsLightType.PULSE || token == GldefsLightType.FLICKER 
 						|| token == GldefsLightType.FLICKER2 || token == GldefsLightType.SECTOR) 
 					{
-						bool gotErrors = false;
 						string lightType = token;
 
 						DynamicLightData light = new DynamicLightData();
@@ -117,41 +110,39 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						SkipWhitespace(true);
 						string lightName = StripTokenQuotes(ReadToken()).ToLowerInvariant();
 
-						if (!string.IsNullOrEmpty(lightName)) 
+						if(!string.IsNullOrEmpty(lightName)) 
 						{
 							//now find opening brace
 							if(!NextTokenIs("{")) continue;
 
 							//read gldefs light structure
-							while (SkipWhitespace(true)) 
+							while(SkipWhitespace(true)) 
 							{
 								token = ReadToken();
-								if (!string.IsNullOrEmpty(token)) 
+								if(!string.IsNullOrEmpty(token)) 
 								{
 									token = token.ToLowerInvariant();
 //color
-									if (token == "color") 
+									if(token == "color") 
 									{
 										SkipWhitespace(true);
 
 										token = StripTokenQuotes(ReadToken());
-										if (!float.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out light.Color.Red)) 
+										if(!float.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out light.Color.Red)) 
 										{
 											// Not numeric!
-											General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected Red Color value, but got '" + token + "'.");
-											gotErrors = true;
-											break;
+											ReportError("expected Red color value, but got '" + token + "'");
+											return false;
 										}
 
 										SkipWhitespace(true);
 
 										token = StripTokenQuotes(ReadToken());
-										if (!float.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out light.Color.Green)) 
+										if(!float.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out light.Color.Green)) 
 										{
 											// Not numeric!
-											General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected Green Color value, but got '" + token + "'.");
-											gotErrors = true;
-											break;
+											ReportError("expected Green color value, but got '" + token + "'");
+											return false;
 										}
 
 										SkipWhitespace(true);
@@ -160,128 +151,118 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 										if (!float.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out light.Color.Blue)) 
 										{
 											// Not numeric!
-											General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected Blue Color value, but got '" + token + "'.");
-											gotErrors = true;
-											break;
+											ReportError("expected Blue color value, but got '" + token + "'");
+											return false;
 										}
 //size
 									} 
-									else if (token == "size") 
+									else if(token == "size") 
 									{
-										if (lightType != GldefsLightType.SECTOR) 
+										if(lightType != GldefsLightType.SECTOR) 
 										{
 											SkipWhitespace(true);
 
 											token = StripTokenQuotes(ReadToken());
-											if (!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out light.PrimaryRadius)) 
+											if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out light.PrimaryRadius)) 
 											{
 												// Not numeric!
-												General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected Size value, but got '" + token + "'.");
-												gotErrors = true;
-												break;
+												ReportError("expected Size value, but got '" + token + "'");
+												return false;
 											}
 											light.PrimaryRadius *= 2;
 
 										} 
 										else 
 										{
-											General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": '" + token + "' is not valid property for " + lightType + ".");
-											gotErrors = true;
-											break;
+											ReportError("'" + token + "' is not valid property for " + lightType + ".");
+											return false;
 										}
 //offset
 									} 
-									else if (token == "offset") 
+									else if(token == "offset") 
 									{
 										SkipWhitespace(true);
 
 										token = StripTokenQuotes(ReadToken());
-										if (!ReadSignedFloat(token, ref light.Offset.X)) 
+										if(!ReadSignedFloat(token, ref light.Offset.X)) 
 										{
 											// Not numeric!
-											General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected Offset X value, but got '" + token + "'.");
-											gotErrors = true;
-											break;
+											ReportError("expected Offset X value, but got '" + token + "'");
+											return false;
 										}
 
 										SkipWhitespace(true);
 
 										token = StripTokenQuotes(ReadToken());
-										if (!ReadSignedFloat(token, ref light.Offset.Z)) 
+										if(!ReadSignedFloat(token, ref light.Offset.Z)) 
 										{
 											// Not numeric!
-											General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected Offset Y value, but got '" + token + "'");
-											gotErrors = true;
-											break;
+											ReportError("expected Offset Y value, but got '" + token + "'");
+											return false;
 										}
 
 										SkipWhitespace(true);
 
 										token = StripTokenQuotes(ReadToken());
-										if (!ReadSignedFloat(token, ref light.Offset.Y)) 
+										if(!ReadSignedFloat(token, ref light.Offset.Y)) 
 										{
 											// Not numeric!
-											General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected Offset Z value, but got '" + token + "'.");
-											gotErrors = true;
-											break;
+											ReportError("expected Offset Z value, but got '" + token + "'");
+											return false;
 										}
 //subtractive
 									} 
-									else if (token == "subtractive") 
+									else if(token == "subtractive") 
 									{
 										SkipWhitespace(true);
 
 										token = StripTokenQuotes(ReadToken());
 										int i;
-										if (!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out i)) 
+										if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out i)) 
 										{
 											// Not numeric!
-											General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected Subtractive value, but got '" + token + "'.");
-											gotErrors = true;
-											break;
+											ReportError("expected Subtractive value, but got '" + token + "'");
+											return false;
 										}
 
 										light.Subtractive = i == 1;
 //dontlightself
 									} 
-									else if (token == "dontlightself") 
+									else if(token == "dontlightself") 
 									{
 										SkipWhitespace(true);
 
 										token = StripTokenQuotes(ReadToken());
 										int i;
-										if (!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out i)) 
+										if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out i)) 
 										{
 											// Not numeric!
-											General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected Dontlightself value, but got '" + token + "'.");
-											gotErrors = true;
-											break;
+											ReportError("expected Dontlightself value, but got '" + token + "'");
+											return false;
 										}
 
 										light.DontLightSelf = (i == 1);
 //interval
 									} 
-									else if (token == "interval") 
+									else if(token == "interval") 
 									{
-										if (lightType == GldefsLightType.PULSE || lightType == GldefsLightType.FLICKER2) 
+										if(lightType == GldefsLightType.PULSE || lightType == GldefsLightType.FLICKER2) 
 										{
 											SkipWhitespace(true);
 
 											token = StripTokenQuotes(ReadToken());
 											float interval;
-											if (!float.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out interval)) 
+											if(!float.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out interval)) 
 											{
 												// Not numeric!
-												General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected Interval value, but got '" + token + "'.");
-												gotErrors = true;
-												break;
+												ReportError("expected Interval value, but got '" + token + "'");
+												return false;
 											}
 
-											if(interval == 0) 
-												General.ErrorLogger.Add(ErrorType.Warning, "Warning in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": Interval value should be greater than zero.");
+											if(interval == 0) LogWarning("Interval value should be greater than zero");
 
 											//I wrote logic for dynamic lights animation first, so here I modify gldefs settings to fit in existing logic
-											if (lightType == GldefsLightType.PULSE) 
+											if(lightType == GldefsLightType.PULSE) 
 											{
 												light.Interval = (int)(interval * 35); //measured in tics (35 per second) in PointLightPulse, measured in seconds in gldefs' PulseLight
 											} 
@@ -292,50 +273,46 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 										} 
 										else 
 										{
-											General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": '" + token + "' is not valid property for " + lightType + ".");
-											gotErrors = true;
-											break;
+											ReportError("'" + token + "' is not valid property for " + lightType);
+											return false;
 										}
 //secondarysize
 									} 
-									else if (token == "secondarysize") 
+									else if(token == "secondarysize") 
 									{
-										if (lightType == GldefsLightType.PULSE || lightType == GldefsLightType.FLICKER || lightType == GldefsLightType.FLICKER2) 
+										if(lightType == GldefsLightType.PULSE || lightType == GldefsLightType.FLICKER || lightType == GldefsLightType.FLICKER2) 
 										{
 											SkipWhitespace(true);
 
 											token = StripTokenQuotes(ReadToken());
-											if (!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out light.SecondaryRadius)) 
+											if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out light.SecondaryRadius)) 
 											{
 												// Not numeric!
-												General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected SecondarySize value, but got '" + token + "'.");
-												gotErrors = true;
-												break;
+												ReportError("expected SecondarySize value, but got '" + token + "'");
+												return false;
 											}
 											light.SecondaryRadius *= 2;
 										} 
 										else 
 										{
-											General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": '" + token + "' is not valid property for " + lightType + ".");
-											gotErrors = true;
-											break;
+											ReportError("'" + token + "' is not valid property for " + lightType);
+											return false;
 										}
 //chance
 									} 
-									else if (token == "chance") 
+									else if(token == "chance") 
 									{
-										if (lightType == GldefsLightType.FLICKER) 
+										if(lightType == GldefsLightType.FLICKER) 
 										{
 											SkipWhitespace(true);
 
 											token = StripTokenQuotes(ReadToken());
 											float chance;
-											if (!float.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out chance)) 
+											if(!float.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out chance)) 
 											{
 												// Not numeric!
-												General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected Chance value, but got '" + token + "'.");
-												gotErrors = true;
-												break;
+												ReportError("expected Chance value, but got '" + token + "'");
+												return false;
 											}
 
 											//transforming from 0.0 .. 1.0 to 0 .. 359 to fit in existing logic
@@ -343,33 +320,30 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 										} 
 										else 
 										{
-											General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": '" + token + "' is not valid property for " + lightType + ".");
-											gotErrors = true;
-											break;
+											ReportError("'" + token + "' is not valid property for " + lightType);
+											return false;
 										}
 //scale
 									} 
-									else if (token == "scale") 
+									else if(token == "scale") 
 									{
-										if (lightType == GldefsLightType.SECTOR) 
+										if(lightType == GldefsLightType.SECTOR) 
 										{
 											SkipWhitespace(true);
 
 											token = StripTokenQuotes(ReadToken());
 											float scale;
-											if (!float.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out scale)) 
+											if(!float.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out scale)) 
 											{
 												// Not numeric!
-												General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected Scale value, but got '" + token + "'.");
-												gotErrors = true;
-												break;
+												ReportError("expected Scale value, but got '" + token + "'");
+												return false;
 											}
 
-											if (scale > 1.0f) 
+											if(scale > 1.0f) 
 											{
-												General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": scale must be in 0.0 - 1.0 range, but is " + scale + ".");
-												gotErrors = true;
-												break;
+												ReportError("scale must be in 0.0 - 1.0 range, but is " + scale);
+												return false;
 											}
 
 											//sector light doesn't have animation, so we will store it's size in Interval
@@ -378,64 +352,59 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 										} 
 										else 
 										{
-											General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": '" + token + "' is not valid property for " + lightType + ".");
-											gotErrors = true;
-											break;
+											ReportError("'" + token + "' is not valid property for " + lightType);
+											return false;
 										}
 									} 
 									//end of structure
-									else if (token == "}") 
+									else if(token == "}") 
 									{
-										if (!gotErrors) 
+										bool skip = false;
+
+										//general checks
+										if(light.Color.Red == 0.0f && light.Color.Green == 0.0f && light.Color.Blue == 0.0f) 
 										{
-											//general checks
-											if (light.Color.Red == 0.0f && light.Color.Green == 0.0f && light.Color.Blue == 0.0f) 
-											{
-												General.ErrorLogger.Add(ErrorType.Warning, "'" + sourcefilename + "', line " + GetCurrentLineNumber() + ": light Color is " + light.Color.Red + "," + light.Color.Green + "," + light.Color.Blue + ". It won't be shown in GZDoom!");
-												gotErrors = true;
-											}
+											LogWarning("'" + lightName + "' light Color is " + light.Color.Red + "," + light.Color.Green + "," + light.Color.Blue + ". It won't be shown in GZDoom");
+											skip = true;
+										}
 
-											//light-type specific checks
-											if (light.Type == DynamicLightType.NORMAL && light.PrimaryRadius == 0) 
-											{
-												General.ErrorLogger.Add(ErrorType.Warning, "'" + sourcefilename + "', line " + GetCurrentLineNumber() + ": light Size is 0. It won't be shown in GZDoom!");
-												gotErrors = true;
-											}
+										//light-type specific checks
+										if(light.Type == DynamicLightType.NORMAL && light.PrimaryRadius == 0) 
+										{
+											LogWarning("'" + lightName + "' light Size is 0. It won't be shown in GZDoom");
+											skip = true;
+										}
 
-											if (light.Type == DynamicLightType.FLICKER || light.Type == DynamicLightType.PULSE || light.Type == DynamicLightType.RANDOM) 
+										if(light.Type == DynamicLightType.FLICKER || light.Type == DynamicLightType.PULSE || light.Type == DynamicLightType.RANDOM) 
+										{
+											if(light.PrimaryRadius == 0 && light.SecondaryRadius == 0)
 											{
-												if (light.PrimaryRadius == 0 && light.SecondaryRadius == 0) 
-												{
-													General.ErrorLogger.Add(ErrorType.Warning, "'" + sourcefilename + "', line " + GetCurrentLineNumber() + ": 'Size' and 'SecondarySize' are 0. This light won't be shown in GZDoom!");
-													gotErrors = true;
-												}
-											}
-
-											//offset it slightly to avoid shading glitches
-											if (light.Offset.Z == 0.0f) light.Offset.Z = 0.1f;
-
-											if (!gotErrors) 
-											{
-												if (lightsByName.ContainsKey(lightName))
-													lightsByName[lightName] = light;
-												else
-													lightsByName.Add(lightName, light);
+												LogWarning("'" + lightName + "' light Size and SecondarySize are 0. This light won't be shown in GZDoom");
+												skip = true;
 											}
 										}
-										break; //break out of this parsing loop
+
+										//offset it slightly to avoid shading glitches
+										if(light.Offset.Z == 0.0f) light.Offset.Z = 0.1f;
+
+										// Add to the collection?
+										if(!skip) lightsByName[lightName] = light;
+
+										//break out of this parsing loop
+										break; 
 									}
 								}
 							}
 						}
 					} 
-					else if (token == "object") 
+					else if(token == "object") 
 					{
 						SkipWhitespace(true);
 
 						//read object class
 						string objectClass = StripTokenQuotes(ReadToken()).ToLowerInvariant();
 
-						if (!string.IsNullOrEmpty(objectClass)) 
+						if(!string.IsNullOrEmpty(objectClass)) 
 						{
 							//now find opening brace
 							if(!NextTokenIs("{")) continue;
@@ -445,10 +414,10 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							bool foundFrame = false;
 
 							//read frames structure
-							while (SkipWhitespace(true)) 
+							while(SkipWhitespace(true)) 
 							{
 								token = ReadToken();
-								if (!string.IsNullOrEmpty(token)) 
+								if(!string.IsNullOrEmpty(token)) 
 								{
 									token = StripTokenQuotes(token).ToLowerInvariant();
 									if(!foundLight && !foundFrame && token == "frame") 
@@ -464,29 +433,26 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 										SkipWhitespace(true);
 										token = ReadToken().ToLowerInvariant(); //should be light name
 
-										if (!string.IsNullOrEmpty(token)) 
+										if(!string.IsNullOrEmpty(token)) 
 										{
-											if (lightsByName.ContainsKey(token)) 
+											if(lightsByName.ContainsKey(token)) 
 											{
-												if (objects.ContainsKey(objectClass))
-													objects[objectClass] = token;
-												else
-													objects.Add(objectClass, token);
+												objects[objectClass] = token;
 												foundLight = true;
 											} 
 											else 
 											{
-												General.ErrorLogger.Add(ErrorType.Warning, "Light declaration not found for light '" + token + "' ('" + sourcefilename + "', line " + GetCurrentLineNumber()+").");
+												LogWarning("Light declaration not found for light '" + token + "'");
 											}
 										}
 									} 
-									else if (token == "{") //continue in this loop until object structure ends
+									else if(token == "{") //continue in this loop until object structure ends
 									{ 
 										bracesCount++;
 									} 
-									else if (token == "}") 
+									else if(token == "}") 
 									{
-										if (--bracesCount < 1) break; //This was Cave Johnson. And we are done here.
+										if(--bracesCount < 1) break; //This was Cave Johnson. And we are done here.
 									}
 								}
 							}
@@ -549,12 +515,12 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 								int color;
 								int glowheight = DEFAULT_GLOW_HEIGHT;
 								bool subtractivetexture = (token == "subtexture");
-								string texturename = StripTokenQuotes(ReadToken());
+								string texturename = StripTokenQuotes(ReadToken(false));
 
 								if(string.IsNullOrEmpty(texturename))
 								{
-									General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected a texture name.");
-									break;
+									ReportError("expected " + token + " name");
+									return false;
 								}
 								
 								// Now we should find a comma
@@ -574,8 +540,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 									}
 									else
 									{
-										General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected glow color value, but got '" + token + "'.");
-										break;
+										ReportError("expected glow color value, but got '" + token + "'");
+										return false;
 									}
 								}
 
@@ -632,8 +598,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 								if(!fullblack && !fullbright)
 								{
 									string expectedflags = (subtractivetexture ? "'fullbright'" : "'fullbright' or 'fullblack'");
-									General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected " + expectedflags + " flag, but got '" + token + "'.");
-									break;
+									ReportError("expected " + expectedflags + " flag, but got '" + token + "'");
+									return false;
 								}
 
 								// Add glow data
@@ -655,25 +621,43 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							if(string.IsNullOrEmpty(token) || token == "}") break;
 						}
 					}
-					else if (token == "#include") 
+					else if(token == "#include") 
 					{
 						SkipWhitespace(true);
-						string includeLump = StripTokenQuotes(ReadToken()).ToLowerInvariant();
-						if (!string.IsNullOrEmpty(includeLump)) 
-						{
-							// Callback to parse this file
-							if (OnInclude != null)
-								OnInclude(this, includeLump.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar));
+						string includelump = ReadToken(false); // Don't skip newline
 
-							// Set our buffers back to continue parsing
-							datastream = localstream;
-							datareader = localreader;
-							sourcename = localsourcename;
-						} 
-						else 
+						// Sanity checks
+						if(!includelump.StartsWith("\"") || !includelump.EndsWith("\""))
 						{
-							General.ErrorLogger.Add(ErrorType.Error, "Error in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": got #include directive with missing or incorrect path: '" + includeLump + "'.");
+							ReportError("#include filename should be quoted");
+							return false;
 						}
+
+						includelump = StripTokenQuotes(includelump).ToLowerInvariant();
+
+						// More sanity checks
+						if(string.IsNullOrEmpty(includelump))
+						{
+							ReportError("Expected file name to include");
+							return false;
+						}
+
+						includelump = includelump.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+						
+						// Already parsed?
+						if(parsedlumps.IndexOf(includelump) != -1)
+						{
+							ReportError("already parsed '" + includelump + "'. Check your #include directives");
+							return false;
+						}
+
+						// Callback to parse this file
+						if(OnInclude != null) OnInclude(this, includelump);
+
+						// Set our buffers back to continue parsing
+						datastream = localstream;
+						datareader = localreader;
+						sourcename = localsourcename;
 					} 
 					else if(token == "$gzdb_skip") //mxd
 					{
@@ -685,21 +669,21 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						string token2;
 						do 
 						{
-							if (!SkipWhitespace(true)) break;
+							if(!SkipWhitespace(true)) break;
 							token2 = ReadToken();
-							if (string.IsNullOrEmpty(token2)) break;
+							if(string.IsNullOrEmpty(token2)) break;
 						}
 						while (token2 != "{");
 						int scopelevel = 1;
 						do 
 						{
-							if (!SkipWhitespace(true)) break;
+							if(!SkipWhitespace(true)) break;
 							token2 = ReadToken();
 							if(string.IsNullOrEmpty(token2)) break;
-							if (token2 == "{") scopelevel++;
-							if (token2 == "}") scopelevel--;
+							if(token2 == "{") scopelevel++;
+							if(token2 == "}") scopelevel--;
 						}
-						while (scopelevel > 0);
+						while(scopelevel > 0);
 					}
 				}
 			}
@@ -714,6 +698,11 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 		internal void ClearIncludesList() 
 		{
 			parsedlumps.Clear();
+		}
+
+		protected override string GetLanguageType()
+		{
+			return "GLDEFS";
 		}
 
 		#endregion
