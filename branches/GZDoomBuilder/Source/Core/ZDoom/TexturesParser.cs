@@ -73,9 +73,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 		// This parses the given stream
 		// Returns false on errors
-		public override bool Parse(Stream stream, string sourcefilename)
+		public override bool Parse(Stream stream, string sourcefilename, bool clearerrors)
 		{
-			base.Parse(stream, sourcefilename);
+			if(!base.Parse(stream, sourcefilename, clearerrors)) return false;
 
 			//mxd. Make vitrual path from filename
 			string virtualpath = sourcefilename.Substring(8).TrimStart(pathtrimchars);

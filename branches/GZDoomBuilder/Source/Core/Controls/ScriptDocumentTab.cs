@@ -426,7 +426,7 @@ namespace CodeImp.DoomBuilder.Controls
 			navigator.Items.Clear();
 
 			DecorateParserSE parser = new DecorateParserSE();
-			if(parser.Parse(stream, "DECORATE"))
+			if(parser.Parse(stream, "DECORATE", false))
 			{
 				navigator.Items.AddRange(parser.Actors.ToArray());
 			}
@@ -444,7 +444,7 @@ namespace CodeImp.DoomBuilder.Controls
 			navigator.Items.Clear();
 
 			ModeldefParserSE parser = new ModeldefParserSE();
-			if(parser.Parse(stream, "MODELDEF"))
+			if(parser.Parse(stream, "MODELDEF", false))
 			{
 				navigator.Items.AddRange(parser.Models.ToArray());
 			}
@@ -462,7 +462,7 @@ namespace CodeImp.DoomBuilder.Controls
 			navigator.Items.Clear();
 
 			AcsParserSE parser = new AcsParserSE { AddArgumentsToScriptNames = true, IsMapScriptsLump = this is ScriptLumpDocumentTab };
-			if(parser.Parse(stream, "SCRIPTS"))
+			if(parser.Parse(stream, "SCRIPTS", false))
 			{
 				navigator.Items.AddRange(parser.NamedScripts.ToArray());
 				navigator.Items.AddRange(parser.NumberedScripts.ToArray());
@@ -479,7 +479,7 @@ namespace CodeImp.DoomBuilder.Controls
 		internal ScriptType VerifyScriptType() 
 		{
 			ScriptTypeParserSE parser = new ScriptTypeParserSE();
-			if(parser.Parse(new MemoryStream(editor.GetText()), config.Description)) 
+			if(parser.Parse(new MemoryStream(editor.GetText()), config.Description, false)) 
 			{
 				if(parser.ScriptType != ScriptType.UNKNOWN && config.ScriptType != parser.ScriptType)
 					return parser.ScriptType;

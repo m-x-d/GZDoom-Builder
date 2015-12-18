@@ -104,7 +104,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		// Returns false on errors
 		public override bool Parse(Stream stream, string sourcefilename, bool clearerrors)
 		{
-			base.Parse(stream, sourcefilename, clearerrors);
+			if(!base.Parse(stream, sourcefilename, clearerrors)) return false;
 			
 			// Keep local data
 			Stream localstream = datastream;

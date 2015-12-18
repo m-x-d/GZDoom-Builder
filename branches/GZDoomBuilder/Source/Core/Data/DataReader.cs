@@ -152,36 +152,39 @@ namespace CodeImp.DoomBuilder.Data
 
 		#region ================== Decorate, Modeldef, Mapinfo, Gldefs, etc...
 
-		// When implemented, this returns the decorate lump
-		public virtual Dictionary<string, Stream> GetDecorateData(string pname) { return new Dictionary<string, Stream>(); }
+		// When implemented, this returns the DECORATE lump
+		public abstract Dictionary<string, Stream> GetDecorateData(string pname); // { return new Dictionary<string, Stream>(); }
 
-		//mxd. When implemented, this returns the Modeldef lump
-		public virtual Dictionary<string, Stream> GetModeldefData() { return new Dictionary<string, Stream>(); }
+		//mxd. When implemented, this returns the MODELDEF lump
+		public abstract Dictionary<string, Stream> GetModeldefData(); // { return new Dictionary<string, Stream>(); }
 
-		//mxd. When implemented, this returns the Mapinfo lump
-		public virtual Dictionary<string, Stream> GetMapinfoData() { return new Dictionary<string, Stream>(); }
+		//mxd. When implemented, this returns the MAPINFO lump
+		public abstract Dictionary<string, Stream> GetMapinfoData(); // { return new Dictionary<string, Stream>(); }
 
-		//mxd. When implemented, this returns the Gldefs lump
-		public virtual Dictionary<string, Stream> GetGldefsData(GameType gameType) { return new Dictionary<string, Stream>(); }
+		//mxd. When implemented, this returns the GLDEFS lump
+		public abstract Dictionary<string, Stream> GetGldefsData(GameType gametype); // { return new Dictionary<string, Stream>(); }
 
-		//mxd. When implemented, this returns the Reverbs lump
-		public virtual Dictionary<string, Stream> GetReverbsData() { return new Dictionary<string, Stream>(); }
+		//mxd. When implemented, this returns the REVERBS lump
+		public abstract Dictionary<string, Stream> GetReverbsData(); // { return new Dictionary<string, Stream>(); }
+
+		//mxd. When implemented, this returns the VOXELDEF lump
+		public abstract KeyValuePair<string, Stream> GetVoxeldefData(); // { return new KeyValuePair<string, Stream>(); }
+
+		//mxd. When implemented, this returns the SNDSEQ lump
+		public abstract Dictionary<string, Stream> GetSndSeqData(); // { return new Dictionary<string, Stream>(); }
+
+		//mxd. When implemented, this returns the ANIMDEFS lump
+		public abstract Dictionary<string, Stream> GetAnimdefsData();
 
 		//mxd. When implemented, this returns the list of voxel model names
-		public virtual string[] GetVoxelNames() { return null; }
+		public abstract IEnumerable<string> GetVoxelNames(); // { return null; }
 
 		//mxd. When implemented, this returns the voxel lump
-		public virtual Stream GetVoxelData(string name) { return null; }
+		public abstract Stream GetVoxelData(string name); // { return null; }
 
 		//mxd
-		public virtual KeyValuePair<string, Stream> GetVoxeldefData() { return new KeyValuePair<string,Stream>(); }
-
-		//mxd. When implemented, this returns the SndSeq lump
-		public virtual List<Stream> GetSndSeqData() { return new List<Stream>(); }
-
-		//mxd
-		internal virtual MemoryStream LoadFile(string name) { return null; }
-		internal virtual bool FileExists(string filename) { return false; }
+		internal abstract MemoryStream LoadFile(string name);// { return null; }
+		internal abstract bool FileExists(string filename);// { return false; }
 
 		#endregion
 	}

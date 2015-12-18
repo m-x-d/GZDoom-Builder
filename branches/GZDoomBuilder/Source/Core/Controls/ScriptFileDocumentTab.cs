@@ -172,10 +172,10 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 
 			// Preprocess the file
-			AcsParserSE parser = new AcsParserSE { OnInclude = (se, path) => se.Parse(General.Map.Data.LoadFile(path), path, true, true) };
+			AcsParserSE parser = new AcsParserSE { OnInclude = (se, path) => se.Parse(General.Map.Data.LoadFile(path), path, true, true, false) };
 			using(FileStream stream = File.OpenRead(filepathname))
 			{
-				if(!parser.Parse(stream, filepathname, scriptconfig.Compiler.Files, true, false))
+				if(!parser.Parse(stream, filepathname, scriptconfig.Compiler.Files, true, false, false))
 				{
 					// Check for errors
 					if(parser.HasError)

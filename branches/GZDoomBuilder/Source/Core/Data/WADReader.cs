@@ -407,7 +407,7 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			// Parse the data
 			TexturesParser parser = new TexturesParser();
-			parser.Parse(stream, filename);
+			parser.Parse(stream, filename, false);
 			if(parser.HasError) parser.LogError(); //mxd
 
 			// Make the textures
@@ -647,7 +647,7 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			// Parse the data
 			TexturesParser parser = new TexturesParser();
-			parser.Parse(stream, filename);
+			parser.Parse(stream, filename, false);
 			if(parser.HasError) parser.LogError(); //mxd
 
 			// Make the textures
@@ -710,7 +710,7 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			// Parse the data
 			TexturesParser parser = new TexturesParser();
-			parser.Parse(stream, filename);
+			parser.Parse(stream, filename, false);
 			if(parser.HasError) parser.LogError(); //mxd
 			
 			// Make the textures
@@ -763,7 +763,7 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Voxels (mxd)
 
 		//mxd. This returns the list of voxels, which can be used without VOXELDEF definition
-		public override string[] GetVoxelNames() 
+		public override IEnumerable<string> GetVoxelNames() 
 		{
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
@@ -908,13 +908,24 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		//mxd
-		public override List<Stream> GetSndSeqData() 
+		public override Dictionary<string, Stream> GetSndSeqData() 
 		{
 			if(issuspended) throw new Exception("Data reader is suspended");
 
-			List<Stream> result = new List<Stream>();
+			Dictionary<string, Stream> result = new Dictionary<string, Stream>();
 			Lump lump = file.FindLump("SNDSEQ");
-			if(lump != null) result.Add(lump.Stream);
+			if(lump != null) result.Add(Path.Combine(location.location, "SNDSEQ"), lump.Stream);
+			return result;
+		}
+
+		//mxd
+		public override Dictionary<string, Stream> GetAnimdefsData()
+		{
+			if(issuspended) throw new Exception("Data reader is suspended");
+
+			Dictionary<string, Stream> result = new Dictionary<string, Stream>();
+			Lump lump = file.FindLump("ANIMDEFS");
+			if(lump != null) result.Add(Path.Combine(location.location, "ANIMDEFS"), lump.Stream);
 			return result;
 		}
 

@@ -409,7 +409,7 @@ namespace CodeImp.DoomBuilder.Data
 
 		#endregion
 
-		#region ================== Decorate
+		#region ================== DECORATE
 
 		// This finds and returns a sprite stream
 		public override Dictionary<string, Stream> GetDecorateData(string pname)
@@ -461,7 +461,7 @@ namespace CodeImp.DoomBuilder.Data
 
 		#endregion
 
-		#region ================== Modeldef (mxd)
+		#region ================== MODELDEF (mxd)
 
 		//mxd
 		public override Dictionary<string, Stream> GetModeldefData() 
@@ -484,10 +484,10 @@ namespace CodeImp.DoomBuilder.Data
 
 		#endregion 
 
-		#region ================== Voxeldef (mxd)
+		#region ================== VOXELDEF (mxd)
 
 		//mxd. This returns the list of voxels, which can be used without VOXELDEF definition
-		public override string[] GetVoxelNames() 
+		public override IEnumerable<string> GetVoxelNames() 
 		{
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
@@ -557,7 +557,7 @@ namespace CodeImp.DoomBuilder.Data
 		public override Dictionary<string, Stream> GetGldefsData(GameType gametype) 
 		{
 			// Error when suspended
-			if (issuspended) throw new Exception("Data reader is suspended");
+			if(issuspended) throw new Exception("Data reader is suspended");
 
 			Dictionary<string, Stream> streams = new Dictionary<string, Stream>(StringComparer.Ordinal);
 
@@ -565,10 +565,10 @@ namespace CodeImp.DoomBuilder.Data
 			string[] files = GetAllFiles("", false);
 
 			//try to load game specific GLDEFS first
-			if (gametype != GameType.UNKNOWN) 
+			if(gametype != GameType.UNKNOWN) 
 			{
 				string lumpname = Gldefs.GLDEFS_LUMPS_PER_GAME[(int)gametype];
-				foreach (string s in files) 
+				foreach(string s in files) 
 				{
 					if(Path.GetFileNameWithoutExtension(s).ToUpperInvariant() == lumpname)
 						streams.Add(s, LoadFile(s));
@@ -576,7 +576,7 @@ namespace CodeImp.DoomBuilder.Data
 			}
 
 			// Can be several entries
-			foreach (string s in files)
+			foreach(string s in files)
 			{
 				if(Path.GetFileNameWithoutExtension(s).ToUpperInvariant().StartsWith("GLDEFS"))
 					streams.Add(s, LoadFile(s));
@@ -587,7 +587,7 @@ namespace CodeImp.DoomBuilder.Data
 
 		#endregion
 
-		#region ================== Reverbs
+		#region ================== REVERBS (mxd)
 
 		public override Dictionary<string, Stream> GetReverbsData() 
 		{
@@ -616,27 +616,58 @@ namespace CodeImp.DoomBuilder.Data
 
 		#endregion
 
-		#region ================== SndSeq
+		#region ================== SNDSEQ (mxd)
 
-		public override List<Stream> GetSndSeqData() 
+		public override Dictionary<string, Stream> GetSndSeqData() 
 		{
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
 
-			List<Stream> streams = new List<Stream>();
+			Dictionary<string, Stream> streams = new Dictionary<string, Stream>();
 
 			// Get from wads first
 			//TODO: is this the correct order?..
 			foreach(WADReader wr in wads) 
 			{
-				streams.AddRange(wr.GetSndSeqData());
+				Dictionary<string, Stream> wadstreams = wr.GetSndSeqData();
+				foreach(KeyValuePair<string, Stream> pair in wadstreams) streams.Add(pair.Key, pair.Value);
 			}
 
 			// Then from our own files
 			string foundfile = FindFirstFile("sndseq", false);
 			if(!string.IsNullOrEmpty(foundfile) && FileExists(foundfile))
 			{
-				streams.Add(LoadFile(foundfile));
+				streams.Add(foundfile, LoadFile(foundfile));
+			}
+
+			return streams;
+		}
+
+		#endregion
+
+		#region ================== ANIMDEFS (mxd)
+
+		public override Dictionary<string, Stream> GetAnimdefsData()
+		{
+			// Error when suspended
+			if(issuspended) throw new Exception("Data reader is suspended");
+
+			Dictionary<string, Stream> streams = new Dictionary<string, Stream>();
+
+			// Get from wads first
+			//TODO: is this the correct order?..
+			foreach(WADReader wr in wads)
+			{
+				Dictionary<string, Stream> wadstreams = wr.GetAnimdefsData();
+				foreach(KeyValuePair<string, Stream> pair in wadstreams)
+					streams.Add(pair.Key, pair.Value);
+			}
+
+			// Then from our own files
+			string foundfile = FindFirstFile("animdefs", false);
+			if(!string.IsNullOrEmpty(foundfile) && FileExists(foundfile))
+			{
+				streams.Add(foundfile, LoadFile(foundfile));
 			}
 
 			return streams;

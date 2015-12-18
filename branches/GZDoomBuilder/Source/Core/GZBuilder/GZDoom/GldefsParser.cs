@@ -39,7 +39,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 
 		#region ================== Delegates
 
-		public delegate void IncludeDelegate(GldefsParser parser, string includefile);
+		public delegate void IncludeDelegate(GldefsParser parser, string includefile, bool clearerrors);
 		public IncludeDelegate OnInclude;
 
 		#endregion
@@ -79,10 +79,10 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 
 		#region ================== Parsing
 
-		public override bool Parse(Stream stream, string sourcefilename) 
+		public override bool Parse(Stream stream, string sourcefilename, bool clearerrors) 
 		{
-			base.Parse(stream, sourcefilename);
 			parsedlumps.Add(sourcefilename);
+			if(!base.Parse(stream, sourcefilename, clearerrors)) return false;
 
 			// Keep local data
 			Stream localstream = datastream;
@@ -652,7 +652,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						}
 
 						// Callback to parse this file
-						if(OnInclude != null) OnInclude(this, includelump);
+						if(OnInclude != null) OnInclude(this, includelump, clearerrors);
 
 						// Set our buffers back to continue parsing
 						datastream = localstream;

@@ -75,23 +75,17 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 		#region ================== Parsing
 
-		// This parses the given decorate stream
-		// Returns false on errors
-		public virtual bool Parse(Stream stream, string sourcefilename)
-		{
-			return Parse(stream, sourcefilename, false);
-		}
-
-		// This parses the given decorate stream (mxd)
-		// Returns false on errors
+		//mxd. This parses the given decorate stream. Returns false on errors
 		public virtual bool Parse(Stream stream, string sourcefilename, bool clearerrors)
 		{
-			// Clear error status (mxd)
-			if(clearerrors) 
+			//mxd. Clear error status?
+			if(clearerrors) ClearError();
+
+			//mxd. Integrity check
+			if(stream == null || stream.Length == 0)
 			{
-				errordesc = null;
-				errorsource = null;
-				errorline = -1;
+				ReportError("Unable to load '" + sourcefilename + "'!");
+				return false;
 			}
 			
 			datastream = stream;
@@ -425,7 +419,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			if(!SkipWhitespace(true)) return false;
 			string token = ReadToken();
 
-			if(token != expectedtoken) 
+			if(string.Compare(token, expectedtoken, true) != 0)
 			{
 				if(reporterror) ReportError("expected '" + expectedtoken + "', but got '" + token + "'");
 
@@ -438,34 +432,36 @@ namespace CodeImp.DoomBuilder.ZDoom
 		}
 
 		//mxd
+		protected internal bool ReadSignedFloat(ref float value) { return ReadSignedFloat(StripTokenQuotes(ReadToken(false)), ref value); }
 		protected internal bool ReadSignedFloat(string token, ref float value) 
 		{
 			int sign = 1;
-			if (token == "-") 
+			if(token == "-") 
 			{
 				sign = -1;
-				token = StripTokenQuotes(ReadToken());
+				token = StripTokenQuotes(ReadToken(false));
 			}
 
 			float val;
 			bool success = float.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out val);
-			if (success) value = val * sign;
+			if(success) value = val * sign;
 			return success;
 		}
 
 		//mxd
+		protected internal bool ReadSignedInt(ref int value) { return ReadSignedInt(StripTokenQuotes(ReadToken(false)), ref value); }
 		protected internal bool ReadSignedInt(string token, ref int value) 
 		{
 			int sign = 1;
-			if (token == "-") 
+			if(token == "-") 
 			{
 				sign = -1;
-				token = StripTokenQuotes(ReadToken());
+				token = StripTokenQuotes(ReadToken(false));
 			}
 
 			int val;
 			bool success = int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out val);
-			if (success) value = val * sign;
+			if(success) value = val * sign;
 			return success;
 		}
 		
@@ -497,11 +493,11 @@ namespace CodeImp.DoomBuilder.ZDoom
 		}
 
 		//mxd
-		internal void ClearError()
+		protected void ClearError()
 		{
-			errorline = 0;
 			errordesc = null;
 			errorsource = null;
+			errorline = CompilerError.NO_LINE_NUMBER;
 		}
 
 		//mxd 
