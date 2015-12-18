@@ -42,18 +42,23 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 			specialtokens += "(,)";
 		}
 
-		public override bool Parse(Stream stream, string sourcefilename) 
+		public override bool Parse(Stream stream, string sourcefilename, bool clearerrors) 
 		{
-			return Parse(stream, sourcefilename, new List<string>(), false, false);
+			return Parse(stream, sourcefilename, new List<string>(), false, false, clearerrors);
 		}
 
-		public bool Parse(Stream stream, string sourcefilename, bool processincludes, bool isinclude)
+		public bool Parse(Stream stream, string sourcefilename, bool processincludes, bool isinclude, bool clearerrors)
 		{
-			return Parse(stream, sourcefilename, includestoskip, processincludes, isinclude);
+			return Parse(stream, sourcefilename, includestoskip, processincludes, isinclude, clearerrors);
 		}
 
-		public bool Parse(Stream stream, string sourcefilename, List<string> configincludes, bool processincludes, bool isinclude) 
+		public bool Parse(Stream stream, string sourcefilename, List<string> configincludes, bool processincludes, bool isinclude, bool clearerrors) 
 		{
+			parsedlumps.Add(sourcefilename);
+			if(isinclude && !includes.Contains(sourcefilename)) includes.Add(sourcefilename);
+			includestoskip = configincludes;
+			int bracelevel = 0;
+
 			// Integrity check
 			if(stream == null || stream.Length == 0)
 			{
@@ -61,12 +66,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 				return false;
 			}
 
-			base.Parse(stream, sourcefilename);
-
-			parsedlumps.Add(sourcefilename);
-			if(isinclude && !includes.Contains(sourcefilename)) includes.Add(sourcefilename);
-			includestoskip = configincludes;
-			int bracelevel = 0;
+			if(!base.Parse(stream, sourcefilename, clearerrors)) return false;
 
 			// Keep local data
 			Stream localstream = datastream;

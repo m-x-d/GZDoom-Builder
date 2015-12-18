@@ -792,6 +792,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Data\BitmapImage.cs" />
+    <Compile Include="Data\CameraTextureImage.cs" />
     <Compile Include="Data\ColorImage.cs" />
     <Compile Include="Data\ColormapImage.cs" />
     <Compile Include="Data\HighResImage.cs" />
@@ -996,6 +997,7 @@
       <DependentUpon>VertexEditForm.cs</DependentUpon>
     </Compile>
     <Compile Include="ZDoom\ActorStructure.cs" />
+    <Compile Include="ZDoom\AnimdefsParser.cs" />
     <Compile Include="ZDoom\PatchStructure.cs" />
     <Compile Include="ZDoom\ReverbsParser.cs" />
     <Compile Include="ZDoom\SndSeqParser.cs" />

@@ -31,9 +31,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 		#region ================== Parsing
 
-		public override bool Parse(Stream stream, string sourcefilename)
+		public override bool Parse(Stream stream, string sourcefilename, bool clearerrors)
 		{
-			base.Parse(stream, sourcefilename);
+			if(!base.Parse(stream, sourcefilename, clearerrors)) return false;
 			
 			char[] dots = new[] { ':' };
 			char[] brace = new[] { '[' };

@@ -21,9 +21,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 			models = new List<ScriptItem>();
 		}
 
-		public override bool Parse(Stream stream, string sourcefilename) 
+		public override bool Parse(Stream stream, string sourcefilename, bool clearerrors) 
 		{
-			base.Parse(stream, sourcefilename);
+			if(!base.Parse(stream, sourcefilename, clearerrors)) return false;
 
 			// Continue until at the end of the stream
 			while(SkipWhitespace(true)) 

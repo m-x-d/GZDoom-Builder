@@ -17,7 +17,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 	{
 		#region ================== Delegates
 
-		public delegate void IncludeDelegate(MapinfoParser parser, string includefile);
+		public delegate void IncludeDelegate(MapinfoParser parser, string includefile, bool clearerror);
 		public IncludeDelegate OnInclude;
 
 		#endregion
@@ -59,17 +59,17 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 		#region ================== Parsing
 
 
-		override public bool Parse(Stream stream, string sourcefilename)
+		override public bool Parse(Stream stream, string sourcefilename, bool clearerrors)
 		{
 			if(string.IsNullOrEmpty(mapname)) throw new NotSupportedException("MapName is required!");
-			return Parse(stream, sourcefilename, mapname);
+			return Parse(stream, sourcefilename, mapname, clearerrors);
 		}
 
-		public bool Parse(Stream stream, string sourcefilename, string mapname) 
+		public bool Parse(Stream stream, string sourcefilename, string mapname, bool clearerrors) 
 		{
-			base.Parse(stream, sourcefilename);
 			this.mapname = mapname.ToLowerInvariant();
 			parsedlumps.Add(sourcefilename);
+			if(!base.Parse(stream, sourcefilename, clearerrors)) return false;
 
 			while(SkipWhitespace(true)) 
 			{
@@ -77,7 +77,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 				if(!string.IsNullOrEmpty(token)) 
 				{
 					token = token.ToLowerInvariant();
-					if(ParseBlock(token)) break;
+					if(ParseBlock(token, clearerrors)) break;
 				}
 			}
 
@@ -93,7 +93,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 		}
 
 		//returns true if parsing is finished
-		private bool ParseBlock(string token) 
+		private bool ParseBlock(string token, bool clearerrors) 
 		{
 			// Keep local data
 			Stream localstream = datastream;
@@ -333,7 +333,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 //block end
 					else if(token == "}") 
 					{
-						return ParseBlock(token);
+						return ParseBlock(token, clearerrors);
 					}
 //child block
 					else if(token == "{")
@@ -362,7 +362,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 				{
 					// Callback to parse this file
 					if(OnInclude != null)
-						OnInclude(this, includelump.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar));
+						OnInclude(this, includelump.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar), clearerrors);
 
 					// Set our buffers back to continue parsing
 					datastream = localstream;

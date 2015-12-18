@@ -21,7 +21,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Windows.Forms;
-using CodeImp.DoomBuilder.Compilers;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.GZBuilder.Data;
 using CodeImp.DoomBuilder.GZBuilder.GZDoom;
@@ -369,7 +368,7 @@ namespace CodeImp.DoomBuilder.Data
 			LoadVoxels();
 			Dictionary<string, List<int>> actorsbyclass = CreateActorsByClassList();
 			LoadModeldefs(actorsbyclass);
-			foreach (Thing t in General.Map.Map.Things) t.UpdateCache();
+			foreach(Thing t in General.Map.Map.Things) t.UpdateCache();
 			General.MainWindow.DisplayReady();
 			
 			// Process colormaps (we just put them in as textures)
@@ -451,6 +450,9 @@ namespace CodeImp.DoomBuilder.Data
 
 			//mxd. Should be done after loading textures...
 			LoadGldefs(actorsbyclass);
+
+			//mxd. Create camera textures. Should be done after loading textures.
+			LoadAnimdefs();
 			
 			// Sort names
 			texturenames.Sort();
@@ -954,7 +956,7 @@ namespace CodeImp.DoomBuilder.Data
 							nametranslation.Remove(longshortname);
 							nametranslation.Add(longshortname, img.LongName);
 						} 
-						else if (img is TextureImage && nametranslation.ContainsKey(img.LongName))
+						else if(img is TextureImage && nametranslation.ContainsKey(img.LongName))
 						{
 							nametranslation.Remove(img.LongName);
 						}
@@ -1672,7 +1674,14 @@ namespace CodeImp.DoomBuilder.Data
 			foreach(KeyValuePair<string, Stream> group in decostreams)
 			{
 				// Parse this data
-				parser.Parse(group.Value, Path.Combine(currentreader.Location.location, group.Key));
+				parser.Parse(group.Value, Path.Combine(currentreader.Location.location, group.Key), false);
+
+				//mxd. DECORATE lumps are interdepandable. Can't carry on...
+				if(parser.HasError)
+				{
+					decorate.LogError();
+					return;
+				}
 			}
 		}
 		
@@ -1741,7 +1750,7 @@ namespace CodeImp.DoomBuilder.Data
 					group.Value.Dispose();
 			}
 
-			// Bail out when not supported by currect game configuration
+			// Bail out when not supported by current game configuration
 			if(string.IsNullOrEmpty(General.Map.Config.DecorateGames)) return;
 
 			General.MainWindow.DisplayStatus(StatusType.Busy, "Reloading model definitions...");
@@ -1764,7 +1773,7 @@ namespace CodeImp.DoomBuilder.Data
 		//mxd
 		public void ReloadGldefs() 
 		{
-			// Bail out when not supported by currect game configuration
+			// Bail out when not supported by current game configuration
 			if(string.IsNullOrEmpty(General.Map.Config.DecorateGames)) return;
 			
 			General.MainWindow.DisplayStatus(StatusType.Busy, "Reloading GLDEFS...");
@@ -1806,7 +1815,7 @@ namespace CodeImp.DoomBuilder.Data
 				foreach(KeyValuePair<string, Stream> group in streams) 
 				{
 					// Parse the data
-					if(parser.Parse(group.Value, currentreader.Location.location + "\\" + group.Key)) 
+					if(parser.Parse(group.Value, currentreader.Location.location + "\\" + group.Key, true)) 
 					{
 						foreach(KeyValuePair<string, ModelData> g in parser.Entries) 
 						{
@@ -1823,11 +1832,7 @@ namespace CodeImp.DoomBuilder.Data
 					}
 
 					// Modeldefs are independable, so parsing fail in one file should not affect the others
-					if(parser.HasError)
-					{
-						parser.LogError();
-						parser.ClearError();
-					}
+					if(parser.HasError) parser.LogError();
 				}
 			}
 
@@ -1849,7 +1854,7 @@ namespace CodeImp.DoomBuilder.Data
 		//mxd
 		private void LoadVoxels() 
 		{
-			// Bail out when not supported by currect game configuration
+			// Bail out when not supported by current game configuration
 			if(string.IsNullOrEmpty(General.Map.Config.DecorateGames)) return;
 			
 			//Get names of all voxel models, which can be used "as is"
@@ -1859,7 +1864,7 @@ namespace CodeImp.DoomBuilder.Data
 			{
 				currentreader = dr;
 
-				string[] result = dr.GetVoxelNames();
+				IEnumerable<string> result = dr.GetVoxelNames();
 				if(result == null) continue;
 
 				foreach(string s in result) 
@@ -1902,7 +1907,7 @@ namespace CodeImp.DoomBuilder.Data
 				KeyValuePair<string, Stream> group = dr.GetVoxeldefData();
 				if(group.Value != null) 
 				{
-					if(parser.Parse(group.Value, group.Key))
+					if(parser.Parse(group.Value, group.Key, true))
 					{
 						foreach(KeyValuePair<string, ModelData> entry in parser.Entries)
 						{
@@ -1918,11 +1923,7 @@ namespace CodeImp.DoomBuilder.Data
 					}
 
 					// Report errors?
-					if(parser.HasError)
-					{
-						parser.LogError();
-						parser.ClearError();
-					}
+					if(parser.HasError) parser.LogError();
 				}
 			}
 
@@ -1963,7 +1964,7 @@ namespace CodeImp.DoomBuilder.Data
 
 				foreach(KeyValuePair<string, Stream> group in streams)
 				{
-					parser.Parse(group.Value, group.Key);
+					parser.Parse(group.Value, group.Key, false);
 					
 					// Gldefs can be interdependable. Can't carry on
 					if(parser.HasError)
@@ -2006,7 +2007,7 @@ namespace CodeImp.DoomBuilder.Data
 				foreach(KeyValuePair<string, Stream> group in streams) 
 				{
 					// Parse the data
-					parser.Parse(group.Value, Path.Combine(currentreader.Location.location, group.Key), General.Map.Options.LevelName);
+					parser.Parse(group.Value, Path.Combine(currentreader.Location.location, group.Key), General.Map.Options.LevelName, false);
 
 					//MAPINFO lumps are interdependable. Can't carry on...
 					if(parser.HasError)
@@ -2032,11 +2033,10 @@ namespace CodeImp.DoomBuilder.Data
 			mapinfo = parser.MapInfo ?? new MapInfo();
 		}
 
-		private void ParseFromLocation(ZDTextParser parser, string location)
+		private void ParseFromLocation(ZDTextParser parser, string location, bool clearerrors)
 		{
 			if(currentreader.IsSuspended) throw new Exception("Data reader is suspended");
-			Stream s = currentreader.LoadFile(location);
-			if(s != null) parser.Parse(s, location);
+			parser.Parse(currentreader.LoadFile(location), location, clearerrors);
 		}
 
 		//mxd. This loads REVERBS
@@ -2044,7 +2044,7 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			reverbs.Clear();
 
-			// Bail out when not supported by currect game configuration
+			// Bail out when not supported by current game configuration
 			if(string.IsNullOrEmpty(General.Map.Config.DecorateGames)) return;
 
 			ReverbsParser parser = new ReverbsParser();
@@ -2055,14 +2055,10 @@ namespace CodeImp.DoomBuilder.Data
 				foreach(KeyValuePair<string, Stream> group in streams) 
 				{
 					// Parse the data
-					parser.Parse(group.Value, group.Key);
+					parser.Parse(group.Value, group.Key, true);
 
 					// Report errors?
-					if(parser.HasError)
-					{
-						parser.LogError();
-						parser.ClearError();
-					}
+					if(parser.HasError) parser.LogError();
 				}
 			}
 
@@ -2075,31 +2071,94 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			soundsequences.Clear();
 
-			// Bail out when not supported by currect game configuration
+			// Bail out when not supported by current game configuration
 			if(string.IsNullOrEmpty(General.Map.Config.DecorateGames)) return;
 
 			SndSeqParser parser = new SndSeqParser();
 			foreach(DataReader dr in containers) 
 			{
 				currentreader = dr;
-				List<Stream> streams = dr.GetSndSeqData();
+				Dictionary<string, Stream> streams = dr.GetSndSeqData();
 
 				// Parse the data
-				foreach(Stream s in streams)
+				foreach(KeyValuePair<string, Stream> group in streams)
 				{
-					if(s != null) parser.Parse(s, "SNDSEQ");
+					parser.Parse(group.Value, group.Key, true);
 
 					// Report errors?
-					if(parser.HasError)
-					{
-						parser.LogError();
-						parser.ClearError();
-					}
+					if(parser.HasError) parser.LogError();
 				}
 			}
 
 			currentreader = null;
 			soundsequences = parser.GetSoundSequences();
+		}
+
+		//mxd. This loads cameratextures from ANIMDEFS
+		private void LoadAnimdefs()
+		{
+			// Bail out when not supported by current game configuration
+			if(string.IsNullOrEmpty(General.Map.Config.DecorateGames)) return;
+
+			AnimdefsParser parser = new AnimdefsParser();
+			foreach(DataReader dr in containers)
+			{
+				currentreader = dr;
+				Dictionary<string, Stream> streams = dr.GetAnimdefsData();
+
+				// Parse the data
+				foreach(KeyValuePair<string, Stream> group in streams)
+				{
+					parser.Parse(group.Value, group.Key, true);
+
+					// Report errors?
+					if(parser.HasError) parser.LogError();
+
+					// Create images
+					foreach(var g in parser.CameraTextures)
+					{
+						// Grab a local copy
+						CameraTextureData data = g.Value;
+
+						// Apply texture size override?
+						if(!data.FitTexture)
+						{
+							long longname = Lump.MakeLongName(data.Name);
+
+							if(textures.ContainsKey(longname))
+							{
+								data.ScaleX = (float)textures[longname].Width / data.Width;
+								data.ScaleY = (float)textures[longname].Height / data.Height;
+							}
+							else if(flats.ContainsKey(longname))
+							{
+								data.ScaleX = (float)flats[longname].Width / data.Width;
+								data.ScaleY = (float)flats[longname].Height / data.Height;
+							}
+						}
+
+						// Create texture
+						CameraTextureImage camteximage = new CameraTextureImage(data);
+
+						// Add to flats and textures
+						texturenames.Add(camteximage.Name);
+						flatnames.Add(camteximage.Name);
+
+						//TODO: Do cameratextures override stuff like this?..
+						textures[camteximage.LongName] = camteximage;
+						flats[camteximage.LongName] = camteximage;
+
+						// Add to preview manager
+						previews.AddImage(camteximage);
+
+						// Add to container's texture set
+						currentreader.TextureSet.AddFlat(camteximage);
+						currentreader.TextureSet.AddTexture(camteximage);
+					}
+				}
+			}
+
+			currentreader = null;
 		}
 
 		//mxd

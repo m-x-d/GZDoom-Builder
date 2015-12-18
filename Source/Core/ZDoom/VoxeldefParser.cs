@@ -16,10 +16,10 @@ namespace CodeImp.DoomBuilder.ZDoom
 		private Dictionary<string, ModelData> entries; //sprite name, entry
 		internal Dictionary<string, ModelData> Entries { get { return entries; } }
 
-		public override bool Parse(Stream stream, string sourcefilename) 
+		public override bool Parse(Stream stream, string sourcefilename, bool clearerrors) 
 		{
-			base.Parse(stream, sourcefilename);
 			entries = new Dictionary<string, ModelData>(StringComparer.Ordinal);
+			if(!base.Parse(stream, sourcefilename, clearerrors)) return false;
 			string prevToken = string.Empty;
 
 			List<string> spriteNames = new List<string>();
