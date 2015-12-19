@@ -21,7 +21,6 @@ using System.IO;
 using System.Text;
 using System.Globalization;
 using System.Collections.Generic;
-using CodeImp.DoomBuilder.Map;
 
 #endregion
 
@@ -141,32 +140,32 @@ namespace CodeImp.DoomBuilder.IO
 		// error properties if key is invalid and errorline > -1
 		private bool ValidateKey(string key, int errorline)
 		{
-			bool validateresult = true;
-			
 			// Check if key is an empty string
 			if(key.Length == 0)
 			{
 				// ERROR: Missing key name in statement
 				if(errorline > -1) RaiseError(errorline, ERROR_KEYMISSING);
-				validateresult = false;
+				return false;
 			}
-			else if(strictchecking) //Only when strict checking
+
+			//Only when strict checking
+			if(strictchecking) 
 			{
 				// Check if all characters are valid
-				foreach(char c in key) 
+				string keylc = key.ToLowerInvariant(); //mxd. UDMF key names are case-insensitive
+				foreach(char c in keylc) 
 				{
 					if(KEY_CHARACTERS.IndexOf(c) == -1) 
 					{
 						// ERROR: Invalid characters in key name
 						if(errorline > -1) RaiseError(errorline, ERROR_KEYCHARACTERS);
-						validateresult = false;
-						break;
+						return false;
 					}
 				}
 			}
 			
-			// Return result
-			return validateresult;
+			// Key is valid
+			return true;
 		}
 		
 		
