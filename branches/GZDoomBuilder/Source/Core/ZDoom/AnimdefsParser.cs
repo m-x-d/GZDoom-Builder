@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using System.IO;
+using CodeImp.DoomBuilder.Data;
 
 #endregion
 
@@ -58,8 +59,15 @@ namespace CodeImp.DoomBuilder.ZDoom
 				string texturename = StripTokenQuotes(ReadToken(false));
 				if(string.IsNullOrEmpty(texturename))
 				{
-					ReportError("Expected camera texture name");
-					break;
+					ReportError("expected camera texture name");
+					return false;
+				}
+
+				// Camera texture names are limited to 8 chars
+				if(texturename.Length > DataManager.CLASIC_IMAGE_NAME_LENGTH)
+				{
+					ReportError("camera texture names must be no longer than " + DataManager.CLASIC_IMAGE_NAME_LENGTH + " chars");
+					return false;
 				}
 
 				// Width
@@ -67,8 +75,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 				SkipWhitespace(true);
 				if(!ReadSignedInt(ref width) || width < 1)
 				{
-					ReportError("Expected camera texture width");
-					break;
+					ReportError("expected camera texture width");
+					return false;
 				}
 
 				// Height
@@ -76,8 +84,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 				SkipWhitespace(true);
 				if(!ReadSignedInt(ref height) || height < 1)
 				{
-					ReportError("Expected camera texture height");
-					break;
+					ReportError("expected camera texture height");
+					return false;
 				}
 
 				// "Fit" keyword?
@@ -96,16 +104,16 @@ namespace CodeImp.DoomBuilder.ZDoom
 					SkipWhitespace(true);
 					if(!ReadSignedInt(ref fitwidth) || fitwidth < 1)
 					{
-						ReportError("Expected camera texture fit width");
-						break;
+						ReportError("expected camera texture fit width");
+						return false;
 					}
 
 					// Fit height
 					SkipWhitespace(true);
 					if(!ReadSignedInt(ref fitheight) || fitheight < 1)
 					{
-						ReportError("Expected camera texture fit height");
-						break;
+						ReportError("expected camera texture fit height");
+						return false;
 					}
 
 					// Update scale
@@ -124,7 +132,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 				if(cameratextures.ContainsKey(texturename.ToUpperInvariant()))
 				{
 					ReportError("Camera texture '" + texturename + "' is defined more than once");
-					break;
+					return false;
 				}
 
 				// Store results
