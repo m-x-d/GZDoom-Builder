@@ -21,6 +21,7 @@ using System.Globalization;
 using System.Text;
 using System.IO;
 using CodeImp.DoomBuilder.Compilers;
+using CodeImp.DoomBuilder.Data;
 
 #endregion
 
@@ -29,6 +30,11 @@ namespace CodeImp.DoomBuilder.ZDoom
 	public abstract class ZDTextParser
 	{
 		#region ================== Constants
+
+		protected static readonly string RELATIVE_PATH_MARKER = ".." + Path.DirectorySeparatorChar;
+		protected static readonly string CURRENT_FOLDER_PATH_MARKER = "." + Path.DirectorySeparatorChar;
+		protected static readonly string ALT_RELATIVE_PATH_MARKER = ".." + Path.AltDirectorySeparatorChar;
+		protected static readonly string ALT_CURRENT_FOLDER_PATH_MARKER = "." + Path.AltDirectorySeparatorChar;
 		
 		#endregion
 		
@@ -84,7 +90,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			//mxd. Integrity check
 			if(stream == null || stream.Length == 0)
 			{
-				ReportError("Unable to load '" + sourcefilename + "'!");
+				ReportError("Unable to load '" + sourcefilename + "'");
 				return false;
 			}
 			
@@ -408,20 +414,20 @@ namespace CodeImp.DoomBuilder.ZDoom
 		}
 
 		//mxd
-		protected bool NextTokenIs(string expectedtoken) 
+		internal bool NextTokenIs(string expectedtoken) 
 		{
 			return NextTokenIs(expectedtoken, true);
 		}
 
 		//mxd
-		protected bool NextTokenIs(string expectedtoken, bool reporterror) 
+		internal bool NextTokenIs(string expectedtoken, bool reporterror) 
 		{
 			if(!SkipWhitespace(true)) return false;
 			string token = ReadToken();
 
 			if(string.Compare(token, expectedtoken, true) != 0)
 			{
-				if(reporterror) ReportError("expected '" + expectedtoken + "', but got '" + token + "'");
+				if(reporterror) ReportError("Expected '" + expectedtoken + "', but got '" + token + "'");
 
 				// Rewind so this structure can be read again
 				DataStream.Seek(-token.Length - 1, SeekOrigin.Current);
@@ -523,6 +529,69 @@ namespace CodeImp.DoomBuilder.ZDoom
 			datastream.Seek(pos, SeekOrigin.Begin);
 
 			return Math.Max(linenumber, 0);
+		}
+
+		//mxd. This converts given path to be relative to "filename"
+		protected string GetRootedPath(string filename, string includefilename)
+		{
+			// Construct root-relative path...
+			filename = filename.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+
+			// Filename absolute? Try to convert it to resource-rooted
+			if(Path.IsPathRooted(filename))
+			{
+				foreach(DataReader reader in General.Map.Data.Containers)
+				{
+					if(reader is DirectoryReader && filename.StartsWith(reader.Location.location, true, CultureInfo.InvariantCulture))
+					{
+						filename = filename.Substring(reader.Location.location.Length + 1, filename.Length - reader.Location.location.Length - 1);
+						break;
+					}
+				}
+			}
+			
+			string filepath = Path.GetDirectoryName(filename);
+			string result = includefilename.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+
+			if(result.StartsWith(RELATIVE_PATH_MARKER) && !string.IsNullOrEmpty(filepath))
+			{
+				string[] parts = filepath.Split(Path.DirectorySeparatorChar);
+				int index = parts.Length - 1;
+				int pos;
+
+				// Count & trim relative path markers
+				while((pos = result.LastIndexOf(RELATIVE_PATH_MARKER, StringComparison.Ordinal)) != -1)
+				{
+					// includefilename references something above the root?
+					if(index-- < 0)
+					{
+						ReportError("Unable to construct rooted path from '" + includefilename + "'");
+						return string.Empty;
+					}
+
+					string start = result.Substring(0, pos);
+					string end = result.Substring(pos + RELATIVE_PATH_MARKER.Length, result.Length - pos - RELATIVE_PATH_MARKER.Length);
+					result = start + end;
+				}
+
+				// Construct absolute path relative to current filename
+				while(index > -1)
+				{
+					result = parts[index--] + Path.DirectorySeparatorChar + result;
+				}
+			}
+			else
+			{
+				// Trim "this folder" marker
+				if(result.StartsWith(CURRENT_FOLDER_PATH_MARKER))
+					result = result.TrimStart(CURRENT_FOLDER_PATH_MARKER.ToCharArray());
+
+				// Treat as relative path
+				if(!string.IsNullOrEmpty(filepath))
+					result = Path.Combine(filepath, result);
+			}
+
+			return result;
 		}
 
 		//mxd. Language type

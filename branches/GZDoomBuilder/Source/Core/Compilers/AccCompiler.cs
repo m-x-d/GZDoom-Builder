@@ -79,7 +79,7 @@ namespace CodeImp.DoomBuilder.Compilers
 				foreach(string include in includes)
 				{
 					// Grab the script text from the resources
-					MemoryStream s = General.Map.Data.LoadFile(include);
+					Stream s = General.Map.Data.LoadFile(include);
 
 					if(s != null)
 					{

@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Globalization;
 using CodeImp.DoomBuilder.ZDoom;
@@ -14,7 +15,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 
 		private readonly HashSet<string> parsedlumps;
 		private readonly HashSet<string> includes;
-		private List<string> includestoskip;
+		private HashSet<string> includestoskip;
 		private string libraryname;
 
 		private readonly List<ScriptItem> namedscripts;
@@ -36,15 +37,15 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 			namedscripts = new List<ScriptItem>();
 			numberedscripts = new List<ScriptItem>();
 			functions = new List<ScriptItem>();
-			parsedlumps = new HashSet<string>();
-			includes = new HashSet<string>();
-			includestoskip = new List<string>();
+			parsedlumps = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+			includes = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+			includestoskip = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 			specialtokens += "(,)";
 		}
 
 		public override bool Parse(Stream stream, string sourcefilename, bool clearerrors) 
 		{
-			return Parse(stream, sourcefilename, new List<string>(), false, false, clearerrors);
+			return Parse(stream, sourcefilename, new HashSet<string>(), false, false, clearerrors);
 		}
 
 		public bool Parse(Stream stream, string sourcefilename, bool processincludes, bool isinclude, bool clearerrors)
@@ -52,19 +53,20 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 			return Parse(stream, sourcefilename, includestoskip, processincludes, isinclude, clearerrors);
 		}
 
-		public bool Parse(Stream stream, string sourcefilename, List<string> configincludes, bool processincludes, bool isinclude, bool clearerrors) 
+		public bool Parse(Stream stream, string sourcefilename, HashSet<string> configincludes, bool processincludes, bool isinclude, bool clearerrors) 
 		{
-			parsedlumps.Add(sourcefilename);
-			if(isinclude && !includes.Contains(sourcefilename)) includes.Add(sourcefilename);
-			includestoskip = configincludes;
-			int bracelevel = 0;
+			string source = sourcefilename.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
 
-			// Integrity check
-			if(stream == null || stream.Length == 0)
+			// Duplicate checks
+			if(parsedlumps.Contains(source))
 			{
-				ReportError("Unable to load " + (isinclude ? "include" : "") + " file '" + sourcefilename + "'!");
+				ReportError("Already parsed '" + source + "'. Check your #include directives");
 				return false;
 			}
+			
+			parsedlumps.Add(source);
+			includestoskip = configincludes;
+			int bracelevel = 0;
 
 			if(!base.Parse(stream, sourcefilename, clearerrors)) return false;
 
@@ -204,6 +206,10 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 					default:
 						if(processincludes && (token == "#include" || token == "#import")) 
 						{
+							//INFO: ZDoom ACC include paths can be absolute ("d:\stuff\coollib.acs"), relative ("../coollib.acs") 
+							//and can use forward and backward slashes ("acs\map01/script.acs")
+							//also include paths must be quoted
+							//long filenames are supported
 							SkipWhitespace(true);
 							string includelump = ReadToken(false); // Don't skip newline
 
@@ -213,7 +219,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 								return false;
 							}
 
-							includelump = StripTokenQuotes(includelump).ToLowerInvariant();
+							includelump = StripTokenQuotes(includelump);
 
 							if(string.IsNullOrEmpty(includelump))
 							{
@@ -221,26 +227,39 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 								return false;
 							}
 
-							string includename = Path.GetFileName(includelump);
+							includelump = includelump.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
 
 							// Compiler files?
-							if(includestoskip.Contains(includename)) continue;
+							if(includestoskip.Contains(includelump)) continue;
 
 							// Already parsed this?
-							if(includes.Contains(includename))
+							string includelumppath = GetRootedPath(source, includelump);
+
+							// Rooting succeeded?
+							if(HasError || string.IsNullOrEmpty(includelumppath)) return false;
+
+							// Already parsed?
+							if(includes.Contains(includelumppath))
 							{
-								ReportError("already parsed '" + includename + "'. Check your #include directives");
+								ReportError("Already parsed '" + includelump + "'. Check your " + token + " directives");
 								return false;
 							}
+
+							// Add to collections
+							includes.Add(includelumppath);
 						
 							// Callback to parse this file
-							if(OnInclude != null) OnInclude(this, includelump.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar));
+							if(OnInclude != null) OnInclude(this, includelumppath);
+
+							// Bail out on error
+							if(this.HasError) return false;
 
 							// Set our buffers back to continue parsing
 							datastream = localstream;
 							datareader = localreader;
 							sourcename = localsourcename;
 						}
+
 						break;
 				}
 			}

@@ -51,7 +51,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 			mapinfo = new MapInfo();
 			spawnnums = new Dictionary<int, string>();
 			doomednums = new Dictionary<int, string>();
-			parsedlumps = new HashSet<string>();
+			parsedlumps = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 		}
 
 		#endregion
@@ -68,7 +68,6 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 		public bool Parse(Stream stream, string sourcefilename, string mapname, bool clearerrors) 
 		{
 			this.mapname = mapname.ToLowerInvariant();
-			parsedlumps.Add(sourcefilename);
 			if(!base.Parse(stream, sourcefilename, clearerrors)) return false;
 
 			while(SkipWhitespace(true)) 
@@ -166,7 +165,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 									if(!ReadSignedFloat(token, ref scrollSpeed)) 
 									{
 										// Not numeric!
-										ReportError("expected " + skyType + " scroll speed value, but got '" + token + "'");
+										ReportError("Expected " + skyType + " scroll speed value, but got '" + token + "'");
 										return false;
 									}
 
@@ -182,7 +181,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							} 
 							else 
 							{
-								ReportError("expected " + skyType + " texture name");
+								ReportError("Expected " + skyType + " texture name");
 								return false;
 							}
 						}
@@ -217,7 +216,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							} 
 							else 
 							{
-								ReportError("expected " + skyType + " texture name");
+								ReportError("Expected " + skyType + " texture name");
 								return false;
 							}
 						}
@@ -251,13 +250,13 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							} 
 							else //...or not
 							{ 
-								ReportError("failed to parse " + fadeType + " value from string '" + colorVal + "'");
+								ReportError("Failed to parse " + fadeType + " value from string '" + colorVal + "'");
 								return false;
 							}
 						} 
 						else 
 						{
-							ReportError("expected " + fadeType + " color value");
+							ReportError("Expected " + fadeType + " color value");
 							return false;
 						}
 					}
@@ -279,7 +278,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						if(!ReadSignedInt(token, ref val)) 
 						{
 							// Not numeric!
-							ReportError("expected " + shadeType + " value, but got '" + token + "'");
+							ReportError("Expected " + shadeType + " value, but got '" + token + "'");
 							return false;
 						}
 
@@ -306,7 +305,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out val)) 
 						{
 							// Not numeric!
-							ReportError("expected " + densityType + " value, but got '" + token + "'");
+							ReportError("Expected " + densityType + " value, but got '" + token + "'");
 							return false;
 						}
 
@@ -352,17 +351,56 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						}
 					}
 				}
-			} 
-			else if(token == "include")
+			}
+			else if(token == "include") // It's "include", not "#include". Cause fuck consistency.
 			{
 				SkipWhitespace(true);
-				string includelump = StripTokenQuotes(ReadToken(false)).ToLowerInvariant(); // Don't skip newline
-				
+				string includelump = StripTokenQuotes(ReadToken(false)); // Don't skip newline
+
+				//INFO: ZDoom MAPINFO include paths can't be relative ("../mapstuff.txt") 
+				//or absolute ("d:/project/mapstuff.txt") 
+				//or have backward slases ("info\mapstuff.txt")
+				//include paths are relative to the first parsed entry, not the current one 
+				//also include paths may or may not be quoted
 				if(!string.IsNullOrEmpty(includelump)) 
 				{
+					// Absolute paths are not supported...
+					if(Path.IsPathRooted(includelump))
+					{
+						ReportError("Absolute include paths are not supported by ZDoom");
+						return false;
+					}
+
+					// Relative paths are not supported
+					if(includelump.StartsWith(RELATIVE_PATH_MARKER) || includelump.StartsWith(CURRENT_FOLDER_PATH_MARKER) ||
+					   includelump.StartsWith(ALT_RELATIVE_PATH_MARKER) || includelump.StartsWith(ALT_CURRENT_FOLDER_PATH_MARKER))
+					{
+						ReportError("Relative include paths are not supported by ZDoom");
+						return false;
+					}
+
+					// Backward slases are not supported
+					if(includelump.Contains(Path.DirectorySeparatorChar.ToString()))
+					{
+						ReportError("Only forward slases are supported by ZDoom");
+						return false;
+					}
+
+					// Already parsed?
+					if(parsedlumps.Contains(includelump))
+					{
+						ReportError("Already parsed '" + includelump + "'. Check your include directives");
+						return false;
+					}
+
+					// Add to collection
+					parsedlumps.Add(includelump);
+
 					// Callback to parse this file
-					if(OnInclude != null)
-						OnInclude(this, includelump.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar), clearerrors);
+					if(OnInclude != null) OnInclude(this, includelump, clearerrors);
+
+					// Bail out on error
+					if(this.HasError) return false;
 
 					// Set our buffers back to continue parsing
 					datastream = localstream;
@@ -371,7 +409,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 				} 
 				else 
 				{
-					ReportError("got include directive with missing or incorrect path: '" + includelump + "'");
+					ReportError("Expected filename to include");
 					return false;
 				}
 			}
@@ -384,7 +422,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 					token = ReadToken();
 					if(string.IsNullOrEmpty(token))
 					{
-						ReportError("failed to find the end of GameInfo block");
+						ReportError("Failed to find the end of GameInfo block");
 						return false; // Finished with this file
 					}
 					if(token == "}") break;
@@ -396,7 +434,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						string skyflatname = StripTokenQuotes(ReadToken());
 						if(string.IsNullOrEmpty(skyflatname)) 
 						{
-							ReportError("unable to get SkyFlatName value");
+							ReportError("Unable to get SkyFlatName value");
 							return false; // Finished with this file
 						}
 
@@ -413,7 +451,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 					token = ReadToken();
 					if(string.IsNullOrEmpty(token)) 
 					{
-						ReportError("failed to find the end of DoomEdNums block");
+						ReportError("Failed to find the end of DoomEdNums block");
 						return false; // Finished with this file
 					}
 					if(token == "}") break;
@@ -423,7 +461,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 					if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out id)) 
 					{
 						// Not numeric!
-						ReportError("expected DoomEdNums entry number, but got '" + token + "'");
+						ReportError("Expected DoomEdNums entry number, but got '" + token + "'");
 						return false; // Finished with this file
 					}
 
@@ -435,7 +473,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 					string classname = StripTokenQuotes(ReadToken());
 					if(string.IsNullOrEmpty(classname)) 
 					{
-						ReportError("unable to get DoomEdNums entry class definition");
+						ReportError("Unable to get DoomEdNums entry class definition");
 						return false; // Finished with this file
 					}
 
@@ -461,7 +499,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 					token = ReadToken();
 					if(string.IsNullOrEmpty(token)) 
 					{
-						ReportError("failed to find the end of SpawnNums block");
+						ReportError("Failed to find the end of SpawnNums block");
 						return false; // Finished with this file
 					}
 					if(token == "}") break;
@@ -471,7 +509,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 					if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out id)) 
 					{
 						// Not numeric!
-						ReportError("expected SpawnNums number, but got '" + token + "'");
+						ReportError("Expected SpawnNums number, but got '" + token + "'");
 						return false; // Finished with this file
 					}
 
@@ -483,7 +521,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 					token = StripTokenQuotes(ReadToken());
 					if(string.IsNullOrEmpty(token))
 					{
-						ReportError("unable to get SpawnNums entry class definition");
+						ReportError("Unable to get SpawnNums entry class definition");
 						return false;
 					}
 
