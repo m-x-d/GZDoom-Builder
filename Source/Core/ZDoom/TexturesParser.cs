@@ -107,7 +107,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 							//mxd. Can't load image without name
 							if(string.IsNullOrEmpty(tx.Name))
 							{
-								ReportError("Can't load an unnamed texture. Please consider giving names to your resources.");
+								ReportError("Can't load an unnamed texture. Please consider giving names to your resources");
 								return false;
 							}
 
@@ -133,7 +133,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 							//mxd. Can't load image without name
 							if(string.IsNullOrEmpty(tx.Name))
 							{
-								ReportError("Can't load an unnamed sprite. Please consider giving names to your resources.");
+								ReportError("Can't load an unnamed sprite. Please consider giving names to your resources");
 								return false;
 							}
 
@@ -158,7 +158,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 							//mxd. Can't load image without name
 							if(string.IsNullOrEmpty(tx.Name))
 							{
-								ReportError("Can't load an unnamed WallTexture. Please consider giving names to your resources.");
+								ReportError("Can't load an unnamed WallTexture. Please consider giving names to your resources");
 								return false;
 							}
 
@@ -184,7 +184,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 							//mxd. Can't load image without name
 							if(string.IsNullOrEmpty(tx.Name))
 							{
-								ReportError("Can't load an unnamed flat. Please consider giving names to your resources.");
+								ReportError("Can't load an unnamed flat. Please consider giving names to your resources");
 								return false;
 							}
 

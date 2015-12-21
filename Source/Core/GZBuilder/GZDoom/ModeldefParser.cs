@@ -6,14 +6,18 @@ using CodeImp.DoomBuilder.GZBuilder.Data;
 
 namespace CodeImp.DoomBuilder.GZBuilder.GZDoom 
 {
-	internal class ModeldefParser : ZDTextParser 
+	internal class ModeldefParser : ZDTextParser
 	{
+		private readonly Dictionary<string, int> actorsbyclass;
+		internal Dictionary<string, int> ActorsByClass { get { return actorsbyclass; } }
+
 		private Dictionary<string, ModelData> entries; //classname, entry
 		internal Dictionary<string, ModelData> Entries { get { return entries; } }
 
-		internal ModeldefParser() 
+		internal ModeldefParser(Dictionary<string, int> actorsbyclass)
 		{
-			entries = new Dictionary<string, ModelData>(StringComparer.Ordinal);
+			this.actorsbyclass = actorsbyclass;
+			this.entries = new Dictionary<string, ModelData>(StringComparer.Ordinal);
 		}
 
 		//should be called after all decorate actors are parsed 
@@ -60,22 +64,15 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							}
 
 							// Skip untill current structure end
-							if(!mds.ParsingFinished)
-							{
-								while(SkipWhitespace(true))
-								{
-									token = ReadToken();
-									if(string.IsNullOrEmpty(token) || token == "}") break;
-								}
-							}
+							if(!mds.ParsingFinished) SkipStructure(1);
 						}
 					} 
 					else 
 					{
 						// Unknown structure!
-						string token2;
-						if(token != "{") 
+						if(token != "{")
 						{
+							string token2;
 							do
 							{
 								if(!SkipWhitespace(true)) break;
@@ -85,21 +82,26 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							while(token2 != "{");
 						}
 
-						int scopelevel = 1;
-						do 
-						{
-							if(!SkipWhitespace(true)) break;
-							token2 = ReadToken();
-							if(string.IsNullOrEmpty(token2)) break;
-							if(token2 == "{") scopelevel++;
-							if(token2 == "}") scopelevel--;
-						}
-						while(scopelevel > 0);
+						SkipStructure(1);
 					}
 				}
 			}
 
 			return entries.Count > 0;
+		}
+
+		// Skips untill current structure end
+		private void SkipStructure(int scopelevel)
+		{
+			do
+			{
+				if(!SkipWhitespace(true)) break;
+				string token = ReadToken();
+				if(string.IsNullOrEmpty(token)) break;
+				if(token == "{") scopelevel++;
+				if(token == "}") scopelevel--;
+			}
+			while(scopelevel > 0);
 		}
 
 		protected override string GetLanguageType()

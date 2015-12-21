@@ -60,7 +60,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							path = parser.StripTokenQuotes(parser.ReadToken(false)).Replace("/", "\\"); // Don't skip newline
 							if(string.IsNullOrEmpty(path))
 							{
-								parser.ReportError("expected model path, but got '" + token + "'");
+								parser.ReportError("Expected model path, but got '" + token + "'");
 								return false;
 							}
 							break;
@@ -78,7 +78,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out index)) 
 							{
 								// Not numeric!
-								parser.ReportError("expected model index, but got '" + token + "'");
+								parser.ReportError("Expected model index, but got '" + token + "'");
 								return false;
 							}
 
@@ -94,7 +94,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							token = parser.StripTokenQuotes(parser.ReadToken(false)).ToLowerInvariant(); // Don't skip newline
 							if(string.IsNullOrEmpty(token)) 
 							{
-								parser.ReportError("model name required");
+								parser.ReportError("Expected model name");
 								return false;
 							} 
 
@@ -102,13 +102,13 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							string fileExt = Path.GetExtension(token);
 							if(string.IsNullOrEmpty(fileExt)) 
 							{
-								parser.ReportError("model '" + token + "' won't be loaded. Models without extension are not supported by GZDoom");
+								parser.ReportError("Model '" + token + "' won't be loaded. Models without extension are not supported by GZDoom");
 								return false;
 							}
 
 							if(fileExt != ".md3" && fileExt != ".md2") 
 							{
-								parser.ReportError("model '" + token + "' won't be loaded. Only MD2 and MD3 models are supported");
+								parser.ReportError("Model '" + token + "' won't be loaded. Only MD2 and MD3 models are supported");
 								return false;
 							}
 
@@ -129,7 +129,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out skinIndex)) 
 							{
 								// Not numeric!
-								parser.ReportError("expected skin index, but got '" + token + "'");
+								parser.ReportError("Expected skin index, but got '" + token + "'");
 								return false;
 							}
 
@@ -145,7 +145,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							token = parser.StripTokenQuotes(parser.ReadToken(false)).ToLowerInvariant(); // Don't skip newline
 							if(string.IsNullOrEmpty(token)) 
 							{
-								parser.ReportError("skin path required");
+								parser.ReportError("Skin path required");
 								return false;
 							} 
 
@@ -153,7 +153,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							string ext = Path.GetExtension(token);
 							if(Array.IndexOf(ModelData.SUPPORTED_TEXTURE_EXTENSIONS, ext) == -1) 
 							{
-								parser.ReportError("image format '" + ext + "' is not supported!");
+								parser.ReportError("Image format '" + ext + "' is not supported");
 								return false;
 							} 
 
@@ -171,7 +171,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							if(!parser.ReadSignedFloat(token, ref scale.Y)) 
 							{
 								// Not numeric!
-								parser.ReportError("expected Scale X value, but got '" + token + "'");
+								parser.ReportError("Expected Scale X value, but got '" + token + "'");
 								return false;
 							}
 
@@ -180,7 +180,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							if(!parser.ReadSignedFloat(token, ref scale.X)) 
 							{
 								// Not numeric!
-								parser.ReportError("expected Scale Y value, but got '" + token + "'");
+								parser.ReportError("Expected Scale Y value, but got '" + token + "'");
 								return false;
 							}
 
@@ -189,7 +189,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							if(!parser.ReadSignedFloat(token, ref scale.Z)) 
 							{
 								// Not numeric!
-								parser.ReportError("expected Scale Z value, but got '" + token + "'");
+								parser.ReportError("Expected Scale Z value, but got '" + token + "'");
 								return false;
 							}
 							break;
@@ -204,7 +204,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							if(!parser.ReadSignedFloat(token, ref offset.X)) 
 							{
 								// Not numeric!
-								parser.ReportError("expected Offset X value, but got '" + token + "'");
+								parser.ReportError("Expected Offset X value, but got '" + token + "'");
 								return false;
 							}
 
@@ -213,7 +213,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							if(!parser.ReadSignedFloat(token, ref offset.Y)) 
 							{
 								// Not numeric!
-								parser.ReportError("expected Offset Y value, but got '" + token + "'");
+								parser.ReportError("Expected Offset Y value, but got '" + token + "'");
 								return false;
 							}
 
@@ -222,7 +222,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							if(!parser.ReadSignedFloat(token, ref offset.Z)) 
 							{
 								// Not numeric!
-								parser.ReportError("expected Offset Z value, but got '" + token + "'");
+								parser.ReportError("Expected Offset Z value, but got '" + token + "'");
 								return false;
 							}
 							break;
@@ -237,7 +237,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							if(!parser.ReadSignedFloat(token, ref offset.Z)) 
 							{
 								// Not numeric!
-								parser.ReportError("expected ZOffset value, but got '" + token + "'");
+								parser.ReportError("Expected ZOffset value, but got '" + token + "'");
 								return false;
 							}
 							break;
@@ -252,7 +252,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							if(!parser.ReadSignedFloat(token, ref angleOffset)) 
 							{
 								// Not numeric!
-								parser.ReportError("expected AngleOffset value, but got '" + token + "'");
+								parser.ReportError("Expected AngleOffset value, but got '" + token + "'");
 								return false;
 							}
 							break;
@@ -267,7 +267,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							if(!parser.ReadSignedFloat(token, ref pitchOffset)) 
 							{
 								// Not numeric!
-								parser.ReportError("expected PitchOffset value, but got '" + token + "'");
+								parser.ReportError("Expected PitchOffset value, but got '" + token + "'");
 								return false;
 							}
 							break;
@@ -282,7 +282,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							if(!parser.ReadSignedFloat(token, ref rollOffset)) 
 							{
 								// Not numeric!
-								parser.ReportError("expected RollOffset value, but got '" + token + "'");
+								parser.ReportError("Expected RollOffset value, but got '" + token + "'");
 								return false;
 							}
 							break;
@@ -376,7 +376,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 										if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out modelIndex)) 
 										{
 											// Not numeric!
-											parser.ReportError("expected model index, but got '" + token + "'");
+											parser.ReportError("Expected model index, but got '" + token + "'");
 											return false;
 										}
 
@@ -388,7 +388,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 
 										if(modelNames[modelIndex] == null) 
 										{
-											parser.ReportError("got model index, which doesn't correspond to any defined model");
+											parser.ReportError("Model index doesn't correspond to any defined model");
 											return false;
 										}
 
@@ -404,7 +404,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 											if(!parser.ReadSignedInt(token, ref frame))
 											{
 												// Not numeric!
-												parser.ReportError("expected model frame index, but got '" + token + "'");
+												parser.ReportError("Expected model frame index, but got '" + token + "'");
 												return false;
 											}
 
@@ -417,7 +417,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 											if(string.IsNullOrEmpty(token))
 											{
 												// Missing!
-												parser.ReportError("expected model frame name");
+												parser.ReportError("Expected model frame name");
 												return false;
 											}
 
@@ -451,7 +451,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 			// Bail out when got errors or no models are used
 			if(Array.IndexOf(modelsUsed, true) == -1)
 			{
-				parser.ReportError("no models are used by '" + classname + "'");
+				parser.ReportError("No models are used by '" + classname + "'");
 				return false;
 			}
 			

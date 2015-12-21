@@ -38,7 +38,6 @@ namespace CodeImp.DoomBuilder.ZDoom
 					{ 
 						if(!string.IsNullOrEmpty(prevToken) && !spriteNames.Contains(prevToken)) spriteNames.Add(prevToken);
 						prevToken = token.ToUpperInvariant();
-
 					} 
 					else if(token == "=") //next token should be a voxel model name
 					{ 
@@ -78,14 +77,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 										foreach(string s in spriteNames)
 										{
-											if(entries.ContainsKey(s)) //TODO: is this a proper behaviour? 
-											{ 
-												entries[s] = mde;
-											} 
-											else 
-											{
-												entries.Add(s, mde);
-											}
+											//TODO: is this the proper behaviour?
+											entries[s] = mde;
 										}
 
 										//reset local data
@@ -96,45 +89,31 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 									break;
 								} 
-								else if(token == "overridepalette") 
+								else if(token == "overridepalette")
 								{
 									mde.OverridePalette = true;
 								} 
-								else if(token == "angleoffset") 
+								else if(token == "angleoffset")
 								{
-									SkipWhitespace(true);
+									if(!NextTokenIs("=")) return false;
 
 									token = StripTokenQuotes(ReadToken());
-									if(token != "=") 
-									{
-										ReportError("expected '=', but got '" + token + "'");
-										return false;
-									}
-
-									token = StripTokenQuotes(ReadToken());
-									if(!ReadSignedFloat(token, ref angleoffset)) 
+									if(!ReadSignedFloat(token, ref angleoffset))
 									{
 										// Not numeric!
-										ReportError("expected AngleOffset value, but got '" + token + "'");
+										ReportError("Expected AngleOffset value, but got '" + token + "'");
 										return false;
 									}
 								} 
 								else if(token == "scale") 
 								{
-									SkipWhitespace(true);
-
-									token = StripTokenQuotes(ReadToken());
-									if(token != "=") 
-									{
-										ReportError("expected '=', but got '" + token + "'");
-										return false;
-									}
+									if(!NextTokenIs("=")) return false;
 
 									token = StripTokenQuotes(ReadToken());
 									if(!ReadSignedFloat(token, ref scale)) 
 									{
 										// Not numeric!
-										ReportError("expected Scale value, but got '" + token + "'");
+										ReportError("Expected Scale value, but got '" + token + "'");
 										return false;
 									}
 								}

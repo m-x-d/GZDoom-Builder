@@ -71,8 +71,6 @@ namespace CodeImp.DoomBuilder.ZDoom
 		// Constructor
 		internal PatchStructure(TexturesParser parser)
 		{
-			string tokenstr;
-			
 			// Initialize
 			alpha = 1.0f;
 			renderStyle = TexturePathRenderStyle.Copy;//mxd
@@ -94,17 +92,11 @@ namespace CodeImp.DoomBuilder.ZDoom
 			name = name.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
 
 			// Now we should find a comma
-			parser.SkipWhitespace(true);
-			tokenstr = parser.ReadToken();
-			if(tokenstr != ",")
-			{
-				parser.ReportError("Expected a comma");
-				return;
-			}
+			if(!parser.NextTokenIs(",")) return; //mxd
 
 			// Next is the patch width
 			parser.SkipWhitespace(true);
-			tokenstr = parser.ReadToken();
+			string tokenstr = parser.ReadToken();
 			if(string.IsNullOrEmpty(tokenstr) || !int.TryParse(tokenstr, NumberStyles.Integer, CultureInfo.InvariantCulture, out offsetx))
 			{
 				parser.ReportError("Expected offset in pixels");
@@ -112,13 +104,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			}
 
 			// Now we should find a comma again
-			parser.SkipWhitespace(true);
-			tokenstr = parser.ReadToken();
-			if(tokenstr != ",")
-			{
-				parser.ReportError("Expected a comma");
-				return;
-			}
+			if(!parser.NextTokenIs(",")) return; //mxd
 
 			// Next is the patch height
 			parser.SkipWhitespace(true);
@@ -129,16 +115,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 				return;
 			}
 
-			// Next token is the beginning of the texture scope.
-			// If not, then the patch info ends here.
-			parser.SkipWhitespace(true);
-			tokenstr = parser.ReadToken();
-			if(tokenstr != "{")
-			{
-				// Rewind so this structure can be read again
-				parser.DataStream.Seek(-tokenstr.Length - 1, SeekOrigin.Current);
-				return;
-			}
+			// Next token is the beginning of the texture scope. If not, then the patch info ends here.
+			if(!parser.NextTokenIs("{", false)) return; //mxd
 
 			// Now parse the contents of texture structure
 			bool done = false; //mxd
@@ -169,7 +147,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 						if(rotation != 0 && rotation != 90 && rotation != 180 && rotation != 270) 
 						{
-							parser.LogWarning("Got unsupported rotation (" + rotation + ") in patch '" + name + "'");
+							parser.LogWarning("Unsupported rotation (" + rotation + ") in patch '" + name + "'");
 							rotation = 0;
 						}
 						break;

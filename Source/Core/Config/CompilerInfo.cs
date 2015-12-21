@@ -16,6 +16,7 @@
 
 #region ================== Namespaces
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using CodeImp.DoomBuilder.IO;
@@ -38,7 +39,7 @@ namespace CodeImp.DoomBuilder.Config
 		private readonly string programfile;
 		private readonly string programinterface;
 		private readonly string path;
-		private readonly List<string> files;
+		private readonly HashSet<string> files;
 		
 		#endregion
 		
@@ -49,7 +50,7 @@ namespace CodeImp.DoomBuilder.Config
 		public string Path { get { return path; } }
 		public string ProgramFile { get { return programfile; } }
 		public string ProgramInterface { get { return programinterface; } }
-		public List<string> Files { get { return files; } }
+		public HashSet<string> Files { get { return files; } }
 		
 		#endregion
 		
@@ -64,7 +65,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.filename = filename;
 			this.path = path;
 			this.name = name;
-			this.files = new List<string>();
+			this.files = new HashSet<string>(StringComparer.OrdinalIgnoreCase); //mxd. List -> HashSet
 			
 			// Read program file and interface
 			this.programfile = cfg.ReadSetting("compilers." + name + ".program", "");
@@ -75,7 +76,14 @@ namespace CodeImp.DoomBuilder.Config
 			foreach(DictionaryEntry de in cfgfiles)
 			{
 				if(de.Key.ToString() != "interface" && de.Key.ToString() != "program")
-					files.Add(de.Value.ToString());
+				{
+					//mxd
+					string include = de.Value.ToString().Replace(System.IO.Path.AltDirectorySeparatorChar, System.IO.Path.DirectorySeparatorChar);
+					if(files.Contains(include))
+						General.ErrorLogger.Add(ErrorType.Warning, "Include file '" + de.Value + "' is double-defined in '" + name + "' compiler configuration");
+					else
+						files.Add(include);
+				}
 			}
 		}
 		

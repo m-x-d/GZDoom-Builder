@@ -47,7 +47,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 						if(string.IsNullOrEmpty(name))
 						{
-							ReportError("Got empty sound environment name");
+							ReportError("Expected sound environment name");
 							break;
 						}
 
@@ -57,7 +57,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 						int arg1;
 						if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out arg1))
 						{
-							ReportError("Failed to parse the first part of '" + name + "' sound environment ID");
+							ReportError("Expected first part of '" + name + "' sound environment ID, but got '" + token + "'");
 							break;
 						}
 
@@ -67,7 +67,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 						int arg2;
 						if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out arg2)) 
 						{
-							ReportError("Failed to parse the second part of '" + name + "' sound environment ID");
+							ReportError("Expected second part of '" + name + "' sound environment ID, but got '" + token + "'");
 							break;
 						}
 

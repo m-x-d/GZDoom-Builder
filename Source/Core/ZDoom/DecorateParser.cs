@@ -45,6 +45,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 		
 		// These are all parsed actors, also those from other games
 		private Dictionary<string, ActorStructure> archivedactors;
+
+		//mxd. Includes tracking
+		private readonly HashSet<string> parsedlumps; 
 		
 		#endregion
 		
@@ -84,6 +87,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			// Initialize
 			actors = new Dictionary<string, ActorStructure>(StringComparer.Ordinal);
 			archivedactors = new Dictionary<string, ActorStructure>(StringComparer.Ordinal);
+			parsedlumps = new HashSet<string>(StringComparer.OrdinalIgnoreCase); //mxd
 		}
 		
 		// Disposer
@@ -148,35 +152,63 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 						case "#include":
 						{
-							// Include a file
+							//INFO: ZDoom DECORATE include paths can't be relative ("../actor.txt") 
+							//or absolute ("d:/project/actor.txt") 
+							//or have backward slases ("info\actor.txt")
+							//include paths are relative to the first parsed entry, not the current one 
+							//also include paths may or may not be quoted
 							SkipWhitespace(true);
-							string filename = ReadToken(false); //mxd. Don't skip newline
+							string filename = StripTokenQuotes(ReadToken(false)); //mxd. Don't skip newline
 
 							//mxd. Sanity checks
-							if(!filename.StartsWith("\"") || !filename.EndsWith("\""))
-							{
-								ReportError("#include filename should be quoted");
-								return false;
-							}
-
-							// Strip the quotes
-							filename = filename.Replace("\"", "");
-
-							//mxd. More sanity checks
 							if(string.IsNullOrEmpty(filename))
 							{
 								ReportError("Expected file name to include");
 								return false;
 							}
 
+							//mxd. Absolute paths are not supported...
+							if(Path.IsPathRooted(filename))
+							{
+								ReportError("Absolute include paths are not supported by ZDoom");
+								return false;
+							}
+
+							//mxd. Relative paths are not supported
+							if(filename.StartsWith(RELATIVE_PATH_MARKER) || filename.StartsWith(CURRENT_FOLDER_PATH_MARKER) ||
+							   filename.StartsWith(ALT_RELATIVE_PATH_MARKER) || filename.StartsWith(ALT_CURRENT_FOLDER_PATH_MARKER))
+							{
+								ReportError("Relative include paths are not supported by ZDoom");
+								return false;
+							}
+
+							//mxd. Backward slases are not supported
+							if(filename.Contains(Path.DirectorySeparatorChar.ToString()))
+							{
+								ReportError("Only forward slases are supported by ZDoom");
+								return false;
+							}
+
+							//mxd. Already parsed?
+							if(parsedlumps.Contains(filename))
+							{
+								ReportError("Already parsed '" + filename + "'. Check your include directives");
+								return false;
+							}
+
+							//mxd. Add to collection
+							parsedlumps.Add(filename);
+
 							// Callback to parse this file now
 							if(OnInclude != null) OnInclude(this, filename);
+
+							//mxd. Bail out on error
+							if(this.HasError) return false;
 
 							// Set our buffers back to continue parsing
 							datastream = localstream;
 							datareader = localreader;
 							sourcename = localsourcename;
-							if(this.HasError) return false;
 						}
 						break;
 

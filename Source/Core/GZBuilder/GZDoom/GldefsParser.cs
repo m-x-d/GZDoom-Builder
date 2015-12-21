@@ -49,7 +49,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 		private readonly Dictionary<string, DynamicLightData> lightsByName; //LightName, light definition
 		private readonly Dictionary<string, string> objects; //ClassName, LightName
 		private readonly Dictionary<long, GlowingFlatData> glowingflats;
-		private readonly List<string> parsedlumps;
+		private readonly HashSet<string> parsedlumps;
 
 		#endregion
 
@@ -69,7 +69,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 			whitespace = "\n \t\r\u00A0";
 			specialtokens = ",{}\n";
 			
-			parsedlumps = new List<string>();
+			parsedlumps = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 			lightsByName = new Dictionary<string, DynamicLightData>(StringComparer.Ordinal); //LightName, Light params
 			objects = new Dictionary<string, string>(StringComparer.Ordinal); //ClassName, LightName
 			glowingflats = new Dictionary<long, GlowingFlatData>(); // Texture name hash, Glowing Flat Data
@@ -81,7 +81,6 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 
 		public override bool Parse(Stream stream, string sourcefilename, bool clearerrors) 
 		{
-			parsedlumps.Add(sourcefilename);
 			if(!base.Parse(stream, sourcefilename, clearerrors)) return false;
 
 			// Keep local data
@@ -92,11 +91,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 			// Continue until at the end of the stream
 			while(SkipWhitespace(true)) 
 			{
-				string token = ReadToken();
+				string token = StripTokenQuotes(ReadToken()).ToLowerInvariant(); //Quotes can be anywhere! ANYWHERE!!! And GZDoom will still parse data correctly
 				if(!string.IsNullOrEmpty(token)) 
 				{
-					token = StripTokenQuotes(token.ToLowerInvariant()); //Quotes can be anywhere! ANYWHERE!!! And GZDoom will still parse data correctly
-
 					//got light structure
 					if(token == GldefsLightType.POINT || token == GldefsLightType.PULSE || token == GldefsLightType.FLICKER 
 						|| token == GldefsLightType.FLICKER2 || token == GldefsLightType.SECTOR) 
@@ -131,7 +128,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 										if(!float.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out light.Color.Red)) 
 										{
 											// Not numeric!
-											ReportError("expected Red color value, but got '" + token + "'");
+											ReportError("Expected Red color value, but got '" + token + "'");
 											return false;
 										}
 
@@ -141,7 +138,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 										if(!float.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out light.Color.Green)) 
 										{
 											// Not numeric!
-											ReportError("expected Green color value, but got '" + token + "'");
+											ReportError("Expected Green color value, but got '" + token + "'");
 											return false;
 										}
 
@@ -151,7 +148,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 										if (!float.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out light.Color.Blue)) 
 										{
 											// Not numeric!
-											ReportError("expected Blue color value, but got '" + token + "'");
+											ReportError("Expected Blue color value, but got '" + token + "'");
 											return false;
 										}
 //size
@@ -166,7 +163,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 											if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out light.PrimaryRadius)) 
 											{
 												// Not numeric!
-												ReportError("expected Size value, but got '" + token + "'");
+												ReportError("Expected Size value, but got '" + token + "'");
 												return false;
 											}
 											light.PrimaryRadius *= 2;
@@ -174,7 +171,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 										} 
 										else 
 										{
-											ReportError("'" + token + "' is not valid property for " + lightType + ".");
+											ReportError("'" + token + "' is not valid property for " + lightType);
 											return false;
 										}
 //offset
@@ -187,7 +184,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 										if(!ReadSignedFloat(token, ref light.Offset.X)) 
 										{
 											// Not numeric!
-											ReportError("expected Offset X value, but got '" + token + "'");
+											ReportError("Expected Offset X value, but got '" + token + "'");
 											return false;
 										}
 
@@ -197,7 +194,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 										if(!ReadSignedFloat(token, ref light.Offset.Z)) 
 										{
 											// Not numeric!
-											ReportError("expected Offset Y value, but got '" + token + "'");
+											ReportError("Expected Offset Y value, but got '" + token + "'");
 											return false;
 										}
 
@@ -207,7 +204,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 										if(!ReadSignedFloat(token, ref light.Offset.Y)) 
 										{
 											// Not numeric!
-											ReportError("expected Offset Z value, but got '" + token + "'");
+											ReportError("Expected Offset Z value, but got '" + token + "'");
 											return false;
 										}
 //subtractive
@@ -237,7 +234,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 										if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out i)) 
 										{
 											// Not numeric!
-											ReportError("expected Dontlightself value, but got '" + token + "'");
+											ReportError("Expected DontLightSelf value, but got '" + token + "'");
 											return false;
 										}
 
@@ -255,7 +252,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 											if(!float.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out interval)) 
 											{
 												// Not numeric!
-												ReportError("expected Interval value, but got '" + token + "'");
+												ReportError("Expected Interval value, but got '" + token + "'");
 												return false;
 											}
 
@@ -288,7 +285,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 											if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out light.SecondaryRadius)) 
 											{
 												// Not numeric!
-												ReportError("expected SecondarySize value, but got '" + token + "'");
+												ReportError("Expected SecondarySize value, but got '" + token + "'");
 												return false;
 											}
 											light.SecondaryRadius *= 2;
@@ -311,7 +308,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 											if(!float.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out chance)) 
 											{
 												// Not numeric!
-												ReportError("expected Chance value, but got '" + token + "'");
+												ReportError("Expected Chance value, but got '" + token + "'");
 												return false;
 											}
 
@@ -336,13 +333,13 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 											if(!float.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out scale)) 
 											{
 												// Not numeric!
-												ReportError("expected Scale value, but got '" + token + "'");
+												ReportError("Expected Scale value, but got '" + token + "'");
 												return false;
 											}
 
 											if(scale > 1.0f) 
 											{
-												ReportError("scale must be in 0.0 - 1.0 range, but is " + scale);
+												ReportError("Scale must be in 0.0 - 1.0 range, but is " + scale);
 												return false;
 											}
 
@@ -623,36 +620,58 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 					}
 					else if(token == "#include") 
 					{
+						//INFO: ZDoom GLDEFS include paths can't be relative ("../glstuff.txt") 
+						//or absolute ("d:/project/glstuff.txt") 
+						//or have backward slases ("info\glstuff.txt")
+						//include paths are relative to the first parsed entry, not the current one 
+						//also include paths may or may not be quoted
 						SkipWhitespace(true);
-						string includelump = ReadToken(false); // Don't skip newline
+						string includelump = StripTokenQuotes(ReadToken(false)); // Don't skip newline
 
 						// Sanity checks
-						if(!includelump.StartsWith("\"") || !includelump.EndsWith("\""))
-						{
-							ReportError("#include filename should be quoted");
-							return false;
-						}
-
-						includelump = StripTokenQuotes(includelump).ToLowerInvariant();
-
-						// More sanity checks
 						if(string.IsNullOrEmpty(includelump))
 						{
 							ReportError("Expected file name to include");
 							return false;
 						}
 
-						includelump = includelump.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
-						
-						// Already parsed?
-						if(parsedlumps.IndexOf(includelump) != -1)
+						// Absolute paths are not supported...
+						if(Path.IsPathRooted(includelump))
 						{
-							ReportError("already parsed '" + includelump + "'. Check your #include directives");
+							ReportError("Absolute include paths are not supported by ZDoom");
 							return false;
 						}
 
+						// Relative paths are not supported
+						if(includelump.StartsWith(RELATIVE_PATH_MARKER) || includelump.StartsWith(CURRENT_FOLDER_PATH_MARKER) ||
+						   includelump.StartsWith(ALT_RELATIVE_PATH_MARKER) || includelump.StartsWith(ALT_CURRENT_FOLDER_PATH_MARKER))
+						{
+							ReportError("Relative include paths are not supported by ZDoom");
+							return false;
+						}
+
+						// Backward slases are not supported
+						if(includelump.Contains(Path.DirectorySeparatorChar.ToString()))
+						{
+							ReportError("Only forward slases are supported by ZDoom");
+							return false;
+						}
+					
+						// Already parsed?
+						if(parsedlumps.Contains(includelump))
+						{
+							ReportError("Already parsed '" + includelump + "'. Check your #include directives");
+							return false;
+						}
+
+						// Add to collection
+						parsedlumps.Add(includelump);
+
 						// Callback to parse this file
 						if(OnInclude != null) OnInclude(this, includelump, clearerrors);
+
+						// Bail out on error
+						if(this.HasError) return false;
 
 						// Set our buffers back to continue parsing
 						datastream = localstream;

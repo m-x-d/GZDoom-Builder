@@ -102,17 +102,11 @@ namespace CodeImp.DoomBuilder.ZDoom
 			}
 
 			// Now we should find a comma
-			parser.SkipWhitespace(true);
-			string tokenstr = parser.ReadToken();
-			if(tokenstr != ",")
-			{
-				parser.ReportError("Expected a comma");
-				return;
-			}
+			if(!parser.NextTokenIs(",")) return; //mxd
 
 			// Next is the texture width
 			parser.SkipWhitespace(true);
-			tokenstr = parser.ReadToken();
+			string tokenstr = parser.ReadToken();
 			if(string.IsNullOrEmpty(tokenstr) || !int.TryParse(tokenstr, NumberStyles.Integer, CultureInfo.InvariantCulture, out width))
 			{
 				parser.ReportError("Expected width in pixels");
@@ -120,13 +114,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			}
 
 			// Now we should find a comma again
-			parser.SkipWhitespace(true);
-			tokenstr = parser.ReadToken();
-			if(tokenstr != ",")
-			{
-				parser.ReportError("Expected a comma");
-				return;
-			}
+			if(!parser.NextTokenIs(",")) return; //mxd
 
 			// Next is the texture height
 			parser.SkipWhitespace(true);
@@ -138,9 +126,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			}
 
 			// Next token should be the beginning of the texture scope
-			parser.SkipWhitespace(true);
-			tokenstr = parser.ReadToken();
-			if(tokenstr != "{")
+			if(!parser.NextTokenIs("{", false)) //mxd
 			{
 				parser.ReportError("Expected begin of structure");
 				return;
@@ -172,13 +158,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 						if(!ReadTokenInt(parser, token, out xoffset)) return;
 
 						// Now we should find a comma
-						parser.SkipWhitespace(true);
-						tokenstr = parser.ReadToken();
-						if(tokenstr != ",") 
-						{
-							parser.ReportError("Expected a comma");
-							return;
-						}
+						if(!parser.NextTokenIs(",")) return; //mxd
 
 						// Read y offset
 						if(!ReadTokenInt(parser, token, out yoffset)) return;
@@ -223,19 +203,15 @@ namespace CodeImp.DoomBuilder.ZDoom
 					parser.ReportError("Expected numeric value for property '" + propertyname + "'");
 					return false;
 				}
-				else
-				{
-					// Success
-					return true;
-				}
+
+				// Success
+				return true;
 			}
-			else
-			{
-				// Can't find the property value!
-				parser.ReportError("Expected a value for property '" + propertyname + "'");
-				value = 0.0f;
-				return false;
-			}
+
+			// Can't find the property value!
+			parser.ReportError("Expected a value for property '" + propertyname + "'");
+			value = 0.0f;
+			return false;
 		}
 
 		// This reads the next token and sets an integral value, returns false when failed
@@ -252,41 +228,29 @@ namespace CodeImp.DoomBuilder.ZDoom
 					parser.ReportError("Expected integral value for property '" + propertyname + "'");
 					return false;
 				}
-				else
-				{
-					// Success
-					return true;
-				}
+
+				// Success
+				return true;
 			}
-			else
-			{
-				// Can't find the property value!
-				parser.ReportError("Expected a value for property '" + propertyname + "'");
-				value = 0;
-				return false;
-			}
+
+			// Can't find the property value!
+			parser.ReportError("Expected a value for property '" + propertyname + "'");
+			value = 0;
+			return false;
 		}
 
 		// This makes a HighResImage texture for this texture
 		internal HighResImage MakeImage()
 		{
-			float scalex, scaley;
-			
-			// Determine default scale
-			float defaultscale = General.Map.Config.DefaultTextureScale;
-
 			// Determine scale for texture
-			if(xscale == 0.0f) scalex = defaultscale; else scalex = 1f / xscale;
-			if(yscale == 0.0f) scaley = defaultscale; else scaley = 1f / yscale;
+			float scalex = ((xscale == 0.0f) ? General.Map.Config.DefaultTextureScale : 1f / xscale);
+			float scaley = ((yscale == 0.0f) ? General.Map.Config.DefaultTextureScale : 1f / yscale);
 
 			// Make texture
 			HighResImage tex = new HighResImage(name, virtualpath, width, height, scalex, scaley, worldpanning, typename == "flat");
 
 			// Add patches
-			foreach(PatchStructure p in patches)
-			{
-				tex.AddPatch(new TexturePatch(p));//mxd
-			}
+			foreach(PatchStructure p in patches) tex.AddPatch(new TexturePatch(p));//mxd
 			
 			return tex;
 		}

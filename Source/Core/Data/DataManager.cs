@@ -366,7 +366,7 @@ namespace CodeImp.DoomBuilder.Data
 			LoadReverbs();
 			LoadSndSeq();
 			LoadVoxels();
-			Dictionary<string, List<int>> actorsbyclass = CreateActorsByClassList();
+			Dictionary<string, int> actorsbyclass = CreateActorsByClassList();
 			LoadModeldefs(actorsbyclass);
 			foreach(Thing t in General.Map.Map.Things) t.UpdateCache();
 			General.MainWindow.DisplayReady();
@@ -1719,9 +1719,9 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== mxd. Modeldef, Voxeldef, Gldefs, Mapinfo
 
 		//mxd. This creates <Actor Class, Thing.Type> dictionary. Should be called after all DECORATE actors are parsed
-		private Dictionary<string, List<int>> CreateActorsByClassList() 
+		private Dictionary<string, int> CreateActorsByClassList() 
 		{
-			Dictionary<string, List<int>> actors = new Dictionary<string, List<int>>(StringComparer.Ordinal);
+			Dictionary<string, int> actors = new Dictionary<string, int>(StringComparer.Ordinal);
 			if(string.IsNullOrEmpty(General.Map.Config.DecorateGames)) return actors;
 
 			//read our new shiny ClassNames for default game things
@@ -1730,13 +1730,15 @@ namespace CodeImp.DoomBuilder.Data
 				if(!string.IsNullOrEmpty(ti.Value.ClassName))
 				{
 					string classname = ti.Value.ClassName.ToLowerInvariant();
-					if(!actors.ContainsKey(classname)) actors.Add(classname, new List<int>());
-					actors[classname].Add(ti.Key);
+
+					if(actors.ContainsKey(classname) && actors[classname] != ti.Key)
+						General.ErrorLogger.Add(ErrorType.Warning, "actor '" + ti.Value.ClassName + "' has several editor numbers! Only the last one (" + ti.Key + ") will be used.");
+					actors[classname] = ti.Key;
 				}
 			}
 
 			if(actors.Count == 0) 
-				General.ErrorLogger.Add(ErrorType.Warning, "Warning: unable to find any DECORATE actor definitions!");
+				General.ErrorLogger.Add(ErrorType.Warning, "unable to find any DECORATE actor definitions!");
 
 			return actors;
 		}
@@ -1799,13 +1801,13 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		//mxd. This parses modeldefs. Should be called after all DECORATE actors are parsed and actorsByClass dictionary created
-		private void LoadModeldefs(Dictionary<string, List<int>> actorsByClass) 
+		private void LoadModeldefs(Dictionary<string, int> actorsbyclass) 
 		{
 			//if no actors defined in DECORATE or game config...
-			if(actorsByClass.Count == 0) return;
+			if(actorsbyclass.Count == 0) return;
 
-			Dictionary<string, ModelData> modelDefEntriesByName = new Dictionary<string, ModelData>(StringComparer.Ordinal);
-			ModeldefParser parser = new ModeldefParser();
+			Dictionary<string, ModelData> modeldefentriesbyname = new Dictionary<string, ModelData>(StringComparer.Ordinal);
+			ModeldefParser parser = new ModeldefParser(actorsbyclass);
 
 			foreach(DataReader dr in containers) 
 			{
@@ -1819,15 +1821,10 @@ namespace CodeImp.DoomBuilder.Data
 					{
 						foreach(KeyValuePair<string, ModelData> g in parser.Entries) 
 						{
-							if(modelDefEntriesByName.ContainsKey(g.Key)) 
-							{
+							if(modeldefentriesbyname.ContainsKey(g.Key)) 
 								General.ErrorLogger.Add(ErrorType.Warning, "Model definition for actor '" + g.Key + "' is double-defined in '" + group.Key + "'");
-								modelDefEntriesByName[g.Key] = g.Value;
-							} 
-							else 
-							{
-								modelDefEntriesByName.Add(g.Key, g.Value);
-							}
+							
+							modeldefentriesbyname[g.Key] = g.Value;
 						}
 					}
 
@@ -1838,16 +1835,12 @@ namespace CodeImp.DoomBuilder.Data
 
 			currentreader = null;
 
-			foreach(KeyValuePair<string, ModelData> e in modelDefEntriesByName) 
+			foreach(KeyValuePair<string, ModelData> e in modeldefentriesbyname) 
 			{
-				if(actorsByClass.ContainsKey(e.Key))
-				{
-					foreach(int i in actorsByClass[e.Key]) modeldefentries[i] = modelDefEntriesByName[e.Key];
-				}
+				if(actorsbyclass.ContainsKey(e.Key))
+					modeldefentries[actorsbyclass[e.Key]] = modeldefentriesbyname[e.Key];
 				else if(!decorate.ActorsByClass.ContainsKey(e.Key))
-				{
 					General.ErrorLogger.Add(ErrorType.Warning, "Got MODELDEF override for class '" + e.Key + "', but haven't found such class in Decorate");
-				}
 			}
 		}
 
@@ -1947,11 +1940,11 @@ namespace CodeImp.DoomBuilder.Data
 			}
 		}
 
-		//mxd. This parses gldefs. Should be called after all DECORATE actors are parsed and actorsByClass dictionary created
-		private void LoadGldefs(Dictionary<string, List<int>> actorsByClass) 
+		//mxd. This parses gldefs. Should be called after all DECORATE actors are parsed
+		private void LoadGldefs(Dictionary<string, int> actorsbyclass) 
 		{
 			//if no actors defined in DECORATE or game config...
-			if(actorsByClass.Count == 0) return;
+			if(actorsbyclass.Count == 0) return;
 
 			GldefsParser parser = new GldefsParser { OnInclude = ParseFromLocation };
 
@@ -1975,19 +1968,14 @@ namespace CodeImp.DoomBuilder.Data
 				}
 			}
 
-			//create gldefsEntries dictionary
-			foreach(KeyValuePair<string, string> e in parser.Objects) //ClassName, Light name
+			//create Gldefs Entries dictionary
+			foreach(KeyValuePair<string, string> e in parser.Objects) //<ClassName, Light name>
 			{ 
 				//if we have decorate actor and light definition for given ClassName...
-				if(actorsByClass.ContainsKey(e.Key) && parser.LightsByName.ContainsKey(e.Value)) 
-				{
-					foreach(int i in actorsByClass[e.Key])
-						gldefsentries[i] = parser.LightsByName[e.Value];
-				} 
+				if(actorsbyclass.ContainsKey(e.Key) && parser.LightsByName.ContainsKey(e.Value)) 
+					gldefsentries[actorsbyclass[e.Key]] = parser.LightsByName[e.Value];
 				else if(!decorate.AllActorsByClass.ContainsKey(e.Key))
-				{
 					General.ErrorLogger.Add(ErrorType.Warning, "Got GLDEFS light for class '" + e.Key + "', but haven't found such class in DECORATE");
-				}
 			}
 
 			// Grab them glowy flats!
@@ -2162,13 +2150,15 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		//mxd
-		internal MemoryStream LoadFile(string name) 
+		internal Stream LoadFile(string name) 
 		{
-			// Relative path?
-			if(name.StartsWith("..\\")) name = name.Replace("..\\", "");
-			
+			// Filesystem path?
+			if(Path.IsPathRooted(name))
+				return (File.Exists(name) ? File.OpenRead(name) : null);
+
 			foreach(DataReader dr in containers)
 				if(dr.FileExists(name)) return dr.LoadFile(name);
+
 			return null;
 		}
 

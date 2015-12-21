@@ -59,14 +59,14 @@ namespace CodeImp.DoomBuilder.ZDoom
 				string texturename = StripTokenQuotes(ReadToken(false));
 				if(string.IsNullOrEmpty(texturename))
 				{
-					ReportError("expected camera texture name");
+					ReportError("Expected camera texture name");
 					return false;
 				}
 
 				// Camera texture names are limited to 8 chars
 				if(texturename.Length > DataManager.CLASIC_IMAGE_NAME_LENGTH)
 				{
-					ReportError("camera texture names must be no longer than " + DataManager.CLASIC_IMAGE_NAME_LENGTH + " chars");
+					ReportError("Camera texture names must be no longer than " + DataManager.CLASIC_IMAGE_NAME_LENGTH + " chars");
 					return false;
 				}
 
@@ -75,7 +75,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 				SkipWhitespace(true);
 				if(!ReadSignedInt(ref width) || width < 1)
 				{
-					ReportError("expected camera texture width");
+					ReportError("Expected camera texture width");
 					return false;
 				}
 
@@ -84,7 +84,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 				SkipWhitespace(true);
 				if(!ReadSignedInt(ref height) || height < 1)
 				{
-					ReportError("expected camera texture height");
+					ReportError("Expected camera texture height");
 					return false;
 				}
 
@@ -104,7 +104,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 					SkipWhitespace(true);
 					if(!ReadSignedInt(ref fitwidth) || fitwidth < 1)
 					{
-						ReportError("expected camera texture fit width");
+						ReportError("Expected camera texture fit width");
 						return false;
 					}
 
@@ -112,7 +112,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 					SkipWhitespace(true);
 					if(!ReadSignedInt(ref fitheight) || fitheight < 1)
 					{
-						ReportError("expected camera texture fit height");
+						ReportError("Expected camera texture fit height");
 						return false;
 					}
 
