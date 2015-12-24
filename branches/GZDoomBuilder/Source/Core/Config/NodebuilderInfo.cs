@@ -32,11 +32,11 @@ namespace CodeImp.DoomBuilder.Config
 
 		#region ================== Variables
 
-		private string name;
-		private string title;
-		private CompilerInfo compiler;
-		private string parameters;
-		private bool specialoutputfile;
+		private readonly string name;
+		private readonly string title;
+		private readonly CompilerInfo compiler;
+		private readonly string parameters;
+		private readonly bool specialoutputfile;
 		
 		#endregion
 
@@ -55,15 +55,13 @@ namespace CodeImp.DoomBuilder.Config
 		// Constructor
 		public NodebuilderInfo(string filename, string name, Configuration cfg)
 		{
-			string compilername;
-			
 			General.WriteLogLine("Registered nodebuilder configuration '" + name + "' from '" + filename + "'");
 			
 			// Initialize
 			this.name = name;
 			this.compiler = null;
 			this.title = cfg.ReadSetting("nodebuilders." + name + ".title", "<untitled configuration>");
-			compilername = cfg.ReadSetting("nodebuilders." + name + ".compiler", "");
+			string compilername = cfg.ReadSetting("nodebuilders." + name + ".compiler", "");
 			this.parameters = cfg.ReadSetting("nodebuilders." + name + ".parameters", "");
 			
 			// Check for special output filename
@@ -104,7 +102,7 @@ namespace CodeImp.DoomBuilder.Config
 		public int CompareTo(NodebuilderInfo other)
 		{
 			// Compare
-			return name.CompareTo(other.name);
+			return String.Compare(name, other.name, StringComparison.Ordinal);
 		}
 		
 		// String representation

@@ -336,6 +336,7 @@ special
 	-90:GetActorRoll(1),
 	-91:QuakeEx(8,12),
 	-92:Warp(6,11),
+	-93:GetMaxInventory(2),
 
 	// Zandronum's
 	-100:ResetMap(0),
