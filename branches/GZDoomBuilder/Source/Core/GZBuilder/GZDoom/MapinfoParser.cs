@@ -137,7 +137,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 
 							//should be sky texture name
 							token = StripTokenQuotes(ReadToken());
-							bool gotComma = (token.IndexOf(",") != -1);
+							bool gotComma = (token.IndexOf(",", StringComparison.Ordinal) != -1);
 							if(gotComma) token = token.Replace(",", "");
 							string skyTexture = StripTokenQuotes(token).ToLowerInvariant();
 
@@ -359,7 +359,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 
 				//INFO: ZDoom MAPINFO include paths can't be relative ("../mapstuff.txt") 
 				//or absolute ("d:/project/mapstuff.txt") 
-				//or have backward slases ("info\mapstuff.txt")
+				//or have backward slashes ("info\mapstuff.txt")
 				//include paths are relative to the first parsed entry, not the current one 
 				//also include paths may or may not be quoted
 				if(!string.IsNullOrEmpty(includelump)) 
@@ -379,10 +379,10 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						return false;
 					}
 
-					// Backward slases are not supported
-					if(includelump.Contains(Path.DirectorySeparatorChar.ToString()))
+					// Backward slashes are not supported
+					if(includelump.Contains(Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture)))
 					{
-						ReportError("Only forward slases are supported by ZDoom");
+						ReportError("Only forward slashes are supported by ZDoom");
 						return false;
 					}
 
