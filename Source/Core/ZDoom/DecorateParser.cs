@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 
 #endregion
@@ -154,7 +155,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 						{
 							//INFO: ZDoom DECORATE include paths can't be relative ("../actor.txt") 
 							//or absolute ("d:/project/actor.txt") 
-							//or have backward slases ("info\actor.txt")
+							//or have backward slashes ("info\actor.txt")
 							//include paths are relative to the first parsed entry, not the current one 
 							//also include paths may or may not be quoted
 							SkipWhitespace(true);
@@ -182,10 +183,10 @@ namespace CodeImp.DoomBuilder.ZDoom
 								return false;
 							}
 
-							//mxd. Backward slases are not supported
-							if(filename.Contains(Path.DirectorySeparatorChar.ToString()))
+							//mxd. Backward slashes are not supported
+							if(filename.Contains(Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture)))
 							{
-								ReportError("Only forward slases are supported by ZDoom");
+								ReportError("Only forward slashes are supported by ZDoom");
 								return false;
 							}
 
