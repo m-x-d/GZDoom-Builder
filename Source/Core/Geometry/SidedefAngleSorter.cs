@@ -44,27 +44,23 @@ namespace CodeImp.DoomBuilder.Geometry
 		// This calculates the relative angle between two sides
 		private float CalculateRelativeAngle(Sidedef a, Sidedef b)
 		{
-			float s, n, ana, anb;
-			Vector2D va, vb;
-			bool dir;
-			
 			// Determine angles
-			ana = a.Line.Angle; if(a.Line.End == basevertex) ana += Angle2D.PI;
-			anb = b.Line.Angle; if(b.Line.End == basevertex) anb += Angle2D.PI;
+			float ana = a.Line.Angle; if(a.Line.End == basevertex) ana += Angle2D.PI;
+			float anb = b.Line.Angle; if(b.Line.End == basevertex) anb += Angle2D.PI;
 			
 			// Take the difference from angles
-			n = Angle2D.Difference(ana, anb);
+			float n = Angle2D.Difference(ana, anb);
 			
 			// Get line end vertices a and b that are not connected to basevertex
-			if(a.Line.Start == basevertex) va = a.Line.End.Position; else va = a.Line.Start.Position;
-			if(b.Line.Start == basevertex) vb = b.Line.End.Position; else vb = b.Line.Start.Position;
+			Vector2D va = (a.Line.Start == basevertex ? a.Line.End.Position : a.Line.Start.Position);
+			Vector2D vb = (b.Line.Start == basevertex ? b.Line.End.Position : b.Line.Start.Position);
 			
 			// Determine rotation direction
-			dir = baseside.IsFront;
+			bool dir = baseside.IsFront;
 			if(baseside.Line.End == basevertex) dir = !dir;
 			
 			// Check to which side the angle goes and adjust angle as needed
-			s = Line2D.GetSideOfLine(va, vb, basevertex.Position);
+			float s = Line2D.GetSideOfLine(va, vb, basevertex.Position);
 			if((s < 0) && dir) n = Angle2D.PI2 - n;
 			if((s > 0) && !dir) n = Angle2D.PI2 - n;
 			
@@ -77,8 +73,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		{
 			// Somehow, in a release build without debugger attached,
 			// the code above is not always the same when x == y... don't ask.
-			if(x == y)
-				return 0;
+			if(x == y) return 0;
 			
 			// Calculate angles
 			float ax = CalculateRelativeAngle(baseside, x);

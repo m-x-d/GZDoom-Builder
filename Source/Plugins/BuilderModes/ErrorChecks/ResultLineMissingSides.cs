@@ -184,11 +184,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Fix both sides
 		public override bool Button2Click(bool batchMode)
 		{
-			Sidedef newside;
 			if(!batchMode) General.Map.UndoRedo.CreateUndo("Create sidedefs");
 
 			// Front
-			newside = General.Map.Map.CreateSidedef(line, true, copysidedeffront.Sector);
+			Sidedef newside = General.Map.Map.CreateSidedef(line, true, copysidedeffront.Sector);
 			if(newside == null) return false;
 			copysidedeffront.CopyPropertiesTo(newside);
 			

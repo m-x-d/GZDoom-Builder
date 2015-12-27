@@ -1148,8 +1148,7 @@ namespace CodeImp.DoomBuilder.Geometry
 										{
 											foreach(LinedefSide endp in endpoints)
 											{
-												List<LinedefSide> p;
-												p = Tools.FindClosestPath(startp.Line, startp.Front, endp.Line, endp.Front, true);
+												List<LinedefSide> p = Tools.FindClosestPath(startp.Line, startp.Front, endp.Line, endp.Front, true);
 												if((p != null) && ((shortestpath == null) || (p.Count < shortestpath.Count))) shortestpath = p;
 												p = Tools.FindClosestPath(endp.Line, endp.Front, startp.Line, startp.Front, true);
 												if((p != null) && ((shortestpath == null) || (p.Count < shortestpath.Count))) shortestpath = p;

@@ -378,15 +378,13 @@ namespace CodeImp.DoomBuilder.Editing
 		// This zooms and moves to view the given area
 		public void CenterOnArea(RectangleF area, float padding)
 		{
-			float scalew, scaleh, scale;
-			
 			// Add size to the area for better overview
 			area.Inflate(area.Width * padding, area.Height * padding);
 			
 			// Calculate scale to view map at
-			scalew = General.Map.Graphics.RenderTarget.ClientSize.Width / area.Width;
-			scaleh = General.Map.Graphics.RenderTarget.ClientSize.Height / area.Height;
-			scale = scalew < scaleh ? scalew : scaleh;
+			float scalew = General.Map.Graphics.RenderTarget.ClientSize.Width / area.Width;
+			float scaleh = General.Map.Graphics.RenderTarget.ClientSize.Height / area.Height;
+			float scale = scalew < scaleh ? scalew : scaleh;
 			
 			//mxd. Change the view to see the whole map
 			CenterOnCoordinates(new Vector2D(area.Left + area.Width * 0.5f, area.Top + area.Height * 0.5f), scale);

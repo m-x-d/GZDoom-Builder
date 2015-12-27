@@ -264,12 +264,10 @@ namespace CodeImp.DoomBuilder.Data
 		// This loads all data resources
 		internal void Load(DataLocationList locations)
 		{
-			int texcount, flatcount, spritecount, thingcount, colormapcount;
 			Dictionary<long, ImageData> texturesonly = new Dictionary<long, ImageData>();
 			Dictionary<long, ImageData> colormapsonly = new Dictionary<long, ImageData>();
 			Dictionary<long, ImageData> flatsonly = new Dictionary<long, ImageData>();
-			DataReader c;
-			
+
 			// Create collections
 			containers = new List<DataReader>();
 			textures = new Dictionary<long, ImageData>();
@@ -303,7 +301,7 @@ namespace CodeImp.DoomBuilder.Data
 			foreach(DataLocation dl in locations)
 			{
 				// Nothing chosen yet
-				c = null;
+				DataReader c = null;
 
 				// TODO: Make this work more elegant using reflection.
 				// Make DataLocation.type of type Type and assign the
@@ -348,9 +346,9 @@ namespace CodeImp.DoomBuilder.Data
 			
 			// Load stuff
 			LoadPalette();
-			texcount = LoadTextures(texturesonly, texturenamesshorttofull);
-			flatcount = LoadFlats(flatsonly, flatnamesshorttofull);
-			colormapcount = LoadColormaps(colormapsonly);
+			int texcount = LoadTextures(texturesonly, texturenamesshorttofull);
+			int flatcount = LoadFlats(flatsonly, flatnamesshorttofull);
+			int colormapcount = LoadColormaps(colormapsonly);
 			LoadSprites();
 
 			//mxd. Load MAPINFO. Should happen before parisng DECORATE
@@ -358,8 +356,8 @@ namespace CodeImp.DoomBuilder.Data
 			Dictionary<int, string> doomednums;
 			LoadMapInfo(out spawnnums, out doomednums);
 
-			thingcount = LoadDecorateThings(spawnnums, doomednums);
-			spritecount = LoadThingSprites();
+			int thingcount = LoadDecorateThings(spawnnums, doomednums);
+			int spritecount = LoadThingSprites();
 			LoadInternalSprites();
 
 			//mxd. Load more stuff

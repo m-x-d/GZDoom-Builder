@@ -27,9 +27,9 @@ namespace CodeImp.DoomBuilder.Geometry
 	public sealed class LinedefAngleSorter : IComparer<Linedef>
 	{
 		// Variables
-		private Linedef baseline;
-		private bool front;
-		private Vertex basevertex;
+		private readonly Linedef baseline;
+		private readonly bool front;
+		private readonly Vertex basevertex;
 
 		// Constructor
 		public LinedefAngleSorter(Linedef baseline, bool front, Vertex fromvertex)
@@ -48,22 +48,19 @@ namespace CodeImp.DoomBuilder.Geometry
 		// This calculates the relative angle between two lines
 		private float CalculateRelativeAngle(Linedef a, Linedef b)
 		{
-			float s, n, ana, anb;
-			Vector2D va, vb;
-			
 			// Determine angles
-			ana = a.Angle; if(a.End == basevertex) ana += Angle2D.PI;
-			anb = b.Angle; if(b.End == basevertex) anb += Angle2D.PI;
+			float ana = a.Angle; if(a.End == basevertex) ana += Angle2D.PI;
+			float anb = b.Angle; if(b.End == basevertex) anb += Angle2D.PI;
 			
 			// Take the difference from angles
-			n = Angle2D.Difference(ana, anb);
+			float n = Angle2D.Difference(ana, anb);
 			
 			// Get line end vertices a and b that are not connected to basevertex
-			if(a.Start == basevertex) va = a.End.Position; else va = a.Start.Position;
-			if(b.Start == basevertex) vb = b.End.Position; else vb = b.Start.Position;
+			Vector2D va = (a.Start == basevertex ? a.End.Position : a.Start.Position);
+			Vector2D vb = (b.Start == basevertex ? b.End.Position : b.Start.Position);
 			
 			// Check to which side the angle goes and adjust angle as needed
-			s = Line2D.GetSideOfLine(va, vb, basevertex.Position);
+			float s = Line2D.GetSideOfLine(va, vb, basevertex.Position);
 			if(((s < 0) && front) || ((s > 0) && !front)) n = Angle2D.PI2 - n;
 			
 			// Return result
@@ -73,11 +70,9 @@ namespace CodeImp.DoomBuilder.Geometry
 		// Comparer
 		public int Compare(Linedef x, Linedef y)
 		{
-			float ax, ay;
-			
 			// Calculate angles
-			ax = CalculateRelativeAngle(baseline, x);
-			ay = CalculateRelativeAngle(baseline, y);
+			float ax = CalculateRelativeAngle(baseline, x);
+			float ay = CalculateRelativeAngle(baseline, y);
 			
 			// Compare results
 			/*

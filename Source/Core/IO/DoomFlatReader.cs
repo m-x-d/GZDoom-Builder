@@ -79,22 +79,19 @@ namespace CodeImp.DoomBuilder.IO
 		// Returns null on failure
 		public Bitmap ReadAsBitmap(Stream stream)
 		{
-			BitmapData bitmapdata;
-			PixelColorBlock pixeldata;
-			PixelColor* targetdata;
 			int width, height;
 			Bitmap bmp;
 
 			// Read pixel data
-			pixeldata = ReadAsPixelData(stream, out width, out height);
+			PixelColorBlock pixeldata = ReadAsPixelData(stream, out width, out height);
 			if(pixeldata != null)
 			{
 				try
 				{
 					// Create bitmap and lock pixels
 					bmp = new Bitmap(width, height, PixelFormat.Format32bppArgb);
-					bitmapdata = bmp.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
-					targetdata = (PixelColor*)bitmapdata.Scan0.ToPointer();
+					BitmapData bitmapdata = bmp.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+					PixelColor* targetdata = (PixelColor*)bitmapdata.Scan0.ToPointer();
 
 					// Copy the pixels
 					General.CopyMemory(targetdata, pixeldata.Pointer, (uint)(width * height * sizeof(PixelColor)));
@@ -123,32 +120,26 @@ namespace CodeImp.DoomBuilder.IO
 		// Throws exception on failure
 		public void DrawToPixelData(Stream stream, PixelColor* target, int targetwidth, int targetheight, int x, int y)
 		{
-			Bitmap bmp;
-			BitmapData bmpdata;
-			PixelColor* pixels;
-			int ox, oy, tx, ty;
-			int width, height;
-
 			// Get bitmap
-			bmp = ReadAsBitmap(stream);
-			width = bmp.Size.Width;
-			height = bmp.Size.Height;
+			Bitmap bmp = ReadAsBitmap(stream);
+			int width = bmp.Size.Width;
+			int height = bmp.Size.Height;
 
 			// Lock bitmap pixels
-			bmpdata = bmp.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
-			pixels = (PixelColor*)bmpdata.Scan0.ToPointer();
+			BitmapData bmpdata = bmp.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+			PixelColor* pixels = (PixelColor*)bmpdata.Scan0.ToPointer();
 
 			// Go for all pixels in the original image
-			for(ox = 0; ox < width; ox++)
+			for(int ox = 0; ox < width; ox++)
 			{
-				for(oy = 0; oy < height; oy++)
+				for(int oy = 0; oy < height; oy++)
 				{
 					// Copy this pixel?
 					if(pixels[oy * width + ox].a > 0.5f)
 					{
 						// Calculate target pixel and copy when within bounds
-						tx = x + ox;
-						ty = y + oy;
+						int tx = x + ox;
+						int ty = y + oy;
 						if((tx >= 0) && (tx < targetwidth) && (ty >= 0) && (ty < targetheight))
 							target[ty * targetwidth + tx] = pixels[oy * width + ox];
 					}
@@ -164,13 +155,8 @@ namespace CodeImp.DoomBuilder.IO
 		// Returns null on failure
 		private PixelColorBlock ReadAsPixelData(Stream stream, out int width, out int height)
 		{
-			//new BinaryReader(stream);
-			PixelColorBlock pixeldata;
-			float sqrlength;
-			byte[] bytes;
-			
 			// Check if the flat is square
-			sqrlength = (float)Math.Sqrt(stream.Length);
+			float sqrlength = (float)Math.Sqrt(stream.Length);
 			if(sqrlength == (float)Math.Truncate(sqrlength))
 			{
 				// Calculate image size
@@ -201,11 +187,11 @@ namespace CodeImp.DoomBuilder.IO
 			if((width <= 0) || (height <= 0)) return null;
 
 			// Allocate memory
-			pixeldata = new PixelColorBlock(width, height);
+			PixelColorBlock pixeldata = new PixelColorBlock(width, height);
 			pixeldata.Clear();
 
 			// Read flat bytes from stream
-			bytes = new byte[width * height];
+			byte[] bytes = new byte[width * height];
 			stream.Read(bytes, 0, width * height);
 
 			// Convert bytes with palette

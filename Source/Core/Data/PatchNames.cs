@@ -55,11 +55,10 @@ namespace CodeImp.DoomBuilder.Data
 		public PatchNames(Stream stream)
 		{
 			BinaryReader reader = new BinaryReader(stream);
-			uint length;
-			
+
 			// Read length of array
 			stream.Seek(0, SeekOrigin.Begin);
-			length = reader.ReadUInt32();
+			uint length = reader.ReadUInt32();
 			
 			// Create array
 			pnames = new string[length];

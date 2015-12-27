@@ -68,7 +68,6 @@ namespace CodeImp.DoomBuilder.Compilers
 		public override bool Run()
 		{
 			Process process;
-			TimeSpan deltatime;
 			int line = 0;
 			string sourcedir = Path.GetDirectoryName(sourcefile);
 
@@ -141,7 +140,7 @@ namespace CodeImp.DoomBuilder.Compilers
 			
 			// Wait for compiler to complete
 			process.WaitForExit();
-			deltatime = TimeSpan.FromTicks(process.ExitTime.Ticks - process.StartTime.Ticks);
+			TimeSpan deltatime = TimeSpan.FromTicks(process.ExitTime.Ticks - process.StartTime.Ticks);
 			General.WriteLogLine("Compiler process has finished.");
 			General.WriteLogLine("Compile time: " + deltatime.TotalSeconds.ToString("########0.00") + " seconds");
 			

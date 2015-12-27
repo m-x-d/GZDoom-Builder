@@ -101,19 +101,13 @@ namespace CodeImp.DoomBuilder.Plugins
 		// This loads all plugins
 		public void LoadAllPlugins()
 		{
-			List<string> filenames;
-			//Type[] editclasses;
-			//EditModeAttribute[] emattrs;
-			//EditModeInfo editmodeinfo;
-			Configuration cfg;
 			IDictionary loadorderfiles = new ListDictionary();
-			Plugin p;
 			
 			try
 			{
 				// Load the load order cfg
-				cfg = new Configuration(Path.Combine(General.PluginsPath, "Loadorder.cfg"), true);
-				
+				Configuration cfg = new Configuration(Path.Combine(General.PluginsPath, "Loadorder.cfg"), true);
+
 				// Check for erors
 				if(cfg.ErrorResult)
 				{
@@ -134,7 +128,7 @@ namespace CodeImp.DoomBuilder.Plugins
 			}
 			
 			// Find all .dll files
-			filenames = new List<string>(Directory.GetFiles(General.PluginsPath, "*.dll", SearchOption.TopDirectoryOnly));
+			List<string> filenames = new List<string>(Directory.GetFiles(General.PluginsPath, "*.dll", SearchOption.TopDirectoryOnly));
 			
 			// Load the ones in order as specified by the load order cfg
 			foreach(DictionaryEntry de in loadorderfiles)
@@ -150,6 +144,7 @@ namespace CodeImp.DoomBuilder.Plugins
 				if(filenameindex > -1)
 				{
 					// Load plugin from this file
+					Plugin p;
 					try
 					{
 						p = new Plugin(filenames[filenameindex]);
@@ -184,6 +179,7 @@ namespace CodeImp.DoomBuilder.Plugins
 			foreach(string fn in filenames)
 			{
 				// Load plugin from this file
+				Plugin p;
 				try
 				{
 					p = new Plugin(fn);

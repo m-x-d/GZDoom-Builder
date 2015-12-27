@@ -520,11 +520,8 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
                 // If the vertices were created in counter-clockwise order turn them into clockwise order
                 if (!clockwise)
                 {
-                    List<Vector2D> tmpvertices;
-                    int tmpmultiplier;
-
-                    tmpvertices = innervertices;
-                    tmpmultiplier = innervertexmultiplier;
+	                List<Vector2D> tmpvertices = innervertices;
+                    int tmpmultiplier = innervertexmultiplier;
 
                     innervertices = outervertices;
                     outervertices = tmpvertices;
@@ -968,10 +965,9 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 		private List<Vector2D> GenerateCatmullRom(CatmullRomSplineData crsd, int numverts)
 		{
 			List<Vector2D> vertices = new List<Vector2D>();
-			int sections = crsd.controlpoints.Count - 1;
+			//int sections = crsd.controlpoints.Count - 1;
 			//double hop = (double)sections / numverts;
 			float distance = 0.0f;
-			float unithop;
 			List<float> cpdistance = new List<float>();
 
 			// Compute the length of the whole spline and the length of the parts on the
@@ -1004,7 +1000,7 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 				exactsplines.Add(dc);
 			}
 
-			unithop = distance / numverts;
+			float unithop = distance / numverts;
 
 			for (int i = 0; i <= numverts; i++)
 			{
@@ -1277,7 +1273,7 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 					foreach (List<Vector2D> lv in si.sectors)
 					{
 						List<Sector> oldsectors = new List<Sector>(General.Map.Map.Sectors);
-						List<Sector> newsectors = new List<Sector>();
+						//List<Sector> newsectors = new List<Sector>();
 						List<DrawnVertex> vertices = new List<DrawnVertex>();
 
 						for (int i = 0; i < lv.Count; i++)

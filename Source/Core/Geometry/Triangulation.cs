@@ -94,16 +94,15 @@ namespace CodeImp.DoomBuilder.Geometry
 		// Constructor
 		public Triangulation()
 		{
-			islandvertices = Array.AsReadOnly<int>(new int[0]);
-			vertices = Array.AsReadOnly<Vector2D>(new Vector2D[0]);
-			sidedefs = Array.AsReadOnly<Sidedef>(new Sidedef[0]);
+			islandvertices = Array.AsReadOnly(new int[0]);
+			vertices = Array.AsReadOnly(new Vector2D[0]);
+			sidedefs = Array.AsReadOnly(new Sidedef[0]);
 		}
 
 		// This performs the triangulation
 		public void Triangulate(Sector s)
 		{
 			// Initialize
-			List<EarClipPolygon> polys;
 			List<int> islandslist = new List<int>();
 			List<Vector2D> verticeslist = new List<Vector2D>();
 			List<Sidedef> sidedefslist = new List<Sidedef>();
@@ -126,7 +125,7 @@ namespace CodeImp.DoomBuilder.Geometry
 			 */
 
 			// TRACING
-			polys = DoTrace(s);
+			List<EarClipPolygon> polys = DoTrace(s);
 			
 			// CUTTING
 			DoCutting(polys);
@@ -136,9 +135,9 @@ namespace CodeImp.DoomBuilder.Geometry
 				islandslist.Add(DoEarClip(p, verticeslist, sidedefslist));
 
 			// Make arrays
-			islandvertices = Array.AsReadOnly<int>(islandslist.ToArray());
-			vertices = Array.AsReadOnly<Vector2D>(verticeslist.ToArray());
-			sidedefs = Array.AsReadOnly<Sidedef>(sidedefslist.ToArray());
+			islandvertices = Array.AsReadOnly(islandslist.ToArray());
+			vertices = Array.AsReadOnly(verticeslist.ToArray());
+			sidedefs = Array.AsReadOnly(sidedefslist.ToArray());
 		}
 
 		#endregion
@@ -172,12 +171,12 @@ namespace CodeImp.DoomBuilder.Geometry
 				s.rInt(out c);
 				int[] islandverticeslist = new int[c];
 				for(int i = 0; i < c; i++) s.rInt(out islandverticeslist[i]);
-				islandvertices = Array.AsReadOnly<int>(islandverticeslist);
+				islandvertices = Array.AsReadOnly(islandverticeslist);
 				
 				s.rInt(out c);
 				Vector2D[] verticeslist = new Vector2D[c];
 				for(int i = 0; i < c; i++) s.rVector2D(out verticeslist[i]);
-				vertices = Array.AsReadOnly<Vector2D>(verticeslist);
+				vertices = Array.AsReadOnly(verticeslist);
 				
 				s.rInt(out c);
 				sidedefindices = new int[c];
@@ -202,7 +201,7 @@ namespace CodeImp.DoomBuilder.Geometry
 			sidedefindices = null;
 			
 			// Keep readonly array
-			sidedefs = Array.AsReadOnly<Sidedef>(sides.ToArray());
+			sidedefs = Array.AsReadOnly(sides.ToArray());
 		}
 		
 		
@@ -216,10 +215,7 @@ namespace CodeImp.DoomBuilder.Geometry
 			Dictionary<Sidedef, bool> todosides = new Dictionary<Sidedef, bool>(s.Sidedefs.Count);
 			Dictionary<Vertex, Vertex> ignores = new Dictionary<Vertex,Vertex>();
 			List<EarClipPolygon> root = new List<EarClipPolygon>();
-			SidedefsTracePath path;
-			EarClipPolygon newpoly;
-			Vertex start;
-			
+
 			// Fill the dictionary
 			// The bool value is used to indicate lines which has been visited in the trace
 			foreach(Sidedef sd in s.Sidedefs) todosides.Add(sd, false);
@@ -236,14 +232,14 @@ namespace CodeImp.DoomBuilder.Geometry
 				// Find the right-most vertex to start a trace with.
 				// This guarantees that we start out with an outer polygon and we just
 				// have to check if it is inside a previously found polygon.
-				start = FindRightMostVertex(todosides, ignores);
+				Vertex start = FindRightMostVertex(todosides, ignores);
 
 				// No more possible start vertex found?
 				// Then leave with what we have up till now.
 				if(start == null) break;
 				
 				// Trace to find a polygon
-				path = DoTracePath(new SidedefsTracePath(), start, null, s, todosides);
+				SidedefsTracePath path = DoTracePath(new SidedefsTracePath(), start, null, s, todosides);
 
 				// If tracing is not possible (sector not closed?)
 				// then add the start to the ignore list and try again later
@@ -258,7 +254,7 @@ namespace CodeImp.DoomBuilder.Geometry
 					foreach(Sidedef sd in path) todosides.Remove(sd);
 
 					// Create the polygon
-					newpoly = path.MakePolygon();
+					EarClipPolygon newpoly = path.MakePolygon();
 					
 					// Determine where this polygon goes in our tree
 					foreach(EarClipPolygon p in root)
@@ -291,11 +287,6 @@ namespace CodeImp.DoomBuilder.Geometry
 		// or returns null when no path found.
 		private static SidedefsTracePath DoTracePath(SidedefsTracePath history, Vertex fromhere, Vertex findme, Sector sector, Dictionary<Sidedef, bool> sides)
 		{
-			SidedefsTracePath nextpath;
-			SidedefsTracePath result;
-			Vertex nextvertex;
-			List<Sidedef> allsides;
-			
 			// Found the vertex we are tracing to?
 			if(fromhere == findme) return history;
 
@@ -304,7 +295,7 @@ namespace CodeImp.DoomBuilder.Geometry
 			if(findme == null) findme = fromhere;
 
 			// Make a list of sides referring to the same sector
-			allsides = new List<Sidedef>(fromhere.Linedefs.Count * 2);
+			List<Sidedef> allsides = new List<Sidedef>(fromhere.Linedefs.Count * 2);
 			foreach(Linedef l in fromhere.Linedefs)
 			{
 				// Should we go along the front or back side?
@@ -345,10 +336,10 @@ namespace CodeImp.DoomBuilder.Geometry
 			{
 				// Mark sidedef as visited and move to next vertex
 				sides[s] = true;
-				nextpath = new SidedefsTracePath(history, s);
-				if(s.Line.Start == fromhere) nextvertex = s.Line.End; else nextvertex = s.Line.Start;
+				SidedefsTracePath nextpath = new SidedefsTracePath(history, s);
+				Vertex nextvertex = (s.Line.Start == fromhere ? s.Line.End : s.Line.Start);
 				
-				result = DoTracePath(nextpath, nextvertex, findme, sector, sides);
+				SidedefsTracePath result = DoTracePath(nextpath, nextvertex, findme, sector, sides);
 				if(result != null) return result;
 			}
 
@@ -499,12 +490,10 @@ namespace CodeImp.DoomBuilder.Geometry
 		// This finds the cut coordinates and splits the other poly with inner vertices
 		private static void SplitOuterWithInner(LinkedListNode<EarClipVertex> start, EarClipPolygon p)
 		{
-			LinkedListNode<EarClipVertex> v1, v2;
 			LinkedListNode<EarClipVertex> insertbefore = null;
-			float u, ul, bonus, foundu = float.MaxValue;
+			float u, ul, foundu = float.MaxValue;
 			Vector2D foundpos = new Vector2D();
-			EarClipVertex split;
-			
+
 			// Create a line from start that goes beyond the right most vertex of p
 			LinkedListNode<EarClipVertex> pr = FindRightMostVertex(p);
 			float startx = start.Value.Position.x;
@@ -512,18 +501,16 @@ namespace CodeImp.DoomBuilder.Geometry
 			Line2D starttoright = new Line2D(start.Value.Position, new Vector2D(endx, start.Value.Position.y));
 			
 			// Calculate a small bonus (0.1 mappixel)
-			bonus = starttoright.GetNearestOnLine(new Vector2D(start.Value.Position.x + 0.1f, start.Value.Position.y));
+			float bonus = starttoright.GetNearestOnLine(new Vector2D(start.Value.Position.x + 0.1f, start.Value.Position.y));
 			
 			// Go for all lines in the outer polygon
-			v1 = p.Last;
-			v2 = p.First;
+			LinkedListNode<EarClipVertex> v1 = p.Last;
+			LinkedListNode<EarClipVertex> v2 = p.First;
 			while(v2 != null)
 			{
 				// Check if the line goes between startx and endx
-				if(((v1.Value.Position.x > startx) ||
-					(v2.Value.Position.x > startx)) &&
-				   ((v1.Value.Position.x < endx) ||
-					(v2.Value.Position.x < endx)))
+				if((v1.Value.Position.x > startx || v2.Value.Position.x > startx) &&
+				   (v1.Value.Position.x < endx || v2.Value.Position.x < endx))
 				{
 					// Find intersection
 					Line2D pl = new Line2D(v1.Value.Position, v2.Value.Position);
@@ -615,7 +602,7 @@ namespace CodeImp.DoomBuilder.Geometry
 				Sidedef sd = (insertbefore.Previous == null) ? insertbefore.List.Last.Value.Sidedef : insertbefore.Previous.Value.Sidedef;
 				
 				// Find the position where we have to split the outer polygon
-				split = new EarClipVertex(foundpos, null);
+				EarClipVertex split = new EarClipVertex(foundpos, null);
 				
 				// Insert manual split vertices
 				p.AddBefore(insertbefore, new EarClipVertex(split, sd));
@@ -626,9 +613,8 @@ namespace CodeImp.DoomBuilder.Geometry
 				{
 					// Insert inner polygon vertex
 					p.AddBefore(insertbefore, new EarClipVertex(v1.Value));
-					if(v1.Next != null) v1 = v1.Next; else v1 = v1.List.First;
-				}
-				while(v1 != start);
+					v1 = (v1.Next ?? v1.List.First);
+				} while(v1 != start);
 				
 				// Insert manual split vertices
 				p.AddBefore(insertbefore, new EarClipVertex(start.Value, sd));
@@ -650,7 +636,7 @@ namespace CodeImp.DoomBuilder.Geometry
 			List<EarClipVertex> convexes = new List<EarClipVertex>(poly.Count);
 			LinkedList<EarClipVertex> reflexes = new LinkedList<EarClipVertex>();
 			LinkedList<EarClipVertex> eartips = new LinkedList<EarClipVertex>();
-			LinkedListNode<EarClipVertex> n1, n2;
+			LinkedListNode<EarClipVertex> n2;
 			EarClipVertex v, v1, v2;
 			EarClipVertex[] t, t1, t2;
 			int countvertices = 0;
@@ -660,7 +646,7 @@ namespace CodeImp.DoomBuilder.Geometry
 				vec.SetVertsLink(verts.AddLast(vec));
 
 			// Remove any zero-length lines, these will give problems
-			n1 = verts.First;
+			LinkedListNode<EarClipVertex> n1 = verts.First;
 			do
 			{
 				// Continue until adjacent zero-length lines are removed

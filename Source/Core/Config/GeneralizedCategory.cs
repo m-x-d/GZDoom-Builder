@@ -42,8 +42,6 @@ namespace CodeImp.DoomBuilder.Config
 		// Constructor
 		internal GeneralizedCategory(string structure, string name, Configuration cfg)
 		{
-			IDictionary opts;
-			
 			// Initialize
 			this.options = new List<GeneralizedOption>();
 			
@@ -53,7 +51,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.length = cfg.ReadSetting(structure + "." + name + ".length", 0);
 			
 			// Read the options
-			opts = cfg.ReadSetting(structure + "." + name, new Hashtable());
+			IDictionary opts = cfg.ReadSetting(structure + "." + name, new Hashtable());
 			foreach(DictionaryEntry de in opts)
 			{
 				// Is this an option and not just some value?

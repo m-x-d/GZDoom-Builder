@@ -342,7 +342,6 @@ namespace CodeImp.DoomBuilder
 		internal bool InitializeOpenMap(string filepathname, MapOptions options) 
 		{
 			WAD mapwad;
-			string tempfile;
 
 #if DEBUG
 			DebugConsole.Clear();
@@ -378,7 +377,7 @@ namespace CodeImp.DoomBuilder
 			map = new MapSet();
 
 			// Create temp wadfile
-			tempfile = General.MakeTempFilename(temppath);
+			string tempfile = General.MakeTempFilename(temppath);
 			General.WriteLogLine("Creating temporary file: " + tempfile);
 #if DEBUG
 			tempwad = new WAD(tempfile);
@@ -1928,10 +1927,10 @@ namespace CodeImp.DoomBuilder
 					if(stream != null && stream.Length > 0 && scriptconfig != null && scriptconfig.Compiler != null)
 					{
 						// Get script names
-						AcsParserSE parser = new AcsParserSE { OnInclude = (se, path) => se.Parse(General.Map.Data.LoadFile(path), path, true, true, false) };
+						AcsParserSE parser = new AcsParserSE { OnInclude = (se, path, includetype) => se.Parse(General.Map.Data.LoadFile(path), path, true, includetype, false) };
 
 						//INFO: CompileLump() prepends lumpname with "?" to distinguish between temporary files and files compiled in place
-						if(parser.Parse(stream, "?SCRIPTS", scriptconfig.Compiler.Files, true, false, false))
+						if(parser.Parse(stream, "?SCRIPTS", scriptconfig.Compiler.Files, true, AcsParserSE.IncludeType.NONE, false))
 						{
 							// Add them to arrays
 							namedscriptslist.AddRange(parser.NamedScripts);

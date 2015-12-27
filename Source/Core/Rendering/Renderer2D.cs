@@ -255,7 +255,7 @@ namespace CodeImp.DoomBuilder.Rendering
 							graphics.Shaders.Display2D.Texture1 = General.Map.Grid.Background.Texture;
 							graphics.Shaders.Display2D.SetSettings(1f / windowsize.Width, 1f / windowsize.Height, FSAA_FACTOR, layer.alpha, false);
 							graphics.Shaders.Display2D.BeginPass(aapass);
-							graphics.Device.DrawUserPrimitives<FlatVertex>(PrimitiveType.TriangleStrip, 0, 2, backimageverts);
+							graphics.Device.DrawUserPrimitives(PrimitiveType.TriangleStrip, 0, 2, backimageverts);
 							graphics.Shaders.Display2D.EndPass();
 							graphics.Device.SetStreamSource(0, screenverts, 0, sizeof(FlatVertex));
 							break;
@@ -803,7 +803,6 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Only if a background image is set
 			if((General.Map.Grid.Background != null) && !(General.Map.Grid.Background is UnknownImage))
 			{
-				Vector2D ltpos, rbpos;
 				Vector2D backoffset = new Vector2D(General.Map.Grid.BackgroundX, General.Map.Grid.BackgroundY);
 				Vector2D backimagesize = new Vector2D(General.Map.Grid.Background.ScaledWidth, General.Map.Grid.Background.ScaledHeight);
 				Vector2D backimagescale = new Vector2D(General.Map.Grid.BackgroundScaleX, General.Map.Grid.BackgroundScaleY);
@@ -815,8 +814,8 @@ namespace CodeImp.DoomBuilder.Rendering
 				backimageverts = CreateScreenVerts(windowsize);
 
 				// Determine map coordinates for view window
-				ltpos = DisplayToMap(new Vector2D(0f, 0f));
-				rbpos = DisplayToMap(new Vector2D(windowsize.Width, windowsize.Height));
+				Vector2D ltpos = DisplayToMap(new Vector2D(0f, 0f));
+				Vector2D rbpos = DisplayToMap(new Vector2D(windowsize.Width, windowsize.Height));
 				
 				// Offset by given background offset
 				ltpos -= backoffset;
@@ -895,12 +894,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This renders the grid
 		private void RenderGrid(float size, PixelColor c, Plotter gridplotter)
 		{
-			Vector2D ltpos, rbpos;
-			Vector2D tlb, rbb;
 			Vector2D pos = new Vector2D();
-			float ystart, yend;
-			float xstart, xend;
-			float from, to;
 
 			//mxd. Increase rendered grid size if needed
 			if(!General.Settings.DynamicGridSize && size * scale <= 6f)
@@ -908,28 +902,28 @@ namespace CodeImp.DoomBuilder.Rendering
 			float sizeinv = 1f / size;
 
 			// Determine map coordinates for view window
-			ltpos = DisplayToMap(new Vector2D(0, 0));
-			rbpos = DisplayToMap(new Vector2D(windowsize.Width, windowsize.Height));
+			Vector2D ltpos = DisplayToMap(new Vector2D(0, 0));
+			Vector2D rbpos = DisplayToMap(new Vector2D(windowsize.Width, windowsize.Height));
 
 			// Clip to nearest grid
 			ltpos = GridSetup.SnappedToGrid(ltpos, size, sizeinv);
 			rbpos = GridSetup.SnappedToGrid(rbpos, size, sizeinv);
 
 			// Translate top left boundary and right bottom boundary of map to screen coords
-			tlb = new Vector2D(General.Map.Config.LeftBoundary, General.Map.Config.TopBoundary).GetTransformed(translatex, translatey, scale, -scale);
-			rbb = new Vector2D(General.Map.Config.RightBoundary, General.Map.Config.BottomBoundary).GetTransformed(translatex, translatey, scale, -scale);
+			Vector2D tlb = new Vector2D(General.Map.Config.LeftBoundary, General.Map.Config.TopBoundary).GetTransformed(translatex, translatey, scale, -scale);
+			Vector2D rbb = new Vector2D(General.Map.Config.RightBoundary, General.Map.Config.BottomBoundary).GetTransformed(translatex, translatey, scale, -scale);
 
 			// Draw all horizontal grid lines
-			ystart = rbpos.y > General.Map.Config.BottomBoundary ? rbpos.y : General.Map.Config.BottomBoundary;
-			yend = ltpos.y < General.Map.Config.TopBoundary ? ltpos.y : General.Map.Config.TopBoundary;
+			float ystart = rbpos.y > General.Map.Config.BottomBoundary ? rbpos.y : General.Map.Config.BottomBoundary;
+			float yend = ltpos.y < General.Map.Config.TopBoundary ? ltpos.y : General.Map.Config.TopBoundary;
 
 			for(float y = ystart; y < yend + size; y += size) 
 			{
 				if(y > General.Map.Config.TopBoundary) y = General.Map.Config.TopBoundary;
 				else if(y < General.Map.Config.BottomBoundary) y = General.Map.Config.BottomBoundary;
 
-				from = tlb.x < 0 ? 0 : tlb.x;
-				to = rbb.x > windowsize.Width ? windowsize.Width : rbb.x;
+				float from = tlb.x < 0 ? 0 : tlb.x;
+				float to = rbb.x > windowsize.Width ? windowsize.Width : rbb.x;
 
 				pos.y = y;
 				pos = pos.GetTransformed(translatex, translatey, scale, -scale);
@@ -939,16 +933,16 @@ namespace CodeImp.DoomBuilder.Rendering
 			}
 
 			// Draw all vertical grid lines
-			xstart = ltpos.x > General.Map.Config.LeftBoundary ? ltpos.x : General.Map.Config.LeftBoundary;
-			xend = rbpos.x < General.Map.Config.RightBoundary ? rbpos.x : General.Map.Config.RightBoundary;
+			float xstart = ltpos.x > General.Map.Config.LeftBoundary ? ltpos.x : General.Map.Config.LeftBoundary;
+			float xend = rbpos.x < General.Map.Config.RightBoundary ? rbpos.x : General.Map.Config.RightBoundary;
 
 			for(float x = xstart; x < xend + size; x += size) 
 			{
 				if(x > General.Map.Config.RightBoundary) x = General.Map.Config.RightBoundary;
 				else if(x < General.Map.Config.LeftBoundary) x = General.Map.Config.LeftBoundary;
 
-				from = tlb.y < 0 ? 0 : tlb.y;
-				to = rbb.y > windowsize.Height ? windowsize.Height : rbb.y;
+				float from = tlb.y < 0 ? 0 : tlb.y;
+				float to = rbb.y > windowsize.Height ? windowsize.Height : rbb.y;
 
 				pos.x = x;
 				pos = pos.GetTransformed(translatex, translatey, scale, -scale);

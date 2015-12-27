@@ -1067,9 +1067,6 @@ namespace CodeImp.DoomBuilder.Map
 		/// Note that this function uses the markings to convert the selection.</summary>
 		public void ConvertSelection(SelectionType source, SelectionType target)
 		{
-			ICollection<Linedef> lines;
-			ICollection<Vertex> verts;
-			
 			ClearAllMarks(false);
 			
 			switch(target)
@@ -1078,7 +1075,7 @@ namespace CodeImp.DoomBuilder.Map
 				case SelectionType.Vertices:
 					if(InSelectionType(source, SelectionType.Linedefs)) MarkSelectedLinedefs(true, true);
 					if(InSelectionType(source, SelectionType.Sectors)) General.Map.Map.MarkSelectedSectors(true, true);
-					verts = General.Map.Map.GetVerticesFromLinesMarks(true);
+					ICollection<Vertex> verts = General.Map.Map.GetVerticesFromLinesMarks(true);
 					foreach(Vertex v in verts) v.Selected = true;
 					verts = General.Map.Map.GetVerticesFromSectorsMarks(true);
 					foreach(Vertex v in verts) v.Selected = true;
@@ -1090,7 +1087,7 @@ namespace CodeImp.DoomBuilder.Map
 				case SelectionType.Linedefs:
 					if(InSelectionType(source, SelectionType.Vertices)) MarkSelectedVertices(true, true);
 					if(!InSelectionType(source, SelectionType.Linedefs)) ClearSelectedLinedefs();
-					lines = General.Map.Map.LinedefsFromMarkedVertices(false, true, false);
+					ICollection<Linedef> lines = General.Map.Map.LinedefsFromMarkedVertices(false, true, false);
 					foreach(Linedef l in lines) l.Selected = true;
 					if(InSelectionType(source, SelectionType.Sectors))
 					{
@@ -2059,31 +2056,24 @@ namespace CodeImp.DoomBuilder.Map
 		/// </summary>
 		public bool StitchGeometry()
 		{
-			ICollection<Linedef> movinglines;
-			ICollection<Linedef> fixedlines;
-			ICollection<Vertex> nearbyfixedverts;
-			ICollection<Vertex> movingverts;
-			ICollection<Vertex> fixedverts;
-			RectangleF editarea;
-
 			// Find vertices
-			movingverts = General.Map.Map.GetMarkedVertices(true);
-			fixedverts = General.Map.Map.GetMarkedVertices(false);
+			ICollection<Vertex> movingverts = General.Map.Map.GetMarkedVertices(true);
+			ICollection<Vertex> fixedverts = General.Map.Map.GetMarkedVertices(false);
 			
 			// Find lines that moved during the drag
-			movinglines = LinedefsFromMarkedVertices(false, true, true);
+			ICollection<Linedef> movinglines = LinedefsFromMarkedVertices(false, true, true);
 			
 			// Find all non-moving lines
-			fixedlines = LinedefsFromMarkedVertices(true, false, false);
+			ICollection<Linedef> fixedlines = LinedefsFromMarkedVertices(true, false, false);
 			
 			// Determine area in which we are editing
-			editarea = MapSet.CreateArea(movinglines);
-			editarea = MapSet.IncreaseArea(editarea, movingverts);
+			RectangleF editarea = CreateArea(movinglines);
+			editarea = IncreaseArea(editarea, movingverts);
 			editarea.Inflate(1.0f, 1.0f);
 			
 			// Join nearby vertices
 			BeginAddRemove();
-			MapSet.JoinVertices(fixedverts, movingverts, true, MapSet.STITCH_DISTANCE);
+			JoinVertices(fixedverts, movingverts, true, STITCH_DISTANCE);
 			EndAddRemove();
 			
 			// Update cached values of lines because we need their length/angle
@@ -2092,20 +2082,20 @@ namespace CodeImp.DoomBuilder.Map
 			BeginAddRemove();
 			
 			// Split moving lines with unselected vertices
-			nearbyfixedverts = MapSet.FilterByArea(fixedverts, ref editarea);
-			if(!MapSet.SplitLinesByVertices(movinglines, nearbyfixedverts, MapSet.STITCH_DISTANCE, movinglines))
+			ICollection<Vertex> nearbyfixedverts = FilterByArea(fixedverts, ref editarea);
+			if(!SplitLinesByVertices(movinglines, nearbyfixedverts, STITCH_DISTANCE, movinglines))
 				return false;
 			
 			// Split non-moving lines with selected vertices
-			fixedlines = MapSet.FilterByArea(fixedlines, ref editarea);
-			if(!MapSet.SplitLinesByVertices(fixedlines, movingverts, MapSet.STITCH_DISTANCE, movinglines))
+			fixedlines = FilterByArea(fixedlines, ref editarea);
+			if(!SplitLinesByVertices(fixedlines, movingverts, STITCH_DISTANCE, movinglines))
 				return false;
 			
 			// Remove looped linedefs
-			MapSet.RemoveLoopedLinedefs(movinglines);
+			RemoveLoopedLinedefs(movinglines);
 			
 			// Join overlapping lines
-			if(!MapSet.JoinOverlappingLines(movinglines))
+			if(!JoinOverlappingLines(movinglines))
 				return false;
 			
 			EndAddRemove();

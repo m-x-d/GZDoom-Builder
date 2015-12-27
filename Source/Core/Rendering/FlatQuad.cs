@@ -69,14 +69,12 @@ namespace CodeImp.DoomBuilder.Rendering
 		// Constructor
 		public FlatQuad(PrimitiveType type, float left, float top, float right, float bottom, float twidth, float theight)
 		{
-			float twd, thd;
-			
 			// Initialize
 			Initialize(type);
 
 			// Determine texture size dividers
-			twd = 1f / twidth;
-			thd = 1f / theight;
+			float twd = 1f / twidth;
+			float thd = 1f / theight;
 			
 			// Set coordinates
 			switch (type)
@@ -261,7 +259,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		public void Render(D3DDevice device)
 		{
 			// Render the quad
-			device.Device.DrawUserPrimitives<FlatVertex>(type, 0, 2, vertices);
+			device.Device.DrawUserPrimitives(type, 0, 2, vertices);
 		}
 		
 		#endregion

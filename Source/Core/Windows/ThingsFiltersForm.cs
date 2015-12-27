@@ -486,7 +486,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private void filteraction_ValueChanges(object sender, EventArgs e)
 		{
 			int showaction = 0;
-			ArgumentInfo[] arginfo;
 
 			// Anything selected?
 			if(listfilters.SelectedItems.Count > 0)
@@ -503,7 +502,7 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			// Only when line type is known, otherwise use the thing arguments
 			if(General.Map.Config.LinedefActions.ContainsKey(filteraction.Value)) showaction = filteraction.Value;
-			arginfo = General.Map.Config.LinedefActions[showaction].Args;
+			ArgumentInfo[] arginfo = General.Map.Config.LinedefActions[showaction].Args;
 			
 			// Change the argument descriptions
 			arg0label.Text = arginfo[0].Title + ":";
@@ -516,11 +515,11 @@ namespace CodeImp.DoomBuilder.Windows
 			arg2label.Enabled = arginfo[2].Used;
 			arg3label.Enabled = arginfo[3].Used;
 			arg4label.Enabled = arginfo[4].Used;
-			if(arg0label.Enabled) arg0.ForeColor = SystemColors.WindowText; else arg0.ForeColor = SystemColors.GrayText;
-			if(arg1label.Enabled) arg1.ForeColor = SystemColors.WindowText; else arg1.ForeColor = SystemColors.GrayText;
-			if(arg2label.Enabled) arg2.ForeColor = SystemColors.WindowText; else arg2.ForeColor = SystemColors.GrayText;
-			if(arg3label.Enabled) arg3.ForeColor = SystemColors.WindowText; else arg3.ForeColor = SystemColors.GrayText;
-			if(arg4label.Enabled) arg4.ForeColor = SystemColors.WindowText; else arg4.ForeColor = SystemColors.GrayText;
+			arg0.ForeColor = (arg0label.Enabled ? SystemColors.WindowText : SystemColors.GrayText);
+			arg1.ForeColor = (arg1label.Enabled ? SystemColors.WindowText : SystemColors.GrayText);
+			arg2.ForeColor = (arg2label.Enabled ? SystemColors.WindowText : SystemColors.GrayText);
+			arg3.ForeColor = (arg3label.Enabled ? SystemColors.WindowText : SystemColors.GrayText);
+			arg4.ForeColor = (arg4label.Enabled ? SystemColors.WindowText : SystemColors.GrayText);
 			arg0.Setup(arginfo[0]);
 			arg1.Setup(arginfo[1]);
 			arg2.Setup(arginfo[2]);

@@ -278,15 +278,12 @@ namespace CodeImp.DoomBuilder.Data
 		// This loads a range of colormaps
 		private void LoadColormapsRange(string startlump, string endlump, ref List<ImageData> images)
 		{
-			int startindex, endindex;
-			ColormapImage image;
-
 			// Continue until no more start can be found
-			startindex = file.FindLumpIndex(startlump);
+			int startindex = file.FindLumpIndex(startlump);
 			while(startindex > -1)
 			{
 				// Find end index
-				endindex = file.FindLumpIndex(endlump, startindex + 1);
+				int endindex = file.FindLumpIndex(endlump, startindex + 1);
 				if(endindex > -1)
 				{
 					// Go for all lumps between start and end exclusive
@@ -296,7 +293,7 @@ namespace CodeImp.DoomBuilder.Data
 						if(file.Lumps[i].Length > 0)
 						{
 							// Make the image object
-							image = new ColormapImage(file.Lumps[i].Name);
+							ColormapImage image = new ColormapImage(file.Lumps[i].Name);
 
 							// Add image to collection
 							images.Add(image);
@@ -315,22 +312,20 @@ namespace CodeImp.DoomBuilder.Data
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
 
-			Lump lump;
-
 			// Strictly read patches only between C_START and C_END?
 			if(strictpatches)
 			{
 				// Find the lump in ranges
 				foreach(LumpRange range in colormapranges)
 				{
-					lump = file.FindLump(pname, range.start, range.end);
+					Lump lump = file.FindLump(pname, range.start, range.end);
 					if(lump != null) return lump.Stream;
 				}
 			}
 			else
 			{
 				// Find the lump anywhere
-				lump = file.FindLump(pname);
+				Lump lump = file.FindLump(pname);
 				if(lump != null) return lump.Stream;
 			}
 
@@ -422,23 +417,15 @@ namespace CodeImp.DoomBuilder.Data
 		// This loads a set of textures
 		public static void LoadTextureSet(string sourcename, Stream texturedata, ref List<ImageData> images, PatchNames pnames)
 		{
-			BinaryReader reader = new BinaryReader(texturedata);
-			int flags, width, height, patches, px, py, pi;
-			uint numtextures;
-			byte scalebytex, scalebytey;
-			float scalex, scaley, defaultscale;
-			byte[] namebytes;
-			TextureImage image = null;
-			bool strifedata;
-
 			if(texturedata.Length == 0) return;
+			BinaryReader reader = new BinaryReader(texturedata);
 
 			// Determine default scale
-			defaultscale = General.Map.Config.DefaultTextureScale;
+			float defaultscale = General.Map.Config.DefaultTextureScale;
 			
 			// Get number of textures
 			texturedata.Seek(0, SeekOrigin.Begin);
-			numtextures = reader.ReadUInt32();
+			uint numtextures = reader.ReadUInt32();
 			
 			// Skip offset bytes (we will read all textures sequentially)
 			texturedata.Seek(4 * numtextures, SeekOrigin.Current);
@@ -447,15 +434,16 @@ namespace CodeImp.DoomBuilder.Data
 			for(uint i = 0; i < numtextures; i++)
 			{
 				// Read texture properties
-				namebytes = reader.ReadBytes(8);
-				flags = reader.ReadUInt16();
-				scalebytex = reader.ReadByte();
-				scalebytey = reader.ReadByte();
-				width = reader.ReadInt16();
-				height = reader.ReadInt16();
-				patches = reader.ReadInt16();
+				byte[] namebytes = reader.ReadBytes(8);
+				int flags = reader.ReadUInt16();
+				byte scalebytex = reader.ReadByte();
+				byte scalebytey = reader.ReadByte();
+				int width = reader.ReadInt16();
+				int height = reader.ReadInt16();
+				int patches = reader.ReadInt16();
 				
 				// Check for doom or strife data format
+				bool strifedata;
 				if(patches == 0)
 				{
 					// Ignore 2 bytes and then read number of patches
@@ -470,14 +458,14 @@ namespace CodeImp.DoomBuilder.Data
 				}
 
 				// Determine actual scales
-				if(scalebytex == 0) scalex = defaultscale; else scalex = 1f / (scalebytex / 8f);
-				if(scalebytey == 0) scaley = defaultscale; else scaley = 1f / (scalebytey / 8f);
+				float scalex = (scalebytex == 0 ? defaultscale : 1f / (scalebytex / 8f));
+				float scaley = (scalebytey == 0 ? defaultscale : 1f / (scalebytey / 8f));
 				
 				// Validate data
-				if((width > 0) && (height > 0) && (patches > 0) &&
-				   (scalex != 0) || (scaley != 0))
+				if((width > 0) && (height > 0) && (patches > 0) && (scalex != 0) || (scaley != 0))
 				{
 					string texname = Lump.MakeNormalName(namebytes, WAD.ENCODING);
+					TextureImage image = null;
 					if(texname.Length > 0)
 					{
 						// Make the image object
@@ -494,9 +482,9 @@ namespace CodeImp.DoomBuilder.Data
 					for(int p = 0; p < patches; p++)
 					{
 						// Read patch properties
-						px = reader.ReadInt16();
-						py = reader.ReadInt16();
-						pi = reader.ReadUInt16();
+						int px = reader.ReadInt16();
+						int py = reader.ReadInt16();
+						int pi = reader.ReadUInt16();
 						if(!strifedata) texturedata.Seek(4, SeekOrigin.Current);
 						
 						// Validate data

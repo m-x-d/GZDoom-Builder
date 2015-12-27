@@ -71,10 +71,8 @@ namespace CodeImp.DoomBuilder.Geometry
 		// This returns the difference between two angles
 		public static float Difference(float a, float b)
 		{
-			float d;
-
 			// Calculate delta angle
-			d = Normalized(a) - Normalized(b);
+			float d = Normalized(a) - Normalized(b);
 
 			// Make corrections for zero barrier
 			if(d < 0f) d += PI2;
