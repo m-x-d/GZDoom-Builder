@@ -24,6 +24,7 @@ using CodeImp.DoomBuilder.Actions;
 using System.Globalization;
 using CodeImp.DoomBuilder.Data;
 using System.IO;
+using Action = CodeImp.DoomBuilder.Actions.Action;
 
 #endregion
 
@@ -55,9 +56,6 @@ namespace CodeImp.DoomBuilder.Windows
 		// Constructor
 		public PreferencesForm()
 		{
-			Actions.Action[] actions;
-			ListViewItem item;
-			
 			// Initialize
 			InitializeComponent();
 			
@@ -139,14 +137,14 @@ namespace CodeImp.DoomBuilder.Windows
 				listactions.Groups.Add(c.Key, c.Value);
 			
 			// Fill list of actions
-			actions = General.Actions.GetAllActions();
+			Action[] actions = General.Actions.GetAllActions();
 			actionListItems = new List<ListViewItem>(); //mxd
 			actionListItemsGroupIndices = new List<int>(); //mxd
-			foreach(Actions.Action a in actions)
+			foreach(Action a in actions)
 			{
 				// Create item
-				item = listactions.Items.Add(a.Name, a.Title, 0);
-				item.SubItems.Add(Actions.Action.GetShortcutKeyDesc(a.ShortcutKey));
+				ListViewItem item = listactions.Items.Add(a.Name, a.Title, 0);
+				item.SubItems.Add(Action.GetShortcutKeyDesc(a.ShortcutKey));
 				item.SubItems[1].Tag = a.ShortcutKey;
 
 				// Put in category, if the category exists

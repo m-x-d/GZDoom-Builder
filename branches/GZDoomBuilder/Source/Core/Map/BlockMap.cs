@@ -199,9 +199,6 @@ namespace CodeImp.DoomBuilder.Map
 		// This returns all blocks along the given line
 		public virtual List<BE> GetLineBlocks(Vector2D v1, Vector2D v2)
 		{
-			float deltax, deltay;
-			float posx, posy;
-			Point pos, end;
 			int dirx, diry;
 			
 			// Estimate number of blocks we will go through and create list
@@ -209,8 +206,8 @@ namespace CodeImp.DoomBuilder.Map
 			List<BE> entries = new List<BE>(entriescount);
 
 			// Find start and end block
-			pos = GetBlockCoordinates(v1);
-			end = GetBlockCoordinates(v2);
+			Point pos = GetBlockCoordinates(v1);
+			Point end = GetBlockCoordinates(v2);
 			v1 -= rangelefttop;
 			v2 -= rangelefttop;
 
@@ -271,6 +268,7 @@ namespace CodeImp.DoomBuilder.Map
 					diry = Math.Sign(v2.y - v1.y);
 
 					// Calculate offset and delta movement over x
+					float posx, deltax;
 					if(dirx >= 0)
 					{
 						posx = (cr - v1.x) / (v2.x - v1.x);
@@ -284,6 +282,7 @@ namespace CodeImp.DoomBuilder.Map
 					}
 
 					// Calculate offset and delta movement over y
+					float posy, deltay;
 					if(diry >= 0)
 					{
 						posy = (cb - v1.y) / (v2.y - v1.y);
@@ -379,19 +378,15 @@ namespace CodeImp.DoomBuilder.Map
 		// This puts a single linedef in all blocks it crosses
 		public virtual void AddLinedef(Linedef line)
 		{
-			Vector2D v1, v2;
-			float deltax, deltay;
-			float posx, posy;
-			Point pos, end;
 			int dirx, diry;
 
 			// Get coordinates
-			v1 = line.Start.Position;
-			v2 = line.End.Position;
+			Vector2D v1 = line.Start.Position;
+			Vector2D v2 = line.End.Position;
 			
 			// Find start and end block
-			pos = GetBlockCoordinates(v1);
-			end = GetBlockCoordinates(v2);
+			Point pos = GetBlockCoordinates(v1);
+			Point end = GetBlockCoordinates(v2);
 			v1 -= rangelefttop;
 			v2 -= rangelefttop;
 			
@@ -452,6 +447,7 @@ namespace CodeImp.DoomBuilder.Map
 					diry = Math.Sign(v2.y - v1.y);
 					
 					// Calculate offset and delta movement over x
+					float posx, deltax;
 					if(dirx == 0)
 					{
 						posx = float.MaxValue;
@@ -470,6 +466,7 @@ namespace CodeImp.DoomBuilder.Map
 					}
 					
 					// Calculate offset and delta movement over y
+					float posy, deltay;
 					if(diry == 0)
 					{
 						posy = float.MaxValue;

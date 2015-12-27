@@ -78,27 +78,22 @@ namespace CodeImp.DoomBuilder.Rendering
 		// Constructor
 		internal TextFont()
 		{
-			Configuration cfg;
-			Stream fontdata;
-			StreamReader fontreader;
-			string[] resnames;
-			
 			// Initialize
 			characters = new FontCharacter[256];
 
 			// Make chars configuration
-			cfg = new Configuration();
+			Configuration cfg = new Configuration();
 			
 			// Find a resource named Font.cfg
-			resnames = General.ThisAssembly.GetManifestResourceNames();
+			string[] resnames = General.ThisAssembly.GetManifestResourceNames();
 			foreach(string rn in resnames)
 			{
 				// Found it?
 				if(rn.EndsWith(FONT_RESOURCE, StringComparison.InvariantCultureIgnoreCase))
 				{
 					// Get a stream from the resource
-					fontdata = General.ThisAssembly.GetManifestResourceStream(rn);
-					fontreader = new StreamReader(fontdata, Encoding.ASCII);
+					Stream fontdata = General.ThisAssembly.GetManifestResourceStream(rn);
+					StreamReader fontreader = new StreamReader(fontdata, Encoding.ASCII);
 
 					// Load configuration from stream
 					cfg.InputConfiguration(fontreader.ReadToEnd());
@@ -155,12 +150,10 @@ namespace CodeImp.DoomBuilder.Rendering
 						ref float textx, float texty, float textheight, float offsetv)
 		{
 			FlatVertex vert = new FlatVertex();
-			FontCharacter cinfo;
-			float cwidth;
-			
+
 			// Get the character information
-			cinfo = characters[c];
-			cwidth = cinfo.width * scale;
+			FontCharacter cinfo = characters[c];
+			float cwidth = cinfo.width * scale;
 
 			// Create lefttop vertex
 			vert.c = color;
@@ -168,7 +161,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			vert.v = cinfo.v1 * 0.5f + offsetv;
 			vert.x = textx;
 			vert.y = texty;
-			stream.Write<FlatVertex>(vert);
+			stream.Write(vert);
 
 			// Create leftbottom vertex
 			vert.c = color;
@@ -176,7 +169,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			vert.v = cinfo.v2 * 0.5f + offsetv;
 			vert.x = textx;
 			vert.y = texty + textheight;
-			stream.Write<FlatVertex>(vert);
+			stream.Write(vert);
 
 			// Create righttop vertex
 			vert.c = color;
@@ -184,7 +177,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			vert.v = cinfo.v1 * 0.5f + offsetv;
 			vert.x = textx + cwidth;
 			vert.y = texty;
-			stream.Write<FlatVertex>(vert);
+			stream.Write(vert);
 
 			// Create leftbottom vertex
 			vert.c = color;
@@ -192,7 +185,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			vert.v = cinfo.v2 * 0.5f + offsetv;
 			vert.x = textx;
 			vert.y = texty + textheight;
-			stream.Write<FlatVertex>(vert);
+			stream.Write(vert);
 
 			// Create righttop vertex
 			vert.c = color;
@@ -200,7 +193,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			vert.v = cinfo.v1 * 0.5f + offsetv;
 			vert.x = textx + cwidth;
 			vert.y = texty;
-			stream.Write<FlatVertex>(vert);
+			stream.Write(vert);
 
 			// Create rightbottom vertex
 			vert.c = color;
@@ -208,7 +201,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			vert.v = cinfo.v2 * 0.5f + offsetv;
 			vert.x = textx + cwidth;
 			vert.y = texty + textheight;
-			stream.Write<FlatVertex>(vert);
+			stream.Write(vert);
 
 			textx += (cwidth + (ADJUST_SPACING * scale));
 		}

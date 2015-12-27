@@ -114,11 +114,6 @@ namespace CodeImp.DoomBuilder.Actions
 		// This loads all actions from an assembly
 		internal void LoadActions(Assembly asm)
 		{
-			Stream actionsdata;
-			StreamReader actionsreader;
-			Configuration cfg;
-			string name, shortname;
-			bool debugonly;
 			AssemblyName asmname = asm.GetName();
 
 			// Find a resource named Actions.cfg
@@ -129,11 +124,11 @@ namespace CodeImp.DoomBuilder.Actions
 				if(rn.EndsWith(ACTIONS_RESOURCE, StringComparison.InvariantCultureIgnoreCase))
 				{
 					// Get a stream from the resource
-					actionsdata = asm.GetManifestResourceStream(rn);
-					actionsreader = new StreamReader(actionsdata, Encoding.ASCII);
+					Stream actionsdata = asm.GetManifestResourceStream(rn);
+					StreamReader actionsreader = new StreamReader(actionsdata, Encoding.ASCII);
 
 					// Load configuration from stream
-					cfg = new Configuration();
+					Configuration cfg = new Configuration();
 					cfg.InputConfiguration(actionsreader.ReadToEnd());
 					if(cfg.ErrorResult)
 					{
@@ -158,9 +153,9 @@ namespace CodeImp.DoomBuilder.Actions
 						foreach(DictionaryEntry a in cfg.Root)
 						{
 							// Get action properties
-							shortname = a.Key.ToString();
-							name = asmname.Name.ToLowerInvariant() + "_" + shortname;
-							debugonly = cfg.ReadSetting(a.Key + ".debugonly", false);
+							string shortname = a.Key.ToString();
+							string name = asmname.Name.ToLowerInvariant() + "_" + shortname;
+							bool debugonly = cfg.ReadSetting(a.Key + ".debugonly", false);
 
 							// Not the categories structure?
 							if(shortname.ToLowerInvariant() != "categories")
@@ -219,31 +214,26 @@ namespace CodeImp.DoomBuilder.Actions
 		// This binds all methods marked with this attribute
 		private void BindMethods(object obj, Type type)
 		{
-			MethodInfo[] methods;
-			ActionAttribute[] attrs;
-			ActionDelegate del;
-			string actionname;
-
 			if(obj == null)
 				General.WriteLogLine("Binding static action methods for class " + type.Name + "...");
 			else
 				General.WriteLogLine("Binding action methods for " + type.Name + " object...");
 
 			// Go for all methods on obj
-			methods = type.GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static);
+			MethodInfo[] methods = type.GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static);
 			foreach(MethodInfo m in methods)
 			{
 				// Check if the method has this attribute
-				attrs = (ActionAttribute[])m.GetCustomAttributes(typeof(BeginActionAttribute), true);
+				ActionAttribute[] attrs = (ActionAttribute[])m.GetCustomAttributes(typeof(BeginActionAttribute), true);
 
 				// Go for all attributes
 				foreach(ActionAttribute a in attrs)
 				{
 					// Create a delegate for this method
-					del = (ActionDelegate)Delegate.CreateDelegate(typeof(ActionDelegate), obj, m);
+					ActionDelegate del = (ActionDelegate)Delegate.CreateDelegate(typeof(ActionDelegate), obj, m);
 
 					// Make proper name
-					actionname = a.GetFullActionName(type.Assembly);
+					string actionname = a.GetFullActionName(type.Assembly);
 
 					// Bind method to action
 					if(Exists(actionname))
@@ -259,10 +249,10 @@ namespace CodeImp.DoomBuilder.Actions
 				foreach(ActionAttribute a in attrs)
 				{
 					// Create a delegate for this method
-					del = (ActionDelegate)Delegate.CreateDelegate(typeof(ActionDelegate), obj, m);
+					ActionDelegate del = (ActionDelegate)Delegate.CreateDelegate(typeof(ActionDelegate), obj, m);
 
 					// Make proper name
-					actionname = a.GetFullActionName(type.Assembly);
+					string actionname = a.GetFullActionName(type.Assembly);
 
 					// Bind method to action
 					if(Exists(actionname))
@@ -316,31 +306,26 @@ namespace CodeImp.DoomBuilder.Actions
 		// This unbinds all methods marked with this attribute
 		private void UnbindMethods(object obj, Type type)
 		{
-			MethodInfo[] methods;
-			ActionAttribute[] attrs;
-			ActionDelegate del;
-			string actionname;
-
 			if(obj == null)
 				General.WriteLogLine("Unbinding static action methods for class " + type.Name + "...");
 			else
 				General.WriteLogLine("Unbinding action methods for " + type.Name + " object...");
 
 			// Go for all methods on obj
-			methods = type.GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static);
+			MethodInfo[] methods = type.GetMethods(BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Static);
 			foreach(MethodInfo m in methods)
 			{
 				// Check if the method has this attribute
-				attrs = (ActionAttribute[])m.GetCustomAttributes(typeof(BeginActionAttribute), true);
+				ActionAttribute[] attrs = (ActionAttribute[])m.GetCustomAttributes(typeof(BeginActionAttribute), true);
 
 				// Go for all attributes
 				foreach(ActionAttribute a in attrs)
 				{
 					// Create a delegate for this method
-					del = (ActionDelegate)Delegate.CreateDelegate(typeof(ActionDelegate), obj, m);
+					ActionDelegate del = (ActionDelegate)Delegate.CreateDelegate(typeof(ActionDelegate), obj, m);
 
 					// Make proper name
-					actionname = a.GetFullActionName(type.Assembly);
+					string actionname = a.GetFullActionName(type.Assembly);
 
 					// Unbind method from action
 					actions[actionname].UnbindBegin(del);
@@ -353,10 +338,10 @@ namespace CodeImp.DoomBuilder.Actions
 				foreach(ActionAttribute a in attrs)
 				{
 					// Create a delegate for this method
-					del = (ActionDelegate)Delegate.CreateDelegate(typeof(ActionDelegate), obj, m);
+					ActionDelegate del = (ActionDelegate)Delegate.CreateDelegate(typeof(ActionDelegate), obj, m);
 
 					// Make proper name
-					actionname = a.GetFullActionName(type.Assembly);
+					string actionname = a.GetFullActionName(type.Assembly);
 
 					// Unbind method from action
 					actions[actionname].UnbindEnd(del);
@@ -423,12 +408,9 @@ namespace CodeImp.DoomBuilder.Actions
 				actions[actionname].Invoke();
 				return true;
 			}
-			else
-			{
-				return false;
-			}
+			return false;
 		}
-		
+
 		#endregion
 
 		#region ================== Shortcut Keys
@@ -682,17 +664,11 @@ namespace CodeImp.DoomBuilder.Actions
 		/// </summary>
 		public bool RequestExclusiveInvokation()
 		{
-			if(exclusiverequested)
-			{
-				// Already given out
-				return false;
-			}
-			else
-			{
-				// Success
-				exclusiverequested = true;
-				return true;
-			}
+			if(exclusiverequested) return false; // Already given out
+
+			// Success
+			exclusiverequested = true;
+			return true;
 		}
 		
 		#endregion

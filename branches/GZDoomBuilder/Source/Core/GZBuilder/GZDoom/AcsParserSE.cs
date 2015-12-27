@@ -10,7 +10,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 {
 	internal sealed class AcsParserSE : ZDTextParser
 	{
-		internal delegate void IncludeDelegate(AcsParserSE parser, string includefile);
+		internal delegate void IncludeDelegate(AcsParserSE parser, string includefile, IncludeType includetype);
 		internal IncludeDelegate OnInclude;
 
 		private readonly HashSet<string> parsedlumps;
@@ -32,6 +32,13 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 		internal bool AddArgumentsToScriptNames;
 		internal bool IsMapScriptsLump;
 
+		internal enum IncludeType
+		{
+			NONE,
+			INCLUDE,
+			LIBRARY
+		}
+
 		internal AcsParserSE() 
 		{
 			namedscripts = new List<ScriptItem>();
@@ -45,15 +52,15 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 
 		public override bool Parse(Stream stream, string sourcefilename, bool clearerrors) 
 		{
-			return Parse(stream, sourcefilename, new HashSet<string>(), false, false, clearerrors);
+			return Parse(stream, sourcefilename, new HashSet<string>(), false, IncludeType.NONE, clearerrors);
 		}
 
-		public bool Parse(Stream stream, string sourcefilename, bool processincludes, bool isinclude, bool clearerrors)
+		public bool Parse(Stream stream, string sourcefilename, bool processincludes, IncludeType includetype, bool clearerrors)
 		{
-			return Parse(stream, sourcefilename, includestoskip, processincludes, isinclude, clearerrors);
+			return Parse(stream, sourcefilename, includestoskip, processincludes, includetype, clearerrors);
 		}
 
-		public bool Parse(Stream stream, string sourcefilename, HashSet<string> configincludes, bool processincludes, bool isinclude, bool clearerrors) 
+		public bool Parse(Stream stream, string sourcefilename, HashSet<string> configincludes, bool processincludes, IncludeType includetype, bool clearerrors) 
 		{
 			string source = sourcefilename.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
 
@@ -109,7 +116,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							if(AddArgumentsToScriptNames) scriptname += " " + GetArgumentNames(args);
 
 							// Add to collection
-							namedscripts.Add(new ScriptItem(scriptname, argnames, startpos, isinclude));
+							namedscripts.Add(new ScriptItem(scriptname, argnames, startpos, includetype != IncludeType.NONE));
 						} 
 						else //should be numbered script
 						{ 
@@ -150,7 +157,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 								if(AddArgumentsToScriptNames) name += " " + GetArgumentNames(args);
 
 								// Add to collection
-								numberedscripts.Add(new ScriptItem(n, name, argnames, startpos, isinclude, customname));
+								numberedscripts.Add(new ScriptItem(n, name, argnames, startpos, includetype != IncludeType.NONE, customname));
 							}
 						}
 					}
@@ -173,7 +180,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						if(AddArgumentsToScriptNames) funcname += GetArgumentNames(args);
 
 						// Add to collection
-						functions.Add(new ScriptItem(funcname, argnames, startpos, isinclude));
+						functions.Add(new ScriptItem(funcname, argnames, startpos, includetype != IncludeType.NONE));
 					}
 					break;
 
@@ -185,20 +192,27 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						}
 						
 						SkipWhitespace(true);
-						libraryname = ReadToken(false); // Don't skip newline
+						string libname = ReadToken(false); // Don't skip newline
 
-						if(!libraryname.StartsWith("\"") || !libraryname.EndsWith("\""))
+						if(!libname.StartsWith("\"") || !libname.EndsWith("\""))
 						{
 							ReportError("#library name should be quoted");
 							return false;
 						}
 
-						libraryname = StripTokenQuotes(libraryname);
+						libname = StripTokenQuotes(libname);
 
-						if(string.IsNullOrEmpty(libraryname))
+						if(string.IsNullOrEmpty(libname))
 						{
 							ReportError("Expected library name");
 							return false;
+						}
+
+						// Store only when the script compiling was executed for is library
+						if(includetype == IncludeType.NONE)
+						{
+							libraryname = libname;
+							includetype = IncludeType.LIBRARY;
 						}
 
 						break;
@@ -210,6 +224,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							//and can use forward and backward slashes ("acs\map01/script.acs")
 							//also include paths must be quoted
 							//long filenames are supported
+							bool islibrary = (token == "#import" || includetype == IncludeType.LIBRARY);
 							SkipWhitespace(true);
 							string includelump = ReadToken(false); // Don't skip newline
 
@@ -232,7 +247,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							// Compiler files?
 							if(includestoskip.Contains(includelump)) continue;
 
-							// Already parsed this?
+							// Convert to a path we can use
 							string includelumppath = GetRootedPath(source, includelump);
 
 							// Rooting succeeded?
@@ -241,25 +256,34 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							// Already parsed?
 							if(includes.Contains(includelumppath))
 							{
-								ReportError("Already parsed '" + includelump + "'. Check your " + token + " directives");
-								return false;
+								//INFO: files included or imported inside a library are not visible to the code outside it 
+								//and must be included/imported separately
+								if(!islibrary)
+								{
+									ReportError("Already parsed '" + includelump + "'. Check your " + token + " directives");
+									return false;
+								}
 							}
+							else
+							{
+								// Add to collections
+								includes.Add(includelumppath);
 
-							// Add to collections
-							includes.Add(includelumppath);
-						
-							// Callback to parse this file
-							if(OnInclude != null) OnInclude(this, includelumppath);
+								// Callback to parse this file
+								if(OnInclude != null)
+								{
+									OnInclude(this, includelumppath, islibrary ? IncludeType.LIBRARY : IncludeType.INCLUDE);
+								}
 
-							// Bail out on error
-							if(this.HasError) return false;
+								// Bail out on error
+								if(this.HasError) return false;
 
-							// Set our buffers back to continue parsing
-							datastream = localstream;
-							datareader = localreader;
-							sourcename = localsourcename;
+								// Set our buffers back to continue parsing
+								datastream = localstream;
+								datareader = localreader;
+								sourcename = localsourcename;
+							}
 						}
-
 						break;
 				}
 			}

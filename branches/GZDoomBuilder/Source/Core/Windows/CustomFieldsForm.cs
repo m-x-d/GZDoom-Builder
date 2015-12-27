@@ -44,10 +44,9 @@ namespace CodeImp.DoomBuilder.Windows
 		// This shows the dialog, returns false when cancelled
 		public static bool ShowDialog(IWin32Window owner, string title, string elementname, ICollection<MapElement> elements, List<UniversalFieldInfo> fixedfields)
 		{
-			bool result;
 			CustomFieldsForm f = new CustomFieldsForm();
 			f.Setup(title, elementname, elements, fixedfields);
-			result = (f.ShowDialog(owner) == DialogResult.OK);
+			bool result = (f.ShowDialog(owner) == DialogResult.OK);
 			f.Dispose();
 			return result;
 		}

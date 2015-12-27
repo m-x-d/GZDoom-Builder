@@ -469,34 +469,28 @@ namespace CodeImp.DoomBuilder.IO
 		// Throws exception on failure
 		public void DrawToPixelData(Stream stream, PixelColor* target, int targetwidth, int targetheight, int x, int y)
 		{
-			Bitmap bmp;
-			BitmapData bmpdata;
-			PixelColor* pixels;
-			int ox, oy, tx, ty;
-			int width, height;
-			
 			// Get bitmap
-			bmp = ReadAsBitmap(stream);
+			Bitmap bmp = ReadAsBitmap(stream);
 			if(bmp != null)
 			{
-				width = bmp.Size.Width;
-				height = bmp.Size.Height;
+				int width = bmp.Size.Width;
+				int height = bmp.Size.Height;
 
 				// Lock bitmap pixels
-				bmpdata = bmp.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
-				pixels = (PixelColor*)bmpdata.Scan0.ToPointer();
+				BitmapData bmpdata = bmp.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+				PixelColor* pixels = (PixelColor*)bmpdata.Scan0.ToPointer();
 
 				// Go for all pixels in the original image
-				for(ox = 0; ox < width; ox++)
+				for(int ox = 0; ox < width; ox++)
 				{
-					for(oy = 0; oy < height; oy++)
+					for(int oy = 0; oy < height; oy++)
 					{
 						// Copy this pixel?
 						if(pixels[oy * width + ox].a > 0.5f)
 						{
 							// Calculate target pixel and copy when within bounds
-							tx = x + ox;
-							ty = y + oy;
+							int tx = x + ox;
+							int ty = y + oy;
 							if((tx >= 0) && (tx < targetwidth) && (ty >= 0) && (ty < targetheight))
 								target[ty * targetwidth + tx] = pixels[oy * width + ox];
 						}

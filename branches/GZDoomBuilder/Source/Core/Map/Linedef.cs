@@ -888,7 +888,7 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			List<Vector2D> coords = new List<Vector2D>();
 			Vector2D v = new Vector2D();
-			float gx, gy, minx, maxx, miny, maxy;
+			float minx, maxx, miny, maxy;
 			bool reversex, reversey;
 			
 			if(start.Position.x > end.Position.x)
@@ -918,7 +918,7 @@ namespace CodeImp.DoomBuilder.Map
 			}
 
 			// Go for all vertical grid lines in between line start and end
-			gx = General.Map.Grid.GetHigher(minx) + gridoffset.x;
+			float gx = General.Map.Grid.GetHigher(minx) + gridoffset.x;
 			if(gx < maxx)
 			{
 				for(; gx < maxx; gx += General.Map.Grid.GridSizeF)
@@ -933,7 +933,7 @@ namespace CodeImp.DoomBuilder.Map
 			}
 			
 			// Go for all horizontal grid lines in between line start and end
-			gy = General.Map.Grid.GetHigher(miny) + gridoffset.y;
+			float gy = General.Map.Grid.GetHigher(miny) + gridoffset.y;
 			if(gy < maxy)
 			{
 				for(; gy < maxy; gy += General.Map.Grid.GridSizeF)

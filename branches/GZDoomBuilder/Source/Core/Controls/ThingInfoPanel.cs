@@ -50,9 +50,6 @@ namespace CodeImp.DoomBuilder.Controls
 		// This shows the info
 		public void ShowInfo(Thing t)
 		{
-			string actioninfo;
-			string zinfo;
-
 			// Show/hide stuff depending on format
 			bool hasArgs = General.Map.FormatInterface.HasActionArgs;
 			arglbl1.Visible = hasArgs;
@@ -83,10 +80,11 @@ namespace CodeImp.DoomBuilder.Controls
 			if(General.Map.Config.LinedefActions.ContainsKey(t.Action)) act = General.Map.Config.LinedefActions[t.Action];
 			else if(t.Action == 0) act = new LinedefActionInfo(0, "None", true, false);
 			else act = new LinedefActionInfo(t.Action, "Unknown", false, false);
-			actioninfo = act.ToString();
+			string actioninfo = act.ToString();
 			
 			// Determine z info to show
 			t.DetermineSector();
+			string zinfo;
 			if(ti.AbsoluteZ || t.Sector == null)
 			{
 				zinfo = t.Position.z.ToString(CultureInfo.InvariantCulture) + " (abs.)"; //mxd

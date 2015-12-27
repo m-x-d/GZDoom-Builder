@@ -355,7 +355,7 @@ namespace CodeImp.DoomBuilder.Map
 					updateneeded = true;
 					
 					// Make label positions
-					labels = Array.AsReadOnly<LabelPositionInfo>(Tools.FindLabelPositions(this).ToArray());
+					labels = Array.AsReadOnly(Tools.FindLabelPositions(this).ToArray());
 					
 					// Number of vertices changed?
 					if(triangles.Vertices.Count != surfaceentries.totalvertices)

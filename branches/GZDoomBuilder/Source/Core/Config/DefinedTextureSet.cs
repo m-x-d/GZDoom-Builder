@@ -63,10 +63,8 @@ namespace CodeImp.DoomBuilder.Config
 		// This writes the texture set to configuration
 		internal void WriteToConfig(Configuration cfg, string path)
 		{
-			IDictionary dic;
-			
 			// Fill structure
-			dic = new ListDictionary();
+			IDictionary dic = new ListDictionary();
 			
 			// Add name
 			dic.Add("name", name);

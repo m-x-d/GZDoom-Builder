@@ -56,19 +56,16 @@ namespace CodeImp.DoomBuilder.IO
 		public bool Validate(Stream stream)
 		{
 			BinaryReader reader = new BinaryReader(stream);
-			int width, height;
-			int datalength;
-			int columnaddr;
-			
+
 			// Initialize
-			datalength = (int)stream.Length - (int)stream.Position;
+			int datalength = (int)stream.Length - (int)stream.Position;
 
 			// Need at least 4 bytes
 			if(datalength < 4) return false;
 
 			// Read size and offset
-			width = reader.ReadInt16();
-			height = reader.ReadInt16();
+			int width = reader.ReadInt16();
+			int height = reader.ReadInt16();
 			reader.ReadInt16();
 			reader.ReadInt16();
 
@@ -79,8 +76,8 @@ namespace CodeImp.DoomBuilder.IO
 			for(int x = 0; x < width; x++)
 			{
 				// Get column address
-				columnaddr = reader.ReadInt32();
-				
+				int columnaddr = reader.ReadInt32();
+
 				// Check if address is outside valid range
 				if((columnaddr < (8 + width * 4)) || (columnaddr >= datalength)) return false;
 			}
@@ -101,22 +98,19 @@ namespace CodeImp.DoomBuilder.IO
 		// Returns null on failure
 		public Bitmap ReadAsBitmap(Stream stream, out int offsetx, out int offsety)
 		{
-			BitmapData bitmapdata;
-			PixelColorBlock pixeldata;
-			PixelColor* targetdata;
 			int width, height;
 			Bitmap bmp;
 
 			// Read pixel data
-			pixeldata = ReadAsPixelData(stream, out width, out height, out offsetx, out offsety);
+			PixelColorBlock pixeldata = ReadAsPixelData(stream, out width, out height, out offsetx, out offsety);
 			if(pixeldata != null)
 			{
 				// Create bitmap and lock pixels
 				try
 				{
 					bmp = new Bitmap(width, height, PixelFormat.Format32bppArgb);
-					bitmapdata = bmp.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
-					targetdata = (PixelColor*)bitmapdata.Scan0.ToPointer();
+					BitmapData bitmapdata = bmp.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+					PixelColor* targetdata = (PixelColor*)bitmapdata.Scan0.ToPointer();
 
 					// Copy the pixels
 					General.CopyMemory(targetdata, pixeldata.Pointer, (uint)(width * height * sizeof(PixelColor)));
@@ -145,11 +139,10 @@ namespace CodeImp.DoomBuilder.IO
 		// Throws exception on failure
 		public void DrawToPixelData(Stream stream, PixelColor* target, int targetwidth, int targetheight, int x, int y)
 		{
-			PixelColorBlock pixeldata;
-			int width, height, ox, oy, tx, ty;
+			int width, height, ox, oy;
 
 			// Read pixel data
-			pixeldata = ReadAsPixelData(stream, out width, out height, out ox, out oy);
+			PixelColorBlock pixeldata = ReadAsPixelData(stream, out width, out height, out ox, out oy);
 			if(pixeldata != null)
 			{
 				// Go for all source pixels
@@ -162,8 +155,8 @@ namespace CodeImp.DoomBuilder.IO
 						if(pixeldata.Pointer[oy * width + ox].a > 0.5f)
 						{
 							// Calculate target pixel and copy when within bounds
-							tx = x + ox;
-							ty = y + oy;
+							int tx = x + ox;
+							int ty = y + oy;
 							if((tx >= 0) && (tx < targetwidth) && (ty >= 0) && (ty < targetheight))
 								target[ty * targetwidth + tx] = pixeldata.Pointer[oy * width + ox];
 						}
@@ -177,17 +170,13 @@ namespace CodeImp.DoomBuilder.IO
 		private PixelColorBlock ReadAsPixelData(Stream stream, out int width, out int height, out int offsetx, out int offsety)
 		{
 			BinaryReader reader = new BinaryReader(stream);
-			PixelColorBlock pixeldata;
-			int y, read_y, count, p;
-			int[] columns;
-			int dataoffset;
-			
+
 			// Initialize
 			width = 0;
 			height = 0;
 			offsetx = 0;
 			offsety = 0;
-			dataoffset = (int)stream.Position;
+			int dataoffset = (int)stream.Position;
 
 			// Need at least 4 bytes
 			if((stream.Length - stream.Position) < 4) return null;
@@ -207,11 +196,11 @@ namespace CodeImp.DoomBuilder.IO
 			if((width <= 0) || (height <= 0)) return null;
 			
 			// Read the column addresses
-			columns = new int[width];
+			int[] columns = new int[width];
 			for(int x = 0; x < width; x++) columns[x] = reader.ReadInt32();
 			
 			// Allocate memory
-			pixeldata = new PixelColorBlock(width, height);
+			PixelColorBlock pixeldata = new PixelColorBlock(width, height);
 			pixeldata.Clear();
 			
 			// Go for all columns
@@ -221,14 +210,14 @@ namespace CodeImp.DoomBuilder.IO
 				stream.Seek(dataoffset + columns[x], SeekOrigin.Begin);
 				
 				// Read first post start
-				y = reader.ReadByte();
-				read_y = y;
+				int y = reader.ReadByte();
+				int read_y = y;
 				
 				// Continue while not end of column reached
 				while(read_y < 255)
 				{
 					// Read number of pixels in post
-					count = reader.ReadByte();
+					int count = reader.ReadByte();
 
 					// Skip unused pixel
 					stream.Seek(1, SeekOrigin.Current);
@@ -237,12 +226,12 @@ namespace CodeImp.DoomBuilder.IO
 					for(int yo = 0; yo < count; yo++)
 					{
 						// Read pixel color index
-						p = reader.ReadByte();
+						int p = reader.ReadByte();
 
 						// Draw pixel
 						pixeldata.Pointer[(y + yo) * width + x] = palette[p];
 					}
-					
+
 					// Skip unused pixel
 					stream.Seek(1, SeekOrigin.Current);
 

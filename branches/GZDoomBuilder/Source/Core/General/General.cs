@@ -408,9 +408,6 @@ namespace CodeImp.DoomBuilder
 		// This loads all script configurations
 		private static void LoadAllScriptConfigurations()
 		{
-			Configuration cfg;
-			string[] filenames;
-			
 			// Display status
 			mainwindow.DisplayStatus(StatusType.Busy, "Loading script configurations...");
 			
@@ -419,14 +416,14 @@ namespace CodeImp.DoomBuilder
 			compiledscriptconfigs = new Dictionary<string, ScriptConfiguration>(StringComparer.Ordinal); //mxd
 			
 			// Go for all cfg files in the scripts directory
-			filenames = Directory.GetFiles(scriptspath, "*.cfg", SearchOption.TopDirectoryOnly);
+			string[] filenames = Directory.GetFiles(scriptspath, "*.cfg", SearchOption.TopDirectoryOnly);
 			foreach(string filepath in filenames)
 			{
 				try
 				{
 					// Try loading the configuration
-					cfg = new Configuration(filepath, true);
-					
+					Configuration cfg = new Configuration(filepath, true);
+
 					// Check for erors
 					if(cfg.ErrorResult)
 					{
@@ -466,10 +463,7 @@ namespace CodeImp.DoomBuilder
 		// This loads all compiler configurations
 		private static void LoadAllCompilerConfigurations()
 		{
-			Configuration cfg;
 			Dictionary<string, CompilerInfo> addedcompilers = new Dictionary<string, CompilerInfo>(StringComparer.Ordinal);
-			IDictionary compilerslist;
-			string[] filenames;
 
 			// Display status
 			mainwindow.DisplayStatus(StatusType.Busy, "Loading compiler configurations...");
@@ -478,13 +472,13 @@ namespace CodeImp.DoomBuilder
 			compilers = new List<CompilerInfo>();
 
 			// Go for all cfg files in the compilers directory
-			filenames = Directory.GetFiles(compilerspath, "*.cfg", SearchOption.AllDirectories);
+			string[] filenames = Directory.GetFiles(compilerspath, "*.cfg", SearchOption.AllDirectories);
 			foreach(string filepath in filenames)
 			{
 				try
 				{
 					// Try loading the configuration
-					cfg = new Configuration(filepath, true);
+					Configuration cfg = new Configuration(filepath, true);
 
 					// Check for erors
 					if(cfg.ErrorResult)
@@ -496,7 +490,7 @@ namespace CodeImp.DoomBuilder
 					else
 					{
 						// Get structures
-						compilerslist = cfg.ReadSetting("compilers", new Hashtable());
+						IDictionary compilerslist = cfg.ReadSetting("compilers", new Hashtable());
 						foreach(DictionaryEntry de in compilerslist)
 						{
 							// Check if this is a structure

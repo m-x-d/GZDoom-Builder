@@ -227,16 +227,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Vector2D tl, br;
 
 			// don't move if the offset contains invalid data
-			if (!offset.IsFinite()) return false;
+			if(!offset.IsFinite()) return false;
 
 			// Find the outmost vertices
 			tl = br = oldpositions[0];
-			for (int i = 0; i < oldpositions.Count; i++)
+			for(int i = 0; i < oldpositions.Count; i++)
 			{
-				if (oldpositions[i].x < tl.x) tl.x = (int)oldpositions[i].x;
-				if (oldpositions[i].x > br.x) br.x = (int)oldpositions[i].x;
-				if (oldpositions[i].y > tl.y) tl.y = (int)oldpositions[i].y;
-				if (oldpositions[i].y < br.y) br.y = (int)oldpositions[i].y;
+				if(oldpositions[i].x < tl.x) tl.x = (int)oldpositions[i].x;
+				if(oldpositions[i].x > br.x) br.x = (int)oldpositions[i].x;
+				if(oldpositions[i].y > tl.y) tl.y = (int)oldpositions[i].y;
+				if(oldpositions[i].y < br.y) br.y = (int)oldpositions[i].y;
 			}
 			
 			// Snap to nearest?

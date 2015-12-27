@@ -45,19 +45,16 @@ namespace CodeImp.DoomBuilder.Data
 		// This creates a list from a configuration structure
 		internal DataLocationList(Configuration cfg, string path)
 		{
-			IDictionary resinfo, rlinfo;
-			DataLocation res;
-
 			// Go for all items in the map info
-			resinfo = cfg.ReadSetting(path, new ListDictionary());
+			IDictionary resinfo = cfg.ReadSetting(path, new ListDictionary());
 			foreach(DictionaryEntry rl in resinfo)
 			{
 				// Item is a structure?
 				if(rl.Value is IDictionary)
 				{
 					// Create resource location
-					rlinfo = (IDictionary)rl.Value;
-					res = new DataLocation();
+					IDictionary rlinfo = (IDictionary)rl.Value;
+					DataLocation res = new DataLocation();
 
 					// Copy information from Configuration to ResourceLocation
 					if(rlinfo.Contains("type") && (rlinfo["type"] is int)) res.type = (int)rlinfo["type"];
@@ -88,14 +85,12 @@ namespace CodeImp.DoomBuilder.Data
 		// This writes the list to configuration
 		internal void WriteToConfig(Configuration cfg, string path)
 		{
-			IDictionary resinfo, rlinfo;
-			
 			// Fill structure
-			resinfo = new ListDictionary();
+			IDictionary resinfo = new ListDictionary();
 			for(int i = 0; i < this.Count; i++)
 			{
 				// Create structure for resource
-				rlinfo = new ListDictionary();
+				IDictionary rlinfo = new ListDictionary();
 				rlinfo.Add("type", this[i].type);
 				rlinfo.Add("location", this[i].location);
 				rlinfo.Add("option1", General.Bool2Int(this[i].option1));
@@ -113,7 +108,7 @@ namespace CodeImp.DoomBuilder.Data
 		//mxd
 		public bool IsValid()
 		{
-			foreach (DataLocation location in this) if (!location.IsValid()) return false;
+			foreach(DataLocation location in this) if (!location.IsValid()) return false;
 			return true;
 		}
 		

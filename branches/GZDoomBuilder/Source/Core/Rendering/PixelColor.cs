@@ -148,9 +148,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		public PixelColor Blend(PixelColor a, PixelColor b)
 		{
 			PixelColor c = new PixelColor();
-			float ba;
-			
-			ba = a.a * BYTE_TO_FLOAT;
+
+			float ba = a.a * BYTE_TO_FLOAT;
 			c.r = (byte)(a.r * (1f - ba) + b.r * ba);
 			c.g = (byte)(a.g * (1f - ba) + b.g * ba);
 			c.b = (byte)(a.b * (1f - ba) + b.b * ba);

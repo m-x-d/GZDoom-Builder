@@ -433,6 +433,7 @@ namespace CodeImp.DoomBuilder.Config
 			foreach(ThingCategory tc in thingcategories) tc.Dispose();
 			foreach(LinedefActionCategory ac in actioncategories) ac.Dispose();
 			foreach(ThingsFilter tf in thingfilters) tf.Dispose(); //mxd
+			foreach(GeneralizedCategory gc in genactioncategories) gc.Dispose(); //mxd
 		}
 		
 		#endregion

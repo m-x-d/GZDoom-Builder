@@ -71,17 +71,13 @@ namespace CodeImp.DoomBuilder.Compilers
 		// This runs the compiler with a file as input.
 		public override bool Run()
 		{
-			ProcessStartInfo processinfo;
-			Process process;
-			TimeSpan deltatime;
-			
 			// Create parameters
 			string args = this.parameters;
 			args = args.Replace("%FI", inputfile);
 			args = args.Replace("%FO", outputfile);
 			
 			// Setup process info
-			processinfo = new ProcessStartInfo();
+			ProcessStartInfo processinfo = new ProcessStartInfo();
 			processinfo.Arguments = args;
 			//processinfo.FileName = Path.Combine(this.tempdir.FullName, info.ProgramFile);
 			processinfo.FileName = Path.Combine(info.Path, info.ProgramFile); //mxd
@@ -99,7 +95,9 @@ namespace CodeImp.DoomBuilder.Compilers
 			General.WriteLogLine("Running compiler...");
 			General.WriteLogLine("Program:    " + processinfo.FileName);
 			General.WriteLogLine("Arguments:  " + processinfo.Arguments);
-			
+
+			Process process;
+
 			try
 			{
 				// Start the compiler
@@ -124,19 +122,19 @@ namespace CodeImp.DoomBuilder.Compilers
 			//zdbsp actually writes building process here, not error info
 			bool errorsInErrorOutput = (outErr.Length > 0 && outErr.ToLowerInvariant().IndexOf("error") != -1);
 
-			deltatime = TimeSpan.FromTicks(process.ExitTime.Ticks - process.StartTime.Ticks);
+			TimeSpan deltatime = TimeSpan.FromTicks(process.ExitTime.Ticks - process.StartTime.Ticks);
 			General.WriteLogLine("Compiler process has finished" + (errorsInNormalOurput || errorsInErrorOutput ? " with errors." : ".")); //mxd
 			General.WriteLogLine("Compile time: " + deltatime.TotalSeconds.ToString("########0.00") + " seconds");
 
 			//mxd
-			if (process.ExitCode > 0 || errorsInNormalOurput || errorsInErrorOutput) 
+			if(process.ExitCode > 0 || errorsInNormalOurput || errorsInErrorOutput) 
 			{
-				if (errorsInNormalOurput) 
+				if(errorsInNormalOurput) 
 				{
 					ReportError(new CompilerError(outMsg));
 					General.WriteLogLine("Normal output: " + outMsg);
 				}
-				if (errorsInErrorOutput) 
+				if(errorsInErrorOutput) 
 				{
 					ReportError(new CompilerError(outErr));
 					General.WriteLogLine("Error output: " + outErr);
