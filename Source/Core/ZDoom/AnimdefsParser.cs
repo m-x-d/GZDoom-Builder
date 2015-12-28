@@ -56,6 +56,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 				if(string.IsNullOrEmpty(token) || string.Compare(token, "CAMERATEXTURE", true) != 0) continue;
 
 				// Texture name
+				SkipWhitespace(true);
 				string texturename = StripTokenQuotes(ReadToken(false));
 				if(string.IsNullOrEmpty(texturename))
 				{
