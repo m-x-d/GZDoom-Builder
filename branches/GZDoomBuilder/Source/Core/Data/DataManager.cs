@@ -203,7 +203,7 @@ namespace CodeImp.DoomBuilder.Data
 			                  };
 
 			//mxd. Load comment icons
-			foreach (ImageData data in commenttextures)
+			foreach(ImageData data in commenttextures)
 			{
 				data.LoadImage();
 				data.CreateTexture();
@@ -604,8 +604,6 @@ namespace CodeImp.DoomBuilder.Data
 		// This stops background loading
 		private void StopBackgroundLoader()
 		{
-			ImageData img;
-			
 			General.WriteLogLine("Stopping background resource loading...");
 			if(backgroundloader != null)
 			{
@@ -616,7 +614,7 @@ namespace CodeImp.DoomBuilder.Data
 				// Reset load states on all images in the list
 				while(imageque.Count > 0)
 				{
-					img = imageque.Dequeue();
+					ImageData img = imageque.Dequeue();
 					
 					switch(img.ImageState)
 					{
@@ -719,9 +717,9 @@ namespace CodeImp.DoomBuilder.Data
 							if(loadfinishtime == 0)
 							{
 								//mxd. Release PK3 files
-								foreach (DataReader reader in containers)
+								foreach(DataReader reader in containers)
 								{
-									if (reader is PK3Reader) (reader as PK3Reader).BathMode = false;
+									if(reader is PK3Reader) (reader as PK3Reader).BathMode = false;
 								}
 								
 								loadfinishtime = Clock.CurrentTime;
@@ -866,14 +864,13 @@ namespace CodeImp.DoomBuilder.Data
 		// This loads the colormaps
 		private int LoadColormaps(Dictionary<long, ImageData> list)
 		{
-			ICollection<ImageData> images;
 			int counter = 0;
 
 			// Go for all opened containers
 			foreach(DataReader dr in containers)
 			{
 				// Load colormaps
-				images = dr.LoadColormaps();
+				ICollection<ImageData> images = dr.LoadColormaps();
 				if(images != null)
 				{
 					// Go for all colormaps
@@ -897,13 +894,11 @@ namespace CodeImp.DoomBuilder.Data
 		// This returns a specific colormap stream
 		internal Stream GetColormapData(string pname)
 		{
-			Stream colormap;
-
 			// Go for all opened containers
 			for(int i = containers.Count - 1; i >= 0; i--)
 			{
 				// This contain provides this flat?
-				colormap = containers[i].GetColormapData(pname);
+				Stream colormap = containers[i].GetColormapData(pname);
 				if(colormap != null) return colormap;
 			}
 
@@ -918,9 +913,7 @@ namespace CodeImp.DoomBuilder.Data
 		// This loads the textures
 		private int LoadTextures(Dictionary<long, ImageData> list, Dictionary<long, long> nametranslation)
 		{
-			ICollection<ImageData> images;
 			PatchNames pnames = new PatchNames();
-			PatchNames newpnames;
 			int counter = 0;
 
 			// Go for all opened containers
@@ -930,11 +923,11 @@ namespace CodeImp.DoomBuilder.Data
 				// Note that pnames is NOT set to null in the loop
 				// because if a container has no pnames, the pnames
 				// of the previous (higher) container should be used.
-				newpnames = dr.LoadPatchNames();
+				PatchNames newpnames = dr.LoadPatchNames();
 				if(newpnames != null) pnames = newpnames;
 
 				// Load textures
-				images = dr.LoadTextures(pnames);
+				ICollection<ImageData> images = dr.LoadTextures(pnames);
 				if(images != null)
 				{
 					// Go for all textures
@@ -972,13 +965,11 @@ namespace CodeImp.DoomBuilder.Data
 		// This returns a specific patch stream
 		internal Stream GetPatchData(string pname, bool longname)
 		{
-			Stream patch;
-
 			// Go for all opened containers
 			for(int i = containers.Count - 1; i > -1; i--)
 			{
 				// This contain provides this patch?
-				patch = containers[i].GetPatchData(pname, longname);
+				Stream patch = containers[i].GetPatchData(pname, longname);
 				if(patch != null) return patch;
 			}
 
@@ -989,13 +980,11 @@ namespace CodeImp.DoomBuilder.Data
 		// This returns a specific texture stream
 		internal Stream GetTextureData(string pname, bool longname)
 		{
-			Stream patch;
-
 			// Go for all opened containers
 			for(int i = containers.Count - 1; i >= 0; i--)
 			{
 				// This contain provides this patch?
-				patch = containers[i].GetTextureData(pname, longname);
+				Stream patch = containers[i].GetTextureData(pname, longname);
 				if(patch != null) return patch;
 			}
 
@@ -1038,7 +1027,7 @@ namespace CodeImp.DoomBuilder.Data
 		//mxd
 		public string GetFullTextureName(string name)
 		{
-			if (Path.GetFileNameWithoutExtension(name) == name && name.Length > CLASIC_IMAGE_NAME_LENGTH) 
+			if(Path.GetFileNameWithoutExtension(name) == name && name.Length > CLASIC_IMAGE_NAME_LENGTH) 
 				name = name.Substring(0, CLASIC_IMAGE_NAME_LENGTH);
 			long hash = MurmurHash2.Hash(name.Trim().ToUpperInvariant());
 
@@ -1062,14 +1051,13 @@ namespace CodeImp.DoomBuilder.Data
 		// This loads the flats
 		private int LoadFlats(Dictionary<long, ImageData> list, Dictionary<long, long> nametranslation)
 		{
-			ICollection<ImageData> images;
 			int counter = 0;
 			
 			// Go for all opened containers
 			foreach(DataReader dr in containers)
 			{
 				// Load flats
-				images = dr.LoadFlats();
+				ICollection<ImageData> images = dr.LoadFlats();
 				if(images != null)
 				{
 					// Go for all flats
@@ -1083,7 +1071,7 @@ namespace CodeImp.DoomBuilder.Data
 						//mxd. Also add as short name when texture name is longer than 8 chars
 						// Or remove when a wad image with short name overrides previously added 
 						// resource image with long name
-						if (img.HasLongName)
+						if(img.HasLongName)
 						{
 							long longshortname = Lump.MakeLongName(Path.GetFileNameWithoutExtension(img.Name), false);
 							nametranslation.Remove(longshortname);
@@ -1107,13 +1095,11 @@ namespace CodeImp.DoomBuilder.Data
 		// This returns a specific flat stream
 		internal Stream GetFlatData(string pname, bool longname)
 		{
-			Stream flat;
-
 			// Go for all opened containers
 			for(int i = containers.Count - 1; i >= 0; i--)
 			{
 				// This contain provides this flat?
-				flat = containers[i].GetFlatData(pname, longname);
+				Stream flat = containers[i].GetFlatData(pname, longname);
 				if(flat != null) return flat;
 			}
 
@@ -1187,7 +1173,6 @@ namespace CodeImp.DoomBuilder.Data
 		// This loads the hard defined sprites (not all the lumps, we do that on a need-to-know basis, see LoadThingSprites)
 		private int LoadSprites()
 		{
-			ICollection<ImageData> images;
 			int counter = 0;
 			
 			// Load all defined sprites. Note that we do not use all sprites,
@@ -1195,7 +1180,7 @@ namespace CodeImp.DoomBuilder.Data
 			foreach(DataReader dr in containers)
 			{
 				// Load sprites
-				images = dr.LoadSprites();
+				ICollection<ImageData> images = dr.LoadSprites();
 				if(images != null)
 				{
 					// Add or replace in sprites list
@@ -1475,7 +1460,7 @@ namespace CodeImp.DoomBuilder.Data
 					{
 						List<int> toremove = new List<int>();
 						Dictionary<string, ThingTypeInfo> thingtypesbyclass = new Dictionary<string, ThingTypeInfo>();
-						foreach (KeyValuePair<int, ThingTypeInfo> group in thingtypes)
+						foreach(KeyValuePair<int, ThingTypeInfo> group in thingtypes)
 						{
 							if(string.IsNullOrEmpty(group.Value.ClassName)) continue;
 							thingtypesbyclass[group.Value.ClassName.ToLowerInvariant()] = group.Value;
@@ -1599,13 +1584,13 @@ namespace CodeImp.DoomBuilder.Data
 						General.Map.Config.Enums["spawnthing"] = newenums;
 
 						// Update all ArgumentInfos...
-						foreach (ThingTypeInfo info in thingtypes.Values)
+						foreach(ThingTypeInfo info in thingtypes.Values)
 						{
 							foreach(ArgumentInfo ai in info.Args) 
 								if(ai.Enum.Name == "spawnthing") ai.Enum = newenums;
 						}
 
-						foreach (LinedefActionInfo info in General.Map.Config.LinedefActions.Values)
+						foreach(LinedefActionInfo info in General.Map.Config.LinedefActions.Values)
 						{
 							foreach(ArgumentInfo ai in info.Args)
 								if(ai.Enum.Name == "spawnthing") ai.Enum = newenums;

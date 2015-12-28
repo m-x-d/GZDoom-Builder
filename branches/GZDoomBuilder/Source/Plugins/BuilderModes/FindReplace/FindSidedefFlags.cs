@@ -65,7 +65,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				foreach(string flag in replaceflags) 
 				{
 					string f = flag.Trim();
-					if (!General.Map.Config.SidedefFlags.ContainsKey(f))
+					if(!General.Map.Config.SidedefFlags.ContainsKey(f))
 					{
 						MessageBox.Show("Invalid replace value '" + f + "' for this search type!", "Find and Replace", MessageBoxButtons.OK, MessageBoxIcon.Error);
 						return objs.ToArray();

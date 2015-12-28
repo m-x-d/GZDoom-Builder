@@ -188,7 +188,7 @@ namespace CodeImp.DoomBuilder.IO
 				args[3] = GetCollectionEntry(c, "arg3", false, 0, where);
 				args[4] = GetCollectionEntry(c, "arg4", false, 0, where);
 
-				if (scale != 0) //mxd
+				if(scale != 0) //mxd
 				{
 					scaleX = scale;
 					scaleY = scale;
@@ -236,7 +236,7 @@ namespace CodeImp.DoomBuilder.IO
 				int v1 = GetCollectionEntry(lc, "v1", true, 0, where);
 				int v2 = GetCollectionEntry(lc, "v2", true, 0, where);
 
-				if (!vertexlink.ContainsKey(v1) || !vertexlink.ContainsKey(v2)) { //mxd
+				if(!vertexlink.ContainsKey(v1) || !vertexlink.ContainsKey(v2)) { //mxd
 					General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + i + " references one or more invalid vertices. Linedef has been removed.");
 					continue;
 				}
@@ -257,9 +257,9 @@ namespace CodeImp.DoomBuilder.IO
 				if(!string.IsNullOrEmpty(moreids))
 				{
 					string[] moreidscol = moreids.Split(splitter, StringSplitOptions.RemoveEmptyEntries);
-					int id;
-					foreach (string sid in moreidscol)
+					foreach(string sid in moreidscol)
 					{
+						int id;
 						if(int.TryParse(sid.Trim(), out id) && id != 0 && !tags.Contains(id))
 						{
 							tags.Add(id);
@@ -387,9 +387,9 @@ namespace CodeImp.DoomBuilder.IO
 				if(!string.IsNullOrEmpty(moreids)) 
 				{
 					string[] moreidscol = moreids.Split(splitter, StringSplitOptions.RemoveEmptyEntries);
-					int id;
-					foreach(string sid in moreidscol) 
+					foreach(string sid in moreidscol)
 					{
+						int id;
 						if(int.TryParse(sid.Trim(), out id) && id != 0 && !tags.Contains(id)) 
 						{
 							tags.Add(id);
@@ -598,9 +598,9 @@ namespace CodeImp.DoomBuilder.IO
 			List<UniversalCollection> list = new List<UniversalCollection>();
 
 			// Make list
-			foreach (UniversalEntry e in collection) 
+			foreach(UniversalEntry e in collection) 
 			{
-				if (!(e.Value is UniversalCollection) || (e.Key != entryname)) continue; //mxd
+				if(!(e.Value is UniversalCollection) || (e.Key != entryname)) continue; //mxd
 				list.Add(e.Value as UniversalCollection);
 			}
 

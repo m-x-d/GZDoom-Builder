@@ -73,7 +73,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			PixelColor stitchcolor = General.Colors.Highlight;
 			PixelColor losecolor = General.Colors.Selection;
-			PixelColor color;
 
 			snaptocardinaldirection = General.Interface.ShiftState && General.Interface.AltState;
 			snaptogrid = snaptocardinaldirection || General.Interface.ShiftState ^ General.Interface.SnapToGrid;
@@ -109,20 +108,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					for(int i = 1; i < curve.Shape.Count; i++) 
 					{
 						// Determine line color
-						color = snaptonearest ? stitchcolor : losecolor;
+						PixelColor c = snaptonearest ? stitchcolor : losecolor;
 
 						// Render line
-						renderer.RenderLine(curve.Shape[i - 1], curve.Shape[i], LINE_THICKNESS, color, true);
+						renderer.RenderLine(curve.Shape[i - 1], curve.Shape[i], LINE_THICKNESS, c, true);
 					}
 
 					//render "inactive" vertices
 					for(int i = 1; i < curve.Shape.Count - 1; i++) 
 					{
 						// Determine vertex color
-						color = !snaptonearest ? stitchcolor : losecolor;
+						PixelColor c = !snaptonearest ? stitchcolor : losecolor;
 
 						// Render vertex
-						renderer.RenderRectangleFilled(new RectangleF(curve.Shape[i].x - vsize, curve.Shape[i].y - vsize, vsize * 2.0f, vsize * 2.0f), color, true);
+						renderer.RenderRectangleFilled(new RectangleF(curve.Shape[i].x - vsize, curve.Shape[i].y - vsize, vsize * 2.0f, vsize * 2.0f), c, true);
 					}
 				}
 
@@ -132,15 +131,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					for(int i = 0; i < points.Count; i++) 
 					{
 						// Determine vertex color
-						color = points[i].stitch ? stitchcolor : losecolor;
+						PixelColor c = points[i].stitch ? stitchcolor : losecolor;
 
 						// Render vertex
-						renderer.RenderRectangleFilled(new RectangleF(points[i].pos.x - vsize, points[i].pos.y - vsize, vsize * 2.0f, vsize * 2.0f), color, true);
+						renderer.RenderRectangleFilled(new RectangleF(points[i].pos.x - vsize, points[i].pos.y - vsize, vsize * 2.0f, vsize * 2.0f), c, true);
 					}
 				}
 
 				// Determine point color
-				color = snaptonearest ? stitchcolor : losecolor;
+				PixelColor color = snaptonearest ? stitchcolor : losecolor;
 
 				// Render vertex at cursor
 				renderer.RenderRectangleFilled(new RectangleF(curp.pos.x - vsize, curp.pos.y - vsize, vsize * 2.0f, vsize * 2.0f), color, true);

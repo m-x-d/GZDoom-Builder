@@ -69,7 +69,7 @@ namespace CodeImp.DoomBuilder.ColorPicker
 			// HSV contains values scaled as in the color wheel:
 			// that is, all from 0 to 255. 
 
-			// for ( this code to work, HSV.Hue needs
+			// for( this code to work, HSV.Hue needs
 			// to be scaled from 0 to 360 (it//s the angle of the selected
 			// point within the circle). HSV.Saturation and HSV.value must be 
 			// scaled to be between 0 and 1.
@@ -84,7 +84,7 @@ namespace CodeImp.DoomBuilder.ColorPicker
 			float s = (float)HSV.Saturation / 255;
 			float v = (float)HSV.value / 255;
 
-			if (s == 0) 
+			if(s == 0) 
 			{
 				// If s is 0, all colors are the same.
 				// This is some flavor of gray.
@@ -112,7 +112,7 @@ namespace CodeImp.DoomBuilder.ColorPicker
 
 				// Assign the fractional colors to r, g, and b
 				// based on the sector the angle is in.
-				switch (sectorNumber) 
+				switch(sectorNumber) 
 				{
 					case 0:
 						r = v;
@@ -175,7 +175,7 @@ namespace CodeImp.DoomBuilder.ColorPicker
 			float max = Math.Max(Math.Max(r, g), b);
 			v = max;
 			float delta = max - min;
-			if (max == 0 || delta == 0) 
+			if(max == 0 || delta == 0) 
 			{
 				// R, G, and B must be 0, or all the same. In this case, S is 0, and H is undefined.
 				// Using H = 0 is as good as any...
@@ -185,12 +185,12 @@ namespace CodeImp.DoomBuilder.ColorPicker
 			else 
 			{
 				s = delta / max;
-				if (r == max) 
+				if(r == max) 
 				{
 					// Between Yellow and Magenta
 					h = (g - b) / delta;
 				} 
-				else if (g == max) 
+				else if(g == max) 
 				{
 					// Between Cyan and Yellow
 					h = 2 + (b - r) / delta;
@@ -205,7 +205,7 @@ namespace CodeImp.DoomBuilder.ColorPicker
 			// Scale h to be between 0 and 360. 
 			// This may require adding 360, if the value is negative.
 			h *= 60;
-			if (h < 0) h += 360;
+			if(h < 0) h += 360;
 
 			// Scale to the requirements of this application. All values are between 0 and 255.
 			return new HSV((int)(h / 360 * 255), (int)(s * 255), (int)(v * 255));

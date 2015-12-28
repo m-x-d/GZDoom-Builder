@@ -544,7 +544,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				bool snaptonearest = General.Interface.CtrlState ^ General.Interface.AutoMerge;
 				DrawnVertex v = DrawGeometryMode.GetCurrentPosition(mousemappos, snaptonearest, snaptogrid, false, renderer, new List<DrawnVertex>());
 
-				if (drawmode.DrawPointAt(v))
+				if(drawmode.DrawPointAt(v))
 					General.Editing.ChangeMode(drawmode);
 				else
 					General.Interface.DisplayStatus(StatusType.Warning, "Failed to draw point: outside of map boundaries.");
@@ -570,13 +570,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						General.Map.Map.Update();
 						
 						// When a single line was selected, deselect it now
-						if (selected.Count == 1) 
+						if(selected.Count == 1) 
 						{
 							General.Map.Map.ClearSelectedLinedefs();
 						} 
 						else if(result == DialogResult.Cancel) //mxd. Restore selection...
 						{ 
-							foreach (Linedef l in selected) l.Selected = true;
+							foreach(Linedef l in selected) l.Selected = true;
 						}
 
 						// Update entire display
@@ -1371,10 +1371,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			// Any selected lines?
-			if (validlines.Count > 0) 
+			if(validlines.Count > 0) 
 			{
 				// Make undo
-				if (validlines.Count > 1) 
+				if(validlines.Count > 1) 
 				{
 					General.Map.UndoRedo.CreateUndo("Flip " + validlines.Count + " sidedefs");
 					General.Interface.DisplayStatus(StatusType.Action, "Flipped " + validlines.Count + " sidedefs.");
@@ -1386,7 +1386,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 
 				// Flip sidedefs in all selected linedefs
-				foreach (Linedef l in validlines) 
+				foreach(Linedef l in validlines) 
 				{
 					l.FlipSidedefs();
 					l.Front.Sector.UpdateNeeded = true;
@@ -1515,7 +1515,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			if(lines.Count == 0) 
 			{
-				if (highlighted != null && !highlighted.IsDisposed) 
+				if(highlighted != null && !highlighted.IsDisposed) 
 				{
 					lines.Add(highlighted);
 				} 

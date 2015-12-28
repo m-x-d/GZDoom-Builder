@@ -151,7 +151,7 @@ namespace CodeImp.DoomBuilder.GZBuilder
 		[BeginAction("gzreloadgldefs")]
 		private static void ReloadGldefs() 
 		{
-			if (General.Map != null) General.Map.Data.ReloadGldefs();
+			if(General.Map != null) General.Map.Data.ReloadGldefs();
 		}
 
 		#endregion

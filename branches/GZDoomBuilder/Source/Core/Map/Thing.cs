@@ -453,7 +453,7 @@ namespace CodeImp.DoomBuilder.Map
 			pitch = General.ClampAngle(newpitch);
 			pitchrad = ((ismodel && General.Map.Data.ModeldefEntries[type].InheritActorPitch) ? Angle2D.DegToRad(pitch) : 0);
 
-			if (type != General.Map.Config.Start3DModeThingType)
+			if(type != General.Map.Config.Start3DModeThingType)
 				General.Map.IsChanged = true;
 		}
 
@@ -465,7 +465,7 @@ namespace CodeImp.DoomBuilder.Map
 			roll = General.ClampAngle(newroll);
 			rollrad = ( (rollsprite || (ismodel && General.Map.Data.ModeldefEntries[type].InheritActorRoll)) ? Angle2D.DegToRad(roll) : 0);
 
-			if (type != General.Map.Config.Start3DModeThingType)
+			if(type != General.Map.Config.Start3DModeThingType)
 				General.Map.IsChanged = true;
 		}
 
@@ -477,7 +477,7 @@ namespace CodeImp.DoomBuilder.Map
 			scaleX = scalex;
 			scaleY = scaley;
 
-			if (type != General.Map.Config.Start3DModeThingType)
+			if(type != General.Map.Config.Start3DModeThingType)
 				General.Map.IsChanged = true;
 		}
 		
@@ -546,14 +546,14 @@ namespace CodeImp.DoomBuilder.Map
 		//mxd. This checks if the thing has model override
 		internal void UpdateCache()
 		{
-			if (General.Map.Data == null)
+			if(General.Map.Data == null)
 			{
 				ismodel = false;
 				return;
 			}
 
 			ismodel = General.Map.Data.ModeldefEntries.ContainsKey(type);
-			if (ismodel && General.Map.Data.ModeldefEntries[type].LoadState == ModelLoadState.None)
+			if(ismodel && General.Map.Data.ModeldefEntries[type].LoadState == ModelLoadState.None)
 				ismodel = General.Map.Data.ProcessModel(type);
 
 			if(ismodel) 

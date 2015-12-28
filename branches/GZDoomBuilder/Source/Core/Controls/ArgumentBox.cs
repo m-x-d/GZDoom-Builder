@@ -271,7 +271,6 @@ namespace CodeImp.DoomBuilder.Controls
 			// Strip prefixes
 			string str = combobox.Text.Trim().ToLowerInvariant();
 			str = str.TrimStart('+', '-');
-			int num = original;
 
 			// Anything in the box?
 			if(combobox.Text.Trim().Length > 0)
@@ -280,6 +279,7 @@ namespace CodeImp.DoomBuilder.Controls
 				if(combobox.Text.Trim().StartsWith("++"))
 				{
 					// Add number to original
+					int num;
 					if(!int.TryParse(str, out num)) num = 0;
 					result = original + num;
 				}
@@ -287,6 +287,7 @@ namespace CodeImp.DoomBuilder.Controls
 				else if(combobox.Text.Trim().StartsWith("--"))
 				{
 					// Subtract number from original
+					int num;
 					if(!int.TryParse(str, out num)) num = 0;
 					result = original - num;
 				}

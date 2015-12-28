@@ -61,7 +61,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			InitializeComponent();
 
-			if (!location.IsEmpty)
+			if(!location.IsEmpty)
 			{
 				this.StartPosition = FormStartPosition.Manual;
 				this.Location = location;
@@ -152,7 +152,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			location = this.Location;
 
 			// Store settings
-			if (this.DialogResult == DialogResult.OK)
+			if(this.DialogResult == DialogResult.OK)
 			{
 				horizontalrepeat = (int)horizrepeat.Value;
 				verticalrepeat = (int)vertrepeat.Value;
@@ -178,7 +178,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			if(blockupdate) return;
 
-			if (horizrepeat.Value == 0)
+			if(horizrepeat.Value == 0)
 			{
 				horizrepeat.Value = prevhorizrepeat > 0 ? -1 : 1;
 				return;
@@ -240,7 +240,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				sortedstrips[side.Side.Texture.LongName].Add(side);
 			}
 
-			foreach (KeyValuePair<long, List<SortedVisualSide>> pair in sortedstrips)
+			foreach(KeyValuePair<long, List<SortedVisualSide>> pair in sortedstrips)
 			{
 				//find bounds
 				int minx = int.MaxValue;

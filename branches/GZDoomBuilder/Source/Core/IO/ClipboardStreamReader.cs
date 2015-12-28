@@ -84,7 +84,7 @@ namespace CodeImp.DoomBuilder.IO
 
 					// Add custom fields
 					v.Fields.BeforeFieldsChange();
-					foreach (KeyValuePair<string, UniValue> group in fields) 
+					foreach(KeyValuePair<string, UniValue> group in fields) 
 					{
 						v.Fields.Add(group.Key, group.Value);
 					}
@@ -108,7 +108,7 @@ namespace CodeImp.DoomBuilder.IO
 			// Go for all collections
 			map.SetCapacity(0, 0, 0, map.Sectors.Count + count, 0);
 
-			for (int i = 0; i < count; i++) 
+			for(int i = 0; i < count; i++) 
 			{
 				int effect = reader.ReadInt32();
 				int hfloor = reader.ReadInt32();
@@ -135,7 +135,7 @@ namespace CodeImp.DoomBuilder.IO
 				for(int f = 0; f < numFlags; f++) stringflags.Add(ReadString(reader), true);
 
 				//add missing flags
-				foreach (KeyValuePair<string, string> flag in General.Map.Config.SectorFlags) 
+				foreach(KeyValuePair<string, string> flag in General.Map.Config.SectorFlags) 
 				{
 					if(stringflags.ContainsKey(flag.Key)) continue;
 					stringflags.Add(flag.Key, false);
@@ -197,7 +197,7 @@ namespace CodeImp.DoomBuilder.IO
 				}
 
 				//add missing activations
-				foreach (LinedefActivateInfo activate in General.Map.Config.LinedefActivates) 
+				foreach(LinedefActivateInfo activate in General.Map.Config.LinedefActivates) 
 				{
 					if(stringflags.ContainsKey(activate.Key)) continue;
 					stringflags.Add(activate.Key, false);
@@ -207,11 +207,11 @@ namespace CodeImp.DoomBuilder.IO
 				Dictionary<string, UniValue> fields = ReadCustomFields(reader);
 
 				// Check if not zero-length
-				if (Vector2D.ManhattanDistance(vertexlink[v1].Position, vertexlink[v2].Position) > 0.0001f) 
+				if(Vector2D.ManhattanDistance(vertexlink[v1].Position, vertexlink[v2].Position) > 0.0001f) 
 				{
 					// Create new linedef
 					Linedef l = map.CreateLinedef(vertexlink[v1], vertexlink[v2]);
-					if (l != null) 
+					if(l != null) 
 					{
 						l.Update(stringflags, 0, tags, special, args);
 						l.UpdateCache();
@@ -259,7 +259,7 @@ namespace CodeImp.DoomBuilder.IO
 					s.Update(data.OffsetX, data.OffsetY, data.HighTexture, data.MiddleTexture, data.LowTexture, data.Flags);
 
 					// Add custom fields
-					foreach (KeyValuePair<string, UniValue> group in data.Fields) 
+					foreach(KeyValuePair<string, UniValue> group in data.Fields) 
 					{
 						s.Fields.Add(group.Key, group.Value);
 					}
@@ -399,9 +399,9 @@ namespace CodeImp.DoomBuilder.IO
 		private static string ReadString(BinaryReader reader) 
 		{
 			int len = reader.ReadInt32();
-			if (len == 0) return string.Empty;
+			if(len == 0) return string.Empty;
 			char[] chars = new char[len];
-			for (int i = 0; i < len; ++i) chars[i] = reader.ReadChar();
+			for(int i = 0; i < len; ++i) chars[i] = reader.ReadChar();
 			return new string(chars);
 		}
 

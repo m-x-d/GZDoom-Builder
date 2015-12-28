@@ -313,7 +313,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				// First texture stage
 				//mxd
 				//if((index == 0) || (index == 2))
-				if ((index == 0) || (index == 2) || (index == 4) || (index == 6) || (index == 8) || (index == 10) || (index == 12) || (index == 14) || index > 15)
+				if((index == 0) || (index == 2) || (index == 4) || (index == 6) || (index == 8) || (index == 10) || (index == 12) || (index == 14) || index > 15)
 				{
 					// Normal
 					device.SetTextureStageState(0, TextureStage.ColorOperation, TextureOperation.Modulate);
@@ -351,8 +351,8 @@ namespace CodeImp.DoomBuilder.Rendering
 				// Highlight?
 				//mxd
 				//if(index > 1) 2 3 6 10 14
-				//if ((index > 1 && index < 4) || (index > 5 && index < 8) || (index > 9 && index < 12) || (index > 13 && index < 16))
-				if (index == 2 || index == 3 || index == 6 || index == 10 || index == 14)
+				//if((index > 1 && index < 4) || (index > 5 && index < 8) || (index > 9 && index < 12) || (index > 13 && index < 16))
+				if(index == 2 || index == 3 || index == 6 || index == 10 || index == 14)
 				{
 					// Third texture stage
 					device.SetTextureStageState(2, TextureStage.ColorOperation, TextureOperation.AddSigned);

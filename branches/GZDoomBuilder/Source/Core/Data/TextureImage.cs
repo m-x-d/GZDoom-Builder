@@ -70,16 +70,11 @@ namespace CodeImp.DoomBuilder.Data
 		// This loads the image
 		protected override void LocalLoadImage()
 		{
-			IImageReader reader;
-			BitmapData bitmapdata = null;
-			MemoryStream mem;
-			PixelColor* pixels = (PixelColor*)0;
-			Stream patchdata;
-			byte[] membytes;
-			
 			// Checks
-			if(this.IsImageLoaded) return;
-			if((width == 0) || (height == 0)) return;
+			if(this.IsImageLoaded || width == 0 || height == 0) return;
+
+			BitmapData bitmapdata = null;
+			PixelColor* pixels = (PixelColor*)0;
 			
 			lock(this)
 			{
@@ -107,26 +102,26 @@ namespace CodeImp.DoomBuilder.Data
 					foreach(TexturePatch p in patches)
 					{
 						// Get the patch data stream
-						patchdata = General.Map.Data.GetPatchData(p.lumpname, p.haslongname);
+						Stream patchdata = General.Map.Data.GetPatchData(p.lumpname, p.haslongname);
 						if(patchdata != null)
 						{
 							// Copy patch data to memory
 							patchdata.Seek(0, SeekOrigin.Begin);
-							membytes = new byte[(int)patchdata.Length];
+							byte[] membytes = new byte[(int)patchdata.Length];
 							patchdata.Read(membytes, 0, (int)patchdata.Length);
-							mem = new MemoryStream(membytes);
+							MemoryStream mem = new MemoryStream(membytes);
 							mem.Seek(0, SeekOrigin.Begin);
 
 							// Get a reader for the data
-							reader = ImageDataFormat.GetImageReader(mem, ImageDataFormat.DOOMPICTURE, General.Map.Data.Palette);
+							IImageReader reader = ImageDataFormat.GetImageReader(mem, ImageDataFormat.DOOMPICTURE, General.Map.Data.Palette);
 							if(reader is UnknownImageReader)
 							{
 								//mxd. Probably that's a flat?..
-								if (General.Map.Config.MixTexturesFlats) 
+								if(General.Map.Config.MixTexturesFlats) 
 								{
 									reader = ImageDataFormat.GetImageReader(mem, ImageDataFormat.DOOMFLAT, General.Map.Data.Palette);
 								}
-								if (reader is UnknownImageReader) 
+								if(reader is UnknownImageReader) 
 								{
 									// Data is in an unknown format!
 									General.ErrorLogger.Add(ErrorType.Error, "Patch lump '" + p.lumpname + "' data format could not be read, while loading texture '" + this.Name + "'. Does this lump contain valid picture data at all?");

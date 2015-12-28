@@ -43,7 +43,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
         {
             blockUpdate = true;
 
-            if (first) 
+            if(first) 
 			{
                 value1.Text = val1.ToString(CultureInfo.CurrentCulture);
 				value2.Text = val2.ToString(CultureInfo.CurrentCulture);
@@ -78,7 +78,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
                 || value1.GetResultFloat(defaultValue, 0) != defaultValue || value2.GetResultFloat(defaultValue, 0) != defaultValue);
             bReset.Visible = changed;
 
-            if (!blockUpdate && OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+            if(!blockUpdate && OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
         }
 
         private void bReset_Click(object sender, EventArgs e)
@@ -97,9 +97,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 
         private void value1_WhenTextChanged(object sender, EventArgs e)
         {
-            if (blockUpdate) return;
+            if(blockUpdate) return;
             
-            if (linkValues) 
+            if(linkValues) 
 			{
                 blockUpdate = true;
                 value2.Text = value1.Text;
@@ -111,9 +111,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 
         private void value2_WhenTextChanged(object sender, EventArgs e)
         {
-            if (blockUpdate) return;
+            if(blockUpdate) return;
 
-            if (linkValues) 
+            if(linkValues) 
 			{
                 blockUpdate = true;
                 value1.Text = value2.Text;

@@ -30,12 +30,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	{
 		#region ================== Constants
 
-		private int MIN_VERTICES = 1;
-		private int MAX_VERTICES = 200;
-		private int MIN_DISTANCE = 0;
-		private int MAX_DISTANCE = 10000;
-		private int MIN_ANGLE = 1;
-		private int MAX_ANGLE = 350;
+		private const int MIN_VERTICES = 1;
+		private const int MAX_VERTICES = 200;
+		private const int MIN_DISTANCE = 0;
+		private const int MAX_DISTANCE = 10000;
+		private const int MIN_ANGLE = 1;
+		private const int MAX_ANGLE = 350;
 
 		#endregion
 

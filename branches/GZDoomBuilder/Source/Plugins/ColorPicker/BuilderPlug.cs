@@ -66,10 +66,10 @@ namespace CodeImp.DoomBuilder.ColorPicker
 			base.Dispose();
 			General.Actions.UnbindMethods(this);
 
-			if (form != null) form.Close();
+			if(form != null) form.Close();
 			form = null;
 
-			if (toolsform != null) 
+			if(toolsform != null) 
 			{
 				toolsform.Unregister();
 				toolsform.Dispose();
@@ -80,11 +80,11 @@ namespace CodeImp.DoomBuilder.ColorPicker
 		[BeginAction("togglelightpannel")]
 		private void ToggleLightPannel() 
 		{
-			if (General.Editing.Mode == null) return;
+			if(General.Editing.Mode == null) return;
 			string currentModeName = General.Editing.Mode.GetType().Name;
 
 			//display one of colorPickers or tell the user why we can't do that
-			if (currentModeName == "ThingsMode") 
+			if(currentModeName == "ThingsMode") 
 			{
 				if(General.Map.Map.SelectedThingsCount == 0)
 				{
@@ -93,11 +93,11 @@ namespace CodeImp.DoomBuilder.ColorPicker
 				}
 				form = new LightColorPicker();
 			} 
-			else if (currentModeName == "SectorsMode") 
+			else if(currentModeName == "SectorsMode") 
 			{
-				if (General.Map.UDMF) 
+				if(General.Map.UDMF) 
 				{
-					if (General.Map.Map.SelectedSectorsCount == 0) 
+					if(General.Map.Map.SelectedSectorsCount == 0) 
 					{
 						General.Interface.DisplayStatus(StatusType.Warning, "Select some sectors first!");
 						return;
@@ -110,14 +110,14 @@ namespace CodeImp.DoomBuilder.ColorPicker
 					return;
 				}
 			} 
-			else if (currentModeName == "BaseVisualMode") 
+			else if(currentModeName == "BaseVisualMode") 
 			{
 				//nothing selected in visual mode?
-				if ( ((VisualMode)General.Editing.Mode).GetSelectedVisualThings(true).Count == 0 ) 
+				if( ((VisualMode)General.Editing.Mode).GetSelectedVisualThings(true).Count == 0 ) 
 				{
 					//check sectors
 					int selectedSectorsCount = ((VisualMode)General.Editing.Mode).GetSelectedVisualSectors(true).Count;
-					if (General.Map.UDMF && (selectedSectorsCount > 0 || General.Map.Map.SelectedSectorsCount > 0)) 
+					if(General.Map.UDMF && (selectedSectorsCount > 0 || General.Map.Map.SelectedSectorsCount > 0)) 
 					{
 						form = new SectorColorPicker();
 					} 
@@ -138,9 +138,9 @@ namespace CodeImp.DoomBuilder.ColorPicker
 				return;
 			}
 
-			if (form.Setup(currentModeName)) 
+			if(form.Setup(currentModeName)) 
 			{
-				if (formLocation.X == 0 && formLocation.Y == 0) 
+				if(formLocation.X == 0 && formLocation.Y == 0) 
 				{
 					Size displaySize = General.Interface.Display.Size;
 					Point displayLocation = General.Interface.Display.LocationAbs;

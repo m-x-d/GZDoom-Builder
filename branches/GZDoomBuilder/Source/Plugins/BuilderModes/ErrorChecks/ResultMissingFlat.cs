@@ -52,8 +52,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			hidden = hide;
 			Type t = this.GetType();
-			if (hide) sector.IgnoredErrorChecks.Add(t);
-			else if (sector.IgnoredErrorChecks.Contains(t)) sector.IgnoredErrorChecks.Remove(t);
+			if(hide) sector.IgnoredErrorChecks.Add(t);
+			else if(sector.IgnoredErrorChecks.Contains(t)) sector.IgnoredErrorChecks.Remove(t);
 		}
 		
 		// This must return the string that is displayed in the listbox

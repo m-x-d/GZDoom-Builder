@@ -173,11 +173,9 @@ namespace CodeImp.DoomBuilder.IO
 		// from the given pos and line and updates pos and line.
 		private UniversalCollection InputStructure(ref string[] data, ref int pos, ref int line, bool topLevel)
 		{
-			char c;							// current data character
 			int pm = PM_NOTHING;			// current parse mode
 			key.Remove(0, key.Length);
 			val.Remove(0, val.Length);
-			string s;
 			bool escape = false;			// escape sequence?
 			bool endofstruct = false;		// true as soon as this level struct ends
 			UniversalCollection cs = new UniversalCollection();
@@ -196,7 +194,7 @@ namespace CodeImp.DoomBuilder.IO
 					if(string.IsNullOrEmpty(data[line])) continue; //mxd. Skip empty lines here so correct line number is displayed on errors
 				}
 
-				c = data[line][pos];
+				char c = data[line][pos]; // current data character
 				
 				// ================ What parse mode are we at?
 				if(pm == PM_NOTHING)
@@ -206,7 +204,7 @@ namespace CodeImp.DoomBuilder.IO
 					{
 						case '{': // Begin of new struct
 							// Validate key
-							s = key.ToString().Trim();
+							string s = key.ToString().Trim();
 							if(ValidateKey(s, line))
 							{
 								// Next character
@@ -381,7 +379,7 @@ namespace CodeImp.DoomBuilder.IO
 					if(c == ';')
 					{
 						// Hexadecimal?
-						s = val.ToString();
+						string s = val.ToString();
 						if((s.Length > 2) && s.StartsWith("0x", StringComparison.InvariantCultureIgnoreCase))
 						{
 							// Convert to int

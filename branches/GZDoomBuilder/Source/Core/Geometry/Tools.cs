@@ -138,11 +138,8 @@ namespace CodeImp.DoomBuilder.Geometry
 		// This finds the inner lines of the sector and adds them to the sector polygon
 		private static void FindInnerLines(EarClipPolygon p, List<LinedefSide> alllines)
 		{
-			Vertex foundv;
-			bool vvalid, findmore;
-			Linedef foundline;
+			bool findmore;
 			float foundangle = 0f;
-			bool foundlinefront;
 			RectangleF bbox = p.CreateBBox();
 			
 			do
@@ -150,7 +147,7 @@ namespace CodeImp.DoomBuilder.Geometry
 				findmore = false;
 
 				// Go for all vertices to find the right-most vertex inside the polygon
-				foundv = null;
+				Vertex foundv = null;
 				foreach(Vertex v in General.Map.Map.Vertices)
 				{
 					// Inside the polygon bounding box?
@@ -167,7 +164,7 @@ namespace CodeImp.DoomBuilder.Geometry
 							if(v.Linedefs.Count > 0)
 							{
 								// Go for all lines to see if the vertex is not of the polygon itsself
-								vvalid = true;
+								bool vvalid = true;
 								foreach(LinedefSide ls in alllines) 
 								{
 									if((ls.Line.Start == v) || (ls.Line.End == v)) 
@@ -188,8 +185,8 @@ namespace CodeImp.DoomBuilder.Geometry
 				if(foundv != null)
 				{
 					// Find the attached linedef with the smallest angle to the right
-					float targetangle = Angle2D.PIHALF;
-					foundline = null;
+					const float targetangle = Angle2D.PIHALF;
+					Linedef foundline = null;
 					foreach(Linedef l in foundv.Linedefs)
 					{
 						// We need an angle unrelated to line direction, so correct for that
@@ -215,7 +212,7 @@ namespace CodeImp.DoomBuilder.Geometry
 
 					// Find the side at which to start pathfinding
 					Vector2D testpos = new Vector2D(100.0f, 0.0f);
-					foundlinefront = (foundline.SideOfLine(foundv.Position + testpos) < 0.0f);
+					bool foundlinefront = (foundline.SideOfLine(foundv.Position + testpos) < 0.0f);
 
 					// Find inner path
 					List<LinedefSide> innerlines = FindClosestPath(foundline, foundlinefront, true);
@@ -740,7 +737,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		//mxd. This applies overrides to a sidedef
 		private static void ApplyOverridesToSidedef(Sidedef sd) 
 		{
-			if (General.Map.Options.OverrideTopTexture) sd.SetTextureHigh(General.Map.Options.DefaultTopTexture);
+			if(General.Map.Options.OverrideTopTexture) sd.SetTextureHigh(General.Map.Options.DefaultTopTexture);
 			if(sd.MiddleRequired() && General.Map.Options.OverrideMiddleTexture) sd.SetTextureMid(General.Map.Options.DefaultWallTexture);
 			if(General.Map.Options.OverrideBottomTexture) sd.SetTextureLow(General.Map.Options.DefaultBottomTexture);
 		}
@@ -945,12 +942,12 @@ namespace CodeImp.DoomBuilder.Geometry
 						Dictionary<Linedef, bool> processed = new Dictionary<Linedef, bool>(); //mxd
 
 						//mxd
-						foreach (Sector s in map.Sectors) 
+						foreach(Sector s in map.Sectors) 
 						{
 							//line intersects with sector's bounding box?
 							if((MapSet.GetCSFieldBits(measureline.v1, s.BBox) & MapSet.GetCSFieldBits(measureline.v2, s.BBox)) == 0) 
 							{
-								foreach (Sidedef side in s.Sidedefs) 
+								foreach(Sidedef side in s.Sidedefs) 
 								{
 									if(processed.ContainsKey(side.Line)) continue;
 									if(side.Line == ld) continue;
@@ -1464,10 +1461,10 @@ namespace CodeImp.DoomBuilder.Geometry
 					}
 
 					//mxd. Apply texture overrides
-					if (useOverrides && !General.Settings.AutoClearSidedefTextures) 
+					if(useOverrides && !General.Settings.AutoClearSidedefTextures) 
 					{
 						//if new sectors are created, apply overrides to the sides of these sectors, otherwise, apply overrides to all new lines
-						if (insidesides.Count > 0) 
+						if(insidesides.Count > 0) 
 						{
 							foreach(Sidedef side in insidesides) ApplyOverridesToSidedef(side);
 						} 
@@ -1539,7 +1536,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		//mxd
 		private static void AutoAlignLinedefStrip(List<Linedef> strip) 
 		{
-			if (strip.Count < 2) return;
+			if(strip.Count < 2) return;
 
 			float totalLength = 0f;
 			foreach(Linedef l in strip) totalLength += l.Length;
@@ -1816,7 +1813,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		//mxd. This converts offsetY from/to "normalized" offset for given wall part
 		public static float GetSidedefOffsetY(Sidedef side, VisualGeometryType part, float offset, float scaleY, bool fromNormalized)
 		{
-			switch (part)
+			switch(part)
 			{
 				case VisualGeometryType.WALL_UPPER:
 					return GetSidedefTopOffsetY(side, offset, scaleY, fromNormalized);
@@ -2336,13 +2333,13 @@ namespace CodeImp.DoomBuilder.Geometry
 		//mxd
 		public static int GetDropDownWidth(ComboBox cb) 
 		{
-			int maxWidth = 0, temp;
-			foreach(var obj in cb.Items) 
+			int maxwidth = 0;
+			foreach(var obj in cb.Items)
 			{
-				temp = TextRenderer.MeasureText(obj.ToString(), cb.Font).Width;
-				if(temp > maxWidth) maxWidth = temp;
+				int temp = TextRenderer.MeasureText(obj.ToString(), cb.Font).Width;
+				if(temp > maxwidth) maxwidth = temp;
 			}
-			return maxWidth > 0 ? maxWidth + 6 : 1;
+			return maxwidth > 0 ? maxwidth + 6 : 1;
 		}
 
 		//mxd
@@ -2354,8 +2351,7 @@ namespace CodeImp.DoomBuilder.Geometry
 				return General.Map.Data.MapInfo.OutsideFogColor.ToColor();
 			}
  
-			if(General.Map.Data.MapInfo.HasFadeColor) return General.Map.Data.MapInfo.FadeColor.ToColor();
-			return Color.Black;
+			return (General.Map.Data.MapInfo.HasFadeColor ? General.Map.Data.MapInfo.FadeColor.ToColor() : Color.Black);
 		}
 
 		#endregion

@@ -79,7 +79,7 @@ namespace CodeImp.DoomBuilder.Types
 			{
 				if(s.Tag == 0 || tagshash.IsSupersetOf(s.Tags)) continue;
 				tags.AddRange(s.Tags);
-				foreach (int i in s.Tags) tagshash.Add(i);
+				foreach(int i in s.Tags) tagshash.Add(i);
 			}
 
 			//now sort them in descending order

@@ -52,7 +52,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			Initialize(type);
 			
 			// Set coordinates
-			switch (type)
+			switch(type)
 			{
 				case PrimitiveType.TriangleList:
 					SetTriangleListCoordinates(left, top, right, bottom, 0f, 0f, 1f, 1f);
@@ -77,7 +77,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			float thd = 1f / theight;
 			
 			// Set coordinates
-			switch (type)
+			switch(type)
 			{
 				case PrimitiveType.TriangleList:
 					SetTriangleListCoordinates(left, top, right, bottom, twd, thd, 1f - twd, 1f - thd);
@@ -98,7 +98,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			Initialize(type);
 
 			// Set coordinates
-			switch (type)
+			switch(type)
 			{
 				case PrimitiveType.TriangleList:
 					SetTriangleListCoordinates(pos.Left, pos.Top, pos.Right, pos.Bottom, tl, tt, tr, tb);
@@ -119,7 +119,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			Initialize(type);
 			
 			// Set coordinates
-			switch (type)
+			switch(type)
 			{
 				case PrimitiveType.TriangleList:
 					SetTriangleListCoordinates(left, top, right, bottom, tl, tt, tr, tb);
@@ -149,7 +149,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		public void SetColors(int clt, int crt, int clb, int crb)
 		{
 			// Determine polygon type
-			switch (type)
+			switch(type)
 			{
 				case PrimitiveType.TriangleList:
 					vertices[0].c = clt;
@@ -233,7 +233,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			this.type = type;
 
 			// Determine number of vertices
-			switch (type)
+			switch(type)
 			{
 				case PrimitiveType.TriangleList: numvertices = 6; break;
 				case PrimitiveType.TriangleStrip: numvertices = 4; break;

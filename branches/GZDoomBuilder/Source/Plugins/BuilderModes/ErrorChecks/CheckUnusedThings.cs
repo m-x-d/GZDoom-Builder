@@ -39,31 +39,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Go for all things
 			foreach(Thing t in General.Map.Map.Things) 
 			{
-				List<string> messages = new List<string>();
-				foreach(KeyValuePair<string, Dictionary<string, ThingFlagsCompare>> group in General.Map.Config.ThingFlagsCompare) 
+				// Gather enabled flags
+				HashSet<string> activeflags = new HashSet<string>();
+				foreach(KeyValuePair<string, bool> group in t.GetFlags())
 				{
-					if(group.Value.Count < 2) continue;
-					bool haveflags = false;
-
-					foreach(KeyValuePair<string, ThingFlagsCompare> flags in group.Value)
-					{
-						bool flagset = (General.Map.UDMF && t.Fields.ContainsKey(flags.Key) && (bool) t.Fields[flags.Key].Value) || t.IsFlagSet(flags.Key);
-						
-						// Should we skip this group?
-						if(flagset || flags.Value.IgnoreGroupWhenUnset) 
-						{
-							haveflags = true;
-							break;
-						}
-					}
-
-					if(!haveflags) messages.Add(GetDescription(group.Key));
+					if(group.Value) activeflags.Add(group.Key);
 				}
 
-				if(messages.Count > 0)
+				// Check em
+				List<string> warnings = ThingFlagsCompare.CheckFlags(activeflags);
+				if(warnings.Count > 0)
 				{
-					string msg = " is not used " + string.Join(", ", messages.ToArray());
-					SubmitResult(new ResultUnusedThing(t, msg));
+					// Got missing flags
+					SubmitResult(new ResultUnusedThing(t, string.Join(" ", warnings.ToArray())));
 				}
 
 				// Handle thread interruption
@@ -76,17 +64,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					AddProgress(1);
 				}
 			}	
-		}
-
-		private static string GetDescription(string group)
-		{
-			switch(group) 
-			{
-				case "skills": return "in any skill level";
-				case "gamemodes": return "in any game mode";
-				case "classes": return "by any class";
-				default: return "by any class, skill or game mode";
-			}
 		}
 
 		#endregion

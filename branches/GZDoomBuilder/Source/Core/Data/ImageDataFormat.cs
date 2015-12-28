@@ -118,14 +118,11 @@ namespace CodeImp.DoomBuilder.Data
 		// signature, and expects the stream to be long enough.
 		private static bool CheckSignature(Stream data, int[] sig)
 		{
-			int b;
-			
 			// Go for all bytes
-			for(int i = 0; i < sig.Length; i++)
+			foreach(int s in sig)
 			{
 				// When byte doesnt match the signature, leave
-				b = data.ReadByte();
-				if(b != sig[i]) return false;
+				if(data.ReadByte() != s) return false;
 			}
 
 			// Signature matches

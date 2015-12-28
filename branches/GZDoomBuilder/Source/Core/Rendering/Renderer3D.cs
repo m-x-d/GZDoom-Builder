@@ -650,12 +650,11 @@ namespace CodeImp.DoomBuilder.Rendering
 			//create vertices
 			WorldVertex[] verts = new WorldVertex[pointscount];
 			const float scaler = 20f;
-			int color;
 			pointscount = 0;
 
 			foreach(Line3D line in lines)
 			{
-				color = line.Color.ToInt();
+				int color = line.Color.ToInt();
 
 				// Add regular points
 				verts[pointscount].x = line.Start.x;
@@ -767,7 +766,7 @@ namespace CodeImp.DoomBuilder.Rendering
 
 						// Only do this sector when a vertexbuffer is created
 						//mxd. No Map means that sector was deleted recently, I suppose
-						if (g.Sector.GeometryBuffer != null && g.Sector.Sector.Map != null) 
+						if(g.Sector.GeometryBuffer != null && g.Sector.Sector.Map != null) 
 						{
 							// Change current sector
 							sector = g.Sector;
@@ -832,7 +831,6 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Device.SetSamplerState(0, SamplerState.AddressW, TextureAddress.Clamp);
 				graphics.Device.SetRenderState(RenderState.CullMode, Cull.None); //mxd. Disable backside culling, because otherwise sprites with positive ScaleY and negative ScaleX will be facing away from the camera...
 
-				Color4 litcolor; //mxd
 				Color4 vertexcolor = new Color4(); //mxd
 
 				// Render things collected
@@ -873,6 +871,7 @@ namespace CodeImp.DoomBuilder.Rendering
 							world = CreateThingPositionMatrix(t);
 
 							//mxd. If current thing is light - set it's color to light color
+							Color4 litcolor;
 							if(Array.IndexOf(GZBuilder.GZGeneral.GZ_LIGHTS, t.Thing.Type) != -1 && !fullbrightness) 
 							{
 								wantedshaderpass += 4; // Render using one of passes, which uses World3D.VertexColor
@@ -1109,8 +1108,6 @@ namespace CodeImp.DoomBuilder.Rendering
 				thingspass.Sort((vt1, vt2) => (int)((General.Map.VisualCamera.Position - vt2.BoundingBox[0]).GetLengthSq()
 												  - (General.Map.VisualCamera.Position - vt1.BoundingBox[0]).GetLengthSq()));
 
-				Color4 litcolor;
-				
 				// Reset vars
 				currentpass = RenderPass.Solid;
 				curtexturename = 0;
@@ -1174,6 +1171,7 @@ namespace CodeImp.DoomBuilder.Rendering
 						world = CreateThingPositionMatrix(t);
 
 						//mxd. If current thing is light - set it's color to light color
+						Color4 litcolor;
 						if(Array.IndexOf(GZBuilder.GZGeneral.GZ_LIGHTS, t.Thing.Type) != -1 && !fullbrightness)
 						{
 							wantedshaderpass += 4; // Render using one of passes, which uses World3D.VertexColor
@@ -1283,8 +1281,6 @@ namespace CodeImp.DoomBuilder.Rendering
 			graphics.Shaders.World3D.World = Matrix.Identity;
 			graphics.Shaders.World3D.BeginPass(17);
 
-			int i, count;
-			Vector4 lpr;
 			VisualSector sector = null;
 
 			graphics.Device.SetRenderState(RenderState.SourceBlend, Blend.One);
@@ -1319,12 +1315,13 @@ namespace CodeImp.DoomBuilder.Rendering
 					if(sector == null) continue;
 
 					//normal lights
-					count = lightOffsets[0];
+					int count = lightOffsets[0];
+					Vector4 lpr;
 					if(lightOffsets[0] > 0) 
 					{
 						graphics.Device.SetRenderState(RenderState.BlendOperation, BlendOperation.Add);
 
-						for(i = 0; i < count; i++) 
+						for(int i = 0; i < count; i++) 
 						{
 							if(BoundingBoxesIntersect(g.BoundingBox, lights[i].BoundingBox)) 
 							{
@@ -1344,7 +1341,7 @@ namespace CodeImp.DoomBuilder.Rendering
 						count += lightOffsets[1];
 						graphics.Device.SetRenderState(RenderState.BlendOperation, BlendOperation.Add);
 
-						for(i = lightOffsets[0]; i < count; i++) 
+						for(int i = lightOffsets[0]; i < count; i++) 
 						{
 							if(BoundingBoxesIntersect(g.BoundingBox, lights[i].BoundingBox)) 
 							{
@@ -1364,7 +1361,7 @@ namespace CodeImp.DoomBuilder.Rendering
 						count += lightOffsets[2];
 						graphics.Device.SetRenderState(RenderState.BlendOperation, BlendOperation.ReverseSubtract);
 
-						for(i = lightOffsets[0] + lightOffsets[1]; i < count; i++) 
+						for(int i = lightOffsets[0] + lightOffsets[1]; i < count; i++) 
 						{
 							if(BoundingBoxesIntersect(g.BoundingBox, lights[i].BoundingBox)) 
 							{
@@ -1574,26 +1571,24 @@ namespace CodeImp.DoomBuilder.Rendering
 		private Color4 GetLitColorForThing(VisualThing t) 
 		{
 			Color4 litColor = new Color4();
-			float radiusSquared, distSquared, scaler;
-			int sign;
-
 			foreach(VisualThing lt in lightthings)
 			{
 				// Don't light self
 				if(General.Map.Data.GldefsEntries.ContainsKey(t.Thing.Type) && General.Map.Data.GldefsEntries[t.Thing.Type].DontLightSelf && t.Thing.Index == lt.Thing.Index)
 					continue;
 
-				distSquared = Vector3.DistanceSquared(lt.Center, t.PositionV3);
-				radiusSquared = lt.LightRadius * lt.LightRadius;
+				float distSquared = Vector3.DistanceSquared(lt.Center, t.PositionV3);
+				float radiusSquared = lt.LightRadius * lt.LightRadius;
 				if(distSquared < radiusSquared) 
 				{
-					sign = (lt.LightRenderStyle == DynamicLightRenderStyle.NEGATIVE ? -1 : 1);
-					scaler = 1 - distSquared / radiusSquared * lt.LightColor.Alpha;
+					int sign = (lt.LightRenderStyle == DynamicLightRenderStyle.NEGATIVE ? -1 : 1);
+					float scaler = 1 - distSquared / radiusSquared * lt.LightColor.Alpha;
 					litColor.Red += lt.LightColor.Red * scaler * sign;
 					litColor.Green += lt.LightColor.Green * scaler * sign;
 					litColor.Blue += lt.LightColor.Blue * scaler * sign;
 				}
 			}
+
 			return litColor;
 		}
 

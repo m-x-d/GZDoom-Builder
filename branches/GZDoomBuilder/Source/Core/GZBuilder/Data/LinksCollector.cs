@@ -87,7 +87,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 			{
 				ThingTypeInfo info = General.Map.Data.GetThingInfoEx(t.Type);
 				if(info == null) continue;
-				switch (info.ClassName.ToLowerInvariant())
+				switch(info.ClassName.ToLowerInvariant())
 				{
 					case "patrolpoint":
 						if(t.Tag != 0 || t.Args[0] != 0)

@@ -58,11 +58,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			int progress = 0;
 			int stepprogress = 0;
 			float maxradius = 0;
-			Dictionary<int, Dictionary<int, bool>> processedthingpairs = new Dictionary<int, Dictionary<int, bool>>(); //mxd
+			Dictionary<int, HashSet<int>> processedthingpairs = new Dictionary<int, HashSet<int>>(); //mxd
 
-			foreach (ThingTypeInfo tti in General.Map.Data.ThingTypes)
+			foreach(ThingTypeInfo tti in General.Map.Data.ThingTypes)
 			{
-				if (tti.Radius > maxradius) maxradius = tti.Radius;
+				if(tti.Radius > maxradius) maxradius = tti.Radius;
 			}
 
 			// Go for all the things
@@ -119,32 +119,31 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						// Check if thing is stuck in other things
 						if(info.Blocking != ThingTypeInfo.THING_BLOCKING_NONE) 
 						{
-							foreach (Thing ot in b.Things)
+							foreach(Thing ot in b.Things)
 							{
 								// Don't compare the thing with itself
-								if (t.Index == ot.Index) continue;
+								if(t.Index == ot.Index) continue;
 
 								// mxd. Don't compare already processed stuff
-								if (processedthingpairs.ContainsKey(t.Index) && processedthingpairs[t.Index].ContainsKey(ot.Index)) continue;
+								if(processedthingpairs.ContainsKey(t.Index) && processedthingpairs[t.Index].Contains(ot.Index)) continue;
 
 								// Only check of items that can block
-								if (General.Map.Data.GetThingInfo(ot.Type).Blocking == ThingTypeInfo.THING_BLOCKING_NONE) continue;
+								if(General.Map.Data.GetThingInfo(ot.Type).Blocking == ThingTypeInfo.THING_BLOCKING_NONE) continue;
 
 								// need to compare the flags
-								if (FlagsOverlap(t, ot) && ThingsOverlap(t, ot))
+								if(FlagsOverlap(t, ot) && ThingsOverlap(t, ot))
 								{
 									stuck = true;
-									
-									//mxd. Prepare collection
-									if(!processedthingpairs.ContainsKey(t.Index)) processedthingpairs.Add(t.Index, new Dictionary<int, bool>());
-									if(!processedthingpairs.ContainsKey(ot.Index)) processedthingpairs.Add(ot.Index, new Dictionary<int, bool>());
-
-									//mxd. Add both ways
-									processedthingpairs[t.Index].Add(ot.Index, false);
-									processedthingpairs[ot.Index].Add(t.Index, false);
-
 									SubmitResult(new ResultStuckThingInThing(t, ot));
 								}
+
+								//mxd. Prepare collections
+								if(!processedthingpairs.ContainsKey(t.Index)) processedthingpairs.Add(t.Index, new HashSet<int>());
+								if(!processedthingpairs.ContainsKey(ot.Index)) processedthingpairs.Add(ot.Index, new HashSet<int>());
+
+								//mxd. Add both ways
+								processedthingpairs[t.Index].Add(ot.Index);
+								processedthingpairs[ot.Index].Add(t.Index);
 							}
 						}
 					}
@@ -201,18 +200,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			ThingTypeInfo t2info = General.Map.Data.GetThingInfo(t2.Type);
 	
 			// simple bounding box collision detection
-			if (	p1.x + t1.Size - ALLOWED_STUCK_DISTANCE < p2.x - t2.Size + ALLOWED_STUCK_DISTANCE ||
+			if(		p1.x + t1.Size - ALLOWED_STUCK_DISTANCE < p2.x - t2.Size + ALLOWED_STUCK_DISTANCE ||
 					p1.x - t1.Size + ALLOWED_STUCK_DISTANCE > p2.x + t2.Size - ALLOWED_STUCK_DISTANCE ||
 					p1.y - t1.Size + ALLOWED_STUCK_DISTANCE > p2.y + t2.Size - ALLOWED_STUCK_DISTANCE ||
 					p1.y + t1.Size - ALLOWED_STUCK_DISTANCE < p2.y - t2.Size + ALLOWED_STUCK_DISTANCE)
 				return false;
 
 			// if either thing blocks full height there's no need to check the z-axis
-			if (t1info.Blocking == ThingTypeInfo.THING_BLOCKING_FULL || t2info.Blocking == ThingTypeInfo.THING_BLOCKING_FULL)
+			if(t1info.Blocking == ThingTypeInfo.THING_BLOCKING_FULL || t2info.Blocking == ThingTypeInfo.THING_BLOCKING_FULL)
 				return true;
 
 			// check z-axis
-			if (p1.z > p2.z + t2info.Height || p1.z + t1info.Height < p2.z)
+			if(p1.z > p2.z + t2info.Height || p1.z + t1info.Height < p2.z)
 				return false;
 
 			return true;
@@ -222,31 +221,53 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private static bool FlagsOverlap(Thing t1, Thing t2) 
 		{
 			if(General.Map.Config.ThingFlagsCompare.Count < 1) return true; //mxd. Otherwise, no things will ever overlap when ThingFlagsCompare is empty
-			int overlappinggroups = 0;
-			int totalgroupscount = General.Map.Config.ThingFlagsCompare.Count; //mxd. Some groups can be ignored when unset...
+			Dictionary<string, ThingFlagsCompareResult> results = new Dictionary<string, ThingFlagsCompareResult>(General.Map.Config.ThingFlagsCompare.Count);
 
 			// Go through all flags in all groups and check if they overlap
-			foreach(KeyValuePair<string, Dictionary<string, ThingFlagsCompare>> group in General.Map.Config.ThingFlagsCompare) 
+			foreach(ThingFlagsCompareGroup group in General.Map.Config.ThingFlagsCompare.Values)
+				results[group.Name] = group.Compare(t1, t2);
+
+			// Process Required/IgnoredGroups
+			foreach(ThingFlagsCompareResult result in results.Values)
 			{
-				foreach(ThingFlagsCompare tfc in group.Value.Values)
+				// Group matters only when it contains overlapping flags
+				if(result.Result == 1)
 				{
-					int compareresult = tfc.Compare(t1, t2); //mxd
-					if(compareresult > 0) 
+					// Ignore this group when RequiredGroup flags don't overlap
+					foreach(string requiredgroup in result.RequiredGroups)
 					{
-						overlappinggroups++;
-						break;
+						if(results[requiredgroup].Result != 1)
+						{
+							result.Result = 0;
+							break;
+						}
 					}
 
-					//mxd. Some groups can be ignored when unset...
-					if(compareresult == 0 && tfc.IgnoreGroupWhenUnset)
+					// Ignore other groups when this one's flags overlap
+					if(result.Result == 1)
 					{
-						totalgroupscount--;
+						foreach(string ignoredgroup in result.IgnoredGroups)
+							results[ignoredgroup].Result = 0;
 					}
 				}
 			}
 
+			// Count overlapping groups
+			int overlappinggroupscount = 0;
+			int totalgroupscount = results.Values.Count;
+			foreach(ThingFlagsCompareResult result in results.Values)
+			{
+				switch(result.Result)
+				{
+					case  1: overlappinggroupscount++; break; // Group flags overlap
+					case  0: totalgroupscount--; break; // Ignored group should be ignored
+					case -1: return false; // Group flags don't overlap
+					default: throw new NotImplementedException("Unknown thing flags comparison result");
+				}
+			}
+
 			// All groups have to overlap for the things to show up at the same time
-			return (totalgroupscount > 0 && overlappinggroups == totalgroupscount);
+			return (totalgroupscount > 0 && overlappinggroupscount == totalgroupscount);
 		}
 		
 		#endregion

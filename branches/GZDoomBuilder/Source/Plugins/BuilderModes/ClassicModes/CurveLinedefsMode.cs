@@ -113,11 +113,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			float h = R - d;
 
 			float yDeform = fixedcurve ? 1 : distance / h;
-			if(backwards)
-				yDeform = -yDeform;
-
-			float a, x, y;
-			Vector2D vertex;
+			if(backwards) yDeform = -yDeform;
 
 			for(int v = 1; v <= vertices; v++)
 			{
@@ -125,15 +121,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				//the curve starts at PI/2 - theta/2 and is segmented into vertices+1 segments
 				//this assumes the line is horisontal and on y = 0, the point is rotated and moved later
 
-				a = (Angle2D.PI - theta) / 2 + v * (theta / (vertices + 1));
+				float a = (Angle2D.PI - theta) / 2 + v * (theta / (vertices + 1));
 
 				//calculate the coordinates of the point, and distort the y coordinate
 				//using the deform factor calculated above
-				x = (float)Math.Cos(a) * R;
-				y = ((float)Math.Sin(a) * R - d) * yDeform;
+				float x = (float)Math.Cos(a) * R;
+				float y = ((float)Math.Sin(a) * R - d) * yDeform;
 
 				//rotate and transform to fit original line
-				vertex = new Vector2D(x, y).GetRotated(line.Angle + Angle2D.PIHALF);
+				Vector2D vertex = new Vector2D(x, y).GetRotated(line.Angle + Angle2D.PIHALF);
 				vertex = vertex.GetTransformed(line.GetCenterPoint().x, line.GetCenterPoint().y, 1, 1);
 
 				points.Add(vertex);

@@ -170,9 +170,9 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			//mxd. Select the found set or "All", if none were found
-			if (tvTextureSets.Nodes.Count > 0)
+			if(tvTextureSets.Nodes.Count > 0)
 			{
-				if (selectedset == null) selectedset = tvTextureSets.Nodes[tvTextureSets.Nodes.Count - 1];
+				if(selectedset == null) selectedset = tvTextureSets.Nodes[tvTextureSets.Nodes.Count - 1];
 				tvTextureSets.SelectedNodes.Clear();
 				tvTextureSets.SelectedNodes.Add(selectedset);
 				selectedset.EnsureVisible();
@@ -192,10 +192,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.WindowState = (FormWindowState)General.Settings.ReadSetting("browserwindow.windowstate", (int)FormWindowState.Normal);
 			
 			//mxd
-			if (this.WindowState == FormWindowState.Normal) 
+			if(this.WindowState == FormWindowState.Normal) 
 			{
 				Point location = new Point(General.Settings.ReadSetting("browserwindow.positionx", int.MaxValue), General.Settings.ReadSetting("browserwindow.positiony", int.MaxValue));
-				if (location.X < int.MaxValue && location.Y < int.MaxValue) 
+				if(location.X < int.MaxValue && location.Y < int.MaxValue) 
 				{
 					this.Location = location;
 				} 
@@ -234,11 +234,10 @@ namespace CodeImp.DoomBuilder.Windows
 		private TreeNode FindTextureByLongName(TreeNode node, long longname) 
 		{
 			//first search in child nodes
-			TreeNode match;
 
-			foreach(TreeNode n in node.Nodes) 
+			foreach(TreeNode n in node.Nodes)
 			{
-				match = FindTextureByLongName(n, longname);
+				TreeNode match = FindTextureByLongName(n, longname);
 				if(match != null) return match;
 			}
 
@@ -254,9 +253,9 @@ namespace CodeImp.DoomBuilder.Windows
 		//mxd
 		private static TreeNode FindNodeByName(TreeNodeCollection nodes, string selectname) 
 		{
-			foreach (TreeNode n in nodes) 
+			foreach(TreeNode n in nodes) 
 			{
-				if (n.Name == selectname) return n;
+				if(n.Name == selectname) return n;
 
 				TreeNode match = FindNodeByName(n.Nodes, selectname);
 				if(match != null) return match;
@@ -268,7 +267,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private void CreateNodes(TreeNode root) 
 		{
 			ResourceTextureSet set = root.Tag as ResourceTextureSet;
-			if (set == null) 
+			if(set == null) 
 			{
 				General.ErrorLogger.Add(ErrorType.Error, "Resource " + root.Name + " doesn't have TextureSet!");
 				return;
@@ -278,7 +277,7 @@ namespace CodeImp.DoomBuilder.Windows
 			char[] separator = new[] { Path.AltDirectorySeparatorChar };
 			
 			ImageData[] images;
-			if (browseflats)
+			if(browseflats)
 			{
 				images = new ImageData[set.Flats.Count];
 				set.Flats.CopyTo(images, 0);
@@ -295,7 +294,7 @@ namespace CodeImp.DoomBuilder.Windows
 				string[] parts = image.VirtualName.Split(separator, StringSplitOptions.RemoveEmptyEntries);
 				TreeNode curNode = root;
 
-				if (parts.Length == 1) continue;
+				if(parts.Length == 1) continue;
 				int localindex = (parts[0] == "[TEXTURES]" ? 8 : imageIndex);
 
 				string category = set.Name;
@@ -305,7 +304,7 @@ namespace CodeImp.DoomBuilder.Windows
 					category += (Path.DirectorySeparatorChar + parts[i]);
 					
 					//already got such category?
-					if (curNode.Nodes.Count > 0 && curNode.Nodes.ContainsKey(category)) 
+					if(curNode.Nodes.Count > 0 && curNode.Nodes.ContainsKey(category)) 
 					{
 						curNode = curNode.Nodes[category];
 					} 
@@ -325,10 +324,10 @@ namespace CodeImp.DoomBuilder.Windows
 					if(i == parts.Length - 2) 
 					{
 						TreeNode cn = curNode;
-						while (cn != root) 
+						while(cn != root) 
 						{
 							ResourceTextureSet curTs = cn.Tag as ResourceTextureSet;
-							if (image.IsFlat)
+							if(image.IsFlat)
 								curTs.AddFlat(image);
 							else
 								curTs.AddTexture(image);
@@ -347,17 +346,17 @@ namespace CodeImp.DoomBuilder.Windows
 				((ResourceTextureSet)root.Tag).Level++;
 			}
 
-			foreach (TreeNode n in root.Nodes) SetItemsCount(n);
+			foreach(TreeNode n in root.Nodes) SetItemsCount(n);
 		}
 
 		//mxd
 		private void SetItemsCount(TreeNode node) 
 		{
 			ResourceTextureSet ts = node.Tag as ResourceTextureSet;
-			if (ts == null) throw new Exception("Expected IFilledTextureSet, but got null...");
+			if(ts == null) throw new Exception("Expected IFilledTextureSet, but got null...");
 			
 
-			if (node.Parent != null && General.Map.Config.MixTexturesFlats)
+			if(node.Parent != null && General.Map.Config.MixTexturesFlats)
 			{
 				ts.MixTexturesAndFlats();
 				node.Text += " [" + ts.Textures.Count + "]";
@@ -367,7 +366,7 @@ namespace CodeImp.DoomBuilder.Windows
 				node.Text += " [" + (browseflats ? ts.Flats.Count : ts.Textures.Count) + "]";
 			}
 
-			foreach (TreeNode child in node.Nodes) SetItemsCount(child);
+			foreach(TreeNode child in node.Nodes) SetItemsCount(child);
 		}
 
 		// Selection changed
@@ -505,7 +504,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// Start adding
 			browser.BeginAdding(set.Level, false); //mxd. Pass current folder level
 
-			if (browseflats) 
+			if(browseflats) 
 			{
 				// Add all available flats
 				foreach(ImageData img in set.Flats)
@@ -518,11 +517,11 @@ namespace CodeImp.DoomBuilder.Windows
 			else
 			{
 				// Add all available textures and mark the images for temporary loading
-				foreach (ImageData img in set.Textures)
+				foreach(ImageData img in set.Textures)
 					browser.Add(img, img, availgroup);
 
 				// Add all used textures and mark the images for permanent loading
-				foreach (ImageData img in set.Textures)
+				foreach(ImageData img in set.Textures)
 					if(img.UsedInMap) browser.Add(img, img, usedgroup);
 			}
 			
@@ -539,7 +538,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void TextureBrowserForm_Shown(object sender, EventArgs e)
 		{
-			if (selectedset != null) //mxd. Calling FillImagesList() from constructor leads to TERRIBLE load times. Why? I have no sodding idea...
+			if(selectedset != null) //mxd. Calling FillImagesList() from constructor leads to TERRIBLE load times. Why? I have no sodding idea...
 				FillImagesList();
 			
 			// Select texture

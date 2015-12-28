@@ -54,7 +54,6 @@ namespace CodeImp.DoomBuilder.Config
 		// Constructor
 		internal GeneralizedOption(string structure, string cat, string name, IDictionary bitslist)
 		{
-			int index;
 			string fullpath;
 			
 			// Determine path
@@ -69,6 +68,7 @@ namespace CodeImp.DoomBuilder.Config
 			foreach(DictionaryEntry de in bitslist)
 			{
 				// Check if the item key is numeric
+				int index;
 				if(int.TryParse(de.Key.ToString(), NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite, CultureInfo.InvariantCulture, out index))
 				{
 					// Add to list

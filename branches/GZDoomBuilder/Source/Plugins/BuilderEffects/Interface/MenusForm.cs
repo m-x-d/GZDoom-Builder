@@ -35,7 +35,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			General.Interface.RemoveMenu(jitterItem);
 			General.Interface.RemoveButton(jitterButton);
 
-			for (int i = 0; i < importStripMenuItem.DropDownItems.Count; i++)
+			for(int i = 0; i < importStripMenuItem.DropDownItems.Count; i++)
 				General.Interface.RemoveMenu(importStripMenuItem.DropDownItems[i] as ToolStripMenuItem);
 		}
 	}

@@ -429,7 +429,7 @@ namespace CodeImp.DoomBuilder.IO
 				stream.Read(bytes, 0, bytes.Length);
 				fixed(byte* bptr = bytes)
 				{
-					if (!ilLoadL(imagetype, new IntPtr(bptr), (uint)bytes.Length))
+					if(!ilLoadL(imagetype, new IntPtr(bptr), (uint)bytes.Length))
 						throw new BadImageFormatException();
 				}
 				
@@ -452,7 +452,7 @@ namespace CodeImp.DoomBuilder.IO
 				ilDeleteImages(1, new IntPtr(&imageid));
 
 				//mxd. TGA fix
-				if (imagetype == DevilImageType.IL_TGA)
+				if(imagetype == DevilImageType.IL_TGA)
 					bmp.RotateFlip(RotateFlipType.RotateNoneFlipY);
 
 				return bmp;

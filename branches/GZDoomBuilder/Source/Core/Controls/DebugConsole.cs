@@ -59,7 +59,7 @@ namespace CodeImp.DoomBuilder
 			me = this;
 
 			// Setup filters
-			foreach (ToolStripMenuItem item in filterselector.DropDownItems)
+			foreach(ToolStripMenuItem item in filterselector.DropDownItems)
 			{
 				UpdateFilters(item);
 			}
@@ -86,7 +86,7 @@ namespace CodeImp.DoomBuilder
 			wordwrap.Checked = console.WordWrap;
 
 			// Pending messages?
-			if (messages.Count > 0) UpdateMessages();
+			if(messages.Count > 0) UpdateMessages();
 		}
 
 		#endregion
@@ -111,7 +111,7 @@ namespace CodeImp.DoomBuilder
 			} 
 			else 
 			{
-				if (messages.Count + 1 > MAX_MESSAGES) lock (messages) { messages.RemoveAt(0); }
+				if(messages.Count + 1 > MAX_MESSAGES) lock (messages) { messages.RemoveAt(0); }
 				messages.Add(new KeyValuePair<DebugMessageType, string>(type, text));
 				if(me != null && (me.filters & type) == type) 
 				{
@@ -127,13 +127,13 @@ namespace CodeImp.DoomBuilder
 
 		public static void Clear()
 		{
-			if (me != null && me.InvokeRequired)
+			if(me != null && me.InvokeRequired)
 			{
 				me.Invoke(new Action(Clear));
 			}
 			else
 			{
-				if (me != null) me.console.Clear();
+				if(me != null) me.console.Clear();
 				messages.Clear();
 			}
 		}
@@ -149,7 +149,7 @@ namespace CodeImp.DoomBuilder
 
 			long duration = SlimDX.Configuration.Timer.ElapsedMilliseconds - starttime;
 			
-			if (message.Contains("%"))
+			if(message.Contains("%"))
 				message = message.Replace("%", duration.ToString(CultureInfo.InvariantCulture));
 			else
 				message = message.TrimEnd() + " " + duration + " ms.";
@@ -225,7 +225,7 @@ namespace CodeImp.DoomBuilder
 			console.Clear();
 
 			console.SuspendLayout();
-			foreach (KeyValuePair<DebugMessageType, string> pair in messages)
+			foreach(KeyValuePair<DebugMessageType, string> pair in messages)
 			{
 				if((filters & pair.Key) == pair.Key && CheckTextFilter(pair.Value, searchbox.Text))
 				{
@@ -240,7 +240,7 @@ namespace CodeImp.DoomBuilder
 		// Should we display this message?
 		private static bool CheckTextFilter(string text, string filter) 
 		{
-			if (string.IsNullOrEmpty(filter) || filter.Length < 3) return true;
+			if(string.IsNullOrEmpty(filter) || filter.Length < 3) return true;
 			return text.ToUpperInvariant().Contains(filter.ToUpperInvariant());
 		}
 

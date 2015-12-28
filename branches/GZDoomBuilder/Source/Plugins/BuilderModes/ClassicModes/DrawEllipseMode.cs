@@ -72,13 +72,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		override protected Vector2D[] GetShape(Vector2D pStart, Vector2D pEnd) 
 		{
 			//no shape
-			if (pEnd.x == pStart.x && pEnd.y == pStart.y) return new Vector2D[0];
+			if(pEnd.x == pStart.x && pEnd.y == pStart.y) return new Vector2D[0];
 
 			//line
 			if(pEnd.x == pStart.x || pEnd.y == pStart.y) return new[] { pStart, pEnd };
 
 			//got shape
-			if (bevelWidth < 0) 
+			if(bevelWidth < 0) 
 			{
 				currentBevelWidth = -Math.Min(Math.Abs(bevelWidth), Math.Min(width, height) / 2) + 1;
 			} 
@@ -96,11 +96,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Vector2D center = new Vector2D(pStart.x + hw, pStart.y + hh);
 			float curAngle = 0;
 			float angleStep = -Angle2D.PI / subdivisions * 2;
-			int px, py;
 
-			for (int i = 0; i < subdivisions; i++) 
+			for(int i = 0; i < subdivisions; i++) 
 			{
-				if (doBevel) 
+				int px, py;
+				if(doBevel) 
 				{
 					px = (int)(center.x - (float)Math.Sin(curAngle) * (hw + currentBevelWidth));
 					py = (int)(center.y - (float)Math.Cos(curAngle) * (hh + currentBevelWidth));
@@ -156,7 +156,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		override protected void DecreaseSubdivLevel() 
 		{
-			if (subdivisions - minSubdivisions > 1) 
+			if(subdivisions - minSubdivisions > 1) 
 			{
 				subdivisions -= 2;
 				panel.Subdivisions = subdivisions;

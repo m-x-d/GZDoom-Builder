@@ -74,7 +74,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			string sidestr = side.IsFront ? "front" : "back";
 
-			switch (part)
+			switch(part)
 			{
 				case SidedefPart.Upper:
 					return "Linedef " + side.Line.Index + " has missing upper texture (" + sidestr + " side)";
@@ -103,7 +103,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			if(!batchMode) General.Map.UndoRedo.CreateUndo("Missing texture correction");
 			General.Settings.FindDefaultDrawSettings();
-			switch (part)
+			switch(part)
 			{
 				case SidedefPart.Upper: side.SetTextureHigh(General.Map.Options.DefaultTopTexture); break;
 				case SidedefPart.Middle: side.SetTextureMid(General.Map.Options.DefaultWallTexture); break;

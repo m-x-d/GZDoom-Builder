@@ -88,7 +88,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				foreach(string flag in replaceflags) 
 				{
 					string f = flag.Trim();
-					if (!General.Map.Config.LinedefFlags.ContainsKey(f))
+					if(!General.Map.Config.LinedefFlags.ContainsKey(f))
 					{
 						MessageBox.Show("Invalid replace value '" + f + "' for this search type!", "Find and Replace", MessageBoxButtons.OK, MessageBoxIcon.Error);
 						return objs.ToArray();
@@ -98,7 +98,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			// Go for all linedefs
-			foreach (Linedef l in list)
+			foreach(Linedef l in list)
 			{
 				bool match = true;
 
@@ -114,7 +114,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 
 				// Flags matches?
-				if (match)
+				if(match)
 				{
 					// Replace flags (mxd)
 					if(replace) 
@@ -128,7 +128,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					
 					// Add to list
 					LinedefActionInfo info = General.Map.Config.GetLinedefActionInfo(l.Action);
-					if (!info.IsNull)
+					if(!info.IsNull)
 						objs.Add(new FindReplaceObject(l, "Linedef " + l.Index + " (" + info.Title + ")"));
 					else
 						objs.Add(new FindReplaceObject(l, "Linedef " + l.Index));

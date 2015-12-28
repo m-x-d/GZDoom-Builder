@@ -105,7 +105,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.IO
 					}
 				}
 
-				if (settings.Flats != null) 
+				if(settings.Flats != null) 
 				{
 					foreach(string s in settings.Flats) 
 					{
@@ -148,26 +148,26 @@ namespace CodeImp.DoomBuilder.BuilderModes.IO
 			mtl.Append("# MTL for " + General.Map.FileTitle + ", map " + General.Map.Options.LevelName + Environment.NewLine);
 			mtl.Append("# Created by GZDoom Builder " + Application.ProductVersion + Environment.NewLine + Environment.NewLine);
 
-			if (settings.Textures != null) 
+			if(settings.Textures != null) 
 			{
-				foreach (string s in settings.Textures) 
+				foreach(string s in settings.Textures) 
 				{
-					if (s == DEFAULT) continue;
+					if(s == DEFAULT) continue;
 					mtl.Append("newmtl " + s.ToUpperInvariant() + Environment.NewLine);
 					mtl.Append("Kd 1.0 1.0 1.0" + Environment.NewLine);
-					if (settings.ExportTextures) mtl.Append("map_Kd " + Path.Combine(settings.ObjPath, s.ToUpperInvariant() + ".PNG") + Environment.NewLine);
+					if(settings.ExportTextures) mtl.Append("map_Kd " + Path.Combine(settings.ObjPath, s.ToUpperInvariant() + ".PNG") + Environment.NewLine);
 					mtl.Append(Environment.NewLine);
 				}
 			}
 
 			if(settings.Flats != null) 
 			{
-				foreach (string s in settings.Flats) 
+				foreach(string s in settings.Flats) 
 				{
-					if (s == DEFAULT) continue;
+					if(s == DEFAULT) continue;
 					mtl.Append("newmtl " + s.ToUpperInvariant() + Environment.NewLine);
 					mtl.Append("Kd 1.0 1.0 1.0" + Environment.NewLine);
-					if (settings.ExportTextures) 
+					if(settings.ExportTextures) 
 					{
 						// Handle duplicate names
 						string flatname = s;
@@ -261,11 +261,11 @@ namespace CodeImp.DoomBuilder.BuilderModes.IO
 			texturegeo.Add(DEFAULT, new List<WorldVertex[]>());
 			var flatgeo = new Dictionary<string, List<WorldVertex[]>>(StringComparer.Ordinal);
 			flatgeo.Add(DEFAULT, new List<WorldVertex[]>());
-			string texture;
 
 			foreach(BaseVisualSector vs in visualSectors) 
 			{
 				//floor
+				string texture;
 				if(vs.Floor != null) 
 				{
 					texture = vs.Sector.FloorTexture;
@@ -395,7 +395,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.IO
 			} 
 			else 
 			{
-				for (int i = 0; i < verts.Length; i += 3) 
+				for(int i = 0; i < verts.Length; i += 3) 
 				{
 					groups.Add(new[] { verts[i + 2], verts[i + 1], verts[i] });
 				}
@@ -418,7 +418,6 @@ namespace CodeImp.DoomBuilder.BuilderModes.IO
 			Dictionary<PointF, int> uniqueUVs = new Dictionary<PointF, int>();
 
 			var vertexDataByTexture = new Dictionary<string, Dictionary<WorldVertex, VertexIndices>>(StringComparer.Ordinal);
-			int ni;
 			int pc = 0;
 			int nc = 0;
 			int uvc = 0;
@@ -433,7 +432,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.IO
 					{
 						//vertex normals
 						Vector3D n = new Vector3D(verts[0].nx, verts[0].ny, verts[0].nz).GetNormal();
-						if (uniqueNormals.ContainsKey(n)) 
+						int ni;
+						if(uniqueNormals.ContainsKey(n)) 
 						{
 							ni = uniqueNormals[n];
 						} 
@@ -445,13 +445,13 @@ namespace CodeImp.DoomBuilder.BuilderModes.IO
 
 						foreach(WorldVertex v in verts) 
 						{
-							if (vertsData.ContainsKey(v)) continue;
+							if(vertsData.ContainsKey(v)) continue;
 							VertexIndices indices = new VertexIndices();
 							indices.NormalIndex = ni;
 
 							//vertex coords
 							Vector3D vc = new Vector3D(v.x, v.y, v.z);
-							if (uniqueVerts.ContainsKey(vc)) 
+							if(uniqueVerts.ContainsKey(vc)) 
 							{
 								indices.PositionIndex = uniqueVerts[vc];
 							} 
@@ -463,7 +463,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.IO
 
 							//uv
 							PointF uv = new PointF(v.u, v.v);
-							if (uniqueUVs.ContainsKey(uv)) 
+							if(uniqueUVs.ContainsKey(uv)) 
 							{
 								indices.UVIndex = uniqueUVs[uv];
 							} 

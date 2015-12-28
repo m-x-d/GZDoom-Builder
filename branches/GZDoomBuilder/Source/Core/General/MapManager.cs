@@ -452,7 +452,7 @@ namespace CodeImp.DoomBuilder
 			General.Settings.SetDefaultThingFlags(config.DefaultThingFlags);
 
 			// Center map in screen
-			//if (General.Editing.Mode is ClassicMode) (General.Editing.Mode as ClassicMode).CenterInScreen();
+			//if(General.Editing.Mode is ClassicMode) (General.Editing.Mode as ClassicMode).CenterInScreen();
 
 			// Success
 			this.changed = maprestored; //mxd
@@ -678,7 +678,7 @@ namespace CodeImp.DoomBuilder
 						// We're not using SetFlag here, this doesn't have to be undone.
 						// Please note that this is totally exceptional!
 						List<string> flagkeys = new List<string>(t.Flags.Keys);
-						foreach (string k in flagkeys) t.Flags[k] = false;
+						foreach(string k in flagkeys) t.Flags[k] = false;
 					}
 				}
 
@@ -734,7 +734,7 @@ namespace CodeImp.DoomBuilder
 				// Write to temporary file
 				General.WriteLogLine("Writing map data structures to file...");
 				index = tempwad.FindLumpIndex(TEMP_MAP_HEADER);
-				if (index == -1) index = 0;
+				if(index == -1) index = 0;
 				io.Write(outputset, TEMP_MAP_HEADER, index);
 				outputset.Dispose();
 
@@ -810,10 +810,10 @@ namespace CodeImp.DoomBuilder
 
 			try 
 			{
-				if (File.Exists(newfilepathname)) 
+				if(File.Exists(newfilepathname)) 
 				{
 					// mxd. Check if target wad already has a map with the same name
-					if (purpose == SavePurpose.IntoFile) 
+					if(purpose == SavePurpose.IntoFile) 
 					{
 						WAD wad = new WAD(newfilepathname, true);
 						int mapindex = wad.FindLumpIndex(origmapname);
@@ -828,33 +828,33 @@ namespace CodeImp.DoomBuilder
 					}
 
 					// Backup existing file, if any
-					if (File.Exists(newfilepathname + ".backup3")) File.Delete(newfilepathname + ".backup3");
-					if (File.Exists(newfilepathname + ".backup2")) File.Move(newfilepathname + ".backup2", newfilepathname + ".backup3");
-					if (File.Exists(newfilepathname + ".backup1")) File.Move(newfilepathname + ".backup1", newfilepathname + ".backup2");
+					if(File.Exists(newfilepathname + ".backup3")) File.Delete(newfilepathname + ".backup3");
+					if(File.Exists(newfilepathname + ".backup2")) File.Move(newfilepathname + ".backup2", newfilepathname + ".backup3");
+					if(File.Exists(newfilepathname + ".backup1")) File.Move(newfilepathname + ".backup1", newfilepathname + ".backup2");
 					File.Copy(newfilepathname, newfilepathname + ".backup1");
 				}
 
 				// Except when saving INTO another file,
 				// kill the target file if it is different from source file
-				if ((purpose != SavePurpose.IntoFile) && (newfilepathname != filepathname)) 
+				if((purpose != SavePurpose.IntoFile) && (newfilepathname != filepathname)) 
 				{
 					// Kill target file
-					if (File.Exists(newfilepathname)) File.Delete(newfilepathname);
+					if(File.Exists(newfilepathname)) File.Delete(newfilepathname);
 
 					// Kill .dbs settings file
 					settingsfile = newfilepathname.Substring(0, newfilepathname.Length - 4) + ".dbs";
-					if (File.Exists(settingsfile)) File.Delete(settingsfile);
+					if(File.Exists(settingsfile)) File.Delete(settingsfile);
 				}
 
 				// On Save AS we have to copy the previous file to the new file
-				if ((purpose == SavePurpose.AsNewFile) && (filepathname != "")) 
+				if((purpose == SavePurpose.AsNewFile) && (filepathname != "")) 
 				{
 					// Copy if original file still exists
-					if (File.Exists(filepathname)) File.Copy(filepathname, newfilepathname, true);
+					if(File.Exists(filepathname)) File.Copy(filepathname, newfilepathname, true);
 				}
 
 				// If the target file exists, we need to rebuild it
-				if (File.Exists(newfilepathname)) 
+				if(File.Exists(newfilepathname)) 
 				{
 					// Move the target file aside
 					origwadfile = newfilepathname + ".temp";
@@ -868,7 +868,7 @@ namespace CodeImp.DoomBuilder
 
 					// Copy all lumps, except the original map
 					GameConfiguration origcfg; //mxd
-					if (origmapconfigname == configinfo.Filename) 
+					if(origmapconfigname == configinfo.Filename) 
 					{
 						origcfg = config;
 					} 
@@ -913,13 +913,13 @@ namespace CodeImp.DoomBuilder
 			// mxd. Was the map renamed?
 			if(options.LevelNameChanged) 
 			{
-				if (purpose != SavePurpose.IntoFile) 
+				if(purpose != SavePurpose.IntoFile) 
 				{
 					General.WriteLogLine("Changing map name from '" + options.PreviousName + "' to '" + options.CurrentName + "'");
 
 					// Find the map header in target
 					index = targetwad.FindLumpIndex(options.PreviousName);
-					if (index > -1) 
+					if(index > -1) 
 					{
 						// Rename the map lump name
 						targetwad.Lumps[index].Rename(options.CurrentName);
@@ -942,10 +942,10 @@ namespace CodeImp.DoomBuilder
 			data.Resume();
 
 			// Not saved for testing purpose?
-			if (purpose != SavePurpose.Testing) 
+			if(purpose != SavePurpose.Testing) 
 			{
 				// Saved in a different file?
-				if (newfilepathname != filepathname) 
+				if(newfilepathname != filepathname) 
 				{
 					// Keep new filename
 					filepathname = newfilepathname;
@@ -1288,7 +1288,7 @@ namespace CodeImp.DoomBuilder
 					{
 						// Determine target index
 						insertindex++;
-						if (insertindex > target.Lumps.Count) insertindex = target.Lumps.Count;
+						if(insertindex > target.Lumps.Count) insertindex = target.Lumps.Count;
 
 						// Create new, emtpy lump
 						General.WriteLogLine(lumpname + " is required! Created empty lump.");
@@ -1325,7 +1325,7 @@ namespace CodeImp.DoomBuilder
 			foreach(Lump lump in target.Lumps)
 				if(!requiredLumps.Contains(lump.Name)) toRemove.Add(lump);
 
-			foreach (Lump lump in toRemove) target.Remove(lump);
+			foreach(Lump lump in toRemove) target.Remove(lump);
 		}
 
 		// This copies all lumps, except those of a specific map
@@ -1409,8 +1409,8 @@ namespace CodeImp.DoomBuilder
 							// Determine target index
 							// When original lump was found and removed then insert at that position
 							// otherwise insert after last insertion position
-							if (lumpindex > -1) targetindex = lumpindex; else targetindex++;
-							if (targetindex > target.Lumps.Count) targetindex = target.Lumps.Count;
+							if(lumpindex > -1) targetindex = lumpindex; else targetindex++;
+							if(targetindex > target.Lumps.Count) targetindex = target.Lumps.Count;
 
 							// Copy the lump to the target
 							//General.WriteLogLine(srclumpname + " copying as " + tgtlumpname);
@@ -1422,7 +1422,7 @@ namespace CodeImp.DoomBuilder
 						{
 							// We don't want to bother the user with this. There are a lot of lumps in
 							// the game configs that are trivial and don't need to be found.
-							if (group.Value.Required) 
+							if(group.Value.Required) 
 							{
 								General.ErrorLogger.Add(ErrorType.Warning, group.Key + " (required lump) should be read but was not found in the WAD file.");
 							}
@@ -2370,10 +2370,9 @@ namespace CodeImp.DoomBuilder
 			blockmap.AddVerticesSet(General.Map.Map.Vertices);
 
 			//merge overlapping vertices using teh power of BLOCKMAP!!!11
-			BlockEntry block;
 			foreach(Vertex v in movedVerts) 
 			{
-				block = blockmap.GetBlockAt(v.Position);
+				BlockEntry block = blockmap.GetBlockAt(v.Position);
 				if(block == null) continue;
 
 				foreach(Vertex blockVert in block.Vertices) 
@@ -2381,9 +2380,9 @@ namespace CodeImp.DoomBuilder
 					if(blockVert.IsDisposed || blockVert.Index == v.Index || blockVert.Position != v.Position)
 						continue;
 
-					foreach (Linedef l in blockVert.Linedefs) 
+					foreach(Linedef l in blockVert.Linedefs) 
 					{
-						if (!movedLines.Contains(l)) movedLines.Add(l);
+						if(!movedLines.Contains(l)) movedLines.Add(l);
 					}
 					v.Join(blockVert);
 					break;

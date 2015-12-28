@@ -73,8 +73,6 @@ namespace CodeImp.DoomBuilder.Controls
 		// This initializes the control
 		public void Initialize()
 		{
-			ToolStripMenuItem item;
-			
 			// Make list of script configs
 			scriptconfigs = new List<ScriptConfiguration>(General.ScriptConfigs.Values);
 			scriptconfigs.Add(new ScriptConfiguration());
@@ -84,7 +82,7 @@ namespace CodeImp.DoomBuilder.Controls
 			foreach(ScriptConfiguration cfg in scriptconfigs)
 			{
 				// Button for new script menu
-				item = new ToolStripMenuItem(cfg.Description);
+				ToolStripMenuItem item = new ToolStripMenuItem(cfg.Description);
 				//item.Image = buttonnew.Image;
 				item.Tag = cfg;
 				item.Click += buttonnew_Click;
@@ -424,7 +422,7 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				// Ask to save
 				DialogResult result = MessageBox.Show(this.ParentForm, "Do you want to save changes to " + t.Text + "?", "Close File", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
-				switch (result)
+				switch(result)
 				{
 					case DialogResult.Yes:
 						if(!SaveScript(t)) return false;

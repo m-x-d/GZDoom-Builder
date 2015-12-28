@@ -80,10 +80,7 @@ namespace CodeImp.DoomBuilder.IO
 		// Returns null on failure
 		public unsafe Bitmap ReadAsBitmap(Stream stream)
 		{
-			BitmapData bitmapdata;
-			PixelColor* targetdata;
 			int width, height;
-			Bitmap bmp;
 
 			// Read pixel data
 			PixelColorBlock pixeldata = ReadAsPixelData(stream, out width, out height);
@@ -92,15 +89,16 @@ namespace CodeImp.DoomBuilder.IO
 				try
 				{
 					// Create bitmap and lock pixels
-					bmp = new Bitmap(width, height, PixelFormat.Format32bppArgb);
-					bitmapdata = bmp.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
-					targetdata = (PixelColor*)bitmapdata.Scan0.ToPointer();
+					Bitmap bmp = new Bitmap(width, height, PixelFormat.Format32bppArgb);
+					BitmapData bitmapdata = bmp.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+					PixelColor* targetdata = (PixelColor*)bitmapdata.Scan0.ToPointer();
 
 					// Copy the pixels
 					General.CopyMemory(targetdata, pixeldata.Pointer, (uint)(width * height * sizeof(PixelColor)));
 
 					// Done
 					bmp.UnlockBits(bitmapdata);
+					return bmp;
 				}
 				catch(Exception e)
 				{
@@ -112,19 +110,14 @@ namespace CodeImp.DoomBuilder.IO
 			else
 			{
 				// Failed loading picture
-				bmp = null;
+				return null;
 			}
-
-			// Return result
-			return bmp;
 		}
 
 		// This draws the picture to the given pixel color data
 		// Throws exception on failure
 		public unsafe void DrawToPixelData(Stream stream, PixelColor* target, int targetwidth, int targetheight, int x, int y)
 		{
-			int ox, oy, tx, ty;
-
 			// Get bitmap
 			Bitmap bmp = ReadAsBitmap(stream);
 			int width = bmp.Size.Width;
@@ -135,16 +128,16 @@ namespace CodeImp.DoomBuilder.IO
 			PixelColor* pixels = (PixelColor*)bmpdata.Scan0.ToPointer();
 
 			// Go for all pixels in the original image
-			for(ox = 0; ox < width; ox++)
+			for(int ox = 0; ox < width; ox++)
 			{
-				for(oy = 0; oy < height; oy++)
+				for(int oy = 0; oy < height; oy++)
 				{
 					// Copy this pixel?
 					if(pixels[oy * width + ox].a > 0.5f)
 					{
 						// Calculate target pixel and copy when within bounds
-						tx = x + ox;
-						ty = y + oy;
+						int tx = x + ox;
+						int ty = y + oy;
 						if((tx >= 0) && (tx < targetwidth) && (ty >= 0) && (ty < targetheight))
 							target[ty * targetwidth + tx] = pixels[oy * width + ox];
 					}

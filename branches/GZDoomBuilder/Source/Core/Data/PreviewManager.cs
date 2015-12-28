@@ -112,12 +112,11 @@ namespace CodeImp.DoomBuilder.Data
 		// This makes a preview for the given image and updates the image settings
 		private void MakeImagePreview(ImageData img)
 		{
-			int imagewidth, imageheight;
-
 			lock(img)
 			{
 				// Load image if needed
 				if(!img.IsImageLoaded) img.LoadImage();
+				int imagewidth, imageheight;
 				if(!img.LoadFailed)
 				{
 					imagewidth = img.Width;

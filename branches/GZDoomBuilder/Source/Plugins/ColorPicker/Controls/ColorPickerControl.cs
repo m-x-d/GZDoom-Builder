@@ -61,7 +61,7 @@ namespace CodeImp.DoomBuilder.ColorPicker.Controls
 			// If the R, G, or B values change, use this code to update the HSV values and invalidate
 			// the color wheel (so it updates the pointers).
 			// Check the isInUpdate flag to avoid recursive events when you update the NumericUpdownControls.
-			if (!isInUpdate) 
+			if(!isInUpdate) 
 			{
 				changeType = ChangeStyle.RGB;
 				RGB = new ColorHandler.RGB((int)nudRed.Value, (int)nudGreen.Value, (int)nudBlue.Value);
@@ -86,7 +86,7 @@ namespace CodeImp.DoomBuilder.ColorPicker.Controls
 			btnOK.ForeColor = (RGB.Red < 180 && RGB.Green < 180) ? Color.White : Color.Black;
 
 			//update color info
-			switch (cbColorInfo.SelectedItem.ToString()) 
+			switch(cbColorInfo.SelectedItem.ToString()) 
 			{
 				case COLOR_INFO_RGB:
 					RefreshNudValue(nudRed, RGB.Red);
@@ -117,7 +117,7 @@ namespace CodeImp.DoomBuilder.ColorPicker.Controls
 
 			//dispatch event further
 			EventHandler<ColorChangedEventArgs> handler = OnColorChanged;
-			if (handler != null)
+			if(handler != null)
 				handler(this, new ColorChangedEventArgs(RGB, ColorHandler.RGBtoHSV(RGB)));
 		}
 
@@ -131,7 +131,7 @@ namespace CodeImp.DoomBuilder.ColorPicker.Controls
 		{
 			// Update the value of the NumericUpDown control, if the value is different than the current value.
 			// Refresh the control, causing an immediate repaint.
-			if (nud.Value != value) 
+			if(nud.Value != value) 
 			{
 				nud.Value = value;
 				nud.Refresh();
@@ -183,7 +183,7 @@ namespace CodeImp.DoomBuilder.ColorPicker.Controls
 		private void OnPaint(object sender, PaintEventArgs e) 
 		{
 			// Depending on the circumstances, force a repaint of the color wheel passing different information.
-			switch (changeType) 
+			switch(changeType) 
 			{
 				case ChangeStyle.MouseMove:
 				case ChangeStyle.None:
@@ -207,7 +207,7 @@ namespace CodeImp.DoomBuilder.ColorPicker.Controls
 
 		private void OnMouseMove(object sender, MouseEventArgs e) 
 		{
-			if (e.Button == MouseButtons.Left) 
+			if(e.Button == MouseButtons.Left) 
 			{
 				changeType = ChangeStyle.MouseMove;
 				selectedPoint = new Point(e.X, e.Y);
@@ -232,19 +232,19 @@ namespace CodeImp.DoomBuilder.ColorPicker.Controls
 		{
 			//dispatch event further
 			EventHandler handler = OnOkPressed;
-			if (handler != null) handler(this, e);
+			if(handler != null) handler(this, e);
 		}
 
 		private void btnCancel_Click(object sender, EventArgs e) 
 		{
 			//dispatch event further
 			EventHandler handler = OnCancelPressed;
-			if (handler != null) handler(this, e);
+			if(handler != null) handler(this, e);
 		}
 
 		private void cbColorInfo_SelectedIndexChanged(object sender, EventArgs e) 
 		{
-			if (cbColorInfo.SelectedItem.ToString() == COLOR_INFO_RGB) 
+			if(cbColorInfo.SelectedItem.ToString() == COLOR_INFO_RGB) 
 			{
 				pRGB.Visible = true;
 				tbFloatVals.Visible = false;
@@ -260,47 +260,47 @@ namespace CodeImp.DoomBuilder.ColorPicker.Controls
 
 		private void tbFloatVals_TextChanged(object sender, EventArgs e) 
 		{
-			if (isInUpdate) return;
+			if(isInUpdate) return;
 			
-			if (COLOR_INFO[colorInfoMode].ToString() == COLOR_INFO_FLOAT) 
+			if(COLOR_INFO[colorInfoMode].ToString() == COLOR_INFO_FLOAT) 
 			{
 				string[] parts = tbFloatVals.Text.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-				if (parts.Length != 3) return;
+				if(parts.Length != 3) return;
 
 				ColorHandler.RGB rgb = new ColorHandler.RGB();
 
 				float c;
-				if (!float.TryParse(parts[0].Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out c)) return;
+				if(!float.TryParse(parts[0].Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out c)) return;
 				rgb.Red = (int)(General.Clamp(Math.Abs(c), 0.0f, 1.0f) * 255);
 
-				if (!float.TryParse(parts[1].Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out c)) return;
+				if(!float.TryParse(parts[1].Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out c)) return;
 				rgb.Green = (int)(General.Clamp(Math.Abs(c), 0.0f, 1.0f) * 255);
 
-				if (!float.TryParse(parts[2].Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out c)) return;
+				if(!float.TryParse(parts[2].Trim(), NumberStyles.Float, CultureInfo.InvariantCulture, out c)) return;
 				rgb.Blue = (int)(General.Clamp(Math.Abs(c), 0.0f, 1.0f) * 255);
 
 				changeType = ChangeStyle.RGB;
 				UpdateColorInfo(rgb);
 				this.Invalidate();
 			} 
-			else if (COLOR_INFO[colorInfoMode].ToString() == COLOR_INFO_HEX) 
+			else if(COLOR_INFO[colorInfoMode].ToString() == COLOR_INFO_HEX) 
 			{
 				string hexColor = tbFloatVals.Text.Trim().Replace("-", "");
-				if (hexColor.Length != 6) return;
+				if(hexColor.Length != 6) return;
 
 				ColorHandler.RGB rgb = new ColorHandler.RGB();
 				int color;
 
 				string colorStr = hexColor.Substring(0, 2);
-				if (!int.TryParse(colorStr, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out color)) return;
+				if(!int.TryParse(colorStr, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out color)) return;
 				rgb.Red = color;
 
 				colorStr = hexColor.Substring(2, 2);
-				if (!int.TryParse(colorStr, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out color)) return;
+				if(!int.TryParse(colorStr, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out color)) return;
 				rgb.Green = color;
 
 				colorStr = hexColor.Substring(4, 2);
-				if (!int.TryParse(colorStr, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out color)) return;
+				if(!int.TryParse(colorStr, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out color)) return;
 				rgb.Blue = color;
 
 				changeType = ChangeStyle.RGB;

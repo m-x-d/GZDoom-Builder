@@ -1125,10 +1125,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if((t.Position.y + t.Size) > right.y) right.y = t.Position.y + t.Size;
 
 					
-					if (!fixedrotationthingtypes.Contains(t.Type)) //mxd
+					if(!fixedrotationthingtypes.Contains(t.Type)) //mxd
 					{
 						ThingTypeInfo tti = General.Map.Data.GetThingInfoEx(t.Type);
-						if (tti != null && tti.FixedRotation) fixedrotationthingtypes.Add(t.Type);
+						if(tti != null && tti.FixedRotation) fixedrotationthingtypes.Add(t.Type);
 					}
 
 					// Keep original coordinates
@@ -1266,39 +1266,39 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				Vector2D tl = new Vector2D(General.Map.Config.RightBoundary, General.Map.Config.BottomBoundary);
 				Vector2D br = new Vector2D(General.Map.Config.LeftBoundary, General.Map.Config.RightBoundary);
 
-				foreach (Vertex v in selectedvertices)
+				foreach(Vertex v in selectedvertices)
 				{
-					if (v.Position.x < tl.x) tl.x = (int)v.Position.x;
-					if (v.Position.x > br.x) br.x = (int)v.Position.x;
-					if (v.Position.y > tl.y) tl.y = (int)v.Position.y;
-					if (v.Position.y < br.y) br.y = (int)v.Position.y;
+					if(v.Position.x < tl.x) tl.x = (int)v.Position.x;
+					if(v.Position.x > br.x) br.x = (int)v.Position.x;
+					if(v.Position.y > tl.y) tl.y = (int)v.Position.y;
+					if(v.Position.y < br.y) br.y = (int)v.Position.y;
 				}
 
-				foreach (Thing t in selectedthings)
+				foreach(Thing t in selectedthings)
 				{
-					if (t.Position.x < tl.x) tl.x = (int)t.Position.x;
-					if (t.Position.x > br.x) br.x = (int)t.Position.x;
-					if (t.Position.y > tl.y) tl.y = (int)t.Position.y;
-					if (t.Position.y < br.y) br.y = (int)t.Position.y;
+					if(t.Position.x < tl.x) tl.x = (int)t.Position.x;
+					if(t.Position.x > br.x) br.x = (int)t.Position.x;
+					if(t.Position.y > tl.y) tl.y = (int)t.Position.y;
+					if(t.Position.y < br.y) br.y = (int)t.Position.y;
 				}
 
 				// Check if the selection is outside the map boundaries
-				if (tl.x < General.Map.Config.LeftBoundary || br.x > General.Map.Config.RightBoundary ||
+				if(tl.x < General.Map.Config.LeftBoundary || br.x > General.Map.Config.RightBoundary ||
 					tl.y > General.Map.Config.TopBoundary || br.y < General.Map.Config.BottomBoundary)
 				{
 					General.Interface.DisplayStatus(StatusType.Warning, "Error: selection out of map boundaries.");
 
 					// If we're in the process of switching to another mode, reset to selection
 					// to its old position
-					if (modealreadyswitching)
+					if(modealreadyswitching)
 					{
 						// Reset geometry in original position
 						int index = 0;
-						foreach (Vertex v in selectedvertices)
+						foreach(Vertex v in selectedvertices)
 							v.Move(vertexpos[index++]);
 
 						index = 0;
-						foreach (Thing t in selectedthings)
+						foreach(Thing t in selectedthings)
 						{
 							t.Rotate(thingangle[index]);
 							t.Move(thingpos[index++]);
@@ -1350,7 +1350,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// We need a different kind of offset...
 					Vector2D relativeoffset = offset - baseoffset;
 					
-					foreach (Sector s in selectedsectors.Keys)
+					foreach(Sector s in selectedsectors.Keys)
 					{
 						// Update floor slope?
 						if(s.FloorSlope.GetLengthSq() > 0 && !float.IsNaN(s.FloorSlopeOffset / s.FloorSlope.z)) 
@@ -1394,7 +1394,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					// Go for all sidedes in the new geometry
 					List<Sidedef> newsides = General.Map.Map.GetMarkedSidedefs(true);
-					foreach (Sidedef s in newsides) 
+					foreach(Sidedef s in newsides) 
 					{
 						// Connected to a virtual sector?
 						if(s.Marked && s.Sector.Fields.ContainsKey(MapSet.VirtualSectorField))

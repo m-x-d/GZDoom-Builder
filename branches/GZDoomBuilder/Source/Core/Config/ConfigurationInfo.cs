@@ -306,14 +306,12 @@ namespace CodeImp.DoomBuilder.Config
 		//mxd
 		private void SaveTestEngines() 
 		{
-			IDictionary rlinfo;
-
 			// Fill structure
 			IDictionary resinfo = new ListDictionary();
 
 			for(int i = 0; i < testEngines.Count; i++) 
 			{
-				rlinfo = new ListDictionary();
+				IDictionary rlinfo = new ListDictionary();
 				rlinfo.Add("testprogramname", testEngines[i].TestProgramName);
 				rlinfo.Add("testprogram", testEngines[i].TestProgram);
 				rlinfo.Add("testparameters", testEngines[i].TestParameters);
@@ -332,14 +330,12 @@ namespace CodeImp.DoomBuilder.Config
 		//mxd
 		private void SaveLinedefColorPresets() 
 		{
-			IDictionary rlinfo;
-
 			// Fill structure
 			IDictionary resinfo = new ListDictionary();
 
 			for(int i = 0; i < linedefColorPresets.Length; i++) 
 			{
-				rlinfo = new ListDictionary();
+				IDictionary rlinfo = new ListDictionary();
 				rlinfo.Add("name", linedefColorPresets[i].Name);
 				rlinfo.Add("enabled", linedefColorPresets[i].Enabled);
 				rlinfo.Add("color", linedefColorPresets[i].Color.ToInt());
@@ -378,7 +374,7 @@ namespace CodeImp.DoomBuilder.Config
 			
 			//mxd
 			ci.testEngines = new List<EngineInfo>();
-			foreach (EngineInfo info in testEngines) ci.testEngines.Add(new EngineInfo(info));
+			foreach(EngineInfo info in testEngines) ci.testEngines.Add(new EngineInfo(info));
 			ci.currentEngineIndex = this.currentEngineIndex;
 			ci.linedefColorPresets = new LinedefColorPreset[linedefColorPresets.Length];
 			for(int i = 0; i < linedefColorPresets.Length; i++)
@@ -411,7 +407,7 @@ namespace CodeImp.DoomBuilder.Config
 			
 			//mxd
 			this.testEngines = new List<EngineInfo>();
-			foreach (EngineInfo info in ci.testEngines) testEngines.Add(new EngineInfo(info));
+			foreach(EngineInfo info in ci.testEngines) testEngines.Add(new EngineInfo(info));
 			if(this.currentEngineIndex >= testEngines.Count) this.currentEngineIndex = Math.Max(0, testEngines.Count - 1);
 			this.linedefColorPresets = new LinedefColorPreset[ci.linedefColorPresets.Length];
 			for(int i = 0; i < ci.linedefColorPresets.Length; i++)

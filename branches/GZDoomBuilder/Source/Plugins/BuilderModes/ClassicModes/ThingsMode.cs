@@ -513,7 +513,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						//toggle selected state
 						if(General.Interface.ShiftState ^ BuilderPlug.Me.AdditiveSelect)
 							t.Selected = true;
-						else if (General.Interface.CtrlState)
+						else if(General.Interface.CtrlState)
 							t.Selected = false;
 						else
 							t.Selected = !t.Selected;
@@ -594,10 +594,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 
 					// Start dragging the selection
-					if (!BuilderPlug.Me.DontMoveGeometryOutsideMapBoundary || CanDrag()) //mxd
+					if(!BuilderPlug.Me.DontMoveGeometryOutsideMapBoundary || CanDrag()) //mxd
 					{ 
 						// Shift pressed? Clone things!
-						if (General.Interface.ShiftState) 
+						if(General.Interface.ShiftState) 
 						{
 							ICollection<Thing> selection = General.Map.Map.GetSelectedThings(true);
 							foreach(Thing t in selection) 
@@ -610,7 +610,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 								int nextpointtagargnum = -1;
 
 								// Thing type can be changed in MAPINFO DoomEdNums block...
-								switch (info.ClassName.ToLowerInvariant())
+								switch(info.ClassName.ToLowerInvariant())
 								{
 									case "interpolationpoint":
 										nextpointtagargnum = 3;
@@ -924,7 +924,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Map.UndoRedo.CreateUndo("Insert thing");
 				Thing t = InsertThing(mousemappos);
 
-				if (t == null)
+				if(t == null)
 				{
 					General.Map.UndoRedo.WithdrawUndo();
 					return;
@@ -1214,7 +1214,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			ICollection<Thing> selection = General.Map.Map.GetSelectedThings(true);
 
-			if (selection.Count == 0) 
+			if(selection.Count == 0) 
 			{
 				General.Interface.DisplayStatus(StatusType.Warning, "This action requires a selection!");
 				return;
@@ -1236,7 +1236,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			var form = new SelectSimilarElementOptionsPanel();
-			if (form.Setup(this)) form.ShowDialog();
+			if(form.Setup(this)) form.ShowDialog();
 		}
 
 		#endregion

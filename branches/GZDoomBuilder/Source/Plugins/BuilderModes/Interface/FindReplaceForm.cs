@@ -64,10 +64,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			findtypeslist = new List<FindReplaceType>(findtypes.Length);
 			foreach(Type t in findtypes)
 			{
-				FindReplaceType finderinst;
 				object[] attr = t.GetCustomAttributes(typeof(FindReplaceAttribute), true);
 				if(attr.Length > 0)
 				{
+					FindReplaceType finderinst;
 					try
 					{
 						// Create instance
@@ -78,14 +78,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						// Error!
 						General.ErrorLogger.Add(ErrorType.Error, "Failed to create class instance '" + t.Name + "'");
 						General.WriteLogLine(ex.InnerException.GetType().Name + ": " + ex.InnerException.Message);
-						throw ex;
+						throw;
 					}
 					catch(Exception ex)
 					{
 						// Error!
 						General.ErrorLogger.Add(ErrorType.Error, "Failed to create class instance '" + t.Name + "'");
 						General.WriteLogLine(ex.GetType().Name + ": " + ex.Message);
-						throw ex;
+						throw;
 					}
 					
 					// Add the finder to the list
@@ -168,7 +168,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				resultscount.Text = resultslist.Items.Count + " items found and replaced.";
 
 				// Withdraw the undo step if nothing was replaced
-				if (resultslist.Items.Count < 1)
+				if(resultslist.Items.Count < 1)
 					General.Map.UndoRedo.WithdrawUndo();
 			}
 			else

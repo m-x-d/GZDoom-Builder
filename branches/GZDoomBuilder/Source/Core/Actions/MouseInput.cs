@@ -151,7 +151,7 @@ namespace CodeImp.DoomBuilder.Actions
 				}
 				catch (Exception e)
 				{
-					System.Console.WriteLine("MouseInput process failed: " + e.Message);
+					Console.WriteLine("MouseInput process failed: " + e.Message);
 				}
 				return new Vector2D();
 			}

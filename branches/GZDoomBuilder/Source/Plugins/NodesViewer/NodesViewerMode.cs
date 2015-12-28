@@ -349,7 +349,7 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 							for(int i = ss.firstseg + 1; i <= lastseg; i++) segs[i - 1].endvertex = segs[i].startvertex;
 
 							//set angle and subsector index
-							for (int i = ss.firstseg; i <= lastseg; i++) 
+							for(int i = ss.firstseg; i <= lastseg; i++) 
 							{
 								segs[i].angle = Vector2D.GetAngle(verts[segs[i].endvertex], verts[segs[i].startvertex]);
 								segs[i].ssector = index;
@@ -693,7 +693,7 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 		/// </summary>
 		private bool PointInSubsector(int index, Vector2D p) 
 		{
-			if (ssectors[index].points.Length == 0) return false; //mxd
+			if(ssectors[index].points.Length == 0) return false; //mxd
 			
 			// Subsectors are convex, so we can simply test if the point is on the front side of all lines.
 			Vector2D[] points = ssectors[index].points;
@@ -811,7 +811,7 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 			base.OnEngage();
 
 			//mxd. General.Map.ExportToFile in BuildNodes() won't do the trick if the map was never saved
-			if (string.IsNullOrEmpty(General.Map.FilePathName)) 
+			if(string.IsNullOrEmpty(General.Map.FilePathName)) 
 			{
 				MessageBox.Show("Please save the map before running Nodes Viewer mode.", "Nodes Viewer mode", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				General.Editing.CancelMode();

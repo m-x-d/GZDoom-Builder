@@ -62,15 +62,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			hidden = hide;
 			Type t = this.GetType();
-			if (hide) 
+			if(hide) 
 			{
 				line1.IgnoredErrorChecks.Add(t);
 				line2.IgnoredErrorChecks.Add(t);
 			}
 			else 
 			{
-				if (line1.IgnoredErrorChecks.Contains(t)) line1.IgnoredErrorChecks.Remove(t);
-				if (line2.IgnoredErrorChecks.Contains(t)) line2.IgnoredErrorChecks.Remove(t);
+				if(line1.IgnoredErrorChecks.Contains(t)) line1.IgnoredErrorChecks.Remove(t);
+				if(line2.IgnoredErrorChecks.Contains(t)) line2.IgnoredErrorChecks.Remove(t);
 			}
 		}
 		

@@ -177,9 +177,9 @@ namespace CodeImp.DoomBuilder.Windows
 			thingtype.SelectType(ft.Type);
 
 			// Flags
-			foreach (CheckBox c in flags.Checkboxes) 
+			foreach(CheckBox c in flags.Checkboxes) 
 			{
-				if (ft.Flags.ContainsKey(c.Tag.ToString())) c.Checked = ft.Flags[c.Tag.ToString()];
+				if(ft.Flags.ContainsKey(c.Tag.ToString())) c.Checked = ft.Flags[c.Tag.ToString()];
 			}
 
 			// Coordination
@@ -282,8 +282,8 @@ namespace CodeImp.DoomBuilder.Windows
 				scale.SetValues(t.ScaleX, t.ScaleY, false);
 				color.SetValueFrom(t.Fields);
 
-				if (t.Pitch.ToString() != pitch.Text) pitch.Text = "";
-				if (t.Roll.ToString() != roll.Text) roll.Text = "";
+				if(t.Pitch.ToString() != pitch.Text) pitch.Text = "";
+				if(t.Roll.ToString() != roll.Text) roll.Text = "";
 
 				//Render style
 				if(renderStyle.SelectedIndex > -1 && renderStyle.SelectedIndex != Array.IndexOf(renderstyles, t.Fields.GetValue("renderstyle", "normal")))
@@ -370,7 +370,7 @@ namespace CodeImp.DoomBuilder.Windows
 		// Angle text changes
 		private void angle_WhenTextChanged(object sender, EventArgs e) 
 		{
-			if (preventchanges) return;
+			if(preventchanges) return;
 			preventchanges = true;
 			anglecontrol.Angle = angle.GetResult(GZBuilder.Controls.AngleControl.NO_ANGLE);
 			preventchanges = false;
@@ -422,8 +422,8 @@ namespace CodeImp.DoomBuilder.Windows
 		// Apply clicked
 		private void apply_Click(object sender, EventArgs e) 
 		{
-			// Make Undo
-			MakeUndo(); //mxd
+			//mxd. Make Undo
+			MakeUndo();
 			
 			List<string> defaultflags = new List<string>();
 
@@ -450,14 +450,6 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				General.ShowWarningMessage("Thing action must be between " + General.Map.FormatInterface.MinAction + " and " + General.Map.FormatInterface.MaxAction + ".", MessageBoxButtons.OK);
 				return;
-			}
-
-			//mxd
-			string[] rskeys = null;
-			if(General.Map.Config.ThingRenderStyles.Count > 0) 
-			{
-				rskeys = new string[General.Map.Config.ThingRenderStyles.Count];
-				General.Map.Config.ThingRenderStyles.Keys.CopyTo(rskeys, 0);
 			}
 
 			// Go for all the things
@@ -505,9 +497,9 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			// Set as defaults
-			foreach (CheckBox c in flags.Checkboxes) 
+			foreach(CheckBox c in flags.Checkboxes) 
 			{
-				if (c.CheckState == CheckState.Checked) defaultflags.Add(c.Tag.ToString());
+				if(c.CheckState == CheckState.Checked) defaultflags.Add(c.Tag.ToString());
 			}
 			General.Settings.DefaultThingType = thingtype.GetResult(General.Settings.DefaultThingType);
 			General.Settings.DefaultThingAngle = Angle2D.DegToRad((float)angle.GetResult((int)Angle2D.RadToDeg(General.Settings.DefaultThingAngle) - 90) + 90);
@@ -661,7 +653,7 @@ namespace CodeImp.DoomBuilder.Windows
 			MakeUndo(); //mxd
 			int i = 0;
 
-			foreach (Thing t in things)
+			foreach(Thing t in things)
 			{
 				float sx = scale.GetValue1(thingprops[i].ScaleX);
 				float sy = scale.GetValue2(thingprops[i].ScaleY);
@@ -671,7 +663,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 			General.Map.IsChanged = true;
 			labelScale.Enabled = scale.NonDefaultValue;
-			if (OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
 
 		// Selected type changes
@@ -683,7 +675,7 @@ namespace CodeImp.DoomBuilder.Windows
 			action_ValueChanges(this, EventArgs.Empty);
 
 			//mxd. Update things
-			if (preventchanges 
+			if(preventchanges 
 					|| (thingtype.GetResult(0) < General.Map.FormatInterface.MinThingType) 
 					|| (thingtype.GetResult(0) > General.Map.FormatInterface.MaxThingType))
 				return;
@@ -732,13 +724,13 @@ namespace CodeImp.DoomBuilder.Windows
 			int i = 0;
 
 			//restore values
-			if (string.IsNullOrEmpty(pitch.Text)) 
+			if(string.IsNullOrEmpty(pitch.Text)) 
 			{
-				foreach (Thing t in things) t.SetPitch(thingprops[i++].Pitch);
+				foreach(Thing t in things) t.SetPitch(thingprops[i++].Pitch);
 			} 
 			else //update values
 			{ 
-				foreach (Thing t in things)
+				foreach(Thing t in things)
 					t.SetPitch(pitch.GetResult(thingprops[i++].Pitch));
 			}
 
@@ -754,18 +746,18 @@ namespace CodeImp.DoomBuilder.Windows
 			int i = 0;
 
 			//restore values
-			if (string.IsNullOrEmpty(roll.Text)) 
+			if(string.IsNullOrEmpty(roll.Text)) 
 			{
-				foreach (Thing t in things) t.SetRoll(thingprops[i++].Roll);
+				foreach(Thing t in things) t.SetRoll(thingprops[i++].Roll);
 			} 
 			else //update values
 			{ 
-				foreach (Thing t in things)
+				foreach(Thing t in things)
 					t.SetRoll(roll.GetResult(thingprops[i++].Roll));
 			}
 
 			General.Map.IsChanged = true;
-			if (OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
 
 		private void flags_OnValueChanged(object sender, EventArgs e) 
@@ -797,12 +789,19 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Map.IsChanged = true;
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 
-			// Validate flags
-			string warn = ThingFlagsCompare.CheckThingEditFormFlags(flags.Checkboxes);
-			if(!string.IsNullOrEmpty(warn)) 
+			// Gather enabled flags
+			HashSet<string> activeflags = new HashSet<string>();
+			foreach(CheckBox cb in flags.Checkboxes)
+			{
+				if(cb.CheckState != CheckState.Unchecked) activeflags.Add(cb.Tag.ToString());
+			}
+
+			// Check em
+			List<string> warnings = ThingFlagsCompare.CheckFlags(activeflags);
+			if(warnings.Count > 0) 
 			{
 				// Got missing flags
-				tooltip.SetToolTip(missingflags, warn);
+				tooltip.SetToolTip(missingflags, string.Join(Environment.NewLine, warnings.ToArray()));
 				missingflags.Visible = true;
 				settingsgroup.ForeColor = Color.DarkRed;
 				return;

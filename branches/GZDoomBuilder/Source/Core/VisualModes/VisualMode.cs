@@ -112,7 +112,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 			this.vertices = new Dictionary<Vertex, VisualVertexPair>(); //mxd
 
 			//mxd. Synch camera position to cursor position or center of the screen in 2d-mode
-			if (General.Settings.GZSynchCameras && General.Editing.Mode is ClassicMode) 
+			if(General.Settings.GZSynchCameras && General.Editing.Mode is ClassicMode) 
 			{
 				ClassicMode oldmode = General.Editing.Mode as ClassicMode;
 
@@ -285,13 +285,13 @@ namespace CodeImp.DoomBuilder.VisualModes
 		//mxd
 		public override bool OnMapTestBegin(bool testFromCurrentPosition) 
 		{
-			if (testFromCurrentPosition) 
+			if(testFromCurrentPosition) 
 			{
 				//find Single Player Start. Should have Type 1 in all games
 				Thing start = null;
-				foreach (Thing t in General.Map.Map.Things) 
+				foreach(Thing t in General.Map.Map.Things) 
 				{
-					if (t.Type == 1) 
+					if(t.Type == 1) 
 					{
 						//store thing and position
 						start = t;
@@ -299,7 +299,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 					}
 				}
 
-				if (start == null) 
+				if(start == null) 
 				{
 					General.MainWindow.DisplayStatus(StatusType.Warning, "Can't test from current position: no Player 1 start found!");
 					return false;
@@ -309,14 +309,14 @@ namespace CodeImp.DoomBuilder.VisualModes
 				Vector3D camPos = General.Map.VisualCamera.Position;
 				Sector s = General.Map.Map.GetSectorByCoordinates(new Vector2D(camPos.x, camPos.y), blockmap);
 
-				if (s == null) 
+				if(s == null) 
 				{
 					General.MainWindow.DisplayStatus(StatusType.Warning, "Can't test from current position: cursor is not inside sector!");
 					return false;
 				}
 
 				//41 = player's height in Doom. Is that so in all other games as well?
-				if (s.CeilHeight - s.FloorHeight < 41) 
+				if(s.CeilHeight - s.FloorHeight < 41) 
 				{
 					General.MainWindow.DisplayStatus(StatusType.Warning, "Can't test from current position: sector is too low!");
 					return false;
@@ -343,7 +343,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		//mxd
 		public override void OnMapTestEnd(bool testFromCurrentPosition) 
 		{
-			if (testFromCurrentPosition) 
+			if(testFromCurrentPosition) 
 			{
 				//restore position
 				playerStart.Move(playerStartPosition);
@@ -465,7 +465,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		protected void PlaceThingAtCursor() 
 		{
 			Vector2D hitpos = GetHitPosition();
-			if (!hitpos.IsFinite()) 
+			if(!hitpos.IsFinite()) 
 			{
 				General.Interface.DisplayStatus(StatusType.Warning, "Cannot place Thing here");
 				return;
@@ -986,17 +986,17 @@ namespace CodeImp.DoomBuilder.VisualModes
 		//mxd
 		public List<VisualThing> GetSelectedVisualThings(bool refreshSelection) 
 		{
-			if (refreshSelection || selectedVisualThings == null) 
+			if(refreshSelection || selectedVisualThings == null) 
 			{
 				selectedVisualThings = new List<VisualThing>();
-				foreach (KeyValuePair<Thing, VisualThing> group in allthings) 
+				foreach(KeyValuePair<Thing, VisualThing> group in allthings) 
 				{
-					if (group.Value != null && group.Value.Selected)
+					if(group.Value != null && group.Value.Selected)
 						selectedVisualThings.Add(group.Value);
 				}
 
 				//if nothing is selected - try to get thing from hilighted object
-				if (selectedVisualThings.Count == 0) 
+				if(selectedVisualThings.Count == 0) 
 				{
 					Vector3D start = General.Map.VisualCamera.Position;
 					Vector3D delta = General.Map.VisualCamera.Target - General.Map.VisualCamera.Position;
@@ -1004,7 +1004,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 					VisualPickResult target = PickObject(start, start + delta);
 
 					//not appropriate way to do this, but...
-					if (target.picked is VisualThing)
+					if(target.picked is VisualThing)
 						selectedVisualThings.Add((VisualThing)target.picked);
 				}
 			}
@@ -1017,14 +1017,14 @@ namespace CodeImp.DoomBuilder.VisualModes
 		/// </summary>
 		public List<VisualSector> GetSelectedVisualSectors(bool refreshSelection) 
 		{
-			if (refreshSelection || selectedVisualSectors == null) 
+			if(refreshSelection || selectedVisualSectors == null) 
 			{
 				selectedVisualSectors = new List<VisualSector>();
-				foreach (KeyValuePair<Sector, VisualSector> group in allsectors) 
+				foreach(KeyValuePair<Sector, VisualSector> group in allsectors) 
 				{
-					foreach (VisualGeometry vg in group.Value.AllGeometry) 
+					foreach(VisualGeometry vg in group.Value.AllGeometry) 
 					{
-						if (vg.Selected) 
+						if(vg.Selected) 
 						{
 							selectedVisualSectors.Add(group.Value);
 							break;
@@ -1033,10 +1033,10 @@ namespace CodeImp.DoomBuilder.VisualModes
 				}
 
 				//if nothing is selected - try to get sector from hilighted object
-				if (selectedVisualSectors.Count == 0) 
+				if(selectedVisualSectors.Count == 0) 
 				{
 					VisualGeometry vg = GetHilightedSurface();
-					if (vg != null) selectedVisualSectors.Add(vg.Sector);
+					if(vg != null) selectedVisualSectors.Add(vg.Sector);
 				}
 			}
 			return selectedVisualSectors;
@@ -1048,19 +1048,19 @@ namespace CodeImp.DoomBuilder.VisualModes
 		public List<VisualGeometry> GetSelectedSurfaces() 
 		{
 			List<VisualGeometry> selectedSurfaces = new List<VisualGeometry>();
-			foreach (KeyValuePair<Sector, VisualSector> group in allsectors) 
+			foreach(KeyValuePair<Sector, VisualSector> group in allsectors) 
 			{
-				foreach (VisualGeometry vg in group.Value.AllGeometry) 
+				foreach(VisualGeometry vg in group.Value.AllGeometry) 
 				{
-					if (vg.Selected) selectedSurfaces.Add(vg);
+					if(vg.Selected) selectedSurfaces.Add(vg);
 				}
 			}
 
 			//if nothing is selected - try to get hilighted surface
-			if (selectedSurfaces.Count == 0) 
+			if(selectedSurfaces.Count == 0) 
 			{
 				VisualGeometry vg = GetHilightedSurface();
-				if (vg != null) selectedSurfaces.Add(vg);
+				if(vg != null) selectedSurfaces.Add(vg);
 			}
 			return selectedSurfaces;
 		}
@@ -1076,7 +1076,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 			if(target.picked is VisualGeometry) 
 			{
 				VisualGeometry vg = (VisualGeometry)target.picked;
-				if (vg.Sector != null) return vg;
+				if(vg.Sector != null) return vg;
 			}
 			return null;
 		}
@@ -1159,7 +1159,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 			{
 				Sector s = General.Map.Map.GetSectorByCoordinates(form.Coordinates, blockmap);
 
-				if (s == null)
+				if(s == null)
 					General.Map.VisualCamera.Position = form.Coordinates;
 				else
 					General.Map.VisualCamera.Position = new Vector3D(form.Coordinates.x, form.Coordinates.y, s.FloorHeight + 54);

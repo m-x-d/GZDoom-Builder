@@ -579,7 +579,7 @@ namespace CodeImp.DoomBuilder.Config
 
 			//mxd. Set default arguments
 			ThingTypeInfo tti = General.Map.Data.GetThingInfoEx(t.Type);
-			if (tti != null) 
+			if(tti != null) 
 			{
 				t.Args[0] = (int)tti.Args[0].DefaultValue;
 				t.Args[1] = (int)tti.Args[1].DefaultValue;

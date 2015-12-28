@@ -112,7 +112,6 @@ namespace CodeImp.DoomBuilder.Geometry
 		public bool Intersect(Vector2D p)
 		{
 			Vector2D v1 = base.Last.Value.Position;
-			Vector2D v2;
 			LinkedListNode<EarClipVertex> n = base.First;
 			uint c = 0;
 			
@@ -120,7 +119,7 @@ namespace CodeImp.DoomBuilder.Geometry
 			while(n != null)
 			{
 				// Get next vertex
-				v2 = n.Value.Position;
+				Vector2D v2 = n.Value.Position;
 
 				// Determine min/max values
 				float miny = Math.Min(v1.y, v2.y);

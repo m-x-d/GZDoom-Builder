@@ -276,17 +276,17 @@ namespace CodeImp.DoomBuilder.Map
 		internal void TranslateFromUDMF() 
 		{
 			// Try to translate UDMF texture offsets to regular ones
-			if (longtexnamemid != MapSet.EmptyLongName && MiddleRequired()) 
+			if(longtexnamemid != MapSet.EmptyLongName && MiddleRequired()) 
 			{
 				offsetx += (int)UniFields.GetFloat(this.Fields, "offsetx_mid");
 				offsety += (int)UniFields.GetFloat(this.Fields, "offsety_mid");
 			}
-			else if (longtexnamehigh != MapSet.EmptyLongName && HighRequired()) 
+			else if(longtexnamehigh != MapSet.EmptyLongName && HighRequired()) 
 			{
 				offsetx += (int)UniFields.GetFloat(this.Fields, "offsetx_top");
 				offsety += (int)UniFields.GetFloat(this.Fields, "offsety_top");
 			}
-			else if (longtexnamelow != MapSet.EmptyLongName && LowRequired()) 
+			else if(longtexnamelow != MapSet.EmptyLongName && LowRequired()) 
 			{
 				offsetx += (int)UniFields.GetFloat(this.Fields, "offsetx_bottom");
 				offsety += (int)UniFields.GetFloat(this.Fields, "offsety_bottom");

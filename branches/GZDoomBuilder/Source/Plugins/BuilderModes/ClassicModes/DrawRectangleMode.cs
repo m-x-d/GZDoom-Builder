@@ -118,36 +118,36 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			float vsize = (renderer.VertexSize + 1.0f) / renderer.Scale;
 
 			// Render drawing lines
-			if (renderer.StartOverlay(true)) 
+			if(renderer.StartOverlay(true)) 
 			{
 				PixelColor color = snaptonearest ? stitchcolor : losecolor;
 				
-				if (points.Count == 1) 
+				if(points.Count == 1) 
 				{
 					UpdateReferencePoints(points[0], curp);
 					Vector2D[] shape = GetShape(start, end);
 
 					//render shape
-					for (int i = 1; i < shape.Length; i++)
+					for(int i = 1; i < shape.Length; i++)
 						renderer.RenderLine(shape[i - 1], shape[i], LINE_THICKNESS, color, true);
 
 					//vertices
-					for (int i = 0; i < shape.Length; i++)
+					for(int i = 0; i < shape.Length; i++)
 						renderer.RenderRectangleFilled(new RectangleF(shape[i].x - vsize, shape[i].y - vsize, vsize * 2.0f, vsize * 2.0f), color, true);
 
 					//and labels
 					Vector2D[] labelCoords = new[] { start, new Vector2D(end.x, start.y), end, new Vector2D(start.x, end.y), start };
-					for (int i = 1; i < 5; i++) 
+					for(int i = 1; i < 5; i++) 
 					{
 						labels[i - 1].Move(labelCoords[i], labelCoords[i - 1]);
 						renderer.RenderText(labels[i - 1].TextLabel);
 					}
 
 					//got beveled corners? 
-					if (shape.Length > 5) 
+					if(shape.Length > 5) 
 					{
 						//render hint
-						if (width > 64 * vsize && height > 16 * vsize) 
+						if(width > 64 * vsize && height > 16 * vsize) 
 						{
 							hintlabel.Move(start, end);
 							hintlabel.Text = GetHintText();
@@ -155,7 +155,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						}
 						
 						//and shape corners
-						for (int i = 0; i < 4; i++)
+						for(int i = 0; i < 4; i++)
 							renderer.RenderRectangleFilled(new RectangleF(labelCoords[i].x - vsize, labelCoords[i].y - vsize, vsize * 2.0f, vsize * 2.0f), General.Colors.InfoLine, true);
 					}
 				} 
@@ -176,7 +176,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected virtual Vector2D[] GetShape(Vector2D pStart, Vector2D pEnd) 
 		{
 			//no shape
-			if (pStart == pEnd) 
+			if(pStart == pEnd) 
 			{
 				currentBevelWidth = 0;
 				return new Vector2D[0];
@@ -190,7 +190,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			//no corners
-			if (bevelWidth == 0) 
+			if(bevelWidth == 0) 
 			{
 				currentBevelWidth = 0;
 				return new[] { pStart, new Vector2D((int)pStart.x, (int)pEnd.y), pEnd, new Vector2D((int)pEnd.x, (int)pStart.y), pStart };
@@ -200,7 +200,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			bool reverse = false;
 			currentBevelWidth = Math.Min(Math.Abs(bevelWidth), Math.Min(width, height) / 2);
 			
-			if (bevelWidth < 0) 
+			if(bevelWidth < 0) 
 			{
 				currentBevelWidth *= -1;
 				reverse = true;
@@ -236,13 +236,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			points = new Vector2D[steps];
 			float stepAngle = Angle2D.PIHALF / (subdivisions + 1);
 
-			for (int i = 0; i < steps; i++) 
+			for(int i = 0; i < steps; i++) 
 			{
 				points[i] = new Vector2D(center.x + (float)Math.Sin(curAngle) * bevel_width, center.y + (float)Math.Cos(curAngle) * bevel_height);
 				curAngle += stepAngle;
 			}
 
-			if (reverse) Array.Reverse(points);
+			if(reverse) Array.Reverse(points);
 			return points;
 		}
 
@@ -256,7 +256,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			if(!p1.pos.IsFinite() || !p2.pos.IsFinite()) return;
 
-			if (p1.pos.x < p2.pos.x) 
+			if(p1.pos.x < p2.pos.x) 
 			{
 				start.x = p1.pos.x;
 				end.x = p2.pos.x;
@@ -267,7 +267,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				end.x = p1.pos.x;
 			}
 
-			if (p1.pos.y < p2.pos.y) 
+			if(p1.pos.y < p2.pos.y) 
 			{
 				start.y = p1.pos.y;
 				end.y = p2.pos.y;
@@ -285,7 +285,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This draws a point at a specific location
 		override public bool DrawPointAt(Vector2D pos, bool stitch, bool stitchline) 
 		{
-			if (pos.x < General.Map.Config.LeftBoundary || pos.x > General.Map.Config.RightBoundary ||
+			if(pos.x < General.Map.Config.LeftBoundary || pos.x > General.Map.Config.RightBoundary ||
 				pos.y > General.Map.Config.TopBoundary || pos.y < General.Map.Config.BottomBoundary)
 				return false;
 
@@ -295,13 +295,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			newpoint.stitchline = stitchline;
 			points.Add(newpoint);
 
-			if (points.Count == 1) //add point and labels
+			if(points.Count == 1) //add point and labels
 			{ 
 				labels.AddRange(new[] { new LineLengthLabel(false, true), new LineLengthLabel(false, true), new LineLengthLabel(false, true), new LineLengthLabel(false, true) });
 				hintlabel = new HintLabel(General.Colors.InfoLine);
 				Update();
 			} 
-			else if (points[0].pos == points[1].pos) //nothing is drawn
+			else if(points[0].pos == points[1].pos) //nothing is drawn
 			{ 
 				points = new List<DrawnVertex>();
 				FinishDraw();
@@ -313,7 +313,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				points = new List<DrawnVertex>(); //clear points
 				Vector2D[] shape = GetShape(start, end);
 
-				foreach (Vector2D t in shape) base.DrawPointAt(t, true, true);
+				foreach(Vector2D t in shape) base.DrawPointAt(t, true, true);
 
 				FinishDraw();
 			}
@@ -322,8 +322,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		override public void RemovePoint() 
 		{
-			if (points.Count > 0) points.RemoveAt(points.Count - 1);
-			if (labels.Count > 0) labels = new List<LineLengthLabel>();
+			if(points.Count > 0) points.RemoveAt(points.Count - 1);
+			if(labels.Count > 0) labels = new List<LineLengthLabel>();
 			Update();
 		}
 
@@ -362,7 +362,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Interface.DisplayStatus(StatusType.Action, "Created " + a + word + " " + shapeName + ".");
 
 				// Make the drawing
-				if (!Tools.DrawLines(points, true, BuilderPlug.Me.AutoAlignTextureOffsetsOnCreate)) 
+				if(!Tools.DrawLines(points, true, BuilderPlug.Me.AutoAlignTextureOffsetsOnCreate)) 
 				{
 					// Drawing failed
 					// NOTE: I have to call this twice, because the first time only cancels this volatile mode
@@ -382,7 +382,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				// Edit new sectors?
 				List<Sector> newsectors = General.Map.Map.GetMarkedSectors(true);
-				if (BuilderPlug.Me.EditNewSector && (newsectors.Count > 0))
+				if(BuilderPlug.Me.EditNewSector && (newsectors.Count > 0))
 					General.Interface.ShowEditSectors(newsectors);
 
 				// Update the used textures
@@ -421,7 +421,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("increasesubdivlevel")]
 		protected virtual void IncreaseSubdivLevel() 
 		{
-			if (subdivisions < maxSubdivisions) 
+			if(subdivisions < maxSubdivisions) 
 			{
 				subdivisions++;
 				panel.Subdivisions = subdivisions;
@@ -432,7 +432,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("decreasesubdivlevel")]
 		protected virtual void DecreaseSubdivLevel() 
 		{
-			if (subdivisions > minSubdivisions) 
+			if(subdivisions > minSubdivisions) 
 			{
 				subdivisions--;
 				panel.Subdivisions = subdivisions;
@@ -443,7 +443,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("increasebevel")]
 		protected virtual void IncreaseBevel() 
 		{
-			if (points.Count < 2 || currentBevelWidth == bevelWidth || bevelWidth < 0) 
+			if(points.Count < 2 || currentBevelWidth == bevelWidth || bevelWidth < 0) 
 			{
 				bevelWidth = Math.Min(bevelWidth + General.Map.Grid.GridSize, panel.MaxBevelWidth);
 				panel.BevelWidth = bevelWidth;
@@ -454,7 +454,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("decreasebevel")]
 		protected virtual void DecreaseBevel() 
 		{
-			if (currentBevelWidth == bevelWidth || bevelWidth > 0) 
+			if(currentBevelWidth == bevelWidth || bevelWidth > 0) 
 			{
 				bevelWidth = Math.Max(bevelWidth - General.Map.Grid.GridSize, panel.MinBevelWidth);
 				panel.BevelWidth = bevelWidth;

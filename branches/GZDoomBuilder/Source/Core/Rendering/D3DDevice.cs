@@ -256,18 +256,16 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This initializes the graphics
 		public bool Initialize()
 		{
-			PresentParameters displaypp;
-			DeviceType devtype;
-			
 			// Use default adapter
 			this.adapter = 0; // Manager.Adapters.Default.Adapter;
 
 			try
 			{
 				// Make present parameters
-				displaypp = CreatePresentParameters(adapter);
+				PresentParameters displaypp = CreatePresentParameters(adapter);
 
 				// Determine device type for compatability with NVPerfHUD
+				DeviceType devtype;
 				if(d3d.Adapters[adapter].Details.Description.EndsWith(NVPERFHUD_ADAPTER))
 					devtype = DeviceType.Reference;
 				else

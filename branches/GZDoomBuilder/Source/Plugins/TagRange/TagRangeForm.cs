@@ -100,14 +100,12 @@ namespace CodeImp.DoomBuilder.TagRange
 			tagsused = false;
 
 			//mxd. Get relative tag range
-			if (relative) 
+			if(relative) 
 			{
-				int newtag;
-
 				// Go for the number of tags we need
 				for(int i = 0; i < selectioncount; i++) 
 				{
-					newtag = initialtags[i] + starttag;
+					int newtag = initialtags[i] + starttag;
 
 					if(newtag > General.Map.FormatInterface.MaxTag || newtag < General.Map.FormatInterface.MinTag) 
 					{
@@ -141,20 +139,20 @@ namespace CodeImp.DoomBuilder.TagRange
 			else //mxd. Get absolute tag range
 			{
 				// Go for the number of tags we need
-				for (int i = 0; i < selectioncount; i++) 
+				for(int i = 0; i < selectioncount; i++) 
 				{
-					if (starttag > General.Map.FormatInterface.MaxTag || starttag < General.Map.FormatInterface.MinTag) 
+					if(starttag > General.Map.FormatInterface.MaxTag || starttag < General.Map.FormatInterface.MinTag) 
 					{
 						outoftags = true;
 						return newtags;
 					}
 
-					if (skipusedtags) 
+					if(skipusedtags) 
 					{
 						// Find next unused tag
-						while (usedtags.ContainsKey(starttag)) 
+						while(usedtags.ContainsKey(starttag)) 
 						{
-							if (starttag >= General.Map.FormatInterface.MaxTag || starttag <= General.Map.FormatInterface.MinTag) 
+							if(starttag >= General.Map.FormatInterface.MaxTag || starttag <= General.Map.FormatInterface.MinTag) 
 							{
 								outoftags = true;
 								return newtags;

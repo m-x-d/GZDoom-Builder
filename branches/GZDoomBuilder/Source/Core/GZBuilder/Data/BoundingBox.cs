@@ -35,7 +35,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 
 		public static void UpdateBoundingBoxSizes(ref BoundingBoxSizes bbs, WorldVertex v) 
 		{
-			if (v.x < bbs.MinX) bbs.MinX = (int)v.x;
+			if(v.x < bbs.MinX) bbs.MinX = (int)v.x;
 			else if(v.x > bbs.MaxX) bbs.MaxX = (int)v.x;
 
 			if(v.z < bbs.MinZ) bbs.MinZ = (int)v.z;

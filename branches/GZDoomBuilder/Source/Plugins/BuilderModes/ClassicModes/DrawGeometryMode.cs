@@ -331,7 +331,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// if the mouse cursor is outside the map bondaries check if the line between the last set point and the
 			// mouse cursor intersect any of the boundary lines. If it does, set the position to this intersection
-			if (points.Count > 0 &&
+			if(points.Count > 0 &&
 				(mousemappos.x < General.Map.Config.LeftBoundary || mousemappos.x > General.Map.Config.RightBoundary ||
 				mousemappos.y > General.Map.Config.TopBoundary || mousemappos.y < General.Map.Config.BottomBoundary))
 			{
@@ -347,13 +347,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				blines.Add(new Line2D(General.Map.Config.RightBoundary, General.Map.Config.BottomBoundary, General.Map.Config.LeftBoundary, General.Map.Config.BottomBoundary));
 
 				// check for intersections with boundaries
-				for (int i = 0; i < blines.Count; i++)
+				for(int i = 0; i < blines.Count; i++)
 				{
-					if (!foundintersection)
+					if(!foundintersection)
 					{
 						// only check for intersection if the last set point is not on the
 						// line we are checking against
-						if (blines[i].GetSideOfLine(points[points.Count - 1].pos) != 0.0f)
+						if(blines[i].GetSideOfLine(points[points.Count - 1].pos) != 0.0f)
 						{
 							foundintersection = blines[i].GetIntersection(dline, out u);
 						}
@@ -361,7 +361,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 
 				// if there was no intersection set the position to the last set point
-				if (!foundintersection)
+				if(!foundintersection)
 					vm = points[points.Count - 1].pos;
 				else
 					vm = dline.GetCoordinatesAt(u);
@@ -376,8 +376,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				p.pos = General.Map.Grid.SnappedToGrid(vm);
 
 				// special handling 
-				if (p.pos.x > General.Map.Config.RightBoundary) p.pos.x = General.Map.Config.RightBoundary;
-				if (p.pos.y < General.Map.Config.BottomBoundary) p.pos.y = General.Map.Config.BottomBoundary;
+				if(p.pos.x > General.Map.Config.RightBoundary) p.pos.x = General.Map.Config.RightBoundary;
+				if(p.pos.y < General.Map.Config.BottomBoundary) p.pos.y = General.Map.Config.BottomBoundary;
 				//p.stitch = snaptonearest;
 				//p.stitchline = snaptonearest;
 				return p;
@@ -409,7 +409,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This draws a point at a specific location
 		public virtual bool DrawPointAt(Vector2D pos, bool stitch, bool stitchline)
 		{
-			if (pos.x < General.Map.Config.LeftBoundary || pos.x > General.Map.Config.RightBoundary ||
+			if(pos.x < General.Map.Config.LeftBoundary || pos.x > General.Map.Config.RightBoundary ||
 				pos.y > General.Map.Config.TopBoundary || pos.y < General.Map.Config.BottomBoundary)
 				return false;
 
@@ -430,7 +430,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if((Math.Abs(delta.x) <= 0.001f) && (Math.Abs(delta.y) <= 0.001f))
 				{
 					//mxd. Seems... logical?
-					if (points.Count == 2) 
+					if(points.Count == 2) 
 					{
 						OnCancel();
 						return true;

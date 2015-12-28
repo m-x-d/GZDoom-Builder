@@ -377,7 +377,7 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 			else
 			{
-				for (int i = 0; i < labels.Length; i++)
+				for(int i = 0; i < labels.Length; i++)
 				{
 					labels[i].Text = arginfo[i].Title;
 					labels[i].Enabled = arginfo[i].Used;

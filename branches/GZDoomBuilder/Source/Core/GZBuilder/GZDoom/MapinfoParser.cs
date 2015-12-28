@@ -325,7 +325,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						mapinfo.EvenLighting = true;
 					}
 //smoothlighting
-					else if (token == "smoothlighting") 
+					else if(token == "smoothlighting") 
 					{
 						mapinfo.SmoothLighting = true;
 					}

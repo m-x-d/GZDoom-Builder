@@ -70,15 +70,14 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 		public static string MakeTempFilename(string extension)
 		{
 			string filename;
-			string chars = "abcdefghijklmnopqrstuvwxyz1234567890";
+			const string chars = "abcdefghijklmnopqrstuvwxyz1234567890";
 			Random rnd = new Random();
-			int i;
 
 			do
 			{
 				// Generate a filename
 				filename = "";
-				for(i = 0; i < 8; i++) filename += chars[rnd.Next(chars.Length)];
+				for(int i = 0; i < 8; i++) filename += chars[rnd.Next(chars.Length)];
 				filename = Path.Combine(General.TempPath, filename + extension);
 			}
 			// Continue while file is not unique

@@ -16,7 +16,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This is called when a specific object is selected from the list
 		public override void ObjectSelected(FindReplaceObject[] selection) 
 		{
-			if (selection.Length == 1)
+			if(selection.Length == 1)
 			{
 				ZoomToSelection(selection);
 				General.Interface.ShowLinedefInfo(selection[0].Sidedef.Line);

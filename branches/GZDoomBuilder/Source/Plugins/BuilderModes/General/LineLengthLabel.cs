@@ -170,10 +170,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					new Line2D(rb.x, lt.y, rb.x, rb.y), // right
 				};
 
-				float u;
 				foreach(Line2D side in viewportsides)
 				{
 					// Modify the start point so it stays on screen
+					float u;
 					if(!startvisible && side.GetIntersection(drawnline, out u))
 					{
 						start = drawnline.GetCoordinatesAt(u);

@@ -112,7 +112,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 			numericUpDown1.Value = General.Clamp((int)numericUpDown1.Value, minimum, maximum);
 
-			if (extendedLimits) 
+			if(extendedLimits) 
 			{
 				numericUpDown1.Minimum = minimum * 32;
 				numericUpDown1.Maximum = maximum * 32;
@@ -129,19 +129,19 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 		//events
 		private void trackBar1_ValueChanged(object sender, EventArgs e) 
 		{
-			if (!blockEvents) numericUpDown1.Value = ((TrackBar)sender).Value;
+			if(!blockEvents) numericUpDown1.Value = ((TrackBar)sender).Value;
 		}
 
 		private void numericUpDown1_ValueChanged(object sender, EventArgs e) 
 		{
 			int value = (int)((NumericUpDown)sender).Value;
-			if (value == previousValue) return;
+			if(value == previousValue) return;
 
 			valueChanged = true;
 			delta = value - previousValue;
 			previousValue = value;
 
-			if (!blockEvents && OnValueChanging != null)
+			if(!blockEvents && OnValueChanging != null)
 				OnValueChanging(this, EventArgs.Empty);
 
 			blockEvents = true;
@@ -151,7 +151,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 		private void trackBar1_MouseLeave(object sender, EventArgs e) 
 		{
-			if (valueChanged && OnValueChanged != null) 
+			if(valueChanged && OnValueChanged != null) 
 			{
 				OnValueChanged(this, EventArgs.Empty);
 				valueChanged = false;
@@ -160,7 +160,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 		private void numericUpDown1_MouseLeave(object sender, EventArgs e) 
 		{
-			if (valueChanged && OnValueChanged != null) 
+			if(valueChanged && OnValueChanged != null) 
 			{
 				OnValueChanged(this, EventArgs.Empty);
 				valueChanged = false;

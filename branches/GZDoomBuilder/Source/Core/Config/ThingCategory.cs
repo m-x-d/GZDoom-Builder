@@ -150,8 +150,6 @@ namespace CodeImp.DoomBuilder.Config
 		// Constructor
 		internal ThingCategory(Configuration cfg, ThingCategory parent, string name, IDictionary<string, EnumList> enums)
 		{
-			int index;
-			
 			// Initialize
 			this.name = name;
 			this.things = new List<ThingTypeInfo>();
@@ -225,6 +223,7 @@ namespace CodeImp.DoomBuilder.Config
 			foreach(DictionaryEntry de in dic)
 			{
 				// Check if the item key is numeric
+				int index;
 				if(int.TryParse(de.Key.ToString(), NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite, CultureInfo.InvariantCulture, out index))
 				{
 					// Check if the item value is a structure

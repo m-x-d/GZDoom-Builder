@@ -269,16 +269,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							List<Vector2D> coords = nl.GetGridIntersections(snapgridincrement ? dragstartoffset : new Vector2D());
 
 							// mxd. Do the rest only if we actually have some coordinates
-							if (coords.Count > 0) 
+							if(coords.Count > 0) 
 							{
 								// Find nearest grid intersection
 								float found_distance = float.MaxValue;
 								Vector2D found_coord = new Vector2D();
 
-								foreach (Vector2D v in coords) 
+								foreach(Vector2D v in coords) 
 								{
 									Vector2D delta = anchorpos - v;
-									if (delta.GetLengthSq() < found_distance) 
+									if(delta.GetLengthSq() < found_distance) 
 									{
 										found_distance = delta.GetLengthSq();
 										found_coord = v;
@@ -329,10 +329,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			// Make sure the offset is inside the map boundaries
-			if (offset.x + tl.x < General.Map.Config.LeftBoundary) offset.x = General.Map.Config.LeftBoundary - tl.x;
-			if (offset.x + br.x > General.Map.Config.RightBoundary) offset.x = General.Map.Config.RightBoundary - br.x;
-			if (offset.y + tl.y > General.Map.Config.TopBoundary) offset.y = General.Map.Config.TopBoundary - tl.y;
-			if (offset.y + br.y < General.Map.Config.BottomBoundary) offset.y = General.Map.Config.BottomBoundary - br.y;
+			if(offset.x + tl.x < General.Map.Config.LeftBoundary) offset.x = General.Map.Config.LeftBoundary - tl.x;
+			if(offset.x + br.x > General.Map.Config.RightBoundary) offset.x = General.Map.Config.RightBoundary - br.x;
+			if(offset.y + tl.y > General.Map.Config.TopBoundary) offset.y = General.Map.Config.TopBoundary - tl.y;
+			if(offset.y + br.y < General.Map.Config.BottomBoundary) offset.y = General.Map.Config.BottomBoundary - br.y;
 
 			// Drag item moved?
 			if((!snapgrid && !snapgridincrement) || (dragitem.Position != oldpos))
@@ -584,7 +584,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Update labels
 				int index = 0;
-				foreach (Linedef l in unstablelines)
+				foreach(Linedef l in unstablelines)
 					labels[index++].Move(l.Start.Position, l.End.Position);
 			}
 			else

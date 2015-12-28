@@ -146,9 +146,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 
 		public int GetSmartTag(int original, int offset) 
 		{
-			if (!valid) return original;
-			if (rangemode != 0) return tag + offset * rangemode;
-			if (offsetmode != 0) return original + tag * offsetmode;
+			if(!valid) return original;
+			if(rangemode != 0) return tag + offset * rangemode;
+			if(offsetmode != 0) return original + tag * offsetmode;
 			return tag;
 		}
 

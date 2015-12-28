@@ -129,7 +129,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				renderer.PlotLinedefSet(General.Map.Map.Linedefs);
 				renderer.PlotVerticesSet(General.Map.Map.Vertices);
-				foreach (ErrorResult result in selection) result.PlotSelection(renderer); //mxd
+				foreach(ErrorResult result in selection) result.PlotSelection(renderer); //mxd
 				renderer.Finish();
 			}
 			

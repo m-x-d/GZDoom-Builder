@@ -76,8 +76,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 				// Clean up
 				if(Model != null)
 				{
-					foreach (Mesh mesh in Model.Meshes) mesh.Dispose();
-					foreach (Texture t in Model.Textures) t.Dispose();
+					foreach(Mesh mesh in Model.Meshes) mesh.Dispose();
+					foreach(Texture t in Model.Textures) t.Dispose();
 					loadstate = ModelLoadState.None;
 				}
 

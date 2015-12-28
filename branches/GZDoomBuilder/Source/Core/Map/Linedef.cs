@@ -230,7 +230,7 @@ namespace CodeImp.DoomBuilder.Map
 			if(s.IsWriting)
 			{
 				s.wInt(tags.Count);
-				foreach (int tag in tags) s.wInt(tag);
+				foreach(int tag in tags) s.wInt(tag);
 			}
 			else
 			{
@@ -456,7 +456,7 @@ namespace CodeImp.DoomBuilder.Map
 			//mxd. Hexen -> UDMF action translation. Hardcoded for now...
 			if(previousmapformatinterfacetype == typeof(HexenMapSetIO)) 
 			{
-				switch (Action) 
+				switch(Action) 
 				{
 					case 121: //Line_SetIdentification
 						//Convert arg0 to tag
@@ -467,7 +467,7 @@ namespace CodeImp.DoomBuilder.Map
 
 						//clear action and arguments
 						action = 0;
-						for (int i = 0; i < args.Length; i++) args[i] = 0;
+						for(int i = 0; i < args.Length; i++) args[i] = 0;
 						break;
 
 					case 208: //TranslucentLine
@@ -486,7 +486,7 @@ namespace CodeImp.DoomBuilder.Map
 
 					case 160: //Sector_3DFloor
 						// Convert to UDMF
-						if ((args[1] & 8) == 8) // arg4 is LineID?
+						if((args[1] & 8) == 8) // arg4 is LineID?
 						{
 							tags[0] = args[4];
 							args[1] &= ~8; // Unset flag
@@ -585,9 +585,9 @@ namespace CodeImp.DoomBuilder.Map
 			}
 
 			//mxd. UDMF -> Hexen action translation. Hardcoded for now...
-			if (General.Map.FormatInterface is HexenMapSetIO)
+			if(General.Map.FormatInterface is HexenMapSetIO)
 			{
-				switch (action)
+				switch(action)
 				{
 					case 208: //TranslucentLine
 						//Convert tag to arg0
@@ -645,7 +645,7 @@ namespace CodeImp.DoomBuilder.Map
 					default: // Convert tag to Line_SetIdentification?
 						if(tags[0] > General.Map.FormatInterface.MinArgument)
 						{
-							if (action != 0)
+							if(action != 0)
 							{
 								General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + Index + ": unable to convert Tag (" + tags[0] + ") to LineID, because linedef already has an action.");
 							}
@@ -1249,8 +1249,6 @@ namespace CodeImp.DoomBuilder.Map
 		// Returns false when the operation could not be completed.
 		private bool JoinChangeSidedefs(Linedef target, bool front, Sidedef newside)
 		{
-			Sidedef sd;
-			
 			// Change sidedefs
 			if(front)
 			{
@@ -1263,7 +1261,7 @@ namespace CodeImp.DoomBuilder.Map
 			
 			if(newside != null)
 			{
-				sd = map.CreateSidedef(target, front, newside.Sector);
+				Sidedef sd = map.CreateSidedef(target, front, newside.Sector);
 				if(sd == null) return false;
 				newside.CopyPropertiesTo(sd);
 				sd.Marked = newside.Marked;
@@ -1324,7 +1322,7 @@ namespace CodeImp.DoomBuilder.Map
 						if((oldline.back.MiddleRequired() && oldline.back.LongMiddleTexture != MapSet.EmptyLongName) || oldline.back.HighRequired() || oldline.back.LowRequired()) 
 						{
 							int distance = (int)Vector2D.Distance(newline.start.Position, newline.end.Position);
-							if (General.Map.UDMF) 
+							if(General.Map.UDMF) 
 							{
 								if(distance != 0) oldline.back.SetUdmfTextureOffsetX(distance);
 							} 

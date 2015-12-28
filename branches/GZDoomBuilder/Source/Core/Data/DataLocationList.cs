@@ -108,7 +108,7 @@ namespace CodeImp.DoomBuilder.Data
 		//mxd
 		public bool IsValid()
 		{
-			foreach(DataLocation location in this) if (!location.IsValid()) return false;
+			foreach(DataLocation location in this) if(!location.IsValid()) return false;
 			return true;
 		}
 		

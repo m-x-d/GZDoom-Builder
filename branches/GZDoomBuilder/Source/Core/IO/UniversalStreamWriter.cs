@@ -293,7 +293,7 @@ namespace CodeImp.DoomBuilder.IO
 				}
 
 				//mxd. Slopes
-				if (s.FloorSlope.GetLengthSq() > 0) 
+				if(s.FloorSlope.GetLengthSq() > 0) 
 				{
 					coll.Add("floorplane_a", Math.Round(s.FloorSlope.x, Sector.SLOPE_DECIMALS));
 					coll.Add("floorplane_b", Math.Round(s.FloorSlope.y, Sector.SLOPE_DECIMALS));
@@ -302,7 +302,7 @@ namespace CodeImp.DoomBuilder.IO
 						(float.IsNaN(s.FloorSlopeOffset) ? 0f : Math.Round(s.FloorSlopeOffset, Sector.SLOPE_DECIMALS)));
 				}
 
-				if (s.CeilSlope.GetLengthSq() > 0) 
+				if(s.CeilSlope.GetLengthSq() > 0) 
 				{
 					coll.Add("ceilingplane_a", Math.Round(s.CeilSlope.x, Sector.SLOPE_DECIMALS));
 					coll.Add("ceilingplane_b", Math.Round(s.CeilSlope.y, Sector.SLOPE_DECIMALS));
@@ -336,10 +336,10 @@ namespace CodeImp.DoomBuilder.IO
 				coll.Add("y", t.Position.y);
 				if(t.Position.z != 0.0f) coll.Add("height", t.Position.z);
 				coll.Add("angle", t.AngleDoom);
-				if (t.Pitch != 0) coll.Add("pitch", t.Pitch); //mxd
-				if (t.Roll != 0) coll.Add("roll", t.Roll); //mxd
-				if (t.ScaleX != 0 && t.ScaleX != 1.0f) coll.Add("scalex", t.ScaleX); //mxd
-				if (t.ScaleY != 0 && t.ScaleY != 1.0f) coll.Add("scaley", t.ScaleY); //mxd
+				if(t.Pitch != 0) coll.Add("pitch", t.Pitch); //mxd
+				if(t.Roll != 0) coll.Add("roll", t.Roll); //mxd
+				if(t.ScaleX != 0 && t.ScaleX != 1.0f) coll.Add("scalex", t.ScaleX); //mxd
+				if(t.ScaleY != 0 && t.ScaleY != 1.0f) coll.Add("scaley", t.ScaleY); //mxd
 				coll.Add("type", t.Type);
 				if(t.Action != 0) coll.Add("special", t.Action);
 				if(t.Args[0] != 0) coll.Add("arg0", t.Args[0]);

@@ -674,8 +674,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	public class ThingProperties : MapElementProperties
 	{
 		//mxd
-		private static ThingPropertiesCopySettings defaultsettings = new ThingPropertiesCopySettings();
-		public static ThingPropertiesCopySettings CopySettings = new ThingPropertiesCopySettings();
+		private static readonly ThingPropertiesCopySettings defaultsettings = new ThingPropertiesCopySettings();
+		public static readonly ThingPropertiesCopySettings CopySettings = new ThingPropertiesCopySettings();
 		
 		private readonly int type;
 		private readonly float angle;

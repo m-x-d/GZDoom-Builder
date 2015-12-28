@@ -181,7 +181,7 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			get
 			{
-				return FastPerform(2016, 0, 0) != 0 ? true : false;
+				return FastPerform(2016, 0, 0) != 0;
 			}
 		}
 
@@ -194,7 +194,7 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			get
 			{
-				return FastPerform(2102, 0, 0) != 0 ? true : false;
+				return FastPerform(2102, 0, 0) != 0;
 			}
 		}
 
@@ -220,7 +220,7 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			get
 			{
-				return FastPerform(2173, 0, 0) != 0 ? true : false;
+				return FastPerform(2173, 0, 0) != 0;
 			}
 		}
 
@@ -233,7 +233,7 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			get
 			{
-				return FastPerform(2174, 0, 0) != 0 ? true : false;
+				return FastPerform(2174, 0, 0) != 0;
 			}
 		}
 
@@ -246,7 +246,7 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			get
 			{
-				return FastPerform(2202, 0, 0) != 0 ? true : false;
+				return FastPerform(2202, 0, 0) != 0;
 			}
 		}
 

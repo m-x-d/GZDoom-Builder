@@ -81,16 +81,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				Dictionary<Vertex, int> vertices = new Dictionary<Vertex, int>();
 
 				// look at each side that belongs to the current sector
-				foreach (Sidedef sd in s.Sidedefs)
+				foreach(Sidedef sd in s.Sidedefs)
 				{
 					// Add the lines starting vertex to the Dictionary if it's not yet present
-					if (!vertices.ContainsKey(sd.Line.Start))
+					if(!vertices.ContainsKey(sd.Line.Start))
 					{
 						vertices.Add(sd.Line.Start, 0);
 					}
 
 					// Add the lines ending vertex to the Dictionary if it's not yet present
-					if (!vertices.ContainsKey(sd.Line.End))
+					if(!vertices.ContainsKey(sd.Line.End))
 					{
 						vertices.Add(sd.Line.End, 0);
 					}
@@ -112,33 +112,33 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 
 				// look at all the vertices
-				foreach (KeyValuePair<Vertex, int> kvp in vertices)
+				foreach(KeyValuePair<Vertex, int> kvp in vertices)
 				{
 					// only look at bad vertices
-					if (kvp.Value != 3)
+					if(kvp.Value != 3)
 					{
 						// add the current vertex to the holes list
-						if (!foundholes.Contains(kvp.Key))
+						if(!foundholes.Contains(kvp.Key))
 						{
 							foundholes.Add(kvp.Key);
 						}
 
 						// this checks if any vertices slipped past the first test
 						// look at all lines that share the current vertex
-						foreach (Linedef cl in kvp.Key.Linedefs)
+						foreach(Linedef cl in kvp.Key.Linedefs)
 						{
 							// the line does not has its front or back side referencing the current sector
-							if (!((cl.Front != null && cl.Front.Sector == s) || (cl.Back != null && cl.Back.Sector == s)))
+							if(!((cl.Front != null && cl.Front.Sector == s) || (cl.Back != null && cl.Back.Sector == s)))
 							{
 								// if the opposite vertex of our current vertex is marked good something must be wrong,
 								// since the above check tells us that the line bewtween the vertices has no side referencing
 								// the current sector. So add the falsely marked vertex to the holes list
-								if (vertices.ContainsKey(cl.Start) && vertices[cl.Start] == 3 && !foundholes.Contains(cl.Start))
+								if(vertices.ContainsKey(cl.Start) && vertices[cl.Start] == 3 && !foundholes.Contains(cl.Start))
 								{
 									foundholes.Add(cl.Start);
 								}
 
-								if (vertices.ContainsKey(cl.End) && vertices[cl.End] == 3 && !foundholes.Contains(cl.End))
+								if(vertices.ContainsKey(cl.End) && vertices[cl.End] == 3 && !foundholes.Contains(cl.End))
 								{
 									foundholes.Add(cl.End);
 								}
@@ -149,9 +149,23 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				// Add report when holes have been found
 				if(foundholes.Count > 0)
+				{
 					SubmitResult(new ResultSectorUnclosed(s, foundholes));
-				else if(s.Sidedefs.Count < 3 || s.BBox.IsEmpty) //mxd
+				}
+				//mxd. Add report when sector has less than 3 sidedefs
+				else if(s.Sidedefs.Count < 3 || s.BBox.IsEmpty)
+				{
 					SubmitResult(new ResultSectorInvalid(s));
+				}
+				//mxd. Add report when sector has less than 3 linedefs
+				else
+				{
+					HashSet<Linedef> lines = new HashSet<Linedef>();
+					foreach(Sidedef side in s.Sidedefs)
+						if(side.Line != null && !lines.Contains(side.Line)) lines.Add(side.Line);
+
+					if(lines.Count < 3) SubmitResult(new ResultSectorInvalid(s));
+				}
 
 				// Handle thread interruption
 				try { Thread.Sleep(0); }

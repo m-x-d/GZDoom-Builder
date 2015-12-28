@@ -596,9 +596,9 @@ namespace CodeImp.DoomBuilder.Controls
 		//mxd. This validates an item's texture size
 		private static bool ValidateItemSize(ImageBrowserItem i, int w, int h) 
 		{
-			if (!i.Icon.IsPreviewLoaded) return true;
-			if (w > 0 && i.Icon.Width != w) return false;
-			if (h > 0 && i.Icon.Height != h) return false;
+			if(!i.Icon.IsPreviewLoaded) return true;
+			if(w > 0 && i.Icon.Width != w) return false;
+			if(h > 0 && i.Icon.Height != h) return false;
 			return true;
 		}
 		

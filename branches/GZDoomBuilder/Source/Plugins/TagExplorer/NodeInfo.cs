@@ -72,13 +72,13 @@ namespace CodeImp.DoomBuilder.TagExplorer
 		//methods
 		private UniFields GetFields() 
 		{
-			if (type == NodeInfoType.THING) 
+			if(type == NodeInfoType.THING) 
 			{
 				Thing t = General.Map.Map.GetThingByIndex(index);
 				return (t == null ? null : t.Fields);
 			}
 
-			if (type == NodeInfoType.SECTOR) 
+			if(type == NodeInfoType.SECTOR) 
 			{
 				Sector s = General.Map.Map.GetSectorByIndex(index);
 				return (s == null ? null : s.Fields);
@@ -93,9 +93,9 @@ namespace CodeImp.DoomBuilder.TagExplorer
 		{
 			UniFields fields = GetFields();
 
-			if (comment.Length == 0) 
+			if(comment.Length == 0) 
 			{
-				if (fields.ContainsKey("comment")) 
+				if(fields.ContainsKey("comment")) 
 				{
 					General.Map.UndoRedo.CreateUndo("Remove comment");
 					fields.BeforeFieldsChange();
@@ -108,7 +108,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
 			General.Map.UndoRedo.CreateUndo("Set comment");
 			fields.BeforeFieldsChange();
 
-			if (!fields.ContainsKey("comment"))
+			if(!fields.ContainsKey("comment"))
 				fields.Add("comment", new UniValue((int)UniversalType.String, comment));
 			else
 				fields["comment"].Value = comment;
@@ -117,30 +117,30 @@ namespace CodeImp.DoomBuilder.TagExplorer
 		private string GetComment() 
 		{
 			UniFields fields = GetFields();
-			if (fields == null) return "";
-			if (!fields.ContainsKey("comment")) return "";
+			if(fields == null) return "";
+			if(!fields.ContainsKey("comment")) return "";
 			return fields["comment"].Value.ToString();
 		}
 
 //naming
 		public string GetName(ref string comment, string sortMode) 
 		{
-			if (type == NodeInfoType.THING) 
+			if(type == NodeInfoType.THING) 
 			{
 				Thing t = General.Map.Map.GetThingByIndex(index);
-				if (t == null) return "<invalid thing>";
+				if(t == null) return "<invalid thing>";
 				return GetThingName(t, ref comment, sortMode);
 			}
 
-			if (type == NodeInfoType.SECTOR) 
+			if(type == NodeInfoType.SECTOR) 
 			{
 				Sector s = General.Map.Map.GetSectorByIndex(index);
-				if (s == null) return "<invalid sector>";
+				if(s == null) return "<invalid sector>";
 				return GetSectorName(s, ref comment, sortMode);
 			}
 
 			Linedef l = General.Map.Map.GetLinedefByIndex(index);
-			if (l == null) return "<invalid linedef>";
+			if(l == null) return "<invalid linedef>";
 			return GetLinedefName(l, ref comment, sortMode);
 		}
 

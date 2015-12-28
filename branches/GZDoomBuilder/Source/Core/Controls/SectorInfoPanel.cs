@@ -93,7 +93,7 @@ namespace CodeImp.DoomBuilder.Controls
 			effectlabel.Enabled = (s.Effect != 0);
 
 			//mxd. Texture size
-			if (s.LongFloorTexture == MapSet.EmptyLongName)
+			if(s.LongFloorTexture == MapSet.EmptyLongName)
 			{
 				labelFloorTextureSize.Visible = false;
 				General.DisplayZoomedImage(floortex, Properties.Resources.MissingTexture);
@@ -105,7 +105,7 @@ namespace CodeImp.DoomBuilder.Controls
 				General.DisplayZoomedImage(floortex, image.GetPreview());
 			}
 
-			if (s.LongCeilTexture == MapSet.EmptyLongName) 
+			if(s.LongCeilTexture == MapSet.EmptyLongName) 
 			{
 				labelCeilTextureSize.Visible = false;
 				General.DisplayZoomedImage(ceilingtex, Properties.Resources.MissingTexture);
@@ -369,7 +369,7 @@ namespace CodeImp.DoomBuilder.Controls
 		private static int GetMaxRight(IEnumerable<Label> labels)
 		{
 			int max = 0;
-			foreach (Label label in labels) if (label.Right > max) max = label.Right;
+			foreach(Label label in labels) if(label.Right > max) max = label.Right;
 			return max;
 		}
 

@@ -844,7 +844,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(horizontal == 0 && vertical == 0) return; //mxd
 			
 			//mxd
-			if (!General.Map.UDMF) 
+			if(!General.Map.UDMF) 
 			{
 				General.Interface.DisplayStatus(StatusType.Warning, "Floor/ceiling texture offsets cannot be changed in this map format!");
 				return;

@@ -42,7 +42,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			foreach(Thing t in selection) 
 			{
-				if (!thingcounts.ContainsKey(t.Type)) 
+				if(!thingcounts.ContainsKey(t.Type)) 
 				{
 					thingcounts.Add(t.Type, 1);
 					ThingTypeInfo ti = General.Map.Data.GetThingInfo(t.Type);
@@ -75,14 +75,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			List<int> selectedtypes = new List<int>();
 
 			foreach(DataGridViewRow row in dataGridView.Rows)
-				if (row.Selected) selectedtypes.Add((int)row.Cells[0].Value);
+				if(row.Selected) selectedtypes.Add((int)row.Cells[0].Value);
 
 			//apply selection
-			if (selectedtypes.Count > 0) 
+			if(selectedtypes.Count > 0) 
 			{
-				foreach (Thing t in selection) 
+				foreach(Thing t in selection) 
 				{
-					if (!selectedtypes.Contains(t.Type)) t.Selected = false;
+					if(!selectedtypes.Contains(t.Type)) t.Selected = false;
 				}
 
 				//update display

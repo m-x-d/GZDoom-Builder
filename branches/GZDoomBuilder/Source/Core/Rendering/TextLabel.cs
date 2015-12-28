@@ -138,22 +138,18 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This updates the text if needed
 		internal void Update(float translatex, float translatey, float scalex, float scaley)
 		{
-			//FlatVertex[] verts;
-			RectangleF absview;
-			float beginx = 0;
-			float beginy = 0;
-			//bool colorcode = false;
-			//int characters = 0;
-			byte[] textbytes;
-			DataStream stream;
-
 			// Check if transformation changed and needs to be updated
 			if(transformcoords)
 			{
-				if((translatex != lasttranslatex) ||
-				   (translatey != lasttranslatey) ||
-				   (scalex != lastscalex) ||
-				   (scaley != lastscaley)) updateneeded = true;
+				if(translatex != lasttranslatex || translatey != lasttranslatey ||
+				   scalex != lastscalex || scaley != lastscaley)
+				{
+					translatex = lasttranslatex; //mxd
+					translatey = lasttranslatey; //mxd
+					scalex = lastscalex; //mxd
+					scaley = lastscaley; //mxd
+					updateneeded = true;
+				}
 			}
 			
 			// Update if needed
@@ -179,6 +175,7 @@ namespace CodeImp.DoomBuilder.Rendering
 					}
 					
 					// Transform?
+					RectangleF absview;
 					if(transformcoords)
 					{
 						// Calculate absolute coordinates
@@ -198,6 +195,7 @@ namespace CodeImp.DoomBuilder.Rendering
 					size = General.Map.Graphics.Font.GetTextSize(text, scale);
 
 					// Align the text horizontally
+					float beginx = 0;
 					switch(alignx)
 					{
 						case TextAlignmentX.Left: beginx = absview.X; break;
@@ -206,6 +204,7 @@ namespace CodeImp.DoomBuilder.Rendering
 					}
 
 					// Align the text vertically
+					float beginy = 0;
 					switch(aligny)
 					{
 						case TextAlignmentY.Top: beginy = absview.Y; break;
@@ -214,10 +213,10 @@ namespace CodeImp.DoomBuilder.Rendering
 					}
 
 					// Get the ASCII bytes for the text
-					textbytes = Encoding.ASCII.GetBytes(text);
+					byte[] textbytes = Encoding.ASCII.GetBytes(text);
 
 					// Lock the buffer
-					stream = textbuffer.Lock(0, capacity * 12 * FlatVertex.Stride,
+					DataStream stream = textbuffer.Lock(0, capacity * 12 * FlatVertex.Stride,
 									LockFlags.Discard | LockFlags.NoSystemLock);
 					
 					// Go for all chars in text to create the backgrounds

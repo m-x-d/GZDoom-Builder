@@ -44,17 +44,17 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		{
 			blockUpdate = true;
 
-			if (first) 
+			if(first) 
 			{
 				value1.Text = val1.ToString(CultureInfo.InvariantCulture);
 				value2.Text = val2.ToString(CultureInfo.InvariantCulture);
 			} 
 			else 
 			{
-				if (!string.IsNullOrEmpty(value1.Text) && value1.Text != val1.ToString(CultureInfo.InvariantCulture))
+				if(!string.IsNullOrEmpty(value1.Text) && value1.Text != val1.ToString(CultureInfo.InvariantCulture))
 					value1.Text = string.Empty;
 
-				if (!string.IsNullOrEmpty(value2.Text) && value2.Text != val2.ToString(CultureInfo.InvariantCulture))
+				if(!string.IsNullOrEmpty(value2.Text) && value2.Text != val2.ToString(CultureInfo.InvariantCulture))
 					value2.Text = string.Empty;
 			}
 

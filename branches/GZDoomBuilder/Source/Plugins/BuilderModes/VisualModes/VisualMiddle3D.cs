@@ -314,7 +314,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override bool PickFastReject(Vector3D from, Vector3D to, Vector3D dir) 
 		{
 			// Top and bottom are swapped in Vavoom-type 3d floors
-			if (extrafloor.VavoomType)
+			if(extrafloor.VavoomType)
 				return (pickintersect.z >= top.GetZ(pickintersect)) && (pickintersect.z <= bottom.GetZ(pickintersect));
 			return base.PickFastReject(from, to, dir);
 		}
@@ -334,9 +334,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected override void SetTexture(string texturename)
 		{
 			//mxd
-			if ((extrafloor.Linedef.Args[2] & (int)Effect3DFloor.Flags.UseUpperTexture) != 0)
+			if((extrafloor.Linedef.Args[2] & (int)Effect3DFloor.Flags.UseUpperTexture) != 0)
 				Sidedef.SetTextureHigh(texturename);
-			if ((extrafloor.Linedef.Args[2] & (int)Effect3DFloor.Flags.UseLowerTexture) != 0)
+			if((extrafloor.Linedef.Args[2] & (int)Effect3DFloor.Flags.UseLowerTexture) != 0)
 				Sidedef.SetTextureLow(texturename);
 			else
 				extrafloor.Linedef.Front.SetTextureMid(texturename);

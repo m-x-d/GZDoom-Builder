@@ -84,7 +84,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			//mxd
 			effects = new Dictionary<int, string[]>();
-			foreach (SectorEffectInfo info in General.Map.Config.SortedSectorEffects) 
+			foreach(SectorEffectInfo info in General.Map.Config.SortedSectorEffects) 
 			{
 				string name = info.Index + ": " + info.Title;
 				effects.Add(info.Index, new[] { name, "E" + info.Index });
@@ -396,7 +396,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			bool completeredraw = (highlighted != null) && (highlighted.Tag != 0);
 
 			// Set highlight association
-			if (s != null && s.Tag != 0) 
+			if(s != null && s.Tag != 0) 
 			{
 				Vector2D center = (s.Labels.Count > 0 ? s.Labels[0].position : new Vector2D(s.BBox.X + s.BBox.Width / 2, s.BBox.Y + s.BBox.Height / 2));
 				highlightasso.Set(center, s.Tags, UniversalType.SectorTag);
@@ -1652,7 +1652,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			//mxd. Create undo info text
 			List<string> info = new List<string>();
 
-			//mxd. Create linedef info text
+			//mxd. Create sectors info text
 			if(selectedsectors.Count > 1)
 				info.Add(selectedsectors.Count + " sectors");
 			else
@@ -1661,7 +1661,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			//mxd. Create things info text
 			if(selectedthings.Count > 1)
 				info.Add(selectedthings.Count + " things");
-			else
+			else if(selectedthings.Count == 1)
 				info.Add("a thing");
 
 			//mxd. Make undo
@@ -2215,7 +2215,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(selected.Count == 0 && highlighted != null && !highlighted.IsDisposed)
 				selected.Add(highlighted);
 
-			if (selected.Count == 0) 
+			if(selected.Count == 0) 
 			{
 				General.Interface.DisplayStatus(StatusType.Warning, "This action requires a selection!");
 				return;
@@ -2316,7 +2316,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd
 		private void RotateTextures(float increment) 
 		{
-			if (!General.Map.UDMF) 
+			if(!General.Map.UDMF) 
 			{
 				General.Interface.DisplayStatus(StatusType.Warning, "This action works only in UDMF map format!");
 				return;
@@ -2336,7 +2336,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			string targets;
 			string target;
-			switch (General.Map.Renderer2D.ViewMode) 
+			switch(General.Map.Renderer2D.ViewMode) 
 			{
 				case ViewMode.FloorTextures:
 					target = " a floor";
@@ -2367,7 +2367,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			//rotate stuff
-			foreach (Sector s in sectors) 
+			foreach(Sector s in sectors) 
 			{
 				s.Fields.BeforeFieldsChange();
 

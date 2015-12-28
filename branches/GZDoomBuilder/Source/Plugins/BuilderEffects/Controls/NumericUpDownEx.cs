@@ -33,13 +33,13 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 		{
 			// extract a reference to the underlying TextBox field
 			_textbox = GetPrivateField<TextBox>(this, "upDownEdit");
-			if (_textbox == null)
+			if(_textbox == null)
 			{
 				throw new ArgumentNullException(this.GetType().FullName + ": Can't find internal TextBox field.");
 			}
 			// extract a reference to the underlying UpDownButtons field
 			_upDownButtons = GetPrivateField<Control>(this, "upDownButtons");
-			if (_upDownButtons == null)
+			if(_upDownButtons == null)
 			{
 				throw new ArgumentNullException(this.GetType().FullName + ": Can't find internal UpDown buttons field.");
 			}
@@ -62,7 +62,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			// find internal TextBox
 			FieldInfo fi = typeof(NumericUpDown).GetField(fieldName, BindingFlags.FlattenHierarchy | BindingFlags.NonPublic | BindingFlags.Instance);
 			// take some caution... they could change field name in the future!
-			if (fi == null)
+			if(fi == null)
 			{
 				return null;
 			}
@@ -75,7 +75,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 		protected override void OnPaint(PaintEventArgs e)
 		{
-			if (_upDownButtons.Visible == false)
+			if(_upDownButtons.Visible == false)
 			{
 				e.Graphics.Clear(this.BackColor);
 			}
@@ -90,16 +90,16 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 		{
 			const int WM_MOUSEWHEEL = 0x20a;
 
-			if (m.Msg == WM_MOUSEWHEEL)
+			if(m.Msg == WM_MOUSEWHEEL)
 			{
-				switch (_interceptMouseWheel)
+				switch(_interceptMouseWheel)
 				{
 					case InterceptMouseWheelMode.Always:
 						// standard message
 						base.WndProc(ref m);
 						break;
 					case InterceptMouseWheelMode.WhenMouseOver:
-						if (_mouseOver)
+						if(_mouseOver)
 						{
 							// standard message
 							base.WndProc(ref m);
@@ -226,7 +226,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 		// select all the text on focus enter
 		protected override void OnGotFocus(EventArgs e)
 		{
-			if (_autoSelect)
+			if(_autoSelect)
 			{
 				_textbox.SelectAll();
 			}
@@ -238,7 +238,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 		// Will restore it, but only if user have not made a partial text selection.
 		protected override void OnMouseUp(MouseEventArgs mevent)
 		{
-			if (_autoSelect && _textbox.SelectionLength == 0)
+			if(_autoSelect && _textbox.SelectionLength == 0)
 			{
 				_textbox.SelectAll();
 			}
@@ -271,20 +271,20 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			bool isOver = cr.Contains(mp);
 
 			// test if status changed
-			if (_mouseOver ^ isOver)
+			if(_mouseOver ^ isOver)
 			{
 				// update state
 				_mouseOver = isOver;
-				if (_mouseOver)
+				if(_mouseOver)
 				{
-					if (MouseEnter != null)
+					if(MouseEnter != null)
 					{
 						MouseEnter(this, EventArgs.Empty);
 					}
 				}
 				else
 				{
-					if (MouseLeave != null)
+					if(MouseLeave != null)
 					{
 						MouseLeave(this, EventArgs.Empty);
 					}
@@ -292,7 +292,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			}
 
 			// update UpDownButtons visibility
-			if (_showUpDownButtons != ShowUpDownButtonsMode.Always)
+			if(_showUpDownButtons != ShowUpDownButtonsMode.Always)
 			{
 				UpdateUpDownButtonsVisibility();
 			}
@@ -308,13 +308,13 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 		public override void DownButton()
 		{
 			CancelEventArgs e = new CancelEventArgs();
-			if (BeforeValueDecrement != null) 
+			if(BeforeValueDecrement != null) 
 			{
 				BeforeValueDecrement(this, e);
 			}
-			if (e.Cancel) return;
+			if(e.Cancel) return;
 
-			if (_wrapValue && Value - Increment < Minimum) 
+			if(_wrapValue && Value - Increment < Minimum) 
 			{
 				Value = Maximum;
 			} 
@@ -326,13 +326,13 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 		public override void UpButton()
 		{
 			CancelEventArgs e = new CancelEventArgs();
-			if (BeforeValueIncrement != null) 
+			if(BeforeValueIncrement != null) 
 			{
 				BeforeValueIncrement(this, e);
 			}
-			if (e.Cancel) return;
+			if(e.Cancel) return;
 
-			if (_wrapValue && Value + Increment > Maximum) 
+			if(_wrapValue && Value + Increment > Maximum) 
 			{
 				Value = Minimum;
 			} 
@@ -354,7 +354,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 		{
 			// test new state
 			bool newVisible;
-			switch (_showUpDownButtons)
+			switch(_showUpDownButtons)
 			{
 				case ShowUpDownButtonsMode.WhenMouseOver:
 					newVisible = _mouseOver;
@@ -365,9 +365,9 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			}
 
 			// assign only if needed
-			if (_upDownButtons.Visible != newVisible)
+			if(_upDownButtons.Visible != newVisible)
 			{
-				if (newVisible)
+				if(newVisible)
 				{
 					_textbox.Width = this.ClientRectangle.Width - _upDownButtons.Width;
 				}
@@ -388,9 +388,9 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 		/// </summary>
 		protected override void OnTextBoxResize(object source, EventArgs e)
 		{
-			if (_textbox == null)
+			if(_textbox == null)
 				return;
-			if (_showUpDownButtons == ShowUpDownButtonsMode.Always)
+			if(_showUpDownButtons == ShowUpDownButtonsMode.Always)
 			{
 				// standard management
 				base.OnTextBoxResize(source, e);
@@ -402,15 +402,15 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 				// change position if RTL
 				bool fixPos = this.RightToLeft == RightToLeft.Yes ^ this.UpDownAlign == LeftRightAlignment.Left;
 
-				if (_mouseOver)
+				if(_mouseOver)
 				{
 					_textbox.Width = this.ClientSize.Width - _textbox.Left - _upDownButtons.Width - 2;
-					if (fixPos)
+					if(fixPos)
 						_textbox.Location = new Point(16, _textbox.Location.Y);
 				}
 				else
 				{
-					if (fixPos)
+					if(fixPos)
 						_textbox.Location = new Point(2, _textbox.Location.Y);
 					_textbox.Width = this.ClientSize.Width - _textbox.Left - 2;
 				}

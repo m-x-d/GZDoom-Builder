@@ -530,7 +530,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected override void MoveSelectedThings(Vector2D direction, bool absoluteposition) 
 		{
 			List<VisualThing> visualthings = GetSelectedVisualThings(true);
-			if (visualthings.Count == 0) return;
+			if(visualthings.Count == 0) return;
 
 			PreAction(UndoGroup.ThingMove);
 
@@ -555,7 +555,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd
 		private static Vector3D[] TranslateCoordinates(Vector3D[] coordinates, Vector2D direction, bool absolutePosition) 
 		{
-			if (coordinates.Length == 0) return null;
+			if(coordinates.Length == 0) return null;
 
 			direction.x = (float)Math.Round(direction.x);
 			direction.y = (float)Math.Round(direction.y);
@@ -563,20 +563,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Vector3D[] translatedCoords = new Vector3D[coordinates.Length];
 
 			//move things...
-			if (!absolutePosition) //...relatively (that's easy)
+			if(!absolutePosition) //...relatively (that's easy)
 			{ 
 				int camAngle = (int)Math.Round(Angle2D.RadToDeg(General.Map.VisualCamera.AngleXY));
 				int sector = General.ClampAngle(camAngle - 45) / 90;
 				direction = direction.GetRotated(sector * Angle2D.PIHALF);
 
-				for (int i = 0; i < coordinates.Length; i++)
+				for(int i = 0; i < coordinates.Length; i++)
 					translatedCoords[i] = coordinates[i] + new Vector3D(direction);
 
 				return translatedCoords;
 			}
 
 			//...to specified location preserving relative positioning (that's harder)
-			if (coordinates.Length == 1) //just move it there
+			if(coordinates.Length == 1) //just move it there
 			{
 				translatedCoords[0] = new Vector3D(direction.x, direction.y, coordinates[0].z);
 				return translatedCoords;
@@ -589,23 +589,23 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			float maxY = minY;
 
 			//get bounding coordinates for selected things
-			for (int i = 1; i < coordinates.Length; i++) 
+			for(int i = 1; i < coordinates.Length; i++) 
 			{
-				if (coordinates[i].x < minX)
+				if(coordinates[i].x < minX)
 					minX = coordinates[i].x;
-				else if (coordinates[i].x > maxX)
+				else if(coordinates[i].x > maxX)
 					maxX = coordinates[i].x;
 
-				if (coordinates[i].y < minY)
+				if(coordinates[i].y < minY)
 					minY = coordinates[i].y;
-				else if (coordinates[i].y > maxY)
+				else if(coordinates[i].y > maxY)
 					maxY = coordinates[i].y;
 			}
 
 			Vector2D selectionCenter = new Vector2D(minX + (maxX - minX) / 2, minY + (maxY - minY) / 2);
 
 			//move them
-			for (int i = 0; i < coordinates.Length; i++)
+			for(int i = 0; i < coordinates.Length; i++)
 				translatedCoords[i] = new Vector3D((float)Math.Round(direction.x - (selectionCenter.x - coordinates[i].x)), (float)Math.Round(direction.y - (selectionCenter.y - coordinates[i].y)), (float)Math.Round(coordinates[i].z));
 
 			return translatedCoords;
@@ -686,7 +686,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd
 		internal void StartRealtimeInterfaceUpdate(SelectionType selectiontype)
 		{
-			switch (selectiontype)
+			switch(selectiontype)
 			{
 				case SelectionType.All:
 				case SelectionType.Linedefs:
@@ -777,7 +777,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			//mxd
 			Sector[] sectorsWithEffects = null;
 
-			if (!gzdoomRenderingEffects) 
+			if(!gzdoomRenderingEffects) 
 			{
 				//store all sectors with effects
 				if(sectordata != null && sectordata.Count > 0) 
@@ -820,7 +820,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				vertices.Clear();
 			}
 
-			if (!gzdoomRenderingEffects) return; //mxd
+			if(!gzdoomRenderingEffects) return; //mxd
 			
 			// Find all sector who's tag is not 0 and hash them so that we can find them quicly
 			foreach(Sector s in General.Map.Map.Sectors)
@@ -853,7 +853,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						{
 							if((Vector2D)t.Position == v.Position) 
 							{
-								switch (t.Type)
+								switch(t.Type)
 								{
 									case 1504: slopefloorthings.Add(t); break;
 									case 1505: slopeceilingthings.Add(t); break;
@@ -1399,19 +1399,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				if(General.Interface.ActiveDockerTabName == "Help") 
 				{
-					if (o is BaseVisualGeometrySidedef) 
+					if(o is BaseVisualGeometrySidedef) 
 					{
 						General.Hints.ShowHints(this.GetType(), "sidedefs");
 					}
-					else if (o is BaseVisualGeometrySector) 
+					else if(o is BaseVisualGeometrySector) 
 					{
 						General.Hints.ShowHints(this.GetType(), "sectors");
 					}
-					else if (o is BaseVisualThing) 
+					else if(o is BaseVisualThing) 
 					{
 						General.Hints.ShowHints(this.GetType(), "things");
 					}
-					else if (o is BaseVisualVertex) 
+					else if(o is BaseVisualVertex) 
 					{
 						General.Hints.ShowHints(this.GetType(), "vertices");
 					}
@@ -1669,7 +1669,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			foreach(IVisualEventReceiver obj in objs)
 			{
-				if (!(obj is BaseVisualGeometrySidedef))
+				if(!(obj is BaseVisualGeometrySidedef))
 				{
 					result.Add(obj);
 				}
@@ -1677,7 +1677,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					Sidedef side = (obj as BaseVisualGeometrySidedef).Sidedef;
 
-					if (!processed.ContainsKey(side))
+					if(!processed.ContainsKey(side))
 					{
 						processed.Add(side, false);
 						result.Add(obj);
@@ -1856,7 +1856,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This creates a new thing
 		private static Thing CreateThing(Vector2D pos) 
 		{
-			if (pos.x < General.Map.Config.LeftBoundary || pos.x > General.Map.Config.RightBoundary ||
+			if(pos.x < General.Map.Config.LeftBoundary || pos.x > General.Map.Config.RightBoundary ||
 				pos.y > General.Map.Config.TopBoundary || pos.y < General.Map.Config.BottomBoundary) 
 			{
 				General.Interface.DisplayStatus(StatusType.Warning, "Failed to insert thing: outside of map boundaries.");
@@ -1865,7 +1865,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Create thing
 			Thing t = General.Map.Map.CreateThing();
-			if (t != null) 
+			if(t != null) 
 			{
 				General.Settings.ApplyDefaultThingSettings(t);
 				t.Move(pos);
@@ -1876,7 +1876,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Map.ThingsFilter.Update();
 
 				// Snap to grid enabled?
-				if (General.Interface.SnapToGrid) 
+				if(General.Interface.SnapToGrid) 
 				{
 					// Snap to grid
 					t.SnapToGrid();
@@ -2379,7 +2379,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				} 
 				else 
 				{
-					if (!string.IsNullOrEmpty(alignFailDescription)) alignFailDescription += " and ";
+					if(!string.IsNullOrEmpty(alignFailDescription)) alignFailDescription += " and ";
 					alignFailDescription += ceilings.Count > 1 ? "ceilings" : "ceiling";
 				}
 			}
@@ -2432,13 +2432,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void MatchBrightness() 
 		{
 			//check input
-			if (!General.Map.UDMF) 
+			if(!General.Map.UDMF) 
 			{
 				General.Interface.DisplayStatus(StatusType.Warning, "'Match Brightness' action works only in UDMF map format!");
 				return;
 			}
 
-			if (selectedobjects.Count == 0) 
+			if(selectedobjects.Count == 0) 
 			{
 				General.Interface.DisplayStatus(StatusType.Warning, "'Match Brightness' action requires a selection!");
 				return;
@@ -2458,7 +2458,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				VisualFloor v = highlighted as VisualFloor;
 				targetbrightness = v.Level.sector.Fields.GetValue("lightfloor", 0);
-				if (!v.Level.sector.Fields.GetValue("lightfloorabsolute", false)) 
+				if(!v.Level.sector.Fields.GetValue("lightfloorabsolute", false)) 
 				{
 					targetbrightness += v.Level.sector.Brightness;
 				}
@@ -2485,7 +2485,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				VisualMiddle3D v = highlighted as VisualMiddle3D;
 				Sidedef sd = v.GetControlLinedef().Front;
-				if (sd == null) 
+				if(sd == null) 
 				{
 					General.Interface.DisplayStatus(StatusType.Warning, "Highlight a surface, to which you want to match the brightness.");
 					return;
@@ -2508,7 +2508,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			targetbrightness = General.Clamp(targetbrightness, 0, 255);
 
 			//apply new brightness
-			foreach (IVisualEventReceiver obj in selectedobjects) 
+			foreach(IVisualEventReceiver obj in selectedobjects) 
 			{
 				if(obj == highlighted) continue;
 
@@ -2518,7 +2518,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					v.Level.sector.Fields.BeforeFieldsChange();
 					v.Sector.Changed = true;
 
-					if (v.Level.sector.Fields.GetValue("lightfloorabsolute", false)) 
+					if(v.Level.sector.Fields.GetValue("lightfloorabsolute", false)) 
 					{
 						v.Level.sector.Fields["lightfloor"] = new UniValue(UniversalType.Integer, targetbrightness);
 					} 
@@ -2553,7 +2553,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					v.Sidedef.Fields.BeforeFieldsChange();
 					v.Sector.Changed = true;
 
-					if (v.Sidedef.Fields.GetValue("lightabsolute", false)) 
+					if(v.Sidedef.Fields.GetValue("lightabsolute", false)) 
 					{
 						v.Sidedef.Fields["light"] = new UniValue(UniversalType.Integer, targetbrightness);
 					} 
@@ -2603,7 +2603,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			PreAction(UndoGroup.TextureOffsetChange);
 			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
 			if(!General.Map.UDMF) objs = RemoveDuplicateSidedefs(objs); //mxd
-			foreach (IVisualEventReceiver i in objs) i.OnChangeTextureOffset(-1, 0, true);
+			foreach(IVisualEventReceiver i in objs) i.OnChangeTextureOffset(-1, 0, true);
 			PostAction();
 		}
 
@@ -2613,7 +2613,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			PreAction(UndoGroup.TextureOffsetChange);
 			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
 			if(!General.Map.UDMF) objs = RemoveDuplicateSidedefs(objs); //mxd
-			foreach (IVisualEventReceiver i in objs) i.OnChangeTextureOffset(1, 0, true);
+			foreach(IVisualEventReceiver i in objs) i.OnChangeTextureOffset(1, 0, true);
 			PostAction();
 		}
 
@@ -2623,7 +2623,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			PreAction(UndoGroup.TextureOffsetChange);
 			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
 			if(!General.Map.UDMF) objs = RemoveDuplicateSidedefs(objs); //mxd
-			foreach (IVisualEventReceiver i in objs) i.OnChangeTextureOffset(0, -1, true);
+			foreach(IVisualEventReceiver i in objs) i.OnChangeTextureOffset(0, -1, true);
 			PostAction();
 		}
 
@@ -2633,7 +2633,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			PreAction(UndoGroup.TextureOffsetChange);
 			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
 			if(!General.Map.UDMF) objs = RemoveDuplicateSidedefs(objs); //mxd
-			foreach (IVisualEventReceiver i in objs) i.OnChangeTextureOffset(0, 1, true);
+			foreach(IVisualEventReceiver i in objs) i.OnChangeTextureOffset(0, 1, true);
 			PostAction();
 		}
 
@@ -2653,7 +2653,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			PreAction(UndoGroup.TextureOffsetChange);
 			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
 			if(!General.Map.UDMF) objs = RemoveDuplicateSidedefs(objs); //mxd
-			foreach (IVisualEventReceiver i in objs) i.OnChangeTextureOffset(General.Map.Grid.GridSize, 0, true);
+			foreach(IVisualEventReceiver i in objs) i.OnChangeTextureOffset(General.Map.Grid.GridSize, 0, true);
 			PostAction();
 		}
 
@@ -3170,13 +3170,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void CopySelection() 
 		{
 			List<IVisualEventReceiver> objs = GetSelectedObjects(false, false, true, false);
-			if (objs.Count == 0) return;
+			if(objs.Count == 0) return;
 
 			copybuffer.Clear();
-			foreach (IVisualEventReceiver i in objs) 
+			foreach(IVisualEventReceiver i in objs) 
 			{
 				VisualThing vt = i as VisualThing;
-				if (vt != null) copybuffer.Add(new ThingCopyData(vt.Thing));
+				if(vt != null) copybuffer.Add(new ThingCopyData(vt.Thing));
 			}
 			General.Interface.DisplayStatus(StatusType.Info, "Copied " + copybuffer.Count + " Things");
 		}
@@ -3193,7 +3193,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.DisplayStatus(StatusType.Info, "Cut " + rest);
 
 			List<IVisualEventReceiver> objs = GetSelectedObjects(false, false, true, false);
-			foreach (IVisualEventReceiver i in objs) 
+			foreach(IVisualEventReceiver i in objs) 
 			{
 				BaseVisualThing thing = i as BaseVisualThing;
 				thing.Thing.Fields.BeforeFieldsChange();
@@ -3220,7 +3220,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			Vector2D hitpos = GetHitPosition();
 
-			if (!hitpos.IsFinite()) 
+			if(!hitpos.IsFinite()) 
 			{
 				General.Interface.DisplayStatus(StatusType.Warning, "Cannot paste here!");
 				return;
@@ -3235,7 +3235,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			//get translated positions
 			Vector3D[] coords = new Vector3D[copybuffer.Count];
-			for (int i = 0; i < copybuffer.Count; i++ )
+			for(int i = 0; i < copybuffer.Count; i++ )
 				coords[i] = copybuffer[i].Position;
 
 			Vector3D[] translatedCoords = TranslateCoordinates(coords, hitpos, true);
@@ -3244,7 +3244,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			for(int i = 0; i < copybuffer.Count; i++) 
 			{
 				Thing t = CreateThing(new Vector2D());
-				if (t != null) 
+				if(t != null) 
 				{
 					copybuffer[i].ApplyTo(t);
 					t.Move(translatedCoords[i]);
@@ -3526,7 +3526,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 				}
 
-				if (target == null) 
+				if(target == null) 
 				{
 					General.Interface.DisplayStatus(StatusType.Warning, "Camera target with Tag " + t.Args[3] + " does not exist!");
 					General.Map.VisualCamera.AngleXY = t.Angle - Angle2D.PI;
@@ -3578,14 +3578,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				return;
 			}
 
-			bool update;
 			List<BaseVisualSector> toUpdate = new List<BaseVisualSector>();
 			General.Map.UndoRedo.CreateUndo("Toggle Slope");
 
 			//check selection
 			foreach(VisualGeometry vg in selection) 
 			{
-				update = false;
+				bool update = false;
 
 				//assign/remove action
 				if(vg.GeometryType == VisualGeometryType.WALL_LOWER) 
@@ -3835,7 +3834,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			first.sidedef = start.Sidedef;
 			first.offsetx = start.Sidedef.OffsetX;
 
-			if (start.GeometryType == VisualGeometryType.WALL_MIDDLE_3D)
+			if(start.GeometryType == VisualGeometryType.WALL_MIDDLE_3D)
 				first.controlSide = start.GetControlLinedef().Front;
 			else
 				first.controlSide = start.Sidedef;

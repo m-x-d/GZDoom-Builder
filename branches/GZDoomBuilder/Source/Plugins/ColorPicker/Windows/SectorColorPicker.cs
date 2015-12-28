@@ -31,7 +31,7 @@ namespace CodeImp.DoomBuilder.ColorPicker.Windows
 		{
 			mode = editingModeName;
 
-			if (mode == "SectorsMode") 
+			if(mode == "SectorsMode") 
 			{
 				selection = (List<Sector>)(General.Map.Map.GetSelectedSectors(true));
 			} 
@@ -41,9 +41,9 @@ namespace CodeImp.DoomBuilder.ColorPicker.Windows
 				VisualMode vm = (VisualMode)General.Editing.Mode;
 				visualSelection = vm.GetSelectedVisualSectors(false);
 				
-				if (visualSelection.Count > 0) 
+				if(visualSelection.Count > 0) 
 				{
-					foreach (VisualSector vs in visualSelection)
+					foreach(VisualSector vs in visualSelection)
 						selection.Add(vs.Sector);
 				} 
 				else //should be some sectors selected in 2d-mode...
@@ -51,9 +51,9 @@ namespace CodeImp.DoomBuilder.ColorPicker.Windows
 					visualSelection = new List<VisualSector>();
 					selection = (List<Sector>)(General.Map.Map.GetSelectedSectors(true));
 
-					foreach (Sector s in selection) 
+					foreach(Sector s in selection) 
 					{
-						if (vm.VisualSectorExists(s))
+						if(vm.VisualSectorExists(s))
 							visualSelection.Add(vm.GetVisualSector(s));
 					}
 				}
@@ -63,19 +63,19 @@ namespace CodeImp.DoomBuilder.ColorPicker.Windows
 			string rest = selection.Count + " sector" + (selection.Count > 1 ? "s" : "");
 			General.Map.UndoRedo.CreateUndo("Edit color of " + rest);
 			
-			foreach (Sector s in selection) s.Fields.BeforeFieldsChange();
+			foreach(Sector s in selection) s.Fields.BeforeFieldsChange();
 
 			//set colors
 			curSectorColor = selection[0].Fields.GetValue("lightcolor", DEFAULT_LIGHT_COLOR);
 			curFadeColor = selection[0].Fields.GetValue("fadecolor", DEFAULT_FADE_COLOR);
 
 			//check that all sectors in selection have "lightcolor" and "fadecolor" fields
-			for (int i = 0; i < selection.Count; i++) 
+			for(int i = 0; i < selection.Count; i++) 
 			{
-				if (!selection[i].Fields.ContainsKey("lightcolor"))
+				if(!selection[i].Fields.ContainsKey("lightcolor"))
 					selection[i].Fields.Add("lightcolor", new UniValue(UniversalType.Color, curSectorColor));
 				
-				if (!selection[i].Fields.ContainsKey("fadecolor"))
+				if(!selection[i].Fields.ContainsKey("fadecolor"))
 					selection[i].Fields.Add("fadecolor", new UniValue(UniversalType.Color, curFadeColor));
 			}
 
@@ -89,7 +89,7 @@ namespace CodeImp.DoomBuilder.ColorPicker.Windows
 			colorPickerControl1.OnOkPressed += colorPickerControl1_OnOkPressed;
 			colorPickerControl1.OnCancelPressed += colorPickerControl1_OnCancelPressed;
 
-			if (currentColorTag == "lightcolor")
+			if(currentColorTag == "lightcolor")
 				rbSectorColor.Checked = true;
 			else
 				rbFadeColor.Checked = true;
@@ -112,12 +112,12 @@ namespace CodeImp.DoomBuilder.ColorPicker.Windows
 		private void colorPickerControl1_OnOkPressed(object sender, EventArgs e) 
 		{
 			//check if values are default
-			foreach (Sector s in selection) 
+			foreach(Sector s in selection) 
 			{
 				if((int)s.Fields["lightcolor"].Value == DEFAULT_LIGHT_COLOR)
 					s.Fields.Remove("lightcolor");
 
-				if ((int)s.Fields["fadecolor"].Value == DEFAULT_FADE_COLOR)
+				if((int)s.Fields["fadecolor"].Value == DEFAULT_FADE_COLOR)
 					s.Fields.Remove("fadecolor");
 			}
 
@@ -132,7 +132,7 @@ namespace CodeImp.DoomBuilder.ColorPicker.Windows
 
 		private void OnColorPickerControl1OnColorChanged(object sender, ColorChangedEventArgs e) 
 		{
-			foreach (Sector s in selection) 
+			foreach(Sector s in selection) 
 			{
 				s.Fields[currentColorTag].Value = e.RGB.Red << 16 | e.RGB.Green << 8 | e.RGB.Blue;
 				s.UpdateNeeded = true;
@@ -140,25 +140,25 @@ namespace CodeImp.DoomBuilder.ColorPicker.Windows
 			}
 
 			//update display
-			if (mode == "SectorsMode") 
+			if(mode == "SectorsMode") 
 			{
 				General.Interface.RedrawDisplay();
 			} 
 			else //should be visual mode
 			{ 
-				foreach (VisualSector vs in visualSelection) vs.UpdateSectorData();
+				foreach(VisualSector vs in visualSelection) vs.UpdateSectorData();
 			}
 		}
 
 		private void rbColor_CheckedChanged(object sender, EventArgs e) 
 		{
 			RadioButton b = (RadioButton)sender;
-			if (b.Checked) 
+			if(b.Checked) 
 			{
 				currentColorTag = (string)b.Tag;
 
 				//update color picker
-				if (currentColorTag == "lightcolor")
+				if(currentColorTag == "lightcolor")
 					colorPickerControl1.SetInitialColor(Color.FromArgb(initialSectorColor));
 				else
 					colorPickerControl1.SetInitialColor(Color.FromArgb(initialFadeColor));

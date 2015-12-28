@@ -53,7 +53,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 			{
 				if(s.Tag == 0) continue;
 				tags.UnionWith(s.Tags);
-				foreach (int tag in s.Tags)
+				foreach(int tag in s.Tags)
 				{
 					if(!sectorsCountByTag.ContainsKey(tag)) sectorsCountByTag.Add(tag, 0);
 					sectorsCountByTag[tag]++;
@@ -67,7 +67,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 				{
 					if(l.Tag == 0) continue;
 					tags.UnionWith(l.Tags);
-					foreach (int tag in l.Tags)
+					foreach(int tag in l.Tags)
 					{
 						if(!linedefsCountByTag.ContainsKey(tag)) linedefsCountByTag.Add(tag, 0);
 						linedefsCountByTag[tag]++;
@@ -193,7 +193,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 			area.Inflate(100f, 100f);
 
 			// Zoom to area
-			if (General.Editing.Mode is ClassicMode)
+			if(General.Editing.Mode is ClassicMode)
 			{
 				ClassicMode editmode = (General.Editing.Mode as ClassicMode);
 				editmode.CenterOnArea(area, 0.6f);
@@ -230,7 +230,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 			if(e.ColumnIndex < 2 || e.RowIndex == -1) return;
 			
 			//select 
-			if (e.Button == MouseButtons.Left) 
+			if(e.Button == MouseButtons.Left) 
 			{
 				int tag = (int)dataGridView.Rows[e.RowIndex].Cells[0].Value;
 

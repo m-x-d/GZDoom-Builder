@@ -280,12 +280,12 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 			ICollection<Sector> sectors = General.Map.Map.GetSelectedSectors(true);
 
 			//if we have selected sectors - fill their textures
-			if (sectors.Count > 0) 
+			if(sectors.Count > 0) 
 			{
 				//make undo
 				General.Map.UndoRedo.CreateUndo("Fill all texturs for " + sectors.Count + (sectors.Count > 1 ? " sectors" : " sector"));
 
-				foreach (Sector s in sectors) 
+				foreach(Sector s in sectors) 
 				{
 					//fill sidedefs
 					foreach(Sidedef side in s.Sidedefs) 
@@ -309,7 +309,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 				General.Map.UndoRedo.CreateUndo("Fill all texturs for " + lines.Count + (lines.Count > 1 ? " linedefs" : " linedef"));
 
 				//fill textures
-				foreach (Linedef l in lines) 
+				foreach(Linedef l in lines) 
 				{
 					if(top.Enabled) 
 					{
@@ -448,7 +448,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 		{
 			//if we have selected sectors - clear their textures
 			ICollection<Sector> sectors = General.Map.Map.GetSelectedSectors(true);
-			if (sectors.Count > 0) 
+			if(sectors.Count > 0) 
 			{
 				//make undo
 				string undodesc = "sector";
@@ -458,7 +458,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 				foreach(Sector s in sectors) 
 				{
 					//clear side textures
-					foreach (Sidedef side in s.Sidedefs) 
+					foreach(Sidedef side in s.Sidedefs) 
 					{
 						if(side.HighTexture != "-") side.SetTextureHigh("-");
 						if(side.MiddleTexture != "-") side.SetTextureMid("-");
@@ -490,7 +490,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 						if(l.Front.MiddleTexture != "-") l.Front.SetTextureMid("-");
 						if(l.Front.LowTexture != "-") l.Front.SetTextureLow("-");
 					} 
-					if (l.Back != null) 
+					if(l.Back != null) 
 					{
 						if(l.Back.HighTexture != "-") l.Back.SetTextureHigh("-");
 						if(l.Back.MiddleTexture != "-") l.Back.SetTextureMid("-");
@@ -536,7 +536,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 			}
 
 			Sidedef s = null;
-			foreach (Linedef l in lines)
+			foreach(Linedef l in lines)
 			{
 				s = (l.Front ?? l.Back);
 				if(s.MiddleTexture != "-" || s.HighTexture != "-" || s.LowTexture != "-") break;

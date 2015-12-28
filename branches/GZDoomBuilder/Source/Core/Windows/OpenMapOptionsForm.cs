@@ -201,9 +201,7 @@ namespace CodeImp.DoomBuilder.Windows
 		// by checking if the specific lumps are detected
 		private static bool MatchConfiguration(Configuration cfg, WAD wadfile) 
 		{
-			int scanindex, checkoffset;
-			int lumpsfound, lumpsrequired = 0;
-			string lumpname;
+			int lumpsrequired = 0;
 
 			// Get the map lump names
 			IDictionary maplumpnames = cfg.ReadSetting("maplumpnames", new Hashtable());
@@ -221,20 +219,20 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			// Go for all the lumps in the wad
-			for(scanindex = 0; scanindex < (wadfile.Lumps.Count - 1); scanindex++) 
+			for(int scanindex = 0; scanindex < (wadfile.Lumps.Count - 1); scanindex++) 
 			{
 				// Make sure this lump is not part of the map.
 				if(!maplumpnames.Contains(wadfile.Lumps[scanindex].Name)) 
 				{
 					// Reset check
-					lumpsfound = 0;
-					checkoffset = 1;
+					int lumpsfound = 0;
+					int checkoffset = 1;
 
 					// Continue while still within bounds and lumps are still recognized
 					while(((scanindex + checkoffset) < wadfile.Lumps.Count) &&
 						  maplumpnames.Contains(wadfile.Lumps[scanindex + checkoffset].Name)) 
 					{
-						lumpname = wadfile.Lumps[scanindex + checkoffset].Name;
+						string lumpname = wadfile.Lumps[scanindex + checkoffset].Name;
 						//mxd. Lump cannot present in current map format, fail this check
 						if(cfg.ReadSetting("maplumpnames." + lumpname + ".forbidden", false)) 
 						{
@@ -264,13 +262,8 @@ namespace CodeImp.DoomBuilder.Windows
 			// Anything selected?
 			if(config.SelectedIndex < 0) return;
 
-			int scanindex, checkoffset;
-			int lumpsfound, lumpsrequired = 0;
-			string lumpname, selectedname = "";
-
 			// Keep selected name, if any
-			if(mapslist.SelectedItems.Count > 0)
-				selectedname = mapslist.SelectedItems[0].Text;
+			string selectedname = (mapslist.SelectedItems.Count > 0 ? mapslist.SelectedItems[0].Text : "");
 
 			// Make an array for the map names
 			List<ListViewItem> mapnames = new List<ListViewItem>();
@@ -285,6 +278,7 @@ namespace CodeImp.DoomBuilder.Windows
 			IDictionary maplumpnames = cfg.ReadSetting("maplumpnames", new Hashtable());
 
 			// Count how many required lumps we have to find
+			int lumpsrequired = 0;
 			foreach(DictionaryEntry ml in maplumpnames) 
 			{
 				// Ignore the map header (it will not be found because the name is different)
@@ -297,20 +291,20 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			// Go for all the lumps in the wad
-			for(scanindex = 0; scanindex < (wadfile.Lumps.Count - 1); scanindex++) 
+			for(int scanindex = 0; scanindex < (wadfile.Lumps.Count - 1); scanindex++) 
 			{
 				// Make sure this lump is not part of the map.
 				if(!maplumpnames.Contains(wadfile.Lumps[scanindex].Name)) 
 				{
 					// Reset check
-					lumpsfound = 0;
-					checkoffset = 1;
+					int lumpsfound = 0;
+					int checkoffset = 1;
 
 					// Continue while still within bounds and lumps are still recognized
 					while(((scanindex + checkoffset) < wadfile.Lumps.Count) &&
 						  maplumpnames.Contains(wadfile.Lumps[scanindex + checkoffset].Name)) 
 					{
-						lumpname = wadfile.Lumps[scanindex + checkoffset].Name;
+						string lumpname = wadfile.Lumps[scanindex + checkoffset].Name;
 						//mxd. Lump cannot present in current map format, fail this check
 						if(cfg.ReadSetting("maplumpnames." + lumpname + ".forbidden", false)) 
 						{
@@ -354,7 +348,7 @@ namespace CodeImp.DoomBuilder.Windows
 			mapslist.EndUpdate();
 
 			//mxd. Disable script compiler selector when there are no maps detected using current configuration
-			if (mapslist.Items.Count == 0) 
+			if(mapslist.Items.Count == 0) 
 			{
 				scriptcompiler.Enabled = false;
 				scriptcompiler.SelectedIndex = -1;

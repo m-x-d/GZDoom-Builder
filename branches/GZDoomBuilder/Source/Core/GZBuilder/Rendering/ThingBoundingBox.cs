@@ -40,10 +40,10 @@ namespace CodeImp.DoomBuilder.GZBuilder.Rendering
 		public void Dispose() 
 		{
 			// Not already disposed?
-			if (!isdisposed)
+			if(!isdisposed)
 			{
-				if (arrow != null) arrow.Dispose();
-				if (cage != null) cage.Dispose();
+				if(arrow != null) arrow.Dispose();
+				if(cage != null) cage.Dispose();
 
 				// Unregister resource
 				General.Map.Graphics.UnregisterResource(this);

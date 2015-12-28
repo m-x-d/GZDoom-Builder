@@ -102,7 +102,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			hidden = hide;
 			Type t = this.GetType();
-			if (hide) line.IgnoredErrorChecks.Add(t);
+			if(hide) line.IgnoredErrorChecks.Add(t);
 			else if(line.IgnoredErrorChecks.Contains(t)) line.IgnoredErrorChecks.Remove(t);
 		}
 		

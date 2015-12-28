@@ -330,9 +330,6 @@ namespace CodeImp.DoomBuilder.Map
 		/// </summary>
 		public MapSet Clone()
 		{
-			Linedef nl;
-			Sidedef nd;
-			
 			// Create the map set
 			MapSet newset = new MapSet();
 			newset.BeginAddRemove();
@@ -358,14 +355,14 @@ namespace CodeImp.DoomBuilder.Map
 			foreach(Linedef l in linedefs)
 			{
 				// Make new linedef
-				nl = newset.CreateLinedef(l.Start.Clone, l.End.Clone);
+				Linedef nl = newset.CreateLinedef(l.Start.Clone, l.End.Clone);
 				l.CopyPropertiesTo(nl);
 
 				// Linedef has a front side?
 				if(l.Front != null)
 				{
 					// Make new sidedef
-					nd = newset.CreateSidedef(nl, true, l.Front.Sector.Clone);
+					Sidedef nd = newset.CreateSidedef(nl, true, l.Front.Sector.Clone);
 					l.Front.CopyPropertiesTo(nd);
 				}
 
@@ -373,7 +370,7 @@ namespace CodeImp.DoomBuilder.Map
 				if(l.Back != null)
 				{
 					// Make new sidedef
-					nd = newset.CreateSidedef(nl, false, l.Back.Sector.Clone);
+					Sidedef nd = newset.CreateSidedef(nl, false, l.Back.Sector.Clone);
 					l.Back.CopyPropertiesTo(nd);
 				}
 			}
@@ -1383,8 +1380,6 @@ namespace CodeImp.DoomBuilder.Map
 		//mxd
 		internal void WriteSelectionGroups(Configuration cfg) 
 		{
-			List<string> indices;
-
 			// Fill structure
 			IDictionary groups = new ListDictionary();
 			for(int i = 0; i < 10; i++) 
@@ -1393,7 +1388,7 @@ namespace CodeImp.DoomBuilder.Map
 				int groupmask = 0x01 << i;
 
 				//store verts
-				indices = new List<string>();
+				List<string> indices = new List<string>();
 				foreach(Vertex e in vertices) if(e.IsInGroup(groupmask)) indices.Add(e.Index.ToString());
 				if(indices.Count > 0) group.Add("vertices", string.Join(" ", indices.ToArray()));
 
@@ -1424,7 +1419,6 @@ namespace CodeImp.DoomBuilder.Map
 		internal void ReadSelectionGroups(Configuration cfg) 
 		{
 			IDictionary grouplist = cfg.ReadSetting(SELECTION_GROUPS_PATH, new Hashtable());
-			IDictionary groupinfo;
 
 			foreach(DictionaryEntry mp in grouplist) 
 			{
@@ -1436,16 +1430,15 @@ namespace CodeImp.DoomBuilder.Map
 					if(!int.TryParse(mp.Key as string, out groupnum)) continue;
 
 					int groupmask = 0x01 << General.Clamp(groupnum, 0, 10);
-					groupinfo = (IDictionary)mp.Value;
+					IDictionary groupinfo = (IDictionary)mp.Value;
 
 					if(groupinfo.Contains("vertices")) 
 					{
 						string s = groupinfo["vertices"] as string;
-						if (!string.IsNullOrEmpty(s)) 
+						if(!string.IsNullOrEmpty(s)) 
 						{
 							List<int> indices = GetIndices(groupinfo["vertices"] as string);
-
-							foreach (int index in indices) 
+							foreach(int index in indices) 
 							{
 								if(index > vertices.Length) continue;
 								vertices[index].AddToGroup(groupmask);
@@ -1459,7 +1452,6 @@ namespace CodeImp.DoomBuilder.Map
 						if(!string.IsNullOrEmpty(s)) 
 						{
 							List<int> indices = GetIndices(groupinfo["linedefs"] as string);
-
 							foreach(int index in indices) 
 							{
 								if(index > linedefs.Length) continue;
@@ -1474,7 +1466,6 @@ namespace CodeImp.DoomBuilder.Map
 						if(!string.IsNullOrEmpty(s)) 
 						{
 							List<int> indices = GetIndices(groupinfo["sectors"] as string);
-
 							foreach(int index in indices) 
 							{
 								if(index > sectors.Length) continue;
@@ -1489,7 +1480,6 @@ namespace CodeImp.DoomBuilder.Map
 						if(!string.IsNullOrEmpty(s)) 
 						{
 							List<int> indices = GetIndices(groupinfo["things"] as string);
-
 							foreach(int index in indices) 
 							{
 								if(index > things.Length) continue;
@@ -1508,7 +1498,7 @@ namespace CodeImp.DoomBuilder.Map
 			int index;
 			List<int> result = new List<int>(parts.Length);
 
-			foreach (string part in parts) if(int.TryParse(part, out index)) result.Add(index);
+			foreach(string part in parts) if(int.TryParse(part, out index)) result.Add(index);
 
 			return result;
 		}
@@ -2005,7 +1995,7 @@ namespace CodeImp.DoomBuilder.Map
 			foreach(Linedef l in lines)
 			{
 				// Check the cs field bits
-				if ((GetCSFieldBits(l.Start.Position, area) & GetCSFieldBits(l.End.Position, area)) == 0) 
+				if((GetCSFieldBits(l.Start.Position, area) & GetCSFieldBits(l.End.Position, area)) == 0) 
 				{
 					// The line could be in the area
 					newlines.Add(l);
@@ -2367,7 +2357,6 @@ namespace CodeImp.DoomBuilder.Map
 			float joindist2 = joindist * joindist;
 			int joinsdone = 0;
 			bool joined;
-			Vertex v1, v2;
 
 			do 
 			{
@@ -2379,14 +2368,14 @@ namespace CodeImp.DoomBuilder.Map
 				{
 					for(int c = i + 1; c < set.Count; c++) 
 					{
-						v1 = set[i];
-						v2 = set[c];
+						Vertex v1 = set[i];
+						Vertex v2 = set[c];
 
 						// Check if vertices are close enough
-						if (v1.DistanceToSq(v2.Position) <= joindist2) 
+						if(v1.DistanceToSq(v2.Position) <= joindist2) 
 						{
 							// Check if not the same vertex
-							if (v1.Index != v2.Index) 
+							if(v1.Index != v2.Index) 
 							{
 								// Move the second vertex to match the first
 								v2.Move(v1.Position);
@@ -2435,7 +2424,7 @@ namespace CodeImp.DoomBuilder.Map
 		/// will be added to changedlines. Returns false when the operation failed.</summary>
 		public static bool SplitLinesByVertices(ICollection<Linedef> lines, ICollection<Vertex> verts, float splitdist, ICollection<Linedef> changedlines)
 		{
-			if (verts.Count == 0 || lines.Count == 0) return true; //mxd
+			if(verts.Count == 0 || lines.Count == 0) return true; //mxd
 			
 			float splitdist2 = splitdist * splitdist;
 			bool splitted;
@@ -2449,19 +2438,17 @@ namespace CodeImp.DoomBuilder.Map
 			int bmWidth = blockmap.Size.Width;
 			int bmHeight = blockmap.Size.Height;
 			BlockEntry[,] bmap = blockmap.Map;
-			BlockEntry block;
-			int w, h;
 
 			do
 			{
 				// No split yet
 				splitted = false;
 
-				for(w = 0; w < bmWidth; w++) 
+				for(int w = 0; w < bmWidth; w++) 
 				{
-					for(h = 0; h < bmHeight; h++) 
+					for(int h = 0; h < bmHeight; h++) 
 					{
-						block = bmap[w, h];
+						BlockEntry block = bmap[w, h];
 						if(block.Vertices.Count == 0 || block.Lines.Count == 0) continue;
 
 						// Go for all the lines
@@ -2581,13 +2568,12 @@ namespace CodeImp.DoomBuilder.Map
 			Linedef closest = null;
 			float distance = float.MaxValue;
 			float maxrangesq = maxrange * maxrange;
-			float d;
 
 			// Go for all linedefs in selection
 			foreach(Linedef l in selection)
 			{
 				// Calculate distance and check if closer than previous find
-				d = l.SafeDistanceToSq(pos, true);
+				float d = l.SafeDistanceToSq(pos, true);
 				if(d < distance && d <= maxrangesq)
 				{
 					// This one is closer
@@ -2629,13 +2615,12 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			Vertex closest = null;
 			float distance = float.MaxValue;
-			float d;
-			
+
 			// Go for all vertices in selection
 			foreach(Vertex v in selection)
 			{
 				// Calculate distance and check if closer than previous find
-				d = v.DistanceToSq(pos);
+				float d = v.DistanceToSq(pos);
 				if(d < distance)
 				{
 					// This one is closer
@@ -2653,13 +2638,12 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			Thing closest = null;
 			float distance = float.MaxValue;
-			float d;
 
 			// Go for all things in selection
 			foreach(Thing t in selection)
 			{
 				// Calculate distance and check if closer than previous find
-				d = t.DistanceToSq(pos);
+				float d = t.DistanceToSq(pos);
 				if(d < distance)
 				{
 					// This one is closer
@@ -2677,7 +2661,6 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			Thing closest = null;
 			float distance = float.MaxValue;
-			float d;
 
 			// Go for all things in selection
 			foreach(Thing t in selection) 
@@ -2685,7 +2668,7 @@ namespace CodeImp.DoomBuilder.Map
 				if(t == thing) continue;
 
 				// Calculate distance and check if closer than previous find
-				d = t.DistanceToSq(thing.Position);
+				float d = t.DistanceToSq(thing.Position);
 				if(d < distance) 
 				{
 					// This one is closer
@@ -2704,13 +2687,12 @@ namespace CodeImp.DoomBuilder.Map
 			RectangleF range = RectangleF.FromLTRB(pos.x - maxrange, pos.y - maxrange, pos.x + maxrange, pos.y + maxrange);
 			Vertex closest = null;
 			float distance = float.MaxValue;
-			float d, px, py;
 
 			// Go for all vertices in selection
 			foreach(Vertex v in selection)
 			{
-				px = v.Position.x;
-				py = v.Position.y;
+				float px = v.Position.x;
+				float py = v.Position.y;
 				
 				//mxd. Within range?
 				if((v.Position.x < range.Left) || (v.Position.x > range.Right) 
@@ -2718,7 +2700,7 @@ namespace CodeImp.DoomBuilder.Map
 					continue;
 
 				// Close than previous find?
-				d = Math.Abs(px - pos.x) + Math.Abs(py - pos.y);
+				float d = Math.Abs(px - pos.x) + Math.Abs(py - pos.y);
 				if(d < distance) 
 				{
 					// This one is closer
@@ -2738,20 +2720,19 @@ namespace CodeImp.DoomBuilder.Map
 			Thing closest = null;
 			float distance = float.MaxValue;
 			float size = float.MaxValue; //mxd
-			float d, px, py, ts;
 
 			// Go for all things in selection
 			foreach(Thing t in selection)
 			{
-				px = t.Position.x;
-				py = t.Position.y;
-				ts = ((t.FixedSize && General.Map.Renderer2D.Scale > 1.0f) ? t.Size / General.Map.Renderer2D.Scale : t.Size); //mxd
+				float px = t.Position.x;
+				float py = t.Position.y;
+				float ts = ((t.FixedSize && General.Map.Renderer2D.Scale > 1.0f) ? t.Size / General.Map.Renderer2D.Scale : t.Size);
 
 				//mxd. Within range?
 				if(px < range.Left - ts || px > range.Right + ts || py < range.Top - ts || py > range.Bottom + ts) continue;
 
 				// Closer than previous find? mxd. Or smaller when distance is the same?
-				d = Math.Abs(px - pos.x) + Math.Abs(py - pos.y);
+				float d = Math.Abs(px - pos.x) + Math.Abs(py - pos.y);
 				if(d < distance || (d == distance && ts < size))
 				{
 					// This one is closer
@@ -2833,7 +2814,7 @@ namespace CodeImp.DoomBuilder.Map
 				case UniversalType.LinedefTag:
 					for(int i = 0; i < linedefs.Length; i++) 
 					{
-						foreach (int tag in linedefs[i].Tags)
+						foreach(int tag in linedefs[i].Tags)
 						{
 							if(tag == 0) continue;
 							if(!usedtags.ContainsKey(tag)) usedtags.Add(tag, false);
@@ -3101,9 +3082,9 @@ namespace CodeImp.DoomBuilder.Map
 		/// <summary>This returns a sector if given coordinates are inside one.</summary>
 		public Sector GetSectorByCoordinates(Vector2D pos) 
 		{
-			foreach (Sector s in sectors) 
+			foreach(Sector s in sectors) 
 			{
-				if (s.Intersect(pos)) return s;
+				if(s.Intersect(pos)) return s;
 			}
 			return null;
 		}
@@ -3143,13 +3124,12 @@ namespace CodeImp.DoomBuilder.Map
 			Linedef closest = null;
 			distance = float.MaxValue;
 			float maxrangesq = maxrange * maxrange;
-			float d;
 
 			// Go for all linedefs in selection
 			foreach(Linedef l in linedefs)
 			{
 				// Calculate distance and check if closer than previous find
-				d = l.SafeDistanceToSq(pos, true);
+				float d = l.SafeDistanceToSq(pos, true);
 				if((d <= maxrangesq) && (d < distance))
 				{
 					// Check if not selected
@@ -3194,7 +3174,7 @@ namespace CodeImp.DoomBuilder.Map
 					foreach(Sidedef os in othersides)
 					{
 						// They must be in the same sector
-						if (snsd.Sector == os.Sector)
+						if(snsd.Sector == os.Sector)
 						{
 							// Check if sidedefs are really the same
 							stored = os;
@@ -3204,14 +3184,14 @@ namespace CodeImp.DoomBuilder.Map
 							SerializerStream otherdata = new SerializerStream(othermem);
 							snsd.ReadWrite(sidedata);
 							os.ReadWrite(otherdata);
-							if (sidemem.Length == othermem.Length)
+							if(sidemem.Length == othermem.Length)
 							{
 								samesidedef = true;
 								sidemem.Seek(0, SeekOrigin.Begin);
 								othermem.Seek(0, SeekOrigin.Begin);
-								for (int i = 0; i < sidemem.Length; i++)
+								for(int i = 0; i < sidemem.Length; i++)
 								{
-									if (sidemem.ReadByte() != othermem.ReadByte())
+									if(sidemem.ReadByte() != othermem.ReadByte())
 									{
 										samesidedef = false;
 										break;
@@ -3219,7 +3199,7 @@ namespace CodeImp.DoomBuilder.Map
 								}
 							}
 
-							if (samesidedef) break;
+							if(samesidedef) break;
 						}
 					}
 				}
@@ -3287,7 +3267,7 @@ namespace CodeImp.DoomBuilder.Map
 		//mxd
 		internal bool TranslateTextureNames(bool uselongnames, bool markedonly)
 		{
-			if (markedonly)
+			if(markedonly)
 			{
 				List<Sector> markedsectors = GetMarkedSectors(true);
 				List<Sidedef> markedsides = GetMarkedSidedefs(true);
@@ -3306,21 +3286,21 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			bool changed = false;
 			
-			foreach (Sector s in sectors)
+			foreach(Sector s in sectors)
 			{
-				if (s.FloorTexture != "-")
+				if(s.FloorTexture != "-")
 				{
 					string ft = General.Map.Data.GetFullFlatName(s.FloorTexture);
-					if (ft != s.FloorTexture)
+					if(ft != s.FloorTexture)
 					{
 						s.SetFloorTexture(Lump.MakeLongName(ft));
 						changed = true;
 					}
 				}
-				if (s.CeilTexture != "-")
+				if(s.CeilTexture != "-")
 				{
 					string ct = General.Map.Data.GetFullFlatName(s.CeilTexture);
-					if (ct != s.CeilTexture)
+					if(ct != s.CeilTexture)
 					{
 						s.SetCeilTexture(Lump.MakeLongName(ct));
 						changed = true;
@@ -3328,30 +3308,30 @@ namespace CodeImp.DoomBuilder.Map
 				}
 			}
 
-			foreach (Sidedef s in sidedefs)
+			foreach(Sidedef s in sidedefs)
 			{
-				if (s.HighTexture != "-")
+				if(s.HighTexture != "-")
 				{
 					string ht = General.Map.Data.GetFullTextureName(s.HighTexture);
-					if (ht != s.HighTexture)
+					if(ht != s.HighTexture)
 					{
 						s.SetTextureHigh(Lump.MakeLongName(ht));
 						changed = true;
 					}
 				}
-				if (s.MiddleTexture != "-")
+				if(s.MiddleTexture != "-")
 				{
 					string mt = General.Map.Data.GetFullTextureName(s.MiddleTexture);
-					if (mt != s.MiddleTexture)
+					if(mt != s.MiddleTexture)
 					{
 						s.SetTextureMid(Lump.MakeLongName(mt));
 						changed = true;
 					}
 				}
-				if (s.LowTexture != "-")
+				if(s.LowTexture != "-")
 				{
 					string lt = General.Map.Data.GetFullTextureName(s.LowTexture);
-					if (lt != s.LowTexture)
+					if(lt != s.LowTexture)
 					{
 						s.SetTextureLow(Lump.MakeLongName(lt));
 						changed = true;
@@ -3371,7 +3351,7 @@ namespace CodeImp.DoomBuilder.Map
 				if(s.FloorTexture != "-") 
 				{
 					string ft = GetShortTextureName(s.FloorTexture);
-					if (ft != s.FloorTexture)
+					if(ft != s.FloorTexture)
 					{
 						s.SetFloorTexture(ft);
 						changed = true;
@@ -3380,7 +3360,7 @@ namespace CodeImp.DoomBuilder.Map
 				if(s.CeilTexture != "-") 
 				{
 					string ct = GetShortTextureName(s.CeilTexture);
-					if (ct != s.CeilTexture)
+					if(ct != s.CeilTexture)
 					{
 						s.SetCeilTexture(ct);
 						changed = true;
@@ -3393,7 +3373,7 @@ namespace CodeImp.DoomBuilder.Map
 				if(s.HighTexture != "-") 
 				{
 					string ht = GetShortTextureName(s.HighTexture);
-					if (ht != s.HighTexture)
+					if(ht != s.HighTexture)
 					{
 						s.SetTextureHigh(ht);
 						changed = true;
@@ -3402,7 +3382,7 @@ namespace CodeImp.DoomBuilder.Map
 				if(s.MiddleTexture != "-") 
 				{
 					string mt = GetShortTextureName(s.MiddleTexture);
-					if (mt != s.MiddleTexture)
+					if(mt != s.MiddleTexture)
 					{
 						s.SetTextureMid(mt);
 						changed = true;
@@ -3411,7 +3391,7 @@ namespace CodeImp.DoomBuilder.Map
 				if(s.LowTexture != "-") 
 				{
 					string lt = GetShortTextureName(s.LowTexture);
-					if (lt != s.LowTexture)
+					if(lt != s.LowTexture)
 					{
 						s.SetTextureLow(lt);
 						changed = true;
@@ -3425,7 +3405,7 @@ namespace CodeImp.DoomBuilder.Map
 		internal static string GetShortTextureName(string name)
 		{
 			string shortname = Path.GetFileNameWithoutExtension(name).ToUpperInvariant();
-			if (shortname.Length > DataManager.CLASIC_IMAGE_NAME_LENGTH) shortname = shortname.Substring(0, DataManager.CLASIC_IMAGE_NAME_LENGTH);
+			if(shortname.Length > DataManager.CLASIC_IMAGE_NAME_LENGTH) shortname = shortname.Substring(0, DataManager.CLASIC_IMAGE_NAME_LENGTH);
 			return shortname;
 		}
 

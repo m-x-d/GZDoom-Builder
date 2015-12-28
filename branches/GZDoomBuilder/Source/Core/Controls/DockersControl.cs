@@ -250,8 +250,8 @@ namespace CodeImp.DoomBuilder.Controls
 		//mxd. This checks if given docker exists in this control
 		public bool Contains(Docker d) 
 		{
-			foreach (TabPage page in tabs.TabPages) 
-				if ((page.Tag as Docker) == d) return true;
+			foreach(TabPage page in tabs.TabPages) 
+				if((page.Tag as Docker) == d) return true;
 			return false;
 		}
 		

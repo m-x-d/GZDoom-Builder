@@ -74,10 +74,10 @@ namespace CodeImp.DoomBuilder.Data
 			// Note the backward order, because the last wad's images have priority
 			if(!longname) //mxd. Patches with long names can't be in wads
 			{
-				for (int i = wads.Count - 1; i > -1; i--)
+				for(int i = wads.Count - 1; i > -1; i--)
 				{
 					Stream data = wads[i].GetPatchData(pname, false);
-					if (data != null) return data;
+					if(data != null) return data;
 				}
 			}
 
@@ -89,16 +89,16 @@ namespace CodeImp.DoomBuilder.Data
 					pname = pname.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
 					return (FileExists(pname) ? LoadFile(pname) : null);
 				}
-				else if (General.Map.Config.MixTexturesFlats)
+				else if(General.Map.Config.MixTexturesFlats)
 				{
 					//mxd. Find in directories ZDoom expects them to be
 					string dir = Path.GetDirectoryName(pname);
 					string name = Path.GetFileName(pname);
-					foreach (string loc in PatchLocations)
+					foreach(string loc in PatchLocations)
 					{
 						string path = Path.Combine(loc, dir);
 						string filename = FindFirstFile(path, name, true);
-						if (!string.IsNullOrEmpty(filename) && FileExists(filename)) 
+						if(!string.IsNullOrEmpty(filename) && FileExists(filename)) 
 							return LoadFile(filename);
 					}
 				}
@@ -128,19 +128,19 @@ namespace CodeImp.DoomBuilder.Data
 
 			// Find in any of the wad files
 			// Note the backward order, because the last wad's images have priority
-			if (!longname) //mxd. Textures with long names can't be in wads
+			if(!longname) //mxd. Textures with long names can't be in wads
 			{
-				for (int i = wads.Count - 1; i >= 0; i--)
+				for(int i = wads.Count - 1; i >= 0; i--)
 				{
 					Stream data = wads[i].GetTextureData(pname, false);
-					if (data != null) return data;
+					if(data != null) return data;
 				}
 			}
 			
 			try
 			{
 				//mxd. Long names are absolute
-				if (longname)
+				if(longname)
 				{
 					pname = pname.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
 					return (FileExists(pname) ? LoadFile(pname) : null);
@@ -150,7 +150,7 @@ namespace CodeImp.DoomBuilder.Data
 					// Find in textures directory
 					string path = Path.Combine(TEXTURES_DIR, Path.GetDirectoryName(pname));
 					string filename = FindFirstFile(path, Path.GetFileName(pname), true);
-					if (!string.IsNullOrEmpty(filename) && FileExists(filename)) 
+					if(!string.IsNullOrEmpty(filename) && FileExists(filename)) 
 						return LoadFile(filename);
 				}
 			}

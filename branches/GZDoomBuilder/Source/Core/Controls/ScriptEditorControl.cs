@@ -678,15 +678,15 @@ namespace CodeImp.DoomBuilder.Controls
 			int entryline = -1;
 			string[] processedlines = ProcessLineBreaks(lines);
 
-			for (int i = 0; i < lines.Length; i++) 
+			for(int i = 0; i < lines.Length; i++) 
 			{
 				processedlines[i] = processedlines[i].Replace("\t", spaces);
 
 				//check if we have the [EP] marker
-				if (entrypos == -1) 
+				if(entrypos == -1) 
 				{
 					int pos = processedlines[i].IndexOf("[EP]");
-					if (pos != -1) 
+					if(pos != -1) 
 					{
 						entryline = curline + i;
 						entrypos = pos + numtabs;
@@ -702,7 +702,7 @@ namespace CodeImp.DoomBuilder.Controls
 			scriptedit.ReplaceSel(text);
 
 			//move the cursor if we had the [EP] marker
-			if (entrypos != -1) 
+			if(entrypos != -1) 
 			{
 				MoveToLine(entryline);
 				scriptedit.SelectionStart = scriptedit.PositionFromLine(entryline) + entrypos;
