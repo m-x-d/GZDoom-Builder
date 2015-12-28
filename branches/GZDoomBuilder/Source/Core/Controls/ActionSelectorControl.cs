@@ -217,10 +217,11 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				list.SelectedIndex = itemindex;
 				list.Refresh();
-
-				// Raise change event
-				if(ValueChanges != null) ValueChanges(this, EventArgs.Empty);
 			}
+
+			// Raise change event
+			//mxd. This HAS to be raised during Edit form setup, otherwise TypeHandlers in ArgumentBoxes won't be initialized
+			if(ValueChanges != null) ValueChanges(this, EventArgs.Empty);
 		}
 
 		// Keys pressed in number box
