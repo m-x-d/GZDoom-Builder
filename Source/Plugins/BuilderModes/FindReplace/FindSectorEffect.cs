@@ -51,7 +51,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd
 		public FindSectorEffect() 
 		{
-			if (!General.Map.Config.GeneralizedEffects) return;
+			if(!General.Map.Config.GeneralizedEffects) return;
 
 			// Get all them generalized bits
 			generalizedbits = new List<int>();
@@ -134,7 +134,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd
 		private static List<int> GetGeneralizedBits(int effect) 
 		{
-			if (!General.Map.Config.GeneralizedEffects) return new List<int>();
+			if(!General.Map.Config.GeneralizedEffects) return new List<int>();
 			List<int> bits = new List<int>();
 
 			foreach(GeneralizedOption option in General.Map.Config.GenEffectOptions) 
@@ -152,11 +152,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd
 		private static bool BitsMatch(int effect, List<int> expectedbits) 
 		{
-			if (!General.Map.Config.GeneralizedEffects) return false;
+			if(!General.Map.Config.GeneralizedEffects) return false;
 
-			foreach (int bit in expectedbits) 
+			foreach(int bit in expectedbits) 
 			{
-				if ((effect & bit) != bit) return false;
+				if((effect & bit) != bit) return false;
 			}
 
 			return true;

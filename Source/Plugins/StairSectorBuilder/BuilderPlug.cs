@@ -136,7 +136,7 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 		{
 			// Must have sectors selected. Having sectors selected implies
 			// that there are also linedefs selected
-			if (General.Map.Map.SelectedSectorsCount == 0) return;
+			if(General.Map.Map.SelectedSectorsCount == 0) return;
 
 			// Get the list of selected sectors since it'll be empty after
 			// switching to linedefs mode
@@ -146,9 +146,9 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 
 			// Go through all selected linedefs and unselect/unmark all which
 			// have a selected sector on both sides
-			foreach (Linedef ld in General.Map.Map.GetSelectedLinedefs(true))
+			foreach(Linedef ld in General.Map.Map.GetSelectedLinedefs(true))
 			{
-				if (sectors.Contains(ld.Front.Sector) && ld.Back != null && sectors.Contains(ld.Back.Sector))
+				if(sectors.Contains(ld.Front.Sector) && ld.Back != null && sectors.Contains(ld.Back.Sector))
 				{
 					ld.Selected = false;
 					ld.Marked = false;

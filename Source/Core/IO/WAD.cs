@@ -186,9 +186,6 @@ namespace CodeImp.DoomBuilder.IO
 		// This reads the WAD header and lumps table
 		private void ReadHeaders()
 		{
-			int offset, length;
-			byte[] fixedname;
-			
 			// Make sure the write is finished writing
 			if(!isreadonly) writer.Flush();
 
@@ -217,9 +214,9 @@ namespace CodeImp.DoomBuilder.IO
 			for(int i = 0; i < numlumps; i++)
 			{
 				// Read lump information
-				offset = reader.ReadInt32();
-				length = reader.ReadInt32();
-				fixedname = reader.ReadBytes(8);
+				int offset = reader.ReadInt32();
+				int length = reader.ReadInt32();
+				byte[] fixedname = reader.ReadBytes(8);
 
 				// Create the lump
 				lumps.Add(new Lump(file, this, fixedname, offset, length));

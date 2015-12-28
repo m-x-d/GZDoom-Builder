@@ -49,18 +49,18 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 		{
 			List<Sector> sectorstocheck = new List<Sector> { sourcesector };
 
-			while (sectorstocheck.Count > 0)
+			while(sectorstocheck.Count > 0)
 			{
 				// Make sure to first check all sectors that are not behind a sound blocking line
 				Sector sector = sectorstocheck[0];
 
-				foreach (Sidedef sd in sector.Sidedefs)
+				foreach(Sidedef sd in sector.Sidedefs)
 				{
 					bool blocksound = sd.Line.IsFlagSet(SoundPropagationMode.BlockSoundFlag);
-					if (blocksound) blockinglines.Add(sd.Line);
+					if(blocksound) blockinglines.Add(sd.Line);
 
 					// If the line is one sided, the sound can travel nowhere, so try the next one
-					if (sd.Line.Back == null || blocksound) continue;
+					if(sd.Line.Back == null || blocksound) continue;
 	
 					// Get the sector on the other side of the line we're checking right now
 					Sector oppositesector = sd.Other.Sector;
@@ -70,10 +70,10 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 					// Try next line if sound will not pass through the current one. The last check makes
 					// sure that the next line is tried if the current line is blocking sound, and the current
 					// sector is already behind a sound blocking line
-					if (oppositesector == null || blockheight) continue;
+					if(oppositesector == null || blockheight) continue;
 
 					// If the opposite sector was not regarded at all yet...
-					if (!sectors.Contains(oppositesector) && !sectorstocheck.Contains(oppositesector))
+					if(!sectors.Contains(oppositesector) && !sectorstocheck.Contains(oppositesector))
 					{
 						sectorstocheck.Add(oppositesector);
 					}
@@ -83,18 +83,18 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 				sectors.Add(sector);
 			}
 
-			foreach (Linedef ld in blockinglines)
+			foreach(Linedef ld in blockinglines)
 			{
 				// Lines that don't have a back side, or where the sound is blocked due to
 				// the sector heights on each side can be skipped
-				if (ld.Back == null || IsSoundBlockedByHeight(ld)) continue;
-				if (!sectors.Contains(ld.Front.Sector)) adjacentsectors.Add(ld.Front.Sector);
-				if (!sectors.Contains(ld.Back.Sector)) adjacentsectors.Add(ld.Back.Sector);
+				if(ld.Back == null || IsSoundBlockedByHeight(ld)) continue;
+				if(!sectors.Contains(ld.Front.Sector)) adjacentsectors.Add(ld.Front.Sector);
+				if(!sectors.Contains(ld.Back.Sector)) adjacentsectors.Add(ld.Back.Sector);
 			}
 
 			List<FlatVertex> vertices = new List<FlatVertex>();
 
-			foreach (Sector s in sectors)
+			foreach(Sector s in sectors)
 			{
 				vertices.AddRange(s.FlatVertices);
 			}
@@ -102,7 +102,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			level1geometry = vertices.ToArray();
 			level2geometry = vertices.ToArray();
 
-			for (int i = 0; i < level1geometry.Length; i++)
+			for(int i = 0; i < level1geometry.Length; i++)
 			{
 				level1geometry[i].c = BuilderPlug.Me.Level1Color.WithAlpha(128).ToInt();
 				level2geometry[i].c = BuilderPlug.Me.Level2Color.WithAlpha(128).ToInt();

@@ -79,11 +79,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Select linedefs by sectors
 			foreach(Linedef ld in General.Map.Map.Linedefs)
 			{
-				if (ld.Selected == false)
+				if(ld.Selected == false)
 				{
 					bool front, back;
-					if (ld.Front != null) front = ld.Front.Sector.Selected; else front = false;
-					if (ld.Back != null) back = ld.Back.Sector.Selected; else back = false;
+					if(ld.Front != null) front = ld.Front.Sector.Selected; else front = false;
+					if(ld.Back != null) back = ld.Back.Sector.Selected; else back = false;
 					ld.Selected = front | back;
 				}
 			}

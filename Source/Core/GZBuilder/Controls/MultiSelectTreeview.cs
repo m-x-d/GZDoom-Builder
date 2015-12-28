@@ -136,7 +136,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 
 		protected void OnAfterDeselect(TreeNode tn)
 		{
-			if (AfterDeselect != null)
+			if(AfterDeselect != null)
 			{
 				AfterDeselect(this, new TreeViewEventArgs(tn));
 			}
@@ -144,7 +144,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 
 		protected void OnBeforeDeselect(TreeNode tn)
 		{
-			if (BeforeDeselect != null)
+			if(BeforeDeselect != null)
 			{
 				BeforeDeselect(this, new TreeViewEventArgs(tn));
 			}
@@ -152,8 +152,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 
 		protected void OnSelectionsChanged()
 		{
-			if (blnSelectionChanged)
-				if (SelectionsChanged != null)
+			if(blnSelectionChanged)
+				if(SelectionsChanged != null)
 				{
 					SelectionsChanged(this, new EventArgs());
 				}
@@ -253,7 +253,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		{
 			get
 			{
-				if (!blnInternalCall)
+				if(!blnInternalCall)
 				{
 					throw new NotSupportedException("Use SelectedNodes instead of SelectedNode.");
 				}
@@ -264,7 +264,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			}
 			set
 			{
-				if (!blnInternalCall)
+				if(!blnInternalCall)
 				{
 					throw new NotSupportedException("Use SelectedNodes instead of SelectedNode.");
 				}
@@ -314,7 +314,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			{
 				// Create a SelectedNodesCollection to return, and add event handlers to catch actions on it
 				NodesCollection selectedNodesCollection = new NodesCollection();
-				foreach (TreeNode tn in htblSelectedNodes.Values)
+				foreach(TreeNode tn in htblSelectedNodes.Values)
 				{
 					selectedNodesCollection.Add(tn);
 				}
@@ -404,16 +404,16 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		{
 			// First, build list of nodes that need to be unselected
 			List<TreeNode> arrNodesToDeselect = new List<TreeNode>(); //mxd
-			foreach (TreeNode selectedTreeNode in htblSelectedNodes.Values)
+			foreach(TreeNode selectedTreeNode in htblSelectedNodes.Values)
 			{
-				if (GetNodeLevel(selectedTreeNode) != level)
+				if(GetNodeLevel(selectedTreeNode) != level)
 				{
 					arrNodesToDeselect.Add(selectedTreeNode);
 				}
 			}
 
 			// Do the actual unselect
-			foreach (TreeNode tnToDeselect in arrNodesToDeselect)
+			foreach(TreeNode tnToDeselect in arrNodesToDeselect)
 			{
 				SelectNode(tnToDeselect, false, tva);
 			}
@@ -428,16 +428,16 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		{
 			// First, build list of nodes that need to be unselected
 			List<TreeNode> arrNodesToDeselect = new List<TreeNode>(); //mxd
-			foreach (TreeNode selectedTreeNode in htblSelectedNodes.Values)
+			foreach(TreeNode selectedTreeNode in htblSelectedNodes.Values)
 			{
-				if (selectedTreeNode.Parent != parent)
+				if(selectedTreeNode.Parent != parent)
 				{
 					arrNodesToDeselect.Add(selectedTreeNode);
 				}
 			}
 
 			// Do the actual unselect
-			foreach (TreeNode tnToDeselect in arrNodesToDeselect)
+			foreach(TreeNode tnToDeselect in arrNodesToDeselect)
 			{
 				SelectNode(tnToDeselect, false, tva);
 			}
@@ -452,16 +452,16 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		{
 			// First, build list of nodes that need to be unselected
 			List<TreeNode> arrNodesToDeselect = new List<TreeNode>(); //mxd
-			foreach (TreeNode selectedTreeNode in htblSelectedNodes.Values)
+			foreach(TreeNode selectedTreeNode in htblSelectedNodes.Values)
 			{
-				if (!IsChildOf(selectedTreeNode, parent))
+				if(!IsChildOf(selectedTreeNode, parent))
 				{
 					arrNodesToDeselect.Add(selectedTreeNode);
 				}
 			}
 
 			// Do the actual unselect
-			foreach (TreeNode tnToDeselect in arrNodesToDeselect)
+			foreach(TreeNode tnToDeselect in arrNodesToDeselect)
 			{
 				SelectNode(tnToDeselect, false, tva);
 			}
@@ -476,20 +476,20 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		{
 			// First, build list of nodes that need to be unselected
 			List<TreeNode> arrNodesToDeselect = new List<TreeNode>(); //mxd
-			foreach (TreeNode selectedTreeNode in htblSelectedNodes.Values)
+			foreach(TreeNode selectedTreeNode in htblSelectedNodes.Values)
 			{
-				if (nodeKeepSelected == null)
+				if(nodeKeepSelected == null)
 				{
 					arrNodesToDeselect.Add(selectedTreeNode);
 				}
-				else if ((nodeKeepSelected != null) && (selectedTreeNode != nodeKeepSelected))
+				else if((nodeKeepSelected != null) && (selectedTreeNode != nodeKeepSelected))
 				{
 					arrNodesToDeselect.Add(selectedTreeNode);
 				}
 			}
 
 			// Do the actual unselect
-			foreach (TreeNode tnToDeselect in arrNodesToDeselect)
+			foreach(TreeNode tnToDeselect in arrNodesToDeselect)
 			{
 				SelectNode(tnToDeselect, false, tva);
 			}
@@ -514,16 +514,16 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		/// <returns>True if specified node is selected, false if not.</returns>
 		private bool IsNodeSelected(TreeNode tn)
 		{
-			if (tn != null)
+			if(tn != null)
 				return htblSelectedNodes.ContainsKey(tn.GetHashCode());
 			return false;
 		}
 
 		private void PreserveNodeColors(TreeNode tn)
 		{
-			if (tn == null) return;
+			if(tn == null) return;
 
-			if (htblSelectedNodesOrigColors.ContainsKey(tn.GetHashCode()))
+			if(htblSelectedNodesOrigColors.ContainsKey(tn.GetHashCode()))
 			{
 				//				Color[] color = (Color[])htblSelectedNodesOrigColors[tn.GetHashCode()];
 				//				color[0]=tn.BackColor;
@@ -531,7 +531,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			}
 			else
 			{
-				htblSelectedNodesOrigColors.Add(tn.GetHashCode(), new Color[] { tn.BackColor, tn.ForeColor });
+				htblSelectedNodesOrigColors.Add(tn.GetHashCode(), new[] { tn.BackColor, tn.ForeColor });
 			}
 		}
 
@@ -546,18 +546,18 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		{
 			bool blnSelected = false;
 
-			if (tn == null)
+			if(tn == null)
 				return false;
 
-			if (select)
+			if(select)
 			{
 				// Only try to select node if it was not already selected																		
-				if (!IsNodeSelected(tn))
+				if(!IsNodeSelected(tn))
 				{
 					// Check if node selection is cancelled
 					TreeViewCancelEventArgs tvcea = new TreeViewCancelEventArgs(tn, false, tva);
 					base.OnBeforeSelect(tvcea);
-					if (tvcea.Cancel)
+					if(tvcea.Cancel)
 					{
 						// This node selection was cancelled!						
 						return false;
@@ -580,12 +580,12 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			else
 			{
 				// Only unselect node if it was selected
-				if (IsNodeSelected(tn))
+				if(IsNodeSelected(tn))
 				{
 					OnBeforeDeselect(tn);
 
 					Color[] originalColors = (Color[])this.htblSelectedNodesOrigColors[tn.GetHashCode()];
-					if (originalColors != null)
+					if(originalColors != null)
 					{
 						htblSelectedNodes.Remove(tn.GetHashCode());
 						blnSelectionChanged = true;
@@ -612,9 +612,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		private void SelectNodesInsideRange(TreeNode startNode, TreeNode endNode, TreeViewAction tva)
 		{
 			// Calculate start node and end node
-			TreeNode firstNode = null;
-			TreeNode lastNode = null;
-			if (startNode.Bounds.Y < endNode.Bounds.Y)
+			TreeNode firstNode, lastNode;
+			if(startNode.Bounds.Y < endNode.Bounds.Y)
 			{
 				firstNode = startNode;
 				lastNode = endNode;
@@ -628,10 +627,10 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			// Select each node in range
 			SelectNode(firstNode, true, tva);
 			TreeNode tnTemp = firstNode;
-			while (tnTemp != lastNode)
+			while(tnTemp != lastNode)
 			{
 				tnTemp = tnTemp.NextVisibleNode;
-				if (tnTemp != null)
+				if(tnTemp != null)
 				{
 					SelectNode(tnTemp, true, tva);
 				}
@@ -648,9 +647,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		private void UnselectNodesOutsideRange(TreeNode startNode, TreeNode endNode, TreeViewAction tva)
 		{
 			// Calculate start node and end node
-			TreeNode firstNode = null;
-			TreeNode lastNode = null;
-			if (startNode.Bounds.Y < endNode.Bounds.Y)
+			TreeNode firstNode, lastNode;
+			if(startNode.Bounds.Y < endNode.Bounds.Y)
 			{
 				firstNode = startNode;
 				lastNode = endNode;
@@ -663,20 +661,20 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 
 			// Unselect each node outside range
 			TreeNode tnTemp = firstNode;
-			while (tnTemp != null)
+			while(tnTemp != null)
 			{
 				tnTemp = tnTemp.PrevVisibleNode;
-				if (tnTemp != null)
+				if(tnTemp != null)
 				{
 					SelectNode(tnTemp, false, tva);
 				}
 			}
 
 			tnTemp = lastNode;
-			while (tnTemp != null)
+			while(tnTemp != null)
 			{
 				tnTemp = tnTemp.NextVisibleNode;
-				if (tnTemp != null)
+				if(tnTemp != null)
 				{
 					SelectNode(tnTemp, false, tva);
 				}
@@ -691,7 +689,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		private void UnselectNodesRecursively(TreeNode tn, TreeViewAction tva)
 		{
 			SelectNode(tn, false, tva);
-			foreach (TreeNode child in tn.Nodes)
+			foreach(TreeNode child in tn.Nodes)
 			{
 				UnselectNodesRecursively(child, tva);
 			}
@@ -709,7 +707,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		/// <returns>True is mouse was clicked inside the node bounds, false if it was clicked ouside the node bounds.</returns>
 		private static bool IsClickOnNode(TreeNode tn, MouseEventArgs e)
 		{
-			if (tn == null) return false;
+			if(tn == null) return false;
 
 			// GKM
 			// Determine the rightmost position we'll process clicks (so that the click has to be on the node's bounds, 
@@ -726,7 +724,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		public int GetNodeLevel(TreeNode node)
 		{
 			int level = 0;
-			while ((node = node.Parent) != null)
+			while((node = node.Parent) != null)
 				level++;
 			return level;
 		}
@@ -742,9 +740,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			bool blnChild = false;
 
 			TreeNode tnTemp = child;
-			while (tnTemp != null)
+			while(tnTemp != null)
 			{
-				if (tnTemp == parent)
+				if(tnTemp == parent)
 				{
 					blnChild = true;
 					break;
@@ -767,7 +765,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		{
 			TreeNode tnParent = child;
 
-			while (tnParent.Parent != null)
+			while(tnParent.Parent != null)
 			{
 				tnParent = tnParent.Parent;
 			}
@@ -785,9 +783,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 
 			TreeNode tnTemp = this.Nodes[0];
 
-			while (tnTemp != null)
+			while(tnTemp != null)
 			{
-				if (tnTemp.IsVisible)
+				if(tnTemp.IsVisible)
 				{
 					intCounter++;
 				}
@@ -806,7 +804,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		{
 			TreeNode tnTemp = this.Nodes[0];
 
-			while (tnTemp.NextVisibleNode != null)
+			while(tnTemp.NextVisibleNode != null)
 			{
 				tnTemp = tnTemp.NextVisibleNode;
 			}
@@ -825,18 +823,18 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		{
 			int intCounter = 0;
 			TreeNode tnTemp = start;
-			while (intCounter < intNumber)
+			while(intCounter < intNumber)
 			{
-				if (down)
+				if(down)
 				{
-					if (tnTemp.NextVisibleNode != null)
+					if(tnTemp.NextVisibleNode != null)
 						tnTemp = tnTemp.NextVisibleNode;
 					else
 						break;
 				}
 				else
 				{
-					if (tnTemp.PrevVisibleNode != null)
+					if(tnTemp.PrevVisibleNode != null)
 						tnTemp = tnTemp.PrevVisibleNode;
 					else
 						break;
@@ -857,18 +855,18 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		{
 			Graphics g = this.CreateGraphics();
 			Rectangle rect = new Rectangle(tn.Bounds.X, tn.Bounds.Y, tn.Bounds.Width, tn.Bounds.Height);
-			if (visible)
+			if(visible)
 			{
 				this.Invalidate(rect, false);
 				Update();
-				if (tn.BackColor != SelectionBackColor)
+				if(tn.BackColor != SelectionBackColor)
 				{
 					using(Pen p = new Pen(SelectionBackColor, 1)) g.DrawRectangle(p, rect);
 				}
 			}
 			else
 			{
-				if (tn.BackColor != SelectionBackColor)
+				if(tn.BackColor != SelectionBackColor)
 				{
 					using (Pen p = new Pen(BackColor, 1))
 					{
@@ -889,9 +887,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		/// </summary>
 		protected override void Dispose(bool disposing)
 		{
-			if (disposing)
+			if(disposing)
 			{
-				if (components != null)
+				if(components != null)
 				{
 					components.Dispose();
 				}
@@ -928,7 +926,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			try
 			{
 #endif
-				if (!this.blnNodeProcessedOnMouseDown)
+				if(!this.blnNodeProcessedOnMouseDown)
 				{
 					TreeNode tn = this.GetNodeAt(e.X, e.Y);
 
@@ -936,7 +934,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 					// a selected node was clicked again; in that case we handle that click here because in case the
 					// user is dragging the node, we should not put it in edit mode.					
 
-					if (IsClickOnNode(tn, e))
+					if(IsClickOnNode(tn, e))
 					{
 						this.ProcessNodeRange(this.tnMostRecentSelectedNode, tn, e, Control.ModifierKeys, TreeViewAction.ByMouse, true);
 					}
@@ -978,19 +976,19 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 
 			TreeNode tn = this.GetNodeAt(e.X, e.Y);
 
-			if (tn == null) return;
+			if(tn == null) return;
 
 			// Preserve colors here, because if you do it later then it will already have selected colors 
 			// Don't know why...!
 			PreserveNodeColors(tn);
 
 			// If +/- was clicked, we should not process the node.
-			if (!IsPlusMinusClicked(tn, e))
+			if(!IsPlusMinusClicked(tn, e))
 			{
 				// If mouse down on a node that is already selected, then we should process this node in the mouse up event, because we
 				// might want to drag it and it should not be put in edit mode.
 				// Also, only process node if click was in node's bounds.
-				if ((tn != null) && (IsClickOnNode(tn, e)) && (!IsNodeSelected(tn)))
+				if((tn != null) && (IsClickOnNode(tn, e)) && (!IsNodeSelected(tn)))
 				{
 					// Flash node. In case the node selection is cancelled by the user, this gives the effect that it
 					// was selected and unselected again.
@@ -1016,7 +1014,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		/// </summary>
 		private void FlashNode()
 		{
-			if (this.InvokeRequired)
+			if(this.InvokeRequired)
 			{
 				this.Invoke(new MethodInvoker(FlashNode));
 				return;
@@ -1024,7 +1022,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 
 			TreeNode tn = tnToFlash;
 			// Only flash node is it's not yet selected
-			if (!IsNodeSelected(tn))
+			if(!IsNodeSelected(tn))
 			{
 				tn.BackColor = SelectionBackColor;
 				tn.ForeColor = this.BackColor;
@@ -1035,7 +1033,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			}
 
 			// If node is not selected yet, restore default colors to end flashing
-			if (!IsNodeSelected(tn))
+			if(!IsNodeSelected(tn))
 			{
 				tn.BackColor = BackColor;
 				tn.ForeColor = this.ForeColor;
@@ -1048,7 +1046,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		private void StartEdit()
 		{
 			System.Threading.Thread.Sleep(200);
-			if (!blnWasDoubleClick)
+			if(!blnWasDoubleClick)
 			{
 				blnInternalCall = true;
 				SelectedNode = tnNodeToStartEditOn;
@@ -1078,27 +1076,27 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		{
 			blnSelectionChanged = false; // prepare for OnSelectionsChanged
 
-			if (e.Button == MouseButtons.Left)
+			if(e.Button == MouseButtons.Left)
 			{
 				blnWasDoubleClick = (intMouseClicks == 2);
 
 				TreeNode tnTemp;
 				int intNodeLevelStart;
 
-				if (((keys & Keys.Control) == 0) && ((keys & Keys.Shift) == 0))
+				if(((keys & Keys.Control) == 0) && ((keys & Keys.Shift) == 0))
 				{
 					// CTRL and SHIFT not held down							
 					tnSelectionMirrorPoint = endNode;
 					int intNumberOfSelectedNodes = SelectedNodes.Count;
 
 					// If it was a double click, select node and suspend further processing					
-					if (blnWasDoubleClick)
+					if(blnWasDoubleClick)
 					{
 						base.OnMouseDown(e);
 						return;
 					}
 
-					if (!IsPlusMinusClicked(endNode, e))
+					if(!IsPlusMinusClicked(endNode, e))
 					{
 						bool blnNodeWasSelected = IsNodeSelected(endNode);
 
@@ -1106,7 +1104,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 						SelectNode(endNode, true, tva);
 
 
-						if ((blnNodeWasSelected) && (LabelEdit) && (allowStartEdit) && (!blnWasDoubleClick) && (intNumberOfSelectedNodes <= 1))
+						if((blnNodeWasSelected) && (LabelEdit) && (allowStartEdit) && (!blnWasDoubleClick) && (intNumberOfSelectedNodes <= 1))
 						{
 							// Node should be put in edit mode					
 							tnNodeToStartEditOn = endNode;
@@ -1115,14 +1113,14 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 						}
 					}
 				}
-				else if (((keys & Keys.Control) != 0) && ((keys & Keys.Shift) == 0))
+				else if(((keys & Keys.Control) != 0) && ((keys & Keys.Shift) == 0))
 				{
 					// CTRL held down
 					tnSelectionMirrorPoint = null;
 
-					if (!IsNodeSelected(endNode))
+					if(!IsNodeSelected(endNode))
 					{
-						switch (selectionMode)
+						switch(selectionMode)
 						{
 							case TreeViewSelectionMode.SingleSelect:
 								UnselectAllNodesExceptNode(endNode, tva);
@@ -1156,15 +1154,15 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 						SelectNode(endNode, false, tva);
 					}
 				}
-				else if (((keys & Keys.Control) == 0) && ((keys & Keys.Shift) != 0))
+				else if(((keys & Keys.Control) == 0) && ((keys & Keys.Shift) != 0))
 				{
 					// SHIFT pressed
-					if (tnSelectionMirrorPoint == null)
+					if(tnSelectionMirrorPoint == null)
 					{
 						tnSelectionMirrorPoint = startNode;
 					}
 
-					switch (selectionMode)
+					switch(selectionMode)
 					{
 						case TreeViewSelectionMode.SingleSelect:
 							UnselectAllNodesExceptNode(endNode, tva);
@@ -1175,16 +1173,16 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 							TreeNode tnAbsoluteParentStartNode = GetRootParent(startNode);
 							tnTemp = startNode;
 							// Check each visible node from startNode to endNode and select it if needed
-							while ((tnTemp != null) && (tnTemp != endNode))
+							while((tnTemp != null) && (tnTemp != endNode))
 							{
-								if (startNode.Bounds.Y > endNode.Bounds.Y)
+								if(startNode.Bounds.Y > endNode.Bounds.Y)
 									tnTemp = tnTemp.PrevVisibleNode;
 								else
 									tnTemp = tnTemp.NextVisibleNode;
-								if (tnTemp != null)
+								if(tnTemp != null)
 								{
 									TreeNode tnAbsoluteParent = GetRootParent(tnTemp);
-									if (tnAbsoluteParent == tnAbsoluteParentStartNode)
+									if(tnAbsoluteParent == tnAbsoluteParentStartNode)
 									{
 										SelectNode(tnTemp, true, tva);
 									}
@@ -1198,16 +1196,16 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 							intNodeLevelStart = GetNodeLevel(startNode);
 							tnTemp = startNode;
 							// Check each visible node from startNode to endNode and select it if needed
-							while ((tnTemp != null) && (tnTemp != endNode))
+							while((tnTemp != null) && (tnTemp != endNode))
 							{
-								if (startNode.Bounds.Y > endNode.Bounds.Y)
+								if(startNode.Bounds.Y > endNode.Bounds.Y)
 									tnTemp = tnTemp.PrevVisibleNode;
 								else
 									tnTemp = tnTemp.NextVisibleNode;
-								if (tnTemp != null)
+								if(tnTemp != null)
 								{
 									int intNodeLevel = GetNodeLevel(tnTemp);
-									if (intNodeLevel == intNodeLevelStart)
+									if(intNodeLevel == intNodeLevelStart)
 									{
 										SelectNode(tnTemp, true, tva);
 									}
@@ -1222,17 +1220,17 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 							intNodeLevelStart = GetNodeLevel(startNode);
 							tnTemp = startNode;
 							// Check each visible node from startNode to endNode and select it if needed
-							while ((tnTemp != null) && (tnTemp != endNode))
+							while((tnTemp != null) && (tnTemp != endNode))
 							{
-								if (startNode.Bounds.Y > endNode.Bounds.Y)
+								if(startNode.Bounds.Y > endNode.Bounds.Y)
 									tnTemp = tnTemp.PrevVisibleNode;
 								else
 									tnTemp = tnTemp.NextVisibleNode;
-								if (tnTemp != null)
+								if(tnTemp != null)
 								{
 									int intNodeLevel = GetNodeLevel(tnTemp);
 									TreeNode tnAbsoluteParent = GetRootParent(tnTemp);
-									if ((intNodeLevel == intNodeLevelStart) && (tnAbsoluteParent == tnAbsoluteParentStart))
+									if((intNodeLevel == intNodeLevelStart) && (tnAbsoluteParent == tnAbsoluteParentStart))
 									{
 										SelectNode(tnTemp, true, tva);
 									}
@@ -1252,16 +1250,16 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 							TreeNode tnParentStartNode = startNode.Parent;
 							tnTemp = startNode;
 							// Check each visible node from startNode to endNode and select it if needed
-							while ((tnTemp != null) && (tnTemp != endNode))
+							while((tnTemp != null) && (tnTemp != endNode))
 							{
-								if (startNode.Bounds.Y > endNode.Bounds.Y)
+								if(startNode.Bounds.Y > endNode.Bounds.Y)
 									tnTemp = tnTemp.PrevVisibleNode;
 								else
 									tnTemp = tnTemp.NextVisibleNode;
-								if (tnTemp != null)
+								if(tnTemp != null)
 								{
 									TreeNode tnParent = tnTemp.Parent;
-									if (tnParent == tnParentStartNode)
+									if(tnParent == tnParentStartNode)
 									{
 										SelectNode(tnTemp, true, tva);
 									}
@@ -1272,10 +1270,10 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 							break;
 					}
 				}
-				else if (((keys & Keys.Control) != 0) && ((keys & Keys.Shift) != 0))
+				else if(((keys & Keys.Control) != 0) && ((keys & Keys.Shift) != 0))
 				{
 					// SHIFT AND CTRL pressed
-					switch (selectionMode)
+					switch(selectionMode)
 					{
 						case TreeViewSelectionMode.SingleSelect:
 							UnselectAllNodesExceptNode(endNode, tva);
@@ -1286,16 +1284,16 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 							TreeNode tnAbsoluteParentStartNode = GetRootParent(startNode);
 							tnTemp = startNode;
 							// Check each visible node from startNode to endNode and select it if needed
-							while ((tnTemp != null) && (tnTemp != endNode))
+							while((tnTemp != null) && (tnTemp != endNode))
 							{
-								if (startNode.Bounds.Y > endNode.Bounds.Y)
+								if(startNode.Bounds.Y > endNode.Bounds.Y)
 									tnTemp = tnTemp.PrevVisibleNode;
 								else
 									tnTemp = tnTemp.NextVisibleNode;
-								if (tnTemp != null)
+								if(tnTemp != null)
 								{
 									TreeNode tnAbsoluteParent = GetRootParent(tnTemp);
-									if (tnAbsoluteParent == tnAbsoluteParentStartNode)
+									if(tnAbsoluteParent == tnAbsoluteParentStartNode)
 									{
 										SelectNode(tnTemp, true, tva);
 									}
@@ -1308,16 +1306,16 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 							intNodeLevelStart = GetNodeLevel(startNode);
 							tnTemp = startNode;
 							// Check each visible node from startNode to endNode and select it if needed
-							while ((tnTemp != null) && (tnTemp != endNode))
+							while((tnTemp != null) && (tnTemp != endNode))
 							{
-								if (startNode.Bounds.Y > endNode.Bounds.Y)
+								if(startNode.Bounds.Y > endNode.Bounds.Y)
 									tnTemp = tnTemp.PrevVisibleNode;
 								else
 									tnTemp = tnTemp.NextVisibleNode;
-								if (tnTemp != null)
+								if(tnTemp != null)
 								{
 									int intNodeLevel = GetNodeLevel(tnTemp);
-									if (intNodeLevel == intNodeLevelStart)
+									if(intNodeLevel == intNodeLevelStart)
 									{
 										SelectNode(tnTemp, true, tva);
 									}
@@ -1331,17 +1329,17 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 							intNodeLevelStart = GetNodeLevel(startNode);
 							tnTemp = startNode;
 							// Check each visible node from startNode to endNode and select it if needed
-							while ((tnTemp != null) && (tnTemp != endNode))
+							while((tnTemp != null) && (tnTemp != endNode))
 							{
-								if (startNode.Bounds.Y > endNode.Bounds.Y)
+								if(startNode.Bounds.Y > endNode.Bounds.Y)
 									tnTemp = tnTemp.PrevVisibleNode;
 								else
 									tnTemp = tnTemp.NextVisibleNode;
-								if (tnTemp != null)
+								if(tnTemp != null)
 								{
 									int intNodeLevel = GetNodeLevel(tnTemp);
 									TreeNode tnAbsoluteParent = GetRootParent(tnTemp);
-									if ((intNodeLevel == intNodeLevelStart) && (tnAbsoluteParent == tnAbsoluteParentStart))
+									if((intNodeLevel == intNodeLevelStart) && (tnAbsoluteParent == tnAbsoluteParentStart))
 									{
 										SelectNode(tnTemp, true, tva);
 									}
@@ -1354,13 +1352,13 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 						case TreeViewSelectionMode.MultiSelect:
 							tnTemp = startNode;
 							// Check each visible node from startNode to endNode and select it if needed
-							while ((tnTemp != null) && (tnTemp != endNode))
+							while((tnTemp != null) && (tnTemp != endNode))
 							{
-								if (startNode.Bounds.Y > endNode.Bounds.Y)
+								if(startNode.Bounds.Y > endNode.Bounds.Y)
 									tnTemp = tnTemp.PrevVisibleNode;
 								else
 									tnTemp = tnTemp.NextVisibleNode;
-								if (tnTemp != null)
+								if(tnTemp != null)
 								{
 									SelectNode(tnTemp, true, tva);
 								}
@@ -1371,16 +1369,16 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 							TreeNode tnParentStartNode = startNode.Parent;
 							tnTemp = startNode;
 							// Check each visible node from startNode to endNode and select it if needed
-							while ((tnTemp != null) && (tnTemp != endNode))
+							while((tnTemp != null) && (tnTemp != endNode))
 							{
-								if (startNode.Bounds.Y > endNode.Bounds.Y)
+								if(startNode.Bounds.Y > endNode.Bounds.Y)
 									tnTemp = tnTemp.PrevVisibleNode;
 								else
 									tnTemp = tnTemp.NextVisibleNode;
-								if (tnTemp != null)
+								if(tnTemp != null)
 								{
 									TreeNode tnParent = tnTemp.Parent;
-									if (tnParent == tnParentStartNode)
+									if(tnParent == tnParentStartNode)
 									{
 										SelectNode(tnTemp, true, tva);
 									}
@@ -1391,10 +1389,10 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 					}
 				}
 			}
-			else if (e.Button == MouseButtons.Right)
+			else if(e.Button == MouseButtons.Right)
 			{
 				// if right mouse button clicked, clear selection and select right-clicked node
-				if (!IsNodeSelected(endNode))
+				if(!IsNodeSelected(endNode))
 				{
 					UnselectAllNodes(tva);
 					SelectNode(endNode, true, tva);
@@ -1435,13 +1433,13 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		protected override void OnKeyDown(KeyEventArgs e)
 		{
 			Keys kMod = Keys.None;
-			switch (e.Modifiers)
+			switch(e.Modifiers)
 			{
 				case Keys.Shift:
 				case Keys.Control:
 				case Keys.Control | Keys.Shift:
 					kMod = Keys.Shift;
-					if (tnKeysStartNode == null)
+					if(tnKeysStartNode == null)
 						tnKeysStartNode = tnMostRecentSelectedNode;
 					break;
 				default:
@@ -1452,7 +1450,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			int intNumber = 0;
 
 			TreeNode tnNewlySelectedNodeWithKeys = null;
-			switch (e.KeyCode)
+			switch(e.KeyCode)
 			{
 				case Keys.Down:
 					tnNewlySelectedNodeWithKeys = tnMostRecentSelectedNode.NextVisibleNode;
@@ -1463,17 +1461,17 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 					break;
 
 				case Keys.Left:
-					if (tnMostRecentSelectedNode.IsExpanded) 
+					if(tnMostRecentSelectedNode.IsExpanded) 
 						tnMostRecentSelectedNode.Collapse(); 
 					else
 						tnNewlySelectedNodeWithKeys = tnMostRecentSelectedNode.Parent; 
 					break;
 
 				case Keys.Right:
-					if (!tnMostRecentSelectedNode.IsExpanded) 
+					if(!tnMostRecentSelectedNode.IsExpanded) 
 						tnMostRecentSelectedNode.Expand(); 
 					else 
-						if (tnMostRecentSelectedNode.Nodes != null) 
+						if(tnMostRecentSelectedNode.Nodes != null) 
 							tnNewlySelectedNodeWithKeys = tnMostRecentSelectedNode.Nodes[0];
 					break;
 
@@ -1502,7 +1500,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 					return;
 			}
 
-			if ((tnNewlySelectedNodeWithKeys != null))
+			if((tnNewlySelectedNodeWithKeys != null))
 			{
 				SetFocusToNode(tnMostRecentSelectedNode, false);
 				ProcessNodeRange(tnKeysStartNode, tnNewlySelectedNodeWithKeys, new MouseEventArgs(MouseButtons.Left, 1, Cursor.Position.X, Cursor.Position.Y, 0), kMod, TreeViewAction.ByKeyboard, false);
@@ -1511,10 +1509,10 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			}
 
 			// Ensure visibility
-			if (tnMostRecentSelectedNode != null)
+			if(tnMostRecentSelectedNode != null)
 			{
 				TreeNode tnToMakeVisible = null;
-				switch (e.KeyCode)
+				switch(e.KeyCode)
 				{
 					case Keys.Down:
 					case Keys.Right:
@@ -1540,7 +1538,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 						break;
 				}
 
-				if (tnToMakeVisible != null)
+				if(tnToMakeVisible != null)
 					tnToMakeVisible.EnsureVisible();
 			}
 
@@ -1561,16 +1559,16 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 
 			// All child nodes should be deselected
 			bool blnChildSelected = false;
-			foreach (TreeNode tn in e.Node.Nodes)
+			foreach(TreeNode tn in e.Node.Nodes)
 			{
-				if (IsNodeSelected(tn))
+				if(IsNodeSelected(tn))
 				{
 					blnChildSelected = true;
 				}
 				UnselectNodesRecursively(tn, TreeViewAction.Collapse);
 			}
 
-			if (blnChildSelected)
+			if(blnChildSelected)
 			{
 				SelectNode(e.Node, true, TreeViewAction.Collapse);
 			}
@@ -1646,7 +1644,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		/// <returns>The position into which the new element was inserted.</returns>
 		public int Add(TreeNode treeNode)
 		{
-			if (TreeNodeAdded != null)
+			if(TreeNodeAdded != null)
 				TreeNodeAdded(treeNode);
 
 			return List.Add(treeNode);
@@ -1659,7 +1657,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		/// <param name="treeNode">Tree node to insert.</param>
 		public void Insert(int index, TreeNode treeNode)
 		{
-			if (TreeNodeInserted != null)
+			if(TreeNodeInserted != null)
 				TreeNodeInserted(treeNode);
 
 			List.Add(treeNode);
@@ -1671,7 +1669,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		/// <param name="treeNode">Tree node to remove.</param>
 		public void Remove(TreeNode treeNode)
 		{
-			if (TreeNodeRemoved != null)
+			if(TreeNodeRemoved != null)
 				TreeNodeRemoved(treeNode);
 
 			List.Remove(treeNode);
@@ -1706,7 +1704,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		/// </summary>
 		protected override void OnClear()
 		{
-			if (SelectedNodesCleared != null)
+			if(SelectedNodesCleared != null)
 				SelectedNodesCleared(this, EventArgs.Empty);
 
 			base.OnClear();

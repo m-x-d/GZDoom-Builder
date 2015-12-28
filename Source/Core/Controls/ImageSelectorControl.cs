@@ -98,7 +98,7 @@ namespace CodeImp.DoomBuilder.Controls
 		private void preview_Click(object sender, EventArgs e)
 		{
 			imagebox.BackColor = SystemColors.Highlight;
-			switch (button)
+			switch(button)
 			{
 				case MouseButtons.Right: name.Text = "-"; break;
 				case MouseButtons.Left: name.Text = BrowseImage(name.Text); break;
@@ -228,7 +228,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 			// Update icon and tooltip
 			togglefullname.Visible = true;
-			if (image.ShortName == name.Text)
+			if(image.ShortName == name.Text)
 			{
 				togglefullname.Image = Properties.Resources.Expand;
 				tooltip.SetToolTip(togglefullname, "Switch to full name");

@@ -57,7 +57,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					if(bv == v || (doneverts.ContainsKey(v) && doneverts[v].Contains(bv)) || (doneverts.ContainsKey(bv) && doneverts[bv].Contains(v))) continue;
 					if(bv.Position == v.Position) SubmitResult(new ResultVertexOverlappingVertex(v, bv));
-					if (!doneverts.ContainsKey(v)) doneverts.Add(v, new List<Vertex>());
+					if(!doneverts.ContainsKey(v)) doneverts.Add(v, new List<Vertex>());
 					doneverts[v].Add(bv);
 				}
 				

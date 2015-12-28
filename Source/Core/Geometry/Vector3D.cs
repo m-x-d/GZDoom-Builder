@@ -356,13 +356,13 @@ namespace CodeImp.DoomBuilder.Geometry
 		//mxd. Addeed to make compiler a bit more happy...
 		public override bool Equals(object obj) 
 		{
-			if (!(obj is Vector3D)) return false;
+			if(!(obj is Vector3D)) return false;
 
 			Vector3D other = (Vector3D)obj;
 
-			if (x != other.x) return false;
-			if (y != other.y) return false;
-			if (z != other.z) return false;
+			if(x != other.x) return false;
+			if(y != other.y) return false;
+			if(z != other.z) return false;
 			return true;
 		}
 

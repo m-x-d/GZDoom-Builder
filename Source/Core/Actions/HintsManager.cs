@@ -53,12 +53,11 @@ namespace CodeImp.DoomBuilder.Actions
 			string[] resnames = asm.GetManifestResourceNames();
 			string asmname = asm.GetName().Name.ToLowerInvariant() + "_";
 
-			foreach (string rn in resnames) 
+			foreach(string rn in resnames) 
 			{
 				// Found one?
 				if(rn.EndsWith(HINTS_RESOURCE, StringComparison.InvariantCultureIgnoreCase)) 
 				{
-					string line;
 					string classname = string.Empty;
 					string groupname = string.Empty;
 					List<string> lines = new List<string>(2);
@@ -68,7 +67,7 @@ namespace CodeImp.DoomBuilder.Actions
 					{
 						using(StreamReader reader = new StreamReader(data, Encoding.ASCII)) 
 						{
-							while (!reader.EndOfStream) lines.Add(reader.ReadLine());
+							while(!reader.EndOfStream) lines.Add(reader.ReadLine());
 						}
 					}
 
@@ -76,7 +75,7 @@ namespace CodeImp.DoomBuilder.Actions
 
 					foreach(string s in lines) 
 					{
-						line = s.Trim();
+						string line = s.Trim();
 						if(string.IsNullOrEmpty(line) || line.StartsWith("//"))
 							continue;
 
@@ -139,7 +138,7 @@ namespace CodeImp.DoomBuilder.Actions
 		{
 			string fullname = type.Assembly.GetName().Name.ToLowerInvariant() + "_" + type.Name;
 
-			if (!hints.ContainsKey(fullname) || !hints[fullname].ContainsKey(groupname)) 
+			if(!hints.ContainsKey(fullname) || !hints[fullname].ContainsKey(groupname)) 
 			{
 				General.Interface.ShowHints(DEFAULT_HINT);
 #if DEBUG

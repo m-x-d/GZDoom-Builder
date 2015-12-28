@@ -433,21 +433,17 @@ namespace CodeImp.DoomBuilder.Geometry
 		private static void MergeInnerPolys(EarClipPolygon p)
 		{
 			LinkedList<EarClipPolygon> todo = new LinkedList<EarClipPolygon>(p.Children);
-			LinkedListNode<EarClipVertex> start;
-			LinkedListNode<EarClipPolygon> ip;
-			LinkedListNode<EarClipPolygon> found;
-			LinkedListNode<EarClipVertex> foundstart;
-			
+
 			// Continue until no more inner polygons to process
 			while(todo.Count > 0)
 			{
 				// Find the inner polygon with the highest x vertex
-				found = null;
-				foundstart = null;
-				ip = todo.First;
+				LinkedListNode<EarClipPolygon> found = null;
+				LinkedListNode<EarClipVertex> foundstart = null;
+				LinkedListNode<EarClipPolygon> ip = todo.First;
 				while(ip != null)
 				{
-					start = FindRightMostVertex(ip.Value);
+					LinkedListNode<EarClipVertex> start = FindRightMostVertex(ip.Value);
 					if((foundstart == null) || (start.Value.Position.x > foundstart.Value.Position.x))
 					{
 						// Found a better start
@@ -491,7 +487,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		private static void SplitOuterWithInner(LinkedListNode<EarClipVertex> start, EarClipPolygon p)
 		{
 			LinkedListNode<EarClipVertex> insertbefore = null;
-			float u, ul, foundu = float.MaxValue;
+			float foundu = float.MaxValue;
 			Vector2D foundpos = new Vector2D();
 
 			// Create a line from start that goes beyond the right most vertex of p
@@ -514,6 +510,7 @@ namespace CodeImp.DoomBuilder.Geometry
 				{
 					// Find intersection
 					Line2D pl = new Line2D(v1.Value.Position, v2.Value.Position);
+					float u, ul;
 					pl.GetIntersection(starttoright, out u, out ul);
 					if(float.IsNaN(u))
 					{
@@ -637,8 +634,7 @@ namespace CodeImp.DoomBuilder.Geometry
 			LinkedList<EarClipVertex> reflexes = new LinkedList<EarClipVertex>();
 			LinkedList<EarClipVertex> eartips = new LinkedList<EarClipVertex>();
 			LinkedListNode<EarClipVertex> n2;
-			EarClipVertex v, v1, v2;
-			EarClipVertex[] t, t1, t2;
+			EarClipVertex[] t;
 			int countvertices = 0;
 
 			// Go for all vertices to fill list
@@ -711,7 +707,7 @@ namespace CodeImp.DoomBuilder.Geometry
 			while((eartips.Count > 0) && (verts.Count > 2))
 			{
 				// Get next ear
-				v = eartips.First.Value;
+				EarClipVertex v = eartips.First.Value;
 				t = GetTriangle(v);
 
 				// Only save this triangle when it has an area
@@ -724,8 +720,8 @@ namespace CodeImp.DoomBuilder.Geometry
 				
 				// Remove this ear from all lists
 				v.Remove();
-				v1 = t[0];
-				v2 = t[2];
+				EarClipVertex v1 = t[0];
+				EarClipVertex v2 = t[2];
 
 				#if DEBUG
 				if(TriangleHasArea(t))
@@ -735,7 +731,7 @@ namespace CodeImp.DoomBuilder.Geometry
 				#endif
 				
 				// Test first neighbour
-				t1 = GetTriangle(v1);
+				EarClipVertex[] t1 = GetTriangle(v1);
 				//bool t1a = true;	//TriangleHasArea(t1);
 				if(/*t1a && */IsReflex(t1))
 				{
@@ -750,7 +746,7 @@ namespace CodeImp.DoomBuilder.Geometry
 				}
 				
 				// Test second neighbour
-				t2 = GetTriangle(v2);
+				EarClipVertex[] t2 = GetTriangle(v2);
 				//bool t2a = true;	//TriangleHasArea(t2);
 				if(/*t2a && */IsReflex(t2))
 				{

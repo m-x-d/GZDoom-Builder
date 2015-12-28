@@ -64,7 +64,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			get 
 			{
 				List<ErrorResult> selection = new List<ErrorResult>();
-				foreach (Object ro in results.SelectedItems)
+				foreach(Object ro in results.SelectedItems)
 				{
 					ErrorResult result = ro as ErrorResult;
 					if(result == null) continue;
@@ -143,7 +143,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 			else
 			{
-				if (!result.IsHidden && !hiddentresulttypes.Contains(result.GetType())) //mxd
+				if(!result.IsHidden && !hiddentresulttypes.Contains(result.GetType())) //mxd
 				{
 					results.Items.Add(result);
 				}
@@ -239,7 +239,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			blockmap.AddVerticesSet(General.Map.Map.Vertices); //mxd
 			
 			//mxd. Open the results panel
-			if (!resultspanel.Visible) 
+			if(!resultspanel.Visible) 
 			{
 				this.MinimumSize = new Size();
 				this.MaximumSize = new Size();
@@ -292,7 +292,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private void ClearSelectedResult()
 		{
 			results.SelectedItems.Clear(); //mxd
-			if (results.Items.Count == 0 && resultslist.Count > 0) //mxd
+			if(results.Items.Count == 0 && resultslist.Count > 0) //mxd
 				resultinfo.Text = "All results are hidden. Use context menu to show them.";
 			else
 				resultinfo.Text = "Select a result from the list to see more information.\r\nHold 'Ctrl' to select several results.\r\nHold 'Shift' to select a range of results.\r\nRight-click on a result to show context menu.";
@@ -480,7 +480,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					List<ErrorResult> validresults = new List<ErrorResult>();
 
 					// Selected results have the same fixes?
-					foreach (var ri in results.SelectedItems)
+					foreach(var ri in results.SelectedItems)
 					{
 						ErrorResult result = ri as ErrorResult;
 						if(result == null) continue;
@@ -518,7 +518,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if(validresults.Count > 0)
 					{
 						RectangleF zoomarea = validresults[0].GetZoomArea();
-						foreach (ErrorResult result in validresults)
+						foreach(ErrorResult result in validresults)
 						{
 							zoomarea = RectangleF.Union(zoomarea, result.GetZoomArea());
 						}
@@ -551,7 +551,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				else
 				{
 					ErrorResult r = (results.SelectedItem as ErrorResult);
-					if (r.Button1Click(false)) 
+					if(r.Button1Click(false)) 
 					{
 						if(results.SelectedItems.Count > 1) FixSimilarErrors(r.GetType(), 1); //mxd
 						StartChecking();
@@ -577,7 +577,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				else
 				{
 					ErrorResult r = (results.SelectedItem as ErrorResult);
-					if (r.Button2Click(false)) 
+					if(r.Button2Click(false)) 
 					{
 						if(results.SelectedItems.Count > 1) FixSimilarErrors(r.GetType(), 2); //mxd
 						StartChecking();
@@ -603,7 +603,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				else
 				{
 					ErrorResult r = (results.SelectedItem as ErrorResult);
-					if (r.Button3Click(false)) 
+					if(r.Button3Click(false)) 
 					{
 						if(results.SelectedItems.Count > 1) FixSimilarErrors(r.GetType(), 3); //mxd
 						StartChecking();
@@ -619,16 +619,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd
 		private void FixSimilarErrors(Type type, int fixIndex) 
 		{
-			foreach (Object item in results.SelectedItems) 
+			foreach(Object item in results.SelectedItems) 
 			{
-				if (item == results.SelectedItem) continue;
-				if (item.GetType() != type) continue;
+				if(item == results.SelectedItem) continue;
+				if(item.GetType() != type) continue;
 
 				ErrorResult r = item as ErrorResult;
 
-				if (fixIndex == 1 && !r.Button1Click(true)) break;
-				if (fixIndex == 2 && !r.Button2Click(true)) break;
-				if (fixIndex == 3 && !r.Button3Click(true)) break;
+				if(fixIndex == 1 && !r.Button1Click(true)) break;
+				if(fixIndex == 2 && !r.Button2Click(true)) break;
+				if(fixIndex == 3 && !r.Button3Click(true)) break;
 			}
 		}
 
@@ -687,7 +687,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			// Remove from the list
 			results.BeginUpdate();
-			foreach (ErrorResult r in tohide) results.Items.Remove(r);
+			foreach(ErrorResult r in tohide) results.Items.Remove(r);
 			results.EndUpdate();
 
 			// Do the obvious
@@ -724,7 +724,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			foreach(ErrorResult result in results.Items)
 			{
 				Type curresulttype = result.GetType();
-				if (!toshow.ContainsKey(curresulttype))
+				if(!toshow.ContainsKey(curresulttype))
 				{
 					hiddentresulttypes.Add(curresulttype);
 				}
@@ -758,7 +758,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private void results_KeyUp(object sender, KeyEventArgs e) 
 		{
 			// Copy descriptions to clipboard?
-			if (e.Control && e.KeyCode == Keys.C)
+			if(e.Control && e.KeyCode == Keys.C)
 			{
 				resultcopytoclipboard_Click(sender, EventArgs.Empty);
 			} 

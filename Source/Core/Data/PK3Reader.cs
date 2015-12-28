@@ -127,7 +127,7 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			if(archivetype == ArchiveType.SevenZip) return;
 
-			if (enable && archive == null)
+			if(enable && archive == null)
 			{
 				archive = ArchiveFactory.Open(location.location);
 			} 
@@ -150,12 +150,12 @@ namespace CodeImp.DoomBuilder.Data
 
 			// Find in any of the wad files
 			// Note the backward order, because the last wad's images have priority
-			if (!longname) //mxd. Patches with long names can't be in wads
+			if(!longname) //mxd. Patches with long names can't be in wads
 			{
-				for (int i = wads.Count - 1; i >= 0; i--)
+				for(int i = wads.Count - 1; i >= 0; i--)
 				{
 					Stream data = wads[i].GetPatchData(pname, false);
-					if (data != null) return data;
+					if(data != null) return data;
 				}
 			}
 			else
@@ -164,13 +164,13 @@ namespace CodeImp.DoomBuilder.Data
 				return (FileExists(pname) ? LoadFile(pname) : null);
 			}
 
-			if (General.Map.Config.MixTexturesFlats)
+			if(General.Map.Config.MixTexturesFlats)
 			{
 				//mxd. Find in directories ZDoom expects them to be
-				foreach (string loc in PatchLocations)
+				foreach(string loc in PatchLocations)
 				{
 					string filename = FindFirstFile(loc, pname, true);
-					if ((filename != null) && FileExists(filename)) 
+					if((filename != null) && FileExists(filename)) 
 						return LoadFile(filename);
 				}
 			}
@@ -194,12 +194,12 @@ namespace CodeImp.DoomBuilder.Data
 
 			// Find in any of the wad files
 			// Note the backward order, because the last wad's images have priority
-			if (!longname) //mxd. Textures with long names can't be in wads
+			if(!longname) //mxd. Textures with long names can't be in wads
 			{
-				for (int i = wads.Count - 1; i >= 0; i--)
+				for(int i = wads.Count - 1; i >= 0; i--)
 				{
 					Stream data = wads[i].GetTextureData(pname, false);
-					if (data != null) return data;
+					if(data != null) return data;
 				}
 			}
 			else
@@ -418,7 +418,7 @@ namespace CodeImp.DoomBuilder.Data
 			if(archivetype == ArchiveType.SevenZip)
 			{
 				fn = fn.ToLowerInvariant();
-				if (sevenzipentries.ContainsKey(fn)) filedata = new MemoryStream(sevenzipentries[fn]);
+				if(sevenzipentries.ContainsKey(fn)) filedata = new MemoryStream(sevenzipentries[fn]);
 			} 
 			else 
 			{

@@ -92,7 +92,7 @@ namespace CodeImp.DoomBuilder.Controls
 			//mxd. Create some scaled coordinates...
 			int[] coords = new[] { 1, 2, 3, 4, 6, 8, 9, 14, 115 };
 			scaled = new Dictionary<int, int>(coords.Length);
-			foreach (int i in coords) scaled[i] = (int)Math.Round(i * MainForm.DPIScaler.Width);
+			foreach(int i in coords) scaled[i] = (int)Math.Round(i * MainForm.DPIScaler.Width);
 		}
 
 		#endregion

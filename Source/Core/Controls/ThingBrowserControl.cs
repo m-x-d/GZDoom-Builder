@@ -208,7 +208,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 		private static void GetValidNodes(TreeNode root, ref Dictionary<string, TreeNode> vn)
 		{
-			if (root.Nodes.Count == 0)
+			if(root.Nodes.Count == 0)
 			{
 				if(root.Tag is ThingTypeInfo && !vn.ContainsKey(root.Text)) vn.Add(root.Text, root);
 			}
@@ -259,7 +259,7 @@ namespace CodeImp.DoomBuilder.Controls
 		// so we set the correct one in typelist_AfterSelect handler (mxd)
 		private void typelist_MouseDoubleClick(object sender, MouseEventArgs e) 
 		{
-			if (typelist.SelectedNodes.Count == 1
+			if(typelist.SelectedNodes.Count == 1
 			    && doubleclickednode != null
 			    && doubleclickednode.Nodes.Count == 0
 			    && doubleclickednode.Tag is ThingTypeInfo
@@ -274,7 +274,7 @@ namespace CodeImp.DoomBuilder.Controls
 		private void typelist_SelectionsChanged(object sender, EventArgs e) 
 		{
 			doubleclickednode = null; //mxd
-			if (!doupdatetextbox) return;
+			if(!doupdatetextbox) return;
 
 			//mxd
 			validnodes = GetValidNodes();
@@ -283,12 +283,12 @@ namespace CodeImp.DoomBuilder.Controls
 			if(typelist.SelectionMode == TreeViewSelectionMode.MultiSelectSameLevel && validnodes.Count > 1) 
 			{
 				doupdatenode = false;
-				if (!string.IsNullOrEmpty(typeid.Text))
+				if(!string.IsNullOrEmpty(typeid.Text))
 				{
 					// Event will be raised in typeid_OnTextChanged
 					typeid.Text = "";
 				}
-				else if (OnTypeChanged != null)
+				else if(OnTypeChanged != null)
 				{
 					// Or raise event here
 					UpdateThingSprite();
@@ -304,7 +304,7 @@ namespace CodeImp.DoomBuilder.Controls
 				doupdatenode = true;
 
 				// Set as double-clicked only if a single child node is selected
-				if (typelist.SelectedNodes.Count == 1 && typelist.SelectedNodes[0].Nodes.Count == 0)
+				if(typelist.SelectedNodes.Count == 1 && typelist.SelectedNodes[0].Nodes.Count == 0)
 				{
 					doubleclickednode = validnodes[0]; //mxd
 				}
@@ -372,7 +372,7 @@ namespace CodeImp.DoomBuilder.Controls
 			else
 			{
 				thinginfo = null;
-				if (doupdatenode)
+				if(doupdatenode)
 				{
 					typelist.SelectedNodes.Clear();
 					validnodes.Clear(); //mxd

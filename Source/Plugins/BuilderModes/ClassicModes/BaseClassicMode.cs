@@ -157,7 +157,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd
 		protected void PlaceThingsAtPositions(List<Vector2D> positions) 
 		{
-			if (positions.Count < 1) 
+			if(positions.Count < 1) 
 			{
 				General.Interface.DisplayStatus(StatusType.Warning, "This action requires selection of some description!");
 				return;
@@ -167,7 +167,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			List<Thing> things = new List<Thing>();
 
 			// Create things
-			foreach (Vector2D pos in positions) 
+			foreach(Vector2D pos in positions) 
 			{
 				Thing t = General.Map.Map.CreateThing();
 				if(t != null) 
@@ -182,7 +182,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			//Operation failed?..
-			if (things.Count < 1) 
+			if(things.Count < 1) 
 			{
 				General.Interface.DisplayStatus(StatusType.Warning, "This action requires selection of some description!");
 				General.Map.UndoRedo.WithdrawUndo();
@@ -191,7 +191,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			//Show realtime thing edit dialog
 			General.Interface.OnEditFormValuesChanged += thingEditForm_OnValuesChanged;
-			if (General.Interface.ShowEditThings(things) == DialogResult.Cancel) 
+			if(General.Interface.ShowEditThings(things) == DialogResult.Cancel) 
 			{
 				General.Map.UndoRedo.WithdrawUndo();
 			} 

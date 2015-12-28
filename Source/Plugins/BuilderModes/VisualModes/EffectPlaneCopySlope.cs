@@ -92,7 +92,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			if(linedef.Args[4] > 0 && linedef.Args[4] != 3 && linedef.Args[4] != 12) 
 			{
-				if (front) 
+				if(front) 
 				{
 					copyFloor = (linedef.Args[4] & 2) == 2;
 					copyCeiling = (linedef.Args[4] & 8) == 8;

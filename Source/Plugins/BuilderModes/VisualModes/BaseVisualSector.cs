@@ -179,11 +179,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Rebuild();
 
 			//update things in this sector
-			foreach (Thing t in General.Map.Map.Things) 
+			foreach(Thing t in General.Map.Map.Things) 
 			{
-				if (t.Sector == this.Sector) 
+				if(t.Sector == this.Sector) 
 				{
-					if (mode.VisualThingExists(t)) 
+					if(mode.VisualThingExists(t)) 
 					{
 						// Update thing
 						BaseVisualThing vt = (mode.GetVisualThing(t) as BaseVisualThing);
@@ -223,7 +223,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					//mxd. check if 3d floor is between real floor and ceiling
 					if(!ef.VavoomType) 
 					{
-						if (ef.Ceiling.plane.GetInverted().Normal != floor.Level.plane.Normal
+						if(ef.Ceiling.plane.GetInverted().Normal != floor.Level.plane.Normal
 							|| ef.Ceiling.plane.Normal != ceiling.Level.plane.Normal) 
 						{
 							//mxd. check if at least one vertex of 3d floor is between floor and ceiling
@@ -261,7 +261,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				//mxd. check if 3d ceiling is between real floor and ceiling
 				if(!ef.VavoomType) 
 				{
-					if (ef.Floor.plane.GetInverted().Normal != ceiling.Level.plane.Normal
+					if(ef.Floor.plane.GetInverted().Normal != ceiling.Level.plane.Normal
 						|| ef.Floor.plane.Normal != floor.Level.plane.Normal) 
 					{
 						//mxd. check if at least one vertex of 3d ceiling is between floor and ceiling

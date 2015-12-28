@@ -20,7 +20,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			thing = sourcething;
 
 			// New effect added: This sector needs an update!
-			if (data.Mode.VisualSectorExists(data.Sector))
+			if(data.Mode.VisualSectorExists(data.Sector))
 			{
 				BaseVisualSector vs = (BaseVisualSector)data.Mode.GetVisualSector(data.Sector);
 				vs.UpdateSectorGeometry(true);
@@ -34,13 +34,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Thing t = thing;
 
 			// Floor slope thing
-			if (t.Type == 9502)
+			if(t.Type == 9502)
 			{
 				t.DetermineSector(data.Mode.BlockMap);
-				if (t.Sector != null)
+				if(t.Sector != null)
 				{
 					//mxd. Vertex zheight overrides this effect
-					if (General.Map.UDMF && t.Sector.Sidedefs.Count == 3) 
+					if(General.Map.UDMF && t.Sector.Sidedefs.Count == 3) 
 					{
 						foreach(Sidedef side in t.Sector.Sidedefs) 
 						{
@@ -70,16 +70,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					SectorData sd = data.Mode.GetSectorData(t.Sector);
 					sd.AddUpdateSector(data.Sector, true);
-					if (!sd.Updated) sd.Update();
+					if(!sd.Updated) sd.Update();
 					td.AddUpdateSector(t.Sector, true);
 					sd.Floor.plane = new Plane(v1, v2, v3, true);
 				}
 			}
 			// Ceiling slope thing
-			else if (t.Type == 9503)
+			else if(t.Type == 9503)
 			{
 				t.DetermineSector(data.Mode.BlockMap);
-				if (t.Sector != null)
+				if(t.Sector != null)
 				{
 					//mxd. Vertex zheight overrides this effect
 					if(General.Map.UDMF && t.Sector.Sidedefs.Count == 3) 
@@ -112,7 +112,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					SectorData sd = data.Mode.GetSectorData(t.Sector);
 					sd.AddUpdateSector(data.Sector, true);
-					if (!sd.Updated) sd.Update();
+					if(!sd.Updated) sd.Update();
 					td.AddUpdateSector(t.Sector, true);
 					sd.Ceiling.plane = new Plane(v1, v2, v3, false);
 				}

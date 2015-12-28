@@ -15,7 +15,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 		private readonly int warningiconindex; //mxd
 		private bool treeisupdating; //mxd
 		private int nodewarningscount; //mxd
-		private string shownodewarningstext = "Show nodes with warnings only (N)";
+		private const string shownodewarningstext = "Show nodes with warnings only (N)";
 		private delegate void UpdateCallback(); //mxd
 
 		public SoundEnvironmentPanel()
@@ -85,7 +85,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			linedefsnode.SelectedImageIndex = iconindex; //mxd
 
 			// Add things
-			foreach (Thing t in se.Things)
+			foreach(Thing t in se.Things)
 			{
 				TreeNode thingnode = new TreeNode("Thing " + t.Index);
 				thingnode.Tag = t;
@@ -104,15 +104,15 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			}
 
 			// Set the icon to warning sign and add the tooltip when there are more than 1 non-dormant things
-			if (notdormant > 1)
+			if(notdormant > 1)
 			{
 				thingsnode.ImageIndex = warningiconindex;
 				thingsnode.SelectedImageIndex = warningiconindex;
 				topindex = warningiconindex;
 
-				foreach (TreeNode tn in thingsnode.Nodes)
+				foreach(TreeNode tn in thingsnode.Nodes)
 				{
-					if (!BuilderPlug.ThingDormant((Thing)tn.Tag))
+					if(!BuilderPlug.ThingDormant((Thing)tn.Tag))
 					{
 						tn.ImageIndex = warningiconindex;
 						tn.SelectedImageIndex = warningiconindex;
@@ -124,7 +124,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			}
 
 			// Add linedefs
-			foreach (Linedef ld in se.Linedefs)
+			foreach(Linedef ld in se.Linedefs)
 			{
 				bool showwarning = false;
 				TreeNode linedefnode = new TreeNode("Linedef " + ld.Index);
@@ -132,18 +132,18 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 				linedefnode.ImageIndex = iconindex; //mxd
 				linedefnode.SelectedImageIndex = iconindex; //mxd
 
-				if (ld.Back == null)
+				if(ld.Back == null)
 				{
 					showwarning = true;
 					linedefnode.ToolTipText = "This line is single-sided, but has\nthe sound boundary flag set.";
 				}
-				else if (se.Sectors.Contains(ld.Front.Sector) && se.Sectors.Contains(ld.Back.Sector))
+				else if(se.Sectors.Contains(ld.Front.Sector) && se.Sectors.Contains(ld.Back.Sector))
 				{
 					showwarning = true;
 					linedefnode.ToolTipText = "More than one thing in this\nThe sectors on both sides of\nthe line belong to the same\nsound environment.";
 				}
 
-				if (showwarning)
+				if(showwarning)
 				{
 					linedefnode.ImageIndex = warningiconindex;
 					linedefnode.SelectedImageIndex = warningiconindex;
@@ -189,11 +189,11 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			if(!treeisupdating) soundenvironments.BeginUpdate();
 			soundenvironments.CollapseAll(); //mxd
 
-			foreach (TreeNode tn in soundenvironments.Nodes)
+			foreach(TreeNode tn in soundenvironments.Nodes)
 			{
 				if(se != null && ((SoundEnvironment)tn.Tag).ID == se.ID)
 				{
-					if (tn.NodeFont == null || tn.NodeFont.Style != FontStyle.Bold)
+					if(tn.NodeFont == null || tn.NodeFont.Style != FontStyle.Bold)
 						tn.NodeFont = new Font(soundenvironments.Font.FontFamily, soundenvironments.Font.Size, FontStyle.Bold);
 
 					//mxd
@@ -240,20 +240,20 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 
 		private static void ProcessNodeClick(TreeNode node)
 		{
-			if (node == null) return;
+			if(node == null) return;
 
 			List<Vector2D> points = new List<Vector2D>();
 			RectangleF area = MapSet.CreateEmptyArea();
 
-			if (node.Parent == null)
+			if(node.Parent == null)
 			{
-				if (node.Tag is SoundEnvironment)
+				if(node.Tag is SoundEnvironment)
 				{
 					SoundEnvironment se = (SoundEnvironment)node.Tag;
 
-					foreach (Sector s in se.Sectors)
+					foreach(Sector s in se.Sectors)
 					{
-						foreach (Sidedef sd in s.Sidedefs)
+						foreach(Sidedef sd in s.Sidedefs)
 						{
 							points.Add(sd.Line.Start.Position);
 							points.Add(sd.Line.End.Position);
@@ -268,7 +268,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			}
 			else
 			{
-				if (node.Tag is Thing)
+				if(node.Tag is Thing)
 				{
 					Thing t = (Thing)node.Tag;
 
@@ -276,7 +276,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 					points.Add(t.Position - 200);
 					points.Add(t.Position + 200);
 				}
-				else if (node.Tag is Linedef)
+				else if(node.Tag is Linedef)
 				{
 					Linedef ld = (Linedef)node.Tag;
 
@@ -304,7 +304,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 
 		private void soundenvironments_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
 		{
-			if (IsClickOnText(soundenvironments, e.Node, e.Location))
+			if(IsClickOnText(soundenvironments, e.Node, e.Location))
 			{
 				ProcessNodeClick(e.Node);
 			}

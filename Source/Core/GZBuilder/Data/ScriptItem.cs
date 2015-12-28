@@ -53,29 +53,29 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 
 		internal static int SortByIndex(ScriptItem i1, ScriptItem i2) 
 		{
-			if (i1.isinclude && !i2.isinclude) return 1;
-			if (!i1.isinclude && i2.isinclude) return -1;
-			if (i1.Index > i2.Index) return 1;
-			if (i1.Index == i2.Index) return 0;
+			if(i1.isinclude && !i2.isinclude) return 1;
+			if(!i1.isinclude && i2.isinclude) return -1;
+			if(i1.Index > i2.Index) return 1;
+			if(i1.Index == i2.Index) return 0;
 			return -1;
 		}
 
 		internal static int SortByName(ScriptItem i1, ScriptItem i2)
 		{
-			if (i1.isinclude && !i2.isinclude) return 1;
-			if (!i1.isinclude && i2.isinclude) return -1;
+			if(i1.isinclude && !i2.isinclude) return 1;
+			if(!i1.isinclude && i2.isinclude) return -1;
 			
-			if (i1.Name == i2.Name) return 0;
-			if (i1.Name.ToUpper()[0] > i2.Name.ToUpper()[0]) return 1;
-			if (i1.Name.ToUpper()[0] == i2.Name.ToUpper()[0]) 
+			if(i1.Name == i2.Name) return 0;
+			if(i1.Name.ToUpper()[0] > i2.Name.ToUpper()[0]) return 1;
+			if(i1.Name.ToUpper()[0] == i2.Name.ToUpper()[0]) 
 			{
 				int len = Math.Min(i1.Name.Length, i2.Name.Length);
-				for (int i = 0; i < len; i++) 
+				for(int i = 0; i < len; i++) 
 				{
-					if (i1.Name.ToUpper()[i] > i2.Name.ToUpper()[i]) return 1;
-					if (i1.Name.ToUpper()[i] < i2.Name.ToUpper()[i]) return -1;
+					if(i1.Name.ToUpper()[i] > i2.Name.ToUpper()[i]) return 1;
+					if(i1.Name.ToUpper()[i] < i2.Name.ToUpper()[i]) return -1;
 				}
-				if (i1.Name.Length > i2.Name.Length) return 1;
+				if(i1.Name.Length > i2.Name.Length) return 1;
 				return -1;
 			} 
 			return -1;
@@ -85,7 +85,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 		internal string[] GetArgumentsDescriptions(int action)
 		{
 			string[] result = new[] { index == int.MinValue ? "Script Name" : "Script Number", string.Empty, string.Empty, string.Empty, string.Empty };
-			switch (action)
+			switch(action)
 			{
 				case 80:        //ACS_Execute (script, map, s_arg1, s_arg2, s_arg3)
 				case 226: //ACS_ExecuteAlways (script, map, s_arg1, s_arg2, s_arg3)

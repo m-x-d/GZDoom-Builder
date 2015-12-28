@@ -500,7 +500,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(offset == 0f) return oldValue;
 			float scaledOffset = offset * scale;
 			float result = (float)Math.Round(oldValue + scaledOffset);
-			if (textureSize > 0) result %= textureSize;
+			if(textureSize > 0) result %= textureSize;
 			if(result == oldValue) result += (scaledOffset < 0 ? -1 : 1);
 			return result;
 		}
@@ -703,7 +703,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					mode.SelectSideParts(line.Back, addBackTop, addBackMiddle, addBackBottom, select, withSameTexture, withSameHeight);
 
 				// Select 3d floor sides?
-				foreach (VisualMiddle3D side3d in extrasides) 
+				foreach(VisualMiddle3D side3d in extrasides) 
 				{
 					if( (select && !side3d.Selected) || (!select && side3d.Selected) )
 						side3d.SelectNeighbours(select, withSameTexture, withSameHeight);
@@ -940,7 +940,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd
 		public virtual void OnResetLocalTextureOffset() 
 		{
-			if (!General.Map.UDMF) 
+			if(!General.Map.UDMF) 
 			{
 				OnResetTextureOffset();
 				return;
@@ -1200,7 +1200,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual void OnPasteTextureOffsets()
 		{
 			mode.CreateUndo("Paste texture offsets");
-			if (General.Map.UDMF) 
+			if(General.Map.UDMF) 
 			{
 				SetTextureOffsetX(BuilderPlug.Me.CopiedOffsets.X);
 				SetTextureOffsetY(BuilderPlug.Me.CopiedOffsets.Y);
@@ -1443,7 +1443,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public virtual void OnChangeTargetBrightness(bool up)
 		{
 			//mxd. Change UDMF wall light?
-			if (General.Map.UDMF)
+			if(General.Map.UDMF)
 			{
 				int light = Sidedef.Fields.GetValue("light", 0);
 				bool absolute = Sidedef.Fields.GetValue("lightabsolute", false);
@@ -1509,7 +1509,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				undoticket = mode.CreateUndo("Change texture offsets");
 			
 			//mxd
-			if (General.Map.UDMF) 
+			if(General.Map.UDMF) 
 			{
 				// Apply UDMF offsets
 				MoveTextureOffset(new Point(-horizontal, -vertical));
@@ -1520,7 +1520,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				//mxd. Apply classic offsets
 				Sidedef.OffsetX = (Sidedef.OffsetX - horizontal);
-				if (Texture != null) Sidedef.OffsetX %= Texture.Width;
+				if(Texture != null) Sidedef.OffsetX %= Texture.Width;
 				Sidedef.OffsetY = (Sidedef.OffsetY - vertical);
 				if(geometrytype != VisualGeometryType.WALL_MIDDLE && Texture != null) Sidedef.OffsetY %= Texture.Height;
 

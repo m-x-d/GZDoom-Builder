@@ -76,9 +76,9 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			if(columns < 1 || checkboxes.Count < 1) return 0;
 			int maxwidth = 0;
-			foreach (CheckBox cb in checkboxes)
+			foreach(CheckBox cb in checkboxes)
 			{
-				if (cb.Width > maxwidth) maxwidth = cb.Width;
+				if(cb.Width > maxwidth) maxwidth = cb.Width;
 			}
 
 			return maxwidth * columns;

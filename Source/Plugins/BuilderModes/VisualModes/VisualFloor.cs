@@ -372,7 +372,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(!verts.Contains(side.Line.End)) verts.Add(side.Line.End);
 			}
 
-			foreach (Vertex v in verts) 
+			foreach(Vertex v in verts) 
 				mode.GetVisualVertex(v, true).OnChangeTargetHeight(amount);
 		}
 

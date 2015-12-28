@@ -90,7 +90,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			renderer.SetPresentation(Presentation.Standard);
 
 			// Add toolbar buttons
-			if (General.Map.UDMF) 
+			if(General.Map.UDMF) 
 			{
 				General.Interface.AddButton(BuilderPlug.Me.MenusForm.CopyProperties);
 				General.Interface.AddButton(BuilderPlug.Me.MenusForm.PasteProperties);
@@ -109,7 +109,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnDisengage();
 
 			// Remove toolbar buttons
-			if (General.Map.UDMF)
+			if(General.Map.UDMF)
 			{
 				General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.CopyProperties);
 				General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.PasteProperties);
@@ -353,7 +353,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					DrawGeometryMode drawmode = new DrawGeometryMode();
 					DrawnVertex v = DrawGeometryMode.GetCurrentPosition(mousemappos, snaptonearest, snaptogrid, false, renderer, new List<DrawnVertex>());
 
-					if (drawmode.DrawPointAt(v))
+					if(drawmode.DrawPointAt(v))
 						General.Editing.ChangeMode(drawmode);
 					else
 						General.Interface.DisplayStatus(StatusType.Warning, "Failed to draw point: outside of map boundaries.");
@@ -381,13 +381,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						General.Interface.OnEditFormValuesChanged -= vertexEditForm_OnValuesChanged;
 
 						// When a single vertex was selected, deselect it now
-						if (selected.Count == 1) 
+						if(selected.Count == 1) 
 						{
 							General.Map.Map.ClearSelectedVertices();
 						} 
 						else if(result == DialogResult.Cancel) //mxd. Restore selection...
 						{ 
-							foreach (Vertex v in selected) v.Selected = true;
+							foreach(Vertex v in selected) v.Selected = true;
 						}
 						General.Interface.RedrawDisplay();
 					}
@@ -539,12 +539,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd
 		protected override void BeginViewPan() 
 		{
-			if (insertpreview.IsFinite()) 
+			if(insertpreview.IsFinite()) 
 			{
 				insertpreview.x = float.NaN;
 
 				//undraw preveiw
-				if (renderer.StartOverlay(true)) 
+				if(renderer.StartOverlay(true)) 
 				{
 					renderer.Finish();
 					renderer.Present();
@@ -1068,9 +1068,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			// Make list of selected vertices
 			ICollection<Vertex> selected = General.Map.Map.GetSelectedVertices(true);
-			if (selected.Count == 0) 
+			if(selected.Count == 0) 
 			{
-				if (highlighted != null && !highlighted.IsDisposed)
+				if(highlighted != null && !highlighted.IsDisposed)
 				{
 					selected.Add(highlighted);
 				} 
@@ -1082,8 +1082,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			List<Vector2D> positions = new List<Vector2D>(selected.Count);
-			foreach (Vertex v in selected)
-				if (!positions.Contains(v.Position)) positions.Add(v.Position);
+			foreach(Vertex v in selected)
+				if(!positions.Contains(v.Position)) positions.Add(v.Position);
 			PlaceThingsAtPositions(positions);
 		}
 

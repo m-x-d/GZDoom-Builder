@@ -312,9 +312,6 @@ namespace CodeImp.DoomBuilder
 		// This loads all game configurations
 		private static void LoadAllGameConfigurations()
 		{
-			Configuration cfg;
-			string fullfilename;
-			
 			// Display status
 			mainwindow.DisplayStatus(StatusType.Busy, "Loading game configurations...");
 
@@ -327,10 +324,10 @@ namespace CodeImp.DoomBuilder
 			foreach(string filepath in filenames)
 			{
 				// Check if it can be loaded
-				cfg = LoadGameConfiguration(Path.GetFileName(filepath));
+				Configuration cfg = LoadGameConfiguration(Path.GetFileName(filepath));
 				if(cfg != null)
 				{
-					fullfilename = Path.GetFileName(filepath);
+					string fullfilename = Path.GetFileName(filepath);
 					ConfigurationInfo cfginfo = new ConfigurationInfo(cfg, fullfilename);
 					
 					// Add to lists
@@ -346,9 +343,6 @@ namespace CodeImp.DoomBuilder
 		// This loads all nodebuilder configurations
 		private static void LoadAllNodebuilderConfigurations()
 		{
-			Configuration cfg;
-			IDictionary builderslist;
-			
 			// Display status
 			mainwindow.DisplayStatus(StatusType.Busy, "Loading nodebuilder configurations...");
 
@@ -362,7 +356,7 @@ namespace CodeImp.DoomBuilder
 				try
 				{
 					// Try loading the configuration
-					cfg = new Configuration(filepath, true);
+					Configuration cfg = new Configuration(filepath, true);
 
 					// Check for erors
 					if(cfg.ErrorResult)
@@ -374,7 +368,7 @@ namespace CodeImp.DoomBuilder
 					else
 					{
 						// Get structures
-						builderslist = cfg.ReadSetting("nodebuilders", new Hashtable());
+						IDictionary builderslist = cfg.ReadSetting("nodebuilders", new Hashtable());
 						foreach(DictionaryEntry de in builderslist)
 						{
 							// Check if this is a structure
@@ -1230,7 +1224,7 @@ namespace CodeImp.DoomBuilder
 		[BeginAction("openmapincurrentwad")]
 		internal static void OpenMapInCurrentWad() 
 		{
-			if (map == null || string.IsNullOrEmpty(map.FilePathName) || !File.Exists(map.FilePathName))
+			if(map == null || string.IsNullOrEmpty(map.FilePathName) || !File.Exists(map.FilePathName))
 			{
 				Interface.DisplayStatus(StatusType.Warning, "Unable to open map from current WAD!");
 				return;
@@ -1248,7 +1242,7 @@ namespace CodeImp.DoomBuilder
 
 			// If resources don't match, perform regular map loading
 			bool resourcesmismatch = changemapwindow.Options.Resources.Count != map.Options.Resources.Count;
-			if (!resourcesmismatch)
+			if(!resourcesmismatch)
 			{
 				for(int i = 0; i < changemapwindow.Options.Resources.Count; i++) 
 				{
@@ -1314,7 +1308,7 @@ namespace CodeImp.DoomBuilder
 			{
 				// Show any errors if preferred
 				mainwindow.DisplayStatus(StatusType.Warning, "There were errors during loading!");
-				if (!delaymainwindow && Settings.ShowErrorsWindow)
+				if(!delaymainwindow && Settings.ShowErrorsWindow)
 					mainwindow.ShowErrors();
 			} 
 			else 
@@ -1440,7 +1434,7 @@ namespace CodeImp.DoomBuilder
 			else
 			{
 				//mxd. Do we need to save the map?
-				if (!map.MapSaveRequired(map.FilePathName, SavePurpose.Normal))
+				if(!map.MapSaveRequired(map.FilePathName, SavePurpose.Normal))
 				{
 					// Still save settings file
 					result = map.SaveSettingsFile(map.FilePathName);
@@ -1933,13 +1927,12 @@ namespace CodeImp.DoomBuilder
 		{
 			string filename;
 			const string chars = "abcdefghijklmnopqrstuvwxyz1234567890";
-			int i;
 
 			do
 			{
 				// Generate a filename
 				filename = "";
-				for(i = 0; i < 8; i++) filename += chars[Random(0, chars.Length - 1)];
+				for(int i = 0; i < 8; i++) filename += chars[Random(0, chars.Length - 1)];
 				filename = Path.Combine(tempdir, filename + "." + extension);
 			}
 			// Continue while file is not unique
@@ -1954,13 +1947,12 @@ namespace CodeImp.DoomBuilder
 		{
 			string dirname;
 			const string chars = "abcdefghijklmnopqrstuvwxyz1234567890";
-			int i;
 
 			do
 			{
 				// Generate a filename
 				dirname = "";
-				for(i = 0; i < 8; i++) dirname += chars[Random(0, chars.Length - 1)];
+				for(int i = 0; i < 8; i++) dirname += chars[Random(0, chars.Length - 1)];
 				dirname = Path.Combine(temppath, dirname);
 			}
 			// Continue while file is not unique
@@ -2114,7 +2106,7 @@ namespace CodeImp.DoomBuilder
 				// Since we can't prevent the app from terminating, log this to the event log.
 				try 
 				{
-					if (!EventLog.SourceExists("ThreadException"))
+					if(!EventLog.SourceExists("ThreadException"))
 						EventLog.CreateEventSource("ThreadException", "Application");
 
 					// Create an EventLog instance and assign its source.

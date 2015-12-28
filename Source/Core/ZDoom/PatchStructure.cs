@@ -125,7 +125,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 				string token = parser.ReadToken();
 				token = token.ToLowerInvariant();
 
-				switch (token) 
+				switch(token) 
 				{
 					case "flipx":
 						flipx = true;
@@ -136,7 +136,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 						break;
 
 					case "alpha":
-						if (!ReadTokenFloat(parser, token, out alpha)) return;
+						if(!ReadTokenFloat(parser, token, out alpha)) return;
 						alpha = General.Clamp(alpha, 0.0f, 1.0f);
 						break;
 

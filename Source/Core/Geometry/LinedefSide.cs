@@ -50,15 +50,6 @@ namespace CodeImp.DoomBuilder.Geometry
 		/// <summary>
 		/// This is used to indicate a side of a line without the need for a sidedef.
 		/// </summary>
-		public LinedefSide()
-		{
-			// Initialize
-
-		}
-
-		/// <summary>
-		/// This is used to indicate a side of a line without the need for a sidedef.
-		/// </summary>
 		public LinedefSide(Linedef line, bool front)
 		{
 			// Initialize
@@ -74,11 +65,6 @@ namespace CodeImp.DoomBuilder.Geometry
 			// Initialize
 			this.line = original.line;
 			this.front = original.front;
-		}
-
-		// Destructor
-		~LinedefSide()
-		{
 		}
 
 		#endregion

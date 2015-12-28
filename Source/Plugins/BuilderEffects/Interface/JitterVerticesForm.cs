@@ -200,11 +200,9 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 		private void ApplyTranslationJitter(int ammount) 
 		{
-			int curAmmount;
-
-			for(int i = 0; i < selection.Count; i++) 
+			for(int i = 0; i < selection.Count; i++)
 			{
-				curAmmount = ammount > vertexData[i].SafeDistance ? vertexData[i].SafeDistance : ammount;
+				int curAmmount = ammount > vertexData[i].SafeDistance ? vertexData[i].SafeDistance : ammount;
 				selection[i].Move(new Vector2D(vertexData[i].Position.x + (int)(Math.Sin(vertexData[i].JitterAngle) * curAmmount), vertexData[i].Position.y + (int)(Math.Cos(vertexData[i].JitterAngle) * curAmmount)));
 			}
 

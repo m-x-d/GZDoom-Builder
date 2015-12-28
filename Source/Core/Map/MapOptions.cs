@@ -173,9 +173,6 @@ namespace CodeImp.DoomBuilder.Map
 		// Constructor to load from Doom Builder Map Settings Configuration
 		internal MapOptions(Configuration cfg, string mapname, bool longtexturenamessupported)
 		{
-			IDictionary resinfo;
-			DataLocation res;
-			
 			// Initialize
 			this.previousname = "";
 			this.currentname = mapname;
@@ -199,7 +196,7 @@ namespace CodeImp.DoomBuilder.Map
 
 				foreach(DictionaryEntry entry in (ListDictionary)tagLabelsEntry.Value) 
 				{
-					switch ((string)entry.Key)
+					switch((string)entry.Key)
 					{
 						case "tag": tag = (int)entry.Value; break;
 						case "label": label = (string)entry.Value; break;
@@ -250,8 +247,8 @@ namespace CodeImp.DoomBuilder.Map
 				if(mp.Value is IDictionary)
 				{
 					// Create resource
-					resinfo = (IDictionary)mp.Value;
-					res = new DataLocation();
+					IDictionary resinfo = (IDictionary)mp.Value;
+					DataLocation res = new DataLocation();
 					
 					// Copy information from Configuration to ResourceLocation
 					if(resinfo.Contains("type") && (resinfo["type"] is int)) res.type = (int)resinfo["type"];

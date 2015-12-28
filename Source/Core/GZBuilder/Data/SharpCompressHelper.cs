@@ -29,7 +29,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 			MemoryStream ms = new MemoryStream();
 
 			int read;
-			while ((read = bzip.Read(buffer, 0, buffer.Length)) > 0)
+			while((read = bzip.Read(buffer, 0, buffer.Length)) > 0)
 				ms.Write(buffer, 0, read);
 
 			return ms;

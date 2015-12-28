@@ -607,7 +607,7 @@ namespace CodeImp.DoomBuilder.CommentsPanel
 		private void enabledtimer_Tick(object sender, EventArgs e)
 		{
 			if(General.Editing.Mode == null) return; //mxd
-			switch (General.Editing.Mode.GetType().Name)
+			switch(General.Editing.Mode.GetType().Name)
 			{
 				case "VerticesMode":
 					addcommentgroup.Enabled = (General.Map.Map.SelectedVerticessCount > 0);

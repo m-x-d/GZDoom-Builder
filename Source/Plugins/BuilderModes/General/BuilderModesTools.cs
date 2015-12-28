@@ -43,7 +43,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Bounds = BuilderModesTools.GetSidedefPartSize(side);
 			Index = index++;
 
-			if (side.Sidedef.Line.Front == side.Sidedef)
+			if(side.Sidedef.Line.Front == side.Sidedef)
 			{
 				Start = side.Sidedef.Line.Start.Position;
 				End = side.Sidedef.Line.End.Position;
@@ -54,7 +54,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				End = side.Sidedef.Line.Start.Position;
 			}
 
-			switch (side.GeometryType)
+			switch(side.GeometryType)
 			{
 				case VisualGeometryType.WALL_UPPER:
 					OffsetX = UniFields.GetFloat(side.Sidedef.Fields, "offsetx_top");
@@ -123,7 +123,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(cl.Front != null && cl.Front.Sector != null) 
 				{
 					// Use floor height for vavoom-type 3d floors, because FloorHeight should be > CeilHeight for this type of 3d floor.
-					if (cl.Args[1] == 0)
+					if(cl.Args[1] == 0)
 					{
 						rect.Y = -cl.Front.Sector.FloorHeight;
 						rect.Height = cl.Front.Sector.FloorHeight - cl.Front.Sector.CeilHeight;
@@ -153,7 +153,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			switch(type) 
 			{
 				case VisualGeometryType.WALL_LOWER:
-					if (side.LowRequired())
+					if(side.LowRequired())
 					{
 						rect.Y = -side.Other.Sector.FloorHeight;
 						rect.Height = side.GetLowHeight();
@@ -173,7 +173,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					{
 						rect.Y = -side.Sector.CeilHeight;
 					}
-					else if (side.Other.Sector != null) // Double-sided
+					else if(side.Other.Sector != null) // Double-sided
 					{
 						rect.Y = -Math.Min(side.Sector.CeilHeight, side.Other.Sector.CeilHeight);
 					}
@@ -193,7 +193,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Sort by texture
 			Dictionary<long, List<BaseVisualGeometrySidedef>> sidesbytexture = new Dictionary<long, List<BaseVisualGeometrySidedef>>();
-			foreach (BaseVisualGeometrySidedef side in tosort)
+			foreach(BaseVisualGeometrySidedef side in tosort)
 			{
 				long texturelong;
 				if(side is VisualLower) texturelong = side.Sidedef.LongLowTexture;
@@ -208,7 +208,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			// Connect sides
-			foreach (KeyValuePair<long, List<BaseVisualGeometrySidedef>> pair in sidesbytexture)
+			foreach(KeyValuePair<long, List<BaseVisualGeometrySidedef>> pair in sidesbytexture)
 			{
 				// Create strips
 				Dictionary<int, List<SortedVisualSide>> strips = ConnectSides(pair.Value);
@@ -259,7 +259,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			List<SortedVisualSide> sides = new List<SortedVisualSide>(allsides.Count);
 			int groupindex = 0;
 
-			foreach (BaseVisualGeometrySidedef side in allsides)
+			foreach(BaseVisualGeometrySidedef side in allsides)
 			{
 				sides.Add(new SortedVisualSide(side));
 			}
@@ -335,11 +335,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private static void ApplyHorizontalOffset(SortedVisualSide side, SortedVisualSide prevside, bool forward, Dictionary<int, bool> processed) 
 		{
 			// Set offset
-			if (!processed.ContainsKey(side.Index))
+			if(!processed.ContainsKey(side.Index))
 			{
-				if (prevside != null)
+				if(prevside != null)
 				{
-					if (forward)
+					if(forward)
 						side.Bounds.X = prevside.Bounds.X + (int)Math.Round(prevside.Side.Sidedef.Line.Length);
 					else
 						side.Bounds.X = prevside.Bounds.X - (int)Math.Round(side.Side.Sidedef.Line.Length);
@@ -349,9 +349,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			// Repeat for NextSides
-			foreach (KeyValuePair<SortedVisualSide, bool> pair in side.NextSides)
+			foreach(KeyValuePair<SortedVisualSide, bool> pair in side.NextSides)
 			{
-				if (!processed.ContainsKey(pair.Key.Index))
+				if(!processed.ContainsKey(pair.Key.Index))
 					ApplyHorizontalOffset(pair.Key, side, true, processed);
 			}
 

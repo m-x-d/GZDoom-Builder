@@ -1096,7 +1096,6 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Anything to render?
 			if(things.Count > 0)
 			{
-				PixelColor tc;
 				DataStream stream;
 				
 				// Make alpha color
@@ -1148,7 +1147,7 @@ namespace CodeImp.DoomBuilder.Rendering
 					}
 					
 					// Create vertices
-					tc = fixedcolor ? c : DetermineThingColor(t);
+					PixelColor tc = fixedcolor ? c : DetermineThingColor(t);
 					if(CreateThingBoxVerts(t, ref verts, thingsByPosition, buffercount * 6, tc)) 
 					{
 						buffercount++;
@@ -1204,8 +1203,8 @@ namespace CodeImp.DoomBuilder.Rendering
 					if(info.Sprite.Length == 0) continue;
 
 					ImageData sprite = General.Map.Data.GetSpriteImage(info.Sprite);
-					if (sprite == null) continue; 
-					if (!sprite.IsImageLoaded) 
+					if(sprite == null) continue; 
+					if(!sprite.IsImageLoaded) 
 					{
 						sprite.SetUsedInMap(true);
 						continue;
@@ -1298,7 +1297,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				buffercount = 0;
 				totalcount = 0;
 
-				foreach (KeyValuePair<Thing, Vector2D> group in thingsByPosition) 
+				foreach(KeyValuePair<Thing, Vector2D> group in thingsByPosition) 
 				{
 					if(!group.Key.IsDirectional) continue;
 
@@ -1338,7 +1337,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Shaders.Things2D.EndPass();
 
 				//mxd. Render models
-				if (General.Settings.GZDrawModelsMode != ModelRenderMode.NONE) 
+				if(General.Settings.GZDrawModelsMode != ModelRenderMode.NONE) 
 				{
 					// Set renderstates for rendering
 					graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, false);
@@ -1354,12 +1353,10 @@ namespace CodeImp.DoomBuilder.Rendering
 					cWire.Alpha = cSelection.Alpha;
 
 					Matrix viewscale = Matrix.Scaling(scale, -scale, 0.0f);
-					ModelData mde;
 
-					foreach(KeyValuePair<int, List<Thing>> group in modelsByType) 
+					foreach(KeyValuePair<int, List<Thing>> group in modelsByType)
 					{
-						mde = General.Map.Data.ModeldefEntries[group.Key];
-
+						ModelData mde = General.Map.Data.ModeldefEntries[@group.Key];
 						foreach(Thing t in group.Value) 
 						{
 							if((General.Settings.GZDrawModelsMode == ModelRenderMode.SELECTION && !t.Selected) || (General.Settings.GZDrawModelsMode == ModelRenderMode.ACTIVE_THINGS_FILTER && alpha < 1.0f)) continue;
@@ -1373,22 +1370,20 @@ namespace CodeImp.DoomBuilder.Rendering
 
 							graphics.Shaders.Things2D.FillColor = (t.Selected ? cSelection : cWire);
 
-							for(int i = 0; i < mde.Model.Meshes.Count; i++) 
-							{
-								float sx = t.ScaleX * t.ActorScale.Width;
-								float sy = t.ScaleY * t.ActorScale.Height;
-								
-								Matrix modelscale = Matrix.Scaling(sx, sx, sy);
-								Matrix rotation = Matrix.RotationY(-t.RollRad) * Matrix.RotationX(-t.PitchRad) * Matrix.RotationZ(t.Angle);
-								Matrix position = Matrix.Translation(screenpos.x, screenpos.y, 0.0f);
-								Matrix world = General.Map.Data.ModeldefEntries[t.Type].Transform * modelscale * rotation * viewscale * position;
+							// Set transform settings
+							float sx = t.ScaleX * t.ActorScale.Width;
+							float sy = t.ScaleY * t.ActorScale.Height;
+							
+							Matrix modelscale = Matrix.Scaling(sx, sx, sy);
+							Matrix rotation = Matrix.RotationY(-t.RollRad) * Matrix.RotationX(-t.PitchRad) * Matrix.RotationZ(t.Angle);
+							Matrix position = Matrix.Translation(screenpos.x, screenpos.y, 0.0f);
+							Matrix world = General.Map.Data.ModeldefEntries[t.Type].Transform * modelscale * rotation * viewscale * position;
 
-								graphics.Shaders.Things2D.SetTransformSettings(world);
-								graphics.Shaders.Things2D.ApplySettings();
+							graphics.Shaders.Things2D.SetTransformSettings(world);
+							graphics.Shaders.Things2D.ApplySettings();
 
-								// Draw
-								mde.Model.Meshes[i].DrawSubset(0);
-							}
+							// Draw
+							foreach(Mesh mesh in mde.Model.Meshes) mesh.DrawSubset(0);
 						}
 					}
 
@@ -1748,14 +1743,13 @@ namespace CodeImp.DoomBuilder.Rendering
 
 			FlatVertex[] verts = new FlatVertex[pointscount];
 			float scaler = 16f / scale;
-			int color;
 
 			// Create verts array
 			pointscount = 0;
 			foreach(Line3D line in lines)
 			{
 				if(line.SkipRendering) continue;
-				color = line.Color.ToInt();
+				int color = line.Color.ToInt();
 
 				// Add regular points
 				verts[pointscount].x = line.Start2D.x;

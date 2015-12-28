@@ -330,7 +330,7 @@ namespace CodeImp.DoomBuilder.Editing
 							totalpasted += General.Map.Map.GetMarkedSectors(true).Count;
 							if(totalpasted > 0)
 							{
-								foreach (Thing t in things) t.UpdateConfiguration(); //mxd
+								foreach(Thing t in things) t.UpdateConfiguration(); //mxd
 								General.Map.ThingsFilter.Update();
 								General.Editing.Mode.OnPasteEnd(options.Copy());
 								General.Plugins.OnPasteEnd(options);

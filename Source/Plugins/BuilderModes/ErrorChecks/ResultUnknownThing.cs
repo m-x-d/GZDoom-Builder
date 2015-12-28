@@ -51,7 +51,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This must return the string that is displayed in the listbox
 		public override string ToString() 
 		{
-			return "Thing " + thing.Index + " at " + thing.Position.x + ", " + thing.Position.y + " has unknown type (" + thing.Type + ").";
+			return "Thing " + thing.Index + " has unknown type (" + thing.Type + ").";
 		}
 
 		// Rendering

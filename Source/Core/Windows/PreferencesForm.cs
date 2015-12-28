@@ -476,8 +476,8 @@ namespace CodeImp.DoomBuilder.Windows
 					else if(ff.IsStyleAvailable(FontStyle.Strikeout))
 						style = FontStyle.Strikeout;
 				}
-				int fontsize = 8;
-				int.TryParse(scriptfontsize.Text, out fontsize);
+				int fontsize;
+				if(!int.TryParse(scriptfontsize.Text, out fontsize)) fontsize = 8;
 				if(ff.IsStyleAvailable(style))
 					fontpreview.Font = new Font(scriptfontname.Text, fontsize, style); //mxd
 
@@ -702,7 +702,6 @@ namespace CodeImp.DoomBuilder.Windows
 		// Item selected
 		private void listactions_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
 		{
-			KeyControl keycontrol;
 			string disregardkeys = "";
 
 			// Anything selected?
@@ -712,7 +711,7 @@ namespace CodeImp.DoomBuilder.Windows
 				allowapplycontrol = false;
 
 				// Get the selected action
-				Actions.Action action = General.Actions[listactions.SelectedItems[0].Name];
+				Action action = General.Actions[listactions.SelectedItems[0].Name];
 				int key = (int)listactions.SelectedItems[0].SubItems[1].Tag;
 				disregardshift = action.DisregardShift;
 				disregardcontrol = action.DisregardControl;
@@ -741,13 +740,13 @@ namespace CodeImp.DoomBuilder.Windows
 				for(int i = 0; i < actioncontrol.Items.Count; i++)
 				{
 					// Select it when the key is found here
-					keycontrol = (KeyControl)actioncontrol.Items[i];
+					KeyControl keycontrol = (KeyControl)actioncontrol.Items[i];
 					if(keycontrol.key == key) actioncontrol.SelectedIndex = i;
 				}
 
 				// Otherwise display the key in the textbox
 				if(actioncontrol.SelectedIndex == -1)
-					actionkey.Text = Actions.Action.GetShortcutKeyDesc(key);
+					actionkey.Text = Action.GetShortcutKeyDesc(key);
 				
 				// Show actions with same key
 				UpdateKeyUsedActions();
@@ -1003,7 +1002,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void browsescreenshotsdir_Click(object sender, EventArgs e) 
 		{
-			if (browseScreenshotsFolderDialog.ShowDialog(General.MainWindow) == DialogResult.OK) 
+			if(browseScreenshotsFolderDialog.ShowDialog(General.MainWindow) == DialogResult.OK) 
 				screenshotsfolderpath.Text = browseScreenshotsFolderDialog.SelectedPath;
 		}
 

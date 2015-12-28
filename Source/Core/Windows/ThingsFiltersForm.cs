@@ -136,7 +136,7 @@ namespace CodeImp.DoomBuilder.Windows
 		//mxd. This recursively adds ThingCategories
 		private void AddThingFilterCategories(List<ThingCategory> list, string fullname) 
 		{
-			foreach (ThingCategory cat in list)
+			foreach(ThingCategory cat in list)
 			{
 				string catname = (string.IsNullOrEmpty(fullname) ? cat.Title : fullname + " / " + cat.Title);
 				filtercategory.Items.Add(new ThingCategoryData(cat, catname));
@@ -405,7 +405,7 @@ namespace CodeImp.DoomBuilder.Windows
 					// Get selected filter
 					ThingsFilter f = listfilters.SelectedItems[0].Tag as ThingsFilter;
 					
-					switch (box.CheckState)
+					switch(box.CheckState)
 					{
 						// New state is required?
 						case CheckState.Checked:

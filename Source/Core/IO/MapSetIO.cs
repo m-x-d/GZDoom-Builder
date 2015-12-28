@@ -114,22 +114,18 @@ namespace CodeImp.DoomBuilder.IO
 		// This returns and instance of the specified IO class
 		public static MapSetIO Create(string classname, WAD wadfile, MapManager manager)
 		{
-			object[] args;
-			MapSetIO result;
-			string fullname;
-			
 			try
 			{
 				// Create arguments
-				args = new object[2];
+				object[] args = new object[2];
 				args[0] = wadfile;
 				args[1] = manager;
 				
 				// Make the full class name
-				fullname = "CodeImp.DoomBuilder.IO." + classname;
+				string fullname = "CodeImp.DoomBuilder.IO." + classname;
 				
 				// Create IO class
-				result = (MapSetIO)General.ThisAssembly.CreateInstance(fullname, false,
+				MapSetIO result = (MapSetIO)General.ThisAssembly.CreateInstance(fullname, false,
 					BindingFlags.Default, null, args, CultureInfo.CurrentCulture, new object[0]);
 				
 				// Check result

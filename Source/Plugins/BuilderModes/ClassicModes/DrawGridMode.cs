@@ -118,7 +118,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Interface.DisplayStatus(StatusType.Action, "Created " + a + word + " grid.");
 
 				List<Sector> newsectors = new List<Sector>();
-				foreach (DrawnVertex[] shape in gridpoints) 
+				foreach(DrawnVertex[] shape in gridpoints) 
 				{
 					if(!Tools.DrawLines(shape, true, BuilderPlug.Me.AutoAlignTextureOffsetsOnCreate)) 
 					{
@@ -199,7 +199,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			snaptonearest = (!gridlock && (General.Interface.CtrlState ^ General.Interface.AutoMerge));
 
 			DrawnVertex curp;
-			if (points.Count == 1)
+			if(points.Count == 1)
 			{
 				// Handle the case when start point is not on current grid.
 				Vector2D gridoffset = General.Map.Grid.SnappedToGrid(points[0].pos) - points[0].pos;
@@ -224,16 +224,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					List<Vector2D[]> shapes = GetShapes(start, end);
 
 					//render shape
-					foreach (Vector2D[] shape in shapes) 
+					foreach(Vector2D[] shape in shapes) 
 					{
 						for(int i = 1; i < shape.Length; i++)
 						renderer.RenderLine(shape[i - 1], shape[i], LINE_THICKNESS, color, true);
 					}
 
 					//vertices
-					foreach (Vector2D[] shape in shapes) 
+					foreach(Vector2D[] shape in shapes) 
 					{
-						for (int i = 0; i < shape.Length; i++)
+						for(int i = 0; i < shape.Length; i++)
 							renderer.RenderRectangleFilled(new RectangleF(shape[i].x - vsize, shape[i].y - vsize, vsize * 2.0f, vsize * 2.0f), color, true);
 					}
 
@@ -246,7 +246,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 
 					//render hint
-					if (horizontalSlices > 1 || verticalSlices > 1) 
+					if(horizontalSlices > 1 || verticalSlices > 1) 
 					{
 						hintlabel.Text = "H: " + (slicesH - 1) + "; V: " + (slicesV - 1);
 						if(width > hintlabel.Text.Length * vsize && height > 16 * vsize) 
@@ -306,7 +306,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				UpdateReferencePoints(points[0], newpoint);
 				List<Vector2D[]> shapes = GetShapes(start, end);
 
-				foreach (Vector2D[] shape in shapes) 
+				foreach(Vector2D[] shape in shapes) 
 				{
 					DrawnVertex[] verts = new DrawnVertex[shape.Length];
 					for(int i = 0; i < shape.Length; i++) 
@@ -347,22 +347,22 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			List<Vector2D[]> shapes;
 			if(width == 0 || height == 0)
 			{
-				if (slicesH > 0 && width > 0)
+				if(slicesH > 0 && width > 0)
 				{
 					shapes = new List<Vector2D[]>();
 					int step = width / slicesH;
-					for (int w = 0; w < slicesH; w++)
+					for(int w = 0; w < slicesH; w++)
 					{
 						shapes.Add(new[] { new Vector2D((int)s.x + step * w, (int)s.y), new Vector2D((int)s.x + step * w + step, (int)s.y) });
 					}
 					return shapes;
 				}
 
-				if (slicesV > 0 && height > 0)
+				if(slicesV > 0 && height > 0)
 				{
 					shapes = new List<Vector2D[]>();
 					int step = height / slicesV;
-					for (int h = 0; h < slicesV; h++)
+					for(int h = 0; h < slicesV; h++)
 					{
 						shapes.Add(new[] {new Vector2D((int) s.x, (int) s.y + step * h), new Vector2D((int) s.x, (int) s.y + step * h + step)});
 					}
@@ -415,7 +415,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			//triangulate?
-			if (triangulate) 
+			if(triangulate) 
 			{
 				bool startflip = ((int)Math.Round(((s.x + e.y) / General.Map.Grid.GridSize) % 2) == 0);
 				bool flip = startflip;
@@ -424,7 +424,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					for(int h = slicesV - 1; h > -1; h--) 
 					{
-						if (flip)
+						if(flip)
 							shapes.Add(new[] { new Vector2D(blocks[w, h].X, blocks[w, h].Y), new Vector2D(blocks[w, h].Right, blocks[w, h].Bottom) });
 						else
 							shapes.Add(new[] { new Vector2D(blocks[w, h].Right, blocks[w, h].Y), new Vector2D(blocks[w, h].X, blocks[w, h].Bottom) });
@@ -445,7 +445,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			if(!p1.pos.IsFinite() || !p2.pos.IsFinite()) return;
 			
-			if (p1.pos.x < p2.pos.x) 
+			if(p1.pos.x < p2.pos.x) 
 			{
 				start.x = p1.pos.x;
 				end.x = p2.pos.x;
@@ -456,7 +456,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				end.x = p1.pos.x;
 			}
 
-			if (p1.pos.y < p2.pos.y) 
+			if(p1.pos.y < p2.pos.y) 
 			{
 				start.y = p1.pos.y;
 				end.y = p2.pos.y;

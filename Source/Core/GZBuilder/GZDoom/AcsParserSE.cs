@@ -131,7 +131,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 								{
 									if(!SkipWhitespace(true)) break;
 									token = ReadToken();
-								} while (!string.IsNullOrEmpty(token) && token != "{");
+								} while(!string.IsNullOrEmpty(token) && token != "{");
 
 								token = ReadLine();
 								string name = "";

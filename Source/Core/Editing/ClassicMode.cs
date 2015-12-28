@@ -521,8 +521,6 @@ namespace CodeImp.DoomBuilder.Editing
 		// Mouse moved inside the display
 		public override void OnMouseMove(MouseEventArgs e)
 		{
-			Vector2D delta;
-
 			// Record last position
 			mouseinside = true;
 			mouselastpos = mousepos;
@@ -540,7 +538,7 @@ namespace CodeImp.DoomBuilder.Editing
 				if(mousedragging == MouseButtons.None)
 				{
 					// Check if moved enough pixels for dragging
-					delta = mousedownpos - mousepos;
+					Vector2D delta = mousedownpos - mousepos;
 					if((Math.Abs(delta.x) > DRAG_START_MOVE_PIXELS) ||
 					   (Math.Abs(delta.y) > DRAG_START_MOVE_PIXELS))
 					{
@@ -555,7 +553,7 @@ namespace CodeImp.DoomBuilder.Editing
 			if(selecting) OnUpdateMultiSelection();
 
 			// Panning?
-			if (panning) OnUpdateViewPanning();
+			if(panning) OnUpdateViewPanning();
 			
 			// Let the base class know
 			base.OnMouseMove(e);
@@ -667,12 +665,12 @@ namespace CodeImp.DoomBuilder.Editing
 				//find Single Player Start. Should be type 1 in all games
 				Thing start = null;
 				
-				foreach (Thing t in General.Map.Map.Things) 
+				foreach(Thing t in General.Map.Map.Things) 
 				{
-					if (t.Type == 1) 
+					if(t.Type == 1) 
 					{
 						//store thing and position
-						if (start == null) 
+						if(start == null) 
 						{
 							start = t;
 						} 
@@ -684,7 +682,7 @@ namespace CodeImp.DoomBuilder.Editing
 					}
 				}
 
-				if (start == null) 
+				if(start == null) 
 				{
 					General.MainWindow.DisplayStatus(StatusType.Warning, "Can't test from current position: no Player 1 start found!");
 					return false;
@@ -700,7 +698,7 @@ namespace CodeImp.DoomBuilder.Editing
 				}
 
 				//41 = player's height in Doom. Is that so in all other games as well?
-				if (s.CeilHeight - s.FloorHeight < 41) 
+				if(s.CeilHeight - s.FloorHeight < 41) 
 				{
 					General.MainWindow.DisplayStatus(StatusType.Warning, "Can't test from current position: sector is too low!");
 					return false;
@@ -719,7 +717,7 @@ namespace CodeImp.DoomBuilder.Editing
 
 		public override void OnMapTestEnd(bool testFromCurrentPosition) 
 		{
-			if (testFromCurrentPosition) 
+			if(testFromCurrentPosition) 
 			{
 				//restore position
 				playerStart.Move(playerStartPosition);
@@ -919,7 +917,7 @@ namespace CodeImp.DoomBuilder.Editing
 		{
 			//show form...
 			CenterOnCoordinatesForm form = new CenterOnCoordinatesForm();
-			if (form.ShowDialog() == DialogResult.OK) 
+			if(form.ShowDialog() == DialogResult.OK) 
 			{
 				//center view
 				renderer2d.PositionView(form.Coordinates.x, form.Coordinates.y);

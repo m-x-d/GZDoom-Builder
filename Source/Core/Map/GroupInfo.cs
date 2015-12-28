@@ -28,7 +28,7 @@ namespace CodeImp.DoomBuilder.Map
 
 		public override string ToString() 
 		{
-			if (empty) return index + ": Empty";
+			if(empty) return index + ": Empty";
 			List<string> result = new List<string>();
 
 			if(numSectors > 0) result.Add(numSectors + (numSectors > 1 ? " sectors" : " sector"));

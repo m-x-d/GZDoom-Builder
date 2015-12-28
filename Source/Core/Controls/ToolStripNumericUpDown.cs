@@ -32,7 +32,7 @@ namespace CodeImp.DoomBuilder.Controls
 
         public void OnValueChanged(object sender, EventArgs e)
         {
-            if (ValueChanged != null) ValueChanged(this, e);
+            if(ValueChanged != null) ValueChanged(this, e);
         }
 	}
 }

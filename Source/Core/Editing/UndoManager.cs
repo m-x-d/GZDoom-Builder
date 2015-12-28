@@ -249,13 +249,11 @@ namespace CodeImp.DoomBuilder.Editing
 		// This checks and removes a level when the limit is reached
 		private static void LimitUndoRedoLevel(List<UndoSnapshot> list)
 		{
-			UndoSnapshot u;
-			
 			// Too many?
 			if(list.Count > MAX_UNDO_LEVELS)
 			{
 				// Remove one and dispose map
-				u = list[list.Count - 1];
+				UndoSnapshot u = list[list.Count - 1];
 				u.Dispose();
 				list.RemoveAt(list.Count - 1);
 			}

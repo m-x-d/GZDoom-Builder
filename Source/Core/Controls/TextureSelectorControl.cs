@@ -56,7 +56,7 @@ namespace CodeImp.DoomBuilder.Controls
 				UpdateToggleImageNameButton(null); //mxd
 				
 				//mxd. Determine image to show
-				if (multipletextures) return Properties.Resources.ImageStack;
+				if(multipletextures) return Properties.Resources.ImageStack;
 				return (required ? Properties.Resources.MissingTexture : null);
 			} 
 			else if(imagename == "-") //mxd

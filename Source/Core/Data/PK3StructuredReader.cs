@@ -326,10 +326,10 @@ namespace CodeImp.DoomBuilder.Data
 			// Note the backward order, because the last wad's images have priority
 			if(!longname) //mxd. Flats with long names can't be in wads
 			{
-				for (int i = wads.Count - 1; i > -1; i--)
+				for(int i = wads.Count - 1; i > -1; i--)
 				{
 					Stream data = wads[i].GetFlatData(pname, false);
-					if (data != null) return data;
+					if(data != null) return data;
 				}
 			}
 
@@ -345,7 +345,6 @@ namespace CodeImp.DoomBuilder.Data
 		public override ICollection<ImageData> LoadSprites()
 		{
 			Dictionary<long, ImageData> images = new Dictionary<long, ImageData>();
-			ICollection<ImageData> collection;
 			List<ImageData> imgset = new List<ImageData>();
 			
 			// Error when suspended
@@ -355,7 +354,7 @@ namespace CodeImp.DoomBuilder.Data
 			// Note the backward order, because the last wad's images have priority
 			for(int i = wads.Count - 1; i >= 0; i--)
 			{
-				collection = wads[i].LoadSprites();
+				ICollection<ImageData> collection = wads[i].LoadSprites();
 				AddImagesToList(images, collection);
 			}
 			
@@ -467,15 +466,15 @@ namespace CodeImp.DoomBuilder.Data
 		public override Dictionary<string, Stream> GetModeldefData() 
 		{
 			// Error when suspended
-			if (issuspended) throw new Exception("Data reader is suspended");
+			if(issuspended) throw new Exception("Data reader is suspended");
 
 			// Modedef should be in root folder
 			string[] files = GetAllFiles("", false);
 			Dictionary<string, Stream> streams = new Dictionary<string, Stream>(StringComparer.Ordinal);
 
-			foreach (string s in files) 
+			foreach(string s in files) 
 			{
-				if (Path.GetFileNameWithoutExtension(s).ToUpperInvariant().StartsWith("MODELDEF")) 
+				if(Path.GetFileNameWithoutExtension(s).ToUpperInvariant().StartsWith("MODELDEF")) 
 					streams.Add(s, LoadFile(s));
 			}
 
@@ -496,7 +495,7 @@ namespace CodeImp.DoomBuilder.Data
 			List<string> voxels = new List<string>();
 			Regex spritename = new Regex(SPRITE_NAME_PATTERN);
 
-			foreach (string t in files)
+			foreach(string t in files)
 			{
 				string s = Path.GetFileNameWithoutExtension(t).ToUpperInvariant();
 				if(spritename.IsMatch(s)) voxels.Add(s);
@@ -531,17 +530,16 @@ namespace CodeImp.DoomBuilder.Data
 		public override Dictionary<string, Stream> GetMapinfoData() 
 		{
 			// Error when suspended
-			if (issuspended) throw new Exception("Data reader is suspended");
+			if(issuspended) throw new Exception("Data reader is suspended");
 
 			//mapinfo should be in root folder
 			Dictionary<string, Stream> streams = new Dictionary<string, Stream>(StringComparer.Ordinal);
 			string[] files = GetAllFiles("", false);
-			string filename;
 
 			//try to find (z)mapinfo
-			foreach (string s in files) 
+			foreach(string s in files)
 			{
-				filename = Path.GetFileNameWithoutExtension(s.ToLowerInvariant());
+				string filename = Path.GetFileNameWithoutExtension(s.ToLowerInvariant());
 				if(filename == "zmapinfo" || filename == "mapinfo")
 					streams.Add(s, LoadFile(s));
 			}

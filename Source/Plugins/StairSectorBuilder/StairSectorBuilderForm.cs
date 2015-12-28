@@ -231,7 +231,7 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 		{
 			InitializeComponent();
 
-            foreach (BuilderPlug.Prefab p in BuilderPlug.Me.Prefabs)
+            foreach(BuilderPlug.Prefab p in BuilderPlug.Me.Prefabs)
             {
                 ListViewItem lvi = new ListViewItem();
                 ListViewItem.ListViewSubItem lvisi = new ListViewItem.ListViewSubItem();
@@ -251,21 +251,21 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
             this.Location = new Point(owner.Location.X + 20, owner.Location.Y + 90);
 
 			// Set the default name for the prefab
-			for (int i = 1; i < int.MaxValue; i++)
+			for(int i = 1; i < int.MaxValue; i++)
 			{
 				string defname = "Prefab #" + i;
 				bool validname = true;
 
-				foreach (BuilderPlug.Prefab p in BuilderPlug.Me.Prefabs)
+				foreach(BuilderPlug.Prefab p in BuilderPlug.Me.Prefabs)
 				{
-					if (p.name == defname)
+					if(p.name == defname)
 					{
 						validname = false;
 						break;
 					}
 				}
 
-				if (validname)
+				if(validname)
 				{
 					prefabname.Text = defname;
 					break;
@@ -278,9 +278,9 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 
 		private void ComputeHeights()
 		{
-			if (!fullyloaded) return;
+			if(!fullyloaded) return;
 
-			if (floorbase.Enabled == false)
+			if(floorbase.Enabled == false)
 			{
 				floorfirst.Text = "--";
 				floorlast.Text = "--";
@@ -291,7 +291,7 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 				floorlast.Text = (Int32.Parse(floorbase.Text) + Int32.Parse(floorheightmod.Text) * (Int32.Parse(numberofsectors.Text) * stepmultiplier)).ToString();
 			}
 
-			if (ceilingbase.Enabled == false)
+			if(ceilingbase.Enabled == false)
 			{
 				ceilingfirst.Text = "--";
 				ceilinglast.Text = "--";
@@ -307,7 +307,7 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 		// times while loading a prefab
 		private void DoRedrawDisplay()
 		{
-			if (loadingprefab == false) General.Interface.RedrawDisplay();
+			if(loadingprefab == false) General.Interface.RedrawDisplay();
 		}
 
 		private void btnOK_Click(object sender, EventArgs e)
@@ -339,19 +339,19 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 
 		private void tabcontrol_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (General.Map.Map.GetSelectedLinedefs(true).Count == 1)
+			if(General.Map.Map.GetSelectedLinedefs(true).Count == 1)
 			{
 				tabcontrol.SelectedTab = tabPage1;
 			}
 
-			if (tabcontrol.SelectedTab != tabPage1)
+			if(tabcontrol.SelectedTab != tabPage1)
 			{
 				floorbase.Enabled = true;
 				ceilingbase.Enabled = true;
 			}
 			else
 			{
-				if (distinctbaseheights.Checked)
+				if(distinctbaseheights.Checked)
 				{
 					floorbase.Enabled = false;
 					ceilingbase.Enabled = false;
@@ -374,14 +374,14 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 
 		private void numberofsectors_WhenTextChanged(object sender, EventArgs e)
 		{
-			if (numberofsectors.Text == "" || numberofsectors.GetResult(1) == 0) numberofsectors.Text = "1";
+			if(numberofsectors.Text == "" || numberofsectors.GetResult(1) == 0) numberofsectors.Text = "1";
 			ComputeHeights();
 			DoRedrawDisplay();
 		}
 
 		private void sectordepth_WhenTextChanged(object sender, EventArgs e)
 		{
-			if (sectordepth.GetResult(32) == 0) sectordepth.Text = "1";
+			if(sectordepth.GetResult(32) == 0) sectordepth.Text = "1";
 			DoRedrawDisplay();
 		}
 
@@ -409,7 +409,7 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 
 		private void autocurveinnervertexmultiplier_WhenTextChanged(object sender, EventArgs e)
 		{
-			if (autocurveinnervertexmultiplier.GetResult(1) == 0) autocurveinnervertexmultiplier.Text = "1";
+			if(autocurveinnervertexmultiplier.GetResult(1) == 0) autocurveinnervertexmultiplier.Text = "1";
 
 			if(splineinnervertexmultiplier.Text != autocurveinnervertexmultiplier.Text)
 				splineinnervertexmultiplier.Text = autocurveinnervertexmultiplier.Text;
@@ -419,7 +419,7 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 
 		private void autocurveoutervertexmultiplier_WhenTextChanged(object sender, EventArgs e)
 		{
-			if (autocurveoutervertexmultiplier.GetResult(1) == 0) autocurveoutervertexmultiplier.Text = "1";
+			if(autocurveoutervertexmultiplier.GetResult(1) == 0) autocurveoutervertexmultiplier.Text = "1";
 
 			if(splineoutervertexmultiplier.Text != autocurveoutervertexmultiplier.Text)
 				splineoutervertexmultiplier.Text = autocurveoutervertexmultiplier.Text;
@@ -430,7 +430,7 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 
 		private void splineinnervertexmultiplier_WhenTextChanged(object sender, EventArgs e)
 		{
-			if (splineinnervertexmultiplier.GetResult(1) == 0) splineinnervertexmultiplier.Text = "1";
+			if(splineinnervertexmultiplier.GetResult(1) == 0) splineinnervertexmultiplier.Text = "1";
 
 			if(autocurveinnervertexmultiplier.Text != splineinnervertexmultiplier.Text)
 				autocurveinnervertexmultiplier.Text = splineinnervertexmultiplier.Text;
@@ -440,7 +440,7 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 
 		private void splineoutervertexmultiplier_WhenTextChanged(object sender, EventArgs e)
 		{
-			if (splineoutervertexmultiplier.GetResult(1) == 0) splineoutervertexmultiplier.Text = "1";
+			if(splineoutervertexmultiplier.GetResult(1) == 0) splineoutervertexmultiplier.Text = "1";
 
 			if(splineoutervertexmultiplier.Text != autocurveoutervertexmultiplier.Text)
 				autocurveoutervertexmultiplier.Text = splineoutervertexmultiplier.Text;
@@ -455,13 +455,13 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 
 		private void StairSectorBuilderForm_Shown(object sender, EventArgs e)
 		{
-			if (General.Map.Map.GetSelectedLinedefs(true).Count == 1 || General.Map.Map.SelectedSectorsCount > 0)
+			if(General.Map.Map.GetSelectedLinedefs(true).Count == 1 || General.Map.Map.SelectedSectorsCount > 0)
 			{
 				tabcontrol.TabPages.Remove(tabPage2);
 				tabcontrol.TabPages.Remove(tabPage3);
 			}
 
-			if (General.Map.Map.SelectedSectorsCount > 0)
+			if(General.Map.Map.SelectedSectorsCount > 0)
 			{
 				singledirection.Checked = false;
 				singledirection.Enabled = false;
@@ -473,7 +473,7 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 
 		private void singlesectors_CheckedChanged(object sender, EventArgs e)
 		{
-			if (singlesectors.Checked)
+			if(singlesectors.Checked)
 				singledirection.Enabled = true;
 			else
 				singledirection.Enabled = false;
@@ -483,7 +483,7 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 
 		private void numberofcontrolpoints_WhenTextChanged(object sender, EventArgs e)
 		{
-			if (numberofcontrolpoints.GetResult(1) == 0) numberofcontrolpoints.Text = "1";
+			if(numberofcontrolpoints.GetResult(1) == 0) numberofcontrolpoints.Text = "1";
 			DoRedrawDisplay();
 		}
 
@@ -504,19 +504,19 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 
         private void floorheightmod_WhenTextChanged(object sender, EventArgs e)
         {
-            if (floorheightmod.GetResult(0) == 0) floorheightmod.Text = "0";
+            if(floorheightmod.GetResult(0) == 0) floorheightmod.Text = "0";
 			ComputeHeights();
         }
 
         private void ceilingheightmod_WhenTextChanged(object sender, EventArgs e)
         {
-            if (ceilingheightmod.GetResult(0) == 0) ceilingheightmod.Text = "0";
+            if(ceilingheightmod.GetResult(0) == 0) ceilingheightmod.Text = "0";
 			ComputeHeights();
         }
 
         private void floorflat_CheckedChanged(object sender, EventArgs e)
         {
-            if (floorflat.Checked)
+            if(floorflat.Checked)
                 floorflattexture.Enabled = true;
             else
                 floorflattexture.Enabled = false;
@@ -524,7 +524,7 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 
         private void ceilingflat_CheckedChanged(object sender, EventArgs e)
         {
-            if (ceilingflat.Checked)
+            if(ceilingflat.Checked)
                 ceilingflattexture.Enabled = true;
             else
                 ceilingflattexture.Enabled = false;
@@ -532,13 +532,13 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 
         private void spacing_WhenTextChanged(object sender, EventArgs e)
         {
-            if (spacing.GetResult(0) == 0) spacing.Text = "0";
+            if(spacing.GetResult(0) == 0) spacing.Text = "0";
             DoRedrawDisplay();
         }
 
         private void uppertexture_CheckedChanged(object sender, EventArgs e)
         {
-			if (uppertexture.Checked)
+			if(uppertexture.Checked)
 			{
 				uppertexturetexture.Enabled = true;
 				upperunpegged.Enabled = true;
@@ -552,7 +552,7 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 
 		private void middletexture_CheckedChanged(object sender, EventArgs e)
 		{
-			if (middletexture.Checked)
+			if(middletexture.Checked)
 				middletexturetexture.Enabled = true;
 			else
 				middletexturetexture.Enabled = false;
@@ -560,7 +560,7 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 
         private void lowertexture_CheckedChanged(object sender, EventArgs e)
         {
-			if (lowertexture.Checked)
+			if(lowertexture.Checked)
 			{
 				lowertexturetexture.Enabled = true;
 				lowerunpegged.Enabled = true;
@@ -580,7 +580,7 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 		private void StairSectorBuilderForm_FormClosing(object sender, FormClosingEventArgs e)
 		{
 			// User closing the window?
-			if (e.CloseReason == CloseReason.UserClosing)
+			if(e.CloseReason == CloseReason.UserClosing)
 			{
 				// Just cancel
 				General.Editing.CancelMode();
@@ -610,13 +610,13 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 
 		private void floorbase_WhenTextChanged(object sender, EventArgs e)
 		{
-			if (floorbase.GetResult(0) == 0) floorbase.Text = "0";
+			if(floorbase.GetResult(0) == 0) floorbase.Text = "0";
 			ComputeHeights();
 		}
 
 		private void ceilingbase_WhenTextChanged(object sender, EventArgs e)
 		{
-			if (ceilingbase.GetResult(0) == 0) ceilingbase.Text = "0";
+			if(ceilingbase.GetResult(0) == 0) ceilingbase.Text = "0";
 			ComputeHeights();
 		}
 
@@ -624,7 +624,7 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
         {
 			string name = prefabname.Text.Trim();
 
-			if (name == "[Previous]")
+			if(name == "[Previous]")
 				MessageBox.Show(Owner, "The prefab name \"[Previous]\" is reserved and can not be overwritten.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
 			else
 				SavePrefab(prefabname.Text.Trim(), false, -1);
@@ -635,20 +635,20 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
             int overwrite = -1;
 
             // Prefab name may not be empty
-            if (name == "")
+            if(name == "")
             {
                 MessageBox.Show(this.Owner, "Please enter a name for the prefab", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
             // Check if there's already a prefab with the given name
-			for (int i = 0; i < BuilderPlug.Me.Prefabs.Count; i++)
+			for(int i = 0; i < BuilderPlug.Me.Prefabs.Count; i++)
 			{
 				BuilderPlug.Prefab p = BuilderPlug.Me.Prefabs[i];
 
-				if (p.name == name)
+				if(p.name == name)
 				{
-					if (forceoverwrite == false && MessageBox.Show(this.Owner, "A prefab with that name already exists. Overwrite?", "", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+					if(forceoverwrite == false && MessageBox.Show(this.Owner, "A prefab with that name already exists. Overwrite?", "", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
 						return;
 					else
 						overwrite = i;
@@ -713,9 +713,9 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
             pf.lowertexture = LowerTextureTexture;
 			pf.lowerunpegged = LowerUnpegged;
 
-			if (overwrite == -1)
+			if(overwrite == -1)
 			{
-				if (position == -1)
+				if(position == -1)
 				{
 					BuilderPlug.Me.Prefabs.Add(pf);
 					prefabs.Items.Add(lvi);
@@ -738,7 +738,7 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 
         private void prefabload_Click(object sender, EventArgs e)
         {
-			if (prefabs.SelectedIndices.Count == 0) return;
+			if(prefabs.SelectedIndices.Count == 0) return;
 
 			loadingprefab = true;
 
@@ -798,7 +798,7 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 
 		private void prefabdelete_Click(object sender, EventArgs e)
 		{
-			if (prefabs.SelectedIndices.Count == 0) return;
+			if(prefabs.SelectedIndices.Count == 0) return;
 
 			BuilderPlug.Me.Prefabs.RemoveAt(prefabs.SelectedIndices[0]);
 			prefabs.Items.RemoveAt(prefabs.SelectedIndices[0]);
@@ -806,7 +806,7 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 
 		private void distinctbaseheights_CheckedChanged(object sender, EventArgs e)
 		{
-			if (distinctbaseheights.Checked)
+			if(distinctbaseheights.Checked)
 			{
 				floorbase.Enabled = false;
 				ceilingbase.Enabled = false;
@@ -822,7 +822,7 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 
 		private void autocurveflipping_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (autocurveflipping.SelectedIndex != splineflipping.SelectedIndex)
+			if(autocurveflipping.SelectedIndex != splineflipping.SelectedIndex)
 				splineflipping.SelectedIndex = autocurveflipping.SelectedIndex;
 
 			DoRedrawDisplay();
@@ -830,7 +830,7 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 
 		private void splineflipping_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			if (splineflipping.SelectedIndex != autocurveflipping.SelectedIndex)
+			if(splineflipping.SelectedIndex != autocurveflipping.SelectedIndex)
 				autocurveflipping.SelectedIndex = splineflipping.SelectedIndex;
 
 			DoRedrawDisplay();
@@ -838,33 +838,33 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 
 		private void floorheightmodification_CheckedChanged(object sender, EventArgs e)
 		{
-			if (floorheightmodification.Checked)
+			if(floorheightmodification.Checked)
 			{
 				floorheightmod.Enabled = true;
 
-				if (StairType != 0 || distinctbaseheights.Checked == false)	floorbase.Enabled = true;
+				if(StairType != 0 || distinctbaseheights.Checked == false)	floorbase.Enabled = true;
 			}
 			else
 			{
 				floorheightmod.Enabled = false;
 
-				if (StairType != 0 || distinctbaseheights.Checked == false)	floorbase.Enabled = false;
+				if(StairType != 0 || distinctbaseheights.Checked == false)	floorbase.Enabled = false;
 			}
 		}
 
 		private void ceilingheightmodification_CheckedChanged(object sender, EventArgs e)
 		{
-			if (ceilingheightmodification.Checked)
+			if(ceilingheightmodification.Checked)
 			{
 				ceilingheightmod.Enabled = true;
 
-				if (StairType != 0 || distinctbaseheights.Checked == false) ceilingbase.Enabled = true;
+				if(StairType != 0 || distinctbaseheights.Checked == false) ceilingbase.Enabled = true;
 			}
 			else
 			{
 				ceilingheightmod.Enabled = false;
 
-				if (StairType != 0 || distinctbaseheights.Checked == false) ceilingbase.Enabled = false;
+				if(StairType != 0 || distinctbaseheights.Checked == false) ceilingbase.Enabled = false;
 			}
 		}
 

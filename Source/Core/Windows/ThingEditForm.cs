@@ -149,7 +149,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 			// Keep this list
 			this.things = things;
-			if (things.Count > 1) this.Text = "Edit Things (" + things.Count + ")";
+			if(things.Count > 1) this.Text = "Edit Things (" + things.Count + ")";
 			hint.Visible = things.Count > 1; //mxd
 			hintlabel.Visible = things.Count > 1; //mxd
 			thingtype.UseMultiSelection = things.Count > 1; //mxd
@@ -228,7 +228,7 @@ namespace CodeImp.DoomBuilder.Windows
 				//mxd. Position
 				if(((int)t.Position.x).ToString() != posX.Text) posX.Text = "";
 				if(((int)t.Position.y).ToString() != posY.Text) posY.Text = "";
-				if (useabsoluteheight && t.Sector != null) 
+				if(useabsoluteheight && t.Sector != null) 
 				{
 					if(((int)Math.Round(Sector.GetFloorPlane(t.Sector).GetZ(t.Position) + t.Position.z)).ToString() != posZ.Text)
 						posZ.Text = "";
@@ -373,7 +373,7 @@ namespace CodeImp.DoomBuilder.Windows
 				// Apply all flags
 				foreach(CheckBox c in flags.Checkboxes)
 				{
-					switch (c.CheckState)
+					switch(c.CheckState)
 					{
 						case CheckState.Checked: t.SetFlag(c.Tag.ToString(), true); break;
 						case CheckState.Unchecked: t.SetFlag(c.Tag.ToString(), false); break;
@@ -382,7 +382,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 				// Action/tags
 				t.Tag = General.Clamp(tagSelector.GetSmartTag(t.Tag, tagoffset++), General.Map.FormatInterface.MinTag, General.Map.FormatInterface.MaxTag); //mxd
-				if (!action.Empty) t.Action = action.Value;
+				if(!action.Empty) t.Action = action.Value;
 
 				//mxd. Apply args
 				argscontrol.Apply(t);
@@ -592,11 +592,19 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			if(preventchanges) return;
 
-			string warn = ThingFlagsCompare.CheckThingEditFormFlags(flags.Checkboxes);
-			if(!string.IsNullOrEmpty(warn)) 
+			// Gather enabled flags
+			HashSet<string> activeflags = new HashSet<string>();
+			foreach(CheckBox cb in flags.Checkboxes)
+			{
+				if(cb.CheckState != CheckState.Unchecked) activeflags.Add(cb.Tag.ToString());
+			}
+
+			// Check em
+			List<string> warnings = ThingFlagsCompare.CheckFlags(activeflags);
+			if(warnings.Count > 0) 
 			{
 				//got missing flags
-				tooltip.SetToolTip(missingflags, warn);
+				tooltip.SetToolTip(missingflags, string.Join(Environment.NewLine, warnings.ToArray()));
 				missingflags.Visible = true;
 				settingsgroup.ForeColor = Color.DarkRed;
 				return;

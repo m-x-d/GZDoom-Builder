@@ -278,19 +278,19 @@ namespace CodeImp.DoomBuilder.Windows
 				if(l.Front != null)
 				{
 					//mxd
-					if (fronthigh.TextureName != l.Front.HighTexture) 
+					if(fronthigh.TextureName != l.Front.HighTexture) 
 					{
 						if(!fronthigh.Required && l.Front.HighRequired()) fronthigh.Required = true;
 						fronthigh.MultipleTextures = true; //mxd
 						fronthigh.TextureName = string.Empty;
 					}
-					if (frontmid.TextureName != l.Front.MiddleTexture) 
+					if(frontmid.TextureName != l.Front.MiddleTexture) 
 					{
 						if(!frontmid.Required && l.Front.MiddleRequired()) frontmid.Required = true;
 						frontmid.MultipleTextures = true; //mxd
 						frontmid.TextureName = string.Empty;
 					}
-					if (frontlow.TextureName != l.Front.LowTexture) 
+					if(frontlow.TextureName != l.Front.LowTexture) 
 					{
 						if(!frontlow.Required && l.Front.LowRequired()) frontlow.Required = true;
 						frontlow.MultipleTextures = true; //mxd
@@ -305,19 +305,19 @@ namespace CodeImp.DoomBuilder.Windows
 				if(l.Back != null)
 				{
 					//mxd
-					if (backhigh.TextureName != l.Back.HighTexture) 
+					if(backhigh.TextureName != l.Back.HighTexture) 
 					{
 						if(!backhigh.Required && l.Back.HighRequired()) backhigh.Required = true;
 						backhigh.MultipleTextures = true; //mxd
 						backhigh.TextureName = string.Empty;
 					}
-					if (backmid.TextureName != l.Back.MiddleTexture) 
+					if(backmid.TextureName != l.Back.MiddleTexture) 
 					{
 						if(!backmid.Required && l.Back.MiddleRequired()) backmid.Required = true;
 						backmid.MultipleTextures = true; //mxd
 						backmid.TextureName = string.Empty;
 					}
-					if (backlow.TextureName != l.Back.LowTexture) 
+					if(backlow.TextureName != l.Back.LowTexture) 
 					{
 						if(!backlow.Required && l.Back.LowRequired()) backlow.Required = true;
 						backlow.MultipleTextures = true; //mxd
@@ -373,9 +373,6 @@ namespace CodeImp.DoomBuilder.Windows
 		// Apply clicked
 		private void apply_Click(object sender, EventArgs e)
 		{
-			Sector s;
-			int index;
-			
 			// Verify the tag
 			if(General.Map.FormatInterface.HasLinedefTag)
 			{
@@ -420,13 +417,11 @@ namespace CodeImp.DoomBuilder.Windows
 				else if(frontside.CheckState == CheckState.Checked)
 				{
 					// Make sure we have a valid sector (make a new one if needed)
-					if(l.Front != null) index = l.Front.Sector.Index; else index = -1;
+					int index = (l.Front != null ? l.Front.Sector.Index : -1);
 					index = frontsector.GetResult(index);
 					if((index > -1) && (index < General.Map.Map.Sectors.Count))
 					{
-						s = General.Map.Map.GetSectorByIndex(index);
-						if(s == null) s = General.Map.Map.CreateSector();
-						
+						Sector s = (General.Map.Map.GetSectorByIndex(index) ?? General.Map.Map.CreateSector());
 						if(s != null)
 						{
 							// Create new sidedef?
@@ -447,12 +442,11 @@ namespace CodeImp.DoomBuilder.Windows
 				else if(backside.CheckState == CheckState.Checked)
 				{
 					// Make sure we have a valid sector (make a new one if needed)
-					if(l.Back != null) index = l.Back.Sector.Index; else index = -1;
+					int index = (l.Back != null ? l.Back.Sector.Index : -1);
 					index = backsector.GetResult(index);
 					if((index > -1) && (index < General.Map.Map.Sectors.Count))
 					{
-						s = General.Map.Map.GetSectorByIndex(index) ?? General.Map.Map.CreateSector();
-
+						Sector s = (General.Map.Map.GetSectorByIndex(index) ?? General.Map.Map.CreateSector());
 						if(s != null)
 						{
 							// Create new sidedef?

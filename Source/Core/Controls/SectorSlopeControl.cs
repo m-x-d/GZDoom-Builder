@@ -94,7 +94,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 		public void SetValues(float anglexy, float anglez, float offset, bool first) 
 		{
-			if (first) 
+			if(first) 
 			{
 				// Set values
 				this.anglexy = anglexy;

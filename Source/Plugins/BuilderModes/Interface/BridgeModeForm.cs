@@ -56,22 +56,22 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 //events
 		private void BezierPathForm_FormClosed(object sender, FormClosedEventArgs e) 
 		{
-			if (OnCancelClick != null) OnCancelClick(this, EventArgs.Empty);
+			if(OnCancelClick != null) OnCancelClick(this, EventArgs.Empty);
 		}
 
 		private void buttonCancel_Click(object sender, EventArgs e) 
 		{
-			if (OnCancelClick != null) OnCancelClick(this, EventArgs.Empty);
+			if(OnCancelClick != null) OnCancelClick(this, EventArgs.Empty);
 		}
 
 		private void buttonOK_Click(object sender, EventArgs e) 
 		{
-			if (OnOkClick != null) OnOkClick(this, EventArgs.Empty);
+			if(OnOkClick != null) OnOkClick(this, EventArgs.Empty);
 		}
 
 		private void nudSubdivisions_ValueChanged(object sender, EventArgs e) 
 		{
-			if (OnSubdivisionChanged != null) OnSubdivisionChanged(this, EventArgs.Empty);
+			if(OnSubdivisionChanged != null) OnSubdivisionChanged(this, EventArgs.Empty);
 		}
 
 		private void BezierPathForm_MouseLeave(object sender, EventArgs e) 
@@ -81,17 +81,17 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 
 		private void buttonFlip_Click(object sender, EventArgs e) 
 		{
-			if (OnFlipClick != null) OnFlipClick(this, EventArgs.Empty);
+			if(OnFlipClick != null) OnFlipClick(this, EventArgs.Empty);
 		}
 
 		private void cbCopy_CheckedChanged(object sender, EventArgs e) 
 		{
-			if (cbMirror.Checked && cbCopy.Checked) cbMirror.Checked = false;
+			if(cbMirror.Checked && cbCopy.Checked) cbMirror.Checked = false;
 		}
 
 		private void cbMirror_CheckStateChanged(object sender, EventArgs e) 
 		{
-			if (cbMirror.Checked && cbCopy.Checked) cbCopy.Checked = false;
+			if(cbMirror.Checked && cbCopy.Checked) cbCopy.Checked = false;
 		}
 	}
 }

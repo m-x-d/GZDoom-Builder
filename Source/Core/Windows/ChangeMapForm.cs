@@ -26,24 +26,20 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void LoadSettings() 
 		{
-			int scanindex, checkoffset;
-			int lumpsfound, lumpsrequired = 0;
-			string lumpname;
-			WAD wadfile;
-			
-			// Busy
-			Cursor.Current = Cursors.WaitCursor;
-
 			// Check if the file exists
 			if(!File.Exists(filepathname))
 			{
 				// WAD file does not exist
-				MessageBox.Show(this, "Could not open the WAD file: The file does not exist.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show(this, "Could not open the WAD file. The file does not exist.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
 				this.DialogResult = DialogResult.Cancel;
 				this.Close();
 				return;
 			}
-			
+
+			// Busy
+			Cursor.Current = Cursors.WaitCursor;
+
+			WAD wadfile;
 			try
 			{
 				// Open the WAD file
@@ -63,7 +59,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 			// Open the Map Settings configuration
 			string dbsfile = filepathname.Substring(0, filepathname.Length - 4) + ".dbs";
-			if (File.Exists(dbsfile))
+			if(File.Exists(dbsfile))
 			{
 				try
 				{
@@ -86,6 +82,7 @@ namespace CodeImp.DoomBuilder.Windows
 			IDictionary maplumpnames = ci.Configuration.ReadSetting("maplumpnames", new Hashtable());
 
 			// Count how many required lumps we have to find
+			int lumpsrequired = 0;
 			foreach(DictionaryEntry ml in maplumpnames) 
 			{
 				// Ignore the map header (it will not be found because the name is different)
@@ -98,21 +95,21 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			// Go for all the lumps in the wad
-			for(scanindex = 0; scanindex < (wadfile.Lumps.Count - 1); scanindex++) 
+			for(int scanindex = 0; scanindex < (wadfile.Lumps.Count - 1); scanindex++) 
 			{
 				// Make sure this lump is not part of the map
 				if(!maplumpnames.Contains(wadfile.Lumps[scanindex].Name)) 
 				{
 					// Reset check
-					lumpsfound = 0;
-					checkoffset = 1;
+					int lumpsfound = 0;
+					int checkoffset = 1;
 
 					// Continue while still within bounds and lumps are still recognized
 					while(((scanindex + checkoffset) < wadfile.Lumps.Count) &&
 						  maplumpnames.Contains(wadfile.Lumps[scanindex + checkoffset].Name)) 
 					{
 						// Count the lump when it is marked as required
-						lumpname = wadfile.Lumps[scanindex + checkoffset].Name;
+						string lumpname = wadfile.Lumps[scanindex + checkoffset].Name;
 						if(ci.Configuration.ReadSetting("maplumpnames." + lumpname + ".required", false))
 							lumpsfound++;
 
@@ -173,7 +170,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private void apply_Click(object sender, EventArgs e) 
 		{
 			// No map selected?
-			if (mapslist.SelectedItems.Count == 0)
+			if(mapslist.SelectedItems.Count == 0)
 			{
 				MessageBox.Show(this, "Please select a map to load for editing.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Warning);
 				mapslist.Focus();
@@ -181,7 +178,7 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			// Current map is already loaded
-			if (mapslist.SelectedItems[0].Text == options.LevelName)
+			if(mapslist.SelectedItems[0].Text == options.LevelName)
 			{
 				MessageBox.Show(this, "Map '" + options.LevelName + "' is already loaded.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Warning);
 				mapslist.Focus();

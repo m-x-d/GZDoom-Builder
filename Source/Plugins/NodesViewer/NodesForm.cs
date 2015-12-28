@@ -305,10 +305,13 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 			segangle.Text = Angle2D.RealToDoom(sg.angle) + "\u00B0";
 			segoffset.Text = sg.offset + " mp";
 
-			if (ld != null) { //mxd
+			if(ld != null) //mxd
+			{ 
 				sideindex.Text = sg.leftside ? ld.Back.Index.ToString() : ld.Front.Index.ToString();
 				sectorindex.Text = sg.leftside ? ld.Back.Sector.Index.ToString() : ld.Front.Sector.Index.ToString();
-			} else {
+			}
+			else
+			{
 				sideindex.Text = "None";
 				sectorindex.Text = "None";
 			}

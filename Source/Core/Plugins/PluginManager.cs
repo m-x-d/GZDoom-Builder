@@ -303,12 +303,12 @@ namespace CodeImp.DoomBuilder.Plugins
 		public void OnPresentDisplayBegin() { foreach(Plugin p in plugins) p.Plug.OnPresentDisplayBegin(); }
 
 		//mxd. Hilight events
-		public void OnHighlightSector(Sector s) { foreach (Plugin p in plugins) p.Plug.OnHighlightSector(s); }
-		public void OnHighlightLinedef(Linedef l) { foreach (Plugin p in plugins) p.Plug.OnHighlightLinedef(l); }
-		public void OnHighlightThing(Thing t) { foreach (Plugin p in plugins) p.Plug.OnHighlightThing(t); }
-		public void OnHighlightVertex(Vertex v) { foreach (Plugin p in plugins) p.Plug.OnHighlightVertex(v); }
-		public void OnHighlightRefreshed(object o) { foreach (Plugin p in plugins) p.Plug.OnHighlightRefreshed(o); }
-		public void OnHighlightLost() { foreach (Plugin p in plugins) p.Plug.OnHighlightLost(); }
+		public void OnHighlightSector(Sector s) { foreach(Plugin p in plugins) p.Plug.OnHighlightSector(s); }
+		public void OnHighlightLinedef(Linedef l) { foreach(Plugin p in plugins) p.Plug.OnHighlightLinedef(l); }
+		public void OnHighlightThing(Thing t) { foreach(Plugin p in plugins) p.Plug.OnHighlightThing(t); }
+		public void OnHighlightVertex(Vertex v) { foreach(Plugin p in plugins) p.Plug.OnHighlightVertex(v); }
+		public void OnHighlightRefreshed(object o) { foreach(Plugin p in plugins) p.Plug.OnHighlightRefreshed(o); }
+		public void OnHighlightLost() { foreach(Plugin p in plugins) p.Plug.OnHighlightLost(); }
 		
 		#endregion
 	}

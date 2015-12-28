@@ -234,7 +234,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			// Add slope things
 			if(form.UseVertexHeights && !General.Map.UDMF) 
 			{
-				foreach (Vector3D pos in newverts.Keys) 
+				foreach(Vector3D pos in newverts.Keys) 
 				{
 					Thing t = map.CreateThing();
 					General.Settings.ApplyDefaultThingSettings(t);
@@ -310,8 +310,6 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			using(StreamReader reader = File.OpenText(path)) 
 			{
 				string line;
-				float x, y, z;
-				int px, py, pz;
 				int counter = 0;
 				float picoarse = (float)Math.Round(Angle2D.PI, 3);
 
@@ -323,6 +321,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 					{
 						string[] parts = line.Split(space, StringSplitOptions.RemoveEmptyEntries);
 
+						float x, y, z;
 						if(parts.Length != 4 || !float.TryParse(parts[1], NumberStyles.Float, CultureInfo.InvariantCulture, out x) ||
 							!float.TryParse(parts[2], NumberStyles.Float, CultureInfo.InvariantCulture, out y) ||
 							!float.TryParse(parts[3], NumberStyles.Float, CultureInfo.InvariantCulture, out z)) 
@@ -332,7 +331,8 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 						}
 
 						//apply up axis
-						switch (axis) 
+						int px, py, pz;
+						switch(axis) 
 						{
 							case UpAxis.Y:
 								px = (int)Math.Round(x * scale);

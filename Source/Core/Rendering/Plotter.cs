@@ -93,25 +93,24 @@ namespace CodeImp.DoomBuilder.Rendering
 			int x2 = x + size;
 			int y1 = y - size;
 			int y2 = y + size;
-			int xp, yp;
 
 			// Do unchecked?
 			if((x1 >= 0) && (x2 < visiblewidth) && (y1 >= 0) && (y2 < visibleheight))
 			{
 				// Filled square
-				for(yp = y1; yp <= y2; yp++)
-					for(xp = x1; xp <= x2; xp++)
+				for(int yp = y1; yp <= y2; yp++)
+					for(int xp = x1; xp <= x2; xp++)
 						pixels[yp * width + xp] = c;
 
 				// Vertical edges
-				for(yp = y1 + 1; yp <= y2 - 1; yp++)
+				for(int yp = y1 + 1; yp <= y2 - 1; yp++)
 				{
 					pixels[yp * width + x1] = l;
 					pixels[yp * width + x2] = d;
 				}
 
 				// Horizontal edges
-				for(xp = x1 + 1; xp <= x2 - 1; xp++)
+				for(int xp = x1 + 1; xp <= x2 - 1; xp++)
 				{
 					pixels[y1 * width + xp] = l;
 					pixels[y2 * width + xp] = d;
@@ -159,10 +158,10 @@ namespace CodeImp.DoomBuilder.Rendering
 			x1 = General.Clamp(x1 >> 1, 0, numpixels - 1);
 			x2 = General.Clamp(x2 >> 1, 0, numpixels - 1);
 			
-			if ((y >= 0) && (y < height))
+			if((y >= 0) && (y < height))
 			{
 				// Draw all pixels on this line
-				for (int i = x1; i < x2; i++) pixels[ywidth + ((i << 1) | offset)] = c;
+				for(int i = x1; i < x2; i++) pixels[ywidth + ((i << 1) | offset)] = c;
 			}
 		}
 
@@ -177,15 +176,13 @@ namespace CodeImp.DoomBuilder.Rendering
 			if((x >= 0) && (x < width))
 			{
 				// Draw all pixels on this line
-				for (int i = y1; i < y2; i++) pixels[((i << 1) | offset) * width + x] = c;
+				for(int i = y1; i < y2; i++) pixels[((i << 1) | offset) * width + x] = c;
 			}
 		}
 
 		// This draws a pixel alpha blended
 		public void DrawPixelAlpha(int x, int y, ref PixelColor c)
 		{
-			float a;
-
 			// Draw only when within range
 			if((x >= 0) && (x < visiblewidth) && (y >= 0) && (y < visibleheight))
 			{
@@ -201,7 +198,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				else
 				{
 					// Blend with pixel
-					a = c.a * 0.003921568627450980392156862745098f;
+					float a = c.a * 0.003921568627450980392156862745098f;
 					if(p->a + c.a > 255) p->a = 255; else p->a += c.a;
 					p->r = (byte)(p->r * (1f - a) + c.r * a);
 					p->g = (byte)(p->g * (1f - a) + c.g * a);
@@ -214,8 +211,6 @@ namespace CodeImp.DoomBuilder.Rendering
 		// See: http://en.wikipedia.org/wiki/Bresenham%27s_line_algorithm
 		public void DrawLineSolid(int x1, int y1, int x2, int y2, ref PixelColor c)
 		{
-			int i;
-
 			// Check if the line is outside the screen for sure.
 			// This is quickly done by checking in which area both points are. When this
 			// is above, below, right or left of the screen, then skip drawing the line.
@@ -256,7 +251,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				// Check if the line is more horizontal than vertical
 				if(dxabs >= dyabs)
 				{
-					for(i = 0; i < dxabs; i++)
+					for(int i = 0; i < dxabs; i++)
 					{
 						y += dyabs;
 						if(y >= dxabs)
@@ -273,7 +268,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				// Else the line is more vertical than horizontal
 				else
 				{
-					for(i = 0; i < dyabs; i++)
+					for(int i = 0; i < dyabs; i++)
 					{
 						x += dxabs;
 						if(x >= dyabs)
@@ -297,7 +292,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				// Check if the line is more horizontal than vertical
 				if(dxabs >= dyabs)
 				{
-					for(i = 0; i < dxabs; i++)
+					for(int i = 0; i < dxabs; i++)
 					{
 						y += dyabs;
 						if(y >= dxabs)
@@ -315,7 +310,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				// Else the line is more vertical than horizontal
 				else
 				{
-					for(i = 0; i < dyabs; i++)
+					for(int i = 0; i < dyabs; i++)
 					{
 						x += dxabs;
 						if(x >= dyabs)

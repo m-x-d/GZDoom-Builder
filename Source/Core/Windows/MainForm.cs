@@ -722,16 +722,16 @@ namespace CodeImp.DoomBuilder.Windows
 		//mxd
 		private void OnDragDrop(object sender, DragEventArgs e) 
 		{
-			if (e.Data.GetDataPresent(DataFormats.FileDrop)) 
+			if(e.Data.GetDataPresent(DataFormats.FileDrop)) 
 			{
 				string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
-				if (filePaths.Length != 1) 
+				if(filePaths.Length != 1) 
 				{
 					General.Interface.DisplayStatus(StatusType.Warning, "Cannot open multiple files at once!");
 					return;
 				}
 
-				if (!File.Exists(filePaths[0])) 
+				if(!File.Exists(filePaths[0])) 
 				{
 					General.Interface.DisplayStatus(StatusType.Warning, "Cannot open '" + filePaths[0] + "': file does not exist!");
 					return;
@@ -1493,7 +1493,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 				//mxd. Add engine selector
 				ToolStripMenuItem menuitem = new ToolStripMenuItem("Engine:", Resources.Marine);
-				for (int i = 0; i < General.Map.ConfigSettings.TestEngines.Count; i++) 
+				for(int i = 0; i < General.Map.ConfigSettings.TestEngines.Count; i++) 
 				{
 					ToolStripMenuItem engineItem = new ToolStripMenuItem(General.Map.ConfigSettings.TestEngines[i].TestProgramName);
 					engineItem.Tag = i;
@@ -1744,7 +1744,7 @@ namespace CodeImp.DoomBuilder.Windows
 			((LinedefColorPreset)item.Tag).Enabled = item.Checked;
 
 			List<string> enablednames = new List<string>();
-			foreach (LinedefColorPreset p in General.Map.ConfigSettings.LinedefColorPresets)
+			foreach(LinedefColorPreset p in General.Map.ConfigSettings.LinedefColorPresets)
 			{
 				if(p.Enabled) enablednames.Add(p.Name);
 			}
@@ -1929,7 +1929,7 @@ namespace CodeImp.DoomBuilder.Windows
 				if(!(button is ToolStripSeparator)) button.VisibleChanged -= buttonvisiblechangedhandler;
 
 				//mxd. Remove button from toolbars
-				switch (buttoninfo.section) 
+				switch(buttoninfo.section) 
 				{
 					case ToolbarSection.Modes:
 						modestoolbar.Items.Remove(button);
@@ -2514,8 +2514,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private void CreateRecentFiles()
 		{
 			bool anyitems = false;
-			string filename;
-			
+
 			// Where to insert
 			int insertindex = menufile.DropDownItems.IndexOf(itemnorecent);
 			
@@ -2530,7 +2529,7 @@ namespace CodeImp.DoomBuilder.Windows
 				menufile.DropDownItems.Insert(insertindex + i, recentitems[i]);
 
 				// Get configuration setting
-				filename = General.Settings.ReadSetting("recentfiles.file" + i, "");
+				string filename = General.Settings.ReadSetting("recentfiles.file" + i, "");
 				if(filename != "" && File.Exists(filename))
 				{
 					// Set up item
@@ -2570,7 +2569,7 @@ namespace CodeImp.DoomBuilder.Windows
 		internal void AddRecentFile(string filename)
 		{
 			//mxd. Recreate recent files list
-			if (recentitems.Length != General.Settings.MaxRecentFiles) 
+			if(recentitems.Length != General.Settings.MaxRecentFiles) 
 			{
 				foreach(ToolStripMenuItem item in recentitems)
 					menufile.DropDownItems.Remove(item);
@@ -2615,8 +2614,6 @@ namespace CodeImp.DoomBuilder.Windows
 		// This returns the trimmed file/path string
 		private string GetDisplayFilename(string filename)
 		{
-			string newname;
-			
 			// String doesnt fit?
 			if(GetStringWidth(filename) > MAX_RECENT_FILES_PIXELS)
 			{
@@ -2624,7 +2621,7 @@ namespace CodeImp.DoomBuilder.Windows
 				for(int i = filename.Length - 6; i >= 0; i--)
 				{
 					// Does it fit now?
-					newname = filename.Substring(0, 3) + "..." + filename.Substring(filename.Length - i, i);
+					string newname = filename.Substring(0, 3) + "..." + filename.Substring(filename.Length - i, i);
 					if(GetStringWidth(newname) <= MAX_RECENT_FILES_PIXELS) return newname;
 				}
 
@@ -2706,7 +2703,7 @@ namespace CodeImp.DoomBuilder.Windows
 		//mxd
 		private void menuedit_DropDownOpening(object sender, EventArgs e) 
 		{
-			if (General.Map == null) 
+			if(General.Map == null) 
 			{
 				selectGroup.Enabled = false;
 				clearGroup.Enabled = false;
@@ -2722,7 +2719,7 @@ namespace CodeImp.DoomBuilder.Windows
 			//update "Add to group" menu
 			addToGroup.Enabled = true;
 			addToGroup.DropDownItems.Clear();
-			foreach (GroupInfo gi in infos) 
+			foreach(GroupInfo gi in infos) 
 			{
 				item = addToGroup.DropDownItems.Add(gi.ToString());
 				item.Tag = "builder_assigngroup" + gi.Index;
@@ -2731,7 +2728,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 			//update "Select group" menu
 			selectGroup.DropDownItems.Clear();
-			foreach (GroupInfo gi in infos) 
+			foreach(GroupInfo gi in infos) 
 			{
 				if(gi.Empty) continue;
 				item = selectGroup.DropDownItems.Add(gi.ToString());
@@ -2994,10 +2991,9 @@ namespace CodeImp.DoomBuilder.Windows
 
 				actionTitles.Sort();
 
-				Actions.Action a;
 				foreach(string title in actionTitles) 
 				{
-					a = actionsByTitle[title];
+					Actions.Action a = actionsByTitle[title];
 					List<string> modifiers = new List<string>();
 
 					html.AppendLine("<tr>");
@@ -3172,9 +3168,9 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			//pick a valid folder
 			string folder = General.Settings.ScreenshotsPath;
-			if (!Directory.Exists(folder)) 
+			if(!Directory.Exists(folder)) 
 			{
-				if (folder != General.DefaultScreenshotsPath 
+				if(folder != General.DefaultScreenshotsPath 
 					&& General.ShowErrorMessage("Screenshots save path '" + folder 
 					+ "' does not exist!\nPress OK to save to the default folder ('" 
 					+ General.DefaultScreenshotsPath 
@@ -3193,7 +3189,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 			if(activeControlOnly)
 			{
-				if (Form.ActiveForm != null && Form.ActiveForm != this)
+				if(Form.ActiveForm != null && Form.ActiveForm != this)
 				{
 					name = mapname + " (" + Form.ActiveForm.Text + ") at ";
 					bounds = (Form.ActiveForm.WindowState == FormWindowState.Maximized ? 
@@ -3241,12 +3237,12 @@ namespace CodeImp.DoomBuilder.Windows
 						info = General.Map.FileTitle + " | " + General.Map.Options.CurrentName + " | ";
 
 						//get map coordinates
-						if (General.Editing.Mode is ClassicMode) 
+						if(General.Editing.Mode is ClassicMode) 
 						{
 							Vector2D pos = ((ClassicMode) General.Editing.Mode).MouseMapPos;
 
 							//mouse inside the view?
-							if (pos.IsFinite()) 
+							if(pos.IsFinite()) 
 							{
 								info += "X:" + Math.Round(pos.x) + " Y:" + Math.Round(pos.y);
 							} 
@@ -3464,7 +3460,7 @@ namespace CodeImp.DoomBuilder.Windows
 		//mxd
 		public void ShowHints(string hintsText) 
 		{
-			if (!string.IsNullOrEmpty(hintsText)) 
+			if(!string.IsNullOrEmpty(hintsText)) 
 			{
 				hintsPanel.SetHints(hintsText);
 			} 
@@ -3524,7 +3520,7 @@ namespace CodeImp.DoomBuilder.Windows
 				LinedefActionInfo act = General.Map.Config.LinedefActions[l.Action];
 				labelcollapsedinfo.Text = act.ToString();
 			} 
-			else if (l.Action == 0)
+			else if(l.Action == 0)
 			{
 				labelcollapsedinfo.Text = l.Action + " - None";
 			}
@@ -3542,7 +3538,7 @@ namespace CodeImp.DoomBuilder.Windows
 		// Show vertex info
 		public void ShowVertexInfo(Vertex v) 
 		{
-			if (v.IsDisposed) 
+			if(v.IsDisposed) 
 			{
 				HideInfo();
 				return;
@@ -3554,10 +3550,10 @@ namespace CodeImp.DoomBuilder.Windows
 			console.Visible = console.AlwaysOnTop; //mxd
 #endif
 			statistics.Visible = false; //mxd
-			if (linedefinfo.Visible) linedefinfo.Hide();
-			if (sectorinfo.Visible) sectorinfo.Hide();
-			if (thinginfo.Visible) thinginfo.Hide();
-			if (IsInfoPanelExpanded) vertexinfo.ShowInfo(v);
+			if(linedefinfo.Visible) linedefinfo.Hide();
+			if(sectorinfo.Visible) sectorinfo.Hide();
+			if(thinginfo.Visible) thinginfo.Hide();
+			if(IsInfoPanelExpanded) vertexinfo.ShowInfo(v);
 
 			// Show info on collapsed label
 			labelcollapsedinfo.Text = v.Position.x.ToString("0.##") + ", " + v.Position.y.ToString("0.##");
@@ -3576,7 +3572,7 @@ namespace CodeImp.DoomBuilder.Windows
 		// Show sector info
 		public void ShowSectorInfo(Sector s, bool highlightceiling, bool highlightfloor) 
 		{
-			if (s.IsDisposed) 
+			if(s.IsDisposed) 
 			{
 				HideInfo();
 				return;
@@ -3588,9 +3584,9 @@ namespace CodeImp.DoomBuilder.Windows
 			console.Visible = console.AlwaysOnTop; //mxd
 #endif
 			statistics.Visible = false; //mxd
-			if (linedefinfo.Visible) linedefinfo.Hide();
-			if (vertexinfo.Visible) vertexinfo.Hide();
-			if (thinginfo.Visible) thinginfo.Hide();
+			if(linedefinfo.Visible) linedefinfo.Hide();
+			if(vertexinfo.Visible) vertexinfo.Hide();
+			if(thinginfo.Visible) thinginfo.Hide();
 			if(IsInfoPanelExpanded) sectorinfo.ShowInfo(s, highlightceiling, highlightfloor); //mxd
 
 			// Show info on collapsed label
@@ -3809,7 +3805,7 @@ namespace CodeImp.DoomBuilder.Windows
 		//mxd
 		private void EditForm_OnValuesChanged(object sender, EventArgs e) 
 		{
-			if (OnEditFormValuesChanged != null) 
+			if(OnEditFormValuesChanged != null) 
 			{
 				OnEditFormValuesChanged(sender, e);
 			} 
@@ -3848,10 +3844,10 @@ namespace CodeImp.DoomBuilder.Windows
 				case (int)ThreadMessages.SpriteDataLoaded: //mxd
 					string spritename = Marshal.PtrToStringAuto(m.WParam);
 					Marshal.FreeCoTaskMem(m.WParam);
-					if ((General.Map != null) && (General.Map.Data != null))
+					if((General.Map != null) && (General.Map.Data != null))
 					{
 						ImageData img = General.Map.Data.GetSpriteImage(spritename);
-						if (img != null && img.UsedInMap && !img.IsDisposed)
+						if(img != null && img.UsedInMap && !img.IsDisposed)
 						{
 							DelayedRedraw();
 						}

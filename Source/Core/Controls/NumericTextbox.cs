@@ -104,7 +104,7 @@ namespace CodeImp.DoomBuilder.Controls
 				//mxd. Check if * or / is pressed
 				if(e.KeyChar == '*' || e.KeyChar == '/') 
 				{
-					if (this.SelectionStart - 1 > -1) e.Handled = true; //only valid when at the start of the text
+					if(this.SelectionStart - 1 > -1) e.Handled = true; //only valid when at the start of the text
 				}
 				// Check if + or - is pressed
 				else if((e.KeyChar == '+') || (e.KeyChar == '-'))
@@ -270,7 +270,7 @@ namespace CodeImp.DoomBuilder.Controls
 					// Divide original by number
 					float resultf;
 					float.TryParse(textpart, NumberStyles.Float, CultureInfo.CurrentCulture, out resultf);
-					if (resultf == 0) return original;
+					if(resultf == 0) return original;
 					int newvalue = (int)Math.Round(original / resultf);
 					if(!allownegative && (newvalue < 0)) newvalue = 0;
 					return newvalue;
@@ -374,7 +374,7 @@ namespace CodeImp.DoomBuilder.Controls
 		public void UpdateTextboxStyle(string tip) 
 		{
 			this.ForeColor = (allowrelative ? SystemColors.HotTrack : SystemColors.WindowText);
-			if (allowrelative)
+			if(allowrelative)
 			{
 				tooltip.SetToolTip(this, "Use ++ or -- prefixes to change by given value." + Environment.NewLine +
 					"Use +++ or --- prefixes to incrementally change by given value." + Environment.NewLine + 

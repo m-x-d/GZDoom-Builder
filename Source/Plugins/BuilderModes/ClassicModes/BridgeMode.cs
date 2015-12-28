@@ -120,9 +120,9 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 			base.OnSelectBegin();
 
 			//check if control handle is selected
-			for (int i = 0; i < 4; i++) 
+			for(int i = 0; i < 4; i++) 
 			{
-				if (mousemappos.x <= controlHandles[i].Position.x + GRIP_SIZE 
+				if(mousemappos.x <= controlHandles[i].Position.x + GRIP_SIZE 
 					&& mousemappos.x >= controlHandles[i].Position.x - GRIP_SIZE 
 					&& mousemappos.y <= controlHandles[i].Position.y + GRIP_SIZE 
 					&& mousemappos.y >= controlHandles[i].Position.y - GRIP_SIZE) 
@@ -149,13 +149,13 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 			base.OnMouseMove(e);
 			if(panning) return; //mxd. Skip all this jass while panning
 
-			if (curControlHandle != -1) 
+			if(curControlHandle != -1) 
 			{
 				ControlHandle handle = controlHandles[curControlHandle];
 				
 				handle.Position = (snaptogrid ? General.Map.Grid.SnappedToGrid(mousemappos) : mousemappos);
 
-				if (form.MirrorMode) 
+				if(form.MirrorMode) 
 				{
 					Vector2D pos = handle.RelativePosition;
 					//handle angle
@@ -167,7 +167,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 
 					handle.Pair.RelativePosition = new Vector2D((float)Math.Sin(mirroredAngle) * length, (float)Math.Cos(mirroredAngle) * length);
 				} 
-				else if (form.CopyMode) 
+				else if(form.CopyMode) 
 				{
 					handle.Pair.RelativePosition = handle.RelativePosition;
 				}    
@@ -184,20 +184,18 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 			//get vertices
 			List<List<Vector2D[]>> shapes = GetShapes();
 			List<List<List<DrawnVertex>>> drawShapes = new List<List<List<DrawnVertex>>>();
-			List<List<DrawnVertex>> shapesRow;
-			List<DrawnVertex> points;
 
 			//set stitch range
 			float stitchrange = BuilderPlug.Me.StitchRange;
 			BuilderPlug.Me.StitchRange = 0.1f;
 
-			for (int i = 0; i < shapes.Count; i++) 
+			for(int i = 0; i < shapes.Count; i++) 
 			{
-				shapesRow = new List<List<DrawnVertex>>();
-				for (int c = 0; c < shapes[i].Count; c++) 
+				List<List<DrawnVertex>> shapesRow = new List<List<DrawnVertex>>();
+				for(int c = 0; c < shapes[i].Count; c++) 
 				{
-					points = new List<DrawnVertex>();
-					for (int p = 0; p < shapes[i][c].Length; p++)
+					List<DrawnVertex> points = new List<DrawnVertex>();
+					for(int p = 0; p < shapes[i][c].Length; p++)
 						points.Add(DrawGeometryMode.GetCurrentPosition(shapes[i][c][p], true, false, false, renderer, points));
 					shapesRow.Add(points);
 				}
@@ -208,7 +206,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 			BuilderPlug.Me.StitchRange = stitchrange;
 
 			//draw lines
-			if (drawShapes.Count > 0) 
+			if(drawShapes.Count > 0) 
 			{
 				// Make undo for the draw
 				General.Map.UndoRedo.CreateUndo("Bridge ("+form.Subdivisions+" subdivisions)");
@@ -218,23 +216,23 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 				
 				//create sector properties collection
 				//sector row
-				for (int i = 0; i < drawShapes.Count; i++) 
+				for(int i = 0; i < drawShapes.Count; i++) 
 				{
 					sectorProps.Add(new List<SectorProperties>());
 					
 					//sector in row
-					for (int c = 0; c < drawShapes[i].Count; c++)
+					for(int c = 0; c < drawShapes[i].Count; c++)
 						sectorProps[i].Add(GetSectorProperties(i, c));
 				}
 
 				// Make the drawing
 				//sector row
-				for (int i = 0; i < drawShapes.Count; i++) 
+				for(int i = 0; i < drawShapes.Count; i++) 
 				{
 					newSectors.Add(new List<List<Sector>>());
 
 					//sector in row
-					for (int c = 0; c < drawShapes[i].Count; c++) 
+					for(int c = 0; c < drawShapes[i].Count; c++) 
 					{
 						if(!Tools.DrawLines(drawShapes[i][c], false, true)) 
 						{
@@ -250,7 +248,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 						newSectors[i].Add(newsectors);
 
 						//set floor/ceiling heights and brightness
-						foreach (Sector s in newsectors) 
+						foreach(Sector s in newsectors) 
 						{
 							SectorProperties sp = sectorProps[i][c];
 							s.Brightness = sp.Brightness;
@@ -262,18 +260,18 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 
 				//apply textures
 				//sector row
-				for (int i = 0; i < newSectors.Count; i++) 
+				for(int i = 0; i < newSectors.Count; i++) 
 				{
 					//sector in row
-					for (int c = 0; c < newSectors[i].Count; c++) 
+					for(int c = 0; c < newSectors[i].Count; c++) 
 					{
-						foreach (Sector s in newSectors[i][c]) 
+						foreach(Sector s in newSectors[i][c]) 
 						{
 							foreach(Sidedef sd in s.Sidedefs)
 							{
-								if (sd.LowRequired())
+								if(sd.LowRequired())
 									sd.SetTextureLow(sectorProps[i][c].LowTexture);
-								if (sd.HighRequired())
+								if(sd.HighRequired())
 									sd.SetTextureHigh(sectorProps[i][c].HighTexture);    
 							}
 						}
@@ -282,20 +280,20 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 
 				//apply textures to front/back sides of shape
 				//sector row
-				for (int i = 0; i < newSectors.Count; i++) 
+				for(int i = 0; i < newSectors.Count; i++) 
 				{
 					//first/last sector in row
-					for (int c = 0; c < newSectors[i].Count; c += newSectors[i].Count-1) 
+					for(int c = 0; c < newSectors[i].Count; c += newSectors[i].Count-1) 
 					{
-						foreach (Sector s in newSectors[i][c]) 
+						foreach(Sector s in newSectors[i][c]) 
 						{
-							foreach (Sidedef sd in s.Sidedefs) 
+							foreach(Sidedef sd in s.Sidedefs) 
 							{
-								if (sd.Other != null) 
+								if(sd.Other != null) 
 								{
-									if (sd.Other.LowRequired() && sd.Other.LowTexture == "-")
+									if(sd.Other.LowRequired() && sd.Other.LowTexture == "-")
 										sd.Other.SetTextureLow(sectorProps[i][c].LowTexture);
-									if (sd.Other.HighRequired() && sd.Other.HighTexture == "-")
+									if(sd.Other.HighRequired() && sd.Other.HighTexture == "-")
 										sd.Other.SetTextureHigh(sectorProps[i][c].HighTexture);
 								}
 							}
@@ -322,7 +320,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 			}
 
 			//close form
-			if (form != null) form.Close();
+			if(form != null) form.Close();
 
 			// Done
 			Cursor.Current = Cursors.Default;
@@ -338,7 +336,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 			base.OnCancel();
 
 			//close form
-			if (form != null) form.Dispose();
+			if(form != null) form.Dispose();
 
 			// Return to original mode
 			General.Editing.ChangeMode(General.Editing.PreviousStableMode.Name);
@@ -348,14 +346,14 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 		public override void OnKeyUp(KeyEventArgs e) 
 		{
 			base.OnKeyUp(e);
-			if (snaptogrid != (General.Interface.ShiftState ^ General.Interface.SnapToGrid)) Update();
+			if(snaptogrid != (General.Interface.ShiftState ^ General.Interface.SnapToGrid)) Update();
 		}
 
 		// When a key is pressed
 		public override void OnKeyDown(KeyEventArgs e) 
 		{
 			base.OnKeyDown(e);
-			if (snaptogrid != (General.Interface.ShiftState ^ General.Interface.SnapToGrid)) Update();
+			if(snaptogrid != (General.Interface.ShiftState ^ General.Interface.SnapToGrid)) Update();
 		}
 
 		// This redraws the display
@@ -364,7 +362,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 			renderer.RedrawSurface();
 
 			// Render lines
-			if (renderer.StartPlotter(true)) 
+			if(renderer.StartPlotter(true)) 
 			{
 				renderer.PlotLinedefSet(General.Map.Map.Linedefs);
 				renderer.PlotVerticesSet(General.Map.Map.Vertices);
@@ -372,7 +370,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 			}
 
 			// Render things
-			if (renderer.StartThings(true)) 
+			if(renderer.StartThings(true)) 
 			{
 				renderer.RenderThingSet(General.Map.Map.Things, Presentation.THINGS_ALPHA);
 				renderer.Finish();
@@ -394,7 +392,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 		//this checks if initial data is valid
 		private bool Setup(List<Line> lines) 
 		{
-			if (!SetupPointGroups(lines)) return false;
+			if(!SetupPointGroups(lines)) return false;
 
 			//setup control handles
 			Vector2D center1 = CurveTools.GetPointOnLine(pointGroup1[0], pointGroup1[segmentsCount - 1], 0.5f);
@@ -424,32 +422,31 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 
 		private void Update() 
 		{
-			if (renderer.StartOverlay(true)) 
+			if(renderer.StartOverlay(true)) 
 			{
 				snaptogrid = General.Interface.ShiftState ^ General.Interface.SnapToGrid;
 				
 				PixelColor linesColor = snaptogrid ? General.Colors.Selection : General.Colors.Highlight;
 				
 				//draw curves
-				Vector2D cp1, cp2;
 				curves = new List<Vector2D[]>();
 
-				for (int i = 0; i < segmentsCount; i++) 
+				for(int i = 0; i < segmentsCount; i++) 
 				{
-					cp1 = CurveTools.GetPointOnLine(controlHandles[0].Position, controlHandles[2].Position, relLenGroup1[i]);
-					cp2 = CurveTools.GetPointOnLine(controlHandles[1].Position, controlHandles[3].Position, relLenGroup2[i]);
+					Vector2D cp1 = CurveTools.GetPointOnLine(controlHandles[0].Position, controlHandles[2].Position, relLenGroup1[i]);
+					Vector2D cp2 = CurveTools.GetPointOnLine(controlHandles[1].Position, controlHandles[3].Position, relLenGroup2[i]);
 					curves.Add(CurveTools.GetCubicCurve(pointGroup1[i], pointGroup2[i], cp1, cp2, form.Subdivisions));
 
-					for (int c = 1; c < curves[i].Length; c++)
+					for(int c = 1; c < curves[i].Length; c++)
 						renderer.RenderLine(curves[i][c - 1], curves[i][c], LINE_THICKNESS, linesColor, true);
 				}
 
 				//draw connecting lines
-				if (form.Subdivisions > 1) 
+				if(form.Subdivisions > 1) 
 				{
-					for (int i = 1; i < segmentsCount; i++) 
+					for(int i = 1; i < segmentsCount; i++) 
 					{
-						for (int c = 1; c < form.Subdivisions; c++) 
+						for(int c = 1; c < form.Subdivisions; c++) 
 						{
 							renderer.RenderLine(curves[i-1][c], curves[i][c], LINE_THICKNESS, linesColor, true);
 						}
@@ -461,7 +458,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 
 				foreach(Vector2D[] points in curves)
 				{
-					for (int i = 1; i < points.Length - 1; i++ ) 
+					for(int i = 1; i < points.Length - 1; i++ ) 
 					{
 						renderer.RenderRectangleFilled(new RectangleF(points[i].x - vsize, points[i].y - vsize, vsize * 2.0f, vsize * 2.0f), linesColor, true);
 					}
@@ -476,7 +473,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 				//draw handles
 				float gripsize = GRIP_SIZE / renderer.Scale;
 
-				for (int i = 0; i < 4; i++) 
+				for(int i = 0; i < 4; i++) 
 				{
 					RectangleF handleRect = new RectangleF(controlHandles[i].Position.x - gripsize * 0.5f, controlHandles[i].Position.y - gripsize * 0.5f, gripsize, gripsize);
 					renderer.RenderRectangleFilled(handleRect, General.Colors.Background, true);
@@ -509,11 +506,11 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 		{
 			List<List<Vector2D[]>> shapes = new List<List<Vector2D[]>>();
 
-			for (int i = 1; i < segmentsCount; i++) 
+			for(int i = 1; i < segmentsCount; i++) 
 			{
 				List<Vector2D[]> segShapes = new List<Vector2D[]>();
 
-				for (int c = 1; c <= form.Subdivisions; c++) 
+				for(int c = 1; c <= form.Subdivisions; c++) 
 				{
 					Vector2D p0 = curves[i - 1][c - 1];
 					Vector2D p1 = curves[i - 1][c];
@@ -541,17 +538,14 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 			float length = Vector2D.Distance(pointGroup[0], pointGroup[segmentsCount - 1]);
 			float angle = (float)Math.Atan2(pointGroup[0].y - pointGroup[segmentsCount - 1].y, pointGroup[0].x - pointGroup[segmentsCount - 1].x);
 
-			float curAngle, diff, segLen;
-			Vector2D p0, p1;
-
 			//get relative length of every line
-			for (int i = 1; i < pointGroup.Length - 1; i++) 
+			for(int i = 1; i < pointGroup.Length - 1; i++) 
 			{
-				p0 = pointGroup[i - 1];
-				p1 = pointGroup[i];
-				curAngle = (float)Math.Atan2(p0.y - p1.y, p0.x - p1.x);
-				diff = (angle + Angle2D.PI) - (curAngle + Angle2D.PI);
-				segLen = (int)(Vector2D.Distance(p0, p1) * Math.Cos(diff));
+				Vector2D p0 = pointGroup[i - 1];
+				Vector2D p1 = pointGroup[i];
+				float curAngle = (float)Math.Atan2(p0.y - p1.y, p0.x - p1.x);
+				float diff = (angle + Angle2D.PI) - (curAngle + Angle2D.PI);
+				float segLen = (int)(Vector2D.Distance(p0, p1) * Math.Cos(diff));
 				relLenGroup[i] = relLenGroup[i - 1] + segLen / length;
 			}
 
@@ -581,7 +575,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 			float ch1 = (line2.End.x - line2.Start.x) * (line1.Start.y - line2.Start.y) - (line2.End.y - line2.Start.y) * (line1.Start.x - line2.Start.x);
 			float ch2 = (line1.End.x - line1.Start.x) * (line1.Start.y - line2.Start.y) - (line1.End.y - line1.Start.y) * (line1.Start.x - line2.Start.x);
 
-			if (zn == 0) return false;
+			if(zn == 0) return false;
 			return (ch1 / zn <= 1 && ch1 / zn >= 0) && (ch2 / zn <= 1 && ch2 / zn >= 0);
 		}
 
@@ -593,32 +587,32 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 		private bool SetupPointGroups(List<Line> linesList) 
 		{
 			//find prev/next lines for each line
-			for (int i = 0; i < linesList.Count; i++) 
+			for(int i = 0; i < linesList.Count; i++) 
 			{
 				Line curLine = linesList[i];
 
-				for (int c = 0; c < linesList.Count; c++) 
+				for(int c = 0; c < linesList.Count; c++) 
 				{
-					if (c != i) //don't wanna play with ourselves :)
+					if(c != i) //don't wanna play with ourselves :)
 					{
 						Line line = linesList[c];
 
 						//check start and end points
-						if (curLine.Start == line.Start) 
+						if(curLine.Start == line.Start) 
 						{
 							line.Invert();
 							curLine.Previous = line;
 						} 
-						else if (curLine.Start == line.End) 
+						else if(curLine.Start == line.End) 
 						{
 							curLine.Previous = line;
 						} 
-						else if (curLine.End == line.End) 
+						else if(curLine.End == line.End) 
 						{
 							line.Invert();
 							curLine.Next = line;
 						} 
-						else if (curLine.End == line.Start) 
+						else if(curLine.End == line.Start) 
 						{
 							curLine.Next = line;
 						}
@@ -630,11 +624,11 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 			List<List<Line>> sortedLines = new List<List<Line>>();
 
 			//now find start lines
-			for (int i = 0; i < linesList.Count; i++) 
+			for(int i = 0; i < linesList.Count; i++) 
 			{
 				Line curLine = linesList[i];
 
-				if (curLine.Previous == null) //found start
+				if(curLine.Previous == null) //found start
 				{ 
 					//collect points
 					Line l = curLine;
@@ -646,31 +640,31 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 					{
 						points.Add(l.End);
 						lines.Add(l);
-					} while ((l = l.Next) != null);
+					} while((l = l.Next) != null);
 
 					pointGroups.Add(points);
 					sortedLines.Add(lines);
 				}
 			}
 
-			if (pointGroups.Count != 2) 
+			if(pointGroups.Count != 2) 
 			{
 				General.Interface.DisplayStatus(StatusType.Warning, "Incorrect number of linedef groups! Expected 2, but got " + pointGroups.Count);
 				return false;
 			}
 
-			if (pointGroups[0].Count != pointGroups[1].Count) 
+			if(pointGroups[0].Count != pointGroups[1].Count) 
 			{
 				General.Interface.DisplayStatus(StatusType.Warning, "Linedefs groups must have equal length! Got " + pointGroups[0].Count + " in first group and " + pointGroups[1].Count + " in second.");
 				return false;
 			}
 
 			//check if lines from first group intersect with lines from second group
-			foreach (Line l1 in sortedLines[0]) 
+			foreach(Line l1 in sortedLines[0]) 
 			{
-				foreach (Line l2 in sortedLines[1]) 
+				foreach(Line l2 in sortedLines[1]) 
 				{
-					if (LinesIntersect(l1, l2)) 
+					if(LinesIntersect(l1, l2)) 
 					{
 						General.Interface.DisplayStatus(StatusType.Warning, "One or more lines from first group intersect with one or more lines from second group!");
 						return false;
@@ -683,12 +677,12 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 
 			//collect sector properties
 			sectorProps1 = new SectorProperties[sortedLines[0].Count];
-			for (int i = 0; i < sortedLines[0].Count; i++ ) 
+			for(int i = 0; i < sortedLines[0].Count; i++ ) 
 			{
 				sectorProps1[i] = sortedLines[0][i].SectorProperties;
 			}
 			sectorProps2 = new SectorProperties[sortedLines[1].Count];
-			for (int i = 0; i < sortedLines[1].Count; i++) 
+			for(int i = 0; i < sortedLines[1].Count; i++) 
 			{
 				sectorProps2[i] = sortedLines[1][i].SectorProperties;
 			}
@@ -697,7 +691,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 			Line line1 = new Line(pointGroups[0][0], pointGroups[1][0]);
 			Line line2 = new Line(pointGroups[0][segmentsCount - 1], pointGroups[1][segmentsCount - 1]);
 
-			if (LinesIntersect(line1, line2)) 
+			if(LinesIntersect(line1, line2)) 
 			{
 				pointGroups[0].Reverse();
 				Array.Reverse(sectorProps1);
@@ -719,7 +713,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 
 		private static int IntepolateValue(int val1, int val2, float delta, string mode) 
 		{
-			switch (mode) 
+			switch(mode) 
 			{
 				case BridgeInterpolationMode.HIGHEST:
 				case BridgeInterpolationMode.BRIGHTNESS_HIGHEST:
@@ -793,13 +787,13 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 		[BeginAction("increasesubdivlevel")]
 		private void IncreaseSubdivLevel() 
 		{
-			if (form != null && form.Subdivisions < MAX_SUBDIVISIONS) form.Subdivisions++;
+			if(form != null && form.Subdivisions < MAX_SUBDIVISIONS) form.Subdivisions++;
 		}
 
 		[BeginAction("decreasesubdivlevel")]
 		private void DecreaseSubdivLevel() 
 		{
-			if (form != null && form.Subdivisions > MIN_SUBDIVISIONS) form.Subdivisions--;
+			if(form != null && form.Subdivisions > MIN_SUBDIVISIONS) form.Subdivisions--;
 		}
 
 		#endregion
@@ -853,7 +847,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 			end = new Vector2D((int)ld.End.Position.x, (int)ld.End.Position.y);
 			SectorProperties = new SectorProperties();
 
-			if (ld.Back != null) 
+			if(ld.Back != null) 
 			{
 				SectorProperties.CeilingHeight = ld.Back.Sector.CeilHeight;
 				SectorProperties.FloorHeight = ld.Back.Sector.FloorHeight;

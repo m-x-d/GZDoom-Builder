@@ -126,7 +126,7 @@ namespace CodeImp.DoomBuilder.Geometry
 				u_ray = ((v2.x - v1.x) * (v1.y - y3) - (v2.y - v1.y) * (v1.x - x3)) / div;
 
 				// Return if intersecting
-				if (u_ray < 0.0f || u_ray > 1.0f || u_line < 0.0f || u_line > 1.0f) return false; //mxd
+				if(u_ray < 0.0f || u_ray > 1.0f || u_line < 0.0f || u_line > 1.0f) return false; //mxd
 				return true;
 			}
 

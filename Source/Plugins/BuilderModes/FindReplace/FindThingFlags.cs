@@ -96,7 +96,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				foreach(string flag in replaceflags) 
 				{
 					string f = flag.Trim();
-					if (!General.Map.Config.ThingFlags.ContainsKey(f))
+					if(!General.Map.Config.ThingFlags.ContainsKey(f))
 					{
 						MessageBox.Show("Invalid replace value '" + f + "' for this search type!", "Find and Replace", MessageBoxButtons.OK, MessageBoxIcon.Error);
 						return objs.ToArray();
@@ -106,7 +106,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			// Go for all things
-			foreach (Thing t in list)
+			foreach(Thing t in list)
 			{
 				bool match = true;
 
@@ -122,7 +122,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 
 				// Match?
-				if (match)
+				if(match)
 				{
 					// Replace flags (mxd)
 					if(replace)

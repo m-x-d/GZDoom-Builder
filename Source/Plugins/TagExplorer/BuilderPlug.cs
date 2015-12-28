@@ -33,7 +33,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
 		// This is called after a map has been successfully opened
 		public override void OnMapOpenEnd() 
 		{
-			if (tagExplorer == null) 
+			if(tagExplorer == null) 
 			{
 				tagExplorer = new TagExplorer();
 				docker = new Docker("tagexplorerdockerpanel", "Tag Explorer", tagExplorer);
@@ -46,7 +46,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
 		public override void OnMapCloseBegin() 
 		{
 			// If we have a Tag Explorer panel, remove it
-			if (tagExplorer != null) 
+			if(tagExplorer != null) 
 			{
 				tagExplorer.Terminate();
 				General.Interface.RemoveDocker(docker);
@@ -59,24 +59,24 @@ namespace CodeImp.DoomBuilder.TagExplorer
 		// Geometry pasted
 		public override void OnPasteEnd(PasteOptions options) 
 		{
-			if (tagExplorer != null) tagExplorer.UpdateTreeSoon();
+			if(tagExplorer != null) tagExplorer.UpdateTreeSoon();
 		}
 
 		// Undo performed
 		public override void OnUndoEnd() 
 		{
-			if (tagExplorer != null) tagExplorer.UpdateTreeSoon();
+			if(tagExplorer != null) tagExplorer.UpdateTreeSoon();
 		}
 
 		// Redo performed
 		public override void OnRedoEnd() 
 		{
-			if (tagExplorer != null) tagExplorer.UpdateTreeSoon();
+			if(tagExplorer != null) tagExplorer.UpdateTreeSoon();
 		}
 
 		public override void OnActionEnd(Actions.Action action) 
 		{
-			if (tagExplorer != null && action.Name == "builder_deleteitem")
+			if(tagExplorer != null && action.Name == "builder_deleteitem")
 				tagExplorer.UpdateTreeSoon();
 		}
 	}

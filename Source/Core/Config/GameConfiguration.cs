@@ -94,9 +94,9 @@ namespace CodeImp.DoomBuilder.Config
 		private readonly Dictionary<string, MapLumpInfo> maplumps;
 
 		//mxd. Map format
-		private bool doommapformat;
-		private bool hexenmapformat;
-		private bool universalmapformat;
+		private readonly bool doommapformat;
+		private readonly bool hexenmapformat;
+		private readonly bool universalmapformat;
 		
 		// Texture/flat/voxel sources
 		private readonly IDictionary textureranges;
@@ -112,7 +112,7 @@ namespace CodeImp.DoomBuilder.Config
 		private readonly List<ThingCategory> thingcategories;
 		private readonly Dictionary<int, ThingTypeInfo> things;
 		private readonly List<FlagTranslation> thingflagstranslation;
-		private readonly Dictionary<string, Dictionary<string, ThingFlagsCompare>> thingflagscompare; //mxd 
+		private readonly Dictionary<string, ThingFlagsCompareGroup> thingflagscompare; //mxd 
 		private readonly Dictionary<string, string> thingrenderstyles; //mxd
 		
 		// Linedefs
@@ -226,7 +226,7 @@ namespace CodeImp.DoomBuilder.Config
 		public ICollection<string> DefaultThingFlags { get { return defaultthingflags; } }
 		public IDictionary<string, string> ThingFlags { get { return thingflags; } }
 		public List<FlagTranslation> ThingFlagsTranslation { get { return thingflagstranslation; } }
-		public Dictionary<string, Dictionary<string, ThingFlagsCompare>> ThingFlagsCompare { get { return thingflagscompare; } } //mxd
+		public Dictionary<string, ThingFlagsCompareGroup> ThingFlagsCompare { get { return thingflagscompare; } } //mxd
 		public Dictionary<string, string> ThingRenderStyles { get { return thingrenderstyles; } } //mxd
 		
 		// Linedefs
@@ -301,7 +301,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.thingflagstranslation = new List<FlagTranslation>();
 			this.linedefflagstranslation = new List<FlagTranslation>();
 			this.thingfilters = new List<ThingsFilter>();
-			this.thingflagscompare = new Dictionary<string, Dictionary<string, ThingFlagsCompare>>(); //mxd
+			this.thingflagscompare = new Dictionary<string, ThingFlagsCompareGroup>(); //mxd
 			this.brightnesslevels = new StepsList();
 			this.makedoorflags = new Dictionary<string, bool>(StringComparer.Ordinal);
 			this.linedefrenderstyles = new Dictionary<string, string>(StringComparer.Ordinal); //mxd
@@ -470,7 +470,6 @@ namespace CodeImp.DoomBuilder.Config
 		private List<UniversalFieldInfo> LoadUniversalFields(string elementname)
 		{
 			List<UniversalFieldInfo> list = new List<UniversalFieldInfo>();
-			UniversalFieldInfo uf;
 
 			// Get fields
 			IDictionary dic = cfg.ReadSetting("universalfields." + elementname, new Hashtable());
@@ -479,7 +478,7 @@ namespace CodeImp.DoomBuilder.Config
 				try
 				{
 					// Read the field info and add to list
-					uf = new UniversalFieldInfo(elementname, de.Key.ToString(), cfg, enums);
+					UniversalFieldInfo uf = new UniversalFieldInfo(elementname, de.Key.ToString(), cfg, enums);
 					list.Add(uf);
 				}
 				catch(Exception)
@@ -495,8 +494,6 @@ namespace CodeImp.DoomBuilder.Config
 		// Things and thing categories
 		private void LoadThingCategories()
 		{
-			ThingCategory thingcat;
-			
 			// Get thing categories
 			IDictionary dic = cfg.ReadSetting("thingtypes", new Hashtable());
 			foreach(DictionaryEntry de in dic)
@@ -504,7 +501,7 @@ namespace CodeImp.DoomBuilder.Config
 				if(de.Value is IDictionary)
 				{
 					// Make a category
-					thingcat = new ThingCategory(cfg, null, de.Key.ToString(), enums);
+					ThingCategory thingcat = new ThingCategory(cfg, null, de.Key.ToString(), enums);
 
 					//mxd. Otherwise nesting problems might occure
 					if(thingcat.IsValid)
@@ -576,10 +573,7 @@ namespace CodeImp.DoomBuilder.Config
 		private void LoadLinedefActions()
 		{
 			Dictionary<string, LinedefActionCategory> cats = new Dictionary<string, LinedefActionCategory>(StringComparer.Ordinal);
-			LinedefActionInfo ai;
-			LinedefActionCategory ac;
-			int actionnumber;
-			
+
 			// Get linedef categories
 			IDictionary dic = cfg.ReadSetting("linedeftypes", new Hashtable());
 			foreach(DictionaryEntry cde in dic)
@@ -590,6 +584,7 @@ namespace CodeImp.DoomBuilder.Config
 					string cattitle = cfg.ReadSetting("linedeftypes." + cde.Key + ".title", "");
 
 					// Make or get category
+					LinedefActionCategory ac;
 					if(cats.ContainsKey(cde.Key.ToString()))
 						ac = cats[cde.Key.ToString()];
 					else
@@ -603,6 +598,7 @@ namespace CodeImp.DoomBuilder.Config
 					foreach(DictionaryEntry de in catdic)
 					{
 						// Check if the item key is numeric
+						int actionnumber;
 						if(int.TryParse(de.Key.ToString(),
 							NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite,
 							CultureInfo.InvariantCulture, out actionnumber))
@@ -611,7 +607,7 @@ namespace CodeImp.DoomBuilder.Config
 							if(de.Value is IDictionary)
 							{
 								// Make the line type
-								ai = new LinedefActionInfo(actionnumber, cfg, cde.Key.ToString(), enums);
+								LinedefActionInfo ai = new LinedefActionInfo(actionnumber, cfg, cde.Key.ToString(), enums);
 
 								// Add action to category and sorted list
 								sortedlinedefactions.Add(ai);
@@ -682,20 +678,18 @@ namespace CodeImp.DoomBuilder.Config
 		// Sector effects
 		private void LoadSectorEffects()
 		{
-			SectorEffectInfo si;
-			int actionnumber;
-			
 			// Get sector effects
 			IDictionary dic = cfg.ReadSetting("sectortypes", new Hashtable());
 			foreach(DictionaryEntry de in dic)
 			{
 				// Try paring the action number
+				int actionnumber;
 				if(int.TryParse(de.Key.ToString(),
 					NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite,
 					CultureInfo.InvariantCulture, out actionnumber))
 				{
 					// Make effects
-					si = new SectorEffectInfo(actionnumber, de.Value.ToString(), true, false);
+					SectorEffectInfo si = new SectorEffectInfo(actionnumber, de.Value.ToString(), true, false);
 					
 					// Add action to category and sorted list
 					sortedsectoreffects.Add(si);
@@ -714,13 +708,12 @@ namespace CodeImp.DoomBuilder.Config
 		// Brightness levels
 		private void LoadBrightnessLevels()
 		{
-			int level;
-
 			// Get brightness levels structure
 			IDictionary dic = cfg.ReadSetting("sectorbrightness", new Hashtable());
 			foreach(DictionaryEntry de in dic)
 			{
 				// Try paring the level
+				int level;
 				if(int.TryParse(de.Key.ToString(),
 					NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite,
 					CultureInfo.InvariantCulture, out level))
@@ -769,48 +762,51 @@ namespace CodeImp.DoomBuilder.Config
 				thingflagstranslation.Add(new FlagTranslation(de));
 				
 			// Get thing compare flag info (for the stuck thing error checker
+			HashSet<string> flagscache = new HashSet<string>();
 			dic = cfg.ReadSetting("thingflagscompare", new Hashtable());
-			foreach(DictionaryEntry de in dic) 
+			foreach(DictionaryEntry de in dic)
 			{
-				IDictionary gdic = cfg.ReadSetting("thingflagscompare." + de.Key, new Hashtable());
-
-				foreach(DictionaryEntry gde in gdic)
+				string group = de.Key.ToString(); //mxd
+				thingflagscompare[group] = new ThingFlagsCompareGroup(cfg, group); //mxd
+				foreach(string s in thingflagscompare[group].Flags.Keys)
 				{
-					string group = de.Key.ToString(); //mxd
-					string flag = gde.Key.ToString(); //mxd
-					
-					if(!thingflagscompare.ContainsKey(group)) //mxd
-						thingflagscompare.Add(group, new Dictionary<string, ThingFlagsCompare>());
-
-					if(!thingflagscompare[group].ContainsKey(flag)) //mxd
-						thingflagscompare[group].Add(flag, new ThingFlagsCompare(cfg, group, flag));
+					if(flagscache.Contains(s))
+						General.ErrorLogger.Add(ErrorType.Warning, "ThingFlagsCompare flag '" + s + "' is double-defined in '" + group + "' group!");
+					else
+						flagscache.Add(s);
 				}
 			}
 
 			//mxd. Integrity check
-			foreach (KeyValuePair<string, Dictionary<string, ThingFlagsCompare>> group in thingflagscompare)
+			foreach(KeyValuePair<string, ThingFlagsCompareGroup> group in thingflagscompare)
 			{
-				foreach (KeyValuePair<string, ThingFlagsCompare> flaggrp in group.Value)
+				foreach(ThingFlagsCompare flag in group.Value.Flags.Values)
 				{
-					// Required group is missing?
-					if (!string.IsNullOrEmpty(flaggrp.Value.RequiredGroup) && !thingflagscompare.ContainsKey(flaggrp.Value.RequiredGroup))
+					// Required groups are missing?
+					foreach(string s in flag.RequiredGroups)
 					{
-						General.ErrorLogger.Add(ErrorType.Warning, "thingflagscompare group '" + flaggrp.Value.RequiredGroup + "', required by flag '" + flaggrp.Key + "' does not exist!");
-						flaggrp.Value.RequiredGroup = string.Empty;
+						if(!thingflagscompare.ContainsKey(s))
+						{
+							General.ErrorLogger.Add(ErrorType.Warning, "ThingFlagsCompare group '" + s + "', required by flag '" + flag.Flag + "' does not exist!");
+							flag.RequiredGroups.Remove(s);
+						}
 					}
 
-					// Ignored group is missing?
-					if(!string.IsNullOrEmpty(flaggrp.Value.IgnoredGroup) && !thingflagscompare.ContainsKey(flaggrp.Value.IgnoredGroup)) 
+					// Ignored groups are missing?
+					foreach(string s in flag.IgnoredGroups)
 					{
-						General.ErrorLogger.Add(ErrorType.Warning, "thingflagscompare group '" + flaggrp.Value.IgnoredGroup + "', ignored by flag '" + flaggrp.Key + "' does not exist!");
-						flaggrp.Value.IgnoredGroup = string.Empty;
+						if(!thingflagscompare.ContainsKey(s))
+						{
+							General.ErrorLogger.Add(ErrorType.Warning, "ThingFlagsCompare group '" + s + "', ignored by flag '" + flag.Flag + "' does not exist!");
+							flag.IgnoredGroups.Remove(s);
+						}
 					}
 
 					// Required flag is missing?
-					if(!string.IsNullOrEmpty(flaggrp.Value.RequiredFlag) && !group.Value.ContainsKey(flaggrp.Value.RequiredFlag)) 
+					if(!string.IsNullOrEmpty(flag.RequiredFlag) && !flagscache.Contains(flag.RequiredFlag) /*!group.Value.Flags.ContainsKey(flag.RequiredFlag)*/) 
 					{
-						General.ErrorLogger.Add(ErrorType.Warning, "thingflagscompare flag '" + flaggrp.Value.RequiredFlag + "', required by flag '" + flaggrp.Key + "' does not exist!");
-						flaggrp.Value.RequiredFlag = string.Empty;
+						General.ErrorLogger.Add(ErrorType.Warning, "ThingFlagsCompare flag '" + flag.RequiredFlag + "', required by flag '" + flag.Flag + "' does not exist!");
+						flag.RequiredFlag = string.Empty;
 					}
 				}
 			}
@@ -885,10 +881,10 @@ namespace CodeImp.DoomBuilder.Config
 		private void LoadMakeDoorFlags()
 		{
 			IDictionary dic = cfg.ReadSetting("makedoorflags", new Hashtable());
-			foreach (DictionaryEntry de in dic)
+			foreach(DictionaryEntry de in dic)
 			{
 				// Using minus will unset the flag
-				if (de.Key.ToString()[0] == '-')
+				if(de.Key.ToString()[0] == '-')
 				{
 					makedoorflags[de.Key.ToString().TrimStart('-')] = false;
 				}
@@ -972,8 +968,8 @@ namespace CodeImp.DoomBuilder.Config
 		//mxd
 		public static bool IsGeneralizedSectorEffect(int effect, IEnumerable<GeneralizedOption> options) 
 		{
-			if (effect == 0) return false;
-			foreach (GeneralizedOption option in options) 
+			if(effect == 0) return false;
+			foreach(GeneralizedOption option in options) 
 			{
 				foreach(GeneralizedBit bit in option.Bits) 
 				{
@@ -987,7 +983,7 @@ namespace CodeImp.DoomBuilder.Config
 		//mxd
 		public string GetGeneralizedSectorEffectName(int effect) 
 		{
-			if (effect == 0) return "None";
+			if(effect == 0) return "None";
 			string title = "Unknown";
 			int matches = 0;
 

@@ -73,7 +73,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 		public override void Dispose()
 		{
 			// Not already disposed?
-			if (!isdisposed)
+			if(!isdisposed)
 			{
 				// Dispose base
 				base.Dispose();
@@ -91,11 +91,11 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			highlighted = s;
 			highlightedsoundenvironment = null;
 
-			if (highlighted != null)
+			if(highlighted != null)
 			{
-				foreach (SoundEnvironment se in BuilderPlug.Me.SoundEnvironments)
+				foreach(SoundEnvironment se in BuilderPlug.Me.SoundEnvironments)
 				{
-					if (se.Sectors.Contains(highlighted))
+					if(se.Sectors.Contains(highlighted))
 					{
 						highlightedsoundenvironment = se;
 						break;
@@ -106,7 +106,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			panel.HighlightSoundEnvironment(highlightedsoundenvironment);
 
 			// Show highlight info
-			if ((highlighted != null) && !highlighted.IsDisposed)
+			if((highlighted != null) && !highlighted.IsDisposed)
 				General.Interface.ShowSectorInfo(highlighted);
 			else
 				General.Interface.HideInfo();
@@ -262,15 +262,15 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 		// This redraws the display
 		public override void OnRedrawDisplay()
 		{
-			if (BuilderPlug.Me.DataIsDirty) UpdateData();
+			if(BuilderPlug.Me.DataIsDirty) UpdateData();
 
 			// Render lines and vertices
-			if (renderer.StartPlotter(true))
+			if(renderer.StartPlotter(true))
 			{
 				// Plot lines by hand, so that no coloring (line specials, 3D floors etc.) distracts from
 				// the sound environments. Also don't draw the line's normal. They are not needed here anyway
 				// and can make it harder to see the sound environment colors
-				foreach (Linedef ld in General.Map.Map.Linedefs)
+				foreach(Linedef ld in General.Map.Map.Linedefs)
 				{
 					PixelColor c;
 					
@@ -286,7 +286,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 				// faster to draw them on their own instead of checking if each linedef is in BlockingLinedefs
 				lock (BuilderPlug.Me.BlockingLinedefs)
 				{
-					foreach (Linedef ld in BuilderPlug.Me.BlockingLinedefs)
+					foreach(Linedef ld in BuilderPlug.Me.BlockingLinedefs)
 					{
 						renderer.PlotLine(ld.Start.Position, ld.End.Position, BuilderPlug.Me.BlockSoundColor);
 					}
@@ -303,14 +303,14 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			}
 
 			// Render things
-			if (renderer.StartThings(true))
+			if(renderer.StartThings(true))
 			{
 				renderer.RenderThingSet(General.Map.ThingsFilter.HiddenThings, Presentation.THINGS_BACK_ALPHA);
 				renderer.RenderThingSet(General.Map.ThingsFilter.VisibleThings, Presentation.THINGS_HIDDEN_ALPHA);
 
 				lock (BuilderPlug.Me.SoundEnvironments)
 				{
-					foreach (SoundEnvironment se in BuilderPlug.Me.SoundEnvironments)
+					foreach(SoundEnvironment se in BuilderPlug.Me.SoundEnvironments)
 					{
 						if(se.Things.Count > 0) renderer.RenderThingSet(se.Things, Presentation.THINGS_ALPHA);
 					}
@@ -323,11 +323,11 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			}
 
 			// Render overlay geometry (sectors)
-			if (BuilderPlug.Me.OverlayGeometry != null)
+			if(BuilderPlug.Me.OverlayGeometry != null)
 			{
 				lock (BuilderPlug.Me.OverlayGeometry)
 				{
-					if (BuilderPlug.Me.OverlayGeometry.Length > 0 && renderer.StartOverlay(true))
+					if(BuilderPlug.Me.OverlayGeometry.Length > 0 && renderer.StartOverlay(true))
 					{
 						renderer.RenderGeometry(BuilderPlug.Me.OverlayGeometry, General.Map.Data.WhiteTexture, true);
 						renderer.Finish();
@@ -344,23 +344,23 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			base.OnMouseMove(e);
 
 			// Not holding any buttons?
-			if (e.Button == MouseButtons.None)
+			if(e.Button == MouseButtons.None)
 			{
 				General.Interface.SetCursor(Cursors.Default);
 
 				// Find the nearest linedef within highlight range
 				Linedef l = General.Map.Map.NearestLinedef(mousemappos);
-				if (l != null)
+				if(l != null)
 				{
 					// Check on which side of the linedef the mouse is
 					float side = l.SideOfLine(mousemappos);
-					if (side > 0)
+					if(side > 0)
 					{
 						// Is there a sidedef here?
-						if (l.Back != null)
+						if(l.Back != null)
 						{
 							// Highlight if not the same
-							if (l.Back.Sector != highlighted) Highlight(l.Back.Sector);
+							if(l.Back.Sector != highlighted) Highlight(l.Back.Sector);
 						}
 						else
 						{
@@ -371,10 +371,10 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 					else
 					{
 						// Is there a sidedef here?
-						if (l.Front != null)
+						if(l.Front != null)
 						{
 							// Highlight if not the same
-							if (l.Front.Sector != highlighted) Highlight(l.Front.Sector);
+							if(l.Front.Sector != highlighted) Highlight(l.Front.Sector);
 						}
 						else
 						{

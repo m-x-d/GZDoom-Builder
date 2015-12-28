@@ -127,24 +127,17 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 
 		private void InitializeCatmullRomSplines()
 		{
-			List<Linedef> sourceld = new List<Linedef>(General.Map.Map.GetSelectedLinedefs(true));
-			Line2D innerline, outerline;
-			CatmullRomSplineData innerspline, outerspline;
-			CatmullRomSplineGroup splinegroup;
-			
 			numcontrolpoints = stairsectorbuilderform.NumControlPoints;
 
-			if (General.Map.Map.GetSelectedLinedefs(true).Count <= 0)
-			{
-				return;
-			}
+			if(General.Map.Map.GetSelectedLinedefs(true).Count <= 0) return;
 
-			if (catmullromsplinegroups == null)
+			if(catmullromsplinegroups == null)
 				catmullromsplinegroups = new List<CatmullRomSplineGroup>();
 			else
 				catmullromsplinegroups.Clear();
 
-			for (int l1 = 0; l1 < sourceld.Count - 1; l1++)
+			List<Linedef> sourceld = new List<Linedef>(General.Map.Map.GetSelectedLinedefs(true));
+			for(int l1 = 0; l1 < sourceld.Count - 1; l1++)
 			{
 				int l2 = l1 + 1;
 
@@ -156,36 +149,36 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 				//innerline = new Line2D(sourceld[l2].Start.Position, sourceld[l1].Start.Position);
 				//outerline = new Line2D(sourceld[l1].End.Position, sourceld[l2].End.Position);
 
-				innerline = new Line2D(s2, s1);
-				outerline = new Line2D(e1, e2);
+				Line2D innerline = new Line2D(s2, s1);
+				Line2D outerline = new Line2D(e1, e2);
 
-				innerspline = new CatmullRomSplineData();
+				CatmullRomSplineData innerspline = new CatmullRomSplineData();
 				innerspline.controlpoints = new List<Vector2D>();
 
 				innerspline.line = innerline;
 				innerspline.controlpoints.Add(new Vector2D(innerline.v1));
 
-				for (int k = 1; k <= numcontrolpoints - 2; k++)
+				for(int k = 1; k <= numcontrolpoints - 2; k++)
 					innerspline.controlpoints.Add(new Vector2D(innerline.GetCoordinatesAt(1.0f / (numcontrolpoints - 1) * k)));
 
 				innerspline.controlpoints.Add(new Vector2D(innerline.v2));
 
 				ComputeTangents(ref innerspline);
 
-				outerspline = new CatmullRomSplineData();
+				CatmullRomSplineData outerspline = new CatmullRomSplineData();
 				outerspline.controlpoints = new List<Vector2D>();
 
 				outerspline.line = outerline;
 				outerspline.controlpoints.Add(new Vector2D(outerline.v1));
 
-				for (int k = 1; k <= numcontrolpoints - 2; k++)
+				for(int k = 1; k <= numcontrolpoints - 2; k++)
 					outerspline.controlpoints.Add(new Vector2D(outerline.GetCoordinatesAt(1.0f / (numcontrolpoints - 1) * k)));
 
 				outerspline.controlpoints.Add(new Vector2D(outerline.v2));
 
 				ComputeTangents(ref outerspline);
 
-				splinegroup = new CatmullRomSplineGroup();
+				CatmullRomSplineGroup splinegroup = new CatmullRomSplineGroup();
 				splinegroup.splines = new CatmullRomSplineData[2];
 				splinegroup.splines[INNER_SPLINE] = innerspline;
 				splinegroup.splines[OUTER_SPLINE] = outerspline;
@@ -198,16 +191,16 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 		// Modifies the number of control points on the splines
 		public void ModifyControlpointNumber(int num)
 		{
-			if (catmullromsplinegroups == null) return;
+			if(catmullromsplinegroups == null) return;
 
 			for(int crsg=0; crsg < catmullromsplinegroups.Count;crsg++) {
-				for (int s = 0; s < 2; s++)
+				for(int s = 0; s < 2; s++)
 				{
 					List<Vector2D> verts = GenerateCatmullRom(catmullromsplinegroups[crsg].splines[s], num-1);
 
 					catmullromsplinegroups[crsg].splines[s].controlpoints.Clear();
 
-					foreach (Vector2D v in verts)
+					foreach(Vector2D v in verts)
 					{
 						catmullromsplinegroups[crsg].splines[s].controlpoints.Add(v);
 					}
@@ -224,9 +217,9 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 		public void UpdateVertexData()
 		{
 			// Straight stair
-			if (stairsectorbuilderform.Tabs.SelectedIndex == 0)
+			if(stairsectorbuilderform.Tabs.SelectedIndex == 0)
 			{
-				if (General.Map.Map.SelectedSectorsCount == 0)
+				if(General.Map.Map.SelectedSectorsCount == 0)
 				{
 					stairsectors = CreateStraightStairSectorsFromLines(new List<Linedef>(General.Map.Map.GetSelectedLinedefs(true)));
 				}
@@ -236,42 +229,42 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 				}
 			}
 			// Curved stair
-			else if (stairsectorbuilderform.Tabs.SelectedIndex == 1)
+			else if(stairsectorbuilderform.Tabs.SelectedIndex == 1)
 			{
 				stairsectors = CreateCurvedStairSectors();
 			}
 			// Catmull Rom stair
-			else if (stairsectorbuilderform.Tabs.SelectedIndex == 2)
+			else if(stairsectorbuilderform.Tabs.SelectedIndex == 2)
 			{
-				if (oldflipping != stairsectorbuilderform.Flipping)
+				if(oldflipping != stairsectorbuilderform.Flipping)
 				{
 					oldflipping = stairsectorbuilderform.Flipping;
 					InitializeCatmullRomSplines();
 				}
 
 				exactsplines = new List<List<Vector2D>>();
-                stairsectors = CreateCatmullRomStairSectors();
+				stairsectors = CreateCatmullRomStairSectors();
 			}
 
-			if (stairsectors.Count > 0)
+			if(stairsectors.Count > 0)
 			{
 				stairsectorbuilderform.OriginalCeilingBase = stairsectors[0].ceilingheight;
 				stairsectorbuilderform.OriginalFloorBase = stairsectors[0].floorheight;
 			}
 		}
 
-		private bool CheckConnectedLines()
+		/*private bool CheckConnectedLines()
 		{
 			//List<Linedef> sourceld = new List<Linedef>();
 
-			//if (General.Map.Map.GetSelectedLinedefs(true).Count <= 0 && General.Map.Map.SelectedSectorsCount <= 0)
+			//if(General.Map.Map.GetSelectedLinedefs(true).Count <= 0 && General.Map.Map.SelectedSectorsCount <= 0)
 			//{
 			//    return false;
 			//}
 
 			// connectedlinedefs = new List<ConnectedLinedefs>();
 
-			//foreach (Linedef ld in General.Map.Map.GetSelectedLinedefs(true))
+			//foreach(Linedef ld in General.Map.Map.GetSelectedLinedefs(true))
 			//{
 			//    sourceld.Add(ld);
 			//}
@@ -279,7 +272,7 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 			// GetConnectedLines(ref sourceld, -1);
 
 			return true;
-		}
+		}*/
 
 		private void GetConnectedLines(ref List<Linedef> sourceld, int sector)
 		{
@@ -288,10 +281,10 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 
 			connectedlinedefs = new List<ConnectedLinedefs>();
 
-			while (sourceld.Count > 0)
+			while(sourceld.Count > 0)
 			{
 				// List is empty
-				if (connectedld.Count == 0)
+				if(connectedld.Count == 0)
 				{
 					connectedld.Add(sourceld[0]);
 					currentld = sourceld[0];
@@ -299,13 +292,13 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 				}
 
 				// Find all connected linedefs starting from the start of the current linedef
-				while (currentld != null)
+				while(currentld != null)
 				{
 					bool found = false;
 
-					foreach (Linedef ld in sourceld)
+					foreach(Linedef ld in sourceld)
 					{
-						// if (currentld.Start.Linedefs.Contains(ld))
+						// if(currentld.Start.Linedefs.Contains(ld))
 						if(ld.Start == currentld.Start || ld.End == currentld.Start)
 						{
 							// add the connected linedef to the beginning of the list
@@ -317,20 +310,20 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 						}
 					}
 
-					if (found == false) currentld = null;
+					if(found == false) currentld = null;
 				}
 
 				currentld = connectedld[connectedld.Count - 1];
 
 				// Find all connected linedefs starting from the end of the current linedef
-				while (currentld != null)
+				while(currentld != null)
 				{
 					bool found = false;
 
-					foreach (Linedef ld in sourceld)
+					foreach(Linedef ld in sourceld)
 					{
-						// if (currentld.End.Linedefs.Contains(ld))
-						if (ld.Start == currentld.End || ld.End == currentld.End)
+						// if(currentld.End.Linedefs.Contains(ld))
+						if(ld.Start == currentld.End || ld.End == currentld.End)
 						{
 							// add the connected linedef to the end of the list
 							connectedld.Add(ld);
@@ -341,7 +334,7 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 						}
 					}
 
-					if (found == false) currentld = null;
+					if(found == false) currentld = null;
 				}
 
 				ConnectedLinedefs cld = new ConnectedLinedefs();
@@ -349,16 +342,16 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 
 				cld.sector = sector;
 
-				foreach (Linedef ld in connectedld)
+				foreach(Linedef ld in connectedld)
 				{
 					cld.linedefs.Add(ld);
 				}
 
-				if (General.Map.Map.SelectedLinedefsCount > 0)
+				if(General.Map.Map.SelectedLinedefsCount > 0)
 				{
-					foreach (Linedef ld in General.Map.Map.GetSelectedLinedefs(true))
+					foreach(Linedef ld in General.Map.Map.GetSelectedLinedefs(true))
 					{
-						if (cld.linedefs.Contains(ld))
+						if(cld.linedefs.Contains(ld))
 						{
 							cld.firstlinedef = ld;
 							break;
@@ -384,7 +377,7 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 			float f = 2.0f;
 			int i;
 
-			if (spline.tangents == null)
+			if(spline.tangents == null)
 				spline.tangents = new List<Vector2D>();
 			else
 				spline.tangents.Clear();
@@ -393,7 +386,7 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 			// spline.tangents.Add(new Vector2D((spline.controlpoints[1] - spline.controlpoints[0]) / f));
 			spline.tangents.Add(new Vector2D(spline.controlpoints[1] - spline.controlpoints[0]));
 
-			for (i=1; i < spline.controlpoints.Count - 1; i++)
+			for(i = 1; i < spline.controlpoints.Count - 1; i++)
 			{
 				spline.tangents.Add(new Vector2D((spline.controlpoints[i + 1] - spline.controlpoints[i - 1]) / f));
 			}
@@ -407,36 +400,29 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
         private List<StairInfo> CreateCurvedStairSectors()
 		{
 			List<List<Vector2D>> secs = new List<List<Vector2D>>();
-			List<Vector2D> newsec;
-			//List<DrawnVertex> dvl = new List<DrawnVertex>();
-			List<Vector2D> innervertices, outervertices;
-			Line2D innerline, outerline;
-			float innerangle, outerangle;
-			int innervertexmultiplier = stairsectorbuilderform.InnerVertexMultiplier;
+	        int innervertexmultiplier = stairsectorbuilderform.InnerVertexMultiplier;
 			int outervertexmultiplier = stairsectorbuilderform.OuterVertexMultiplier;
-			bool clockwise;
-			int numsteps = (int)stairsectorbuilderform.NumberOfSectors;
-			//uint depth = stairsectorbuilderform.SectorDepth;
+	        int numsteps = (int)stairsectorbuilderform.NumberOfSectors;
 			List<Linedef> sourceld = new List<Linedef>();
             List<StairInfo> stairinfo = new List<StairInfo>();
-            StairInfo si = new StairInfo();
+            StairInfo si;
             List<List<Vector2D>> sisecs = new List<List<Vector2D>>();
 
 			secs.Clear();
 
-			if (General.Map.Map.GetSelectedLinedefs(true).Count <= 0)
+			if(General.Map.Map.GetSelectedLinedefs(true).Count <= 0)
 			{
 				return null;
 			}
 
 			// Add all selected linedefs to a source linedef list
-			foreach (Linedef ld in General.Map.Map.GetSelectedLinedefs(true))
+			foreach(Linedef ld in General.Map.Map.GetSelectedLinedefs(true))
 			{
 				sourceld.Add(ld);
 			}
 
 			// Go through all source linedefs
-			for (int l1 = 0; l1 < sourceld.Count - 1; l1++)
+			for(int l1 = 0; l1 < sourceld.Count - 1; l1++)
 			{
 				// A curve will always be made in the order the lines were selected
 				int l2 = l1 + 1;
@@ -448,7 +434,9 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 				Vector2D s2 = stairsectorbuilderform.Flipping == 2 ? sourceld[l2].End.Position : sourceld[l2].Start.Position;
 				Vector2D e2 = stairsectorbuilderform.Flipping == 2 ? sourceld[l2].Start.Position : sourceld[l2].End.Position;
 
-				if (Vector2D.Distance(s1, s2) < Vector2D.Distance(e1, e2))
+				Line2D innerline, outerline;
+				bool clockwise;
+				if(Vector2D.Distance(s1, s2) < Vector2D.Distance(e1, e2))
 				{
 					clockwise = true;
 					innerline = new Line2D(s2, s1);
@@ -462,7 +450,8 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 				}
 
 				// Compute the angle of the inner and outer line
-				if (sourceld[l1].Angle == sourceld[l2].Angle && !(stairsectorbuilderform.Flipping == 1) && !(stairsectorbuilderform.Flipping == 2))
+				float innerangle, outerangle;
+				if(sourceld[l1].Angle == sourceld[l2].Angle && stairsectorbuilderform.Flipping != 1 && stairsectorbuilderform.Flipping != 2)
 				{
 					innerangle = 1;
 					outerangle = 1;
@@ -471,29 +460,29 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 				}
 				else
 				{
-					if (clockwise)
+					if(clockwise)
 					{
 						innerangle = outerangle = sourceld[l1].Angle - sourceld[l2].Angle;
-						if (innerangle < 0.0f) innerangle += Angle2D.PI2;
-						if (outerangle < 0.0f) outerangle += Angle2D.PI2;
+						if(innerangle < 0.0f) innerangle += Angle2D.PI2;
+						if(outerangle < 0.0f) outerangle += Angle2D.PI2;
 					}
 					else
 					{
 						innerangle = outerangle = sourceld[l2].Angle - sourceld[l1].Angle;
-						if (innerangle < 0.0f) innerangle += Angle2D.PI2;
-						if (outerangle < 0.0f) outerangle += Angle2D.PI2;
+						if(innerangle < 0.0f) innerangle += Angle2D.PI2;
+						if(outerangle < 0.0f) outerangle += Angle2D.PI2;
 					}
 
-					if (stairsectorbuilderform.Flipping != 0)
+					if(stairsectorbuilderform.Flipping != 0)
 					{
-						if (sourceld[l1].Angle == sourceld[l2].Angle)
+						if(sourceld[l1].Angle == sourceld[l2].Angle)
 						{
-							if (stairsectorbuilderform.Flipping == 1)
+							if(stairsectorbuilderform.Flipping == 1)
 							{
 								innerangle = Math.Abs(innerangle - Angle2D.PI);
 								outerangle = Math.Abs(outerangle - Angle2D.PI);
 							}
-							else if (stairsectorbuilderform.Flipping == 2)
+							else if(stairsectorbuilderform.Flipping == 2)
 							{
 								innerangle -= Angle2D.PI;
 								outerangle -= Angle2D.PI;
@@ -508,17 +497,17 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 				}
 
 				// Generate the vertices on the curve, and add the start and end vertices of the inner line to the list
-				innervertices = GenerateCurve(innerline, numsteps * innervertexmultiplier - 1, innerangle, false, distance, fixedcurve);
+				List<Vector2D> innervertices = GenerateCurve(innerline, numsteps * innervertexmultiplier - 1, innerangle, false, distance, fixedcurve);
 				innervertices.Insert(0, innerline.v1);
 				innervertices.Add(innerline.v2);
 
 				// Generate the vertices on the curve, and add the start and end vertices of the outer line to the list
-				outervertices = GenerateCurve(outerline, numsteps * outervertexmultiplier - 1, outerangle, true, distance, fixedcurve);
+				List<Vector2D> outervertices = GenerateCurve(outerline, numsteps * outervertexmultiplier - 1, outerangle, true, distance, fixedcurve);
 				outervertices.Insert(0, outerline.v1);
 				outervertices.Add(outerline.v2);
 
                 // If the vertices were created in counter-clockwise order turn them into clockwise order
-                if (!clockwise)
+                if(!clockwise)
                 {
 	                List<Vector2D> tmpvertices = innervertices;
                     int tmpmultiplier = innervertexmultiplier;
@@ -531,20 +520,20 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
                 }
 
 				// Create the sectors from the created vertices
-			    for (int i = 0; i < numsteps; i++)
+			    for(int i = 0; i < numsteps; i++)
 			    {
-					newsec = new List<Vector2D>();
+					List<Vector2D> newsec = new List<Vector2D>();
 
 					// Depending on the outer and innter vertex multipliers more
 					// vertices from the curve have to be added to the new sector
-                    for (int k = 0; k <= outervertexmultiplier; k++)
+                    for(int k = 0; k <= outervertexmultiplier; k++)
                     {
                         newsec.Add(outervertices[i * outervertexmultiplier + k]);
                     }
 
 					// Depending on the outer and innter vertex multipliers more
 					// vertices from the curve have to be added to the new sector
-                    for (int k = 0; k <= innervertexmultiplier; k++)
+                    for(int k = 0; k <= innervertexmultiplier; k++)
                     {
                         newsec.Add(innervertices[(numsteps - 1 - i) * innervertexmultiplier + k]);
                     }
@@ -568,13 +557,13 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 			return stairinfo;
 		}
 
-		private List<Vector2D> GenerateCurve(Line2D line, int vertices, float angle, bool backwards)
+		/*private List<Vector2D> GenerateCurve(Line2D line, int vertices, float angle, bool backwards)
 		{
 			return GenerateCurve(line, vertices, angle, backwards, 128, true);
-		}
+		}*/
 
 		// This generates the vertices to split the line with, from start to end
-		private List<Vector2D> GenerateCurve(Line2D line, int vertices, float angle, bool backwards, float distance, bool fixedcurve)
+		private static List<Vector2D> GenerateCurve(Line2D line, int vertices, float angle, bool backwards, float distance, bool fixedcurve)
 		{
 
 			// Make list
@@ -599,32 +588,27 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 			double h = R - d;
 
 			double yDeform = fixedcurve ? 1 : distance / h;
-			if (backwards)
-				yDeform = -yDeform;
+			if(backwards) yDeform = -yDeform;
 
-			double a, x, y;
-			Vector2D vertex;
-
-			for (int v = 1; v <= vertices; v++)
+			for(int v = 1; v <= vertices; v++)
 			{
 				//calculate the angle for this vertex
 				//the curve starts at PI/2 - theta/2 and is segmented into vertices+1 segments
 				//this assumes the line is horisontal and on y = 0, the point is rotated and moved later
 
-				a = (Math.PI - theta) / 2 + v * (theta / (vertices + 1));
+				double a = (Math.PI - theta) / 2 + v * (theta / (vertices + 1));
 
 				//calculate the coordinates of the point, and distort the y coordinate
 				//using the deform factor calculated above
-				x = Math.Cos(a) * R;
-				y = (Math.Sin(a) * R - d) * yDeform;
+				double x = Math.Cos(a) * R;
+				double y = (Math.Sin(a) * R - d) * yDeform;
 
 				//rotate and transform to fit original line
-				vertex = new Vector2D((float)x, (float)y).GetRotated(line.GetAngle() + Angle2D.PIHALF);
+				Vector2D vertex = new Vector2D((float)x, (float)y).GetRotated(line.GetAngle() + Angle2D.PIHALF);
 				vertex = vertex.GetTransformed(line.GetCoordinatesAt(0.5f).x, line.GetCoordinatesAt(0.5f).y, 1, 1);
 
 				points.Add(vertex);
 			}
-
 
 			// Done
 			return points;
@@ -635,37 +619,35 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
         private List<StairInfo> CreateCatmullRomStairSectors()
 		{
 			List<List<Vector2D>> secs = new List<List<Vector2D>>();
-			List<Vector2D> newsec;
-			List<Vector2D> innervertices, outervertices;
-			int innervertexmultiplier = stairsectorbuilderform.InnerVertexMultiplier;
+	        int innervertexmultiplier = stairsectorbuilderform.InnerVertexMultiplier;
 			int outervertexmultiplier = stairsectorbuilderform.OuterVertexMultiplier;
 			int numsteps = (int)stairsectorbuilderform.NumberOfSectors;
 			List<List<Vector2D>> sisecs = new List<List<Vector2D>>();
 
             List<StairInfo> stairinfo = new List<StairInfo>();
-            StairInfo si = new StairInfo();
+            StairInfo si;
 
 			secs.Clear();
 
 			foreach(CatmullRomSplineGroup crsg in catmullromsplinegroups)
 			{
 				// Generate the vertices for both the inner and outer spline
-				innervertices = GenerateCatmullRom(crsg.splines[INNER_SPLINE], numsteps * innervertexmultiplier);
-				outervertices = GenerateCatmullRom(crsg.splines[OUTER_SPLINE], numsteps * outervertexmultiplier);
+				List<Vector2D> innervertices = GenerateCatmullRom(crsg.splines[INNER_SPLINE], numsteps * innervertexmultiplier);
+				List<Vector2D> outervertices = GenerateCatmullRom(crsg.splines[OUTER_SPLINE], numsteps * outervertexmultiplier);
 
 				// Create the data to build complete sectors from the splines
-				for (int i = 0; i < numsteps; i++)
+				for(int i = 0; i < numsteps; i++)
 				{
-					newsec = new List<Vector2D>();
+					List<Vector2D> newsec = new List<Vector2D>();
 
 					// Depending on the outer and innter vertex multipliers more
 					// vertices from the splines have to be added to the new sector
-					for (int k = 0; k <= outervertexmultiplier; k++)
+					for(int k = 0; k <= outervertexmultiplier; k++)
 					{
 						newsec.Add(outervertices[i * outervertexmultiplier + k]);
 					}
 
-					for (int k = 0; k <= innervertexmultiplier; k++)
+					for(int k = 0; k <= innervertexmultiplier; k++)
 					{
 						newsec.Add(innervertices[(numsteps - 1 - i) * innervertexmultiplier + k]);
 					}
@@ -691,14 +673,14 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 		{
 			List<StairInfo> stairinfo = new List<StairInfo>();
 
-			foreach (Sector s in selectedsectors)
+			foreach(Sector s in selectedsectors)
 			{
 				List<Linedef> linedefs = new List<Linedef>();
 				List<Linedef> fliplinedefs = new List<Linedef>();
 
-				foreach (Sidedef sd in s.Sidedefs)
+				foreach(Sidedef sd in s.Sidedefs)
 				{
-					if (sd.Line.Front.Sector.Index != s.Index)
+					if(sd.Line.Front.Sector.Index != s.Index)
 					{
 						fliplinedefs.Add(sd.Line);
 						sd.Line.FlipVertices();
@@ -710,7 +692,7 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 
 				stairinfo.AddRange(CreateStraightStairSectorsFromLines(linedefs));
 
-				foreach (Linedef ld in fliplinedefs)
+				foreach(Linedef ld in fliplinedefs)
 				{
 					ld.FlipSidedefs();
 					ld.FlipVertices();
@@ -727,43 +709,39 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 			uint depth = stairsectorbuilderform.SectorDepth;
             int spacing = stairsectorbuilderform.Spacing;
 			List<Linedef> sourceld = new List<Linedef>(selectedlinedefs);
-            StairInfo si = new StairInfo();
+            StairInfo si;
 
 			GetConnectedLines(ref selectedlinedefs, -1);
 
             // Build an independend set of steps from each selected line
-			if (!stairsectorbuilderform.SingleSectors.Checked)
+			if(!stairsectorbuilderform.SingleSectors.Checked)
 			{
-				Vector2D direction;
-				Vector2D v1, v2;
-
-                // Go through each selected line
-				for (int k = 0; k < sourceld.Count; k++)
+				// Go through each selected line
+				for(int k = 0; k < sourceld.Count; k++)
 				{
                     List<List<Vector2D>> sisecs = new List<List<Vector2D>>();
 
                     // Get the direction to build the stair to. "Flip" the vector depending on the selected build direction modifier
-                    direction = sourceld[k].Line.GetPerpendicular().GetNormal() * (stairsectorbuilderform.SideFront ? -1 : 1);
+                    Vector2D direction = sourceld[k].Line.GetPerpendicular().GetNormal() * (stairsectorbuilderform.SideFront ? -1 : 1);
 
-					for (int i = 0; i < numsteps; i++)
+					for(int i = 0; i < numsteps; i++)
 					{
 						//List<DrawnVertex> vertices = new List<DrawnVertex>();
 						List<Vector2D> newsec = new List<Vector2D>();
 
                         // Compute the position of the vertices that form the line opposite the source line
-                        v1 = sourceld[k].Start.Position + direction * depth * i;
-                        v2 = sourceld[k].End.Position + direction * depth * i;
+                        Vector2D v1 = sourceld[k].Start.Position + direction * depth * i;
+                        Vector2D v2 = sourceld[k].End.Position + direction * depth * i;
 						Vector2D v3 = v1 + direction * depth;
 						Vector2D v4 = v2 + direction * depth;
 
                         // Apply spacing to each vertex
-                        if (spacing > 0)
+                        if(spacing > 0)
                         {
                             v1 += (direction * spacing) * i;
                             v2 += (direction * spacing) * i;
                             v3 += (direction * spacing) * i;
                             v4 += (direction * spacing) * i;
-
                         }
 
                         // v1 is added twice so it will actually draw a complete sector
@@ -786,68 +764,66 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 			else if(stairsectorbuilderform.SingleSectors.Checked)
 			{
 				Vector2D direction = new Vector2D();
-				Vector2D globaldirection;
 				bool closed = false;
 
-				foreach (ConnectedLinedefs cld in connectedlinedefs)
+				foreach(ConnectedLinedefs cld in connectedlinedefs)
 				{
 					List<Vector2D> connectedvertices = new List<Vector2D>();
 					List<Vector2D> connecteddirections = new List<Vector2D>();
 					List<double> connectedlength = new List<double>();
                     List<List<Vector2D>> sisecs = new List<List<Vector2D>>();
 
-					globaldirection = Vector2D.FromAngle(cld.firstlinedef.Angle + Angle2D.DegToRad(stairsectorbuilderform.SideFront ? -90.0f : 90.0f));
+					Vector2D globaldirection = Vector2D.FromAngle(cld.firstlinedef.Angle + Angle2D.DegToRad(stairsectorbuilderform.SideFront ? -90.0f : 90.0f));
 
-					for(int i=0; i < cld.linedefs.Count; i++)
+					for(int i = 0; i < cld.linedefs.Count; i++)
 					{
-						if (cld.sector >= 0)
+						if(cld.sector >= 0)
 						{
-							if (cld.linedefs[i].Front.Sector.Index == cld.sector)
+							if(cld.linedefs[i].Front.Sector.Index == cld.sector)
 							{
-								if (!connectedvertices.Contains(cld.linedefs[i].End.Position))
+								if(!connectedvertices.Contains(cld.linedefs[i].End.Position))
 									connectedvertices.Add(cld.linedefs[i].End.Position);
 
-								if (!connectedvertices.Contains(cld.linedefs[i].Start.Position))
+								if(!connectedvertices.Contains(cld.linedefs[i].Start.Position))
 									connectedvertices.Add(cld.linedefs[i].Start.Position);
-
 							}
 							else
 							{
-								if (!connectedvertices.Contains(cld.linedefs[i].Start.Position))
+								if(!connectedvertices.Contains(cld.linedefs[i].Start.Position))
 									connectedvertices.Add(cld.linedefs[i].Start.Position);
 
-								if (!connectedvertices.Contains(cld.linedefs[i].End.Position))
+								if(!connectedvertices.Contains(cld.linedefs[i].End.Position))
 									connectedvertices.Add(cld.linedefs[i].End.Position);
 							}
 						}
 						else
 						{
-							if (!connectedvertices.Contains(cld.linedefs[i].Start.Position))
+							if(!connectedvertices.Contains(cld.linedefs[i].Start.Position))
 								connectedvertices.Add(cld.linedefs[i].Start.Position);
 
-							if (!connectedvertices.Contains(cld.linedefs[i].End.Position))
+							if(!connectedvertices.Contains(cld.linedefs[i].End.Position))
 								connectedvertices.Add(cld.linedefs[i].End.Position);
 						}
 					}
 
-					if (cld.sector >= 0)
+					if(cld.sector >= 0)
 					{
 						closed = true;
 					}
 					else
 					{
-						if (connectedvertices[0] == cld.firstlinedef.End.Position && connectedvertices[connectedvertices.Count - 1] == cld.firstlinedef.Start.Position)
+						if(connectedvertices[0] == cld.firstlinedef.End.Position && connectedvertices[connectedvertices.Count - 1] == cld.firstlinedef.Start.Position)
 							closed = true;
 					}
 				
-					for (int i = 0; i < connectedvertices.Count; i++)
+					for(int i = 0; i < connectedvertices.Count; i++)
 					{
-						if (i == 0 && closed == false)
+						if(i == 0 && closed == false)
 						{
 							connecteddirections.Add(Vector2D.FromAngle(Vector2D.GetAngle(connectedvertices[0], connectedvertices[1]) - Angle2D.DegToRad(stairsectorbuilderform.SideFront ? -90.0f : 90.0f)));
 							connectedlength.Add(depth);
 						}
-						else if (i == connectedvertices.Count - 1 && closed == false)
+						else if(i == connectedvertices.Count - 1 && closed == false)
 						{
 							connecteddirections.Add(Vector2D.FromAngle(Vector2D.GetAngle(connectedvertices[i], connectedvertices[i - 1]) + Angle2D.DegToRad(stairsectorbuilderform.SideFront ? -90.0f : 90.0f)));
 							connectedlength.Add(depth);
@@ -857,7 +833,7 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 							Vector2D v1;
 							Vector2D v2;
 
-							if (closed && i == 0)
+							if(closed && i == 0)
 							{
 								v1 = new Line2D(connectedvertices[1], connectedvertices[0]).GetPerpendicular();
 								v2 = new Line2D(connectedvertices[0], connectedvertices[connectedvertices.Count - 1]).GetPerpendicular();
@@ -885,16 +861,16 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 						}
 					}
 
-					for (int i = 0; i < numsteps; i++)
+					for(int i = 0; i < numsteps; i++)
 					{
 						List<Vector2D> newsec = new List<Vector2D>();
 						float length;
 
-						if (closed == false)
+						if(closed == false)
 						{
-							for (int k = 0; k < connectedvertices.Count; k++)
+							for(int k = 0; k < connectedvertices.Count; k++)
 							{
-								if (!stairsectorbuilderform.SingleDirection.Checked)
+								if(!stairsectorbuilderform.SingleDirection.Checked)
 								{
 									direction = connecteddirections[k];
 									length = (float)connectedlength[k];
@@ -909,9 +885,9 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 							}
 						}
 
-						for (int k = connectedvertices.Count - 1; k >= 0; k--)
+						for(int k = connectedvertices.Count - 1; k >= 0; k--)
 						{
-							if (!stairsectorbuilderform.SingleDirection.Checked)
+							if(!stairsectorbuilderform.SingleDirection.Checked)
 							{
 								direction = connecteddirections[k];
 								length = (float)connectedlength[k];
@@ -932,7 +908,7 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 
 						// If the steps are drawn on the back side the vertices are in counter-clockwise
 						// order, so reverse their order
-						if (!stairsectorbuilderform.SideFront) newsec.Reverse();
+						if(!stairsectorbuilderform.SideFront) newsec.Reverse();
 
 						sisecs.Add(newsec);
 					}
@@ -972,7 +948,7 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 
 			// Compute the length of the whole spline and the length of the parts on the
 			// spline between the control points
-			for (int i = 0; i < crsd.controlpoints.Count-1; i++)
+			for(int i = 0; i < crsd.controlpoints.Count-1; i++)
 			{
 				int h = (int)Vector2D.Distance(crsd.controlpoints[i], crsd.controlpoints[i + 1]);
 				float dist = 0;
@@ -983,12 +959,12 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 				Vector2D t0 = crsd.tangents[i];
 				Vector2D t1 = crsd.tangents[i + 1];
 
-				for (int k = 0; k <= h; k++)
+				for(int k = 0; k <= h; k++)
 				{
 					dc.Add(Tools.HermiteSpline(p0, t0, p1, t1, (float)k / h));
 				}
 
-				for (int k = 0; k < h; k++)
+				for(int k = 0; k < h; k++)
 				{
 					dist += Vector2D.Distance(dc[k], dc[k + 1]);
 				}
@@ -1002,7 +978,7 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 
 			float unithop = distance / numverts;
 
-			for (int i = 0; i <= numverts; i++)
+			for(int i = 0; i <= numverts; i++)
 			{
 				int s = 0;
 				float u;
@@ -1010,13 +986,13 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 				float max = 0.0f;
 
 				// Find out what section the vertex is in
-				while (max < distancefromstart)
+				while(max < distancefromstart)
 				{
 					max += cpdistance[s];
-					if (max < distancefromstart) s++;
+					if(max < distancefromstart) s++;
 
 					// Work around for rounding errors
-					if (s > cpdistance.Count-1)
+					if(s > cpdistance.Count-1)
 					{
 						s = cpdistance.Count - 1;
 						max = distancefromstart;
@@ -1025,9 +1001,9 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 
 				// Compute the u component with special cases for the first
 				// and last vertex
-				if (distancefromstart == 0)
+				if(distancefromstart == 0)
 					u = 0.0f;
-				else if (distancefromstart == distance)
+				else if(distancefromstart == distance)
 					u = 1.0f;
 				else
 					u = 1.0f - ((max - distancefromstart) / cpdistance[s]);
@@ -1040,14 +1016,14 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 			}
 
 			// OLD CODE
-			//for (int x = 0; x <= numverts; x++)
+			//for(int x = 0; x <= numverts; x++)
 			//{
 			//    // Compute the section the vertex will be in
 			//    int s = (int)(x * hop);
 			//    double u;
 
 			//    // Workaround for the last vertex
-			//    if ((x * hop) - s < 0.00001f && s == sections)
+			//    if((x * hop) - s < 0.00001f && s == sections)
 			//    {
 			//        u = 1.0f;
 			//        s--;
@@ -1058,7 +1034,7 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 			//        u = (x * hop) - s;
 			//    }
 
-			//    if (u > 1.0f) u = 1.0f;
+			//    if(u > 1.0f) u = 1.0f;
 
 			//    Vector2D p0 = crsd.controlpoints[s];
 			//    Vector2D p1 = crsd.controlpoints[s + 1];
@@ -1099,9 +1075,9 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 
 			GetSetBaseHeights(ld);
 
-			if (stairsectorbuilderform.SideFront)
+			if(stairsectorbuilderform.SideFront)
 			{
-				if (ld.Front == null)
+				if(ld.Front == null)
 				{
 					primary = ld.Back;
 					secondary = ld.Front;
@@ -1114,7 +1090,7 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 			}
 			else
 			{
-				if (ld.Back == null)
+				if(ld.Back == null)
 				{
 					primary = ld.Front;
 					secondary = ld.Back;
@@ -1129,10 +1105,10 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 			si.ceilingheight = primary.Sector.CeilHeight;
 			si.floorheight = primary.Sector.FloorHeight;
 
-			if (stairsectorbuilderform.UpperTextureTexture == "")
+			if(stairsectorbuilderform.UpperTextureTexture == "")
 				stairsectorbuilderform.UpperTextureTexture = (secondary == null) ? primary.MiddleTexture : primary.HighTexture;
 
-			if (stairsectorbuilderform.LowerTextureTexture == "")
+			if(stairsectorbuilderform.LowerTextureTexture == "")
 				stairsectorbuilderform.LowerTextureTexture = (secondary == null) ? primary.MiddleTexture : primary.LowTexture;
 
 			siout = si;
@@ -1140,13 +1116,13 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 
 		private void GetSetBaseHeights(Linedef ld)
 		{
-			if (baseheightset) return;
+			if(baseheightset) return;
 
 			baseheightset = true;
 
-			if (stairsectorbuilderform.SideFront)
+			if(stairsectorbuilderform.SideFront)
 			{
-				if (ld.Back == null)
+				if(ld.Back == null)
 				{
 					stairsectorbuilderform.CeilingBase = ld.Front.Sector.CeilHeight;
 					stairsectorbuilderform.FloorBase = ld.Front.Sector.FloorHeight;
@@ -1191,7 +1167,7 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 			base.OnEngage();
 
             // If no lines are selected nothing can be done, so exit this mode immediately
-            if (General.Map.Map.SelectedLinedefsCount == 0 && General.Map.Map.SelectedSectorsCount == 0)
+            if(General.Map.Map.SelectedLinedefsCount == 0 && General.Map.Map.SelectedSectorsCount == 0)
             {
                 General.Interface.DisplayStatus(StatusType.Warning, "No lines or sectors selected.");
                 General.Editing.ChangeMode(General.Editing.PreviousStableMode.Name);
@@ -1200,7 +1176,7 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 
 			renderer.SetPresentation(Presentation.Standard);
 
-			linesconnected = CheckConnectedLines();
+			linesconnected = true; //CheckConnectedLines();
 
 			LoadPrefabs();
 
@@ -1214,8 +1190,8 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 			selectedcontrolpoint.crsd = -1;
 			selectedcontrolpoint.crsg = -1;
 
-			stairsectorbuilderform.SingleSectors.Enabled = linesconnected ? true : false;
-			stairsectorbuilderform.DistinctBaseHeights.Checked = General.Map.Map.SelectedLinedefsCount == 1 ? false : true;
+			stairsectorbuilderform.SingleSectors.Enabled = linesconnected;
+			stairsectorbuilderform.DistinctBaseHeights.Checked = (General.Map.Map.SelectedLinedefsCount != 1);
 
 
 			// Show toolbox window
@@ -1248,7 +1224,7 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 			List<Linedef> newlinedefs = new List<Linedef>();
 			List<Sector> allnewsectors = new List<Sector>();
 
-			if (stairsectors == null) return;
+			if(stairsectors == null) return;
 
 			// Create undo
 			General.Map.UndoRedo.CreateUndo("Build stair sectors");
@@ -1256,7 +1232,7 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
             // Get the default settings and remember the default texture
             General.Settings.FindDefaultDrawSettings();
 
-			if (stairsectorbuilderform.MiddleTexture)
+			if(stairsectorbuilderform.MiddleTexture)
 			{
 				olddefaulttexture = General.Map.Options.DefaultWallTexture;
 				General.Map.Options.DefaultWallTexture = "-";
@@ -1266,81 +1242,81 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 			// for the preview
 			try
 			{
-				foreach (StairInfo si in stairsectors)
+				foreach(StairInfo si in stairsectors)
 				{
 					int stepcounter = 1;
 
-					foreach (List<Vector2D> lv in si.sectors)
+					foreach(List<Vector2D> lv in si.sectors)
 					{
 						List<Sector> oldsectors = new List<Sector>(General.Map.Map.Sectors);
 						//List<Sector> newsectors = new List<Sector>();
 						List<DrawnVertex> vertices = new List<DrawnVertex>();
 
-						for (int i = 0; i < lv.Count; i++)
+						for(int i = 0; i < lv.Count; i++)
 						{
 							vertices.Add(SectorVertex(lv[i]));
 						}
 
 						// Draw the new sector
-						if (!Tools.DrawLines(vertices)) throw new Exception("Failed drawing lines");
+						if(!Tools.DrawLines(vertices)) throw new Exception("Failed drawing lines");
 
 						// Update newly created sector(s) with the given textures and heights
-						foreach (Sector s in General.Map.Map.Sectors)
+						foreach(Sector s in General.Map.Map.Sectors)
 						{
-							if (!oldsectors.Contains(s))
+							if(!oldsectors.Contains(s))
 							{
 								allnewsectors.Add(s);
 
 								// Apply floor heights if necessary
-								if (stairsectorbuilderform.FloorHeight)
+								if(stairsectorbuilderform.FloorHeight)
 								{
 									// Should each stair use individual base height or the global one?
-									if (stairsectorbuilderform.DistinctBaseHeights.Checked && stairsectorbuilderform.StairType == 0)
+									if(stairsectorbuilderform.DistinctBaseHeights.Checked && stairsectorbuilderform.StairType == 0)
 										s.FloorHeight = si.floorheight + stairsectorbuilderform.FloorHeightModification * stepcounter;
 									else
 										s.FloorHeight = stairsectorbuilderform.FloorBase + stairsectorbuilderform.FloorHeightModification * stepcounter;
 								}
 
 								// Apply ceiling heights if necessary
-								if (stairsectorbuilderform.CeilingHeight)
+								if(stairsectorbuilderform.CeilingHeight)
 								{
 									// Should each stair use individual base height or the global one?
-									if (stairsectorbuilderform.DistinctBaseHeights.Checked && stairsectorbuilderform.StairType == 0)
+									if(stairsectorbuilderform.DistinctBaseHeights.Checked && stairsectorbuilderform.StairType == 0)
 										s.CeilHeight = si.ceilingheight + stairsectorbuilderform.CeilingHeightModification * stepcounter;
 									else
 										s.CeilHeight = stairsectorbuilderform.CeilingBase + stairsectorbuilderform.CeilingHeightModification * stepcounter;
 								}
 
 								// Apply floor and ceiling textures if necessary
-								if (stairsectorbuilderform.FloorFlat)
+								if(stairsectorbuilderform.FloorFlat)
 									s.SetFloorTexture(stairsectorbuilderform.FloorFlatTexture);
 
-								if (stairsectorbuilderform.CeilingFlat)
+								if(stairsectorbuilderform.CeilingFlat)
 									s.SetCeilTexture(stairsectorbuilderform.CeilingFlatTexture);
 
 								// Fix missing textures
-								foreach (Sidedef sd in s.Sidedefs)
+								foreach(Sidedef sd in s.Sidedefs)
 								{
-									if (!newlinedefs.Contains(sd.Line)) newlinedefs.Add(sd.Line);
+									if(!newlinedefs.Contains(sd.Line)) newlinedefs.Add(sd.Line);
 
-									if (stairsectorbuilderform.UpperTexture)
+									if(stairsectorbuilderform.UpperTexture)
 									{
-										if (sd.Line.Back != null && sd.Line.Back.HighRequired()) sd.Line.Back.SetTextureHigh(uppertexture);
-										if (sd.Line.Front != null && sd.Line.Front.HighRequired()) sd.Line.Front.SetTextureHigh(uppertexture);
-										if (stairsectorbuilderform.UpperUnpegged) sd.Line.SetFlag(General.Map.Config.UpperUnpeggedFlag, true);
+										if(sd.Line.Back != null && sd.Line.Back.HighRequired()) sd.Line.Back.SetTextureHigh(uppertexture);
+										if(sd.Line.Front != null && sd.Line.Front.HighRequired()) sd.Line.Front.SetTextureHigh(uppertexture);
+										if(stairsectorbuilderform.UpperUnpegged) sd.Line.SetFlag(General.Map.Config.UpperUnpeggedFlag, true);
 									}
 
-									if (stairsectorbuilderform.LowerTexture)
+									if(stairsectorbuilderform.LowerTexture)
 									{
-										if (sd.Line.Front != null && sd.Line.Front.LowRequired()) sd.Line.Front.SetTextureLow(lowertexture);
-										if (sd.Line.Back != null && sd.Line.Back.LowRequired()) sd.Line.Back.SetTextureLow(lowertexture);
-										if (stairsectorbuilderform.LowerUnpegged) sd.Line.SetFlag(General.Map.Config.LowerUnpeggedFlag, true);
+										if(sd.Line.Front != null && sd.Line.Front.LowRequired()) sd.Line.Front.SetTextureLow(lowertexture);
+										if(sd.Line.Back != null && sd.Line.Back.LowRequired()) sd.Line.Back.SetTextureLow(lowertexture);
+										if(stairsectorbuilderform.LowerUnpegged) sd.Line.SetFlag(General.Map.Config.LowerUnpeggedFlag, true);
 									}
 
-									if (stairsectorbuilderform.MiddleTexture)
+									if(stairsectorbuilderform.MiddleTexture)
 									{
-										if (sd.Line.Front != null && sd.Line.Front.MiddleRequired()) sd.Line.Front.SetTextureMid(middletexture);
-										if (sd.Line.Back != null && sd.Line.Back.MiddleRequired()) sd.Line.Back.SetTextureMid(middletexture);
+										if(sd.Line.Front != null && sd.Line.Front.MiddleRequired()) sd.Line.Front.SetTextureMid(middletexture);
+										if(sd.Line.Back != null && sd.Line.Back.MiddleRequired()) sd.Line.Back.SetTextureMid(middletexture);
 									}
 								}
 							}
@@ -1350,7 +1326,7 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 					}
 				}
 
-				if (stairsectorbuilderform.MiddleTexture)
+				if(stairsectorbuilderform.MiddleTexture)
 					General.Map.Options.DefaultWallTexture = olddefaulttexture;
 
 				// Snap to map format accuracy
@@ -1358,14 +1334,14 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 
 				// Clean the map up. Merge all vertices that share the same position and
 				// remove looped linedefs
-				foreach (Sector s in allnewsectors)
+				foreach(Sector s in allnewsectors)
 				{
-					if (s.Sidedefs == null) continue;
+					if(s.Sidedefs == null) continue;
 
-					foreach (Sidedef sd in s.Sidedefs)
+					foreach(Sidedef sd in s.Sidedefs)
 					{
-						if (!newvertices.Contains(sd.Line.Start)) newvertices.Add(sd.Line.Start);
-						if (!newvertices.Contains(sd.Line.End)) newvertices.Add(sd.Line.End);
+						if(!newvertices.Contains(sd.Line.Start)) newvertices.Add(sd.Line.Start);
+						if(!newvertices.Contains(sd.Line.End)) newvertices.Add(sd.Line.End);
 					}
 				}
 
@@ -1395,14 +1371,14 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 		// Redrawing display
 		public override void OnRedrawDisplay()
 		{
-			if (!stairsectorbuilderform.FullyLoaded) return;
+			if(!stairsectorbuilderform.FullyLoaded) return;
 
 			base.OnRedrawDisplay();
 
 			renderer.RedrawSurface();
 
 			// Render lines
-			if (renderer.StartPlotter(true))
+			if(renderer.StartPlotter(true))
 			{
 				renderer.PlotLinedefSet(General.Map.Map.Linedefs);
 				renderer.PlotVerticesSet(General.Map.Map.Vertices);
@@ -1410,16 +1386,16 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 			}
 
 			// Render things
-			if (renderer.StartThings(true))
+			if(renderer.StartThings(true))
 			{
 				renderer.RenderThingSet(General.Map.Map.Things, Presentation.THINGS_ALPHA);
 				renderer.Finish();
 			}
 
 			// Render overlay
-			if (renderer.StartOverlay(true))
+			if(renderer.StartOverlay(true))
 			{
-				if (stairsectorbuilderform.Tabs.SelectedIndex == 2 && numcontrolpoints != stairsectorbuilderform.NumControlPoints)
+				if(stairsectorbuilderform.Tabs.SelectedIndex == 2 && numcontrolpoints != stairsectorbuilderform.NumControlPoints)
 				{
 					ModifyControlpointNumber(stairsectorbuilderform.NumControlPoints);
 					numcontrolpoints = stairsectorbuilderform.NumControlPoints;
@@ -1429,11 +1405,11 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 				UpdateVertexData();
 
 				// Render the control points if the Catmull Rom spline tab is selected
-				if (stairsectorbuilderform.Tabs.SelectedIndex == 2)
+				if(stairsectorbuilderform.Tabs.SelectedIndex == 2)
 				{
-					foreach (List<Vector2D> lv in exactsplines)
+					foreach(List<Vector2D> lv in exactsplines)
 					{
-						for (int i = 0; i < lv.Count - 1; i++)
+						for(int i = 0; i < lv.Count - 1; i++)
 						{
 							renderer.RenderLine(lv[i], lv[i + 1], LINE_THICKNESS, new PixelColor(255, 128, 128, 128), true);
 						}
@@ -1445,12 +1421,12 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 
 						foreach(CatmullRomSplineData c in crsd)
 						{
-							for (int i = 0; i < c.controlpoints.Count; i++)
+							for(int i = 0; i < c.controlpoints.Count; i++)
 							{
 								RectangleF rect = new RectangleF(c.controlpoints[i].x - CONTROLPOINT_SIZE / 2, c.controlpoints[i].y - CONTROLPOINT_SIZE / 2, 10.0f, 10.0f);
 
 								if(i == 0) renderer.RenderRectangle(rect, 2, new PixelColor(128, 255, 0, 0), true);
-								else if (i == c.controlpoints.Count -1) renderer.RenderRectangle(rect, 2, new PixelColor(128, 0, 255, 0), true);
+								else if(i == c.controlpoints.Count -1) renderer.RenderRectangle(rect, 2, new PixelColor(128, 0, 255, 0), true);
 								else renderer.RenderRectangle(rect, 2, General.Colors.Indication, true);
 								//renderer.RenderLine(c.controlpoints[i], c.controlpoints[i] + c.tangents[i], LINE_THICKNESS, new PixelColor(255, 128, 128, 128), true);
 							}
@@ -1459,11 +1435,11 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 				}
 
 				// ... and draw the preview
-				foreach (StairInfo si in stairsectors)
+				foreach(StairInfo si in stairsectors)
 				{
-					foreach (List<Vector2D> lv in si.sectors)
+					foreach(List<Vector2D> lv in si.sectors)
 					{
-						for (int i = 0; i < lv.Count - 1; i++)
+						for(int i = 0; i < lv.Count - 1; i++)
 						{
 							renderer.RenderLine(lv[i], lv[i + 1], LINE_THICKNESS, General.Colors.Highlight, true);
 
@@ -1483,23 +1459,23 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 		{
 			base.OnSelectBegin();
 
-			if (stairsectorbuilderform.Tabs.SelectedIndex != 2) return;
+			if(stairsectorbuilderform.Tabs.SelectedIndex != 2) return;
 
 			// Go through all Catmull Rom Spline Groups
-			for (int crsg = 0; crsg < catmullromsplinegroups.Count; crsg++)
+			for(int crsg = 0; crsg < catmullromsplinegroups.Count; crsg++)
 			{
 				// Check inner and outer splines
-				for (int crsd = 0; crsd < 2; crsd++)
+				for(int crsd = 0; crsd < 2; crsd++)
 				{
 					// Check all control points except the first and last, they belong to the linedefs
 					// and may not be moved
-					for (int cp = 1; cp < catmullromsplinegroups[crsg].splines[crsd].controlpoints.Count-1; cp++)
+					for(int cp = 1; cp < catmullromsplinegroups[crsg].splines[crsd].controlpoints.Count-1; cp++)
 					{
 						Vector2D p = catmullromsplinegroups[crsg].splines[crsd].controlpoints[cp];
 
 						// If the mouse is inside a control point, set the info about that control point
 						// in the selectedcontrolpoint struct
-						if (mousemappos.x >= p.x - CONTROLPOINT_SIZE / 2 && mousemappos.x <= p.x + CONTROLPOINT_SIZE / 2 && mousemappos.y >= p.y - CONTROLPOINT_SIZE / 2 && mousemappos.y <= p.y + CONTROLPOINT_SIZE / 2)
+						if(mousemappos.x >= p.x - CONTROLPOINT_SIZE / 2 && mousemappos.x <= p.x + CONTROLPOINT_SIZE / 2 && mousemappos.y >= p.y - CONTROLPOINT_SIZE / 2 && mousemappos.y <= p.y + CONTROLPOINT_SIZE / 2)
 						{
 							selectedcontrolpoint.cp = cp;
 							selectedcontrolpoint.crsd = crsd;
@@ -1531,7 +1507,7 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 			base.OnMouseMove(e);
 
 			// If a control point is selected move it around
-			if (selectedcontrolpoint.cp != -1)
+			if(selectedcontrolpoint.cp != -1)
 			{
 				if(General.Interface.ShiftState ^ General.Interface.SnapToGrid)
 				{
@@ -1604,43 +1580,43 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 
 			BuilderPlug.Me.Prefabs.Clear();
 
-			foreach (DictionaryEntry prefabentry in prefabdata)
+			foreach(DictionaryEntry prefabentry in prefabdata)
 			{
 				BuilderPlug.Prefab p = new BuilderPlug.Prefab();
 
-				foreach (DictionaryEntry entry in (ListDictionary)prefabentry.Value)
+				foreach(DictionaryEntry entry in (ListDictionary)prefabentry.Value)
 				{
-					if ((string)entry.Key == "name") p.name = (string)entry.Value;
-					if ((string)entry.Key == "numberofsectors") p.numberofsectors = (int)entry.Value;
-					if ((string)entry.Key == "outervertexmultiplier") p.outervertexmultiplier = (int)entry.Value;
-					if ((string)entry.Key == "innervertexmultiplier") p.innervertexmultiplier = (int)entry.Value;
-					if ((string)entry.Key == "stairtype") p.stairtype = (int)entry.Value;
-					if ((string)entry.Key == "sectordepth") p.sectordepth = (int)entry.Value;
-					if ((string)entry.Key == "spacing") p.spacing = (int)entry.Value;
-					if ((string)entry.Key == "frontside") p.frontside = (bool)entry.Value;
-					if ((string)entry.Key == "singlesectors") p.singlesectors = (bool)entry.Value;
-					if ((string)entry.Key == "singledirection") p.singledirection = (bool)entry.Value;
-					if ((string)entry.Key == "distinctbaseheights") p.distinctbaseheights = (bool)entry.Value;
-					if ((string)entry.Key == "flipping") p.flipping = (int)entry.Value;
-					if ((string)entry.Key == "numberofcontrolpoints") p.numberofcontrolpoints = (int)entry.Value;
-					if ((string)entry.Key == "applyfloormod") p.applyfloormod = (bool)entry.Value;
-					if ((string)entry.Key == "floormod") p.floormod = (int)entry.Value;
-					//if ((string)entry.Key == "floorbase") p.floorbase = (int)entry.Value;
-					if ((string)entry.Key == "applyceilingmod") p.applyceilingmod = (bool)entry.Value;
-					if ((string)entry.Key == "ceilingmod") p.ceilingmod = (int)entry.Value;
-					//if ((string)entry.Key == "ceilingbase") p.ceilingbase = (int)entry.Value;
-					if ((string)entry.Key == "applyfloortexture") p.applyfloortexture = (bool)entry.Value;
-					if ((string)entry.Key == "floortexture") p.floortexture = (string)entry.Value;
-					if ((string)entry.Key == "applyceilingtexture") p.applyceilingtexture = (bool)entry.Value;
-					if ((string)entry.Key == "ceilingtexture") p.ceilingtexture = (string)entry.Value;
-					if ((string)entry.Key == "applyuppertexture") p.applyuppertexture = (bool)entry.Value;
-					if ((string)entry.Key == "upperunpegged") p.upperunpegged = (bool)entry.Value;
-					if ((string)entry.Key == "uppertexture") p.uppertexture = (string)entry.Value;
-					if ((string)entry.Key == "applymiddletexture") p.applymiddletexture = (bool)entry.Value;
-					if ((string)entry.Key == "middletexture") p.middletexture = (string)entry.Value;
-					if ((string)entry.Key == "applylowertexture") p.applylowertexture = (bool)entry.Value;
-					if ((string)entry.Key == "lowertexture") p.lowertexture = (string)entry.Value;
-					if ((string)entry.Key == "lowerunpegged") p.lowerunpegged = (bool)entry.Value;
+					if((string)entry.Key == "name") p.name = (string)entry.Value;
+					if((string)entry.Key == "numberofsectors") p.numberofsectors = (int)entry.Value;
+					if((string)entry.Key == "outervertexmultiplier") p.outervertexmultiplier = (int)entry.Value;
+					if((string)entry.Key == "innervertexmultiplier") p.innervertexmultiplier = (int)entry.Value;
+					if((string)entry.Key == "stairtype") p.stairtype = (int)entry.Value;
+					if((string)entry.Key == "sectordepth") p.sectordepth = (int)entry.Value;
+					if((string)entry.Key == "spacing") p.spacing = (int)entry.Value;
+					if((string)entry.Key == "frontside") p.frontside = (bool)entry.Value;
+					if((string)entry.Key == "singlesectors") p.singlesectors = (bool)entry.Value;
+					if((string)entry.Key == "singledirection") p.singledirection = (bool)entry.Value;
+					if((string)entry.Key == "distinctbaseheights") p.distinctbaseheights = (bool)entry.Value;
+					if((string)entry.Key == "flipping") p.flipping = (int)entry.Value;
+					if((string)entry.Key == "numberofcontrolpoints") p.numberofcontrolpoints = (int)entry.Value;
+					if((string)entry.Key == "applyfloormod") p.applyfloormod = (bool)entry.Value;
+					if((string)entry.Key == "floormod") p.floormod = (int)entry.Value;
+					//if((string)entry.Key == "floorbase") p.floorbase = (int)entry.Value;
+					if((string)entry.Key == "applyceilingmod") p.applyceilingmod = (bool)entry.Value;
+					if((string)entry.Key == "ceilingmod") p.ceilingmod = (int)entry.Value;
+					//if((string)entry.Key == "ceilingbase") p.ceilingbase = (int)entry.Value;
+					if((string)entry.Key == "applyfloortexture") p.applyfloortexture = (bool)entry.Value;
+					if((string)entry.Key == "floortexture") p.floortexture = (string)entry.Value;
+					if((string)entry.Key == "applyceilingtexture") p.applyceilingtexture = (bool)entry.Value;
+					if((string)entry.Key == "ceilingtexture") p.ceilingtexture = (string)entry.Value;
+					if((string)entry.Key == "applyuppertexture") p.applyuppertexture = (bool)entry.Value;
+					if((string)entry.Key == "upperunpegged") p.upperunpegged = (bool)entry.Value;
+					if((string)entry.Key == "uppertexture") p.uppertexture = (string)entry.Value;
+					if((string)entry.Key == "applymiddletexture") p.applymiddletexture = (bool)entry.Value;
+					if((string)entry.Key == "middletexture") p.middletexture = (string)entry.Value;
+					if((string)entry.Key == "applylowertexture") p.applylowertexture = (bool)entry.Value;
+					if((string)entry.Key == "lowertexture") p.lowertexture = (string)entry.Value;
+					if((string)entry.Key == "lowerunpegged") p.lowerunpegged = (bool)entry.Value;
 				}
 
 				BuilderPlug.Me.Prefabs.Add(p);

@@ -124,7 +124,7 @@ namespace CodeImp.DoomBuilder.Controls
 				if(l.Tags.Count > 1)
 				{
 					string[] tags = new string[l.Tags.Count];
-					for (int i = 0; i < l.Tags.Count; i++) tags[i] = l.Tags[i].ToString();
+					for(int i = 0; i < l.Tags.Count; i++) tags[i] = l.Tags[i].ToString();
 					tag.Text = string.Join(", ", tags);
 					tag.Enabled = true;
 					taglabel.Enabled = true;
@@ -281,7 +281,7 @@ namespace CodeImp.DoomBuilder.Controls
 				else 
 				{
 					frontoffsetlabel.Text = "Front offset:";
-					if (l.Front.OffsetX != 0 || l.Front.OffsetY != 0)
+					if(l.Front.OffsetX != 0 || l.Front.OffsetY != 0)
 					{
 						frontoffset.Text = l.Front.OffsetX + ", " + l.Front.OffsetY;
 						frontoffsetlabel.Enabled = true;
@@ -399,7 +399,7 @@ namespace CodeImp.DoomBuilder.Controls
 				else
 				{
 					backoffsetlabel.Text = "Back offset:";
-					if (l.Back.OffsetX != 0 || l.Back.OffsetY != 0)
+					if(l.Back.OffsetX != 0 || l.Back.OffsetY != 0)
 					{
 						backoffset.Text = l.Back.OffsetX + ", " + l.Back.OffsetY;
 						backoffsetlabel.Enabled = true;
@@ -563,7 +563,7 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				int light = (int)sd.Fields["light"].Value;
 				
-				if (sd.Fields.GetValue("lightabsolute", false))
+				if(sd.Fields.GetValue("lightabsolute", false))
 					value.Text = light + " (abs.)";
 				else
 					value.Text = light + " (" + Math.Min(255, Math.Max(0, (light + sd.Sector.Brightness))) + ")";

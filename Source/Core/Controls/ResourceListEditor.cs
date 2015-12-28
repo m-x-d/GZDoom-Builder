@@ -65,7 +65,7 @@ namespace CodeImp.DoomBuilder.Controls
 			InitializeComponent();
 			ResizeColumnHeader();
 			
-			if (General.Actions != null)
+			if(General.Actions != null)
 			{
 				// Get key shortcuts (mxd)
 				copyactionkey = General.Actions.GetActionByName("builder_copyselection").ShortcutKey;
@@ -394,7 +394,7 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			foreach(ListViewItem item in resourceitems.Items)
 			{
-				if (!((DataLocation)item.Tag).IsValid()) return false;
+				if(!((DataLocation)item.Tag).IsValid()) return false;
 			}
 			return true;
 		}

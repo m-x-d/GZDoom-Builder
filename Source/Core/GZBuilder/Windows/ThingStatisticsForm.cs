@@ -21,7 +21,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
             InitializeComponent();
 
             //apply window size and location
-            if (!size.IsEmpty && !location.IsEmpty) 
+            if(!size.IsEmpty && !location.IsEmpty) 
 			{
                 this.StartPosition = FormStartPosition.Manual;
                 this.Size = size;
@@ -47,7 +47,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 
             foreach(Thing t in General.Map.Map.Things) 
 			{
-                if (thingcounts.ContainsKey(t.Type)) 
+                if(thingcounts.ContainsKey(t.Type)) 
 				{
                     thingcounts[t.Type]++;
                 } 
@@ -60,9 +60,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
             }
 
             //add rows
-            foreach (KeyValuePair<int, int> group in thingcounts) 
+            foreach(KeyValuePair<int, int> group in thingcounts) 
 			{
-                if (hideUnused.Checked && group.Value == 0) continue;
+                if(hideUnused.Checked && group.Value == 0) continue;
                 
                 DataGridViewRow row = new DataGridViewRow();
 
@@ -80,8 +80,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
         private static List<Thing> GetThingsByType(int type) 
 		{
             List<Thing> list = new List<Thing>();
-            foreach (Thing t in General.Map.Map.Things)
-                if (t.Type == type) list.Add(t);
+            foreach(Thing t in General.Map.Map.Things)
+                if(t.Type == type) list.Add(t);
 
             return list;
         }
@@ -91,10 +91,10 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
             RectangleF area = MapSet.CreateEmptyArea();
 
             // Make a view area from the points
-            foreach (Vector2D p in points) area = MapSet.IncreaseArea(area, p);
+            foreach(Vector2D p in points) area = MapSet.IncreaseArea(area, p);
 
             // Make the area square, using the largest side
-            if (area.Width > area.Height) 
+            if(area.Width > area.Height) 
 			{
                 float delta = area.Width - area.Height;
                 area.Y -= delta * 0.5f;
@@ -111,7 +111,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
             area.Inflate(100f, 100f);
 
             // Zoom to area
-	        if (General.Editing.Mode is ClassicMode) 
+	        if(General.Editing.Mode is ClassicMode) 
 			{
 		        ClassicMode editmode = (General.Editing.Mode as ClassicMode);
 		        editmode.CenterOnArea(area, 0.6f);
@@ -120,16 +120,16 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 
         private void dataGridView_CellMouseClick(object sender, DataGridViewCellMouseEventArgs e) 
 		{
-            if (e.RowIndex == -1) return;
-			if (e.Button == MouseButtons.Left) //select
+            if(e.RowIndex == -1) return;
+			if(e.Button == MouseButtons.Left) //select
 			{ 
                 List<Thing> list = GetThingsByType((int)dataGridView.Rows[e.RowIndex].Cells[0].Value);
-                if (list.Count > 0) 
+                if(list.Count > 0) 
 				{
                     General.Map.Map.ClearSelectedThings();
 
                     List<Vector2D> points = new List<Vector2D>();
-                    foreach (Thing t in list) 
+                    foreach(Thing t in list) 
 					{
                         t.Selected = true;
 
@@ -146,10 +146,10 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
                     ShowSelection(points);
                 }
             } 
-			else if (e.Button == MouseButtons.Right) //edit
+			else if(e.Button == MouseButtons.Right) //edit
 			{ 
                 List<Thing> list = GetThingsByType((int)dataGridView.Rows[e.RowIndex].Cells[0].Value);
-                if (list.Count > 0) 
+                if(list.Count > 0) 
 				{
                     General.MainWindow.ShowEditThings(list);
                     General.Map.Map.Update();

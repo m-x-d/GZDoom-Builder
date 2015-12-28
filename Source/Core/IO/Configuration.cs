@@ -657,7 +657,8 @@ namespace CodeImp.DoomBuilder.IO
 				}
 				else
 				{
-					switch (c) { //mxd
+					switch(c) //mxd
+					{ 
 						// Check for sequence start
 						case '\\':
 							// Next character is of escape sequence
@@ -932,7 +933,6 @@ namespace CodeImp.DoomBuilder.IO
 		{
 			// We now parse arguments, separated by commas, until we reach the end of the function
 			List<object> args = new List<object>();
-			object val;
 			while((pos < data.Length) && !cpErrorResult)
 			{
 				// Get current character
@@ -954,11 +954,12 @@ namespace CodeImp.DoomBuilder.IO
 							return;
 					}
 				}
+
 				// Check for string opening
-				else if(c == '\"')
+				if(c == '\"')
 				{
 					// Now parsing a string
-					val = ParseString(ref file, ref data, ref pos, ref line);
+					object val = ParseString(ref file, ref data, ref pos, ref line);
 					if(cpErrorResult) return;
 					args.Add(val);
 				}
@@ -970,7 +971,7 @@ namespace CodeImp.DoomBuilder.IO
 					pos--;
 					
 					// Now parsing a number
-					val = ParseNumber(ref file, ref data, ref pos, ref line);
+					object val = ParseNumber(ref file, ref data, ref pos, ref line);
 					if(cpErrorResult) return;
 					args.Add(val);
 				}
@@ -993,7 +994,7 @@ namespace CodeImp.DoomBuilder.IO
 					pos--;
 					
 					// Now parsing a keyword
-					val = ParseKeyword(ref file, ref data, ref pos, ref line);
+					object val = ParseKeyword(ref file, ref data, ref pos, ref line);
 					if(cpErrorResult) return;
 					args.Add(val);
 				}
@@ -1012,7 +1013,7 @@ namespace CodeImp.DoomBuilder.IO
 			// Go through all of the data until
 			// the end or until the struct closes
 			// or when an arror occurred
-			while ((pos < data.Length) && !cpErrorResult)
+			while((pos < data.Length) && !cpErrorResult)
 			{
 				// Get current character
 				char c = data[pos++];

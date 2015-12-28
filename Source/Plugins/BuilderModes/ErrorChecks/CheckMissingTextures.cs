@@ -52,22 +52,22 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			int stepprogress = 0;
 
 			// Go for all the sidedefs
-			foreach (Sidedef sd in General.Map.Map.Sidedefs)
+			foreach(Sidedef sd in General.Map.Map.Sidedefs)
 			{
 				// Check upper texture. Also make sure not to return a false
 				// positive if the sector on the other side has the ceiling
 				// set to be sky
-				if (sd.HighRequired() && sd.HighTexture == "-")
+				if(sd.HighRequired() && sd.HighTexture == "-")
 				{
 					if(sd.Line.Action == 181 && sd.Line.Args[1] > 0) continue; //mxd. Ceiling slopes doesn't require upper texture
-					if (sd.Other != null && sd.Other.Sector.CeilTexture != General.Map.Config.SkyFlatName)
+					if(sd.Other != null && sd.Other.Sector.CeilTexture != General.Map.Config.SkyFlatName)
 					{
 						SubmitResult(new ResultMissingTexture(sd, SidedefPart.Upper));
 					}
 				}
 
 				// Check middle texture
-				if (sd.MiddleRequired() && sd.MiddleTexture == "-")
+				if(sd.MiddleRequired() && sd.MiddleTexture == "-")
 				{
 					SubmitResult(new ResultMissingTexture(sd, SidedefPart.Middle));
 				}
@@ -75,10 +75,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Check lower texture. Also make sure not to return a false
 				// positive if the sector on the other side has the floor
 				// set to be sky
-				if (sd.LowRequired() && sd.LowTexture == "-")
+				if(sd.LowRequired() && sd.LowTexture == "-")
 				{
 					if(sd.Line.Action == 181 && sd.Line.Args[0] > 0) continue; //mxd. Floor slopes doesn't require lower texture
-					if (sd.Other != null && sd.Other.Sector.FloorTexture != General.Map.Config.SkyFlatName)
+					if(sd.Other != null && sd.Other.Sector.FloorTexture != General.Map.Config.SkyFlatName)
 					{
 						SubmitResult(new ResultMissingTexture(sd, SidedefPart.Lower));
 					}
@@ -89,7 +89,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				catch (ThreadInterruptedException) { return; }
 
 				// We are making progress!
-				if ((++progress / PROGRESS_STEP) > stepprogress)
+				if((++progress / PROGRESS_STEP) > stepprogress)
 				{
 					stepprogress = (progress / PROGRESS_STEP);
 					AddProgress(1);

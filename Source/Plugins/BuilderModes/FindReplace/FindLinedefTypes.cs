@@ -53,7 +53,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd
 		public FindLinedefTypes() 
 		{
-			if (!General.Map.Config.GeneralizedActions) return;
+			if(!General.Map.Config.GeneralizedActions) return;
 
 			// Get all them generalized bits
 			generalizedbits = new List<int>();

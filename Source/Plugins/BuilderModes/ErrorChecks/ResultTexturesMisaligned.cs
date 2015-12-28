@@ -48,7 +48,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			hidden = hide;
 			Type t = this.GetType();
-			if (hide) 
+			if(hide) 
 			{
 				side1.IgnoredErrorChecks.Add(t);
 				side2.IgnoredErrorChecks.Add(t);

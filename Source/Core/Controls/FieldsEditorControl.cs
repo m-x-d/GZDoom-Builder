@@ -111,7 +111,7 @@ namespace CodeImp.DoomBuilder.Controls
 			int sortcolumn = General.Settings.ReadSetting("customfieldssortcolumn", 0);
 			int sortorder = General.Settings.ReadSetting("customfieldssortorder", (int)ListSortDirection.Ascending);
 
-			switch (sortorder)
+			switch(sortorder)
 			{
 				case (int)SortOrder.Ascending:
 					fieldslist.Sort(fieldslist.Columns[sortcolumn], ListSortDirection.Ascending);
@@ -253,7 +253,7 @@ namespace CodeImp.DoomBuilder.Controls
 			UniFields tempfields = new UniFields(tofields);
 			foreach(KeyValuePair<string, UniValue> f in tempfields) 
 			{
-				if (uifields.ContainsKey(f.Key)) continue; //mxd
+				if(uifields.ContainsKey(f.Key)) continue; //mxd
 				
 				// Go for all rows
 				bool foundrow = false;
@@ -436,12 +436,11 @@ namespace CodeImp.DoomBuilder.Controls
 			else if(e.ColumnIndex == 2)
 			{
 				// Get the row
-				FieldsEditorRow frow;
 				DataGridViewRow row = fieldslist.Rows[e.RowIndex];
 				if(row is FieldsEditorRow)
 				{
 					// Get specializedrow
-					frow = row as FieldsEditorRow;
+					FieldsEditorRow frow = row as FieldsEditorRow;
 
 					// Enumerable?
 					if(frow.TypeHandler.IsEnumerable)
@@ -516,10 +515,10 @@ namespace CodeImp.DoomBuilder.Controls
 							else 
 							{
 								// Check if no other row already has this name
-								foreach (DataGridViewRow r in fieldslist.Rows) 
+								foreach(DataGridViewRow r in fieldslist.Rows) 
 								{
 									// Name matches and not the same row?
-									if ((r.Index != row.Index) && (r.Cells.Count > 0) && (r.Cells[0].Value != null) &&
+									if((r.Index != row.Index) && (r.Cells.Count > 0) && (r.Cells[0].Value != null) &&
 									    (r.Cells[0].Value.ToString().ToLowerInvariant() == validname)) 
 									{
 										// Cannot have two rows with same name
@@ -530,7 +529,7 @@ namespace CodeImp.DoomBuilder.Controls
 								}
 
 								// Still valid?
-								if (validname.Length > 0) 
+								if(validname.Length > 0) 
 								{
 									// Try to find the type in the map options
 									int type = General.Map.Options.GetUniversalFieldType(elementname, validname, 0);
@@ -540,7 +539,7 @@ namespace CodeImp.DoomBuilder.Controls
 									frow.Visible = false;
 									fieldslist.Rows.Insert(e.RowIndex + 1, frow);
 
-									if (OnFieldInserted != null)
+									if(OnFieldInserted != null)
 										OnFieldInserted(validname);
 								}
 							}

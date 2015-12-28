@@ -68,10 +68,10 @@ namespace CodeImp.DoomBuilder.ColorPicker.Controls {
 			
 			int val = (int)((NumericUpDown)sender).Value;
 
-			if (!blockEventsStatus) 
+			if(!blockEventsStatus) 
 			{
 				EventHandler<ColorPickerSliderEventArgs> handler = OnValueChanged;
-				if (handler != null) handler(this, new ColorPickerSliderEventArgs(val));
+				if(handler != null) handler(this, new ColorPickerSliderEventArgs(val));
 			}
 
 			blockEvents = true;

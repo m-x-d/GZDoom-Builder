@@ -23,15 +23,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			int stepprogress = 0;
 
 			// Go for all things
-			foreach (Thing t in General.Map.Map.Things) 
+			foreach(Thing t in General.Map.Map.Things) 
 			{
-				if (General.Map.Data.GetThingInfoEx(t.Type) == null) SubmitResult(new ResultUnknownThing(t));
+				if(General.Map.Data.GetThingInfoEx(t.Type) == null) SubmitResult(new ResultUnknownThing(t));
 
 				// Handle thread interruption
 				try { Thread.Sleep(0); } catch (ThreadInterruptedException) { return; }
 
 				// We are making progress!
-				if ((++progress / PROGRESS_STEP) > stepprogress) 
+				if((++progress / PROGRESS_STEP) > stepprogress) 
 				{
 					stepprogress = (progress / PROGRESS_STEP);
 					AddProgress(1);

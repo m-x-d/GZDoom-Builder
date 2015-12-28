@@ -201,7 +201,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			base.Dispose();
 
 			//mxd
-			foreach (Bitmap b in distincticons) b.Dispose();
+			foreach(Bitmap b in distincticons) b.Dispose();
 
 			// This must be called to remove bound methods for actions.
             General.Actions.UnbindMethods(this);
@@ -234,30 +234,30 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			// Keep track of all the sectors in the map. Sectors that belong to a sound environment
 			// will be removed from the list, so in the end only sectors that don't belong to any
 			// sound environment will be in this list
-			foreach (Sector s in General.Map.Map.Sectors) allsectors.Add(s);
+			foreach(Sector s in General.Map.Map.Sectors) allsectors.Add(s);
 
 			List<Thing> soundenvironmenthings = GetSoundEnvironmentThings(General.Map.Map.Sectors.ToList());
 			int numthings = soundenvironmenthings.Count;
 
 			// Assign each thing a color and a number, so each sound environment will always have the same color
 			// and id, no matter in what order they are discovered
-			for (int i = 0; i < soundenvironmenthings.Count; i++)
+			for(int i = 0; i < soundenvironmenthings.Count; i++)
 			{
 				secolor[soundenvironmenthings[i]] = distinctcolors[i % distinctcolors.Count];
 				senumber.Add(soundenvironmenthings[i], i + 1);
 			}
 
-			while (soundenvironmenthings.Count > 0 && !worker.CancellationPending)
+			while(soundenvironmenthings.Count > 0 && !worker.CancellationPending)
 			{
 				// Sort things by distance to center of the screen, so that sound environments the user want to look at will (hopefully) be discovered first
-				Vector2D center = General.Map.Renderer2D.DisplayToMap(new Vector2D(General.Interface.Display.Width / 2, General.Interface.Display.Height / 2));
+				Vector2D center = General.Map.Renderer2D.DisplayToMap(new Vector2D(General.Interface.Display.Width / 2f, General.Interface.Display.Height / 2f));
 				soundenvironmenthings = soundenvironmenthings.OrderBy(o => Math.Abs(Vector2D.Distance(center, o.Position))).ToList();
 
 				Thing thing = soundenvironmenthings[0];
-				if (thing.Sector == null) thing.DetermineSector();
+				if(thing.Sector == null) thing.DetermineSector();
 
 				// Ignore things that are outside the map
-				if (thing.Sector == null)
+				if(thing.Sector == null)
 				{
 					soundenvironmenthings.Remove(thing);
 					continue;
@@ -269,34 +269,30 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 				// as they are discovered
 				sectorstocheck.Add(thing.Sector);
 
-				while (sectorstocheck.Count > 0)
+				while(sectorstocheck.Count > 0)
 				{
 					Sector sector = sectorstocheck[0];
-					Sector oppositesector;
 
-					if (!environment.Sectors.Contains(sector)) environment.Sectors.Add(sector);
-					if (!checkedsectors.Contains(sector)) checkedsectors.Add(sector);
+					if(!environment.Sectors.Contains(sector)) environment.Sectors.Add(sector);
+					if(!checkedsectors.Contains(sector)) checkedsectors.Add(sector);
 
 					sectorstocheck.Remove(sector);
 					allsectors.Remove(sector);
 
 					// Find adjacant sectors and add them to the list of sectors to check if necessary
-					foreach (Sidedef sd in sector.Sidedefs)
+					foreach(Sidedef sd in sector.Sidedefs)
 					{
-						if (LinedefBlocksSoundEnvironment(sd.Line))
+						if(LinedefBlocksSoundEnvironment(sd.Line))
 						{
-							if (!environment.Linedefs.Contains(sd.Line)) environment.Linedefs.Add(sd.Line);
+							if(!environment.Linedefs.Contains(sd.Line)) environment.Linedefs.Add(sd.Line);
 							continue;
 						}
 
-						if (sd.Line.Back == null) continue;
+						if(sd.Line.Back == null) continue;
 
-						if (sd.Line.Front.Sector == sector)
-							oppositesector = sd.Line.Back.Sector;
-						else
-							oppositesector = sd.Line.Front.Sector;
+						Sector oppositesector = (sd.Line.Front.Sector == sector ? sd.Line.Back.Sector : sd.Line.Front.Sector);
 
-						if (!sectorstocheck.Contains(oppositesector) && !checkedsectors.Contains(oppositesector))
+						if(!sectorstocheck.Contains(oppositesector) && !checkedsectors.Contains(oppositesector))
 							sectorstocheck.Add(oppositesector);
 					}
 				}
@@ -306,9 +302,9 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 
 				// ... and remove them from the list of sound environment things to check, because we know that
 				// they already belong to a sound environment
-				foreach (Thing t in environment.Things)
+				foreach(Thing t in environment.Things)
 				{
-					if (soundenvironmenthings.Contains(t)) soundenvironmenthings.Remove(t);
+					if(soundenvironmenthings.Contains(t)) soundenvironmenthings.Remove(t);
 				}
 
 				// Set color and id of the sound environment
@@ -316,18 +312,18 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 				environment.ID = senumber[environment.Things[0]];
 
 				// Create the data for the overlay geometry
-				foreach (Sector s in environment.Sectors)
+				foreach(Sector s in environment.Sectors)
 				{
 					FlatVertex[] fv = new FlatVertex[s.FlatVertices.Length];
 					s.FlatVertices.CopyTo(fv, 0);
-					for (int j = 0; j < fv.Length; j++) fv[j].c = environment.Color.WithAlpha(128).ToInt();
+					for(int j = 0; j < fv.Length; j++) fv[j].c = environment.Color.WithAlpha(128).ToInt();
 
 					vertsList.AddRange(fv);
 
 					// Get all Linedefs that will block sound environments
-					foreach (Sidedef sd in s.Sidedefs)
+					foreach(Sidedef sd in s.Sidedefs)
 					{
-						if (LinedefBlocksSoundEnvironment(sd.Line))
+						if(LinedefBlocksSoundEnvironment(sd.Line))
 							lock (blockinglinedefs)
 							{
 								blockinglinedefs.Add(sd.Line);
@@ -336,7 +332,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 				}
 
 				// Update the overlay geometry with the newly added sectors
-				if (overlayGeometry == null)
+				if(overlayGeometry == null)
 				{
 					overlayGeometry = vertsList.ToArray();
 				}
@@ -395,15 +391,15 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			}
 
 			// Create overlay geometry for sectors that don't belong to a sound environment
-			foreach (Sector s in allsectors)
+			foreach(Sector s in allsectors)
 			{
 				FlatVertex[] fv = new FlatVertex[s.FlatVertices.Length];
 				s.FlatVertices.CopyTo(fv, 0);
-				for (int j = 0; j < fv.Length; j++) fv[j].c = NoSoundColor.WithAlpha(128).ToInt();
+				for(int j = 0; j < fv.Length; j++) fv[j].c = NoSoundColor.WithAlpha(128).ToInt();
 				vertsList.AddRange(fv);
 			}
 
-			if (overlayGeometry == null)
+			if(overlayGeometry == null)
 			{
 				overlayGeometry = vertsList.ToArray();
 			}
@@ -423,12 +419,12 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 		{
 			List<Thing> things = new List<Thing>();
 
-			foreach (Thing thing in General.Map.Map.Things)
+			foreach(Thing thing in General.Map.Map.Things)
 			{
 				// SoundEnvironment thing, see http://zdoom.org/wiki/Classes:SoundEnvironment
-				if (thing.Type != SOUND_ENVIROMNEMT_THING_TYPE) continue;
-				if (thing.Sector == null) thing.DetermineSector();
-				if (thing.Sector != null && sectors.Contains(thing.Sector)) things.Add(thing);
+				if(thing.Type != SOUND_ENVIROMNEMT_THING_TYPE) continue;
+				if(thing.Sector == null) thing.DetermineSector();
+				if(thing.Sector != null && sectors.Contains(thing.Sector)) things.Add(thing);
 			}
 
 			return things;
@@ -469,13 +465,12 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			float redtint = tint.r / 256.0f;
 			float greentint = tint.g / 256.0f; 
 			float bluetint = tint.b / 256.0f;
-			float red, green, blue;
 
 			for(int k = 0; k + 4 < pixelBuffer.Length; k += 4) 
 			{
-				blue = 60 + pixelBuffer[k] * bluetint;
-				green = 60 + pixelBuffer[k + 1] * greentint;
-				red = 60 + pixelBuffer[k + 2] * redtint;
+				float blue = 60 + pixelBuffer[k] * bluetint;
+				float green = 60 + pixelBuffer[k + 1] * greentint;
+				float red = 60 + pixelBuffer[k + 2] * redtint;
 
 				pixelBuffer[k] = (byte)Math.Min(255, blue);
 				pixelBuffer[k + 1] = (byte)Math.Min(255, green);

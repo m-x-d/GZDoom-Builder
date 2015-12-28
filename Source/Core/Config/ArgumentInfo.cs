@@ -69,10 +69,10 @@ namespace CodeImp.DoomBuilder.Config
 
 			// Determine enum type
 			IDictionary argdic = cfg.ReadSetting(argspath + ".arg" + istr, new Hashtable());
-			if (argdic.Contains("enum"))
+			if(argdic.Contains("enum"))
 			{
 				// Enum fully specified?
-				if (argdic["enum"] is IDictionary)
+				if(argdic["enum"] is IDictionary)
 				{
 					// Create anonymous enum
 					this.enumlist = new EnumList(argdic["enum"] as IDictionary);
@@ -80,7 +80,7 @@ namespace CodeImp.DoomBuilder.Config
 				else
 				{
 					// Check if referenced enum exists
-					if ((argdic["enum"].ToString().Length > 0) && enums.ContainsKey(argdic["enum"].ToString()))
+					if((argdic["enum"].ToString().Length > 0) && enums.ContainsKey(argdic["enum"].ToString()))
 					{
 						// Get the enum list
 						this.enumlist = enums[argdic["enum"].ToString()];
@@ -92,7 +92,7 @@ namespace CodeImp.DoomBuilder.Config
 				}
 			}
 			
-			if (this.enumlist == null) this.enumlist = new EnumList(); //mxd
+			if(this.enumlist == null) this.enumlist = new EnumList(); //mxd
 		}
 
 		//mxd. Constructor for an argument info defined in DECORATE

@@ -171,8 +171,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This highlights a new region
 		private void Highlight(bool buttonspressed)
 		{
-			LinedefSide newnearest;
-
 			// Mouse inside?
 			if(mouseinside)
 			{
@@ -181,7 +179,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(nl != null)
 				{
 					float side = nl.SideOfLine(mousemappos);
-					newnearest = new LinedefSide(nl, (side <= 0.0f));
+					LinedefSide newnearest = new LinedefSide(nl, (side <= 0.0f));
 					if(newnearest != nearestside)
 					{
 						// Only change when buttons are not pressed

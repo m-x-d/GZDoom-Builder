@@ -34,13 +34,13 @@ namespace CodeImp.DoomBuilder.Windows
 			flagdefs = inflags;
 
 			// Fill flags list
-			foreach (KeyValuePair<string, string> tf in flagdefs)
+			foreach(KeyValuePair<string, string> tf in flagdefs)
 				flags.Add(tf.Value, tf.Key);
 
 			// Parse the value string and check the boxes if necessary
-			if (value.Trim() != "")
+			if(value.Trim() != "")
 			{
-				foreach (string s in value.Split(','))
+				foreach(string s in value.Split(','))
 				{
 					string str = s.Trim();
 
@@ -48,9 +48,9 @@ namespace CodeImp.DoomBuilder.Windows
 					if(!flagdefs.ContainsKey(str))
 						continue;
 
-					foreach (CheckBox c in flags.Checkboxes)
+					foreach(CheckBox c in flags.Checkboxes)
 					{
-						if (c.Text == flagdefs[str])
+						if(c.Text == flagdefs[str])
 							c.Checked = true;
 					}
 				}
@@ -64,7 +64,7 @@ namespace CodeImp.DoomBuilder.Windows
 			string result = value;
 			FlagsForm f = new FlagsForm();
 			f.Setup(value, inflags);
-			if (f.ShowDialog(owner) == DialogResult.OK) result = f.Value;
+			if(f.ShowDialog(owner) == DialogResult.OK) result = f.Value;
 			f.Dispose();
 			return result;
 		}
@@ -76,15 +76,15 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			value = "";
 
-			foreach (CheckBox c in flags.Checkboxes)
+			foreach(CheckBox c in flags.Checkboxes)
 			{
 				if(c.Checked == false) continue;
 
-				foreach (KeyValuePair<string, string> lf in flagdefs)
+				foreach(KeyValuePair<string, string> lf in flagdefs)
 				{
-					if (lf.Value == c.Text)
+					if(lf.Value == c.Text)
 					{
-						if (value != "") value += ",";
+						if(value != "") value += ",";
 						value += lf.Key;
 					}
 				}

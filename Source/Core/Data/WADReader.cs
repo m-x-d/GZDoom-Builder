@@ -104,7 +104,7 @@ namespace CodeImp.DoomBuilder.Data
 			if(flatranges.Count > 0) 
 			{
 				//add range before the first flatrange
-				if (flatranges[0].start > 0) 
+				if(flatranges[0].start > 0) 
 				{
 					LumpRange range = new LumpRange {start = 0, end = flatranges[0].start - 1};
 					invertedflatranges.Add(range);
@@ -205,7 +205,7 @@ namespace CodeImp.DoomBuilder.Data
 						else
 						{
 							//mxd
-							if (!failedrangestarts.ContainsKey(startindex))
+							if(!failedrangestarts.ContainsKey(startindex))
 							{
 								failedranges.Add(range, new KeyValuePair<string, string>(rangestart, rangeend)); //mxd
 								failedrangestarts.Add(startindex, false);
@@ -218,7 +218,7 @@ namespace CodeImp.DoomBuilder.Data
 			}
 
 			//mxd. Display warnings for unclosed ranges
-			foreach (KeyValuePair<LumpRange, KeyValuePair<string, string>> group in failedranges)
+			foreach(KeyValuePair<LumpRange, KeyValuePair<string, string>> group in failedranges)
 			{
 				if(successfulrangestarts.ContainsKey(group.Key.start)) continue;
 				General.ErrorLogger.Add(ErrorType.Warning, "'" + group.Value.Key + "' range at index " + group.Key.start + " is not closed in '" + location.location + "' ('" + group.Value.Value + "' marker is missing)!");
@@ -249,7 +249,6 @@ namespace CodeImp.DoomBuilder.Data
 		public override ICollection<ImageData> LoadColormaps()
 		{
 			List<ImageData> images = new List<ImageData>();
-			string rangestart, rangeend;
 
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
@@ -258,8 +257,8 @@ namespace CodeImp.DoomBuilder.Data
 			foreach(DictionaryEntry r in General.Map.Config.ColormapRanges)
 			{
 				// Read start and end
-				rangestart = General.Map.Config.ReadSetting("colormaps." + r.Key + ".start", "");
-				rangeend = General.Map.Config.ReadSetting("colormaps." + r.Key + ".end", "");
+				string rangestart = General.Map.Config.ReadSetting("colormaps." + r.Key + ".start", "");
+				string rangeend = General.Map.Config.ReadSetting("colormaps." + r.Key + ".end", "");
 				if((rangestart.Length > 0) && (rangeend.Length > 0))
 				{
 					// Load texture range
@@ -268,8 +267,7 @@ namespace CodeImp.DoomBuilder.Data
 			}
 
 			// Add images to the container-specific texture set
-			foreach(ImageData img in images)
-				textureset.AddFlat(img);
+			foreach(ImageData img in images) textureset.AddFlat(img);
 
 			// Return result
 			return images;
@@ -542,17 +540,17 @@ namespace CodeImp.DoomBuilder.Data
 				if(lump != null) return lump.Stream;
 			}
 			
-			if (!strictpatches) 
+			if(!strictpatches) 
 			{
 				//mxd. Find the lump anywhere EXCEPT flat ranges (the way it's done in ZDoom)
-				foreach (LumpRange range in invertedflatranges) 
+				foreach(LumpRange range in invertedflatranges) 
 				{
 					lump = file.FindLump(pname, range.start, range.end);
 					if(lump != null) return lump.Stream;
 				}
 
 				// Find the lump anywhere IN flat ranges
-				foreach (LumpRange range in flatranges) 
+				foreach(LumpRange range in flatranges) 
 				{
 					lump = file.FindLump(pname, range.start, range.end);
 					if(lump != null) return lump.Stream;
@@ -568,12 +566,11 @@ namespace CodeImp.DoomBuilder.Data
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
 			if(longname) return null; //mxd
-			Lump lump;
 
 			// Find the lump in ranges
 			foreach(LumpRange range in textureranges)
 			{
-				lump = file.FindLump(pname, range.start, range.end);
+				Lump lump = file.FindLump(pname, range.start, range.end);
 				if(lump != null) return lump.Stream;
 			}
 
@@ -591,8 +588,6 @@ namespace CodeImp.DoomBuilder.Data
 			if(issuspended) throw new Exception("Data reader is suspended");
 
 			List<ImageData> images = new List<ImageData>();
-			FlatImage image;
-
 			foreach(LumpRange range in flatranges)
 			{
 				if(range.end < range.start + 2) continue;
@@ -600,10 +595,10 @@ namespace CodeImp.DoomBuilder.Data
 				for(int i = range.start + 1; i < range.end; i++) 
 				{
 					// Lump not zero-length?
-					if(file.Lumps[i].Length > 0) 
+					if(file.Lumps[i].Length > 0)
 					{
 						// Make the image object
-						image = new FlatImage(file.Lumps[i].Name);
+						FlatImage image = new FlatImage(file.Lumps[i].Name);
 
 						// Add image to collection
 						images.Add(image);
@@ -653,12 +648,11 @@ namespace CodeImp.DoomBuilder.Data
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
 			if(longname) return null; //mxd
-			Lump lump;
 
 			// Find the lump in ranges
 			foreach(LumpRange range in flatranges)
 			{
-				lump = file.FindLump(pname, range.start, range.end);
+				Lump lump = file.FindLump(pname, range.start, range.end);
 				if(lump != null) return lump.Stream;
 			}
 			
@@ -713,15 +707,13 @@ namespace CodeImp.DoomBuilder.Data
 		// This finds and returns a sprite stream
 		public override Stream GetSpriteData(string pname)
 		{
-			Lump lump;
-
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
 
 			// Find the lump in ranges
 			foreach(LumpRange range in spriteranges)
 			{
-				lump = file.FindLump(pname, range.start, range.end);
+				Lump lump = file.FindLump(pname, range.start, range.end);
 				if(lump != null) return lump.Stream;
 			}
 
@@ -731,15 +723,13 @@ namespace CodeImp.DoomBuilder.Data
 		// This checks if the given sprite exists
 		public override bool GetSpriteExists(string pname)
 		{
-			Lump lump;
-			
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
 
 			// Find the lump in ranges
 			foreach(LumpRange range in spriteranges)
 			{
-				lump = file.FindLump(pname, range.start, range.end);
+				Lump lump = file.FindLump(pname, range.start, range.end);
 				if(lump != null) return true;
 			}
 
@@ -786,12 +776,10 @@ namespace CodeImp.DoomBuilder.Data
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
 
-			Lump lump;
-
 			foreach(LumpRange range in voxelranges) 
 			{
 				if(range.start == range.end) continue;
-				lump = file.FindLump(name, range.start, range.end);
+				Lump lump = file.FindLump(name, range.start, range.end);
 				if(lump != null) return lump.Stream;
 			}
 
@@ -827,7 +815,7 @@ namespace CodeImp.DoomBuilder.Data
 		//mxd
 		public override Dictionary<string, Stream> GetMapinfoData() 
 		{
-			if (issuspended) throw new Exception("Data reader is suspended");
+			if(issuspended) throw new Exception("Data reader is suspended");
 
 			Dictionary<string, Stream> streams = new Dictionary<string, Stream>(StringComparer.Ordinal);
 			string src = "ZMAPINFO";
@@ -837,7 +825,7 @@ namespace CodeImp.DoomBuilder.Data
 			int lumpindex = file.FindLumpIndex(src);
 
 			//then for MAPINFO
-			if (lumpindex == -1) 
+			if(lumpindex == -1) 
 			{
 				src = "MAPINFO";
 				lumpindex = file.FindLumpIndex(src);
@@ -850,25 +838,25 @@ namespace CodeImp.DoomBuilder.Data
 		//mxd
 		public override Dictionary<string, Stream> GetGldefsData(GameType gameType) 
 		{
-			if (issuspended) throw new Exception("Data reader is suspended");
+			if(issuspended) throw new Exception("Data reader is suspended");
 
 			Dictionary<string, Stream> streams = new Dictionary<string, Stream>(StringComparer.Ordinal);
 			int lumpindex;
 
 			//try to load game specific GLDEFS first
-			if (gameType != GameType.UNKNOWN) 
+			if(gameType != GameType.UNKNOWN) 
 			{
 				string lumpName = Gldefs.GLDEFS_LUMPS_PER_GAME[(int)gameType];
 				lumpindex = file.FindLumpIndex(lumpName);
 
-				if (lumpindex != -1)
+				if(lumpindex != -1)
 					streams.Add(lumpName, file.Lumps[lumpindex].Stream);
 			}
 
 			//should be only one entry per wad
 			lumpindex = file.FindLumpIndex("GLDEFS");
 			
-			if (lumpindex != -1) streams.Add("GLDEFS", file.Lumps[lumpindex].Stream);
+			if(lumpindex != -1) streams.Add("GLDEFS", file.Lumps[lumpindex].Stream);
 			return streams;
 		}
 
@@ -922,7 +910,7 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			Lump l = file.FindLump(name);
 
-			if (l != null) 
+			if(l != null) 
 			{
 				l.Stream.Seek(0, SeekOrigin.Begin);
 				return new MemoryStream(l.Stream.ReadAllBytes());

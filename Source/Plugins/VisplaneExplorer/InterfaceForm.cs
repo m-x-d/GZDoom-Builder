@@ -72,7 +72,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 			Point fp = (General.Interface as Form).Location;
 			Point tp = new Point(sp.X - fp.X, sp.Y - fp.Y);
 
-			if (oldttposition != tp)
+			if(oldttposition != tp)
 			{
 				tooltip.Show(text, General.Interface, tp);
 				oldttposition = tp;

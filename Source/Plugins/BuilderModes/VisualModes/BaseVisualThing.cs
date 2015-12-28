@@ -848,7 +848,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd
 		public void SetAngle(int newangle)
 		{
-			if ((General.Map.UndoRedo.NextUndo == null) || (General.Map.UndoRedo.NextUndo.TicketID != undoticket))
+			if((General.Map.UndoRedo.NextUndo == null) || (General.Map.UndoRedo.NextUndo.TicketID != undoticket))
 				undoticket = mode.CreateUndo("Change thing angle");
 			Thing.Rotate(newangle);
 			mode.SetActionResult("Changed thing angle to " + Thing.AngleDoom + ".");

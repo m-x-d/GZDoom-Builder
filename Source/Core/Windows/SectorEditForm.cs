@@ -144,12 +144,12 @@ namespace CodeImp.DoomBuilder.Windows
 				// Floor/Ceiling
 				if(s.FloorHeight.ToString() != floorheight.Text) floorheight.Text = "";
 				if(s.CeilHeight.ToString() != ceilingheight.Text) ceilingheight.Text = "";
-				if (s.FloorTexture != floortex.TextureName) 
+				if(s.FloorTexture != floortex.TextureName) 
 				{
 					floortex.MultipleTextures = true; //mxd
 					floortex.TextureName = "";
 				}
-				if (s.CeilTexture != ceilingtex.TextureName) 
+				if(s.CeilTexture != ceilingtex.TextureName) 
 				{
 					ceilingtex.MultipleTextures = true; //mxd
 					ceilingtex.TextureName = "";
@@ -230,7 +230,7 @@ namespace CodeImp.DoomBuilder.Windows
 			if(heightoffset.Text == "++" || heightoffset.Text == "--") // Raise or lower by sector height
 			{
 				int sign = (heightoffset.Text == "++" ? 1 : -1);
-				foreach (Sector s in sectors)
+				foreach(Sector s in sectors)
 				{
 					offset = sectorprops[i].CeilHeight - sectorprops[i].FloorHeight;
 					s.CeilHeight += offset * sign;
@@ -265,7 +265,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				// Raise or lower by sector height
 				int sign = (heightoffset.Text == "++" ? 1 : -1);
-				foreach (Sector s in sectors)
+				foreach(Sector s in sectors)
 				{
 					offset = sectorprops[i].CeilHeight - sectorprops[i].FloorHeight;
 					s.FloorHeight += offset * sign;
@@ -279,12 +279,12 @@ namespace CodeImp.DoomBuilder.Windows
 				//restore values
 				if(string.IsNullOrEmpty(floorheight.Text))
 				{
-					foreach (Sector s in sectors)
+					foreach(Sector s in sectors)
 						s.FloorHeight = sectorprops[i++].FloorHeight + offset;
 				}
 				else //update values
 				{
-					foreach (Sector s in sectors)
+					foreach(Sector s in sectors)
 						s.FloorHeight = floorheight.GetResult(sectorprops[i++].FloorHeight) + offset;
 				}
 			}

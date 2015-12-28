@@ -48,8 +48,6 @@ namespace CodeImp.DoomBuilder.Types
 
 		public override void SetValue(object value) 
 		{
-			float result;
-
 			// Null?
 			if(value == null) 
 			{
@@ -61,9 +59,10 @@ namespace CodeImp.DoomBuilder.Types
 				// Set directly
 				this.value = Convert.ToSingle(value);
 			} 
-			else 
+			else
 			{
 				// Try parsing as string
+				float result;
 				if(float.TryParse(value.ToString(), NumberStyles.Float, CultureInfo.CurrentCulture, out result)) 
 				{
 					this.value = result;
@@ -71,7 +70,7 @@ namespace CodeImp.DoomBuilder.Types
 				else 
 				{
 					//mxd. Try to parse value as random range
-					string[] parts = value.ToString().Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+					string[] parts = value.ToString().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
 					if(parts.Length == 2) 
 					{

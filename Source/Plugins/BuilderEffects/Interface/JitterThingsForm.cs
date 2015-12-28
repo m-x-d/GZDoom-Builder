@@ -68,7 +68,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			bUpdateHeight.Enabled = General.Map.FormatInterface.HasThingHeight;
 
 			//disable pitch/roll/scale?
-			if (!General.Map.UDMF) 
+			if(!General.Map.UDMF) 
 			{
 				pitchAmmount.Enabled = false;
 				rollAmmount.Enabled = false;
@@ -176,7 +176,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			cbNegativeRoll.CheckedChanged += cbNegativeRoll_CheckedChanged;
 
 			//disable controls if necessary
-			if (uniformScale) cbUniformScale_CheckedChanged(cbUniformScale, EventArgs.Empty);
+			if(uniformScale) cbUniformScale_CheckedChanged(cbUniformScale, EventArgs.Empty);
 
 			//tricky way to actually store undo information...
 			foreach(Thing t in selection) t.Move(t.Position);
@@ -209,11 +209,10 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 		private void ApplyPitch(int ammount) 
 		{
-			int p;
-
 			for(int i = 0; i < selection.Count; i++) 
 			{
-				if (cbRelativePitch.Checked) 
+				int p;
+				if(cbRelativePitch.Checked) 
 				{
 					p = (int)((thingData[i].Pitch + ammount * thingData[i].JitterPitch) % 360);
 				} 
@@ -231,11 +230,10 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 		private void ApplyRoll(int ammount) 
 		{
-			int r;
-
-			for (int i = 0; i < selection.Count; i++) 
+			for(int i = 0; i < selection.Count; i++) 
 			{
-				if (cbRelativeRoll.Checked) 
+				int r;
+				if(cbRelativeRoll.Checked) 
 				{
 					r = (int)((thingData[i].Roll + ammount * thingData[i].JitterRoll) % 360);
 				} 
@@ -281,7 +279,6 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			if(minX > maxX) General.Swap(ref minX, ref maxX);
 			if(minY > maxY) General.Swap(ref minY, ref maxY);
 
-			float sx, sy;
 			float diffX = maxX - minX;
 			float diffY = maxY - minY;
 
@@ -289,8 +286,9 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 			{
 				float jitterX = thingData[i].JitterScaleX;
 				float jitterY = (cbUniformScale.Checked ? jitterX : thingData[i].JitterScaleY);
-				
-				if (cbRelativeScale.Checked) 
+				float sx, sy;
+
+				if(cbRelativeScale.Checked) 
 				{
 					sx = thingData[i].ScaleX + minX + diffX * jitterX;
 					sy = thingData[i].ScaleY + minY + diffY * jitterY;
@@ -440,7 +438,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 
 		private void JitterThingsForm_FormClosing(object sender, FormClosingEventArgs e) 
 		{
-			if (this.DialogResult == DialogResult.Cancel)
+			if(this.DialogResult == DialogResult.Cancel)
 				General.Map.UndoRedo.WithdrawUndo(); //undo changes
 		}
 

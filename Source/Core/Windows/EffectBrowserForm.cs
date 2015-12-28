@@ -43,14 +43,12 @@ namespace CodeImp.DoomBuilder.Windows
 		// Constructor
 		public EffectBrowserForm(int effect)
 		{
-			GeneralizedOption o;
-
 			// Initialize
 			InitializeComponent();
 
 			// Make array references for controls
-			options = new ComboBox[] { option0, option1, option2, option3, option4, option5, option6, option7 };
-			optionlbls = new Label[] { option0label, option1label, option2label, option3label, option4label,
+			options = new[] { option0, option1, option2, option3, option4, option5, option6, option7 };
+			optionlbls = new[] { option0label, option1label, option2label, option3label, option4label,
 									   option5label, option6label, option7label };
 			
 			// Go for all predefined effects
@@ -67,7 +65,7 @@ namespace CodeImp.DoomBuilder.Windows
 					// Option used in selected category?
 					if(i < General.Map.Config.GenEffectOptions.Count)
 					{
-						o = General.Map.Config.GenEffectOptions[i];
+						GeneralizedOption o = General.Map.Config.GenEffectOptions[i];
 						
 						// Setup controls
 						optionlbls[i].Text = o.Name + ":";
@@ -120,15 +118,14 @@ namespace CodeImp.DoomBuilder.Windows
 		private bool CreateEffects(int effect) 
 		{
 			bool selected = false;
-			ListViewItem n;
 
-			foreach (SectorEffectInfo si in General.Map.Config.SortedSectorEffects) 
+			foreach(SectorEffectInfo si in General.Map.Config.SortedSectorEffects) 
 			{
 				// Create effect
-				n = effects.Items.Add(si.Index.ToString());
+				ListViewItem n = effects.Items.Add(si.Index.ToString());
 				n.SubItems.Add(si.Title);
 				n.Tag = si;
-				if (si.Index == effect) 
+				if(si.Index == effect) 
 				{
 					selected = true;
 					n.Selected = true;
@@ -142,10 +139,10 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			List<ListViewItem> filteredItems = new List<ListViewItem>();
 
-			foreach (ListViewItem i in allItems) 
+			foreach(ListViewItem i in allItems) 
 			{
 				SectorEffectInfo si = i.Tag as SectorEffectInfo;
-				if (si.Title.ToLowerInvariant().IndexOf(p) != -1)
+				if(si.Title.ToLowerInvariant().IndexOf(p) != -1)
 					filteredItems.Add(i);
 			}
 

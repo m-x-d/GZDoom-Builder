@@ -82,7 +82,7 @@ namespace CodeImp.DoomBuilder
 					return;
 				}
 
-				string s = string.Empty;
+				string s;
 				using(StreamReader reader = new StreamReader(stream))
 				{
 					s = reader.ReadToEnd();
@@ -144,7 +144,6 @@ namespace CodeImp.DoomBuilder
 				
 				XmlDocument doc = new XmlDocument();
 				doc.Load(stream);
-				int noderev;
 
 				// Revision infos go in descending order
 				if(doc.ChildNodes.Count == 0) return string.Empty;
@@ -153,6 +152,7 @@ namespace CodeImp.DoomBuilder
 					if(log.ChildNodes.Count == 0) continue;
 					foreach(XmlNode logentry in log.ChildNodes)
 					{
+						int noderev;
 						if(logentry.Attributes == null || !int.TryParse(logentry.Attributes.GetNamedItem("revision").Value, out noderev)) continue;
 						if(noderev <= localrev) break;
 

@@ -34,7 +34,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.details = details;
 			this.viewobjects.Add(t);
 			this.hidden = t.IgnoredErrorChecks.Contains(this.GetType());
-			this.description = "This thing is not used by any class, skill or game mode.";
+			this.description = "This thing won't be shown in any game mode.";
 		}
 
 		#endregion
@@ -53,7 +53,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This must return the string that is displayed in the listbox
 		public override string ToString() 
 		{
-			return "Thing " + thing.Index + " (" + General.Map.Data.GetThingInfo(thing.Type).Title + ") at " + thing.Position.x + ", " + thing.Position.y + details;
+			return "Thing " + thing.Index + " (" + General.Map.Data.GetThingInfo(thing.Type).Title + ") is unused. " + details;
 		}
 
 		// Rendering

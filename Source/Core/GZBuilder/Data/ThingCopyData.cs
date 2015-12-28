@@ -45,9 +45,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 			for(int i = 0; i < args.Length; i++) 
 				t.Args[i] = args[i];
 
-			foreach (KeyValuePair<string, UniValue> group in fields) 
+			foreach(KeyValuePair<string, UniValue> group in fields) 
 			{
-				if (t.Fields.ContainsKey(group.Key))
+				if(t.Fields.ContainsKey(group.Key))
 					t.Fields[group.Key] = group.Value;
 				else
 					t.Fields.Add(group.Key, group.Value);

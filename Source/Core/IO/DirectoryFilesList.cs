@@ -171,9 +171,9 @@ namespace CodeImp.DoomBuilder.IO
 			path = CorrectPath(path).ToLowerInvariant();
 			title = title.ToLowerInvariant();
 			List<string> files = new List<string>(entries.Length);
-			for (int i = 0; i < entries.Length; i++)
+			for(int i = 0; i < entries.Length; i++)
 			{
-				if ((entries[i].path == path) && (entries[i].filetitle.StartsWith(title))) 
+				if((entries[i].path == path) && (entries[i].filetitle.StartsWith(title))) 
 					files.Add(entries[i].filepathname);
 			}
 			return files;

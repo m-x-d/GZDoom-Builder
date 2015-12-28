@@ -45,7 +45,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				SectorData sourcesectordata = data.Mode.GetSectorData(sourcesector);
 				if(!sourcesectordata.Updated) sourcesectordata.Update();
 
-				switch (thing.Type)
+				switch(thing.Type)
 				{
 					case 9510:
 						data.Floor.plane = sourcesectordata.Floor.plane;

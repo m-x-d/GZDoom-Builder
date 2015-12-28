@@ -106,7 +106,7 @@ namespace CodeImp.DoomBuilder.Data
 			if(!uselongtexturenames || (!forcelongtexturename && string.IsNullOrEmpty(Path.GetDirectoryName(name))))
 			{
 				this.name = Path.GetFileNameWithoutExtension(name.ToUpperInvariant());
-				if (this.name.Length > DataManager.CLASIC_IMAGE_NAME_LENGTH)
+				if(this.name.Length > DataManager.CLASIC_IMAGE_NAME_LENGTH)
 				{
 					this.name = this.name.Substring(0, DataManager.CLASIC_IMAGE_NAME_LENGTH);
 				}
@@ -120,7 +120,7 @@ namespace CodeImp.DoomBuilder.Data
 				this.virtualname = name;
 				this.displayname = Path.GetFileNameWithoutExtension(name);
 				this.shortname = this.displayname.ToUpperInvariant();
-				if (this.shortname.Length > DataManager.CLASIC_IMAGE_NAME_LENGTH)
+				if(this.shortname.Length > DataManager.CLASIC_IMAGE_NAME_LENGTH)
 				{
 					this.shortname = this.shortname.Substring(0, DataManager.CLASIC_IMAGE_NAME_LENGTH);
 				}
@@ -136,7 +136,7 @@ namespace CodeImp.DoomBuilder.Data
 				this.displayname = this.displayname.ToUpperInvariant();
 			}
 
-			if (this.displayname.Length > ImageBrowserItem.MAX_NAME_LENGTH)
+			if(this.displayname.Length > ImageBrowserItem.MAX_NAME_LENGTH)
 			{
 				this.displayname = this.displayname.Substring(0, ImageBrowserItem.MAX_NAME_LENGTH);
 			}

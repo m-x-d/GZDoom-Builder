@@ -99,12 +99,10 @@ namespace CodeImp.DoomBuilder.Controls
 		// This draws an item in the combobox
 		private void list_DrawItem(object sender, DrawItemEventArgs e)
 		{
-			INumberedTitle item;
 			Brush displaybrush = SystemBrushes.WindowText;
 			Brush backbrush = SystemBrushes.Window;
 			string displayname = string.Empty;
-			int intnumber;
-			
+
 			// Only when running
 			if(!this.DesignMode)
 			{
@@ -116,6 +114,7 @@ namespace CodeImp.DoomBuilder.Controls
 					backbrush = new SolidBrush(SystemColors.Window);
 
 					// Try getting integral number
+					int intnumber;
 					int.TryParse(number.Text, out intnumber);
 
 					// Check what to display
@@ -134,7 +133,7 @@ namespace CodeImp.DoomBuilder.Controls
 				else if((e.State & DrawItemState.ComboBoxEdit) != 0)
 				{
 					// Show without number
-					item = (INumberedTitle)list.Items[e.Index];
+					INumberedTitle item = (INumberedTitle)list.Items[e.Index];
 					displayname = item.Title.Trim();
 
 					// Determine colors to use
@@ -154,7 +153,7 @@ namespace CodeImp.DoomBuilder.Controls
 				else
 				{
 					// Use number and description
-					item = (INumberedTitle)list.Items[e.Index];
+					INumberedTitle item = (INumberedTitle)list.Items[e.Index];
 					displayname = item.Index + NUMBER_SEPERATOR + item.Title;
 
 					// Determine colors to use
@@ -195,8 +194,7 @@ namespace CodeImp.DoomBuilder.Controls
 		private void number_TextChanged(object sender, EventArgs e)
 		{
 			int itemindex = -1;
-			INumberedTitle item;
-			
+
 			// Not nothing?
 			if(number.Text.Length > 0)
 			{
@@ -204,7 +202,7 @@ namespace CodeImp.DoomBuilder.Controls
 				for(int i = 0; i < list.Items.Count; i++)
 				{
 					// This is the item we're looking for?
-					item = (INumberedTitle)list.Items[i];
+					INumberedTitle item = (INumberedTitle)list.Items[i];
 					if(item.Index.ToString() == number.Text)
 					{
 						// Found it
@@ -215,11 +213,14 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 
 			// Select item
-			if(list.SelectedIndex != itemindex) list.SelectedIndex = itemindex;
-			list.Refresh();
-			
-			// Raise change event
-			if(ValueChanges != null) ValueChanges(this, EventArgs.Empty);
+			if(list.SelectedIndex != itemindex)
+			{
+				list.SelectedIndex = itemindex;
+				list.Refresh();
+
+				// Raise change event
+				if(ValueChanges != null) ValueChanges(this, EventArgs.Empty);
+			}
 		}
 
 		// Keys pressed in number box
@@ -231,9 +232,9 @@ namespace CodeImp.DoomBuilder.Controls
 			if(controlpressed && ((e.KeyCode == Keys.X) || (e.KeyCode == Keys.C) || (e.KeyCode == Keys.V))) return;
 
 			//mxd. Scroll action list using arrow keys
-			if (e.KeyCode == Keys.Down)
+			if(e.KeyCode == Keys.Down)
 			{
-				if (list.SelectedIndex > 0)
+				if(list.SelectedIndex > 0)
 				{
 					list.SelectedIndex--;
 					list_SelectionChangeCommitted(list, EventArgs.Empty);
@@ -244,7 +245,7 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 			if(e.KeyCode == Keys.Up) 
 			{
-				if (list.SelectedIndex < list.Items.Count)
+				if(list.SelectedIndex < list.Items.Count)
 				{
 					list.SelectedIndex++;
 					list_SelectionChangeCommitted(list, EventArgs.Empty);
@@ -281,12 +282,12 @@ namespace CodeImp.DoomBuilder.Controls
 		//mxd. Scrolls action list using mouse wheel
 		private void number_OnMouseWheel(object sender, MouseEventArgs e) 
 		{
-			if (e.Delta < 0 && list.SelectedIndex > 0)
+			if(e.Delta < 0 && list.SelectedIndex > 0)
 			{
 				list.SelectedIndex--;
 				list_SelectionChangeCommitted(list, EventArgs.Empty);
 			}
-			else if (e.Delta > 0 && list.SelectedIndex < list.Items.Count - 1)
+			else if(e.Delta > 0 && list.SelectedIndex < list.Items.Count - 1)
 			{
 				list.SelectedIndex++;
 				list_SelectionChangeCommitted(list, EventArgs.Empty);

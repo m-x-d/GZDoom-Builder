@@ -43,9 +43,6 @@ namespace CodeImp.DoomBuilder.Windows
 		// Constructor
 		public ActionBrowserForm(int action)
 		{
-			GeneralizedCategory sc;
-			int actionbits;
-			
 			// Initialize
 			InitializeComponent();
 
@@ -86,8 +83,8 @@ namespace CodeImp.DoomBuilder.Windows
 					if(category.SelectedIndex > -1)
 					{
 						// Go for all options in selected category
-						sc = category.SelectedItem as GeneralizedCategory;
-						actionbits = action - sc.Offset;
+						GeneralizedCategory sc = category.SelectedItem as GeneralizedCategory;
+						int actionbits = action - sc.Offset;
 						for(int i = 0; i < MAX_OPTIONS; i++)
 						{
 							// Option used?
@@ -124,26 +121,24 @@ namespace CodeImp.DoomBuilder.Windows
 		//mxd
 		private void CreateActionCategories(int action) 
 		{
-			TreeNode cn, n;
-
 			actions.BeginUpdate();
 			actions.ShowLines = true;
-			foreach (LinedefActionCategory ac in General.Map.Config.ActionCategories) 
+			foreach(LinedefActionCategory ac in General.Map.Config.ActionCategories)
 			{
 				// Empty category names will not be created
 				// (those actions will go in the root of the tree)
-				if (ac.Title.Length > 0) 
+				if(ac.Title.Length > 0)
 				{
 					// Create category
-					cn = actions.Nodes.Add(ac.Title);
-					foreach (LinedefActionInfo ai in ac.Actions) 
+					TreeNode cn = actions.Nodes.Add(ac.Title);
+					foreach(LinedefActionInfo ai in ac.Actions) 
 					{
 						// Create action
-						n = cn.Nodes.Add(ai.Title);
+						TreeNode n = cn.Nodes.Add(ai.Title);
 						n.Tag = ai;
 
 						// This is the given action?
-						if (ai.Index == action) 
+						if(ai.Index == action) 
 						{
 							// Select this and expand the category
 							cn.Expand();
@@ -151,14 +146,14 @@ namespace CodeImp.DoomBuilder.Windows
 							n.EnsureVisible();
 						}
 					}
-				} 
+				}
 				else 
 				{
 					// Put actions in the tree root
-					foreach (LinedefActionInfo ai in ac.Actions) 
+					foreach(LinedefActionInfo ai in ac.Actions) 
 					{
 						// Create action
-						n = actions.Nodes.Add(ai.Title);
+						TreeNode n = actions.Nodes.Add(ai.Title);
 						n.Tag = ai;
 					}
 				}
@@ -171,12 +166,12 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			List<TreeNode> filteredNodes = new List<TreeNode>();
 
-			foreach (TreeNode n in allNodes) 
+			foreach(TreeNode n in allNodes) 
 			{
-				foreach (TreeNode cn in n.Nodes) 
+				foreach(TreeNode cn in n.Nodes) 
 				{
 					LinedefActionInfo ai = cn.Tag as LinedefActionInfo;
-					if (ai.Title.ToLowerInvariant().IndexOf(p) != -1)
+					if(ai.Title.ToLowerInvariant().IndexOf(p) != -1)
 						filteredNodes.Add(cn);
 				}
 			}
@@ -191,8 +186,6 @@ namespace CodeImp.DoomBuilder.Windows
 		// OK clicked
 		private void apply_Click(object sender, EventArgs e)
 		{
-			GeneralizedCategory sc;
-			
 			// Presume no result
 			selectedaction = 0;
 			
@@ -213,7 +206,7 @@ namespace CodeImp.DoomBuilder.Windows
 				if(category.SelectedIndex > -1)
 				{
 					// Add category bits and go for all options
-					sc = category.SelectedItem as GeneralizedCategory;
+					GeneralizedCategory sc = category.SelectedItem as GeneralizedCategory;
 					selectedaction = sc.Offset;
 					for(int i = 0; i < MAX_OPTIONS; i++)
 					{
@@ -244,14 +237,12 @@ namespace CodeImp.DoomBuilder.Windows
 		// Generalized category selected
 		private void category_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			GeneralizedCategory ac;
-			
 			// Category selected?
 			if(category.SelectedIndex > -1)
 			{
 				// Get the category
-				ac = category.SelectedItem as GeneralizedCategory;
-				
+				GeneralizedCategory ac = category.SelectedItem as GeneralizedCategory;
+
 				// Go for all options
 				for(int i = 0; i < MAX_OPTIONS; i++)
 				{

@@ -43,7 +43,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Rendering
 		public void Dispose() 
 		{
 			// Not already disposed?
-			if (!isdisposed)
+			if(!isdisposed)
 			{
 				// Clean up
 				if(shape != null) shape.Dispose();

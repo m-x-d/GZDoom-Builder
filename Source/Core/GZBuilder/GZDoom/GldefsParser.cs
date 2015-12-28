@@ -150,7 +150,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 								SkipWhitespace(true);
 
 								token = StripTokenQuotes(ReadToken());
-								if (!float.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out light.Color.Blue)) 
+								if(!float.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out light.Color.Blue)) 
 								{
 									// Not numeric!
 									ReportError("Expected Blue color value, but got '" + token + "'");
@@ -717,7 +717,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						token2 = ReadToken();
 						if(string.IsNullOrEmpty(token2)) break;
 					}
-					while (token2 != "{");
+					while(token2 != "{");
 					int scopelevel = 1;
 					do 
 					{

@@ -195,7 +195,7 @@ namespace CodeImp.DoomBuilder.Windows
 					EditModeInfo emi = (lvi.Tag as EditModeInfo);
 
 					//mxd. Disable item if the mode does not support current map format
-					if (emi.Attributes.SupportedMapFormats != null &&
+					if(emi.Attributes.SupportedMapFormats != null &&
 					    Array.IndexOf(emi.Attributes.SupportedMapFormats, gameconfig.FormatInterface) == -1) 
 					{
 						lvi.Text = emi.Attributes.DisplayName + " (map format not supported)";
@@ -374,7 +374,7 @@ namespace CodeImp.DoomBuilder.Windows
 			ConfigurationInfo ci;
 
 			//mxd. Check resources
-			for (int i = 0; i < listconfigs.Items.Count; i++)
+			for(int i = 0; i < listconfigs.Items.Count; i++)
 			{
 				// Get configuration item
 				ci = listconfigs.Items[i].Tag as ConfigurationInfo;
@@ -739,12 +739,12 @@ namespace CodeImp.DoomBuilder.Windows
 			foreach(EngineInfo info in configinfo.TestEngines)
 				cbEngineSelector.Items.Add(info.TestProgramName);
 
-			if (index >= configinfo.TestEngines.Count)
+			if(index >= configinfo.TestEngines.Count)
 				index = configinfo.TestEngines.Count - 1;
 
 			cbEngineSelector.SelectedIndex = index;
 
-			if (configinfo.TestEngines.Count < 2)
+			if(configinfo.TestEngines.Count < 2)
 				btnRemoveEngine.Enabled = false;
 
 			preventchanges = false;
@@ -761,7 +761,7 @@ namespace CodeImp.DoomBuilder.Windows
 			cbEngineSelector.Tag = cbEngineSelector.SelectedIndex; //store for later use
 
 			// Set test application and parameters
-			if (!configinfo.CustomParameters)
+			if(!configinfo.CustomParameters)
 			{
 				configinfo.TestParameters = gameconfig.TestParameters;
 				configinfo.TestShortPaths = gameconfig.TestShortPaths;
@@ -787,14 +787,14 @@ namespace CodeImp.DoomBuilder.Windows
 		//mxd
 		private void ConfigForm_Shown(object sender, EventArgs e) 
 		{
-			if (listconfigs.SelectedItems.Count > 0) listconfigs.SelectedItems[0].EnsureVisible();
+			if(listconfigs.SelectedItems.Count > 0) listconfigs.SelectedItems[0].EnsureVisible();
 		}
 
 		#region ============= Copy/Paste context menu (mxd)
 
 		private void copypastemenu_Opening(object sender, System.ComponentModel.CancelEventArgs e) 
 		{
-			if (listconfigs.SelectedIndices.Count < 1) 
+			if(listconfigs.SelectedIndices.Count < 1) 
 			{
 				e.Cancel = true;
 				return;

@@ -182,7 +182,7 @@ namespace CodeImp.DoomBuilder
 			/// </param>
 			public void Update(byte[] buffer) 
 			{
-				if (buffer == null) throw new ArgumentNullException("buffer");
+				if(buffer == null) throw new ArgumentNullException("buffer");
 				Update(buffer, 0, buffer.Length);
 			}
 
@@ -200,13 +200,13 @@ namespace CodeImp.DoomBuilder
 			/// </param>
 			public void Update(byte[] buffer, int offset, int count) 
 			{
-				if (buffer == null) throw new ArgumentNullException("buffer");
-				if (count < 0) throw new ArgumentOutOfRangeException("count", "Count cannot be less than zero");
-				if (offset < 0 || offset + count > buffer.Length) throw new ArgumentOutOfRangeException("offset");
+				if(buffer == null) throw new ArgumentNullException("buffer");
+				if(count < 0) throw new ArgumentOutOfRangeException("count", "Count cannot be less than zero");
+				if(offset < 0 || offset + count > buffer.Length) throw new ArgumentOutOfRangeException("offset");
 
 				crc ^= CRC_SEED;
 
-				while (--count >= 0) 
+				while(--count >= 0) 
 				{
 					crc = CRC_TABLE[(crc ^ buffer[offset++]) & 0xFF] ^ (crc >> 8);
 				}

@@ -533,7 +533,7 @@ namespace CodeImp.DoomBuilder.Map
 				Vector2D v2 = sd.Line.End.Position;
 
 				//mxd. On top of a vertex?
-				if (p == v1 || p == v2) return true;
+				if(p == v1 || p == v2) return true;
 				
 				// Determine min/max values
 				float miny = Math.Min(v1.y, v2.y);
@@ -573,15 +573,15 @@ namespace CodeImp.DoomBuilder.Map
 			Dictionary<Vertex, bool> processed = new Dictionary<Vertex, bool>(); //mxd
 
 			//mxd. This way bbox will be created even if triangulation failed (sector with 2 or less sidedefs and 2 vertices)
-			foreach (Sidedef s in sidedefs) 
+			foreach(Sidedef s in sidedefs) 
 			{
 				//start...
-				if (!processed.ContainsKey(s.Line.Start)) 
+				if(!processed.ContainsKey(s.Line.Start)) 
 				{
-					if (s.Line.Start.Position.x < left) left = s.Line.Start.Position.x;
-					if (s.Line.Start.Position.x > right) right = s.Line.Start.Position.x;
-					if (s.Line.Start.Position.y < top) top = s.Line.Start.Position.y;
-					if (s.Line.Start.Position.y > bottom) bottom = s.Line.Start.Position.y;
+					if(s.Line.Start.Position.x < left) left = s.Line.Start.Position.x;
+					if(s.Line.Start.Position.x > right) right = s.Line.Start.Position.x;
+					if(s.Line.Start.Position.y < top) top = s.Line.Start.Position.y;
+					if(s.Line.Start.Position.y > bottom) bottom = s.Line.Start.Position.y;
 					processed.Add(s.Line.Start, false);
 				}
 
@@ -667,7 +667,7 @@ namespace CodeImp.DoomBuilder.Map
 			}
 
 			// Have line slope?
-			foreach (Sidedef side in s.sidedefs)
+			foreach(Sidedef side in s.sidedefs)
 			{
 				// Carbon copy of EffectLineSlope class here...
 				if(side.Line.Action == 181 && ((side.Line.Args[0] == 1 && side == side.Line.Front) || side.Line.Args[0] == 2) && side.Other != null)

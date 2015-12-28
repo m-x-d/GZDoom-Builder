@@ -3,8 +3,6 @@ using CodeImp.DoomBuilder.Rendering;
 
 namespace CodeImp.DoomBuilder.Geometry
 {
-	
-	
 	public static class InterpolationTools
 	{
 		public enum Mode
@@ -17,7 +15,7 @@ namespace CodeImp.DoomBuilder.Geometry
 
 		public static int Interpolate(float val1, float val2, float delta, Mode mode)
 		{
-			switch (mode)
+			switch(mode)
 			{
 				case Mode.LINEAR: return Linear(val1, val2, delta);
 				case Mode.EASE_IN_SINE: return EaseInSine(val1, val2, delta);
