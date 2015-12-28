@@ -144,10 +144,10 @@ namespace CodeImp.DoomBuilder.Rendering
 				if(translatex != lasttranslatex || translatey != lasttranslatey ||
 				   scalex != lastscalex || scaley != lastscaley)
 				{
-					translatex = lasttranslatex; //mxd
-					translatey = lasttranslatey; //mxd
-					scalex = lastscalex; //mxd
-					scaley = lastscaley; //mxd
+					lasttranslatex = translatex; //mxd
+					lasttranslatey = translatey; //mxd
+					lastscalex = scalex; //mxd
+					lastscaley = scaley; //mxd
 					updateneeded = true;
 				}
 			}
