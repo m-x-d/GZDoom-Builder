@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.IO;
 
 namespace CodeImp.DoomBuilder.GZBuilder.Data 
@@ -14,6 +15,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 		public bool CustomParameters;
 		public int TestSkill;
 		public bool TestShortPaths;
+		private Bitmap icon;
+		public Bitmap TestProgramIcon { get { return icon; } }
 
 		public EngineInfo() 
 		{
@@ -28,6 +31,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 			CustomParameters = other.CustomParameters;
 			TestSkill = other.TestSkill;
 			TestShortPaths = other.TestShortPaths;
+			icon = other.icon;
 		}
 
 		private void CheckProgramName() 
@@ -36,6 +40,24 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 			{
 				//get engine name from path
 				testprogramname = Path.GetFileNameWithoutExtension(TestProgram);
+			}
+
+			// Update icon
+			if(icon != null)
+			{
+				icon.Dispose();
+				icon = null;
+			}
+
+			if(File.Exists(TestProgram))
+			{
+				Icon i = Icon.ExtractAssociatedIcon(TestProgram);
+				if(i != null) icon = i.ToBitmap();
+			}
+			
+			if(icon == null)
+			{
+				icon = new Bitmap(16, 16);
 			}
 		}
 	}

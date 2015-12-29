@@ -53,8 +53,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Edit objects
 		public override void EditObjects(FindReplaceObject[] selection) 
 		{
-			List<Sector> sectors = new List<Sector>(selection.Length);
-			foreach(FindReplaceObject o in selection) sectors.Add(o.Sector);
+			HashSet<Sector> sectors = new HashSet<Sector>();
+			foreach(FindReplaceObject o in selection) 
+				if(!sectors.Contains(o.Sector)) sectors.Add(o.Sector);
 			General.Interface.ShowEditSectors(sectors);
 		}
 
