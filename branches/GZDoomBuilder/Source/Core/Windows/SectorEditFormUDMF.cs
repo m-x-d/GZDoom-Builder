@@ -499,11 +499,12 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			foreach(Sector s in sectors)
 			{
+				if(slopepivots.ContainsKey(s)) continue;
 				Vector2D pivot = new Vector2D(s.BBox.X + s.BBox.Width / 2, s.BBox.Y + s.BBox.Height / 2);
 				globalslopepivot += pivot;
 				slopepivots.Add(s, pivot);
 
-				//mxd. Store initial properties
+				// Store initial properties
 				sectorprops.Add(s, new SectorProperties(s));
 			}
 

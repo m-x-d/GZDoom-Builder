@@ -40,8 +40,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Edit objects
 		public override void EditObjects(FindReplaceObject[] selection) 
 		{
-			List<Linedef> linedefs = new List<Linedef>(selection.Length);
-			foreach(FindReplaceObject o in selection) linedefs.Add(o.Sidedef.Line);
+			HashSet<Linedef> linedefs = new HashSet<Linedef>();
+			foreach(FindReplaceObject o in selection)
+				if(!linedefs.Contains(o.Sidedef.Line)) linedefs.Add(o.Sidedef.Line);
 			General.Interface.ShowEditLinedefs(linedefs);
 		}
 

@@ -41,18 +41,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Constructor / Destructor
 
-		// Constructor
-		public FindVertexNumber()
-		{
-			// Initialize
-
-		}
-
-		// Destructor
-		~FindVertexNumber()
-		{
-		}
-
 		#endregion
 
 		#region ================== Methods
@@ -108,8 +96,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Edit objects
 		public override void EditObjects(FindReplaceObject[] selection)
 		{
-			List<Vertex> vertices = new List<Vertex>(selection.Length);
-			foreach(FindReplaceObject o in selection) vertices.Add(o.Vertex);
+			HashSet<Vertex> vertices = new HashSet<Vertex>();
+			foreach(FindReplaceObject o in selection)
+				if(!vertices.Contains(o.Vertex)) vertices.Add(o.Vertex);
 			General.Interface.ShowEditVertices(vertices);
 			General.Map.Map.Update();
 		}

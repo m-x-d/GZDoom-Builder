@@ -127,9 +127,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private bool mouseexclusive;
 		private int mouseexclusivebreaklevel;
 		
-		// Skills
-		private ToolStripItem[] skills;
-		
 		// Last info on panels
 		private object lastinfoobject;
 		
@@ -1488,63 +1485,62 @@ namespace CodeImp.DoomBuilder.Windows
 			// Map loaded?
 			if(General.Map != null)
 			{
-				// Make the new skills list
-				skills = new ToolStripItem[(General.Map.Config.Skills.Count * 2) + 3]; //mxd
-
-				//mxd. Add engine selector
-				ToolStripMenuItem menuitem = new ToolStripMenuItem("Engine:", Resources.Marine);
-				for(int i = 0; i < General.Map.ConfigSettings.TestEngines.Count; i++) 
-				{
-					ToolStripMenuItem engineItem = new ToolStripMenuItem(General.Map.ConfigSettings.TestEngines[i].TestProgramName);
-					engineItem.Tag = i;
-					engineItem.Checked = (i == General.Map.ConfigSettings.CurrentEngineIndex);
-					engineItem.Click += engineItem_Click;
-					menuitem.DropDownItems.Add(engineItem);
-				}
-				skills[0] = menuitem;
-				
-				//mxd. Add seperator
-				skills[1] = new ToolStripSeparator();
-				skills[1].Padding = new Padding(0, 3, 0, 3);
-				int addindex = 2;
+				// Make the new items list
+				ToolStripItem[] items = new ToolStripItem[(General.Map.Config.Skills.Count * 2) + General.Map.ConfigSettings.TestEngines.Count + 2]; //mxd
+				int addindex = 0;
 				
 				// Positive skills are with monsters
-				for(int i = 0; i < General.Map.Config.Skills.Count; i++)
+				foreach(SkillInfo si in General.Map.Config.Skills)
 				{
-					menuitem = new ToolStripMenuItem(General.Map.Config.Skills[i].ToString());
+					ToolStripMenuItem menuitem = new ToolStripMenuItem(si.ToString());
 					menuitem.Image = Resources.Monster2;
 					menuitem.Click += TestSkill_Click;
-					menuitem.Tag = General.Map.Config.Skills[i].Index;
-					menuitem.Checked = (General.Settings.TestMonsters && (General.Map.ConfigSettings.TestSkill == General.Map.Config.Skills[i].Index));
-					skills[addindex++] = menuitem;
+					menuitem.Tag = si.Index;
+					menuitem.Checked = (General.Settings.TestMonsters && (General.Map.ConfigSettings.TestSkill == si.Index));
+					items[addindex++] = menuitem;
 				}
 
 				// Add seperator
-				skills[addindex] = new ToolStripSeparator();
-				skills[addindex].Padding = new Padding(0, 3, 0, 3);
+				items[addindex] = new ToolStripSeparator { Padding = new Padding(0, 3, 0, 3) };
 				addindex++;
 
 				// Negative skills are without monsters
-				for(int i = 0; i < General.Map.Config.Skills.Count; i++)
+				foreach(SkillInfo si in General.Map.Config.Skills)
 				{
-					menuitem = new ToolStripMenuItem(General.Map.Config.Skills[i].ToString());
+					ToolStripMenuItem menuitem = new ToolStripMenuItem(si.ToString());
 					menuitem.Image = Resources.Monster3;
 					menuitem.Click += TestSkill_Click;
-					menuitem.Tag = -General.Map.Config.Skills[i].Index;
-					menuitem.Checked = (!General.Settings.TestMonsters && (General.Map.ConfigSettings.TestSkill == General.Map.Config.Skills[i].Index));
-					skills[addindex++] = menuitem;
+					menuitem.Tag = -si.Index;
+					menuitem.Checked = (!General.Settings.TestMonsters && (General.Map.ConfigSettings.TestSkill == si.Index));
+					items[addindex++] = menuitem;
+				}
+
+				//mxd. Add seperator
+				items[addindex] = new ToolStripSeparator { Padding = new Padding(0, 3, 0, 3) };
+				addindex++;
+
+				//mxd. Add test engines
+				for(int i = 0; i < General.Map.ConfigSettings.TestEngines.Count; i++)
+				{
+					ToolStripMenuItem menuitem = new ToolStripMenuItem(General.Map.ConfigSettings.TestEngines[i].TestProgramName);
+					menuitem.Image = General.Map.ConfigSettings.TestEngines[i].TestProgramIcon;
+					menuitem.Click += TestEngine_Click;
+					menuitem.Tag = i;
+					menuitem.Checked = (i == General.Map.ConfigSettings.CurrentEngineIndex);
+					items[addindex++] = menuitem;
 				}
 				
 				// Add to list
-				buttontest.DropDownItems.AddRange(skills);
+				buttontest.DropDownItems.AddRange(items);
 			}
 		}
 
 		//mxd
-		private void engineItem_Click(object sender, EventArgs e)
+		private void TestEngine_Click(object sender, EventArgs e)
 		{
 			General.Map.ConfigSettings.CurrentEngineIndex = (int)(((ToolStripMenuItem)sender).Tag);
 			General.Map.ConfigSettings.Changed = true;
+			General.Map.Launcher.TestAtSkill(General.Map.ConfigSettings.TestSkill);
 			UpdateSkills();
 		}
 		

@@ -40,8 +40,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Edit objects
 		public override void EditObjects(FindReplaceObject[] selection) 
 		{
-			List<Thing> things = new List<Thing>(selection.Length);
-			foreach(FindReplaceObject o in selection) things.Add(o.Thing);
+			HashSet<Thing> things = new HashSet<Thing>();
+			foreach(FindReplaceObject o in selection) 
+				if(!things.Contains(o.Thing)) things.Add(o.Thing);
 			General.Interface.ShowEditThings(things);
 		}
 
