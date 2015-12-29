@@ -2140,14 +2140,15 @@ namespace CodeImp.DoomBuilder.Geometry
 				if(lightid < GZBuilder.GZGeneral.GZ_LIGHT_TYPES[2]) //if it's gzdoom light
 				{
 					int n;
-					if(t.Type < GZBuilder.GZGeneral.GZ_LIGHT_TYPES[0]) n = 0;
-					else if(t.Type < GZBuilder.GZGeneral.GZ_LIGHT_TYPES[1]) n = 10;
+					if(lightid < GZBuilder.GZGeneral.GZ_LIGHT_TYPES[0]) n = 0;
+					else if(lightid < GZBuilder.GZGeneral.GZ_LIGHT_TYPES[1]) n = 10;
 					else n = 20;
 					DynamicLightType lightType = (DynamicLightType)(t.Type - 9800 - n);
 
 					if(lightType == DynamicLightType.SECTOR)
 					{
-						int scaler = (t.Sector != null ? t.Sector.Brightness / 4 : 1);
+						if(t.Sector == null) t.DetermineSector();
+						int scaler = (t.Sector != null ? t.Sector.Brightness / 4 : 2);
 						primaryradius = (int)Math.Round((t.Args[3] * scaler) * General.Settings.GZDynamicLightRadius);
 					}
 					else
