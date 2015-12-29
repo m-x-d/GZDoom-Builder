@@ -502,7 +502,7 @@ namespace CodeImp.DoomBuilder.Data
 					}
 					
 					// Add image to collection
-					images.Add(image);
+					if(image != null) images.Add(image);
 				}
 				else
 				{

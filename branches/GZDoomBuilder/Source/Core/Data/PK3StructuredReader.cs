@@ -163,12 +163,11 @@ namespace CodeImp.DoomBuilder.Data
 		// This loads the textures
 		public override ICollection<ImageData> LoadTextures(PatchNames pnames)
 		{
-			Dictionary<long, ImageData> images = new Dictionary<long, ImageData>();
-			ICollection<ImageData> collection;
-			List<ImageData> imgset = new List<ImageData>();
-			
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
+
+			Dictionary<long, ImageData> images = new Dictionary<long, ImageData>();
+			ICollection<ImageData> collection;
 			
 			// Load from wad files (NOTE: backward order, because the last wad's images have priority)
 			for(int i = wads.Count - 1; i >= 0; i--)
@@ -186,7 +185,7 @@ namespace CodeImp.DoomBuilder.Data
 			}
 			
 			// Load TEXTURE1 lump file
-			imgset.Clear();
+			List<ImageData> imgset = new List<ImageData>();
 			string texture1file = FindFirstFile("TEXTURE1", false);
 			if((texture1file != null) && FileExists(texture1file))
 			{
