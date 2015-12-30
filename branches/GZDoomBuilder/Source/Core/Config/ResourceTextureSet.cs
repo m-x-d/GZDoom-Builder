@@ -73,7 +73,7 @@ namespace CodeImp.DoomBuilder.Config
 		// Add a flat
 		internal void AddFlat(ImageData image)
 		{
-			if(flats.ContainsKey(image.LongName))
+			if(flats.ContainsKey(image.LongName) && (!General.Map.Config.MixTexturesFlats || !image.HasPatchWithSameName))
 				General.ErrorLogger.Add(ErrorType.Warning, "Flat \"" + image.Name + "\" is double defined in resource \"" + this.Location.location + "\".");
 			flats[image.LongName] = image;
 		}
