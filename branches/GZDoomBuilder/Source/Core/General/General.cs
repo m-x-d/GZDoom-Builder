@@ -130,6 +130,7 @@ namespace CodeImp.DoomBuilder
 		private const string MAP_RESTORE_DIR = "Restore"; //mxd
 		private const string SETUP_DIR = "Setup";
 		private const string SPRITES_DIR = "Sprites";
+		private const string TEXTURES_DIR = "Textures"; //mxd
 		private const string HELP_FILE = "Refmanual.chm";
 
 		// SCROLLINFO structure
@@ -162,6 +163,7 @@ namespace CodeImp.DoomBuilder
 		private static string screenshotspath; //mxd
 		private static string pluginspath;
 		private static string spritespath;
+		private static string texturespath; //mxd
 		
 		// Main objects
 		private static Assembly thisasm;
@@ -216,6 +218,7 @@ namespace CodeImp.DoomBuilder
 		public static string CompilersPath { get { return compilerspath; } }
 		public static string PluginsPath { get { return pluginspath; } }
 		public static string SpritesPath { get { return spritespath; } }
+		internal static string TexturesPath { get { return texturespath; } } //mxd
 		public static string SnippetsPath { get { return snippetspath; } } //mxd
 		public static string DefaultScreenshotsPath { get { return screenshotspath; } } //mxd
 		public static ICollection<string> CommandArgs { get { return Array.AsReadOnly(cmdargs); } }
@@ -583,6 +586,7 @@ namespace CodeImp.DoomBuilder
 			snippetspath = Path.Combine(apppath, SNIPPETS_DIR); //mxd
 			screenshotspath = Path.Combine(apppath, SCREENSHOTS_DIR).Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar); //mxd
 			spritespath = Path.Combine(apppath, SPRITES_DIR);
+			texturespath = Path.Combine(apppath, TEXTURES_DIR); //mxd
 			logfile = Path.Combine(settingspath, LOG_FILE);
 			
 			// Make program settings directory if missing
