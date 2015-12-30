@@ -272,7 +272,7 @@ namespace CodeImp.DoomBuilder.Editing
 
 			//Integrity check
 			if(!IsValid())
-				General.ErrorLogger.Add(ErrorType.Warning, "Things filter '" + name + "' has invalid properties. Configure the thing filter to fix this!");
+				General.ErrorLogger.Add(ErrorType.Warning, "Things filter '" + name + "' has invalid properties. Configure the things filter to fix this!");
 		}
 
 		//mxd
