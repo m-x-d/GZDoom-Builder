@@ -173,17 +173,7 @@ namespace CodeImp.DoomBuilder.Data
 			glowingflats = new Dictionary<long, GlowingFlatData>();
 			soundsequences = new List<string>();
 
-			// Load special images
-			missingtexture3d = new ResourceImage("CodeImp.DoomBuilder.Resources.MissingTexture3D.png");
-			missingtexture3d.LoadImage();
-			unknowntexture3d = new ResourceImage("CodeImp.DoomBuilder.Resources.UnknownTexture3D.png");
-			unknowntexture3d.LoadImage();
-			hourglass3d = new ResourceImage("CodeImp.DoomBuilder.Resources.Hourglass3D.png");
-			hourglass3d.LoadImage();
-			crosshair = new ResourceImage("CodeImp.DoomBuilder.Resources.Crosshair.png");
-			crosshair.LoadImage();
-			crosshairbusy = new ResourceImage("CodeImp.DoomBuilder.Resources.CrosshairBusy.png");
-			crosshairbusy.LoadImage();
+			// Load special images (mxd: the rest is loaded in LoadInternalTextures())
 			whitetexture = new ResourceImage("CodeImp.DoomBuilder.Resources.White.png") { UseColorCorrection = false };
 			whitetexture.LoadImage();
 			whitetexture.CreateTexture();
@@ -359,6 +349,7 @@ namespace CodeImp.DoomBuilder.Data
 			int thingcount = LoadDecorateThings(spawnnums, doomednums);
 			int spritecount = LoadThingSprites();
 			LoadInternalSprites();
+			LoadInternalTextures(); //mxd
 
 			//mxd. Load more stuff
 			LoadReverbs();
@@ -1042,6 +1033,35 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			if(textures.ContainsKey(hash) && textures[hash] is HighResImage) return hash; //TEXTURES textures should still override regular ones...
 			return (General.Map.Config.UseLongTextureNames && texturenamesshorttofull.ContainsKey(hash) ? texturenamesshorttofull[hash] : hash);
+		}
+
+		//mxd
+		private void LoadInternalTextures()
+		{
+			missingtexture3d = LoadInternalTexture("MissingTexture3D.png"); //mxd
+			unknowntexture3d = LoadInternalTexture("UnknownTexture3D.png"); //mxd
+			hourglass3d = LoadInternalTexture("Hourglass3D.png"); //mxd
+			crosshair = LoadInternalTexture("Crosshair.png"); //mxd
+			crosshairbusy = LoadInternalTexture("CrosshairBusy.png"); //mxd
+		}
+
+		//mxd
+		private static ImageData LoadInternalTexture(string name)
+		{
+			ImageData result;
+			string path = Path.Combine(General.TexturesPath, name);
+			if(File.Exists(path))
+			{
+				result = new FileImage(name, path) { AllowUnload = false };
+			}
+			else
+			{
+				General.ErrorLogger.Add(ErrorType.Warning, "Unable to load editor texture '" + name + "'. Using built-in one instead.");
+				result = new ResourceImage("CodeImp.DoomBuilder.Resources." + name);
+			}
+
+			result.LoadImage();
+			return result;
 		}
 		
 		#endregion

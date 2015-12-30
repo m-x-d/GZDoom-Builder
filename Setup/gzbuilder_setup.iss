@@ -64,6 +64,7 @@ Source: Plugins\TagRange.dll; DestDir: {app}\Plugins; Flags: ignoreversion
 Source: Plugins\VisplaneExplorer.dll; DestDir: {app}\Plugins; Flags: ignoreversion
 Source: Plugins\Loadorder.cfg; DestDir: {app}\Plugins; Flags: ignoreversion onlyifdoesntexist
 Source: Sprites\*; DestDir: {app}\Sprites; Flags: ignoreversion recursesubdirs
+Source: Textures\*; DestDir: {app}\Textures; Flags: ignoreversion
 
 [Icons]
 Name: {group}\GZDoom Builder; Filename: {app}\Builder.exe
