@@ -98,15 +98,18 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 								return false;
 							} 
 
+							//check invalid path chars
+							if(!parser.CheckInvalidPathChars(token)) return false;
+
 							//check extension
-							string fileExt = Path.GetExtension(token);
-							if(string.IsNullOrEmpty(fileExt)) 
+							string modelext = Path.GetExtension(token);
+							if(string.IsNullOrEmpty(modelext)) 
 							{
 								parser.ReportError("Model '" + token + "' won't be loaded. Models without extension are not supported by GZDoom");
 								return false;
 							}
 
-							if(fileExt != ".md3" && fileExt != ".md2") 
+							if(modelext != ".md3" && modelext != ".md2") 
 							{
 								parser.ReportError("Model '" + token + "' won't be loaded. Only MD2 and MD3 models are supported");
 								return false;
@@ -149,11 +152,14 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 								return false;
 							} 
 
+							//check invalid path chars
+							if(!parser.CheckInvalidPathChars(token)) return false;
+
 							//check extension
-							string ext = Path.GetExtension(token);
-							if(Array.IndexOf(ModelData.SUPPORTED_TEXTURE_EXTENSIONS, ext) == -1) 
+							string texext = Path.GetExtension(token);
+							if(Array.IndexOf(ModelData.SUPPORTED_TEXTURE_EXTENSIONS, texext) == -1) 
 							{
-								parser.ReportError("Image format '" + ext + "' is not supported");
+								parser.ReportError("Image format '" + texext + "' is not supported");
 								return false;
 							} 
 
