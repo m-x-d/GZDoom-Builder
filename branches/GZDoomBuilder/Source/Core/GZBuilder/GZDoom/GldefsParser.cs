@@ -660,6 +660,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						return false;
 					}
 
+					// Check invalid path chars
+					if(!CheckInvalidPathChars(token)) return false;
+
 					// Absolute paths are not supported...
 					if(Path.IsPathRooted(includelump))
 					{

@@ -594,6 +594,27 @@ namespace CodeImp.DoomBuilder.ZDoom
 			return result;
 		}
 
+		//mxd. This replicates System.IO.Path.CheckInvalidPathChars() internal function
+		public bool CheckInvalidPathChars(string path)
+		{
+			foreach(char c in path)
+			{
+				int num = c;
+				switch(num)
+				{
+					case 34: case 60: case 62: case 124:
+						ReportError("unsupported character \"" + c + "\" in path \"" + path + "\".");
+						return false;
+
+					default:
+						if(num >= 32) continue;
+						goto case 34;
+				}
+			}
+
+			return true;
+		}
+
 		//mxd. Language type
 		protected abstract string GetLanguageType();
 

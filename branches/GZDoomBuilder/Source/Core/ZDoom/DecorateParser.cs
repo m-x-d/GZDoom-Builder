@@ -168,6 +168,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 								return false;
 							}
 
+							//mxd. Check invalid path chars
+							if(!CheckInvalidPathChars(filename)) return false;
+
 							//mxd. Absolute paths are not supported...
 							if(Path.IsPathRooted(filename))
 							{
