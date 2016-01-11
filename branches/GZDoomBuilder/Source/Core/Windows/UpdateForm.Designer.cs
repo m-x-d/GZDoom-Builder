@@ -106,6 +106,7 @@
 			// 
 			// ignorethisupdate
 			// 
+			this.ignorethisupdate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.ignorethisupdate.AutoSize = true;
 			this.ignorethisupdate.Location = new System.Drawing.Point(306, 233);
 			this.ignorethisupdate.Name = "ignorethisupdate";
@@ -131,7 +132,7 @@
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
-			this.MinimumSize = new System.Drawing.Size(625, 250);
+			this.MinimumSize = new System.Drawing.Size(667, 250);
 			this.Name = "UpdateForm";
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
