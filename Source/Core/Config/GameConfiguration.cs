@@ -77,6 +77,7 @@ namespace CodeImp.DoomBuilder.Config
 		private readonly bool linetagindicatesectors;
 		private readonly string decorategames;
 		private string skyflatname;
+		private Dictionary<string, string> defaultskytextures; //mxd <map name, sky texture name>
 		private readonly int maxtexturenamelength;
 		private readonly bool longtexturenames; //mxd
 		private readonly int leftboundary;
@@ -193,6 +194,7 @@ namespace CodeImp.DoomBuilder.Config
 		public bool LineTagIndicatesSectors { get { return linetagindicatesectors ; } }
 		public string DecorateGames { get { return decorategames; } }
 		public string SkyFlatName { get { return skyflatname; } internal set { skyflatname = value; } } //mxd. Added setter
+		public Dictionary<string, string> DefaultSkyTextures { get { return defaultskytextures; } } //mxd
 		public int MaxTextureNameLength { get { return maxtexturenamelength; } }
 		public bool UseLongTextureNames { get { return longtexturenames; } } //mxd
 		public int LeftBoundary { get { return leftboundary; } }
@@ -307,6 +309,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.linedefrenderstyles = new Dictionary<string, string>(StringComparer.Ordinal); //mxd
 			this.sectorrenderstyles = new Dictionary<string, string>(StringComparer.Ordinal); //mxd
 			this.thingrenderstyles = new Dictionary<string, string>(StringComparer.Ordinal); //mxd
+			this.defaultskytextures = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase); //mxd
 			
 			// Read general settings
 			configname = cfg.ReadSetting("game", "<unnamed game>");
@@ -422,6 +425,9 @@ namespace CodeImp.DoomBuilder.Config
 			// Defaults
 			LoadTextureSets();
 			LoadThingFilters();
+
+			//mxd. Vanilla sky textures
+			LoadDefaultSkies();
 
 			// Make door flags
 			LoadMakeDoorFlags();
@@ -891,6 +897,40 @@ namespace CodeImp.DoomBuilder.Config
 				else
 				{
 					makedoorflags[de.Key.ToString()] = true;
+				}
+			}
+		}
+
+		//mxd
+		private void LoadDefaultSkies()
+		{
+			IDictionary dic = cfg.ReadSetting("defaultskytextures", new Hashtable());
+			char[] separator = new []{ ',' };
+			foreach(DictionaryEntry de in dic)
+			{
+				string skytex = de.Key.ToString();
+				if(defaultskytextures.ContainsKey(skytex))
+				{
+					General.ErrorLogger.Add(ErrorType.Warning, "Sky texture \"" + skytex + "\" is double-defined in the current game configuration!");
+					continue;
+				}
+
+				string[] maps = de.Value.ToString().Split(separator, StringSplitOptions.RemoveEmptyEntries);
+				if(maps.Length == 0)
+				{
+					General.ErrorLogger.Add(ErrorType.Warning, "Sky texture \"" + skytex + "\" has no map names defined in the current game configuration!");
+					continue;
+				}
+
+				foreach(string map in maps)
+				{
+					if(defaultskytextures.ContainsKey(map))
+					{
+						General.ErrorLogger.Add(ErrorType.Warning, "Map \"" + map + "\" is double-defined in the \"DefaultSkyTextures\" block of current game configuration!");
+						continue;
+					}
+
+					defaultskytextures[map] = skytex;
 				}
 			}
 		}

@@ -2127,6 +2127,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		public static List<Line3D> GetDynamicLightShapes()
 		{
 			List<Line3D> circles = new List<Line3D>();
+			const int linealpha = 128;
 			foreach(Thing t in General.Map.Map.Things)
 			{
 				int lightid = Array.IndexOf(GZBuilder.GZGeneral.GZ_LIGHTS, t.Type);
@@ -2171,15 +2172,15 @@ namespace CodeImp.DoomBuilder.Geometry
 				switch(t.Type)
 				{
 					case 1502: // Vavoom light
-						color = new PixelColor(255, 255, 255, 255);
+						color = new PixelColor(linealpha, 255, 255, 255);
 						break;
 
 					case 1503: // Vavoom colored light
-						color = new PixelColor(255, (byte)t.Args[1], (byte)t.Args[2], (byte)t.Args[3]);
+						color = new PixelColor(linealpha, (byte)t.Args[1], (byte)t.Args[2], (byte)t.Args[3]);
 						break;
 
 					default:
-						color = new PixelColor(255, (byte)t.Args[0], (byte)t.Args[1], (byte)t.Args[2]);
+						color = new PixelColor(linealpha, (byte)t.Args[0], (byte)t.Args[1], (byte)t.Args[2]);
 						break;
 				}
 

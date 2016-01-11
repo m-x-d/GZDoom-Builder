@@ -531,16 +531,16 @@ namespace CodeImp.DoomBuilder.Data
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
 
-			//mapinfo should be in root folder
+			// Mapinfo should be in root folder
 			Dictionary<string, Stream> streams = new Dictionary<string, Stream>(StringComparer.Ordinal);
-			string[] files = GetAllFiles("", false);
 
-			//try to find (z)mapinfo
+			// Try to find (z)mapinfo
+			string[] files = GetAllFiles("", false);
 			foreach(string s in files)
 			{
 				string filename = Path.GetFileNameWithoutExtension(s.ToLowerInvariant());
 				if(filename == "zmapinfo" || filename == "mapinfo")
-					streams.Add(s, LoadFile(s));
+					streams[s] = LoadFile(s);
 			}
 
 			return streams;

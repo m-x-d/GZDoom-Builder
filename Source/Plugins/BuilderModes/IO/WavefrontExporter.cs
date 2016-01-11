@@ -197,7 +197,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.IO
 			BaseVisualMode mode = new BaseVisualMode();
 			bool renderingEffectsDisabled = false;
 
-			if(!BaseVisualMode.GZDoomRenderingEffects) 
+			if(!General.Settings.GZDoomRenderingEffects) 
 			{
 				renderingEffectsDisabled = true;
 				mode.ToggleGZDoomRenderingEffects();

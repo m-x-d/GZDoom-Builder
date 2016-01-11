@@ -75,6 +75,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		private Vector3D[] boundingBox;
 		protected VisualGeometryType geometrytype;
 		protected string partname; //UDMF part name
+		protected bool renderassky;
 		
 		#endregion
 
@@ -89,6 +90,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		public Vector3D[] BoundingBox { get { return boundingBox; } }
 		public VisualGeometryType GeometryType { get { return geometrytype; } }
 		public float FogFactor { get { return fogfactor; } set { fogfactor = value; } }
+		public bool RenderAsSky { get { return renderassky; } }
 
 		/// <summary>
 		/// Render pass in which this geometry must be rendered. Default is Solid.
@@ -131,7 +133,6 @@ namespace CodeImp.DoomBuilder.VisualModes
 		/// <summary>
 		/// This creates visual geometry that is bound to a sidedef. This geometry is only visible when the sidedef is visible. It is automatically back-face culled during rendering and automatically XY intersection tested as well as back-face culled during object picking.
 		/// </summary>
-		/// <param name="sd"></param>
 		protected VisualGeometry(VisualSector vs, Sidedef sd)
 		{
 			this.sector = vs;

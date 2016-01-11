@@ -1,14 +1,14 @@
 ﻿using System;
+using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Map;
 using SlimDX;
-using CodeImp.DoomBuilder.Geometry;
 
 namespace CodeImp.DoomBuilder.VisualModes
 {
 	public class VisualVertexPair
 	{
-		private VisualVertex floorvert;
-		private VisualVertex ceilvert;
+		private readonly VisualVertex floorvert;
+		private readonly VisualVertex ceilvert;
 
 		public VisualVertex[] Vertices { get { return new[] { floorvert, ceilvert }; } }
 		public VisualVertex FloorVertex { get { return floorvert; } }
@@ -37,18 +37,17 @@ namespace CodeImp.DoomBuilder.VisualModes
 		}
 	}
 
-	public abstract class VisualVertex : IVisualPickable, IComparable<VisualVertex>
+	public abstract class VisualVertex : IVisualPickable
 	{
 		//Constants
 		public const float DEFAULT_SIZE = 6.0f;
 		
 		//Variables
-		protected Vertex vertex;
+		protected readonly Vertex vertex;
 		private Matrix position;
-		private float cameradistance;
 		protected bool selected;
 		protected bool changed;
-		protected bool ceilingVertex;
+		protected readonly bool ceilingVertex;
 		protected bool haveOffset;
 
 		//Properties
@@ -89,14 +88,6 @@ namespace CodeImp.DoomBuilder.VisualModes
 		public virtual bool PickAccurate(Vector3D from, Vector3D to, Vector3D dir, ref float u_ray) 
 		{
 			return false;
-		}
-
-		/// <summary>
-		/// This sorts things by distance from the camera. Farthest first.
-		/// </summary>
-		public int CompareTo(VisualVertex other) 
-		{
-			return Math.Sign(other.cameradistance - this.cameradistance);
 		}
 	}
 }

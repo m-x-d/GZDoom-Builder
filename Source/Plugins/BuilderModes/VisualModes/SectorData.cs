@@ -327,9 +327,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					SectorLevel l = lightlevels[i];
 					SectorLevel pl = lightlevels[i + 1];
 
-					// Glow levels should not affect light transfer
-					if(l.type == SectorLevelType.Glow) continue;
-
 					// Glow levels don't cast light
 					if(pl.type == SectorLevelType.Glow && lightlevels.Count > i + 2) pl = lightlevels[i + 2];
 

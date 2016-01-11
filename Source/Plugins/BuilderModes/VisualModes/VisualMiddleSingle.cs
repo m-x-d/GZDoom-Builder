@@ -62,6 +62,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			Vector2D vl, vr;
 
+			//mxd. Apply sky hack?
+			UpdateSkyRenderFlag();
+
 			//mxd. lightfog flag support
 			int lightvalue;
 			bool lightabsolute;
@@ -201,7 +204,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.SetVertices(null); //mxd
 			return false;
 		}
-		
+
+		//mxd
+		internal void UpdateSkyRenderFlag()
+		{
+			renderassky = (Sidedef.LongMiddleTexture == MapSet.EmptyLongName && Sidedef.Sector != null && Sidedef.Sector.CeilTexture == General.Map.Config.SkyFlatName);
+		}
+
 		#endregion
 		
 		#region ================== Methods

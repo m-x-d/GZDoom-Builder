@@ -46,8 +46,9 @@
     <DocumentationFile>..\..\Build\Builder.xml</DocumentationFile>
     <DefineConstants>
     </DefineConstants>
-    <WarningLevel>3</WarningLevel>
+    <WarningLevel>4</WarningLevel>
     <DebugSymbols>true</DebugSymbols>
+    <NoWarn>1591</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug + Profiler|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -863,6 +864,7 @@
     <Compile Include="GZBuilder\Data\ModelLoadState.cs" />
     <Compile Include="GZBuilder\Data\ScriptItem.cs" />
     <Compile Include="GZBuilder\Data\SharpCompressHelper.cs" />
+    <Compile Include="GZBuilder\Data\SkyboxInfo.cs" />
     <Compile Include="GZBuilder\Rendering\SizelessVisualThingCage.cs" />
     <Compile Include="GZBuilder\Rendering\ThingBoundingBox.cs" />
     <Compile Include="GZBuilder\Data\ThingCopyData.cs" />
@@ -1120,10 +1122,12 @@
     <None Include="Resources\MCrash.png" />
     <None Include="Resources\MixedThings.png" />
     <None Include="Resources\LinedefColorPresets.png" />
+    <EmbeddedResource Include="Resources\MissingSky3D.png" />
     <Content Include="Resources\Model.png" />
     <None Include="Resources\ModelDisabled.png" />
     <None Include="Resources\ModelFiltered.png" />
     <Content Include="Resources\Model_selected.png" />
+    <None Include="Resources\Sky.png" />
     <None Include="Resources\Update.png" />
     <None Include="Resources\Reload.png" />
     <None Include="Resources\Preferences.png" />
