@@ -97,6 +97,7 @@ namespace CodeImp.DoomBuilder.Config
 		private ModelRenderMode gzDrawModelsMode;
 		private LightRenderMode gzDrawLightsMode;
 		private bool gzDrawFog;
+		private bool gzDrawSky;
 		private bool gzToolbarGZDoom;
 		private bool gzSynchCameras;
 		private bool gzShowEventLines;
@@ -111,6 +112,7 @@ namespace CodeImp.DoomBuilder.Config
 		private string lastUsedConfigName;
 		private string lastUsedMapFolder;
 		private bool gzMarkExtraFloors;
+		private bool gzdoomrenderingeffects = true; //mxd
 		private int maxRecentFiles;
 		private bool autoClearSideTextures;
 		private bool storeSelectedEditTab;
@@ -187,6 +189,7 @@ namespace CodeImp.DoomBuilder.Config
 		public ModelRenderMode GZDrawModelsMode { get { return gzDrawModelsMode; } internal set { gzDrawModelsMode = value; } }
 		public LightRenderMode GZDrawLightsMode { get { return gzDrawLightsMode; } internal set { gzDrawLightsMode = value; } }
 		public bool GZDrawFog { get { return gzDrawFog; } internal set { gzDrawFog = value; } }
+		public bool GZDrawSky { get { return gzDrawSky; } internal set { gzDrawSky = value; } }
 		public bool GZToolbarGZDoom { get { return gzToolbarGZDoom; } internal set { gzToolbarGZDoom = value; } }
 		public bool GZSynchCameras { get { return gzSynchCameras; } internal set { gzSynchCameras = value; } }
 		public bool GZShowEventLines { get { return gzShowEventLines; } internal set { gzShowEventLines = value; } }
@@ -201,6 +204,7 @@ namespace CodeImp.DoomBuilder.Config
 		public string LastUsedConfigName { get { return lastUsedConfigName; } internal set { lastUsedConfigName = value; } }
 		public string LastUsedMapFolder { get { return lastUsedMapFolder; } internal set { lastUsedMapFolder = value; } }
 		public bool GZMarkExtraFloors { get { return gzMarkExtraFloors; } internal set { gzMarkExtraFloors = value; } }
+		public bool GZDoomRenderingEffects { get { return gzdoomrenderingeffects; } set { gzdoomrenderingeffects = value; } } //mxd
 		public int MaxRecentFiles { get { return maxRecentFiles; } internal set { maxRecentFiles = General.Clamp(value, 8, 25); } }
 		public bool AutoClearSidedefTextures { get { return autoClearSideTextures; } internal set { autoClearSideTextures = value; } }
 		public bool StoreSelectedEditTab { get { return storeSelectedEditTab; } internal set { storeSelectedEditTab = value; } }
@@ -300,6 +304,7 @@ namespace CodeImp.DoomBuilder.Config
 				gzDrawModelsMode = (ModelRenderMode)cfg.ReadSetting("gzdrawmodels", (int)ModelRenderMode.ALL);
 				gzDrawLightsMode = (LightRenderMode)cfg.ReadSetting("gzdrawlights", (int)LightRenderMode.ALL);
 				gzDrawFog = cfg.ReadSetting("gzdrawfog", false);
+				gzDrawSky = cfg.ReadSetting("gzdrawsky", true);
 				gzToolbarGZDoom = cfg.ReadSetting("gztoolbargzdoom", true);
 				gzSynchCameras = cfg.ReadSetting("gzsynchcameras", true);
 				gzShowEventLines = cfg.ReadSetting("gzshoweventlines", true);
@@ -395,6 +400,7 @@ namespace CodeImp.DoomBuilder.Config
 			cfg.WriteSetting("gzdrawmodels", (int)gzDrawModelsMode);
 			cfg.WriteSetting("gzdrawlights", (int)gzDrawLightsMode);
 			cfg.WriteSetting("gzdrawfog", gzDrawFog);
+			cfg.WriteSetting("gzdrawsky", gzDrawSky);
 			cfg.WriteSetting("gzsynchcameras", gzSynchCameras);
 			cfg.WriteSetting("gzshoweventlines", gzShowEventLines);
 			cfg.WriteSetting("gzoldhighlightmode", gzOldHighlightMode);

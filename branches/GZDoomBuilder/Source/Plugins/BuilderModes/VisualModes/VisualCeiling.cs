@@ -117,43 +117,35 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			else
 				texscale = new Vector2D(1.0f / 64.0f, 1.0f / 64.0f);
 
-			//mxd. Sky is always bright
-			int color;
-			if(s.CeilTexture == General.Map.Config.SkyFlatName)
+			// Determine brightness
+			int color = PixelColor.FromInt(level.color).WithAlpha((byte)General.Clamp(level.alpha, 0, 255)).ToInt();
+
+			//mxd. Top extrafloor level should calculate fogdensity
+			//from the brightness of the level above it
+			int targetbrightness;
+			if(extrafloor != null && !extrafloor.VavoomType && !level.disablelighting)
 			{
-				color = -1; // That's white. With alpha. Not very impressive, eh?
-				fogfactor = 0; // No fog
+				targetbrightness = 0;
+				SectorData sd = mode.GetSectorData(this.Sector.Sector);
+				for(int i = 0; i < sd.LightLevels.Count - 1; i++)
+				{
+					if(sd.LightLevels[i] == level)
+					{
+						targetbrightness = sd.LightLevels[i + 1].brightnessbelow;
+						break;
+					}
+				}
 			}
 			else
 			{
-				color = PixelColor.FromInt(level.color).WithAlpha((byte)General.Clamp(level.alpha, 0, 255)).ToInt();
-
-				//mxd. Top extrafloor level should calculate fogdensity
-				//from the brightness of the level above it
-				int targetbrightness;
-				if(extrafloor != null && !extrafloor.VavoomType && !level.disablelighting)
-				{
-					targetbrightness = 0;
-					SectorData sd = mode.GetSectorData(this.Sector.Sector);
-					for(int i = 0; i < sd.LightLevels.Count - 1; i++)
-					{
-						if(sd.LightLevels[i] == level)
-						{
-							targetbrightness = sd.LightLevels[i + 1].brightnessbelow;
-							break;
-						}
-					}
-				}
-				else
-				{
-					targetbrightness = level.brightnessbelow;
-				}
-
-				fogfactor = CalculateFogDensity(targetbrightness);
+				targetbrightness = level.brightnessbelow;
 			}
 
+			//mxd. Determine fog density
+			fogfactor = CalculateFogDensity(targetbrightness);
+
 			// Make vertices
-			ReadOnlyCollection<Vector2D> triverts = base.Sector.Sector.Triangles.Vertices;
+			ReadOnlyCollection<Vector2D> triverts = Sector.Sector.Triangles.Vertices;
 			WorldVertex[] verts = new WorldVertex[triverts.Count];
 			for(int i = 0; i < triverts.Count; i++)
 			{
@@ -196,12 +188,32 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				this.RenderPass = RenderPass.Solid;
 			}
+
+			//mxd. Update sky render flag
+			UpdateSkyRenderFlag();
 			
 			// Apply vertices
 			base.SetVertices(verts);
 			return (verts.Length > 0);
 		}
-		
+
+		//mxd
+		private void UpdateSkyRenderFlag()
+		{
+			bool isrenderedassky = renderassky;
+			renderassky = (level.sector.CeilTexture == General.Map.Config.SkyFlatName);
+			if(isrenderedassky != renderassky && Sector.Sides != null)
+			{
+				// Upper/middle geometry may need updating...
+				foreach(Sidedef side in level.sector.Sidedefs)
+				{
+					VisualSidedefParts parts = Sector.GetSidedefParts(side);
+					if(parts.upper != null) parts.upper.UpdateSkyRenderFlag();
+					else if(parts.middlesingle != null) parts.middlesingle.UpdateSkyRenderFlag();
+				}
+			}
+		}
+
 		#endregion
 
 		#region ================== Methods

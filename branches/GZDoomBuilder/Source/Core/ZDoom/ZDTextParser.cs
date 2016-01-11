@@ -17,6 +17,7 @@
 #region ================== Namespaces
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using System.IO;
@@ -87,11 +88,20 @@ namespace CodeImp.DoomBuilder.ZDoom
 			//mxd. Clear error status?
 			if(clearerrors) ClearError();
 
-			//mxd. Integrity check
-			if(stream == null || stream.Length == 0)
+			//mxd. Integrity checks
+			if(stream == null)
 			{
-				ReportError("Unable to load '" + sourcefilename + "'");
+				ReportError("Unable to load \"" + sourcefilename + "\"");
 				return false;
+			}
+
+			if(stream.Length == 0)
+			{
+				if(!string.IsNullOrEmpty(sourcename))
+					LogWarning("Include file \"" + sourcefilename + "\" is empty");
+				else
+					LogWarning("File is empty");
+				return true;
 			}
 			
 			datastream = stream;
@@ -470,6 +480,35 @@ namespace CodeImp.DoomBuilder.ZDoom
 			if(success) value = val * sign;
 			return success;
 		}
+
+		//mxd
+		protected void SkipStructure() { SkipStructure(new HashSet<string>()); }
+		protected void SkipStructure(HashSet<string> breakat)
+		{
+			string token;
+			do
+			{
+				if(!SkipWhitespace(true)) break;
+				token = ReadToken();
+				if(string.IsNullOrEmpty(token)) break;
+				if(breakat.Contains(token))
+				{
+					DataStream.Seek(-token.Length - 1, SeekOrigin.Current);
+					return;
+				}
+			}
+			while(token != "{");
+			int scopelevel = 1;
+			do
+			{
+				if(!SkipWhitespace(true)) break;
+				token = ReadToken();
+				if(string.IsNullOrEmpty(token)) break;
+				if(token == "{") scopelevel++;
+				if(token == "}") scopelevel--;
+			}
+			while(scopelevel > 0);
+		}
 		
 		// This reports an error
 		protected internal void ReportError(string message)
@@ -603,7 +642,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 				switch(num)
 				{
 					case 34: case 60: case 62: case 124:
-						ReportError("unsupported character \"" + c + "\" in path \"" + path + "\".");
+						ReportError("Unsupported character \"" + c + "\" in path \"" + path + "\"");
 						return false;
 
 					default:

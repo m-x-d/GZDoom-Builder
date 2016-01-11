@@ -18,6 +18,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Threading;
 using System.Windows.Forms;
@@ -29,6 +32,8 @@ using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.ZDoom;
+using SlimDX;
+using SlimDX.Direct3D9;
 
 #endregion
 
@@ -70,6 +75,7 @@ namespace CodeImp.DoomBuilder.Data
 		private MapInfo mapinfo;
 		private Dictionary<string, KeyValuePair<int, int>> reverbs; //<name, <arg1, arg2> 
 		private Dictionary<long, GlowingFlatData> glowingflats; // Texture name hash, Glowing Flat Data
+		private Dictionary<string, SkyboxInfo> skyboxes; 
 		private List<string> soundsequences;
 		
 		// Background loading
@@ -91,6 +97,9 @@ namespace CodeImp.DoomBuilder.Data
 		private Dictionary<string, ImageData> internalsprites;
 		private ImageData whitetexture;
 		private ImageData blacktexture; //mxd
+
+		//mxd. Sky textures
+		private CubeTexture skybox; // GZDoom skybox
 
 		//mxd. Comment icons
 		private ImageData[] commenttextures;
@@ -139,6 +148,7 @@ namespace CodeImp.DoomBuilder.Data
 		public ImageData WhiteTexture { get { return whitetexture; } }
 		public ImageData BlackTexture { get { return blacktexture; } } //mxd
 		public ImageData[] CommentTextures { get { return commenttextures; } } //mxd
+		internal CubeTexture SkyBox { get { return skybox; } } //mxd
 		public List<ThingCategory> ThingCategories { get { return thingcategories; } }
 		public ICollection<ThingTypeInfo> ThingTypes { get { return thingtypes.Values; } }
 		public DecorateParser Decorate { get { return decorate; } }
@@ -169,8 +179,10 @@ namespace CodeImp.DoomBuilder.Data
 			//mxd.
 			modeldefentries = new Dictionary<int, ModelData>();
 			gldefsentries = new Dictionary<int, DynamicLightData>();
-			reverbs = new Dictionary<string, KeyValuePair<int, int>>();
+			reverbs = new Dictionary<string, KeyValuePair<int, int>>(StringComparer.Ordinal);
 			glowingflats = new Dictionary<long, GlowingFlatData>();
+			skyboxes = new Dictionary<string, SkyboxInfo>(StringComparer.Ordinal);
+
 			soundsequences = new List<string>();
 
 			// Load special images (mxd: the rest is loaded in LoadInternalTextures())
@@ -224,8 +236,17 @@ namespace CodeImp.DoomBuilder.Data
 				blacktexture = null; //mxd
 				unknownimage.Dispose(); //mxd
 				unknownimage = null; //mxd
-				foreach(ImageData i in commenttextures) i.Dispose(); //mxd
+				for(int i = 0; i < commenttextures.Length; i++) //mxd
+				{
+					commenttextures[i].Dispose();
+					commenttextures[i] = null;
+				}
 				commenttextures = null;
+				if(skybox != null) //mxd
+				{
+					skybox.Dispose();
+					skybox = null;
+				}
 				
 				// Done
 				isdisposed = true;
@@ -252,7 +273,7 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		// This loads all data resources
-		internal void Load(DataLocationList locations)
+		private void Load(DataLocationList locations)
 		{
 			Dictionary<long, ImageData> texturesonly = new Dictionary<long, ImageData>();
 			Dictionary<long, ImageData> colormapsonly = new Dictionary<long, ImageData>();
@@ -474,6 +495,9 @@ namespace CodeImp.DoomBuilder.Data
 				// Add to all
 				alltextures.AddFlat(img.Value);
 			}
+
+			//mxd. Create skybox texture(s)
+			SetupSkybox();
 			
 			// Start background loading
 			StartBackgroundLoader();
@@ -483,7 +507,8 @@ namespace CodeImp.DoomBuilder.Data
 				colormapcount + " colormaps, " + spritecount + " sprites, " + 
 				thingcount + " decorate things, " + modeldefentries.Count + " model/voxel deinitions, " + 
 				gldefsentries.Count + " dynamic light definitions, " + 
-				glowingflats.Count + " glowing flat definitions, " + reverbs.Count + " sound environment definitions");
+				glowingflats.Count + " glowing flat definitions, " + skyboxes.Count + " skybox definitions, " +
+				reverbs.Count + " sound environment definitions");
 		}
 		
 		// This unloads all data
@@ -1724,7 +1749,7 @@ namespace CodeImp.DoomBuilder.Data
 		//mxd. This creates <Actor Class, Thing.Type> dictionary. Should be called after all DECORATE actors are parsed
 		private Dictionary<string, int> CreateActorsByClassList() 
 		{
-			Dictionary<string, int> actors = new Dictionary<string, int>(StringComparer.Ordinal);
+			Dictionary<string, int> actors = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
 			if(string.IsNullOrEmpty(General.Map.Config.DecorateGames)) return actors;
 
 			//read our new shiny ClassNames for default game things
@@ -1732,11 +1757,9 @@ namespace CodeImp.DoomBuilder.Data
 			{
 				if(!string.IsNullOrEmpty(ti.Value.ClassName))
 				{
-					string classname = ti.Value.ClassName.ToLowerInvariant();
-
-					if(actors.ContainsKey(classname) && actors[classname] != ti.Key)
+					if(actors.ContainsKey(ti.Value.ClassName) && actors[ti.Value.ClassName] != ti.Key)
 						General.ErrorLogger.Add(ErrorType.Warning, "actor '" + ti.Value.ClassName + "' has several editor numbers! Only the last one (" + ti.Key + ") will be used.");
-					actors[classname] = ti.Key;
+					actors[ti.Value.ClassName] = ti.Key;
 				}
 			}
 
@@ -1794,7 +1817,10 @@ namespace CodeImp.DoomBuilder.Data
 				return;
 			}
 
-			//rebuild geometry if in Visual mode
+			// Rebuild skybox texture
+			SetupSkybox();
+
+			// Rebuild geometry if in Visual mode
 			if(General.Editing.Mode != null && General.Editing.Mode.GetType().Name == "BaseVisualMode") 
 			{
 				General.Editing.Mode.OnReloadResources();
@@ -1820,7 +1846,7 @@ namespace CodeImp.DoomBuilder.Data
 				foreach(KeyValuePair<string, Stream> group in streams) 
 				{
 					// Parse the data
-					if(parser.Parse(group.Value, currentreader.Location.location + "\\" + group.Key, true)) 
+					if(parser.Parse(group.Value, Path.Combine(currentreader.Location.location, group.Key), true)) 
 					{
 						foreach(KeyValuePair<string, ModelData> g in parser.Entries) 
 						{
@@ -1946,7 +1972,7 @@ namespace CodeImp.DoomBuilder.Data
 		//mxd. This parses gldefs. Should be called after all DECORATE actors are parsed
 		private void LoadGldefs(Dictionary<string, int> actorsbyclass) 
 		{
-			//if no actors defined in DECORATE or game config...
+			// Skip if no actors defined in DECORATE or game config...
 			if(actorsbyclass.Count == 0) return;
 
 			GldefsParser parser = new GldefsParser { OnInclude = ParseFromLocation };
@@ -1971,10 +1997,10 @@ namespace CodeImp.DoomBuilder.Data
 				}
 			}
 
-			//create Gldefs Entries dictionary
+			// Create Gldefs Entries dictionary
 			foreach(KeyValuePair<string, string> e in parser.Objects) //<ClassName, Light name>
 			{ 
-				//if we have decorate actor and light definition for given ClassName...
+				// If we have decorate actor and light definition for given ClassName...
 				if(actorsbyclass.ContainsKey(e.Key) && parser.LightsByName.ContainsKey(e.Value)) 
 					gldefsentries[actorsbyclass[e.Key]] = parser.LightsByName[e.Value];
 				else if(!decorate.AllActorsByClass.ContainsKey(e.Key))
@@ -1983,45 +2009,52 @@ namespace CodeImp.DoomBuilder.Data
 
 			// Grab them glowy flats!
 			glowingflats = parser.GlowingFlats;
+
+			// And skyboxes
+			skyboxes = parser.Skyboxes;
 		}
 
 		//mxd. This loads (Z)MAPINFO
 		private void LoadMapInfo(out Dictionary<int, string> spawnnums, out Dictionary<int, string> doomednums)
 		{
 			MapinfoParser parser = new MapinfoParser { OnInclude = ParseFromLocation };
-			
+
+			// Parse mapinfo 
 			foreach(DataReader dr in containers)
 			{
 				currentreader = dr;
 
 				Dictionary<string, Stream> streams = dr.GetMapinfoData();
-				foreach(KeyValuePair<string, Stream> group in streams) 
+				foreach(KeyValuePair<string, Stream> group in streams)
 				{
 					// Parse the data
-					parser.Parse(group.Value, Path.Combine(currentreader.Location.location, group.Key), General.Map.Options.LevelName, false);
+					parser.Parse(group.Value, Path.Combine(dr.Location.location, group.Key), General.Map.Options.LevelName, false);
 
 					//MAPINFO lumps are interdependable. Can't carry on...
 					if(parser.HasError)
 					{
 						parser.LogError();
-
-						// No nulls allowed!
-						spawnnums = new Dictionary<int, string>();
-						doomednums = new Dictionary<int, string>();
-						mapinfo = new MapInfo();
-
-						return;
+						break;
 					}
 				}
 			}
-
-			// Set the output values
-			spawnnums = parser.SpawnNums;
-			doomednums = parser.DoomEdNums;
-
-			// Store to our MapInfo property
+			
+			if(!parser.HasError)
+			{
+				// Store parsed data
+				spawnnums = parser.SpawnNums;
+				doomednums = parser.DoomEdNums;
+				mapinfo = parser.MapInfo;
+			}
+			else
+			{
+				// No nulls allowed!
+				spawnnums = new Dictionary<int, string>();
+				doomednums = new Dictionary<int, string>();
+				mapinfo = new MapInfo();
+			}
+			
 			currentreader = null;
-			mapinfo = parser.MapInfo ?? new MapInfo();
 		}
 
 		private void ParseFromLocation(ZDTextParser parser, string location, bool clearerrors)
@@ -2259,6 +2292,438 @@ namespace CodeImp.DoomBuilder.Data
 				// Notify the background thread that it needs to update the images
 				updatedusedtextures = true;
 			}
+		}
+
+		#endregion
+
+		#region ================== mxd. Skybox Making
+
+		private void SetupSkybox()
+		{
+			// Get rid of old texture
+			if(skybox != null) skybox.Dispose(); skybox = null;
+
+			// Determine which texture name to use
+			string skytex = string.Empty;
+			if(!string.IsNullOrEmpty(mapinfo.Sky1))
+			{
+				skytex = mapinfo.Sky1;
+			}
+			// Use vanilla sky only when current map doesn't have a MAPINFO entry
+			else if(!mapinfo.IsDefined)
+			{
+				if(General.Map.Config.DefaultSkyTextures.ContainsKey(General.Map.Options.CurrentName))
+					skytex = General.Map.Config.DefaultSkyTextures[General.Map.Options.CurrentName];
+				else
+					skytex = General.GetByIndex(General.Map.Config.DefaultSkyTextures, 0).Value;
+			}
+			
+			// Create sky texture
+			if(!string.IsNullOrEmpty(skytex))
+			{
+				if(skyboxes.ContainsKey(skytex))
+				{
+					// Create cubemap texture
+					skybox = (skyboxes[skytex].Textures.Count == 6 ? MakeSkyBox6(skyboxes[skytex]) : MakeSkyBox3(skyboxes[skytex]));
+				}
+				else
+				{
+					// Create classic texture
+					ImageData tex = GetTextureImage(skytex);
+					if(!(tex is UnknownImage))
+					{
+						if(!tex.IsImageLoaded) tex.LoadImage();
+						if(!tex.LoadFailed)
+						{
+							skybox = MakeClassicSkyBox(new Bitmap(tex.GetBitmap()), true);
+						}
+					}
+				}
+			}
+
+			// Sky texture will be missing in ZDoom. Use internal texture
+			if(skybox == null)
+			{
+				ImageData tex = LoadInternalTexture("MissingSky3D.png");
+				tex.CreateTexture();
+				skybox = MakeClassicSkyBox(new Bitmap(tex.GetBitmap()), false);
+				tex.Dispose();
+			}
+		}
+
+		private static CubeTexture MakeClassicSkyBox(Bitmap img, bool dogradients)
+		{
+			// CubeTexture must be square with power of 2 sides
+			int targetwidth = General.NextPowerOf2(img.Width);
+			int targetheight = General.NextPowerOf2(img.Height);
+
+			// Get averaged top and bottom colors
+			Color topcolor, bottomcolor;
+			if(dogradients)
+			{
+				int tr = 0, tg = 0, tb = 0, br = 0, bg = 0, bb = 0;
+				for(int i = 0; i < img.Width; i++)
+				{
+					Color c = img.GetPixel(i, 0);
+					tr += c.R;
+					tg += c.G;
+					tb += c.B;
+
+					c = img.GetPixel(i, img.Height - 1);
+					br += c.R;
+					bg += c.G;
+					bb += c.B;
+				}
+
+				topcolor = Color.FromArgb(255, tr / img.Width, tg / img.Width, tb / img.Width);
+				bottomcolor = Color.FromArgb(255, br / img.Width, bg / img.Width, bb / img.Width);
+			}
+			else
+			{
+				// This should be built-in sky texture
+				Color c = img.GetPixel(img.Width / 2, 0);
+				topcolor = Color.FromArgb(255, c);
+
+				c = img.GetPixel(img.Width / 2, img.Height - 1);
+				bottomcolor = Color.FromArgb(255, c);
+			}
+
+			// Make it Po2
+			if(img.Width != targetwidth || img.Height != targetheight) img = ResizeImage(img, targetwidth, targetheight);
+
+			// Make it square
+			if(targetwidth > targetheight)
+			{
+				int c = targetwidth / targetheight;
+				Bitmap result = new Bitmap(targetwidth, targetwidth, img.PixelFormat);
+
+				// Tile vertically
+				using(Graphics g = Graphics.FromImage(result))
+				{
+					for(int i = 0; i < c; i++) g.DrawImage(img, 0, targetheight * i);
+				}
+
+				img = result;
+			}
+			else if(targetwidth < targetheight)
+			{
+				int c = targetheight / targetwidth;
+				Bitmap result = new Bitmap(targetheight, targetheight);
+
+				// Tile horizontally
+				using(Graphics g = Graphics.FromImage(result))
+				{
+					for(int i = 0; i < c; i++) g.DrawImage(img, targetwidth * i, 0);
+				}
+
+				img = result;
+			}
+
+			// Make top and bottom images
+			Bitmap top = new Bitmap(img.Width, img.Height);
+			using(Graphics g = Graphics.FromImage(top))
+			{
+				using(SolidBrush b = new SolidBrush(topcolor))
+				{
+					g.FillRectangle(b, 0, 0, img.Width, img.Height);
+				}
+			}
+
+			Bitmap bottom = new Bitmap(img.Width, img.Height);
+			using(Graphics g = Graphics.FromImage(bottom))
+			{
+				using(SolidBrush b = new SolidBrush(bottomcolor))
+				{
+					g.FillRectangle(b, 0, 0, img.Width, img.Height);
+				}
+			}
+
+			// Apply top/bottom gradients
+			if(dogradients)
+			{
+				using(Graphics g = Graphics.FromImage(img))
+				{
+					int gradientheight = img.Height / 6;
+					Rectangle area = new Rectangle(0, 0, img.Width, gradientheight);
+					using(LinearGradientBrush b = new LinearGradientBrush(area, topcolor, Color.FromArgb(0, topcolor), 90f))
+					{
+						g.FillRectangle(b, area);
+					}
+
+					area = new Rectangle(0, img.Height - gradientheight, img.Width, gradientheight);
+					using(LinearGradientBrush b = new LinearGradientBrush(area, Color.FromArgb(0, bottomcolor), bottomcolor, 90f))
+					{
+						area.Y += 1;
+						g.FillRectangle(b, area);
+					}
+				}
+			}
+
+			// Make cubemap texture
+			CubeTexture cubemap = new CubeTexture(General.Map.Graphics.Device, img.Width, 1, Usage.None, Format.A8R8G8B8, Pool.Managed);
+
+			// Draw faces
+			img.RotateFlip(RotateFlipType.Rotate180FlipX);
+			DrawCubemapFace(cubemap, CubeMapFace.NegativeX, img);
+
+			img.RotateFlip(RotateFlipType.Rotate90FlipNone);
+			DrawCubemapFace(cubemap, CubeMapFace.NegativeY, img);
+
+			img.RotateFlip(RotateFlipType.Rotate90FlipNone);
+			DrawCubemapFace(cubemap, CubeMapFace.PositiveX, img);
+
+			img.RotateFlip(RotateFlipType.Rotate90FlipNone);
+			DrawCubemapFace(cubemap, CubeMapFace.PositiveY, img);
+
+			DrawCubemapFace(cubemap, CubeMapFace.PositiveZ, top);
+			DrawCubemapFace(cubemap, CubeMapFace.NegativeZ, bottom);
+
+			// All done...
+			return cubemap;
+		}
+
+		// Makes CubeTexture from 6 images
+		private CubeTexture MakeSkyBox6(SkyboxInfo info)
+		{
+			// Gather images. They should be defined in this order: North, East, South, West, Top, Bottom
+			Bitmap[] sides = new Bitmap[6];
+			int targetsize = 0;
+			for(int i = 0; i < info.Textures.Count; i++)
+			{
+				ImageData tex = GetTextureImage(info.Textures[i]);
+				if(!(tex is UnknownImage))
+				{
+					if(!tex.IsImageLoaded) tex.LoadImage();
+					if(!tex.LoadFailed)
+					{
+						sides[i] = new Bitmap(tex.GetBitmap());
+						targetsize = Math.Max(targetsize, Math.Max(sides[i].Width, sides[i].Height));
+					}
+				}
+
+				if(sides[i] == null)
+				{
+					General.ErrorLogger.Add(ErrorType.Error, "Unable to create \"" + info.Name + "\" skybox: unable to find \"" + info.Textures[i] + "\" texture");
+					return null;
+				}
+			}
+
+			// All images must be square and have the same size
+			if(targetsize == 0)
+			{
+				General.ErrorLogger.Add(ErrorType.Error, "Unable to create \"" + info.Name + "\" skybox: invalid texture size");
+				return null;
+			}
+
+			// Make it Po2
+			targetsize = General.NextPowerOf2(targetsize);
+
+			for(int i = 0; i < sides.Length; i++)
+			{
+				if(sides[i].Width != targetsize || sides[i].Height != targetsize)
+					sides[i] = ResizeImage(sides[i], targetsize, targetsize);
+			}
+
+			// Return cubemap texture
+			return MakeSkyBox(sides, targetsize, info.FlipTop);
+		}
+
+		// Makes CubeTexture from 3 images
+		private CubeTexture MakeSkyBox3(SkyboxInfo info)
+		{
+			// Gather images. They should be defined in this order: Sides, Top, Bottom
+			Bitmap[] sides = new Bitmap[6];
+			int targetsize = 0;
+
+			// Create NWSE images from the side texture
+			ImageData side = GetTextureImage(info.Textures[0]);
+			if(!(side is UnknownImage))
+			{
+				if(!side.IsImageLoaded) side.LoadImage();
+				if(!side.LoadFailed)
+				{
+					// This should be 4x1 format image. If it's not, resize it
+					Bitmap sideimg = new Bitmap(side.GetBitmap());
+					targetsize = Math.Max(sideimg.Width / 4, sideimg.Height);
+
+					if(targetsize == 0)
+					{
+						General.ErrorLogger.Add(ErrorType.Error, "Unable to create \"" + info.Name + "\" skybox: invalid texture size");
+						return null;
+					}
+
+					// Make it Po2
+					targetsize = General.NextPowerOf2(targetsize);
+
+					// Resize if needed
+					if(sideimg.Width != targetsize * 4 || sideimg.Height != targetsize)
+					{
+						sideimg = ResizeImage(sideimg, targetsize * 4, targetsize);
+					}
+
+					// Chop into tiny pieces
+					for(int i = 0; i < 4; i++)
+					{
+						// Create square image
+						Bitmap img = new Bitmap(targetsize, targetsize);
+						using(Graphics g = Graphics.FromImage(img))
+						{
+							// Copy area from the side image
+							g.DrawImage(sideimg, 0, 0, new Rectangle(targetsize * i, 0, targetsize, targetsize), GraphicsUnit.Pixel);
+						}
+
+						// Add to collection
+						sides[i] = img;
+					}
+				}
+			}
+
+			// Sanity check...
+			if(sides[0] == null || sides[1] == null || sides[2] == null || sides[3] == null)
+			{
+				General.ErrorLogger.Add(ErrorType.Error, "Unable to create \"" + info.Name + "\" skybox: unable to find \"" + info.Textures[0] + "\" texture");
+				return null;
+			}
+
+			// Create top
+			ImageData top = GetTextureImage(info.Textures[1]);
+			if(!(top is UnknownImage))
+			{
+				if(!top.IsImageLoaded) top.LoadImage();
+				if(!top.LoadFailed)
+				{
+					// Copy bitmap 
+					Bitmap topimg = new Bitmap(top.GetBitmap());
+					
+					// Resize if needed
+					if(topimg.Width != targetsize || topimg.Height != targetsize)
+						topimg = ResizeImage(topimg, targetsize, targetsize);
+
+					// Add to collection
+					sides[4] = topimg;
+				}
+			}
+
+			// Sanity check...
+			if(sides[4] == null)
+			{
+				General.ErrorLogger.Add(ErrorType.Error, "Unable to create \"" + info.Name + "\" skybox: unable to find \"" + info.Textures[1] + "\" texture");
+				return null;
+			}
+
+			// Create bottom
+			ImageData bottom = GetTextureImage(info.Textures[2]);
+			if(!(bottom is UnknownImage))
+			{
+				if(!bottom.IsImageLoaded) bottom.LoadImage();
+				if(!bottom.LoadFailed)
+				{
+					// Copy bitmap 
+					Bitmap bottomimg = new Bitmap(bottom.GetBitmap());
+
+					// Resize if needed
+					if(bottomimg.Width != targetsize || bottomimg.Height != targetsize)
+						bottomimg = ResizeImage(bottomimg, targetsize, targetsize);
+
+					// Add to collection
+					sides[5] = bottomimg;
+				}
+			}
+
+			// Sanity check...
+			if(sides[5] == null)
+			{
+				General.ErrorLogger.Add(ErrorType.Error, "Unable to create \"" + info.Name + "\" skybox: unable to find \"" + info.Textures[2] + "\" texture");
+				return null;
+			}
+
+			// Return cubemap texture
+			return MakeSkyBox(sides, targetsize, info.FlipTop);
+		}
+
+		// Makes CubeTexture from 6 images.
+		// sides[] must contain 6 square Po2 images in this order: North, East, South, West, Top, Bottom
+		private static CubeTexture MakeSkyBox(Bitmap[] sides, int targetsize, bool fliptop)
+		{
+			CubeTexture cubemap = new CubeTexture(General.Map.Graphics.Device, targetsize, 1, Usage.None, Format.A8R8G8B8, Pool.Managed);
+
+			// Draw faces
+			sides[3].RotateFlip(RotateFlipType.Rotate180FlipX);
+			DrawCubemapFace(cubemap, CubeMapFace.NegativeX, sides[3]); // West
+
+			sides[0].RotateFlip(RotateFlipType.Rotate90FlipX);
+			DrawCubemapFace(cubemap, CubeMapFace.NegativeY, sides[0]); // North
+
+			sides[1].RotateFlip(RotateFlipType.RotateNoneFlipX);
+			DrawCubemapFace(cubemap, CubeMapFace.PositiveX, sides[1]); // East
+
+			sides[2].RotateFlip(RotateFlipType.Rotate270FlipX);
+			DrawCubemapFace(cubemap, CubeMapFace.PositiveY, sides[2]); // South
+
+			sides[4].RotateFlip(fliptop ? RotateFlipType.Rotate90FlipX : RotateFlipType.Rotate90FlipNone);
+			DrawCubemapFace(cubemap, CubeMapFace.PositiveZ, sides[4]); // Top
+
+			sides[5].RotateFlip(RotateFlipType.Rotate270FlipX);
+			DrawCubemapFace(cubemap, CubeMapFace.NegativeZ, sides[5]); // Bottom
+
+			// All done...
+			return cubemap;
+		}
+
+		private static void DrawCubemapFace(CubeTexture texture, CubeMapFace face, Bitmap image)
+		{
+			DataRectangle rect = texture.LockRectangle(face, 0, LockFlags.NoSystemLock);
+			SurfaceDescription desc = texture.GetLevelDescription(0);
+
+			if(rect.Data.CanWrite)
+			{
+				for(int row = 0; row < desc.Height; row++)
+				{
+					int rowstart = row * rect.Pitch;
+					rect.Data.Seek(rowstart, SeekOrigin.Begin);
+
+					for(int col = 0; col < desc.Width; col++)
+					{
+						Color color = image.GetPixel(row, col);
+
+						rect.Data.WriteByte(color.B);
+						rect.Data.WriteByte(color.G);
+						rect.Data.WriteByte(color.R);
+						rect.Data.WriteByte(color.A);
+					}
+				}
+			}
+			else
+			{
+				General.ErrorLogger.Add(ErrorType.Error, "Skybox creation failed: CubeTexture is unwritable...");
+			}
+
+			texture.UnlockRectangle(face, 0);
+		}
+
+		private static Bitmap ResizeImage(Image image, int width, int height)
+		{
+			var destrect = new Rectangle(0, 0, width, height);
+			var destimage = new Bitmap(width, height);
+
+			destimage.SetResolution(image.HorizontalResolution, image.VerticalResolution);
+
+			using(var graphics = Graphics.FromImage(destimage))
+			{
+				graphics.CompositingMode = CompositingMode.SourceCopy;
+				graphics.CompositingQuality = CompositingQuality.HighQuality;
+				graphics.InterpolationMode = InterpolationMode.HighQualityBicubic;
+				graphics.SmoothingMode = SmoothingMode.HighQuality;
+				graphics.PixelOffsetMode = PixelOffsetMode.HighQuality;
+
+				using(var wrapmode = new ImageAttributes())
+				{
+					wrapmode.SetWrapMode(WrapMode.TileFlipXY);
+					graphics.DrawImage(image, destrect, 0, 0, image.Width, image.Height, GraphicsUnit.Pixel, wrapmode);
+				}
+			}
+
+			return destimage;
 		}
 		
 		#endregion

@@ -297,7 +297,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 		
 		// This copies all properties to another line
-		new public void CopyPropertiesTo(Linedef l)
+		public void CopyPropertiesTo(Linedef l)
 		{
 			l.BeforePropsChange();
 			

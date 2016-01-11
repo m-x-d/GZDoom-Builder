@@ -2,6 +2,7 @@
 
 using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.GZBuilder.Data;
 
@@ -73,22 +74,40 @@ namespace CodeImp.DoomBuilder.GZBuilder
 		[BeginAction("gztogglelights")]
 		private static void ToggleLightsRenderingMode() 
 		{
-			switch(General.Settings.GZDrawLightsMode) 
+			if(General.Editing.Mode is ClassicMode)
 			{
-				case LightRenderMode.NONE:
-					General.Settings.GZDrawLightsMode = LightRenderMode.ALL;
-					General.MainWindow.DisplayStatus(StatusType.Action, "Dynamic lights rendering mode: ALL");
-					break;
+				switch(General.Settings.GZDrawLightsMode)
+				{
+					case LightRenderMode.NONE:
+						General.Settings.GZDrawLightsMode = LightRenderMode.ALL;
+						General.MainWindow.DisplayStatus(StatusType.Action, "Dynamic lights rendering mode: ALL");
+						break;
 
-				case LightRenderMode.ALL:
-					General.Settings.GZDrawLightsMode = LightRenderMode.ALL_ANIMATED;
-					General.MainWindow.DisplayStatus(StatusType.Action, "Models rendering mode: ANIMATED");
-					break;
+					default:
+						General.Settings.GZDrawLightsMode = LightRenderMode.NONE;
+						General.MainWindow.DisplayStatus(StatusType.Action, "Dynamic lights rendering mode: NONE");
+						break;
+				}
+			}
+			else
+			{
+				switch(General.Settings.GZDrawLightsMode)
+				{
+					case LightRenderMode.NONE:
+						General.Settings.GZDrawLightsMode = LightRenderMode.ALL;
+						General.MainWindow.DisplayStatus(StatusType.Action, "Dynamic lights rendering mode: ALL");
+						break;
 
-				case LightRenderMode.ALL_ANIMATED:
-					General.Settings.GZDrawLightsMode = LightRenderMode.NONE;
-					General.MainWindow.DisplayStatus(StatusType.Action, "Models rendering mode: NONE");
-					break;
+					case LightRenderMode.ALL:
+						General.Settings.GZDrawLightsMode = LightRenderMode.ALL_ANIMATED;
+						General.MainWindow.DisplayStatus(StatusType.Action, "Dynamic lights rendering mode: ANIMATED");
+						break;
+
+					case LightRenderMode.ALL_ANIMATED:
+						General.Settings.GZDrawLightsMode = LightRenderMode.NONE;
+						General.MainWindow.DisplayStatus(StatusType.Action, "Dynamic lights rendering mode: NONE");
+						break;
+				}
 			}
 			
 			General.MainWindow.RedrawDisplay();
@@ -104,17 +123,28 @@ namespace CodeImp.DoomBuilder.GZBuilder
 			General.MainWindow.UpdateGZDoomPanel();
 		}
 
+		[BeginAction("gztogglesky")]
+		private static void ToggleSky()
+		{
+			General.Settings.GZDrawSky = !General.Settings.GZDrawSky;
+			General.MainWindow.DisplayStatus(StatusType.Action, "Sky rendering is " + (General.Settings.GZDrawSky ? "ENABLED" : "DISABLED"));
+			General.MainWindow.RedrawDisplay();
+			General.MainWindow.UpdateGZDoomPanel();
+		}
+
 		[BeginAction("gztogglefx")]
 		private static void ToggleFx() 
 		{
 			int on = 0;
 			on += General.Settings.GZDrawFog ? 1 : -1;
+			on += General.Settings.GZDrawSky ? 1 : -1;
 			on += General.Settings.GZDrawLightsMode != LightRenderMode.NONE ? 1 : -1;
 			on += General.Settings.GZDrawModelsMode != ModelRenderMode.NONE ? 1 : -1;
 
 			bool enable = (on < 0);
 
 			General.Settings.GZDrawFog = enable;
+			General.Settings.GZDrawSky = enable;
 			General.Settings.GZDrawLightsMode = (enable ? LightRenderMode.ALL : LightRenderMode.NONE);
 			General.Settings.GZDrawModelsMode = (enable ? ModelRenderMode.ALL : ModelRenderMode.NONE);
 			General.MainWindow.DisplayStatus(StatusType.Action, "Advanced effects are " + (enable ? "ENABLED" : "DISABLED") );

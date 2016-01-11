@@ -18,8 +18,21 @@ struct PixelData
 	float2 uv		  : TEXCOORD0;
 };
 
-//mxd
-// Pixel input data for light pass
+//mxd. Vertex input data for sky rendering
+struct SkyVertexData
+{
+	float3 pos		: POSITION;
+	float2 uv			: TEXCOORD0;
+};
+
+//mxd. Pixel input data for sky rendering
+struct SkyPixelData
+{
+	float4 pos		: POSITION;
+	float3 tex		: TEXCOORD0;
+};
+
+//mxd. Pixel input data for light pass
 struct LitPixelData
 {
 	float4 pos		  : POSITION;
@@ -44,7 +57,10 @@ float4 lightPosAndRadius;
 float4 lightColor; //also used as fog color
 
 //fog
-const float4 cameraPos;  //w is set to fade factor (distance, at wich fog color completely overrides pixel color)
+const float4 campos;  //w is set to fade factor (distance, at wich fog color completely overrides pixel color)
+
+//sky
+static const float4 skynormal = float4(0.0f, 1.0f, 0.0f, 0.0f);
 
 // Texture input
 const texture texture1;
@@ -57,6 +73,17 @@ const float maxanisotropysetting;
 
 // Texture sampler settings
 sampler2D texturesamp = sampler_state
+{
+	Texture = <texture1>;
+	MagFilter = magfiltersettings;
+	MinFilter = minfiltersettings;
+	MipFilter = mipfiltersettings;
+	MipMapLodBias = 0.0f;
+	MaxAnisotropy = maxanisotropysetting;
+};
+
+//mxd. Skybox texture sampler settings
+samplerCUBE skysamp = sampler_state
 {
 	Texture = <texture1>;
 	MagFilter = magfiltersettings;
@@ -100,7 +127,7 @@ LitPixelData vs_customvertexcolor_fog(VertexData vd)
 	
 	// Fill pixel data input
 	pd.pos = mul(float4(vd.pos, 1.0f), worldviewproj);
-	pd.pos_w = mul(float4(vd.pos, 1.0f), world);
+	pd.pos_w = mul(float4(vd.pos, 1.0f), world).xyz;
 	pd.color = vertexColor;
 	pd.uv = vd.uv;
 	pd.normal = vd.normal;
@@ -114,7 +141,7 @@ LitPixelData vs_lightpass(VertexData vd)
 {
 	LitPixelData pd;
 	pd.pos = mul(float4(vd.pos, 1.0f), worldviewproj);
-	pd.pos_w = mul(float4(vd.pos, 1.0f), world);
+	pd.pos_w = mul(float4(vd.pos, 1.0f), world).xyz;
 	pd.color = vd.color;
 	pd.uv = vd.uv;
 	pd.normal = vd.normal;
@@ -165,8 +192,8 @@ float4 ps_fullbright_highlight(PixelData pd) : COLOR
 //mxd. This adds fog color to current pixel color
 float4 getFogColor(LitPixelData pd, float4 color)
 {
-	float fogdist = max(16.0f, distance(pd.pos_w, cameraPos.xyz));
-	float fogfactor = exp2(cameraPos.w * fogdist);
+	float fogdist = max(16.0f, distance(pd.pos_w, campos.xyz));
+	float fogfactor = exp2(campos.w * fogdist);
 
 	color.rgb = lerp(lightColor.rgb, color.rgb, fogfactor);
 	return color;
@@ -238,6 +265,23 @@ float4 ps_lightpass(LitPixelData pd) : COLOR
 	return lightColorMod; //should never get here
 }
 
+//mxd. Vertex skybox shader
+SkyPixelData vs_skybox(SkyVertexData vd)
+{
+	SkyPixelData pd;
+	pd.pos = mul(float4(vd.pos, 1.0f), worldviewproj);
+	float3 worldpos = mul(float4(vd.pos, 1.0f), world).xyz;
+	pd.tex = reflect(worldpos - campos.xyz, normalize(mul(skynormal, world).xyz));
+	return pd;
+}
+
+//mxd. Pixel skybox shader
+float4 ps_skybox(SkyPixelData pd) : COLOR
+{
+	float4 ncolor = texCUBE(skysamp, pd.tex);
+	return float4(highlightcolor.rgb * highlightcolor.a + (ncolor.rgb - 0.4f * highlightcolor.a), 1.0f);
+}
+
 // Technique for shader model 2.0
 technique SM20 
 {
@@ -277,7 +321,12 @@ technique SM20
 		PixelShader = compile ps_2_0 ps_main();
 	}
 	
-	pass p5 {} //mxd. need this only to maintain offset
+	//mxd. Skybox shader
+	pass p5 
+	{
+		VertexShader = compile vs_2_0 vs_skybox();
+		PixelShader  = compile ps_2_0 ps_skybox();
+	}
 	
 	// Normal with highlight
 	pass p6 
