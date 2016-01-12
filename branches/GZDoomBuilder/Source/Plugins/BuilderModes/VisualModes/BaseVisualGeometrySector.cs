@@ -95,6 +95,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This changes the height
 		protected abstract void ChangeHeight(int amount);
 		protected abstract void ChangeTextureScale(int incrementX, int incrementY); //mxd
+		protected abstract void UpdateSkyRenderFlag(); //mxd
 		public virtual void SelectNeighbours(bool select, bool withSameTexture, bool withSameHeight) { } //mxd
 
 		// This swaps triangles so that the plane faces the other way
@@ -218,14 +219,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd
 		protected void OnTextureChanged() 
 		{
-			//mxd. Effects may need updating...
+			// Effects may need updating...
 			mode.RebuildElementData();
+
+			// As well as sky render flag...
+			UpdateSkyRenderFlag();
 			
 			if(level.sector == this.Sector.Sector) 
 			{
 				this.Setup();
 
-				//mxd. 3D floors may need updating...
+				// 3D floors may need updating...
 				foreach(Sidedef s in level.sector.Sidedefs) 
 				{
 					if(s.Line.Action == 160 && s.Line.Front != null) 
@@ -242,7 +246,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 				}
 			}
-			//mxd. As well as this sector's geometry
+			// As well as this sector's geometry
 			else if(mode.VisualSectorExists(level.sector)) 
 			{
 				BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(level.sector);

@@ -200,7 +200,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		private void UpdateSkyRenderFlag()
+		protected override void UpdateSkyRenderFlag()
 		{
 			bool isrenderedassky = renderassky;
 			renderassky = (level.sector.FloorTexture == General.Map.Config.SkyFlatName || level.sector.LongFloorTexture == MapSet.EmptyLongName);
