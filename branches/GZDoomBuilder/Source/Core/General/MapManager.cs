@@ -2210,14 +2210,14 @@ namespace CodeImp.DoomBuilder
 				}
 				map.UpdateCustomLinedefColors();
 
+				// Reload resources
+				ReloadResources();
+
 				// Update interface
 				General.MainWindow.SetupInterface();
 				General.MainWindow.UpdateThingsFilters();
 				General.MainWindow.UpdateLinedefColorPresets(); //mxd
 				General.MainWindow.UpdateInterface();
-
-				// Reload resources
-				ReloadResources();
 
 				//mxd. Translate texture names
 				bool nameschanged = map.TranslateTextureNames(config.UseLongTextureNames, false);

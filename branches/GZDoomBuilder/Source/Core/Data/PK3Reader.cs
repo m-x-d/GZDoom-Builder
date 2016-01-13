@@ -387,7 +387,7 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		// This finds the first file that has the specific name, regardless of file extension
-		protected override string FindFirstFile(string beginswith, bool subfolders)
+		internal override string FindFirstFile(string beginswith, bool subfolders)
 		{
 			return files.GetFirstFile(beginswith, subfolders);
 		}

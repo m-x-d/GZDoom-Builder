@@ -517,9 +517,9 @@ namespace CodeImp.DoomBuilder.Editing
 							{
 								PastePrefab(stream, options);
 								lastprefabfile = openfile.FileName;
+								stream.Dispose();
 							}
 							General.MainWindow.UpdateInterface();
-							stream.Dispose();
 						}
 
 						Cursor.Current = oldcursor;
@@ -573,8 +573,11 @@ namespace CodeImp.DoomBuilder.Editing
 									General.ShowErrorMessage("Error while reading prefab from file! See log file for error details.", MessageBoxButtons.OK);
 								}
 
-								if(stream != null) PastePrefab(stream, options);
-								stream.Dispose();
+								if(stream != null)
+								{
+									PastePrefab(stream, options);
+									stream.Dispose();
+								}
 								General.MainWindow.UpdateInterface();
 								Cursor.Current = oldcursor;
 							}
