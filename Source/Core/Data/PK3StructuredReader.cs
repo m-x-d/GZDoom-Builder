@@ -727,7 +727,7 @@ namespace CodeImp.DoomBuilder.Data
 		protected abstract string[] GetFilesWithExt(string path, string extension, bool subfolders);
 
 		// This must find the first file that has the specific name, regardless of file extension
-		protected abstract string FindFirstFile(string beginswith, bool subfolders);
+		internal abstract string FindFirstFile(string beginswith, bool subfolders);
 
 		// This must find the first file that has the specific name, regardless of file extension
 		protected abstract string FindFirstFile(string path, string beginswith, bool subfolders);

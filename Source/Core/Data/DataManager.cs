@@ -999,7 +999,7 @@ namespace CodeImp.DoomBuilder.Data
 			// Go for all opened containers
 			for(int i = containers.Count - 1; i >= 0; i--)
 			{
-				// This contain provides this patch?
+				// This container provides this patch?
 				Stream patch = containers[i].GetTextureData(pname, longname);
 				if(patch != null) return patch;
 			}
@@ -1040,9 +1040,67 @@ namespace CodeImp.DoomBuilder.Data
 			return unknownimage; //mxd
 		}
 
+		//mxd. This tries to find and load any image with given name
+		internal Bitmap GetTextureBitmap(string name)
+		{
+			// Check the textures first...
+			ImageData img = GetTextureImage(name);
+			if(img is UnknownImage && !General.Map.Config.MixTexturesFlats)
+				img = GetFlatImage(name);
+
+			if(!(img is UnknownImage))
+			{
+				if(!img.IsImageLoaded) img.LoadImage();
+				if(!img.LoadFailed)
+				{
+					return new Bitmap(img.GetBitmap());
+				}
+			}
+			
+			// Try to find any image...
+			for(int i = containers.Count - 1; i >= 0; i--)
+			{
+				// This container has a lump with given name?
+				if(containers[i] is PK3StructuredReader)
+				{
+					name = ((PK3StructuredReader)containers[i]).FindFirstFile(name, true);
+				}
+				else if(!(containers[i] is WADReader))
+				{
+					throw new NotImplementedException("Unsupported container type!");
+				}
+
+				if(!containers[i].FileExists(name)) continue;
+				MemoryStream mem = containers[i].LoadFile(name);
+				if(mem == null) continue;
+
+				// Is it an image?
+				IImageReader reader = ImageDataFormat.GetImageReader(mem, ImageDataFormat.DOOMPICTURE, General.Map.Data.Palette);
+				if(!(reader is UnknownImageReader))
+				{
+					// Load the image
+					mem.Seek(0, SeekOrigin.Begin);
+					Bitmap result;
+					try { result = reader.ReadAsBitmap(mem); }
+					catch(InvalidDataException)
+					{
+						// Data cannot be read!
+						result = null;
+					}
+
+					// Found it?
+					if(result != null) return result;
+				}
+			}
+
+			// No such image found
+			return null;
+		}
+
 		//mxd
 		public string GetFullTextureName(string name)
 		{
+			if(string.IsNullOrEmpty(name)) return name;
 			if(Path.GetFileNameWithoutExtension(name) == name && name.Length > CLASIC_IMAGE_NAME_LENGTH) 
 				name = name.Substring(0, CLASIC_IMAGE_NAME_LENGTH);
 			long hash = MurmurHash2.Hash(name.Trim().ToUpperInvariant());
@@ -2329,14 +2387,10 @@ namespace CodeImp.DoomBuilder.Data
 				else
 				{
 					// Create classic texture
-					ImageData tex = GetTextureImage(skytex);
-					if(!(tex is UnknownImage))
+					Bitmap img = GetTextureBitmap(skytex);
+					if(img != null)
 					{
-						if(!tex.IsImageLoaded) tex.LoadImage();
-						if(!tex.LoadFailed)
-						{
-							skybox = MakeClassicSkyBox(new Bitmap(tex.GetBitmap()), true);
-						}
+						skybox = MakeClassicSkyBox(img, true);
 					}
 				}
 			}
@@ -2490,18 +2544,12 @@ namespace CodeImp.DoomBuilder.Data
 			int targetsize = 0;
 			for(int i = 0; i < info.Textures.Count; i++)
 			{
-				ImageData tex = GetTextureImage(info.Textures[i]);
-				if(!(tex is UnknownImage))
+				sides[i] = GetTextureBitmap(info.Textures[i]);
+				if(sides[i] != null)
 				{
-					if(!tex.IsImageLoaded) tex.LoadImage();
-					if(!tex.LoadFailed)
-					{
-						sides[i] = new Bitmap(tex.GetBitmap());
-						targetsize = Math.Max(targetsize, Math.Max(sides[i].Width, sides[i].Height));
-					}
+					targetsize = Math.Max(targetsize, Math.Max(sides[i].Width, sides[i].Height));
 				}
-
-				if(sides[i] == null)
+				else
 				{
 					General.ErrorLogger.Add(ErrorType.Error, "Unable to create \"" + info.Name + "\" skybox: unable to find \"" + info.Textures[i] + "\" texture");
 					return null;
@@ -2536,45 +2584,40 @@ namespace CodeImp.DoomBuilder.Data
 			int targetsize = 0;
 
 			// Create NWSE images from the side texture
-			ImageData side = GetTextureImage(info.Textures[0]);
-			if(!(side is UnknownImage))
+			Bitmap sideimg = GetTextureBitmap(info.Textures[0]);
+			if(sideimg != null)
 			{
-				if(!side.IsImageLoaded) side.LoadImage();
-				if(!side.LoadFailed)
+				// This should be 4x1 format image. If it's not, we'll need to resize it
+				targetsize = Math.Max(sideimg.Width / 4, sideimg.Height);
+
+				if(targetsize == 0)
 				{
-					// This should be 4x1 format image. If it's not, resize it
-					Bitmap sideimg = new Bitmap(side.GetBitmap());
-					targetsize = Math.Max(sideimg.Width / 4, sideimg.Height);
+					General.ErrorLogger.Add(ErrorType.Error, "Unable to create \"" + info.Name + "\" skybox: invalid texture size");
+					return null;
+				}
 
-					if(targetsize == 0)
+				// Make it Po2
+				targetsize = General.NextPowerOf2(targetsize);
+
+				// Resize if needed
+				if(sideimg.Width != targetsize * 4 || sideimg.Height != targetsize)
+				{
+					sideimg = ResizeImage(sideimg, targetsize * 4, targetsize);
+				}
+
+				// Chop into tiny pieces
+				for(int i = 0; i < 4; i++)
+				{
+					// Create square image
+					Bitmap img = new Bitmap(targetsize, targetsize);
+					using(Graphics g = Graphics.FromImage(img))
 					{
-						General.ErrorLogger.Add(ErrorType.Error, "Unable to create \"" + info.Name + "\" skybox: invalid texture size");
-						return null;
+						// Copy area from the side image
+						g.DrawImage(sideimg, 0, 0, new Rectangle(targetsize * i, 0, targetsize, targetsize), GraphicsUnit.Pixel);
 					}
 
-					// Make it Po2
-					targetsize = General.NextPowerOf2(targetsize);
-
-					// Resize if needed
-					if(sideimg.Width != targetsize * 4 || sideimg.Height != targetsize)
-					{
-						sideimg = ResizeImage(sideimg, targetsize * 4, targetsize);
-					}
-
-					// Chop into tiny pieces
-					for(int i = 0; i < 4; i++)
-					{
-						// Create square image
-						Bitmap img = new Bitmap(targetsize, targetsize);
-						using(Graphics g = Graphics.FromImage(img))
-						{
-							// Copy area from the side image
-							g.DrawImage(sideimg, 0, 0, new Rectangle(targetsize * i, 0, targetsize, targetsize), GraphicsUnit.Pixel);
-						}
-
-						// Add to collection
-						sides[i] = img;
-					}
+					// Add to collection
+					sides[i] = img;
 				}
 			}
 
@@ -2586,52 +2629,34 @@ namespace CodeImp.DoomBuilder.Data
 			}
 
 			// Create top
-			ImageData top = GetTextureImage(info.Textures[1]);
-			if(!(top is UnknownImage))
+			Bitmap topimg = GetTextureBitmap(info.Textures[1]);
+			if(topimg != null)
 			{
-				if(!top.IsImageLoaded) top.LoadImage();
-				if(!top.LoadFailed)
-				{
-					// Copy bitmap 
-					Bitmap topimg = new Bitmap(top.GetBitmap());
-					
-					// Resize if needed
-					if(topimg.Width != targetsize || topimg.Height != targetsize)
-						topimg = ResizeImage(topimg, targetsize, targetsize);
+				// Resize if needed
+				if(topimg.Width != targetsize || topimg.Height != targetsize)
+					topimg = ResizeImage(topimg, targetsize, targetsize);
 
-					// Add to collection
-					sides[4] = topimg;
-				}
+				// Add to collection
+				sides[4] = topimg;
 			}
-
-			// Sanity check...
-			if(sides[4] == null)
+			else
 			{
 				General.ErrorLogger.Add(ErrorType.Error, "Unable to create \"" + info.Name + "\" skybox: unable to find \"" + info.Textures[1] + "\" texture");
 				return null;
 			}
 
 			// Create bottom
-			ImageData bottom = GetTextureImage(info.Textures[2]);
-			if(!(bottom is UnknownImage))
+			Bitmap bottomimg = GetTextureBitmap(info.Textures[2]);
+			if(bottomimg != null)
 			{
-				if(!bottom.IsImageLoaded) bottom.LoadImage();
-				if(!bottom.LoadFailed)
-				{
-					// Copy bitmap 
-					Bitmap bottomimg = new Bitmap(bottom.GetBitmap());
+				// Resize if needed
+				if(bottomimg.Width != targetsize || bottomimg.Height != targetsize)
+					bottomimg = ResizeImage(bottomimg, targetsize, targetsize);
 
-					// Resize if needed
-					if(bottomimg.Width != targetsize || bottomimg.Height != targetsize)
-						bottomimg = ResizeImage(bottomimg, targetsize, targetsize);
-
-					// Add to collection
-					sides[5] = bottomimg;
-				}
+				// Add to collection
+				sides[5] = bottomimg;
 			}
-
-			// Sanity check...
-			if(sides[5] == null)
+			else
 			{
 				General.ErrorLogger.Add(ErrorType.Error, "Unable to create \"" + info.Name + "\" skybox: unable to find \"" + info.Textures[2] + "\" texture");
 				return null;
