@@ -1067,6 +1067,9 @@ namespace CodeImp.DoomBuilder.Windows
 				{
 					// Reset graphics to match changes
 					General.Map.Graphics.Reset();
+
+					//mxd. Aspect ratio may've been changed
+					General.Map.CRenderer3D.CreateProjection();
 				}
 
 				// This is a dirty trick to give the display a new mousemove event with correct arguments
@@ -4001,21 +4004,19 @@ namespace CodeImp.DoomBuilder.Windows
 			float deltatime = curtime - lastupdatetime;
 			lastupdatetime = curtime;
 			
-			// In exclusive mouse mode?
-			if(mouseinput != null)
+			if((General.Map != null) && (General.Editing.Mode != null))
 			{
-				// Process mouse input
-				Vector2D deltamouse = mouseinput.Process();
-				if((General.Map != null) && (General.Editing.Mode != null))
+				// In exclusive mouse mode?
+				if(mouseinput != null)
 				{
+					Vector2D deltamouse = mouseinput.Process();
 					General.Plugins.OnEditMouseInput(deltamouse);
 					General.Editing.Mode.OnMouseInput(deltamouse);
 				}
-			}
-			
-			// Process signal
-			if((General.Map != null) && (General.Editing.Mode != null))
+
+				// Process signal
 				General.Editing.Mode.OnProcess(deltatime);
+			}
 		}
 
 		#endregion

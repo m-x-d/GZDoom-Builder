@@ -350,11 +350,11 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		// This resets the graphics
-		public override void Reset()
+		/*public override void Reset()
 		{
 			UnloadResource();
 			ReloadResource();
-		}
+		}*/
 
 		// This destroys the rendertargets
 		public void DestroyRendertargets()

@@ -91,9 +91,6 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This loads an effect
 		protected Effect LoadEffect(string fxfile)
 		{
-			// Return null when not using shaders
-			if(!manager.Enabled) return null;
-
 			Effect fx;
 			string errors = string.Empty;
 			
@@ -145,31 +142,31 @@ namespace CodeImp.DoomBuilder.Rendering
 			General.Map.Graphics.Device.VertexDeclaration = vertexdecl;
 
 			// Set effect
-			if(manager.Enabled) effect.Begin(FX.DoNotSaveState);
+			effect.Begin(FX.DoNotSaveState);
 		}
 
 		// This begins a pass
 		public virtual void BeginPass(int index)
 		{
-			if(manager.Enabled) effect.BeginPass(index);
+			effect.BeginPass(index);
 		}
 
 		// This ends a pass
 		public void EndPass()
 		{
-			if(manager.Enabled) effect.EndPass();
+			effect.EndPass();
 		}
 		
 		// This ends te shader
 		public void End()
 		{
-			if(manager.Enabled) effect.End();
+			effect.End();
 		}
 
 		// This applies properties during a pass
 		public void ApplySettings()
 		{
-			if(manager.Enabled && settingschanged)
+			if(settingschanged)
 			{
 				effect.CommitChanges();
 				settingschanged = false; //mxd

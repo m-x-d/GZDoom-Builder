@@ -498,6 +498,9 @@ namespace CodeImp.DoomBuilder.Data
 				// Add to all
 				alltextures.AddFlat(img.Value);
 			}
+
+			//mxd. Create skybox texture(s)
+			SetupSkybox();
 			
 			// Start background loading
 			StartBackgroundLoader();
@@ -1875,9 +1878,8 @@ namespace CodeImp.DoomBuilder.Data
 				return;
 			}
 
-			// Reset skybox texture
-			skybox.Dispose();
-			skybox = null;
+			// Rebuild skybox texture
+			SetupSkybox();
 
 			// Rebuild geometry if in Visual mode
 			if(General.Editing.Mode != null && General.Editing.Mode.GetType().Name == "BaseVisualMode") 
@@ -2357,11 +2359,6 @@ namespace CodeImp.DoomBuilder.Data
 
 		#region ================== mxd. Skybox Making
 
-		internal void UpdateSkybox()
-		{
-			if(skybox == null) SetupSkybox();
-		}
-
 		private void SetupSkybox()
 		{
 			// Get rid of old texture
@@ -2489,14 +2486,33 @@ namespace CodeImp.DoomBuilder.Data
 				}
 			}
 
-			// Load the skysphere model...
+			// Get Device and shader...
 			Device device = General.Map.Graphics.Device;
 			World3DShader effect = General.Map.Graphics.Shaders.World3D;
-			
+
+			// Make custom rendertarget
+			const int cubemaptexsize = 1024;
+			Surface rendertarget = Surface.CreateRenderTarget(device, cubemaptexsize, cubemaptexsize, Format.A8R8G8B8, MultisampleType.None, 0, false);
+			Surface depthbuffer = Surface.CreateDepthStencil(device, cubemaptexsize, cubemaptexsize, General.Map.Graphics.DepthBuffer.Description.Format, MultisampleType.None, 0, false);
+
+			// Start rendering
+			if(!General.Map.Graphics.StartRendering(true, new Color4(), rendertarget, depthbuffer))
+			{
+				General.ErrorLogger.Add(ErrorType.Error, "Skybox creation failed: unable to start rendering...");
+
+				// Get rid of unmanaged stuff...
+				rendertarget.Dispose();
+				depthbuffer.Dispose();
+
+				// No dice...
+				return null;
+			}
+
+			// Load the skysphere model...
 			BoundingBoxSizes bbs = new BoundingBoxSizes();
 			Stream modeldata = General.ThisAssembly.GetManifestResourceStream("CodeImp.DoomBuilder.Resources.SkySphere.md3");
-			ModelReader.MD3LoadResult result = ModelReader.ReadMD3Model(ref bbs, true, modeldata, device, 0);
-			if(result.Meshes.Count != 3) throw new Exception("Skybox creation failed: " + result.Errors);
+			ModelReader.MD3LoadResult meshes = ModelReader.ReadMD3Model(ref bbs, true, modeldata, device, 0);
+			if(meshes.Meshes.Count != 3) throw new Exception("Skybox creation failed: " + meshes.Errors);
 
 			// Make skysphere textures...
 			Texture texside = TextureFromBitmap(device, skyimage);
@@ -2511,16 +2527,13 @@ namespace CodeImp.DoomBuilder.Data
 			else yscale = 1.2f * 1.17f;
 
 			// Make cubemap texture
-			const int cubemaptexsize = 1024;
-			CubeTexture cubemap = new CubeTexture(device, cubemaptexsize, 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
+			CubeTexture cubemap = new CubeTexture(device, cubemaptexsize, 1, Usage.None, Format.A8R8G8B8, Pool.Managed);
+			Surface sysmemsurf = Surface.CreateOffscreenPlain(device, cubemaptexsize, cubemaptexsize, Format.A8R8G8B8, Pool.SystemMemory);
 
 			// Set render settings...
 			device.SetRenderState(RenderState.ZEnable, false);
 			device.SetRenderState(RenderState.CullMode, Cull.None);
-
-			// Make custom rendertarget
-			Surface rendertarget = Surface.CreateRenderTarget(device, cubemaptexsize, cubemaptexsize, Format.A8R8G8B8, MultisampleType.None, 0, false);
-
+			
 			// Setup matrices
 			Vector3 offset = new Vector3(0f, 0f, -1.8f); // Sphere size is 10 mu
 			Matrix mworld = Matrix.Multiply(Matrix.Identity, Matrix.Translation(offset) * Matrix.Scaling(1.0f, 1.0f, yscale));
@@ -2529,17 +2542,9 @@ namespace CodeImp.DoomBuilder.Data
 			// Place camera at origin
 			effect.CameraPosition = new Vector4();
 
-			// Set the rendertarget to our own RT surface
-			device.SetRenderTarget(0, rendertarget);
-
-			// Set custom depth stencil
-			device.DepthStencilSurface = Surface.CreateDepthStencil(device, cubemaptexsize, cubemaptexsize, General.Map.Graphics.DepthBuffer.Description.Format, MultisampleType.None, 0, false);
-
-			// Begin rendering
-			device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.DarkRed, 1.0f, 0);
-			device.BeginScene();
+			// Begin fullbright shaderpass
 			effect.Begin();
-			effect.BeginPass(1); // Fullbright pass
+			effect.BeginPass(1);
 
 			// Render to the six faces of the cube map
 			for(int i = 0; i < 6; i++)
@@ -2548,10 +2553,10 @@ namespace CodeImp.DoomBuilder.Data
 				effect.WorldViewProj = mworld * faceview * mprojection;
 
 				// Render the skysphere meshes
-				for(int j = 0; j < result.Meshes.Count; j++)
+				for(int j = 0; j < meshes.Meshes.Count; j++)
 				{
 					// Set appropriate texture
-					switch(result.Skins[j])
+					switch(meshes.Skins[j])
 					{
 						case "top.png": effect.Texture1 = textop; break;
 						case "bottom.png": effect.Texture1 = texbottom; break;
@@ -2563,29 +2568,49 @@ namespace CodeImp.DoomBuilder.Data
 					effect.ApplySettings();
 
 					// Render mesh
-					result.Meshes[j].DrawSubset(0);
+					meshes.Meshes[j].DrawSubset(0);
 				}
 
-				// Copy the rendered image from our RT surface to the texture face
-				Surface cubeface = cubemap.GetCubeMapSurface((CubeMapFace)i, 0);
-				device.StretchRectangle(rendertarget, cubeface, TextureFilter.None);
+				// Get rendered data from video memory...
+				device.GetRenderTargetData(rendertarget, sysmemsurf);
 
-				cubeface.Dispose();
+				// ...Then copy it to destination texture
+				Surface targetsurf = cubemap.GetCubeMapSurface((CubeMapFace)i, 0);
+				DataRectangle sourcerect = sysmemsurf.LockRectangle(LockFlags.NoSystemLock);
+				DataRectangle targetrect = targetsurf.LockRectangle(LockFlags.NoSystemLock);
+
+				if(sourcerect.Data.CanRead && targetrect.Data.CanWrite)
+				{
+					byte[] data = new byte[sourcerect.Data.Length];
+					sourcerect.Data.ReadRange(data, 0, (int)sourcerect.Data.Length);
+					targetrect.Data.Write(data, 0, data.Length);
+				}
+				else
+				{
+					General.ErrorLogger.Add(ErrorType.Error, "Skybox creation failed: unable to copy to CubeTexture surface...");
+				}
+
+				// Unlock and dispose
+				sysmemsurf.UnlockRectangle();
+				targetsurf.UnlockRectangle();
+				targetsurf.Dispose();
 			}
 
 			// End rendering
 			effect.EndPass();
 			effect.End();
-			device.EndScene();
+			General.Map.Graphics.FinishRendering();
 
 			// Dispose unneeded stuff
 			rendertarget.Dispose();
+			depthbuffer.Dispose();
+			sysmemsurf.Dispose();
 			textop.Dispose();
 			texside.Dispose();
 			texbottom.Dispose();
 
 			// Dispose skybox meshes
-			foreach(Mesh m in result.Meshes) m.Dispose();
+			foreach(Mesh m in meshes.Meshes) m.Dispose();
 
 			// All done...
 			return cubemap;

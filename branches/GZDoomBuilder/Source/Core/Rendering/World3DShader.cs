@@ -58,7 +58,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		{
 			set
 			{
-				if(manager.Enabled && wwp != value)
+				if(wwp != value)
 				{
 					effect.SetValue(worldviewproj, value);
 					wwp = value;
@@ -67,7 +67,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			}
 		}
 
-		public BaseTexture Texture1 { set { if(manager.Enabled) effect.SetTexture(texture1, value); settingschanged = true; } }
+		public BaseTexture Texture1 { set { effect.SetTexture(texture1, value); settingschanged = true; } }
 
 		//mxd
 		private Color4 vertexcolor;
@@ -75,7 +75,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		{
 			set 
 			{
-				if(manager.Enabled && vertexcolor != value)
+				if(vertexcolor != value)
 				{
 					effect.SetValue(vertexColorHadle, value);
 					vertexcolor = value;
@@ -90,7 +90,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		{
 			set
 			{
-				if(manager.Enabled && lightcolor != value)
+				if(lightcolor != value)
 				{
 					effect.SetValue(lightColorHandle, value);
 					lightcolor = value;
@@ -104,7 +104,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		{
 			set
 			{
-				if(manager.Enabled && value != lightpos)
+				if(lightpos != value)
 				{
 					effect.SetValue(lightPositionAndRadiusHandle, value);
 					lightpos = value;
@@ -119,7 +119,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		{
 			set
 			{
-				if(manager.Enabled && campos != value)
+				if(campos != value)
 				{
 					effect.SetValue(camPosHandle, value);
 					campos = value;
@@ -133,7 +133,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		{
 			set
 			{
-				if(manager.Enabled && mworld != value)
+				if(mworld != value)
 				{
 					effect.SetValue(world, value);
 					mworld = value;
@@ -148,7 +148,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		{
 			set
 			{
-				if(manager.Enabled && hicolor != value)
+				if(hicolor != value)
 				{
 					effect.SetValue(highlightcolor, value);
 					hicolor = value;
@@ -190,27 +190,15 @@ namespace CodeImp.DoomBuilder.Rendering
 			}
 
 			// Initialize world vertex declaration
-			if(manager.Enabled) //mxd
-			{ 
-				vertexElements = new[] 
-				{
-					new VertexElement(0, 0, DeclarationType.Float3, DeclarationMethod.Default, DeclarationUsage.Position, 0),
-					new VertexElement(0, 12, DeclarationType.Color, DeclarationMethod.Default, DeclarationUsage.Color, 0),
-					new VertexElement(0, 16, DeclarationType.Float2, DeclarationMethod.Default, DeclarationUsage.TextureCoordinate, 0),
-					new VertexElement(0, 24, DeclarationType.Float3, DeclarationMethod.Default, DeclarationUsage.Normal, 0), //mxd
-					VertexElement.VertexDeclarationEnd
-				};
-			} 
-			else 
+			vertexElements = new[] 
 			{
-				vertexElements = new[] 
-				{
-					new VertexElement(0, 0, DeclarationType.Float3, DeclarationMethod.Default, DeclarationUsage.Position, 0),
-					new VertexElement(0, 12, DeclarationType.Color, DeclarationMethod.Default, DeclarationUsage.Color, 0),
-					new VertexElement(0, 16, DeclarationType.Float2, DeclarationMethod.Default, DeclarationUsage.TextureCoordinate, 0),
-					VertexElement.VertexDeclarationEnd
-				};
-			}
+				new VertexElement(0, 0, DeclarationType.Float3, DeclarationMethod.Default, DeclarationUsage.Position, 0),
+				new VertexElement(0, 12, DeclarationType.Color, DeclarationMethod.Default, DeclarationUsage.Color, 0),
+				new VertexElement(0, 16, DeclarationType.Float2, DeclarationMethod.Default, DeclarationUsage.TextureCoordinate, 0),
+				new VertexElement(0, 24, DeclarationType.Float3, DeclarationMethod.Default, DeclarationUsage.Normal, 0), //mxd
+				VertexElement.VertexDeclarationEnd
+			};
+
 			vertexdecl = new VertexDeclaration(General.Map.Graphics.Device, vertexElements);
 
 			// We have no destructor
@@ -249,148 +237,24 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Methods
 
 		// This sets the constant settings
-		public void SetConstants(bool bilinear, bool useanisotropic, float maxanisotropy)
+		public void SetConstants(bool bilinear, float maxanisotropy)
 		{
-			if(manager.Enabled)
+			if(bilinear)
 			{
-				if(bilinear)
-				{
-					if(useanisotropic)
-					{
-						effect.SetValue(magfiltersettings, (int)TextureFilter.Linear);
-						effect.SetValue(minfiltersettings, (int)TextureFilter.Anisotropic);
-						effect.SetValue(mipfiltersettings, (int)TextureFilter.Linear);
-						effect.SetValue(maxanisotropysetting, maxanisotropy);
-					}
-					else
-					{
-						effect.SetValue(magfiltersettings, (int)TextureFilter.Linear);
-						effect.SetValue(minfiltersettings, (int)TextureFilter.Linear);
-						effect.SetValue(mipfiltersettings, (int)TextureFilter.Linear);
-						effect.SetValue(maxanisotropysetting, 1.0f);
-					}
-				}
-				else
-				{
-					effect.SetValue(magfiltersettings, (int)TextureFilter.Point);
-					effect.SetValue(minfiltersettings, (int)TextureFilter.Point);
-					effect.SetValue(mipfiltersettings, (int)TextureFilter.Linear);
-					effect.SetValue(maxanisotropysetting, 1.0f);
-				}
-
-				settingschanged = true; //mxd
+				effect.SetValue(magfiltersettings, (int)TextureFilter.Linear);
+				effect.SetValue(minfiltersettings, (int)TextureFilter.Anisotropic);
+				effect.SetValue(mipfiltersettings, (int)TextureFilter.Linear);
+				effect.SetValue(maxanisotropysetting, maxanisotropy);
 			}
-		}
-
-		// This sets up the render pipeline
-		public override void BeginPass(int index)
-		{
-			if(!manager.Enabled)
+			else
 			{
-				Device device = manager.D3DDevice.Device;
-				
-				// Sampler settings
-				if(General.Settings.VisualBilinear)
-				{
-					device.SetSamplerState(0, SamplerState.MagFilter, TextureFilter.Linear);
-					device.SetSamplerState(0, SamplerState.MinFilter, TextureFilter.Linear);
-					device.SetSamplerState(0, SamplerState.MipFilter, TextureFilter.Linear);
-					device.SetSamplerState(0, SamplerState.MipMapLodBias, 0f);
-				}
-				else
-				{
-					device.SetSamplerState(0, SamplerState.MagFilter, TextureFilter.Point);
-					device.SetSamplerState(0, SamplerState.MinFilter, TextureFilter.Point);
-					device.SetSamplerState(0, SamplerState.MipFilter, TextureFilter.Linear);
-					device.SetSamplerState(0, SamplerState.MipMapLodBias, 0f);
-				}
-
-				// Texture addressing
-				device.SetSamplerState(0, SamplerState.AddressU, TextureAddress.Wrap);
-				device.SetSamplerState(0, SamplerState.AddressV, TextureAddress.Wrap);
-				device.SetSamplerState(0, SamplerState.AddressW, TextureAddress.Wrap);
-				
-				// First texture stage
-				//mxd
-				//if((index == 0) || (index == 2))
-				if((index == 0) || (index == 2) || (index == 4) || (index == 6) || (index == 8) || (index == 10) || (index == 12) || (index == 14) || index > 15)
-				{
-					// Normal
-					device.SetTextureStageState(0, TextureStage.ColorOperation, TextureOperation.Modulate);
-					device.SetTextureStageState(0, TextureStage.ColorArg1, TextureArgument.Texture);
-					device.SetTextureStageState(0, TextureStage.ColorArg2, TextureArgument.Diffuse);
-					device.SetTextureStageState(0, TextureStage.ResultArg, TextureArgument.Current);
-					device.SetTextureStageState(0, TextureStage.TexCoordIndex, 0);
-				}
-				else
-				{
-					// Full brightness
-					device.SetTextureStageState(0, TextureStage.ColorOperation, TextureOperation.SelectArg1);
-					device.SetTextureStageState(0, TextureStage.ColorArg1, TextureArgument.Texture);
-					device.SetTextureStageState(0, TextureStage.ResultArg, TextureArgument.Current);
-					device.SetTextureStageState(0, TextureStage.TexCoordIndex, 0);
-				}
-
-				// First alpha stage
-				device.SetTextureStageState(0, TextureStage.AlphaOperation, TextureOperation.Modulate);
-				device.SetTextureStageState(0, TextureStage.AlphaArg1, TextureArgument.Texture);
-				device.SetTextureStageState(0, TextureStage.AlphaArg2, TextureArgument.Diffuse);
-				
-				// Second texture stage
-				device.SetTextureStageState(1, TextureStage.ColorOperation, TextureOperation.Modulate);
-				device.SetTextureStageState(1, TextureStage.ColorArg1, TextureArgument.Current);
-				device.SetTextureStageState(1, TextureStage.ColorArg2, TextureArgument.TFactor);
-				device.SetTextureStageState(1, TextureStage.ResultArg, TextureArgument.Current);
-				device.SetTextureStageState(1, TextureStage.TexCoordIndex, 0);
-
-				// Second alpha stage
-				device.SetTextureStageState(1, TextureStage.AlphaOperation, TextureOperation.Modulate);
-				device.SetTextureStageState(1, TextureStage.AlphaArg1, TextureArgument.Current);
-				device.SetTextureStageState(1, TextureStage.AlphaArg2, TextureArgument.TFactor);
-
-				// Highlight?
-				//mxd
-				//if(index > 1) 2 3 6 10 14
-				//if((index > 1 && index < 4) || (index > 5 && index < 8) || (index > 9 && index < 12) || (index > 13 && index < 16))
-				if(index == 2 || index == 3 || index == 6 || index == 10 || index == 14)
-				{
-					// Third texture stage
-					device.SetTextureStageState(2, TextureStage.ColorOperation, TextureOperation.AddSigned);
-					device.SetTextureStageState(2, TextureStage.ColorArg1, TextureArgument.Current);
-					device.SetTextureStageState(2, TextureStage.ColorArg2, TextureArgument.Texture);
-					device.SetTextureStageState(2, TextureStage.ColorArg0, TextureArgument.Texture);
-					device.SetTextureStageState(2, TextureStage.ResultArg, TextureArgument.Current);
-					device.SetTextureStageState(2, TextureStage.TexCoordIndex, 0);
-
-					// Third alpha stage
-					device.SetTextureStageState(2, TextureStage.AlphaOperation, TextureOperation.SelectArg1);
-					device.SetTextureStageState(2, TextureStage.AlphaArg1, TextureArgument.Current);
-
-					// Fourth texture stage
-					device.SetTextureStageState(3, TextureStage.ColorOperation, TextureOperation.AddSigned);
-					device.SetTextureStageState(3, TextureStage.ColorArg1, TextureArgument.Current);
-					device.SetTextureStageState(3, TextureStage.ColorArg2, TextureArgument.Texture);
-					device.SetTextureStageState(3, TextureStage.ColorArg0, TextureArgument.Texture);
-					device.SetTextureStageState(3, TextureStage.ResultArg, TextureArgument.Current);
-					device.SetTextureStageState(3, TextureStage.TexCoordIndex, 0);
-
-					// Fourth alpha stage
-					device.SetTextureStageState(3, TextureStage.AlphaOperation, TextureOperation.SelectArg1);
-					device.SetTextureStageState(3, TextureStage.AlphaArg1, TextureArgument.Current);
-
-					// No more further stages
-					device.SetTextureStageState(4, TextureStage.ColorOperation, TextureOperation.Disable);
-					device.SetTextureStageState(4, TextureStage.AlphaOperation, TextureOperation.Disable);
-				}
-				else
-				{
-					// No more further stages
-					device.SetTextureStageState(2, TextureStage.ColorOperation, TextureOperation.Disable);
-					device.SetTextureStageState(2, TextureStage.AlphaOperation, TextureOperation.Disable);
-				}
+				effect.SetValue(magfiltersettings, (int)TextureFilter.Point);
+				effect.SetValue(minfiltersettings, (int)TextureFilter.Point);
+				effect.SetValue(mipfiltersettings, (int)TextureFilter.Linear);
+				effect.SetValue(maxanisotropysetting, 1.0f);
 			}
 
-			base.BeginPass(index);
+			settingschanged = true; //mxd
 		}
 		
 		#endregion
