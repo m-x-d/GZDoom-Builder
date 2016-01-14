@@ -84,7 +84,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		// Internal properties
 		public WorldVertex[] Vertices { get { return vertices; } } //mxd
 		internal int VertexOffset { get { return vertexoffset; } set { vertexoffset = value; } }
-		internal int Triangles { get { return triangles; } }
+		public int Triangles { get { return triangles; } }
 
 		//mxd
 		public Vector3D[] BoundingBox { get { return boundingBox; } }

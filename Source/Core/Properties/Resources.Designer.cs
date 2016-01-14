@@ -844,6 +844,13 @@ namespace CodeImp.DoomBuilder.Properties {
             }
         }
         
+        internal static byte[] SkySphere {
+            get {
+                object obj = ResourceManager.GetObject("SkySphere", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap SlimDX_small {
             get {
                 object obj = ResourceManager.GetObject("SlimDX_small", resourceCulture);

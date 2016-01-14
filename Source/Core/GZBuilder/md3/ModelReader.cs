@@ -23,7 +23,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 	{
 		#region ================== Variables
 
-		private class MD3LoadResult
+		internal class MD3LoadResult
 		{
 			public List<string> Skins;
 			public List<Mesh> Meshes;
@@ -232,7 +232,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 
 		#region ================== MD3
 
-		private static MD3LoadResult ReadMD3Model(ref BoundingBoxSizes bbs, bool useSkins, MemoryStream s, Device device, int frame) 
+		internal static MD3LoadResult ReadMD3Model(ref BoundingBoxSizes bbs, bool useSkins, Stream s, Device device, int frame) 
 		{
 			long start = s.Position;
 			MD3LoadResult result = new MD3LoadResult();
@@ -423,7 +423,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 
 		#region ================== MD2
 
-		private static MD3LoadResult ReadMD2Model(ref BoundingBoxSizes bbs, MemoryStream s, Device device, int frame, string framename) 
+		private static MD3LoadResult ReadMD2Model(ref BoundingBoxSizes bbs, Stream s, Device device, int frame, string framename) 
 		{
 			long start = s.Position;
 			MD3LoadResult result = new MD3LoadResult();

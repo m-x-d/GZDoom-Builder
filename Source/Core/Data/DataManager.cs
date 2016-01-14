@@ -28,12 +28,15 @@ using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.GZBuilder.Data;
 using CodeImp.DoomBuilder.GZBuilder.GZDoom;
 using CodeImp.DoomBuilder.GZBuilder.MD3;
+using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Map;
+using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.ZDoom;
 using SlimDX;
 using SlimDX.Direct3D9;
+using Matrix = SlimDX.Matrix;
 
 #endregion
 
@@ -495,9 +498,6 @@ namespace CodeImp.DoomBuilder.Data
 				// Add to all
 				alltextures.AddFlat(img.Value);
 			}
-
-			//mxd. Create skybox texture(s)
-			SetupSkybox();
 			
 			// Start background loading
 			StartBackgroundLoader();
@@ -1875,8 +1875,9 @@ namespace CodeImp.DoomBuilder.Data
 				return;
 			}
 
-			// Rebuild skybox texture
-			SetupSkybox();
+			// Reset skybox texture
+			skybox.Dispose();
+			skybox = null;
 
 			// Rebuild geometry if in Visual mode
 			if(General.Editing.Mode != null && General.Editing.Mode.GetType().Name == "BaseVisualMode") 
@@ -2356,6 +2357,11 @@ namespace CodeImp.DoomBuilder.Data
 
 		#region ================== mxd. Skybox Making
 
+		internal void UpdateSkybox()
+		{
+			if(skybox == null) SetupSkybox();
+		}
+
 		private void SetupSkybox()
 		{
 			// Get rid of old texture
@@ -2390,7 +2396,7 @@ namespace CodeImp.DoomBuilder.Data
 					Bitmap img = GetTextureBitmap(skytex);
 					if(img != null)
 					{
-						skybox = MakeClassicSkyBox(img, true);
+						skybox = MakeClassicSkyBox(img);
 					}
 				}
 			}
@@ -2400,137 +2406,186 @@ namespace CodeImp.DoomBuilder.Data
 			{
 				ImageData tex = LoadInternalTexture("MissingSky3D.png");
 				tex.CreateTexture();
-				skybox = MakeClassicSkyBox(new Bitmap(tex.GetBitmap()), false);
+				skybox = MakeClassicSkyBox(new Bitmap(tex.GetBitmap()));
 				tex.Dispose();
 			}
 		}
 
-		private static CubeTexture MakeClassicSkyBox(Bitmap img, bool dogradients)
+		//INFO: 1. Looks like GZDoom tries to tile a sky texture into a 1024 pixel width texture.
+		//INFO: 2. If sky texture width <= height, it will be tiled to fit into 512 pixel height texture vertically.
+		private static CubeTexture MakeClassicSkyBox(Bitmap img)
 		{
-			// CubeTexture must be square with power of 2 sides
-			int targetwidth = General.NextPowerOf2(img.Width);
-			int targetheight = General.NextPowerOf2(img.Height);
-
-			// Get averaged top and bottom colors
-			Color topcolor, bottomcolor;
-			if(dogradients)
+			// Get averaged top and bottom colors from the original image
+			int tr = 0, tg = 0, tb = 0, br = 0, bg = 0, bb = 0;
+			const int colorsampleheight = 28; // TODO: is this value calculated from the image's height?
+			for(int w = 0; w < img.Width; w++)
 			{
-				int tr = 0, tg = 0, tb = 0, br = 0, bg = 0, bb = 0;
-				for(int i = 0; i < img.Width; i++)
+				for(int h = 0; h < colorsampleheight; h++)
 				{
-					Color c = img.GetPixel(i, 0);
+					Color c = img.GetPixel(w, h);
 					tr += c.R;
 					tg += c.G;
 					tb += c.B;
 
-					c = img.GetPixel(i, img.Height - 1);
+					c = img.GetPixel(w, img.Height - 1 - h);
 					br += c.R;
 					bg += c.G;
 					bb += c.B;
 				}
-
-				topcolor = Color.FromArgb(255, tr / img.Width, tg / img.Width, tb / img.Width);
-				bottomcolor = Color.FromArgb(255, br / img.Width, bg / img.Width, bb / img.Width);
-			}
-			else
-			{
-				// This should be built-in sky texture
-				Color c = img.GetPixel(img.Width / 2, 0);
-				topcolor = Color.FromArgb(255, c);
-
-				c = img.GetPixel(img.Width / 2, img.Height - 1);
-				bottomcolor = Color.FromArgb(255, c);
 			}
 
-			// Make it Po2
-			if(img.Width != targetwidth || img.Height != targetheight) img = ResizeImage(img, targetwidth, targetheight);
+			int pixelscount = img.Width * colorsampleheight;
+			Color topcolor = Color.FromArgb(255, tr / pixelscount, tg / pixelscount, tb / pixelscount);
+			Color bottomcolor = Color.FromArgb(255, br / pixelscount, bg / pixelscount, bb / pixelscount);
 
-			// Make it square
-			if(targetwidth > targetheight)
+			// Make tiling image
+			int horiztiles = (int)Math.Ceiling(1024.0f / img.Width);
+			int verttiles = img.Height > 256 ? 1 : 2;
+
+			Bitmap skyimage = new Bitmap(1024, img.Height * verttiles, img.PixelFormat);
+
+			// Draw original image
+			using(Graphics g = Graphics.FromImage(skyimage))
 			{
-				int c = targetwidth / targetheight;
-				Bitmap result = new Bitmap(targetwidth, targetwidth, img.PixelFormat);
-
-				// Tile vertically
-				using(Graphics g = Graphics.FromImage(result))
+				for(int w = 0; w < horiztiles; w++)
 				{
-					for(int i = 0; i < c; i++) g.DrawImage(img, 0, targetheight * i);
+					for(int h = 0; h < verttiles; h++)
+					{
+						g.DrawImage(img, img.Width * w, img.Height * h);
+					}
 				}
-
-				img = result;
-			}
-			else if(targetwidth < targetheight)
-			{
-				int c = targetheight / targetwidth;
-				Bitmap result = new Bitmap(targetheight, targetheight);
-
-				// Tile horizontally
-				using(Graphics g = Graphics.FromImage(result))
-				{
-					for(int i = 0; i < c; i++) g.DrawImage(img, targetwidth * i, 0);
-				}
-
-				img = result;
 			}
 
 			// Make top and bottom images
-			Bitmap top = new Bitmap(img.Width, img.Height);
-			using(Graphics g = Graphics.FromImage(top))
+			const int capsimgsize = 16;
+			Bitmap topimg = new Bitmap(capsimgsize, capsimgsize);
+			using(Graphics g = Graphics.FromImage(topimg))
 			{
 				using(SolidBrush b = new SolidBrush(topcolor))
-				{
-					g.FillRectangle(b, 0, 0, img.Width, img.Height);
-				}
+					g.FillRectangle(b, 0, 0, capsimgsize, capsimgsize);
 			}
 
-			Bitmap bottom = new Bitmap(img.Width, img.Height);
-			using(Graphics g = Graphics.FromImage(bottom))
+			Bitmap bottomimg = new Bitmap(capsimgsize, capsimgsize);
+			using(Graphics g = Graphics.FromImage(bottomimg))
 			{
 				using(SolidBrush b = new SolidBrush(bottomcolor))
-				{
-					g.FillRectangle(b, 0, 0, img.Width, img.Height);
-				}
+					g.FillRectangle(b, 0, 0, capsimgsize, capsimgsize);
 			}
 
 			// Apply top/bottom gradients
-			if(dogradients)
+			using(Graphics g = Graphics.FromImage(skyimage))
 			{
-				using(Graphics g = Graphics.FromImage(img))
+				Rectangle area = new Rectangle(0, 0, skyimage.Width, colorsampleheight);
+				using(LinearGradientBrush b = new LinearGradientBrush(area, topcolor, Color.FromArgb(0, topcolor), 90f))
 				{
-					int gradientheight = img.Height / 6;
-					Rectangle area = new Rectangle(0, 0, img.Width, gradientheight);
-					using(LinearGradientBrush b = new LinearGradientBrush(area, topcolor, Color.FromArgb(0, topcolor), 90f))
-					{
-						g.FillRectangle(b, area);
-					}
+					g.FillRectangle(b, area);
+				}
 
-					area = new Rectangle(0, img.Height - gradientheight, img.Width, gradientheight);
-					using(LinearGradientBrush b = new LinearGradientBrush(area, Color.FromArgb(0, bottomcolor), bottomcolor, 90f))
-					{
-						area.Y += 1;
-						g.FillRectangle(b, area);
-					}
+				area = new Rectangle(0, skyimage.Height - colorsampleheight, skyimage.Width, colorsampleheight);
+				using(LinearGradientBrush b = new LinearGradientBrush(area, Color.FromArgb(0, bottomcolor), bottomcolor, 90f))
+				{
+					area.Y += 1;
+					g.FillRectangle(b, area);
 				}
 			}
 
+			// Load the skysphere model...
+			Device device = General.Map.Graphics.Device;
+			World3DShader effect = General.Map.Graphics.Shaders.World3D;
+			
+			BoundingBoxSizes bbs = new BoundingBoxSizes();
+			Stream modeldata = General.ThisAssembly.GetManifestResourceStream("CodeImp.DoomBuilder.Resources.SkySphere.md3");
+			ModelReader.MD3LoadResult result = ModelReader.ReadMD3Model(ref bbs, true, modeldata, device, 0);
+			if(result.Meshes.Count != 3) throw new Exception("Skybox creation failed: " + result.Errors);
+
+			// Make skysphere textures...
+			Texture texside = TextureFromBitmap(device, skyimage);
+			Texture textop = TextureFromBitmap(device, topimg);
+			Texture texbottom = TextureFromBitmap(device, bottomimg);
+
+			// Calculate model scaling (gl.skydone.cpp:RenderDome() in GZDoom)
+			float yscale;
+			if(img.Height < 128) yscale = 128 / 230.0f;
+			else if(img.Height < 200) yscale = img.Height / 230.0f;
+			else if(img.Height < 241) yscale = 1.0f + ((img.Height - 200.0f) / 200.0f) * 1.17f;
+			else yscale = 1.2f * 1.17f;
+
 			// Make cubemap texture
-			CubeTexture cubemap = new CubeTexture(General.Map.Graphics.Device, img.Width, 1, Usage.None, Format.A8R8G8B8, Pool.Managed);
+			const int cubemaptexsize = 1024;
+			CubeTexture cubemap = new CubeTexture(device, cubemaptexsize, 1, Usage.RenderTarget, Format.A8R8G8B8, Pool.Default);
 
-			// Draw faces
-			img.RotateFlip(RotateFlipType.Rotate180FlipX);
-			DrawCubemapFace(cubemap, CubeMapFace.NegativeX, img);
+			// Set render settings...
+			device.SetRenderState(RenderState.ZEnable, false);
+			device.SetRenderState(RenderState.CullMode, Cull.None);
 
-			img.RotateFlip(RotateFlipType.Rotate90FlipNone);
-			DrawCubemapFace(cubemap, CubeMapFace.NegativeY, img);
+			// Make custom rendertarget
+			Surface rendertarget = Surface.CreateRenderTarget(device, cubemaptexsize, cubemaptexsize, Format.A8R8G8B8, MultisampleType.None, 0, false);
 
-			img.RotateFlip(RotateFlipType.Rotate90FlipNone);
-			DrawCubemapFace(cubemap, CubeMapFace.PositiveX, img);
+			// Setup matrices
+			Vector3 offset = new Vector3(0f, 0f, -1.8f); // Sphere size is 10 mu
+			Matrix mworld = Matrix.Multiply(Matrix.Identity, Matrix.Translation(offset) * Matrix.Scaling(1.0f, 1.0f, yscale));
+			Matrix mprojection = Matrix.PerspectiveFovLH(Angle2D.PIHALF, 1.0f, 0.5f, 100.0f);
 
-			img.RotateFlip(RotateFlipType.Rotate90FlipNone);
-			DrawCubemapFace(cubemap, CubeMapFace.PositiveY, img);
+			// Place camera at origin
+			effect.CameraPosition = new Vector4();
 
-			DrawCubemapFace(cubemap, CubeMapFace.PositiveZ, top);
-			DrawCubemapFace(cubemap, CubeMapFace.NegativeZ, bottom);
+			// Set the rendertarget to our own RT surface
+			device.SetRenderTarget(0, rendertarget);
+
+			// Set custom depth stencil
+			device.DepthStencilSurface = Surface.CreateDepthStencil(device, cubemaptexsize, cubemaptexsize, General.Map.Graphics.DepthBuffer.Description.Format, MultisampleType.None, 0, false);
+
+			// Begin rendering
+			device.Clear(ClearFlags.Target | ClearFlags.ZBuffer, Color.DarkRed, 1.0f, 0);
+			device.BeginScene();
+			effect.Begin();
+			effect.BeginPass(1); // Fullbright pass
+
+			// Render to the six faces of the cube map
+			for(int i = 0; i < 6; i++)
+			{
+				Matrix faceview = GetCubeMapViewMatrix((CubeMapFace)i);
+				effect.WorldViewProj = mworld * faceview * mprojection;
+
+				// Render the skysphere meshes
+				for(int j = 0; j < result.Meshes.Count; j++)
+				{
+					// Set appropriate texture
+					switch(result.Skins[j])
+					{
+						case "top.png": effect.Texture1 = textop; break;
+						case "bottom.png": effect.Texture1 = texbottom; break;
+						case "side.png": effect.Texture1 = texside; break;
+						default: throw new Exception("Unexpected skin!");
+					}
+
+					// Commit changes
+					effect.ApplySettings();
+
+					// Render mesh
+					result.Meshes[j].DrawSubset(0);
+				}
+
+				// Copy the rendered image from our RT surface to the texture face
+				Surface cubeface = cubemap.GetCubeMapSurface((CubeMapFace)i, 0);
+				device.StretchRectangle(rendertarget, cubeface, TextureFilter.None);
+
+				cubeface.Dispose();
+			}
+
+			// End rendering
+			effect.EndPass();
+			effect.End();
+			device.EndScene();
+
+			// Dispose unneeded stuff
+			rendertarget.Dispose();
+			textop.Dispose();
+			texside.Dispose();
+			texbottom.Dispose();
+
+			// Dispose skybox meshes
+			foreach(Mesh m in result.Meshes) m.Dispose();
 
 			// All done...
 			return cubemap;
@@ -2749,6 +2804,62 @@ namespace CodeImp.DoomBuilder.Data
 			}
 
 			return destimage;
+		}
+
+		private static Matrix GetCubeMapViewMatrix(CubeMapFace face)
+		{
+			Vector3 lookdir, updir;
+
+			switch(face)
+			{
+				case CubeMapFace.PositiveX:
+					lookdir = new Vector3(1.0f, 0.0f, 0.0f);
+					updir = new Vector3(0.0f, 1.0f, 0.0f);
+					break;
+
+				case CubeMapFace.NegativeX:
+					lookdir = new Vector3(-1.0f, 0.0f, 0.0f);
+					updir = new Vector3(0.0f, 1.0f, 0.0f);
+					break;
+
+				case CubeMapFace.PositiveY:
+					lookdir = new Vector3(0.0f, 1.0f, 0.0f);
+					updir = new Vector3(0.0f, 0.0f, -1.0f);
+					break;
+
+				case CubeMapFace.NegativeY:
+					lookdir = new Vector3(0.0f, -1.0f, 0.0f);
+					updir = new Vector3(0.0f, 0.0f, 1.0f);
+					break;
+
+				case CubeMapFace.PositiveZ:
+					lookdir = new Vector3(0.0f, 0.0f, 1.0f);
+					updir = new Vector3(0.0f, 1.0f, 0.0f);
+					break;
+
+				case CubeMapFace.NegativeZ:
+					lookdir = new Vector3(0.0f, 0.0f, -1.0f);
+					updir = new Vector3(0.0f, 1.0f, 0.0f);
+					break;
+
+				default:
+					throw new Exception("Unknown CubeMapFace!");
+			}
+
+			Vector3 eye = new Vector3();
+			return Matrix.LookAtLH(eye, lookdir, updir);
+		}
+
+		private static Texture TextureFromBitmap(Device device, Image image)
+		{
+			MemoryStream ms = new MemoryStream();
+			image.Save(ms, ImageFormat.Png);
+			ms.Seek(0, SeekOrigin.Begin);
+			Texture result = Texture.FromStream(device, ms);
+			ms.Close();
+			ms.Dispose();
+
+			return result;
 		}
 		
 		#endregion
