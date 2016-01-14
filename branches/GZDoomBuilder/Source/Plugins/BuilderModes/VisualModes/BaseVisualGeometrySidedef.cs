@@ -528,7 +528,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd
 		protected void SelectNeighbours(long longtexture, bool select, bool withSameTexture, bool withSameHeight) 
 		{
-			if(Sidedef.Sector == null || (!withSameTexture && !withSameHeight)) return;
+			if(Sidedef.Sector == null || Triangles < 1 || (!withSameTexture && !withSameHeight)) return;
 
 			Rectangle rect = BuilderModesTools.GetSidedefPartSize(this);
 			if(rect.Height == 0) return;
