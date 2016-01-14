@@ -159,7 +159,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		// This is called when the graphics need to be reset
-		public virtual void Reset() { }
+		//public virtual void Reset() { }
 
 		// For DirectX resources
 		public virtual void UnloadResource() { }

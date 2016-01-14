@@ -1277,6 +1277,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			base.ResourcesReloaded();
 			RebuildElementData();
+			UpdateChangedObjects(); //mxd
 			PickTarget();
 		}
 		

@@ -158,9 +158,6 @@ namespace CodeImp.DoomBuilder.VisualModes
 		{
 			base.OnEngage();
 
-			//mxd. Sky texture may need recreating
-			General.Map.Data.UpdateSkybox();
-
 			// Update projection (mxd)
 			General.Map.CRenderer3D.CreateProjection();
 			
@@ -880,9 +877,6 @@ namespace CodeImp.DoomBuilder.VisualModes
 			
 			// Make new blockmap
 			FillBlockMap();
-
-			//mxd. Sky texture may need recreating
-			General.Map.Data.UpdateSkybox();
 
 			// Visibility culling (this re-creates the needed resources)
 			DoCulling();

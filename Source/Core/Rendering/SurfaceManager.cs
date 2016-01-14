@@ -665,7 +665,6 @@ namespace CodeImp.DoomBuilder.Rendering
 				{
 					// Set texture
 					graphics.Shaders.Display2D.Texture1 = imgsurfaces.Key.Texture;
-					if(!graphics.Shaders.Enabled) graphics.Device.SetTexture(0, imgsurfaces.Key.Texture);
 
 					graphics.Shaders.Display2D.BeginPass(pass);
 					
