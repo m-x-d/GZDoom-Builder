@@ -37,7 +37,6 @@ namespace CodeImp.DoomBuilder.Data
 		private static readonly int[] BMP_SIGNATURE = new[] { 66, 77 }; 
 		private static readonly int[] DDS_SIGNATURE = new[] { 68, 68, 83, 32 };
 		private static readonly int[] JPG_SIGNATURE = new[] { 255, 216, 255 }; //mxd
-		private static readonly int[] TGA_SIGNATURE = new[] { 0, 0, 2, 0 }; //mxd
 		private static readonly int[] PCX_SIGNATURE = new[] { 10, 5, 1, 8 }; //mxd
 
 		// This check image data and returns the appropriate image reader
@@ -49,39 +48,25 @@ namespace CodeImp.DoomBuilder.Data
 			if(data.Length > 10) 
 			{
 				// Check for PNG signature
-				data.Seek(0, SeekOrigin.Begin);
-				if(CheckSignature(data, PNG_SIGNATURE))
-					return new FileImageReader(DevilImageType.IL_PNG);
+				if(CheckSignature(data, PNG_SIGNATURE)) return new FileImageReader(DevilImageType.IL_PNG);
 
 				// Check for DDS signature
-				data.Seek(0, SeekOrigin.Begin);
-				if(CheckSignature(data, DDS_SIGNATURE))
-					return new FileImageReader(DevilImageType.IL_DDS);
-
-				// Check for GIF signature
-				data.Seek(0, SeekOrigin.Begin);
-				if(CheckSignature(data, GIF_SIGNATURE))
-					return new UnknownImageReader(); //mxd. Not supported by (G)ZDoom
+				if(CheckSignature(data, DDS_SIGNATURE)) return new FileImageReader(DevilImageType.IL_DDS);
 
 				//mxd. Check for PCX signature
-				data.Seek(0, SeekOrigin.Begin);
-				if(CheckSignature(data, PCX_SIGNATURE))
-					return new FileImageReader(DevilImageType.IL_PCX);
+				if(CheckSignature(data, PCX_SIGNATURE)) return new FileImageReader(DevilImageType.IL_PCX);
 
 				//mxd. Check for JPG signature
-				data.Seek(0, SeekOrigin.Begin);
-				if(CheckSignature(data, JPG_SIGNATURE))
-					return new FileImageReader(DevilImageType.IL_JPG);
+				if(CheckSignature(data, JPG_SIGNATURE)) return new FileImageReader(DevilImageType.IL_JPG);
 
-				//mxd. Check for TGA signature
-				data.Seek(0, SeekOrigin.Begin);
-				if(CheckSignature(data, TGA_SIGNATURE))
-					return new FileImageReader(DevilImageType.IL_TGA);
+				//mxd. TGA is VERY special in that it doesn't have a proper signature...
+				if(CheckTgaSignature(data)) return new FileImageReader(DevilImageType.IL_TGA);
+
+				// Check for GIF signature
+				if(CheckSignature(data, GIF_SIGNATURE)) return new UnknownImageReader(); //mxd. Not supported by (G)ZDoom
 
 				// Check for BMP signature
-				data.Seek(0, SeekOrigin.Begin);
-				if(CheckSignature(data, BMP_SIGNATURE))
-					return new UnknownImageReader(); //mxd. Not supported by (G)ZDoom
+				if(CheckSignature(data, BMP_SIGNATURE)) return new UnknownImageReader(); //mxd. Not supported by (G)ZDoom
 			}
 				
 			// Could it be a doom picture?
@@ -118,6 +103,9 @@ namespace CodeImp.DoomBuilder.Data
 		// signature, and expects the stream to be long enough.
 		private static bool CheckSignature(Stream data, int[] sig)
 		{
+			//mxd. Rewind the data first
+			data.Seek(0, SeekOrigin.Begin);
+			
 			// Go for all bytes
 			foreach(int s in sig)
 			{
@@ -127,6 +115,23 @@ namespace CodeImp.DoomBuilder.Data
 
 			// Signature matches
 			return true;
+		}
+
+		//mxd. This tries to guess if a given image is in TGA format...
+		private static bool CheckTgaSignature(Stream data)
+		{
+			// Rewind the data first
+			data.Seek(0, SeekOrigin.Begin);
+			
+			byte idfieldlength = (byte)data.ReadByte(); // Can be 0 or the length of ID string, whatever that is
+			byte colormap = (byte)data.ReadByte();		// Can be 0 or 1
+			byte imagetype = (byte)data.ReadByte();		// Can be 0, 1, 2, 3, 9, 10, 11
+			data.Position += 13;						// Skip some stuff...
+			byte bitsperpixel = (byte)data.ReadByte();  // Can be 8, 15, 16, 24, 32
+
+				// Check if data is valid...
+			return ((colormap == 0 || colormap == 1) && (imagetype < 4 || (imagetype > 8 && imagetype < 12)) &&
+			        (bitsperpixel == 8 || bitsperpixel == 15 || bitsperpixel == 16 || bitsperpixel == 24 || bitsperpixel == 32));
 		}
 	}
 }
