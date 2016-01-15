@@ -188,20 +188,12 @@ namespace CodeImp.DoomBuilder.VisualModes
 				if(nearestsector != null) 
 				{
 					int sectorheight = nearestsector.CeilHeight - nearestsector.FloorHeight;
-					if(General.Map.VisualCamera.Position.z < nearestsector.FloorHeight + 41) 
-					{
-						if(sectorheight < 41)
-							posz = nearestsector.FloorHeight + sectorheight / 2;
-						else
-							posz = nearestsector.FloorHeight + 41; // same as in doom
-					} 
+					if(sectorheight < 41)
+						posz = nearestsector.FloorHeight + Math.Max(16, sectorheight / 2);
+					else if(General.Map.VisualCamera.Position.z < nearestsector.FloorHeight + 41) 
+						posz = nearestsector.FloorHeight + 41; // same as in doom
 					else if(General.Map.VisualCamera.Position.z > nearestsector.CeilHeight) 
-					{
-						if(sectorheight < 41)
-							posz = nearestsector.FloorHeight + sectorheight / 2;
-						else
-							posz = nearestsector.CeilHeight - 4;
-					}
+						posz = nearestsector.CeilHeight - 4;
 				}
 
 				General.Map.VisualCamera.Position = new Vector3D(initialcameraposition.x, initialcameraposition.y, posz);

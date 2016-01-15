@@ -495,7 +495,7 @@ namespace CodeImp.DoomBuilder.Windows
 		// Window is first shown
 		private void MainForm_Shown(object sender, EventArgs e)
 		{
-			// Perform auto mapo loading action when the window is not delayed
+			// Perform auto map loading action when the window is not delayed
 			if(!General.DelayMainWindow) PerformAutoMapLoading();
 		}
 
@@ -532,9 +532,9 @@ namespace CodeImp.DoomBuilder.Windows
 					}
 					else
 					{
-						//TODO: test this!
-						Configuration gamecfg = new Configuration(configfile);
-						longtexturenamessupported = gamecfg.ReadSetting("longtexturenames", false);
+						// Get if long texture names are supported from the game configuration
+						ConfigurationInfo configinfo = General.GetConfigurationInfo(configfile);
+						longtexturenamessupported = configinfo.Configuration.ReadSetting("longtexturenames", false);
 					}
 
 					// Set map name and other options

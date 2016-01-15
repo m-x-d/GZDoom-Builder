@@ -6,6 +6,7 @@ using System.Drawing;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Map;
+using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.VisualModes;
 using CodeImp.DoomBuilder.Windows;
 
@@ -113,37 +114,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	{
 		#region ================== Sidedef
 
-		internal static Rectangle GetSidedefPartSize(BaseVisualGeometrySidedef side) 
+		internal static Rectangle GetSidedefPartSize(BaseVisualGeometrySidedef side)
 		{
-			if(side.GeometryType == VisualGeometryType.WALL_MIDDLE_3D) 
-			{
-				Rectangle rect = new Rectangle(0, 0, Math.Max(1, (int)Math.Round(side.Sidedef.Line.Length)), 0);
-				Linedef cl = side.GetControlLinedef();
-				
-				if(cl.Front != null && cl.Front.Sector != null) 
-				{
-					// Use floor height for vavoom-type 3d floors, because FloorHeight should be > CeilHeight for this type of 3d floor.
-					if(cl.Args[1] == 0)
-					{
-						rect.Y = -cl.Front.Sector.FloorHeight;
-						rect.Height = cl.Front.Sector.FloorHeight - cl.Front.Sector.CeilHeight;
-					}
-					else
-					{
-						rect.Y = -cl.Front.Sector.CeilHeight;
-						rect.Height = cl.Front.GetMiddleHeight();
-					}
-				} 
-				else 
-				{
-					rect.Y = -side.Sidedef.Sector.CeilHeight;
-					rect.Height = side.Sidedef.GetMiddleHeight();
-				}
+			// We are interested in width, height and vertical position only
+			float miny = float.MaxValue;
+			float maxy = float.MinValue;
 
-				return rect;
+			foreach(WorldVertex v in side.Vertices)
+			{
+				if(v.z < miny) miny = v.z;
+				else if(v.z > maxy) maxy = v.z;
 			}
 
-			return GetSidedefPartSize(side.Sidedef, side.GeometryType);
+			return new Rectangle(0, (int)Math.Round(-maxy), Math.Max(1, (int)Math.Round(side.Sidedef.Line.Length)), (int)Math.Round(maxy - miny));
 		}
 
 		public static Rectangle GetSidedefPartSize(Sidedef side, VisualGeometryType type) 

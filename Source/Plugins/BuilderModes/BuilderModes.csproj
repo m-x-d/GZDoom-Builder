@@ -280,8 +280,10 @@
     <Compile Include="FindReplace\BaseFindThing.cs" />
     <Compile Include="FindReplace\FindLinedefFlags.cs" />
     <Compile Include="FindReplace\FindSectorBrightness.cs" />
+    <Compile Include="FindReplace\FindSectorCeilingFlat.cs" />
     <Compile Include="FindReplace\FindSectorCeilingHeight.cs" />
     <Compile Include="FindReplace\FindSectorFlags.cs" />
+    <Compile Include="FindReplace\FindSectorFloorFlat.cs" />
     <Compile Include="FindReplace\FindSectorFloorHeight.cs" />
     <Compile Include="FindReplace\FindSidedefFlags.cs" />
     <Compile Include="FindReplace\FindThingAngle.cs" />

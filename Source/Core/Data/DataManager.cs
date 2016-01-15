@@ -2359,7 +2359,7 @@ namespace CodeImp.DoomBuilder.Data
 
 		#region ================== mxd. Skybox Making
 
-		private void SetupSkybox()
+		internal void SetupSkybox()
 		{
 			// Get rid of old texture
 			if(skybox != null) skybox.Dispose(); skybox = null;
@@ -2525,6 +2525,9 @@ namespace CodeImp.DoomBuilder.Data
 			else if(img.Height < 200) yscale = img.Height / 230.0f;
 			else if(img.Height < 241) yscale = 1.0f + ((img.Height - 200.0f) / 200.0f) * 1.17f;
 			else yscale = 1.2f * 1.17f;
+
+			// I guess my sky model doesn't exactly match the one GZDoom generates...
+			yscale *= 1.65f;
 
 			// Make cubemap texture
 			CubeTexture cubemap = new CubeTexture(device, cubemaptexsize, 1, Usage.None, Format.A8R8G8B8, Pool.Managed);

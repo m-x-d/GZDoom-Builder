@@ -609,36 +609,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		internal void SelectSideParts(Sidedef side, bool toggleTop, bool toggleMid, bool toggleBottom, bool select, bool withSameTexture, bool withSameHeight) 
-		{
-			BaseVisualSector vs = GetVisualSector(side.Sector) as BaseVisualSector;
-			
-			if(toggleTop && vs.Sides[side].upper != null &&
-				((select && !vs.Sides[side].upper.Selected) || (!select && vs.Sides[side].upper.Selected))) 
-			{
-				vs.Sides[side].upper.SelectNeighbours(select, withSameTexture, withSameHeight);
-			}
-
-			if(toggleMid && vs.Sides[side].middlesingle != null &&
-				((select && !vs.Sides[side].middlesingle.Selected) || (!select && vs.Sides[side].middlesingle.Selected))) 
-			{
-				vs.Sides[side].middlesingle.SelectNeighbours(select, withSameTexture, withSameHeight);
-			}
-
-			if(toggleMid && vs.Sides[side].middledouble != null &&
-				((select && !vs.Sides[side].middledouble.Selected) || (!select && vs.Sides[side].middledouble.Selected))) 
-			{
-				vs.Sides[side].middledouble.SelectNeighbours(select, withSameTexture, withSameHeight);
-			}
-
-			if(toggleBottom && vs.Sides[side].lower != null &&
-				((select && !vs.Sides[side].lower.Selected) || (!select && vs.Sides[side].lower.Selected))) 
-			{
-				vs.Sides[side].lower.SelectNeighbours(select, withSameTexture, withSameHeight);
-			}
-		}
-
-		//mxd
 		public override void UpdateSelectionInfo() 
 		{
 			// Collect info

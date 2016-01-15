@@ -595,12 +595,10 @@ namespace CodeImp.DoomBuilder
 			// Remove the previous log file and start logging
 			if(File.Exists(logfile)) File.Delete(logfile);
 			General.WriteLogLine("GZDoom Builder R" + thisasm.GetName().Version.Revision + " startup"); //mxd
-			General.WriteLogLine("Application path:        " + apppath);
-			General.WriteLogLine("Temporary path:          " + temppath);
-			General.WriteLogLine("Local settings path:     " + settingspath);
-			General.WriteLogLine("Command-line arguments:  " + args.Length);
-			for(int i = 0; i < args.Length; i++)
-				General.WriteLogLine("Argument " + i + ":   \"" + args[i] + "\"");
+			General.WriteLogLine("Application path:        \"" + apppath + "\"");
+			General.WriteLogLine("Temporary path:          \"" + temppath + "\"");
+			General.WriteLogLine("Local settings path:     \"" + settingspath + "\"");
+			General.WriteLogLine("Command-line arguments:  \"" + string.Join(" ", args) + "\""); //mxd
 			
 			// Load configuration
 			General.WriteLogLine("Loading program configuration...");

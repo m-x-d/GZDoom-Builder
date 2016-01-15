@@ -388,12 +388,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		public override void SelectNeighbours(bool select, bool withSameTexture, bool withSameHeight) 
-		{
-			SelectNeighbours(extrafloor.Linedef.Front.LongMiddleTexture, select, withSameTexture, withSameHeight);
-		}
-
-		//mxd
 		public override void OnTextureFit(FitTextureOptions options) 
 		{
 			if(!General.Map.UDMF) return;
