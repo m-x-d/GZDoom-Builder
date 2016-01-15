@@ -1066,7 +1066,9 @@ namespace CodeImp.DoomBuilder.Data
 				// This container has a lump with given name?
 				if(containers[i] is PK3StructuredReader)
 				{
-					name = ((PK3StructuredReader)containers[i]).FindFirstFile(name, true);
+					string foundname = ((PK3StructuredReader)containers[i]).FindFirstFile(name, true);
+					if(string.IsNullOrEmpty(foundname)) continue;
+					name = foundname;
 				}
 				else if(!(containers[i] is WADReader))
 				{
@@ -2401,9 +2403,18 @@ namespace CodeImp.DoomBuilder.Data
 			// Sky texture will be missing in ZDoom. Use internal texture
 			if(skybox == null)
 			{
+				// Whine and moan
+				if(string.IsNullOrEmpty(skytex))
+					General.ErrorLogger.Add(ErrorType.Warning, "Skybox creation failed: Sky1 property is missing from the MAPINFO map definition");
+				else
+					General.ErrorLogger.Add(ErrorType.Warning, "Skybox creation failed: unable to load \"" + skytex + "\" texture");
+				
+				// Use the built-in texture
 				ImageData tex = LoadInternalTexture("MissingSky3D.png");
 				tex.CreateTexture();
-				skybox = MakeClassicSkyBox(new Bitmap(tex.GetBitmap()));
+				Bitmap sky = new Bitmap(tex.GetBitmap());
+				sky.RotateFlip(RotateFlipType.RotateNoneFlipX); // We don't want our built-in image mirrored...
+				skybox = MakeClassicSkyBox(sky);
 				tex.Dispose();
 			}
 		}
