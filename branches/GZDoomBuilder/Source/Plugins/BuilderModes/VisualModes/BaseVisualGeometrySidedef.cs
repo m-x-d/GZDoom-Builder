@@ -526,9 +526,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		protected void SelectNeighbours(long longtexture, bool select, bool withSameTexture, bool withSameHeight) 
+		public void SelectNeighbours(bool select, bool matchtexture, bool matchheight) 
 		{
-			if(Sidedef.Sector == null || Triangles < 1 || (!withSameTexture && !withSameHeight)) return;
+			if(Sidedef.Sector == null || Triangles < 1 || (!matchtexture && !matchheight)) return;
 
 			Rectangle rect = BuilderModesTools.GetSidedefPartSize(this);
 			if(rect.Height == 0) return;
@@ -544,169 +544,57 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				mode.RemoveSelectedObject(this);
 			}
 
-			//select
-			List<Linedef> connectedLines = new List<Linedef>();
+			// Select
+			SelectNeighbourLines(Sidedef.Line.Start.Linedefs, rect, select, matchtexture, matchheight);
+			SelectNeighbourLines(Sidedef.Line.End.Linedefs, rect, select, matchtexture, matchheight);
+		}
 
-			foreach(Linedef line in Sidedef.Line.Start.Linedefs) 
+		//mxd
+		private void SelectNeighbourLines(IEnumerable<Linedef> lines, Rectangle sourcerect, bool select, bool matchtexture, bool matchheight)
+		{
+			foreach(Linedef line in lines)
 			{
 				if(line.Index == Sidedef.Line.Index) continue;
-				connectedLines.Add(line);
+
+				if(line.Front != null && line.Front.Sector != null)
+					SelectNeighbourSideParts(line.Front, sourcerect, select, matchtexture, matchheight);
+
+				if(line.Back != null && line.Back.Sector != null)
+					SelectNeighbourSideParts(line.Back, sourcerect, select, matchtexture, matchheight);
 			}
-			foreach(Linedef line in Sidedef.Line.End.Linedefs) 
+		}
+
+		//mxd
+		private void SelectNeighbourSideParts(Sidedef side, Rectangle sourcerect, bool select, bool matchtexture, bool matchheight)
+		{
+			BaseVisualSector s = mode.GetVisualSector(side.Sector) as BaseVisualSector;
+			if(s != null)
 			{
-				if(line.Index == Sidedef.Line.Index) continue;
-				if(!connectedLines.Contains(line)) connectedLines.Add(line);
+				VisualSidedefParts parts = s.GetSidedefParts(side);
+				SelectNeighbourSidePart(parts.lower, sourcerect, select, matchtexture, matchheight);
+				SelectNeighbourSidePart(parts.middlesingle, sourcerect, select, matchtexture, matchheight);
+				SelectNeighbourSidePart(parts.middledouble, sourcerect, select, matchtexture, matchheight);
+				SelectNeighbourSidePart(parts.upper, sourcerect, select, matchtexture, matchheight);
+
+				if(parts.middle3d != null)
+				{
+					foreach(VisualMiddle3D middle3D in parts.middle3d)
+						SelectNeighbourSidePart(middle3D, sourcerect, select, matchtexture, matchheight);
+				}
 			}
+		}
 
-			// Check connected lines
-			foreach(Linedef line in connectedLines) 
+		//mxd
+		private void SelectNeighbourSidePart(BaseVisualGeometrySidedef visualside, Rectangle sourcerect, bool select, bool matchtexture, bool matchheight)
+		{
+			if(visualside != null && visualside.Triangles > 0 && visualside.Selected != select)
 			{
-				bool addFrontTop = false;
-				bool addFrontMiddle = false;
-				bool addFrontBottom = false;
-				bool addBackTop = false;
-				bool addBackMiddle = false;
-				bool addBackBottom = false;
-
-				bool lineHasFrontSector = (line.Front != null && line.Front.Sector != null);
-				bool lineHasBackSector = (line.Back != null && line.Back.Sector != null);
-				bool doublesided = (lineHasFrontSector && lineHasBackSector);
-
-				List<VisualMiddle3D> extrasides = new List<VisualMiddle3D>();
-
-				// Gather 3d floor sides
-				if(doublesided) 
+				Rectangle r = BuilderModesTools.GetSidedefPartSize(visualside);
+				if(r.Width == 0 || r.Height == 0) return;
+				if((matchtexture && visualside.Texture == Texture && r.IntersectsWith(sourcerect)) ||
+				   (matchheight && sourcerect.Height == r.Height && sourcerect.Y == r.Y))
 				{
-					BaseVisualSector s = mode.GetVisualSector(line.Front.Sector) as BaseVisualSector;
-					if(s != null) extrasides.AddRange(s.GetSidedefParts(line.Front).middle3d.ToArray());
-
-					s = mode.GetVisualSector(line.Back.Sector) as BaseVisualSector;
-					if(s != null) extrasides.AddRange(s.GetSidedefParts(line.Back).middle3d.ToArray());
-				}
-
-				// Add regular sides
-				if(withSameTexture) 
-				{
-					if(line.Front != null) 
-					{
-						addFrontTop = (line.Front.LongHighTexture == longtexture 
-							&& line.Front.HighRequired()
-							&& BuilderModesTools.GetSidedefPartSize(line.Front, VisualGeometryType.WALL_UPPER).IntersectsWith(rect));
-
-						addFrontMiddle = (line.Front.LongMiddleTexture == longtexture
-							&& (line.Front.MiddleRequired() || (line.Back != null && longtexture != MapSet.EmptyLongName))
-							&& line.Front.GetMiddleHeight() > 0
-							&& BuilderModesTools.GetSidedefPartSize(line.Front, VisualGeometryType.WALL_MIDDLE).IntersectsWith(rect));
-
-						addFrontBottom = (line.Front.LongLowTexture == longtexture 
-							&& line.Front.LowRequired()
-							&& BuilderModesTools.GetSidedefPartSize(line.Front, VisualGeometryType.WALL_LOWER).IntersectsWith(rect));
-
-					}
-
-					if(line.Back != null) 
-					{
-						addBackTop = (line.Back.LongHighTexture == longtexture 
-							&& line.Back.HighRequired()
-							&& BuilderModesTools.GetSidedefPartSize(line.Back, VisualGeometryType.WALL_UPPER).IntersectsWith(rect));
-
-						addBackMiddle = (line.Back.LongMiddleTexture == longtexture
-							&& (line.Back.MiddleRequired() || (line.Front != null && longtexture != MapSet.EmptyLongName))
-							&& line.Back.GetMiddleHeight() > 0
-							&& BuilderModesTools.GetSidedefPartSize(line.Back, VisualGeometryType.WALL_MIDDLE).IntersectsWith(rect));
-
-						addBackBottom = (line.Back.LongLowTexture == longtexture 
-							&& line.Back.LowRequired()
-							&& BuilderModesTools.GetSidedefPartSize(line.Back, VisualGeometryType.WALL_LOWER).IntersectsWith(rect));
-					}
-
-					// Add 3d floor sides
-					List<VisualMiddle3D> filtered = new List<VisualMiddle3D>();
-					foreach(VisualMiddle3D side3d in extrasides) 
-					{
-						Sidedef controlside = side3d.GetControlLinedef().Front;
-						if(controlside.LongMiddleTexture == longtexture && BuilderModesTools.GetSidedefPartSize(controlside, VisualGeometryType.WALL_MIDDLE).IntersectsWith(rect)) 
-						{
-							filtered.Add(side3d);
-						}
-					}
-
-					extrasides = filtered;
-				}
-
-				if(withSameHeight && rect.Height > 0) 
-				{
-					// Upper parts match?
-					if((!withSameTexture || addFrontTop) && doublesided && line.Front.HighRequired())
-					{
-						Rectangle r = BuilderModesTools.GetSidedefPartSize(line.Front, VisualGeometryType.WALL_UPPER);
-						addFrontTop = (rect.Height == r.Height && rect.Y == r.Y);
-					}
-
-					if((!withSameTexture || addBackTop) && doublesided && line.Back.HighRequired()) 
-					{
-						Rectangle r = BuilderModesTools.GetSidedefPartSize(line.Back, VisualGeometryType.WALL_UPPER);
-						addBackTop = (rect.Height == r.Height && rect.Y == r.Y);
-					}
-
-					// Middle parts match?
-					if((!withSameTexture || addFrontMiddle) 
-						&& lineHasFrontSector 
-						&& (line.Front.MiddleRequired() || line.Front.LongMiddleTexture != MapSet.EmptyLongName) ) 
-					{
-						Rectangle r = BuilderModesTools.GetSidedefPartSize(line.Front, VisualGeometryType.WALL_MIDDLE);
-						addFrontMiddle = (rect.Height == r.Height && rect.Y == r.Y);
-					}
-
-					if((!withSameTexture || addBackMiddle) 
-						&& lineHasBackSector 
-						&& (line.Back.MiddleRequired() || line.Back.LongMiddleTexture != MapSet.EmptyLongName)) 
-					{
-						Rectangle r = BuilderModesTools.GetSidedefPartSize(line.Back, VisualGeometryType.WALL_MIDDLE);
-						addBackMiddle = (rect.Height == r.Height && rect.Y == r.Y);
-					}
-
-					// Lower parts match?
-					if((!withSameTexture || addFrontBottom) && doublesided && line.Front.LowRequired()) 
-					{
-						Rectangle r = BuilderModesTools.GetSidedefPartSize(line.Front, VisualGeometryType.WALL_LOWER);
-						addFrontBottom = (rect.Height == r.Height && rect.Y == r.Y);
-					}
-
-					if((!withSameTexture || addBackBottom) && doublesided && line.Back.LowRequired()) 
-					{
-						Rectangle r = BuilderModesTools.GetSidedefPartSize(line.Back, VisualGeometryType.WALL_LOWER);
-						addBackBottom = (rect.Height == r.Height && rect.Y == r.Y);
-					}
-
-					// 3d floor parts match?
-					List<VisualMiddle3D> filtered = new List<VisualMiddle3D>();
-					foreach(VisualMiddle3D side3d in extrasides) 
-					{
-						Sidedef controlside = side3d.GetControlLinedef().Front;
-						Rectangle r = BuilderModesTools.GetSidedefPartSize(controlside, VisualGeometryType.WALL_MIDDLE);
-						if(rect.Height == r.Height && rect.Y == r.Y) 
-						{
-							filtered.Add(side3d);
-						}
-					}
-
-					extrasides = filtered;
-				}
-
-				// Select front?
-				if(addFrontTop || addFrontMiddle || addFrontBottom)
-					mode.SelectSideParts(line.Front, addFrontTop, addFrontMiddle, addFrontBottom, select, withSameTexture, withSameHeight);
-
-				// Select back?
-				if(addBackTop || addBackMiddle || addBackBottom)
-					mode.SelectSideParts(line.Back, addBackTop, addBackMiddle, addBackBottom, select, withSameTexture, withSameHeight);
-
-				// Select 3d floor sides?
-				foreach(VisualMiddle3D side3d in extrasides) 
-				{
-					if( (select && !side3d.Selected) || (!select && side3d.Selected) )
-						side3d.SelectNeighbours(select, withSameTexture, withSameHeight);
+					visualside.SelectNeighbours(select, matchtexture, matchheight);
 				}
 			}
 		}
@@ -839,7 +727,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected virtual void ResetTextureScale() { } //mxd
 		protected abstract void MoveTextureOffset(Point xy);
 		protected abstract Point GetTextureOffset();
-		public virtual void SelectNeighbours(bool select, bool withSameTexture, bool withSameHeight) { } //mxd
 		public virtual void OnTextureFit(FitTextureOptions options) { } //mxd
 		
 		// Insert middle texture

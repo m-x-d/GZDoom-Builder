@@ -275,12 +275,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			FitTexture(options);
 			Setup();
 		}
-
-		//mxd
-		public override void SelectNeighbours(bool select, bool withSameTexture, bool withSameHeight) 
-		{
-			SelectNeighbours(Sidedef.LongLowTexture, select, withSameTexture, withSameHeight);
-		}
 		
 		#endregion
 	}
