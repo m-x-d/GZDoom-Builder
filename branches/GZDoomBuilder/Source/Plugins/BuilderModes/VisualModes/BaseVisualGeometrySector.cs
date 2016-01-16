@@ -67,7 +67,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private int prevoffsety;		// want to calculate with delta offsets to prevent
 										// inaccuracy in the dragging.
 
-		private static List<BaseVisualSector> updateList; //mxd
+		private static List<BaseVisualSector> updatelist; //mxd
+		protected bool performautoselection; //mxd
 
 		#endregion
 
@@ -97,6 +98,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected abstract void ChangeTextureScale(int incrementX, int incrementY); //mxd
 		protected abstract void UpdateSkyRenderFlag(); //mxd
 		public virtual void SelectNeighbours(bool select, bool withSameTexture, bool withSameHeight) { } //mxd
+
+		//mxd
+		override protected void PerformAutoSelection()
+		{
+			if(!performautoselection) return;
+			if(Triangles > 0)
+			{
+				this.selected = true;
+				mode.AddSelectedObject(this);
+			}
+
+			performautoselection = false;
+		}
 
 		// This swaps triangles so that the plane faces the other way
 		protected static void SwapTriangleVertices(WorldVertex[] verts)
@@ -774,12 +788,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				//mxd
 				List<Sector> sectors = mode.GetSelectedSectors();
-				updateList = new List<BaseVisualSector>();
+				updatelist = new List<BaseVisualSector>();
 
 				foreach(Sector s in sectors) 
 				{
 					if(mode.VisualSectorExists(s)) 
-						updateList.Add((BaseVisualSector)mode.GetVisualSector(s));
+						updatelist.Add((BaseVisualSector)mode.GetVisualSector(s));
 				}
 
 				General.Interface.OnEditFormValuesChanged += Interface_OnEditFormValuesChanged; //mxd
@@ -788,8 +802,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				mode.StopRealtimeInterfaceUpdate(SelectionType.Sectors); //mxd
 				General.Interface.OnEditFormValuesChanged -= Interface_OnEditFormValuesChanged; //mxd
 
-				updateList.Clear(); //mxd
-				updateList = null; //mxd
+				updatelist.Clear(); //mxd
+				updatelist = null; //mxd
 
 				if(result == DialogResult.OK) mode.RebuildElementData(); //mxd
 			}
@@ -798,7 +812,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd
 		private void Interface_OnEditFormValuesChanged(object sender, EventArgs e) 
 		{
-			foreach(BaseVisualSector vs in updateList) vs.UpdateSectorGeometry(true);
+			foreach(BaseVisualSector vs in updatelist) vs.UpdateSectorGeometry(true);
 		}
 
 		// Sector height change
