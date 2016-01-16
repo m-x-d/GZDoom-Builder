@@ -1610,20 +1610,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			List<IVisualEventReceiver> objs = new List<IVisualEventReceiver>();
 			foreach(IVisualEventReceiver i in selectedobjects)
 			{
-				if((i is BaseVisualGeometrySector) && includesectors) objs.Add(i);
-				else if((i is BaseVisualGeometrySidedef) && includesidedefs) objs.Add(i);
-				else if((i is BaseVisualThing) && includethings) objs.Add(i);
-				else if((i is BaseVisualVertex) && includevertices) objs.Add(i);//mxd
+				if(includesectors && (i is BaseVisualGeometrySector) /*&& ((BaseVisualGeometrySector)i).Triangles > 0*/) objs.Add(i);
+				else if(includesidedefs && (i is BaseVisualGeometrySidedef) /*&& ((BaseVisualGeometrySidedef)i).Triangles > 0*/) objs.Add(i);
+				else if(includethings && (i is BaseVisualThing)) objs.Add(i);
+				else if(includevertices && (i is BaseVisualVertex)) objs.Add(i); //mxd
 			}
 
 			// Add highlight?
 			if(selectedobjects.Count == 0)
 			{
 				IVisualEventReceiver i = (target.picked as IVisualEventReceiver);
-				if((i is BaseVisualGeometrySector) && includesectors) objs.Add(i);
-				else if((i is BaseVisualGeometrySidedef) && includesidedefs) objs.Add(i);
-				else if((i is BaseVisualThing) && includethings) objs.Add(i);
-				else if((i is BaseVisualVertex) && includevertices) objs.Add(i);//mxd
+				if(includesectors && (i is BaseVisualGeometrySector) /*&& ((BaseVisualGeometrySector)i).Triangles > 0*/) objs.Add(i);
+				else if(includesidedefs && (i is BaseVisualGeometrySidedef) /*&& ((BaseVisualGeometrySidedef)i).Triangles > 0*/) objs.Add(i);
+				else if(includethings && (i is BaseVisualThing)) objs.Add(i);
+				else if(includevertices && (i is BaseVisualVertex)) objs.Add(i); //mxd
 			}
 
 			return objs;

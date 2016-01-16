@@ -40,7 +40,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Variables
 
-		public bool innerSide; //mxd
+		private bool innerside; //mxd
 
 		#endregion
 
@@ -56,13 +56,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			//mxd
 			geometrytype = VisualGeometryType.CEILING;
 			partname = "ceiling";
-
-			//mxd
-			if(mode.UseSelectionFromClassicMode && vs != null && vs.Sector.Selected && (General.Map.ViewMode == ViewMode.CeilingTextures || General.Map.ViewMode == ViewMode.Normal)) 
-			{
-				this.selected = true;
-				mode.AddSelectedObject(this);
-			}
+			performautoselection = mode.UseSelectionFromClassicMode && vs != null && vs.Sector.Selected && (General.Map.ViewMode == ViewMode.CeilingTextures || General.Map.ViewMode == ViewMode.Normal);
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -71,15 +65,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This builds the geometry. Returns false when no geometry created.
 		public override bool Setup(SectorLevel level, Effect3DFloor extrafloor) 
 		{
-			return Setup(level, extrafloor, innerSide);
+			return Setup(level, extrafloor, innerside);
 		}
 
 		//mxd
-		public bool Setup(SectorLevel level, Effect3DFloor extrafloor, bool innerSide)
+		public bool Setup(SectorLevel level, Effect3DFloor extrafloor, bool innerside)
 		{
 			Sector s = level.sector;
 			Vector2D texscale;
-			this.innerSide = innerSide; //mxd
+			this.innerside = innerside; //mxd
 			
 			base.Setup(level, extrafloor);
 			
@@ -169,7 +163,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// The sector triangulation created clockwise triangles that
 			// are right up for the floor. For the ceiling we must flip
 			// the triangles upside down.
-			if(extrafloor == null || extrafloor.VavoomType || innerSide)
+			if(extrafloor == null || extrafloor.VavoomType || innerside)
 				SwapTriangleVertices(verts);
 
 			// Determine render pass
@@ -457,7 +451,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override bool PickFastReject(Vector3D from, Vector3D to, Vector3D dir)
 		{
 			// Check if our ray starts at the correct side of the plane
-			if((innerSide && level.plane.Distance(from) < 0.0f) || (!innerSide && level.plane.Distance(from) > 0.0f)) //mxd
+			if((innerside && level.plane.Distance(from) < 0.0f) || (!innerside && level.plane.Distance(from) > 0.0f)) //mxd
 			//if(level.plane.Distance(from) > 0.0f)
 			{
 				// Calculate the intersection

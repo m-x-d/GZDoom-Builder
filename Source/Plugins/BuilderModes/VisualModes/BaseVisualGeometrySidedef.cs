@@ -61,7 +61,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private int prevoffsetx;		// We have to provide delta offsets, but I don't
 		private int prevoffsety;		// want to calculate with delta offsets to prevent
 										// inaccuracy in the dragging.
-		private static List<BaseVisualSector> updateList; //mxd
+		private static List<BaseVisualSector> updatelist; //mxd
+		private bool performautoselection; //mxd
 
 		// Undo/redo
 		private int undoticket;
@@ -84,18 +85,35 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.deltaz = new Vector3D(0.0f, 0.0f, 1.0f);
 			this.deltaxy = (sd.Line.End.Position - sd.Line.Start.Position) * sd.Line.LengthInv;
 			if(!sd.IsFront) this.deltaxy = -this.deltaxy;
-
-			//mxd
-			if(mode.UseSelectionFromClassicMode && sd.Line.Selected) 
-			{
-				this.selected = true;
-				mode.AddSelectedObject(this);
-			}
+			this.performautoselection = (mode.UseSelectionFromClassicMode && sd.Line.Selected); //mxd
 		}
 		
 		#endregion
 
 		#region ================== Methods
+
+		//mxd
+		override protected void PerformAutoSelection()
+		{
+			if(!performautoselection) return;
+			if(Triangles > 0)
+			{
+				dragstartanglexy = General.Map.VisualCamera.AngleXY;
+				dragstartanglez = General.Map.VisualCamera.AngleZ;
+				dragorigin = pickintersect;
+
+				Point texoffset = GetTextureOffset();
+				startoffsetx = texoffset.X;
+				startoffsety = texoffset.Y;
+				prevoffsetx = texoffset.X;
+				prevoffsety = texoffset.Y;
+
+				this.selected = true;
+				mode.AddSelectedObject(this);
+			}
+
+			performautoselection = false;
+		}
 
 		// This sets the renderstyle from linedef information and returns the alpha value or the vertices
 		protected byte SetLinedefRenderstyle(bool solidasmask)
@@ -1164,10 +1182,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			dragstartanglexy = General.Map.VisualCamera.AngleXY;
 			dragstartanglez = General.Map.VisualCamera.AngleZ;
 			dragorigin = pickintersect;
-			startoffsetx = GetTextureOffset().X;
-			startoffsety = GetTextureOffset().Y;
-			prevoffsetx = GetTextureOffset().X;
-			prevoffsety = GetTextureOffset().Y;
+
+			Point texoffset = GetTextureOffset(); //mxd
+			startoffsetx = texoffset.X;
+			startoffsety = texoffset.Y;
+			prevoffsetx = texoffset.X;
+			prevoffsety = texoffset.Y;
 		}
 		
 		// Select button released
@@ -1203,13 +1223,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(General.Interface.IsActiveWindow)
 			{
 				List<Linedef> linedefs = mode.GetSelectedLinedefs();
-				updateList = new List<BaseVisualSector>(); //mxd
+				updatelist = new List<BaseVisualSector>(); //mxd
 				foreach(Linedef l in linedefs) 
 				{
 					if(l.Front != null && mode.VisualSectorExists(l.Front.Sector)) 
-						updateList.Add((BaseVisualSector)mode.GetVisualSector(l.Front.Sector));
+						updatelist.Add((BaseVisualSector)mode.GetVisualSector(l.Front.Sector));
 					if(l.Back != null && mode.VisualSectorExists(l.Back.Sector))
-						updateList.Add((BaseVisualSector)mode.GetVisualSector(l.Back.Sector));
+						updatelist.Add((BaseVisualSector)mode.GetVisualSector(l.Back.Sector));
 				}
 
 				General.Interface.OnEditFormValuesChanged += Interface_OnEditFormValuesChanged;
@@ -1218,8 +1238,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				mode.StopRealtimeInterfaceUpdate(SelectionType.Linedefs);
 				General.Interface.OnEditFormValuesChanged -= Interface_OnEditFormValuesChanged;
 
-				updateList.Clear();
-				updateList = null;
+				updatelist.Clear();
+				updatelist = null;
 
 				//mxd. Effects may need updating...
 				if(result == DialogResult.OK) mode.RebuildElementData();
@@ -1229,7 +1249,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd
 		private void Interface_OnEditFormValuesChanged(object sender, EventArgs e) 
 		{
-			foreach(BaseVisualSector vs in updateList) vs.UpdateSectorGeometry(false);
+			foreach(BaseVisualSector vs in updatelist) vs.UpdateSectorGeometry(false);
 		}
 		
 		// Mouse moves
