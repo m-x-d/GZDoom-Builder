@@ -589,70 +589,72 @@ namespace CodeImp.DoomBuilder.ZDoom
 			// Sprite forced?
 			if(HasPropertyWithValue("$sprite"))
 			{
-				return GetPropertyValueString("$sprite", 0);
+				string sprite = GetPropertyValueString("$sprite", 0); //mxd
+				if(General.Map.Data.GetSpriteExists(sprite)) return sprite; //mxd. Added availability check
+
+				//mxd. Bitch and moan
+				General.ErrorLogger.Add(ErrorType.Warning, "DECORATE warning in " + classname + ":" + doomednum + ". The sprite \"" + sprite + "\" assigned by the \"$sprite\" property does not exist.");
 			}
-			else
+
+			// Try the idle state
+			if(HasState("idle"))
 			{
-				// Try the idle state
-				if(HasState("idle"))
+				StateStructure s = GetState("idle");
+				string spritename = s.GetSprite(0);
+				if(!string.IsNullOrEmpty(spritename))
+					result = spritename;
+			}
+			
+			// Try the see state
+			if(string.IsNullOrEmpty(result) && HasState("see"))
+			{
+				StateStructure s = GetState("see");
+				string spritename = s.GetSprite(0);
+				if(!string.IsNullOrEmpty(spritename))
+					result = spritename;
+			}
+			
+			// Try the inactive state
+			if(string.IsNullOrEmpty(result) && HasState("inactive"))
+			{
+				StateStructure s = GetState("inactive");
+				string spritename = s.GetSprite(0);
+				if(!string.IsNullOrEmpty(spritename))
+					result = spritename;
+			}
+			
+			// Try the spawn state
+			if(string.IsNullOrEmpty(result) && HasState("spawn"))
+			{
+				StateStructure s = GetState("spawn");
+				string spritename = s.GetSprite(0);
+				if(!string.IsNullOrEmpty(spritename))
+					result = spritename;
+			}
+			
+			// Still no sprite found? then just pick the first we can find
+			if(string.IsNullOrEmpty(result))
+			{
+				Dictionary<string, StateStructure> list = GetAllStates();
+				foreach(StateStructure s in list.Values)
 				{
-					StateStructure s = GetState("idle");
 					string spritename = s.GetSprite(0);
 					if(!string.IsNullOrEmpty(spritename))
-						result = spritename;
-				}
-				
-				// Try the see state
-				if(string.IsNullOrEmpty(result) && HasState("see"))
-				{
-					StateStructure s = GetState("see");
-					string spritename = s.GetSprite(0);
-					if(!string.IsNullOrEmpty(spritename))
-						result = spritename;
-				}
-				
-				// Try the inactive state
-				if(string.IsNullOrEmpty(result) && HasState("inactive"))
-				{
-					StateStructure s = GetState("inactive");
-					string spritename = s.GetSprite(0);
-					if(!string.IsNullOrEmpty(spritename))
-						result = spritename;
-				}
-				
-				// Try the spawn state
-				if(string.IsNullOrEmpty(result) && HasState("spawn"))
-				{
-					StateStructure s = GetState("spawn");
-					string spritename = s.GetSprite(0);
-					if(!string.IsNullOrEmpty(spritename))
-						result = spritename;
-				}
-				
-				// Still no sprite found? then just pick the first we can find
-				if(string.IsNullOrEmpty(result))
-				{
-					Dictionary<string, StateStructure> list = GetAllStates();
-					foreach(StateStructure s in list.Values)
 					{
-						string spritename = s.GetSprite(0);
-						if(!string.IsNullOrEmpty(spritename))
-						{
-							result = spritename;
-							break;
-						}
+						result = spritename;
+						break;
 					}
 				}
-				
-				if(!string.IsNullOrEmpty(result))
+			}
+			
+			if(!string.IsNullOrEmpty(result))
+			{
+				// The sprite name is not actually complete, we still have to append
+				// the direction characters to it. Find an existing sprite with direction.
+				foreach(string postfix in SPRITE_POSTFIXES)
 				{
-					// The sprite name is not actually complete, we still have to append
-					// the direction characters to it. Find an existing sprite with direction.
-					foreach(string postfix in SPRITE_POSTFIXES)
-					{
-						if(General.Map.Data.GetSpriteExists(result + postfix))
-							return result + postfix;
-					}
+					if(General.Map.Data.GetSpriteExists(result + postfix))
+						return result + postfix;
 				}
 			}
 			
