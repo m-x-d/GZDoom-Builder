@@ -485,6 +485,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 		protected void SkipStructure() { SkipStructure(new HashSet<string>()); }
 		protected void SkipStructure(HashSet<string> breakat)
 		{
+			// We need it to be case-insensitive
+			if(breakat.Count > 0) breakat = new HashSet<string>(breakat, StringComparer.OrdinalIgnoreCase);
+			
 			string token;
 			do
 			{
