@@ -556,19 +556,19 @@ namespace CodeImp.DoomBuilder.VisualModes
 					n = 0;
 					lightRenderStyle = DynamicLightRenderStyle.NORMAL;
 					//lightColor.Alpha used in shader to perform some calculations based on light type
-					lightColor = new Color4((float)lightRenderStyle / 100.0f, thing.Args[0] / scaled_intensity, thing.Args[1] / scaled_intensity, thing.Args[2] / scaled_intensity);
+					lightColor = new Color4((float)lightRenderStyle / 100.0f, thing.Args[0] / scaled_intensity / 2, thing.Args[1] / scaled_intensity / 2, thing.Args[2] / scaled_intensity / 2);
 				} 
 				else if(lightId < GZBuilder.GZGeneral.GZ_LIGHT_TYPES[1]) 
 				{
 					n = 10;
 					lightRenderStyle = DynamicLightRenderStyle.ADDITIVE;
-					lightColor = new Color4((float)lightRenderStyle / 100.0f, thing.Args[0] / scaled_intensity, thing.Args[1] / scaled_intensity, thing.Args[2] / scaled_intensity);
+					lightColor = new Color4((float)lightRenderStyle / 100.0f, thing.Args[0] / scaled_intensity / 2, thing.Args[1] / scaled_intensity / 2, thing.Args[2] / scaled_intensity / 2);
 				} 
 				else 
 				{
 					n = 20;
 					lightRenderStyle = DynamicLightRenderStyle.NEGATIVE;
-					lightColor = new Color4((float)lightRenderStyle / 100.0f, thing.Args[0] / scaled_intensity, thing.Args[1] / scaled_intensity, thing.Args[2] / scaled_intensity);
+					lightColor = new Color4((float)lightRenderStyle / 100.0f, thing.Args[0] / scaled_intensity / 3, thing.Args[1] / scaled_intensity / 3, thing.Args[2] / scaled_intensity / 3);
 				}
 				lightType = (DynamicLightType)(thing.Type - 9800 - n);
 
@@ -589,9 +589,9 @@ namespace CodeImp.DoomBuilder.VisualModes
 				lightRenderStyle = DynamicLightRenderStyle.VAVOOM;
 				lightType = (DynamicLightType)thing.Type;
 				if(lightType == DynamicLightType.VAVOOM_COLORED)
-					lightColor = new Color4((float)lightRenderStyle / 100.0f, thing.Args[1] / scaled_intensity, thing.Args[2] / scaled_intensity, thing.Args[3] / scaled_intensity);
+					lightColor = new Color4((float)lightRenderStyle / 100.0f, thing.Args[1] / scaled_intensity / 2, thing.Args[2] / scaled_intensity / 2, thing.Args[3] / scaled_intensity / 2);
 				else
-					lightColor = new Color4((float)lightRenderStyle / 100.0f, General.Settings.GZDynamicLightIntensity, General.Settings.GZDynamicLightIntensity, General.Settings.GZDynamicLightIntensity);
+					lightColor = new Color4((float)lightRenderStyle / 100.0f, General.Settings.GZDynamicLightIntensity / 2, General.Settings.GZDynamicLightIntensity / 2, General.Settings.GZDynamicLightIntensity / 2);
 				lightPrimaryRadius = (thing.Args[0] * 8) * General.Settings.GZDynamicLightRadius;
 			}
 
