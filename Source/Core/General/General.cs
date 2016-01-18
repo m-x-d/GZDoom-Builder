@@ -1242,26 +1242,6 @@ namespace CodeImp.DoomBuilder
 			ChangeMapForm changemapwindow = new ChangeMapForm(map.FilePathName, map.Options);
 			if(changemapwindow.ShowDialog(mainwindow) != DialogResult.OK) return;
 
-			// If resources don't match, perform regular map loading
-			bool resourcesmismatch = changemapwindow.Options.Resources.Count != map.Options.Resources.Count;
-			if(!resourcesmismatch)
-			{
-				for(int i = 0; i < changemapwindow.Options.Resources.Count; i++) 
-				{
-					if(changemapwindow.Options.Resources[i].location != map.Options.Resources[i].location)
-					{
-						resourcesmismatch = true;
-						break;
-					}
-				}
-			}
-
-			if(resourcesmismatch) 
-			{
-				OpenMapFileWithOptions(map.FilePathName, changemapwindow.Options);
-				return;
-			}
-
 			// Display status
 			mainwindow.DisplayStatus(StatusType.Busy, "Switching to map '" + changemapwindow.Options.CurrentName + "'...");
 			WriteLogLine("Switching to map '" + changemapwindow.Options.CurrentName + "'...");

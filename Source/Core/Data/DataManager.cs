@@ -366,8 +366,7 @@ namespace CodeImp.DoomBuilder.Data
 			LoadSprites();
 
 			//mxd. Load MAPINFO. Should happen before parisng DECORATE
-			Dictionary<int, string> spawnnums;
-			Dictionary<int, string> doomednums;
+			Dictionary<int, string> spawnnums, doomednums;
 			LoadMapInfo(out spawnnums, out doomednums);
 
 			int thingcount = LoadDecorateThings(spawnnums, doomednums);
@@ -2075,6 +2074,13 @@ namespace CodeImp.DoomBuilder.Data
 
 			// And skyboxes
 			skyboxes = parser.Skyboxes;
+		}
+
+		//mxd. This updates mapinfo class only
+		internal void ReloadMapInfoPartial()
+		{
+			Dictionary<int, string> spawnnums, doomednums;
+			LoadMapInfo(out spawnnums, out doomednums);
 		}
 
 		//mxd. This loads (Z)MAPINFO

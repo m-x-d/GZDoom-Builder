@@ -198,6 +198,7 @@ namespace CodeImp.DoomBuilder.Windows
 			MapOptions newoptions = new MapOptions(mapsettings, mapslist.SelectedItems[0].Text, options.UseLongTextureNames);
 			newoptions.ConfigFile = options.ConfigFile;
 			newoptions.ScriptCompiler = options.ScriptCompiler;
+			newoptions.CopyResources(options.Resources);
 			options = newoptions;
 			
 			// Hide window
