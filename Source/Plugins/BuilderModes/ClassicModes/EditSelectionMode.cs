@@ -138,6 +138,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private bool modealreadyswitching;
 		private bool clearselection; //mxd
 		private bool pasting;
+		private bool autodrag; //mxd
 		private PasteOptions pasteoptions;
 		
 		// Docker
@@ -385,7 +386,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Check what grip the mouse is over
 				// and change cursor accordingly
-				Grip mousegrip = CheckMouseGrip();
+				Grip mousegrip = (autodrag ? Grip.Main : CheckMouseGrip()); //mxd. We only want to move when starting auto-dragging
 				switch(mousegrip)
 				{
 					case Grip.Main:
@@ -1036,7 +1037,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			base.OnEngage();
 			
-			bool autodrag = (pasting && mouseinside && BuilderPlug.Me.AutoDragOnPaste);
+			autodrag = (pasting && mouseinside && BuilderPlug.Me.AutoDragOnPaste);
 			snaptonearest = General.Interface.AutoMerge; //mxd
 			
 			// Add toolbar buttons
@@ -1193,7 +1194,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				Update();
 				
 				// When pasting and mouse is in screen, drag selection immediately
-				if(autodrag) OnSelectBegin();
+				if(autodrag)
+				{
+					OnSelectBegin();
+					autodrag = false; //mxd. Don't need this any more
+				}
 			}
 			else
 			{
@@ -1642,7 +1647,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Vector2D delta;
 
 			// Check what grip the mouse is over
-			switch(CheckMouseGrip())
+			Grip mousegrip = (autodrag ? Grip.Main : CheckMouseGrip()); //mxd. We only want to move when starting auto-dragging
+			switch(mousegrip)
 			{
 				// Drag main rectangle
 				case Grip.Main:
@@ -1653,7 +1659,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						int index = 0;
 						foreach(Vertex v in selectedvertices)
 						{
-							if(v == highlighted) highlightedpos = vertexpos[index];
+							if(v == highlighted)
+							{
+								highlightedpos = vertexpos[index];
+								break;
+							}
 							index++;
 						}
 					}
@@ -1662,7 +1672,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						int index = 0;
 						foreach(Thing t in selectedthings)
 						{
-							if(t == highlighted) highlightedpos = thingpos[index];
+							if(t == highlighted)
+							{
+								highlightedpos = thingpos[index];
+								break;
+							}
 							index++;
 						}
 					}
