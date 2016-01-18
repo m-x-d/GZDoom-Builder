@@ -526,6 +526,9 @@ namespace CodeImp.DoomBuilder
 			// Sector textures may've been changed 
 			data.UpdateUsedTextures();
 
+			// This will update DataManager.mapinfo only
+			data.ReloadMapInfoPartial();
+
 			// Skybox may've been changed
 			data.SetupSkybox();
 
