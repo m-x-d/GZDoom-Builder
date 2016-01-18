@@ -2425,7 +2425,10 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			// Get averaged top and bottom colors from the original image
 			int tr = 0, tg = 0, tb = 0, br = 0, bg = 0, bb = 0;
-			const int colorsampleheight = 28; // TODO: is this value calculated from the image's height?
+			const int defaultcolorsampleheight = 28;
+			int colorsampleheight = Math.Max(1, Math.Min(defaultcolorsampleheight, img.Height / 2)); // TODO: is this value calculated from the image's height?
+			bool dogradients = colorsampleheight < img.Height / 2;
+
 			for(int w = 0; w < img.Width; w++)
 			{
 				for(int h = 0; h < colorsampleheight; h++)
@@ -2481,19 +2484,22 @@ namespace CodeImp.DoomBuilder.Data
 			}
 
 			// Apply top/bottom gradients
-			using(Graphics g = Graphics.FromImage(skyimage))
+			if(dogradients)
 			{
-				Rectangle area = new Rectangle(0, 0, skyimage.Width, colorsampleheight);
-				using(LinearGradientBrush b = new LinearGradientBrush(area, topcolor, Color.FromArgb(0, topcolor), 90f))
+				using(Graphics g = Graphics.FromImage(skyimage))
 				{
-					g.FillRectangle(b, area);
-				}
+					Rectangle area = new Rectangle(0, 0, skyimage.Width, colorsampleheight);
+					using(LinearGradientBrush b = new LinearGradientBrush(area, topcolor, Color.FromArgb(0, topcolor), 90f))
+					{
+						g.FillRectangle(b, area);
+					}
 
-				area = new Rectangle(0, skyimage.Height - colorsampleheight, skyimage.Width, colorsampleheight);
-				using(LinearGradientBrush b = new LinearGradientBrush(area, Color.FromArgb(0, bottomcolor), bottomcolor, 90f))
-				{
-					area.Y += 1;
-					g.FillRectangle(b, area);
+					area = new Rectangle(0, skyimage.Height - colorsampleheight, skyimage.Width, colorsampleheight);
+					using(LinearGradientBrush b = new LinearGradientBrush(area, Color.FromArgb(0, bottomcolor), bottomcolor, 90f))
+					{
+						area.Y += 1;
+						g.FillRectangle(b, area);
+					}
 				}
 			}
 
