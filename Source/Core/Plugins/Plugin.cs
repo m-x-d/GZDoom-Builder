@@ -71,7 +71,6 @@ namespace CodeImp.DoomBuilder.Plugins
 			try
 			{
 				// Load assembly
-				//asm = Assembly.LoadFile(filename); //mxd
 				asm = Assembly.LoadFrom(filename);
 			}
 			catch(Exception)
@@ -95,8 +94,30 @@ namespace CodeImp.DoomBuilder.Plugins
 				plug = CreateObject<Plug>(t);
 				plug.Plugin = this;
 
-				// Verify minimum revision number
+				// Verify revision numbers
 				int thisrevision = General.ThisAssembly.GetName().Version.Revision;
+
+				//mxd. Revision numbers should match?
+				if(plug.StrictRevisionMatching && plug.MinimumRevision != thisrevision)
+				{
+					string message = shortfilename + " plugin's assembly version (" + plug.MinimumRevision + ") doesn't match main module version (" + thisrevision + ").";
+					if(General.ShowWarningMessage(message + Environment.NewLine +
+												  "It's strongly recomended to update the editor." + Environment.NewLine + 
+												  "Program stability is not guaranteed." + Environment.NewLine + Environment.NewLine +
+					                              "Continue anyway?", MessageBoxButtons.YesNo, MessageBoxDefaultButton.Button2, false) == DialogResult.No)
+					{
+						General.WriteLogLine("Quiting on " + shortfilename + " module version mismatch");
+						General.Exit(General.Map != null);
+						return;
+					}
+					else
+					{
+						General.ErrorLogger.Add(ErrorType.Warning, message);
+						throw new InvalidProgramException();
+					}
+				}
+
+				// Verify minimum revision number
 				if((thisrevision != 0) && (plug.MinimumRevision > thisrevision))
 				{
 					// Can't load this plugin because it is meant for a newer version
