@@ -1023,13 +1023,13 @@ namespace CodeImp.DoomBuilder
 				General.Actions.UnbindMethods(typeof(General));
 				
 				// Save colors
-				colors.SaveColors(settings.Config);
+				if(colors != null) colors.SaveColors(settings.Config);
 				
 				// Save action controls
 				actions.SaveSettings();
 				
 				// Save game configuration settings
-				foreach(ConfigurationInfo ci in configs) ci.SaveSettings();
+				if(configs != null) foreach(ConfigurationInfo ci in configs) ci.SaveSettings();
 				
 				// Save settings configuration
 				if(!General.NoSettings)

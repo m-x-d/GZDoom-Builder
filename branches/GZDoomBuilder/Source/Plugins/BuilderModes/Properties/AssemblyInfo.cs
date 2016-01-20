@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("CodeImp, MaxED")]
 [assembly: AssemblyProduct("Doom Builder")]
-[assembly: AssemblyCopyright("Copyright ©  2007, 2014")]
+[assembly: AssemblyCopyright("Copyright ©  2007, 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -28,4 +28,4 @@ using System.Runtime.InteropServices;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion("2.3.0.1885")]
+[assembly: AssemblyVersion("2.3.0.2411")]
