@@ -211,32 +211,26 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			if(preventchanges) return;
 			MakeUndo();
-			int i = 0;
 
-			//restore values
+			// Restore values
 			if(string.IsNullOrEmpty(positionx.Text)) 
 			{
 				// Apply position
+				int i = 0;
 				foreach(Vertex v in vertices) v.Move(new Vector2D(vertexprops[i++].X, v.Position.y));
-			} 
-			else //update values
+			}
+			// Update values
+			else 
 			{ 
-				// Verify the coordinates
-				float px = positionx.GetResultFloat(vertexprops[i].X);
-				if(px < General.Map.FormatInterface.MinCoordinate) 
+				int i = 0;
+				foreach(Vertex v in vertices)
 				{
-					positionx.Text = General.Map.FormatInterface.MinCoordinate.ToString();
-					return;
-				} 
-				
-				if(px > General.Map.FormatInterface.MaxCoordinate) 
-				{
-					positionx.Text = General.Map.FormatInterface.MaxCoordinate.ToString();
-					return;
-				}
+					// Verify the coordinates
+					float px = positionx.GetResultFloat(vertexprops[i++].X);
 
-				// Apply position
-				foreach(Vertex v in vertices) v.Move(new Vector2D(px, v.Position.y));
+					// Apply new position
+					v.Move(new Vector2D(Math.Max(General.Map.FormatInterface.MinCoordinate, Math.Min(General.Map.FormatInterface.MaxCoordinate, px)), v.Position.y));
+				}
 			}
 
 			General.Map.IsChanged = true;
@@ -247,32 +241,26 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			if(preventchanges) return;
 			MakeUndo();
-			int i = 0;
 
-			//restore values
+			// Restore values
 			if(string.IsNullOrEmpty(positiony.Text)) 
 			{
 				// Apply position
+				int i = 0;
 				foreach(Vertex v in vertices) v.Move(new Vector2D(v.Position.x, vertexprops[i++].Y));
-			} 
-			else //update values
+			}
+			// Update values
+			else 
 			{ 
-				// Verify the coordinates
-				float py = positiony.GetResultFloat(vertexprops[i].Y);
-				if(py < General.Map.FormatInterface.MinCoordinate) 
+				int i = 0;
+				foreach(Vertex v in vertices)
 				{
-					positiony.Text = General.Map.FormatInterface.MinCoordinate.ToString();
-					return;
-				} 
-				
-				if(py > General.Map.FormatInterface.MaxCoordinate) 
-				{
-					positiony.Text = General.Map.FormatInterface.MaxCoordinate.ToString();
-					return;
-				}
+					// Verify the coordinates
+					float py = positiony.GetResultFloat(vertexprops[i++].Y);
 
-				// Apply position
-				foreach(Vertex v in vertices) v.Move(new Vector2D(v.Position.x, py));
+					// Apply new position
+					v.Move(new Vector2D(v.Position.x, Math.Max(General.Map.FormatInterface.MinCoordinate, Math.Min(General.Map.FormatInterface.MaxCoordinate, py))));
+				}
 			}
 
 			General.Map.IsChanged = true;
