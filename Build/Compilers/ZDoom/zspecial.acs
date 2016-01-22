@@ -337,8 +337,10 @@ special
 	-91:QuakeEx(8,12),
 	-92:Warp(6,11),
 	-93:GetMaxInventory(2),
-	-94:SetSectorDamage(2,6),
-
+	-94:SetSectorDamage(2,5),
+	-95:SetSectorTerrain(3),
+	-96:SpawnParticle(1,15),
+	
 	// Zandronum's
 	-100:ResetMap(0),
 	-101:PlayerIsSpectator(1),
