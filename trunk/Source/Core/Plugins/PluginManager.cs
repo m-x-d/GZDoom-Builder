@@ -301,6 +301,7 @@ namespace CodeImp.DoomBuilder.Plugins
 		public void OnEditRedrawDisplayBegin() { foreach(Plugin p in plugins) p.Plug.OnEditRedrawDisplayBegin(); }
 		public void OnEditRedrawDisplayEnd() { foreach(Plugin p in plugins) p.Plug.OnEditRedrawDisplayEnd(); }
 		public void OnPresentDisplayBegin() { foreach(Plugin p in plugins) p.Plug.OnPresentDisplayBegin(); }
+		public void OnMapNodesRebuilt() { foreach(Plugin p in plugins) p.Plug.OnMapNodesRebuilt(); }
 		
 		#endregion
 	}

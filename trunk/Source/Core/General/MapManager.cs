@@ -431,13 +431,100 @@ namespace CodeImp.DoomBuilder
 		/// </summary>
 		public bool ExportToFile(string filepathname)
 		{
-			return SaveMap(filepathname, SavePurpose.Testing);
+			General.Plugins.OnMapSaveBegin(SavePurpose.Testing);
+			bool result = SaveMap(filepathname, SavePurpose.Testing);
+			General.Plugins.OnMapSaveEnd(SavePurpose.Testing);
+			return result;
+		}
+
+		/// <summary>
+		/// This writes the map structures to the temporary file.
+		/// </summary>
+		/// <returns></returns>
+		private bool WriteMapToTempFile()
+		{
+			StatusInfo oldstatus = General.MainWindow.Status;
+
+			// Make a copy of the map data
+			MapSet outputset = map.Clone();
+
+			// Remove all flags from all 3D Start things
+			foreach(Thing t in outputset.Things)
+			{
+				if(t.Type == config.Start3DModeThingType)
+				{
+					// We're not using SetFlag here, this doesn't have to be undone.
+					// Please note that this is totally exceptional!
+					List<string> flagkeys = new List<string>(t.Flags.Keys);
+					foreach(string k in flagkeys) t.Flags[k] = false;
+				}
+			}
+
+			// Do we need sidedefs compression?
+			if(map.Sidedefs.Count > io.MaxSidedefs)
+			{
+				// Compress sidedefs
+				General.MainWindow.DisplayStatus(StatusType.Busy, "Compressing sidedefs...");
+				outputset.CompressSidedefs();
+
+				// Check if it still doesnt fit
+				if(outputset.Sidedefs.Count > io.MaxSidedefs)
+				{
+					// Problem! Can't save the map like this!
+					General.ShowErrorMessage("Unable to save the map: There are too many unique sidedefs!", MessageBoxButtons.OK);
+					General.MainWindow.DisplayStatus(oldstatus);
+					return false;
+				}
+			}
+
+			// Check things
+			if(map.Things.Count > io.MaxThings)
+			{
+				General.ShowErrorMessage("Unable to save the map: There are too many things!", MessageBoxButtons.OK);
+				General.MainWindow.DisplayStatus(oldstatus);
+				return false;
+			}
+
+			// Check sectors
+			if(map.Sectors.Count > io.MaxSectors)
+			{
+				General.ShowErrorMessage("Unable to save the map: There are too many sectors!", MessageBoxButtons.OK);
+				General.MainWindow.DisplayStatus(oldstatus);
+				return false;
+			}
+
+			// Check linedefs
+			if(map.Linedefs.Count > io.MaxLinedefs)
+			{
+				General.ShowErrorMessage("Unable to save the map: There are too many linedefs!", MessageBoxButtons.OK);
+				General.MainWindow.DisplayStatus(oldstatus);
+				return false;
+			}
+
+			// Check vertices
+			if(map.Vertices.Count > io.MaxVertices)
+			{
+				General.ShowErrorMessage("Unable to save the map: There are too many vertices!", MessageBoxButtons.OK);
+				General.MainWindow.DisplayStatus(oldstatus);
+				return false;
+			}
+
+			// TODO: Check for more limitations
+
+			// Write to temporary file
+			General.WriteLogLine("Writing map data structures to file...");
+			int index = tempwad.FindLumpIndex(TEMP_MAP_HEADER);
+			if(index == -1) index = 0;
+			io.Write(outputset, TEMP_MAP_HEADER, index);
+			outputset.Dispose();
+
+			General.MainWindow.DisplayStatus(oldstatus);
+			return true;
 		}
 
 		// Initializes for an existing map
 		internal bool SaveMap(string newfilepathname, SavePurpose purpose)
 		{
-			MapSet outputset;
 			string nodebuildername, settingsfile;
 			StatusInfo oldstatus;
 			WAD targetwad;
@@ -477,75 +564,8 @@ namespace CodeImp.DoomBuilder
 			// (not when only scripts have changed)
 			if(changed)
 			{
-				// Make a copy of the map data
-				outputset = map.Clone();
-
-				// Remove all flags from all 3D Start things
-				foreach(Thing t in outputset.Things)
-				{
-					if(t.Type == config.Start3DModeThingType)
-					{
-						// We're not using SetFlag here, this doesn't have to be undone.
-						// Please note that this is totally exceptional!
-						List<string> flagkeys = new List<string>(t.Flags.Keys);
-						foreach(string k in flagkeys) t.Flags[k] = false;
-					}
-				}
-
-				// Do we need sidedefs compression?
-				if(map.Sidedefs.Count > io.MaxSidedefs)
-				{
-					// Compress sidedefs
-					oldstatus = General.MainWindow.Status;
-					General.MainWindow.DisplayStatus(StatusType.Busy, "Compressing sidedefs...");
-					outputset.CompressSidedefs();
-					General.MainWindow.DisplayStatus(oldstatus);
-					
-					// Check if it still doesnt fit
-					if(outputset.Sidedefs.Count > io.MaxSidedefs)
-					{
-						// Problem! Can't save the map like this!
-						General.ShowErrorMessage("Unable to save the map: There are too many unique sidedefs!", MessageBoxButtons.OK);
-						return false;
-					}
-				}
-
-				// Check things
-				if(map.Things.Count > io.MaxThings)
-				{
-					General.ShowErrorMessage("Unable to save the map: There are too many things!", MessageBoxButtons.OK);
-					return false;
-				}
-
-				// Check sectors
-				if(map.Sectors.Count > io.MaxSectors)
-				{
-					General.ShowErrorMessage("Unable to save the map: There are too many sectors!", MessageBoxButtons.OK);
-					return false;
-				}
-
-				// Check linedefs
-				if(map.Linedefs.Count > io.MaxLinedefs)
-				{
-					General.ShowErrorMessage("Unable to save the map: There are too many linedefs!", MessageBoxButtons.OK);
-					return false;
-				}
-
-				// Check vertices
-				if(map.Vertices.Count > io.MaxVertices)
-				{
-					General.ShowErrorMessage("Unable to save the map: There are too many vertices!", MessageBoxButtons.OK);
-					return false;
-				}
-				
-				// TODO: Check for more limitations
-				
-				// Write to temporary file
-				General.WriteLogLine("Writing map data structures to file...");
-				index = tempwad.FindLumpIndex(TEMP_MAP_HEADER);
-				if(index == -1) index = 0;
-				io.Write(outputset, TEMP_MAP_HEADER, index);
-				outputset.Dispose();
+				// Write the current map structures to the temp file
+				if(!WriteMapToTempFile()) return false;
 				
 				// Get the corresponding nodebuilder
 				nodebuildername = (purpose == SavePurpose.Testing) ? configinfo.NodebuilderTest : configinfo.NodebuilderSave;
@@ -714,6 +734,30 @@ namespace CodeImp.DoomBuilder
 
 		#region ================== Nodebuild
 
+		/// <summary>
+		/// This stores the current structures in memory to the temporary file and rebuilds the nodes.
+		/// The 'nodebuildername' must be a valid nodebuilder configuration profile.
+		/// Returns True on success, False when failed.
+		/// </summary>
+		public bool RebuildNodes(string nodebuildername, bool failaswarning)
+		{
+			bool result;
+
+			// Write the current map structures to the temp file
+			if(!WriteMapToTempFile()) return false;
+
+			// Build the nodes
+			StatusInfo oldstatus = General.MainWindow.Status;
+			General.MainWindow.DisplayStatus(StatusType.Busy, "Building map nodes...");
+			if(!string.IsNullOrEmpty(nodebuildername))
+				result = BuildNodes(nodebuildername, failaswarning);
+			else
+				result = false;
+			General.MainWindow.DisplayStatus(oldstatus);
+
+			return result;
+		}
+
 		// This builds the nodes in the temproary file with the given configuration name
 		private bool BuildNodes(string nodebuildername, bool failaswarning)
 		{
@@ -821,6 +865,11 @@ namespace CodeImp.DoomBuilder
 				
 				// Clean up
 				compiler.Dispose();
+
+				if(lumpscomplete)
+				{
+					General.Plugins.OnMapNodesRebuilt();
+				}
 				
 				// Return result
 				return lumpscomplete;
