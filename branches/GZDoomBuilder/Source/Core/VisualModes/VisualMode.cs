@@ -73,7 +73,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		protected Dictionary<Thing, VisualThing> allthings;
 		protected Dictionary<Sector, VisualSector> allsectors;
 		protected List<VisualBlockEntry> visibleblocks;
-		protected List<VisualThing> visiblethings;
+		protected Dictionary<Thing, VisualThing> visiblethings;
 		protected Dictionary<Sector, VisualSector> visiblesectors;
 		protected List<VisualGeometry> visiblegeometry;
 		
@@ -102,11 +102,11 @@ namespace CodeImp.DoomBuilder.VisualModes
 			this.renderer = General.Map.Renderer3D;
 			this.blockmap = new VisualBlockMap();
 			this.allsectors = new Dictionary<Sector, VisualSector>(General.Map.Map.Sectors.Count);
-			this.allthings = new Dictionary<Thing,VisualThing>(General.Map.Map.Things.Count);
+			this.allthings = new Dictionary<Thing, VisualThing>(General.Map.Map.Things.Count);
 			this.visibleblocks = new List<VisualBlockEntry>();
 			this.visiblesectors = new Dictionary<Sector, VisualSector>(50);
 			this.visiblegeometry = new List<VisualGeometry>(200);
-			this.visiblethings = new List<VisualThing>(100);
+			this.visiblethings = new Dictionary<Thing, VisualThing>(100);
 			this.processgeometry = true;
 			this.processthings = true;
 			this.vertices = new Dictionary<Vertex, VisualVertexPair>(); //mxd
@@ -515,7 +515,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 			// Make collections
 			visiblesectors = new Dictionary<Sector, VisualSector>(visiblesectors.Count);
 			visiblegeometry = new List<VisualGeometry>(visiblegeometry.Capacity);
-			visiblethings = new List<VisualThing>(visiblethings.Capacity);
+			visiblethings = new Dictionary<Thing, VisualThing>(visiblethings.Count);
 
 			// Get the blocks within view range
 			visibleblocks = blockmap.GetFrustumRange(renderer.Frustum2D);
@@ -569,9 +569,9 @@ namespace CodeImp.DoomBuilder.VisualModes
 							allthings.Add(t, vt);
 						}
 
-						if(vt != null)
+						if(vt != null && !visiblethings.ContainsKey(vt.Thing))
 						{
-							visiblethings.Add(vt);
+							visiblethings.Add(vt.Thing, vt);
 						}
 					}
 				}
@@ -799,7 +799,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 			}
 			
 			// Add all the visible things
-			foreach(VisualThing vt in visiblethings) pickables.Add(vt);
+			foreach(VisualThing vt in visiblethings.Values) pickables.Add(vt);
 
 			//mxd. And all visual vertices
 			if(General.Map.UDMF && General.Settings.GZShowVisualVertices) 

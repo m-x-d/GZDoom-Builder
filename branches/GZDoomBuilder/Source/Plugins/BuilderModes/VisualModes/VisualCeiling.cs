@@ -136,7 +136,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			//mxd. Determine fog density
-			fogfactor = CalculateFogDensity(targetbrightness);
+			fogfactor = CalculateFogFactor(targetbrightness);
 
 			// Make vertices
 			ReadOnlyCollection<Vector2D> triverts = Sector.Sector.Triangles.Vertices;

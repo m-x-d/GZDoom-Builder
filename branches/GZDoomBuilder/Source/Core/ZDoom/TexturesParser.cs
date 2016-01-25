@@ -78,8 +78,19 @@ namespace CodeImp.DoomBuilder.ZDoom
 			if(!base.Parse(stream, sourcefilename, clearerrors)) return false;
 
 			//mxd. Make vitrual path from filename
-			string virtualpath = sourcefilename.Substring(8).TrimStart(pathtrimchars);
-			if(virtualpath.ToLowerInvariant() == "txt") virtualpath = string.Empty;
+			string virtualpath;
+			if(sourcefilename.Contains("#")) // It's TEXTURES lump
+			{
+				virtualpath = Path.GetFileName(sourcefilename);
+				if(!string.IsNullOrEmpty(virtualpath)) virtualpath = virtualpath.Substring(0, virtualpath.LastIndexOf("#", StringComparison.Ordinal));
+			}
+			else // If it's actual filename, try to use extension(s) as virtualpath
+			{
+				virtualpath = Path.GetFileName(sourcefilename);
+				if(!string.IsNullOrEmpty(virtualpath)) virtualpath = virtualpath.Substring(8).TrimStart(pathtrimchars);
+				if(!string.IsNullOrEmpty(virtualpath) && virtualpath.ToLowerInvariant() == "txt") virtualpath = string.Empty;
+				if(string.IsNullOrEmpty(virtualpath)) virtualpath = "[TEXTURES]";
+			}
 			
 			// Continue until at the end of the stream
 			while(SkipWhitespace(true))
@@ -194,7 +205,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 						}
 						break;
 
-						case "$gzdb_skip": break;
+						case "$gzdb_skip": return !this.HasError;
 						
 						default:
 						{

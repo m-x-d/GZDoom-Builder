@@ -214,18 +214,26 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							WallPolygon np = SplitPoly(ref p, plane, false);
 							if(np.Count > 0)
 							{
-								//mxd. Determine color
-								int lightlevel;
-
-								// Sidedef part is not affected by 3d floor brightness
-								if(l.disablelighting || !l.extrafloor)
-									lightlevel = (lightabsolute ? lightvalue : l.brightnessbelow + lightvalue);
-								// 3d floor transfers brightness below it ignoring sidedef's brightness
+								if(l.type == SectorLevelType.Glow)
+								{
+									//mxd. Glow levels should not affect light level
+									np.color = p.color;
+								}
 								else
-									lightlevel = l.brightnessbelow;
+								{
+									//mxd. Determine color
+									int lightlevel;
 
-								PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(lightlevel, Sidedef)); //mxd
-								np.color = PixelColor.Modulate(l.colorbelow, wallbrightness).WithAlpha(255).ToInt();
+									// Sidedef part is not affected by 3d floor brightness
+									if(l.type != SectorLevelType.Light && (l.disablelighting || !l.extrafloor))
+										lightlevel = (lightabsolute ? lightvalue : l.brightnessbelow + lightvalue);
+									// 3d floors and light transfer effects transfers brightness below them ignoring sidedef's brightness
+									else
+										lightlevel = l.brightnessbelow;
+
+									PixelColor wallbrightness = PixelColor.FromInt(mode.CalculateBrightness(lightlevel, Sidedef)); //mxd
+									np.color = PixelColor.Modulate(l.colorbelow, wallbrightness).WithAlpha(255).ToInt();
+								}
 
 								if(p.Count == 0)
 								{
