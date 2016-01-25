@@ -301,8 +301,9 @@ namespace CodeImp.DoomBuilder.Plugins
 		public void OnEditRedrawDisplayBegin() { foreach(Plugin p in plugins) p.Plug.OnEditRedrawDisplayBegin(); }
 		public void OnEditRedrawDisplayEnd() { foreach(Plugin p in plugins) p.Plug.OnEditRedrawDisplayEnd(); }
 		public void OnPresentDisplayBegin() { foreach(Plugin p in plugins) p.Plug.OnPresentDisplayBegin(); }
+		public void OnMapNodesRebuilt() { foreach(Plugin p in plugins) p.Plug.OnMapNodesRebuilt(); }
 
-		//mxd. Hilight events
+		//mxd. Highlight events
 		public void OnHighlightSector(Sector s) { foreach(Plugin p in plugins) p.Plug.OnHighlightSector(s); }
 		public void OnHighlightLinedef(Linedef l) { foreach(Plugin p in plugins) p.Plug.OnHighlightLinedef(l); }
 		public void OnHighlightThing(Thing t) { foreach(Plugin p in plugins) p.Plug.OnHighlightThing(t); }

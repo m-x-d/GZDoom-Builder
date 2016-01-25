@@ -86,20 +86,6 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 		#region ================== Methods
 
 		/// <summary>
-		/// This (re)builds the nodes for the whole map.
-		/// </summary>
-		public void BuildNodes()
-		{
-			// There is no API available to do this directly, but we export the map which will
-			// cause the DB core to build the nodes (with testing parameters)
-			General.Interface.DisplayStatus(StatusType.Busy, "Building map nodes...");
-			string tempfile = BuilderPlug.MakeTempFilename(".wad");
-			General.Map.IsChanged = true;
-			General.Map.ExportToFile(tempfile);
-			File.Delete(tempfile);
-		}
-
-		/// <summary>
 		/// This loads all nodes structures data from the lumps
 		/// </summary>
 		private bool LoadClassicStructures()
@@ -810,14 +796,6 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 			Cursor.Current = Cursors.WaitCursor;
 			base.OnEngage();
 
-			//mxd. General.Map.ExportToFile in BuildNodes() won't do the trick if the map was never saved
-			if(string.IsNullOrEmpty(General.Map.FilePathName)) 
-			{
-				MessageBox.Show("Please save the map before running Nodes Viewer mode.", "Nodes Viewer mode", MessageBoxButtons.OK, MessageBoxIcon.Error);
-				General.Editing.CancelMode();
-				return;
-			}
-
 			//mxd
 			bool haveNodes = General.Map.LumpExists("NODES");
 			bool haveZnodes = General.Map.LumpExists("ZNODES");
@@ -828,7 +806,7 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 			if(General.Map.IsChanged || !(haveZnodes || (haveNodes || haveSectors || haveSegs || haveVerts)))
 			{
 				// We need to build the nodes!
-				BuildNodes();
+				if(!General.Map.RebuildNodes(General.Map.ConfigSettings.NodebuilderSave, true)) return;
 
 				//mxd. Update nodes availability
 				haveNodes = General.Map.LumpExists("NODES");
