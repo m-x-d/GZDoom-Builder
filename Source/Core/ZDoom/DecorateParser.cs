@@ -86,8 +86,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 			specialtokens = ":{}+-\n;,";
 			
 			// Initialize
-			actors = new Dictionary<string, ActorStructure>(StringComparer.Ordinal);
-			archivedactors = new Dictionary<string, ActorStructure>(StringComparer.Ordinal);
+			actors = new Dictionary<string, ActorStructure>(StringComparer.OrdinalIgnoreCase);
+			archivedactors = new Dictionary<string, ActorStructure>(StringComparer.OrdinalIgnoreCase);
 			parsedlumps = new HashSet<string>(StringComparer.OrdinalIgnoreCase); //mxd
 		}
 		
@@ -124,6 +124,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 				if(!string.IsNullOrEmpty(objdeclaration))
 				{
 					objdeclaration = objdeclaration.ToLowerInvariant();
+					if(objdeclaration == "$gzdb_skip") break;
 					switch(objdeclaration)
 					{
 						case "actor":
@@ -225,8 +226,6 @@ namespace CodeImp.DoomBuilder.ZDoom
 								if(string.IsNullOrEmpty(t) || t == ";") break;
 							}
 							break;
-
-						case "$gzdb_skip": break;
 
 						default:
 						{

@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.Data;
 
 #endregion
 
@@ -590,6 +591,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 			if(HasPropertyWithValue("$sprite"))
 			{
 				string sprite = GetPropertyValueString("$sprite", 0); //mxd
+				if((sprite.Length > DataManager.INTERNAL_PREFIX.Length) && 
+					sprite.ToLowerInvariant().StartsWith(DataManager.INTERNAL_PREFIX)) return sprite; //mxd
 				if(General.Map.Data.GetSpriteExists(sprite)) return sprite; //mxd. Added availability check
 
 				//mxd. Bitch and moan

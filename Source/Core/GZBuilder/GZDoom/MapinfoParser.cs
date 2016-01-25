@@ -81,8 +81,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 			while(SkipWhitespace(true)) 
 			{
 				string token = ReadToken().ToLowerInvariant();
-				if(string.IsNullOrEmpty(token)) break;
-				bool stopparsing = false;
+				if(string.IsNullOrEmpty(token) || token == "$gzdb_skip") break;
 
 				switch(token)
 				{
@@ -158,20 +157,14 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 					case "spawnnums":
 						if(!ParseSpawnNums()) return false;
 						break;
-
-					case "$gzdb_skip":
-						stopparsing = true; // Finished with this file
-						break; 
 				}
-
-				if(stopparsing) break;
 			}
 
 			// Check values
-			if(mapinfo.FadeColor.Red > 0 || mapinfo.FadeColor.Green > 0 || mapinfo.FadeColor.Blue > 0)
+			if(mapinfo.FogDensity > 0 && (mapinfo.FadeColor.Red > 0 || mapinfo.FadeColor.Green > 0 || mapinfo.FadeColor.Blue > 0))
 				mapinfo.HasFadeColor = true;
 
-			if(mapinfo.OutsideFogColor.Red > 0 || mapinfo.OutsideFogColor.Green > 0 || mapinfo.OutsideFogColor.Blue > 0)
+			if(mapinfo.OutsideFogDensity > 0 && (mapinfo.OutsideFogColor.Red > 0 || mapinfo.OutsideFogColor.Green > 0 || mapinfo.OutsideFogColor.Blue > 0))
 				mapinfo.HasOutsideFogColor = true;
 
 			// All done
@@ -643,10 +636,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 				return false;
 			}
 
-			if(densitytype == "fogdensity")
-				mapinfo.FogDensity = (int)(1024 * (256.0f / val));
-			else
-				mapinfo.OutsideFogDensity = (int)(1024 * (256.0f / val));
+			val = Math.Max(0, val);
+			if(densitytype == "fogdensity") mapinfo.FogDensity = val;
+			else mapinfo.OutsideFogDensity = val;
 
 			// All done here
 			return true;

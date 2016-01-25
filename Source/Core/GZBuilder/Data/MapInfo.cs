@@ -62,6 +62,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 		{
 			vertwallshade = 16;
 			horizwallshade = -16;
+			fogdensity = 255;
+			outsidefogdensity = 255;
 		}
 
 		#endregion

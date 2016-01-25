@@ -96,7 +96,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			int lightlevel = sd.Ceiling.brightnessbelow + lightvalue;
 
 			// Calculate fog density
-			fogfactor = CalculateFogDensity(lightlevel);
+			fogfactor = CalculateFogFactor(lightlevel);
 			poly.color = PixelColor.INT_WHITE;
 
 			// Cut off the part below the other floor and above the other ceiling
@@ -138,10 +138,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private bool IsFogBoundary()
 		{
 			if(Sidedef.Sector.Index == Sidedef.Other.Sector.Index) return false; // There can't be a boundary if both sides are in the same sector.
-			if(Sidedef.Sector.HasFogColor == Sidedef.Other.Sector.HasFogColor) return false;
-			if(!Sidedef.Sector.HasFogColor && !Sidedef.Other.Sector.HasFogColor) return false;
 			if(Sidedef.Sector.CeilTexture == General.Map.Config.SkyFlatName && Sidedef.Other.Sector.CeilTexture == General.Map.Config.SkyFlatName) return false;
-			return true;
+			return (Sidedef.Sector.FogMode > SectorFogMode.CLASSIC && Sidedef.Other.Sector.FogMode <= SectorFogMode.CLASSIC);
 		}
 
 		// This performs a fast test in object picking
