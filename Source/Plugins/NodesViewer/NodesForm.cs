@@ -160,7 +160,7 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 		// (Re)build the nodes
 		private void buildnodesbutton_Click(object sender, EventArgs e)
 		{
-			mode.BuildNodes();
+			General.Map.RebuildNodes(General.Map.ConfigSettings.NodebuilderSave, true);
 
 			// Restart the mode so that the new structures are loaded in.
 			// This will automatically close and re-open this window.

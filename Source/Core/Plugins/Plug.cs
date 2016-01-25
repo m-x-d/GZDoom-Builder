@@ -308,6 +308,13 @@ namespace CodeImp.DoomBuilder.Plugins
 		/// </summary>
 		public virtual void OnEditAccept() { }
 
+		/// <summary>
+		/// Called just after the nodes have been (re)built. This allows a plugin to intervene with
+		/// the nodebuilder output using GetLumpData and SetLumpData. If the map is being saved, this
+		/// is called after the nodes are rebuilt and just before they are stored in the target file.
+		/// </summary>
+		public virtual void OnMapNodesRebuilt() { }
+
 		// Interface events
 		public virtual void OnEditMouseClick(MouseEventArgs e) { }
 		public virtual void OnEditMouseDoubleClick(MouseEventArgs e) { }
