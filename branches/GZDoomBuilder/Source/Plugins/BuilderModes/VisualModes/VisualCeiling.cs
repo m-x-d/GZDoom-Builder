@@ -480,7 +480,40 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Check on which side of the nearest sidedef we are
 			Sidedef sd = MapSet.NearestSidedef(Sector.Sector.Sidedefs, pickintersect);
 			float side = sd.Line.SideOfLine(pickintersect);
-			return (((side <= 0.0f) && sd.IsFront) || ((side > 0.0f) && !sd.IsFront));
+
+			//mxd. Alpha based picking. Used only on extrafloors with transparent or masked textures
+			if((side <= 0.0f && sd.IsFront) || (side > 0.0f && !sd.IsFront))
+			{
+				if(!Texture.IsImageLoaded || extrafloor == null || RenderPass == RenderPass.Solid || (!Texture.IsTranslucent && !Texture.IsMasked))
+					return true;
+				
+				// Fetch ZDoom fields
+				float rotate = Angle2D.DegToRad(level.sector.Fields.GetValue("rotationceiling", 0.0f));
+				Vector2D offset = new Vector2D(level.sector.Fields.GetValue("xpanningceiling", 0.0f), level.sector.Fields.GetValue("ypanningceiling", 0.0f));
+				Vector2D scale = new Vector2D(level.sector.Fields.GetValue("xscaleceiling", 1.0f), level.sector.Fields.GetValue("yscaleceiling", 1.0f));
+				Vector2D texscale = new Vector2D(1.0f / Texture.ScaledWidth, 1.0f / Texture.ScaledHeight);
+
+				// Texture coordinates
+				Vector2D o = pickintersect;
+				o = o.GetRotated(rotate);
+				o.y = -o.y;
+				o = (o + offset) * scale * texscale;
+				o.x = (o.x * Texture.Width) % Texture.Width;
+				o.y = (o.y * Texture.Height) % Texture.Height;
+
+				// Make sure coordinates are inside of texture dimensions...
+				if(o.x < 0) o.x += Texture.Width;
+				if(o.y < 0) o.y += Texture.Height;
+
+				// Make final texture coordinates...
+				int ox = General.Clamp((int)Math.Floor(o.x), 0, Texture.Width - 1);
+				int oy = General.Clamp((int)Math.Floor(o.y), 0, Texture.Height - 1);
+
+				// Check pixel alpha
+				return (Texture.GetBitmap().GetPixel(ox, oy).A > 0);
+			}
+
+			return false;
 		}
 
 		// Return texture name

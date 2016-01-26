@@ -627,7 +627,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Sectors
 
 		// This gets sectors which surround given sectors
-		internal static IEnumerable<Sector> GetSectorsAround(IEnumerable<Sector> selected)
+		internal static IEnumerable<Sector> GetSectorsAround(BaseVisualMode mode, IEnumerable<Sector> selected)
 		{
 			HashSet<int> processedsectors = new HashSet<int>();
 			HashSet<Vertex> verts = new HashSet<Vertex>();
@@ -651,11 +651,39 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					{
 						result.Add(l.Front.Sector);
 						processedsectors.Add(l.Front.Sector.Index);
+
+						// Add extrafloors as well
+						SectorData sd = mode.GetSectorDataEx(l.Front.Sector);
+						if(sd != null && sd.ExtraFloors.Count > 0)
+						{
+							foreach(Effect3DFloor effect in sd.ExtraFloors)
+							{
+								if(!processedsectors.Contains(effect.Linedef.Front.Sector.Index))
+								{
+									result.Add(effect.Linedef.Front.Sector);
+									processedsectors.Add(effect.Linedef.Front.Sector.Index);
+								}
+							}
+						}
 					}
 					if(l.Back != null && l.Back.Sector != null && !processedsectors.Contains(l.Back.Sector.Index))
 					{
 						result.Add(l.Back.Sector);
 						processedsectors.Add(l.Back.Sector.Index);
+
+						// Add extrafloors as well
+						SectorData sd = mode.GetSectorDataEx(l.Back.Sector);
+						if(sd != null && sd.ExtraFloors.Count > 0)
+						{
+							foreach(Effect3DFloor effect in sd.ExtraFloors)
+							{
+								if(!processedsectors.Contains(effect.Linedef.Front.Sector.Index))
+								{
+									result.Add(effect.Linedef.Front.Sector);
+									processedsectors.Add(effect.Linedef.Front.Sector.Index);
+								}
+							}
+						}
 					}
 				}
 			}
