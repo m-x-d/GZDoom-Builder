@@ -1042,7 +1042,7 @@ namespace CodeImp.DoomBuilder.Windows
 					if(General.Colors != null)
 						e.Graphics.Clear(Color.FromArgb(General.Colors.Background.ToInt()));
 					else
-						e.Graphics.Clear(SystemColors.AppWorkspace);
+						e.Graphics.Clear(SystemColors.ControlDarkDark);
 				}
 			}
 		}
