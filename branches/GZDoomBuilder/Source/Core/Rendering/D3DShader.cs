@@ -112,6 +112,9 @@ namespace CodeImp.DoomBuilder.Rendering
 				// Compiling failed, try with debug information
 				try
 				{
+					//mxd. Rewind before use!
+					fxdata.Seek(0, SeekOrigin.Begin);
+					
 					// Compile effect
 					fx = Effect.FromStream(General.Map.Graphics.Device, fxdata, null, null, null, ShaderFlags.Debug, null, out errors);
 					if(!string.IsNullOrEmpty(errors))

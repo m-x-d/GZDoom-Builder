@@ -169,7 +169,7 @@ float4 ps_fullbright(PixelData pd) : COLOR
 float4 ps_main_highlight(PixelData pd) : COLOR
 {
 	float4 tcolor = tex2D(texturesamp, pd.uv);
-	if(tcolor.a == 0) clip(-1);
+	if(tcolor.a == 0) return tcolor;
 	
 	// Blend texture color and vertex color
 	float4 ncolor = tcolor * pd.color;
@@ -181,7 +181,7 @@ float4 ps_main_highlight(PixelData pd) : COLOR
 float4 ps_fullbright_highlight(PixelData pd) : COLOR
 {
 	float4 tcolor = tex2D(texturesamp, pd.uv);
-	if(tcolor.a == 0) clip(-1);
+	if(tcolor.a == 0) return tcolor;
 	
 	// Blend texture color and vertex color
 	float4 ncolor = tcolor * pd.color;
@@ -204,7 +204,7 @@ float4 getFogColor(LitPixelData pd, float4 color)
 float4 ps_main_fog(LitPixelData pd) : COLOR 
 {
 	float4 tcolor = tex2D(texturesamp, pd.uv);
-	if(tcolor.a == 0) clip(-1);
+	if(tcolor.a == 0) return tcolor;
 	
 	return getFogColor(pd, tcolor * pd.color);
 }
@@ -213,7 +213,7 @@ float4 ps_main_fog(LitPixelData pd) : COLOR
 float4 ps_main_highlight_fog(LitPixelData pd) : COLOR 
 {
 	float4 tcolor = tex2D(texturesamp, pd.uv);
-	if(tcolor.a == 0) clip(-1);
+	if(tcolor.a == 0) return tcolor;
 	
 	// Blend texture color and vertex color
 	float4 ncolor = getFogColor(pd, tcolor * pd.color);
