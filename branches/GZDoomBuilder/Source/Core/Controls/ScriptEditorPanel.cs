@@ -25,6 +25,7 @@ using System.Windows.Forms;
 using CodeImp.DoomBuilder.Compilers;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Windows;
+using ScintillaNET;
 
 #endregion
 
@@ -116,16 +117,20 @@ namespace CodeImp.DoomBuilder.Controls
 			foreach(MapLumpInfo maplumpinfo in General.Map.Config.MapLumps.Values)
 			{
 				// Is this a script lump?
-				if(maplumpinfo.Script != null)
-				{
-					// Load this!
-					ScriptLumpDocumentTab t = new ScriptLumpDocumentTab(this, maplumpinfo.Name, maplumpinfo.Script);
-					tabs.TabPages.Add(t);
-				} 
-				else if(maplumpinfo.ScriptBuild) //mxd
+				if(maplumpinfo.ScriptBuild) //mxd
 				{
 					// Load this!
 					ScriptLumpDocumentTab t = new ScriptLumpDocumentTab(this, maplumpinfo.Name, General.CompiledScriptConfigs[General.Map.Options.ScriptCompiler]);
+					t.OnTextChanged += tabpage_OnLumpTextChanged; //mxd
+					t.Scintilla.UpdateUI += scintilla_OnUpdateUI; //mxd
+					tabs.TabPages.Add(t);
+				} 
+				else if(maplumpinfo.Script != null)
+				{
+					// Load this!
+					ScriptLumpDocumentTab t = new ScriptLumpDocumentTab(this, maplumpinfo.Name, maplumpinfo.Script);
+					t.OnTextChanged += tabpage_OnLumpTextChanged; //mxd
+					t.Scintilla.UpdateUI += scintilla_OnUpdateUI; //mxd
 					tabs.TabPages.Add(t);
 				}
 			}
@@ -160,21 +165,35 @@ namespace CodeImp.DoomBuilder.Controls
 		// This applies user preferences
 		public void ApplySettings()
 		{
-			// Apply settings
-			//int panel2size = General.Settings.ReadSetting("scriptspanel.splitter", splitter.ClientRectangle.Height - splitter.SplitterDistance);
-			//splitter.SplitterDistance = splitter.ClientRectangle.Height - panel2size;
 			errorlist.Columns[0].Width = General.Settings.ReadSetting("scriptspanel.errorscolumn0width", errorlist.Columns[0].Width);
 			errorlist.Columns[1].Width = General.Settings.ReadSetting("scriptspanel.errorscolumn1width", errorlist.Columns[1].Width);
 			errorlist.Columns[2].Width = General.Settings.ReadSetting("scriptspanel.errorscolumn2width", errorlist.Columns[2].Width);
+			buttonwhitespace.Checked = General.Settings.ReadSetting("scriptspanel.showwhitespace", false); //mxd
+			buttonwordwrap.Checked = General.Settings.ReadSetting("scriptspanel.wraplonglines", false); //mxd
+			ApplyTabSettings(); //mxd
 		}
 		
 		// This saves user preferences
 		public void SaveSettings()
 		{
-			//General.Settings.WriteSetting("scriptspanel.splitter", splitter.ClientRectangle.Height - splitter.SplitterDistance);
 			General.Settings.WriteSetting("scriptspanel.errorscolumn0width", errorlist.Columns[0].Width);
 			General.Settings.WriteSetting("scriptspanel.errorscolumn1width", errorlist.Columns[1].Width);
-			General.Settings.WriteSetting("scriptspanel.errorscolumn2width", errorlist.Columns[2].Width);
+			General.Settings.WriteSetting("scriptspanel.showwhitespace", buttonwhitespace.Checked); //mxd
+			General.Settings.WriteSetting("scriptspanel.wraplonglines", buttonwordwrap.Checked); //mxd
+		}
+
+		//mxd
+		private void ApplyTabSettings()
+		{
+			foreach(var tp in tabs.TabPages)
+			{
+				ScriptDocumentTab scripttab = (tp as ScriptDocumentTab);
+				if(scripttab != null)
+				{
+					scripttab.WrapLongLines = buttonwordwrap.Checked;
+					scripttab.ShowWhitespace = buttonwhitespace.Checked;
+				}
+			}
 		}
 		
 		#endregion
@@ -230,7 +249,7 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			if(!string.IsNullOrEmpty(findoptions.FindText) && (options.ReplaceWith != null) && (ActiveTab != null))
 			{
-				if(string.Compare(ActiveTab.GetSelectedText(), options.FindText, !options.CaseSensitive) == 0)
+				if(string.Compare(ActiveTab.SelectedText, options.FindText, !options.CaseSensitive) == 0)
 				{
 					// Replace selection
 					ActiveTab.ReplaceSelection(options.ReplaceWith);
@@ -321,7 +340,7 @@ namespace CodeImp.DoomBuilder.Controls
 					findreplaceform.Show(this.ParentForm);
 
 				if(ActiveTab.SelectionEnd != ActiveTab.SelectionStart)
-					findreplaceform.SetFindText(ActiveTab.GetSelectedText());
+					findreplaceform.SetFindText(ActiveTab.SelectedText);
 			}
 			catch(Exception)
 			{
@@ -421,7 +440,7 @@ namespace CodeImp.DoomBuilder.Controls
 			if(t.IsChanged)
 			{
 				// Ask to save
-				DialogResult result = MessageBox.Show(this.ParentForm, "Do you want to save changes to " + t.Text + "?", "Close File", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+				DialogResult result = MessageBox.Show(this.ParentForm, "Do you want to save changes to " + t.Title + "?", "Close File", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
 				switch(result)
 				{
 					case DialogResult.Yes:
@@ -492,20 +511,24 @@ namespace CodeImp.DoomBuilder.Controls
 				t = (tabs.SelectedTab as ScriptDocumentTab);
 			
 			// Enable/disable buttons
-			buttonsave.Enabled = (t != null) && t.ExplicitSave && t.IsChanged;
+			buttonsave.Enabled = (t != null && t.ExplicitSave && t.IsChanged);
 			buttonsaveall.Enabled = (explicitsavescripts > 0);
-			buttoncompile.Enabled = (t != null) && (t.Config.Compiler != null);
+			buttoncompile.Enabled = (t != null && t.Config.Compiler != null);
 			buttonsearch.Enabled = (t != null); //mxd
-			buttonkeywordhelp.Enabled = (t != null) && !string.IsNullOrEmpty(t.Config.KeywordHelp);
-			buttonscriptconfig.Enabled = (t != null) && t.IsReconfigurable;
-			buttonundo.Enabled = (t != null);
-			buttonredo.Enabled = (t != null);
-			buttoncopy.Enabled = (t != null);
-			buttoncut.Enabled = (t != null);
-			buttonpaste.Enabled = (t != null);
-			buttonclose.Enabled = (t != null) && t.IsClosable;
+			buttonkeywordhelp.Enabled = (t != null && !string.IsNullOrEmpty(t.Config.KeywordHelp));
+			buttonscriptconfig.Enabled = (t != null && t.IsReconfigurable);
+			buttonundo.Enabled = (t != null && t.Scintilla.CanUndo);
+			buttonredo.Enabled = (t != null && t.Scintilla.CanRedo);
+			buttoncopy.Enabled = (t != null && t.Scintilla.SelectionStart < t.Scintilla.SelectionEnd);
+			buttoncut.Enabled = (t != null && t.Scintilla.SelectionStart < t.Scintilla.SelectionEnd);
+			buttonpaste.Enabled = (t != null && t.Scintilla.CanPaste);
+			buttonclose.Enabled = (t != null && t.IsClosable);
 			buttonsnippets.DropDownItems.Clear(); //mxd
-			buttonsnippets.Enabled = (t != null) && t.Config.Snippets.Count > 0; //mxd
+			buttonsnippets.Enabled = (t != null && t.Config.Snippets.Count > 0); //mxd
+			buttonindent.Enabled = (t != null); //mxd
+			buttonunindent.Enabled = (t != null && t.Scintilla.Lines[t.Scintilla.CurrentLine].Indentation > 0); //mxd
+			buttonwhitespace.Enabled = (t != null); //mxd
+			buttonwordwrap.Enabled = (t != null); //mxd
 			
 			if(t != null)
 			{
@@ -519,7 +542,8 @@ namespace CodeImp.DoomBuilder.Controls
 				//mxd. Add snippets
 				if(t.Config != null && t.Config.Snippets.Count > 0)
 				{
-					if(t.Config.Snippets.Count > 0) foreach(KeyValuePair<string, string[]> group in t.Config.Snippets) buttonsnippets.DropDownItems.Add(group.Key).Click += OnInsertSnippetClick;
+					if(t.Config.Snippets.Count > 0)
+						foreach(string snippetname in t.Config.Snippets) buttonsnippets.DropDownItems.Add(snippetname).Click += OnInsertSnippetClick;
 				}
 				
 				// Focus to script editor
@@ -589,24 +613,27 @@ namespace CodeImp.DoomBuilder.Controls
 
 				// Done
 				t.OnTextChanged += tabpage_OnTextChanged; //mxd
-				t.IsChanged = false; //mxd. Not changed yet
+				t.Scintilla.UpdateUI += scintilla_OnUpdateUI;
 				UpdateToolbar(true);
 				return t;
 			}
-			else
-			{
-				// Failed
-				return null;
-			}
+
+			// Failed
+			return null;
 		}
 
 		// This saves the current open script
 		public void ExplicitSaveCurrentTab()
 		{
 			ScriptDocumentTab t = (tabs.SelectedTab as ScriptDocumentTab);
-			if((t != null) && t.ExplicitSave)
+			if((t != null))
 			{
-				buttonsave_Click(this, EventArgs.Empty);
+				if(t.ExplicitSave)
+					buttonsave_Click(this, EventArgs.Empty);
+				else if(t.Config.Compiler != null) //mxd
+					buttoncompile_Click(this, EventArgs.Empty);
+				else
+					General.MessageBeep(MessageBeepType.Default);
 			}
 			else
 			{
@@ -625,7 +652,7 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			// Get script
 			ScriptDocumentTab t = (tabs.SelectedTab as ScriptDocumentTab);
-			return t.LaunchKeywordHelp();
+			return (t != null && t.LaunchKeywordHelp());
 		}
 
 		//mxd. This changes status text
@@ -837,18 +864,14 @@ namespace CodeImp.DoomBuilder.Controls
 					t.SaveAs(savefile.FileName);
 					return true;
 				}
-				else
-				{
-					// Cancelled
-					return false;
-				}
+				
+				// Cancelled
+				return false;
 			}
-			else
-			{
-				// Save to same filename
-				t.Save();
-				return true;
-			}
+
+			// Save to same filename
+			t.Save();
+			return true;
 		}
 		
 		// A tab is selected
@@ -894,15 +917,15 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 
 			// Compile now
-			DisplayStatus(ScriptStatusType.Busy, "Compiling script \"" + t.Text + "\"...");
+			DisplayStatus(ScriptStatusType.Busy, "Compiling script \"" + t.Title + "\"...");
 			Cursor.Current = Cursors.WaitCursor;
 			t.Compile();
 
 			// Show warning
 			if((compilererrors != null) && (compilererrors.Count > 0))
-				DisplayStatus(ScriptStatusType.Warning, compilererrors.Count + " errors while compiling \"" + t.Text + "\"!");
+				DisplayStatus(ScriptStatusType.Warning, compilererrors.Count + " errors while compiling \"" + t.Title + "\"!");
 			else
-				DisplayStatus(ScriptStatusType.Info, "Script \"" + t.Text + "\" compiled without errors.");
+				DisplayStatus(ScriptStatusType.Info, "Script \"" + t.Title + "\" compiled without errors.");
 
 			Cursor.Current = Cursors.Default;
 			UpdateToolbar(true);
@@ -948,6 +971,32 @@ namespace CodeImp.DoomBuilder.Controls
 			UpdateToolbar(true);
 		}
 
+		//mxd
+		private void buttonunindent_Click(object sender, EventArgs e)
+		{
+			ScriptDocumentTab t = (tabs.SelectedTab as ScriptDocumentTab);
+			t.IndentSelection(false);
+		}
+
+		//mxd
+		private void buttonindent_Click(object sender, EventArgs e)
+		{
+			ScriptDocumentTab t = (tabs.SelectedTab as ScriptDocumentTab);
+			t.IndentSelection(true);
+		}
+
+		//mxd
+		private void buttonwhitespace_Click(object sender, EventArgs e)
+		{
+			ApplyTabSettings();
+		}
+
+		//mxd
+		private void buttonwordwrap_Click(object sender, EventArgs e)
+		{
+			ApplyTabSettings();
+		}
+
 		//mxd. Search clicked
 		private void buttonsearch_Click(object sender, EventArgs e) 
 		{
@@ -958,7 +1007,7 @@ namespace CodeImp.DoomBuilder.Controls
 		private void OnInsertSnippetClick(object sender, EventArgs eventArgs) 
 		{
 			ScriptDocumentTab t = (tabs.SelectedTab as ScriptDocumentTab);
-			t.InsertSnippet( t.Config.Snippets[((ToolStripItem)sender).Text] );
+			t.InsertSnippet( ((ToolStripItem)sender).Text );
 		}
 		
 		// Mouse released on tabs
@@ -967,13 +1016,52 @@ namespace CodeImp.DoomBuilder.Controls
 			ForceFocus();
 		}
 
-		//mxd
+		//mxd. Text in ScriptFileDocumentTab was changed
 		private void tabpage_OnTextChanged(object sender, EventArgs eventArgs)
 		{
 			if(tabs.SelectedTab != null)
 			{
 				ScriptDocumentTab curtab = tabs.SelectedTab as ScriptDocumentTab;
-				buttonsave.Enabled = (curtab != null && curtab.ExplicitSave && curtab.IsChanged);
+				if(curtab != null)
+				{
+					buttonsave.Enabled = (curtab.ExplicitSave && curtab.IsChanged);
+					buttonundo.Enabled = curtab.Scintilla.CanUndo;
+					buttonredo.Enabled = curtab.Scintilla.CanRedo;
+				}
+			}
+		}
+
+		//mxd. Text in ScriptLumpDocumentTab was changed
+		private void tabpage_OnLumpTextChanged(object sender, EventArgs e)
+		{
+			if(tabs.SelectedTab != null)
+			{
+				ScriptDocumentTab curtab = tabs.SelectedTab as ScriptDocumentTab;
+				if(curtab != null)
+				{
+					buttonundo.Enabled = curtab.Scintilla.CanUndo;
+					buttonredo.Enabled = curtab.Scintilla.CanRedo;
+				}
+			}
+		}
+
+		//mxd
+		private void scintilla_OnUpdateUI(object sender, UpdateUIEventArgs e)
+		{
+			Scintilla s = sender as Scintilla;
+			if(s != null)
+			{
+				// Update caret position info [line] : [caret pos start] OR [caret pos start x selection length] ([total lines])
+				positionlabel.Text = (s.CurrentLine + 1) + " : " 
+					+ (s.SelectionStart + 1 - s.Lines[s.LineFromPosition(s.SelectionStart)].Position) 
+					+ (s.SelectionStart != s.SelectionEnd ? "x" + (s.SelectionEnd - s.SelectionStart) : "") 
+					+ " (" + s.Lines.Count + ")";
+
+				// Update copy-paste buttons
+				buttoncut.Enabled = (s.SelectionEnd > s.SelectionStart);
+				buttoncopy.Enabled = (s.SelectionEnd > s.SelectionStart);
+				buttonpaste.Enabled = s.CanPaste;
+				buttonunindent.Enabled = s.Lines[s.CurrentLine].Indentation > 0;
 			}
 		}
 		

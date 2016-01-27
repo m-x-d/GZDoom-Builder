@@ -44,6 +44,11 @@ namespace CodeImp.DoomBuilder.Controls
 			this.buttoncopy = new System.Windows.Forms.ToolStripButton();
 			this.buttonpaste = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
+			this.buttonunindent = new System.Windows.Forms.ToolStripButton();
+			this.buttonindent = new System.Windows.Forms.ToolStripButton();
+			this.buttonwhitespace = new System.Windows.Forms.ToolStripButton();
+			this.buttonwordwrap = new System.Windows.Forms.ToolStripButton();
+			this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
 			this.buttonsnippets = new System.Windows.Forms.ToolStripDropDownButton();
 			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
 			this.buttonscriptconfig = new System.Windows.Forms.ToolStripDropDownButton();
@@ -68,6 +73,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.errorimages = new System.Windows.Forms.ImageList(this.components);
 			this.statusbar = new System.Windows.Forms.StatusStrip();
 			this.statuslabel = new System.Windows.Forms.ToolStripStatusLabel();
+			this.positionlabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.scripttype = new System.Windows.Forms.ToolStripStatusLabel();
 			this.statusflasher = new System.Windows.Forms.Timer(this.components);
 			this.statusresetter = new System.Windows.Forms.Timer(this.components);
@@ -88,7 +94,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.tabs.Name = "tabs";
 			this.tabs.Padding = new System.Drawing.Point(12, 3);
 			this.tabs.SelectedIndex = 0;
-			this.tabs.Size = new System.Drawing.Size(720, 379);
+			this.tabs.Size = new System.Drawing.Size(794, 379);
 			this.tabs.TabIndex = 0;
 			this.tabs.TabStop = false;
 			this.tabs.Selecting += new System.Windows.Forms.TabControlCancelEventHandler(this.tabs_Selecting);
@@ -111,6 +117,11 @@ namespace CodeImp.DoomBuilder.Controls
             this.buttoncopy,
             this.buttonpaste,
             this.toolStripSeparator3,
+            this.buttonunindent,
+            this.buttonindent,
+            this.buttonwhitespace,
+            this.buttonwordwrap,
+            this.toolStripSeparator6,
             this.buttonsnippets,
             this.toolStripSeparator4,
             this.buttonscriptconfig,
@@ -126,7 +137,7 @@ namespace CodeImp.DoomBuilder.Controls
             this.searchwholeword});
 			this.toolbar.Location = new System.Drawing.Point(0, 0);
 			this.toolbar.Name = "toolbar";
-			this.toolbar.Size = new System.Drawing.Size(726, 25);
+			this.toolbar.Size = new System.Drawing.Size(800, 25);
 			this.toolbar.TabIndex = 1;
 			// 
 			// buttonnew
@@ -239,6 +250,54 @@ namespace CodeImp.DoomBuilder.Controls
 			this.toolStripSeparator3.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
 			this.toolStripSeparator3.Name = "toolStripSeparator3";
 			this.toolStripSeparator3.Size = new System.Drawing.Size(6, 25);
+			// 
+			// buttonunindent
+			// 
+			this.buttonunindent.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttonunindent.Image = global::CodeImp.DoomBuilder.Properties.Resources.TextUnindent;
+			this.buttonunindent.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttonunindent.Name = "buttonunindent";
+			this.buttonunindent.Size = new System.Drawing.Size(23, 22);
+			this.buttonunindent.Text = "Unindent selection";
+			this.buttonunindent.Click += new System.EventHandler(this.buttonunindent_Click);
+			// 
+			// buttonindent
+			// 
+			this.buttonindent.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttonindent.Image = global::CodeImp.DoomBuilder.Properties.Resources.TextIndent;
+			this.buttonindent.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttonindent.Name = "buttonindent";
+			this.buttonindent.Size = new System.Drawing.Size(23, 22);
+			this.buttonindent.Text = "Indent selection";
+			this.buttonindent.Click += new System.EventHandler(this.buttonindent_Click);
+			// 
+			// buttonwhitespace
+			// 
+			this.buttonwhitespace.CheckOnClick = true;
+			this.buttonwhitespace.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttonwhitespace.Image = global::CodeImp.DoomBuilder.Properties.Resources.TextWhitespace;
+			this.buttonwhitespace.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttonwhitespace.Name = "buttonwhitespace";
+			this.buttonwhitespace.Size = new System.Drawing.Size(23, 22);
+			this.buttonwhitespace.Text = "Show whitespace";
+			this.buttonwhitespace.Click += new System.EventHandler(this.buttonwhitespace_Click);
+			// 
+			// buttonwordwrap
+			// 
+			this.buttonwordwrap.CheckOnClick = true;
+			this.buttonwordwrap.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttonwordwrap.Image = global::CodeImp.DoomBuilder.Properties.Resources.WordWrap;
+			this.buttonwordwrap.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttonwordwrap.Name = "buttonwordwrap";
+			this.buttonwordwrap.Size = new System.Drawing.Size(23, 22);
+			this.buttonwordwrap.Text = "Wrap long lines";
+			this.buttonwordwrap.Click += new System.EventHandler(this.buttonwordwrap_Click);
+			// 
+			// toolStripSeparator6
+			// 
+			this.toolStripSeparator6.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+			this.toolStripSeparator6.Name = "toolStripSeparator6";
+			this.toolStripSeparator6.Size = new System.Drawing.Size(6, 25);
 			// 
 			// buttonsnippets
 			// 
@@ -391,7 +450,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			this.splitter.Panel2.Controls.Add(this.label1);
 			this.splitter.Panel2.Controls.Add(this.errorlist);
-			this.splitter.Size = new System.Drawing.Size(726, 516);
+			this.splitter.Size = new System.Drawing.Size(800, 516);
 			this.splitter.SplitterDistance = 390;
 			this.splitter.TabIndex = 2;
 			this.splitter.TabStop = false;
@@ -406,7 +465,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.label1.Location = new System.Drawing.Point(3, 0);
 			this.label1.Name = "label1";
 			this.label1.Padding = new System.Windows.Forms.Padding(1);
-			this.label1.Size = new System.Drawing.Size(720, 16);
+			this.label1.Size = new System.Drawing.Size(794, 16);
 			this.label1.TabIndex = 1;
 			this.label1.Text = "Errors";
 			// 
@@ -427,7 +486,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.errorlist.MultiSelect = false;
 			this.errorlist.Name = "errorlist";
 			this.errorlist.ShowGroups = false;
-			this.errorlist.Size = new System.Drawing.Size(720, 100);
+			this.errorlist.Size = new System.Drawing.Size(794, 100);
 			this.errorlist.SmallImageList = this.errorimages;
 			this.errorlist.TabIndex = 0;
 			this.errorlist.TabStop = false;
@@ -460,10 +519,11 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			this.statusbar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.statuslabel,
+            this.positionlabel,
             this.scripttype});
 			this.statusbar.Location = new System.Drawing.Point(0, 541);
 			this.statusbar.Name = "statusbar";
-			this.statusbar.Size = new System.Drawing.Size(726, 22);
+			this.statusbar.Size = new System.Drawing.Size(800, 22);
 			this.statusbar.TabIndex = 3;
 			this.statusbar.Text = "statusStrip1";
 			// 
@@ -476,11 +536,19 @@ namespace CodeImp.DoomBuilder.Controls
 			this.statuslabel.Size = new System.Drawing.Size(60, 17);
 			this.statuslabel.Text = "Ready.";
 			// 
+			// positionlabel
+			// 
+			this.positionlabel.Name = "positionlabel";
+			this.positionlabel.Size = new System.Drawing.Size(634, 17);
+			this.positionlabel.Spring = true;
+			this.positionlabel.Text = "100 : 12 (120)";
+			this.positionlabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			// 
 			// scripttype
 			// 
+			this.scripttype.Margin = new System.Windows.Forms.Padding(30, 3, 0, 2);
 			this.scripttype.Name = "scripttype";
-			this.scripttype.Size = new System.Drawing.Size(648, 17);
-			this.scripttype.Spring = true;
+			this.scripttype.Size = new System.Drawing.Size(58, 17);
 			this.scripttype.Text = "Plain Text";
 			this.scripttype.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			// 
@@ -501,7 +569,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.Controls.Add(this.statusbar);
 			this.Controls.Add(this.toolbar);
 			this.Name = "ScriptEditorPanel";
-			this.Size = new System.Drawing.Size(726, 563);
+			this.Size = new System.Drawing.Size(800, 563);
 			this.toolbar.ResumeLayout(false);
 			this.toolbar.PerformLayout();
 			this.splitter.Panel1.ResumeLayout(false);
@@ -557,5 +625,11 @@ namespace CodeImp.DoomBuilder.Controls
 		private System.Windows.Forms.ToolStripStatusLabel scripttype;
 		private System.Windows.Forms.Timer statusflasher;
 		private System.Windows.Forms.Timer statusresetter;
+		private System.Windows.Forms.ToolStripStatusLabel positionlabel;
+		private System.Windows.Forms.ToolStripButton buttonunindent;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
+		private System.Windows.Forms.ToolStripButton buttonindent;
+		private System.Windows.Forms.ToolStripButton buttonwhitespace;
+		private System.Windows.Forms.ToolStripButton buttonwordwrap;
 	}
 }

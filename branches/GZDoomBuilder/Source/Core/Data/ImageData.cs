@@ -547,8 +547,8 @@ namespace CodeImp.DoomBuilder.Data
 		// This returns a preview image
 		public virtual Image GetPreview()
 		{
-			lock(this)
-			{
+			//lock(this)
+			//{
 				// Preview ready?
 				if(previewstate == ImageLoadState.Ready)
 				{
@@ -565,7 +565,7 @@ namespace CodeImp.DoomBuilder.Data
 
 				// Return loading bitmap
 				return Properties.Resources.Hourglass;
-			}
+			//}
 		}
 
 		//mxd. This greatly speeds up Dictionary lookups

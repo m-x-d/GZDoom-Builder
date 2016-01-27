@@ -61,7 +61,7 @@ namespace CodeImp.DoomBuilder.Controls
 			if(config.Extensions.Length > 0) ext = "." + config.Extensions[0];
 			SetTitle("Untitled" + ext);
 			editor.ClearUndoRedo();
-			navigator.Enabled = (config.ScriptType != ScriptType.UNKNOWN); //mxd
+			editor.FunctionBar.Enabled = (config.ScriptType != ScriptType.UNKNOWN); //mxd
 		}
 		
 		#endregion
@@ -289,7 +289,7 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 			
 			// Done
-			editor.IsChanged = false;
+			editor.SetSavePoint(); //mxd
 			UpdateTitle(); //mxd
 			return true;
 		}
@@ -318,7 +318,7 @@ namespace CodeImp.DoomBuilder.Controls
 			try
 			{
 				// Read the file
-				editor.SetText(File.ReadAllBytes(filepathname));
+				editor.Text = File.ReadAllText(filepathname); //mxd
 			}
 			catch(Exception e)
 			{
@@ -332,7 +332,6 @@ namespace CodeImp.DoomBuilder.Controls
 			// Setup
 			this.filepathname = filepathname;
 			editor.ClearUndoRedo();
-			editor.IsChanged = false; //mxd. Not changed yet
 			SetTitle(Path.GetFileName(filepathname));
 			UpdateNavigator(); //mxd
 

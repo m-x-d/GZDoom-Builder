@@ -753,17 +753,17 @@ namespace CodeImp.DoomBuilder.Properties {
             }
         }
         
-        internal static byte[] ScriptConstant {
+        internal static System.Drawing.Bitmap ScriptConstant {
             get {
                 object obj = ResourceManager.GetObject("ScriptConstant", resourceCulture);
-                return ((byte[])(obj));
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
-        internal static byte[] ScriptError {
+        internal static System.Drawing.Bitmap ScriptError {
             get {
                 object obj = ResourceManager.GetObject("ScriptError", resourceCulture);
-                return ((byte[])(obj));
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
@@ -774,10 +774,10 @@ namespace CodeImp.DoomBuilder.Properties {
             }
         }
         
-        internal static byte[] ScriptKeyword {
+        internal static System.Drawing.Bitmap ScriptKeyword {
             get {
                 object obj = ResourceManager.GetObject("ScriptKeyword", resourceCulture);
-                return ((byte[])(obj));
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
@@ -788,10 +788,10 @@ namespace CodeImp.DoomBuilder.Properties {
             }
         }
         
-        internal static byte[] ScriptSnippet {
+        internal static System.Drawing.Bitmap ScriptSnippet {
             get {
                 object obj = ResourceManager.GetObject("ScriptSnippet", resourceCulture);
-                return ((byte[])(obj));
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
@@ -938,6 +938,27 @@ namespace CodeImp.DoomBuilder.Properties {
         internal static System.Drawing.Bitmap Text {
             get {
                 object obj = ResourceManager.GetObject("Text", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap TextIndent {
+            get {
+                object obj = ResourceManager.GetObject("TextIndent", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap TextUnindent {
+            get {
+                object obj = ResourceManager.GetObject("TextUnindent", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap TextWhitespace {
+            get {
+                object obj = ResourceManager.GetObject("TextWhitespace", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
