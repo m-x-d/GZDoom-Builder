@@ -20,7 +20,6 @@ using System;
 using System.Globalization;
 using System.Drawing;
 using SlimDX;
-
 using Configuration = CodeImp.DoomBuilder.IO.Configuration;
 
 #endregion
@@ -38,7 +37,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		private const float DARK_ADDITION = -0.2f;
 
 		// Palette size
-		private const int NUM_COLORS = 41;
+		private const int NUM_COLORS = 49;
 		public const int NUM_THING_COLORS = 20;
 		public const int THING_COLORS_OFFSET = 20;
 
@@ -84,16 +83,23 @@ namespace CodeImp.DoomBuilder.Rendering
 		public const int THINGCOLOR18 = 38;
 		public const int THINGCOLOR19 = 39;
 		public const int THREEDFLOORCOLOR = 40; //mxd
-
+		public const int SCRIPTINDICATOR = 41; //mxd. Additional Script Editor colors
+		public const int SCRIPTBRACEHIGHLIGHT = 42;
+		public const int SCRIPTBADBRACEHIGHLIGHT = 43;
+		public const int SCRIPTWHITESPACE = 44;
+		public const int SCRIPTSELECTIONFORE = 45;
+		public const int SCRIPTSELECTIONBACK = 46;
+		public const int STRINGS = 47;
+		public const int INCLUDES = 48;
 		
 		#endregion
 
 		#region ================== Variables
 
 		// Colors
-		private PixelColor[] colors;
-		private PixelColor[] brightcolors;
-		private PixelColor[] darkcolors;
+		private readonly PixelColor[] colors;
+		private readonly PixelColor[] brightcolors;
+		private readonly PixelColor[] darkcolors;
 		
 		// Color-correction table
 		private byte[] correctiontable;
@@ -125,6 +131,12 @@ namespace CodeImp.DoomBuilder.Rendering
 		public PixelColor Selection3D { get { return colors[SELECTION3D]; } internal set { colors[SELECTION3D] = value; } }
 		
 		public PixelColor ScriptBackground { get { return colors[SCRIPTBACKGROUND]; } internal set { colors[SCRIPTBACKGROUND] = value; } }
+		public PixelColor ScriptIndicator { get { return colors[SCRIPTINDICATOR]; } internal set { colors[SCRIPTINDICATOR] = value; } }
+		public PixelColor ScriptBraceHighlight { get { return colors[SCRIPTBRACEHIGHLIGHT]; } internal set { colors[SCRIPTBRACEHIGHLIGHT] = value; } }
+		public PixelColor ScriptBadBraceHighlight { get { return colors[SCRIPTBADBRACEHIGHLIGHT]; } internal set { colors[SCRIPTBADBRACEHIGHLIGHT] = value; } }
+		public PixelColor ScriptWhitespace { get { return colors[SCRIPTWHITESPACE]; } internal set { colors[SCRIPTWHITESPACE] = value; } }
+		public PixelColor ScriptSelectionForeColor { get { return colors[SCRIPTSELECTIONFORE]; } internal set { colors[SCRIPTSELECTIONFORE] = value; } }
+		public PixelColor ScriptSelectionBackColor { get { return colors[SCRIPTSELECTIONBACK]; } internal set { colors[SCRIPTSELECTIONBACK] = value; } }
 		public PixelColor LineNumbers { get { return colors[LINENUMBERS]; } internal set { colors[LINENUMBERS] = value; } }
 		public PixelColor PlainText { get { return colors[PLAINTEXT]; } internal set { colors[PLAINTEXT] = value; } }
 		public PixelColor Comments { get { return colors[COMMENTS]; } internal set { colors[COMMENTS] = value; } }
@@ -148,10 +160,32 @@ namespace CodeImp.DoomBuilder.Rendering
 			for(int i = 0; i < NUM_COLORS; i++)
 			{
 				// Read color
-				colors[i] = PixelColor.FromInt(cfg.ReadSetting("colors.color" + i.ToString(CultureInfo.InvariantCulture), -16711872)); //mxd. changed default color from transparent to light-green
+				colors[i] = PixelColor.FromInt(cfg.ReadSetting("colors.color" + i.ToString(CultureInfo.InvariantCulture), 0));
 			}
 
-			// Set new colors
+			//mxd. Set new colors (previously these were defined in GZBuilder.default.cfg)
+			if(colors[BACKGROUND].ToInt() == 0) colors[BACKGROUND] = PixelColor.FromInt(-16777216);
+			if(colors[VERTICES].ToInt() == 0) colors[VERTICES] = PixelColor.FromInt(-11425537);
+			if(colors[LINEDEFS].ToInt() == 0) colors[LINEDEFS] = PixelColor.FromInt(-1);
+			if(colors[MODELWIRECOLOR].ToInt() == 0) colors[MODELWIRECOLOR] = PixelColor.FromInt(-4259937);
+			if(colors[INFOLINECOLOR].ToInt() == 0) colors[INFOLINECOLOR] = PixelColor.FromInt(-3750145);
+			if(colors[HIGHLIGHT].ToInt() == 0) colors[HIGHLIGHT] = PixelColor.FromInt(-21504);
+			if(colors[SELECTION].ToInt() == 0) colors[SELECTION] = PixelColor.FromInt(-49152);
+			if(colors[INDICATION].ToInt() == 0) colors[INDICATION] = PixelColor.FromInt(-128);
+			if(colors[GRID].ToInt() == 0) colors[GRID] = PixelColor.FromInt(-12171706);
+			if(colors[GRID64].ToInt() == 0) colors[GRID64] = PixelColor.FromInt(-13018769);
+			if(colors[CROSSHAIR3D].ToInt() == 0) colors[CROSSHAIR3D] = PixelColor.FromInt(-16711681); // Unused!
+			if(colors[HIGHLIGHT3D].ToInt() == 0) colors[HIGHLIGHT3D] = PixelColor.FromInt(-24576);
+			if(colors[SELECTION3D].ToInt() == 0) colors[SELECTION3D] = PixelColor.FromInt(-49152);
+			if(colors[SCRIPTBACKGROUND].ToInt() == 0) colors[SCRIPTBACKGROUND] = PixelColor.FromInt(-1);
+			if(colors[LINENUMBERS].ToInt() == 0) colors[LINENUMBERS] = PixelColor.FromInt(-13921873);
+			if(colors[PLAINTEXT].ToInt() == 0) colors[PLAINTEXT] = PixelColor.FromInt(-16777216);
+			if(colors[COMMENTS].ToInt() == 0) colors[COMMENTS] = PixelColor.FromInt(-16744448);
+			if(colors[KEYWORDS].ToInt() == 0) colors[KEYWORDS] = PixelColor.FromInt(-16741493);
+			if(colors[LITERALS].ToInt() == 0) colors[LITERALS] = PixelColor.FromInt(-16776961);
+			if(colors[CONSTANTS].ToInt() == 0) colors[CONSTANTS] = PixelColor.FromInt(-12566273);
+
+			// Set new thing colors
 			if(colors[THINGCOLOR00].ToInt() == 0) colors[THINGCOLOR00] = PixelColor.FromColor(Color.DimGray);
 			if(colors[THINGCOLOR01].ToInt() == 0) colors[THINGCOLOR01] = PixelColor.FromColor(Color.RoyalBlue);
 			if(colors[THINGCOLOR02].ToInt() == 0) colors[THINGCOLOR02] = PixelColor.FromColor(Color.ForestGreen);
@@ -172,6 +206,17 @@ namespace CodeImp.DoomBuilder.Rendering
 			if(colors[THINGCOLOR17].ToInt() == 0) colors[THINGCOLOR17] = PixelColor.FromColor(Color.DarkOrange);
 			if(colors[THINGCOLOR18].ToInt() == 0) colors[THINGCOLOR18] = PixelColor.FromColor(Color.DarkKhaki);
 			if(colors[THINGCOLOR19].ToInt() == 0) colors[THINGCOLOR19] = PixelColor.FromColor(Color.Goldenrod);
+
+			//mxd. Set the rest of new colors (previously these were also defined in GZBuilder.default.cfg)
+			if(colors[THREEDFLOORCOLOR].ToInt() == 0) colors[THREEDFLOORCOLOR] = PixelColor.FromInt(-65536);
+			if(colors[SCRIPTINDICATOR].ToInt() == 0) colors[SCRIPTINDICATOR] = PixelColor.FromInt(-16711936);
+			if(colors[SCRIPTBRACEHIGHLIGHT].ToInt() == 0) colors[SCRIPTBRACEHIGHLIGHT] = PixelColor.FromInt(-16711681);
+			if(colors[SCRIPTBADBRACEHIGHLIGHT].ToInt() == 0) colors[SCRIPTBADBRACEHIGHLIGHT] = PixelColor.FromInt(-65536);
+			if(colors[SCRIPTWHITESPACE].ToInt() == 0) colors[SCRIPTWHITESPACE] = PixelColor.FromInt(-8355712);
+			if(colors[SCRIPTSELECTIONFORE].ToInt() == 0) colors[SCRIPTSELECTIONFORE] = PixelColor.FromInt(-1);
+			if(colors[SCRIPTSELECTIONBACK].ToInt() == 0) colors[SCRIPTSELECTIONBACK] = PixelColor.FromInt(-13395457);
+			if(colors[STRINGS].ToInt() == 0) colors[STRINGS] = PixelColor.FromInt(-6089451);
+			if(colors[INCLUDES].ToInt() == 0) colors[INCLUDES] = PixelColor.FromInt(-9868951);
 			
 			// Create assist colors
 			CreateAssistColors();

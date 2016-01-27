@@ -21,6 +21,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using CodeImp.DoomBuilder.IO;
+using ScintillaNET;
 
 #endregion
 
@@ -54,21 +55,27 @@ namespace CodeImp.DoomBuilder.Config
 		private readonly string[] extensions;
 		private readonly bool casesensitive;
 		private readonly int insertcase;
-		private readonly int lexer;
+		private readonly Lexer lexer;
 		private readonly string keywordhelp;
 		private readonly string functionopen;
 		private readonly string functionclose;
+		private readonly string codeblockopen; //mxd
+		private readonly string codeblockclose; //mxd
+		private readonly string arrayopen; //mxd
+		private readonly string arrayclose; //mxd
 		private readonly string argumentdelimiter;
 		private readonly string terminator;
-		private readonly string functionregex;
 		private readonly ScriptType scripttype; //mxd
 		
 		// Collections
 		private readonly Dictionary<string, string> keywords;
 		private readonly Dictionary<string, string> lowerkeywords;
+		private readonly List<string> keywordkeyssorted; //mxd
 		private readonly List<string> constants;
 		private readonly Dictionary<string, string> lowerconstants;
 		private readonly Dictionary<string, string[]> snippets; //mxd
+		private readonly HashSet<string> snippetkeyssorted; //mxd
+		private readonly HashSet<char> braces; //mxd
 		
 		#endregion
 
@@ -85,19 +92,23 @@ namespace CodeImp.DoomBuilder.Config
 		public string[] Extensions { get { return extensions; } }
 		public bool CaseSensitive { get { return casesensitive; } }
 		public int InsertCase { get { return insertcase; } }
-		public int Lexer { get { return lexer; } }
+		public Lexer Lexer { get { return lexer; } }
 		public string KeywordHelp { get { return keywordhelp; } }
 		public string FunctionOpen { get { return functionopen; } }
 		public string FunctionClose { get { return functionclose; } }
+		public string CodeBlockOpen { get { return codeblockopen; } } //mxd
+		public string CodeBlockClose { get { return codeblockclose; } } //mxd
+		public string ArrayOpen { get { return arrayopen; } } //mxd
+		public string ArrayClose { get { return arrayclose; } } //mxd
 		public string ArgumentDelimiter { get { return argumentdelimiter; } }
 		public string Terminator { get { return terminator; } }
-		public string FunctionRegEx { get { return functionregex; } }
 		public ScriptType ScriptType { get { return scripttype; } } //mxd
-		public Dictionary<string, string[]> Snippets { get { return snippets; } } //mxd
 
 		// Collections
-		public ICollection<string> Keywords { get { return keywords.Keys; } }
+		public ICollection<string> Keywords { get { return keywordkeyssorted; } }
 		public ICollection<string> Constants { get { return constants; } }
+		public ICollection<string> Snippets { get { return snippetkeyssorted; } }
+		public HashSet<char> BraceChars { get { return braces; } } //mxd
 		
 		#endregion
 
@@ -112,9 +123,13 @@ namespace CodeImp.DoomBuilder.Config
 			this.constants = new List<string>();
 			this.lowerkeywords = new Dictionary<string, string>(StringComparer.Ordinal);
 			this.lowerconstants = new Dictionary<string, string>(StringComparer.Ordinal);
+			this.keywordkeyssorted = new List<string>(); //mxd
+			this.snippets = new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase); //mxd
+			this.snippetkeyssorted = new HashSet<string>(); //mxd
+			this.braces = new HashSet<char>(); //mxd
 
 			// Settings
-			lexer = 1;
+			lexer = Lexer.Null;
 			casesensitive = false;
 			codepage = 65001;
 			parameters = "";
@@ -123,13 +138,15 @@ namespace CodeImp.DoomBuilder.Config
 			keywordhelp = "";
 			functionopen = "";
 			functionclose = "";
+			codeblockopen = ""; //mxd
+			codeblockclose = ""; //mxd
+			arrayopen = ""; //mxd
+			arrayclose = ""; //mxd
 			argumentdelimiter = "";
 			terminator = "";
-			functionregex = "";
 			description = "Plain text";
 			scripttype = ScriptType.UNKNOWN; //mxd
 			extensions = new[] { "txt" };
-			snippets = new Dictionary<string, string[]>(StringComparer.Ordinal); //mxd
 		}
 		
 		// Constructor
@@ -140,7 +157,10 @@ namespace CodeImp.DoomBuilder.Config
 			this.constants = new List<string>();
 			this.lowerkeywords = new Dictionary<string, string>(StringComparer.Ordinal);
 			this.lowerconstants = new Dictionary<string, string>(StringComparer.Ordinal);
-			this.snippets = new Dictionary<string, string[]>(StringComparer.Ordinal); //mxd
+			this.keywordkeyssorted = new List<string>(); //mxd
+			this.snippets = new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase); //mxd
+			this.snippetkeyssorted = new HashSet<string>(); //mxd
+			this.braces = new HashSet<char>(); //mxd
 			
 			// Read settings
 			description = cfg.ReadSetting("description", "Untitled script");
@@ -151,14 +171,25 @@ namespace CodeImp.DoomBuilder.Config
 			resultlump = cfg.ReadSetting("resultlump", "");
 			casesensitive = cfg.ReadSetting("casesensitive", true);
 			insertcase = cfg.ReadSetting("insertcase", 0);
-			lexer = cfg.ReadSetting("lexer", 0);
+			lexer = (Lexer)cfg.ReadSetting("lexer", (int)Lexer.Container);
 			keywordhelp = cfg.ReadSetting("keywordhelp", "");
 			functionopen = cfg.ReadSetting("functionopen", "");
 			functionclose = cfg.ReadSetting("functionclose", "");
+			codeblockopen = cfg.ReadSetting("codeblockopen", ""); //mxd
+			codeblockclose = cfg.ReadSetting("codeblockclose", ""); //mxd
+			arrayopen = cfg.ReadSetting("arrayopen", ""); //mxd
+			arrayclose = cfg.ReadSetting("arrayclose", ""); //mxd
 			argumentdelimiter = cfg.ReadSetting("argumentdelimiter", "");
 			terminator = cfg.ReadSetting("terminator", "");
-			functionregex = cfg.ReadSetting("functionregex", "");
 			scripttype = (ScriptType)cfg.ReadSetting("scripttype", (int)ScriptType.UNKNOWN); //mxd
+
+			//mxd. Make braces array
+			if(!string.IsNullOrEmpty(functionopen)) braces.Add(functionopen[0]);
+			if(!string.IsNullOrEmpty(functionclose)) braces.Add(functionclose[0]);
+			if(!string.IsNullOrEmpty(codeblockopen)) braces.Add(codeblockopen[0]);
+			if(!string.IsNullOrEmpty(codeblockclose)) braces.Add(codeblockclose[0]);
+			if(!string.IsNullOrEmpty(arrayopen)) braces.Add(arrayopen[0]);
+			if(!string.IsNullOrEmpty(arrayclose)) braces.Add(arrayclose[0]);
 			
 			// Make extensions array
 			extensions = extensionsstring.Split(',');
@@ -170,7 +201,11 @@ namespace CodeImp.DoomBuilder.Config
 			{
 				keywords.Add(de.Key.ToString(), de.Value.ToString());
 				lowerkeywords.Add(de.Key.ToString().ToLowerInvariant(), de.Key.ToString());
+				keywordkeyssorted.Add(de.Key.ToString()); //mxd
 			}
+
+			//mxd. Sort keywords lookup
+			keywordkeyssorted.Sort();
 			
 			// Load constants
 			dic = cfg.ReadSetting("constants", new Hashtable());
@@ -178,6 +213,48 @@ namespace CodeImp.DoomBuilder.Config
 			{
 				constants.Add(de.Key.ToString());
 				lowerconstants.Add(de.Key.ToString().ToLowerInvariant(), de.Key.ToString());
+			}
+
+			//mxd
+			constants.Sort();
+
+			//mxd. Load Snippets
+			string snippetsdir = cfg.ReadSetting("snippetsdir", "");
+			if(!string.IsNullOrEmpty(snippetsdir))
+			{
+				string snippetspath = Path.Combine(General.SnippetsPath, snippetsdir);
+				if(Directory.Exists(snippetspath))
+				{
+					string[] files = Directory.GetFiles(snippetspath, "*.txt", SearchOption.TopDirectoryOnly);
+					List<string> sortedkeys = new List<string>();
+
+					foreach(string file in files)
+					{
+						string name = Path.GetFileNameWithoutExtension(file);
+						if(string.IsNullOrEmpty(name))
+						{
+							General.ErrorLogger.Add(ErrorType.Warning, "Failed to load snippet '" + file + "' for '" + description + "' script configuration.");
+						}
+						else
+						{
+							if(name.Contains(" ")) name = name.Replace(' ', '_');
+							string[] lines = File.ReadAllLines(file);
+							if(lines.Length > 0)
+							{
+								snippets.Add(name, lines);
+								sortedkeys.Add(name);
+							}
+							else
+							{
+								General.ErrorLogger.Add(ErrorType.Warning, "Failed to load snippet '" + file + "' for '" + description + "' script configuration: file is empty!");
+							}
+						}
+					}
+
+					//mxd. Sort snippets lookup
+					sortedkeys.Sort();
+					snippetkeyssorted = new HashSet<string>(sortedkeys, StringComparer.OrdinalIgnoreCase);
+				}
 			}
 			
 			// Compiler specified?
@@ -197,38 +274,6 @@ namespace CodeImp.DoomBuilder.Config
 				
 				// No compiler found?
 				if(this.compiler == null) throw new Exception("No such compiler defined: '" + compilername + "'");
-			}
-
-			//mxd. Load Snippets
-			string snippetsdir = cfg.ReadSetting("snippetsdir", "");
-			if(!string.IsNullOrEmpty(snippetsdir)) 
-			{
-				string snippetspath = Path.Combine(General.SnippetsPath, snippetsdir);
-				if(Directory.Exists(snippetspath)) 
-				{
-					string[] files = Directory.GetFiles(snippetspath, "*.txt", SearchOption.TopDirectoryOnly);
-
-					foreach(string file in files) 
-					{
-						string name = Path.GetFileNameWithoutExtension(file);
-						if(name.Contains(" ")) 
-						{
-							General.ErrorLogger.Add(ErrorType.Warning, "Failed to load snippet '" + file + "' for '" + description + "' script configuration: snippet file name must not contain spaces!");
-						} 
-						else 
-						{
-							string[] lines = File.ReadAllLines(file);
-							if(lines.Length > 0) 
-							{
-								snippets.Add(name, lines);
-							} 
-							else 
-							{
-								General.ErrorLogger.Add(ErrorType.Warning, "Failed to load snippet '" + file + "' for '" + description + "' script configuration: file is empty!");
-							}
-						}
-					}
-				}
 			}
 		}
 		
@@ -279,6 +324,12 @@ namespace CodeImp.DoomBuilder.Config
 				return null;
 		}
 		
+		//mxd
+		public string[] GetSnippet(string name)
+		{
+			return (snippetkeyssorted.Contains(name) ? snippets[name] : null);
+		}
+
 		// This sorts by description
 		public int CompareTo(ScriptConfiguration other)
 		{

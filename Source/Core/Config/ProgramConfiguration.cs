@@ -66,6 +66,7 @@ namespace CodeImp.DoomBuilder.Config
 		private bool scriptfontbold;
 		private bool scriptontop;
 		private bool scriptautoindent;
+		private bool scriptusetabs; //mxd
 		private bool snippetsallmanstyle; //mxd
 		private string screenshotspath; //mxd
 		private int scripttabwidth;
@@ -162,6 +163,7 @@ namespace CodeImp.DoomBuilder.Config
 		public int ZoomFactor { get { return zoomfactor; } internal set { zoomfactor = value; } }
 		public bool ShowErrorsWindow { get { return showerrorswindow; } internal set { showerrorswindow = value; } }
 		public bool AnimateVisualSelection { get { return animatevisualselection; } internal set { animatevisualselection = value; } }
+		public bool ScriptUseTabs { get { return scriptusetabs; } internal set { scriptusetabs = value; } } //mxd
 		public int ScriptTabWidth { get { return scripttabwidth; } internal set { scripttabwidth = value; } }
 		public bool ScriptAutoIndent { get { return scriptautoindent; } internal set { scriptautoindent = value; } }
 		public bool SnippetsAllmanStyle { get { return snippetsallmanstyle; } internal set { snippetsallmanstyle = value; } } //mxd
@@ -268,13 +270,14 @@ namespace CodeImp.DoomBuilder.Config
 				movespeed = cfg.ReadSetting("movespeed", 100);
 				viewdistance = cfg.ReadSetting("viewdistance", 3000.0f);
 				invertyaxis = cfg.ReadSetting("invertyaxis", false);
-				scriptfontname = cfg.ReadSetting("scriptfontname", "Lucida Console");
+				scriptfontname = cfg.ReadSetting("scriptfontname", "Courier New");
 				scriptfontsize = cfg.ReadSetting("scriptfontsize", 10);
 				scriptfontbold = cfg.ReadSetting("scriptfontbold", false);
 				scriptautoindent = cfg.ReadSetting("scriptautoindent", true);
 				snippetsallmanstyle = cfg.ReadSetting("snippetsallmanstyle", false); //mxd
 				screenshotspath = cfg.ReadSetting("screenshotspath", General.DefaultScreenshotsPath); //mxd
 				scriptontop = cfg.ReadSetting("scriptontop", true);
+				scriptusetabs = cfg.ReadSetting("scriptusetabs", true); //mxd
 				scripttabwidth = cfg.ReadSetting("scripttabwidth", 4);
 				previewimagesize = cfg.ReadSetting("previewimagesize", 1);
 				autoscrollspeed = cfg.ReadSetting("autoscrollspeed", 0);
@@ -368,6 +371,7 @@ namespace CodeImp.DoomBuilder.Config
 			cfg.WriteSetting("scriptfontsize", scriptfontsize);
 			cfg.WriteSetting("scriptfontbold", scriptfontbold);
 			cfg.WriteSetting("scriptontop", scriptontop);
+			cfg.WriteSetting("scriptusetabs", scriptusetabs); //mxd
 			cfg.WriteSetting("scripttabwidth", scripttabwidth);
 			cfg.WriteSetting("scriptautoindent", scriptautoindent);
 			cfg.WriteSetting("snippetsallmanstyle", snippetsallmanstyle); //mxd

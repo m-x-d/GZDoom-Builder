@@ -42,8 +42,7 @@ namespace CodeImp.DoomBuilder.Windows
 			FillList();
 			checkerrors.Start();
 			checkshow.Checked = General.Settings.ShowErrorsWindow;
-			//mxd
-			grid.Focus();
+			grid.Focus(); //mxd
 		}
 
 		#endregion
@@ -55,11 +54,12 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			// Fill the list with the items we don't have yet
 			General.ErrorLogger.HasChanged = false;
-			List<ErrorItem> errors = General.ErrorLogger.GetErrors();
+
+			//mxd. Rewritten to get only the new items from the ErrorLogger
 			int startindex = grid.Rows.Count;
-			for(int i = startindex; i < errors.Count; i++)
+			IEnumerable<ErrorItem> errors = General.ErrorLogger.GetErrors(startindex);
+			foreach(ErrorItem e in errors)
 			{
-				ErrorItem e = errors[i];
 				Image icon = (e.type == ErrorType.Error) ? Properties.Resources.ErrorLarge : Properties.Resources.WarningLarge;
 				int index = grid.Rows.Add();
 				DataGridViewRow row = grid.Rows[index];
@@ -145,7 +145,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private void ErrorsForm_Shown(object sender, EventArgs e)
 		{
 			if(grid.Rows.Count > 0) grid.Rows[0].Selected = false;
-
 		}
 
 		private void grid_CellContentClick(object sender, DataGridViewCellEventArgs e) 
