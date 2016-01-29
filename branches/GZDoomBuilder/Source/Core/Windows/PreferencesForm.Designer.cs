@@ -152,29 +152,49 @@ namespace CodeImp.DoomBuilder.Windows
 			this.classicbilinear = new System.Windows.Forms.CheckBox();
 			this.imagebrightnesslabel = new System.Windows.Forms.Label();
 			this.imagebrightness = new System.Windows.Forms.TrackBar();
-			this.colorsgroup3 = new System.Windows.Forms.GroupBox();
-			this.snippetsallmanstyle = new System.Windows.Forms.CheckBox();
-			this.scripttabwidth = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
-			this.scriptautoindent = new System.Windows.Forms.CheckBox();
+			this.tabscripteditor = new System.Windows.Forms.TabPage();
+			this.groupBox9 = new System.Windows.Forms.GroupBox();
+			this.scriptshowfolding = new System.Windows.Forms.CheckBox();
+			this.scriptshowlinenumbers = new System.Windows.Forms.CheckBox();
+			this.groupBox8 = new System.Windows.Forms.GroupBox();
+			this.scriptautoshowautocompletion = new System.Windows.Forms.CheckBox();
+			this.scriptautoclosebrackets = new System.Windows.Forms.CheckBox();
+			this.scriptusetabs = new System.Windows.Forms.CheckBox();
+			this.scriptallmanstyle = new System.Windows.Forms.CheckBox();
 			this.label10 = new System.Windows.Forms.Label();
-			this.fontpreview = new System.Windows.Forms.RichTextBox();
-			this.scriptfontsize = new System.Windows.Forms.ComboBox();
-			this.label8 = new System.Windows.Forms.Label();
-			this.scriptfontbold = new System.Windows.Forms.CheckBox();
-			this.scriptfontname = new System.Windows.Forms.ComboBox();
+			this.scriptautoindent = new System.Windows.Forms.CheckBox();
+			this.scripttabwidth = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
+			this.groupBox7 = new System.Windows.Forms.GroupBox();
 			this.label3 = new System.Windows.Forms.Label();
-			this.colorconstants = new CodeImp.DoomBuilder.Controls.ColorControl();
-			this.colorliterals = new CodeImp.DoomBuilder.Controls.ColorControl();
+			this.scriptfontname = new System.Windows.Forms.ComboBox();
+			this.scriptfontbold = new System.Windows.Forms.CheckBox();
+			this.label8 = new System.Windows.Forms.Label();
+			this.scriptfontsize = new System.Windows.Forms.ComboBox();
+			this.groupBox6 = new System.Windows.Forms.GroupBox();
+			this.colorindicator = new CodeImp.DoomBuilder.Controls.ColorControl();
+			this.colorwhitespace = new CodeImp.DoomBuilder.Controls.ColorControl();
+			this.colorbracebad = new CodeImp.DoomBuilder.Controls.ColorControl();
+			this.colorbrace = new CodeImp.DoomBuilder.Controls.ColorControl();
+			this.colorselectionback = new CodeImp.DoomBuilder.Controls.ColorControl();
+			this.colorselectionfore = new CodeImp.DoomBuilder.Controls.ColorControl();
+			this.colorincludes = new CodeImp.DoomBuilder.Controls.ColorControl();
+			this.colorstrings = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.colorscriptbackground = new CodeImp.DoomBuilder.Controls.ColorControl();
-			this.colorkeywords = new CodeImp.DoomBuilder.Controls.ColorControl();
-			this.colorlinenumbers = new CodeImp.DoomBuilder.Controls.ColorControl();
-			this.colorcomments = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.colorplaintext = new CodeImp.DoomBuilder.Controls.ColorControl();
+			this.colorcomments = new CodeImp.DoomBuilder.Controls.ColorControl();
+			this.colorlinenumbers = new CodeImp.DoomBuilder.Controls.ColorControl();
+			this.colorkeywords = new CodeImp.DoomBuilder.Controls.ColorControl();
+			this.colorliterals = new CodeImp.DoomBuilder.Controls.ColorControl();
+			this.colorconstants = new CodeImp.DoomBuilder.Controls.ColorControl();
+			this.previewgroup = new System.Windows.Forms.GroupBox();
+			this.scriptedit = new CodeImp.DoomBuilder.Controls.ScriptEditorPreviewControl();
 			this.tabpasting = new System.Windows.Forms.TabPage();
 			this.label16 = new System.Windows.Forms.Label();
 			this.pasteoptions = new CodeImp.DoomBuilder.Controls.PasteOptionsControl();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.browseScreenshotsFolderDialog = new System.Windows.Forms.FolderBrowserDialog();
+			this.colorfoldfore = new CodeImp.DoomBuilder.Controls.ColorControl();
+			this.colorfoldback = new CodeImp.DoomBuilder.Controls.ColorControl();
 			label7 = new System.Windows.Forms.Label();
 			label6 = new System.Windows.Forms.Label();
 			label5 = new System.Windows.Forms.Label();
@@ -210,7 +230,12 @@ namespace CodeImp.DoomBuilder.Windows
 			((System.ComponentModel.ISupportInitialize)(this.tbDynLightSize)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.tbDynLightCount)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.imagebrightness)).BeginInit();
-			this.colorsgroup3.SuspendLayout();
+			this.tabscripteditor.SuspendLayout();
+			this.groupBox9.SuspendLayout();
+			this.groupBox8.SuspendLayout();
+			this.groupBox7.SuspendLayout();
+			this.groupBox6.SuspendLayout();
+			this.previewgroup.SuspendLayout();
 			this.tabpasting.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -797,6 +822,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabs.Controls.Add(this.tabinterface);
 			this.tabs.Controls.Add(this.tabkeys);
 			this.tabs.Controls.Add(this.tabcolors);
+			this.tabs.Controls.Add(this.tabscripteditor);
 			this.tabs.Controls.Add(this.tabpasting);
 			this.tabs.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tabs.Location = new System.Drawing.Point(11, 13);
@@ -815,10 +841,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabinterface.Controls.Add(this.groupBox2);
 			this.tabinterface.Controls.Add(groupBox1);
 			this.tabinterface.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tabinterface.Location = new System.Drawing.Point(4, 23);
+			this.tabinterface.Location = new System.Drawing.Point(4, 22);
 			this.tabinterface.Name = "tabinterface";
 			this.tabinterface.Padding = new System.Windows.Forms.Padding(5);
-			this.tabinterface.Size = new System.Drawing.Size(682, 509);
+			this.tabinterface.Size = new System.Drawing.Size(682, 510);
 			this.tabinterface.TabIndex = 0;
 			this.tabinterface.Text = "Interface";
 			this.tabinterface.UseVisualStyleBackColor = true;
@@ -1230,10 +1256,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabkeys.Controls.Add(this.listactions);
 			this.tabkeys.Controls.Add(this.actioncontrolpanel);
 			this.tabkeys.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tabkeys.Location = new System.Drawing.Point(4, 23);
+			this.tabkeys.Location = new System.Drawing.Point(4, 22);
 			this.tabkeys.Name = "tabkeys";
 			this.tabkeys.Padding = new System.Windows.Forms.Padding(3);
-			this.tabkeys.Size = new System.Drawing.Size(682, 509);
+			this.tabkeys.Size = new System.Drawing.Size(682, 510);
 			this.tabkeys.TabIndex = 1;
 			this.tabkeys.Text = "Controls";
 			this.tabkeys.UseVisualStyleBackColor = true;
@@ -1409,13 +1435,12 @@ namespace CodeImp.DoomBuilder.Windows
 			// tabcolors
 			// 
 			this.tabcolors.Controls.Add(this.appearancegroup1);
-			this.tabcolors.Controls.Add(this.colorsgroup3);
 			this.tabcolors.Controls.Add(this.colorsgroup1);
 			this.tabcolors.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tabcolors.Location = new System.Drawing.Point(4, 23);
+			this.tabcolors.Location = new System.Drawing.Point(4, 22);
 			this.tabcolors.Name = "tabcolors";
 			this.tabcolors.Padding = new System.Windows.Forms.Padding(5);
-			this.tabcolors.Size = new System.Drawing.Size(682, 509);
+			this.tabcolors.Size = new System.Drawing.Size(682, 510);
 			this.tabcolors.TabIndex = 2;
 			this.tabcolors.Text = "Appearance";
 			this.tabcolors.UseVisualStyleBackColor = true;
@@ -1446,9 +1471,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.appearancegroup1.Controls.Add(this.classicbilinear);
 			this.appearancegroup1.Controls.Add(this.imagebrightnesslabel);
 			this.appearancegroup1.Controls.Add(this.imagebrightness);
-			this.appearancegroup1.Location = new System.Drawing.Point(217, 224);
+			this.appearancegroup1.Location = new System.Drawing.Point(217, 14);
 			this.appearancegroup1.Name = "appearancegroup1";
-			this.appearancegroup1.Size = new System.Drawing.Size(457, 277);
+			this.appearancegroup1.Size = new System.Drawing.Size(457, 487);
 			this.appearancegroup1.TabIndex = 24;
 			this.appearancegroup1.TabStop = false;
 			this.appearancegroup1.Text = " Additional Options ";
@@ -1618,45 +1643,131 @@ namespace CodeImp.DoomBuilder.Windows
 			this.imagebrightness.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
 			this.imagebrightness.ValueChanged += new System.EventHandler(this.imagebrightness_ValueChanged);
 			// 
-			// colorsgroup3
+			// tabscripteditor
 			// 
-			this.colorsgroup3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.colorsgroup3.Controls.Add(this.snippetsallmanstyle);
-			this.colorsgroup3.Controls.Add(this.scripttabwidth);
-			this.colorsgroup3.Controls.Add(this.scriptautoindent);
-			this.colorsgroup3.Controls.Add(this.label10);
-			this.colorsgroup3.Controls.Add(this.fontpreview);
-			this.colorsgroup3.Controls.Add(this.scriptfontsize);
-			this.colorsgroup3.Controls.Add(this.label8);
-			this.colorsgroup3.Controls.Add(this.scriptfontbold);
-			this.colorsgroup3.Controls.Add(this.scriptfontname);
-			this.colorsgroup3.Controls.Add(this.label3);
-			this.colorsgroup3.Controls.Add(this.colorconstants);
-			this.colorsgroup3.Controls.Add(this.colorliterals);
-			this.colorsgroup3.Controls.Add(this.colorscriptbackground);
-			this.colorsgroup3.Controls.Add(this.colorkeywords);
-			this.colorsgroup3.Controls.Add(this.colorlinenumbers);
-			this.colorsgroup3.Controls.Add(this.colorcomments);
-			this.colorsgroup3.Controls.Add(this.colorplaintext);
-			this.colorsgroup3.Location = new System.Drawing.Point(217, 8);
-			this.colorsgroup3.Name = "colorsgroup3";
-			this.colorsgroup3.Size = new System.Drawing.Size(457, 212);
-			this.colorsgroup3.TabIndex = 1;
-			this.colorsgroup3.TabStop = false;
-			this.colorsgroup3.Text = " Script editor ";
-			this.colorsgroup3.Visible = false;
+			this.tabscripteditor.Controls.Add(this.groupBox9);
+			this.tabscripteditor.Controls.Add(this.groupBox8);
+			this.tabscripteditor.Controls.Add(this.groupBox7);
+			this.tabscripteditor.Controls.Add(this.groupBox6);
+			this.tabscripteditor.Controls.Add(this.previewgroup);
+			this.tabscripteditor.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.tabscripteditor.Location = new System.Drawing.Point(4, 22);
+			this.tabscripteditor.Name = "tabscripteditor";
+			this.tabscripteditor.Size = new System.Drawing.Size(682, 510);
+			this.tabscripteditor.TabIndex = 4;
+			this.tabscripteditor.Text = "Script Editor";
+			this.tabscripteditor.UseVisualStyleBackColor = true;
 			// 
-			// snippetsallmanstyle
+			// groupBox9
 			// 
-			this.snippetsallmanstyle.AutoSize = true;
-			this.snippetsallmanstyle.Location = new System.Drawing.Point(202, 187);
-			this.snippetsallmanstyle.Name = "snippetsallmanstyle";
-			this.snippetsallmanstyle.Size = new System.Drawing.Size(172, 17);
-			this.snippetsallmanstyle.TabIndex = 34;
-			this.snippetsallmanstyle.Text = "Allman-style bracing in snippets";
-			this.toolTip1.SetToolTip(this.snippetsallmanstyle, resources.GetString("snippetsallmanstyle.ToolTip"));
-			this.snippetsallmanstyle.UseVisualStyleBackColor = true;
+			this.groupBox9.Controls.Add(this.scriptshowfolding);
+			this.groupBox9.Controls.Add(this.scriptshowlinenumbers);
+			this.groupBox9.Location = new System.Drawing.Point(217, 260);
+			this.groupBox9.Name = "groupBox9";
+			this.groupBox9.Size = new System.Drawing.Size(457, 78);
+			this.groupBox9.TabIndex = 6;
+			this.groupBox9.TabStop = false;
+			this.groupBox9.Text = " Appearance ";
+			// 
+			// scriptshowfolding
+			// 
+			this.scriptshowfolding.AutoSize = true;
+			this.scriptshowfolding.Location = new System.Drawing.Point(19, 49);
+			this.scriptshowfolding.Name = "scriptshowfolding";
+			this.scriptshowfolding.Size = new System.Drawing.Size(120, 17);
+			this.scriptshowfolding.TabIndex = 38;
+			this.scriptshowfolding.Text = "Enable code folding";
+			this.scriptshowfolding.UseVisualStyleBackColor = true;
+			this.scriptshowfolding.CheckedChanged += new System.EventHandler(this.scriptshowfolding_CheckedChanged);
+			// 
+			// scriptshowlinenumbers
+			// 
+			this.scriptshowlinenumbers.AutoSize = true;
+			this.scriptshowlinenumbers.Location = new System.Drawing.Point(19, 26);
+			this.scriptshowlinenumbers.Name = "scriptshowlinenumbers";
+			this.scriptshowlinenumbers.Size = new System.Drawing.Size(115, 17);
+			this.scriptshowlinenumbers.TabIndex = 37;
+			this.scriptshowlinenumbers.Text = "Show line numbers";
+			this.scriptshowlinenumbers.UseVisualStyleBackColor = true;
+			this.scriptshowlinenumbers.CheckedChanged += new System.EventHandler(this.scriptshowlinenumbers_CheckedChanged);
+			// 
+			// groupBox8
+			// 
+			this.groupBox8.Controls.Add(this.scriptautoshowautocompletion);
+			this.groupBox8.Controls.Add(this.scriptautoclosebrackets);
+			this.groupBox8.Controls.Add(this.scriptusetabs);
+			this.groupBox8.Controls.Add(this.scriptallmanstyle);
+			this.groupBox8.Controls.Add(this.label10);
+			this.groupBox8.Controls.Add(this.scriptautoindent);
+			this.groupBox8.Controls.Add(this.scripttabwidth);
+			this.groupBox8.Location = new System.Drawing.Point(217, 104);
+			this.groupBox8.Name = "groupBox8";
+			this.groupBox8.Size = new System.Drawing.Size(457, 148);
+			this.groupBox8.TabIndex = 5;
+			this.groupBox8.TabStop = false;
+			this.groupBox8.Text = " Formatting ";
+			// 
+			// scriptautoshowautocompletion
+			// 
+			this.scriptautoshowautocompletion.AutoSize = true;
+			this.scriptautoshowautocompletion.Location = new System.Drawing.Point(19, 118);
+			this.scriptautoshowautocompletion.Name = "scriptautoshowautocompletion";
+			this.scriptautoshowautocompletion.Size = new System.Drawing.Size(169, 17);
+			this.scriptautoshowautocompletion.TabIndex = 37;
+			this.scriptautoshowautocompletion.Text = "Auto show auto-completion list";
+			this.scriptautoshowautocompletion.UseVisualStyleBackColor = true;
+			// 
+			// scriptautoclosebrackets
+			// 
+			this.scriptautoclosebrackets.AutoSize = true;
+			this.scriptautoclosebrackets.Location = new System.Drawing.Point(19, 72);
+			this.scriptautoclosebrackets.Name = "scriptautoclosebrackets";
+			this.scriptautoclosebrackets.Size = new System.Drawing.Size(120, 17);
+			this.scriptautoclosebrackets.TabIndex = 36;
+			this.scriptautoclosebrackets.Text = "Auto-close brackets";
+			this.toolTip1.SetToolTip(this.scriptautoclosebrackets, "When enabled, the editor will automatically\r\ninsert closing bracket if opening br" +
+					"acket was typed.");
+			this.scriptautoclosebrackets.UseVisualStyleBackColor = true;
+			// 
+			// scriptusetabs
+			// 
+			this.scriptusetabs.AutoSize = true;
+			this.scriptusetabs.Location = new System.Drawing.Point(19, 26);
+			this.scriptusetabs.Name = "scriptusetabs";
+			this.scriptusetabs.Size = new System.Drawing.Size(68, 17);
+			this.scriptusetabs.TabIndex = 35;
+			this.scriptusetabs.Text = "Use tabs";
+			this.scriptusetabs.UseVisualStyleBackColor = true;
+			// 
+			// scriptallmanstyle
+			// 
+			this.scriptallmanstyle.AutoSize = true;
+			this.scriptallmanstyle.Location = new System.Drawing.Point(19, 95);
+			this.scriptallmanstyle.Name = "scriptallmanstyle";
+			this.scriptallmanstyle.Size = new System.Drawing.Size(119, 17);
+			this.scriptallmanstyle.TabIndex = 34;
+			this.scriptallmanstyle.Text = "Allman-style bracing";
+			this.toolTip1.SetToolTip(this.scriptallmanstyle, resources.GetString("scriptallmanstyle.ToolTip"));
+			this.scriptallmanstyle.UseVisualStyleBackColor = true;
+			// 
+			// label10
+			// 
+			this.label10.AutoSize = true;
+			this.label10.Location = new System.Drawing.Point(121, 27);
+			this.label10.Name = "label10";
+			this.label10.Size = new System.Drawing.Size(57, 13);
+			this.label10.TabIndex = 30;
+			this.label10.Text = "Tab width:";
+			// 
+			// scriptautoindent
+			// 
+			this.scriptautoindent.AutoSize = true;
+			this.scriptautoindent.Location = new System.Drawing.Point(19, 49);
+			this.scriptautoindent.Name = "scriptautoindent";
+			this.scriptautoindent.Size = new System.Drawing.Size(80, 17);
+			this.scriptautoindent.TabIndex = 31;
+			this.scriptautoindent.Text = "Auto indent";
+			this.scriptautoindent.UseVisualStyleBackColor = true;
 			// 
 			// scripttabwidth
 			// 
@@ -1669,44 +1780,68 @@ namespace CodeImp.DoomBuilder.Windows
 			this.scripttabwidth.ButtonStepSmall = 0.1F;
 			this.scripttabwidth.ButtonStepsUseModifierKeys = false;
 			this.scripttabwidth.ButtonStepsWrapAround = false;
-			this.scripttabwidth.Location = new System.Drawing.Point(364, 157);
+			this.scripttabwidth.Location = new System.Drawing.Point(181, 22);
 			this.scripttabwidth.Name = "scripttabwidth";
 			this.scripttabwidth.Size = new System.Drawing.Size(71, 24);
 			this.scripttabwidth.StepValues = null;
 			this.scripttabwidth.TabIndex = 32;
+			this.scripttabwidth.WhenTextChanged += new System.EventHandler(this.scripttabwidth_WhenTextChanged);
 			// 
-			// scriptautoindent
+			// groupBox7
 			// 
-			this.scriptautoindent.AutoSize = true;
-			this.scriptautoindent.Location = new System.Drawing.Point(202, 161);
-			this.scriptautoindent.Name = "scriptautoindent";
-			this.scriptautoindent.Size = new System.Drawing.Size(80, 17);
-			this.scriptautoindent.TabIndex = 31;
-			this.scriptautoindent.Text = "Auto indent";
-			this.scriptautoindent.UseVisualStyleBackColor = true;
+			this.groupBox7.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox7.Controls.Add(this.label3);
+			this.groupBox7.Controls.Add(this.scriptfontname);
+			this.groupBox7.Controls.Add(this.scriptfontbold);
+			this.groupBox7.Controls.Add(this.label8);
+			this.groupBox7.Controls.Add(this.scriptfontsize);
+			this.groupBox7.Location = new System.Drawing.Point(217, 8);
+			this.groupBox7.Name = "groupBox7";
+			this.groupBox7.Size = new System.Drawing.Size(457, 90);
+			this.groupBox7.TabIndex = 4;
+			this.groupBox7.TabStop = false;
+			this.groupBox7.Text = " Font ";
 			// 
-			// label10
+			// label3
 			// 
-			this.label10.AutoSize = true;
-			this.label10.Location = new System.Drawing.Point(304, 162);
-			this.label10.Name = "label10";
-			this.label10.Size = new System.Drawing.Size(57, 13);
-			this.label10.TabIndex = 30;
-			this.label10.Text = "Tab width:";
+			this.label3.AutoSize = true;
+			this.label3.Location = new System.Drawing.Point(16, 27);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(31, 13);
+			this.label3.TabIndex = 24;
+			this.label3.Text = "Font:";
 			// 
-			// fontpreview
+			// scriptfontname
 			// 
-			this.fontpreview.Cursor = System.Windows.Forms.Cursors.Arrow;
-			this.fontpreview.DetectUrls = false;
-			this.fontpreview.Location = new System.Drawing.Point(202, 70);
-			this.fontpreview.Name = "fontpreview";
-			this.fontpreview.ReadOnly = true;
-			this.fontpreview.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
-			this.fontpreview.Size = new System.Drawing.Size(233, 80);
-			this.fontpreview.TabIndex = 33;
-			this.fontpreview.Text = "1 #include \"zcommon.acs\"\n2 script 0 (void) { //a comment\n3       CONSTANT_VALUE;\n" +
-				"4 }";
-			this.fontpreview.WordWrap = false;
+			this.scriptfontname.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.scriptfontname.FormattingEnabled = true;
+			this.scriptfontname.Location = new System.Drawing.Point(53, 24);
+			this.scriptfontname.Name = "scriptfontname";
+			this.scriptfontname.Size = new System.Drawing.Size(199, 21);
+			this.scriptfontname.Sorted = true;
+			this.scriptfontname.TabIndex = 23;
+			this.scriptfontname.SelectedIndexChanged += new System.EventHandler(this.scriptfontname_SelectedIndexChanged);
+			// 
+			// scriptfontbold
+			// 
+			this.scriptfontbold.AutoSize = true;
+			this.scriptfontbold.Location = new System.Drawing.Point(165, 56);
+			this.scriptfontbold.Name = "scriptfontbold";
+			this.scriptfontbold.Size = new System.Drawing.Size(47, 17);
+			this.scriptfontbold.TabIndex = 26;
+			this.scriptfontbold.Text = "Bold";
+			this.scriptfontbold.UseVisualStyleBackColor = true;
+			this.scriptfontbold.CheckedChanged += new System.EventHandler(this.scriptfontbold_CheckedChanged);
+			// 
+			// label8
+			// 
+			this.label8.AutoSize = true;
+			this.label8.Location = new System.Drawing.Point(16, 56);
+			this.label8.Name = "label8";
+			this.label8.Size = new System.Drawing.Size(30, 13);
+			this.label8.TabIndex = 28;
+			this.label8.Text = "Size:";
 			// 
 			// scriptfontsize
 			// 
@@ -1730,75 +1865,135 @@ namespace CodeImp.DoomBuilder.Windows
             "36",
             "48",
             "72"});
-			this.scriptfontsize.Location = new System.Drawing.Point(236, 43);
+			this.scriptfontsize.Location = new System.Drawing.Point(53, 53);
 			this.scriptfontsize.Name = "scriptfontsize";
 			this.scriptfontsize.Size = new System.Drawing.Size(94, 21);
 			this.scriptfontsize.TabIndex = 25;
 			this.scriptfontsize.SelectedIndexChanged += new System.EventHandler(this.scriptfontsize_SelectedIndexChanged);
 			// 
-			// label8
+			// groupBox6
 			// 
-			this.label8.AutoSize = true;
-			this.label8.Location = new System.Drawing.Point(199, 46);
-			this.label8.Name = "label8";
-			this.label8.Size = new System.Drawing.Size(30, 13);
-			this.label8.TabIndex = 28;
-			this.label8.Text = "Size:";
+			this.groupBox6.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)));
+			this.groupBox6.Controls.Add(this.colorfoldback);
+			this.groupBox6.Controls.Add(this.colorfoldfore);
+			this.groupBox6.Controls.Add(this.colorindicator);
+			this.groupBox6.Controls.Add(this.colorwhitespace);
+			this.groupBox6.Controls.Add(this.colorbracebad);
+			this.groupBox6.Controls.Add(this.colorbrace);
+			this.groupBox6.Controls.Add(this.colorselectionback);
+			this.groupBox6.Controls.Add(this.colorselectionfore);
+			this.groupBox6.Controls.Add(this.colorincludes);
+			this.groupBox6.Controls.Add(this.colorstrings);
+			this.groupBox6.Controls.Add(this.colorscriptbackground);
+			this.groupBox6.Controls.Add(this.colorplaintext);
+			this.groupBox6.Controls.Add(this.colorcomments);
+			this.groupBox6.Controls.Add(this.colorlinenumbers);
+			this.groupBox6.Controls.Add(this.colorkeywords);
+			this.groupBox6.Controls.Add(this.colorliterals);
+			this.groupBox6.Controls.Add(this.colorconstants);
+			this.groupBox6.Location = new System.Drawing.Point(8, 8);
+			this.groupBox6.Name = "groupBox6";
+			this.groupBox6.Size = new System.Drawing.Size(203, 493);
+			this.groupBox6.TabIndex = 3;
+			this.groupBox6.TabStop = false;
+			this.groupBox6.Text = " Colors ";
 			// 
-			// scriptfontbold
+			// colorindicator
 			// 
-			this.scriptfontbold.AutoSize = true;
-			this.scriptfontbold.Location = new System.Drawing.Point(354, 45);
-			this.scriptfontbold.Name = "scriptfontbold";
-			this.scriptfontbold.Size = new System.Drawing.Size(47, 17);
-			this.scriptfontbold.TabIndex = 26;
-			this.scriptfontbold.Text = "Bold";
-			this.scriptfontbold.UseVisualStyleBackColor = true;
-			this.scriptfontbold.CheckedChanged += new System.EventHandler(this.scriptfontbold_CheckedChanged);
+			this.colorindicator.BackColor = System.Drawing.Color.Transparent;
+			this.colorindicator.Label = "Matching word:";
+			this.colorindicator.Location = new System.Drawing.Point(15, 325);
+			this.colorindicator.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorindicator.MinimumSize = new System.Drawing.Size(100, 23);
+			this.colorindicator.Name = "colorindicator";
+			this.colorindicator.Size = new System.Drawing.Size(168, 23);
+			this.colorindicator.TabIndex = 14;
+			this.colorindicator.ColorChanged += new System.EventHandler(this.colorindicator_ColorChanged);
 			// 
-			// scriptfontname
+			// colorwhitespace
 			// 
-			this.scriptfontname.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.scriptfontname.FormattingEnabled = true;
-			this.scriptfontname.Location = new System.Drawing.Point(236, 17);
-			this.scriptfontname.Name = "scriptfontname";
-			this.scriptfontname.Size = new System.Drawing.Size(199, 21);
-			this.scriptfontname.Sorted = true;
-			this.scriptfontname.TabIndex = 23;
-			this.scriptfontname.SelectedIndexChanged += new System.EventHandler(this.scriptfontname_SelectedIndexChanged);
+			this.colorwhitespace.BackColor = System.Drawing.Color.Transparent;
+			this.colorwhitespace.Label = "Whitespace:";
+			this.colorwhitespace.Location = new System.Drawing.Point(15, 409);
+			this.colorwhitespace.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorwhitespace.MinimumSize = new System.Drawing.Size(100, 23);
+			this.colorwhitespace.Name = "colorwhitespace";
+			this.colorwhitespace.Size = new System.Drawing.Size(168, 23);
+			this.colorwhitespace.TabIndex = 13;
+			this.colorwhitespace.ColorChanged += new System.EventHandler(this.colorwhitespace_ColorChanged);
 			// 
-			// label3
+			// colorbracebad
 			// 
-			this.label3.AutoSize = true;
-			this.label3.Location = new System.Drawing.Point(199, 20);
-			this.label3.Name = "label3";
-			this.label3.Size = new System.Drawing.Size(31, 13);
-			this.label3.TabIndex = 24;
-			this.label3.Text = "Font:";
+			this.colorbracebad.BackColor = System.Drawing.Color.Transparent;
+			this.colorbracebad.Label = "Mismatching brace:";
+			this.colorbracebad.Location = new System.Drawing.Point(15, 381);
+			this.colorbracebad.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorbracebad.MinimumSize = new System.Drawing.Size(100, 23);
+			this.colorbracebad.Name = "colorbracebad";
+			this.colorbracebad.Size = new System.Drawing.Size(168, 23);
+			this.colorbracebad.TabIndex = 12;
+			this.colorbracebad.ColorChanged += new System.EventHandler(this.colorbracebad_ColorChanged);
 			// 
-			// colorconstants
+			// colorbrace
 			// 
-			this.colorconstants.BackColor = System.Drawing.Color.Transparent;
-			this.colorconstants.Label = "Constants:";
-			this.colorconstants.Location = new System.Drawing.Point(15, 179);
-			this.colorconstants.MaximumSize = new System.Drawing.Size(10000, 23);
-			this.colorconstants.MinimumSize = new System.Drawing.Size(100, 23);
-			this.colorconstants.Name = "colorconstants";
-			this.colorconstants.Size = new System.Drawing.Size(150, 23);
-			this.colorconstants.TabIndex = 6;
-			this.colorconstants.ColorChanged += new System.EventHandler(this.scriptcolor_ColorChanged);
+			this.colorbrace.BackColor = System.Drawing.Color.Transparent;
+			this.colorbrace.Label = "Matching brace:";
+			this.colorbrace.Location = new System.Drawing.Point(15, 353);
+			this.colorbrace.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorbrace.MinimumSize = new System.Drawing.Size(100, 23);
+			this.colorbrace.Name = "colorbrace";
+			this.colorbrace.Size = new System.Drawing.Size(168, 23);
+			this.colorbrace.TabIndex = 11;
+			this.colorbrace.ColorChanged += new System.EventHandler(this.colorbrace_ColorChanged);
 			// 
-			// colorliterals
+			// colorselectionback
 			// 
-			this.colorliterals.BackColor = System.Drawing.Color.Transparent;
-			this.colorliterals.Label = "Literals:";
-			this.colorliterals.Location = new System.Drawing.Point(15, 152);
-			this.colorliterals.MaximumSize = new System.Drawing.Size(10000, 23);
-			this.colorliterals.MinimumSize = new System.Drawing.Size(100, 23);
-			this.colorliterals.Name = "colorliterals";
-			this.colorliterals.Size = new System.Drawing.Size(150, 23);
-			this.colorliterals.TabIndex = 5;
-			this.colorliterals.ColorChanged += new System.EventHandler(this.scriptcolor_ColorChanged);
+			this.colorselectionback.BackColor = System.Drawing.Color.Transparent;
+			this.colorselectionback.Label = "Selection BG:";
+			this.colorselectionback.Location = new System.Drawing.Point(15, 297);
+			this.colorselectionback.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorselectionback.MinimumSize = new System.Drawing.Size(100, 23);
+			this.colorselectionback.Name = "colorselectionback";
+			this.colorselectionback.Size = new System.Drawing.Size(168, 23);
+			this.colorselectionback.TabIndex = 10;
+			this.colorselectionback.ColorChanged += new System.EventHandler(this.colorselectionback_ColorChanged);
+			// 
+			// colorselectionfore
+			// 
+			this.colorselectionfore.BackColor = System.Drawing.Color.Transparent;
+			this.colorselectionfore.Label = "Selection:";
+			this.colorselectionfore.Location = new System.Drawing.Point(15, 269);
+			this.colorselectionfore.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorselectionfore.MinimumSize = new System.Drawing.Size(100, 23);
+			this.colorselectionfore.Name = "colorselectionfore";
+			this.colorselectionfore.Size = new System.Drawing.Size(168, 23);
+			this.colorselectionfore.TabIndex = 9;
+			this.colorselectionfore.ColorChanged += new System.EventHandler(this.colorselectionfore_ColorChanged);
+			// 
+			// colorincludes
+			// 
+			this.colorincludes.BackColor = System.Drawing.Color.Transparent;
+			this.colorincludes.Label = "Includes:";
+			this.colorincludes.Location = new System.Drawing.Point(15, 241);
+			this.colorincludes.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorincludes.MinimumSize = new System.Drawing.Size(100, 23);
+			this.colorincludes.Name = "colorincludes";
+			this.colorincludes.Size = new System.Drawing.Size(168, 23);
+			this.colorincludes.TabIndex = 8;
+			this.colorincludes.ColorChanged += new System.EventHandler(this.colorincludes_ColorChanged);
+			// 
+			// colorstrings
+			// 
+			this.colorstrings.BackColor = System.Drawing.Color.Transparent;
+			this.colorstrings.Label = "Strings:";
+			this.colorstrings.Location = new System.Drawing.Point(15, 157);
+			this.colorstrings.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorstrings.MinimumSize = new System.Drawing.Size(100, 23);
+			this.colorstrings.Name = "colorstrings";
+			this.colorstrings.Size = new System.Drawing.Size(168, 23);
+			this.colorstrings.TabIndex = 7;
+			this.colorstrings.ColorChanged += new System.EventHandler(this.colorstrings_ColorChanged);
 			// 
 			// colorscriptbackground
 			// 
@@ -1808,67 +2003,110 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorscriptbackground.MaximumSize = new System.Drawing.Size(10000, 23);
 			this.colorscriptbackground.MinimumSize = new System.Drawing.Size(100, 23);
 			this.colorscriptbackground.Name = "colorscriptbackground";
-			this.colorscriptbackground.Size = new System.Drawing.Size(150, 23);
+			this.colorscriptbackground.Size = new System.Drawing.Size(168, 23);
 			this.colorscriptbackground.TabIndex = 0;
-			this.colorscriptbackground.ColorChanged += new System.EventHandler(this.scriptcolor_ColorChanged);
-			// 
-			// colorkeywords
-			// 
-			this.colorkeywords.BackColor = System.Drawing.Color.Transparent;
-			this.colorkeywords.Label = "Keywords:";
-			this.colorkeywords.Location = new System.Drawing.Point(15, 125);
-			this.colorkeywords.MaximumSize = new System.Drawing.Size(10000, 23);
-			this.colorkeywords.MinimumSize = new System.Drawing.Size(100, 23);
-			this.colorkeywords.Name = "colorkeywords";
-			this.colorkeywords.Size = new System.Drawing.Size(150, 23);
-			this.colorkeywords.TabIndex = 4;
-			this.colorkeywords.ColorChanged += new System.EventHandler(this.scriptcolor_ColorChanged);
-			// 
-			// colorlinenumbers
-			// 
-			this.colorlinenumbers.BackColor = System.Drawing.Color.Transparent;
-			this.colorlinenumbers.Label = "Line numbers:";
-			this.colorlinenumbers.Location = new System.Drawing.Point(15, 44);
-			this.colorlinenumbers.MaximumSize = new System.Drawing.Size(10000, 23);
-			this.colorlinenumbers.MinimumSize = new System.Drawing.Size(100, 23);
-			this.colorlinenumbers.Name = "colorlinenumbers";
-			this.colorlinenumbers.Size = new System.Drawing.Size(150, 23);
-			this.colorlinenumbers.TabIndex = 1;
-			this.colorlinenumbers.ColorChanged += new System.EventHandler(this.scriptcolor_ColorChanged);
-			// 
-			// colorcomments
-			// 
-			this.colorcomments.BackColor = System.Drawing.Color.Transparent;
-			this.colorcomments.Label = "Comments:";
-			this.colorcomments.Location = new System.Drawing.Point(15, 98);
-			this.colorcomments.MaximumSize = new System.Drawing.Size(10000, 23);
-			this.colorcomments.MinimumSize = new System.Drawing.Size(100, 23);
-			this.colorcomments.Name = "colorcomments";
-			this.colorcomments.Size = new System.Drawing.Size(150, 23);
-			this.colorcomments.TabIndex = 3;
-			this.colorcomments.ColorChanged += new System.EventHandler(this.scriptcolor_ColorChanged);
+			this.colorscriptbackground.ColorChanged += new System.EventHandler(this.colorscriptbackground_ColorChanged);
 			// 
 			// colorplaintext
 			// 
 			this.colorplaintext.BackColor = System.Drawing.Color.Transparent;
 			this.colorplaintext.Label = "Plain text:";
-			this.colorplaintext.Location = new System.Drawing.Point(15, 71);
+			this.colorplaintext.Location = new System.Drawing.Point(15, 73);
 			this.colorplaintext.MaximumSize = new System.Drawing.Size(10000, 23);
 			this.colorplaintext.MinimumSize = new System.Drawing.Size(100, 23);
 			this.colorplaintext.Name = "colorplaintext";
-			this.colorplaintext.Size = new System.Drawing.Size(150, 23);
+			this.colorplaintext.Size = new System.Drawing.Size(168, 23);
 			this.colorplaintext.TabIndex = 2;
-			this.colorplaintext.ColorChanged += new System.EventHandler(this.scriptcolor_ColorChanged);
+			this.colorplaintext.ColorChanged += new System.EventHandler(this.colorplaintext_ColorChanged);
+			// 
+			// colorcomments
+			// 
+			this.colorcomments.BackColor = System.Drawing.Color.Transparent;
+			this.colorcomments.Label = "Comments:";
+			this.colorcomments.Location = new System.Drawing.Point(15, 101);
+			this.colorcomments.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorcomments.MinimumSize = new System.Drawing.Size(100, 23);
+			this.colorcomments.Name = "colorcomments";
+			this.colorcomments.Size = new System.Drawing.Size(168, 23);
+			this.colorcomments.TabIndex = 3;
+			this.colorcomments.ColorChanged += new System.EventHandler(this.colorcomments_ColorChanged);
+			// 
+			// colorlinenumbers
+			// 
+			this.colorlinenumbers.BackColor = System.Drawing.Color.Transparent;
+			this.colorlinenumbers.Label = "Line numbers:";
+			this.colorlinenumbers.Location = new System.Drawing.Point(15, 45);
+			this.colorlinenumbers.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorlinenumbers.MinimumSize = new System.Drawing.Size(100, 23);
+			this.colorlinenumbers.Name = "colorlinenumbers";
+			this.colorlinenumbers.Size = new System.Drawing.Size(168, 23);
+			this.colorlinenumbers.TabIndex = 1;
+			this.colorlinenumbers.ColorChanged += new System.EventHandler(this.colorlinenumbers_ColorChanged);
+			// 
+			// colorkeywords
+			// 
+			this.colorkeywords.BackColor = System.Drawing.Color.Transparent;
+			this.colorkeywords.Label = "Keywords:";
+			this.colorkeywords.Location = new System.Drawing.Point(15, 129);
+			this.colorkeywords.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorkeywords.MinimumSize = new System.Drawing.Size(100, 23);
+			this.colorkeywords.Name = "colorkeywords";
+			this.colorkeywords.Size = new System.Drawing.Size(168, 23);
+			this.colorkeywords.TabIndex = 4;
+			this.colorkeywords.ColorChanged += new System.EventHandler(this.colorkeywords_ColorChanged);
+			// 
+			// colorliterals
+			// 
+			this.colorliterals.BackColor = System.Drawing.Color.Transparent;
+			this.colorliterals.Label = "Numbers:";
+			this.colorliterals.Location = new System.Drawing.Point(15, 185);
+			this.colorliterals.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorliterals.MinimumSize = new System.Drawing.Size(100, 23);
+			this.colorliterals.Name = "colorliterals";
+			this.colorliterals.Size = new System.Drawing.Size(168, 23);
+			this.colorliterals.TabIndex = 5;
+			this.colorliterals.ColorChanged += new System.EventHandler(this.colorliterals_ColorChanged);
+			// 
+			// colorconstants
+			// 
+			this.colorconstants.BackColor = System.Drawing.Color.Transparent;
+			this.colorconstants.Label = "Constants:";
+			this.colorconstants.Location = new System.Drawing.Point(15, 213);
+			this.colorconstants.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorconstants.MinimumSize = new System.Drawing.Size(100, 23);
+			this.colorconstants.Name = "colorconstants";
+			this.colorconstants.Size = new System.Drawing.Size(168, 23);
+			this.colorconstants.TabIndex = 6;
+			this.colorconstants.ColorChanged += new System.EventHandler(this.colorconstants_ColorChanged);
+			// 
+			// previewgroup
+			// 
+			this.previewgroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.previewgroup.Controls.Add(this.scriptedit);
+			this.previewgroup.Location = new System.Drawing.Point(217, 344);
+			this.previewgroup.Name = "previewgroup";
+			this.previewgroup.Size = new System.Drawing.Size(457, 157);
+			this.previewgroup.TabIndex = 2;
+			this.previewgroup.TabStop = false;
+			this.previewgroup.Text = " Preview ";
+			// 
+			// scriptedit
+			// 
+			this.scriptedit.Location = new System.Drawing.Point(6, 19);
+			this.scriptedit.Name = "scriptedit";
+			this.scriptedit.Size = new System.Drawing.Size(445, 132);
+			this.scriptedit.TabIndex = 0;
 			// 
 			// tabpasting
 			// 
 			this.tabpasting.Controls.Add(this.label16);
 			this.tabpasting.Controls.Add(this.pasteoptions);
 			this.tabpasting.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.tabpasting.Location = new System.Drawing.Point(4, 23);
+			this.tabpasting.Location = new System.Drawing.Point(4, 22);
 			this.tabpasting.Name = "tabpasting";
 			this.tabpasting.Padding = new System.Windows.Forms.Padding(5);
-			this.tabpasting.Size = new System.Drawing.Size(682, 509);
+			this.tabpasting.Size = new System.Drawing.Size(682, 510);
 			this.tabpasting.TabIndex = 3;
 			this.tabpasting.Text = "Pasting ";
 			this.tabpasting.UseVisualStyleBackColor = true;
@@ -1898,6 +2136,30 @@ namespace CodeImp.DoomBuilder.Windows
 			// browseScreenshotsFolderDialog
 			// 
 			this.browseScreenshotsFolderDialog.Description = "Select a Folder to Save Screenshots Into";
+			// 
+			// colorfoldfore
+			// 
+			this.colorfoldfore.BackColor = System.Drawing.Color.Transparent;
+			this.colorfoldfore.Label = "Fold:";
+			this.colorfoldfore.Location = new System.Drawing.Point(15, 437);
+			this.colorfoldfore.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorfoldfore.MinimumSize = new System.Drawing.Size(100, 23);
+			this.colorfoldfore.Name = "colorfoldfore";
+			this.colorfoldfore.Size = new System.Drawing.Size(168, 23);
+			this.colorfoldfore.TabIndex = 15;
+			this.colorfoldfore.ColorChanged += new System.EventHandler(this.colorfoldfore_ColorChanged);
+			// 
+			// colorfoldback
+			// 
+			this.colorfoldback.BackColor = System.Drawing.Color.Transparent;
+			this.colorfoldback.Label = "Fold BG:";
+			this.colorfoldback.Location = new System.Drawing.Point(15, 465);
+			this.colorfoldback.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorfoldback.MinimumSize = new System.Drawing.Size(100, 23);
+			this.colorfoldback.Name = "colorfoldback";
+			this.colorfoldback.Size = new System.Drawing.Size(168, 23);
+			this.colorfoldback.TabIndex = 16;
+			this.colorfoldback.ColorChanged += new System.EventHandler(this.colorfoldback_ColorChanged);
 			// 
 			// PreferencesForm
 			// 
@@ -1956,8 +2218,15 @@ namespace CodeImp.DoomBuilder.Windows
 			((System.ComponentModel.ISupportInitialize)(this.tbDynLightSize)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.tbDynLightCount)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.imagebrightness)).EndInit();
-			this.colorsgroup3.ResumeLayout(false);
-			this.colorsgroup3.PerformLayout();
+			this.tabscripteditor.ResumeLayout(false);
+			this.groupBox9.ResumeLayout(false);
+			this.groupBox9.PerformLayout();
+			this.groupBox8.ResumeLayout(false);
+			this.groupBox8.PerformLayout();
+			this.groupBox7.ResumeLayout(false);
+			this.groupBox7.PerformLayout();
+			this.groupBox6.ResumeLayout(false);
+			this.previewgroup.ResumeLayout(false);
 			this.tabpasting.ResumeLayout(false);
 			this.ResumeLayout(false);
 
@@ -1984,14 +2253,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private CodeImp.DoomBuilder.Controls.ColorControl colorlinedefs;
 		private CodeImp.DoomBuilder.Controls.ColorControl colorvertices;
 		private CodeImp.DoomBuilder.Controls.ColorControl colorbackcolor;
-		private System.Windows.Forms.GroupBox colorsgroup3;
-		private CodeImp.DoomBuilder.Controls.ColorControl colorscriptbackground;
-		private CodeImp.DoomBuilder.Controls.ColorControl colorkeywords;
-		private CodeImp.DoomBuilder.Controls.ColorControl colorlinenumbers;
-		private CodeImp.DoomBuilder.Controls.ColorControl colorcomments;
-		private CodeImp.DoomBuilder.Controls.ColorControl colorplaintext;
-		private CodeImp.DoomBuilder.Controls.ColorControl colorliterals;
-		private CodeImp.DoomBuilder.Controls.ColorControl colorconstants;
 		private CodeImp.DoomBuilder.Controls.ColorControl colorindication;
 		private CodeImp.DoomBuilder.Controls.ColorControl colorgrid64;
 		private CodeImp.DoomBuilder.Controls.ColorControl colorgrid;
@@ -2043,14 +2304,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.Label zoomfactorlabel;
 		private System.Windows.Forms.Label label19;
 		private System.Windows.Forms.GroupBox groupBox5;
-		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox scripttabwidth;
-		private System.Windows.Forms.CheckBox scriptautoindent;
-		private System.Windows.Forms.Label label10;
-		private System.Windows.Forms.ComboBox scriptfontsize;
-		private System.Windows.Forms.Label label8;
-		private System.Windows.Forms.CheckBox scriptfontbold;
-		private System.Windows.Forms.ComboBox scriptfontname;
-		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.CheckBox scriptontop;
 		private System.Windows.Forms.CheckBox toolbar_script;
 		private System.Windows.Forms.CheckBox toolbar_copy;
@@ -2083,12 +2336,10 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.Label label24;
 		private CodeImp.DoomBuilder.Controls.ColorControl color3dFloors;
 		private System.Windows.Forms.TextBox actiondescription;
-		private System.Windows.Forms.RichTextBox fontpreview;
 		private System.Windows.Forms.CheckBox cbMarkExtraFloors;
 		private System.Windows.Forms.TrackBar recentFiles;
 		private System.Windows.Forms.Label labelRecentFiles;
 		private System.Windows.Forms.Label label25;
-		private System.Windows.Forms.CheckBox snippetsallmanstyle;
 		private System.Windows.Forms.CheckBox capitalizetexturenames;
 		private System.Windows.Forms.GroupBox groupBox3;
 		private System.Windows.Forms.Button browsescreenshotsdir;
@@ -2101,5 +2352,43 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.CheckBox locatetexturegroup;
 		private System.Windows.Forms.CheckBox cbStoreEditTab;
 		private System.Windows.Forms.CheckBox checkforupdates;
+		private System.Windows.Forms.TabPage tabscripteditor;
+		private System.Windows.Forms.GroupBox previewgroup;
+		private System.Windows.Forms.CheckBox scriptallmanstyle;
+		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox scripttabwidth;
+		private System.Windows.Forms.CheckBox scriptautoindent;
+		private System.Windows.Forms.Label label10;
+		private System.Windows.Forms.ComboBox scriptfontsize;
+		private System.Windows.Forms.Label label8;
+		private System.Windows.Forms.CheckBox scriptfontbold;
+		private System.Windows.Forms.ComboBox scriptfontname;
+		private System.Windows.Forms.Label label3;
+		private CodeImp.DoomBuilder.Controls.ColorControl colorconstants;
+		private CodeImp.DoomBuilder.Controls.ColorControl colorliterals;
+		private CodeImp.DoomBuilder.Controls.ColorControl colorscriptbackground;
+		private CodeImp.DoomBuilder.Controls.ColorControl colorkeywords;
+		private CodeImp.DoomBuilder.Controls.ColorControl colorlinenumbers;
+		private CodeImp.DoomBuilder.Controls.ColorControl colorcomments;
+		private CodeImp.DoomBuilder.Controls.ColorControl colorplaintext;
+		private System.Windows.Forms.GroupBox groupBox7;
+		private System.Windows.Forms.GroupBox groupBox6;
+		private CodeImp.DoomBuilder.Controls.ColorControl colorstrings;
+		private System.Windows.Forms.GroupBox groupBox8;
+		private System.Windows.Forms.CheckBox scriptusetabs;
+		private CodeImp.DoomBuilder.Controls.ColorControl colorwhitespace;
+		private CodeImp.DoomBuilder.Controls.ColorControl colorbracebad;
+		private CodeImp.DoomBuilder.Controls.ColorControl colorbrace;
+		private CodeImp.DoomBuilder.Controls.ColorControl colorselectionback;
+		private CodeImp.DoomBuilder.Controls.ColorControl colorselectionfore;
+		private CodeImp.DoomBuilder.Controls.ColorControl colorincludes;
+		private System.Windows.Forms.CheckBox scriptautoclosebrackets;
+		private System.Windows.Forms.GroupBox groupBox9;
+		private System.Windows.Forms.CheckBox scriptshowfolding;
+		private System.Windows.Forms.CheckBox scriptshowlinenumbers;
+		private System.Windows.Forms.CheckBox scriptautoshowautocompletion;
+		private CodeImp.DoomBuilder.Controls.ColorControl colorindicator;
+		private CodeImp.DoomBuilder.Controls.ScriptEditorPreviewControl scriptedit;
+		private CodeImp.DoomBuilder.Controls.ColorControl colorfoldback;
+		private CodeImp.DoomBuilder.Controls.ColorControl colorfoldfore;
 	}
 }
