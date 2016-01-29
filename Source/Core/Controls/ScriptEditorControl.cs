@@ -35,21 +35,21 @@ using ScintillaNET;
 
 namespace CodeImp.DoomBuilder.Controls
 {
+	internal enum ScriptStyleType
+	{
+		PlainText = 0,
+		Keyword = 1,
+		Constant = 2,
+		Comment = 3,
+		Literal = 4,
+		LineNumber = 5,
+		String = 6, //mxd
+		Include = 7, //mxd
+	}
+	
 	internal partial class ScriptEditorControl : UserControl
 	{
 		#region ================== Enums
-
-		private enum ScriptStyleType
-		{
-			PlainText = 0,
-			Keyword = 1,
-			Constant = 2,
-			Comment = 3,
-			Literal = 4,
-			LineNumber = 5,
-			String = 6, //mxd
-			Include = 7, //mxd
-		}
 
 		// Index for registered images
 		private enum ImageIndex
@@ -147,8 +147,11 @@ namespace CodeImp.DoomBuilder.Controls
 			scriptedit.Margins[0].Sensitive = true;
 			
 			// Line numbers margin
-			scriptedit.Margins[1].Type = MarginType.Number;
-			scriptedit.Margins[1].Width = 16;
+			if(General.Settings.ScriptShowLineNumbers)
+			{
+				scriptedit.Margins[1].Type = MarginType.Number;
+				scriptedit.Margins[1].Width = 16;
+			}
 			scriptedit.Margins[1].Mask = 0; // No markers here
 
 			// Spacing margin
@@ -354,10 +357,17 @@ namespace CodeImp.DoomBuilder.Controls
 
 			// Set style for linenumbers and margins
 			scriptedit.Styles[Style.LineNumber].BackColor = General.Colors.ScriptBackground.ToColor();
+			scriptedit.SetFoldMarginColor(true, General.Colors.ScriptFoldBackColor.ToColor());
+			scriptedit.SetFoldMarginHighlightColor(true, General.Colors.ScriptFoldBackColor.ToColor());
+			for(int i = 25; i < 32; i++)
+			{
+				scriptedit.Markers[i].SetForeColor(General.Colors.ScriptFoldBackColor.ToColor());
+				scriptedit.Markers[i].SetBackColor(General.Colors.ScriptFoldForeColor.ToColor());
+			}
  
 			//mxd. Set style for (mis)matching braces
-			scriptedit.Styles[Style.BraceLight].BackColor = General.Colors.ScriptBraceHighlight.ToColor(); //Color.Cyan;
-			scriptedit.Styles[Style.BraceBad].BackColor = General.Colors.ScriptBadBraceHighlight.ToColor(); //Color.Red;
+			scriptedit.Styles[Style.BraceLight].BackColor = General.Colors.ScriptBraceHighlight.ToColor();
+			scriptedit.Styles[Style.BraceBad].BackColor = General.Colors.ScriptBadBraceHighlight.ToColor();
 
 			//mxd. Set whitespace color
 			scriptedit.SetWhitespaceForeColor(true, General.Colors.ScriptWhitespace.ToColor());
@@ -399,9 +409,6 @@ namespace CodeImp.DoomBuilder.Controls
 					}
 
 					scriptedit.Styles[stylenum].ForeColor = General.Colors.Colors[colorindex].ToColor();
-					
-					//mxd. Display constants as uppercase
-					if(type == ScriptStyleType.Constant) scriptedit.Styles[stylenum].Case = StyleCase.Upper;
 				}
 			}
 			
@@ -470,7 +477,7 @@ namespace CodeImp.DoomBuilder.Controls
 			autocompletelist = new List<string>(autocompletedict.Values);
 
 			// Setup folding (https://github.com/jacobslusser/ScintillaNET/wiki/Automatic-Code-Folding)
-			if(scriptconfig.Lexer == Lexer.Cpp || scriptconfig.Lexer == Lexer.CppNoCase)
+			if(General.Settings.ScriptShowFolding && (scriptconfig.Lexer == Lexer.Cpp || scriptconfig.Lexer == Lexer.CppNoCase))
 			{
 				// Instruct the lexer to calculate folding
 				scriptedit.SetProperty("fold", "1");
@@ -481,13 +488,6 @@ namespace CodeImp.DoomBuilder.Controls
 				scriptedit.Margins[2].Mask = Marker.MaskFolders;
 				scriptedit.Margins[2].Sensitive = true;
 				scriptedit.Margins[2].Width = 12;
-
-				// Set colors for all folding markers
-				for(int i = 25; i < 32; i++)
-				{
-					scriptedit.Markers[i].SetForeColor(SystemColors.ControlLightLight);
-					scriptedit.Markers[i].SetBackColor(SystemColors.ControlDark);
-				}
 
 				// Configure folding markers with respective symbols
 				scriptedit.Markers[Marker.Folder].Symbol = MarkerSymbol.BoxPlus;
@@ -907,7 +907,7 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				if(line.IndexOf(separator[0], StringComparison.Ordinal) != -1) 
 				{
-					if(General.Settings.SnippetsAllmanStyle)
+					if(General.Settings.ScriptAllmanStyle)
 						result.AddRange(line.Split(separator, StringSplitOptions.RemoveEmptyEntries));
 					else
 						result.Add(line.Replace(separator[0], " "));
@@ -1097,27 +1097,35 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 
 			// Auto-match braces
-			//TODO: Auto-match quotes
-			bool endpos = (scriptedit.CurrentPosition == scriptedit.TextLength);
-			if(!string.IsNullOrEmpty(scriptconfig.CodeBlockOpen) && e.Char == scriptconfig.CodeBlockOpen[0] && !string.IsNullOrEmpty(scriptconfig.CodeBlockClose) &&
-				(endpos || (char)scriptedit.GetCharAt(scriptedit.CurrentPosition + 1) != scriptconfig.CodeBlockClose[0]))
+			if(General.Settings.ScriptAutoCloseBrackets)
 			{
-				scriptedit.InsertText(scriptedit.CurrentPosition, scriptconfig.CodeBlockClose);
+				//TODO: Auto-match quotes
+				bool endpos = (scriptedit.CurrentPosition == scriptedit.TextLength);
+				if(!string.IsNullOrEmpty(scriptconfig.CodeBlockOpen) && e.Char == scriptconfig.CodeBlockOpen[0] && !string.IsNullOrEmpty(scriptconfig.CodeBlockClose) &&
+					(endpos || (char)scriptedit.GetCharAt(scriptedit.CurrentPosition + 1) != scriptconfig.CodeBlockClose[0]))
+				{
+					scriptedit.InsertText(scriptedit.CurrentPosition, scriptconfig.CodeBlockClose);
+					return;
+				}
+				
+				if(!string.IsNullOrEmpty(scriptconfig.FunctionOpen) && e.Char == scriptconfig.FunctionOpen[0] && !string.IsNullOrEmpty(scriptconfig.FunctionClose) &&
+					(endpos || (char)scriptedit.GetCharAt(scriptedit.CurrentPosition + 1) != scriptconfig.FunctionClose[0]))
+				{
+					scriptedit.InsertText(scriptedit.CurrentPosition, scriptconfig.FunctionClose);
+					return;
+				}
+				
+				if(!string.IsNullOrEmpty(scriptconfig.ArrayOpen) && e.Char == scriptconfig.ArrayOpen[0] && !string.IsNullOrEmpty(scriptconfig.ArrayClose) &&
+					(endpos || (char)scriptedit.GetCharAt(scriptedit.CurrentPosition + 1) != scriptconfig.ArrayClose[0]))
+				{
+					scriptedit.InsertText(scriptedit.CurrentPosition, scriptconfig.ArrayClose);
+					return;
+				}
 			}
-			else if(!string.IsNullOrEmpty(scriptconfig.FunctionOpen) && e.Char == scriptconfig.FunctionOpen[0] && !string.IsNullOrEmpty(scriptconfig.FunctionClose) &&
-				(endpos || (char)scriptedit.GetCharAt(scriptedit.CurrentPosition + 1) != scriptconfig.FunctionClose[0]))
-			{
-				scriptedit.InsertText(scriptedit.CurrentPosition, scriptconfig.FunctionClose);
-			}
-			else if(!string.IsNullOrEmpty(scriptconfig.ArrayOpen) && e.Char == scriptconfig.ArrayOpen[0] && !string.IsNullOrEmpty(scriptconfig.ArrayClose) &&
-				(endpos || (char)scriptedit.GetCharAt(scriptedit.CurrentPosition + 1) != scriptconfig.ArrayClose[0]))
-			{
-				scriptedit.InsertText(scriptedit.CurrentPosition, scriptconfig.ArrayClose);
-			}
-			else
+
+			if(General.Settings.ScriptAutoShowAutocompletion)
 			{
 				// Display the autocompletion list
-				// TODO: make this behaviour optional?
 				ShowAutoCompletionList();
 			}
 		}
@@ -1205,23 +1213,19 @@ namespace CodeImp.DoomBuilder.Controls
 
 				// Need to increase indentation? We do this when:
 				// 1. Line contains '{' and '}' and the cursor is between them
-				// 2. Line either doesn't contain '}', or it's before '{', it contains '{' and the cursor is after it 
-				// 3. Line doesn't contain ';', line contains ')' and the cursor is after it
+				// 2. Line either doesn't contain '}', or it's before '{', or the line contains '{' and the cursor is after it 
 				int blockopenpos = (string.IsNullOrEmpty(scriptconfig.CodeBlockOpen) ? -1 : linetext.LastIndexOf(scriptconfig.CodeBlockOpen, selectionpos, StringComparison.Ordinal));
 				int blockclosepos = (string.IsNullOrEmpty(scriptconfig.CodeBlockOpen) ? -1 : linetext.IndexOf(scriptconfig.CodeBlockClose, selectionpos, StringComparison.Ordinal));
-				int funcclosepos = (string.IsNullOrEmpty(scriptconfig.FunctionClose) ? -1 : linetext.LastIndexOf(scriptconfig.FunctionClose, StringComparison.Ordinal));
 
 				// Add indentation when the cursor is between { and }
 				bool addindent = (blockopenpos != -1 && blockopenpos < selectionpos) && (blockclosepos == -1 || (blockopenpos < blockclosepos && blockclosepos >= selectionpos));
-				bool isblockindent = addindent;
-				addindent |= funcclosepos != -1 && blockopenpos == -1 && funcclosepos < selectionpos && !linetext.Contains(scriptconfig.Terminator);
 				if(addindent) indent += scriptedit.TabWidth;
 
 				// Calculate indentation
 				string indentstr = GetIndentationString(indent);
 
-				// Move CodeBlockOpen to the new line (will be applied in scriptedit_CharAdded)?
-				expandcodeblock = (isblockindent && General.Settings.SnippetsAllmanStyle);
+				// Move CodeBlockOpen to the new line? (will be applied in scriptedit_CharAdded)
+				expandcodeblock = General.Settings.ScriptAllmanStyle;
 
 				// Offset closing block char?
 				if(addindent && blockclosepos != -1)

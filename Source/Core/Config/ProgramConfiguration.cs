@@ -61,15 +61,7 @@ namespace CodeImp.DoomBuilder.Config
 		private int movespeed;
 		private float viewdistance;
 		private bool invertyaxis;
-		private string scriptfontname;
-		private int scriptfontsize;
-		private bool scriptfontbold;
-		private bool scriptontop;
-		private bool scriptautoindent;
-		private bool scriptusetabs; //mxd
-		private bool snippetsallmanstyle; //mxd
 		private string screenshotspath; //mxd
-		private int scripttabwidth;
 		private int previewimagesize;
 		private int autoscrollspeed;
 		private int zoomfactor;
@@ -92,7 +84,21 @@ namespace CodeImp.DoomBuilder.Config
 		private float filteranisotropy;
 		private bool showtexturesizes;
 		private bool locatetexturegroup; //mxd
-		private SplitLineBehavior splitlinebehavior;	//mxd
+		private SplitLineBehavior splitlinebehavior; //mxd
+
+		//mxd. Script editor settings
+		private string scriptfontname;
+		private int scriptfontsize;
+		private bool scriptfontbold;
+		private bool scriptontop;
+		private bool scriptautoindent;
+		private bool scriptallmanstyle; //mxd
+		private bool scriptusetabs; //mxd
+		private int scripttabwidth;
+		private bool scriptautoclosebrackets; //mxd
+		private bool scriptshowlinenumbers; //mxd
+		private bool scriptshowfolding; //mxd
+		private bool scriptautoshowautocompletion; //mxd
 
 		//mxd
 		private ModelRenderMode gzDrawModelsMode;
@@ -154,19 +160,11 @@ namespace CodeImp.DoomBuilder.Config
 		public int MoveSpeed { get { return movespeed; } internal set { movespeed = value; } }
 		public float ViewDistance { get { return viewdistance; } internal set { viewdistance = value; } }
 		public bool InvertYAxis { get { return invertyaxis; } internal set { invertyaxis = value; } }
-		public string ScriptFontName { get { return scriptfontname; } internal set { scriptfontname = value; } }
-		public int ScriptFontSize { get { return scriptfontsize; } internal set { scriptfontsize = value; } }
-		public bool ScriptFontBold { get { return scriptfontbold; } internal set { scriptfontbold = value; } }
-		public bool ScriptOnTop { get { return scriptontop; } internal set { scriptontop = value; } }
 		public int PreviewImageSize { get { return previewimagesize; } internal set { previewimagesize = value; } }
 		public int AutoScrollSpeed { get { return autoscrollspeed; } internal set { autoscrollspeed = value; } }
 		public int ZoomFactor { get { return zoomfactor; } internal set { zoomfactor = value; } }
 		public bool ShowErrorsWindow { get { return showerrorswindow; } internal set { showerrorswindow = value; } }
 		public bool AnimateVisualSelection { get { return animatevisualselection; } internal set { animatevisualselection = value; } }
-		public bool ScriptUseTabs { get { return scriptusetabs; } internal set { scriptusetabs = value; } } //mxd
-		public int ScriptTabWidth { get { return scripttabwidth; } internal set { scripttabwidth = value; } }
-		public bool ScriptAutoIndent { get { return scriptautoindent; } internal set { scriptautoindent = value; } }
-		public bool SnippetsAllmanStyle { get { return snippetsallmanstyle; } internal set { snippetsallmanstyle = value; } } //mxd
 		internal string ScreenshotsPath { get { return screenshotspath; } set { screenshotspath = value; } } //mxd
 		internal int PreviousVersion { get { return previousversion; } }
 		internal PasteOptions PasteOptions { get { return pasteoptions; } set { pasteoptions = value; } }
@@ -186,6 +184,20 @@ namespace CodeImp.DoomBuilder.Config
 		public bool ShowTextureSizes { get { return showtexturesizes; } internal set { showtexturesizes = value; } }
 		public bool LocateTextureGroup { get { return locatetexturegroup; } internal set { locatetexturegroup = value; } } //mxd
 		public SplitLineBehavior SplitLineBehavior { get { return splitlinebehavior; } set { splitlinebehavior = value; } } //mxd
+
+		//mxd. Script editor settings
+		public string ScriptFontName { get { return scriptfontname; } internal set { scriptfontname = value; } }
+		public int ScriptFontSize { get { return scriptfontsize; } internal set { scriptfontsize = value; } }
+		public bool ScriptFontBold { get { return scriptfontbold; } internal set { scriptfontbold = value; } }
+		public bool ScriptOnTop { get { return scriptontop; } internal set { scriptontop = value; } }
+		public bool ScriptAutoIndent { get { return scriptautoindent; } internal set { scriptautoindent = value; } }
+		public bool ScriptAllmanStyle { get { return scriptallmanstyle; } internal set { scriptallmanstyle = value; } } //mxd
+		public bool ScriptUseTabs { get { return scriptusetabs; } internal set { scriptusetabs = value; } } //mxd
+		public int ScriptTabWidth { get { return scripttabwidth; } internal set { scripttabwidth = value; } }
+		public bool ScriptAutoCloseBrackets { get { return scriptautoclosebrackets; } internal set { scriptautoclosebrackets = value; } } //mxd
+		public bool ScriptShowLineNumbers { get { return scriptshowlinenumbers; } internal set { scriptshowlinenumbers = value; } } //mxd
+		public bool ScriptShowFolding { get { return scriptshowfolding; } internal set { scriptshowfolding = value; } } //mxd
+		public bool ScriptAutoShowAutocompletion { get { return scriptautoshowautocompletion; } internal set { scriptautoshowautocompletion = value; } } //mxd
 
 		//mxd 
 		public ModelRenderMode GZDrawModelsMode { get { return gzDrawModelsMode; } internal set { gzDrawModelsMode = value; } }
@@ -270,15 +282,7 @@ namespace CodeImp.DoomBuilder.Config
 				movespeed = cfg.ReadSetting("movespeed", 100);
 				viewdistance = cfg.ReadSetting("viewdistance", 3000.0f);
 				invertyaxis = cfg.ReadSetting("invertyaxis", false);
-				scriptfontname = cfg.ReadSetting("scriptfontname", "Courier New");
-				scriptfontsize = cfg.ReadSetting("scriptfontsize", 10);
-				scriptfontbold = cfg.ReadSetting("scriptfontbold", false);
-				scriptautoindent = cfg.ReadSetting("scriptautoindent", true);
-				snippetsallmanstyle = cfg.ReadSetting("snippetsallmanstyle", false); //mxd
 				screenshotspath = cfg.ReadSetting("screenshotspath", General.DefaultScreenshotsPath); //mxd
-				scriptontop = cfg.ReadSetting("scriptontop", true);
-				scriptusetabs = cfg.ReadSetting("scriptusetabs", true); //mxd
-				scripttabwidth = cfg.ReadSetting("scripttabwidth", 4);
 				previewimagesize = cfg.ReadSetting("previewimagesize", 1);
 				autoscrollspeed = cfg.ReadSetting("autoscrollspeed", 0);
 				zoomfactor = cfg.ReadSetting("zoomfactor", 3);
@@ -302,6 +306,20 @@ namespace CodeImp.DoomBuilder.Config
 				showtexturesizes = cfg.ReadSetting("showtexturesizes", true);
 				locatetexturegroup = cfg.ReadSetting("locatetexturegroup", true); //mxd
 				splitlinebehavior = (SplitLineBehavior) General.Clamp(cfg.ReadSetting("splitlinebehavior", 0), 0, 3); //mxd
+
+				//mxd. Script editor
+				scriptfontname = cfg.ReadSetting("scriptfontname", "Courier New");
+				scriptfontsize = cfg.ReadSetting("scriptfontsize", 10);
+				scriptfontbold = cfg.ReadSetting("scriptfontbold", false);
+				scriptontop = cfg.ReadSetting("scriptontop", true);
+				scriptautoindent = cfg.ReadSetting("scriptautoindent", true);
+				scriptallmanstyle = cfg.ReadSetting("scriptallmanstyle", false); //mxd
+				scriptusetabs = cfg.ReadSetting("scriptusetabs", true); //mxd
+				scripttabwidth = cfg.ReadSetting("scripttabwidth", 4);
+				scriptautoclosebrackets = cfg.ReadSetting("scriptautoclosebrackets", true); //mxd
+				scriptshowlinenumbers = cfg.ReadSetting("scriptshowlinenumbers", true); //mxd
+				scriptshowfolding = cfg.ReadSetting("scriptshowfolding", true); //mxd
+				scriptautoshowautocompletion = cfg.ReadSetting("scriptautoshowautocompletion", true); //mxd
 
 				//mxd 
 				gzDrawModelsMode = (ModelRenderMode)cfg.ReadSetting("gzdrawmodels", (int)ModelRenderMode.ALL);
@@ -367,14 +385,6 @@ namespace CodeImp.DoomBuilder.Config
 			cfg.WriteSetting("movespeed", movespeed);
 			cfg.WriteSetting("viewdistance", viewdistance);
 			cfg.WriteSetting("invertyaxis", invertyaxis);
-			cfg.WriteSetting("scriptfontname", scriptfontname);
-			cfg.WriteSetting("scriptfontsize", scriptfontsize);
-			cfg.WriteSetting("scriptfontbold", scriptfontbold);
-			cfg.WriteSetting("scriptontop", scriptontop);
-			cfg.WriteSetting("scriptusetabs", scriptusetabs); //mxd
-			cfg.WriteSetting("scripttabwidth", scripttabwidth);
-			cfg.WriteSetting("scriptautoindent", scriptautoindent);
-			cfg.WriteSetting("snippetsallmanstyle", snippetsallmanstyle); //mxd
 			cfg.WriteSetting("screenshotspath", screenshotspath); //mxd
 			cfg.WriteSetting("previewimagesize", previewimagesize);
 			cfg.WriteSetting("autoscrollspeed", autoscrollspeed);
@@ -399,6 +409,20 @@ namespace CodeImp.DoomBuilder.Config
 			cfg.WriteSetting("showtexturesizes", showtexturesizes);
 			cfg.WriteSetting("locatetexturegroup", locatetexturegroup); //mxd
 			cfg.WriteSetting("splitlinebehavior", (int)splitlinebehavior); //mxd
+
+			//mxd. Script editor
+			cfg.WriteSetting("scriptfontname", scriptfontname);
+			cfg.WriteSetting("scriptfontsize", scriptfontsize);
+			cfg.WriteSetting("scriptfontbold", scriptfontbold);
+			cfg.WriteSetting("scriptontop", scriptontop);
+			cfg.WriteSetting("scriptusetabs", scriptusetabs); //mxd
+			cfg.WriteSetting("scripttabwidth", scripttabwidth);
+			cfg.WriteSetting("scriptautoindent", scriptautoindent);
+			cfg.WriteSetting("scriptallmanstyle", scriptallmanstyle); //mxd
+			cfg.WriteSetting("scriptautoclosebrackets", scriptautoclosebrackets); //mxd
+			cfg.WriteSetting("scriptshowlinenumbers", scriptshowlinenumbers); //mxd
+			cfg.WriteSetting("scriptshowfolding", scriptshowfolding); //mxd
+			cfg.WriteSetting("scriptautoshowautocompletion", scriptautoshowautocompletion); //mxd
 
 			//mxd
 			cfg.WriteSetting("gzdrawmodels", (int)gzDrawModelsMode);

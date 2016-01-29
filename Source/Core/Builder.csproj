@@ -694,6 +694,9 @@
     <EmbeddedResource Include="Controls\ScriptEditorControl.resx">
       <DependentUpon>ScriptEditorControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls\ScriptEditorPreviewControl.resx">
+      <DependentUpon>ScriptEditorPreviewControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\SkySphere.md3" />
     <None Include="Resources\ThingStatistics.png" />
     <None Include="Resources\Copy.png" />
@@ -766,6 +769,12 @@
     </Compile>
     <Compile Include="Controls\ScriptEditorControl.designer.cs">
       <DependentUpon>ScriptEditorControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\ScriptEditorPreviewControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\ScriptEditorPreviewControl.Designer.cs">
+      <DependentUpon>ScriptEditorPreviewControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\SectorSlopeControl.cs">
       <SubType>UserControl</SubType>
