@@ -108,6 +108,7 @@ namespace CodeImp.DoomBuilder.Controls
 		private bool skiptextinsert; //mxd. Gross hacks
 		private bool expandcodeblock; //mxd. More gross hacks
 		private string highlightedword; //mxd
+		private Encoding encoding; //mxd
 		
 		#endregion
 
@@ -132,6 +133,9 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			// Initialize
 			InitializeComponent();
+
+			//mxd. ASCII with cyrillic support...
+			encoding = Encoding.GetEncoding(1251);
 			
 			// Script editor properties
 			//TODO: use ScintillaNET properties instead when they become available
@@ -581,12 +585,12 @@ namespace CodeImp.DoomBuilder.Controls
 
 		public byte[] GetText()
 		{
-			return Encoding.ASCII.GetBytes(scriptedit.Text); //mxd TODO: other encodings?..
+			return encoding.GetBytes(scriptedit.Text); //mxd TODO: other encodings?..
 		}
 
 		public void SetText(byte[] text)
 		{
-			scriptedit.Text = Encoding.ASCII.GetString(text); //mxd TODO: other encodings?..
+			scriptedit.Text = encoding.GetString(text); //mxd TODO: other encodings?..
 		}
 
 		//mxd
@@ -1300,10 +1304,18 @@ namespace CodeImp.DoomBuilder.Controls
 					}
 				}
 			}
-			//mxd. Handle screenshot saving
-			else if(DelayedForm.ProcessSaveScreenshotAction((int)e.KeyData))
+			else
 			{
-				skiptextinsert = true;
+				//mxd. Skip text insert when "save screenshot" action's keys are pressed
+				Actions.Action[] actions = General.Actions.GetActionsByKey((int)e.KeyData);
+				foreach(Actions.Action action in actions)
+				{
+					if(action.ShortName == "savescreenshot" || action.ShortName == "saveeditareascreenshot")
+					{
+						skiptextinsert = true;
+						return;
+					}
+				}
 			}
 		}
 		
