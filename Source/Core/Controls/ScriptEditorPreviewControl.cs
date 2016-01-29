@@ -75,7 +75,14 @@ namespace CodeImp.DoomBuilder.Controls
 
 		public Color SelectionForeColor { set { scriptedit.SetSelectionForeColor(true, value); } }
 		public Color SelectionBackColor { set { scriptedit.SetSelectionBackColor(true, value); } }
-		public Color WhitespaceColor { set { scriptedit.SetWhitespaceForeColor(true, value); } }
+		public Color WhitespaceColor
+		{
+			set
+			{
+				scriptedit.SetWhitespaceForeColor(true, value);
+				scriptedit.SetWhitespaceBackColor(false, value); // Otherwise selection back color won't be applied correctly...
+			}
+		}
 		public Color BraceHighlight { set { scriptedit.Styles[Style.BraceLight].BackColor = value; } }
 		public Color BadBraceHighlight { set { scriptedit.Styles[Style.BraceBad].BackColor = value; } }
 		public Color ScriptIndicator { set { indicatorcolor = value; UpdateWordHighlight(); } }

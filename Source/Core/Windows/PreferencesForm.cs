@@ -24,6 +24,7 @@ using CodeImp.DoomBuilder.Actions;
 using System.Globalization;
 using CodeImp.DoomBuilder.Data;
 using System.IO;
+using CodeImp.DoomBuilder.Rendering;
 using Action = CodeImp.DoomBuilder.Actions.Action;
 
 #endregion
@@ -203,6 +204,9 @@ namespace CodeImp.DoomBuilder.Windows
 			colorwhitespace.Color = General.Colors.ScriptWhitespace; //mxd
 			colorfoldfore.Color = General.Colors.ScriptFoldForeColor; //mxd
 			colorfoldback.Color = General.Colors.ScriptFoldBackColor; //mxd
+
+			//mxd. Select "Current colors" preset
+			scriptcolorpresets.SelectedIndex = 0;
 
 			blackbrowsers.Checked = General.Settings.BlackBrowsers;
 			capitalizetexturenames.Checked = General.Settings.CapitalizeTextureNames; //mxd
@@ -1048,6 +1052,92 @@ namespace CodeImp.DoomBuilder.Windows
 		private void colorfoldback_ColorChanged(object sender, EventArgs e)
 		{
 			if(allowapplycontrol) scriptedit.FoldBackColor = colorfoldback.Color.ToColor();
+		}
+
+		private void scriptcolorpresets_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if(!allowapplycontrol) return;
+			switch(scriptcolorpresets.SelectedIndex)
+			{
+				case 0: // Restore current colors
+					colorscriptbackground.Color = General.Colors.ScriptBackground;
+					colorlinenumbers.Color = General.Colors.LineNumbers;
+					colorplaintext.Color = General.Colors.PlainText;
+					colorcomments.Color = General.Colors.Comments;
+					colorkeywords.Color = General.Colors.Keywords;
+					colorliterals.Color = General.Colors.Literals;
+					colorconstants.Color = General.Colors.Constants;
+					colorstrings.Color = General.Colors.Strings;
+					colorincludes.Color = General.Colors.Includes;
+					colorindicator.Color = General.Colors.ScriptIndicator;
+					colorbrace.Color = General.Colors.ScriptBraceHighlight;
+					colorbracebad.Color = General.Colors.ScriptBadBraceHighlight;
+					colorwhitespace.Color = General.Colors.ScriptWhitespace;
+					colorfoldfore.Color = General.Colors.ScriptFoldForeColor;
+					colorfoldback.Color = General.Colors.ScriptFoldBackColor;
+					colorselectionfore.Color = General.Colors.ScriptSelectionForeColor;
+					colorselectionback.Color = General.Colors.ScriptSelectionBackColor;
+					break;
+
+				case 1: // Light theme
+					colorlinenumbers.Color = PixelColor.FromInt(-13921873);
+					colorplaintext.Color = PixelColor.FromInt(-16777216);
+					colorcomments.Color = PixelColor.FromInt(-16744448);
+					colorkeywords.Color = PixelColor.FromInt(-16741493);
+					colorliterals.Color = PixelColor.FromInt(-16776961);
+					colorconstants.Color = PixelColor.FromInt(-16744256);
+					colorstrings.Color = PixelColor.FromInt(-6089451);
+					colorincludes.Color = PixelColor.FromInt(-9868951);
+					colorindicator.Color = PixelColor.FromInt(-16711936);
+					colorbrace.Color = PixelColor.FromInt(-16711681);
+					colorbracebad.Color = PixelColor.FromInt(-65536);
+					colorwhitespace.Color = PixelColor.FromInt(-8355712);
+					colorfoldfore.Color = PixelColor.FromColor(SystemColors.ControlDark);
+					colorfoldback.Color = PixelColor.FromColor(SystemColors.ControlLightLight);
+					colorselectionfore.Color = PixelColor.FromInt(-1);
+					colorselectionback.Color = PixelColor.FromInt(-13395457);
+					colorscriptbackground.Color = PixelColor.FromInt(-1);
+					break;
+
+				case 2: // Dark theme
+					colorscriptbackground.Color = new PixelColor(255, 34, 40, 42);
+					colorlinenumbers.Color = new PixelColor(255, 63, 78, 73);
+					colorplaintext.Color = new PixelColor(255, 241, 242, 243);
+					colorcomments.Color = new PixelColor(255, 102, 116, 123);
+					colorkeywords.Color = new PixelColor(255, 103, 140, 177);
+					colorliterals.Color = new PixelColor(255, 255, 205, 34);
+					colorconstants.Color = new PixelColor(255, 147, 199, 99);
+					colorstrings.Color = new PixelColor(255, 236, 118, 0);
+					colorincludes.Color = new PixelColor(255, 160, 130, 189);
+					colorindicator.Color = new PixelColor(255, 211, 209, 85);
+					colorbrace.Color = new PixelColor(255, 135, 211, 85);
+					colorbracebad.Color = new PixelColor(255, 150, 58, 70);
+					colorwhitespace.Color = new PixelColor(255, 241, 242, 243);
+					colorfoldfore.Color = new PixelColor(255, 37, 92, 111);
+					colorfoldback.Color = new PixelColor(255, 41, 49, 52);
+					colorselectionfore.Color = new PixelColor(255, 255, 255, 255);
+					colorselectionback.Color = new PixelColor(255, 71, 71, 71);
+					break;
+			}
+
+			// Apply changes
+			scriptedit.ScriptBackground = colorscriptbackground.Color.ToColor();
+			scriptedit.LineNumbers = colorlinenumbers.Color.ToColor();
+			scriptedit.PlainText = colorplaintext.Color.ToColor();
+			scriptedit.Comments = colorcomments.Color.ToColor();
+			scriptedit.Keywords = colorkeywords.Color.ToColor();
+			scriptedit.Strings = colorstrings.Color.ToColor();
+			scriptedit.Literals = colorliterals.Color.ToColor();
+			scriptedit.Constants = colorconstants.Color.ToColor();
+			scriptedit.Includes = colorincludes.Color.ToColor();
+			scriptedit.SelectionForeColor = colorselectionfore.Color.ToColor();
+			scriptedit.SelectionBackColor = colorselectionback.Color.ToColor();
+			scriptedit.ScriptIndicator = colorindicator.Color.ToColor();
+			scriptedit.BraceHighlight = colorbrace.Color.ToColor();
+			scriptedit.BadBraceHighlight = colorbracebad.Color.ToColor();
+			scriptedit.WhitespaceColor = colorwhitespace.Color.ToColor();
+			scriptedit.FoldForeColor = colorfoldfore.Color.ToColor();
+			scriptedit.FoldBackColor = colorfoldback.Color.ToColor();
 		}
 
 		#endregion
