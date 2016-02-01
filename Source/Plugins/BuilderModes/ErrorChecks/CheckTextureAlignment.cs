@@ -83,7 +83,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					Thread.Sleep(0);
 				}
-				catch (ThreadInterruptedException)
+				catch(ThreadInterruptedException)
 				{
 					// Clear collection
 					donesides.Clear();

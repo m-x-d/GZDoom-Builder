@@ -4,8 +4,11 @@ using System.IO;
 
 namespace CodeImp.DoomBuilder.GZBuilder.Data 
 {
-	public class EngineInfo 
+	public class EngineInfo : IDisposable
 	{
+		// Disposing
+		private bool isdisposed;
+		
 		public const string DEFAULT_ENGINE_NAME = "Engine with no name";
 		
 		private string testprogramname;
@@ -58,6 +61,19 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 			if(icon == null)
 			{
 				icon = new Bitmap(16, 16);
+			}
+		}
+
+		public void Dispose()
+		{
+			// Not already disposed?
+			if(!isdisposed)
+			{
+				// Clean up
+				icon.Dispose();
+
+				// Done
+				isdisposed = true;
 			}
 		}
 	}

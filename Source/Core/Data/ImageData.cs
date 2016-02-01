@@ -33,7 +33,7 @@ using SlimDX.Direct3D9;
 
 namespace CodeImp.DoomBuilder.Data
 {
-	public abstract unsafe class ImageData
+	public abstract unsafe class ImageData : IDisposable
 	{
 		#region ================== Constants
 		

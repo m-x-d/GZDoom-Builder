@@ -56,7 +56,7 @@ namespace CodeImp.DoomBuilder.Actions
 			foreach(string rn in resnames) 
 			{
 				// Found one?
-				if(rn.EndsWith(HINTS_RESOURCE, StringComparison.InvariantCultureIgnoreCase)) 
+				if(rn.EndsWith(HINTS_RESOURCE, StringComparison.OrdinalIgnoreCase)) 
 				{
 					string classname = string.Empty;
 					string groupname = string.Empty;

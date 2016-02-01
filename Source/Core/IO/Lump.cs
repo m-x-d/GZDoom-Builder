@@ -25,7 +25,7 @@ using CodeImp.DoomBuilder.Data;
 
 namespace CodeImp.DoomBuilder.IO
 {
-	public class Lump
+	public class Lump : IDisposable
 	{
 		#region ================== Methods
 
@@ -40,14 +40,14 @@ namespace CodeImp.DoomBuilder.IO
 		private WAD owner;
 		
 		// Data stream
-		private ClippedStream stream;
+		private readonly ClippedStream stream;
 		
 		// Data info
 		private string name;
 		private long longname;
 		private byte[] fixedname;
-		private int offset;
-		private int length;
+		private readonly int offset;
+		private readonly int length;
 
 		// Disposing
 		private bool isdisposed;
@@ -89,7 +89,7 @@ namespace CodeImp.DoomBuilder.IO
 		}
 
 		// Disposer
-		internal void Dispose()
+		public void Dispose()
 		{
 			// Not already disposed?
 			if(!isdisposed)

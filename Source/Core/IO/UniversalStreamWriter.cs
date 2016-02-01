@@ -62,7 +62,7 @@ namespace CodeImp.DoomBuilder.IO
 			foreach(string rn in resnames)
 			{
 				// Found it?
-				if(rn.EndsWith(UDMF_CONFIG_NAME, StringComparison.InvariantCultureIgnoreCase))
+				if(rn.EndsWith(UDMF_CONFIG_NAME, StringComparison.OrdinalIgnoreCase))
 				{
 					// Get a stream from the resource
 					Stream udmfcfg = General.ThisAssembly.GetManifestResourceStream(rn);

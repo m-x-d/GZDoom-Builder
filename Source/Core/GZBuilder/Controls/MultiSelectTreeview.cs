@@ -868,7 +868,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			{
 				if(tn.BackColor != SelectionBackColor)
 				{
-					using (Pen p = new Pen(BackColor, 1))
+					using(Pen p = new Pen(BackColor, 1))
 					{
 						g.DrawRectangle(p, tnMostRecentSelectedNode.Bounds.X, tnMostRecentSelectedNode.Bounds.Y, tnMostRecentSelectedNode.Bounds.Width, tnMostRecentSelectedNode.Bounds.Height);
 					}
@@ -945,7 +945,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 				base.OnMouseUp(e);
 #if DEBUG
 			}
-			catch (Exception ex)
+			catch(Exception ex)
 			{
 				// GKM - Untrapped exceptions were killing me for debugging purposes.
 				// It probably shouldn't be here permanently, but it was causing real trouble for me.

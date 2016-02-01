@@ -445,7 +445,7 @@ namespace CodeImp.DoomBuilder.IO
 			bool validateresult;
 			
 			// Check if key is an empty string
-			if(key == "")
+			if(string.IsNullOrEmpty(key))
 			{
 				// ERROR: Missing key name in statement
 				if(errorline > -1) RaiseError(file, errorline, ERROR_KEYMISSING);
@@ -500,7 +500,7 @@ namespace CodeImp.DoomBuilder.IO
 			bool validateresult;
 			
 			// Check if key is an empty string
-			if(keyword == "")
+			if(string.IsNullOrEmpty(keyword))
 			{
 				// ERROR: Missing key name in statement
 				if(errorline > -1) RaiseError(file, errorline, ERROR_ASSIGNINVALID);

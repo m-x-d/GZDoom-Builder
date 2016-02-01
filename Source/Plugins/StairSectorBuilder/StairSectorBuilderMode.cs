@@ -1358,7 +1358,7 @@ namespace CodeImp.DoomBuilder.StairSectorBuilderMode
 				General.Map.Map.Update();
 				General.Map.IsChanged = true;
 			}
-			catch (Exception e)
+			catch(Exception e)
 			{
 				General.Interface.DisplayStatus(StatusType.Warning, e.ToString());
 				General.Map.UndoRedo.WithdrawUndo();

@@ -38,7 +38,7 @@ namespace CodeImp.DoomBuilder.Windows
 				flags.Add(tf.Value, tf.Key);
 
 			// Parse the value string and check the boxes if necessary
-			if(value.Trim() != "")
+			if(!string.IsNullOrEmpty(value.Trim()))
 			{
 				foreach(string s in value.Split(','))
 				{
@@ -84,7 +84,7 @@ namespace CodeImp.DoomBuilder.Windows
 				{
 					if(lf.Value == c.Text)
 					{
-						if(value != "") value += ",";
+						if(!string.IsNullOrEmpty(value)) value += ",";
 						value += lf.Key;
 					}
 				}

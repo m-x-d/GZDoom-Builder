@@ -578,7 +578,7 @@ namespace CodeImp.DoomBuilder.Controls
 				foreach(string ext in cfg.Extensions)
 				{
 					// Use this configuration if the extension matches
-					if(filename.EndsWith("." + ext, true, CultureInfo.InvariantCulture))
+					if(filename.EndsWith("." + ext, StringComparison.OrdinalIgnoreCase))
 					{
 						foundconfig = cfg;
 						break;

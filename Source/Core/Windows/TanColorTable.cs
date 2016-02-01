@@ -13,7 +13,7 @@
  */
 
 #endregion
-
+/*
 #region ================== Namespaces
 
 using System;
@@ -772,4 +772,4 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 	}
 
-}
+}*/

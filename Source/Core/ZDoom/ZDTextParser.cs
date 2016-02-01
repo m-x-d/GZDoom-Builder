@@ -28,7 +28,7 @@ using CodeImp.DoomBuilder.Data;
 
 namespace CodeImp.DoomBuilder.ZDoom
 {
-	public abstract class ZDTextParser
+	public abstract class ZDTextParser : IDisposable
 	{
 		#region ================== Constants
 
@@ -55,6 +55,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 		private string errordesc;
 		private string errorsource;
 		private long prevstreamposition; //mxd. Text stream position storted before performing ReadToken.
+
+		//mxd. Disposing
+		protected bool isdisposed;
 		
 		#endregion
 		
@@ -76,6 +79,23 @@ namespace CodeImp.DoomBuilder.ZDoom
 		{
 			// Initialize
 			errordesc = null;
+		}
+
+		//mxd
+		public virtual void Dispose()
+		{
+			// Not already disposed?
+			if(!isdisposed)
+			{
+				if(datareader != null) datareader.Close();
+				if(datastream != null)
+				{
+					datastream.Dispose();
+					datastream = null;
+				}
+
+				isdisposed = true;
+			}
 		}
 		
 		#endregion
@@ -588,7 +608,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			{
 				foreach(DataReader reader in General.Map.Data.Containers)
 				{
-					if(reader is DirectoryReader && filename.StartsWith(reader.Location.location, true, CultureInfo.InvariantCulture))
+					if(reader is DirectoryReader && filename.StartsWith(reader.Location.location, StringComparison.OrdinalIgnoreCase))
 					{
 						filename = filename.Substring(reader.Location.location.Length + 1, filename.Length - reader.Location.location.Length - 1);
 						break;

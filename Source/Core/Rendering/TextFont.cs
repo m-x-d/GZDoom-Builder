@@ -89,7 +89,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			foreach(string rn in resnames)
 			{
 				// Found it?
-				if(rn.EndsWith(FONT_RESOURCE, StringComparison.InvariantCultureIgnoreCase))
+				if(rn.EndsWith(FONT_RESOURCE, StringComparison.OrdinalIgnoreCase))
 				{
 					// Get a stream from the resource
 					Stream fontdata = General.ThisAssembly.GetManifestResourceStream(rn);

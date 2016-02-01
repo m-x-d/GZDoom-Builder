@@ -107,7 +107,7 @@ namespace CodeImp.DoomBuilder.Map
 				// Change the name, but keep previous name
 				if(currentname != value)
 				{
-					if(previousname == "") previousname = currentname;
+					if(string.IsNullOrEmpty(previousname)) previousname = currentname;
 					currentname = value;
 				}
 			}

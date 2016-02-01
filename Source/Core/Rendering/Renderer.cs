@@ -25,7 +25,7 @@ using CodeImp.DoomBuilder.Geometry;
 
 namespace CodeImp.DoomBuilder.Rendering
 {
-	internal abstract class Renderer : ID3DResource
+	internal abstract class Renderer : ID3DResource, IDisposable
 	{
 		#region ================== Constants
 
@@ -66,7 +66,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		// Disposer
-		internal virtual void Dispose()
+		public virtual void Dispose()
 		{
 			// Not already disposed?
 			if(!isdisposed)

@@ -899,6 +899,7 @@ namespace CodeImp.DoomBuilder.Map
 			ReadThings(deserializer);
 
 			deserializer.End();
+			deserializer.Dispose(); //mxd
 
 			// Make table of sidedef indices
 			sidedefindices = new Sidedef[numsidedefs];

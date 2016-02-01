@@ -185,7 +185,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 				// Level name changed and the map exists in a source wad?
 				if((levelname.Text != options.CurrentName) && (General.Map != null) &&
-				   (General.Map.FilePathName != "") && File.Exists(General.Map.FilePathName))
+				   (!string.IsNullOrEmpty(General.Map.FilePathName)) && File.Exists(General.Map.FilePathName))
 				{
 					// Open the source wad file to check for conflicting name
 					WAD sourcewad = new WAD(General.Map.FilePathName, true);

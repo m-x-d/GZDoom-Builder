@@ -24,6 +24,7 @@ using System.Drawing;
 
 namespace CodeImp.DoomBuilder.Geometry
 {
+	[Serializable]
 	public sealed class EarClipPolygon : LinkedList<EarClipVertex>
 	{
 		#region ================== Variables

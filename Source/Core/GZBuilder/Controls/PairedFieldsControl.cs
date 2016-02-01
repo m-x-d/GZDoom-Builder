@@ -95,12 +95,12 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 
 		public void ApplyTo(UniFields fields, int min, int max, float oldValue1, float oldValue2) 
 		{
-			if(value1.Text != string.Empty)
+			if(!string.IsNullOrEmpty(value1.Text))
 				UniFields.SetFloat(fields, field1, General.Clamp(value1.GetResultFloat(oldValue1), min, max), defaultValue);
 			else
 				UniFields.SetFloat(fields, field1, oldValue1, defaultValue);
 
-			if(value2.Text != string.Empty)
+			if(!string.IsNullOrEmpty(value2.Text))
 				UniFields.SetFloat(fields, field2, General.Clamp(value2.GetResultFloat(oldValue2), min, max), defaultValue);
 			else
 				UniFields.SetFloat(fields, field2, oldValue2, defaultValue);

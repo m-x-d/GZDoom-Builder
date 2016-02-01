@@ -22,7 +22,7 @@ using System;
 
 namespace CodeImp.DoomBuilder.Types
 {
-	public class TypeHandlerAttribute : Attribute
+	public sealed class TypeHandlerAttribute : Attribute
 	{
 		#region ================== Constants
 

@@ -25,7 +25,7 @@ using System.IO;
 
 namespace CodeImp.DoomBuilder.IO
 {
-	internal sealed class SerializerStream : IReadWriteStream
+	internal sealed class SerializerStream : IReadWriteStream, IDisposable
 	{
 		#region ================== Constants
 
@@ -34,8 +34,9 @@ namespace CodeImp.DoomBuilder.IO
 		#region ================== Variables
 
 		//private Stream stream;
-		private BinaryWriter writer;
-		private Dictionary<string, ushort> stringstable;
+		private readonly BinaryWriter writer;
+		private readonly Dictionary<string, ushort> stringstable;
+		private bool isdisposed; //mxd
 
 		#endregion
 
@@ -54,6 +55,17 @@ namespace CodeImp.DoomBuilder.IO
 			//this.stream = stream;
 			this.writer = new BinaryWriter(stream);
 			this.stringstable = new Dictionary<string, ushort>(StringComparer.Ordinal);
+		}
+
+		//mxd
+		public void Dispose()
+		{
+			// Not already disposed?
+			if(!isdisposed)
+			{
+				if(writer != null) writer.Close();
+				isdisposed = true;
+			}
 		}
 
 		#endregion

@@ -165,7 +165,7 @@ namespace CodeImp.DoomBuilder.Plugins
 			foreach(string rn in resnames)
 			{
 				// Found it?
-				if(rn.EndsWith(resourcename, StringComparison.InvariantCultureIgnoreCase))
+				if(rn.EndsWith(resourcename, StringComparison.OrdinalIgnoreCase))
 				{
 					// Get a stream from the resource
 					return asm.GetManifestResourceStream(rn);

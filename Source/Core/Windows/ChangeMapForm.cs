@@ -65,7 +65,7 @@ namespace CodeImp.DoomBuilder.Windows
 				{
 					mapsettings = new Configuration(dbsfile, true);
 				}
-				catch (Exception)
+				catch(Exception)
 				{
 					mapsettings = new Configuration(true);
 				}

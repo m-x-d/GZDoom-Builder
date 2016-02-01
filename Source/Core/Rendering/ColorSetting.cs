@@ -13,7 +13,7 @@
  */
 
 #endregion
-
+/*
 #region ================== Namespaces
 
 using System;
@@ -88,3 +88,4 @@ namespace CodeImp.DoomBuilder.Rendering
 		#endregion
 	}
 }
+*/

@@ -32,7 +32,7 @@ using Plane = CodeImp.DoomBuilder.Geometry.Plane;
 
 namespace CodeImp.DoomBuilder.VisualModes
 {
-	public abstract class VisualThing : IVisualPickable, ID3DResource
+	public abstract class VisualThing : IVisualPickable, ID3DResource, IDisposable
 	{
 		#region ================== Constants
 

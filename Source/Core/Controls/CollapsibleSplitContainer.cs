@@ -185,7 +185,7 @@ namespace CodeImp.DoomBuilder.Controls
 				bounds = new Rectangle(r.X, r.Y + ((r.Height - scaled[115]) / 2), scaled[8], scaled[115]);
 
 				// draw the background color for our control image
-				using (SolidBrush bg = new SolidBrush(hot ? hotcolor : this.BackColor))
+				using(SolidBrush bg = new SolidBrush(hot ? hotcolor : this.BackColor))
 				{
 					e.Graphics.FillRectangle(bg, new Rectangle(bounds.X + scaled[1], bounds.Y, scaled[6], scaled[115]));
 				}
@@ -225,7 +225,7 @@ namespace CodeImp.DoomBuilder.Controls
 				bounds = new Rectangle(r.X + ((r.Width - scaled[115]) / 2), r.Y, scaled[115], scaled[8]);
 
 				// draw the background color for our control image
-				using (SolidBrush bg = new SolidBrush(hot ? hotcolor : this.BackColor))
+				using(SolidBrush bg = new SolidBrush(hot ? hotcolor : this.BackColor))
 				{
 					e.Graphics.FillRectangle(bg, new Rectangle(bounds.X, bounds.Y + scaled[1], scaled[115], scaled[6]));
 				}

@@ -18,7 +18,7 @@ using SlimDX;
 
 namespace CodeImp.DoomBuilder
 {
-	public class Clock
+	public static class Clock
 	{
 		// This queries the system for the current time
 		public static float CurrentTime { get { return Configuration.Timer.ElapsedMilliseconds; } }

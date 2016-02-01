@@ -67,12 +67,12 @@ namespace CodeImp.DoomBuilder.Actions
 			// Aquire device
 			try { mouse.Acquire(); }
 #if DEBUG
-			catch (Exception e)
+			catch(Exception e)
 			{
 				Console.WriteLine("MouseInput initialization failed: " + e.Message);
 			}
 #else
-			catch (Exception) { }
+			catch(Exception) { }
 #endif
 
 			// We have no destructor
@@ -130,12 +130,12 @@ namespace CodeImp.DoomBuilder.Actions
 				// Reaquire device
 				try { mouse.Acquire(); }
 #if DEBUG
-				catch (Exception e)
+				catch(Exception e)
 				{
 					Console.WriteLine("MouseInput process failed: " + e.Message);
 				}
 #else
-				catch (Exception) { }
+				catch(Exception) { }
 #endif
 				return new Vector2D();
 			}
@@ -149,7 +149,7 @@ namespace CodeImp.DoomBuilder.Actions
 				{
 					mouse.Acquire();
 				}
-				catch (Exception e)
+				catch(Exception e)
 				{
 					Console.WriteLine("MouseInput process failed: " + e.Message);
 				}
@@ -160,7 +160,7 @@ namespace CodeImp.DoomBuilder.Actions
 			{
 				// Reaquire device
 				try { mouse.Acquire(); } 
-				catch (Exception) { }
+				catch(Exception) { }
 				return new Vector2D();
 			}
 #endif

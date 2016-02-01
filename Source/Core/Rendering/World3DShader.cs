@@ -39,15 +39,10 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		//mxd
 		private readonly EffectHandle vertexColorHadle;
-		//lights
-		private readonly EffectHandle lightPositionAndRadiusHandle;
+		private readonly EffectHandle lightPositionAndRadiusHandle; //lights
 		private readonly EffectHandle lightColorHandle;
 		private readonly EffectHandle world;
-		//fog
-		private readonly EffectHandle camPosHandle;
-		//used in ModelReader
-		private readonly VertexElement[] vertexElements;
-
+		private readonly EffectHandle camPosHandle; //used for fog rendering
 		
 		#endregion
 
@@ -190,7 +185,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			}
 
 			// Initialize world vertex declaration
-			vertexElements = new[] 
+			VertexElement[] ve = new[] 
 			{
 				new VertexElement(0, 0, DeclarationType.Float3, DeclarationMethod.Default, DeclarationUsage.Position, 0),
 				new VertexElement(0, 12, DeclarationType.Color, DeclarationMethod.Default, DeclarationUsage.Color, 0),
@@ -199,7 +194,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				VertexElement.VertexDeclarationEnd
 			};
 
-			vertexdecl = new VertexDeclaration(General.Map.Graphics.Device, vertexElements);
+			vertexdecl = new VertexDeclaration(General.Map.Graphics.Device, ve);
 
 			// We have no destructor
 			GC.SuppressFinalize(this);

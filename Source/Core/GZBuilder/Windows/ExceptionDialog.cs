@@ -22,9 +22,10 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 			logPath = Path.Combine(General.SettingsPath, @"GZCrash.txt");
 			Exception ex = (Exception)e.ExceptionObject;
 			errorDescription.Text = "Error in " + ex.Source + ":";
+			string sysinfo = GetSystemInfo();
 			using(StreamWriter sw = File.CreateText(logPath)) 
 			{
-				sw.Write(GetExceptionDescription(ex));
+				sw.Write(sysinfo + GetExceptionDescription(ex));
 			}
 
 			errorMessage.Text = ex.Message + Environment.NewLine + ex.StackTrace;

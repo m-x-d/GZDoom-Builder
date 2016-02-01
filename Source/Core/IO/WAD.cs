@@ -25,7 +25,7 @@ using System.IO;
 
 namespace CodeImp.DoomBuilder.IO
 {
-	internal class WAD
+	internal class WAD : IDisposable
 	{
 		#region ================== Constants
 

@@ -268,7 +268,7 @@ namespace CodeImp.DoomBuilder
 			Cursor oldcursor = Cursor.Current;
 
 			// Check if configuration is OK
-			if(General.Map.ConfigSettings.TestProgram == "" || !File.Exists(General.Map.ConfigSettings.TestProgram))
+			if(string.IsNullOrEmpty(General.Map.ConfigSettings.TestProgram) || !File.Exists(General.Map.ConfigSettings.TestProgram))
 			{
 				//mxd. Let's be more precise
 				string message;

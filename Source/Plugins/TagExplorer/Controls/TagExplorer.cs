@@ -988,7 +988,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
 				using(StreamWriter sw = File.CreateText(saveFileDialog.FileName)) sw.Write(sb.ToString());
 				General.Interface.DisplayStatus(StatusType.Info, "Tag info successfully saved.");
 			}
-			catch (Exception ex)
+			catch(Exception ex)
 			{
 				General.ErrorLogger.Add(ErrorType.Error, "Failed to save tag info: " + ex.Message);
 				General.Interface.DisplayStatus(StatusType.Info, "Failed to save tag info...");

@@ -156,7 +156,7 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			if(this.DesignMode)
 			{
-				using (Pen p = new Pen(SystemColors.ControlDark, 1) { DashStyle = DashStyle.Dash })
+				using(Pen p = new Pen(SystemColors.ControlDark, 1) { DashStyle = DashStyle.Dash })
 				{
 					e.Graphics.DrawRectangle(p, 0, 0, this.ClientRectangle.Width - 1, this.ClientRectangle.Height - 1);
 				}

@@ -11,6 +11,7 @@ namespace CodeImp.DoomBuilder.Map
 	/// <summary>
 	/// List of universal fields and their values.
 	/// </summary>
+	[Serializable]
 	public class UniFields : Dictionary<string, UniValue>
 	{
 		#region ================== Variables
