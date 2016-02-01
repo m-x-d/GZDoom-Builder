@@ -23,7 +23,7 @@ namespace CodeImp.DoomBuilder.Actions
 	/// <summary>
 	/// This binds a method to an action which is then called when the action is started.
 	/// </summary>
-	public class BeginActionAttribute : ActionAttribute
+	public sealed class BeginActionAttribute : ActionAttribute
 	{
 		/// <summary>
 		/// This binds a method to an action which is then called when the action is started.

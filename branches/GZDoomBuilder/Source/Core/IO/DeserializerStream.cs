@@ -16,6 +16,7 @@
 
 #region ================== Namespaces
 
+using System;
 using System.Collections.Generic;
 using CodeImp.DoomBuilder.Geometry;
 using System.IO;
@@ -24,7 +25,7 @@ using System.IO;
 
 namespace CodeImp.DoomBuilder.IO
 {
-	internal sealed class DeserializerStream : IReadWriteStream
+	internal sealed class DeserializerStream : IReadWriteStream, IDisposable
 	{
 		#region ================== Constants
 
@@ -33,9 +34,10 @@ namespace CodeImp.DoomBuilder.IO
 		#region ================== Variables
 
 		private Stream stream;
-		private BinaryReader reader;
+		private readonly BinaryReader reader;
 		private string[] stringstable;
 		private int stringtablepos;
+		private bool isdisposed; //mxd
 
 		#endregion
 
@@ -55,6 +57,23 @@ namespace CodeImp.DoomBuilder.IO
 			// Initialize
 			this.stream = stream;
 			this.reader = new BinaryReader(stream);
+		}
+
+		//mxd
+		public void Dispose()
+		{
+			// Not already disposed?
+			if(!isdisposed)
+			{
+				if(reader != null) reader.Close();
+				if(stream != null)
+				{
+					stream.Dispose();
+					stream = null;
+				}
+
+				isdisposed = true;
+			}
 		}
 
 		#endregion

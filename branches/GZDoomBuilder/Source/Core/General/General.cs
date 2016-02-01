@@ -128,22 +128,9 @@ namespace CodeImp.DoomBuilder
 		private const string SCREENSHOTS_DIR = "Screenshots"; //mxd
 		private const string SNIPPETS_DIR = "Snippets"; //mxd
 		private const string MAP_RESTORE_DIR = "Restore"; //mxd
-		private const string SETUP_DIR = "Setup";
 		private const string SPRITES_DIR = "Sprites";
 		private const string TEXTURES_DIR = "Textures"; //mxd
 		private const string HELP_FILE = "Refmanual.chm";
-
-		// SCROLLINFO structure
-		/*internal struct ScrollInfo
-		{
-			public int size;		// size of this structure
-			public uint mask;		// combination of SIF_ constants
-			public int min;			// minimum scrolling position
-			public int max;			// maximum scrolling position
-			public uint page;		// page size (scroll bar uses this value to determine the appropriate size of the proportional scroll box)
-			public int pos;			// position of the scroll box
-			public int trackpos;	// immediate position of a scroll box that the user is dragging
-		}*/
 
 		#endregion
 
@@ -151,7 +138,6 @@ namespace CodeImp.DoomBuilder
 
 		// Files and Folders
 		private static string apppath;
-		private static string setuppath;
 		private static string settingspath;
 		private static string restorepath; //mxd
 		private static string logfile;
@@ -176,7 +162,6 @@ namespace CodeImp.DoomBuilder
 		private static PluginManager plugins;
 		private static ColorCollection colors;
 		private static TypesManager types;
-		private static Clock clock;
 		private static ErrorLogger errorlogger;
 		//private static Mutex appmutex;
 		
@@ -235,7 +220,6 @@ namespace CodeImp.DoomBuilder
 		public static ActionManager Actions { get { return actions; } }
 		public static HintsManager Hints { get { return hints; } } //mxd
 		internal static PluginManager Plugins { get { return plugins; } }
-		public static Clock Clock { get { return clock; } }
 		public static bool DebugBuild { get { return debugbuild; } }
 		internal static TypesManager Types { get { return types; } }
 		public static string AutoLoadFile { get { return autoloadfile; } }
@@ -551,8 +535,9 @@ namespace CodeImp.DoomBuilder
 
 			// Enable OS visual styles
 			Application.EnableVisualStyles();
-			Application.DoEvents();		// This must be here to work around a .NET bug
-			ToolStripManager.Renderer = new ToolStripProfessionalRenderer(new TanColorTable());
+			Application.SetCompatibleTextRenderingDefault(false); //mxd
+			//Application.DoEvents();		// This must be here to work around a .NET bug
+			//ToolStripManager.Renderer = new ToolStripProfessionalRenderer(new TanColorTable());
 			
 			// Hook to DLL loading failure event
 			AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
@@ -576,7 +561,6 @@ namespace CodeImp.DoomBuilder
 
 			// Setup directories
 			temppath = Path.GetTempPath();
-			setuppath = Path.Combine(apppath, SETUP_DIR);
 			settingspath = (portablemode ? apppath : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), SETTINGS_DIR)); //mxd
 			restorepath = Path.Combine(settingspath, MAP_RESTORE_DIR);
 			configspath = Path.Combine(apppath, GAME_CONFIGS_DIR);
@@ -679,20 +663,12 @@ namespace CodeImp.DoomBuilder
 				General.WriteLogLine("Loading color settings...");
 				colors = new ColorCollection(settings.Config);
 				
-				// Create application clock
-				General.WriteLogLine("Creating application clock...");
-				clock = new Clock();
-				
 				// Create types manager
 				General.WriteLogLine("Creating types manager...");
 				types = new TypesManager();
-
-				//mxd. init gzdoom builder
-				GZBuilder.GZGeneral.Init();
 				
 				// Do auto map loading when window is delayed
-				if(delaymainwindow)
-					mainwindow.PerformAutoMapLoading();
+				if(delaymainwindow) mainwindow.PerformAutoMapLoading();
 				
 				// All done
 				General.WriteLogLine("Startup done");
@@ -1408,7 +1384,7 @@ namespace CodeImp.DoomBuilder
 			editing.DisengageVolatileMode();
 			
 			// Check if a wad file is known
-			if(map.FilePathName == "")
+			if(string.IsNullOrEmpty(map.FilePathName))
 			{
 				// Call to SaveMapAs
 				result = SaveMapAs();
@@ -2106,13 +2082,13 @@ namespace CodeImp.DoomBuilder
 						EventLog.CreateEventSource("ThreadException", "Application");
 
 					// Create an EventLog instance and assign its source.
-					using (EventLog myLog = new EventLog()) 
+					using(EventLog myLog = new EventLog()) 
 					{
 						myLog.Source = "ThreadException";
 						myLog.WriteEntry(exceptionmsg);
 					}
 				}
-				catch (Exception exc) 
+				catch(Exception exc) 
 				{
 					MessageBox.Show("Could not write the error to the event log.\nReason: "
 						+ exc.Message + "\n\nInitial exception:\n" + exceptionmsg, "Fatal Non-UI Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);

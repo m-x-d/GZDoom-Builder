@@ -16,6 +16,7 @@
 
 #region ================== Namespaces
 
+using System;
 using System.IO;
 using CodeImp.DoomBuilder.GZBuilder.Data; //mxd
 
@@ -23,14 +24,14 @@ using CodeImp.DoomBuilder.GZBuilder.Data; //mxd
 
 namespace CodeImp.DoomBuilder.Editing
 {
-	public class UndoSnapshot
+	public class UndoSnapshot : IDisposable
 	{
 		#region ================== Variables
 
 		private MemoryStream recstream;
 		private string filename;
 		private string description;
-		private int ticketid;			// For safe withdrawing
+		private readonly int ticketid;			// For safe withdrawing
 		private volatile bool storeondisk;
 		private volatile bool isondisk;
 		private bool isdisposed;
@@ -70,7 +71,7 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 
 		// Disposer
-		internal void Dispose()
+		public void Dispose()
 		{
 			lock(this)
 			{

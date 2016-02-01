@@ -24,7 +24,7 @@ using SlimDX.Direct3D9;
 
 namespace CodeImp.DoomBuilder.Rendering
 {
-	internal abstract class D3DShader
+	internal abstract class D3DShader : IDisposable
 	{
 		#region ================== Constants
 

@@ -16,6 +16,7 @@
 
 #region ================== Namespaces
 
+using System;
 using System.Collections.Generic;
 using CodeImp.DoomBuilder.Map;
 using SlimDX.Direct3D9;
@@ -26,7 +27,7 @@ using CodeImp.DoomBuilder.Rendering;
 
 namespace CodeImp.DoomBuilder.VisualModes
 {
-	public class VisualSector : ID3DResource
+	public class VisualSector : ID3DResource, IDisposable
 	{
 		#region ================== Constants
 
@@ -35,14 +36,14 @@ namespace CodeImp.DoomBuilder.VisualModes
 		#region ================== Variables
 
 		// Geometry
-		private List<VisualGeometry> fixedgeometry;
-		private List<VisualGeometry> allgeometry;
-		private Dictionary<Sidedef, List<VisualGeometry>> sidedefgeometry;
+		private readonly List<VisualGeometry> fixedgeometry;
+		private readonly List<VisualGeometry> allgeometry;
+		private readonly Dictionary<Sidedef, List<VisualGeometry>> sidedefgeometry;
 		private VertexBuffer geobuffer;
 		private bool updategeo;
 		
 		// Original sector
-		private Sector sector;
+		private readonly Sector sector;
 		
 		// Disposing
 		private bool isdisposed;

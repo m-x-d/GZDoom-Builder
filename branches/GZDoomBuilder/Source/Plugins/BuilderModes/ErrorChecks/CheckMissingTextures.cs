@@ -86,7 +86,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				// Handle thread interruption
 				try { Thread.Sleep(0); }
-				catch (ThreadInterruptedException) { return; }
+				catch(ThreadInterruptedException) { return; }
 
 				// We are making progress!
 				if((++progress / PROGRESS_STEP) > stepprogress)

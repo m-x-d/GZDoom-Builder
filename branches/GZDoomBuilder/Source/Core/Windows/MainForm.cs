@@ -2472,7 +2472,7 @@ namespace CodeImp.DoomBuilder.Windows
 				if(item.Tag is string)
 				{
 					// Check if the tag doe not already begin with the assembly name
-					if(!(item.Tag as string).StartsWith(plugin.Name + "_", StringComparison.InvariantCultureIgnoreCase))
+					if(!(item.Tag as string).StartsWith(plugin.Name + "_", StringComparison.OrdinalIgnoreCase))
 					{
 						// Change the tag to a fully qualified action name
 						item.Tag = plugin.Name.ToLowerInvariant() + "_" + (item.Tag as string);
@@ -2534,7 +2534,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 				// Get configuration setting
 				string filename = General.Settings.ReadSetting("recentfiles.file" + i, "");
-				if(filename != "" && File.Exists(filename))
+				if(!string.IsNullOrEmpty(filename) && File.Exists(filename))
 				{
 					// Set up item
 					int number = i + 1;
@@ -2561,7 +2561,7 @@ namespace CodeImp.DoomBuilder.Windows
 			for(int i = 0; i < recentitems.Length; i++)
 			{
 				// Recent file set?
-				if(recentitems[i].Text != "")
+				if(!string.IsNullOrEmpty(recentitems[i].Text))
 				{
 					// Save to configuration
 					General.Settings.WriteSetting("recentfiles.file" + i, recentitems[i].Tag.ToString());
@@ -2603,7 +2603,7 @@ namespace CodeImp.DoomBuilder.Windows
 				int number = i + 2;
 				recentitems[i + 1].Text = "&" + number + "  " + GetDisplayFilename(recentitems[i].Tag.ToString());
 				recentitems[i + 1].Tag = recentitems[i].Tag.ToString();
-				recentitems[i + 1].Visible = (recentitems[i].Tag.ToString() != "");
+				recentitems[i + 1].Visible = !string.IsNullOrEmpty(recentitems[i].Tag.ToString());
 			}
 
 			// Add new file at the top
@@ -3027,7 +3027,7 @@ namespace CodeImp.DoomBuilder.Windows
 					writer.Write(html.ToString());
 				}
 			} 
-			catch (Exception) 
+			catch(Exception) 
 			{
 				//Configurtions path SHOULD be accessible and not read-only, right?
 				path = Path.Combine(General.SettingsPath, fileName);
@@ -3884,24 +3884,15 @@ namespace CodeImp.DoomBuilder.Windows
 				return;
 			}
 
-			// Start annoying blinking!
-			if(blink)
-			{
-				if(!blinkTimer.Enabled) blinkTimer.Start();
-			}
-			else
-			{
-				blinkTimer.Stop();
-				warnsLabel.BackColor = SystemColors.Control;
-			}
-			
-			// Update icon
+			// Update icon, start annoying blinking if necessary
 			if(count > 0) 
 			{
+				if(blink && !blinkTimer.Enabled) blinkTimer.Start();
 				warnsLabel.Image = Resources.Warning;
 			} 
 			else 
 			{
+				blinkTimer.Stop();
 				warnsLabel.Image = Resources.WarningOff;
 				warnsLabel.BackColor = SystemColors.Control;
 			}
@@ -3925,6 +3916,7 @@ namespace CodeImp.DoomBuilder.Windows
 		//mxd
 		private void blinkTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e) 
 		{
+			if(!blinkTimer.Enabled) return;
 			try 
 			{
 				this.Invoke(new CallBlink(Blink));

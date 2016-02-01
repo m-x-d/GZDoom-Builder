@@ -268,11 +268,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						int x = side.Bounds.X - minx + margin;
 						int y = side.Bounds.Y - miny + margin;
 
-						using (Pen p = new Pen(c))
+						using(Pen p = new Pen(c))
 						{
 							g.DrawRectangle(p, x, y, side.Bounds.Width, side.Bounds.Height);
 						}
-						using (Brush b = new SolidBrush(c))
+						using(Brush b = new SolidBrush(c))
 						{
 							g.DrawString(i++ + ": line " + side.Side.Sidedef.Line.Index + "; x:" + side.Bounds.X + " y:" + side.Bounds.Y, this.Font, b, x + 2, y + 2);
 						}

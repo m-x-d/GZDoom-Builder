@@ -32,7 +32,7 @@ using CodeImp.DoomBuilder.Actions;
 
 namespace CodeImp.DoomBuilder.Editing
 {
-	public class UndoManager
+	public class UndoManager : IDisposable
 	{
 		#region ================== Constants
 
@@ -181,7 +181,7 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 
 		// Disposer
-		internal void Dispose()
+		public void Dispose()
 		{
 			// Not already disposed?
 			if(!isdisposed)
@@ -198,6 +198,18 @@ namespace CodeImp.DoomBuilder.Editing
 				ClearUndos();
 				ClearRedos();
 				General.WriteLogLine("All undo and redo levels cleared.");
+
+				//mxd
+				if(ss != null)
+				{
+					ss.Dispose();
+					ss = null;
+				}
+				if(stream != null)
+				{
+					stream.Dispose();
+					stream = null;
+				}
 				
 				// Done
 				isdisposed = true;
@@ -367,12 +379,12 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 
 		// This outputs record info, if desired
-		private void LogRecordInfo(string info)
+		/*private void LogRecordInfo(string info)
 		{
 			#if DEBUG
 				//General.WriteLogLine(info);
 			#endif
-		}
+		}*/
 
 		// This plays back a stream in reverse
 		private void PlaybackStream(MemoryStream pstream)
@@ -432,6 +444,10 @@ namespace CodeImp.DoomBuilder.Editing
 					numcmds--;
 				}
 			}
+
+			//mxd
+			ds.End();
+			ds.Dispose();
 			
 			General.Map.Map.AutoRemove = true;
 		}

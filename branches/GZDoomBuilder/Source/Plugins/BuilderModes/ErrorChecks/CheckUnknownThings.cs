@@ -28,7 +28,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(General.Map.Data.GetThingInfoEx(t.Type) == null) SubmitResult(new ResultUnknownThing(t));
 
 				// Handle thread interruption
-				try { Thread.Sleep(0); } catch (ThreadInterruptedException) { return; }
+				try { Thread.Sleep(0); } catch(ThreadInterruptedException) { return; }
 
 				// We are making progress!
 				if((++progress / PROGRESS_STEP) > stepprogress) 

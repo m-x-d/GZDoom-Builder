@@ -295,7 +295,7 @@ namespace CodeImp.DoomBuilder.Controls
 			foreach(string rn in resnames)
 			{
 				// Found one?
-				if(rn.EndsWith(LEXERS_RESOURCE, StringComparison.InvariantCultureIgnoreCase))
+				if(rn.EndsWith(LEXERS_RESOURCE, StringComparison.OrdinalIgnoreCase))
 				{
 					// Get a stream from the resource
 					Stream lexersdata = General.ThisAssembly.GetManifestResourceStream(rn);

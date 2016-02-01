@@ -121,7 +121,7 @@ namespace CodeImp.DoomBuilder.Actions
 			foreach(string rn in resnames)
 			{
 				// Found one?
-				if(rn.EndsWith(ACTIONS_RESOURCE, StringComparison.InvariantCultureIgnoreCase))
+				if(rn.EndsWith(ACTIONS_RESOURCE, StringComparison.OrdinalIgnoreCase))
 				{
 					// Get a stream from the resource
 					Stream actionsdata = asm.GetManifestResourceStream(rn);

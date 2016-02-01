@@ -27,7 +27,7 @@ namespace CodeImp.DoomBuilder.Editing
 	/// Allows automatic binding with an action and a button on the toolbar/menu.
 	/// </summary>
 	[AttributeUsage(AttributeTargets.Class, Inherited = true, AllowMultiple = true)]
-	public class EditModeAttribute : Attribute
+	public sealed class EditModeAttribute : Attribute
 	{
 		#region ================== Variables
 		

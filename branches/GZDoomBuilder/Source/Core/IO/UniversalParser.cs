@@ -380,7 +380,7 @@ namespace CodeImp.DoomBuilder.IO
 					{
 						// Hexadecimal?
 						string s = val.ToString();
-						if((s.Length > 2) && s.StartsWith("0x", StringComparison.InvariantCultureIgnoreCase))
+						if((s.Length > 2) && s.StartsWith("0x", StringComparison.OrdinalIgnoreCase))
 						{
 							// Convert to int
 							try

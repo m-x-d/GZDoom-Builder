@@ -130,7 +130,7 @@ namespace CodeImp.DoomBuilder.Data
 						{
 							bitmap = reader.ReadAsBitmap(filedata);
 						}
-						catch (InvalidDataException)
+						catch(InvalidDataException)
 						{
 							// Data cannot be read!
 							bitmap = null;

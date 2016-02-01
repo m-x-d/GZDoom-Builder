@@ -40,7 +40,7 @@ using CodeImp.DoomBuilder.Windows;
 
 namespace CodeImp.DoomBuilder 
 {
-	public sealed class MapManager 
+	public sealed class MapManager : IDisposable
 	{
 		#region ================== Constants
 
@@ -164,7 +164,7 @@ namespace CodeImp.DoomBuilder
 		}
 
 		// Disposer
-		internal bool Dispose() 
+		public void Dispose()
 		{
 			// Not already disposed?
 			if(!isdisposed) 
@@ -234,11 +234,7 @@ namespace CodeImp.DoomBuilder
 
 				// Done
 				isdisposed = true;
-				return true;
 			}
-
-			// Already closed
-			return true;
 		}
 
 		#endregion
@@ -828,7 +824,7 @@ namespace CodeImp.DoomBuilder
 			}
 
 			// Determine original map name
-			string origmapname = (options.PreviousName != "" && purpose != SavePurpose.IntoFile) ? options.PreviousName : options.CurrentName;
+			string origmapname = (!string.IsNullOrEmpty(options.PreviousName) && purpose != SavePurpose.IntoFile) ? options.PreviousName : options.CurrentName;
 			string origwadfile = string.Empty; //mxd
 
 			try 
@@ -1653,6 +1649,152 @@ namespace CodeImp.DoomBuilder
 
 		#endregion
 
+		#region ================== [mxd] GZDB actions
+
+		[BeginAction("gztogglemodels")]
+		internal void ToggleModelsRenderingMode()
+		{
+			switch(General.Settings.GZDrawModelsMode)
+			{
+				case ModelRenderMode.NONE:
+					General.Settings.GZDrawModelsMode = ModelRenderMode.SELECTION;
+					General.MainWindow.DisplayStatus(StatusType.Action, "Models rendering mode: SELECTION ONLY");
+					break;
+
+				case ModelRenderMode.SELECTION:
+					General.Settings.GZDrawModelsMode = ModelRenderMode.ACTIVE_THINGS_FILTER;
+					General.MainWindow.DisplayStatus(StatusType.Action, "Models rendering mode: ACTIVE THINGS FILTER ONLY");
+					break;
+
+				case ModelRenderMode.ACTIVE_THINGS_FILTER:
+					General.Settings.GZDrawModelsMode = ModelRenderMode.ALL;
+					General.MainWindow.DisplayStatus(StatusType.Action, "Models rendering mode: ALL");
+					break;
+
+				case ModelRenderMode.ALL:
+					General.Settings.GZDrawModelsMode = ModelRenderMode.NONE;
+					General.MainWindow.DisplayStatus(StatusType.Action, "Models rendering mode: NONE");
+					break;
+			}
+
+			General.MainWindow.RedrawDisplay();
+			General.MainWindow.UpdateGZDoomPanel();
+		}
+
+		[BeginAction("gztogglelights")]
+		internal void ToggleLightsRenderingMode()
+		{
+			if(General.Editing.Mode is ClassicMode)
+			{
+				switch(General.Settings.GZDrawLightsMode)
+				{
+					case LightRenderMode.NONE:
+						General.Settings.GZDrawLightsMode = LightRenderMode.ALL;
+						General.MainWindow.DisplayStatus(StatusType.Action, "Dynamic lights rendering mode: ALL");
+						break;
+
+					default:
+						General.Settings.GZDrawLightsMode = LightRenderMode.NONE;
+						General.MainWindow.DisplayStatus(StatusType.Action, "Dynamic lights rendering mode: NONE");
+						break;
+				}
+			}
+			else
+			{
+				switch(General.Settings.GZDrawLightsMode)
+				{
+					case LightRenderMode.NONE:
+						General.Settings.GZDrawLightsMode = LightRenderMode.ALL;
+						General.MainWindow.DisplayStatus(StatusType.Action, "Dynamic lights rendering mode: ALL");
+						break;
+
+					case LightRenderMode.ALL:
+						General.Settings.GZDrawLightsMode = LightRenderMode.ALL_ANIMATED;
+						General.MainWindow.DisplayStatus(StatusType.Action, "Dynamic lights rendering mode: ANIMATED");
+						break;
+
+					case LightRenderMode.ALL_ANIMATED:
+						General.Settings.GZDrawLightsMode = LightRenderMode.NONE;
+						General.MainWindow.DisplayStatus(StatusType.Action, "Dynamic lights rendering mode: NONE");
+						break;
+				}
+			}
+
+			General.MainWindow.RedrawDisplay();
+			General.MainWindow.UpdateGZDoomPanel();
+		}
+
+		[BeginAction("gztogglefog")]
+		internal void ToggleFog()
+		{
+			General.Settings.GZDrawFog = !General.Settings.GZDrawFog;
+			General.MainWindow.DisplayStatus(StatusType.Action, "Fog rendering is " + (General.Settings.GZDrawFog ? "ENABLED" : "DISABLED"));
+			General.MainWindow.RedrawDisplay();
+			General.MainWindow.UpdateGZDoomPanel();
+		}
+
+		[BeginAction("gztogglesky")]
+		internal void ToggleSky()
+		{
+			General.Settings.GZDrawSky = !General.Settings.GZDrawSky;
+			General.MainWindow.DisplayStatus(StatusType.Action, "Sky rendering is " + (General.Settings.GZDrawSky ? "ENABLED" : "DISABLED"));
+			General.MainWindow.RedrawDisplay();
+			General.MainWindow.UpdateGZDoomPanel();
+		}
+
+		[BeginAction("gztogglefx")]
+		internal void ToggleFx()
+		{
+			int on = 0;
+			on += General.Settings.GZDrawFog ? 1 : -1;
+			on += General.Settings.GZDrawSky ? 1 : -1;
+			on += General.Settings.GZDrawLightsMode != LightRenderMode.NONE ? 1 : -1;
+			on += General.Settings.GZDrawModelsMode != ModelRenderMode.NONE ? 1 : -1;
+
+			bool enable = (on < 0);
+
+			General.Settings.GZDrawFog = enable;
+			General.Settings.GZDrawSky = enable;
+			General.Settings.GZDrawLightsMode = (enable ? LightRenderMode.ALL : LightRenderMode.NONE);
+			General.Settings.GZDrawModelsMode = (enable ? ModelRenderMode.ALL : ModelRenderMode.NONE);
+			General.MainWindow.DisplayStatus(StatusType.Action, "Advanced effects are " + (enable ? "ENABLED" : "DISABLED"));
+
+			General.MainWindow.RedrawDisplay();
+			General.MainWindow.UpdateGZDoomPanel();
+		}
+
+		[BeginAction("gztoggleeventlines")]
+		internal void ToggleEventLines()
+		{
+			General.Settings.GZShowEventLines = !General.Settings.GZShowEventLines;
+			General.MainWindow.DisplayStatus(StatusType.Action, "Event lines are " + (General.Settings.GZShowEventLines ? "ENABLED" : "DISABLED"));
+			General.MainWindow.RedrawDisplay();
+			General.MainWindow.UpdateGZDoomPanel();
+		}
+
+		[BeginAction("gztogglevisualvertices")]
+		internal void ToggleVisualVertices()
+		{
+			General.Settings.GZShowVisualVertices = !General.Settings.GZShowVisualVertices;
+			General.MainWindow.DisplayStatus(StatusType.Action, "Visual vertices are " + (General.Settings.GZShowVisualVertices ? "ENABLED" : "DISABLED"));
+			General.MainWindow.RedrawDisplay();
+			General.MainWindow.UpdateGZDoomPanel();
+		}
+
+		[BeginAction("gzreloadmodeldef")]
+		internal void ReloadModeldef()
+		{
+			data.ReloadModeldef();
+		}
+
+		[BeginAction("gzreloadgldefs")]
+		internal void ReloadGldefs()
+		{
+			data.ReloadGldefs();
+		}
+
+		#endregion
+
 		#region ================== Script Editing
 
 		// Show the script editor
@@ -1994,6 +2136,8 @@ namespace CodeImp.DoomBuilder
 							compilererrors.Add(new CompilerError(parser.ErrorDescription, parser.ErrorSource, parser.ErrorLine));
 							break;
 						}
+
+						parser.Dispose();
 					}
 				}
 			}

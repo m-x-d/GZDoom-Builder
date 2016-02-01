@@ -81,7 +81,7 @@ namespace CodeImp.DoomBuilder.ColorPicker
 			// (colorRectangle), brightness "strip" (brightnessRectangle)
 			// and location to display selected color (selectedColorRectangle).
 
-			using (GraphicsPath path = new GraphicsPath()) 
+			using(GraphicsPath path = new GraphicsPath()) 
 			{
 				// Store away locations for later use. 
 				this.colorRectangle = colorRectangle;
@@ -358,7 +358,7 @@ namespace CodeImp.DoomBuilder.ColorPicker
 			// Given the top color, draw a linear gradient
 			// ranging from black to the top color. Use the 
 			// brightness rectangle as the area to fill.
-			using (LinearGradientBrush lgb = new LinearGradientBrush(brightnessRectangle, TopColor,
+			using(LinearGradientBrush lgb = new LinearGradientBrush(brightnessRectangle, TopColor,
 							 Color.Black, LinearGradientMode.Vertical)) 
 			{
 				g.FillRectangle(lgb, brightnessRectangle);
@@ -399,7 +399,7 @@ namespace CodeImp.DoomBuilder.ColorPicker
 		{
 			// Create a new PathGradientBrush, supplying an array of points created by calling
 			// the GetPoints method.
-			using (PathGradientBrush pgb = new PathGradientBrush(GetPoints(radius, new Point(radius, radius)))) 
+			using(PathGradientBrush pgb = new PathGradientBrush(GetPoints(radius, new Point(radius, radius)))) 
 			{
 				// Set the various properties. Note the SurroundColors property, which contains an array of points, 
 				// in a one-to-one relationship with the points that created the gradient.
@@ -412,7 +412,7 @@ namespace CodeImp.DoomBuilder.ColorPicker
 				// rather than recreating the gradient.
 				colorImage = new Bitmap(colorRectangle.Width, colorRectangle.Height, PixelFormat.Format32bppArgb);
 
-				using (Graphics newGraphics = Graphics.FromImage(colorImage)) 
+				using(Graphics newGraphics = Graphics.FromImage(colorImage)) 
 				{
 					newGraphics.FillEllipse(pgb, 0, 0, colorRectangle.Width, colorRectangle.Height);
 				}

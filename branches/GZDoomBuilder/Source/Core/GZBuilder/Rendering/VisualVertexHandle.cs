@@ -43,7 +43,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.Rendering
 			if(!isdisposed) 
 			{
 				if(upper != null) upper.Dispose();
+				upper = null;
 				if(lower != null) lower.Dispose();
+				lower = null;
 
 				// Unregister resource
 				General.Map.Graphics.UnregisterResource(this);
@@ -109,8 +111,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Rendering
 		{
 			// Trash geometry buffers
 			if(upper != null) upper.Dispose();
-			if(lower != null) lower.Dispose();
 			upper = null;
+			if(lower != null) lower.Dispose();
 			lower = null;
 		}
 
