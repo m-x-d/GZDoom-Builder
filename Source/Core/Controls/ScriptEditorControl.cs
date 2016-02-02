@@ -244,6 +244,7 @@ namespace CodeImp.DoomBuilder.Controls
 			int endline = Math.Min(scriptedit.Lines.Count, Math.Max(linenumber, linenumber + scriptedit.LinesOnScreen - 6));
 
 			// Go to target line
+			scriptedit.DirectMessage(NativeMethods.SCI_ENSUREVISIBLEENFORCEPOLICY, (IntPtr)startline); // Unfold the whole text block if needed
 			scriptedit.ShowLines(startline, endline);
 
 			// We may want to do some scrolling...
@@ -251,6 +252,29 @@ namespace CodeImp.DoomBuilder.Controls
 				scriptedit.Lines[startline].Goto();
 			else if(scriptedit.FirstVisibleLine + scriptedit.LinesOnScreen <= endline)
 				scriptedit.Lines[endline].Goto();
+		}
+
+		//mxd
+		private void SelectAndShow(int startpos, int endpos)
+		{
+			// Select the result
+			int startline = scriptedit.LineFromPosition(startpos);
+			int endline = scriptedit.LineFromPosition(endpos);
+
+			// Go to target line
+			scriptedit.DirectMessage(NativeMethods.SCI_ENSUREVISIBLEENFORCEPOLICY, (IntPtr)startline); // Unfold the whole text block if needed
+			scriptedit.ShowLines(startline, endline);
+			scriptedit.GotoPosition(startpos);
+
+			// We may want to do some extra scrolling...
+			if(startline > 1 && scriptedit.FirstVisibleLine >= startline - 1)
+				scriptedit.Lines[startline - 1].Goto();
+			else if(endline < scriptedit.Lines.Count - 1 && scriptedit.FirstVisibleLine + scriptedit.LinesOnScreen <= endline + 1)
+				scriptedit.Lines[endline + 1].Goto();
+
+			// Update selection
+			scriptedit.SelectionStart = startpos;
+			scriptedit.SelectionEnd = endpos;
 		}
 
 		// This returns the line for a position
@@ -324,6 +348,9 @@ namespace CodeImp.DoomBuilder.Controls
 			string lexername = "lexer" + (int)scriptconfig.Lexer;
 			if(!lexercfg.SettingExists(lexername)) throw new InvalidOperationException("Unknown lexer " + scriptconfig.Lexer + " specified in script configuration!");
 			scriptedit.Lexer = scriptconfig.Lexer;
+
+			//mxd. Set word chars
+			scriptedit.SetWordChars(scriptconfig.WordCharacters);
 			
 			// Set the default style and settings
 			scriptedit.Styles[Style.Default].Font = General.Settings.ScriptFontName;
@@ -485,7 +512,10 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				// Instruct the lexer to calculate folding
 				scriptedit.SetProperty("fold", "1");
-				scriptedit.SetProperty("fold.compact", "1");
+				scriptedit.SetProperty("fold.compact", "0"); // 1 = folds blank lines
+				scriptedit.SetProperty("fold.comment", "1"); // Enable block comment folding
+				scriptedit.SetProperty("fold.preprocessor", "1"); // Enable #region folding
+				scriptedit.SetFoldFlags(FoldFlags.LineAfterContracted); // Draw line below if not expanded
 
 				// Configure a margin to display folding symbols
 				scriptedit.Margins[2].Type = MarginType.Symbol;
@@ -710,32 +740,6 @@ namespace CodeImp.DoomBuilder.Controls
 
 			// Nothing found...
 			return false;
-		}
-
-		//mxd
-		private void SelectAndShow(int startpos, int endpos)
-		{
-			// Select the result
-			int startline = scriptedit.LineFromPosition(startpos);
-			int endline = scriptedit.LineFromPosition(endpos);
-
-			// Go to target line
-			scriptedit.ShowLines(startline, endline);
-			scriptedit.GotoPosition(startpos);
-
-			// We may want to do some extra scrolling...
-			if(startline > 1 && scriptedit.FirstVisibleLine >= startline - 1)
-			{
-				scriptedit.Lines[startline - 1].Goto();
-			}
-			else if(endline < scriptedit.Lines.Count - 1 && scriptedit.FirstVisibleLine + scriptedit.LinesOnScreen <= endline + 1)
-			{
-				scriptedit.Lines[endline + 1].Goto();
-			}
-
-			// Update selection
-			scriptedit.SelectionStart = startpos;
-			scriptedit.SelectionEnd = endpos;
 		}
 
 		//mxd. (Un)indents selection
