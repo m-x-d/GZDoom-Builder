@@ -49,6 +49,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 		//mxd. Includes tracking
 		private readonly HashSet<string> parsedlumps; 
+
+		//mxd. Disposing. Is that really needed?..
+		private bool isdisposed;
 		
 		#endregion
 		
@@ -57,7 +60,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		/// <summary>
 		/// All actors that are supported by the current game.
 		/// </summary>
-		public ICollection<ActorStructure> Actors { get { return actors.Values; } }
+		public IEnumerable<ActorStructure> Actors { get { return actors.Values; } }
 
 		/// <summary>
 		/// All actors defined in the loaded DECORATE structures. This includes actors not supported in the current game.
@@ -92,9 +95,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 		}
 		
 		// Disposer
-		override public void Dispose()
+		public void Dispose()
 		{
-			// Not already disposed?
+			//mxd. Not already disposed?
 			if(!isdisposed)
 			{
 				foreach(KeyValuePair<string, ActorStructure> a in archivedactors)
@@ -103,7 +106,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 				actors = null;
 				archivedactors = null;
 
-				base.Dispose();
+				isdisposed = true;
 			}
 		}
 		

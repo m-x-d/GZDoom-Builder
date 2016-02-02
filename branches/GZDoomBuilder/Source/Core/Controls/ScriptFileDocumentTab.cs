@@ -256,7 +256,6 @@ namespace CodeImp.DoomBuilder.Controls
 
 			// Dispose compiler
 			compiler.Dispose();
-			parser.Dispose();
 
 			// Update script navigator
 			UpdateNavigator();

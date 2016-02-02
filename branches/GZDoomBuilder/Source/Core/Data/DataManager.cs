@@ -1925,7 +1925,6 @@ namespace CodeImp.DoomBuilder.Data
 			}
 
 			currentreader = null;
-			parser.Dispose();
 
 			foreach(KeyValuePair<string, ModelData> e in modeldefentriesbyname) 
 			{
@@ -2013,7 +2012,6 @@ namespace CodeImp.DoomBuilder.Data
 			}
 
 			currentreader = null;
-			parser.Dispose();
 
 			//get voxel models
 			foreach(KeyValuePair<string, bool> group in voxelNames) 
@@ -2076,8 +2074,6 @@ namespace CodeImp.DoomBuilder.Data
 
 			// And skyboxes
 			skyboxes = parser.Skyboxes;
-
-			parser.Dispose();
 		}
 
 		//mxd. This updates mapinfo class only
@@ -2128,7 +2124,6 @@ namespace CodeImp.DoomBuilder.Data
 			}
 			
 			currentreader = null;
-			parser.Dispose();
 		}
 
 		private void ParseFromLocation(ZDTextParser parser, string location, bool clearerrors)
@@ -2162,7 +2157,6 @@ namespace CodeImp.DoomBuilder.Data
 
 			currentreader = null;
 			reverbs = parser.GetReverbs();
-			parser.Dispose();
 		}
 
 		//mxd. This loads SNDSEQ
@@ -2191,7 +2185,6 @@ namespace CodeImp.DoomBuilder.Data
 
 			currentreader = null;
 			soundsequences = parser.GetSoundSequences();
-			parser.Dispose();
 		}
 
 		//mxd. This loads cameratextures from ANIMDEFS
@@ -2259,7 +2252,6 @@ namespace CodeImp.DoomBuilder.Data
 			}
 
 			currentreader = null;
-			parser.Dispose();
 		}
 
 		//mxd
