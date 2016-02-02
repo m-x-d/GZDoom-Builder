@@ -410,8 +410,6 @@ namespace CodeImp.DoomBuilder.Data
 				ImageData img = t.MakeImage();
 				images.Add(img);
 			}
-
-			parser.Dispose();
 		}
 		
 		// This loads a set of textures
@@ -642,8 +640,6 @@ namespace CodeImp.DoomBuilder.Data
 				ImageData img = t.MakeImage();
 				images.Add(img);
 			}
-
-			parser.Dispose();
 		}
 		
 		// This finds and returns a patch stream
@@ -706,8 +702,6 @@ namespace CodeImp.DoomBuilder.Data
 				ImageData img = t.MakeImage();
 				images.Add(img);
 			}
-
-			parser.Dispose();
 		}
 		
 		// This finds and returns a sprite stream

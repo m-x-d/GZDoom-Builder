@@ -2136,8 +2136,6 @@ namespace CodeImp.DoomBuilder
 							compilererrors.Add(new CompilerError(parser.ErrorDescription, parser.ErrorSource, parser.ErrorLine));
 							break;
 						}
-
-						parser.Dispose();
 					}
 				}
 			}
