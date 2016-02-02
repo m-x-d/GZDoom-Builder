@@ -54,7 +54,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private readonly Vector2D dragstartmappos;
 
 		//mxd. Offset from nearest grid intersection to dragstartmappos
-		private Vector2D dragstartoffset;
+		private readonly Vector2D dragstartoffset;
 
 		// Item used as reference for snapping to the grid
 		private readonly Thing dragitem;
@@ -62,6 +62,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		// List of old thing positions
 		private readonly List<Vector2D> oldpositions;
+
+		//mxd
+		private bool makeundo;
 
 		//mxd
 		private class AlignData
@@ -111,11 +114,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Constructor / Disposer
 
 		// Constructor to start dragging immediately
-		public DragThingsMode(EditMode basemode, Vector2D dragstartmappos)
+		public DragThingsMode(EditMode basemode, Vector2D dragstartmappos, bool makeundo)
 		{
 			// Initialize
 			this.dragstartmappos = dragstartmappos;
 			this.basemode = basemode;
+			this.makeundo = makeundo; //mxd
 
 			Cursor.Current = Cursors.AppStarting;
 
@@ -371,7 +375,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 
 				// Make undo for the dragging
-				General.Map.UndoRedo.CreateUndo((selectedthings.Count == 1 ? "Drag thing" : "Drag " + selectedthings.Count + " things"));
+				if(makeundo) //mxd
+					General.Map.UndoRedo.CreateUndo((selectedthings.Count == 1 ? "Drag thing" : "Drag " + selectedthings.Count + " things"));
 
 				// Move selected geometry to final position
 				if(aligndata != null && aligndata.Active) //mxd. Apply aligning

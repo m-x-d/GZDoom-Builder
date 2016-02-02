@@ -237,7 +237,7 @@ float4 ps_vertex_color(PixelData pd) : COLOR
 float4 ps_lightpass(LitPixelData pd) : COLOR 
 {
 	//is face facing away from light source?
-	if(dot(pd.normal, (lightPosAndRadius.xyz - pd.pos_w)) < -0.1f) // (lightPosAndRadius.xyz - pd.pos_w) == direction from light to current pixel
+	if(dot(pd.normal, normalize(lightPosAndRadius.xyz - pd.pos_w)) < -0.1f) // (lightPosAndRadius.xyz - pd.pos_w) == direction from light to current pixel
 		clip(-1);
 
 	//is pixel in light range?

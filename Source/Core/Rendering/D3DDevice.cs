@@ -145,7 +145,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			device.SetRenderState(RenderState.CullMode, Cull.None);
 			device.SetRenderState(RenderState.DestinationBlend, Blend.InverseSourceAlpha);
 			device.SetRenderState(RenderState.DiffuseMaterialSource, ColorSource.Color1);
-			device.SetRenderState(RenderState.DitherEnable, true);
+			//device.SetRenderState(RenderState.DitherEnable, true);
 			device.SetRenderState(RenderState.FillMode, FillMode.Solid);
 			device.SetRenderState(RenderState.FogEnable, false);
 			device.SetRenderState(RenderState.FogTableMode, FogMode.Linear);
@@ -154,6 +154,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			device.SetRenderState(RenderState.NormalizeNormals, false);
 			device.SetRenderState(RenderState.PointSpriteEnable, false);
 			device.SetRenderState(RenderState.RangeFogEnable, false);
+			device.SetRenderState(RenderState.ShadeMode, ShadeMode.Flat); //mxd
 			device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
 			device.SetRenderState(RenderState.SpecularEnable, false);
 			device.SetRenderState(RenderState.StencilEnable, false);
