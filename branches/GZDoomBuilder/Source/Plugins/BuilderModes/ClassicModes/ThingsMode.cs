@@ -597,43 +597,54 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if(!BuilderPlug.Me.DontMoveGeometryOutsideMapBoundary || CanDrag()) //mxd
 					{ 
 						// Shift pressed? Clone things!
+						bool thingscloned = false;
 						if(General.Interface.ShiftState) 
 						{
 							ICollection<Thing> selection = General.Map.Map.GetSelectedThings(true);
-							foreach(Thing t in selection) 
+							if(selection.Count > 0)
 							{
-								Thing clone = InsertThing(t.Position);
-								t.CopyPropertiesTo(clone);
+								// Make undo
+								General.Map.UndoRedo.CreateUndo((selection.Count == 1 ? "Clone-drag thing" : "Clone-drag " + selection.Count + " things"));
 
-								// If the cloned item is an interpolation point or patrol point, then insert the point in the path
-								ThingTypeInfo info = General.Map.Data.GetThingInfo(t.Type);
-								int nextpointtagargnum = -1;
-
-								// Thing type can be changed in MAPINFO DoomEdNums block...
-								switch(info.ClassName.ToLowerInvariant())
+								// Clone things
+								foreach(Thing t in selection)
 								{
-									case "interpolationpoint":
-										nextpointtagargnum = 3;
-										break;
+									Thing clone = InsertThing(t.Position);
+									t.CopyPropertiesTo(clone);
 
-									case "patrolpoint":
-										nextpointtagargnum = 0;
-										break;
+									// If the cloned item is an interpolation point or patrol point, then insert the point in the path
+									ThingTypeInfo info = General.Map.Data.GetThingInfo(t.Type);
+									int nextpointtagargnum = -1;
+
+									// Thing type can be changed in MAPINFO DoomEdNums block...
+									switch(info.ClassName.ToLowerInvariant())
+									{
+										case "interpolationpoint":
+											nextpointtagargnum = 3;
+											break;
+
+										case "patrolpoint":
+											nextpointtagargnum = 0;
+											break;
+									}
+
+									// Apply changes?
+									if(nextpointtagargnum != -1)
+									{
+										if(t.Tag == 0) t.Tag = General.Map.Map.GetNewTag();
+										t.Args[nextpointtagargnum] = clone.Tag = General.Map.Map.GetNewTag();
+									}
+
+									t.Selected = false;
+									clone.Selected = true;
 								}
 
-								// Apply changes?
-								if(nextpointtagargnum != -1)
-								{
-									if(t.Tag == 0) t.Tag = General.Map.Map.GetNewTag();
-									t.Args[nextpointtagargnum] = clone.Tag = General.Map.Map.GetNewTag();
-								}
-
-								t.Selected = false;
-								clone.Selected = true;
+								// We'll want to skip creating additional Undo in DragThingsMode
+								thingscloned = true;
 							}
 						}
 
-						General.Editing.ChangeMode(new DragThingsMode(new ThingsMode(), mousedownmappos));
+						General.Editing.ChangeMode(new DragThingsMode(new ThingsMode(), mousedownmappos, !thingscloned));
 					}
 				}
 			}

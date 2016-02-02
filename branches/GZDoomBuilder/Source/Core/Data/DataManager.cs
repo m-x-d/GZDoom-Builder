@@ -2559,6 +2559,8 @@ namespace CodeImp.DoomBuilder.Data
 			// Set render settings...
 			device.SetRenderState(RenderState.ZEnable, false);
 			device.SetRenderState(RenderState.CullMode, Cull.None);
+			device.SetSamplerState(0, SamplerState.AddressU, TextureAddress.Clamp);
+			device.SetSamplerState(0, SamplerState.AddressV, TextureAddress.Clamp);
 			
 			// Setup matrices
 			Vector3 offset = new Vector3(0f, 0f, -1.8f); // Sphere size is 10 mu
@@ -2903,14 +2905,17 @@ namespace CodeImp.DoomBuilder.Data
 
 		private static Texture TextureFromBitmap(Device device, Image image)
 		{
-			MemoryStream ms = new MemoryStream();
-			image.Save(ms, ImageFormat.Png);
-			ms.Seek(0, SeekOrigin.Begin);
-			Texture result = Texture.FromStream(device, ms);
-			ms.Close();
-			ms.Dispose();
+			using(MemoryStream ms = new MemoryStream())
+			{
+				image.Save(ms, ImageFormat.Png);
+				ms.Seek(0, SeekOrigin.Begin);
 
-			return result;
+				// Classic skies textures can be NPo2 (and D3D Texture is resized to Po2 by default),
+				// so we need to explicitly specify the size
+				return Texture.FromStream(device, ms, (int) ms.Length,
+										  image.Size.Width, image.Size.Height, 0, Usage.None, Format.Unknown,
+										  Pool.Managed, Filter.None, Filter.None, 0);
+			}
 		}
 		
 		#endregion

@@ -418,9 +418,6 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							}
 						}
 
-						// Offset it slightly to avoid shading glitches
-						if(light.Offset.Z == 0.0f) light.Offset.Z = 0.1f;
-
 						// Add to the collection?
 						if(!skip) lightsbyname[lightname] = light;
 
