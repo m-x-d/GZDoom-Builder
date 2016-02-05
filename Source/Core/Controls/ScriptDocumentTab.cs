@@ -411,6 +411,63 @@ namespace CodeImp.DoomBuilder.Controls
 			editor.IndentSelection(indent);
 		}
 
+		//mxd
+		internal void SetViewSettings(ScriptDocumentSettings settings)
+		{
+			// Text must be exactly the same
+			long hash = MurmurHash2.Hash(Text);
+			if(hash != settings.Hash) return;
+			
+			// Restore fold levels
+			if(settings.FoldLevels != null && General.Settings.ScriptShowFolding && (Scintilla.Lexer == Lexer.Cpp || Scintilla.Lexer == Lexer.CppNoCase))
+			{
+				// We'll want to fold deeper levels first...
+				int[] fl = new int[settings.FoldLevels.Keys.Count];
+				settings.FoldLevels.Keys.CopyTo(fl, 0);
+
+				List<int> foldlevels = new List<int>(fl);
+				foldlevels.Sort((a, b) => -1 * a.CompareTo(b)); // Sort in descending order
+
+				foreach(int level in foldlevels)
+				{
+					foreach(int line in settings.FoldLevels[level])
+						Scintilla.Lines[line].FoldLine(FoldAction.Contract);
+				}
+			}
+
+			// Restore scroll
+			Scintilla.FirstVisibleLine = settings.FirstVisibleLine;
+
+			// Restore caret position
+			Scintilla.SetEmptySelection(settings.CaretPosition);
+		}
+
+		//mxd
+		internal ScriptDocumentSettings GetViewSettings()
+		{
+			Dictionary<int, HashSet<int>> foldlevels = new Dictionary<int, HashSet<int>>();
+
+			for(int i = 0; i < Scintilla.Lines.Count; i++)
+			{
+				if(!Scintilla.Lines[i].Expanded)
+				{
+					if(!foldlevels.ContainsKey(Scintilla.Lines[i].FoldLevel))
+						foldlevels.Add(Scintilla.Lines[i].FoldLevel, new HashSet<int>());
+					foldlevels[Scintilla.Lines[i].FoldLevel].Add(i);
+				}
+			}
+
+			return new ScriptDocumentSettings
+			{
+				Filename = this.Filename,
+				FoldLevels = foldlevels,
+				CaretPosition = Scintilla.SelectionStart,
+				IsActiveTab = (this.Panel.ActiveTab == this),
+				FirstVisibleLine = Scintilla.FirstVisibleLine,
+				Hash = MurmurHash2.Hash(Text),
+			};
+		}
+
 		#endregion
 		
 		#region ================== Events
