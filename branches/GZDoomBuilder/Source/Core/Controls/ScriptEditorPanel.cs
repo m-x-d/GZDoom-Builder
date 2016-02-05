@@ -19,7 +19,6 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Globalization;
 using System.IO;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Compilers;
@@ -114,6 +113,7 @@ namespace CodeImp.DoomBuilder.Controls
 			openfile.Filter = "Script files|" + filterall + "|" + filterseperate + "|All files|*.*";
 			
 			// Load the script lumps
+			ScriptDocumentTab activetab = null; //mxd
 			foreach(MapLumpInfo maplumpinfo in General.Map.Config.MapLumps.Values)
 			{
 				// Is this a script lump?
@@ -121,6 +121,15 @@ namespace CodeImp.DoomBuilder.Controls
 				{
 					// Load this!
 					ScriptLumpDocumentTab t = new ScriptLumpDocumentTab(this, maplumpinfo.Name, General.CompiledScriptConfigs[General.Map.Options.ScriptCompiler]);
+					
+					//mxd. Apply stored settings?
+					if(General.Map.Options.ScriptLumpSettings.ContainsKey(maplumpinfo.Name))
+					{
+						t.SetViewSettings(General.Map.Options.ScriptLumpSettings[maplumpinfo.Name]);
+						if(General.Map.Options.ScriptLumpSettings[maplumpinfo.Name].IsActiveTab) 
+							activetab = t;
+					}
+					
 					t.OnTextChanged += tabpage_OnLumpTextChanged; //mxd
 					t.Scintilla.UpdateUI += scintilla_OnUpdateUI; //mxd
 					tabs.TabPages.Add(t);
@@ -129,6 +138,15 @@ namespace CodeImp.DoomBuilder.Controls
 				{
 					// Load this!
 					ScriptLumpDocumentTab t = new ScriptLumpDocumentTab(this, maplumpinfo.Name, maplumpinfo.Script);
+
+					//mxd. Apply stored settings?
+					if(General.Map.Options.ScriptLumpSettings.ContainsKey(maplumpinfo.Name))
+					{
+						t.SetViewSettings(General.Map.Options.ScriptLumpSettings[maplumpinfo.Name]);
+						if(General.Map.Options.ScriptLumpSettings[maplumpinfo.Name].IsActiveTab)
+							activetab = t;
+					}
+					
 					t.OnTextChanged += tabpage_OnLumpTextChanged; //mxd
 					t.Scintilla.UpdateUI += scintilla_OnUpdateUI; //mxd
 					tabs.TabPages.Add(t);
@@ -136,19 +154,29 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 
 			// Load the files that were previously opened for this map
-			foreach(String filename in General.Map.Options.ScriptFiles)
+			foreach(ScriptDocumentSettings settings in General.Map.Options.ScriptFileSettings.Values)
 			{
 				// Does this file exist?
-				if(File.Exists(filename))
+				if(File.Exists(settings.Filename))
 				{
 					// Load this!
-					OpenFile(filename);
+					ScriptFileDocumentTab t = OpenFile(settings.Filename);
+					t.SetViewSettings(settings); //mxd
+					if(settings.IsActiveTab) activetab = t;
 				}
 			}
 
+			//mxd. Reselect previously selected tab
+			if(activetab != null)
+			{
+				tabs.SelectedTab = activetab;
+			}
 			//mxd. Select "Scripts" tab, because that's what user will want 99% of time
-			int scriptsindex = GetTabPageIndex("SCRIPTS");
-			tabs.SelectedIndex = (scriptsindex == -1 ? 0 : scriptsindex);
+			else
+			{
+				int scriptsindex = GetTabPageIndex("SCRIPTS");
+				tabs.SelectedIndex = (scriptsindex == -1 ? 0 : scriptsindex);
+			}
 
 			//mxd. Apply quick search settings
 			searchmatchcase.Checked = matchcase;
@@ -412,12 +440,16 @@ namespace CodeImp.DoomBuilder.Controls
 		// This writes all explicitly opened files to the configuration
 		public void WriteOpenFilesToConfiguration()
 		{
-			List<string> files = new List<string>();
-			foreach(ScriptDocumentTab t in tabs.TabPages)
+			General.Map.Options.ScriptFileSettings.Clear(); //mxd
+			General.Map.Options.ScriptLumpSettings.Clear(); //mxd
+
+			foreach(ScriptDocumentTab t in tabs.TabPages) //mxd
 			{
-				if(t.ExplicitSave) files.Add(t.Filename);
+				if(t.ExplicitSave)
+					General.Map.Options.ScriptFileSettings.Add(t.Filename, t.GetViewSettings());
+				else
+					General.Map.Options.ScriptLumpSettings.Add(t.Filename, t.GetViewSettings());
 			}
-			General.Map.Options.ScriptFiles = files;
 		}
 		
 		// This asks to save files and returns the result
