@@ -110,8 +110,8 @@ namespace CodeImp.DoomBuilder.Controls
 					}
 				}
 
-				activation.Enabled = (l.Activate != 0); //mxd
-				activationlabel.Enabled = (l.Activate != 0); //mxd
+				activation.Enabled = (l.Activate != 0 || l.Action != 0); //mxd
+				activationlabel.Enabled = (l.Activate != 0 || l.Action != 0); //mxd
 			} 
 			else 
 			{

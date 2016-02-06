@@ -45,6 +45,7 @@ namespace CodeImp.DoomBuilder.Controls
 		LineNumber = 5,
 		String = 6, //mxd
 		Include = 7, //mxd
+		Property = 8, //mxd
 	}
 	
 	internal partial class ScriptEditorControl : UserControl
@@ -58,6 +59,7 @@ namespace CodeImp.DoomBuilder.Controls
 			ScriptKeyword = 1,
 			ScriptError = 2,
 			ScriptSnippet = 3, //mxd
+			ScriptProperty = 4, //mxd
 		}
 
 		#endregion
@@ -168,6 +170,7 @@ namespace CodeImp.DoomBuilder.Controls
 			RegisterAutoCompleteImage(ImageIndex.ScriptConstant, Resources.ScriptConstant);
 			RegisterAutoCompleteImage(ImageIndex.ScriptKeyword, Resources.ScriptKeyword);
 			RegisterAutoCompleteImage(ImageIndex.ScriptSnippet, Resources.ScriptSnippet); //mxd
+			RegisterAutoCompleteImage(ImageIndex.ScriptProperty, Resources.ScriptProperty); //mxd
 			RegisterMarkerImage(ImageIndex.ScriptError, Resources.ScriptError);
 
 			//mxd. These key combinations put odd characters in the script. Let's disable them
@@ -436,6 +439,7 @@ namespace CodeImp.DoomBuilder.Controls
 						case ScriptStyleType.Literal: colorindex = ColorCollection.LITERALS; break;
 						case ScriptStyleType.String: colorindex = ColorCollection.STRINGS; break;
 						case ScriptStyleType.Include: colorindex = ColorCollection.INCLUDES; break;
+						case ScriptStyleType.Property: colorindex = ColorCollection.PROPERTIES; break;
 						default: colorindex = ColorCollection.PLAINTEXT; break;
 					}
 
@@ -460,6 +464,57 @@ namespace CodeImp.DoomBuilder.Controls
 				}
 				string words = keywordslist.ToString();
 				scriptedit.SetKeywords(keywordsindex, (scriptconfig.CaseSensitive ? words : words.ToLowerInvariant()));
+			}
+
+			//mxd. Create the properties list and apply it
+			imageindex = ((int)ImageIndex.ScriptProperty).ToString(CultureInfo.InvariantCulture);
+			int propertiesindex = lexercfg.ReadSetting(lexername + ".propertiesindex", -1);
+			if(propertiesindex > -1)
+			{
+				StringBuilder propertieslist = new StringBuilder("");
+				HashSet<string> addedprops = new HashSet<string>();
+				char[] dot = new[] {'.'};
+				foreach(string p in scriptconfig.Properties)
+				{
+					if(propertieslist.Length > 0) propertieslist.Append(" ");
+
+					// Scintilla doesn't highlight keywords with '.' or ':', so get rid of those 
+					if(scriptconfig.ScriptType == ScriptType.DECORATE)
+					{
+						string prop = p;
+						if(prop.Contains(":")) prop = prop.Replace(":", string.Empty);
+						if(prop.Contains("."))
+						{
+							// Split dotted properties into separate entries
+							string[] parts = prop.Split(dot, StringSplitOptions.RemoveEmptyEntries);
+							List<string> result = new List<string>();
+							foreach(string part in parts)
+							{
+								if(!addedprops.Contains(part))
+								{
+									result.Add(part);
+									addedprops.Add(part);
+								}
+							}
+
+							if(result.Count > 0) propertieslist.Append(string.Join(" ", result.ToArray()));
+						}
+						else
+						{
+							addedprops.Add(prop);
+							propertieslist.Append(prop);
+						}
+					}
+					else
+					{
+						propertieslist.Append(p);
+					}
+
+					// Autocomplete doesn't mind '.' or ':'
+					autocompletedict[p.ToUpperInvariant()] = p + "?" + imageindex;
+				}
+				string words = propertieslist.ToString();
+				scriptedit.SetKeywords(propertiesindex, (scriptconfig.CaseSensitive ? words : words.ToLowerInvariant()));
 			}
 
 			// Create the constants list and apply it

@@ -36,6 +36,8 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// label
 			// 
+			this.label.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)));
 			this.label.Location = new System.Drawing.Point(-3, 0);
 			this.label.Name = "label";
 			this.label.Size = new System.Drawing.Size(175, 23);
@@ -45,6 +47,8 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// panel
 			// 
+			this.panel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)));
 			this.panel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(128)))), ((int)(((byte)(0)))));
 			this.panel.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
 			this.panel.Location = new System.Drawing.Point(178, 0);
@@ -54,6 +58,8 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			// button
 			// 
+			this.button.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)));
 			this.button.BackColor = System.Drawing.SystemColors.Control;
 			this.button.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
 			this.button.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
@@ -81,7 +87,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.Controls.Add(this.panel);
 			this.Controls.Add(this.label);
 			this.MaximumSize = new System.Drawing.Size(10000, 23);
-			this.MinimumSize = new System.Drawing.Size(100, 23);
+			this.MinimumSize = new System.Drawing.Size(100, 16);
 			this.Name = "ColorControl";
 			this.Size = new System.Drawing.Size(348, 23);
 			this.Resize += new System.EventHandler(this.ColorControl_Resize);

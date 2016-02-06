@@ -68,6 +68,7 @@ namespace CodeImp.DoomBuilder.Controls
 		public Color PlainText { set { ApplyStyleColor(ScriptStyleType.PlainText, value); } }
 		public Color Comments { set { ApplyStyleColor(ScriptStyleType.Comment, value); } }
 		public Color Keywords { set { ApplyStyleColor(ScriptStyleType.Keyword, value); } }
+		public Color Properties { set { ApplyStyleColor(ScriptStyleType.Property, value); } }
 		public Color Literals { set { ApplyStyleColor(ScriptStyleType.Literal, value); } }
 		public Color Constants { set { ApplyStyleColor(ScriptStyleType.Constant, value); } }
 		public Color Strings { set { ApplyStyleColor(ScriptStyleType.String, value); } }
@@ -142,12 +143,16 @@ namespace CodeImp.DoomBuilder.Controls
 			scriptedit.ReadOnly = true;
 
 			// Set keywords (0)
-			const string keywords = "script enter Print int HudMessageBold Thing_ChangeTID";
+			const string keywords = "Print HudMessageBold Thing_ChangeTID";
 			scriptedit.SetKeywords(0, keywords.ToLowerInvariant());
 
-			// Set constants (1);
+			// Set constants (1)
 			const string constants = "CR_RED";
 			scriptedit.SetKeywords(1, constants.ToLowerInvariant());
+
+			// Set properties (3)
+			const string properties = "script enter int";
+			scriptedit.SetKeywords(3, properties.ToLowerInvariant());
 
 			// Reset document slyle
 			scriptedit.ClearDocumentStyle();
@@ -169,6 +174,7 @@ namespace CodeImp.DoomBuilder.Controls
 				{ 37, ScriptStyleType.LineNumber },
 				{ 6, ScriptStyleType.String },
 				{ 9, ScriptStyleType.Include },
+				{ 19, ScriptStyleType.Property },
 			};
 
 			// Set the default style and settings
@@ -227,6 +233,7 @@ namespace CodeImp.DoomBuilder.Controls
 					case ScriptStyleType.Literal: colorindex = ColorCollection.LITERALS; break;
 					case ScriptStyleType.String: colorindex = ColorCollection.STRINGS; break;
 					case ScriptStyleType.Include: colorindex = ColorCollection.INCLUDES; break;
+					case ScriptStyleType.Property: colorindex = ColorCollection.PROPERTIES; break;
 					default: colorindex = ColorCollection.PLAINTEXT; break;
 				}
 
