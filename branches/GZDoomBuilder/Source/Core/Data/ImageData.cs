@@ -462,6 +462,10 @@ namespace CodeImp.DoomBuilder.Data
 						if((width != texture.GetLevelDescription(0).Width) || (height != texture.GetLevelDescription(0).Height))
 							throw new Exception("Could not create a texture with the same size as the image.");
 					}
+
+#if DEBUG
+					texture.Tag = name; //mxd. Helps with tracking undisposed resources...
+#endif
 				}
 			}
 		}

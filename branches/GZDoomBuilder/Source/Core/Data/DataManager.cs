@@ -530,6 +530,7 @@ namespace CodeImp.DoomBuilder.Data
 			foreach(KeyValuePair<long, ImageData> i in textures) i.Value.Dispose();
 			foreach(KeyValuePair<long, ImageData> i in flats) i.Value.Dispose();
 			foreach(KeyValuePair<long, ImageData> i in sprites) i.Value.Dispose();
+			foreach(KeyValuePair<string, ImageData> i in internalsprites) i.Value.Dispose(); //mxd
 			palette = null;
 
 			//mxd. Dispose models
