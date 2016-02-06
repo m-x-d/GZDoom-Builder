@@ -18,13 +18,13 @@
 
 using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
 using System.Drawing;
-using SlimDX.Direct3D9;
+using System.Windows.Forms;
+using CodeImp.DoomBuilder.Controls;
+using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Geometry;
 using SlimDX;
-using CodeImp.DoomBuilder.Data;
-using CodeImp.DoomBuilder.Controls;
+using SlimDX.Direct3D9;
 
 #endregion
 
@@ -109,16 +109,30 @@ namespace CodeImp.DoomBuilder.Rendering
 				rendertarget = null;
 				if(backbuffer != null) backbuffer.Dispose();
 				if(depthbuffer != null) depthbuffer.Dispose();
-				if(device != null)
-				{
-					device.Reset(new PresentParameters()); //mxd. Some video memory is not freed without this line if Visual mode was visited
-					device.Dispose();
-				}
 				if(font != null) font.Dispose();
 				if(fonttexture != null) fonttexture.Dispose();
-				isrendering = false; //mxd
+				if(device != null) device.Dispose();
+
+				if(ObjectTable.Objects.Count > 1) //mxd. Direct3D itself is not disposed while the editor is running
+				{
+					//mxd. Get rid of any remaining D3D objects...
+					foreach(ComObject o in ObjectTable.Objects) 
+					{
+						if(o is Direct3D) continue; // Don't dispose the device itself...
+						General.WriteLogLine("WARNING: D3D resource " + o
+							+ (o.Tag != null ? " (" + o.Tag + ")" : string.Empty) + " was not disposed properly!"
+							+ (o.CreationSource != null ? " Stack trace: " + o.CreationSource : string.Empty));
+						o.Dispose();
+					}
+
+#if DEBUG
+					General.ShowWarningMessage("Some D3D resources were not disposed properly! See the event log for more details.",
+					                           MessageBoxButtons.OK);
+#endif
+				}
 				
 				// Done
+				isrendering = false; //mxd
 				isdisposed = true;
 			}
 		}
@@ -313,7 +327,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			displaypp.BackBufferWidth = rendertarget.ClientSize.Width;
 			displaypp.BackBufferHeight = rendertarget.ClientSize.Height;
 			displaypp.EnableAutoDepthStencil = true;
-			displaypp.AutoDepthStencilFormat = Format.D16;
+			displaypp.AutoDepthStencilFormat = Format.D24X8; //Format.D16;
 			displaypp.Multisample = MultisampleType.None;
 			displaypp.PresentationInterval = PresentInterval.Immediate;
 

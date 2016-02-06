@@ -289,7 +289,10 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				// Instruct the lexer to calculate folding
 				scriptedit.SetProperty("fold", "1");
-				scriptedit.SetProperty("fold.compact", "1");
+				scriptedit.SetProperty("fold.compact", "0"); // 1 = folds blank lines
+				scriptedit.SetProperty("fold.comment", "1"); // Enable block comment folding
+				scriptedit.SetProperty("fold.preprocessor", "1"); // Enable #region folding
+				scriptedit.SetFoldFlags(FoldFlags.LineAfterContracted); // Draw line below if not expanded
 
 				// Configure a margin to display folding symbols
 				scriptedit.Margins[2].Type = MarginType.Symbol;
