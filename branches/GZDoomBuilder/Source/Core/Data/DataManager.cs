@@ -1513,7 +1513,7 @@ namespace CodeImp.DoomBuilder.Data
 					{
 						// Parse the data
 						group.Value.Seek(0, SeekOrigin.Begin);
-						decorate.Parse(group.Value, group.Key, true);
+						decorate.Parse(group.Value, Path.Combine(currentreader.Location.GetShortName(), group.Key), true);
 						
 						//mxd. DECORATE lumps are interdepandable. Can't carry on...
 						if(decorate.HasError)
@@ -1765,7 +1765,7 @@ namespace CodeImp.DoomBuilder.Data
 			foreach(KeyValuePair<string, Stream> group in decostreams)
 			{
 				// Parse this data
-				parser.Parse(group.Value, Path.Combine(currentreader.Location.location, group.Key), false);
+				parser.Parse(group.Value, group.Key, false);
 
 				//mxd. DECORATE lumps are interdepandable. Can't carry on...
 				if(parser.HasError)
@@ -1909,7 +1909,7 @@ namespace CodeImp.DoomBuilder.Data
 				foreach(KeyValuePair<string, Stream> group in streams) 
 				{
 					// Parse the data
-					if(parser.Parse(group.Value, Path.Combine(currentreader.Location.location, group.Key), true)) 
+					if(parser.Parse(group.Value, Path.Combine(currentreader.Location.GetShortName(), group.Key), true)) 
 					{
 						foreach(KeyValuePair<string, ModelData> g in parser.Entries) 
 						{
@@ -1992,7 +1992,7 @@ namespace CodeImp.DoomBuilder.Data
 				KeyValuePair<string, Stream> group = dr.GetVoxeldefData();
 				if(group.Value != null) 
 				{
-					if(parser.Parse(group.Value, group.Key, true))
+					if(parser.Parse(group.Value, Path.Combine(currentreader.Location.GetShortName(), group.Key), true))
 					{
 						foreach(KeyValuePair<string, ModelData> entry in parser.Entries)
 						{
@@ -2049,7 +2049,7 @@ namespace CodeImp.DoomBuilder.Data
 
 				foreach(KeyValuePair<string, Stream> group in streams)
 				{
-					parser.Parse(group.Value, group.Key, false);
+					parser.Parse(group.Value, Path.Combine(currentreader.Location.GetShortName(), group.Key), false);
 					
 					// Gldefs can be interdependable. Can't carry on
 					if(parser.HasError)
@@ -2149,7 +2149,7 @@ namespace CodeImp.DoomBuilder.Data
 				foreach(KeyValuePair<string, Stream> group in streams) 
 				{
 					// Parse the data
-					parser.Parse(group.Value, group.Key, true);
+					parser.Parse(group.Value, Path.Combine(currentreader.Location.GetShortName(), group.Key), true);
 
 					// Report errors?
 					if(parser.HasError) parser.LogError();
@@ -2177,7 +2177,7 @@ namespace CodeImp.DoomBuilder.Data
 				// Parse the data
 				foreach(KeyValuePair<string, Stream> group in streams)
 				{
-					parser.Parse(group.Value, group.Key, true);
+					parser.Parse(group.Value, Path.Combine(currentreader.Location.GetShortName(), group.Key), true);
 
 					// Report errors?
 					if(parser.HasError) parser.LogError();
@@ -2203,7 +2203,7 @@ namespace CodeImp.DoomBuilder.Data
 				// Parse the data
 				foreach(KeyValuePair<string, Stream> group in streams)
 				{
-					parser.Parse(group.Value, group.Key, true);
+					parser.Parse(group.Value, Path.Combine(currentreader.Location.GetShortName(), group.Key), true);
 
 					// Report errors?
 					if(parser.HasError) parser.LogError();

@@ -200,7 +200,7 @@ namespace CodeImp.DoomBuilder.Data
 							if(General.Map.Config.MixTexturesFlats)
 							{
 								ImageData img = General.Map.Data.GetTextureImage(p.lumpname);
-								if(!(img is UnknownImage))
+								if(!(img is UnknownImage) && img != this)
 								{
 									if(!img.IsImageLoaded) img.LoadImage();
 
