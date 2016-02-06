@@ -192,6 +192,7 @@ namespace CodeImp.DoomBuilder.Windows
 			colorplaintext.Color = General.Colors.PlainText;
 			colorcomments.Color = General.Colors.Comments;
 			colorkeywords.Color = General.Colors.Keywords;
+			colorproperties.Color = General.Colors.Properties; //mxd
 			colorliterals.Color = General.Colors.Literals;
 			colorconstants.Color = General.Colors.Constants;
 			colorstrings.Color = General.Colors.Strings; //mxd
@@ -322,6 +323,7 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Colors.PlainText = colorplaintext.Color;
 			General.Colors.Comments = colorcomments.Color;
 			General.Colors.Keywords = colorkeywords.Color;
+			General.Colors.Properties = colorproperties.Color; //mxd
 			General.Colors.Literals = colorliterals.Color;
 			General.Colors.Constants = colorconstants.Color;
 			General.Colors.Strings = colorstrings.Color; //mxd
@@ -994,6 +996,11 @@ namespace CodeImp.DoomBuilder.Windows
 			if(allowapplycontrol) scriptedit.Keywords = colorkeywords.Color.ToColor();
 		}
 
+		private void colorproperties_ColorChanged(object sender, EventArgs e)
+		{
+			if(allowapplycontrol) scriptedit.Properties = colorproperties.Color.ToColor();
+		}
+
 		private void colorstrings_ColorChanged(object sender, EventArgs e)
 		{
 			if(allowapplycontrol) scriptedit.Strings = colorstrings.Color.ToColor();
@@ -1065,6 +1072,7 @@ namespace CodeImp.DoomBuilder.Windows
 					colorplaintext.Color = General.Colors.PlainText;
 					colorcomments.Color = General.Colors.Comments;
 					colorkeywords.Color = General.Colors.Keywords;
+					colorproperties.Color = General.Colors.Properties;
 					colorliterals.Color = General.Colors.Literals;
 					colorconstants.Color = General.Colors.Constants;
 					colorstrings.Color = General.Colors.Strings;
@@ -1080,13 +1088,15 @@ namespace CodeImp.DoomBuilder.Windows
 					break;
 
 				case 1: // Light theme
+					colorscriptbackground.Color = PixelColor.FromInt(-1);
 					colorlinenumbers.Color = PixelColor.FromInt(-13921873);
 					colorplaintext.Color = PixelColor.FromInt(-16777216);
 					colorcomments.Color = PixelColor.FromInt(-16744448);
 					colorkeywords.Color = PixelColor.FromInt(-16741493);
-					colorliterals.Color = PixelColor.FromInt(-16776961);
-					colorconstants.Color = PixelColor.FromInt(-16744256);
-					colorstrings.Color = PixelColor.FromInt(-6089451);
+					colorproperties.Color = PixelColor.FromInt(-16752191);
+					colorliterals.Color = PixelColor.FromInt(-16776999);
+					colorconstants.Color = PixelColor.FromInt(-8372160);
+					colorstrings.Color = PixelColor.FromInt(-8388608);
 					colorincludes.Color = PixelColor.FromInt(-9868951);
 					colorindicator.Color = PixelColor.FromInt(-16711936);
 					colorbrace.Color = PixelColor.FromInt(-16711681);
@@ -1096,7 +1106,6 @@ namespace CodeImp.DoomBuilder.Windows
 					colorfoldback.Color = PixelColor.FromColor(SystemColors.ControlLightLight);
 					colorselectionfore.Color = PixelColor.FromInt(-1);
 					colorselectionback.Color = PixelColor.FromInt(-13395457);
-					colorscriptbackground.Color = PixelColor.FromInt(-1);
 					break;
 
 				case 2: // Dark theme
@@ -1105,6 +1114,7 @@ namespace CodeImp.DoomBuilder.Windows
 					colorplaintext.Color = new PixelColor(255, 241, 242, 243);
 					colorcomments.Color = new PixelColor(255, 102, 116, 123);
 					colorkeywords.Color = new PixelColor(255, 103, 140, 177);
+					colorproperties.Color = PixelColor.FromColor(Color.LightSkyBlue);
 					colorliterals.Color = new PixelColor(255, 255, 205, 34);
 					colorconstants.Color = new PixelColor(255, 147, 199, 99);
 					colorstrings.Color = new PixelColor(255, 236, 118, 0);
@@ -1126,6 +1136,7 @@ namespace CodeImp.DoomBuilder.Windows
 			scriptedit.PlainText = colorplaintext.Color.ToColor();
 			scriptedit.Comments = colorcomments.Color.ToColor();
 			scriptedit.Keywords = colorkeywords.Color.ToColor();
+			scriptedit.Properties = colorproperties.Color.ToColor();
 			scriptedit.Strings = colorstrings.Color.ToColor();
 			scriptedit.Literals = colorliterals.Color.ToColor();
 			scriptedit.Constants = colorconstants.Color.ToColor();

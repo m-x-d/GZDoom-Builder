@@ -76,6 +76,8 @@ namespace CodeImp.DoomBuilder.Config
 		private readonly List<string> keywordkeyssorted; //mxd
 		private readonly List<string> constants;
 		private readonly Dictionary<string, string> lowerconstants;
+		private readonly List<string> properties; //mxd
+		private readonly Dictionary<string, string> lowerproperties; //mxd
 		private readonly Dictionary<string, string[]> snippets; //mxd
 		private readonly HashSet<string> snippetkeyssorted; //mxd
 		private readonly HashSet<char> braces; //mxd
@@ -110,8 +112,9 @@ namespace CodeImp.DoomBuilder.Config
 
 		// Collections
 		public ICollection<string> Keywords { get { return keywordkeyssorted; } }
+		public ICollection<string> Properties { get { return properties; } } //mxd
 		public ICollection<string> Constants { get { return constants; } }
-		public ICollection<string> Snippets { get { return snippetkeyssorted; } }
+		public ICollection<string> Snippets { get { return snippetkeyssorted; } } //mxd
 		public HashSet<char> BraceChars { get { return braces; } } //mxd
 		
 		#endregion
@@ -125,8 +128,10 @@ namespace CodeImp.DoomBuilder.Config
 			// Initialize
 			this.keywords = new Dictionary<string, string>(StringComparer.Ordinal);
 			this.constants = new List<string>();
+			this.properties = new List<string>(); //mxd
 			this.lowerkeywords = new Dictionary<string, string>(StringComparer.Ordinal);
 			this.lowerconstants = new Dictionary<string, string>(StringComparer.Ordinal);
+			this.lowerproperties = new Dictionary<string, string>(StringComparer.Ordinal); //mxd
 			this.keywordkeyssorted = new List<string>(); //mxd
 			this.snippets = new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase); //mxd
 			this.snippetkeyssorted = new HashSet<string>(); //mxd
@@ -160,8 +165,10 @@ namespace CodeImp.DoomBuilder.Config
 			// Initialize
 			this.keywords = new Dictionary<string, string>(StringComparer.Ordinal);
 			this.constants = new List<string>();
+			this.properties = new List<string>(); //mxd
 			this.lowerkeywords = new Dictionary<string, string>(StringComparer.Ordinal);
 			this.lowerconstants = new Dictionary<string, string>(StringComparer.Ordinal);
+			this.lowerproperties = new Dictionary<string, string>(StringComparer.Ordinal); //mxd
 			this.keywordkeyssorted = new List<string>(); //mxd
 			this.snippets = new Dictionary<string, string[]>(StringComparer.OrdinalIgnoreCase); //mxd
 			this.snippetkeyssorted = new HashSet<string>(); //mxd
@@ -205,20 +212,52 @@ namespace CodeImp.DoomBuilder.Config
 			IDictionary dic = cfg.ReadSetting("keywords", new Hashtable());
 			foreach(DictionaryEntry de in dic)
 			{
-				keywords.Add(de.Key.ToString(), de.Value.ToString());
-				lowerkeywords.Add(de.Key.ToString().ToLowerInvariant(), de.Key.ToString());
-				keywordkeyssorted.Add(de.Key.ToString()); //mxd
+				string keyword = de.Key.ToString();
+				if(keywords.ContainsKey(keyword)) //mxd
+				{
+					General.ErrorLogger.Add(ErrorType.Warning, "Keyword \"" + keyword + "\" is double-defined in \"" + description + "\" script configuration.");
+					continue;
+				}
+
+				keywords[keyword] = de.Value.ToString();
+				lowerkeywords[keyword.ToLowerInvariant()] = keyword;
+				keywordkeyssorted.Add(keyword); //mxd
 			}
 
 			//mxd. Sort keywords lookup
 			keywordkeyssorted.Sort();
+
+			//mxd. Load properties
+			dic = cfg.ReadSetting("properties", new Hashtable());
+			foreach(DictionaryEntry de in dic)
+			{
+				string property = de.Key.ToString();
+				if(lowerproperties.ContainsValue(property)) //mxd
+				{
+					General.ErrorLogger.Add(ErrorType.Warning, "Property \"" + property + "\" is double-defined in \"" + description + "\" script configuration.");
+					continue;
+				}
+
+				properties.Add(property);
+				lowerproperties[property.ToLowerInvariant()] = property;
+			}
+
+			//mxd
+			properties.Sort();
 			
 			// Load constants
 			dic = cfg.ReadSetting("constants", new Hashtable());
 			foreach(DictionaryEntry de in dic)
 			{
-				constants.Add(de.Key.ToString());
-				lowerconstants.Add(de.Key.ToString().ToLowerInvariant(), de.Key.ToString());
+				string constant = de.Key.ToString();
+				if(lowerconstants.ContainsValue(constant)) //mxd
+				{
+					General.ErrorLogger.Add(ErrorType.Warning, "Constant \"" + constant + "\" is double-defined in \"" + description + "\" script configuration.");
+					continue;
+				}
+
+				constants.Add(constant);
+				lowerconstants[constant.ToLowerInvariant()] = constant;
 			}
 
 			//mxd

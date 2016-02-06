@@ -37,7 +37,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		private const float DARK_ADDITION = -0.2f;
 
 		// Palette size
-		private const int NUM_COLORS = 51;
+		private const int NUM_COLORS = 52;
 		public const int NUM_THING_COLORS = 20;
 		public const int THING_COLORS_OFFSET = 20;
 
@@ -93,6 +93,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		public const int INCLUDES = 48;
 		public const int SCRIPTFOLDFORE = 49;
 		public const int SCRIPTFOLDBACK = 50;
+		public const int PROPERTIES = 51;
 		
 		#endregion
 
@@ -143,6 +144,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		public PixelColor PlainText { get { return colors[PLAINTEXT]; } internal set { colors[PLAINTEXT] = value; } }
 		public PixelColor Comments { get { return colors[COMMENTS]; } internal set { colors[COMMENTS] = value; } }
 		public PixelColor Keywords { get { return colors[KEYWORDS]; } internal set { colors[KEYWORDS] = value; } }
+		public PixelColor Properties { get { return colors[PROPERTIES]; } internal set { colors[PROPERTIES] = value; } }
 		public PixelColor Literals { get { return colors[LITERALS]; } internal set { colors[LITERALS] = value; } }
 		public PixelColor Constants { get { return colors[CONSTANTS]; } internal set { colors[CONSTANTS] = value; } }
 		public PixelColor Strings { get { return colors[STRINGS]; } internal set { colors[STRINGS] = value; } } //mxd
@@ -188,8 +190,8 @@ namespace CodeImp.DoomBuilder.Rendering
 			if(colors[PLAINTEXT].ToInt() == 0) colors[PLAINTEXT] = PixelColor.FromInt(-16777216);
 			if(colors[COMMENTS].ToInt() == 0) colors[COMMENTS] = PixelColor.FromInt(-16744448);
 			if(colors[KEYWORDS].ToInt() == 0) colors[KEYWORDS] = PixelColor.FromInt(-16741493);
-			if(colors[LITERALS].ToInt() == 0) colors[LITERALS] = PixelColor.FromInt(-16776961);
-			if(colors[CONSTANTS].ToInt() == 0) colors[CONSTANTS] = PixelColor.FromInt(-16744256);
+			if(colors[LITERALS].ToInt() == 0) colors[LITERALS] = PixelColor.FromInt(-16776999);
+			if(colors[CONSTANTS].ToInt() == 0) colors[CONSTANTS] = PixelColor.FromInt(-8372160);
 
 			// Set new thing colors
 			if(colors[THINGCOLOR00].ToInt() == 0) colors[THINGCOLOR00] = PixelColor.FromColor(Color.DimGray);
@@ -221,11 +223,12 @@ namespace CodeImp.DoomBuilder.Rendering
 			if(colors[SCRIPTWHITESPACE].ToInt() == 0) colors[SCRIPTWHITESPACE] = PixelColor.FromInt(-8355712);
 			if(colors[SCRIPTSELECTIONFORE].ToInt() == 0) colors[SCRIPTSELECTIONFORE] = PixelColor.FromInt(-1);
 			if(colors[SCRIPTSELECTIONBACK].ToInt() == 0) colors[SCRIPTSELECTIONBACK] = PixelColor.FromInt(-13395457);
-			if(colors[STRINGS].ToInt() == 0) colors[STRINGS] = PixelColor.FromInt(-6089451);
+			if(colors[STRINGS].ToInt() == 0) colors[STRINGS] = PixelColor.FromInt(-8388608);
 			if(colors[INCLUDES].ToInt() == 0) colors[INCLUDES] = PixelColor.FromInt(-9868951);
 			if(colors[SCRIPTFOLDFORE].ToInt() == 0) colors[SCRIPTFOLDFORE] = PixelColor.FromColor(SystemColors.ControlDark);
 			if(colors[SCRIPTFOLDBACK].ToInt() == 0) colors[SCRIPTFOLDBACK] = PixelColor.FromColor(SystemColors.ControlLightLight);
-			
+			if(colors[PROPERTIES].ToInt() == 0) colors[PROPERTIES] = PixelColor.FromInt(-16752191);
+
 			// Create assist colors
 			CreateAssistColors();
 			
