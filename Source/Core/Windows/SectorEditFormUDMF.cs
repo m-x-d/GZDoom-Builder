@@ -679,7 +679,6 @@ namespace CodeImp.DoomBuilder.Windows
 
 				// Effects
 				if(!effect.Empty) s.Effect = effect.Value;
-				s.Brightness = General.Clamp(brightness.GetResult(s.Brightness), General.Map.FormatInterface.MinBrightness, General.Map.FormatInterface.MaxBrightness);
 
 				//mxd. Tag
 				tagsselector.ApplyTo(s, tagoffset++);

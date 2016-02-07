@@ -61,6 +61,7 @@ namespace CodeImp.DoomBuilder.Controls
 		private string lasteditfieldname;
 		private bool autoinsertuserprefix;
 		private Dictionary<string, UniversalType> uifields;//mxd
+		private bool showfixedfields = true; //mxd
 		
 		#endregion
 
@@ -73,7 +74,8 @@ namespace CodeImp.DoomBuilder.Controls
 		public bool PropertyColumnVisible { get { return fieldname.Visible; } set { fieldname.Visible = value; UpdateValueColumn(); UpdateBrowseButton(); } }
 		public bool TypeColumnVisible { get { return fieldtype.Visible; } set { fieldtype.Visible = value; UpdateValueColumn(); UpdateBrowseButton(); } }
 		public bool ValueColumnVisible { get { return fieldvalue.Visible; } set { fieldvalue.Visible = value; UpdateValueColumn(); UpdateBrowseButton(); } }
-		
+		public bool ShowFixedFields {get { return showfixedfields; } set { showfixedfields = value; UpdateFixedFieldsVisibility(); } } //mxd
+
 		#endregion
 
 		#region ================== Constructor
@@ -96,7 +98,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// Keep element name
 			this.elementname = elementname;
 
-			//mxd. get proper UIFields
+			//mxd. Get proper UIFields
 			uifields = General.Map.FormatInterface.UIFields[General.Map.FormatInterface.GetElementType(elementname)];
 			
 			// Make types list
@@ -640,9 +642,16 @@ namespace CodeImp.DoomBuilder.Controls
 			for(int i = fieldslist.Rows.Count - 1; i >= 0; i--)
 			{
 				if(fieldslist.Rows[i].ReadOnly)
-					try { fieldslist.Rows.RemoveAt(i); } catch(Exception) { }
+				{
+					try { fieldslist.Rows.RemoveAt(i); } catch { }
+				}
 				else
-					fieldslist.Rows[i].Visible = true;
+				{
+					//mxd. Preserve fixed fields visibility setting
+					FieldsEditorRow frow = (fieldslist.Rows[i] as FieldsEditorRow);
+					if(frow != null && frow.IsFixed) frow.Visible = showfixedfields;
+					else fieldslist.Rows[i].Visible = true;
+				}
 			}
 
 			// Update new row
@@ -829,6 +838,16 @@ namespace CodeImp.DoomBuilder.Controls
 			else
 			{
 				HideBrowseButton();
+			}
+		}
+
+		//mxd
+		private void UpdateFixedFieldsVisibility()
+		{
+			foreach(var row in fieldslist.Rows)
+			{
+				FieldsEditorRow frow = (row as FieldsEditorRow);
+				if(frow != null && frow.IsFixed) frow.Visible = showfixedfields;
 			}
 		}
 		
