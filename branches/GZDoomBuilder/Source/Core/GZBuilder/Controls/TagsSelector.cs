@@ -126,7 +126,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		{
 			if(first)
 			{
-				foreach(int tag in newtags) tags.Add(tag);
+				tags.AddRange(newtags);
 				return;
 			}
 
@@ -136,6 +136,13 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 					tags[i] = int.MinValue;
 				else if(i >= tags.Count)
 					tags.Add(int.MinValue);
+			}
+
+			// If current tags list is shorter than out tags list, mark the rest of our list as mixed
+			if(newtags.Count < tags.Count)
+			{
+				for(int i = newtags.Count; i < tags.Count; i++)
+					tags[i] = int.MinValue;
 			}
 		}
 
@@ -161,13 +168,13 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 
 		private IEnumerable<int> GetResultTags(int[] oldtags, int offset)
 		{
-			Dictionary<int, bool> newtags = new Dictionary<int, bool>();
+			HashSet<int> newtags = new HashSet<int>();
 
 			for(int i = 0; i < tags.Count; i++)
 			{
 				if(tags[i] == int.MinValue && oldtags.Length > i)
 				{
-					if(!newtags.ContainsKey(oldtags[i])) newtags.Add(oldtags[i], false);
+					if(oldtags[i] != 0 && !newtags.Contains(oldtags[i])) newtags.Add(oldtags[i]);
 				}
 				else if(tags[i] != 0 && tags[i] != int.MinValue)
 				{
@@ -179,12 +186,12 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 					else
 						tag = tags[i];
 
-					if(!newtags.ContainsKey(tag)) newtags.Add(tag, false);
+					if(!newtags.Contains(tag)) newtags.Add(tag);
 				}
 			}
 
-			if(newtags.Count == 0) newtags.Add(0, false);
-			return newtags.Keys;
+			if(newtags.Count == 0) newtags.Add(0);
+			return newtags;
 		}
 
 		#endregion

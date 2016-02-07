@@ -131,6 +131,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// Fill universal fields list
 			fieldslist.ListFixedFields(General.Map.Config.ThingFields);
 
+			//mxd. Show fixed fields?
+			hidefixedfields.Checked = !General.Settings.ReadSetting("customfieldsshowfixed", true);
+
 			// Thing height?
 			posZ.Visible = General.Map.FormatInterface.HasThingHeight;
 			zlabel.Visible = General.Map.FormatInterface.HasThingHeight;
@@ -578,6 +581,7 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			location = this.Location;
 			activetab = tabs.SelectedIndex;
+			General.Settings.WriteSetting("customfieldsshowfixed", !hidefixedfields.Checked);
 		}
 
 		// Help
@@ -865,6 +869,11 @@ namespace CodeImp.DoomBuilder.Windows
 
 			General.Map.IsChanged = true;
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		private void hidefixedfields_CheckedChanged(object sender, EventArgs e)
+		{
+			fieldslist.ShowFixedFields = !hidefixedfields.Checked;
 		}
 
 		#endregion

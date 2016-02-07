@@ -743,9 +743,9 @@ namespace CodeImp.DoomBuilder.Geometry
 		//mxd. This applies overrides to a sidedef
 		private static void ApplyOverridesToSidedef(Sidedef sd) 
 		{
-			if(General.Map.Options.OverrideTopTexture) sd.SetTextureHigh(General.Map.Options.DefaultTopTexture);
+			if(sd.HighRequired() && General.Map.Options.OverrideTopTexture) sd.SetTextureHigh(General.Map.Options.DefaultTopTexture);
 			if(sd.MiddleRequired() && General.Map.Options.OverrideMiddleTexture) sd.SetTextureMid(General.Map.Options.DefaultWallTexture);
-			if(General.Map.Options.OverrideBottomTexture) sd.SetTextureLow(General.Map.Options.DefaultBottomTexture);
+			if(sd.LowRequired() && General.Map.Options.OverrideBottomTexture) sd.SetTextureLow(General.Map.Options.DefaultBottomTexture);
 		}
 		
 		#endregion
@@ -1467,9 +1467,9 @@ namespace CodeImp.DoomBuilder.Geometry
 					}
 
 					//mxd. Apply texture overrides
-					if(useOverrides && !General.Settings.AutoClearSidedefTextures) 
+					if(useOverrides) 
 					{
-						//if new sectors are created, apply overrides to the sides of these sectors, otherwise, apply overrides to all new lines
+						// If new sectors are created, apply overrides to the sides of these sectors, otherwise, apply overrides to all new lines
 						if(insidesides.Count > 0) 
 						{
 							foreach(Sidedef side in insidesides) ApplyOverridesToSidedef(side);
