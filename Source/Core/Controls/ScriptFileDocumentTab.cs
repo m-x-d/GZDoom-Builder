@@ -147,7 +147,7 @@ namespace CodeImp.DoomBuilder.Controls
 				// Boilderplate
 				if(!General.CompiledScriptConfigs.ContainsKey(General.Map.Options.ScriptCompiler))
 				{
-					General.ShowErrorMessage("Unable to compile '" + inputfile + "'. Unable to find required script compiler configuration ('" + General.Map.Options.ScriptCompiler + "').", MessageBoxButtons.OK);
+					General.ShowErrorMessage("Unable to compile \"" + inputfile + "\". Unable to find required script compiler configuration (\"" + General.Map.Options.ScriptCompiler + "\").", MessageBoxButtons.OK);
 					return;
 				}
 
@@ -232,7 +232,7 @@ namespace CodeImp.DoomBuilder.Controls
 					{
 						// Fail
 						compiler.Dispose();
-						errors.Add(new CompilerError("Output file '" + outputfile + "' doesn't exist."));
+						errors.Add(new CompilerError("Output file \"" + outputfile + "\" doesn't exist."));
 						panel.ShowErrors(errors);
 						return;
 					}
@@ -247,7 +247,7 @@ namespace CodeImp.DoomBuilder.Controls
 					{
 						// Fail
 						compiler.Dispose();
-						errors.Add(new CompilerError("Unable to create library file '" + targetfilename + "'. " + e.GetType().Name + ": " + e.Message));
+						errors.Add(new CompilerError("Unable to create library file \"" + targetfilename + "\". " + e.GetType().Name + ": " + e.Message));
 						panel.ShowErrors(errors);
 						return;
 					}
@@ -282,7 +282,7 @@ namespace CodeImp.DoomBuilder.Controls
 			catch(Exception e)
 			{
 				// Failed
-				General.ErrorLogger.Add(ErrorType.Error, "Cannot open file '" + filepathname + "' for writing. Make sure the path exists and that the file is not in use by another application.");
+				General.ErrorLogger.Add(ErrorType.Error, "Cannot open file \"" + filepathname + "\" for writing. Make sure the path exists and that the file is not in use by another application.");
 				General.WriteLogLine(e.GetType().Name + ": " + e.Message);
 				General.ShowErrorMessage("Unable to open file \"" + filepathname + "\" for writing. Make sure the path exists and that the file is not in use by another application.", MessageBoxButtons.OK);
 				return false;
@@ -323,7 +323,7 @@ namespace CodeImp.DoomBuilder.Controls
 			catch(Exception e)
 			{
 				// Failed
-				General.ErrorLogger.Add(ErrorType.Error, "Cannot open file '" + filepathname + "' for reading. Make sure the path exists and that the file is not in use by another application.");
+				General.ErrorLogger.Add(ErrorType.Error, "Cannot open file \"" + filepathname + "\" for reading. Make sure the path exists and that the file is not in use by another application.");
 				General.WriteLogLine(e.GetType().Name + ": " + e.Message);
 				General.ShowErrorMessage("Unable to open file \"" + filepathname + "\" for reading. Make sure the path exists and that the file is not in use by another application.", MessageBoxButtons.OK);
 				return false;

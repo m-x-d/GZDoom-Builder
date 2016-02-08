@@ -170,7 +170,7 @@ namespace CodeImp.DoomBuilder.Types
 		}
 
 		//mxd
-		public override void SetDefaultValue() 
+		public override void ApplyDefaultValue() 
 		{
 			value = defaultvalue;
 		}
@@ -195,6 +195,11 @@ namespace CodeImp.DoomBuilder.Types
 		public override string GetStringValue() 
 		{
 			return (this.value != null ? this.value.Title : "0: No Tag");
+		}
+
+		public override object GetDefaultValue()
+		{
+			return defaultvalue;
 		}
 
 		// This returns an enum list

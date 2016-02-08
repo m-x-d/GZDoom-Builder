@@ -171,6 +171,7 @@ namespace CodeImp.DoomBuilder.Controls
 				
 				// Go for all rows
 				bool foundrow = false;
+				bool skiprow = false; //mxd
 				foreach(DataGridViewRow row in fieldslist.Rows)
 				{
 					// Row is a field?
@@ -181,11 +182,18 @@ namespace CodeImp.DoomBuilder.Controls
 						// Row name matches with field
 						if(frow.Name == f.Key)
 						{
+							//mxd. User vars are set separately
+							if(frow.RowType == FieldsEditorRowType.USERVAR)
+							{
+								skiprow = true;
+								break;
+							}
+							
 							// First time?
 							if(first)
 							{
 								// Set type when row is not fixed
-								if(!frow.IsFixed) frow.ChangeType(f.Value.Type);
+								if(frow.RowType == FieldsEditorRowType.DYNAMIC) frow.ChangeType(f.Value.Type);
 
 								// Apply value of field to row
 								frow.Define(f.Value.Value);
@@ -207,16 +215,18 @@ namespace CodeImp.DoomBuilder.Controls
 						}
 					}
 				}
+
+				//mxd. User vars are set separately
+				if(skiprow) continue;
 				
 				// Row not found?
 				if(!foundrow)
 				{
 					// Make new row
-					FieldsEditorRow frow = new FieldsEditorRow(fieldslist, f.Key, f.Value.Type, f.Value.Value);
+					FieldsEditorRow frow = new FieldsEditorRow(fieldslist, f.Key, f.Value.Type, f.Value.Value, false);
 					fieldslist.Rows.Insert(fieldslist.Rows.Count - 1, frow);
 					
-					// When not the first, clear the field
-					// because the others did not define this one
+					// When not the first, clear the field because the others did not define this one
 					if(!first) frow.Clear();
 				}
 			}
@@ -245,6 +255,82 @@ namespace CodeImp.DoomBuilder.Controls
 			// Sort fields
 			Sort();
 		}
+
+		//mxd
+		public void SetUserVars(Dictionary<string, UniversalType> vars, UniFields fromfields, bool first)
+		{
+			foreach(KeyValuePair<string, UniversalType> group in vars)
+			{
+				// Go for all rows
+				bool foundrow = false;
+				TypeHandler vartype = General.Types.GetFieldHandler((int)group.Value, 0);
+				object value = fromfields.ContainsKey(group.Key) ? fromfields[group.Key].Value : vartype.GetDefaultValue();
+				
+				foreach(DataGridViewRow row in fieldslist.Rows)
+				{
+					// Row is a field?
+					if(row is FieldsEditorRow)
+					{
+						FieldsEditorRow frow = row as FieldsEditorRow;
+						
+						// Row name matches with user var?
+						if(frow.RowType == FieldsEditorRowType.USERVAR && frow.Name == group.Key)
+						{
+							// First time?
+							if(first)
+							{
+								frow.Define(value);
+							}
+							// Check if the value is different
+							else if(!frow.TypeHandler.GetValue().Equals(value))
+							{
+								// Clear the value in the row
+								frow.Define(value);
+								frow.Clear();
+							}
+							
+							// Done
+							foundrow = true;
+							break;
+						}
+					}
+				}
+				
+				// Row not found?
+				if(!foundrow)
+				{
+					// Make new row
+					object defaultvalue = vartype.GetDefaultValue();
+					FieldsEditorRow frow = new FieldsEditorRow(fieldslist, group.Key, (int)group.Value, defaultvalue, true);
+					if(!value.Equals(defaultvalue)) frow.Define(value);
+					fieldslist.Rows.Insert(fieldslist.Rows.Count - 1, frow);
+				}
+			}
+			
+			// Now check for rows that the givens fields do NOT have
+			foreach(DataGridViewRow row in fieldslist.Rows)
+			{
+				// Row is a field?
+				if(row is FieldsEditorRow)
+				{
+					FieldsEditorRow frow = row as FieldsEditorRow;
+					
+					// Don't undefine user var rows defined by other actor types
+					if(frow.RowType != FieldsEditorRowType.USERVAR || !vars.ContainsKey(frow.Name)) continue;
+
+					// Is this row defined previously?
+					if(frow.IsDefined)
+					{
+						// Check if this row can not be found in the fields at all
+						if(!fromfields.ContainsKey(frow.Name))
+						{
+							// It is not defined in these fields, undefine the value
+							frow.Undefine();
+						}
+					}
+				}
+			}
+		}
 		
 		// This applies the current fields to a UniFields object
 		public void Apply(UniFields tofields)
@@ -259,12 +345,20 @@ namespace CodeImp.DoomBuilder.Controls
 				
 				// Go for all rows
 				bool foundrow = false;
+				bool skiprow = false; //mxd
 				foreach(DataGridViewRow row in fieldslist.Rows)
 				{
 					// Row is a field and matches field name?
 					if((row is FieldsEditorRow) && (row.Cells[0].Value.ToString() == f.Key))
 					{
 						FieldsEditorRow frow = row as FieldsEditorRow;
+
+						//mxd. User vars are stored separately
+						if(frow.RowType == FieldsEditorRowType.USERVAR)
+						{
+							skiprow = true;
+							break;
+						}
 
 						// Field is defined?
 						if(frow.IsDefined)
@@ -274,6 +368,9 @@ namespace CodeImp.DoomBuilder.Controls
 						}
 					}
 				}
+
+				//mxd. User vars are stored separately
+				if(skiprow) continue;
 
 				// No such row?
 				if(!foundrow)
@@ -292,7 +389,7 @@ namespace CodeImp.DoomBuilder.Controls
 					FieldsEditorRow frow = row as FieldsEditorRow;
 					
 					// Field is defined and not empty?
-					if(frow.IsDefined && !frow.IsEmpty)
+					if(frow.RowType != FieldsEditorRowType.USERVAR && frow.IsDefined && !frow.IsEmpty)
 					{
 						// Apply field
 						object oldvalue = null;
@@ -300,11 +397,43 @@ namespace CodeImp.DoomBuilder.Controls
 						tofields[frow.Name] = new UniValue(frow.TypeHandler.Index, frow.GetResult(oldvalue));
 
 						// Custom row?
-						if(!frow.IsFixed)
+						if(frow.RowType == FieldsEditorRowType.DYNAMIC)
 						{
 							// Write type to map configuration
 							General.Map.Options.SetUniversalFieldType(elementname, frow.Name, frow.TypeHandler.Index);
 						}
+					}
+				}
+			}
+		}
+
+		//mxd
+		public void ApplyUserVars(Dictionary<string, UniversalType> vars, UniFields tofields)
+		{
+			// Apply user variables when target map element contains user var definition and the value is not default
+			foreach(DataGridViewRow row in fieldslist.Rows)
+			{
+				// Row is a field?
+				if(row is FieldsEditorRow)
+				{
+					FieldsEditorRow frow = row as FieldsEditorRow;
+					if(frow.RowType != FieldsEditorRowType.USERVAR || !vars.ContainsKey(frow.Name)) continue;
+
+					object oldvalue = (tofields.ContainsKey(frow.Name) ? tofields[frow.Name].Value : null);
+					object newvalue = frow.GetResult(oldvalue);
+
+					// Skip field when mixed values
+					if(newvalue == null) continue;
+
+					// Remove field
+					if(newvalue.Equals(frow.TypeHandler.GetDefaultValue()))
+					{
+						if(tofields.ContainsKey(frow.Name)) tofields.Remove(frow.Name);
+					}
+					// Add field
+					else if(!newvalue.Equals(oldvalue))
+					{
+						tofields[frow.Name] = new UniValue(frow.TypeHandler.Index, newvalue);
 					}
 				}
 			}
@@ -377,8 +506,8 @@ namespace CodeImp.DoomBuilder.Controls
 				// First column?
 				if(e.ColumnIndex == 0)
 				{
-					// Not a fixed field?
-					if((frow != null) && !frow.IsFixed)
+					// Dynamic field?
+					if((frow != null) && frow.RowType == FieldsEditorRowType.DYNAMIC)
 					{
 						lasteditfieldname = frow.Name;
 						fieldslist.CurrentCell = fieldslist.SelectedRows[0].Cells[0];
@@ -399,21 +528,20 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			// Get the row
 			FieldsEditorRow row = e.Row as FieldsEditorRow;
+			if(row == null) return;
 			
-			// Fixed field?
-			if(row.IsFixed)
+			// Fixed/uservar field?
+			if(row.RowType == FieldsEditorRowType.FIXED || row.RowType == FieldsEditorRowType.USERVAR)
 			{
 				// Just undefine the field
 				row.Undefine();
 				e.Cancel = true;
 
-				if(OnFieldUndefined != null)
-					OnFieldUndefined(row.Name);
+				if(OnFieldUndefined != null) OnFieldUndefined(row.Name);
 			}
 			else
 			{
-				if(OnFieldDeleted != null)
-					OnFieldDeleted(row.Name);
+				if(OnFieldDeleted != null) OnFieldDeleted(row.Name);
 			}
 		}
 
@@ -428,10 +556,7 @@ namespace CodeImp.DoomBuilder.Controls
 				{
 					// Remove all text
 					fieldslist.Rows[e.RowIndex].Cells[0].Style.ForeColor = SystemColors.WindowText;
-					if(autoinsertuserprefix)
-						fieldslist.Rows[e.RowIndex].Cells[0].Value = FIELD_PREFIX_SUGGESTION;
-					else
-						fieldslist.Rows[e.RowIndex].Cells[0].Value = "";
+					fieldslist.Rows[e.RowIndex].Cells[0].Value = (autoinsertuserprefix ? FIELD_PREFIX_SUGGESTION : string.Empty);
 				}
 			}
 			// Value cell?
@@ -538,12 +663,11 @@ namespace CodeImp.DoomBuilder.Controls
 									int type = General.Map.Options.GetUniversalFieldType(elementname, validname, 0);
 
 									// Make new row
-									frow = new FieldsEditorRow(fieldslist, validname, type, null);
+									frow = new FieldsEditorRow(fieldslist, validname, type, null, false);
 									frow.Visible = false;
 									fieldslist.Rows.Insert(e.RowIndex + 1, frow);
 
-									if(OnFieldInserted != null)
-										OnFieldInserted(validname);
+									if(OnFieldInserted != null) OnFieldInserted(validname);
 								}
 							}
 						}
@@ -587,11 +711,8 @@ namespace CodeImp.DoomBuilder.Controls
 								row.Cells[0].Value = validname;
 								if(type != -1) frow.ChangeType(type);
 
-								if(OnFieldNameChanged != null)
-									OnFieldNameChanged(lasteditfieldname, validname);
-
-								if(OnFieldTypeChanged != null)
-									OnFieldTypeChanged(validname);
+								if(OnFieldNameChanged != null) OnFieldNameChanged(lasteditfieldname, validname);
+								if(OnFieldTypeChanged != null) OnFieldTypeChanged(validname);
 							}
 							else
 							{
@@ -615,8 +736,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// Changing field type?
 			if((e.ColumnIndex == 1) && (frow != null))
 			{
-				if(OnFieldTypeChanged != null)
-					OnFieldTypeChanged(frow.Name);
+				if(OnFieldTypeChanged != null) OnFieldTypeChanged(frow.Name);
 			}
 			// Changing field value?
 			if((e.ColumnIndex == 2) && (frow != null))
@@ -649,7 +769,7 @@ namespace CodeImp.DoomBuilder.Controls
 				{
 					//mxd. Preserve fixed fields visibility setting
 					FieldsEditorRow frow = (fieldslist.Rows[i] as FieldsEditorRow);
-					if(frow != null && frow.IsFixed) frow.Visible = showfixedfields;
+					if(frow != null && frow.RowType == FieldsEditorRowType.FIXED) frow.Visible = showfixedfields;
 					else fieldslist.Rows[i].Visible = true;
 				}
 			}
@@ -730,17 +850,17 @@ namespace CodeImp.DoomBuilder.Controls
 		private void ApplyValue(FieldsEditorRow frow, object value)
 		{
 			// Defined?
-			if((value != null) && (!frow.IsFixed || !frow.Info.Default.Equals(value)))
+			if((value != null) && (frow.RowType == FieldsEditorRowType.DYNAMIC || frow.RowType == FieldsEditorRowType.USERVAR 
+				|| !frow.Info.Default.Equals(value)))
 			{
 				frow.Define(value);
 			}
-			else if(frow.IsFixed)
+			else if(frow.RowType == FieldsEditorRowType.FIXED)
 			{
 				frow.Undefine();
 			}
 			
-			if(OnFieldValueChanged != null)
-				OnFieldValueChanged(frow.Name);
+			if(OnFieldValueChanged != null) OnFieldValueChanged(frow.Name);
 		}
 		
 		// This applies the contents of the enums combobox and hides (if opened)
@@ -847,7 +967,7 @@ namespace CodeImp.DoomBuilder.Controls
 			foreach(var row in fieldslist.Rows)
 			{
 				FieldsEditorRow frow = (row as FieldsEditorRow);
-				if(frow != null && frow.IsFixed) frow.Visible = showfixedfields;
+				if(frow != null && frow.RowType == FieldsEditorRowType.FIXED) frow.Visible = showfixedfields;
 			}
 		}
 		

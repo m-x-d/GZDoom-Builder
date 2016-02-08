@@ -102,6 +102,11 @@ namespace CodeImp.DoomBuilder.Types
 			return this.value.ToString();
 		}
 
+		public override object GetDefaultValue()
+		{
+			return 0f;
+		}
+
 		#endregion
 	}
 }

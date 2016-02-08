@@ -199,6 +199,11 @@ namespace CodeImp.DoomBuilder.Windows
 			posY.ButtonStep = General.Map.Grid.GridSize;
 			posZ.ButtonStep = General.Map.Grid.GridSize;
 
+			//mxd. User vars. Should be done before adding regular fields
+			ThingTypeInfo fti = General.Map.Data.GetThingInfoEx(ft.Type);
+			if(fti != null && fti.Actor != null && fti.Actor.UserVars.Count > 0)
+				fieldslist.SetUserVars(fti.Actor.UserVars, ft.Fields, true);
+
 			// Custom fields
 			fieldslist.SetValues(ft.Fields, true);
 			commenteditor.SetValues(ft.Fields, true);
@@ -272,6 +277,11 @@ namespace CodeImp.DoomBuilder.Windows
 				//mxd. Arguments
 				argscontrol.SetValue(t, false);
 
+				//mxd. User vars. Should be done before adding regular fields
+				ThingTypeInfo ti = General.Map.Data.GetThingInfoEx(t.Type);
+				if(ti != null && ti.Actor != null && ti.Actor.UserVars.Count > 0)
+					fieldslist.SetUserVars(ti.Actor.UserVars, t.Fields, false);
+
 				//mxd. Custom fields
 				fieldslist.SetValues(t.Fields, false);
 				commenteditor.SetValues(t.Fields, false); //mxd. Comments
@@ -294,16 +304,6 @@ namespace CodeImp.DoomBuilder.Windows
 
 				//mxd. Store initial properties
 				thingprops.Add(new ThingProperties(t));
-
-				//mxd. add user vars
-				/*if(info != null && info.Actor != null && info.Actor.UserVars.Count > 0) 
-				 {
-					foreach(string s in info.Actor.UserVars) 
-					{
-						if(!t.Fields.ContainsKey(s))
-							fieldslist.SetValue(s, 0, CodeImp.DoomBuilder.Types.UniversalType.Integer);
-					}
-				}*/
 			}
 
 			preventchanges = false;
@@ -489,6 +489,11 @@ namespace CodeImp.DoomBuilder.Windows
 					UniFields.SetInteger(t.Fields, "health", health.GetResult(t.Fields.GetValue("health", 1)), 1);
 				if(!string.IsNullOrEmpty(score.Text))
 					UniFields.SetInteger(t.Fields, "score", score.GetResult(t.Fields.GetValue("score", 0)), 0);
+
+				//mxd. User vars. Should be called after fieldslist.Apply()
+				ThingTypeInfo ti = General.Map.Data.GetThingInfoEx(t.Type);
+				if(ti != null && ti.Actor != null && ti.Actor.UserVars.Count > 0)
+					fieldslist.ApplyUserVars(ti.Actor.UserVars, t.Fields);
 
 				color.ApplyTo(t.Fields, t.Fields.GetValue("fillcolor", 0));
 

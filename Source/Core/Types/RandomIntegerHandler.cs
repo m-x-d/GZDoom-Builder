@@ -14,8 +14,8 @@ namespace CodeImp.DoomBuilder.Types
 		#region ================== Variables
 
 		private int value;
-		private int defaultValue; 
-		private bool randomValue; 
+		private int defaultvalue; 
+		private bool randomvalue; 
 		private int min;
 		private int max;
 
@@ -29,7 +29,7 @@ namespace CodeImp.DoomBuilder.Types
 
 		public override void SetupArgument(TypeHandlerAttribute attr, ArgumentInfo arginfo) 
 		{
-			defaultValue = (int)arginfo.DefaultValue;
+			defaultvalue = (int)arginfo.DefaultValue;
 			base.SetupArgument(attr, arginfo);
 
 			//mxd. We don't want to store this type
@@ -74,7 +74,7 @@ namespace CodeImp.DoomBuilder.Types
 						if(int.TryParse(parts[0], NumberStyles.Integer, CultureInfo.CurrentCulture, out min) &&
 						   int.TryParse(parts[1], NumberStyles.Integer, CultureInfo.CurrentCulture, out max)) 
 						{
-							randomValue = (min != max);
+							randomvalue = (min != max);
 							if(min == max) this.value = min;
 							else if(min > max) General.Swap(ref min, ref max);
 						}
@@ -89,27 +89,32 @@ namespace CodeImp.DoomBuilder.Types
 		}
 
 		//mxd
-		public override void SetDefaultValue() 
+		public override void ApplyDefaultValue() 
 		{
-			value = defaultValue;
+			value = defaultvalue;
 		}
 
 		public override object GetValue() 
 		{
-			if(randomValue)	return General.Random(min, max); //mxd
+			if(randomvalue)	return General.Random(min, max); //mxd
 			return this.value;
 		}
 
 		public override int GetIntValue() 
 		{
-			if(randomValue)	return General.Random(min, max); //mxd
+			if(randomvalue)	return General.Random(min, max); //mxd
 			return this.value;
 		}
 
 		public override string GetStringValue() 
 		{
-			if(randomValue)	return General.Random(min, max).ToString(CultureInfo.InvariantCulture); //mxd
+			if(randomvalue)	return General.Random(min, max).ToString(CultureInfo.InvariantCulture); //mxd
 			return this.value.ToString(CultureInfo.InvariantCulture);
+		}
+
+		public override object GetDefaultValue()
+		{
+			return defaultvalue;
 		}
 
 		#endregion

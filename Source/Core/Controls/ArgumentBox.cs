@@ -242,7 +242,7 @@ namespace CodeImp.DoomBuilder.Controls
 		//mxd. this sets default value
 		public void SetDefaultValue() 
 		{
-			typehandler.SetDefaultValue();
+			typehandler.ApplyDefaultValue();
 			combobox.SelectedItem = null;
 			combobox.Text = typehandler.GetStringValue();
 			combobox_Validating(this, new CancelEventArgs());

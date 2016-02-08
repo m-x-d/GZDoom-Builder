@@ -38,7 +38,7 @@ namespace CodeImp.DoomBuilder.Types
 
 		private EnumList list;
 		private int value;
-		private int defaultValue; //mxd
+		private int defaultvalue; //mxd
 
 		#endregion
 
@@ -55,7 +55,7 @@ namespace CodeImp.DoomBuilder.Types
 		// When set up for an argument
 		public override void SetupArgument(TypeHandlerAttribute attr, ArgumentInfo arginfo)
 		{
-			defaultValue = (int)arginfo.DefaultValue;//mxd
+			defaultvalue = (int)arginfo.DefaultValue;//mxd
 			base.SetupArgument(attr, arginfo);
 
 			// Keep enum list reference
@@ -100,9 +100,9 @@ namespace CodeImp.DoomBuilder.Types
 		}
 
 		//mxd
-		public override void SetDefaultValue() 
+		public override void ApplyDefaultValue() 
 		{
-			value = defaultValue;
+			value = defaultvalue;
 		}
 
 		public override object GetValue()
@@ -118,6 +118,11 @@ namespace CodeImp.DoomBuilder.Types
 		public override string GetStringValue()
 		{
 			return this.value.ToString();
+		}
+
+		public override object GetDefaultValue()
+		{
+			return defaultvalue;
 		}
 
 		#endregion
