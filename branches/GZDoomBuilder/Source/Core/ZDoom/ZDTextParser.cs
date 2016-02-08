@@ -201,7 +201,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 							if(datastream.Position == datastream.Length) //mxd
 							{
 								// ZDoom doesn't give even a warning message about this, so we shouldn't report error or fail parsing.
-								General.ErrorLogger.Add(ErrorType.Warning, "DECORATE warning in '" + sourcename + "', line " + GetCurrentLineNumber() + ". Block comment is not closed.");
+								General.ErrorLogger.Add(ErrorType.Warning, "DECORATE warning in \"" + sourcename + "\", line " + GetCurrentLineNumber() + ". Block comment is not closed.");
 								return false;
 							}
 
@@ -441,7 +441,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 			if(string.Compare(token, expectedtoken, true) != 0)
 			{
-				if(reporterror) ReportError("Expected '" + expectedtoken + "', but got '" + token + "'");
+				if(reporterror) ReportError("Expected \"" + expectedtoken + "\", but got \"" + token + "\"");
 
 				// Rewind so this structure can be read again
 				DataStream.Seek(-token.Length - 1, SeekOrigin.Current);
@@ -531,16 +531,16 @@ namespace CodeImp.DoomBuilder.ZDoom
 		{
 			// Add a warning
 			int errline = (datastream != null ? GetCurrentLineNumber() : CompilerError.NO_LINE_NUMBER);
-			General.ErrorLogger.Add(ErrorType.Warning, GetLanguageType() + " warning in '" + sourcename
-								+ (errline != CompilerError.NO_LINE_NUMBER ? "', line " + (errline + 1) : "'") + ". " 
+			General.ErrorLogger.Add(ErrorType.Warning, GetLanguageType() + " warning in \"" + sourcename
+								+ (errline != CompilerError.NO_LINE_NUMBER ? "\", line " + (errline + 1) : "\"") + ". " 
 								+ message + ".");
 		}
 
 		//mxd. This adds an error to the ErrorLogger
 		public void LogError()
 		{
-			General.ErrorLogger.Add(ErrorType.Error, GetLanguageType() + " error in '" + errorsource
-								+ (errorline != CompilerError.NO_LINE_NUMBER ? "', line " + (errorline + 1) : "'") + ". "
+			General.ErrorLogger.Add(ErrorType.Error, GetLanguageType() + " error in \"" + errorsource
+								+ (errorline != CompilerError.NO_LINE_NUMBER ? "\", line " + (errorline + 1) : "\"") + ". "
 								+ errordesc + ".");
 		}
 
@@ -611,7 +611,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 					// includefilename references something above the root?
 					if(index-- < 0)
 					{
-						ReportError("Unable to construct rooted path from '" + includefilename + "'");
+						ReportError("Unable to construct rooted path from \"" + includefilename + "\"");
 						return string.Empty;
 					}
 

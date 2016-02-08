@@ -452,7 +452,7 @@ namespace CodeImp.DoomBuilder.Controls
 			int keywordsindex = lexercfg.ReadSetting(lexername + ".keywordsindex", -1);
 			if(keywordsindex > -1)
 			{
-				StringBuilder keywordslist = new StringBuilder("");
+				StringBuilder keywordslist = new StringBuilder();
 				foreach(string k in scriptconfig.Keywords)
 				{
 					if(keywordslist.Length > 0) keywordslist.Append(" ");
@@ -460,7 +460,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 					//mxd. Skip adding the keyword if we have a snippet with the same name
 					if(!scriptconfig.Snippets.Contains(k))
-						autocompletedict.Add(k.ToUpperInvariant(), k + "?" + imageindex);
+						autocompletedict.Add(k, k + "?" + imageindex);
 				}
 				string words = keywordslist.ToString();
 				scriptedit.SetKeywords(keywordsindex, (scriptconfig.CaseSensitive ? words : words.ToLowerInvariant()));
@@ -471,9 +471,9 @@ namespace CodeImp.DoomBuilder.Controls
 			int propertiesindex = lexercfg.ReadSetting(lexername + ".propertiesindex", -1);
 			if(propertiesindex > -1)
 			{
-				StringBuilder propertieslist = new StringBuilder("");
+				StringBuilder propertieslist = new StringBuilder();
 				HashSet<string> addedprops = new HashSet<string>();
-				char[] dot = new[] {'.'};
+				char[] dot = {'.'};
 				foreach(string p in scriptconfig.Properties)
 				{
 					if(propertieslist.Length > 0) propertieslist.Append(" ");
@@ -511,7 +511,9 @@ namespace CodeImp.DoomBuilder.Controls
 					}
 
 					// Autocomplete doesn't mind '.' or ':'
-					autocompletedict[p.ToUpperInvariant()] = p + "?" + imageindex;
+					// Skip adding the keyword if we have a snippet with the same name
+					if(!scriptconfig.Snippets.Contains(p))
+						autocompletedict.Add(p, p + "?" + imageindex);
 				}
 				string words = propertieslist.ToString();
 				scriptedit.SetKeywords(propertiesindex, (scriptconfig.CaseSensitive ? words : words.ToLowerInvariant()));
@@ -522,21 +524,17 @@ namespace CodeImp.DoomBuilder.Controls
 			int constantsindex = lexercfg.ReadSetting(lexername + ".constantsindex", -1);
 			if(constantsindex > -1)
 			{
-				StringBuilder constantslist = new StringBuilder("");
+				StringBuilder constantslist = new StringBuilder();
 				foreach(string c in scriptconfig.Constants)
 				{
-					if(autocompletedict.ContainsKey(c.ToUpperInvariant())) //mxd. This happens when there's a keyword and a constant with the same name...
-					{
-						General.ErrorLogger.Add(ErrorType.Error, "Constant '" + c + "' is double-defined in '" + scriptconfig.Description + "' script configuration!");
-						continue;
-					}
+					if(autocompletedict.ContainsKey(c)) continue; //mxd. This happens when there's a keyword and a constant with the same name...
 					
 					if(constantslist.Length > 0) constantslist.Append(" ");
 					constantslist.Append(c);
 
 					//mxd. Skip adding the constant if we have a snippet with the same name
 					if(!scriptconfig.Snippets.Contains(c))
-						autocompletedict.Add(c.ToUpperInvariant(), c + "?" + imageindex);
+						autocompletedict.Add(c, c + "?" + imageindex);
 				}
 				string words = constantslist.ToString();
 				scriptedit.SetKeywords(constantsindex, (scriptconfig.CaseSensitive ? words : words.ToLowerInvariant()));
@@ -547,13 +545,12 @@ namespace CodeImp.DoomBuilder.Controls
 			int snippetindex = lexercfg.ReadSetting(lexername + ".snippetindex", -1);
 			if(snippetindex > -1 && scriptconfig.Snippets.Count > 0) 
 			{
-				StringBuilder snippetslist = new StringBuilder("");
-				foreach(string c in scriptconfig.Snippets) 
+				StringBuilder snippetslist = new StringBuilder();
+				foreach(string s in scriptconfig.Snippets) 
 				{
-					if(autocompletedict.ContainsKey(c.ToUpperInvariant())) continue;
 					if(snippetslist.Length > 0) snippetslist.Append(" ");
-					snippetslist.Append(c);
-					autocompletedict.Add(c.ToUpperInvariant(), c + "?" + imageindex);
+					snippetslist.Append(s);
+					autocompletedict.Add(s, s + "?" + imageindex);
 				}
 				string words = snippetslist.ToString();
 				scriptedit.SetKeywords(snippetindex, (scriptconfig.CaseSensitive ? words : words.ToLowerInvariant()));

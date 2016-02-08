@@ -86,7 +86,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		{
 			// Syntax
 			whitespace = "\n \t\r\u00A0"; //mxd. non-breaking space is also space :)
-			specialtokens = ":{}+-\n;,";
+			specialtokens = ":{}[]+-\n;,";
 			
 			// Initialize
 			actors = new Dictionary<string, ActorStructure>(StringComparer.OrdinalIgnoreCase);

@@ -113,6 +113,11 @@ namespace CodeImp.DoomBuilder.Types
 			return this.value.ToString("X6");
 		}
 
+		public override object GetDefaultValue()
+		{
+			return 0;
+		}
+
 		#endregion
 	}
 }

@@ -26,6 +26,23 @@ using CodeImp.DoomBuilder.Types;
 
 namespace CodeImp.DoomBuilder.Controls
 {
+	internal enum FieldsEditorRowType //mxd
+	{
+		// This is a fixed field defined in the game configuration
+		// The field cannot be deleted (delete will result in a reset)
+		// and cannot change type.
+		FIXED,
+
+		// This is an abstartct variable field enetered by user
+		// The field can be deleted and can change type.
+		DYNAMIC,
+
+		// This is a user variable field defined in actor's DECORATE
+		// The field cannot be deleted (delete will result in a reset)
+		// but can change type.
+		USERVAR,
+	}
+	
 	internal class FieldsEditorRow : DataGridViewRow
 	{
 		#region ================== Constants
@@ -34,13 +51,11 @@ namespace CodeImp.DoomBuilder.Controls
 
 		#region ================== Variables
 		
-		// This is true when for a fixed field as defined in the game configuration
-		// This means that the field cannot be deleted (delete will result in a reset)
-		// and cannot change type.
-		private bool isfixed;
+		//mxd. Row type
+		private readonly FieldsEditorRowType rowtype;
 
 		// Field information (only for fixed fields)
-		private UniversalFieldInfo fieldinfo;
+		private readonly UniversalFieldInfo fieldinfo;
 
 		// This is true when the field is defined. Cannot be false when this field
 		// is not fixed, because non-fixed fields are deleted from the list when undefined.
@@ -53,7 +68,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 		#region ================== Properties
 
-		public bool IsFixed { get { return isfixed; } }
+		public FieldsEditorRowType RowType { get { return rowtype; } } //mxd
 		public bool IsDefined { get { return isdefined; } }
 		public bool IsEmpty { get { return (this.Cells[2].Value == null) || (this.Cells[2].Value.ToString().Length == 0); } }
 		public string Name { get { return this.Cells[0].Value.ToString(); } }
@@ -73,7 +88,7 @@ namespace CodeImp.DoomBuilder.Controls
 			
 			// Fixed
 			this.fieldinfo = fixedfield;
-			isfixed = true;
+			this.rowtype = FieldsEditorRowType.FIXED; //mxd
 			
 			// Type
 			this.fieldtype = General.Types.GetFieldHandler(fixedfield);
@@ -97,31 +112,54 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		// Constructor for a non-fixed, defined field
-		public FieldsEditorRow(DataGridView view, string name, int type, object value)
+		//mxd. Also for a user variable field.
+		public FieldsEditorRow(DataGridView view, string name, int type, object value, bool isuservar)
 		{
-			// Defined
-			this.DefaultCellStyle.ForeColor = SystemColors.WindowText;
-			isdefined = true;
-
-			// Non-fixed
-			isfixed = false;
+			//mxd. Row type
+			this.rowtype = (isuservar ? FieldsEditorRowType.USERVAR : FieldsEditorRowType.DYNAMIC);
 
 			// Type
 			this.fieldtype = General.Types.GetFieldHandler(type, value);
 
 			// Make all cells
 			base.CreateCells(view);
-			
-			// Setup property cell
-			this.Cells[0].Value = name;
-			this.Cells[0].ReadOnly = true;
 
-			// Setup type cell
-			this.Cells[1].Value = fieldtype.GetDisplayType();
-			this.Cells[1].ReadOnly = false;
+			//mxd. Our path splits here...
+			if(isuservar)
+			{
+				// Not defined
+				this.DefaultCellStyle.ForeColor = SystemColors.GrayText;
+				isdefined = false;
+				fieldtype.ApplyDefaultValue();
 
-			// Setup value cell
-			this.Cells[2].Value = fieldtype.GetStringValue();
+				// Setup property cell
+				this.Cells[0].Value = name;
+				this.Cells[0].ReadOnly = true;
+
+				// Setup type cell
+				this.Cells[1].Value = fieldtype.GetDisplayType();
+				this.Cells[1].ReadOnly = true;
+
+				// Setup value cell
+				this.Cells[2].Value = fieldtype.GetStringValue();
+			}
+			else
+			{
+				// Defined
+				this.DefaultCellStyle.ForeColor = SystemColors.WindowText;
+				isdefined = true;
+
+				// Setup property cell
+				this.Cells[0].Value = name;
+				this.Cells[0].ReadOnly = true;
+
+				// Setup type cell
+				this.Cells[1].Value = fieldtype.GetDisplayType();
+				this.Cells[1].ReadOnly = false;
+
+				// Setup value cell
+				this.Cells[2].Value = fieldtype.GetStringValue();
+			}
 
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -140,7 +178,7 @@ namespace CodeImp.DoomBuilder.Controls
 				fieldtype.Browse(parent);
 
 				// This is a fixed field?
-				if(isfixed)
+				if(rowtype == FieldsEditorRowType.FIXED)
 				{
 					// Does this match the default setting?
 					if(fieldtype.GetValue().Equals(fieldinfo.Default))
@@ -188,7 +226,7 @@ namespace CodeImp.DoomBuilder.Controls
 				this.Cells[2].Value = fieldtype.GetStringValue();
 
 				// This is a fixed field?
-				if(isfixed)
+				if(rowtype == FieldsEditorRowType.FIXED)
 				{
 					// Does this match the default setting?
 					if(fieldtype.GetValue().Equals(fieldinfo.Default))
@@ -201,15 +239,19 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 		
 		// This undefines the field
-		// ONLY VALID FOR FIXED FIELDS
+		// ONLY VALID FOR FIXED AND USERVAR FIELDS
 		// You should just delete non-fixed fields
 		public void Undefine()
 		{
 			// Must be fixed!
-			if(!isfixed) throw new InvalidOperationException();
+			if(rowtype != FieldsEditorRowType.FIXED && rowtype != FieldsEditorRowType.USERVAR) throw new InvalidOperationException();
 			
 			// Now undefined
-			fieldtype.SetValue(fieldinfo.Default);
+			if(rowtype == FieldsEditorRowType.USERVAR)
+				fieldtype.ApplyDefaultValue();
+			else
+				fieldtype.SetValue(fieldinfo.Default);
+
 			this.Cells[2].Value = fieldtype.GetStringValue();
 			this.DefaultCellStyle.ForeColor = SystemColors.GrayText;
 			isdefined = false;
@@ -218,10 +260,13 @@ namespace CodeImp.DoomBuilder.Controls
 		// This defines the field
 		public void Define(object value)
 		{
+			//mxd. Don't count as defined when default value is passed
+			if(value.ToString() == fieldtype.GetDefaultValue().ToString()) return;
+			
 			// Now defined
 			fieldtype.SetValue(value);
 			this.Cells[2].Value = fieldtype.GetStringValue();
-			this.DefaultCellStyle.ForeColor = SystemColors.WindowText;
+			this.DefaultCellStyle.ForeColor = (rowtype == FieldsEditorRowType.USERVAR ? SystemColors.HotTrack : SystemColors.WindowText);
 			isdefined = true;
 		}
 
@@ -229,13 +274,12 @@ namespace CodeImp.DoomBuilder.Controls
 		public void ChangeType(int typeindex)
 		{
 			// Can't do this for a fixed field!
-			if(isfixed) throw new InvalidOperationException();
+			if(rowtype == FieldsEditorRowType.FIXED) throw new InvalidOperationException();
 			
 			// Different?
 			if(typeindex != fieldtype.Index)
 			{
 				// Change field type!
-				//TypeHandlerAttribute attrib = General.Types.GetAttribute(typeindex); //mxd
 				fieldtype = General.Types.GetFieldHandler(typeindex, this.Cells[2].Value);
 				this.Cells[1].Value = fieldtype.GetDisplayType();
 			}

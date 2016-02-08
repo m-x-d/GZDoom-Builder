@@ -140,7 +140,7 @@ namespace CodeImp.DoomBuilder.Types
 		}
 
 		//mxd
-		public override void SetDefaultValue() 
+		public override void ApplyDefaultValue() 
 		{
 			value = defaultvalue;
 		}
@@ -188,6 +188,11 @@ namespace CodeImp.DoomBuilder.Types
 		public override TypeHandlerAttribute GetDisplayType()
 		{
 			return General.Types.GetAttribute((int)UniversalType.Integer);
+		}
+
+		public override object GetDefaultValue()
+		{
+			return defaultvalue;
 		}
 		
 		#endregion

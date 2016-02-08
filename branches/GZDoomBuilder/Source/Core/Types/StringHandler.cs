@@ -68,13 +68,17 @@ namespace CodeImp.DoomBuilder.Types
 		public override int GetIntValue()
 		{
 			int result;
-			if(int.TryParse(this.value, out result)) return result;
-				else return 0;
+			return (int.TryParse(this.value, out result) ? result : 0);
 		}
 
 		public override string GetStringValue()
 		{
 			return this.value;
+		}
+
+		public override object GetDefaultValue()
+		{
+			return string.Empty;
 		}
 
 		#endregion

@@ -93,7 +93,7 @@ namespace CodeImp.DoomBuilder.Types
 
 		public override int GetIntValue()
 		{
-			if(this.value) return 1; else return 0;
+			return (this.value ? 1 : 0);
 		}
 
 		public override string GetStringValue()
@@ -105,6 +105,11 @@ namespace CodeImp.DoomBuilder.Types
 		public override EnumList GetEnumList()
 		{
 			return list;
+		}
+
+		public override object GetDefaultValue()
+		{
+			return false;
 		}
 		
 		#endregion

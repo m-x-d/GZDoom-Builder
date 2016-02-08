@@ -18,7 +18,7 @@ namespace CodeImp.DoomBuilder.Types
 		#region ================== Variables
 
 		private float value;
-		private bool randomValue;
+		private bool randomvalue;
 		private float min;
 		private float max;
 
@@ -77,7 +77,7 @@ namespace CodeImp.DoomBuilder.Types
 						if(float.TryParse(parts[0], NumberStyles.Float, CultureInfo.CurrentCulture, out min) &&
 						   float.TryParse(parts[1], NumberStyles.Float, CultureInfo.CurrentCulture, out max)) 
 						{
-							randomValue = (min != max);
+							randomvalue = (min != max);
 
 							if(min == max) this.value = min;
 							else if(min > max) General.Swap(ref min, ref max);
@@ -91,20 +91,25 @@ namespace CodeImp.DoomBuilder.Types
 
 		public override object GetValue() 
 		{
-			if(randomValue)	return General.Random(min, max); //mxd
+			if(randomvalue)	return General.Random(min, max); //mxd
 			return this.value;
 		}
 
 		public override int GetIntValue() 
 		{
-			if(randomValue)	return (int)General.Random(min, max); //mxd
+			if(randomvalue)	return (int)General.Random(min, max); //mxd
 			return (int)this.value;
 		}
 
 		public override string GetStringValue() 
 		{
-			if(randomValue) return General.Random(min, max).ToString(CultureInfo.InvariantCulture); //mxd
+			if(randomvalue) return General.Random(min, max).ToString(CultureInfo.InvariantCulture); //mxd
 			return this.value.ToString(CultureInfo.InvariantCulture);
+		}
+
+		public override object GetDefaultValue()
+		{
+			return 0f;
 		}
 
 		#endregion

@@ -120,11 +120,14 @@ namespace CodeImp.DoomBuilder.Types
 		public abstract void SetValue(object value);
 
 		//mxd. This should replace current value with the default one
-		public virtual void SetDefaultValue() { }
+		public virtual void ApplyDefaultValue() { }
 
 		// This must return the value as one of the primitive data types
 		// supported by UDMF: int, string, float or bool
 		public abstract object GetValue();
+
+		//mxd. This should return the default value
+		public abstract object GetDefaultValue();
 		
 		// This must return the value as integer (for arguments)
 		public virtual int GetIntValue()
@@ -136,9 +139,7 @@ namespace CodeImp.DoomBuilder.Types
 		public abstract string GetStringValue();
 
 		// This is called when the user presses the browse button
-		public virtual void Browse(IWin32Window parent)
-		{
-		}
+		public virtual void Browse(IWin32Window parent) { }
 		
 		// This must returns an enum list when IsEnumerable is true
 		public virtual EnumList GetEnumList()

@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Data;
+using CodeImp.DoomBuilder.Types;
 
 #endregion
 
@@ -52,7 +53,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		
 		// Properties
 		private Dictionary<string, List<string>> props;
-		private readonly List<string> userVars; //mxd
+		private readonly Dictionary<string, UniversalType> uservars; //mxd
 		
 		// States
 		private Dictionary<string, StateStructure> states;
@@ -68,7 +69,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		public string ReplacesClass { get { return replaceclass; } }
 		public ActorStructure BaseClass { get { return baseclass; } }
 		internal int DoomEdNum { get { return doomednum; } set { doomednum = value; } }
-		public List<string> UserVars { get { return userVars; } } //mxd
+		public Dictionary<string, UniversalType> UserVars { get { return uservars; } } //mxd
 		
 		#endregion
 		
@@ -78,10 +79,10 @@ namespace CodeImp.DoomBuilder.ZDoom
 		internal ActorStructure(DecorateParser parser)
 		{
 			// Initialize
-			flags = new Dictionary<string, bool>(StringComparer.Ordinal);
-			props = new Dictionary<string, List<string>>(StringComparer.Ordinal);
-			states = new Dictionary<string, StateStructure>(StringComparer.Ordinal);
-			userVars = new List<string>();//mxd
+			flags = new Dictionary<string, bool>(StringComparer.OrdinalIgnoreCase);
+			props = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
+			states = new Dictionary<string, StateStructure>(StringComparer.OrdinalIgnoreCase);
+			uservars = new Dictionary<string, UniversalType>(StringComparer.OrdinalIgnoreCase);//mxd
 			bool done = false; //mxd
 			
 			// Always define a game property, but default to 0 values
@@ -163,7 +164,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 							else if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out doomednum)) // Check if numeric
 							{
 								// Not numeric!
-								parser.ReportError("Expected editor thing number or start of actor scope while parsing '" + classname + "'");
+								parser.ReportError("Expected editor thing number or start of actor scope while parsing \"" + classname + "\"");
 								return;
 							}
 							break;
@@ -271,18 +272,87 @@ namespace CodeImp.DoomBuilder.ZDoom
 						break;
 
 					case "var": //mxd
-						while(parser.SkipWhitespace(true)) 
+						// Type
+						parser.SkipWhitespace(true);
+						string typestr = parser.ReadToken().ToUpperInvariant();
+						UniversalType type = UniversalType.EnumOption; // There is no Unknown type, so let's use something impossiburu...
+						switch(typestr)
 						{
-							string t = parser.ReadToken();
-							if(string.IsNullOrEmpty(t) || t == ";") break;
-							if(t.StartsWith("user_") && !userVars.Contains(t))
-								userVars.Add(t);
+							case "INT":
+								type = UniversalType.Integer;
+								break;
+
+							default:
+								parser.LogWarning("Unknown user variable type");
+								break;
+						}
+
+						// Name
+						parser.SkipWhitespace(true);
+						string name = parser.ReadToken();
+						if(string.IsNullOrEmpty(name))
+						{
+							parser.ReportError("Expected User Variable name");
+							return;
+						}
+						if(!name.StartsWith("user_", StringComparison.OrdinalIgnoreCase))
+						{
+							parser.ReportError("User Variable name must start with \"user_\" prefix");
+							return;
+						}
+						if(uservars.ContainsKey(name))
+						{
+							parser.ReportError("User Variable \"" + name + "\" is double-defined");
+							return;
+						}
+						if(!skipsuper && baseclass != null && baseclass.uservars.ContainsKey(name))
+						{
+							parser.ReportError("User variable \"" + name + "\" is already defined in one of the parent classes");
+							return;
+						}
+
+						// Rest
+						parser.SkipWhitespace(true);
+						string next = parser.ReadToken();
+						if(next == "[") // that's User Array. Let's skip it...
+						{
+							int arrlen = -1;
+							if(!parser.ReadSignedInt(ref arrlen))
+							{
+								parser.ReportError("Expected User Array length, but got \"" + next + "\"");
+								return;
+							}
+							if(arrlen < 1)
+							{
+								parser.ReportError("User Array length must be a positive value");
+								return;
+							}
+							if(!parser.NextTokenIs("]") || !parser.NextTokenIs(";"))
+							{
+								return;
+							}
+						}
+						else if(next != ";")
+						{
+							parser.ReportError("Expected \";\", but got \"" + next + "\"");
+							return;
+						}
+						else
+						{
+							// Add to collection
+							uservars.Add(name, type);
 						}
 						break;
 
 					case "}":
-						// Actor scope ends here,
-						// break out of this parse loop
+						//mxd. Get user vars from the BaseClass, if we have one
+						if(!skipsuper && baseclass != null && baseclass.uservars.Count > 0)
+						{
+							foreach(var group in baseclass.uservars)
+								uservars.Add(group.Key, group.Value);
+						}
+
+						// Actor scope ends here, break out of this parse loop
 						done = true;
 						break;
 
@@ -414,7 +484,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 					}
 				}
 
-				parser.LogWarning("Unable to find '" + inheritclass + "' class to inherit from, while parsing '" + classname + ":" + doomednum + "'");
+				parser.LogWarning("Unable to find \"" + inheritclass + "\" class to inherit from, while parsing \"" + classname + ":" + doomednum + "\"");
 			}
 		}
 		
@@ -554,7 +624,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		/// </summary>
 		public Dictionary<string, StateStructure> GetAllStates()
 		{
-			Dictionary<string, StateStructure> list = new Dictionary<string, StateStructure>(states);
+			Dictionary<string, StateStructure> list = new Dictionary<string, StateStructure>(states, StringComparer.OrdinalIgnoreCase);
 			
 			if(!skipsuper && (baseclass != null))
 			{
