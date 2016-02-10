@@ -89,6 +89,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 			//mxd
 			locatetexturegroup.Checked = General.Settings.LocateTextureGroup;
+			keepfilterfocused.Checked = General.Settings.KeepTextureFilterFocused;
 			cbStoreEditTab.Checked = General.Settings.StoreSelectedEditTab;
 			checkforupdates.Checked = General.Settings.CheckForUpdates;
 			toolbar_gzdoom.Checked = General.Settings.GZToolbarGZDoom;
@@ -280,6 +281,7 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Settings.StoreSelectedEditTab = cbStoreEditTab.Checked; //mxd
 			General.Settings.CheckForUpdates = checkforupdates.Checked; //mxd
 			General.Settings.LocateTextureGroup = locatetexturegroup.Checked; //mxd
+			General.Settings.KeepTextureFilterFocused = keepfilterfocused.Checked; //mxd
 			General.Settings.MaxRecentFiles = recentFiles.Value; //mxd
 			General.Settings.ScreenshotsPath = screenshotsfolderpath.Text.Trim(); //mxd
 

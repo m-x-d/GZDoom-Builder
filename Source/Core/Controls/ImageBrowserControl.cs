@@ -237,6 +237,20 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 		}
 
+		//mxd. Handle keyboard navigation the same way regardless of list being focused...
+		private void list_KeyDown(object sender, KeyEventArgs e)
+		{
+			// Check what key is pressed
+			switch(e.KeyData)
+			{
+				// Cursor keys
+				case Keys.Left: SelectNextItem(SearchDirectionHint.Left); e.SuppressKeyPress = true; break;
+				case Keys.Right: SelectNextItem(SearchDirectionHint.Right); e.SuppressKeyPress = true; break;
+				case Keys.Up: SelectNextItem(SearchDirectionHint.Up); e.SuppressKeyPress = true; break;
+				case Keys.Down: SelectNextItem(SearchDirectionHint.Down); e.SuppressKeyPress = true; break;
+			}
+		}
+
 		//mxd
 		private void filterSize_WhenTextChanged(object sender, EventArgs e) 
 		{
@@ -277,6 +291,8 @@ namespace CodeImp.DoomBuilder.Controls
 		//mxd. Transfer focus to Filter textbox
 		private void list_KeyPress(object sender, KeyPressEventArgs e)
 		{
+			if(!General.Settings.KeepTextureFilterFocused) return;
+
 			objectname.Focus();
 			if(e.KeyChar == '\b') // Any better way to check for Backspace?..
 			{
@@ -388,36 +404,107 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 			else
 			{
-				// Get selected item
-				ListViewItem lvi = list.SelectedItems[0];
-				Rectangle lvirect = list.GetItemRect(lvi.Index, ItemBoundsPortion.Entire);
-				Point spos = new Point(lvirect.Location.X + lvirect.Width / 2, lvirect.Y + lvirect.Height / 2);
+				//mxd
+				int index = list.SelectedItems[0].Index;
+				int targetindex = -1;
+				ListViewGroup startgroup = list.SelectedItems[0].Group;
+				Rectangle startrect = list.GetItemRect(index, ItemBoundsPortion.Entire);
 				
-				// Try finding 5 times in the given direction
-				for(int i = 0; i < 5; i++)
+				switch(dir)
 				{
-					// Move point in given direction
-					switch(dir)
-					{
-						case SearchDirectionHint.Left: spos.X -= list.TileSize.Width / 2; break;
-						case SearchDirectionHint.Right: spos.X += list.TileSize.Width / 2; break;
-						case SearchDirectionHint.Up: spos.Y -= list.TileSize.Height / 2; break;
-						case SearchDirectionHint.Down: spos.Y += list.TileSize.Height / 2; break;
-					}
-					
-					// Test position
-					lvi = list.GetItemAt(spos.X, spos.Y);
-					if(lvi != null)
-					{
-						// Select item
-						list.SelectedItems.Clear();
-						lvi.Selected = true;
+					// Check previous items untill groups match...
+					case SearchDirectionHint.Left:
+						if(list.SelectedIndices[0] > 0)
+						{
+							while(--index > -1)
+							{
+								if(list.Items[index].Group == startgroup)
+								{
+									targetindex = index;
+									break;
+								}
+							}
+						}
 						break;
+
+					// Same thing, other direction...
+					case SearchDirectionHint.Right:
+						if(list.SelectedIndices[0] < list.Items.Count - 1)
+						{
+							while(++index < list.Items.Count)
+							{
+								if(list.Items[index].Group == startgroup)
+								{
+									targetindex = index;
+									break;
+								}
+							}
+						}
+						break;
+
+					// Check previous items untill X coordinate match and Y coordinate is less than the start ones...
+					case SearchDirectionHint.Up:
+						while(--index > -1)
+						{
+							Rectangle rect = list.GetItemRect(index, ItemBoundsPortion.Entire);
+							if(list.Items[index].Group == startgroup && rect.X == startrect.X && rect.Y < startrect.Y)
+							{
+								targetindex = index;
+								break;
+							}
+						}
+						break;
+
+					// Same thing, other direction...
+					case SearchDirectionHint.Down:
+						if(list.SelectedIndices[0] < list.Items.Count - 1)
+						{
+							while(++index < list.Items.Count)
+							{
+								Rectangle rect = list.GetItemRect(index, ItemBoundsPortion.Entire);
+								if(list.Items[index].Group == startgroup && rect.X == startrect.X && rect.Y > startrect.Y)
+								{
+									targetindex = index;
+									break;
+								}
+							}
+						}
+						break;
+				}
+
+				//mxd. Use the old method for Up/Down keys, becaue it can jump between Groups...
+				if(targetindex == -1 && (dir == SearchDirectionHint.Up || dir == SearchDirectionHint.Down))
+				{
+					Point spos = new Point(startrect.Location.X + startrect.Width / 2, startrect.Y + startrect.Height / 2);
+
+					// Try finding 5 times in the given direction
+					for(int i = 0; i < 5; i++)
+					{
+						// Move point in given direction
+						switch(dir)
+						{
+							case SearchDirectionHint.Up: spos.Y -= list.TileSize.Height / 2; break;
+							case SearchDirectionHint.Down: spos.Y += list.TileSize.Height / 2; break;
+						}
+
+						// Test position
+						ListViewItem lvi = list.GetItemAt(spos.X, spos.Y);
+						if(lvi != null)
+						{
+							targetindex = lvi.Index;
+							break;
+						}
 					}
 				}
-				
-				// Make selection visible
-				if(list.SelectedItems.Count > 0) list.SelectedItems[0].EnsureVisible();
+
+				//mxd. Found something?..
+				if(targetindex != -1)
+				{
+					// Select item
+					list.SelectedItems.Clear();
+					list.Items[targetindex].Selected = true;
+					list.SelectedItems[0].EnsureVisible();
+				}
 			}
 		}
 		
@@ -514,6 +601,15 @@ namespace CodeImp.DoomBuilder.Controls
 		private void RefillList(bool selectfirst)
 		{
 			visibleitems = new List<ImageBrowserItem>();
+
+			//mxd. Store info about currently selected item
+			string selectedname = string.Empty;
+			ListViewGroup selecteditemgroup = null;
+			if(!selectfirst && keepselected == -1 && list.SelectedIndices.Count > 0)
+			{
+				selectedname = list.Items[list.SelectedIndices[0]].Text;
+				selecteditemgroup = list.Items[list.SelectedIndices[0]].Group;
+			}
 			
 			// Begin updating list
 			updating = true;
@@ -569,6 +665,56 @@ namespace CodeImp.DoomBuilder.Controls
 				{
 					SelectFirstItem();
 				}
+				//mxd. Try reselecting the same/next closest item
+				else if(selecteditemgroup != null && !string.IsNullOrEmpty(selectedname))
+				{
+					ListViewItem bestmatch = null;
+					int charsmatched = 1;
+					foreach(ListViewItem item in list.Items)
+					{
+						if(item.Group == selecteditemgroup && item.Text[0] == selectedname[0])
+						{
+							if(item.Text == selectedname)
+							{
+								bestmatch = item;
+								break;
+							}
+
+							for(int i = 1; i < Math.Min(item.Text.Length, selectedname.Length); i++)
+							{
+								if(item.Text[i] != selectedname[i])
+								{
+									if(i > charsmatched)
+									{
+										bestmatch = item;
+										charsmatched = i;
+									}
+									break;
+								}
+							}
+						}
+					}
+
+					// Select the first item from the same group...
+					if(bestmatch == null)
+					{
+						foreach(ListViewItem item in list.Items)
+						{
+							if(item.Group == selecteditemgroup)
+							{
+								bestmatch = item;
+								break;
+							}
+						}
+					}
+
+					// Select found item
+					if(bestmatch != null)
+					{
+						bestmatch.Selected = true;
+						bestmatch.EnsureVisible();
+					}
+				}
 			}
 			
 			// Raise event
@@ -605,7 +751,10 @@ namespace CodeImp.DoomBuilder.Controls
 		// This sends the focus to the textbox
 		public void FocusTextbox()
 		{
-			objectname.Focus();
+			if(General.Settings.KeepTextureFilterFocused) //mxd
+				objectname.Focus();
+			else
+				list.Focus();
 		}
 		
 		#endregion

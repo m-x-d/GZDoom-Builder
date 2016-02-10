@@ -39,6 +39,7 @@ namespace CodeImp.DoomBuilder.Windows
 			System.Windows.Forms.Label label20;
 			System.Windows.Forms.Label label21;
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PreferencesForm));
+			this.keepfilterfocused = new System.Windows.Forms.CheckBox();
 			this.checkforupdates = new System.Windows.Forms.CheckBox();
 			this.cbStoreEditTab = new System.Windows.Forms.CheckBox();
 			this.locatetexturegroup = new System.Windows.Forms.CheckBox();
@@ -171,6 +172,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.label8 = new System.Windows.Forms.Label();
 			this.scriptfontsize = new System.Windows.Forms.ComboBox();
 			this.groupBox6 = new System.Windows.Forms.GroupBox();
+			this.colorproperties = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.label23 = new System.Windows.Forms.Label();
 			this.scriptcolorpresets = new System.Windows.Forms.ComboBox();
 			this.colorfoldback = new CodeImp.DoomBuilder.Controls.ColorControl();
@@ -197,7 +199,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.pasteoptions = new CodeImp.DoomBuilder.Controls.PasteOptionsControl();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.browseScreenshotsFolderDialog = new System.Windows.Forms.FolderBrowserDialog();
-			this.colorproperties = new CodeImp.DoomBuilder.Controls.ColorControl();
 			label7 = new System.Windows.Forms.Label();
 			label6 = new System.Windows.Forms.Label();
 			label5 = new System.Windows.Forms.Label();
@@ -271,6 +272,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// groupBox1
 			// 
+			groupBox1.Controls.Add(this.keepfilterfocused);
 			groupBox1.Controls.Add(this.checkforupdates);
 			groupBox1.Controls.Add(this.cbStoreEditTab);
 			groupBox1.Controls.Add(this.locatetexturegroup);
@@ -301,10 +303,22 @@ namespace CodeImp.DoomBuilder.Windows
 			groupBox1.TabStop = false;
 			groupBox1.Text = " Options ";
 			// 
+			// keepfilterfocused
+			// 
+			this.keepfilterfocused.AutoSize = true;
+			this.keepfilterfocused.Location = new System.Drawing.Point(32, 350);
+			this.keepfilterfocused.Name = "keepfilterfocused";
+			this.keepfilterfocused.Size = new System.Drawing.Size(280, 17);
+			this.keepfilterfocused.TabIndex = 52;
+			this.keepfilterfocused.Text = "Keep Filter input focused when image browser is open";
+			this.toolTip1.SetToolTip(this.keepfilterfocused, "When enabled, all key presses in \r\nimage browsers will be redirected \r\nto the Fil" +
+					"ter textbox.");
+			this.keepfilterfocused.UseVisualStyleBackColor = true;
+			// 
 			// checkforupdates
 			// 
 			this.checkforupdates.AutoSize = true;
-			this.checkforupdates.Location = new System.Drawing.Point(32, 392);
+			this.checkforupdates.Location = new System.Drawing.Point(32, 413);
 			this.checkforupdates.Name = "checkforupdates";
 			this.checkforupdates.Size = new System.Drawing.Size(160, 17);
 			this.checkforupdates.TabIndex = 51;
@@ -314,7 +328,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// cbStoreEditTab
 			// 
 			this.cbStoreEditTab.AutoSize = true;
-			this.cbStoreEditTab.Location = new System.Drawing.Point(32, 371);
+			this.cbStoreEditTab.Location = new System.Drawing.Point(32, 392);
 			this.cbStoreEditTab.Name = "cbStoreEditTab";
 			this.cbStoreEditTab.Size = new System.Drawing.Size(203, 17);
 			this.cbStoreEditTab.TabIndex = 50;
@@ -401,7 +415,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// cbSynchCameras
 			// 
 			this.cbSynchCameras.AutoSize = true;
-			this.cbSynchCameras.Location = new System.Drawing.Point(32, 350);
+			this.cbSynchCameras.Location = new System.Drawing.Point(32, 371);
 			this.cbSynchCameras.Name = "cbSynchCameras";
 			this.cbSynchCameras.Size = new System.Drawing.Size(260, 17);
 			this.cbSynchCameras.TabIndex = 42;
@@ -1905,6 +1919,18 @@ namespace CodeImp.DoomBuilder.Windows
 			this.groupBox6.TabStop = false;
 			this.groupBox6.Text = " Colors ";
 			// 
+			// colorproperties
+			// 
+			this.colorproperties.BackColor = System.Drawing.Color.Transparent;
+			this.colorproperties.Label = "Keywords:";
+			this.colorproperties.Location = new System.Drawing.Point(15, 169);
+			this.colorproperties.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorproperties.MinimumSize = new System.Drawing.Size(100, 16);
+			this.colorproperties.Name = "colorproperties";
+			this.colorproperties.Size = new System.Drawing.Size(168, 21);
+			this.colorproperties.TabIndex = 41;
+			this.colorproperties.ColorChanged += new System.EventHandler(this.colorproperties_ColorChanged);
+			// 
 			// label23
 			// 
 			this.label23.AutoSize = true;
@@ -1934,6 +1960,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorfoldback.Label = "Fold BG:";
 			this.colorfoldback.Location = new System.Drawing.Point(15, 457);
 			this.colorfoldback.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorfoldback.MinimumSize = new System.Drawing.Size(100, 16);
 			this.colorfoldback.Name = "colorfoldback";
 			this.colorfoldback.Size = new System.Drawing.Size(168, 21);
 			this.colorfoldback.TabIndex = 16;
@@ -1945,6 +1972,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorfoldfore.Label = "Fold:";
 			this.colorfoldfore.Location = new System.Drawing.Point(15, 433);
 			this.colorfoldfore.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorfoldfore.MinimumSize = new System.Drawing.Size(100, 16);
 			this.colorfoldfore.Name = "colorfoldfore";
 			this.colorfoldfore.Size = new System.Drawing.Size(168, 21);
 			this.colorfoldfore.TabIndex = 15;
@@ -1956,6 +1984,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorindicator.Label = "Matching word:";
 			this.colorindicator.Location = new System.Drawing.Point(15, 337);
 			this.colorindicator.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorindicator.MinimumSize = new System.Drawing.Size(100, 16);
 			this.colorindicator.Name = "colorindicator";
 			this.colorindicator.Size = new System.Drawing.Size(168, 21);
 			this.colorindicator.TabIndex = 14;
@@ -1967,6 +1996,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorwhitespace.Label = "Whitespace:";
 			this.colorwhitespace.Location = new System.Drawing.Point(15, 409);
 			this.colorwhitespace.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorwhitespace.MinimumSize = new System.Drawing.Size(100, 16);
 			this.colorwhitespace.Name = "colorwhitespace";
 			this.colorwhitespace.Size = new System.Drawing.Size(168, 21);
 			this.colorwhitespace.TabIndex = 13;
@@ -1978,6 +2008,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorbracebad.Label = "Mismatching brace:";
 			this.colorbracebad.Location = new System.Drawing.Point(15, 385);
 			this.colorbracebad.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorbracebad.MinimumSize = new System.Drawing.Size(100, 16);
 			this.colorbracebad.Name = "colorbracebad";
 			this.colorbracebad.Size = new System.Drawing.Size(168, 21);
 			this.colorbracebad.TabIndex = 12;
@@ -1989,6 +2020,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorbrace.Label = "Matching brace:";
 			this.colorbrace.Location = new System.Drawing.Point(15, 361);
 			this.colorbrace.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorbrace.MinimumSize = new System.Drawing.Size(100, 16);
 			this.colorbrace.Name = "colorbrace";
 			this.colorbrace.Size = new System.Drawing.Size(168, 21);
 			this.colorbrace.TabIndex = 11;
@@ -2000,6 +2032,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorselectionback.Label = "Selection BG:";
 			this.colorselectionback.Location = new System.Drawing.Point(15, 313);
 			this.colorselectionback.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorselectionback.MinimumSize = new System.Drawing.Size(100, 16);
 			this.colorselectionback.Name = "colorselectionback";
 			this.colorselectionback.Size = new System.Drawing.Size(168, 21);
 			this.colorselectionback.TabIndex = 10;
@@ -2011,6 +2044,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorselectionfore.Label = "Selection:";
 			this.colorselectionfore.Location = new System.Drawing.Point(15, 289);
 			this.colorselectionfore.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorselectionfore.MinimumSize = new System.Drawing.Size(100, 16);
 			this.colorselectionfore.Name = "colorselectionfore";
 			this.colorselectionfore.Size = new System.Drawing.Size(168, 21);
 			this.colorselectionfore.TabIndex = 9;
@@ -2022,6 +2056,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorincludes.Label = "Includes:";
 			this.colorincludes.Location = new System.Drawing.Point(15, 265);
 			this.colorincludes.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorincludes.MinimumSize = new System.Drawing.Size(100, 16);
 			this.colorincludes.Name = "colorincludes";
 			this.colorincludes.Size = new System.Drawing.Size(168, 21);
 			this.colorincludes.TabIndex = 8;
@@ -2033,6 +2068,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorstrings.Label = "Strings:";
 			this.colorstrings.Location = new System.Drawing.Point(15, 193);
 			this.colorstrings.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorstrings.MinimumSize = new System.Drawing.Size(100, 16);
 			this.colorstrings.Name = "colorstrings";
 			this.colorstrings.Size = new System.Drawing.Size(168, 21);
 			this.colorstrings.TabIndex = 7;
@@ -2044,6 +2080,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorscriptbackground.Label = "Background:";
 			this.colorscriptbackground.Location = new System.Drawing.Point(15, 49);
 			this.colorscriptbackground.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorscriptbackground.MinimumSize = new System.Drawing.Size(100, 16);
 			this.colorscriptbackground.Name = "colorscriptbackground";
 			this.colorscriptbackground.Size = new System.Drawing.Size(168, 21);
 			this.colorscriptbackground.TabIndex = 0;
@@ -2055,6 +2092,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorplaintext.Label = "Plain text:";
 			this.colorplaintext.Location = new System.Drawing.Point(15, 97);
 			this.colorplaintext.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorplaintext.MinimumSize = new System.Drawing.Size(100, 16);
 			this.colorplaintext.Name = "colorplaintext";
 			this.colorplaintext.Size = new System.Drawing.Size(168, 21);
 			this.colorplaintext.TabIndex = 2;
@@ -2066,6 +2104,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorcomments.Label = "Comments:";
 			this.colorcomments.Location = new System.Drawing.Point(15, 121);
 			this.colorcomments.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorcomments.MinimumSize = new System.Drawing.Size(100, 16);
 			this.colorcomments.Name = "colorcomments";
 			this.colorcomments.Size = new System.Drawing.Size(168, 21);
 			this.colorcomments.TabIndex = 3;
@@ -2077,6 +2116,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorlinenumbers.Label = "Line numbers:";
 			this.colorlinenumbers.Location = new System.Drawing.Point(15, 73);
 			this.colorlinenumbers.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorlinenumbers.MinimumSize = new System.Drawing.Size(100, 16);
 			this.colorlinenumbers.Name = "colorlinenumbers";
 			this.colorlinenumbers.Size = new System.Drawing.Size(168, 21);
 			this.colorlinenumbers.TabIndex = 1;
@@ -2088,6 +2128,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorkeywords.Label = "Functions:";
 			this.colorkeywords.Location = new System.Drawing.Point(15, 145);
 			this.colorkeywords.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorkeywords.MinimumSize = new System.Drawing.Size(100, 16);
 			this.colorkeywords.Name = "colorkeywords";
 			this.colorkeywords.Size = new System.Drawing.Size(168, 21);
 			this.colorkeywords.TabIndex = 4;
@@ -2099,6 +2140,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorliterals.Label = "Numbers:";
 			this.colorliterals.Location = new System.Drawing.Point(15, 217);
 			this.colorliterals.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorliterals.MinimumSize = new System.Drawing.Size(100, 16);
 			this.colorliterals.Name = "colorliterals";
 			this.colorliterals.Size = new System.Drawing.Size(168, 21);
 			this.colorliterals.TabIndex = 5;
@@ -2110,6 +2152,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorconstants.Label = "Constants:";
 			this.colorconstants.Location = new System.Drawing.Point(15, 241);
 			this.colorconstants.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorconstants.MinimumSize = new System.Drawing.Size(100, 16);
 			this.colorconstants.Name = "colorconstants";
 			this.colorconstants.Size = new System.Drawing.Size(168, 21);
 			this.colorconstants.TabIndex = 6;
@@ -2172,17 +2215,6 @@ namespace CodeImp.DoomBuilder.Windows
 			// browseScreenshotsFolderDialog
 			// 
 			this.browseScreenshotsFolderDialog.Description = "Select a Folder to Save Screenshots Into";
-			// 
-			// colorproperties
-			// 
-			this.colorproperties.BackColor = System.Drawing.Color.Transparent;
-			this.colorproperties.Label = "Keywords:";
-			this.colorproperties.Location = new System.Drawing.Point(15, 169);
-			this.colorproperties.MaximumSize = new System.Drawing.Size(10000, 23);
-			this.colorproperties.Name = "colorproperties";
-			this.colorproperties.Size = new System.Drawing.Size(168, 21);
-			this.colorproperties.TabIndex = 41;
-			this.colorproperties.ColorChanged += new System.EventHandler(this.colorproperties_ColorChanged);
 			// 
 			// PreferencesForm
 			// 
@@ -2417,5 +2449,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.ComboBox scriptcolorpresets;
 		private System.Windows.Forms.Label label23;
 		private CodeImp.DoomBuilder.Controls.ColorControl colorproperties;
+		private System.Windows.Forms.CheckBox keepfilterfocused;
 	}
 }
