@@ -84,6 +84,7 @@ namespace CodeImp.DoomBuilder.Config
 		private float filteranisotropy;
 		private bool showtexturesizes;
 		private bool locatetexturegroup; //mxd
+		private bool keeptexturefilterfocused; //mxd
 		private SplitLineBehavior splitlinebehavior; //mxd
 
 		//mxd. Script editor settings
@@ -183,6 +184,7 @@ namespace CodeImp.DoomBuilder.Config
 		public float FilterAnisotropy { get { return filteranisotropy; } internal set { filteranisotropy = value; } }
 		public bool ShowTextureSizes { get { return showtexturesizes; } internal set { showtexturesizes = value; } }
 		public bool LocateTextureGroup { get { return locatetexturegroup; } internal set { locatetexturegroup = value; } } //mxd
+		public bool KeepTextureFilterFocused { get { return keeptexturefilterfocused; } internal set { keeptexturefilterfocused = value; } } //mxd
 		public SplitLineBehavior SplitLineBehavior { get { return splitlinebehavior; } set { splitlinebehavior = value; } } //mxd
 
 		//mxd. Script editor settings
@@ -305,6 +307,7 @@ namespace CodeImp.DoomBuilder.Config
 				filteranisotropy = cfg.ReadSetting("filteranisotropy", 8.0f);
 				showtexturesizes = cfg.ReadSetting("showtexturesizes", true);
 				locatetexturegroup = cfg.ReadSetting("locatetexturegroup", true); //mxd
+				keeptexturefilterfocused = cfg.ReadSetting("keeptexturefilterfocused", true); //mxd
 				splitlinebehavior = (SplitLineBehavior) General.Clamp(cfg.ReadSetting("splitlinebehavior", 0), 0, 3); //mxd
 
 				//mxd. Script editor
@@ -408,6 +411,7 @@ namespace CodeImp.DoomBuilder.Config
 			cfg.WriteSetting("filteranisotropy", filteranisotropy);
 			cfg.WriteSetting("showtexturesizes", showtexturesizes);
 			cfg.WriteSetting("locatetexturegroup", locatetexturegroup); //mxd
+			cfg.WriteSetting("keeptexturefilterfocused", keeptexturefilterfocused); //mxd
 			cfg.WriteSetting("splitlinebehavior", (int)splitlinebehavior); //mxd
 
 			//mxd. Script editor
