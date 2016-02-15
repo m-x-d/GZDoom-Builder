@@ -28,9 +28,6 @@ namespace CodeImp.DoomBuilder.ZDoom
 	{
 		#region ================== Constants
 
-		// Some odd thing in ZDoom
-		private const string IGNORE_SPRITE = "TNT1A0";
-
 		#endregion
 
 		#region ================== Variables
@@ -169,9 +166,6 @@ namespace CodeImp.DoomBuilder.ZDoom
 						PatchStructure pt = new PatchStructure(parser);
 						if(parser.HasError) break;
 
-						//mxd. Let's ignore TNT1A0
-						if(pt.Name == IGNORE_SPRITE) break;
-
 						// Add the patch
 						patches.Add(pt);
 						break;
@@ -200,7 +194,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 				// Try parsing as value
 				if(!float.TryParse(strvalue, NumberStyles.Float, CultureInfo.InvariantCulture, out value))
 				{
-					parser.ReportError("Expected numeric value for property '" + propertyname + "'");
+					parser.ReportError("Expected numeric value for property \"" + propertyname + "\"");
 					return false;
 				}
 
@@ -209,7 +203,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			}
 
 			// Can't find the property value!
-			parser.ReportError("Expected a value for property '" + propertyname + "'");
+			parser.ReportError("Expected a value for property \"" + propertyname + "\"");
 			value = 0.0f;
 			return false;
 		}
@@ -225,7 +219,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 				// Try parsing as value
 				if(!int.TryParse(strvalue, NumberStyles.Integer, CultureInfo.InvariantCulture, out value))
 				{
-					parser.ReportError("Expected integral value for property '" + propertyname + "'");
+					parser.ReportError("Expected integral value for property \"" + propertyname + "\"");
 					return false;
 				}
 
@@ -234,7 +228,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			}
 
 			// Can't find the property value!
-			parser.ReportError("Expected a value for property '" + propertyname + "'");
+			parser.ReportError("Expected a value for property \"" + propertyname + "\"");
 			value = 0;
 			return false;
 		}

@@ -125,17 +125,26 @@ namespace CodeImp.DoomBuilder.Data
 				catch(Exception e)
 				{
 					// Unable to make bitmap
-					General.ErrorLogger.Add(ErrorType.Error, "Unable to load texture image '" + this.Name + "'. " + e.GetType().Name + ": " + e.Message);
+					General.ErrorLogger.Add(ErrorType.Error, "Unable to load texture image \"" + this.Name + "\". " + e.GetType().Name + ": " + e.Message);
 					loadfailed = true;
 				}
 
 				int missingpatches = 0; //mxd
 
-				if(!loadfailed)
+				if(patches.Count == 0) //mxd
+				{
+					// No patches!
+					General.ErrorLogger.Add(ErrorType.Warning, "No patches are defined for texture \"" + this.Name + "\"");
+					loadfailed = true;
+				}
+				else if(!loadfailed)
 				{
 					// Go for all patches
 					foreach(TexturePatch p in patches)
 					{
+						//mxd. Some patches (like "TNT1A0") should be skipped
+						if(p.skip) continue;
+						
 						// Get the patch data stream
 						Stream patchdata = General.Map.Data.GetPatchData(p.lumpname, p.haslongname);
 
@@ -161,7 +170,7 @@ namespace CodeImp.DoomBuilder.Data
 								if(reader is UnknownImageReader) 
 								{
 									// Data is in an unknown format!
-									General.ErrorLogger.Add(ErrorType.Error, "Patch lump '" + p.lumpname + "' data format could not be read, while loading texture '" + this.Name + "'");
+									General.ErrorLogger.Add(ErrorType.Error, "Patch lump \"" + p.lumpname + "\" data format could not be read, while loading texture \"" + this.Name + "\"");
 									missingpatches++; //mxd
 								}
 							}
@@ -175,7 +184,7 @@ namespace CodeImp.DoomBuilder.Data
 								catch(InvalidDataException)
 								{
 									// Data cannot be read!
-									General.ErrorLogger.Add(ErrorType.Error, "Patch lump '" + p.lumpname + "' data format could not be read, while loading texture '" + this.Name + "'");
+									General.ErrorLogger.Add(ErrorType.Error, "Patch lump \"" + p.lumpname + "\" data format could not be read, while loading texture \"" + this.Name + "\"");
 									missingpatches++; //mxd
 								}
 
@@ -217,7 +226,7 @@ namespace CodeImp.DoomBuilder.Data
 							}
 							
 							// Missing a patch lump!
-							General.ErrorLogger.Add(ErrorType.Error, "Missing patch lump '" + p.lumpname + "' while loading texture '" + this.Name + "'");
+							General.ErrorLogger.Add(ErrorType.Error, "Missing patch lump \"" + p.lumpname + "\" while loading texture \"" + this.Name + "\"");
 							missingpatches++; //mxd
 						}
 					}
@@ -282,7 +291,7 @@ namespace CodeImp.DoomBuilder.Data
 				}
 				catch(Exception e)
 				{
-					General.ErrorLogger.Add(ErrorType.Error, "Cannot lock image '" + p.lumpname + "' for alpha adjustment. " + e.GetType().Name + ": " + e.Message);
+					General.ErrorLogger.Add(ErrorType.Error, "Cannot lock image \"" + p.lumpname + "\" for alpha adjustment. " + e.GetType().Name + ": " + e.Message);
 				}
 
 				if(bmpdata != null)
@@ -347,7 +356,7 @@ namespace CodeImp.DoomBuilder.Data
 						}
 						catch(Exception e)
 						{
-							General.ErrorLogger.Add(ErrorType.Error, "Cannot lock texture '" + this.Name + "' to apply render style. " + e.GetType().Name + ": " + e.Message);
+							General.ErrorLogger.Add(ErrorType.Error, "Cannot lock texture \"" + this.Name + "\" to apply render style. " + e.GetType().Name + ": " + e.Message);
 						}
 
 						if(texturebmpdata != null)

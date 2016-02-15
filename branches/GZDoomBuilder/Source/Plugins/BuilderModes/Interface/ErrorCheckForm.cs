@@ -749,7 +749,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			foreach(ErrorResult result in results.SelectedItems) sb.AppendLine(result.ToString());
 
 			// Set on clipboard
-			Clipboard.SetText(sb.ToString());
+			Clipboard.SetDataObject(sb.ToString(), true, 5, 200); //mxd
 
 			// Inform the user
 			General.Interface.DisplayStatus(StatusType.Info, "Analysis results copied to clipboard.");
