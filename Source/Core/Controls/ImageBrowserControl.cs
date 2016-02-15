@@ -408,7 +408,7 @@ namespace CodeImp.DoomBuilder.Controls
 				int index = list.SelectedItems[0].Index;
 				int targetindex = -1;
 				ListViewGroup startgroup = list.SelectedItems[0].Group;
-				Rectangle startrect = list.GetItemRect(index, ItemBoundsPortion.Entire);
+				Rectangle startrect = list.SelectedItems[0].GetBounds(ItemBoundsPortion.Entire);
 				
 				switch(dir)
 				{
@@ -446,11 +446,15 @@ namespace CodeImp.DoomBuilder.Controls
 					case SearchDirectionHint.Up:
 						while(--index > -1)
 						{
-							Rectangle rect = list.GetItemRect(index, ItemBoundsPortion.Entire);
-							if(list.Items[index].Group == startgroup && rect.X == startrect.X && rect.Y < startrect.Y)
+							ListViewItem item = list.Items[index];
+							if(item != null && item.Group == startgroup)
 							{
-								targetindex = index;
-								break;
+								Rectangle rect = item.GetBounds(ItemBoundsPortion.Entire);
+								if(rect.X == startrect.X && rect.Y < startrect.Y)
+								{
+									targetindex = index;
+									break;
+								}
 							}
 						}
 						break;
@@ -461,11 +465,15 @@ namespace CodeImp.DoomBuilder.Controls
 						{
 							while(++index < list.Items.Count)
 							{
-								Rectangle rect = list.GetItemRect(index, ItemBoundsPortion.Entire);
-								if(list.Items[index].Group == startgroup && rect.X == startrect.X && rect.Y > startrect.Y)
+								ListViewItem item = list.Items[index];
+								if(item != null && item.Group == startgroup)
 								{
-									targetindex = index;
-									break;
+									Rectangle rect = item.GetBounds(ItemBoundsPortion.Entire);
+									if(rect.X == startrect.X && rect.Y > startrect.Y)
+									{
+										targetindex = index;
+										break;
+									}
 								}
 							}
 						}

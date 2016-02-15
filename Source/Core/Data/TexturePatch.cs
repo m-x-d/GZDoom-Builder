@@ -58,6 +58,7 @@ namespace CodeImp.DoomBuilder.Data
 		public readonly TexturePathRenderStyle style;
 		public readonly TexturePathBlendStyle blendstyle; //mxd
 		public readonly float tintammount;//mxd
+		public readonly bool skip; //mxd
 		
 		// Constructor for simple patches
 		public TexturePatch(string lumpname, int x, int y)
@@ -75,6 +76,7 @@ namespace CodeImp.DoomBuilder.Data
 			this.blendstyle = TexturePathBlendStyle.None;//mxd
 			this.tintammount = 0; //mxd
 			this.haslongname = false; //mxd
+			this.skip = false; //mxd
 		}
 
 		//mxd. Constructor for hires patches
@@ -93,6 +95,7 @@ namespace CodeImp.DoomBuilder.Data
 			this.blendstyle = patch.BlendStyle;
 			this.tintammount = patch.TintAmmount;
 			this.haslongname = (Path.GetFileNameWithoutExtension(this.lumpname) != this.lumpname);
+			this.skip = patch.Skip;
 
 			//mxd. Check data so we don't perform unneeded operations later on
 			if(this.alpha == 1.0f) 

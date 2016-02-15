@@ -109,6 +109,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Effect3DFloor e = new Effect3DFloor(this, sourcelinedef);
 			extrafloors.Add(e);
 			alleffects.Add(e);
+
+			//mxd. Extrafloor neighbours should be updated when extrafloor is changed
+			foreach(Sidedef sd in this.Sector.Sidedefs)
+			{
+				if(sd.Other != null && sd.Other.Sector != null)
+					AddUpdateSector(sd.Other.Sector, false);
+			}
 		}
 		
 		// Brightness level effect

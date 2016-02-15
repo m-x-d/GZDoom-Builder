@@ -35,14 +35,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Variables
 		
-		private BaseVisualMode mode;
+		private readonly BaseVisualMode mode;
 
 		private VisualFloor floor;
 		private VisualCeiling ceiling;
 		private List<VisualFloor> extrafloors;
 		private List<VisualCeiling> extraceilings;
-		private List<VisualFloor> extrabackfloors; //mxd
-		private List<VisualCeiling> extrabackceilings; //mxd
+		private readonly List<VisualFloor> extrabackfloors; //mxd
+		private readonly List<VisualCeiling> extrabackceilings; //mxd
 		private Dictionary<Sidedef, VisualSidedefParts> sides;
 		
 		// If this is set to true, the sector will be rebuilt after the action is performed.
@@ -130,7 +130,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(mode.VisualSectorExists(s.Key))
 				{
 					BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(s.Key);
-					vs.UpdateSectorGeometry(s.Value);
+					vs.Changed = true;
 				}
 			}
 			

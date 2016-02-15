@@ -30,23 +30,27 @@ namespace CodeImp.DoomBuilder.ZDoom
 	{
 		#region ================== Constants
 
+		// Some odd things in ZDoom
+		private const string IGNORE_SPRITE = "TNT1A0";
+
 		#endregion
 
 		#region ================== Variables
 
 		// Declaration
-		private string name;
-		private int offsetx;
-		private int offsety;
-		private bool flipx;
-		private bool flipy;
-		private float alpha;
-		private int rotation; //mxd
-		private TexturePathRenderStyle renderStyle; //mxd
-		private PixelColor blendColor; //mxd
-		private TexturePathBlendStyle blendStyle; //mxd
-		private float tintAmmount; //mxd
-		private static string[] renderStyles = { "copy", "translucent", "add", "subtract", "reversesubtract", "modulate", "copyalpha", "copynewalpha", "overlay" }; //mxd
+		private readonly string name;
+		private readonly int offsetx;
+		private readonly int offsety;
+		private readonly bool flipx;
+		private readonly bool flipy;
+		private readonly float alpha;
+		private readonly int rotation; //mxd
+		private readonly TexturePathRenderStyle renderStyle; //mxd
+		private readonly PixelColor blendColor; //mxd
+		private readonly TexturePathBlendStyle blendStyle; //mxd
+		private readonly float tintAmmount; //mxd
+		private static readonly string[] renderStyles = { "copy", "translucent", "add", "subtract", "reversesubtract", "modulate", "copyalpha", "copynewalpha", "overlay" }; //mxd
+		private readonly bool skip; //mxd
 
 		#endregion
 
@@ -63,6 +67,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		public TexturePathBlendStyle BlendStyle { get { return blendStyle; } }
 		public float TintAmmount { get { return tintAmmount; } }
 		public PixelColor BlendColor { get { return blendColor; } }//mxd
+		public bool Skip { get { return skip; } } //mxd
 
 		#endregion
 
@@ -87,6 +92,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 				parser.ReportError("Expected patch name");
 				return;
 			}
+
+			//mxd. Skip what must be skipped
+			skip = (name.ToUpperInvariant() == IGNORE_SPRITE);
 
 			//mxd
 			name = name.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
