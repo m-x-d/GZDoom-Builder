@@ -2215,9 +2215,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.statistics.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
 			this.statistics.ForeColor = System.Drawing.SystemColors.GrayText;
-			this.statistics.Location = new System.Drawing.Point(869, 2);
+			this.statistics.Location = new System.Drawing.Point(849, 2);
 			this.statistics.Name = "statistics";
-			this.statistics.Size = new System.Drawing.Size(118, 102);
+			this.statistics.Size = new System.Drawing.Size(138, 102);
 			this.statistics.TabIndex = 9;
 			this.statistics.Visible = false;
 			// 
