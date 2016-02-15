@@ -45,7 +45,7 @@
 			this.thingscount.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.thingscount.Location = new System.Drawing.Point(10, 81);
 			this.thingscount.Name = "thingscount";
-			this.thingscount.Size = new System.Drawing.Size(43, 14);
+			this.thingscount.Size = new System.Drawing.Size(63, 14);
 			this.thingscount.TabIndex = 19;
 			this.thingscount.Text = "0";
 			this.thingscount.TextAlign = System.Drawing.ContentAlignment.TopRight;
@@ -55,7 +55,7 @@
 			this.sectorscount.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.sectorscount.Location = new System.Drawing.Point(10, 62);
 			this.sectorscount.Name = "sectorscount";
-			this.sectorscount.Size = new System.Drawing.Size(43, 14);
+			this.sectorscount.Size = new System.Drawing.Size(63, 14);
 			this.sectorscount.TabIndex = 18;
 			this.sectorscount.Text = "0";
 			this.sectorscount.TextAlign = System.Drawing.ContentAlignment.TopRight;
@@ -65,7 +65,7 @@
 			this.sidedefscount.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.sidedefscount.Location = new System.Drawing.Point(10, 44);
 			this.sidedefscount.Name = "sidedefscount";
-			this.sidedefscount.Size = new System.Drawing.Size(43, 14);
+			this.sidedefscount.Size = new System.Drawing.Size(63, 14);
 			this.sidedefscount.TabIndex = 17;
 			this.sidedefscount.Text = "0";
 			this.sidedefscount.TextAlign = System.Drawing.ContentAlignment.TopRight;
@@ -75,7 +75,7 @@
 			this.linedefscount.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.linedefscount.Location = new System.Drawing.Point(10, 26);
 			this.linedefscount.Name = "linedefscount";
-			this.linedefscount.Size = new System.Drawing.Size(43, 14);
+			this.linedefscount.Size = new System.Drawing.Size(63, 14);
 			this.linedefscount.TabIndex = 16;
 			this.linedefscount.Text = "0";
 			this.linedefscount.TextAlign = System.Drawing.ContentAlignment.TopRight;
@@ -85,7 +85,7 @@
 			this.verticescount.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.verticescount.Location = new System.Drawing.Point(10, 8);
 			this.verticescount.Name = "verticescount";
-			this.verticescount.Size = new System.Drawing.Size(43, 14);
+			this.verticescount.Size = new System.Drawing.Size(63, 14);
 			this.verticescount.TabIndex = 15;
 			this.verticescount.Text = "0";
 			this.verticescount.TextAlign = System.Drawing.ContentAlignment.TopRight;
@@ -93,7 +93,7 @@
 			// thingslabel
 			// 
 			this.thingslabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.thingslabel.Location = new System.Drawing.Point(55, 81);
+			this.thingslabel.Location = new System.Drawing.Point(75, 81);
 			this.thingslabel.Name = "thingslabel";
 			this.thingslabel.Size = new System.Drawing.Size(60, 15);
 			this.thingslabel.TabIndex = 14;
@@ -102,7 +102,7 @@
 			// sectorslabel
 			// 
 			this.sectorslabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.sectorslabel.Location = new System.Drawing.Point(55, 62);
+			this.sectorslabel.Location = new System.Drawing.Point(75, 62);
 			this.sectorslabel.Name = "sectorslabel";
 			this.sectorslabel.Size = new System.Drawing.Size(60, 15);
 			this.sectorslabel.TabIndex = 13;
@@ -111,7 +111,7 @@
 			// sidedefslabel
 			// 
 			this.sidedefslabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.sidedefslabel.Location = new System.Drawing.Point(55, 44);
+			this.sidedefslabel.Location = new System.Drawing.Point(75, 44);
 			this.sidedefslabel.Name = "sidedefslabel";
 			this.sidedefslabel.Size = new System.Drawing.Size(60, 15);
 			this.sidedefslabel.TabIndex = 12;
@@ -120,7 +120,7 @@
 			// linedefslabel
 			// 
 			this.linedefslabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.linedefslabel.Location = new System.Drawing.Point(55, 26);
+			this.linedefslabel.Location = new System.Drawing.Point(75, 26);
 			this.linedefslabel.Name = "linedefslabel";
 			this.linedefslabel.Size = new System.Drawing.Size(60, 15);
 			this.linedefslabel.TabIndex = 11;
@@ -129,7 +129,7 @@
 			// verticeslabel
 			// 
 			this.verticeslabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.verticeslabel.Location = new System.Drawing.Point(55, 8);
+			this.verticeslabel.Location = new System.Drawing.Point(75, 8);
 			this.verticeslabel.Name = "verticeslabel";
 			this.verticeslabel.Size = new System.Drawing.Size(60, 15);
 			this.verticeslabel.TabIndex = 10;
@@ -151,7 +151,7 @@
 			this.Controls.Add(this.verticeslabel);
 			this.ForeColor = System.Drawing.SystemColors.GrayText;
 			this.Name = "StatisticsControl";
-			this.Size = new System.Drawing.Size(118, 104);
+			this.Size = new System.Drawing.Size(138, 104);
 			this.ResumeLayout(false);
 
 		}
