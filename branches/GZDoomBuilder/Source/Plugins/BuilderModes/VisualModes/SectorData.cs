@@ -210,7 +210,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 		
 		// This resets this sector data and all sectors that require updating after me
-		public void Reset()
+		/*public void Reset()
 		{
 			if(isupdating) return;
 			isupdating = true;
@@ -230,6 +230,35 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				SectorData sd = mode.GetSectorData(s.Key);
 				sd.Reset();
+			}
+
+			isupdating = false;
+		}*/
+
+		//mxd. This marks this sector data and all sector datas that require updating as not updated
+		public void Reset(bool resetneighbours)
+		{
+			if(isupdating) return;
+			isupdating = true;
+
+			// This is set to false so that this sector is rebuilt the next time it is needed!
+			updated = false;
+
+			// The visual sector associated is now outdated
+			if(mode.VisualSectorExists(sector))
+			{
+				BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(sector);
+				vs.Changed = true;
+			}
+
+			// Reset the sectors that depend on this sector
+			if(resetneighbours)
+			{
+				foreach(KeyValuePair<Sector, bool> s in updatesectors)
+				{
+					SectorData sd = mode.GetSectorDataEx(s.Key);
+					if(sd != null) sd.Reset(s.Value);
+				}
 			}
 
 			isupdating = false;

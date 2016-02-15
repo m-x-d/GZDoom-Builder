@@ -121,16 +121,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			changed = true;
 			
 			// Not sure what from this part we need, so commented out for now
-			SectorData data = GetSectorData();
-			data.Reset();
-			
-			// Update sectors that rely on this sector
-			foreach(KeyValuePair<Sector, bool> s in data.UpdateAlso)
+			SectorData data = mode.GetSectorDataEx(this.Sector); //mxd
+			if(data != null) //mxd
 			{
-				if(mode.VisualSectorExists(s.Key))
+				data.Reset(includeneighbours);
+
+				// Update sectors that rely on this sector
+				foreach(KeyValuePair<Sector, bool> s in data.UpdateAlso)
 				{
-					BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(s.Key);
-					vs.Changed = true;
+					if(mode.VisualSectorExists(s.Key))
+					{
+						BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(s.Key);
+						vs.Changed = true;
+					}
 				}
 			}
 			
