@@ -332,6 +332,12 @@
     <Compile Include="Interface\DrawGridOptionsPanel.Designer.cs">
       <DependentUpon>DrawGridOptionsPanel.cs</DependentUpon>
     </Compile>
+    <Compile Include="Interface\DrawLineOptionsPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Interface\DrawLineOptionsPanel.Designer.cs">
+      <DependentUpon>DrawLineOptionsPanel.cs</DependentUpon>
+    </Compile>
     <Compile Include="Interface\DrawRectangleOptionsPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -532,6 +538,9 @@
     <EmbeddedResource Include="Resources\DrawGeometryMode.png" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Interface\DrawLineOptionsPanel.resx">
+      <DependentUpon>DrawLineOptionsPanel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Interface\FilterSelectedThingsForm.resx">
       <DependentUpon>FilterSelectedThingsForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -593,6 +602,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\PlaceThings.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Repeat.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

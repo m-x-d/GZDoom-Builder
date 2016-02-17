@@ -565,6 +565,10 @@ namespace CodeImp.DoomBuilder.Editing
 			// Save mouse down position
 			mousedownpos = mousepos;
 			mousedownmappos = mousemappos;
+
+			//mxd. Looks like in some cases (very detailed maps / slow CPUs) OnMouseUp is not fired
+			// This is my attempt at fixing this...
+			if(e.Button == mousedragging) mousedragging = MouseButtons.None;
 			
 			// Let the base class know
 			base.OnMouseDown(e);

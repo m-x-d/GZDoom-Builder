@@ -29,6 +29,8 @@
 		private void InitializeComponent() 
 		{
 			this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+			this.continuousdrawing = new System.Windows.Forms.ToolStripButton();
+			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.subdivslabel = new System.Windows.Forms.ToolStripLabel();
 			this.subdivs = new CodeImp.DoomBuilder.Controls.ToolStripNumericUpDown();
 			this.spikinesslabel = new System.Windows.Forms.ToolStripLabel();
@@ -40,6 +42,8 @@
 			// toolStrip1
 			// 
 			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.continuousdrawing,
+            this.toolStripSeparator1,
             this.subdivslabel,
             this.subdivs,
             this.spikinesslabel,
@@ -51,11 +55,25 @@
 			this.toolStrip1.TabIndex = 6;
 			this.toolStrip1.Text = "toolStrip1";
 			// 
+			// continuousdrawing
+			// 
+			this.continuousdrawing.CheckOnClick = true;
+			this.continuousdrawing.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.Repeat;
+			this.continuousdrawing.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.continuousdrawing.Name = "continuousdrawing";
+			this.continuousdrawing.Size = new System.Drawing.Size(135, 22);
+			this.continuousdrawing.Text = "Continuous drawing";
+			this.continuousdrawing.CheckedChanged += new System.EventHandler(this.continuousdrawing_CheckedChanged);
+			// 
+			// toolStripSeparator1
+			// 
+			this.toolStripSeparator1.Name = "toolStripSeparator1";
+			this.toolStripSeparator1.Size = new System.Drawing.Size(6, 25);
+			// 
 			// subdivslabel
 			// 
-			this.subdivslabel.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.Gear;
 			this.subdivslabel.Name = "subdivslabel";
-			this.subdivslabel.Size = new System.Drawing.Size(53, 22);
+			this.subdivslabel.Size = new System.Drawing.Size(37, 22);
 			this.subdivslabel.Text = "Sides:";
 			// 
 			// subdivs
@@ -102,7 +120,7 @@
             0,
             0});
 			this.spikiness.Name = "spikiness";
-			this.spikiness.Size = new System.Drawing.Size(56, 20);
+			this.spikiness.Size = new System.Drawing.Size(56, 23);
 			this.spikiness.Text = "0";
 			this.spikiness.Value = new decimal(new int[] {
             0,
@@ -116,7 +134,7 @@
 			this.reset.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.Reset;
 			this.reset.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.reset.Name = "reset";
-			this.reset.Size = new System.Drawing.Size(23, 22);
+			this.reset.Size = new System.Drawing.Size(23, 20);
 			this.reset.Text = "Reset";
 			this.reset.Click += new System.EventHandler(this.reset_Click);
 			// 
@@ -142,5 +160,7 @@
 		private System.Windows.Forms.ToolStripLabel spikinesslabel;
 		private CodeImp.DoomBuilder.Controls.ToolStripNumericUpDown spikiness;
 		private System.Windows.Forms.ToolStripButton reset;
+		private System.Windows.Forms.ToolStripButton continuousdrawing;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
 	}
 }
