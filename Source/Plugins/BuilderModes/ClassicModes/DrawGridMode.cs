@@ -65,40 +65,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Events
 
-		public override void OnEngage() 
-		{
-			base.OnEngage();
-
-			// Create and setup settings panel
-			panel = new DrawGridOptionsPanel();
-			panel.MaxHorizontalSlices = (int)General.Map.FormatInterface.MaxCoordinate;
-			panel.MaxVerticalSlices = (int) General.Map.FormatInterface.MaxCoordinate;
-			panel.Triangulate = triangulate;
-			panel.LockToGrid = gridlock;
-			panel.HorizontalSlices = horizontalSlices - 1;
-			panel.VerticalSlices = verticalSlices - 1;
-			panel.HorizontalInterpolationMode = horizontalinterpolation;
-			panel.VerticalInterpolationMode = verticalinterpolation;
-
-			panel.OnValueChanged += OptionsPanelOnValueChanged;
-			panel.OnGridLockChanged += OptionsPanelOnOnGridLockChanged;
-
-			// Add docker
-			docker = new Docker("drawgrid", "Draw Grid", panel);
-			General.Interface.AddDocker(docker);
-			General.Interface.SelectDocker(docker);
-		}
-
-		public override void OnDisengage() 
-		{
-			base.OnDisengage();
-
-			// Remove docker
-			General.Interface.RemoveDocker(docker);
-			panel.Dispose();
-			panel = null;
-		}
-
 		override public void OnAccept() 
 		{
 			Cursor.Current = Cursors.AppStarting;
@@ -120,46 +86,59 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				List<Sector> newsectors = new List<Sector>();
 				foreach(DrawnVertex[] shape in gridpoints) 
 				{
-					if(!Tools.DrawLines(shape, true, BuilderPlug.Me.AutoAlignTextureOffsetsOnCreate)) 
+					if(Tools.DrawLines(shape, true, BuilderPlug.Me.AutoAlignTextureOffsetsOnCreate))
+					{
+						// Update cached values after each step...
+						General.Map.Map.Update();
+
+						newsectors.AddRange(General.Map.Map.GetMarkedSectors(true));
+
+						// Snap to map format accuracy
+						General.Map.Map.SnapAllToAccuracy();
+
+						// Clear selection
+						General.Map.Map.ClearAllSelected();
+
+						// Edit new sectors?
+						if(BuilderPlug.Me.EditNewSector && (newsectors.Count > 0))
+							General.Interface.ShowEditSectors(newsectors);
+
+						// Update the used textures
+						General.Map.Data.UpdateUsedTextures();
+
+						//mxd
+						General.Map.Renderer2D.UpdateExtraFloorFlag();
+
+						// Map is changed
+						General.Map.IsChanged = true;
+					}
+					else
 					{
 						// Drawing failed
 						// NOTE: I have to call this twice, because the first time only cancels this volatile mode
 						General.Map.UndoRedo.WithdrawUndo();
 						General.Map.UndoRedo.WithdrawUndo();
-						return;
 					}
-
-					// Update cached values after each step...
-					General.Map.Map.Update();
-
-					newsectors.AddRange(General.Map.Map.GetMarkedSectors(true));
 				}
-
-				// Snap to map format accuracy
-				General.Map.Map.SnapAllToAccuracy();
-
-				// Clear selection
-				General.Map.Map.ClearAllSelected();
-
-				// Edit new sectors?
-				if(BuilderPlug.Me.EditNewSector && (newsectors.Count > 0))
-					General.Interface.ShowEditSectors(newsectors);
-
-				// Update the used textures
-				General.Map.Data.UpdateUsedTextures();
-
-				//mxd
-				General.Map.Renderer2D.UpdateExtraFloorFlag();
-
-				// Map is changed
-				General.Map.IsChanged = true;
 			}
 
 			// Done
 			Cursor.Current = Cursors.Default;
 
-			// Return to original mode
-			General.Editing.ChangeMode(General.Editing.PreviousStableMode.Name);
+			if(continuousdrawing)
+			{
+				// Reset settings
+				points.Clear();
+				labels.Clear();
+
+				// Redraw display
+				General.Interface.RedrawDisplay();
+			}
+			else
+			{
+				// Return to original mode
+				General.Editing.ChangeMode(General.Editing.PreviousStableMode.Name);
+			}
 		}
 
 		private void OptionsPanelOnValueChanged(object sender, EventArgs eventArgs) 
@@ -469,6 +448,48 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			width = (int)(end.x - start.x);
 			height = (int)(end.y - start.y);
+		}
+
+		#endregion
+
+		#region ================== Settings panel
+
+		protected override void SetupInterface()
+		{
+			// Create and setup settings panel
+			panel = new DrawGridOptionsPanel();
+			panel.MaxHorizontalSlices = (int)General.Map.FormatInterface.MaxCoordinate;
+			panel.MaxVerticalSlices = (int)General.Map.FormatInterface.MaxCoordinate;
+			panel.Triangulate = triangulate;
+			panel.LockToGrid = gridlock;
+			panel.HorizontalSlices = horizontalSlices - 1;
+			panel.VerticalSlices = verticalSlices - 1;
+			panel.HorizontalInterpolationMode = horizontalinterpolation;
+			panel.VerticalInterpolationMode = verticalinterpolation;
+
+			panel.OnValueChanged += OptionsPanelOnValueChanged;
+			panel.OnGridLockChanged += OptionsPanelOnOnGridLockChanged;
+			panel.OnContinuousDrawingChanged += OnContinuousDrawingChanged;
+
+			panel.ContinuousDrawing = General.Settings.ReadPluginSetting("drawgridmode_continuousdrawing", false);
+		}
+
+		protected override void AddInterface()
+		{
+			// Add docker
+			docker = new Docker("drawgrid", "Draw Grid", panel);
+			General.Interface.AddDocker(docker);
+			General.Interface.SelectDocker(docker);
+		}
+
+		protected override void RemoveInterface()
+		{
+			General.Settings.WritePluginSetting("drawgridmode_continuousdrawing", panel.ContinuousDrawing);
+
+			// Remove docker
+			General.Interface.RemoveDocker(docker);
+			panel.Dispose();
+			panel = null;
 		}
 
 		#endregion

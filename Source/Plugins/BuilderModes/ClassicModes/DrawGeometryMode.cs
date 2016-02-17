@@ -65,10 +65,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected bool snaptonearest;	// CTRL to enable
 		protected bool snaptocardinaldirection; //mxd. ALT-SHIFT to enable
 		protected static bool usefourcardinaldirections;
+		protected bool continuousdrawing; //mxd. Restart after finishing drawing?
 
 		//mxd. Labels display style
 		protected bool labelshowangle = true;
 		protected bool labeluseoffset = true;
+
+		//mxd. Interface
+		private DrawLineOptionsPanel panel;
 		
 		#endregion
 
@@ -88,6 +92,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// No selection in this mode
 			General.Map.Map.ClearAllSelected();
 			General.Map.Map.ClearAllMarks(false);
+
+			//mxd
+			SetupInterface();
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -446,6 +453,29 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		#endregion
 
+		#region ================== mxd. Settings panel
+
+		protected virtual void SetupInterface()
+		{
+			//Add options docker
+			panel = new DrawLineOptionsPanel();
+			panel.OnContinuousDrawingChanged += OnContinuousDrawingChanged;
+			panel.ContinuousDrawing = General.Settings.ReadPluginSetting("drawlinesmode_continuousdrawing", false);
+		}
+
+		protected virtual void AddInterface()
+		{
+			panel.Register();
+		}
+
+		protected virtual void RemoveInterface()
+		{
+			General.Settings.WritePluginSetting("drawlinesmode_continuousdrawing", panel.ContinuousDrawing);
+			panel.Unregister();
+		}
+
+		#endregion
+
 		#region ================== Events
 
 		public override void OnHelp()
@@ -458,6 +488,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			base.OnEngage();
 			EnableAutoPanning();
+			AddInterface(); //mxd
 			renderer.SetPresentation(Presentation.Standard);
 			
 			// Set cursor
@@ -467,6 +498,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Disengaging
 		public override void OnDisengage()
 		{
+			RemoveInterface(); //mxd
 			base.OnDisengage();
 			DisableAutoPanning();
 		}
@@ -474,6 +506,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Cancelled
 		public override void OnCancel()
 		{
+			//mxd. Cannot leave this way when continuous drawing is enabled
+			if(continuousdrawing) return;
+			
 			// Cancel base class
 			base.OnCancel();
 			
@@ -505,44 +540,57 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Interface.DisplayStatus(StatusType.Action, "Created " + a + word + " drawing.");
 				
 				// Make the drawing
-				if(!Tools.DrawLines(points, true, BuilderPlug.Me.AutoAlignTextureOffsetsOnCreate)) //mxd
+				if(Tools.DrawLines(points, true, BuilderPlug.Me.AutoAlignTextureOffsetsOnCreate)) //mxd
+				{
+					// Snap to map format accuracy
+					General.Map.Map.SnapAllToAccuracy();
+
+					// Clear selection
+					General.Map.Map.ClearAllSelected();
+
+					// Update cached values
+					General.Map.Map.Update();
+
+					// Edit new sectors?
+					List<Sector> newsectors = General.Map.Map.GetMarkedSectors(true);
+					if(BuilderPlug.Me.EditNewSector && (newsectors.Count > 0))
+						General.Interface.ShowEditSectors(newsectors);
+
+					// Update the used textures
+					General.Map.Data.UpdateUsedTextures();
+
+					//mxd
+					General.Map.Renderer2D.UpdateExtraFloorFlag();
+
+					// Map is changed
+					General.Map.IsChanged = true;
+				}
+				else
 				{
 					// Drawing failed
 					// NOTE: I have to call this twice, because the first time only cancels this volatile mode
 					General.Map.UndoRedo.WithdrawUndo();
 					General.Map.UndoRedo.WithdrawUndo();
-					return;
 				}
-
-				// Snap to map format accuracy
-				General.Map.Map.SnapAllToAccuracy();
-				
-				// Clear selection
-				General.Map.Map.ClearAllSelected();
-				
-				// Update cached values
-				General.Map.Map.Update();
-
-				// Edit new sectors?
-				List<Sector> newsectors = General.Map.Map.GetMarkedSectors(true);
-				if(BuilderPlug.Me.EditNewSector && (newsectors.Count > 0))
-					General.Interface.ShowEditSectors(newsectors);
-				
-				// Update the used textures
-				General.Map.Data.UpdateUsedTextures();
-
-				//mxd
-				General.Map.Renderer2D.UpdateExtraFloorFlag();
-				
-				// Map is changed
-				General.Map.IsChanged = true;
 			}
 
 			// Done
 			Cursor.Current = Cursors.Default;
-			
-			// Return to original mode
-			General.Editing.ChangeMode(General.Editing.PreviousStableMode.Name);
+
+			if(continuousdrawing)
+			{
+				//mxd. Reset settings
+				points.Clear();
+				labels.Clear();
+
+				//mxd. Redraw display
+				General.Interface.RedrawDisplay();
+			}
+			else
+			{
+				// Return to original mode
+				General.Editing.ChangeMode(General.Editing.PreviousStableMode.Name);
+			}
 		}
 
 		// This redraws the display
@@ -593,6 +641,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if((snaptogrid != (General.Interface.ShiftState ^ General.Interface.SnapToGrid)) ||
 			   (snaptonearest != (General.Interface.CtrlState ^ General.Interface.AutoMerge)) ||
 			   (snaptocardinaldirection != (General.Interface.AltState && General.Interface.ShiftState))) Update();
+		}
+
+		//mxd
+		protected void OnContinuousDrawingChanged(object value, EventArgs e)
+		{
+			continuousdrawing = (bool)value;
 		}
 		
 		#endregion

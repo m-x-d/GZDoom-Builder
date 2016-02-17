@@ -30,22 +30,22 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Variables
 
 		protected HintLabel hintlabel;
-		protected int bevelWidth;
-		protected int currentBevelWidth;
+		protected int bevelwidth;
+		protected int currentbevelwidth;
 		protected int subdivisions;
 
-		protected int maxSubdivisions;
-		protected int minSubdivisions;
+		protected int maxsubdivisions;
+		protected int minsubdivisions;
 
-		protected string undoName = "Rectangle draw";
-		protected string shapeName = "rectangle";
+		protected string undoname = "Rectangle draw";
+		protected string shapename = "rectangle";
 
 		protected Vector2D start;
 		protected Vector2D end;
 		protected int width;
 		protected int height;
 
-		//interface
+		// Interface
 		private DrawRectangleOptionsPanel panel;
 
 		#endregion
@@ -56,7 +56,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			snaptogrid = true;
 			usefourcardinaldirections = true;
-			SetupInterface();
 		}
 
 		public override void Dispose() 
@@ -76,28 +75,31 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Settings panel
 
-		protected virtual void SetupInterface() 
+		protected override void SetupInterface() 
 		{
-			maxSubdivisions = 16;
+			maxsubdivisions = 16;
 
 			//Add options docker
 			panel = new DrawRectangleOptionsPanel();
-			panel.MaxSubdivisions = maxSubdivisions;
-			panel.MinSubdivisions = minSubdivisions;
+			panel.MaxSubdivisions = maxsubdivisions;
+			panel.MinSubdivisions = minsubdivisions;
 			panel.MaxBevelWidth = (int)General.Map.FormatInterface.MaxCoordinate;
 			panel.MinBevelWidth = (int)General.Map.FormatInterface.MinCoordinate;
 			panel.OnValueChanged += OptionsPanelOnValueChanged;
+			panel.OnContinuousDrawingChanged += OnContinuousDrawingChanged;
+			panel.ContinuousDrawing = General.Settings.ReadPluginSetting("drawrectanglemode_continuousdrawing", false);
 		}
 
-		protected virtual void AddInterface() 
+		protected override void AddInterface() 
 		{
 			panel.Register();
-			bevelWidth = panel.BevelWidth;
+			bevelwidth = panel.BevelWidth;
 			subdivisions = panel.Subdivisions;
 		}
 
-		protected virtual void RemoveInterface() 
+		protected override void RemoveInterface()
 		{
+			General.Settings.WritePluginSetting("drawrectanglemode_continuousdrawing", panel.ContinuousDrawing);
 			panel.Unregister();
 		}
 
@@ -178,47 +180,47 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			//no shape
 			if(pStart == pEnd) 
 			{
-				currentBevelWidth = 0;
+				currentbevelwidth = 0;
 				return new Vector2D[0];
 			}
 
 			//line
 			if(pEnd.x == pStart.x || pEnd.y == pStart.y) 
 			{
-				currentBevelWidth = 0;
+				currentbevelwidth = 0;
 				return new[] { pStart, pEnd };
 			}
 
 			//no corners
-			if(bevelWidth == 0) 
+			if(bevelwidth == 0) 
 			{
-				currentBevelWidth = 0;
+				currentbevelwidth = 0;
 				return new[] { pStart, new Vector2D((int)pStart.x, (int)pEnd.y), pEnd, new Vector2D((int)pEnd.x, (int)pStart.y), pStart };
 			}
 
 			//got corners. TODO: check point order
 			bool reverse = false;
-			currentBevelWidth = Math.Min(Math.Abs(bevelWidth), Math.Min(width, height) / 2);
+			currentbevelwidth = Math.Min(Math.Abs(bevelwidth), Math.Min(width, height) / 2);
 			
-			if(bevelWidth < 0) 
+			if(bevelwidth < 0) 
 			{
-				currentBevelWidth *= -1;
+				currentbevelwidth *= -1;
 				reverse = true;
 			}
 
 			List<Vector2D> shape = new List<Vector2D>();
 
 			//top-left corner
-			shape.AddRange(GetCornerPoints(pStart, currentBevelWidth, currentBevelWidth, !reverse));
+			shape.AddRange(GetCornerPoints(pStart, currentbevelwidth, currentbevelwidth, !reverse));
 
 			//top-right corner
-			shape.AddRange(GetCornerPoints(new Vector2D(pEnd.x, pStart.y), -currentBevelWidth, currentBevelWidth, reverse));
+			shape.AddRange(GetCornerPoints(new Vector2D(pEnd.x, pStart.y), -currentbevelwidth, currentbevelwidth, reverse));
 
 			//bottom-right corner
-			shape.AddRange(GetCornerPoints(pEnd, -currentBevelWidth, -currentBevelWidth, !reverse));
+			shape.AddRange(GetCornerPoints(pEnd, -currentbevelwidth, -currentbevelwidth, !reverse));
 
 			//bottom-left corner
-			shape.AddRange(GetCornerPoints(new Vector2D(pStart.x, pEnd.y), currentBevelWidth, -currentBevelWidth, reverse));
+			shape.AddRange(GetCornerPoints(new Vector2D(pStart.x, pEnd.y), currentbevelwidth, -currentbevelwidth, reverse));
 
 			//closing point
 			shape.Add(shape[0]);
@@ -229,7 +231,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private Vector2D[] GetCornerPoints(Vector2D startPoint, int bevel_width, int bevel_height, bool reverse) 
 		{
 			Vector2D[] points;
-			Vector2D center = (bevelWidth > 0 ? new Vector2D(startPoint.x + bevel_width, startPoint.y + bevel_height) : startPoint);
+			Vector2D center = (bevelwidth > 0 ? new Vector2D(startPoint.x + bevel_width, startPoint.y + bevel_height) : startPoint);
 			float curAngle = Angle2D.PI;
 
 			int steps = subdivisions + 2;
@@ -248,7 +250,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		protected virtual string GetHintText() 
 		{
-			return "BVL: " + bevelWidth + "; SUB: " + subdivisions;
+			return "BVL: " + bevelwidth + "; SUB: " + subdivisions;
 		}
 
 		//update top-left and bottom-right points, which define drawing shape
@@ -330,18 +332,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 
 		#region ================== Events
-
-		public override void OnEngage() 
-		{
-			base.OnEngage();
-			AddInterface();
-		}
-
-		public override void OnDisengage() 
-		{
-			RemoveInterface();
-			base.OnDisengage();
-		}
 		
 		override public void OnAccept() 
 		{
@@ -352,54 +342,67 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(points.Count > 4 || points.Count == 2) 
 			{
 				// Make undo for the draw
-				General.Map.UndoRedo.CreateUndo(undoName);
+				General.Map.UndoRedo.CreateUndo(undoname);
 
 				// Make an analysis and show info
 				string[] adjectives = new[] { "gloomy", "sad", "unhappy", "lonely", "troubled", "depressed", "heartsick", "glum", "pessimistic", "bitter", "downcast" }; // aaand my english vocabulary ends here :)
 				string word = adjectives[new Random().Next(adjectives.Length - 1)];
 				string a = (word[0] == 'u' ? "an " : "a ");
 
-				General.Interface.DisplayStatus(StatusType.Action, "Created " + a + word + " " + shapeName + ".");
+				General.Interface.DisplayStatus(StatusType.Action, "Created " + a + word + " " + shapename + ".");
 
 				// Make the drawing
-				if(!Tools.DrawLines(points, true, BuilderPlug.Me.AutoAlignTextureOffsetsOnCreate)) 
+				if(Tools.DrawLines(points, true, BuilderPlug.Me.AutoAlignTextureOffsetsOnCreate))
+				{
+					// Snap to map format accuracy
+					General.Map.Map.SnapAllToAccuracy();
+
+					// Clear selection
+					General.Map.Map.ClearAllSelected();
+
+					// Update cached values
+					General.Map.Map.Update();
+
+					// Edit new sectors?
+					List<Sector> newsectors = General.Map.Map.GetMarkedSectors(true);
+					if(BuilderPlug.Me.EditNewSector && (newsectors.Count > 0))
+						General.Interface.ShowEditSectors(newsectors);
+
+					// Update the used textures
+					General.Map.Data.UpdateUsedTextures();
+
+					//mxd
+					General.Map.Renderer2D.UpdateExtraFloorFlag();
+
+					// Map is changed
+					General.Map.IsChanged = true;
+				}
+				else
 				{
 					// Drawing failed
 					// NOTE: I have to call this twice, because the first time only cancels this volatile mode
 					General.Map.UndoRedo.WithdrawUndo();
 					General.Map.UndoRedo.WithdrawUndo();
-					return;
 				}
-
-				// Snap to map format accuracy
-				General.Map.Map.SnapAllToAccuracy();
-
-				// Clear selection
-				General.Map.Map.ClearAllSelected();
-
-				// Update cached values
-				General.Map.Map.Update();
-
-				// Edit new sectors?
-				List<Sector> newsectors = General.Map.Map.GetMarkedSectors(true);
-				if(BuilderPlug.Me.EditNewSector && (newsectors.Count > 0))
-					General.Interface.ShowEditSectors(newsectors);
-
-				// Update the used textures
-				General.Map.Data.UpdateUsedTextures();
-
-				//mxd
-				General.Map.Renderer2D.UpdateExtraFloorFlag();
-
-				// Map is changed
-				General.Map.IsChanged = true;
 			}
 
 			// Done
 			Cursor.Current = Cursors.Default;
 
-			// Return to original mode
-			General.Editing.ChangeMode(General.Editing.PreviousStableMode.Name);
+			if(continuousdrawing)
+			{
+				// Reset settings
+				points.Clear();
+				labels.Clear();
+
+				// Redraw display
+				General.Interface.RedrawDisplay();
+			}
+			else
+			{
+				// Return to original mode
+				General.Editing.ChangeMode(General.Editing.PreviousStableMode.Name);
+			}
 		}
 
 		public override void OnHelp() 
@@ -409,7 +412,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		private void OptionsPanelOnValueChanged(object sender, EventArgs eventArgs) 
 		{
-			bevelWidth = panel.BevelWidth;
+			bevelwidth = panel.BevelWidth;
 			subdivisions = panel.Subdivisions;
 			Update();
 		}
@@ -421,7 +424,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("increasesubdivlevel")]
 		protected virtual void IncreaseSubdivLevel() 
 		{
-			if(subdivisions < maxSubdivisions) 
+			if(subdivisions < maxsubdivisions) 
 			{
 				subdivisions++;
 				panel.Subdivisions = subdivisions;
@@ -432,7 +435,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("decreasesubdivlevel")]
 		protected virtual void DecreaseSubdivLevel() 
 		{
-			if(subdivisions > minSubdivisions) 
+			if(subdivisions > minsubdivisions) 
 			{
 				subdivisions--;
 				panel.Subdivisions = subdivisions;
@@ -443,10 +446,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("increasebevel")]
 		protected virtual void IncreaseBevel() 
 		{
-			if(points.Count < 2 || currentBevelWidth == bevelWidth || bevelWidth < 0) 
+			if(points.Count < 2 || currentbevelwidth == bevelwidth || bevelwidth < 0) 
 			{
-				bevelWidth = Math.Min(bevelWidth + General.Map.Grid.GridSize, panel.MaxBevelWidth);
-				panel.BevelWidth = bevelWidth;
+				bevelwidth = Math.Min(bevelwidth + General.Map.Grid.GridSize, panel.MaxBevelWidth);
+				panel.BevelWidth = bevelwidth;
 				Update();
 			}
 		}
@@ -454,10 +457,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("decreasebevel")]
 		protected virtual void DecreaseBevel() 
 		{
-			if(currentBevelWidth == bevelWidth || bevelWidth > 0) 
+			if(currentbevelwidth == bevelwidth || bevelwidth > 0) 
 			{
-				bevelWidth = Math.Max(bevelWidth - General.Map.Grid.GridSize, panel.MinBevelWidth);
-				panel.BevelWidth = bevelWidth;
+				bevelwidth = Math.Max(bevelwidth - General.Map.Grid.GridSize, panel.MinBevelWidth);
+				panel.BevelWidth = bevelwidth;
 				Update();
 			}
 		}

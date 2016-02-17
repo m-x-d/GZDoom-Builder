@@ -31,12 +31,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		private readonly HintLabel hintlabel;
 		private Curve curve;
-		private static int segmentLength = 32;
+		private static int segmentlength = 32;
 		private const int MIN_SEGMENT_LENGTH = 16;
 		private const int MAX_SEGMENT_LENGTH = 4096; //just some arbitrary number
 
-		//interface
-		private readonly DrawCurveOptionsPanel panel;
+		// Interface
+		private DrawCurveOptionsPanel panel;
 
 		#endregion
 
@@ -46,10 +46,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			hintlabel = new HintLabel(General.Colors.InfoLine);
 			labeluseoffset = false;
-
-			//Options docker
-			panel = new DrawCurveOptionsPanel(MIN_SEGMENT_LENGTH, MAX_SEGMENT_LENGTH);
-			panel.OnValueChanged += OptionsPanelOnValueChanged;
 		}
 
 		public override void Dispose() 
@@ -102,7 +98,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					List<Vector2D> verts = new List<Vector2D>();
 					for(int i = 0; i < points.Count; i++) verts.Add(points[i].pos);
 					if(curp.pos != verts[verts.Count-1]) verts.Add(curp.pos);
-					curve = CurveTools.CurveThroughPoints(verts, 0.5f, 0.75f, segmentLength);
+					curve = CurveTools.CurveThroughPoints(verts, 0.5f, 0.75f, segmentlength);
 
 					// Render lines
 					for(int i = 1; i < curve.Shape.Count; i++) 
@@ -151,7 +147,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				Vector2D start = new Vector2D(mousemappos.x + (32 / renderer.Scale), mousemappos.y - (16 / renderer.Scale));
 				Vector2D end = new Vector2D(mousemappos.x + (96 / renderer.Scale), mousemappos.y);
 				hintlabel.Move(start, end);
-				hintlabel.Text = "SEG LEN: " + segmentLength;
+				hintlabel.Text = "SEG LEN: " + segmentlength;
 				renderer.RenderText(hintlabel.TextLabel);
 
 				// Done
@@ -171,7 +167,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnEngage();
 
 			//setup settings panel
-			panel.SegmentLength = segmentLength;
+			panel.SegmentLength = segmentlength;
 			panel.Register();
 		}
 
@@ -245,55 +241,62 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 
 				// Make the drawing
-				if(!Tools.DrawLines(verts, true, BuilderPlug.Me.AutoAlignTextureOffsetsOnCreate)) //mxd
+				if(Tools.DrawLines(verts, true, BuilderPlug.Me.AutoAlignTextureOffsetsOnCreate)) //mxd
+				{
+					// Snap to map format accuracy
+					General.Map.Map.SnapAllToAccuracy();
+
+					// Clear selection
+					General.Map.Map.ClearAllSelected();
+
+					// Update cached values
+					General.Map.Map.Update();
+
+					// Edit new sectors?
+					List<Sector> newsectors = General.Map.Map.GetMarkedSectors(true);
+					if(BuilderPlug.Me.EditNewSector && (newsectors.Count > 0))
+						General.Interface.ShowEditSectors(newsectors);
+
+					// Update the used textures
+					General.Map.Data.UpdateUsedTextures();
+
+					//mxd
+					General.Map.Renderer2D.UpdateExtraFloorFlag();
+
+					// Map is changed
+					General.Map.IsChanged = true;
+				}
+				else
 				{
 					// Drawing failed
 					// NOTE: I have to call this twice, because the first time only cancels this volatile mode
 					General.Map.UndoRedo.WithdrawUndo();
 					General.Map.UndoRedo.WithdrawUndo();
-					return;
 				}
-
-				// Snap to map format accuracy
-				General.Map.Map.SnapAllToAccuracy();
-
-				// Clear selection
-				General.Map.Map.ClearAllSelected();
-
-				// Update cached values
-				General.Map.Map.Update();
-
-				// Edit new sectors?
-				List<Sector> newsectors = General.Map.Map.GetMarkedSectors(true);
-				if(BuilderPlug.Me.EditNewSector && (newsectors.Count > 0))
-					General.Interface.ShowEditSectors(newsectors);
-
-				// Update the used textures
-				General.Map.Data.UpdateUsedTextures();
-
-				//mxd
-				General.Map.Renderer2D.UpdateExtraFloorFlag();
-
-				// Map is changed
-				General.Map.IsChanged = true;
 			}
 
 			// Done
 			Cursor.Current = Cursors.Default;
 
-			// Return to original mode
-			General.Editing.ChangeMode(General.Editing.PreviousStableMode.Name);
-		}
+			if(continuousdrawing)
+			{
+				// Reset settings
+				points.Clear();
+				labels.Clear();
 
-		public override void OnDisengage() 
-		{
-			base.OnDisengage();
-			panel.Unregister();
+				// Redraw display
+				General.Interface.RedrawDisplay();
+			}
+			else
+			{
+				// Return to original mode
+				General.Editing.ChangeMode(General.Editing.PreviousStableMode.Name);
+			}
 		}
 
 		private void OptionsPanelOnValueChanged(object sender, EventArgs eventArgs) 
 		{
-			segmentLength = panel.SegmentLength;
+			segmentlength = panel.SegmentLength;
 			Update();
 		}
 
@@ -304,18 +307,42 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#endregion
 
+		#region ================== mxd. Settings panel
+
+		protected override void SetupInterface()
+		{
+			// Add options docker
+			panel = new DrawCurveOptionsPanel(MIN_SEGMENT_LENGTH, MAX_SEGMENT_LENGTH);
+			panel.OnValueChanged += OptionsPanelOnValueChanged;
+			panel.OnContinuousDrawingChanged += OnContinuousDrawingChanged;
+			panel.ContinuousDrawing = General.Settings.ReadPluginSetting("drawcurvemode_continuousdrawing", false);
+		}
+
+		protected override void AddInterface()
+		{
+			panel.Register();
+		}
+
+		protected override void RemoveInterface()
+		{
+			General.Settings.WritePluginSetting("drawcurvemode_continuousdrawing", panel.ContinuousDrawing);
+			panel.Unregister();
+		}
+
+		#endregion
+
 		#region ================== Actions
 
 		[BeginAction("increasesubdivlevel")]
 		protected virtual void IncreaseSubdivLevel() 
 		{
-			if(segmentLength < MAX_SEGMENT_LENGTH) 
+			if(segmentlength < MAX_SEGMENT_LENGTH) 
 			{
-				int increment = Math.Max(MIN_SEGMENT_LENGTH, segmentLength / 32 * 16);
-				segmentLength += increment;
+				int increment = Math.Max(MIN_SEGMENT_LENGTH, segmentlength / 32 * 16);
+				segmentlength += increment;
 
-				if(segmentLength > MAX_SEGMENT_LENGTH) segmentLength = MAX_SEGMENT_LENGTH;
-				panel.SegmentLength = segmentLength;
+				if(segmentlength > MAX_SEGMENT_LENGTH) segmentlength = MAX_SEGMENT_LENGTH;
+				panel.SegmentLength = segmentlength;
 				Update();
 			}
 		}
@@ -323,13 +350,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("decreasesubdivlevel")]
 		protected virtual void DecreaseSubdivLevel() 
 		{
-			if(segmentLength > MIN_SEGMENT_LENGTH) 
+			if(segmentlength > MIN_SEGMENT_LENGTH) 
 			{
-				int increment = Math.Max(MIN_SEGMENT_LENGTH, segmentLength / 32 * 16);
-				segmentLength -= increment;
+				int increment = Math.Max(MIN_SEGMENT_LENGTH, segmentlength / 32 * 16);
+				segmentlength -= increment;
 
-				if(segmentLength < MIN_SEGMENT_LENGTH) segmentLength = MIN_SEGMENT_LENGTH;
-				panel.SegmentLength = segmentLength;
+				if(segmentlength < MIN_SEGMENT_LENGTH) segmentlength = MIN_SEGMENT_LENGTH;
+				panel.SegmentLength = segmentlength;
 				Update();
 			}
 		}

@@ -6,17 +6,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	internal partial class DrawEllipseOptionsPanel : UserControl
 	{
 		public event EventHandler OnValueChanged;
-		private bool blockEvents;
+		public event EventHandler OnContinuousDrawingChanged;
+		private bool blockevents;
 
-		private static int aquityValue;
-		private static int subdivsValue = 8;
+		private static int aquityvalue;
+		private static int subdivsvalue = 8;
 
-		public int Spikiness { get { return (int)spikiness.Value; } set { blockEvents = true; spikiness.Value = value; blockEvents = false; } }
-		public int Subdivisions { get { return (int)subdivs.Value; } set { blockEvents = true; subdivs.Value = value; blockEvents = false; } }
+		public int Spikiness { get { return (int)spikiness.Value; } set { blockevents = true; spikiness.Value = value; blockevents = false; } }
+		public int Subdivisions { get { return (int)subdivs.Value; } set { blockevents = true; subdivs.Value = value; blockevents = false; } }
 		public int MaxSubdivisions { get { return (int)subdivs.Maximum; } set { subdivs.Maximum = value; } }
 		public int MinSubdivisions { get { return (int)subdivs.Minimum;  } set { subdivs.Minimum = value; } }
 		public int MaxSpikiness { get { return (int)spikiness.Maximum; } set { spikiness.Maximum = value; } }
 		public int MinSpikiness { get { return (int)spikiness.Minimum; } set { spikiness.Minimum = value; } }
+		public bool ContinuousDrawing { get { return continuousdrawing.Checked; } set { continuousdrawing.Checked = value; } }
 		
 		public DrawEllipseOptionsPanel() 
 		{
@@ -25,11 +27,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		public void Register() 
 		{
-			spikiness.Value = aquityValue;
-			subdivs.Value = subdivsValue;
+			spikiness.Value = aquityvalue;
+			subdivs.Value = subdivsvalue;
 			spikiness.ValueChanged += ValueChanged;
 			subdivs.ValueChanged += ValueChanged;
 
+			General.Interface.AddButton(continuousdrawing);
+			General.Interface.AddButton(toolStripSeparator1);
 			General.Interface.AddButton(subdivslabel);
 			General.Interface.AddButton(subdivs);
 			General.Interface.AddButton(spikinesslabel);
@@ -44,21 +48,28 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.RemoveButton(spikinesslabel);
 			General.Interface.RemoveButton(subdivs);
 			General.Interface.RemoveButton(subdivslabel);
+			General.Interface.RemoveButton(toolStripSeparator1);
+			General.Interface.RemoveButton(continuousdrawing);
 		}
 
 		private void ValueChanged(object sender, EventArgs e) 
 		{
-			aquityValue = (int)spikiness.Value;
-			subdivsValue = (int)subdivs.Value;
-			if(!blockEvents && OnValueChanged != null) OnValueChanged(this, EventArgs.Empty);
+			aquityvalue = (int)spikiness.Value;
+			subdivsvalue = (int)subdivs.Value;
+			if(!blockevents && OnValueChanged != null) OnValueChanged(this, EventArgs.Empty);
 		}
 
 		private void reset_Click(object sender, EventArgs e) 
 		{
-			blockEvents = true;
+			blockevents = true;
 			spikiness.Value = 0;
-			blockEvents = false;
+			blockevents = false;
 			subdivs.Value = subdivs.Minimum;
+		}
+
+		private void continuousdrawing_CheckedChanged(object sender, EventArgs e)
+		{
+			if(OnContinuousDrawingChanged != null) OnContinuousDrawingChanged(continuousdrawing.Checked, EventArgs.Empty);
 		}
 	}
 }

@@ -2043,7 +2043,7 @@ namespace CodeImp.DoomBuilder.Windows
 			buttontogglefog.Visible = General.Settings.GZToolbarGZDoom && maploaded;
 			buttontogglesky.Visible = General.Settings.GZToolbarGZDoom && maploaded;
 			buttontoggleeventlines.Visible = General.Settings.GZToolbarGZDoom && maploaded;
-			buttontogglevisualvertices.Visible = General.Settings.GZToolbarGZDoom && maploaded;
+			buttontogglevisualvertices.Visible = General.Settings.GZToolbarGZDoom && maploaded && General.Map.UDMF;
 			separatorgzmodes.Visible = General.Settings.GZToolbarGZDoom && maploaded;
 
 			//mxd. Show/hide additional panels

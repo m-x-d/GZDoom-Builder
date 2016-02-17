@@ -41,10 +41,13 @@
 			this.interphmode = new System.Windows.Forms.ComboBox();
 			this.label3 = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
+			this.groupBox3 = new System.Windows.Forms.GroupBox();
+			this.continuousdrawing = new System.Windows.Forms.CheckBox();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.slicesV)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.slicesH)).BeginInit();
 			this.groupBox2.SuspendLayout();
+			this.groupBox3.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// groupBox1
@@ -190,10 +193,34 @@
 			this.label4.TabIndex = 15;
 			this.label4.Text = "Horizontal";
 			// 
+			// groupBox3
+			// 
+			this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox3.Controls.Add(this.continuousdrawing);
+			this.groupBox3.Location = new System.Drawing.Point(3, 225);
+			this.groupBox3.Name = "groupBox3";
+			this.groupBox3.Size = new System.Drawing.Size(200, 55);
+			this.groupBox3.TabIndex = 11;
+			this.groupBox3.TabStop = false;
+			this.groupBox3.Text = "Additional options";
+			// 
+			// continuousdrawing
+			// 
+			this.continuousdrawing.AutoSize = true;
+			this.continuousdrawing.Location = new System.Drawing.Point(20, 24);
+			this.continuousdrawing.Name = "continuousdrawing";
+			this.continuousdrawing.Size = new System.Drawing.Size(119, 17);
+			this.continuousdrawing.TabIndex = 15;
+			this.continuousdrawing.Text = "Continuous drawing";
+			this.continuousdrawing.UseVisualStyleBackColor = true;
+			this.continuousdrawing.CheckedChanged += new System.EventHandler(this.continuousdrawing_CheckedChanged);
+			// 
 			// DrawGridOptionsPanel
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+			this.Controls.Add(this.groupBox3);
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.groupBox1);
 			this.Name = "DrawGridOptionsPanel";
@@ -204,6 +231,8 @@
 			((System.ComponentModel.ISupportInitialize)(this.slicesH)).EndInit();
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox2.PerformLayout();
+			this.groupBox3.ResumeLayout(false);
+			this.groupBox3.PerformLayout();
 			this.ResumeLayout(false);
 
 		}
@@ -223,5 +252,7 @@
 		private System.Windows.Forms.ComboBox interphmode;
 		private System.Windows.Forms.Label label3;
 		private System.Windows.Forms.Label label4;
+		private System.Windows.Forms.GroupBox groupBox3;
+		private System.Windows.Forms.CheckBox continuousdrawing;
 	}
 }
