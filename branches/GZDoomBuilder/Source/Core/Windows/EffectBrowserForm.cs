@@ -36,15 +36,19 @@ namespace CodeImp.DoomBuilder.Windows
 		private ComboBox[] options;
 		private Label[] optionlbls;
 		private ListViewItem[] allItems; //mxd
+		private readonly bool addanyeffect;
 		
 		// Properties
 		public int SelectedEffect { get { return selectedeffect; } }
 		
 		// Constructor
-		public EffectBrowserForm(int effect)
+		public EffectBrowserForm(int effect, bool addanyeffect)
 		{
 			// Initialize
 			InitializeComponent();
+
+			//mxd. Show "Any action" item?
+			this.addanyeffect = addanyeffect;
 
 			// Make array references for controls
 			options = new[] { option0, option1, option2, option3, option4, option5, option6, option7 };
@@ -82,7 +86,11 @@ namespace CodeImp.DoomBuilder.Windows
 							foreach(GeneralizedBit ab in o.Bits)
 							{
 								// Select this setting if matches
-								if((effect & ab.Index) == ab.Index) options[i].SelectedItem = ab;
+								if((effect & ab.Index) == ab.Index)
+								{
+									options[i].SelectedItem = ab;
+									break; //mxd
+								}
 							}
 						}
 					}
@@ -106,9 +114,10 @@ namespace CodeImp.DoomBuilder.Windows
 		
 		// This browses for an effect
 		// Returns the new effect or the same effect when cancelled
-		public static int BrowseEffect(IWin32Window owner, int effect)
+		public static int BrowseEffect(IWin32Window owner, int effect) { return BrowseEffect(owner, effect, false); } //mxd
+		public static int BrowseEffect(IWin32Window owner, int effect, bool addanyeffect)
 		{
-			EffectBrowserForm f = new EffectBrowserForm(effect);
+			EffectBrowserForm f = new EffectBrowserForm(effect, addanyeffect);
 			if(f.ShowDialog(owner) == DialogResult.OK) effect = f.SelectedEffect;
 			f.Dispose();
 			return effect;
@@ -118,6 +127,18 @@ namespace CodeImp.DoomBuilder.Windows
 		private bool CreateEffects(int effect) 
 		{
 			bool selected = false;
+
+			if(addanyeffect)
+			{
+				ListViewItem n = effects.Items.Add("-1");
+				n.SubItems.Add("Any effect");
+				n.Tag = new SectorEffectInfo(-1, "Any effect", false, false);
+				if(effect == -1)
+				{
+					selected = true;
+					n.Selected = true;
+				}
+			}
 
 			foreach(SectorEffectInfo si in General.Map.Config.SortedSectorEffects) 
 			{
@@ -180,6 +201,10 @@ namespace CodeImp.DoomBuilder.Windows
 						// Add selected bits
 						if(options[i].SelectedIndex > -1)
 							selectedeffect += (options[i].SelectedItem as GeneralizedBit).Index;
+					}
+					else
+					{
+						break; //mxd
 					}
 				}
 			}

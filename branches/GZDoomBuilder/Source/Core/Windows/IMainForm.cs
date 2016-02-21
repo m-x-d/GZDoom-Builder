@@ -87,12 +87,24 @@ namespace CodeImp.DoomBuilder.Windows
 		/// </summary>
 		/// <returns>Returns the new action or the same action when cancelled</returns>
 		int BrowseLinedefActions(IWin32Window owner, int initialvalue);
-		
+
+		/// <summary>
+		/// This browses the lindef types
+		/// </summary>
+		/// <returns>Returns the new action or the same action when cancelled</returns>
+		int BrowseLinedefActions(IWin32Window owner, int initialvalue, bool addanyaction);
+
 		/// <summary>
 		/// This browses sector effects
 		/// </summary>
 		/// <returns>Returns the new effect or the same effect when cancelled</returns>
 		int BrowseSectorEffect(IWin32Window owner, int initialvalue);
+		
+		/// <summary>
+		/// This browses sector effects
+		/// </summary>
+		/// <returns>Returns the new effect or the same effect when cancelled</returns>
+		int BrowseSectorEffect(IWin32Window owner, int initialvalue, bool addanyeffect);
 
 		/// <summary>
 		/// This browses for a texture

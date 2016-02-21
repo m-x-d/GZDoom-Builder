@@ -131,7 +131,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Browse replacement clicked
 		private void browsereplace_Click(object sender, EventArgs e)
 		{
-			replaceinput.Text = newfinder.Browse(replaceinput.Text);
+			replaceinput.Text = newfinder.BrowseReplace(replaceinput.Text);
 		}
 
 		//mxd
