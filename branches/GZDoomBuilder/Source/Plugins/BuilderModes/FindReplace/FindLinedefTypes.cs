@@ -173,8 +173,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Go for all linedefs
 				foreach(Linedef l in list)
 				{
-					// Action matches?
-					if((action == -1 && l.Action < 1) || l.Action != action && !BitsMatch(l.Action, expectedbits)) continue;
+					// Action matches? -1 means any action (mxd)
+					if((action == -1 && l.Action == 0) || (action > -1 && (l.Action != action && !BitsMatch(l.Action, expectedbits)))) continue;
 
 					bool match = true;
 					string argtext = "";

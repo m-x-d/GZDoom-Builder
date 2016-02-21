@@ -101,8 +101,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Go for all sectors
 				foreach(Sector s in list)
 				{
-					// Effect matches?
-					if((effect == -1 && s.Effect > 0) || s.Effect == effect || BitsMatch(s.Effect, expectedbits))
+					// Effect matches? -1 means any effect (mxd)
+					if((effect == -1 && s.Effect > 0) || (effect > -1 && (s.Effect == effect || BitsMatch(s.Effect, expectedbits))))
 					{
 						// Replace
 						if(replace) s.Effect = replaceeffect;
