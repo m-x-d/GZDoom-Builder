@@ -60,16 +60,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			return General.Map.FormatInterface.HasThingAction;
 		}
 
-
 		// This is called when the browse button is pressed
 		public override string Browse(string initialvalue)
 		{
 			int action;
 			int.TryParse(initialvalue, out action);
-			action = General.Interface.BrowseLinedefActions(BuilderPlug.Me.FindReplaceForm, action);
-			return action.ToString();
+			return General.Interface.BrowseLinedefActions(BuilderPlug.Me.FindReplaceForm, action, true).ToString();
 		}
 
+		// This is called when the browse replace button is pressed
+		public override string BrowseReplace(string initialvalue)
+		{
+			int action;
+			int.TryParse(initialvalue, out action);
+			return General.Interface.BrowseLinedefActions(BuilderPlug.Me.FindReplaceForm, action).ToString();
+		}
 
 		// This is called to perform a search (and replace)
 		// Returns a list of items to show in the results list
@@ -172,8 +177,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Go for all things
 				foreach(Thing t in list) 
 				{
-					// Action matches?
-					if(t.Action != action) continue;
+					// Action matches? -1 means any action (mxd)
+					if((action == -1 && t.Action == 0) || (action > -1 && t.Action != action)) continue;
 
 					bool match = true;
 					string argtext = "";
