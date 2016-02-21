@@ -79,6 +79,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			return string.Empty;
 		}
+
+		//mxd. This is called when the replace browse button is pressed
+		public virtual string BrowseReplace(string initialvalue)
+		{
+			return Browse(initialvalue);
+		}
 		
 		// This is called to perform a search (and replace)
 		// Must return a list of items to show in the results list

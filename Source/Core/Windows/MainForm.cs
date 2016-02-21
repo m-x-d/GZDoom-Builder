@@ -1492,8 +1492,7 @@ namespace CodeImp.DoomBuilder.Windows
 			if(General.Map != null)
 			{
 				// Make the new items list
-				ToolStripItem[] items = new ToolStripItem[(General.Map.Config.Skills.Count * 2) + General.Map.ConfigSettings.TestEngines.Count + 2]; //mxd
-				int addindex = 0;
+				List<ToolStripItem> items = new List<ToolStripItem>(General.Map.Config.Skills.Count * 2 + General.Map.ConfigSettings.TestEngines.Count + 2);
 				
 				// Positive skills are with monsters
 				foreach(SkillInfo si in General.Map.Config.Skills)
@@ -1503,12 +1502,11 @@ namespace CodeImp.DoomBuilder.Windows
 					menuitem.Click += TestSkill_Click;
 					menuitem.Tag = si.Index;
 					menuitem.Checked = (General.Settings.TestMonsters && (General.Map.ConfigSettings.TestSkill == si.Index));
-					items[addindex++] = menuitem;
+					items.Add(menuitem);
 				}
 
 				// Add seperator
-				items[addindex] = new ToolStripSeparator { Padding = new Padding(0, 3, 0, 3) };
-				addindex++;
+				items.Add(new ToolStripSeparator { Padding = new Padding(0, 3, 0, 3) });
 
 				// Negative skills are without monsters
 				foreach(SkillInfo si in General.Map.Config.Skills)
@@ -1518,26 +1516,26 @@ namespace CodeImp.DoomBuilder.Windows
 					menuitem.Click += TestSkill_Click;
 					menuitem.Tag = -si.Index;
 					menuitem.Checked = (!General.Settings.TestMonsters && (General.Map.ConfigSettings.TestSkill == si.Index));
-					items[addindex++] = menuitem;
+					items.Add(menuitem);
 				}
 
 				//mxd. Add seperator
-				items[addindex] = new ToolStripSeparator { Padding = new Padding(0, 3, 0, 3) };
-				addindex++;
+				items.Add(new ToolStripSeparator { Padding = new Padding(0, 3, 0, 3) });
 
 				//mxd. Add test engines
 				for(int i = 0; i < General.Map.ConfigSettings.TestEngines.Count; i++)
 				{
+					if(General.Map.ConfigSettings.TestEngines[i].TestProgramName == EngineInfo.DEFAULT_ENGINE_NAME) continue;
 					ToolStripMenuItem menuitem = new ToolStripMenuItem(General.Map.ConfigSettings.TestEngines[i].TestProgramName);
 					menuitem.Image = General.Map.ConfigSettings.TestEngines[i].TestProgramIcon;
 					menuitem.Click += TestEngine_Click;
 					menuitem.Tag = i;
 					menuitem.Checked = (i == General.Map.ConfigSettings.CurrentEngineIndex);
-					items[addindex++] = menuitem;
+					items.Add(menuitem);
 				}
 				
 				// Add to list
-				buttontest.DropDownItems.AddRange(items);
+				buttontest.DropDownItems.AddRange(items.ToArray());
 			}
 		}
 
@@ -3658,14 +3656,28 @@ namespace CodeImp.DoomBuilder.Windows
 		// Returns the new action or the same action when cancelled
 		public int BrowseLinedefActions(IWin32Window owner, int initialvalue)
 		{
-			return ActionBrowserForm.BrowseAction(owner, initialvalue);
+			return ActionBrowserForm.BrowseAction(owner, initialvalue, false);
+		}
+		
+		//mxd. This browses the lindef types
+		// Returns the new action or the same action when cancelled
+		public int BrowseLinedefActions(IWin32Window owner, int initialvalue, bool addanyaction)
+		{
+			return ActionBrowserForm.BrowseAction(owner, initialvalue, addanyaction);
 		}
 
 		// This browses sector effects
 		// Returns the new effect or the same effect when cancelled
 		public int BrowseSectorEffect(IWin32Window owner, int initialvalue)
 		{
-			return EffectBrowserForm.BrowseEffect(owner, initialvalue);
+			return EffectBrowserForm.BrowseEffect(owner, initialvalue, false);
+		}
+
+		//mxd. This browses sector effects
+		// Returns the new effect or the same effect when cancelled
+		public int BrowseSectorEffect(IWin32Window owner, int initialvalue, bool addanyeffect)
+		{
+			return EffectBrowserForm.BrowseEffect(owner, initialvalue, addanyeffect);
 		}
 
 		// This browses thing types

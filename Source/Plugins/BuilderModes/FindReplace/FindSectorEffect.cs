@@ -36,8 +36,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Variables
 
-		private List<int> generalizedbits;
-
 		#endregion
 
 		#region ================== Properties
@@ -48,22 +46,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Constructor / Destructor
 
-		//mxd
-		public FindSectorEffect() 
-		{
-			if(!General.Map.Config.GeneralizedEffects) return;
-
-			// Get all them generalized bits
-			generalizedbits = new List<int>();
-			foreach(GeneralizedOption option in General.Map.Config.GenEffectOptions) 
-			{
-				foreach(GeneralizedBit bit in option.Bits) 
-				{
-					if(bit.Index > 0) generalizedbits.Add(bit.Index);
-				}
-			}
-		}
-
 		#endregion
 
 		#region ================== Methods
@@ -73,10 +55,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			int effect;
 			int.TryParse(initialvalue, out effect);
-			effect = General.Interface.BrowseSectorEffect(BuilderPlug.Me.FindReplaceForm, effect);
-			return effect.ToString();
+			return General.Interface.BrowseSectorEffect(BuilderPlug.Me.FindReplaceForm, effect, true).ToString();
 		}
 
+		//mxd. This is called when the browse replace button is pressed
+		public override string BrowseReplace(string initialvalue)
+		{
+			int effect;
+			int.TryParse(initialvalue, out effect);
+			return General.Interface.BrowseSectorEffect(BuilderPlug.Me.FindReplaceForm, effect).ToString();
+		}
 
 		// This is called to perform a search (and replace)
 		// Returns a list of items to show in the results list
@@ -114,7 +102,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				foreach(Sector s in list)
 				{
 					// Effect matches?
-					if(s.Effect == effect || BitsMatch(s.Effect, expectedbits))
+					if((effect == -1 && s.Effect > 0) || s.Effect == effect || BitsMatch(s.Effect, expectedbits))
 					{
 						// Replace
 						if(replace) s.Effect = replaceeffect;

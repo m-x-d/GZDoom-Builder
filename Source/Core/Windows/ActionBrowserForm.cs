@@ -36,15 +36,19 @@ namespace CodeImp.DoomBuilder.Windows
 		private readonly ComboBox[] options;
 		private readonly Label[] optionlbls;
 		private readonly TreeNode[] allNodes; //mxd
+		private readonly bool addanyaction; //mxd
 		
 		// Properties
 		public int SelectedAction { get { return selectedaction; } }
 		
 		// Constructor
-		public ActionBrowserForm(int action)
+		public ActionBrowserForm(int action, bool addanyaction)
 		{
 			// Initialize
 			InitializeComponent();
+
+			//mxd. Show "Any action" item?
+			this.addanyaction = addanyaction;
 
 			// Make array references for controls
 			options = new[] { option0, option1, option2, option3, option4, option5, option6, option7 };
@@ -94,12 +98,24 @@ namespace CodeImp.DoomBuilder.Windows
 								foreach(GeneralizedBit ab in sc.Options[i].Bits)
 								{
 									// Select this setting if matches
-									if((actionbits & ab.Index) == ab.Index) options[i].SelectedItem = ab;
+									if((actionbits & ab.Index) == ab.Index)
+									{
+										options[i].SelectedItem = ab;
+										break; //mxd
+									}
 								}
+							}
+							else
+							{
+								break; //mxd
 							}
 						}
 					}
 				}
+
+				//mxd. Make sure something is selected
+				if(category.SelectedIndex == -1 && category.Items.Count > 0)
+					category.SelectedIndex = 0;
 			}
 			else
 			{
@@ -110,9 +126,10 @@ namespace CodeImp.DoomBuilder.Windows
 		
 		// This browses for an action
 		// Returns the new action or the same action when cancelled
-		public static int BrowseAction(IWin32Window owner, int action)
+		public static int BrowseAction(IWin32Window owner, int action) { return BrowseAction(owner, action, false); } //mxd
+		public static int BrowseAction(IWin32Window owner, int action, bool addanyaction)
 		{
-			ActionBrowserForm f = new ActionBrowserForm(action);
+			ActionBrowserForm f = new ActionBrowserForm(action, addanyaction);
 			if(f.ShowDialog(owner) == DialogResult.OK) action = f.SelectedAction;
 			f.Dispose();
 			return action;
@@ -123,6 +140,19 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			actions.BeginUpdate();
 			actions.ShowLines = true;
+
+			// Add "Any action" item?
+			if(addanyaction)
+			{
+				TreeNode aan = actions.Nodes.Add("Any action");
+				aan.Tag = new LinedefActionInfo(-1, "Any action", false, false);
+				if(action == -1)
+				{
+					actions.SelectedNode = aan;
+					aan.EnsureVisible();
+				}
+			}
+
 			foreach(LinedefActionCategory ac in General.Map.Config.ActionCategories)
 			{
 				// Empty category names will not be created
