@@ -22,7 +22,7 @@ namespace CodeImp.DoomBuilder.IO
 		
 		#region ================== Variables
 
-		private Configuration config;
+		private readonly Configuration config;
 
 		#endregion
 
@@ -83,13 +83,13 @@ namespace CodeImp.DoomBuilder.IO
 
 		#region ================== Writing
 
-		public void Write(MapSet map, Stream stream, bool longtexturenames) 
+		public void Write(MapSet map, Stream stream) 
 		{
-			Write(map.Vertices, map.Linedefs, map.Sidedefs, map.Sectors, map.Things, stream, longtexturenames);
+			Write(map.Vertices, map.Linedefs, map.Sidedefs, map.Sectors, map.Things, stream);
 		}
 
 		public void Write(ICollection<Vertex> vertices, ICollection<Linedef> linedefs, ICollection<Sidedef> sidedefs, 
-						  ICollection<Sector> sectors, ICollection<Thing> things, Stream stream, bool longtexturenames) 
+						  ICollection<Sector> sectors, ICollection<Thing> things, Stream stream) 
 		{
 			// Create collections
 			Dictionary<Vertex, int> vertexids = new Dictionary<Vertex, int>();
@@ -104,7 +104,10 @@ namespace CodeImp.DoomBuilder.IO
 			BinaryWriter writer = new BinaryWriter(stream);
 			
 			// Write the data structures to stream
-			writer.Write(longtexturenames); //mxd
+			writer.Write(vertices.Count); //mxd
+			writer.Write(sectors.Count); //mxd
+			writer.Write(linedefs.Count); //mxd
+			writer.Write(things.Count); //mxd
 			WriteVertices(vertices, writer);
 			WriteSectors(sectors, writer);
 			WriteSidedefs(sidedefs, writer, sectorids);
@@ -292,8 +295,8 @@ namespace CodeImp.DoomBuilder.IO
 					writer.Write(s.ToCharArray());
 				} 
 				else //WOLOLO! ERRORS!
-				{ 
-					General.ErrorLogger.Add(ErrorType.Error, "Unable to copy Universal Field '" + f.Key + "' to clipboard: unknown value type '" + f.Value.Type + "'!");
+				{
+					General.ErrorLogger.Add(ErrorType.Error, "Unable to copy Universal Field \"" + f.Key + "\" to clipboard: unknown value type \"" + f.Value.Type + "\"!");
 				}
 			}
 		}
