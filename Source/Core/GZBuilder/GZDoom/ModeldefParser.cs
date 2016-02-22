@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
+using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.ZDoom;
 using CodeImp.DoomBuilder.GZBuilder.Data;
 
@@ -8,6 +9,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 {
 	internal class ModeldefParser : ZDTextParser
 	{
+		internal override ScriptType ScriptType { get { return ScriptType.MODELDEF; } }
+
 		private readonly Dictionary<string, int> actorsbyclass;
 		internal Dictionary<string, int> ActorsByClass { get { return actorsbyclass; } }
 
@@ -21,10 +24,19 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 		}
 
 		//should be called after all decorate actors are parsed 
-		public override bool Parse(Stream stream, string sourcefilename, bool clearerrors)
+		public override bool Parse(TextResourceData data, bool clearerrors)
 		{
 			entries = new Dictionary<string, ModelData>(StringComparer.Ordinal);
-			if(!base.Parse(stream, sourcefilename, clearerrors)) return false;
+
+			//mxd. Already parsed?
+			if(!base.AddTextResource(data))
+			{
+				if(clearerrors) ClearError();
+				return true;
+			}
+
+			// Cannot process?
+			if(!base.Parse(data, clearerrors)) return false;
 
 			// Continue until at the end of the stream
 			while(SkipWhitespace(true)) 
@@ -35,21 +47,15 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 					token = StripTokenQuotes(token).ToLowerInvariant();
 					if(token == "model") //model structure start
 					{ 
-						//find classname
+						// Find classname
 						SkipWhitespace(true);
 						string displayclassname = StripTokenQuotes(ReadToken(ActorStructure.ACTOR_CLASS_SPECIAL_TOKENS));
 						string classname = displayclassname.ToLowerInvariant();
 
 						if(!string.IsNullOrEmpty(classname) && !entries.ContainsKey(classname)) 
 						{
-							//now find opening brace
-							SkipWhitespace(true);
-							token = ReadToken();
-							if(token != "{") 
-							{
-								General.ErrorLogger.Add(ErrorType.Error, "Unexpected token found in '" + sourcefilename + "' at line " + GetCurrentLineNumber() + ": expected '{', but got '" + token + "'");
-								continue; //something wrong with modeldef declaration, continue to next one
-							}
+							// Now find opening brace
+							if(!NextTokenIs("{")) return false;
 
 							ModeldefStructure mds = new ModeldefStructure();
 							if(mds.Parse(this, displayclassname) && mds.ModelData != null)
@@ -102,11 +108,6 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 				if(token == "}") scopelevel--;
 			}
 			while(scopelevel > 0);
-		}
-
-		protected override string GetLanguageType()
-		{
-			return "MODELDEF";
 		}
 	}
 }

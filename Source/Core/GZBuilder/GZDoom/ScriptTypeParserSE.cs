@@ -1,7 +1,8 @@
-﻿#region ================== Namespaces
+﻿
+#region ================== Namespaces
 
-using System.IO;
 using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.ZDoom;
 
 #endregion
@@ -11,17 +12,25 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 {
 	internal sealed class ScriptTypeParserSE :ZDTextParser 
 	{
-		private ScriptType scriptType;
-		internal ScriptType ScriptType { get { return scriptType; } }
+		internal override ScriptType ScriptType { get { return scripttype; } }
+		private ScriptType scripttype;
 
 		internal ScriptTypeParserSE() 
 		{
-			scriptType = ScriptType.UNKNOWN;
+			scripttype = ScriptType.UNKNOWN;
 		}
 		
-		public override bool Parse(Stream stream, string sourcefilename, bool clearerrors) 
+		public override bool Parse(TextResourceData data, bool clearerrors) 
 		{
-			if(!base.Parse(stream, sourcefilename, clearerrors)) return false;
+			//mxd. Already parsed?
+			if(!base.AddTextResource(data))
+			{
+				if(clearerrors) ClearError();
+				return true;
+			}
+
+			// Cannot process?
+			if(!base.Parse(data, clearerrors)) return false;
 
 			// Continue until at the end of the stream
 			while(SkipWhitespace(true)) 
@@ -41,7 +50,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						
 						if(token == "{") 
 						{
-							scriptType = ScriptType.MODELDEF;
+							scripttype = ScriptType.MODELDEF;
 							return true;
 						}
 
@@ -57,7 +66,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						
 						if(token == "{") 
 						{
-							scriptType = ScriptType.ACS;
+							scripttype = ScriptType.ACS;
 							return true;
 						}
 
@@ -72,7 +81,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 
 						if(token == ":" || token == "{" || token == "REPLACES") 
 						{
-							scriptType = ScriptType.DECORATE;
+							scripttype = ScriptType.DECORATE;
 							return true;
 						}
 
@@ -81,7 +90,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 
 						if(token == "{") 
 						{
-							scriptType = ScriptType.DECORATE;
+							scripttype = ScriptType.DECORATE;
 							return true;
 						}
 					}
@@ -89,11 +98,6 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 			}
 
 			return false;
-		}
-
-		protected override string GetLanguageType()
-		{
-			return "SCRIPT TYPE CHECKER";
 		}
 	}
 }

@@ -1,7 +1,9 @@
-﻿#region ================== Namespaces
+﻿using CodeImp.DoomBuilder.Data;
+
+#region ================== Namespaces
 
 using System.Collections.Generic;
-using System.IO;
+using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.GZBuilder.Data;
 using CodeImp.DoomBuilder.ZDoom;
 
@@ -13,6 +15,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 {
 	internal sealed class ModeldefParserSE : ZDTextParser 
 	{
+		internal override ScriptType ScriptType { get { return ScriptType.MODELDEF; } }
+		
 		private readonly List<ScriptItem> models;
 		internal List<ScriptItem> Models { get { return models; } }
 
@@ -21,9 +25,17 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 			models = new List<ScriptItem>();
 		}
 
-		public override bool Parse(Stream stream, string sourcefilename, bool clearerrors) 
+		public override bool Parse(TextResourceData data, bool clearerrors) 
 		{
-			if(!base.Parse(stream, sourcefilename, clearerrors)) return false;
+			//mxd. Already parsed?
+			if(!base.AddTextResource(data))
+			{
+				if(clearerrors) ClearError();
+				return true;
+			}
+
+			// Cannot process?
+			if(!base.Parse(data, clearerrors)) return false;
 
 			// Continue until at the end of the stream
 			while(SkipWhitespace(true)) 
@@ -32,7 +44,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 				if(string.IsNullOrEmpty(token) || token.ToUpperInvariant() != "MODEL") continue; 
 
 				SkipWhitespace(true);
-				int startpos = (int)stream.Position;
+				int startpos = (int)datastream.Position;
 				string modelname = ReadToken();
 
 				SkipWhitespace(true);
@@ -54,11 +66,6 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 			// Sort nodes
 			models.Sort(ScriptItem.SortByName);
 			return true;
-		}
-
-		protected override string GetLanguageType()
-		{
-			return "MODELDEF";
 		}
 	}
 }

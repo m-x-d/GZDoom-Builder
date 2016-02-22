@@ -123,7 +123,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private bool shift, ctrl, alt;
 		private MouseButtons mousebuttons;
 		private MouseInput mouseinput;
-		private Rectangle originalclip;
 		private bool mouseexclusive;
 		private int mouseexclusivebreaklevel;
 		
@@ -1246,7 +1245,7 @@ namespace CodeImp.DoomBuilder.Windows
 				mouseinput = new MouseInput(this);
 
 				// Lock and hide the mouse in window
-				originalclip = Cursor.Clip;
+				Cursor.Position = display.PointToScreen(new Point(display.ClientSize.Width / 2, display.ClientSize.Height / 2)); //mxd
 				Cursor.Clip = display.RectangleToScreen(display.ClientRectangle);
 				Cursor.Hide();
 			}
@@ -1263,7 +1262,7 @@ namespace CodeImp.DoomBuilder.Windows
 				mouseinput = null;
 
 				// Release and show the mouse
-				Cursor.Clip = originalclip;
+				Cursor.Clip = Rectangle.Empty;
 				Cursor.Position = display.PointToScreen(new Point(display.ClientSize.Width / 2, display.ClientSize.Height / 2));
 				Cursor.Show();
 			}

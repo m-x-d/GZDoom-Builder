@@ -1,7 +1,8 @@
 ﻿#region ================== Namespaces
 
 using System.Collections.Generic;
-using System.IO;
+using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.Data;
 
 #endregion
 
@@ -14,6 +15,12 @@ namespace CodeImp.DoomBuilder.ZDoom
 		private readonly List<string> sequences;
 		private readonly List<string> sequencegroups;
 		private readonly HashSet<string> seqencenames;
+
+		#endregion
+
+		#region ================== Properties
+
+		internal override ScriptType ScriptType { get { return ScriptType.SNDSEQ; } }
 
 		#endregion
 
@@ -31,12 +38,20 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 		#region ================== Parsing
 
-		public override bool Parse(Stream stream, string sourcefilename, bool clearerrors)
+		public override bool Parse(TextResourceData data, bool clearerrors)
 		{
-			if(!base.Parse(stream, sourcefilename, clearerrors)) return false;
+			//mxd. Already parsed?
+			if(!base.AddTextResource(data))
+			{
+				if(clearerrors) ClearError();
+				return true;
+			}
+
+			// Cannot process?
+			if(!base.Parse(data, clearerrors)) return false;
 			
-			char[] dots = new[] { ':' };
-			char[] brace = new[] { '[' };
+			char[] dots = { ':' };
+			char[] brace = { '[' };
 
 			// Continue until at the end of the stream
 			while(SkipWhitespace(true))
@@ -71,7 +86,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			return true;
 		}
 
-		internal List<string> GetSoundSequences() 
+		internal string[] GetSoundSequences() 
 		{
 			List<string> result = new List<string>(sequencegroups.Count + sequences.Count);
 			
@@ -83,12 +98,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			result.AddRange(sequences);
 
 			// Return the collection
-			return result;
-		}
-
-		protected override string GetLanguageType()
-		{
-			return "SNDSEQ";
+			return result.ToArray();
 		}
 
 		#endregion

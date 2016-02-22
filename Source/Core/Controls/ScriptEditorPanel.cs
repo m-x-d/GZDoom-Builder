@@ -129,6 +129,10 @@ namespace CodeImp.DoomBuilder.Controls
 						if(General.Map.Options.ScriptLumpSettings[maplumpinfo.Name].IsActiveTab) 
 							activetab = t;
 					}
+					else
+					{
+						t.SetDefaultViewSettings();
+					}
 					
 					t.OnTextChanged += tabpage_OnLumpTextChanged; //mxd
 					t.Scintilla.UpdateUI += scintilla_OnUpdateUI; //mxd
@@ -145,6 +149,10 @@ namespace CodeImp.DoomBuilder.Controls
 						t.SetViewSettings(General.Map.Options.ScriptLumpSettings[maplumpinfo.Name]);
 						if(General.Map.Options.ScriptLumpSettings[maplumpinfo.Name].IsActiveTab)
 							activetab = t;
+					}
+					else
+					{
+						t.SetDefaultViewSettings();
 					}
 					
 					t.OnTextChanged += tabpage_OnLumpTextChanged; //mxd
@@ -176,6 +184,7 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				int scriptsindex = GetTabPageIndex("SCRIPTS");
 				tabs.SelectedIndex = (scriptsindex == -1 ? 0 : scriptsindex);
+				activetab = tabs.TabPages[tabs.SelectedIndex] as ScriptDocumentTab;
 			}
 
 			//mxd. Apply quick search settings
@@ -183,8 +192,12 @@ namespace CodeImp.DoomBuilder.Controls
 			searchwholeword.Checked = matchwholeword;
 			searchbox_TextChanged(this, EventArgs.Empty);
 			
-			// If the map has remembered any compile errors, then show them
-			ShowErrors(General.Map.Errors);
+			//mxd. If the map or script navigator has any compile errors, show them
+			if(activetab != null)
+			{
+				List<CompilerError> errors = activetab.UpdateNavigator();
+				ShowErrors(General.Map.Errors.Count > 0 ? General.Map.Errors : errors);
+			}
 			
 			// Done
 			UpdateToolbar(true);
@@ -839,7 +852,27 @@ namespace CodeImp.DoomBuilder.Controls
 				//mxd. Add new tabs
 				foreach(string name in openfile.FileNames)
 				{
-					if(!openedfiles.Contains(name)) OpenFile(name);
+					if(!openedfiles.Contains(name))
+					{
+						ScriptFileDocumentTab t = OpenFile(name);
+						
+						// Apply document settings
+						bool settingsfound = false;
+						foreach(ScriptDocumentSettings settings in General.Map.Options.ScriptFileSettings.Values)
+						{
+							// Does this file exist?
+							if(settings.Filename == t.Filename)
+							{
+								// Apply stored settings
+								t.SetViewSettings(settings);
+								settingsfound = true;
+								break;
+							}
+						}
+
+						// Apply default settings
+						if(!settingsfound) t.SetDefaultViewSettings();
+					}
 				}
 
 				// Select the last new item
@@ -909,6 +942,10 @@ namespace CodeImp.DoomBuilder.Controls
 		// A tab is selected
 		private void tabs_Selecting(object sender, TabControlCancelEventArgs e)
 		{
+			//mxd. Update script navigator
+			ScriptDocumentTab tab = e.TabPage as ScriptDocumentTab;
+			if(tab != null) ShowErrors(tab.UpdateNavigator());
+
 			UpdateToolbar(true);
 		}
 		

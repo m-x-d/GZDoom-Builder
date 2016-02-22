@@ -20,11 +20,66 @@ using System.Collections.Generic;
 using System.IO;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.GZBuilder.Data;
+using CodeImp.DoomBuilder.ZDoom;
 
 #endregion
 
 namespace CodeImp.DoomBuilder.Data
 {
+	//mxd
+	public class TextResourceData
+	{
+		private Stream stream;
+		private DataReader source;
+		private DataLocation sourcelocation;
+		private string filename;
+		private int lumpindex;
+		private bool trackable;
+
+		internal Stream Stream { get { return stream; } }
+		internal DataReader Source { get { return source; } }
+		internal DataLocation SourceLocation { get { return sourcelocation; } }
+		internal string Filename { get { return filename; } } // Lump name/Filename
+		internal int LumpIndex { get { return lumpindex; } } // Lump index in a WAD
+		internal bool Trackable { get { return trackable; } set { trackable = value; } } // When false, wont be added to DataManager.TextResources
+
+
+		internal TextResourceData(DataReader Source, Stream Stream, string Filename, bool Trackable)
+		{
+			source = Source;
+			sourcelocation = Source.Location;
+			stream = Stream;
+			filename = Filename;
+			trackable = Trackable;
+
+			WADReader reader = source as WADReader;
+			if(reader != null)
+				lumpindex = reader.WadFile.FindLumpIndex(filename);
+			else
+				lumpindex = -1;
+		}
+
+		internal TextResourceData(DataReader Source, Stream Stream, string Filename, int LumpIndex, bool Trackable)
+		{
+			source = Source;
+			sourcelocation = Source.Location;
+			stream = Stream;
+			filename = Filename;
+			lumpindex = LumpIndex;
+			trackable = Trackable;
+		}
+
+		internal TextResourceData(Stream Stream, DataLocation Location, string Filename, bool Trackable)
+		{
+			source = null;
+			sourcelocation = Location;
+			stream = Stream;
+			filename = Filename;
+			lumpindex = -1;
+			trackable = Trackable;
+		}
+	}
+	
 	internal abstract class DataReader
 	{
 		#region ================== Constants
@@ -114,77 +169,80 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Textures
 
 		// When implemented, this should read the patch names
-		public virtual PatchNames LoadPatchNames() { return null; }
+		public abstract PatchNames LoadPatchNames();
 
 		// When implemented, this returns the patch lump
-		public virtual Stream GetPatchData(string pname, bool longname) { return null; }
+		public abstract Stream GetPatchData(string pname, bool longname);
 
 		// When implemented, this returns the texture lump
-		public virtual Stream GetTextureData(string pname, bool longname) { return null; }
+		public abstract Stream GetTextureData(string pname, bool longname);
 
 		// When implemented, this loads the textures
-		public virtual ICollection<ImageData> LoadTextures(PatchNames pnames) { return null; }
+		public abstract IEnumerable<ImageData> LoadTextures(PatchNames pnames, Dictionary<string, TexturesParser> cachedparsers);
 		
 		#endregion
 
 		#region ================== Flats
 		
 		// When implemented, this loads the flats
-		public virtual ICollection<ImageData> LoadFlats() { return null; }
+		public abstract IEnumerable<ImageData> LoadFlats(Dictionary<string, TexturesParser> cachedparsers);
 
 		// When implemented, this returns the flat lump
-		public virtual Stream GetFlatData(string pname, bool longname) { return null; }
+		public abstract Stream GetFlatData(string pname, bool longname);
 		
 		#endregion
 		
 		#region ================== Sprites
 
 		// When implemented, this loads the sprites
-		public virtual ICollection<ImageData> LoadSprites() { return null; }
+		public abstract IEnumerable<ImageData> LoadSprites(Dictionary<string, TexturesParser> cachedparsers);
 		
 		// When implemented, this returns the sprite lump
-		public virtual Stream GetSpriteData(string pname) { return null; }
+		public abstract Stream GetSpriteData(string pname);
 
 		// When implemented, this checks if the given sprite lump exists
-		public virtual bool GetSpriteExists(string pname) { return false; }
+		public abstract bool GetSpriteExists(string pname);
 		
 		#endregion
 
 		#region ================== Decorate, Modeldef, Mapinfo, Gldefs, etc...
 
 		// When implemented, this returns the DECORATE lump
-		public abstract Dictionary<string, Stream> GetDecorateData(string pname); // { return new Dictionary<string, Stream>(); }
+		public abstract IEnumerable<TextResourceData> GetDecorateData(string pname);
 
 		//mxd. When implemented, this returns the MODELDEF lump
-		public abstract Dictionary<string, Stream> GetModeldefData(); // { return new Dictionary<string, Stream>(); }
+		public abstract IEnumerable<TextResourceData> GetModeldefData();
 
 		//mxd. When implemented, this returns the MAPINFO lump
-		public abstract Dictionary<string, Stream> GetMapinfoData(); // { return new Dictionary<string, Stream>(); }
+		public abstract IEnumerable<TextResourceData> GetMapinfoData();
 
 		//mxd. When implemented, this returns the GLDEFS lump
-		public abstract Dictionary<string, Stream> GetGldefsData(GameType gametype); // { return new Dictionary<string, Stream>(); }
+		public abstract IEnumerable<TextResourceData> GetGldefsData(GameType gametype);
 
 		//mxd. When implemented, this returns the REVERBS lump
-		public abstract Dictionary<string, Stream> GetReverbsData(); // { return new Dictionary<string, Stream>(); }
+		public abstract IEnumerable<TextResourceData> GetReverbsData();
 
 		//mxd. When implemented, this returns the VOXELDEF lump
-		public abstract KeyValuePair<string, Stream> GetVoxeldefData(); // { return new KeyValuePair<string, Stream>(); }
+		public abstract IEnumerable<TextResourceData> GetVoxeldefData();
 
 		//mxd. When implemented, this returns the SNDSEQ lump
-		public abstract Dictionary<string, Stream> GetSndSeqData(); // { return new Dictionary<string, Stream>(); }
+		public abstract IEnumerable<TextResourceData> GetSndSeqData();
 
 		//mxd. When implemented, this returns the ANIMDEFS lump
-		public abstract Dictionary<string, Stream> GetAnimdefsData();
+		public abstract IEnumerable<TextResourceData> GetAnimdefsData();
+
+		//mxd. When implemented, this returns the TERRAIN lump
+		public abstract IEnumerable<TextResourceData> GetTerrainData();
 
 		//mxd. When implemented, this returns the list of voxel model names
-		public abstract IEnumerable<string> GetVoxelNames(); // { return null; }
+		public abstract IEnumerable<string> GetVoxelNames();
 
 		//mxd. When implemented, this returns the voxel lump
-		public abstract Stream GetVoxelData(string name); // { return null; }
+		public abstract Stream GetVoxelData(string name);
 
 		//mxd
-		internal abstract MemoryStream LoadFile(string name);// { return null; }
-		internal abstract bool FileExists(string filename);// { return false; }
+		internal abstract MemoryStream LoadFile(string name);
+		internal abstract bool FileExists(string filename);
 
 		#endregion
 	}

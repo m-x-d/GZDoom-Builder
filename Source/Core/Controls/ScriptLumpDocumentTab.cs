@@ -74,7 +74,6 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				editor.SetText(stream.ToArray()); //mxd
 				editor.ClearUndoRedo();
-				UpdateNavigator(); //mxd
 			}
 
 			// Set title
@@ -103,10 +102,10 @@ namespace CodeImp.DoomBuilder.Controls
 			General.Map.CompileLump((ismapheader ? MapManager.CONFIG_MAP_HEADER : lumpname), true);
 			
 			//mxd. Update script navigator
-			UpdateNavigator();
+			errors = UpdateNavigator();
 
 			// Feed errors to panel
-			panel.ShowErrors(General.Map.Errors);
+			panel.ShowErrors(General.Map.Errors.Count > 0 ? General.Map.Errors : errors);
 		}
 		
 		// Implicit save

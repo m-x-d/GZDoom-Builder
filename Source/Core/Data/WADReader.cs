@@ -50,22 +50,23 @@ namespace CodeImp.DoomBuilder.Data
 		// Source
 		private WAD file;
 		private bool is_iwad;
-		private bool strictpatches;
+		private readonly bool strictpatches;
 		
 		// Lump ranges
-		private List<LumpRange> flatranges;
-		private List<LumpRange> invertedflatranges; //mxd
-		private List<LumpRange> patchranges;
-		private List<LumpRange> spriteranges;
-		private List<LumpRange> textureranges;
-		private List<LumpRange> colormapranges;
-		private List<LumpRange> voxelranges; //mxd
+		private readonly List<LumpRange> flatranges;
+		private readonly List<LumpRange> invertedflatranges; //mxd
+		private readonly List<LumpRange> patchranges;
+		private readonly List<LumpRange> spriteranges;
+		private readonly List<LumpRange> textureranges;
+		private readonly List<LumpRange> colormapranges;
+		private readonly List<LumpRange> voxelranges; //mxd
 		
 		#endregion
 
 		#region ================== Properties
 
 		public bool IsIWAD { get { return is_iwad; } }
+		internal WAD WadFile { get { return file; } } //mxd
 
 		#endregion
 
@@ -74,7 +75,7 @@ namespace CodeImp.DoomBuilder.Data
 		// Constructor
 		public WADReader(DataLocation dl) : base(dl)
 		{
-			General.WriteLogLine("Opening WAD resource '" + location.location + "'");
+			General.WriteLogLine("Opening WAD resource \"" + location.location + "\"");
 
 			if(!File.Exists(location.location))
 				throw new FileNotFoundException("Could not find the file \"" + location.location + "\"", location.location);
@@ -91,12 +92,12 @@ namespace CodeImp.DoomBuilder.Data
 			voxelranges = new List<LumpRange>(); //mxd
 			
 			// Find ranges
-			FindRanges(patchranges, General.Map.Config.PatchRanges, "patches");
-			FindRanges(spriteranges, General.Map.Config.SpriteRanges, "sprites");
-			FindRanges(flatranges, General.Map.Config.FlatRanges, "flats");
-			FindRanges(textureranges, General.Map.Config.TextureRanges, "textures");
-			FindRanges(colormapranges, General.Map.Config.ColormapRanges, "colormaps");
-			FindRanges(voxelranges, General.Map.Config.VoxelRanges, "voxels");
+			FindRanges(patchranges, General.Map.Config.PatchRanges, "patches", "Patch");
+			FindRanges(spriteranges, General.Map.Config.SpriteRanges, "sprites", "Sprite");
+			FindRanges(flatranges, General.Map.Config.FlatRanges, "flats", "Flat");
+			FindRanges(textureranges, General.Map.Config.TextureRanges, "textures", "Texture");
+			FindRanges(colormapranges, General.Map.Config.ColormapRanges, "colormaps", "Colormap");
+			FindRanges(voxelranges, General.Map.Config.VoxelRanges, "voxels", "Voxel");
 
 			//mxd
 			invertedflatranges = new List<LumpRange>();
@@ -140,7 +141,7 @@ namespace CodeImp.DoomBuilder.Data
 			// Not already disposed?
 			if(!isdisposed)
 			{
-				General.WriteLogLine("Closing WAD resource '" + location.location + "'");
+				General.WriteLogLine("Closing WAD resource \"" + location.location + "\"");
 
 				// Clean up
 				file.Dispose();
@@ -176,7 +177,7 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		// This fills a ranges list
-		private void FindRanges(List<LumpRange> ranges, IDictionary rangeinfos, string rangename)
+		private void FindRanges(List<LumpRange> ranges, IDictionary rangeinfos, string rangename, string elementname)
 		{
 			Dictionary<LumpRange, KeyValuePair<string, string>> failedranges = new Dictionary<LumpRange, KeyValuePair<string, string>>(); //mxd
 			Dictionary<int, bool> successfulrangestarts = new Dictionary<int, bool>(); //mxd
@@ -193,9 +194,7 @@ namespace CodeImp.DoomBuilder.Data
 					int startindex = file.FindLumpIndex(rangestart);
 					while(startindex > -1)
 					{
-						LumpRange range = new LumpRange();
-						range.start = startindex;
-						range.end = file.FindLumpIndex(rangeend, startindex);
+						LumpRange range = new LumpRange { start = startindex, end = file.FindLumpIndex(rangeend, startindex) };
 						if(range.end > -1)
 						{
 							if(!successfulrangestarts.ContainsKey(startindex)) successfulrangestarts.Add(startindex, false); //mxd
@@ -221,7 +220,20 @@ namespace CodeImp.DoomBuilder.Data
 			foreach(KeyValuePair<LumpRange, KeyValuePair<string, string>> group in failedranges)
 			{
 				if(successfulrangestarts.ContainsKey(group.Key.start)) continue;
-				General.ErrorLogger.Add(ErrorType.Warning, "'" + group.Value.Key + "' range at index " + group.Key.start + " is not closed in '" + location.location + "' ('" + group.Value.Value + "' marker is missing)!");
+				General.ErrorLogger.Add(ErrorType.Warning, "\"" + group.Value.Key + "\" range at index " + group.Key.start + " is not closed in resource \"" + location.location + "\" (\"" + group.Value.Value + "\" marker is missing).");
+			}
+
+			//mxd. Check duplicates
+			foreach(LumpRange range in ranges)
+			{
+				HashSet<string> names = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+				for(int i = range.start + 1; i < range.end; i++)
+				{
+					if(names.Contains(file.Lumps[i].Name))
+						General.ErrorLogger.Add(ErrorType.Warning, elementname + " \"" + file.Lumps[i].Name + "\", index " + i + " is double defined in resource \"" + location.location + "\".");
+					else
+						names.Add(file.Lumps[i].Name);
+				}
 			}
 		}
 		
@@ -335,7 +347,7 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Textures
 
 		// This loads the textures
-		public override ICollection<ImageData> LoadTextures(PatchNames pnames)
+		public override IEnumerable<ImageData> LoadTextures(PatchNames pnames, Dictionary<string, TexturesParser> cachedparsers)
 		{
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
@@ -371,7 +383,7 @@ namespace CodeImp.DoomBuilder.Data
 					else 
 					{
 						// Can't load image without size
-						General.ErrorLogger.Add(ErrorType.Error, "Can't load texture '" + file.Lumps[i].Name + "' because it doesn't contain any data.");
+						General.ErrorLogger.Add(ErrorType.Error, "Can't load texture \"" + file.Lumps[i].Name + "\" because it doesn't contain any data.");
 					}
 				}
 			}
@@ -380,10 +392,21 @@ namespace CodeImp.DoomBuilder.Data
 			int lumpindex = file.FindLumpIndex("TEXTURES");
 			while(lumpindex > -1)
 			{
-				MemoryStream filedata = new MemoryStream(file.Lumps[lumpindex].Stream.ReadAllBytes());
-				WADReader.LoadHighresTextures(filedata, Path.Combine(Path.GetFileName(file.Filename), "TEXTURES#" + lumpindex), ref images, null, null);
-				filedata.Dispose();
-				
+				//mxd. Added TexturesParser caching
+				string fullpath = Path.Combine(this.location.location, "TEXTURES#" + lumpindex);
+				if(cachedparsers.ContainsKey(fullpath))
+				{
+					// Make the textures
+					foreach(TextureStructure t in cachedparsers[fullpath].Textures)
+						images.Add(t.MakeImage());
+				}
+				else
+				{
+					MemoryStream filedata = new MemoryStream(file.Lumps[lumpindex].Stream.ReadAllBytes());
+					cachedparsers.Add(fullpath, LoadHighresTextures(new TextResourceData(this, filedata, "TEXTURES", lumpindex, true), ref images)); //mxd
+					filedata.Dispose();
+				}
+
 				// Find next
 				lumpindex = file.FindLumpIndex("TEXTURES", lumpindex + 1);
 			}
@@ -396,11 +419,11 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		// This loads the texture definitions from a TEXTURES lump
-		public static void LoadHighresTextures(Stream stream, string filename, ref List<ImageData> images, Dictionary<long, ImageData> textures, Dictionary<long, ImageData> flats)
+		public static TexturesParser LoadHighresTextures(TextResourceData data, ref List<ImageData> images)
 		{
 			// Parse the data
 			TexturesParser parser = new TexturesParser();
-			parser.Parse(stream, filename, false);
+			parser.Parse(data, false);
 			if(parser.HasError) parser.LogError(); //mxd
 
 			// Make the textures
@@ -410,6 +433,15 @@ namespace CodeImp.DoomBuilder.Data
 				ImageData img = t.MakeImage();
 				images.Add(img);
 			}
+
+			//mxd. Add to text resources collection
+			if(!General.Map.Data.TextResources.ContainsKey(parser.ScriptType))
+				General.Map.Data.TextResources[parser.ScriptType] = new HashSet<TextResource>();
+
+			foreach(KeyValuePair<string, TextResource> group in parser.TextResources)
+				General.Map.Data.TextResources[parser.ScriptType].Add(group.Value);
+
+			return parser; //mxd
 		}
 		
 		// This loads a set of textures
@@ -582,7 +614,7 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Flats
 
 		//mxd. This loads the flats
-		public override ICollection<ImageData> LoadFlats() 
+		public override IEnumerable<ImageData> LoadFlats(Dictionary<string, TexturesParser> cachedparsers) 
 		{
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
@@ -610,9 +642,20 @@ namespace CodeImp.DoomBuilder.Data
 			int lumpindex = file.FindLumpIndex("TEXTURES");
 			while(lumpindex > -1) 
 			{
-				MemoryStream filedata = new MemoryStream(file.Lumps[lumpindex].Stream.ReadAllBytes());
-				WADReader.LoadHighresFlats(filedata, Path.Combine(Path.GetFileName(file.Filename), "TEXTURES#" + lumpindex), ref images, null, null);
-				filedata.Dispose();
+				//mxd. Added TexturesParser caching
+				string fullpath = Path.Combine(this.location.location, "TEXTURES#" + lumpindex);
+				if(cachedparsers.ContainsKey(fullpath))
+				{
+					// Make the textures
+					foreach(TextureStructure t in cachedparsers[fullpath].Flats)
+						images.Add(t.MakeImage());
+				}
+				else
+				{
+					MemoryStream filedata = new MemoryStream(file.Lumps[lumpindex].Stream.ReadAllBytes());
+					cachedparsers.Add(fullpath, LoadHighresFlats(new TextResourceData(this, filedata, "TEXTURES", lumpindex, true), ref images)); //mxd
+					filedata.Dispose();
+				}
 
 				// Find next
 				lumpindex = file.FindLumpIndex("TEXTURES", lumpindex + 1);
@@ -626,11 +669,11 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		// This loads the flat definitions from a TEXTURES lump
-		public static void LoadHighresFlats(Stream stream, string filename, ref List<ImageData> images, Dictionary<long, ImageData> textures, Dictionary<long, ImageData> flats)
+		public static TexturesParser LoadHighresFlats(TextResourceData data, ref List<ImageData> images)
 		{
 			// Parse the data
 			TexturesParser parser = new TexturesParser();
-			parser.Parse(stream, filename, false);
+			parser.Parse(data, false);
 			if(parser.HasError) parser.LogError(); //mxd
 
 			// Make the textures
@@ -640,6 +683,15 @@ namespace CodeImp.DoomBuilder.Data
 				ImageData img = t.MakeImage();
 				images.Add(img);
 			}
+
+			//mxd. Add to text resources collection
+			if(!General.Map.Data.TextResources.ContainsKey(parser.ScriptType))
+				General.Map.Data.TextResources[parser.ScriptType] = new HashSet<TextResource>();
+
+			foreach(KeyValuePair<string, TextResource> group in parser.TextResources)
+				General.Map.Data.TextResources[parser.ScriptType].Add(group.Value);
+
+			return parser; //mxd
 		}
 		
 		// This finds and returns a patch stream
@@ -664,7 +716,7 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Sprite
 
 		// This loads the textures
-		public override ICollection<ImageData> LoadSprites()
+		public override IEnumerable<ImageData> LoadSprites(Dictionary<string, TexturesParser> cachedparsers)
 		{
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
@@ -675,10 +727,21 @@ namespace CodeImp.DoomBuilder.Data
 			int lumpindex = file.FindLumpIndex("TEXTURES");
 			while(lumpindex > -1)
 			{
-				MemoryStream filedata = new MemoryStream(file.Lumps[lumpindex].Stream.ReadAllBytes());
-				WADReader.LoadHighresSprites(filedata, Path.Combine(Path.GetFileName(file.Filename), "TEXTURES#" + lumpindex), ref images, null, null); 
-				filedata.Dispose();
-				
+				//mxd. Added TexturesParser caching
+				string fullpath = Path.Combine(this.location.location, "TEXTURES#" + lumpindex);
+				if(cachedparsers.ContainsKey(fullpath))
+				{
+					// Make the textures
+					foreach(TextureStructure t in cachedparsers[fullpath].Sprites)
+						images.Add(t.MakeImage());
+				}
+				else
+				{
+					MemoryStream filedata = new MemoryStream(file.Lumps[lumpindex].Stream.ReadAllBytes());
+					cachedparsers.Add(fullpath, LoadHighresSprites(new TextResourceData(this, filedata, "TEXTURES", lumpindex, true), ref images)); //mxd
+					filedata.Dispose();
+				}
+
 				// Find next
 				lumpindex = file.FindLumpIndex("TEXTURES", lumpindex + 1);
 			}
@@ -688,11 +751,11 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		// This loads the sprites definitions from a TEXTURES lump
-		public static void LoadHighresSprites(Stream stream, string filename, ref List<ImageData> images, Dictionary<long, ImageData> textures, Dictionary<long, ImageData> flats)
+		public static TexturesParser LoadHighresSprites(TextResourceData data, ref List<ImageData> images)
 		{
 			// Parse the data
 			TexturesParser parser = new TexturesParser();
-			parser.Parse(stream, filename, false);
+			parser.Parse(data, false);
 			if(parser.HasError) parser.LogError(); //mxd
 			
 			// Make the textures
@@ -702,6 +765,15 @@ namespace CodeImp.DoomBuilder.Data
 				ImageData img = t.MakeImage();
 				images.Add(img);
 			}
+
+			//mxd. Add to text resources collection
+			if(!General.Map.Data.TextResources.ContainsKey(parser.ScriptType))
+				General.Map.Data.TextResources[parser.ScriptType] = new HashSet<TextResource>();
+
+			foreach(KeyValuePair<string, TextResource> group in parser.TextResources)
+				General.Map.Data.TextResources[parser.ScriptType].Add(group.Value);
+
+			return parser; //mxd
 		}
 		
 		// This finds and returns a sprite stream
@@ -763,11 +835,10 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		//mxd
-		public override KeyValuePair<string, Stream> GetVoxeldefData() 
+		public override IEnumerable<TextResourceData> GetVoxeldefData() 
 		{
-			Lump lump = file.FindLump("VOXELDEF");
-			if(lump != null) return new KeyValuePair<string, Stream>("VOXELDEF", lump.Stream);
-			return new KeyValuePair<string, Stream>();
+			if(issuspended) throw new Exception("Data reader is suspended");
+			return GetFirstLump("VOXELDEF");
 		}
 
 		//mxd. This finds and returns a voxel stream or null if no voxel was found
@@ -791,117 +862,107 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Decorate, Gldefs, Mapinfo, etc...
 
 		// This finds and returns a sprite stream
-		public override Dictionary<string, Stream> GetDecorateData(string pname)
+		public override IEnumerable<TextResourceData> GetDecorateData(string pname)
 		{
-			// Error when suspended
+			if(issuspended) throw new Exception("Data reader is suspended");
+			return GetAllLumps("DECORATE");
+		}
+
+		//mxd. Should be only one entry per wad
+		public override IEnumerable<TextResourceData> GetMapinfoData() 
+		{
+			if(issuspended) throw new Exception("Data reader is suspended");
+			
+			// First look for ZMAPINFO
+			List<TextResourceData> result = new List<TextResourceData>();
+			result.AddRange(GetFirstLump("ZMAPINFO"));
+
+			// Then for MAPINFO
+			if(result.Count == 0) result.AddRange(GetFirstLump("MAPINFO"));
+			return result;
+		}
+
+		//mxd
+		public override IEnumerable<TextResourceData> GetGldefsData(GameType gametype) 
+		{
 			if(issuspended) throw new Exception("Data reader is suspended");
 
-			Dictionary<string, Stream> result = new Dictionary<string, Stream>();
+			List<TextResourceData> result = new List<TextResourceData>();
 
-			// Find all lumps named 'DECORATE'
-			int lumpindex = file.FindLumpIndex(pname);
+			// Try to load game specific GLDEFS first
+			if(gametype != GameType.UNKNOWN)
+			{
+				string lumpname = Gldefs.GLDEFS_LUMPS_PER_GAME[(int)gametype];
+				result.AddRange(GetFirstLump(lumpname));
+			}
+
+			// Should be only one entry per wad
+			result.AddRange(GetFirstLump("GLDEFS"));
+			return result;
+		}
+
+		//mxd
+		public override IEnumerable<TextResourceData> GetModeldefData() 
+		{
+			if(issuspended) throw new Exception("Data reader is suspended");
+			return GetFirstLump("MODELDEF");
+		}
+
+		//mxd
+		public override IEnumerable<TextResourceData> GetReverbsData() 
+		{
+			if(issuspended) throw new Exception("Data reader is suspended");
+			return GetFirstLump("REVERBS");
+		}
+
+		//mxd
+		public override IEnumerable<TextResourceData> GetSndSeqData() 
+		{
+			if(issuspended) throw new Exception("Data reader is suspended");
+			return GetFirstLump("SNDSEQ");
+		}
+
+		//mxd
+		public override IEnumerable<TextResourceData> GetAnimdefsData()
+		{
+			if(issuspended) throw new Exception("Data reader is suspended");
+			return GetAllLumps("ANIMDEFS");
+		}
+
+		//mxd
+		public override IEnumerable<TextResourceData> GetTerrainData()
+		{
+			if(issuspended) throw new Exception("Data reader is suspended");
+			return GetAllLumps("TERRAIN");
+		}
+
+		//mxd
+		private IEnumerable<TextResourceData> GetFirstLump(string name)
+		{
+			List<TextResourceData> result = new List<TextResourceData>();
+			int lumpindex = file.FindLumpIndex(name);
+			if(lumpindex != -1)
+				result.Add(new TextResourceData(this, file.Lumps[lumpindex].Stream, name, lumpindex, true));
+
+			return result;
+		}
+
+		//mxd
+		private IEnumerable<TextResourceData> GetAllLumps(string name)
+		{
+			List<TextResourceData> result = new List<TextResourceData>();
+
+			// Find all lumps with given name
+			int lumpindex = file.FindLumpIndex(name);
 			while(lumpindex > -1)
 			{
-				//mxd. Since we are using Dictionary, all names should be unique
-				result.Add(Path.Combine(file.Filename, pname + "#" + lumpindex), file.Lumps[lumpindex].Stream);
-				
-				// Find next
-				lumpindex = file.FindLumpIndex(pname, lumpindex + 1);
-			}
-			
-			return result;
-		}
+				// Add to collection
+				result.Add(new TextResourceData(this, file.Lumps[lumpindex].Stream, name, lumpindex, true));
 
-		//mxd
-		public override Dictionary<string, Stream> GetMapinfoData() 
-		{
-			if(issuspended) throw new Exception("Data reader is suspended");
-
-			Dictionary<string, Stream> streams = new Dictionary<string, Stream>(StringComparer.Ordinal);
-			string src = "ZMAPINFO";
-
-			//should be only one entry per wad
-			//first look for ZMAPINFO
-			int lumpindex = file.FindLumpIndex(src);
-
-			//then for MAPINFO
-			if(lumpindex == -1) 
-			{
-				src = "MAPINFO";
-				lumpindex = file.FindLumpIndex(src);
+				// Find next entry
+				lumpindex = file.FindLumpIndex(name, lumpindex + 1);
 			}
 
-			if(lumpindex != -1) streams.Add(src, file.Lumps[lumpindex].Stream);
-			return streams;
-		}
-
-		//mxd
-		public override Dictionary<string, Stream> GetGldefsData(GameType gameType) 
-		{
-			if(issuspended) throw new Exception("Data reader is suspended");
-
-			Dictionary<string, Stream> streams = new Dictionary<string, Stream>(StringComparer.Ordinal);
-			int lumpindex;
-
-			//try to load game specific GLDEFS first
-			if(gameType != GameType.UNKNOWN) 
-			{
-				string lumpName = Gldefs.GLDEFS_LUMPS_PER_GAME[(int)gameType];
-				lumpindex = file.FindLumpIndex(lumpName);
-
-				if(lumpindex != -1)
-					streams.Add(lumpName, file.Lumps[lumpindex].Stream);
-			}
-
-			//should be only one entry per wad
-			lumpindex = file.FindLumpIndex("GLDEFS");
-			
-			if(lumpindex != -1) streams.Add("GLDEFS", file.Lumps[lumpindex].Stream);
-			return streams;
-		}
-
-		//mxd
-		public override Dictionary<string, Stream> GetModeldefData() 
-		{
-			if(issuspended) throw new Exception("Data reader is suspended");
-
-			Dictionary<string, Stream> streams = new Dictionary<string, Stream>(StringComparer.Ordinal);
-			int lumpindex = file.FindLumpIndex("MODELDEF");
-
-			if(lumpindex != -1) streams.Add("MODELDEF", file.Lumps[lumpindex].Stream);
-			return streams;
-		}
-
-		//mxd
-		public override Dictionary<string, Stream> GetReverbsData() 
-		{
-			if(issuspended) throw new Exception("Data reader is suspended");
-
-			Dictionary<string, Stream> result = new Dictionary<string, Stream>();
-			Lump lump = file.FindLump("REVERBS");
-			if(lump != null) result.Add(Path.Combine(location.location, "REVERBS"), lump.Stream);
-			return result;
-		}
-
-		//mxd
-		public override Dictionary<string, Stream> GetSndSeqData() 
-		{
-			if(issuspended) throw new Exception("Data reader is suspended");
-
-			Dictionary<string, Stream> result = new Dictionary<string, Stream>();
-			Lump lump = file.FindLump("SNDSEQ");
-			if(lump != null) result.Add(Path.Combine(location.location, "SNDSEQ"), lump.Stream);
-			return result;
-		}
-
-		//mxd
-		public override Dictionary<string, Stream> GetAnimdefsData()
-		{
-			if(issuspended) throw new Exception("Data reader is suspended");
-
-			Dictionary<string, Stream> result = new Dictionary<string, Stream>();
-			Lump lump = file.FindLump("ANIMDEFS");
-			if(lump != null) result.Add(Path.Combine(location.location, "ANIMDEFS"), lump.Stream);
 			return result;
 		}
 

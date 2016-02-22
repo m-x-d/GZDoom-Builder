@@ -22,6 +22,7 @@ using CodeImp.DoomBuilder.Data;
 using System.Diagnostics;
 using CodeImp.DoomBuilder.Actions;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.VisualModes;
 using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Editing;
@@ -346,12 +347,13 @@ namespace CodeImp.DoomBuilder
 					General.MainWindow.DisplayStatus(StatusType.Warning, "Unable to test the map due to script errors.");
 				}
 			}
+			General.Plugins.OnMapSaveEnd(SavePurpose.Testing);
 		}
 
 		//mxd
 		private void TestingFinished() 
 		{
-			//Done
+			// Done
 			TimeSpan deltatime = TimeSpan.FromTicks(process.ExitTime.Ticks - process.StartTime.Ticks);
 			process = null;
 			General.WriteLogLine("Test program has finished.");
@@ -361,9 +363,22 @@ namespace CodeImp.DoomBuilder
 			// Clean up temp file
 			CleanTempFile(General.Map);
 
-			General.Plugins.OnMapSaveEnd(SavePurpose.Testing);
+			if(General.Map != null)
+			{
+				// Device reset may be needed...
+				if(General.Editing.Mode is ClassicMode)
+				{
+					General.Map.Graphics.Reset();
+					General.MainWindow.RedrawDisplay();
+				}
+				else if(General.Editing.Mode is VisualMode)
+				{
+					//General.MainWindow.StopExclusiveMouseInput();
+					//General.MainWindow.StartExclusiveMouseInput();
+				}
+			}
+
 			General.MainWindow.FocusDisplay();
-			if(General.Editing.Mode is ClassicMode) General.MainWindow.RedrawDisplay();
 		}
 
 		//mxd

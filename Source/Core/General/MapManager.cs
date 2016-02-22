@@ -130,7 +130,6 @@ namespace CodeImp.DoomBuilder
 		//mxd. Scripts
 		internal Dictionary<string, ScriptItem> NamedScripts { get { return namedscripts; } }
 		internal Dictionary<int, ScriptItem> NumberedScripts { get { return numberedscripts; } }
-		internal HashSet<string> ScriptIncludes { get { return scriptincludes; } }
 
 		public ViewMode ViewMode { get { return renderer2d.ViewMode; } }
 
@@ -159,8 +158,8 @@ namespace CodeImp.DoomBuilder
 
 			//mxd
 			numberedscripts = new Dictionary<int, ScriptItem>();
-			namedscripts = new Dictionary<string, ScriptItem>();
-			scriptincludes = new HashSet<string>();
+			namedscripts = new Dictionary<string, ScriptItem>(StringComparer.OrdinalIgnoreCase);
+			scriptincludes = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 		}
 
 		// Disposer
@@ -255,7 +254,7 @@ namespace CodeImp.DoomBuilder
 			this.changed = false;
 			this.options = options;
 
-			General.WriteLogLine("Creating new map '" + options.CurrentName + "' with configuration '" + options.ConfigFile + "'");
+			General.WriteLogLine("Creating new map \"" + options.CurrentName + "\" with configuration \"" + options.ConfigFile + "\"");
 
 			// Initiate graphics
 			General.WriteLogLine("Initializing graphics device...");
@@ -350,7 +349,7 @@ namespace CodeImp.DoomBuilder
 			this.maploading = true; //mxd
 			this.options = options;
 
-			General.WriteLogLine("Opening map '" + options.CurrentName + "' with configuration '" + options.ConfigFile + "'");
+			General.WriteLogLine("Opening map \"" + options.CurrentName + "\" with configuration \"" + options.ConfigFile + "\"");
 
 			// Initiate graphics
 			General.WriteLogLine("Initializing graphics device...");
@@ -572,7 +571,7 @@ namespace CodeImp.DoomBuilder
 					{
 						General.WriteLogLine("Initializing map format interface " + config.FormatInterface + "...");
 						io = MapSetIO.Create(config.FormatInterface, tempwad, this);
-						General.WriteLogLine("Restoring map from '" + backuppath + "'...");
+						General.WriteLogLine("Restoring map from \"" + backuppath + "\"...");
 						
 #if DEBUG
 						// Restore map
@@ -838,7 +837,7 @@ namespace CodeImp.DoomBuilder
 						int mapindex = wad.FindLumpIndex(origmapname);
 						wad.Dispose();
 
-						if(mapindex != -1 && MessageBox.Show(General.MainWindow, "Target file already contains map '" + origmapname + "'\nDo you want to replace it?", "Map already exists!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No) 
+						if(mapindex != -1 && MessageBox.Show(General.MainWindow, "Target file already contains map \"" + origmapname + "\"\nDo you want to replace it?", "Map already exists!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No) 
 						{
 							data.Resume();
 							General.WriteLogLine("Map saving cancelled...");
@@ -934,7 +933,7 @@ namespace CodeImp.DoomBuilder
 			{
 				if(purpose != SavePurpose.IntoFile) 
 				{
-					General.WriteLogLine("Changing map name from '" + options.PreviousName + "' to '" + options.CurrentName + "'");
+					General.WriteLogLine("Changing map name from \"" + options.PreviousName + "\" to \"" + options.CurrentName + "\"");
 
 					// Find the map header in target
 					int index = targetwad.FindLumpIndex(options.PreviousName);
@@ -1048,7 +1047,7 @@ namespace CodeImp.DoomBuilder
 					File.WriteAllBytes(backuppath, SharpCompressHelper.CompressStream(ms).ToArray());
 
 					// Log it
-					General.WriteLogLine("Map backup saved to '" + backuppath + "'");
+					General.WriteLogLine("Map backup saved to \"" + backuppath + "\"");
 				}
 				else
 				{
@@ -1915,7 +1914,7 @@ namespace CodeImp.DoomBuilder
 			//mxd. Boilerplate
 			if(!config.MapLumps.ContainsKey(lumpname))
 			{
-				General.ShowErrorMessage("Unable to compile lump '" + lumpname + "'. This lump is not defined in the current game configuration.", MessageBoxButtons.OK);
+				General.ShowErrorMessage("Unable to compile lump \"" + lumpname + "\". This lump is not defined in the current game configuration.", MessageBoxButtons.OK);
 				return false;
 			}
 			
@@ -1930,7 +1929,7 @@ namespace CodeImp.DoomBuilder
 				//mxd. More boilderplate
 				if(!General.CompiledScriptConfigs.ContainsKey(General.Map.Options.ScriptCompiler))
 				{
-					General.ShowErrorMessage("Unable to compile lump '" + lumpname + "'. Unable to find required script compiler configuration ('" + General.Map.Options.ScriptCompiler + "').", MessageBoxButtons.OK);
+					General.ShowErrorMessage("Unable to compile lump \"" + lumpname + "\". Unable to find required script compiler configuration (\"" + General.Map.Options.ScriptCompiler + "\").", MessageBoxButtons.OK);
 					return false;
 				}
 				
@@ -1945,7 +1944,7 @@ namespace CodeImp.DoomBuilder
 			// Find the lump
 			if(lumpname == CONFIG_MAP_HEADER) reallumpname = TEMP_MAP_HEADER;
 			Lump lump = tempwad.FindLump(reallumpname);
-			if(lump == null) throw new Exception("No such lump in temporary wad file '" + reallumpname + "'.");
+			if(lump == null) throw new Exception("No such lump in temporary wad file \"" + reallumpname + "\".");
 
 			// Determine source file
 			string sourcefile = (filepathname.Length > 0 ? filepathname : tempwad.Filename);
@@ -1995,7 +1994,7 @@ namespace CodeImp.DoomBuilder
 			//mxd
 			if(scriptconfig.ScriptType == ScriptType.ACS)
 			{
-				compiler.Includes = General.Map.ScriptIncludes;
+				compiler.Includes = scriptincludes;
 				compiler.CopyIncludesToWorkingDirectory = true;
 			}
 
@@ -2074,8 +2073,8 @@ namespace CodeImp.DoomBuilder
 				//INFO: also, error.linenumber is zero-based
 				foreach(CompilerError error in compilererrors)
 				{
-					General.ErrorLogger.Add(ErrorType.Error, "ACS error in '" + (error.filename.StartsWith("?") ? error.filename.Replace("?", string.Empty) : error.filename)
-						+ (error.linenumber != CompilerError.NO_LINE_NUMBER ? "', line " + (error.linenumber + 1) : "'") 
+					General.ErrorLogger.Add(ErrorType.Error, "ACS error in \"" + (error.filename.StartsWith("?") ? error.filename.Substring(1) : error.filename)
+						+ (error.linenumber != CompilerError.NO_LINE_NUMBER ? "\", line " + (error.linenumber + 1) : "\"") 
 						+ ". " + error.description + ".");
 				}
 			}
@@ -2090,6 +2089,7 @@ namespace CodeImp.DoomBuilder
 			List<ScriptItem> numberedscriptslist = new List<ScriptItem>();
 			List<string> scripincludeslist = new List<string>();
 			List<CompilerError> compilererrors = new List<CompilerError>();
+			General.Map.Data.TextResources[ScriptType.ACS] = new HashSet<TextResource>();
 
 			// Load the script lumps
 			foreach(MapLumpInfo maplumpinfo in config.MapLumps.Values) 
@@ -2103,7 +2103,7 @@ namespace CodeImp.DoomBuilder
 						//mxd. More boilderplate
 						if(!General.CompiledScriptConfigs.ContainsKey(General.Map.Options.ScriptCompiler))
 						{
-							compilererrors.Add(new CompilerError("Unable to compile lump '" + maplumpinfo.Name + "'. Unable to find required script compiler configuration ('" + General.Map.Options.ScriptCompiler + "')."));
+							compilererrors.Add(new CompilerError("Unable to compile lump \"" + maplumpinfo.Name + "\". Unable to find required script compiler configuration (\"" + General.Map.Options.ScriptCompiler + "\")."));
 							return compilererrors;
 						}
 
@@ -2119,15 +2119,37 @@ namespace CodeImp.DoomBuilder
 					if(stream != null && stream.Length > 0 && scriptconfig != null && scriptconfig.Compiler != null)
 					{
 						// Get script names
-						AcsParserSE parser = new AcsParserSE { OnInclude = (se, path, includetype) => se.Parse(General.Map.Data.LoadFile(path), path, true, includetype, false) };
+						AcsParserSE parser = new AcsParserSE
+						{
+							IsMapScriptsLump = true,
+							IgnoreErrors = true,
+							OnInclude = delegate(AcsParserSE se, string includefile, AcsParserSE.IncludeType includetype)
+							{
+								TextResourceData includedata = General.Map.Data.LoadFile(includefile);
+								if(includedata != null)
+								{
+									includedata.Trackable = true;
+									se.Parse(includedata, true, includetype, false);
+								}
+								else
+								{
+									General.ErrorLogger.Add(ErrorType.Error, "Unable to find include file \"" + includefile + "\"");
+								}
+							}
+						};
 
 						//INFO: CompileLump() prepends lumpname with "?" to distinguish between temporary files and files compiled in place
-						if(parser.Parse(stream, "?SCRIPTS", scriptconfig.Compiler.Files, true, AcsParserSE.IncludeType.NONE, false))
+						DataLocation location = new DataLocation { location = tempwad.Filename, type = DataLocation.RESOURCE_WAD };
+						TextResourceData data = new TextResourceData(stream, location, "?SCRIPTS", false);
+						if(parser.Parse(data, scriptconfig.Compiler.Files, true, AcsParserSE.IncludeType.NONE, false))
 						{
 							// Add them to arrays
 							namedscriptslist.AddRange(parser.NamedScripts);
 							numberedscriptslist.AddRange(parser.NumberedScripts);
 							scripincludeslist.AddRange(parser.Includes);
+
+							// Add to text resource list
+							General.Map.Data.TextResources[parser.ScriptType].UnionWith(parser.TextResources.Values);
 						}
 						
 						// Check for errors
@@ -2297,7 +2319,7 @@ namespace CodeImp.DoomBuilder
 			data = new DataManager();
 			if(!string.IsNullOrEmpty(filepathname)) 
 			{
-				DataLocation maplocation = new DataLocation(DataLocation.RESOURCE_WAD, filepathname, false, false, false);
+				DataLocation maplocation = new DataLocation(DataLocation.RESOURCE_WAD, filepathname, options.StrictPatches, false, false);
 				data.Load(configinfo.Resources, options.Resources, maplocation);
 			}
 			else 
@@ -2346,7 +2368,7 @@ namespace CodeImp.DoomBuilder
 				this.options = optionsform.Options;
 
 				// Load new game configuration
-				General.WriteLogLine("Loading game configuration '" + options.ConfigFile + "'...");
+				General.WriteLogLine("Loading game configuration \"" + options.ConfigFile + "\"...");
 				configinfo = General.GetConfigurationInfo(options.ConfigFile);
 				Type oldiotype = io.GetType(); //mxd
 

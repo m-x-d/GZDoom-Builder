@@ -42,6 +42,19 @@ using Matrix = SlimDX.Matrix;
 
 namespace CodeImp.DoomBuilder.Data
 {
+	public struct TextResource //mxd
+	{
+		public string Filename; // Path to text file inside of Resource
+		public int LumpIndex;   // Text lump index if Resource is wad
+		internal DataReader Resource;
+		public HashSet<string> Entries; // Actors/models/sounds etc.
+
+		public override string ToString()
+		{
+			return Filename + (LumpIndex != -1 ? ":" + LumpIndex : "") + " (" + Entries.Count + " entries)";
+		}
+	}
+	
 	public sealed class DataManager
 	{
 		#region ================== Constants
@@ -74,12 +87,17 @@ namespace CodeImp.DoomBuilder.Data
 
 		//mxd 
 		private Dictionary<int, ModelData> modeldefentries; //Thing.Type, Model entry
-		private readonly Dictionary<int, DynamicLightData> gldefsentries; //Thing.Type, Light entry
+		private Dictionary<int, DynamicLightData> gldefsentries; //Thing.Type, Light entry
 		private MapInfo mapinfo;
 		private Dictionary<string, KeyValuePair<int, int>> reverbs; //<name, <arg1, arg2> 
 		private Dictionary<long, GlowingFlatData> glowingflats; // Texture name hash, Glowing Flat Data
 		private Dictionary<string, SkyboxInfo> skyboxes; 
-		private List<string> soundsequences;
+		private string[] soundsequences;
+		private string[] terrainnames; 
+		private string[] damagetypes;
+
+		//mxd. Text resources
+		private Dictionary<ScriptType, HashSet<TextResource>> textresources; 
 		
 		// Background loading
 		private Queue<ImageData> imageque;
@@ -108,8 +126,8 @@ namespace CodeImp.DoomBuilder.Data
 		private ImageData[] commenttextures;
 		
 		// Used images
-		private Dictionary<long, long> usedtextures; //mxd
-		private Dictionary<long, long> usedflats; //mxd. Used only when MixTextursFlats is disabled
+		private Dictionary<long, bool> usedtextures; //mxd
+		private Dictionary<long, bool> usedflats; //mxd. Used only when MixTextursFlats is disabled
 		
 		// Things combined with things created from Decorate
 		private DecorateParser decorate;
@@ -133,8 +151,13 @@ namespace CodeImp.DoomBuilder.Data
 		public MapInfo MapInfo { get { return mapinfo; } }
 		public Dictionary<string, KeyValuePair<int, int>> Reverbs { get { return reverbs; } }
 		public Dictionary<long, GlowingFlatData> GlowingFlats { get { return glowingflats; } }
-		public List<string> SoundSequences { get { return soundsequences; } }
-		internal List<DataReader> Containers { get { return containers; } } //mxd
+		public string[] SoundSequences { get { return soundsequences; } }
+		public string[] TerrainNames { get { return terrainnames; } }
+		public string[] DamageTypes { get { return damagetypes; } }
+		internal Dictionary<ScriptType, HashSet<TextResource>> TextResources { get { return textresources; } }
+
+		//mxd
+		internal IEnumerable<DataReader> Containers { get { return containers; } }
 
 		public Playpal Palette { get { return palette; } }
 		public PreviewManager Previews { get { return previews; } }
@@ -178,15 +201,6 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			// We have no destructor
 			GC.SuppressFinalize(this);
-
-			//mxd.
-			modeldefentries = new Dictionary<int, ModelData>();
-			gldefsentries = new Dictionary<int, DynamicLightData>();
-			reverbs = new Dictionary<string, KeyValuePair<int, int>>(StringComparer.Ordinal);
-			glowingflats = new Dictionary<long, GlowingFlatData>();
-			skyboxes = new Dictionary<string, SkyboxInfo>(StringComparer.Ordinal);
-
-			soundsequences = new List<string>();
 
 			// Load special images (mxd: the rest is loaded in LoadInternalTextures())
 			whitetexture = new ResourceImage("CodeImp.DoomBuilder.Resources.White.png") { UseColorCorrection = false };
@@ -294,11 +308,22 @@ namespace CodeImp.DoomBuilder.Data
 			imageque = new Queue<ImageData>();
 			previews = new PreviewManager();
 			texturesets = new List<MatchingTextureSet>();
-			usedtextures = new Dictionary<long, long>(); //mxd
-			usedflats = new Dictionary<long, long>(); //mxd
+			usedtextures = new Dictionary<long, bool>(); //mxd
+			usedflats = new Dictionary<long, bool>(); //mxd
 			internalsprites = new Dictionary<string, ImageData>(StringComparer.Ordinal);
 			thingcategories = General.Map.Config.GetThingCategories();
 			thingtypes = General.Map.Config.GetThingTypes();
+
+			//mxd. Create even more collections!
+			modeldefentries = new Dictionary<int, ModelData>();
+			gldefsentries = new Dictionary<int, DynamicLightData>();
+			reverbs = new Dictionary<string, KeyValuePair<int, int>>(StringComparer.Ordinal);
+			glowingflats = new Dictionary<long, GlowingFlatData>();
+			skyboxes = new Dictionary<string, SkyboxInfo>(StringComparer.Ordinal);
+			soundsequences = new string[0];
+			terrainnames = new string[0];
+			textresources = new Dictionary<ScriptType, HashSet<TextResource>>();
+			damagetypes = new string[0];
 			
 			// Load texture sets
 			foreach(DefinedTextureSet ts in General.Map.ConfigSettings.TextureSets)
@@ -360,10 +385,12 @@ namespace CodeImp.DoomBuilder.Data
 			
 			// Load stuff
 			LoadPalette();
-			int texcount = LoadTextures(texturesonly, texturenamesshorttofull);
-			int flatcount = LoadFlats(flatsonly, flatnamesshorttofull);
+			Dictionary<string, TexturesParser> cachedparsers = new Dictionary<string, TexturesParser>(); //mxd
+			int texcount = LoadTextures(texturesonly, texturenamesshorttofull, cachedparsers);
+			int flatcount = LoadFlats(flatsonly, flatnamesshorttofull, cachedparsers);
 			int colormapcount = LoadColormaps(colormapsonly);
-			LoadSprites();
+			LoadSprites(cachedparsers);
+			cachedparsers = null; //mxd
 
 			//mxd. Load MAPINFO. Should happen before parisng DECORATE
 			Dictionary<int, string> spawnnums, doomednums;
@@ -465,6 +492,9 @@ namespace CodeImp.DoomBuilder.Data
 
 			//mxd. Create camera textures. Should be done after loading textures.
 			LoadAnimdefs();
+
+			//mxd
+			LoadTerrain();
 			
 			// Sort names
 			texturenames.Sort();
@@ -547,6 +577,14 @@ namespace CodeImp.DoomBuilder.Data
 			flats = null;
 			sprites = null;
 			modeldefentries = null; //mxd
+			gldefsentries = null; //mxd
+			reverbs = null; //mxd
+			glowingflats = null; //mxd
+			skyboxes = null; //mxd
+			soundsequences = null; //mxd
+			terrainnames = null; //mxd
+			textresources = null; //mxd
+			damagetypes = null; //mxd
 			texturenames = null;
 			flatnames = null;
 			imageque = null;
@@ -568,7 +606,7 @@ namespace CodeImp.DoomBuilder.Data
 			foreach(DataReader d in containers)
 			{
 				// Suspend
-				General.WriteLogLine("Suspended data resource '" + d.Location.location + "'");
+				General.WriteLogLine("Suspended data resource \"" + d.Location.location + "\"");
 				d.Suspend();
 			}
 		}
@@ -582,7 +620,7 @@ namespace CodeImp.DoomBuilder.Data
 				try
 				{
 					// Resume
-					General.WriteLogLine("Resumed data resource '" + d.Location.location + "'");
+					General.WriteLogLine("Resumed data resource \"" + d.Location.location + "\"");
 					d.Resume();
 				}
 				catch(Exception e)
@@ -820,9 +858,6 @@ namespace CodeImp.DoomBuilder.Data
 						i.Value.SetUsedInMap(usedtextures.ContainsKey(i.Key));
 						if(i.Value.IsImageLoaded != i.Value.IsReferenced) ProcessImage(i.Value);
 					}
-
-					// Done
-					updatedusedtextures = false;
 				}
 			}
 			//mxd. Use separate collections
@@ -847,10 +882,10 @@ namespace CodeImp.DoomBuilder.Data
 						if(i.Value.IsImageLoaded != i.Value.IsReferenced) ProcessImage(i.Value);
 					}
 				}
-				
-				// Done
-				updatedusedtextures = false;
 			}
+
+			// Done
+			updatedusedtextures = false;
 		}
 		
 		#endregion
@@ -930,7 +965,7 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Textures
 
 		// This loads the textures
-		private int LoadTextures(Dictionary<long, ImageData> list, Dictionary<long, long> nametranslation)
+		private int LoadTextures(Dictionary<long, ImageData> list, Dictionary<long, long> nametranslation, Dictionary<string, TexturesParser> cachedparsers)
 		{
 			PatchNames pnames = new PatchNames();
 			int counter = 0;
@@ -946,7 +981,7 @@ namespace CodeImp.DoomBuilder.Data
 				if(newpnames != null) pnames = newpnames;
 
 				// Load textures
-				ICollection<ImageData> images = dr.LoadTextures(pnames);
+				IEnumerable<ImageData> images = dr.LoadTextures(pnames, cachedparsers);
 				if(images != null)
 				{
 					// Go for all textures
@@ -1144,7 +1179,7 @@ namespace CodeImp.DoomBuilder.Data
 			}
 			else
 			{
-				General.ErrorLogger.Add(ErrorType.Warning, "Unable to load editor texture '" + name + "'. Using built-in one instead.");
+				General.ErrorLogger.Add(ErrorType.Warning, "Unable to load editor texture \"" + name + "\". Using built-in one instead.");
 				result = new ResourceImage("CodeImp.DoomBuilder.Resources." + name);
 			}
 
@@ -1157,7 +1192,7 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Flats
 
 		// This loads the flats
-		private int LoadFlats(Dictionary<long, ImageData> list, Dictionary<long, long> nametranslation)
+		private int LoadFlats(Dictionary<long, ImageData> list, Dictionary<long, long> nametranslation, Dictionary<string, TexturesParser> cachedparsers)
 		{
 			int counter = 0;
 			
@@ -1165,7 +1200,7 @@ namespace CodeImp.DoomBuilder.Data
 			foreach(DataReader dr in containers)
 			{
 				// Load flats
-				ICollection<ImageData> images = dr.LoadFlats();
+				IEnumerable<ImageData> images = dr.LoadFlats(cachedparsers);
 				if(images != null)
 				{
 					// Go for all flats
@@ -1279,7 +1314,7 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Sprites
 
 		// This loads the hard defined sprites (not all the lumps, we do that on a need-to-know basis, see LoadThingSprites)
-		private int LoadSprites()
+		private int LoadSprites(Dictionary<string, TexturesParser> cachedparsers)
 		{
 			int counter = 0;
 			
@@ -1288,7 +1323,7 @@ namespace CodeImp.DoomBuilder.Data
 			foreach(DataReader dr in containers)
 			{
 				// Load sprites
-				ICollection<ImageData> images = dr.LoadSprites();
+				IEnumerable<ImageData> images = dr.LoadSprites(cachedparsers);
 				if(images != null)
 				{
 					// Add or replace in sprites list
@@ -1330,7 +1365,7 @@ namespace CodeImp.DoomBuilder.Data
 					} 
 					else //mxd
 					{
-						General.ErrorLogger.Add(ErrorType.Error, "Missing sprite lump '" + ti.Sprite + "'. Forgot to include required resources?");
+						General.ErrorLogger.Add(ErrorType.Error, "Missing sprite lump \"" + ti.Sprite + "\". Forgot to include required resources?");
 					}
 				} 
 				else 
@@ -1494,7 +1529,7 @@ namespace CodeImp.DoomBuilder.Data
 		private int LoadDecorateThings(Dictionary<int, string> spawnnumsoverride, Dictionary<int, string> doomednumsoverride)
 		{
 			int counter = 0;
-			char[] catsplitter = new[] {Path.AltDirectorySeparatorChar}; //mxd
+			char[] catsplitter = { Path.AltDirectorySeparatorChar }; //mxd
 			
 			// Create new parser
 			decorate = new DecorateParser { OnInclude = LoadDecorateFromLocation };
@@ -1508,26 +1543,43 @@ namespace CodeImp.DoomBuilder.Data
 					// Load Decorate info cumulatively (the last Decorate is added to the previous)
 					// I'm not sure if this is the right thing to do though.
 					currentreader = dr;
-					Dictionary<string, Stream> decostreams = dr.GetDecorateData("DECORATE");
-					foreach(KeyValuePair<string, Stream> group in decostreams)
+					IEnumerable<TextResourceData> decostreams = dr.GetDecorateData("DECORATE");
+					foreach(TextResourceData data in decostreams)
 					{
 						// Parse the data
-						group.Value.Seek(0, SeekOrigin.Begin);
-						decorate.Parse(group.Value, Path.Combine(currentreader.Location.GetShortName(), group.Key), true);
+						data.Stream.Seek(0, SeekOrigin.Begin);
+						decorate.Parse(data, true);
 						
 						//mxd. DECORATE lumps are interdepandable. Can't carry on...
 						if(decorate.HasError)
 						{
-							decorate.LogError(); //mxd
+							decorate.LogError();
+							currentreader = null;
 							return counter;
 						}
 					}
 				}
-				
+
+				//mxd. Add to text resources collection
+				textresources[decorate.ScriptType] = new HashSet<TextResource>(decorate.TextResources.Values);
 				currentreader = null;
 				
 				if(!decorate.HasError)
 				{
+					//mxd. Create DamageTypes list
+					// Combine damage types from config and decorate
+					HashSet<string> dtset = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+					dtset.UnionWith(General.Map.Config.DamageTypes);
+					dtset.UnionWith(decorate.DamageTypes);
+
+					// Sort values
+					List<string> dtypes = new List<string>(dtset);
+					dtypes.Sort();
+					
+					// Apply to collection
+					damagetypes = new string[dtypes.Count];
+					dtypes.CopyTo(damagetypes);
+					
 					// Step 1. Go for all actors in the decorate to make things or update things
 					foreach(ActorStructure actor in decorate.Actors)
 					{
@@ -1632,7 +1684,7 @@ namespace CodeImp.DoomBuilder.Data
 							// Loudly give up...
 							else
 							{
-								General.ErrorLogger.Add(ErrorType.Warning, "Failed to apply MAPINFO DoomEdNum override '" + group.Key + " = " + group.Value + ": failed to find corresponding actor class...");
+								General.ErrorLogger.Add(ErrorType.Warning, "Failed to apply MAPINFO DoomEdNum override \"" + group.Key + " = " + group.Value + "\": failed to find corresponding actor class...");
 							}
 						}
 
@@ -1658,16 +1710,13 @@ namespace CodeImp.DoomBuilder.Data
 					}
 
 					bool spawnidschanged = false;
-					if(!decorate.HasError)
+					foreach(ActorStructure actor in decorate.Actors)
 					{
-						foreach(ActorStructure actor in decorate.Actors)
+						int spawnid = actor.GetPropertyValueInt("spawnid", 0);
+						if(spawnid != 0)
 						{
-							int spawnid = actor.GetPropertyValueInt("spawnid", 0);
-							if(spawnid != 0)
-							{
-								configspawnnums[spawnid] = new EnumItem(spawnid.ToString(), (actor.HasPropertyWithValue("$title") ? actor.GetPropertyAllValues("$title") : actor.ClassName));
-								spawnidschanged = true;
-							}
+							configspawnnums[spawnid] = new EnumItem(spawnid.ToString(), (actor.HasPropertyWithValue("$title") ? actor.GetPropertyAllValues("$title") : actor.ClassName));
+							spawnidschanged = true;
 						}
 					}
 
@@ -1676,9 +1725,7 @@ namespace CodeImp.DoomBuilder.Data
 					{
 						// Modify by MAPINFO data
 						foreach(KeyValuePair<int, string> group in spawnnumsoverride) 
-						{
 							configspawnnums[group.Key] = new EnumItem(group.Key.ToString(), (thingtypes.ContainsKey(group.Key) ? thingtypes[group.Key].Title : group.Value));
-						}
 
 						spawnidschanged = true;
 					}
@@ -1761,11 +1808,11 @@ namespace CodeImp.DoomBuilder.Data
 		private void LoadDecorateFromLocation(DecorateParser parser, string location)
 		{
 			//General.WriteLogLine("Including DECORATE resource '" + location + "'...");
-			Dictionary<string, Stream> decostreams = currentreader.GetDecorateData(location);
-			foreach(KeyValuePair<string, Stream> group in decostreams)
+			IEnumerable<TextResourceData> decostreams = currentreader.GetDecorateData(location);
+			foreach(TextResourceData data in decostreams)
 			{
 				// Parse this data
-				parser.Parse(group.Value, group.Key, false);
+				parser.Parse(data, false);
 
 				//mxd. DECORATE lumps are interdepandable. Can't carry on...
 				if(parser.HasError)
@@ -1821,13 +1868,13 @@ namespace CodeImp.DoomBuilder.Data
 				if(!string.IsNullOrEmpty(ti.Value.ClassName))
 				{
 					if(actors.ContainsKey(ti.Value.ClassName) && actors[ti.Value.ClassName] != ti.Key)
-						General.ErrorLogger.Add(ErrorType.Warning, "actor '" + ti.Value.ClassName + "' has several editor numbers! Only the last one (" + ti.Key + ") will be used.");
+						General.ErrorLogger.Add(ErrorType.Warning, "Actor \"" + ti.Value.ClassName + "\" has several editor numbers! Only the last one (" + ti.Key + ") will be used.");
 					actors[ti.Value.ClassName] = ti.Key;
 				}
 			}
 
 			if(actors.Count == 0) 
-				General.ErrorLogger.Add(ErrorType.Warning, "unable to find any DECORATE actor definitions!");
+				General.ErrorLogger.Add(ErrorType.Warning, "Unable to find any DECORATE actor definitions!");
 
 			return actors;
 		}
@@ -1836,10 +1883,7 @@ namespace CodeImp.DoomBuilder.Data
 		public void ReloadModeldef() 
 		{
 			if(modeldefentries != null) 
-			{
-				foreach(KeyValuePair<int, ModelData> group in modeldefentries)
-					group.Value.Dispose();
-			}
+				foreach(KeyValuePair<int, ModelData> group in modeldefentries) group.Value.Dispose();
 
 			// Bail out when not supported by current game configuration
 			if(string.IsNullOrEmpty(General.Map.Config.DecorateGames)) return;
@@ -1852,7 +1896,7 @@ namespace CodeImp.DoomBuilder.Data
 
 			foreach(Thing t in General.Map.Map.Things) t.UpdateCache();
 
-			//rebuild geometry if in Visual mode
+			// Rebuild geometry if in Visual mode
 			if(General.Editing.Mode != null && General.Editing.Mode.GetType().Name == "BaseVisualMode") 
 			{
 				General.Editing.Mode.OnReloadResources();
@@ -1905,16 +1949,16 @@ namespace CodeImp.DoomBuilder.Data
 			{
 				currentreader = dr;
 
-				Dictionary<string, Stream> streams = dr.GetModeldefData();
-				foreach(KeyValuePair<string, Stream> group in streams) 
+				IEnumerable<TextResourceData> streams = dr.GetModeldefData();
+				foreach(TextResourceData data in streams) 
 				{
 					// Parse the data
-					if(parser.Parse(group.Value, Path.Combine(currentreader.Location.GetShortName(), group.Key), true)) 
+					if(parser.Parse(data, true)) 
 					{
 						foreach(KeyValuePair<string, ModelData> g in parser.Entries) 
 						{
-							if(modeldefentriesbyname.ContainsKey(g.Key)) 
-								General.ErrorLogger.Add(ErrorType.Warning, "Model definition for actor '" + g.Key + "' is double-defined in '" + group.Key + "'");
+							if(modeldefentriesbyname.ContainsKey(g.Key))
+								General.ErrorLogger.Add(ErrorType.Warning, "Model definition for actor \"" + g.Key + "\" is double defined in \"" + Path.Combine(data.Source.Location.GetShortName(), data.Filename) + "\"");
 							
 							modeldefentriesbyname[g.Key] = g.Value;
 						}
@@ -1925,6 +1969,8 @@ namespace CodeImp.DoomBuilder.Data
 				}
 			}
 
+			//mxd. Add to text resources collection
+			textresources[parser.ScriptType] = new HashSet<TextResource>(parser.TextResources.Values);
 			currentreader = null;
 
 			foreach(KeyValuePair<string, ModelData> e in modeldefentriesbyname) 
@@ -1932,7 +1978,7 @@ namespace CodeImp.DoomBuilder.Data
 				if(actorsbyclass.ContainsKey(e.Key))
 					modeldefentries[actorsbyclass[e.Key]] = modeldefentriesbyname[e.Key];
 				else if(!decorate.ActorsByClass.ContainsKey(e.Key))
-					General.ErrorLogger.Add(ErrorType.Warning, "Got MODELDEF override for class '" + e.Key + "', but haven't found such class in Decorate");
+					General.ErrorLogger.Add(ErrorType.Warning, "MODELDEF model \"" + e.Key + "\" doesn't match any Decorate actor class");
 			}
 		}
 
@@ -1942,8 +1988,8 @@ namespace CodeImp.DoomBuilder.Data
 			// Bail out when not supported by current game configuration
 			if(string.IsNullOrEmpty(General.Map.Config.DecorateGames)) return;
 			
-			//Get names of all voxel models, which can be used "as is"
-			Dictionary<string, bool> voxelNames = new Dictionary<string, bool>(StringComparer.Ordinal);
+			// Get names of all voxel models, which can be used "as is"
+			HashSet<string> voxelnames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 			
 			foreach(DataReader dr in containers) 
 			{
@@ -1954,7 +2000,7 @@ namespace CodeImp.DoomBuilder.Data
 
 				foreach(string s in result) 
 				{
-					if(!voxelNames.ContainsKey(s)) voxelNames.Add(s, false);
+					if(!voxelnames.Contains(s)) voxelnames.Add(s);
 				}
 			}
 
@@ -1969,7 +2015,7 @@ namespace CodeImp.DoomBuilder.Data
 				if(ti.Sprite.Length == 0 || ti.Sprite.Length > CLASIC_IMAGE_NAME_LENGTH) 
 				{
 					if(ti.Actor == null) continue;
-					sprite = ti.Actor.FindSuitableVoxel(voxelNames);
+					sprite = ti.Actor.FindSuitableVoxel(voxelnames);
 				} 
 				else 
 				{
@@ -1982,17 +2028,17 @@ namespace CodeImp.DoomBuilder.Data
 			}
 
 			VoxeldefParser parser = new VoxeldefParser();
-			Dictionary<string, bool> processed = new Dictionary<string, bool>(StringComparer.Ordinal);
+			HashSet<string> processed = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-			//parse VOXLEDEF
+			// Parse VOXLEDEF
 			foreach(DataReader dr in containers) 
 			{
 				currentreader = dr;
 
-				KeyValuePair<string, Stream> group = dr.GetVoxeldefData();
-				if(group.Value != null) 
+				IEnumerable<TextResourceData> streams = dr.GetVoxeldefData();
+				foreach(TextResourceData data in streams)
 				{
-					if(parser.Parse(group.Value, Path.Combine(currentreader.Location.GetShortName(), group.Key), true))
+					if(parser.Parse(data, true))
 					{
 						foreach(KeyValuePair<string, ModelData> entry in parser.Entries)
 						{
@@ -2000,8 +2046,9 @@ namespace CodeImp.DoomBuilder.Data
 							{
 								if(sc.Key.Contains(entry.Key))
 								{
-									foreach(int id in sc.Value) modeldefentries[id] = entry.Value;
-									processed.Add(entry.Key, false);
+									foreach(int id in sc.Value)
+										modeldefentries[id] = entry.Value;
+									processed.Add(entry.Key);
 								}
 							}
 						}
@@ -2012,19 +2059,21 @@ namespace CodeImp.DoomBuilder.Data
 				}
 			}
 
+			//mxd. Add to text resources collection
+			textresources[parser.ScriptType] = new HashSet<TextResource>(parser.TextResources.Values);
 			currentreader = null;
 
-			//get voxel models
-			foreach(KeyValuePair<string, bool> group in voxelNames) 
+			// Get voxel models
+			foreach(string voxelname in voxelnames) 
 			{
-				if(processed.ContainsKey(group.Key)) continue;
+				if(processed.Contains(voxelname)) continue;
 				foreach(KeyValuePair<string, List<int>> sc in sprites) 
 				{
-					if(sc.Key.Contains(group.Key)) 
+					if(sc.Key.Contains(voxelname)) 
 					{
-						//it's a model without a definition, and it corresponds to a sprite we can display, so let's add it
+						// It's a model without a definition, and it corresponds to a sprite we can display, so let's add it
 						ModelData data = new ModelData { IsVoxel = true };
-						data.ModelNames.Add(group.Key);
+						data.ModelNames.Add(voxelname);
 
 						foreach(int id in sprites[sc.Key]) modeldefentries[id] = data;
 					}
@@ -2045,20 +2094,25 @@ namespace CodeImp.DoomBuilder.Data
 			{
 				currentreader = dr;
 				parser.ClearIncludesList();
-				Dictionary<string, Stream> streams = dr.GetGldefsData(General.Map.Config.GameType);
+				IEnumerable<TextResourceData> streams = dr.GetGldefsData(General.Map.Config.GameType);
 
-				foreach(KeyValuePair<string, Stream> group in streams)
+				foreach(TextResourceData data in streams)
 				{
-					parser.Parse(group.Value, Path.Combine(currentreader.Location.GetShortName(), group.Key), false);
+					parser.Parse(data, false);
 					
 					// Gldefs can be interdependable. Can't carry on
 					if(parser.HasError)
 					{
 						parser.LogError();
+						currentreader = null;
 						return;
 					}
 				}
 			}
+
+			//mxd. Add to text resources collection
+			textresources[parser.ScriptType] = new HashSet<TextResource>(parser.TextResources.Values);
+			currentreader = null;
 
 			// Create Gldefs Entries dictionary
 			foreach(KeyValuePair<string, string> e in parser.Objects) //<ClassName, Light name>
@@ -2067,7 +2121,7 @@ namespace CodeImp.DoomBuilder.Data
 				if(actorsbyclass.ContainsKey(e.Key) && parser.LightsByName.ContainsKey(e.Value)) 
 					gldefsentries[actorsbyclass[e.Key]] = parser.LightsByName[e.Value];
 				else if(!decorate.AllActorsByClass.ContainsKey(e.Key))
-					General.ErrorLogger.Add(ErrorType.Warning, "Got GLDEFS light for class '" + e.Key + "', but haven't found such class in DECORATE");
+					General.ErrorLogger.Add(ErrorType.Warning, "GLDEFS object \"" + e.Key + "\" doesn't match any DECORATE actor class");
 			}
 
 			// Grab them glowy flats!
@@ -2093,12 +2147,12 @@ namespace CodeImp.DoomBuilder.Data
 			foreach(DataReader dr in containers)
 			{
 				currentreader = dr;
+				IEnumerable<TextResourceData> streams = dr.GetMapinfoData();
 
-				Dictionary<string, Stream> streams = dr.GetMapinfoData();
-				foreach(KeyValuePair<string, Stream> group in streams)
+				foreach(TextResourceData data in streams)
 				{
 					// Parse the data
-					parser.Parse(group.Value, Path.Combine(dr.Location.location, group.Key), General.Map.Options.LevelName, false);
+					parser.Parse(data, General.Map.Options.LevelName, false);
 
 					//MAPINFO lumps are interdependable. Can't carry on...
 					if(parser.HasError)
@@ -2123,14 +2177,16 @@ namespace CodeImp.DoomBuilder.Data
 				doomednums = new Dictionary<int, string>();
 				mapinfo = new MapInfo();
 			}
-			
+
+			//mxd. Add to text resources collection
+			textresources[parser.ScriptType] = new HashSet<TextResource>(parser.TextResources.Values);
 			currentreader = null;
 		}
 
 		private void ParseFromLocation(ZDTextParser parser, string location, bool clearerrors)
 		{
 			if(currentreader.IsSuspended) throw new Exception("Data reader is suspended");
-			parser.Parse(currentreader.LoadFile(location), location, clearerrors);
+			parser.Parse(new TextResourceData(currentreader, currentreader.LoadFile(location), location, true), clearerrors);
 		}
 
 		//mxd. This loads REVERBS
@@ -2145,17 +2201,19 @@ namespace CodeImp.DoomBuilder.Data
 			foreach(DataReader dr in containers) 
 			{
 				currentreader = dr;
-				Dictionary<string, Stream> streams = dr.GetReverbsData();
-				foreach(KeyValuePair<string, Stream> group in streams) 
+				IEnumerable<TextResourceData> streams = dr.GetReverbsData();
+				foreach(TextResourceData data in streams) 
 				{
 					// Parse the data
-					parser.Parse(group.Value, Path.Combine(currentreader.Location.GetShortName(), group.Key), true);
+					parser.Parse(data, true);
 
 					// Report errors?
 					if(parser.HasError) parser.LogError();
 				}
 			}
 
+			//mxd. Add to text resources collection
+			textresources[parser.ScriptType] = new HashSet<TextResource>(parser.TextResources.Values);
 			currentreader = null;
 			reverbs = parser.GetReverbs();
 		}
@@ -2163,8 +2221,6 @@ namespace CodeImp.DoomBuilder.Data
 		//mxd. This loads SNDSEQ
 		private void LoadSndSeq()
 		{
-			soundsequences.Clear();
-
 			// Bail out when not supported by current game configuration
 			if(string.IsNullOrEmpty(General.Map.Config.DecorateGames)) return;
 
@@ -2172,18 +2228,20 @@ namespace CodeImp.DoomBuilder.Data
 			foreach(DataReader dr in containers) 
 			{
 				currentreader = dr;
-				Dictionary<string, Stream> streams = dr.GetSndSeqData();
+				IEnumerable<TextResourceData> streams = dr.GetSndSeqData();
 
 				// Parse the data
-				foreach(KeyValuePair<string, Stream> group in streams)
+				foreach(TextResourceData data in streams)
 				{
-					parser.Parse(group.Value, Path.Combine(currentreader.Location.GetShortName(), group.Key), true);
+					parser.Parse(data, true);
 
 					// Report errors?
 					if(parser.HasError) parser.LogError();
 				}
 			}
 
+			//mxd. Add to text resources collection
+			textresources[parser.ScriptType] = new HashSet<TextResource>(parser.TextResources.Values);
 			currentreader = null;
 			soundsequences = parser.GetSoundSequences();
 		}
@@ -2198,12 +2256,12 @@ namespace CodeImp.DoomBuilder.Data
 			foreach(DataReader dr in containers)
 			{
 				currentreader = dr;
-				Dictionary<string, Stream> streams = dr.GetAnimdefsData();
+				IEnumerable<TextResourceData> streams = dr.GetAnimdefsData();
 
 				// Parse the data
-				foreach(KeyValuePair<string, Stream> group in streams)
+				foreach(TextResourceData data in streams)
 				{
-					parser.Parse(group.Value, Path.Combine(currentreader.Location.GetShortName(), group.Key), true);
+					parser.Parse(data, true);
 
 					// Report errors?
 					if(parser.HasError) parser.LogError();
@@ -2212,27 +2270,27 @@ namespace CodeImp.DoomBuilder.Data
 					foreach(var g in parser.CameraTextures)
 					{
 						// Grab a local copy
-						CameraTextureData data = g.Value;
+						CameraTextureData camtexdata = g.Value;
 
 						// Apply texture size override?
-						if(!data.FitTexture)
+						if(!camtexdata.FitTexture)
 						{
-							long longname = Lump.MakeLongName(data.Name);
+							long longname = Lump.MakeLongName(camtexdata.Name);
 
 							if(textures.ContainsKey(longname))
 							{
-								data.ScaleX = (float)textures[longname].Width / data.Width;
-								data.ScaleY = (float)textures[longname].Height / data.Height;
+								camtexdata.ScaleX = (float)textures[longname].Width / camtexdata.Width;
+								camtexdata.ScaleY = (float)textures[longname].Height / camtexdata.Height;
 							}
 							else if(flats.ContainsKey(longname))
 							{
-								data.ScaleX = (float)flats[longname].Width / data.Width;
-								data.ScaleY = (float)flats[longname].Height / data.Height;
+								camtexdata.ScaleX = (float)flats[longname].Width / camtexdata.Width;
+								camtexdata.ScaleY = (float)flats[longname].Height / camtexdata.Height;
 							}
 						}
 
 						// Create texture
-						CameraTextureImage camteximage = new CameraTextureImage(data);
+						CameraTextureImage camteximage = new CameraTextureImage(camtexdata);
 
 						// Add to flats and textures
 						texturenames.Add(camteximage.Name);
@@ -2252,18 +2310,66 @@ namespace CodeImp.DoomBuilder.Data
 				}
 			}
 
+			//mxd. Add to text resources collection
+			textresources[parser.ScriptType] = new HashSet<TextResource>(parser.TextResources.Values);
 			currentreader = null;
 		}
 
+		//mxd. This loads TERRAIN
+		private void LoadTerrain()
+		{
+			// Bail out when not supported by current game configuration
+			if(string.IsNullOrEmpty(General.Map.Config.DecorateGames)) return;
+
+			TerrainParser parser = new TerrainParser();
+			foreach(DataReader dr in containers)
+			{
+				currentreader = dr;
+				IEnumerable<TextResourceData> streams = dr.GetTerrainData();
+
+				// Parse the data
+				foreach(TextResourceData data in streams)
+				{
+					parser.Parse(data, true);
+
+					// Report errors?
+					if(parser.HasError) parser.LogError();
+				}
+			}
+
+			// Add to text resources collection
+			textresources[parser.ScriptType] = new HashSet<TextResource>(parser.TextResources.Values);
+			currentreader = null;
+
+			// Sort
+			List<string> names = new List<string>(parser.TerrainNames);
+			names.Sort();
+
+			// Set as collection
+			terrainnames = names.ToArray();
+		}
+
 		//mxd
-		internal Stream LoadFile(string name) 
+		internal TextResourceData LoadFile(string name) 
 		{
 			// Filesystem path?
 			if(Path.IsPathRooted(name))
-				return (File.Exists(name) ? File.OpenRead(name) : null);
+			{
+				if(File.Exists(name))
+				{
+					DataLocation location = new DataLocation{ location = name, type = DataLocation.RESOURCE_DIRECTORY };
+					return new TextResourceData(File.OpenRead(name), location, name, false);
+				}
 
-			foreach(DataReader dr in containers)
-				if(dr.FileExists(name)) return dr.LoadFile(name);
+				return null;
+			}
+
+			// Search in resources
+			for(int i = containers.Count - 1; i >= 0; i--)
+			{
+				if(containers[i].FileExists(name))
+					return new TextResourceData(containers[i], containers[i].LoadFile(name), name, false);
+			}
 
 			return null;
 		}
@@ -2312,21 +2418,18 @@ namespace CodeImp.DoomBuilder.Data
 					foreach(Sidedef sd in General.Map.Map.Sidedefs)
 					{
 						// Add used textures to dictionary
-						if(sd.LongHighTexture != MapSet.EmptyLongName) usedtextures[sd.LongHighTexture] = 0;
-						if(sd.LongMiddleTexture != MapSet.EmptyLongName) usedtextures[sd.LongMiddleTexture] = 0;
-						if(sd.LongLowTexture != MapSet.EmptyLongName) usedtextures[sd.LongLowTexture] = 0;
+						if(sd.LongHighTexture != MapSet.EmptyLongName) usedtextures[sd.LongHighTexture] = true;
+						if(sd.LongMiddleTexture != MapSet.EmptyLongName) usedtextures[sd.LongMiddleTexture] = true;
+						if(sd.LongLowTexture != MapSet.EmptyLongName) usedtextures[sd.LongLowTexture] = true;
 					}
 
 					// Go through the map to find the used flats
 					foreach(Sector s in General.Map.Map.Sectors)
 					{
 						// Add used flats to dictionary
-						usedtextures[s.LongFloorTexture] = 0;
-						usedtextures[s.LongCeilTexture] = 0;
+						usedtextures[s.LongFloorTexture] = false;
+						usedtextures[s.LongCeilTexture] = false;
 					}
-
-					// Notify the background thread that it needs to update the images
-					updatedusedtextures = true;
 				}
 			}
 			//mxd. Use separate collections
@@ -2340,9 +2443,9 @@ namespace CodeImp.DoomBuilder.Data
 					foreach(Sidedef sd in General.Map.Map.Sidedefs)
 					{
 						// Add used textures to dictionary
-						if(sd.LongHighTexture != MapSet.EmptyLongName) usedtextures[sd.LongHighTexture] = 0;
-						if(sd.LongMiddleTexture != MapSet.EmptyLongName) usedtextures[sd.LongMiddleTexture] = 0;
-						if(sd.LongLowTexture != MapSet.EmptyLongName) usedtextures[sd.LongLowTexture] = 0;
+						if(sd.LongHighTexture != MapSet.EmptyLongName) usedtextures[sd.LongHighTexture] = true;
+						if(sd.LongMiddleTexture != MapSet.EmptyLongName) usedtextures[sd.LongMiddleTexture] = true;
+						if(sd.LongLowTexture != MapSet.EmptyLongName) usedtextures[sd.LongLowTexture] = true;
 					}
 				}
 
@@ -2354,14 +2457,14 @@ namespace CodeImp.DoomBuilder.Data
 					foreach(Sector s in General.Map.Map.Sectors)
 					{
 						// Add used flats to dictionary
-						usedflats[s.LongFloorTexture] = 0;
-						usedflats[s.LongCeilTexture] = 0;
+						usedflats[s.LongFloorTexture] = false;
+						usedflats[s.LongCeilTexture] = false;
 					}
 				}
-				
-				// Notify the background thread that it needs to update the images
-				updatedusedtextures = true;
 			}
+
+			// Notify the background thread that it needs to update the images
+			updatedusedtextures = true;
 		}
 
 		#endregion

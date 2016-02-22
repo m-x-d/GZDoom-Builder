@@ -5,6 +5,8 @@ using System.Drawing;
 using System.IO;
 using System.Collections.Generic;
 using System.Globalization;
+using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.ZDoom;
 using CodeImp.DoomBuilder.GZBuilder.Data;
 using CodeImp.DoomBuilder.Rendering;
@@ -56,6 +58,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 
 		#region ================== Properties
 
+		internal override ScriptType ScriptType { get { return ScriptType.GLDEFS; } }
+		
 		internal Dictionary<string, DynamicLightData> LightsByName { get { return lightsbyname; } }
 		internal Dictionary<string, string> Objects { get { return objects; } }
 		internal Dictionary<long, GlowingFlatData> GlowingFlats { get { return glowingflats; } }
@@ -82,14 +86,25 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 
 		#region ================== Parsing
 
-		public override bool Parse(Stream stream, string sourcefilename, bool clearerrors) 
+		public override bool Parse(TextResourceData data, bool clearerrors) 
 		{
-			if(!base.Parse(stream, sourcefilename, clearerrors)) return false;
+			//mxd. Already parsed?
+			if(!base.AddTextResource(data))
+			{
+				if(clearerrors) ClearError();
+				return true;
+			}
+
+			// Cannot process?
+			if(!base.Parse(data, clearerrors)) return false;
 
 			// Keep local data
 			Stream localstream = datastream;
 			string localsourcename = sourcename;
+			int localsourcelumpindex = sourcelumpindex;
 			BinaryReader localreader = datareader;
+			DataLocation locallocation = datalocation;
+			string localtextresourcepath = textresourcepath;
 
 			// Continue until at the end of the stream
 			while(SkipWhitespace(true)) 
@@ -123,6 +138,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						datastream = localstream;
 						datareader = localreader;
 						sourcename = localsourcename;
+						sourcelumpindex = localsourcelumpindex;
+						datalocation = locallocation;
+						textresourcepath = localtextresourcepath;
 						break;
 
 					case "$gzdb_skip": return !this.HasError;
@@ -173,7 +191,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						if(!float.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out light.Color.Red))
 						{
 							// Not numeric!
-							ReportError("Expected Red color value, but got '" + token + "'");
+							ReportError("Expected Red color value, but got \"" + token + "\"");
 							return false;
 						}
 
@@ -182,7 +200,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						if(!float.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out light.Color.Green))
 						{
 							// Not numeric!
-							ReportError("Expected Green color value, but got '" + token + "'");
+							ReportError("Expected Green color value, but got \"" + token + "\"");
 							return false;
 						}
 
@@ -191,7 +209,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						if(!float.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out light.Color.Blue))
 						{
 							// Not numeric!
-							ReportError("Expected Blue color value, but got '" + token + "'");
+							ReportError("Expected Blue color value, but got \"" + token + "\"");
 							return false;
 						}
 					break;
@@ -205,7 +223,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out light.PrimaryRadius))
 							{
 								// Not numeric!
-								ReportError("Expected Size value, but got '" + token + "'");
+								ReportError("Expected Size value, but got \"" + token + "\"");
 								return false;
 							}
 							light.PrimaryRadius *= 2;
@@ -213,7 +231,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						}
 						else
 						{
-							ReportError("'" + token + "' is not valid property for " + lighttype);
+							ReportError("\"" + token + "\" is not valid property for " + lighttype);
 							return false;
 						}
 					break;
@@ -224,7 +242,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						if(!ReadSignedFloat(token, ref light.Offset.X))
 						{
 							// Not numeric!
-							ReportError("Expected Offset X value, but got '" + token + "'");
+							ReportError("Expected Offset X value, but got \"" + token + "\"");
 							return false;
 						}
 
@@ -233,7 +251,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						if(!ReadSignedFloat(token, ref light.Offset.Z))
 						{
 							// Not numeric!
-							ReportError("Expected Offset Y value, but got '" + token + "'");
+							ReportError("Expected Offset Y value, but got \"" + token + "\"");
 							return false;
 						}
 
@@ -242,7 +260,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						if(!ReadSignedFloat(token, ref light.Offset.Y))
 						{
 							// Not numeric!
-							ReportError("Expected Offset Z value, but got '" + token + "'");
+							ReportError("Expected Offset Z value, but got \"" + token + "\"");
 							return false;
 						}
 					break;
@@ -256,7 +274,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out i))
 						{
 							// Not numeric!
-							ReportError("expected Subtractive value, but got '" + token + "'");
+							ReportError("expected Subtractive value, but got \"" + token + "\"");
 							return false;
 						}
 
@@ -273,7 +291,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out i))
 						{
 							// Not numeric!
-							ReportError("Expected DontLightSelf value, but got '" + token + "'");
+							ReportError("Expected DontLightSelf value, but got \"" + token + "\"");
 							return false;
 						}
 
@@ -291,7 +309,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							if(!float.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out interval))
 							{
 								// Not numeric!
-								ReportError("Expected Interval value, but got '" + token + "'");
+								ReportError("Expected Interval value, but got \"" + token + "\"");
 								return false;
 							}
 
@@ -309,7 +327,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						}
 						else
 						{
-							ReportError("'" + token + "' is not valid property for " + lighttype);
+							ReportError("\"" + token + "\" is not valid property for " + lighttype);
 							return false;
 						}
 					break;
@@ -323,7 +341,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out light.SecondaryRadius))
 							{
 								// Not numeric!
-								ReportError("Expected SecondarySize value, but got '" + token + "'");
+								ReportError("Expected SecondarySize value, but got \"" + token + "\"");
 								return false;
 							}
 
@@ -331,7 +349,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						}
 						else
 						{
-							ReportError("'" + token + "' is not valid property for " + lighttype);
+							ReportError("\"" + token + "\" is not valid property for " + lighttype);
 							return false;
 						}
 					break;
@@ -346,7 +364,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							if(!float.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out chance))
 							{
 								// Not numeric!
-								ReportError("Expected Chance value, but got '" + token + "'");
+								ReportError("Expected Chance value, but got \"" + token + "\"");
 								return false;
 							}
 
@@ -355,7 +373,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						}
 						else
 						{
-							ReportError("'" + token + "' is not valid property for " + lighttype);
+							ReportError("\"" + token + "\" is not valid property for " + lighttype);
 							return false;
 						}
 					break;
@@ -370,7 +388,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							if(!float.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out scale))
 							{
 								// Not numeric!
-								ReportError("Expected Scale value, but got '" + token + "'");
+								ReportError("Expected Scale value, but got \"" + token + "\"");
 								return false;
 							}
 
@@ -386,7 +404,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						}
 						else
 						{
-							ReportError("'" + token + "' is not valid property for " + lighttype);
+							ReportError("\"" + token + "\" is not valid property for " + lighttype);
 							return false;
 						}
 					break;
@@ -398,14 +416,14 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						// General checks
 						if(light.Color.Red == 0.0f && light.Color.Green == 0.0f && light.Color.Blue == 0.0f)
 						{
-							LogWarning("'" + lightname + "' light Color is " + light.Color.Red + "," + light.Color.Green + "," + light.Color.Blue + ". It won't be shown in GZDoom");
+							LogWarning("\"" + lightname + "\" light Color is " + light.Color.Red + "," + light.Color.Green + "," + light.Color.Blue + ". It won't be shown in GZDoom");
 							skip = true;
 						}
 
 						// Light-type specific checks
 						if(light.Type == DynamicLightType.NORMAL && light.PrimaryRadius == 0)
 						{
-							LogWarning("'" + lightname + "' light Size is 0. It won't be shown in GZDoom");
+							LogWarning("\"" + lightname + "\" light Size is 0. It won't be shown in GZDoom");
 							skip = true;
 						}
 
@@ -413,7 +431,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						{
 							if(light.PrimaryRadius == 0 && light.SecondaryRadius == 0)
 							{
-								LogWarning("'" + lightname + "' light Size and SecondarySize are 0. This light won't be shown in GZDoom");
+								LogWarning("\"" + lightname + "\" light Size and SecondarySize are 0. This light won't be shown in GZDoom");
 								skip = true;
 							}
 						}
@@ -484,7 +502,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						}
 						else
 						{
-							LogWarning("Light declaration not found for light '" + token + "'");
+							LogWarning("Light declaration not found for light \"" + token + "\"");
 						}
 					}
 				}
@@ -605,7 +623,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							}
 							else
 							{
-								ReportError("expected glow color value, but got '" + token + "'");
+								ReportError("expected glow color value, but got \"" + token + "\"");
 								return false;
 							}
 						}
@@ -662,8 +680,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 
 						if(!fullblack && !fullbright)
 						{
-							string expectedflags = (subtractivetexture ? "'fullbright'" : "'fullbright' or 'fullblack'");
-							ReportError("expected " + expectedflags + " flag, but got '" + token + "'");
+							string expectedflags = (subtractivetexture ? "\"fullbright\"" : "\"fullbright\" or \"fullblack\"");
+							ReportError("expected " + expectedflags + " flag, but got \"" + token + "\"");
 							return false;
 						}
 
@@ -697,7 +715,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 				return false;
 			}
 
-			if(skyboxes.ContainsKey(name)) LogWarning("Skybox \"" + name + "\" is double-defined");
+			if(skyboxes.ContainsKey(name)) LogWarning("Skybox \"" + name + "\" is double defined");
 
 			SkyboxInfo info = new SkyboxInfo(name.ToUpperInvariant()); 
 
@@ -782,7 +800,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 			// Already parsed?
 			if(parsedlumps.Contains(includelump))
 			{
-				ReportError("Already parsed '" + includelump + "'. Check your #include directives");
+				ReportError("Already parsed \"" + includelump + "\". Check your #include directives");
 				return false;
 			}
 
@@ -803,11 +821,6 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 		internal void ClearIncludesList() 
 		{
 			parsedlumps.Clear();
-		}
-
-		protected override string GetLanguageType()
-		{
-			return "GLDEFS";
 		}
 
 		#endregion

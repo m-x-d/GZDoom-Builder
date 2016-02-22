@@ -120,6 +120,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			UpdateTagPicker(tags[0]);
 			UpdateTagsList();
 			removetag.Enabled = (tags.Count > 1);
+			clear.Enabled = (tagpicker.Text.Trim() != "0");
 		}
 
 		public void SetValue(List<int> newtags, bool first)
@@ -278,8 +279,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 
 		private void clear_Click(object sender, EventArgs e)
 		{
-			tagpicker.SelectedIndex = -1;
+			tagpicker.Focus();
 			tagpicker.Text = "0";
+			tagpicker.SelectAll();
 		}
 
 		private void addtag_Click(object sender, EventArgs e)
@@ -365,6 +367,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			}
 
 			string text = tagpicker.Text.Trim();
+			clear.Enabled = (text != "0");
 			if(string.IsNullOrEmpty(text))
 			{
 				tags[curtagindex] = int.MinValue;

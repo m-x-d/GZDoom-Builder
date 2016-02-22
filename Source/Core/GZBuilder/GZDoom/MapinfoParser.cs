@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
+using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.Data;
 using SlimDX;
 using CodeImp.DoomBuilder.ZDoom;
 using CodeImp.DoomBuilder.GZBuilder.Data;
@@ -34,6 +36,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 
 		#region ================== Properties
 
+		internal override ScriptType ScriptType { get { return ScriptType.MAPINFO; } }
+		
 		public MapInfo MapInfo { get { return mapinfo; } }
 		public Dictionary<int, string> SpawnNums { get { return spawnnums; } }
 		public Dictionary<int, string> DoomEdNums { get { return doomednums; } }
@@ -59,21 +63,33 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 		#region ================== Parsing
 
 
-		override public bool Parse(Stream stream, string sourcefilename, bool clearerrors)
+		override public bool Parse(TextResourceData data, bool clearerrors)
 		{
 			if(string.IsNullOrEmpty(mapname)) throw new NotSupportedException("Map name required!");
-			return Parse(stream, sourcefilename, mapname, clearerrors);
+			return Parse(data, mapname, clearerrors);
 		}
 
-		public bool Parse(Stream stream, string sourcefilename, string mapname, bool clearerrors) 
+		public bool Parse(TextResourceData data, string mapname, bool clearerrors) 
 		{
 			this.mapname = mapname.ToLowerInvariant();
-			if(!base.Parse(stream, sourcefilename, clearerrors)) return false;
+
+			//mxd. Already parsed?
+			if(!base.AddTextResource(data))
+			{
+				if(clearerrors) ClearError();
+				return true;
+			}
+
+			// Cannot process?
+			if(!base.Parse(data, clearerrors)) return false;
 
 			// Keep local data
 			Stream localstream = datastream;
 			string localsourcename = sourcename;
+			int localsourcelumpindex = sourcelumpindex;
 			BinaryReader localreader = datareader;
+			DataLocation locallocation = datalocation;
+			string localtextresourcepath = textresourcepath;
 
 			// Classic format skip stoppers...
 			HashSet<string> breakat = new HashSet<string> { "map", "defaultmap", "adddefaultmap" };
@@ -135,6 +151,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 
 						// Parse properties
 						if(!ParseMapBlock()) return false;
+						
+						// There is a map entry for current map, which makes it defined 
+						mapinfo.IsDefined = true; 
 						break;
 
 					case "include":
@@ -144,6 +163,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						datastream = localstream;
 						datareader = localreader;
 						sourcename = localsourcename;
+						sourcelumpindex = localsourcelumpindex;
+						datalocation = locallocation;
+						textresourcepath = localtextresourcepath;
 						break;
 
 					case "gameinfo":
@@ -211,7 +233,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 				// Already parsed?
 				if(parsedlumps.Contains(includelump))
 				{
-					ReportError("Already parsed '" + includelump + "'. Check your include directives");
+					ReportError("Already parsed \"" + includelump + "\". Check your include directives");
 					return false;
 				}
 
@@ -259,7 +281,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 					string skyflatname = StripTokenQuotes(ReadToken());
 					if(string.IsNullOrEmpty(skyflatname))
 					{
-						ReportError("Unable to get SkyFlatName value");
+						ReportError("Expected SkyFlatName value");
 						return false; // Finished with this file
 					}
 
@@ -291,7 +313,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 				if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out id))
 				{
 					// Not numeric!
-					ReportError("Expected DoomEdNums entry number, but got '" + token + "'");
+					ReportError("Expected DoomEdNums entry number, but got \"" + token + "\"");
 					return false; // Finished with this file
 				}
 
@@ -303,7 +325,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 				string classname = StripTokenQuotes(ReadToken());
 				if(string.IsNullOrEmpty(classname))
 				{
-					ReportError("Unable to get DoomEdNums entry class definition");
+					ReportError("Expected DoomEdNums class definition");
 					return false; // Finished with this file
 				}
 
@@ -344,7 +366,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 				if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out id))
 				{
 					// Not numeric!
-					ReportError("Expected SpawnNums number, but got '" + token + "'");
+					ReportError("Expected SpawnNums number, but got \"" + token + "\"");
 					return false; // Finished with this file
 				}
 
@@ -495,7 +517,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 					if(!ReadSignedFloat(token, ref scrollspeed))
 					{
 						// Not numeric!
-						ReportError("Expected " + skytype + " scroll speed value, but got '" + token + "'");
+						ReportError("Expected " + skytype + " scroll speed value, but got \"" + token + "\"");
 						return false;
 					}
 
@@ -579,7 +601,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 			}
 			else //...or not
 			{
-				ReportError("Failed to parse " + fadetype + " value from string '" + colorval + "'");
+				ReportError("Failed to parse " + fadetype + " value from string \"" + colorval + "\"");
 				return false;
 			}
 
@@ -603,7 +625,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 			if(!ReadSignedInt(token, ref val))
 			{
 				// Not numeric!
-				ReportError("Expected " + shadetype + " value, but got '" + token + "'");
+				ReportError("Expected " + shadetype + " value, but got \"" + token + "\"");
 				return false;
 			}
 
@@ -632,7 +654,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 			if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out val))
 			{
 				// Not numeric!
-				ReportError("Expected " + densitytype + " value, but got '" + token + "'");
+				ReportError("Expected " + densitytype + " value, but got \"" + token + "\"");
 				return false;
 			}
 
@@ -668,11 +690,6 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 				return true;
 			}
 			return false;
-		}
-
-		protected override string GetLanguageType()
-		{
-			return "MAPINFO";
 		}
 
 		#endregion

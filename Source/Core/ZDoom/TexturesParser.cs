@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Data;
 
 #endregion
@@ -40,12 +41,14 @@ namespace CodeImp.DoomBuilder.ZDoom
 		private readonly Dictionary<string, TextureStructure> textures;
 		private readonly Dictionary<string, TextureStructure> flats;
 		private readonly Dictionary<string, TextureStructure> sprites;
-		private readonly char[] pathtrimchars = new[] {'_', '.', ' ', '-'}; //mxd
+		private readonly char[] pathtrimchars = {'_', '.', ' ', '-'}; //mxd
 
 		#endregion
 		
 		#region ================== Properties
 
+		internal override ScriptType ScriptType { get { return ScriptType.TEXTURES; } } //mxd
+		
 		public IEnumerable<TextureStructure> Textures { get { return textures.Values; } }
 		public IEnumerable<TextureStructure> Flats { get { return flats.Values; } }
 		public IEnumerable<TextureStructure> Sprites { get { return sprites.Values; } }
@@ -73,20 +76,27 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 		// This parses the given stream
 		// Returns false on errors
-		public override bool Parse(Stream stream, string sourcefilename, bool clearerrors)
+		public override bool Parse(TextResourceData data, bool clearerrors)
 		{
-			if(!base.Parse(stream, sourcefilename, clearerrors)) return false;
+			//mxd. Already parsed?
+			if(!base.AddTextResource(data))
+			{
+				if(clearerrors) ClearError();
+				return true;
+			}
+
+			// Cannot process?
+			if(!base.Parse(data, clearerrors)) return false;
 
 			//mxd. Make vitrual path from filename
 			string virtualpath;
-			if(sourcefilename.Contains("#")) // It's TEXTURES lump
+			if(data.LumpIndex != -1) // It's TEXTURES lump
 			{
-				virtualpath = Path.GetFileName(sourcefilename);
-				if(!string.IsNullOrEmpty(virtualpath)) virtualpath = virtualpath.Substring(0, virtualpath.LastIndexOf("#", StringComparison.Ordinal));
+				virtualpath = data.Filename;
 			}
 			else // If it's actual filename, try to use extension(s) as virtualpath
 			{
-				virtualpath = Path.GetFileName(sourcefilename);
+				virtualpath = Path.GetFileName(data.Filename);
 				if(!string.IsNullOrEmpty(virtualpath)) virtualpath = virtualpath.Substring(8).TrimStart(pathtrimchars);
 				if(!string.IsNullOrEmpty(virtualpath) && virtualpath.ToLowerInvariant() == "txt") virtualpath = string.Empty;
 				if(string.IsNullOrEmpty(virtualpath)) virtualpath = "[TEXTURES]";
@@ -239,12 +249,6 @@ namespace CodeImp.DoomBuilder.ZDoom
 			
 			// Return true when no errors occurred
 			return (ErrorDescription == null);
-		}
-
-		//mxd
-		protected override string GetLanguageType()
-		{
-			return "TEXTURES";
 		}
 		
 		#endregion

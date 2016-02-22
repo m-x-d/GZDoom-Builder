@@ -20,6 +20,8 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.Data;
 
 #endregion
 
@@ -40,7 +42,10 @@ namespace CodeImp.DoomBuilder.ZDoom
 		#endregion
 		
 		#region ================== Variables
-		
+
+		//mxd. Script type
+		internal override ScriptType ScriptType { get { return ScriptType.DECORATE; } }
+
 		// These are actors we want to keep
 		private Dictionary<string, ActorStructure> actors;
 		
@@ -48,7 +53,10 @@ namespace CodeImp.DoomBuilder.ZDoom
 		private Dictionary<string, ActorStructure> archivedactors;
 
 		//mxd. Includes tracking
-		private readonly HashSet<string> parsedlumps; 
+		private readonly HashSet<string> parsedlumps;
+
+		//mxd. Custom damagetypes
+		private readonly HashSet<string> damagetypes;
 
 		//mxd. Disposing. Is that really needed?..
 		private bool isdisposed;
@@ -77,6 +85,11 @@ namespace CodeImp.DoomBuilder.ZDoom
 		/// </summary>
 		internal Dictionary<string, ActorStructure> AllActorsByClass { get { return archivedactors; } }
 
+		/// <summary>
+		/// mxd. Custom DamageTypes (http://zdoom.org/wiki/Damage_types).
+		/// </summary>
+		public IEnumerable<string> DamageTypes { get { return damagetypes; } }
+
 		#endregion
 		
 		#region ================== Constructor / Disposer
@@ -92,6 +105,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			actors = new Dictionary<string, ActorStructure>(StringComparer.OrdinalIgnoreCase);
 			archivedactors = new Dictionary<string, ActorStructure>(StringComparer.OrdinalIgnoreCase);
 			parsedlumps = new HashSet<string>(StringComparer.OrdinalIgnoreCase); //mxd
+			damagetypes = new HashSet<string>(StringComparer.OrdinalIgnoreCase); //mxd
 		}
 		
 		// Disposer
@@ -116,14 +130,24 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 		// This parses the given decorate stream
 		// Returns false on errors
-		public override bool Parse(Stream stream, string sourcefilename, bool clearerrors)
+		public override bool Parse(TextResourceData data, bool clearerrors)
 		{
-			if(!base.Parse(stream, sourcefilename, clearerrors)) return false;
+			//mxd. Already parsed?
+			if(!base.AddTextResource(data))
+			{
+				if(clearerrors) ClearError();
+				return true;
+			}
+
+			// Cannot process?
+			if(!base.Parse(data, clearerrors)) return false;
 			
 			// Keep local data
 			Stream localstream = datastream;
 			string localsourcename = sourcename;
 			BinaryReader localreader = datareader;
+			DataLocation locallocation = datalocation; //mxd
+			string localtextresourcepath = textresourcepath; //mxd
 			
 			// Continue until at the end of the stream
 			while(SkipWhitespace(true))
@@ -153,11 +177,14 @@ namespace CodeImp.DoomBuilder.ZDoom
 								if(GetArchivedActorByName(actor.ReplacesClass) != null)
 									archivedactors[actor.ReplacesClass.ToLowerInvariant()] = actor;
 								else
-									LogWarning("Unable to find '" + actor.ReplacesClass + "' class to replace, while parsing '" + actor.ClassName + "'");
+									LogWarning("Unable to find \"" + actor.ReplacesClass + "\" class to replace, while parsing \"" + actor.ClassName + "\"");
 							
 								if(actor.CheckActorSupported() && GetActorByName(actor.ReplacesClass) != null)
 									actors[actor.ReplacesClass.ToLowerInvariant()] = actor;
 							}
+
+							//mxd. Add to current text resource
+							if(!textresources[textresourcepath].Entries.Contains(actor.ClassName)) textresources[textresourcepath].Entries.Add(actor.ClassName);
 						}
 						break;
 
@@ -206,7 +233,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 							//mxd. Already parsed?
 							if(parsedlumps.Contains(filename))
 							{
-								ReportError("Already parsed '" + filename + "'. Check your include directives");
+								ReportError("Already parsed \"" + filename + "\". Check your include directives");
 								return false;
 							}
 
@@ -223,8 +250,35 @@ namespace CodeImp.DoomBuilder.ZDoom
 							datastream = localstream;
 							datareader = localreader;
 							sourcename = localsourcename;
+							datalocation = locallocation; //mxd
+							textresourcepath = localtextresourcepath; //mxd
 						}
 						break;
+
+						case "damagetype": //mxd
+							// Get DamageType name
+							SkipWhitespace(true);
+							string damagetype = StripTokenQuotes(ReadToken(false));
+							if(string.IsNullOrEmpty(damagetype))
+							{
+								ReportError("Expected DamageType name");
+								return false;
+							}
+
+							// Next should be "{"
+							SkipWhitespace(true);
+							if(!NextTokenIs("{")) return false;
+
+							// Skip the structure
+							while(SkipWhitespace(true))
+							{
+								string t = ReadToken();
+								if(string.IsNullOrEmpty(t) || t == "}") break;
+							}
+
+							// Add to collection
+							if(!damagetypes.Contains(damagetype)) damagetypes.Add(damagetype);
+							break;
 
 						case "enum":
 						case "native":
@@ -299,12 +353,6 @@ namespace CodeImp.DoomBuilder.ZDoom
 		{
 			name = name.ToLowerInvariant();
 			return (archivedactors.ContainsKey(name) ? archivedactors[name] : null);
-		}
-
-		//mxd
-		protected override string GetLanguageType()
-		{
-			return "DECORATE";
 		}
 		
 		#endregion

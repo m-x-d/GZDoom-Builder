@@ -2,6 +2,8 @@
 using System.IO;
 using System.Collections.Generic;
 using System.Globalization;
+using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.ZDoom;
 using CodeImp.DoomBuilder.GZBuilder.Data;
 
@@ -10,6 +12,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 {
 	internal sealed class AcsParserSE : ZDTextParser
 	{
+		internal override ScriptType ScriptType { get { return ScriptType.ACS; } }
+		
 		internal delegate void IncludeDelegate(AcsParserSE parser, string includefile, IncludeType includetype);
 		internal IncludeDelegate OnInclude;
 
@@ -31,6 +35,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 
 		internal bool AddArgumentsToScriptNames;
 		internal bool IsMapScriptsLump;
+		internal bool IgnoreErrors;
 
 		internal enum IncludeType
 		{
@@ -50,37 +55,47 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 			specialtokens += "(,)";
 		}
 
-		public override bool Parse(Stream stream, string sourcefilename, bool clearerrors) 
+		public override bool Parse(TextResourceData data, bool clearerrors) 
 		{
-			return Parse(stream, sourcefilename, new HashSet<string>(), false, IncludeType.NONE, clearerrors);
+			return Parse(data, new HashSet<string>(), false, IncludeType.NONE, clearerrors);
 		}
 
-		public bool Parse(Stream stream, string sourcefilename, bool processincludes, IncludeType includetype, bool clearerrors)
+		public bool Parse(TextResourceData data, bool processincludes, IncludeType includetype, bool clearerrors)
 		{
-			return Parse(stream, sourcefilename, includestoskip, processincludes, includetype, clearerrors);
+			return Parse(data, includestoskip, processincludes, includetype, clearerrors);
 		}
 
-		public bool Parse(Stream stream, string sourcefilename, HashSet<string> configincludes, bool processincludes, IncludeType includetype, bool clearerrors) 
+		public bool Parse(TextResourceData data, HashSet<string> configincludes, bool processincludes, IncludeType includetype, bool clearerrors) 
 		{
-			string source = sourcefilename.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+			string source = data.Filename.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
 
 			// Duplicate checks
 			if(parsedlumps.Contains(source))
 			{
-				ReportError("Already parsed '" + source + "'. Check your #include directives");
-				return false;
+				ReportError("Already parsed \"" + source + "\". Check your #include directives");
+				return IgnoreErrors;
 			}
 			
 			parsedlumps.Add(source);
 			includestoskip = configincludes;
 			int bracelevel = 0;
 
-			if(!base.Parse(stream, sourcefilename, clearerrors)) return false;
+			//mxd. Already parsed?
+			if(!base.AddTextResource(data))
+			{
+				if(clearerrors) ClearError();
+				return true;
+			}
+
+			// Cannot process?
+			if(!base.Parse(data, clearerrors)) return false;
 
 			// Keep local data
 			Stream localstream = datastream;
 			string localsourcename = sourcename;
+			int localsourcelumpindex = sourcelumpindex;
 			BinaryReader localreader = datareader;
+			DataLocation locallocation = datalocation; //mxd
 
 			// Continue until at the end of the stream
 			while(SkipWhitespace(true)) 
@@ -98,7 +113,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 					case "script":
 					{
 						SkipWhitespace(true);
-						int startpos = (int)stream.Position;
+						int startpos = (int)datastream.Position;
 						token = ReadToken();
 
 						//is it named script?
@@ -139,7 +154,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 
 								if(!string.IsNullOrEmpty(token))
 								{
-									int commentstart = token.IndexOf("//", System.StringComparison.Ordinal);
+									int commentstart = token.IndexOf("//", StringComparison.Ordinal);
 									if(commentstart != -1) //found comment
 									{ 
 										commentstart += 2;
@@ -168,7 +183,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						SkipWhitespace(true);
 						string funcname = ReadToken(); //read return type
 						SkipWhitespace(true);
-						int startpos = (int)stream.Position;
+						int startpos = (int)datastream.Position;
 						funcname += " " + ReadToken(); //read function name
 
 						// Try to parse argument names
@@ -188,7 +203,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						if(IsMapScriptsLump)
 						{
 							ReportError("SCRIPTS lump can not be compiled as a library");
-							return false;
+							if(!IgnoreErrors) return false;
 						}
 						
 						SkipWhitespace(true);
@@ -197,7 +212,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						if(!libname.StartsWith("\"") || !libname.EndsWith("\""))
 						{
 							ReportError("#library name should be quoted");
-							return false;
+							return IgnoreErrors;
 						}
 
 						libname = StripTokenQuotes(libname);
@@ -205,7 +220,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						if(string.IsNullOrEmpty(libname))
 						{
 							ReportError("Expected library name");
-							return false;
+							return IgnoreErrors;
 						}
 
 						// Store only when the script compiling was executed for is library
@@ -231,7 +246,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							if(!includelump.StartsWith("\"") || !includelump.EndsWith("\""))
 							{
 								ReportError(token + " filename should be quoted");
-								return false;
+								return IgnoreErrors;
 							}
 
 							includelump = StripTokenQuotes(includelump);
@@ -239,7 +254,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							if(string.IsNullOrEmpty(includelump))
 							{
 								ReportError("Expected file name to " + token);
-								return false;
+								return IgnoreErrors;
 							}
 
 							includelump = includelump.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
@@ -251,7 +266,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							string includelumppath = GetRootedPath(source, includelump);
 
 							// Rooting succeeded?
-							if(HasError || string.IsNullOrEmpty(includelumppath)) return false;
+							if((HasError && !IgnoreErrors) || string.IsNullOrEmpty(includelumppath))
+								return IgnoreErrors;
 
 							// Already parsed?
 							if(includes.Contains(includelumppath))
@@ -260,8 +276,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 								//and must be included/imported separately
 								if(!islibrary)
 								{
-									ReportError("Already parsed '" + includelump + "'. Check your " + token + " directives");
-									return false;
+									ReportError("Already parsed \"" + includelump + "\". Check your " + token + " directives");
+									return IgnoreErrors;
 								}
 							}
 							else
@@ -272,16 +288,19 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 								// Callback to parse this file
 								if(OnInclude != null)
 								{
+									IsMapScriptsLump = false;
 									OnInclude(this, includelumppath, islibrary ? IncludeType.LIBRARY : IncludeType.INCLUDE);
 								}
 
 								// Bail out on error
-								if(this.HasError) return false;
+								if(this.HasError && !IgnoreErrors) return false;
 
 								// Set our buffers back to continue parsing
 								datastream = localstream;
 								datareader = localreader;
 								sourcename = localsourcename;
+								sourcelumpindex = localsourcelumpindex; //mxd
+								datalocation = locallocation; //mxd
 							}
 						}
 						break;
@@ -340,9 +359,5 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 			return "(void)";
 		}
 
-		protected override string GetLanguageType()
-		{
-			return "ACS";
-		}
 	}
 }
