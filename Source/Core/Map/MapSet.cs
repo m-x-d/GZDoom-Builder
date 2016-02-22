@@ -2727,7 +2727,7 @@ namespace CodeImp.DoomBuilder.Map
 			{
 				float px = t.Position.x;
 				float py = t.Position.y;
-				float ts = ((t.FixedSize && General.Map.Renderer2D.Scale > 1.0f) ? t.Size / General.Map.Renderer2D.Scale : t.Size);
+				float ts = (((t.FixedSize || General.Settings.FixedThingsScale) && General.Map.Renderer2D.Scale > 1.0f) ? t.Size / General.Map.Renderer2D.Scale : t.Size);
 
 				//mxd. Within range?
 				if(px < range.Left - ts || px > range.Right + ts || py < range.Top - ts || py > range.Bottom + ts) continue;

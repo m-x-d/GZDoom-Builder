@@ -2021,6 +2021,8 @@ namespace CodeImp.DoomBuilder.Windows
 			buttontogglegrid.Checked = General.Settings.RenderGrid; //mxd
 			buttontogglecomments.Visible = General.Settings.ToolbarViewModes && maploaded && General.Map.UDMF; //mxd
 			buttontogglecomments.Checked = General.Settings.RenderComments; //mxd
+			buttontogglefixedthingsscale.Visible = General.Settings.ToolbarViewModes && maploaded; //mxd
+			buttontogglefixedthingsscale.Checked = General.Settings.FixedThingsScale; //mxd
 			separatorfullbrightness.Visible = General.Settings.ToolbarViewModes && maploaded; //mxd
 			buttonviewbrightness.Visible = General.Settings.ToolbarViewModes && maploaded;
 			buttonviewceilings.Visible = General.Settings.ToolbarViewModes && maploaded;
@@ -2764,6 +2766,19 @@ namespace CodeImp.DoomBuilder.Windows
 			RedrawDisplay();
 		}
 
+		//mxd. Action to toggle fixed things scale
+		[BeginAction("togglefixedthingsscale")]
+		internal void ToggleFixedThingsScale()
+		{
+			buttontogglefixedthingsscale.Checked = !buttontogglefixedthingsscale.Checked;
+			itemtogglefixedthingsscale.Checked = buttontogglefixedthingsscale.Checked;
+			General.Settings.FixedThingsScale = buttontogglefixedthingsscale.Checked;
+			DisplayStatus(StatusType.Action, "Fixed things scale is " + (buttontogglefixedthingsscale.Checked ? "ENABLED" : "DISABLED"));
+
+			// Redraw display to show changes
+			RedrawDisplay();
+		}
+
 		// Action to toggle snap to grid
 		[BeginAction("togglesnap")]
 		internal void ToggleSnapToGrid()
@@ -2864,6 +2879,8 @@ namespace CodeImp.DoomBuilder.Windows
 			itemtoggleinfo.Checked = IsInfoPanelExpanded;
 			itemtogglecomments.Visible = (General.Map != null && General.Map.UDMF); //mxd
 			itemtogglecomments.Checked = General.Settings.RenderComments; //mxd
+			itemtogglefixedthingsscale.Visible = (General.Map != null); //mxd
+			itemtogglefixedthingsscale.Checked = General.Settings.FixedThingsScale; //mxd
 			
 			// View mode items
 			if(General.Map != null)

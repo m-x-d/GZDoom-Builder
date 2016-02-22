@@ -125,7 +125,8 @@ namespace CodeImp.DoomBuilder.Config
 		private bool autoClearSideTextures;
 		private bool storeSelectedEditTab;
 		private bool checkforupdates;
-		private bool rendercomments;
+		private bool rendercomments; //mxd
+		private bool fixedthingsscale; //mxd
 		private bool rendergrid;
 		private bool dynamicgridsize;
 		private int ignoredremoterevision;
@@ -226,6 +227,7 @@ namespace CodeImp.DoomBuilder.Config
 		public bool StoreSelectedEditTab { get { return storeSelectedEditTab; } internal set { storeSelectedEditTab = value; } }
 		internal bool CheckForUpdates { get { return checkforupdates; } set { checkforupdates = value; } } //mxd
 		public bool RenderComments { get { return rendercomments; } internal set { rendercomments = value; } } //mxd
+		public bool FixedThingsScale { get { return fixedthingsscale; } internal set { fixedthingsscale = value; } } //mxd
 		public bool RenderGrid { get { return rendergrid; } internal set { rendergrid = value; } } //mxd
 		public bool DynamicGridSize { get { return dynamicgridsize; } internal set { dynamicgridsize = value; } } //mxd
 		internal int IgnoredRemoteRevision { get { return ignoredremoterevision; } set { ignoredremoterevision = value; } } //mxd
@@ -348,6 +350,7 @@ namespace CodeImp.DoomBuilder.Config
 				storeSelectedEditTab = cfg.ReadSetting("storeselectededittab", true);
 				checkforupdates = cfg.ReadSetting("checkforupdates", true); //mxd
 				rendercomments = cfg.ReadSetting("rendercomments", true); //mxd
+				fixedthingsscale = cfg.ReadSetting("fixedthingsscale", false); //mxd
 				rendergrid = cfg.ReadSetting("rendergrid", true); //mxd
 				dynamicgridsize = cfg.ReadSetting("dynamicgridsize", true); //mxd
 				ignoredremoterevision = cfg.ReadSetting("ignoredremoterevision", 0); //mxd
@@ -454,6 +457,7 @@ namespace CodeImp.DoomBuilder.Config
 			cfg.WriteSetting("storeselectededittab", storeSelectedEditTab);
 			cfg.WriteSetting("checkforupdates", checkforupdates); //mxd
 			cfg.WriteSetting("rendercomments", rendercomments); //mxd
+			cfg.WriteSetting("fixedthingsscale", fixedthingsscale); //mxd
 			cfg.WriteSetting("rendergrid", rendergrid); //mxd
 			cfg.WriteSetting("dynamicgridsize", dynamicgridsize); //mxd
 			cfg.WriteSetting("ignoredremoterevision", ignoredremoterevision); //mxd

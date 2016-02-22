@@ -1124,6 +1124,7 @@
     <None Include="Resources\GroupRemove.png" />
     <None Include="Resources\GridDecrease.png" />
     <None Include="Resources\GridIncrease.png" />
+    <None Include="Resources\FixedThingsScale.png" />
     <Content Include="Resources\Light.png" />
     <None Include="Resources\Lightbulb.png" />
     <None Include="Resources\LightDisabled.png" />
