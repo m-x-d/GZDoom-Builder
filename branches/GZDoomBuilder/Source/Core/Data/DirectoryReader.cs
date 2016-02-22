@@ -17,6 +17,7 @@
 #region ================== Namespaces
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using CodeImp.DoomBuilder.IO;
 
@@ -37,7 +38,7 @@ namespace CodeImp.DoomBuilder.Data
 		// Constructor
 		public DirectoryReader(DataLocation dl) : base(dl)
 		{
-			General.WriteLogLine("Opening directory resource '" + location.location + "'");
+			General.WriteLogLine("Opening directory resource \"" + location.location + "\"");
 			
 			// Initialize
 			files = new DirectoryFilesList(dl.location, true);
@@ -46,14 +47,27 @@ namespace CodeImp.DoomBuilder.Data
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
-		
+
+		//mxd. Don't move directory wads anywhere
+		protected override void Initialize()
+		{
+			// Load all WAD files in the root as WAD resources
+			string[] wadfiles = GetFilesWithExt("", "wad", false);
+			wads = new List<WADReader>(wadfiles.Length);
+			foreach(string wadfile in wadfiles)
+			{
+				DataLocation wdl = new DataLocation(DataLocation.RESOURCE_WAD, Path.Combine(location.location, wadfile), false, false, true);
+				wads.Add(new WADReader(wdl));
+			}
+		}
+
 		// Disposer
 		public override void Dispose()
 		{
 			// Not already disposed?
 			if(!isdisposed)
 			{
-				General.WriteLogLine("Closing directory resource '" + location.location + "'");
+				General.WriteLogLine("Closing directory resource \"" + location.location + "\"");
 				
 				// Done
 				base.Dispose();
@@ -113,7 +127,7 @@ namespace CodeImp.DoomBuilder.Data
 			}
 			catch(Exception e)
 			{
-				General.ErrorLogger.Add(ErrorType.Error, e.GetType().Name + " while loading patch '" + pname + "' from directory: " + e.Message);
+				General.ErrorLogger.Add(ErrorType.Error, e.GetType().Name + " while loading patch \"" + pname + "\" from directory: " + e.Message);
 			}
 
 			// Nothing found
@@ -156,7 +170,7 @@ namespace CodeImp.DoomBuilder.Data
 			}
 			catch(Exception e)
 			{
-				General.ErrorLogger.Add(ErrorType.Error, e.GetType().Name + " while loading texture '" + pname + "' from directory: " + e.Message);
+				General.ErrorLogger.Add(ErrorType.Error, e.GetType().Name + " while loading texture \"" + pname + "\" from directory: " + e.Message);
 			}
 
 			// Nothing found
@@ -189,7 +203,7 @@ namespace CodeImp.DoomBuilder.Data
 			}
 			catch(Exception e)
 			{
-				General.ErrorLogger.Add(ErrorType.Error, e.GetType().Name + " while loading colormap '" + pname + "' from directory: " + e.Message);
+				General.ErrorLogger.Add(ErrorType.Error, e.GetType().Name + " while loading colormap \"" + pname + "\" from directory: " + e.Message);
 			}
 
 			// Nothing found
@@ -225,7 +239,7 @@ namespace CodeImp.DoomBuilder.Data
 			}
 			catch(Exception e)
 			{
-				General.ErrorLogger.Add(ErrorType.Error, e.GetType().Name + " while loading sprite '" + pname + "' from directory: " + e.Message);
+				General.ErrorLogger.Add(ErrorType.Error, e.GetType().Name + " while loading sprite \"" + pname + "\" from directory: " + e.Message);
 			}
 			
 			// Nothing found
@@ -256,7 +270,7 @@ namespace CodeImp.DoomBuilder.Data
 			}
 			catch(Exception e)
 			{
-				General.ErrorLogger.Add(ErrorType.Error, e.GetType().Name + " while checking sprite '" + pname + "' existance in directory: " + e.Message);
+				General.ErrorLogger.Add(ErrorType.Error, e.GetType().Name + " while checking sprite \"" + pname + "\" existance in directory: " + e.Message);
 			}
 			
 			// Nothing found
@@ -292,7 +306,7 @@ namespace CodeImp.DoomBuilder.Data
 			}
 			catch(Exception e)
 			{
-				General.ErrorLogger.Add(ErrorType.Error, e.GetType().Name + " while loading voxel '" + name + "' from directory: " + e.Message);
+				General.ErrorLogger.Add(ErrorType.Error, e.GetType().Name + " while loading voxel \"" + name + "\" from directory: " + e.Message);
 			}
 
 			// Nothing found
@@ -347,9 +361,9 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		//mxd. This returns all files in a given directory which title starts with given title
-		protected override string[] GetAllFilesWhichTitleStartsWith(string path, string title) 
+		protected override string[] GetAllFilesWhichTitleStartsWith(string path, string title, bool subfolders) 
 		{
-			return files.GetAllFilesWhichTitleStartsWith(path, title).ToArray();
+			return files.GetAllFilesWhichTitleStartsWith(path, title, subfolders).ToArray();
 		}
 		
 		// This returns all files in a given directory that match the given extension
@@ -394,7 +408,7 @@ namespace CodeImp.DoomBuilder.Data
 			} 
 			catch(Exception e) 
 			{
-				General.ErrorLogger.Add(ErrorType.Error, "Unable to load file: "+e.Message);
+				General.ErrorLogger.Add(ErrorType.Error, "Unable to load file: " + e.Message);
 			}
 			return s;
 		}

@@ -17,10 +17,12 @@
 #region ================== Namespaces
 
 using System;
+using System.Globalization;
 using System.IO;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Compilers;
@@ -114,7 +116,6 @@ namespace CodeImp.DoomBuilder.Controls
 			//mxd. Bind functionbar events
 			editor.FunctionBar.DropDown += functionbar_DropDown;
 			editor.FunctionBar.SelectedIndexChanged += functionbar_SelectedIndexChanged;
-
 		}
 		
 		// Disposer
@@ -202,7 +203,8 @@ namespace CodeImp.DoomBuilder.Controls
 		// This changes the script configurations
 		public virtual void ChangeScriptConfig(ScriptConfiguration newconfig)
 		{
-			UpdateNavigator(); //mxd
+			List<CompilerError> errors = UpdateNavigator(); //mxd
+			if(panel.ActiveTab == this) panel.ShowErrors(errors); //mxd
 		}
 
 		// Call this to set the tab title
@@ -273,23 +275,25 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		//mxd
-		protected void UpdateNavigator()
+		//TODO: rewrite this using reflection, move UpdateNavigator[Type] to appropriate parsers
+		internal List<CompilerError> UpdateNavigator()
 		{
 			// Store currently selected item name
 			string prevtext = editor.FunctionBar.Text;
+			List<CompilerError> result = new List<CompilerError>();
 			
 			switch(config.ScriptType)
 			{
 				case ScriptType.ACS:
-					UpdateNavigatorAcs(new MemoryStream(editor.GetText()));
+					result = UpdateNavigatorAcs(new MemoryStream(editor.GetText()));
 					break;
 
 				case ScriptType.DECORATE:
-					UpdateNavigatorDecorate(new MemoryStream(editor.GetText()));
+					result = UpdateNavigatorDecorate(new MemoryStream(editor.GetText()));
 					break;
 
 				case ScriptType.MODELDEF:
-					UpdateNavigatorModeldef(new MemoryStream(editor.GetText()));
+					result = UpdateNavigatorModeldef(new MemoryStream(editor.GetText()));
 					break;
 
 				default: // Unsupported script type. Just clear the items
@@ -322,52 +326,59 @@ namespace CodeImp.DoomBuilder.Controls
 
 				preventchanges = false;
 			}
+
+			return result;
 		}
 
 		//mxd
-		private void UpdateNavigatorDecorate(MemoryStream stream) 
+		private List<CompilerError> UpdateNavigatorDecorate(MemoryStream stream) 
 		{
-			if(stream == null) return;
+			List<CompilerError> result = new List<CompilerError>();
+			if(stream == null) return result;
 			editor.FunctionBar.Items.Clear();
 
 			DecorateParserSE parser = new DecorateParserSE();
-			if(parser.Parse(stream, "DECORATE", false))
-			{
+			TextResourceData data = new TextResourceData(stream, new DataLocation(), "DECORATE", false);
+
+			if(parser.Parse(data, false))
 				editor.FunctionBar.Items.AddRange(parser.Actors.ToArray());
-			}
 
 			if(parser.HasError)
-			{
-				panel.ShowErrors(new List<CompilerError> { new CompilerError(parser.ErrorDescription, parser.ErrorSource, parser.ErrorLine) });
-			}
+				result.Add(new CompilerError(parser.ErrorDescription, parser.ErrorSource, parser.ErrorLine));
+
+			return result;
 		}
 
 		//mxd
-		private void UpdateNavigatorModeldef(MemoryStream stream) 
+		private List<CompilerError> UpdateNavigatorModeldef(MemoryStream stream) 
 		{
-			if(stream == null) return;
+			List<CompilerError> result = new List<CompilerError>();
+			if(stream == null) return result;
 			editor.FunctionBar.Items.Clear();
 
 			ModeldefParserSE parser = new ModeldefParserSE();
-			if(parser.Parse(stream, "MODELDEF", false))
-			{
+			TextResourceData data = new TextResourceData(stream, new DataLocation(), "MODELDEF", false);
+
+			if(parser.Parse(data, false))
 				editor.FunctionBar.Items.AddRange(parser.Models.ToArray());
-			}
 
 			if(parser.HasError)
-			{
-				panel.ShowErrors(new List<CompilerError> { new CompilerError(parser.ErrorDescription, parser.ErrorSource, parser.ErrorLine) });
-			}
+				result.Add(new CompilerError(parser.ErrorDescription, parser.ErrorSource, parser.ErrorLine));
+
+			return result;
 		}
 
 		//mxd
-		private void UpdateNavigatorAcs(MemoryStream stream) 
+		private List<CompilerError> UpdateNavigatorAcs(MemoryStream stream) 
 		{
-			if(stream == null) return;
+			List<CompilerError> result = new List<CompilerError>();
+			if(stream == null) return result;
 			editor.FunctionBar.Items.Clear();
 
-			AcsParserSE parser = new AcsParserSE { AddArgumentsToScriptNames = true, IsMapScriptsLump = this is ScriptLumpDocumentTab };
-			if(parser.Parse(stream, "SCRIPTS", false))
+			AcsParserSE parser = new AcsParserSE { AddArgumentsToScriptNames = true, IsMapScriptsLump = this is ScriptLumpDocumentTab, IgnoreErrors = true };
+			TextResourceData data = new TextResourceData(stream, new DataLocation(), (parser.IsMapScriptsLump ? "?SCRIPTS" : Filename), false);
+			
+			if(parser.Parse(data, false))
 			{
 				editor.FunctionBar.Items.AddRange(parser.NamedScripts.ToArray());
 				editor.FunctionBar.Items.AddRange(parser.NumberedScripts.ToArray());
@@ -375,25 +386,25 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 
 			if(parser.HasError)
-			{
-				panel.ShowErrors(new List<CompilerError> { new CompilerError(parser.ErrorDescription, parser.ErrorSource, parser.ErrorLine) });
-			}
+				result.Add(new CompilerError(parser.ErrorDescription, parser.ErrorSource, parser.ErrorLine));
+
+			return result;
 		}
 		
 		//mxd
 		internal ScriptType VerifyScriptType() 
 		{
 			ScriptTypeParserSE parser = new ScriptTypeParserSE();
-			if(parser.Parse(new MemoryStream(editor.GetText()), config.Description, false)) 
+			TextResourceData data = new TextResourceData(new MemoryStream(editor.GetText()), new DataLocation(), config.Description, false);
+			
+			if(parser.Parse(data, false))
 			{
 				if(parser.ScriptType != ScriptType.UNKNOWN && config.ScriptType != parser.ScriptType)
 					return parser.ScriptType;
 			}
 
 			if(parser.HasError)
-			{
 				panel.ShowErrors(new List<CompilerError> { new CompilerError(parser.ErrorDescription, parser.ErrorSource, parser.ErrorLine) });
-			}
 
 			return ScriptType.UNKNOWN;
 		}
@@ -416,30 +427,68 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			// Text must be exactly the same
 			long hash = MurmurHash2.Hash(Text);
-			if(hash != settings.Hash) return;
-			
-			// Restore fold levels
-			if(settings.FoldLevels != null && General.Settings.ScriptShowFolding && (Scintilla.Lexer == Lexer.Cpp || Scintilla.Lexer == Lexer.CppNoCase))
+			bool applyfolding = General.Settings.ScriptShowFolding && (Scintilla.Lexer == Lexer.Cpp || Scintilla.Lexer == Lexer.CppNoCase);
+			if(hash == settings.Hash)
 			{
-				// We'll want to fold deeper levels first...
-				int[] fl = new int[settings.FoldLevels.Keys.Count];
-				settings.FoldLevels.Keys.CopyTo(fl, 0);
+				// Restore fold levels
+				if(applyfolding) ApplyFolding(settings.FoldLevels ?? GetFoldLevels());
 
-				List<int> foldlevels = new List<int>(fl);
-				foldlevels.Sort((a, b) => -1 * a.CompareTo(b)); // Sort in descending order
+				// Restore scroll
+				Scintilla.FirstVisibleLine = settings.FirstVisibleLine;
 
-				foreach(int level in foldlevels)
+				// Restore caret position
+				Scintilla.SetEmptySelection(settings.CaretPosition);
+			}
+			// Do what Visual Studio does: fold all #regions 
+			else if(applyfolding)
+			{
+				ApplyFolding(GetFoldLevels());
+			}
+		}
+
+		internal void SetDefaultViewSettings()
+		{
+			if(General.Settings.ScriptShowFolding && (Scintilla.Lexer == Lexer.Cpp || Scintilla.Lexer == Lexer.CppNoCase))
+				ApplyFolding(GetFoldLevels());
+		}
+
+		private void ApplyFolding(Dictionary<int, HashSet<int>> foldlevelsarr)
+		{
+			// We'll want to fold deeper levels first...
+			int[] fl = new int[foldlevelsarr.Keys.Count];
+			foldlevelsarr.Keys.CopyTo(fl, 0);
+
+			List<int> foldlevels = new List<int>(fl);
+			foldlevels.Sort((a, b) => -1 * a.CompareTo(b)); // Sort in descending order
+
+			foreach(int level in foldlevels)
+			{
+				foreach(int line in foldlevelsarr[level])
+					Scintilla.Lines[line].FoldLine(FoldAction.Contract);
+			}
+		}
+
+		private Dictionary<int, HashSet<int>> GetFoldLevels()
+		{
+			Dictionary<int, HashSet<int>> foldlevels = new Dictionary<int, HashSet<int>>();
+			int foldlevel = NativeMethods.SC_FOLDLEVELBASE;
+
+			for(int i = 0; i < Scintilla.Lines.Count; i++)
+			{
+				string line = Scintilla.Lines[i].Text.TrimStart();
+				if(line.StartsWith("#region", true, CultureInfo.InvariantCulture))
 				{
-					foreach(int line in settings.FoldLevels[level])
-						Scintilla.Lines[line].FoldLine(FoldAction.Contract);
+					foldlevel++;
+					if(!foldlevels.ContainsKey(foldlevel)) foldlevels.Add(foldlevel, new HashSet<int>());
+					foldlevels[foldlevel].Add(i);
+				}
+				else if(line.StartsWith("#endregion", true, CultureInfo.InvariantCulture) && foldlevel > NativeMethods.SC_FOLDLEVELBASE)
+				{
+					foldlevel--;
 				}
 			}
 
-			// Restore scroll
-			Scintilla.FirstVisibleLine = settings.FirstVisibleLine;
-
-			// Restore caret position
-			Scintilla.SetEmptySelection(settings.CaretPosition);
+			return foldlevels;
 		}
 
 		//mxd
@@ -511,7 +560,7 @@ namespace CodeImp.DoomBuilder.Controls
 		//mxd
 		private void functionbar_DropDown(object sender, EventArgs e) 
 		{
-			if(!preventchanges && editor.IsChanged) UpdateNavigator();
+			if(!preventchanges && editor.IsChanged) panel.ShowErrors(UpdateNavigator());
 		}
 
 		//mxd

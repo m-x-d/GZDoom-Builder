@@ -69,6 +69,7 @@ namespace CodeImp.DoomBuilder.Controls
 		private const string LEXERS_RESOURCE = "Lexers.cfg";
 		private const int MAX_BACKTRACK_LENGTH = 200;
 		private const int HIGHLIGHT_INDICATOR = 8; //mxd. Indicators 0-7 could be in use by a lexer so we'll use indicator 8 to highlight words.
+		private const string ENTRY_POSITION_MARKER = "[EP]"; //mxd
 		
 		#endregion
 
@@ -237,11 +238,14 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			scriptedit.Lines[linenumber].Goto();
 			EnsureLineVisible(linenumber);
+			scriptedit.SetEmptySelection(scriptedit.Lines[linenumber].Position);
 		}
 
 		// This makes sure a line is visible
 		public void EnsureLineVisible(int linenumber)
 		{
+			int caretpos = scriptedit.CurrentPosition;
+			
 			// Determine target lines range
 			int startline = Math.Max(0, linenumber - 4);
 			int endline = Math.Min(scriptedit.Lines.Count, Math.Max(linenumber, linenumber + scriptedit.LinesOnScreen - 6));
@@ -255,6 +259,9 @@ namespace CodeImp.DoomBuilder.Controls
 				scriptedit.Lines[startline].Goto();
 			else if(scriptedit.FirstVisibleLine + scriptedit.LinesOnScreen <= endline)
 				scriptedit.Lines[endline].Goto();
+			
+			// We don't want to change caret position
+			scriptedit.CurrentPosition = caretpos;
 		}
 
 		//mxd
@@ -513,7 +520,12 @@ namespace CodeImp.DoomBuilder.Controls
 					// Autocomplete doesn't mind '.' or ':'
 					// Skip adding the keyword if we have a snippet with the same name
 					if(!scriptconfig.Snippets.Contains(p))
-						autocompletedict.Add(p, p + "?" + imageindex);
+					{
+						if(autocompletedict.ContainsKey(p))
+							General.ErrorLogger.Add(ErrorType.Warning, "Property \"" + p + "\" is double defined in \"" + scriptconfig.Description + "\" script configuration.");
+						else
+							autocompletedict.Add(p, p + "?" + imageindex);
+					}
 				}
 				string words = propertieslist.ToString();
 				scriptedit.SetKeywords(propertiesindex, (scriptconfig.CaseSensitive ? words : words.ToLowerInvariant()));
@@ -695,7 +707,7 @@ namespace CodeImp.DoomBuilder.Controls
 				// Check if we have the [EP] marker
 				if(entrypos == -1) 
 				{
-					int pos = processedlines[i].IndexOf("[EP]", StringComparison.Ordinal);
+					int pos = processedlines[i].IndexOf(ENTRY_POSITION_MARKER, StringComparison.OrdinalIgnoreCase);
 					if(pos != -1) 
 					{
 						processedlines[i] = processedlines[i].Remove(pos, 4);
@@ -1307,7 +1319,31 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			// Expand snippet?
 			string[] lines = scriptconfig.GetSnippet(e.Text);
-			if(lines != null) InsertSnippet(lines);
+			if(lines != null)
+			{
+				InsertSnippet(lines);
+			}
+			// Format editor comment?
+			else if(e.Text.StartsWith("$"))
+			{
+				string definition = scriptconfig.GetFunctionDefinition(e.Text);
+				if(!string.IsNullOrEmpty(definition))
+				{
+					int entrypos = definition.IndexOf(ENTRY_POSITION_MARKER, StringComparison.OrdinalIgnoreCase);
+					
+					// Remove the marker
+					if(entrypos != -1) definition = definition.Remove(entrypos, 4);
+					
+					// Replace insterted text with expanded comment
+					int startpos = scriptedit.WordStartPosition(scriptedit.CurrentPosition, true);
+					scriptedit.SelectionStart = startpos;
+					scriptedit.SelectionEnd = scriptedit.WordEndPosition(scriptedit.CurrentPosition, true);
+					scriptedit.ReplaceSelection(definition);
+					
+					// Update caret position
+					if(entrypos != -1) scriptedit.SetEmptySelection(startpos + entrypos);
+				}
+			}
 		}
 		
 		// Key pressed down

@@ -22,6 +22,7 @@ using System.Globalization;
 using System.Text;
 using System.IO;
 using CodeImp.DoomBuilder.Compilers;
+using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Data;
 
 #endregion
@@ -49,12 +50,19 @@ namespace CodeImp.DoomBuilder.ZDoom
 		protected Stream datastream;
 		protected BinaryReader datareader;
 		protected string sourcename;
+		protected int sourcelumpindex; //mxd
+		protected DataLocation datalocation; //mxd
 		
 		// Error report
 		private int errorline;
 		private string errordesc;
 		private string errorsource;
 		private long prevstreamposition; //mxd. Text stream position storted before performing ReadToken.
+
+		//mxd. Text lumps
+		protected string textresourcepath;
+		protected readonly Dictionary<string, TextResource> textresources;
+		protected readonly HashSet<string> untrackedtextresources; 
 		
 		#endregion
 		
@@ -66,7 +74,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 		public string ErrorDescription { get { return errordesc; } }
 		public string ErrorSource { get { return errorsource; } }
 		public bool HasError { get { return (errordesc != null); } }
-		
+		internal abstract ScriptType ScriptType { get; } //mxd
+		internal Dictionary<string, TextResource> TextResources { get { return textresources; } } //mxd
+
 		#endregion
 		
 		#region ================== Constructor / Disposer
@@ -76,6 +86,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 		{
 			// Initialize
 			errordesc = null;
+			textresources = new Dictionary<string, TextResource>(StringComparer.OrdinalIgnoreCase); //mxd
+			untrackedtextresources = new HashSet<string>(StringComparer.OrdinalIgnoreCase); //mxd
 		}
 		
 		#endregion
@@ -83,35 +95,76 @@ namespace CodeImp.DoomBuilder.ZDoom
 		#region ================== Parsing
 
 		//mxd. This parses the given decorate stream. Returns false on errors
-		public virtual bool Parse(Stream stream, string sourcefilename, bool clearerrors)
+		public virtual bool Parse(TextResourceData parsedata, bool clearerrors)
 		{
 			//mxd. Clear error status?
 			if(clearerrors) ClearError();
 
 			//mxd. Integrity checks
-			if(stream == null)
+			if(parsedata.Stream == null)
 			{
-				ReportError("Unable to load \"" + sourcefilename + "\"");
+				ReportError("Unable to load \"" + parsedata.Filename + "\"");
 				return false;
 			}
 
-			if(stream.Length == 0)
+			if(parsedata.Stream.Length == 0)
 			{
-				if(!string.IsNullOrEmpty(sourcename) && sourcename != sourcefilename)
+				if(!string.IsNullOrEmpty(sourcename) && sourcename != parsedata.Filename)
 				{
-					LogWarning("Include file \"" + sourcefilename + "\" is empty");
+					LogWarning("Include file \"" + parsedata.Filename + "\" is empty");
 				}
 				else
 				{
-					sourcename = sourcefilename; // LogWarning() needs "sourcename" property to properly log the warning...
+					sourcename = parsedata.Filename; // LogWarning() needs "sourcename" property to properly log the warning...
 					LogWarning("File is empty");
 				}
 			}
-			
-			datastream = stream;
-			datareader = new BinaryReader(stream, Encoding.ASCII);
-			sourcename = sourcefilename;
+
+			datastream = parsedata.Stream;
+			datareader = new BinaryReader(parsedata.Stream, Encoding.ASCII);
+			sourcename = parsedata.Filename;
+			sourcelumpindex = parsedata.LumpIndex; //mxd
+			datalocation = parsedata.SourceLocation; //mxd
 			datastream.Seek(0, SeekOrigin.Begin);
+
+			return true;
+		}
+
+		//mxd
+		protected bool AddTextResource(TextResourceData parsedata)
+		{
+			// Script Editor resources don't have actual path and should always be parsed
+			if(string.IsNullOrEmpty(parsedata.SourceLocation.location))
+			{
+				if(parsedata.Trackable) throw new NotSupportedException("Trackable TextResource must have a valid path.");
+				return true;
+			}
+
+			string path = Path.Combine(parsedata.SourceLocation.location, parsedata.Filename + (parsedata.LumpIndex != -1 ? "#" + parsedata.LumpIndex : ""));
+			if(textresources.ContainsKey(path) || untrackedtextresources.Contains(path))
+				return false;
+
+			//mxd. Create TextResource for this file
+			if(parsedata.Trackable)
+			{
+				textresourcepath = path;
+				TextResource res = new TextResource
+				{
+					Resource = parsedata.Source,
+					Entries = new HashSet<string>(StringComparer.OrdinalIgnoreCase),
+					Filename = parsedata.Filename,
+					LumpIndex = parsedata.LumpIndex
+				};
+
+				textresources.Add(textresourcepath, res);
+			}
+			// Track the untrackable!
+			else
+			{
+				untrackedtextresources.Add(path);
+				textresourcepath = string.Empty;
+			}
+
 			return true;
 		}
 		
@@ -215,6 +268,24 @@ namespace CodeImp.DoomBuilder.ZDoom
 					{
 						// Not a comment, rewind from reading c2
 						datastream.Seek(-1, SeekOrigin.Current);
+					}
+				}
+				//mxd. Region/endregion handling
+				else if(c == '#')
+				{
+					string s = ReadToken(false).ToLowerInvariant();
+					if(s == "region" || s == "endregion")
+					{
+						// Skip entire line
+						char ch = ' ';
+						while((ch != '\n') && (datastream.Position < datastream.Length)) { ch = (char)datareader.ReadByte(); }
+						c = ch;
+					}
+					else
+					{
+						// Rewind so this structure can be read again
+						DataStream.Seek(-s.Length - 2, SeekOrigin.Current);
+						return true;
 					}
 				}
 			}
@@ -523,7 +594,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 			// Set error information
 			errordesc = message;
 			errorline = (datastream != null ? GetCurrentLineNumber() : CompilerError.NO_LINE_NUMBER); //mxd
-			errorsource = sourcename;
+			errorsource = (ScriptType == ScriptType.ACS && sourcename.StartsWith("?") ? sourcename : Path.Combine(datalocation.GetShortName(), sourcename));
+			if(sourcelumpindex != -1) errorsource += ":" + sourcelumpindex; //mxd
 		}
 
 		//mxd. This adds a warning to the ErrorLogger
@@ -531,7 +603,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 		{
 			// Add a warning
 			int errline = (datastream != null ? GetCurrentLineNumber() : CompilerError.NO_LINE_NUMBER);
-			General.ErrorLogger.Add(ErrorType.Warning, GetLanguageType() + " warning in \"" + sourcename
+			string errsource = (ScriptType == ScriptType.ACS && sourcename.StartsWith("?") ? sourcename.Substring(1) : Path.Combine(datalocation.GetShortName(), sourcename));
+			if(sourcelumpindex != -1) errsource += ":" + sourcelumpindex;
+			General.ErrorLogger.Add(ErrorType.Warning, ScriptType + " warning in \"" + errsource
 								+ (errline != CompilerError.NO_LINE_NUMBER ? "\", line " + (errline + 1) : "\"") + ". " 
 								+ message + ".");
 		}
@@ -539,7 +613,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		//mxd. This adds an error to the ErrorLogger
 		public void LogError()
 		{
-			General.ErrorLogger.Add(ErrorType.Error, GetLanguageType() + " error in \"" + errorsource
+			General.ErrorLogger.Add(ErrorType.Error, ScriptType + " error in \"" + errorsource
 								+ (errorline != CompilerError.NO_LINE_NUMBER ? "\", line " + (errorline + 1) : "\"") + ". "
 								+ errordesc + ".");
 		}
@@ -563,7 +637,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			// Find the line on which we found this error
 			datastream.Seek(0, SeekOrigin.Begin);
 			StreamReader textreader = new StreamReader(datastream, Encoding.ASCII);
-			while(readpos < finishpos) 
+			while(readpos < finishpos + 1) 
 			{
 				string line = textreader.ReadLine();
 				if(line == null) break;
@@ -660,9 +734,6 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 			return true;
 		}
-
-		//mxd. Language type
-		protected abstract string GetLanguageType();
 
 		#endregion
 	}

@@ -1,5 +1,6 @@
-﻿using System.IO;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.ZDoom;
 using CodeImp.DoomBuilder.GZBuilder.Data;
 
@@ -9,6 +10,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 {
 	internal sealed class DecorateParserSE : ZDTextParser
 	{
+		internal override ScriptType ScriptType { get { return ScriptType.DECORATE; } }
+		
 		private readonly List<ScriptItem> actors;
 		public List<ScriptItem> Actors { get { return actors; } }
 
@@ -17,9 +20,17 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 			actors = new List<ScriptItem>();
 		}
 
-		public override bool Parse(Stream stream, string sourcefilename, bool clearerrors) 
+		public override bool Parse(TextResourceData data, bool clearerrors) 
 		{
-			if(!base.Parse(stream, sourcefilename, clearerrors)) return false;
+			//mxd. Already parsed?
+			if(!base.AddTextResource(data))
+			{
+				if(clearerrors) ClearError();
+				return true;
+			}
+
+			// Cannot process?
+			if(!base.Parse(data, clearerrors)) return false;
 
 			// Continue until at the end of the stream
 			while(SkipWhitespace(true)) 
@@ -28,7 +39,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 				if(string.IsNullOrEmpty(token) || token.ToUpperInvariant() != "ACTOR") continue;
 
 				SkipWhitespace(true);
-				int startpos = (int)stream.Position;
+				int startpos = (int)datastream.Position;
 
 				List<string> definition = new List<string>();
 
@@ -46,11 +57,6 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 			// Sort nodes
 			actors.Sort(ScriptItem.SortByName);
 			return true;
-		}
-
-		protected override string GetLanguageType()
-		{
-			return "DECORATE";
 		}
 	}
 }

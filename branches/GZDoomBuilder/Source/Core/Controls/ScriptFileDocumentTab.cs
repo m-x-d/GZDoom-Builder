@@ -22,6 +22,7 @@ using System.IO;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Compilers;
 using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.GZBuilder.GZDoom;
 
 #endregion
@@ -127,7 +128,7 @@ namespace CodeImp.DoomBuilder.Controls
 			compiler.Dispose();
 
 			//mxd. Update script navigator
-			UpdateNavigator();
+			errors.AddRange(UpdateNavigator());
 			
 			// Feed errors to panel
 			panel.ShowErrors(errors);
@@ -172,10 +173,27 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 
 			// Preprocess the file
-			AcsParserSE parser = new AcsParserSE { OnInclude = (se, path, includetype) => se.Parse(General.Map.Data.LoadFile(path), path, true, includetype, false) };
+			AcsParserSE parser = new AcsParserSE
+			{
+				OnInclude = delegate(AcsParserSE se, string includefile, AcsParserSE.IncludeType includetype)
+				{
+					TextResourceData data = General.Map.Data.LoadFile(includefile);
+					if(data == null)
+					{
+						// Fial
+						errors.Add(new CompilerError("Unable to find include file \"" + includefile + "\""));
+						panel.ShowErrors(errors);
+					}
+					else
+					{
+						se.Parse(data, true, includetype, false);
+					}
+				}
+			};
 			using(FileStream stream = File.OpenRead(filepathname))
 			{
-				if(!parser.Parse(stream, filepathname, scriptconfig.Compiler.Files, true, AcsParserSE.IncludeType.NONE, false))
+				TextResourceData data = new TextResourceData(stream, new DataLocation(), filepathname, false);
+				if(!parser.Parse(data, scriptconfig.Compiler.Files, true, AcsParserSE.IncludeType.NONE, false))
 				{
 					// Check for errors
 					if(parser.HasError)
@@ -258,7 +276,7 @@ namespace CodeImp.DoomBuilder.Controls
 			compiler.Dispose();
 
 			// Update script navigator
-			UpdateNavigator();
+			errors.AddRange(UpdateNavigator());
 
 			// Feed errors to panel
 			panel.ShowErrors(errors);
@@ -333,7 +351,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.filepathname = filepathname;
 			editor.ClearUndoRedo();
 			SetTitle(Path.GetFileName(filepathname));
-			UpdateNavigator(); //mxd
+			panel.ShowErrors(UpdateNavigator()); //mxd
 
 			return true;
 		}

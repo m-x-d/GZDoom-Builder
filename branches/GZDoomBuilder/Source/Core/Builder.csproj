@@ -1016,6 +1016,7 @@
     <Compile Include="ZDoom\ReverbsParser.cs" />
     <Compile Include="ZDoom\SndSeqParser.cs" />
     <Compile Include="ZDoom\StateGoto.cs" />
+    <Compile Include="ZDoom\TerrainParser.cs" />
     <Compile Include="ZDoom\TexturesParser.cs" />
     <Compile Include="ZDoom\TextureStructure.cs" />
     <Compile Include="ZDoom\VoxeldefParser.cs" />

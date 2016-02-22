@@ -51,7 +51,7 @@ namespace CodeImp.DoomBuilder.Data
 		// Constructor
 		public PK3Reader(DataLocation dl) : base(dl)
 		{
-			General.WriteLogLine("Opening " + Path.GetExtension(location.location).ToUpper().Replace(".", "") + " resource '" + location.location + "'");
+			General.WriteLogLine("Opening " + Path.GetExtension(location.location).ToUpper().Replace(".", "") + " resource \"" + location.location + "\"");
 
 			if(!File.Exists(location.location))
 				throw new FileNotFoundException("Could not find the file \"" + location.location + "\"", location.location);
@@ -108,8 +108,15 @@ namespace CodeImp.DoomBuilder.Data
 			// Not already disposed?
 			if(!isdisposed)
 			{
-				General.WriteLogLine("Closing " + Path.GetExtension(location.location).ToUpper().Replace(".", "") + " resource '" + location.location + "'");
-				
+				General.WriteLogLine("Closing " + Path.GetExtension(location.location).ToUpper().Replace(".", "") + " resource \"" + location.location + "\"");
+
+				//mxd. Remove temp files
+				foreach(WADReader wr in wads)
+				{
+					try { File.Delete(wr.Location.location); }
+					catch(Exception) { }
+				}
+
 				//mxd
 				if(archive != null)
 				{
@@ -375,9 +382,9 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		//mxd. This returns all files in a given directory which title starts with given title
-		protected override string[] GetAllFilesWhichTitleStartsWith(string path, string title) 
+		protected override string[] GetAllFilesWhichTitleStartsWith(string path, string title, bool subfolders) 
 		{
-			return files.GetAllFilesWhichTitleStartsWith(path, title).ToArray();
+			return files.GetAllFilesWhichTitleStartsWith(path, title, subfolders).ToArray();
 		}
 		
 		// This returns all files in a given directory that match the given extension
@@ -447,7 +454,7 @@ namespace CodeImp.DoomBuilder.Data
 			if(filedata == null)
 			{
 				//mxd
-				General.ErrorLogger.Add(ErrorType.Error, "Cannot find the file '" + filename + "' in archive '" + location.location + "'.");
+				General.ErrorLogger.Add(ErrorType.Error, "Cannot find the file \"" + filename + "\" in archive \"" + location.location + "\".");
 				return null;
 			}
 

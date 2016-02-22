@@ -117,7 +117,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 							// The next token must be the class to inherit from
 							parser.SkipWhitespace(true);
 							inheritclass = parser.StripTokenQuotes(parser.ReadToken());
-							if(string.IsNullOrEmpty(inheritclass) || parser.IsSpecialToken(inheritclass)) 
+							if(string.IsNullOrEmpty(inheritclass)) 
 							{
 								parser.ReportError("Expected class name to inherit from");
 								return;
@@ -131,7 +131,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 							// The next token must be the class to replace
 							parser.SkipWhitespace(true);
 							replaceclass = parser.StripTokenQuotes(parser.ReadToken());
-							if(string.IsNullOrEmpty(replaceclass) || parser.IsSpecialToken(replaceclass)) 
+							if(string.IsNullOrEmpty(replaceclass)) 
 							{
 								parser.ReportError("Expected class name to replace");
 								return;
@@ -302,7 +302,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 						}
 						if(uservars.ContainsKey(name))
 						{
-							parser.ReportError("User Variable \"" + name + "\" is double-defined");
+							parser.ReportError("User Variable \"" + name + "\" is double defined");
 							return;
 						}
 						if(!skipsuper && baseclass != null && baseclass.uservars.ContainsKey(name))
@@ -737,7 +737,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 		//mxd. 
 		///TODO: rewrite this
-		public string FindSuitableVoxel(Dictionary<string, bool> voxels) 
+		public string FindSuitableVoxel(HashSet<string> voxels) 
 		{
 			string result = string.Empty;
 			
@@ -790,11 +790,11 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 			if(!string.IsNullOrEmpty(result)) 
 			{
-				if(voxels.ContainsKey(result)) return result;
+				if(voxels.Contains(result)) return result;
 
 				// The sprite name may be incomplete. Find an existing sprite with direction.
 				foreach(string postfix in SPRITE_POSTFIXES)
-					if(voxels.ContainsKey(result + postfix)) return result + postfix;
+					if(voxels.Contains(result + postfix)) return result + postfix;
 			}
 
 

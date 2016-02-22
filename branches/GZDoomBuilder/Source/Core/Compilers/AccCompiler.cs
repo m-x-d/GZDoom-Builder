@@ -78,9 +78,9 @@ namespace CodeImp.DoomBuilder.Compilers
 				foreach(string include in includes)
 				{
 					// Grab the script text from the resources
-					Stream s = General.Map.Data.LoadFile(include);
+					TextResourceData data = General.Map.Data.LoadFile(include);
 
-					if(s != null)
+					if(data.Stream != null)
 					{
 						// Pull the pk3 or directory sub folder out if applicable
 						FileInfo fi = new FileInfo(Path.Combine(this.tempdir.FullName, include));
@@ -94,8 +94,8 @@ namespace CodeImp.DoomBuilder.Compilers
 							if(!string.IsNullOrEmpty(fi.DirectoryName)) Directory.CreateDirectory(fi.DirectoryName);
 
 							// Dump the script into the target file
-							BinaryReader reader = new BinaryReader(s);
-							File.WriteAllBytes(fi.FullName, reader.ReadBytes((int)s.Length));
+							BinaryReader reader = new BinaryReader(data.Stream);
+							File.WriteAllBytes(fi.FullName, reader.ReadBytes((int)data.Stream.Length));
 						}
 					}
 				}
@@ -174,10 +174,14 @@ namespace CodeImp.DoomBuilder.Compilers
 							
 							// Everything before the match is the filename
 							err.filename = linestr.Substring(0, match.Index).Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
+
+							//mxd. Get rid of temp directory path
+							if(err.filename.StartsWith(this.tempdir.Name)) err.filename = err.filename.Replace(this.tempdir.Name, string.Empty);
+							
 							if(!Path.IsPathRooted(err.filename))
 							{
 								//mxd. If the error is in an include file, try to find it in loaded resources
-								if(includes.Contains(err.filename.ToLowerInvariant()))
+								if(includes.Contains(err.filename))
 								{
 									foreach(DataReader dr in General.Map.Data.Containers)
 									{

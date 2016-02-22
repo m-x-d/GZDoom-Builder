@@ -2,7 +2,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
+using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.GZBuilder.Data;
 using SlimDX;
@@ -13,17 +14,28 @@ namespace CodeImp.DoomBuilder.ZDoom
 {
 	public sealed class VoxeldefParser : ZDTextParser
 	{
+		internal override ScriptType ScriptType { get { return ScriptType.VOXELDEF; } }
+		
 		private Dictionary<string, ModelData> entries; //sprite name, entry
 		internal Dictionary<string, ModelData> Entries { get { return entries; } }
 
-		public override bool Parse(Stream stream, string sourcefilename, bool clearerrors) 
+		public override bool Parse(TextResourceData data, bool clearerrors) 
 		{
 			entries = new Dictionary<string, ModelData>(StringComparer.Ordinal);
-			if(!base.Parse(stream, sourcefilename, clearerrors)) return false;
-			string prevToken = string.Empty;
+			
+			//mxd. Already parsed?
+			if(!base.AddTextResource(data))
+			{
+				if(clearerrors) ClearError();
+				return true;
+			}
+
+			// Cannot process?
+			if(!base.Parse(data, clearerrors)) return false;
 
 			List<string> spriteNames = new List<string>();
 			string modelName = string.Empty;
+			string prevToken = string.Empty;
 
 			// Continue until at the end of the stream
 			while(SkipWhitespace(true)) 
@@ -101,7 +113,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 									if(!ReadSignedFloat(token, ref angleoffset))
 									{
 										// Not numeric!
-										ReportError("Expected AngleOffset value, but got '" + token + "'");
+										ReportError("Expected AngleOffset value, but got \"" + token + "\"");
 										return false;
 									}
 								} 
@@ -113,7 +125,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 									if(!ReadSignedFloat(token, ref scale)) 
 									{
 										// Not numeric!
-										ReportError("Expected Scale value, but got '" + token + "'");
+										ReportError("Expected Scale value, but got \"" + token + "\"");
 										return false;
 									}
 								}
@@ -130,11 +142,6 @@ namespace CodeImp.DoomBuilder.ZDoom
 			}
 
 			return entries.Count > 0;
-		}
-
-		protected override string GetLanguageType()
-		{
-			return "VOXELDEF";
 		}
 	}
 }

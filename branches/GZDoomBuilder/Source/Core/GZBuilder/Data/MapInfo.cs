@@ -34,7 +34,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 
 		#region ================== Properties
 
-		public bool IsDefined { get { return isdefined; } }
+		public bool IsDefined { get { return isdefined; } internal set { isdefined = value; } }
 
 		public string Title { get { return title; } internal set { title = value; isdefined = true; } }
 		public string Sky1 { get { return sky1; } internal set { sky1 = value; isdefined = true; } }

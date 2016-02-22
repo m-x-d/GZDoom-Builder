@@ -40,6 +40,10 @@
 			System.Windows.Forms.Label label15;
 			System.Windows.Forms.Label label6;
 			System.Windows.Forms.Label label5;
+			System.Windows.Forms.Label label17;
+			System.Windows.Forms.Label label16;
+			System.Windows.Forms.Label label18;
+			System.Windows.Forms.Label label19;
 			this.tagsselector = new CodeImp.DoomBuilder.GZBuilder.Controls.TagsSelector();
 			this.soundsequence = new System.Windows.Forms.ComboBox();
 			this.resetsoundsequence = new System.Windows.Forms.Button();
@@ -57,10 +61,19 @@
 			this.floorheight = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.tabs = new System.Windows.Forms.TabControl();
 			this.tabproperties = new System.Windows.Forms.TabPage();
+			this.groupdamage = new System.Windows.Forms.GroupBox();
+			this.leakiness = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
+			this.damageinterval = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
+			this.resetdamagetype = new System.Windows.Forms.Button();
+			this.damageamount = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
+			this.damagetype = new System.Windows.Forms.ComboBox();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
 			this.flags = new CodeImp.DoomBuilder.Controls.CheckboxArrayControl();
 			this.tabSurfaces = new System.Windows.Forms.TabPage();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.resetfloorterrain = new System.Windows.Forms.Button();
+			this.label3 = new System.Windows.Forms.Label();
+			this.floorterrain = new System.Windows.Forms.ComboBox();
 			this.resetfloorlight = new System.Windows.Forms.Button();
 			this.labelFloorOffsets = new System.Windows.Forms.Label();
 			this.labelFloorScale = new System.Windows.Forms.Label();
@@ -79,6 +92,9 @@
 			this.floorOffsets = new CodeImp.DoomBuilder.GZBuilder.Controls.PairedFieldsControl();
 			this.floortex = new CodeImp.DoomBuilder.Controls.FlatSelectorControl();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.resetceilterrain = new System.Windows.Forms.Button();
+			this.label7 = new System.Windows.Forms.Label();
+			this.ceilterrain = new System.Windows.Forms.ComboBox();
 			this.resetceillight = new System.Windows.Forms.Button();
 			this.labelCeilOffsets = new System.Windows.Forms.Label();
 			this.labelCeilScale = new System.Windows.Forms.Label();
@@ -119,11 +135,16 @@
 			label15 = new System.Windows.Forms.Label();
 			label6 = new System.Windows.Forms.Label();
 			label5 = new System.Windows.Forms.Label();
+			label17 = new System.Windows.Forms.Label();
+			label16 = new System.Windows.Forms.Label();
+			label18 = new System.Windows.Forms.Label();
+			label19 = new System.Windows.Forms.Label();
 			groupaction.SuspendLayout();
 			groupeffect.SuspendLayout();
 			groupfloorceiling.SuspendLayout();
 			this.tabs.SuspendLayout();
 			this.tabproperties.SuspendLayout();
+			this.groupdamage.SuspendLayout();
 			this.groupBox3.SuspendLayout();
 			this.tabSurfaces.SuspendLayout();
 			this.groupBox2.SuspendLayout();
@@ -140,16 +161,16 @@
 			groupaction.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
 			groupaction.Controls.Add(this.tagsselector);
-			groupaction.Location = new System.Drawing.Point(7, 327);
+			groupaction.Location = new System.Drawing.Point(7, 394);
 			groupaction.Name = "groupaction";
-			groupaction.Size = new System.Drawing.Size(490, 85);
+			groupaction.Size = new System.Drawing.Size(490, 80);
 			groupaction.TabIndex = 2;
 			groupaction.TabStop = false;
 			groupaction.Text = " Identification ";
 			// 
 			// tagsselector
 			// 
-			this.tagsselector.Location = new System.Drawing.Point(6, 21);
+			this.tagsselector.Location = new System.Drawing.Point(6, 15);
 			this.tagsselector.Name = "tagsselector";
 			this.tagsselector.Size = new System.Drawing.Size(478, 60);
 			this.tagsselector.TabIndex = 0;
@@ -172,9 +193,9 @@
 			groupeffect.Controls.Add(this.browseeffect);
 			groupeffect.Controls.Add(this.effect);
 			groupeffect.Controls.Add(label8);
-			groupeffect.Location = new System.Drawing.Point(7, 160);
+			groupeffect.Location = new System.Drawing.Point(7, 256);
 			groupeffect.Name = "groupeffect";
-			groupeffect.Size = new System.Drawing.Size(490, 161);
+			groupeffect.Size = new System.Drawing.Size(490, 132);
 			groupeffect.TabIndex = 1;
 			groupeffect.TabStop = false;
 			groupeffect.Text = " Effects ";
@@ -182,9 +203,9 @@
 			// soundsequence
 			// 
 			this.soundsequence.FormattingEnabled = true;
-			this.soundsequence.Location = new System.Drawing.Point(125, 54);
+			this.soundsequence.Location = new System.Drawing.Point(283, 48);
 			this.soundsequence.Name = "soundsequence";
-			this.soundsequence.Size = new System.Drawing.Size(325, 21);
+			this.soundsequence.Size = new System.Drawing.Size(167, 21);
 			this.soundsequence.TabIndex = 32;
 			this.soundsequence.MouseDown += new System.Windows.Forms.MouseEventHandler(this.soundsequence_MouseDown);
 			this.soundsequence.TextChanged += new System.EventHandler(this.soundsequence_TextChanged);
@@ -192,7 +213,7 @@
 			// resetsoundsequence
 			// 
 			this.resetsoundsequence.Image = global::CodeImp.DoomBuilder.Properties.Resources.Reset;
-			this.resetsoundsequence.Location = new System.Drawing.Point(456, 52);
+			this.resetsoundsequence.Location = new System.Drawing.Point(456, 46);
 			this.resetsoundsequence.Name = "resetsoundsequence";
 			this.resetsoundsequence.Size = new System.Drawing.Size(28, 25);
 			this.resetsoundsequence.TabIndex = 31;
@@ -205,7 +226,7 @@
 			this.fadeColor.DefaultValue = 0;
 			this.fadeColor.Field = "fadecolor";
 			this.fadeColor.Label = "Fade:";
-			this.fadeColor.Location = new System.Drawing.Point(241, 104);
+			this.fadeColor.Location = new System.Drawing.Point(236, 99);
 			this.fadeColor.Name = "fadeColor";
 			this.fadeColor.Size = new System.Drawing.Size(207, 31);
 			this.fadeColor.TabIndex = 30;
@@ -216,7 +237,7 @@
 			this.lightColor.DefaultValue = 16777215;
 			this.lightColor.Field = "lightcolor";
 			this.lightColor.Label = "Light:";
-			this.lightColor.Location = new System.Drawing.Point(241, 77);
+			this.lightColor.Location = new System.Drawing.Point(236, 71);
 			this.lightColor.Name = "lightColor";
 			this.lightColor.Size = new System.Drawing.Size(207, 29);
 			this.lightColor.TabIndex = 29;
@@ -233,7 +254,7 @@
 			this.brightness.ButtonStepSmall = 1F;
 			this.brightness.ButtonStepsUseModifierKeys = true;
 			this.brightness.ButtonStepsWrapAround = false;
-			this.brightness.Location = new System.Drawing.Point(125, 79);
+			this.brightness.Location = new System.Drawing.Point(89, 46);
 			this.brightness.Name = "brightness";
 			this.brightness.Size = new System.Drawing.Size(81, 24);
 			this.brightness.StepValues = null;
@@ -251,7 +272,7 @@
 			this.desaturation.ButtonStepSmall = 0.01F;
 			this.desaturation.ButtonStepsUseModifierKeys = true;
 			this.desaturation.ButtonStepsWrapAround = false;
-			this.desaturation.Location = new System.Drawing.Point(125, 131);
+			this.desaturation.Location = new System.Drawing.Point(89, 102);
 			this.desaturation.Name = "desaturation";
 			this.desaturation.Size = new System.Drawing.Size(81, 24);
 			this.desaturation.StepValues = null;
@@ -260,7 +281,7 @@
 			// label14
 			// 
 			label14.AutoSize = true;
-			label14.Location = new System.Drawing.Point(27, 58);
+			label14.Location = new System.Drawing.Point(186, 52);
 			label14.Name = "label14";
 			label14.Size = new System.Drawing.Size(91, 13);
 			label14.TabIndex = 3;
@@ -269,7 +290,7 @@
 			// label9
 			// 
 			label9.AutoSize = true;
-			label9.Location = new System.Drawing.Point(57, 84);
+			label9.Location = new System.Drawing.Point(21, 51);
 			label9.Name = "label9";
 			label9.Size = new System.Drawing.Size(59, 13);
 			label9.TabIndex = 2;
@@ -277,7 +298,7 @@
 			// 
 			// label13
 			// 
-			label13.Location = new System.Drawing.Point(45, 136);
+			label13.Location = new System.Drawing.Point(9, 107);
 			label13.Name = "label13";
 			label13.Size = new System.Drawing.Size(74, 14);
 			label13.TabIndex = 27;
@@ -295,7 +316,7 @@
 			this.gravity.ButtonStepSmall = 0.01F;
 			this.gravity.ButtonStepsUseModifierKeys = true;
 			this.gravity.ButtonStepsWrapAround = false;
-			this.gravity.Location = new System.Drawing.Point(125, 105);
+			this.gravity.Location = new System.Drawing.Point(89, 74);
 			this.gravity.Name = "gravity";
 			this.gravity.Size = new System.Drawing.Size(81, 24);
 			this.gravity.StepValues = null;
@@ -303,7 +324,7 @@
 			// 
 			// label2
 			// 
-			label2.Location = new System.Drawing.Point(45, 110);
+			label2.Location = new System.Drawing.Point(9, 79);
 			label2.Name = "label2";
 			label2.Size = new System.Drawing.Size(74, 14);
 			label2.TabIndex = 23;
@@ -313,7 +334,7 @@
 			// browseeffect
 			// 
 			this.browseeffect.Image = global::CodeImp.DoomBuilder.Properties.Resources.List;
-			this.browseeffect.Location = new System.Drawing.Point(456, 26);
+			this.browseeffect.Location = new System.Drawing.Point(456, 16);
 			this.browseeffect.Name = "browseeffect";
 			this.browseeffect.Size = new System.Drawing.Size(28, 25);
 			this.browseeffect.TabIndex = 1;
@@ -328,16 +349,16 @@
 			this.effect.Empty = false;
 			this.effect.GeneralizedCategories = null;
 			this.effect.GeneralizedOptions = null;
-			this.effect.Location = new System.Drawing.Point(68, 28);
+			this.effect.Location = new System.Drawing.Point(89, 18);
 			this.effect.Name = "effect";
-			this.effect.Size = new System.Drawing.Size(382, 21);
+			this.effect.Size = new System.Drawing.Size(361, 21);
 			this.effect.TabIndex = 0;
 			this.effect.Value = 402;
 			// 
 			// label8
 			// 
 			label8.AutoSize = true;
-			label8.Location = new System.Drawing.Point(17, 31);
+			label8.Location = new System.Drawing.Point(35, 22);
 			label8.Name = "label8";
 			label8.Size = new System.Drawing.Size(45, 13);
 			label8.TabIndex = 0;
@@ -355,9 +376,9 @@
 			groupfloorceiling.Controls.Add(this.sectorheightlabel);
 			groupfloorceiling.Controls.Add(this.sectorheight);
 			groupfloorceiling.Controls.Add(this.floorheight);
-			groupfloorceiling.Location = new System.Drawing.Point(7, 6);
+			groupfloorceiling.Location = new System.Drawing.Point(7, 112);
 			groupfloorceiling.Name = "groupfloorceiling";
-			groupfloorceiling.Size = new System.Drawing.Size(188, 148);
+			groupfloorceiling.Size = new System.Drawing.Size(187, 138);
 			groupfloorceiling.TabIndex = 0;
 			groupfloorceiling.TabStop = false;
 			groupfloorceiling.Text = " Heights ";
@@ -366,7 +387,7 @@
 			// 
 			label15.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			label15.ForeColor = System.Drawing.SystemColors.HotTrack;
-			label15.Location = new System.Drawing.Point(9, 84);
+			label15.Location = new System.Drawing.Point(9, 83);
 			label15.Name = "label15";
 			label15.Size = new System.Drawing.Size(74, 14);
 			label15.TabIndex = 27;
@@ -377,7 +398,7 @@
 			// 
 			// label6
 			// 
-			label6.Location = new System.Drawing.Point(9, 24);
+			label6.Location = new System.Drawing.Point(9, 23);
 			label6.Name = "label6";
 			label6.Size = new System.Drawing.Size(74, 14);
 			label6.TabIndex = 19;
@@ -386,7 +407,7 @@
 			// 
 			// label5
 			// 
-			label5.Location = new System.Drawing.Point(9, 54);
+			label5.Location = new System.Drawing.Point(9, 53);
 			label5.Name = "label5";
 			label5.Size = new System.Drawing.Size(74, 14);
 			label5.TabIndex = 17;
@@ -404,9 +425,9 @@
 			this.heightoffset.ButtonStepSmall = 1F;
 			this.heightoffset.ButtonStepsUseModifierKeys = true;
 			this.heightoffset.ButtonStepsWrapAround = false;
-			this.heightoffset.Location = new System.Drawing.Point(89, 79);
+			this.heightoffset.Location = new System.Drawing.Point(89, 78);
 			this.heightoffset.Name = "heightoffset";
-			this.heightoffset.Size = new System.Drawing.Size(88, 24);
+			this.heightoffset.Size = new System.Drawing.Size(81, 24);
 			this.heightoffset.StepValues = null;
 			this.heightoffset.TabIndex = 28;
 			this.heightoffset.WhenTextChanged += new System.EventHandler(this.heightoffset_WhenTextChanged);
@@ -422,16 +443,16 @@
 			this.ceilingheight.ButtonStepSmall = 1F;
 			this.ceilingheight.ButtonStepsUseModifierKeys = true;
 			this.ceilingheight.ButtonStepsWrapAround = false;
-			this.ceilingheight.Location = new System.Drawing.Point(89, 19);
+			this.ceilingheight.Location = new System.Drawing.Point(89, 18);
 			this.ceilingheight.Name = "ceilingheight";
-			this.ceilingheight.Size = new System.Drawing.Size(88, 24);
+			this.ceilingheight.Size = new System.Drawing.Size(81, 24);
 			this.ceilingheight.StepValues = null;
 			this.ceilingheight.TabIndex = 22;
 			this.ceilingheight.WhenTextChanged += new System.EventHandler(this.ceilingheight_WhenTextChanged);
 			// 
 			// sectorheightlabel
 			// 
-			this.sectorheightlabel.Location = new System.Drawing.Point(9, 114);
+			this.sectorheightlabel.Location = new System.Drawing.Point(9, 113);
 			this.sectorheightlabel.Name = "sectorheightlabel";
 			this.sectorheightlabel.Size = new System.Drawing.Size(74, 14);
 			this.sectorheightlabel.TabIndex = 20;
@@ -441,7 +462,7 @@
 			// sectorheight
 			// 
 			this.sectorheight.AutoSize = true;
-			this.sectorheight.Location = new System.Drawing.Point(90, 114);
+			this.sectorheight.Location = new System.Drawing.Point(89, 114);
 			this.sectorheight.Name = "sectorheight";
 			this.sectorheight.Size = new System.Drawing.Size(13, 13);
 			this.sectorheight.TabIndex = 21;
@@ -458,12 +479,59 @@
 			this.floorheight.ButtonStepSmall = 1F;
 			this.floorheight.ButtonStepsUseModifierKeys = true;
 			this.floorheight.ButtonStepsWrapAround = false;
-			this.floorheight.Location = new System.Drawing.Point(89, 49);
+			this.floorheight.Location = new System.Drawing.Point(89, 48);
 			this.floorheight.Name = "floorheight";
-			this.floorheight.Size = new System.Drawing.Size(88, 24);
+			this.floorheight.Size = new System.Drawing.Size(81, 24);
 			this.floorheight.StepValues = null;
 			this.floorheight.TabIndex = 23;
 			this.floorheight.WhenTextChanged += new System.EventHandler(this.floorheight_WhenTextChanged);
+			// 
+			// label17
+			// 
+			label17.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			label17.ForeColor = System.Drawing.SystemColors.HotTrack;
+			label17.Location = new System.Drawing.Point(10, 51);
+			label17.Name = "label17";
+			label17.Size = new System.Drawing.Size(74, 14);
+			label17.TabIndex = 29;
+			label17.Text = "Ammount:";
+			label17.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			this.tooltip.SetToolTip(label17, "Amount of damage inflicted by this sector.\r\nIf this is 0, all other damage proper" +
+					"ties will be ignored.\r\nSetting this to a negative value will create a healing se" +
+					"ctor.");
+			// 
+			// label16
+			// 
+			label16.Location = new System.Drawing.Point(10, 23);
+			label16.Name = "label16";
+			label16.Size = new System.Drawing.Size(74, 14);
+			label16.TabIndex = 36;
+			label16.Text = "Type:";
+			label16.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// label18
+			// 
+			label18.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			label18.ForeColor = System.Drawing.SystemColors.HotTrack;
+			label18.Location = new System.Drawing.Point(10, 81);
+			label18.Name = "label18";
+			label18.Size = new System.Drawing.Size(74, 14);
+			label18.TabIndex = 37;
+			label18.Text = "Interval:";
+			label18.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			this.tooltip.SetToolTip(label18, "Interval in tics between damage application.");
+			// 
+			// label19
+			// 
+			label19.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			label19.ForeColor = System.Drawing.SystemColors.HotTrack;
+			label19.Location = new System.Drawing.Point(10, 111);
+			label19.Name = "label19";
+			label19.Size = new System.Drawing.Size(74, 14);
+			label19.TabIndex = 39;
+			label19.Text = "Leakiness:";
+			label19.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			this.tooltip.SetToolTip(label19, "Probability of leaking through radiation suit\r\n(0 = never, 256 = always)");
 			// 
 			// tabs
 			// 
@@ -481,11 +549,12 @@
 			this.tabs.Name = "tabs";
 			this.tabs.Padding = new System.Drawing.Point(24, 3);
 			this.tabs.SelectedIndex = 0;
-			this.tabs.Size = new System.Drawing.Size(511, 445);
+			this.tabs.Size = new System.Drawing.Size(511, 504);
 			this.tabs.TabIndex = 1;
 			// 
 			// tabproperties
 			// 
+			this.tabproperties.Controls.Add(this.groupdamage);
 			this.tabproperties.Controls.Add(this.groupBox3);
 			this.tabproperties.Controls.Add(groupaction);
 			this.tabproperties.Controls.Add(groupeffect);
@@ -494,30 +563,123 @@
 			this.tabproperties.Location = new System.Drawing.Point(4, 22);
 			this.tabproperties.Name = "tabproperties";
 			this.tabproperties.Padding = new System.Windows.Forms.Padding(3);
-			this.tabproperties.Size = new System.Drawing.Size(503, 419);
+			this.tabproperties.Size = new System.Drawing.Size(503, 478);
 			this.tabproperties.TabIndex = 0;
 			this.tabproperties.Text = "Properties";
 			this.tabproperties.UseVisualStyleBackColor = true;
 			// 
+			// groupdamage
+			// 
+			this.groupdamage.Controls.Add(label19);
+			this.groupdamage.Controls.Add(this.leakiness);
+			this.groupdamage.Controls.Add(label18);
+			this.groupdamage.Controls.Add(this.damageinterval);
+			this.groupdamage.Controls.Add(label16);
+			this.groupdamage.Controls.Add(label17);
+			this.groupdamage.Controls.Add(this.resetdamagetype);
+			this.groupdamage.Controls.Add(this.damageamount);
+			this.groupdamage.Controls.Add(this.damagetype);
+			this.groupdamage.Location = new System.Drawing.Point(200, 112);
+			this.groupdamage.Name = "groupdamage";
+			this.groupdamage.Size = new System.Drawing.Size(297, 136);
+			this.groupdamage.TabIndex = 4;
+			this.groupdamage.TabStop = false;
+			this.groupdamage.Text = " Sector damage ";
+			// 
+			// leakiness
+			// 
+			this.leakiness.AllowDecimal = false;
+			this.leakiness.AllowNegative = false;
+			this.leakiness.AllowRelative = true;
+			this.leakiness.ButtonStep = 8;
+			this.leakiness.ButtonStepBig = 16F;
+			this.leakiness.ButtonStepFloat = 1F;
+			this.leakiness.ButtonStepSmall = 1F;
+			this.leakiness.ButtonStepsUseModifierKeys = true;
+			this.leakiness.ButtonStepsWrapAround = false;
+			this.leakiness.Location = new System.Drawing.Point(90, 106);
+			this.leakiness.Name = "leakiness";
+			this.leakiness.Size = new System.Drawing.Size(81, 24);
+			this.leakiness.StepValues = null;
+			this.leakiness.TabIndex = 40;
+			// 
+			// damageinterval
+			// 
+			this.damageinterval.AllowDecimal = false;
+			this.damageinterval.AllowNegative = false;
+			this.damageinterval.AllowRelative = true;
+			this.damageinterval.ButtonStep = 8;
+			this.damageinterval.ButtonStepBig = 16F;
+			this.damageinterval.ButtonStepFloat = 1F;
+			this.damageinterval.ButtonStepSmall = 1F;
+			this.damageinterval.ButtonStepsUseModifierKeys = true;
+			this.damageinterval.ButtonStepsWrapAround = false;
+			this.damageinterval.Location = new System.Drawing.Point(90, 76);
+			this.damageinterval.Name = "damageinterval";
+			this.damageinterval.Size = new System.Drawing.Size(81, 24);
+			this.damageinterval.StepValues = null;
+			this.damageinterval.TabIndex = 38;
+			// 
+			// resetdamagetype
+			// 
+			this.resetdamagetype.Image = global::CodeImp.DoomBuilder.Properties.Resources.Reset;
+			this.resetdamagetype.Location = new System.Drawing.Point(263, 17);
+			this.resetdamagetype.Name = "resetdamagetype";
+			this.resetdamagetype.Size = new System.Drawing.Size(28, 25);
+			this.resetdamagetype.TabIndex = 35;
+			this.resetdamagetype.Text = " ";
+			this.resetdamagetype.UseVisualStyleBackColor = true;
+			this.resetdamagetype.Click += new System.EventHandler(this.resetdamagetype_Click);
+			// 
+			// damageamount
+			// 
+			this.damageamount.AllowDecimal = false;
+			this.damageamount.AllowNegative = true;
+			this.damageamount.AllowRelative = true;
+			this.damageamount.ButtonStep = 8;
+			this.damageamount.ButtonStepBig = 16F;
+			this.damageamount.ButtonStepFloat = 1F;
+			this.damageamount.ButtonStepSmall = 1F;
+			this.damageamount.ButtonStepsUseModifierKeys = true;
+			this.damageamount.ButtonStepsWrapAround = false;
+			this.damageamount.Location = new System.Drawing.Point(90, 46);
+			this.damageamount.Name = "damageamount";
+			this.damageamount.Size = new System.Drawing.Size(81, 24);
+			this.damageamount.StepValues = null;
+			this.damageamount.TabIndex = 30;
+			// 
+			// damagetype
+			// 
+			this.damagetype.FormattingEnabled = true;
+			this.damagetype.Location = new System.Drawing.Point(90, 19);
+			this.damagetype.Name = "damagetype";
+			this.damagetype.Size = new System.Drawing.Size(167, 21);
+			this.damagetype.TabIndex = 34;
+			this.damagetype.MouseDown += new System.Windows.Forms.MouseEventHandler(this.damagetype_MouseDown);
+			this.damagetype.TextChanged += new System.EventHandler(this.damagetype_TextChanged);
+			// 
 			// groupBox3
 			// 
 			this.groupBox3.Controls.Add(this.flags);
-			this.groupBox3.Location = new System.Drawing.Point(201, 6);
+			this.groupBox3.Location = new System.Drawing.Point(7, 6);
 			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Size = new System.Drawing.Size(296, 148);
+			this.groupBox3.Size = new System.Drawing.Size(490, 100);
 			this.groupBox3.TabIndex = 3;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = " Flags ";
 			// 
 			// flags
 			// 
+			this.flags.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.flags.AutoScroll = true;
-			this.flags.Columns = 1;
+			this.flags.Columns = 2;
 			this.flags.Location = new System.Drawing.Point(15, 21);
 			this.flags.Name = "flags";
-			this.flags.Size = new System.Drawing.Size(275, 121);
+			this.flags.Size = new System.Drawing.Size(469, 73);
 			this.flags.TabIndex = 5;
-			this.flags.VerticalSpacing = 2;
+			this.flags.VerticalSpacing = 1;
 			// 
 			// tabSurfaces
 			// 
@@ -526,7 +688,7 @@
 			this.tabSurfaces.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tabSurfaces.Location = new System.Drawing.Point(4, 22);
 			this.tabSurfaces.Name = "tabSurfaces";
-			this.tabSurfaces.Size = new System.Drawing.Size(503, 419);
+			this.tabSurfaces.Size = new System.Drawing.Size(503, 478);
 			this.tabSurfaces.TabIndex = 2;
 			this.tabSurfaces.Text = "Surfaces";
 			this.tabSurfaces.UseVisualStyleBackColor = true;
@@ -535,6 +697,9 @@
 			// 
 			this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox2.Controls.Add(this.resetfloorterrain);
+			this.groupBox2.Controls.Add(this.label3);
+			this.groupBox2.Controls.Add(this.floorterrain);
 			this.groupBox2.Controls.Add(this.resetfloorlight);
 			this.groupBox2.Controls.Add(this.labelFloorOffsets);
 			this.groupBox2.Controls.Add(this.labelFloorScale);
@@ -552,17 +717,48 @@
 			this.groupBox2.Controls.Add(this.floorScale);
 			this.groupBox2.Controls.Add(this.floorOffsets);
 			this.groupBox2.Controls.Add(this.floortex);
-			this.groupBox2.Location = new System.Drawing.Point(3, 212);
+			this.groupBox2.Location = new System.Drawing.Point(3, 239);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(497, 203);
+			this.groupBox2.Size = new System.Drawing.Size(497, 230);
 			this.groupBox2.TabIndex = 55;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = " Floor ";
 			// 
+			// resetfloorterrain
+			// 
+			this.resetfloorterrain.Image = global::CodeImp.DoomBuilder.Properties.Resources.Reset;
+			this.resetfloorterrain.Location = new System.Drawing.Point(246, 110);
+			this.resetfloorterrain.Name = "resetfloorterrain";
+			this.resetfloorterrain.Size = new System.Drawing.Size(23, 23);
+			this.resetfloorterrain.TabIndex = 66;
+			this.resetfloorterrain.Text = " ";
+			this.resetfloorterrain.UseVisualStyleBackColor = true;
+			this.resetfloorterrain.Click += new System.EventHandler(this.resetfloorterrain_Click);
+			// 
+			// label3
+			// 
+			this.label3.Location = new System.Drawing.Point(24, 114);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(80, 14);
+			this.label3.TabIndex = 62;
+			this.label3.Tag = "";
+			this.label3.Text = "Terrain:";
+			this.label3.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// floorterrain
+			// 
+			this.floorterrain.FormattingEnabled = true;
+			this.floorterrain.Location = new System.Drawing.Point(113, 111);
+			this.floorterrain.Name = "floorterrain";
+			this.floorterrain.Size = new System.Drawing.Size(130, 21);
+			this.floorterrain.TabIndex = 61;
+			this.floorterrain.MouseDown += new System.Windows.Forms.MouseEventHandler(this.floorterrain_MouseDown);
+			this.floorterrain.TextChanged += new System.EventHandler(this.floorterrain_TextChanged);
+			// 
 			// resetfloorlight
 			// 
 			this.resetfloorlight.Image = global::CodeImp.DoomBuilder.Properties.Resources.Reset;
-			this.resetfloorlight.Location = new System.Drawing.Point(246, 114);
+			this.resetfloorlight.Location = new System.Drawing.Point(246, 138);
 			this.resetfloorlight.Name = "resetfloorlight";
 			this.resetfloorlight.Size = new System.Drawing.Size(23, 23);
 			this.resetfloorlight.TabIndex = 60;
@@ -593,7 +789,7 @@
 			// cbUseFloorLineAngles
 			// 
 			this.cbUseFloorLineAngles.AutoSize = true;
-			this.cbUseFloorLineAngles.Location = new System.Drawing.Point(181, 148);
+			this.cbUseFloorLineAngles.Location = new System.Drawing.Point(181, 172);
 			this.cbUseFloorLineAngles.Name = "cbUseFloorLineAngles";
 			this.cbUseFloorLineAngles.Size = new System.Drawing.Size(113, 17);
 			this.cbUseFloorLineAngles.TabIndex = 57;
@@ -604,9 +800,9 @@
 			// 
 			// floorAngleControl
 			// 
-			this.floorAngleControl.Angle = -450;
+			this.floorAngleControl.Angle = -1350;
 			this.floorAngleControl.AngleOffset = 90;
-			this.floorAngleControl.Location = new System.Drawing.Point(6, 132);
+			this.floorAngleControl.Location = new System.Drawing.Point(6, 156);
 			this.floorAngleControl.Name = "floorAngleControl";
 			this.floorAngleControl.Size = new System.Drawing.Size(44, 44);
 			this.floorAngleControl.TabIndex = 56;
@@ -624,7 +820,7 @@
 			// 
 			// label10
 			// 
-			this.label10.Location = new System.Drawing.Point(24, 178);
+			this.label10.Location = new System.Drawing.Point(24, 202);
 			this.label10.Name = "label10";
 			this.label10.Size = new System.Drawing.Size(80, 14);
 			this.label10.TabIndex = 52;
@@ -643,7 +839,7 @@
 			this.floorAlpha.ButtonStepSmall = 0.01F;
 			this.floorAlpha.ButtonStepsUseModifierKeys = true;
 			this.floorAlpha.ButtonStepsWrapAround = false;
-			this.floorAlpha.Location = new System.Drawing.Point(113, 173);
+			this.floorAlpha.Location = new System.Drawing.Point(113, 197);
 			this.floorAlpha.Name = "floorAlpha";
 			this.floorAlpha.Size = new System.Drawing.Size(62, 24);
 			this.floorAlpha.StepValues = null;
@@ -652,7 +848,7 @@
 			// 
 			// label11
 			// 
-			this.label11.Location = new System.Drawing.Point(24, 148);
+			this.label11.Location = new System.Drawing.Point(24, 172);
 			this.label11.Name = "label11";
 			this.label11.Size = new System.Drawing.Size(80, 14);
 			this.label11.TabIndex = 50;
@@ -671,7 +867,7 @@
 			this.floorRotation.ButtonStepSmall = 0.1F;
 			this.floorRotation.ButtonStepsUseModifierKeys = true;
 			this.floorRotation.ButtonStepsWrapAround = false;
-			this.floorRotation.Location = new System.Drawing.Point(113, 143);
+			this.floorRotation.Location = new System.Drawing.Point(113, 167);
 			this.floorRotation.Name = "floorRotation";
 			this.floorRotation.Size = new System.Drawing.Size(62, 24);
 			this.floorRotation.StepValues = null;
@@ -682,7 +878,7 @@
 			// floorLightAbsolute
 			// 
 			this.floorLightAbsolute.AutoSize = true;
-			this.floorLightAbsolute.Location = new System.Drawing.Point(181, 118);
+			this.floorLightAbsolute.Location = new System.Drawing.Point(181, 142);
 			this.floorLightAbsolute.Name = "floorLightAbsolute";
 			this.floorLightAbsolute.Size = new System.Drawing.Size(67, 17);
 			this.floorLightAbsolute.TabIndex = 49;
@@ -692,7 +888,7 @@
 			// 
 			// label12
 			// 
-			this.label12.Location = new System.Drawing.Point(24, 118);
+			this.label12.Location = new System.Drawing.Point(24, 142);
 			this.label12.Name = "label12";
 			this.label12.Size = new System.Drawing.Size(80, 14);
 			this.label12.TabIndex = 47;
@@ -711,7 +907,7 @@
 			this.floorBrightness.ButtonStepSmall = 1F;
 			this.floorBrightness.ButtonStepsUseModifierKeys = true;
 			this.floorBrightness.ButtonStepsWrapAround = false;
-			this.floorBrightness.Location = new System.Drawing.Point(113, 113);
+			this.floorBrightness.Location = new System.Drawing.Point(113, 137);
 			this.floorBrightness.Name = "floorBrightness";
 			this.floorBrightness.Size = new System.Drawing.Size(62, 24);
 			this.floorBrightness.StepValues = null;
@@ -771,7 +967,7 @@
 			this.floortex.Location = new System.Drawing.Point(300, 13);
 			this.floortex.MultipleTextures = false;
 			this.floortex.Name = "floortex";
-			this.floortex.Size = new System.Drawing.Size(190, 184);
+			this.floortex.Size = new System.Drawing.Size(190, 204);
 			this.floortex.TabIndex = 15;
 			this.floortex.TextureName = "";
 			this.floortex.UsePreviews = false;
@@ -781,6 +977,9 @@
 			// 
 			this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox1.Controls.Add(this.resetceilterrain);
+			this.groupBox1.Controls.Add(this.label7);
+			this.groupBox1.Controls.Add(this.ceilterrain);
 			this.groupBox1.Controls.Add(this.resetceillight);
 			this.groupBox1.Controls.Add(this.labelCeilOffsets);
 			this.groupBox1.Controls.Add(this.labelCeilScale);
@@ -800,15 +999,46 @@
 			this.groupBox1.Controls.Add(this.ceilingtex);
 			this.groupBox1.Location = new System.Drawing.Point(3, 3);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(497, 203);
+			this.groupBox1.Size = new System.Drawing.Size(497, 230);
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = " Ceiling ";
 			// 
+			// resetceilterrain
+			// 
+			this.resetceilterrain.Image = global::CodeImp.DoomBuilder.Properties.Resources.Reset;
+			this.resetceilterrain.Location = new System.Drawing.Point(246, 110);
+			this.resetceilterrain.Name = "resetceilterrain";
+			this.resetceilterrain.Size = new System.Drawing.Size(23, 23);
+			this.resetceilterrain.TabIndex = 65;
+			this.resetceilterrain.Text = " ";
+			this.resetceilterrain.UseVisualStyleBackColor = true;
+			this.resetceilterrain.Click += new System.EventHandler(this.resetceilterrain_Click);
+			// 
+			// label7
+			// 
+			this.label7.Location = new System.Drawing.Point(24, 114);
+			this.label7.Name = "label7";
+			this.label7.Size = new System.Drawing.Size(80, 14);
+			this.label7.TabIndex = 64;
+			this.label7.Tag = "";
+			this.label7.Text = "Terrain:";
+			this.label7.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// ceilterrain
+			// 
+			this.ceilterrain.FormattingEnabled = true;
+			this.ceilterrain.Location = new System.Drawing.Point(113, 111);
+			this.ceilterrain.Name = "ceilterrain";
+			this.ceilterrain.Size = new System.Drawing.Size(130, 21);
+			this.ceilterrain.TabIndex = 63;
+			this.ceilterrain.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ceilterrain_MouseDown);
+			this.ceilterrain.TextChanged += new System.EventHandler(this.ceilterrain_TextChanged);
+			// 
 			// resetceillight
 			// 
 			this.resetceillight.Image = global::CodeImp.DoomBuilder.Properties.Resources.Reset;
-			this.resetceillight.Location = new System.Drawing.Point(246, 114);
+			this.resetceillight.Location = new System.Drawing.Point(246, 138);
 			this.resetceillight.Name = "resetceillight";
 			this.resetceillight.Size = new System.Drawing.Size(23, 23);
 			this.resetceillight.TabIndex = 62;
@@ -839,7 +1069,7 @@
 			// cbUseCeilLineAngles
 			// 
 			this.cbUseCeilLineAngles.AutoSize = true;
-			this.cbUseCeilLineAngles.Location = new System.Drawing.Point(181, 148);
+			this.cbUseCeilLineAngles.Location = new System.Drawing.Point(181, 172);
 			this.cbUseCeilLineAngles.Name = "cbUseCeilLineAngles";
 			this.cbUseCeilLineAngles.Size = new System.Drawing.Size(113, 17);
 			this.cbUseCeilLineAngles.TabIndex = 56;
@@ -850,9 +1080,9 @@
 			// 
 			// ceilAngleControl
 			// 
-			this.ceilAngleControl.Angle = -450;
+			this.ceilAngleControl.Angle = -1350;
 			this.ceilAngleControl.AngleOffset = 90;
-			this.ceilAngleControl.Location = new System.Drawing.Point(6, 132);
+			this.ceilAngleControl.Location = new System.Drawing.Point(6, 156);
 			this.ceilAngleControl.Name = "ceilAngleControl";
 			this.ceilAngleControl.Size = new System.Drawing.Size(44, 44);
 			this.ceilAngleControl.TabIndex = 55;
@@ -870,7 +1100,7 @@
 			// 
 			// label4
 			// 
-			this.label4.Location = new System.Drawing.Point(24, 178);
+			this.label4.Location = new System.Drawing.Point(24, 202);
 			this.label4.Name = "label4";
 			this.label4.Size = new System.Drawing.Size(80, 14);
 			this.label4.TabIndex = 52;
@@ -889,7 +1119,7 @@
 			this.ceilAlpha.ButtonStepSmall = 0.01F;
 			this.ceilAlpha.ButtonStepsUseModifierKeys = true;
 			this.ceilAlpha.ButtonStepsWrapAround = false;
-			this.ceilAlpha.Location = new System.Drawing.Point(113, 173);
+			this.ceilAlpha.Location = new System.Drawing.Point(113, 197);
 			this.ceilAlpha.Name = "ceilAlpha";
 			this.ceilAlpha.Size = new System.Drawing.Size(62, 24);
 			this.ceilAlpha.StepValues = null;
@@ -898,7 +1128,7 @@
 			// 
 			// label1
 			// 
-			this.label1.Location = new System.Drawing.Point(24, 148);
+			this.label1.Location = new System.Drawing.Point(24, 172);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(80, 14);
 			this.label1.TabIndex = 50;
@@ -917,7 +1147,7 @@
 			this.ceilRotation.ButtonStepSmall = 0.1F;
 			this.ceilRotation.ButtonStepsUseModifierKeys = true;
 			this.ceilRotation.ButtonStepsWrapAround = true;
-			this.ceilRotation.Location = new System.Drawing.Point(113, 143);
+			this.ceilRotation.Location = new System.Drawing.Point(113, 167);
 			this.ceilRotation.Name = "ceilRotation";
 			this.ceilRotation.Size = new System.Drawing.Size(62, 24);
 			this.ceilRotation.StepValues = null;
@@ -928,7 +1158,7 @@
 			// ceilLightAbsolute
 			// 
 			this.ceilLightAbsolute.AutoSize = true;
-			this.ceilLightAbsolute.Location = new System.Drawing.Point(181, 118);
+			this.ceilLightAbsolute.Location = new System.Drawing.Point(181, 142);
 			this.ceilLightAbsolute.Name = "ceilLightAbsolute";
 			this.ceilLightAbsolute.Size = new System.Drawing.Size(67, 17);
 			this.ceilLightAbsolute.TabIndex = 49;
@@ -939,7 +1169,7 @@
 			// 
 			// labelLightFront
 			// 
-			this.labelLightFront.Location = new System.Drawing.Point(24, 118);
+			this.labelLightFront.Location = new System.Drawing.Point(24, 142);
 			this.labelLightFront.Name = "labelLightFront";
 			this.labelLightFront.Size = new System.Drawing.Size(80, 14);
 			this.labelLightFront.TabIndex = 47;
@@ -958,7 +1188,7 @@
 			this.ceilBrightness.ButtonStepSmall = 1F;
 			this.ceilBrightness.ButtonStepsUseModifierKeys = true;
 			this.ceilBrightness.ButtonStepsWrapAround = false;
-			this.ceilBrightness.Location = new System.Drawing.Point(113, 113);
+			this.ceilBrightness.Location = new System.Drawing.Point(113, 137);
 			this.ceilBrightness.Name = "ceilBrightness";
 			this.ceilBrightness.Size = new System.Drawing.Size(62, 24);
 			this.ceilBrightness.StepValues = null;
@@ -1018,7 +1248,7 @@
 			this.ceilingtex.Location = new System.Drawing.Point(300, 13);
 			this.ceilingtex.MultipleTextures = false;
 			this.ceilingtex.Name = "ceilingtex";
-			this.ceilingtex.Size = new System.Drawing.Size(190, 184);
+			this.ceilingtex.Size = new System.Drawing.Size(190, 204);
 			this.ceilingtex.TabIndex = 15;
 			this.ceilingtex.TextureName = "";
 			this.ceilingtex.UsePreviews = false;
@@ -1031,7 +1261,7 @@
 			this.tabslopes.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tabslopes.Location = new System.Drawing.Point(4, 22);
 			this.tabslopes.Name = "tabslopes";
-			this.tabslopes.Size = new System.Drawing.Size(503, 419);
+			this.tabslopes.Size = new System.Drawing.Size(503, 478);
 			this.tabslopes.TabIndex = 3;
 			this.tabslopes.Text = "Slopes";
 			this.tabslopes.UseVisualStyleBackColor = true;
@@ -1039,9 +1269,9 @@
 			// groupBox5
 			// 
 			this.groupBox5.Controls.Add(this.floorslopecontrol);
-			this.groupBox5.Location = new System.Drawing.Point(3, 212);
+			this.groupBox5.Location = new System.Drawing.Point(3, 239);
 			this.groupBox5.Name = "groupBox5";
-			this.groupBox5.Size = new System.Drawing.Size(497, 203);
+			this.groupBox5.Size = new System.Drawing.Size(497, 230);
 			this.groupBox5.TabIndex = 1;
 			this.groupBox5.TabStop = false;
 			this.groupBox5.Text = " Floor ";
@@ -1063,7 +1293,7 @@
 			this.groupBox4.Controls.Add(this.ceilingslopecontrol);
 			this.groupBox4.Location = new System.Drawing.Point(3, 3);
 			this.groupBox4.Name = "groupBox4";
-			this.groupBox4.Size = new System.Drawing.Size(497, 203);
+			this.groupBox4.Size = new System.Drawing.Size(497, 230);
 			this.groupBox4.TabIndex = 0;
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = " Ceiling ";
@@ -1086,7 +1316,7 @@
 			this.tabcomment.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.tabcomment.Location = new System.Drawing.Point(4, 22);
 			this.tabcomment.Name = "tabcomment";
-			this.tabcomment.Size = new System.Drawing.Size(503, 419);
+			this.tabcomment.Size = new System.Drawing.Size(503, 478);
 			this.tabcomment.TabIndex = 4;
 			this.tabcomment.Text = "Comment";
 			this.tabcomment.UseVisualStyleBackColor = true;
@@ -1095,7 +1325,7 @@
 			// 
 			this.commenteditor.Location = new System.Drawing.Point(3, 3);
 			this.commenteditor.Name = "commenteditor";
-			this.commenteditor.Size = new System.Drawing.Size(497, 413);
+			this.commenteditor.Size = new System.Drawing.Size(497, 472);
 			this.commenteditor.TabIndex = 0;
 			// 
 			// tabcustom
@@ -1105,7 +1335,7 @@
 			this.tabcustom.Location = new System.Drawing.Point(4, 22);
 			this.tabcustom.Name = "tabcustom";
 			this.tabcustom.Padding = new System.Windows.Forms.Padding(3);
-			this.tabcustom.Size = new System.Drawing.Size(503, 419);
+			this.tabcustom.Size = new System.Drawing.Size(503, 478);
 			this.tabcustom.TabIndex = 1;
 			this.tabcustom.Text = "Custom";
 			this.tabcustom.UseVisualStyleBackColor = true;
@@ -1124,7 +1354,8 @@
 			this.fieldslist.Name = "fieldslist";
 			this.fieldslist.PropertyColumnVisible = true;
 			this.fieldslist.PropertyColumnWidth = 150;
-			this.fieldslist.Size = new System.Drawing.Size(481, 398);
+			this.fieldslist.ShowFixedFields = true;
+			this.fieldslist.Size = new System.Drawing.Size(481, 444);
 			this.fieldslist.TabIndex = 1;
 			this.fieldslist.TypeColumnVisible = true;
 			this.fieldslist.TypeColumnWidth = 100;
@@ -1134,7 +1365,7 @@
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(407, 459);
+			this.cancel.Location = new System.Drawing.Point(407, 518);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
 			this.cancel.TabIndex = 4;
@@ -1145,7 +1376,7 @@
 			// apply
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(289, 459);
+			this.apply.Location = new System.Drawing.Point(289, 518);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
 			this.apply.TabIndex = 3;
@@ -1166,7 +1397,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.cancel;
-			this.ClientSize = new System.Drawing.Size(531, 489);
+			this.ClientSize = new System.Drawing.Size(531, 548);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
 			this.Controls.Add(this.tabs);
@@ -1188,6 +1419,7 @@
 			groupfloorceiling.PerformLayout();
 			this.tabs.ResumeLayout(false);
 			this.tabproperties.ResumeLayout(false);
+			this.groupdamage.ResumeLayout(false);
 			this.groupBox3.ResumeLayout(false);
 			this.tabSurfaces.ResumeLayout(false);
 			this.groupBox2.ResumeLayout(false);
@@ -1273,5 +1505,17 @@
 		private CodeImp.DoomBuilder.GZBuilder.Controls.TagsSelector tagsselector;
 		private System.Windows.Forms.Button resetfloorlight;
 		private System.Windows.Forms.Button resetceillight;
+		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.ComboBox floorterrain;
+		private System.Windows.Forms.Label label7;
+		private System.Windows.Forms.ComboBox ceilterrain;
+		private System.Windows.Forms.GroupBox groupdamage;
+		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox leakiness;
+		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox damageinterval;
+		private System.Windows.Forms.Button resetdamagetype;
+		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox damageamount;
+		private System.Windows.Forms.ComboBox damagetype;
+		private System.Windows.Forms.Button resetfloorterrain;
+		private System.Windows.Forms.Button resetceilterrain;
 	}
 }

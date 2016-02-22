@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
+using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.Data;
 
 namespace CodeImp.DoomBuilder.ZDoom
 {
 	internal sealed class ReverbsParser : ZDTextParser
 	{
+		internal override ScriptType ScriptType { get { return ScriptType.REVERBS; } }
+		
 		private readonly List<string> names;
 		private readonly List<int> firstargs;
 		private readonly List<int> secondargs;
@@ -20,9 +23,17 @@ namespace CodeImp.DoomBuilder.ZDoom
 			combinedargs = new List<int>();
 		}
 		
-		public override bool Parse(Stream stream, string sourcefilename, bool clearerrors)
+		public override bool Parse(TextResourceData data, bool clearerrors)
 		{
-			if(!base.Parse(stream, sourcefilename, clearerrors)) return false;
+			//mxd. Already parsed?
+			if(!base.AddTextResource(data))
+			{
+				if(clearerrors) ClearError();
+				return true;
+			}
+
+			// Cannot process?
+			if(!base.Parse(data, clearerrors)) return false;
 
 			// Continue until at the end of the stream
 			while(SkipWhitespace(true)) 
@@ -48,7 +59,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 						if(string.IsNullOrEmpty(name))
 						{
 							ReportError("Expected sound environment name");
-							break;
+							return false;
 						}
 
 						// Read first part of the ID
@@ -57,8 +68,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 						int arg1;
 						if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out arg1))
 						{
-							ReportError("Expected first part of '" + name + "' sound environment ID, but got '" + token + "'");
-							break;
+							ReportError("Expected first part of \"" + name + "\" sound environment ID, but got \"" + token + "\"");
+							return false;
 						}
 
 						// Read second part of the ID
@@ -67,15 +78,15 @@ namespace CodeImp.DoomBuilder.ZDoom
 						int arg2;
 						if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out arg2)) 
 						{
-							ReportError("Expected second part of '" + name + "' sound environment ID, but got '" + token + "'");
-							break;
+							ReportError("Expected second part of \"" + name + "\" sound environment ID, but got \"" + token + "\"");
+							return false;
 						}
 
 						int combined = arg1 * 1000000 + arg2 * 1000;
 						int combinedindex = combinedargs.IndexOf(combined);
 						if(combinedindex != -1)
 						{
-							LogWarning("'" + names[combinedindex] + "' and '" + name + "' sound environments share the same ID (" + arg1 + " " + arg2 + ")");
+							LogWarning("\"" + names[combinedindex] + "\" and \"" + name + "\" sound environments share the same ID (" + arg1 + " " + arg2 + ")");
 						}
 						else
 						{
@@ -84,7 +95,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 							// Add to collections
 							if(names.Contains(name)) 
 							{
-								LogWarning("'" + name + "' sound environment is double-defined in '" + sourcefilename + "'");
+								LogWarning("\"" + name + "\" sound environment is double defined");
 								int index = names.IndexOf(name);
 								firstargs[index] = arg1;
 								secondargs[index] = arg2;
@@ -118,11 +129,6 @@ namespace CodeImp.DoomBuilder.ZDoom
 			}
 
 			return result;
-		}
-
-		protected override string GetLanguageType()
-		{
-			return "REVERBS";
 		}
 	}
 }

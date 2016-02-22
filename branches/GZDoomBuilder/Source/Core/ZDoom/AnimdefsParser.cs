@@ -2,6 +2,7 @@
 
 using System.Collections.Generic;
 using System.IO;
+using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Data;
 
 #endregion
@@ -30,6 +31,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 		#region ================== Properties
 
+		internal override ScriptType ScriptType { get { return ScriptType.ANIMDEFS; } }
+
 		public Dictionary<string, CameraTextureData> CameraTextures { get { return cameratextures; } }
 
 		#endregion
@@ -45,9 +48,17 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 		#region ================== Parsing
 
-		public override bool Parse(Stream stream, string sourcefilename, bool clearerrors)
+		public override bool Parse(TextResourceData data, bool clearerrors)
 		{
-			if(!base.Parse(stream, sourcefilename, clearerrors)) return false;
+			// Already parsed?
+			if(!base.AddTextResource(data))
+			{
+				if(clearerrors) ClearError();
+				return true;
+			}
+
+			// Cannot process?
+			if(!base.Parse(data, clearerrors)) return false;
 
 			// Continue until at the end of the stream
 			while(SkipWhitespace(true))
@@ -144,11 +155,6 @@ namespace CodeImp.DoomBuilder.ZDoom
 			}
 
 			return true;
-		}
-
-		protected override string GetLanguageType()
-		{
-			return "ANIMDEFS";
 		}
 
 		#endregion

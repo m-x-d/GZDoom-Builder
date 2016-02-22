@@ -54,7 +54,7 @@ namespace CodeImp.DoomBuilder.Config
 		private readonly string defaultsavecompiler;
 		private readonly string defaulttestcompiler;
 		private readonly string formatinterface;
-		private readonly string defaultLinedefActivation; //mxd
+		private readonly string defaultlinedefactivation; //mxd
 		private readonly string singlesidedflag;
 		private readonly string doublesidedflag;
 		private readonly string impassableflag;
@@ -77,7 +77,7 @@ namespace CodeImp.DoomBuilder.Config
 		private readonly bool linetagindicatesectors;
 		private readonly string decorategames;
 		private string skyflatname;
-		private Dictionary<string, string> defaultskytextures; //mxd <map name, sky texture name>
+		private readonly Dictionary<string, string> defaultskytextures; //mxd <map name, sky texture name>
 		private readonly int maxtexturenamelength;
 		private readonly bool longtexturenames; //mxd
 		private readonly int leftboundary;
@@ -147,13 +147,16 @@ namespace CodeImp.DoomBuilder.Config
 		
 		// Enums
 		private readonly Dictionary<string, EnumList> enums;
+
+		//mxd. DamageTypes
+		private HashSet<string> damagetypes; 
 		
 		// Defaults
 		private readonly List<DefinedTextureSet> texturesets;
 		private readonly List<ThingsFilter> thingfilters;
 
 		//mxd. Holds base game type (doom, heretic, hexen or strife)
-		private readonly GameType gameType;
+		private readonly GameType gametype;
 		
 		#endregion
 
@@ -171,7 +174,7 @@ namespace CodeImp.DoomBuilder.Config
 		public string DefaultCeilingTexture { get { return defaultceilingtexture; } } //mxd
 		public bool ScaledTextureOffsets { get { return scaledtextureoffsets; } }
 		public string FormatInterface { get { return formatinterface; } }
-		public string DefaultLinedefActivationFlag { get { return defaultLinedefActivation; } } //mxd
+		public string DefaultLinedefActivationFlag { get { return defaultlinedefactivation; } } //mxd
 		public string SingleSidedFlag { get { return singlesidedflag; } }
 		public string DoubleSidedFlag { get { return doublesidedflag; } }
 		public string ImpassableFlag { get { return impassableflag; } }
@@ -263,12 +266,15 @@ namespace CodeImp.DoomBuilder.Config
 		// Enums
 		public IDictionary<string, EnumList> Enums { get { return enums; } }
 
+		//mxd. DamageTypes
+		internal IEnumerable<string> DamageTypes { get { return damagetypes; } }
+
 		// Defaults
 		internal List<DefinedTextureSet> TextureSets { get { return texturesets; } }
 		public List<ThingsFilter> ThingsFilters { get { return thingfilters; } }
 
 		//mxd
-		public GameType GameType { get { return gameType; } }
+		public GameType GameType { get { return gametype; } }
 		
 		#endregion
 
@@ -316,7 +322,7 @@ namespace CodeImp.DoomBuilder.Config
 
 			//mxd
 			int gt = (cfg.ReadSetting("basegame", (int)GameType.UNKNOWN));
-			gameType = ( (gt > -1 && gt < Gldefs.GLDEFS_LUMPS_PER_GAME.Length) ? (GameType)gt : GameType.UNKNOWN);
+			gametype = ( (gt > -1 && gt < Gldefs.GLDEFS_LUMPS_PER_GAME.Length) ? (GameType)gt : GameType.UNKNOWN);
 
 			enginename = cfg.ReadSetting("engine", "");
 			defaultsavecompiler = cfg.ReadSetting("defaultsavecompiler", "");
@@ -350,7 +356,7 @@ namespace CodeImp.DoomBuilder.Config
 			doomlightlevels = cfg.ReadSetting("doomlightlevels", true);
 			actionspecialhelp = cfg.ReadSetting("actionspecialhelp", string.Empty); //mxd
 			thingclasshelp = cfg.ReadSetting("thingclasshelp", string.Empty); //mxd
-			defaultLinedefActivation = cfg.ReadSetting("defaultlinedefactivation", ""); //mxd
+			defaultlinedefactivation = cfg.ReadSetting("defaultlinedefactivation", ""); //mxd
 			for(int i = 0; i < Linedef.NUM_ARGS; i++) makedoorargs[i] = cfg.ReadSetting("makedoorarg" + i.ToString(CultureInfo.InvariantCulture), 0);
 
 			//mxd. Update map format flags
@@ -391,6 +397,9 @@ namespace CodeImp.DoomBuilder.Config
 
 			// Enums
 			LoadEnums();
+
+			//mxd. Damage types
+			LoadDamageTypes();
 			
 			// Things
 			LoadThingFlags();
@@ -471,6 +480,25 @@ namespace CodeImp.DoomBuilder.Config
 				enums.Add(de.Key.ToString(), list);
 			}
 		}
+
+		//mxd. This loads built-in DamageTypes
+		private void LoadDamageTypes()
+		{
+			string dtypes = cfg.ReadSetting("damagetypes", "None");
+			string[] dtypesarr = dtypes.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+			damagetypes = new HashSet<string>();
+
+			foreach(string dtype in dtypesarr)
+			{
+				if(damagetypes.Contains(dtype))
+				{
+					General.ErrorLogger.Add(ErrorType.Warning, "DamageType \"" + dtype + "\" is double defined in the \"" + this.Name + "\" game configuration");
+					continue;
+				}
+
+				damagetypes.Add(dtype);
+			}
+		}
 		
 		// This loads a universal fields list
 		private List<UniversalFieldInfo> LoadUniversalFields(string elementname)
@@ -489,7 +517,7 @@ namespace CodeImp.DoomBuilder.Config
 				}
 				catch(Exception)
 				{
-					General.ErrorLogger.Add(ErrorType.Warning, "Unable to read universal field definition 'universalfields." + elementname + "." + de.Key + "' from game configuration '" + this.Name + "'");
+					General.ErrorLogger.Add(ErrorType.Warning, "Unable to read universal field definition \"universalfields." + elementname + "." + de.Key + "\" from game configuration \"" + this.Name + "\"");
 				}
 			}
 
@@ -532,8 +560,8 @@ namespace CodeImp.DoomBuilder.Config
 			{
 				if(!things.ContainsKey(t.Index)) 
 					things.Add(t.Index, t);
-				else 
-					General.ErrorLogger.Add(ErrorType.Warning, "Thing number " + t.Index + " is defined more than once (as '" + things[t.Index].Title + "' and '" + t.Title + "') in the '" + this.Name + "' game configuration");
+				else
+					General.ErrorLogger.Add(ErrorType.Warning, "Thing number " + t.Index + " is defined more than once (as \"" + things[t.Index].Title + "\" and \"" + t.Title + "\") in the \"" + this.Name + "\" game configuration");
 			}
 
 			// Recursively add things from child categories
@@ -624,7 +652,7 @@ namespace CodeImp.DoomBuilder.Config
 							{
 								// Failure
 								if(de.Value != null)
-									General.ErrorLogger.Add(ErrorType.Warning, "Structure 'linedeftypes' contains invalid types in game configuration '" + this.Name + "'. All types must be expanded structures.");
+									General.ErrorLogger.Add(ErrorType.Warning, "Structure \"linedeftypes\" contains invalid types in the \"" + this.Name + "\" game configuration. All types must be expanded structures.");
 							}
 						}
 					}
@@ -676,7 +704,7 @@ namespace CodeImp.DoomBuilder.Config
 				}
 				else
 				{
-					General.ErrorLogger.Add(ErrorType.Warning, "Structure 'gen_linedeftypes' contains invalid entries in game configuration '" + this.Name + "'");
+					General.ErrorLogger.Add(ErrorType.Warning, "Structure \"gen_linedeftypes\" contains invalid entries in the \"" + this.Name + "\" game configuration");
 				}
 			}
 		}
@@ -703,7 +731,7 @@ namespace CodeImp.DoomBuilder.Config
 				}
 				else
 				{
-					General.ErrorLogger.Add(ErrorType.Warning, "Structure 'sectortypes' contains invalid keys in game configuration '" + this.Name + "'");
+					General.ErrorLogger.Add(ErrorType.Warning, "Structure \"sectortypes\" contains invalid keys in the \"" + this.Name + "\" game configuration");
 				}
 			}
 
@@ -728,7 +756,7 @@ namespace CodeImp.DoomBuilder.Config
 				}
 				else
 				{
-					General.ErrorLogger.Add(ErrorType.Warning, "Structure 'sectorbrightness' contains invalid keys in game configuration '" + this.Name + "'");
+					General.ErrorLogger.Add(ErrorType.Warning, "Structure \"sectorbrightness\" contains invalid keys in the \"" + this.Name + "\" game configuration");
 				}
 			}
 
@@ -751,7 +779,7 @@ namespace CodeImp.DoomBuilder.Config
 				}
 				else
 				{
-					General.ErrorLogger.Add(ErrorType.Warning, "Structure 'gen_sectortypes' contains invalid entries in game configuration '" + this.Name + "'");
+					General.ErrorLogger.Add(ErrorType.Warning, "Structure \"gen_sectortypes\" contains invalid entries in the \"" + this.Name + "\" game configuration");
 				}
 			}
 		}
@@ -777,7 +805,7 @@ namespace CodeImp.DoomBuilder.Config
 				foreach(string s in thingflagscompare[group].Flags.Keys)
 				{
 					if(flagscache.Contains(s))
-						General.ErrorLogger.Add(ErrorType.Warning, "ThingFlagsCompare flag '" + s + "' is double-defined in '" + group + "' group!");
+						General.ErrorLogger.Add(ErrorType.Warning, "ThingFlagsCompare flag \"" + s + "\" is double defined in the \"" + group + "\" group of the \"" + this.Name + "\" game configuration");
 					else
 						flagscache.Add(s);
 				}
@@ -793,7 +821,7 @@ namespace CodeImp.DoomBuilder.Config
 					{
 						if(!thingflagscompare.ContainsKey(s))
 						{
-							General.ErrorLogger.Add(ErrorType.Warning, "ThingFlagsCompare group '" + s + "', required by flag '" + flag.Flag + "' does not exist!");
+							General.ErrorLogger.Add(ErrorType.Warning, "ThingFlagsCompare group \"" + s + "\" required by flag \"" + flag.Flag + "\" does not exist in the \"" + this.Name + "\" game configuration");
 							flag.RequiredGroups.Remove(s);
 						}
 					}
@@ -803,15 +831,15 @@ namespace CodeImp.DoomBuilder.Config
 					{
 						if(!thingflagscompare.ContainsKey(s))
 						{
-							General.ErrorLogger.Add(ErrorType.Warning, "ThingFlagsCompare group '" + s + "', ignored by flag '" + flag.Flag + "' does not exist!");
+							General.ErrorLogger.Add(ErrorType.Warning, "ThingFlagsCompare group \"" + s + "\", ignored by flag \"" + flag.Flag + "\" does not exist in the \"" + this.Name + "\" game configuration");
 							flag.IgnoredGroups.Remove(s);
 						}
 					}
 
 					// Required flag is missing?
-					if(!string.IsNullOrEmpty(flag.RequiredFlag) && !flagscache.Contains(flag.RequiredFlag) /*!group.Value.Flags.ContainsKey(flag.RequiredFlag)*/) 
+					if(!string.IsNullOrEmpty(flag.RequiredFlag) && !flagscache.Contains(flag.RequiredFlag)) 
 					{
-						General.ErrorLogger.Add(ErrorType.Warning, "ThingFlagsCompare flag '" + flag.RequiredFlag + "', required by flag '" + flag.Flag + "' does not exist!");
+						General.ErrorLogger.Add(ErrorType.Warning, "ThingFlagsCompare flag \"" + flag.RequiredFlag + "\", required by flag \"" + flag.Flag + "\" does not exist in the \"" + this.Name + "\" game configuration");
 						flag.RequiredFlag = string.Empty;
 					}
 				}
@@ -835,7 +863,7 @@ namespace CodeImp.DoomBuilder.Config
 				}
 				else
 				{
-					General.ErrorLogger.Add(ErrorType.Warning, "Structure 'defaultthingflags' contains unknown thing flags in game configuration '" + this.Name + "'");
+					General.ErrorLogger.Add(ErrorType.Warning, "Structure \"defaultthingflags\" contains unknown thing flags in the \"" + this.Name + "\" game configuration");
 				}
 			}
 		}
@@ -854,7 +882,7 @@ namespace CodeImp.DoomBuilder.Config
 				}
 				else
 				{
-					General.ErrorLogger.Add(ErrorType.Warning, "Structure 'skills' contains invalid skill numbers in game configuration '" + this.Name + "'");
+					General.ErrorLogger.Add(ErrorType.Warning, "Structure \"skills\" contains invalid skill numbers in the \"" + this.Name + "\" game configuration");
 				}
 			}
 		}
@@ -911,14 +939,14 @@ namespace CodeImp.DoomBuilder.Config
 				string skytex = de.Key.ToString();
 				if(defaultskytextures.ContainsKey(skytex))
 				{
-					General.ErrorLogger.Add(ErrorType.Warning, "Sky texture \"" + skytex + "\" is double-defined in the current game configuration!");
+					General.ErrorLogger.Add(ErrorType.Warning, "Sky texture \"" + skytex + "\" is double defined in the \"" + this.Name + "\" game configuration");
 					continue;
 				}
 
 				string[] maps = de.Value.ToString().Split(separator, StringSplitOptions.RemoveEmptyEntries);
 				if(maps.Length == 0)
 				{
-					General.ErrorLogger.Add(ErrorType.Warning, "Sky texture \"" + skytex + "\" has no map names defined in the current game configuration!");
+					General.ErrorLogger.Add(ErrorType.Warning, "Sky texture \"" + skytex + "\" has no map names defined in the \"" + this.Name + "\" game configuration");
 					continue;
 				}
 
@@ -926,7 +954,7 @@ namespace CodeImp.DoomBuilder.Config
 				{
 					if(defaultskytextures.ContainsKey(map))
 					{
-						General.ErrorLogger.Add(ErrorType.Warning, "Map \"" + map + "\" is double-defined in the \"DefaultSkyTextures\" block of current game configuration!");
+						General.ErrorLogger.Add(ErrorType.Warning, "Map \"" + map + "\" is double defined in the \"DefaultSkyTextures\" block of \"" + this.Name + "\" game configuration");
 						continue;
 					}
 

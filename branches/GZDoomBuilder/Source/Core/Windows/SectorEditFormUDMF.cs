@@ -24,6 +24,8 @@ namespace CodeImp.DoomBuilder.Windows
 		#region ================== Constants
 
 		private const string NO_SOUND_SEQUENCE = "None"; //mxd
+		private const string NO_TERRAIN = "Default"; //mxd
+		private const string NO_DAMAGETYPE = "None"; //mxd
 
 		#endregion
 
@@ -206,7 +208,17 @@ namespace CodeImp.DoomBuilder.Windows
 
 			// Fill sound sequences list
 			soundsequence.Items.Add(NO_SOUND_SEQUENCE);
-			soundsequence.Items.AddRange(General.Map.Data.SoundSequences.ToArray());
+			soundsequence.Items.AddRange(General.Map.Data.SoundSequences);
+
+			// Fill damagetype list
+			damagetype.Items.Add(NO_DAMAGETYPE);
+			damagetype.Items.AddRange(General.Map.Data.DamageTypes);
+
+			// Fill terrain type lists
+			ceilterrain.Items.Add(NO_TERRAIN);
+			ceilterrain.Items.AddRange(General.Map.Data.TerrainNames);
+			floorterrain.Items.Add(NO_TERRAIN);
+			floorterrain.Items.AddRange(General.Map.Data.TerrainNames);
 
 			// Initialize custom fields editor
 			fieldslist.Setup("sector");
@@ -307,6 +319,16 @@ namespace CodeImp.DoomBuilder.Windows
 			//Render style
 			ceilRenderStyle.SelectedIndex = Array.IndexOf(renderstyles, sc.Fields.GetValue("renderstyleceiling", "translucent"));
 			floorRenderStyle.SelectedIndex = Array.IndexOf(renderstyles, sc.Fields.GetValue("renderstylefloor", "translucent"));
+
+			//Damage
+			damagetype.Text = sc.Fields.GetValue("damagetype", NO_DAMAGETYPE);
+			damageamount.Text = sc.Fields.GetValue("damageamount", 0).ToString();
+			damageinterval.Text = sc.Fields.GetValue("damageinterval", 32).ToString();
+			leakiness.Text = General.Clamp(sc.Fields.GetValue("leakiness", 0), 0, 256).ToString();
+
+			//Terrain
+			ceilterrain.Text = sc.Fields.GetValue("ceilingterrain", NO_TERRAIN);
+			floorterrain.Text = sc.Fields.GetValue("floorterrain", NO_TERRAIN);
 
 			//Misc
 			soundsequence.Text = sc.Fields.GetValue("soundsequence", NO_SOUND_SEQUENCE);
@@ -415,8 +437,22 @@ namespace CodeImp.DoomBuilder.Windows
 				if(floorRenderStyle.SelectedIndex > -1 && floorRenderStyle.SelectedIndex != Array.IndexOf(renderstyles, s.Fields.GetValue("renderstylefloor", "translucent")))
 					floorRenderStyle.SelectedIndex = -1;
 
+				//Damage
+				if(damagetype.SelectedIndex > -1 && s.Fields.GetValue("damagetype", NO_DAMAGETYPE) != damagetype.Text) 
+					damagetype.SelectedIndex = -1;
+				if(s.Fields.GetValue("damageamount", 0).ToString() != damageamount.Text) damageamount.Text = "";
+				if(s.Fields.GetValue("damageinterval", 32).ToString() != damageinterval.Text) damageinterval.Text = "";
+				if(s.Fields.GetValue("leakiness", 0).ToString() != leakiness.Text) leakiness.Text = "";
+
+				//Terrain
+				if(ceilterrain.SelectedIndex > -1 && s.Fields.GetValue("ceilingterrain", NO_TERRAIN) != ceilterrain.Text)
+					ceilterrain.SelectedIndex = -1;
+				if(floorterrain.SelectedIndex > -1 && s.Fields.GetValue("floorterrain", NO_TERRAIN) != floorterrain.Text)
+					floorterrain.SelectedIndex = -1;
+
 				//Misc
-				if(s.Fields.GetValue("soundsequence", NO_SOUND_SEQUENCE) != soundsequence.Text) soundsequence.Text = "";
+				if(soundsequence.SelectedIndex > -1 && s.Fields.GetValue("soundsequence", NO_SOUND_SEQUENCE) != soundsequence.Text)
+					soundsequence.SelectedIndex = -1;
 				if(s.Fields.GetValue("gravity", 1.0f).ToString() != gravity.Text) gravity.Text = "";
 				if(s.Fields.GetValue("desaturation", 0.0f).ToString() != desaturation.Text) desaturation.Text = "";
 
@@ -706,14 +742,26 @@ namespace CodeImp.DoomBuilder.Windows
 				if(rskeys != null) 
 				{
 					if(ceilRenderStyle.SelectedIndex > -1) 
-					{
 						UniFields.SetString(s.Fields, "renderstyleceiling", rskeys[ceilRenderStyle.SelectedIndex], "translucent");
-					}
 					if(floorRenderStyle.SelectedIndex > -1) 
-					{
 						UniFields.SetString(s.Fields, "renderstylefloor", rskeys[floorRenderStyle.SelectedIndex], "translucent");
-					}
 				}
+
+				//Damage
+				if(!string.IsNullOrEmpty(damagetype.Text))
+					UniFields.SetString(s.Fields, "damagetype", damagetype.Text, NO_DAMAGETYPE);
+				if(!string.IsNullOrEmpty(damageamount.Text))
+					UniFields.SetInteger(s.Fields, "damageamount", damageamount.GetResult(s.Fields.GetValue("damageamount", 0)), 0);
+				if(!string.IsNullOrEmpty(damageinterval.Text))
+					UniFields.SetInteger(s.Fields, "damageinterval", damageinterval.GetResult(s.Fields.GetValue("damageinterval", 32)), 32);
+				if(!string.IsNullOrEmpty(leakiness.Text))
+					UniFields.SetInteger(s.Fields, "leakiness", General.Clamp(leakiness.GetResult(s.Fields.GetValue("leakiness", 0)), 0, 256), 0);
+
+				//Terrain
+				if(!string.IsNullOrEmpty(ceilterrain.Text))
+					UniFields.SetString(s.Fields, "ceilingterrain", ceilterrain.Text, NO_TERRAIN);
+				if(!string.IsNullOrEmpty(floorterrain.Text))
+					UniFields.SetString(s.Fields, "floorterrain", floorterrain.Text, NO_TERRAIN);
 
 				// Misc
 				if(!string.IsNullOrEmpty(soundsequence.Text))
@@ -814,14 +862,61 @@ namespace CodeImp.DoomBuilder.Windows
 			floorRotation.StepValues = (cbUseFloorLineAngles.Checked ? anglesteps : null);
 		}
 
+		private void resetfloorterrain_Click(object sender, EventArgs e)
+		{
+			floorterrain.Text = NO_TERRAIN;
+		}
+
+		private void floorterrain_TextChanged(object sender, EventArgs e)
+		{
+			resetfloorterrain.Visible = (floorterrain.Text != NO_TERRAIN);
+		}
+
+		private void floorterrain_MouseDown(object sender, MouseEventArgs e)
+		{
+			if(floorterrain.Text == NO_TERRAIN) floorterrain.SelectAll();
+		}
+
+		private void resetceilterrain_Click(object sender, EventArgs e)
+		{
+			ceilterrain.Text = NO_TERRAIN;
+		}
+
+		private void ceilterrain_TextChanged(object sender, EventArgs e)
+		{
+			resetceilterrain.Visible = (ceilterrain.Text != NO_TERRAIN);
+		}
+
+		private void ceilterrain_MouseDown(object sender, MouseEventArgs e)
+		{
+			if(ceilterrain.Text == NO_TERRAIN) ceilterrain.SelectAll();
+		}
+
+		private void resetdamagetype_Click(object sender, EventArgs e)
+		{
+			damagetype.Focus();
+			damagetype.Text = NO_DAMAGETYPE;
+		}
+
+		private void damagetype_TextChanged(object sender, EventArgs e)
+		{
+			resetdamagetype.Visible = (damagetype.Text != NO_DAMAGETYPE);
+		}
+
+		private void damagetype_MouseDown(object sender, MouseEventArgs e)
+		{
+			if(damagetype.Text == NO_DAMAGETYPE) damagetype.SelectAll();
+		}
+
 		private void resetsoundsequence_Click(object sender, EventArgs e) 
 		{
+			soundsequence.Focus();
 			soundsequence.Text = NO_SOUND_SEQUENCE;
 		}
 
-		private void soundsequence_TextChanged(object sender, EventArgs e) 
+		private void soundsequence_TextChanged(object sender, EventArgs e)
 		{
-			resetsoundsequence.Enabled = (soundsequence.Text != NO_SOUND_SEQUENCE);
+			resetsoundsequence.Visible = (soundsequence.Text != NO_SOUND_SEQUENCE);
 		}
 
 		private void soundsequence_MouseDown(object sender, MouseEventArgs e) 
@@ -1419,7 +1514,7 @@ namespace CodeImp.DoomBuilder.Windows
 					return new Vector3D(0, 0, offset);
 
 				default:
-					throw new NotImplementedException("SectorEditFormUDMF.GetSectorCenter: Got unknown SlopePivotMode (" + (int)mode + ")");
+					throw new NotImplementedException("Unknown SlopePivotMode: " + (int)mode);
 			}
 		}
 
