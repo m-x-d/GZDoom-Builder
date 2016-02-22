@@ -45,7 +45,7 @@ namespace CodeImp.DoomBuilder
 			string updaterpath = Path.Combine(General.AppPath, "Updater.exe");
 			if(!File.Exists(updaterpath))
 			{
-				errordesc = "Update check failed: '" + updaterpath + "' does not exist!";
+				errordesc = "Update check failed: \"" + updaterpath + "\" does not exist!";
 				e.Cancel = true;
 				return;
 			} 
@@ -53,7 +53,7 @@ namespace CodeImp.DoomBuilder
 			string inipath = Path.Combine(General.AppPath, "Updater.ini");
 			if(!File.Exists(inipath))
 			{
-				errordesc = "Update check failed: '" + inipath + "' does not exist!";
+				errordesc = "Update check failed: \"" + inipath + "\" does not exist!";
 				e.Cancel = true;
 				return;
 			}

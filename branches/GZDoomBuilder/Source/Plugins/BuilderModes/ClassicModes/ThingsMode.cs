@@ -1095,7 +1095,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						if(excludedLines.Count == thingsCount) 
 						{
 							ThingTypeInfo tti = General.Map.Data.GetThingInfo(t.Type);
-							General.ErrorLogger.Add(ErrorType.Warning, "Unable to align Thing ¹" + t.Index + " (" + tti.Title + ") to any linedef in a map!");
+							General.ErrorLogger.Add(ErrorType.Warning, "Unable to align " + tti.Title + " (index " + t.Index + ") to any linedef!");
 							aligned = true;
 						}
 					}

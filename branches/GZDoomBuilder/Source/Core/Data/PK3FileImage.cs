@@ -140,7 +140,7 @@ namespace CodeImp.DoomBuilder.Data
 					// Not loaded?
 					if(bitmap == null)
 					{
-						General.ErrorLogger.Add(ErrorType.Error, "Image file '" + filepathname + "' data format could not be read, while loading texture '" + this.Name + "'");
+						General.ErrorLogger.Add(ErrorType.Error, "Image file \"" + filepathname + "\" data format could not be read, while loading texture \"" + this.Name + "\"");
 						loadfailed = true;
 					}
 					else

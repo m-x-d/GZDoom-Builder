@@ -90,7 +90,7 @@ namespace CodeImp.DoomBuilder.Data
 				catch(Exception e)
 				{
 					// Unable to make bitmap
-					General.ErrorLogger.Add(ErrorType.Error, "Unable to load texture image '" + this.Name + "'. " + e.GetType().Name + ": " + e.Message);
+					General.ErrorLogger.Add(ErrorType.Error, "Unable to load texture image \"" + this.Name + "\". " + e.GetType().Name + ": " + e.Message);
 					loadfailed = true;
 				}
 
@@ -124,7 +124,7 @@ namespace CodeImp.DoomBuilder.Data
 								if(reader is UnknownImageReader) 
 								{
 									// Data is in an unknown format!
-									General.ErrorLogger.Add(ErrorType.Error, "Patch lump '" + p.lumpname + "' data format could not be read, while loading texture '" + this.Name + "'. Does this lump contain valid picture data at all?");
+									General.ErrorLogger.Add(ErrorType.Error, "Patch lump \"" + p.lumpname + "\" data format could not be read, while loading texture \"" + this.Name + "\". Does this lump contain valid picture data at all?");
 									loadfailed = true;
 									missingpatches++; //mxd
 								}
@@ -138,7 +138,7 @@ namespace CodeImp.DoomBuilder.Data
 								catch(InvalidDataException)
 								{
 									// Data cannot be read!
-									General.ErrorLogger.Add(ErrorType.Error, "Patch lump '" + p.lumpname + "' data format could not be read, while loading texture '" + this.Name + "'. Does this lump contain valid picture data at all?");
+									General.ErrorLogger.Add(ErrorType.Error, "Patch lump \"" + p.lumpname + "\" data format could not be read, while loading texture \"" + this.Name + "\". Does this lump contain valid picture data at all?");
 									loadfailed = true;
 									missingpatches++; //mxd
 								}
@@ -150,7 +150,7 @@ namespace CodeImp.DoomBuilder.Data
 						else
 						{
 							// Missing a patch lump!
-							General.ErrorLogger.Add(ErrorType.Error, "Missing patch lump '" + p.lumpname + "' while loading texture '" + this.Name + "'. Did you forget to include required resources?");
+							General.ErrorLogger.Add(ErrorType.Error, "Missing patch lump \"" + p.lumpname + "\" while loading texture \"" + this.Name + "\". Did you forget to include required resources?");
 							loadfailed = true;
 							missingpatches++; //mxd
 						}

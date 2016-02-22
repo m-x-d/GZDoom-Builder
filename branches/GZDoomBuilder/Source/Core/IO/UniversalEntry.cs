@@ -60,7 +60,7 @@ namespace CodeImp.DoomBuilder.IO
 		// Will throw and exception when it is not
 		public void ValidateType(Type t)
 		{
-			if(value.GetType() != t) throw new Exception("The value of entry '" + key + "' is of incompatible type (expected " + t.Name + ")");
+			if(value.GetType() != t) throw new Exception("The value of entry \"" + key + "\" is of incompatible type (expected " + t.Name + ")");
 		}
 
 		//mxd 

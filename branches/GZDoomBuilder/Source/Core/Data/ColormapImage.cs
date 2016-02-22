@@ -67,7 +67,7 @@ namespace CodeImp.DoomBuilder.Data
 					if(reader is UnknownImageReader)
 					{
 						// Data is in an unknown format!
-						General.ErrorLogger.Add(ErrorType.Error, "Colormap lump '" + Name + "' data format could not be read. Does this lump contain valid colormap data at all?");
+						General.ErrorLogger.Add(ErrorType.Error, "Colormap lump \"" + Name + "\" data format could not be read. Does this lump contain valid colormap data at all?");
 						bitmap = null;
 					}
 					else
@@ -97,7 +97,7 @@ namespace CodeImp.DoomBuilder.Data
 				else
 				{
 					// Missing a patch lump!
-					General.ErrorLogger.Add(ErrorType.Error, "Missing colormap lump '" + Name + "'. Did you forget to include required resources?");
+					General.ErrorLogger.Add(ErrorType.Error, "Missing colormap lump \"" + Name + "\". Did you forget to include required resources?");
 					loadfailed = true;
 				}
 

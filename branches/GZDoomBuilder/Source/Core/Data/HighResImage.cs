@@ -252,12 +252,9 @@ namespace CodeImp.DoomBuilder.Data
 			if(p.flipx || p.flipy)
 			{
 				RotateFlipType flip;
-				if(p.flipx && !p.flipy)
-					flip = RotateFlipType.RotateNoneFlipX;
-				else if(!p.flipx && p.flipy)
-					flip = RotateFlipType.RotateNoneFlipY;
-				else
-					flip = RotateFlipType.RotateNoneFlipXY;
+				if(p.flipx && !p.flipy) flip = RotateFlipType.RotateNoneFlipX;
+				else if(!p.flipx && p.flipy) flip = RotateFlipType.RotateNoneFlipY;
+				else flip = RotateFlipType.RotateNoneFlipXY;
 				patchbmp.RotateFlip(flip);
 			}
 
@@ -267,15 +264,9 @@ namespace CodeImp.DoomBuilder.Data
 				RotateFlipType rotate;
 				switch(p.rotate)
 				{
-					case 90:
-						rotate = RotateFlipType.Rotate90FlipNone;
-						break;
-					case 180:
-						rotate = RotateFlipType.Rotate180FlipNone;
-						break;
-					default:
-						rotate = RotateFlipType.Rotate270FlipNone;
-						break;
+					case 90:  rotate = RotateFlipType.Rotate90FlipNone; break;
+					case 180: rotate = RotateFlipType.Rotate180FlipNone; break;
+					default:  rotate = RotateFlipType.Rotate270FlipNone; break;
 				}
 				patchbmp.RotateFlip(rotate);
 			}

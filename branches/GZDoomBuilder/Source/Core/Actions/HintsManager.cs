@@ -142,7 +142,7 @@ namespace CodeImp.DoomBuilder.Actions
 			{
 				General.Interface.ShowHints(DEFAULT_HINT);
 #if DEBUG
-				Console.WriteLine("WARNING: Unable to get hints for class '" + fullname + "', group '" + groupname + "'");
+				Console.WriteLine("WARNING: Unable to get hints for class \"" + fullname + "\", group \"" + groupname + "\"");
 #endif
 				return;
 			}

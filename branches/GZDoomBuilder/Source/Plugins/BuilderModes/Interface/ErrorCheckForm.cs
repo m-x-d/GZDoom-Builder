@@ -330,16 +330,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					catch(TargetInvocationException ex)
 					{
 						// Error!
-						General.ErrorLogger.Add(ErrorType.Error, "Failed to create class instance '" + t.Name + "'");
+						General.ErrorLogger.Add(ErrorType.Error, "Failed to create class instance \"" + t.Name + "\"");
 						General.WriteLogLine(ex.InnerException.GetType().Name + ": " + ex.InnerException.Message);
-						throw ex;
+						throw;
 					}
 					catch(Exception ex)
 					{
 						// Error!
-						General.ErrorLogger.Add(ErrorType.Error, "Failed to create class instance '" + t.Name + "'");
+						General.ErrorLogger.Add(ErrorType.Error, "Failed to create class instance \"" + t.Name + "\"");
 						General.WriteLogLine(ex.GetType().Name + ": " + ex.Message);
-						throw ex;
+						throw;
 					}
 					
 					// Add to list

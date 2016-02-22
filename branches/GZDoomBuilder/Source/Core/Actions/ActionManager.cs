@@ -193,7 +193,7 @@ namespace CodeImp.DoomBuilder.Actions
 			else
 			{
 				// Action already exists!
-				General.ErrorLogger.Add(ErrorType.Warning, "Action '" + name + "' already exists. Action names must be unique.");
+				General.ErrorLogger.Add(ErrorType.Warning, "Action \"" + name + "\" already exists. Action names must be unique.");
 			}
 		}
 

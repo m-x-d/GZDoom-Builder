@@ -55,7 +55,7 @@ namespace CodeImp.DoomBuilder.Config
 		// Constructor
 		public NodebuilderInfo(string filename, string name, Configuration cfg)
 		{
-			General.WriteLogLine("Registered nodebuilder configuration '" + name + "' from '" + filename + "'");
+			General.WriteLogLine("Registered nodebuilder configuration \"" + name + "\" from \"" + filename + "\"");
 			
 			// Initialize
 			this.name = name;
@@ -80,7 +80,7 @@ namespace CodeImp.DoomBuilder.Config
 			}
 			
 			// No compiler found?
-			if(this.compiler == null) throw new Exception("No such compiler defined: '" + compilername + "'");
+			if(this.compiler == null) throw new Exception("Compiler \"" + compilername + "\" is not defined");
 		}
 
 		// Constructor for "none" nodebuilder

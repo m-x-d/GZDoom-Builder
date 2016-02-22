@@ -172,7 +172,7 @@ namespace CodeImp.DoomBuilder.Data
 				// Not loaded?
 				if(bitmap == null) 
 				{
-					General.ErrorLogger.Add(ErrorType.Error, "Image file '" + filepathname + "' data format could not be read, while loading image '" + this.Name + "'. Is this a valid picture file at all?");
+					General.ErrorLogger.Add(ErrorType.Error, "Image file \"" + filepathname + "\" data format could not be read, while loading image \"" + this.Name + "\". Is this a valid picture file at all?");
 					loadfailed = true;
 				} 
 				else 

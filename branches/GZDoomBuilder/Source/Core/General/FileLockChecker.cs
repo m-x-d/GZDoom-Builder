@@ -176,8 +176,8 @@ namespace CodeImp.DoomBuilder
 							foreach(Process process in result.Processes)
 							{
 								result.Error += Path.GetFileName(process.MainModule.FileName)
-									+ " ('" + process.MainModule.FileName
-									+ "', started at " + process.StartTime + ")" 
+									+ " (\"" + process.MainModule.FileName
+									+ "\", started at " + process.StartTime + ")" 
 									+ Environment.NewLine + Environment.NewLine;
 							}
 						}

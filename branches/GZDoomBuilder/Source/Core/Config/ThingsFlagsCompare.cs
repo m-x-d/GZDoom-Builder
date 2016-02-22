@@ -47,7 +47,7 @@ namespace CodeImp.DoomBuilder.Config
 
 				// Duplicate flags check
 				if(Flags.ContainsKey(flag))
-					General.ErrorLogger.Add(ErrorType.Warning, "ThingFlagsCompare flag '" + flag + "' is double-defined in '" + name + "' group");
+					General.ErrorLogger.Add(ErrorType.Warning, "ThingFlagsCompare flag \"" + flag + "\" is double defined in the \"" + name + "\" group");
 
 				Flags[flag] = new ThingFlagsCompare(cfg, name, flag);
 			}
@@ -294,7 +294,7 @@ namespace CodeImp.DoomBuilder.Config
 							result.Add("Thing is not used by any class.");
 							break;
 						default:
-							result.Add("At least one '" + group.Key + "' flag should be set.");
+							result.Add("At least one \"" + group.Key + "\" flag should be set.");
 							break;
 					}
 				}

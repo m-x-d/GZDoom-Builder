@@ -102,7 +102,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 				MemoryStream ms = LoadFile(containers, mde.ModelNames[i], true);
 				if(ms == null) 
 				{
-					General.ErrorLogger.Add(ErrorType.Error, "Error while loading '" + mde.ModelNames[i] + "': unable to find file.");
+					General.ErrorLogger.Add(ErrorType.Error, "Error while loading \"" + mde.ModelNames[i] + "\": unable to find file.");
 					continue;
 				}
 
@@ -112,7 +112,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 					case ".md3":
 						if(!string.IsNullOrEmpty(mde.FrameNames[i]))
 						{
-							General.ErrorLogger.Add(ErrorType.Error, "Error while loading '" + mde.ModelNames[i] + "': frame names are not supported for MD3 models!");
+							General.ErrorLogger.Add(ErrorType.Error, "Error while loading \"" + mde.ModelNames[i] + "\": frame names are not supported for MD3 models!");
 							continue;
 						}
 						result = ReadMD3Model(ref bbs, useSkins, ms, device, mde.FrameIndices[i]);
@@ -131,7 +131,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 				//got errors?
 				if(!String.IsNullOrEmpty(result.Errors)) 
 				{
-					General.ErrorLogger.Add(ErrorType.Error, "Error while loading '" + mde.ModelNames[i] + "': " + result.Errors);
+					General.ErrorLogger.Add(ErrorType.Error, "Error while loading \"" + mde.ModelNames[i] + "\": " + result.Errors);
 				} 
 				else 
 				{
@@ -164,7 +164,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 							if(Array.IndexOf(ModelData.SUPPORTED_TEXTURE_EXTENSIONS, ext) == -1) 
 							{
 								mde.Model.Textures.Add(General.Map.Data.UnknownTexture3D.Texture);
-								errors.Add("image format '" + ext + "' is not supported!");
+								errors.Add("image format \"" + ext + "\" is not supported!");
 								continue;
 							}
 
@@ -177,7 +177,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 							if(t == null) 
 							{
 								mde.Model.Textures.Add(General.Map.Data.UnknownTexture3D.Texture);
-								errors.Add("unable to load skin '" + result.Skins[m] + "'");
+								errors.Add("unable to load skin \"" + result.Skins[m] + "\"");
 								continue;
 							} 
 
@@ -191,7 +191,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 						if(t == null) 
 						{
 							mde.Model.Textures.Add(General.Map.Data.UnknownTexture3D.Texture);
-							errors.Add("unable to load texture '" + mde.TextureNames[i] + "'");
+							errors.Add("unable to load texture \"" + mde.TextureNames[i] + "\"");
 						} 
 						else 
 						{
@@ -203,7 +203,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 					if(errors.Count > 0) 
 					{
 						foreach(string e in errors)
-							General.ErrorLogger.Add(ErrorType.Error, "Error while loading '" + mde.ModelNames[i] + "': " + e);
+							General.ErrorLogger.Add(ErrorType.Error, "Error while loading \"" + mde.ModelNames[i] + "\": " + e);
 					}
 				}
 			}
@@ -242,7 +242,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 				string magic = ReadString(br, 4);
 				if(magic != "IDP3")
 				{
-					result.Errors = "unknown header: expected 'IDP3', but got '" + magic + "'";
+					result.Errors = "unknown header: expected \"IDP3\", but got \"" + magic + "\"";
 					return result;
 				}
 
@@ -341,7 +341,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 			long start = br.BaseStream.Position;
 			
 			string magic = ReadString(br, 4);
-			if(magic != "IDP3") return "error while reading surface. Unknown header: expected 'IDP3', but got '" + magic + "'";
+			if(magic != "IDP3") return "error while reading surface. Unknown header: expected \"IDP3\", but got \"" + magic + "\"";
 
 			string name = ReadString(br, 64);
 			int flags = br.ReadInt32();
@@ -432,8 +432,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 			{
 				string magic = ReadString(br, 4);
 				if(magic != "IDP2") //magic number: "IDP2"
-				{  
-					result.Errors = "unknown header: expected 'IDP2', but got '" + magic + "'";
+				{
+					result.Errors = "unknown header: expected \"IDP2\", but got \"" + magic + "\"";
 					return result;
 				}
 
@@ -521,7 +521,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 					// No dice? Bail out!
 					if(!framefound)
 					{
-						result.Errors = "unable to find frame '" + framename + "'!";
+						result.Errors = "unable to find frame \"" + framename + "\"!";
 						return result;
 					}
 				}

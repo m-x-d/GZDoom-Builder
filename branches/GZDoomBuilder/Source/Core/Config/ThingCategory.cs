@@ -246,7 +246,7 @@ namespace CodeImp.DoomBuilder.Config
 					if(child.IsValid && child.things.Count > 0)
 					{
 						if(cats.ContainsKey(child.title.ToLowerInvariant()))
-							General.ErrorLogger.Add(ErrorType.Warning, "Thing Category '" + child.title + "' is double-defined in " + this.title);
+							General.ErrorLogger.Add(ErrorType.Warning, "Thing Category \"" + child.title + "\" is double defined in " + this.title);
 						cats[child.title.ToLowerInvariant()] = child;
 					}
 				}

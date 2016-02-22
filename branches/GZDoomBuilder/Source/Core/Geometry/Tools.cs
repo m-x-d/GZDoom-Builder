@@ -1832,7 +1832,7 @@ namespace CodeImp.DoomBuilder.Geometry
 					return GetSidedefBottomOffsetY(side, offset, scaleY, fromNormalized);
 
 				default:
-					throw new NotSupportedException("Tools.GetSidedefOffsetY: '" + part + "' geometry type is not supported!");
+					throw new NotSupportedException("Tools.GetSidedefOffsetY: \"" + part + "\" geometry type is not supported!");
 			}
 		}
 
