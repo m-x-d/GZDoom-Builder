@@ -18,10 +18,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.Windows.Forms;
-using CodeImp.DoomBuilder.Map;
 using System.Drawing;
+using System.Windows.Forms;
 using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.Map;
 
 #endregion
 
@@ -138,7 +138,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		private static bool BitsMatch(int effect, List<int> expectedbits) 
+		private static bool BitsMatch(int effect, IEnumerable<int> expectedbits) 
 		{
 			if(!General.Map.Config.GeneralizedEffects) return false;
 

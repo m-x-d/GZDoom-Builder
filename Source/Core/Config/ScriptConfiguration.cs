@@ -28,12 +28,20 @@ using ScintillaNET;
 namespace CodeImp.DoomBuilder.Config
 {
 	//mxd
-	internal enum ScriptType
+	public enum ScriptType
 	{
 		UNKNOWN = 0,
 		ACS = 1,
 		MODELDEF = 2,
 		DECORATE = 3,
+		GLDEFS = 4,
+		SNDSEQ = 5,
+		MAPINFO = 6,
+		VOXELDEF = 7,
+		TEXTURES = 8,
+		ANIMDEFS = 9,
+		REVERBS = 10,
+		TERRAIN = 11,
 	}
 	
 	internal class ScriptConfiguration : IComparable<ScriptConfiguration>
@@ -215,7 +223,7 @@ namespace CodeImp.DoomBuilder.Config
 				string keyword = de.Key.ToString();
 				if(keywords.ContainsKey(keyword)) //mxd
 				{
-					General.ErrorLogger.Add(ErrorType.Warning, "Keyword \"" + keyword + "\" is double-defined in \"" + description + "\" script configuration.");
+					General.ErrorLogger.Add(ErrorType.Warning, "Keyword \"" + keyword + "\" is double defined in \"" + description + "\" script configuration.");
 					continue;
 				}
 
@@ -234,7 +242,7 @@ namespace CodeImp.DoomBuilder.Config
 				string property = de.Key.ToString();
 				if(lowerproperties.ContainsValue(property)) //mxd
 				{
-					General.ErrorLogger.Add(ErrorType.Warning, "Property \"" + property + "\" is double-defined in \"" + description + "\" script configuration.");
+					General.ErrorLogger.Add(ErrorType.Warning, "Property \"" + property + "\" is double defined in \"" + description + "\" script configuration.");
 					continue;
 				}
 
@@ -252,7 +260,7 @@ namespace CodeImp.DoomBuilder.Config
 				string constant = de.Key.ToString();
 				if(lowerconstants.ContainsValue(constant)) //mxd
 				{
-					General.ErrorLogger.Add(ErrorType.Warning, "Constant \"" + constant + "\" is double-defined in \"" + description + "\" script configuration.");
+					General.ErrorLogger.Add(ErrorType.Warning, "Constant \"" + constant + "\" is double defined in \"" + description + "\" script configuration.");
 					continue;
 				}
 
@@ -278,7 +286,7 @@ namespace CodeImp.DoomBuilder.Config
 						string name = Path.GetFileNameWithoutExtension(file);
 						if(string.IsNullOrEmpty(name))
 						{
-							General.ErrorLogger.Add(ErrorType.Warning, "Failed to load snippet '" + file + "' for '" + description + "' script configuration.");
+							General.ErrorLogger.Add(ErrorType.Warning, "Failed to load snippet \"" + file + "\" for \"" + description + "\" script configuration.");
 						}
 						else
 						{
@@ -291,7 +299,7 @@ namespace CodeImp.DoomBuilder.Config
 							}
 							else
 							{
-								General.ErrorLogger.Add(ErrorType.Warning, "Failed to load snippet '" + file + "' for '" + description + "' script configuration: file is empty!");
+								General.ErrorLogger.Add(ErrorType.Warning, "Failed to load snippet \"" + file + "\" for \"" + description + "\" script configuration: file is empty!");
 							}
 						}
 					}
@@ -318,7 +326,7 @@ namespace CodeImp.DoomBuilder.Config
 				}
 				
 				// No compiler found?
-				if(this.compiler == null) throw new Exception("No such compiler defined: '" + compilername + "'");
+				if(this.compiler == null) throw new Exception("Compiler \"" + compilername + "\" is not defined");
 			}
 		}
 		

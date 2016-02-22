@@ -130,7 +130,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 			
 			// Get OS name
 			ManagementObjectSearcher searcher = new ManagementObjectSearcher("SELECT Caption FROM Win32_OperatingSystem");
-			foreach(ManagementObject mo in searcher.Get())
+			foreach(ManagementBaseObject mo in searcher.Get())
 			{
 				result += "OS: " + mo["Caption"] + Environment.NewLine;
 				break;
@@ -138,7 +138,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 
 			// Get GPU name
 			searcher = new ManagementObjectSearcher("SELECT * FROM Win32_VideoController");
-			foreach(ManagementObject mo in searcher.Get())
+			foreach(ManagementBaseObject mo in searcher.Get())
 			{
 				PropertyData bpp = mo.Properties["CurrentBitsPerPixel"];
 				PropertyData description = mo.Properties["Description"];

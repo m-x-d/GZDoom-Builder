@@ -464,7 +464,7 @@ namespace CodeImp.DoomBuilder.Config
 			cfg.WriteSetting("defaultbrightness", defaultbrightness);
 			
 			// Save settings configuration
-			General.WriteLogLine("Saving program configuration to '" + filepathname + "'...");
+			General.WriteLogLine("Saving program configuration to \"" + filepathname + "\"...");
 			cfg.SaveConfiguration(filepathname);
 		}
 		

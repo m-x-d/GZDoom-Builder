@@ -21,7 +21,7 @@ namespace CodeImp.DoomBuilder.Geometry
 				case Mode.EASE_IN_SINE: return EaseInSine(val1, val2, delta);
 				case Mode.EASE_OUT_SINE: return EaseOutSine(val1, val2, delta);
 				case Mode.EASE_IN_OUT_SINE: return EaseInOutSine(val1, val2, delta);
-				default: throw new NotImplementedException("InterpolationTools.Interpolate: '" + mode + "' mode is not supported!");
+				default: throw new NotImplementedException("InterpolationTools.Interpolate: \"" + mode + "\" mode is not supported!");
 			}
 		}
 		

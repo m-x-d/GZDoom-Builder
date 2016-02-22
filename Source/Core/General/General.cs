@@ -318,7 +318,7 @@ namespace CodeImp.DoomBuilder
 					ConfigurationInfo cfginfo = new ConfigurationInfo(cfg, fullfilename);
 					
 					// Add to lists
-					General.WriteLogLine("Registered game configuration '" + cfginfo.Name + "' from '" + fullfilename + "'");
+					General.WriteLogLine("Registered game configuration \"" + cfginfo.Name + "\" from \"" + fullfilename + "\"");
 					configs.Add(cfginfo);
 				}
 			}
@@ -369,7 +369,7 @@ namespace CodeImp.DoomBuilder
 								catch(Exception e)
 								{
 									// Unable to load configuration
-									errorlogger.Add(ErrorType.Error, "Unable to load the nodebuilder configuration '" + de.Key + "' from \"" + Path.GetFileName(filepath) + "\". Error: " + e.Message);
+									errorlogger.Add(ErrorType.Error, "Unable to load the nodebuilder configuration \"" + de.Key + "\" from \"" + Path.GetFileName(filepath) + "\". Error: " + e.Message);
 								}
 							}
 						}
@@ -677,7 +677,7 @@ namespace CodeImp.DoomBuilder
 				// Show any errors if preferred
 				if(errorlogger.IsErrorAdded)
 				{
-					mainwindow.DisplayStatus(StatusType.Warning, "There were errors during program statup!");
+					mainwindow.DisplayStatus(StatusType.Warning, "There were errors during program startup!");
 					if(!delaymainwindow && General.Settings.ShowErrorsWindow) mainwindow.ShowErrors();
 				}
 
@@ -707,7 +707,7 @@ namespace CodeImp.DoomBuilder
 						if((DateTime.Now - File.GetLastWriteTime(backup)).TotalDays > 30)
 						{
 							File.Delete(backup);
-							WriteLogLine("Removed '" + backup + "' map backup.");
+							WriteLogLine("Removed \"" + backup + "\" map backup.");
 						}
 					}
 				}
@@ -859,7 +859,7 @@ namespace CodeImp.DoomBuilder
 					catch(Exception) { }
 
 					// Warn the user?
-					if(!portablemode) ShowWarningMessage("Failed to enable portable mode.\nMake sure you have write premission for '" + apppath + "' directory.", MessageBoxButtons.OK);
+					if(!portablemode) ShowWarningMessage("Failed to enable portable mode.\nMake sure you have write premission for \"" + apppath + "\" directory.", MessageBoxButtons.OK);
 				}
 				// Resource?
 				else if(string.Compare(curarg, "-RESOURCE", true) == 0)
@@ -1219,8 +1219,8 @@ namespace CodeImp.DoomBuilder
 			if(changemapwindow.ShowDialog(mainwindow) != DialogResult.OK) return;
 
 			// Display status
-			mainwindow.DisplayStatus(StatusType.Busy, "Switching to map '" + changemapwindow.Options.CurrentName + "'...");
-			WriteLogLine("Switching to map '" + changemapwindow.Options.CurrentName + "'...");
+			mainwindow.DisplayStatus(StatusType.Busy, "Switching to map \"" + changemapwindow.Options.CurrentName + "\"...");
+			WriteLogLine("Switching to map \"" + changemapwindow.Options.CurrentName + "\"...");
 			
 			Cursor.Current = Cursors.WaitCursor;
 

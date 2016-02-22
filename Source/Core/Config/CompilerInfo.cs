@@ -59,7 +59,7 @@ namespace CodeImp.DoomBuilder.Config
 		// Constructor
 		internal CompilerInfo(string filename, string name, string path, Configuration cfg)
 		{
-			General.WriteLogLine("Registered compiler configuration '" + name + "' from '" + filename + "'");
+			General.WriteLogLine("Registered compiler configuration \"" + name + "\" from \"" + filename + "\"");
 			
 			// Initialize
 			this.filename = filename;
@@ -80,7 +80,7 @@ namespace CodeImp.DoomBuilder.Config
 					//mxd
 					string include = de.Value.ToString().Replace(System.IO.Path.AltDirectorySeparatorChar, System.IO.Path.DirectorySeparatorChar);
 					if(files.Contains(include))
-						General.ErrorLogger.Add(ErrorType.Warning, "Include file '" + de.Value + "' is double-defined in '" + name + "' compiler configuration");
+						General.ErrorLogger.Add(ErrorType.Warning, "Include file \"" + de.Value + "\" is double defined in \"" + name + "\" compiler configuration");
 					else
 						files.Add(include);
 				}

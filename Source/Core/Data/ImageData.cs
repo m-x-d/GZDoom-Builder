@@ -277,7 +277,7 @@ namespace CodeImp.DoomBuilder.Data
 						catch(Exception e)
 						{
 							bitmap = oldbitmap;
-							General.ErrorLogger.Add(ErrorType.Warning, "Cannot lock image '" + name + "' for pixel format conversion. The image may not be displayed correctly.\n" + e.GetType().Name + ": " + e.Message);
+							General.ErrorLogger.Add(ErrorType.Warning, "Cannot lock image \"" + name + "\" for pixel format conversion. The image may not be displayed correctly.\n" + e.GetType().Name + ": " + e.Message);
 						}
 					}
 					
@@ -293,7 +293,7 @@ namespace CodeImp.DoomBuilder.Data
 						}
 						catch(Exception e)
 						{
-							General.ErrorLogger.Add(ErrorType.Warning, "Cannot lock image '" + name + "' for color correction. The image may not be displayed correctly.\n" + e.GetType().Name + ": " + e.Message);
+							General.ErrorLogger.Add(ErrorType.Warning, "Cannot lock image \"" + name + "\" for color correction. The image may not be displayed correctly.\n" + e.GetType().Name + ": " + e.Message);
 						}
 
 						// Bitmap locked?
@@ -348,7 +348,7 @@ namespace CodeImp.DoomBuilder.Data
 					{
 						BitmapData bmpdata = null;
 						try { bmpdata = bitmap.LockBits(new Rectangle(0, 0, bitmap.Size.Width, bitmap.Size.Height), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb); }
-						catch(Exception e) { General.ErrorLogger.Add(ErrorType.Error, "Cannot lock image '" + this.filepathname + "' for glow color calculation. " + e.GetType().Name + ": " + e.Message); }
+						catch(Exception e) { General.ErrorLogger.Add(ErrorType.Error, "Cannot lock image \"" + this.filepathname + "\" for glow color calculation. " + e.GetType().Name + ": " + e.Message); }
 
 						if(bmpdata != null)
 						{
@@ -403,7 +403,7 @@ namespace CodeImp.DoomBuilder.Data
 					{
 						BitmapData bmpdata = null;
 						try { bmpdata = bitmap.LockBits(new Rectangle(0, 0, bitmap.Size.Width, bitmap.Size.Height), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb); }
-						catch(Exception e) { General.ErrorLogger.Add(ErrorType.Error, "Cannot lock image '" + this.filepathname + "' for translucency check. " + e.GetType().Name + ": " + e.Message); }
+						catch(Exception e) { General.ErrorLogger.Add(ErrorType.Error, "Cannot lock image \"" + this.filepathname + "\" for translucency check. " + e.GetType().Name + ": " + e.Message); }
 
 						if(bmpdata != null)
 						{

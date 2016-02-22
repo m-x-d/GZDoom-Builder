@@ -76,9 +76,9 @@ namespace CodeImp.DoomBuilder.Compilers
 			// Initialize
 			this.info = info;
 			this.errors = new List<CompilerError>();
-			this.includes = new HashSet<string>(); //mxd
-			
-			General.WriteLogLine("Creating compiler '" + info.Name + "' on interface '" + this.GetType().Name + "'...");
+			this.includes = new HashSet<string>(StringComparer.OrdinalIgnoreCase); //mxd
+
+			General.WriteLogLine("Creating compiler \"" + info.Name + "\" on interface \"" + this.GetType().Name + "\"...");
 			
 			// Create temporary directory
 			tempdir = Directory.CreateDirectory(General.MakeTempDirname());
@@ -146,7 +146,7 @@ namespace CodeImp.DoomBuilder.Compilers
 				string srcfile = Path.Combine(info.Path, f);
 				if(!File.Exists(srcfile)) 
 				{
-					General.ErrorLogger.Add(ErrorType.Error, "The file '" + f + "' required by the '" + info.Name + "' compiler is missing. According to the compiler configuration in '" + info.FileName + "', the was expected to be found in the following path: " + info.Path);
+					General.ErrorLogger.Add(ErrorType.Error, "The file \"" + f + "\" required by the \"" + info.Name + "\" compiler is missing. According to the compiler configuration in \"" + info.FileName + "\", it was expected to be found here: \"" + info.Path + "\"");
 				} 
 				else 
 				{

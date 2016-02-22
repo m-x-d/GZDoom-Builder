@@ -90,7 +90,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.IO
 							ImageData id = General.Map.Data.GetTextureImage(s);
 							if(id.Width == 0 || id.Height == 0) 
 							{
-								General.ErrorLogger.Add(ErrorType.Warning, "OBJ Exporter: texture '" + s + "' has invalid size (" + id.Width + "x" + id.Height + ")!");
+								General.ErrorLogger.Add(ErrorType.Warning, "OBJ Exporter: texture \"" + s + "\" has invalid size (" + id.Width + "x" + id.Height + ")!");
 								continue;
 							}
 
@@ -100,7 +100,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.IO
 						} 
 						else 
 						{
-							General.ErrorLogger.Add(ErrorType.Warning, "OBJ Exporter: texture '" + s + "' does not exist!");
+							General.ErrorLogger.Add(ErrorType.Warning, "OBJ Exporter: texture \"" + s + "\" does not exist!");
 						}
 					}
 				}
@@ -115,7 +115,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.IO
 							ImageData id = General.Map.Data.GetFlatImage(s);
 							if(id.Width == 0 || id.Height == 0) 
 							{
-								General.ErrorLogger.Add(ErrorType.Warning, "OBJ Exporter: flat '" + s + "' has invalid size (" + id.Width + "x" + id.Height + ")!");
+								General.ErrorLogger.Add(ErrorType.Warning, "OBJ Exporter: flat \"" + s + "\" has invalid size (" + id.Width + "x" + id.Height + ")!");
 								continue;
 							}
 
@@ -132,7 +132,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.IO
 						} 
 						else 
 						{
-							General.ErrorLogger.Add(ErrorType.Warning, "OBJ Exporter: flat '" + s + "' does not exist!");
+							General.ErrorLogger.Add(ErrorType.Warning, "OBJ Exporter: flat \"" + s + "\" does not exist!");
 						}
 					}
 				}

@@ -87,7 +87,7 @@ namespace CodeImp.DoomBuilder.Config
 					}
 					else
 					{
-						General.ErrorLogger.Add(ErrorType.Warning, "'" + argspath + ".arg" + istr + "' references unknown enumeration '" + argdic["enum"] + "'.");
+						General.ErrorLogger.Add(ErrorType.Warning, "\"" + argspath + ".arg" + istr + "\" references unknown enumeration \"" + argdic["enum"] + "\".");
 					}
 				}
 			}

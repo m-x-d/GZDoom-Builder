@@ -233,7 +233,7 @@ namespace CodeImp.DoomBuilder
 		{
 			if(process != null)
 			{
-				General.ShowWarningMessage("Game engine is already running." + Environment.NewLine + "Please close '" + process.MainModule.FileName + "' first.", MessageBoxButtons.OK);
+				General.ShowWarningMessage("Game engine is already running." + Environment.NewLine + "Please close \"" + process.MainModule.FileName + "\" first.", MessageBoxButtons.OK);
 				return true;
 			}
 

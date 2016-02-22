@@ -804,7 +804,8 @@ namespace CodeImp.DoomBuilder.IO
 							case "true": return true;
 							case "false": return false;
 							case "null": return null;
-							default: RaiseError(file, line, ERROR_KEYWORDUNKNOWN + "\nUnrecognized token: '" + val.Trim().ToLowerInvariant() + "'"); return null;
+							default: RaiseError(file, line, ERROR_KEYWORDUNKNOWN + "\nUnrecognized token: \"" + val.Trim().ToLowerInvariant() + "\"");
+								return null;
 						}
 					}
 				}
@@ -860,7 +861,7 @@ namespace CodeImp.DoomBuilder.IO
 					} 
 					else 
 					{
-						RaiseError(file, line, "Include missing structure '" + args[1] + "' in file '" + includefile + "'");
+						RaiseError(file, line, "Include missing structure \"" + args[1] + "\" in file \"" + includefile + "\"");
 						return;
 					}
 				}
@@ -885,7 +886,7 @@ namespace CodeImp.DoomBuilder.IO
 			}
 			catch(Exception e)
 			{
-				RaiseError(file, line, "Unable to include file '" + includefile + "'. " + e.GetType().Name + ": " + e.Message);
+				RaiseError(file, line, "Unable to include file \"" + includefile + "\". " + e.GetType().Name + ": " + e.Message);
 				return;
 			}
 			
@@ -915,7 +916,7 @@ namespace CodeImp.DoomBuilder.IO
 					}
 					else
 					{
-						RaiseError(file, line, "Include missing structure '" + args[1] + "' in file '" + includefile + "'");
+						RaiseError(file, line, "Include missing structure \"" + args[1] + "\" in file \"" + includefile + "\"");
 						return;
 					}
 				}

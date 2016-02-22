@@ -79,7 +79,7 @@ namespace CodeImp.DoomBuilder.Data
 				}
 			}
 
-			return name;
+			return (name ?? string.Empty);
 		}
 
 		// This compares two locations

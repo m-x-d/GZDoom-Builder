@@ -33,9 +33,8 @@ namespace CodeImp.DoomBuilder.Windows
 		
 		// Variables
 		private int selectedeffect;
-		private ComboBox[] options;
-		private Label[] optionlbls;
-		private ListViewItem[] allItems; //mxd
+		private readonly ComboBox[] options;
+		private readonly ListViewItem[] allitems; //mxd
 		private readonly bool addanyeffect;
 		
 		// Properties
@@ -52,13 +51,13 @@ namespace CodeImp.DoomBuilder.Windows
 
 			// Make array references for controls
 			options = new[] { option0, option1, option2, option3, option4, option5, option6, option7 };
-			optionlbls = new[] { option0label, option1label, option2label, option3label, option4label,
-									   option5label, option6label, option7label };
+			Label[] optionlbls = { option0label, option1label, option2label, option3label, 
+								   option4label, option5label, option6label, option7label };
 			
 			// Go for all predefined effects
 			bool selected = CreateEffects(effect); //mxd
-			allItems = new ListViewItem[effects.Items.Count]; //mxd
-			effects.Items.CopyTo(allItems, 0); //mxd
+			allitems = new ListViewItem[effects.Items.Count]; //mxd
+			effects.Items.CopyTo(allitems, 0); //mxd
 			
 			// Using generalized effects?
 			if(General.Map.Config.GeneralizedEffects)
@@ -160,7 +159,7 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			List<ListViewItem> filteredItems = new List<ListViewItem>();
 
-			foreach(ListViewItem i in allItems) 
+			foreach(ListViewItem i in allitems) 
 			{
 				SectorEffectInfo si = i.Tag as SectorEffectInfo;
 				if(si.Title.ToLowerInvariant().IndexOf(p) != -1)
