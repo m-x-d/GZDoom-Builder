@@ -126,60 +126,87 @@ namespace CodeImp.DoomBuilder.Windows
 				scriptcompiler.Items.Add(group.Value);
 			}
 
-			//mxd. Go for all enabled configurations
-			for(int i = 0; i < General.Configs.Count; i++) 
+			// Go for all configurations
+			foreach(ConfigurationInfo info in General.Configs)
 			{
-				if(!General.Configs[i].Enabled) continue;
-				
 				// Add config name to list
-				index = config.Items.Add(General.Configs[i]);
+				index = config.Items.Add(info);
 
 				// Select this item
-				if(General.Configs[i].Filename == gameconfig) config.SelectedIndex = index;
-			}
-
-			//mxd. No dice? Try disabled ones
-			if(config.SelectedIndex == -1) 
-			{
-				for(int i = 0; i < General.Configs.Count; i++) 
-				{
-					if(General.Configs[i].Enabled) continue;
-					if(General.Configs[i].Filename == gameconfig) 
-					{
-						//add and Select this item
-						config.SelectedIndex = config.Items.Add(General.Configs[i]);
-						break;
-					}
-				}
+				if(info.Filename == gameconfig) config.SelectedIndex = index;
 			}
 
 			// Still no configuration selected?
 			if(config.SelectedIndex == -1) 
 			{
-				// Then go for all configurations with resources to find a suitable one
-				for(int i = 0; i < General.Configs.Count; i++)
+				//mxd. Then go for all ENABLED configurations with resources to find a suitable one
+				foreach(ConfigurationInfo info in General.Configs)
 				{
 					// Check if a resource location is set for this configuration, if so, match the wad against this configuration
-					if(General.Configs[i].Resources.Count > 0 && MatchConfiguration(General.Configs[i].Configuration, wadfile))
+					if(info.Enabled && info.Resources.Count > 0 && MatchConfiguration(info.Configuration, wadfile))
 					{
-						index = config.Items.IndexOf(General.Configs[i]); //mxd. Already added?
-						config.SelectedIndex = (index != -1 ? index : config.Items.Add(General.Configs[i])); // Select or add and select this item
+						//mxd. Already added?
+						index = config.Items.IndexOf(info);
+
+						// Select or add and select this item
+						config.SelectedIndex = (index != -1 ? index : config.Items.Add(info)); 
 						break;
 					}
 				}
 			}
 
 			//mxd. Still no configuration selected?
-			if(config.SelectedIndex == -1) 
+			if(config.SelectedIndex == -1)
 			{
-				// Then go for all configurations without resources to find a suitable one
-				for(int i = 0; i < General.Configs.Count; i++) 
+				// Then go for all DISABLED configurations with resources to find a suitable one
+				foreach(ConfigurationInfo info in General.Configs)
+				{
+					// Check if a resource location is set for this configuration, if so, match the wad against this configuration
+					if(!info.Enabled && info.Resources.Count > 0 && MatchConfiguration(info.Configuration, wadfile))
+					{
+						//mxd. Already added?
+						index = config.Items.IndexOf(info);
+
+						// Select or add and select this item
+						config.SelectedIndex = (index != -1 ? index : config.Items.Add(info));
+						break;
+					}
+				}
+			}
+
+			//mxd. Still no configuration selected?
+			if(config.SelectedIndex == -1)
+			{
+				//mxd. Then go for all ENABLED configurations without resources to find a suitable one
+				foreach(ConfigurationInfo info in General.Configs)
 				{
 					// Check if a resource location is not set for this configuration, if so, match the wad against this configuration
-					if(General.Configs[i].Resources.Count == 0 && MatchConfiguration(General.Configs[i].Configuration, wadfile)) 
+					if(info.Enabled && info.Resources.Count == 0 && MatchConfiguration(info.Configuration, wadfile))
 					{
-						index = config.Items.IndexOf(General.Configs[i]); //mxd. Already added?
-						config.SelectedIndex = (index != -1 ? index : config.Items.Add(General.Configs[i])); // Select or add and select this item
+						//mxd. Already added?
+						index = config.Items.IndexOf(info);
+
+						// Select or add and select this item
+						config.SelectedIndex = (index != -1 ? index : config.Items.Add(info));
+						break;
+					}
+				}
+			}
+
+			//mxd. Still no configuration selected?
+			if(config.SelectedIndex == -1)
+			{
+				// Then go for all DISABLED configurations without resources to find a suitable one
+				foreach(ConfigurationInfo info in General.Configs)
+				{
+					// Check if a resource location is not set for this configuration, if so, match the wad against this configuration
+					if(!info.Enabled && info.Resources.Count == 0 && MatchConfiguration(info.Configuration, wadfile))
+					{
+						//mxd. Already added?
+						index = config.Items.IndexOf(info);
+
+						// Select or add and select this item
+						config.SelectedIndex = (index != -1 ? index : config.Items.Add(info));
 						break;
 					}
 				}
