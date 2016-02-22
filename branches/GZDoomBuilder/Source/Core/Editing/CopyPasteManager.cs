@@ -246,7 +246,7 @@ namespace CodeImp.DoomBuilder.Editing
 						// Write data to stream
 						MemoryStream memstream = new MemoryStream();
 						ClipboardStreamWriter writer = new ClipboardStreamWriter(); //mxd
-						writer.Write(copyset, memstream, General.Map.Config.UseLongTextureNames);
+						writer.Write(copyset, memstream);
 
 						// Set on clipboard
 						Clipboard.SetData(CLIPBOARD_DATA_FORMAT, memstream);
@@ -290,36 +290,30 @@ namespace CodeImp.DoomBuilder.Editing
 							// Create undo
 							General.MainWindow.DisplayStatus(StatusType.Action, "Pasted selected elements.");
 							General.Map.UndoRedo.CreateUndo("Paste");
-							
-							// Read from clipboard
-							Stream memstream = (Stream)Clipboard.GetData(CLIPBOARD_DATA_FORMAT);
-							memstream.Seek(0, SeekOrigin.Begin);
 
 							// Mark all current geometry
 							General.Map.Map.ClearAllMarks(true);
 
-							// Read data stream
-							ClipboardStreamReader reader = new ClipboardStreamReader(); //mxd
-							General.Map.Map.BeginAddRemove();
-							reader.Read(General.Map.Map, memstream);
-							General.Map.Map.EndAddRemove();
+							// Read from clipboard
+							using(Stream memstream = (Stream)Clipboard.GetData(CLIPBOARD_DATA_FORMAT))
+							{
+								// Rewind before use
+								memstream.Seek(0, SeekOrigin.Begin);
+								
+								// Read data stream
+								ClipboardStreamReader reader = new ClipboardStreamReader(); //mxd
+								General.Map.Map.BeginAddRemove();
+								bool success = reader.Read(General.Map.Map, memstream);
+								General.Map.Map.EndAddRemove();
+								if(!success) //mxd
+								{
+									General.Map.UndoRedo.WithdrawUndo(); // This will also mess with the marks...
+									General.Map.Map.ClearAllMarks(true); // So re-mark all current geometry...
+								}
+							}
 							
 							// The new geometry is not marked, so invert the marks to get it marked
 							General.Map.Map.InvertAllMarks();
-
-							// Convert UDMF fields back to flags and activations, if needed
-							if(!(General.Map.FormatInterface is UniversalMapSetIO)) General.Map.Map.TranslateFromUDMF();
-
-							//mxd. Translate texture names
-							General.Map.Map.TranslateTextureNames(General.Map.Config.UseLongTextureNames, true);
-							
-							// Modify tags and actions if preferred
-							if(options.ChangeTags == PasteOptions.TAGS_REMOVE) Tools.RemoveMarkedTags();
-							if(options.ChangeTags == PasteOptions.TAGS_RENUMBER) Tools.RenumberMarkedTags();
-							if(options.RemoveActions) Tools.RemoveMarkedActions();
-
-							// Clean up
-							memstream.Dispose();
 
 							// Check if anything was pasted
 							List<Thing> things = General.Map.Map.GetMarkedThings(true); //mxd
@@ -328,14 +322,25 @@ namespace CodeImp.DoomBuilder.Editing
 							totalpasted += General.Map.Map.GetMarkedLinedefs(true).Count;
 							totalpasted += General.Map.Map.GetMarkedSidedefs(true).Count;
 							totalpasted += General.Map.Map.GetMarkedSectors(true).Count;
+							
 							if(totalpasted > 0)
 							{
+								// Convert UDMF fields back to flags and activations, if needed
+								if(!(General.Map.FormatInterface is UniversalMapSetIO)) General.Map.Map.TranslateFromUDMF();
+
+								//mxd. Translate texture names
+								General.Map.Map.TranslateTextureNames(General.Map.Config.UseLongTextureNames, true);
+
+								// Modify tags and actions if preferred
+								if(options.ChangeTags == PasteOptions.TAGS_REMOVE) Tools.RemoveMarkedTags();
+								if(options.ChangeTags == PasteOptions.TAGS_RENUMBER) Tools.RenumberMarkedTags();
+								if(options.RemoveActions) Tools.RemoveMarkedActions();
+								
 								foreach(Thing t in things) t.UpdateConfiguration(); //mxd
 								General.Map.ThingsFilter.Update();
 								General.Editing.Mode.OnPasteEnd(options.Copy());
 								General.Plugins.OnPasteEnd(options);
 							}
-							return;
 						}
 					}
 				}

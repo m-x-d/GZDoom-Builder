@@ -7,6 +7,7 @@ using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Types;
+using CodeImp.DoomBuilder.Windows;
 
 #endregion
 
@@ -29,32 +30,56 @@ namespace CodeImp.DoomBuilder.IO
 			public Dictionary<string, bool> Flags;
 		}
 
-		private bool uselongtexturenames; //mxd
-
 		#endregion 
 
 		#region ================== Properties
-
-		public bool UseLongTextureNames { get { return uselongtexturenames; } } //mxd
 
 		#endregion
 
 		#region ================== Reading
 
 		// This reads from a stream
-		public MapSet Read(MapSet map, Stream stream) 
+		public bool Read(MapSet map, Stream stream) 
 		{
 			BinaryReader reader = new BinaryReader(stream);
 
+			//mxd. Sanity checks
+			int numverts = reader.ReadInt32();
+			if(map.Vertices.Count + numverts >= General.Map.FormatInterface.MaxVertices)
+			{
+				General.Interface.DisplayStatus(StatusType.Warning, "Cannot paste: resulting number of vertices (" + (map.Vertices.Count + numverts) + ") will exceed map format's maximum (" + General.Map.FormatInterface.MaxVertices + ").");
+				return false;
+			}
+
+			int numsectors = reader.ReadInt32();
+			if(map.Sectors.Count + numsectors >= General.Map.FormatInterface.MaxSectors)
+			{
+				General.Interface.DisplayStatus(StatusType.Warning, "Cannot paste: resulting number of sectors (" + (map.Sectors.Count + numsectors) + ") will exceed map format's maximum (" + General.Map.FormatInterface.MaxSectors + ").");
+				return false;
+			}
+
+			int numlinedefs = reader.ReadInt32();
+			if(map.Linedefs.Count + numlinedefs >= General.Map.FormatInterface.MaxLinedefs)
+			{
+				General.Interface.DisplayStatus(StatusType.Warning, "Cannot paste: resulting number of linedefs (" + (map.Linedefs.Count + numlinedefs) + ") will exceed map format's maximum (" + General.Map.FormatInterface.MaxLinedefs + ").");
+				return false;
+			}
+
+			int numthings = reader.ReadInt32();
+			if(map.Things.Count + numthings >= General.Map.FormatInterface.MaxThings)
+			{
+				General.Interface.DisplayStatus(StatusType.Warning, "Cannot paste: resulting number of things (" + (map.Things.Count + numthings) + ") will exceed map format's maximum (" + General.Map.FormatInterface.MaxThings + ").");
+				return false;
+			}
+
 			// Read the map
-			uselongtexturenames = reader.ReadBoolean(); //mxd
 			Dictionary<int, Vertex> vertexlink = ReadVertices(map, reader);
 			Dictionary<int, Sector> sectorlink = ReadSectors(map, reader);
 			Dictionary<int, SidedefData> sidedeflink = ReadSidedefs(reader);
 			ReadLinedefs(map, reader, vertexlink, sectorlink, sidedeflink);
 			ReadThings(map, reader);
 
-			return map;
+			return true;
 		}
 
 		private static Dictionary<int, Vertex> ReadVertices(MapSet map, BinaryReader reader) 
@@ -388,7 +413,7 @@ namespace CodeImp.DoomBuilder.IO
 						break;
 
 					default: //WOLOLO! ERRORS!
-						throw new Exception("Got unknown value type while reading custom fields from clipboard data! Field '" + name + "', type '" + type + "', primitive type '" + valueType + "'");
+						throw new Exception("Got unknown value type while reading custom fields from clipboard data! Field \"" + name + "\", type \"" + type + "\", primitive type \"" + valueType + "\"");
 				}
 			}
 
