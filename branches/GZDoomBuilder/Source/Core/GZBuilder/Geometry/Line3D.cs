@@ -22,6 +22,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Geometry
 		{
 			this.Start = start;
 			this.End = end;
+			this.Start2D = start;
+			this.End2D = end;
 			this.Color = General.Colors.InfoLine;
 			this.RenderArrowhead = true;
 		}
@@ -30,6 +32,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Geometry
 		{
 			this.Start = start;
 			this.End = end;
+			this.Start2D = start;
+			this.End2D = end;
 			this.Color = General.Colors.InfoLine;
 			this.RenderArrowhead = renderArrowhead;
 		}
@@ -38,6 +42,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Geometry
 		{
 			this.Start = start;
 			this.End = end;
+			this.Start2D = start;
+			this.End2D = end;
 			this.Color = color;
 			this.RenderArrowhead = true;
 		}
@@ -46,6 +52,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Geometry
 		{
 			this.Start = start;
 			this.End = end;
+			this.Start2D = start;
+			this.End2D = end;
 			this.Color = color;
 			this.RenderArrowhead = renderArrowhead;
 		}

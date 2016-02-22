@@ -760,7 +760,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			if(t.Fields.ContainsKey("comment"))
 			{
-				float size = ((t.FixedSize && renderer.Scale > 1.0f) ? t.Size / renderer.Scale : t.Size);
+				float size = (((t.FixedSize || General.Settings.FixedThingsScale) && renderer.Scale > 1.0f) ? t.Size / renderer.Scale : t.Size);
 				if(size * renderer.Scale < 1.5f) return; // Thing is too small to render
 
 				int iconindex = 0;

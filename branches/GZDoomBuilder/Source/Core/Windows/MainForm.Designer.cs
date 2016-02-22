@@ -181,6 +181,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.buttonviewceilings = new System.Windows.Forms.ToolStripButton();
 			this.seperatorviews = new System.Windows.Forms.ToolStripSeparator();
 			this.buttontogglecomments = new System.Windows.Forms.ToolStripButton();
+			this.buttontogglefixedthingsscale = new System.Windows.Forms.ToolStripButton();
 			this.buttonsnaptogrid = new System.Windows.Forms.ToolStripButton();
 			this.buttonautomerge = new System.Windows.Forms.ToolStripButton();
 			this.buttonautoclearsidetextures = new System.Windows.Forms.ToolStripButton();
@@ -255,6 +256,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.flowLayoutPanel = new System.Windows.Forms.FlowLayoutPanel();
 			this.modecontrolsloolbar = new System.Windows.Forms.ToolStrip();
 			this.itemtogglecomments = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemtogglefixedthingsscale = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemdynamicgridsize = new System.Windows.Forms.ToolStripMenuItem();
 			toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
@@ -738,6 +740,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.itemfullbrightness,
             this.itemtogglegrid,
             this.itemtogglecomments,
+			this.itemtogglefixedthingsscale,
             this.toolStripSeparator4,
             this.menuzoom,
             this.itemgotocoords,
@@ -1243,6 +1246,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.buttonfullbrightness,
             this.buttontogglegrid,
             this.buttontogglecomments,
+			this.buttontogglefixedthingsscale,
             this.separatorfullbrightness,
             this.buttonviewnormal,
             this.buttonviewbrightness,
@@ -1657,6 +1661,19 @@ namespace CodeImp.DoomBuilder.Windows
 			this.buttontogglecomments.Tag = "builder_togglecomments";
 			this.buttontogglecomments.Text = "Show Comments";
 			this.buttontogglecomments.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// buttontogglefixedthingsscale
+			// 
+			this.buttontogglefixedthingsscale.Checked = true;
+			this.buttontogglefixedthingsscale.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.buttontogglefixedthingsscale.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttontogglefixedthingsscale.Image = global::CodeImp.DoomBuilder.Properties.Resources.FixedThingsScale;
+			this.buttontogglefixedthingsscale.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttontogglefixedthingsscale.Name = "buttontogglefixedthingsscale";
+			this.buttontogglefixedthingsscale.Size = new System.Drawing.Size(23, 22);
+			this.buttontogglefixedthingsscale.Tag = "builder_togglefixedthingsscale";
+			this.buttontogglefixedthingsscale.Text = "Fixed Things Scale";
+			this.buttontogglefixedthingsscale.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// buttonsnaptogrid
 			// 
@@ -2429,6 +2446,18 @@ namespace CodeImp.DoomBuilder.Windows
 			this.itemtogglecomments.Text = "Show Comments";
 			this.itemtogglecomments.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
+			// itemtogglefixedthingsscale
+			// 
+			this.itemtogglefixedthingsscale.Checked = true;
+			this.itemtogglefixedthingsscale.CheckOnClick = true;
+			this.itemtogglefixedthingsscale.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.itemtogglefixedthingsscale.Image = global::CodeImp.DoomBuilder.Properties.Resources.FixedThingsScale;
+			this.itemtogglefixedthingsscale.Name = "itemtogglefixedthingsscale";
+			this.itemtogglefixedthingsscale.Size = new System.Drawing.Size(215, 22);
+			this.itemtogglefixedthingsscale.Tag = "builder_togglefixedthingsscale";
+			this.itemtogglefixedthingsscale.Text = "Fixed Things Scale";
+			this.itemtogglefixedthingsscale.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
 			// itemdynamicgridsize
 			// 
 			this.itemdynamicgridsize.Checked = true;
@@ -2694,6 +2723,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private ToolStripMenuItem item2zoom800;
 		private ToolStripMenuItem itemzoom800;
 		private ToolStripButton buttontogglecomments;
+		private ToolStripButton buttontogglefixedthingsscale;
 		private ToolStripMenuItem itemlinedefcolors;
 		private ToolStripSeparator separatorlinecolors;
 		private ToolStripButton buttonlinededfcolors;
@@ -2704,5 +2734,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private ToolStripButton buttontoggledynamicgrid;
 		private ToolStripMenuItem itemdynamicgridsize;
 		private ToolStripMenuItem itemtogglecomments;
+		private ToolStripMenuItem itemtogglefixedthingsscale;
 	}
 }

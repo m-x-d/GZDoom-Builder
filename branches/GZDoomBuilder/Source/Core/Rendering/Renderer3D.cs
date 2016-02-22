@@ -1814,13 +1814,11 @@ namespace CodeImp.DoomBuilder.Rendering
 			if(crosshairbusy)
 			{
 				if(General.Map.Data.CrosshairBusy3D.Texture == null) General.Map.Data.CrosshairBusy3D.CreateTexture();
-				graphics.Device.SetTexture(0, General.Map.Data.CrosshairBusy3D.Texture);
 				graphics.Shaders.Display2D.Texture1 = General.Map.Data.CrosshairBusy3D.Texture;
 			}
 			else
 			{
 				if(General.Map.Data.Crosshair3D.Texture == null) General.Map.Data.Crosshair3D.CreateTexture();
-				graphics.Device.SetTexture(0, General.Map.Data.Crosshair3D.Texture);
 				graphics.Shaders.Display2D.Texture1 = General.Map.Data.Crosshair3D.Texture;
 			}
 			
