@@ -461,7 +461,8 @@ namespace CodeImp.DoomBuilder.Config
 			if(actor.HasPropertyWithValue("height")) height = actor.GetPropertyValueInt("height", 0);
 
 			//mxd. Renderstyle
-			if(actor.HasPropertyWithValue("renderstyle")) renderstyle = actor.GetPropertyValueString("renderstyle", 0).ToLower();
+			if(actor.HasPropertyWithValue("renderstyle") && !actor.HasProperty("$ignorerenderstyle"))
+				renderstyle = actor.GetPropertyValueString("renderstyle", 0).ToLower();
 
 			//mxd. Alpha
 			if(actor.HasPropertyWithValue("alpha"))
