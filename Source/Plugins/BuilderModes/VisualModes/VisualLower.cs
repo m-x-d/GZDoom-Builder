@@ -190,7 +190,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(polygons.Count > 0)
 			{
 				// Keep top and bottom planes for intersection testing
-				top = osd.Floor.plane;
+				Vector2D linecenter = Sidedef.Line.GetCenterPoint(); //mxd. Our sector's ceiling can be lower than the other sector's floor!
+				top = (osd.Floor.plane.GetZ(linecenter) < sd.Ceiling.plane.GetZ(linecenter) ? osd.Floor.plane : sd.Ceiling.plane);
 				bottom = sd.Floor.plane;
 				
 				// Process the polygon and create vertices
