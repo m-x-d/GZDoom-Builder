@@ -192,24 +192,40 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		private void FilterActions(string p) 
+		private void FilterActions(string text) 
 		{
-			List<TreeNode> filteredNodes = new List<TreeNode>();
+			List<TreeNode> filterednodes = new List<TreeNode>();
+			HashSet<string> added = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
+			// First add nodes, which titles start with given text
 			foreach(TreeNode n in allNodes) 
 			{
 				foreach(TreeNode cn in n.Nodes) 
 				{
 					LinedefActionInfo ai = cn.Tag as LinedefActionInfo;
-					if(ai.Title.ToLowerInvariant().IndexOf(p) != -1)
-						filteredNodes.Add(cn);
+					if(ai != null && ai.Title.ToUpperInvariant().StartsWith(text))
+					{
+						filterednodes.Add(cn);
+						added.Add(ai.Title);
+					}
+				}
+			}
+
+			// Then add nodes, which titles contain given text
+			foreach(TreeNode n in allNodes)
+			{
+				foreach(TreeNode cn in n.Nodes)
+				{
+					LinedefActionInfo ai = cn.Tag as LinedefActionInfo;
+					if(ai != null && !added.Contains(ai.Title) && ai.Title.ToUpperInvariant().Contains(text))
+						filterednodes.Add(cn);
 				}
 			}
 
 			actions.BeginUpdate();
 			actions.Nodes.Clear();
 			actions.ShowLines = false;
-			actions.Nodes.AddRange(filteredNodes.ToArray());
+			actions.Nodes.AddRange(filterednodes.ToArray());
 			actions.EndUpdate();
 		}
 		
@@ -322,7 +338,7 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			if(!string.IsNullOrEmpty(tbFilter.Text.Trim()))
 			{
-				FilterActions(tbFilter.Text);
+				FilterActions(tbFilter.Text.ToUpperInvariant());
 			} 
 			else
 			{
