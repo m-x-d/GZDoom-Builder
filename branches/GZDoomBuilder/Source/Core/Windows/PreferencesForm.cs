@@ -39,8 +39,8 @@ namespace CodeImp.DoomBuilder.Windows
 		private bool allowapplycontrol;
 		private bool disregardshift;
 		private bool disregardcontrol;
-		private readonly List<ListViewItem> actionListItems; //mxd
-		private readonly List<int> actionListItemsGroupIndices; //mxd
+		private readonly List<ListViewItem> allactionitems; //mxd
+		private readonly List<int> allactionitemsgroups; //mxd
 
 		private bool reloadresources;
 		
@@ -148,8 +148,10 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			// Fill list of actions
 			Action[] actions = General.Actions.GetAllActions();
-			actionListItems = new List<ListViewItem>(); //mxd
-			actionListItemsGroupIndices = new List<int>(); //mxd
+			allactionitems = new List<ListViewItem>(); //mxd
+			allactionitemsgroups = new List<int>(); //mxd
+
+			listactions.BeginUpdate(); //mxd
 			foreach(Action a in actions)
 			{
 				// Create item
@@ -161,15 +163,16 @@ namespace CodeImp.DoomBuilder.Windows
 				if(General.Actions.Categories.ContainsKey(a.Category)) 
 				{
 					item.Group = listactions.Groups[a.Category];
-					actionListItemsGroupIndices.Add(listactions.Groups.IndexOf(item.Group));
+					allactionitemsgroups.Add(listactions.Groups.IndexOf(item.Group)); //mxd
 				}
 				else //mxd
 				{ 
-					actionListItemsGroupIndices.Add(-1);
+					allactionitemsgroups.Add(-1);
 				}
 
-				actionListItems.Add(item); //mxd
+				allactionitems.Add(item); //mxd
 			}
+			listactions.EndUpdate(); //mxd
 
 			// Set the colors
 			// TODO: Make this automated by using the collection
@@ -304,7 +307,7 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Settings.ScriptFontSize = fontsize;
 			
 			// Apply control keys to actions
-			foreach(ListViewItem item in actionListItems) //mxd
+			foreach(ListViewItem item in allactionitems) //mxd
 				General.Actions[item.Name].SetShortcutKey((int)item.SubItems[1].Tag);
 
 			// Apply the colors
@@ -503,7 +506,7 @@ namespace CodeImp.DoomBuilder.Windows
 				if(thiskey != 0)
 				{
 					// Find actions with same key
-					foreach(ListViewItem item in actionListItems)
+					foreach(ListViewItem item in allactionitems)
 					{
 						// Don't count the selected action
 						if(item != listactions.SelectedItems[0])
@@ -665,6 +668,9 @@ namespace CodeImp.DoomBuilder.Windows
 		// Item selected
 		private void listactions_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
 		{
+			//mxd. Leave when not allowed to update
+			if(!allowapplycontrol) return;
+
 			string disregardkeys = "";
 
 			// Anything selected?
@@ -849,51 +855,61 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		private void tbFilterActions_TextChanged(object sender, EventArgs e) 
+		private void tbFilterActions_TextChanged(object sender, EventArgs e)
 		{
+			ListViewItem curselection = (listactions.SelectedItems.Count > 0 ? listactions.SelectedItems[0] : null);
+			ListViewItem toselect = null;
+
+			allowapplycontrol = false;
 			listactions.BeginUpdate();
+			listactions.Items.Clear();
 			
-			//restore everything
-			if(string.IsNullOrEmpty(tbFilterActions.Text)) 
+			// Restore everything
+			if(string.IsNullOrEmpty(tbFilterActions.Text))
 			{
-				//restore items
-				listactions.Items.Clear();
-				listactions.Items.AddRange(actionListItems.ToArray());
-
-				//restore groups
-				for(int i = 0; i < actionListItems.Count; i++) 
+				// Restore items and groups
+				for(int i = 0; i < allactionitems.Count; i++)
 				{
-					if(actionListItemsGroupIndices[i] != -1)
-						actionListItems[i].Group = listactions.Groups[actionListItemsGroupIndices[i]];
+					if(allactionitemsgroups[i] != -1)
+						allactionitems[i].Group = listactions.Groups[allactionitemsgroups[i]];
+
+					// Item sould be added AFTER restoring it's group, otherwise item sorting will be screwed!
+					listactions.Items.Add(allactionitems[i]);
+
+					// Restore selection?
+					if(allactionitems[i] == curselection) toselect = curselection;
 				}
-			} 
-			else //apply filtering
-			{ 
+			}
+			// Apply filtering
+			else
+			{
 				string match = tbFilterActions.Text.ToUpperInvariant();
-				for(int i = 0; i < actionListItems.Count; i++) 
+				for(int i = 0; i < allactionitems.Count; i++) 
 				{
-					if(actionListItems[i].Text.ToUpperInvariant().Contains(match)) 
+					if(allactionitems[i].Text.ToUpperInvariant().Contains(match))
 					{
-						//ensure visible
-						if(!listactions.Items.Contains(actionListItems[i])) 
-						{
-							listactions.Items.Add(actionListItems[i]);
+						// Restore group
+						if(allactionitemsgroups[i] != -1)
+							allactionitems[i].Group = listactions.Groups[allactionitemsgroups[i]];
 
-							//restore group
-							if(actionListItemsGroupIndices[i] != -1)
-								actionListItems[i].Group = listactions.Groups[actionListItemsGroupIndices[i]];
-						}
+						// Add item
+						listactions.Items.Add(allactionitems[i]);
+
+						// Restore selection?
+						if(allactionitems[i] == curselection) toselect = curselection;
 					} 
-					else if(listactions.Items.Contains(actionListItems[i])) 
-					{
-						//ensure invisible
-						listactions.Items.Remove(actionListItems[i]);
-					}
 				}
 			}
 
-			listactions.Sort();
+			// Restore selection?
+			if(toselect != null)
+			{
+				toselect.Selected = true;
+				listactions.EnsureVisible(toselect.Index);
+			}
+
 			listactions.EndUpdate();
+			allowapplycontrol = true;
 		}
 
 		#endregion

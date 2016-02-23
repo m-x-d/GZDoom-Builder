@@ -455,12 +455,23 @@ namespace CodeImp.DoomBuilder.Controls
 				validnodes.Clear();
 
 				string match = tbFilter.Text.ToUpperInvariant();
+				HashSet<string> added = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+				
+				// First add nodes, which titles start with given text
 				foreach(TreeNode node in nodes)
 				{
-					if(node.Text.ToUpperInvariant().Contains(match)) 
+					if(node.Text.ToUpperInvariant().StartsWith(match))
 					{
 						typelist.Nodes.Add(node);
+						added.Add(node.Text);
 					}
+				}
+
+				// Then add nodes, which titles contain given text
+				foreach(TreeNode node in nodes)
+				{
+					if(!added.Contains(node.Text) && node.Text.ToUpperInvariant().Contains(match)) 
+						typelist.Nodes.Add(node);
 				}
 
 				doupdatenode = true;

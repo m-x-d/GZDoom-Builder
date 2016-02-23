@@ -1111,7 +1111,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				
 				// Make alpha color
 				Color4 alphacolor = new Color4(alpha, 1.0f, 1.0f, 1.0f);
-				byte bboxalpha = (byte)(alpha * (General.Editing.Mode.GetType().Name == "ThingsMode" ? 128 : 255));
+				bool isthingsmode = (General.Editing.Mode.GetType().Name == "ThingsMode");
 				
 				// Set renderstates for things rendering
 				graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
@@ -1160,6 +1160,7 @@ namespace CodeImp.DoomBuilder.Rendering
 					
 					// Create vertices
 					PixelColor tc = fixedcolor ? c : DetermineThingColor(t);
+					byte bboxalpha = (byte)(alpha * ((!fixedcolor && !t.Selected && isthingsmode) ? 128 : 255));
 					if(CreateThingBoxVerts(t, ref verts, ref bboxes, thingsByPosition, buffercount * 6, tc, bboxalpha))
 					{
 						buffercount++;

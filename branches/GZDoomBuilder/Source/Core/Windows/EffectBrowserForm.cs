@@ -155,20 +155,36 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		private void FilterEffects(string p) 
+		private void FilterEffects(string text) 
 		{
-			List<ListViewItem> filteredItems = new List<ListViewItem>();
+			List<ListViewItem> filtereditems = new List<ListViewItem>();
+			HashSet<string> added = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
+			// First add nodes, which titles start with given text
 			foreach(ListViewItem i in allitems) 
 			{
 				SectorEffectInfo si = i.Tag as SectorEffectInfo;
-				if(si.Title.ToLowerInvariant().IndexOf(p) != -1)
-					filteredItems.Add(i);
+				if(si != null && si.Title.ToUpperInvariant().StartsWith(text))
+				{
+					filtereditems.Add(i);
+					added.Add(si.Title);
+				}
+			}
+
+			// Then add nodes, which titles contain given text
+			foreach(ListViewItem i in allitems)
+			{
+				SectorEffectInfo si = i.Tag as SectorEffectInfo;
+				if(si != null && !added.Contains(si.Title) && si.Title.ToUpperInvariant().Contains(text))
+				{
+					filtereditems.Add(i);
+					added.Add(si.Title);
+				}
 			}
 
 			effects.BeginUpdate();
 			effects.Items.Clear();
-			effects.Items.AddRange(filteredItems.ToArray());
+			effects.Items.AddRange(filtereditems.ToArray());
 			effects.EndUpdate();
 		}
 		
@@ -236,7 +252,7 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			if(!string.IsNullOrEmpty(tbFilter.Text.Trim()))
 			{
-				FilterEffects(tbFilter.Text);
+				FilterEffects(tbFilter.Text.ToUpperInvariant());
 			} 
 			else
 			{
