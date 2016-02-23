@@ -204,14 +204,20 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			// Update arguments
 			int showaction = 0;
+			ArgumentInfo[] oldarginfo = (arginfo != null ? (ArgumentInfo[])arginfo.Clone() : null); //mxd
 
 			// Only when action type is known
 			if(General.Map.Config.LinedefActions.ContainsKey(action)) showaction = action;
+			
+			// Update argument infos
 			if((showaction == 0) && (info != null)) arginfo = info.Args;
 			else arginfo = General.Map.Config.LinedefActions[showaction].Args;
 
 			// Don't update action args when thing type is changed
 			if(info != null && showaction != 0 && this.action == showaction) return;
+
+			//mxd. Don't update action args when old and new argument infos match
+			if(arginfo != null && oldarginfo != null && ArgumentInfosMatch(arginfo, oldarginfo)) return;
 
 			// Change the argument descriptions
 			this.BeginUpdate();
@@ -385,6 +391,24 @@ namespace CodeImp.DoomBuilder.Controls
 					args[i].ForeColor = (labels[i].Enabled ? SystemColors.WindowText : SystemColors.GrayText);
 				}
 			}
+		}
+
+		//mxd
+		private static bool ArgumentInfosMatch(ArgumentInfo[] info1, ArgumentInfo[] info2)
+		{
+			if(info1.Length != info2.Length) return false;
+			bool haveusedargs = false; // Arguments should still be reset if all arguments are unused
+			
+			for(int i = 0; i < info1.Length; i++)
+			{
+				if(info1[i].Used != info1[2].Used || info1[i].Type != info1[2].Type 
+					|| info1[i].Title.ToUpperInvariant() != info2[i].Title.ToUpperInvariant())
+					return false;
+
+				haveusedargs |= (info1[i].Used || info1[2].Used);
+			}
+
+			return haveusedargs;
 		}
 
 		#endregion
