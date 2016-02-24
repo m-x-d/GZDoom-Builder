@@ -1266,8 +1266,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// and uses the marks to check what needs to be reloaded.
 		protected override void ResourcesReloadedPartial()
 		{
-			bool sectorsmarked = false;
-			
 			if(General.Map.UndoRedo.GeometryChanged)
 			{
 				// Let the core do this (it will just dispose the sectors that were changed)
@@ -1275,6 +1273,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 			else
 			{
+				bool sectorsmarked = false;
+				
 				// Neighbour sectors must be updated as well
 				foreach(Sector s in General.Map.Map.Sectors)
 				{
@@ -1331,8 +1331,22 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					// No sectors or geometry changed. So we only have
 					// to update things when they have changed.
+					HashSet<Thing> toremove = new HashSet<Thing>(); //mxd
 					foreach(KeyValuePair<Thing, VisualThing> vt in allthings)
-						if((vt.Value != null) && vt.Key.Marked) (vt.Value as BaseVisualThing).Rebuild();
+					{
+						if((vt.Value != null) && vt.Key.Marked)
+						{
+							if(vt.Key.IsDisposed) toremove.Add(vt.Key); //mxd. Disposed things will cause problems
+							else (vt.Value as BaseVisualThing).Rebuild();
+						}
+					}
+
+					//mxd. Remove disposed things
+					foreach(Thing t in toremove)
+					{
+						if(allthings[t] != null) allthings[t].Dispose();
+						allthings.Remove(t);
+					}
 				}
 				else
 				{
