@@ -722,7 +722,7 @@ namespace CodeImp.DoomBuilder
 		internal bool SaveMap(string newfilepathname, SavePurpose purpose) 
 		{
 			string settingsfile;
-			WAD targetwad;
+			WAD targetwad = null;
 			bool includenodes;
 
 			General.WriteLogLine("Saving map to file: " + newfilepathname);
@@ -769,6 +769,31 @@ namespace CodeImp.DoomBuilder
 			{
 				// Check if we have nodebuilder lumps
 				includenodes = VerifyNodebuilderLumps(tempwad, TEMP_MAP_HEADER);
+			}
+
+			//mxd. Target file is read-only?
+			FileInfo info = new FileInfo(newfilepathname);
+			if(info.IsReadOnly)
+			{
+				if(General.ShowWarningMessage("Unable to save the map: target file is read-only.\nRemove read-only flag and save the map anyway?", MessageBoxButtons.YesNo) == DialogResult.Yes)
+				{
+					General.WriteLogLine("Removing read-only flag from the map file...");
+					try
+					{
+						info.IsReadOnly = false;
+					}
+					catch(Exception e)
+					{
+						General.ShowErrorMessage("Failed to remove read-only flag from \"" + filepathname + "\":" + Environment.NewLine + Environment.NewLine + e.Message, MessageBoxButtons.OK);
+						General.WriteLogLine("Failed to remove read-only flag from \"" + filepathname + "\":" + e.Message);
+						return false;
+					}
+				}
+				else
+				{
+					General.WriteLogLine("Map saving cancelled...");
+					return false;
+				}
 			}
 
 			// Suspend data resources
@@ -908,22 +933,29 @@ namespace CodeImp.DoomBuilder
 					targetwad = new WAD(newfilepathname);
 				}
 			} 
-			catch(IOException) 
+			catch(Exception e) 
 			{
-				General.ShowErrorMessage("IO Error while writing target file: " + newfilepathname + ". Please make sure the location is accessible and not in use by another program.", MessageBoxButtons.OK);
-				if(!string.IsNullOrEmpty(origwadfile) && File.Exists(origwadfile)) File.Delete(origwadfile); //mxd. Clean-up
+				General.ShowErrorMessage("Unable to write the map to target file \"" + newfilepathname + "\":\n" + e.Message, MessageBoxButtons.OK);
+				if(!string.IsNullOrEmpty(origwadfile) && File.Exists(origwadfile))
+				{
+					//mxd. Clean-up
+					if(File.Exists(newfilepathname))
+					{
+						//mxd. We MAY've just deleted the map from the target file. Let's pretend this never happened
+						if(targetwad != null) targetwad.Dispose();
+						File.Delete(newfilepathname);
+						File.Move(origwadfile, newfilepathname);
+					}
+					else
+					{
+						File.Delete(origwadfile); 
+					}
+				}
+
 				data.Resume();
-				General.WriteLogLine("Map saving failed");
+				General.WriteLogLine("Map saving failed: " + e.Message);
 				return false;
 			} 
-			catch(UnauthorizedAccessException) 
-			{
-				General.ShowErrorMessage("Error while accessing target file: " + newfilepathname + ". Please make sure the location is accessible and not in use by another program.", MessageBoxButtons.OK);
-				if(!string.IsNullOrEmpty(origwadfile) && File.Exists(origwadfile)) File.Delete(origwadfile); //mxd. Clean-up
-				data.Resume();
-				General.WriteLogLine("Map saving failed");
-				return false;
-			}
 
 			// Copy map lumps to target file
 			CopyLumpsByType(tempwad, TEMP_MAP_HEADER, targetwad, origmapname, true, true, includenodes, true);

@@ -260,7 +260,14 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 
 			// Export the current map to a temporary WAD file
 			tempfile = BuilderPlug.MakeTempFilename(".wad");
-			General.Map.ExportToFile(tempfile);
+			if(!General.Map.ExportToFile(tempfile))
+			{
+				//mxd. Abort on export fail
+				Cursor.Current = Cursors.Default;
+				General.Interface.DisplayStatus(StatusType.Warning, "Unable to set test environment...");
+				OnCancel();
+				return;
+			}
 
 			// Load the map in VPO_DLL
 			BuilderPlug.VPO.Start(tempfile, General.Map.Options.LevelName);

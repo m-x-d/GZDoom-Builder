@@ -1431,8 +1431,14 @@ namespace CodeImp.DoomBuilder
 					mainwindow.DisplayStatus(StatusType.Warning, "There were errors during saving!");
 					if(!delaymainwindow && settings.ShowErrorsWindow) mainwindow.ShowErrors();
 				}
-				else
+				else if(result)
+				{
 					mainwindow.DisplayStatus(StatusType.Info, "Map saved in " + map.FileTitle + ".");
+				}
+				else
+				{
+					mainwindow.DisplayStatus(StatusType.Info, "Map saving cancelled."); //mxd
+				}
 
 				Cursor.Current = Cursors.Default;
 			}
@@ -1499,10 +1505,16 @@ namespace CodeImp.DoomBuilder
 					{
 						// Show any errors if preferred
 						mainwindow.DisplayStatus(StatusType.Warning, "There were errors during saving!");
-						if(!delaymainwindow && General.Settings.ShowErrorsWindow) mainwindow.ShowErrors();
+						if(!delaymainwindow && settings.ShowErrorsWindow) mainwindow.ShowErrors();
+					}
+					else if(result)
+					{
+						mainwindow.DisplayStatus(StatusType.Info, "Map saved in " + map.FileTitle + ".");
 					}
 					else
-						mainwindow.DisplayStatus(StatusType.Info, "Map saved in " + map.FileTitle + ".");
+					{
+						mainwindow.DisplayStatus(StatusType.Info, "Map saving cancelled."); //mxd
+					}
 					
 					Cursor.Current = Cursors.Default;
 				}
@@ -1561,8 +1573,14 @@ namespace CodeImp.DoomBuilder
 					mainwindow.DisplayStatus(StatusType.Warning, "There were errors during saving!");
 					if(!delaymainwindow && settings.ShowErrorsWindow) mainwindow.ShowErrors();
 				}
+				else if(result)
+				{
+					mainwindow.DisplayStatus(StatusType.Info, "Map saved in " + map.FileTitle + ".");
+				}
 				else
-					mainwindow.DisplayStatus(StatusType.Info, "Map saved into " + map.FileTitle + ".");
+				{
+					mainwindow.DisplayStatus(StatusType.Info, "Map saving cancelled."); //mxd
+				}
 
 				Cursor.Current = Cursors.Default;
 			}
