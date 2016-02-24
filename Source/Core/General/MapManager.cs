@@ -773,7 +773,7 @@ namespace CodeImp.DoomBuilder
 
 			//mxd. Target file is read-only?
 			FileInfo info = new FileInfo(newfilepathname);
-			if(info.IsReadOnly)
+			if(info.Exists && info.IsReadOnly)
 			{
 				if(General.ShowWarningMessage("Unable to save the map: target file is read-only.\nRemove read-only flag and save the map anyway?", MessageBoxButtons.YesNo) == DialogResult.Yes)
 				{
