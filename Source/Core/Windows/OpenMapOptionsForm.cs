@@ -30,7 +30,7 @@ using CodeImp.DoomBuilder.Config;
 
 namespace CodeImp.DoomBuilder.Windows
 {
-	internal partial class OpenMapOptionsForm : DelayedForm
+	internal partial class OpenMapOptionsForm : Form
 	{
 		// Variables
 		private Configuration mapsettings;
@@ -213,11 +213,15 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 			
 			//mxd. Bail out if still no dice...
-			if(config.SelectedIndex == -1)
+			if(config.SelectedIndex == -1 || mapslist.Items.Count == 0)
 			{
-				this.Visible = false;
 				General.ShowWarningMessage("Unable to find maps using any game configuration.\nDoes this wad contain any maps at all?..", MessageBoxButtons.OK);
 				cancel_Click(this, EventArgs.Empty);
+			}
+			else
+			{
+				// Show the window
+				this.Opacity = 1;
 			}
 
 			// Done
