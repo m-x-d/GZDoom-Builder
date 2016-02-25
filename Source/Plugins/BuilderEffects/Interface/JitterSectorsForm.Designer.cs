@@ -238,7 +238,7 @@
 			// 
 			this.floorHeightAmmount.AllowNegative = false;
 			this.floorHeightAmmount.ExtendedLimits = false;
-			this.floorHeightAmmount.Label = "Floor height:";
+			this.floorHeightAmmount.Label = "Height:";
 			this.floorHeightAmmount.Location = new System.Drawing.Point(6, 19);
 			this.floorHeightAmmount.Maximum = 100;
 			this.floorHeightAmmount.Minimum = 0;

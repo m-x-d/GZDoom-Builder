@@ -258,6 +258,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 				if(tagpicker.SelectedIndex == -1) tagpicker.Text = tag.ToString();
 			}
 
+			clear.Enabled = (tagpicker.Text.Trim() != "0");
+
 			blockupdate = false;
 		}
 
@@ -280,6 +282,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		private void clear_Click(object sender, EventArgs e)
 		{
 			tagpicker.Focus();
+			tagpicker.SelectedIndex = -1;
 			tagpicker.Text = "0";
 			tagpicker.SelectAll();
 		}
@@ -358,6 +361,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		{
 			if(blockupdate) return;
 
+			clear.Enabled = (tagpicker.Text.Trim() != "0");
 			if(tagpicker.SelectedItem != null)
 			{
 				TagInfo info = (TagInfo)tagpicker.SelectedItem;
@@ -367,7 +371,6 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			}
 
 			string text = tagpicker.Text.Trim();
-			clear.Enabled = (text != "0");
 			if(string.IsNullOrEmpty(text))
 			{
 				tags[curtagindex] = int.MinValue;
@@ -423,11 +426,11 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		private void TagsSelector_Resize(object sender, EventArgs e)
 		{
 			clear.Left = this.Width - clear.Width - clear.Margin.Right;
-			unusedtag.Left = clear.Left - clear.Margin.Left - unusedtag.Margin.Right - unusedtag.Width;
-			newtag.Left = unusedtag.Left - unusedtag.Margin.Left - newtag.Margin.Right - newtag.Width;
-			tagpicker.Width = newtag.Left - newtag.Margin.Left - tagpicker.Margin.Right - tagpicker.Left;
+			unusedtag.Left = clear.Left - unusedtag.Margin.Right - unusedtag.Width;
+			newtag.Left = unusedtag.Left - newtag.Margin.Right - newtag.Width;
+			tagpicker.Width = newtag.Left - tagpicker.Margin.Right - tagpicker.Left;
 			removetag.Left = clear.Left;
-			addtag.Left = removetag.Left - removetag.Margin.Left - addtag.Margin.Right - addtag.Width;
+			addtag.Left = removetag.Left - addtag.Margin.Right - addtag.Width;
 		}
 
 		#endregion
