@@ -68,8 +68,7 @@
 			this.newTag.Size = new System.Drawing.Size(54, 24);
 			this.newTag.TabIndex = 2;
 			this.newTag.Text = "New";
-			this.tooltip.SetToolTip(this.newTag, "Finds a tag, which is not used as a tag or tag action argument \r\nby any map eleme" +
-					"nt");
+			this.tooltip.SetToolTip(this.newTag, "Find a tag, which is not used as a tag or tag action argument\r\nby any map element");
 			this.newTag.UseVisualStyleBackColor = true;
 			this.newTag.Click += new System.EventHandler(this.newTag_Click);
 			// 
@@ -80,7 +79,7 @@
 			this.unusedTag.Size = new System.Drawing.Size(54, 24);
 			this.unusedTag.TabIndex = 3;
 			this.unusedTag.Text = "Unused";
-			this.tooltip.SetToolTip(this.unusedTag, "Finds a tag, which is not used as a tag \r\nby any map element of this type");
+			this.tooltip.SetToolTip(this.unusedTag, "Find a tag, which is not used as a tag\r\nby any map element of this type");
 			this.unusedTag.UseVisualStyleBackColor = true;
 			this.unusedTag.Click += new System.EventHandler(this.unusedTag_Click);
 			// 
@@ -98,7 +97,7 @@
 			this.clear.Name = "clear";
 			this.clear.Size = new System.Drawing.Size(26, 24);
 			this.clear.TabIndex = 4;
-			this.tooltip.SetToolTip(this.clear, "Sets tag to 0");
+			this.tooltip.SetToolTip(this.clear, "Set tag to 0");
 			this.clear.UseVisualStyleBackColor = true;
 			this.clear.Click += new System.EventHandler(this.clear_Click);
 			// 
