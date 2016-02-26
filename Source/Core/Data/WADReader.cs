@@ -861,11 +861,18 @@ namespace CodeImp.DoomBuilder.Data
 
 		#region ================== Decorate, Gldefs, Mapinfo, etc...
 
-		// This finds and returns a sprite stream
+		// This finds and returns DECORATE streams
 		public override IEnumerable<TextResourceData> GetDecorateData(string pname)
 		{
 			if(issuspended) throw new Exception("Data reader is suspended");
-			return GetAllLumps("DECORATE");
+			List<TextResourceData> result = GetAllLumps(pname); //mxd
+
+			//mxd. Return ALL DECORATE lumps
+			if(result.Count == 0 || string.Compare(pname, "DECORATE", StringComparison.OrdinalIgnoreCase) == 0)
+				return result;
+
+			//mxd. Return THE LAST include lump, because that's the way ZDoom seems to operate
+			return new List<TextResourceData> {result[result.Count - 1]};
 		}
 
 		//mxd. Should be only one entry per wad
@@ -948,7 +955,7 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		//mxd
-		private IEnumerable<TextResourceData> GetAllLumps(string name)
+		private List<TextResourceData> GetAllLumps(string name)
 		{
 			List<TextResourceData> result = new List<TextResourceData>();
 
