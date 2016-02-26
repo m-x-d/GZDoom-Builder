@@ -65,20 +65,20 @@ namespace CodeImp.DoomBuilder.Windows
 			public readonly int OffsetX;
 			public readonly int OffsetY;
 
-			public readonly string TextureTop;
-			public readonly string TextureMid;
-			public readonly string TextureLow;
+			public readonly string HighTexture;
+			public readonly string MiddleTexture;
+			public readonly string LowTexture;
 
 			public SidedefProperties(Sidedef side) 
 			{
-				//offset
+				// Offset
 				OffsetX = side.OffsetX;
 				OffsetY = side.OffsetY;
 
-				//textures
-				TextureTop = side.HighTexture;
-				TextureMid = side.MiddleTexture;
-				TextureLow = side.LowTexture;
+				// Textures
+				HighTexture = side.HighTexture;
+				MiddleTexture = side.MiddleTexture;
+				LowTexture = side.LowTexture;
 			}
 		}
 
@@ -148,6 +148,10 @@ namespace CodeImp.DoomBuilder.Windows
 			// Arrange Apply/Cancel buttons
 			apply.Top = panel.Bottom + panel.Margin.Bottom + apply.Margin.Top;
 			cancel.Top = apply.Top;
+
+			//mxd. Apply texture replacement settings
+			replaceunusedfronttextures.Checked = General.Settings.ReadSetting("editlinedefswindow.replaceunusedfronttextures", true);
+			replaceunusedbacktextures.Checked = General.Settings.ReadSetting("editlinedefswindow.replaceunusedbacktextures", true);
 
 			// Update window height
 			this.Height = apply.Bottom + apply.Margin.Bottom * 2 + (this.Height - this.ClientRectangle.Height) + 1;
@@ -526,7 +530,12 @@ namespace CodeImp.DoomBuilder.Windows
 		//mxd. Store window location
 		private void LinedefEditForm_FormClosing(object sender, FormClosingEventArgs e) 
 		{
+			// Save location
 			location = this.Location;
+			
+			// Save persistent settings
+			General.Settings.WriteSetting("editlinedefswindow.replaceunusedfronttextures", replaceunusedfronttextures.Checked);
+			General.Settings.WriteSetting("editlinedefswindow.replaceunusedbacktextures", replaceunusedbacktextures.Checked);
 		}
 
 		// Help!
@@ -575,24 +584,31 @@ namespace CodeImp.DoomBuilder.Windows
 		private void fronthigh_OnValueChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
-			MakeUndo(); //mxd
+			MakeUndo();
 
-			//restore values
+			// Restore values
 			if(string.IsNullOrEmpty(fronthigh.TextureName)) 
 			{
 				int i = 0;
-
 				foreach(Linedef l in lines) 
 				{
-					if(l.Front != null) l.Front.SetTextureHigh(linedefprops[i].Front != null ? linedefprops[i].Front.TextureTop : "-");
+					if(l.Front != null) l.Front.SetTextureHigh(linedefprops[i].Front != null ? linedefprops[i].Front.HighTexture : "-");
 					i++;
 				}
-			
-			} 
-			else //update values
+			}
+			// Update values
+			else
 			{
-				foreach(Linedef l in lines) 
-					if(l.Front != null)	l.Front.SetTextureHigh(fronthigh.GetResult(l.Front.HighTexture));
+				int i = 0;
+				foreach(Linedef l in lines)
+				{
+					if(l.Front != null
+						&& (replaceunusedfronttextures.Checked
+						|| (l.Front.HighRequired()
+						|| (linedefprops[i].Front != null && linedefprops[i].Front.HighTexture != "-"))))
+						l.Front.SetTextureHigh(fronthigh.GetResult(l.Front.HighTexture));
+					i++;
+				}
 			}
 
 			// Update the used textures
@@ -605,24 +621,31 @@ namespace CodeImp.DoomBuilder.Windows
 		private void frontmid_OnValueChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
-			MakeUndo(); //mxd
+			MakeUndo();
 
-			//restore values
+			// Restore values
 			if(string.IsNullOrEmpty(frontmid.TextureName)) 
 			{
 				int i = 0;
-
 				foreach(Linedef l in lines) 
 				{
-					if(l.Front != null) l.Front.SetTextureMid(linedefprops[i].Front != null ? linedefprops[i].Front.TextureMid : "-");
+					if(l.Front != null) l.Front.SetTextureMid(linedefprops[i].Front != null ? linedefprops[i].Front.MiddleTexture : "-");
 					i++;
 				}
-			
-			} 
-			else //update values
+			}
+			// Update values
+			else
 			{
-				foreach(Linedef l in lines) 
-					if(l.Front != null)	l.Front.SetTextureMid(frontmid.GetResult(l.Front.MiddleTexture));
+				int i = 0;
+				foreach(Linedef l in lines)
+				{
+					if(l.Front != null 
+						&& (replaceunusedfronttextures.Checked 
+						|| (l.Front.MiddleRequired() 
+						|| (linedefprops[i].Front != null && linedefprops[i].Front.MiddleTexture != "-"))))
+						l.Front.SetTextureMid(frontmid.GetResult(l.Front.MiddleTexture));
+					i++;
+				}
 			}
 
 			// Update the used textures
@@ -635,24 +658,31 @@ namespace CodeImp.DoomBuilder.Windows
 		private void frontlow_OnValueChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
-			MakeUndo(); //mxd
+			MakeUndo();
 
-			//restore values
+			// Restore values
 			if(string.IsNullOrEmpty(frontlow.TextureName)) 
 			{
 				int i = 0;
-
 				foreach(Linedef l in lines) 
 				{
-					if(l.Front != null) l.Front.SetTextureLow(linedefprops[i].Front != null ? linedefprops[i].Front.TextureLow : "-");
+					if(l.Front != null) l.Front.SetTextureLow(linedefprops[i].Front != null ? linedefprops[i].Front.LowTexture : "-");
 					i++;
 				}
-			
-			} 
-			else //update values
+			}
+			// Update values
+			else
 			{
+				int i = 0;
 				foreach(Linedef l in lines)
-					if(l.Front != null) l.Front.SetTextureLow(frontlow.GetResult(l.Front.LowTexture));
+				{
+					if(l.Front != null
+						&& (replaceunusedfronttextures.Checked
+						|| (l.Front.LowRequired()
+						|| (linedefprops[i].Front != null && linedefprops[i].Front.LowTexture != "-"))))
+						l.Front.SetTextureLow(frontlow.GetResult(l.Front.LowTexture));
+					i++;
+				}
 			}
 
 			// Update the used textures
@@ -665,24 +695,31 @@ namespace CodeImp.DoomBuilder.Windows
 		private void backhigh_OnValueChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
-			MakeUndo(); //mxd
+			MakeUndo();
 
-			//restore values
+			// Restore values
 			if(string.IsNullOrEmpty(backhigh.TextureName)) 
 			{
 				int i = 0;
-
 				foreach(Linedef l in lines) 
 				{
-					if(l.Back != null) l.Back.SetTextureHigh(linedefprops[i].Back != null ? linedefprops[i].Back.TextureTop : "-");
+					if(l.Back != null) l.Back.SetTextureHigh(linedefprops[i].Back != null ? linedefprops[i].Back.HighTexture : "-");
 					i++;
 				}
-			
-			} 
-			else //update values
+			}
+			// Update values
+			else
 			{
+				int i = 0;
 				foreach(Linedef l in lines)
-					if(l.Back != null) l.Back.SetTextureHigh(backhigh.GetResult(l.Back.HighTexture));
+				{
+					if(l.Back != null
+						&& (replaceunusedbacktextures.Checked
+						|| (l.Back.HighRequired()
+						|| (linedefprops[i].Back != null && linedefprops[i].Back.HighTexture != "-"))))
+						l.Back.SetTextureHigh(backhigh.GetResult(l.Back.HighTexture));
+					i++;
+				}
 			}
 
 			// Update the used textures
@@ -695,24 +732,31 @@ namespace CodeImp.DoomBuilder.Windows
 		private void backmid_OnValueChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
-			MakeUndo(); //mxd
+			MakeUndo();
 
-			//restore values
+			// Restore values
 			if(string.IsNullOrEmpty(backmid.TextureName)) 
 			{
 				int i = 0;
-
 				foreach(Linedef l in lines) 
 				{
-					if(l.Back != null) l.Back.SetTextureMid(linedefprops[i].Back != null ? linedefprops[i].Back.TextureMid : "-");
+					if(l.Back != null) l.Back.SetTextureMid(linedefprops[i].Back != null ? linedefprops[i].Back.MiddleTexture : "-");
 					i++;
 				}
-			
-			} 
-			else //update values
+			}
+			// Update values
+			else 
 			{
+				int i = 0;
 				foreach(Linedef l in lines)
-					if(l.Back != null) l.Back.SetTextureMid(backmid.GetResult(l.Back.MiddleTexture));
+				{
+					if(l.Back != null
+						&& (replaceunusedbacktextures.Checked
+						|| (l.Back.MiddleRequired()
+						|| (linedefprops[i].Back != null && linedefprops[i].Back.MiddleTexture != "-"))))
+						l.Back.SetTextureMid(backmid.GetResult(l.Back.MiddleTexture));
+					i++;
+				}
 			}
 
 			// Update the used textures
@@ -725,24 +769,31 @@ namespace CodeImp.DoomBuilder.Windows
 		private void backlow_OnValueChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
-			MakeUndo(); //mxd
+			MakeUndo();
 
-			//restore values
+			// Restore values
 			if(string.IsNullOrEmpty(backlow.TextureName)) 
 			{
 				int i = 0;
-
 				foreach(Linedef l in lines) 
 				{
-					if(l.Back != null) l.Back.SetTextureLow(linedefprops[i].Back != null ? linedefprops[i].Back.TextureLow : "-");
+					if(l.Back != null) l.Back.SetTextureLow(linedefprops[i].Back != null ? linedefprops[i].Back.LowTexture : "-");
 					i++;
 				}
-			
-			} 
-			else //update values 
+			}
+			// Update values
+			else
 			{
+				int i = 0;
 				foreach(Linedef l in lines)
-					if(l.Back != null) l.Back.SetTextureLow(backlow.GetResult(l.Back.LowTexture));
+				{
+					if(l.Back != null
+						&& (replaceunusedbacktextures.Checked
+						|| (l.Back.LowRequired()
+						|| (linedefprops[i].Back != null && linedefprops[i].Back.LowTexture != "-"))))
+						l.Back.SetTextureLow(backlow.GetResult(l.Back.LowTexture));
+					i++;
+				}
 			}
 
 			// Update the used textures

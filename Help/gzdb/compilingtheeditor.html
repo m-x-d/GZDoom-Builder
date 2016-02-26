@@ -28,21 +28,34 @@
     <li>7-zip archiver (<a href="www.7-zip.org">www.7-zip.org</a>).</li>
     <li>Inno Setup 5 or newer (<a href="http://www.jrsoftware.org/isinfo.php">http://www.jrsoftware.org/isinfo.php</a>).</li>
     <li>Microsoft HTML Help compiler (<a href="http://www.microsoft.com/en-us/download/details.aspx?id=21138">http://www.microsoft.com/en-us/download/details.aspx?id=21138</a>).</li>
-    <li>SlimDX Developer SDK. You can download it for free from <a href="http://slimdx.org/download.php">http://slimdx.org/download.php</a>.</li>
+    <li>SlimDX Developer SDK (<a href="http://slimdx.org/download.php">http://slimdx.org/download.php</a>).</li>
+    <li>DirectX SDK (<a href="https://www.microsoft.com/en-us/download/details.aspx?id=6812">https://www.microsoft.com/en-us/download/details.aspx?id=6812</a>).</li>
   </ul>
   
   <h2>Obtaining the source:</h2>
-  The Doom Builder 2 source code is hosted on SourceForge and is available through SVN at the following location:<pre>https://svn.code.sf.net/p/doombuilder/code/branches/GZDoomBuilder</pre>
-  If you don't want to use a SVN client, head to 
-  <a href="https://sourceforge.net/p/doombuilder/code/HEAD/tree/branches/GZDoomBuilder/">https://sourceforge.net/p/doombuilder/code/HEAD/tree/branches/GZDoomBuilder/</a>
-  and press &quot;Download Snapshot&quot; button.
+  The GZDoom Builder source code is hosted on SourceForge and is available through SVN at the following location:
+  <pre>https://svn.code.sf.net/p/doombuilder/code/branches/GZDoomBuilder</pre>
+  If you don't want to use a SVN client, head to <a href="https://sourceforge.net/p/doombuilder/code/HEAD/tree/branches/GZDoomBuilder/">https://sourceforge.net/p/doombuilder/code/HEAD/tree/branches/GZDoomBuilder/</a> and press &quot;Download Snapshot&quot; button.
+  <h2>Quick start guide:</h2>
+  This guide assumes you are using <strong>Visual Studio 2008</strong> / <strong>Visual C# 2008 Express Edition</strong> and <strong>Tortiose SVN</strong>.
+  <ol>
+    <li>Create an empty folder, right click on it and choose "<strong>SVN Checkout...</strong>" from the context menu.</li>
+    <li>Enter &quot;<strong>https://svn.code.sf.net/p/doombuilder/code/branches/GZDoomBuilder</strong>&quot; in the &quot;<strong>URL of repository</strong>&quot; field and click OK.</li>
+    <li> Open &quot;<strong>Builder.sln</strong>&quot; in the Visual Studio and make sure it compiles and runs (click the green &quot;<strong>Play</strong>&quot; button, or press <strong>F5</strong>).
+      <ul>
+      <li>If the Visual Studio complains about missing <strong>SlimDX</strong> reference in the Builder project, you'll need to re-add it manually. To do so, delete SlimDX from the References in the Solution Explorer, right click on the Builder project and choose &quot;<strong>Add reference</strong>&quot;. On the .NET tab, choose SlimDX (.net 2.0, x86 version).</li>
+      <li>You can ignore the warning about missing <strong>JetBrains.Profiler.Core.Api</strong> reference. Everything should build fine, unless you choose a   profiler-enabled build target (or you can use dotTrace Performance, if   you have access to it).</li>
+      </ul>
+    </li>
+    <li>If you've made some code changes and want to submit them to the main GZDB repository, you can make a diff patch (right-click on the GZDB source folder and choose &quot;<strong>TortioseSVN -&gt; Create patch...</strong>&quot;) and post it at the official GZDB thread at ZDoom.org (<a href="http://forum.zdoom.org/viewtopic.php?f=3&t=32392&start=999999">http://forum.zdoom.org/viewtopic.php?f=3&amp;t=32392&amp;start=999999</a>).</li>
+  </ol>
   <h2>Batch files:</h2>
 GZDB source comes with several batch files, which can be used to automatically compile and package the editor. Before launching a batch file for the first time, make sure to open it and check that variables holding software paths point to the right directories. These variables are always located near the top of the file, after the info block.
 <ul>
-  <li><strong>Clean Rebuild.bat</strong> - removes project cache files, then compiles it in Release mode.<br />Requires Visual C#  Express Edition / Visual Studio.</li><br />
+  <li><strong>Clean Rebuild.bat</strong> - removes project cache files, then compiles it in Release mode.<br />Requires Visual C# Express Edition / Visual Studio.</li><br />
   <li><strong>CompileHelp.bat</strong> - compiles &quot;Build\Refmanual.chm&quot;. Help source files are located in the &quot;Help&quot; directory.<br />Requires Microsoft HTML Help compiler.</li><br />
   <li><strong>MakeRelease.bat</strong> - removes project cache files,  sets project version number to match the latest SVN revision, compiles the project in Release mode, generates &quot;Build\Changelog.txt&quot;, compiles &quot;Build\Refmanual.chm&quot;, creates an installer and places it in the &quot;Release&quot; folder.<br />Requires Subversion command-line client, Visual C#  Express Edition / Visual Studio, Microsoft HTML Help compiler and Inno Setup 5.</li><br />
-  <li><strong>MakeSVNRelease.bat</strong> - removes project cache files,  sets project version number to match the latest SVN revision, compiles the project in Release mode, generates &quot;Build\Changelog.txt&quot;, compiles &quot;Build\Refmanual.chm&quot;, packs the build into 7-zip archive and places it in the &quot;SVN_Build&quot; folder.<br />Requires Subversion command-line client, Visual C#  Express Edition / Visual Studio, Microsoft HTML Help compiler and 7-zip archiver.</li>
+  <li><strong>MakeSVNRelease.bat</strong> - removes project cache files,  sets project version number to match the latest SVN revision, compiles the project in Release mode, generates &quot;Build\Changelog.txt&quot;, compiles &quot;Build\Refmanual.chm&quot;, packs the build into 7-zip archive and places it in the &quot;SVN_Build&quot; folder.<br />Requires Subversion command-line client, Visual C# Express Edition / Visual Studio, Microsoft HTML Help compiler and 7-zip archiver.</li>
 </ul>
 </div>
 </body>
