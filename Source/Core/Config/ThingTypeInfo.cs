@@ -429,7 +429,7 @@ namespace CodeImp.DoomBuilder.Config
 			//mxd. Marked as obsolete?
 			if(actor.HasPropertyWithValue("$obsolete"))
 			{
-				obsoletemessage = ZDTextParser.StripQuotes(actor.GetPropertyValueString("$obsolete", 0));
+				obsoletemessage = actor.GetPropertyValueString("$obsolete", 0, true);
 				obsolete = true;
 				color = 4; //red
 			}
@@ -462,7 +462,7 @@ namespace CodeImp.DoomBuilder.Config
 
 			//mxd. Renderstyle
 			if(actor.HasPropertyWithValue("renderstyle") && !actor.HasProperty("$ignorerenderstyle"))
-				renderstyle = actor.GetPropertyValueString("renderstyle", 0).ToLower();
+				renderstyle = actor.GetPropertyValueString("renderstyle", 0, true).ToLower();
 
 			//mxd. Alpha
 			if(actor.HasPropertyWithValue("alpha"))

@@ -10,8 +10,9 @@ namespace CodeImp.DoomBuilder
 {
 	internal static class UpdateChecker
 	{
+		private const string NO_UPDATE_REQUIRED = "Your version is up to date.";
+		
 		private static BackgroundWorker worker;
-		private static string errordesc;
 		private static bool verbose;
 
 		internal static void PerformCheck(bool verbosemode)
@@ -19,15 +20,7 @@ namespace CodeImp.DoomBuilder
 			// Update check already runing?
 			if(worker != null && worker.IsBusy)
 			{
-				if(verbosemode)
-				{
-					General.ShowWarningMessage("Update check is already running!", MessageBoxButtons.OK);
-				}
-				else
-				{
-					General.ErrorLogger.Add(ErrorType.Warning, "Update check is already running!");
-					General.MainWindow.ShowErrors();
-				}
+				if(verbosemode) General.ShowWarningMessage("Update check is already running!", MessageBoxButtons.OK);
 				return;
 			}
 
@@ -45,7 +38,7 @@ namespace CodeImp.DoomBuilder
 			string updaterpath = Path.Combine(General.AppPath, "Updater.exe");
 			if(!File.Exists(updaterpath))
 			{
-				errordesc = "Update check failed: \"" + updaterpath + "\" does not exist!";
+				e.Result = "Update check failed: \"" + updaterpath + "\" does not exist!";
 				e.Cancel = true;
 				return;
 			} 
@@ -53,7 +46,7 @@ namespace CodeImp.DoomBuilder
 			string inipath = Path.Combine(General.AppPath, "Updater.ini");
 			if(!File.Exists(inipath))
 			{
-				errordesc = "Update check failed: \"" + inipath + "\" does not exist!";
+				e.Result = "Update check failed: \"" + inipath + "\" does not exist!";
 				e.Cancel = true;
 				return;
 			}
@@ -61,7 +54,7 @@ namespace CodeImp.DoomBuilder
 			string url = GetDownloadUrl(inipath);
 			if(string.IsNullOrEmpty(url))
 			{
-				errordesc = "Update check failed: failed to get update url from Updater.ini!";
+				e.Result = "Update check failed: failed to get update url from Updater.ini!";
 				e.Cancel = true;
 				return;
 			}
@@ -77,7 +70,7 @@ namespace CodeImp.DoomBuilder
 			{
 				if(stream == null)
 				{
-					errordesc = "Update check failed: failed to retrieve remote revision info.";
+					e.Result = "Update check failed: failed to retrieve remote revision info.";
 					e.Cancel = true;
 					return;
 				}
@@ -90,7 +83,7 @@ namespace CodeImp.DoomBuilder
 
 				if(!int.TryParse(s, out remoterev))
 				{
-					errordesc = "Update check failed: failed to retrieve remote revision number.";
+					e.Result = "Update check failed: failed to retrieve remote revision number.";
 					e.Cancel = true;
 					return;
 				}
@@ -103,7 +96,7 @@ namespace CodeImp.DoomBuilder
 
 				if(string.IsNullOrEmpty(changelog))
 				{
-					errordesc = "Update check failed: failed to retrieve changelog.";
+					e.Result = "Update check failed: failed to retrieve changelog.";
 					e.Cancel = true;
 					return;
 				}
@@ -113,24 +106,20 @@ namespace CodeImp.DoomBuilder
 			}
 			else if(verbose)
 			{
-				errordesc = "Your version is up to date";
+				e.Result = NO_UPDATE_REQUIRED;
 			}
 		}
 
-		private static void RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs runWorkerCompletedEventArgs)
+		private static void RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
 		{
 			worker = null;
+			string errordesc = (e.Result != null ? e.Result.ToString() : string.Empty);
 			if(!string.IsNullOrEmpty(errordesc))
 			{
 				if(verbose)
-				{
 					General.ShowWarningMessage(errordesc, MessageBoxButtons.OK);
-				}
-				else
-				{
-					General.ErrorLogger.Add(ErrorType.Warning, errordesc);
-					General.MainWindow.ShowErrors();
-				}
+				else if(errordesc != NO_UPDATE_REQUIRED)
+					General.ErrorLogger.Add(ErrorType.Error, errordesc);
 			}
 		}
 
@@ -178,47 +167,42 @@ namespace CodeImp.DoomBuilder
 		private static MemoryStream DownloadWebFile(string url)
 		{
 			// Open a data stream from the supplied URL
-			WebRequest webReq = WebRequest.Create(url);
-			WebResponse webResponse;
+			WebRequest request = WebRequest.Create(url);
+			WebResponse response;
 
 			try
 			{
-				webResponse = webReq.GetResponse();
+				response = request.GetResponse();
 			}
 			catch(WebException)
 			{
 				return null;
 			}
 			
-			Stream dataStream = webResponse.GetResponseStream();
+			Stream source = response.GetResponseStream();
+			if(source == null) return null;
 
 			// Download the data in chuncks
-			byte[] dataBuffer = new byte[1024];
+			byte[] buffer = new byte[1024];
 
 			// Download the data
-			MemoryStream memoryStream = new MemoryStream();
+			MemoryStream result = new MemoryStream();
 			while(!General.MainWindow.IsDisposed)
 			{
 				// Let's try and read the data
-				int bytesFromStream = dataStream.Read(dataBuffer, 0, dataBuffer.Length);
-				if(bytesFromStream == 0)
-				{
-					// Download complete
-					break;
-				}
-				else 
-				{
-					// Write the downloaded data
-					memoryStream.Write(dataBuffer, 0, bytesFromStream);
-				}
+				int numbytes = source.Read(buffer, 0, buffer.Length);
+				if(numbytes == 0) break; // Download complete
+
+				// Write the downloaded data
+				result.Write(buffer, 0, numbytes);
 			}
 
 			// Release resources
-			dataStream.Close();
+			source.Close();
 
 			// Rewind and return the stream
-			memoryStream.Position = 0;
-			return memoryStream;
+			result.Position = 0;
+			return result;
 		}
 
 		private static string GetDownloadUrl(string filename)

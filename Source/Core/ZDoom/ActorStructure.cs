@@ -536,12 +536,13 @@ namespace CodeImp.DoomBuilder.ZDoom
 		/// <summary>
 		/// This returns a specific value of a specific property as a string. Returns an empty string when the propery does not have the specified value.
 		/// </summary>
-		public string GetPropertyValueString(string propname, int valueindex)
+		public string GetPropertyValueString(string propname, int valueindex) { return GetPropertyValueString(propname, valueindex, true); } //mxd. Added "stripquotes" parameter
+		public string GetPropertyValueString(string propname, int valueindex, bool stripquotes)
 		{
 			if(props.ContainsKey(propname) && (props[propname].Count > valueindex))
-				return props[propname][valueindex];
+				return (stripquotes ? ZDTextParser.StripQuotes(props[propname][valueindex]) : props[propname][valueindex]);
 			if(!skipsuper && (baseclass != null))
-				return baseclass.GetPropertyValueString(propname, valueindex);
+				return baseclass.GetPropertyValueString(propname, valueindex, stripquotes);
 			return "";
 		}
 		
@@ -550,11 +551,11 @@ namespace CodeImp.DoomBuilder.ZDoom
 		/// </summary>
 		public int GetPropertyValueInt(string propname, int valueindex)
 		{
-			string str = GetPropertyValueString(propname, valueindex);
+			string str = GetPropertyValueString(propname, valueindex, false);
 
 			//mxd. It can be negative...
-			if(str == "-" && props.Count > valueindex + 1) 
-				str += GetPropertyValueString(propname, valueindex + 1);
+			if(str == "-" && props.Count > valueindex + 1)
+				str += GetPropertyValueString(propname, valueindex + 1, false);
 			
 			int intvalue;
 			if(int.TryParse(str, NumberStyles.Integer, CultureInfo.InvariantCulture, out intvalue))
@@ -567,11 +568,11 @@ namespace CodeImp.DoomBuilder.ZDoom
 		/// </summary>
 		public float GetPropertyValueFloat(string propname, int valueindex)
 		{
-			string str = GetPropertyValueString(propname, valueindex);
+			string str = GetPropertyValueString(propname, valueindex, false);
 
 			//mxd. It can be negative...
 			if(str == "-" && props.Count > valueindex + 1)
-				str += GetPropertyValueString(propname, valueindex + 1);
+				str += GetPropertyValueString(propname, valueindex + 1, false);
 
 			float fvalue;
 			if(float.TryParse(str, NumberStyles.Float, CultureInfo.InvariantCulture, out fvalue))
@@ -660,7 +661,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			// Sprite forced?
 			if(HasPropertyWithValue("$sprite"))
 			{
-				string sprite = GetPropertyValueString("$sprite", 0); //mxd
+				string sprite = GetPropertyValueString("$sprite", 0, true); //mxd
 				if((sprite.Length > DataManager.INTERNAL_PREFIX.Length) && 
 					sprite.ToLowerInvariant().StartsWith(DataManager.INTERNAL_PREFIX)) return sprite; //mxd
 				if(General.Map.Data.GetSpriteExists(sprite)) return sprite; //mxd. Added availability check
