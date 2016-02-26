@@ -265,7 +265,8 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// label2
 			// 
-			label2.Location = new System.Drawing.Point(193, 16);
+			label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+			label2.Location = new System.Drawing.Point(196, 16);
 			label2.Name = "label2";
 			label2.Size = new System.Drawing.Size(114, 16);
 			label2.TabIndex = 15;
@@ -283,7 +284,8 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// label4
 			// 
-			label4.Location = new System.Drawing.Point(313, 16);
+			label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+			label4.Location = new System.Drawing.Point(316, 16);
 			label4.Name = "label4";
 			label4.Size = new System.Drawing.Size(114, 16);
 			label4.TabIndex = 14;

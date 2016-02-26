@@ -56,6 +56,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tagSelector = new CodeImp.DoomBuilder.GZBuilder.Controls.TagSelector();
 			this.frontside = new System.Windows.Forms.CheckBox();
 			this.frontgroup = new System.Windows.Forms.GroupBox();
+			this.replaceunusedfronttextures = new System.Windows.Forms.CheckBox();
 			this.frontsector = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.frontlow = new CodeImp.DoomBuilder.Controls.TextureSelectorControl();
 			this.frontmid = new CodeImp.DoomBuilder.Controls.TextureSelectorControl();
@@ -63,6 +64,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.frontTextureOffset = new CodeImp.DoomBuilder.GZBuilder.Controls.PairedIntControl();
 			this.backside = new System.Windows.Forms.CheckBox();
 			this.backgroup = new System.Windows.Forms.GroupBox();
+			this.replaceunusedbacktextures = new System.Windows.Forms.CheckBox();
 			this.backsector = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.backlow = new CodeImp.DoomBuilder.Controls.TextureSelectorControl();
 			this.backmid = new CodeImp.DoomBuilder.Controls.TextureSelectorControl();
@@ -100,6 +102,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// label3
 			// 
+			label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			label3.Location = new System.Drawing.Point(255, 13);
 			label3.Name = "label3";
 			label3.Size = new System.Drawing.Size(83, 16);
@@ -109,6 +112,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// label4
 			// 
+			label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			label4.Location = new System.Drawing.Point(346, 13);
 			label4.Name = "label4";
 			label4.Size = new System.Drawing.Size(83, 16);
@@ -118,6 +122,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// label5
 			// 
+			label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			label5.Location = new System.Drawing.Point(437, 13);
 			label5.Name = "label5";
 			label5.Size = new System.Drawing.Size(83, 16);
@@ -127,6 +132,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// label8
 			// 
+			label8.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			label8.Location = new System.Drawing.Point(437, 13);
 			label8.Name = "label8";
 			label8.Size = new System.Drawing.Size(83, 16);
@@ -136,6 +142,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// label9
 			// 
+			label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			label9.Location = new System.Drawing.Point(346, 13);
 			label9.Name = "label9";
 			label9.Size = new System.Drawing.Size(83, 16);
@@ -145,6 +152,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// label10
 			// 
+			label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			label10.Location = new System.Drawing.Point(255, 13);
 			label10.Name = "label10";
 			label10.Size = new System.Drawing.Size(83, 16);
@@ -357,6 +365,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.frontgroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.frontgroup.Controls.Add(this.replaceunusedfronttextures);
 			this.frontgroup.Controls.Add(this.labelFrontTextureOffset);
 			this.frontgroup.Controls.Add(this.frontsector);
 			this.frontgroup.Controls.Add(label11);
@@ -374,6 +383,16 @@ namespace CodeImp.DoomBuilder.Windows
 			this.frontgroup.TabIndex = 1;
 			this.frontgroup.TabStop = false;
 			this.frontgroup.Text = "     ";
+			// 
+			// replaceunusedfronttextures
+			// 
+			this.replaceunusedfronttextures.AutoSize = true;
+			this.replaceunusedfronttextures.Location = new System.Drawing.Point(90, 121);
+			this.replaceunusedfronttextures.Name = "replaceunusedfronttextures";
+			this.replaceunusedfronttextures.Size = new System.Drawing.Size(144, 17);
+			this.replaceunusedfronttextures.TabIndex = 43;
+			this.replaceunusedfronttextures.Text = "Replace unused textures";
+			this.replaceunusedfronttextures.UseVisualStyleBackColor = true;
 			// 
 			// frontsector
 			// 
@@ -456,6 +475,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.backgroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.backgroup.Controls.Add(this.replaceunusedbacktextures);
 			this.backgroup.Controls.Add(this.labelBackTextureOffset);
 			this.backgroup.Controls.Add(this.backsector);
 			this.backgroup.Controls.Add(label12);
@@ -473,6 +493,16 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backgroup.TabIndex = 1;
 			this.backgroup.TabStop = false;
 			this.backgroup.Text = "     ";
+			// 
+			// replaceunusedbacktextures
+			// 
+			this.replaceunusedbacktextures.AutoSize = true;
+			this.replaceunusedbacktextures.Location = new System.Drawing.Point(90, 121);
+			this.replaceunusedbacktextures.Name = "replaceunusedbacktextures";
+			this.replaceunusedbacktextures.Size = new System.Drawing.Size(144, 17);
+			this.replaceunusedbacktextures.TabIndex = 44;
+			this.replaceunusedbacktextures.Text = "Replace unused textures";
+			this.replaceunusedbacktextures.UseVisualStyleBackColor = true;
 			// 
 			// backsector
 			// 
@@ -585,7 +615,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.flagsgroup.ResumeLayout(false);
 			this.idgroup.ResumeLayout(false);
 			this.frontgroup.ResumeLayout(false);
+			this.frontgroup.PerformLayout();
 			this.backgroup.ResumeLayout(false);
+			this.backgroup.PerformLayout();
 			this.panel.ResumeLayout(false);
 			this.panel.PerformLayout();
 			this.ResumeLayout(false);
@@ -625,5 +657,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.Label labelFrontTextureOffset;
 		private System.Windows.Forms.Label labelBackTextureOffset;
 		private CodeImp.DoomBuilder.Controls.ArgumentsControl argscontrol;
+		private System.Windows.Forms.CheckBox replaceunusedfronttextures;
+		private System.Windows.Forms.CheckBox replaceunusedbacktextures;
 	}
 }
