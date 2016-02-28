@@ -382,6 +382,15 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 					return false;
 				}
 
+				// Range check
+				if((id < General.Map.FormatInterface.MinThingType) || (id > General.Map.FormatInterface.MaxThingType))
+				{
+					// Out of bounds!
+					ReportError("\"" + token + "\" actor's spawn number must be between " 
+						+ General.Map.FormatInterface.MinThingType + " and " + General.Map.FormatInterface.MaxThingType);
+					return false; // Finished with this file
+				}
+
 				// Add to collection
 				spawnnums[id] = token.ToLowerInvariant();
 			}

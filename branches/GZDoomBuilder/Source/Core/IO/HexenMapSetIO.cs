@@ -74,8 +74,8 @@ namespace CodeImp.DoomBuilder.IO
 		public override int MinEffect { get { return ushort.MinValue; } }
 		public override int MaxBrightness { get { return short.MaxValue; } }
 		public override int MinBrightness { get { return short.MinValue; } }
-		public override int MaxThingType { get { return ushort.MaxValue; } }
-		public override int MinThingType { get { return ushort.MinValue; } }
+		public override int MaxThingType { get { return short.MaxValue; } } //mxd. Editor numbers must be in [1 .. 32767] range
+		public override int MinThingType { get { return 1; } } //mxd
 		public override float MaxCoordinate { get { return short.MaxValue; } }
 		public override float MinCoordinate { get { return short.MinValue; } }
 		public override int MaxThingAngle { get { return short.MaxValue; } }

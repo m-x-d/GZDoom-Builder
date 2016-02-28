@@ -126,8 +126,8 @@ namespace CodeImp.DoomBuilder.IO
 		public override int MinEffect { get { return int.MinValue; } }
 		public override int MaxBrightness { get { return int.MaxValue; } }
 		public override int MinBrightness { get { return int.MinValue; } }
-		public override int MaxThingType { get { return int.MaxValue; } }
-		public override int MinThingType { get { return int.MinValue; } }
+		public override int MaxThingType { get { return short.MaxValue; } } //mxd. Editor numbers must be in [1 .. 32767] range
+		public override int MinThingType { get { return 1; } } //mxd
 		public override float MaxCoordinate { get { return short.MaxValue; } } //mxd. UDMF maps are still bounded to -32768 .. 32767 range
 		public override float MinCoordinate { get { return short.MinValue; } } //mxd
 		public override int MaxThingAngle { get { return int.MaxValue; } }
