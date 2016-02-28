@@ -2157,7 +2157,7 @@ namespace CodeImp.DoomBuilder
 							IgnoreErrors = true,
 							OnInclude = delegate(AcsParserSE se, string includefile, AcsParserSE.IncludeType includetype)
 							{
-								TextResourceData includedata = General.Map.Data.LoadFile(includefile);
+								TextResourceData includedata = General.Map.Data.GetTextResourceData(includefile);
 								if(includedata != null)
 								{
 									includedata.Trackable = true;

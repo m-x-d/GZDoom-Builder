@@ -177,7 +177,7 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				OnInclude = delegate(AcsParserSE se, string includefile, AcsParserSE.IncludeType includetype)
 				{
-					TextResourceData data = General.Map.Data.LoadFile(includefile);
+					TextResourceData data = General.Map.Data.GetTextResourceData(includefile);
 					if(data == null)
 					{
 						// Fial

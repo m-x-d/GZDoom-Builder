@@ -2350,7 +2350,7 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		//mxd
-		internal TextResourceData LoadFile(string name) 
+		internal TextResourceData GetTextResourceData(string name) 
 		{
 			// Filesystem path?
 			if(Path.IsPathRooted(name))
