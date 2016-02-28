@@ -160,11 +160,22 @@ namespace CodeImp.DoomBuilder.ZDoom
 							{
 								// This is for editor-only properties such as $sprite and $category
 								props[token] = new List<string> { (parser.SkipWhitespace(false) ? parser.ReadLine() : "") };
-							} 
-							else if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out doomednum)) // Check if numeric
+								continue;
+							}
+
+							if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out doomednum)) // Check if numeric
 							{
 								// Not numeric!
-								parser.ReportError("Expected editor thing number or start of actor scope while parsing \"" + classname + "\"");
+								parser.ReportError("Expected editor number or start of actor scope while parsing \"" + classname + "\"");
+								return;
+							}
+							
+							//mxd. Range check
+							if((doomednum < General.Map.FormatInterface.MinThingType) || (doomednum > General.Map.FormatInterface.MaxThingType))
+							{
+								// Out of bounds!
+								parser.ReportError("\"" + classname + "\" actor's editor number must be between " 
+									+ General.Map.FormatInterface.MinThingType + " and " + General.Map.FormatInterface.MaxThingType);
 								return;
 							}
 							break;
