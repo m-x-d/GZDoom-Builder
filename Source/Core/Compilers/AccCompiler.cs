@@ -78,9 +78,8 @@ namespace CodeImp.DoomBuilder.Compilers
 				foreach(string include in includes)
 				{
 					// Grab the script text from the resources
-					TextResourceData data = General.Map.Data.LoadFile(include);
-
-					if(data.Stream != null)
+					TextResourceData data = General.Map.Data.GetTextResourceData(include);
+					if(data != null && data.Stream != null)
 					{
 						// Pull the pk3 or directory sub folder out if applicable
 						FileInfo fi = new FileInfo(Path.Combine(this.tempdir.FullName, include));
