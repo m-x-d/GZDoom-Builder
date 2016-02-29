@@ -345,7 +345,7 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			// Verify the type
-			if(((thingtype.GetResult(0) < General.Map.FormatInterface.MinThingType) || (thingtype.GetResult(0) > General.Map.FormatInterface.MaxThingType)))
+			if(!string.IsNullOrEmpty(thingtype.TypeStringValue) && ((thingtype.GetResult(0) < General.Map.FormatInterface.MinThingType) || (thingtype.GetResult(0) > General.Map.FormatInterface.MaxThingType)))
 			{
 				General.ShowWarningMessage("Thing type must be between " + General.Map.FormatInterface.MinThingType + " and " + General.Map.FormatInterface.MaxThingType + ".", MessageBoxButtons.OK);
 				return;
@@ -543,11 +543,13 @@ namespace CodeImp.DoomBuilder.Windows
 			action_ValueChanges(this, EventArgs.Empty);
 
 			//mxd. Update things
-			if(preventchanges) return;
-			MakeUndo(); //mxd
-
-			if(((thingtype.GetResult(0) < General.Map.FormatInterface.MinThingType) || (thingtype.GetResult(0) > General.Map.FormatInterface.MaxThingType)))
+			if(preventchanges ||
+					(!string.IsNullOrEmpty(thingtype.TypeStringValue) &&
+					thingtype.GetResult(0) < General.Map.FormatInterface.MinThingType
+					|| thingtype.GetResult(0) > General.Map.FormatInterface.MaxThingType))
 				return;
+
+			MakeUndo(); //mxd
 
 			foreach(Thing t in things) 
 			{
