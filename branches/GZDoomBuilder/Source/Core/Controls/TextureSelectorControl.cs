@@ -74,10 +74,12 @@ namespace CodeImp.DoomBuilder.Controls
 
 				if(string.IsNullOrEmpty(texture.FilePathName) || texture is UnknownImage) DisplayImageSize(0, 0); //mxd
 				else DisplayImageSize(texture.ScaledWidth, texture.ScaledHeight); //mxd
-				if(usepreviews ? !texture.IsPreviewLoaded : !texture.IsImageLoaded) timer.Start(); //mxd
-				
+
+				if(usepreviews && !texture.IsPreviewLoaded) timer.Start(); //mxd
+				else if(!texture.IsImageLoaded) texture.LoadImage(); //mxd. In some cases the image may never me loaded by the DataManager
+
 				// Set the image
-				return (usepreviews ? texture.GetPreview() : texture.GetBitmap());
+				return new Bitmap((usepreviews ? texture.GetPreview() : texture.GetBitmap()));
 			}
 		}
 
