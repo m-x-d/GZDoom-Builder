@@ -1015,6 +1015,17 @@ namespace CodeImp.DoomBuilder.Controls
 				return false;
 			}
 
+			// Don't show Auto-completion list when editing comment, include or string
+			switch(GetScriptStyle(scriptedit.GetStyleAt(currentpos)))
+			{
+				case ScriptStyleType.Comment:
+				case ScriptStyleType.String:
+				case ScriptStyleType.Include:
+					// Hide the list
+					scriptedit.AutoCCancel();
+					return false;
+			}
+
 			// Filter the list
 			List<string> filtered = new List<string>();
 			foreach(string s in autocompletelist)

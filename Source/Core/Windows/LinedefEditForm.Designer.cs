@@ -393,6 +393,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.replaceunusedfronttextures.TabIndex = 43;
 			this.replaceunusedfronttextures.Text = "Replace unused textures";
 			this.replaceunusedfronttextures.UseVisualStyleBackColor = true;
+			this.replaceunusedfronttextures.CheckedChanged += new System.EventHandler(this.replaceunusedfronttextures_CheckedChanged);
 			// 
 			// frontsector
 			// 
@@ -503,6 +504,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.replaceunusedbacktextures.TabIndex = 44;
 			this.replaceunusedbacktextures.Text = "Replace unused textures";
 			this.replaceunusedbacktextures.UseVisualStyleBackColor = true;
+			this.replaceunusedbacktextures.CheckedChanged += new System.EventHandler(this.replaceunusedbacktextures_CheckedChanged);
 			// 
 			// backsector
 			// 

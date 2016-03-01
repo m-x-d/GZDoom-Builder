@@ -150,8 +150,10 @@ namespace CodeImp.DoomBuilder.Windows
 			cancel.Top = apply.Top;
 
 			//mxd. Apply texture replacement settings
+			preventchanges = true;
 			replaceunusedfronttextures.Checked = General.Settings.ReadSetting("editlinedefswindow.replaceunusedfronttextures", true);
 			replaceunusedbacktextures.Checked = General.Settings.ReadSetting("editlinedefswindow.replaceunusedbacktextures", true);
+			preventchanges = false;
 
 			// Update window height
 			this.Height = apply.Bottom + apply.Margin.Bottom * 2 + (this.Height - this.ClientRectangle.Height) + 1;
@@ -282,22 +284,22 @@ namespace CodeImp.DoomBuilder.Windows
 				if(l.Front != null)
 				{
 					//mxd
-					if(fronthigh.TextureName != l.Front.HighTexture) 
+					if(!string.IsNullOrEmpty(fronthigh.TextureName) && fronthigh.TextureName != l.Front.HighTexture) 
 					{
 						if(!fronthigh.Required && l.Front.HighRequired()) fronthigh.Required = true;
-						fronthigh.MultipleTextures = true; //mxd
+						fronthigh.MultipleTextures = true;
 						fronthigh.TextureName = string.Empty;
 					}
-					if(frontmid.TextureName != l.Front.MiddleTexture) 
+					if(!string.IsNullOrEmpty(frontmid.TextureName) && frontmid.TextureName != l.Front.MiddleTexture) 
 					{
 						if(!frontmid.Required && l.Front.MiddleRequired()) frontmid.Required = true;
-						frontmid.MultipleTextures = true; //mxd
+						frontmid.MultipleTextures = true;
 						frontmid.TextureName = string.Empty;
 					}
-					if(frontlow.TextureName != l.Front.LowTexture) 
+					if(!string.IsNullOrEmpty(frontlow.TextureName) && frontlow.TextureName != l.Front.LowTexture) 
 					{
 						if(!frontlow.Required && l.Front.LowRequired()) frontlow.Required = true;
-						frontlow.MultipleTextures = true; //mxd
+						frontlow.MultipleTextures = true;
 						frontlow.TextureName = string.Empty;
 					}
 					if(frontsector.Text != l.Front.Sector.Index.ToString()) frontsector.Text = string.Empty;
@@ -309,22 +311,22 @@ namespace CodeImp.DoomBuilder.Windows
 				if(l.Back != null)
 				{
 					//mxd
-					if(backhigh.TextureName != l.Back.HighTexture) 
+					if(!string.IsNullOrEmpty(backhigh.TextureName) && backhigh.TextureName != l.Back.HighTexture) 
 					{
 						if(!backhigh.Required && l.Back.HighRequired()) backhigh.Required = true;
-						backhigh.MultipleTextures = true; //mxd
+						backhigh.MultipleTextures = true;
 						backhigh.TextureName = string.Empty;
 					}
-					if(backmid.TextureName != l.Back.MiddleTexture) 
+					if(!string.IsNullOrEmpty(backmid.TextureName) && backmid.TextureName != l.Back.MiddleTexture) 
 					{
 						if(!backmid.Required && l.Back.MiddleRequired()) backmid.Required = true;
-						backmid.MultipleTextures = true; //mxd
+						backmid.MultipleTextures = true;
 						backmid.TextureName = string.Empty;
 					}
-					if(backlow.TextureName != l.Back.LowTexture) 
+					if(!string.IsNullOrEmpty(backlow.TextureName) && backlow.TextureName != l.Back.LowTexture) 
 					{
 						if(!backlow.Required && l.Back.LowRequired()) backlow.Required = true;
-						backlow.MultipleTextures = true; //mxd
+						backlow.MultipleTextures = true;
 						backlow.TextureName = string.Empty;
 					}
 					if(backsector.Text != l.Back.Sector.Index.ToString()) backsector.Text = string.Empty;
@@ -794,6 +796,86 @@ namespace CodeImp.DoomBuilder.Windows
 						l.Back.SetTextureLow(backlow.GetResult(l.Back.LowTexture));
 					i++;
 				}
+			}
+
+			// Update the used textures
+			General.Map.Data.UpdateUsedTextures();
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		private void replaceunusedfronttextures_CheckedChanged(object sender, EventArgs e)
+		{
+			//Re-apply front textures
+			if(preventchanges) return;
+			MakeUndo();
+
+			// Set values
+			int i = 0;
+			foreach(Linedef l in lines)
+			{
+				if(l.Front == null) continue;
+
+				// Update top texture
+				if(!replaceunusedfronttextures.Checked || string.IsNullOrEmpty(fronthigh.TextureName))
+					l.Front.SetTextureHigh(linedefprops[i].Front != null ? linedefprops[i].Front.HighTexture : "-");
+				else
+					l.Front.SetTextureHigh(fronthigh.GetResult(l.Front.HighTexture));
+
+				// Update middle texture
+				if(!replaceunusedfronttextures.Checked || string.IsNullOrEmpty(frontmid.TextureName))
+					l.Front.SetTextureMid(linedefprops[i].Front != null ? linedefprops[i].Front.MiddleTexture : "-");
+				else
+					l.Front.SetTextureMid(frontmid.GetResult(l.Front.MiddleTexture));
+
+				// Update bottom texture
+				if(!replaceunusedfronttextures.Checked || string.IsNullOrEmpty(frontlow.TextureName))
+					l.Front.SetTextureLow(linedefprops[i].Front != null ? linedefprops[i].Front.LowTexture : "-");
+				else
+					l.Front.SetTextureLow(frontlow.GetResult(l.Front.LowTexture));
+
+				i++;
+			}
+
+			// Update the used textures
+			General.Map.Data.UpdateUsedTextures();
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		private void replaceunusedbacktextures_CheckedChanged(object sender, EventArgs e)
+		{
+			//Re-apply back textures
+			if(preventchanges) return;
+			MakeUndo();
+
+			// Set values
+			int i = 0;
+			foreach(Linedef l in lines)
+			{
+				if(l.Back == null) continue;
+
+				// Update top texture
+				if(!replaceunusedbacktextures.Checked || string.IsNullOrEmpty(backhigh.TextureName))
+					l.Back.SetTextureHigh(linedefprops[i].Back != null ? linedefprops[i].Back.HighTexture : "-");
+				else
+					l.Back.SetTextureHigh(backhigh.GetResult(l.Back.HighTexture));
+
+				// Update middle texture
+				if(!replaceunusedbacktextures.Checked || string.IsNullOrEmpty(backmid.TextureName))
+					l.Back.SetTextureMid(linedefprops[i].Back != null ? linedefprops[i].Back.MiddleTexture : "-");
+				else
+					l.Back.SetTextureMid(backmid.GetResult(l.Back.MiddleTexture));
+
+				// Update bottom texture
+				if(!replaceunusedbacktextures.Checked || string.IsNullOrEmpty(backlow.TextureName))
+					l.Back.SetTextureLow(linedefprops[i].Back != null ? linedefprops[i].Back.LowTexture : "-");
+				else
+					l.Back.SetTextureLow(backlow.GetResult(l.Back.LowTexture));
+
+				i++;
 			}
 
 			// Update the used textures
