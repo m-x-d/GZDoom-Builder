@@ -289,13 +289,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 						UniversalType type = UniversalType.EnumOption; // There is no Unknown type, so let's use something impossiburu...
 						switch(typestr)
 						{
-							case "INT":
-								type = UniversalType.Integer;
-								break;
-
-							default:
-								parser.LogWarning("Unknown user variable type");
-								break;
+							case "INT": type = UniversalType.Integer; break;
+							case "FLOAT": type = UniversalType.Float; break;
+							default: parser.LogWarning("Unknown user variable type"); break;
 						}
 
 						// Name
