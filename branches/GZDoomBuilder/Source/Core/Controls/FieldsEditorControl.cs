@@ -316,7 +316,7 @@ namespace CodeImp.DoomBuilder.Controls
 					FieldsEditorRow frow = row as FieldsEditorRow;
 					
 					// Don't undefine user var rows defined by other actor types
-					if(frow.RowType != FieldsEditorRowType.USERVAR || !vars.ContainsKey(frow.Name)) continue;
+					if(frow.RowType == FieldsEditorRowType.USERVAR || vars.ContainsKey(frow.Name)) continue;
 
 					// Is this row defined previously?
 					if(frow.IsDefined)
@@ -330,6 +330,9 @@ namespace CodeImp.DoomBuilder.Controls
 					}
 				}
 			}
+
+			// Sort fields
+			Sort();
 		}
 		
 		// This applies the current fields to a UniFields object
