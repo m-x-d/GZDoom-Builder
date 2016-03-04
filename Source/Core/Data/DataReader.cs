@@ -179,6 +179,12 @@ namespace CodeImp.DoomBuilder.Data
 
 		// When implemented, this loads the textures
 		public abstract IEnumerable<ImageData> LoadTextures(PatchNames pnames, Dictionary<string, TexturesParser> cachedparsers);
+
+		//mxd. When implemented, this returns the HiRes texture lump
+		public abstract Stream GetHiResTextureData(string pname);
+
+		//mxd. When implemented, this loads the HiRes textures
+		public abstract IEnumerable<HiResImage> LoadHiResTextures();
 		
 		#endregion
 

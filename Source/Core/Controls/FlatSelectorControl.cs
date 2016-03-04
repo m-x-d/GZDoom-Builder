@@ -67,7 +67,8 @@ namespace CodeImp.DoomBuilder.Controls
 				if(usepreviews ? !texture.IsPreviewLoaded : !texture.IsImageLoaded) timer.Start(); //mxd
 				
 				// Set the image
-				return new Bitmap(usepreviews ? texture.GetPreview() : texture.GetBitmap());
+				// mxd. GetPreview() returns a copy of preview, GetBitmap() returns actual bitmap
+				return (usepreviews ? texture.GetPreview() : new Bitmap(texture.GetBitmap()));
 			}
 		}
 

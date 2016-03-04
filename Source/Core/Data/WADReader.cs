@@ -58,6 +58,7 @@ namespace CodeImp.DoomBuilder.Data
 		private readonly List<LumpRange> patchranges;
 		private readonly List<LumpRange> spriteranges;
 		private readonly List<LumpRange> textureranges;
+		private readonly List<LumpRange> hiresranges; //mxd
 		private readonly List<LumpRange> colormapranges;
 		private readonly List<LumpRange> voxelranges; //mxd
 		
@@ -88,6 +89,7 @@ namespace CodeImp.DoomBuilder.Data
 			spriteranges = new List<LumpRange>();
 			flatranges = new List<LumpRange>();
 			textureranges = new List<LumpRange>();
+			hiresranges = new List<LumpRange>(); //mxd
 			colormapranges = new List<LumpRange>();
 			voxelranges = new List<LumpRange>(); //mxd
 			
@@ -96,6 +98,7 @@ namespace CodeImp.DoomBuilder.Data
 			FindRanges(spriteranges, General.Map.Config.SpriteRanges, "sprites", "Sprite");
 			FindRanges(flatranges, General.Map.Config.FlatRanges, "flats", "Flat");
 			FindRanges(textureranges, General.Map.Config.TextureRanges, "textures", "Texture");
+			FindRanges(hiresranges, General.Map.Config.HiResRanges, "hires", "HiRes texture");
 			FindRanges(colormapranges, General.Map.Config.ColormapRanges, "colormaps", "Colormap");
 			FindRanges(voxelranges, General.Map.Config.VoxelRanges, "voxels", "Voxel");
 
@@ -403,7 +406,7 @@ namespace CodeImp.DoomBuilder.Data
 				else
 				{
 					MemoryStream filedata = new MemoryStream(file.Lumps[lumpindex].Stream.ReadAllBytes());
-					cachedparsers.Add(fullpath, LoadHighresTextures(new TextResourceData(this, filedata, "TEXTURES", lumpindex, true), ref images)); //mxd
+					cachedparsers.Add(fullpath, LoadTEXTURESTextures(new TextResourceData(this, filedata, "TEXTURES", lumpindex, true), ref images)); //mxd
 					filedata.Dispose();
 				}
 
@@ -418,8 +421,36 @@ namespace CodeImp.DoomBuilder.Data
 			return images;
 		}
 
+		//mxd. This loads the HiRes textures
+		public override IEnumerable<HiResImage> LoadHiResTextures()
+		{
+			List<HiResImage> images = new List<HiResImage>();
+			
+			// Read ranges from configuration
+			foreach(LumpRange range in hiresranges)
+			{
+				// Go for all lumps between start and end exclusive
+				for(int i = range.start + 1; i < range.end; i++)
+				{
+					// Lump not zero length?
+					if(file.Lumps[i].Length > 0)
+					{
+						// Add image to collection
+						images.Add(new HiResImage(file.Lumps[i].Name));
+					}
+					else
+					{
+						// Can't load image without size
+						General.ErrorLogger.Add(ErrorType.Error, "Can't load HiRes texture \"" + file.Lumps[i].Name + "\" because it doesn't contain any data.");
+					}
+				}
+			}
+
+			return images;
+		}
+
 		// This loads the texture definitions from a TEXTURES lump
-		public static TexturesParser LoadHighresTextures(TextResourceData data, ref List<ImageData> images)
+		public static TexturesParser LoadTEXTURESTextures(TextResourceData data, ref List<ImageData> images)
 		{
 			// Parse the data
 			TexturesParser parser = new TexturesParser();
@@ -430,8 +461,7 @@ namespace CodeImp.DoomBuilder.Data
 			foreach(TextureStructure t in parser.Textures)
 			{
 				// Add the texture
-				ImageData img = t.MakeImage();
-				images.Add(img);
+				images.Add(t.MakeImage());
 			}
 
 			//mxd. Add to text resources collection
@@ -609,6 +639,22 @@ namespace CodeImp.DoomBuilder.Data
 			return null;
 		}
 
+		//mxd. This finds and returns a HiRes texture stream
+		public override Stream GetHiResTextureData(string name)
+		{
+			// Error when suspended
+			if(issuspended) throw new Exception("Data reader is suspended");
+
+			// Find the lump in ranges
+			foreach(LumpRange range in hiresranges)
+			{
+				Lump lump = file.FindLump(name, range.start, range.end);
+				if(lump != null) return lump.Stream;
+			}
+
+			return null;
+		}
+
 		#endregion
 		
 		#region ================== Flats
@@ -653,7 +699,7 @@ namespace CodeImp.DoomBuilder.Data
 				else
 				{
 					MemoryStream filedata = new MemoryStream(file.Lumps[lumpindex].Stream.ReadAllBytes());
-					cachedparsers.Add(fullpath, LoadHighresFlats(new TextResourceData(this, filedata, "TEXTURES", lumpindex, true), ref images)); //mxd
+					cachedparsers.Add(fullpath, LoadTEXTURESFlats(new TextResourceData(this, filedata, "TEXTURES", lumpindex, true), ref images)); //mxd
 					filedata.Dispose();
 				}
 
@@ -669,19 +715,18 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		// This loads the flat definitions from a TEXTURES lump
-		public static TexturesParser LoadHighresFlats(TextResourceData data, ref List<ImageData> images)
+		public static TexturesParser LoadTEXTURESFlats(TextResourceData data, ref List<ImageData> images)
 		{
 			// Parse the data
 			TexturesParser parser = new TexturesParser();
 			parser.Parse(data, false);
 			if(parser.HasError) parser.LogError(); //mxd
 
-			// Make the textures
+			// Make the flat
 			foreach(TextureStructure t in parser.Flats)
 			{
-				// Add the texture
-				ImageData img = t.MakeImage();
-				images.Add(img);
+				// Add the flat
+				images.Add(t.MakeImage());
 			}
 
 			//mxd. Add to text resources collection
@@ -738,7 +783,7 @@ namespace CodeImp.DoomBuilder.Data
 				else
 				{
 					MemoryStream filedata = new MemoryStream(file.Lumps[lumpindex].Stream.ReadAllBytes());
-					cachedparsers.Add(fullpath, LoadHighresSprites(new TextResourceData(this, filedata, "TEXTURES", lumpindex, true), ref images)); //mxd
+					cachedparsers.Add(fullpath, LoadTEXTURESSprites(new TextResourceData(this, filedata, "TEXTURES", lumpindex, true), ref images)); //mxd
 					filedata.Dispose();
 				}
 
@@ -751,19 +796,18 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		// This loads the sprites definitions from a TEXTURES lump
-		public static TexturesParser LoadHighresSprites(TextResourceData data, ref List<ImageData> images)
+		public static TexturesParser LoadTEXTURESSprites(TextResourceData data, ref List<ImageData> images)
 		{
 			// Parse the data
 			TexturesParser parser = new TexturesParser();
 			parser.Parse(data, false);
 			if(parser.HasError) parser.LogError(); //mxd
 			
-			// Make the textures
+			// Make the sprites
 			foreach(TextureStructure t in parser.Sprites)
 			{
 				// Add the sprite
-				ImageData img = t.MakeImage();
-				images.Add(img);
+				images.Add(t.MakeImage());
 			}
 
 			//mxd. Add to text resources collection

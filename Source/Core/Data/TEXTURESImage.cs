@@ -29,7 +29,7 @@ using CodeImp.DoomBuilder.Rendering;
 
 namespace CodeImp.DoomBuilder.Data
 {
-	internal sealed unsafe class HighResImage : ImageData
+	internal sealed unsafe class TEXTURESImage : ImageData
 	{
 		#region ================== Variables
 
@@ -40,7 +40,7 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public HighResImage(string name, string virtualpath, int width, int height, float scalex, float scaley, bool worldpanning, bool isflat)
+		public TEXTURESImage(string name, string virtualpath, int width, int height, float scalex, float scaley, bool worldpanning, bool isflat)
 		{
 			// Initialize
 			this.width = width;
@@ -52,7 +52,7 @@ namespace CodeImp.DoomBuilder.Data
 
 			//mxd
 			SetName(name);
-			this.virtualname = "[TEXTURES]" + Path.AltDirectorySeparatorChar + (!string.IsNullOrEmpty(virtualpath) ? virtualpath + Path.AltDirectorySeparatorChar : "") + this.name;
+			this.virtualname = (!string.IsNullOrEmpty(virtualpath) ? virtualpath : "[TEXTURES]") + Path.AltDirectorySeparatorChar + this.name;
 			this.level = virtualname.Split(new[] { Path.AltDirectorySeparatorChar }).Length - 1;
 			this.isFlat = isflat;
 			

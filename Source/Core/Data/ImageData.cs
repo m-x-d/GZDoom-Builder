@@ -113,13 +113,13 @@ namespace CodeImp.DoomBuilder.Data
 		public bool IsReferenced { get { return (references > 0) || usedinmap; } }
 		public bool UsedInMap { get { return usedinmap; } }
 		public int MipMapLevels { get { return mipmaplevels; } set { mipmaplevels = value; } }
-		public int Width { get { return width; } }
-		public int Height { get { return height; } }
+		public virtual int Width { get { return width; } }
+		public virtual int Height { get { return height; } }
 		internal int PreviewIndex { get { return previewindex; } set { previewindex = value; } }
 		//mxd. Scaled texture size is integer in ZDoom.
-		public float ScaledWidth { get { return (float)Math.Round(width * scale.x); } }
-		public float ScaledHeight { get { return (float)Math.Round(height * scale.y); } }
-		public Vector2D Scale { get { return scale; } }
+		public virtual float ScaledWidth { get { return (float)Math.Round(width * scale.x); } }
+		public virtual float ScaledHeight { get { return (float)Math.Round(height * scale.y); } }
+		public virtual Vector2D Scale { get { return scale; } }
 		public bool WorldPanning { get { return worldpanning; } }
 		public int Level { get { return level; } } //mxd
 

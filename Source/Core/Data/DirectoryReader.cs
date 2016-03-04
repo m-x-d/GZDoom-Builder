@@ -177,6 +177,37 @@ namespace CodeImp.DoomBuilder.Data
 			return null;
 		}
 
+		//mxd. This finds and returns a HiRes textue stream
+		public override Stream GetHiResTextureData(string name)
+		{
+			// Error when suspended
+			if(issuspended) throw new Exception("Data reader is suspended");
+
+			// Find in any of the wad files
+			// Note the backward order, because the last wad's images have priority
+			for(int i = wads.Count - 1; i >= 0; i--)
+			{
+				Stream data = wads[i].GetHiResTextureData(name);
+				if(data != null) return data;
+			}
+
+			try
+			{
+				// Find in hires directory
+				string path = Path.Combine(HIRES_DIR, Path.GetDirectoryName(name));
+				string filename = FindFirstFile(path, Path.GetFileName(name), false);
+				if(!string.IsNullOrEmpty(filename) && FileExists(filename))
+					return LoadFile(filename);
+			}
+			catch(Exception e)
+			{
+				General.ErrorLogger.Add(ErrorType.Error, e.GetType().Name + " while loading HiRes texture \"" + name + "\" from directory: " + e.Message);
+			}
+
+			// Nothing found
+			return null;
+		}
+
 		// This finds and returns a colormap stream
 		public override Stream GetColormapData(string pname)
 		{

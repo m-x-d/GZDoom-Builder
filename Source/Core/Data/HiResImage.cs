@@ -1,0 +1,158 @@
+﻿#region ================== Namespaces
+
+using System;
+using System.Drawing;
+using System.IO;
+using CodeImp.DoomBuilder.Geometry;
+using CodeImp.DoomBuilder.IO;
+
+#endregion
+
+namespace CodeImp.DoomBuilder.Data
+{
+	internal class HiResImage : ImageData
+	{
+		#region ================== Variables
+
+		private Vector2D sourcescale;
+		private Size sourcesize;
+		private bool overridesettingsapplied;
+
+		#endregion
+
+		#region ================== Properties
+
+		public override int Width { get { return sourcesize.Width; } }
+		public override int Height { get { return sourcesize.Height; } }
+		public override float ScaledWidth { get { return (float)Math.Round(sourcesize.Width * sourcescale.x); } }
+		public override float ScaledHeight { get { return (float)Math.Round(sourcesize.Height * sourcescale.y); } }
+		public override Vector2D Scale { get { return sourcescale; } }
+
+		#endregion
+
+		#region ================== Constructor / Disposer
+
+		public HiResImage(string name)
+		{
+			// Initialize
+			this.scale.x = General.Map.Config.DefaultTextureScale;
+			this.scale.y = General.Map.Config.DefaultTextureScale;
+			this.sourcescale = scale;
+			this.sourcesize = Size.Empty;
+
+			if(name.Length > DataManager.CLASIC_IMAGE_NAME_LENGTH)
+				name = name.Substring(0, DataManager.CLASIC_IMAGE_NAME_LENGTH);
+
+			SetName(name.ToUpperInvariant());
+			
+			// We have no destructor
+			GC.SuppressFinalize(this);
+		}
+
+		// Copy constructor
+		public HiResImage(HiResImage other)
+		{
+			// Initialize
+			this.scale = other.scale;
+			this.sourcescale = other.sourcescale;
+			this.sourcesize = other.sourcesize;
+
+			SetName(other.name);
+
+			// We have no destructor
+			GC.SuppressFinalize(this);
+		}
+
+		#endregion
+
+		#region ================== Methods
+
+		internal void ApplySettings(ImageData overridden)
+		{
+			virtualname = overridden.VirtualName;
+			isFlat = overridden.IsFlat;
+			overridesettingsapplied = true;
+
+			if(!overridden.IsImageLoaded) overridden.LoadImage();
+			if(overridden.ImageState == ImageLoadState.Ready)
+			{
+				// Store source properteis
+				sourcesize = new Size(overridden.Width, overridden.Height);
+				sourcescale = overridden.Scale;
+			}
+		}
+
+		// This loads the image
+		protected override void LocalLoadImage()
+		{
+			// Checks
+			if(this.IsImageLoaded) return;
+
+			lock(this)
+			{ 
+				// Get the patch data stream
+				if(bitmap != null) bitmap.Dispose(); bitmap = null;
+				Stream data = General.Map.Data.GetHiResTextureData(shortname);
+				if(data != null)
+				{
+					// Copy patch data to memory
+					data.Seek(0, SeekOrigin.Begin);
+					byte[] membytes = new byte[(int)data.Length];
+					data.Read(membytes, 0, (int)data.Length);
+					MemoryStream mem = new MemoryStream(membytes);
+					mem.Seek(0, SeekOrigin.Begin);
+
+					// Get a reader for the data
+					IImageReader reader = ImageDataFormat.GetImageReader(mem, (isFlat ? ImageDataFormat.DOOMFLAT : ImageDataFormat.DOOMPICTURE), General.Map.Data.Palette);
+					if(!(reader is UnknownImageReader))
+					{
+						// Load the image
+						mem.Seek(0, SeekOrigin.Begin);
+						try { bitmap = reader.ReadAsBitmap(mem); }
+						catch(InvalidDataException)
+						{
+							// Data cannot be read!
+							bitmap = null;
+						}
+					}
+
+					// Not loaded?
+					if(bitmap == null)
+					{
+						General.ErrorLogger.Add(ErrorType.Error, "Image lump \"" + shortname + "\" data format could not be read, while loading texture \"" + this.Name + "\". Does this lump contain valid picture data at all?");
+						loadfailed = true;
+					}
+					else
+					{
+						// Get width and height from image
+						width = bitmap.Size.Width;
+						height = bitmap.Size.Height;
+
+						// Apply source overrides?
+						if(!sourcesize.IsEmpty)
+						{
+							scale = new Vector2D(ScaledWidth / width, ScaledHeight / height);
+						}
+						else if(overridesettingsapplied)
+						{
+							General.ErrorLogger.Add(ErrorType.Warning, "Unable to get source texture dimensions while loading HiRes texture \"" + this.Name + "\".");
+						}
+					}
+
+					// Done
+					mem.Dispose();
+				}
+				else
+				{
+					General.ErrorLogger.Add(ErrorType.Error, "Image lump \"" + shortname + "\" could not be found, while loading texture \"" + this.Name + "\". Did you forget to include required resources?");
+					loadfailed = true;
+				}
+				
+				// Pass on to base
+				base.LocalLoadImage();
+			}
+		}
+		
+		#endregion
+	}
+}

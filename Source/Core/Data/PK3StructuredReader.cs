@@ -217,7 +217,7 @@ namespace CodeImp.DoomBuilder.Data
 				{
 					MemoryStream filedata = LoadFile(texturesfile);
 					TextResourceData data = new TextResourceData(this, filedata, texturesfile, true); //mxd
-					cachedparsers.Add(fullpath, WADReader.LoadHighresTextures(data, ref imgset)); //mxd
+					cachedparsers.Add(fullpath, WADReader.LoadTEXTURESTextures(data, ref imgset)); //mxd
 					filedata.Dispose();
 				}
 			}
@@ -234,7 +234,31 @@ namespace CodeImp.DoomBuilder.Data
 			
 			return new List<ImageData>(images.Values);
 		}
-		
+
+		//mxd
+		public override IEnumerable<HiResImage> LoadHiResTextures()
+		{
+			// Go for all files
+			string[] files = GetAllFiles(HIRES_DIR, false);
+			List<HiResImage> result = new List<HiResImage>(files.Length);
+			foreach(string f in files)
+			{
+				string name = Path.GetFileNameWithoutExtension(f);
+				if(string.IsNullOrEmpty(name))
+				{
+					// Can't load image without name
+					General.ErrorLogger.Add(ErrorType.Error, "Can't load an unnamed HiRes texture from \"" + HIRES_DIR + "\". Please consider giving names to your resources.");
+				}
+				else
+				{
+					// Add image to list
+					result.Add(new HiResImage(name));
+				}
+			}
+
+			return result;
+		}
+
 		// This returns the patch names from the PNAMES lump
 		// A directory resource does not support this lump, but the wads in the directory may contain this lump
 		public override PatchNames LoadPatchNames()
@@ -314,7 +338,7 @@ namespace CodeImp.DoomBuilder.Data
 				{
 					MemoryStream filedata = LoadFile(texturesfile);
 					TextResourceData data = new TextResourceData(this, filedata, texturesfile, true); //mxd
-					cachedparsers.Add(fullpath, WADReader.LoadHighresFlats(data, ref imgset)); //mxd
+					cachedparsers.Add(fullpath, WADReader.LoadTEXTURESFlats(data, ref imgset)); //mxd
 					filedata.Dispose();
 				}
 			}
@@ -388,7 +412,7 @@ namespace CodeImp.DoomBuilder.Data
 				{
 					MemoryStream filedata = LoadFile(texturesfile);
 					TextResourceData data = new TextResourceData(this, filedata, texturesfile, true); //mxd
-					cachedparsers.Add(fullpath, WADReader.LoadHighresSprites(data, ref imgset)); //mxd
+					cachedparsers.Add(fullpath, WADReader.LoadTEXTURESSprites(data, ref imgset)); //mxd
 					filedata.Dispose();
 				}
 			}
