@@ -28,13 +28,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Constructor
 
-		public DrawEllipseMode() 
-		{
-			undoname = "Ellipse draw";
-			shapename = "ellipse";
-			usefourcardinaldirections = true;
-		}
-
 		#endregion
 
 		#region ================== Settings panel
@@ -42,7 +35,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		override protected void SetupInterface() 
 		{
 			maxsubdivisions = 512;
-			minsubdivisions = 6;
+			minsubdivisions = 4;
 
 			// Load stored settings
 			subdivisions = General.Clamp(General.Settings.ReadPluginSetting("drawellipsemode.subdivisions", 8), minsubdivisions, maxsubdivisions);
@@ -86,21 +79,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		override protected Vector2D[] GetShape(Vector2D pStart, Vector2D pEnd) 
 		{
-			//no shape
+			// No shape
 			if(pEnd.x == pStart.x && pEnd.y == pStart.y) return new Vector2D[0];
 
-			//line
+			// Line
 			if(pEnd.x == pStart.x || pEnd.y == pStart.y) return new[] { pStart, pEnd };
 
-			//got shape
-			if(bevelwidth < 0) 
-			{
+			// Got shape
+			if(subdivisions < 6)
+				currentbevelwidth = 0; // Works strange otherwise
+			else if(bevelwidth < 0) 
 				currentbevelwidth = -Math.Min(Math.Abs(bevelwidth), Math.Min(width, height) / 2) + 1;
-			} 
 			else 
-			{
 				currentbevelwidth = bevelwidth;
-			}
 
 			Vector2D[] shape = new Vector2D[subdivisions + 1];
 
@@ -129,7 +120,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				shape[i] = new Vector2D(px, py);
 				curAngle += angleStep;
 			}
-			//add final point
+
+			// Add final point
 			shape[subdivisions] = shape[0];
 			return shape;
 		}
@@ -142,6 +134,33 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 
 		#region ================== Events
+
+		public override void OnAccept()
+		{
+			switch(points.Count - 1) // Last point matches the first one
+			{
+				case 4:  undoname = "Rhombus draw"; shapename = "rhombus"; break;
+				case 5:  undoname = "Pentagon draw"; shapename = "pentagon"; break;
+				case 6:  undoname = "Hexagon draw"; shapename = "hexagon"; break;
+				case 7:  undoname = "Heptagon draw"; shapename = "heptagon"; break;
+				case 8:  undoname = "Octagon draw"; shapename = "octagon"; break;
+				case 9:  undoname = "Enneagon draw"; shapename = "enneagon"; break;
+				case 10: undoname = "Decagon draw"; shapename = "decagon"; break;
+				case 11: undoname = "Hendecagon draw"; shapename = "hendecagon"; break;
+				case 12: undoname = "Dodecagon draw"; shapename = "dodecagon"; break;
+				case 13: undoname = "Tridecagon draw"; shapename = "tridecagon"; break;
+				case 14: undoname = "Tetradecagon draw"; shapename = "tetradecagon"; break;
+				case 15: undoname = "Pentadecagon draw"; shapename = "pentadecagon"; break;
+				case 16: undoname = "Hexadecagon draw"; shapename = "hexadecagon"; break;
+				case 17: undoname = "Heptadecagon draw"; shapename = "heptadecagon"; break;
+				case 18: undoname = "Octadecagon draw"; shapename = "octadecagon"; break;
+				case 19: undoname = "Enneadecagon draw"; shapename = "enneadecagon"; break;
+				case 20: undoname = "Icosagon draw"; shapename = "icosagon"; break;
+				default: undoname = "Ellipse draw"; shapename = "ellipse"; break;
+			}
+			
+			base.OnAccept();
+		}
 
 		private void OptionsPanelOnValueChanged(object sender, EventArgs eventArgs) 
 		{
@@ -163,7 +182,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			if(maxsubdivisions - subdivisions > 1) 
 			{
-				subdivisions += 2;
+				subdivisions += (subdivisions % 2 != 0 ? 1 : 2);
 				panel.Subdivisions = subdivisions;
 				Update();
 			}
@@ -173,7 +192,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			if(subdivisions - minsubdivisions > 1) 
 			{
-				subdivisions -= 2;
+				subdivisions -= (subdivisions % 2 != 0 ? 1 : 2);
 				panel.Subdivisions = subdivisions;
 				Update();
 			}
