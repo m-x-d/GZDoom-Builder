@@ -27,15 +27,29 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 	public class DrawGridMode : DrawGeometryMode
 	{
+		#region ================== Enums
+
+		public enum GridLockMode
+		{
+			NONE,
+			HORIZONTAL,
+			VERTICAL,
+			BOTH,
+		}
+
+		#endregion
+
 		#region ================== Variables
 
-		private static int horizontalSlices = 3;
-		private static int verticalSlices = 3;
-		private static bool triangulate;
-		private static bool gridlock;
-		private static InterpolationTools.Mode horizontalinterpolation = InterpolationTools.Mode.LINEAR;
-		private static InterpolationTools.Mode verticalinterpolation = InterpolationTools.Mode.LINEAR;
+		// Settings
+		private int horizontalslices;
+		private int verticalslices;
+		private bool triangulate;
+		private GridLockMode gridlockmode;
+		private InterpolationTools.Mode horizontalinterpolation;
+		private InterpolationTools.Mode verticalinterpolation;
 
+		// Drawing
 		private readonly List<DrawnVertex[]> gridpoints;
 		private HintLabel hintlabel;
 		
@@ -46,7 +60,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private Vector2D start;
 		private Vector2D end;
 
-		//interface
+		// Interface
 		private DrawGridOptionsPanel panel;
 		private Docker docker;
 
@@ -144,17 +158,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private void OptionsPanelOnValueChanged(object sender, EventArgs eventArgs) 
 		{
 			triangulate = panel.Triangulate;
-			horizontalSlices = panel.HorizontalSlices + 1;
-			verticalSlices = panel.VerticalSlices + 1;
+			horizontalslices = panel.HorizontalSlices + 1;
+			verticalslices = panel.VerticalSlices + 1;
 			horizontalinterpolation = panel.HorizontalInterpolationMode;
 			verticalinterpolation = panel.VerticalInterpolationMode;
 			Update();
 		}
 
-		private void OptionsPanelOnOnGridLockChanged(object sender, EventArgs eventArgs) 
+		private void OptionsPanelOnGridLockChanged(object sender, EventArgs eventArgs) 
 		{
-			gridlock = panel.LockToGrid;
-			General.Hints.ShowHints(this.GetType(), (gridlock ? "gridlockhelp" : "general"));
+			gridlockmode = panel.GridLockMode;
+			General.Hints.ShowHints(this.GetType(), ((gridlockmode != GridLockMode.NONE) ? "gridlockhelp" : "general"));
 			Update();
 		}
 
@@ -174,8 +188,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// We WANT snaptogrid and DON'T WANT snaptonearest when lock to grid is enabled
 			snaptocardinaldirection = General.Interface.ShiftState && General.Interface.AltState; //mxd
-			snaptogrid = (snaptocardinaldirection || gridlock || (General.Interface.ShiftState ^ General.Interface.SnapToGrid));
-			snaptonearest = (!gridlock && (General.Interface.CtrlState ^ General.Interface.AutoMerge));
+			snaptogrid = (snaptocardinaldirection || gridlockmode != GridLockMode.NONE || (General.Interface.ShiftState ^ General.Interface.SnapToGrid));
+			snaptonearest = (gridlockmode == GridLockMode.NONE && (General.Interface.CtrlState ^ General.Interface.AutoMerge));
 
 			DrawnVertex curp;
 			if(points.Count == 1)
@@ -225,7 +239,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 
 					//render hint
-					if(horizontalSlices > 1 || verticalSlices > 1) 
+					if(horizontalslices > 1 || verticalslices > 1) 
 					{
 						hintlabel.Text = "H: " + (slicesH - 1) + "; V: " + (slicesV - 1);
 						if(width > hintlabel.Text.Length * vsize && height > 16 * vsize) 
@@ -256,10 +270,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				pos.y > General.Map.Config.TopBoundary || pos.y < General.Map.Config.BottomBoundary)
 				return false;
 
-			DrawnVertex newpoint = new DrawnVertex();
-			newpoint.pos = pos;
-			newpoint.stitch = true;
-			newpoint.stitchline = stitchline;
+			DrawnVertex newpoint = new DrawnVertex { pos = pos, stitch = true, stitchline = stitchline };
 			points.Add(newpoint);
 
 			if(points.Count == 1) 
@@ -290,10 +301,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					DrawnVertex[] verts = new DrawnVertex[shape.Length];
 					for(int i = 0; i < shape.Length; i++) 
 					{
-						newpoint = new DrawnVertex();
-						newpoint.pos = shape[i];
-						newpoint.stitch = true;
-						newpoint.stitchline = stitchline;
+						newpoint = new DrawnVertex { pos = shape[i], stitch = true, stitchline = stitchline };
 						verts[i] = newpoint;
 					}
 
@@ -307,22 +315,34 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		private List<Vector2D[]> GetShapes(Vector2D s, Vector2D e) 
 		{
-			//no shape
+			// No shape
 			if(s == e) return new List<Vector2D[]>();
 
-			//setup slices
-			if(gridlock) 
+			// Setup slices
+			switch(gridlockmode)
 			{
-				slicesH = width / General.Map.Grid.GridSize;
-				slicesV = height / General.Map.Grid.GridSize;
-			} 
-			else 
-			{
-				slicesH = horizontalSlices;
-				slicesV = verticalSlices;
+				case GridLockMode.NONE:
+					slicesH = horizontalslices;
+					slicesV = verticalslices;
+					break;
+
+				case GridLockMode.HORIZONTAL:
+					slicesH = width / General.Map.Grid.GridSize;
+					slicesV = verticalslices;
+					break;
+
+				case GridLockMode.VERTICAL:
+					slicesH = horizontalslices;
+					slicesV = height / General.Map.Grid.GridSize;
+					break;
+
+				case GridLockMode.BOTH:
+					slicesH = width / General.Map.Grid.GridSize;
+					slicesV = height / General.Map.Grid.GridSize;
+					break;
 			}
 
-			//create a segmented line
+			// Create a segmented line
 			List<Vector2D[]> shapes;
 			if(width == 0 || height == 0)
 			{
@@ -348,19 +368,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					return shapes;
 				}
 
-				//create a line
+				// Create a line
 				return new List<Vector2D[]> {new[] {s, e}};
 			}
 
-			//create shape
+			// Create shape
 			List<Vector2D> rect = new List<Vector2D> { s, new Vector2D((int)s.x, (int)e.y), e, new Vector2D((int)e.x, (int)s.y), s };
-			if(!gridlock && slicesH == 1 && slicesV == 1) 
+			if(slicesH == 1 && slicesV == 1) 
 			{
 				if(triangulate) rect.AddRange(new[] { s, e });
 				return new List<Vector2D[]> { rect.ToArray() };
 			}
 
-			//create blocks
+			// Create blocks
 			shapes = new List<Vector2D[]> { rect.ToArray() };
 			RectangleF[,] blocks = new RectangleF[slicesH, slicesV];
 			for(int w = 0; w < slicesH; w++) 
@@ -375,7 +395,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 			}
 
-			//add subdivisions
+			// Add subdivisions
 			if(slicesH > 1) 
 			{
 				for(int w = 1; w < slicesH; w++) 
@@ -393,7 +413,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 			}
 
-			//triangulate?
+			// Triangulate?
 			if(triangulate) 
 			{
 				bool startflip = ((int)Math.Round(((s.x + e.y) / General.Map.Grid.GridSize) % 2) == 0);
@@ -419,7 +439,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			return shapes;
 		}
 
-		//update bottom-left and top-right points, which define drawing shape
+		// Update bottom-left and top-right points, which define drawing shape
 		private void UpdateReferencePoints(DrawnVertex p1, DrawnVertex p2) 
 		{
 			if(!p1.pos.IsFinite() || !p2.pos.IsFinite()) return;
@@ -456,22 +476,31 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		protected override void SetupInterface()
 		{
+			// Load stored settings
+			triangulate = General.Settings.ReadPluginSetting("drawgridmode.triangulate", false);
+			gridlockmode = (GridLockMode)General.Settings.ReadPluginSetting("drawgridmode.gridlockmode", 0);
+			horizontalslices = Math.Max(General.Settings.ReadPluginSetting("drawgridmode.horizontalslices", 3), 3);
+			verticalslices = Math.Max(General.Settings.ReadPluginSetting("drawgridmode.verticalslices", 3), 3);
+			horizontalinterpolation = (InterpolationTools.Mode)General.Settings.ReadPluginSetting("drawgridmode.horizontalinterpolation", 0);
+			verticalinterpolation = (InterpolationTools.Mode)General.Settings.ReadPluginSetting("drawgridmode.verticalinterpolation", 0);
+			
 			// Create and setup settings panel
 			panel = new DrawGridOptionsPanel();
 			panel.MaxHorizontalSlices = (int)General.Map.FormatInterface.MaxCoordinate;
 			panel.MaxVerticalSlices = (int)General.Map.FormatInterface.MaxCoordinate;
 			panel.Triangulate = triangulate;
-			panel.LockToGrid = gridlock;
-			panel.HorizontalSlices = horizontalSlices - 1;
-			panel.VerticalSlices = verticalSlices - 1;
+			panel.GridLockMode = gridlockmode;
+			panel.HorizontalSlices = horizontalslices - 1;
+			panel.VerticalSlices = verticalslices - 1;
 			panel.HorizontalInterpolationMode = horizontalinterpolation;
 			panel.VerticalInterpolationMode = verticalinterpolation;
 
 			panel.OnValueChanged += OptionsPanelOnValueChanged;
-			panel.OnGridLockChanged += OptionsPanelOnOnGridLockChanged;
+			panel.OnGridLockModeChanged += OptionsPanelOnGridLockChanged;
 			panel.OnContinuousDrawingChanged += OnContinuousDrawingChanged;
 
-			panel.ContinuousDrawing = General.Settings.ReadPluginSetting("drawgridmode_continuousdrawing", false);
+			// Needs to be set after adding the OnContinuousDrawingChanged event...
+			panel.ContinuousDrawing = General.Settings.ReadPluginSetting("drawgridmode.continuousdrawing", false);
 		}
 
 		protected override void AddInterface()
@@ -484,7 +513,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		protected override void RemoveInterface()
 		{
-			General.Settings.WritePluginSetting("drawgridmode_continuousdrawing", panel.ContinuousDrawing);
+			// Store settings
+			General.Settings.WritePluginSetting("drawgridmode.triangulate", triangulate);
+			General.Settings.WritePluginSetting("drawgridmode.gridlockmode", (int)gridlockmode);
+			General.Settings.WritePluginSetting("drawgridmode.horizontalslices", horizontalslices);
+			General.Settings.WritePluginSetting("drawgridmode.verticalslices", verticalslices);
+			General.Settings.WritePluginSetting("drawgridmode.horizontalinterpolation", (int)horizontalinterpolation);
+			General.Settings.WritePluginSetting("drawgridmode.verticalinterpolation", (int)verticalinterpolation);
+			General.Settings.WritePluginSetting("drawgridmode.continuousdrawing", panel.ContinuousDrawing);
 
 			// Remove docker
 			General.Interface.RemoveDocker(docker);
@@ -499,10 +535,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("increasebevel")]
 		protected void IncreaseBevel()
 		{
-			if(!gridlock && (points.Count < 2 || horizontalSlices < width - 2) && horizontalSlices - 1 < panel.MaxHorizontalSlices) 
+			if((gridlockmode == GridLockMode.NONE || gridlockmode == GridLockMode.VERTICAL) 
+				&& (points.Count < 2 || horizontalslices < width - 2) 
+				&& horizontalslices - 1 < panel.MaxHorizontalSlices) 
 			{
-				horizontalSlices++;
-				panel.HorizontalSlices = horizontalSlices - 1;
+				horizontalslices++;
+				panel.HorizontalSlices = horizontalslices - 1;
 				Update();
 			}
 		}
@@ -510,10 +548,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("decreasebevel")]
 		protected void DecreaseBevel()
 		{
-			if(!gridlock && horizontalSlices > 1) 
+			if((gridlockmode == GridLockMode.NONE || gridlockmode == GridLockMode.VERTICAL) && horizontalslices > 1) 
 			{
-				horizontalSlices--;
-				panel.HorizontalSlices = horizontalSlices - 1;
+				horizontalslices--;
+				panel.HorizontalSlices = horizontalslices - 1;
 				Update();
 			}
 		}
@@ -521,10 +559,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("increasesubdivlevel")]
 		protected void IncreaseSubdivLevel()
 		{
-			if(!gridlock && (points.Count < 2 || verticalSlices < height - 2) && verticalSlices - 1 < panel.MaxVerticalSlices) 
+			if((gridlockmode == GridLockMode.NONE || gridlockmode == GridLockMode.HORIZONTAL) 
+				&& (points.Count < 2 || verticalslices < height - 2) 
+				&& verticalslices - 1 < panel.MaxVerticalSlices) 
 			{
-				verticalSlices++;
-				panel.VerticalSlices = verticalSlices - 1;
+				verticalslices++;
+				panel.VerticalSlices = verticalslices - 1;
 				Update();
 			}
 		}
@@ -532,10 +572,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("decreasesubdivlevel")]
 		protected void DecreaseSubdivLevel()
 		{
-			if(!gridlock && verticalSlices > 1) 
+			if((gridlockmode == GridLockMode.NONE || gridlockmode == GridLockMode.HORIZONTAL) && verticalslices > 1) 
 			{
-				verticalSlices--;
-				panel.VerticalSlices = verticalSlices - 1;
+				verticalslices--;
+				panel.VerticalSlices = verticalslices - 1;
 				Update();
 			}
 		}

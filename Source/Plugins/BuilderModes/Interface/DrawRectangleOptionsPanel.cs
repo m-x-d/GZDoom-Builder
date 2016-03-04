@@ -9,9 +9,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public event EventHandler OnContinuousDrawingChanged;
 		private bool blockevents;
 
-		private static int radiusValue;
-		private static int subdivsValue;
-
 		public int BevelWidth { get { return (int)radius.Value; } set { blockevents = true; radius.Value = value; blockevents = false; } }
 		public int MaxBevelWidth { get { return (int)radius.Maximum; } set { radius.Maximum = value; } }
 		public int MinBevelWidth { get { return (int)radius.Minimum; } set { radius.Minimum = value; } }
@@ -27,8 +24,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		public void Register() 
 		{
-			radius.Value = radiusValue;
-			subdivs.Value = subdivsValue;
 			radius.ValueChanged += ValueChanged;
 			subdivs.ValueChanged += ValueChanged;
 
@@ -54,8 +49,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		private void ValueChanged(object sender, EventArgs e) 
 		{
-			radiusValue = (int)radius.Value;
-			subdivsValue = (int)subdivs.Value;
 			if(!blockevents && OnValueChanged != null) OnValueChanged(this, EventArgs.Empty);
 		}
 

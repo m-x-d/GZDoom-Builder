@@ -9,9 +9,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public event EventHandler OnContinuousDrawingChanged;
 		private bool blockevents;
 
-		private static int aquityvalue;
-		private static int subdivsvalue = 8;
-
 		public int Spikiness { get { return (int)spikiness.Value; } set { blockevents = true; spikiness.Value = value; blockevents = false; } }
 		public int Subdivisions { get { return (int)subdivs.Value; } set { blockevents = true; subdivs.Value = value; blockevents = false; } }
 		public int MaxSubdivisions { get { return (int)subdivs.Maximum; } set { subdivs.Maximum = value; } }
@@ -27,8 +24,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		public void Register() 
 		{
-			spikiness.Value = aquityvalue;
-			subdivs.Value = subdivsvalue;
 			spikiness.ValueChanged += ValueChanged;
 			subdivs.ValueChanged += ValueChanged;
 
@@ -54,8 +49,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		private void ValueChanged(object sender, EventArgs e) 
 		{
-			aquityvalue = (int)spikiness.Value;
-			subdivsvalue = (int)subdivs.Value;
 			if(!blockevents && OnValueChanged != null) OnValueChanged(this, EventArgs.Empty);
 		}
 

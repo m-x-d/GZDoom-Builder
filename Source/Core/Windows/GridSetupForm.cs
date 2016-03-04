@@ -140,8 +140,18 @@ namespace CodeImp.DoomBuilder.Windows
 		// Apply
 		private void apply_Click(object sender, EventArgs e)
 		{
+			//mxd. Apply
+			int newgridsize = gridsize.GetResult(General.Map.Grid.GridSize);
+			if(newgridsize != General.Map.Grid.GridSize)
+			{
+				//Disable automatic grid resizing
+				General.MainWindow.DisableDynamicGridResize();
+
+				//Apply grid size
+				General.Map.Grid.SetGridSize(newgridsize);
+			}
+			
 			// Apply
-			General.Map.Grid.SetGridSize(gridsize.GetResult(General.Map.Grid.GridSize));
 			General.Map.Grid.SetBackgroundView(backoffsetx.GetResult(General.Map.Grid.BackgroundX),
 											   backoffsety.GetResult(General.Map.Grid.BackgroundY),
 											   backscalex.GetResult((int)(General.Map.Grid.BackgroundScaleX * 100.0f)) / 100.0f,
