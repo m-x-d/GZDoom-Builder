@@ -31,7 +31,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		private readonly HintLabel hintlabel;
 		private Curve curve;
-		private static int segmentlength = 32;
+		private int segmentlength;
 		private const int MIN_SEGMENT_LENGTH = 16;
 		private const int MAX_SEGMENT_LENGTH = 4096; //just some arbitrary number
 
@@ -311,11 +311,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		protected override void SetupInterface()
 		{
+			// Load stored settings
+			segmentlength = General.Clamp(General.Settings.ReadPluginSetting("drawcurvemode.segmentlength", 32), MIN_SEGMENT_LENGTH, MAX_SEGMENT_LENGTH);
+			
 			// Add options docker
 			panel = new DrawCurveOptionsPanel(MIN_SEGMENT_LENGTH, MAX_SEGMENT_LENGTH);
+			panel.SegmentLength = segmentlength;
 			panel.OnValueChanged += OptionsPanelOnValueChanged;
 			panel.OnContinuousDrawingChanged += OnContinuousDrawingChanged;
-			panel.ContinuousDrawing = General.Settings.ReadPluginSetting("drawcurvemode_continuousdrawing", false);
+
+			// Needs to be set after adding the OnContinuousDrawingChanged event...
+			panel.ContinuousDrawing = General.Settings.ReadPluginSetting("drawcurvemode.continuousdrawing", false);
 		}
 
 		protected override void AddInterface()
@@ -325,7 +331,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		protected override void RemoveInterface()
 		{
-			General.Settings.WritePluginSetting("drawcurvemode_continuousdrawing", panel.ContinuousDrawing);
+			// Store settings
+			General.Settings.WritePluginSetting("drawcurvemode.segmentlength", segmentlength);
+			General.Settings.WritePluginSetting("drawcurvemode.continuousdrawing", panel.ContinuousDrawing);
+
+			// Remove the buttons
 			panel.Unregister();
 		}
 

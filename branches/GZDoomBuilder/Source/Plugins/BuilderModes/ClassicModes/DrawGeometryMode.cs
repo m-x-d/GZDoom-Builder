@@ -18,14 +18,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
-using CodeImp.DoomBuilder.Windows;
+using CodeImp.DoomBuilder.Actions;
+using CodeImp.DoomBuilder.Editing;
+using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
-using CodeImp.DoomBuilder.Geometry;
-using System.Drawing;
-using CodeImp.DoomBuilder.Editing;
-using CodeImp.DoomBuilder.Actions;
+using CodeImp.DoomBuilder.Windows;
 
 #endregion
 
@@ -460,7 +460,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			//Add options docker
 			panel = new DrawLineOptionsPanel();
 			panel.OnContinuousDrawingChanged += OnContinuousDrawingChanged;
-			panel.ContinuousDrawing = General.Settings.ReadPluginSetting("drawlinesmode_continuousdrawing", false);
+
+			// Needs to be set after adding the OnContinuousDrawingChanged event...
+			panel.ContinuousDrawing = General.Settings.ReadPluginSetting("drawlinesmode.continuousdrawing", false);
 		}
 
 		protected virtual void AddInterface()
@@ -470,7 +472,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		protected virtual void RemoveInterface()
 		{
-			General.Settings.WritePluginSetting("drawlinesmode_continuousdrawing", panel.ContinuousDrawing);
+			General.Settings.WritePluginSetting("drawlinesmode.continuousdrawing", panel.ContinuousDrawing);
 			panel.Unregister();
 		}
 

@@ -968,6 +968,9 @@ namespace CodeImp.DoomBuilder.Windows
 					// Get integral zoom level
 					int size = int.Parse((sender as ToolStripMenuItem).Tag.ToString(), CultureInfo.InvariantCulture);
 
+					//mxd. Disable automatic grid resizing
+					DisableDynamicGridResize();
+
 					// Change grid size
 					General.Map.Grid.SetGridSize(size);
 					
@@ -1535,6 +1538,17 @@ namespace CodeImp.DoomBuilder.Windows
 				
 				// Add to list
 				buttontest.DropDownItems.AddRange(items.ToArray());
+			}
+		}
+
+		//mxd
+		internal void DisableDynamicGridResize()
+		{
+			if(General.Settings.DynamicGridSize)
+			{
+				General.Settings.DynamicGridSize = false;
+				itemdynamicgridsize.Checked = false;
+				buttontoggledynamicgrid.Checked = false;
 			}
 		}
 

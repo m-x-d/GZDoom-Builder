@@ -44,27 +44,39 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			maxsubdivisions = 512;
 			minsubdivisions = 6;
 
+			// Load stored settings
+			subdivisions = General.Clamp(General.Settings.ReadPluginSetting("drawellipsemode.subdivisions", 8), minsubdivisions, maxsubdivisions);
+			bevelwidth = General.Settings.ReadPluginSetting("drawellipsemode.bevelwidth", 0);
+			currentbevelwidth = bevelwidth;
+
 			//Add options docker
 			panel = new DrawEllipseOptionsPanel();
 			panel.MaxSubdivisions = maxsubdivisions;
 			panel.MinSubdivisions = minsubdivisions;
 			panel.MinSpikiness = (int)General.Map.FormatInterface.MinCoordinate;
 			panel.MaxSpikiness = (int)General.Map.FormatInterface.MaxCoordinate;
+			panel.Spikiness = bevelwidth;
+			panel.Subdivisions = subdivisions;
 			panel.OnValueChanged += OptionsPanelOnValueChanged;
 			panel.OnContinuousDrawingChanged += OnContinuousDrawingChanged;
-			panel.ContinuousDrawing = General.Settings.ReadPluginSetting("drawellipsemode_continuousdrawing", false);
+
+			// Needs to be set after adding the OnContinuousDrawingChanged event...
+			panel.ContinuousDrawing = General.Settings.ReadPluginSetting("drawellipsemode.continuousdrawing", false);
 		}
 
 		override protected void AddInterface() 
 		{
 			panel.Register();
-			bevelwidth = panel.Spikiness;
-			subdivisions = panel.Subdivisions;
 		}
 
 		override protected void RemoveInterface() 
 		{
-			General.Settings.WritePluginSetting("drawellipsemode_continuousdrawing", panel.ContinuousDrawing);
+			// Store settings
+			General.Settings.WritePluginSetting("drawellipsemode.subdivisions", subdivisions);
+			General.Settings.WritePluginSetting("drawellipsemode.bevelwidth", bevelwidth);
+			General.Settings.WritePluginSetting("drawellipsemode.continuousdrawing", panel.ContinuousDrawing);
+
+			// Remove the buttons
 			panel.Unregister();
 		}
 

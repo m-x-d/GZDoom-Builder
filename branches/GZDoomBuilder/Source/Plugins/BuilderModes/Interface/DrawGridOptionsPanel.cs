@@ -1,31 +1,42 @@
 ﻿using System;
 using System.Windows.Forms;
-using CodeImp.DoomBuilder.Geometry;
+using InterpolationMode = CodeImp.DoomBuilder.Geometry.InterpolationTools.Mode;
+using GridLockMode = CodeImp.DoomBuilder.BuilderModes.DrawGridMode.GridLockMode;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
 	internal partial class DrawGridOptionsPanel : UserControl
 	{
 		public event EventHandler OnValueChanged;
-		public event EventHandler OnGridLockChanged;
+		public event EventHandler OnGridLockModeChanged;
 		public event EventHandler OnContinuousDrawingChanged;
 		private bool blockevents;
 
 		public bool Triangulate { get { return triangulate.Checked; } set { blockevents = true; triangulate.Checked = value; blockevents = false; } }
-		public bool LockToGrid { get { return gridlock.Checked; } set { blockevents = true; gridlock.Checked = value; blockevents = false; } }
+		public GridLockMode GridLockMode { get { return (GridLockMode)gridlockmode.SelectedIndex; } set { blockevents = true; gridlockmode.SelectedIndex = (int)value; blockevents = false; } }
 		public int HorizontalSlices { get { return (int)slicesH.Value; } set { blockevents = true; slicesH.Value = value; blockevents = false; } }
 		public int MaxHorizontalSlices { get { return (int)slicesH.Maximum; } set { slicesH.Maximum = value; } }
 		public int VerticalSlices { get { return (int)slicesV.Value; } set { blockevents = true; slicesV.Value = value; blockevents = false; } }
 		public int MaxVerticalSlices { get { return (int)slicesV.Maximum; } set { slicesV.Maximum = value; } }
 		public bool ContinuousDrawing { get { return continuousdrawing.Checked; } set { continuousdrawing.Checked = value; } }
-		public InterpolationTools.Mode HorizontalInterpolationMode 
+		public InterpolationMode HorizontalInterpolationMode 
 		{
-			get { return gridlock.Checked ? InterpolationTools.Mode.LINEAR : (InterpolationTools.Mode)interphmode.SelectedIndex; }
+			get
+			{
+				GridLockMode mode = (GridLockMode)gridlockmode.SelectedIndex;
+				return (mode == GridLockMode.BOTH || mode == GridLockMode.HORIZONTAL) 
+					? InterpolationMode.LINEAR : (InterpolationMode)interphmode.SelectedIndex;
+			}
 			set { interphmode.SelectedIndex = (int)value; }
 		}
-		public InterpolationTools.Mode VerticalInterpolationMode 
+		public InterpolationMode VerticalInterpolationMode 
 		{
-			get { return gridlock.Checked ? InterpolationTools.Mode.LINEAR : (InterpolationTools.Mode)interpvmode.SelectedIndex; }
+			get
+			{
+				GridLockMode mode = (GridLockMode)gridlockmode.SelectedIndex;
+				return (mode == GridLockMode.BOTH || mode == GridLockMode.VERTICAL) 
+					? InterpolationMode.LINEAR : (InterpolationMode)interpvmode.SelectedIndex;
+			}
 			set { interpvmode.SelectedIndex = (int)value; }
 		}
 
@@ -45,15 +56,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(!blockevents && OnValueChanged != null) OnValueChanged(this, EventArgs.Empty);
 		}
 
-		private void gridlock_CheckedChanged(object sender, EventArgs e)
+		private void gridlockmode_SelectedIndexChanged(object sender, EventArgs e)
 		{
-			slicesH.Enabled = !gridlock.Checked;
-			slicesV.Enabled = !gridlock.Checked;
-			interpvmode.Enabled = !gridlock.Checked;
-			interphmode.Enabled = !gridlock.Checked;
-			reset.Enabled = !gridlock.Checked;
-
-			if(!blockevents && OnGridLockChanged != null) OnGridLockChanged(this, EventArgs.Empty);
+			GridLockMode mode = (GridLockMode)gridlockmode.SelectedIndex;
+			slicesH.Enabled = (mode == GridLockMode.NONE || mode == GridLockMode.VERTICAL);
+			slicesV.Enabled = (mode == GridLockMode.NONE || mode == GridLockMode.HORIZONTAL);
+			interphmode.Enabled = slicesH.Enabled;
+			interpvmode.Enabled = slicesV.Enabled;
+			reset.Enabled = (mode != GridLockMode.BOTH);
+			
+			if(!blockevents && OnGridLockModeChanged != null) OnGridLockModeChanged(this, EventArgs.Empty);
 		}
 
 		private void interpmode_DropDownClosed(object sender, EventArgs e) 
@@ -63,9 +75,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		private void reset_Click(object sender, EventArgs e)
 		{
+			GridLockMode mode = (GridLockMode)gridlockmode.SelectedIndex;
+			
 			blockevents = true;
-			slicesH.Value = 3;
-			slicesV.Value = 3;
+			if((mode == GridLockMode.NONE || mode == GridLockMode.VERTICAL)) slicesH.Value = 3;
+			if(mode == GridLockMode.NONE || mode == GridLockMode.HORIZONTAL) slicesV.Value = 3;
 			blockevents = false;
 
 			if(OnValueChanged != null) OnValueChanged(this, EventArgs.Empty);

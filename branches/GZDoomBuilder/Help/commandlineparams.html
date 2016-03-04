@@ -7,49 +7,74 @@
 </head>
 <body>
 <object type="application/x-oleobject" classid="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
-  <param name="keyword" value="command line">
-  <param name="keyword" value="arguments">
+	<param name="keyword" value="command line">
+	<param name="keyword" value="arguments">
 </object>
 <div id="gz_title">
-  <h1>Command Line Parameters</h1>
+	<h1>Command Line Parameters</h1>
 </div>
 <div id="contents">
-  <p> All command line parameters are case-insensitive.<br />
-    <br />
-    <b class="fat">-portable</b> - <span class="red">GZDB only.</span><br />
-    The editor will be launched in portable mode. It will use the &quot;GZBuilder.cfg&quot; located in the program directory instead of the one located in the &quot;%LocalAppData%\Doom Builder\GZBuilder.cfg&quot; to load and save program settings. Log and crash report files will be also created in the program directory.<br />
-    <br />
-    <b class="fat">-nosettings</b><br />
-    The editor doesn't load or save program settings.<br />
-    <br />
-    <b class="fat">-delaywindow</b><br />
-    Delays showing of the main window.<br />
-    <br />
-    <b class="fat">-map &quot;path\to\mapfile.wad&quot;</b><br />
-    The editor will automatically load the specified map.<br />
-  <h2>The following parameters are used only in conjunction with the &quot;-map&quot; parameter</h2>
-  They replicate the settings, which can be set in the <a href="w_openmapoptions.html">Open Map Window</a>.<br />
-  <br />
-  <b class="fat">-strictpatches</b><br />
-  Enables strict patches rules.<br />
-  <br />
-  <b class="fat">-cfg &quot;path\to\game configuration.cfg&quot;</b><br />
-  <b class="fat">-config &quot;path\to\game configuration.cfg&quot;</b><br />
-  The editor will use the specified game configuration file when loading the map.<br />
-  <br />
-  <b class="fat">-resource &lt;resource type&gt; [flags] &quot;path\to\resource&quot;</b><br />
-  Adds a map resource.<br />
-  <strong>Resource type</strong> (required): &quot;wad&quot;, &quot;dir&quot; or &quot;pk3&quot;.<br />
-  <strong>Flags</strong> (optional):
-  <ul>
-    <li><strong>ROOTTEXTURES</strong> - load images in the root directory of the resource as textures.</li>
-    <li><strong>ROOTFLATS</strong> - load images in the root directory of the resource as flats.</li>
-    <li><strong>STRICTPATCHES</strong> - use strict rules for patches.</li>
-    <li><strong>NOTEST</strong> - exclude this resource from testing parameters.</li>
-  </ul>
-  <strong>Examples:</strong>
-  <pre>
-  -resource pk3 notest "c:\GZDoom\gzdoom.pk3"
-  -resource WAD "c:\Doom\DOOM.WAD"</pre>
+	<h2>Usage:</h2>
+	All command line parameters are case-insensitive.<br />
+	<br />
+	<b class="fat">GZBuilder.exe [wadfile] [-map mapname] [-cfg configname] [-delaywindow] [-nosettings]
+	[-strictpatches] [-portable] [-resource wad|dir|pk3 [roottextures] [rootflats]
+	[strictpatches] [notest] resourcename]</b>
+	<h2>Parameters:</h2>
+	<br />
+	<b class="fat">wadfile</b><br />
+	This is a .WAD file to load immediately after GZDoom Builder has started up. Unless <strong>-map</strong> and <strong>-cfg</strong> are used, this will show the map-options dialog.<br />
+	<p><b class="fat">-map &quot;mapname&quot;</b><br />
+		Where &quot;mapname&quot; is the name of the map (map header lump name) such as <strong>MAP01</strong> or <strong>E1M1</strong>.<br />
+		When specified, this will indicate the map to load from the specified wad file.<br />
+		Use in combination with <strong>-cfg</strong> to provide the required information to skip the map-options dialog.
+	<p><b class="fat">-delaywindow</b><br />
+		This delays showing the main interface window until the automatic map loading from command line parameters is completed, and the program is not terminating yet.<br />This is usefull for plugins that can be used to perform batch processes where the showing of the main interface window is not desired.<br />If a plugin completes it's actions on map load and terminates the application immediately, the main window will not be shown at all.
+	<p>
+		<b class="fat">-nosettings</b><br />
+		When this parameter is specified, GZDoom Builder will not load your preferences or game	configuration settings and will use the default settings instead.<br />You will not lose your original settings, but when this parameter is specified your settings will not be saved.<br />
+		<br />
+		<b class="fat">-portable</b> - <span class="red">GZDB only.</span><br />
+		The editor will be launched in portable mode. It will use the &quot;GZBuilder.cfg&quot; located in the program directory instead of the one located in the &quot;%LocalAppData%\Doom Builder\GZBuilder.cfg&quot; to load and save program settings. Log and crash report files will be also created in the program directory.<br />
+	<h2>The following parameters are used only when both &quot;wadfile&quot; and &quot;-map&quot; parameters are present</h2>
+	They replicate the settings, which can be set in the <a href="w_openmapoptions.html">Open Map Window</a>.<br />
+	<br />
+	<b class="fat">-strictpatches</b><br />
+	Specify this parameter to enforce strictly loading texture patches from between P_START
+	and P_END marker lumps only. This can solve lump name conflicts, but old WAD files do not
+	always adhere to this rule.<br />
+	<br />
+	<b class="fat">-cfg &quot;game_configuration.cfg&quot;</b><br />
+	<b class="fat">-config &quot;game_configuration.cfg&quot;</b><br />
+	The editor will use the specified game configuration file when loading the map.<br />
+	Do not include the path, all game configurations must be in the &quot;Configurations&quot; subfolder.<br />
+	<br />
+	<b class="fat">-resource &lt;resource type&gt; [flags] &quot;path\to\resource&quot;</b><br />
+	Adds a map resource. Note that these are added to the resources, which are automatically loaded according to selected game configuration.<br />
+	<strong>Resource type</strong> (required): &quot;wad&quot;, &quot;dir&quot; or &quot;pk3&quot;.<br />
+	<strong>Flags</strong> (optional):
+	<ul>
+		<li><strong>ROOTTEXTURES</strong> - load images in the root directory of the resource as textures  (directory/pk3 resources only).</li>
+		<li><strong>ROOTFLATS</strong> - load images in the root directory of the resource as flats (directory/pk3 resources only).</li>
+		<li><strong>STRICTPATCHES</strong> - use strict rules for patches (wad resources only).</li>
+		<li><strong>NOTEST</strong> - exclude this resource from testing parameters.</li>
+	</ul>
+	<h2>Examples:</h2>
+	This loads the file "Ubermegawad.wad" after GZDoom Builder is initialized and shows the
+	map-options dialog:
+	<pre>
+GZBuilder.exe "C:\Games\Doom\My Maps\Ubermegawad.wad"
+</pre>
+	Same as the example above, but now without showing the map-options dialog and instead immediately loading map MAP23 with the Doom 2 game configuration:
+	<pre>
+GZBuilder.exe "C:\Games\Doom\My Maps\Ubermegawad.wad" -map MAP23 -cfg "Doom_Doom2Doom.cfg"
+</pre>
+	Same as the example above, but using one of GZDoom game configurations with added wad file resource and PK3 file resources:
+	<pre>
+GZBuilder.exe "C:\Games\Doom\My Maps\Ubermegawad.wad" -map MAP23 -cfg "GZDoom_DoomUDMF.cfg"
+               -resource pk3 notest "C:\GZDoom\gzdoom.pk3"
+               -resource wad strictpatches "C:\Games\Doom\gothtextures.wad"
+               -resource pk3 "C:\Games\Doom\hardmonsters.pk3"
+</pre>
 </div>
 </body>

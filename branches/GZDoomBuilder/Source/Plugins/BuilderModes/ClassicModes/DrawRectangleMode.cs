@@ -79,27 +79,39 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			maxsubdivisions = 16;
 
+			// Load stored settings
+			subdivisions = General.Clamp(General.Settings.ReadPluginSetting("drawrectanglemode.subdivisions", 0), minsubdivisions, maxsubdivisions);
+			bevelwidth = General.Settings.ReadPluginSetting("drawrectanglemode.bevelwidth", 0);
+			currentbevelwidth = bevelwidth;
+
 			//Add options docker
 			panel = new DrawRectangleOptionsPanel();
 			panel.MaxSubdivisions = maxsubdivisions;
 			panel.MinSubdivisions = minsubdivisions;
 			panel.MaxBevelWidth = (int)General.Map.FormatInterface.MaxCoordinate;
 			panel.MinBevelWidth = (int)General.Map.FormatInterface.MinCoordinate;
+			panel.BevelWidth = bevelwidth;
+			panel.Subdivisions = subdivisions;
 			panel.OnValueChanged += OptionsPanelOnValueChanged;
 			panel.OnContinuousDrawingChanged += OnContinuousDrawingChanged;
-			panel.ContinuousDrawing = General.Settings.ReadPluginSetting("drawrectanglemode_continuousdrawing", false);
+
+			// Needs to be set after adding the OnContinuousDrawingChanged event...
+			panel.ContinuousDrawing = General.Settings.ReadPluginSetting("drawrectanglemode.continuousdrawing", false);
 		}
 
 		protected override void AddInterface() 
 		{
 			panel.Register();
-			bevelwidth = panel.BevelWidth;
-			subdivisions = panel.Subdivisions;
 		}
 
 		protected override void RemoveInterface()
 		{
-			General.Settings.WritePluginSetting("drawrectanglemode_continuousdrawing", panel.ContinuousDrawing);
+			// Store settings
+			General.Settings.WritePluginSetting("drawrectanglemode.subdivisions", subdivisions);
+			General.Settings.WritePluginSetting("drawrectanglemode.bevelwidth", bevelwidth);
+			General.Settings.WritePluginSetting("drawrectanglemode.continuousdrawing", panel.ContinuousDrawing);
+
+			// Remove the buttons
 			panel.Unregister();
 		}
 

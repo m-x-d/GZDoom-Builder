@@ -246,7 +246,7 @@ namespace CodeImp.DoomBuilder.Editing
 		// This snaps to the nearest grid coordinate
 		public Vector2D SnappedToGrid(Vector2D v)
 		{
-			return GridSetup.SnappedToGrid(v, gridsizef, gridsizefinv);
+			return SnappedToGrid(v, gridsizef, gridsizefinv);
 		}
 
 		// This snaps to the nearest grid coordinate
@@ -291,6 +291,9 @@ namespace CodeImp.DoomBuilder.Editing
 			// Not lower than 1
 			if(gridsize >= 2)
 			{
+				//mxd. Disable automatic grid resizing
+				General.MainWindow.DisableDynamicGridResize();
+				
 				// Change grid
 				SetGridSize(gridsize >> 1);
 				
@@ -307,6 +310,9 @@ namespace CodeImp.DoomBuilder.Editing
 			// Not higher than 1024
 			if(gridsize <= 512)
 			{
+				//mxd. Disable automatic grid resizing
+				General.MainWindow.DisableDynamicGridResize();
+				
 				// Change grid
 				SetGridSize(gridsize << 1);
 

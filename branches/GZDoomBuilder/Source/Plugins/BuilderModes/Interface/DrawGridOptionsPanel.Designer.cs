@@ -29,8 +29,9 @@
 		private void InitializeComponent() 
 		{
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.gridlockmode = new System.Windows.Forms.ComboBox();
+			this.label5 = new System.Windows.Forms.Label();
 			this.triangulate = new System.Windows.Forms.CheckBox();
-			this.gridlock = new System.Windows.Forms.CheckBox();
 			this.reset = new System.Windows.Forms.Button();
 			this.slicesV = new System.Windows.Forms.NumericUpDown();
 			this.slicesH = new System.Windows.Forms.NumericUpDown();
@@ -54,8 +55,9 @@
 			// 
 			this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox1.Controls.Add(this.gridlockmode);
+			this.groupBox1.Controls.Add(this.label5);
 			this.groupBox1.Controls.Add(this.triangulate);
-			this.groupBox1.Controls.Add(this.gridlock);
 			this.groupBox1.Controls.Add(this.reset);
 			this.groupBox1.Controls.Add(this.slicesV);
 			this.groupBox1.Controls.Add(this.slicesH);
@@ -68,6 +70,32 @@
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = " Number of slices: ";
 			// 
+			// gridlockmode
+			// 
+			this.gridlockmode.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.gridlockmode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.gridlockmode.FormattingEnabled = true;
+			this.gridlockmode.Items.AddRange(new object[] {
+            "None",
+            "Horizontal",
+            "Vertical",
+            "Both"});
+			this.gridlockmode.Location = new System.Drawing.Point(118, 77);
+			this.gridlockmode.Name = "gridlockmode";
+			this.gridlockmode.Size = new System.Drawing.Size(76, 21);
+			this.gridlockmode.TabIndex = 16;
+			this.gridlockmode.SelectedIndexChanged += new System.EventHandler(this.gridlockmode_SelectedIndexChanged);
+			// 
+			// label5
+			// 
+			this.label5.AutoSize = true;
+			this.label5.Location = new System.Drawing.Point(17, 80);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(95, 13);
+			this.label5.TabIndex = 15;
+			this.label5.Text = "Lock slices to grid:";
+			// 
 			// triangulate
 			// 
 			this.triangulate.AutoSize = true;
@@ -78,17 +106,6 @@
 			this.triangulate.Text = "Triangulate";
 			this.triangulate.UseVisualStyleBackColor = true;
 			this.triangulate.CheckedChanged += new System.EventHandler(this.ValueChanged);
-			// 
-			// gridlock
-			// 
-			this.gridlock.AutoSize = true;
-			this.gridlock.Location = new System.Drawing.Point(20, 80);
-			this.gridlock.Name = "gridlock";
-			this.gridlock.Size = new System.Drawing.Size(111, 17);
-			this.gridlock.TabIndex = 13;
-			this.gridlock.Text = "Lock slices to grid";
-			this.gridlock.UseVisualStyleBackColor = true;
-			this.gridlock.CheckedChanged += new System.EventHandler(this.gridlock_CheckedChanged);
 			// 
 			// reset
 			// 
@@ -224,7 +241,7 @@
 			this.Controls.Add(this.groupBox2);
 			this.Controls.Add(this.groupBox1);
 			this.Name = "DrawGridOptionsPanel";
-			this.Size = new System.Drawing.Size(206, 299);
+			this.Size = new System.Drawing.Size(206, 426);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.slicesV)).EndInit();
@@ -241,7 +258,6 @@
 
 		private System.Windows.Forms.GroupBox groupBox1;
 		private System.Windows.Forms.CheckBox triangulate;
-		private System.Windows.Forms.CheckBox gridlock;
 		private System.Windows.Forms.Button reset;
 		private System.Windows.Forms.NumericUpDown slicesV;
 		private System.Windows.Forms.NumericUpDown slicesH;
@@ -254,5 +270,7 @@
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.GroupBox groupBox3;
 		private System.Windows.Forms.CheckBox continuousdrawing;
+		private System.Windows.Forms.ComboBox gridlockmode;
+		private System.Windows.Forms.Label label5;
 	}
 }
