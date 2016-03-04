@@ -61,6 +61,7 @@ namespace CodeImp.DoomBuilder.Data
 		
 		public const string INTERNAL_PREFIX = "internal:";
 		public const int CLASIC_IMAGE_NAME_LENGTH = 8; //mxd
+		private const int MAX_SKYTEXTURE_SIZE = 2048; //mxd
 		
 		#endregion
 
@@ -454,7 +455,7 @@ namespace CodeImp.DoomBuilder.Data
 						if(t.Value.HasLongName) flatnames.Add(t.Value.ShortName);
 						flatnames.Add(t.Value.Name);
 					}
-					else if(t.Value is HighResImage || t.Value is SimpleTextureImage) //mxd. Textures defined in TEXTURES or placed between TX_START and TX_END markers override "regular" flats in ZDoom
+					else if(t.Value is TEXTURESImage || t.Value is SimpleTextureImage) //mxd. Textures defined in TEXTURES or placed between TX_START and TX_END markers override "regular" flats in ZDoom
 					{
 						//TODO: check this!
 						flats[t.Key] = t.Value;
@@ -488,6 +489,7 @@ namespace CodeImp.DoomBuilder.Data
 			}
 
 			//mxd. Should be done after loading textures...
+			int hirestexcount = LoadHiResTextures();
 			LoadGldefs(actorsbyclass);
 
 			//mxd. Create camera textures. Should be done after loading textures.
@@ -535,7 +537,7 @@ namespace CodeImp.DoomBuilder.Data
 			StartBackgroundLoader();
 			
 			// Output info
-			General.WriteLogLine("Loaded " + texcount + " textures, " + flatcount + " flats, " + 
+			General.WriteLogLine("Loaded " + texcount + " textures, " + flatcount + " flats, " + hirestexcount + " hires textures, " +
 				colormapcount + " colormaps, " + spritecount + " sprites, " + 
 				thingcount + " decorate things, " + modeldefentries.Count + " model/voxel deinitions, " + 
 				gldefsentries.Count + " dynamic light definitions, " + 
@@ -988,8 +990,7 @@ namespace CodeImp.DoomBuilder.Data
 					foreach(ImageData img in images)
 					{
 						// Add or replace in textures list
-						list.Remove(img.LongName);
-						list.Add(img.LongName, img);
+						list[img.LongName] = img;
 						counter++;
 
 						//mxd. Also add as short name when texture name is longer than 8 chars
@@ -998,8 +999,7 @@ namespace CodeImp.DoomBuilder.Data
 						if(img.HasLongName) 
 						{
 							long longshortname = Lump.MakeLongName(Path.GetFileNameWithoutExtension(img.Name), false);
-							nametranslation.Remove(longshortname);
-							nametranslation.Add(longshortname, img.LongName);
+							nametranslation[longshortname] = img.LongName;
 						} 
 						else if(img is TextureImage && nametranslation.ContainsKey(img.LongName))
 						{
@@ -1070,7 +1070,9 @@ namespace CodeImp.DoomBuilder.Data
 		public ImageData GetTextureImage(long longname)
 		{
 			// Does this texture exist?
-			if(textures.ContainsKey(longname) && textures[longname] is HighResImage) return textures[longname]; //TEXTURES textures should still override regular ones...
+			if(textures.ContainsKey(longname) 
+				&& (textures[longname] is TEXTURESImage || textures[longname] is HiResImage))
+				return textures[longname]; //TEXTURES and HiRes textures should still override regular ones...
 			if(texturenamesshorttofull.ContainsKey(longname)) return textures[texturenamesshorttofull[longname]]; //mxd
 			if(textures.ContainsKey(longname)) return textures[longname];
 
@@ -1079,7 +1081,8 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		//mxd. This tries to find and load any image with given name
-		internal Bitmap GetTextureBitmap(string name)
+		internal Bitmap GetTextureBitmap(string name) { Vector2D unused = new Vector2D(); return GetTextureBitmap(name, out unused); }
+		internal Bitmap GetTextureBitmap(string name, out Vector2D scale)
 		{
 			// Check the textures first...
 			ImageData img = GetTextureImage(name);
@@ -1091,11 +1094,15 @@ namespace CodeImp.DoomBuilder.Data
 				if(!img.IsImageLoaded) img.LoadImage();
 				if(!img.LoadFailed)
 				{
-					return new Bitmap(img.GetBitmap());
+					// HiResImage will not give us it's actual scale
+					Bitmap texture = img.GetBitmap();
+					scale = new Vector2D((float)img.Width / texture.Width, (float)img.Height / texture.Height);
+					return texture;
 				}
 			}
 			
 			// Try to find any image...
+			scale = new Vector2D(1.0f, 1.0f);
 			for(int i = containers.Count - 1; i >= 0; i--)
 			{
 				// This container has a lump with given name?
@@ -1145,7 +1152,8 @@ namespace CodeImp.DoomBuilder.Data
 				name = name.Substring(0, CLASIC_IMAGE_NAME_LENGTH);
 			long hash = MurmurHash2.Hash(name.Trim().ToUpperInvariant());
 
-			if(textures.ContainsKey(hash) && textures[hash] is HighResImage) return textures[hash].Name; //TEXTURES textures should still override regular ones...
+			if(textures.ContainsKey(hash) && (textures[hash] is TEXTURESImage || textures[hash] is HiResImage))
+				return textures[hash].Name; //TEXTURES and HiRes textures should still override regular ones...
 			if(texturenamesshorttofull.ContainsKey(hash)) return textures[texturenamesshorttofull[hash]].Name;
 			if(textures.ContainsKey(hash)) return textures[hash].Name;
 			return name;
@@ -1154,7 +1162,8 @@ namespace CodeImp.DoomBuilder.Data
 		//mxd
 		internal long GetFullLongTextureName(long hash)
 		{
-			if(textures.ContainsKey(hash) && textures[hash] is HighResImage) return hash; //TEXTURES textures should still override regular ones...
+			if(textures.ContainsKey(hash) && (textures[hash] is TEXTURESImage || textures[hash] is HiResImage))
+				return hash; //TEXTURES and HiRes textures should still override regular ones...
 			return (General.Map.Config.UseLongTextureNames && texturenamesshorttofull.ContainsKey(hash) ? texturenamesshorttofull[hash] : hash);
 		}
 
@@ -1207,8 +1216,7 @@ namespace CodeImp.DoomBuilder.Data
 					foreach(ImageData img in images)
 					{
 						// Add or replace in flats list
-						list.Remove(img.LongName);
-						list.Add(img.LongName, img);
+						list[img.LongName] = img; //mxd
 						counter++;
 
 						//mxd. Also add as short name when texture name is longer than 8 chars
@@ -1217,8 +1225,7 @@ namespace CodeImp.DoomBuilder.Data
 						if(img.HasLongName)
 						{
 							long longshortname = Lump.MakeLongName(Path.GetFileNameWithoutExtension(img.Name), false);
-							nametranslation.Remove(longshortname);
-							nametranslation.Add(longshortname, img.LongName);
+							nametranslation[longshortname] = img.LongName;
 						} 
 						else if(img is FlatImage && nametranslation.ContainsKey(img.LongName)) 
 						{
@@ -1274,7 +1281,8 @@ namespace CodeImp.DoomBuilder.Data
 		public ImageData GetFlatImage(long longname)
 		{
 			// Does this flat exist?
-			if(flats.ContainsKey(longname) && flats[longname] is HighResImage) return flats[longname]; //TEXTURES flats should still override regular ones...
+			if(flats.ContainsKey(longname) && (flats[longname] is TEXTURESImage || flats[longname] is HiResImage))
+				return flats[longname]; //TEXTURES and HiRes flats should still override regular ones...
 			if(flatnamesshorttofull.ContainsKey(longname)) return flats[flatnamesshorttofull[longname]]; //mxd
 			if(flats.ContainsKey(longname)) return flats[longname];
 			
@@ -1296,7 +1304,8 @@ namespace CodeImp.DoomBuilder.Data
 				name = name.Substring(0, CLASIC_IMAGE_NAME_LENGTH);
 			long hash = MurmurHash2.Hash(name.ToUpperInvariant());
 
-			if(flats.ContainsKey(hash) && flats[hash] is HighResImage) return flats[hash].Name; //TEXTURES flats should still override regular ones...
+			if(flats.ContainsKey(hash) && (flats[hash] is TEXTURESImage || flats[hash] is HiResImage))
+				return flats[hash].Name; //TEXTURES and HiRes flats should still override regular ones...
 			if(flatnamesshorttofull.ContainsKey(hash)) return flats[flatnamesshorttofull[hash]].Name;
 			if(flats.ContainsKey(hash)) return flats[hash].Name;
 			return name;
@@ -1305,10 +1314,86 @@ namespace CodeImp.DoomBuilder.Data
 		//mxd
 		internal long GetFullLongFlatName(long hash)
 		{
-			if(flats.ContainsKey(hash) && flats[hash] is HighResImage) return hash; //TEXTURES flats should still override regular ones...
+			if(flats.ContainsKey(hash) && (flats[hash] is TEXTURESImage || flats[hash] is HiResImage))
+				return hash; //TEXTURES and HiRes flats should still override regular ones...
 			return (General.Map.Config.UseLongTextureNames && flatnamesshorttofull.ContainsKey(hash) ? flatnamesshorttofull[hash] : hash);
 		}
 		
+		#endregion
+
+		#region ================== mxd. HiRes textures
+
+		// This loads the textures
+		private int LoadHiResTextures()
+		{
+			int counter = 0;
+
+			// Go for all opened containers
+			foreach(DataReader dr in containers)
+			{
+				//mxd. Load HiRes texures
+				IEnumerable<HiResImage> hiresimages = dr.LoadHiResTextures();
+				if(hiresimages != null)
+				{
+					// Go for all textures
+					foreach(HiResImage img in hiresimages)
+					{
+						bool replaced = false;
+						
+						// Replace texture?
+						if(textures.ContainsKey(img.LongName))
+						{
+							HiResImage replacer = new HiResImage(img);
+							replacer.ApplySettings(textures[img.LongName]);
+							textures[img.LongName] = replacer;
+							replaced = true;
+
+							// Add to preview manager
+							previews.AddImage(replacer);
+						}
+
+						// Replace flat?
+						if(flats.ContainsKey(img.LongName))
+						{
+							HiResImage replacer = new HiResImage(img);
+							replacer.ApplySettings(flats[img.LongName]);
+							flats[img.LongName] = replacer;
+							replaced = true;
+
+							// Add to preview manager
+							previews.AddImage(replacer);
+						}
+
+						if(!replaced)
+						{
+							General.ErrorLogger.Add(ErrorType.Warning, "HiRes texture \"" + Path.Combine(dr.Location.GetShortName(), img.FilePathName) + "\" does not override any existing texture or flat.");
+							dr.TextureSet.AddTexture(img);
+						}
+
+						counter++;
+					}
+				}
+			}
+
+			// Output info
+			return counter;
+		}
+
+		//mxd. This returns a specific HiRes texture stream
+		internal Stream GetHiResTextureData(string name)
+		{
+			// Go for all opened containers
+			for(int i = containers.Count - 1; i >= 0; i--)
+			{
+				// This container provides this texture?
+				Stream data = containers[i].GetHiResTextureData(name);
+				if(data != null) return data;
+			}
+
+			// No such patch texture
+			return null;
+		}
+
 		#endregion
 
 		#region ================== Sprites
@@ -2502,10 +2587,11 @@ namespace CodeImp.DoomBuilder.Data
 				else
 				{
 					// Create classic texture
-					Bitmap img = GetTextureBitmap(skytex);
+					Vector2D scale;
+					Bitmap img = GetTextureBitmap(skytex, out scale);
 					if(img != null)
 					{
-						skybox = MakeClassicSkyBox(img);
+						skybox = MakeClassicSkyBox(img, scale);
 					}
 				}
 			}
@@ -2531,12 +2617,15 @@ namespace CodeImp.DoomBuilder.Data
 
 		//INFO: 1. Looks like GZDoom tries to tile a sky texture into a 1024 pixel width texture.
 		//INFO: 2. If sky texture width <= height, it will be tiled to fit into 512 pixel height texture vertically.
-		private static CubeTexture MakeClassicSkyBox(Bitmap img)
+		private static CubeTexture MakeClassicSkyBox(Bitmap img) { return MakeClassicSkyBox(img, new Vector2D(1.0f, 1.0f)); }
+		private static CubeTexture MakeClassicSkyBox(Bitmap img, Vector2D scale)
 		{
 			// Get averaged top and bottom colors from the original image
 			int tr = 0, tg = 0, tb = 0, br = 0, bg = 0, bb = 0;
-			const int defaultcolorsampleheight = 28;
+			int defaultcolorsampleheight = (int)Math.Round(28 / scale.x);
 			int colorsampleheight = Math.Max(1, Math.Min(defaultcolorsampleheight, img.Height / 2)); // TODO: is this value calculated from the image's height?
+			int scaledwidth = (int)Math.Round(img.Width * scale.x);
+			int scaledheight = (int)Math.Round(img.Height * scale.y);
 			bool dogradients = colorsampleheight < img.Height / 2;
 
 			for(int w = 0; w < img.Width; w++)
@@ -2559,11 +2648,11 @@ namespace CodeImp.DoomBuilder.Data
 			Color topcolor = Color.FromArgb(255, tr / pixelscount, tg / pixelscount, tb / pixelscount);
 			Color bottomcolor = Color.FromArgb(255, br / pixelscount, bg / pixelscount, bb / pixelscount);
 
-			// Make tiling image
-			int horiztiles = (int)Math.Ceiling(1024.0f / img.Width);
-			int verttiles = img.Height > 256 ? 1 : 2;
+			// Make tiling image. Take custom scale into account
+			int horiztiles = (int)Math.Ceiling(1024.0f / scaledwidth);
+			int verttiles = scaledheight > 256 ? 1 : 2;
 
-			Bitmap skyimage = new Bitmap(1024, img.Height * verttiles, img.PixelFormat);
+			Bitmap skyimage = new Bitmap((int)Math.Round(1024 / scale.x), img.Height * verttiles, img.PixelFormat);
 
 			// Draw original image
 			using(Graphics g = Graphics.FromImage(skyimage))
@@ -2578,7 +2667,7 @@ namespace CodeImp.DoomBuilder.Data
 			}
 
 			// Make top and bottom images
-			const int capsimgsize = 16;
+			int capsimgsize = (int)Math.Round(16 / scale.x);
 			Bitmap topimg = new Bitmap(capsimgsize, capsimgsize);
 			using(Graphics g = Graphics.FromImage(topimg))
 			{
@@ -2613,6 +2702,13 @@ namespace CodeImp.DoomBuilder.Data
 				}
 			}
 
+			// Rendering errors occure when image size exceeds MAX_SKYTEXTURE_SIZE...
+			if(skyimage.Width > MAX_SKYTEXTURE_SIZE || skyimage.Height > MAX_SKYTEXTURE_SIZE)
+			{
+				float scaler = (float)MAX_SKYTEXTURE_SIZE / Math.Max(skyimage.Width, skyimage.Height);
+				skyimage = ResizeImage(skyimage, (int)Math.Round(skyimage.Width * scaler), (int)Math.Round(skyimage.Height * scaler));
+			}
+
 			// Get Device and shader...
 			Device device = General.Map.Graphics.Device;
 			World3DShader effect = General.Map.Graphics.Shaders.World3D;
@@ -2639,7 +2735,8 @@ namespace CodeImp.DoomBuilder.Data
 			BoundingBoxSizes bbs = new BoundingBoxSizes();
 			Stream modeldata = General.ThisAssembly.GetManifestResourceStream("CodeImp.DoomBuilder.Resources.SkySphere.md3");
 			ModelReader.MD3LoadResult meshes = ModelReader.ReadMD3Model(ref bbs, true, modeldata, device, 0);
-			if(meshes.Meshes.Count != 3) throw new Exception("Skybox creation failed: " + meshes.Errors);
+			if(meshes.Meshes.Count != 3) throw new Exception("Skybox creation failed: " 
+				+ (string.IsNullOrEmpty(meshes.Errors) ? "skybox model must contain 3 surfaces" : meshes.Errors));
 
 			// Make skysphere textures...
 			Texture texside = TextureFromBitmap(device, skyimage);
@@ -2648,9 +2745,9 @@ namespace CodeImp.DoomBuilder.Data
 
 			// Calculate model scaling (gl.skydone.cpp:RenderDome() in GZDoom)
 			float yscale;
-			if(img.Height < 128) yscale = 128 / 230.0f;
-			else if(img.Height < 200) yscale = img.Height / 230.0f;
-			else if(img.Height < 241) yscale = 1.0f + ((img.Height - 200.0f) / 200.0f) * 1.17f;
+			if(scaledheight < 128) yscale = 128 / 230.0f;
+			else if(scaledheight < 200) yscale = scaledheight / 230.0f;
+			else if(scaledheight < 241) yscale = 1.0f + ((scaledheight - 200.0f) / 200.0f) * 1.17f;
 			else yscale = 1.2f * 1.17f;
 
 			// I guess my sky model doesn't exactly match the one GZDoom generates...
@@ -2776,7 +2873,7 @@ namespace CodeImp.DoomBuilder.Data
 			}
 
 			// Make it Po2
-			targetsize = General.NextPowerOf2(targetsize);
+			targetsize = Math.Min(General.NextPowerOf2(targetsize), MAX_SKYTEXTURE_SIZE);
 
 			for(int i = 0; i < sides.Length; i++)
 			{
@@ -2809,7 +2906,7 @@ namespace CodeImp.DoomBuilder.Data
 				}
 
 				// Make it Po2
-				targetsize = General.NextPowerOf2(targetsize);
+				targetsize = Math.Min(General.NextPowerOf2(targetsize), MAX_SKYTEXTURE_SIZE);
 
 				// Resize if needed
 				if(sideimg.Width != targetsize * 4 || sideimg.Height != targetsize)

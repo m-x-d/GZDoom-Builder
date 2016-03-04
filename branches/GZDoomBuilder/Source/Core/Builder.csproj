@@ -808,7 +808,8 @@
     <Compile Include="Data\CameraTextureImage.cs" />
     <Compile Include="Data\ColorImage.cs" />
     <Compile Include="Data\ColormapImage.cs" />
-    <Compile Include="Data\HighResImage.cs" />
+    <Compile Include="Data\HiResImage.cs" />
+    <Compile Include="Data\TEXTURESImage.cs" />
     <Compile Include="Data\PK3FileImage.cs" />
     <Compile Include="Data\PK3StructuredReader.cs" />
     <Compile Include="Data\DynamicBitmapImage.cs" />

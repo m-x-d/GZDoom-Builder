@@ -79,7 +79,8 @@ namespace CodeImp.DoomBuilder.Controls
 				else if(!texture.IsImageLoaded) texture.LoadImage(); //mxd. In some cases the image may never me loaded by the DataManager
 
 				// Set the image
-				return new Bitmap((usepreviews ? texture.GetPreview() : texture.GetBitmap()));
+				// mxd. GetPreview() returns a copy of preview, GetBitmap() returns actual bitmap
+				return (usepreviews ? texture.GetPreview() : new Bitmap(texture.GetBitmap()));
 			}
 		}
 

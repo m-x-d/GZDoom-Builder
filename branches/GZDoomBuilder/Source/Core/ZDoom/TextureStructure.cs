@@ -234,14 +234,14 @@ namespace CodeImp.DoomBuilder.ZDoom
 		}
 
 		// This makes a HighResImage texture for this texture
-		internal HighResImage MakeImage()
+		internal TEXTURESImage MakeImage()
 		{
 			// Determine scale for texture
 			float scalex = ((xscale == 0.0f) ? General.Map.Config.DefaultTextureScale : 1f / xscale);
 			float scaley = ((yscale == 0.0f) ? General.Map.Config.DefaultTextureScale : 1f / yscale);
 
 			// Make texture
-			HighResImage tex = new HighResImage(name, virtualpath, width, height, scalex, scaley, worldpanning, typename == "flat");
+			TEXTURESImage tex = new TEXTURESImage(name, virtualpath, width, height, scalex, scaley, worldpanning, typename == "flat");
 
 			// Add patches
 			foreach(PatchStructure p in patches) tex.AddPatch(new TexturePatch(p));//mxd

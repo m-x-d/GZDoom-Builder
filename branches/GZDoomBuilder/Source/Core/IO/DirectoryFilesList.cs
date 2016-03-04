@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using CodeImp.DoomBuilder.Data;
 
 #endregion
 
@@ -272,13 +273,13 @@ namespace CodeImp.DoomBuilder.IO
 			if(subdirectories)
 			{
 				for(int i = 0; i < entries.Length; i++)
-					if((entries[i].filetitle == title) && entries[i].path.StartsWith(path))
+					if((entries[i].filetitle.Length > DataManager.CLASIC_IMAGE_NAME_LENGTH ? entries[i].filetitle.StartsWith(title) : entries[i].filetitle == title) && entries[i].path.StartsWith(path))
 						return entries[i].filepathname;
 			}
 			else
 			{
 				for(int i = 0; i < entries.Length; i++)
-					if((entries[i].filetitle == title) && (entries[i].path == path))
+					if((entries[i].filetitle.Length > DataManager.CLASIC_IMAGE_NAME_LENGTH ? entries[i].filetitle.StartsWith(title) : entries[i].filetitle == title) && (entries[i].path == path))
 						return entries[i].filepathname;
 			}
 

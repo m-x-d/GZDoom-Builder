@@ -101,6 +101,7 @@ namespace CodeImp.DoomBuilder.Config
 		
 		// Texture/flat/voxel sources
 		private readonly IDictionary textureranges;
+		private readonly IDictionary hiresranges; //mxd
 		private readonly IDictionary flatranges;
 		private readonly IDictionary patchranges;
 		private readonly IDictionary spriteranges;
@@ -221,6 +222,7 @@ namespace CodeImp.DoomBuilder.Config
 
 		// Texture/flat/voxel sources
 		public IDictionary TextureRanges { get { return textureranges; } }
+		public IDictionary HiResRanges { get { return hiresranges; } } //mxd
 		public IDictionary FlatRanges { get { return flatranges; } }
 		public IDictionary PatchRanges { get { return patchranges; } }
 		public IDictionary SpriteRanges { get { return spriteranges; } }
@@ -383,6 +385,7 @@ namespace CodeImp.DoomBuilder.Config
 
 			// Get texture and flat sources
 			textureranges = cfg.ReadSetting("textures", new Hashtable());
+			hiresranges = cfg.ReadSetting("hires", new Hashtable()); //mxd
 			flatranges = cfg.ReadSetting("flats", new Hashtable());
 			patchranges = cfg.ReadSetting("patches", new Hashtable());
 			spriteranges = cfg.ReadSetting("sprites", new Hashtable());

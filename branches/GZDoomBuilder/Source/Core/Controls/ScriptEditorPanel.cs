@@ -180,7 +180,7 @@ namespace CodeImp.DoomBuilder.Controls
 				tabs.SelectedTab = activetab;
 			}
 			//mxd. Select "Scripts" tab, because that's what user will want 99% of time
-			else
+			else if(tabs.TabPages.Count > 0)
 			{
 				int scriptsindex = GetTabPageIndex("SCRIPTS");
 				tabs.SelectedIndex = (scriptsindex == -1 ? 0 : scriptsindex);
@@ -195,8 +195,13 @@ namespace CodeImp.DoomBuilder.Controls
 			//mxd. If the map or script navigator has any compile errors, show them
 			if(activetab != null)
 			{
-				List<CompilerError> errors = activetab.UpdateNavigator();
-				ShowErrors(General.Map.Errors.Count > 0 ? General.Map.Errors : errors);
+				List<CompilerError> errors = (General.Map.Errors.Count > 0 ? General.Map.Errors : activetab.UpdateNavigator());
+				if(errors.Count > 0) ShowErrors(errors);
+				else ClearErrors();
+			}
+			else
+			{
+				ClearErrors();
 			}
 			
 			// Done
@@ -574,6 +579,11 @@ namespace CodeImp.DoomBuilder.Controls
 			buttonunindent.Enabled = (t != null && t.Scintilla.Lines[t.Scintilla.CurrentLine].Indentation > 0); //mxd
 			buttonwhitespace.Enabled = (t != null); //mxd
 			buttonwordwrap.Enabled = (t != null); //mxd
+			searchbox.Enabled = (t != null); //mxd
+			searchprev.Enabled = (t != null); //mxd
+			searchnext.Enabled = (t != null); //mxd
+			searchmatchcase.Enabled = (t != null); //mxd
+			searchwholeword.Enabled = (t != null); //mxd
 			
 			if(t != null)
 			{
