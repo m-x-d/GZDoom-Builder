@@ -41,7 +41,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 		{
 			if(testprogramname == DEFAULT_ENGINE_NAME && !String.IsNullOrEmpty(TestProgram)) 
 			{
-				//get engine name from path
+				// Get engine name from path
 				testprogramname = Path.GetFileNameWithoutExtension(TestProgram);
 			}
 
@@ -55,12 +55,11 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 			if(File.Exists(TestProgram))
 			{
 				Icon i = Icon.ExtractAssociatedIcon(TestProgram);
-				if(i != null) icon = i.ToBitmap();
+				icon = (i != null ? i.ToBitmap() : new Bitmap(Properties.Resources.Question));
 			}
-			
-			if(icon == null)
+			else
 			{
-				icon = new Bitmap(16, 16);
+				icon = new Bitmap(Properties.Resources.Warning);
 			}
 		}
 
