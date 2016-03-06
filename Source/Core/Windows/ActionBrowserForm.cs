@@ -101,7 +101,7 @@ namespace CodeImp.DoomBuilder.Windows
 									if((actionbits & ab.Index) == ab.Index)
 									{
 										options[i].SelectedItem = ab;
-										break; //mxd
+										if(ab.Index > 0) break; //mxd
 									}
 								}
 							}

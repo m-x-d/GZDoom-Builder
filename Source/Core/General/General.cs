@@ -749,7 +749,7 @@ namespace CodeImp.DoomBuilder
 				MessageBoxIcon.Exclamation) == DialogResult.Yes)
 			{
 				// Go to DirectX End-User Runtime Web Installer page (mxd)
-				OpenWebsite("http://www.microsoft.com/en-us/download/details.aspx?id=35");
+				OpenWebsite("https://www.microsoft.com/en-us/download/details.aspx?id=35&44F86079-8679-400C-BFF2-9CA5F2BCBDFC=1");
 			}
 
 			// End program here

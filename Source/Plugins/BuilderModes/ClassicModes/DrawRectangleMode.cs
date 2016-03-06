@@ -44,6 +44,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected Vector2D end;
 		protected int width;
 		protected int height;
+		protected int minpointscount;
+		protected bool alwaysrendershapehints;
 
 		// Interface
 		private DrawRectangleOptionsPanel panel;
@@ -78,6 +80,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected override void SetupInterface() 
 		{
 			maxsubdivisions = 16;
+			minpointscount = 4;
 
 			// Load stored settings
 			subdivisions = General.Clamp(General.Settings.ReadPluginSetting("drawrectanglemode.subdivisions", 0), minsubdivisions, maxsubdivisions);
@@ -158,7 +161,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 
 					//got beveled corners? 
-					if(shape.Length > 5) 
+					if(alwaysrendershapehints || shape.Length > minpointscount + 1) 
 					{
 						//render hint
 						if(width > 64 * vsize && height > 16 * vsize) 
@@ -265,11 +268,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			return "BVL: " + bevelwidth + "; SUB: " + subdivisions;
 		}
 
-		//update top-left and bottom-right points, which define drawing shape
+		// Update top-left and bottom-right points, which define drawing shape
 		private void UpdateReferencePoints(DrawnVertex p1, DrawnVertex p2) 
 		{
 			if(!p1.pos.IsFinite() || !p2.pos.IsFinite()) return;
 
+			// Make sure start always stays at left and up from the end
 			if(p1.pos.x < p2.pos.x) 
 			{
 				start.x = p1.pos.x;
@@ -292,6 +296,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				end.y = p1.pos.y;
 			}
 
+			// Update size
 			width = (int)(end.x - start.x);
 			height = (int)(end.y - start.y);
 		}
@@ -351,7 +356,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Settings.FindDefaultDrawSettings();
 
 			// When we have a rectangle or a line
-			if(points.Count > 4 || points.Count == 2) 
+			if(points.Count > minpointscount || points.Count == 2) 
 			{
 				// Make undo for the draw
 				General.Map.UndoRedo.CreateUndo(undoname);
