@@ -35,6 +35,8 @@
 			this.subdivs = new CodeImp.DoomBuilder.Controls.ToolStripNumericUpDown();
 			this.spikinesslabel = new System.Windows.Forms.ToolStripLabel();
 			this.spikiness = new CodeImp.DoomBuilder.Controls.ToolStripNumericUpDown();
+			this.anglelabel = new System.Windows.Forms.ToolStripLabel();
+			this.angle = new CodeImp.DoomBuilder.Controls.ToolStripNumericUpDown();
 			this.reset = new System.Windows.Forms.ToolStripButton();
 			this.toolStrip1.SuspendLayout();
 			this.SuspendLayout();
@@ -48,10 +50,12 @@
             this.subdivs,
             this.spikinesslabel,
             this.spikiness,
+            this.anglelabel,
+            this.angle,
             this.reset});
 			this.toolStrip1.Location = new System.Drawing.Point(0, 0);
 			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.Size = new System.Drawing.Size(348, 25);
+			this.toolStrip1.Size = new System.Drawing.Size(582, 25);
 			this.toolStrip1.TabIndex = 6;
 			this.toolStrip1.Text = "toolStrip1";
 			// 
@@ -128,13 +132,42 @@
             0,
             0});
 			// 
+			// anglelabel
+			// 
+			this.anglelabel.Name = "anglelabel";
+			this.anglelabel.Size = new System.Drawing.Size(41, 22);
+			this.anglelabel.Text = "Angle:";
+			// 
+			// angle
+			// 
+			this.angle.AutoSize = false;
+			this.angle.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+			this.angle.Maximum = new decimal(new int[] {
+            360,
+            0,
+            0,
+            0});
+			this.angle.Minimum = new decimal(new int[] {
+            360,
+            0,
+            0,
+            -2147483648});
+			this.angle.Name = "angle";
+			this.angle.Size = new System.Drawing.Size(56, 23);
+			this.angle.Text = "0";
+			this.angle.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+			// 
 			// reset
 			// 
 			this.reset.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.reset.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.Reset;
 			this.reset.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.reset.Name = "reset";
-			this.reset.Size = new System.Drawing.Size(23, 20);
+			this.reset.Size = new System.Drawing.Size(23, 22);
 			this.reset.Text = "Reset";
 			this.reset.Click += new System.EventHandler(this.reset_Click);
 			// 
@@ -144,7 +177,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.Controls.Add(this.toolStrip1);
 			this.Name = "DrawEllipseOptionsPanel";
-			this.Size = new System.Drawing.Size(348, 60);
+			this.Size = new System.Drawing.Size(582, 60);
 			this.toolStrip1.ResumeLayout(false);
 			this.toolStrip1.PerformLayout();
 			this.ResumeLayout(false);
@@ -162,5 +195,7 @@
 		private System.Windows.Forms.ToolStripButton reset;
 		private System.Windows.Forms.ToolStripButton continuousdrawing;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+		private System.Windows.Forms.ToolStripLabel anglelabel;
+		private CodeImp.DoomBuilder.Controls.ToolStripNumericUpDown angle;
 	}
 }

@@ -21,6 +21,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	{
 		#region ================== Variables
 
+		// Drawing
+		private float angle; // in radians
+		
 		// Interface
 		private DrawEllipseOptionsPanel panel;
 
@@ -35,11 +38,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		override protected void SetupInterface() 
 		{
 			maxsubdivisions = 512;
-			minsubdivisions = 4;
+			minsubdivisions = 3;
+			minpointscount = 3;
+			alwaysrendershapehints = true;
 
 			// Load stored settings
 			subdivisions = General.Clamp(General.Settings.ReadPluginSetting("drawellipsemode.subdivisions", 8), minsubdivisions, maxsubdivisions);
 			bevelwidth = General.Settings.ReadPluginSetting("drawellipsemode.bevelwidth", 0);
+			int angledeg = General.Settings.ReadPluginSetting("drawellipsemode.angle", 0);
+			angle = Angle2D.DegToRad(angledeg);
 			currentbevelwidth = bevelwidth;
 
 			//Add options docker
@@ -49,6 +56,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			panel.MinSpikiness = (int)General.Map.FormatInterface.MinCoordinate;
 			panel.MaxSpikiness = (int)General.Map.FormatInterface.MaxCoordinate;
 			panel.Spikiness = bevelwidth;
+			panel.Angle = angledeg;
 			panel.Subdivisions = subdivisions;
 			panel.OnValueChanged += OptionsPanelOnValueChanged;
 			panel.OnContinuousDrawingChanged += OnContinuousDrawingChanged;
@@ -67,6 +75,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Store settings
 			General.Settings.WritePluginSetting("drawellipsemode.subdivisions", subdivisions);
 			General.Settings.WritePluginSetting("drawellipsemode.bevelwidth", bevelwidth);
+			General.Settings.WritePluginSetting("drawellipsemode.angle", panel.Angle);
 			General.Settings.WritePluginSetting("drawellipsemode.continuousdrawing", panel.ContinuousDrawing);
 
 			// Remove the buttons
@@ -100,7 +109,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			int hh = height / 2;
 
 			Vector2D center = new Vector2D(pStart.x + hw, pStart.y + hh);
-			float curAngle = 0;
+			float curAngle = angle;
 			float angleStep = -Angle2D.PI / subdivisions * 2;
 
 			for(int i = 0; i < subdivisions; i++) 
@@ -139,6 +148,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			switch(points.Count - 1) // Last point matches the first one
 			{
+				case 3:  undoname = "Triangle draw"; shapename = "triangle"; break;
 				case 4:  undoname = "Rhombus draw"; shapename = "rhombus"; break;
 				case 5:  undoname = "Pentagon draw"; shapename = "pentagon"; break;
 				case 6:  undoname = "Hexagon draw"; shapename = "hexagon"; break;
@@ -166,6 +176,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			bevelwidth = panel.Spikiness;
 			subdivisions = Math.Min(maxsubdivisions, panel.Subdivisions);
+			angle = Angle2D.DegToRad(panel.Angle);
 			Update();
 		}
 

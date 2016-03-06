@@ -11,6 +11,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		public int Spikiness { get { return (int)spikiness.Value; } set { blockevents = true; spikiness.Value = value; blockevents = false; } }
 		public int Subdivisions { get { return (int)subdivs.Value; } set { blockevents = true; subdivs.Value = value; blockevents = false; } }
+		public int Angle { get { return (int)angle.Value; } set { blockevents = true; angle.Value = value; blockevents = false; } }
 		public int MaxSubdivisions { get { return (int)subdivs.Maximum; } set { subdivs.Maximum = value; } }
 		public int MinSubdivisions { get { return (int)subdivs.Minimum;  } set { subdivs.Minimum = value; } }
 		public int MaxSpikiness { get { return (int)spikiness.Maximum; } set { spikiness.Maximum = value; } }
@@ -26,6 +27,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			spikiness.ValueChanged += ValueChanged;
 			subdivs.ValueChanged += ValueChanged;
+			angle.ValueChanged += ValueChanged;
 
 			General.Interface.AddButton(continuousdrawing);
 			General.Interface.AddButton(toolStripSeparator1);
@@ -33,12 +35,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.AddButton(subdivs);
 			General.Interface.AddButton(spikinesslabel);
 			General.Interface.AddButton(spikiness);
+			General.Interface.AddButton(anglelabel);
+			General.Interface.AddButton(angle);
 			General.Interface.AddButton(reset);
 		}
 
 		public void Unregister() 
 		{
 			General.Interface.RemoveButton(reset);
+			General.Interface.RemoveButton(angle);
+			General.Interface.RemoveButton(anglelabel);
 			General.Interface.RemoveButton(spikiness);
 			General.Interface.RemoveButton(spikinesslabel);
 			General.Interface.RemoveButton(subdivs);
@@ -56,8 +62,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			blockevents = true;
 			spikiness.Value = 0;
+			angle.Value = 0;
 			blockevents = false;
-			subdivs.Value = subdivs.Minimum;
+			subdivs.Value = 6;
 		}
 
 		private void continuousdrawing_CheckedChanged(object sender, EventArgs e)
