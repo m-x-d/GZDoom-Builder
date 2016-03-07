@@ -260,7 +260,18 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							includelump = includelump.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
 
 							// Compiler files?
-							if(includestoskip.Contains(includelump)) continue;
+							if(includestoskip.Contains(includelump))
+							{
+								// These can also be included several times...
+								if(parsedlumps.Contains(includelump))
+								{
+									ReportError("Already parsed \"" + includelump + "\". Check your " + token + " directives");
+									return IgnoreErrors;
+								}
+
+								parsedlumps.Add(includelump);
+								continue;
+							}
 
 							// Convert to a path we can use
 							string includelumppath = GetRootedPath(source, includelump);

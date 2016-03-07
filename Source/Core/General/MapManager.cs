@@ -2098,25 +2098,6 @@ namespace CodeImp.DoomBuilder
 		//mxd. Update includes list and script names
 		internal List<CompilerError> UpdateScriptNames(bool logerrors)
 		{
-			List<CompilerError> compilererrors = UpdateScriptNames();
-			if(logerrors && compilererrors.Count > 0)
-			{
-				//INFO: CompileLump() prepends lumpname with "?" to distinguish between temporary files and files compiled in place
-				//INFO: also, error.linenumber is zero-based
-				foreach(CompilerError error in compilererrors)
-				{
-					General.ErrorLogger.Add(ErrorType.Error, "ACS error in \"" + (error.filename.StartsWith("?") ? error.filename.Substring(1) : error.filename)
-						+ (error.linenumber != CompilerError.NO_LINE_NUMBER ? "\", line " + (error.linenumber + 1) : "\"") 
-						+ ". " + error.description + ".");
-				}
-			}
-
-			return compilererrors;
-		}
-
-		//mxd. Update includes list and script names
-		internal List<CompilerError> UpdateScriptNames()
-		{
 			List<ScriptItem> namedscriptslist = new List<ScriptItem>();
 			List<ScriptItem> numberedscriptslist = new List<ScriptItem>();
 			List<string> scripincludeslist = new List<string>();
@@ -2135,7 +2116,11 @@ namespace CodeImp.DoomBuilder
 						//mxd. More boilderplate
 						if(!General.CompiledScriptConfigs.ContainsKey(General.Map.Options.ScriptCompiler))
 						{
-							compilererrors.Add(new CompilerError("Unable to compile lump \"" + maplumpinfo.Name + "\". Unable to find required script compiler configuration (\"" + General.Map.Options.ScriptCompiler + "\")."));
+							string error = "Unable to compile lump \"" + maplumpinfo.Name +
+							               "\". Unable to find required script compiler configuration (\"" +
+							               General.Map.Options.ScriptCompiler + "\").";
+							compilererrors.Add(new CompilerError(error));
+							if(logerrors) General.ErrorLogger.Add(ErrorType.Error, error);
 							return compilererrors;
 						}
 
@@ -2188,6 +2173,7 @@ namespace CodeImp.DoomBuilder
 						if(parser.HasError)
 						{
 							compilererrors.Add(new CompilerError(parser.ErrorDescription, parser.ErrorSource, parser.ErrorLine));
+							if(logerrors) parser.LogError();
 							break;
 						}
 					}

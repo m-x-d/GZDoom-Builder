@@ -954,7 +954,29 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			//mxd. Update script navigator
 			ScriptDocumentTab tab = e.TabPage as ScriptDocumentTab;
-			if(tab != null) ShowErrors(tab.UpdateNavigator());
+			if(tab != null)
+			{
+				List<CompilerError> errors = tab.UpdateNavigator();
+				
+				// Combine 2 error lists...
+				foreach(CompilerError navigatorerror in errors)
+				{
+					bool alreadyadded = false;
+					foreach(CompilerError compilererror in compilererrors)
+					{
+						if(compilererror.Equals(navigatorerror))
+						{
+							alreadyadded = true;
+							break;
+						}
+					}
+
+					if(!alreadyadded) compilererrors.Add(navigatorerror);
+				}
+
+				// Show all errors...
+				ShowErrors(compilererrors);
+			}
 
 			UpdateToolbar(true);
 		}
