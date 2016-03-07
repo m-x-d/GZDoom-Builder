@@ -1,4 +1,6 @@
-﻿using System;
+﻿#region ================== Namespaces
+
+using System;
 using System.ComponentModel;
 using System.IO;
 using System.Net;
@@ -6,10 +8,14 @@ using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 
+#endregion
+
 namespace CodeImp.DoomBuilder
 {
 	internal static class UpdateChecker
 	{
+		private delegate DialogResult ShowWarningMessageDelegate(string message, MessageBoxButtons buttons);
+		
 		private const string NO_UPDATE_REQUIRED = "Your version is up to date.";
 		
 		private static BackgroundWorker worker;
@@ -38,7 +44,7 @@ namespace CodeImp.DoomBuilder
 			string updaterpath = Path.Combine(General.AppPath, "Updater.exe");
 			if(!File.Exists(updaterpath))
 			{
-				e.Result = "Update check failed: \"" + updaterpath + "\" does not exist!";
+				ShowResult("Update check failed: \"" + updaterpath + "\" does not exist!");
 				e.Cancel = true;
 				return;
 			} 
@@ -46,7 +52,7 @@ namespace CodeImp.DoomBuilder
 			string inipath = Path.Combine(General.AppPath, "Updater.ini");
 			if(!File.Exists(inipath))
 			{
-				e.Result = "Update check failed: \"" + inipath + "\" does not exist!";
+				ShowResult("Update check failed: \"" + inipath + "\" does not exist!");
 				e.Cancel = true;
 				return;
 			}
@@ -54,7 +60,7 @@ namespace CodeImp.DoomBuilder
 			string url = GetDownloadUrl(inipath);
 			if(string.IsNullOrEmpty(url))
 			{
-				e.Result = "Update check failed: failed to get update url from Updater.ini!";
+				ShowResult("Update check failed: failed to get update url from Updater.ini!");
 				e.Cancel = true;
 				return;
 			}
@@ -70,7 +76,7 @@ namespace CodeImp.DoomBuilder
 			{
 				if(stream == null)
 				{
-					e.Result = "Update check failed: failed to retrieve remote revision info.";
+					ShowResult("Update check failed: failed to retrieve remote revision info.\nCheck your Internet connection and try again.");
 					e.Cancel = true;
 					return;
 				}
@@ -83,7 +89,7 @@ namespace CodeImp.DoomBuilder
 
 				if(!int.TryParse(s, out remoterev))
 				{
-					e.Result = "Update check failed: failed to retrieve remote revision number.";
+					ShowResult("Update check failed: failed to retrieve remote revision number.");
 					e.Cancel = true;
 					return;
 				}
@@ -96,7 +102,7 @@ namespace CodeImp.DoomBuilder
 
 				if(string.IsNullOrEmpty(changelog))
 				{
-					e.Result = "Update check failed: failed to retrieve changelog.";
+					ShowResult("Update check failed: failed to retrieve changelog.\nCheck your Internet connection and try again.");
 					e.Cancel = true;
 					return;
 				}
@@ -106,21 +112,31 @@ namespace CodeImp.DoomBuilder
 			}
 			else if(verbose)
 			{
-				e.Result = NO_UPDATE_REQUIRED;
+				ShowResult(NO_UPDATE_REQUIRED);
+			}
+		}
+
+		private static void ShowResult(string message)
+		{
+			if(!string.IsNullOrEmpty(message))
+			{
+				if(verbose)
+				{
+					if(General.MainWindow.InvokeRequired)
+						General.MainWindow.Invoke(new ShowWarningMessageDelegate(General.ShowWarningMessage), new object[] { message, MessageBoxButtons.OK });
+					else
+						General.ShowWarningMessage(message, MessageBoxButtons.OK);
+				}
+				else if(message != NO_UPDATE_REQUIRED)
+				{
+					General.ErrorLogger.Add(ErrorType.Error, message);
+				}
 			}
 		}
 
 		private static void RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
 		{
 			worker = null;
-			string errordesc = (e.Result != null ? e.Result.ToString() : string.Empty);
-			if(!string.IsNullOrEmpty(errordesc))
-			{
-				if(verbose)
-					General.ShowWarningMessage(errordesc, MessageBoxButtons.OK);
-				else if(errordesc != NO_UPDATE_REQUIRED)
-					General.ErrorLogger.Add(ErrorType.Error, errordesc);
-			}
 		}
 
 		private static string GetChangelog(string url, int localrev)

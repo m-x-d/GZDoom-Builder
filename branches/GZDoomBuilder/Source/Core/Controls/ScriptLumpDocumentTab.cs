@@ -88,7 +88,7 @@ namespace CodeImp.DoomBuilder.Controls
 		public override void Compile()
 		{
 			//mxd. List of errors. UpdateScriptNames can return errors and also updates acs includes list
-			List<CompilerError> errors = (config.ScriptType == ScriptType.ACS ? General.Map.UpdateScriptNames() : new List<CompilerError>());
+			List<CompilerError> errors = (config.ScriptType == ScriptType.ACS ? General.Map.UpdateScriptNames(false) : new List<CompilerError>());
 
 			//mxd. Errors already?..
 			if(errors.Count > 0)

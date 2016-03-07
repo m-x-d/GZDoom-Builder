@@ -56,7 +56,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 		// Error report
 		private int errorline;
 		private string errordesc;
-		private string errorsource;
+		private string errorsource; // Rooted path to the troubling file
+		private string shorterrorsource; //mxd. Resource name + filename
 		private long prevstreamposition; //mxd. Text stream position storted before performing ReadToken.
 
 		//mxd. Text lumps
@@ -594,7 +595,19 @@ namespace CodeImp.DoomBuilder.ZDoom
 			// Set error information
 			errordesc = message;
 			errorline = (datastream != null ? GetCurrentLineNumber() : CompilerError.NO_LINE_NUMBER); //mxd
-			errorsource = (ScriptType == ScriptType.ACS && sourcename.StartsWith("?") ? sourcename : Path.Combine(datalocation.GetShortName(), sourcename));
+			
+			//mxd
+			if(ScriptType == ScriptType.ACS && sourcename.StartsWith("?"))
+			{
+				shorterrorsource = sourcename;
+				errorsource = sourcename;
+			}
+			else
+			{
+				shorterrorsource = Path.Combine(datalocation.GetShortName(), sourcename);
+				errorsource = Path.Combine(datalocation.location, sourcename);
+			}
+			
 			if(sourcelumpindex != -1) errorsource += ":" + sourcelumpindex; //mxd
 		}
 
@@ -613,7 +626,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		//mxd. This adds an error to the ErrorLogger
 		public void LogError()
 		{
-			General.ErrorLogger.Add(ErrorType.Error, ScriptType + " error in \"" + errorsource
+			General.ErrorLogger.Add(ErrorType.Error, ScriptType + " error in \"" + shorterrorsource
 								+ (errorline != CompilerError.NO_LINE_NUMBER ? "\", line " + (errorline + 1) : "\"") + ". "
 								+ errordesc + ".");
 		}
@@ -623,6 +636,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		{
 			errordesc = null;
 			errorsource = null;
+			shorterrorsource = null;
 			errorline = CompilerError.NO_LINE_NUMBER;
 		}
 
