@@ -189,6 +189,16 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 			if(mapinfo.OutsideFogDensity > 0 && (mapinfo.OutsideFogColor.Red > 0 || mapinfo.OutsideFogColor.Green > 0 || mapinfo.OutsideFogColor.Blue > 0))
 				mapinfo.HasOutsideFogColor = true;
 
+			if(!string.IsNullOrEmpty(mapinfo.Sky2) && !mapinfo.DoubleSky)
+			{
+				LogWarning("\"Sky2\" is defined without \"doublesky\" flag. It won't be shown ingame");
+			}
+			else if(string.IsNullOrEmpty(mapinfo.Sky2) && mapinfo.DoubleSky)
+			{
+				LogWarning("\"doublesky\" flag is defined without \"Sky2\" property.");
+				mapinfo.DoubleSky = false;
+			}
+
 			// All done
 			return !this.HasError;
 		}
