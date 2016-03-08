@@ -180,7 +180,7 @@ namespace CodeImp.DoomBuilder.Windows
 					if(gotmismatch) continue;
 
 					//we have a match
-					warning = "Preset matches '" + other.Preset.Name + "'!";
+					warning = "Preset matches \"" + other.Preset.Name + "\"!";
 					item.ShowWarning = true;
 					break;
 				}

@@ -655,7 +655,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
 					break;
 
 				default:
-					throw new NotImplementedException("Tag Explorer: Sort mode '" + sortMode + "' is not implemented!");
+					throw new NotImplementedException("Tag Explorer: Sort mode \"" + sortMode + "\" is not implemented!");
 			}
 		}
 

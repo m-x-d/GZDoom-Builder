@@ -1955,7 +1955,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			if(!start.Fields.ContainsKey(key) && !end.Fields.ContainsKey(key)) 
 			{
-				General.Interface.DisplayStatus(StatusType.Warning, "First or last selected sector must have the '" + key + "' property!");
+				General.Interface.DisplayStatus(StatusType.Warning, "First or last selected sector must have the \"" + key + "\" property!");
 			} 
 			else 
 			{

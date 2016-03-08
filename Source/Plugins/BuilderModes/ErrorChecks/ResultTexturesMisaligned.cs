@@ -63,7 +63,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This must return the string that is displayed in the listbox
 		public override string ToString()
 		{
-			return "Texture '" + texturename + "' is not aligned on linedefs " + side1.Line.Index + " (" + (side1.IsFront ? "front" : "back") 
+			return "Texture \"" + texturename + "\" is not aligned on linedefs " + side1.Line.Index + " (" + (side1.IsFront ? "front" : "back") 
 				+ ") and " + side2.Line.Index + " (" + (side2.IsFront ? "front" : "back") + ")";
 		}
 		

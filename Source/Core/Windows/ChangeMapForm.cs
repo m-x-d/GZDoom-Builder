@@ -180,7 +180,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// Current map is already loaded
 			if(mapslist.SelectedItems[0].Text == options.LevelName)
 			{
-				MessageBox.Show(this, "Map '" + options.LevelName + "' is already loaded.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+				MessageBox.Show(this, "Map \"" + options.LevelName + "\" is already loaded.", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Warning);
 				mapslist.Focus();
 				return;
 			}

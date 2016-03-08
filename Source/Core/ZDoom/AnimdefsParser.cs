@@ -143,7 +143,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 				// Check results
 				if(cameratextures.ContainsKey(texturename.ToUpperInvariant()))
 				{
-					ReportError("Camera texture '" + texturename + "' is defined more than once");
+					ReportError("Camera texture \"" + texturename + "\" is defined more than once");
 					return false;
 				}
 

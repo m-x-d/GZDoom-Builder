@@ -380,7 +380,7 @@ namespace CodeImp.DoomBuilder.Windows
 				ci = listconfigs.Items[i].Tag as ConfigurationInfo;
 				if(!ci.Resources.IsValid())
 				{
-					MessageBox.Show(this, "At least one resource doesn't exist in '" + ci.Name + "' game configuration!", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Warning);
+					MessageBox.Show(this, "At least one resource doesn't exist in \"" + ci.Name + "\" game configuration!", Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Warning);
 					tabs.SelectedTab = tabresources;
 					listconfigs.Focus();
 					listconfigs.Items[i].Selected = true;
@@ -817,7 +817,7 @@ namespace CodeImp.DoomBuilder.Windows
 			configinfocopy = current.Clone();
 
 			//display info
-			General.Interface.DisplayStatus(StatusType.Info, "Copied '" + configinfocopy.Name + "' game configuration");
+			General.Interface.DisplayStatus(StatusType.Info, "Copied \"" + configinfocopy.Name + "\" game configuration");
 		}
 
 		private void pasteall_Click(object sender, EventArgs e) 
@@ -831,7 +831,7 @@ namespace CodeImp.DoomBuilder.Windows
 			//update display
 			cbEngineSelector.Text = string.Empty; // Otherwise current text from cbEngineSelector will override the pasted one
 			listconfigs_SelectedIndexChanged(listconfigs, EventArgs.Empty);
-			General.Interface.DisplayStatus(StatusType.Info, "Pasted game configuration from '" + configinfocopy.Name + "'");
+			General.Interface.DisplayStatus(StatusType.Info, "Pasted game configuration from \"" + configinfocopy.Name + "\"");
 		}
 
 		private void pasteresources_Click(object sender, EventArgs e) 
@@ -844,7 +844,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 			//update display
 			listconfigs_SelectedIndexChanged(listconfigs, EventArgs.Empty);
-			General.Interface.DisplayStatus(StatusType.Info, "Pasted resources from '" + configinfocopy.Name + "'");
+			General.Interface.DisplayStatus(StatusType.Info, "Pasted resources from \"" + configinfocopy.Name + "\"");
 		}
 
 		private void pasteengines_Click(object sender, EventArgs e) 
@@ -858,7 +858,7 @@ namespace CodeImp.DoomBuilder.Windows
 			//update display
 			cbEngineSelector.Text = string.Empty; // Otherwise current text from cbEngineSelector will override the pasted one
 			listconfigs_SelectedIndexChanged(listconfigs, EventArgs.Empty);
-			General.Interface.DisplayStatus(StatusType.Info, "Pasted engines list from '" + configinfocopy.Name + "'");
+			General.Interface.DisplayStatus(StatusType.Info, "Pasted engines list from \"" + configinfocopy.Name + "\"");
 		}
 
 		private void pastecolorpresets_Click(object sender, EventArgs e) 
@@ -871,7 +871,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 			//update display
 			listconfigs_SelectedIndexChanged(listconfigs, EventArgs.Empty);
-			General.Interface.DisplayStatus(StatusType.Info, "Pasted color presets from '" + configinfocopy.Name + "'");
+			General.Interface.DisplayStatus(StatusType.Info, "Pasted color presets from \"" + configinfocopy.Name + "\"");
 		}
 
 		#endregion

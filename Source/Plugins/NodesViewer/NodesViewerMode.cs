@@ -244,7 +244,7 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 					nodesformat = new string(reader.ReadChars(4));
 					if(!supportedFormats.Contains(nodesformat)) 
 					{
-						MessageBox.Show("'" + nodesformat + "' node format is not supported.", "Nodes Viewer mode", MessageBoxButtons.OK, MessageBoxIcon.Error);
+						MessageBox.Show("\"" + nodesformat + "\" node format is not supported.", "Nodes Viewer mode", MessageBoxButtons.OK, MessageBoxIcon.Error);
 						return false;
 					}
 
