@@ -2588,10 +2588,29 @@ namespace CodeImp.DoomBuilder.Data
 				{
 					// Create classic texture
 					Vector2D scale;
-					Bitmap img = GetTextureBitmap(skytex, out scale);
-					if(img != null)
+					Bitmap sky1 = GetTextureBitmap(skytex, out scale);
+					if(sky1 != null)
 					{
-						skybox = MakeClassicSkyBox(img, scale);
+						// Double skies?
+						if(mapinfo.DoubleSky)
+						{
+							Bitmap sky2 = GetTextureBitmap(mapinfo.Sky2);
+							if(sky2 != null)
+							{
+								// Resize if needed
+								if(sky2.Width != sky1.Width || sky2.Height != sky1.Height)
+									ResizeImage(sky2, sky1.Width, sky1.Height);
+
+								// Combine both textures. Sky2 is below Sky1
+								using(Graphics g = Graphics.FromImage(sky2))
+									g.DrawImageUnscaled(sky1, 0, 0);
+
+								// Use the composite one
+								sky1 = sky2;
+							}
+						}
+
+						skybox = MakeClassicSkyBox(sky1, scale);
 					}
 				}
 			}
