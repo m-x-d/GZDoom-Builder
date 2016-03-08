@@ -185,7 +185,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.IO
 				sw.Write(mtl.ToString());
 
 			//done
-			General.Interface.DisplayStatus(StatusType.Warning, "Geometry exported to '" + savePath + ".obj'");
+			General.Interface.DisplayStatus(StatusType.Warning, "Geometry exported to \"" + savePath + ".obj\"");
 		}
 
 		#endregion

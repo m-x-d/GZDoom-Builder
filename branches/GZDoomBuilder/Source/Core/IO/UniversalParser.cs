@@ -414,13 +414,13 @@ namespace CodeImp.DoomBuilder.IO
 								catch(FormatException)
 								{
 									// ERROR: Invalid value in assignment
-									RaiseError(line, ERROR_VALUEINVALID + "\n\nUnrecognized token: '" + s.Trim() + "'");
+									RaiseError(line, ERROR_VALUEINVALID + "\n\nUnrecognized token: \"" + s.Trim() + "\"");
 								}
 							}
 							catch(FormatException)
 							{
 								// ERROR: Invalid value in assignment
-								RaiseError(line, ERROR_VALUEINVALID + "\n\nUnrecognized token: '" + s.Trim() + "'");
+								RaiseError(line, ERROR_VALUEINVALID + "\n\nUnrecognized token: \"" + s.Trim() + "\"");
 							}
 						}
 						// Floating point?
@@ -434,7 +434,7 @@ namespace CodeImp.DoomBuilder.IO
 							catch(FormatException)
 							{ 
 								// ERROR: Invalid value in assignment
-								RaiseError(line, ERROR_VALUEINVALID + "\n\nUnrecognized token: '" + s.Trim() + "'");
+								RaiseError(line, ERROR_VALUEINVALID + "\n\nUnrecognized token: \"" + s.Trim() + "\"");
 							}
 							
 							// Add it to struct
@@ -476,13 +476,13 @@ namespace CodeImp.DoomBuilder.IO
 								catch(FormatException)
 								{ 
 									// ERROR: Invalid value in assignment
-									RaiseError(line, ERROR_VALUEINVALID + "\n\nUnrecognized token: '" + s.Trim() + "'");
+									RaiseError(line, ERROR_VALUEINVALID + "\n\nUnrecognized token: \"" + s.Trim() + "\"");
 								}
 							}
 							catch(FormatException)
 							{ 
 								// ERROR: Invalid value in assignment
-								RaiseError(line, ERROR_VALUEINVALID + "\n\nUnrecognized token: '" + s.Trim() + "'");
+								RaiseError(line, ERROR_VALUEINVALID + "\n\nUnrecognized token: \"" + s.Trim() + "\"");
 							}
 						}
 						
@@ -533,7 +533,7 @@ namespace CodeImp.DoomBuilder.IO
 									catch(FormatException)
 									{ 
 										// ERROR: Invalid value in assignment
-										RaiseError(line, ERROR_VALUEINVALID + "\n\nUnrecognized token: '" + v.Trim() + "'");
+										RaiseError(line, ERROR_VALUEINVALID + "\n\nUnrecognized token: \"" + v.Trim() + "\"");
 									}
 									
 									// Convert the number to a char
@@ -541,7 +541,7 @@ namespace CodeImp.DoomBuilder.IO
 									catch(FormatException)
 									{ 
 										// ERROR: Invalid value in assignment
-										RaiseError(line, ERROR_VALUEINVALID + "\n\nUnrecognized token: '" + v.Trim() + "'");
+										RaiseError(line, ERROR_VALUEINVALID + "\n\nUnrecognized token: \"" + v.Trim() + "\"");
 									}
 									
 									// Add the char
@@ -623,7 +623,7 @@ namespace CodeImp.DoomBuilder.IO
 								
 							default:
 								// Unknown keyword
-								RaiseError(line, ERROR_KEYWORDUNKNOWN + "\n\nUnrecognized token: '" + val.ToString().Trim() + "'");
+								RaiseError(line, ERROR_KEYWORDUNKNOWN + "\n\nUnrecognized token: \"" + val.ToString().Trim() + "\"");
 								break;
 						}
 						

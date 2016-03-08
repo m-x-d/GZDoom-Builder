@@ -1102,10 +1102,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			if(BuilderPlug.Me.CopiedTexture != null)
 			{
-				mode.CreateUndo("Paste texture '" + BuilderPlug.Me.CopiedTexture + "'");
-				mode.SetActionResult("Pasted texture '" + BuilderPlug.Me.CopiedTexture + "'.");
+				mode.CreateUndo("Paste texture \"" + BuilderPlug.Me.CopiedTexture + "\"");
+				mode.SetActionResult("Pasted texture \"" + BuilderPlug.Me.CopiedTexture + "\".");
 				SetTexture(BuilderPlug.Me.CopiedTexture);
-				OnTextureChanged();//mxd
+				OnTextureChanged(); //mxd
 			}
 		}
 		
@@ -1137,7 +1137,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			string texturename = ((General.Map.Options.UseLongTextureNames && Texture != null && Texture.UsedInMap) ? Texture.Name : GetTextureName());
 			BuilderPlug.Me.CopiedTexture = texturename;
 			if(General.Map.Config.MixTexturesFlats) BuilderPlug.Me.CopiedFlat = texturename;
-			mode.SetActionResult("Copied texture '" + texturename + "'.");
+			mode.SetActionResult("Copied texture \"" + texturename + "\".");
 		}
 		
 		// Copy texture offsets

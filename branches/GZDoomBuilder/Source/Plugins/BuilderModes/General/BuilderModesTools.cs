@@ -164,7 +164,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					break;
 
 				default:
-					throw new NotImplementedException("GetSidedefPartSize: got unsupported geometry type: '" + type + "'");
+					throw new NotImplementedException("GetSidedefPartSize: got unsupported geometry type: \"" + type + "\"");
 			}
 
 			return rect;

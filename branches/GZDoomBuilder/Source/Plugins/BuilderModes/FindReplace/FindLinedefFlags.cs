@@ -90,7 +90,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					string f = flag.Trim();
 					if(!General.Map.Config.LinedefFlags.ContainsKey(f))
 					{
-						MessageBox.Show("Invalid replace value '" + f + "' for this search type!", "Find and Replace", MessageBoxButtons.OK, MessageBoxIcon.Error);
+						MessageBox.Show("Invalid replace value \"" + f + "\" for this search type!", "Find and Replace", MessageBoxButtons.OK, MessageBoxIcon.Error);
 						return objs.ToArray();
 					}
 					replaceflagslist.Add(f);

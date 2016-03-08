@@ -494,7 +494,7 @@ namespace CodeImp.DoomBuilder.IO
 					} 
 					else if(!e.IsValidType(e.Value.GetType())) 
 					{
-						General.ErrorLogger.Add(ErrorType.Warning, element + ": the value of entry '" + e.Key + "' is of incompatible type (expected " + e.GetType().Name + ", but got " + e.Value.GetType().Name + "). If you save the map, this value will be ignored.");
+						General.ErrorLogger.Add(ErrorType.Warning, element + ": the value of entry \"" + e.Key + "\" is of incompatible type (expected " + e.GetType().Name + ", but got " + e.Value.GetType().Name + "). If you save the map, this value will be ignored.");
 						continue;
 					}
 
@@ -522,7 +522,7 @@ namespace CodeImp.DoomBuilder.IO
 							} 
 							else if(!e.IsValidType(e.Value.GetType())) 
 							{
-								General.ErrorLogger.Add(ErrorType.Warning, element + ": the value of entry '" + e.Key + "' is of incompatible type (expected " + e.GetType().Name + ", but got " + e.Value.GetType().Name + "). If you save the map, this value will be ignored.");
+								General.ErrorLogger.Add(ErrorType.Warning, element + ": the value of entry \"" + e.Key + "\" is of incompatible type (expected " + e.GetType().Name + ", but got " + e.Value.GetType().Name + "). If you save the map, this value will be ignored.");
 								continue;
 							}
 
@@ -582,7 +582,7 @@ namespace CodeImp.DoomBuilder.IO
 			{
 				// Report error when entry is required!
 				if(required)
-					General.ErrorLogger.Add(ErrorType.Error, "Error while reading UDMF map data: Missing required field '" + entryname + "' at " + where + ".");
+					General.ErrorLogger.Add(ErrorType.Error, "Error while reading UDMF map data: Missing required field \"" + entryname + "\" at " + where + ".");
 
 				// Make default entry
 				result = defaultvalue;

@@ -155,7 +155,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 						if(rotation != 0 && rotation != 90 && rotation != 180 && rotation != 270) 
 						{
-							parser.LogWarning("Unsupported rotation (" + rotation + ") in patch '" + name + "'");
+							parser.LogWarning("Unsupported rotation (" + rotation + ") in patch \"" + name + "\"");
 							rotation = 0;
 						}
 						break;
@@ -214,7 +214,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 				// Try parsing as value
 				if(!float.TryParse(strvalue, NumberStyles.Float, CultureInfo.InvariantCulture, out value))
 				{
-					parser.ReportError("Expected numeric value for property '" + propertyname + "'");
+					parser.ReportError("Expected numeric value for property \"" + propertyname + "\"");
 					return false;
 				}
 				// Success
@@ -222,7 +222,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			}
 
 			// Can't find the property value!
-			parser.ReportError("Expected a value for property '" + propertyname + "'");
+			parser.ReportError("Expected a value for property \"" + propertyname + "\"");
 			value = 0.0f;
 			return false;
 		}
@@ -238,7 +238,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 				// Try parsing as value
 				if(!int.TryParse(strvalue, NumberStyles.Integer, CultureInfo.InvariantCulture, out value))
 				{
-					parser.ReportError("Expected integral value for property '" + propertyname + "'");
+					parser.ReportError("Expected integral value for property \"" + propertyname + "\"");
 					return false;
 				}
 
@@ -247,7 +247,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			}
 
 			// Can't find the property value!
-			parser.ReportError("Expected a value for property '" + propertyname + "'");
+			parser.ReportError("Expected a value for property \"" + propertyname + "\"");
 			value = 0;
 			return false;
 		}
@@ -261,7 +261,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			if(string.IsNullOrEmpty(value)) 
 			{
 				// Can't find the property value!
-				parser.ReportError("Expected a value for property '" + propertyname + "'");
+				parser.ReportError("Expected a value for property \"" + propertyname + "\"");
 				return false;
 			}
 
@@ -278,20 +278,20 @@ namespace CodeImp.DoomBuilder.ZDoom
 			if(string.IsNullOrEmpty(strvalue)) 
 			{
 				// Can't find the property value!
-				parser.ReportError("Expected a value for property '" + propertyname + "'");
+				parser.ReportError("Expected a value for property \"" + propertyname + "\"");
 				return false;
 			}
 
 			if(strvalue[0] != '#') 
 			{
-				parser.ReportError("Expected color value for property '" + propertyname + "'");
+				parser.ReportError("Expected color value for property \"" + propertyname + "\"");
 				return false;
 			}
 
 			// Try parsing as value
 			if(!int.TryParse(strvalue.Remove(0, 1), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out value)) 
 			{
-				parser.ReportError("Expected color value for property '" + propertyname + "'");
+				parser.ReportError("Expected color value for property \"" + propertyname + "\"");
 				return false;
 			}
 

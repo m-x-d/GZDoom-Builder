@@ -66,7 +66,7 @@ namespace CodeImp.DoomBuilder.Plugins
 			// Initialize
 			string shortfilename = Path.GetFileName(filename);
 			name = Path.GetFileNameWithoutExtension(filename);
-			General.WriteLogLine("Loading plugin '" + name + "' from '" + shortfilename + "'...");
+			General.WriteLogLine("Loading plugin \"" + name + "\" from \"" + shortfilename + "\"...");
 
 			try
 			{
@@ -218,7 +218,7 @@ namespace CodeImp.DoomBuilder.Plugins
 			catch(TargetInvocationException e)
 			{
 				// Error!
-				string error = "Failed to create class instance '" + t.Name + "' from plugin '" + name + "'.";
+				string error = "Failed to create class instance \"" + t.Name + "\" from plugin \"" + name + "\".";
 				General.ShowErrorMessage(error + Environment.NewLine + Environment.NewLine + "See the error log for more details", MessageBoxButtons.OK, false);
 				General.WriteLogLine(error + " " + e.InnerException.GetType().Name + " at target: " 
 					+ e.InnerException.Message + Environment.NewLine + "Stacktrace: " + e.InnerException.StackTrace.Trim());
@@ -227,7 +227,7 @@ namespace CodeImp.DoomBuilder.Plugins
 			catch(Exception e)
 			{
 				// Error!
-				string error = "Failed to create class instance '" + t.Name + "' from plugin '" + name + "'.";
+				string error = "Failed to create class instance \"" + t.Name + "\" from plugin \"" + name + "\".";
 				General.ShowErrorMessage(error + Environment.NewLine + Environment.NewLine + "See the error log for more details", MessageBoxButtons.OK, false);
 				General.WriteLogLine(error + " " + e.GetType().Name + ": " + e.Message + Environment.NewLine
 					+ "Stacktrace: " + e.StackTrace.Trim());

@@ -732,14 +732,14 @@ namespace CodeImp.DoomBuilder.Windows
 
 				if(!File.Exists(filePaths[0])) 
 				{
-					General.Interface.DisplayStatus(StatusType.Warning, "Cannot open '" + filePaths[0] + "': file does not exist!");
+					General.Interface.DisplayStatus(StatusType.Warning, "Cannot open \"" + filePaths[0] + "\": file does not exist!");
 					return;
 				}
 
 				string ext = Path.GetExtension(filePaths[0]);
 				if(string.IsNullOrEmpty(ext) || ext.ToLower() != ".wad") 
 				{
-					General.Interface.DisplayStatus(StatusType.Warning, "Cannot open '" + filePaths[0] + "': only WAD files can be loaded this way!");
+					General.Interface.DisplayStatus(StatusType.Warning, "Cannot open \"" + filePaths[0] + "\": only WAD files can be loaded this way!");
 					return;
 				}
 
@@ -3066,7 +3066,7 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			//open file
-			DisplayStatus(StatusType.Info, "Shortcut reference saved to '" + path + "'");
+			DisplayStatus(StatusType.Info, "Shortcut reference saved to \"" + path + "\"");
 			Process.Start(path);
 		}
 
@@ -3074,8 +3074,8 @@ namespace CodeImp.DoomBuilder.Windows
 		private void itemopenconfigfolder_Click(object sender, EventArgs e)
 		{
 			if(Directory.Exists(General.SettingsPath)) Process.Start(General.SettingsPath);
-			else General.ShowErrorMessage("Huh? Where did Settings folder go?.." + Environment.NewLine 
-				+ "I swear it was here: '" + General.SettingsPath + "'!", MessageBoxButtons.OK); // I don't think this will ever happen
+			else General.ShowErrorMessage("Huh? Where did Settings folder go?.." + Environment.NewLine
+				+ "I swear it was here: \"" + General.SettingsPath + "\"!", MessageBoxButtons.OK); // I don't think this will ever happen
 		}
 		
 		#endregion
@@ -3202,11 +3202,11 @@ namespace CodeImp.DoomBuilder.Windows
 			string folder = General.Settings.ScreenshotsPath;
 			if(!Directory.Exists(folder)) 
 			{
-				if(folder != General.DefaultScreenshotsPath 
-					&& General.ShowErrorMessage("Screenshots save path '" + folder 
-					+ "' does not exist!\nPress OK to save to the default folder ('" 
-					+ General.DefaultScreenshotsPath 
-					+ "').\nPress Cancel to abort.", MessageBoxButtons.OKCancel) == DialogResult.Cancel) return;
+				if(folder != General.DefaultScreenshotsPath
+					&& General.ShowErrorMessage("Screenshots save path \"" + folder
+					+ "\" does not exist!\nPress OK to save to the default folder (\"" 
+					+ General.DefaultScreenshotsPath
+					+ "\").\nPress Cancel to abort.", MessageBoxButtons.OKCancel) == DialogResult.Cancel) return;
 
 
 				folder = General.DefaultScreenshotsPath;
@@ -3328,7 +3328,7 @@ namespace CodeImp.DoomBuilder.Windows
 					encoderParams.Param[0] = qualityParam;
 
 					bitmap.Save(path, jpegCodec, encoderParams);
-					DisplayStatus(StatusType.Info, "Screenshot saved to '" + path + "'");
+					DisplayStatus(StatusType.Info, "Screenshot saved to \"" + path + "\"");
 				} 
 				catch(ExternalException e) 
 				{

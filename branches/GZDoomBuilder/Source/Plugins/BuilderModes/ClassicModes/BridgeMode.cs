@@ -736,7 +736,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 					return InterpolationTools.EaseInOutSine(val1, val2, delta);
 
 				default:
-					throw new Exception("DrawBezierPathMode.IntepolateValue: '" + mode + "' mode is not supported!");
+					throw new Exception("DrawBezierPathMode.IntepolateValue: \"" + mode + "\" mode is not supported!");
 			}
 		}
 
