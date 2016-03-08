@@ -60,11 +60,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		private void reset_Click(object sender, EventArgs e) 
 		{
+			// Reset values
 			blockevents = true;
 			spikiness.Value = 0;
 			angle.Value = 0;
-			blockevents = false;
 			subdivs.Value = 6;
+			blockevents = false;
+
+			// Dispatch event
+			OnValueChanged(this, EventArgs.Empty);
 		}
 
 		private void continuousdrawing_CheckedChanged(object sender, EventArgs e)

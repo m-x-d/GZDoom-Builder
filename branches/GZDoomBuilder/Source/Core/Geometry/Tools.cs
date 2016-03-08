@@ -2223,7 +2223,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		/// <summary>Flips sector linedefs so they all face either inward or outward.</summary>
 		public static void FlipSectorLinedefs(ICollection<Sector> sectors, bool selectedlinesonly) 
 		{
-			Dictionary<Linedef, bool> processed = new Dictionary<Linedef, bool>();
+			HashSet<Linedef> processed = new HashSet<Linedef>();
 			
 			foreach(Sector s in sectors) 
 			{
@@ -2235,7 +2235,7 @@ namespace CodeImp.DoomBuilder.Geometry
 				//sort lines
 				foreach(Sidedef side in s.Sidedefs) 
 				{
-					if(processed.ContainsKey(side.Line)) continue;
+					if(processed.Contains(side.Line)) continue;
 					if(selectedlinesonly && !side.Line.Selected)
 					{
 						if(side == side.Line.Front) unselectedfrontlines++;
@@ -2248,7 +2248,7 @@ namespace CodeImp.DoomBuilder.Geometry
 					else
 						backlines.Add(side.Line);
 
-					processed.Add(side.Line, false);
+					processed.Add(side.Line);
 				}
 
 				//flip lines

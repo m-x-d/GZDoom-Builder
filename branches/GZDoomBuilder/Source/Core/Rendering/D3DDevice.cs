@@ -168,7 +168,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			device.SetRenderState(RenderState.NormalizeNormals, false);
 			device.SetRenderState(RenderState.PointSpriteEnable, false);
 			device.SetRenderState(RenderState.RangeFogEnable, false);
-			device.SetRenderState(RenderState.ShadeMode, ShadeMode.Flat); //mxd
+			device.SetRenderState(RenderState.ShadeMode, ShadeMode.Gouraud);
 			device.SetRenderState(RenderState.SourceBlend, Blend.SourceAlpha);
 			device.SetRenderState(RenderState.SpecularEnable, false);
 			device.SetRenderState(RenderState.StencilEnable, false);
