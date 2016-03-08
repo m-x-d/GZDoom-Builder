@@ -1082,7 +1082,11 @@ namespace CodeImp.DoomBuilder.Editing
 			Sidedef sd = (sindex >= 0) ? General.Map.Map.GetSidedefByIndex(sindex) : null;
 			l.AttachFront(sd);
 			l.Marked = true;
-			if(sd != null) sd.Marked = true;
+			if(sd != null)
+			{
+				sd.Marked = true;
+				if(sd.Sector != null) sd.Sector.UpdateNeeded = true; //mxd. Sector needs to be updated as well...
+			}
 			geometrychanged = true;
 		}
 
@@ -1106,7 +1110,11 @@ namespace CodeImp.DoomBuilder.Editing
 			Sidedef sd = (sindex >= 0) ? General.Map.Map.GetSidedefByIndex(sindex) : null;
 			l.AttachBack(sd);
 			l.Marked = true;
-			if(sd != null) sd.Marked = true;
+			if(sd != null)
+			{
+				sd.Marked = true;
+				if(sd.Sector != null) sd.Sector.UpdateNeeded = true; //mxd. Sector needs to be updated as well...
+			}
 			geometrychanged = true;
 		}
 

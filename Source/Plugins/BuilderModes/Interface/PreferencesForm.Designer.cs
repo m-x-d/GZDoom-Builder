@@ -233,15 +233,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.autodrawonedit.AutoSize = true;
 			this.autodrawonedit.Location = new System.Drawing.Point(13, 24);
 			this.autodrawonedit.Name = "autodrawonedit";
-			this.autodrawonedit.Size = new System.Drawing.Size(346, 17);
+			this.autodrawonedit.Size = new System.Drawing.Size(353, 30);
 			this.autodrawonedit.TabIndex = 11;
-			this.autodrawonedit.Text = "Start drawing when Edit pressed over empty space in Classic modes";
+			this.autodrawonedit.Text = "Start drawing when Edit pressed over empty space in Classic modes\r\nInsert new thi" +
+				"ng when Edit pressed over empty space in Things mode";
 			this.autodrawonedit.UseVisualStyleBackColor = true;
 			// 
 			// syncSelection
 			// 
 			this.syncSelection.AutoSize = true;
-			this.syncSelection.Location = new System.Drawing.Point(13, 249);
+			this.syncSelection.Location = new System.Drawing.Point(13, 262);
 			this.syncSelection.Name = "syncSelection";
 			this.syncSelection.Size = new System.Drawing.Size(295, 17);
 			this.syncSelection.TabIndex = 10;
@@ -251,7 +252,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// dontMoveGeometryOutsideBounds
 			// 
 			this.dontMoveGeometryOutsideBounds.AutoSize = true;
-			this.dontMoveGeometryOutsideBounds.Location = new System.Drawing.Point(13, 224);
+			this.dontMoveGeometryOutsideBounds.Location = new System.Drawing.Point(13, 237);
 			this.dontMoveGeometryOutsideBounds.Name = "dontMoveGeometryOutsideBounds";
 			this.dontMoveGeometryOutsideBounds.Size = new System.Drawing.Size(323, 17);
 			this.dontMoveGeometryOutsideBounds.TabIndex = 9;
@@ -261,7 +262,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// autoaligntexturesoncreate
 			// 
 			this.autoaligntexturesoncreate.AutoSize = true;
-			this.autoaligntexturesoncreate.Location = new System.Drawing.Point(13, 199);
+			this.autoaligntexturesoncreate.Location = new System.Drawing.Point(13, 212);
 			this.autoaligntexturesoncreate.Name = "autoaligntexturesoncreate";
 			this.autoaligntexturesoncreate.Size = new System.Drawing.Size(233, 17);
 			this.autoaligntexturesoncreate.TabIndex = 7;
@@ -271,7 +272,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// autodragonpaste
 			// 
 			this.autodragonpaste.AutoSize = true;
-			this.autodragonpaste.Location = new System.Drawing.Point(13, 174);
+			this.autodragonpaste.Location = new System.Drawing.Point(13, 187);
 			this.autodragonpaste.Name = "autodragonpaste";
 			this.autodragonpaste.Size = new System.Drawing.Size(202, 17);
 			this.autodragonpaste.TabIndex = 6;
@@ -281,7 +282,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// visualmodeclearselection
 			// 
 			this.visualmodeclearselection.AutoSize = true;
-			this.visualmodeclearselection.Location = new System.Drawing.Point(13, 149);
+			this.visualmodeclearselection.Location = new System.Drawing.Point(13, 162);
 			this.visualmodeclearselection.Name = "visualmodeclearselection";
 			this.visualmodeclearselection.Size = new System.Drawing.Size(216, 17);
 			this.visualmodeclearselection.TabIndex = 5;
@@ -291,7 +292,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// autoclearselection
 			// 
 			this.autoclearselection.AutoSize = true;
-			this.autoclearselection.Location = new System.Drawing.Point(13, 124);
+			this.autoclearselection.Location = new System.Drawing.Point(13, 137);
 			this.autoclearselection.Name = "autoclearselection";
 			this.autoclearselection.Size = new System.Drawing.Size(226, 17);
 			this.autoclearselection.TabIndex = 4;
@@ -301,7 +302,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// editnewthing
 			// 
 			this.editnewthing.AutoSize = true;
-			this.editnewthing.Location = new System.Drawing.Point(13, 49);
+			this.editnewthing.Location = new System.Drawing.Point(13, 62);
 			this.editnewthing.Name = "editnewthing";
 			this.editnewthing.Size = new System.Drawing.Size(248, 17);
 			this.editnewthing.TabIndex = 1;
@@ -311,7 +312,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// editnewsector
 			// 
 			this.editnewsector.AutoSize = true;
-			this.editnewsector.Location = new System.Drawing.Point(13, 74);
+			this.editnewsector.Location = new System.Drawing.Point(13, 87);
 			this.editnewsector.Name = "editnewsector";
 			this.editnewsector.Size = new System.Drawing.Size(258, 17);
 			this.editnewsector.TabIndex = 2;
@@ -321,7 +322,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// additiveselect
 			// 
 			this.additiveselect.AutoSize = true;
-			this.additiveselect.Location = new System.Drawing.Point(13, 99);
+			this.additiveselect.Location = new System.Drawing.Point(13, 112);
 			this.additiveselect.Name = "additiveselect";
 			this.additiveselect.Size = new System.Drawing.Size(205, 17);
 			this.additiveselect.TabIndex = 3;

@@ -303,26 +303,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			if(BuilderPlug.Me.CopiedFlat != null)
 			{
-				mode.CreateUndo("Paste ceiling '" + BuilderPlug.Me.CopiedFlat + "'");
-				mode.SetActionResult("Pasted flat '" + BuilderPlug.Me.CopiedFlat + "' on ceiling.");
-
-				//mxd. Glow effect may require SectorData and geometry update
-				bool prevtextureglows = General.Map.Data.GlowingFlats.ContainsKey(Sector.Sector.LongCeilTexture);
+				mode.CreateUndo("Paste ceiling \"" + BuilderPlug.Me.CopiedFlat + "\"");
+				mode.SetActionResult("Pasted flat \"" + BuilderPlug.Me.CopiedFlat + "\" on ceiling.");
 
 				SetTexture(BuilderPlug.Me.CopiedFlat);
-
-				//mxd. Glow effect may require SectorData and geometry update
-				if(prevtextureglows && !General.Map.Data.GlowingFlats.ContainsKey(Sector.Sector.LongCeilTexture))
-				{
-					SectorData sd = mode.GetSectorData(level.sector);
-					sd.UpdateForced();
-
-					if(mode.VisualSectorExists(level.sector))
-					{
-						BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(level.sector);
-						vs.UpdateSectorGeometry(false);
-					}
-				}
 
 				//mxd. 3D floors may need updating...
 				OnTextureChanged();
@@ -525,7 +509,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This changes the texture
 		protected override void SetTexture(string texturename)
 		{
+			//mxd. Glow effect may require SectorData and geometry update
+			bool prevtextureglows = General.Map.Data.GlowingFlats.ContainsKey(Sector.Sector.LongCeilTexture);
+
+			// Set new texture
 			level.sector.SetCeilTexture(texturename);
+
+			//mxd. Glow effect may require SectorData and geometry update
+			if(prevtextureglows 
+				&& !General.Map.Data.GlowingFlats.ContainsKey(Sector.Sector.LongCeilTexture)
+				&& mode.VisualSectorExists(level.sector))
+			{
+				((BaseVisualSector)mode.GetVisualSector(level.sector)).Changed = true;
+			}
+			
 			General.Map.Data.UpdateUsedTextures();
 		}
 
