@@ -265,11 +265,19 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 								// These can also be included several times...
 								if(parsedlumps.Contains(includelump))
 								{
-									ReportError("Already parsed \"" + includelump + "\". Check your " + token + " directives");
-									return IgnoreErrors;
+									//INFO: files included or imported inside a library are not visible to the code outside it 
+									//and must be included/imported separately
+									if(includetype != IncludeType.LIBRARY)
+									{
+										ReportError("Already parsed \"" + includelump + "\". Check your " + token + " directives");
+										return IgnoreErrors;
+									}
 								}
-
-								parsedlumps.Add(includelump);
+								else
+								{
+									parsedlumps.Add(includelump);
+								}
+								
 								continue;
 							}
 
