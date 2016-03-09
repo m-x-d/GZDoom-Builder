@@ -249,6 +249,7 @@
     <Compile Include="ErrorChecks\CheckMissingTextures.cs" />
     <Compile Include="ErrorChecks\CheckObsoleteThings.cs" />
     <Compile Include="ErrorChecks\CheckOverlappingVertices.cs" />
+    <Compile Include="ErrorChecks\CheckPolyobjects.cs" />
     <Compile Include="ErrorChecks\CheckShortLinedefs.cs" />
     <Compile Include="ErrorChecks\CheckStrayVertices.cs" />
     <Compile Include="ErrorChecks\CheckTextureAlignment.cs" />
@@ -257,6 +258,8 @@
     <Compile Include="ErrorChecks\CheckUnknownThings.cs" />
     <Compile Include="ErrorChecks\CheckUnusedTextures.cs" />
     <Compile Include="ErrorChecks\CheckUnusedThings.cs" />
+    <Compile Include="ErrorChecks\ResultInvalidPolyobjectLines.cs" />
+    <Compile Include="ErrorChecks\ResultInvalidPolyobjectThings.cs" />
     <Compile Include="ErrorChecks\ResultMapTooBig.cs" />
     <Compile Include="ErrorChecks\ResultMissingFlat.cs" />
     <Compile Include="ErrorChecks\ResultNoErrors.cs" />
