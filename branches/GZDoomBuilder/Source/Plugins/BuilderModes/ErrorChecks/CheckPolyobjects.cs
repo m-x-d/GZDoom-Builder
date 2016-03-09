@@ -113,17 +113,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Check Linedefs with Polyobj_StartLine action. These must connect 1 - 1.
 			// Polyobject number is arg0, Mirror polyobject number is arg1
-			foreach(KeyValuePair<int, List<Linedef>> linesbytype in polyobjlines[Polyobj_StartLine])
+			if(polyobjlines.ContainsKey(Polyobj_StartLine))
 			{
-				// Should be only one Polyobj_StartLine per Polyobject number
-				if(linesbytype.Value.Count > 1)
-					SubmitResult(new ResultInvalidPolyobjectLines(linesbytype.Value, "Several \"" + Polyobj_StartLine + "\" actions have the same Polyobject Number assigned (" + linesbytype.Key + "). They won't function correctly ingame."));
-
-				// Check if Mirror Polyobject Number exists
-				foreach(Linedef linedef in linesbytype.Value)
+				foreach(KeyValuePair<int, List<Linedef>> linesbytype in polyobjlines[Polyobj_StartLine])
 				{
-					if(!startspots.ContainsKey(linedef.Args[1]))
-						SubmitResult(new ResultInvalidPolyobjectLines(new List<Linedef> { linedef }, "\"" + Polyobj_StartLine + "\" action have non-existing Mirror Polyobject Number assigned (" + linedef.Args[1] + "). It won't function correctly ingame."));
+					// Should be only one Polyobj_StartLine per Polyobject number
+					if(linesbytype.Value.Count > 1)
+						SubmitResult(new ResultInvalidPolyobjectLines(linesbytype.Value, "Several \"" + Polyobj_StartLine + "\" actions have the same Polyobject Number assigned (" + linesbytype.Key + "). They won't function correctly ingame."));
+
+					// Check if Mirror Polyobject Number exists
+					foreach(Linedef linedef in linesbytype.Value)
+					{
+						if(!startspots.ContainsKey(linedef.Args[1]))
+							SubmitResult(new ResultInvalidPolyobjectLines(new List<Linedef> { linedef }, "\"" + Polyobj_StartLine + "\" action have non-existing Mirror Polyobject Number assigned (" + linedef.Args[1] + "). It won't function correctly ingame."));
+					}
 				}
 			}
 
