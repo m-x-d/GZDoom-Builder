@@ -48,7 +48,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		void OnTextureFloodfill();
 		void OnToggleUpperUnpegged();
 		void OnToggleLowerUnpegged();
-		void OnProcess(float deltatime);
+		void OnProcess(long deltatime);
 		void OnInsert();
 		void OnDelete();
 

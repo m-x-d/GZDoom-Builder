@@ -254,7 +254,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void OnToggleLowerUnpegged() { }
 		public void OnResetTextureOffset() { }
 		public void OnResetLocalTextureOffset() { } //mxd
-		public void OnProcess(float deltatime) { }
+		public void OnProcess(long deltatime) { }
 		public void OnTextureFloodfill() { }
 		public void OnInsert() { }
 		public void ApplyTexture(string texture) { }

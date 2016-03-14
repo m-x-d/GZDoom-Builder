@@ -72,6 +72,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			snaptogrid = true;
 			usefourcardinaldirections = true;
+			autoclosedrawing = false;
 			gridpoints = new List<DrawnVertex[]>();
 		}
 
@@ -144,6 +145,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Reset settings
 				points.Clear();
 				labels.Clear();
+				drawingautoclosed = false;
 
 				// Redraw display
 				General.Interface.RedrawDisplay();

@@ -231,6 +231,7 @@ namespace CodeImp.DoomBuilder
 		public static bool NoSettings { get { return nosettings; } }
 		public static EditingManager Editing { get { return editing; } }
 		public static ErrorLogger ErrorLogger { get { return errorlogger; } }
+		internal static int PendingUpdateRev; //mxd
 
 		#endregion
 
@@ -993,7 +994,7 @@ namespace CodeImp.DoomBuilder
 			// Terminate properly?
 			if(properexit)
 			{
-				General.WriteLogLine("Termination requested");
+				General.WriteLogLine(PendingUpdateRev != 0 ? "Program update requested" : "Termination requested");
 				
 				// Unbind static methods from actions
 				General.Actions.UnbindMethods(typeof(General));
@@ -1018,7 +1019,14 @@ namespace CodeImp.DoomBuilder
 				if(mainwindow != null) { mainwindow.Dispose(); mainwindow = null; }
 				if(actions != null) { actions.Dispose(); actions = null; }
 				if(types != null) { types.Dispose(); types = null; }
-				try { D3DDevice.Terminate(); } catch(Exception) { }
+				try { D3DDevice.Terminate(); } catch { }
+
+				//mxd. Launch the updater?
+				if(PendingUpdateRev != 0)
+				{
+					General.WriteLogLine("Initiating update to R" + PendingUpdateRev + "...");
+					Process.Start(Path.Combine(apppath, "Updater.exe"), "-rev " + PendingUpdateRev);
+				}
 
 				// Application ends here and now
 				General.WriteLogLine("Termination done");
@@ -1181,7 +1189,10 @@ namespace CodeImp.DoomBuilder
 			openfile.Filter = "Doom WAD Files (*.wad)|*.wad";
 			openfile.Title = "Open Map";
 			if(!string.IsNullOrEmpty(settings.LastUsedMapFolder) && Directory.Exists(settings.LastUsedMapFolder)) //mxd
-				openfile.InitialDirectory = settings.LastUsedMapFolder; //mxd
+			{
+				openfile.RestoreDirectory = true;
+				openfile.InitialDirectory = settings.LastUsedMapFolder;
+			} 
 			openfile.AddExtension = false;
 			openfile.CheckFileExists = true;
 			openfile.Multiselect = false;
@@ -1468,6 +1479,12 @@ namespace CodeImp.DoomBuilder
 			savefile.OverwritePrompt = true;
 			savefile.ValidateNames = true;
 			savefile.FileName = map.FileTitle; //mxd
+			if(map.FilePathName.Length > 0) //mxd
+			{
+				savefile.RestoreDirectory = true;
+				savefile.InitialDirectory = Path.GetDirectoryName(map.FilePathName);
+			}
+
 			if(savefile.ShowDialog(mainwindow) == DialogResult.OK)
 			{
 				// Check if we're saving to the same file as the original.

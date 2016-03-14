@@ -88,7 +88,6 @@
             0,
             0,
             0});
-			this.radius.ValueChanged += new System.EventHandler(this.ValueChanged);
 			// 
 			// subdivslabel
 			// 
@@ -118,7 +117,6 @@
             0,
             0,
             0});
-			this.subdivs.ValueChanged += new System.EventHandler(this.ValueChanged);
 			// 
 			// continuousdrawing
 			// 

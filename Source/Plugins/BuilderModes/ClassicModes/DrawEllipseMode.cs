@@ -1,6 +1,8 @@
 ﻿#region ================== Namespaces
 
 using System;
+using System.Collections.Generic;
+using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.Geometry;
 
@@ -20,16 +22,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	public class DrawEllipseMode : DrawRectangleMode
 	{
 		#region ================== Variables
-
-		// Drawing
-		private float angle; // in radians
 		
 		// Interface
 		private DrawEllipseOptionsPanel panel;
 
+		// Drawing
+		private float angle; // in radians
+
 		#endregion
 
 		#region ================== Constructor
+
+		public DrawEllipseMode()
+		{
+			autoclosedrawing = false;
+		}
 
 		#endregion
 
@@ -135,9 +142,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			return shape;
 		}
 
-		protected override string GetHintText() 
+		protected override string GetHintText()
 		{
-			return "BVL: " + bevelwidth + "; VERTS: " + subdivisions;
+			List<string> result = new List<string>();
+			if(bevelwidth != 0) result.Add("BVL: " + bevelwidth);
+			if(subdivisions != 0) result.Add("VERTS: " + subdivisions);
+			if(panel.Angle != 0) result.Add("ANGLE: " + panel.Angle);
+			
+			return string.Join("; ", result.ToArray());
 		}
 
 		#endregion
@@ -227,6 +239,22 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				panel.Spikiness = bevelwidth;
 				Update();
 			}
+		}
+
+		[BeginAction("rotateclockwise")]
+		private void IncreaseAngle()
+		{
+			panel.Angle = General.ClampAngle(panel.Angle + 5);
+			angle = Angle2D.DegToRad(panel.Angle);
+			Update();
+		}
+
+		[BeginAction("rotatecounterclockwise")]
+		private void DecreaseAngle()
+		{
+			panel.Angle = General.ClampAngle(panel.Angle - 5);
+			angle = Angle2D.DegToRad(panel.Angle);
+			Update();
 		}
 
 		#endregion

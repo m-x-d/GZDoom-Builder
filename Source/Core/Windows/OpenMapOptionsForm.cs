@@ -446,7 +446,7 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 			
 			// Check if we should warn the user for missing resources
-			if((wadfile.Type != WAD.TYPE_IWAD) && (locations.Count == 0) && (configinfo.Resources.Count == 0))
+			if((!wadfile.IsIWAD) && (locations.Count == 0) && (configinfo.Resources.Count == 0))
 			{
 				if(MessageBox.Show(this, "You are about to load a map without selecting any resources. Textures, flats and " +
 										 "sprites may not be shown correctly or may not show up at all. Do you want to continue?", Application.ProductName,

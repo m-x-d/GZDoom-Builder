@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using System.Text;
 using System.IO;
 
@@ -30,11 +31,58 @@ namespace CodeImp.DoomBuilder.IO
 		#region ================== Constants
 
 		// WAD types
-		public const string TYPE_IWAD = "IWAD";
-		public const string TYPE_PWAD = "PWAD";
+		private const string TYPE_IWAD = "IWAD";
+		private const string TYPE_PWAD = "PWAD";
 		
 		// Encoder
 		public static readonly Encoding ENCODING = Encoding.ASCII;
+
+		//mxd. Official IWAD MD5 hashes
+		private static readonly HashSet<string> IWAD_HASHES = new HashSet<string>
+		{
+			////// DOOM IWADS //////
+			"d9153ced9fd5b898b36cc5844e35b520",			// DOOM2 1.666g MD5
+			"30e3c2d0350b67bfbf47271970b74b2f",			// DOOM2 1.666 MD5
+			"ea74a47a791fdef2e9f2ea8b8a9da13b",			// DOOM2 1.7 MD5
+			"d7a07e5d3f4625074312bc299d7ed33f",			// DOOM2 1.7a MD5
+			"c236745bb01d89bbb866c8fed81b6f8c",			// DOOM2 1.8 MD5
+			"25e1459ca71d321525f84628f45ca8cd",			// DOOM2 1.9 MD5
+			"3cb02349b3df649c86290907eed64e7b",			// DOOM2 French MD5
+			"c3bea40570c23e511a7ed3ebcd9865f7",			// BFG DOOM2 MD5
+
+			"981b03e6d1dc033301aa3095acc437ce",			// DOOM 1.1 MD5
+			"792fd1fea023d61210857089a7c1e351",			// DOOM 1.2 MD5
+			"464e3723a7e7f97039ac9fd057096adb",			// DOOM 1.6b MD5
+			"54978d12de87f162b9bcc011676cb3c0",			// DOOM 1.666 MD5
+			"11e1cd216801ea2657723abc86ecb01f",			// DOOM 1.8 MD5
+			"1cd63c5ddff1bf8ce844237f580e9cf3",			// DOOM 1.9 MD5
+			"fb35c4a5a9fd49ec29ab6e900572c524",			// BFG DOOM MD5
+
+			"c4fe9fd920207691a9f493668e0a2083",			// ULTIMATE DOOM MD5
+
+			"75c8cf89566741fa9d22447604053bd7",			// PLUTONIA MD5
+			"3493be7e1e2588bc9c8b31eab2587a04",			// PLUTONIA RARE MD5
+
+			"4e158d9953c79ccf97bd0663244cc6b6",			// TNT MD5
+			"1d39e405bf6ee3df69a8d2646c8d5c49",			// TNT Fixed MD5
+			"be626c12b7c9d94b1dfb9c327566b4ff",			// PSN TNT MD5
+
+			////// HERETIC IWADS //////
+			"3117e399cdb4298eaa3941625f4b2923",			// HERETIC 1.0 MD5
+			"1e4cb4ef075ad344dd63971637307e04",			// HERETIC 1.2 MD5
+			"66d686b1ed6d35ff103f15dbd30e0341",			// HERETIC 1.3 MD5
+
+			////// HEXEN IWADS //////
+			"c88a2bb3d783e2ad7b599a8e301e099e",			// HEXEN Beta MD5
+			"b2543a03521365261d0a0f74d5dd90f0",			// HEXEN 1.0 MD5
+			"abb033caf81e26f12a2103e1fa25453f",			// HEXEN 1.1 MD5
+			"1077432e2690d390c256ac908b5f4efa",			// HEXEN DK 1.0 MD5
+			"78d5898e99e220e4de64edaa0e479593",			// HEXEN DK 1.1 MD5
+
+			////// STRIFE IWADS //////
+			"8f2d3a6a289f5d2f2f9c1eec02b47299",			// STRIFE 1.0 MD5
+			"2fed2031a5b03892106e0f117f17901f",			// STRIFE 1.2 MD5
+		};                                                      
 		
 		#endregion
 
@@ -47,15 +95,16 @@ namespace CodeImp.DoomBuilder.IO
 		private BinaryWriter writer;
 		
 		// Header
-		private string type;
 		private int numlumps;
 		private int lumpsoffset;
+		private bool isiwad; //mxd
+		private bool isofficialiwad; //mxd
 		
 		// Lumps
 		private List<Lump> lumps;
 		
 		// Status
-		private readonly bool isreadonly;
+		private bool isreadonly;
 		private bool isdisposed;
 
 		#endregion
@@ -63,10 +112,11 @@ namespace CodeImp.DoomBuilder.IO
 		#region ================== Properties
 
 		public string Filename { get { return filename; } }
-		public string Type { get { return type; } }
 		public Encoding Encoding { get { return ENCODING; } }
 		public bool IsReadOnly { get { return isreadonly; } }
 		public bool IsDisposed { get { return isdisposed; } }
+		public bool IsIWAD { get { return isiwad; } set { isiwad = value; } } //mxd
+		public bool IsOfficialIWAD { get { return isofficialiwad; } } //mxd
 		public List<Lump> Lumps { get { return lumps; } }
 
 		#endregion
@@ -131,6 +181,12 @@ namespace CodeImp.DoomBuilder.IO
 		{
 			FileAccess access;
 			FileShare share;
+
+			// Keep filename
+			filename = pathfilename;
+
+			//mxd
+			CheckHash();
 			
 			// Determine if opening for read only
 			if(isreadonly)
@@ -146,9 +202,6 @@ namespace CodeImp.DoomBuilder.IO
 				share = FileShare.Read;
 			}
 			
-			// Keep filename
-			filename = pathfilename;
-			
 			// Open the file stream
 			file = File.Open(pathfilename, FileMode.OpenOrCreate, access, share);
 
@@ -157,7 +210,7 @@ namespace CodeImp.DoomBuilder.IO
 			if(!isreadonly) writer = new BinaryWriter(file, ENCODING);
 
 			// Is the WAD file zero length?
-			if(file.Length == 0)
+			if(file.Length < 4)
 			{
 				// Create the headers in file
 				CreateHeaders();
@@ -173,14 +226,15 @@ namespace CodeImp.DoomBuilder.IO
 		private void CreateHeaders()
 		{
 			// Default settings
-			type = TYPE_PWAD;
+			isiwad = false; //mxd
+			isofficialiwad = false; //mxd
 			lumpsoffset = 12;
 
 			// New lumps array
 			lumps = new List<Lump>(numlumps);
 			
 			// Write the headers
-			WriteHeaders();
+			if(!isreadonly) WriteHeaders();
 		}
 		
 		// This reads the WAD header and lumps table
@@ -193,7 +247,7 @@ namespace CodeImp.DoomBuilder.IO
 			file.Seek(0, SeekOrigin.Begin);
 
 			// Read WAD type
-			type = ENCODING.GetString(reader.ReadBytes(4));
+			isiwad = (ENCODING.GetString(reader.ReadBytes(4)) == TYPE_IWAD); //mxd
 			
 			// Number of lumps
 			numlumps = reader.ReadInt32();
@@ -223,14 +277,14 @@ namespace CodeImp.DoomBuilder.IO
 			}
 		}
 
-		// This reads the WAD header and lumps table
+		// This writes the WAD header and lumps table
 		public void WriteHeaders()
 		{
 			// Seek to beginning
 			file.Seek(0, SeekOrigin.Begin);
 
 			// Write WAD type
-			writer.Write(ENCODING.GetBytes(type));
+			writer.Write(ENCODING.GetBytes(isiwad ? TYPE_IWAD : TYPE_PWAD));
 
 			// Number of lumps
 			writer.Write(numlumps);
@@ -249,6 +303,48 @@ namespace CodeImp.DoomBuilder.IO
 				writer.Write(lumps[i].Length);
 				writer.Write(lumps[i].FixedName);
 			}
+		}
+
+		//mxd
+		private void CheckHash()
+		{
+			// Open the file stream
+			FileStream fs = File.Open(filename, FileMode.OpenOrCreate, FileAccess.Read, FileShare.ReadWrite);
+			
+			// Empty file can't be official iwad
+			if(fs.Length > 4)
+			{
+				BinaryReader r = new BinaryReader(fs, ENCODING);
+
+				// Read WAD type
+				if(ENCODING.GetString(r.ReadBytes(4)) == TYPE_IWAD)
+				{
+					// Rewind
+					r.BaseStream.Position = 0;
+					
+					// Check hash
+					MD5 hasher = MD5.Create();
+					byte[] data = hasher.ComputeHash(r.BaseStream);
+
+					// Create a new Stringbuilder to collect the bytes and create a string.
+					StringBuilder hash = new StringBuilder();
+
+					// Loop through each byte of the hashed data and format each one as a hexadecimal string.
+					for(int i = 0; i < data.Length; i++)
+					{
+						hash.Append(data[i].ToString("x2"));
+					}
+
+					isofficialiwad = IWAD_HASHES.Contains(hash.ToString());
+					if(!isreadonly && isofficialiwad) isreadonly = true;
+				}
+
+				// Close the reader
+				r.Close();
+			}
+
+			// Close the file
+			fs.Dispose();
 		}
 		
 		// This flushes writing changes

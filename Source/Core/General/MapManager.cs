@@ -664,7 +664,7 @@ namespace CodeImp.DoomBuilder
 				General.MainWindow.DisplayStatus(StatusType.Busy, "Compressing sidedefs...");
 				outputset.CompressSidedefs();
 
-				// Check if it still doesnt fit
+				// Check if it still doesnt
 				if(outputset.Sidedefs.Count > io.MaxSidedefs)
 				{
 					// Problem! Can't save the map like this!
@@ -726,6 +726,20 @@ namespace CodeImp.DoomBuilder
 			bool includenodes;
 
 			General.WriteLogLine("Saving map to file: " + newfilepathname);
+
+			//mxd. Official IWAD check...
+			WAD hashtest = new WAD(newfilepathname, true);
+			if(hashtest.IsOfficialIWAD)
+			{
+				General.WriteLogLine("Map saving aborted: attempt to modify official IWAD");
+				General.ShowErrorMessage("Official IWADs should not be modified.\nConsider making a PWAD instead", MessageBoxButtons.OK);
+				return false;
+			}
+			else
+			{
+				hashtest.Dispose();
+				hashtest = null;
+			}
 
 			// Scripts changed?
 			bool localscriptschanged = CheckScriptChanged();
@@ -907,7 +921,7 @@ namespace CodeImp.DoomBuilder
 					WAD origwad = new WAD(origwadfile, true);
 
 					// Create new target file
-					targetwad = new WAD(newfilepathname);
+					targetwad = new WAD(newfilepathname) { IsIWAD = origwad.IsIWAD }; //mxd. Let's preserve wad type
 
 					// Copy all lumps, except the original map
 					GameConfiguration origcfg; //mxd

@@ -4182,12 +4182,13 @@ namespace CodeImp.DoomBuilder.Windows
 				// Update ignored revision number
 				General.Settings.IgnoredRemoteRevision = (form.IgnoreThisUpdate ? remoterev : 0);
 
-				if(result == DialogResult.OK && General.AskSaveMap())
+				if(result == DialogResult.OK)
 				{
-					// Launch the updater
-					Process.Start(Path.Combine(General.AppPath, "Updater.exe"), "-rev " + remoterev);
+					// Updater will be launched from General.Terminate
+					General.PendingUpdateRev = remoterev;
 
 					// Close
+					General.WriteLogLine("Initiating shutdown due to update request...");
 					General.Exit(true);
 				}
 			}

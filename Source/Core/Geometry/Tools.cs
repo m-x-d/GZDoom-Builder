@@ -359,7 +359,6 @@ namespace CodeImp.DoomBuilder.Geometry
 			{
 				// Add line to path
 				path.Add(new LinedefSide(nextline, nextfront));
-				if(!tracecount.ContainsKey(nextline)) tracecount.Add(nextline, 1); else tracecount[nextline]++;
 
 				// Determine next vertex to use
 				Vertex v = nextfront ? nextline.End : nextline.Start;
@@ -390,6 +389,21 @@ namespace CodeImp.DoomBuilder.Geometry
 					Linedef prevline = nextline;
 					nextline = (lines[0] == nextline ? lines[1] : lines[0]);
 
+					//mxd. Try to pick a line with lower tracecount...
+					// Otherwise we will just walk the same path trise
+					int curcount = (!tracecount.ContainsKey(nextline) ? 0 : tracecount[nextline]);
+					if(curcount > 0)
+					{
+						foreach(Linedef l in lines)
+						{
+							if(l != nextline && l != prevline && (!tracecount.ContainsKey(l) || tracecount[l] < curcount))
+							{
+								nextline = l;
+								break;
+							}
+						}
+					}
+
 					// Are we allowed to trace this line again?
 					if(!tracecount.ContainsKey(nextline) || (tracecount[nextline] < 3))
 					{
@@ -403,6 +417,9 @@ namespace CodeImp.DoomBuilder.Geometry
 						path = null;
 					}
 				}
+
+				//mxd. Increase trace count
+				if(!tracecount.ContainsKey(nextline)) tracecount.Add(nextline, 1); else tracecount[nextline]++;
 			}
 			// Continue as long as we have not reached the start yet
 			// or we have no next line to trace

@@ -2413,6 +2413,57 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void FlipLinedefs() 
 		{
 			// Get selection
+			ICollection<Sector> selected = General.Map.Map.GetSelectedSectors(true);
+
+			if(selected.Count == 0 && highlighted != null && !highlighted.IsDisposed)
+				selected.Add(highlighted);
+
+			if(selected.Count == 0)
+			{
+				General.Interface.DisplayStatus(StatusType.Warning, "This action requires a selection!");
+				return;
+			}
+
+			// Make undo
+			if(selected.Count > 1)
+			{
+				General.Map.UndoRedo.CreateUndo("Align linedefs of " + selected.Count + " sectors");
+				General.Interface.DisplayStatus(StatusType.Action, "Aligned linedefs of " + selected.Count + "sectors.");
+			}
+			else
+			{
+				General.Map.UndoRedo.CreateUndo("Align sector linedefs");
+				General.Interface.DisplayStatus(StatusType.Action, "Aligned sector linedefs.");
+			}
+
+			HashSet<Linedef> selectedlines = new HashSet<Linedef>();
+			foreach(Sector s in selected)
+			{
+				foreach(Sidedef side in s.Sidedefs)
+				{
+					if(!selectedlines.Contains(side.Line)) selectedlines.Add(side.Line);
+				}
+			}
+
+			// Flip all selected linedefs
+			foreach(Linedef l in selectedlines)
+			{
+				l.FlipVertices();
+				l.FlipSidedefs();
+			}
+
+			// Redraw
+			General.Map.Map.Update();
+			General.Map.IsChanged = true;
+			General.Interface.RefreshInfo();
+			General.Interface.RedrawDisplay();
+		}
+		
+		//mxd
+		[BeginAction("alignlinedefs")]
+		public void AlignLinedefs() 
+		{
+			// Get selection
 			ICollection<Sector> selection = General.Map.Map.GetSelectedSectors(true);
 
 			if(selection.Count == 0 && highlighted != null && !highlighted.IsDisposed)
@@ -2427,13 +2478,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Make undo
 			if(selection.Count > 1) 
 			{
-				General.Map.UndoRedo.CreateUndo("Flip linedefs of " + selection.Count + " sectors");
-				General.Interface.DisplayStatus(StatusType.Action, "Flipped linedefs of " + selection.Count + "sectors.");
+				General.Map.UndoRedo.CreateUndo("Align linedefs of " + selection.Count + " sectors");
+				General.Interface.DisplayStatus(StatusType.Action, "Aligned linedefs of " + selection.Count + "sectors.");
 			} 
 			else 
 			{
-				General.Map.UndoRedo.CreateUndo("Flip sector linedefs");
-				General.Interface.DisplayStatus(StatusType.Action, "Flipped sector linedefs.");
+				General.Map.UndoRedo.CreateUndo("Align sector linedefs");
+				General.Interface.DisplayStatus(StatusType.Action, "Aligned sector linedefs.");
 			}
 
 			// Flip lines

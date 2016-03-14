@@ -1290,63 +1290,122 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			// Any selected lines?
-			if(selected.Count > 0)
+			if(selected.Count == 0)
 			{
-				// Make undo
-				if(selected.Count > 1)
-				{
-					General.Map.UndoRedo.CreateUndo("Flip " + selected.Count + " linedefs");
-					General.Interface.DisplayStatus(StatusType.Action, "Flipped " + selected.Count + " linedefs.");
-				}
-				else
-				{
-					General.Map.UndoRedo.CreateUndo("Flip linedef");
-					General.Interface.DisplayStatus(StatusType.Action, "Flipped a linedef.");
-				}
-
-				//mxd. Do it sector-wise
-				Dictionary<Sector, int> sectors = new Dictionary<Sector, int>();
-
-				foreach(Linedef l in selected) 
-				{
-					if(l.Front != null && l.Front.Sector != null)
-					{
-						if(!sectors.ContainsKey(l.Front.Sector)) sectors.Add(l.Front.Sector, 0);
-						sectors[l.Front.Sector]++;
-					}
-						
-					if(l.Back != null && l.Back.Sector != null)
-					{
-						if(!sectors.ContainsKey(l.Back.Sector)) sectors.Add(l.Back.Sector, 0);
-						sectors[l.Back.Sector]++;
-					}
-				}
-
-				//mxd. Sort the collection so sectors with the most selected linedefs go first
-				List<KeyValuePair<Sector, int>> sortedlist = sectors.ToList();
-				sortedlist.Sort((firstPair, nextPair) => firstPair.Value.CompareTo(nextPair.Value));
-				sortedlist.Reverse();
-
-				//mxd. Gather our ordered sectors
-				List<Sector> sectorslist = new List<Sector>(sortedlist.Count());
-				sectorslist.AddRange(sortedlist.Select(pair => pair.Key));
-
-				//mxd. Flip the lines
-				Tools.FlipSectorLinedefs(sectorslist, true);
-
-				// Remove selection if only one linedef was selected
-				if(selected.Count == 1)
-				{
-					foreach(Linedef ld in selected) ld.Selected = false;
-					selected.Clear();
-				}
-
-				// Redraw
-				General.Map.Map.Update();
-				General.Map.IsChanged = true;
-				General.Interface.RefreshInfo();
-				General.Interface.RedrawDisplay();
+				General.Interface.DisplayStatus(StatusType.Warning, "This action requires a selection!");
+				return;
 			}
+
+			// Make undo
+			if(selected.Count > 1)
+			{
+				General.Map.UndoRedo.CreateUndo("Flip " + selected.Count + " linedefs");
+				General.Interface.DisplayStatus(StatusType.Action, "Flipped " + selected.Count + " linedefs.");
+			}
+			else
+			{
+				General.Map.UndoRedo.CreateUndo("Flip linedef");
+				General.Interface.DisplayStatus(StatusType.Action, "Flipped a linedef.");
+			}
+
+			// Flip all selected linedefs
+			foreach(Linedef l in selected)
+			{
+				l.FlipVertices();
+				l.FlipSidedefs();
+			}
+
+			// Remove selection if only one linedef was selected
+			if(selected.Count == 1)
+			{
+				foreach(Linedef ld in selected) ld.Selected = false;
+				selected.Clear();
+			}
+
+			// Redraw
+			General.Map.Map.Update();
+			General.Map.IsChanged = true;
+			General.Interface.RefreshInfo();
+			General.Interface.RedrawDisplay();
+		}
+
+		[BeginAction("alignlinedefs")]
+		public void AlignLinedefs() //mxd
+		{
+			// No selected lines?
+			ICollection<Linedef> selected = General.Map.Map.GetSelectedLinedefs(true);
+			if(selected.Count == 0)
+			{
+				// Anything highlighted?
+				if(highlighted != null)
+				{
+					// Select the highlighted item
+					highlighted.Selected = true;
+					selected.Add(highlighted);
+				}
+			}
+
+			// Any selected lines?
+			if(selected.Count == 0)
+			{
+				General.Interface.DisplayStatus(StatusType.Warning, "This action requires a selection!");
+				return;
+			}
+
+			// Make undo
+			if(selected.Count > 1)
+			{
+				General.Map.UndoRedo.CreateUndo("Align " + selected.Count + " linedefs");
+				General.Interface.DisplayStatus(StatusType.Action, "Aligned " + selected.Count + " linedefs.");
+			}
+			else
+			{
+				General.Map.UndoRedo.CreateUndo("Align linedef");
+				General.Interface.DisplayStatus(StatusType.Action, "Aligned a linedef.");
+			}
+
+			//mxd. Do it sector-wise
+			Dictionary<Sector, int> sectors = new Dictionary<Sector, int>();
+
+			foreach(Linedef l in selected) 
+			{
+				if(l.Front != null && l.Front.Sector != null)
+				{
+					if(!sectors.ContainsKey(l.Front.Sector)) sectors.Add(l.Front.Sector, 0);
+					sectors[l.Front.Sector]++;
+				}
+						
+				if(l.Back != null && l.Back.Sector != null)
+				{
+					if(!sectors.ContainsKey(l.Back.Sector)) sectors.Add(l.Back.Sector, 0);
+					sectors[l.Back.Sector]++;
+				}
+			}
+
+			//mxd. Sort the collection so sectors with the most selected linedefs go first
+			List<KeyValuePair<Sector, int>> sortedlist = sectors.ToList();
+			sortedlist.Sort((firstPair, nextPair) => firstPair.Value.CompareTo(nextPair.Value));
+			sortedlist.Reverse();
+
+			//mxd. Gather our ordered sectors
+			List<Sector> sectorslist = new List<Sector>(sortedlist.Count());
+			sectorslist.AddRange(sortedlist.Select(pair => pair.Key));
+
+			//mxd. Flip the lines
+			Tools.FlipSectorLinedefs(sectorslist, true);
+
+			// Remove selection if only one linedef was selected
+			if(selected.Count == 1)
+			{
+				foreach(Linedef ld in selected) ld.Selected = false;
+				selected.Clear();
+			}
+
+			// Redraw
+			General.Map.Map.Update();
+			General.Map.IsChanged = true;
+			General.Interface.RefreshInfo();
+			General.Interface.RedrawDisplay();
 		}
 
 		[BeginAction("flipsidedefs")]
@@ -1363,6 +1422,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 			}
 
+			//mxd. Any selected lines?
+			if(selected.Count == 0)
+			{
+				General.Interface.DisplayStatus(StatusType.Warning, "This action requires a selection!");
+				return;
+			}
+
 			//mxd. Do this only with double-sided linedefs
 			List<Linedef> validlines = new List<Linedef>();
 			foreach(Linedef l in selected) 
@@ -1370,39 +1436,38 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(l.Front != null && l.Back != null) validlines.Add(l);
 			}
 
-			// Any selected lines?
-			if(validlines.Count > 0) 
+			//mxd. Any double-sided lines selected?
+			if(validlines.Count == 0)
 			{
-				// Make undo
-				if(validlines.Count > 1) 
-				{
-					General.Map.UndoRedo.CreateUndo("Flip " + validlines.Count + " sidedefs");
-					General.Interface.DisplayStatus(StatusType.Action, "Flipped " + validlines.Count + " sidedefs.");
-				}
-				else
-				{
-					General.Map.UndoRedo.CreateUndo("Flip sidedef");
-					General.Interface.DisplayStatus(StatusType.Action, "Flipped a sidedef.");
-				}
-
-				// Flip sidedefs in all selected linedefs
-				foreach(Linedef l in validlines) 
-				{
-					l.FlipSidedefs();
-					l.Front.Sector.UpdateNeeded = true;
-					l.Back.Sector.UpdateNeeded = true;
-				}
-
-				// Redraw
-				General.Map.Map.Update();
-				General.Map.IsChanged = true;
-				General.Interface.RefreshInfo();
-				General.Interface.RedrawDisplay();
-			} 
-			else 
-			{
-				General.Interface.DisplayStatus(StatusType.Warning, "No sidedefs to flip (only 2-sided linedefs can be flipped)!");
+				General.Interface.DisplayStatus(StatusType.Warning, "No sidedefs to flip! Only 2-sided linedefs can be flipped.");
+				return;
 			}
+
+			// Make undo
+			if(validlines.Count > 1) 
+			{
+				General.Map.UndoRedo.CreateUndo("Flip " + validlines.Count + " sidedefs");
+				General.Interface.DisplayStatus(StatusType.Action, "Flipped " + validlines.Count + " sidedefs.");
+			}
+			else
+			{
+				General.Map.UndoRedo.CreateUndo("Flip sidedef");
+				General.Interface.DisplayStatus(StatusType.Action, "Flipped a sidedef.");
+			}
+
+			// Flip sidedefs in all selected linedefs
+			foreach(Linedef l in validlines) 
+			{
+				l.FlipSidedefs();
+				l.Front.Sector.UpdateNeeded = true;
+				l.Back.Sector.UpdateNeeded = true;
+			}
+
+			// Redraw
+			General.Map.Map.Update();
+			General.Map.IsChanged = true;
+			General.Interface.RefreshInfo();
+			General.Interface.RedrawDisplay();
 		}
 
 		//mxd. Make gradient brightness

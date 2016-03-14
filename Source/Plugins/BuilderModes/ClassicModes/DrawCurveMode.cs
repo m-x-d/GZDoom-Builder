@@ -183,7 +183,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Map.UndoRedo.CreateUndo("Curve draw");
 
 				// Make an analysis and show info
-				string[] adjectives = new[] 
+				string[] adjectives =
 				{
 				  "beautiful", "lovely", "romantic", "stylish", "cheerful", "comical",
 				  "awesome", "accurate", "adorable", "adventurous", "attractive", "cute",
@@ -197,27 +197,23 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				List<DrawnVertex> verts = new List<DrawnVertex>();
 				
-				//if we have a curve...
+				// If we have a curve...
 				if(points.Count > 2)
 				{
-					//is it a closed curve?
-					int lastPoint;
-					if(points[0].pos == points[points.Count - 1].pos) 
-					{
-						lastPoint = curve.Segments.Count;
-					}
+					// Is it an (auto)closed curve?
+					int lastpoint;
+					if(drawingautoclosed || points[0].pos == points[points.Count - 1].pos) 
+						lastpoint = curve.Segments.Count;
 					else 
-					{
-						lastPoint = curve.Segments.Count - 1;
-					}
+						lastpoint = curve.Segments.Count - 1;
 
-					for(int i = 0; i < lastPoint; i++) 
+					for(int i = 0; i < lastpoint; i++) 
 					{
 						int next = (i == curve.Segments.Count - 1 ? 0 : i + 1);
 						bool stitch = points[i].stitch && points[next].stitch;
 						bool stitchline = points[i].stitchline && points[next].stitchline;
 
-						//add segment points except the last one
+						// Add segment points except the last one
 						for(int c = 0; c < curve.Segments[i].Points.Length - 1; c++) 
 						{
 							DrawnVertex dv = new DrawnVertex();
@@ -228,9 +224,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						}
 					}
 
-					//add last point
+					// Add the last point
 					DrawnVertex end = new DrawnVertex();
-					end.pos = curve.Segments[lastPoint - 1].End;
+					end.pos = curve.Segments[lastpoint - 1].End;
 					end.stitch = verts[verts.Count - 1].stitch;
 					end.stitchline = verts[verts.Count - 1].stitchline;
 					verts.Add(end);
@@ -283,6 +279,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Reset settings
 				points.Clear();
 				labels.Clear();
+				drawingautoclosed = false;
 
 				// Redraw display
 				General.Interface.RedrawDisplay();
@@ -319,9 +316,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			panel.SegmentLength = segmentlength;
 			panel.OnValueChanged += OptionsPanelOnValueChanged;
 			panel.OnContinuousDrawingChanged += OnContinuousDrawingChanged;
+			panel.OnAutoCloseDrawingChanged += OnAutoCloseDrawingChanged;
 
-			// Needs to be set after adding the OnContinuousDrawingChanged event...
+			// Needs to be set after adding the events...
 			panel.ContinuousDrawing = General.Settings.ReadPluginSetting("drawcurvemode.continuousdrawing", false);
+			panel.AutoCloseDrawing = General.Settings.ReadPluginSetting("drawlinesmode.autoclosedrawing", false);
 		}
 
 		protected override void AddInterface()
@@ -334,6 +333,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Store settings
 			General.Settings.WritePluginSetting("drawcurvemode.segmentlength", segmentlength);
 			General.Settings.WritePluginSetting("drawcurvemode.continuousdrawing", panel.ContinuousDrawing);
+			General.Settings.WritePluginSetting("drawlinesmode.autoclosedrawing", panel.AutoCloseDrawing);
 
 			// Remove the buttons
 			panel.Unregister();

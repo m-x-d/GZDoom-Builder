@@ -1099,7 +1099,6 @@ namespace CodeImp.DoomBuilder.VisualModes
 		/// <summary>
 		/// While this mode is active, this is called continuously to process whatever needs processing.
 		/// </summary>
-		public override void OnProcess(float deltatime) { OnProcess((long)deltatime); } //mxd. DB2 compatibility
 		public override void OnProcess(long deltatime)
 		{
 			base.OnProcess(deltatime);
