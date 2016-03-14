@@ -90,6 +90,9 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			//mxd. This is sent by the background thread when sprites are loaded
 			SpriteDataLoaded = General.WM_USER + 3,
+
+			//mxd. This is sent by the background thread when all resources are loaded
+			ResourcesLoaded = General.WM_USER + 4,
 		}
 		
 		#endregion
@@ -156,7 +159,7 @@ namespace CodeImp.DoomBuilder.Windows
 		
 		// Processing
 		private int processingcount;
-		private float lastupdatetime;
+		private long lastupdatetime;
 
 		// Updating
 		private int lockupdatecount;
@@ -3900,6 +3903,12 @@ namespace CodeImp.DoomBuilder.Windows
 					}
 					break;
 
+				case (int)ThreadMessages.ResourcesLoaded: //mxd
+					string loadtime = Marshal.PtrToStringAuto(m.WParam);
+					Marshal.FreeCoTaskMem(m.WParam);
+					DisplayStatus(StatusType.Info, "Resources loaded in " + loadtime + " seconds");
+					break;
+
 				case General.WM_SYSCOMMAND:
 					// We don't want to open a menu when ALT is pressed
 					if(m.WParam.ToInt32() != General.SC_KEYMENU)
@@ -4034,8 +4043,8 @@ namespace CodeImp.DoomBuilder.Windows
 		// Processor event
 		private void processor_Tick(object sender, EventArgs e)
 		{
-			float curtime = Clock.CurrentTime;
-			float deltatime = curtime - lastupdatetime;
+			long curtime = Clock.CurrentTime;
+			long deltatime = curtime - lastupdatetime;
 			lastupdatetime = curtime;
 			
 			if((General.Map != null) && (General.Editing.Mode != null))

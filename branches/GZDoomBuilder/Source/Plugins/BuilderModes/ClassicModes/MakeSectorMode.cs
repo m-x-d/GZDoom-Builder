@@ -54,7 +54,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Flash polygon
 		private FlatVertex[] flashpolygon;
 		private float flashintensity;
-		private float flashstarttime;
+		private long flashstarttime;
 		
 		// Interface
 		protected bool editpressed;
@@ -498,7 +498,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// Processing
-		public override void OnProcess(float deltatime)
+		public override void OnProcess(long deltatime)
 		{
 			base.OnProcess(deltatime);
 
@@ -506,7 +506,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(flashpolygon != null)
 			{
 				// Determine the intensity of the flash by time elapsed
-				float curtime = Clock.CurrentTime;
+				long curtime = Clock.CurrentTime;
 				flashintensity = 1f - ((curtime - flashstarttime) / FLASH_DURATION);
 				if(flashintensity > 0.0f)
 				{

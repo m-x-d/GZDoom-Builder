@@ -34,12 +34,12 @@ namespace CodeImp.DoomBuilder.TagExplorer
 			defaultName = (tti != null ? tti.Title : "Thing");
 		}
 
-		public NodeInfo(Sector s) 
+		public NodeInfo(Sector s, int tagindex) 
 		{
 			type = NodeInfoType.SECTOR;
 			index = s.Index;
 			action = s.Effect;
-			tag = s.Tag;
+			tag = s.Tags[tagindex];
 			
 			if(General.Map.Config.SectorEffects.ContainsKey(action))
 			{
@@ -51,12 +51,12 @@ namespace CodeImp.DoomBuilder.TagExplorer
 			}
 		}
 
-		public NodeInfo(Linedef l) 
+		public NodeInfo(Linedef l, int tagindex) 
 		{
 			type = NodeInfoType.LINEDEF;
 			index = l.Index;
 			action = l.Action;
-			tag = l.Tag;
+			tag = l.Tags[tagindex];
 			polyobjnumber = ((l.Action > 0 && l.Action < 9) ? l.Args[0] : int.MinValue);
 			
 			if(General.Map.Config.LinedefActions.ContainsKey(l.Action))

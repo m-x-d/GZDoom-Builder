@@ -84,7 +84,6 @@
 			this.dataGridView.Size = new System.Drawing.Size(477, 256);
 			this.dataGridView.TabIndex = 3;
 			this.dataGridView.CellMouseClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView_CellMouseClick);
-			this.dataGridView.CellMouseDoubleClick += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView_CellMouseDoubleClick);
 			// 
 			// TagColumn
 			// 

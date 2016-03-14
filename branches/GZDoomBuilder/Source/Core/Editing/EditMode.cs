@@ -245,7 +245,8 @@ namespace CodeImp.DoomBuilder.Editing
 		public virtual void OnPresentDisplay() { }
 
 		// Processing events
-		public virtual void OnProcess(float deltatime) { }
+		public virtual void OnProcess(long deltatime) { }
+		public virtual void OnProcess(float deltatime) { OnProcess((long)deltatime); } //mxd. DB2 compatibility
 		
 		// Generic events
 		public virtual void OnReloadResources() { }

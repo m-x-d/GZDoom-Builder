@@ -22,6 +22,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Config;
@@ -136,8 +137,8 @@ namespace CodeImp.DoomBuilder.Data
 		private Dictionary<int, ThingTypeInfo> thingtypes;
 		
 		// Timing
-		private float loadstarttime;
-		private float loadfinishtime;
+		private long loadstarttime;
+		private long loadfinishtime;
 		
 		// Disposing
 		private bool isdisposed;
@@ -766,12 +767,6 @@ namespace CodeImp.DoomBuilder.Data
 						}
 						else
 						{
-							if(notifiedbusy)
-							{
-								notifiedbusy = false;
-								General.SendMessage(General.MainWindow.Handle, (int)MainForm.ThreadMessages.UpdateStatus, 0, 0);
-							}
-							
 							// Timing
 							if(loadfinishtime == 0)
 							{
@@ -782,8 +777,21 @@ namespace CodeImp.DoomBuilder.Data
 								}
 								
 								loadfinishtime = Clock.CurrentTime;
-								float deltatimesec = (loadfinishtime - loadstarttime) / 1000.0f;
-								General.WriteLogLine("Resources loading took " + deltatimesec.ToString("########0.00") + " seconds");
+								string deltatimesec = ((loadfinishtime - loadstarttime) / 1000.0f).ToString("########0.00");
+								General.WriteLogLine("Resources loading took " + deltatimesec + " seconds");
+
+								//mxd. Show more detailed message
+								if(notifiedbusy)
+								{
+									notifiedbusy = false;
+									IntPtr strptr = Marshal.StringToCoTaskMemAuto(deltatimesec);
+									General.SendMessage(General.MainWindow.Handle, (int)MainForm.ThreadMessages.ResourcesLoaded, strptr.ToInt32(), 0);
+								}
+							}
+							else if(notifiedbusy) //mxd. Sould never happen (?)
+							{
+								notifiedbusy = false;
+								General.SendMessage(General.MainWindow.Handle, (int)MainForm.ThreadMessages.UpdateStatus, 0, 0);
 							}
 							
 							// Wait longer to release CPU resources
