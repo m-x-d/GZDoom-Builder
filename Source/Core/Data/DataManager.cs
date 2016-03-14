@@ -1025,13 +1025,13 @@ namespace CodeImp.DoomBuilder.Data
 		}
 		
 		// This returns a specific patch stream
-		internal Stream GetPatchData(string pname, bool longname)
+		internal Stream GetPatchData(string pname, bool longname, ref string patchlocation)
 		{
 			// Go for all opened containers
 			for(int i = containers.Count - 1; i > -1; i--)
 			{
 				// This contain provides this patch?
-				Stream patch = containers[i].GetPatchData(pname, longname);
+				Stream patch = containers[i].GetPatchData(pname, longname, ref patchlocation);
 				if(patch != null) return patch;
 			}
 
@@ -1040,13 +1040,13 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		// This returns a specific texture stream
-		internal Stream GetTextureData(string pname, bool longname)
+		internal Stream GetTextureData(string pname, bool longname, ref string texturelocation)
 		{
 			// Go for all opened containers
 			for(int i = containers.Count - 1; i >= 0; i--)
 			{
 				// This container provides this patch?
-				Stream patch = containers[i].GetTextureData(pname, longname);
+				Stream patch = containers[i].GetTextureData(pname, longname, ref texturelocation);
 				if(patch != null) return patch;
 			}
 
@@ -1251,13 +1251,13 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		// This returns a specific flat stream
-		internal Stream GetFlatData(string pname, bool longname)
+		internal Stream GetFlatData(string pname, bool longname, ref string flatlocation)
 		{
 			// Go for all opened containers
 			for(int i = containers.Count - 1; i >= 0; i--)
 			{
 				// This contain provides this flat?
-				Stream flat = containers[i].GetFlatData(pname, longname);
+				Stream flat = containers[i].GetFlatData(pname, longname, ref flatlocation);
 				if(flat != null) return flat;
 			}
 
@@ -1374,7 +1374,7 @@ namespace CodeImp.DoomBuilder.Data
 
 						if(!replaced)
 						{
-							General.ErrorLogger.Add(ErrorType.Warning, "HiRes texture \"" + Path.Combine(dr.Location.GetShortName(), img.FilePathName) + "\" does not override any existing texture or flat.");
+							General.ErrorLogger.Add(ErrorType.Warning, "HiRes texture \"" + Path.Combine(dr.Location.GetDisplayName(), img.FilePathName) + "\" does not override any existing texture or flat.");
 							dr.TextureSet.AddTexture(img);
 						}
 
@@ -1388,13 +1388,13 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		//mxd. This returns a specific HiRes texture stream
-		internal Stream GetHiResTextureData(string name)
+		internal Stream GetHiResTextureData(string name, ref string hireslocation)
 		{
 			// Go for all opened containers
 			for(int i = containers.Count - 1; i >= 0; i--)
 			{
 				// This container provides this texture?
-				Stream data = containers[i].GetHiResTextureData(name);
+				Stream data = containers[i].GetHiResTextureData(name, ref hireslocation);
 				if(data != null) return data;
 			}
 
@@ -1446,17 +1446,30 @@ namespace CodeImp.DoomBuilder.Data
 				// Sprite not in our collection yet?
 				if(!sprites.ContainsKey(ti.SpriteLongName)) 
 				{
-					// Find sprite data
-					Stream spritedata = GetSpriteData(ti.Sprite);
-					if(spritedata != null) 
+					//mxd. Go for all opened containers
+					bool spritefound = false;
+					if(!string.IsNullOrEmpty(ti.Sprite))
+					{
+						for(int i = containers.Count - 1; i >= 0; i--)
+						{
+							// This contain provides this sprite?
+							if(containers[i].GetSpriteExists(ti.Sprite))
+							{
+								spritefound = true;
+								break;
+							}
+						}
+					}
+
+					if(spritefound)
 					{
 						// Make new sprite image
 						image = new SpriteImage(ti.Sprite);
 
 						// Add to collection
 						sprites.Add(ti.SpriteLongName, image);
-					} 
-					else //mxd
+					}
+					else
 					{
 						General.ErrorLogger.Add(ErrorType.Error, "Missing sprite lump \"" + ti.Sprite + "\". Forgot to include required resources?");
 					}
@@ -1475,7 +1488,7 @@ namespace CodeImp.DoomBuilder.Data
 		}
 		
 		// This returns a specific patch stream
-		internal Stream GetSpriteData(string pname)
+		internal Stream GetSpriteData(string pname, ref string spritelocation)
 		{
 			if(!string.IsNullOrEmpty(pname))
 			{
@@ -1483,7 +1496,7 @@ namespace CodeImp.DoomBuilder.Data
 				for(int i = containers.Count - 1; i >= 0; i--)
 				{
 					// This contain provides this patch?
-					Stream spritedata = containers[i].GetSpriteData(pname);
+					Stream spritedata = containers[i].GetSpriteData(pname, ref spritelocation);
 					if(spritedata != null) return spritedata;
 				}
 			}
@@ -1578,18 +1591,23 @@ namespace CodeImp.DoomBuilder.Data
 				}
 				else
 				{
-					Stream spritedata = null;
-					
-					// Go for all opened containers
-					for(int i = containers.Count - 1; i >= 0; i--)
+					//mxd. Go for all opened containers
+					bool spritefound = false;
+					if(!string.IsNullOrEmpty(name))
 					{
-						// This container provides this sprite?
-						spritedata = containers[i].GetSpriteData(name);
-						if(spritedata != null) break;
+						for(int i = containers.Count - 1; i >= 0; i--)
+						{
+							// This contain provides this sprite?
+							if(containers[i].GetSpriteExists(name))
+							{
+								spritefound = true;
+								break;
+							}
+						}
 					}
 					
 					// Found anything?
-					if(spritedata != null)
+					if(spritefound)
 					{
 						// Make new sprite image
 						SpriteImage image = new SpriteImage(name);
@@ -2051,7 +2069,7 @@ namespace CodeImp.DoomBuilder.Data
 						foreach(KeyValuePair<string, ModelData> g in parser.Entries) 
 						{
 							if(modeldefentriesbyname.ContainsKey(g.Key))
-								General.ErrorLogger.Add(ErrorType.Warning, "Model definition for actor \"" + g.Key + "\" is double defined in \"" + Path.Combine(data.Source.Location.GetShortName(), data.Filename) + "\"");
+								General.ErrorLogger.Add(ErrorType.Warning, "Model definition for actor \"" + g.Key + "\" is double defined in \"" + Path.Combine(data.Source.Location.GetDisplayName(), data.Filename) + "\"");
 							
 							modeldefentriesbyname[g.Key] = g.Value;
 						}

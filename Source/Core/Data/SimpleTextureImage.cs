@@ -66,7 +66,8 @@ namespace CodeImp.DoomBuilder.Data
 			{
 				// Get the patch data stream
 				if(bitmap != null) bitmap.Dispose(); bitmap = null;
-				Stream patchdata = General.Map.Data.GetTextureData(lumpname, hasLongName);
+				string patchlocation = string.Empty; //mxd
+				Stream patchdata = General.Map.Data.GetTextureData(lumpname, hasLongName, ref patchlocation);
 				if(patchdata != null)
 				{
 					// Copy patch data to memory
@@ -93,7 +94,7 @@ namespace CodeImp.DoomBuilder.Data
 					// Not loaded?
 					if(bitmap == null)
 					{
-						General.ErrorLogger.Add(ErrorType.Error, "Image lump \"" + lumpname + "\" data format could not be read, while loading texture \"" + this.Name + "\". Does this lump contain valid picture data at all?");
+						General.ErrorLogger.Add(ErrorType.Error, "Image lump \"" + Path.Combine(patchlocation, lumpname) + "\" data format could not be read, while loading texture \"" + this.Name + "\". Does this lump contain valid picture data at all?");
 						loadfailed = true;
 					}
 					else

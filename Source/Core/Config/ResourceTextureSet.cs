@@ -67,7 +67,7 @@ namespace CodeImp.DoomBuilder.Config
 		{
 			//mxd. Wad duplicates are checked by WadReader
 			if(location.type != DataLocation.RESOURCE_WAD && textures.ContainsKey(image.LongName) && !image.HasPatchWithSameName)
-				General.ErrorLogger.Add(ErrorType.Warning, "Texture \"" + image.Name + "\" is double defined in resource \"" + this.Location.location + "\".");
+				General.ErrorLogger.Add(ErrorType.Warning, "Texture \"" + image.Name + "\" is double defined in resource \"" + this.Location.GetDisplayName() + "\".");
 			textures[image.LongName] = image;
 		}
 
@@ -76,7 +76,7 @@ namespace CodeImp.DoomBuilder.Config
 		{
 			//mxd. Wad duplicates are checked by WadReader
 			if(location.type != DataLocation.RESOURCE_WAD && flats.ContainsKey(image.LongName) && (!General.Map.Config.MixTexturesFlats || !image.HasPatchWithSameName))
-				General.ErrorLogger.Add(ErrorType.Warning, "Flat \"" + image.Name + "\" is double defined in resource \"" + this.Location.location + "\".");
+				General.ErrorLogger.Add(ErrorType.Warning, "Flat \"" + image.Name + "\" is double defined in resource \"" + this.Location.GetDisplayName() + "\".");
 			flats[image.LongName] = image;
 		}
 

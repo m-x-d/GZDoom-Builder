@@ -78,7 +78,7 @@ namespace CodeImp.DoomBuilder.Data
 			foreach(string w in wadfiles)
 			{
 				string tempfile = CreateTempFile(w);
-				DataLocation wdl = new DataLocation(DataLocation.RESOURCE_WAD, tempfile, false, false, true);
+				DataLocation wdl = new DataLocation(DataLocation.RESOURCE_WAD, tempfile, Path.Combine(location.GetDisplayName(), Path.GetFileName(w)), false, false, true);
 				wads.Add(new WADReader(wdl));
 			}
 		}
@@ -354,7 +354,7 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		//mxd.
-		public override Stream GetFlatData(string pname, bool longname) 
+		public override Stream GetFlatData(string pname, bool longname, ref string flatlocation) 
 		{
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
@@ -365,7 +365,7 @@ namespace CodeImp.DoomBuilder.Data
 			{
 				for(int i = wads.Count - 1; i > -1; i--)
 				{
-					Stream data = wads[i].GetFlatData(pname, false);
+					Stream data = wads[i].GetFlatData(pname, false, ref flatlocation);
 					if(data != null) return data;
 				}
 			}

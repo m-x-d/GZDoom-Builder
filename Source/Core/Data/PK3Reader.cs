@@ -150,7 +150,7 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Textures
 
 		// This finds and returns a patch stream
-		public override Stream GetPatchData(string pname, bool longname)
+		public override Stream GetPatchData(string pname, bool longname, ref string patchlocation)
 		{
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
@@ -161,14 +161,19 @@ namespace CodeImp.DoomBuilder.Data
 			{
 				for(int i = wads.Count - 1; i >= 0; i--)
 				{
-					Stream data = wads[i].GetPatchData(pname, false);
+					Stream data = wads[i].GetPatchData(pname, false, ref patchlocation);
 					if(data != null) return data;
 				}
 			}
 			else
 			{
 				//mxd. Long names are absolute
-				return (FileExists(pname) ? LoadFile(pname) : null);
+				if(FileExists(pname))
+				{
+					patchlocation = location.GetDisplayName();
+					return LoadFile(pname);
+				}
+				return null;
 			}
 
 			if(General.Map.Config.MixTexturesFlats)
@@ -177,8 +182,11 @@ namespace CodeImp.DoomBuilder.Data
 				foreach(string loc in PatchLocations)
 				{
 					string filename = FindFirstFile(loc, pname, true);
-					if((filename != null) && FileExists(filename)) 
+					if((filename != null) && FileExists(filename))
+					{
+						patchlocation = location.GetDisplayName();
 						return LoadFile(filename);
+					}
 				}
 			}
 			else
@@ -186,7 +194,10 @@ namespace CodeImp.DoomBuilder.Data
 				// Find in patches directory
 				string filename = FindFirstFile(PATCHES_DIR, pname, true);
 				if((filename != null) && FileExists(filename))
+				{
+					patchlocation = location.GetDisplayName();
 					return LoadFile(filename);
+				}
 			}
 
 			// Nothing found
@@ -194,7 +205,7 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		// This finds and returns a textue stream
-		public override Stream GetTextureData(string pname, bool longname)
+		public override Stream GetTextureData(string pname, bool longname, ref string texturelocation)
 		{
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
@@ -205,27 +216,35 @@ namespace CodeImp.DoomBuilder.Data
 			{
 				for(int i = wads.Count - 1; i >= 0; i--)
 				{
-					Stream data = wads[i].GetTextureData(pname, false);
+					Stream data = wads[i].GetTextureData(pname, false, ref texturelocation);
 					if(data != null) return data;
 				}
 			}
 			else
 			{
 				//mxd. Long names are absolute
-				return (FileExists(pname) ? LoadFile(pname) : null);
+				if(FileExists(pname))
+				{
+					texturelocation = location.GetDisplayName();
+					return LoadFile(pname);
+				}
+				return null;
 			}
 
 			// Find in textures directory
 			string filename = FindFirstFile(TEXTURES_DIR, pname, true);
 			if(!string.IsNullOrEmpty(filename) && FileExists(filename))
+			{
+				texturelocation = location.GetDisplayName();
 				return LoadFile(filename);
+			}
 
 			// Nothing found
 			return null;
 		}
 
 		//mxd. This finds and returns a HiRes textue stream
-		public override Stream GetHiResTextureData(string pname)
+		public override Stream GetHiResTextureData(string pname, ref string hireslocation)
 		{
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
@@ -234,14 +253,17 @@ namespace CodeImp.DoomBuilder.Data
 			// Note the backward order, because the last wad's images have priority
 			for(int i = wads.Count - 1; i >= 0; i--)
 			{
-				Stream data = wads[i].GetTextureData(pname, false);
+				Stream data = wads[i].GetTextureData(pname, false, ref hireslocation);
 				if(data != null) return data;
 			}
 
 			// Find in HiRes directory
 			string filename = FindFirstFile(HIRES_DIR, pname, false);
 			if(!string.IsNullOrEmpty(filename) && FileExists(filename))
+			{
+				hireslocation = location.GetDisplayName();
 				return LoadFile(filename);
+			}
 
 			// Nothing found
 			return null;
@@ -277,7 +299,7 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Sprites
 
 		// This finds and returns a sprite stream
-		public override Stream GetSpriteData(string pname)
+		public override Stream GetSpriteData(string pname, ref string spritelocation)
 		{
 			string pfilename = pname.Replace('\\', '^');
 
@@ -287,7 +309,7 @@ namespace CodeImp.DoomBuilder.Data
 			// Find in any of the wad files
 			for(int i = wads.Count - 1; i >= 0; i--)
 			{
-				Stream sprite = wads[i].GetSpriteData(pname);
+				Stream sprite = wads[i].GetSpriteData(pname, ref spritelocation);
 				if(sprite != null) return sprite;
 			}
 
@@ -295,6 +317,7 @@ namespace CodeImp.DoomBuilder.Data
 			string filename = FindFirstFile(SPRITES_DIR, pfilename, true);
 			if((filename != null) && FileExists(filename))
 			{
+				spritelocation = location.GetDisplayName(); //mxd
 				return LoadFile(filename);
 			}
 
@@ -477,7 +500,7 @@ namespace CodeImp.DoomBuilder.Data
 			if(filedata == null)
 			{
 				//mxd
-				General.ErrorLogger.Add(ErrorType.Error, "Cannot find the file \"" + filename + "\" in archive \"" + location.location + "\".");
+				General.ErrorLogger.Add(ErrorType.Error, "Cannot find the file \"" + filename + "\" in archive \"" + location.GetDisplayName() + "\".");
 				return null;
 			}
 
@@ -509,7 +532,7 @@ namespace CodeImp.DoomBuilder.Data
 					case 60:
 					case 62:
 					case 124:
-						General.ErrorLogger.Add(ErrorType.Error, "Error in \"" + location.location + "\": unsupported character \"" + c + "\" in path \"" + path + "\". File loading was skipped.");
+						General.ErrorLogger.Add(ErrorType.Error, "Error in \"" + location.GetDisplayName() + "\": unsupported character \"" + c + "\" in path \"" + path + "\". File loading was skipped.");
 						return false;
 
 					default:

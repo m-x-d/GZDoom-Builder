@@ -226,7 +226,7 @@ namespace CodeImp.DoomBuilder.Data
 				foreach(KeyValuePair<LumpRange, KeyValuePair<string, string>> group in failedranges)
 				{
 					if(successfulrangestarts.ContainsKey(group.Key.start)) continue;
-					General.ErrorLogger.Add(ErrorType.Warning, "\"" + group.Value.Key + "\" range at index " + group.Key.start + " is not closed in resource \"" + location.location + "\" (\"" + group.Value.Value + "\" marker is missing).");
+					General.ErrorLogger.Add(ErrorType.Warning, "\"" + group.Value.Key + "\" range at index " + group.Key.start + " is not closed in resource \"" + location.GetDisplayName() + "\" (\"" + group.Value.Value + "\" marker is missing).");
 				}
 
 				//mxd. Check duplicates
@@ -236,7 +236,7 @@ namespace CodeImp.DoomBuilder.Data
 					for(int i = range.start + 1; i < range.end; i++)
 					{
 						if(names.Contains(file.Lumps[i].Name))
-							General.ErrorLogger.Add(ErrorType.Warning, elementname + " \"" + file.Lumps[i].Name + "\", index " + i + " is double defined in resource \"" + location.location + "\".");
+							General.ErrorLogger.Add(ErrorType.Warning, elementname + " \"" + file.Lumps[i].Name + "\", index " + i + " is double defined in resource \"" + location.GetDisplayName() + "\".");
 						else
 							names.Add(file.Lumps[i].Name);
 					}
@@ -390,7 +390,7 @@ namespace CodeImp.DoomBuilder.Data
 					else 
 					{
 						// Can't load image without size
-						General.ErrorLogger.Add(ErrorType.Error, "Can't load texture \"" + file.Lumps[i].Name + "\" because it doesn't contain any data.");
+						General.ErrorLogger.Add(ErrorType.Error, "Can't load texture \"" + file.Lumps[i].Name + "\" from \"" + location.GetDisplayName() + "\" because it doesn't contain any data.");
 					}
 				}
 			}
@@ -445,7 +445,7 @@ namespace CodeImp.DoomBuilder.Data
 					else
 					{
 						// Can't load image without size
-						General.ErrorLogger.Add(ErrorType.Error, "Can't load HiRes texture \"" + file.Lumps[i].Name + "\" because it doesn't contain any data.");
+						General.ErrorLogger.Add(ErrorType.Error, "Can't load HiRes texture \"" + file.Lumps[i].Name + "\" from \"" + location.GetDisplayName() + "\" because it doesn't contain any data.");
 					}
 				}
 			}
@@ -592,7 +592,7 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		// This finds and returns a patch stream
-		public override Stream GetPatchData(string pname, bool longname)
+		public override Stream GetPatchData(string pname, bool longname, ref string patchlocation)
 		{
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
@@ -612,14 +612,22 @@ namespace CodeImp.DoomBuilder.Data
 				foreach(LumpRange range in invertedflatranges) 
 				{
 					lump = file.FindLump(pname, range.start, range.end);
-					if(lump != null) return lump.Stream;
+					if(lump != null)
+					{
+						patchlocation = location.GetDisplayName();
+						return lump.Stream;
+					}
 				}
 
 				// Find the lump anywhere IN flat ranges
 				foreach(LumpRange range in flatranges) 
 				{
 					lump = file.FindLump(pname, range.start, range.end);
-					if(lump != null) return lump.Stream;
+					if(lump != null)
+					{
+						patchlocation = location.GetDisplayName();
+						return lump.Stream;
+					}
 				}
 			}
 			
@@ -627,7 +635,7 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		// This finds and returns a texture stream
-		public override Stream GetTextureData(string pname, bool longname)
+		public override Stream GetTextureData(string pname, bool longname, ref string texturelocation)
 		{
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
@@ -637,14 +645,18 @@ namespace CodeImp.DoomBuilder.Data
 			foreach(LumpRange range in textureranges)
 			{
 				Lump lump = file.FindLump(pname, range.start, range.end);
-				if(lump != null) return lump.Stream;
+				if(lump != null)
+				{
+					texturelocation = location.GetDisplayName(); //mxd
+					return lump.Stream;
+				}
 			}
 
 			return null;
 		}
 
 		//mxd. This finds and returns a HiRes texture stream
-		public override Stream GetHiResTextureData(string name)
+		public override Stream GetHiResTextureData(string name, ref string hireslocation)
 		{
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
@@ -653,7 +665,11 @@ namespace CodeImp.DoomBuilder.Data
 			foreach(LumpRange range in hiresranges)
 			{
 				Lump lump = file.FindLump(name, range.start, range.end);
-				if(lump != null) return lump.Stream;
+				if(lump != null)
+				{
+					hireslocation = location.GetDisplayName();
+					return lump.Stream;
+				}
 			}
 
 			return null;
@@ -744,7 +760,7 @@ namespace CodeImp.DoomBuilder.Data
 		}
 		
 		// This finds and returns a patch stream
-		public override Stream GetFlatData(string pname, bool longname)
+		public override Stream GetFlatData(string pname, bool longname, ref string flatlocation)
 		{
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
@@ -754,7 +770,11 @@ namespace CodeImp.DoomBuilder.Data
 			foreach(LumpRange range in flatranges)
 			{
 				Lump lump = file.FindLump(pname, range.start, range.end);
-				if(lump != null) return lump.Stream;
+				if(lump != null)
+				{
+					flatlocation = location.GetDisplayName(); //mxd
+					return lump.Stream;
+				}
 			}
 			
 			return null;
@@ -825,7 +845,7 @@ namespace CodeImp.DoomBuilder.Data
 		}
 		
 		// This finds and returns a sprite stream
-		public override Stream GetSpriteData(string pname)
+		public override Stream GetSpriteData(string pname, ref string spritelocation)
 		{
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
@@ -834,7 +854,11 @@ namespace CodeImp.DoomBuilder.Data
 			foreach(LumpRange range in spriteranges)
 			{
 				Lump lump = file.FindLump(pname, range.start, range.end);
-				if(lump != null) return lump.Stream;
+				if(lump != null)
+				{
+					spritelocation = location.GetDisplayName(); //mxd
+					return lump.Stream;
+				}
 			}
 
 			return null;

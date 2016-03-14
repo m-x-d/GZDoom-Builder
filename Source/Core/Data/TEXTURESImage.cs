@@ -146,8 +146,8 @@ namespace CodeImp.DoomBuilder.Data
 						if(p.skip) continue;
 						
 						// Get the patch data stream
-						Stream patchdata = General.Map.Data.GetPatchData(p.lumpname, p.haslongname);
-
+						string patchlocation = string.Empty; //mxd
+						Stream patchdata = General.Map.Data.GetPatchData(p.lumpname, p.haslongname, ref patchlocation);
 						if(patchdata != null)
 						{
 							// Copy patch data to memory
@@ -170,7 +170,7 @@ namespace CodeImp.DoomBuilder.Data
 								if(reader is UnknownImageReader) 
 								{
 									// Data is in an unknown format!
-									General.ErrorLogger.Add(ErrorType.Error, "Patch lump \"" + p.lumpname + "\" data format could not be read, while loading texture \"" + this.Name + "\"");
+									General.ErrorLogger.Add(ErrorType.Error, "Patch lump \"" + Path.Combine(patchlocation, p.lumpname) + "\" data format could not be read, while loading texture \"" + this.Name + "\"");
 									missingpatches++; //mxd
 								}
 							}
