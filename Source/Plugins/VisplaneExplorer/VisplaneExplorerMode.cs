@@ -380,7 +380,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		}
 
 		// Processing
-		public override void OnProcess(float deltatime)
+		public override void OnProcess(long deltatime)
 		{
 			base.OnProcess(deltatime);
 			if(DateTime.Now >= nextupdate)

@@ -1099,10 +1099,9 @@ namespace CodeImp.DoomBuilder.VisualModes
 		/// <summary>
 		/// While this mode is active, this is called continuously to process whatever needs processing.
 		/// </summary>
-		public override void OnProcess(float deltatime)
+		public override void OnProcess(float deltatime) { OnProcess((long)deltatime); } //mxd. DB2 compatibility
+		public override void OnProcess(long deltatime)
 		{
-			float multiplier;
-			
 			base.OnProcess(deltatime);
 			
 			// Camera vectors
@@ -1113,6 +1112,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 			Vector3D upvec = new Vector3D(0.0f, 0.0f, 1.0f);
 
 			// Move the camera
+			float multiplier;
 			if(General.Interface.ShiftState) multiplier = MOVE_SPEED_MULTIPLIER * 2.0f; else multiplier = MOVE_SPEED_MULTIPLIER;
 			if(keyforward) camdeltapos += camvec * cammovemul * General.Settings.MoveSpeed * multiplier * deltatime;
 			if(keybackward) camdeltapos -= camvec * cammovemul * General.Settings.MoveSpeed * multiplier * deltatime;

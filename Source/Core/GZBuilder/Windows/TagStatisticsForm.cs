@@ -168,7 +168,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 			return list;
 		}
 
-		private static void ShowSelection(List<Vector2D> points) 
+		private static void ShowSelection(IEnumerable<Vector2D> points) 
 		{
 			RectangleF area = MapSet.CreateEmptyArea();
 			
@@ -235,13 +235,13 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 				int tag = (int)dataGridView.Rows[e.RowIndex].Cells[0].Value;
 
 				if(e.ColumnIndex == 2) //sectors
-				{ 
+				{
+					// Deselect everything
+					General.Map.Map.ClearAllSelected();
+					
 					List<Sector> list = GetSectorsWithTag(tag, (int)dataGridView.Rows[e.RowIndex].Cells[2].Value);
 					if(list.Count > 0) 
 					{
-						General.Map.Map.ClearSelectedSectors();
-						General.Map.Map.ClearSelectedLinedefs();
-						
 						List<Vector2D> points = new List<Vector2D>();
 						General.Editing.ChangeMode("SectorsMode");
 						ClassicMode mode = (ClassicMode)General.Editing.Mode;
@@ -259,15 +259,20 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 
 						ShowSelection(points);
 					}
+					else
+					{
+						General.Interface.RedrawDisplay();
+					}
 				} 
 				else if(e.ColumnIndex == 3) //linedefs
-				{ 
+				{
+					// Deselect everything
+					General.Map.Map.ClearAllSelected();
+					
 					List<Linedef> list = GetLinedefsWithTag(tag, (int)dataGridView.Rows[e.RowIndex].Cells[3].Value);
 					if(list.Count > 0) 
 					{
-						General.Map.Map.ClearSelectedSectors();
-						General.Map.Map.ClearSelectedLinedefs();
-
+						General.Editing.ChangeMode("LinedefsMode");
 						List<Vector2D> points = new List<Vector2D>();
 						foreach(Linedef l in list) 
 						{
@@ -277,19 +282,24 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 						}
 
 						General.Map.Map.Update();
-						General.Editing.ChangeMode("LinedefsMode");
 						ShowSelection(points);
+					}
+					else
+					{
+						General.Interface.RedrawDisplay();
 					}
 				} 
 				else if(e.ColumnIndex == 4) //things
-				{ 
+				{
+					// Deselect everything
+					General.Map.Map.ClearAllSelected();
+					
 					List<Thing> list = GetThingsWithTag(tag, (int)dataGridView.Rows[e.RowIndex].Cells[4].Value);
-					if(list.Count > 0) 
+					if(list.Count > 0)
 					{
-						General.Map.Map.ClearSelectedThings();
-
+						General.Editing.ChangeMode("ThingsMode");
 						List<Vector2D> points = new List<Vector2D>();
-						foreach(Thing t in list) 
+						foreach(Thing t in list)
 						{
 							t.Selected = true;
 
@@ -302,12 +312,13 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 						}
 
 						General.Map.Map.Update();
-						General.Editing.ChangeMode("ThingsMode");
 						ShowSelection(points);
 					}
+					else
+					{
+						General.Interface.RedrawDisplay();
+					}
 				}
-
-			
 			} 
 			else if(e.Button == MouseButtons.Right) //open properties window
 			{
@@ -343,84 +354,6 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 						General.Map.Map.Update();
 						Setup();
 					}
-				}
-			}
-		}
-
-		private void dataGridView_CellMouseDoubleClick(object sender, DataGridViewCellMouseEventArgs e) 
-		{
-			if(e.ColumnIndex < 2 || e.RowIndex == -1) return;
-			int tag = (int)dataGridView.Rows[e.RowIndex].Cells[0].Value;
-
-			if(e.ColumnIndex == 2) //sectors
-			{ 
-				List<Sector> list = GetSectorsWithTag(tag, (int)dataGridView.Rows[e.RowIndex].Cells[2].Value);
-				if(list.Count > 0) 
-				{
-					General.Map.Map.ClearSelectedSectors();
-					General.Map.Map.ClearSelectedLinedefs();
-
-					List<Vector2D> points = new List<Vector2D>();
-					foreach(Sector s in list) 
-					{
-						s.Selected = true;
-
-						foreach(Sidedef sd in s.Sidedefs) 
-						{
-							points.Add(sd.Line.Start.Position);
-							points.Add(sd.Line.End.Position);
-						}
-					}
-					
-					General.Map.Map.Update();
-					General.Editing.ChangeMode("SectorsMode");
-					ShowSelection(points);
-				}
-			} 
-			else if(e.ColumnIndex == 3) //linedefs
-			{ 
-				List<Linedef> list = GetLinedefsWithTag(tag, (int)dataGridView.Rows[e.RowIndex].Cells[3].Value);
-				if(list.Count > 0) 
-				{
-					General.Map.Map.ClearSelectedSectors();
-					General.Map.Map.ClearSelectedLinedefs();
-
-					List<Vector2D> points = new List<Vector2D>();
-					foreach(Linedef l in list) 
-					{
-						l.Selected = true;
-						points.Add(l.Start.Position);
-						points.Add(l.End.Position);
-					}
-
-					General.Map.Map.Update();
-					General.Editing.ChangeMode("LinedefsMode");
-					ShowSelection(points);
-				}
-			} 
-			else if(e.ColumnIndex == 4) //things
-			{ 
-				List<Thing> list = GetThingsWithTag(tag, (int)dataGridView.Rows[e.RowIndex].Cells[4].Value);
-				if(list.Count > 0) 
-				{
-					General.Map.Map.ClearSelectedThings();
-
-					List<Vector2D> points = new List<Vector2D>();
-					foreach(Thing t in list) 
-					{
-						t.Selected = true;
-						
-						Vector2D p = t.Position;
-						points.Add(p);
-						points.Add(p + new Vector2D(t.Size * 2.0f, t.Size * 2.0f));
-						points.Add(p + new Vector2D(t.Size * 2.0f, -t.Size * 2.0f));
-						points.Add(p + new Vector2D(-t.Size * 2.0f, t.Size * 2.0f));
-						points.Add(p + new Vector2D(-t.Size * 2.0f, -t.Size * 2.0f));
-					}
-
-					General.Map.Map.Update();
-					General.Editing.ChangeMode("ThingsMode");
-					ShowSelection(points);
 				}
 			}
 		}

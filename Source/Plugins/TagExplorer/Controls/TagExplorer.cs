@@ -144,9 +144,9 @@ namespace CodeImp.DoomBuilder.TagExplorer
 			string comment = "";
 			string serachStr = tbSearch.Text.ToLowerInvariant();
 
-			List<int> filteredtags = new List<int>();
-			List<int> filteredactions = new List<int>();
-			List<int> filteredpolyobjects = new List<int>();
+			HashSet<int> filteredtags = new HashSet<int>();
+			HashSet<int> filteredactions = new HashSet<int>();
+			HashSet<int> filteredpolyobjects = new HashSet<int>();
 			GetSpecialValues(serachStr, ref filteredtags, ref filteredactions, ref filteredpolyobjects);
 
 			if(!udmf || filteredtags.Count > 0 || filteredactions.Count > 0 || filteredpolyobjects.Count > 0)
@@ -333,23 +333,25 @@ namespace CodeImp.DoomBuilder.TagExplorer
 				{
 					if((showTags && s.Tag != 0) || (showActions && s.Effect > 0)) 
 					{
-						if(filteredtags.Count > 0 && !filteredtags.Contains(s.Tag)) continue;
 						if(filteredactions.Count > 0 && !filteredactions.Contains(s.Effect)) continue;
-
-						NodeInfo info = new NodeInfo(s);
-						string name = info.GetName(ref comment, currentSortMode);
-						hasComment = comment.Length > 0;
-
-						if(!hasComment && cbCommentsOnly.Checked) continue;
-
-						if(!udmf || serachStr.Length == 0 || (hasComment && comment.ToLowerInvariant().IndexOf(serachStr) != -1)) 
+						for(int i = 0; i < s.Tags.Count; i++)
 						{
-							TreeNode node = new TreeNode(name, 3, 3) { Tag = info, ToolTipText = nodetooltip };
-							if(hasComment) node.ForeColor = commentColor;
-							nodes.Add(node);
+							if(filteredtags.Count > 0 && !filteredtags.Contains(s.Tags[i])) continue;
 
-							if(info.Index == selection.Index && info.Type == selection.Type)
-								selectedNode = node;
+							NodeInfo info = new NodeInfo(s, i);
+							string name = info.GetName(ref comment, currentSortMode);
+							hasComment = comment.Length > 0;
+
+							if(!hasComment && cbCommentsOnly.Checked) continue;
+							if(!udmf || serachStr.Length == 0 || (hasComment && comment.ToLowerInvariant().IndexOf(serachStr) != -1))
+							{
+								TreeNode node = new TreeNode(name, 3, 3) { Tag = info, ToolTipText = nodetooltip };
+								if(hasComment) node.ForeColor = commentColor;
+								nodes.Add(node);
+
+								if(info.Index == selection.Index && info.Type == selection.Type)
+									selectedNode = node;
+							}
 						}
 					}
 				}
@@ -449,31 +451,34 @@ namespace CodeImp.DoomBuilder.TagExplorer
 				{
 					if((showTags && l.Tag != 0) || (showActions && l.Action > 0)) 
 					{
-						if(filteredtags.Count > 0 && !filteredtags.Contains(l.Tag)) continue;
 						if(filteredactions.Count > 0 && !filteredactions.Contains(l.Action)) continue;
 
-						NodeInfo info = new NodeInfo(l);
-						if(filteredpolyobjects.Count > 0 && !filteredpolyobjects.Contains(info.PolyobjectNumber))
-							continue;
+						NodeInfo firstinfo = new NodeInfo(l, 0);
+						if(filteredpolyobjects.Count > 0 && !filteredpolyobjects.Contains(firstinfo.PolyobjectNumber)) continue;
 
-						string name = info.GetName(ref comment, currentSortMode);
-						hasComment = comment.Length > 0;
-
-						if(!hasComment && cbCommentsOnly.Checked) continue;
-
-						if(!udmf || serachStr.Length == 0 || (hasComment && comment.ToLowerInvariant().IndexOf(serachStr) != -1)) 
+						for(int i = 0; i < l.Tags.Count; i++)
 						{
-							TreeNode node = new TreeNode(name, 5, 5) { Tag = info, ToolTipText = nodetooltip };
-							if(hasComment) node.ForeColor = commentColor;
-							nodes.Add(node);
+							if(filteredtags.Count > 0 && !filteredtags.Contains(l.Tags[i])) continue;
 
-							if(info.Index == selection.Index && info.Type == selection.Type)
-								selectedNode = node;
+							NodeInfo info = new NodeInfo(l, i);
+							string name = info.GetName(ref comment, currentSortMode);
+							hasComment = comment.Length > 0;
+
+							if(!hasComment && cbCommentsOnly.Checked) continue;
+							if(!udmf || serachStr.Length == 0 || (hasComment && comment.ToLowerInvariant().IndexOf(serachStr) != -1))
+							{
+								TreeNode node = new TreeNode(name, 5, 5) { Tag = info, ToolTipText = nodetooltip };
+								if(hasComment) node.ForeColor = commentColor;
+								nodes.Add(node);
+
+								if(info.Index == selection.Index && info.Type == selection.Type)
+									selectedNode = node;
+							}
 						}
 					} 
 					else if(currentDisplayMode == DISPLAY_POLYOBJECTS) 
 					{
-						NodeInfo info = new NodeInfo(l);
+						NodeInfo info = new NodeInfo(l, 0);
 						if(info.PolyobjectNumber != int.MinValue && (filteredpolyobjects.Count == 0 || filteredpolyobjects.Contains(info.PolyobjectNumber))) 
 						{
 							string name = info.GetName(ref comment, SortMode.SORT_BY_POLYOBJ_NUMBER);
@@ -584,7 +589,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
 		}
 
 //tag/action search
-		private static void GetSpecialValues(string serachstr, ref List<int> filteredtags, ref List<int> filteredactions, ref List<int> filteredpolyobjects) 
+		private static void GetSpecialValues(string serachstr, ref HashSet<int> filteredtags, ref HashSet<int> filteredactions, ref HashSet<int> filteredpolyobjects) 
 		{
 			if(serachstr.Length == 0) return;
 
@@ -916,6 +921,9 @@ namespace CodeImp.DoomBuilder.TagExplorer
 			if(e.Label != null)	info.Comment = e.Label;
 			e.Node.Text = info.GetName(ref comment, currentSortMode);
 			e.Node.ForeColor = string.IsNullOrEmpty(info.Comment) ? Color.Black : commentColor;
+
+			// Because of multiple tags, several nodes can link to the same sector/linedef
+			UpdateTree(false);
 		}
 
 		//It is called every time a dialog window closes.

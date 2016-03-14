@@ -338,7 +338,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				// Highlight
 				if(General.Settings.AnimateVisualSelection)
 				{
-					float time = Clock.CurrentTime;
+					long time = Clock.CurrentTime;
 					highlightglow = (float)Math.Sin(time / 100.0f) * 0.1f + 0.4f;
 					highlightglowinv = -highlightglow + 0.8f;
 				}

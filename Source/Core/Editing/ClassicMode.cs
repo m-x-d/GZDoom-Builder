@@ -461,7 +461,8 @@ namespace CodeImp.DoomBuilder.Editing
 		#region ================== Processing
 
 		// Processing
-		public override void OnProcess(float deltatime)
+		public override void OnProcess(float deltatime) { OnProcess((long)deltatime); } //mxd. DB2 compatibility
+		public override void OnProcess(long deltatime)
 		{
 			base.OnProcess(deltatime);
 
