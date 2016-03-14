@@ -70,6 +70,7 @@ namespace CodeImp.DoomBuilder.Controls
 		private const int MAX_BACKTRACK_LENGTH = 200;
 		private const int HIGHLIGHT_INDICATOR = 8; //mxd. Indicators 0-7 could be in use by a lexer so we'll use indicator 8 to highlight words.
 		private const string ENTRY_POSITION_MARKER = "[EP]"; //mxd
+		private const string LINE_BREAK_MARKER = "[LB]"; //mxd
 		
 		#endregion
 
@@ -359,8 +360,9 @@ namespace CodeImp.DoomBuilder.Controls
 			if(!lexercfg.SettingExists(lexername)) throw new InvalidOperationException("Unknown lexer " + scriptconfig.Lexer + " specified in script configuration!");
 			scriptedit.Lexer = scriptconfig.Lexer;
 
-			//mxd. Set word chars
-			scriptedit.SetWordChars(scriptconfig.WordCharacters);
+			//mxd. Set extra word chars?
+			if(!string.IsNullOrEmpty(scriptconfig.ExtraWordCharacters))
+				scriptedit.WordChars += scriptconfig.ExtraWordCharacters;
 			
 			// Set the default style and settings
 			scriptedit.Styles[Style.Default].Font = General.Settings.ScriptFontName;
@@ -691,16 +693,33 @@ namespace CodeImp.DoomBuilder.Controls
 		public void InsertSnippet(string[] lines) 
 		{
 			// Insert the snippet
+			List<string> processedlines = new List<string>(lines.Length);
 			int curline = scriptedit.LineFromPosition(scriptedit.SelectionStart);
 			int indent = scriptedit.Lines[scriptedit.CurrentLine].Indentation;
 			string tabs = Environment.NewLine + GetIndentationString(indent);
 			string spaces = new String(' ', General.Settings.ScriptTabWidth);
+			string[] linebreak = { LINE_BREAK_MARKER };
 			int entrypos = -1;
 			int entryline = -1;
-			string[] processedlines = ProcessLineBreaks(lines);
+
+			// Process line breaks
+			foreach(string line in lines)
+			{
+				if(line.IndexOf(linebreak[0], StringComparison.Ordinal) != -1)
+				{
+					if(General.Settings.ScriptAllmanStyle)
+						processedlines.AddRange(line.Split(linebreak, StringSplitOptions.RemoveEmptyEntries));
+					else
+						processedlines.Add(line.Replace(linebreak[0], " "));
+				}
+				else
+				{
+					processedlines.Add(line);
+				}
+			}
 
 			// Process special chars, try to find entry position marker
-			for(int i = 0; i < lines.Length; i++) 
+			for(int i = 0; i < processedlines.Count; i++) 
 			{
 				if(!scriptedit.UseTabs) processedlines[i] = processedlines[i].Replace("\t", spaces);
 
@@ -718,7 +737,7 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 
 			// Replace the text
-			string text = string.Join(tabs, processedlines);
+			string text = string.Join(tabs, processedlines.ToArray());
 			scriptedit.SelectionStart = scriptedit.WordStartPosition(scriptedit.CurrentPosition, true);
 			scriptedit.SelectionEnd = scriptedit.WordEndPosition(scriptedit.CurrentPosition, true);
 			scriptedit.ReplaceSelection(text);
@@ -726,7 +745,10 @@ namespace CodeImp.DoomBuilder.Controls
 			// Move the cursor if we had the [EP] marker
 			if(entrypos != -1) 
 			{
-				scriptedit.SetEmptySelection(scriptedit.Lines[entryline].EndPosition - entrypos - 2);
+				// Count from the end of the line, because I don't see a reliable way to count indentation chars...
+				int pos = scriptedit.Lines[entryline].EndPosition - entrypos;
+				if(scriptedit.Lines[entryline].Text.EndsWith(Environment.NewLine)) pos -= 2;
+				scriptedit.SetEmptySelection(pos);
 			}
 		}
 
@@ -967,30 +989,6 @@ namespace CodeImp.DoomBuilder.Controls
 			// Register image
 			scriptedit.Markers[(int)index].DefineRgbaImage(image);
 			scriptedit.Markers[(int)index].Symbol = MarkerSymbol.RgbaImage;
-		}
-
-		//mxd. This converts [LB] markers to line breaks if necessary
-		private static string[] ProcessLineBreaks(string[] lines) 
-		{
-			List<string> result = new List<string>(lines.Length);
-			string[] separator = new[] { "[LB]" };
-
-			foreach(string line in lines) 
-			{
-				if(line.IndexOf(separator[0], StringComparison.Ordinal) != -1) 
-				{
-					if(General.Settings.ScriptAllmanStyle)
-						result.AddRange(line.Split(separator, StringSplitOptions.RemoveEmptyEntries));
-					else
-						result.Add(line.Replace(separator[0], " "));
-				} 
-				else 
-				{
-					result.Add(line);
-				}
-			}
-
-			return result.ToArray();
 		}
 
 		//mxd. Autocompletion handling (https://github.com/jacobslusser/ScintillaNET/wiki/Basic-Autocompletion)

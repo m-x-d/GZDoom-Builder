@@ -48,8 +48,6 @@ namespace CodeImp.DoomBuilder.Config
 	{
 		#region ================== Constants
 
-		private const string WORD_CHARS = "_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"; //mxd
-
 		#endregion
 
 		#region ================== Variables
@@ -62,7 +60,7 @@ namespace CodeImp.DoomBuilder.Config
 		// Editor settings
 		private readonly string description;
 		private readonly int codepage;
-		private readonly string wordchars; //mxd. Characters to be threated as part of a word by Scintilla
+		private readonly string extrawordchars; //mxd. Extra characters to be threated as part of a word by Scintilla
 		private readonly string[] extensions;
 		private readonly bool casesensitive;
 		private readonly int insertcase;
@@ -115,7 +113,7 @@ namespace CodeImp.DoomBuilder.Config
 		public string ArrayClose { get { return arrayclose; } } //mxd
 		public string ArgumentDelimiter { get { return argumentdelimiter; } }
 		public string Terminator { get { return terminator; } }
-		public string WordCharacters { get { return wordchars; } } //mxd
+		public string ExtraWordCharacters { get { return extrawordchars; } } //mxd
 		public ScriptType ScriptType { get { return scripttype; } } //mxd
 
 		// Collections
@@ -163,7 +161,7 @@ namespace CodeImp.DoomBuilder.Config
 			terminator = "";
 			description = "Plain text";
 			scripttype = ScriptType.UNKNOWN; //mxd
-			wordchars = WORD_CHARS; //mxd
+			extrawordchars = ""; //mxd
 			extensions = new[] { "txt" };
 		}
 		
@@ -202,7 +200,7 @@ namespace CodeImp.DoomBuilder.Config
 			argumentdelimiter = cfg.ReadSetting("argumentdelimiter", "");
 			terminator = cfg.ReadSetting("terminator", "");
 			scripttype = (ScriptType)cfg.ReadSetting("scripttype", (int)ScriptType.UNKNOWN); //mxd
-			wordchars = WORD_CHARS + cfg.ReadSetting("extrawordchars", ""); //mxd
+			extrawordchars = cfg.ReadSetting("extrawordchars", ""); //mxd
 
 			//mxd. Make braces array
 			if(!string.IsNullOrEmpty(functionopen)) braces.Add(functionopen[0]);
