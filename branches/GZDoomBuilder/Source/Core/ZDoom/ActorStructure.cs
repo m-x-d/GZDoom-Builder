@@ -264,7 +264,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 									} 
 									else 
 									{
-										parser.ReportError("Unexpected end of structure");
+										parser.ReportError("Expected actor state name");
 										return;
 									}
 								} 
@@ -403,7 +403,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 							string v = parser.ReadToken();
 							if(string.IsNullOrEmpty(v)) 
 							{
-								parser.ReportError("Unexpected end of structure");
+								parser.ReportError("Expected \"Game\" property value");
 								return;
 							}
 							if(v == "\n") break;

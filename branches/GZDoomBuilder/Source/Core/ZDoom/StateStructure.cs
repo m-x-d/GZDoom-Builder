@@ -113,7 +113,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 					token = parser.StripTokenQuotes(token); //mxd. First part of the sprite name can be quoted
 					if(string.IsNullOrEmpty(token)) 
 					{
-						parser.ReportError("Unexpected end of structure");
+						parser.ReportError("Expected sprite name");
 						return;
 					}
 					
@@ -122,7 +122,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 					string spriteframes = parser.StripTokenQuotes(parser.ReadToken()); //mxd. Frames can be quoted
 					if(string.IsNullOrEmpty(spriteframes))
 					{
-						parser.ReportError("Unexpected end of structure");
+						parser.ReportError("Expected sprite frame");
 						return;
 					}
 					

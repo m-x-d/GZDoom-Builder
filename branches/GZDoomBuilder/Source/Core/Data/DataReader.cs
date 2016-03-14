@@ -172,16 +172,16 @@ namespace CodeImp.DoomBuilder.Data
 		public abstract PatchNames LoadPatchNames();
 
 		// When implemented, this returns the patch lump
-		public abstract Stream GetPatchData(string pname, bool longname);
+		public abstract Stream GetPatchData(string pname, bool longname, ref string patchlocation);
 
 		// When implemented, this returns the texture lump
-		public abstract Stream GetTextureData(string pname, bool longname);
+		public abstract Stream GetTextureData(string pname, bool longname, ref string texturelocation);
 
 		// When implemented, this loads the textures
 		public abstract IEnumerable<ImageData> LoadTextures(PatchNames pnames, Dictionary<string, TexturesParser> cachedparsers);
 
 		//mxd. When implemented, this returns the HiRes texture lump
-		public abstract Stream GetHiResTextureData(string pname);
+		public abstract Stream GetHiResTextureData(string pname, ref string hireslocation);
 
 		//mxd. When implemented, this loads the HiRes textures
 		public abstract IEnumerable<HiResImage> LoadHiResTextures();
@@ -194,7 +194,7 @@ namespace CodeImp.DoomBuilder.Data
 		public abstract IEnumerable<ImageData> LoadFlats(Dictionary<string, TexturesParser> cachedparsers);
 
 		// When implemented, this returns the flat lump
-		public abstract Stream GetFlatData(string pname, bool longname);
+		public abstract Stream GetFlatData(string pname, bool longname, ref string flatlocation);
 		
 		#endregion
 		
@@ -204,7 +204,7 @@ namespace CodeImp.DoomBuilder.Data
 		public abstract IEnumerable<ImageData> LoadSprites(Dictionary<string, TexturesParser> cachedparsers);
 		
 		// When implemented, this returns the sprite lump
-		public abstract Stream GetSpriteData(string pname);
+		public abstract Stream GetSpriteData(string pname, ref string spritelocation);
 
 		// When implemented, this checks if the given sprite lump exists
 		public abstract bool GetSpriteExists(string pname);

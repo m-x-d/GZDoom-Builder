@@ -92,7 +92,8 @@ namespace CodeImp.DoomBuilder.Data
 			{ 
 				// Get the patch data stream
 				if(bitmap != null) bitmap.Dispose(); bitmap = null;
-				Stream data = General.Map.Data.GetHiResTextureData(shortname);
+				string sourcelocation = string.Empty;
+				Stream data = General.Map.Data.GetHiResTextureData(shortname, ref sourcelocation);
 				if(data != null)
 				{
 					// Copy patch data to memory
@@ -119,7 +120,7 @@ namespace CodeImp.DoomBuilder.Data
 					// Not loaded?
 					if(bitmap == null)
 					{
-						General.ErrorLogger.Add(ErrorType.Error, "Image lump \"" + shortname + "\" data format could not be read, while loading texture \"" + this.Name + "\". Does this lump contain valid picture data at all?");
+						General.ErrorLogger.Add(ErrorType.Error, "Image lump \"" + Path.Combine(sourcelocation, shortname) + "\" data format could not be read, while loading HiRes texture \"" + this.Name + "\". Does this lump contain valid picture data at all?");
 						loadfailed = true;
 					}
 					else
@@ -144,7 +145,7 @@ namespace CodeImp.DoomBuilder.Data
 				}
 				else
 				{
-					General.ErrorLogger.Add(ErrorType.Error, "Image lump \"" + shortname + "\" could not be found, while loading texture \"" + this.Name + "\". Did you forget to include required resources?");
+					General.ErrorLogger.Add(ErrorType.Error, "Image lump \"" + shortname + "\" could not be found, while loading HiRes texture \"" + this.Name + "\". Did you forget to include required resources?");
 					loadfailed = true;
 				}
 				

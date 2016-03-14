@@ -604,7 +604,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			}
 			else
 			{
-				shorterrorsource = Path.Combine(datalocation.GetShortName(), sourcename);
+				shorterrorsource = Path.Combine(datalocation.GetDisplayName(), sourcename);
 				errorsource = Path.Combine(datalocation.location, sourcename);
 			}
 			
@@ -616,7 +616,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		{
 			// Add a warning
 			int errline = (datastream != null ? GetCurrentLineNumber() : CompilerError.NO_LINE_NUMBER);
-			string errsource = (ScriptType == ScriptType.ACS && sourcename.StartsWith("?") ? sourcename.Substring(1) : Path.Combine(datalocation.GetShortName(), sourcename));
+			string errsource = (ScriptType == ScriptType.ACS && sourcename.StartsWith("?") ? sourcename.Substring(1) : Path.Combine(datalocation.GetDisplayName(), sourcename));
 			if(sourcelumpindex != -1) errsource += ":" + sourcelumpindex;
 			General.ErrorLogger.Add(ErrorType.Warning, ScriptType + " warning in \"" + errsource
 								+ (errline != CompilerError.NO_LINE_NUMBER ? "\", line " + (errline + 1) : "\"") + ". " 

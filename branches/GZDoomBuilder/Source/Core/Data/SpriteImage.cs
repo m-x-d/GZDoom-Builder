@@ -78,7 +78,8 @@ namespace CodeImp.DoomBuilder.Data
 			lock(this)
 			{
 				// Get the lump data stream
-				Stream lumpdata = General.Map.Data.GetSpriteData(Name);
+				string spritelocation = string.Empty; //mxd
+				Stream lumpdata = General.Map.Data.GetSpriteData(Name, ref spritelocation);
 				if(lumpdata != null)
 				{
 					// Copy lump data to memory
@@ -93,7 +94,7 @@ namespace CodeImp.DoomBuilder.Data
 					if(reader is UnknownImageReader)
 					{
 						// Data is in an unknown format!
-						General.ErrorLogger.Add(ErrorType.Error, "Sprite lump \"" + Name + "\" data format could not be read. Does this lump contain valid picture data at all?");
+						General.ErrorLogger.Add(ErrorType.Error, "Sprite lump \"" + Path.Combine(spritelocation, Name) + "\" data format could not be read. Does this lump contain valid picture data at all?");
 						bitmap = null;
 					}
 					else

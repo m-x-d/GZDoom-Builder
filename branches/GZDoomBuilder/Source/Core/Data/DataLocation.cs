@@ -33,6 +33,7 @@ namespace CodeImp.DoomBuilder.Data
 		// Members
 		public int type;
 		public string location;
+		private string initiallocation; //mxd. Stores intial path inside a PK3/PK7. For display purposes only!
 		private string name; //mxd
 		public bool option1;
 		public bool option2;
@@ -44,10 +45,24 @@ namespace CodeImp.DoomBuilder.Data
 			// Initialize
 			this.type = type;
 			this.location = location;
+			this.initiallocation = string.Empty; //mxd
 			this.option1 = option1;
 			this.option2 = option2;
 			this.notfortesting = notfortesting;
 			this.name = string.Empty; //mxd
+		}
+
+		//mxd. Constructor for WADs inside of PK3s
+		internal DataLocation(int type, string location, string initiallocation, bool option1, bool option2, bool notfortesting)
+		{
+			// Initialize
+			this.type = type;
+			this.location = location;
+			this.initiallocation = initiallocation;
+			this.option1 = option1;
+			this.option2 = option2;
+			this.notfortesting = notfortesting;
+			this.name = string.Empty; 
 		}
 
 		// This displays the struct as string
@@ -57,8 +72,8 @@ namespace CodeImp.DoomBuilder.Data
 			return location;
 		}
 
-		//mxd. This returns short location name
-		public string GetShortName()
+		//mxd. This returns short location name. May not correspond to actual file location! Use for display purposes only!
+		public string GetDisplayName()
 		{
 			if(string.IsNullOrEmpty(name))
 			{
@@ -70,6 +85,9 @@ namespace CodeImp.DoomBuilder.Data
 						break;
 
 					case RESOURCE_WAD:
+						name = (!string.IsNullOrEmpty(initiallocation) ? initiallocation : Path.GetFileName(location));
+						break;
+
 					case RESOURCE_PK3:
 						name = Path.GetFileName(location);
 						break;

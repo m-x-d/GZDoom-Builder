@@ -722,32 +722,46 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		private void OnDragDrop(object sender, DragEventArgs e) 
+		private void OnDragDrop(object sender, DragEventArgs e)
 		{
 			if(e.Data.GetDataPresent(DataFormats.FileDrop)) 
 			{
-				string[] filePaths = (string[])e.Data.GetData(DataFormats.FileDrop);
-				if(filePaths.Length != 1) 
+				string[] filepaths = (string[])e.Data.GetData(DataFormats.FileDrop);
+				if(filepaths.Length != 1) 
 				{
 					General.Interface.DisplayStatus(StatusType.Warning, "Cannot open multiple files at once!");
 					return;
 				}
 
-				if(!File.Exists(filePaths[0])) 
+				if(!File.Exists(filepaths[0])) 
 				{
-					General.Interface.DisplayStatus(StatusType.Warning, "Cannot open \"" + filePaths[0] + "\": file does not exist!");
+					General.Interface.DisplayStatus(StatusType.Warning, "Cannot open \"" + filepaths[0] + "\": file does not exist!");
 					return;
 				}
 
-				string ext = Path.GetExtension(filePaths[0]);
+				string ext = Path.GetExtension(filepaths[0]);
 				if(string.IsNullOrEmpty(ext) || ext.ToLower() != ".wad") 
 				{
-					General.Interface.DisplayStatus(StatusType.Warning, "Cannot open \"" + filePaths[0] + "\": only WAD files can be loaded this way!");
+					General.Interface.DisplayStatus(StatusType.Warning, "Cannot open \"" + filepaths[0] + "\": only WAD files can be loaded this way!");
 					return;
 				}
 
+				// If we call General.OpenMapFile here, it will lock the source window in the waiting state untill OpenMapOptionsForm is closed.
+				Timer t = new Timer { Tag = filepaths[0], Interval = 10 };
+				t.Tick += OnDragDropTimerTick;
+				t.Start();
+			}
+		}
+
+		private void OnDragDropTimerTick(object sender, EventArgs e)
+		{
+			Timer t = sender as Timer;
+			if(t != null)
+			{
+				t.Stop();
+				string targetwad = t.Tag.ToString();
 				this.Update(); // Update main window
-				General.OpenMapFile(filePaths[0], null);
+				General.OpenMapFile(targetwad, null);
 				UpdateGZDoomPanel();
 			}
 		}
