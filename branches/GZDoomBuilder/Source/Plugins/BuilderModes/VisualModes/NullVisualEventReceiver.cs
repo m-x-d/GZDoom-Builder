@@ -48,7 +48,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void OnTextureFloodfill() { }
 		public void OnToggleUpperUnpegged()	{ }
 		public void OnToggleLowerUnpegged()	{ }
-		public void OnProcess(float deltatime) { }
+		public void OnProcess(long deltatime) { }
 		public void OnInsert() { }
 		public void OnDelete() { }
 		public void ApplyTexture(string texture) { }

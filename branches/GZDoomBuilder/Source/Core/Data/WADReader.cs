@@ -83,7 +83,7 @@ namespace CodeImp.DoomBuilder.Data
 			
 			// Initialize
 			file = new WAD(location.location, true);
-			is_iwad = (file.Type == WAD.TYPE_IWAD);
+			is_iwad = file.IsIWAD;
 			strictpatches = dl.option1;
 			patchranges = new List<LumpRange>();
 			spriteranges = new List<LumpRange>();
@@ -175,7 +175,7 @@ namespace CodeImp.DoomBuilder.Data
 		public override void Resume()
 		{
 			file = new WAD(location.location, true);
-			is_iwad = (file.Type == WAD.TYPE_IWAD);
+			is_iwad = file.IsIWAD;
 			base.Resume();
 		}
 
@@ -219,23 +219,27 @@ namespace CodeImp.DoomBuilder.Data
 				}
 			}
 
-			//mxd. Display warnings for unclosed ranges
-			foreach(KeyValuePair<LumpRange, KeyValuePair<string, string>> group in failedranges)
+			// Don't check official IWADs
+			if(!file.IsOfficialIWAD)
 			{
-				if(successfulrangestarts.ContainsKey(group.Key.start)) continue;
-				General.ErrorLogger.Add(ErrorType.Warning, "\"" + group.Value.Key + "\" range at index " + group.Key.start + " is not closed in resource \"" + location.location + "\" (\"" + group.Value.Value + "\" marker is missing).");
-			}
-
-			//mxd. Check duplicates
-			foreach(LumpRange range in ranges)
-			{
-				HashSet<string> names = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-				for(int i = range.start + 1; i < range.end; i++)
+				//mxd. Display warnings for unclosed ranges
+				foreach(KeyValuePair<LumpRange, KeyValuePair<string, string>> group in failedranges)
 				{
-					if(names.Contains(file.Lumps[i].Name))
-						General.ErrorLogger.Add(ErrorType.Warning, elementname + " \"" + file.Lumps[i].Name + "\", index " + i + " is double defined in resource \"" + location.location + "\".");
-					else
-						names.Add(file.Lumps[i].Name);
+					if(successfulrangestarts.ContainsKey(group.Key.start)) continue;
+					General.ErrorLogger.Add(ErrorType.Warning, "\"" + group.Value.Key + "\" range at index " + group.Key.start + " is not closed in resource \"" + location.location + "\" (\"" + group.Value.Value + "\" marker is missing).");
+				}
+
+				//mxd. Check duplicates
+				foreach(LumpRange range in ranges)
+				{
+					HashSet<string> names = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+					for(int i = range.start + 1; i < range.end; i++)
+					{
+						if(names.Contains(file.Lumps[i].Name))
+							General.ErrorLogger.Add(ErrorType.Warning, elementname + " \"" + file.Lumps[i].Name + "\", index " + i + " is double defined in resource \"" + location.location + "\".");
+						else
+							names.Add(file.Lumps[i].Name);
+					}
 				}
 			}
 		}

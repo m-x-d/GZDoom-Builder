@@ -107,6 +107,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.itemcopyprops = new System.Windows.Forms.ToolStripMenuItem();
 			this.itempasteprops = new System.Windows.Forms.ToolStripMenuItem();
 			this.itempastepropsoptions = new System.Windows.Forms.ToolStripMenuItem();
+			this.alignsectorlinedefsitem = new System.Windows.Forms.ToolStripMenuItem();
+			this.alignlinedefsitem = new System.Windows.Forms.ToolStripMenuItem();
 			this.menustrip.SuspendLayout();
 			this.manualstrip.SuspendLayout();
 			this.fileMenuStrip.SuspendLayout();
@@ -135,6 +137,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
             this.selectdoublesideditem,
             this.toolStripMenuItem4,
             this.fliplinedefsitem,
+            this.alignlinedefsitem,
             this.flipsidedefsitem,
             this.toolStripMenuItem1,
             this.curvelinedefsitem,
@@ -318,6 +321,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
             this.mergesectorsitem,
             this.toolStripMenuItem2,
             this.flipsectorlinedefsitem,
+            this.alignsectorlinedefsitem,
             this.toolStripSeparator8,
             this.makedooritem,
             this.toolStripSeparator4,
@@ -847,6 +851,23 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.itempastepropsoptions.Text = "Paste Properties Special...";
 			this.itempastepropsoptions.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
+			// alignsectorlinedefsitem
+			// 
+			this.alignsectorlinedefsitem.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.Flip;
+			this.alignsectorlinedefsitem.Name = "alignsectorlinedefsitem";
+			this.alignsectorlinedefsitem.Size = new System.Drawing.Size(224, 22);
+			this.alignsectorlinedefsitem.Tag = "alignlinedefs";
+			this.alignsectorlinedefsitem.Text = "Align &Linedefs";
+			this.alignsectorlinedefsitem.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// alignlinedefsitem
+			// 
+			this.alignlinedefsitem.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.Flip;
+			this.alignlinedefsitem.Name = "alignlinedefsitem";
+			this.alignlinedefsitem.Size = new System.Drawing.Size(224, 22);
+			this.alignlinedefsitem.Tag = "alignlinedefs";
+			this.alignlinedefsitem.Text = "Align &Linedefs";
+			// 
 			// MenusForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -955,5 +976,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private System.Windows.Forms.ToolStripMenuItem itempasteprops;
 		private System.Windows.Forms.ToolStripMenuItem itempastepropsoptions;
 		private System.Windows.Forms.ToolStripSeparator separatorcopyprops;
+		private System.Windows.Forms.ToolStripMenuItem alignsectorlinedefsitem;
+		private System.Windows.Forms.ToolStripMenuItem alignlinedefsitem;
 	}
 }

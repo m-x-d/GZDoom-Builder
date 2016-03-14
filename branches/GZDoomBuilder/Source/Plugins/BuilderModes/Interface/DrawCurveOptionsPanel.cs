@@ -7,10 +7,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	{
 		public event EventHandler OnValueChanged;
 		public event EventHandler OnContinuousDrawingChanged;
+		public event EventHandler OnAutoCloseDrawingChanged;
 		private bool blockevents;
 
 		public int SegmentLength { get { return (int)seglen.Value; } set { blockevents = true; seglen.Value = value; blockevents = false; } }
 		public bool ContinuousDrawing { get { return continuousdrawing.Checked; } set { continuousdrawing.Checked = value; } }
+		public bool AutoCloseDrawing { get { return autoclosedrawing.Checked; } set { autoclosedrawing.Checked = value; } }
 
 		public DrawCurveOptionsPanel(int minLength, int maxLength) 
 		{
@@ -25,6 +27,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void Register() 
 		{
 			General.Interface.AddButton(continuousdrawing);
+			General.Interface.AddButton(autoclosedrawing);
 			General.Interface.AddButton(toolStripSeparator1);
 			General.Interface.AddButton(seglabel);
 			General.Interface.AddButton(seglen);
@@ -37,6 +40,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.RemoveButton(seglen);
 			General.Interface.RemoveButton(seglabel);
 			General.Interface.RemoveButton(toolStripSeparator1);
+			General.Interface.RemoveButton(autoclosedrawing);
 			General.Interface.RemoveButton(continuousdrawing);
 		}
 
@@ -53,6 +57,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private void continuousdrawing_CheckedChanged(object sender, EventArgs e)
 		{
 			if(OnContinuousDrawingChanged != null) OnContinuousDrawingChanged(continuousdrawing.Checked, EventArgs.Empty);
+		}
+
+		private void autoclosedrawing_CheckedChanged(object sender, EventArgs e)
+		{
+			if(OnAutoCloseDrawingChanged != null) OnAutoCloseDrawingChanged(autoclosedrawing.Checked, EventArgs.Empty);
 		}
 	}
 }

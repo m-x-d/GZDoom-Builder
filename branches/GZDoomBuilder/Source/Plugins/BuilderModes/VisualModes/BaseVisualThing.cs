@@ -606,7 +606,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void OnTextureAlign(bool alignx, bool aligny) { }
 		public void OnToggleUpperUnpegged() { }
 		public void OnToggleLowerUnpegged() { }
-		public void OnProcess(float deltatime) { }
+		public void OnProcess(long deltatime) { }
 		public void OnTextureFloodfill() { }
 		public void OnInsert() { }
 		public void OnTextureFit(FitTextureOptions options) { } //mxd

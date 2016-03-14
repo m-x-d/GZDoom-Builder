@@ -580,7 +580,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 		
 		// Processing
-		public virtual void OnProcess(float deltatime)
+		public virtual void OnProcess(long deltatime)
 		{
 			// If the texture was not loaded, but is loaded now, then re-setup geometry
 			if(setuponloadedtexture != 0)

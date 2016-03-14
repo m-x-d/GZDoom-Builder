@@ -58,6 +58,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			snaptogrid = true;
 			usefourcardinaldirections = true;
+			autoclosedrawing = false;
 		}
 
 		public override void Dispose() 
@@ -263,9 +264,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			return points;
 		}
 
-		protected virtual string GetHintText() 
+		protected virtual string GetHintText()
 		{
-			return "BVL: " + bevelwidth + "; SUB: " + subdivisions;
+			List<string> result = new List<string>();
+			if(bevelwidth != 0) result.Add("BVL: " + bevelwidth);
+			if(subdivisions != 0) result.Add("SUB: " + subdivisions);
+
+			return string.Join("; ", result.ToArray());
 		}
 
 		// Update top-left and bottom-right points, which define drawing shape
@@ -362,7 +367,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Map.UndoRedo.CreateUndo(undoname);
 
 				// Make an analysis and show info
-				string[] adjectives = new[] { "gloomy", "sad", "unhappy", "lonely", "troubled", "depressed", "heartsick", "glum", "pessimistic", "bitter", "downcast" }; // aaand my english vocabulary ends here :)
+				string[] adjectives = { "gloomy", "sad", "unhappy", "lonely", "troubled", "depressed", "heartsick", "glum", "pessimistic", "bitter", "downcast" }; // aaand my english vocabulary ends here :)
 				string word = adjectives[new Random().Next(adjectives.Length - 1)];
 				string a = (word[0] == 'u' ? "an " : "a ");
 
@@ -411,6 +416,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Reset settings
 				points.Clear();
 				labels.Clear();
+				drawingautoclosed = false;
 
 				// Redraw display
 				General.Interface.RedrawDisplay();

@@ -66,6 +66,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected bool snaptocardinaldirection; //mxd. ALT-SHIFT to enable
 		protected static bool usefourcardinaldirections;
 		protected bool continuousdrawing; //mxd. Restart after finishing drawing?
+		protected bool autoclosedrawing;  //mxd. Finish drawing when new points and existing geometry form a closed shape
+		protected bool drawingautoclosed; //mxd
 
 		//mxd. Labels display style
 		protected bool labelshowangle = true;
@@ -428,27 +430,124 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			labels.Add(new LineLengthLabel(labelshowangle, labeluseoffset));
 			Update();
 
-			// Check if point stitches with the first
-			if((points.Count > 1) && points[points.Count - 1].stitch)
+			if(points.Count > 1)
 			{
-				Vector2D p1 = points[0].pos;
-				Vector2D p2 = points[points.Count - 1].pos;
-				Vector2D delta = p1 - p2;
-				if((Math.Abs(delta.x) <= 0.001f) && (Math.Abs(delta.y) <= 0.001f))
+				// Check if point stitches with the first
+				if(points[points.Count - 1].stitch)
 				{
-					//mxd. Seems... logical?
-					if(points.Count == 2) 
+					Vector2D p1 = points[0].pos;
+					Vector2D p2 = points[points.Count - 1].pos;
+					Vector2D delta = p1 - p2;
+					if((Math.Abs(delta.x) <= 0.001f) && (Math.Abs(delta.y) <= 0.001f))
 					{
-						OnCancel();
+						//mxd. Seems... logical?
+						if(points.Count == 2)
+						{
+							OnCancel();
+							return true;
+						}
+
+						// Finish drawing
+						FinishDraw();
 						return true;
 					}
+				}
+				
+				//mxd. Points and existing geometry form a closed shape?
+				if(continuousdrawing && autoclosedrawing)
+				{
+					// Determive center point
+					float minx = float.MaxValue;
+					float maxx = float.MinValue;
+					float miny = float.MaxValue;
+					float maxy = float.MinValue;
+
+					foreach(DrawnVertex v in points)
+					{
+						if(v.pos.x < minx) minx = v.pos.x;
+						if(v.pos.x > maxx) maxx = v.pos.x;
+						if(v.pos.y < miny) miny = v.pos.y;
+						if(v.pos.y > maxy) maxy = v.pos.y;
+					}
+
+					Vector2D shapecenter = new Vector2D(minx + (maxx - minx) / 2, miny + (maxy - miny) / 2);
 					
-					// Finish drawing
-					FinishDraw();
+					// Determine center point between start and end points
+					minx = Math.Min(points[0].pos.x, points[points.Count - 1].pos.x);
+					maxx = Math.Max(points[0].pos.x, points[points.Count - 1].pos.x);
+					miny = Math.Min(points[0].pos.y, points[points.Count - 1].pos.y);
+					maxy = Math.Max(points[0].pos.y, points[points.Count - 1].pos.y);
+
+					Vector2D startendcenter = new Vector2D(minx + (maxx - minx) / 2, miny + (maxy - miny) / 2);
+
+					// Offset the center perpendicular to the start -> end line direction...
+					if(shapecenter == startendcenter)
+					{
+						shapecenter -= new Line2D(points[0].pos, points[points.Count - 1].pos).GetPerpendicular().GetNormal();
+					}
+
+					// Do the check
+					if(CanFinishDrawing(points[0].pos, points[points.Count - 1].pos, shapecenter))
+					{
+						drawingautoclosed = true;
+						FinishDraw();
+					}
 				}
 			}
 
 			return true;
+		}
+
+		//mxd
+		private static bool CanFinishDrawing(Vector2D start, Vector2D end, Vector2D center)
+		{
+			Linedef startline = FindPotentialLine(start, center);
+			if(startline == null) return false;
+
+			Linedef endline = FindPotentialLine(end, center);
+			if(endline == null) return false;
+
+			// Can finish drawing if a path between startline and endline exists
+			return Tools.FindClosestPath(startline, startline.SideOfLine(center) < 0.0f, endline, endline.SideOfLine(center) < 0.0f, true) != null;
+		}
+
+		//mxd
+		private static Linedef FindPotentialLine(Vector2D target, Vector2D center)
+		{
+			// Target position on top of existing vertex?
+			Vertex v = General.Map.Map.NearestVertex(target);
+			if(v == null) return null;
+
+			Linedef result = null;
+			if(v.Position == target)
+			{
+				float mindistance = float.MaxValue;
+				foreach(Linedef l in v.Linedefs)
+				{
+					if(result == null)
+					{
+						result = l;
+						mindistance = Vector2D.DistanceSq(l.GetCenterPoint(), center);
+					}
+					else
+					{
+						float curdistance = Vector2D.DistanceSq(l.GetCenterPoint(), center);
+						if(curdistance < mindistance)
+						{
+							mindistance = curdistance;
+							result = l;
+						}
+					}
+				}
+			}
+			else
+			{
+				// Result position will split a line?
+				result = General.Map.Map.NearestLinedef(target);
+				if(result.DistanceTo(target, true) > BuilderPlug.Me.StitchRange) return null;
+			}
+
+			return result;
 		}
 		
 		#endregion
@@ -460,9 +559,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			//Add options docker
 			panel = new DrawLineOptionsPanel();
 			panel.OnContinuousDrawingChanged += OnContinuousDrawingChanged;
+			panel.OnAutoCloseDrawingChanged += OnAutoCloseDrawingChanged;
 
-			// Needs to be set after adding the OnContinuousDrawingChanged event...
+			// Needs to be set after adding the events...
 			panel.ContinuousDrawing = General.Settings.ReadPluginSetting("drawlinesmode.continuousdrawing", false);
+			panel.AutoCloseDrawing = General.Settings.ReadPluginSetting("drawlinesmode.autoclosedrawing", false);
 		}
 
 		protected virtual void AddInterface()
@@ -473,6 +574,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected virtual void RemoveInterface()
 		{
 			General.Settings.WritePluginSetting("drawlinesmode.continuousdrawing", panel.ContinuousDrawing);
+			General.Settings.WritePluginSetting("drawlinesmode.autoclosedrawing", panel.AutoCloseDrawing);
 			panel.Unregister();
 		}
 
@@ -509,7 +611,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void OnCancel()
 		{
 			//mxd. Cannot leave this way when continuous drawing is enabled
-			if(continuousdrawing) return;
+			if(continuousdrawing)
+			{
+				drawingautoclosed = false;
+				return;
+			}
 			
 			// Cancel base class
 			base.OnCancel();
@@ -584,6 +690,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				//mxd. Reset settings
 				points.Clear();
 				labels.Clear();
+				drawingautoclosed = false;
 
 				//mxd. Redraw display
 				General.Interface.RedrawDisplay();
@@ -649,6 +756,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected void OnContinuousDrawingChanged(object value, EventArgs e)
 		{
 			continuousdrawing = (bool)value;
+		}
+
+		//mxd
+		protected void OnAutoCloseDrawingChanged(object value, EventArgs e)
+		{
+			autoclosedrawing = (bool)value;
 		}
 		
 		#endregion
