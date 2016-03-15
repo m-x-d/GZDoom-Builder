@@ -284,6 +284,36 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		#region ================== Methods
 
+		// Alpha based picking
+		public override bool PickAccurate(Vector3D from, Vector3D to, Vector3D dir, ref float u_ray)
+		{
+			if(!Texture.IsImageLoaded || (!Texture.IsTranslucent && !Texture.IsMasked)) return base.PickAccurate(from, to, dir, ref u_ray);
+
+			float u;
+			Sidedef sourceside = extrafloor.Linedef.Front;
+			new Line2D(from, to).GetIntersection(Sidedef.Line.Line, out u);
+			if(Sidedef != Sidedef.Line.Front) u = 1.0f - u;
+
+			// Get correct offset to texture space...
+			float texoffsetx = Sidedef.OffsetX + sourceside.OffsetX + UniFields.GetFloat(Sidedef.Fields, "offsetx_mid") + UniFields.GetFloat(sourceside.Fields, "offsetx_mid");
+			int ox = (int)Math.Floor((u * Sidedef.Line.Length * UniFields.GetFloat(sourceside.Fields, "scalex_mid", 1.0f) / Texture.Scale.x + texoffsetx) % Texture.Width);
+
+			float texoffsety = Sidedef.OffsetY + sourceside.OffsetY + UniFields.GetFloat(Sidedef.Fields, "offsety_mid") + UniFields.GetFloat(sourceside.Fields, "offsety_mid");
+			int oy = (int)Math.Ceiling(((pickintersect.z - sourceside.Sector.CeilHeight) * UniFields.GetFloat(sourceside.Fields, "scaley_mid", 1.0f) / Texture.Scale.y - texoffsety) % Texture.Height);
+
+			// Make sure offsets are inside of texture dimensions...
+			if(ox < 0) ox += Texture.Width;
+			if(oy < 0) oy += Texture.Height;
+
+			// Check pixel alpha
+			if(Texture.GetBitmap().GetPixel(General.Clamp(ox, 0, Texture.Width - 1), General.Clamp(Texture.Height - oy, 0, Texture.Height - 1)).A > 0)
+			{
+				return base.PickAccurate(from, to, dir, ref u_ray);
+			}
+
+			return false;
+		}
+
 		// Return texture name
 		public override string GetTextureName() 
 		{
