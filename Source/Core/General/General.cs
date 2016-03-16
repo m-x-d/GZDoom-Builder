@@ -2080,70 +2080,64 @@ namespace CodeImp.DoomBuilder
 
 		#region ==================  mxd. Uncaught exceptions handling
 
+		// In some cases the program can remain operational after these
 		private static void Application_ThreadException(object sender, ThreadExceptionEventArgs e) 
 		{
 			try 
 			{
+				// Try handling it in user-friendy way...
 				GZBuilder.Windows.ExceptionDialog dlg = new GZBuilder.Windows.ExceptionDialog(e);
 				dlg.Setup();
-				if(dlg.ShowDialog() == DialogResult.Cancel) Application.Exit();
+				if(dlg.ShowDialog() == DialogResult.Cancel) Terminate(false);
 			} 
-			catch 
+			catch
 			{
-				try 
-				{
-					MessageBox.Show("Fatal Windows Forms Error", "Fatal Windows Forms Error", MessageBoxButtons.AbortRetryIgnore, MessageBoxIcon.Stop);
-				} 
-				finally 
-				{
-					Application.Exit();
-				}
+				string exceptionmsg;
+
+				// Try getting exception details...
+				try { exceptionmsg = "Fatal Windows Forms error occurred: " + e.Exception.Message + "\n\nStack Trace:\n" + e.Exception.StackTrace; }
+				catch(Exception exc) { exceptionmsg = "Failed to get initial excepton details: " + exc.Message + "\n\nStack Trace:\n" + exc.StackTrace; }
+
+				// Try logging it...
+				try { WriteLogLine(exceptionmsg); } catch { }
+
+				// Try displaying it to the user...
+				try { MessageBox.Show("Fatal Windows Forms Error", exceptionmsg, MessageBoxButtons.OK, MessageBoxIcon.Stop); }
+				finally { Process.GetCurrentProcess().Kill(); }
 			}
 		}
 
+		// These are usually unrecoverable
 		private static void CurrentDomainOnUnhandledException(object sender, UnhandledExceptionEventArgs e) 
 		{
-			string exceptionmsg = string.Empty;
-			
-			try 
+			try
 			{
-				Exception ex = (Exception)e.ExceptionObject;
-				exceptionmsg = "An application error occurred: " + ex.Message + "\n\nStack Trace:\n" + ex.StackTrace;
-
-				// Since we can't prevent the app from terminating, log this to the event log.
-				try 
-				{
-					if(!EventLog.SourceExists("ThreadException"))
-						EventLog.CreateEventSource("ThreadException", "Application");
-
-					// Create an EventLog instance and assign its source.
-					using(EventLog myLog = new EventLog()) 
-					{
-						myLog.Source = "ThreadException";
-						myLog.WriteEntry(exceptionmsg);
-					}
-				}
-				catch(Exception exc) 
-				{
-					MessageBox.Show("Could not write the error to the event log.\nReason: "
-						+ exc.Message + "\n\nInitial exception:\n" + exceptionmsg, "Fatal Non-UI Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-				}
-
+				// Try handling it in user-friendy way...
 				GZBuilder.Windows.ExceptionDialog dlg = new GZBuilder.Windows.ExceptionDialog(e);
 				dlg.Setup();
-				dlg.ShowDialog();
-			} 
-			catch(Exception exc) 
+				if(dlg.ShowDialog() == DialogResult.Cancel) Terminate(false);
+			}
+			catch
 			{
-				try 
+				string exceptionmsg;
+
+				// Try getting exception details...
+				try
 				{
-					MessageBox.Show("Failed to write the error to the event log or to show the Exception Dialog.\n\nReason: "
-						+ exc.Message + "\n\nInitial exception:\n" + exceptionmsg, "Fatal Non-UI Error", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-				} 
-				finally 
-				{
-					Application.Exit();
+					Exception ex = (Exception) e.ExceptionObject;
+					exceptionmsg = "Fatal Non-UI error occurred: " + ex.Message + "\n\nStack Trace:\n" + ex.StackTrace;
 				}
+				catch(Exception exc)
+				{
+					exceptionmsg = "Failed to get initial excepton details: " + exc.Message + "\n\nStack Trace:\n" + exc.StackTrace;
+				}
+
+				// Try logging it...
+				try { WriteLogLine(exceptionmsg); } catch {}
+
+				// Try displaying it to the user...
+				try { MessageBox.Show("Fatal Windows Forms Error", exceptionmsg, MessageBoxButtons.OK, MessageBoxIcon.Stop); }
+				finally { Process.GetCurrentProcess().Kill(); }
 			}
 		}
 

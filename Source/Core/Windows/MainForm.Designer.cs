@@ -1,3 +1,4 @@
+using System;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Controls;
 
@@ -407,6 +408,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.menufile.Name = "menufile";
 			this.menufile.Size = new System.Drawing.Size(37, 20);
 			this.menufile.Text = "&File";
+			this.menufile.DropDownOpening += menufile_DropDownOpening;
 			// 
 			// itemnewmap
 			// 

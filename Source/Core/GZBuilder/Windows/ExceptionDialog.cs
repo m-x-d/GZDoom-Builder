@@ -12,34 +12,34 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 {
 	public partial class ExceptionDialog : Form
 	{
-		private readonly bool cannotContinue;
-		private readonly string logPath;
+		private readonly bool isterminating;
+		private readonly string logpath;
 		
 		public ExceptionDialog(UnhandledExceptionEventArgs e) 
 		{
 			InitializeComponent();
 
-			logPath = Path.Combine(General.SettingsPath, @"GZCrash.txt");
+			logpath = Path.Combine(General.SettingsPath, @"GZCrash.txt");
 			Exception ex = (Exception)e.ExceptionObject;
 			errorDescription.Text = "Error in " + ex.Source + ":";
 			string sysinfo = GetSystemInfo();
-			using(StreamWriter sw = File.CreateText(logPath)) 
+			using(StreamWriter sw = File.CreateText(logpath)) 
 			{
 				sw.Write(sysinfo + GetExceptionDescription(ex));
 			}
 
 			errorMessage.Text = ex.Message + Environment.NewLine + ex.StackTrace;
-			cannotContinue = true;  //cannot recover from this...
+			isterminating = e.IsTerminating;  // Recoverable?
 		}
 
 		public ExceptionDialog(ThreadExceptionEventArgs e) 
 		{
 			InitializeComponent();
 
-			logPath = Path.Combine(General.SettingsPath, @"GZCrash.txt");
+			logpath = Path.Combine(General.SettingsPath, @"GZCrash.txt");
 			errorDescription.Text = "Error in " + e.Exception.Source + ":";
 			string sysinfo = GetSystemInfo();
-			using(StreamWriter sw = File.CreateText(logPath)) 
+			using(StreamWriter sw = File.CreateText(logpath)) 
 			{
 				sw.Write(sysinfo + GetExceptionDescription(e.Exception));
 			}
@@ -50,78 +50,92 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 
 		public void Setup() 
 		{
-			bContinue.Enabled = !cannotContinue;
+			string[] titles =
+			{
+				"0x000000 at 0xFFFFFF. That's probaby bad",
+				"Here we go again...",
+				"Uh oh, you're screwed",
+				"All is lost!",
+				"Achievement unlocked: CRASH TIME!",
+				"OH NOES! TEH ERROR!",
+				"0001000001111011000000000011001101011120110111",
+				"Nuclear launch detected!",
+				"Don't send this to Microsoft",
+				"You. Shall. Not. Pass!!!",
+				"Yep, we have bugs",
+				"It's dangerous to go alone. Take this!",
+				"The operation completed successfully",
+				"Security Alert – Moving cursor is not as safe as you thought",
+				"Random error appears from north",
+				"ERROR: NO_ERROR",
+				"Epic fail",
+				"At least it's not BSoD...",
+				"User Error. Please Replace User",
+				"Brought to you by MaxED!",
+				"GZDoom Builder proudly presents:",
+				"You aren't expected to understand this",
+				"Back to the drawing board...",
+				"I'm sorry... :(",
+				"This is a horrbble day for you, and of course, the world",
+				"Abort, Retry, Fail?",
+				"You are making progress. I'm afraid that's something I can't allow to happen",
+				"You are making progress. That's not OK",
+				"No errors found, restarting computer",
+				"Does Not Compute!",
+				"I’m sorry, Dave, I’m afraid I can’t do that",
+				"What's that? Chicken?",
+				"It can only be attributable to human error",
+				"It's now safe to turn off your computer",
+				"I've got a bad feeling about this",
+				"YOU CAN’T DO THAT!",
+				"Man the Lifeboats! Women and children first!",
+				"IMPOSSIBURU!!!",
+				"Now deleting all files. Goodbye",
+				"General Failure",
+				"Invalid Error",
+				"Beam me up Scotty, there’s no life out here",
+				"Well, you ran into something and the game is over",
+				"I'm good at writing bad code",
+				"$FUNNY_ERROR_CAPTION",
+				"In Soviet Russia, exception throws YOU!",
+				"...and then GZDB was the demons!",
+				"B U S T E D",
+				"Freeze mode enabled",
+				"You feel strange...",
+				"That doesn't seem to work",
+				"This function is only available in the retail version of GZDoom Builder",
+				"You picked up the Random Exception.",
+				"Pinky says that you're the new hope. Bear that in mind.",
+				"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+				"Deal with it",
+				"Error 47",
+				"YOU DIED",
+				"Thanks, Obama",
+				"The God Of Exceptions Demands MORE Exceptions!",
+				"Good. It's boring here anyway.",
+				"Shameful display!",
+				"It's CRASHENING!",
+				"W-W-W-WIPEOUT!",
+				"EVERYTHING IS LOST!",
+				"Your empty is full!",
+				"Let's see how far this infinite loop goes...",
+				"Windows 10 is here! RUN!",
+				"You really screwed up this time!",
+				"[WFDS]",
+				"[No]",
+				"An error has occurred while creating an error",
+				"Catastrophic failure",
+				"This time, it’s the human’s fault",
+				"No error occurred",
+				"Hey! It looks like you're having an error!",
+				"What, what, what, what, what, what, what, what, what, what?",
+				"WARNING: PROGRAMMING BUG IN GZDB!",
+				"Something happened",
+				"The Device is Error",
+			};
 
-			string[] titles = {
-								  "0x000000 at 0xFFFFFF. That's probaby bad",
-								  "Here we go again...",
-								  "Uh oh, you're screwed",
-								  "All is lost!",
-								  "Achievement unlocked: CRASH TIME!",
-								  "OH NOES! TEH ERROR!",
-								  "0001000001111011000000000011001101011110110111",
-								  "Nuclear launch detected!",
-								  "Don't send this to Microsoft",
-								  "You. Shall. Not. Pass!!!",
-								  "Yep, we have bugs",
-								  "It's dangerous to go alone. Take this!",
-								  "The operation completed successfully",
-								  "Security Alert – Moving cursor is not as safe as you thought",
-								  "Random error appears from north",
-								  "ERROR: NO_ERROR",
-								  "Epic fail",
-								  "At least it's not BSoD...",
-								  "User Error. Please Replace User",
-								  "Brought to you by MaxED!",
-								  "GZDoom Builder proudly presents:",
-								  "You aren't expected to understand this",
-								  "Back to the drawing board...",
-								  "I'm sorry... :(",
-								  "This is a horrbble day for you, and of course, the world",
-								  "Abort, Retry, Fail?",
-								  "You are making progress. I'm afraid that's something I can't allow to happen",
-								  "You are making progress. That's not OK",
-								  "No errors found, restarting computer",
-								  "Does Not Compute!",
-								  "I’m sorry, Dave, I’m afraid I can’t do that",
-								  "What's that? Chicken?",
-								  "It can only be attributable to human error",
-								  "It's now safe to turn off your computer",
-								  "I've got a bad feeling about this",
-								  "YOU CAN’T DO THAT!",
-								  "Man the Lifeboats! Women and children first!",
-								  "IMPOSSIBURU!!!",
-								  "Now deleting all files. Goodbye",
-								  "General Failure",
-								  "Invalid Error",
-								  "Beam me up Scotty, there’s no life out here",
-								  "Well, you ran into something and the game is over",
-								  "I'm good at writing bad code",
-								  "$FUNNY_ERROR_CAPTION",
-								  "In Soviet Russia, exception throws YOU!",
-								  "...and then GZDB was the demons!",
-								  "B U S T E D",
-								  "Freeze mode enabled",
-								  "You feel strange...",
-								  "That doesn't seem to work",
-								  "This function is only available in the retail version of GZDoom Builder",
-								  "You picked up the Random Exception.",
-								  "Pinky says that you're the new hope. Bear that in mind.",
-								  "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-								  "Deal with it",
-								  "Error 47",
-								  "YOU DIED",
-								  "Thanks, Obama",
-								  "The God Of Exceptions Demands MORE Exceptions!",
-								  "Good. It's boring here anyway.",
-								  "Shameful display!",
-								  "It's CRASHENING!",
-								  "W-W-W-WIPEOUT!",
-								  "EVERYTHING IS LOST!",
-								  "Your empty is full!",
-								  "Let's see how far this infinite loop goes...",
-							  };
 			this.Text = titles[new Random().Next(0, titles.Length - 1)];
+			bContinue.Enabled = !isterminating;
 		}
 
 		private static string GetSystemInfo()
@@ -181,8 +195,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 
 		private void reportLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) 
 		{
-			if(!File.Exists(logPath)) return;
-			System.Diagnostics.Process.Start("explorer.exe", @"/select, " + logPath);
+			if(!File.Exists(logpath)) return;
+			System.Diagnostics.Process.Start("explorer.exe", @"/select, " + logpath);
 			reportLink.LinkVisited = true;
 		}
 

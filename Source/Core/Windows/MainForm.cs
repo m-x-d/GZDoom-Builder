@@ -2603,13 +2603,9 @@ namespace CodeImp.DoomBuilder.Windows
 		internal void AddRecentFile(string filename)
 		{
 			//mxd. Recreate recent files list
-			if(recentitems.Length != General.Settings.MaxRecentFiles) 
+			if(recentitems.Length != General.Settings.MaxRecentFiles)
 			{
-				foreach(ToolStripMenuItem item in recentitems)
-					menufile.DropDownItems.Remove(item);
-
-				SaveRecentFiles();
-				CreateRecentFiles();
+				UpdateRecentItems();
 			}
 
 			int movedownto = General.Settings.MaxRecentFiles - 1;
@@ -2643,6 +2639,16 @@ namespace CodeImp.DoomBuilder.Windows
 
 			// Hide the no recent item
 			itemnorecent.Visible = false;
+		}
+
+		//mxd
+		private void UpdateRecentItems()
+		{
+			foreach(ToolStripMenuItem item in recentitems)
+				menufile.DropDownItems.Remove(item);
+
+			SaveRecentFiles();
+			CreateRecentFiles();
 		}
 
 		// This returns the trimmed file/path string
@@ -2688,6 +2694,12 @@ namespace CodeImp.DoomBuilder.Windows
 
 			// Open this file
 			General.OpenMapFile(item.Tag.ToString(), null);
+		}
+
+		//mxd
+		private void menufile_DropDownOpening(object sender, EventArgs e)
+		{
+			UpdateRecentItems();
 		}
 		
 		#endregion

@@ -18,8 +18,8 @@
 
 using System;
 using System.Globalization;
-using CodeImp.DoomBuilder.Data;
 using System.IO;
+using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Rendering;
 
 #endregion
@@ -45,10 +45,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 		private readonly bool flipy;
 		private readonly float alpha;
 		private readonly int rotation; //mxd
-		private readonly TexturePathRenderStyle renderStyle; //mxd
-		private readonly PixelColor blendColor; //mxd
-		private readonly TexturePathBlendStyle blendStyle; //mxd
-		private readonly float tintAmmount; //mxd
+		private readonly TexturePathRenderStyle renderstyle; //mxd
+		private readonly PixelColor blendcolor; //mxd
+		private readonly TexturePathBlendStyle blendstyle; //mxd
 		private static readonly string[] renderStyles = { "copy", "translucent", "add", "subtract", "reversesubtract", "modulate", "copyalpha", "copynewalpha", "overlay" }; //mxd
 		private readonly bool skip; //mxd
 
@@ -63,10 +62,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 		public bool FlipY { get { return flipy; } }
 		public float Alpha { get { return alpha; } }
 		public int Rotation { get { return rotation; } } //mxd
-		public TexturePathRenderStyle RenderStyle { get { return renderStyle; } } //mxd
-		public TexturePathBlendStyle BlendStyle { get { return blendStyle; } }
-		public float TintAmmount { get { return tintAmmount; } }
-		public PixelColor BlendColor { get { return blendColor; } }//mxd
+		public TexturePathRenderStyle RenderStyle { get { return renderstyle; } } //mxd
+		public TexturePathBlendStyle BlendStyle { get { return blendstyle; } }
+		public PixelColor BlendColor { get { return blendcolor; } }//mxd
 		public bool Skip { get { return skip; } } //mxd
 
 		#endregion
@@ -78,8 +76,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 		{
 			// Initialize
 			alpha = 1.0f;
-			renderStyle = TexturePathRenderStyle.Copy;//mxd
-			blendStyle = TexturePathBlendStyle.None; //mxd
+			renderstyle = TexturePathRenderStyle.COPY;//mxd
+			blendstyle = TexturePathBlendStyle.NONE; //mxd
 			
 			// There should be 3 tokens separated by 2 commas now:
 			// Name, Width, Height
@@ -164,30 +162,69 @@ namespace CodeImp.DoomBuilder.ZDoom
 						string s;
 						if(!ReadTokenString(parser, token, out s)) return;
 						int index = Array.IndexOf(renderStyles, s.ToLowerInvariant());
-						renderStyle = index == -1 ? TexturePathRenderStyle.Copy : (TexturePathRenderStyle) index;
+						renderstyle = index == -1 ? TexturePathRenderStyle.COPY : (TexturePathRenderStyle) index;
 						break;
 
 					case "blend": //mxd
-						int val;
-						if(!ReadTokenColor(parser, token, out val)) return;
-						blendColor = PixelColor.FromInt(val);
-
 						parser.SkipWhitespace(false);
-						token = parser.ReadToken();
+						PixelColor color = new PixelColor();
 
-						if(token == ",") //read tint ammount
-						{ 
-							parser.SkipWhitespace(false);
-							if(!ReadTokenFloat(parser, token, out tintAmmount)) return;
-							tintAmmount = General.Clamp(tintAmmount, 0.0f, 1.0f);
-							blendStyle = TexturePathBlendStyle.Tint;
-						} 
-						else 
+						// Blend <string color>[,<float alpha>] block?
+						token = parser.ReadToken(false);
+						if(!parser.ReadByte(token, ref color.r))
 						{
-							blendStyle = TexturePathBlendStyle.Blend;
-							// Rewind so this structure can be read again
-							parser.DataStream.Seek(-token.Length, SeekOrigin.Current);
+							if(!ZDTextParser.GetColorFromString(token, ref color))
+							{
+								parser.ReportError("Unsupported patch blend definition");
+								return;
+							}
 						}
+						// That's Blend <int r>,<int g>,<int b>[,<float alpha>] block
+						else
+						{
+							if(!parser.SkipWhitespace(false) ||
+								!parser.NextTokenIs(",", false) || !parser.SkipWhitespace(false) || !parser.ReadByte(ref color.g) ||
+								!parser.NextTokenIs(",", false) || !parser.SkipWhitespace(false) || !parser.ReadByte(ref color.b))
+							{
+								parser.ReportError("Unsupported patch blend definition");
+								return;
+							}
+						}
+
+						// Alpha block?
+						float blendalpha = -1f;
+						parser.SkipWhitespace(false);
+						if(parser.NextTokenIs(",", false))
+						{
+							parser.SkipWhitespace(false);
+							if(!ReadTokenFloat(parser, token, out blendalpha))
+							{
+								parser.ReportError("Unsupported patch blend alpha value");
+								return;
+							}
+						}
+
+						// Blend may never be 0 when using the Tint effect
+						if(blendalpha > 0.0f)
+						{
+							color.a = (byte)General.Clamp((int)(blendalpha * 255), 1, 254);
+							blendstyle = TexturePathBlendStyle.TINT;
+
+						}
+						else if(blendalpha < 0.0f)
+						{
+							color.a = 255;
+							blendstyle = TexturePathBlendStyle.BLEND;
+						}
+						else
+						{
+							// Ignore Blend when alpha == 0
+							parser.LogWarning("Blend with zero alpha will be ignored by ZDoom");
+							break;
+						}
+
+						// Store the color
+						blendcolor = color;
 						break;
 
 					case "}":
@@ -262,36 +299,6 @@ namespace CodeImp.DoomBuilder.ZDoom
 			{
 				// Can't find the property value!
 				parser.ReportError("Expected a value for property \"" + propertyname + "\"");
-				return false;
-			}
-
-			return true;
-		}
-
-		//mxd. This reads the next token and sets a PixelColor value, returns false when failed
-		private static bool ReadTokenColor(TexturesParser parser, string propertyname, out int value) 
-		{
-			parser.SkipWhitespace(true);
-			string strvalue = parser.StripTokenQuotes(parser.ReadToken());
-			value = 0;
-
-			if(string.IsNullOrEmpty(strvalue)) 
-			{
-				// Can't find the property value!
-				parser.ReportError("Expected a value for property \"" + propertyname + "\"");
-				return false;
-			}
-
-			if(strvalue[0] != '#') 
-			{
-				parser.ReportError("Expected color value for property \"" + propertyname + "\"");
-				return false;
-			}
-
-			// Try parsing as value
-			if(!int.TryParse(strvalue.Remove(0, 1), NumberStyles.HexNumber, CultureInfo.InvariantCulture, out value)) 
-			{
-				parser.ReportError("Expected color value for property \"" + propertyname + "\"");
 				return false;
 			}
 

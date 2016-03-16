@@ -701,7 +701,6 @@ namespace CodeImp.DoomBuilder.Data
 
 		#region ================== TERRAIN (mxd)
 
-		//mxd
 		public override IEnumerable<TextResourceData> GetTerrainData()
 		{
 			// Error when suspended
@@ -709,6 +708,28 @@ namespace CodeImp.DoomBuilder.Data
 
 			List<TextResourceData> result = new List<TextResourceData>();
 			string[] files = GetAllFilesWithTitle("", "TERRAIN", false);
+
+			// Add to collection
+			foreach(string s in files)
+				result.Add(new TextResourceData(this, LoadFile(s), s, true));
+
+			// Find in any of the wad files
+			foreach(WADReader wr in wads) result.AddRange(wr.GetTerrainData());
+
+			return result;
+		}
+
+		#endregion
+
+		#region ================== XBRSBSBB11 (mxd)
+
+		public override IEnumerable<TextResourceData> GetX11R6RGBData()
+		{
+			// Error when suspended
+			if(issuspended) throw new Exception("Data reader is suspended");
+
+			List<TextResourceData> result = new List<TextResourceData>();
+			string[] files = GetAllFilesWithTitle("", "X11R6RGB", false);
 
 			// Add to collection
 			foreach(string s in files)

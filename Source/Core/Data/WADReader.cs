@@ -1016,6 +1016,13 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		//mxd
+		public override IEnumerable<TextResourceData> GetX11R6RGBData()
+		{
+			if(issuspended) throw new Exception("Data reader is suspended");
+			return GetAllLumps("X11R6RGB");
+		}
+
+		//mxd
 		private IEnumerable<TextResourceData> GetFirstLump(string name)
 		{
 			List<TextResourceData> result = new List<TextResourceData>();

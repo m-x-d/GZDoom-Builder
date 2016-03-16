@@ -64,7 +64,7 @@ namespace CodeImp.DoomBuilder.Data
 			// Add it
 			patches.Add(patch);
 
-			if(patch.lumpname == Name) hasPatchWithSameName = true; //mxd
+			if(patch.LumpName == Name) hasPatchWithSameName = true; //mxd
 		}
 		
 		// This loads the image
@@ -103,7 +103,7 @@ namespace CodeImp.DoomBuilder.Data
 					{
 						// Get the patch data stream
 						string patchlocation = string.Empty; //mxd
-						Stream patchdata = General.Map.Data.GetPatchData(p.lumpname, p.haslongname, ref patchlocation);
+						Stream patchdata = General.Map.Data.GetPatchData(p.LumpName, p.HasLongName, ref patchlocation);
 						if(patchdata != null)
 						{
 							// Copy patch data to memory
@@ -125,7 +125,7 @@ namespace CodeImp.DoomBuilder.Data
 								if(reader is UnknownImageReader) 
 								{
 									// Data is in an unknown format!
-									General.ErrorLogger.Add(ErrorType.Error, "Patch lump \"" + Path.Combine(patchlocation, p.lumpname) + "\" data format could not be read, while loading texture \"" + this.Name + "\". Does this lump contain valid picture data at all?");
+									General.ErrorLogger.Add(ErrorType.Error, "Patch lump \"" + Path.Combine(patchlocation, p.LumpName) + "\" data format could not be read, while loading texture \"" + this.Name + "\". Does this lump contain valid picture data at all?");
 									loadfailed = true;
 									missingpatches++; //mxd
 								}
@@ -135,11 +135,11 @@ namespace CodeImp.DoomBuilder.Data
 							{
 								// Draw the patch
 								mem.Seek(0, SeekOrigin.Begin);
-								try { reader.DrawToPixelData(mem, pixels, width, height, p.x, p.y); }
+								try { reader.DrawToPixelData(mem, pixels, width, height, p.X, p.Y); }
 								catch(InvalidDataException)
 								{
 									// Data cannot be read!
-									General.ErrorLogger.Add(ErrorType.Error, "Patch lump \"" + p.lumpname + "\" data format could not be read, while loading texture \"" + this.Name + "\". Does this lump contain valid picture data at all?");
+									General.ErrorLogger.Add(ErrorType.Error, "Patch lump \"" + p.LumpName + "\" data format could not be read, while loading texture \"" + this.Name + "\". Does this lump contain valid picture data at all?");
 									loadfailed = true;
 									missingpatches++; //mxd
 								}
@@ -151,7 +151,7 @@ namespace CodeImp.DoomBuilder.Data
 						else
 						{
 							// Missing a patch lump!
-							General.ErrorLogger.Add(ErrorType.Error, "Missing patch lump \"" + p.lumpname + "\" while loading texture \"" + this.Name + "\". Did you forget to include required resources?");
+							General.ErrorLogger.Add(ErrorType.Error, "Missing patch lump \"" + p.LumpName + "\" while loading texture \"" + this.Name + "\". Did you forget to include required resources?");
 							loadfailed = true;
 							missingpatches++; //mxd
 						}

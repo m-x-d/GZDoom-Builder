@@ -1,7 +1,6 @@
 ﻿#region ================== Namespaces
 
 using System.Collections.Generic;
-using System.IO;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Data;
 
