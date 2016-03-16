@@ -42,6 +42,7 @@ namespace CodeImp.DoomBuilder.Config
 		ANIMDEFS = 9,
 		REVERBS = 10,
 		TERRAIN = 11,
+		X11R6RGB = 12,
 	}
 	
 	internal class ScriptConfiguration : IComparable<ScriptConfiguration>

@@ -97,6 +97,7 @@ namespace CodeImp.DoomBuilder.Data
 		private string[] soundsequences;
 		private string[] terrainnames; 
 		private string[] damagetypes;
+		private Dictionary<string, PixelColor> knowncolors; // Colors parsed from X11R6RGB lump. Color names are lowercase without spaces
 
 		//mxd. Text resources
 		private Dictionary<ScriptType, HashSet<TextResource>> textresources; 
@@ -156,6 +157,7 @@ namespace CodeImp.DoomBuilder.Data
 		public string[] SoundSequences { get { return soundsequences; } }
 		public string[] TerrainNames { get { return terrainnames; } }
 		public string[] DamageTypes { get { return damagetypes; } }
+		public Dictionary<string, PixelColor> KnownColors { get { return knowncolors; } }
 		internal Dictionary<ScriptType, HashSet<TextResource>> TextResources { get { return textresources; } }
 
 		//mxd
@@ -326,6 +328,7 @@ namespace CodeImp.DoomBuilder.Data
 			terrainnames = new string[0];
 			textresources = new Dictionary<ScriptType, HashSet<TextResource>>();
 			damagetypes = new string[0];
+			knowncolors = new Dictionary<string, PixelColor>(StringComparer.OrdinalIgnoreCase);
 			
 			// Load texture sets
 			foreach(DefinedTextureSet ts in General.Map.ConfigSettings.TextureSets)
@@ -386,6 +389,7 @@ namespace CodeImp.DoomBuilder.Data
 			}
 			
 			// Load stuff
+			LoadX11R6RGB(); //mxd
 			LoadPalette();
 			Dictionary<string, TexturesParser> cachedparsers = new Dictionary<string, TexturesParser>(); //mxd
 			int texcount = LoadTextures(texturesonly, texturenamesshorttofull, cachedparsers);
@@ -588,6 +592,7 @@ namespace CodeImp.DoomBuilder.Data
 			terrainnames = null; //mxd
 			textresources = null; //mxd
 			damagetypes = null; //mxd
+			knowncolors = null; //mxd
 			texturenames = null;
 			flatnames = null;
 			imageque = null;
@@ -801,10 +806,7 @@ namespace CodeImp.DoomBuilder.Data
 				}
 				while(true);
 			}
-			catch(ThreadInterruptedException)
-			{
-				return;
-			}
+			catch(ThreadInterruptedException) { }
 		}
 		
 		// This adds an image for background loading or unloading
@@ -2458,6 +2460,34 @@ namespace CodeImp.DoomBuilder.Data
 
 			// Set as collection
 			terrainnames = names.ToArray();
+		}
+
+		//mxd. This loads X11R6RGB
+		private void LoadX11R6RGB()
+		{
+			X11R6RGBParser parser = new X11R6RGBParser();
+
+			foreach(DataReader dr in containers)
+			{
+				currentreader = dr;
+				IEnumerable<TextResourceData> streams = dr.GetX11R6RGBData();
+
+				// Parse the data
+				foreach(TextResourceData data in streams)
+				{
+					parser.Parse(data, true);
+
+					// Report errors?
+					if(parser.HasError) parser.LogError();
+				}
+			}
+
+			// Add to text resources collection
+			textresources[parser.ScriptType] = new HashSet<TextResource>(parser.TextResources.Values);
+			currentreader = null;
+
+			// Set as collection
+			knowncolors = parser.KnownColors;
 		}
 
 		//mxd

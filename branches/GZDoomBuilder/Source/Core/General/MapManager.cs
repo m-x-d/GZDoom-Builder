@@ -724,21 +724,22 @@ namespace CodeImp.DoomBuilder
 			string settingsfile;
 			WAD targetwad = null;
 			bool includenodes;
+			bool fileexists = File.Exists(newfilepathname); //mxd
 
 			General.WriteLogLine("Saving map to file: " + newfilepathname);
 
 			//mxd. Official IWAD check...
-			WAD hashtest = new WAD(newfilepathname, true);
-			if(hashtest.IsOfficialIWAD)
+			if(fileexists)
 			{
-				General.WriteLogLine("Map saving aborted: attempt to modify official IWAD");
-				General.ShowErrorMessage("Official IWADs should not be modified.\nConsider making a PWAD instead", MessageBoxButtons.OK);
-				return false;
-			}
-			else
-			{
+				WAD hashtest = new WAD(newfilepathname, true);
+				if(hashtest.IsOfficialIWAD)
+				{
+					General.WriteLogLine("Map saving aborted: attempt to modify an official IWAD");
+					General.ShowErrorMessage("Official IWADs should not be modified.\nConsider making a PWAD instead", MessageBoxButtons.OK);
+					return false;
+				}
+
 				hashtest.Dispose();
-				hashtest = null;
 			}
 
 			// Scripts changed?
@@ -786,27 +787,30 @@ namespace CodeImp.DoomBuilder
 			}
 
 			//mxd. Target file is read-only?
-			FileInfo info = new FileInfo(newfilepathname);
-			if(info.Exists && info.IsReadOnly)
+			if(fileexists)
 			{
-				if(General.ShowWarningMessage("Unable to save the map: target file is read-only.\nRemove read-only flag and save the map anyway?", MessageBoxButtons.YesNo) == DialogResult.Yes)
+				FileInfo info = new FileInfo(newfilepathname);
+				if(info.IsReadOnly)
 				{
-					General.WriteLogLine("Removing read-only flag from the map file...");
-					try
+					if(General.ShowWarningMessage("Unable to save the map: target file is read-only.\nRemove read-only flag and save the map anyway?", MessageBoxButtons.YesNo) == DialogResult.Yes)
 					{
-						info.IsReadOnly = false;
+						General.WriteLogLine("Removing read-only flag from the map file...");
+						try
+						{
+							info.IsReadOnly = false;
+						}
+						catch(Exception e)
+						{
+							General.ShowErrorMessage("Failed to remove read-only flag from \"" + filepathname + "\":" + Environment.NewLine + Environment.NewLine + e.Message, MessageBoxButtons.OK);
+							General.WriteLogLine("Failed to remove read-only flag from \"" + filepathname + "\":" + e.Message);
+							return false;
+						}
 					}
-					catch(Exception e)
+					else
 					{
-						General.ShowErrorMessage("Failed to remove read-only flag from \"" + filepathname + "\":" + Environment.NewLine + Environment.NewLine + e.Message, MessageBoxButtons.OK);
-						General.WriteLogLine("Failed to remove read-only flag from \"" + filepathname + "\":" + e.Message);
+						General.WriteLogLine("Map saving cancelled...");
 						return false;
 					}
-				}
-				else
-				{
-					General.WriteLogLine("Map saving cancelled...");
-					return false;
 				}
 			}
 
@@ -814,50 +818,53 @@ namespace CodeImp.DoomBuilder
 			data.Suspend();
 
 			//mxd. Check if the target file is locked
-			FileLockChecker.FileLockCheckResult checkresult = FileLockChecker.CheckFile(newfilepathname);
-			if(!string.IsNullOrEmpty(checkresult.Error))
+			if(fileexists)
 			{
-				if(checkresult.Processes.Count > 0)
+				FileLockChecker.FileLockCheckResult checkresult = FileLockChecker.CheckFile(newfilepathname);
+				if(!string.IsNullOrEmpty(checkresult.Error))
 				{
-					string rest = "Press 'Retry' to close " + (checkresult.Processes.Count > 1 ? "all processes" : "the process") 
-						+ " and retry." + Environment.NewLine + "Press 'Cancel' to cancel saving.";
-					
-					if(General.ShowErrorMessage(checkresult.Error + rest, MessageBoxButtons.RetryCancel) == DialogResult.Retry)
+					if(checkresult.Processes.Count > 0)
 					{
-						// Close all processes
-						foreach(Process process in checkresult.Processes)
-						{
-							try
-							{
-								if(!process.HasExited) process.Kill();
-							}
-							catch(Exception e)
-							{
-								General.ShowErrorMessage("Failed to close " + Path.GetFileName(process.MainModule.FileName) + ":" + Environment.NewLine + Environment.NewLine + e.Message, MessageBoxButtons.OK);
-								data.Resume();
-								General.WriteLogLine("Map saving failed: failed to close " + Path.GetFileName(process.MainModule.FileName));
-								return false;
-							}
-						}
+						string rest = "Press 'Retry' to close " + (checkresult.Processes.Count > 1 ? "all processes" : "the process")
+							+ " and retry." + Environment.NewLine + "Press 'Cancel' to cancel saving.";
 
-						// Retry
-						data.Resume();
-						General.WriteLogLine("Map saving restarted...");
-						return SaveMap(newfilepathname, purpose);
+						if(General.ShowErrorMessage(checkresult.Error + rest, MessageBoxButtons.RetryCancel) == DialogResult.Retry)
+						{
+							// Close all processes
+							foreach(Process process in checkresult.Processes)
+							{
+								try
+								{
+									if(!process.HasExited) process.Kill();
+								}
+								catch(Exception e)
+								{
+									General.ShowErrorMessage("Failed to close " + Path.GetFileName(process.MainModule.FileName) + ":" + Environment.NewLine + Environment.NewLine + e.Message, MessageBoxButtons.OK);
+									data.Resume();
+									General.WriteLogLine("Map saving failed: failed to close " + Path.GetFileName(process.MainModule.FileName));
+									return false;
+								}
+							}
+
+							// Retry
+							data.Resume();
+							General.WriteLogLine("Map saving restarted...");
+							return SaveMap(newfilepathname, purpose);
+						}
+						else
+						{
+							data.Resume();
+							General.WriteLogLine("Map saving cancelled...");
+							return false;
+						}
 					}
 					else
 					{
+						General.ShowErrorMessage(checkresult.Error, MessageBoxButtons.OK);
 						data.Resume();
-						General.WriteLogLine("Map saving cancelled...");
+						General.WriteLogLine("Map saving failed: " + checkresult.Error);
 						return false;
 					}
-				}
-				else
-				{
-					General.ShowErrorMessage(checkresult.Error, MessageBoxButtons.OK);
-					data.Resume();
-					General.WriteLogLine("Map saving failed: " + checkresult.Error);
-					return false;
 				}
 			}
 
@@ -867,7 +874,7 @@ namespace CodeImp.DoomBuilder
 
 			try 
 			{
-				if(File.Exists(newfilepathname)) 
+				if(fileexists) 
 				{
 					// mxd. Check if target wad already has a map with the same name
 					if(purpose == SavePurpose.IntoFile) 

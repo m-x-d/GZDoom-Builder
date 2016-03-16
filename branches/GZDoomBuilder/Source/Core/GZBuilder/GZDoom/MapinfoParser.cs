@@ -2,12 +2,11 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Globalization;
 using System.IO;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Data;
-using SlimDX;
+using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.ZDoom;
 using CodeImp.DoomBuilder.GZBuilder.Data;
 
@@ -607,16 +606,15 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 				ReportError("Expected " + fadetype + " color value");
 				return false;
 			}
-
-			Color4 color = new Color4();
 			
 			// Try to get the color...
-			if(GetColor(colorval, ref color))
+			PixelColor color = new PixelColor();
+			if(GetColorFromString(colorval, ref color))
 			{
 				if(fadetype == "fade")
-					mapinfo.FadeColor = color;
+					mapinfo.FadeColor = color.ToColorValue();
 				else
-					mapinfo.OutsideFogColor = color;
+					mapinfo.OutsideFogColor = color.ToColorValue();
 			}
 			else //...or not
 			{
@@ -687,30 +685,5 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 
 		#endregion
 
-		#region ================== Methods
-
-		private static bool GetColor(string name, ref Color4 color) 
-		{
-			if(name == "black") return true;
-
-			//probably it's a hex color (like FFCC11)?
-			int ci;
-			if(int.TryParse(name, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out ci)) 
-			{
-				color = new Color4(ci) {Alpha = 1.0f};
-				return true;
-			}
-
-			//probably it's a color name?
-			Color c = Color.FromName(name); //should be similar to C++ color name detection, I suppose
-			if(c.IsKnownColor) 
-			{
-				color = new Color4(c);
-				return true;
-			}
-			return false;
-		}
-
-		#endregion
 	}
 }

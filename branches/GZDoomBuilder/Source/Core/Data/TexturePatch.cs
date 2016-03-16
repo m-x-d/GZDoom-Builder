@@ -26,93 +26,90 @@ namespace CodeImp.DoomBuilder.Data
 {
 	public enum TexturePathRenderStyle
 	{
-		Copy,
-		Blend,
-		Add,
-		Subtract,
-		ReverseSubtract,
-		Modulate,
-		CopyAlpha,
-		CopyNewAlpha, //mxd
-		Overlay, //mxd
+		COPY,
+		BLEND,
+		ADD,
+		SUBTRACT,
+		REVERSE_SUBTRACT,
+		MODULATE,
+		COPY_ALPHA,
+		COPY_NEW_ALPHA, //mxd
+		OVERLAY, //mxd
 	}
 
 	public enum TexturePathBlendStyle //mxd
 	{
-		None,
-		Blend,
-		Tint
+		NONE,
+		BLEND,
+		TINT
 	}
 	
 	internal struct TexturePatch
 	{
-		public readonly string lumpname;
-		public readonly int x;
-		public readonly int y;
-		public readonly bool flipx;
-		public readonly bool flipy;
-		public readonly bool haslongname; //mxd
-		public readonly int rotate;
-		public PixelColor blend;
-		public readonly float alpha;
-		public readonly TexturePathRenderStyle style;
-		public readonly TexturePathBlendStyle blendstyle; //mxd
-		public readonly float tintammount;//mxd
-		public readonly bool skip; //mxd
+		public readonly string LumpName;
+		public readonly int X;
+		public readonly int Y;
+		public readonly bool FlipX;
+		public readonly bool FlipY;
+		public readonly bool HasLongName; //mxd
+		public readonly int Rotate;
+		public PixelColor BlendColor;
+		public readonly float Alpha;
+		public readonly TexturePathRenderStyle RenderStyle;
+		public readonly TexturePathBlendStyle BlendStyle; //mxd
+		public readonly bool Skip; //mxd
 		
 		// Constructor for simple patches
 		public TexturePatch(string lumpname, int x, int y)
 		{
 			// Initialize
-			this.lumpname = lumpname;
-			this.x = x;
-			this.y = y;
-			this.flipx = false;
-			this.flipy = false;
-			this.rotate = 0;
-			this.blend = new PixelColor(0, 0, 0, 0);
-			this.alpha = 1.0f;
-			this.style = TexturePathRenderStyle.Copy;
-			this.blendstyle = TexturePathBlendStyle.None;//mxd
-			this.tintammount = 0; //mxd
-			this.haslongname = false; //mxd
-			this.skip = false; //mxd
+			this.LumpName = lumpname;
+			this.X = x;
+			this.Y = y;
+			this.FlipX = false;
+			this.FlipY = false;
+			this.Rotate = 0;
+			this.BlendColor = new PixelColor(0, 0, 0, 0);
+			this.Alpha = 1.0f;
+			this.RenderStyle = TexturePathRenderStyle.COPY;
+			this.BlendStyle = TexturePathBlendStyle.NONE;//mxd
+			this.HasLongName = false; //mxd
+			this.Skip = false; //mxd
 		}
 
 		//mxd. Constructor for hires patches
 		public TexturePatch(PatchStructure patch) 
 		{
 			// Initialize
-			this.lumpname = patch.Name.ToUpperInvariant();
-			this.x = patch.OffsetX;
-			this.y = patch.OffsetY;
-			this.flipx = patch.FlipX;
-			this.flipy = patch.FlipY;
-			this.rotate = patch.Rotation;
-			this.blend = patch.BlendColor;
-			this.alpha = patch.Alpha;
-			this.style = patch.RenderStyle;
-			this.blendstyle = patch.BlendStyle;
-			this.tintammount = patch.TintAmmount;
-			this.haslongname = (Path.GetFileNameWithoutExtension(this.lumpname) != this.lumpname);
-			this.skip = patch.Skip;
+			this.LumpName = patch.Name.ToUpperInvariant();
+			this.X = patch.OffsetX;
+			this.Y = patch.OffsetY;
+			this.FlipX = patch.FlipX;
+			this.FlipY = patch.FlipY;
+			this.Rotate = patch.Rotation;
+			this.BlendColor = patch.BlendColor;
+			this.Alpha = patch.Alpha;
+			this.RenderStyle = patch.RenderStyle;
+			this.BlendStyle = patch.BlendStyle;
+			this.HasLongName = (Path.GetFileNameWithoutExtension(this.LumpName) != this.LumpName);
+			this.Skip = patch.Skip;
 
 			//mxd. Check data so we don't perform unneeded operations later on
-			if(this.alpha == 1.0f) 
+			if(this.Alpha == 1.0f) 
 			{
-				switch(this.style)
+				switch(this.RenderStyle)
 				{
-					case TexturePathRenderStyle.Blend:
-					case TexturePathRenderStyle.CopyAlpha:
-					case TexturePathRenderStyle.CopyNewAlpha:
-					case TexturePathRenderStyle.Overlay:
-						this.style = TexturePathRenderStyle.Copy;
+					case TexturePathRenderStyle.BLEND:
+					case TexturePathRenderStyle.COPY_ALPHA:
+					case TexturePathRenderStyle.COPY_NEW_ALPHA:
+					case TexturePathRenderStyle.OVERLAY:
+						this.RenderStyle = TexturePathRenderStyle.COPY;
 						break;
 				}
 			}
 
 			//mxd. and get rid of render styles we don't support
-			if(this.style == TexturePathRenderStyle.Overlay) this.style = TexturePathRenderStyle.Copy;
+			if(this.RenderStyle == TexturePathRenderStyle.OVERLAY) this.RenderStyle = TexturePathRenderStyle.COPY;
 		}
 	}
 }

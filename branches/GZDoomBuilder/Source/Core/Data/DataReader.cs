@@ -240,6 +240,9 @@ namespace CodeImp.DoomBuilder.Data
 		//mxd. When implemented, this returns the TERRAIN lump
 		public abstract IEnumerable<TextResourceData> GetTerrainData();
 
+		//mxd. When implemented, this returns the X11R6RGB lump
+		public abstract IEnumerable<TextResourceData> GetX11R6RGBData();
+
 		//mxd. When implemented, this returns the list of voxel model names
 		public abstract IEnumerable<string> GetVoxelNames();
 

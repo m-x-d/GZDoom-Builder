@@ -24,6 +24,7 @@ using System.IO;
 using CodeImp.DoomBuilder.Compilers;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Data;
+using CodeImp.DoomBuilder.Rendering;
 
 #endregion
 
@@ -555,6 +556,65 @@ namespace CodeImp.DoomBuilder.ZDoom
 			bool success = int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out val);
 			if(success) value = val * sign;
 			return success;
+		}
+
+		//mxd
+		protected internal bool ReadByte(ref byte value) { return ReadByte(StripTokenQuotes(ReadToken(false)), ref value); }
+		protected internal bool ReadByte(string token, ref byte value)
+		{
+			if(token == "-") return false;
+
+			int result;
+			if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out result) || result < 0 || result > 255)
+			{
+				return false;
+			}
+
+			value = (byte)result;
+			return true;
+		}
+
+		//mxd. This replicates ZDoom's V_GetColorFromString method
+		public static bool GetColorFromString(string name, ref PixelColor color)
+		{
+			name = StripQuotes(name.Replace(" ", ""));
+
+			// Check for HTML-style #RRGGBB or #RGB color string
+			bool ishtmlcolor = false;
+			if(name.StartsWith("#"))
+			{
+				ishtmlcolor = true;
+				name = name.Remove(0, 1);
+
+				// Expand RGB to RRGGBB
+				if(name.Length == 3)
+				{
+					name = name[0].ToString() + name[0] + name[1] + name[1] + name[2] + name[2];
+				}
+				else if(name.Length != 6)
+				{
+					// Bad HTML-style; pretend it's black.
+					color = new PixelColor();
+					return true;
+				}
+			}
+
+			// Probably it's a hex color (like FFCC11)?
+			int ci;
+			if(int.TryParse(name, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out ci))
+			{
+				color = PixelColor.FromInt(ci).WithAlpha(255);
+				return true;
+			}
+
+			// Probably it's a color name?
+			if(!ishtmlcolor && General.Map.Data.KnownColors.ContainsKey(name))
+			{
+				color = General.Map.Data.KnownColors[name];
+				return true;
+			}
+
+			return false;
 		}
 
 		//mxd
