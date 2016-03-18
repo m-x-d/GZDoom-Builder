@@ -252,6 +252,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			base.OnDisengage();
 
 			worker.CancelAsync();
+			worker.Dispose();
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.ColorConfiguration);
 			General.Interface.RemoveDocker(docker);
 

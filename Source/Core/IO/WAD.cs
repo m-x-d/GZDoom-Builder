@@ -342,9 +342,11 @@ namespace CodeImp.DoomBuilder.IO
 				// Close the reader
 				r.Close();
 			}
-
-			// Close the file
-			fs.Dispose();
+			else
+			{
+				// Close the file
+				fs.Dispose();
+			}
 		}
 		
 		// This flushes writing changes

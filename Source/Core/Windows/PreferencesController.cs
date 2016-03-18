@@ -58,12 +58,12 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		// Destructor
-		~PreferencesController()
+		/*~PreferencesController()
 		{
 			form = null;
 			OnAccept = null;
 			OnCancel = null;
-		}
+		}*/
 
 		#endregion
 

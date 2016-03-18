@@ -97,7 +97,6 @@ namespace CodeImp.DoomBuilder.IO
 
 					// Done
 					udmfcfgreader.Dispose();
-					udmfcfg.Dispose();
 					break;
 				}
 			}

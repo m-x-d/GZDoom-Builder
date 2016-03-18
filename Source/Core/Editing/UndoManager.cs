@@ -200,16 +200,9 @@ namespace CodeImp.DoomBuilder.Editing
 				General.WriteLogLine("All undo and redo levels cleared.");
 
 				//mxd
-				if(ss != null)
-				{
-					ss.Dispose();
-					ss = null;
-				}
-				if(stream != null)
-				{
-					stream.Dispose();
-					stream = null;
-				}
+				if(snapshot != null) { snapshot.Dispose(); snapshot = null; }
+				if(ss != null) { ss.Dispose(); ss = null; }
+				if(stream != null) { stream.Dispose(); stream = null; }
 				
 				// Done
 				isdisposed = true;

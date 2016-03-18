@@ -72,27 +72,25 @@ namespace CodeImp.DoomBuilder
 
 			// Get remote revision number
 			int remoterev;
-			using(MemoryStream stream = DownloadWebFile(Path.Combine(url, "Version.txt")))
+			MemoryStream stream = DownloadWebFile(Path.Combine(url, "Version.txt"));
+			if(stream == null)
 			{
-				if(stream == null)
-				{
-					ShowResult("Update check failed: failed to retrieve remote revision info.\nCheck your Internet connection and try again.");
-					e.Cancel = true;
-					return;
-				}
+				ShowResult("Update check failed: failed to retrieve remote revision info.\nCheck your Internet connection and try again.");
+				e.Cancel = true;
+				return;
+			}
 
-				string s;
-				using(StreamReader reader = new StreamReader(stream))
-				{
-					s = reader.ReadToEnd();
-				}
+			string s;
+			using(StreamReader reader = new StreamReader(stream))
+			{
+				s = reader.ReadToEnd();
+			}
 
-				if(!int.TryParse(s, out remoterev))
-				{
-					ShowResult("Update check failed: failed to retrieve remote revision number.");
-					e.Cancel = true;
-					return;
-				}
+			if(!int.TryParse(s, out remoterev))
+			{
+				ShowResult("Update check failed: failed to retrieve remote revision number.");
+				e.Cancel = true;
+				return;
 			}
 
 			if(remoterev > localrev)

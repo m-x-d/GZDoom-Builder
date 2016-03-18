@@ -114,7 +114,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 			//mxd. Synch camera position to cursor position or center of the screen in 2d-mode
 			if(General.Settings.GZSynchCameras && General.Editing.Mode is ClassicMode) 
 			{
-				ClassicMode oldmode = General.Editing.Mode as ClassicMode;
+				ClassicMode oldmode = (ClassicMode)General.Editing.Mode;
 
 				if(oldmode.IsMouseInside)
 					initialcameraposition = new Vector2D(oldmode.MouseMapPos.x, oldmode.MouseMapPos.y);
@@ -476,18 +476,13 @@ namespace CodeImp.DoomBuilder.VisualModes
 
 			if(target.picked == null) return new Vector2D(float.NaN, float.NaN);
 
-			//now find where exactly did we hit
-			if(target.picked is VisualGeometry) 
-			{
-				VisualGeometry vg = target.picked as VisualGeometry;
-				return GetIntersection(start, start + delta, vg.BoundingBox[0], new Vector3D(vg.Vertices[0].nx, vg.Vertices[0].ny, vg.Vertices[0].nz));
-			} 
-			
-			if(target.picked is VisualThing) 
-			{
-				VisualThing vt = target.picked as VisualThing;
-				return GetIntersection(start, start + delta, vt.CenterV3D, D3DDevice.V3D(vt.Center - vt.PositionV3));
-			} 
+			// Now find where exactly did we hit
+			VisualGeometry vg = target.picked as VisualGeometry;
+			if(vg != null) return GetIntersection(start, start + delta, vg.BoundingBox[0], new Vector3D(vg.Vertices[0].nx, vg.Vertices[0].ny, vg.Vertices[0].nz));
+
+
+			VisualThing vt = target.picked as VisualThing;
+			if(vt != null) return GetIntersection(start, start + delta, vt.CenterV3D, D3DDevice.V3D(vt.Center - vt.PositionV3));
 
 			return new Vector2D(float.NaN, float.NaN);
 		}

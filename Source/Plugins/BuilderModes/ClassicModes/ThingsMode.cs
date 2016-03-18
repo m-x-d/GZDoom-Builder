@@ -147,11 +147,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(highlighted != null) highlighted.Highlighted = false;
 
 			// Going to EditSelectionMode?
-			if(General.Editing.NewMode is EditSelectionMode)
+			EditSelectionMode mode = General.Editing.NewMode as EditSelectionMode;
+			if(mode != null)
 			{
 				// Not pasting anything?
-				EditSelectionMode editmode = (General.Editing.NewMode as EditSelectionMode);
-				if(!editmode.Pasting)
+				if(!mode.Pasting)
 				{
 					// No selection made? But we have a highlight!
 					if((General.Map.Map.GetSelectedThings(true).Count == 0) && (highlighted != null))

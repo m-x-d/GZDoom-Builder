@@ -1438,7 +1438,7 @@ namespace CodeImp.DoomBuilder.Map
 						string s = groupinfo["vertices"] as string;
 						if(!string.IsNullOrEmpty(s)) 
 						{
-							List<int> indices = GetIndices(groupinfo["vertices"] as string);
+							List<int> indices = GetIndices(s);
 							foreach(int index in indices) 
 							{
 								if(index > vertices.Length) continue;
@@ -1452,7 +1452,7 @@ namespace CodeImp.DoomBuilder.Map
 						string s = groupinfo["linedefs"] as string;
 						if(!string.IsNullOrEmpty(s)) 
 						{
-							List<int> indices = GetIndices(groupinfo["linedefs"] as string);
+							List<int> indices = GetIndices(s);
 							foreach(int index in indices) 
 							{
 								if(index > linedefs.Length) continue;
@@ -1466,7 +1466,7 @@ namespace CodeImp.DoomBuilder.Map
 						string s = groupinfo["sectors"] as string;
 						if(!string.IsNullOrEmpty(s)) 
 						{
-							List<int> indices = GetIndices(groupinfo["sectors"] as string);
+							List<int> indices = GetIndices(s);
 							foreach(int index in indices) 
 							{
 								if(index > sectors.Length) continue;
@@ -1480,7 +1480,7 @@ namespace CodeImp.DoomBuilder.Map
 						string s = groupinfo["things"] as string;
 						if(!string.IsNullOrEmpty(s)) 
 						{
-							List<int> indices = GetIndices(groupinfo["things"] as string);
+							List<int> indices = GetIndices(s);
 							foreach(int index in indices) 
 							{
 								if(index > things.Length) continue;

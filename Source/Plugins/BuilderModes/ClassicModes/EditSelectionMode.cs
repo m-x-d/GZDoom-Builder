@@ -330,13 +330,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private void Highlight(MapElement h)
 		{
 			// Undraw previous highlight
-			if((highlighted != null) && !highlighted.IsDisposed)
+			if(highlighted != null && !highlighted.IsDisposed)
 			{
 				if(highlighted is Vertex)
 				{
 					if(renderer.StartPlotter(false))
 					{
-						renderer.PlotVertex((highlighted as Vertex), renderer.DetermineVertexColor((highlighted as Vertex)));
+						renderer.PlotVertex((Vertex)highlighted, renderer.DetermineVertexColor((Vertex)highlighted));
 						renderer.Finish();
 					}
 				}
@@ -344,7 +344,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					if(renderer.StartThings(false))
 					{
-						renderer.RenderThing((highlighted as Thing), renderer.DetermineThingColor((highlighted as Thing)), Presentation.THINGS_ALPHA);
+						renderer.RenderThing((Thing)highlighted, renderer.DetermineThingColor((Thing)highlighted), Presentation.THINGS_ALPHA);
 						renderer.Finish();
 					}
 				}
@@ -354,13 +354,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			highlighted = h;
 
 			// Render highlighted item
-			if((highlighted != null) && !highlighted.IsDisposed)
+			if(highlighted != null && !highlighted.IsDisposed)
 			{
 				if(highlighted is Vertex)
 				{
 					if(renderer.StartPlotter(false))
 					{
-						renderer.PlotVertex((highlighted as Vertex), ColorCollection.HIGHLIGHT);
+						renderer.PlotVertex((Vertex)highlighted, ColorCollection.HIGHLIGHT);
 						renderer.Finish();
 					}
 				}
@@ -368,7 +368,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					if(renderer.StartThings(false))
 					{
-						renderer.RenderThing((highlighted as Thing), General.Colors.Highlight, Presentation.THINGS_ALPHA);
+						renderer.RenderThing((Thing)highlighted, General.Colors.Highlight, Presentation.THINGS_ALPHA);
 						renderer.Finish();
 					}
 				}
@@ -1561,7 +1561,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				renderer.PlotLinedefSet(General.Map.Map.Linedefs);
 				renderer.PlotVerticesSet(General.Map.Map.Vertices);
-				if(highlighted is Vertex) renderer.PlotVertex((highlighted as Vertex), ColorCollection.HIGHLIGHT);
+				if(highlighted is Vertex) renderer.PlotVertex((Vertex)highlighted, ColorCollection.HIGHLIGHT);
 				renderer.Finish();
 			}
 
@@ -1570,7 +1570,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				renderer.RenderThingSet(General.Map.ThingsFilter.HiddenThings, Presentation.THINGS_HIDDEN_ALPHA);
 				renderer.RenderThingSet(General.Map.ThingsFilter.VisibleThings, Presentation.THINGS_ALPHA);
-				if(highlighted is Thing) renderer.RenderThing((highlighted as Thing), General.Colors.Highlight, Presentation.THINGS_ALPHA);
+				if(highlighted is Thing) renderer.RenderThing((Thing)highlighted, General.Colors.Highlight, Presentation.THINGS_ALPHA);
 				renderer.Finish();
 			}
 

@@ -75,7 +75,7 @@ namespace CodeImp.DoomBuilder.Config
 				if(argdic["enum"] is IDictionary)
 				{
 					// Create anonymous enum
-					this.enumlist = new EnumList(argdic["enum"] as IDictionary);
+					this.enumlist = new EnumList((IDictionary)argdic["enum"]);
 				}
 				else
 				{

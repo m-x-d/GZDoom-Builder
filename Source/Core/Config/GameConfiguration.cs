@@ -778,7 +778,7 @@ namespace CodeImp.DoomBuilder.Config
 				if(de.Value is IDictionary)
 				{
 					// Add option
-					geneffectoptions.Add(new GeneralizedOption("gen_sectortypes", "", de.Key.ToString(), de.Value as IDictionary));
+					geneffectoptions.Add(new GeneralizedOption("gen_sectortypes", "", de.Key.ToString(), (IDictionary)de.Value));
 				}
 				else
 				{

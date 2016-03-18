@@ -157,6 +157,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 		}
 
+		public override void OnDisengage()
+		{
+			if(hintlabel != null) hintlabel.Dispose();
+			base.OnDisengage();
+		}
+
 		private void OptionsPanelOnValueChanged(object sender, EventArgs eventArgs) 
 		{
 			triangulate = panel.Triangulate;

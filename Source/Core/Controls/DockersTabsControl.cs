@@ -194,25 +194,21 @@ namespace CodeImp.DoomBuilder.Controls
 		// Tabs don't process keys
 		protected override void OnKeyDown(KeyEventArgs ke)
 		{
-			if(this.Parent is DockersControl)
-			{
-				// Only absorb the key press when no focused on an input control, otherwise
-				// the input controls may not receive certain keys such as delete and arrow keys
-				DockersControl docker = (this.Parent as DockersControl);
-				if(!docker.IsFocused) ke.Handled = true;
-			}
+			DockersControl docker = this.Parent as DockersControl;
+
+			// Only absorb the key press when no focused on an input control, otherwise
+			// the input controls may not receive certain keys such as delete and arrow keys
+			if(docker != null && !docker.IsFocused) ke.Handled = true;
 		}
-		
+
 		// Tabs don't process keys
 		protected override void OnKeyUp(KeyEventArgs e)
 		{
-			if(this.Parent is DockersControl)
-			{
-				// Only absorb the key press when no focused on an input control, otherwise
-				// the input controls may not receive certain keys such as delete and arrow keys
-				DockersControl docker = (this.Parent as DockersControl);
-				if(!docker.IsFocused) e.Handled = true;
-			}
+			DockersControl docker = this.Parent as DockersControl;
+
+			// Only absorb the key press when no focused on an input control, otherwise
+			// the input controls may not receive certain keys such as delete and arrow keys
+			if(docker != null && !docker.IsFocused) e.Handled = true;
 		}
 		
 		#endregion

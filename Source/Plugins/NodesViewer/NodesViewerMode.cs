@@ -129,8 +129,6 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 				nodes[i].leftsubsector = (leftindex & 0x8000) != 0;
 			}
 			nodesreader.Close();
-			nodesstream.Close();
-			nodesstream.Dispose();
 
 			// Add additional properties to nodes
 			nodes[nodes.Length - 1].parent = -1;
@@ -161,8 +159,6 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 				segs[i].offset = segsreader.ReadInt16();
 			}
 			segsreader.Close();
-			segsstream.Close();
-			segsstream.Dispose();
 
 			// Load the vertexes structure
 			MemoryStream vertsstream = General.Map.GetLumpData("VERTEXES");
@@ -185,8 +181,6 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 				verts[i].y = vertsreader.ReadInt16();
 			}
 			vertsreader.Close();
-			vertsstream.Close();
-			vertsstream.Dispose();
 
 			// Load the subsectors structure
 			MemoryStream ssecstream = General.Map.GetLumpData("SSECTORS");
@@ -209,8 +203,6 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 				ssectors[i].firstseg = ssecreader.ReadInt16();
 			}
 			ssecreader.Close();
-			ssecstream.Close();
-			ssecstream.Dispose();
 
 			// Link all segs to their subsectors
 			for(int i = 0; i < ssectors.Length; i++)
@@ -229,175 +221,175 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 		private bool LoadZNodes() 
 		{
 			List<string> supportedFormats = new List<string> { "XNOD", "XGLN", "XGL2", "XGL3" };
-			using(MemoryStream stream = General.Map.GetLumpData("ZNODES")) 
+			MemoryStream stream = General.Map.GetLumpData("ZNODES");
+
+			//boilerplate...
+			if(stream.Length < 4) 
 			{
-				//boilerplate...
-				if(stream.Length < 4) 
+				MessageBox.Show("ZNODES lump is empty.", "Nodes Viewer mode", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				stream.Close();
+				return false;
+			}
+
+			using(BinaryReader reader = new BinaryReader(stream)) 
+			{
+				//read signature
+				nodesformat = new string(reader.ReadChars(4));
+				if(!supportedFormats.Contains(nodesformat)) 
 				{
-					MessageBox.Show("ZNODES lump is empty.", "Nodes Viewer mode", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					MessageBox.Show("\"" + nodesformat + "\" node format is not supported.", "Nodes Viewer mode", MessageBoxButtons.OK, MessageBoxIcon.Error);
 					return false;
 				}
 
-				using(BinaryReader reader = new BinaryReader(stream)) 
+				uint vertsCount = reader.ReadUInt32();
+				uint newVertsCount = reader.ReadUInt32();
+
+				//boilerplate...
+				if(vertsCount != General.Map.Map.Vertices.Count) 
 				{
-					//read signature
-					nodesformat = new string(reader.ReadChars(4));
-					if(!supportedFormats.Contains(nodesformat)) 
-					{
-						MessageBox.Show("\"" + nodesformat + "\" node format is not supported.", "Nodes Viewer mode", MessageBoxButtons.OK, MessageBoxIcon.Error);
-						return false;
-					}
-
-					uint vertsCount = reader.ReadUInt32();
-					uint newVertsCount = reader.ReadUInt32();
-
-					//boilerplate...
-					if(vertsCount != General.Map.Map.Vertices.Count) 
-					{
-						MessageBox.Show("Error while reading ZNODES: vertices count in ZNODES lump (" + vertsCount + ") doesn't match with map's vertices count (" + General.Map.Map.Vertices.Count + ")!", "Nodes Viewer mode", MessageBoxButtons.OK, MessageBoxIcon.Error);
-						return false;
-					}
-
-					//add map vertices
-					verts = new Vector2D[vertsCount + newVertsCount];
-					int counter = 0;
-					foreach(Vertex v in General.Map.Map.Vertices) verts[counter++] = v.Position;
-
-					//read extra vertices
-					for(int i = counter; i < counter + newVertsCount; i++) 
-					{
-						verts[i].x = reader.ReadInt32() / 65536.0f;
-						verts[i].y = reader.ReadInt32() / 65536.0f;
-					}
-
-					//read subsectors
-					uint ssecCount = reader.ReadUInt32();
-					ssectors = new Subsector[ssecCount];
-
-					int firstseg = 0;
-					for(int i = 0; i < ssectors.Length; i++) 
-					{
-						ssectors[i].numsegs = (int)reader.ReadUInt32();
-						ssectors[i].firstseg = firstseg;
-						firstseg += ssectors[i].numsegs;
-					}
-
-					//read segments. offset and angle are unused anyway
-					uint segsCount = reader.ReadUInt32();
-					segs = new Seg[segsCount];
-
-					switch(nodesformat) 
-					{
-						case "XGLN":
-							for(int i = 0; i < segs.Length; i++) 
-							{
-								segs[i].startvertex = (int)reader.ReadUInt32();
-								reader.BaseStream.Position += 4; //skip partner
-								segs[i].lineindex = reader.ReadUInt16();
-								segs[i].leftside = reader.ReadBoolean();
-							}
-							break;
-
-						case "XGL3":
-						case "XGL2":
-							for(int i = 0; i < segs.Length; i++) 
-							{
-								segs[i].startvertex = (int)reader.ReadUInt32();
-								reader.BaseStream.Position += 4; //skip partner
-								uint lineindex = reader.ReadUInt32();
-								segs[i].lineindex = (lineindex == 0xFFFFFFFF ? -1 : (int)lineindex);
-								segs[i].leftside = reader.ReadBoolean();
-							}
-							break;
-
-						case "XNOD":
-							for(int i = 0; i < segs.Length; i++) 
-							{
-								segs[i].startvertex = (int)reader.ReadUInt32();
-								segs[i].endvertex = (int)reader.ReadUInt32();
-								segs[i].lineindex = reader.ReadUInt16();
-								segs[i].leftside = reader.ReadBoolean();
-							}
-							break;
-					}
-
-					//set second vertex, angle and reverse segs order
-					if(nodesformat == "XGLN" || nodesformat == "XGL2" || nodesformat == "XGL3") 
-					{
-						int index = 0;
-						foreach(Subsector ss in ssectors) 
-						{
-							//set the last vert
-							int lastseg = ss.firstseg + ss.numsegs - 1;
-							segs[lastseg].endvertex = segs[ss.firstseg].startvertex;
-
-							//set the rest
-							for(int i = ss.firstseg + 1; i <= lastseg; i++) segs[i - 1].endvertex = segs[i].startvertex;
-
-							//set angle and subsector index
-							for(int i = ss.firstseg; i <= lastseg; i++) 
-							{
-								segs[i].angle = Vector2D.GetAngle(verts[segs[i].endvertex], verts[segs[i].startvertex]);
-								segs[i].ssector = index;
-							}
-
-							index++;
-						}
-					}
-
-					//read nodes
-					uint nodesCount = reader.ReadUInt32();
-
-					//boilerplate...
-					if(nodesCount < 1) 
-					{
-						MessageBox.Show("The map has only one subsector.", "Why are you doing this, Stanley?..", MessageBoxButtons.OK, MessageBoxIcon.Error);
-						return false;
-					}
-
-					nodes = new Node[nodesCount];
-
-					for(int i = 0; i < nodes.Length; i++) 
-					{
-						if(nodesformat == "XGL3") 
-						{
-							nodes[i].linestart.x = reader.ReadInt32() / 65536.0f;
-							nodes[i].linestart.y = reader.ReadInt32() / 65536.0f;
-							nodes[i].linedelta.x = reader.ReadInt32() / 65536.0f;
-							nodes[i].linedelta.y = reader.ReadInt32() / 65536.0f;
-						} 
-						else 
-						{
-							nodes[i].linestart.x = reader.ReadInt16();
-							nodes[i].linestart.y = reader.ReadInt16();
-							nodes[i].linedelta.x = reader.ReadInt16();
-							nodes[i].linedelta.y = reader.ReadInt16();
-						}
-
-						float top = reader.ReadInt16();
-						float bot = reader.ReadInt16();
-						float left = reader.ReadInt16();
-						float right = reader.ReadInt16();
-						nodes[i].rightbox = new RectangleF(left, top, (right - left), (bot - top));
-
-						top = reader.ReadInt16();
-						bot = reader.ReadInt16();
-						left = reader.ReadInt16();
-						right = reader.ReadInt16();
-						nodes[i].leftbox = new RectangleF(left, top, (right - left), (bot - top));
-
-						uint rightindex = reader.ReadUInt32();
-						uint leftindex = reader.ReadUInt32();
-						nodes[i].rightchild = (int)(rightindex & 0x7FFFFFFF);
-						nodes[i].leftchild = (int)(leftindex & 0x7FFFFFFF);
-						nodes[i].rightsubsector = (rightindex & 0x80000000) != 0;
-						nodes[i].leftsubsector = (leftindex & 0x80000000) != 0;
-					}
-
-					// Add additional properties to nodes
-					nodes[nodes.Length - 1].parent = -1;
-					RecursiveSetupNodes(nodes.Length - 1);
+					MessageBox.Show("Error while reading ZNODES: vertices count in ZNODES lump (" + vertsCount + ") doesn't match with map's vertices count (" + General.Map.Map.Vertices.Count + ")!", "Nodes Viewer mode", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					return false;
 				}
+
+				//add map vertices
+				verts = new Vector2D[vertsCount + newVertsCount];
+				int counter = 0;
+				foreach(Vertex v in General.Map.Map.Vertices) verts[counter++] = v.Position;
+
+				//read extra vertices
+				for(int i = counter; i < counter + newVertsCount; i++) 
+				{
+					verts[i].x = reader.ReadInt32() / 65536.0f;
+					verts[i].y = reader.ReadInt32() / 65536.0f;
+				}
+
+				//read subsectors
+				uint ssecCount = reader.ReadUInt32();
+				ssectors = new Subsector[ssecCount];
+
+				int firstseg = 0;
+				for(int i = 0; i < ssectors.Length; i++) 
+				{
+					ssectors[i].numsegs = (int)reader.ReadUInt32();
+					ssectors[i].firstseg = firstseg;
+					firstseg += ssectors[i].numsegs;
+				}
+
+				//read segments. offset and angle are unused anyway
+				uint segsCount = reader.ReadUInt32();
+				segs = new Seg[segsCount];
+
+				switch(nodesformat) 
+				{
+					case "XGLN":
+						for(int i = 0; i < segs.Length; i++) 
+						{
+							segs[i].startvertex = (int)reader.ReadUInt32();
+							reader.BaseStream.Position += 4; //skip partner
+							segs[i].lineindex = reader.ReadUInt16();
+							segs[i].leftside = reader.ReadBoolean();
+						}
+						break;
+
+					case "XGL3":
+					case "XGL2":
+						for(int i = 0; i < segs.Length; i++) 
+						{
+							segs[i].startvertex = (int)reader.ReadUInt32();
+							reader.BaseStream.Position += 4; //skip partner
+							uint lineindex = reader.ReadUInt32();
+							segs[i].lineindex = (lineindex == 0xFFFFFFFF ? -1 : (int)lineindex);
+							segs[i].leftside = reader.ReadBoolean();
+						}
+						break;
+
+					case "XNOD":
+						for(int i = 0; i < segs.Length; i++) 
+						{
+							segs[i].startvertex = (int)reader.ReadUInt32();
+							segs[i].endvertex = (int)reader.ReadUInt32();
+							segs[i].lineindex = reader.ReadUInt16();
+							segs[i].leftside = reader.ReadBoolean();
+						}
+						break;
+				}
+
+				//set second vertex, angle and reverse segs order
+				if(nodesformat == "XGLN" || nodesformat == "XGL2" || nodesformat == "XGL3") 
+				{
+					int index = 0;
+					foreach(Subsector ss in ssectors) 
+					{
+						//set the last vert
+						int lastseg = ss.firstseg + ss.numsegs - 1;
+						segs[lastseg].endvertex = segs[ss.firstseg].startvertex;
+
+						//set the rest
+						for(int i = ss.firstseg + 1; i <= lastseg; i++) segs[i - 1].endvertex = segs[i].startvertex;
+
+						//set angle and subsector index
+						for(int i = ss.firstseg; i <= lastseg; i++) 
+						{
+							segs[i].angle = Vector2D.GetAngle(verts[segs[i].endvertex], verts[segs[i].startvertex]);
+							segs[i].ssector = index;
+						}
+
+						index++;
+					}
+				}
+
+				//read nodes
+				uint nodesCount = reader.ReadUInt32();
+
+				//boilerplate...
+				if(nodesCount < 1) 
+				{
+					MessageBox.Show("The map has only one subsector.", "Why are you doing this, Stanley?..", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					return false;
+				}
+
+				nodes = new Node[nodesCount];
+
+				for(int i = 0; i < nodes.Length; i++) 
+				{
+					if(nodesformat == "XGL3") 
+					{
+						nodes[i].linestart.x = reader.ReadInt32() / 65536.0f;
+						nodes[i].linestart.y = reader.ReadInt32() / 65536.0f;
+						nodes[i].linedelta.x = reader.ReadInt32() / 65536.0f;
+						nodes[i].linedelta.y = reader.ReadInt32() / 65536.0f;
+					} 
+					else 
+					{
+						nodes[i].linestart.x = reader.ReadInt16();
+						nodes[i].linestart.y = reader.ReadInt16();
+						nodes[i].linedelta.x = reader.ReadInt16();
+						nodes[i].linedelta.y = reader.ReadInt16();
+					}
+
+					float top = reader.ReadInt16();
+					float bot = reader.ReadInt16();
+					float left = reader.ReadInt16();
+					float right = reader.ReadInt16();
+					nodes[i].rightbox = new RectangleF(left, top, (right - left), (bot - top));
+
+					top = reader.ReadInt16();
+					bot = reader.ReadInt16();
+					left = reader.ReadInt16();
+					right = reader.ReadInt16();
+					nodes[i].leftbox = new RectangleF(left, top, (right - left), (bot - top));
+
+					uint rightindex = reader.ReadUInt32();
+					uint leftindex = reader.ReadUInt32();
+					nodes[i].rightchild = (int)(rightindex & 0x7FFFFFFF);
+					nodes[i].leftchild = (int)(leftindex & 0x7FFFFFFF);
+					nodes[i].rightsubsector = (rightindex & 0x80000000) != 0;
+					nodes[i].leftsubsector = (leftindex & 0x80000000) != 0;
+				}
+
+				// Add additional properties to nodes
+				nodes[nodes.Length - 1].parent = -1;
+				RecursiveSetupNodes(nodes.Length - 1);
 			}
 
 			return true;

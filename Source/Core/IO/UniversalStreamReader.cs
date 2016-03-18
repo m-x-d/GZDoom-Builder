@@ -118,7 +118,6 @@ namespace CodeImp.DoomBuilder.IO
 
 					// Done
 					udmfcfgreader.Dispose();
-					udmfcfg.Dispose();
 					break;
 				}
 			}
@@ -600,8 +599,8 @@ namespace CodeImp.DoomBuilder.IO
 			// Make list
 			foreach(UniversalEntry e in collection) 
 			{
-				if(!(e.Value is UniversalCollection) || (e.Key != entryname)) continue; //mxd
-				list.Add(e.Value as UniversalCollection);
+				UniversalCollection uc = e.Value as UniversalCollection;
+				if(uc != null && e.Key == entryname) list.Add(uc);
 			}
 
 			return list;

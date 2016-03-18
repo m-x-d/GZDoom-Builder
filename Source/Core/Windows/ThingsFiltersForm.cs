@@ -351,7 +351,7 @@ namespace CodeImp.DoomBuilder.Windows
 				if((filtercategory.SelectedIndex > -1) && (filtercategory.SelectedItem is ThingCategoryData))
 				{
 					// Set new category name
-					f.CategoryName = (filtercategory.SelectedItem as ThingCategoryData).Category.Name; //mxd
+					f.CategoryName = ((ThingCategoryData)filtercategory.SelectedItem).Category.Name; //mxd
 				}
 				else
 				{

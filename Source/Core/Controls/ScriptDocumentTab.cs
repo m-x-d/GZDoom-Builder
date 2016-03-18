@@ -546,7 +546,7 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			if(!preventchanges && editor.FunctionBar.SelectedItem is ScriptItem) 
 			{
-				ScriptItem si = editor.FunctionBar.SelectedItem as ScriptItem;
+				ScriptItem si = (ScriptItem)editor.FunctionBar.SelectedItem;
 				editor.EnsureLineVisible(editor.LineFromPosition(si.CursorPosition));
 				editor.SelectionStart = si.CursorPosition;
 				editor.SelectionEnd = si.CursorPosition;

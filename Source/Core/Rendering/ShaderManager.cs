@@ -23,7 +23,7 @@ using SlimDX.Direct3D9;
 
 namespace CodeImp.DoomBuilder.Rendering
 {
-	internal class ShaderManager : ID3DResource
+	internal class ShaderManager : ID3DResource, IDisposable
 	{
 		#region ================== Constants
 

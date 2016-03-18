@@ -279,15 +279,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			if(!(mode.HighlightedObject is BaseVisualSector)) return;
 			
-			//do we need to align this? (and also grab texture scale while we are at it)
+			// Do we need to align this? (and also grab texture scale while we are at it)
 			float scaleX, scaleY;
 			bool isFloor = (geometrytype == VisualGeometryType.FLOOR);
 
 			if(mode.HighlightedTarget is VisualFloor) 
 			{
-				VisualFloor target = mode.HighlightedTarget as VisualFloor;
+				VisualFloor target = (VisualFloor)mode.HighlightedTarget;
 
-				//check texture
+				// Check texture
 				if(target.Sector.Sector.FloorTexture != (isFloor ? Sector.Sector.FloorTexture : Sector.Sector.CeilTexture))	return;
 
 				scaleX = target.Sector.Sector.Fields.GetValue("xscalefloor", 1.0f);
@@ -295,9 +295,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			} 
 			else 
 			{
-				VisualCeiling target = mode.HighlightedTarget as VisualCeiling;
+				VisualCeiling target = (VisualCeiling)mode.HighlightedTarget;
 
-				//check texture
+				// Check texture
 				if(target.Sector.Sector.CeilTexture != (isFloor ? Sector.Sector.FloorTexture : Sector.Sector.CeilTexture)) return;
 
 				scaleX = target.Sector.Sector.Fields.GetValue("xscaleceiling", 1.0f);

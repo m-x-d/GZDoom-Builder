@@ -534,9 +534,9 @@ namespace CodeImp.DoomBuilder
 			options.ReadSelectionGroups();
 
 			// Center map in screen or on stored coordinates
-			if(General.Editing.Mode is ClassicMode) 
+			ClassicMode mode = General.Editing.Mode as ClassicMode;
+			if(mode != null) 
 			{
-				ClassicMode mode = General.Editing.Mode as ClassicMode;
 				mode.OnRedoEnd();
 
 				if(options.ViewPosition.IsFinite() && !float.IsNaN(options.ViewScale))
