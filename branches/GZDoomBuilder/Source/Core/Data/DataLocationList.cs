@@ -16,13 +16,11 @@
 
 #region ================== Namespaces
 
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using CodeImp.DoomBuilder.IO;
 using System.Collections.Specialized;
+using System.Globalization;
+using CodeImp.DoomBuilder.IO;
 
 #endregion
 
@@ -50,10 +48,10 @@ namespace CodeImp.DoomBuilder.Data
 			foreach(DictionaryEntry rl in resinfo)
 			{
 				// Item is a structure?
-				if(rl.Value is IDictionary)
+				IDictionary rlinfo = rl.Value as IDictionary;
+				if(rlinfo != null)
 				{
 					// Create resource location
-					IDictionary rlinfo = (IDictionary)rl.Value;
 					DataLocation res = new DataLocation();
 
 					// Copy information from Configuration to ResourceLocation
@@ -76,9 +74,15 @@ namespace CodeImp.DoomBuilder.Data
 		// This merges two lists together
 		public static DataLocationList Combined(DataLocationList a, DataLocationList b)
 		{
-			DataLocationList result = new DataLocationList();
-			result.AddRange(a);
-			result.AddRange(b);
+			DataLocationList result = new DataLocationList(a);
+
+			//mxd. In case of duplicates, keep the last entry
+			foreach(DataLocation dl in b)
+			{
+				result.Remove(dl);
+				result.Add(dl);
+			}
+
 			return result;
 		}
 

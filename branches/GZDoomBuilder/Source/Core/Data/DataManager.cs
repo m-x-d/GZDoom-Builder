@@ -282,6 +282,7 @@ namespace CodeImp.DoomBuilder.Data
 		internal void Load(DataLocationList configlist, DataLocationList maplist, DataLocation maplocation)
 		{
 			DataLocationList all = DataLocationList.Combined(configlist, maplist);
+			all.Remove(maplocation); //mxd. If maplocation was already added as a resource, make sure it's singular and is last in the list
 			all.Add(maplocation);
 			Load(all);
 		}
@@ -342,6 +343,7 @@ namespace CodeImp.DoomBuilder.Data
 			resourcetextures = new List<ResourceTextureSet>();
 			
 			// Go for all locations
+			string prevofficialiwad = string.Empty; //mxd
 			foreach(DataLocation dl in locations)
 			{
 				// Nothing chosen yet
@@ -359,6 +361,12 @@ namespace CodeImp.DoomBuilder.Data
 						// WAD file container
 						case DataLocation.RESOURCE_WAD:
 							c = new WADReader(dl);
+							if(((WADReader)c).WadFile.IsOfficialIWAD) //mxd
+							{
+								if(!string.IsNullOrEmpty(prevofficialiwad))
+									General.ErrorLogger.Add(ErrorType.Warning, "Using more than one official IWAD as a resource is not recommended. Consider removing \"" + prevofficialiwad + "\" or \"" + dl.GetDisplayName() + "\".");
+								prevofficialiwad = dl.GetDisplayName();
+							}
 							break;
 
 						// Directory container

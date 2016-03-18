@@ -535,9 +535,6 @@
     <None Include="Resources\Door.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\Gear.png" />
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="Resources\DrawGeometryMode.png" />
   </ItemGroup>
   <ItemGroup>

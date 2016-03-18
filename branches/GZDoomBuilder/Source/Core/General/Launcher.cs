@@ -17,15 +17,15 @@
 #region ================== Namespaces
 
 using System;
-using System.IO;
-using CodeImp.DoomBuilder.Data;
 using System.Diagnostics;
-using CodeImp.DoomBuilder.Actions;
+using System.IO;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.Actions;
+using CodeImp.DoomBuilder.Data;
+using CodeImp.DoomBuilder.Editing;
+using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.VisualModes;
 using CodeImp.DoomBuilder.Windows;
-using CodeImp.DoomBuilder.IO;
-using CodeImp.DoomBuilder.Editing;
 
 #endregion
 
@@ -124,12 +124,16 @@ namespace CodeImp.DoomBuilder
 			}
 			
 			// Make a list of all data locations, including map location
-			DataLocation maplocation = new DataLocation(DataLocation.RESOURCE_WAD, General.Map.FilePathName, false, false, false);
-			DataLocationList locations = new DataLocationList();
-			locations.AddRange(General.Map.ConfigSettings.Resources);
-			locations.AddRange(General.Map.Options.Resources);
-			if(!string.IsNullOrEmpty(maplocation.location)) locations.Add(maplocation); //mxd. maplocation.location will be empty when a newly created map was not saved yet.
-			
+			DataLocationList locations = DataLocationList.Combined(General.Map.ConfigSettings.Resources, General.Map.Options.Resources);
+
+			//mxd. General.Map.FilePathName will be empty when a newly created map was not saved yet.
+			if(!string.IsNullOrEmpty(General.Map.FilePathName))
+			{
+				DataLocation maplocation = new DataLocation(DataLocation.RESOURCE_WAD, General.Map.FilePathName, false, false, false);
+				locations.Remove(maplocation); //If maplocation was already added as a resource, make sure it's singular and is last in the list
+				locations.Add(maplocation); 
+			}
+
 			// Go for all data locations
 			foreach(DataLocation dl in locations)
 			{
