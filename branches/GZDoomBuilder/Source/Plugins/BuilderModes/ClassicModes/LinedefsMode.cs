@@ -367,11 +367,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(General.Map.UDMF) General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.TextureOffsetLock); //mxd
 
 			// Going to EditSelectionMode?
-			if(General.Editing.NewMode is EditSelectionMode)
+			EditSelectionMode mode = General.Editing.NewMode as EditSelectionMode;
+			if(mode != null)
 			{
 				// Not pasting anything?
-				EditSelectionMode editmode = (General.Editing.NewMode as EditSelectionMode);
-				if(!editmode.Pasting)
+				if(!mode.Pasting)
 				{
 					// No selection made? But we have a highlight!
 					if((General.Map.Map.GetSelectedLinedefs(true).Count == 0) && (highlighted != null))
@@ -1388,7 +1388,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			sortedlist.Reverse();
 
 			//mxd. Gather our ordered sectors
-			List<Sector> sectorslist = new List<Sector>(sortedlist.Count());
+			List<Sector> sectorslist = new List<Sector>(sortedlist.Count);
 			sectorslist.AddRange(sortedlist.Select(pair => pair.Key));
 
 			//mxd. Flip the lines

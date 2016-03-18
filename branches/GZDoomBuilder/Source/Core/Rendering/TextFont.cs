@@ -100,7 +100,6 @@ namespace CodeImp.DoomBuilder.Rendering
 
 					// Done
 					fontreader.Dispose();
-					fontdata.Dispose();
 					break;
 				}
 			}

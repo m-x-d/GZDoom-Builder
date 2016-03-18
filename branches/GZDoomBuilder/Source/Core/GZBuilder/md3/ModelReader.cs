@@ -71,7 +71,6 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 
 					//done
 					ms.Close();
-					ms.Dispose();
 					break;
 				}
 			}
@@ -126,7 +125,6 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 				}
 
 				ms.Close();
-				ms.Dispose();
 
 				//got errors?
 				if(!String.IsNullOrEmpty(result.Errors)) 
@@ -912,7 +910,6 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 				Bitmap bitmap = fir.ReadAsBitmap(ms);
 
 				ms.Close();
-				ms.Dispose();
 
 				if(bitmap != null) 
 				{
@@ -931,7 +928,6 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 				texture = Texture.FromStream(device, ms);
 
 				ms.Close();
-				ms.Dispose();
 			}
 
 			return texture;

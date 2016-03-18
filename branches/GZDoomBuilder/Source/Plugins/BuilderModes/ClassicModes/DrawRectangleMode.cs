@@ -428,6 +428,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 		}
 
+		public override void OnDisengage()
+		{
+			if(hintlabel != null) hintlabel.Dispose();
+			base.OnDisengage();
+		}
+
 		public override void OnHelp() 
 		{
 			General.ShowHelp("/gzdb/features/classic_modes/mode_drawrect.html");

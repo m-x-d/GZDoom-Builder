@@ -135,7 +135,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void Register()
 		{
 			// Add the menus to the core
-			foreach(ToolStripMenuItem i in menus)
+			foreach(ToolStripItem i in menus)
 				General.Interface.AddMenu(i);
 			
 			// Add the buttons to the core
@@ -143,7 +143,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Interface.AddButton(b);
 
 			//mxd. Export menu
-			foreach(ToolStripMenuItem i in exportmenuitems)
+			foreach(ToolStripItem i in exportmenuitems)
 				General.Interface.AddMenu(i, MenuSection.FileExport);
 
 			//mxd. Copy-paste propserties items
@@ -155,7 +155,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void Unregister()
 		{
 			// Remove the menus from the core
-			foreach(ToolStripMenuItem i in menus)
+			foreach(ToolStripItem i in menus)
 				General.Interface.RemoveMenu(i);
 
 			// Remove the buttons from the core
@@ -163,7 +163,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Interface.RemoveButton(b);
 
 			//mxd. Export menu
-			foreach(ToolStripMenuItem i in exportmenuitems)
+			foreach(ToolStripItem i in exportmenuitems)
 				General.Interface.RemoveMenu(i);
 
 			//mxd. Copy-paste propserties items
@@ -174,7 +174,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This hides all menus
 		public void HideAllMenus()
 		{
-			foreach(ToolStripMenuItem m in menus) m.Visible = false;
+			foreach(ToolStripItem m in menus) m.Visible = false;
 		}
 		
 		// This hides all except one menu

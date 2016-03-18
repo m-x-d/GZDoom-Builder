@@ -30,7 +30,7 @@ using CodeImp.DoomBuilder.Geometry;
 
 namespace CodeImp.DoomBuilder.Editing
 {
-	public class GridSetup
+	public class GridSetup : IDisposable
 	{
 		#region ================== Constants
 
@@ -95,12 +95,12 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 
 		// Disposer
-		internal void Dispose()
+		public void Dispose()
 		{
 			if(!isdisposed)
 			{
 				// Dispose image if needed
-				if(backimage is FileImage) (backimage as FileImage).Dispose();
+				if(backimage is FileImage) backimage.Dispose();
 				
 				// Clean up
 				backimage = null;
@@ -208,7 +208,7 @@ namespace CodeImp.DoomBuilder.Editing
 		internal void LinkBackground()
 		{
 			// Dispose image if needed
-			if(backimage is FileImage) (backimage as FileImage).Dispose();
+			if(backimage is FileImage) backimage.Dispose();
 			
 			// Where to load background from?
 			switch(backsource)

@@ -63,12 +63,11 @@ namespace CodeImp.DoomBuilder.Actions
 					List<string> lines = new List<string>(2);
 					
 					// Get a stream from the resource
-					using(Stream data = asm.GetManifestResourceStream(rn)) 
+					Stream data = asm.GetManifestResourceStream(rn);
+					if(data == null) return;
+					using(StreamReader reader = new StreamReader(data, Encoding.ASCII)) 
 					{
-						using(StreamReader reader = new StreamReader(data, Encoding.ASCII)) 
-						{
-							while(!reader.EndOfStream) lines.Add(reader.ReadLine());
-						}
+						while(!reader.EndOfStream) lines.Add(reader.ReadLine());
 					}
 
 					Dictionary<string, List<string>> group = new Dictionary<string, List<string>>(StringComparer.Ordinal);
@@ -119,7 +118,7 @@ namespace CodeImp.DoomBuilder.Actions
 
 					//add the last class
 					hints.Add(asmname + classname, ProcessHints(group));
-					break;
+					return;
 				}
 			}
 		}

@@ -295,13 +295,13 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		//mxd. Is that really needed?..
-		~MapOptions()
+		/*~MapOptions()
 		{
 			// Clean up
 			this.resources = null;
 			this.scriptfilesettings = null; //mxd
 			this.scriptlumpsettings = null; //mxd
-		}
+		}*/
 		
 		#endregion
 

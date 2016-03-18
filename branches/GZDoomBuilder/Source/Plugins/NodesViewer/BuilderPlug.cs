@@ -67,7 +67,7 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 		#region ================== Methods
 
 		// This returns a unique temp filename
-		public static string MakeTempFilename(string extension)
+		/*public static string MakeTempFilename(string extension)
 		{
 			string filename;
 			const string chars = "abcdefghijklmnopqrstuvwxyz1234567890";
@@ -85,7 +85,7 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 
 			// Return the filename
 			return filename;
-		}
+		}*/
 
 		#endregion
 	}

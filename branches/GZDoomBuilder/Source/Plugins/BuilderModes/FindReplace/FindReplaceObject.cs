@@ -70,21 +70,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			if(obj is Vertex)
 			{
-				points.Add((obj as Vertex).Position);
+				points.Add(((Vertex)obj).Position);
 			}
 			else if(obj is Linedef)
 			{
-				points.Add((obj as Linedef).Start.Position);
-				points.Add((obj as Linedef).End.Position);
+				points.Add(((Linedef)obj).Start.Position);
+				points.Add(((Linedef)obj).End.Position);
 			}
 			else if(obj is Sidedef)
 			{
-				points.Add((obj as Sidedef).Line.Start.Position);
-				points.Add((obj as Sidedef).Line.End.Position);
+				points.Add(((Sidedef)obj).Line.Start.Position);
+				points.Add(((Sidedef)obj).Line.End.Position);
 			}
 			else if(obj is Sector)
 			{
-				Sector s = (obj as Sector);
+				Sector s = (Sector)obj;
 				foreach(Sidedef sd in s.Sidedefs)
 				{
 					points.Add(sd.Line.Start.Position);
@@ -93,7 +93,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 			else if(obj is Thing)
 			{
-				Thing t = (obj as Thing);
+				Thing t = (Thing)obj;
 				Vector2D p = t.Position;
 				points.Add(p);
 				points.Add(p + new Vector2D(t.Size * 2.0f, t.Size * 2.0f));

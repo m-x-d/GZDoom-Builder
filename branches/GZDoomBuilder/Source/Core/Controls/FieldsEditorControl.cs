@@ -870,10 +870,10 @@ namespace CodeImp.DoomBuilder.Controls
 		private void ApplyEnums(bool hide)
 		{
 			// Enums combobox shown?
-			if((enumscombo.Visible) && (enumscombo.Tag is FieldsEditorRow))
+			if(enumscombo.Visible && (enumscombo.Tag is FieldsEditorRow))
 			{
 				// Get the row
-				FieldsEditorRow frow = (enumscombo.Tag as FieldsEditorRow);
+				FieldsEditorRow frow = (FieldsEditorRow)enumscombo.Tag;
 
 				// Take the selected value and apply it
 				ApplyValue(frow, enumscombo.Text);

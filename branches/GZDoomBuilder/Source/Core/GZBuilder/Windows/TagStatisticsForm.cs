@@ -193,11 +193,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 			area.Inflate(100f, 100f);
 
 			// Zoom to area
-			if(General.Editing.Mode is ClassicMode)
-			{
-				ClassicMode editmode = (General.Editing.Mode as ClassicMode);
-				editmode.CenterOnArea(area, 0.6f);
-			}
+			ClassicMode mode = General.Editing.Mode as ClassicMode;
+			if(mode != null) mode.CenterOnArea(area, 0.6f);
 		}
 
 		#endregion

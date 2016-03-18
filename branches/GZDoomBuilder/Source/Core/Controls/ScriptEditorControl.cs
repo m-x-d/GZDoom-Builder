@@ -343,7 +343,6 @@ namespace CodeImp.DoomBuilder.Controls
 
 						// Done with the resource
 						lexersreader.Dispose();
-						lexersdata.Dispose();
 					}
 
 					//mxd. We are done here

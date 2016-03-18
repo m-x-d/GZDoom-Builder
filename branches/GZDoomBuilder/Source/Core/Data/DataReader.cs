@@ -16,6 +16,7 @@
 
 #region ================== Namespaces
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using CodeImp.DoomBuilder.Config;
@@ -80,7 +81,7 @@ namespace CodeImp.DoomBuilder.Data
 		}
 	}
 	
-	internal abstract class DataReader
+	internal abstract class DataReader : IDisposable
 	{
 		#region ================== Constants
 

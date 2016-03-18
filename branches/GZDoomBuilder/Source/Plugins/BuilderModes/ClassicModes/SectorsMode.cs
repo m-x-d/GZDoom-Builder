@@ -592,11 +592,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		public override void SelectMapElement(SelectableElement element) 
+		public override void SelectMapElement(SelectableElement element)
 		{
-			if(element is Sector) 
+			Sector sector = element as Sector;
+			if(sector != null) 
 			{
-				SelectSector(element as Sector, true, true);
+				SelectSector(sector, true, true);
 
 				// Update overlay
 				UpdateOverlaySurfaces();
@@ -709,11 +710,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Map.Map.ClearSelectedLinedefs();
 			
 			// Going to EditSelectionMode?
-			if(General.Editing.NewMode is EditSelectionMode)
+			EditSelectionMode mode = General.Editing.NewMode as EditSelectionMode;
+			if(mode != null)
 			{
 				// Not pasting anything?
-				EditSelectionMode editmode = (General.Editing.NewMode as EditSelectionMode);
-				if(!editmode.Pasting)
+				if(!mode.Pasting)
 				{
 					// No selection made? But we have a highlight!
 					if((General.Map.Map.GetSelectedSectors(true).Count == 0) && (highlighted != null))

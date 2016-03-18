@@ -445,9 +445,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Update();
 			
 			if(sender is ToolStripItem)
-				General.Actions.InvokeAction((sender as ToolStripItem).Tag.ToString());
+				General.Actions.InvokeAction(((ToolStripItem)sender).Tag.ToString());
 			else if(sender is Control)
-				General.Actions.InvokeAction((sender as Control).Tag.ToString());
+				General.Actions.InvokeAction(((Control)sender).Tag.ToString());
 			else
 				General.Fail("InvokeTaggedAction used on an unexpected control.");
 			
@@ -945,13 +945,14 @@ namespace CodeImp.DoomBuilder.Windows
 			if(General.Map != null && General.Editing.Mode is ClassicMode)
 			{
 				// Requested from menu?
-				if(sender is ToolStripMenuItem)
+				ToolStripMenuItem item = sender as ToolStripMenuItem;
+				if(item != null)
 				{
 					// Get integral zoom level
-					int zoom = int.Parse((sender as ToolStripMenuItem).Tag.ToString(), CultureInfo.InvariantCulture);
+					int zoom = int.Parse(item.Tag.ToString(), CultureInfo.InvariantCulture);
 
 					// Zoom now
-					(General.Editing.Mode as ClassicMode).SetZoom(zoom / 100f);
+					((ClassicMode)General.Editing.Mode).SetZoom(zoom / 100f);
 				}
 			}
 		}
@@ -961,7 +962,7 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			// In classic mode?
 			if(General.Map != null && General.Editing.Mode is ClassicMode)
-				(General.Editing.Mode as ClassicMode).CenterInScreen();
+				((ClassicMode)General.Editing.Mode).CenterInScreen();
 		}
 
 		// This changes grid display
@@ -980,10 +981,11 @@ namespace CodeImp.DoomBuilder.Windows
 			if(General.Editing.Mode is ClassicMode)
 			{
 				// Requested from menu?
-				if(sender is ToolStripMenuItem)
+				ToolStripMenuItem item = sender as ToolStripMenuItem;
+				if(item != null)
 				{
 					// Get integral zoom level
-					int size = int.Parse((sender as ToolStripMenuItem).Tag.ToString(), CultureInfo.InvariantCulture);
+					int size = int.Parse(item.Tag.ToString(), CultureInfo.InvariantCulture);
 
 					//mxd. Disable automatic grid resizing
 					DisableDynamicGridResize();
@@ -2476,7 +2478,7 @@ namespace CodeImp.DoomBuilder.Windows
 					else if(menuitem.Tag is EditModeInfo)
 					{
 						// Action with this name available?
-						EditModeInfo modeinfo = (menuitem.Tag as EditModeInfo);
+						EditModeInfo modeinfo = (EditModeInfo)menuitem.Tag;
 						string actionname = modeinfo.SwitchAction.GetFullActionName(modeinfo.Plugin.Assembly);
 						if(General.Actions.Exists(actionname))
 						{
@@ -2501,11 +2503,11 @@ namespace CodeImp.DoomBuilder.Windows
 				// Tag set for this item?
 				if(item.Tag is string)
 				{
-					// Check if the tag doe not already begin with the assembly name
-					if(!(item.Tag as string).StartsWith(plugin.Name + "_", StringComparison.OrdinalIgnoreCase))
+					// Check if the tag does not already begin with the assembly name
+					if(!((string)item.Tag).StartsWith(plugin.Name + "_", StringComparison.OrdinalIgnoreCase))
 					{
 						// Change the tag to a fully qualified action name
-						item.Tag = plugin.Name.ToLowerInvariant() + "_" + (item.Tag as string);
+						item.Tag = plugin.Name.ToLowerInvariant() + "_" + (string)item.Tag;
 					}
 				}
 
@@ -3452,10 +3454,10 @@ namespace CodeImp.DoomBuilder.Windows
 				buttontoggleinfo.Image = Resources.InfoPanelCollapse; //mxd
 				labelcollapsedinfo.Visible = false;
 				itemtoggleinfo.Checked = true;
-				if(lastinfoobject is Vertex) ShowVertexInfo(lastinfoobject as Vertex);
-				else if(lastinfoobject is Linedef) ShowLinedefInfo(lastinfoobject as Linedef);
-				else if(lastinfoobject is Sector) ShowSectorInfo(lastinfoobject as Sector);
-				else if(lastinfoobject is Thing) ShowThingInfo(lastinfoobject as Thing);
+				if(lastinfoobject is Vertex) ShowVertexInfo((Vertex)lastinfoobject);
+				else if(lastinfoobject is Linedef) ShowLinedefInfo((Linedef)lastinfoobject);
+				else if(lastinfoobject is Sector) ShowSectorInfo((Sector)lastinfoobject);
+				else if(lastinfoobject is Thing) ShowThingInfo((Thing)lastinfoobject);
 				else HideInfo();
 			}
 
@@ -3502,19 +3504,19 @@ namespace CodeImp.DoomBuilder.Windows
 			modename.Refresh();
 			statistics.Visible = showModeName; //mxd
 
-			//mxd. let the plugins know
+			//mxd. Let the plugins know
 			General.Plugins.OnHighlightLost();
 		}
 		
 		// This refreshes info
 		public void RefreshInfo()
 		{
-			if(lastinfoobject is Vertex) ShowVertexInfo(lastinfoobject as Vertex);
-			else if(lastinfoobject is Linedef) ShowLinedefInfo(lastinfoobject as Linedef);
-			else if(lastinfoobject is Sector) ShowSectorInfo(lastinfoobject as Sector);
-			else if(lastinfoobject is Thing) ShowThingInfo(lastinfoobject as Thing);
+			if(lastinfoobject is Vertex) ShowVertexInfo((Vertex)lastinfoobject);
+			else if(lastinfoobject is Linedef) ShowLinedefInfo((Linedef)lastinfoobject);
+			else if(lastinfoobject is Sector) ShowSectorInfo((Sector)lastinfoobject);
+			else if(lastinfoobject is Thing) ShowThingInfo((Thing)lastinfoobject);
 
-			//mxd. let the plugins know
+			//mxd. Let the plugins know
 			General.Plugins.OnHighlightRefreshed(lastinfoobject);
 		}
 

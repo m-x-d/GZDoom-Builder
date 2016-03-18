@@ -68,22 +68,22 @@ namespace CodeImp.DoomBuilder
 		[DllImport("user32.dll", SetLastError = true)]
 		internal static extern bool MessageBeep(MessageBeepType type);
 
-		[DllImport("kernel32.dll")]
-		internal extern static IntPtr LoadLibrary(string filename);
+		//[DllImport("kernel32.dll")]
+		//internal extern static IntPtr LoadLibrary(string filename);
 
-		[DllImport("kernel32.dll")]
-		internal extern static bool FreeLibrary(IntPtr moduleptr);
+		//[DllImport("kernel32.dll")]
+		//internal extern static bool FreeLibrary(IntPtr moduleptr);
 
-		[DllImport("user32.dll")]
-		internal static extern IntPtr CreateWindowEx(uint exstyle, string classname, string windowname, uint style,
+		//[DllImport("user32.dll")]
+		/*internal static extern IntPtr CreateWindowEx(uint exstyle, string classname, string windowname, uint style,
 												   int x, int y, int width, int height, IntPtr parentptr, int menu,
-												   IntPtr instanceptr, string param);
+												   IntPtr instanceptr, string param);*/
 
-		[DllImport("user32.dll")]
-		internal static extern bool DestroyWindow(IntPtr windowptr);
+		//[DllImport("user32.dll")]
+		//internal static extern bool DestroyWindow(IntPtr windowptr);
 
-		[DllImport("user32.dll")]
-		internal static extern int SetWindowPos(IntPtr windowptr, int insertafterptr, int x, int y, int cx, int cy, int flags);
+		//[DllImport("user32.dll")]
+		//internal static extern int SetWindowPos(IntPtr windowptr, int insertafterptr, int x, int y, int cx, int cy, int flags);
 		
 		[DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
 		private static extern uint GetShortPathName([MarshalAs(UnmanagedType.LPTStr)] string longpath, [MarshalAs(UnmanagedType.LPTStr)]StringBuilder shortpath, uint buffersize);
@@ -1349,9 +1349,9 @@ namespace CodeImp.DoomBuilder
 				mainwindow.AddHintsDocker(); //mxd
 
 				//mxd. Center map in screen or on stored coordinates. Done here to avoid the view jerking around when updating the interface.
-				if(Editing.Mode is ClassicMode)
+				ClassicMode mode = Editing.Mode as ClassicMode;
+				if(mode != null)
 				{
-					ClassicMode mode = Editing.Mode as ClassicMode;
 					if(options != null && options.ViewPosition.IsFinite() && !float.IsNaN(options.ViewScale))
 						mode.CenterOnCoordinates(options.ViewPosition, options.ViewScale);
 					else

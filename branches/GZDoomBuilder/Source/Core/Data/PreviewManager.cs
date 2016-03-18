@@ -41,15 +41,16 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Variables
 		
 		// Dimensions of a single preview image
-		private int maxpreviewwidth = 64;
-		private int maxpreviewheight = 64;
+		private readonly int maxpreviewwidth;
+		private readonly int maxpreviewheight;
 		
 		// Images
 		private List<Bitmap> images;
 		
 		// Processing
 		private Queue<ImageData> imageque;
-		
+		private static object syncroot = new object(); //mxd
+
 		// Disposing
 		private bool isdisposed;
 
@@ -196,7 +197,7 @@ namespace CodeImp.DoomBuilder.Data
 			targetpos.Y += (maxpreviewheight - image.Height) >> 1;
 			
 			// Draw from atlas to target
-			lock(image)
+			lock(syncroot)
 			{
 				target.DrawImageUnscaled(image, targetpos.X, targetpos.Y);
 			}
@@ -211,7 +212,7 @@ namespace CodeImp.DoomBuilder.Data
 			lock(images) { image = images[previewindex]; }
 
 			// Make a copy
-			lock(image)
+			lock(syncroot)
 			{
 				return new Bitmap(image);
 			}

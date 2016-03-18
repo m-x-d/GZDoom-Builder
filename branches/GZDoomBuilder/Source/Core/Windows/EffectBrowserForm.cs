@@ -201,7 +201,7 @@ namespace CodeImp.DoomBuilder.Windows
 				if((effects.SelectedItems.Count > 0) && (effects.SelectedItems[0].Tag is SectorEffectInfo))
 				{
 					// Our result
-					selectedeffect = (effects.SelectedItems[0].Tag as SectorEffectInfo).Index;
+					selectedeffect = ((SectorEffectInfo)effects.SelectedItems[0].Tag).Index;
 				}
 			}
 			// Generalized action

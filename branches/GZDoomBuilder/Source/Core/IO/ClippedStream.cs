@@ -222,7 +222,6 @@ namespace CodeImp.DoomBuilder.IO
 		{
 			basestream = null;
 			base.Close();
-			this.Dispose();
 		}
 		
 		// This reads a single byte from the stream
