@@ -370,8 +370,7 @@ namespace CodeImp.DoomBuilder.Config
 			ci.nodebuildersave = this.nodebuildersave;
 			ci.nodebuildertest = this.nodebuildertest;
 			ci.formatinterface = this.formatinterface; //mxd
-			ci.resources = new DataLocationList();
-			ci.resources.AddRange(this.resources);
+			ci.resources = new DataLocationList(this.resources);
 			
 			//mxd
 			ci.testEngines = new List<EngineInfo>();
@@ -403,8 +402,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.nodebuildertest = ci.nodebuildertest;
 			this.formatinterface = ci.formatinterface; //mxd
 			this.currentEngineIndex = ci.currentEngineIndex; //mxd
-			this.resources = new DataLocationList();
-			this.resources.AddRange(ci.resources);
+			this.resources = new DataLocationList(ci.resources);
 			
 			//mxd
 			this.testEngines = new List<EngineInfo>();
@@ -477,8 +475,7 @@ namespace CodeImp.DoomBuilder.Config
 		//mxd
 		internal void PasteResourcesFrom(ConfigurationInfo source) 
 		{
-			resources = new DataLocationList();
-			resources.AddRange(source.resources);
+			resources = new DataLocationList(source.resources);
 			changed = true;
 		}
 
@@ -507,8 +504,7 @@ namespace CodeImp.DoomBuilder.Config
 			nodebuildersave = source.nodebuildersave;
 			nodebuildertest = source.nodebuildertest;
 			currentEngineIndex = source.currentEngineIndex;
-			resources = new DataLocationList();
-			resources.AddRange(source.resources);
+			resources = new DataLocationList(source.resources);
 
 			testEngines = new List<EngineInfo>();
 			foreach(EngineInfo info in source.testEngines)

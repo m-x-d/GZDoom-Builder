@@ -103,17 +103,10 @@ namespace CodeImp.DoomBuilder.Controls
 			// What type?
 			switch(locationtype)
 			{
-				case DataLocation.RESOURCE_DIRECTORY:
-					return 0 + lockedaddition;
-
-				case DataLocation.RESOURCE_WAD:
-					return 1 + lockedaddition;
-
-				case DataLocation.RESOURCE_PK3:
-					return 2 + lockedaddition;
-
-				default:
-					return -1;
+				case DataLocation.RESOURCE_DIRECTORY: return 0 + lockedaddition;
+				case DataLocation.RESOURCE_WAD: return 1 + lockedaddition;
+				case DataLocation.RESOURCE_PK3: return 2 + lockedaddition;
+				default: return -1;
 			}
 		}
 		
@@ -122,6 +115,9 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			// Start editing list
 			resourceitems.BeginUpdate();
+
+			//mxd
+			HashSet<DataLocation> currentitems = new HashSet<DataLocation>();
 			
 			// Go for all items
 			for(int i = resourceitems.Items.Count - 1; i >= 0; i--)
@@ -129,11 +125,16 @@ namespace CodeImp.DoomBuilder.Controls
 				// Remove item if not fixed
 				if(resourceitems.Items[i].ForeColor != SystemColors.WindowText)
 					resourceitems.Items.RemoveAt(i);
+				else
+					currentitems.Add((DataLocation)resourceitems.Items[i].Tag); //mxd
 			}
 			
 			// Go for all items
 			for(int i = list.Count - 1; i >= 0; i--)
 			{
+				if(currentitems.Contains(list[i])) continue; //mxd
+				currentitems.Add(list[i]); //mxd
+				
 				// Add item as fixed
 				resourceitems.Items.Insert(0, new ListViewItem(list[i].location));
 				resourceitems.Items[0].Tag = list[i];
@@ -169,10 +170,10 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 
 			// Go for all items
-			for(int i = 0; i < list.Count; i++)
+			foreach(DataLocation dl in list)
 			{
 				// Add item
-				AddItem(list[i]);
+				AddItem(dl);
 			}
 
 			// Done
@@ -194,8 +195,12 @@ namespace CodeImp.DoomBuilder.Controls
 		}*/
 
 		// This adds a normal item
-		private void AddItem(DataLocation rl)
+		private bool AddItem(DataLocation rl)
 		{
+			//mxd. No duplicates ples
+			foreach(ListViewItem item in resourceitems.Items)
+				if(((DataLocation)item.Tag).location == rl.location) return false;
+
 			// Start editing list
 			resourceitems.BeginUpdate();
 
@@ -213,39 +218,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 			// Done
 			resourceitems.EndUpdate();
-		}
-
-		//mxd
-		private void DropItem(IDataObject data) 
-		{
-			if(!data.GetDataPresent(DataFormats.FileDrop)) return;
-
-			string[] paths = (string[])data.GetData(DataFormats.FileDrop);
-			Dictionary<string, bool> curlocations = GetLocationNames();
-			foreach(string path in paths) 
-			{
-				if(curlocations.ContainsKey(path)) continue;
-
-				if(File.Exists(path)) 
-				{
-					string ext = Path.GetExtension(path);
-					if(string.IsNullOrEmpty(ext)) continue;
-					switch(ext.ToLower())
-					{
-						case ".wad":
-							AddItem(new DataLocation(DataLocation.RESOURCE_WAD, path, false, false, false));
-							break;
-						case ".pk7":
-						case ".pk3":
-							AddItem(new DataLocation(DataLocation.RESOURCE_PK3, path, false, false, false));
-							break;
-					}
-				} 
-				else if(Directory.Exists(path)) 
-				{
-					AddItem(new DataLocation(DataLocation.RESOURCE_DIRECTORY, path, false, false, false));
-				}
-			}
+			return true;
 		}
 		
 		// This fixes the column header in the list
@@ -279,7 +252,11 @@ namespace CodeImp.DoomBuilder.Controls
 			if(resoptions.ShowDialog(this) == DialogResult.OK)
 			{
 				// Add resource
-				AddItem(resoptions.ResourceLocation);
+				if(!AddItem(resoptions.ResourceLocation))
+				{
+					General.Interface.DisplayStatus(StatusType.Warning, "Resource already added!"); //mxd
+					return; //mxd
+				}
 			}
 
 			// Raise content changed event
@@ -381,7 +358,8 @@ namespace CodeImp.DoomBuilder.Controls
 				if(resourceitems.Items[i].ForeColor == SystemColors.WindowText)
 				{
 					// Add item to list
-					list.Add((DataLocation)resourceitems.Items[i].Tag);
+					DataLocation dl = (DataLocation)resourceitems.Items[i].Tag;
+					if(!list.Contains(dl)) list.Add(dl); //mxd. Duplicates check
 				}
 			}
 
@@ -409,10 +387,39 @@ namespace CodeImp.DoomBuilder.Controls
 		// Item dropped
 		private void resourceitems_DragDrop(object sender, DragEventArgs e)
 		{
-			DropItem(e.Data); //mxd
+			if(!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
+
+			string[] paths = (string[])e.Data.GetData(DataFormats.FileDrop);
+			int addedfiles = 0;
+			foreach(string path in paths)
+			{
+				if(File.Exists(path))
+				{
+					string ext = Path.GetExtension(path);
+					if(string.IsNullOrEmpty(ext)) continue;
+					switch(ext.ToLower())
+					{
+						case ".wad":
+							if(AddItem(new DataLocation(DataLocation.RESOURCE_WAD, path, false, false, false)))
+								addedfiles++;
+							break;
+						case ".pk7":
+						case ".pk3":
+							if(AddItem(new DataLocation(DataLocation.RESOURCE_PK3, path, false, false, false)))
+								addedfiles++;
+							break;
+					}
+				}
+				else if(Directory.Exists(path))
+				{
+					if(AddItem(new DataLocation(DataLocation.RESOURCE_DIRECTORY, path, false, false, false)))
+						addedfiles++;
+				}
+			}
 			
 			// Raise content changed event
-			if(OnContentChanged != null) OnContentChanged();
+			if(addedfiles > 0 && OnContentChanged != null) OnContentChanged();
+			if(addedfiles == 0) General.Interface.DisplayStatus(StatusType.Warning, "Invalid or duplicate resources!"); //mxd
 		}
 
 		// Client size changed
@@ -433,9 +440,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 			copiedresources.Clear();
 			foreach(ListViewItem item in resourceitems.SelectedItems) 
-			{
 				if(item.Tag is DataLocation) copiedresources.Add((DataLocation)item.Tag);
-			}
 
 			// Display notification
 			General.Interface.DisplayStatus(StatusType.Info, copiedresources.Count + " Resource" + (copiedresources.Count > 1 ? "s" : "") + " Copied to Clipboard");
@@ -446,14 +451,9 @@ namespace CodeImp.DoomBuilder.Controls
 			// Don't do stupid things
 			if(copiedresources.Count == 0) return;
 
-			Dictionary<string, bool> curlocations = GetLocationNames();
 			int pastedcount = 0;
 			foreach(DataLocation dl in copiedresources) 
-			{
-				if(curlocations.ContainsKey(dl.location)) continue;
-				AddItem(dl);
-				pastedcount++;
-			}
+				if(AddItem(dl)) pastedcount++;
 
 			if(pastedcount > 0) 
 			{
@@ -483,13 +483,8 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 
 			// Paste new resources
-			Dictionary<string, bool> curlocations = GetLocationNames();
 			foreach(DataLocation dl in copiedresources) 
-			{
-				if(curlocations.ContainsKey(dl.location)) continue;
-				AddItem(dl);
-				pastedcount++;
-			}
+				if(AddItem(dl)) pastedcount++;
 
 			if(pastedcount > 0) 
 			{
@@ -519,19 +514,6 @@ namespace CodeImp.DoomBuilder.Controls
 
 			// Raise content changed event
 			if(OnContentChanged != null) OnContentChanged();
-		}
-
-		private Dictionary<string, bool> GetLocationNames() 
-		{
-			Dictionary<string, bool> dict = new Dictionary<string, bool>(resourceitems.Items.Count);
-			foreach(ListViewItem item in resourceitems.Items) 
-			{
-				if(!(item.Tag is DataLocation)) continue;
-				DataLocation dl = (DataLocation)item.Tag;
-				if(!dict.ContainsKey(dl.location)) dict.Add(dl.location, false);
-			}
-
-			return dict;
 		}
 
 		#endregion
