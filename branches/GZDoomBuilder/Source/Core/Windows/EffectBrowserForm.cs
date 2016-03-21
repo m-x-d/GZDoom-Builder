@@ -54,16 +54,12 @@ namespace CodeImp.DoomBuilder.Windows
 			Label[] optionlbls = { option0label, option1label, option2label, option3label, 
 								   option4label, option5label, option6label, option7label };
 			
-			// Go for all predefined effects
-			bool selected = CreateEffects(effect); //mxd
-			allitems = new ListViewItem[effects.Items.Count]; //mxd
-			effects.Items.CopyTo(allitems, 0); //mxd
-			
 			// Using generalized effects?
+			int nongeneralizedeffect = effect; //mxd
 			if(General.Map.Config.GeneralizedEffects)
 			{
-				// Go for all options
-				for(int i = 0; i < MAX_OPTIONS; i++)
+				// Go for all options, bigger steps first (mxd)
+				for(int i = MAX_OPTIONS - 1; i > -1; i--)
 				{
 					// Option used in selected category?
 					if(i < General.Map.Config.GenEffectOptions.Count)
@@ -88,6 +84,7 @@ namespace CodeImp.DoomBuilder.Windows
 								if((effect & ab.Index) == ab.Index)
 								{
 									options[i].SelectedItem = ab;
+									nongeneralizedeffect -= ab.Index; //mxd
 									if(ab.Index > 0) break; //mxd
 								}
 							}
@@ -100,15 +97,20 @@ namespace CodeImp.DoomBuilder.Windows
 						optionlbls[i].Visible = false;
 					}
 				}
-				
-				// Open the generalized tab when given effect is generalized
-				if(!selected) tabs.SelectedTab = tabgeneralized;
 			}
 			else
 			{
 				// Remove generalized tab
 				tabs.TabPages.Remove(tabgeneralized);
 			}
+
+			//mxd. Go for all predefined effects
+			bool selected = CreateEffects(nongeneralizedeffect) && General.Map.Config.GeneralizedEffects; //mxd
+			allitems = new ListViewItem[effects.Items.Count]; //mxd
+			effects.Items.CopyTo(allitems, 0); //mxd
+
+			// Open the generalized tab when given effect is generalized
+			if(!selected && General.Map.Config.GeneralizedEffects) tabs.SelectedTab = tabgeneralized;
 		}
 		
 		// This browses for an effect
@@ -193,19 +195,16 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			// Presume no result
 			selectedeffect = 0;
-			
-			// Predefined action?
-			if(tabs.SelectedTab == tabeffects)
+
+			//mxd. Add predefined effect?
+			if((effects.SelectedItems.Count > 0) && (effects.SelectedItems[0].Tag is SectorEffectInfo))
 			{
-				// Effect selected?
-				if((effects.SelectedItems.Count > 0) && (effects.SelectedItems[0].Tag is SectorEffectInfo))
-				{
-					// Our result
-					selectedeffect = ((SectorEffectInfo)effects.SelectedItems[0].Tag).Index;
-				}
+				// Our result
+				selectedeffect = ((SectorEffectInfo)effects.SelectedItems[0].Tag).Index;
 			}
-			// Generalized action
-			else
+
+			//mxd. Add generalized effects? (Don't add when "Any effect" is selected)
+			if(selectedeffect != -1 && General.Map.Config.GeneralizedEffects)
 			{
 				// Go for all options
 				for(int i = 0; i < MAX_OPTIONS; i++)

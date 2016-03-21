@@ -1,4 +1,5 @@
-﻿using CodeImp.DoomBuilder.Config;
+﻿using System;
+using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Types;
 
@@ -12,13 +13,13 @@ namespace CodeImp.DoomBuilder.TagExplorer
 		private readonly int action;
 		private readonly int tag;
 		private readonly int polyobjnumber;
-		private readonly string defaultName;
+		private readonly string defaultname;
 
 		public int Index { get { return index; } }
 		public int Tag { get { return tag; } }
 		public int PolyobjectNumber { get { return polyobjnumber; } }
 		public int Action { get { return action; } }
-		public string DefaultName { get { return defaultName; } }
+		public string DefaultName { get { return defaultname; } }
 		public NodeInfoType Type { get { return type; } }
 		public string Comment { get { return GetComment(); } set { SetComment(value); } }
 
@@ -31,10 +32,10 @@ namespace CodeImp.DoomBuilder.TagExplorer
 			tag = t.Tag;
 			polyobjnumber = ((t.Type > 9299 && t.Type < 9304) ? t.AngleDoom : int.MinValue);
 			ThingTypeInfo tti = General.Map.Data.GetThingInfoEx(t.Type);
-			defaultName = (tti != null ? tti.Title : "Thing");
+			defaultname = (tti != null ? tti.Title : "Thing");
 		}
 
-		public NodeInfo(Sector s, int tagindex) 
+		public NodeInfo(Sector s, int tagindex)
 		{
 			type = NodeInfoType.SECTOR;
 			index = s.Index;
@@ -42,13 +43,11 @@ namespace CodeImp.DoomBuilder.TagExplorer
 			tag = s.Tags[tagindex];
 			
 			if(General.Map.Config.SectorEffects.ContainsKey(action))
-			{
-				defaultName = General.Map.Config.SectorEffects[action].Title;
-			}
+				defaultname = General.Map.Config.SectorEffects[action].Title;
+			else if(action > 0)
+				defaultname = General.Map.Config.GetGeneralizedSectorEffectName(action);
 			else
-			{
-				defaultName = "Sector";
-			}
+				defaultname = "Sector";
 		}
 
 		public NodeInfo(Linedef l, int tagindex) 
@@ -59,13 +58,44 @@ namespace CodeImp.DoomBuilder.TagExplorer
 			tag = l.Tags[tagindex];
 			polyobjnumber = ((l.Action > 0 && l.Action < 9) ? l.Args[0] : int.MinValue);
 			
-			if(General.Map.Config.LinedefActions.ContainsKey(l.Action))
-			{
-				defaultName = General.Map.Config.LinedefActions[l.Action].Title;
-			}
+			if(General.Map.Config.LinedefActions.ContainsKey(action))
+				defaultname = General.Map.Config.LinedefActions[action].Title;
+			else if(action > 0 && GameConfiguration.IsGeneralized(action))
+				defaultname = "Generalized (" + General.Map.Config.GetGeneralizedActionCategory(action) + ")";
 			else
+				defaultname = "Linedef";
+		}
+
+		// Copy constructor
+		public NodeInfo(NodeInfo other, int neweffect)
+		{
+			this.type = other.type;
+			this.index = other.index;
+			this.action = neweffect;
+			this.tag = other.tag;
+			this.polyobjnumber = other.polyobjnumber;
+
+			switch(type)
 			{
-				defaultName = "Linedef";
+				case NodeInfoType.LINEDEF:
+					if(General.Map.Config.LinedefActions.ContainsKey(action))
+						defaultname = General.Map.Config.LinedefActions[action].Title;
+					else if(action > 0 && GameConfiguration.IsGeneralized(action))
+						defaultname = "Generalized (" + General.Map.Config.GetGeneralizedActionCategory(action) + ")";
+					else
+						defaultname = "Linedef";
+					break;
+
+				case NodeInfoType.SECTOR:
+					if(General.Map.Config.SectorEffects.ContainsKey(action))
+						defaultname = General.Map.Config.SectorEffects[action].Title;
+					else if(action > 0)
+						defaultname = General.Map.Config.GetGeneralizedSectorEffectName(action);
+					else
+						defaultname = "Sector";
+					break;
+
+				default: throw new NotImplementedException("Not implemented...");
 			}
 		}
 
@@ -165,7 +195,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
 
 		private string CombineName(string comment, string sortmode)
 		{
-			string name = (!string.IsNullOrEmpty(comment) ? comment : defaultName);
+			string name = (!string.IsNullOrEmpty(comment) ? comment : defaultname);
 
 			switch(sortmode) 
 			{
@@ -179,7 +209,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
 					return (action > 0 ? "Action " + action + ": " : "") + name + ", Index " + index;
 
 				case SortMode.SORT_BY_POLYOBJ_NUMBER:
-					return "PO " + polyobjnumber + ": " + defaultName + ", Index " + index;
+					return "PO " + polyobjnumber + ": " + defaultname + ", Index " + index;
 
 				default:
 					return name;

@@ -39,6 +39,8 @@ namespace CodeImp.DoomBuilder.Config
 		// Properties
 		private string name;
 		private List<GeneralizedBit> bits;
+		private int bitstep; //mxd
+		public int BitsStep { get { return bitstep; } } // mxd. Each subsequent value is incremented  by this number
 		
 		#endregion
 
@@ -82,6 +84,20 @@ namespace CodeImp.DoomBuilder.Config
 			
 			// Sort the list
 			bits.Sort();
+
+			//mxd. Determine and check increment steps
+			if(bits.Count > 1)
+			{
+				// Use the second bit as the structure's step
+				bitstep = bits[1].Index; 
+				
+				// Check the rest of the values
+				for(int i = 1; i < bits.Count; i++)
+				{
+					if(bits[i].Index - bits[i - 1].Index != bitstep)
+						General.ErrorLogger.Add(ErrorType.Warning, "Structure \"" + fullpath + "." + name + "\" contains options with mixed increments (option \"" + bits[i].Title + "\" increment (" + (bits[i - 1].Index - bits[i].Index) + ") doesn't match the structure increment (" + bitstep + ")).");
+				}
+			}
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);

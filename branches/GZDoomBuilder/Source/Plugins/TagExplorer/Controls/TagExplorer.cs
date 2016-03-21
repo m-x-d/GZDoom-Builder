@@ -39,11 +39,19 @@ namespace CodeImp.DoomBuilder.TagExplorer
 	
 	public sealed partial class TagExplorer : UserControl
 	{
+		private struct SectorEffectData
+		{
+			public int Effect; //1024
+			public string CategoryName; // "Secret"
+			public string EffectName; // "Secret: Yes"
+			public bool IsGeneralized;
+		}
+		
 		private const string DISPLAY_TAGS_AND_ACTIONS = "Tags and Action Specials";
 		private const string DISPLAY_TAGS = "Tags";
 		private const string DISPLAY_ACTIONS = "Action Specials";
 		private const string DISPLAY_POLYOBJECTS = "Polyobjects";
-		private readonly object[] DISPLAY_MODES = new object[] { DISPLAY_TAGS_AND_ACTIONS, DISPLAY_TAGS, DISPLAY_ACTIONS, DISPLAY_POLYOBJECTS };
+		private readonly object[] DISPLAY_MODES = { DISPLAY_TAGS_AND_ACTIONS, DISPLAY_TAGS, DISPLAY_ACTIONS, DISPLAY_POLYOBJECTS };
 		
 		private string currentDisplayMode;
 		private string currentSortMode;
@@ -356,10 +364,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
 					}
 				}
 
-				//sort nodes
-				Sort(ref nodes, currentSortMode);
-
-				//add category
+				// Add category
 				if(nodes.Count > 0) 
 				{
 					switch(currentSortMode)
@@ -371,25 +376,89 @@ namespace CodeImp.DoomBuilder.TagExplorer
 
 							foreach(TreeNode node in nodes) 
 							{
-								NodeInfo nodeInfo = node.Tag as NodeInfo;
+								NodeInfo info = node.Tag as NodeInfo;
 
-								if(nodeInfo.Action == 0) 
+								if(info.Action == 0) 
 								{
 									noAction.Nodes.Add(node);
 									continue;
 								}
 
-								SectorEffectInfo sei = General.Map.Config.GetSectorEffectInfo(nodeInfo.Action);
-
-								if(!categories.ContainsKey(sei.Index))
-									categories.Add(sei.Index, new TreeNode(sei.Index + " - " + sei.Title, 2, 2, new[] { node }));
+								List<SectorEffectData> effects = GetSectorEffects(info.Action);
+								if(effects.Count == 1 && !effects[0].IsGeneralized)
+								{
+									// The first node is already has all relevant data. Just add it
+									if(!categories.ContainsKey(effects[0].Effect))
+									{
+										TreeNode catnode = new TreeNode(effects[0].Effect + " - " + effects[0].CategoryName, 2, 2, new[] {node});
+										catnode.Tag = effects[0].Effect;
+										categories.Add(effects[0].Effect, catnode);
+									}
+									else
+									{
+										categories[effects[0].Effect].Nodes.Add(node);
+									}
+								}
 								else
-									categories[sei.Index].Nodes.Add(node);
-							}
-							TreeNode[] catNodes = new TreeNode[categories.Values.Count];
-							categories.Values.CopyTo(catNodes, 0);
+								{
+									// Add generalized effects
+									foreach(SectorEffectData data in effects)
+									{
+										// Create NodeInfo for each effect... 
+										NodeInfo geninfo = new NodeInfo(info, data.Effect);
+										
+										// Copy the initial node, otherwise it won't be added several times
+										string name = geninfo.GetName(ref comment, currentSortMode);
+										TreeNode nodecopy = new TreeNode(name, node.ImageIndex, node.SelectedImageIndex)
+										{
+											Tag = geninfo,
+											ToolTipText = node.ToolTipText
+										};
 
-							TreeNode category = new TreeNode(CAT_SECTORS, 2, 2, catNodes);
+										if(!categories.ContainsKey(data.Effect))
+										{
+											TreeNode catnode = new TreeNode(data.Effect + " - " + data.CategoryName, 2, 2, new[] {nodecopy});
+											catnode.Tag = data.Effect;
+											categories.Add(data.Effect, catnode);
+										}
+										else
+										{
+											categories[data.Effect].Nodes.Add(nodecopy);
+										}
+									}
+								}
+							}
+
+							// Because of generalized effects shenanigans, category and nodes resortings are required...
+							TreeNode[] catnodes = new TreeNode[categories.Values.Count];
+							categories.Values.CopyTo(catnodes, 0);
+
+							// Sort categories
+							Array.Sort(catnodes, delegate(TreeNode t1, TreeNode t2)
+							{
+								int effect1 = (int)t1.Tag;
+								int effect2 = (int)t2.Tag;
+
+								if(effect1 > effect2)  return 1;
+								if(effect1 == effect2) return 0;
+								return -1;
+							});
+
+							// Sort nodes
+							foreach(TreeNode n in catnodes)
+							{
+								if(n.Nodes.Count > 0)
+								{
+									List<TreeNode> tosort = new List<TreeNode>(n.Nodes.Count);
+									foreach(TreeNode nn in n.Nodes) tosort.Add(nn);
+									Sort(ref tosort, currentSortMode);
+
+									n.Nodes.Clear();
+									n.Nodes.AddRange(tosort.ToArray());
+								}
+							}
+
+							TreeNode category = new TreeNode(CAT_SECTORS, 2, 2, catnodes);
 							if(noAction.Nodes.Count > 0) category.Nodes.Add(noAction);
 
 							treeView.Nodes.Add(category);
@@ -400,6 +469,9 @@ namespace CodeImp.DoomBuilder.TagExplorer
 						{
 							Dictionary<int, TreeNode> categories = new Dictionary<int, TreeNode>();
 							TreeNode noTag = new TreeNode("No Tag", 2, 2);
+
+							// Sort nodes
+							Sort(ref nodes, currentSortMode);
 
 							foreach(TreeNode node in nodes) 
 							{
@@ -435,6 +507,9 @@ namespace CodeImp.DoomBuilder.TagExplorer
 						break;
 
 						default:
+							// Sort nodes
+							Sort(ref nodes, currentSortMode);
+
 							treeView.Nodes.Add(new TreeNode(CAT_SECTORS, 2, 2, nodes.ToArray()));
 							break;
 					}
@@ -513,7 +588,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
 
 								LinedefActionInfo lai = General.Map.Config.GetLinedefActionInfo(nodeInfo.Action);
 
-								if(!categories.ContainsKey(lai.Index)) categories.Add(lai.Index, new TreeNode(lai.Index + " - " + lai.Name, 4, 4, new[] { node }));
+								if(!categories.ContainsKey(lai.Index)) categories.Add(lai.Index, new TreeNode(lai.Index + " - " + lai.Title, 4, 4, new[] { node }));
 								else categories[lai.Index].Nodes.Add(node);
 							}
 							TreeNode[] catNodes = new TreeNode[categories.Values.Count];
@@ -707,6 +782,79 @@ namespace CodeImp.DoomBuilder.TagExplorer
 			if(i1.PolyobjectNumber == i2.PolyobjectNumber)
 				return String.CompareOrdinal(i1.DefaultName, i2.DefaultName);
 			return -1;
+		}
+
+		// This returns information on a sector effect
+		private static List<SectorEffectData> GetSectorEffects(int effect)
+		{
+			List<SectorEffectData> result = new List<SectorEffectData>(1);
+			
+			// No effect?
+			if(effect == 0)
+			{
+				result.Add(new SectorEffectData { Effect = 0, CategoryName = "None", EffectName = "None" });
+			}
+			// Known effect?
+			else if(General.Map.Config.SectorEffects.ContainsKey(effect))
+			{
+				string title = General.Map.Config.SectorEffects[effect].Title;
+				result.Add(new SectorEffectData { Effect = effect, CategoryName = title, EffectName = title });
+			}
+			else
+			{
+				// Generalized effect(s)?
+				int initialeffect = effect;
+
+				// Check all effects, in bigger to smaller order
+				for(int i = General.Map.Config.GenEffectOptions.Count - 1; i > -1; i--)
+				{
+					for(int j = General.Map.Config.GenEffectOptions[i].Bits.Count - 1; j > -1; j--)
+					{
+						GeneralizedBit bit = General.Map.Config.GenEffectOptions[i].Bits[j];
+						if(bit.Index > 0 && (effect & bit.Index) == bit.Index)
+						{
+							initialeffect -= bit.Index;
+							result.Add(new SectorEffectData
+							           {
+								           Effect = bit.Index, 
+										   CategoryName = General.Map.Config.GenEffectOptions[i].Name, 
+										   EffectName = General.Map.Config.GenEffectOptions[i].Name + ": " + bit.Title, 
+										   IsGeneralized = true,
+							           });
+							break;
+						}
+					}
+				}
+
+				// Add combined effect?
+				if(result.Count > 0 && initialeffect > 0)
+				{
+					string combinedeffect = General.Map.Config.GetGeneralizedSectorEffectName(effect);
+					result.Add(new SectorEffectData { Effect = effect, CategoryName = combinedeffect, EffectName = combinedeffect + ": " + effect, });
+				}
+
+				if(initialeffect > 0)
+				{
+					// Insert non-generalized effect as the first one
+					if(General.Map.Config.SectorEffects.ContainsKey(initialeffect))
+					{
+						string title = General.Map.Config.SectorEffects[initialeffect].Title;
+						result.Insert(0, new SectorEffectData { Effect = initialeffect, CategoryName = title, EffectName = title });
+					}
+					else
+					{
+						// Unknown effect...
+						result.Insert(0, new SectorEffectData { Effect = initialeffect, CategoryName = "Unknown", EffectName = "Unknown" });
+					}
+				}
+				else if(result.Count == 0)
+				{
+					// Unknown effect...
+					result.Add(new SectorEffectData { Effect = effect, CategoryName = "Unknown", EffectName = "Unknown" });
+				}
+			}
+
+			return result;
 		}
 
 		#endregion

@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Map;
 
@@ -801,8 +802,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(flags.CeilingTexture && source.CeilTexture != target.CeilTexture) return false;
 			if(flags.Brightness && source.Brightness != target.Brightness) return false;
 			if(flags.Tag && !TagsMatch(source.Tags, target.Tags)) return false;
-			if(flags.Special && source.Effect != target.Effect) return false;
 			if(flags.Flags && !FlagsMatch(source.GetFlags(), target.GetFlags())) return false;
+
+			// Generalized effects require more tender loving care...
+			if(flags.Special && source.Effect != target.Effect)
+			{
+				if(!General.Map.Config.GeneralizedEffects || source.Effect == 0 || target.Effect == 0) return false;
+
+				// Get effect bits...
+				HashSet<int> sourcebits = GameConfiguration.GetGeneralizedSectorEffectBits(source.Effect);
+				HashSet<int> targetbits = GameConfiguration.GetGeneralizedSectorEffectBits(target.Effect);
+				
+				// No bits match when at least one effect is not generalized, or when bits don't overlap 
+				if(sourcebits.Count == 0 || targetbits.Count == 0 || !sourcebits.Overlaps(targetbits)) return false;
+			}
+
 			if(!General.Map.UDMF) return true;
 
 			// UI fields
@@ -838,7 +852,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Built-in properties
 			if(linedefflags.Action && source.Action != target.Action) return false;
 			if(linedefflags.Activation && source.Activate != target.Activate) return false;
-			if(linedefflags.Tag && !TagsMatch(source.Tags, target.Tags)) return false; //mxd
+			if(linedefflags.Tag && !TagsMatch(source.Tags, target.Tags)) return false;
 			if(linedefflags.Arguments) 
 			{
 				// Classic args

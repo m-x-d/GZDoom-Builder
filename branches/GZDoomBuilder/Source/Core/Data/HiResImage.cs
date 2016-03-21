@@ -39,11 +39,7 @@ namespace CodeImp.DoomBuilder.Data
 			this.scale.y = General.Map.Config.DefaultTextureScale;
 			this.sourcescale = scale;
 			this.sourcesize = Size.Empty;
-
-			if(name.Length > DataManager.CLASIC_IMAGE_NAME_LENGTH)
-				name = name.Substring(0, DataManager.CLASIC_IMAGE_NAME_LENGTH);
-
-			SetName(name.ToUpperInvariant());
+			SetName(name);
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -57,7 +53,13 @@ namespace CodeImp.DoomBuilder.Data
 			this.sourcescale = other.sourcescale;
 			this.sourcesize = other.sourcesize;
 
-			SetName(other.name);
+			// Copy names
+			this.name = other.name;
+			this.filepathname = other.filepathname;
+			this.virtualname = other.virtualname;
+			this.displayname = other.displayname;
+			this.shortname = other.shortname;
+			this.longname = other.longname;
 
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -66,6 +68,22 @@ namespace CodeImp.DoomBuilder.Data
 		#endregion
 
 		#region ================== Methods
+
+		protected override void SetName(string name)
+		{
+			name = name.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+
+			this.filepathname = name;
+			this.name = Path.GetFileNameWithoutExtension(name.ToUpperInvariant());
+			if(this.name.Length > DataManager.CLASIC_IMAGE_NAME_LENGTH)
+			{
+				this.name = this.name.Substring(0, DataManager.CLASIC_IMAGE_NAME_LENGTH);
+			}
+			this.virtualname = this.name;
+			this.displayname = this.name;
+			this.shortname = this.name;
+			this.longname = Lump.MakeLongName(this.name);
+		}
 
 		internal void ApplySettings(ImageData overridden)
 		{
@@ -120,7 +138,7 @@ namespace CodeImp.DoomBuilder.Data
 					// Not loaded?
 					if(bitmap == null)
 					{
-						General.ErrorLogger.Add(ErrorType.Error, "Image lump \"" + Path.Combine(sourcelocation, shortname) + "\" data format could not be read, while loading HiRes texture \"" + this.Name + "\". Does this lump contain valid picture data at all?");
+						General.ErrorLogger.Add(ErrorType.Error, "Image lump \"" + Path.Combine(sourcelocation, filepathname.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar)) + "\" data format could not be read, while loading HiRes texture \"" + this.Name + "\". Does this lump contain valid picture data at all?");
 						loadfailed = true;
 					}
 					else
@@ -134,9 +152,13 @@ namespace CodeImp.DoomBuilder.Data
 						{
 							scale = new Vector2D(ScaledWidth / width, ScaledHeight / height);
 						}
-						else if(overridesettingsapplied)
+						else 
 						{
-							General.ErrorLogger.Add(ErrorType.Warning, "Unable to get source texture dimensions while loading HiRes texture \"" + this.Name + "\".");
+							if(overridesettingsapplied)
+								General.ErrorLogger.Add(ErrorType.Warning, "Unable to get source texture dimensions while loading HiRes texture \"" + this.Name + "\".");
+
+							// Use our own size...
+							sourcesize = new Size(width, height);
 						}
 					}
 
