@@ -289,6 +289,9 @@
     <Compile Include="FindReplace\FindSectorFloorFlat.cs" />
     <Compile Include="FindReplace\FindSectorFloorHeight.cs" />
     <Compile Include="FindReplace\FindSidedefFlags.cs" />
+    <Compile Include="FindReplace\FindSidedefLowerTexture.cs" />
+    <Compile Include="FindReplace\FindSidedefMiddleTexture.cs" />
+    <Compile Include="FindReplace\FindSidedefUpperTexture.cs" />
     <Compile Include="FindReplace\FindThingAngle.cs" />
     <Compile Include="FindReplace\FindAnyTextureFlat.cs" />
     <Compile Include="FindReplace\FindThingFlags.cs" />
