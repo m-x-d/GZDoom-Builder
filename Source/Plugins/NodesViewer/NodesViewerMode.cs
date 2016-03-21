@@ -151,10 +151,10 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 			segs = new Seg[numsegs];
 			for(int i = 0; i < segs.Length; i++)
 			{
-				segs[i].startvertex = segsreader.ReadInt16();
-				segs[i].endvertex = segsreader.ReadInt16();
-				segs[i].angle = Angle2D.DoomToReal(segsreader.ReadInt16());
-				segs[i].lineindex = segsreader.ReadInt16();
+				segs[i].startvertex = segsreader.ReadUInt16();
+				segs[i].endvertex = segsreader.ReadUInt16();
+				segs[i].angle = Angle2D.DegToRad(General.ClampAngle(segsreader.ReadInt16() / 182 + 90)); //mxd 182 == 65536 / 360; 
+				segs[i].lineindex = segsreader.ReadUInt16();
 				segs[i].leftside = segsreader.ReadInt16() != 0;
 				segs[i].offset = segsreader.ReadInt16();
 			}
@@ -220,10 +220,10 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 		//mxd. This loads all data from the ZNODES lump
 		private bool LoadZNodes() 
 		{
-			List<string> supportedFormats = new List<string> { "XNOD", "XGLN", "XGL2", "XGL3" };
+			List<string> supportedformats = new List<string> { "XNOD", "XGLN", "XGL2", "XGL3" };
 			MemoryStream stream = General.Map.GetLumpData("ZNODES");
 
-			//boilerplate...
+			// Boilerplate...
 			if(stream.Length < 4) 
 			{
 				MessageBox.Show("ZNODES lump is empty.", "Nodes Viewer mode", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -233,39 +233,39 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 
 			using(BinaryReader reader = new BinaryReader(stream)) 
 			{
-				//read signature
+				// Read signature
 				nodesformat = new string(reader.ReadChars(4));
-				if(!supportedFormats.Contains(nodesformat)) 
+				if(!supportedformats.Contains(nodesformat)) 
 				{
 					MessageBox.Show("\"" + nodesformat + "\" node format is not supported.", "Nodes Viewer mode", MessageBoxButtons.OK, MessageBoxIcon.Error);
 					return false;
 				}
 
-				uint vertsCount = reader.ReadUInt32();
-				uint newVertsCount = reader.ReadUInt32();
+				uint vertscount = reader.ReadUInt32();
+				uint newvertscount = reader.ReadUInt32();
 
-				//boilerplate...
-				if(vertsCount != General.Map.Map.Vertices.Count) 
+				// Boilerplate...
+				if(vertscount != General.Map.Map.Vertices.Count) 
 				{
-					MessageBox.Show("Error while reading ZNODES: vertices count in ZNODES lump (" + vertsCount + ") doesn't match with map's vertices count (" + General.Map.Map.Vertices.Count + ")!", "Nodes Viewer mode", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					MessageBox.Show("Error while reading ZNODES: vertices count in ZNODES lump (" + vertscount + ") doesn't match with map's vertices count (" + General.Map.Map.Vertices.Count + ")!", "Nodes Viewer mode", MessageBoxButtons.OK, MessageBoxIcon.Error);
 					return false;
 				}
 
-				//add map vertices
-				verts = new Vector2D[vertsCount + newVertsCount];
+				// Add map vertices
+				verts = new Vector2D[vertscount + newvertscount];
 				int counter = 0;
 				foreach(Vertex v in General.Map.Map.Vertices) verts[counter++] = v.Position;
 
-				//read extra vertices
-				for(int i = counter; i < counter + newVertsCount; i++) 
+				// Read extra vertices
+				for(int i = counter; i < counter + newvertscount; i++) 
 				{
 					verts[i].x = reader.ReadInt32() / 65536.0f;
 					verts[i].y = reader.ReadInt32() / 65536.0f;
 				}
 
-				//read subsectors
-				uint ssecCount = reader.ReadUInt32();
-				ssectors = new Subsector[ssecCount];
+				// Read subsectors
+				uint sseccount = reader.ReadUInt32();
+				ssectors = new Subsector[sseccount];
 
 				int firstseg = 0;
 				for(int i = 0; i < ssectors.Length; i++) 
@@ -275,9 +275,9 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 					firstseg += ssectors[i].numsegs;
 				}
 
-				//read segments. offset and angle are unused anyway
-				uint segsCount = reader.ReadUInt32();
-				segs = new Seg[segsCount];
+				// Read segments. Offset and angle are unused anyway
+				uint segscount = reader.ReadUInt32();
+				segs = new Seg[segscount];
 
 				switch(nodesformat) 
 				{
@@ -314,20 +314,20 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 						break;
 				}
 
-				//set second vertex, angle and reverse segs order
+				// Set second vertex, angle and reverse segs order
 				if(nodesformat == "XGLN" || nodesformat == "XGL2" || nodesformat == "XGL3") 
 				{
 					int index = 0;
 					foreach(Subsector ss in ssectors) 
 					{
-						//set the last vert
+						// Set the last vert
 						int lastseg = ss.firstseg + ss.numsegs - 1;
 						segs[lastseg].endvertex = segs[ss.firstseg].startvertex;
 
-						//set the rest
+						// Set the rest
 						for(int i = ss.firstseg + 1; i <= lastseg; i++) segs[i - 1].endvertex = segs[i].startvertex;
 
-						//set angle and subsector index
+						// Set angle and subsector index
 						for(int i = ss.firstseg; i <= lastseg; i++) 
 						{
 							segs[i].angle = Vector2D.GetAngle(verts[segs[i].endvertex], verts[segs[i].startvertex]);
@@ -338,17 +338,17 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 					}
 				}
 
-				//read nodes
-				uint nodesCount = reader.ReadUInt32();
+				// Read nodes
+				uint nodescount = reader.ReadUInt32();
 
-				//boilerplate...
-				if(nodesCount < 1) 
+				// Boilerplate...
+				if(nodescount < 1) 
 				{
 					MessageBox.Show("The map has only one subsector.", "Why are you doing this, Stanley?..", MessageBoxButtons.OK, MessageBoxIcon.Error);
 					return false;
 				}
 
-				nodes = new Node[nodesCount];
+				nodes = new Node[nodescount];
 
 				for(int i = 0; i < nodes.Length; i++) 
 				{

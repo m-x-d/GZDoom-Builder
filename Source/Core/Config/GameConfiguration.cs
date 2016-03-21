@@ -23,7 +23,6 @@ using System.Globalization;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Editing;
-
 using CodeImp.DoomBuilder.GZBuilder.Data;
 using CodeImp.DoomBuilder.Data;
 
@@ -719,7 +718,7 @@ namespace CodeImp.DoomBuilder.Config
 			IDictionary dic = cfg.ReadSetting("sectortypes", new Hashtable());
 			foreach(DictionaryEntry de in dic)
 			{
-				// Try paring the action number
+				// Try parsing the action number
 				int actionnumber;
 				if(int.TryParse(de.Key.ToString(),
 					NumberStyles.AllowLeadingWhite | NumberStyles.AllowTrailingWhite,
@@ -775,10 +774,11 @@ namespace CodeImp.DoomBuilder.Config
 			foreach(DictionaryEntry de in dic)
 			{
 				// Check for valid structure
-				if(de.Value is IDictionary)
+				IDictionary value = de.Value as IDictionary;
+				if(value != null)
 				{
 					// Add option
-					geneffectoptions.Add(new GeneralizedOption("gen_sectortypes", "", de.Key.ToString(), (IDictionary)de.Value));
+					geneffectoptions.Add(new GeneralizedOption("gen_sectortypes", "", de.Key.ToString(), value));
 				}
 				else
 				{
@@ -1001,7 +1001,8 @@ namespace CodeImp.DoomBuilder.Config
 		}
 		
 		// This checks if an action is generalized or predefined
-		public static bool IsGeneralized(int action, List<GeneralizedCategory> categories)
+		public static bool IsGeneralized(int action) { return IsGeneralized(action, General.Map.Config.GenActionCategories); }
+		public static bool IsGeneralized(int action, IEnumerable<GeneralizedCategory> categories)
 		{
 			// Only actions above 0
 			if(action > 0)
@@ -1037,14 +1038,18 @@ namespace CodeImp.DoomBuilder.Config
 		}
 
 		//mxd
-		public static bool IsGeneralizedSectorEffect(int effect, IEnumerable<GeneralizedOption> options) 
+		public static bool IsGeneralizedSectorEffect(int effect, List<GeneralizedOption> options) 
 		{
 			if(effect == 0) return false;
-			foreach(GeneralizedOption option in options) 
+
+			int cureffect = effect;
+			for(int i = options.Count - 1; i > -1; i--)
 			{
-				foreach(GeneralizedBit bit in option.Bits) 
+				for(int j = options[i].Bits.Count - 1; j > -1; j--)
 				{
-					if(bit.Index > 0 && (effect & bit.Index) == bit.Index) return true;
+					GeneralizedBit bit = options[i].Bits[j];
+					if(bit.Index > 0 && (cureffect & bit.Index) == bit.Index) return true;
+					cureffect -= bit.Index;
 				}
 			}
 
@@ -1052,26 +1057,69 @@ namespace CodeImp.DoomBuilder.Config
 		}
 
 		//mxd
+		public static HashSet<int> GetGeneralizedSectorEffectBits(int effect) { return GetGeneralizedSectorEffectBits(effect, General.Map.Config.GenEffectOptions); }
+		public static HashSet<int> GetGeneralizedSectorEffectBits(int effect, List<GeneralizedOption> options)
+		{
+			HashSet<int> result = new HashSet<int>();
+			if(effect > 0)
+			{
+				int cureffect = effect;
+				for(int i = options.Count - 1; i > -1; i--)
+				{
+					for(int j = options[i].Bits.Count - 1; j > -1; j--)
+					{
+						GeneralizedBit bit = options[i].Bits[j];
+						if(bit.Index > 0 && (cureffect & bit.Index) == bit.Index)
+						{
+							cureffect -= bit.Index;
+							result.Add(bit.Index);
+						}
+					}
+				}
+
+				if(cureffect > 0) result.Add(cureffect);
+			}
+
+			return result;
+		}
+
+		//mxd
 		public string GetGeneralizedSectorEffectName(int effect) 
 		{
 			if(effect == 0) return "None";
-			string title = "Unknown";
+			string title = "Unknown generalized effect";
 			int matches = 0;
 
-			foreach(GeneralizedOption option in geneffectoptions) 
+			int nongeneralizedeffect = effect;
+
+			// Check all options, in bigger to smaller order
+			for(int i = geneffectoptions.Count - 1; i > -1; i--)
 			{
-				foreach(GeneralizedBit bit in option.Bits) 
+				for(int j = geneffectoptions[i].Bits.Count - 1; j > -1; j--)
 				{
-					if(bit.Index > 0 && (effect & bit.Index) == bit.Index) 
+					GeneralizedBit bit = geneffectoptions[i].Bits[j];
+					if(bit.Index > 0 && (effect & bit.Index) == bit.Index)
 					{
-						title = option.Name + ": " + bit.Title;
+						title = geneffectoptions[i].Name + ": " + bit.Title;
+						nongeneralizedeffect -= bit.Index;
 						matches++;
 						break;
 					}
 				}
 			}
 
-			return (matches > 1 ? "Generalized (" + matches + " effects)" : title);
+			// Make generalized effect title
+			string gentitle = (matches > 1 ? "Generalized (" + matches + " effects)" : title);
+			
+			// Generalized effect only
+			if(nongeneralizedeffect <= 0) return gentitle;
+
+			// Classic and generalized effects
+			if(General.Map.Config.SectorEffects.ContainsKey(nongeneralizedeffect))
+				return General.Map.Config.SectorEffects[nongeneralizedeffect].Title + " + " + gentitle;
+
+			if(matches > 0) return "Unknown effect + " + gentitle;
+			return "Unknown effect";
 		}
 		
 		// This checks if a specific edit mode class is listed

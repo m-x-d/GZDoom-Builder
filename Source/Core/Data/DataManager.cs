@@ -1384,8 +1384,15 @@ namespace CodeImp.DoomBuilder.Data
 
 						if(!replaced)
 						{
-							General.ErrorLogger.Add(ErrorType.Warning, "HiRes texture \"" + Path.Combine(dr.Location.GetDisplayName(), img.FilePathName) + "\" does not override any existing texture or flat.");
+							General.ErrorLogger.Add(ErrorType.Warning, "HiRes texture \"" + Path.Combine(dr.Location.GetDisplayName(), img.FilePathName.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar)) + "\" does not override any existing texture or flat.");
 							dr.TextureSet.AddTexture(img);
+
+							// Add to textures and flats
+							textures[img.LongName] = img;
+							flats[img.LongName] = img;
+
+							// Add to preview manager
+							previews.AddImage(img);
 						}
 
 						counter++;

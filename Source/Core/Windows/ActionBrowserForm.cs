@@ -81,7 +81,13 @@ namespace CodeImp.DoomBuilder.Windows
 
 					// Select category
 					foreach(GeneralizedCategory ac in category.Items)
-						if((action >= ac.Offset) && (action < (ac.Offset + ac.Length))) category.SelectedItem = ac;
+					{
+						if((action >= ac.Offset) && (action < (ac.Offset + ac.Length)))
+						{
+							category.SelectedItem = ac;
+							break; //mxd
+						}
+					}
 
 					// Anything selected?
 					if(category.SelectedIndex > -1)
@@ -89,25 +95,26 @@ namespace CodeImp.DoomBuilder.Windows
 						// Go for all options in selected category
 						GeneralizedCategory sc = category.SelectedItem as GeneralizedCategory;
 						int actionbits = action - sc.Offset;
-						for(int i = 0; i < MAX_OPTIONS; i++)
+						 
+						// Go for all options, bigger steps first (mxd)
+						// INFO: both GeneralizedOptions and GeneralizedBits are incrimentally sorted 
+						for(int i = MAX_OPTIONS - 1; i > -1; i--)
 						{
 							// Option used?
 							if(i < sc.Options.Count)
 							{
-								// Go for all bits
-								foreach(GeneralizedBit ab in sc.Options[i].Bits)
+								// Go for all bits, bigger bits first (mxd)
+								for(int b = sc.Options[i].Bits.Count - 1; b > -1; b--)
 								{
 									// Select this setting if matches
-									if((actionbits & ab.Index) == ab.Index)
+									GeneralizedBit bit = sc.Options[i].Bits[b];
+									if((actionbits & bit.Index) == bit.Index)
 									{
-										options[i].SelectedItem = ab;
-										if(ab.Index > 0) break; //mxd
+										options[i].SelectedItem = bit;
+										actionbits -= bit.Index; //mxd
+										if(bit.Index > 0) break; //mxd
 									}
 								}
-							}
-							else
-							{
-								break; //mxd
 							}
 						}
 					}

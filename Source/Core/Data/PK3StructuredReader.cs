@@ -243,8 +243,7 @@ namespace CodeImp.DoomBuilder.Data
 			List<HiResImage> result = new List<HiResImage>(files.Length);
 			foreach(string f in files)
 			{
-				string name = Path.GetFileNameWithoutExtension(f);
-				if(string.IsNullOrEmpty(name))
+				if(string.IsNullOrEmpty(Path.GetFileNameWithoutExtension(f)))
 				{
 					// Can't load image without name
 					General.ErrorLogger.Add(ErrorType.Error, "Can't load an unnamed HiRes texture from \"" + HIRES_DIR + "\". Please consider giving names to your resources.");
@@ -252,7 +251,7 @@ namespace CodeImp.DoomBuilder.Data
 				else
 				{
 					// Add image to list
-					result.Add(new HiResImage(name));
+					result.Add(new HiResImage(f));
 				}
 			}
 
