@@ -239,14 +239,14 @@ namespace CodeImp.DoomBuilder.Data
 		public override IEnumerable<HiResImage> LoadHiResTextures()
 		{
 			// Go for all files
-			string[] files = GetAllFiles(HIRES_DIR, false);
+			string[] files = GetAllFiles(HIRES_DIR, true);
 			List<HiResImage> result = new List<HiResImage>(files.Length);
 			foreach(string f in files)
 			{
 				if(string.IsNullOrEmpty(Path.GetFileNameWithoutExtension(f)))
 				{
 					// Can't load image without name
-					General.ErrorLogger.Add(ErrorType.Error, "Can't load an unnamed HiRes texture from \"" + HIRES_DIR + "\". Please consider giving names to your resources.");
+					General.ErrorLogger.Add(ErrorType.Error, "Can't load an unnamed HiRes texture from \"" + Path.Combine(this.location.GetDisplayName(), HIRES_DIR) + "\". Please consider giving names to your resources.");
 				}
 				else
 				{

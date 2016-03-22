@@ -214,8 +214,7 @@ namespace CodeImp.DoomBuilder.Data
 			try
 			{
 				// Find in hires directory
-				string path = Path.Combine(HIRES_DIR, Path.GetDirectoryName(name));
-				string filename = FindFirstFile(path, Path.GetFileName(name), false);
+				string filename = FindFirstFile(HIRES_DIR, name, true);
 				if(!string.IsNullOrEmpty(filename) && FileExists(filename))
 				{
 					hireslocation = location.GetDisplayName();

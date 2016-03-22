@@ -244,7 +244,7 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		//mxd. This finds and returns a HiRes textue stream
-		public override Stream GetHiResTextureData(string pname, ref string hireslocation)
+		public override Stream GetHiResTextureData(string name, ref string hireslocation)
 		{
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
@@ -253,12 +253,12 @@ namespace CodeImp.DoomBuilder.Data
 			// Note the backward order, because the last wad's images have priority
 			for(int i = wads.Count - 1; i >= 0; i--)
 			{
-				Stream data = wads[i].GetTextureData(pname, false, ref hireslocation);
+				Stream data = wads[i].GetTextureData(name, false, ref hireslocation);
 				if(data != null) return data;
 			}
 
 			// Find in HiRes directory
-			string filename = FindFirstFile(HIRES_DIR, pname, false);
+			string filename = FindFirstFile(HIRES_DIR, name, true);
 			if(!string.IsNullOrEmpty(filename) && FileExists(filename))
 			{
 				hireslocation = location.GetDisplayName();

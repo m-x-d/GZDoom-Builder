@@ -1356,33 +1356,53 @@ namespace CodeImp.DoomBuilder.Data
 					// Go for all textures
 					foreach(HiResImage img in hiresimages)
 					{
-						bool replaced = false;
+						// Replace when HiRes image name exactly matches a regular texture name, 
+						// or when regular texture filename is 8 or less chars long
+						//bool replaced = false;
 						
 						// Replace texture?
-						if(textures.ContainsKey(img.LongName))
+						long hash = GetFullLongTextureName(img.LongName);
+						if(textures.ContainsKey(hash) && (hash == img.LongName || Path.GetFileNameWithoutExtension(textures[hash].Name).Length <= CLASIC_IMAGE_NAME_LENGTH))
 						{
 							HiResImage replacer = new HiResImage(img);
-							replacer.ApplySettings(textures[img.LongName]);
-							textures[img.LongName] = replacer;
-							replaced = true;
+							replacer.ApplySettings(textures[hash]);
+							textures[hash] = replacer;
+							//replaced = true;
 
 							// Add to preview manager
 							previews.AddImage(replacer);
+							counter++;
 						}
 
 						// Replace flat?
-						if(flats.ContainsKey(img.LongName))
+						hash = GetFullLongFlatName(img.LongName);
+						if(flats.ContainsKey(hash) && (hash == img.LongName || Path.GetFileNameWithoutExtension(flats[hash].Name).Length <= CLASIC_IMAGE_NAME_LENGTH))
 						{
 							HiResImage replacer = new HiResImage(img);
-							replacer.ApplySettings(flats[img.LongName]);
-							flats[img.LongName] = replacer;
-							replaced = true;
+							replacer.ApplySettings(flats[hash]);
+							flats[hash] = replacer;
+							//replaced = true;
 
 							// Add to preview manager
 							previews.AddImage(replacer);
+							counter++;
 						}
 
-						if(!replaced)
+						// Replace sprite?
+						if(sprites.ContainsKey(img.LongName))
+						{
+							HiResImage replacer = new HiResImage(img);
+							replacer.ApplySettings(sprites[img.LongName]);
+							sprites[img.LongName] = replacer;
+							//replaced = true;
+
+							// Add to preview manager
+							previews.AddImage(replacer);
+							counter++;
+						}
+
+						// We don't load any graphics and most of the sprites, so this can result in a ton of false warnings...
+						/*if(!replaced)
 						{
 							General.ErrorLogger.Add(ErrorType.Warning, "HiRes texture \"" + Path.Combine(dr.Location.GetDisplayName(), img.FilePathName.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar)) + "\" does not override any existing texture or flat.");
 							dr.TextureSet.AddTexture(img);
@@ -1395,7 +1415,7 @@ namespace CodeImp.DoomBuilder.Data
 							previews.AddImage(img);
 						}
 
-						counter++;
+						counter++;*/
 					}
 				}
 			}
