@@ -4015,17 +4015,19 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				// Go for all setors
 				bool updated = false;
+				long imgshorthash = General.Map.Data.GetShortLongFlatName(img.LongName); //mxd. Part of long name support shennanigans
+
 				foreach(Sector s in General.Map.Map.Sectors)
 				{
 					// Update floor buffer if needed
-					if(s.LongFloorTexture == img.LongName)
+					if(s.LongFloorTexture == img.LongName || s.LongFloorTexture == imgshorthash)
 					{
 						s.UpdateFloorSurface();
 						updated = true;
 					}
 					
 					// Update ceiling buffer if needed
-					if(s.LongCeilTexture == img.LongName)
+					if(s.LongCeilTexture == img.LongName || s.LongCeilTexture == imgshorthash)
 					{
 						s.UpdateCeilingSurface();
 						updated = true;

@@ -22,6 +22,7 @@ using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
@@ -49,6 +50,7 @@ namespace CodeImp.DoomBuilder.Data
 		public int LumpIndex;   // Text lump index if Resource is wad
 		internal DataReader Resource;
 		public HashSet<string> Entries; // Actors/models/sounds etc.
+		public ScriptType ScriptType;
 
 		public override string ToString()
 		{
@@ -81,6 +83,7 @@ namespace CodeImp.DoomBuilder.Data
 		private List<string> texturenames;
 		private Dictionary<long, ImageData> flats;
 		private Dictionary<long, long> flatnamesshorttofull; //mxd
+		private Dictionary<long, long> flatnamesfulltoshort; //mxd
 		private List<string> flatnames;
 		private Dictionary<long, ImageData> sprites;
 		private List<MatchingTextureSet> texturesets;
@@ -310,6 +313,7 @@ namespace CodeImp.DoomBuilder.Data
 			flatnames = new List<string>();
 			texturenamesshorttofull = new Dictionary<long, long>(); //mxd
 			flatnamesshorttofull = new Dictionary<long, long>(); //mxd
+			flatnamesfulltoshort = new Dictionary<long, long>(); //mxd
 			imageque = new Queue<ImageData>();
 			previews = new PreviewManager();
 			texturesets = new List<MatchingTextureSet>();
@@ -478,6 +482,9 @@ namespace CodeImp.DoomBuilder.Data
 				//mxd
 				foreach(KeyValuePair<long, long> t in texturenamesshorttofull)
 					if(!flatnamesshorttofull.ContainsKey(t.Key)) flatnamesshorttofull.Add(t.Key, t.Value);
+
+				//mxd
+				flatnamesfulltoshort = flatnamesshorttofull.ToDictionary(t => t.Value, t => t.Key); //flatnamesshorttofull.ToDictionary(kp => kp.Value, kp => kp.Key);
 
 				// Add flats to textures
 				foreach(KeyValuePair<long, ImageData> f in flatsonly) 
@@ -1336,6 +1343,12 @@ namespace CodeImp.DoomBuilder.Data
 				return hash; //TEXTURES and HiRes flats should still override regular ones...
 			return (General.Map.Config.UseLongTextureNames && flatnamesshorttofull.ContainsKey(hash) ? flatnamesshorttofull[hash] : hash);
 		}
+
+		//mxd
+		internal long GetShortLongFlatName(long hash)
+		{
+			return (flatnamesfulltoshort.ContainsKey(hash) ? flatnamesfulltoshort[hash] : hash);
+		}
 		
 		#endregion
 
@@ -1366,7 +1379,7 @@ namespace CodeImp.DoomBuilder.Data
 						{
 							HiResImage replacer = new HiResImage(img);
 							replacer.ApplySettings(textures[hash]);
-							textures[hash] = replacer;
+							textures[img.LongName] = replacer;
 							//replaced = true;
 
 							// Add to preview manager
@@ -1380,7 +1393,7 @@ namespace CodeImp.DoomBuilder.Data
 						{
 							HiResImage replacer = new HiResImage(img);
 							replacer.ApplySettings(flats[hash]);
-							flats[hash] = replacer;
+							flats[img.LongName] = replacer;
 							//replaced = true;
 
 							// Add to preview manager
@@ -2594,9 +2607,30 @@ namespace CodeImp.DoomBuilder.Data
 					foreach(Sidedef sd in General.Map.Map.Sidedefs)
 					{
 						// Add used textures to dictionary
-						if(sd.LongHighTexture != MapSet.EmptyLongName) usedtextures[sd.LongHighTexture] = true;
-						if(sd.LongMiddleTexture != MapSet.EmptyLongName) usedtextures[sd.LongMiddleTexture] = true;
-						if(sd.LongLowTexture != MapSet.EmptyLongName) usedtextures[sd.LongLowTexture] = true;
+						if(sd.LongHighTexture != MapSet.EmptyLongName)
+						{
+							usedtextures[sd.LongHighTexture] = true;
+
+							//mxd. Part of long name support shennanigans
+							if(texturenamesshorttofull.ContainsKey(sd.LongHighTexture))
+								usedtextures[texturenamesshorttofull[sd.LongHighTexture]] = true;
+						}
+						if(sd.LongMiddleTexture != MapSet.EmptyLongName)
+						{
+							usedtextures[sd.LongMiddleTexture] = true;
+
+							//mxd. Part of long name support shennanigans
+							if(texturenamesshorttofull.ContainsKey(sd.LongMiddleTexture))
+								usedtextures[texturenamesshorttofull[sd.LongMiddleTexture]] = true;
+						}
+						if(sd.LongLowTexture != MapSet.EmptyLongName)
+						{
+							usedtextures[sd.LongLowTexture] = true;
+
+							//mxd. Part of long name support shennanigans
+							if(texturenamesshorttofull.ContainsKey(sd.LongLowTexture))
+								usedtextures[texturenamesshorttofull[sd.LongLowTexture]] = true;
+						}
 					}
 
 					// Go through the map to find the used flats
@@ -2605,6 +2639,12 @@ namespace CodeImp.DoomBuilder.Data
 						// Add used flats to dictionary
 						usedtextures[s.LongFloorTexture] = false;
 						usedtextures[s.LongCeilTexture] = false;
+
+						//mxd. Part of long name support shennanigans
+						if(flatnamesshorttofull.ContainsKey(s.LongFloorTexture))
+							usedtextures[flatnamesshorttofull[s.LongFloorTexture]] = false;
+						if(flatnamesshorttofull.ContainsKey(s.LongCeilTexture))
+							usedtextures[flatnamesshorttofull[s.LongCeilTexture]] = false;
 					}
 				}
 			}
@@ -2619,9 +2659,30 @@ namespace CodeImp.DoomBuilder.Data
 					foreach(Sidedef sd in General.Map.Map.Sidedefs)
 					{
 						// Add used textures to dictionary
-						if(sd.LongHighTexture != MapSet.EmptyLongName) usedtextures[sd.LongHighTexture] = true;
-						if(sd.LongMiddleTexture != MapSet.EmptyLongName) usedtextures[sd.LongMiddleTexture] = true;
-						if(sd.LongLowTexture != MapSet.EmptyLongName) usedtextures[sd.LongLowTexture] = true;
+						if(sd.LongHighTexture != MapSet.EmptyLongName)
+						{
+							usedtextures[sd.LongHighTexture] = true;
+
+							//mxd. Part of long name support shennanigans
+							if(texturenamesshorttofull.ContainsKey(sd.LongHighTexture))
+								usedtextures[texturenamesshorttofull[sd.LongHighTexture]] = true;
+						}
+						if(sd.LongMiddleTexture != MapSet.EmptyLongName)
+						{
+							usedtextures[sd.LongMiddleTexture] = true;
+
+							//mxd. Part of long name support shennanigans
+							if(texturenamesshorttofull.ContainsKey(sd.LongMiddleTexture))
+								usedtextures[texturenamesshorttofull[sd.LongMiddleTexture]] = true;
+						}
+						if(sd.LongLowTexture != MapSet.EmptyLongName)
+						{
+							usedtextures[sd.LongLowTexture] = true;
+
+							//mxd. Part of long name support shennanigans
+							if(texturenamesshorttofull.ContainsKey(sd.LongLowTexture))
+								usedtextures[texturenamesshorttofull[sd.LongLowTexture]] = true;
+						}
 					}
 				}
 
@@ -2635,6 +2696,12 @@ namespace CodeImp.DoomBuilder.Data
 						// Add used flats to dictionary
 						usedflats[s.LongFloorTexture] = false;
 						usedflats[s.LongCeilTexture] = false;
+
+						//mxd. Part of long name support shennanigans
+						if(flatnamesshorttofull.ContainsKey(s.LongFloorTexture))
+							usedflats[flatnamesshorttofull[s.LongFloorTexture]] = false;
+						if(flatnamesshorttofull.ContainsKey(s.LongCeilTexture))
+							usedflats[flatnamesshorttofull[s.LongCeilTexture]] = false;
 					}
 				}
 			}

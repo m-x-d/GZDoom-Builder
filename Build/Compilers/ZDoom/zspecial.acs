@@ -358,7 +358,7 @@ special
 	-88:SetActorRoll(2),
 	-89:ChangeActorRoll(2,3),
 	-90:GetActorRoll(1),
-	-91:QuakeEx(8,12),
+	-91:QuakeEx(8,14),
 	-92:Warp(6,11),
 	-93:GetMaxInventory(2),
 	-94:SetSectorDamage(2,5),

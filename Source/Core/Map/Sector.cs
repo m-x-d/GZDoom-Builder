@@ -812,8 +812,6 @@ namespace CodeImp.DoomBuilder.Map
 			// Apply changes
 			this.floorheight = hfloor;
 			this.ceilheight = hceil;
-			//SetFloorTexture(tfloor);
-			//SetCeilTexture(tceil);
 			this.effect = effect;
 			this.tags = new List<int>(tags); //mxd
 			this.flags = new Dictionary<string, bool>(flags); //mxd
@@ -845,7 +843,7 @@ namespace CodeImp.DoomBuilder.Map
 			
 			if(string.IsNullOrEmpty(name)) name = "-"; //mxd
 			floortexname = name;
-			longfloortexname = General.Map.Data.GetFullLongFlatName(Lump.MakeLongName(name)); //mxd
+			longfloortexname = Lump.MakeLongName(name);
 			updateneeded = true;
 			General.Map.IsChanged = true;
 		}
@@ -857,27 +855,7 @@ namespace CodeImp.DoomBuilder.Map
 			
 			if(string.IsNullOrEmpty(name)) name = "-"; //mxd
 			ceiltexname = name;
-			longceiltexname = General.Map.Data.GetFullLongFlatName(Lump.MakeLongName(name)); //mxd
-			updateneeded = true;
-			General.Map.IsChanged = true;
-		}
-
-		//mxd. This sets texture lookup
-		internal void SetFloorTexture(long hash)
-		{
-			BeforePropsChange();
-
-			longfloortexname = hash;
-			updateneeded = true;
-			General.Map.IsChanged = true;
-		}
-
-		//mxd. This sets texture lookup
-		internal void SetCeilTexture(long hash)
-		{
-			BeforePropsChange();
-
-			longceiltexname = hash;
+			longceiltexname = Lump.MakeLongName(name);
 			updateneeded = true;
 			General.Map.IsChanged = true;
 		}

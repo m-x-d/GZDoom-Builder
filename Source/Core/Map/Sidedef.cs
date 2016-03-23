@@ -679,7 +679,7 @@ namespace CodeImp.DoomBuilder.Map
 			BeforePropsChange();
 			
 			texnamehigh = string.IsNullOrEmpty(name) ? "-" : name; //mxd
-			longtexnamehigh = General.Map.Data.GetFullLongTextureName(Lump.MakeLongName(name)); //mxd
+			longtexnamehigh = Lump.MakeLongName(name);
 			General.Map.IsChanged = true;
 		}
 
@@ -689,7 +689,7 @@ namespace CodeImp.DoomBuilder.Map
 			BeforePropsChange();
 			
 			texnamemid = string.IsNullOrEmpty(name) ? "-" : name; //mxd;
-			longtexnamemid = General.Map.Data.GetFullLongTextureName(Lump.MakeLongName(name)); //mxd
+			longtexnamemid = Lump.MakeLongName(name);
 			General.Map.IsChanged = true;
 		}
 
@@ -699,34 +699,7 @@ namespace CodeImp.DoomBuilder.Map
 			BeforePropsChange();
 			
 			texnamelow = string.IsNullOrEmpty(name) ? "-" : name; //mxd;
-			longtexnamelow = General.Map.Data.GetFullLongTextureName(Lump.MakeLongName(name)); //mxd
-			General.Map.IsChanged = true;
-		}
-
-		//mxd. This sets texture lookup
-		public void SetTextureHigh(long hash) 
-		{
-			BeforePropsChange();
-
-			longtexnamehigh = hash;
-			General.Map.IsChanged = true;
-		}
-
-		//mxd. This sets texture lookup
-		public void SetTextureMid(long hash) 
-		{
-			BeforePropsChange();
-
-			longtexnamemid = hash;
-			General.Map.IsChanged = true;
-		}
-
-		//mxd. This sets texture lookup
-		public void SetTextureLow(long hash) 
-		{
-			BeforePropsChange();
-
-			longtexnamelow = hash;
+			longtexnamelow = Lump.MakeLongName(name);
 			General.Map.IsChanged = true;
 		}
 

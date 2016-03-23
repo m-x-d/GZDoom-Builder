@@ -131,7 +131,7 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 
 		// Read settings from configuration
-		internal void ReadFromConfig(Configuration cfg, string path, bool uselongtexturenames)
+		internal void ReadFromConfig(Configuration cfg, string path)
 		{
 			// Read settings
 			background = cfg.ReadSetting(path + ".background", "");
@@ -141,9 +141,6 @@ namespace CodeImp.DoomBuilder.Editing
 			backscalex = cfg.ReadSetting(path + ".backscalex", 100) / 100.0f;
 			backscaley = cfg.ReadSetting(path + ".backscaley", 100) / 100.0f;
 			gridsize = cfg.ReadSetting(path + ".gridsize", DEFAULT_GRID_SIZE);
-
-			//mxd. Translate background name?
-			TranslateBackgroundName(uselongtexturenames);
 
 			// Setup
 			SetGridSize(gridsize);
@@ -175,23 +172,6 @@ namespace CodeImp.DoomBuilder.Editing
 
 			// Find this image
 			LinkBackground();
-		}
-
-		//mxd
-		internal void TranslateBackgroundName(bool uselongtexturenames)
-		{
-			if(string.IsNullOrEmpty(background)) return;
-
-			switch(backsource) 
-			{
-				case SOURCE_TEXTURES:
-					background = (uselongtexturenames ? General.Map.Data.GetFullTextureName(background) : MapSet.GetShortTextureName(background));
-					break;
-
-				case SOURCE_FLATS:
-					background = (uselongtexturenames ? General.Map.Data.GetFullFlatName(background) : MapSet.GetShortTextureName(background));
-					break;
-			}
 		}
 
 		// This sets the background view

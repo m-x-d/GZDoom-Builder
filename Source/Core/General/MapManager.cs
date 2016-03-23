@@ -417,13 +417,6 @@ namespace CodeImp.DoomBuilder
 			// Remove unused sectors
 			map.RemoveUnusedSectors(true);
 
-			//mxd. Translate to long or short texture names.
-			bool nameschanged = map.TranslateTextureNames(config.UseLongTextureNames, false);
-			grid.TranslateBackgroundName(config.UseLongTextureNames);
-
-			//mxd. Sector textures may've been changed 
-			if(nameschanged) data.UpdateUsedTextures();
-
 			// Update structures
 			options.ApplyGridSettings();
 			map.UpdateConfiguration();
@@ -513,10 +506,6 @@ namespace CodeImp.DoomBuilder
 
 			// And switch to it
 			ChangeMapSet(newmap);
-
-			// Translate texture names
-			map.TranslateTextureNames(config.UseLongTextureNames, false);
-			grid.TranslateBackgroundName(config.UseLongTextureNames);
 
 			// Sector textures may've been changed 
 			data.UpdateUsedTextures();
@@ -2500,13 +2489,6 @@ namespace CodeImp.DoomBuilder
 				General.MainWindow.UpdateThingsFilters();
 				General.MainWindow.UpdateLinedefColorPresets(); //mxd
 				General.MainWindow.UpdateInterface();
-
-				//mxd. Translate texture names
-				bool nameschanged = map.TranslateTextureNames(config.UseLongTextureNames, false);
-				grid.TranslateBackgroundName(config.UseLongTextureNames);
-				
-				//mxd. Sector textures may've been changed 
-				if(nameschanged) data.UpdateUsedTextures();
 
 				// Done
 				General.MainWindow.DisplayReady();
