@@ -213,7 +213,7 @@ namespace CodeImp.DoomBuilder.Windows
 			score.Text = ft.Fields.GetValue("score", 0).ToString();
 			health.Text = ft.Fields.GetValue("health", 1).ToString();
 			alpha.Text = ft.Fields.GetValue("alpha", 1.0f).ToString();
-			color.SetValueFrom(ft.Fields);
+			color.SetValueFrom(ft.Fields, true);
 			scale.SetValues(ft.ScaleX, ft.ScaleY, true);
 			pitch.Text = ft.Pitch.ToString();
 			roll.Text = ft.Roll.ToString();
@@ -293,7 +293,7 @@ namespace CodeImp.DoomBuilder.Windows
 				if(t.Fields.GetValue("alpha", 1.0f).ToString() != alpha.Text) alpha.Text = "";
 
 				scale.SetValues(t.ScaleX, t.ScaleY, false);
-				color.SetValueFrom(t.Fields);
+				color.SetValueFrom(t.Fields, false);
 
 				if(t.Pitch.ToString() != pitch.Text) pitch.Text = "";
 				if(t.Roll.ToString() != roll.Text) roll.Text = "";

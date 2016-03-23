@@ -470,6 +470,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				if(!Texture.IsImageLoaded || extrafloor == null || RenderPass == RenderPass.Solid || (!Texture.IsTranslucent && !Texture.IsMasked))
 					return true;
+
+				// Some textures (e.g. HiResImage) may lie about their size, so use bitmap size instead
+				Bitmap image = Texture.GetBitmap();
 				
 				// Fetch ZDoom fields
 				float rotate = Angle2D.DegToRad(level.sector.Fields.GetValue("rotationceiling", 0.0f));
@@ -482,19 +485,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				o = o.GetRotated(rotate);
 				o.y = -o.y;
 				o = (o + offset) * scale * texscale;
-				o.x = (o.x * Texture.Width) % Texture.Width;
-				o.y = (o.y * Texture.Height) % Texture.Height;
+				o.x = (o.x * image.Width) % image.Width;
+				o.y = (o.y * image.Height) % image.Height;
 
 				// Make sure coordinates are inside of texture dimensions...
-				if(o.x < 0) o.x += Texture.Width;
-				if(o.y < 0) o.y += Texture.Height;
+				if(o.x < 0) o.x += image.Width;
+				if(o.y < 0) o.y += image.Height;
 
 				// Make final texture coordinates...
-				int ox = General.Clamp((int)Math.Floor(o.x), 0, Texture.Width - 1);
-				int oy = General.Clamp((int)Math.Floor(o.y), 0, Texture.Height - 1);
+				int ox = General.Clamp((int)Math.Floor(o.x), 0, image.Width - 1);
+				int oy = General.Clamp((int)Math.Floor(o.y), 0, image.Height - 1);
 
 				// Check pixel alpha
-				return (Texture.GetBitmap().GetPixel(ox, oy).A > 0);
+				return (image.GetPixel(ox, oy).A > 0);
 			}
 
 			return false;

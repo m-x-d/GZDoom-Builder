@@ -2,10 +2,10 @@
 
 using System;
 using System.Drawing;
-using System.Windows.Forms;
 using System.Globalization;
-using CodeImp.DoomBuilder.Rendering;
+using System.Windows.Forms;
 using CodeImp.DoomBuilder.Map;
+using CodeImp.DoomBuilder.Rendering;
 
 #endregion
 
@@ -15,93 +15,109 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 	{
 		#region ================== Events
 
-		public event EventHandler OnValueChanged; //mxd
+		public event EventHandler OnValueChanged;
 
 		#endregion
 
 		#region ================== Variables
 
-		private int defaultValue;
+		private int defaultvalue;
 		private string field;
-		private bool blockUpdate;
+		private bool blockupdate;
+		private bool blockevents;
 
 		#endregion
 
 		#region ================== Properties
 
-		public int DefaultValue { get { return defaultValue; } set { defaultValue = value; } }
+		public int DefaultValue { get { return defaultvalue; } set { defaultvalue = value; } }
 		public string Label { get { return cpColor.Label; } set { cpColor.Label = value; } }
 		public string Field { get { return field; } set { field = value; } }
 
 		#endregion
-		
+
+		#region ================== Constructor
+
 		public ColorFieldsControl() 
 		{
 			InitializeComponent();
 		}
 
-		public void SetValueFrom(UniFields fields) 
+		#endregion
+
+		#region ================== Methods
+
+		public void SetValueFrom(UniFields fields, bool first)
 		{
-			string newValue = String.Format("{0:X6}", UniFields.GetInteger(fields, field, defaultValue));
-			tbColor.Text = ((!string.IsNullOrEmpty(tbColor.Text) && tbColor.Text != newValue) ? "" : newValue);
-			CheckColor();
+			blockevents = true;
+			
+			string colorval = String.Format("{0:X6}", UniFields.GetInteger(fields, field, defaultvalue));
+			if(first)
+			{
+				tbColor.Text = colorval;
+			}
+			else if(!string.IsNullOrEmpty(tbColor.Text) && colorval != tbColor.Text)
+			{
+				blockupdate = true;
+				tbColor.Text = string.Empty;
+				cpColor.Color = PixelColor.FromInt(defaultvalue).WithAlpha(255);
+				blockupdate = false;
+
+				CheckColor();
+			}
+
+			blockevents = false;
 		}
 
-		public void ApplyTo(UniFields fields, int oldValue) 
+		public void ApplyTo(UniFields fields, int oldvalue)
 		{
-			if(string.IsNullOrEmpty(tbColor.Text)) 
-			{
-				UniFields.SetInteger(fields, field, oldValue, defaultValue);
-			} 
-			else 
-			{
-				UniFields.SetInteger(fields, field, (cpColor.Color.ToInt() & 0x00ffffff), defaultValue);
-			}
+			int colorval = !string.IsNullOrEmpty(tbColor.Text) ? (cpColor.Color.ToInt() & 0x00FFFFFF) : oldvalue;
+			UniFields.SetInteger(fields, field, colorval, defaultvalue);
 		}
 
 		private void CheckColor() 
 		{
-			bool changed = string.IsNullOrEmpty(tbColor.Text) || (cpColor.Color.ToInt() & 0x00ffffff) != defaultValue;
+			bool changed = string.IsNullOrEmpty(tbColor.Text) || (cpColor.Color.ToInt() & 0x00FFFFFF) != defaultvalue;
 			bReset.Visible = changed;
-			tbColor.ForeColor = changed ? SystemColors.WindowText : SystemColors.GrayText;
+			tbColor.ForeColor = (changed ? SystemColors.WindowText : SystemColors.GrayText);
 		}
+
+		#endregion
 
 		#region ================== Events
 
 		private void bReset_Click(object sender, EventArgs e) 
 		{
-			cpColor.Color = PixelColor.FromInt(defaultValue).WithAlpha(255);
+			cpColor.Focus(); // Otherwise the focus will go to cpColor's textbox, which is not what we want
+			cpColor.Color = PixelColor.FromInt(defaultvalue).WithAlpha(255);
 			cpColor_ColorChanged(this, EventArgs.Empty);
 		}
 
 		private void cpColor_ColorChanged(object sender, EventArgs e) 
 		{
-			if(blockUpdate)	return;
+			if(blockupdate) return;
 
-			blockUpdate = true;
-			tbColor.Text = String.Format("{0:X6}", (cpColor.Color.ToInt() & 0x00ffffff));
-			blockUpdate = false;
+			blockupdate = true;
+			tbColor.Text = String.Format("{0:X6}", (cpColor.Color.ToInt() & 0x00FFFFFF));
+			blockupdate = false;
 
 			CheckColor();
-			if(OnValueChanged != null) OnValueChanged(this, EventArgs.Empty);
+			if(!blockevents && OnValueChanged != null) OnValueChanged(this, EventArgs.Empty);
 		}
 
 		private void tbColor_TextChanged(object sender, EventArgs e) 
 		{
-			if(blockUpdate)	return;
-			int colorVal;
-
-			if(int.TryParse(tbColor.Text, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out colorVal))
+			if(blockupdate) return;
+			
+			int colorval;
+			if(int.TryParse(tbColor.Text, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out colorval))
 			{
-				colorVal = General.Clamp(colorVal, 0, 16777215);
-
-				blockUpdate = true;
-				cpColor.Color = PixelColor.FromInt(colorVal).WithAlpha(255);
-				blockUpdate = false;
+				colorval = General.Clamp(colorval, 0, 0xFFFFFF);
+				cpColor.Color = PixelColor.FromInt(colorval).WithAlpha(255);
 			}
 
 			CheckColor();
-			if(OnValueChanged != null) OnValueChanged(this, EventArgs.Empty);
+			if(!blockevents && OnValueChanged != null) OnValueChanged(this, EventArgs.Empty);
 		}
 
 		#endregion

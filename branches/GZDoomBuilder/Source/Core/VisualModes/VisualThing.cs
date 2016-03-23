@@ -37,7 +37,6 @@ namespace CodeImp.DoomBuilder.VisualModes
 		#region ================== Constants
 
 		protected const int FIXED_RADIUS = 8; //mxd. Used to render things with zero width and radius
-		internal const float LIT_FOG_DENSITY_SCALER = 255 * VisualGeometry.FOG_DENSITY_SCALER; //mxd
 
 		#endregion
 		

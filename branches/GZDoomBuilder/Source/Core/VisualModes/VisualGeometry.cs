@@ -33,7 +33,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 	{
 		#region ================== Constants
 
-		public const float FOG_DENSITY_SCALER = -1.442692f / 256000f; //-1.442692f / 64000f; //mxd
+		private const float FOG_DENSITY_SCALER = -1.442692f / 512000f; //mxd. It's -1.442692f / 64000f in GZDoom...;
+		private const int FADE_MULTIPLIER = 4; //mxd
 
 		#endregion
 
@@ -209,15 +210,15 @@ namespace CodeImp.DoomBuilder.VisualModes
 			switch(mode)
 			{
 				case SectorFogMode.OUTSIDEFOGDENSITY:
-					density = General.Map.Data.MapInfo.OutsideFogDensity;
+					density = General.Map.Data.MapInfo.OutsideFogDensity * FADE_MULTIPLIER;
 					break;
 
 				case SectorFogMode.FOGDENSITY:
-					density = General.Map.Data.MapInfo.FogDensity;
+					density = General.Map.Data.MapInfo.FogDensity * FADE_MULTIPLIER;
 					break;
 
 				case SectorFogMode.FADE:
-					density = General.Clamp(255 - brightness, 30, 255) * 4;
+					density = General.Clamp(255 - brightness, 30, 255) * FADE_MULTIPLIER;
 					break;
 
 				case SectorFogMode.CLASSIC:

@@ -51,6 +51,7 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				// Apply new color
 				panel.BackColor = dialog.Color;
+				
 				//mxd. Dispatch Event
 				if(ColorChanged != null) ColorChanged(this, EventArgs.Empty); 
 			}
@@ -59,14 +60,10 @@ namespace CodeImp.DoomBuilder.Controls
 		// Resized
 		private void ColorControl_Resize(object sender, EventArgs e)
 		{
-			try
-			{
-				button.Left = ClientSize.Width - button.Width;
-				panel.Left = ClientSize.Width - button.Width - panel.Width - 3;
-				label.Left = 0;
-				label.Width = panel.Left;
-			}
-			catch(Exception) { }
+			button.Left = ClientSize.Width - button.Width;
+			panel.Left = ClientSize.Width - button.Width - panel.Width - 3;
+			label.Left = 0;
+			label.Width = panel.Left;
 		}
 
 		// Mouse pressed on button
