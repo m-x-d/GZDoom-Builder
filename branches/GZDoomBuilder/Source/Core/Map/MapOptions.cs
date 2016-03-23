@@ -569,7 +569,7 @@ namespace CodeImp.DoomBuilder.Map
 		// This loads the grid settings
 		internal void ApplyGridSettings()
 		{
-			General.Map.Grid.ReadFromConfig(mapconfig, "grid", General.Map.Config.UseLongTextureNames);
+			General.Map.Grid.ReadFromConfig(mapconfig, "grid");
 		}
 
 		//mxd. This reads stored selection groups from the map configuration

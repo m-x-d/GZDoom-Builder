@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.IO;
@@ -769,8 +770,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Copy texture
 		public virtual void OnCopyTexture()
 		{
-			//mxd. When UseLongTextureNames is disabled, use texture name as stored in Sidedef, otherwise use full name.
-			string texturename = ((General.Map.Options.UseLongTextureNames && Texture != null && Texture.UsedInMap) ? Texture.Name : GetTextureName());
+			//mxd. When UseLongTextureNames is enabled and the image filename is longer than 8 chars, use full name, 
+			// otherwise use texture name as stored in Sector
+			string texturename = ((General.Map.Options.UseLongTextureNames && Texture != null && Texture.UsedInMap 
+				&& Path.GetFileNameWithoutExtension(Texture.Name).Length > DataManager.CLASIC_IMAGE_NAME_LENGTH) 
+				? Texture.Name : GetTextureName());
+
 			BuilderPlug.Me.CopiedFlat = texturename;
 			if(General.Map.Config.MixTexturesFlats) BuilderPlug.Me.CopiedTexture = texturename;
 			mode.SetActionResult("Copied flat \"" + texturename + "\".");

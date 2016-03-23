@@ -454,7 +454,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 				
 				//mxd. Points and existing geometry form a closed shape?
-				if(continuousdrawing && autoclosedrawing)
+				if(autoclosedrawing)
 				{
 					// Determive center point
 					float minx = float.MaxValue;

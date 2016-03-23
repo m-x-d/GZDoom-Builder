@@ -31,6 +31,10 @@ namespace CodeImp.DoomBuilder.Windows
 	{
 		#region ================== Variables
 
+		//mxd. Window setup stuff
+		private static Point location = Point.Empty;
+		private static Size size = Size.Empty;
+
 		#endregion
 		
 		#region ================== Constructor / Disposer
@@ -39,6 +43,15 @@ namespace CodeImp.DoomBuilder.Windows
 		public ErrorsForm()
 		{
 			InitializeComponent();
+
+			//mxd. Apply window settings
+			if(location != Point.Empty)
+			{
+				this.StartPosition = FormStartPosition.Manual;
+				this.Location = location;
+			}
+			if(size != Size.Empty) this.Size = size;
+
 			FillList();
 			checkerrors.Start();
 			checkshow.Checked = General.Settings.ShowErrorsWindow;
@@ -86,16 +99,17 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			checkerrors.Stop();
 			General.Settings.ShowErrorsWindow = checkshow.Checked;
+
+			//mxd. Save window settings
+			location = this.Location;
+			size = this.Size;
 		}
 
 		// Checking for more errors
 		private void checkerrors_Tick(object sender, EventArgs e)
 		{
 			// If errors have been added, update the list
-			if(General.ErrorLogger.HasChanged)
-			{
-				FillList();
-			}
+			if(General.ErrorLogger.HasChanged) FillList();
 		}
 
 		// This clears all errors

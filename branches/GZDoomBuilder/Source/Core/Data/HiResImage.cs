@@ -87,13 +87,13 @@ namespace CodeImp.DoomBuilder.Data
 
 		internal void ApplySettings(ImageData overridden)
 		{
-			// Copy all the names...
+			// Copy relevant names...
 			name = overridden.Name;
 			virtualname = overridden.VirtualName;
 			displayname = overridden.DisplayName;
-			longname = overridden.LongName;
 
 			isFlat = overridden.IsFlat;
+			hasLongName = overridden.HasLongName;
 			overridesettingsapplied = true;
 
 			if(!overridden.IsImageLoaded) overridden.LoadImage();
