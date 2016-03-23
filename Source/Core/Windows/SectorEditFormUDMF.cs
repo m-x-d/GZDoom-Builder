@@ -336,8 +336,8 @@ namespace CodeImp.DoomBuilder.Windows
 			desaturation.Text = General.Clamp(sc.Fields.GetValue("desaturation", 0.0f), 0f, 1f).ToString();
 
 			//Sector colors
-			fadeColor.SetValueFrom(sc.Fields);
-			lightColor.SetValueFrom(sc.Fields);
+			fadeColor.SetValueFrom(sc.Fields, true);
+			lightColor.SetValueFrom(sc.Fields, true);
 
 			//Slopes
 			SetupFloorSlope(sc, true);
@@ -457,8 +457,8 @@ namespace CodeImp.DoomBuilder.Windows
 				if(s.Fields.GetValue("desaturation", 0.0f).ToString() != desaturation.Text) desaturation.Text = "";
 
 				//Sector colors
-				fadeColor.SetValueFrom(s.Fields);
-				lightColor.SetValueFrom(s.Fields);
+				fadeColor.SetValueFrom(s.Fields, false);
+				lightColor.SetValueFrom(s.Fields, false);
 
 				//Slopes
 				SetupFloorSlope(s, false);

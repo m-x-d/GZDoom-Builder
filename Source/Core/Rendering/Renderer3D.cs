@@ -856,17 +856,15 @@ namespace CodeImp.DoomBuilder.Rendering
 							world = CreateThingPositionMatrix(t);
 
 							//mxd. If current thing is light - set it's color to light color
-							Color4 litcolor;
 							if(Array.IndexOf(GZBuilder.GZGeneral.GZ_LIGHTS, t.Thing.Type) != -1 && !fullbrightness) 
 							{
 								wantedshaderpass += 4; // Render using one of passes, which uses World3D.VertexColor
-								litcolor = t.LightColor;
 								vertexcolor = t.LightColor;
 							}
 							//mxd. Check if Thing is affected by dynamic lights and set color accordingly
 							else if(General.Settings.GZDrawLightsMode != LightRenderMode.NONE && !fullbrightness && lightthings.Count > 0)
 							{
-								litcolor = GetLitColorForThing(t);
+								Color4 litcolor = GetLitColorForThing(t);
 								if(litcolor.ToArgb() != 0)
 								{
 									wantedshaderpass += 4; // Render using one of passes, which uses World3D.VertexColor
@@ -875,7 +873,6 @@ namespace CodeImp.DoomBuilder.Rendering
 							}
 							else
 							{
-								litcolor = new Color4();
 								vertexcolor = new Color4();
 							}
 
@@ -891,8 +888,7 @@ namespace CodeImp.DoomBuilder.Rendering
 							if(wantedshaderpass > 7)
 							{
 								graphics.Shaders.World3D.World = world;
-								float fogfactor = (litcolor.ToArgb() != 0 ? VisualThing.LIT_FOG_DENSITY_SCALER : t.FogFactor);
-								graphics.Shaders.World3D.CameraPosition = new Vector4(cameraposition.x, cameraposition.y, cameraposition.z, fogfactor);
+								graphics.Shaders.World3D.CameraPosition = new Vector4(cameraposition.x, cameraposition.y, cameraposition.z, t.FogFactor);
 							}
 
 							// Set the colors to use
@@ -1165,17 +1161,15 @@ namespace CodeImp.DoomBuilder.Rendering
 						world = CreateThingPositionMatrix(t);
 
 						//mxd. If current thing is light - set it's color to light color
-						Color4 litcolor;
 						if(Array.IndexOf(GZBuilder.GZGeneral.GZ_LIGHTS, t.Thing.Type) != -1 && !fullbrightness)
 						{
 							wantedshaderpass += 4; // Render using one of passes, which uses World3D.VertexColor
-							litcolor = t.LightColor;
 							vertexcolor = t.LightColor;
 						}
 						//mxd. Check if Thing is affected by dynamic lights and set color accordingly
 						else if(General.Settings.GZDrawLightsMode != LightRenderMode.NONE && !fullbrightness && lightthings.Count > 0)
 						{
-							litcolor = GetLitColorForThing(t);
+							Color4 litcolor = GetLitColorForThing(t);
 							if(litcolor.ToArgb() != 0)
 							{
 								wantedshaderpass += 4; // Render using one of passes, which uses World3D.VertexColor
@@ -1184,7 +1178,6 @@ namespace CodeImp.DoomBuilder.Rendering
 						}
 						else
 						{
-							litcolor = new Color4();
 							vertexcolor = new Color4();
 						}
 
@@ -1196,16 +1189,14 @@ namespace CodeImp.DoomBuilder.Rendering
 							currentshaderpass = wantedshaderpass;
 						}
 
-						//mxd. set variables for fog rendering?
+						//mxd. Set variables for fog rendering?
 						if(wantedshaderpass > 7)
 						{
 							graphics.Shaders.World3D.World = world;
-
-							float curfogfactor = (litcolor.ToArgb() != 0 ? VisualThing.LIT_FOG_DENSITY_SCALER : t.FogFactor);
-							if(curfogfactor != fogfactor)
+							if(t.FogFactor != fogfactor)
 							{
-								graphics.Shaders.World3D.CameraPosition = new Vector4(cameraposition.x, cameraposition.y, cameraposition.z, curfogfactor);
-								fogfactor = curfogfactor;
+								graphics.Shaders.World3D.CameraPosition = new Vector4(cameraposition.x, cameraposition.y, cameraposition.z, t.FogFactor);
+								fogfactor = t.FogFactor;
 							}
 						}
 
@@ -1394,18 +1385,11 @@ namespace CodeImp.DoomBuilder.Rendering
 					
 					Color4 vertexcolor = new Color4(t.VertexColor);
 
-					//check if model is affected by dynamic lights and set color accordingly
-					Color4 litcolor;
+					// Check if model is affected by dynamic lights and set color accordingly
 					if(General.Settings.GZDrawLightsMode != LightRenderMode.NONE && !fullbrightness && lightthings.Count > 0) 
-					{
-						litcolor = GetLitColorForThing(t);
-						graphics.Shaders.World3D.VertexColor = vertexcolor + litcolor;
-					} 
+						graphics.Shaders.World3D.VertexColor = vertexcolor + GetLitColorForThing(t);
 					else 
-					{
 						graphics.Shaders.World3D.VertexColor = vertexcolor;
-						litcolor = new Color4();
-					}
 
 					// Determine the shader pass we want to use for this object
 					int wantedshaderpass = ((((t == highlighted) && showhighlight) || (t.Selected && showselection)) ? highshaderpass : shaderpass);
@@ -1435,13 +1419,12 @@ namespace CodeImp.DoomBuilder.Rendering
 					world = General.Map.Data.ModeldefEntries[t.Thing.Type].Transform * modelscale * modelrotation * t.Position;
 					ApplyMatrices3D();
 
-					//mxd. set variables for fog rendering
+					//mxd. Set variables for fog rendering
 					if(wantedshaderpass > 7)
 					{
 						graphics.Shaders.World3D.World = world;
 						if(t.Thing.Sector != null) graphics.Shaders.World3D.LightColor = t.Thing.Sector.FogColor;
-						float fogfactor = (litcolor.ToArgb() != 0 ? VisualThing.LIT_FOG_DENSITY_SCALER : t.FogFactor);
-						graphics.Shaders.World3D.CameraPosition = new Vector4(cameraposition.x, cameraposition.y, cameraposition.z, fogfactor);
+						graphics.Shaders.World3D.CameraPosition = new Vector4(cameraposition.x, cameraposition.y, cameraposition.z, t.FogFactor);
 					}
 
 					for(int i = 0; i < group.Key.Model.Meshes.Count; i++) 
@@ -1495,18 +1478,11 @@ namespace CodeImp.DoomBuilder.Rendering
 				t.Update();
 				Color4 vertexcolor = new Color4(t.VertexColor);
 
-				//check if model is affected by dynamic lights and set color accordingly
-				Color4 litcolor;
+				// Check if model is affected by dynamic lights and set color accordingly
 				if(General.Settings.GZDrawLightsMode != LightRenderMode.NONE && !fullbrightness && lightthings.Count > 0)
-				{
-					litcolor = GetLitColorForThing(t);
-					graphics.Shaders.World3D.VertexColor = vertexcolor + litcolor;
-				}
+					graphics.Shaders.World3D.VertexColor = vertexcolor + GetLitColorForThing(t);
 				else
-				{
 					graphics.Shaders.World3D.VertexColor = vertexcolor;
-					litcolor = new Color4();
-				}
 
 				// Determine the shader pass we want to use for this object
 				int wantedshaderpass = ((((t == highlighted) && showhighlight) || (t.Selected && showselection)) ? highshaderpass : shaderpass);
@@ -1536,13 +1512,12 @@ namespace CodeImp.DoomBuilder.Rendering
 				world = General.Map.Data.ModeldefEntries[t.Thing.Type].Transform * modelscale * modelrotation * t.Position;
 				ApplyMatrices3D();
 
-				//mxd. set variables for fog rendering
+				//mxd. Set variables for fog rendering
 				if(wantedshaderpass > 7)
 				{
 					graphics.Shaders.World3D.World = world;
 					if(t.Thing.Sector != null) graphics.Shaders.World3D.LightColor = t.Thing.Sector.FogColor;
-					float fogfactor = (litcolor.ToArgb() != 0 ? VisualThing.LIT_FOG_DENSITY_SCALER : t.FogFactor);
-					graphics.Shaders.World3D.CameraPosition = new Vector4(cameraposition.x, cameraposition.y, cameraposition.z, fogfactor);
+					graphics.Shaders.World3D.CameraPosition = new Vector4(cameraposition.x, cameraposition.y, cameraposition.z, t.FogFactor);
 				}
 
 				GZModel model = General.Map.Data.ModeldefEntries[t.Thing.Type].Model;

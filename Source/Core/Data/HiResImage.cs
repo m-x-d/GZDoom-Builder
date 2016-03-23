@@ -10,7 +10,7 @@ using CodeImp.DoomBuilder.IO;
 
 namespace CodeImp.DoomBuilder.Data
 {
-	internal class HiResImage : ImageData
+	public sealed class HiResImage : ImageData
 	{
 		#region ================== Variables
 
