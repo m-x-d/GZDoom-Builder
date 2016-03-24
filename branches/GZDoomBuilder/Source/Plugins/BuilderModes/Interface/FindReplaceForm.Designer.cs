@@ -72,6 +72,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.searchtypes.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
 			this.searchtypes.FormattingEnabled = true;
 			this.searchtypes.Location = new System.Drawing.Point(109, 12);
+			this.searchtypes.MaxDropDownItems = 40;
 			this.searchtypes.Name = "searchtypes";
 			this.searchtypes.Size = new System.Drawing.Size(156, 21);
 			this.searchtypes.Sorted = true;

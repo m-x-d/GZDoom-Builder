@@ -36,12 +36,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Variables
 
+		private FindReplaceMode mode; //mxd
 		private FindReplaceType newfinder;
 		private FindReplaceType finder;
 		private List<FindReplaceType> findtypeslist;
-		bool controlpressed;
-		bool shiftpressed;
-		bool suppressevents;
+		private bool controlpressed;
+		private bool shiftpressed;
+		private bool suppressevents;
 		
 		#endregion
 
@@ -169,7 +170,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				// Withdraw the undo step if nothing was replaced
 				if(resultslist.Items.Count < 1)
+				{
+					mode.Volatile = false; //mxd. Otherwice UndoManager.PerformUndo will cancel the mode...
 					General.Map.UndoRedo.WithdrawUndo();
+					mode.Volatile = true; //mxd
+				}
 			}
 			else
 			{
@@ -345,14 +350,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Methods
 
 		// This shows the window
-		public void Show(Form owner)
+		public void Show(Form owner, FindReplaceMode mode)
 		{
-			// First time showing?
-			//if((this.Location.X == 0) && (this.Location.Y == 0))
-			{
-				// Position at left-top of owner
-				this.Location = new Point(owner.Location.X + 20, owner.Location.Y + 90);
-			}
+			//mxd
+			this.mode = mode;
+			
+			// Position at left-top of owner
+			this.Location = new Point(owner.Location.X + 20, owner.Location.Y + 90);
 			
 			// Re-fill the search types list
 			searchtypes.Items.Clear();
@@ -373,8 +377,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 			
 			// Select first if none was selected
-			if(searchtypes.SelectedIndex < 0)
-				searchtypes.SelectedIndex = 0;
+			if(searchtypes.SelectedIndex < 0) searchtypes.SelectedIndex = 0;
 			
 			// Close results part
 			resultspanel.Visible = false;

@@ -8,7 +8,7 @@ using CodeImp.DoomBuilder.Map;
 
 namespace CodeImp.DoomBuilder.BuilderModes.FindReplace
 {
-	[FindReplace("Sector Floor Height", BrowseButton = false)]
+	[FindReplace("Sector Height (Floor)", BrowseButton = false)]
 	internal class FindSectorFloorHeight : BaseFindSector
 	{
 		#region ================== Methods

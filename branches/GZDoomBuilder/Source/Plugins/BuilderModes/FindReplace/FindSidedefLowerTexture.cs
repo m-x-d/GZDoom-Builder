@@ -11,7 +11,7 @@ using CodeImp.DoomBuilder.Map;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	[FindReplace("Sidedef Lower Texture", BrowseButton = true)]
+	[FindReplace("Sidedef Texture (Lower)", BrowseButton = true)]
 	internal class FindSidedefLowerTexture : BaseFindSidedef
 	{
 		#region ================== Properties

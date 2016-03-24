@@ -10,7 +10,7 @@ using System.Threading;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	[ErrorChecker("Check Polyobjects", true, 100)]
+	[ErrorChecker("Check polyobjects", true, 100)]
 	public class CheckPolyobjects : ErrorChecker
 	{
 		#region ================== Constants
@@ -124,7 +124,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Check if Mirror Polyobject Number exists
 					foreach(Linedef linedef in linesbytype.Value)
 					{
-						if(!startspots.ContainsKey(linedef.Args[1]))
+						// The value of 0 can mean either "No mirror polyobj" or "Polyobj 0" here...
+						if(linedef.Args[1] > 0 && !startspots.ContainsKey(linedef.Args[1]))
 							SubmitResult(new ResultInvalidPolyobjectLines(new List<Linedef> { linedef }, "\"" + Polyobj_StartLine + "\" action have non-existing Mirror Polyobject Number assigned (" + linedef.Args[1] + "). It won't function correctly ingame."));
 					}
 				}

@@ -46,6 +46,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Properties
 
+		internal bool Volatile { get { return attributes.Volatile; } set { attributes.Volatile = value; } } //mxd
+
 		#endregion
 
 		#region ================== Constructor / Disposer
@@ -89,7 +91,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 			
 			// Show toolbox window
-			BuilderPlug.Me.FindReplaceForm.Show((Form)General.Interface);
+			BuilderPlug.Me.FindReplaceForm.Show((Form)General.Interface, this);
 		}
 
 		// Disenagaging
