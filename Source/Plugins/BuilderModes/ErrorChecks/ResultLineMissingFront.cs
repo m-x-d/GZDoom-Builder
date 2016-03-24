@@ -123,6 +123,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Fix by flipping linedefs
 		public override bool Button1Click(bool batchMode)
 		{
+			line.FlipVertices(); //mxd. Otherwise FlipSidedefs() will destroy the sector back side belongs to
 			line.FlipSidedefs();
 			General.Map.Map.Update();
 			return true;
