@@ -45,7 +45,7 @@ namespace CodeImp.DoomBuilder.Editing
 		#region ================== Variables
 		
 		// Attributes
-		private EditModeAttribute attributes;
+		protected EditModeAttribute attributes; //mxd. private -> protected
 		
 		// Disposing
 		protected bool isdisposed;

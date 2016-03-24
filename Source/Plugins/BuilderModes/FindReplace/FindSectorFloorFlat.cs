@@ -10,7 +10,7 @@ using CodeImp.DoomBuilder.Map;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	[FindReplace("Sector Floor Flat", BrowseButton = true)]
+	[FindReplace("Sector Flat (Floor)", BrowseButton = true)]
 	internal class FindSectorFloorFlat : FindSectorFlat
 	{
 		#region ================== Methods
