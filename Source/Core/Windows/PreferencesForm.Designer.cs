@@ -38,6 +38,8 @@ namespace CodeImp.DoomBuilder.Windows
 			System.Windows.Forms.Label label18;
 			System.Windows.Forms.Label label20;
 			System.Windows.Forms.Label label21;
+			System.Windows.Forms.Label label27;
+			System.Windows.Forms.Label label29;
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PreferencesForm));
 			this.keepfilterfocused = new System.Windows.Forms.CheckBox();
 			this.checkforupdates = new System.Windows.Forms.CheckBox();
@@ -68,17 +70,17 @@ namespace CodeImp.DoomBuilder.Windows
 			this.color3dFloors = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.colorInfo = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.colorMD3 = new CodeImp.DoomBuilder.Controls.ColorControl();
-			this.doublesidedalpha = new System.Windows.Forms.TrackBar();
 			this.colorgrid64 = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.colorgrid = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.colorindication = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.colorbackcolor = new CodeImp.DoomBuilder.Controls.ColorControl();
-			this.label2 = new System.Windows.Forms.Label();
-			this.doublesidedalphalabel = new System.Windows.Forms.Label();
 			this.colorselection = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.colorvertices = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.colorhighlight = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.colorlinedefs = new CodeImp.DoomBuilder.Controls.ColorControl();
+			this.doublesidedalpha = new System.Windows.Forms.TrackBar();
+			this.label2 = new System.Windows.Forms.Label();
+			this.doublesidedalphalabel = new System.Windows.Forms.Label();
 			this.cbStretchView = new System.Windows.Forms.CheckBox();
 			this.qualitydisplay = new System.Windows.Forms.CheckBox();
 			this.cancel = new System.Windows.Forms.Button();
@@ -137,9 +139,15 @@ namespace CodeImp.DoomBuilder.Windows
 			this.actioncontrolclear = new System.Windows.Forms.Button();
 			this.actionkey = new System.Windows.Forms.TextBox();
 			this.tabcolors = new System.Windows.Forms.TabPage();
-			this.appearancegroup1 = new System.Windows.Forms.GroupBox();
+			this.groupBox10 = new System.Windows.Forms.GroupBox();
 			this.capitalizetexturenames = new System.Windows.Forms.CheckBox();
+			this.blackbrowsers = new System.Windows.Forms.CheckBox();
 			this.cbMarkExtraFloors = new System.Windows.Forms.CheckBox();
+			this.appearancegroup1 = new System.Windows.Forms.GroupBox();
+			this.labelantialiasing = new System.Windows.Forms.Label();
+			this.antialiasing = new System.Windows.Forms.TrackBar();
+			this.labelanisotropicfiltering = new System.Windows.Forms.Label();
+			this.anisotropicfiltering = new System.Windows.Forms.TrackBar();
 			this.cbOldHighlightMode = new System.Windows.Forms.CheckBox();
 			this.labelDynLightIntensity = new System.Windows.Forms.Label();
 			this.tbDynLightIntensity = new System.Windows.Forms.TrackBar();
@@ -148,7 +156,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.labelDynLightCount = new System.Windows.Forms.Label();
 			this.tbDynLightCount = new System.Windows.Forms.TrackBar();
 			this.animatevisualselection = new System.Windows.Forms.CheckBox();
-			this.blackbrowsers = new System.Windows.Forms.CheckBox();
 			this.visualbilinear = new System.Windows.Forms.CheckBox();
 			this.classicbilinear = new System.Windows.Forms.CheckBox();
 			this.imagebrightnesslabel = new System.Windows.Forms.Label();
@@ -207,6 +214,8 @@ namespace CodeImp.DoomBuilder.Windows
 			label18 = new System.Windows.Forms.Label();
 			label20 = new System.Windows.Forms.Label();
 			label21 = new System.Windows.Forms.Label();
+			label27 = new System.Windows.Forms.Label();
+			label29 = new System.Windows.Forms.Label();
 			groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.recentFiles)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.vertexScale)).BeginInit();
@@ -229,7 +238,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabkeys.SuspendLayout();
 			this.actioncontrolpanel.SuspendLayout();
 			this.tabcolors.SuspendLayout();
+			this.groupBox10.SuspendLayout();
 			this.appearancegroup1.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.antialiasing)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.anisotropicfiltering)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.tbDynLightIntensity)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.tbDynLightSize)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.tbDynLightCount)).BeginInit();
@@ -560,7 +572,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label1
 			// 
 			label1.AutoSize = true;
-			label1.Location = new System.Drawing.Point(28, 29);
+			label1.Location = new System.Drawing.Point(22, 70);
 			label1.Name = "label1";
 			label1.Size = new System.Drawing.Size(143, 13);
 			label1.TabIndex = 20;
@@ -570,7 +582,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label18
 			// 
 			label18.AutoSize = true;
-			label18.Location = new System.Drawing.Point(22, 63);
+			label18.Location = new System.Drawing.Point(18, 108);
 			label18.Name = "label18";
 			label18.Size = new System.Drawing.Size(147, 13);
 			label18.TabIndex = 25;
@@ -582,7 +594,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label20
 			// 
 			label20.AutoSize = true;
-			label20.Location = new System.Drawing.Point(76, 97);
+			label20.Location = new System.Drawing.Point(71, 146);
 			label20.Name = "label20";
 			label20.Size = new System.Drawing.Size(94, 13);
 			label20.TabIndex = 28;
@@ -592,12 +604,32 @@ namespace CodeImp.DoomBuilder.Windows
 			// label21
 			// 
 			label21.AutoSize = true;
-			label21.Location = new System.Drawing.Point(55, 131);
+			label21.Location = new System.Drawing.Point(51, 184);
 			label21.Name = "label21";
 			label21.Size = new System.Drawing.Size(114, 13);
 			label21.TabIndex = 31;
 			label21.Text = "Dynamic light intensity:";
 			label21.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// label27
+			// 
+			label27.AutoSize = true;
+			label27.Location = new System.Drawing.Point(67, 223);
+			label27.Name = "label27";
+			label27.Size = new System.Drawing.Size(98, 13);
+			label27.TabIndex = 35;
+			label27.Text = "Anisotropic filtering:";
+			label27.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// label29
+			// 
+			label29.AutoSize = true;
+			label29.Location = new System.Drawing.Point(74, 262);
+			label29.Name = "label29";
+			label29.Size = new System.Drawing.Size(91, 13);
+			label29.TabIndex = 38;
+			label29.Text = "Edge Antialiasing:";
+			label29.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// keyusedlabel
 			// 
@@ -616,13 +648,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorsgroup1.Controls.Add(this.color3dFloors);
 			this.colorsgroup1.Controls.Add(this.colorInfo);
 			this.colorsgroup1.Controls.Add(this.colorMD3);
-			this.colorsgroup1.Controls.Add(this.doublesidedalpha);
 			this.colorsgroup1.Controls.Add(this.colorgrid64);
 			this.colorsgroup1.Controls.Add(this.colorgrid);
 			this.colorsgroup1.Controls.Add(this.colorindication);
 			this.colorsgroup1.Controls.Add(this.colorbackcolor);
-			this.colorsgroup1.Controls.Add(this.label2);
-			this.colorsgroup1.Controls.Add(this.doublesidedalphalabel);
 			this.colorsgroup1.Controls.Add(this.colorselection);
 			this.colorsgroup1.Controls.Add(this.colorvertices);
 			this.colorsgroup1.Controls.Add(this.colorhighlight);
@@ -632,14 +661,14 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorsgroup1.Size = new System.Drawing.Size(203, 493);
 			this.colorsgroup1.TabIndex = 0;
 			this.colorsgroup1.TabStop = false;
-			this.colorsgroup1.Text = " Display ";
+			this.colorsgroup1.Text = " Colors ";
 			this.colorsgroup1.Visible = false;
 			// 
 			// color3dFloors
 			// 
 			this.color3dFloors.BackColor = System.Drawing.Color.Transparent;
 			this.color3dFloors.Label = "3D Floors:";
-			this.color3dFloors.Location = new System.Drawing.Point(15, 286);
+			this.color3dFloors.Location = new System.Drawing.Point(15, 307);
 			this.color3dFloors.MaximumSize = new System.Drawing.Size(10000, 23);
 			this.color3dFloors.MinimumSize = new System.Drawing.Size(100, 23);
 			this.color3dFloors.Name = "color3dFloors";
@@ -650,7 +679,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.colorInfo.BackColor = System.Drawing.Color.Transparent;
 			this.colorInfo.Label = "Event lines:";
-			this.colorInfo.Location = new System.Drawing.Point(15, 260);
+			this.colorInfo.Location = new System.Drawing.Point(15, 278);
 			this.colorInfo.MaximumSize = new System.Drawing.Size(10000, 23);
 			this.colorInfo.MinimumSize = new System.Drawing.Size(100, 23);
 			this.colorInfo.Name = "colorInfo";
@@ -661,29 +690,18 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.colorMD3.BackColor = System.Drawing.Color.Transparent;
 			this.colorMD3.Label = "Model wireframe:";
-			this.colorMD3.Location = new System.Drawing.Point(15, 233);
+			this.colorMD3.Location = new System.Drawing.Point(15, 249);
 			this.colorMD3.MaximumSize = new System.Drawing.Size(10000, 23);
 			this.colorMD3.MinimumSize = new System.Drawing.Size(100, 23);
 			this.colorMD3.Name = "colorMD3";
 			this.colorMD3.Size = new System.Drawing.Size(168, 23);
 			this.colorMD3.TabIndex = 17;
 			// 
-			// doublesidedalpha
-			// 
-			this.doublesidedalpha.BackColor = System.Drawing.SystemColors.Window;
-			this.doublesidedalpha.LargeChange = 3;
-			this.doublesidedalpha.Location = new System.Drawing.Point(11, 349);
-			this.doublesidedalpha.Name = "doublesidedalpha";
-			this.doublesidedalpha.Size = new System.Drawing.Size(130, 45);
-			this.doublesidedalpha.TabIndex = 2;
-			this.doublesidedalpha.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
-			this.doublesidedalpha.ValueChanged += new System.EventHandler(this.doublesidedalpha_ValueChanged);
-			// 
 			// colorgrid64
 			// 
 			this.colorgrid64.BackColor = System.Drawing.Color.Transparent;
 			this.colorgrid64.Label = "64 Block grid:";
-			this.colorgrid64.Location = new System.Drawing.Point(15, 206);
+			this.colorgrid64.Location = new System.Drawing.Point(15, 220);
 			this.colorgrid64.MaximumSize = new System.Drawing.Size(10000, 23);
 			this.colorgrid64.MinimumSize = new System.Drawing.Size(100, 23);
 			this.colorgrid64.Name = "colorgrid64";
@@ -694,7 +712,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.colorgrid.BackColor = System.Drawing.Color.Transparent;
 			this.colorgrid.Label = "Custom grid:";
-			this.colorgrid.Location = new System.Drawing.Point(15, 179);
+			this.colorgrid.Location = new System.Drawing.Point(15, 191);
 			this.colorgrid.MaximumSize = new System.Drawing.Size(10000, 23);
 			this.colorgrid.MinimumSize = new System.Drawing.Size(100, 23);
 			this.colorgrid.Name = "colorgrid";
@@ -705,7 +723,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.colorindication.BackColor = System.Drawing.Color.Transparent;
 			this.colorindication.Label = "Indications:";
-			this.colorindication.Location = new System.Drawing.Point(15, 152);
+			this.colorindication.Location = new System.Drawing.Point(15, 162);
 			this.colorindication.MaximumSize = new System.Drawing.Size(10000, 23);
 			this.colorindication.MinimumSize = new System.Drawing.Size(100, 23);
 			this.colorindication.Name = "colorindication";
@@ -723,30 +741,11 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorbackcolor.Size = new System.Drawing.Size(168, 23);
 			this.colorbackcolor.TabIndex = 0;
 			// 
-			// label2
-			// 
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(14, 328);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(141, 13);
-			this.label2.TabIndex = 14;
-			this.label2.Text = "Passable lines transparency:";
-			this.label2.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			// 
-			// doublesidedalphalabel
-			// 
-			this.doublesidedalphalabel.AutoSize = true;
-			this.doublesidedalphalabel.Location = new System.Drawing.Point(147, 361);
-			this.doublesidedalphalabel.Name = "doublesidedalphalabel";
-			this.doublesidedalphalabel.Size = new System.Drawing.Size(21, 13);
-			this.doublesidedalphalabel.TabIndex = 16;
-			this.doublesidedalphalabel.Text = "0%";
-			// 
 			// colorselection
 			// 
 			this.colorselection.BackColor = System.Drawing.Color.Transparent;
 			this.colorselection.Label = "Selection:";
-			this.colorselection.Location = new System.Drawing.Point(15, 125);
+			this.colorselection.Location = new System.Drawing.Point(15, 133);
 			this.colorselection.MaximumSize = new System.Drawing.Size(10000, 23);
 			this.colorselection.MinimumSize = new System.Drawing.Size(100, 23);
 			this.colorselection.Name = "colorselection";
@@ -757,7 +756,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.colorvertices.BackColor = System.Drawing.Color.Transparent;
 			this.colorvertices.Label = "Vertices:";
-			this.colorvertices.Location = new System.Drawing.Point(15, 44);
+			this.colorvertices.Location = new System.Drawing.Point(15, 46);
 			this.colorvertices.MaximumSize = new System.Drawing.Size(10000, 23);
 			this.colorvertices.MinimumSize = new System.Drawing.Size(100, 23);
 			this.colorvertices.Name = "colorvertices";
@@ -768,7 +767,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.colorhighlight.BackColor = System.Drawing.Color.Transparent;
 			this.colorhighlight.Label = "Highlight:";
-			this.colorhighlight.Location = new System.Drawing.Point(15, 98);
+			this.colorhighlight.Location = new System.Drawing.Point(15, 104);
 			this.colorhighlight.MaximumSize = new System.Drawing.Size(10000, 23);
 			this.colorhighlight.MinimumSize = new System.Drawing.Size(100, 23);
 			this.colorhighlight.Name = "colorhighlight";
@@ -779,17 +778,47 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.colorlinedefs.BackColor = System.Drawing.Color.Transparent;
 			this.colorlinedefs.Label = "Common lines:";
-			this.colorlinedefs.Location = new System.Drawing.Point(15, 71);
+			this.colorlinedefs.Location = new System.Drawing.Point(15, 75);
 			this.colorlinedefs.MaximumSize = new System.Drawing.Size(10000, 23);
 			this.colorlinedefs.MinimumSize = new System.Drawing.Size(100, 23);
 			this.colorlinedefs.Name = "colorlinedefs";
 			this.colorlinedefs.Size = new System.Drawing.Size(168, 23);
 			this.colorlinedefs.TabIndex = 2;
 			// 
+			// doublesidedalpha
+			// 
+			this.doublesidedalpha.BackColor = System.Drawing.SystemColors.Window;
+			this.doublesidedalpha.LargeChange = 3;
+			this.doublesidedalpha.Location = new System.Drawing.Point(176, 19);
+			this.doublesidedalpha.Name = "doublesidedalpha";
+			this.doublesidedalpha.Size = new System.Drawing.Size(153, 45);
+			this.doublesidedalpha.TabIndex = 2;
+			this.doublesidedalpha.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
+			this.doublesidedalpha.ValueChanged += new System.EventHandler(this.doublesidedalpha_ValueChanged);
+			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(24, 30);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(141, 13);
+			this.label2.TabIndex = 14;
+			this.label2.Text = "Passable lines transparency:";
+			this.label2.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// doublesidedalphalabel
+			// 
+			this.doublesidedalphalabel.AutoSize = true;
+			this.doublesidedalphalabel.Location = new System.Drawing.Point(337, 30);
+			this.doublesidedalphalabel.Name = "doublesidedalphalabel";
+			this.doublesidedalphalabel.Size = new System.Drawing.Size(21, 13);
+			this.doublesidedalphalabel.TabIndex = 16;
+			this.doublesidedalphalabel.Text = "0%";
+			// 
 			// cbStretchView
 			// 
 			this.cbStretchView.AutoSize = true;
-			this.cbStretchView.Location = new System.Drawing.Point(236, 170);
+			this.cbStretchView.Location = new System.Drawing.Point(236, 306);
 			this.cbStretchView.Name = "cbStretchView";
 			this.cbStretchView.Size = new System.Drawing.Size(172, 17);
 			this.cbStretchView.TabIndex = 18;
@@ -801,7 +830,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// qualitydisplay
 			// 
 			this.qualitydisplay.AutoSize = true;
-			this.qualitydisplay.Location = new System.Drawing.Point(25, 191);
+			this.qualitydisplay.Location = new System.Drawing.Point(25, 306);
 			this.qualitydisplay.Name = "qualitydisplay";
 			this.qualitydisplay.Size = new System.Drawing.Size(128, 17);
 			this.qualitydisplay.TabIndex = 7;
@@ -1451,6 +1480,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// tabcolors
 			// 
+			this.tabcolors.Controls.Add(this.groupBox10);
 			this.tabcolors.Controls.Add(this.appearancegroup1);
 			this.tabcolors.Controls.Add(this.colorsgroup1);
 			this.tabcolors.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -1462,43 +1492,22 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabcolors.Text = "Appearance";
 			this.tabcolors.UseVisualStyleBackColor = true;
 			// 
-			// appearancegroup1
+			// groupBox10
 			// 
-			this.appearancegroup1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.appearancegroup1.Controls.Add(this.capitalizetexturenames);
-			this.appearancegroup1.Controls.Add(this.cbMarkExtraFloors);
-			this.appearancegroup1.Controls.Add(this.cbOldHighlightMode);
-			this.appearancegroup1.Controls.Add(label21);
-			this.appearancegroup1.Controls.Add(this.labelDynLightIntensity);
-			this.appearancegroup1.Controls.Add(this.cbStretchView);
-			this.appearancegroup1.Controls.Add(this.tbDynLightIntensity);
-			this.appearancegroup1.Controls.Add(label20);
-			this.appearancegroup1.Controls.Add(this.qualitydisplay);
-			this.appearancegroup1.Controls.Add(this.labelDynLightSize);
-			this.appearancegroup1.Controls.Add(this.tbDynLightSize);
-			this.appearancegroup1.Controls.Add(label18);
-			this.appearancegroup1.Controls.Add(this.labelDynLightCount);
-			this.appearancegroup1.Controls.Add(this.tbDynLightCount);
-			this.appearancegroup1.Controls.Add(this.animatevisualselection);
-			this.appearancegroup1.Controls.Add(this.blackbrowsers);
-			this.appearancegroup1.Controls.Add(this.visualbilinear);
-			this.appearancegroup1.Controls.Add(label1);
-			this.appearancegroup1.Controls.Add(this.classicbilinear);
-			this.appearancegroup1.Controls.Add(this.imagebrightnesslabel);
-			this.appearancegroup1.Controls.Add(this.imagebrightness);
-			this.appearancegroup1.Location = new System.Drawing.Point(217, 14);
-			this.appearancegroup1.Name = "appearancegroup1";
-			this.appearancegroup1.Size = new System.Drawing.Size(457, 487);
-			this.appearancegroup1.TabIndex = 24;
-			this.appearancegroup1.TabStop = false;
-			this.appearancegroup1.Text = " Additional Options ";
+			this.groupBox10.Controls.Add(this.capitalizetexturenames);
+			this.groupBox10.Controls.Add(this.blackbrowsers);
+			this.groupBox10.Controls.Add(this.cbMarkExtraFloors);
+			this.groupBox10.Location = new System.Drawing.Point(217, 388);
+			this.groupBox10.Name = "groupBox10";
+			this.groupBox10.Size = new System.Drawing.Size(457, 113);
+			this.groupBox10.TabIndex = 25;
+			this.groupBox10.TabStop = false;
+			this.groupBox10.Text = " Additional Options ";
 			// 
 			// capitalizetexturenames
 			// 
 			this.capitalizetexturenames.AutoSize = true;
-			this.capitalizetexturenames.Location = new System.Drawing.Point(236, 191);
+			this.capitalizetexturenames.Location = new System.Drawing.Point(25, 75);
 			this.capitalizetexturenames.Name = "capitalizetexturenames";
 			this.capitalizetexturenames.Size = new System.Drawing.Size(140, 17);
 			this.capitalizetexturenames.TabIndex = 36;
@@ -1507,10 +1516,20 @@ namespace CodeImp.DoomBuilder.Windows
 					"2 behaviour)");
 			this.capitalizetexturenames.UseVisualStyleBackColor = true;
 			// 
+			// blackbrowsers
+			// 
+			this.blackbrowsers.AutoSize = true;
+			this.blackbrowsers.Location = new System.Drawing.Point(25, 29);
+			this.blackbrowsers.Name = "blackbrowsers";
+			this.blackbrowsers.Size = new System.Drawing.Size(195, 17);
+			this.blackbrowsers.TabIndex = 4;
+			this.blackbrowsers.Text = "Black background in image browser";
+			this.blackbrowsers.UseVisualStyleBackColor = true;
+			// 
 			// cbMarkExtraFloors
 			// 
 			this.cbMarkExtraFloors.AutoSize = true;
-			this.cbMarkExtraFloors.Location = new System.Drawing.Point(25, 254);
+			this.cbMarkExtraFloors.Location = new System.Drawing.Point(25, 52);
 			this.cbMarkExtraFloors.Name = "cbMarkExtraFloors";
 			this.cbMarkExtraFloors.Size = new System.Drawing.Size(175, 17);
 			this.cbMarkExtraFloors.TabIndex = 35;
@@ -1519,10 +1538,93 @@ namespace CodeImp.DoomBuilder.Windows
 					" color.");
 			this.cbMarkExtraFloors.UseVisualStyleBackColor = true;
 			// 
+			// appearancegroup1
+			// 
+			this.appearancegroup1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.appearancegroup1.Controls.Add(label29);
+			this.appearancegroup1.Controls.Add(this.labelantialiasing);
+			this.appearancegroup1.Controls.Add(this.antialiasing);
+			this.appearancegroup1.Controls.Add(label27);
+			this.appearancegroup1.Controls.Add(this.labelanisotropicfiltering);
+			this.appearancegroup1.Controls.Add(this.anisotropicfiltering);
+			this.appearancegroup1.Controls.Add(this.cbOldHighlightMode);
+			this.appearancegroup1.Controls.Add(label21);
+			this.appearancegroup1.Controls.Add(this.labelDynLightIntensity);
+			this.appearancegroup1.Controls.Add(this.doublesidedalpha);
+			this.appearancegroup1.Controls.Add(this.cbStretchView);
+			this.appearancegroup1.Controls.Add(this.tbDynLightIntensity);
+			this.appearancegroup1.Controls.Add(label20);
+			this.appearancegroup1.Controls.Add(this.doublesidedalphalabel);
+			this.appearancegroup1.Controls.Add(this.qualitydisplay);
+			this.appearancegroup1.Controls.Add(this.labelDynLightSize);
+			this.appearancegroup1.Controls.Add(this.label2);
+			this.appearancegroup1.Controls.Add(this.tbDynLightSize);
+			this.appearancegroup1.Controls.Add(label18);
+			this.appearancegroup1.Controls.Add(this.labelDynLightCount);
+			this.appearancegroup1.Controls.Add(this.tbDynLightCount);
+			this.appearancegroup1.Controls.Add(this.animatevisualselection);
+			this.appearancegroup1.Controls.Add(this.visualbilinear);
+			this.appearancegroup1.Controls.Add(label1);
+			this.appearancegroup1.Controls.Add(this.classicbilinear);
+			this.appearancegroup1.Controls.Add(this.imagebrightnesslabel);
+			this.appearancegroup1.Controls.Add(this.imagebrightness);
+			this.appearancegroup1.Location = new System.Drawing.Point(217, 8);
+			this.appearancegroup1.Name = "appearancegroup1";
+			this.appearancegroup1.Size = new System.Drawing.Size(457, 374);
+			this.appearancegroup1.TabIndex = 24;
+			this.appearancegroup1.TabStop = false;
+			this.appearancegroup1.Text = " Rendering ";
+			// 
+			// labelantialiasing
+			// 
+			this.labelantialiasing.AutoSize = true;
+			this.labelantialiasing.Location = new System.Drawing.Point(337, 262);
+			this.labelantialiasing.Name = "labelantialiasing";
+			this.labelantialiasing.Size = new System.Drawing.Size(54, 13);
+			this.labelantialiasing.TabIndex = 39;
+			this.labelantialiasing.Text = "8 samples";
+			// 
+			// antialiasing
+			// 
+			this.antialiasing.BackColor = System.Drawing.SystemColors.Window;
+			this.antialiasing.LargeChange = 1;
+			this.antialiasing.Location = new System.Drawing.Point(176, 252);
+			this.antialiasing.Maximum = 3;
+			this.antialiasing.Name = "antialiasing";
+			this.antialiasing.Size = new System.Drawing.Size(154, 45);
+			this.antialiasing.TabIndex = 37;
+			this.antialiasing.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
+			this.antialiasing.Value = 3;
+			this.antialiasing.ValueChanged += new System.EventHandler(this.antialiasing_ValueChanged);
+			// 
+			// labelanisotropicfiltering
+			// 
+			this.labelanisotropicfiltering.AutoSize = true;
+			this.labelanisotropicfiltering.Location = new System.Drawing.Point(337, 223);
+			this.labelanisotropicfiltering.Name = "labelanisotropicfiltering";
+			this.labelanisotropicfiltering.Size = new System.Drawing.Size(24, 13);
+			this.labelanisotropicfiltering.TabIndex = 36;
+			this.labelanisotropicfiltering.Text = "16x";
+			// 
+			// anisotropicfiltering
+			// 
+			this.anisotropicfiltering.BackColor = System.Drawing.SystemColors.Window;
+			this.anisotropicfiltering.LargeChange = 1;
+			this.anisotropicfiltering.Location = new System.Drawing.Point(176, 213);
+			this.anisotropicfiltering.Maximum = 4;
+			this.anisotropicfiltering.Name = "anisotropicfiltering";
+			this.anisotropicfiltering.Size = new System.Drawing.Size(154, 45);
+			this.anisotropicfiltering.TabIndex = 34;
+			this.anisotropicfiltering.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
+			this.anisotropicfiltering.Value = 4;
+			this.anisotropicfiltering.ValueChanged += new System.EventHandler(this.anisotropicfiltering_ValueChanged);
+			// 
 			// cbOldHighlightMode
 			// 
 			this.cbOldHighlightMode.AutoSize = true;
-			this.cbOldHighlightMode.Location = new System.Drawing.Point(236, 233);
+			this.cbOldHighlightMode.Location = new System.Drawing.Point(236, 348);
 			this.cbOldHighlightMode.Name = "cbOldHighlightMode";
 			this.cbOldHighlightMode.Size = new System.Drawing.Size(207, 17);
 			this.cbOldHighlightMode.TabIndex = 33;
@@ -1534,7 +1636,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// labelDynLightIntensity
 			// 
 			this.labelDynLightIntensity.AutoSize = true;
-			this.labelDynLightIntensity.Location = new System.Drawing.Point(337, 129);
+			this.labelDynLightIntensity.Location = new System.Drawing.Point(337, 184);
 			this.labelDynLightIntensity.Name = "labelDynLightIntensity";
 			this.labelDynLightIntensity.Size = new System.Drawing.Size(22, 13);
 			this.labelDynLightIntensity.TabIndex = 32;
@@ -1544,7 +1646,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.tbDynLightIntensity.BackColor = System.Drawing.SystemColors.Window;
 			this.tbDynLightIntensity.LargeChange = 1;
-			this.tbDynLightIntensity.Location = new System.Drawing.Point(176, 119);
+			this.tbDynLightIntensity.Location = new System.Drawing.Point(176, 174);
 			this.tbDynLightIntensity.Minimum = 1;
 			this.tbDynLightIntensity.Name = "tbDynLightIntensity";
 			this.tbDynLightIntensity.Size = new System.Drawing.Size(154, 45);
@@ -1556,7 +1658,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// labelDynLightSize
 			// 
 			this.labelDynLightSize.AutoSize = true;
-			this.labelDynLightSize.Location = new System.Drawing.Point(337, 96);
+			this.labelDynLightSize.Location = new System.Drawing.Point(337, 146);
 			this.labelDynLightSize.Name = "labelDynLightSize";
 			this.labelDynLightSize.Size = new System.Drawing.Size(22, 13);
 			this.labelDynLightSize.TabIndex = 29;
@@ -1566,7 +1668,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.tbDynLightSize.BackColor = System.Drawing.SystemColors.Window;
 			this.tbDynLightSize.LargeChange = 1;
-			this.tbDynLightSize.Location = new System.Drawing.Point(176, 85);
+			this.tbDynLightSize.Location = new System.Drawing.Point(176, 136);
 			this.tbDynLightSize.Maximum = 20;
 			this.tbDynLightSize.Minimum = 1;
 			this.tbDynLightSize.Name = "tbDynLightSize";
@@ -1579,7 +1681,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// labelDynLightCount
 			// 
 			this.labelDynLightCount.AutoSize = true;
-			this.labelDynLightCount.Location = new System.Drawing.Point(337, 62);
+			this.labelDynLightCount.Location = new System.Drawing.Point(337, 108);
 			this.labelDynLightCount.Name = "labelDynLightCount";
 			this.labelDynLightCount.Size = new System.Drawing.Size(19, 13);
 			this.labelDynLightCount.TabIndex = 26;
@@ -1589,7 +1691,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.tbDynLightCount.BackColor = System.Drawing.SystemColors.Window;
 			this.tbDynLightCount.LargeChange = 3;
-			this.tbDynLightCount.Location = new System.Drawing.Point(176, 51);
+			this.tbDynLightCount.Location = new System.Drawing.Point(176, 97);
 			this.tbDynLightCount.Maximum = 32;
 			this.tbDynLightCount.Minimum = 1;
 			this.tbDynLightCount.Name = "tbDynLightCount";
@@ -1603,27 +1705,17 @@ namespace CodeImp.DoomBuilder.Windows
 			// animatevisualselection
 			// 
 			this.animatevisualselection.AutoSize = true;
-			this.animatevisualselection.Location = new System.Drawing.Point(236, 212);
+			this.animatevisualselection.Location = new System.Drawing.Point(236, 327);
 			this.animatevisualselection.Name = "animatevisualselection";
 			this.animatevisualselection.Size = new System.Drawing.Size(184, 17);
 			this.animatevisualselection.TabIndex = 23;
 			this.animatevisualselection.Text = "Animate selection in visual modes";
 			this.animatevisualselection.UseVisualStyleBackColor = true;
 			// 
-			// blackbrowsers
-			// 
-			this.blackbrowsers.AutoSize = true;
-			this.blackbrowsers.Location = new System.Drawing.Point(25, 170);
-			this.blackbrowsers.Name = "blackbrowsers";
-			this.blackbrowsers.Size = new System.Drawing.Size(195, 17);
-			this.blackbrowsers.TabIndex = 4;
-			this.blackbrowsers.Text = "Black background in image browser";
-			this.blackbrowsers.UseVisualStyleBackColor = true;
-			// 
 			// visualbilinear
 			// 
 			this.visualbilinear.AutoSize = true;
-			this.visualbilinear.Location = new System.Drawing.Point(25, 233);
+			this.visualbilinear.Location = new System.Drawing.Point(25, 348);
 			this.visualbilinear.Name = "visualbilinear";
 			this.visualbilinear.Size = new System.Drawing.Size(171, 17);
 			this.visualbilinear.TabIndex = 6;
@@ -1633,7 +1725,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// classicbilinear
 			// 
 			this.classicbilinear.AutoSize = true;
-			this.classicbilinear.Location = new System.Drawing.Point(25, 212);
+			this.classicbilinear.Location = new System.Drawing.Point(25, 327);
 			this.classicbilinear.Name = "classicbilinear";
 			this.classicbilinear.Size = new System.Drawing.Size(176, 17);
 			this.classicbilinear.TabIndex = 5;
@@ -1643,7 +1735,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// imagebrightnesslabel
 			// 
 			this.imagebrightnesslabel.AutoSize = true;
-			this.imagebrightnesslabel.Location = new System.Drawing.Point(337, 29);
+			this.imagebrightnesslabel.Location = new System.Drawing.Point(337, 70);
 			this.imagebrightnesslabel.Name = "imagebrightnesslabel";
 			this.imagebrightnesslabel.Size = new System.Drawing.Size(30, 13);
 			this.imagebrightnesslabel.TabIndex = 22;
@@ -1653,7 +1745,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.imagebrightness.BackColor = System.Drawing.SystemColors.Window;
 			this.imagebrightness.LargeChange = 3;
-			this.imagebrightness.Location = new System.Drawing.Point(176, 18);
+			this.imagebrightness.Location = new System.Drawing.Point(176, 58);
 			this.imagebrightness.Name = "imagebrightness";
 			this.imagebrightness.Size = new System.Drawing.Size(154, 45);
 			this.imagebrightness.TabIndex = 3;
@@ -2245,7 +2337,6 @@ namespace CodeImp.DoomBuilder.Windows
 			((System.ComponentModel.ISupportInitialize)(this.autoscrollspeed)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.previewsize)).EndInit();
 			this.colorsgroup1.ResumeLayout(false);
-			this.colorsgroup1.PerformLayout();
 			((System.ComponentModel.ISupportInitialize)(this.doublesidedalpha)).EndInit();
 			this.tabs.ResumeLayout(false);
 			this.tabinterface.ResumeLayout(false);
@@ -2267,8 +2358,12 @@ namespace CodeImp.DoomBuilder.Windows
 			this.actioncontrolpanel.ResumeLayout(false);
 			this.actioncontrolpanel.PerformLayout();
 			this.tabcolors.ResumeLayout(false);
+			this.groupBox10.ResumeLayout(false);
+			this.groupBox10.PerformLayout();
 			this.appearancegroup1.ResumeLayout(false);
 			this.appearancegroup1.PerformLayout();
+			((System.ComponentModel.ISupportInitialize)(this.antialiasing)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.anisotropicfiltering)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.tbDynLightIntensity)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.tbDynLightSize)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.tbDynLightCount)).EndInit();
@@ -2450,5 +2545,10 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.Label label23;
 		private CodeImp.DoomBuilder.Controls.ColorControl colorproperties;
 		private System.Windows.Forms.CheckBox keepfilterfocused;
+		private System.Windows.Forms.GroupBox groupBox10;
+		private System.Windows.Forms.Label labelantialiasing;
+		private System.Windows.Forms.TrackBar antialiasing;
+		private System.Windows.Forms.Label labelanisotropicfiltering;
+		private System.Windows.Forms.TrackBar anisotropicfiltering;
 	}
 }

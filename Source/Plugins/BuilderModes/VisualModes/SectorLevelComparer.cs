@@ -24,24 +24,40 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public int Compare(SectorLevel x, SectorLevel y)
 		{
 			if(x == y) return 0; //mxd
+
+			//mxd. Handle surfaces with the same height
 			float diff = (float)Math.Round(x.plane.GetZ(center) - y.plane.GetZ(center), 3);
 			if(diff == 0)
 			{
-				//mxd. Push extrafloors above extraceilings
-				if(x.extrafloor && y.extrafloor && x.lighttype == LightLevelType.UNKNOWN && y.lighttype == LightLevelType.UNKNOWN)
-				{
-					if(x.type == SectorLevelType.Floor) return (y.type == SectorLevelType.Ceiling ? 1 : 0);
-					return (y.type == SectorLevelType.Floor ? -1 : 0);
-				}
-				
 				bool xislight = (x.type == SectorLevelType.Light || x.type == SectorLevelType.Glow);
 				bool yislight = (y.type == SectorLevelType.Light || y.type == SectorLevelType.Glow);
+
+				// Compare regular and extrafloors
+				if(!xislight && ! yislight && x.lighttype == LightLevelType.UNKNOWN && y.lighttype == LightLevelType.UNKNOWN)
+				{
+					// Both are 3d floors. Push extrafloors above extraceilings
+					if(x.extrafloor && y.extrafloor)
+					{
+						if(x.type == SectorLevelType.Floor) return (y.type == SectorLevelType.Ceiling ? 1 : 0);
+						return (y.type == SectorLevelType.Floor ? -1 : 0);
+					}
+
+					// None is 3d floor. Push ceilings above floors
+					if(!x.extrafloor && !y.extrafloor)
+					{
+						if(x.type == SectorLevelType.Floor) return (y.type == SectorLevelType.Ceiling ? -1 : 0);
+						return (y.type == SectorLevelType.Floor ? 1 : 0);
+					}
+
+					// One is 3d floor. Push it below the regular surface if it has "disablelighting" flag, and above otherwise
+					return ((x.extrafloor && x.disablelighting) || (y.extrafloor && !y.disablelighting) ? -1 : 1);
+				}
 				
-				//mxd. Push light levels above floor and ceiling levels when height is the same
+				// Push light levels above floor and ceiling levels when height is the same
 				if(!xislight) return (yislight ? -1 : 0);
 				if(!yislight) return 1;
 
-				//mxd. Push light levels without lighttype (those should be lower levels of type 1 Transfer Brightness effect) above other ones
+				// Push light levels without lighttype (those should be lower levels of type 1 Transfer Brightness effect) above other ones
 				if(x.lighttype == y.lighttype) return 0; //TODO: how this should be handled?
 				if(x.lighttype == LightLevelType.TYPE1_BOTTOM) return 1;
 				return -1;

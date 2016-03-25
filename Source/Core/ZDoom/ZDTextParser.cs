@@ -99,13 +99,15 @@ namespace CodeImp.DoomBuilder.ZDoom
 		//mxd. This parses the given decorate stream. Returns false on errors
 		public virtual bool Parse(TextResourceData parsedata, bool clearerrors)
 		{
-			//mxd. Clear error status?
+			// Clear error status?
 			if(clearerrors) ClearError();
-
-			//mxd. Integrity checks
+			
+			// Integrity checks
+			// INFO: MapManager.CompileLump() prepends lumpname with "?" to distinguish between temporary files and files compiled in place
+			// We don't want this to show up in error messages
 			if(parsedata.Stream == null)
 			{
-				ReportError("Unable to load \"" + parsedata.Filename + "\"");
+				ReportError("Unable to load \"" + parsedata.Filename.Replace("?", "") + "\"");
 				return false;
 			}
 
@@ -113,7 +115,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			{
 				if(!string.IsNullOrEmpty(sourcename) && sourcename != parsedata.Filename)
 				{
-					LogWarning("Include file \"" + parsedata.Filename + "\" is empty");
+					LogWarning("Include file \"" + parsedata.Filename.Replace("?", "") + "\" is empty");
 				}
 				else
 				{
@@ -125,8 +127,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 			datastream = parsedata.Stream;
 			datareader = new BinaryReader(parsedata.Stream, Encoding.ASCII);
 			sourcename = parsedata.Filename;
-			sourcelumpindex = parsedata.LumpIndex; //mxd
-			datalocation = parsedata.SourceLocation; //mxd
+			sourcelumpindex = parsedata.LumpIndex;
+			datalocation = parsedata.SourceLocation;
 			datastream.Seek(0, SeekOrigin.Begin);
 
 			return true;
@@ -154,8 +156,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 				{
 					Resource = parsedata.Source,
 					Entries = new HashSet<string>(StringComparer.OrdinalIgnoreCase),
-					Filename = parsedata.Filename,
-					LumpIndex = parsedata.LumpIndex
+					Filename = parsedata.Filename.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar),
+					LumpIndex = parsedata.LumpIndex,
+					ScriptType = this.ScriptType,
 				};
 
 				textresources.Add(textresourcepath, res);
@@ -659,7 +662,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			//mxd
 			if(ScriptType == ScriptType.ACS && sourcename.StartsWith("?"))
 			{
-				shorterrorsource = sourcename;
+				shorterrorsource = sourcename.Substring(1);
 				errorsource = sourcename;
 			}
 			else

@@ -2190,7 +2190,7 @@ namespace CodeImp.DoomBuilder
 							// Add them to arrays
 							namedscriptslist.AddRange(parser.NamedScripts);
 							numberedscriptslist.AddRange(parser.NumberedScripts);
-							scripincludeslist.AddRange(parser.Includes);
+							scripincludeslist.AddRange(parser.GetIncludes());
 
 							// Add to text resource list
 							General.Map.Data.TextResources[parser.ScriptType].UnionWith(parser.TextResources.Values);

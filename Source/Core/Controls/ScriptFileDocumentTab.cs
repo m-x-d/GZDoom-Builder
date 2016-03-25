@@ -225,7 +225,7 @@ namespace CodeImp.DoomBuilder.Controls
 			compiler.OutputFile = outputfile;
 			compiler.SourceFile = filepathname;
 			compiler.WorkingDirectory = Path.GetDirectoryName(filepathname);
-			compiler.Includes = parser.Includes;
+			compiler.Includes = parser.GetIncludes();
 			compiler.CopyIncludesToWorkingDirectory = false;
 			if(compiler.Run())
 			{
