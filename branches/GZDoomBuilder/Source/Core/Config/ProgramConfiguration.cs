@@ -82,6 +82,7 @@ namespace CodeImp.DoomBuilder.Config
 		private bool toolbartesting;
 		private bool toolbarfile;
 		private float filteranisotropy;
+		private int antialiasingsamples; //mxd
 		private bool showtexturesizes;
 		private bool locatetexturegroup; //mxd
 		private bool keeptexturefilterfocused; //mxd
@@ -183,6 +184,7 @@ namespace CodeImp.DoomBuilder.Config
 		public bool ToolbarTesting { get { return toolbartesting; } internal set { toolbartesting = value; } }
 		public bool ToolbarFile { get { return toolbarfile; } internal set { toolbarfile = value; } }
 		public float FilterAnisotropy { get { return filteranisotropy; } internal set { filteranisotropy = value; } }
+		public int AntiAliasingSamples { get { return antialiasingsamples; } internal set { antialiasingsamples = value; } } //mxd
 		public bool ShowTextureSizes { get { return showtexturesizes; } internal set { showtexturesizes = value; } }
 		public bool LocateTextureGroup { get { return locatetexturegroup; } internal set { locatetexturegroup = value; } } //mxd
 		public bool KeepTextureFilterFocused { get { return keeptexturefilterfocused; } internal set { keeptexturefilterfocused = value; } } //mxd
@@ -306,7 +308,8 @@ namespace CodeImp.DoomBuilder.Config
 				toolbargeometry = cfg.ReadSetting("toolbargeometry", true);
 				toolbartesting = cfg.ReadSetting("toolbartesting", true);
 				toolbarfile = cfg.ReadSetting("toolbarfile", true);
-				filteranisotropy = cfg.ReadSetting("filteranisotropy", 8.0f);
+				filteranisotropy = General.Clamp(cfg.ReadSetting("filteranisotropy", 16.0f), 1.0f, 16.0f);
+				antialiasingsamples = General.Clamp(cfg.ReadSetting("antialiasingsamples", 4), 0, 8) / 2 * 2; //mxd
 				showtexturesizes = cfg.ReadSetting("showtexturesizes", true);
 				locatetexturegroup = cfg.ReadSetting("locatetexturegroup", true); //mxd
 				keeptexturefilterfocused = cfg.ReadSetting("keeptexturefilterfocused", true); //mxd
@@ -412,6 +415,7 @@ namespace CodeImp.DoomBuilder.Config
 			cfg.WriteSetting("toolbartesting", toolbartesting);
 			cfg.WriteSetting("toolbarfile", toolbarfile);
 			cfg.WriteSetting("filteranisotropy", filteranisotropy);
+			cfg.WriteSetting("antialiasingsamples", antialiasingsamples); //mxd
 			cfg.WriteSetting("showtexturesizes", showtexturesizes);
 			cfg.WriteSetting("locatetexturegroup", locatetexturegroup); //mxd
 			cfg.WriteSetting("keeptexturefilterfocused", keeptexturefilterfocused); //mxd

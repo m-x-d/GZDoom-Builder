@@ -185,8 +185,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			}
 
 			// Initialize world vertex declaration
-			VertexElement[] ve = new[] 
-			{
+			VertexElement[] ve = {
 				new VertexElement(0, 0, DeclarationType.Float3, DeclarationMethod.Default, DeclarationUsage.Position, 0),
 				new VertexElement(0, 12, DeclarationType.Color, DeclarationMethod.Default, DeclarationUsage.Color, 0),
 				new VertexElement(0, 16, DeclarationType.Float2, DeclarationMethod.Default, DeclarationUsage.TextureCoordinate, 0),
@@ -234,20 +233,11 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This sets the constant settings
 		public void SetConstants(bool bilinear, float maxanisotropy)
 		{
-			if(bilinear)
-			{
-				effect.SetValue(magfiltersettings, (int)TextureFilter.Linear);
-				effect.SetValue(minfiltersettings, (int)TextureFilter.Anisotropic);
-				effect.SetValue(mipfiltersettings, (int)TextureFilter.Linear);
-				effect.SetValue(maxanisotropysetting, maxanisotropy);
-			}
-			else
-			{
-				effect.SetValue(magfiltersettings, (int)TextureFilter.Point);
-				effect.SetValue(minfiltersettings, (int)TextureFilter.Point);
-				effect.SetValue(mipfiltersettings, (int)TextureFilter.Linear);
-				effect.SetValue(maxanisotropysetting, 1.0f);
-			}
+			//mxd. It's still nice to have anisotropic filtering when texture filtering is disabled
+			effect.SetValue(magfiltersettings, (int)(bilinear ? TextureFilter.Linear : TextureFilter.Point));
+			effect.SetValue(minfiltersettings, (int)TextureFilter.Anisotropic);
+			effect.SetValue(mipfiltersettings, (int)TextureFilter.Linear);
+			effect.SetValue(maxanisotropysetting, maxanisotropy);
 
 			settingschanged = true; //mxd
 		}

@@ -315,6 +315,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			//mxd. Store a copy of initial settings
 			floor.CopyProperties(floorbase);
 			ceiling.CopyProperties(ceilingbase);
+
+			//mxd. We need sector brightness here, unaffected by custom ceiling brightness...
+			ceilingbase.brightnessbelow = sector.Brightness;
+			ceilingbase.color = PixelColor.FromInt(mode.CalculateBrightness(sector.Brightness)).WithAlpha(255).ToInt();
 		}
 
 		//mxd
@@ -426,13 +430,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						// Use stored light level when previous one has "disablelighting" flag
 						// or is the lower boundary of an extrafloor with "restrictlighting" flag
 						SectorLevel src = (pl.disablelighting || (pl.restrictlighting && pl.type == SectorLevelType.Ceiling) ? stored : pl);
-						
-						if((src == l) || (src == ceiling && l == floor && src.LightPropertiesMatch(ceilingbase)))
-						{
-							// Don't change anything when light properties were reset before hitting floor
-							// (otherwise floor UDMF brightness will be lost)
+
+						// Don't change real ceiling light when previous level has "disablelighting" flag
+						// Don't change anything when light properties were reset before hitting floor (otherwise floor UDMF brightness will be lost)
+						if((src == ceilingbase && l == ceiling)
+							|| (src == ceiling && l == floor && src.LightPropertiesMatch(ceilingbase)))
 							continue;
-						}
 						
 						// Transfer color and brightness if previous level has them
 						if(src.colorbelow.a > 0 && src.brightnessbelow != -1)
@@ -456,6 +459,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						// Store bottom extrafloor level if it doesn't have "restrictlighting" or "restrictlighting" flags set
 						if(l.extrafloor && l.type == SectorLevelType.Ceiling && !l.restrictlighting && !l.disablelighting) stored = l;
 					}
+
+					// Reset lighting?
+					if(l.resetlighting) stored = ceilingbase;
 				}
 			}
 

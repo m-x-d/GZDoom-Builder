@@ -63,7 +63,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			IgnoreBottomHeight = 8,
 			UseUpperTexture = 16,
 			UseLowerTexture = 32,
-			RenderAdditive = 64
+			RenderAdditive = 64,
+			Fade = 512,
+			ResetLighting = 1024,
 		}
 
 		//mxd. 3D-Floor Types
@@ -173,6 +175,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				bool disablelighting =  ((linedef.Args[2] & (int)Flags.DisableLighting)  == (int)Flags.DisableLighting); //mxd
 				bool restrictlighting = ((linedef.Args[2] & (int)Flags.RestrictLighting) == (int)Flags.RestrictLighting); //mxd
+				floor.resetlighting =   ((linedef.Args[2] & (int)Flags.ResetLighting) == (int)Flags.ResetLighting); //mxd
 
 				if(disablelighting || restrictlighting)
 				{

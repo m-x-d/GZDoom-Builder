@@ -35,6 +35,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public PixelColor colorbelow;
 		public bool disablelighting; //mxd
 		public bool restrictlighting; //mxd
+		public bool resetlighting; //mxd
 		public bool affectedbyglow; //mxd
 		public bool extrafloor; //mxd
 		public bool splitsides; //mxd
@@ -68,6 +69,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			target.affectedbyglow = this.affectedbyglow; //mxd
 			target.disablelighting = this.disablelighting; //mxd
 			target.restrictlighting = this.restrictlighting; //mxd
+			target.resetlighting = this.resetlighting; //mxd
 			target.splitsides = this.splitsides; //mxd
 		}
 
@@ -76,7 +78,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			return (this.type == other.type && this.lighttype == other.lighttype && this.alpha == other.alpha && this.splitsides == other.splitsides
 				&& this.color == other.color && this.brightnessbelow == other.brightnessbelow && this.colorbelow.ToInt() == other.colorbelow.ToInt()
-				&& this.disablelighting == other.disablelighting && this.restrictlighting == other.restrictlighting);
+				&& this.disablelighting == other.disablelighting && this.restrictlighting == other.restrictlighting 
+				&& this.resetlighting == other.resetlighting);
 		}
 
 #if DEBUG

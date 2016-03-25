@@ -125,8 +125,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					foreach(Linedef linedef in linesbytype.Value)
 					{
 						// The value of 0 can mean either "No mirror polyobj" or "Polyobj 0" here...
-						if(linedef.Args[1] > 0 && !startspots.ContainsKey(linedef.Args[1]))
-							SubmitResult(new ResultInvalidPolyobjectLines(new List<Linedef> { linedef }, "\"" + Polyobj_StartLine + "\" action have non-existing Mirror Polyobject Number assigned (" + linedef.Args[1] + "). It won't function correctly ingame."));
+						if(linedef.Args[1] > 0)
+						{
+							if(!startspots.ContainsKey(linedef.Args[1]))
+								SubmitResult(new ResultInvalidPolyobjectLines(new List<Linedef> { linedef }, "\"" + Polyobj_StartLine + "\" action have non-existing Mirror Polyobject Number assigned (" + linedef.Args[1] + "). It won't function correctly ingame."));
+							if(linedef.Args[1] == linedef.Args[0])
+								SubmitResult(new ResultInvalidPolyobjectLines(new List<Linedef> { linedef }, "\"" + Polyobj_StartLine + "\" action have the same Polyobject and Mirror Polyobject numbers assigned (" + linedef.Args[1] + "). It won't function correctly ingame."));
+						}
 					}
 				}
 			}

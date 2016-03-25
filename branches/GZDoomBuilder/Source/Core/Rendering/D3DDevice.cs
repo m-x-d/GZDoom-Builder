@@ -35,7 +35,13 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Constants
 
 		// NVPerfHUD device name
-		public const string NVPERFHUD_ADAPTER = "NVPerfHUD";
+		private const string NVPERFHUD_ADAPTER = "NVPerfHUD";
+
+		//mxd. Anisotropic filtering steps
+		public static readonly List<float> AF_STEPS = new List<float> { 1.0f, 2.0f, 4.0f, 8.0f, 16.0f }; 
+		
+		//mxd. Antialiasing steps
+		public static readonly List<int> AA_STEPS = new List<int> { 0, 2, 4, 8 };
 
 		#endregion
 
@@ -165,6 +171,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			device.SetRenderState(RenderState.FogTableMode, FogMode.Linear);
 			device.SetRenderState(RenderState.Lighting, false);
 			device.SetRenderState(RenderState.LocalViewer, false);
+			device.SetRenderState(RenderState.MultisampleAntialias, (General.Settings.AntiAliasingSamples > 0)); //mxd
 			device.SetRenderState(RenderState.NormalizeNormals, false);
 			device.SetRenderState(RenderState.PointSpriteEnable, false);
 			device.SetRenderState(RenderState.RangeFogEnable, false);
@@ -196,7 +203,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			};
 			
 			// Shader settings
-			shaders.World3D.SetConstants(General.Settings.VisualBilinear, General.Settings.FilterAnisotropy);
+			shaders.World3D.SetConstants(General.Settings.VisualBilinear, Math.Min(devicecaps.MaxAnisotropy, General.Settings.FilterAnisotropy));
 			
 			// Texture filters
 			postfilter = Filter.Point;
@@ -243,6 +250,23 @@ namespace CodeImp.DoomBuilder.Rendering
 					devtype = DeviceType.Reference;
 				else
 					devtype = DeviceType.Hardware;
+
+				//mxd. Check maximum supported AA level...
+				for(int i = AA_STEPS.Count - 1; i > 0; i--)
+				{
+					if(General.Settings.AntiAliasingSamples < AA_STEPS[i]) continue;
+					if(d3d.CheckDeviceMultisampleType(this.adapter, devtype, d3d.Adapters[adapter].CurrentDisplayMode.Format, displaypp.Windowed, (MultisampleType)AA_STEPS[i]))
+						break;
+
+					if(General.Settings.AntiAliasingSamples > AA_STEPS[i - 1])
+					{
+						General.Settings.AntiAliasingSamples = AA_STEPS[i - 1];
+						
+						// TODO: looks like setting Multisample here just resets it to MultisampleType.None, 
+						// regardless of value in displaypp.Multisample. Why?..
+						displaypp.Multisample = (MultisampleType)General.Settings.AntiAliasingSamples;
+					}
+				}
 
 				// Get the device capabilities
 				devicecaps = d3d.GetDeviceCaps(adapter, devtype);
@@ -328,7 +352,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			displaypp.BackBufferHeight = rendertarget.ClientSize.Height;
 			displaypp.EnableAutoDepthStencil = true;
 			displaypp.AutoDepthStencilFormat = Format.D24X8; //Format.D16;
-			displaypp.Multisample = MultisampleType.None;
+			displaypp.Multisample = (MultisampleType)General.Settings.AntiAliasingSamples;
 			displaypp.PresentationInterval = PresentInterval.Immediate;
 
 			// Return result

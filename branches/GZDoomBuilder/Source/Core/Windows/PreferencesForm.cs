@@ -110,6 +110,10 @@ namespace CodeImp.DoomBuilder.Windows
 			if(Directory.Exists(General.Settings.ScreenshotsPath))
 				browseScreenshotsFolderDialog.SelectedPath = General.Settings.ScreenshotsPath;
 
+			//mxd. Anisotropic filtering
+			anisotropicfiltering.Value = Math.Max(D3DDevice.AF_STEPS.IndexOf(General.Settings.FilterAnisotropy), 0); //mxd
+			antialiasing.Value = Math.Max(D3DDevice.AA_STEPS.IndexOf(General.Settings.AntiAliasingSamples), 0); //mxd
+
 			//mxd. Script editor
 			scriptfontbold.Checked = General.Settings.ScriptFontBold;
 			scriptontop.Checked = General.Settings.ScriptOnTop;
@@ -359,6 +363,8 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Settings.GZMaxDynamicLights = tbDynLightCount.Value;
 			General.Settings.GZDynamicLightRadius = (tbDynLightSize.Value / 10.0f);
 			General.Settings.GZDynamicLightIntensity = (tbDynLightIntensity.Value / 10.0f);
+			General.Settings.FilterAnisotropy = D3DDevice.AF_STEPS[anisotropicfiltering.Value];
+			General.Settings.AntiAliasingSamples = D3DDevice.AA_STEPS[antialiasing.Value];
 			General.Settings.GZStretchView = cbStretchView.Checked;
 			General.Settings.GZVertexScale2D = vertexScale.Value;
 			General.Settings.GZOldHighlightMode = cbOldHighlightMode.Checked;
@@ -943,6 +949,18 @@ namespace CodeImp.DoomBuilder.Windows
 		private void tbDynLightIntensity_ValueChanged(object sender, EventArgs e) 
 		{
 			labelDynLightIntensity.Text = ((float)tbDynLightIntensity.Value / 10).ToString();
+		}
+
+		//mxd
+		private void anisotropicfiltering_ValueChanged(object sender, EventArgs e)
+		{
+			labelanisotropicfiltering.Text = anisotropicfiltering.Value == 0 ? "None" : (int)D3DDevice.AF_STEPS[anisotropicfiltering.Value] + "x";
+		}
+
+		//mxd
+		private void antialiasing_ValueChanged(object sender, EventArgs e)
+		{
+			labelantialiasing.Text = (antialiasing.Value == 0 ? "None" : D3DDevice.AA_STEPS[antialiasing.Value] + " samples");
 		}
 
 		#endregion
