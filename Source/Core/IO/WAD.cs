@@ -321,21 +321,7 @@ namespace CodeImp.DoomBuilder.IO
 				{
 					// Rewind
 					r.BaseStream.Position = 0;
-					
-					// Check hash
-					MD5 hasher = MD5.Create();
-					byte[] data = hasher.ComputeHash(r.BaseStream);
-
-					// Create a new Stringbuilder to collect the bytes and create a string.
-					StringBuilder hash = new StringBuilder();
-
-					// Loop through each byte of the hashed data and format each one as a hexadecimal string.
-					for(int i = 0; i < data.Length; i++)
-					{
-						hash.Append(data[i].ToString("x2"));
-					}
-
-					isofficialiwad = IWAD_HASHES.Contains(hash.ToString());
+					isofficialiwad = IWAD_HASHES.Contains(MD5Hash.Get(r.BaseStream));
 					if(!isreadonly && isofficialiwad) isreadonly = true;
 				}
 

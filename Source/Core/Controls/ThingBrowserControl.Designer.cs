@@ -40,15 +40,15 @@ namespace CodeImp.DoomBuilder.Controls
 			this.thingimages = new System.Windows.Forms.ImageList(this.components);
 			this.infopanel = new System.Windows.Forms.Panel();
 			this.spritepanel = new System.Windows.Forms.Panel();
-			this.spritetex = new CodeImp.DoomBuilder.Controls.ConfigurablePictureBox();
 			this.classname = new System.Windows.Forms.LinkLabel();
 			this.labelclassname = new System.Windows.Forms.Label();
-			this.typeid = new CodeImp.DoomBuilder.Controls.NumericTextbox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.tbFilter = new System.Windows.Forms.TextBox();
 			this.bClear = new System.Windows.Forms.Button();
 			this.updatetimer = new System.Windows.Forms.Timer(this.components);
 			this.typelist = new CodeImp.DoomBuilder.GZBuilder.Controls.MultiSelectTreeview();
+			this.spritetex = new CodeImp.DoomBuilder.Controls.ConfigurablePictureBox();
+			this.typeid = new CodeImp.DoomBuilder.Controls.NumericTextbox();
 			this.infopanel.SuspendLayout();
 			this.spritepanel.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.spritetex)).BeginInit();
@@ -141,27 +141,47 @@ namespace CodeImp.DoomBuilder.Controls
 			this.thingimages.Images.SetKeyName(17, "thing17.png");
 			this.thingimages.Images.SetKeyName(18, "thing18.png");
 			this.thingimages.Images.SetKeyName(19, "thing19.png");
-			this.thingimages.Images.SetKeyName(20, "category00.png");
-			this.thingimages.Images.SetKeyName(21, "category01.png");
-			this.thingimages.Images.SetKeyName(22, "category02.png");
-			this.thingimages.Images.SetKeyName(23, "category03.png");
-			this.thingimages.Images.SetKeyName(24, "category04.png");
-			this.thingimages.Images.SetKeyName(25, "category05.png");
-			this.thingimages.Images.SetKeyName(26, "category06.png");
-			this.thingimages.Images.SetKeyName(27, "category07.png");
-			this.thingimages.Images.SetKeyName(28, "category08.png");
-			this.thingimages.Images.SetKeyName(29, "category09.png");
-			this.thingimages.Images.SetKeyName(30, "category10.png");
-			this.thingimages.Images.SetKeyName(31, "category11.png");
-			this.thingimages.Images.SetKeyName(32, "category12.png");
-			this.thingimages.Images.SetKeyName(33, "category13.png");
-			this.thingimages.Images.SetKeyName(34, "category14.png");
-			this.thingimages.Images.SetKeyName(35, "category15.png");
-			this.thingimages.Images.SetKeyName(36, "category16.png");
-			this.thingimages.Images.SetKeyName(37, "category17.png");
-			this.thingimages.Images.SetKeyName(38, "category18.png");
-			this.thingimages.Images.SetKeyName(39, "category19.png");
-			this.thingimages.Images.SetKeyName(40, "Warning.png");
+			this.thingimages.Images.SetKeyName(20, "Warning.png");
+			this.thingimages.Images.SetKeyName(21, "category00.png");
+			this.thingimages.Images.SetKeyName(22, "category01.png");
+			this.thingimages.Images.SetKeyName(23, "category02.png");
+			this.thingimages.Images.SetKeyName(24, "category03.png");
+			this.thingimages.Images.SetKeyName(25, "category04.png");
+			this.thingimages.Images.SetKeyName(26, "category05.png");
+			this.thingimages.Images.SetKeyName(27, "category06.png");
+			this.thingimages.Images.SetKeyName(28, "category07.png");
+			this.thingimages.Images.SetKeyName(29, "category08.png");
+			this.thingimages.Images.SetKeyName(30, "category09.png");
+			this.thingimages.Images.SetKeyName(31, "category10.png");
+			this.thingimages.Images.SetKeyName(32, "category11.png");
+			this.thingimages.Images.SetKeyName(33, "category12.png");
+			this.thingimages.Images.SetKeyName(34, "category13.png");
+			this.thingimages.Images.SetKeyName(35, "category14.png");
+			this.thingimages.Images.SetKeyName(36, "category15.png");
+			this.thingimages.Images.SetKeyName(37, "category16.png");
+			this.thingimages.Images.SetKeyName(38, "category17.png");
+			this.thingimages.Images.SetKeyName(39, "category18.png");
+			this.thingimages.Images.SetKeyName(40, "category19.png");
+			this.thingimages.Images.SetKeyName(41, "category_open00.png");
+			this.thingimages.Images.SetKeyName(42, "category_open01.png");
+			this.thingimages.Images.SetKeyName(43, "category_open02.png");
+			this.thingimages.Images.SetKeyName(44, "category_open03.png");
+			this.thingimages.Images.SetKeyName(45, "category_open04.png");
+			this.thingimages.Images.SetKeyName(46, "category_open05.png");
+			this.thingimages.Images.SetKeyName(47, "category_open06.png");
+			this.thingimages.Images.SetKeyName(48, "category_open07.png");
+			this.thingimages.Images.SetKeyName(49, "category_open08.png");
+			this.thingimages.Images.SetKeyName(50, "category_open09.png");
+			this.thingimages.Images.SetKeyName(51, "category_open10.png");
+			this.thingimages.Images.SetKeyName(52, "category_open11.png");
+			this.thingimages.Images.SetKeyName(53, "category_open12.png");
+			this.thingimages.Images.SetKeyName(54, "category_open13.png");
+			this.thingimages.Images.SetKeyName(55, "category_open14.png");
+			this.thingimages.Images.SetKeyName(56, "category_open15.png");
+			this.thingimages.Images.SetKeyName(57, "category_open16.png");
+			this.thingimages.Images.SetKeyName(58, "category_open17.png");
+			this.thingimages.Images.SetKeyName(59, "category_open18.png");
+			this.thingimages.Images.SetKeyName(60, "category_open19.png");
 			// 
 			// infopanel
 			// 
@@ -192,22 +212,6 @@ namespace CodeImp.DoomBuilder.Controls
 			this.spritepanel.Size = new System.Drawing.Size(68, 68);
 			this.spritepanel.TabIndex = 23;
 			// 
-			// spritetex
-			// 
-			this.spritetex.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.Default;
-			this.spritetex.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.spritetex.Highlighted = false;
-			this.spritetex.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
-			this.spritetex.Location = new System.Drawing.Point(0, 0);
-			this.spritetex.Name = "spritetex";
-			this.spritetex.PageUnit = System.Drawing.GraphicsUnit.Pixel;
-			this.spritetex.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.None;
-			this.spritetex.Size = new System.Drawing.Size(64, 64);
-			this.spritetex.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-			this.spritetex.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.Default;
-			this.spritetex.TabIndex = 0;
-			this.spritetex.TabStop = false;
-			// 
 			// classname
 			// 
 			this.classname.ActiveLinkColor = System.Drawing.SystemColors.Highlight;
@@ -230,19 +234,6 @@ namespace CodeImp.DoomBuilder.Controls
 			this.labelclassname.TabIndex = 25;
 			this.labelclassname.Text = "Class:";
 			this.labelclassname.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			// 
-			// typeid
-			// 
-			this.typeid.AllowDecimal = false;
-			this.typeid.AllowNegative = false;
-			this.typeid.AllowRelative = false;
-			this.typeid.ForeColor = System.Drawing.SystemColors.WindowText;
-			this.typeid.ImeMode = System.Windows.Forms.ImeMode.Off;
-			this.typeid.Location = new System.Drawing.Point(60, 2);
-			this.typeid.Name = "typeid";
-			this.typeid.Size = new System.Drawing.Size(68, 20);
-			this.typeid.TabIndex = 1;
-			this.typeid.TextChanged += new System.EventHandler(this.typeid_TextChanged);
 			// 
 			// label1
 			// 
@@ -291,9 +282,40 @@ namespace CodeImp.DoomBuilder.Controls
 			this.typelist.Size = new System.Drawing.Size(304, 203);
 			this.typelist.TabIndex = 22;
 			this.typelist.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.typelist_MouseDoubleClick);
+			this.typelist.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.typelist_BeforeExpand);
+			this.typelist.BeforeCollapse += new System.Windows.Forms.TreeViewCancelEventHandler(this.typelist_BeforeCollapse);
 			this.typelist.MouseEnter += new System.EventHandler(this.typelist_MouseEnter);
 			this.typelist.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.typelist_KeyPress);
 			this.typelist.SelectionsChanged += new System.EventHandler(this.typelist_SelectionsChanged);
+			// 
+			// spritetex
+			// 
+			this.spritetex.CompositingQuality = System.Drawing.Drawing2D.CompositingQuality.Default;
+			this.spritetex.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.spritetex.Highlighted = false;
+			this.spritetex.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.NearestNeighbor;
+			this.spritetex.Location = new System.Drawing.Point(0, 0);
+			this.spritetex.Name = "spritetex";
+			this.spritetex.PageUnit = System.Drawing.GraphicsUnit.Pixel;
+			this.spritetex.PixelOffsetMode = System.Drawing.Drawing2D.PixelOffsetMode.None;
+			this.spritetex.Size = new System.Drawing.Size(64, 64);
+			this.spritetex.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+			this.spritetex.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.Default;
+			this.spritetex.TabIndex = 0;
+			this.spritetex.TabStop = false;
+			// 
+			// typeid
+			// 
+			this.typeid.AllowDecimal = false;
+			this.typeid.AllowNegative = false;
+			this.typeid.AllowRelative = false;
+			this.typeid.ForeColor = System.Drawing.SystemColors.WindowText;
+			this.typeid.ImeMode = System.Windows.Forms.ImeMode.Off;
+			this.typeid.Location = new System.Drawing.Point(60, 2);
+			this.typeid.Name = "typeid";
+			this.typeid.Size = new System.Drawing.Size(68, 20);
+			this.typeid.TabIndex = 1;
+			this.typeid.TextChanged += new System.EventHandler(this.typeid_TextChanged);
 			// 
 			// ThingBrowserControl
 			// 

@@ -33,7 +33,9 @@ namespace CodeImp.DoomBuilder.Controls
 	{
 		#region ================== Constants
 
-		private const int WARNING_ICON_INDEX = 40; //mxd
+		private const int WARNING_ICON_INDEX = 20; //mxd
+		private const int FOLDER_ICON_OFFSET = 21; //mxd
+		private const int FOLDER_OPEN_ICON_OFFSET = 41; //mxd
 
 		#endregion
 
@@ -119,7 +121,7 @@ namespace CodeImp.DoomBuilder.Controls
 					else
 					{
 						// Set regular icon
-						if((ti.Color >= 0) && (ti.Color < thingimages.Images.Count)) n.ImageIndex = ti.Color;
+						if((ti.Color > -1) && (ti.Color < WARNING_ICON_INDEX)) n.ImageIndex = ti.Color;
 						n.SelectedImageIndex = n.ImageIndex;
 					}
 
@@ -136,8 +138,8 @@ namespace CodeImp.DoomBuilder.Controls
 				}
 				else
 				{
-					cn.ImageIndex = thingimages.Images.Count / 2; // Offset to folder icons
-					if((tc.Color >= 0) && (tc.Color < thingimages.Images.Count)) cn.ImageIndex += tc.Color;
+					cn.ImageIndex = FOLDER_ICON_OFFSET; // Offset to folder icons
+					if((tc.Color > -1) && (tc.Color < WARNING_ICON_INDEX)) cn.ImageIndex += tc.Color;
 					cn.SelectedImageIndex = cn.ImageIndex;
 				}
 			}
@@ -508,6 +510,22 @@ namespace CodeImp.DoomBuilder.Controls
 		private void classname_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) 
 		{
 			General.OpenWebsite(General.Map.Config.ThingClassHelp.Replace("%K", thinginfo.ClassName));
+		}
+
+		//mxd. Switch to Open Folder icon
+		private void typelist_BeforeExpand(object sender, TreeViewCancelEventArgs e)
+		{
+			// Category node?
+			if(e.Node.ImageIndex > WARNING_ICON_INDEX)
+				e.Node.ImageIndex = e.Node.ImageIndex - FOLDER_ICON_OFFSET + FOLDER_OPEN_ICON_OFFSET;
+		}
+
+		//mxd. Switch to Closed Folder icon
+		private void typelist_BeforeCollapse(object sender, TreeViewCancelEventArgs e)
+		{
+			// Category node?
+			if(e.Node.ImageIndex > WARNING_ICON_INDEX)
+				e.Node.ImageIndex = e.Node.ImageIndex - FOLDER_OPEN_ICON_OFFSET + FOLDER_ICON_OFFSET;
 		}
 		
 		#endregion

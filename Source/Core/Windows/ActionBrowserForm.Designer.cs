@@ -56,7 +56,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.option0label = new System.Windows.Forms.Label();
 			this.cancel = new System.Windows.Forms.Button();
 			this.apply = new System.Windows.Forms.Button();
-			this.actions = new System.Windows.Forms.TreeView();
+			this.actions = new CodeImp.DoomBuilder.Controls.BufferedTreeView();
 			this.tabs = new System.Windows.Forms.TabControl();
 			this.tabactions = new System.Windows.Forms.TabPage();
 			this.filterPanel = new System.Windows.Forms.Panel();
@@ -525,7 +525,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private System.Windows.Forms.Button cancel;
 		private System.Windows.Forms.Button apply;
-		private System.Windows.Forms.TreeView actions;
+		private CodeImp.DoomBuilder.Controls.BufferedTreeView actions;
 		private System.Windows.Forms.TabControl tabs;
 		private System.Windows.Forms.TabPage tabactions;
 		private System.Windows.Forms.TabPage tabgeneralized;

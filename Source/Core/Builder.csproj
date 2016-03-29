@@ -721,6 +721,9 @@
     <Compile Include="Controls\ArgumentsControl.Designer.cs">
       <DependentUpon>ArgumentsControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\BufferedTreeView.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\ButtonsNumericTextboxDesigner.cs" />
     <Compile Include="Controls\CollapsibleSplitContainer.cs">
       <SubType>Component</SubType>
@@ -818,6 +821,7 @@
     <Compile Include="General\ErrorItem.cs" />
     <Compile Include="General\ErrorLogger.cs" />
     <Compile Include="General\FileLockChecker.cs" />
+    <Compile Include="General\MD5Hash.cs" />
     <Compile Include="General\MurmurHash2.cs" />
     <Compile Include="General\SavePurpose.cs" />
     <Compile Include="General\UpdateChecker.cs" />

@@ -278,10 +278,18 @@ namespace CodeImp.DoomBuilder.Controls
 		//TODO: rewrite this using reflection, move UpdateNavigator[Type] to appropriate parsers
 		internal List<CompilerError> UpdateNavigator()
 		{
-			// Store currently selected item name
-			string prevtext = editor.FunctionBar.Text;
 			List<CompilerError> result = new List<CompilerError>();
 			
+			// Just clear the navigator when current tab has no text
+			if(editor.Text.Length == 0)
+			{
+				editor.FunctionBar.Items.Clear();
+				editor.FunctionBar.Enabled = false;
+				return result;
+			}
+			
+			// Store currently selected item name
+			string prevtext = editor.FunctionBar.Text;
 			switch(config.ScriptType)
 			{
 				case ScriptType.ACS:

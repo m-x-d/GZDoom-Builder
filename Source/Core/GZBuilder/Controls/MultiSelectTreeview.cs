@@ -72,6 +72,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.Controls;
 
 #endregion
 
@@ -128,7 +129,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 	/// The TreeView control is a regular treeview with multi-selection capability.
 	/// </summary>
 	[ToolboxItem(true)]
-	public class MultiSelectTreeview : TreeView
+	public class MultiSelectTreeview : BufferedTreeView
 	{
 		public event TreeViewEventHandler AfterDeselect;
 		public event TreeViewEventHandler BeforeDeselect;
