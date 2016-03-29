@@ -56,9 +56,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BufferedTreeView.cs">
-      <SubType>Component</SubType>
-    </Compile>
     <Compile Include="BuilderPlug.cs" />
     <Compile Include="Interface\SoundEnvironmentPanel.cs">
       <SubType>UserControl</SubType>

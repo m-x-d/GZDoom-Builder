@@ -234,9 +234,10 @@ namespace CodeImp.DoomBuilder.Rendering
 		public void SetConstants(bool bilinear, float maxanisotropy)
 		{
 			//mxd. It's still nice to have anisotropic filtering when texture filtering is disabled
-			effect.SetValue(magfiltersettings, (int)(bilinear ? TextureFilter.Linear : TextureFilter.Point));
-			effect.SetValue(minfiltersettings, (int)TextureFilter.Anisotropic);
-			effect.SetValue(mipfiltersettings, (int)TextureFilter.Linear);
+			TextureFilter magminfilter = (bilinear ? TextureFilter.Linear : TextureFilter.Point);
+			effect.SetValue(magfiltersettings, magminfilter);
+			effect.SetValue(minfiltersettings, (maxanisotropy > 1.0f ? TextureFilter.Anisotropic : magminfilter));
+			effect.SetValue(mipfiltersettings, TextureFilter.Linear);
 			effect.SetValue(maxanisotropysetting, maxanisotropy);
 
 			settingschanged = true; //mxd

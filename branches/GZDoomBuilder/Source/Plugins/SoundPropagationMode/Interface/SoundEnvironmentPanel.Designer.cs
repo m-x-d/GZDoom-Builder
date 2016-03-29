@@ -29,7 +29,7 @@
 		private void InitializeComponent()
 		{
 			this.showwarningsonly = new System.Windows.Forms.CheckBox();
-			this.soundenvironments = new CodeImp.DoomBuilder.SoundPropagationMode.BufferedTreeView();
+			this.soundenvironments = new CodeImp.DoomBuilder.Controls.BufferedTreeView();
 			this.SuspendLayout();
 			// 
 			// showwarningsonly
@@ -73,7 +73,7 @@
 
 		#endregion
 
-		private BufferedTreeView soundenvironments;
+		private CodeImp.DoomBuilder.Controls.BufferedTreeView soundenvironments;
 		private System.Windows.Forms.CheckBox showwarningsonly;
 
 

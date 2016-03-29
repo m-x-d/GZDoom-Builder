@@ -16,7 +16,7 @@
 		private void InitializeComponent() {
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TagExplorer));
-			this.treeView = new System.Windows.Forms.TreeView();
+			this.treeView = new CodeImp.DoomBuilder.Controls.BufferedTreeView();
 			this.imageList1 = new System.Windows.Forms.ImageList(this.components);
 			this.cbDisplayMode = new System.Windows.Forms.ComboBox();
 			this.label1 = new System.Windows.Forms.Label();
@@ -243,7 +243,7 @@
 
 		#endregion
 
-		private System.Windows.Forms.TreeView treeView;
+		private CodeImp.DoomBuilder.Controls.BufferedTreeView treeView;
 		private System.Windows.Forms.ComboBox cbDisplayMode;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.ComboBox cbSortMode;
