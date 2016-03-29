@@ -1017,10 +1017,18 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				case ScriptStyleType.Comment:
 				case ScriptStyleType.String:
-				case ScriptStyleType.Include:
 					// Hide the list
 					scriptedit.AutoCCancel();
 					return false;
+
+				case ScriptStyleType.Include:
+					// Hide the list unless current word is a keyword
+					if(!start.StartsWith("#"))
+					{
+						scriptedit.AutoCCancel();
+						return false;
+					}
+					break;
 			}
 
 			// Filter the list
@@ -1360,27 +1368,47 @@ namespace CodeImp.DoomBuilder.Controls
 			// F3 for Find Next
 			if((e.KeyCode == Keys.F3) && (e.Modifiers == Keys.None))
 			{
-				if(OnFindNext != null) OnFindNext();
+				if(OnFindNext != null)
+				{
+					OnFindNext();
+					skiptextinsert = true;
+				}
 			}
 			// F2 for Find Previous (mxd)
 			else if((e.KeyCode == Keys.F2) && (e.Modifiers == Keys.None))
 			{
-				if(OnFindPrevious != null) OnFindPrevious();
+				if(OnFindPrevious != null)
+				{
+					OnFindPrevious();
+					skiptextinsert = true;
+				}
 			}
 			// CTRL+F for find & replace
-			else if((e.KeyCode == Keys.F) && ((e.Modifiers & Keys.Control) == Keys.Control))
+			else if((e.KeyCode == Keys.F) && (e.Modifiers == Keys.Control))
 			{
-				if(OnOpenFindAndReplace != null) OnOpenFindAndReplace();
+				if(OnOpenFindAndReplace != null)
+				{
+					OnOpenFindAndReplace();
+					skiptextinsert = true;
+				}
 			}
 			// CTRL+S for save
-			else if((e.KeyCode == Keys.S) && ((e.Modifiers & Keys.Control) == Keys.Control))
+			else if((e.KeyCode == Keys.S) && (e.Modifiers == Keys.Control))
 			{
-				if(OnExplicitSaveTab != null) OnExplicitSaveTab();
+				if(OnExplicitSaveTab != null)
+				{
+					OnExplicitSaveTab();
+					skiptextinsert = true;
+				}
 			}
 			// CTRL+O for open
-			else if((e.KeyCode == Keys.O) && ((e.Modifiers & Keys.Control) == Keys.Control))
+			else if((e.KeyCode == Keys.O) && (e.Modifiers == Keys.Control))
 			{
-				if(OnOpenScriptBrowser != null) OnOpenScriptBrowser();
+				if(OnOpenScriptBrowser != null)
+				{
+					OnOpenScriptBrowser();
+					skiptextinsert = true;
+				}
 			}
 			// CTRL+Space to autocomplete
 			else if((e.KeyCode == Keys.Space) && (e.Modifiers == Keys.Control))
@@ -1389,7 +1417,8 @@ namespace CodeImp.DoomBuilder.Controls
 				scriptedit.CallTipCancel();
 				
 				// Show autocomplete
-				if(ShowAutoCompletionList()) skiptextinsert = true;
+				ShowAutoCompletionList();
+				skiptextinsert = true;
 			}
 			//mxd. Tab to expand code snippet. Do it only when the text cursor is at the end of a keyword.
 			else if(e.KeyCode == Keys.Tab)
