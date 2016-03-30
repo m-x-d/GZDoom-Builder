@@ -208,6 +208,12 @@ namespace CodeImp.DoomBuilder.Rendering
 		{
 			return "[A=" + a + ", R=" + r + ", G=" + g + ", B=" + b + "]";
 		}
+
+		//mxd
+		public bool Equals(PixelColor other)
+		{
+			return (r == other.r && g == other.g && b == other.b && a == other.a);
+		}
 		
 		#endregion
 	}

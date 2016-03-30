@@ -2521,12 +2521,6 @@ namespace CodeImp.DoomBuilder
 		}
 
 		//mxd
-		public SizeF GetTextSize(string text, float scale) 
-		{
-			return graphics.Font.GetTextSize(text, scale);
-		}
-
-		//mxd
 		[BeginAction("snapvertstogrid")]
 		private void SnapSelectedMapElementsToGrid() 
 		{

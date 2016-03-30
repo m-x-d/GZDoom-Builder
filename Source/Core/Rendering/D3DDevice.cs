@@ -63,8 +63,6 @@ namespace CodeImp.DoomBuilder.Rendering
 		private ShaderManager shaders;
 		private Surface backbuffer;
 		private Surface depthbuffer;
-		private TextFont font;
-		private ResourceImage fonttexture;
 		
 		// Disposing
 		private bool isdisposed;
@@ -81,8 +79,6 @@ namespace CodeImp.DoomBuilder.Rendering
 		internal ShaderManager Shaders { get { return shaders; } }
 		internal Surface BackBuffer { get { return backbuffer; } }
 		internal Surface DepthBuffer { get { return depthbuffer; } }
-		internal TextFont Font { get { return font; } }
-		internal Texture FontTexture { get { return fonttexture.Texture; } }
 		internal Filter PostFilter { get { return postfilter; } }
 		internal Filter MipGenerateFilter { get { return mipgeneratefilter; } }
 		
@@ -115,8 +111,6 @@ namespace CodeImp.DoomBuilder.Rendering
 				rendertarget = null;
 				if(backbuffer != null) backbuffer.Dispose();
 				if(depthbuffer != null) depthbuffer.Dispose();
-				if(font != null) font.Dispose();
-				if(fonttexture != null) fonttexture.Dispose();
 				if(device != null) device.Dispose();
 
 				if(ObjectTable.Objects.Count > 1) //mxd. Direct3D itself is not disposed while the editor is running
@@ -312,14 +306,6 @@ namespace CodeImp.DoomBuilder.Rendering
 
 			// Create shader manager
 			shaders = new ShaderManager(this);
-			
-			// Font
-			postfilter = Filter.Box;		// Only for the font. This will be reset in SetupSettings (see below)
-			font = new TextFont();
-			fonttexture = new ResourceImage("CodeImp.DoomBuilder.Resources.Font.png");
-			fonttexture.LoadImage();
-			fonttexture.MipMapLevels = 2;
-			fonttexture.CreateTexture();
 			
 			// Initialize settings
 			SetupSettings();

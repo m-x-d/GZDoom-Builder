@@ -172,6 +172,9 @@ namespace CodeImp.DoomBuilder.Windows
 		//mxd
 		private System.Timers.Timer blinkTimer; 
 		private bool editformopen;
+
+		//mxd. Misc drawing
+		private Graphics graphics;
 		
 		#endregion
 
@@ -287,6 +290,9 @@ namespace CodeImp.DoomBuilder.Windows
 			//mxd. Hints
 			hintsPanel = new HintsPanel();
 			hintsDocker = new Docker("hints", "Help", hintsPanel);
+
+			//mxd. Graphics
+			graphics = Graphics.FromHwndInternal(windowptr);
 		}
 		
 		#endregion
@@ -4222,6 +4228,15 @@ namespace CodeImp.DoomBuilder.Windows
 					General.Exit(true);
 				}
 			}
+		}
+
+		#endregion
+
+		#region ================== Graphics (mxd)
+
+		public SizeF MeasureString(string text, Font font)
+		{
+			return graphics.MeasureString(text, font);
 		}
 
 		#endregion

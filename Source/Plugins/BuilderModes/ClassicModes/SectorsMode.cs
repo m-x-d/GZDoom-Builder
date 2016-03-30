@@ -138,11 +138,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(labels != null)
 			{
 				// Dispose old labels
-				foreach(KeyValuePair<Sector, TextLabel[]> lbl in labels)
-					foreach(TextLabel l in lbl.Value) l.Dispose();
+				foreach(TextLabel[] lbl in labels.Values)
+					foreach(TextLabel l in lbl) l.Dispose();
 			}
 
 			// Make text labels for sectors
+			PixelColor c = (BuilderPlug.Me.UseHighlight ? General.Colors.Highlight : General.Colors.Selection); //mxd
 			labels = new Dictionary<Sector, TextLabel[]>(General.Map.Map.Sectors.Count);
 			foreach(Sector s in General.Map.Map.Sectors)
 			{
@@ -151,13 +152,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				for(int i = 0; i < s.Labels.Count; i++)
 				{
 					Vector2D v = s.Labels[i].position;
-					labelarray[i] = new TextLabel(20);
+					labelarray[i] = new TextLabel();
 					labelarray[i].TransformCoords = true;
 					labelarray[i].Rectangle = new RectangleF(v.x, v.y, 0.0f, 0.0f);
 					labelarray[i].AlignX = TextAlignmentX.Center;
 					labelarray[i].AlignY = TextAlignmentY.Middle;
-					labelarray[i].Scale = 14f;
-					labelarray[i].Color = General.Colors.Highlight.WithAlpha(255);
+					labelarray[i].Color = c;
 					labelarray[i].Backcolor = General.Colors.Background.WithAlpha(255);
 				}
 				labels.Add(s, labelarray);
@@ -192,6 +192,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				if(BuilderPlug.Me.ViewSelectionNumbers) 
 				{
+					List<TextLabel> torender = new List<TextLabel>(orderedselection.Count);
 					foreach(Sector s in orderedselection) 
 					{
 						// Render labels
@@ -202,9 +203,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 							// Render only when enough space for the label to see
 							float requiredsize = (l.TextSize.Height / 2) / renderer.Scale;
-							if(requiredsize < s.Labels[i].radius) renderer.RenderText(l);
+							if(requiredsize < s.Labels[i].radius) torender.Add(l);
 						}
 					}
+					renderer.RenderText(torender);
 				}
 
 				//mxd. Render effect labels
@@ -221,9 +223,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd
 		private void RenderEffectLabels(Dictionary<Sector, string[]> labelsGroup) 
 		{
+			List<TextLabel> torender = new List<TextLabel>(labelsGroup.Count);
 			foreach(KeyValuePair<Sector, string[]> group in labelsGroup) 
 			{
-				// Render labels
+				// Pick which text variant to use
 				TextLabel[] labelarray = labels[group.Key];
 				for(int i = 0; i < group.Key.Labels.Count; i++) 
 				{
@@ -231,10 +234,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					l.Color = General.Colors.InfoLine;
 
 					// Render only when enough space for the label to see
-					float requiredsize = (General.Map.GetTextSize(group.Value[0], l.Scale).Width) / renderer.Scale;
+					float requiredsize = (General.Interface.MeasureString(group.Value[0], l.Font).Width / 2) / renderer.Scale;
 					if(requiredsize > group.Key.Labels[i].radius) 
 					{
-						requiredsize = (General.Map.GetTextSize(group.Value[1], l.Scale).Width) / renderer.Scale;
+						requiredsize = (General.Interface.MeasureString(group.Value[1], l.Font).Width / 2) / renderer.Scale;
 						l.Text = (requiredsize > group.Key.Labels[i].radius ? "+" : group.Value[1]);
 					} 
 					else 
@@ -242,9 +245,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						l.Text = group.Value[0];
 					}
 
-					renderer.RenderText(l);
+					torender.Add(l);
 				}
 			}
+
+			// Render labels
+			renderer.RenderText(torender);
 		}
 
 		//mxd
@@ -286,8 +292,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			string[] result = new[] { string.Empty, string.Empty };
 			if(s.Effect != 0 && s.Tag != 0)
 			{
-				result[0] = tagstr + "; " + effectstr;
-				result[1] = tagstrshort + " " + effectstrshort;
+				result[0] = tagstr + Environment.NewLine + effectstr;
+				result[1] = tagstrshort + Environment.NewLine + effectstrshort;
 			}
 			else if(s.Effect != 0)
 			{
@@ -413,14 +419,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if((highlighted != null) && !highlighted.IsDisposed)
 			{
 				TextLabel[] labelarray = labels[highlighted];
-				foreach(TextLabel l in labelarray) l.Color = General.Colors.Selection;
+				PixelColor c = (BuilderPlug.Me.UseHighlight ? General.Colors.Highlight : General.Colors.Selection);
+				foreach(TextLabel l in labelarray) l.Color = c;
 			}
 			
 			// Change label color
 			if((s != null) && !s.IsDisposed)
 			{
 				TextLabel[] labelarray = labels[s];
-				foreach(TextLabel l in labelarray) l.Color = General.Colors.Highlight;
+				PixelColor c = (BuilderPlug.Me.UseHighlight ? General.Colors.Selection : General.Colors.Highlight);
+				foreach(TextLabel l in labelarray) l.Color = c;
 			}
 			
 			// If we're changing associations, then we
@@ -485,11 +493,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					{ 
 						//mxd
 						string selectedCount = General.Map.Map.SelectedSectorsCount.ToString();
+						PixelColor c = (BuilderPlug.Me.UseHighlight ? General.Colors.Highlight : General.Colors.Selection);
 						TextLabel[] labelarray = labels[s];
 						foreach(TextLabel l in labelarray) 
 						{
 							l.Text = selectedCount;
-							l.Color = General.Colors.Selection;
+							l.Color = c;
 						}
 
 						UpdateEffectLabels();
@@ -545,6 +554,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			// Go for all labels in all selected sectors
 			ICollection<Sector> orderedselection = General.Map.Map.GetSelectedSectors(true);
+			PixelColor c = (BuilderPlug.Me.UseHighlight ? General.Colors.Highlight : General.Colors.Selection); //mxd
 			int index = 0;
 			foreach(Sector s in orderedselection)
 			{
@@ -554,7 +564,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Make sure the text and color are right
 					int labelnum = index + 1;
 					l.Text = labelnum.ToString();
-					l.Color = General.Colors.Selection;
+					l.Color = c;
 				}
 				index++;
 			}
@@ -815,7 +825,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					// Update overlay
 					TextLabel[] labelarray = labels[highlighted];
-					foreach(TextLabel l in labelarray) l.Color = General.Colors.Highlight;
+					PixelColor c = (BuilderPlug.Me.UseHighlight ? General.Colors.Selection : General.Colors.Highlight);
+					foreach(TextLabel l in labelarray) l.Color = c;
 					UpdateOverlaySurfaces(); //mxd
 					UpdateOverlay();
 					renderer.Present();
@@ -1320,6 +1331,26 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			UpdateEffectLabels(); //mxd
 			UpdateOverlaySurfaces(); //mxd
 			base.OnRedoEnd(); //mxd
+		}
+
+		//mxd
+		public override void ToggleHighlight()
+		{
+			// Update label colors
+			PixelColor c = (BuilderPlug.Me.UseHighlight ? General.Colors.Selection : General.Colors.Highlight);
+			foreach(TextLabel[] labelarray in labels.Values)
+				foreach(TextLabel l in labelarray) l.Color = c;
+
+			// Update highlighted label color
+			if((highlighted != null) && !highlighted.IsDisposed)
+			{
+				TextLabel[] labelarray = labels[highlighted];
+				c = (BuilderPlug.Me.UseHighlight ? General.Colors.Highlight : General.Colors.Selection);
+				foreach(TextLabel l in labelarray) l.Color = c;
+			}
+			
+			// Pass to base
+			base.ToggleHighlight();
 		}
 
 		//mxd
