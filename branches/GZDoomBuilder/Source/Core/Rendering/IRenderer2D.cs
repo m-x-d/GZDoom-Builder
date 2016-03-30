@@ -75,6 +75,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		void RenderArrows(ICollection<Line3D> line); //mxd
 		void RenderArrows(ICollection<Line3D> line, bool transformcoords); //mxd
 		void RenderText(TextLabel text);
+		void RenderText(List<TextLabel> labels); //mxd
 		void RenderGeometry(FlatVertex[] vertices, ImageData texture, bool transformcoords);
 		void RenderHighlight(FlatVertex[] vertices, int color); //mxd
 		void RedrawSurface();

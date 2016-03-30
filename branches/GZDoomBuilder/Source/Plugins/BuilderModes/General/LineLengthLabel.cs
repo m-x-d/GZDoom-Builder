@@ -29,8 +29,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	{
 		#region ================== Constants
 
-		private const int TEXT_CAPACITY = 15;
-		private const float TEXT_SCALE = 14f;
 		private const string VALUE_FORMAT = "0";
 
 		#endregion
@@ -105,12 +103,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Initialization
 		private void Initialize()
 		{
-			label = new TextLabel(TEXT_CAPACITY);
+			label = new TextLabel();
 			label.AlignX = TextAlignmentX.Center;
 			label.AlignY = TextAlignmentY.Middle;
 			label.Color = General.Colors.Highlight;
 			label.Backcolor = General.Colors.Background;
-			label.Scale = TEXT_SCALE;
 			label.TransformCoords = true;
 		}
 		
@@ -134,7 +131,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(showangle)
 			{
 				int displayangle = General.ClampAngle((int)Math.Round(Angle2D.RadToDeg(delta.GetAngle())));
-				label.Text = "l:" + length.ToString(VALUE_FORMAT) + "; a:" + displayangle;
+				label.Text = "L:" + length.ToString(VALUE_FORMAT) + "; A:" + displayangle;
 			}
 			else
 			{
@@ -194,7 +191,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				Vector2D perpendicular = (end - start).GetPerpendicular();
 				float angle = perpendicular.GetAngle();
-				SizeF textsize = General.Map.GetTextSize(label.Text, label.Scale);
+				SizeF textsize = General.Interface.MeasureString(label.Text, label.Font);
 				float offset = textsize.Width * Math.Abs((float)Math.Sin(angle)) + textsize.Height * Math.Abs((float)Math.Cos(angle));
 				perpendicular = perpendicular.GetNormal().GetScaled(offset / 2.0f / General.Map.Renderer2D.Scale);
 				start += perpendicular;

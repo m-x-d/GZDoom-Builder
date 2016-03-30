@@ -1335,9 +1335,7 @@
       <SubType>Designer</SubType>
       <DependentUpon>ThingsFiltersForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Resources\Font.png" />
     <EmbeddedResource Include="Resources\White.png" />
-    <EmbeddedResource Include="Resources\Font.cfg" />
     <EmbeddedResource Include="Windows\UpdateForm.resx">
       <DependentUpon>UpdateForm.cs</DependentUpon>
     </EmbeddedResource>

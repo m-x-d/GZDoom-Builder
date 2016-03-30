@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Geometry;
@@ -76,6 +77,7 @@ namespace CodeImp.DoomBuilder.Windows
 		void ResumeExclusiveMouseInput();
 		void SetCursor(Cursor cursor);
 		void MessageBeep(MessageBeepType type);
+		SizeF MeasureString(string text, Font font); //mxd
 
 		/// <summary>
 		/// This moves the focus to the editing display.

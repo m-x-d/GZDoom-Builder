@@ -1554,34 +1554,90 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		// This renders text
-		public void RenderText(TextLabel text)
+		public void RenderText(TextLabel label)
 		{
-			// Update the text if needed
-			text.Update(translatex, translatey, scale, -scale);
-			
-			// Text is created?
-			if(text.VertexBuffer != null)
-			{
-				// Set renderstates for rendering
-				graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
-				graphics.Device.SetRenderState(RenderState.ZEnable, false);
-				graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, true);
-				graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
-				graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
-				graphics.Device.SetRenderState(RenderState.FogEnable, false);
-				graphics.Shaders.Display2D.Texture1 = graphics.FontTexture;
-				SetWorldTransformation(false);
-				graphics.Shaders.Display2D.SetSettings(1f, 1f, 0f, 1f, true);
-				graphics.Device.SetStreamSource(0, text.VertexBuffer, 0, FlatVertex.Stride);
+			//mxd. Update the text if needed
+			RectangleF bbox = label.Update(translatex, translatey, scale, -scale);
 
-				// Draw
-				graphics.Shaders.Display2D.Begin();
-				graphics.Shaders.Display2D.BeginPass(1); //mxd
-				//graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, 0, text.NumFaces >> 1); //mxd. Seems to be working fine without this line, soooo...
-				graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, 0, text.NumFaces);
-				graphics.Shaders.Display2D.EndPass();
-				graphics.Shaders.Display2D.End();
+			//mxd. Have graphics / on screen?
+			if(label.VertexBuffer == null || (bbox.Right < 0.1f) || (bbox.Left > windowsize.Width) || (bbox.Bottom < 0.1f) || (bbox.Top > windowsize.Height))
+				return;
+			
+			// Set renderstates for rendering
+			graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
+			graphics.Device.SetRenderState(RenderState.ZEnable, false);
+			graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, true);
+			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
+			graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
+			graphics.Device.SetRenderState(RenderState.FogEnable, false);
+			graphics.Shaders.Display2D.Texture1 = label.Texture;
+			SetWorldTransformation(false);
+			graphics.Shaders.Display2D.SetSettings(1f, 1f, 0f, 1f, true);
+			graphics.Device.SetStreamSource(0, label.VertexBuffer, 0, FlatVertex.Stride);
+
+			// Draw
+			graphics.Shaders.Display2D.Begin();
+			graphics.Shaders.Display2D.BeginPass(1); //mxd
+			graphics.Device.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
+			graphics.Shaders.Display2D.EndPass();
+			graphics.Shaders.Display2D.End();
+		}
+
+		//mxd. This renders text
+		public void RenderText(List<TextLabel> labels)
+		{
+			// Update labels
+			int skipped = 0;
+			foreach(TextLabel label in labels)
+			{
+				// Update the text if needed
+				RectangleF bbox = label.Update(translatex, translatey, scale, -scale);
+
+				// Have graphics / on screen?
+				if(label.VertexBuffer == null || (bbox.Right < 0.1f) || (bbox.Left > windowsize.Width) || (bbox.Bottom < 0.1f) || (bbox.Top > windowsize.Height))
+				{
+					label.SkipRendering = true;
+					skipped++;
+				}
+				else
+				{
+					label.SkipRendering = false;
+				}
 			}
+
+			if(labels.Count == skipped) return;
+			
+			// Set renderstates for rendering
+			graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
+			graphics.Device.SetRenderState(RenderState.ZEnable, false);
+			graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, true);
+			graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
+			graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
+			graphics.Device.SetRenderState(RenderState.FogEnable, false);
+			SetWorldTransformation(false);
+			graphics.Shaders.Display2D.SetSettings(1f, 1f, 0f, 1f, true);
+			
+			// Begin drawing
+			graphics.Shaders.Display2D.Begin();
+			graphics.Shaders.Display2D.BeginPass(1);
+
+			foreach(TextLabel label in labels)
+			{
+				// Text is created?
+				if(!label.SkipRendering)
+				{
+					graphics.Shaders.Display2D.Texture1 = label.Texture;
+					graphics.Shaders.Display2D.ApplySettings();
+					graphics.Device.SetStreamSource(0, label.VertexBuffer, 0, FlatVertex.Stride);
+
+					// Draw
+					graphics.Device.DrawPrimitives(PrimitiveType.TriangleStrip, 0, 2);
+				}
+			}
+			
+			// Finish drawing
+			graphics.Shaders.Display2D.EndPass();
+			graphics.Shaders.Display2D.End();
 		}
 		
 		// This renders a rectangle with given border size and color
