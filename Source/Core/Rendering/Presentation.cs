@@ -63,7 +63,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			standard = new Presentation();
 			standard.layers.Add(new PresentLayer(RendererLayer.Background, BlendingMode.Mask, General.Settings.BackgroundAlpha));
 			standard.layers.Add(new PresentLayer(RendererLayer.Surface, BlendingMode.Mask));
-			standard.layers.Add(new PresentLayer(RendererLayer.Things, BlendingMode.Alpha, THINGS_BACK_ALPHA));
+			standard.layers.Add(new PresentLayer(RendererLayer.Things, BlendingMode.Alpha, General.Settings.InactiveThingsAlpha));
 			standard.layers.Add(new PresentLayer(RendererLayer.Grid, BlendingMode.Mask));
 			standard.layers.Add(new PresentLayer(RendererLayer.Geometry, BlendingMode.Alpha, 1f, true));
 			standard.layers.Add(new PresentLayer(RendererLayer.Overlay, BlendingMode.Alpha, 1f, true));

@@ -63,6 +63,8 @@ namespace CodeImp.DoomBuilder.Windows
 			// Interface
 			imagebrightness.Value = General.Settings.ImageBrightness;
 			doublesidedalpha.Value = General.Clamp((int)((1.0f - General.Settings.DoubleSidedAlpha) * 10.0f), doublesidedalpha.Minimum, doublesidedalpha.Maximum);
+			inactivethingsalpha.Value = General.Clamp((int)((1.0f - General.Settings.InactiveThingsAlpha) * 10.0f), inactivethingsalpha.Minimum, inactivethingsalpha.Maximum); //mxd
+			hiddenthingsalpha.Value = General.Clamp((int)((1.0f - General.Settings.HiddenThingsAlpha) * 10.0f), hiddenthingsalpha.Minimum, hiddenthingsalpha.Maximum); //mxd
 			defaultviewmode.SelectedIndex = General.Settings.DefaultViewMode;
 			fieldofview.Value = General.Clamp(General.Settings.VisualFOV / 10, fieldofview.Minimum, fieldofview.Maximum);
 			mousespeed.Value = General.Clamp(General.Settings.MouseSpeed / 100, mousespeed.Minimum, mousespeed.Maximum);
@@ -261,6 +263,8 @@ namespace CodeImp.DoomBuilder.Windows
 			// Apply interface
 			General.Settings.ImageBrightness = imagebrightness.Value;
 			General.Settings.DoubleSidedAlpha = 1.0f - (doublesidedalpha.Value * 0.1f);
+			General.Settings.InactiveThingsAlpha = 1.0f - (inactivethingsalpha.Value * 0.1f); //mxd
+			General.Settings.HiddenThingsAlpha = 1.0f - (hiddenthingsalpha.Value * 0.1f); //mxd
 			General.Settings.DefaultViewMode = defaultviewmode.SelectedIndex;
 			General.Settings.VisualFOV = fieldofview.Value * 10;
 			General.Settings.MouseSpeed = mousespeed.Value * 100;
@@ -931,6 +935,20 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			int percent = doublesidedalpha.Value * 10;
 			doublesidedalphalabel.Text = percent + "%";
+		}
+
+		//mxd
+		private void inactivethingsalpha_ValueChanged(object sender, EventArgs e)
+		{
+			int percent = inactivethingsalpha.Value * 10;
+			inactivethingsalphalabel.Text = percent + "%";
+		}
+
+		//mxd
+		private void hiddenthingsalpha_ValueChanged(object sender, EventArgs e)
+		{
+			int percent = hiddenthingsalpha.Value * 10;
+			hiddenthingsalphalabel.Text = percent + "%";
 		}
 
 		//mxd

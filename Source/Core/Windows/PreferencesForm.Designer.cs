@@ -144,6 +144,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.blackbrowsers = new System.Windows.Forms.CheckBox();
 			this.cbMarkExtraFloors = new System.Windows.Forms.CheckBox();
 			this.appearancegroup1 = new System.Windows.Forms.GroupBox();
+			this.hiddenthingsalphalabel = new System.Windows.Forms.Label();
+			this.label32 = new System.Windows.Forms.Label();
+			this.inactivethingsalphalabel = new System.Windows.Forms.Label();
+			this.label30 = new System.Windows.Forms.Label();
 			this.labelantialiasing = new System.Windows.Forms.Label();
 			this.antialiasing = new System.Windows.Forms.TrackBar();
 			this.labelanisotropicfiltering = new System.Windows.Forms.Label();
@@ -155,11 +159,13 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tbDynLightSize = new System.Windows.Forms.TrackBar();
 			this.labelDynLightCount = new System.Windows.Forms.Label();
 			this.tbDynLightCount = new System.Windows.Forms.TrackBar();
+			this.imagebrightness = new System.Windows.Forms.TrackBar();
 			this.animatevisualselection = new System.Windows.Forms.CheckBox();
+			this.hiddenthingsalpha = new System.Windows.Forms.TrackBar();
+			this.inactivethingsalpha = new System.Windows.Forms.TrackBar();
 			this.visualbilinear = new System.Windows.Forms.CheckBox();
 			this.classicbilinear = new System.Windows.Forms.CheckBox();
 			this.imagebrightnesslabel = new System.Windows.Forms.Label();
-			this.imagebrightness = new System.Windows.Forms.TrackBar();
 			this.tabscripteditor = new System.Windows.Forms.TabPage();
 			this.groupBox9 = new System.Windows.Forms.GroupBox();
 			this.scriptshowfolding = new System.Windows.Forms.CheckBox();
@@ -246,6 +252,8 @@ namespace CodeImp.DoomBuilder.Windows
 			((System.ComponentModel.ISupportInitialize)(this.tbDynLightSize)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.tbDynLightCount)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.imagebrightness)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.hiddenthingsalpha)).BeginInit();
+			((System.ComponentModel.ISupportInitialize)(this.inactivethingsalpha)).BeginInit();
 			this.tabscripteditor.SuspendLayout();
 			this.groupBox9.SuspendLayout();
 			this.groupBox8.SuspendLayout();
@@ -321,7 +329,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.keepfilterfocused.Location = new System.Drawing.Point(32, 350);
 			this.keepfilterfocused.Name = "keepfilterfocused";
 			this.keepfilterfocused.Size = new System.Drawing.Size(280, 17);
-			this.keepfilterfocused.TabIndex = 52;
+			this.keepfilterfocused.TabIndex = 9;
 			this.keepfilterfocused.Text = "Keep Filter input focused when image browser is open";
 			this.toolTip1.SetToolTip(this.keepfilterfocused, "When enabled, all key presses in \r\nimage browsers will be redirected \r\nto the Fil" +
 					"ter textbox.");
@@ -333,7 +341,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.checkforupdates.Location = new System.Drawing.Point(32, 413);
 			this.checkforupdates.Name = "checkforupdates";
 			this.checkforupdates.Size = new System.Drawing.Size(160, 17);
-			this.checkforupdates.TabIndex = 51;
+			this.checkforupdates.TabIndex = 12;
 			this.checkforupdates.Text = "Check for updates at startup";
 			this.checkforupdates.UseVisualStyleBackColor = true;
 			// 
@@ -343,7 +351,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.cbStoreEditTab.Location = new System.Drawing.Point(32, 392);
 			this.cbStoreEditTab.Name = "cbStoreEditTab";
 			this.cbStoreEditTab.Size = new System.Drawing.Size(203, 17);
-			this.cbStoreEditTab.TabIndex = 50;
+			this.cbStoreEditTab.TabIndex = 11;
 			this.cbStoreEditTab.Text = "Edit windows remember selected tabs";
 			this.cbStoreEditTab.UseVisualStyleBackColor = true;
 			// 
@@ -353,7 +361,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.locatetexturegroup.Location = new System.Drawing.Point(32, 329);
 			this.locatetexturegroup.Name = "locatetexturegroup";
 			this.locatetexturegroup.Size = new System.Drawing.Size(267, 17);
-			this.locatetexturegroup.TabIndex = 49;
+			this.locatetexturegroup.TabIndex = 8;
 			this.locatetexturegroup.Text = "Select texture group when opening image browsers";
 			this.toolTip1.SetToolTip(this.locatetexturegroup, "When enabled, the group current texture belongs to\r\nwill be selected when opening" +
 					" image browsers.\r\nWhen disabled, \"All\" texture group will be selected.");
@@ -368,7 +376,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.recentFiles.Minimum = 8;
 			this.recentFiles.Name = "recentFiles";
 			this.recentFiles.Size = new System.Drawing.Size(116, 45);
-			this.recentFiles.TabIndex = 46;
+			this.recentFiles.TabIndex = 5;
 			this.recentFiles.TickStyle = System.Windows.Forms.TickStyle.Both;
 			this.recentFiles.Value = 8;
 			this.recentFiles.ValueChanged += new System.EventHandler(this.recentFiles_ValueChanged);
@@ -419,7 +427,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.vertexScale.Minimum = 1;
 			this.vertexScale.Name = "vertexScale";
 			this.vertexScale.Size = new System.Drawing.Size(116, 45);
-			this.vertexScale.TabIndex = 43;
+			this.vertexScale.TabIndex = 4;
 			this.vertexScale.TickStyle = System.Windows.Forms.TickStyle.Both;
 			this.vertexScale.Value = 1;
 			this.vertexScale.ValueChanged += new System.EventHandler(this.vertexScale_ValueChanged);
@@ -430,7 +438,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.cbSynchCameras.Location = new System.Drawing.Point(32, 371);
 			this.cbSynchCameras.Name = "cbSynchCameras";
 			this.cbSynchCameras.Size = new System.Drawing.Size(260, 17);
-			this.cbSynchCameras.TabIndex = 42;
+			this.cbSynchCameras.TabIndex = 10;
 			this.cbSynchCameras.Text = "Sync camera position between 2D and 3D modes";
 			this.cbSynchCameras.UseVisualStyleBackColor = true;
 			// 
@@ -440,7 +448,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.showtexturesizes.Location = new System.Drawing.Point(32, 308);
 			this.showtexturesizes.Name = "showtexturesizes";
 			this.showtexturesizes.Size = new System.Drawing.Size(208, 17);
-			this.showtexturesizes.TabIndex = 41;
+			this.showtexturesizes.TabIndex = 7;
 			this.showtexturesizes.Text = "Show texture and flat sizes in browsers";
 			this.showtexturesizes.UseVisualStyleBackColor = true;
 			// 
@@ -450,7 +458,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.scriptontop.Location = new System.Drawing.Point(32, 287);
 			this.scriptontop.Name = "scriptontop";
 			this.scriptontop.Size = new System.Drawing.Size(227, 17);
-			this.scriptontop.TabIndex = 40;
+			this.scriptontop.TabIndex = 6;
 			this.scriptontop.Text = "Script Editor always on top of main window";
 			this.scriptontop.UseVisualStyleBackColor = true;
 			// 
@@ -462,7 +470,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.zoomfactor.Minimum = 1;
 			this.zoomfactor.Name = "zoomfactor";
 			this.zoomfactor.Size = new System.Drawing.Size(116, 45);
-			this.zoomfactor.TabIndex = 37;
+			this.zoomfactor.TabIndex = 3;
 			this.zoomfactor.TickStyle = System.Windows.Forms.TickStyle.Both;
 			this.zoomfactor.Value = 3;
 			this.zoomfactor.ValueChanged += new System.EventHandler(this.zoomfactor_ValueChanged);
@@ -572,7 +580,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label1
 			// 
 			label1.AutoSize = true;
-			label1.Location = new System.Drawing.Point(22, 70);
+			label1.Location = new System.Drawing.Point(45, 134);
 			label1.Name = "label1";
 			label1.Size = new System.Drawing.Size(143, 13);
 			label1.TabIndex = 20;
@@ -582,7 +590,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label18
 			// 
 			label18.AutoSize = true;
-			label18.Location = new System.Drawing.Point(18, 108);
+			label18.Location = new System.Drawing.Point(41, 171);
 			label18.Name = "label18";
 			label18.Size = new System.Drawing.Size(147, 13);
 			label18.TabIndex = 25;
@@ -594,7 +602,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label20
 			// 
 			label20.AutoSize = true;
-			label20.Location = new System.Drawing.Point(71, 146);
+			label20.Location = new System.Drawing.Point(94, 208);
 			label20.Name = "label20";
 			label20.Size = new System.Drawing.Size(94, 13);
 			label20.TabIndex = 28;
@@ -604,7 +612,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label21
 			// 
 			label21.AutoSize = true;
-			label21.Location = new System.Drawing.Point(51, 184);
+			label21.Location = new System.Drawing.Point(74, 245);
 			label21.Name = "label21";
 			label21.Size = new System.Drawing.Size(114, 13);
 			label21.TabIndex = 31;
@@ -614,7 +622,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label27
 			// 
 			label27.AutoSize = true;
-			label27.Location = new System.Drawing.Point(67, 223);
+			label27.Location = new System.Drawing.Point(90, 282);
 			label27.Name = "label27";
 			label27.Size = new System.Drawing.Size(98, 13);
 			label27.TabIndex = 35;
@@ -624,7 +632,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label29
 			// 
 			label29.AutoSize = true;
-			label29.Location = new System.Drawing.Point(74, 262);
+			label29.Location = new System.Drawing.Point(97, 319);
 			label29.Name = "label29";
 			label29.Size = new System.Drawing.Size(91, 13);
 			label29.TabIndex = 38;
@@ -658,7 +666,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorsgroup1.Controls.Add(this.colorlinedefs);
 			this.colorsgroup1.Location = new System.Drawing.Point(8, 8);
 			this.colorsgroup1.Name = "colorsgroup1";
-			this.colorsgroup1.Size = new System.Drawing.Size(203, 493);
+			this.colorsgroup1.Size = new System.Drawing.Size(203, 344);
 			this.colorsgroup1.TabIndex = 0;
 			this.colorsgroup1.TabStop = false;
 			this.colorsgroup1.Text = " Colors ";
@@ -673,7 +681,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.color3dFloors.MinimumSize = new System.Drawing.Size(100, 23);
 			this.color3dFloors.Name = "color3dFloors";
 			this.color3dFloors.Size = new System.Drawing.Size(168, 23);
-			this.color3dFloors.TabIndex = 24;
+			this.color3dFloors.TabIndex = 10;
 			// 
 			// colorInfo
 			// 
@@ -684,7 +692,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorInfo.MinimumSize = new System.Drawing.Size(100, 23);
 			this.colorInfo.Name = "colorInfo";
 			this.colorInfo.Size = new System.Drawing.Size(168, 23);
-			this.colorInfo.TabIndex = 19;
+			this.colorInfo.TabIndex = 9;
 			// 
 			// colorMD3
 			// 
@@ -695,7 +703,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorMD3.MinimumSize = new System.Drawing.Size(100, 23);
 			this.colorMD3.Name = "colorMD3";
 			this.colorMD3.Size = new System.Drawing.Size(168, 23);
-			this.colorMD3.TabIndex = 17;
+			this.colorMD3.TabIndex = 8;
 			// 
 			// colorgrid64
 			// 
@@ -706,7 +714,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorgrid64.MinimumSize = new System.Drawing.Size(100, 23);
 			this.colorgrid64.Name = "colorgrid64";
 			this.colorgrid64.Size = new System.Drawing.Size(168, 23);
-			this.colorgrid64.TabIndex = 9;
+			this.colorgrid64.TabIndex = 7;
 			// 
 			// colorgrid
 			// 
@@ -717,7 +725,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorgrid.MinimumSize = new System.Drawing.Size(100, 23);
 			this.colorgrid.Name = "colorgrid";
 			this.colorgrid.Size = new System.Drawing.Size(168, 23);
-			this.colorgrid.TabIndex = 8;
+			this.colorgrid.TabIndex = 6;
 			// 
 			// colorindication
 			// 
@@ -728,7 +736,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorindication.MinimumSize = new System.Drawing.Size(100, 23);
 			this.colorindication.Name = "colorindication";
 			this.colorindication.Size = new System.Drawing.Size(168, 23);
-			this.colorindication.TabIndex = 7;
+			this.colorindication.TabIndex = 5;
 			// 
 			// colorbackcolor
 			// 
@@ -750,7 +758,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorselection.MinimumSize = new System.Drawing.Size(100, 23);
 			this.colorselection.Name = "colorselection";
 			this.colorselection.Size = new System.Drawing.Size(168, 23);
-			this.colorselection.TabIndex = 6;
+			this.colorselection.TabIndex = 4;
 			// 
 			// colorvertices
 			// 
@@ -772,7 +780,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorhighlight.MinimumSize = new System.Drawing.Size(100, 23);
 			this.colorhighlight.Name = "colorhighlight";
 			this.colorhighlight.Size = new System.Drawing.Size(168, 23);
-			this.colorhighlight.TabIndex = 5;
+			this.colorhighlight.TabIndex = 3;
 			// 
 			// colorlinedefs
 			// 
@@ -789,17 +797,17 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.doublesidedalpha.BackColor = System.Drawing.SystemColors.Window;
 			this.doublesidedalpha.LargeChange = 3;
-			this.doublesidedalpha.Location = new System.Drawing.Point(176, 19);
+			this.doublesidedalpha.Location = new System.Drawing.Point(199, 12);
 			this.doublesidedalpha.Name = "doublesidedalpha";
-			this.doublesidedalpha.Size = new System.Drawing.Size(153, 45);
-			this.doublesidedalpha.TabIndex = 2;
+			this.doublesidedalpha.Size = new System.Drawing.Size(154, 45);
+			this.doublesidedalpha.TabIndex = 0;
 			this.doublesidedalpha.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
 			this.doublesidedalpha.ValueChanged += new System.EventHandler(this.doublesidedalpha_ValueChanged);
 			// 
 			// label2
 			// 
 			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(24, 30);
+			this.label2.Location = new System.Drawing.Point(47, 23);
 			this.label2.Name = "label2";
 			this.label2.Size = new System.Drawing.Size(141, 13);
 			this.label2.TabIndex = 14;
@@ -809,7 +817,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// doublesidedalphalabel
 			// 
 			this.doublesidedalphalabel.AutoSize = true;
-			this.doublesidedalphalabel.Location = new System.Drawing.Point(337, 30);
+			this.doublesidedalphalabel.Location = new System.Drawing.Point(360, 23);
 			this.doublesidedalphalabel.Name = "doublesidedalphalabel";
 			this.doublesidedalphalabel.Size = new System.Drawing.Size(21, 13);
 			this.doublesidedalphalabel.TabIndex = 16;
@@ -818,10 +826,10 @@ namespace CodeImp.DoomBuilder.Windows
 			// cbStretchView
 			// 
 			this.cbStretchView.AutoSize = true;
-			this.cbStretchView.Location = new System.Drawing.Point(236, 306);
+			this.cbStretchView.Location = new System.Drawing.Point(229, 363);
 			this.cbStretchView.Name = "cbStretchView";
 			this.cbStretchView.Size = new System.Drawing.Size(172, 17);
-			this.cbStretchView.TabIndex = 18;
+			this.cbStretchView.TabIndex = 12;
 			this.cbStretchView.Text = "Stretched view in visual modes";
 			this.toolTip1.SetToolTip(this.cbStretchView, "When enabled, visual mode will emulate \r\n(G)ZDoom\'s way of rendering by increasin" +
 					"g\r\nvertical scale of the world geometry and \r\nsprites by 15%.\r\n");
@@ -830,10 +838,10 @@ namespace CodeImp.DoomBuilder.Windows
 			// qualitydisplay
 			// 
 			this.qualitydisplay.AutoSize = true;
-			this.qualitydisplay.Location = new System.Drawing.Point(25, 306);
+			this.qualitydisplay.Location = new System.Drawing.Point(18, 363);
 			this.qualitydisplay.Name = "qualitydisplay";
 			this.qualitydisplay.Size = new System.Drawing.Size(128, 17);
-			this.qualitydisplay.TabIndex = 7;
+			this.qualitydisplay.TabIndex = 9;
 			this.qualitydisplay.Text = "High quality rendering";
 			this.qualitydisplay.UseVisualStyleBackColor = true;
 			// 
@@ -844,7 +852,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.cancel.Location = new System.Drawing.Point(587, 557);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
-			this.cancel.TabIndex = 2;
+			this.cancel.TabIndex = 1;
 			this.cancel.Text = "Cancel";
 			this.cancel.UseVisualStyleBackColor = true;
 			this.cancel.Click += new System.EventHandler(this.cancel_Click);
@@ -855,7 +863,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.apply.Location = new System.Drawing.Point(469, 557);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
-			this.apply.TabIndex = 1;
+			this.apply.TabIndex = 0;
 			this.apply.Text = "OK";
 			this.apply.UseVisualStyleBackColor = true;
 			this.apply.Click += new System.EventHandler(this.apply_Click);
@@ -903,7 +911,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.groupBox3.Location = new System.Drawing.Point(345, 449);
 			this.groupBox3.Name = "groupBox3";
 			this.groupBox3.Size = new System.Drawing.Size(331, 48);
-			this.groupBox3.TabIndex = 5;
+			this.groupBox3.TabIndex = 4;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = " Screenshots Folder ";
 			// 
@@ -951,7 +959,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.groupBox5.Location = new System.Drawing.Point(345, 321);
 			this.groupBox5.Name = "groupBox5";
 			this.groupBox5.Size = new System.Drawing.Size(331, 125);
-			this.groupBox5.TabIndex = 4;
+			this.groupBox5.TabIndex = 3;
 			this.groupBox5.TabStop = false;
 			this.groupBox5.Text = " Toolbar Buttons ";
 			// 
@@ -961,7 +969,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.toolbar_gzdoom.Location = new System.Drawing.Point(160, 102);
 			this.toolbar_gzdoom.Name = "toolbar_gzdoom";
 			this.toolbar_gzdoom.Size = new System.Drawing.Size(75, 17);
-			this.toolbar_gzdoom.TabIndex = 50;
+			this.toolbar_gzdoom.TabIndex = 9;
 			this.toolbar_gzdoom.Text = "Rendering";
 			this.toolbar_gzdoom.UseVisualStyleBackColor = true;
 			// 
@@ -971,7 +979,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.toolbar_file.Location = new System.Drawing.Point(14, 22);
 			this.toolbar_file.Name = "toolbar_file";
 			this.toolbar_file.Size = new System.Drawing.Size(121, 17);
-			this.toolbar_file.TabIndex = 49;
+			this.toolbar_file.TabIndex = 0;
 			this.toolbar_file.Text = "New / Open / Save";
 			this.toolbar_file.UseVisualStyleBackColor = true;
 			// 
@@ -981,7 +989,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.toolbar_testing.Location = new System.Drawing.Point(160, 82);
 			this.toolbar_testing.Name = "toolbar_testing";
 			this.toolbar_testing.Size = new System.Drawing.Size(61, 17);
-			this.toolbar_testing.TabIndex = 48;
+			this.toolbar_testing.TabIndex = 8;
 			this.toolbar_testing.Text = "Testing";
 			this.toolbar_testing.UseVisualStyleBackColor = true;
 			// 
@@ -991,7 +999,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.toolbar_geometry.Location = new System.Drawing.Point(160, 62);
 			this.toolbar_geometry.Name = "toolbar_geometry";
 			this.toolbar_geometry.Size = new System.Drawing.Size(92, 17);
-			this.toolbar_geometry.TabIndex = 47;
+			this.toolbar_geometry.TabIndex = 7;
 			this.toolbar_geometry.Text = "Snap / Merge";
 			this.toolbar_geometry.UseVisualStyleBackColor = true;
 			// 
@@ -1001,7 +1009,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.toolbar_viewmodes.Location = new System.Drawing.Point(160, 42);
 			this.toolbar_viewmodes.Name = "toolbar_viewmodes";
 			this.toolbar_viewmodes.Size = new System.Drawing.Size(84, 17);
-			this.toolbar_viewmodes.TabIndex = 46;
+			this.toolbar_viewmodes.TabIndex = 6;
 			this.toolbar_viewmodes.Text = "View Modes";
 			this.toolbar_viewmodes.UseVisualStyleBackColor = true;
 			// 
@@ -1011,7 +1019,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.toolbar_filter.Location = new System.Drawing.Point(160, 22);
 			this.toolbar_filter.Name = "toolbar_filter";
 			this.toolbar_filter.Size = new System.Drawing.Size(161, 17);
-			this.toolbar_filter.TabIndex = 45;
+			this.toolbar_filter.TabIndex = 5;
 			this.toolbar_filter.Text = "Things Filter / Linedef Colors";
 			this.toolbar_filter.UseVisualStyleBackColor = true;
 			// 
@@ -1021,7 +1029,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.toolbar_prefabs.Location = new System.Drawing.Point(14, 102);
 			this.toolbar_prefabs.Name = "toolbar_prefabs";
 			this.toolbar_prefabs.Size = new System.Drawing.Size(62, 17);
-			this.toolbar_prefabs.TabIndex = 44;
+			this.toolbar_prefabs.TabIndex = 4;
 			this.toolbar_prefabs.Text = "Prefabs";
 			this.toolbar_prefabs.UseVisualStyleBackColor = true;
 			// 
@@ -1031,7 +1039,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.toolbar_copy.Location = new System.Drawing.Point(14, 82);
 			this.toolbar_copy.Name = "toolbar_copy";
 			this.toolbar_copy.Size = new System.Drawing.Size(115, 17);
-			this.toolbar_copy.TabIndex = 43;
+			this.toolbar_copy.TabIndex = 3;
 			this.toolbar_copy.Text = "Cut / Copy / Paste";
 			this.toolbar_copy.UseVisualStyleBackColor = true;
 			// 
@@ -1041,7 +1049,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.toolbar_undo.Location = new System.Drawing.Point(14, 62);
 			this.toolbar_undo.Name = "toolbar_undo";
 			this.toolbar_undo.Size = new System.Drawing.Size(89, 17);
-			this.toolbar_undo.TabIndex = 42;
+			this.toolbar_undo.TabIndex = 2;
 			this.toolbar_undo.Text = "Undo / Redo";
 			this.toolbar_undo.UseVisualStyleBackColor = true;
 			// 
@@ -1051,7 +1059,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.toolbar_script.Location = new System.Drawing.Point(14, 42);
 			this.toolbar_script.Name = "toolbar_script";
 			this.toolbar_script.Size = new System.Drawing.Size(83, 17);
-			this.toolbar_script.TabIndex = 41;
+			this.toolbar_script.TabIndex = 1;
 			this.toolbar_script.Text = "Script Editor";
 			this.toolbar_script.UseVisualStyleBackColor = true;
 			// 
@@ -1063,7 +1071,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.groupBox4.Location = new System.Drawing.Point(8, 449);
 			this.groupBox4.Name = "groupBox4";
 			this.groupBox4.Size = new System.Drawing.Size(331, 48);
-			this.groupBox4.TabIndex = 3;
+			this.groupBox4.TabIndex = 1;
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = " Side Panels ";
 			// 
@@ -1133,7 +1141,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.vertexScale3D.Minimum = 2;
 			this.vertexScale3D.Name = "vertexScale3D";
 			this.vertexScale3D.Size = new System.Drawing.Size(150, 45);
-			this.vertexScale3D.TabIndex = 31;
+			this.vertexScale3D.TabIndex = 3;
 			this.vertexScale3D.TickStyle = System.Windows.Forms.TickStyle.Both;
 			this.vertexScale3D.Value = 10;
 			this.vertexScale3D.ValueChanged += new System.EventHandler(this.vertexScale3D_ValueChanged);
@@ -1166,7 +1174,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.viewdistance.Minimum = 1;
 			this.viewdistance.Name = "viewdistance";
 			this.viewdistance.Size = new System.Drawing.Size(150, 45);
-			this.viewdistance.TabIndex = 3;
+			this.viewdistance.TabIndex = 4;
 			this.viewdistance.TickFrequency = 2;
 			this.viewdistance.TickStyle = System.Windows.Forms.TickStyle.Both;
 			this.viewdistance.Value = 1;
@@ -1236,7 +1244,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.invertyaxis.Location = new System.Drawing.Point(32, 282);
 			this.invertyaxis.Name = "invertyaxis";
 			this.invertyaxis.Size = new System.Drawing.Size(118, 17);
-			this.invertyaxis.TabIndex = 4;
+			this.invertyaxis.TabIndex = 5;
 			this.invertyaxis.Text = "Invert mouse Y axis";
 			this.invertyaxis.UseVisualStyleBackColor = true;
 			// 
@@ -1497,20 +1505,20 @@ namespace CodeImp.DoomBuilder.Windows
 			this.groupBox10.Controls.Add(this.capitalizetexturenames);
 			this.groupBox10.Controls.Add(this.blackbrowsers);
 			this.groupBox10.Controls.Add(this.cbMarkExtraFloors);
-			this.groupBox10.Location = new System.Drawing.Point(217, 388);
+			this.groupBox10.Location = new System.Drawing.Point(8, 358);
 			this.groupBox10.Name = "groupBox10";
-			this.groupBox10.Size = new System.Drawing.Size(457, 113);
-			this.groupBox10.TabIndex = 25;
+			this.groupBox10.Size = new System.Drawing.Size(203, 143);
+			this.groupBox10.TabIndex = 1;
 			this.groupBox10.TabStop = false;
 			this.groupBox10.Text = " Additional Options ";
 			// 
 			// capitalizetexturenames
 			// 
 			this.capitalizetexturenames.AutoSize = true;
-			this.capitalizetexturenames.Location = new System.Drawing.Point(25, 75);
+			this.capitalizetexturenames.Location = new System.Drawing.Point(13, 86);
 			this.capitalizetexturenames.Name = "capitalizetexturenames";
 			this.capitalizetexturenames.Size = new System.Drawing.Size(140, 17);
-			this.capitalizetexturenames.TabIndex = 36;
+			this.capitalizetexturenames.TabIndex = 2;
 			this.capitalizetexturenames.Text = "Capitalize texture names";
 			this.toolTip1.SetToolTip(this.capitalizetexturenames, "When enabled, texture names will be shown \r\nand saved as all caps\r\n(Doom Builder " +
 					"2 behaviour)");
@@ -1519,20 +1527,20 @@ namespace CodeImp.DoomBuilder.Windows
 			// blackbrowsers
 			// 
 			this.blackbrowsers.AutoSize = true;
-			this.blackbrowsers.Location = new System.Drawing.Point(25, 29);
+			this.blackbrowsers.Location = new System.Drawing.Point(13, 29);
 			this.blackbrowsers.Name = "blackbrowsers";
-			this.blackbrowsers.Size = new System.Drawing.Size(195, 17);
-			this.blackbrowsers.TabIndex = 4;
-			this.blackbrowsers.Text = "Black background in image browser";
+			this.blackbrowsers.Size = new System.Drawing.Size(113, 30);
+			this.blackbrowsers.TabIndex = 0;
+			this.blackbrowsers.Text = "Black background\r\nin image browser";
 			this.blackbrowsers.UseVisualStyleBackColor = true;
 			// 
 			// cbMarkExtraFloors
 			// 
 			this.cbMarkExtraFloors.AutoSize = true;
-			this.cbMarkExtraFloors.Location = new System.Drawing.Point(25, 52);
+			this.cbMarkExtraFloors.Location = new System.Drawing.Point(13, 64);
 			this.cbMarkExtraFloors.Name = "cbMarkExtraFloors";
 			this.cbMarkExtraFloors.Size = new System.Drawing.Size(175, 17);
-			this.cbMarkExtraFloors.TabIndex = 35;
+			this.cbMarkExtraFloors.TabIndex = 1;
 			this.cbMarkExtraFloors.Text = "Mark 3D floors in classic modes";
 			this.toolTip1.SetToolTip(this.cbMarkExtraFloors, "When enabled, linedefs of sectors with 3d floors will be marked using \"3D Floors\"" +
 					" color.");
@@ -1543,6 +1551,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.appearancegroup1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.appearancegroup1.Controls.Add(this.hiddenthingsalphalabel);
+			this.appearancegroup1.Controls.Add(this.label32);
+			this.appearancegroup1.Controls.Add(this.inactivethingsalphalabel);
+			this.appearancegroup1.Controls.Add(this.label30);
 			this.appearancegroup1.Controls.Add(label29);
 			this.appearancegroup1.Controls.Add(this.labelantialiasing);
 			this.appearancegroup1.Controls.Add(this.antialiasing);
@@ -1552,7 +1564,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.appearancegroup1.Controls.Add(this.cbOldHighlightMode);
 			this.appearancegroup1.Controls.Add(label21);
 			this.appearancegroup1.Controls.Add(this.labelDynLightIntensity);
-			this.appearancegroup1.Controls.Add(this.doublesidedalpha);
 			this.appearancegroup1.Controls.Add(this.cbStretchView);
 			this.appearancegroup1.Controls.Add(this.tbDynLightIntensity);
 			this.appearancegroup1.Controls.Add(label20);
@@ -1564,23 +1575,66 @@ namespace CodeImp.DoomBuilder.Windows
 			this.appearancegroup1.Controls.Add(label18);
 			this.appearancegroup1.Controls.Add(this.labelDynLightCount);
 			this.appearancegroup1.Controls.Add(this.tbDynLightCount);
+			this.appearancegroup1.Controls.Add(this.imagebrightness);
 			this.appearancegroup1.Controls.Add(this.animatevisualselection);
+			this.appearancegroup1.Controls.Add(this.hiddenthingsalpha);
+			this.appearancegroup1.Controls.Add(this.inactivethingsalpha);
+			this.appearancegroup1.Controls.Add(this.doublesidedalpha);
 			this.appearancegroup1.Controls.Add(this.visualbilinear);
 			this.appearancegroup1.Controls.Add(label1);
 			this.appearancegroup1.Controls.Add(this.classicbilinear);
 			this.appearancegroup1.Controls.Add(this.imagebrightnesslabel);
-			this.appearancegroup1.Controls.Add(this.imagebrightness);
 			this.appearancegroup1.Location = new System.Drawing.Point(217, 8);
 			this.appearancegroup1.Name = "appearancegroup1";
-			this.appearancegroup1.Size = new System.Drawing.Size(457, 374);
-			this.appearancegroup1.TabIndex = 24;
+			this.appearancegroup1.Size = new System.Drawing.Size(457, 493);
+			this.appearancegroup1.TabIndex = 2;
 			this.appearancegroup1.TabStop = false;
 			this.appearancegroup1.Text = " Rendering ";
+			// 
+			// hiddenthingsalphalabel
+			// 
+			this.hiddenthingsalphalabel.AutoSize = true;
+			this.hiddenthingsalphalabel.Location = new System.Drawing.Point(359, 97);
+			this.hiddenthingsalphalabel.Name = "hiddenthingsalphalabel";
+			this.hiddenthingsalphalabel.Size = new System.Drawing.Size(21, 13);
+			this.hiddenthingsalphalabel.TabIndex = 45;
+			this.hiddenthingsalphalabel.Text = "0%";
+			// 
+			// label32
+			// 
+			this.label32.AutoSize = true;
+			this.label32.Location = new System.Drawing.Point(45, 97);
+			this.label32.Name = "label32";
+			this.label32.Size = new System.Drawing.Size(143, 13);
+			this.label32.TabIndex = 44;
+			this.label32.Text = "Hidden Things transparency:";
+			this.label32.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			this.toolTip1.SetToolTip(this.label32, "Sets transparency of things hidden \r\nby Things Filter in Things mode");
+			// 
+			// inactivethingsalphalabel
+			// 
+			this.inactivethingsalphalabel.AutoSize = true;
+			this.inactivethingsalphalabel.Location = new System.Drawing.Point(359, 60);
+			this.inactivethingsalphalabel.Name = "inactivethingsalphalabel";
+			this.inactivethingsalphalabel.Size = new System.Drawing.Size(21, 13);
+			this.inactivethingsalphalabel.TabIndex = 42;
+			this.inactivethingsalphalabel.Text = "0%";
+			// 
+			// label30
+			// 
+			this.label30.AutoSize = true;
+			this.label30.Location = new System.Drawing.Point(82, 60);
+			this.label30.Name = "label30";
+			this.label30.Size = new System.Drawing.Size(106, 13);
+			this.label30.TabIndex = 41;
+			this.label30.Text = "Things transparency:";
+			this.label30.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			this.toolTip1.SetToolTip(this.label30, "Sets Things transparency in all classic\r\nmodes except Things mode");
 			// 
 			// labelantialiasing
 			// 
 			this.labelantialiasing.AutoSize = true;
-			this.labelantialiasing.Location = new System.Drawing.Point(337, 262);
+			this.labelantialiasing.Location = new System.Drawing.Point(359, 319);
 			this.labelantialiasing.Name = "labelantialiasing";
 			this.labelantialiasing.Size = new System.Drawing.Size(54, 13);
 			this.labelantialiasing.TabIndex = 39;
@@ -1590,11 +1644,11 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.antialiasing.BackColor = System.Drawing.SystemColors.Window;
 			this.antialiasing.LargeChange = 1;
-			this.antialiasing.Location = new System.Drawing.Point(176, 252);
+			this.antialiasing.Location = new System.Drawing.Point(199, 308);
 			this.antialiasing.Maximum = 3;
 			this.antialiasing.Name = "antialiasing";
 			this.antialiasing.Size = new System.Drawing.Size(154, 45);
-			this.antialiasing.TabIndex = 37;
+			this.antialiasing.TabIndex = 8;
 			this.antialiasing.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
 			this.antialiasing.Value = 3;
 			this.antialiasing.ValueChanged += new System.EventHandler(this.antialiasing_ValueChanged);
@@ -1602,7 +1656,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// labelanisotropicfiltering
 			// 
 			this.labelanisotropicfiltering.AutoSize = true;
-			this.labelanisotropicfiltering.Location = new System.Drawing.Point(337, 223);
+			this.labelanisotropicfiltering.Location = new System.Drawing.Point(359, 282);
 			this.labelanisotropicfiltering.Name = "labelanisotropicfiltering";
 			this.labelanisotropicfiltering.Size = new System.Drawing.Size(24, 13);
 			this.labelanisotropicfiltering.TabIndex = 36;
@@ -1612,11 +1666,11 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.anisotropicfiltering.BackColor = System.Drawing.SystemColors.Window;
 			this.anisotropicfiltering.LargeChange = 1;
-			this.anisotropicfiltering.Location = new System.Drawing.Point(176, 213);
+			this.anisotropicfiltering.Location = new System.Drawing.Point(199, 271);
 			this.anisotropicfiltering.Maximum = 4;
 			this.anisotropicfiltering.Name = "anisotropicfiltering";
 			this.anisotropicfiltering.Size = new System.Drawing.Size(154, 45);
-			this.anisotropicfiltering.TabIndex = 34;
+			this.anisotropicfiltering.TabIndex = 7;
 			this.anisotropicfiltering.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
 			this.anisotropicfiltering.Value = 4;
 			this.anisotropicfiltering.ValueChanged += new System.EventHandler(this.anisotropicfiltering_ValueChanged);
@@ -1624,10 +1678,10 @@ namespace CodeImp.DoomBuilder.Windows
 			// cbOldHighlightMode
 			// 
 			this.cbOldHighlightMode.AutoSize = true;
-			this.cbOldHighlightMode.Location = new System.Drawing.Point(236, 348);
+			this.cbOldHighlightMode.Location = new System.Drawing.Point(229, 409);
 			this.cbOldHighlightMode.Name = "cbOldHighlightMode";
 			this.cbOldHighlightMode.Size = new System.Drawing.Size(207, 17);
-			this.cbOldHighlightMode.TabIndex = 33;
+			this.cbOldHighlightMode.TabIndex = 14;
 			this.cbOldHighlightMode.Text = "Always show selection in visual modes";
 			this.toolTip1.SetToolTip(this.cbOldHighlightMode, "If enabled, selected surfaces will be highlighted in Visual mode\r\neven if \"Show h" +
 					"ighlight\" mode is disabled \r\n(Doom Builder 2 behaviour).");
@@ -1636,7 +1690,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// labelDynLightIntensity
 			// 
 			this.labelDynLightIntensity.AutoSize = true;
-			this.labelDynLightIntensity.Location = new System.Drawing.Point(337, 184);
+			this.labelDynLightIntensity.Location = new System.Drawing.Point(359, 245);
 			this.labelDynLightIntensity.Name = "labelDynLightIntensity";
 			this.labelDynLightIntensity.Size = new System.Drawing.Size(22, 13);
 			this.labelDynLightIntensity.TabIndex = 32;
@@ -1646,11 +1700,11 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.tbDynLightIntensity.BackColor = System.Drawing.SystemColors.Window;
 			this.tbDynLightIntensity.LargeChange = 1;
-			this.tbDynLightIntensity.Location = new System.Drawing.Point(176, 174);
+			this.tbDynLightIntensity.Location = new System.Drawing.Point(199, 234);
 			this.tbDynLightIntensity.Minimum = 1;
 			this.tbDynLightIntensity.Name = "tbDynLightIntensity";
 			this.tbDynLightIntensity.Size = new System.Drawing.Size(154, 45);
-			this.tbDynLightIntensity.TabIndex = 30;
+			this.tbDynLightIntensity.TabIndex = 6;
 			this.tbDynLightIntensity.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
 			this.tbDynLightIntensity.Value = 10;
 			this.tbDynLightIntensity.ValueChanged += new System.EventHandler(this.tbDynLightIntensity_ValueChanged);
@@ -1658,7 +1712,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// labelDynLightSize
 			// 
 			this.labelDynLightSize.AutoSize = true;
-			this.labelDynLightSize.Location = new System.Drawing.Point(337, 146);
+			this.labelDynLightSize.Location = new System.Drawing.Point(359, 208);
 			this.labelDynLightSize.Name = "labelDynLightSize";
 			this.labelDynLightSize.Size = new System.Drawing.Size(22, 13);
 			this.labelDynLightSize.TabIndex = 29;
@@ -1668,12 +1722,12 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.tbDynLightSize.BackColor = System.Drawing.SystemColors.Window;
 			this.tbDynLightSize.LargeChange = 1;
-			this.tbDynLightSize.Location = new System.Drawing.Point(176, 136);
+			this.tbDynLightSize.Location = new System.Drawing.Point(199, 197);
 			this.tbDynLightSize.Maximum = 20;
 			this.tbDynLightSize.Minimum = 1;
 			this.tbDynLightSize.Name = "tbDynLightSize";
 			this.tbDynLightSize.Size = new System.Drawing.Size(154, 45);
-			this.tbDynLightSize.TabIndex = 27;
+			this.tbDynLightSize.TabIndex = 5;
 			this.tbDynLightSize.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
 			this.tbDynLightSize.Value = 10;
 			this.tbDynLightSize.ValueChanged += new System.EventHandler(this.tbDynLightSize_ValueChanged);
@@ -1681,7 +1735,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// labelDynLightCount
 			// 
 			this.labelDynLightCount.AutoSize = true;
-			this.labelDynLightCount.Location = new System.Drawing.Point(337, 108);
+			this.labelDynLightCount.Location = new System.Drawing.Point(359, 171);
 			this.labelDynLightCount.Name = "labelDynLightCount";
 			this.labelDynLightCount.Size = new System.Drawing.Size(19, 13);
 			this.labelDynLightCount.TabIndex = 26;
@@ -1691,66 +1745,88 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.tbDynLightCount.BackColor = System.Drawing.SystemColors.Window;
 			this.tbDynLightCount.LargeChange = 3;
-			this.tbDynLightCount.Location = new System.Drawing.Point(176, 97);
+			this.tbDynLightCount.Location = new System.Drawing.Point(199, 160);
 			this.tbDynLightCount.Maximum = 32;
 			this.tbDynLightCount.Minimum = 1;
 			this.tbDynLightCount.Name = "tbDynLightCount";
 			this.tbDynLightCount.Size = new System.Drawing.Size(154, 45);
-			this.tbDynLightCount.TabIndex = 24;
+			this.tbDynLightCount.TabIndex = 4;
 			this.tbDynLightCount.TickFrequency = 4;
 			this.tbDynLightCount.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
 			this.tbDynLightCount.Value = 1;
 			this.tbDynLightCount.ValueChanged += new System.EventHandler(this.tbDynLightCount_ValueChanged);
 			// 
+			// imagebrightness
+			// 
+			this.imagebrightness.BackColor = System.Drawing.SystemColors.Window;
+			this.imagebrightness.LargeChange = 3;
+			this.imagebrightness.Location = new System.Drawing.Point(199, 123);
+			this.imagebrightness.Name = "imagebrightness";
+			this.imagebrightness.Size = new System.Drawing.Size(154, 45);
+			this.imagebrightness.TabIndex = 3;
+			this.imagebrightness.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
+			this.imagebrightness.ValueChanged += new System.EventHandler(this.imagebrightness_ValueChanged);
+			// 
 			// animatevisualselection
 			// 
 			this.animatevisualselection.AutoSize = true;
-			this.animatevisualselection.Location = new System.Drawing.Point(236, 327);
+			this.animatevisualselection.Location = new System.Drawing.Point(229, 386);
 			this.animatevisualselection.Name = "animatevisualselection";
-			this.animatevisualselection.Size = new System.Drawing.Size(184, 17);
-			this.animatevisualselection.TabIndex = 23;
-			this.animatevisualselection.Text = "Animate selection in visual modes";
+			this.animatevisualselection.Size = new System.Drawing.Size(190, 17);
+			this.animatevisualselection.TabIndex = 13;
+			this.animatevisualselection.Text = "Animated selection in visual modes";
 			this.animatevisualselection.UseVisualStyleBackColor = true;
+			// 
+			// hiddenthingsalpha
+			// 
+			this.hiddenthingsalpha.BackColor = System.Drawing.SystemColors.Window;
+			this.hiddenthingsalpha.LargeChange = 3;
+			this.hiddenthingsalpha.Location = new System.Drawing.Point(199, 86);
+			this.hiddenthingsalpha.Name = "hiddenthingsalpha";
+			this.hiddenthingsalpha.Size = new System.Drawing.Size(154, 45);
+			this.hiddenthingsalpha.TabIndex = 2;
+			this.hiddenthingsalpha.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
+			this.hiddenthingsalpha.ValueChanged += new System.EventHandler(this.hiddenthingsalpha_ValueChanged);
+			// 
+			// inactivethingsalpha
+			// 
+			this.inactivethingsalpha.BackColor = System.Drawing.SystemColors.Window;
+			this.inactivethingsalpha.LargeChange = 3;
+			this.inactivethingsalpha.Location = new System.Drawing.Point(199, 49);
+			this.inactivethingsalpha.Name = "inactivethingsalpha";
+			this.inactivethingsalpha.Size = new System.Drawing.Size(154, 45);
+			this.inactivethingsalpha.TabIndex = 1;
+			this.inactivethingsalpha.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
+			this.inactivethingsalpha.ValueChanged += new System.EventHandler(this.inactivethingsalpha_ValueChanged);
 			// 
 			// visualbilinear
 			// 
 			this.visualbilinear.AutoSize = true;
-			this.visualbilinear.Location = new System.Drawing.Point(25, 348);
+			this.visualbilinear.Location = new System.Drawing.Point(18, 409);
 			this.visualbilinear.Name = "visualbilinear";
 			this.visualbilinear.Size = new System.Drawing.Size(171, 17);
-			this.visualbilinear.TabIndex = 6;
+			this.visualbilinear.TabIndex = 11;
 			this.visualbilinear.Text = "Bilinear filtering in visual modes";
 			this.visualbilinear.UseVisualStyleBackColor = true;
 			// 
 			// classicbilinear
 			// 
 			this.classicbilinear.AutoSize = true;
-			this.classicbilinear.Location = new System.Drawing.Point(25, 327);
+			this.classicbilinear.Location = new System.Drawing.Point(18, 386);
 			this.classicbilinear.Name = "classicbilinear";
 			this.classicbilinear.Size = new System.Drawing.Size(176, 17);
-			this.classicbilinear.TabIndex = 5;
+			this.classicbilinear.TabIndex = 10;
 			this.classicbilinear.Text = "Bilinear filtering in classic modes";
 			this.classicbilinear.UseVisualStyleBackColor = true;
 			// 
 			// imagebrightnesslabel
 			// 
 			this.imagebrightnesslabel.AutoSize = true;
-			this.imagebrightnesslabel.Location = new System.Drawing.Point(337, 70);
+			this.imagebrightnesslabel.Location = new System.Drawing.Point(359, 134);
 			this.imagebrightnesslabel.Name = "imagebrightnesslabel";
 			this.imagebrightnesslabel.Size = new System.Drawing.Size(30, 13);
 			this.imagebrightnesslabel.TabIndex = 22;
 			this.imagebrightnesslabel.Text = "+ 0 y";
-			// 
-			// imagebrightness
-			// 
-			this.imagebrightness.BackColor = System.Drawing.SystemColors.Window;
-			this.imagebrightness.LargeChange = 3;
-			this.imagebrightness.Location = new System.Drawing.Point(176, 58);
-			this.imagebrightness.Name = "imagebrightness";
-			this.imagebrightness.Size = new System.Drawing.Size(154, 45);
-			this.imagebrightness.TabIndex = 3;
-			this.imagebrightness.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
-			this.imagebrightness.ValueChanged += new System.EventHandler(this.imagebrightness_ValueChanged);
 			// 
 			// tabscripteditor
 			// 
@@ -1774,7 +1850,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.groupBox9.Location = new System.Drawing.Point(217, 260);
 			this.groupBox9.Name = "groupBox9";
 			this.groupBox9.Size = new System.Drawing.Size(457, 78);
-			this.groupBox9.TabIndex = 6;
+			this.groupBox9.TabIndex = 3;
 			this.groupBox9.TabStop = false;
 			this.groupBox9.Text = " Appearance ";
 			// 
@@ -1784,7 +1860,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.scriptshowfolding.Location = new System.Drawing.Point(19, 49);
 			this.scriptshowfolding.Name = "scriptshowfolding";
 			this.scriptshowfolding.Size = new System.Drawing.Size(120, 17);
-			this.scriptshowfolding.TabIndex = 38;
+			this.scriptshowfolding.TabIndex = 1;
 			this.scriptshowfolding.Text = "Enable code folding";
 			this.scriptshowfolding.UseVisualStyleBackColor = true;
 			this.scriptshowfolding.CheckedChanged += new System.EventHandler(this.scriptshowfolding_CheckedChanged);
@@ -1795,7 +1871,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.scriptshowlinenumbers.Location = new System.Drawing.Point(19, 26);
 			this.scriptshowlinenumbers.Name = "scriptshowlinenumbers";
 			this.scriptshowlinenumbers.Size = new System.Drawing.Size(115, 17);
-			this.scriptshowlinenumbers.TabIndex = 37;
+			this.scriptshowlinenumbers.TabIndex = 0;
 			this.scriptshowlinenumbers.Text = "Show line numbers";
 			this.scriptshowlinenumbers.UseVisualStyleBackColor = true;
 			this.scriptshowlinenumbers.CheckedChanged += new System.EventHandler(this.scriptshowlinenumbers_CheckedChanged);
@@ -1812,7 +1888,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.groupBox8.Location = new System.Drawing.Point(217, 104);
 			this.groupBox8.Name = "groupBox8";
 			this.groupBox8.Size = new System.Drawing.Size(457, 148);
-			this.groupBox8.TabIndex = 5;
+			this.groupBox8.TabIndex = 2;
 			this.groupBox8.TabStop = false;
 			this.groupBox8.Text = " Formatting ";
 			// 
@@ -1822,7 +1898,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.scriptautoshowautocompletion.Location = new System.Drawing.Point(19, 118);
 			this.scriptautoshowautocompletion.Name = "scriptautoshowautocompletion";
 			this.scriptautoshowautocompletion.Size = new System.Drawing.Size(169, 17);
-			this.scriptautoshowautocompletion.TabIndex = 37;
+			this.scriptautoshowautocompletion.TabIndex = 5;
 			this.scriptautoshowautocompletion.Text = "Auto show auto-completion list";
 			this.scriptautoshowautocompletion.UseVisualStyleBackColor = true;
 			// 
@@ -1832,7 +1908,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.scriptautoclosebrackets.Location = new System.Drawing.Point(19, 72);
 			this.scriptautoclosebrackets.Name = "scriptautoclosebrackets";
 			this.scriptautoclosebrackets.Size = new System.Drawing.Size(120, 17);
-			this.scriptautoclosebrackets.TabIndex = 36;
+			this.scriptautoclosebrackets.TabIndex = 3;
 			this.scriptautoclosebrackets.Text = "Auto-close brackets";
 			this.toolTip1.SetToolTip(this.scriptautoclosebrackets, "When enabled, the editor will automatically\r\ninsert closing bracket if opening br" +
 					"acket was typed.");
@@ -1844,7 +1920,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.scriptusetabs.Location = new System.Drawing.Point(19, 26);
 			this.scriptusetabs.Name = "scriptusetabs";
 			this.scriptusetabs.Size = new System.Drawing.Size(68, 17);
-			this.scriptusetabs.TabIndex = 35;
+			this.scriptusetabs.TabIndex = 0;
 			this.scriptusetabs.Text = "Use tabs";
 			this.scriptusetabs.UseVisualStyleBackColor = true;
 			// 
@@ -1854,7 +1930,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.scriptallmanstyle.Location = new System.Drawing.Point(19, 95);
 			this.scriptallmanstyle.Name = "scriptallmanstyle";
 			this.scriptallmanstyle.Size = new System.Drawing.Size(119, 17);
-			this.scriptallmanstyle.TabIndex = 34;
+			this.scriptallmanstyle.TabIndex = 4;
 			this.scriptallmanstyle.Text = "Allman-style bracing";
 			this.toolTip1.SetToolTip(this.scriptallmanstyle, resources.GetString("scriptallmanstyle.ToolTip"));
 			this.scriptallmanstyle.UseVisualStyleBackColor = true;
@@ -1874,7 +1950,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.scriptautoindent.Location = new System.Drawing.Point(19, 49);
 			this.scriptautoindent.Name = "scriptautoindent";
 			this.scriptautoindent.Size = new System.Drawing.Size(80, 17);
-			this.scriptautoindent.TabIndex = 31;
+			this.scriptautoindent.TabIndex = 2;
 			this.scriptautoindent.Text = "Auto indent";
 			this.scriptautoindent.UseVisualStyleBackColor = true;
 			// 
@@ -1893,7 +1969,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.scripttabwidth.Name = "scripttabwidth";
 			this.scripttabwidth.Size = new System.Drawing.Size(71, 24);
 			this.scripttabwidth.StepValues = null;
-			this.scripttabwidth.TabIndex = 32;
+			this.scripttabwidth.TabIndex = 1;
 			this.scripttabwidth.WhenTextChanged += new System.EventHandler(this.scripttabwidth_WhenTextChanged);
 			// 
 			// groupBox7
@@ -1908,7 +1984,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.groupBox7.Location = new System.Drawing.Point(217, 8);
 			this.groupBox7.Name = "groupBox7";
 			this.groupBox7.Size = new System.Drawing.Size(457, 90);
-			this.groupBox7.TabIndex = 4;
+			this.groupBox7.TabIndex = 1;
 			this.groupBox7.TabStop = false;
 			this.groupBox7.Text = " Font ";
 			// 
@@ -1929,7 +2005,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.scriptfontname.Name = "scriptfontname";
 			this.scriptfontname.Size = new System.Drawing.Size(199, 21);
 			this.scriptfontname.Sorted = true;
-			this.scriptfontname.TabIndex = 23;
+			this.scriptfontname.TabIndex = 0;
 			this.scriptfontname.SelectedIndexChanged += new System.EventHandler(this.scriptfontname_SelectedIndexChanged);
 			// 
 			// scriptfontbold
@@ -1938,7 +2014,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.scriptfontbold.Location = new System.Drawing.Point(165, 56);
 			this.scriptfontbold.Name = "scriptfontbold";
 			this.scriptfontbold.Size = new System.Drawing.Size(47, 17);
-			this.scriptfontbold.TabIndex = 26;
+			this.scriptfontbold.TabIndex = 2;
 			this.scriptfontbold.Text = "Bold";
 			this.scriptfontbold.UseVisualStyleBackColor = true;
 			this.scriptfontbold.CheckedChanged += new System.EventHandler(this.scriptfontbold_CheckedChanged);
@@ -1977,7 +2053,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.scriptfontsize.Location = new System.Drawing.Point(53, 53);
 			this.scriptfontsize.Name = "scriptfontsize";
 			this.scriptfontsize.Size = new System.Drawing.Size(94, 21);
-			this.scriptfontsize.TabIndex = 25;
+			this.scriptfontsize.TabIndex = 1;
 			this.scriptfontsize.SelectedIndexChanged += new System.EventHandler(this.scriptfontsize_SelectedIndexChanged);
 			// 
 			// groupBox6
@@ -2007,7 +2083,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.groupBox6.Location = new System.Drawing.Point(8, 8);
 			this.groupBox6.Name = "groupBox6";
 			this.groupBox6.Size = new System.Drawing.Size(203, 493);
-			this.groupBox6.TabIndex = 3;
+			this.groupBox6.TabIndex = 0;
 			this.groupBox6.TabStop = false;
 			this.groupBox6.Text = " Colors ";
 			// 
@@ -2020,7 +2096,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorproperties.MinimumSize = new System.Drawing.Size(100, 16);
 			this.colorproperties.Name = "colorproperties";
 			this.colorproperties.Size = new System.Drawing.Size(168, 21);
-			this.colorproperties.TabIndex = 41;
+			this.colorproperties.TabIndex = 6;
 			this.colorproperties.ColorChanged += new System.EventHandler(this.colorproperties_ColorChanged);
 			// 
 			// label23
@@ -2043,7 +2119,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.scriptcolorpresets.Location = new System.Drawing.Point(61, 18);
 			this.scriptcolorpresets.Name = "scriptcolorpresets";
 			this.scriptcolorpresets.Size = new System.Drawing.Size(122, 21);
-			this.scriptcolorpresets.TabIndex = 39;
+			this.scriptcolorpresets.TabIndex = 0;
 			this.scriptcolorpresets.SelectedIndexChanged += new System.EventHandler(this.scriptcolorpresets_SelectedIndexChanged);
 			// 
 			// colorfoldback
@@ -2055,7 +2131,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorfoldback.MinimumSize = new System.Drawing.Size(100, 16);
 			this.colorfoldback.Name = "colorfoldback";
 			this.colorfoldback.Size = new System.Drawing.Size(168, 21);
-			this.colorfoldback.TabIndex = 16;
+			this.colorfoldback.TabIndex = 18;
 			this.colorfoldback.ColorChanged += new System.EventHandler(this.colorfoldback_ColorChanged);
 			// 
 			// colorfoldfore
@@ -2067,7 +2143,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorfoldfore.MinimumSize = new System.Drawing.Size(100, 16);
 			this.colorfoldfore.Name = "colorfoldfore";
 			this.colorfoldfore.Size = new System.Drawing.Size(168, 21);
-			this.colorfoldfore.TabIndex = 15;
+			this.colorfoldfore.TabIndex = 17;
 			this.colorfoldfore.ColorChanged += new System.EventHandler(this.colorfoldfore_ColorChanged);
 			// 
 			// colorindicator
@@ -2079,7 +2155,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorindicator.MinimumSize = new System.Drawing.Size(100, 16);
 			this.colorindicator.Name = "colorindicator";
 			this.colorindicator.Size = new System.Drawing.Size(168, 21);
-			this.colorindicator.TabIndex = 14;
+			this.colorindicator.TabIndex = 13;
 			this.colorindicator.ColorChanged += new System.EventHandler(this.colorindicator_ColorChanged);
 			// 
 			// colorwhitespace
@@ -2091,7 +2167,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorwhitespace.MinimumSize = new System.Drawing.Size(100, 16);
 			this.colorwhitespace.Name = "colorwhitespace";
 			this.colorwhitespace.Size = new System.Drawing.Size(168, 21);
-			this.colorwhitespace.TabIndex = 13;
+			this.colorwhitespace.TabIndex = 16;
 			this.colorwhitespace.ColorChanged += new System.EventHandler(this.colorwhitespace_ColorChanged);
 			// 
 			// colorbracebad
@@ -2103,7 +2179,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorbracebad.MinimumSize = new System.Drawing.Size(100, 16);
 			this.colorbracebad.Name = "colorbracebad";
 			this.colorbracebad.Size = new System.Drawing.Size(168, 21);
-			this.colorbracebad.TabIndex = 12;
+			this.colorbracebad.TabIndex = 15;
 			this.colorbracebad.ColorChanged += new System.EventHandler(this.colorbracebad_ColorChanged);
 			// 
 			// colorbrace
@@ -2115,7 +2191,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorbrace.MinimumSize = new System.Drawing.Size(100, 16);
 			this.colorbrace.Name = "colorbrace";
 			this.colorbrace.Size = new System.Drawing.Size(168, 21);
-			this.colorbrace.TabIndex = 11;
+			this.colorbrace.TabIndex = 14;
 			this.colorbrace.ColorChanged += new System.EventHandler(this.colorbrace_ColorChanged);
 			// 
 			// colorselectionback
@@ -2127,7 +2203,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorselectionback.MinimumSize = new System.Drawing.Size(100, 16);
 			this.colorselectionback.Name = "colorselectionback";
 			this.colorselectionback.Size = new System.Drawing.Size(168, 21);
-			this.colorselectionback.TabIndex = 10;
+			this.colorselectionback.TabIndex = 12;
 			this.colorselectionback.ColorChanged += new System.EventHandler(this.colorselectionback_ColorChanged);
 			// 
 			// colorselectionfore
@@ -2139,7 +2215,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorselectionfore.MinimumSize = new System.Drawing.Size(100, 16);
 			this.colorselectionfore.Name = "colorselectionfore";
 			this.colorselectionfore.Size = new System.Drawing.Size(168, 21);
-			this.colorselectionfore.TabIndex = 9;
+			this.colorselectionfore.TabIndex = 11;
 			this.colorselectionfore.ColorChanged += new System.EventHandler(this.colorselectionfore_ColorChanged);
 			// 
 			// colorincludes
@@ -2151,7 +2227,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorincludes.MinimumSize = new System.Drawing.Size(100, 16);
 			this.colorincludes.Name = "colorincludes";
 			this.colorincludes.Size = new System.Drawing.Size(168, 21);
-			this.colorincludes.TabIndex = 8;
+			this.colorincludes.TabIndex = 10;
 			this.colorincludes.ColorChanged += new System.EventHandler(this.colorincludes_ColorChanged);
 			// 
 			// colorstrings
@@ -2175,7 +2251,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorscriptbackground.MinimumSize = new System.Drawing.Size(100, 16);
 			this.colorscriptbackground.Name = "colorscriptbackground";
 			this.colorscriptbackground.Size = new System.Drawing.Size(168, 21);
-			this.colorscriptbackground.TabIndex = 0;
+			this.colorscriptbackground.TabIndex = 1;
 			this.colorscriptbackground.ColorChanged += new System.EventHandler(this.colorscriptbackground_ColorChanged);
 			// 
 			// colorplaintext
@@ -2187,7 +2263,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorplaintext.MinimumSize = new System.Drawing.Size(100, 16);
 			this.colorplaintext.Name = "colorplaintext";
 			this.colorplaintext.Size = new System.Drawing.Size(168, 21);
-			this.colorplaintext.TabIndex = 2;
+			this.colorplaintext.TabIndex = 3;
 			this.colorplaintext.ColorChanged += new System.EventHandler(this.colorplaintext_ColorChanged);
 			// 
 			// colorcomments
@@ -2199,7 +2275,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorcomments.MinimumSize = new System.Drawing.Size(100, 16);
 			this.colorcomments.Name = "colorcomments";
 			this.colorcomments.Size = new System.Drawing.Size(168, 21);
-			this.colorcomments.TabIndex = 3;
+			this.colorcomments.TabIndex = 4;
 			this.colorcomments.ColorChanged += new System.EventHandler(this.colorcomments_ColorChanged);
 			// 
 			// colorlinenumbers
@@ -2211,7 +2287,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorlinenumbers.MinimumSize = new System.Drawing.Size(100, 16);
 			this.colorlinenumbers.Name = "colorlinenumbers";
 			this.colorlinenumbers.Size = new System.Drawing.Size(168, 21);
-			this.colorlinenumbers.TabIndex = 1;
+			this.colorlinenumbers.TabIndex = 2;
 			this.colorlinenumbers.ColorChanged += new System.EventHandler(this.colorlinenumbers_ColorChanged);
 			// 
 			// colorkeywords
@@ -2223,7 +2299,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorkeywords.MinimumSize = new System.Drawing.Size(100, 16);
 			this.colorkeywords.Name = "colorkeywords";
 			this.colorkeywords.Size = new System.Drawing.Size(168, 21);
-			this.colorkeywords.TabIndex = 4;
+			this.colorkeywords.TabIndex = 5;
 			this.colorkeywords.ColorChanged += new System.EventHandler(this.colorkeywords_ColorChanged);
 			// 
 			// colorliterals
@@ -2235,7 +2311,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorliterals.MinimumSize = new System.Drawing.Size(100, 16);
 			this.colorliterals.Name = "colorliterals";
 			this.colorliterals.Size = new System.Drawing.Size(168, 21);
-			this.colorliterals.TabIndex = 5;
+			this.colorliterals.TabIndex = 8;
 			this.colorliterals.ColorChanged += new System.EventHandler(this.colorliterals_ColorChanged);
 			// 
 			// colorconstants
@@ -2247,7 +2323,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorconstants.MinimumSize = new System.Drawing.Size(100, 16);
 			this.colorconstants.Name = "colorconstants";
 			this.colorconstants.Size = new System.Drawing.Size(168, 21);
-			this.colorconstants.TabIndex = 6;
+			this.colorconstants.TabIndex = 9;
 			this.colorconstants.ColorChanged += new System.EventHandler(this.colorconstants_ColorChanged);
 			// 
 			// previewgroup
@@ -2258,7 +2334,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.previewgroup.Location = new System.Drawing.Point(217, 344);
 			this.previewgroup.Name = "previewgroup";
 			this.previewgroup.Size = new System.Drawing.Size(457, 157);
-			this.previewgroup.TabIndex = 2;
+			this.previewgroup.TabIndex = 4;
 			this.previewgroup.TabStop = false;
 			this.previewgroup.Text = " Preview ";
 			// 
@@ -2368,6 +2444,8 @@ namespace CodeImp.DoomBuilder.Windows
 			((System.ComponentModel.ISupportInitialize)(this.tbDynLightSize)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.tbDynLightCount)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.imagebrightness)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.hiddenthingsalpha)).EndInit();
+			((System.ComponentModel.ISupportInitialize)(this.inactivethingsalpha)).EndInit();
 			this.tabscripteditor.ResumeLayout(false);
 			this.groupBox9.ResumeLayout(false);
 			this.groupBox9.PerformLayout();
@@ -2550,5 +2628,11 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.TrackBar antialiasing;
 		private System.Windows.Forms.Label labelanisotropicfiltering;
 		private System.Windows.Forms.TrackBar anisotropicfiltering;
+		private System.Windows.Forms.TrackBar inactivethingsalpha;
+		private System.Windows.Forms.Label inactivethingsalphalabel;
+		private System.Windows.Forms.Label label30;
+		private System.Windows.Forms.Label hiddenthingsalphalabel;
+		private System.Windows.Forms.Label label32;
+		private System.Windows.Forms.TrackBar hiddenthingsalpha;
 	}
 }

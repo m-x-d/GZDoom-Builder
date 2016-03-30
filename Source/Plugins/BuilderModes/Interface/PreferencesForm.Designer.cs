@@ -118,7 +118,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.groupBox4.Location = new System.Drawing.Point(6, 261);
 			this.groupBox4.Name = "groupBox4";
 			this.groupBox4.Size = new System.Drawing.Size(272, 130);
-			this.groupBox4.TabIndex = 19;
+			this.groupBox4.TabIndex = 2;
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = " Default sector settings";
 			// 
@@ -146,13 +146,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.defaultfloorheight.AllowNegative = true;
 			this.defaultfloorheight.AllowRelative = false;
 			this.defaultfloorheight.ButtonStep = 5;
+			this.defaultfloorheight.ButtonStepBig = 10F;
 			this.defaultfloorheight.ButtonStepFloat = 1F;
+			this.defaultfloorheight.ButtonStepSmall = 0.1F;
+			this.defaultfloorheight.ButtonStepsUseModifierKeys = false;
 			this.defaultfloorheight.ButtonStepsWrapAround = false;
 			this.defaultfloorheight.Location = new System.Drawing.Point(156, 23);
 			this.defaultfloorheight.Name = "defaultfloorheight";
 			this.defaultfloorheight.Size = new System.Drawing.Size(59, 24);
 			this.defaultfloorheight.StepValues = null;
-			this.defaultfloorheight.TabIndex = 25;
+			this.defaultfloorheight.TabIndex = 0;
 			// 
 			// label13
 			// 
@@ -169,13 +172,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.defaultceilheight.AllowNegative = true;
 			this.defaultceilheight.AllowRelative = false;
 			this.defaultceilheight.ButtonStep = 5;
+			this.defaultceilheight.ButtonStepBig = 10F;
 			this.defaultceilheight.ButtonStepFloat = 1F;
+			this.defaultceilheight.ButtonStepSmall = 0.1F;
+			this.defaultceilheight.ButtonStepsUseModifierKeys = false;
 			this.defaultceilheight.ButtonStepsWrapAround = false;
 			this.defaultceilheight.Location = new System.Drawing.Point(156, 53);
 			this.defaultceilheight.Name = "defaultceilheight";
 			this.defaultceilheight.Size = new System.Drawing.Size(59, 24);
 			this.defaultceilheight.StepValues = null;
-			this.defaultceilheight.TabIndex = 23;
+			this.defaultceilheight.TabIndex = 1;
 			// 
 			// label12
 			// 
@@ -192,13 +198,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.defaultbrightness.AllowNegative = false;
 			this.defaultbrightness.AllowRelative = false;
 			this.defaultbrightness.ButtonStep = 5;
+			this.defaultbrightness.ButtonStepBig = 10F;
 			this.defaultbrightness.ButtonStepFloat = 1F;
+			this.defaultbrightness.ButtonStepSmall = 0.1F;
+			this.defaultbrightness.ButtonStepsUseModifierKeys = false;
 			this.defaultbrightness.ButtonStepsWrapAround = false;
 			this.defaultbrightness.Location = new System.Drawing.Point(156, 83);
 			this.defaultbrightness.Name = "defaultbrightness";
 			this.defaultbrightness.Size = new System.Drawing.Size(59, 24);
 			this.defaultbrightness.StepValues = null;
-			this.defaultbrightness.TabIndex = 21;
+			this.defaultbrightness.TabIndex = 2;
 			// 
 			// label11
 			// 
@@ -224,7 +233,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.groupBox3.Location = new System.Drawing.Point(284, 104);
 			this.groupBox3.Name = "groupBox3";
 			this.groupBox3.Size = new System.Drawing.Size(379, 287);
-			this.groupBox3.TabIndex = 18;
+			this.groupBox3.TabIndex = 3;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = " Options ";
 			// 
@@ -234,7 +243,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.autodrawonedit.Location = new System.Drawing.Point(13, 24);
 			this.autodrawonedit.Name = "autodrawonedit";
 			this.autodrawonedit.Size = new System.Drawing.Size(353, 30);
-			this.autodrawonedit.TabIndex = 11;
+			this.autodrawonedit.TabIndex = 0;
 			this.autodrawonedit.Text = "Start drawing when Edit pressed over empty space in Classic modes\r\nInsert new thi" +
 				"ng when Edit pressed over empty space in Things mode";
 			this.autodrawonedit.UseVisualStyleBackColor = true;
@@ -245,7 +254,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.syncSelection.Location = new System.Drawing.Point(13, 262);
 			this.syncSelection.Name = "syncSelection";
 			this.syncSelection.Size = new System.Drawing.Size(295, 17);
-			this.syncSelection.TabIndex = 10;
+			this.syncSelection.TabIndex = 9;
 			this.syncSelection.Text = "Synchronize selection between Visual and Classic modes";
 			this.syncSelection.UseVisualStyleBackColor = true;
 			// 
@@ -255,7 +264,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.dontMoveGeometryOutsideBounds.Location = new System.Drawing.Point(13, 237);
 			this.dontMoveGeometryOutsideBounds.Name = "dontMoveGeometryOutsideBounds";
 			this.dontMoveGeometryOutsideBounds.Size = new System.Drawing.Size(323, 17);
-			this.dontMoveGeometryOutsideBounds.TabIndex = 9;
+			this.dontMoveGeometryOutsideBounds.TabIndex = 8;
 			this.dontMoveGeometryOutsideBounds.Text = "Don\'t move selection if any part of it is outside of map boundary";
 			this.dontMoveGeometryOutsideBounds.UseVisualStyleBackColor = true;
 			// 
@@ -346,7 +355,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.groupBox2.Location = new System.Drawing.Point(6, 104);
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Size = new System.Drawing.Size(272, 151);
-			this.groupBox2.TabIndex = 17;
+			this.groupBox2.TabIndex = 1;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = " Ranges ";
 			// 
@@ -356,13 +365,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.splitlinedefsrange.AllowNegative = false;
 			this.splitlinedefsrange.AllowRelative = false;
 			this.splitlinedefsrange.ButtonStep = 5;
+			this.splitlinedefsrange.ButtonStepBig = 10F;
 			this.splitlinedefsrange.ButtonStepFloat = 1F;
+			this.splitlinedefsrange.ButtonStepSmall = 0.1F;
+			this.splitlinedefsrange.ButtonStepsUseModifierKeys = false;
 			this.splitlinedefsrange.ButtonStepsWrapAround = false;
 			this.splitlinedefsrange.Location = new System.Drawing.Point(156, 111);
 			this.splitlinedefsrange.Name = "splitlinedefsrange";
 			this.splitlinedefsrange.Size = new System.Drawing.Size(59, 24);
 			this.splitlinedefsrange.StepValues = null;
-			this.splitlinedefsrange.TabIndex = 19;
+			this.splitlinedefsrange.TabIndex = 3;
 			// 
 			// stitchrange
 			// 
@@ -370,13 +382,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.stitchrange.AllowNegative = false;
 			this.stitchrange.AllowRelative = false;
 			this.stitchrange.ButtonStep = 5;
+			this.stitchrange.ButtonStepBig = 10F;
 			this.stitchrange.ButtonStepFloat = 1F;
+			this.stitchrange.ButtonStepSmall = 0.1F;
+			this.stitchrange.ButtonStepsUseModifierKeys = false;
 			this.stitchrange.ButtonStepsWrapAround = false;
 			this.stitchrange.Location = new System.Drawing.Point(156, 81);
 			this.stitchrange.Name = "stitchrange";
 			this.stitchrange.Size = new System.Drawing.Size(59, 24);
 			this.stitchrange.StepValues = null;
-			this.stitchrange.TabIndex = 18;
+			this.stitchrange.TabIndex = 2;
 			// 
 			// highlightthingsrange
 			// 
@@ -384,13 +399,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.highlightthingsrange.AllowNegative = false;
 			this.highlightthingsrange.AllowRelative = false;
 			this.highlightthingsrange.ButtonStep = 5;
+			this.highlightthingsrange.ButtonStepBig = 10F;
 			this.highlightthingsrange.ButtonStepFloat = 1F;
+			this.highlightthingsrange.ButtonStepSmall = 0.1F;
+			this.highlightthingsrange.ButtonStepsUseModifierKeys = false;
 			this.highlightthingsrange.ButtonStepsWrapAround = false;
 			this.highlightthingsrange.Location = new System.Drawing.Point(156, 51);
 			this.highlightthingsrange.Name = "highlightthingsrange";
 			this.highlightthingsrange.Size = new System.Drawing.Size(59, 24);
 			this.highlightthingsrange.StepValues = null;
-			this.highlightthingsrange.TabIndex = 17;
+			this.highlightthingsrange.TabIndex = 1;
 			// 
 			// highlightrange
 			// 
@@ -398,13 +416,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.highlightrange.AllowNegative = false;
 			this.highlightrange.AllowRelative = false;
 			this.highlightrange.ButtonStep = 5;
+			this.highlightrange.ButtonStepBig = 10F;
 			this.highlightrange.ButtonStepFloat = 1F;
+			this.highlightrange.ButtonStepSmall = 0.1F;
+			this.highlightrange.ButtonStepsUseModifierKeys = false;
 			this.highlightrange.ButtonStepsWrapAround = false;
 			this.highlightrange.Location = new System.Drawing.Point(156, 21);
 			this.highlightrange.Name = "highlightrange";
 			this.highlightrange.Size = new System.Drawing.Size(59, 24);
 			this.highlightrange.StepValues = null;
-			this.highlightrange.TabIndex = 16;
+			this.highlightrange.TabIndex = 0;
 			// 
 			// label8
 			// 
@@ -491,7 +512,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.groupBox1.Location = new System.Drawing.Point(6, 6);
 			this.groupBox1.Name = "groupBox1";
 			this.groupBox1.Size = new System.Drawing.Size(657, 92);
-			this.groupBox1.TabIndex = 16;
+			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = " Behavior ";
 			// 
@@ -507,7 +528,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.splitbehavior.Location = new System.Drawing.Point(342, 55);
 			this.splitbehavior.Name = "splitbehavior";
 			this.splitbehavior.Size = new System.Drawing.Size(309, 21);
-			this.splitbehavior.TabIndex = 2;
+			this.splitbehavior.TabIndex = 1;
 			// 
 			// label10
 			// 

@@ -313,7 +313,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(renderer.StartThings(true))
 			{
 				// Render things
-				renderer.RenderThingSet(General.Map.ThingsFilter.HiddenThings, Presentation.THINGS_HIDDEN_ALPHA);
+				renderer.RenderThingSet(General.Map.ThingsFilter.HiddenThings, General.Settings.HiddenThingsAlpha);
 				renderer.RenderThingSet(unselectedthings, Presentation.THINGS_ALPHA);
 				renderer.RenderThingSet(selectedthings, Presentation.THINGS_ALPHA);
 
