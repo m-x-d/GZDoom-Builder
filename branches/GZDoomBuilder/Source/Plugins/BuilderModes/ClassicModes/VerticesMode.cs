@@ -155,7 +155,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Render things
 			if(renderer.StartThings(true))
 			{
-				renderer.RenderThingSet(General.Map.ThingsFilter.HiddenThings, Presentation.THINGS_HIDDEN_ALPHA);
+				renderer.RenderThingSet(General.Map.ThingsFilter.HiddenThings, General.Settings.HiddenThingsAlpha);
 				renderer.RenderThingSet(General.Map.ThingsFilter.VisibleThings, Presentation.THINGS_ALPHA);
 				renderer.Finish();
 			}
@@ -818,8 +818,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		// This creates a new vertex at the mouse position
 		[BeginAction("insertitem", BaseAction = true)]
-		public void InsertVertexAction() { VerticesMode.InsertVertex(mousemappos, renderer.Scale); }
-		public static void InsertVertex(Vector2D mousemappos, float rendererscale)
+		private void InsertVertex()
 		{
 			bool snaptogrid = General.Interface.ShiftState ^ General.Interface.SnapToGrid;
 			bool snaptonearest = General.Interface.CtrlState ^ General.Interface.AutoMerge;
@@ -833,7 +832,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Map.UndoRedo.CreateUndo("Insert vertex");
 
 				// Snap to geometry?
-				Linedef l = General.Map.Map.NearestLinedefRange(mousemappos, BuilderPlug.Me.SplitLinedefsRange / rendererscale);
+				Linedef l = General.Map.Map.NearestLinedefRange(mousemappos, BuilderPlug.Me.SplitLinedefsRange / renderer.Scale);
 				if(snaptonearest && (l != null))
 				{
 					// Snip to grid also?
@@ -894,7 +893,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(snaptonearest)
 				{
 					//mxd. Check if snapped vertex is still on top of a linedef
-					l = General.Map.Map.NearestLinedefRange(v.Position, BuilderPlug.Me.SplitLinedefsRange / rendererscale);
+					l = General.Map.Map.NearestLinedefRange(v.Position, BuilderPlug.Me.SplitLinedefsRange / renderer.Scale);
 					
 					if(l != null) 
 					{
@@ -1164,7 +1163,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			dv2.stitch = true;
 			dv1.pos = start;
 			dv2.pos = end;
-			Tools.DrawLines(new List<DrawnVertex>() { dv1, dv2 }, false, false);
+			Tools.DrawLines(new List<DrawnVertex> { dv1, dv2 }, false, false);
 
 			// Update cache values
 			General.Map.Map.Update();

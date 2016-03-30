@@ -48,7 +48,7 @@
 			this.buttonOK.Location = new System.Drawing.Point(95, 148);
 			this.buttonOK.Name = "buttonOK";
 			this.buttonOK.Size = new System.Drawing.Size(75, 23);
-			this.buttonOK.TabIndex = 4;
+			this.buttonOK.TabIndex = 7;
 			this.buttonOK.Text = "OK";
 			this.buttonOK.UseVisualStyleBackColor = true;
 			this.buttonOK.Click += new System.EventHandler(this.buttonOK_Click);
@@ -60,7 +60,7 @@
 			this.buttonCancel.Location = new System.Drawing.Point(177, 148);
 			this.buttonCancel.Name = "buttonCancel";
 			this.buttonCancel.Size = new System.Drawing.Size(75, 23);
-			this.buttonCancel.TabIndex = 5;
+			this.buttonCancel.TabIndex = 8;
 			this.buttonCancel.Text = "Cancel";
 			this.buttonCancel.UseVisualStyleBackColor = true;
 			this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
@@ -159,7 +159,7 @@
 			this.cbMirror.Location = new System.Drawing.Point(168, 96);
 			this.cbMirror.Name = "cbMirror";
 			this.cbMirror.Size = new System.Drawing.Size(81, 17);
-			this.cbMirror.TabIndex = 10;
+			this.cbMirror.TabIndex = 4;
 			this.cbMirror.Text = "Mirror mode";
 			this.cbMirror.UseVisualStyleBackColor = true;
 			this.cbMirror.CheckStateChanged += new System.EventHandler(this.cbMirror_CheckStateChanged);
@@ -170,7 +170,7 @@
 			this.cbCopy.Location = new System.Drawing.Point(168, 119);
 			this.cbCopy.Name = "cbCopy";
 			this.cbCopy.Size = new System.Drawing.Size(79, 17);
-			this.cbCopy.TabIndex = 10;
+			this.cbCopy.TabIndex = 5;
 			this.cbCopy.Text = "Copy mode";
 			this.cbCopy.UseVisualStyleBackColor = true;
 			this.cbCopy.CheckedChanged += new System.EventHandler(this.cbCopy_CheckedChanged);
