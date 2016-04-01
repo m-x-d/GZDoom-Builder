@@ -131,22 +131,57 @@ namespace CodeImp.DoomBuilder.Windows
 
 			// Fill script fonts list
 			scriptfontname.BeginUpdate();
-			foreach(FontFamily ff in FontFamily.Families)
-				scriptfontname.Items.Add(ff.Name);
+			foreach(FontFamily ff in FontFamily.Families) scriptfontname.Items.Add(ff.Name);
 			scriptfontname.EndUpdate();
 			
 			// Select script font name
 			for(int i = 0; i < scriptfontname.Items.Count; i++)
 			{
 				if(string.Compare(scriptfontname.Items[i].ToString(), General.Settings.ScriptFontName, true) == 0)
+				{
 					scriptfontname.SelectedIndex = i;
+					break; //mxd
+				}
 			}
 
 			// Select script font size
 			for(int i = 0; i < scriptfontsize.Items.Count; i++)
 			{
-				if(string.Compare(scriptfontsize.Items[i].ToString(), General.Settings.ScriptFontSize.ToString(CultureInfo.InvariantCulture), true) == 0)
+				string fs = General.Settings.ScriptFontSize.ToString(CultureInfo.InvariantCulture); //mxd
+				if(string.Compare(scriptfontsize.Items[i].ToString(), fs, true) == 0)
+				{
 					scriptfontsize.SelectedIndex = i;
+					break; //mxd
+				}
+			}
+
+			//mxd. Text labels
+			textlabelfontbold.Checked = General.Settings.TextLabelFontBold;
+
+			//mxd. Fill text labels fonts list
+			textlabelfontname.BeginUpdate();
+			foreach(FontFamily ff in FontFamily.Families) textlabelfontname.Items.Add(ff.Name);
+			textlabelfontname.EndUpdate();
+
+			//mxd. Select text labels font name
+			for(int i = 0; i < textlabelfontname.Items.Count; i++)
+			{
+				if(string.Compare(textlabelfontname.Items[i].ToString(), General.Settings.TextLabelFontName, true) == 0)
+				{
+					textlabelfontname.SelectedIndex = i;
+					break;
+				}
+			}
+
+			//mxd. Select text labels font size
+			for(int i = 0; i < textlabelfontsize.Items.Count; i++)
+			{
+				string fs = General.Settings.TextLabelFontSize.ToString(CultureInfo.InvariantCulture);
+				if(string.Compare(textlabelfontsize.Items[i].ToString(), fs, true) == 0)
+				{
+					textlabelfontsize.SelectedIndex = i;
+					break;
+				}
 			}
 			
 			// Fill actions list with categories
@@ -315,6 +350,14 @@ namespace CodeImp.DoomBuilder.Windows
 			int fontsize;
 			if(!int.TryParse(scriptfontsize.Text, out fontsize)) fontsize = 10;
 			General.Settings.ScriptFontSize = fontsize;
+
+			//mxd. Text label settings
+			General.Settings.TextLabelFontBold = textlabelfontbold.Checked;
+			General.Settings.TextLabelFontName = textlabelfontname.Text;
+
+			//mxd. Text label font size
+			if(!int.TryParse(textlabelfontsize.Text, out fontsize)) fontsize = 16;
+			General.Settings.TextLabelFontSize = fontsize;
 			
 			// Apply control keys to actions
 			foreach(ListViewItem item in allactionitems) //mxd
