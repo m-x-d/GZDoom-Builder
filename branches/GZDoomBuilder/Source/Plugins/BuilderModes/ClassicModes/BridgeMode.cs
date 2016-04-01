@@ -372,7 +372,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 			// Render things
 			if(renderer.StartThings(true)) 
 			{
-				renderer.RenderThingSet(General.Map.Map.Things, Presentation.THINGS_ALPHA);
+				renderer.RenderThingSet(General.Map.Map.Things, General.Settings.ActiveThingsAlpha);
 				renderer.Finish();
 			}
 

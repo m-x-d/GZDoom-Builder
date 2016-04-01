@@ -50,6 +50,7 @@ namespace CodeImp.DoomBuilder.Config
 		private float visualmousesensy;
 		private int imagebrightness;
 		private float doublesidedalpha;
+		private float activethingsalpha; //mxd
 		private float inactivethingsalpha; //mxd
 		private float hiddenthingsalpha; //mxd
 		private byte doublesidedalphabyte;
@@ -153,6 +154,7 @@ namespace CodeImp.DoomBuilder.Config
 		public int ImageBrightness { get { return imagebrightness; } internal set { imagebrightness = value; } }
 		public float DoubleSidedAlpha { get { return doublesidedalpha; } internal set { doublesidedalpha = value; doublesidedalphabyte = (byte)(doublesidedalpha * 255f); } }
 		public byte DoubleSidedAlphaByte { get { return doublesidedalphabyte; } }
+		public float ActiveThingsAlpha { get { return activethingsalpha; } internal set { activethingsalpha = value; } } //mxd
 		public float InactiveThingsAlpha { get { return inactivethingsalpha; } internal set { inactivethingsalpha = value; } } //mxd
 		public float HiddenThingsAlpha { get { return hiddenthingsalpha; } internal set { hiddenthingsalpha = value; } } //mxd
 		public float BackgroundAlpha { get { return backgroundalpha; } internal set { backgroundalpha = value; } }
@@ -282,6 +284,7 @@ namespace CodeImp.DoomBuilder.Config
 				imagebrightness = cfg.ReadSetting("imagebrightness", 3);
 				doublesidedalpha = cfg.ReadSetting("doublesidedalpha", 0.4f);
 				doublesidedalphabyte = (byte)(doublesidedalpha * 255f);
+				activethingsalpha = cfg.ReadSetting("activethingsalpha", Presentation.THINGS_ALPHA); //mxd
 				inactivethingsalpha = cfg.ReadSetting("inactivethingsalpha", Presentation.THINGS_BACK_ALPHA); //mxd
 				hiddenthingsalpha = cfg.ReadSetting("hiddenthingsalpha", Presentation.THINGS_HIDDEN_ALPHA); //mxd
 				backgroundalpha = cfg.ReadSetting("backgroundalpha", 1.0f);
@@ -392,6 +395,7 @@ namespace CodeImp.DoomBuilder.Config
 			cfg.WriteSetting("qualitydisplay", qualitydisplay);
 			cfg.WriteSetting("testmonsters", testmonsters);
 			cfg.WriteSetting("doublesidedalpha", doublesidedalpha);
+			cfg.WriteSetting("activethingsalpha", activethingsalpha); //mxd
 			cfg.WriteSetting("inactivethingsalpha", inactivethingsalpha); //mxd
 			cfg.WriteSetting("hiddenthingsalpha", hiddenthingsalpha); //mxd
 			cfg.WriteSetting("backgroundalpha", backgroundalpha);

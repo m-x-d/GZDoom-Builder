@@ -682,7 +682,7 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Actions.cfg" />
     <EmbeddedResource Include="Resources\display2d.fx" />
-    <EmbeddedResource Include="Resources\Thing2D.png" />
+    <EmbeddedResource Include="Resources\ThingTexture2D.png" />
     <EmbeddedResource Include="Resources\things2d.fx" />
     <EmbeddedResource Include="Resources\world3d.fx" />
   </ItemGroup>

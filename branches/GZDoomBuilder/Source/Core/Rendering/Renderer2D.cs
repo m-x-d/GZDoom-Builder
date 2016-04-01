@@ -51,11 +51,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		private const float THING_SPRITE_SHRINK = 2f;
 		private const int THING_BUFFER_SIZE = 100;
 		private const float MINIMUM_THING_RADIUS = 1.5f; //mxd
-		private const float MINIMUM_SPRITE_RADIUS = 5.5f; //mxd
-
-		private const string FONT_NAME = "Verdana";
-		private const int FONT_WIDTH = 0;
-		private const int FONT_HEIGHT = 0;
+		private const float MINIMUM_SPRITE_RADIUS = 8.0f; //mxd
 
 		internal const int NUM_VIEW_MODES = 4;
 		
@@ -80,9 +76,6 @@ namespace CodeImp.DoomBuilder.Rendering
 		private Size thingssize;
 		private Size overlaysize;
 		private Size backsize;
-		
-		// Font
-		private SlimDX.Direct3D9.Font font;
 
 		// Geometry plotter
 		private Plotter plotter;
@@ -100,9 +93,6 @@ namespace CodeImp.DoomBuilder.Rendering
 		
 		// Surfaces
 		private SurfaceManager surfaces;
-		
-		// Images
-		private ResourceImage thingtexture;
 		
 		// View settings (world coordinates)
 		private ViewMode viewmode;
@@ -146,11 +136,6 @@ namespace CodeImp.DoomBuilder.Rendering
 		// Constructor
 		internal Renderer2D(D3DDevice graphics) : base(graphics)
 		{
-			//mxd. Load thing texture
-			thingtexture = new ResourceImage("CodeImp.DoomBuilder.Resources.Thing2D.png") { UseColorCorrection = false };
-			thingtexture.LoadImage();
-			thingtexture.CreateTexture();
-
 			// Create surface manager
 			surfaces = new SurfaceManager();
 
@@ -169,7 +154,6 @@ namespace CodeImp.DoomBuilder.Rendering
 			{
 				// Destroy rendertargets
 				DestroyRendertargets();
-				thingtexture.Dispose(); //mxd
 				
 				// Dispose surface manager
 				surfaces.Dispose();
@@ -371,10 +355,6 @@ namespace CodeImp.DoomBuilder.Rendering
 			thingsvertices = null;
 			lastgridscale = -1f;
 			lastgridsize = 0;
-
-			// Trash font
-			if(font != null) font.Dispose();
-			font = null;
 		}
 		
 		// Allocates new image memory to render on
@@ -416,9 +396,6 @@ namespace CodeImp.DoomBuilder.Rendering
 			//StartOverlay(true); Finish();
 			graphics.ClearRendertarget(General.Colors.Background.WithAlpha(0).ToColorValue(), thingstex.GetSurfaceLevel(0), null);
 			graphics.ClearRendertarget(General.Colors.Background.WithAlpha(0).ToColorValue(), overlaytex.GetSurfaceLevel(0), null);
-			
-			// Create font
-			font = new SlimDX.Direct3D9.Font(graphics.Device, FONT_WIDTH, FONT_HEIGHT, FontWeight.Bold, 1, false, CharacterSet.Ansi, Precision.Default, FontQuality.Antialiased, PitchAndFamily.Default, FONT_NAME);
 			
 			// Create vertex buffers
 			screenverts = new VertexBuffer(graphics.Device, 4 * sizeof(FlatVertex), Usage.Dynamic | Usage.WriteOnly, VertexFormat.None, Pool.Default);
@@ -957,14 +934,15 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		// This makes vertices for a thing
 		// Returns false when not on the screen
-		private bool CreateThingBoxVerts(Thing t, ref FlatVertex[] verts, ref List<Line3D> bboxes, Dictionary<Thing, Vector2D> thingsByPosition, int offset, PixelColor c, byte bboxalpha)
+		private bool CreateThingBoxVerts(Thing t, ref FlatVertex[] verts, ref List<Line3D> bboxes, Dictionary<Thing, Vector3D> thingsByPosition, int offset, PixelColor c, byte bboxalpha)
 		{
 			if(t.Size * scale < MINIMUM_THING_RADIUS) return false; //mxd. Don't render tiny little things
 
 			// Determine sizes
-			float circlesize = ((t.FixedSize || General.Settings.FixedThingsScale) && (scale > 1.0f) ? t.Size : t.Size * scale);
-			float bboxsize = ((!t.FixedSize && General.Settings.FixedThingsScale) && (scale > 1.0f) ? t.Size * scale : -1); //mxd
-			float screensize = Math.Max(circlesize, bboxsize); //mxd
+			float fixedscaler = (t.FixedSize ? 1.0f : 2.0f); //mxd
+			float circlesize = ((t.FixedSize || General.Settings.FixedThingsScale) && (scale > fixedscaler) ? t.Size * fixedscaler : t.Size * scale);
+			float bboxsize = ((!t.FixedSize && General.Settings.FixedThingsScale) && (scale > 2.0f) ? t.Size * scale : -1); //mxd
+			float screensize = (bboxsize > 0 ? bboxsize : circlesize); //mxd
 			
 			// Transform to screen coordinates
 			Vector2D screenpos = ((Vector2D)t.Position).GetTransformed(translatex, translatey, scale, -scale);
@@ -1030,32 +1008,50 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		//mxd
-		private void CreateThingArrowVerts(Thing t, ref FlatVertex[] verts, Vector2D screenpos, int offset) 
+		private void CreateThingArrowVerts(Thing t, ref FlatVertex[] verts, Vector3D screenpos, int offset) 
 		{
 			// Determine size
-			float arrowsize = ((t.FixedSize || General.Settings.FixedThingsScale) && (scale > 1.0f) ? t.Size : t.Size * scale) * THING_ARROW_SIZE; //mxd
+			float fixedscaler = (t.FixedSize ? 1.0f : 2.0f);
+			float arrowsize = ((t.FixedSize || General.Settings.FixedThingsScale) && (scale > fixedscaler) ? t.Size * fixedscaler : t.Size * scale) * THING_ARROW_SIZE; //mxd
 
 			// Setup rotated rect for arrow
 			float sinarrowsize = (float)Math.Sin(t.Angle + Angle2D.PI * 0.25f) * arrowsize;
 			float cosarrowsize = (float)Math.Cos(t.Angle + Angle2D.PI * 0.25f) * arrowsize;
 
+			// Sprite is not rendered?
+			float ut, ub, ul, ur;
+			if(screenpos.z < 0)
+			{
+				ul = 0.625f;
+				ur = 0.874f;
+				ut = -0.039f;
+				ub = 0.46f;
+			}
+			else
+			{
+				ul = 0.501f;
+				ur = 0.999f;
+				ut = 0.001f;
+				ub = 0.999f;
+			}
+
 			verts[offset].x = screenpos.x + sinarrowsize;
 			verts[offset].y = screenpos.y + cosarrowsize;
 			verts[offset].c = -1;
-			verts[offset].u = 0.501f;
-			verts[offset].v = 0.001f;
+			verts[offset].u = ul;
+			verts[offset].v = ut;
 			offset++;
 			verts[offset].x = screenpos.x - cosarrowsize;
 			verts[offset].y = screenpos.y + sinarrowsize;
 			verts[offset].c = -1;
-			verts[offset].u = 0.999f;
-			verts[offset].v = 0.001f;
+			verts[offset].u = ur;
+			verts[offset].v = ut;
 			offset++;
 			verts[offset].x = screenpos.x + cosarrowsize;
 			verts[offset].y = screenpos.y - sinarrowsize;
 			verts[offset].c = -1;
-			verts[offset].u = 0.501f;
-			verts[offset].v = 0.999f;
+			verts[offset].u = ul;
+			verts[offset].v = ub;
 			offset++;
 			verts[offset] = verts[offset - 2];
 			offset++;
@@ -1064,8 +1060,8 @@ namespace CodeImp.DoomBuilder.Rendering
 			verts[offset].x = screenpos.x - sinarrowsize;
 			verts[offset].y = screenpos.y - cosarrowsize;
 			verts[offset].c = -1;
-			verts[offset].u = 0.999f;
-			verts[offset].v = 0.999f;
+			verts[offset].u = ur;
+			verts[offset].v = ub;
 		}
 
 		//mxd
@@ -1125,7 +1121,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Device.SetStreamSource(0, thingsvertices, 0, FlatVertex.Stride);
 				
 				// Set things texture
-				graphics.Shaders.Things2D.Texture1 = thingtexture.Texture;
+				graphics.Shaders.Things2D.Texture1 = General.Map.Data.ThingTexture.Texture; //mxd
 				SetWorldTransformation(false);
 				graphics.Shaders.Things2D.SetSettings(alpha);
 				
@@ -1141,7 +1137,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				//mxd
 				Dictionary<int, List<Thing>> thingsByType = new Dictionary<int, List<Thing>>();
 				Dictionary<int, List<Thing>> modelsByType = new Dictionary<int, List<Thing>>();
-				Dictionary<Thing, Vector2D> thingsByPosition = new Dictionary<Thing, Vector2D>();
+				Dictionary<Thing, Vector3D> thingsByPosition = new Dictionary<Thing, Vector3D>();
 
 				// Go for all things
 				int buffercount = 0;
@@ -1236,7 +1232,8 @@ namespace CodeImp.DoomBuilder.Rendering
 					totalcount = 0;
 
 					float spriteWidth, spriteHeight;
-					float spriteScale = ((group.Value[0].FixedSize || General.Settings.FixedThingsScale) && (scale > 1.0f)) ? 1.0f : scale;
+					float fixedscaler = (group.Value[0].FixedSize ? 1.0f : 2.0f);
+					float spriteScale = ((group.Value[0].FixedSize || General.Settings.FixedThingsScale) && (scale > fixedscaler)) ? fixedscaler : scale;
 
 					if(sprite.Width > sprite.Height) 
 					{
@@ -1258,7 +1255,16 @@ namespace CodeImp.DoomBuilder.Rendering
 					{
 						if(t.IsModel && (General.Settings.GZDrawModelsMode == ModelRenderMode.ALL || (General.Settings.GZDrawModelsMode == ModelRenderMode.SELECTION && t.Selected) || (General.Settings.GZDrawModelsMode == ModelRenderMode.ACTIVE_THINGS_FILTER && alpha == 1.0f))) continue;
 						float scaler = t.Size / info.Radius;
-						if(Math.Max(spriteWidth, spriteHeight) * scaler < MINIMUM_SPRITE_RADIUS) continue; //don't render tiny little sprites
+						if(Math.Max(spriteWidth, spriteHeight) * scaler < MINIMUM_SPRITE_RADIUS)
+						{
+							// Hackish way to tell arrow rendering code to draw bigger arrow...
+							Vector3D v = thingsByPosition[t];
+							v.z = -1; 
+							thingsByPosition[t] = v;
+							
+							// Don't render tiny little sprites
+							continue; 
+						}
 						
 						CreateThingSpriteVerts(thingsByPosition[t], spriteWidth * scaler, spriteHeight * scaler, ref verts, buffercount * 6, t.Selected ? selectionColor : 0xFFFFFF);
 						buffercount++;
@@ -1298,7 +1304,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				graphics.Shaders.Things2D.EndPass();
 
 				//mxd. Render thing arrows
-				graphics.Shaders.Things2D.Texture1 = thingtexture.Texture;
+				graphics.Shaders.Things2D.Texture1 = General.Map.Data.ThingTexture.Texture;
 				graphics.Shaders.Things2D.BeginPass(0);
 
 				// Determine next lock size
@@ -1309,7 +1315,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				buffercount = 0;
 				totalcount = 0;
 
-				foreach(KeyValuePair<Thing, Vector2D> group in thingsByPosition) 
+				foreach(KeyValuePair<Thing, Vector3D> group in thingsByPosition) 
 				{
 					if(!group.Key.IsDirectional) continue;
 
@@ -1368,7 +1374,7 @@ namespace CodeImp.DoomBuilder.Rendering
 
 					foreach(KeyValuePair<int, List<Thing>> group in modelsByType)
 					{
-						ModelData mde = General.Map.Data.ModeldefEntries[@group.Key];
+						ModelData mde = General.Map.Data.ModeldefEntries[group.Key];
 						foreach(Thing t in group.Value) 
 						{
 							if((General.Settings.GZDrawModelsMode == ModelRenderMode.SELECTION && !t.Selected) || (General.Settings.GZDrawModelsMode == ModelRenderMode.ACTIVE_THINGS_FILTER && alpha < 1.0f)) continue;
