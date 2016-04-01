@@ -19,11 +19,12 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using CodeImp.DoomBuilder.IO;
+using System.Drawing;
 using System.IO;
-using System.Windows.Forms;
-using CodeImp.DoomBuilder.Map;
 using System.Reflection;
+using System.Windows.Forms;
+using CodeImp.DoomBuilder.IO;
+using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Plugins;
 using CodeImp.DoomBuilder.Rendering;
 
@@ -104,6 +105,13 @@ namespace CodeImp.DoomBuilder.Config
 		private bool scriptshowlinenumbers; //mxd
 		private bool scriptshowfolding; //mxd
 		private bool scriptautoshowautocompletion; //mxd
+
+		//mxd. Text labels settings
+		private string textlabelfontname;
+		private int textlabelfontsize;
+		private bool textlabelfontbold;
+		private Font textlabelfont;
+		private bool textlabelfontupdaterequired;
 
 		//mxd
 		private ModelRenderMode gzDrawModelsMode;
@@ -209,6 +217,12 @@ namespace CodeImp.DoomBuilder.Config
 		public bool ScriptShowLineNumbers { get { return scriptshowlinenumbers; } internal set { scriptshowlinenumbers = value; } } //mxd
 		public bool ScriptShowFolding { get { return scriptshowfolding; } internal set { scriptshowfolding = value; } } //mxd
 		public bool ScriptAutoShowAutocompletion { get { return scriptautoshowautocompletion; } internal set { scriptautoshowautocompletion = value; } } //mxd
+
+		//mxd. Text labels settings
+		public string TextLabelFontName { get { return textlabelfontname; } internal set { textlabelfontname = value; textlabelfontupdaterequired = true; } }
+		public int TextLabelFontSize { get { return textlabelfontsize; } internal set { textlabelfontsize = value; textlabelfontupdaterequired = true; } }
+		public bool TextLabelFontBold { get { return textlabelfontbold; } internal set { textlabelfontbold = value; textlabelfontupdaterequired = true; } }
+		public Font TextLabelFont { get { return GetTextLabelFont(); } }
 
 		//mxd 
 		public ModelRenderMode GZDrawModelsMode { get { return gzDrawModelsMode; } internal set { gzDrawModelsMode = value; } }
@@ -330,13 +344,19 @@ namespace CodeImp.DoomBuilder.Config
 				scriptfontbold = cfg.ReadSetting("scriptfontbold", false);
 				scriptontop = cfg.ReadSetting("scriptontop", true);
 				scriptautoindent = cfg.ReadSetting("scriptautoindent", true);
-				scriptallmanstyle = cfg.ReadSetting("scriptallmanstyle", false); //mxd
-				scriptusetabs = cfg.ReadSetting("scriptusetabs", true); //mxd
+				scriptallmanstyle = cfg.ReadSetting("scriptallmanstyle", false);
+				scriptusetabs = cfg.ReadSetting("scriptusetabs", true);
 				scripttabwidth = cfg.ReadSetting("scripttabwidth", 4);
-				scriptautoclosebrackets = cfg.ReadSetting("scriptautoclosebrackets", true); //mxd
-				scriptshowlinenumbers = cfg.ReadSetting("scriptshowlinenumbers", true); //mxd
-				scriptshowfolding = cfg.ReadSetting("scriptshowfolding", true); //mxd
-				scriptautoshowautocompletion = cfg.ReadSetting("scriptautoshowautocompletion", true); //mxd
+				scriptautoclosebrackets = cfg.ReadSetting("scriptautoclosebrackets", true);
+				scriptshowlinenumbers = cfg.ReadSetting("scriptshowlinenumbers", true);
+				scriptshowfolding = cfg.ReadSetting("scriptshowfolding", true);
+				scriptautoshowautocompletion = cfg.ReadSetting("scriptautoshowautocompletion", true);
+
+				//mxd. Text labels
+				textlabelfontname = cfg.ReadSetting("textlabelfontname", "Microsoft Sans Serif");
+				textlabelfontsize = cfg.ReadSetting("textlabelfontsize", 10);
+				textlabelfontbold = cfg.ReadSetting("textlabelfontbold", false);
+				textlabelfontupdaterequired = true;
 
 				//mxd 
 				gzDrawModelsMode = (ModelRenderMode)cfg.ReadSetting("gzdrawmodels", (int)ModelRenderMode.ALL);
@@ -438,14 +458,19 @@ namespace CodeImp.DoomBuilder.Config
 			cfg.WriteSetting("scriptfontsize", scriptfontsize);
 			cfg.WriteSetting("scriptfontbold", scriptfontbold);
 			cfg.WriteSetting("scriptontop", scriptontop);
-			cfg.WriteSetting("scriptusetabs", scriptusetabs); //mxd
+			cfg.WriteSetting("scriptusetabs", scriptusetabs);
 			cfg.WriteSetting("scripttabwidth", scripttabwidth);
 			cfg.WriteSetting("scriptautoindent", scriptautoindent);
-			cfg.WriteSetting("scriptallmanstyle", scriptallmanstyle); //mxd
-			cfg.WriteSetting("scriptautoclosebrackets", scriptautoclosebrackets); //mxd
-			cfg.WriteSetting("scriptshowlinenumbers", scriptshowlinenumbers); //mxd
-			cfg.WriteSetting("scriptshowfolding", scriptshowfolding); //mxd
-			cfg.WriteSetting("scriptautoshowautocompletion", scriptautoshowautocompletion); //mxd
+			cfg.WriteSetting("scriptallmanstyle", scriptallmanstyle);
+			cfg.WriteSetting("scriptautoclosebrackets", scriptautoclosebrackets);
+			cfg.WriteSetting("scriptshowlinenumbers", scriptshowlinenumbers);
+			cfg.WriteSetting("scriptshowfolding", scriptshowfolding);
+			cfg.WriteSetting("scriptautoshowautocompletion", scriptautoshowautocompletion);
+
+			//mxd. Text labels
+			cfg.WriteSetting("textlabelfontname", textlabelfontname);
+			cfg.WriteSetting("textlabelfontsize", textlabelfontsize);
+			cfg.WriteSetting("textlabelfontbold", textlabelfontbold);
 
 			//mxd
 			cfg.WriteSetting("gzdrawmodels", (int)gzDrawModelsMode);
@@ -617,6 +642,17 @@ namespace CodeImp.DoomBuilder.Config
 		// DeleteSetting
 		internal bool DeleteSetting(string setting) { return cfg.DeleteSetting(setting); }
 		internal bool DeleteSetting(string setting, string pathseperator) { return cfg.DeleteSetting(setting, pathseperator); }
+
+		//mxd
+		private Font GetTextLabelFont()
+		{
+			if(textlabelfontupdaterequired)
+			{
+				textlabelfont = new Font(new FontFamily(textlabelfontname), textlabelfontsize, (textlabelfontbold ? FontStyle.Bold : FontStyle.Regular));
+				textlabelfontupdaterequired = false;
+			}
+			return textlabelfont;
+		}
 
 		#endregion
 

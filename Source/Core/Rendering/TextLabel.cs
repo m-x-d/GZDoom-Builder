@@ -104,7 +104,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		{
 			// Initialize
 			this.text = "";
-			this.font = new Font(General.MainWindow.Font.FontFamily, (float)Math.Round(General.MainWindow.Font.SizeInPoints * 1.25f), FontStyle.Regular); //mxd
+			this.font = General.Settings.TextLabelFont; //mxd
 			this.rect = new RectangleF(0f, 0f, 1f, 1f);
 			this.color = new PixelColor(255, 255, 255, 255);
 			this.backcolor = new PixelColor(255, 0, 0, 0);
