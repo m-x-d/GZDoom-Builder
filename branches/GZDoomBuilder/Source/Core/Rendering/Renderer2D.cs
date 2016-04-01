@@ -1205,6 +1205,9 @@ namespace CodeImp.DoomBuilder.Rendering
 
 				foreach(KeyValuePair<int, List<Thing>> group in thingsByType)
 				{
+					// Skip when all things of this type will be rendered as models
+					if(group.Value[0].IsModel && (General.Settings.GZDrawModelsMode == ModelRenderMode.ALL)) continue;
+					
 					// Find thing information
 					ThingTypeInfo info = General.Map.Data.GetThingInfo(group.Key);
 
@@ -1231,31 +1234,52 @@ namespace CodeImp.DoomBuilder.Rendering
 					buffercount = 0;
 					totalcount = 0;
 
-					float spriteWidth, spriteHeight;
-					float fixedscaler = (group.Value[0].FixedSize ? 1.0f : 2.0f);
-					float spriteScale = ((group.Value[0].FixedSize || General.Settings.FixedThingsScale) && (scale > fixedscaler)) ? fixedscaler : scale;
+					bool forcespriterendering;
+					float spritewidth, spriteheight, spritescale;
+					float fixedscaler = (group.Value[0].FixedSize ? 1.0f : 2.0f); // Make sure thing size stays at 2x scale when FixedThingsScale is enabled
 
+					// Apply FixedSize setting?
+					if((group.Value[0].FixedSize || General.Settings.FixedThingsScale) && (scale > fixedscaler))
+					{
+						spritescale = fixedscaler;
+						forcespriterendering = true; // Always render sprite when thing size is affected by FixedSize or FixedThingsScale settings
+					}
+					else
+					{
+						spritescale = scale;
+						forcespriterendering = false;
+					}
+
+					// Calculate scaled sprite size
 					if(sprite.Width > sprite.Height) 
 					{
-						spriteWidth = info.Radius * spriteScale - THING_SPRITE_SHRINK * spriteScale;
-						spriteHeight = spriteWidth * ((float)sprite.Height / sprite.Width);
+						spritewidth = (info.Radius - THING_SPRITE_SHRINK) * spritescale;
+						spriteheight = spritewidth * ((float)sprite.Height / sprite.Width);
 					} 
 					else if(sprite.Width < sprite.Height) 
 					{
-						spriteHeight = info.Radius * spriteScale - THING_SPRITE_SHRINK * spriteScale;
-						spriteWidth = spriteHeight * ((float)sprite.Width / sprite.Height);
+						spriteheight = (info.Radius - THING_SPRITE_SHRINK) * spritescale;
+						spritewidth = spriteheight * ((float)sprite.Width / sprite.Height);
 					} 
 					else 
 					{
-						spriteWidth = info.Radius * spriteScale - THING_SPRITE_SHRINK * spriteScale;
-						spriteHeight = spriteWidth;
+						spritewidth = (info.Radius - THING_SPRITE_SHRINK) * spritescale;
+						spriteheight = spritewidth;
 					}
+
+					// Apply radius and height Thing Argument overrides?
+					if(!group.Value[0].FixedSize)
+					{
+						float sizeoverridescaler = group.Value[0].Size / info.Radius;
+						spritewidth *= sizeoverridescaler;
+						spriteheight *= sizeoverridescaler;
+					}
+					float spritesize = Math.Max(spritewidth, spriteheight); 
 
 					foreach(Thing t in group.Value) 
 					{
-						if(t.IsModel && (General.Settings.GZDrawModelsMode == ModelRenderMode.ALL || (General.Settings.GZDrawModelsMode == ModelRenderMode.SELECTION && t.Selected) || (General.Settings.GZDrawModelsMode == ModelRenderMode.ACTIVE_THINGS_FILTER && alpha == 1.0f))) continue;
-						float scaler = t.Size / info.Radius;
-						if(Math.Max(spriteWidth, spriteHeight) * scaler < MINIMUM_SPRITE_RADIUS)
+						if(t.IsModel && ((General.Settings.GZDrawModelsMode == ModelRenderMode.SELECTION && t.Selected) || (General.Settings.GZDrawModelsMode == ModelRenderMode.ACTIVE_THINGS_FILTER && alpha == 1.0f))) continue;
+						if(!forcespriterendering && spritesize < MINIMUM_SPRITE_RADIUS)
 						{
 							// Hackish way to tell arrow rendering code to draw bigger arrow...
 							Vector3D v = thingsByPosition[t];
@@ -1266,7 +1290,7 @@ namespace CodeImp.DoomBuilder.Rendering
 							continue; 
 						}
 						
-						CreateThingSpriteVerts(thingsByPosition[t], spriteWidth * scaler, spriteHeight * scaler, ref verts, buffercount * 6, t.Selected ? selectionColor : 0xFFFFFF);
+						CreateThingSpriteVerts(thingsByPosition[t], spritewidth, spriteheight, ref verts, buffercount * 6, (t.Selected ? selectionColor : 0xFFFFFF));
 						buffercount++;
 						totalcount++;
 
