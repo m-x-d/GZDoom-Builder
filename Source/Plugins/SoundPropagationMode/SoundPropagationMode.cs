@@ -280,7 +280,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 				renderer.RenderThingSet(General.Map.ThingsFilter.VisibleThings, General.Settings.InactiveThingsAlpha);
 				foreach(Thing thing in huntingThings)
 				{
-					renderer.RenderThing(thing, General.Colors.Selection, Presentation.THINGS_ALPHA);
+					renderer.RenderThing(thing, General.Colors.Selection, General.Settings.ActiveThingsAlpha);
 				}
 
 				renderer.Finish();

@@ -81,7 +81,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void RenderOverlaySelection(IRenderer2D renderer) 
 		{
 			foreach(Thing thing in things)
-				renderer.RenderThing(thing, General.Colors.Selection, Presentation.THINGS_ALPHA);
+				renderer.RenderThing(thing, General.Colors.Selection, General.Settings.ActiveThingsAlpha);
 		}
 
 		#endregion

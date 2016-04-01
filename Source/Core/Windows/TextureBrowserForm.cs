@@ -129,17 +129,17 @@ namespace CodeImp.DoomBuilder.Windows
 			if(General.Settings.LocateTextureGroup)
 			{
 				//mxd. Get the previously selected texture set
-				string selectname = General.Settings.ReadSetting("browserwindow.textureset", "");
+				string prevtextureset = General.Settings.ReadSetting("browserwindow.textureset", "");
 				TreeNode match;
 
-				// When texture name is empty, select "All" texture set
-				if(string.IsNullOrEmpty(selectname) || selectname == "-")
+				// When texture set name is empty, select "All" texture set
+				if(string.IsNullOrEmpty(prevtextureset))
 				{
 					match = tvTextureSets.Nodes[tvTextureSets.Nodes.Count - 1];
 				}
 				else
 				{
-					match = FindNodeByName(tvTextureSets.Nodes, selectname);
+					match = FindNodeByName(tvTextureSets.Nodes, prevtextureset);
 				}
 
 				if(match != null)
@@ -466,8 +466,8 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Settings.WriteSetting("browserwindow.splittercollapsed", splitter.IsCollapsed); //mxd
 			General.Settings.WriteSetting("browserwindow.usedgroupcollapsed", browser.IsGroupCollapsed(usedgroup)); //mxd
 
-			//mxd. Save last selected texture set, if it's not "All" (it will be selected anyway if search for initial texture set fails)
-			if(this.DialogResult == DialogResult.OK && tvTextureSets.SelectedNodes.Count > 0 && !(tvTextureSets.SelectedNodes[0].Tag is AllTextureSet))
+			//mxd. Save last selected texture set
+			if(this.DialogResult == DialogResult.OK && tvTextureSets.SelectedNodes.Count > 0)
 				General.Settings.WriteSetting("browserwindow.textureset", tvTextureSets.SelectedNodes[0].Name);
 
 			//mxd. Save ImageBrowserControl settings

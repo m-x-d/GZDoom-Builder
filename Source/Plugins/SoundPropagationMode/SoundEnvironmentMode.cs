@@ -313,12 +313,13 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 				{
 					foreach(SoundEnvironment se in BuilderPlug.Me.SoundEnvironments)
 					{
-						if(se.Things.Count > 0) renderer.RenderThingSet(se.Things, Presentation.THINGS_ALPHA);
+						if(se.Things.Count > 0) renderer.RenderThingSet(se.Things, General.Settings.ActiveThingsAlpha);
 					}
 				}
 
 				//mxd. Render highlighted thing
-				if(highlightedthing != null) renderer.RenderThing(highlightedthing, General.Colors.Selection, Presentation.THINGS_ALPHA);
+				if(highlightedthing != null) 
+					renderer.RenderThing(highlightedthing, General.Colors.Selection, General.Settings.ActiveThingsAlpha);
 
 				renderer.Finish();
 			}

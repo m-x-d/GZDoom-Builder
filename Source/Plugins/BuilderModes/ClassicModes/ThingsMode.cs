@@ -188,13 +188,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Render things
 			if(renderer.StartThings(true))
 			{
+				float alpha = (General.Settings.FixedThingsScale ? Presentation.THINGS_ALPHA : General.Settings.ActiveThingsAlpha); //mxd
 				renderer.RenderThingSet(General.Map.ThingsFilter.HiddenThings, General.Settings.HiddenThingsAlpha);
-				renderer.RenderThingSet(General.Map.ThingsFilter.VisibleThings, Presentation.THINGS_ALPHA);
+				renderer.RenderThingSet(General.Map.ThingsFilter.VisibleThings, alpha);
 				for(int i = 0; i < Thing.NUM_ARGS; i++) BuilderPlug.RenderAssociations(renderer, association[i], eventlines);
 				
 				if((highlighted != null) && !highlighted.IsDisposed)
 				{
-					renderer.RenderThing(highlighted, General.Colors.Highlight, Presentation.THINGS_ALPHA);
+					renderer.RenderThing(highlighted, General.Colors.Highlight, alpha);
 					BuilderPlug.RenderReverseAssociations(renderer, highlightasso, eventlines); //mxd
 				}
 
@@ -302,7 +303,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(renderer.StartThings(false))
 				{
 					// Redraw highlight to show selection
-					renderer.RenderThing(highlighted, renderer.DetermineThingColor(highlighted), Presentation.THINGS_ALPHA);
+					renderer.RenderThing(highlighted, renderer.DetermineThingColor(highlighted), General.Settings.FixedThingsScale ? Presentation.THINGS_ALPHA : General.Settings.ActiveThingsAlpha);
 					renderer.Finish();
 					renderer.Present();
 				}
@@ -327,7 +328,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if(renderer.StartThings(false))
 					{
 						// Render highlighted item
-						renderer.RenderThing(highlighted, General.Colors.Highlight, Presentation.THINGS_ALPHA);
+						renderer.RenderThing(highlighted, General.Colors.Highlight, General.Settings.FixedThingsScale ? Presentation.THINGS_ALPHA : General.Settings.ActiveThingsAlpha);
 						renderer.Finish();
 						renderer.Present();
 					}
@@ -370,7 +371,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(renderer.StartThings(false))
 				{
 					// Redraw highlight to show selection
-					renderer.RenderThing(highlighted, renderer.DetermineThingColor(highlighted), Presentation.THINGS_ALPHA);
+					renderer.RenderThing(highlighted, renderer.DetermineThingColor(highlighted), General.Settings.FixedThingsScale ? Presentation.THINGS_ALPHA : General.Settings.ActiveThingsAlpha);
 					renderer.Finish();
 					renderer.Present();
 				}

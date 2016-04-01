@@ -124,6 +124,7 @@ namespace CodeImp.DoomBuilder.Data
 		private Dictionary<string, ImageData> internalsprites;
 		private ImageData whitetexture;
 		private ImageData blacktexture; //mxd
+		private ImageData thingtexture; //mxd
 
 		//mxd. Sky textures
 		private CubeTexture skybox; // GZDoom skybox
@@ -180,6 +181,7 @@ namespace CodeImp.DoomBuilder.Data
 		public ImageData CrosshairBusy3D { get { return crosshairbusy; } }
 		public ImageData WhiteTexture { get { return whitetexture; } }
 		public ImageData BlackTexture { get { return blacktexture; } } //mxd
+		public ImageData ThingTexture { get { return thingtexture; } } //mxd
 		public ImageData[] CommentTextures { get { return commenttextures; } } //mxd
 		internal CubeTexture SkyBox { get { return skybox; } } //mxd
 		public List<ThingCategory> ThingCategories { get { return thingcategories; } }
@@ -258,6 +260,8 @@ namespace CodeImp.DoomBuilder.Data
 				whitetexture = null;
 				blacktexture.Dispose(); //mxd
 				blacktexture = null; //mxd
+				thingtexture.Dispose(); //mxd
+				thingtexture = null; //mxd
 				unknownimage.Dispose(); //mxd
 				unknownimage = null; //mxd
 				for(int i = 0; i < commenttextures.Length; i++) //mxd
@@ -1195,11 +1199,15 @@ namespace CodeImp.DoomBuilder.Data
 		//mxd
 		private void LoadInternalTextures()
 		{
-			missingtexture3d = LoadInternalTexture("MissingTexture3D.png"); //mxd
-			unknowntexture3d = LoadInternalTexture("UnknownTexture3D.png"); //mxd
-			hourglass3d = LoadInternalTexture("Hourglass3D.png"); //mxd
-			crosshair = LoadInternalTexture("Crosshair.png"); //mxd
-			crosshairbusy = LoadInternalTexture("CrosshairBusy.png"); //mxd
+			missingtexture3d = LoadInternalTexture("MissingTexture3D.png");
+			unknowntexture3d = LoadInternalTexture("UnknownTexture3D.png");
+			thingtexture = LoadInternalTexture("ThingTexture2D.png");
+			hourglass3d = LoadInternalTexture("Hourglass3D.png");
+			crosshair = LoadInternalTexture("Crosshair.png");
+			crosshairbusy = LoadInternalTexture("CrosshairBusy.png");
+
+			thingtexture.UseColorCorrection = false;
+			thingtexture.CreateTexture();
 		}
 
 		//mxd

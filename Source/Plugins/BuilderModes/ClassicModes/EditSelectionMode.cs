@@ -344,7 +344,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					if(renderer.StartThings(false))
 					{
-						renderer.RenderThing((Thing)highlighted, renderer.DetermineThingColor((Thing)highlighted), Presentation.THINGS_ALPHA);
+						renderer.RenderThing((Thing)highlighted, renderer.DetermineThingColor((Thing)highlighted), General.Settings.ActiveThingsAlpha);
 						renderer.Finish();
 					}
 				}
@@ -368,7 +368,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					if(renderer.StartThings(false))
 					{
-						renderer.RenderThing((Thing)highlighted, General.Colors.Highlight, Presentation.THINGS_ALPHA);
+						renderer.RenderThing((Thing)highlighted, General.Colors.Highlight, General.Settings.ActiveThingsAlpha);
 						renderer.Finish();
 					}
 				}
@@ -1569,8 +1569,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(renderer.StartThings(true))
 			{
 				renderer.RenderThingSet(General.Map.ThingsFilter.HiddenThings, General.Settings.HiddenThingsAlpha);
-				renderer.RenderThingSet(General.Map.ThingsFilter.VisibleThings, Presentation.THINGS_ALPHA);
-				if(highlighted is Thing) renderer.RenderThing((Thing)highlighted, General.Colors.Highlight, Presentation.THINGS_ALPHA);
+				renderer.RenderThingSet(General.Map.ThingsFilter.VisibleThings, General.Settings.ActiveThingsAlpha);
+				if(highlighted is Thing) renderer.RenderThing((Thing)highlighted, General.Colors.Highlight, General.Settings.ActiveThingsAlpha);
 				renderer.Finish();
 			}
 

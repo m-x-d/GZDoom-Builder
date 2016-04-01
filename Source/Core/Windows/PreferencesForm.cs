@@ -63,6 +63,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// Interface
 			imagebrightness.Value = General.Settings.ImageBrightness;
 			doublesidedalpha.Value = General.Clamp((int)((1.0f - General.Settings.DoubleSidedAlpha) * 10.0f), doublesidedalpha.Minimum, doublesidedalpha.Maximum);
+			activethingsalpha.Value = General.Clamp((int)((1.0f - General.Settings.ActiveThingsAlpha) * 10.0f), activethingsalpha.Minimum, activethingsalpha.Maximum); //mxd
 			inactivethingsalpha.Value = General.Clamp((int)((1.0f - General.Settings.InactiveThingsAlpha) * 10.0f), inactivethingsalpha.Minimum, inactivethingsalpha.Maximum); //mxd
 			hiddenthingsalpha.Value = General.Clamp((int)((1.0f - General.Settings.HiddenThingsAlpha) * 10.0f), hiddenthingsalpha.Minimum, hiddenthingsalpha.Maximum); //mxd
 			defaultviewmode.SelectedIndex = General.Settings.DefaultViewMode;
@@ -263,6 +264,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// Apply interface
 			General.Settings.ImageBrightness = imagebrightness.Value;
 			General.Settings.DoubleSidedAlpha = 1.0f - (doublesidedalpha.Value * 0.1f);
+			General.Settings.ActiveThingsAlpha = 1.0f - (activethingsalpha.Value * 0.1f); //mxd
 			General.Settings.InactiveThingsAlpha = 1.0f - (inactivethingsalpha.Value * 0.1f); //mxd
 			General.Settings.HiddenThingsAlpha = 1.0f - (hiddenthingsalpha.Value * 0.1f); //mxd
 			General.Settings.DefaultViewMode = defaultviewmode.SelectedIndex;
@@ -935,6 +937,13 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			int percent = doublesidedalpha.Value * 10;
 			doublesidedalphalabel.Text = percent + "%";
+		}
+
+		//mxd
+		private void activethingsalpha_ValueChanged(object sender, EventArgs e)
+		{
+			int percent = activethingsalpha.Value * 10;
+			activethingsalphalabel.Text = percent + "%";
 		}
 
 		//mxd
