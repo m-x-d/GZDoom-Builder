@@ -47,8 +47,8 @@
 			this.highlightcolor.MaximumSize = new System.Drawing.Size(10000, 23);
 			this.highlightcolor.MinimumSize = new System.Drawing.Size(100, 23);
 			this.highlightcolor.Name = "highlightcolor";
-			this.highlightcolor.Size = new System.Drawing.Size(168, 23);
-			this.highlightcolor.TabIndex = 1;
+			this.highlightcolor.Size = new System.Drawing.Size(150, 23);
+			this.highlightcolor.TabIndex = 0;
 			// 
 			// level1color
 			// 
@@ -59,8 +59,8 @@
 			this.level1color.MaximumSize = new System.Drawing.Size(10000, 23);
 			this.level1color.MinimumSize = new System.Drawing.Size(100, 23);
 			this.level1color.Name = "level1color";
-			this.level1color.Size = new System.Drawing.Size(168, 23);
-			this.level1color.TabIndex = 2;
+			this.level1color.Size = new System.Drawing.Size(150, 23);
+			this.level1color.TabIndex = 1;
 			// 
 			// level2color
 			// 
@@ -71,8 +71,8 @@
 			this.level2color.MaximumSize = new System.Drawing.Size(10000, 23);
 			this.level2color.MinimumSize = new System.Drawing.Size(100, 23);
 			this.level2color.Name = "level2color";
-			this.level2color.Size = new System.Drawing.Size(168, 23);
-			this.level2color.TabIndex = 3;
+			this.level2color.Size = new System.Drawing.Size(150, 23);
+			this.level2color.TabIndex = 2;
 			// 
 			// nosoundcolor
 			// 
@@ -83,8 +83,8 @@
 			this.nosoundcolor.MaximumSize = new System.Drawing.Size(10000, 23);
 			this.nosoundcolor.MinimumSize = new System.Drawing.Size(100, 23);
 			this.nosoundcolor.Name = "nosoundcolor";
-			this.nosoundcolor.Size = new System.Drawing.Size(168, 23);
-			this.nosoundcolor.TabIndex = 4;
+			this.nosoundcolor.Size = new System.Drawing.Size(150, 23);
+			this.nosoundcolor.TabIndex = 3;
 			// 
 			// blocksoundcolor
 			// 
@@ -95,14 +95,14 @@
 			this.blocksoundcolor.MaximumSize = new System.Drawing.Size(10000, 23);
 			this.blocksoundcolor.MinimumSize = new System.Drawing.Size(100, 23);
 			this.blocksoundcolor.Name = "blocksoundcolor";
-			this.blocksoundcolor.Size = new System.Drawing.Size(168, 23);
-			this.blocksoundcolor.TabIndex = 5;
+			this.blocksoundcolor.Size = new System.Drawing.Size(150, 23);
+			this.blocksoundcolor.TabIndex = 4;
 			// 
 			// okbutton
 			// 
-			this.okbutton.Location = new System.Drawing.Point(105, 186);
+			this.okbutton.Location = new System.Drawing.Point(12, 186);
 			this.okbutton.Name = "okbutton";
-			this.okbutton.Size = new System.Drawing.Size(75, 23);
+			this.okbutton.Size = new System.Drawing.Size(73, 23);
 			this.okbutton.TabIndex = 6;
 			this.okbutton.Text = "OK";
 			this.okbutton.UseVisualStyleBackColor = true;
@@ -111,9 +111,9 @@
 			// cancelbutton
 			// 
 			this.cancelbutton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancelbutton.Location = new System.Drawing.Point(12, 186);
+			this.cancelbutton.Location = new System.Drawing.Point(89, 186);
 			this.cancelbutton.Name = "cancelbutton";
-			this.cancelbutton.Size = new System.Drawing.Size(75, 23);
+			this.cancelbutton.Size = new System.Drawing.Size(73, 23);
 			this.cancelbutton.TabIndex = 7;
 			this.cancelbutton.Text = "Cancel";
 			this.cancelbutton.UseVisualStyleBackColor = true;
@@ -122,8 +122,8 @@
 			// 
 			this.resetcolors.Location = new System.Drawing.Point(12, 157);
 			this.resetcolors.Name = "resetcolors";
-			this.resetcolors.Size = new System.Drawing.Size(168, 23);
-			this.resetcolors.TabIndex = 8;
+			this.resetcolors.Size = new System.Drawing.Size(150, 23);
+			this.resetcolors.TabIndex = 5;
 			this.resetcolors.Text = "Reset colors";
 			this.resetcolors.UseVisualStyleBackColor = true;
 			this.resetcolors.Click += new System.EventHandler(this.resetcolors_Click);
@@ -134,7 +134,7 @@
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.cancelbutton;
-			this.ClientSize = new System.Drawing.Size(196, 223);
+			this.ClientSize = new System.Drawing.Size(174, 214);
 			this.Controls.Add(this.resetcolors);
 			this.Controls.Add(this.cancelbutton);
 			this.Controls.Add(this.okbutton);

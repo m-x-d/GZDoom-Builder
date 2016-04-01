@@ -153,7 +153,7 @@
 			this.groupBox2.Location = new System.Drawing.Point(428, 298);
 			this.groupBox2.Name = "groupBox2";
 			this.groupBox2.Size = new System.Drawing.Size(193, 98);
-			this.groupBox2.TabIndex = 2;
+			this.groupBox2.TabIndex = 6;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = " Rotation ";
 			// 
@@ -163,7 +163,7 @@
 			this.cbrandomroll.Location = new System.Drawing.Point(120, 71);
 			this.cbrandomroll.Name = "cbrandomroll";
 			this.cbrandomroll.Size = new System.Drawing.Size(66, 17);
-			this.cbrandomroll.TabIndex = 26;
+			this.cbrandomroll.TabIndex = 5;
 			this.cbrandomroll.Text = "Random";
 			this.cbrandomroll.UseVisualStyleBackColor = true;
 			this.cbrandomroll.CheckedChanged += new System.EventHandler(this.cbrandomroll_CheckedChanged);
@@ -174,7 +174,7 @@
 			this.cbrandompitch.Location = new System.Drawing.Point(120, 46);
 			this.cbrandompitch.Name = "cbrandompitch";
 			this.cbrandompitch.Size = new System.Drawing.Size(66, 17);
-			this.cbrandompitch.TabIndex = 25;
+			this.cbrandompitch.TabIndex = 3;
 			this.cbrandompitch.Text = "Random";
 			this.cbrandompitch.UseVisualStyleBackColor = true;
 			this.cbrandompitch.CheckedChanged += new System.EventHandler(this.cbrandompitch_CheckedChanged);
@@ -185,7 +185,7 @@
 			this.cbrandomangle.Location = new System.Drawing.Point(120, 21);
 			this.cbrandomangle.Name = "cbrandomangle";
 			this.cbrandomangle.Size = new System.Drawing.Size(66, 17);
-			this.cbrandomangle.TabIndex = 17;
+			this.cbrandomangle.TabIndex = 1;
 			this.cbrandomangle.Text = "Random";
 			this.cbrandomangle.UseVisualStyleBackColor = true;
 			this.cbrandomangle.CheckedChanged += new System.EventHandler(this.cbrandomangle_CheckedChanged);
@@ -205,7 +205,7 @@
 			this.roll.Name = "roll";
 			this.roll.Size = new System.Drawing.Size(60, 24);
 			this.roll.StepValues = null;
-			this.roll.TabIndex = 24;
+			this.roll.TabIndex = 4;
 			this.roll.WhenTextChanged += new System.EventHandler(this.roll_WhenTextChanged);
 			// 
 			// labelroll
@@ -232,7 +232,7 @@
 			this.pitch.Name = "pitch";
 			this.pitch.Size = new System.Drawing.Size(60, 24);
 			this.pitch.StepValues = null;
-			this.pitch.TabIndex = 22;
+			this.pitch.TabIndex = 2;
 			this.pitch.WhenTextChanged += new System.EventHandler(this.pitch_WhenTextChanged);
 			// 
 			// labelpitch
@@ -259,7 +259,7 @@
 			this.angle.Name = "angle";
 			this.angle.Size = new System.Drawing.Size(60, 24);
 			this.angle.StepValues = null;
-			this.angle.TabIndex = 10;
+			this.angle.TabIndex = 0;
 			this.angle.WhenTextChanged += new System.EventHandler(this.angle_WhenTextChanged);
 			// 
 			// labelAngle
@@ -346,7 +346,7 @@
 			this.settingsgroup.Location = new System.Drawing.Point(242, 6);
 			this.settingsgroup.Name = "settingsgroup";
 			this.settingsgroup.Size = new System.Drawing.Size(295, 286);
-			this.settingsgroup.TabIndex = 23;
+			this.settingsgroup.TabIndex = 1;
 			this.settingsgroup.TabStop = false;
 			this.settingsgroup.Text = " Flags ";
 			// 
@@ -381,7 +381,7 @@
 			this.grouproll.Location = new System.Drawing.Point(543, 16);
 			this.grouproll.Name = "grouproll";
 			this.grouproll.Size = new System.Drawing.Size(78, 88);
-			this.grouproll.TabIndex = 26;
+			this.grouproll.TabIndex = 2;
 			this.grouproll.TabStop = false;
 			this.grouproll.Text = " Roll ";
 			// 
@@ -401,7 +401,7 @@
 			this.grouppitch.Location = new System.Drawing.Point(543, 110);
 			this.grouppitch.Name = "grouppitch";
 			this.grouppitch.Size = new System.Drawing.Size(78, 88);
-			this.grouppitch.TabIndex = 25;
+			this.grouppitch.TabIndex = 3;
 			this.grouppitch.TabStop = false;
 			this.grouppitch.Text = " Pitch ";
 			// 
@@ -421,7 +421,7 @@
 			this.groupangle.Location = new System.Drawing.Point(543, 204);
 			this.groupangle.Name = "groupangle";
 			this.groupangle.Size = new System.Drawing.Size(78, 88);
-			this.groupangle.TabIndex = 24;
+			this.groupangle.TabIndex = 4;
 			this.groupangle.TabStop = false;
 			this.groupangle.Text = " Angle";
 			// 
@@ -437,7 +437,7 @@
 			this.groupBox4.Location = new System.Drawing.Point(242, 298);
 			this.groupBox4.Name = "groupBox4";
 			this.groupBox4.Size = new System.Drawing.Size(180, 98);
-			this.groupBox4.TabIndex = 21;
+			this.groupBox4.TabIndex = 5;
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = " Position";
 			// 
@@ -447,7 +447,7 @@
 			this.cbAbsoluteHeight.Location = new System.Drawing.Point(109, 71);
 			this.cbAbsoluteHeight.Name = "cbAbsoluteHeight";
 			this.cbAbsoluteHeight.Size = new System.Drawing.Size(67, 17);
-			this.cbAbsoluteHeight.TabIndex = 16;
+			this.cbAbsoluteHeight.TabIndex = 3;
 			this.cbAbsoluteHeight.Text = "Absolute";
 			this.cbAbsoluteHeight.UseVisualStyleBackColor = true;
 			this.cbAbsoluteHeight.CheckedChanged += new System.EventHandler(this.cbAbsoluteHeight_CheckedChanged);
@@ -485,7 +485,7 @@
 			this.posX.Name = "posX";
 			this.posX.Size = new System.Drawing.Size(72, 24);
 			this.posX.StepValues = null;
-			this.posX.TabIndex = 13;
+			this.posX.TabIndex = 0;
 			this.posX.WhenTextChanged += new System.EventHandler(this.posX_WhenTextChanged);
 			// 
 			// posY
@@ -503,7 +503,7 @@
 			this.posY.Name = "posY";
 			this.posY.Size = new System.Drawing.Size(72, 24);
 			this.posY.StepValues = null;
-			this.posY.TabIndex = 12;
+			this.posY.TabIndex = 1;
 			this.posY.WhenTextChanged += new System.EventHandler(this.posY_WhenTextChanged);
 			// 
 			// posZ
@@ -521,7 +521,7 @@
 			this.posZ.Name = "posZ";
 			this.posZ.Size = new System.Drawing.Size(72, 24);
 			this.posZ.StepValues = null;
-			this.posZ.TabIndex = 11;
+			this.posZ.TabIndex = 2;
 			this.posZ.WhenTextChanged += new System.EventHandler(this.posZ_WhenTextChanged);
 			// 
 			// zlabel
@@ -582,7 +582,7 @@
 			this.floatbobphase.Name = "floatbobphase";
 			this.floatbobphase.Size = new System.Drawing.Size(72, 24);
 			this.floatbobphase.StepValues = null;
-			this.floatbobphase.TabIndex = 28;
+			this.floatbobphase.TabIndex = 4;
 			// 
 			// label1
 			// 
@@ -608,7 +608,7 @@
 			this.conversationID.Name = "conversationID";
 			this.conversationID.Size = new System.Drawing.Size(72, 24);
 			this.conversationID.StepValues = null;
-			this.conversationID.TabIndex = 26;
+			this.conversationID.TabIndex = 3;
 			// 
 			// labelID
 			// 
@@ -634,7 +634,7 @@
 			this.health.Name = "health";
 			this.health.Size = new System.Drawing.Size(72, 24);
 			this.health.StepValues = null;
-			this.health.TabIndex = 23;
+			this.health.TabIndex = 2;
 			// 
 			// label10
 			// 
@@ -664,7 +664,7 @@
 			this.score.Name = "score";
 			this.score.Size = new System.Drawing.Size(72, 24);
 			this.score.StepValues = null;
-			this.score.TabIndex = 21;
+			this.score.TabIndex = 1;
 			// 
 			// label9
 			// 
@@ -690,7 +690,7 @@
 			this.gravity.Name = "gravity";
 			this.gravity.Size = new System.Drawing.Size(72, 24);
 			this.gravity.StepValues = null;
-			this.gravity.TabIndex = 19;
+			this.gravity.TabIndex = 0;
 			// 
 			// grouprendering
 			// 
@@ -729,7 +729,7 @@
 			this.scale.Margin = new System.Windows.Forms.Padding(2, 3, 2, 3);
 			this.scale.Name = "scale";
 			this.scale.Size = new System.Drawing.Size(186, 26);
-			this.scale.TabIndex = 31;
+			this.scale.TabIndex = 0;
 			this.scale.OnValuesChanged += new System.EventHandler(this.scale_OnValuesChanged);
 			// 
 			// color
@@ -737,10 +737,10 @@
 			this.color.DefaultValue = 0;
 			this.color.Field = "fillcolor";
 			this.color.Label = "Color:";
-			this.color.Location = new System.Drawing.Point(44, 115);
+			this.color.Location = new System.Drawing.Point(22, 115);
 			this.color.Name = "color";
 			this.color.Size = new System.Drawing.Size(207, 31);
-			this.color.TabIndex = 30;
+			this.color.TabIndex = 3;
 			// 
 			// alpha
 			// 
@@ -757,7 +757,7 @@
 			this.alpha.Name = "alpha";
 			this.alpha.Size = new System.Drawing.Size(72, 24);
 			this.alpha.StepValues = null;
-			this.alpha.TabIndex = 23;
+			this.alpha.TabIndex = 2;
 			this.alpha.WhenTextChanged += new System.EventHandler(this.alpha_WhenTextChanged);
 			// 
 			// label8
@@ -776,7 +776,7 @@
 			this.renderStyle.Location = new System.Drawing.Point(91, 57);
 			this.renderStyle.Name = "renderStyle";
 			this.renderStyle.Size = new System.Drawing.Size(156, 21);
-			this.renderStyle.TabIndex = 24;
+			this.renderStyle.TabIndex = 1;
 			this.renderStyle.SelectedIndexChanged += new System.EventHandler(this.renderStyle_SelectedIndexChanged);
 			// 
 			// labelrenderstyle
