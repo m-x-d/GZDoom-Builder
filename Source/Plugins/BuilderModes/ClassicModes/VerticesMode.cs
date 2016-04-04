@@ -92,10 +92,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Add toolbar buttons
 			if(General.Map.UDMF) 
 			{
+				General.Interface.BeginToolbarUpdate(); //mxd
 				General.Interface.AddButton(BuilderPlug.Me.MenusForm.CopyProperties);
 				General.Interface.AddButton(BuilderPlug.Me.MenusForm.PasteProperties);
 				General.Interface.AddButton(BuilderPlug.Me.MenusForm.PastePropertiesOptions); //mxd
 				General.Interface.AddButton(BuilderPlug.Me.MenusForm.TextureOffsetLock, ToolbarSection.Geometry); //mxd
+				General.Interface.EndToolbarUpdate(); //mxd
 			}
 
 			// Convert geometry selection to vertices only
@@ -111,10 +113,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Remove toolbar buttons
 			if(General.Map.UDMF)
 			{
+				General.Interface.BeginToolbarUpdate();
 				General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.CopyProperties);
 				General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.PasteProperties);
 				General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.PastePropertiesOptions); //mxd
 				General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.TextureOffsetLock); //mxd
+				General.Interface.EndToolbarUpdate();
 			}
 
 			// Going to EditSelectionMode?

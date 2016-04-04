@@ -26,6 +26,7 @@ using System.Linq;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.IO;
+using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Types;
 using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.VisualModes;
@@ -2727,7 +2728,15 @@ namespace CodeImp.DoomBuilder.Map
 			{
 				float px = t.Position.x;
 				float py = t.Position.y;
-				float ts = (((t.FixedSize || General.Settings.FixedThingsScale) && General.Map.Renderer2D.Scale > 1.0f) ? t.Size / General.Map.Renderer2D.Scale : t.Size);
+
+				//mxd. Determine displayed size
+				float ts;
+				if(t.FixedSize && General.Map.Renderer2D.Scale > 1.0f)
+					ts = t.Size / General.Map.Renderer2D.Scale;
+				else if(General.Settings.FixedThingsScale && t.Size * General.Map.Renderer2D.Scale > Renderer2D.FIXED_THING_SIZE)
+					ts = Renderer2D.FIXED_THING_SIZE / General.Map.Renderer2D.Scale;
+				else
+					ts = t.Size;
 
 				//mxd. Within range?
 				if(px < range.Left - ts || px > range.Right + ts || py < range.Top - ts || py > range.Bottom + ts) continue;

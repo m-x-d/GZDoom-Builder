@@ -191,6 +191,16 @@ namespace CodeImp.DoomBuilder.Windows
 		/// This removes a custom button from the toolbar.
 		/// </summary>
 		void RemoveButton(ToolStripItem button);
+
+		/// <summary>
+		/// This suspends layouts of all toolbars, which can have buttons added/removed using AddButton() / RemoveButton().
+		/// </summary>
+		void BeginToolbarUpdate(); //mxd
+
+		/// <summary>
+		/// This resumes layouts of all toolbars, which can have buttons added/removed using AddButton() / RemoveButton().
+		/// </summary>
+		void EndToolbarUpdate(); //mxd
 		
 		/// <summary>
 		/// This adds a docker to the side panel.

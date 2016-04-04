@@ -82,7 +82,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		public string Text { get { return text; } set { if(text != value) { text = value; textureupdateneeded = true; } } }
 		public Font Font { get { return font; } set { font = value; textureupdateneeded = true; } } //mxd
 		public bool TransformCoords { get { return transformcoords; } set { transformcoords = value; updateneeded = true; } }
-		public SizeF TextSize { get { return textsize; } }
+		public SizeF TextSize { get { if(textureupdateneeded) Update(General.Map.Renderer2D.TranslateX, General.Map.Renderer2D.TranslateY, General.Map.Renderer2D.Scale, -General.Map.Renderer2D.Scale); return textsize; } }
 		public TextAlignmentX AlignX { get { return alignx; } set { alignx = value; updateneeded = true; } }
 		public TextAlignmentY AlignY { get { return aligny; } set { aligny = value; updateneeded = true; } }
 		public PixelColor Color { get { return color; } set { if(!color.Equals(value)) { color = value; textureupdateneeded = true; } } }
@@ -311,6 +311,7 @@ namespace CodeImp.DoomBuilder.Rendering
 							g.DrawPath(pen, p);
 
 						// Draw text
+						textrect.Inflate(4, 2);
 						using(SolidBrush brush = new SolidBrush(backcolor.ToColor()))
 							g.DrawString(text, font, brush, textrect, sf);
 					}

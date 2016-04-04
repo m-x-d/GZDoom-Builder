@@ -47,6 +47,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	{
 		#region ================== Constants
 
+		private const int MAX_SECTOR_LABELS = 256; //mxd
+
 		#endregion
 
 		#region ================== Variables
@@ -98,8 +100,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(!isdisposed)
 			{
 				// Dispose old labels
-				foreach(KeyValuePair<Sector, TextLabel[]> lbl in labels)
-					foreach(TextLabel l in lbl.Value) l.Dispose();
+				foreach(TextLabel[] lbl in labels.Values)
+					foreach(TextLabel l in lbl) l.Dispose();
 
 				// Dispose base
 				base.Dispose();
@@ -111,7 +113,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Methods
 
 		// This makes a CRC for the selection
-		public int CreateSelectionCRC()
+		/*public int CreateSelectionCRC()
 		{
 			CRC crc = new CRC();
 			ICollection<Sector> orderedselection = General.Map.Map.GetSelectedSectors(true);
@@ -121,7 +123,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				crc.Add(s.FixedIndex);
 			}
 			return (int)(crc.Value & 0xFFFFFFFF);
-		}
+		}*/
 
 		//mxd. This makes a CRC for given selection
 		private static int CreateSelectionCRC(ICollection<Sector> selection) 
@@ -190,20 +192,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					foreach(Sector s in General.Map.Map.Sectors) RenderComment(s);
 				}
 
-				if(BuilderPlug.Me.ViewSelectionNumbers) 
+				if(BuilderPlug.Me.ViewSelectionNumbers && orderedselection.Count < MAX_SECTOR_LABELS) 
 				{
 					List<TextLabel> torender = new List<TextLabel>(orderedselection.Count);
 					foreach(Sector s in orderedselection) 
 					{
 						// Render labels
 						TextLabel[] labelarray = labels[s];
+						float requiredsize = (labelarray[0].TextSize.Height / 2) / renderer.Scale;
 						for(int i = 0; i < s.Labels.Count; i++) 
 						{
-							TextLabel l = labelarray[i];
-
 							// Render only when enough space for the label to see
-							float requiredsize = (l.TextSize.Height / 2) / renderer.Scale;
-							if(requiredsize < s.Labels[i].radius) torender.Add(l);
+							if(requiredsize < s.Labels[i].radius) torender.Add(labelarray[i]);
 						}
 					}
 					renderer.RenderText(torender);
@@ -640,11 +640,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			renderer.SetPresentation(Presentation.Standard);
 
 			// Add toolbar buttons
+			General.Interface.BeginToolbarUpdate(); //mxd
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.CopyProperties);
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.PasteProperties);
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.PastePropertiesOptions); //mxd
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.SeparatorCopyPaste);
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.ViewSelectionNumbers);
+			BuilderPlug.Me.MenusForm.ViewSelectionEffects.Text = "View Tags and Effects"; //mxd
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.ViewSelectionEffects);
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.SeparatorSectors1);
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.MakeDoor); //mxd
@@ -658,6 +660,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.MarqueSelectTouching); //mxd
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.SyncronizeThingEditButton); //mxd
 			if(General.Map.UDMF) General.Interface.AddButton(BuilderPlug.Me.MenusForm.TextureOffsetLock, ToolbarSection.Geometry); //mxd
+			General.Interface.EndToolbarUpdate(); //mxd
 			
 			// Convert geometry selection to sectors only
 			General.Map.Map.ConvertSelection(SelectionType.Sectors);
@@ -697,6 +700,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnDisengage();
 
 			// Remove toolbar buttons
+			General.Interface.BeginToolbarUpdate(); //mxd
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.CopyProperties);
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.PasteProperties);
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.PastePropertiesOptions); //mxd
@@ -715,6 +719,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.MarqueSelectTouching); //mxd
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.SyncronizeThingEditButton); //mxd
 			if(General.Map.UDMF) General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.TextureOffsetLock); //mxd
+			General.Interface.EndToolbarUpdate(); //mxd
 			
 			// Keep only sectors selected
 			General.Map.Map.ClearSelectedLinedefs();

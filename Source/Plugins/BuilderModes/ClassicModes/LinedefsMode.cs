@@ -49,6 +49,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	{
 		#region ================== Constants
 
+		private const int MAX_LINEDEF_LABELS = 256; //mxd
+
 		#endregion
 
 		#region ================== Variables
@@ -58,6 +60,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private readonly Association[] association = new Association[Linedef.NUM_ARGS];
 		private readonly Association highlightasso = new Association();
 		private Vector2D insertpreview = new Vector2D(float.NaN, float.NaN); //mxd
+
+		//mxd. Text labels
+		private Dictionary<Linedef, TextLabel> labels;
+		private Dictionary<Sector, TextLabel[]> sectorlabels;
+		private Dictionary<Sector, string[]> sectortexts;
 		
 		// Interface
 		private bool editpressed;
@@ -78,6 +85,25 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			for(int i = 0; i < association.Length; i++) association[i] = new Association();
 		}
 
+		//mxd
+		public override void Dispose()
+		{
+			// Not already disposed?
+			if(!isdisposed)
+			{
+				// Dispose old labels
+				if(labels != null) foreach(TextLabel l in labels.Values) l.Dispose();
+				if(sectorlabels != null)
+				{
+					foreach(TextLabel[] lbl in sectorlabels.Values)
+						foreach(TextLabel l in lbl) l.Dispose();
+				}
+
+				// Dispose base
+				base.Dispose();
+			}
+		}
+
 		#endregion
 
 		#region ================== Methods
@@ -86,23 +112,45 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private void Highlight(Linedef l)
 		{
 			bool completeredraw = false;
-			LinedefActionInfo action = null;
 
 			// Often we can get away by simply undrawing the previous
 			// highlight and drawing the new highlight. But if associations
 			// are or were drawn we need to redraw the entire display.
 			
-			// Previous association highlights something?
-			if((highlighted != null) && (highlighted.Tag != 0)) completeredraw = true;
+			if(highlighted != null)
+			{
+				//mxd. Update label color?
+				if(labels.ContainsKey(highlighted))
+				{
+					labels[highlighted].Color = General.Colors.Highlight;
+					completeredraw = true;
+				}
+				
+				// Previous association highlights something?
+				if(highlighted.Tag != 0) completeredraw = true;
+			}
 			
 			// Set highlight association
-			if(l != null && l.Tag != 0)
-				highlightasso.Set(new Vector2D((l.Start.Position  + l.End.Position)/2), l.Tags, UniversalType.LinedefTag);
-			else
-				highlightasso.Set(new Vector2D(), 0, 0);
+			if(l != null)
+			{
+				//mxd. Update label color?
+				if(labels.ContainsKey(l))
+				{
+					labels[l].Color = General.Colors.Selection;
+					completeredraw = true;
+				}
 
-			// New association highlights something?
-			if((l != null) && (l.Tag != 0)) completeredraw = true;
+				// New association highlights something?
+				if(l.Tag != 0)
+				{
+					highlightasso.Set(new Vector2D((l.Start.Position + l.End.Position) / 2), l.Tags, UniversalType.LinedefTag);
+					completeredraw = true; 
+				}
+			}
+			else
+			{
+				highlightasso.Set(new Vector2D(), 0, 0);
+			}
 
 			// Use the line tag to highlight sectors (Doom style)
 			if(General.Map.Config.LineTagIndicatesSectors)
@@ -114,6 +162,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 			else
 			{
+				LinedefActionInfo action = null;
+
 				if(l != null)
 				{
 					// Check if we can find the linedefs action
@@ -298,6 +348,93 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			return selectionrect.Contains(l.Start.Position.x, l.Start.Position.y) && selectionrect.Contains(l.End.Position.x, l.End.Position.y);
 		}
+
+		//mxd. This sets up new labels
+		private void SetupSectorLabels()
+		{
+			// Dispose old labels
+			if(sectorlabels != null)
+			{
+				foreach(TextLabel[] larr in sectorlabels.Values)
+					foreach(TextLabel l in larr) l.Dispose();
+			}
+
+			// Make text labels for sectors
+			sectorlabels = new Dictionary<Sector, TextLabel[]>();
+			sectortexts = new Dictionary<Sector, string[]>();
+			foreach(Sector s in General.Map.Map.Sectors)
+			{
+				// Setup labels
+				if(s.Tag == 0) continue;
+
+				// Make tag text
+				string[] tagdescarr = new string[2];
+				if(s.Tags.Count > 1)
+				{
+					string[] stags = new string[s.Tags.Count];
+					for(int i = 0; i < s.Tags.Count; i++) stags[i] = s.Tags[i].ToString();
+					tagdescarr[0] = "Tags " + string.Join(", ", stags);
+					tagdescarr[1] = "T" + string.Join(",", stags);
+				}
+				else
+				{
+					tagdescarr[0] = "Tag " + s.Tag;
+					tagdescarr[1] = "T" + s.Tag;
+				}
+
+				// Add to collection
+				sectortexts.Add(s, tagdescarr);
+
+				TextLabel[] larr = new TextLabel[s.Labels.Count];
+				for(int i = 0; i < s.Labels.Count; i++)
+				{
+					Vector2D v = s.Labels[i].position;
+					TextLabel l = new TextLabel();
+					l.TransformCoords = true;
+					l.Rectangle = new RectangleF(v.x, v.y, 0.0f, 0.0f);
+					l.AlignX = TextAlignmentX.Center;
+					l.AlignY = TextAlignmentY.Middle;
+					l.Color = General.Colors.InfoLine;
+					l.Backcolor = General.Colors.Background.WithAlpha(255);
+					larr[i] = l;
+				}
+
+				// Add to collection
+				sectorlabels.Add(s, larr);
+			}
+		}
+
+		//mxd. Also update labels for the selected linedefs
+		public override void UpdateSelectionInfo()
+		{
+			base.UpdateSelectionInfo();
+			
+			// Dispose old labels
+			if(labels != null) foreach(TextLabel l in labels.Values) l.Dispose();
+
+			// Make text labels for selected linedefs
+			ICollection<Linedef> orderedselection = General.Map.Map.GetSelectedLinedefs(true);
+			labels = new Dictionary<Linedef, TextLabel>(orderedselection.Count);
+
+			// Otherwise significant delays will occure.
+			// Also we probably won't care about selection ordering when selecting this many anyway
+			if(orderedselection.Count > MAX_LINEDEF_LABELS) return; 
+
+			int index = 0;
+			foreach(Linedef linedef in orderedselection)
+			{
+				Vector2D v = linedef.GetCenterPoint();
+				TextLabel l = new TextLabel();
+				l.TransformCoords = true;
+				l.Rectangle = new RectangleF(v.x, v.y, 0.0f, 0.0f);
+				l.AlignX = TextAlignmentX.Center;
+				l.AlignY = TextAlignmentY.Middle;
+				l.Color = (linedef == highlighted ? General.Colors.Selection : General.Colors.Highlight);
+				l.Backcolor = General.Colors.Background.WithAlpha(255);
+				l.Text = (++index).ToString();
+				labels.Add(linedef, l);
+			}
+		}
 		
 		#endregion
 		
@@ -324,10 +461,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			renderer.SetPresentation(Presentation.Standard);
 			
 			// Add toolbar buttons
+			General.Interface.BeginToolbarUpdate(); //mxd
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.CopyProperties);
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.PasteProperties);
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.PastePropertiesOptions); //mxd
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.SeparatorCopyPaste);
+			General.Interface.AddButton(BuilderPlug.Me.MenusForm.ViewSelectionNumbers); //mxd
+			BuilderPlug.Me.MenusForm.ViewSelectionEffects.Text = "View Sector Tags"; //mxd
+			General.Interface.AddButton(BuilderPlug.Me.MenusForm.ViewSelectionEffects); //mxd
+			General.Interface.AddButton(BuilderPlug.Me.MenusForm.SeparatorSectors1); //mxd
 			if(General.Map.UDMF) //mxd
 			{
 				General.Interface.AddButton(BuilderPlug.Me.MenusForm.MakeGradientBrightness);
@@ -340,10 +482,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			//mxd. Update the tooltip
 			BuilderPlug.Me.MenusForm.SyncronizeThingEditButton.ToolTipText = "Synchronized Things Editing" + Environment.NewLine + BuilderPlug.Me.MenusForm.SyncronizeThingEditLinedefsItem.ToolTipText;
+			General.Interface.EndToolbarUpdate(); //mxd
 
 			// Convert geometry selection to linedefs selection
 			General.Map.Map.ConvertSelection(SelectionType.Linedefs);
 			UpdateSelectionInfo(); //mxd
+			SetupSectorLabels(); //mxd
 		}
 		
 		// Mode disengages
@@ -352,10 +496,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnDisengage();
 
 			// Remove toolbar buttons
+			General.Interface.BeginToolbarUpdate(); //mxd
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.CopyProperties);
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.PasteProperties);
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.PastePropertiesOptions); //mxd
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.SeparatorCopyPaste);
+			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.ViewSelectionNumbers); //mxd
+			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.ViewSelectionEffects); //mxd
+			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.SeparatorSectors1); //mxd
 			if(General.Map.UDMF) //mxd
 			{
 				General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.MakeGradientBrightness);
@@ -365,6 +513,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.MarqueSelectTouching); //mxd
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.SyncronizeThingEditButton); //mxd
 			if(General.Map.UDMF) General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.TextureOffsetLock); //mxd
+			General.Interface.EndToolbarUpdate(); //mxd
 
 			// Going to EditSelectionMode?
 			EditSelectionMode mode = General.Editing.NewMode as EditSelectionMode;
@@ -440,6 +589,52 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				renderer.RenderArrows(eventlines); //mxd
 
+				//mxd. Render sector tag labels
+				if(BuilderPlug.Me.ViewSelectionEffects)
+				{
+					List<TextLabel> torender = new List<TextLabel>(sectorlabels.Count);
+					foreach(KeyValuePair<Sector, string[]> group in sectortexts)
+					{
+						// Pick which text variant to use
+						TextLabel[] labelarray = sectorlabels[group.Key];
+						for(int i = 0; i < group.Key.Labels.Count; i++)
+						{
+							TextLabel l = labelarray[i];
+
+							// Render only when enough space for the label to see
+							float requiredsize = (General.Interface.MeasureString(group.Value[0], l.Font).Width / 2) / renderer.Scale;
+							if(requiredsize > group.Key.Labels[i].radius)
+							{
+								requiredsize = (General.Interface.MeasureString(group.Value[1], l.Font).Width / 2) / renderer.Scale;
+								l.Text = (requiredsize > group.Key.Labels[i].radius ? "+" : group.Value[1]);
+							}
+							else
+							{
+								l.Text = group.Value[0];
+							}
+
+							torender.Add(l);
+						}
+					}
+
+					// Render labels
+					renderer.RenderText(torender);
+				}
+
+				//mxd. Render selection labels
+				if(BuilderPlug.Me.ViewSelectionNumbers)
+				{
+					List<TextLabel> torender = new List<TextLabel>(labels.Count);
+					foreach(KeyValuePair<Linedef, TextLabel> group in labels)
+					{
+						// Render only when enough space for the label to see
+						float requiredsize = (group.Value.TextSize.Width) / renderer.Scale;
+						if(group.Key.Length > requiredsize) torender.Add(group.Value);
+					}
+
+					renderer.RenderText(torender);
+				}
+
 				//mxd. Render comments
 				if(General.Map.UDMF && General.Settings.RenderComments) foreach(Linedef l in General.Map.Map.Linedefs) RenderComment(l);
 
@@ -481,9 +676,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					//mxd. Flip selection
 					highlighted.Selected = !highlighted.Selected;
-					
+					UpdateSelectionInfo(); //mxd
+
+					//mxd. Full redraw when labels were changed
+					if(BuilderPlug.Me.ViewSelectionNumbers)
+					{
+						General.Interface.RedrawDisplay();
+					}
 					// Update display
-					if(renderer.StartPlotter(false))
+					else if(renderer.StartPlotter(false))
 					{
 						// Render highlighted item
 						renderer.PlotLinedef(highlighted, General.Colors.Highlight);
@@ -492,16 +693,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						renderer.Finish();
 						renderer.Present();
 					}
-				
 				} 
 				else if(BuilderPlug.Me.AutoClearSelection && General.Map.Map.SelectedLinedefsCount > 0) //mxd
 				{
 					General.Map.Map.ClearSelectedLinedefs();
+					UpdateSelectionInfo(); //mxd
 					General.Interface.RedrawDisplay();
 				}
-
-				//mxd
-				UpdateSelectionInfo();
 			}
 
 			base.OnSelectEnd();
@@ -591,7 +789,23 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			editpressed = false;
 			base.OnEditEnd();
 		}
-		
+
+		//mxd
+		public override void OnUndoEnd()
+		{
+			base.OnUndoEnd();
+
+			SetupSectorLabels(); // Update sector labels
+		}
+
+		//mxd
+		public override void OnRedoEnd()
+		{
+			base.OnRedoEnd();
+
+			SetupSectorLabels(); // Update sector labels
+		}
+
 		// Mouse moves
 		public override void OnMouseMove(MouseEventArgs e)
 		{
@@ -1052,6 +1266,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			//mxd. Clear selection info
 			General.Interface.DisplayStatus(StatusType.Selection, string.Empty);
+
+			//mxd. Clear selection labels
+			foreach(TextLabel l in labels.Values) l.Dispose();
+			labels.Clear();
 
 			// Redraw
 			General.Interface.RedrawDisplay();
