@@ -16,6 +16,7 @@
 
 #region ================== Namespaces
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
@@ -40,6 +41,7 @@ namespace CodeImp.DoomBuilder.Config
 		private readonly int type;
 		private EnumList enumlist;
 		private readonly object defaultvalue; //mxd
+		private readonly HashSet<string> targetclasses; //mxd
 
 		#endregion
 
@@ -49,6 +51,7 @@ namespace CodeImp.DoomBuilder.Config
 		public string ToolTip { get { return tooltip; } } //mxd
 		public bool Used { get { return used; } }
 		public int Type { get { return type; } }
+		public HashSet<string> TargetClasses { get { return targetclasses; } } //mxd
 		public EnumList Enum { get { return enumlist; } internal set { enumlist = value; } }
 		public object DefaultValue { get { return defaultvalue; } } //mxd
 
@@ -66,6 +69,18 @@ namespace CodeImp.DoomBuilder.Config
 			this.tooltip = cfg.ReadSetting(argspath + ".arg" + istr + ".tooltip", string.Empty); //mxd
 			this.type = cfg.ReadSetting(argspath + ".arg" + istr + ".type", 0);
 			this.defaultvalue = cfg.ReadSetting(argspath + ".arg" + istr + ".default", 0); //mxd
+
+			//mxd. Check for TargetClass?
+			this.targetclasses = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
+			if(this.type == (int)UniversalType.ThingTag)
+			{
+				string s = cfg.ReadSetting(argspath + ".arg" + istr + ".targetclasses", string.Empty);
+				if(!string.IsNullOrEmpty(s))
+				{
+					foreach(string tclass in s.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries)) 
+						targetclasses.Add(tclass.Trim());
+				}
+			}
 
 			// Determine enum type
 			IDictionary argdic = cfg.ReadSetting(argspath + ".arg" + istr, new Hashtable());

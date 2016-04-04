@@ -20,7 +20,7 @@
     Sets the title of this argument.<br />
     Argument title can be also set in <a href="gc_decoratekeys.html#argtitle">DECORATE</a>.<br />
     <br />
-    <b class="fat"><a name="argtooltip" id="argtooltip"></a>tooltip</b> (string) - <span class="red">GZDB only</span>.<br />
+    <b class="fat"><a name="argtooltip" id="argtooltip"></a>tooltip</b> (string) - <span class="red">GZDB only</span><br />
     Allows to specify a tooltip text displayed for a <a href="gc_thingsettings.html#argtooltip">Thing</a> or Linedef argument definition. Newline character ("\n") can be used to format the text.<br />
     Argument tooltips can be also set in <a href="gc_decoratekeys.html#argtooltip">DECORATE</a>.<br />
     <strong>Example:</strong> </p>
@@ -50,6 +50,17 @@
     <li>23 = Thing Radius (<span class="red">GZDB only</span>)</li>
     <li>24 = Thing Height (<span class="red">GZDB only</span>)</li>
   </ul>
+  <p><b class="fat">targetclasses</b> (string) - <span class="red">GZDB only</span><br />
+    When set, only things of given classes will be shown in the argument dropdown list. Used only when argument <strong>type</strong> is 14.<br />
+    The value can be either a thing class name of a comma-separated list of thing class names:<br />
+  <pre>
+arg0
+{
+    title = &quot;MapSpot Tag&quot;;
+    type = 14;
+    <span class="blue">targetclasses = &quot;MapSpot,MapSpotGravity&quot;;</span>
+}
+</pre>
   <p><b class="fat">enum</b> (structure or string)<br />
     Provides a list of predefined values to display for this argument. Used only when argument <strong>type</strong> is 11 or 12.<br />
     The value can be either a name of a predefined enum:<br />
@@ -77,7 +88,7 @@ arg0
 </pre>
   Enums can be also set in <a href="gc_decoratekeys.html#argenum">DECORATE</a>.<br />
   <br />
-  <b class="fat">default</b> (integer) - <span class="red">GZDB only</span>.<br />
+  <b class="fat">default</b> (integer) - <span class="red">GZDB only</span><br />
   Sets the default value for a Thing or Linedef argument definition.<br />
   Default value can be also set in <a href="gc_decoratekeys.html#argdefault">DECORATE</a>.<br />
   <strong>Example:</strong>

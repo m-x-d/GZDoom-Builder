@@ -31,23 +31,31 @@ namespace CodeImp.DoomBuilder.Types
 
 		protected override EnumList CreateTagList() 
 		{
-			//collect tags
+			// Collect tags
 			List<int> tags = new List<int>();
 			EnumList taglist = new EnumList();
 
 			foreach(Thing t in General.Map.Map.Things) 
 			{
 				if(t.Tag == 0 || tags.Contains(t.Tag)) continue;
+
+				// Check target class?
+				if(arginfo.TargetClasses.Count > 0)
+				{
+					ThingTypeInfo info = General.Map.Data.GetThingInfoEx(t.Type);
+					if(info != null && !arginfo.TargetClasses.Contains(info.ClassName)) continue;
+				}
+
 				tags.Add(t.Tag);
 			}
 
-			//now sort them in descending order
+			// Now sort them in descending order
 			tags.Sort((a, b) => -1 * a.CompareTo(b));
 
-			//create enum items
+			// Create enum items
 			foreach(int tag in tags) 
 			{
-				if(General.Map.Options.TagLabels.ContainsKey(tag)) //tag labels
+				if(General.Map.Options.TagLabels.ContainsKey(tag)) // Tag labels
 					taglist.Add(new EnumItem(tag.ToString(), General.Map.Options.TagLabels[tag]));
 				else
 					taglist.Add(new EnumItem(tag.ToString(), tag.ToString()));

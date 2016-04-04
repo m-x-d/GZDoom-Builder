@@ -52,6 +52,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		private const int THING_BUFFER_SIZE = 100;
 		private const float MINIMUM_THING_RADIUS = 1.5f; //mxd
 		private const float MINIMUM_SPRITE_RADIUS = 8.0f; //mxd
+		private const float FIXED_THING_SIZE = 48.0f; //mxd
 
 		internal const int NUM_VIEW_MODES = 4;
 		
@@ -628,7 +629,6 @@ namespace CodeImp.DoomBuilder.Rendering
 			}
 
 			renderlayer = RenderLayers.Plotter;
-			try { graphics.Device.SetRenderState(RenderState.FogEnable, false); } catch(Exception) { }
 			
 			// Rendertargets available?
 			if(plottertex != null)
@@ -670,7 +670,6 @@ namespace CodeImp.DoomBuilder.Rendering
 			}
 
 			renderlayer = RenderLayers.Things;
-			try { graphics.Device.SetRenderState(RenderState.FogEnable, false); } catch(Exception) { }
 			
 			// Rendertargets available?
 			if(thingstex != null)
@@ -707,7 +706,6 @@ namespace CodeImp.DoomBuilder.Rendering
 			}
 
 			renderlayer = RenderLayers.Overlay;
-			try { graphics.Device.SetRenderState(RenderState.FogEnable, false); } catch(Exception) { }
 			
 			// Rendertargets available?
 			if(overlaytex != null)
@@ -939,9 +937,24 @@ namespace CodeImp.DoomBuilder.Rendering
 			if(t.Size * scale < MINIMUM_THING_RADIUS) return false; //mxd. Don't render tiny little things
 
 			// Determine sizes
-			float fixedscaler = (t.FixedSize ? 1.0f : 2.0f); //mxd
-			float circlesize = ((t.FixedSize || General.Settings.FixedThingsScale) && (scale > fixedscaler) ? t.Size * fixedscaler : t.Size * scale);
-			float bboxsize = ((!t.FixedSize && General.Settings.FixedThingsScale) && (scale > 2.0f) ? t.Size * scale : -1); //mxd
+			float circlesize, bboxsize;
+
+			if(t.FixedSize && scale > 1.0f)
+			{
+				circlesize = t.Size;
+				bboxsize = -1;
+			}
+			else if(General.Settings.FixedThingsScale && t.Size * scale > FIXED_THING_SIZE)
+			{
+				circlesize = FIXED_THING_SIZE;
+				bboxsize = t.Size * scale;
+			}
+			else
+			{
+				circlesize = t.Size * scale;
+				bboxsize = -1;
+			}
+
 			float screensize = (bboxsize > 0 ? bboxsize : circlesize); //mxd
 			
 			// Transform to screen coordinates
@@ -1011,8 +1024,13 @@ namespace CodeImp.DoomBuilder.Rendering
 		private void CreateThingArrowVerts(Thing t, ref FlatVertex[] verts, Vector3D screenpos, int offset) 
 		{
 			// Determine size
-			float fixedscaler = (t.FixedSize ? 1.0f : 2.0f);
-			float arrowsize = ((t.FixedSize || General.Settings.FixedThingsScale) && (scale > fixedscaler) ? t.Size * fixedscaler : t.Size * scale) * THING_ARROW_SIZE; //mxd
+			float arrowsize;
+			if(t.FixedSize && scale > 1.0f)
+				arrowsize = t.Size * THING_ARROW_SIZE;
+			else if(General.Settings.FixedThingsScale && t.Size * scale > FIXED_THING_SIZE)
+				arrowsize = FIXED_THING_SIZE * THING_ARROW_SIZE;
+			else
+				arrowsize = t.Size * scale * THING_ARROW_SIZE;
 
 			// Setup rotated rect for arrow
 			float sinarrowsize = (float)Math.Sin(t.Angle + Angle2D.PI * 0.25f) * arrowsize;
@@ -1234,51 +1252,49 @@ namespace CodeImp.DoomBuilder.Rendering
 					buffercount = 0;
 					totalcount = 0;
 
-					bool forcespriterendering;
-					float spritewidth, spriteheight, spritescale;
-					float fixedscaler = (group.Value[0].FixedSize ? 1.0f : 2.0f); // Make sure thing size stays at 2x scale when FixedThingsScale is enabled
-
-					// Apply FixedSize setting?
-					if((group.Value[0].FixedSize || General.Settings.FixedThingsScale) && (scale > fixedscaler))
-					{
-						spritescale = fixedscaler;
-						forcespriterendering = true; // Always render sprite when thing size is affected by FixedSize or FixedThingsScale settings
-					}
-					else
-					{
-						spritescale = scale;
-						forcespriterendering = false;
-					}
-
-					// Calculate scaled sprite size
-					if(sprite.Width > sprite.Height) 
-					{
-						spritewidth = (info.Radius - THING_SPRITE_SHRINK) * spritescale;
-						spriteheight = spritewidth * ((float)sprite.Height / sprite.Width);
-					} 
-					else if(sprite.Width < sprite.Height) 
-					{
-						spriteheight = (info.Radius - THING_SPRITE_SHRINK) * spritescale;
-						spritewidth = spriteheight * ((float)sprite.Width / sprite.Height);
-					} 
-					else 
-					{
-						spritewidth = (info.Radius - THING_SPRITE_SHRINK) * spritescale;
-						spriteheight = spritewidth;
-					}
-
-					// Apply radius and height Thing Argument overrides?
-					if(!group.Value[0].FixedSize)
-					{
-						float sizeoverridescaler = group.Value[0].Size / info.Radius;
-						spritewidth *= sizeoverridescaler;
-						spriteheight *= sizeoverridescaler;
-					}
-					float spritesize = Math.Max(spritewidth, spriteheight); 
-
 					foreach(Thing t in group.Value) 
 					{
 						if(t.IsModel && ((General.Settings.GZDrawModelsMode == ModelRenderMode.SELECTION && t.Selected) || (General.Settings.GZDrawModelsMode == ModelRenderMode.ACTIVE_THINGS_FILTER && alpha == 1.0f))) continue;
+
+						bool forcespriterendering;
+						float spritewidth, spriteheight, spritescale;
+
+						// Determine sizes
+						if(t.FixedSize && scale > 1.0f)
+						{
+							spritescale = 1.0f;
+							forcespriterendering = true; // Always render sprite when thing size is affected by FixedSize setting
+						}
+						else if(General.Settings.FixedThingsScale && t.Size * scale > FIXED_THING_SIZE)
+						{
+							spritescale =  FIXED_THING_SIZE / t.Size;
+							forcespriterendering = true; // Always render sprite when thing size is affected by FixedThingsScale setting
+						}
+						else
+						{
+							spritescale = scale;
+							forcespriterendering = false;
+						}
+
+						// Calculate scaled sprite size
+						if(sprite.Width > sprite.Height)
+						{
+							spritewidth = (t.Size - THING_SPRITE_SHRINK) * spritescale;
+							spriteheight = spritewidth * ((float)sprite.Height / sprite.Width);
+						}
+						else if(sprite.Width < sprite.Height)
+						{
+							spriteheight = (t.Size - THING_SPRITE_SHRINK) * spritescale;
+							spritewidth = spriteheight * ((float)sprite.Width / sprite.Height);
+						}
+						else
+						{
+							spritewidth = (t.Size - THING_SPRITE_SHRINK) * spritescale;
+							spriteheight = spritewidth;
+						}
+
+						float spritesize = Math.Max(spritewidth, spriteheight); 
+						
 						if(!forcespriterendering && spritesize < MINIMUM_SPRITE_RADIUS)
 						{
 							// Hackish way to tell arrow rendering code to draw bigger arrow...
