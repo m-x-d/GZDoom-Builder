@@ -48,6 +48,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	{
 		#region ================== Constants
 
+		private const int MAX_THING_LABELS = 256; //mxd
+
 		#endregion
 
 		#region ================== Variables
@@ -67,6 +69,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		//mxd. Dynamic light shapes
 		private List<Line3D> dynamiclightshapes;
+
+		//mxd. Text labels
+		private Dictionary<Thing, TextLabel> labels;
+		private Dictionary<Sector, TextLabel[]> sectorlabels;
+		private Dictionary<Sector, string[]> sectortexts;
 		
 		#endregion
 
@@ -82,6 +89,25 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			//mxd. Associations now requre initializing...
 			for(int i = 0; i < association.Length; i++) association[i] = new Association();
+		}
+
+		//mxd
+		public override void Dispose()
+		{
+			// Not already disposed?
+			if(!isdisposed)
+			{
+				// Dispose old labels
+				if(labels != null) foreach(TextLabel l in labels.Values) l.Dispose();
+				if(sectorlabels != null)
+				{
+					foreach(TextLabel[] larr in sectorlabels.Values)
+						foreach(TextLabel l in larr) l.Dispose();
+				}
+
+				// Dispose base
+				base.Dispose();
+			}
 		}
 
 		#endregion
@@ -118,17 +144,27 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			renderer.SetPresentation(Presentation.Things);
 
 			// Add toolbar buttons
+			General.Interface.BeginToolbarUpdate(); //mxd
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.CopyProperties);
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.PasteProperties);
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.PastePropertiesOptions); //mxd
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.SeparatorCopyPaste); //mxd
+			General.Interface.AddButton(BuilderPlug.Me.MenusForm.ViewSelectionNumbers); //mxd
+			if(General.Map.FormatInterface.HasThingAction)
+			{
+				BuilderPlug.Me.MenusForm.ViewSelectionEffects.Text = "View Sector Tags"; //mxd
+				General.Interface.AddButton(BuilderPlug.Me.MenusForm.ViewSelectionEffects); //mxd
+			}
+			General.Interface.AddButton(BuilderPlug.Me.MenusForm.SeparatorSectors1); //mxd
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.AlignThingsToWall); //mxd
+			General.Interface.EndToolbarUpdate(); //mxd
 			
 			// Convert geometry selection to linedefs selection
 			General.Map.Map.ConvertSelection(SelectionType.Linedefs);
 			General.Map.Map.SelectionType = SelectionType.Things;
 			UpdateSelectionInfo(); //mxd
 			UpdateHelperObjects(); //mxd
+			SetupSectorLabels(); //mxd
 		}
 
 		// Mode disengages
@@ -137,12 +173,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnDisengage();
 
 			// Remove toolbar buttons
+			General.Interface.BeginToolbarUpdate(); //mxd
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.CopyProperties);
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.PasteProperties);
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.PastePropertiesOptions); //mxd
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.SeparatorCopyPaste); //mxd
+			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.ViewSelectionNumbers); //mxd
+			if(General.Map.FormatInterface.HasThingAction)
+				General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.ViewSelectionEffects); //mxd
+			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.SeparatorSectors1); //mxd
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.AlignThingsToWall); //mxd
-			
+			General.Interface.EndToolbarUpdate(); //mxd
+
 			//mxd. Do some highlight management...
 			if(highlighted != null) highlighted.Highlighted = false;
 
@@ -218,6 +260,52 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Render selection
 				if(selecting) RenderMultiSelection();
 
+				//mxd. Render sector tag labels
+				if(BuilderPlug.Me.ViewSelectionEffects && General.Map.FormatInterface.HasThingAction)
+				{
+					List<TextLabel> torender = new List<TextLabel>(sectorlabels.Count);
+					foreach(KeyValuePair<Sector, string[]> group in sectortexts)
+					{
+						// Pick which text variant to use
+						TextLabel[] labelarray = sectorlabels[group.Key];
+						for(int i = 0; i < group.Key.Labels.Count; i++)
+						{
+							TextLabel l = labelarray[i];
+
+							// Render only when enough space for the label to see
+							float requiredsize = (General.Interface.MeasureString(group.Value[0], l.Font).Width / 2) / renderer.Scale;
+							if(requiredsize > group.Key.Labels[i].radius)
+							{
+								requiredsize = (General.Interface.MeasureString(group.Value[1], l.Font).Width / 2) / renderer.Scale;
+								l.Text = (requiredsize > group.Key.Labels[i].radius ? "+" : group.Value[1]);
+							}
+							else
+							{
+								l.Text = group.Value[0];
+							}
+
+							torender.Add(l);
+						}
+					}
+
+					// Render labels
+					renderer.RenderText(torender);
+				}
+
+				//mxd. Render selection labels
+				if(BuilderPlug.Me.ViewSelectionNumbers)
+				{
+					List<TextLabel> torender = new List<TextLabel>(labels.Count);
+					foreach(KeyValuePair<Thing, TextLabel> group in labels)
+					{
+						// Render only when enough space for the label to see
+						float requiredsize = (group.Value.TextSize.Width) / renderer.Scale;
+						if(group.Key.Size * 2 > requiredsize) torender.Add(group.Value);
+					}
+
+					renderer.RenderText(torender);
+				}
+
 				//mxd. Render comments
 				if(General.Map.UDMF && General.Settings.RenderComments) foreach(Thing t in General.Map.Map.Things) RenderComment(t);
 
@@ -231,12 +319,26 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private void Highlight(Thing t)
 		{
 			// Set highlight association
-			if(t != null && t.Tag != 0)
-				highlightasso.Set(t.Position, t.Tag, UniversalType.ThingTag);
-			else
-				highlightasso.Set(new Vector2D(), 0, 0);
+			if(t != null)
+			{
+				//mxd. Update label color?
+				if(labels.ContainsKey(t)) labels[t].Color = General.Colors.Selection;
 
-			if(highlighted != null) highlighted.Highlighted = false; //mxd
+				// New association highlights something?
+				if(t.Tag != 0) highlightasso.Set(t.Position, t.Tag, UniversalType.ThingTag);
+			}
+			else
+			{
+				highlightasso.Set(new Vector2D(), 0, 0);
+			}
+
+			if(highlighted != null) //mxd
+			{
+				//mxd. Update label color?
+				if(labels.ContainsKey(highlighted)) labels[highlighted].Color = General.Colors.Highlight;
+				
+				highlighted.Highlighted = false;
+			}
 
 			//mxd. Determine thing associations
 			bool clearassociations = true; //mxd
@@ -323,25 +425,29 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					//mxd. Flip selection
 					highlighted.Selected = !highlighted.Selected;
-					
+					UpdateSelectionInfo(); //mxd
+
+					//mxd. Full redraw when labels were changed
+					if(BuilderPlug.Me.ViewSelectionNumbers)
+					{
+						General.Interface.RedrawDisplay();
+					}
 					// Update display
-					if(renderer.StartThings(false))
+					else if(renderer.StartThings(false))
 					{
 						// Render highlighted item
 						renderer.RenderThing(highlighted, General.Colors.Highlight, General.Settings.FixedThingsScale ? Presentation.THINGS_ALPHA : General.Settings.ActiveThingsAlpha);
 						renderer.Finish();
 						renderer.Present();
 					}
-				
 				}
 				//mxd
 				else if(BuilderPlug.Me.AutoClearSelection && General.Map.Map.SelectedThingsCount > 0) 
 				{
 					General.Map.Map.ClearSelectedThings();
+					UpdateSelectionInfo();
 					General.Interface.RedrawDisplay();
 				}
-
-				UpdateSelectionInfo(); //mxd
 			}
 
 			base.OnSelectEnd();
@@ -454,8 +560,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			base.OnUndoEnd();
 
-			//mxd. Update helper lines
-			UpdateHelperObjects();
+			UpdateHelperObjects(); // Update helper lines
+			SetupSectorLabels(); // And sector labels
 		}
 
 		//mxd
@@ -463,8 +569,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			base.OnRedoEnd();
 
-			//mxd. Update helper lines
-			UpdateHelperObjects();
+			UpdateHelperObjects(); // Update helper lines
+			SetupSectorLabels(); // And sector labels
 		}
 
 		//mxd. Otherwise event lines won't be drawn after panning finishes.
@@ -779,6 +885,96 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 		}
 
+		//mxd. This sets up new labels
+		private void SetupSectorLabels()
+		{
+			if(!General.Map.FormatInterface.HasThingAction) return;
+
+			// Dispose old labels
+			if(sectorlabels != null)
+			{
+				foreach(TextLabel[] larr in sectorlabels.Values)
+					foreach(TextLabel l in larr) l.Dispose();
+			}
+
+			// Make text labels for sectors
+			sectorlabels = new Dictionary<Sector, TextLabel[]>();
+			sectortexts = new Dictionary<Sector, string[]>();
+			foreach(Sector s in General.Map.Map.Sectors)
+			{
+				// Setup labels
+				if(s.Tag == 0) continue;
+
+				// Make tag text
+				string[] tagdescarr = new string[2];
+				if(s.Tags.Count > 1)
+				{
+					string[] stags = new string[s.Tags.Count];
+					for(int i = 0; i < s.Tags.Count; i++) stags[i] = s.Tags[i].ToString();
+					tagdescarr[0] = "Tags " + string.Join(", ", stags);
+					tagdescarr[1] = "T" + string.Join(",", stags);
+				}
+				else
+				{
+					tagdescarr[0] = "Tag " + s.Tag;
+					tagdescarr[1] = "T" + s.Tag;
+				}
+
+				// Add to collection
+				sectortexts.Add(s, tagdescarr);
+
+				TextLabel[] larr = new TextLabel[s.Labels.Count];
+				for(int i = 0; i < s.Labels.Count; i++)
+				{
+					Vector2D v = s.Labels[i].position;
+					TextLabel l = new TextLabel();
+					l.TransformCoords = true;
+					l.Rectangle = new RectangleF(v.x, v.y, 0.0f, 0.0f);
+					l.AlignX = TextAlignmentX.Center;
+					l.AlignY = TextAlignmentY.Middle;
+					l.Color = General.Colors.InfoLine;
+					l.Backcolor = General.Colors.Background.WithAlpha(255);
+					larr[i] = l;
+				}
+
+				// Add to collection
+				sectorlabels.Add(s, larr);
+			}
+		}
+
+		//mxd. Also update labels for the selected linedefs
+		public override void UpdateSelectionInfo()
+		{
+			base.UpdateSelectionInfo();
+			
+			// Dispose old labels
+			if(labels != null) foreach(TextLabel l in labels.Values) l.Dispose();
+
+			// Make text labels for selected linedefs
+			ICollection<Thing> orderedselection = General.Map.Map.GetSelectedThings(true);
+
+			// Otherwise significant delays will occure.
+			// Also we probably won't care about selection ordering when selecting this many anyway
+			if(orderedselection.Count > MAX_THING_LABELS) return;
+
+			int index = 0;
+			labels = new Dictionary<Thing, TextLabel>(orderedselection.Count);
+			foreach(Thing thing in orderedselection)
+			{
+				Vector2D v = thing.Position;
+				TextLabel l = new TextLabel();
+				l.TransformCoords = true;
+				l.Rectangle = new RectangleF(v.x - thing.Size + 1, v.y + thing.Size - 1, 0f, 0f);
+				l.AlignX = TextAlignmentX.Left;
+				l.AlignY = TextAlignmentY.Top;
+				l.Color = (thing == highlighted ? General.Colors.Selection : General.Colors.Highlight);
+				l.Backcolor = General.Colors.Background.WithAlpha(255);
+				l.DrawBackground = true;
+				l.Text = (++index).ToString();
+				labels.Add(thing, l);
+			}
+		}
+
 		//mxd
 		private void UpdateHelperObjects()
 		{
@@ -920,6 +1116,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			//mxd. Clear selection info
 			General.Interface.DisplayStatus(StatusType.Selection, string.Empty);
+
+			//mxd. Clear selection labels
+			foreach(TextLabel l in labels.Values) l.Dispose();
+			labels.Clear();
 
 			// Redraw
 			General.Interface.RedrawDisplay();

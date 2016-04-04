@@ -75,8 +75,8 @@ namespace CodeImp.DoomBuilder.Rendering
 			things.layers.Add(new PresentLayer(RendererLayer.Things, BlendingMode.Alpha, 1f));
 			things.layers.Add(new PresentLayer(RendererLayer.Grid, BlendingMode.Mask));
 			things.layers.Add(new PresentLayer(RendererLayer.Geometry, BlendingMode.Alpha, 1f, true));
-			things.layers.Add(new PresentLayer(RendererLayer.Overlay, BlendingMode.Alpha, 1f, true));
 			things.layers.Add(new PresentLayer(RendererLayer.Things, BlendingMode.Alpha, 0.5f)); //mxd
+			things.layers.Add(new PresentLayer(RendererLayer.Overlay, BlendingMode.Alpha, 1f, true));
 		}
 	}
 
