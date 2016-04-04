@@ -40,6 +40,7 @@ namespace CodeImp.DoomBuilder.Config
 		public const int THING_ERROR_NONE = 0;
 		public const int THING_ERROR_INSIDE = 1;
 		public const int THING_ERROR_INSIDE_STUCK = 2;
+		private const float THING_FIXED_SIZE = 14f; //mxd
 		
 		#endregion
 
@@ -196,7 +197,7 @@ namespace CodeImp.DoomBuilder.Config
 				this.args[i] = new ArgumentInfo(cfg, "thingtypes." + cat.Name + "." + key, i, enums);
 			
 			// Safety
-			if(this.radius < 4f) this.radius = 16f;
+			if(this.radius < 4f || this.fixedsize) this.radius = THING_FIXED_SIZE;
 			if(this.hangs && this.absolutez) this.hangs = false; //mxd
 			
 			// Make long name for sprite lookup
@@ -242,7 +243,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.locksprite = false;
 
 			// Safety
-			if(this.radius < 4f) this.radius = 8f;
+			if(this.radius < 4f || this.fixedsize) this.radius = THING_FIXED_SIZE;
 			if(this.hangs && this.absolutez) this.hangs = false; //mxd
 			
 			// Make long name for sprite lookup
@@ -287,7 +288,6 @@ namespace CodeImp.DoomBuilder.Config
 			this.spritescale = new SizeF(cat.SpriteScale, cat.SpriteScale);
 
 			// Safety
-			if(this.radius < 4f) this.radius = 8f;
 			if(this.hangs && this.absolutez) this.hangs = false; //mxd
 			
 			// Apply settings from actor
@@ -329,7 +329,6 @@ namespace CodeImp.DoomBuilder.Config
 			this.spritescale = new SizeF(cat.SpriteScale, cat.SpriteScale);
 
 			// Safety
-			if(this.radius < 4f) this.radius = 8f;
 			if(this.hangs && this.absolutez) this.hangs = false; //mxd
 
 			// Apply settings from actor
@@ -480,7 +479,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.bright = actor.GetFlagValue("bright", false);
 			
 			// Safety
-			if(this.radius < 4f) this.radius = 8f;
+			if(this.radius < 4f || this.fixedsize) this.radius = THING_FIXED_SIZE;
 			if(this.spritescale.Width == 0.0f) this.spritescale.Width = 1.0f;
 			if(this.spritescale.Height == 0.0f) this.spritescale.Height = 1.0f;
 			
