@@ -47,7 +47,6 @@ namespace CodeImp.DoomBuilder.Rendering
 		// Text settings
 		private string text;
 		private RectangleF rect;
-		private RectangleF absview; //mxd
 		private bool transformcoords;
 		private PixelColor color;
 		private PixelColor backcolor;
@@ -63,6 +62,9 @@ namespace CodeImp.DoomBuilder.Rendering
 		private float lasttranslatey;
 		private float lastscalex;
 		private float lastscaley;
+
+		//mxd. Rendering
+		private bool skiprendering;
 		
 		// Disposing
 		private bool isdisposed;
@@ -90,7 +92,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		public bool DrawBackground { get { return drawbg; } set { if(drawbg != value) { drawbg = value; textureupdateneeded = true; } } } //mxd
 		internal Texture Texture { get { return texture; } } //mxd
 		internal VertexBuffer VertexBuffer { get { return textbuffer; } }
-		internal bool SkipRendering; //mxd
+		internal bool SkipRendering { get { return skiprendering; } } //mxd
 		
 		// Disposing
 		public bool IsDisposed { get { return isdisposed; } }
@@ -116,6 +118,10 @@ namespace CodeImp.DoomBuilder.Rendering
 			
 			// Register as resource
 			General.Map.Graphics.RegisterResource(this);
+
+			//mxd. Create the buffer
+			this.textbuffer = new VertexBuffer(General.Map.Graphics.Device, 4 * FlatVertex.Stride,
+										  Usage.Dynamic | Usage.WriteOnly, VertexFormat.None, Pool.Default);
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -143,7 +149,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Methods
 		
 		// This updates the text if needed
-		internal RectangleF Update(float translatex, float translatey, float scalex, float scaley)
+		internal void Update(float translatex, float translatey, float scalex, float scaley)
 		{
 			// Check if transformation changed and needs to be updated
 			if(transformcoords && (translatex != lasttranslatex || translatey != lasttranslatey ||
@@ -156,30 +162,6 @@ namespace CodeImp.DoomBuilder.Rendering
 				updateneeded = true;
 			}
 
-			//mxd. Update texture if needed
-			if(textureupdateneeded)
-			{
-				// Get rid of old texture
-				if(texture != null)
-				{
-					texture.Dispose(); 
-					texture = null;
-				}
-
-				// Create label image
-				Bitmap img = CreateLabelImage(text, font, color, backcolor, drawbg);
-				textsize = img.Size;
-
-				// Create texture
-				MemoryStream memstream = new MemoryStream((img.Size.Width * img.Size.Height * 4) + 4096);
-				img.Save(memstream, ImageFormat.Bmp);
-				memstream.Seek(0, SeekOrigin.Begin);
-
-				texture = Texture.FromStream(General.Map.Graphics.Device, memstream, (int)memstream.Length,
-						img.Size.Width, img.Size.Height, 1, Usage.None, Format.Unknown,
-						Pool.Managed, General.Map.Graphics.PostFilter, General.Map.Graphics.MipGenerateFilter, 0);
-			}
-			
 			// Update if needed
 			if(updateneeded || textureupdateneeded)
 			{
@@ -187,6 +169,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				if(text.Length > 0)
 				{
 					// Transform?
+					RectangleF absview;
 					if(transformcoords)
 					{
 						// Calculate absolute coordinates
@@ -200,6 +183,37 @@ namespace CodeImp.DoomBuilder.Rendering
 					{
 						// Fixed coordinates
 						absview = rect;
+					}
+
+					//mxd. Skip when not on screen...
+					RectangleF abssize = absview;
+					abssize.Inflate(textsize.Width / 2, textsize.Height / 2);
+					Size windowsize = General.Map.Graphics.RenderTarget.ClientSize;
+					skiprendering = (abssize.Right < 0.1f) || (abssize.Left > windowsize.Width) || (abssize.Bottom < 0.1f) || (abssize.Top > windowsize.Height);
+					if(skiprendering) return;
+
+					//mxd. Update texture if needed
+					if(textureupdateneeded)
+					{
+						// Get rid of old texture
+						if(texture != null)
+						{
+							texture.Dispose();
+							texture = null;
+						}
+
+						// Create label image
+						Bitmap img = CreateLabelImage(text, font, color, backcolor, drawbg);
+						textsize = img.Size;
+
+						// Create texture
+						MemoryStream memstream = new MemoryStream((img.Size.Width * img.Size.Height * 4) + 4096);
+						img.Save(memstream, ImageFormat.Bmp);
+						memstream.Seek(0, SeekOrigin.Begin);
+
+						texture = Texture.FromStream(General.Map.Graphics.Device, memstream, (int)memstream.Length,
+								img.Size.Width, img.Size.Height, 1, Usage.None, Format.Unknown,
+								Pool.Managed, General.Map.Graphics.PostFilter, General.Map.Graphics.MipGenerateFilter, 0);
 					}
 
 					// Align the text horizontally
@@ -220,14 +234,6 @@ namespace CodeImp.DoomBuilder.Rendering
 						case TextAlignmentY.Bottom: beginy = absview.Y + absview.Height - textsize.Height; break;
 					}
 
-					// Do we have to make a new buffer?
-					if(textbuffer == null)
-					{
-						// Create the buffer
-						textbuffer = new VertexBuffer(General.Map.Graphics.Device, 4 * FlatVertex.Stride,
-													  Usage.Dynamic | Usage.WriteOnly, VertexFormat.None, Pool.Default);
-					}
-
 					//mxd. Lock the buffer
 					using(DataStream stream = textbuffer.Lock(0, 4 * FlatVertex.Stride, LockFlags.Discard | LockFlags.NoSystemLock))
 					{
@@ -241,16 +247,14 @@ namespace CodeImp.DoomBuilder.Rendering
 				else
 				{
 					// No faces in polygon
-					if(textbuffer != null) textbuffer.Dispose(); //mxd
 					textsize = new SizeF();
+					skiprendering = true; //mxd
 				}
 
 				// Text updated
 				updateneeded = false;
 				textureupdateneeded = false; //mxd
 			}
-
-			return absview; //mxd
 		}
 
 		//mxd

@@ -1603,11 +1603,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		public void RenderText(TextLabel label)
 		{
 			//mxd. Update the text if needed
-			RectangleF bbox = label.Update(translatex, translatey, scale, -scale);
-
-			//mxd. Have graphics / on screen?
-			if(label.VertexBuffer == null || (bbox.Right < 0.1f) || (bbox.Left > windowsize.Width) || (bbox.Bottom < 0.1f) || (bbox.Top > windowsize.Height))
-				return;
+			label.Update(translatex, translatey, scale, -scale);
+			if(label.SkipRendering) return;
 			
 			// Set renderstates for rendering
 			graphics.Device.SetRenderState(RenderState.CullMode, Cull.None);
@@ -1637,18 +1634,8 @@ namespace CodeImp.DoomBuilder.Rendering
 			foreach(TextLabel label in labels)
 			{
 				// Update the text if needed
-				RectangleF bbox = label.Update(translatex, translatey, scale, -scale);
-
-				// Have graphics / on screen?
-				if(label.VertexBuffer == null || (bbox.Right < 0.1f) || (bbox.Left > windowsize.Width) || (bbox.Bottom < 0.1f) || (bbox.Top > windowsize.Height))
-				{
-					label.SkipRendering = true;
-					skipped++;
-				}
-				else
-				{
-					label.SkipRendering = false;
-				}
+				label.Update(translatex, translatey, scale, -scale);
+				if(label.SkipRendering) skipped++;
 			}
 
 			if(labels.Count == skipped) return;

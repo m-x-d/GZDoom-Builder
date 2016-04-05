@@ -197,6 +197,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					List<TextLabel> torender = new List<TextLabel>(orderedselection.Count);
 					foreach(Sector s in orderedselection) 
 					{
+						//mxd. Self-referencing (and probably some other) sectors don't have labels...
+						if(labels[s].Length == 0) continue;
+						
 						// Render labels
 						TextLabel[] labelarray = labels[s];
 						float requiredsize = (labelarray[0].TextSize.Height / 2) / renderer.Scale;
@@ -238,7 +241,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if(requiredsize > group.Key.Labels[i].radius) 
 					{
 						requiredsize = (General.Interface.MeasureString(group.Value[1], l.Font).Width / 2) / renderer.Scale;
-						l.Text = (requiredsize > group.Key.Labels[i].radius ? "+" : group.Value[1]);
+						if(requiredsize > group.Key.Labels[i].radius)
+							l.Text = (requiredsize > group.Key.Labels[i].radius * 4 ? string.Empty : "+");
+						else
+							l.Text = group.Value[1];
 					} 
 					else 
 					{

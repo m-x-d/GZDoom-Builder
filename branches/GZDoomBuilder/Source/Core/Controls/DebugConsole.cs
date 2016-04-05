@@ -41,6 +41,7 @@ namespace CodeImp.DoomBuilder
 
 		private DebugMessageType filters;
 		private static long starttime = -1;
+		private static int counter;
 		private static DebugConsole me;
 
 		#endregion
@@ -157,6 +158,24 @@ namespace CodeImp.DoomBuilder
 			WriteLine(DebugMessageType.SPECIAL, message);
 
 			starttime = -1;
+		}
+
+		public static void IncrementCounter() { IncrementCounter(1); }
+		public static void IncrementCounter(int incrementby)
+		{
+			counter += incrementby;
+		}
+
+		public static void ResetCounter(string message)
+		{
+			if(message.Contains("%"))
+				message = message.Replace("%", counter.ToString());
+			else
+				message = message.TrimEnd() + ": " + counter;
+
+			WriteLine(DebugMessageType.SPECIAL, message);
+
+			counter = 0;
 		}
 
 		public static void StartProfiler()

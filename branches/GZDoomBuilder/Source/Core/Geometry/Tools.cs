@@ -1833,6 +1833,14 @@ namespace CodeImp.DoomBuilder.Geometry
 				   ((sd.LongMiddleTexture == texturelongname) && (sd.MiddleRequired() || sd.LongMiddleTexture != MapSet.EmptyLongName)) ;
 		}
 
+		//mxd. This checks if any of the sidedef texture match the given textures
+		public static bool SidedefTextureMatch(Sidedef sd, HashSet<long> texturelongnames)
+		{
+			return (texturelongnames.Contains(sd.LongHighTexture) && sd.HighRequired()) ||
+				   (texturelongnames.Contains(sd.LongLowTexture) && sd.LowRequired()) ||
+				   (texturelongnames.Contains(sd.LongMiddleTexture) && (sd.MiddleRequired() || sd.LongMiddleTexture != MapSet.EmptyLongName));
+		}
+
 		//mxd. This converts offsetY from/to "normalized" offset for given wall part
 		public static float GetSidedefOffsetY(Sidedef side, VisualGeometryType part, float offset, float scaleY, bool fromNormalized)
 		{

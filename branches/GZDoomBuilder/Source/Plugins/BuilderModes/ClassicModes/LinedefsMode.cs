@@ -606,7 +606,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							if(requiredsize > group.Key.Labels[i].radius)
 							{
 								requiredsize = (General.Interface.MeasureString(group.Value[1], l.Font).Width / 2) / renderer.Scale;
-								l.Text = (requiredsize > group.Key.Labels[i].radius ? "+" : group.Value[1]);
+								if(requiredsize > group.Key.Labels[i].radius)
+									l.Text = (requiredsize > group.Key.Labels[i].radius * 4 ? string.Empty : "+");
+								else
+									l.Text = group.Value[1];
 							}
 							else
 							{
