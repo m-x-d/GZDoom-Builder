@@ -590,7 +590,7 @@ namespace CodeImp.DoomBuilder.Data
 			palette = null;
 
 			//mxd. Dispose models
-			foreach(KeyValuePair<int, ModelData> i in modeldefentries) i.Value.Dispose();
+			foreach(ModelData md in modeldefentries.Values) md.Dispose();
 		
 			// Dispose containers
 			foreach(DataReader c in containers) c.Dispose();
@@ -2052,7 +2052,7 @@ namespace CodeImp.DoomBuilder.Data
 		public void ReloadModeldef() 
 		{
 			if(modeldefentries != null) 
-				foreach(KeyValuePair<int, ModelData> group in modeldefentries) group.Value.Dispose();
+				foreach(ModelData md in modeldefentries.Values) md.Dispose();
 
 			// Bail out when not supported by current game configuration
 			if(string.IsNullOrEmpty(General.Map.Config.DecorateGames)) return;
@@ -2105,16 +2105,14 @@ namespace CodeImp.DoomBuilder.Data
 			General.MainWindow.DisplayReady();
 		}
 
-		//mxd. This parses modeldefs. Should be called after all DECORATE actors are parsed and actorsByClass dictionary created
+		//mxd. This parses modeldefs. Should be called after all DECORATE actors are parsed
 		private void LoadModeldefs(Dictionary<string, int> actorsbyclass) 
 		{
-			//if no actors defined in DECORATE or game config...
+			// Abort if no classnames are defined in DECORATE or game config...
 			if(actorsbyclass.Count == 0) return;
 
-			Dictionary<string, ModelData> modeldefentriesbyname = new Dictionary<string, ModelData>(StringComparer.Ordinal);
 			ModeldefParser parser = new ModeldefParser(actorsbyclass);
-
-			foreach(DataReader dr in containers) 
+			foreach(DataReader dr in containers)
 			{
 				currentreader = dr;
 
@@ -2122,30 +2120,21 @@ namespace CodeImp.DoomBuilder.Data
 				foreach(TextResourceData data in streams) 
 				{
 					// Parse the data
-					if(parser.Parse(data, true)) 
-					{
-						foreach(KeyValuePair<string, ModelData> g in parser.Entries) 
-						{
-							if(modeldefentriesbyname.ContainsKey(g.Key))
-								General.ErrorLogger.Add(ErrorType.Warning, "Model definition for actor \"" + g.Key + "\" is double defined in \"" + Path.Combine(data.Source.Location.GetDisplayName(), data.Filename) + "\"");
-							
-							modeldefentriesbyname[g.Key] = g.Value;
-						}
-					}
+					parser.Parse(data, true);
 
 					// Modeldefs are independable, so parsing fail in one file should not affect the others
 					if(parser.HasError) parser.LogError();
 				}
 			}
 
-			//mxd. Add to text resources collection
+			// Add to text resources collection
 			textresources[parser.ScriptType] = new HashSet<TextResource>(parser.TextResources.Values);
 			currentreader = null;
 
-			foreach(KeyValuePair<string, ModelData> e in modeldefentriesbyname) 
+			foreach(KeyValuePair<string, ModelData> e in parser.Entries) 
 			{
 				if(actorsbyclass.ContainsKey(e.Key))
-					modeldefentries[actorsbyclass[e.Key]] = modeldefentriesbyname[e.Key];
+					modeldefentries[actorsbyclass[e.Key]] = parser.Entries[e.Key];
 				else if(!decorate.ActorsByClass.ContainsKey(e.Key))
 					General.ErrorLogger.Add(ErrorType.Warning, "MODELDEF model \"" + e.Key + "\" doesn't match any Decorate actor class");
 			}
@@ -2228,7 +2217,7 @@ namespace CodeImp.DoomBuilder.Data
 				}
 			}
 
-			//mxd. Add to text resources collection
+			// Add to text resources collection
 			textresources[parser.ScriptType] = new HashSet<TextResource>(parser.TextResources.Values);
 			currentreader = null;
 

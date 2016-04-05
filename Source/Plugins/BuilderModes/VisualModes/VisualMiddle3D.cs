@@ -239,6 +239,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if(translucent && !othertranslucent && !ef.ClipSidedefs) continue;
 					if(ef.ClipSidedefs == extrafloor.ClipSidedefs || ef.ClipSidedefs) 
 					{
+						//TODO: find out why ef can be not updated at this point
+						//TODO: [this crashed on me once when performing auto-align on myriad of textures on BoA C1M0]
+						if(ef.Floor == null || ef.Ceiling == null) ef.Update();
+						
 						int num = polygons.Count;
 						for(int pi = 0; pi < num; pi++)
 						{

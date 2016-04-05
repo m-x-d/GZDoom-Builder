@@ -277,7 +277,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							if(requiredsize > group.Key.Labels[i].radius)
 							{
 								requiredsize = (General.Interface.MeasureString(group.Value[1], l.Font).Width / 2) / renderer.Scale;
-								l.Text = (requiredsize > group.Key.Labels[i].radius ? "+" : group.Value[1]);
+								if(requiredsize > group.Key.Labels[i].radius)
+									l.Text = (requiredsize > group.Key.Labels[i].radius * 4 ? string.Empty : "+");
+								else
+									l.Text = group.Value[1];
 							}
 							else
 							{
@@ -541,14 +544,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							//mxd. Update helper lines
 							UpdateHelperObjects();
 
+							//mxd. Update selection info
+							UpdateSelectionInfo();
+
 							// Update display
 							General.Interface.RedrawDisplay();
 						}
 					}
 				}
-
-				//mxd. Update selection info
-				UpdateSelectionInfo();
 			}
 
 			editpressed = false;
@@ -964,9 +967,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				Vector2D v = thing.Position;
 				TextLabel l = new TextLabel();
 				l.TransformCoords = true;
-				l.Rectangle = new RectangleF(v.x - thing.Size + 1, v.y + thing.Size - 1, 0f, 0f);
-				l.AlignX = TextAlignmentX.Left;
-				l.AlignY = TextAlignmentY.Top;
+
+				if(thing.FixedSize)
+				{
+					l.Rectangle = new RectangleF(v.x, v.y, 0f, 0f);
+					l.AlignX = TextAlignmentX.Center;
+					l.AlignY = TextAlignmentY.Middle;
+				}
+				else
+				{
+					l.Rectangle = new RectangleF(v.x - thing.Size + 1, v.y + thing.Size - 1, 0f, 0f);
+					l.AlignX = TextAlignmentX.Left;
+					l.AlignY = TextAlignmentY.Top;
+				}
+				
 				l.Color = (thing == highlighted ? General.Colors.Selection : General.Colors.Highlight);
 				l.Backcolor = General.Colors.Background.WithAlpha(255);
 				l.DrawBackground = true;

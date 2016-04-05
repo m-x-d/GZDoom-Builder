@@ -354,9 +354,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 			int ofsEnd = br.ReadInt32(); //Relative offset from SURFACE_START to where the Surface object ends.
 
 			// Sanity check
-			if(frame < 0 || frame > numFrames)
+			if(frame < 0 || frame >= numFrames)
 			{
-				return "invalid frame number! (frame number: " + frame + ", total frames: " + numFrames + ")";
+				return "frame " + frame + " is outside of model's frame range [0.." + (numFrames - 1) + "]";
 			}
 
 			// Polygons
@@ -453,15 +453,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 				int num_frames = br.ReadInt32(); //Total number of frames
 
 				// Sanity checks
-				if(num_frames == 0) 
+				if(frame < 0 || frame >= num_frames)
 				{
-					result.Errors = "model has 0 frames.";
-					return result;
-				}
-
-				if(num_frames < frame || frame < 0)
-				{
-					result.Errors = "invalid target frame! (target frame: " + frame + ", total frames: " + num_frames + ")";
+					result.Errors = "frame " + frame + " is outside of model's frame range [0.." + (num_frames - 1) + "]";
 					return result;
 				}
 

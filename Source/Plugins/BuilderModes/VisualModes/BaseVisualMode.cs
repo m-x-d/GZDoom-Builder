@@ -3732,6 +3732,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				first.controlSide = start.Sidedef;
 			}
 
+			//mxd
+			HashSet<long> texturehashes = new HashSet<long> { texture.LongName };
+
 			first.forward = true;
 			todo.Push(first);
 
@@ -3761,11 +3764,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					// Add sidedefs forward (connected to the right vertex)
 					Vertex v = j.sidedef.IsFront ? j.sidedef.Line.End : j.sidedef.Line.Start;
-					AddSidedefsForAlignment(todo, v, true, forwardoffset, 1.0f, texture.LongName, false);
+					AddSidedefsForAlignment(todo, v, true, forwardoffset, 1.0f, texturehashes, false);
 
 					// Add sidedefs backward (connected to the left vertex)
 					v = j.sidedef.IsFront ? j.sidedef.Line.Start : j.sidedef.Line.End;
-					AddSidedefsForAlignment(todo, v, false, backwardoffset, 1.0f, texture.LongName, false);
+					AddSidedefsForAlignment(todo, v, false, backwardoffset, 1.0f, texturehashes, false);
 				} 
 				else 
 				{
@@ -3787,11 +3790,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					// Add sidedefs backward (connected to the left vertex)
 					Vertex v = j.sidedef.IsFront ? j.sidedef.Line.Start : j.sidedef.Line.End;
-					AddSidedefsForAlignment(todo, v, false, backwardoffset, 1.0f, texture.LongName, false);
+					AddSidedefsForAlignment(todo, v, false, backwardoffset, 1.0f, texturehashes, false);
 
 					// Add sidedefs forward (connected to the right vertex)
 					v = j.sidedef.IsFront ? j.sidedef.Line.End : j.sidedef.Line.Start;
-					AddSidedefsForAlignment(todo, v, true, forwardoffset, 1.0f, texture.LongName, false);
+					AddSidedefsForAlignment(todo, v, true, forwardoffset, 1.0f, texturehashes, false);
 				}
 			}
 		}
@@ -3820,6 +3823,24 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				first.controlSide = start.GetControlLinedef().Front;
 			else
 				first.controlSide = start.Sidedef;
+
+			//mxd. We potentially need to deal with 2 textures (because of long and short texture names)...
+			HashSet<long> texturehashes = new HashSet<long> { texture.LongName };
+			switch(start.GeometryType)
+			{
+				case VisualGeometryType.WALL_LOWER:
+					texturehashes.Add(first.controlSide.LongLowTexture);
+					break;
+
+				case VisualGeometryType.WALL_MIDDLE:
+				case VisualGeometryType.WALL_MIDDLE_3D:
+					texturehashes.Add(first.controlSide.LongMiddleTexture);
+					break;
+
+				case VisualGeometryType.WALL_UPPER:
+					texturehashes.Add(first.controlSide.LongHighTexture);
+					break;
+			}
 
 			//mxd
 			List<BaseVisualGeometrySidedef> selectedVisualSides = new List<BaseVisualGeometrySidedef>();
@@ -3904,9 +3925,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Get the align job to do
 				SidedefAlignJob j = todo.Pop();
 
-				bool matchtop = (!j.sidedef.Marked && (!singleselection || j.sidedef.LongHighTexture == texture.LongName) && j.sidedef.HighRequired());
-				bool matchbottom = (!j.sidedef.Marked && (!singleselection || j.sidedef.LongLowTexture == texture.LongName) && j.sidedef.LowRequired());
-				bool matchmid = ((!singleselection || j.controlSide.LongMiddleTexture == texture.LongName) && (j.controlSide.MiddleRequired() || j.controlSide.LongMiddleTexture != MapSet.EmptyLongName)); //mxd
+				bool matchtop = (!j.sidedef.Marked && (!singleselection || texturehashes.Contains(j.sidedef.LongHighTexture)) && j.sidedef.HighRequired());
+				bool matchbottom = (!j.sidedef.Marked && (!singleselection || texturehashes.Contains(j.sidedef.LongLowTexture)) && j.sidedef.LowRequired());
+				bool matchmid = ((!singleselection || texturehashes.Contains(j.controlSide.LongMiddleTexture)) && (j.controlSide.MiddleRequired() || j.controlSide.LongMiddleTexture != MapSet.EmptyLongName)); //mxd
 
 				//mxd. If there's a selection, check if matched part is actually selected
 				if(checkSelectedSidedefParts && !singleselection) 
@@ -4037,11 +4058,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					// Add sidedefs backward (connected to the left vertex)
 					v = j.sidedef.IsFront ? j.sidedef.Line.Start : j.sidedef.Line.End;
-					AddSidedefsForAlignment(todo, v, false, backwardoffset, j.scaleY, texture.LongName, true);
+					AddSidedefsForAlignment(todo, v, false, backwardoffset, j.scaleY, texturehashes, true);
 
 					// Add sidedefs forward (connected to the right vertex)
 					v = j.sidedef.IsFront ? j.sidedef.Line.End : j.sidedef.Line.Start;
-					AddSidedefsForAlignment(todo, v, true, forwardoffset, j.scaleY, texture.LongName, true);
+					AddSidedefsForAlignment(todo, v, true, forwardoffset, j.scaleY, texturehashes, true);
 				} 
 				else 
 				{
@@ -4133,17 +4154,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					// Add sidedefs forward (connected to the right vertex)
 					v = j.sidedef.IsFront ? j.sidedef.Line.End : j.sidedef.Line.Start;
-					AddSidedefsForAlignment(todo, v, true, forwardoffset, j.scaleY, texture.LongName, true);
+					AddSidedefsForAlignment(todo, v, true, forwardoffset, j.scaleY, texturehashes, true);
 
 					// Add sidedefs backward (connected to the left vertex)
 					v = j.sidedef.IsFront ? j.sidedef.Line.Start : j.sidedef.Line.End;
-					AddSidedefsForAlignment(todo, v, false, backwardoffset, j.scaleY, texture.LongName, true);
+					AddSidedefsForAlignment(todo, v, false, backwardoffset, j.scaleY, texturehashes, true);
 				}
 			}
 		}
 
 		// This adds the matching, unmarked sidedefs from a vertex for texture alignment
-		private void AddSidedefsForAlignment(Stack<SidedefAlignJob> stack, Vertex v, bool forward, float offsetx, float scaleY, long texturelongname, bool udmf) 
+		private void AddSidedefsForAlignment(Stack<SidedefAlignJob> stack, Vertex v, bool forward, float offsetx, float scaleY, HashSet<long> texturelongnames, bool udmf) 
 		{
 			foreach(Linedef ld in v.Linedefs) 
 			{
@@ -4156,7 +4177,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					foreach(Sidedef s in controlSides) 
 					{
-						if(!singleselection || Tools.SidedefTextureMatch(s, texturelongname)) 
+						if(!singleselection || Tools.SidedefTextureMatch(s, texturelongnames)) 
 						{
 							SidedefAlignJob nj = new SidedefAlignJob();
 							nj.forward = forward;
@@ -4174,7 +4195,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					foreach(Sidedef s in controlSides) 
 					{
-						if(!singleselection || Tools.SidedefTextureMatch(s, texturelongname)) 
+						if(!singleselection || Tools.SidedefTextureMatch(s, texturelongnames)) 
 						{
 							SidedefAlignJob nj = new SidedefAlignJob();
 							nj.forward = forward;
