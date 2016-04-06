@@ -58,18 +58,26 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 			while(SkipWhitespace(true)) 
 			{
 				string token = ReadToken();
-				if(string.IsNullOrEmpty(token)) continue;
-
-				token = StripTokenQuotes(token).ToLowerInvariant();
-				if(token != "model") continue;
+				if(string.IsNullOrEmpty(token) || token.ToLowerInvariant() != "model") continue;
 
 				// Find classname
 				SkipWhitespace(true);
-				string classname = ReadToken(ActorStructure.ACTOR_CLASS_SPECIAL_TOKENS);
+				string classname = StripQuotes(ReadToken(ActorStructure.ACTOR_CLASS_SPECIAL_TOKENS));
 				if(string.IsNullOrEmpty(classname))
 				{
 					ReportError("Expected actor class");
 					return false;
+				}
+
+				// Check if actor exists
+				bool haveplaceableactor = actorsbyclass.ContainsKey(classname);
+				if(!haveplaceableactor && !General.Map.Data.Decorate.ActorsByClass.ContainsKey(classname))
+				{
+					ReportError("DECORATE class \"" + classname + "\" does not exist");
+
+					// We aren't done yet
+					LogError();
+					ClearError();
 				}
 				
 				// Now find opening brace
@@ -80,7 +88,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 				if(mds.Parse(this))
 				{
 					// Fetch Actor info
-					if(actorsbyclass.ContainsKey(classname))
+					if(haveplaceableactor)
 					{
 						ThingTypeInfo info = General.Map.Data.GetThingInfoEx(actorsbyclass[classname]);
 

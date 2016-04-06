@@ -109,8 +109,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 			// Continue until at the end of the stream
 			while(SkipWhitespace(true)) 
 			{
-				string token = StripTokenQuotes(ReadToken()).ToLowerInvariant(); // Quotes can be anywhere! ANYWHERE!!! And GZDoom will still parse data correctly
-				if(string.IsNullOrEmpty(token)) break;
+				string token = ReadToken().ToLowerInvariant();
+				if(string.IsNullOrEmpty(token)) continue;
 
 				switch(token)
 				{
@@ -162,7 +162,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 
 			// Find classname
 			SkipWhitespace(true);
-			string lightname = StripTokenQuotes(ReadToken());
+			string lightname = StripQuotes(ReadToken());
 
 			if(string.IsNullOrEmpty(lightname))
 			{
@@ -187,7 +187,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 				{
 					case "color":
 						SkipWhitespace(true);
-						token = StripTokenQuotes(ReadToken());
+						token = ReadToken();
 						if(!float.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out light.Color.Red))
 						{
 							// Not numeric!
@@ -196,7 +196,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						}
 
 						SkipWhitespace(true);
-						token = StripTokenQuotes(ReadToken());
+						token = ReadToken();
 						if(!float.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out light.Color.Green))
 						{
 							// Not numeric!
@@ -205,7 +205,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						}
 
 						SkipWhitespace(true);
-						token = StripTokenQuotes(ReadToken());
+						token = ReadToken();
 						if(!float.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out light.Color.Blue))
 						{
 							// Not numeric!
@@ -219,7 +219,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						{
 							SkipWhitespace(true);
 
-							token = StripTokenQuotes(ReadToken());
+							token = ReadToken();
 							if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out light.PrimaryRadius))
 							{
 								// Not numeric!
@@ -238,7 +238,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 
 					case "offset":
 						SkipWhitespace(true);
-						token = StripTokenQuotes(ReadToken());
+						token = ReadToken();
 						if(!ReadSignedFloat(token, ref light.Offset.X))
 						{
 							// Not numeric!
@@ -247,7 +247,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						}
 
 						SkipWhitespace(true);
-						token = StripTokenQuotes(ReadToken());
+						token = ReadToken();
 						if(!ReadSignedFloat(token, ref light.Offset.Z))
 						{
 							// Not numeric!
@@ -256,7 +256,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						}
 
 						SkipWhitespace(true);
-						token = StripTokenQuotes(ReadToken());
+						token = ReadToken();
 						if(!ReadSignedFloat(token, ref light.Offset.Y))
 						{
 							// Not numeric!
@@ -269,7 +269,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 					{
 						SkipWhitespace(true);
 
-						token = StripTokenQuotes(ReadToken());
+						token = ReadToken();
 						int i;
 						if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out i))
 						{
@@ -286,7 +286,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 					{
 						SkipWhitespace(true);
 
-						token = StripTokenQuotes(ReadToken());
+						token = ReadToken();
 						int i;
 						if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out i))
 						{
@@ -304,7 +304,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						{
 							SkipWhitespace(true);
 
-							token = StripTokenQuotes(ReadToken());
+							token = ReadToken();
 							float interval;
 							if(!float.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out interval))
 							{
@@ -337,7 +337,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						{
 							SkipWhitespace(true);
 
-							token = StripTokenQuotes(ReadToken());
+							token = ReadToken();
 							if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out light.SecondaryRadius))
 							{
 								// Not numeric!
@@ -359,7 +359,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						{
 							SkipWhitespace(true);
 
-							token = StripTokenQuotes(ReadToken());
+							token = ReadToken();
 							float chance;
 							if(!float.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out chance))
 							{
@@ -383,7 +383,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						{
 							SkipWhitespace(true);
 
-							token = StripTokenQuotes(ReadToken());
+							token = ReadToken();
 							float scale;
 							if(!float.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out scale))
 							{
@@ -454,12 +454,22 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 			SkipWhitespace(true);
 
 			// Read object class
-			string objectclass = StripTokenQuotes(ReadToken());
+			string objectclass = StripQuotes(ReadToken());
 
 			if(string.IsNullOrEmpty(objectclass))
 			{
 				ReportError("Expected object class");
 				return false;
+			}
+
+			// Check if actor exists
+			if(!General.Map.Data.Decorate.ActorsByClass.ContainsKey(objectclass))
+			{
+				ReportError("DECORATE class \"" + objectclass + "\" does not exist");
+
+				// We aren't done yet
+				LogError();
+				ClearError();
 			}
 
 			// Now find opening brace
@@ -476,10 +486,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 			// Read frames structure
 			while(SkipWhitespace(true))
 			{
-				string token = ReadToken();
+				string token = ReadToken().ToLowerInvariant();
 				if(string.IsNullOrEmpty(token)) continue;
 
-				token = StripTokenQuotes(token).ToLowerInvariant();
 				if(!foundlight && !foundframe && token == "frame")
 				{
 					SkipWhitespace(true);
@@ -491,19 +500,12 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 				else if(!foundlight && foundframe && token == "light") // Just use first light and be done with it
 				{
 					SkipWhitespace(true);
-					token = ReadToken(); // Should be light name
+					token = StripQuotes(ReadToken()); // Should be light name
 
 					if(!string.IsNullOrEmpty(token))
 					{
-						if(lightsbyname.ContainsKey(token))
-						{
-							objects[objectclass] = token;
-							foundlight = true;
-						}
-						else
-						{
-							LogWarning("Light declaration not found for light \"" + token + "\"");
-						}
+						objects[objectclass] = token;
+						foundlight = true;
 					}
 				}
 				else if(token == "{") // Continue in this loop until object structure ends
@@ -594,7 +596,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						int color;
 						int glowheight = DEFAULT_GLOW_HEIGHT;
 						bool subtractivetexture = (token == "subtexture");
-						string texturename = StripTokenQuotes(ReadToken(false));
+						string texturename = StripQuotes(ReadToken(false));
 
 						if(string.IsNullOrEmpty(texturename))
 						{
@@ -707,7 +709,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 		private bool ParseSkybox()
 		{
 			SkipWhitespace(true);
-			string name = StripTokenQuotes(ReadToken());
+			string name = StripQuotes(ReadToken());
 
 			if(string.IsNullOrEmpty(name))
 			{
@@ -763,7 +765,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 			//include paths are relative to the first parsed entry, not the current one 
 			//also include paths may or may not be quoted
 			SkipWhitespace(true);
-			string includelump = StripTokenQuotes(ReadToken(false)); // Don't skip newline
+			string includelump = StripQuotes(ReadToken(false)); // Don't skip newline
 
 			// Sanity checks
 			if(string.IsNullOrEmpty(includelump))

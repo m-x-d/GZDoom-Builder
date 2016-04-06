@@ -84,10 +84,10 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 			bool parsingfinished = false;
 			while(!parsingfinished && parser.SkipWhitespace(true)) 
 			{
-				string token = parser.ReadToken();
+				string token = parser.ReadToken().ToLowerInvariant();
 				if(string.IsNullOrEmpty(token)) continue;
 
-				switch(token.ToLowerInvariant())
+				switch(token)
 				{
 					case "path":
 						parser.SkipWhitespace(true);

@@ -40,104 +40,96 @@ namespace CodeImp.DoomBuilder.ZDoom
 			// Continue until at the end of the stream
 			while(SkipWhitespace(true)) 
 			{
-				string token = ReadToken();
+				string token = ReadToken().ToLowerInvariant();
+				if(string.IsNullOrEmpty(token)) continue;
 
-				if(!string.IsNullOrEmpty(token)) 
-				{
-					token = StripTokenQuotes(token).ToLowerInvariant();
+				if(token == ",") //previous token was a sprite name
+				{ 
+					if(!string.IsNullOrEmpty(prevToken) && !spriteNames.Contains(prevToken)) spriteNames.Add(prevToken);
+					prevToken = StripQuotes(token).ToUpperInvariant();
+				} 
+				else if(token == "=") //next token should be a voxel model name
+				{ 
+					if(!string.IsNullOrEmpty(prevToken) && !spriteNames.Contains(prevToken)) spriteNames.Add(prevToken);
 
-					if(token == ",") //previous token was a sprite name
-					{ 
-						if(!string.IsNullOrEmpty(prevToken) && !spriteNames.Contains(prevToken)) spriteNames.Add(prevToken);
-						prevToken = token.ToUpperInvariant();
-					} 
-					else if(token == "=") //next token should be a voxel model name
-					{ 
-						if(!string.IsNullOrEmpty(prevToken) && !spriteNames.Contains(prevToken)) spriteNames.Add(prevToken);
+					SkipWhitespace(true);
+					token = ReadToken();
 
-						SkipWhitespace(true);
-						token = ReadToken();
-
-						if(string.IsNullOrEmpty(token)) 
-						{
-							ReportError("Expected voxel name");
-							return false;
-						}
-
-						modelName = StripTokenQuotes(token).ToLowerInvariant();
-					} 
-					else if(token == "{") //read the settings
+					if(string.IsNullOrEmpty(token)) 
 					{
-						ModelData mde = new ModelData { IsVoxel = true };
-						float scale = 1.0f;
-						float angleoffset = 0;
+						ReportError("Expected voxel name");
+						return false;
+					}
 
-						while(SkipWhitespace(true)) 
-						{
-							token = ReadToken();
+					modelName = StripQuotes(token).ToLowerInvariant();
+				} 
+				else if(token == "{") //read the settings
+				{
+					ModelData mde = new ModelData { IsVoxel = true };
+					float scale = 1.0f;
+					float angleoffset = 0;
 
-							if(!string.IsNullOrEmpty(token)) 
+					while(SkipWhitespace(true)) 
+					{
+						token = ReadToken().ToLowerInvariant();
+						if(string.IsNullOrEmpty(token)) continue;
+
+						if(token == "}") //store data
+						{ 
+							if(!string.IsNullOrEmpty(modelName) && spriteNames.Count > 0) 
 							{
-								token = StripTokenQuotes(token).ToLowerInvariant();
+								mde.ModelNames.Add(modelName);
+								mde.SetTransform(Matrix.RotationZ(Angle2D.DegToRad(angleoffset)), Matrix.Identity, new Vector3(scale));
 
-								if(token == "}") //store data
-								{ 
-									if(!string.IsNullOrEmpty(modelName) && spriteNames.Count > 0) 
-									{
-										mde.ModelNames.Add(modelName);
-										mde.SetTransform(Matrix.RotationZ(Angle2D.DegToRad(angleoffset)), Matrix.Identity, new Vector3(scale));
-
-										foreach(string s in spriteNames)
-										{
-											//TODO: is this the proper behaviour?
-											entries[s] = mde;
-										}
-
-										//reset local data
-										modelName = string.Empty;
-										prevToken = string.Empty;
-										spriteNames.Clear();
-									}
-
-									break;
-								} 
-								else if(token == "overridepalette")
+								foreach(string s in spriteNames)
 								{
-									mde.OverridePalette = true;
-								} 
-								else if(token == "angleoffset")
-								{
-									if(!NextTokenIs("=")) return false;
-
-									token = StripTokenQuotes(ReadToken());
-									if(!ReadSignedFloat(token, ref angleoffset))
-									{
-										// Not numeric!
-										ReportError("Expected AngleOffset value, but got \"" + token + "\"");
-										return false;
-									}
-								} 
-								else if(token == "scale") 
-								{
-									if(!NextTokenIs("=")) return false;
-
-									token = StripTokenQuotes(ReadToken());
-									if(!ReadSignedFloat(token, ref scale)) 
-									{
-										// Not numeric!
-										ReportError("Expected Scale value, but got \"" + token + "\"");
-										return false;
-									}
+									//TODO: is this the proper behaviour?
+									entries[s] = mde;
 								}
 
-								prevToken = token.ToUpperInvariant();
+								//reset local data
+								modelName = string.Empty;
+								prevToken = string.Empty;
+								spriteNames.Clear();
+							}
+
+							break;
+						} 
+						else if(token == "overridepalette")
+						{
+							mde.OverridePalette = true;
+						} 
+						else if(token == "angleoffset")
+						{
+							if(!NextTokenIs("=")) return false;
+
+							token = ReadToken();
+							if(!ReadSignedFloat(token, ref angleoffset))
+							{
+								// Not numeric!
+								ReportError("Expected AngleOffset value, but got \"" + token + "\"");
+								return false;
+							}
+						} 
+						else if(token == "scale") 
+						{
+							if(!NextTokenIs("=")) return false;
+
+							token = ReadToken();
+							if(!ReadSignedFloat(token, ref scale)) 
+							{
+								// Not numeric!
+								ReportError("Expected Scale value, but got \"" + token + "\"");
+								return false;
 							}
 						}
-					} 
-					else 
-					{
-						prevToken = token.ToUpperInvariant();
+
+						prevToken = StripQuotes(token).ToUpperInvariant();
 					}
+				} 
+				else 
+				{
+					prevToken = StripQuotes(token).ToUpperInvariant();
 				}
 			}
 
