@@ -160,7 +160,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					labelarray[i].AlignX = TextAlignmentX.Center;
 					labelarray[i].AlignY = TextAlignmentY.Middle;
 					labelarray[i].Color = c;
-					labelarray[i].Backcolor = General.Colors.Background.WithAlpha(255);
+					labelarray[i].BackColor = General.Colors.Background.WithAlpha(128);
 				}
 				labels.Add(s, labelarray);
 			}

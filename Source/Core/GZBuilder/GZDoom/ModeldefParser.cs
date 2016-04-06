@@ -1,34 +1,50 @@
-﻿using System;
+﻿#region ================== Namespaces
+
+using System;
 using System.Collections.Generic;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Data;
+using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.ZDoom;
 using CodeImp.DoomBuilder.GZBuilder.Data;
+using SlimDX;
+
+#endregion
 
 namespace CodeImp.DoomBuilder.GZBuilder.GZDoom 
 {
 	internal class ModeldefParser : ZDTextParser
 	{
-		internal override ScriptType ScriptType { get { return ScriptType.MODELDEF; } }
+		#region ================== Variables
 
 		private readonly Dictionary<string, int> actorsbyclass;
-		internal Dictionary<string, int> ActorsByClass { get { return actorsbyclass; } }
-
 		private Dictionary<string, ModelData> entries; //classname, entry
+
+		#endregion
+
+		#region ================== Properties
+
+		internal override ScriptType ScriptType { get { return ScriptType.MODELDEF; } }
 		internal Dictionary<string, ModelData> Entries { get { return entries; } }
+
+		#endregion
+
+		#region ================== Constructor
 
 		internal ModeldefParser(Dictionary<string, int> actorsbyclass)
 		{
 			this.actorsbyclass = actorsbyclass;
-			this.entries = new Dictionary<string, ModelData>(StringComparer.Ordinal);
+			this.entries = new Dictionary<string, ModelData>(StringComparer.OrdinalIgnoreCase);
 		}
 
-		//should be called after all decorate actors are parsed 
+		#endregion
+
+		#region ================== Parsing
+
+		// Should be called after all decorate actors are parsed 
 		public override bool Parse(TextResourceData data, bool clearerrors)
 		{
-			entries = new Dictionary<string, ModelData>(StringComparer.Ordinal);
-
-			//mxd. Already parsed?
+			// Already parsed?
 			if(!base.AddTextResource(data))
 			{
 				if(clearerrors) ClearError();
@@ -42,72 +58,75 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 			while(SkipWhitespace(true)) 
 			{
 				string token = ReadToken();
-				if(!string.IsNullOrEmpty(token)) 
+				if(string.IsNullOrEmpty(token)) continue;
+
+				token = StripTokenQuotes(token).ToLowerInvariant();
+				if(token != "model") continue;
+
+				// Find classname
+				SkipWhitespace(true);
+				string classname = ReadToken(ActorStructure.ACTOR_CLASS_SPECIAL_TOKENS);
+				if(string.IsNullOrEmpty(classname))
 				{
-					token = StripTokenQuotes(token).ToLowerInvariant();
-					if(token == "model") //model structure start
-					{ 
-						// Find classname
-						SkipWhitespace(true);
-						string displayclassname = StripTokenQuotes(ReadToken(ActorStructure.ACTOR_CLASS_SPECIAL_TOKENS));
-						string classname = displayclassname.ToLowerInvariant();
+					ReportError("Expected actor class");
+					return false;
+				}
+				
+				// Now find opening brace
+				if(!NextTokenIs("{")) return false;
 
-						if(!string.IsNullOrEmpty(classname) && !entries.ContainsKey(classname)) 
-						{
-							// Now find opening brace
-							if(!NextTokenIs("{")) return false;
-
-							ModeldefStructure mds = new ModeldefStructure();
-							if(mds.Parse(this, displayclassname) && mds.ModelData != null)
-							{
-								entries.Add(classname, mds.ModelData);
-							}
-							
-							if(HasError)
-							{
-								LogError();
-								ClearError();
-							}
-
-							// Skip untill current structure end
-							if(!mds.ParsingFinished) SkipStructure(1);
-						}
-					} 
-					else 
+				// Parse the structure
+				ModeldefStructure mds = new ModeldefStructure();
+				if(mds.Parse(this))
+				{
+					// Fetch Actor info
+					if(actorsbyclass.ContainsKey(classname))
 					{
-						// Unknown structure!
-						if(token != "{")
-						{
-							string token2;
-							do
-							{
-								if(!SkipWhitespace(true)) break;
-								token2 = ReadToken();
-								if(string.IsNullOrEmpty(token2)) break;
-							} 
-							while(token2 != "{");
-						}
+						ThingTypeInfo info = General.Map.Data.GetThingInfoEx(actorsbyclass[classname]);
 
-						SkipStructure(1);
+						// Actor has a valid sprite?
+						if(info != null && !string.IsNullOrEmpty(info.Sprite) && !info.Sprite.ToLowerInvariant().StartsWith(DataManager.INTERNAL_PREFIX))
+						{
+							string targetsprite = info.Sprite.Substring(0, 5);
+							if(mds.Frames.ContainsKey(targetsprite))
+							{
+								// Create model data
+								ModelData md = new ModelData { InheritActorPitch = mds.InheritActorPitch, InheritActorRoll = mds.InheritActorRoll };
+
+								// Things are complicated in GZDoom...
+								Matrix moffset = Matrix.Translation(mds.Offset.Y, -mds.Offset.X, mds.Offset.Z);
+								Matrix mrotation = Matrix.RotationY(-Angle2D.DegToRad(mds.RollOffset)) * Matrix.RotationX(-Angle2D.DegToRad(mds.PitchOffset)) * Matrix.RotationZ(Angle2D.DegToRad(mds.AngleOffset));
+								md.SetTransform(mrotation, moffset, mds.Scale);
+
+								// Add models
+								foreach(var fs in mds.Frames[targetsprite])
+								{
+									// Texture name will be empty when skin path is embedded in the model
+									string texturename = (!string.IsNullOrEmpty(mds.TextureNames[fs.ModelIndex]) ? mds.TextureNames[fs.ModelIndex].ToLowerInvariant() : string.Empty);
+
+									md.TextureNames.Add(texturename);
+									md.ModelNames.Add(mds.ModelNames[fs.ModelIndex].ToLowerInvariant());
+									md.FrameNames.Add(fs.FrameName);
+									md.FrameIndices.Add(fs.FrameIndex);
+								}
+
+								// Add to collection
+								entries[classname] = md;
+							}
+						}
 					}
+				}
+							
+				if(HasError)
+				{
+					LogError();
+					ClearError();
 				}
 			}
 
-			return entries.Count > 0;
+			return true;
 		}
 
-		// Skips untill current structure end
-		private void SkipStructure(int scopelevel)
-		{
-			do
-			{
-				if(!SkipWhitespace(true)) break;
-				string token = ReadToken();
-				if(string.IsNullOrEmpty(token)) break;
-				if(token == "{") scopelevel++;
-				if(token == "}") scopelevel--;
-			}
-			while(scopelevel > 0);
-		}
+		#endregion
 	}
 }

@@ -1615,7 +1615,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			graphics.Device.SetRenderState(RenderState.FogEnable, false);
 			graphics.Shaders.Display2D.Texture1 = label.Texture;
 			SetWorldTransformation(false);
-			graphics.Shaders.Display2D.SetSettings(1f, 1f, 0f, 1f, true);
+			graphics.Shaders.Display2D.SetSettings(1f, 1f, 0f, 1f, false);
 			graphics.Device.SetStreamSource(0, label.VertexBuffer, 0, FlatVertex.Stride);
 
 			// Draw
@@ -1648,7 +1648,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			graphics.Device.SetRenderState(RenderState.TextureFactor, -1);
 			graphics.Device.SetRenderState(RenderState.FogEnable, false);
 			SetWorldTransformation(false);
-			graphics.Shaders.Display2D.SetSettings(1f, 1f, 0f, 1f, true);
+			graphics.Shaders.Display2D.SetSettings(1f, 1f, 0f, 1f, false);
 			
 			// Begin drawing
 			graphics.Shaders.Display2D.Begin();
