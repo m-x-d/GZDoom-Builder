@@ -145,7 +145,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						}
 						else
 						{
-							mapinfo.Title = StripTokenQuotes(token);
+							mapinfo.Title = StripQuotes(token);
 						}
 
 						// Parse properties
@@ -201,7 +201,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 		private bool ParseInclude(bool clearerrors)
 		{
 			SkipWhitespace(true);
-			string includelump = StripTokenQuotes(ReadToken(false)); // Don't skip newline
+			string includelump = StripQuotes(ReadToken(false)); // Don't skip newline
 
 			//INFO: ZDoom MAPINFO include paths can't be relative ("../mapstuff.txt") 
 			//or absolute ("d:/project/mapstuff.txt") 
@@ -283,7 +283,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 				{
 					if(!NextTokenIs("=")) return false; // Finished with this file
 					SkipWhitespace(true);
-					string skyflatname = StripTokenQuotes(ReadToken());
+					string skyflatname = StripQuotes(ReadToken());
 					if(string.IsNullOrEmpty(skyflatname))
 					{
 						ReportError("Expected SkyFlatName value");
@@ -327,7 +327,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 
 				// Then actor class
 				SkipWhitespace(false);
-				string classname = StripTokenQuotes(ReadToken());
+				string classname = StripQuotes(ReadToken());
 				if(string.IsNullOrEmpty(classname))
 				{
 					ReportError("Expected DoomEdNums class definition");
@@ -380,7 +380,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 
 				// Then actor class
 				SkipWhitespace(false);
-				token = StripTokenQuotes(ReadToken());
+				token = StripQuotes(ReadToken());
 				if(string.IsNullOrEmpty(token))
 				{
 					ReportError("Unable to get SpawnNums entry class definition");
@@ -490,7 +490,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 		private bool ParseSky(string skytype)
 		{
 			SkipWhitespace(true);
-			string token = StripTokenQuotes(ReadToken());
+			string token = StripQuotes(ReadToken());
 
 			// New format
 			if(token == "=")
@@ -498,7 +498,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 				SkipWhitespace(true);
 
 				// Should be sky texture name
-				token = StripTokenQuotes(ReadToken());
+				token = StripQuotes(ReadToken());
 				bool gotcomma = (token.IndexOf(",", StringComparison.Ordinal) != -1);
 				if(gotcomma) token = token.Replace(",", "");
 				string skytexture = token.ToUpperInvariant();
@@ -516,13 +516,13 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 
 				// Check if we have scrollspeed
 				SkipWhitespace(true);
-				token = StripTokenQuotes(ReadToken());
+				token = ReadToken();
 
 				if(!gotcomma && token == ",")
 				{
 					gotcomma = true;
 					SkipWhitespace(true);
-					token = StripTokenQuotes(ReadToken());
+					token = ReadToken();
 				}
 
 				if(gotcomma)
@@ -562,7 +562,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 
 				// Try to read scroll speed
 				SkipWhitespace(true);
-				token = StripTokenQuotes(ReadToken());
+				token = ReadToken();
 
 				float scrollspeed = 0;
 				if(!ReadSignedFloat(token, ref scrollspeed))
@@ -585,17 +585,17 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 		private bool ParseFade(string fadetype)
 		{
 			SkipWhitespace(true);
-			string token = StripTokenQuotes(ReadToken());
+			string token = ReadToken();
 
 			// New format?
 			if(token == "=")
 			{
 				SkipWhitespace(true);
-				token = StripTokenQuotes(ReadToken());
+				token = ReadToken();
 			}
 
 			// Get the color value
-			string colorval = StripTokenQuotes(token).ToLowerInvariant().Replace(" ", "");
+			string colorval = StripQuotes(token).ToLowerInvariant().Replace(" ", "");
 
 			if(string.IsNullOrEmpty(colorval))
 			{
@@ -625,13 +625,13 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 		private bool ParseWallShade(string shadetype)
 		{
 			SkipWhitespace(true);
-			string token = StripTokenQuotes(ReadToken());
+			string token = ReadToken();
 
 			// New format
 			if(token == "=")
 			{
 				SkipWhitespace(true);
-				token = StripTokenQuotes(ReadToken());
+				token = ReadToken();
 			}
 
 			int val = 0;
@@ -654,13 +654,13 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 		private bool ParseFogDensity(string densitytype)
 		{
 			SkipWhitespace(true);
-			string token = StripTokenQuotes(ReadToken());
+			string token = ReadToken();
 
 			// New format
 			if(token == "=")
 			{
 				SkipWhitespace(true);
-				token = StripTokenQuotes(ReadToken());
+				token = ReadToken();
 			}
 
 			int val;

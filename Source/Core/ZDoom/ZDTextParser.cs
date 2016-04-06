@@ -528,14 +528,14 @@ namespace CodeImp.DoomBuilder.ZDoom
 		}
 
 		//mxd
-		protected internal bool ReadSignedFloat(ref float value) { return ReadSignedFloat(StripTokenQuotes(ReadToken(false)), ref value); }
+		protected internal bool ReadSignedFloat(ref float value) { return ReadSignedFloat(ReadToken(false), ref value); }
 		protected internal bool ReadSignedFloat(string token, ref float value) 
 		{
 			int sign = 1;
 			if(token == "-") 
 			{
 				sign = -1;
-				token = StripTokenQuotes(ReadToken(false));
+				token = ReadToken(false);
 			}
 
 			float val;
@@ -545,14 +545,14 @@ namespace CodeImp.DoomBuilder.ZDoom
 		}
 
 		//mxd
-		protected internal bool ReadSignedInt(ref int value) { return ReadSignedInt(StripTokenQuotes(ReadToken(false)), ref value); }
+		protected internal bool ReadSignedInt(ref int value) { return ReadSignedInt(ReadToken(false), ref value); }
 		protected internal bool ReadSignedInt(string token, ref int value) 
 		{
 			int sign = 1;
 			if(token == "-") 
 			{
 				sign = -1;
-				token = StripTokenQuotes(ReadToken(false));
+				token = ReadToken(false);
 			}
 
 			int val;
@@ -562,7 +562,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		}
 
 		//mxd
-		protected internal bool ReadByte(ref byte value) { return ReadByte(StripTokenQuotes(ReadToken(false)), ref value); }
+		protected internal bool ReadByte(ref byte value) { return ReadByte(ReadToken(false), ref value); }
 		protected internal bool ReadByte(string token, ref byte value)
 		{
 			if(token == "-") return false;
@@ -667,7 +667,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			}
 			else
 			{
-				shorterrorsource = Path.Combine(datalocation.GetDisplayName(), sourcename);
+				shorterrorsource = Path.Combine(datalocation.GetDisplayName(), sourcename).Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
 				errorsource = Path.Combine(datalocation.location, sourcename);
 			}
 			

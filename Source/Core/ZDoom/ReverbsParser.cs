@@ -54,7 +54,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 					else 
 					{
 						//this should be reverb name and args
-						string name = StripTokenQuotes(token);
+						string name = StripQuotes(token);
 
 						if(string.IsNullOrEmpty(name))
 						{
@@ -64,7 +64,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 						// Read first part of the ID
 						SkipWhitespace(true);
-						token = StripTokenQuotes(ReadToken());
+						token = ReadToken();
 						int arg1;
 						if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out arg1))
 						{
@@ -74,7 +74,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 						// Read second part of the ID
 						SkipWhitespace(true);
-						token = StripTokenQuotes(ReadToken());
+						token = ReadToken();
 						int arg2;
 						if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out arg2)) 
 						{

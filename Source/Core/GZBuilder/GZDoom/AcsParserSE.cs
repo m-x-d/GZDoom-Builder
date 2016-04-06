@@ -115,7 +115,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 			// Continue until at the end of the stream
 			while(SkipWhitespace(true)) 
 			{
-				string token = ReadToken();
+				string token = ReadToken().ToLowerInvariant();
 				if(string.IsNullOrEmpty(token)) continue;
 
 				// Ignore inner scope stuff
@@ -123,7 +123,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 				if(token == "}") { bracelevel--; continue; }
 				if(bracelevel > 0) continue;
 
-				switch(token.ToLowerInvariant())
+				switch(token)
 				{
 					case "script":
 					{
@@ -135,7 +135,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						if(token.IndexOf('"') != -1) 
 						{
 							startpos += 1;
-							string scriptname = StripTokenQuotes(token);
+							string scriptname = StripQuotes(token);
 
 							// Try to parse argument names
 							List<KeyValuePair<string, string>> args = ParseArgs();
@@ -231,7 +231,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 							return IgnoreErrors;
 						}
 
-						libname = StripTokenQuotes(libname);
+						libname = StripQuotes(libname);
 
 						if(string.IsNullOrEmpty(libname))
 						{
@@ -265,7 +265,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 								return IgnoreErrors;
 							}
 
-							includelump = StripTokenQuotes(includelump);
+							includelump = StripQuotes(includelump);
 
 							if(string.IsNullOrEmpty(includelump))
 							{

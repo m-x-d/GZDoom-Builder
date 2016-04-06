@@ -196,7 +196,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 							//include paths are relative to the first parsed entry, not the current one 
 							//also include paths may or may not be quoted
 							SkipWhitespace(true);
-							string filename = StripTokenQuotes(ReadToken(false)); //mxd. Don't skip newline
+							string filename = StripQuotes(ReadToken(false)); //mxd. Don't skip newline
 
 							//mxd. Sanity checks
 							if(string.IsNullOrEmpty(filename))
@@ -258,7 +258,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 						case "damagetype": //mxd
 							// Get DamageType name
 							SkipWhitespace(true);
-							string damagetype = StripTokenQuotes(ReadToken(false));
+							string damagetype = StripQuotes(ReadToken(false));
 							if(string.IsNullOrEmpty(damagetype))
 							{
 								ReportError("Expected DamageType name");

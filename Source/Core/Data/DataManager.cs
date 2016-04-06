@@ -2274,12 +2274,21 @@ namespace CodeImp.DoomBuilder.Data
 
 			// Create Gldefs Entries dictionary
 			foreach(KeyValuePair<string, string> e in parser.Objects) //<ClassName, Light name>
-			{ 
-				// If we have decorate actor and light definition for given ClassName...
-				if(actorsbyclass.ContainsKey(e.Key) && parser.LightsByName.ContainsKey(e.Value)) 
-					gldefsentries[actorsbyclass[e.Key]] = parser.LightsByName[e.Value];
-				else if(!decorate.AllActorsByClass.ContainsKey(e.Key))
-					General.ErrorLogger.Add(ErrorType.Warning, "GLDEFS object \"" + e.Key + "\" doesn't match any DECORATE actor class");
+			{
+				// Check if we have decorate actor and light definition for given ClassName
+				//INFO: objects without corresponding actors are already reported by the parser
+				if(actorsbyclass.ContainsKey(e.Key))
+				{
+					if(parser.LightsByName.ContainsKey(e.Value))
+					{
+						gldefsentries[actorsbyclass[e.Key]] = parser.LightsByName[e.Value];
+					}
+					else
+					{
+						//INFO: Lights CAN be defiend after Objects, so we can't perform any object->light matching checks while parsing
+						General.ErrorLogger.Add(ErrorType.Error, "GLDEFS object \"" + e.Key + "\" references undefined light \"" + e.Value + "\"");
+					}
+				}
 			}
 
 			// Grab them glowy flats!

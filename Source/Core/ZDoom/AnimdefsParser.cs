@@ -67,7 +67,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 				// Texture name
 				SkipWhitespace(true);
-				string texturename = StripTokenQuotes(ReadToken(false));
+				string texturename = StripQuotes(ReadToken(false));
 				if(string.IsNullOrEmpty(texturename))
 				{
 					ReportError("Expected camera texture name");
