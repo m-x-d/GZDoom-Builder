@@ -88,7 +88,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		public TextAlignmentX AlignX { get { return alignx; } set { alignx = value; updateneeded = true; } }
 		public TextAlignmentY AlignY { get { return aligny; } set { aligny = value; updateneeded = true; } }
 		public PixelColor Color { get { return color; } set { if(!color.Equals(value)) { color = value; textureupdateneeded = true; } } }
-		public PixelColor Backcolor { get { return backcolor; } set { if(!backcolor.Equals(value)) { backcolor = value; textureupdateneeded = true; } } }
+		public PixelColor BackColor { get { return backcolor; } set { if(!backcolor.Equals(value)) { backcolor = value; textureupdateneeded = true; } } }
 		public bool DrawBackground { get { return drawbg; } set { if(drawbg != value) { drawbg = value; textureupdateneeded = true; } } } //mxd
 		internal Texture Texture { get { return texture; } } //mxd
 		internal VertexBuffer VertexBuffer { get { return textbuffer; } }
@@ -109,7 +109,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			this.font = General.Settings.TextLabelFont; //mxd
 			this.rect = new RectangleF(0f, 0f, 1f, 1f);
 			this.color = new PixelColor(255, 255, 255, 255);
-			this.backcolor = new PixelColor(255, 0, 0, 0);
+			this.backcolor = new PixelColor(128, 0, 0, 0);
 			this.alignx = TextAlignmentX.Center;
 			this.aligny = TextAlignmentY.Top;
 			this.textsize = new SizeF();
@@ -118,10 +118,6 @@ namespace CodeImp.DoomBuilder.Rendering
 			
 			// Register as resource
 			General.Map.Graphics.RegisterResource(this);
-
-			//mxd. Create the buffer
-			this.textbuffer = new VertexBuffer(General.Map.Graphics.Device, 4 * FlatVertex.Stride,
-										  Usage.Dynamic | Usage.WriteOnly, VertexFormat.None, Pool.Default);
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -203,7 +199,7 @@ namespace CodeImp.DoomBuilder.Rendering
 						}
 
 						// Create label image
-						Bitmap img = CreateLabelImage(text, font, color, backcolor, drawbg);
+						Bitmap img = CreateLabelImage(text, font, alignx, aligny, color, backcolor, drawbg);
 						textsize = img.Size;
 
 						// Create texture
@@ -234,6 +230,13 @@ namespace CodeImp.DoomBuilder.Rendering
 						case TextAlignmentY.Bottom: beginy = absview.Y + absview.Height - textsize.Height; break;
 					}
 
+					//mxd. Create the buffer
+					if(textbuffer == null || textbuffer.Disposed)
+					{
+						textbuffer = new VertexBuffer(General.Map.Graphics.Device, 4 * FlatVertex.Stride,
+												  Usage.Dynamic | Usage.WriteOnly, VertexFormat.None, Pool.Default);
+					}
+
 					//mxd. Lock the buffer
 					using(DataStream stream = textbuffer.Lock(0, 4 * FlatVertex.Stride, LockFlags.Discard | LockFlags.NoSystemLock))
 					{
@@ -258,7 +261,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		//mxd
-		private static Bitmap CreateLabelImage(string text, Font font, PixelColor color, PixelColor backcolor, bool drawbg)
+		private static Bitmap CreateLabelImage(string text, Font font, TextAlignmentX alignx, TextAlignmentY aligny, PixelColor color, PixelColor backcolor, bool drawbg)
 		{
 			PointF textorigin = new PointF(4, 3);
 			RectangleF textrect = new RectangleF(textorigin, General.Interface.MeasureString(text, font));
@@ -266,7 +269,25 @@ namespace CodeImp.DoomBuilder.Rendering
 			textrect.Height = (float)Math.Round(textrect.Height);
 			RectangleF bgrect = new RectangleF(0, 0, textrect.Width + textorigin.X * 2, textrect.Height + textorigin.Y * 2);
 
-			Bitmap result = new Bitmap((int)bgrect.Width, (int)bgrect.Height);
+			// Make PO2 image, for speed and giggles...
+			RectangleF po2rect = new RectangleF(0, 0, General.NextPowerOf2((int)bgrect.Width), General.NextPowerOf2((int)bgrect.Height));
+
+			switch(alignx)
+			{
+				case TextAlignmentX.Center: bgrect.X = (po2rect.Width - bgrect.Width) / 2; break;
+				case TextAlignmentX.Right:  bgrect.X = po2rect.Width - bgrect.Width; break;
+			}
+
+			switch(aligny)
+			{
+				case TextAlignmentY.Middle: bgrect.Y = (po2rect.Height - bgrect.Height) / 2; break;
+				case TextAlignmentY.Bottom: bgrect.Y = po2rect.Height - bgrect.Height; break;
+			}
+
+			textrect.X += bgrect.X;
+			textrect.Y += bgrect.Y;
+
+			Bitmap result = new Bitmap((int)po2rect.Width, (int)po2rect.Height);
 			using(Graphics g = Graphics.FromImage(result))
 			{
 				g.SmoothingMode = SmoothingMode.HighQuality;
@@ -276,7 +297,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				// Draw text
 				using(StringFormat sf = new StringFormat())
 				{
-					sf.FormatFlags = StringFormatFlags.NoWrap;
+					sf.FormatFlags = StringFormatFlags.FitBlackBox | StringFormatFlags.NoWrap;
 					sf.Alignment = StringAlignment.Center;
 					sf.LineAlignment = StringAlignment.Center;
 
@@ -319,21 +340,20 @@ namespace CodeImp.DoomBuilder.Rendering
 						using(SolidBrush brush = new SolidBrush(backcolor.ToColor()))
 							g.DrawString(text, font, brush, textrect, sf);
 					}
-					// Draw text with outline 
+					// Draw plain text
 					else
 					{
-						RectangleF pathrect = textrect;
-						pathrect.Inflate(1, 3);
+						RectangleF plainbgrect = textrect;
+						if(text.Length > 1) plainbgrect.Inflate(6, 2);
 
-						GraphicsPath p = new GraphicsPath();
-						p.AddString(text, font.FontFamily, (int)font.Style, g.DpiY * font.Size / 72f, pathrect, sf);
+						RectangleF plaintextrect = textrect;
+						plaintextrect.Inflate(6, 4);
 
-						// Draw'n'fill text
-						using(Pen pen = new Pen(backcolor.ToColor(), 3))
-							g.DrawPath(pen, p);
+						using(SolidBrush brush = new SolidBrush(backcolor.ToColor()))
+							g.FillRectangle(brush, plainbgrect);
 
 						using(SolidBrush brush = new SolidBrush(color.ToColor()))
-							g.FillPath(brush, p);
+							g.DrawString(text, font, brush, plaintextrect, sf);
 					}
 				}
 			}

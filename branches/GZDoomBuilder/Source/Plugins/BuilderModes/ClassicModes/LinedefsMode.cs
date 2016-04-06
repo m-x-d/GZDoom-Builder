@@ -395,7 +395,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					l.AlignX = TextAlignmentX.Center;
 					l.AlignY = TextAlignmentY.Middle;
 					l.Color = General.Colors.InfoLine;
-					l.Backcolor = General.Colors.Background.WithAlpha(255);
+					l.BackColor = General.Colors.Background.WithAlpha(128);
 					larr[i] = l;
 				}
 
@@ -430,7 +430,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				l.AlignX = TextAlignmentX.Center;
 				l.AlignY = TextAlignmentY.Middle;
 				l.Color = (linedef == highlighted ? General.Colors.Selection : General.Colors.Highlight);
-				l.Backcolor = General.Colors.Background.WithAlpha(255);
+				l.BackColor = General.Colors.Background.WithAlpha(192);
 				l.Text = (++index).ToString();
 				labels.Add(linedef, l);
 			}

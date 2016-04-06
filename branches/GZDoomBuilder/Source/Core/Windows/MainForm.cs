@@ -204,16 +204,19 @@ namespace CodeImp.DoomBuilder.Windows
 		// Constructor
 		internal MainForm()
 		{
+			// Fetch pointer
+			windowptr = base.Handle;
+			
+			//mxd. Graphics
+			graphics = Graphics.FromHwndInternal(windowptr);
+			
 			//mxd. Set DPI-aware icon size
-			using(Graphics g = this.CreateGraphics()) 
-			{
-				DPIScaler = new SizeF(g.DpiX / 96, g.DpiY / 96);
+			DPIScaler = new SizeF(graphics.DpiX / 96, graphics.DpiY / 96);
 
-				if(DPIScaler.Width != 1.0f || DPIScaler.Height != 1.0f)
-				{
-					ScaledIconSize.Width = (int)Math.Round(ScaledIconSize.Width * DPIScaler.Width);
-					ScaledIconSize.Height = (int)Math.Round(ScaledIconSize.Height * DPIScaler.Height);
-				}
+			if(DPIScaler.Width != 1.0f || DPIScaler.Height != 1.0f)
+			{
+				ScaledIconSize.Width = (int)Math.Round(ScaledIconSize.Width * DPIScaler.Width);
+				ScaledIconSize.Height = (int)Math.Round(ScaledIconSize.Height * DPIScaler.Height);
 			}
 			
 			// Setup controls
@@ -233,9 +236,6 @@ namespace CodeImp.DoomBuilder.Windows
 			editmodeitems = new List<ToolStripItem>();
 			labelcollapsedinfo.Text = "";
 			display.Dock = DockStyle.Fill;
-			
-			// Fetch pointer
-			windowptr = base.Handle;
 			
 			// Make array for view modes
 			viewmodesbuttons = new ToolStripButton[Renderer2D.NUM_VIEW_MODES];
@@ -290,9 +290,6 @@ namespace CodeImp.DoomBuilder.Windows
 			//mxd. Hints
 			hintsPanel = new HintsPanel();
 			hintsDocker = new Docker("hints", "Help", hintsPanel);
-
-			//mxd. Graphics
-			graphics = Graphics.FromHwndInternal(windowptr);
 		}
 		
 		#endregion
@@ -2679,14 +2676,14 @@ namespace CodeImp.DoomBuilder.Windows
 		private string GetDisplayFilename(string filename)
 		{
 			// String doesnt fit?
-			if(GetStringWidth(filename) > MAX_RECENT_FILES_PIXELS)
+			if(MeasureString(filename, this.Font).Width > MAX_RECENT_FILES_PIXELS)
 			{
 				// Start chopping off characters
 				for(int i = filename.Length - 6; i >= 0; i--)
 				{
 					// Does it fit now?
 					string newname = filename.Substring(0, 3) + "..." + filename.Substring(filename.Length - i, i);
-					if(GetStringWidth(newname) <= MAX_RECENT_FILES_PIXELS) return newname;
+					if(MeasureString(newname, this.Font).Width <= MAX_RECENT_FILES_PIXELS) return newname;
 				}
 
 				// Cant find anything that fits (most unlikely!)
@@ -2697,14 +2694,6 @@ namespace CodeImp.DoomBuilder.Windows
 				// The whole string fits
 				return filename;
 			}
-		}
-		
-		// This returns the width of a string
-		private float GetStringWidth(string str)
-		{
-			Graphics g = Graphics.FromHwndInternal(this.Handle);
-			SizeF strsize = g.MeasureString(str, this.Font);
-			return strsize.Width;
 		}
 		
 		// Exit clicked

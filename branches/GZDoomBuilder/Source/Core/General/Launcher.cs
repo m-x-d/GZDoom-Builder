@@ -375,11 +375,11 @@ namespace CodeImp.DoomBuilder
 					General.Map.Graphics.Reset();
 					General.MainWindow.RedrawDisplay();
 				}
-				else if(General.Editing.Mode is VisualMode)
+				/*else if(General.Editing.Mode is VisualMode)
 				{
-					//General.MainWindow.StopExclusiveMouseInput();
-					//General.MainWindow.StartExclusiveMouseInput();
-				}
+					General.MainWindow.StopExclusiveMouseInput();
+					General.MainWindow.StartExclusiveMouseInput();
+				}*/
 			}
 
 			General.MainWindow.FocusDisplay();

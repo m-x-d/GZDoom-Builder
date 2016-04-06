@@ -103,12 +103,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Initialization
 		private void Initialize()
 		{
-			label = new TextLabel();
-			label.AlignX = TextAlignmentX.Center;
-			label.AlignY = TextAlignmentY.Middle;
-			label.Color = General.Colors.Highlight;
-			label.Backcolor = General.Colors.Background;
-			label.TransformCoords = true;
+			label = new TextLabel
+					{
+						AlignX = TextAlignmentX.Center, 
+						AlignY = TextAlignmentY.Middle, 
+						Color = General.Colors.Highlight, 
+						BackColor = General.Colors.Background.WithAlpha(64), 
+						TransformCoords = true,
+					};
 		}
 		
 		// Disposer
