@@ -29,7 +29,7 @@ namespace CodeImp.DoomBuilder.Types
 	{
 		#region ================== Setup
 
-		protected override EnumList CreateTagList() 
+		protected override EnumList CreateEnumList() 
 		{
 			// Collect tags
 			List<int> tags = new List<int>();
