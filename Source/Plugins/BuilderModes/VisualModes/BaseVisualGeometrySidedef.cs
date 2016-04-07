@@ -980,7 +980,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(BuilderPlug.Me.CopiedTexture != null)
 			{
 				string oldtexture = GetTextureName();
-				long oldtexturelong = Lump.MakeLongName(General.Map.Data.GetFullTextureName(oldtexture)); //mxd
 				string newtexture = BuilderPlug.Me.CopiedTexture;
 				if(newtexture != oldtexture)
 				{
@@ -1006,9 +1005,27 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							List<Sidedef> sides = mode.GetSelectedSidedefs();
 							foreach(Sidedef sd in sides) sd.Marked = false;
 						}
+
+						//mxd. We potentially need to deal with 2 textures (because of long and short texture names)...
+						HashSet<long> texturehashes = new HashSet<long> { Texture.LongName };
+						switch(this.GeometryType)
+						{
+							case VisualGeometryType.WALL_LOWER:
+								texturehashes.Add(Sidedef.LongLowTexture);
+								break;
+
+							case VisualGeometryType.WALL_MIDDLE:
+							case VisualGeometryType.WALL_MIDDLE_3D:
+								texturehashes.Add(Sidedef.LongMiddleTexture);
+								break;
+
+							case VisualGeometryType.WALL_UPPER:
+								texturehashes.Add(Sidedef.LongHighTexture);
+								break;
+						}
 						
 						// Do the alignment
-						Tools.FloodfillTextures(this.Sidedef, oldtexturelong, newtexture, false);
+						Tools.FloodfillTextures(Sidedef, texturehashes, newtexture, false);
 
 						// Get the changed sidedefs
 						List<Sidedef> changes = General.Map.Map.GetMarkedSidedefs(true);
