@@ -604,7 +604,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(BuilderPlug.Me.CopiedFlat != null)
 			{
 				string oldtexture = GetTextureName();
-				long oldtexturelong = Lump.MakeLongName(General.Map.Data.GetFullFlatName(oldtexture)); //mxd
 				string newtexture = BuilderPlug.Me.CopiedFlat;
 				if(newtexture != oldtexture)
 				{
@@ -640,9 +639,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							List<Sector> sectors = mode.GetSelectedSectors();
 							foreach(Sector s in sectors) s.Marked = false;
 						}
+
+						//mxd. We potentially need to deal with 2 textures (because of long and short texture names)...
+						HashSet<long> oldtexturehashes = new HashSet<long> { Texture.LongName, Lump.MakeLongName(oldtexture) };
 						
 						// Do the fill
-						Tools.FloodfillFlats(this.Sector.Sector, fillceilings, oldtexturelong, newtexture, false);
+						Tools.FloodfillFlats(this.Sector.Sector, fillceilings, oldtexturehashes, newtexture, false);
 
 						// Get the changed sectors
 						List<Sector> changes = General.Map.Map.GetMarkedSectors(true);

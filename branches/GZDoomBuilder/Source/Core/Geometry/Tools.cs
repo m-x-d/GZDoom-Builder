@@ -1685,7 +1685,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		// When resetsectormarks is set to true, all sectors will first be marked false (not aligned).
 		// Setting resetsectormarks to false is usefull to fill only within a specific selection
 		// (set the marked property to true for the sectors outside the selection)
-		public static void FloodfillFlats(Sector start, bool fillceilings, long originalflat, string fillflat, bool resetsectormarks)
+		public static void FloodfillFlats(Sector start, bool fillceilings, HashSet<long> originalflats, string fillflat, bool resetsectormarks)
 		{
 			Stack<Sector> todo = new Stack<Sector>(50);
 
@@ -1693,8 +1693,8 @@ namespace CodeImp.DoomBuilder.Geometry
 			if(resetsectormarks) General.Map.Map.ClearMarkedSectors(false);
 			
 			// Begin with first sector
-			if(((start.LongFloorTexture == originalflat) && !fillceilings) ||
-			   ((start.LongCeilTexture == originalflat) && fillceilings))
+			if((originalflats.Contains(start.LongFloorTexture) && !fillceilings) ||
+			   (originalflats.Contains(start.LongCeilTexture) && fillceilings))
 			{
 				todo.Push(start);
 			}
@@ -1719,8 +1719,8 @@ namespace CodeImp.DoomBuilder.Geometry
 						Sector os = sd.Other.Sector;
 						
 						// Check if texture matches
-						if(((os.LongFloorTexture == originalflat) && !fillceilings) ||
-						   ((os.LongCeilTexture == originalflat) && fillceilings))
+						if((originalflats.Contains(os.LongFloorTexture) && !fillceilings) ||
+						   (originalflats.Contains(os.LongCeilTexture) && fillceilings))
 						{
 							todo.Push(os);
 						}
@@ -1738,7 +1738,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		// When resetsidemarks is set to true, all sidedefs will first be marked false (not aligned).
 		// Setting resetsidemarks to false is usefull to fill only within a specific selection
 		// (set the marked property to true for the sidedefs outside the selection)
-		public static void FloodfillTextures(Sidedef start, long originaltexture, string filltexture, bool resetsidemarks)
+		public static void FloodfillTextures(Sidedef start, HashSet<long> originaltextures, string filltexture, bool resetsidemarks)
 		{
 			Stack<SidedefFillJob> todo = new Stack<SidedefFillJob>(50);
 
@@ -1746,7 +1746,7 @@ namespace CodeImp.DoomBuilder.Geometry
 			if(resetsidemarks) General.Map.Map.ClearMarkedSidedefs(false);
 			
 			// Begin with first sidedef
-			if(SidedefTextureMatch(start, originaltexture))
+			if(SidedefTextureMatch(start, originaltextures))
 			{
 				SidedefFillJob first = new SidedefFillJob();
 				first.sidedef = start;
@@ -1761,10 +1761,10 @@ namespace CodeImp.DoomBuilder.Geometry
 				SidedefFillJob j = todo.Pop();
 
 				// Apply texturing
-				if(j.sidedef.HighRequired() && j.sidedef.LongHighTexture == originaltexture) j.sidedef.SetTextureHigh(filltexture);
+				if(j.sidedef.HighRequired() && originaltextures.Contains(j.sidedef.LongHighTexture)) j.sidedef.SetTextureHigh(filltexture);
 				if((j.sidedef.LongMiddleTexture != MapSet.EmptyLongName || j.sidedef.MiddleRequired()) &&
-				   (j.sidedef.LongMiddleTexture == originaltexture)) j.sidedef.SetTextureMid(filltexture);
-				if(j.sidedef.LowRequired() && j.sidedef.LongLowTexture == originaltexture) j.sidedef.SetTextureLow(filltexture);
+				   originaltextures.Contains(j.sidedef.LongMiddleTexture)) j.sidedef.SetTextureMid(filltexture);
+				if(j.sidedef.LowRequired() && originaltextures.Contains(j.sidedef.LongLowTexture)) j.sidedef.SetTextureLow(filltexture);
 				
 				j.sidedef.Marked = true;
 				
@@ -1772,27 +1772,27 @@ namespace CodeImp.DoomBuilder.Geometry
 				{
 					// Add sidedefs forward (connected to the right vertex)
 					Vertex v = j.sidedef.IsFront ? j.sidedef.Line.End : j.sidedef.Line.Start;
-					AddSidedefsForFloodfill(todo, v, true, originaltexture);
+					AddSidedefsForFloodfill(todo, v, true, originaltextures);
 
 					// Add sidedefs backward (connected to the left vertex)
 					v = j.sidedef.IsFront ? j.sidedef.Line.Start : j.sidedef.Line.End;
-					AddSidedefsForFloodfill(todo, v, false, originaltexture);
+					AddSidedefsForFloodfill(todo, v, false, originaltextures);
 				}
 				else
 				{
 					// Add sidedefs backward (connected to the left vertex)
 					Vertex v = j.sidedef.IsFront ? j.sidedef.Line.Start : j.sidedef.Line.End;
-					AddSidedefsForFloodfill(todo, v, false, originaltexture);
+					AddSidedefsForFloodfill(todo, v, false, originaltextures);
 
 					// Add sidedefs forward (connected to the right vertex)
 					v = j.sidedef.IsFront ? j.sidedef.Line.End : j.sidedef.Line.Start;
-					AddSidedefsForFloodfill(todo, v, true, originaltexture);
+					AddSidedefsForFloodfill(todo, v, true, originaltextures);
 				}
 			}
 		}
 
 		// This adds the matching, unmarked sidedefs from a vertex for texture alignment
-		private static void AddSidedefsForFloodfill(Stack<SidedefFillJob> stack, Vertex v, bool forward, long texturelongname)
+		private static void AddSidedefsForFloodfill(Stack<SidedefFillJob> stack, Vertex v, bool forward, HashSet<long> texturelongnames)
 		{
 			foreach(Linedef ld in v.Linedefs)
 			{
@@ -1800,7 +1800,7 @@ namespace CodeImp.DoomBuilder.Geometry
 				Sidedef side2 = forward ? ld.Back : ld.Front;
 				if((ld.Start == v) && (side1 != null) && !side1.Marked)
 				{
-					if(SidedefTextureMatch(side1, texturelongname))
+					if(SidedefTextureMatch(side1, texturelongnames))
 					{
 						SidedefFillJob nj = new SidedefFillJob();
 						nj.forward = forward;
@@ -1810,7 +1810,7 @@ namespace CodeImp.DoomBuilder.Geometry
 				}
 				else if((ld.End == v) && (side2 != null) && !side2.Marked)
 				{
-					if(SidedefTextureMatch(side2, texturelongname))
+					if(SidedefTextureMatch(side2, texturelongnames))
 					{
 						SidedefFillJob nj = new SidedefFillJob();
 						nj.forward = forward;
@@ -1826,12 +1826,12 @@ namespace CodeImp.DoomBuilder.Geometry
 		#region ================== Texture Alignment
 		
 		// This checks if any of the sidedef texture match the given texture
-		public static bool SidedefTextureMatch(Sidedef sd, long texturelongname)
+		/*public static bool SidedefTextureMatch(Sidedef sd, long texturelongname)
 		{
 			return ((sd.LongHighTexture == texturelongname) && sd.HighRequired()) ||
 				   ((sd.LongLowTexture == texturelongname) && sd.LowRequired()) ||
 				   ((sd.LongMiddleTexture == texturelongname) && (sd.MiddleRequired() || sd.LongMiddleTexture != MapSet.EmptyLongName)) ;
-		}
+		}*/
 
 		//mxd. This checks if any of the sidedef texture match the given textures
 		public static bool SidedefTextureMatch(Sidedef sd, HashSet<long> texturelongnames)

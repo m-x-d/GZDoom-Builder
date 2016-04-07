@@ -3756,7 +3756,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					// Wrap the value within the width of the texture (to prevent ridiculous values)
 					// NOTE: We don't use ScaledWidth here because the texture offset is in pixels, not mappixels
-					if(texture.IsImageLoaded && Tools.SidedefTextureMatch(j.sidedef, texture.LongName)) 
+					if(texture.IsImageLoaded && Tools.SidedefTextureMatch(j.sidedef, texturehashes)) 
 					{
 						if(alignx) j.sidedef.OffsetX %= texture.Width;
 						if(aligny) j.sidedef.OffsetY %= texture.Height;
@@ -3782,7 +3782,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					// Wrap the value within the width of the texture (to prevent ridiculous values)
 					// NOTE: We don't use ScaledWidth here because the texture offset is in pixels, not mappixels
-					if(texture.IsImageLoaded && Tools.SidedefTextureMatch(j.sidedef, texture.LongName)) 
+					if(texture.IsImageLoaded && Tools.SidedefTextureMatch(j.sidedef, texturehashes)) 
 					{
 						if(alignx) j.sidedef.OffsetX %= texture.Width;
 						if(aligny) j.sidedef.OffsetY %= texture.Height;
