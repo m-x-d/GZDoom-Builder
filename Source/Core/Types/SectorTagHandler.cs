@@ -32,7 +32,7 @@ namespace CodeImp.DoomBuilder.Types
 		#region ================== Variables
 
 		private EnumList list;
-		private EnumItem value;
+		protected EnumItem value;
 		private EnumItem defaultvalue;
 
 		#endregion
@@ -52,7 +52,7 @@ namespace CodeImp.DoomBuilder.Types
 			base.SetupArgument(attr, arginfo);
 
 			// Create enum list reference
-			list = CreateTagList();
+			list = CreateEnumList();
 
 			// Add default value
 			list.Insert(0, defaultvalue);
@@ -64,11 +64,11 @@ namespace CodeImp.DoomBuilder.Types
 			base.SetupField(attr, fieldinfo);
 
 			// Create enum list reference
-			list = CreateTagList();
+			list = CreateEnumList();
 		}
 
 		//mxd
-		protected virtual EnumList CreateTagList() 
+		protected virtual EnumList CreateEnumList() 
 		{
 			//collect tags
 			List<int> tags = new List<int>();

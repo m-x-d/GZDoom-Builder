@@ -47,5 +47,6 @@ namespace CodeImp.DoomBuilder.Types
 		AngleByte = 22, //mxd
 		ThingRadius = 23, //mxd
 		ThingHeight = 24, //mxd
+		PolyobjectNumber = 25, //mxd
 	}
 }

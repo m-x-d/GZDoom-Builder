@@ -37,6 +37,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			int progress = 0;
 			int stepprogress = 0;
 			const string Polyobj_StartLine = "Polyobj_StartLine";
+			const string Polyobj_ExplicitLine = "Polyobj_ExplicitLine";
 
 			// <Polyobj_Action, <Polyobj_number, Lines using this number>>
 			Dictionary<string, Dictionary<int, List<Linedef>>> polyobjlines = new Dictionary<string, Dictionary<int, List<Linedef>>>();
@@ -44,14 +45,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// All polyobject-related actions
 			HashSet<string> allactions = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
 			{
-				Polyobj_StartLine, "Polyobj_RotateLeft",
-				"Polyobj_RotateRight", "Polyobj_Move", 
-				"Polyobj_MoveTimes8", "Polyobj_DoorSwing", 
-				"Polyobj_DoorSlide", "Polyobj_OR_MoveToSpot", 
-				"Polyobj_MoveToSpot", "Polyobj_Stop", 
-				"Polyobj_MoveTo", "Polyobj_OR_MoveTo", 
-				"Polyobj_OR_RotateLeft", "Polyobj_OR_RotateRight", 
-				"Polyobj_OR_Move", "Polyobj_OR_MoveTimes8"
+				Polyobj_StartLine, Polyobj_ExplicitLine, 
+				"Polyobj_RotateLeft", "Polyobj_RotateRight", 
+				"Polyobj_Move", "Polyobj_MoveTimes8", 
+				"Polyobj_DoorSwing", "Polyobj_DoorSlide", 
+				"Polyobj_OR_MoveToSpot", "Polyobj_MoveToSpot", 
+				"Polyobj_Stop", "Polyobj_MoveTo", 
+				"Polyobj_OR_MoveTo", "Polyobj_OR_RotateLeft", 
+				"Polyobj_OR_RotateRight", "Polyobj_OR_Move", 
+				"Polyobj_OR_MoveTimes8",
 			};
 
 			Dictionary<int, List<Thing>> anchors = new Dictionary<int, List<Thing>>();
@@ -131,6 +133,27 @@ namespace CodeImp.DoomBuilder.BuilderModes
 								SubmitResult(new ResultInvalidPolyobjectLines(new List<Linedef> { linedef }, "\"" + Polyobj_StartLine + "\" action have non-existing Mirror Polyobject Number assigned (" + linedef.Args[1] + "). It won't function correctly ingame."));
 							if(linedef.Args[1] == linedef.Args[0])
 								SubmitResult(new ResultInvalidPolyobjectLines(new List<Linedef> { linedef }, "\"" + Polyobj_StartLine + "\" action have the same Polyobject and Mirror Polyobject numbers assigned (" + linedef.Args[1] + "). It won't function correctly ingame."));
+						}
+					}
+				}
+			}
+
+			// Check Linedefs with Polyobj_ExplicitLine action. These can connect 1 - multiple.
+			// Polyobject number is arg0, Mirror polyobject number is arg2
+			if(polyobjlines.ContainsKey(Polyobj_ExplicitLine))
+			{
+				foreach(KeyValuePair<int, List<Linedef>> linesbytype in polyobjlines[Polyobj_ExplicitLine])
+				{
+					// Check if Mirror Polyobject Number exists
+					foreach(Linedef linedef in linesbytype.Value)
+					{
+						// The value of 0 can mean either "No mirror polyobj" or "Polyobj 0" here...
+						if(linedef.Args[2] > 0)
+						{
+							if(!startspots.ContainsKey(linedef.Args[2]))
+								SubmitResult(new ResultInvalidPolyobjectLines(new List<Linedef> { linedef }, "\"" + Polyobj_StartLine + "\" action have non-existing Mirror Polyobject Number assigned (" + linedef.Args[2] + "). It won't function correctly ingame."));
+							if(linedef.Args[2] == linedef.Args[0])
+								SubmitResult(new ResultInvalidPolyobjectLines(new List<Linedef> { linedef }, "\"" + Polyobj_StartLine + "\" action have the same Polyobject and Mirror Polyobject numbers assigned (" + linedef.Args[2] + "). It won't function correctly ingame."));
 						}
 					}
 				}
