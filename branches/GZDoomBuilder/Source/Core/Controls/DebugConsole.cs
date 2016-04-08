@@ -41,6 +41,7 @@ namespace CodeImp.DoomBuilder
 
 		private DebugMessageType filters;
 		private static long starttime = -1;
+		private static long storedtime;
 		private static int counter;
 		private static DebugConsole me;
 
@@ -144,11 +145,18 @@ namespace CodeImp.DoomBuilder
 			starttime = SlimDX.Configuration.Timer.ElapsedMilliseconds;
 		}
 
+		public static void PauseTimer()
+		{
+			if(starttime == -1) throw new InvalidOperationException("DebugConsole.StartTimer() must be called before DebugConsole.PauseTimer()!");
+			
+			storedtime += SlimDX.Configuration.Timer.ElapsedMilliseconds - starttime;
+		}
+
 		public static void StopTimer(string message) 
 		{
 			if(starttime == -1) throw new InvalidOperationException("DebugConsole.StartTimer() must be called before DebugConsole.StopTimer()!");
 
-			long duration = SlimDX.Configuration.Timer.ElapsedMilliseconds - starttime;
+			long duration = SlimDX.Configuration.Timer.ElapsedMilliseconds - starttime + storedtime;
 			
 			if(message.Contains("%"))
 				message = message.Replace("%", duration.ToString(CultureInfo.InvariantCulture));
@@ -158,6 +166,7 @@ namespace CodeImp.DoomBuilder
 			WriteLine(DebugMessageType.SPECIAL, message);
 
 			starttime = -1;
+			storedtime = 0;
 		}
 
 		public static void IncrementCounter() { IncrementCounter(1); }

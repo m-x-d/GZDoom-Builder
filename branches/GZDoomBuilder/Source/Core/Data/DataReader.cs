@@ -209,6 +209,9 @@ namespace CodeImp.DoomBuilder.Data
 
 		// When implemented, this checks if the given sprite lump exists
 		public abstract bool GetSpriteExists(string pname);
+
+		//mxd. When implemented, returns all sprites, which name starts with given string
+		public abstract HashSet<string> GetSpriteNames(string startswith);
 		
 		#endregion
 

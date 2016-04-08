@@ -65,6 +65,9 @@ namespace CodeImp.DoomBuilder.Data
 		public const string INTERNAL_PREFIX = "internal:";
 		public const int CLASIC_IMAGE_NAME_LENGTH = 8; //mxd
 		private const int MAX_SKYTEXTURE_SIZE = 2048; //mxd
+
+		private long UNKNOWN_THING; //mxd
+		private long MISSING_THING; //mxd
 		
 		#endregion
 
@@ -121,7 +124,7 @@ namespace CodeImp.DoomBuilder.Data
 		private ImageData hourglass3d;
 		private ImageData crosshair;
 		private ImageData crosshairbusy;
-		private Dictionary<string, ImageData> internalsprites;
+		private Dictionary<string, long> internalspriteslookup; //mxd
 		private ImageData whitetexture;
 		private ImageData blacktexture; //mxd
 		private ImageData thingtexture; //mxd
@@ -323,7 +326,6 @@ namespace CodeImp.DoomBuilder.Data
 			texturesets = new List<MatchingTextureSet>();
 			usedtextures = new Dictionary<long, bool>(); //mxd
 			usedflats = new Dictionary<long, bool>(); //mxd
-			internalsprites = new Dictionary<string, ImageData>(StringComparer.Ordinal);
 			thingcategories = General.Map.Config.GetThingCategories();
 			thingtypes = General.Map.Config.GetThingTypes();
 
@@ -586,7 +588,6 @@ namespace CodeImp.DoomBuilder.Data
 			foreach(KeyValuePair<long, ImageData> i in textures) i.Value.Dispose();
 			foreach(KeyValuePair<long, ImageData> i in flats) i.Value.Dispose();
 			foreach(KeyValuePair<long, ImageData> i in sprites) i.Value.Dispose();
-			foreach(KeyValuePair<string, ImageData> i in internalsprites) i.Value.Dispose(); //mxd
 			palette = null;
 
 			//mxd. Dispose models
@@ -615,7 +616,6 @@ namespace CodeImp.DoomBuilder.Data
 			texturenames = null;
 			flatnames = null;
 			imageque = null;
-			internalsprites = null;
 			mapinfo = null; //mxd
 		}
 		
@@ -1499,53 +1499,60 @@ namespace CodeImp.DoomBuilder.Data
 				// Valid sprite name?
 				if(ti.Sprite.Length == 0 || ti.Sprite.Length > CLASIC_IMAGE_NAME_LENGTH) continue; //mxd
 					
-				ImageData image = null;
+				//mxd. Find all sprite angles
+				ti.SetupSpriteFrame();
 
-				// Sprite not in our collection yet?
-				if(!sprites.ContainsKey(ti.SpriteLongName)) 
+				//mxd. Load them all
+				foreach(SpriteFrameInfo info in ti.SpriteFrame)
 				{
-					//mxd. Go for all opened containers
-					bool spritefound = false;
-					if(!string.IsNullOrEmpty(ti.Sprite))
+					ImageData image = null;
+					
+					// Sprite not in our collection yet?
+					if(!sprites.ContainsKey(info.SpriteLongName))
 					{
-						for(int i = containers.Count - 1; i >= 0; i--)
+						//mxd. Go for all opened containers
+						bool spritefound = false;
+						if(!string.IsNullOrEmpty(info.Sprite))
 						{
-							// This contain provides this sprite?
-							if(containers[i].GetSpriteExists(ti.Sprite))
+							for(int i = containers.Count - 1; i >= 0; i--)
 							{
-								spritefound = true;
-								break;
+								// This contain provides this sprite?
+								if(containers[i].GetSpriteExists(info.Sprite))
+								{
+									spritefound = true;
+									break;
+								}
 							}
 						}
-					}
 
-					if(spritefound)
-					{
-						// Make new sprite image
-						image = new SpriteImage(ti.Sprite);
+						if(spritefound)
+						{
+							// Make new sprite image
+							image = new SpriteImage(info.Sprite);
 
-						// Add to collection
-						sprites.Add(ti.SpriteLongName, image);
+							// Add to collection
+							sprites.Add(info.SpriteLongName, image);
+						}
+						else
+						{
+							General.ErrorLogger.Add(ErrorType.Error, "Missing sprite lump \"" + info.Sprite + "\". Forgot to include required resources?");
+						}
 					}
 					else
 					{
-						General.ErrorLogger.Add(ErrorType.Error, "Missing sprite lump \"" + ti.Sprite + "\". Forgot to include required resources?");
+						image = sprites[info.SpriteLongName];
 					}
-				} 
-				else 
-				{
-					image = sprites[ti.SpriteLongName];
-				}
 
-				// Add to preview manager
-				if(image != null) previews.AddImage(image);
+					// Add to preview manager
+					if(image != null) previews.AddImage(image);
+				}
 			}
 			
 			// Output info
 			return sprites.Count;
 		}
 		
-		// This returns a specific patch stream
+		// This returns a specific sprite stream
 		internal Stream GetSpriteData(string pname, ref string spritelocation)
 		{
 			if(!string.IsNullOrEmpty(pname))
@@ -1553,13 +1560,13 @@ namespace CodeImp.DoomBuilder.Data
 				// Go for all opened containers
 				for(int i = containers.Count - 1; i >= 0; i--)
 				{
-					// This contain provides this patch?
+					// This contain provides this sprite?
 					Stream spritedata = containers[i].GetSpriteData(pname, ref spritelocation);
 					if(spritedata != null) return spritedata;
 				}
 			}
 			
-			// No such patch found
+			// No such sprite found
 			return null;
 		}
 
@@ -1574,12 +1581,12 @@ namespace CodeImp.DoomBuilder.Data
 				// Go for all opened containers
 				for(int i = containers.Count - 1; i >= 0; i--)
 				{
-					// This contain provides this patch?
+					// This contain provides this sprite?
 					if(containers[i].GetSpriteExists(pname)) return true;
 				}
 			}
 			
-			// No such patch found
+			// No such sprite found
 			return false;
 		}
 		
@@ -1587,39 +1594,54 @@ namespace CodeImp.DoomBuilder.Data
 		private void LoadInternalSprites()
 		{
 			// Add sprite icon files from directory
+			string name;
 			string[] files = Directory.GetFiles(General.SpritesPath, "*.png", SearchOption.TopDirectoryOnly);
+			internalspriteslookup = new Dictionary<string, long>(files.Length + 2); //mxd
 			foreach(string spritefile in files)
 			{
 				ImageData img = new FileImage(Path.GetFileNameWithoutExtension(spritefile).ToLowerInvariant(), spritefile);
 				img.LoadImage();
 				img.AllowUnload = false;
-				internalsprites.Add(img.Name, img);
+				name = INTERNAL_PREFIX + img.Name;
+				long hash = Lump.MakeLongName(name, true); //mxd
+				sprites[hash] = img; //mxd
+				internalspriteslookup[name] = hash; //mxd
 			}
 			
-			// Add some internal resources
-			if(!internalsprites.ContainsKey("nothing"))
+			// Add some internal resources.
+			// mxd. Doesn't seem to be used anywhere
+			/*name = INTERNAL_PREFIX + "nothing";
+			if(!internalspriteslookup.ContainsKey(name))
 			{
 				ImageData img = new ResourceImage("CodeImp.DoomBuilder.Resources.Nothing.png");
 				img.LoadImage();
 				img.AllowUnload = false;
-				internalsprites.Add("nothing", img);
-			}
-			
-			if(!internalsprites.ContainsKey("unknownthing"))
+				long hash = Lump.MakeLongName(name, true); //mxd
+				sprites[hash] = img; //mxd
+				internalspriteslookup[name] = hash; //mxd
+			}*/
+
+			name = INTERNAL_PREFIX + "unknownthing";
+			UNKNOWN_THING = Lump.MakeLongName(name, true);
+			if(!internalspriteslookup.ContainsKey(name))
 			{
 				ImageData img = new ResourceImage("CodeImp.DoomBuilder.Resources.UnknownThing.png");
 				img.LoadImage();
 				img.AllowUnload = false;
-				internalsprites.Add("unknownthing", img);
+				sprites[UNKNOWN_THING] = img; //mxd
+				internalspriteslookup[name] = UNKNOWN_THING; //mxd
 			}
 
 			//mxd
-			if(!internalsprites.ContainsKey("missingthing")) 
+			name = INTERNAL_PREFIX + "missingthing";
+			MISSING_THING = Lump.MakeLongName(name, true);
+			if(!internalspriteslookup.ContainsKey(name)) 
 			{
 				ImageData img = new ResourceImage("CodeImp.DoomBuilder.Resources.MissingThing.png");
 				img.LoadImage();
 				img.AllowUnload = false;
-				internalsprites.Add("missingthing", img);
+				sprites[MISSING_THING] = img; //mxd
+				internalspriteslookup[name] = MISSING_THING; //mxd
 			}
 		}
 		
@@ -1630,11 +1652,11 @@ namespace CodeImp.DoomBuilder.Data
 			if((name.Length > INTERNAL_PREFIX.Length) && name.ToLowerInvariant().StartsWith(INTERNAL_PREFIX))
 			{
 				// Get the internal sprite
-				string internalname = name.Substring(INTERNAL_PREFIX.Length).ToLowerInvariant();
-				if(internalsprites.ContainsKey(internalname))
-					return internalsprites[internalname];
+				string internalname = name.ToLowerInvariant();
+				if(internalspriteslookup.ContainsKey(internalname)) //mxd
+					return sprites[internalspriteslookup[internalname]];
 
-				return internalsprites["unknownthing"]; //mxd
+				return sprites[UNKNOWN_THING]; //mxd
 			}
 			else
 			{
@@ -1678,7 +1700,7 @@ namespace CodeImp.DoomBuilder.Data
 					}
 					else //mxd
 					{
-						ImageData img = string.IsNullOrEmpty(name) ? internalsprites["unknownthing"] : internalsprites["missingthing"];
+						ImageData img = string.IsNullOrEmpty(name) ? sprites[UNKNOWN_THING] : sprites[MISSING_THING];
 						
 						// Add to collection
 						sprites.Add(longname, img);
@@ -1688,6 +1710,17 @@ namespace CodeImp.DoomBuilder.Data
 					}
 				}
 			}
+		}
+
+		//mxd. Returns all sprite names, which start with given string
+		internal IEnumerable<string> GetSpriteNames(string startswith)
+		{
+			HashSet<string> result = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+			foreach(DataReader reader in containers)
+				result.UnionWith(reader.GetSpriteNames(startswith));
+
+			return result;
 		}
 		
 		#endregion
