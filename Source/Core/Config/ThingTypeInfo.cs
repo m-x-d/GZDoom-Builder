@@ -18,18 +18,25 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
+using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.GZBuilder.Data;
 using CodeImp.DoomBuilder.IO;
-using CodeImp.DoomBuilder.Data;
-using CodeImp.DoomBuilder.ZDoom;
 using CodeImp.DoomBuilder.Map;
-using System.Drawing;
+using CodeImp.DoomBuilder.ZDoom;
 
 #endregion
 
 namespace CodeImp.DoomBuilder.Config
 {
+	public struct SpriteFrameInfo //mxd
+	{
+		public string Sprite;
+		public long SpriteLongName;
+		public bool Mirror;
+	}
+	
 	public class ThingTypeInfo : INumberedTitle, IComparable<ThingTypeInfo>
 	{
 		#region ================== Constants
@@ -50,9 +57,9 @@ namespace CodeImp.DoomBuilder.Config
 		private readonly int index;
 		private string title;
 		private string sprite;
+		private SpriteFrameInfo[] spriteframe; //mxd. All rotations for given sprite. Currently contains either 1 or 8 frames
 		private ActorStructure actor;
 		private string classname; //mxd
-		private long spritelongname;
 		private int color;
 		private float alpha; //mxd
 		private byte alphabyte; //mxd
@@ -88,8 +95,8 @@ namespace CodeImp.DoomBuilder.Config
 		public int Index { get { return index; } }
 		public string Title { get { return title; } }
 		public string Sprite { get { return sprite; } }
+		public SpriteFrameInfo[] SpriteFrame { get { return spriteframe; } }
 		public ActorStructure Actor { get { return actor; } }
-		public long SpriteLongName { get { return spritelongname; } }
 		public int Color { get { return color; } }
 		public float Alpha { get { return alpha; } } //mxd
 		public byte AlphaByte { get { return alphabyte; } } //mxd
@@ -147,7 +154,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.spritescale = new SizeF(1.0f, 1.0f);
 			this.fixedsize = false;
 			this.fixedrotation = false; //mxd
-			this.spritelongname = long.MaxValue;
+			this.spriteframe = new[] { new SpriteFrameInfo { Sprite = sprite, SpriteLongName = Lump.MakeLongName(sprite, true) } }; //mxd
 			this.args = new ArgumentInfo[Linedef.NUM_ARGS];
 			this.isknown = false;
 			this.absolutez = false;
@@ -199,12 +206,9 @@ namespace CodeImp.DoomBuilder.Config
 			// Safety
 			if(this.radius < 4f || this.fixedsize) this.radius = THING_FIXED_SIZE;
 			if(this.hangs && this.absolutez) this.hangs = false; //mxd
-			
-			// Make long name for sprite lookup
-			if(this.sprite.Length <= 8)
-				this.spritelongname = Lump.MakeLongName(this.sprite);
-			else
-				this.spritelongname = long.MaxValue;
+
+			//mxd. Create sprite frame
+			this.spriteframe = new[] { new SpriteFrameInfo { Sprite = sprite, SpriteLongName = Lump.MakeLongName(sprite, true) } };
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -245,12 +249,9 @@ namespace CodeImp.DoomBuilder.Config
 			// Safety
 			if(this.radius < 4f || this.fixedsize) this.radius = THING_FIXED_SIZE;
 			if(this.hangs && this.absolutez) this.hangs = false; //mxd
-			
-			// Make long name for sprite lookup
-			if(this.sprite.Length <= 8)
-				this.spritelongname = Lump.MakeLongName(this.sprite);
-			else
-				this.spritelongname = long.MaxValue;
+
+			//mxd. Create sprite frame
+			this.spriteframe = new[] { new SpriteFrameInfo { Sprite = sprite, SpriteLongName = Lump.MakeLongName(sprite, true) } };
 
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -292,6 +293,9 @@ namespace CodeImp.DoomBuilder.Config
 			
 			// Apply settings from actor
 			ModifyByDecorateActor(actor);
+
+			//mxd. Create sprite frame
+			this.spriteframe = new[] { new SpriteFrameInfo { Sprite = sprite, SpriteLongName = Lump.MakeLongName(sprite, true) } };
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -313,6 +317,7 @@ namespace CodeImp.DoomBuilder.Config
 
 			// Read properties
 			this.sprite = cat.Sprite;
+			this.spriteframe = new[] { new SpriteFrameInfo { Sprite = sprite, SpriteLongName = Lump.MakeLongName(sprite, true), } }; //mxd
 			this.color = cat.Color;
 			this.alpha = cat.Alpha; //mxd
 			this.alphabyte = (byte)(this.alpha * 255); //mxd
@@ -334,6 +339,9 @@ namespace CodeImp.DoomBuilder.Config
 			// Apply settings from actor
 			ModifyByDecorateActor(actor);
 
+			//mxd. Create sprite frame
+			this.spriteframe = new[] { new SpriteFrameInfo { Sprite = sprite, SpriteLongName = Lump.MakeLongName(sprite, true) } };
+
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
@@ -354,6 +362,8 @@ namespace CodeImp.DoomBuilder.Config
 
 			// Copy properties
 			this.sprite = other.sprite;
+			this.spriteframe = new SpriteFrameInfo[other.spriteframe.Length]; //mxd
+			other.spriteframe.CopyTo(this.spriteframe, 0); //mxd
 			this.color = other.color;
 			this.alpha = other.alpha; //mxd
 			this.alphabyte = other.alphabyte; //mxd
@@ -443,10 +453,8 @@ namespace CodeImp.DoomBuilder.Config
 			else if(string.IsNullOrEmpty(sprite))//mxd
 				sprite = DataManager.INTERNAL_PREFIX + "unknownthing";
 
-			if(this.sprite.Length < 9)
-				this.spritelongname = Lump.MakeLongName(this.sprite);
-			else
-				this.spritelongname = long.MaxValue;
+			//mxd. Create sprite frame
+			this.spriteframe = new[] { new SpriteFrameInfo { Sprite = sprite, SpriteLongName = Lump.MakeLongName(sprite, true) } };
 			
 			// Set sprite scale (mxd. Scale is translated to xscale and yscale in ActorStructure)
 			if(actor.HasPropertyWithValue("xscale"))
@@ -499,6 +507,134 @@ namespace CodeImp.DoomBuilder.Config
 
 			//mxd
 			if(blocking > THING_BLOCKING_NONE) errorcheck = THING_ERROR_INSIDE_STUCK;
+		}
+
+		//mxd. This tries to find all possible sprite rotations
+		internal void SetupSpriteFrame()
+		{
+			// Empty or internal sprites don't have rotations
+			if(string.IsNullOrEmpty(sprite) || sprite.StartsWith(DataManager.INTERNAL_PREFIX)) return;
+
+			// Skip sprites with strange names
+			if(sprite.Length != 6 && sprite.Length != 8)
+			{
+				General.ErrorLogger.Add(ErrorType.Error, "Error in actor \"" + title + "\":" + index + ". Unsupported sprite name fromat: \"" + sprite + "\"");
+				return;
+			}
+
+			// Get sprite angle
+			string anglestr = sprite.Substring(5, 1);
+			int sourceangle;
+			if(!int.TryParse(anglestr, NumberStyles.Integer, CultureInfo.InvariantCulture, out sourceangle))
+			{
+				General.ErrorLogger.Add(ErrorType.Error, "Error in actor \"" + title + "\":" + index + ". Unable to get sprite angle from sprite \"" + sprite + "\"");
+				return;
+			}
+
+			if(sourceangle < 0 || sourceangle > 8)
+			{
+				General.ErrorLogger.Add(ErrorType.Error, "Error in actor \"" + title + "\":" + index + ", sprite \"" + sprite + "\". Sprite angle must be in [0..8] range");
+				return;
+			}
+
+			// No rotations?
+			if(sourceangle == 0) return;
+			
+			// Gather rotations
+			string[] frames = new string[8];
+			bool[] mirror = new bool[8];
+			int processedcount = 0;
+			string sourcename = sprite.Substring(0, 4);
+			IEnumerable<string> spritenames = General.Map.Data.GetSpriteNames(sourcename);
+
+			// Process gathered sprites
+			char sourceframe = sprite[4];
+			foreach(string s in spritenames)
+			{
+				//Check first frame block
+				char targetframe = s[4];
+				if(targetframe == sourceframe)
+				{
+					// Check angle
+					int targetangle;
+					anglestr = s.Substring(5, 1);
+					if(!int.TryParse(anglestr, NumberStyles.Integer, CultureInfo.InvariantCulture, out targetangle))
+					{
+						General.ErrorLogger.Add(ErrorType.Error, "Error in actor \"" + title + "\":" + index + ". Unable to get sprite angle from sprite \"" + s + "\"");
+						return;
+					}
+
+					if(targetangle < 0 || targetangle > 8)
+					{
+						General.ErrorLogger.Add(ErrorType.Error, "Error in actor \"" + title + "\":" + index + ", sprite \"" + s + "\". Sprite angle must be in [0..8] range");
+						return;
+					}
+
+					// Add to collection
+					frames[targetangle - 1] = s;
+					processedcount++;
+				}
+
+				// Check second frame block?
+				if(s.Length == 6) continue;
+
+				targetframe = s[6];
+				if(targetframe == sourceframe)
+				{
+					// Check angle
+					int targetangle;
+					anglestr = s.Substring(7, 1);
+					if(!int.TryParse(anglestr, NumberStyles.Integer, CultureInfo.InvariantCulture, out targetangle))
+					{
+						General.ErrorLogger.Add(ErrorType.Error, "Error in actor \"" + title + "\":" + index + ". Unable to get sprite angle from sprite \"" + s + "\"");
+						return;
+					}
+
+					if(targetangle < 0 || targetangle > 8)
+					{
+						General.ErrorLogger.Add(ErrorType.Error, "Error in actor \"" + title + "\":" + index + ", sprite \"" + s + "\". Sprite angle must be in [0..8] range");
+						return;
+					}
+
+					// Add to collections
+					frames[targetangle - 1] = s;
+					mirror[targetangle - 1] = true;
+					processedcount++;
+				}
+
+				// Gathered all sprites?
+				if(processedcount == 8) break;
+			}
+
+			// Check collected data
+			if(processedcount != 8)
+			{
+				// Check which angles are missing
+				List<string> missingangles = new List<string>();
+				for(int i = 0; i < frames.Length; i++)
+				{
+					if(string.IsNullOrEmpty(frames[i]))
+						missingangles.Add((i + 1).ToString());
+				}
+
+				// Assemble angles to display
+				string ma = string.Join(", ", missingangles.ToArray());
+				if(missingangles.Count > 2)
+				{
+					int pos = ma.LastIndexOf(",", StringComparison.Ordinal);
+					if(pos != -1) ma = ma.Remove(pos, 1).Insert(pos, " and");
+				}
+
+				General.ErrorLogger.Add(ErrorType.Error, "Error in actor \"" + title + "\":" + index + ". Sprite rotations " + ma + " for sprite " + sourcename + ", frame " + sourceframe + " are missing");
+				return;
+			}
+
+			// Create collection
+			spriteframe = new SpriteFrameInfo[frames.Length];
+			for(int i = 0; i < frames.Length; i++)
+			{
+				spriteframe[i] = new SpriteFrameInfo { Sprite = frames[i], SpriteLongName = Lump.MakeLongName(frames[i]), Mirror = mirror[i] };
+			}
 		}
 
 		// This is used for sorting

@@ -377,14 +377,14 @@ namespace CodeImp.DoomBuilder.Data
 
 		#region ================== Sprites
 
-		// This loads the textures
+		// This loads the sprites
 		public override IEnumerable<ImageData> LoadSprites(Dictionary<string, TexturesParser> cachedparsers)
 		{
-			Dictionary<long, ImageData> images = new Dictionary<long, ImageData>();
-			List<ImageData> imgset = new List<ImageData>();
-			
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
+
+			Dictionary<long, ImageData> images = new Dictionary<long, ImageData>();
+			List<ImageData> imgset = new List<ImageData>();
 			
 			// Load from wad files
 			// Note the backward order, because the last wad's images have priority
@@ -421,7 +421,32 @@ namespace CodeImp.DoomBuilder.Data
 			
 			return new List<ImageData>(images.Values);
 		}
-		
+
+		//mxd. Returns all sprites, which name starts with given string
+		public override HashSet<string> GetSpriteNames(string startswith)
+		{
+			// Error when suspended
+			if(issuspended) throw new Exception("Data reader is suspended");
+
+			HashSet<string> result = new HashSet<string>();
+
+			// Load from wad files
+			// Note the backward order, because the last wad's images have priority
+			for(int i = wads.Count - 1; i >= 0; i--)
+			{
+				result.UnionWith(wads[i].GetSpriteNames(startswith));
+			}
+
+			// Load from out own files
+			string[] files = GetAllFilesWhichTitleStartsWith(SPRITES_DIR, startswith, true);
+			foreach(string file in files)
+			{
+				result.Add(Path.GetFileNameWithoutExtension(file).ToUpperInvariant());
+			}
+
+			return result;
+		}
+
 		#endregion
 
 		#region ================== Colormaps
@@ -429,11 +454,11 @@ namespace CodeImp.DoomBuilder.Data
 		// This loads the textures
 		public override ICollection<ImageData> LoadColormaps()
 		{
-			Dictionary<long, ImageData> images = new Dictionary<long, ImageData>();
-			ICollection<ImageData> collection;
-
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
+
+			Dictionary<long, ImageData> images = new Dictionary<long, ImageData>();
+			ICollection<ImageData> collection;
 
 			// Load from wad files
 			// Note the backward order, because the last wad's images have priority
@@ -448,8 +473,7 @@ namespace CodeImp.DoomBuilder.Data
 			AddImagesToList(images, collection);
 
 			// Add images to the container-specific texture set
-			foreach(ImageData img in images.Values)
-				textureset.AddFlat(img);
+			foreach(ImageData img in images.Values) textureset.AddFlat(img);
 
 			return new List<ImageData>(images.Values);
 		}

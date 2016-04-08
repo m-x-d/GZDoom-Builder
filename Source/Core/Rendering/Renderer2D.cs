@@ -1083,25 +1083,28 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		//mxd
-		private static void CreateThingSpriteVerts(Vector2D screenpos, float width, float height, ref FlatVertex[] verts, int offset, int color) 
+		private static void CreateThingSpriteVerts(Vector2D screenpos, float width, float height, ref FlatVertex[] verts, int offset, int color, bool mirror)
 		{
+			float ul = (mirror ? 1f : 0f);
+			float ur = (mirror ? 0f : 1f);
+			
 			// Setup fixed rect for circle
 			verts[offset].x = screenpos.x - width;
 			verts[offset].y = screenpos.y - height;
 			verts[offset].c = color;
-			verts[offset].u = 0;
+			verts[offset].u = ul;
 			verts[offset].v = 0;
 			offset++;
 			verts[offset].x = screenpos.x + width;
 			verts[offset].y = screenpos.y - height;
 			verts[offset].c = color;
-			verts[offset].u = 1;
+			verts[offset].u = ur;
 			verts[offset].v = 0;
 			offset++;
 			verts[offset].x = screenpos.x - width;
 			verts[offset].y = screenpos.y + height;
 			verts[offset].c = color;
-			verts[offset].u = 0;
+			verts[offset].u = ul;
 			verts[offset].v = 1;
 			offset++;
 			verts[offset] = verts[offset - 2];
@@ -1111,7 +1114,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			verts[offset].x = screenpos.x + width;
 			verts[offset].y = screenpos.y + height;
 			verts[offset].c = color;
-			verts[offset].u = 1;
+			verts[offset].u = ur;
 			verts[offset].v = 1;
 		}
 		
@@ -1232,112 +1235,135 @@ namespace CodeImp.DoomBuilder.Rendering
 					// Find sprite texture
 					if(info.Sprite.Length == 0) continue;
 
-					ImageData sprite = General.Map.Data.GetSpriteImage(info.Sprite);
-					if(sprite == null) continue; 
-					if(!sprite.IsImageLoaded) 
+					// Sort by sprite angle...
+					Dictionary<int, List<Thing>> thingsbyangle = new Dictionary<int, List<Thing>>(group.Value.Count);
+					if(info.SpriteFrame.Length == 8)
 					{
-						sprite.SetUsedInMap(true);
-						continue;
-					}
-					if(sprite.Texture == null) sprite.CreateTexture();
-
-					graphics.Shaders.Things2D.Texture1 = sprite.Texture;
-					graphics.Shaders.Things2D.ApplySettings();
-
-					// Determine next lock size
-					locksize = (group.Value.Count > THING_BUFFER_SIZE) ? THING_BUFFER_SIZE : group.Value.Count;
-					verts = new FlatVertex[THING_BUFFER_SIZE * 6];
-
-					// Go for all things
-					buffercount = 0;
-					totalcount = 0;
-
-					foreach(Thing t in group.Value) 
-					{
-						if(t.IsModel && ((General.Settings.GZDrawModelsMode == ModelRenderMode.SELECTION && t.Selected) || (General.Settings.GZDrawModelsMode == ModelRenderMode.ACTIVE_THINGS_FILTER && alpha == 1.0f))) continue;
-
-						bool forcespriterendering;
-						float spritewidth, spriteheight, spritescale;
-
-						// Determine sizes
-						if(t.FixedSize && scale > 1.0f)
+						foreach(Thing t in group.Value)
 						{
-							spritescale = 1.0f;
-							forcespriterendering = true; // Always render sprite when thing size is affected by FixedSize setting
-						}
-						else if(General.Settings.FixedThingsScale && t.Size * scale > FIXED_THING_SIZE)
-						{
-							spritescale =  FIXED_THING_SIZE / t.Size;
-							forcespriterendering = true; // Always render sprite when thing size is affected by FixedThingsScale setting
-						}
-						else
-						{
-							spritescale = scale;
-							forcespriterendering = false;
-						}
+							// Choose which sprite angle to show
+							int spriteangle = General.ClampAngle(-t.AngleDoom + 270) / 45;  // Convert to [0..7] range
 
-						// Calculate scaled sprite size
-						if(sprite.Width > sprite.Height)
-						{
-							spritewidth = (t.Size - THING_SPRITE_SHRINK) * spritescale;
-							spriteheight = spritewidth * ((float)sprite.Height / sprite.Width);
-						}
-						else if(sprite.Width < sprite.Height)
-						{
-							spriteheight = (t.Size - THING_SPRITE_SHRINK) * spritescale;
-							spritewidth = spriteheight * ((float)sprite.Width / sprite.Height);
-						}
-						else
-						{
-							spritewidth = (t.Size - THING_SPRITE_SHRINK) * spritescale;
-							spriteheight = spritewidth;
-						}
-
-						float spritesize = Math.Max(spritewidth, spriteheight); 
-						
-						if(!forcespriterendering && spritesize < MINIMUM_SPRITE_RADIUS)
-						{
-							// Hackish way to tell arrow rendering code to draw bigger arrow...
-							Vector3D v = thingsByPosition[t];
-							v.z = -1; 
-							thingsByPosition[t] = v;
-							
-							// Don't render tiny little sprites
-							continue; 
-						}
-						
-						CreateThingSpriteVerts(thingsByPosition[t], spritewidth, spriteheight, ref verts, buffercount * 6, (t.Selected ? selectionColor : 0xFFFFFF));
-						buffercount++;
-						totalcount++;
-
-						// Buffer filled?
-						if(buffercount == locksize) 
-						{
-							// Write to buffer
-							stream = thingsvertices.Lock(0, locksize * 6 * FlatVertex.Stride, LockFlags.Discard);
-							stream.WriteRange(verts, 0, buffercount * 6);
-							thingsvertices.Unlock();
-							stream.Dispose();
-
-							// Draw!
-							graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, 0, buffercount * 2);
-
-							buffercount = 0;
-
-							// Determine next lock size
-							locksize = ((group.Value.Count - totalcount) > THING_BUFFER_SIZE) ? THING_BUFFER_SIZE : (group.Value.Count - totalcount);
+							// Add to collection
+							if(!thingsbyangle.ContainsKey(spriteangle)) thingsbyangle.Add(spriteangle, new List<Thing>());
+							thingsbyangle[spriteangle].Add(t);
 						}
 					}
+					else
+					{
+						thingsbyangle[0] = group.Value;
+					}
 
-					// Write to buffer
-					stream = thingsvertices.Lock(0, locksize * 6 * FlatVertex.Stride, LockFlags.Discard);
-					if(buffercount > 0) stream.WriteRange(verts, 0, buffercount * 6);
-					thingsvertices.Unlock();
-					stream.Dispose();
+					foreach(KeyValuePair<int, List<Thing>> framegroup in thingsbyangle)
+					{
+						SpriteFrameInfo sfi = info.SpriteFrame[framegroup.Key];
+						ImageData sprite = General.Map.Data.GetSpriteImage(sfi.Sprite);
+						if(sprite == null) continue;
+						if(!sprite.IsImageLoaded)
+						{
+							sprite.SetUsedInMap(true);
+							continue;
+						}
+						if(sprite.Texture == null) sprite.CreateTexture();
 
-					// Draw what's still remaining
-					if(buffercount > 0) 
-						graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, 0, buffercount * 2);
+						graphics.Shaders.Things2D.Texture1 = sprite.Texture;
+						graphics.Shaders.Things2D.ApplySettings();
+
+						// Determine next lock size
+						locksize = (framegroup.Value.Count > THING_BUFFER_SIZE) ? THING_BUFFER_SIZE : framegroup.Value.Count;
+						verts = new FlatVertex[THING_BUFFER_SIZE * 6];
+
+						// Go for all things
+						buffercount = 0;
+						totalcount = 0;
+
+						foreach(Thing t in framegroup.Value)
+						{
+							if(t.IsModel && ((General.Settings.GZDrawModelsMode == ModelRenderMode.SELECTION && t.Selected) || (General.Settings.GZDrawModelsMode == ModelRenderMode.ACTIVE_THINGS_FILTER && alpha == 1.0f)))
+								continue;
+
+							bool forcespriterendering;
+							float spritewidth, spriteheight, spritescale;
+
+							// Determine sizes
+							if(t.FixedSize && scale > 1.0f)
+							{
+								spritescale = 1.0f;
+								forcespriterendering = true; // Always render sprite when thing size is affected by FixedSize setting
+							}
+							else if(General.Settings.FixedThingsScale && t.Size * scale > FIXED_THING_SIZE)
+							{
+								spritescale = FIXED_THING_SIZE / t.Size;
+								forcespriterendering = true; // Always render sprite when thing size is affected by FixedThingsScale setting
+							}
+							else
+							{
+								spritescale = scale;
+								forcespriterendering = false;
+							}
+
+							// Calculate scaled sprite size
+							if(sprite.Width > sprite.Height)
+							{
+								spritewidth = (t.Size - THING_SPRITE_SHRINK) * spritescale;
+								spriteheight = spritewidth * ((float)sprite.Height / sprite.Width);
+							}
+							else if(sprite.Width < sprite.Height)
+							{
+								spriteheight = (t.Size - THING_SPRITE_SHRINK) * spritescale;
+								spritewidth = spriteheight * ((float)sprite.Width / sprite.Height);
+							}
+							else
+							{
+								spritewidth = (t.Size - THING_SPRITE_SHRINK) * spritescale;
+								spriteheight = spritewidth;
+							}
+
+							float spritesize = Math.Max(spritewidth, spriteheight);
+
+							if(!forcespriterendering && spritesize < MINIMUM_SPRITE_RADIUS)
+							{
+								// Hackish way to tell arrow rendering code to draw bigger arrow...
+								Vector3D v = thingsByPosition[t];
+								v.z = -1;
+								thingsByPosition[t] = v;
+
+								// Don't render tiny little sprites
+								continue;
+							}
+
+							CreateThingSpriteVerts(thingsByPosition[t], spritewidth, spriteheight, ref verts, buffercount * 6, (t.Selected ? selectionColor : 0xFFFFFF), sfi.Mirror);
+							buffercount++;
+							totalcount++;
+
+							// Buffer filled?
+							if(buffercount == locksize)
+							{
+								// Write to buffer
+								stream = thingsvertices.Lock(0, locksize * 6 * FlatVertex.Stride, LockFlags.Discard);
+								stream.WriteRange(verts, 0, buffercount * 6);
+								thingsvertices.Unlock();
+								stream.Dispose();
+
+								// Draw!
+								graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, 0, buffercount * 2);
+
+								buffercount = 0;
+
+								// Determine next lock size
+								locksize = ((framegroup.Value.Count - totalcount) > THING_BUFFER_SIZE) ? THING_BUFFER_SIZE : (framegroup.Value.Count - totalcount);
+							}
+						}
+
+						// Write to buffer
+						stream = thingsvertices.Lock(0, locksize * 6 * FlatVertex.Stride, LockFlags.Discard);
+						if(buffercount > 0) stream.WriteRange(verts, 0, buffercount * 6);
+						thingsvertices.Unlock();
+						stream.Dispose();
+
+						// Draw what's still remaining
+						if(buffercount > 0) graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, 0, buffercount * 2);
+					}
 				}
 
 				// Done

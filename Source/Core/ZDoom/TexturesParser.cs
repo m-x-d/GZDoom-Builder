@@ -144,10 +144,10 @@ namespace CodeImp.DoomBuilder.ZDoom
 							TextureStructure tx = new TextureStructure(this, "sprite", virtualpath);
 							if(this.HasError) return false;
 
-							// if a limit for the sprite name length is set make sure that it's not exceeded
-							if(tx.Name.Length > DataManager.CLASIC_IMAGE_NAME_LENGTH)
+							//mxd. Sprite name length must be either 6 or 8 chars
+							if(tx.Name.Length != 6 && tx.Name.Length != 8)
 							{
-								ReportError("Sprite name \"" + tx.Name + "\" too long. Sprite names must have a length of " + DataManager.CLASIC_IMAGE_NAME_LENGTH + " characters or less");
+								ReportError("Sprite name \"" + tx.Name + "\" is incorrect. Sprite names must have a length of 6 or 8 characters");
 								return false;
 							}
 

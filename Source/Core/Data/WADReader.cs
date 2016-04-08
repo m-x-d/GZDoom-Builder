@@ -879,7 +879,29 @@ namespace CodeImp.DoomBuilder.Data
 
 			return false;
 		}
-		
+
+		//mxd. Returns all sprites, which name starts with given string
+		public override HashSet<string> GetSpriteNames(string startswith)
+		{
+			// Error when suspended
+			if(issuspended) throw new Exception("Data reader is suspended");
+
+			HashSet<string> result = new HashSet<string>();
+			if(startswith.Length > 8) return result;
+
+			startswith = startswith.ToUpperInvariant();
+			foreach(LumpRange range in spriteranges)
+			{
+				for(int i = range.start; i < range.end + 1; i++)
+				{
+					if(file.Lumps[i].Name.StartsWith(startswith))
+						result.Add(file.Lumps[i].Name);
+				}
+			}
+
+			return result;
+		}
+
 		#endregion
 
 		#region ================== Voxels (mxd)
