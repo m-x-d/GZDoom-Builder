@@ -285,10 +285,6 @@ namespace CodeImp.DoomBuilder.Windows
 			// Action
 			action.Value = fl.Action;
 
-			//mxd. Tags
-			tagsselector.Setup(UniversalType.LinedefTag);
-			tagsselector.SetValue(fl.Tags, true);
-
 			//mxd. Args
 			argscontrol.SetValue(fl, true);
 			
@@ -411,9 +407,8 @@ namespace CodeImp.DoomBuilder.Windows
 				//mxd. Comments
 				commenteditor.SetValues(l.Fields, false);
 
-				// Action/tags
+				// Action
 				if(l.Action != action.Value) action.Empty = true;
-				tagsselector.SetValue(l.Tags, false);
 
 				//mxd. Arguments
 				argscontrol.SetValue(l, false);
@@ -546,6 +541,9 @@ namespace CodeImp.DoomBuilder.Windows
 				//mxd
 				linedefprops.Add(new LinedefProperties(l));
 			}
+
+			//mxd. Set tags
+			tagsselector.SetValues(lines);
 			
 			// Refresh controls so that they show their image
 			backhigh.Refresh();
@@ -560,7 +558,6 @@ namespace CodeImp.DoomBuilder.Windows
 			CheckActivationFlagsRequired(); //mxd
 			argscontrol.UpdateScriptControls(); //mxd
 			actionhelp.UpdateAction(action.GetValue()); //mxd
-			tagsselector.FinishSetup(); //mxd
 			commenteditor.FinishSetup(); //mxd
 
 			//mxd. Update brightness reset buttons
@@ -677,7 +674,6 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 			
 			// Go for all the lines
-			int tagoffset = 0; //mxd
 			foreach(Linedef l in lines)
 			{
 				// UDMF activations
@@ -691,9 +687,8 @@ namespace CodeImp.DoomBuilder.Windows
 					}
 				}
 				
-				// Action/tags
+				// Action
 				if(!action.Empty) l.Action = action.Value;
-				tagsselector.ApplyTo(l, tagoffset++); //mxd
 
 				//mxd. Apply args
 				argscontrol.Apply(l);
@@ -753,6 +748,9 @@ namespace CodeImp.DoomBuilder.Windows
 				if(setlocknumber) UniFields.SetInteger(l.Fields, "locknumber", locknumber, 0);
 				commenteditor.Apply(l.Fields);
 			}
+
+			//mxd. Apply tags
+			tagsselector.ApplyTo(lines);
 
 			//mxd. Store value linking
 			linkFrontTopScale = pfcFrontScaleTop.LinkValues;

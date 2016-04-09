@@ -38,7 +38,7 @@ namespace CodeImp.DoomBuilder.Map
 		FADE			   // sector uses UDMF "fade" sector property
 	}
 	
-	public sealed class Sector : SelectableElement
+	public sealed class Sector : SelectableElement, IMultiTaggedMapElement
 	{
 		#region ================== Constants
 

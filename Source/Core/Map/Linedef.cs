@@ -28,7 +28,7 @@ using CodeImp.DoomBuilder.IO;
 
 namespace CodeImp.DoomBuilder.Map
 {
-	public sealed class Linedef : SelectableElement
+	public sealed class Linedef : SelectableElement, IMultiTaggedMapElement
 	{
 		#region ================== Constants
 

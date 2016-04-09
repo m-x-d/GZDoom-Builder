@@ -373,7 +373,7 @@ namespace CodeImp.DoomBuilder.Controls
 					}
 					else
 					{
-						labels[i].Text = arginfo[i].Title;
+						labels[i].Text = arginfo[i].Title + ":";
 						labels[i].Enabled = arginfo[i].Used;
 						UpdateToolTip(labels[i], arginfo[i]);
 					}
@@ -385,7 +385,7 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				for(int i = 0; i < labels.Length; i++)
 				{
-					labels[i].Text = arginfo[i].Title;
+					labels[i].Text = arginfo[i].Title + ":";
 					labels[i].Enabled = arginfo[i].Used;
 					UpdateToolTip(labels[i], arginfo[i]);
 					args[i].ForeColor = (labels[i].Enabled ? SystemColors.WindowText : SystemColors.GrayText);

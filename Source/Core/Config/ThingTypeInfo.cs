@@ -564,9 +564,15 @@ namespace CodeImp.DoomBuilder.Config
 						return;
 					}
 
-					if(targetangle < 0 || targetangle > 8)
+					if(targetangle == 0)
 					{
-						General.ErrorLogger.Add(ErrorType.Error, "Error in actor \"" + title + "\":" + index + ", sprite \"" + s + "\". Sprite angle must be in [0..8] range");
+						General.ErrorLogger.Add(ErrorType.Warning, "Warning: actor \"" + title + "\":" + index + ", sprite \"" + sourcename + "\", frame " + targetframe + " has both rotated and non-rotated versions");
+						continue;
+					}
+
+					if(targetangle < 1 || targetangle > 8)
+					{
+						General.ErrorLogger.Add(ErrorType.Error, "Error in actor \"" + title + "\":" + index + ", sprite \"" + s + "\". Expected sprite angle in [1..8] range");
 						return;
 					}
 
@@ -590,9 +596,15 @@ namespace CodeImp.DoomBuilder.Config
 						return;
 					}
 
-					if(targetangle < 0 || targetangle > 8)
+					if(targetangle == 0)
 					{
-						General.ErrorLogger.Add(ErrorType.Error, "Error in actor \"" + title + "\":" + index + ", sprite \"" + s + "\". Sprite angle must be in [0..8] range");
+						General.ErrorLogger.Add(ErrorType.Warning, "Warning: actor \"" + title + "\":" + index + ", sprite \"" + sourcename + "\", frame " + targetframe + " has both rotated and non-rotated versions");
+						continue;
+					}
+
+					if(targetangle < 1 || targetangle > 8)
+					{
+						General.ErrorLogger.Add(ErrorType.Error, "Error in actor \"" + title + "\":" + index + ", sprite \"" + s + "\". Expected sprite angle in [1..8] range");
 						return;
 					}
 

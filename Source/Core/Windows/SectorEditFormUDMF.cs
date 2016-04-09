@@ -343,10 +343,6 @@ namespace CodeImp.DoomBuilder.Windows
 			SetupFloorSlope(sc, true);
 			SetupCeilingSlope(sc, true);
 
-			// Action
-			tagsselector.Setup(UniversalType.SectorTag); //mxd
-			tagsselector.SetValue(sc.Tags, true);//mxd
-
 			// Custom fields
 			fieldslist.SetValues(sc.Fields, true);
 
@@ -464,9 +460,6 @@ namespace CodeImp.DoomBuilder.Windows
 				SetupFloorSlope(s, false);
 				SetupCeilingSlope(s, false);
 
-				// Action
-				tagsselector.SetValue(s.Tags, false); //mxd
-
 				// Custom fields
 				fieldslist.SetValues(s.Fields, false);
 
@@ -485,6 +478,9 @@ namespace CodeImp.DoomBuilder.Windows
 					if(!anglesteps.Contains(angle)) anglesteps.Add(angle);
 				}
 			}
+
+			//mxd. Setup tags
+			tagsselector.SetValues(sectors);
 
 			//mxd. Update slope controls
 			ceilingslopecontrol.UpdateControls();
@@ -510,9 +506,8 @@ namespace CodeImp.DoomBuilder.Windows
 			if(useCeilSlopeLineAngles) ceilingslopecontrol.StepValues = anglesteps;
 			if(useFloorSlopeLineAngles) floorslopecontrol.StepValues = anglesteps;
 
-			//mxd. Comments and Tags
+			//mxd. Comments
 			commenteditor.FinishSetup();
-			tagsselector.FinishSetup();
 
 			preventchanges = false; //mxd
 		}
@@ -700,7 +695,6 @@ namespace CodeImp.DoomBuilder.Windows
 			MakeUndo(); //mxd
 
 			// Go for all sectors
-			int tagoffset = 0; //mxd
 			foreach(Sector s in sectors) 
 			{
 				// Apply all flags
@@ -715,9 +709,6 @@ namespace CodeImp.DoomBuilder.Windows
 
 				// Effects
 				if(!effect.Empty) s.Effect = effect.Value;
-
-				//mxd. Tag
-				tagsselector.ApplyTo(s, tagoffset++);
 
 				// Fields
 				fieldslist.Apply(s.Fields);
@@ -786,6 +777,9 @@ namespace CodeImp.DoomBuilder.Windows
 					s.CeilSlopeOffset = float.NaN;
 				}
 			}
+
+			//mxd. Apply tags
+			tagsselector.ApplyTo(sectors);
 
 			// Update the used textures
 			General.Map.Data.UpdateUsedTextures();

@@ -914,6 +914,7 @@
     <Compile Include="IO\DoomColormapReader.cs" />
     <Compile Include="IO\ClipboardStreamWriter.cs" />
     <Compile Include="Map\GroupInfo.cs" />
+    <Compile Include="Map\ITaggedMapElement.cs" />
     <Compile Include="Map\SelectionType.cs" />
     <Compile Include="Map\MapElementCollection.cs" />
     <Compile Include="Map\SplitLineBehavior.cs" />
