@@ -31,7 +31,7 @@ using CodeImp.DoomBuilder.VisualModes;
 
 namespace CodeImp.DoomBuilder.Map
 {
-	public sealed class Thing : SelectableElement
+	public sealed class Thing : SelectableElement, ITaggedMapElement
 	{
 		#region ================== Constants
 

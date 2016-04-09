@@ -24,11 +24,11 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 
 		#region ================== Variables
 
-		private List<int> usedtags; //tags already used in the map
+		private List<int> usedtags; // Tags already used in the map
 		private List<TagInfo> infos;
-		private List<int> tags; //tags being edited
-		private List<int> rangemodes; //0 - none, 1 - positive (>=), -1 - negative (<=)
-		private List<int> offsetmodes; //0 - none, 1 - positive (++), -1 - negative (--)
+		private List<List<int>> tagspermapelement; // One list per each map element
+		private List<int> rangemodes;  // 0 - none, 1 - positive (>=), -1 - negative (<=)
+		private List<int> offsetmodes; // 0 - none, 1 - positive (++), -1 - negative (--)
 		private UniversalType elementtype;
 		private const string TAGS_SEPARATOR = ", ";
 		private int curtagindex;
@@ -41,22 +41,80 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		public TagsSelector()
 		{
 			InitializeComponent();
+
+			tagspermapelement = new List<List<int>>();
+			usedtags = new List<int>();
+			rangemodes = new List<int>();
+			offsetmodes = new List<int>();
+			infos = new List<TagInfo>();
 		}
 
 		#endregion
 
 		#region ================== Setup
 
-		public void Setup(UniversalType mapelementtype)
+		public void SetValues(ICollection<Sector> sectors)
 		{
-			tags = new List<int>();
-			usedtags = new List<int>();
-			rangemodes = new List<int>();
-			offsetmodes = new List<int>();
-			infos = new List<TagInfo>();
+			List<IMultiTaggedMapElement> taglist = new List<IMultiTaggedMapElement>(sectors.Count);
+			foreach(Sector s in sectors) taglist.Add(s);
+			SetValues(taglist);
+		}
+
+		public void SetValues(ICollection<Linedef> lines)
+		{
+			List<IMultiTaggedMapElement> taglist = new List<IMultiTaggedMapElement>(lines.Count);
+			foreach(Linedef l in lines) taglist.Add(l);
+			SetValues(taglist);
+		}
+
+		private void SetValues(ICollection<IMultiTaggedMapElement> elements)
+		{
+			// Initial setup
+			IMultiTaggedMapElement first = General.GetByIndex(elements, 0);
+			if(first is Linedef)
+				Setup(UniversalType.LinedefTag);
+			else if(first is Sector)
+				Setup(UniversalType.SectorTag);
+			else
+				throw new NotSupportedException(first + " doesn't support 'moreids' property!");
+
+			// Create tags collection
+			int maxtagscount = 0;
+			foreach(IMultiTaggedMapElement me in elements)
+			{
+				tagspermapelement.Add(new List<int>(me.Tags));
+				if(me.Tags.Count > maxtagscount) maxtagscount = me.Tags.Count;
+			}
+			
+			// Make all lists the same length
+			foreach(List<int> l in tagspermapelement)
+			{
+				if(l.Count < maxtagscount)
+					for(int i = l.Count; i < maxtagscount; i++) l.Add(int.MaxValue);
+			}
+
+			// Update collections
+			List<int> tags = GetDisplayTags();
+
+			// Initialize modifier modes
+			for(int i = 0; i < tags.Count; i++)
+			{
+				rangemodes.Add(0);
+				offsetmodes.Add(0);
+			}
+
+			// Update controls
+			UpdateTagPicker(tags[0]);
+			UpdateTagsList(tags);
+			removetag.Enabled = (tags.Count > 1);
+			clear.Enabled = (tagpicker.Text.Trim() != "0");
+		}
+
+		private void Setup(UniversalType mapelementtype)
+		{
 			elementtype = mapelementtype;
 
-			//collect used tags from appropriate element type...
+			// Collect used tags from appropriate element type...
 			switch(elementtype)
 			{
 				case UniversalType.SectorTag:
@@ -83,18 +141,15 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 						}
 					}
 					break;
-
-				default:
-					throw new NotSupportedException(elementtype + " doesn't support 'moreids' property!");
 			}
 
-			//now sort them in descending order
+			// Now sort them in descending order
 			usedtags.Sort((a, b) => -1 * a.CompareTo(b));
 
-			//create tag infos
+			// Create tag infos
 			foreach(int tag in usedtags)
 			{
-				if(General.Map.Options.TagLabels.ContainsKey(tag)) //tag labels
+				if(General.Map.Options.TagLabels.ContainsKey(tag)) // Tag labels
 					infos.Add(new TagInfo(tag, General.Map.Options.TagLabels[tag]));
 				else
 					infos.Add(new TagInfo(tag, string.Empty));
@@ -104,102 +159,93 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			tagpicker.DropDownWidth = DoomBuilder.Geometry.Tools.GetDropDownWidth(tagpicker);
 		}
 
-		// Update collections and controls
-		public void FinishSetup()
-		{
-			if(tags.Count == 0) tags.Add(0);
-
-			// Initialize modifier modes
-			for(int i = 0; i < tags.Count; i++)
-			{
-				rangemodes.Add(0);
-				offsetmodes.Add(0);
-			}
-
-			// Update controls
-			UpdateTagPicker(tags[0]);
-			UpdateTagsList();
-			removetag.Enabled = (tags.Count > 1);
-			clear.Enabled = (tagpicker.Text.Trim() != "0");
-		}
-
-		public void SetValue(List<int> newtags, bool first)
-		{
-			if(first)
-			{
-				tags.AddRange(newtags);
-				return;
-			}
-
-			for(int i = 0; i < newtags.Count; i++)
-			{
-				if(i < tags.Count && newtags[i] != tags[i])
-					tags[i] = int.MinValue;
-				else if(i >= tags.Count)
-					tags.Add(int.MinValue);
-			}
-
-			// If current tags list is shorter than out tags list, mark the rest of our list as mixed
-			if(newtags.Count < tags.Count)
-			{
-				for(int i = newtags.Count; i < tags.Count; i++)
-					tags[i] = int.MinValue;
-			}
-		}
-
 		#endregion
 
 		#region ================== Apply
 
-		public void ApplyTo(Linedef mo, int offset)
+		public void ApplyTo(ICollection<Sector> sectors)
 		{
-			int[] oldtags = new int[mo.Tags.Count];
-			mo.Tags.CopyTo(oldtags);
-			mo.Tags.Clear();
-			mo.Tags.AddRange(GetResultTags(oldtags, offset));
+			List<IMultiTaggedMapElement> taglist = new List<IMultiTaggedMapElement>(sectors.Count);
+			foreach(Sector s in sectors) taglist.Add(s);
+			ApplyTo(taglist);
 		}
 
-		public void ApplyTo(Sector mo, int offset)
+		public void ApplyTo(ICollection<Linedef> lines)
 		{
-			int[] oldtags = new int[mo.Tags.Count];
-			mo.Tags.CopyTo(oldtags);
-			mo.Tags.Clear();
-			mo.Tags.AddRange(GetResultTags(oldtags, offset));
+			List<IMultiTaggedMapElement> taglist = new List<IMultiTaggedMapElement>(lines.Count);
+			foreach(Linedef l in lines) taglist.Add(l);
+			ApplyTo(taglist);
 		}
 
-		private IEnumerable<int> GetResultTags(int[] oldtags, int offset)
+		private void ApplyTo(IEnumerable<IMultiTaggedMapElement> elements)
 		{
-			HashSet<int> newtags = new HashSet<int>();
-
-			for(int i = 0; i < tags.Count; i++)
+			int offset = 0;
+			foreach(IMultiTaggedMapElement me in elements)
 			{
-				if(tags[i] == int.MinValue && oldtags.Length > i)
+				// Create resulting tags list for this map element
+				List<int> tags = tagspermapelement[offset];
+				HashSet<int> newtags = new HashSet<int>();
+				for(int i = 0; i < tags.Count; i++)
 				{
-					if(oldtags[i] != 0 && !newtags.Contains(oldtags[i])) newtags.Add(oldtags[i]);
-				}
-				else if(tags[i] != 0 && tags[i] != int.MinValue)
-				{
-					int tag;
-					if(rangemodes[i] != 0)
-						tag = tags[i] + offset * rangemodes[i];
-					else if(offsetmodes[i] != 0 && oldtags.Length > i)
-						tag = oldtags[i] + tags[i] * offsetmodes[i];
-					else
-						tag = tags[i];
+					if(tags[i] == int.MaxValue) continue; // int.MaxValue is there only for padding
+					if(tags[i] == int.MinValue && me.Tags.Count > i)
+					{
+						if(me.Tags[i] != 0 && !newtags.Contains(me.Tags[i])) newtags.Add(me.Tags[i]);
+					}
+					else if(tags[i] != 0 && tags[i] != int.MinValue)
+					{
+						int tag;
+						if(rangemodes[i] != 0)
+							tag = tags[i] + offset * rangemodes[i];
+						else if(offsetmodes[i] != 0 && me.Tags.Count > i)
+							tag = me.Tags[i] + tags[i] * offsetmodes[i];
+						else
+							tag = tags[i];
 
-					if(!newtags.Contains(tag)) newtags.Add(tag);
+						if(!newtags.Contains(tag)) newtags.Add(tag);
+					}
 				}
+
+				if(newtags.Count == 0) newtags.Add(0);
+
+				// Apply it
+				me.Tags.Clear();
+				me.Tags.AddRange(newtags);
+
+				// We are making progress...
+				offset++;
 			}
-
-			if(newtags.Count == 0) newtags.Add(0);
-			return newtags;
 		}
 
 		#endregion
 
 		#region ================== Methods
 
-		private void UpdateTagsList()
+		// Creates a single tag collection to display. int.MinValue means "mixed tag"
+		private List<int> GetDisplayTags()
+		{
+			List<int> tags = new List<int>(tagspermapelement[0].Count);
+
+			// Padding values should stay in tagspermapelement
+			foreach(int tag in tagspermapelement[0])
+			{
+				tags.Add(tag == int.MaxValue ? int.MinValue : tag);
+			}
+			
+			for(int i = 1; i < tagspermapelement.Count; i++)
+			{
+				// Check mixed values
+				for(int c = 0; c < tagspermapelement[i].Count; c++)
+				{
+					if(tagspermapelement[i][c] != tags[c])
+						tags[c] = int.MinValue;
+				}
+			}
+
+			return tags;
+		}
+
+		private void UpdateTagsList(List<int> tags)
 		{
 			string[] displaytags = new string[tags.Count];
 			int displaytagslen = 0;
@@ -290,6 +336,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 		private void addtag_Click(object sender, EventArgs e)
 		{
 			// When an item has no tags, act like "New Tag" button
+			List<int> tags = GetDisplayTags();
 			if(tags.Count == 1 && tags[0] == 0)
 			{
 				newtag_Click(sender, e);
@@ -297,7 +344,13 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			}
 			
 			int nt = General.Map.Map.GetNewTag(tags);
+			
+			// Add to displayed tags list
 			tags.Add(nt);
+
+			// Add to real tag lists
+			foreach(List<int> l in tagspermapelement) l.Add(nt);
+
 			rangemodes.Add(0);
 			offsetmodes.Add(0);
 			curtagindex = tags.Count - 1;
@@ -308,12 +361,19 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			blockupdate = false;
 
 			removetag.Enabled = true;
-			UpdateTagsList();
+			UpdateTagsList(tags);
 		}
 
 		private void removetag_Click(object sender, EventArgs e)
 		{
+			List<int> tags = GetDisplayTags();
+
+			// Remove from displayed tags list
 			tags.RemoveAt(curtagindex);
+
+			// Remove from real tag lists
+			foreach(List<int> l in tagspermapelement) l.RemoveAt(curtagindex);
+
 			rangemodes.RemoveAt(curtagindex);
 			offsetmodes.RemoveAt(curtagindex);
 			if(curtagindex >= tags.Count) curtagindex = tags.Count - 1;
@@ -322,20 +382,20 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			UpdateTagPicker(tags[curtagindex]);
 
 			removetag.Enabled = (tags.Count > 1);
-			UpdateTagsList();
+			UpdateTagsList(tags);
 		}
 
 		private void clearalltags_Click(object sender, EventArgs e)
 		{
 			curtagindex = 0;
-			
+
+			// Clear real tag lists
+			for(int i = 0; i < tagspermapelement.Count; i++)
+				tagspermapelement[i] = new List<int> { 0 };
+
 			// Clear collections
-			tags.Clear();
-			tags.Add(0);
-			rangemodes.Clear();
-			rangemodes.Add(0);
-			offsetmodes.Clear();
-			offsetmodes.Add(0);
+			rangemodes = new List<int> { 0 };
+			offsetmodes = new List<int> { 0 };
 
 			// Update controls
 			blockupdate = true;
@@ -343,7 +403,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			blockupdate = false;
 
 			removetag.Enabled = false;
-			UpdateTagsList();
+			UpdateTagsList(new List<int> { 0 });
 		}
 
 		private void tagslist_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -354,7 +414,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 
 			// Update interface
 			UpdateTagPicker(data.Tag);
-			UpdateTagsList();
+			UpdateTagsList(GetDisplayTags());
 		}
 
 		private void tagpicker_TextChanged(object sender, EventArgs e)
@@ -362,43 +422,55 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 			if(blockupdate) return;
 
 			clear.Enabled = (tagpicker.Text.Trim() != "0");
+			List<int> tags = GetDisplayTags();
 			if(tagpicker.SelectedItem != null)
 			{
 				TagInfo info = (TagInfo)tagpicker.SelectedItem;
+				
+				// Set displayed tag
 				tags[curtagindex] = info.Tag;
-				UpdateTagsList();
+
+				// Apply to real tags
+				foreach(List<int> l in tagspermapelement) l[curtagindex] = info.Tag;
+
+				UpdateTagsList(tags);
 				return;
 			}
 
 			string text = tagpicker.Text.Trim();
 			if(string.IsNullOrEmpty(text))
 			{
+				// Set displayed tag
 				tags[curtagindex] = int.MinValue;
-				UpdateTagsList();
+
+				// Apply to real tags
+				foreach(List<int> l in tagspermapelement) l[curtagindex] = int.MinValue;
+
+				UpdateTagsList(tags);
 				return;
 			}
 
-			//incremental?
+			// Incremental?
 			int rangemode = 0;
 			int offsetmode = 0;
 			if(text.Length > 2)
 			{
-				if(text.StartsWith(">=")) //range up
+				if(text.StartsWith(">=")) // Range up
 				{
 					rangemode = 1;
 					text = text.Substring(2, text.Length - 2);
 				}
-				else if(text.StartsWith("<=")) //range down
+				else if(text.StartsWith("<=")) // Range down
 				{
 					rangemode = -1;
 					text = text.Substring(2, text.Length - 2);
 				}
-				else if(text.StartsWith("++")) //relative up
+				else if(text.StartsWith("++")) // Relative up
 				{
 					offsetmode = 1;
 					text = text.Substring(2, text.Length - 2);
 				}
-				else if(text.StartsWith("--")) //relative down
+				else if(text.StartsWith("--")) // Relative down
 				{
 					offsetmode = -1;
 					text = text.Substring(2, text.Length - 2);
@@ -415,10 +487,15 @@ namespace CodeImp.DoomBuilder.GZBuilder.Controls
 					return;
 				}
 
+				// Set displayed tag
 				tags[curtagindex] = tag;
+
+				// Apply to real tags
+				foreach(List<int> l in tagspermapelement) l[curtagindex] = tag;
+
 				rangemodes[curtagindex] = rangemode;
 				offsetmodes[curtagindex] = offsetmode;
-				UpdateTagsList();
+				UpdateTagsList(tags);
 			}
 		}
 
