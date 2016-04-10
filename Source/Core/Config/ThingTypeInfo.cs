@@ -564,21 +564,28 @@ namespace CodeImp.DoomBuilder.Config
 						return;
 					}
 
+					// Sanity checks
 					if(targetangle == 0)
 					{
 						General.ErrorLogger.Add(ErrorType.Warning, "Warning: actor \"" + title + "\":" + index + ", sprite \"" + sourcename + "\", frame " + targetframe + " has both rotated and non-rotated versions");
 						continue;
 					}
 
+					// More sanity checks
 					if(targetangle < 1 || targetangle > 8)
 					{
 						General.ErrorLogger.Add(ErrorType.Error, "Error in actor \"" + title + "\":" + index + ", sprite \"" + s + "\". Expected sprite angle in [1..8] range");
 						return;
 					}
 
+					// Even more sanity checks
+					if(!string.IsNullOrEmpty(frames[targetangle - 1]))
+						General.ErrorLogger.Add(ErrorType.Warning, "Warning in actor \"" + title + "\":" + index + ". Sprite \"" + sourcename + "\", frame " + targetframe + ", angle " + targetangle + " is double-defined");
+					else
+						processedcount++;
+
 					// Add to collection
 					frames[targetangle - 1] = s;
-					processedcount++;
 				}
 
 				// Check second frame block?
@@ -596,22 +603,29 @@ namespace CodeImp.DoomBuilder.Config
 						return;
 					}
 
+					// Sanity checks
 					if(targetangle == 0)
 					{
 						General.ErrorLogger.Add(ErrorType.Warning, "Warning: actor \"" + title + "\":" + index + ", sprite \"" + sourcename + "\", frame " + targetframe + " has both rotated and non-rotated versions");
 						continue;
 					}
 
+					// More sanity checks
 					if(targetangle < 1 || targetangle > 8)
 					{
 						General.ErrorLogger.Add(ErrorType.Error, "Error in actor \"" + title + "\":" + index + ", sprite \"" + s + "\". Expected sprite angle in [1..8] range");
 						return;
 					}
 
+					// Even more sanity checks
+					if(!string.IsNullOrEmpty(frames[targetangle - 1]))
+						General.ErrorLogger.Add(ErrorType.Warning, "Warning in actor \"" + title + "\":" + index + ". Sprite \"" + sourcename + "\", frame " + targetframe + ", angle " + targetangle + " is double-defined");
+					else
+						processedcount++;
+
 					// Add to collections
 					frames[targetangle - 1] = s;
 					mirror[targetangle - 1] = true;
-					processedcount++;
 				}
 
 				// Gathered all sprites?
