@@ -580,12 +580,17 @@ namespace CodeImp.DoomBuilder.Config
 
 					// Even more sanity checks
 					if(!string.IsNullOrEmpty(frames[targetangle - 1]))
-						General.ErrorLogger.Add(ErrorType.Warning, "Warning in actor \"" + title + "\":" + index + ". Sprite \"" + sourcename + "\", frame " + targetframe + ", angle " + targetangle + " is double-defined");
+					{
+						General.ErrorLogger.Add(ErrorType.Warning, "Warning in actor \"" + title + "\":" + index 
+							+ ". Sprite \"" + sourcename + "\", frame " + targetframe + ", angle " + targetangle 
+							+ " is double-defined in sprites \"" + frames[targetangle - 1] + "\" and \"" + s + "\"");
+					}
 					else
+					{
+						// Add to collection
+						frames[targetangle - 1] = s;
 						processedcount++;
-
-					// Add to collection
-					frames[targetangle - 1] = s;
+					}
 				}
 
 				// Check second frame block?
@@ -619,13 +624,18 @@ namespace CodeImp.DoomBuilder.Config
 
 					// Even more sanity checks
 					if(!string.IsNullOrEmpty(frames[targetangle - 1]))
-						General.ErrorLogger.Add(ErrorType.Warning, "Warning in actor \"" + title + "\":" + index + ". Sprite \"" + sourcename + "\", frame " + targetframe + ", angle " + targetangle + " is double-defined");
+					{
+						General.ErrorLogger.Add(ErrorType.Warning, "Warning in actor \"" + title + "\":" + index
+							+ ". Sprite \"" + sourcename + "\", frame " + targetframe + ", angle " + targetangle
+							+ " is double-defined in sprites \"" + frames[targetangle - 1] + "\" and \"" + s + "\"");
+					}
 					else
+					{
+						// Add to collections
+						frames[targetangle - 1] = s;
+						mirror[targetangle - 1] = true;
 						processedcount++;
-
-					// Add to collections
-					frames[targetangle - 1] = s;
-					mirror[targetangle - 1] = true;
+					}
 				}
 
 				// Gathered all sprites?
