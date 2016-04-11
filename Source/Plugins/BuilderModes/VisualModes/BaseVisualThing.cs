@@ -42,7 +42,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		private bool isloaded;
 		private bool nointeraction; //mxd
-		private ImageData sprite;
+		private ImageData[] sprites;
 		private float cageradius2;
 		private Vector2D pos2d;
 		private Vector3D boxp1;
@@ -76,11 +76,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			//mxd. When true, the thing can be moved below floor/above ceiling
 			nointeraction = (info.Actor != null && info.Actor.GetFlagValue("nointeraction", false));
 
-			// Find sprite texture
-			if(info.Sprite.Length > 0)
+			//mxd. Find sprite textures
+			sprites = new ImageData[info.SpriteFrame.Length];
+			for(int i = 0; i < info.SpriteFrame.Length; i++)
 			{
-				sprite = General.Map.Data.GetSpriteImage(info.Sprite);
-				if(sprite != null) sprite.AddReference();
+				sprites[i] = General.Map.Data.GetSpriteImage(info.SpriteFrame[i].Sprite);
+				if(sprites[i] != null) sprites[i].AddReference();
 			}
 
 			//mxd
@@ -191,98 +192,103 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				sizeless = false;
 			}
 
-			if(sprite != null)
+			Plane floor = new Plane(); //mxd
+			Plane ceiling = new Plane(); //mxd
+			if(Thing.Sector != null)
 			{
-				Plane floor = new Plane(); //mxd
-				Plane ceiling = new Plane(); //mxd
-				if(Thing.Sector != null)
+				SectorData sd = mode.GetSectorData(Thing.Sector);
+				floor = sd.Floor.plane; //mxd
+				ceiling = sd.Ceiling.plane; //mxd
+
+				if(!info.Bright)
 				{
-					SectorData sd = mode.GetSectorData(Thing.Sector);
-					floor = sd.Floor.plane; //mxd
-					ceiling = sd.Ceiling.plane; //mxd
+					Vector3D thingpos = new Vector3D(Thing.Position.x, Thing.Position.y, Thing.Position.z + sd.Floor.plane.GetZ(Thing.Position));
+					SectorLevel level = sd.GetLevelAboveOrAt(thingpos);
 
-					if(!info.Bright)
+					//mxd. Let's use point on floor plane instead of Thing.Sector.FloorHeight;
+					if(nointeraction && level == null && sd.LightLevels.Count > 0) level = sd.LightLevels[sd.LightLevels.Count - 1];
+
+					//mxd. Use the light level of the highest surface when a thing is above highest sector level.
+					if(level != null)
 					{
-						Vector3D thingpos = new Vector3D(Thing.Position.x, Thing.Position.y, Thing.Position.z + sd.Floor.plane.GetZ(Thing.Position));
-						SectorLevel level = sd.GetLevelAboveOrAt(thingpos);
+						// TECH: In GZDoom, ceiling glow doesn't affect thing brightness 
+						// Use sector brightness for color shading
+						int brightness = level.brightnessbelow;
 
-						//mxd. Let's use point on floor plane instead of Thing.Sector.FloorHeight;
-						if(nointeraction && level == null && sd.LightLevels.Count > 0) level = sd.LightLevels[sd.LightLevels.Count - 1];
-
-						//mxd. Use the light level of the highest surface when a thing is above highest sector level.
-						if(level != null)
+						// Level is glowing
+						if(level.affectedbyglow && level.type == SectorLevelType.Floor)
 						{
-							// TECH: In GZDoom, ceiling glow doesn't affect thing brightness 
-							// Use sector brightness for color shading
-							int brightness = level.brightnessbelow;
-
-							// Level is glowing
-							if(level.affectedbyglow && level.type == SectorLevelType.Floor)
+							// Extrafloor glow doesn't affect thing brightness
+							if(level.sector == Thing.Sector)
 							{
-								// Extrafloor glow doesn't affect thing brightness
-								if(level.sector == Thing.Sector)
-								{
-									float planez = level.plane.GetZ(thingpos);
+								float planez = level.plane.GetZ(thingpos);
 
-									// Get glow brightness
-									int glowbrightness = sd.FloorGlow.Brightness / 2;
-									SectorLevel nexthigher = sd.GetLevelAbove(new Vector3D(thingpos, planez));
+								// Get glow brightness
+								int glowbrightness = sd.FloorGlow.Brightness / 2;
+								SectorLevel nexthigher = sd.GetLevelAbove(new Vector3D(thingpos, planez));
 
-									// Interpolate thing brightness between glow and regular ones
-									if(nexthigher != null)
-									{
-										float higherz = nexthigher.plane.GetZ(thingpos);
-										float delta = General.Clamp(1.0f - (thingpos.z - planez) / (higherz - planez), 0f, 1f);
-										brightness = (int)((glowbrightness + level.sector.Brightness / 2) * delta + nexthigher.sector.Brightness * (1.0f - delta));
-									}
-								}
-							}
-							// Level below this one is glowing. Only possible for floor glow(?)
-							else if(level.type == SectorLevelType.Glow)
-							{
 								// Interpolate thing brightness between glow and regular ones
-								if(sd.Floor != null && sd.FloorGlow != null)
+								if(nexthigher != null)
 								{
-									// Get glow brightness
-									float glowz = level.plane.GetZ(thingpos);
-									float floorz = floor.GetZ(thingpos);
-									float delta = General.Clamp((thingpos.z - floorz) / (glowz - floorz), 0f, 1f);
-
-									brightness = (int)((sd.FloorGlow.Brightness / 2 + sd.Floor.sector.Brightness / 2) * (1.0f - delta) + sd.Floor.sector.Brightness * delta);
+									float higherz = nexthigher.plane.GetZ(thingpos);
+									float delta = General.Clamp(1.0f - (thingpos.z - planez) / (higherz - planez), 0f, 1f);
+									brightness = (int)((glowbrightness + level.sector.Brightness / 2) * delta + nexthigher.sector.Brightness * (1.0f - delta));
 								}
 							}
-
-							PixelColor areabrightness = PixelColor.FromInt(mode.CalculateBrightness(brightness));
-							PixelColor areacolor = PixelColor.Modulate(level.colorbelow, areabrightness);
-							sectorcolor = areacolor.WithAlpha(alpha).ToInt();
-
-							//mxd. Calculate fogfactor
-							fogfactor = VisualGeometry.CalculateFogFactor(level.sector.FogMode, brightness);
 						}
-					}
-					//TECH: even Bright Thing frames are affected by custom fade...
-					else
-					{
-						Vector3D thingpos = new Vector3D(Thing.Position.x, Thing.Position.y, Thing.Position.z + sd.Floor.plane.GetZ(Thing.Position));
-						SectorLevel level = sd.GetLevelAboveOrAt(thingpos);
-
-						if(level != null && level.sector.FogMode > SectorFogMode.CLASSIC)
+						// Level below this one is glowing. Only possible for floor glow(?)
+						else if(level.type == SectorLevelType.Glow)
 						{
-							//mxd. Calculate fogfactor
-							fogfactor = VisualGeometry.CalculateFogFactor(level.sector.FogMode, level.brightnessbelow);
+							// Interpolate thing brightness between glow and regular ones
+							if(sd.Floor != null && sd.FloorGlow != null)
+							{
+								// Get glow brightness
+								float glowz = level.plane.GetZ(thingpos);
+								float floorz = floor.GetZ(thingpos);
+								float delta = General.Clamp((thingpos.z - floorz) / (glowz - floorz), 0f, 1f);
+
+								brightness = (int)((sd.FloorGlow.Brightness / 2 + sd.Floor.sector.Brightness / 2) * (1.0f - delta) + sd.Floor.sector.Brightness * delta);
+							}
 						}
+
+						PixelColor areabrightness = PixelColor.FromInt(mode.CalculateBrightness(brightness));
+						PixelColor areacolor = PixelColor.Modulate(level.colorbelow, areabrightness);
+						sectorcolor = areacolor.WithAlpha(alpha).ToInt();
+
+						//mxd. Calculate fogfactor
+						fogfactor = VisualGeometry.CalculateFogFactor(level.sector.FogMode, brightness);
 					}
 				}
-				
+				//TECH: even Bright Thing frames are affected by custom fade...
+				else
+				{
+					Vector3D thingpos = new Vector3D(Thing.Position.x, Thing.Position.y, Thing.Position.z + sd.Floor.plane.GetZ(Thing.Position));
+					SectorLevel level = sd.GetLevelAboveOrAt(thingpos);
+
+					if(level != null && level.sector.FogMode > SectorFogMode.CLASSIC)
+					{
+						//mxd. Calculate fogfactor
+						fogfactor = VisualGeometry.CalculateFogFactor(level.sector.FogMode, level.brightnessbelow);
+					}
+				}
+			}
+
+			//mxd. Create verts for all sprite angles
+			WorldVertex[][] allverts = new WorldVertex[info.SpriteFrame.Length][];
+			base.textures = new ImageData[info.SpriteFrame.Length];
+
+			for(int i = 0; i < sprites.Length; i++)
+			{
 				// Check if the texture is loaded
+				ImageData sprite = sprites[i];
 				sprite.LoadImage();
 				isloaded = sprite.IsImageLoaded;
 				if(isloaded)
 				{
 					float offsetx = 0.0f;
 					float offsety = 0.0f;
-					
-					base.Texture = sprite;
+
+					base.textures[i] = sprite;
 
 					// Determine sprite size and offset
 					float radius = sprite.ScaledWidth * 0.5f;
@@ -304,30 +310,34 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Make vertices
 					WorldVertex[] verts = new WorldVertex[6];
 
+					//mxd. Sprite mirroring
+					float ul = (info.SpriteFrame[i].Mirror ? 1f : 0f);
+					float ur = (info.SpriteFrame[i].Mirror ? 0f : 1f);
+
 					if(sizeless) //mxd
 					{ 
 						float hh = height / 2;
-						verts[0] = new WorldVertex(-radius + offsetx, 0.0f, offsety - hh, sectorcolor, 0.0f, 1.0f);
-						verts[1] = new WorldVertex(-radius + offsetx, 0.0f, hh + offsety, sectorcolor, 0.0f, 0.0f);
-						verts[2] = new WorldVertex(+radius + offsetx, 0.0f, hh + offsety, sectorcolor, 1.0f, 0.0f);
+						verts[0] = new WorldVertex(-radius + offsetx, 0.0f, offsety - hh, sectorcolor, ul, 1.0f);
+						verts[1] = new WorldVertex(-radius + offsetx, 0.0f, hh + offsety, sectorcolor, ul, 0.0f);
+						verts[2] = new WorldVertex(+radius + offsetx, 0.0f, hh + offsety, sectorcolor, ur, 0.0f);
 						verts[3] = verts[0];
 						verts[4] = verts[2];
-						verts[5] = new WorldVertex(+radius + offsetx, 0.0f, offsety - hh, sectorcolor, 1.0f, 1.0f);
+						verts[5] = new WorldVertex(+radius + offsetx, 0.0f, offsety - hh, sectorcolor, ur, 1.0f);
 					} 
 					else 
 					{
-						verts[0] = new WorldVertex(-radius + offsetx, 0.0f, offsety, sectorcolor, 0.0f, 1.0f);
-						verts[1] = new WorldVertex(-radius + offsetx, 0.0f, height + offsety, sectorcolor, 0.0f, 0.0f);
-						verts[2] = new WorldVertex(+radius + offsetx, 0.0f, height + offsety, sectorcolor, 1.0f, 0.0f);
+						verts[0] = new WorldVertex(-radius + offsetx, 0.0f, offsety, sectorcolor, ul, 1.0f);
+						verts[1] = new WorldVertex(-radius + offsetx, 0.0f, height + offsety, sectorcolor, ul, 0.0f);
+						verts[2] = new WorldVertex(+radius + offsetx, 0.0f, height + offsety, sectorcolor, ur, 0.0f);
 						verts[3] = verts[0];
 						verts[4] = verts[2];
-						verts[5] = new WorldVertex(+radius + offsetx, 0.0f, offsety, sectorcolor, 1.0f, 1.0f);
+						verts[5] = new WorldVertex(+radius + offsetx, 0.0f, offsety, sectorcolor, ur, 1.0f);
 					}
-					SetVertices(verts, floor, ceiling);
+					allverts[i] = verts;
 				}
 				else
 				{
-					base.Texture = General.Map.Data.Hourglass3D;
+					base.textures[i] = General.Map.Data.Hourglass3D;
 
 					// Determine sprite size
 					float radius = Math.Min(thingradius, thingheight / 2f);
@@ -341,9 +351,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					verts[3] = verts[0];
 					verts[4] = verts[2];
 					verts[5] = new WorldVertex(+radius, 0.0f, 0.0f, sectorcolor, 1.0f, 1.0f);
-					SetVertices(verts, floor, ceiling);
+					allverts[i] = verts;
 				}
 			}
+
+			//mxd
+			SetVertices(allverts, floor, ceiling);
 			
 			// Determine position
 			Vector3D pos = Thing.Position;
@@ -439,10 +452,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			if(!IsDisposed)
 			{
-				if(sprite != null)
+				if(sprites != null) //mxd
 				{
-					sprite.RemoveReference();
-					sprite = null;
+					foreach(ImageData sprite in sprites) sprite.RemoveReference();
+					sprites = null;
 				}
 
 				base.Dispose();
@@ -462,11 +475,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			//mxd. When true, the thing can be moved below floor/above ceiling
 			nointeraction = (info.Actor != null && info.Actor.GetFlagValue("nointeraction", false));
 
-			// Find sprite texture
-			if(info.Sprite.Length > 0)
+			//mxd. Find sprite textures
+			sprites = new ImageData[info.SpriteFrame.Length];
+			for(int i = 0; i < info.SpriteFrame.Length; i++)
 			{
-				sprite = General.Map.Data.GetSpriteImage(info.Sprite);
-				if(sprite != null) sprite.AddReference();
+				sprites[i] = General.Map.Data.GetSpriteImage(info.SpriteFrame[i].Sprite);
+				if(sprites[i] != null) sprites[i].AddReference();
 			}
 			
 			// Setup visual thing
@@ -478,11 +492,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			if(!isloaded)
 			{
-				// Rebuild sprite geometry when sprite is loaded
-				if(sprite.IsImageLoaded)
+				//mxd. Rebuild sprite geometry when all sprites are loaded
+				bool allloaded = true;
+				foreach(ImageData sprite in sprites)
 				{
-					Setup();
+					if(!sprite.IsImageLoaded)
+					{
+						allloaded = false;
+						break;
+					}
 				}
+
+				if(allloaded) Setup();
 			}
 			
 			// Let the base update
@@ -757,13 +778,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd
 		public void OnChangeScale(int incrementX, int incrementY)
 		{
-			if(!General.Map.UDMF || !sprite.IsImageLoaded) return;
+			if(!General.Map.UDMF || sprites == null || !sprites[0].IsImageLoaded) return;
 			
 			if((General.Map.UndoRedo.NextUndo == null) || (General.Map.UndoRedo.NextUndo.TicketID != undoticket))
 				undoticket = mode.CreateUndo("Change thing scale");
 
 			float scaleX = Thing.ScaleX;
 			float scaleY = Thing.ScaleY;
+			ImageData sprite = sprites[0];
 
 			if(incrementX != 0) 
 			{
