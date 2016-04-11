@@ -36,9 +36,9 @@ namespace CodeImp.DoomBuilder.Types
 
 		#region ================== Variables
 
-		private EnumList list;
-		private int value;
-		private int defaultvalue; //mxd
+		protected EnumList list;
+		protected int value;
+		protected int defaultvalue; //mxd
 
 		#endregion
 

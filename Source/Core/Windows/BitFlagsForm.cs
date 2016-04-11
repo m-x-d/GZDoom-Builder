@@ -70,7 +70,7 @@ namespace CodeImp.DoomBuilder.Windows
 					foreach(CheckBox b in options.Checkboxes)
 					{
 						// Not the same box?
-						if(b != sender)
+						if(b != thisbox)
 						{
 							// Overlapping bit flags? mxd: box with flag 0 requires special handling...
 							if( (int)b.Tag == 0 || (int)thisbox.Tag == 0 || (((int)b.Tag & (int)thisbox.Tag) != 0) ) 

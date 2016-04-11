@@ -40,6 +40,7 @@ namespace CodeImp.DoomBuilder.Config
 		private readonly bool used;
 		private readonly int type;
 		private EnumList enumlist;
+		private EnumList flagslist; //mxd
 		private readonly object defaultvalue; //mxd
 		private readonly HashSet<string> targetclasses; //mxd
 
@@ -53,6 +54,7 @@ namespace CodeImp.DoomBuilder.Config
 		public int Type { get { return type; } }
 		public HashSet<string> TargetClasses { get { return targetclasses; } } //mxd
 		public EnumList Enum { get { return enumlist; } internal set { enumlist = value; } }
+		public EnumList Flags { get { return flagslist; } internal set { flagslist = value; } } //mxd
 		public object DefaultValue { get { return defaultvalue; } } //mxd
 
 		#endregion
@@ -106,8 +108,33 @@ namespace CodeImp.DoomBuilder.Config
 					}
 				}
 			}
+
+			//mxd. Determine flags type
+			if(argdic.Contains("flags"))
+			{
+				// Enum fully specified?
+				if(argdic["flags"] is IDictionary)
+				{
+					// Create anonymous enum
+					this.flagslist = new EnumList((IDictionary)argdic["flags"]);
+				}
+				else
+				{
+					// Check if referenced enum exists
+					if((argdic["flags"].ToString().Length > 0) && enums.ContainsKey(argdic["flags"].ToString()))
+					{
+						// Get the enum list
+						this.flagslist = enums[argdic["flags"].ToString()];
+					}
+					else
+					{
+						General.ErrorLogger.Add(ErrorType.Warning, "\"" + argspath + ".arg" + istr + "\" references unknown flags enumeration \"" + argdic["flags"] + "\".");
+					}
+				}
+			}
 			
 			if(this.enumlist == null) this.enumlist = new EnumList(); //mxd
+			if(this.flagslist == null) this.flagslist = new EnumList(); //mxd
 		}
 
 		//mxd. Constructor for an argument info defined in DECORATE
@@ -117,6 +144,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.title = argtitle;
 			this.tooltip = tooltip;
 			this.defaultvalue = defaultvalue;
+			this.flagslist = new EnumList(); //mxd
 
 			// Get argument type
 			if(System.Enum.IsDefined(typeof(UniversalType), type))
@@ -164,6 +192,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.title = "Argument " + (argindex + 1);
 			this.type = 0;
 			this.enumlist = new EnumList();
+			this.flagslist = new EnumList(); //mxd
 			this.defaultvalue = 0; //mxd
 		}
 

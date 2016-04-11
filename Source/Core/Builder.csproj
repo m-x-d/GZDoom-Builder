@@ -925,6 +925,7 @@
     <Compile Include="Rendering\SurfaceManager.cs" />
     <Compile Include="Rendering\SurfaceUpdate.cs" />
     <Compile Include="Types\AngleByteHandler.cs" />
+    <Compile Include="Types\EnumOptionAndBitsHandler.cs" />
     <Compile Include="Types\PolyobjectNumberHandler.cs" />
     <Compile Include="Types\RandomFloatHandler.cs" />
     <Compile Include="Types\RandomIntegerHandler.cs" />
@@ -933,6 +934,12 @@
     <Compile Include="Types\ThingRadiusHandler.cs" />
     <Compile Include="Types\ThingTypeHandler.cs" />
     <Compile Include="VisualModes\VisualVertex.cs" />
+    <Compile Include="Windows\BitFlagsAndOptionsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\BitFlagsAndOptionsForm.Designer.cs">
+      <DependentUpon>BitFlagsAndOptionsForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Windows\CenterOnCoordinatesForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -1272,6 +1279,9 @@
     <EmbeddedResource Include="Windows\AngleForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>AngleForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Windows\BitFlagsAndOptionsForm.resx">
+      <DependentUpon>BitFlagsAndOptionsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\BitFlagsForm.resx">
       <SubType>Designer</SubType>

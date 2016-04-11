@@ -50,6 +50,8 @@
     <li>23 = Thing radius (<span class="red">GZDB only</span>)</li>
     <li>24 = Thing height (<span class="red">GZDB only</span>)</li>
 	<li>25 = Polyobject number (<span class="red">GZDB only</span>)</li>
+	<li>26 = Enum option + enum bits (<span class="red">GZDB only</span>)</li
+  >
   </ul>
   <p><b class="fat">targetclasses</b> (string) - <span class="red">GZDB only</span><br />
     When set, only things of given classes will be shown in the argument dropdown list. Used only when argument <strong>type</strong> is 14.<br />
@@ -73,7 +75,7 @@ arg0
     <span class="blue">enum = &quot;sound_volume&quot;;</span>
 }
 </pre>
-  or an explicit  definition:<br />
+  or an explicit definition:<br />
   <pre>
 arg0
 {
@@ -88,12 +90,37 @@ arg0
 }
 </pre>
   Enums can be also set in <a href="gc_decoratekeys.html#argenum">DECORATE</a>.<br />
+  
+  <p><b class="fat">flags</b> (structure or string) - <span class="red">GZDB only</span><br />
+    Provides a list of predefined bit flag values to display for this argument. Used  only when argument <strong>type</strong> is 26.<br />
+    The value can be either a name of a predefined enum or an explicit definition.<br />
+	<strong>Example:</strong>
+	<pre>
+	arg4
+	{
+		title = "Flags";
+		type = 26;
+		<span class="green">// Only a single enum value can be selected at a time</span>
+		enum
+		{
+			0 = "Don't copy anything";
+			1 = "Copy floor texture, remove sector special";
+			2 = "Copy floor texture";
+			3 = "Copy floor texture and special";
+		}
+		<span class="green">// Any number of flags values can be selected</span>
+		<span class="blue">flags
+		{
+			4 = "Use numeric model if set, trigger model if not";
+			8 = "Raise floor if set, lower it if not";
+			16 = "Inflict crushing damage";
+		}</span>
+	}</pre>
   <br />
   <b class="fat">default</b> (integer) - <span class="red">GZDB only</span><br />
   Sets the default value for a Thing or Linedef argument definition.<br />
   Default value can be also set in <a href="gc_decoratekeys.html#argdefault">DECORATE</a>.<br />
-  <strong>Example:</strong>
-  </p>
+  <strong>Example:</strong>  </p>
   <pre>9038
 {
     title = "ColorSetter";
