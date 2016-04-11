@@ -1,6 +1,6 @@
-namespace CodeImp.DoomBuilder.Windows
+﻿namespace CodeImp.DoomBuilder.Windows
 {
-	partial class BitFlagsForm
+	partial class BitFlagsAndOptionsForm
 	{
 		/// <summary>
 		/// Required designer variable.
@@ -28,12 +28,50 @@ namespace CodeImp.DoomBuilder.Windows
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.options = new CodeImp.DoomBuilder.Controls.CheckboxArrayControl();
 			this.cancel = new System.Windows.Forms.Button();
 			this.apply = new System.Windows.Forms.Button();
 			this.groupoptions = new System.Windows.Forms.GroupBox();
+			this.options = new CodeImp.DoomBuilder.Controls.CheckboxArrayControl();
+			this.groupflags = new System.Windows.Forms.GroupBox();
+			this.flags = new CodeImp.DoomBuilder.Controls.CheckboxArrayControl();
 			this.groupoptions.SuspendLayout();
+			this.groupflags.SuspendLayout();
 			this.SuspendLayout();
+			// 
+			// cancel
+			// 
+			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+			this.cancel.Location = new System.Drawing.Point(105, 425);
+			this.cancel.Name = "cancel";
+			this.cancel.Size = new System.Drawing.Size(91, 25);
+			this.cancel.TabIndex = 4;
+			this.cancel.Text = "Cancel";
+			this.cancel.UseVisualStyleBackColor = true;
+			this.cancel.Click += new System.EventHandler(this.cancel_Click);
+			// 
+			// apply
+			// 
+			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.apply.Location = new System.Drawing.Point(11, 425);
+			this.apply.Name = "apply";
+			this.apply.Size = new System.Drawing.Size(91, 25);
+			this.apply.TabIndex = 3;
+			this.apply.Text = "OK";
+			this.apply.UseVisualStyleBackColor = true;
+			this.apply.Click += new System.EventHandler(this.apply_Click);
+			// 
+			// groupoptions
+			// 
+			this.groupoptions.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.groupoptions.Controls.Add(this.options);
+			this.groupoptions.Location = new System.Drawing.Point(12, 12);
+			this.groupoptions.Name = "groupoptions";
+			this.groupoptions.Size = new System.Drawing.Size(184, 200);
+			this.groupoptions.TabIndex = 5;
+			this.groupoptions.TabStop = false;
+			this.groupoptions.Text = " Options ";
 			// 
 			// options
 			// 
@@ -44,75 +82,68 @@ namespace CodeImp.DoomBuilder.Windows
 			this.options.Columns = 1;
 			this.options.Location = new System.Drawing.Point(6, 19);
 			this.options.Name = "options";
-			this.options.Size = new System.Drawing.Size(172, 145);
-			this.options.TabIndex = 0;
+			this.options.Size = new System.Drawing.Size(172, 175);
+			this.options.TabIndex = 1;
 			this.options.VerticalSpacing = 1;
 			// 
-			// cancel
+			// groupflags
 			// 
-			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(105, 188);
-			this.cancel.Name = "cancel";
-			this.cancel.Size = new System.Drawing.Size(91, 25);
-			this.cancel.TabIndex = 2;
-			this.cancel.Text = "Cancel";
-			this.cancel.UseVisualStyleBackColor = true;
-			this.cancel.Click += new System.EventHandler(this.cancel_Click);
+			this.groupflags.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.groupflags.Controls.Add(this.flags);
+			this.groupflags.Location = new System.Drawing.Point(12, 218);
+			this.groupflags.Name = "groupflags";
+			this.groupflags.Size = new System.Drawing.Size(184, 200);
+			this.groupflags.TabIndex = 6;
+			this.groupflags.TabStop = false;
+			this.groupflags.Text = " Flags ";
 			// 
-			// apply
+			// flags
 			// 
-			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(12, 188);
-			this.apply.Name = "apply";
-			this.apply.Size = new System.Drawing.Size(91, 25);
-			this.apply.TabIndex = 1;
-			this.apply.Text = "OK";
-			this.apply.UseVisualStyleBackColor = true;
-			this.apply.Click += new System.EventHandler(this.apply_Click);
-			// 
-			// groupoptions
-			// 
-			this.groupoptions.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+			this.flags.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.groupoptions.Controls.Add(this.options);
-			this.groupoptions.Location = new System.Drawing.Point(12, 12);
-			this.groupoptions.Name = "groupoptions";
-			this.groupoptions.Size = new System.Drawing.Size(184, 170);
-			this.groupoptions.TabIndex = 3;
-			this.groupoptions.TabStop = false;
-			this.groupoptions.Text = " Flags ";
+			this.flags.AutoScroll = true;
+			this.flags.Columns = 1;
+			this.flags.Location = new System.Drawing.Point(6, 19);
+			this.flags.Name = "flags";
+			this.flags.Size = new System.Drawing.Size(172, 175);
+			this.flags.TabIndex = 1;
+			this.flags.VerticalSpacing = 1;
 			// 
-			// BitFlagsForm
+			// BitFlagsAndOptionsForm
 			// 
 			this.AcceptButton = this.apply;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.cancel;
-			this.ClientSize = new System.Drawing.Size(208, 218);
+			this.ClientSize = new System.Drawing.Size(208, 456);
+			this.Controls.Add(this.groupflags);
 			this.Controls.Add(this.groupoptions);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
-			this.Name = "BitFlagsForm";
+			this.Name = "BitFlagsAndOptionsForm";
 			this.Opacity = 1;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Options";
 			this.groupoptions.ResumeLayout(false);
+			this.groupflags.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
 
 		#endregion
 
-		private CodeImp.DoomBuilder.Controls.CheckboxArrayControl options;
 		private System.Windows.Forms.Button cancel;
 		private System.Windows.Forms.Button apply;
 		private System.Windows.Forms.GroupBox groupoptions;
+		private CodeImp.DoomBuilder.Controls.CheckboxArrayControl options;
+		private System.Windows.Forms.GroupBox groupflags;
+		private CodeImp.DoomBuilder.Controls.CheckboxArrayControl flags;
 	}
 }

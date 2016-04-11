@@ -171,9 +171,15 @@ a img
 	font-weight: bold;
 }
 
+.green
+{
+	color: #235115;
+	font-weight: bold;
+}
+
 .big
 {
-  color: #515151;
+  color: #2b772b;
 	font-size: large;
 	font-weight: bold;
 }

@@ -291,6 +291,8 @@
 #define APROP_StencilColor	41
 #define APROP_Friction		42
 #define APROP_DamageMultiplier	43
+#define APROP_MaxStepHeight 44
+#define APROP_MaxDropOffHeight 45
 
 // Render Styles ------------------------------------------------------------
 
