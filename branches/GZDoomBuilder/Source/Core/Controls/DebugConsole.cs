@@ -95,21 +95,16 @@ namespace CodeImp.DoomBuilder
 
 		#region ================== Methods
 
-		public static void Write(string text)
-		{
-			Write(DebugMessageType.INFO, text);
-		}
-
-		public static void WriteLine(string text) 
-		{
-			Write(DebugMessageType.INFO, text + Environment.NewLine);
-		}
-
-		public static void Write(DebugMessageType type, string text)
+		public static void SetText(string text) { Write(DebugMessageType.INFO, text, false); } // Useful to display frequently updated text without flickering
+		public static void WriteLine(string text) { Write(DebugMessageType.INFO, text + Environment.NewLine, true); }
+		public static void WriteLine(DebugMessageType type, string text) { Write(type, text + Environment.NewLine, true); }
+		public static void Write(string text) { Write(DebugMessageType.INFO, text, true); }
+		public static void Write(DebugMessageType type, string text) { Write(type, text, true); }
+		public static void Write(DebugMessageType type, string text, bool append)
 		{
 			if(me != null && me.InvokeRequired) 
 			{
-				me.Invoke(new Action<DebugMessageType, string>(Write), new object[] { type, text });
+				me.Invoke(new Action<DebugMessageType, string, bool>(Write), new object[] { type, text, append });
 			} 
 			else 
 			{
@@ -117,14 +112,9 @@ namespace CodeImp.DoomBuilder
 				messages.Add(new KeyValuePair<DebugMessageType, string>(type, text));
 				if(me != null && (me.filters & type) == type) 
 				{
-					me.AddMessage(type, text, true);
+					me.AddMessage(type, text, true, append);
 				}
 			}
-		}
-
-		public static void WriteLine(DebugMessageType type, string text)
-		{
-			Write(type, text + Environment.NewLine);
 		}
 
 		public static void Clear()
@@ -226,12 +216,13 @@ namespace CodeImp.DoomBuilder
 #endif
 		}
 
-		private void AddMessage(DebugMessageType type, string text, bool scroll)
+		private void AddMessage(DebugMessageType type, string text, bool scroll, bool append)
 		{
 			text = textheaders[type] + text;
 			console.SelectionStart = console.TextLength;
 			console.SelectionColor = textcolors[type];
-			console.AppendText(text);
+			if(append) console.AppendText(text);
+			else console.Text = text;
 			if(scroll && autoscroll.Checked) console.ScrollToCaret();
 		}
 
@@ -257,7 +248,7 @@ namespace CodeImp.DoomBuilder
 			{
 				if((filters & pair.Key) == pair.Key && CheckTextFilter(pair.Value, searchbox.Text))
 				{
-					AddMessage(pair.Key, pair.Value, false);
+					AddMessage(pair.Key, pair.Value, false, true);
 				}
 			}
 

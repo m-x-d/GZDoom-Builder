@@ -48,17 +48,18 @@ namespace CodeImp.DoomBuilder.VisualModes
 		//mxd. Info
 		protected ThingTypeInfo info;
 		
-		// Texture
-		private ImageData texture;
+		// Textures
+		protected ImageData[] textures;
 		
 		// Geometry
-		private WorldVertex[] vertices;
-		private VertexBuffer geobuffer;
+		private WorldVertex[][] vertices;
+		private VertexBuffer[] geobuffers;
 		private VertexBuffer cagebuffer; //mxd
 		private int cagelength; //mxd
 		private bool updategeo;
 		private bool updatecage; //mxd
-		private int triangles;
+		private int[] triangles;
+		private int spriteframe; //mxd
 		
 		// Rendering
 		private RenderPass renderpass;
@@ -97,17 +98,17 @@ namespace CodeImp.DoomBuilder.VisualModes
 		
 		#region ================== Properties
 		
-		internal VertexBuffer GeometryBuffer { get { return geobuffer; } }
+		internal VertexBuffer GeometryBuffer { get { return geobuffers[spriteframe]; } }
 		internal VertexBuffer CageBuffer { get { return cagebuffer; } } //mxd
 		internal int CageLength { get { return cagelength; } } //mxd
 		internal bool NeedsUpdateGeo { get { return updategeo; } }
-		internal int Triangles { get { return triangles; } }
+		internal int Triangles { get { return triangles[spriteframe]; } }
 		internal Matrix Position { get { return position; } }
 		internal Color4 CageColor { get { return cagecolor; } }
 		public ThingTypeInfo Info { get { return info; } } //mxd
 		
 		//mxd
-		internal int VertexColor { get { return vertices.Length > 0 ? vertices[0].c : 0;} }
+		internal int VertexColor { get { return vertices.Length > 0 && vertices[0].Length > 0 ? vertices[0][0].c : 0; } }
 		public int CameraDistance { get { return cameradistance; } }
 		public float FogFactor { get { return fogfactor; } }
 		public Vector3 Center
@@ -142,7 +143,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		/// <summary>
 		/// Image to use as texture on the geometry.
 		/// </summary>
-		public ImageData Texture { get { return texture; } set { texture = value; } }
+		public ImageData Texture { get { return textures[spriteframe]; } }
 
 		/// <summary>
 		/// Disposed or not?
@@ -186,8 +187,12 @@ namespace CodeImp.DoomBuilder.VisualModes
 			if(!isdisposed)
 			{
 				// Clean up
-				if(geobuffer != null) geobuffer.Dispose();
-				geobuffer = null;
+				if(geobuffers != null) //mxd
+				{
+					foreach(VertexBuffer buffer in geobuffers) buffer.Dispose();
+					geobuffers = null;
+				}
+
 				if(cagebuffer != null) cagebuffer.Dispose(); //mxd
 				cagebuffer = null; //mxd
 
@@ -213,8 +218,18 @@ namespace CodeImp.DoomBuilder.VisualModes
 		public void UnloadResource()
 		{
 			// Trash geometry buffers
-			if(geobuffer != null) geobuffer.Dispose();
-			geobuffer = null;
+			if(geobuffers != null) //mxd
+			{
+				foreach(VertexBuffer buffer in geobuffers) buffer.Dispose();
+				geobuffers = null;
+			}
+
+			if(textures != null) //mxd
+			{
+				foreach(ImageData texture in textures) texture.Dispose();
+				textures = null;
+			}
+
 			if(cagebuffer != null) cagebuffer.Dispose(); //mxd
 			cagebuffer = null; //mxd
 			updategeo = true;
@@ -256,132 +271,143 @@ namespace CodeImp.DoomBuilder.VisualModes
 		}
 
 		// This sets the vertices for the thing sprite
-		protected void SetVertices(ICollection<WorldVertex> verts, Plane floor, Plane ceiling)
+		protected void SetVertices(WorldVertex[][] verts, Plane floor, Plane ceiling)
 		{
 			// Copy vertices
-			vertices = new WorldVertex[verts.Count];
-			verts.CopyTo(vertices, 0);
-			triangles = vertices.Length / 3;
+			vertices = new WorldVertex[verts.Length][];
+			triangles = new int[verts.Length];
+
+			//mxd
+			for(int i = 0; i < verts.Length; i++)
+			{
+				vertices[i] = new WorldVertex[verts[i].Length];
+				verts[i].CopyTo(vertices[i], 0);
+				triangles[i] = vertices[i].Length / 3;
+			}
+
 			updategeo = true;
 			
 			//mxd. Do some GLOOME shenanigans...
-			if(triangles < 2) return;
-			float localcenterz = vertices[1].z * 0.5f;
-			Matrix m;
-
-			switch(info.RenderMode)
+			for(int c = 0; c < vertices.Length; c++)
 			{
-				// TODO: Currently broken in GLOOME...
-				case Thing.SpriteRenderMode.WALL_SPRITE:
-					m = Matrix.Translation(0f, 0f, -localcenterz) * Matrix.RotationY(Thing.RollRad) * Matrix.RotationZ(thing.Angle) * Matrix.Translation(0f, 0f, localcenterz);
-					for(int i = 0; i < vertices.Length; i++)
-					{
-						Vector4 transformed = Vector3.Transform(new Vector3(vertices[i].x, vertices[i].y, vertices[i].z), m);
-						vertices[i].x = transformed.X;
-						vertices[i].y = transformed.Y;
-						vertices[i].z = transformed.Z;
-					}
-					break;
+				if(triangles[c] < 2) continue;
+				float localcenterz = vertices[c][1].z * 0.5f;
+				Matrix m;
 
-				case Thing.SpriteRenderMode.FLOOR_SPRITE:
-					Matrix floorrotation = Matrix.RotationZ(info.RollSprite ? Thing.RollRad : 0f)
-										 * Matrix.RotationY(Thing.Angle) 
-										 * Matrix.RotationX(Angle2D.PIHALF);
-
-					m = Matrix.Translation(0f, 0f, -localcenterz) * floorrotation * Matrix.Translation(0f, 0f, localcenterz);
-					
-					for(int i = 0; i < vertices.Length; i++)
-					{
-						Vector4 transformed = Vector3.Transform(new Vector3(vertices[i].x, vertices[i].y, vertices[i].z), m);
-						vertices[i].x = transformed.X;
-						vertices[i].y = transformed.Y;
-						vertices[i].z = transformed.Z;
-					}
-
-					// TODO: this won't work on things with AbsoluteZ flag
-					// TODO: +ROLLSPRITE implies +STICKTOPLANE?
-					if(info.StickToPlane || info.RollSprite)
-					{
-						// Calculate vertical offset
-						float floorz = floor.GetZ(Thing.Position);
-						float ceilz = ceiling.GetZ(Thing.Position);
-
-						if(!float.IsNaN(floorz) && !float.IsNaN(ceilz))
+				switch(info.RenderMode)
+				{
+					// TODO: Currently broken in GLOOME...
+					case Thing.SpriteRenderMode.WALL_SPRITE:
+						m = Matrix.Translation(0f, 0f, -localcenterz) * Matrix.RotationY(Thing.RollRad) * Matrix.RotationZ(thing.Angle) * Matrix.Translation(0f, 0f, localcenterz);
+						for(int i = 0; i < vertices[c].Length; i++)
 						{
-							float voffset;
-							if(info.Hangs)
-							{
-								float thingz = ceilz - Thing.Position.z + Thing.Height;
-								voffset = 0.01f - floorz - General.Clamp(thingz, 0, ceilz - floorz);
-							}
-							else
-							{
-								voffset = 0.01f - floorz - General.Clamp(Thing.Position.z, 0, ceilz - floorz);
-							}
-
-							// Apply it
-							for(int i = 0; i < vertices.Length; i++)
-								vertices[i].z = floor.GetZ(vertices[i].x + Thing.Position.x, vertices[i].y + Thing.Position.y) + voffset;
+							Vector4 transformed = Vector3.Transform(new Vector3(vertices[c][i].x, vertices[c][i].y, vertices[c][i].z), m);
+							vertices[c][i].x = transformed.X;
+							vertices[c][i].y = transformed.Y;
+							vertices[c][i].z = transformed.Z;
 						}
-					}
-					break;
+						break;
 
-				case Thing.SpriteRenderMode.CEILING_SPRITE:
-					Matrix ceilrotation = Matrix.RotationZ(info.RollSprite ? Thing.RollRad : 0f)
-										* Matrix.RotationY(Thing.Angle)
-										* Matrix.RotationX(Angle2D.PIHALF);
+					case Thing.SpriteRenderMode.FLOOR_SPRITE:
+						Matrix floorrotation = Matrix.RotationZ(info.RollSprite ? Thing.RollRad : 0f)
+											 * Matrix.RotationY(Thing.Angle)
+											 * Matrix.RotationX(Angle2D.PIHALF);
 
-					m = Matrix.Translation(0f, 0f, -localcenterz) * ceilrotation * Matrix.Translation(0f, 0f, localcenterz);
-					
-					for(int i = 0; i < vertices.Length; i++)
-					{
-						Vector4 transformed = Vector3.Transform(new Vector3(vertices[i].x, vertices[i].y, vertices[i].z), m);
-						vertices[i].x = transformed.X;
-						vertices[i].y = transformed.Y;
-						vertices[i].z = transformed.Z;
-					}
+						m = Matrix.Translation(0f, 0f, -localcenterz) * floorrotation * Matrix.Translation(0f, 0f, localcenterz);
 
-					// TODO: this won't work on things with AbsoluteZ flag
-					// TODO: +ROLLSPRITE implies +STICKTOPLANE?
-					if(info.StickToPlane || info.RollSprite)
-					{
-						// Calculate vertical offset
-						float floorz = floor.GetZ(Thing.Position);
-						float ceilz = ceiling.GetZ(Thing.Position);
-						
-						if(!float.IsNaN(floorz) && !float.IsNaN(ceilz))
+						for(int i = 0; i < vertices[c].Length; i++)
 						{
-							float voffset;
-							if(info.Hangs)
-							{
-								float thingz = ceilz - Math.Max(0, Thing.Position.z) - Thing.Height;
-								voffset = -0.01f - General.Clamp(thingz, 0, ceilz - floorz);
-							}
-							else
-							{
-								voffset = -0.01f - floorz - General.Clamp(Thing.Position.z, 0, ceilz - floorz);
-							}
-
-							// Apply it
-							for(int i = 0; i < vertices.Length; i++)
-								vertices[i].z = ceiling.GetZ(vertices[i].x + Thing.Position.x, vertices[i].y + Thing.Position.y) + voffset;
+							Vector4 transformed = Vector3.Transform(new Vector3(vertices[c][i].x, vertices[c][i].y, vertices[c][i].z), m);
+							vertices[c][i].x = transformed.X;
+							vertices[c][i].y = transformed.Y;
+							vertices[c][i].z = transformed.Z;
 						}
-					}
-					break;
 
-				default:
-					if(info.RollSprite)
-					{
-						m = Matrix.Translation(0f, 0f, -localcenterz) * Matrix.RotationY(Thing.RollRad) * Matrix.Translation(0f, 0f, localcenterz);
-						for(int i = 0; i < vertices.Length; i++)
+						// TODO: this won't work on things with AbsoluteZ flag
+						// TODO: +ROLLSPRITE implies +STICKTOPLANE?
+						if(info.StickToPlane || info.RollSprite)
 						{
-							Vector4 transformed = Vector3.Transform(new Vector3(vertices[i].x, vertices[i].y, vertices[i].z), m);
-							vertices[i].x = transformed.X;
-							vertices[i].y = transformed.Y;
-							vertices[i].z = transformed.Z;
+							// Calculate vertical offset
+							float floorz = floor.GetZ(Thing.Position);
+							float ceilz = ceiling.GetZ(Thing.Position);
+
+							if(!float.IsNaN(floorz) && !float.IsNaN(ceilz))
+							{
+								float voffset;
+								if(info.Hangs)
+								{
+									float thingz = ceilz - Thing.Position.z + Thing.Height;
+									voffset = 0.01f - floorz - General.Clamp(thingz, 0, ceilz - floorz);
+								}
+								else
+								{
+									voffset = 0.01f - floorz - General.Clamp(Thing.Position.z, 0, ceilz - floorz);
+								}
+
+								// Apply it
+								for(int i = 0; i < vertices[c].Length; i++)
+									vertices[c][i].z = floor.GetZ(vertices[c][i].x + Thing.Position.x, vertices[c][i].y + Thing.Position.y) + voffset;
+							}
 						}
-					}
-					break;
+						break;
+
+					case Thing.SpriteRenderMode.CEILING_SPRITE:
+						Matrix ceilrotation = Matrix.RotationZ(info.RollSprite ? Thing.RollRad : 0f)
+											* Matrix.RotationY(Thing.Angle)
+											* Matrix.RotationX(Angle2D.PIHALF);
+
+						m = Matrix.Translation(0f, 0f, -localcenterz) * ceilrotation * Matrix.Translation(0f, 0f, localcenterz);
+
+						for(int i = 0; i < vertices[c].Length; i++)
+						{
+							Vector4 transformed = Vector3.Transform(new Vector3(vertices[c][i].x, vertices[c][i].y, vertices[c][i].z), m);
+							vertices[c][i].x = transformed.X;
+							vertices[c][i].y = transformed.Y;
+							vertices[c][i].z = transformed.Z;
+						}
+
+						// TODO: this won't work on things with AbsoluteZ flag
+						// TODO: +ROLLSPRITE implies +STICKTOPLANE?
+						if(info.StickToPlane || info.RollSprite)
+						{
+							// Calculate vertical offset
+							float floorz = floor.GetZ(Thing.Position);
+							float ceilz = ceiling.GetZ(Thing.Position);
+
+							if(!float.IsNaN(floorz) && !float.IsNaN(ceilz))
+							{
+								float voffset;
+								if(info.Hangs)
+								{
+									float thingz = ceilz - Math.Max(0, Thing.Position.z) - Thing.Height;
+									voffset = -0.01f - General.Clamp(thingz, 0, ceilz - floorz);
+								}
+								else
+								{
+									voffset = -0.01f - floorz - General.Clamp(Thing.Position.z, 0, ceilz - floorz);
+								}
+
+								// Apply it
+								for(int i = 0; i < vertices[c].Length; i++)
+									vertices[c][i].z = ceiling.GetZ(vertices[c][i].x + Thing.Position.x, vertices[c][i].y + Thing.Position.y) + voffset;
+							}
+						}
+						break;
+
+					default:
+						if(info.RollSprite)
+						{
+							m = Matrix.Translation(0f, 0f, -localcenterz) * Matrix.RotationY(Thing.RollRad) * Matrix.Translation(0f, 0f, localcenterz);
+							for(int i = 0; i < vertices[c].Length; i++)
+							{
+								Vector4 transformed = Vector3.Transform(new Vector3(vertices[c][i].x, vertices[c][i].y, vertices[c][i].z), m);
+								vertices[c][i].x = transformed.X;
+								vertices[c][i].y = transformed.Y;
+								vertices[c][i].z = transformed.Z;
+							}
+						}
+						break;
+				}
 			}
 		}
 		
@@ -391,22 +417,26 @@ namespace CodeImp.DoomBuilder.VisualModes
 			// Do we need to update the geometry buffer?
 			if(updategeo)
 			{
-				// Trash geometry buffer
-				if(geobuffer != null) geobuffer.Dispose();
-				geobuffer = null;
+				//mxd. Trash geometry buffers
+				if(geobuffers != null)
+					foreach(VertexBuffer geobuffer in geobuffers) geobuffer.Dispose();
 
 				// Any vertics?
 				if(vertices.Length > 0) 
 				{
-					// Make a new buffer
-					geobuffer = new VertexBuffer(General.Map.Graphics.Device, WorldVertex.Stride * vertices.Length,
-												 Usage.WriteOnly | Usage.Dynamic, VertexFormat.None, Pool.Default);
+					geobuffers = new VertexBuffer[vertices.Length];
+					for(int i = 0; i < vertices.Length; i++)
+					{
+						// Make a new buffer
+						geobuffers[i] = new VertexBuffer(General.Map.Graphics.Device, WorldVertex.Stride * vertices[i].Length,
+													 Usage.WriteOnly | Usage.Dynamic, VertexFormat.None, Pool.Default);
 
-					// Fill the buffer
-					DataStream bufferstream = geobuffer.Lock(0, WorldVertex.Stride * vertices.Length, LockFlags.Discard);
-					bufferstream.WriteRange(vertices);
-					geobuffer.Unlock();
-					bufferstream.Dispose();
+						// Fill the buffer
+						DataStream bufferstream = geobuffers[i].Lock(0, WorldVertex.Stride * vertices[i].Length, LockFlags.Discard);
+						bufferstream.WriteRange(vertices[i]);
+						geobuffers[i].Unlock();
+						bufferstream.Dispose();
+					}
 				}
 				
 				//mxd. Check if thing is light
@@ -706,6 +736,15 @@ namespace CodeImp.DoomBuilder.VisualModes
 			boundingBox[6] = new Vector3D(position_v3.X + width, position_v3.Y - width, Center.Z + h2);
 			boundingBox[7] = new Vector3D(position_v3.X - width, position_v3.Y + width, Center.Z + h2);
 			boundingBox[8] = new Vector3D(position_v3.X + width, position_v3.Y + width, Center.Z + h2);
+		}
+
+		//mxd. This updates the sprite frame to be rendered
+		internal void UpdateSpriteFrame()
+		{
+			if(textures.Length != 8)
+				spriteframe = 0;
+			else
+				spriteframe = (General.ClampAngle((int)Angle2D.RadToDeg((General.Map.VisualCamera.Position - thing.Position).GetAngleXY()) - thing.AngleDoom + 292)) / 45; // Convert to [0..7] range; 292 == 270 + 45/2
 		}
 		
 		/// <summary>

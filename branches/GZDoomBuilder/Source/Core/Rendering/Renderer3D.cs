@@ -1107,6 +1107,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				// Render things collected
 				foreach(VisualThing t in thingspass)
 				{
+					t.UpdateSpriteFrame(); // Set correct texture, geobuffer and triangles count
 					if(t.Texture is UnknownImage) continue;
 					
 					// Change blend mode?
@@ -1720,28 +1721,35 @@ namespace CodeImp.DoomBuilder.Rendering
 				}
 			}
 			// Gather regular things
-			else if(t.Texture != null) //Must have a texture!
+			else 
 			{
-				//mxd
-				switch(t.RenderPass)
+				//mxd. Set correct texture, geobuffer and triangles count
+				t.UpdateSpriteFrame();
+
+				//Must have a texture!
+				if(t.Texture != null)
 				{
-					case RenderPass.Solid:
-						if(!solidthings.ContainsKey(t.Texture)) solidthings.Add(t.Texture, new List<VisualThing>());
-						solidthings[t.Texture].Add(t);
-						break;
+					//mxd
+					switch(t.RenderPass)
+					{
+						case RenderPass.Solid:
+							if(!solidthings.ContainsKey(t.Texture)) solidthings.Add(t.Texture, new List<VisualThing>());
+							solidthings[t.Texture].Add(t);
+							break;
 
-					case RenderPass.Mask:
-						if(!maskedthings.ContainsKey(t.Texture)) maskedthings.Add(t.Texture, new List<VisualThing>());
-						maskedthings[t.Texture].Add(t);
-						break;
+						case RenderPass.Mask:
+							if(!maskedthings.ContainsKey(t.Texture)) maskedthings.Add(t.Texture, new List<VisualThing>());
+							maskedthings[t.Texture].Add(t);
+							break;
 
-					case RenderPass.Additive:
-					case RenderPass.Alpha:
-						translucentthings.Add(t);
-						break;
+						case RenderPass.Additive:
+						case RenderPass.Alpha:
+							translucentthings.Add(t);
+							break;
 
-					default:
-						throw new NotImplementedException("Thing rendering of " + t.RenderPass + " render pass is not implemented!");
+						default:
+							throw new NotImplementedException("Thing rendering of " + t.RenderPass + " render pass is not implemented!");
+					}
 				}
 			}
 
