@@ -104,6 +104,7 @@ namespace CodeImp.DoomBuilder.Data
 		private string[] terrainnames; 
 		private string[] damagetypes;
 		private Dictionary<string, PixelColor> knowncolors; // Colors parsed from X11R6RGB lump. Color names are lowercase without spaces
+		private CvarsCollection cvars; // Variables parsed from CVARINFO
 
 		//mxd. Text resources
 		private Dictionary<ScriptType, HashSet<TextResource>> textresources; 
@@ -166,6 +167,7 @@ namespace CodeImp.DoomBuilder.Data
 		public string[] DamageTypes { get { return damagetypes; } }
 		public Dictionary<string, PixelColor> KnownColors { get { return knowncolors; } }
 		internal Dictionary<ScriptType, HashSet<TextResource>> TextResources { get { return textresources; } }
+		internal CvarsCollection CVars { get { return cvars; } }
 
 		//mxd
 		internal IEnumerable<DataReader> Containers { get { return containers; } }
@@ -340,6 +342,7 @@ namespace CodeImp.DoomBuilder.Data
 			textresources = new Dictionary<ScriptType, HashSet<TextResource>>();
 			damagetypes = new string[0];
 			knowncolors = new Dictionary<string, PixelColor>(StringComparer.OrdinalIgnoreCase);
+			cvars = new CvarsCollection(); //mxd
 			
 			// Load texture sets
 			foreach(DefinedTextureSet ts in General.Map.ConfigSettings.TextureSets)
@@ -416,9 +419,10 @@ namespace CodeImp.DoomBuilder.Data
 			LoadSprites(cachedparsers);
 			cachedparsers = null; //mxd
 
-			//mxd. Load MAPINFO. Should happen before parisng DECORATE
+			//mxd. Load MAPINFO and CVARINFO. Should happen before parisng DECORATE
 			Dictionary<int, string> spawnnums, doomednums;
 			LoadMapInfo(out spawnnums, out doomednums);
+			LoadCvarInfo();
 
 			int thingcount = LoadDecorateThings(spawnnums, doomednums);
 			int spritecount = LoadThingSprites();
@@ -613,6 +617,7 @@ namespace CodeImp.DoomBuilder.Data
 			textresources = null; //mxd
 			damagetypes = null; //mxd
 			knowncolors = null; //mxd
+			cvars = null; //mxd
 			texturenames = null;
 			flatnames = null;
 			imageque = null;
@@ -2575,6 +2580,34 @@ namespace CodeImp.DoomBuilder.Data
 
 			// Set as collection
 			knowncolors = parser.KnownColors;
+		}
+
+		//mxd. This loads CVARINFO lumps
+		private void LoadCvarInfo()
+		{
+			CvarInfoParser parser = new CvarInfoParser();
+
+			foreach(DataReader dr in containers)
+			{
+				currentreader = dr;
+				IEnumerable<TextResourceData> streams = dr.GetCvarInfoData();
+
+				// Parse the data
+				foreach(TextResourceData data in streams)
+				{
+					parser.Parse(data, true);
+
+					// Report errors?
+					if(parser.HasError) parser.LogError();
+				}
+			}
+
+			// Add to text resources collection
+			textresources[parser.ScriptType] = new HashSet<TextResource>(parser.TextResources.Values);
+			currentreader = null;
+
+			// Set as collection
+			cvars = parser.Cvars;
 		}
 
 		//mxd

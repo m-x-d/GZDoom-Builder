@@ -30,19 +30,20 @@ namespace CodeImp.DoomBuilder.Config
 	//mxd
 	public enum ScriptType
 	{
-		UNKNOWN = 0,
-		ACS = 1,
-		MODELDEF = 2,
-		DECORATE = 3,
-		GLDEFS = 4,
-		SNDSEQ = 5,
-		MAPINFO = 6,
-		VOXELDEF = 7,
-		TEXTURES = 8,
-		ANIMDEFS = 9,
-		REVERBS = 10,
-		TERRAIN = 11,
-		X11R6RGB = 12,
+		UNKNOWN,
+		ACS,
+		MODELDEF,
+		DECORATE,
+		GLDEFS,
+		SNDSEQ,
+		MAPINFO,
+		VOXELDEF,
+		TEXTURES,
+		ANIMDEFS,
+		REVERBS,
+		TERRAIN,
+		X11R6RGB,
+		CVARINFO,
 	}
 	
 	internal class ScriptConfiguration : IComparable<ScriptConfiguration>

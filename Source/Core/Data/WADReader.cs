@@ -1045,6 +1045,13 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		//mxd
+		public override IEnumerable<TextResourceData> GetCvarInfoData()
+		{
+			if(issuspended) throw new Exception("Data reader is suspended");
+			return GetAllLumps("CVARINFO");
+		}
+
+		//mxd
 		private IEnumerable<TextResourceData> GetFirstLump(string name)
 		{
 			List<TextResourceData> result = new List<TextResourceData>();

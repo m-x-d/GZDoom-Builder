@@ -475,11 +475,19 @@ namespace CodeImp.DoomBuilder.Config
 			if(actor.HasPropertyWithValue("radius")) radius = actor.GetPropertyValueInt("radius", 0);
 			if(actor.HasPropertyWithValue("height")) height = actor.GetPropertyValueInt("height", 0);
 
-			//mxd. DistanceCheck. We'll need squared value
+			//mxd. DistanceCheck. The value is CVAR. Also we'll need squared value
 			if(actor.HasPropertyWithValue("distancecheck"))
 			{
-				distancechecksq = actor.GetPropertyValueInt("distancecheck", 0);
-				distancechecksq = (distancechecksq == 0 ? int.MaxValue : distancechecksq * distancechecksq);
+				string cvarname = actor.GetPropertyValueString("distancecheck", 0);
+				if(!General.Map.Data.CVars.Integers.ContainsKey(cvarname))
+				{
+					General.ErrorLogger.Add(ErrorType.Error, "Error in actor \"" + title + "\":" + index + ". DistanceCheck property references undefined cvar \"" + cvarname + "\"");
+					distancechecksq = int.MaxValue;
+				}
+				else
+				{
+					distancechecksq = (int)Math.Pow(General.Map.Data.CVars.Integers[cvarname], 2);
+				}
 			}
 
 			//mxd. Renderstyle
