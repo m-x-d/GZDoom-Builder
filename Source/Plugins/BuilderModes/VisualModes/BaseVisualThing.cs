@@ -513,6 +513,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This performs a fast test in object picking
 		public override bool PickFastReject(Vector3D from, Vector3D to, Vector3D dir)
 		{
+			//mxd. Don't highlight when thing sprite is not rendered and thing cages are disabled 
+			if(!General.Map.Renderer3D.DrawThingCages && info.DistanceCheckSq < int.MaxValue
+				&& (Thing.Position - General.Map.VisualCamera.Position).GetLengthSq() > info.DistanceCheckSq)
+				return false;
+			
 			float distance2 = Line2D.GetDistanceToLineSq(from, to, pos2d, false);
 			return (distance2 <= cageradius2);
 		}

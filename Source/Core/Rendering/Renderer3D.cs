@@ -842,6 +842,10 @@ namespace CodeImp.DoomBuilder.Rendering
 						// Update buffer if needed
 						t.Update();
 
+						//mxd. Check 3D distance
+						if(t.Info.DistanceCheckSq < int.MaxValue && (t.Thing.Position - cameraposition).GetLengthSq() > t.Info.DistanceCheckSq)
+							continue;
+
 						// Only do this sector when a vertexbuffer is created
 						if(t.GeometryBuffer != null) 
 						{
@@ -1107,6 +1111,13 @@ namespace CodeImp.DoomBuilder.Rendering
 				// Render things collected
 				foreach(VisualThing t in thingspass)
 				{
+					// Update buffer if needed
+					t.Update();
+
+					//mxd. Check 3D distance
+					if(t.Info.DistanceCheckSq < int.MaxValue && (t.Thing.Position - cameraposition).GetLengthSq() > t.Info.DistanceCheckSq)
+						continue;
+					
 					t.UpdateSpriteFrame(); // Set correct texture, geobuffer and triangles count
 					if(t.Texture is UnknownImage) continue;
 					
@@ -1144,9 +1155,6 @@ namespace CodeImp.DoomBuilder.Rendering
 						graphics.Shaders.World3D.Texture1 = curtexture.Texture;
 						curtexturename = t.Texture.LongName;
 					}
-
-					// Update buffer if needed
-					t.Update();
 
 					// Only do this sector when a vertexbuffer is created
 					if(t.GeometryBuffer != null)
@@ -1368,7 +1376,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			graphics.Device.SetRenderState(RenderState.BlendOperation, BlendOperation.Add);
 		}
 
-		//mxd. render models
+		//mxd. Render models
 		private void RenderModels() 
 		{
 			int shaderpass = (fullbrightness ? 1 : 4);
@@ -1382,7 +1390,12 @@ namespace CodeImp.DoomBuilder.Rendering
 			{
 				foreach(VisualThing t in group.Value) 
 				{
+					// Update buffer if needed
 					t.Update();
+
+					// Check 3D distance
+					if(t.Info.DistanceCheckSq < int.MaxValue && (t.Thing.Position - cameraposition).GetLengthSq() > t.Info.DistanceCheckSq)
+						continue;
 					
 					Color4 vertexcolor = new Color4(t.VertexColor);
 
@@ -1395,7 +1408,7 @@ namespace CodeImp.DoomBuilder.Rendering
 					// Determine the shader pass we want to use for this object
 					int wantedshaderpass = ((((t == highlighted) && showhighlight) || (t.Selected && showselection)) ? highshaderpass : shaderpass);
 
-					//mxd. if fog is enagled, switch to shader, which calculates it
+					// If fog is enagled, switch to shader, which calculates it
 					if(General.Settings.GZDrawFog && !fullbrightness && t.Thing.Sector != null && t.Thing.Sector.FogMode != SectorFogMode.NONE)
 						wantedshaderpass += 8;
 
@@ -1420,7 +1433,7 @@ namespace CodeImp.DoomBuilder.Rendering
 					world = General.Map.Data.ModeldefEntries[t.Thing.Type].Transform * modelscale * modelrotation * t.Position;
 					ApplyMatrices3D();
 
-					//mxd. Set variables for fog rendering
+					// Set variables for fog rendering
 					if(wantedshaderpass > 7)
 					{
 						graphics.Shaders.World3D.World = world;
@@ -1476,7 +1489,13 @@ namespace CodeImp.DoomBuilder.Rendering
 					currentpass = t.RenderPass;
 				}
 				
+				// Update buffer if needed
 				t.Update();
+
+				// Check 3D distance
+				if(t.Info.DistanceCheckSq < int.MaxValue && (t.Thing.Position - cameraposition).GetLengthSq() > t.Info.DistanceCheckSq)
+					continue;
+
 				Color4 vertexcolor = new Color4(t.VertexColor);
 
 				// Check if model is affected by dynamic lights and set color accordingly
@@ -1488,7 +1507,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				// Determine the shader pass we want to use for this object
 				int wantedshaderpass = ((((t == highlighted) && showhighlight) || (t.Selected && showselection)) ? highshaderpass : shaderpass);
 
-				//mxd. if fog is enagled, switch to shader, which calculates it
+				// If fog is enagled, switch to shader, which calculates it
 				if(General.Settings.GZDrawFog && !fullbrightness && t.Thing.Sector != null && t.Thing.Sector.FogMode != SectorFogMode.NONE)
 					wantedshaderpass += 8;
 
@@ -1513,7 +1532,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				world = General.Map.Data.ModeldefEntries[t.Thing.Type].Transform * modelscale * modelrotation * t.Position;
 				ApplyMatrices3D();
 
-				//mxd. Set variables for fog rendering
+				// Set variables for fog rendering
 				if(wantedshaderpass > 7)
 				{
 					graphics.Shaders.World3D.World = world;
