@@ -766,6 +766,28 @@ namespace CodeImp.DoomBuilder.Data
 
 		#endregion
 
+		#region ================== CVARINFO (mxd)
+
+		public override IEnumerable<TextResourceData> GetCvarInfoData()
+		{
+			// Error when suspended
+			if(issuspended) throw new Exception("Data reader is suspended");
+
+			List<TextResourceData> result = new List<TextResourceData>();
+			string[] files = GetAllFilesWithTitle("", "CVARINFO", false);
+
+			// Add to collection
+			foreach(string s in files)
+				result.Add(new TextResourceData(this, LoadFile(s), s, true));
+
+			// Find in any of the wad files
+			foreach(WADReader wr in wads) result.AddRange(wr.GetCvarInfoData());
+
+			return result;
+		}
+
+		#endregion
+
 		#region ================== Methods
 
 		// This loads the images in this directory
