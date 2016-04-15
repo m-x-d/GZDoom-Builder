@@ -3553,7 +3553,7 @@ namespace CodeImp.DoomBuilder.Windows
 		//mxd
 		internal void AddHintsDocker() 
 		{
-			if(!dockerspanel.Contains(hintsDocker)) dockerspanel.Add(hintsDocker);
+			if(!dockerspanel.Contains(hintsDocker)) dockerspanel.Add(hintsDocker, false);
 		}
 
 		//mxd
@@ -4115,8 +4115,20 @@ namespace CodeImp.DoomBuilder.Windows
 			// Make sure the full name is set with the plugin name as prefix
 			Plugin plugin = General.Plugins.FindPluginByAssembly(Assembly.GetCallingAssembly());
 			d.MakeFullName(plugin.Name.ToLowerInvariant());
+
+			dockerspanel.Add(d, false);
+		}
+
+		//mxd. This also adds a docker
+		public void AddDocker(Docker d, bool notify)
+		{
+			if(dockerspanel.Contains(d)) return; //mxd
+
+			// Make sure the full name is set with the plugin name as prefix
+			Plugin plugin = General.Plugins.FindPluginByAssembly(Assembly.GetCallingAssembly());
+			d.MakeFullName(plugin.Name.ToLowerInvariant());
 			
-			dockerspanel.Add(d);
+			dockerspanel.Add(d, notify);
 		}
 		
 		// This removes a docker

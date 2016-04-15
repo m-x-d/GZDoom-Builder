@@ -515,7 +515,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			// Add docker
 			docker = new Docker("drawgrid", "Draw Grid", panel);
-			General.Interface.AddDocker(docker);
+			General.Interface.AddDocker(docker, true);
 			General.Interface.SelectDocker(docker);
 		}
 

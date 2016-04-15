@@ -190,7 +190,7 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 		
 		// This adds a docker
-		public void Add(Docker d)
+		public void Add(Docker d, bool notify)
 		{
 			// Set up page
 			TabPage page = new TabPage(d.Title);
@@ -202,7 +202,11 @@ namespace CodeImp.DoomBuilder.Controls
 			d.Control.Dock = DockStyle.Fill;
 			tabs.TabPages.Add(page);
 			page.ResumeLayout(true);
-			if(iscollapsed) tabs.SelectedIndex = -1;
+			if(iscollapsed)
+			{
+				tabs.SelectedIndex = -1;
+				if(notify) tabs.PlayNotifyAnimation(tabs.TabPages.Count - 1); //mxd
+			}
 			
 			// Go for all controls to add events
 			Queue<Control> todo = new Queue<Control>();

@@ -70,6 +70,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				preciseposition.Checked = false;
 				preciseposition.Enabled = false;
 			}
+
+			//mxd. Otherwise the focus will go to one of TextBoxes 
+			// and stay there forever preventing tab collapsing when in collapsed mode
+			label1.Focus();
 		}
 		
 		#endregion
