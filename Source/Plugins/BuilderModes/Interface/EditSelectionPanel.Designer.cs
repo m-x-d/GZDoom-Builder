@@ -111,7 +111,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.preciseposition.Location = new System.Drawing.Point(58, 115);
 			this.preciseposition.Name = "preciseposition";
 			this.preciseposition.Size = new System.Drawing.Size(146, 17);
-			this.preciseposition.TabIndex = 36;
+			this.preciseposition.TabIndex = 6;
 			this.preciseposition.Text = "High precision positioning";
 			this.tooltip.SetToolTip(this.preciseposition, "When checked, thing and vertex positions will be set using floating point precisi" +
 					"on.\r\nOtherwise, they will be rounded to the nearest integer.");
@@ -123,7 +123,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.orgposy.Location = new System.Drawing.Point(136, 23);
 			this.orgposy.Name = "orgposy";
 			this.orgposy.Size = new System.Drawing.Size(72, 24);
-			this.orgposy.TabIndex = 29;
+			this.orgposy.TabIndex = 1;
 			this.orgposy.Text = "-2000";
 			this.orgposy.UseVisualStyleBackColor = true;
 			this.orgposy.Click += new System.EventHandler(this.orgposy_Click);
@@ -134,7 +134,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.orgposx.Location = new System.Drawing.Point(58, 23);
 			this.orgposx.Name = "orgposx";
 			this.orgposx.Size = new System.Drawing.Size(72, 24);
-			this.orgposx.TabIndex = 28;
+			this.orgposx.TabIndex = 0;
 			this.orgposx.Text = "-2000";
 			this.orgposx.UseVisualStyleBackColor = true;
 			this.orgposx.Click += new System.EventHandler(this.orgposx_Click);
@@ -190,7 +190,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.relposy.Name = "relposy";
 			this.relposy.Size = new System.Drawing.Size(72, 24);
 			this.relposy.StepValues = null;
-			this.relposy.TabIndex = 11;
+			this.relposy.TabIndex = 5;
 			this.relposy.WhenEnterPressed += new System.EventHandler(this.relposy_Validated);
 			this.relposy.Validated += new System.EventHandler(this.relposy_Validated);
 			this.relposy.WhenButtonsClicked += new System.EventHandler(this.relposy_Validated);
@@ -211,7 +211,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.relposx.Name = "relposx";
 			this.relposx.Size = new System.Drawing.Size(72, 24);
 			this.relposx.StepValues = null;
-			this.relposx.TabIndex = 10;
+			this.relposx.TabIndex = 4;
 			this.relposx.WhenEnterPressed += new System.EventHandler(this.relposx_Validated);
 			this.relposx.Validated += new System.EventHandler(this.relposx_Validated);
 			this.relposx.WhenButtonsClicked += new System.EventHandler(this.relposx_Validated);
@@ -232,7 +232,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.absposy.Name = "absposy";
 			this.absposy.Size = new System.Drawing.Size(72, 24);
 			this.absposy.StepValues = null;
-			this.absposy.TabIndex = 9;
+			this.absposy.TabIndex = 3;
 			this.absposy.WhenEnterPressed += new System.EventHandler(this.absposy_Validated);
 			this.absposy.Validated += new System.EventHandler(this.absposy_Validated);
 			this.absposy.WhenButtonsClicked += new System.EventHandler(this.absposy_Validated);
@@ -253,7 +253,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.absposx.Name = "absposx";
 			this.absposx.Size = new System.Drawing.Size(72, 24);
 			this.absposx.StepValues = null;
-			this.absposx.TabIndex = 8;
+			this.absposx.TabIndex = 2;
 			this.absposx.WhenEnterPressed += new System.EventHandler(this.absposx_Validated);
 			this.absposx.Validated += new System.EventHandler(this.absposx_Validated);
 			this.absposx.WhenButtonsClicked += new System.EventHandler(this.absposx_Validated);
@@ -306,7 +306,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.orgsizey.Location = new System.Drawing.Point(136, 23);
 			this.orgsizey.Name = "orgsizey";
 			this.orgsizey.Size = new System.Drawing.Size(72, 24);
-			this.orgsizey.TabIndex = 31;
+			this.orgsizey.TabIndex = 1;
 			this.orgsizey.Text = "-2000";
 			this.orgsizey.UseVisualStyleBackColor = true;
 			this.orgsizey.Click += new System.EventHandler(this.orgsizey_Click);
@@ -317,7 +317,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.orgsizex.Location = new System.Drawing.Point(58, 23);
 			this.orgsizex.Name = "orgsizex";
 			this.orgsizex.Size = new System.Drawing.Size(72, 24);
-			this.orgsizex.TabIndex = 30;
+			this.orgsizex.TabIndex = 0;
 			this.orgsizex.Text = "-2000";
 			this.orgsizex.UseVisualStyleBackColor = true;
 			this.orgsizex.Click += new System.EventHandler(this.orgsizex_Click);
@@ -373,7 +373,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.relsizey.Name = "relsizey";
 			this.relsizey.Size = new System.Drawing.Size(72, 24);
 			this.relsizey.StepValues = null;
-			this.relsizey.TabIndex = 15;
+			this.relsizey.TabIndex = 5;
 			this.relsizey.WhenEnterPressed += new System.EventHandler(this.relsizey_Validated);
 			this.relsizey.Validated += new System.EventHandler(this.relsizey_Validated);
 			this.relsizey.WhenButtonsClicked += new System.EventHandler(this.relsizey_Validated);
@@ -394,7 +394,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.relsizex.Name = "relsizex";
 			this.relsizex.Size = new System.Drawing.Size(72, 24);
 			this.relsizex.StepValues = null;
-			this.relsizex.TabIndex = 14;
+			this.relsizex.TabIndex = 4;
 			this.relsizex.WhenEnterPressed += new System.EventHandler(this.relsizex_Validated);
 			this.relsizex.Validated += new System.EventHandler(this.relsizex_Validated);
 			this.relsizex.WhenButtonsClicked += new System.EventHandler(this.relsizex_Validated);
@@ -424,7 +424,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.abssizey.Name = "abssizey";
 			this.abssizey.Size = new System.Drawing.Size(72, 24);
 			this.abssizey.StepValues = null;
-			this.abssizey.TabIndex = 12;
+			this.abssizey.TabIndex = 3;
 			this.abssizey.WhenEnterPressed += new System.EventHandler(this.abssizey_Validated);
 			this.abssizey.Validated += new System.EventHandler(this.abssizey_Validated);
 			this.abssizey.WhenButtonsClicked += new System.EventHandler(this.abssizey_Validated);
@@ -445,7 +445,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.abssizex.Name = "abssizex";
 			this.abssizex.Size = new System.Drawing.Size(72, 24);
 			this.abssizex.StepValues = null;
-			this.abssizex.TabIndex = 11;
+			this.abssizex.TabIndex = 2;
 			this.abssizex.WhenEnterPressed += new System.EventHandler(this.abssizex_Validated);
 			this.abssizex.Validated += new System.EventHandler(this.abssizex_Validated);
 			this.abssizex.WhenButtonsClicked += new System.EventHandler(this.abssizex_Validated);
@@ -493,7 +493,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.flipv.Location = new System.Drawing.Point(94, 53);
 			this.flipv.Name = "flipv";
 			this.flipv.Size = new System.Drawing.Size(30, 30);
-			this.flipv.TabIndex = 26;
+			this.flipv.TabIndex = 2;
 			this.flipv.UseVisualStyleBackColor = true;
 			this.flipv.Click += new System.EventHandler(this.flipv_Click);
 			// 
@@ -504,7 +504,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.fliph.Location = new System.Drawing.Point(58, 53);
 			this.fliph.Name = "fliph";
 			this.fliph.Size = new System.Drawing.Size(30, 30);
-			this.fliph.TabIndex = 25;
+			this.fliph.TabIndex = 1;
 			this.fliph.UseVisualStyleBackColor = true;
 			this.fliph.Click += new System.EventHandler(this.fliph_Click);
 			// 
@@ -541,7 +541,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.absrot.Name = "absrot";
 			this.absrot.Size = new System.Drawing.Size(82, 24);
 			this.absrot.StepValues = null;
-			this.absrot.TabIndex = 24;
+			this.absrot.TabIndex = 0;
 			this.absrot.WhenEnterPressed += new System.EventHandler(this.absrot_Validated);
 			this.absrot.Validated += new System.EventHandler(this.absrot_Validated);
 			this.absrot.WhenButtonsClicked += new System.EventHandler(this.absrot_Validated);
@@ -567,7 +567,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.ceiltexoffset.Location = new System.Drawing.Point(27, 28);
 			this.ceiltexoffset.Name = "ceiltexoffset";
 			this.ceiltexoffset.Size = new System.Drawing.Size(54, 17);
-			this.ceiltexoffset.TabIndex = 30;
+			this.ceiltexoffset.TabIndex = 0;
 			this.ceiltexoffset.Text = "Offset";
 			this.ceiltexoffset.UseVisualStyleBackColor = true;
 			this.ceiltexoffset.CheckedChanged += new System.EventHandler(this.ceiltexoffset_CheckedChanged);
@@ -578,7 +578,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.ceiltexrotation.Location = new System.Drawing.Point(89, 28);
 			this.ceiltexrotation.Name = "ceiltexrotation";
 			this.ceiltexrotation.Size = new System.Drawing.Size(66, 17);
-			this.ceiltexrotation.TabIndex = 32;
+			this.ceiltexrotation.TabIndex = 1;
 			this.ceiltexrotation.Text = "Rotation";
 			this.ceiltexrotation.UseVisualStyleBackColor = true;
 			this.ceiltexrotation.CheckedChanged += new System.EventHandler(this.ceiltexrotation_CheckedChanged);
@@ -589,7 +589,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.ceiltexscale.Location = new System.Drawing.Point(163, 28);
 			this.ceiltexscale.Name = "ceiltexscale";
 			this.ceiltexscale.Size = new System.Drawing.Size(53, 17);
-			this.ceiltexscale.TabIndex = 35;
+			this.ceiltexscale.TabIndex = 2;
 			this.ceiltexscale.Text = "Scale";
 			this.ceiltexscale.UseVisualStyleBackColor = true;
 			this.ceiltexscale.CheckedChanged += new System.EventHandler(this.ceiltexscale_CheckedChanged);
@@ -600,7 +600,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.ceiltexall.Location = new System.Drawing.Point(14, 368);
 			this.ceiltexall.Name = "ceiltexall";
 			this.ceiltexall.Size = new System.Drawing.Size(154, 17);
-			this.ceiltexall.TabIndex = 37;
+			this.ceiltexall.TabIndex = 0;
 			this.ceiltexall.Text = "Ceiling Textures Transform:";
 			this.ceiltexall.UseVisualStyleBackColor = true;
 			this.ceiltexall.CheckedChanged += new System.EventHandler(this.ceiltexall_CheckedChanged);
@@ -611,7 +611,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.floortexrotation.Location = new System.Drawing.Point(89, 28);
 			this.floortexrotation.Name = "floortexrotation";
 			this.floortexrotation.Size = new System.Drawing.Size(66, 17);
-			this.floortexrotation.TabIndex = 31;
+			this.floortexrotation.TabIndex = 1;
 			this.floortexrotation.Text = "Rotation";
 			this.floortexrotation.UseVisualStyleBackColor = true;
 			this.floortexrotation.CheckedChanged += new System.EventHandler(this.floortexrotation_CheckedChanged);
@@ -622,7 +622,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.floortexoffset.Location = new System.Drawing.Point(27, 28);
 			this.floortexoffset.Name = "floortexoffset";
 			this.floortexoffset.Size = new System.Drawing.Size(54, 17);
-			this.floortexoffset.TabIndex = 4;
+			this.floortexoffset.TabIndex = 0;
 			this.floortexoffset.Text = "Offset";
 			this.floortexoffset.UseVisualStyleBackColor = true;
 			this.floortexoffset.CheckedChanged += new System.EventHandler(this.floortexoffset_CheckedChanged);
@@ -633,7 +633,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.floortexscale.Location = new System.Drawing.Point(163, 28);
 			this.floortexscale.Name = "floortexscale";
 			this.floortexscale.Size = new System.Drawing.Size(53, 17);
-			this.floortexscale.TabIndex = 34;
+			this.floortexscale.TabIndex = 2;
 			this.floortexscale.Text = "Scale";
 			this.floortexscale.UseVisualStyleBackColor = true;
 			this.floortexscale.CheckedChanged += new System.EventHandler(this.floortexscale_CheckedChanged);
@@ -644,7 +644,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.floortexall.Location = new System.Drawing.Point(14, 432);
 			this.floortexall.Name = "floortexall";
 			this.floortexall.Size = new System.Drawing.Size(146, 17);
-			this.floortexall.TabIndex = 36;
+			this.floortexall.TabIndex = 1;
 			this.floortexall.Text = "Floor Textures Transform:";
 			this.floortexall.UseVisualStyleBackColor = true;
 			this.floortexall.CheckedChanged += new System.EventHandler(this.floortexall_CheckedChanged);

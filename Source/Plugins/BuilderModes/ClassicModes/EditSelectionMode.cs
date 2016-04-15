@@ -1050,7 +1050,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Add docker
 			panel = new EditSelectionPanel(this);
 			docker = new Docker("editselection", "Edit Selection", panel);
-			General.Interface.AddDocker(docker);
+			General.Interface.AddDocker(docker, true);
 			General.Interface.SelectDocker(docker);
 			
 			// We don't want to record this for undoing while we move the geometry around.

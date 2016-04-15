@@ -206,6 +206,11 @@ namespace CodeImp.DoomBuilder.Windows
 		/// This adds a docker to the side panel.
 		/// </summary>
 		void AddDocker(Docker d);
+
+		/// <summary>
+		/// This adds a docker to the side panel and plays notify animation when the control is collapsed
+		/// </summary>
+		void AddDocker(Docker d, bool notify); //mxd
 		
 		/// <summary>
 		/// This removes a docker from the side panel.

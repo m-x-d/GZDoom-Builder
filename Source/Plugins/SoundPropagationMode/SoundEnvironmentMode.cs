@@ -163,7 +163,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			panel = new SoundEnvironmentPanel();
 			panel.OnShowWarningsOnlyChanged += PanelOnOnShowWarningsOnlyChanged;
 			docker = new Docker("soundenvironments", "Sound Environments", panel);
-			General.Interface.AddDocker(docker);
+			General.Interface.AddDocker(docker, true);
 			General.Interface.SelectDocker(docker);
 
 			worker = new BackgroundWorker();
