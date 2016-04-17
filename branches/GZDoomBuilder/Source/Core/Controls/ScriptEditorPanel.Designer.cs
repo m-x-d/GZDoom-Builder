@@ -385,6 +385,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// searchprev
 			// 
 			this.searchprev.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.searchprev.Enabled = false;
 			this.searchprev.Image = global::CodeImp.DoomBuilder.Properties.Resources.SearchPrev;
 			this.searchprev.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.searchprev.Name = "searchprev";
@@ -395,6 +396,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// searchnext
 			// 
 			this.searchnext.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.searchnext.Enabled = false;
 			this.searchnext.Image = global::CodeImp.DoomBuilder.Properties.Resources.SearchNext;
 			this.searchnext.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.searchnext.Name = "searchnext";

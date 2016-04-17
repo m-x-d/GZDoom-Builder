@@ -53,6 +53,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		private TextAlignmentX alignx;
 		private TextAlignmentY aligny;
 		private SizeF textsize;
+		private Size texturesize;
 		private bool drawbg; //mxd
 		
 		// This keeps track if changes were made
@@ -199,8 +200,8 @@ namespace CodeImp.DoomBuilder.Rendering
 						}
 
 						// Create label image
-						Bitmap img = CreateLabelImage(text, font, alignx, aligny, color, backcolor, drawbg);
-						textsize = img.Size;
+						Bitmap img = CreateLabelImage(text, font, alignx, aligny, color, backcolor, drawbg, out textsize);
+						texturesize = img.Size;
 
 						// Create texture
 						MemoryStream memstream = new MemoryStream((img.Size.Width * img.Size.Height * 4) + 4096);
@@ -217,8 +218,8 @@ namespace CodeImp.DoomBuilder.Rendering
 					switch(alignx)
 					{
 						case TextAlignmentX.Left: beginx = absview.X; break;
-						case TextAlignmentX.Center: beginx = absview.X + (absview.Width - textsize.Width) * 0.5f; break;
-						case TextAlignmentX.Right: beginx = absview.X + absview.Width - textsize.Width; break;
+						case TextAlignmentX.Center: beginx = absview.X + (absview.Width - texturesize.Width) * 0.5f; break;
+						case TextAlignmentX.Right: beginx = absview.X + absview.Width - texturesize.Width; break;
 					}
 
 					// Align the text vertically
@@ -226,8 +227,8 @@ namespace CodeImp.DoomBuilder.Rendering
 					switch(aligny)
 					{
 						case TextAlignmentY.Top: beginy = absview.Y; break;
-						case TextAlignmentY.Middle: beginy = absview.Y + (absview.Height - textsize.Height) * 0.5f; break;
-						case TextAlignmentY.Bottom: beginy = absview.Y + absview.Height - textsize.Height; break;
+						case TextAlignmentY.Middle: beginy = absview.Y + (absview.Height - texturesize.Height) * 0.5f; break;
+						case TextAlignmentY.Bottom: beginy = absview.Y + absview.Height - texturesize.Height; break;
 					}
 
 					//mxd. Create the buffer
@@ -240,7 +241,7 @@ namespace CodeImp.DoomBuilder.Rendering
 					//mxd. Lock the buffer
 					using(DataStream stream = textbuffer.Lock(0, 4 * FlatVertex.Stride, LockFlags.Discard | LockFlags.NoSystemLock))
 					{
-						FlatQuad quad = new FlatQuad(PrimitiveType.TriangleStrip, beginx, beginy, beginx + textsize.Width, beginy + textsize.Height);
+						FlatQuad quad = new FlatQuad(PrimitiveType.TriangleStrip, beginx, beginy, beginx + texturesize.Width, beginy + texturesize.Height);
 						stream.WriteRange(quad.Vertices);
 					}
 
@@ -261,13 +262,16 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		//mxd
-		private static Bitmap CreateLabelImage(string text, Font font, TextAlignmentX alignx, TextAlignmentY aligny, PixelColor color, PixelColor backcolor, bool drawbg)
+		private static Bitmap CreateLabelImage(string text, Font font, TextAlignmentX alignx, TextAlignmentY aligny, PixelColor color, PixelColor backcolor, bool drawbg, out SizeF textsize)
 		{
 			PointF textorigin = new PointF(4, 3);
 			RectangleF textrect = new RectangleF(textorigin, General.Interface.MeasureString(text, font));
 			textrect.Width = (float)Math.Round(textrect.Width);
 			textrect.Height = (float)Math.Round(textrect.Height);
 			RectangleF bgrect = new RectangleF(0, 0, textrect.Width + textorigin.X * 2, textrect.Height + textorigin.Y * 2);
+
+			// Store calculated text size...
+			textsize = new SizeF(bgrect.Width, bgrect.Height);
 
 			// Make PO2 image, for speed and giggles...
 			RectangleF po2rect = new RectangleF(0, 0, General.NextPowerOf2((int)bgrect.Width), General.NextPowerOf2((int)bgrect.Height));

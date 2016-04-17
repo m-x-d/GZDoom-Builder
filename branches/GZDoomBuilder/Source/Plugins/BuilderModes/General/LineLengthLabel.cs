@@ -52,7 +52,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd. Display options
 		public bool ShowAngle { get { return showangle; } set { showangle = value; UpdateText(); } }
 		public bool OffsetPosition { get { return offsetposition; } set { offsetposition = value; Move(start, end); } }
-		public PixelColor TextColor { get { return label.Color; } set { label.Color = value; } }
+		public PixelColor Color { get { return label.Color; } set { label.Color = value; } }
+		public PixelColor BackColor { get { return label.BackColor; } set { label.BackColor = value; } }
+		public SizeF TextSize { get { return label.TextSize; } }
 
 		#endregion
 
@@ -108,7 +110,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						AlignX = TextAlignmentX.Center, 
 						AlignY = TextAlignmentY.Middle, 
 						Color = General.Colors.Highlight, 
-						BackColor = General.Colors.Background.WithAlpha(64), 
+						BackColor = General.Colors.Background.WithAlpha(128), 
 						TransformCoords = true,
 					};
 		}
