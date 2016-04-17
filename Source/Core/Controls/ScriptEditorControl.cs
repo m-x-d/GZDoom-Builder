@@ -754,6 +754,7 @@ namespace CodeImp.DoomBuilder.Controls
 		//mxd. Find next result
 		public bool FindNext(FindReplaceOptions options, bool useselectionstart)
 		{
+			if(string.IsNullOrEmpty(options.FindText)) return false;
 			int startpos = (useselectionstart ? Math.Min(scriptedit.SelectionStart, scriptedit.SelectionEnd) : Math.Max(scriptedit.SelectionStart, scriptedit.SelectionEnd));
 
 			// Search the document
@@ -792,6 +793,7 @@ namespace CodeImp.DoomBuilder.Controls
 		//mxd. Find previous result
 		public bool FindPrevious(FindReplaceOptions options)
 		{
+			if(string.IsNullOrEmpty(options.FindText)) return false;
 			int endpos = Math.Max(0, Math.Min(scriptedit.SelectionStart, scriptedit.SelectionEnd) - 1);
 
 			// Search the document

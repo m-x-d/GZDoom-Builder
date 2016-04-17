@@ -33,6 +33,8 @@ namespace CodeImp.DoomBuilder.Controls
 	internal partial class ScriptEditorPanel : UserControl
 	{
 		#region ================== Constants
+
+		private static readonly Color QUICKSEARCH_FAIL_COLOR = Color.MistyRose; //mxd
 		
 		#endregion
 		
@@ -579,14 +581,34 @@ namespace CodeImp.DoomBuilder.Controls
 			buttonunindent.Enabled = (t != null && t.Scintilla.Lines[t.Scintilla.CurrentLine].Indentation > 0); //mxd
 			buttonwhitespace.Enabled = (t != null); //mxd
 			buttonwordwrap.Enabled = (t != null); //mxd
-			searchbox.Enabled = (t != null); //mxd
-			searchprev.Enabled = (t != null); //mxd
-			searchnext.Enabled = (t != null); //mxd
 			searchmatchcase.Enabled = (t != null); //mxd
 			searchwholeword.Enabled = (t != null); //mxd
 			
 			if(t != null)
 			{
+				//mxd. Update quick search controls
+				searchbox.Enabled = true;
+				if(searchbox.Text.Length > 0)
+				{
+					if(t.Scintilla.Text.IndexOf(searchbox.Text, searchmatchcase.Checked ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase) != -1)
+					{
+						searchprev.Enabled = true;
+						searchnext.Enabled = true;
+						searchbox.BackColor = SystemColors.Window;
+					}
+					else
+					{
+						searchprev.Enabled = false;
+						searchnext.Enabled = false;
+						searchbox.BackColor = QUICKSEARCH_FAIL_COLOR;
+					}
+				}
+				else
+				{
+					searchprev.Enabled = false;
+					searchnext.Enabled = false;
+				}
+
 				// Check the according script config in menu
 				foreach(ToolStripMenuItem item in buttonscriptconfig.DropDownItems)
 				{
@@ -603,6 +625,13 @@ namespace CodeImp.DoomBuilder.Controls
 				
 				// Focus to script editor
 				if(focuseditor) ForceFocus();
+			}
+			else
+			{
+				//mxd. Disable quick search controls
+				searchbox.Enabled = false; 
+				searchprev.Enabled = false;
+				searchnext.Enabled = false;
 			}
 
 			//mxd. Update script type description
@@ -1216,7 +1245,7 @@ namespace CodeImp.DoomBuilder.Controls
 		private void searchbox_TextChanged(object sender, EventArgs e)
 		{
 			bool success = (searchbox.Text.Length > 0 && ActiveTab.FindNext(GetQuickSearchOptions(), true));
-			searchbox.BackColor = ((success || searchbox.Text.Length == 0) ? SystemColors.Window : Color.MistyRose);
+			searchbox.BackColor = ((success || searchbox.Text.Length == 0) ? SystemColors.Window : QUICKSEARCH_FAIL_COLOR);
 			searchnext.Enabled = success;
 			searchprev.Enabled = success;
 		}

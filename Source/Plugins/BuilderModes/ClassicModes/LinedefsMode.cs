@@ -62,7 +62,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private Vector2D insertpreview = new Vector2D(float.NaN, float.NaN); //mxd
 
 		//mxd. Text labels
-		private Dictionary<Linedef, TextLabel> labels;
+		private Dictionary<Linedef, SelectionLabel> labels;
 		private Dictionary<Sector, TextLabel[]> sectorlabels;
 		private Dictionary<Sector, string[]> sectortexts;
 		
@@ -92,7 +92,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(!isdisposed)
 			{
 				// Dispose old labels
-				if(labels != null) foreach(TextLabel l in labels.Values) l.Dispose();
+				if(labels != null) foreach(SelectionLabel l in labels.Values) l.Dispose();
 				if(sectorlabels != null)
 				{
 					foreach(TextLabel[] lbl in sectorlabels.Values)
@@ -410,11 +410,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.UpdateSelectionInfo();
 			
 			// Dispose old labels
-			if(labels != null) foreach(TextLabel l in labels.Values) l.Dispose();
+			if(labels != null) foreach(SelectionLabel l in labels.Values) l.Dispose();
 
 			// Make text labels for selected linedefs
 			ICollection<Linedef> orderedselection = General.Map.Map.GetSelectedLinedefs(true);
-			labels = new Dictionary<Linedef, TextLabel>(orderedselection.Count);
+			labels = new Dictionary<Linedef, SelectionLabel>(orderedselection.Count);
 
 			// Otherwise significant delays will occure.
 			// Also we probably won't care about selection ordering when selecting this many anyway
@@ -423,15 +423,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			int index = 0;
 			foreach(Linedef linedef in orderedselection)
 			{
-				Vector2D v = linedef.GetCenterPoint();
-				TextLabel l = new TextLabel();
-				l.TransformCoords = true;
-				l.Rectangle = new RectangleF(v.x, v.y, 0.0f, 0.0f);
-				l.AlignX = TextAlignmentX.Center;
-				l.AlignY = TextAlignmentY.Middle;
+				SelectionLabel l = new SelectionLabel();
+				l.OffsetPosition = true;
 				l.Color = (linedef == highlighted ? General.Colors.Selection : General.Colors.Highlight);
 				l.BackColor = General.Colors.Background.WithAlpha(192);
-				l.Text = (++index).ToString();
+				l.TextLabel.Text = (++index).ToString();
 				labels.Add(linedef, l);
 			}
 		}
@@ -628,11 +624,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(BuilderPlug.Me.ViewSelectionNumbers)
 				{
 					List<TextLabel> torender = new List<TextLabel>(labels.Count);
-					foreach(KeyValuePair<Linedef, TextLabel> group in labels)
+					foreach(KeyValuePair<Linedef, SelectionLabel> group in labels)
 					{
 						// Render only when enough space for the label to see
+						group.Value.Move(group.Key.Start.Position, group.Key.End.Position);
 						float requiredsize = (group.Value.TextSize.Width) / renderer.Scale;
-						if(group.Key.Length > requiredsize) torender.Add(group.Value);
+						if(group.Key.Length > requiredsize)
+						{
+							torender.Add(group.Value.TextLabel);
+						}
 					}
 
 					renderer.RenderText(torender);
@@ -1271,7 +1271,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.DisplayStatus(StatusType.Selection, string.Empty);
 
 			//mxd. Clear selection labels
-			foreach(TextLabel l in labels.Values) l.Dispose();
+			foreach(SelectionLabel l in labels.Values) l.Dispose();
 			labels.Clear();
 
 			// Redraw

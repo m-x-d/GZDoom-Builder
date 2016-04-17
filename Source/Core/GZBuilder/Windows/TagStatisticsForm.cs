@@ -203,13 +203,13 @@ namespace CodeImp.DoomBuilder.GZBuilder.Windows
 
 		private void apply_Click(object sender, EventArgs e) 
 		{
-			//refill TagLabels with table data
+			// Refill TagLabels with table data
 			dataGridView.Sort(TagColumn, ListSortDirection.Ascending);
 			General.Map.Options.TagLabels.Clear();
 
 			foreach(DataGridViewRow row in dataGridView.Rows) 
 			{
-				string label = row.Cells[1].Value.ToString();
+				string label = (string)row.Cells[1].Value;
 				if(!string.IsNullOrEmpty(label))
 					General.Map.Options.TagLabels.Add((int)row.Cells[0].Value, label);
 			}

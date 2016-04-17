@@ -364,6 +364,7 @@ special
 	-94:SetSectorDamage(2,5),
 	-95:SetSectorTerrain(3),
 	-96:SpawnParticle(1,15),
+	-97:SetMusicVolume(1),
 	
 	// Zandronum's
 	-100:ResetMap(0),
