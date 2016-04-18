@@ -715,8 +715,8 @@ namespace CodeImp.DoomBuilder.Editing
 							General.Plugins.OnUndoEnd();
 
 							// Update interface
-							General.MainWindow.RedrawDisplay(); //mxd
 							General.Editing.Mode.UpdateSelectionInfo(); //mxd
+							General.MainWindow.RedrawDisplay(); //mxd
 							dobackgroundwork = true;
 							General.MainWindow.UpdateInterface();
 						}
