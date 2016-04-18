@@ -28,8 +28,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			System.Windows.Forms.Label label1;
-			System.Windows.Forms.Label label2;
+			this.labelfind = new System.Windows.Forms.Label();
 			this.searchtypes = new System.Windows.Forms.ComboBox();
 			this.findinput = new CodeImp.DoomBuilder.Controls.AutoSelectTextbox();
 			this.browsefind = new System.Windows.Forms.Button();
@@ -44,8 +45,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.deletebutton = new System.Windows.Forms.Button();
 			this.editbutton = new System.Windows.Forms.Button();
 			this.doreplace = new System.Windows.Forms.CheckBox();
+			this.tooltip = new System.Windows.Forms.ToolTip(this.components);
 			label1 = new System.Windows.Forms.Label();
-			label2 = new System.Windows.Forms.Label();
 			this.resultspanel.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -58,14 +59,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			label1.TabIndex = 0;
 			label1.Text = "Search type:";
 			// 
-			// label2
+			// labelfind
 			// 
-			label2.AutoSize = true;
-			label2.Location = new System.Drawing.Point(47, 51);
-			label2.Name = "label2";
-			label2.Size = new System.Drawing.Size(56, 13);
-			label2.TabIndex = 2;
-			label2.Text = "Find what:";
+			this.labelfind.AutoSize = true;
+			this.labelfind.Location = new System.Drawing.Point(47, 51);
+			this.labelfind.Name = "labelfind";
+			this.labelfind.Size = new System.Drawing.Size(56, 13);
+			this.labelfind.TabIndex = 2;
+			this.labelfind.Text = "Find what:";
 			// 
 			// searchtypes
 			// 
@@ -219,6 +220,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.doreplace.UseVisualStyleBackColor = true;
 			this.doreplace.CheckedChanged += new System.EventHandler(this.doreplace_CheckedChanged);
 			// 
+			// tooltip
+			// 
+			this.tooltip.AutoPopDelay = 10000;
+			this.tooltip.InitialDelay = 100;
+			this.tooltip.ReshowDelay = 100;
+			// 
 			// FindReplaceForm
 			// 
 			this.AcceptButton = this.findbutton;
@@ -234,7 +241,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.Controls.Add(this.withinselection);
 			this.Controls.Add(this.browsefind);
 			this.Controls.Add(this.findinput);
-			this.Controls.Add(label2);
+			this.Controls.Add(this.labelfind);
 			this.Controls.Add(this.searchtypes);
 			this.Controls.Add(label1);
 			this.Controls.Add(this.resultspanel);
@@ -274,5 +281,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private System.Windows.Forms.CheckBox doreplace;
 		private System.Windows.Forms.Button editbutton;
 		private System.Windows.Forms.Button deletebutton;
+		private System.Windows.Forms.ToolTip tooltip;
+		private System.Windows.Forms.Label labelfind;
 	}
 }

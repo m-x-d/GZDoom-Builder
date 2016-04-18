@@ -1,5 +1,6 @@
 ﻿#region ================== Namespaces
 
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Drawing;
@@ -17,6 +18,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Properties
 
 		public override Image BrowseImage { get { return Properties.Resources.List; } }
+		public override string UsageHint { get { return "Supported wildcards:" + Environment.NewLine
+					+ "* - zero or more characters" + Environment.NewLine
+					+ "? - one character"; } }
 
 		#endregion
 
