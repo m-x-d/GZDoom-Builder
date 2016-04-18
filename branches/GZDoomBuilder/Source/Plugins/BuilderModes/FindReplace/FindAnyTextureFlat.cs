@@ -16,6 +16,7 @@
 
 #region ================== Namespaces
 
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Forms;
@@ -42,6 +43,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Properties
 		
 		public override Image BrowseImage { get { return Properties.Resources.List_Images; } }
+		public override string UsageHint { get { return "Supported wildcards:" + Environment.NewLine
+					+ "* - zero or more characters" + Environment.NewLine
+					+ "? - one character"; } }
 		
 		#endregion
 

@@ -43,6 +43,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private bool controlpressed;
 		private bool shiftpressed;
 		private bool suppressevents;
+		private Font hintfont; //mxd
 		
 		#endregion
 
@@ -59,6 +60,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			// Initialize
 			InitializeComponent();
+
+			//mxd. Create hint font
+			hintfont = new Font(this.Font, FontStyle.Underline);
 
 			// Find all find/replace types
 			Type[] findtypes = BuilderPlug.Me.FindClasses(typeof(FindReplaceType));
@@ -121,6 +125,22 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(!newfinder.CanReplace()) doreplace.Checked = false;
 			doreplace_CheckedChanged(this, EventArgs.Empty); //mxd. Update the rest of replace controls
 			doreplace.Enabled = newfinder.CanReplace();
+
+			//mxd. Update hint text
+			if(!string.IsNullOrEmpty(newfinder.UsageHint))
+			{
+				tooltip.SetToolTip(labelfind, newfinder.UsageHint);
+				labelfind.Font = hintfont;
+				labelfind.ForeColor = SystemColors.HotTrack;
+				labelfind.Cursor = Cursors.Hand;
+			}
+			else if(labelfind.ForeColor == SystemColors.HotTrack)
+			{
+				tooltip.SetToolTip(labelfind, string.Empty);
+				labelfind.Font = this.Font;
+				labelfind.ForeColor = SystemColors.ControlText;
+				labelfind.Cursor = Cursors.Default;
+			}
 		}
 		
 		// Browse find button clicked

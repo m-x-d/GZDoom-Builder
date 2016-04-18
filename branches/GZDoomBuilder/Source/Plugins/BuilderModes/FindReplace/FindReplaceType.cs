@@ -44,6 +44,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public FindReplaceAttribute Attributes { get { return attribs; } }
 		public virtual Image BrowseImage { get { return null; } }
 		public bool AllowDelete { get { return false; } }
+		public virtual string UsageHint { get { return string.Empty; } } //mxd
 		public virtual Presentation RenderPresentation { get { return Presentation.Standard; } }
 
 		#endregion

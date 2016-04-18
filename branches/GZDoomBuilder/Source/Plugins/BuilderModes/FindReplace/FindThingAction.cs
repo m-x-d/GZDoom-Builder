@@ -45,7 +45,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		public override Presentation RenderPresentation { get { return Presentation.Things; } }
 		public override Image BrowseImage { get { return Properties.Resources.List; } }
-		
+		public override string UsageHint { get { return "Usage: action [arg1 [arg2 [arg3 [arg4 [arg5]]]]]" + Environment.NewLine
+			+ "Arg value can be \"*\" (any value)" + Environment.NewLine
+			+ "Arg1 can be script name when searching for ACS specials"; } }
+
 		#endregion
 
 		#region ================== Constructor / Destructor
