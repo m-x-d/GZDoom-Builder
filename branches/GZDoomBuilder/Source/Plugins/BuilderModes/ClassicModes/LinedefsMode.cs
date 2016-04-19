@@ -388,10 +388,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				TextLabel[] larr = new TextLabel[s.Labels.Count];
 				for(int i = 0; i < s.Labels.Count; i++)
 				{
-					Vector2D v = s.Labels[i].position;
 					TextLabel l = new TextLabel();
 					l.TransformCoords = true;
-					l.Rectangle = new RectangleF(v.x, v.y, 0.0f, 0.0f);
+					l.Location = s.Labels[i].position;
 					l.AlignX = TextAlignmentX.Center;
 					l.AlignY = TextAlignmentY.Middle;
 					l.Color = General.Colors.InfoLine;

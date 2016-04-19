@@ -93,10 +93,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					base.Texture = General.Map.Data.UnknownTexture3D;
 					setuponloadedtexture = s.LongFloorTexture;
 				}
-				else
+				else if(!base.Texture.IsImageLoaded)
 				{
-					if(!base.Texture.IsImageLoaded)
-						setuponloadedtexture = s.LongFloorTexture;
+					setuponloadedtexture = s.LongFloorTexture;
 				}
 			}
 			else
@@ -259,8 +258,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				UniFields.SetFloat(s.Fields, "yscalefloor", scaleY, 1.0f);
 			}
 
-			//update geometry
-			OnTextureChanged();
+			// Update geometry
+			if(mode.VisualSectorExists(level.sector))
+			{
+				BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(level.sector);
+				vs.UpdateSectorGeometry(false);
+			}
 
 			s.UpdateNeeded = true;
 			s.UpdateCache();
@@ -296,8 +299,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				
 				SetTexture(BuilderPlug.Me.CopiedFlat);
 
-				//mxd. 3D floors may need updating...
-				OnTextureChanged();
+				// Update
+				if(mode.VisualSectorExists(level.sector))
+				{
+					BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(level.sector);
+					vs.UpdateSectorGeometry(false);
+				}
 			}
 		}
 
@@ -472,20 +479,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This changes the texture
 		protected override void SetTexture(string texturename)
 		{
-			//mxd. Glow effect may require SectorData and geometry update
-			bool prevtextureglows = General.Map.Data.GlowingFlats.ContainsKey(Sector.Sector.LongFloorTexture);
-			
 			// Set new texture
 			level.sector.SetFloorTexture(texturename);
-
-			//mxd. Glow effect may require SectorData and geometry update
-			if(prevtextureglows 
-				&& !General.Map.Data.GlowingFlats.ContainsKey(Sector.Sector.LongFloorTexture)
-				&& mode.VisualSectorExists(level.sector))
-			{
-				((BaseVisualSector)mode.GetVisualSector(level.sector)).Changed = true;
-			}
-
 			General.Map.Data.UpdateUsedTextures();
 		}
 
@@ -513,7 +508,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				if(side.Other != null && side.Other.Sector != Sector.Sector && !neighbours.Contains(side.Other.Sector))
 				{
-					BaseVisualSector vs = mode.GetVisualSector(side.Other.Sector) as BaseVisualSector;
+					BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(side.Other.Sector);
 					if(vs == null) continue;
 
 					// When current floor is part of a 3d floor, it looks like a ceiling, so we need to select adjacent ceilings

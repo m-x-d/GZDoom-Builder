@@ -153,10 +153,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				TextLabel[] labelarray = new TextLabel[s.Labels.Count];
 				for(int i = 0; i < s.Labels.Count; i++)
 				{
-					Vector2D v = s.Labels[i].position;
 					labelarray[i] = new TextLabel();
 					labelarray[i].TransformCoords = true;
-					labelarray[i].Rectangle = new RectangleF(v.x, v.y, 0.0f, 0.0f);
+					labelarray[i].Location = s.Labels[i].position;
 					labelarray[i].AlignX = TextAlignmentX.Center;
 					labelarray[i].AlignY = TextAlignmentY.Middle;
 					labelarray[i].Color = c;

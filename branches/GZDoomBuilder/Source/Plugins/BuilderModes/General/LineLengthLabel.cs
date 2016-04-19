@@ -204,7 +204,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Apply changes
 			Vector2D delta = end - start;
-			label.Rectangle = new RectangleF(start.x + delta.x * 0.5f, start.y + delta.y * 0.5f, 0f, 0f);
+			label.Location = new Vector2D(start.x + delta.x * 0.5f, start.y + delta.y * 0.5f);
 		}
 		
 		#endregion

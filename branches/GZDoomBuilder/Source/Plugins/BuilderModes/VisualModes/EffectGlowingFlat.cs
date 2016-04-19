@@ -1,45 +1,35 @@
-﻿using CodeImp.DoomBuilder.Map;
-using CodeImp.DoomBuilder.Rendering;
+﻿using CodeImp.DoomBuilder.Rendering;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	internal class EffectGlowingFlat : SectorEffect
+	internal class EffectGlowingFlat
 	{
-		private readonly Sector sector;
+		private readonly SectorData data;
 
 		// Level planes
 		private SectorLevel ceillevel;
 		private SectorLevel floorlevel;
 		
 		// Constructor
-		public EffectGlowingFlat(SectorData data, Sector sourcesector) : base(data)
+		public EffectGlowingFlat(SectorData sourcedata)
 		{
-			sector = sourcesector;
-
-			// New effect added: This sector needs an update!
-			if(data.Mode.VisualSectorExists(data.Sector))
-			{
-				BaseVisualSector vs = (BaseVisualSector)data.Mode.GetVisualSector(data.Sector);
-				vs.UpdateSectorGeometry(false);
-			}
+			data = sourcedata;
 		}
 
-		public override void Update() 
+		public void Update() 
 		{
 			// Create ceiling glow effect?
-			if(General.Map.Data.GlowingFlats.ContainsKey(sector.LongCeilTexture))
+			if(General.Map.Data.GlowingFlats.ContainsKey(data.Sector.LongCeilTexture))
 			{
 				// Create ceiling level?
 				if(ceillevel == null)
 				{
-					ceillevel = new SectorLevel(data.Ceiling);
-					ceillevel.type = SectorLevelType.Glow;
-					ceillevel.disablelighting = true;
+					ceillevel = new SectorLevel(data.Ceiling) { type = SectorLevelType.Glow, disablelighting = true };
 					data.AddSectorLevel(ceillevel);
 				}
 
 				// Update ceiling level
-				data.CeilingGlow = General.Map.Data.GlowingFlats[sector.LongCeilTexture];
+				data.CeilingGlow = General.Map.Data.GlowingFlats[data.Sector.LongCeilTexture];
 				ceillevel.brightnessbelow = -1; // We need this plane for clipping only,
 				ceillevel.color = 0;            // so we need to reset all shading and coloring
 				ceillevel.plane = data.Ceiling.plane;
@@ -52,19 +42,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			// Create floor glow effect?
-			if(General.Map.Data.GlowingFlats.ContainsKey(sector.LongFloorTexture))
+			if(General.Map.Data.GlowingFlats.ContainsKey(data.Sector.LongFloorTexture))
 			{
 				// Create floor level?
 				if(floorlevel == null)
 				{
-					floorlevel = new SectorLevel(data.Floor);
-					floorlevel.type = SectorLevelType.Glow;
-					floorlevel.disablelighting = true;
+					floorlevel = new SectorLevel(data.Floor) { type = SectorLevelType.Glow, disablelighting = true };
 					data.AddSectorLevel(floorlevel);
 				}
 
 				// Update floor level
-				data.FloorGlow = General.Map.Data.GlowingFlats[sector.LongFloorTexture];
+				data.FloorGlow = General.Map.Data.GlowingFlats[data.Sector.LongFloorTexture];
 				floorlevel.plane = data.Floor.plane.GetInverted();
 				floorlevel.plane.Offset += data.FloorGlow.Height;
 

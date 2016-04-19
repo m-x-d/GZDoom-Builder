@@ -93,9 +93,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					base.Texture = General.Map.Data.UnknownTexture3D;
 					setuponloadedtexture = s.LongCeilTexture;
 				} 
-				else 
+				else if(!base.Texture.IsImageLoaded)
 				{
-					if(!base.Texture.IsImageLoaded) setuponloadedtexture = s.LongCeilTexture;
+					setuponloadedtexture = s.LongCeilTexture;
 				}
 			} 
 			else 
@@ -113,20 +113,35 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Determine brightness
 			int color = PixelColor.FromInt(level.color).WithAlpha((byte)General.Clamp(level.alpha, 0, 255)).ToInt();
-
-			//mxd. Top extrafloor level should calculate fogdensity
-			//from the brightness of the level above it
 			int targetbrightness;
 			if(extrafloor != null && !extrafloor.VavoomType && !level.disablelighting)
 			{
-				targetbrightness = 0;
-				SectorData sd = mode.GetSectorData(this.Sector.Sector);
-				for(int i = 0; i < sd.LightLevels.Count - 1; i++)
+				//mxd. Top extrafloor level should calculate fogdensity from the brightness of the level above it
+				if(!innerside)
 				{
-					if(sd.LightLevels[i] == level)
+					targetbrightness = 0;
+					SectorData sd = mode.GetSectorData(this.Sector.Sector);
+					for(int i = 0; i < sd.LightLevels.Count - 1; i++)
 					{
-						targetbrightness = sd.LightLevels[i + 1].brightnessbelow;
-						break;
+						if(sd.LightLevels[i] == level)
+						{
+							targetbrightness = sd.LightLevels[i + 1].brightnessbelow;
+							break;
+						}
+					}
+				}
+				//mxd. Inner extrafloor ceilings must be colored using control sector's color and brightness 
+				else
+				{
+					targetbrightness = level.brightnessbelow;
+					SectorData sd = mode.GetSectorData(this.Sector.Sector);
+					for(int i = 0; i < sd.LightLevels.Count; i++)
+					{
+						if(sd.LightLevels[i] == level)
+						{
+							if(i > 0) color = sd.LightLevels[i - 1].color;
+							break;
+						}
 					}
 				}
 			}
@@ -271,8 +286,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				UniFields.SetFloat(s.Fields, "yscaleceiling", scaleY, 1.0f);
 			}
 
-			//update geometry
-			OnTextureChanged();
+			// Update
+			if(mode.VisualSectorExists(level.sector))
+			{
+				BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(level.sector);
+				vs.UpdateSectorGeometry(false);
+			}
 
 			s.UpdateNeeded = true;
 			s.UpdateCache();
@@ -308,8 +327,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				SetTexture(BuilderPlug.Me.CopiedFlat);
 
-				//mxd. 3D floors may need updating...
-				OnTextureChanged();
+				// Update
+				if(mode.VisualSectorExists(level.sector))
+				{
+					BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(level.sector);
+					vs.UpdateSectorGeometry(false);
+				}
 			}
 		}
 
@@ -512,20 +535,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This changes the texture
 		protected override void SetTexture(string texturename)
 		{
-			//mxd. Glow effect may require SectorData and geometry update
-			bool prevtextureglows = General.Map.Data.GlowingFlats.ContainsKey(Sector.Sector.LongCeilTexture);
-
 			// Set new texture
 			level.sector.SetCeilTexture(texturename);
-
-			//mxd. Glow effect may require SectorData and geometry update
-			if(prevtextureglows 
-				&& !General.Map.Data.GlowingFlats.ContainsKey(Sector.Sector.LongCeilTexture)
-				&& mode.VisualSectorExists(level.sector))
-			{
-				((BaseVisualSector)mode.GetVisualSector(level.sector)).Changed = true;
-			}
-			
 			General.Map.Data.UpdateUsedTextures();
 		}
 
@@ -553,7 +564,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				if(side.Other != null && side.Other.Sector != Sector.Sector && !neighbours.Contains(side.Other.Sector)) 
 				{
-					BaseVisualSector vs = mode.GetVisualSector(side.Other.Sector) as BaseVisualSector;
+					BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(side.Other.Sector);
 					if(vs == null) continue;
 
 					// When current ceiling is part of a 3d floor, it looks like a floor, so we need to select adjacent floors
