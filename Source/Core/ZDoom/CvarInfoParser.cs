@@ -132,7 +132,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			{
 				case "int":
 					int iv = 0;
-					if(!string.IsNullOrEmpty(value) && !int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out iv))
+					if(!string.IsNullOrEmpty(value) && !ReadSignedInt(value, ref iv))
 					{
 						ReportError("Cvar \"" + name + "\" has invalid integer value: \"" + value + "\"");
 						return false;
@@ -146,7 +146,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 				case "float":
 					float fv = 0f;
-					if(!string.IsNullOrEmpty(value) && !float.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out fv))
+					if(!string.IsNullOrEmpty(value) && !ReadSignedFloat(value, ref fv))
 					{
 						ReportError("Cvar \"" + name + "\" has invalid decimal value: \"" + value + "\"");
 						return false;

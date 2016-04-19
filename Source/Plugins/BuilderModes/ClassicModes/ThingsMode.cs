@@ -929,10 +929,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				TextLabel[] larr = new TextLabel[s.Labels.Count];
 				for(int i = 0; i < s.Labels.Count; i++)
 				{
-					Vector2D v = s.Labels[i].position;
 					TextLabel l = new TextLabel();
 					l.TransformCoords = true;
-					l.Rectangle = new RectangleF(v.x, v.y, 0.0f, 0.0f);
+					l.Location = s.Labels[i].position;
 					l.AlignX = TextAlignmentX.Center;
 					l.AlignY = TextAlignmentY.Middle;
 					l.Color = General.Colors.InfoLine;
@@ -964,19 +963,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			labels = new Dictionary<Thing, TextLabel>(orderedselection.Count);
 			foreach(Thing thing in orderedselection)
 			{
-				Vector2D v = thing.Position;
 				TextLabel l = new TextLabel();
 				l.TransformCoords = true;
 
 				if(thing.FixedSize)
 				{
-					l.Rectangle = new RectangleF(v.x, v.y, 0f, 0f);
+					l.Location = thing.Position;
 					l.AlignX = TextAlignmentX.Center;
 					l.AlignY = TextAlignmentY.Middle;
 				}
 				else
 				{
-					l.Rectangle = new RectangleF(v.x - thing.Size + 1, v.y + thing.Size - 1, 0f, 0f);
+					l.Location = new Vector2D(thing.Position.x - thing.Size + 1, thing.Position.y + thing.Size - 1);
 					l.AlignX = TextAlignmentX.Left;
 					l.AlignY = TextAlignmentY.Top;
 				}

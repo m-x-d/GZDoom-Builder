@@ -274,6 +274,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(string.IsNullOrEmpty(Sidedef.MiddleTexture) || Sidedef.MiddleTexture == "-" || !Texture.IsImageLoaded) return;
 			FitTexture(options);
 			Setup();
+
+			// Update linked effects
+			SectorData sd = mode.GetSectorDataEx(Sector.Sector);
+			if(sd != null) sd.Reset(true);
 		}
 		
 		#endregion

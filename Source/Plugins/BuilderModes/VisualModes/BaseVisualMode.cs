@@ -282,7 +282,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Reset changed flags
 			foreach(KeyValuePair<Sector, VisualSector> vs in allsectors)
 			{
-				BaseVisualSector bvs = (vs.Value as BaseVisualSector);
+				BaseVisualSector bvs = (BaseVisualSector)vs.Value;
 				foreach(VisualFloor vf in bvs.ExtraFloors) vf.Changed = false;
 				foreach(VisualCeiling vc in bvs.ExtraCeilings) vc.Changed = false;
 				foreach(VisualFloor vf in bvs.ExtraBackFloors) vf.Changed = false; //mxd
@@ -343,7 +343,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				if(vs.Value != null)
 				{
-					BaseVisualSector bvs = vs.Value as BaseVisualSector;
+					BaseVisualSector bvs = (BaseVisualSector)vs.Value;
 					if((bvs.Floor != null) && bvs.Floor.Selected) selectedobjects.Add(bvs.Floor);
 					if((bvs.Ceiling != null) && bvs.Ceiling.Selected) selectedobjects.Add(bvs.Ceiling);
 					foreach(Sidedef sd in vs.Key.Sidedefs)
@@ -351,7 +351,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						List<VisualGeometry> sidedefgeos = bvs.GetSidedefGeometry(sd);
 						foreach(VisualGeometry sdg in sidedefgeos)
 						{
-							if(sdg.Selected) selectedobjects.Add((sdg as IVisualEventReceiver));
+							if(sdg.Selected) selectedobjects.Add((IVisualEventReceiver)sdg);
 						}
 					}
 				}
@@ -361,7 +361,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				if(vt.Value != null)
 				{
-					BaseVisualThing bvt = vt.Value as BaseVisualThing;
+					BaseVisualThing bvt = (BaseVisualThing)vt.Value;
 					if(bvt.Selected) selectedobjects.Add(bvt);
 				}
 			}
@@ -502,7 +502,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				if(vs.Value != null)
 				{
-					BaseVisualSector bvs = vs.Value as BaseVisualSector;
+					BaseVisualSector bvs = (BaseVisualSector)vs.Value;
 					if(bvs.Changed) bvs.Rebuild();
 				}
 			}
@@ -511,7 +511,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				if(vt.Value != null)
 				{
-					BaseVisualThing bvt = vt.Value as BaseVisualThing;
+					BaseVisualThing bvt = (BaseVisualThing)vt.Value;
 					if(bvt.Changed) bvt.Rebuild();
 				}
 			}
@@ -543,7 +543,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Vector3D[] translatedcoords = TranslateCoordinates(coords, direction, absoluteposition);
 			for(int i = 0; i < visualthings.Count; i++) 
 			{
-				BaseVisualThing t = visualthings[i] as BaseVisualThing;
+				BaseVisualThing t = (BaseVisualThing)visualthings[i];
 				t.OnMove(translatedcoords[i]);
 			}
 
@@ -735,7 +735,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(!vertices.ContainsKey(v))
 				vertices.Add(v, new VisualVertexPair(new BaseVisualVertex(this, v, false), new BaseVisualVertex(this, v, true)));
 
-			return (floor ? vertices[v].FloorVertex as BaseVisualVertex : vertices[v].CeilingVertex as BaseVisualVertex);
+			return (floor ? (BaseVisualVertex)vertices[v].FloorVertex : (BaseVisualVertex)vertices[v].CeilingVertex);
 		}
 
 		//mxd
@@ -785,7 +785,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// The visual sector associated is now outdated
 					if(VisualSectorExists(sectorsWithEffects[i])) 
 					{
-						BaseVisualSector vs = GetVisualSector(sectorsWithEffects[i]) as BaseVisualSector;
+						BaseVisualSector vs = (BaseVisualSector)GetVisualSector(sectorsWithEffects[i]);
 						vs.UpdateSectorGeometry(true);
 					}
 				}
@@ -852,13 +852,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						SectorData sd = GetSectorData(s);
 						sd.AddEffectThingVertexSlope(slopeceilingthings, false);
 					}
-				}
-				
-				// ========== mxd. Glowing flats ==========
-				if(General.Map.Data.GlowingFlats.ContainsKey(s.LongFloorTexture) || General.Map.Data.GlowingFlats.ContainsKey(s.LongCeilTexture))
-				{
-					SectorData sd = GetSectorData(s);
-					sd.AddEffectGlowingFlat(s);
 				}
 			}
 			
@@ -1077,7 +1070,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 					else if(obj is VisualFloor || obj is VisualCeiling) 
 					{
-						VisualGeometry vg = obj as VisualGeometry;
+						VisualGeometry vg = (VisualGeometry)obj;
 						if(vg.Sector != null && vg.Sector.Sector != null && !selectedsectorindices.Contains(vg.Sector.Sector.Index))
 						{
 							selectedsectorindices.Add(vg.Sector.Sector.Index);
@@ -1087,7 +1080,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					else if(obj is VisualLower || obj is VisualUpper || obj is VisualMiddleDouble 
 						|| obj is VisualMiddleSingle || obj is VisualMiddle3D) 
 					{
-						VisualGeometry vg = obj as VisualGeometry;
+						VisualGeometry vg = (VisualGeometry)obj;
 						if(vg.Sidedef != null && !selectedlineindices.Contains(vg.Sidedef.Line.Index))
 						{
 							selectedlineindices.Add(vg.Sidedef.Line.Index);
@@ -1096,7 +1089,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 					else if(obj is VisualVertex)
 					{
-						VisualVertex v = obj as VisualVertex;
+						VisualVertex v = (VisualVertex)obj;
 						if(!selectedvertexindices.Contains(v.Vertex.Index))
 						{
 							selectedvertexindices.Add(v.Vertex.Index);
@@ -1293,7 +1286,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					if(sd.Marked && VisualSectorExists(sd.Sector))
 					{
-						BaseVisualSector vs = GetVisualSector(sd.Sector) as BaseVisualSector;
+						BaseVisualSector vs = (BaseVisualSector)GetVisualSector(sd.Sector);
 						VisualSidedefParts parts = vs.GetSidedefParts(sd);
 						parts.SetupAllParts();
 					}
@@ -1304,23 +1297,26 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					if(s.Marked)
 					{
-						SectorData sd = GetSectorData(s);
-						sd.Reset(false); //mxd (changed Reset implementation)
-						
-						// UpdateSectorGeometry for associated sectors (sd.UpdateAlso) as well!
-						foreach(KeyValuePair<Sector, bool> us in sd.UpdateAlso)
+						SectorData sd = GetSectorDataEx(s);
+						if(sd != null)
 						{
-							if(VisualSectorExists(us.Key))
+							sd.Reset(false); //mxd (changed Reset implementation)
+
+							// UpdateSectorGeometry for associated sectors (sd.UpdateAlso) as well!
+							foreach(KeyValuePair<Sector, bool> us in sd.UpdateAlso)
 							{
-								BaseVisualSector vs = GetVisualSector(us.Key) as BaseVisualSector;
-								vs.UpdateSectorGeometry(us.Value);
+								if(VisualSectorExists(us.Key))
+								{
+									BaseVisualSector vs = (BaseVisualSector)GetVisualSector(us.Key);
+									vs.UpdateSectorGeometry(us.Value);
+								}
 							}
 						}
 						
 						// And update for this sector ofcourse
 						if(VisualSectorExists(s))
 						{
-							BaseVisualSector vs = GetVisualSector(s) as BaseVisualSector;
+							BaseVisualSector vs = (BaseVisualSector)GetVisualSector(s);
 							vs.UpdateSectorGeometry(false);
 						}
 					}
@@ -1336,7 +1332,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						if((vt.Value != null) && vt.Key.Marked)
 						{
 							if(vt.Key.IsDisposed) toremove.Add(vt.Key); //mxd. Disposed things will cause problems
-							else (vt.Value as BaseVisualThing).Rebuild();
+							else ((BaseVisualThing)vt.Value).Rebuild();
 						}
 					}
 
@@ -1423,13 +1419,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnUndoEnd();
 
 			//mxd. Effects may've become invalid
-			if(General.Settings.GZDoomRenderingEffects && sectordata != null && sectordata.Count > 0)
-				RebuildElementData();
+			if(sectordata != null && sectordata.Count > 0) RebuildElementData();
 
 			//mxd. As well as geometry...
 			foreach(KeyValuePair<Sector, VisualSector> group in visiblesectors)
 			{
-				BaseVisualSector vs = group.Value as BaseVisualSector;
+				BaseVisualSector vs = (BaseVisualSector)group.Value;
 				if(vs != null) vs.Rebuild();
 			}
 
@@ -1445,13 +1440,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnRedoEnd();
 
 			//mxd. Effects may've become invalid
-			if(sectordata != null && sectordata.Count > 0)
-				RebuildElementData();
+			if(sectordata != null && sectordata.Count > 0) RebuildElementData();
 
 			//mxd. As well as geometry...
 			foreach(KeyValuePair<Sector, VisualSector> group in visiblesectors) 
 			{
-				BaseVisualSector vs = group.Value as BaseVisualSector;
+				BaseVisualSector vs = (BaseVisualSector)group.Value;
 				if(vs != null) vs.Rebuild();
 			}
 
@@ -1466,7 +1460,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Reset changed flags
 			foreach(KeyValuePair<Sector, VisualSector> vs in allsectors) 
 			{
-				BaseVisualSector bvs = (vs.Value as BaseVisualSector);
+				BaseVisualSector bvs = (BaseVisualSector)vs.Value;
 				foreach(VisualFloor vf in bvs.ExtraFloors) vf.Changed = false;
 				foreach(VisualCeiling vc in bvs.ExtraCeilings) vc.Changed = false;
 				foreach(VisualFloor vf in bvs.ExtraBackFloors) vf.Changed = false;
@@ -1494,7 +1488,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					{
 						if(VisualSectorExists(s.Key)) 
 						{
-							BaseVisualSector vs = GetVisualSector(s.Key) as BaseVisualSector;
+							BaseVisualSector vs = (BaseVisualSector)GetVisualSector(s.Key);
 							vs.UpdateSectorGeometry(s.Value);
 						}
 					}
@@ -1535,35 +1529,33 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			//mxd. Because Upper/Middle/Lower textures offsets should be threated separately in UDMF
 			if(General.Map.UDMF)
 			{
-				Dictionary<BaseVisualGeometrySidedef, bool> donesides = new Dictionary<BaseVisualGeometrySidedef, bool>(selectedobjects.Count);
+				HashSet<BaseVisualGeometrySidedef> donesides = new HashSet<BaseVisualGeometrySidedef>();
 				foreach(IVisualEventReceiver i in objs) 
 				{
-					if(!(i is BaseVisualGeometrySidedef)) continue;
-					BaseVisualGeometrySidedef vs = i as BaseVisualGeometrySidedef; //mxd
-					if(!donesides.ContainsKey(vs)) 
+					BaseVisualGeometrySidedef vs = (BaseVisualGeometrySidedef)i; //mxd
+					if(!donesides.Contains(vs)) 
 					{
 						//mxd. added scaling by texture scale
 						if(vs.Texture.UsedInMap) //mxd. Otherwise it's MissingTexture3D and we probably don't want to drag that
 							vs.OnChangeTextureOffset((int)(dx / vs.Texture.Scale.x), (int)(dy / vs.Texture.Scale.y), false);
 
-						donesides.Add(vs, false);
+						donesides.Add(vs);
 					}
 				}
 			}
 			else
 			{
-				Dictionary<Sidedef, bool> donesides = new Dictionary<Sidedef, bool>(selectedobjects.Count);
+				HashSet<Sidedef> donesides = new HashSet<Sidedef>();
 				foreach(IVisualEventReceiver i in objs) 
 				{
-					if(!(i is BaseVisualGeometrySidedef)) continue;
-					BaseVisualGeometrySidedef vs = i as BaseVisualGeometrySidedef; //mxd
-					if(!donesides.ContainsKey(vs.Sidedef)) 
+					BaseVisualGeometrySidedef vs = (BaseVisualGeometrySidedef)i; //mxd
+					if(!donesides.Contains(vs.Sidedef)) 
 					{
 						//mxd. added scaling by texture scale
 						if(vs.Texture.UsedInMap) //mxd. Otherwise it's MissingTexture3D and we probably don't want to drag that
 							vs.OnChangeTextureOffset((int)(dx / vs.Texture.Scale.x), (int)(dy / vs.Texture.Scale.y), false);
 
-						donesides.Add(vs.Sidedef, false);
+						donesides.Add(vs.Sidedef);
 					}
 				}
 			}
@@ -1572,17 +1564,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Apply flat offsets
 		public void ApplyFlatOffsetChange(int dx, int dy)
 		{
-			Dictionary<Sector, int> donesectors = new Dictionary<Sector, int>(selectedobjects.Count);
+			HashSet<Sector> donesectors = new HashSet<Sector>();
 			List<IVisualEventReceiver> objs = GetSelectedObjects(true, false, false, false);
 			foreach(IVisualEventReceiver i in objs)
 			{
-				if(i is BaseVisualGeometrySector)
+				BaseVisualGeometrySector bvs = (BaseVisualGeometrySector)i;
+				if(bvs != null && !donesectors.Contains(bvs.Sector.Sector))
 				{
-					if(!donesectors.ContainsKey((i as BaseVisualGeometrySector).Sector.Sector))
-					{
-						i.OnChangeTextureOffset(dx, dy, false);
-						donesectors.Add((i as BaseVisualGeometrySector).Sector.Sector, 0);
-					}
+					bvs.OnChangeTextureOffset(dx, dy, false);
+					donesectors.Add(bvs.Sector.Sector);
 				}
 			}
 		}
@@ -1657,7 +1647,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd
 		internal List<IVisualEventReceiver> RemoveDuplicateSidedefs(List<IVisualEventReceiver> objs) 
 		{
-			Dictionary<Sidedef, bool> processed = new Dictionary<Sidedef, bool>();
+			HashSet<Sidedef> processed = new HashSet<Sidedef>();
 			List<IVisualEventReceiver> result = new List<IVisualEventReceiver>();
 
 			foreach(IVisualEventReceiver i in objs)
@@ -1665,9 +1655,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				BaseVisualGeometrySidedef sidedef = i as BaseVisualGeometrySidedef;
 				if(sidedef != null)
 				{
-					if (!processed.ContainsKey(sidedef.Sidedef))
+					if(!processed.Contains(sidedef.Sidedef))
 					{
-						processed.Add(sidedef.Sidedef, false);
+						processed.Add(sidedef.Sidedef);
 						result.Add(i);
 					}
 				}
@@ -1683,15 +1673,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This returns all selected sectors, no doubles
 		public List<Sector> GetSelectedSectors()
 		{
-			Dictionary<Sector, int> added = new Dictionary<Sector, int>();
+			HashSet<Sector> added = new HashSet<Sector>();
 			List<Sector> sectors = new List<Sector>();
 			foreach(IVisualEventReceiver i in selectedobjects)
 			{
 				BaseVisualGeometrySector sector = i as BaseVisualGeometrySector;
-				if(sector != null && !added.ContainsKey(sector.Level.sector))
+				if(sector != null && !added.Contains(sector.Level.sector))
 				{
 					sectors.Add(sector.Level.sector);
-					added.Add(sector.Level.sector, 0);
+					added.Add(sector.Level.sector);
 				}
 			}
 
@@ -1699,7 +1689,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if((selectedobjects.Count == 0) && (target.picked is BaseVisualGeometrySector))
 			{
 				Sector s = ((BaseVisualGeometrySector)target.picked).Level.sector;
-				if(!added.ContainsKey(s)) sectors.Add(s);
+				if(!added.Contains(s)) sectors.Add(s);
 			}
 			
 			return sectors;
@@ -1708,7 +1698,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This returns all selected linedefs, no doubles
 		public List<Linedef> GetSelectedLinedefs()
 		{
-			Dictionary<Linedef, int> added = new Dictionary<Linedef, int>();
+			HashSet<Linedef> added = new HashSet<Linedef>();
 			List<Linedef> linedefs = new List<Linedef>();
 			foreach(IVisualEventReceiver i in selectedobjects)
 			{
@@ -1716,10 +1706,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(sidedef != null)
 				{
 					Linedef l = sidedef.GetControlLinedef(); //mxd
-					if(!added.ContainsKey(l))
+					if(!added.Contains(l))
 					{
 						linedefs.Add(l);
-						added.Add(l, 0);
+						added.Add(l);
 					}
 				}
 			}
@@ -1728,7 +1718,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if((selectedobjects.Count == 0) && (target.picked is BaseVisualGeometrySidedef))
 			{
 				Linedef l = ((BaseVisualGeometrySidedef)target.picked).GetControlLinedef(); //mxd
-				if(!added.ContainsKey(l)) linedefs.Add(l);
+				if(!added.Contains(l)) linedefs.Add(l);
 			}
 
 			return linedefs;
@@ -1737,15 +1727,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This returns all selected sidedefs, no doubles
 		public List<Sidedef> GetSelectedSidedefs()
 		{
-			Dictionary<Sidedef, int> added = new Dictionary<Sidedef, int>();
+			HashSet<Sidedef> added = new HashSet<Sidedef>();
 			List<Sidedef> sidedefs = new List<Sidedef>();
 			foreach(IVisualEventReceiver i in selectedobjects)
 			{
 				BaseVisualGeometrySidedef sidedef = i as BaseVisualGeometrySidedef;
-				if(sidedef != null && !added.ContainsKey(sidedef.Sidedef))
+				if(sidedef != null && !added.Contains(sidedef.Sidedef))
 				{
 					sidedefs.Add(sidedef.Sidedef);
-					added.Add(sidedef.Sidedef, 0);
+					added.Add(sidedef.Sidedef);
 				}
 			}
 
@@ -1753,7 +1743,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if((selectedobjects.Count == 0) && (target.picked is BaseVisualGeometrySidedef))
 			{
 				Sidedef sd = ((BaseVisualGeometrySidedef)target.picked).Sidedef;
-				if(!added.ContainsKey(sd)) sidedefs.Add(sd);
+				if(!added.Contains(sd)) sidedefs.Add(sd);
 			}
 
 			return sidedefs;
@@ -1762,15 +1752,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This returns all selected things, no doubles
 		public List<Thing> GetSelectedThings()
 		{
-			Dictionary<Thing, int> added = new Dictionary<Thing, int>();
+			HashSet<Thing> added = new HashSet<Thing>();
 			List<Thing> things = new List<Thing>();
 			foreach(IVisualEventReceiver i in selectedobjects)
 			{
 				BaseVisualThing thing = i as BaseVisualThing;
-				if(thing != null && !added.ContainsKey(thing.Thing))
+				if(thing != null && !added.Contains(thing.Thing))
 				{
 					things.Add(thing.Thing);
-					added.Add(thing.Thing, 0);
+					added.Add(thing.Thing);
 				}
 			}
 
@@ -1778,7 +1768,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if((selectedobjects.Count == 0) && (target.picked is BaseVisualThing))
 			{
 				Thing t = ((BaseVisualThing)target.picked).Thing;
-				if(!added.ContainsKey(t)) things.Add(t);
+				if(!added.Contains(t)) things.Add(t);
 			}
 
 			return things;
@@ -1787,20 +1777,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd. This returns all selected vertices, no doubles
 		public List<Vertex> GetSelectedVertices() 
 		{
-			Dictionary<Vertex, int> added = new Dictionary<Vertex, int>();
+			HashSet<Vertex> added = new HashSet<Vertex>();
 			List<Vertex> verts = new List<Vertex>();
 
-			foreach(IVisualEventReceiver i in selectedobjects) 
+			foreach(IVisualEventReceiver i in selectedobjects)
 			{
-				if(i is BaseVisualVertex) 
+				BaseVisualVertex vertex = i as BaseVisualVertex;
+				if(vertex != null && !added.Contains(vertex.Vertex)) 
 				{
-					Vertex v = (i as BaseVisualVertex).Vertex;
-					
-					if(!added.ContainsKey(v)) 
-					{
-						verts.Add(v);
-						added.Add(v, 0);
-					}
+					verts.Add(vertex.Vertex);
+					added.Add(vertex.Vertex);
 				}
 			}
 
@@ -1808,7 +1794,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if((selectedobjects.Count == 0) && (target.picked is BaseVisualVertex)) 
 			{
 				Vertex v = ((BaseVisualVertex)target.picked).Vertex;
-				if(!added.ContainsKey(v)) verts.Add(v);
+				if(!added.Contains(v)) verts.Add(v);
 			}
 
 			return verts;
@@ -1821,7 +1807,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				if(singleselection || target.picked.Selected || targetonly)
 				{
-					return target.picked as IVisualEventReceiver;
+					return (IVisualEventReceiver)target.picked;
 				}
 
 				if(selectedobjects.Count > 0)
@@ -1829,7 +1815,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					return selectedobjects[0];
 				}
 
-				return target.picked as IVisualEventReceiver;
+				return (IVisualEventReceiver)target.picked;
 			}
 
 			return new NullVisualEventReceiver();
@@ -1907,7 +1893,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				if(vt.Value != null)
 				{
-					BaseVisualThing bvt = vt.Value as BaseVisualThing;
+					BaseVisualThing bvt = (BaseVisualThing)vt.Value;
 					bvt.Selected = false;
 				}
 			}
@@ -2023,20 +2009,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Get selection
 			if(selectedobjects.Count == 0)
 			{
-				IVisualEventReceiver i = (target.picked as IVisualEventReceiver);
-				if(i is VisualFloor) 
+				if(target.picked is VisualFloor) 
 				{
-					VisualFloor vf = i as VisualFloor;
+					VisualFloor vf = (VisualFloor)target.picked;
 					floors.Add(vf.Level.sector, vf);
 				} 
-				else if(i is VisualCeiling) 
+				else if(target.picked is VisualCeiling) 
 				{
-					VisualCeiling vc = i as VisualCeiling;
+					VisualCeiling vc = (VisualCeiling)target.picked;
 					ceilings.Add(vc.Level.sector, vc);
 				} 
-				else if(i is BaseVisualThing) 
+				else if(target.picked is BaseVisualThing) 
 				{
-					things.Add(i as BaseVisualThing);
+					things.Add((BaseVisualThing)target.picked);
 				}
 			} 
 			else 
@@ -2045,17 +2030,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					if(i is VisualFloor) 
 					{
-						VisualFloor vf = i as VisualFloor;
+						VisualFloor vf = (VisualFloor)i;
 						floors.Add(vf.Level.sector, vf);
 					} 
 					else if(i is VisualCeiling) 
 					{
-						VisualCeiling vc = i as VisualCeiling;
+						VisualCeiling vc = (VisualCeiling)i;
 						ceilings.Add(vc.Level.sector, vc);
 					} 
 					else if(i is BaseVisualThing) 
 					{
-						things.Add(i as BaseVisualThing);
+						things.Add((BaseVisualThing)i);
 					}
 				}
 			}
@@ -2221,23 +2206,22 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			List<BaseVisualThing> things = new List<BaseVisualThing>();
 			bool withinSelection = General.Interface.CtrlState;
 
-			//get selection
+			// Get selection
 			if(selectedobjects.Count == 0) 
 			{
-				IVisualEventReceiver i = (target.picked as IVisualEventReceiver);
-				if(i is VisualFloor) 
+				if(target.picked is VisualFloor) 
 				{
-					VisualFloor vf = i as VisualFloor;
+					VisualFloor vf = (VisualFloor)target.picked;
 					floors.Add(vf.Level.sector, vf);
 				} 
-				else if(i is VisualCeiling) 
+				else if(target.picked is VisualCeiling) 
 				{
-					VisualCeiling vc = i as VisualCeiling;
+					VisualCeiling vc = (VisualCeiling)target.picked;
 					ceilings.Add(vc.Level.sector, vc);
 				} 
-				else if(i is BaseVisualThing) 
+				else if(target.picked is BaseVisualThing) 
 				{
-					things.Add(i as BaseVisualThing);
+					things.Add((BaseVisualThing)target.picked);
 				}
 			}
 			else
@@ -2246,17 +2230,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					if(i is VisualFloor) 
 					{
-						VisualFloor vf = i as VisualFloor;
+						VisualFloor vf = (VisualFloor)i;
 						floors.Add(vf.Level.sector, vf);
 					} 
 					else if(i is VisualCeiling) 
 					{
-						VisualCeiling vc = i as VisualCeiling;
+						VisualCeiling vc = (VisualCeiling)i;
 						ceilings.Add(vc.Level.sector, vc);
 					} 
 					else if(i is BaseVisualThing) 
 					{
-						things.Add(i as BaseVisualThing);
+						things.Add((BaseVisualThing)i);
 					}
 				}
 			}
@@ -2427,7 +2411,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				return;
 			}
 
-			IVisualEventReceiver highlighted = (target.picked as IVisualEventReceiver);
+			IVisualEventReceiver highlighted = (IVisualEventReceiver)target.picked;
 
 			if(highlighted is BaseVisualThing) 
 			{
@@ -2439,7 +2423,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			int targetbrightness;
 			if(highlighted is VisualFloor) 
 			{
-				VisualFloor v = highlighted as VisualFloor;
+				VisualFloor v = (VisualFloor)highlighted;
 				targetbrightness = v.Level.sector.Fields.GetValue("lightfloor", 0);
 				if(!v.Level.sector.Fields.GetValue("lightfloorabsolute", false)) 
 				{
@@ -2448,7 +2432,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			} 
 			else if(highlighted is VisualCeiling) 
 			{
-				VisualCeiling v = highlighted as VisualCeiling;
+				VisualCeiling v = (VisualCeiling)highlighted;
 				targetbrightness = v.Level.sector.Fields.GetValue("lightceiling", 0);
 				if(!v.Level.sector.Fields.GetValue("lightceilingabsolute", false)) 
 				{
@@ -2457,7 +2441,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			} 
 			else if(highlighted is VisualUpper || highlighted is VisualMiddleSingle || highlighted is VisualMiddleDouble || highlighted is VisualLower) 
 			{
-				BaseVisualGeometrySidedef v = highlighted as BaseVisualGeometrySidedef;
+				BaseVisualGeometrySidedef v = (BaseVisualGeometrySidedef)highlighted;
 				targetbrightness = v.Sidedef.Fields.GetValue("light", 0);
 				if(!v.Sidedef.Fields.GetValue("lightabsolute", false)) 
 				{
@@ -2466,7 +2450,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			} 
 			else if(highlighted is VisualMiddle3D) 
 			{
-				VisualMiddle3D v = highlighted as VisualMiddle3D;
+				VisualMiddle3D v = (VisualMiddle3D)highlighted;
 				Sidedef sd = v.GetControlLinedef().Front;
 				if(sd == null) 
 				{
@@ -2497,7 +2481,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				if(obj is VisualFloor) 
 				{
-					VisualFloor v = obj as VisualFloor;
+					VisualFloor v = (VisualFloor)obj;
 					v.Level.sector.Fields.BeforeFieldsChange();
 					v.Sector.Changed = true;
 
@@ -2514,7 +2498,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				} 
 				else if(obj is VisualCeiling) 
 				{
-					VisualCeiling v = obj as VisualCeiling;
+					VisualCeiling v = (VisualCeiling)obj;
 					v.Level.sector.Fields.BeforeFieldsChange();
 					v.Sector.Changed = true;
 					v.Sector.Sector.UpdateNeeded = true;
@@ -2532,7 +2516,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				} 
 				else if(obj is VisualUpper || obj is VisualMiddleSingle || obj is VisualMiddleDouble || obj is VisualLower) 
 				{
-					BaseVisualGeometrySidedef v = obj as BaseVisualGeometrySidedef;
+					BaseVisualGeometrySidedef v = (BaseVisualGeometrySidedef)obj;
 					v.Sidedef.Fields.BeforeFieldsChange();
 					v.Sector.Changed = true;
 
@@ -2727,7 +2711,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			renderer.SetCrosshairBusy(true);
 			General.Interface.RedrawDisplay();
 			GetTargetEventReceiver(false).OnSelectTexture();
-			RebuildElementData(); //mxd. Extrafloors or Glow effects may've been changed
 			renderer.SetCrosshairBusy(false);
 			PostAction();
 		}
@@ -2851,7 +2834,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			//align
 			foreach(IVisualEventReceiver i in objs) 
 			{
-				BaseVisualGeometrySidedef side = i as BaseVisualGeometrySidedef;
+				BaseVisualGeometrySidedef side = (BaseVisualGeometrySidedef)i;
 				
 				// Make sure the texture is loaded (we need the texture size)
 				if(!side.Texture.IsImageLoaded) side.Texture.LoadImage();
@@ -2867,7 +2850,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Update the parts for this sidedef!
 					if(VisualSectorExists(sd.Sector)) 
 					{
-						BaseVisualSector vs = (GetVisualSector(sd.Sector) as BaseVisualSector);
+						BaseVisualSector vs = (BaseVisualSector)GetVisualSector(sd.Sector);
 						VisualSidedefParts parts = vs.GetSidedefParts(sd);
 						parts.SetupAllParts();
 					}
@@ -2884,9 +2867,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Get selection
 			List<IVisualEventReceiver> objs = GetSelectedObjects(false, true, false, false);
 			List<BaseVisualGeometrySidedef> sides = new List<BaseVisualGeometrySidedef>();
-			foreach(IVisualEventReceiver side in objs) 
+			foreach(IVisualEventReceiver i in objs)
 			{
-				if(side is BaseVisualGeometrySidedef) sides.Add(side as BaseVisualGeometrySidedef);
+				BaseVisualGeometrySidedef side = (BaseVisualGeometrySidedef)i;
+				if(side != null) sides.Add(side);
 			}
 
 			if(sides.Count == 0)
@@ -3016,7 +3000,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				added = new HashSet<int>();
 				foreach(IVisualEventReceiver receiver in obj)
 				{
-					VisualGeometry vg = receiver as VisualGeometry;
+					VisualGeometry vg = (VisualGeometry)receiver;
 					if(vg != null && !added.Contains(vg.Sector.GetHashCode()))
 					{
 						selection.Add(receiver);
@@ -3035,7 +3019,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				added = new HashSet<int>();
 				foreach(IVisualEventReceiver receiver in obj)
 				{
-					VisualGeometry vg = receiver as VisualGeometry;
+					VisualGeometry vg = (VisualGeometry)receiver;
 					if(vg != null && !added.Contains(vg.Sidedef.Line.GetHashCode()))
 					{
 						selection.Add(receiver);
@@ -3054,7 +3038,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				added = new HashSet<int>();
 				foreach(IVisualEventReceiver receiver in obj)
 				{
-					VisualThing vt = receiver as VisualThing;
+					VisualThing vt = (VisualThing)receiver;
 					if(vt != null && !added.Contains(vt.Thing.GetHashCode()))
 					{
 						selection.Add(receiver);
@@ -3073,7 +3057,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				added = new HashSet<int>();
 				foreach(IVisualEventReceiver receiver in obj)
 				{
-					VisualVertex vv = receiver as VisualVertex;
+					VisualVertex vv = (VisualVertex)receiver;
 					if(vv != null && !added.Contains(vv.Vertex.GetHashCode()))
 					{
 						selection.Add(receiver);
@@ -3157,7 +3141,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			copybuffer.Clear();
 			foreach(IVisualEventReceiver i in objs) 
 			{
-				VisualThing vt = i as VisualThing;
+				VisualThing vt = (VisualThing)i;
 				if(vt != null) copybuffer.Add(new ThingCopyData(vt.Thing));
 			}
 			General.Interface.DisplayStatus(StatusType.Info, "Copied " + copybuffer.Count + " Things");
@@ -3177,7 +3161,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			List<IVisualEventReceiver> objs = GetSelectedObjects(false, false, true, false);
 			foreach(IVisualEventReceiver i in objs) 
 			{
-				BaseVisualThing thing = i as BaseVisualThing;
+				BaseVisualThing thing = (BaseVisualThing)i;
 				thing.Thing.Fields.BeforeFieldsChange();
 				thing.Thing.Dispose();
 				thing.Dispose();
@@ -3267,17 +3251,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				if(obj is BaseVisualThing) 
 				{
-					BaseVisualThing t = obj as BaseVisualThing;
+					BaseVisualThing t = (BaseVisualThing)obj;
 					t.SetAngle(General.ClampAngle(t.Thing.AngleDoom + increment));
 				}
 				else if(obj is VisualFloor) 
 				{
-					VisualFloor vf = obj as VisualFloor;
+					VisualFloor vf = (VisualFloor)obj;
 					vf.OnChangeTextureRotation(General.ClampAngle(vf.GetControlSector().Fields.GetValue("rotationfloor", 0.0f) + increment));
 				} 
 				else if(obj is VisualCeiling) 
 				{
-					VisualCeiling vc = obj as VisualCeiling;
+					VisualCeiling vc = (VisualCeiling)obj;
 					vc.OnChangeTextureRotation(General.ClampAngle(vc.GetControlSector().Fields.GetValue("rotationceiling", 0.0f) + increment));
 				}
 			}
@@ -3309,9 +3293,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			foreach(IVisualEventReceiver obj in selection) 
 			{
-				if(!(obj is BaseVisualThing))  continue;
-				BaseVisualThing t = obj as BaseVisualThing;
-				t.SetPitch(General.ClampAngle(t.Thing.Pitch + increment));
+				BaseVisualThing t = (BaseVisualThing)obj;
+				if(t != null) t.SetPitch(General.ClampAngle(t.Thing.Pitch + increment));
 			}
 
 			PostAction();
@@ -3341,9 +3324,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			foreach(IVisualEventReceiver obj in selection) 
 			{
-				if(!(obj is BaseVisualThing)) continue;
-				BaseVisualThing t = obj as BaseVisualThing;
-				t.SetRoll(General.ClampAngle(t.Thing.Roll + increment));
+				BaseVisualThing t = (BaseVisualThing)obj;
+				if(t != null) t.SetRoll(General.ClampAngle(t.Thing.Roll + increment));
 			}
 
 			PostAction();
@@ -3418,7 +3400,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			//apply changes to Visual Things
 			for(int i = 0; i < visualThings.Count; i++) 
 			{
-				BaseVisualThing t = visualThings[i] as BaseVisualThing;
+				BaseVisualThing t = (BaseVisualThing)visualThings[i];
 				t.Changed = true;
 
 				// Update what must be updated
@@ -3667,7 +3649,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 
 				//add to update list
-				if(update) toUpdate.Add(vg.Sector as BaseVisualSector);
+				if(update) toUpdate.Add((BaseVisualSector)vg.Sector);
 			}
 
 			//update changed geometry
@@ -3846,13 +3828,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			List<BaseVisualGeometrySidedef> selectedVisualSides = new List<BaseVisualGeometrySidedef>();
 			if(checkSelectedSidedefParts && !singleselection) 
 			{
-				foreach(IVisualEventReceiver i in selectedobjects) 
+				foreach(IVisualEventReceiver i in selectedobjects)
 				{
-					if(i is BaseVisualGeometrySidedef) 
-					{
-						BaseVisualGeometrySidedef sd = i as BaseVisualGeometrySidedef;
-						if(!selectedVisualSides.Contains(sd)) selectedVisualSides.Add(sd);
-					}
+					BaseVisualGeometrySidedef side = (BaseVisualGeometrySidedef)i;
+					if(side != null && !selectedVisualSides.Contains(side)) selectedVisualSides.Add(side);
 				}
 			}
 			
@@ -4221,11 +4200,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd
 		private List<Sidedef> GetControlSides(Sidedef side, bool udmf) 
 		{
-			if(side.Other == null) return new List<Sidedef>() { side };
-			if(side.Other.Sector.Tag == 0) return new List<Sidedef>() { side };
+			if(side.Other == null) return new List<Sidedef> { side };
+			if(side.Other.Sector.Tag == 0) return new List<Sidedef> { side };
 
-			SectorData data = GetSectorData(side.Other.Sector);
-			if(data.ExtraFloors.Count == 0)	return new List<Sidedef>() { side };
+			SectorData data = GetSectorDataEx(side.Other.Sector);
+			if(data == null || data.ExtraFloors.Count == 0) return new List<Sidedef> { side };
 
 			List<Sidedef> sides = new List<Sidedef>();
 			foreach(Effect3DFloor ef in data.ExtraFloors)

@@ -33,6 +33,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Effects
 		private readonly List<SectorEffect> alleffects;
 		private readonly List<Effect3DFloor> extrafloors;
+		private readonly EffectGlowingFlat glowingflateffect; //mxd
 
 		internal GlowingFlatData CeilingGlow; //mxd
 		internal GlowingFlatData FloorGlow; //mxd
@@ -91,12 +92,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.floorbase = new SectorLevel(sector, SectorLevelType.Floor); //mxd
 			this.ceiling = new SectorLevel(sector, SectorLevelType.Ceiling);
 			this.ceilingbase = new SectorLevel(sector, SectorLevelType.Ceiling); //mxd
-			
-			BasicSetup();
+			this.glowingflateffect = new EffectGlowingFlat(this); //mxd
 			
 			// Add ceiling and floor
 			lightlevels.Add(floor);
 			lightlevels.Add(ceiling);
+
+			BasicSetup();
 		}
 		
 		#endregion
@@ -185,13 +187,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void AddEffectVertexOffset() 
 		{
 			EffectUDMFVertexOffset e = new EffectUDMFVertexOffset(this);
-			alleffects.Add(e);
-		}
-
-		//mxd.
-		public void AddEffectGlowingFlat(Sector sourcesector) 
-		{
-			EffectGlowingFlat e = new EffectGlowingFlat(this, sourcesector);
 			alleffects.Add(e);
 		}
 		
@@ -319,6 +314,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			//mxd. We need sector brightness here, unaffected by custom ceiling brightness...
 			ceilingbase.brightnessbelow = sector.Brightness;
 			ceilingbase.color = PixelColor.FromInt(mode.CalculateBrightness(sector.Brightness)).WithAlpha(255).ToInt();
+
+			//mxd
+			glowingflateffect.Update();
 		}
 
 		//mxd

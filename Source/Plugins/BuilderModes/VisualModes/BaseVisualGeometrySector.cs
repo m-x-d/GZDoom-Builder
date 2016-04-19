@@ -232,44 +232,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		protected void OnTextureChanged() 
-		{
-			// Effects may need updating...
-			mode.RebuildElementData();
-
-			// As well as sky render flag...
-			UpdateSkyRenderFlag();
-			
-			if(level.sector == this.Sector.Sector) 
-			{
-				this.Setup();
-
-				// 3D floors may need updating...
-				foreach(Sidedef s in level.sector.Sidedefs) 
-				{
-					if(s.Line.Action == 160 && s.Line.Front != null) 
-					{
-						int sectortag = ((General.Map.UDMF || (s.Line.Args[1] & 8) != 0) ? s.Line.Args[0] : s.Line.Args[0] + (s.Line.Args[4] << 8));
-						foreach(Sector sector in General.Map.Map.Sectors) 
-						{
-							if(sector.Tags.Contains(sectortag))
-							{
-								BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(sector);
-								vs.UpdateSectorGeometry(false);
-							}
-						}
-					}
-				}
-			}
-			// As well as this sector's geometry
-			else if(mode.VisualSectorExists(level.sector)) 
-			{
-				BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(level.sector);
-				vs.UpdateSectorGeometry(false);
-			}
-		}
-
-		//mxd
 		public virtual bool IsSelected() 
 		{
 			return selected;
@@ -449,18 +411,29 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			mode.CreateUndo(undodescription);
 			mode.SetActionResult(resultdescription);
-			Sector.Sector.Fields.BeforeFieldsChange();
+			level.sector.Fields.BeforeFieldsChange();
 
-			foreach(string key in keys) 
+			foreach(string key in keys)
 			{
-				if(Sector.Sector.Fields.ContainsKey(key)) 
+				if(level.sector.Fields.ContainsKey(key))
 				{
-					Sector.Sector.Fields.Remove(key);
-					Sector.Sector.UpdateNeeded = true;
+					level.sector.Fields.Remove(key);
+					level.sector.UpdateNeeded = true;
 				}
 			}
 
-			if(Sector.Sector.UpdateNeeded) Sector.UpdateSectorGeometry(false);
+			if(level.sector.UpdateNeeded)
+			{
+				if(level.sector != Sector.Sector && mode.VisualSectorExists(level.sector))
+				{
+					BaseVisualSector vs = (BaseVisualSector) mode.GetVisualSector(level.sector);
+					vs.UpdateSectorGeometry(false);
+				}
+				else
+				{
+					Sector.UpdateSectorGeometry(false);
+				}
+			}
 		}
 		
 		#endregion
@@ -576,7 +549,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(mode.VisualSectorExists(level.sector))
 			{
 				BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(level.sector);
-				vs.UpdateSectorGeometry(true);
+				vs.UpdateSectorGeometry(false);
 			}
 		}
 		
@@ -720,22 +693,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				mode.CreateUndo("Paste sector properties");
 				mode.SetActionResult("Pasted sector properties.");
 
-				//mxd. Glow effect may require SectorData update
-				bool oldfloortextureglows = (SectorProperties.CopySettings.FloorTexture && General.Map.Data.GlowingFlats.ContainsKey(level.sector.LongFloorTexture));
-				bool oldceiltextureglows = (SectorProperties.CopySettings.CeilingTexture && General.Map.Data.GlowingFlats.ContainsKey(level.sector.LongCeilTexture));
-
 				//mxd. Added "usecopysettings"
 				BuilderPlug.Me.CopiedSectorProps.Apply(level.sector, usecopysettings);
-
-				//mxd. Glow effect may require SectorData update
-				if(oldfloortextureglows || oldceiltextureglows
-					|| (SectorProperties.CopySettings.FloorTexture && General.Map.Data.GlowingFlats.ContainsKey(level.sector.LongFloorTexture))
-					|| (SectorProperties.CopySettings.CeilingTexture && General.Map.Data.GlowingFlats.ContainsKey(level.sector.LongCeilTexture)))
-				{
-					mode.RebuildElementData();
-					SectorData sd = mode.GetSectorData(level.sector);
-					sd.UpdateForced();
-				}
 
 				if(mode.VisualSectorExists(level.sector))
 				{
@@ -766,7 +725,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			mode.CreateUndo("Change flat \"" + texture + "\"");
 			SetTexture(texture);
-			OnTextureChanged(); //mxd
+
+			// Update
+			if(mode.VisualSectorExists(level.sector))
+			{
+				BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(level.sector);
+				vs.UpdateSectorGeometry(false);
+			}
 		}
 		
 		// Copy texture
@@ -837,8 +802,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			} 
 			else 
 			{
-				//mxd. Need this to apply changes to 3d-floor even if control sector doesn't exist 
-				//as BaseVisualSector
+				//mxd. Need this to apply changes to 3d-floor even if control sector doesn't exist as BaseVisualSector
 				vs = mode.CreateBaseVisualSector(level.sector);
 			}
 

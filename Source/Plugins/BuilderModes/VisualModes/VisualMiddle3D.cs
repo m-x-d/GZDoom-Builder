@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Rendering;
@@ -30,7 +31,7 @@ using CodeImp.DoomBuilder.Data;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	internal sealed class VisualMiddle3D : BaseVisualGeometrySidedef
+	internal class VisualMiddle3D : BaseVisualGeometrySidedef
 	{
 		#region ================== Constants
 
@@ -38,7 +39,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		#region ================== Variables
 
-		private Effect3DFloor extrafloor;
+		protected Effect3DFloor extrafloor;
 		
 		#endregion
 		
@@ -99,36 +100,35 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			SectorData sd = mode.GetSectorData(Sidedef.Sector);
 			
 			//mxd. which texture we must use?
-			long textureLong = 0;
+			long texturelong = 0;
 			if((sourceside.Line.Args[2] & (int)Effect3DFloor.Flags.UseUpperTexture) != 0) 
 			{
 				if(Sidedef.LongHighTexture != MapSet.EmptyLongName)
-					textureLong = Sidedef.LongHighTexture;
+					texturelong = Sidedef.LongHighTexture;
 			} 
 			else if((sourceside.Line.Args[2] & (int)Effect3DFloor.Flags.UseLowerTexture) != 0) 
 			{
 				if(Sidedef.LongLowTexture != MapSet.EmptyLongName)
-					textureLong = Sidedef.LongLowTexture;
+					texturelong = Sidedef.LongLowTexture;
 			} 
 			else if(sourceside.LongMiddleTexture != MapSet.EmptyLongName) 
 			{
-				textureLong = sourceside.LongMiddleTexture;
+				texturelong = sourceside.LongMiddleTexture;
 			}
 
 			// Texture given?
-			if(textureLong != 0)
+			if(texturelong != 0)
 			{
 				// Load texture
-				base.Texture = General.Map.Data.GetTextureImage(textureLong);
+				base.Texture = General.Map.Data.GetTextureImage(texturelong);
 				if(base.Texture == null || base.Texture is UnknownImage)
 				{
 					base.Texture = General.Map.Data.UnknownTexture3D;
-					setuponloadedtexture = textureLong;
+					setuponloadedtexture = texturelong;
 				}
-				else
+				else if(!base.Texture.IsImageLoaded)
 				{
-					if(!base.Texture.IsImageLoaded)
-						setuponloadedtexture = textureLong;
+					setuponloadedtexture = texturelong;
 				}
 			}
 			else
@@ -379,14 +379,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				extrafloor.Linedef.Front.SetTextureMid(texturename);
 
 			General.Map.Data.UpdateUsedTextures();
-			this.Sector.Rebuild();
 
-			//mxd. Other sector also may require updating
-			SectorData sd = mode.GetSectorData(Sidedef.Other.Sector);
-			if(sd.ExtraFloors.Count > 0)
-				((BaseVisualSector)mode.GetVisualSector(Sidedef.Other.Sector)).Rebuild();
-
-			//mxd. As well as model sector
+			//mxd. Update model sector
 			mode.GetVisualSector(extrafloor.Linedef.Front.Sector).UpdateSectorGeometry(false);
 		}
 
@@ -407,8 +401,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Sidedef.Fields.BeforeFieldsChange();
 			float oldx = Sidedef.Fields.GetValue("offsetx_mid", 0.0f);
 			float oldy = Sidedef.Fields.GetValue("offsety_mid", 0.0f);
-			Sidedef.Fields["offsetx_mid"] = new UniValue(UniversalType.Float, oldx + xy.X);
-			Sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, oldy + xy.Y);
+			float scalex = extrafloor.Linedef.Front.Fields.GetValue("scalex_mid", 1.0f); //mxd
+			float scaley = extrafloor.Linedef.Front.Fields.GetValue("scaley_mid", 1.0f); //mxd
+			Sidedef.Fields["offsetx_mid"] = new UniValue(UniversalType.Float, GetRoundedTextureOffset(oldx, xy.X, scalex, Texture.Width)); //mxd
+			Sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, GetRoundedTextureOffset(oldy, xy.Y, scaley, Texture.Height)); //mxd
 		}
 
 		protected override Point GetTextureOffset()
@@ -430,7 +426,78 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(!General.Map.UDMF) return;
 			if(string.IsNullOrEmpty(extrafloor.Linedef.Front.MiddleTexture) || extrafloor.Linedef.Front.MiddleTexture == "-" || !Texture.IsImageLoaded) return;
 			FitTexture(options);
-			Setup();
+
+			// Update the model sector to update all 3d floors
+			mode.GetVisualSector(extrafloor.Linedef.Front.Sector).UpdateSectorGeometry(false);
+		}
+
+		//mxd. Only control sidedef scale is used by GZDoom
+		public override void OnChangeScale(int incrementX, int incrementY)
+		{
+			if(!General.Map.UDMF || !Texture.IsImageLoaded) return;
+
+			if((General.Map.UndoRedo.NextUndo == null) || (General.Map.UndoRedo.NextUndo.TicketID != undoticket))
+				undoticket = mode.CreateUndo("Change wall scale");
+
+			Sidedef target = extrafloor.Linedef.Front;
+			if(target == null) return;
+
+			float scaleX = target.Fields.GetValue("scalex_mid", 1.0f);
+			float scaleY = target.Fields.GetValue("scaley_mid", 1.0f);
+
+			target.Fields.BeforeFieldsChange();
+
+			if(incrementX != 0)
+			{
+				float pix = (int)Math.Round(Texture.Width * scaleX) - incrementX;
+				float newscaleX = (float)Math.Round(pix / Texture.Width, 3);
+				scaleX = (newscaleX == 0 ? scaleX * -1 : newscaleX);
+				UniFields.SetFloat(target.Fields, "scalex_mid", scaleX, 1.0f);
+			}
+
+			if(incrementY != 0)
+			{
+				float pix = (int)Math.Round(Texture.Height * scaleY) - incrementY;
+				float newscaleY = (float)Math.Round(pix / Texture.Height, 3);
+				scaleY = (newscaleY == 0 ? scaleY * -1 : newscaleY);
+				UniFields.SetFloat(target.Fields, "scaley_mid", scaleY, 1.0f);
+			}
+			
+			// Update the model sector to update all 3d floors
+			mode.GetVisualSector(extrafloor.Linedef.Front.Sector).UpdateSectorGeometry(false);
+
+			// Display result
+			mode.SetActionResult("Wall scale changed to " + scaleX.ToString("F03", CultureInfo.InvariantCulture) + ", " + scaleY.ToString("F03", CultureInfo.InvariantCulture) + " (" + (int)Math.Round(Texture.Width / scaleX) + " x " + (int)Math.Round(Texture.Height / scaleY) + ").");
+		}
+
+		//mxd
+		protected override void ResetTextureScale()
+		{
+			Sidedef target = extrafloor.Linedef.Front;
+			target.Fields.BeforeFieldsChange();
+			if(target.Fields.ContainsKey("scalex_mid")) target.Fields.Remove("scalex_mid");
+			if(target.Fields.ContainsKey("scaley_mid")) target.Fields.Remove("scaley_mid");
+		}
+
+		//mxd
+		public override void OnResetTextureOffset()
+		{
+			base.OnResetTextureOffset();
+
+			// Update the model sector to update all 3d floors
+			mode.GetVisualSector(extrafloor.Linedef.Front.Sector).UpdateSectorGeometry(false);
+		}
+
+		//mxd
+		public override void OnResetLocalTextureOffset()
+		{
+			if(!General.Map.UDMF)
+			{
+				OnResetTextureOffset();
+				return;
+			}
+
+			base.OnResetLocalTextureOffset();
 
 			// Update the model sector to update all 3d floors
 			mode.GetVisualSector(extrafloor.Linedef.Front.Sector).UpdateSectorGeometry(false);

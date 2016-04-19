@@ -707,7 +707,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				foreach(Thing t in things)
 				{
 					VisualThing vt = mode.GetVisualThing(t);
-					if(vt != null) updateList.Add(vt as BaseVisualThing);
+					if(vt != null) updateList.Add((BaseVisualThing)vt);
 				}
 
 				General.Interface.OnEditFormValuesChanged += Interface_OnEditFormValuesChanged;

@@ -124,16 +124,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			SectorData data = mode.GetSectorDataEx(this.Sector); //mxd
 			if(data != null) //mxd
 			{
-				data.Reset(includeneighbours);
+				data.Reset(false);
 
 				// Update sectors that rely on this sector
 				foreach(KeyValuePair<Sector, bool> s in data.UpdateAlso)
 				{
-					if(mode.VisualSectorExists(s.Key))
-					{
-						BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(s.Key);
-						vs.Changed = true;
-					}
+					SectorData other = mode.GetSectorDataEx(s.Key);
+					if(other != null) other.Reset(s.Value);
 				}
 			}
 			
@@ -145,7 +142,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if(mode.VisualThingExists(t))
 					{
 						// Update thing
-						BaseVisualThing vt = (mode.GetVisualThing(t) as BaseVisualThing);
+						BaseVisualThing vt = (BaseVisualThing)mode.GetVisualThing(t);
 						vt.Changed = true;
 					}
 				}
@@ -160,8 +157,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					{
 						if(mode.VisualSectorExists(sd.Other.Sector))
 						{
-							BaseVisualSector bvs = (BaseVisualSector)mode.GetVisualSector(sd.Other.Sector);
-							bvs.Changed = true;
+							SectorData other = mode.GetSectorDataEx(sd.Other.Sector);
+							if(other != null)
+							{
+								other.Reset(false);
+							}
+							else
+							{
+								BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(sd.Other.Sector);
+								vs.Changed = true;
+							}
 						}
 					}
 				}
@@ -189,7 +194,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if(mode.VisualThingExists(t)) 
 					{
 						// Update thing
-						BaseVisualThing vt = (mode.GetVisualThing(t) as BaseVisualThing);
+						BaseVisualThing vt = (BaseVisualThing)mode.GetVisualThing(t);
 						vt.Rebuild();
 					}
 				}

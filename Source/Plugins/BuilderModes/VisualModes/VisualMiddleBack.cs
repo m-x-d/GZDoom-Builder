@@ -1,12 +1,9 @@
 ﻿#region ================== Namespaces
 
-using System;
 using System.Collections.Generic;
-using System.Drawing;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Rendering;
-using CodeImp.DoomBuilder.Types;
 using CodeImp.DoomBuilder.VisualModes;
 using CodeImp.DoomBuilder.Data;
 
@@ -15,31 +12,16 @@ using CodeImp.DoomBuilder.Data;
 namespace CodeImp.DoomBuilder.BuilderModes
 {
 	//mxd. Used to render translucent 3D floor's inner sides
-	internal sealed class VisualMiddleBack : BaseVisualGeometrySidedef 
+	internal sealed class VisualMiddleBack : VisualMiddle3D 
 	{
-		#region ================== Variables
-
-		private Effect3DFloor extrafloor;
-
-		#endregion
-		
 		#region ================== Constructor / Setup
 		
 		// Constructor
-		public VisualMiddleBack(BaseVisualMode mode, VisualSector vs, Sidedef s)
-			: base(mode, vs, s)
-		{
-			//mxd
-			geometrytype = VisualGeometryType.WALL_MIDDLE;
-			partname = "mid";
-			
-			// We have no destructor
-			GC.SuppressFinalize(this);
-		}
+		public VisualMiddleBack(BaseVisualMode mode, VisualSector vs, Sidedef s) : base(mode, vs, s) { }
 		
 		// This builds the geometry. Returns false when no geometry created.
 		public override bool Setup() { return this.Setup(this.extrafloor); }
-		public bool Setup(Effect3DFloor extrafloor)
+		public new bool Setup(Effect3DFloor extrafloor)
 		{
 			Sidedef sourceside = extrafloor.Linedef.Front;
 			this.extrafloor = extrafloor;
@@ -77,35 +59,35 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			SectorData sd = mode.GetSectorData(Sidedef.Other.Sector);
 
 			//mxd. which texture we must use?
-			long longtexture = 0;
+			long texturelong = 0;
 			if((sourceside.Line.Args[2] & (int)Effect3DFloor.Flags.UseUpperTexture) != 0) 
 			{
-				if(Sidedef.Other.LongHighTexture != MapSet.EmptyLongName)
-					longtexture = Sidedef.Other.LongHighTexture;
+				if(Sidedef.LongHighTexture != MapSet.EmptyLongName)
+					texturelong = Sidedef.LongHighTexture;
 			} 
 			else if((sourceside.Line.Args[2] & (int)Effect3DFloor.Flags.UseLowerTexture) != 0) 
 			{
-				if(Sidedef.Other.LongLowTexture != MapSet.EmptyLongName)
-					longtexture = Sidedef.Other.LongLowTexture;
+				if(Sidedef.LongLowTexture != MapSet.EmptyLongName)
+					texturelong = Sidedef.LongLowTexture;
 			} 
-			else if((sourceside.LongMiddleTexture != MapSet.EmptyLongName)) 
+			else if(sourceside.LongMiddleTexture != MapSet.EmptyLongName) 
 			{
-				longtexture = sourceside.LongMiddleTexture;
+				texturelong = sourceside.LongMiddleTexture;
 			}
 
 			// Texture given?
-			if(longtexture != 0) 
+			if(texturelong != 0)
 			{
 				// Load texture
-				base.Texture = General.Map.Data.GetTextureImage(longtexture);
-				if(base.Texture == null || base.Texture is UnknownImage) 
+				base.Texture = General.Map.Data.GetTextureImage(texturelong);
+				if(base.Texture == null || base.Texture is UnknownImage)
 				{
 					base.Texture = General.Map.Data.UnknownTexture3D;
-					setuponloadedtexture = longtexture;
+					setuponloadedtexture = texturelong;
 				} 
 				else if(!base.Texture.IsImageLoaded) 
 				{
-					setuponloadedtexture = longtexture;
+					setuponloadedtexture = texturelong;
 				}
 			} 
 			else 
@@ -179,8 +161,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(((cl - fl) > 0.01f) || ((cr - fr) > 0.01f))
 			{
 				// Keep top and bottom planes for intersection testing
-				bottom = extrafloor.Ceiling.plane;
 				top = extrafloor.Floor.plane;
+				bottom = extrafloor.Ceiling.plane;
 				
 				// Create initial polygon, which is just a quad between floor and ceiling
 				WallPolygon poly = new WallPolygon();
@@ -189,7 +171,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				poly.Add(new Vector3D(vr.x, vr.y, cr));
 				poly.Add(new Vector3D(vr.x, vr.y, fr));
 				
-				// Determine initial color
+				// Determine initial color. Inside parts are shaded using control sector's brightness
 				int lightlevel;
 				PixelColor levelcolor; //mxd
 				if(((sourceside.Line.Args[2] & (int)Effect3DFloor.Flags.DisableLighting) != 0))
@@ -220,6 +202,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// or when only our extrafloor is translucent
 					if(ef.ClipSidedefs == extrafloor.ClipSidedefs || ef.ClipSidedefs)
 					{
+						//TODO: [this crashed on me once when performing auto-align on myriad of textures on BoA C1M0]
+						if(ef.Floor == null || ef.Ceiling == null) ef.Update();
+						
 						int num = polygons.Count;
 						for(int pi = 0; pi < num; pi++)
 						{
@@ -280,114 +265,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			return false;
 		}
 		
-		#endregion
-		
-		#region ================== Methods
-
-		// Alpha based picking
-		public override bool PickAccurate(Vector3D from, Vector3D to, Vector3D dir, ref float u_ray)
-		{
-			if(!Texture.IsImageLoaded || (!Texture.IsTranslucent && !Texture.IsMasked)) return base.PickAccurate(from, to, dir, ref u_ray);
-
-			float u;
-			Sidedef sourceside = extrafloor.Linedef.Front;
-			new Line2D(from, to).GetIntersection(Sidedef.Line.Line, out u);
-			if(Sidedef != Sidedef.Line.Front) u = 1.0f - u;
-
-			// Some textures (e.g. HiResImage) may lie about their size, so use bitmap size instead
-			Bitmap image = Texture.GetBitmap();
-
-			// Determine texture scale...
-			Vector2D imgscale = new Vector2D((float)Texture.Width / image.Width, (float)Texture.Height / image.Height);
-			Vector2D texscale = (Texture is HiResImage) ? imgscale * Texture.Scale : Texture.Scale;
-
-			// Get correct offset to texture space...
-			float texoffsetx = Sidedef.OffsetX + sourceside.OffsetX + UniFields.GetFloat(Sidedef.Fields, "offsetx_mid") + UniFields.GetFloat(sourceside.Fields, "offsetx_mid");
-			int ox = (int)Math.Floor((u * Sidedef.Line.Length * UniFields.GetFloat(sourceside.Fields, "scalex_mid", 1.0f) / texscale.x + (texoffsetx / imgscale.x)) % image.Width);
-
-			float texoffsety = Sidedef.OffsetY + sourceside.OffsetY + UniFields.GetFloat(Sidedef.Fields, "offsety_mid") + UniFields.GetFloat(sourceside.Fields, "offsety_mid");
-			int oy = (int)Math.Ceiling(((pickintersect.z - sourceside.Sector.CeilHeight) * UniFields.GetFloat(sourceside.Fields, "scaley_mid", 1.0f) / texscale.y - (texoffsety / imgscale.y)) % image.Height);
-
-			// Make sure offsets are inside of texture dimensions...
-			if(ox < 0) ox += image.Width;
-			if(oy < 0) oy += image.Height;
-
-			// Check pixel alpha
-			Point pixelpos = new Point(General.Clamp(ox, 0, image.Width - 1), General.Clamp(image.Height - oy, 0, image.Height - 1));
-			return (image.GetPixel(pixelpos.X, pixelpos.Y).A > 0 && base.PickAccurate(@from, to, dir, ref u_ray));
-		}
-
-		// Return texture name
-		public override string GetTextureName() 
-		{
-			//mxd
-			if((extrafloor.Linedef.Args[2] & (int)Effect3DFloor.Flags.UseUpperTexture) != 0)
-				return Sidedef.HighTexture;
-			if((extrafloor.Linedef.Args[2] & (int)Effect3DFloor.Flags.UseLowerTexture) != 0)
-				return Sidedef.LowTexture;
-			return extrafloor.Linedef.Front.MiddleTexture;
-		}
-
-		// This changes the texture
-		protected override void SetTexture(string texturename) 
-		{
-			//mxd
-			if((extrafloor.Linedef.Args[2] & (int)Effect3DFloor.Flags.UseUpperTexture) != 0)
-				Sidedef.Other.SetTextureHigh(texturename);
-			if((extrafloor.Linedef.Args[2] & (int)Effect3DFloor.Flags.UseLowerTexture) != 0)
-				Sidedef.Other.SetTextureLow(texturename);
-			else
-				extrafloor.Linedef.Front.SetTextureMid(texturename);
-
-			General.Map.Data.UpdateUsedTextures();
-			this.Sector.Rebuild();
-
-			//mxd. Other sector also may require updating
-			((BaseVisualSector)mode.GetVisualSector(Sidedef.Other.Sector)).Rebuild();
-
-			//mxd. As well as model sector
-			mode.GetVisualSector(extrafloor.Linedef.Front.Sector).UpdateSectorGeometry(false);
-		}
-
-		protected override void SetTextureOffsetX(int x)
-		{
-			Sidedef.Fields.BeforeFieldsChange();
-			Sidedef.Fields["offsetx_mid"] = new UniValue(UniversalType.Float, (float)x);
-		}
-
-		protected override void SetTextureOffsetY(int y)
-		{
-			Sidedef.Fields.BeforeFieldsChange();
-			Sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, (float)y);
-		}
-
-		protected override void MoveTextureOffset(Point xy)
-		{
-			Sidedef.Fields.BeforeFieldsChange();
-			float oldx = Sidedef.Fields.GetValue("offsetx_mid", 0.0f);
-			float oldy = Sidedef.Fields.GetValue("offsety_mid", 0.0f);
-			float scalex = Sidedef.Fields.GetValue("scalex_mid", 1.0f);
-			float scaley = Sidedef.Fields.GetValue("scaley_mid", 1.0f);
-			Sidedef.Fields["offsetx_mid"] = new UniValue(UniversalType.Float, GetRoundedTextureOffset(oldx, xy.X, scalex, Texture != null ? Texture.Width : -1)); //mxd
-
-			//mxd. Don't clamp offsetY of clipped mid textures
-			bool dontClamp = (Texture == null || Sidedef.IsFlagSet("clipmidtex") || Sidedef.Line.IsFlagSet("clipmidtex"));
-			Sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, GetRoundedTextureOffset(oldy, xy.Y, scaley, dontClamp ? -1 : Texture.Height));
-		}
-
-		protected override Point GetTextureOffset()
-		{
-			float oldx = Sidedef.Fields.GetValue("offsetx_mid", 0.0f);
-			float oldy = Sidedef.Fields.GetValue("offsety_mid", 0.0f);
-			return new Point((int)oldx, (int)oldy);
-		}
-
-		//mxd
-		public override Linedef GetControlLinedef() 
-		{
-			return extrafloor.Linedef;
-		}
-
 		#endregion
 	}
 }

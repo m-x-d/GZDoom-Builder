@@ -46,15 +46,20 @@ namespace CodeImp.DoomBuilder.Rendering
 		
 		// Text settings
 		private string text;
-		private RectangleF rect;
+		private Vector2D location; //mxd
 		private bool transformcoords;
 		private PixelColor color;
 		private PixelColor backcolor;
 		private TextAlignmentX alignx;
 		private TextAlignmentY aligny;
+		private bool drawbg; //mxd
+		
+		//mxd. Label image settings...
 		private SizeF textsize;
 		private Size texturesize;
-		private bool drawbg; //mxd
+		private RectangleF textrect;
+		private RectangleF bgrect;
+		private PointF textorigin;
 		
 		// This keeps track if changes were made
 		private bool updateneeded;
@@ -75,15 +80,9 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Properties
 
 		// Properties
-		public RectangleF Rectangle { get { return rect; } set { rect = value; updateneeded = true; } }
-		public float Left { get { return rect.X; } set { rect.X = value; updateneeded = true; } }
-		public float Top { get { return rect.Y; } set { rect.Y = value; updateneeded = true; } }
-		public float Width { get { return rect.Width; } set { rect.Width = value; updateneeded = true; } }
-		public float Height { get { return rect.Height; } set { rect.Height = value; updateneeded = true; } }
-		public float Right { get { return rect.Right; } set { rect.Width = value - rect.X + 1f; updateneeded = true; } }
-		public float Bottom { get { return rect.Bottom; } set { rect.Height = value - rect.Y + 1f; updateneeded = true; } }
-		public string Text { get { return text; } set { if(text != value) { text = value; textureupdateneeded = true; } } }
-		public Font Font { get { return font; } set { font = value; textureupdateneeded = true; } } //mxd
+		public Vector2D Location { get { return location; } set { location = value; updateneeded = true; } } //mxd
+		public string Text { get { return text; } set { if(text != value) { text = value; textsize = Size.Empty; textureupdateneeded = true; } } }
+		public Font Font { get { return font; } set { font = value; textsize = Size.Empty; textureupdateneeded = true; } } //mxd
 		public bool TransformCoords { get { return transformcoords; } set { transformcoords = value; updateneeded = true; } }
 		public SizeF TextSize { get { if(textureupdateneeded) Update(General.Map.Renderer2D.TranslateX, General.Map.Renderer2D.TranslateY, General.Map.Renderer2D.Scale, -General.Map.Renderer2D.Scale); return textsize; } }
 		public TextAlignmentX AlignX { get { return alignx; } set { alignx = value; updateneeded = true; } }
@@ -108,12 +107,13 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Initialize
 			this.text = "";
 			this.font = General.Settings.TextLabelFont; //mxd
-			this.rect = new RectangleF(0f, 0f, 1f, 1f);
+			this.location = new Vector2D(); //mxd
 			this.color = new PixelColor(255, 255, 255, 255);
 			this.backcolor = new PixelColor(128, 0, 0, 0);
 			this.alignx = TextAlignmentX.Center;
 			this.aligny = TextAlignmentY.Top;
-			this.textsize = new SizeF();
+			this.textsize = SizeF.Empty; //mxd
+			this.texturesize = Size.Empty; //mxd
 			this.updateneeded = true;
 			this.textureupdateneeded = true; //mxd
 			
@@ -166,25 +166,59 @@ namespace CodeImp.DoomBuilder.Rendering
 				if(text.Length > 0)
 				{
 					// Transform?
-					RectangleF absview;
-					if(transformcoords)
+					Vector2D abspos = (transformcoords ? location.GetTransformed(translatex, translatey, scalex, scaley) : location);
+
+					// Update text and texture sizes
+					if(textsize.IsEmpty || texturesize.IsEmpty)
 					{
-						// Calculate absolute coordinates
-						Vector2D lt = new Vector2D(rect.Left, rect.Top);
-						Vector2D rb = new Vector2D(rect.Right, rect.Bottom);
-						lt = lt.GetTransformed(translatex, translatey, scalex, scaley);
-						rb = rb.GetTransformed(translatex, translatey, scalex, scaley);
-						absview = new RectangleF((float)Math.Round(lt.x), (float)Math.Round(lt.y), rb.x - lt.x, rb.y - lt.y);
+						textorigin = new PointF(4, 3);
+						textrect = new RectangleF(textorigin, General.Interface.MeasureString(text, font));
+						textrect.Width = (float)Math.Round(textrect.Width);
+						textrect.Height = (float)Math.Round(textrect.Height);
+						bgrect = new RectangleF(0, 0, textrect.Width + textorigin.X * 2, textrect.Height + textorigin.Y * 2);
+
+						// Store calculated text size...
+						textsize = new SizeF(textrect.Width + textorigin.X * 2, textrect.Height + textorigin.Y * 2);
+
+						// Make PO2 image, for speed and giggles...
+						texturesize = new Size(General.NextPowerOf2((int)textsize.Width), General.NextPowerOf2((int)textsize.Height));
+
+						switch(alignx)
+						{
+							case TextAlignmentX.Center: bgrect.X = (texturesize.Width - bgrect.Width) / 2; break;
+							case TextAlignmentX.Right: bgrect.X = texturesize.Width - bgrect.Width; break;
+						}
+
+						switch(aligny)
+						{
+							case TextAlignmentY.Middle: bgrect.Y = (texturesize.Height - bgrect.Height) / 2; break;
+							case TextAlignmentY.Bottom: bgrect.Y = texturesize.Height - bgrect.Height; break;
+						}
+
+						textrect.X += bgrect.X;
+						textrect.Y += bgrect.Y;
 					}
-					else
+
+					// Align the text horizontally
+					float beginx = 0;
+					switch(alignx)
 					{
-						// Fixed coordinates
-						absview = rect;
+						case TextAlignmentX.Left: beginx = abspos.x; break;
+						case TextAlignmentX.Center: beginx = abspos.x - texturesize.Width * 0.5f; break;
+						case TextAlignmentX.Right: beginx = abspos.x - texturesize.Width; break;
+					}
+
+					// Align the text vertically
+					float beginy = 0;
+					switch(aligny)
+					{
+						case TextAlignmentY.Top: beginy = abspos.y; break;
+						case TextAlignmentY.Middle: beginy = abspos.y - texturesize.Height * 0.5f; break;
+						case TextAlignmentY.Bottom: beginy = abspos.y - texturesize.Height; break;
 					}
 
 					//mxd. Skip when not on screen...
-					RectangleF abssize = absview;
-					abssize.Inflate(textsize.Width / 2, textsize.Height / 2);
+					RectangleF abssize = new RectangleF(beginx, beginy, texturesize.Width, texturesize.Height);
 					Size windowsize = General.Map.Graphics.RenderTarget.ClientSize;
 					skiprendering = (abssize.Right < 0.1f) || (abssize.Left > windowsize.Width) || (abssize.Bottom < 0.1f) || (abssize.Top > windowsize.Height);
 					if(skiprendering) return;
@@ -200,8 +234,8 @@ namespace CodeImp.DoomBuilder.Rendering
 						}
 
 						// Create label image
-						Bitmap img = CreateLabelImage(text, font, alignx, aligny, color, backcolor, drawbg, out textsize);
-						texturesize = img.Size;
+						Bitmap img = CreateLabelImage(text, font, color, backcolor, drawbg, textrect, bgrect, texturesize, textorigin);
+						//texturesize = img.Size;
 
 						// Create texture
 						MemoryStream memstream = new MemoryStream((img.Size.Width * img.Size.Height * 4) + 4096);
@@ -211,24 +245,6 @@ namespace CodeImp.DoomBuilder.Rendering
 						texture = Texture.FromStream(General.Map.Graphics.Device, memstream, (int)memstream.Length,
 								img.Size.Width, img.Size.Height, 1, Usage.None, Format.Unknown,
 								Pool.Managed, General.Map.Graphics.PostFilter, General.Map.Graphics.MipGenerateFilter, 0);
-					}
-
-					// Align the text horizontally
-					float beginx = 0;
-					switch(alignx)
-					{
-						case TextAlignmentX.Left: beginx = absview.X; break;
-						case TextAlignmentX.Center: beginx = absview.X + (absview.Width - texturesize.Width) * 0.5f; break;
-						case TextAlignmentX.Right: beginx = absview.X + absview.Width - texturesize.Width; break;
-					}
-
-					// Align the text vertically
-					float beginy = 0;
-					switch(aligny)
-					{
-						case TextAlignmentY.Top: beginy = absview.Y; break;
-						case TextAlignmentY.Middle: beginy = absview.Y + (absview.Height - texturesize.Height) * 0.5f; break;
-						case TextAlignmentY.Bottom: beginy = absview.Y + absview.Height - texturesize.Height; break;
 					}
 
 					//mxd. Create the buffer
@@ -251,7 +267,8 @@ namespace CodeImp.DoomBuilder.Rendering
 				else
 				{
 					// No faces in polygon
-					textsize = new SizeF();
+					textsize = SizeF.Empty; //mxd
+					texturesize = Size.Empty; //mxd
 					skiprendering = true; //mxd
 				}
 
@@ -262,36 +279,9 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		//mxd
-		private static Bitmap CreateLabelImage(string text, Font font, TextAlignmentX alignx, TextAlignmentY aligny, PixelColor color, PixelColor backcolor, bool drawbg, out SizeF textsize)
+		private static Bitmap CreateLabelImage(string text, Font font, PixelColor color, PixelColor backcolor, bool drawbg, RectangleF textrect, RectangleF bgrect, Size texturesize, PointF textorigin)
 		{
-			PointF textorigin = new PointF(4, 3);
-			RectangleF textrect = new RectangleF(textorigin, General.Interface.MeasureString(text, font));
-			textrect.Width = (float)Math.Round(textrect.Width);
-			textrect.Height = (float)Math.Round(textrect.Height);
-			RectangleF bgrect = new RectangleF(0, 0, textrect.Width + textorigin.X * 2, textrect.Height + textorigin.Y * 2);
-
-			// Store calculated text size...
-			textsize = new SizeF(bgrect.Width, bgrect.Height);
-
-			// Make PO2 image, for speed and giggles...
-			RectangleF po2rect = new RectangleF(0, 0, General.NextPowerOf2((int)bgrect.Width), General.NextPowerOf2((int)bgrect.Height));
-
-			switch(alignx)
-			{
-				case TextAlignmentX.Center: bgrect.X = (po2rect.Width - bgrect.Width) / 2; break;
-				case TextAlignmentX.Right:  bgrect.X = po2rect.Width - bgrect.Width; break;
-			}
-
-			switch(aligny)
-			{
-				case TextAlignmentY.Middle: bgrect.Y = (po2rect.Height - bgrect.Height) / 2; break;
-				case TextAlignmentY.Bottom: bgrect.Y = po2rect.Height - bgrect.Height; break;
-			}
-
-			textrect.X += bgrect.X;
-			textrect.Y += bgrect.Y;
-
-			Bitmap result = new Bitmap((int)po2rect.Width, (int)po2rect.Height);
+			Bitmap result = new Bitmap(texturesize.Width, texturesize.Height);
 			using(Graphics g = Graphics.FromImage(result))
 			{
 				g.SmoothingMode = SmoothingMode.HighQuality;

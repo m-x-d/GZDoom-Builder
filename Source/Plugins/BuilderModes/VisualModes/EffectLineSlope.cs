@@ -43,6 +43,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					founddist = d;
 				}
 			}
+
+			if(foundv == null) return; //mxd
 			
 			// Align floor with back of line
 			if((l.Args[0] == 1) && (l.Front.Sector == data.Sector))
@@ -54,8 +56,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					data.Floor.plane = new Plane(v1, v2, v3, true);
 				else
 					data.Floor.plane = new Plane(v2, v1, v3, true);
-				SectorData sd = data.Mode.GetSectorData(l.Back.Sector);
-				sd.AddUpdateSector(data.Sector, true);
 			}
 			// Align floor with front of line
 			else if((l.Args[0] == 2) && (l.Back.Sector == data.Sector))
@@ -67,8 +67,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					data.Floor.plane = new Plane(v1, v2, v3, true);
 				else
 					data.Floor.plane = new Plane(v2, v1, v3, true);
-				SectorData sd = data.Mode.GetSectorData(l.Front.Sector);
-				sd.AddUpdateSector(data.Sector, true);
 			}
 			
 			// Align ceiling with back of line
@@ -81,8 +79,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					data.Ceiling.plane = new Plane(v1, v2, v3, false);
 				else
 					data.Ceiling.plane = new Plane(v2, v1, v3, false);
-				SectorData sd = data.Mode.GetSectorData(l.Back.Sector);
-				sd.AddUpdateSector(data.Sector, true);
 			}
 			// Align ceiling with front of line
 			else if((l.Args[1] == 2) && (l.Back.Sector == data.Sector))
@@ -94,8 +90,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					data.Ceiling.plane = new Plane(v1, v2, v3, false);
 				else
 					data.Ceiling.plane = new Plane(v2, v1, v3, false);
-				SectorData sd = data.Mode.GetSectorData(l.Front.Sector);
-				sd.AddUpdateSector(data.Sector, true);
 			}
 		}
 	}

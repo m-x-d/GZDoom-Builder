@@ -66,7 +66,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private bool performautoselection; //mxd
 
 		// Undo/redo
-		private int undoticket;
+		protected int undoticket;
 		
 		#endregion
 		
@@ -533,26 +533,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		private void OnTextureChanged() 
-		{
-			//check for 3d floors
-			if(Sidedef.Line.Action == 160) 
-			{
-				int sectortag = ((General.Map.UDMF || (Sidedef.Line.Args[1] & 8) != 0) ? Sidedef.Line.Args[0] : Sidedef.Line.Args[0] + (Sidedef.Line.Args[4] << 8));
-				if(sectortag == 0) return;
-
-				foreach(Sector sector in General.Map.Map.Sectors) 
-				{
-					if(sector.Tags.Contains(sectortag))
-					{
-						BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(sector);
-						vs.UpdateSectorGeometry(true);
-					}
-				}
-			}
-		}
-
-		//mxd
 		public void SelectNeighbours(bool select, bool matchtexture, bool matchheight) 
 		{
 			if(Sidedef.Sector == null || Triangles < 1 || (!matchtexture && !matchheight)) return;
@@ -594,7 +574,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd
 		private void SelectNeighbourSideParts(Sidedef side, Rectangle sourcerect, bool select, bool matchtexture, bool matchheight)
 		{
-			BaseVisualSector s = mode.GetVisualSector(side.Sector) as BaseVisualSector;
+			BaseVisualSector s = (BaseVisualSector)mode.GetVisualSector(side.Sector);
 			if(s != null)
 			{
 				VisualSidedefParts parts = s.GetSidedefParts(side);
@@ -778,7 +758,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					// Update
 					VisualSector othersector = mode.GetVisualSector(Sidedef.Other.Sector);
-					if(othersector is BaseVisualSector) (othersector as BaseVisualSector).Changed = true;
+					if(othersector is BaseVisualSector) ((BaseVisualSector)othersector).Changed = true;
 				}
 			}
 		}
@@ -791,8 +771,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			mode.SetActionResult("Deleted a texture.");
 			SetTexture("-");
 
-			// Update
-			Sector.UpdateSectorGeometry(true);
+			//mxd. Update linked effects
+			SectorData sd = mode.GetSectorDataEx(Sector.Sector);
+			if(sd != null) sd.Reset(true);
 		}
 		
 		// Processing
@@ -871,12 +852,29 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			ResetTextureScale();
 
 			// And brightness
-			if(Sidedef.Fields.ContainsKey("light")) Sidedef.Fields.Remove("light");
-			if(Sidedef.Fields.ContainsKey("lightabsolute")) Sidedef.Fields.Remove("lightabsolute");
+			bool setupallparts = false;
+			if(Sidedef.Fields.ContainsKey("light"))
+			{
+				Sidedef.Fields.Remove("light");
+				setupallparts = true;
+			}
+			if(Sidedef.Fields.ContainsKey("lightabsolute"))
+			{
+				Sidedef.Fields.Remove("lightabsolute");
+				setupallparts = true;
+			}
 
-			// Update sidedef geometry
-			VisualSidedefParts parts = Sector.GetSidedefParts(Sidedef);
-			parts.SetupAllParts();
+			if(setupallparts)
+			{
+				// Update all sidedef geometry
+				VisualSidedefParts parts = Sector.GetSidedefParts(Sidedef);
+				parts.SetupAllParts();
+			}
+			else
+			{
+				// Update this part only
+				this.Setup();
+			}
 		}
 		
 		// Toggle upper-unpegged
@@ -1034,7 +1032,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							// Update the parts for this sidedef!
 							if(mode.VisualSectorExists(sd.Sector))
 							{
-								BaseVisualSector vs = (mode.GetVisualSector(sd.Sector) as BaseVisualSector);
+								BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(sd.Sector);
 								VisualSidedefParts parts = vs.GetSidedefParts(sd);
 								parts.SetupAllParts();
 							}
@@ -1112,7 +1110,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			mode.CreateUndo("Change texture " + texture);
 			SetTexture(texture);
-			OnTextureChanged();//mxd
+			
+			//mxd. Update linked effects
+			SectorData sd = mode.GetSectorDataEx(Sector.Sector);
+			if(sd != null) sd.Reset(true);
 		}
 		
 		// Paste texture
@@ -1123,7 +1124,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				mode.CreateUndo("Paste texture \"" + BuilderPlug.Me.CopiedTexture + "\"");
 				mode.SetActionResult("Pasted texture \"" + BuilderPlug.Me.CopiedTexture + "\".");
 				SetTexture(BuilderPlug.Me.CopiedTexture);
-				OnTextureChanged(); //mxd
+
+				//mxd. Update linked effects
+				SectorData sd = mode.GetSectorDataEx(Sector.Sector);
+				if(sd != null) sd.Reset(true);
 			}
 		}
 		
@@ -1135,17 +1139,25 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				SetTextureOffsetX(BuilderPlug.Me.CopiedOffsets.X);
 				SetTextureOffsetY(BuilderPlug.Me.CopiedOffsets.Y);
+
+				// Update sidedef part geometry
+				this.Setup();
 			} 
 			else 
 			{
 				Sidedef.OffsetX = BuilderPlug.Me.CopiedOffsets.X;
 				Sidedef.OffsetY = BuilderPlug.Me.CopiedOffsets.Y;
+
+				// Update sidedef geometry
+				VisualSidedefParts parts = Sector.GetSidedefParts(Sidedef);
+				parts.SetupAllParts();
 			}
+
+			//mxd. Update linked effects
+			SectorData sd = mode.GetSectorDataEx(Sector.Sector);
+			if(sd != null) sd.Reset(true);
+
 			mode.SetActionResult("Pasted texture offsets " + BuilderPlug.Me.CopiedOffsets.X + ", " + BuilderPlug.Me.CopiedOffsets.Y + ".");
-			
-			// Update sidedef geometry
-			VisualSidedefParts parts = Sector.GetSidedefParts(Sidedef);
-			parts.SetupAllParts();
 		}
 		
 		// Copy texture
@@ -1262,9 +1274,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						updatelist.Add((BaseVisualSector)mode.GetVisualSector(l.Back.Sector));
 				}
 
+				//mxd. Always select front side for extrafloors
+				Linedef sourceline = GetControlLinedef();
+				Sidedef target = (sourceline != Sidedef.Line && sourceline.Front != null ? sourceline.Front : Sidedef);
+
 				General.Interface.OnEditFormValuesChanged += Interface_OnEditFormValuesChanged;
 				mode.StartRealtimeInterfaceUpdate(SelectionType.Linedefs);
-				DialogResult result = General.Interface.ShowEditLinedefs(linedefs, Sidedef.IsFront, !Sidedef.IsFront);
+				DialogResult result = General.Interface.ShowEditLinedefs(linedefs, target.IsFront, !target.IsFront);
 				mode.StopRealtimeInterfaceUpdate(SelectionType.Linedefs);
 				General.Interface.OnEditFormValuesChanged -= Interface_OnEditFormValuesChanged;
 
@@ -1393,18 +1409,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				if(newlight == light) return;
 
-				//create undo
+				// Create undo
 				mode.CreateUndo("Change wall brightness", UndoGroup.SurfaceBrightnessChange, Sector.Sector.FixedIndex);
 				Sidedef.Fields.BeforeFieldsChange();
 
-				//apply changes
+				// Apply changes
 				UniFields.SetInteger(Sidedef.Fields, "light", newlight, (absolute ? int.MinValue : 0));
 				Tools.UpdateLightFogFlag(Sidedef);
 				mode.SetActionResult("Changed wall brightness to " + newlight + ".");
-				Sector.Sector.UpdateCache();
 
-				//rebuild sector
-				Sector.UpdateSectorGeometry(false);
+				// Update this part only
+				this.Setup();
 			}
 			else if(!Sector.Changed)
 			{
@@ -1431,7 +1446,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						if(mode.VisualThingExists(t))
 						{
 							// Update thing
-							BaseVisualThing vt = (mode.GetVisualThing(t) as BaseVisualThing);
+							BaseVisualThing vt = (BaseVisualThing)mode.GetVisualThing(t);
 							vt.Changed = true;
 						}
 					}
@@ -1452,6 +1467,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				MoveTextureOffset(new Point(-horizontal, -vertical));
 				Point p = GetTextureOffset();
 				mode.SetActionResult("Changed texture offsets to " + p.X + ", " + p.Y + ".");
+
+				// Update this part only
+				this.Setup();
 			} 
 			else 
 			{
@@ -1462,11 +1480,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(geometrytype != VisualGeometryType.WALL_MIDDLE && Texture != null) Sidedef.OffsetY %= Texture.Height;
 
 				mode.SetActionResult("Changed texture offsets to " + Sidedef.OffsetX + ", " + Sidedef.OffsetY + ".");
+
+				// Update all sidedef geometry
+				VisualSidedefParts parts = Sector.GetSidedefParts(Sidedef);
+				parts.SetupAllParts();
 			}
-			
-			// Update sidedef geometry
-			VisualSidedefParts parts = Sector.GetSidedefParts(Sidedef);
-			parts.SetupAllParts();
+
+			//mxd. Update linked effects
+			SectorData sd = mode.GetSectorDataEx(Sector.Sector);
+			if(sd != null) sd.Reset(true);
 		}
 
 		//mxd
@@ -1488,7 +1510,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					break;
 
 				case VisualGeometryType.WALL_MIDDLE:
-				case VisualGeometryType.WALL_MIDDLE_3D:
 					keyX = "scalex_mid";
 					keyY = "scaley_mid";
 					break;
@@ -1523,8 +1544,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				UniFields.SetFloat(Sidedef.Fields, keyY, scaleY, 1.0f);
 			}
 
-			//update geometry
+			// Update geometry
 			Setup();
+
+			//mxd. Update linked effects
+			SectorData sd = mode.GetSectorDataEx(Sector.Sector);
+			if(sd != null) sd.Reset(true);
+
 			mode.SetActionResult("Wall scale changed to " + scaleX.ToString("F03", CultureInfo.InvariantCulture) + ", " + scaleY.ToString("F03", CultureInfo.InvariantCulture) + " (" + (int)Math.Round(Texture.Width / scaleX) + " x " + (int)Math.Round(Texture.Height / scaleY) + ").");
 		}
 

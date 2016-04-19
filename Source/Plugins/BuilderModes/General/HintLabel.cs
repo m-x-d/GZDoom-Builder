@@ -32,7 +32,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			bool endvisible = viewport.Contains(end.x, end.y);
 
 			// Get visile area
-			RectangleF labelrect;
 			if(!startvisible || !endvisible)
 			{
 				float minx = Math.Min(start.x, end.x);
@@ -42,16 +41,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				RectangleF labelarea = new RectangleF(minx, miny, maxx - minx, maxy - miny);
 				labelarea.Intersect(viewport);
 
-				labelrect = new RectangleF(labelarea.X + labelarea.Width * 0.5f, labelarea.Y + labelarea.Height * 0.5f, 0f, 0f);
+				label.Location = new Vector2D(labelarea.X + labelarea.Width * 0.5f, labelarea.Y + labelarea.Height * 0.5f);
 			}
 			else
 			{
 				Vector2D delta = end - start;
-				labelrect = new RectangleF(start.x + delta.x * 0.5f, start.y + delta.y * 0.5f, 0f, 0f);
-			}
 
-			// Apply changes
-			label.Rectangle = labelrect;
+				label.Location = new Vector2D(start.x + delta.x * 0.5f, start.y + delta.y * 0.5f);
+			}
 		}
 	}
 }
