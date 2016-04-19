@@ -224,12 +224,6 @@ namespace CodeImp.DoomBuilder.VisualModes
 				geobuffers = null;
 			}
 
-			if(textures != null) //mxd
-			{
-				foreach(ImageData texture in textures) texture.Dispose();
-				textures = null;
-			}
-
 			if(cagebuffer != null) cagebuffer.Dispose(); //mxd
 			cagebuffer = null; //mxd
 			updategeo = true;

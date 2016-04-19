@@ -276,14 +276,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			//mxd. Create verts for all sprite angles
 			WorldVertex[][] allverts = new WorldVertex[info.SpriteFrame.Length][];
 			base.textures = new ImageData[info.SpriteFrame.Length];
+			isloaded = true;
 
 			for(int i = 0; i < sprites.Length; i++)
 			{
 				// Check if the texture is loaded
 				ImageData sprite = sprites[i];
 				sprite.LoadImage();
-				isloaded = sprite.IsImageLoaded;
-				if(isloaded)
+				if(sprite.IsImageLoaded)
 				{
 					float offsetx = 0.0f;
 					float offsety = 0.0f;
@@ -337,6 +337,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 				else
 				{
+					isloaded = false;
 					base.textures[i] = General.Map.Data.Hourglass3D;
 
 					// Determine sprite size
@@ -493,17 +494,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(!isloaded)
 			{
 				//mxd. Rebuild sprite geometry when all sprites are loaded
-				bool allloaded = true;
+				isloaded = true;
 				foreach(ImageData sprite in sprites)
 				{
 					if(!sprite.IsImageLoaded)
 					{
-						allloaded = false;
+						isloaded = false;
 						break;
 					}
 				}
 
-				if(allloaded) Setup();
+				if(isloaded) Setup();
 			}
 			
 			// Let the base update
