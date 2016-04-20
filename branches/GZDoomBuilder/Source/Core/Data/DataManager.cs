@@ -2329,6 +2329,16 @@ namespace CodeImp.DoomBuilder.Data
 				}
 			}
 
+			// Apply dynamic lights defined using Light() state expression
+			foreach(ThingTypeInfo info in thingtypes.Values)
+			{
+				if(string.IsNullOrEmpty(info.LightName)) continue;
+				if(parser.LightsByName.ContainsKey(info.LightName))
+					gldefsentries[info.Index] = parser.LightsByName[info.LightName];
+				else
+					General.ErrorLogger.Add(ErrorType.Error, "Actor \"" + info.Title + "\":" + info.Index + " references undefined light \"" + info.LightName + "\"");
+			}
+
 			// Grab them glowy flats!
 			glowingflats = parser.GlowingFlats;
 

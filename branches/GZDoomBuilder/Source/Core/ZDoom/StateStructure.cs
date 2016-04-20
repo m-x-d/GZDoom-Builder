@@ -30,6 +30,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		public class FrameInfo
 		{
 			public string Sprite;
+			public string LightName;
 			public bool Bright;
 		}
 		
@@ -163,12 +164,38 @@ namespace CodeImp.DoomBuilder.ZDoom
 					while(!string.IsNullOrEmpty(t) && t != "\n")
 					{
 						parser.SkipWhitespace(false);
-						t = parser.ReadToken();
+						t = parser.ReadToken().ToLowerInvariant();
 
 						//mxd. Bright keyword support...
-						if(t.ToLowerInvariant() == "bright")
+						if(t == "bright")
 						{
 							info.Bright = true;
+						}
+						//mxd. Light() expression support...
+						else if(t == "light")
+						{
+							if(!parser.NextTokenIs("(")) return;
+
+							if(!parser.SkipWhitespace(true))
+							{
+								parser.ReportError("Unexpected end of the structure");
+								return;
+							}
+							
+							info.LightName = parser.StripTokenQuotes(parser.ReadToken());
+							if(string.IsNullOrEmpty(info.LightName))
+							{
+								parser.ReportError("Expected dynamic light name");
+								return;
+							}
+
+							if(!parser.SkipWhitespace(true))
+							{
+								parser.ReportError("Unexpected end of the structure");
+								return;
+							}
+
+							if(!parser.NextTokenIs(")")) return;
 						}
 						//mxd. Inner scope start. Step back and reparse using parent loop
 						else if(t == "{")
