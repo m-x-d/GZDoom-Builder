@@ -455,7 +455,8 @@ namespace CodeImp.DoomBuilder.Config
 			title = ZDTextParser.StripQuotes(title); //mxd
 			
 			// Set sprite
-			string suitablesprite = (locksprite ? string.Empty : actor.FindSuitableSprite()); //mxd
+			StateStructure.FrameInfo info = actor.FindSuitableSprite(); //mxd
+			string suitablesprite = (locksprite ? string.Empty : info.Sprite); //mxd
 			if(!string.IsNullOrEmpty(suitablesprite)) 
 				sprite = suitablesprite;
 			else if(string.IsNullOrEmpty(sprite))//mxd
@@ -507,7 +508,7 @@ namespace CodeImp.DoomBuilder.Config
 			}
 
 			//mxd. BRIGHT
-			this.bright = actor.GetFlagValue("bright", false);
+			this.bright = info.Bright || actor.GetFlagValue("bright", false);
 			
 			// Safety
 			if(this.radius < 4f || this.fixedsize) this.radius = THING_FIXED_SIZE;
