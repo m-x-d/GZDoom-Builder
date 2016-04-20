@@ -60,6 +60,7 @@ namespace CodeImp.DoomBuilder.Config
 		private SpriteFrameInfo[] spriteframe; //mxd. All rotations for given sprite. Currently contains either 1 or 8 frames
 		private ActorStructure actor;
 		private string classname; //mxd
+		private string lightname; //mxd. Dynamic light name defined using Light() state expression
 		private int color;
 		private float alpha; //mxd
 		private byte alphabyte; //mxd
@@ -122,6 +123,7 @@ namespace CodeImp.DoomBuilder.Config
 		public bool XYBillboard { get { return xybillboard; } } //mxd
 		public SizeF SpriteScale { get { return spritescale; } }
 		public string ClassName { get { return classname; } } //mxd. Need this to add model overrides for things defined in configs
+		public string LightName { get { return lightname; } } //mxd
 
 		//mxd. GLOOME rendering flags
 		public Thing.SpriteRenderMode RenderMode { get { return rendermode; } }
@@ -461,6 +463,9 @@ namespace CodeImp.DoomBuilder.Config
 				sprite = suitablesprite;
 			else if(string.IsNullOrEmpty(sprite))//mxd
 				sprite = DataManager.INTERNAL_PREFIX + "unknownthing";
+
+			//mxd. Store dynamic light name
+			lightname = info.LightName;
 
 			//mxd. Create sprite frame
 			this.spriteframe = new[] { new SpriteFrameInfo { Sprite = sprite, SpriteLongName = Lump.MakeLongName(sprite, true) } };

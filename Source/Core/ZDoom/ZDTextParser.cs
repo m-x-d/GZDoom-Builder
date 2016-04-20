@@ -512,7 +512,12 @@ namespace CodeImp.DoomBuilder.ZDoom
 		//mxd
 		internal bool NextTokenIs(string expectedtoken, bool reporterror) 
 		{
-			if(!SkipWhitespace(true)) return false;
+			if(!SkipWhitespace(true))
+			{
+				if(reporterror) ReportError("Unexpected end of the structure");
+				return false;
+			}
+
 			string token = ReadToken();
 
 			if(string.Compare(token, expectedtoken, true) != 0)
