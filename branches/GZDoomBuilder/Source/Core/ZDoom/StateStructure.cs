@@ -25,14 +25,20 @@ namespace CodeImp.DoomBuilder.ZDoom
 {
 	public sealed class StateStructure
 	{
-		#region ================== Constants
+		#region ================== FrameInfo (mxd)
+
+		public class FrameInfo
+		{
+			public string Sprite;
+			public bool Bright;
+		}
 		
 		#endregion
 
 		#region ================== Variables
 		
 		// All we care about is the first sprite in the sequence
-		private readonly List<string> sprites;
+		private readonly List<FrameInfo> sprites;
 		private readonly StateGoto gotostate;
 		private readonly DecorateParser parser;
 		
@@ -53,7 +59,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			
 			this.gotostate = null;
 			this.parser = parser;
-			this.sprites = new List<string>();
+			this.sprites = new List<FrameInfo>();
 			
 			// Skip whitespace
 			while(parser.SkipWhitespace(true))
@@ -137,6 +143,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 					}
 					
 					// No first sprite yet?
+					FrameInfo info = new FrameInfo(); //mxd
 					if(spriteframes.Length > 0)
 					{
 						// Make the sprite name
@@ -144,8 +151,11 @@ namespace CodeImp.DoomBuilder.ZDoom
 						spritename = spritename.ToUpperInvariant();
 						
 						// Ignore some odd ZDoom things
-						if(!spritename.StartsWith("TNT1") && !spritename.StartsWith("----") && !spritename.Contains("#")) 
-							sprites.Add(spritename);
+						if(!spritename.StartsWith("TNT1") && !spritename.StartsWith("----") && !spritename.Contains("#"))
+						{
+							info.Sprite = spritename; //mxd
+							sprites.Add(info);
+						}
 					}
 					
 					// Continue until the end of the line
@@ -155,8 +165,13 @@ namespace CodeImp.DoomBuilder.ZDoom
 						parser.SkipWhitespace(false);
 						t = parser.ReadToken();
 
+						//mxd. Bright keyword support...
+						if(t.ToLowerInvariant() == "bright")
+						{
+							info.Bright = true;
+						}
 						//mxd. Inner scope start. Step back and reparse using parent loop
-						if(t == "{")
+						else if(t == "{")
 						{
 							// Rewind so that this scope end can be read again
 							parser.DataStream.Seek(-1, SeekOrigin.Current);
@@ -185,7 +200,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		internal StateStructure(string spritename) 
 		{
 			this.gotostate = null;
-			this.sprites = new List<string> { spritename };
+			this.sprites = new List<FrameInfo> { new FrameInfo { Sprite = spritename } };
 		}
 
 		#endregion
@@ -193,14 +208,13 @@ namespace CodeImp.DoomBuilder.ZDoom
 		#region ================== Methods
 		
 		// This finds the first valid sprite and returns it
-		public string GetSprite(int index)
+		public FrameInfo GetSprite(int index)
 		{
-			List<StateStructure> callstack = new List<StateStructure>();
-			return GetSprite(index, callstack);
+			return GetSprite(index, new HashSet<StateStructure>());
 		}
 		
 		// This version of GetSprite uses a callstack to check if it isn't going into an endless loop
-		private string GetSprite(int index, List<StateStructure> prevstates)
+		private FrameInfo GetSprite(int index, HashSet<StateStructure> prevstates)
 		{
 			// If we have sprite of our own, see if we can return this index
 			if(index < sprites.Count) return sprites[index];
@@ -228,7 +242,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 				return sprites[0];
 			}
 			
-			return "";
+			return new FrameInfo();
 		}
 		
 		#endregion
