@@ -204,7 +204,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Handle the case when start point is not on current grid.
 				Vector2D gridoffset = General.Map.Grid.SnappedToGrid(points[0].pos) - points[0].pos;
-				curp = GetCurrentPosition(mousemappos + gridoffset, snaptonearest, snaptogrid, snaptocardinaldirection, renderer, points);
+				curp = GetCurrentPosition(mousemappos + gridoffset, snaptonearest, snaptogrid, snaptocardinaldirection, usefourcardinaldirections, renderer, points);
 				curp.pos -= gridoffset;
 			}
 			else
@@ -297,7 +297,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Handle the case when start point is not on current grid.
 				Vector2D gridoffset = General.Map.Grid.SnappedToGrid(points[0].pos) - points[0].pos;
-				newpoint = GetCurrentPosition(mousemappos + gridoffset, snaptonearest, snaptogrid, snaptocardinaldirection, renderer, new List<DrawnVertex> { points[0] });
+				newpoint = GetCurrentPosition(mousemappos + gridoffset, snaptonearest, snaptogrid, snaptocardinaldirection, usefourcardinaldirections, renderer, new List<DrawnVertex> { points[0] });
 				newpoint.pos -= gridoffset;
 				
 				// Create vertices for final shape.

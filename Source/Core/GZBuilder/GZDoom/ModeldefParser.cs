@@ -109,6 +109,13 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 								// Add models
 								foreach(var fs in mds.Frames[targetsprite])
 								{
+									// Sanity checks
+									if(string.IsNullOrEmpty(mds.ModelNames[fs.ModelIndex]))
+									{
+										LogWarning("Model definition \"" + classname + "\", frame \"" + fs.SpriteName + " " + fs.FrameName + "\" references undefiend model index " + fs.ModelIndex);
+										continue;
+									}
+									
 									// Texture name will be empty when skin path is embedded in the model
 									string texturename = (!string.IsNullOrEmpty(mds.TextureNames[fs.ModelIndex]) ? mds.TextureNames[fs.ModelIndex].ToLowerInvariant() : string.Empty);
 
@@ -118,8 +125,16 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 									md.FrameIndices.Add(fs.FrameIndex);
 								}
 
-								// Add to collection
-								entries[classname] = md;
+								// More sanity checks...
+								if(md.ModelNames.Count == 0)
+								{
+									LogWarning("Model definition \"" + classname + "\" has no defined models");
+								}
+								else
+								{
+									// Add to collection
+									entries[classname] = md;
+								}
 							}
 						}
 					}

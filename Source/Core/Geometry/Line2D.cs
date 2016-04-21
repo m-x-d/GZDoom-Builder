@@ -107,11 +107,35 @@ namespace CodeImp.DoomBuilder.Geometry
 		public static bool GetIntersection(Vector2D v1, Vector2D v2, float x3, float y3, float x4, float y4, out float u_ray)
 		{
 			float u_line;
-			return GetIntersection(v1, v2, x3, y3, x4, y4, out u_ray, out u_line);
+			return GetIntersection(v1, v2, x3, y3, x4, y4, out u_ray, out u_line, true);
+		}
+
+		//mxd. This tests if the line intersects with the given line coordinates
+		public static bool GetIntersection(Vector2D v1, Vector2D v2, float x3, float y3, float x4, float y4, out float u_ray, bool bounded)
+		{
+			float u_line;
+			return GetIntersection(v1, v2, x3, y3, x4, y4, out u_ray, out u_line, bounded);
+		}
+
+		//mxd. Gets intersection point between given lines
+		public static Vector2D GetIntersectionPoint(Line2D line1, Line2D line2, bool bounded)
+		{
+			float u_ray, u_line;
+			if(GetIntersection(line1.v1, line1.v2, line2.v1.x, line2.v1.y, line2.v2.x, line2.v2.y, out u_ray, out u_line, bounded))
+				return GetCoordinatesAt(line2.v1, line2.v2, u_ray);
+
+			// No dice...
+			return new Vector2D(float.NaN, float.NaN);
 		}
 
 		// This tests if the line intersects with the given line coordinates
 		public static bool GetIntersection(Vector2D v1, Vector2D v2, float x3, float y3, float x4, float y4, out float u_ray, out float u_line)
+		{
+			return GetIntersection(v1, v2, x3, y3, x4, y4, out u_ray, out u_line, true);
+		}
+
+		// This tests if the line intersects with the given line coordinates
+		public static bool GetIntersection(Vector2D v1, Vector2D v2, float x3, float y3, float x4, float y4, out float u_ray, out float u_line, bool bounded)
 		{
 			// Calculate divider
 			float div = (y4 - y3) * (v2.x - v1.x) - (x4 - x3) * (v2.y - v1.y);
@@ -126,7 +150,7 @@ namespace CodeImp.DoomBuilder.Geometry
 				u_ray = ((v2.x - v1.x) * (v1.y - y3) - (v2.y - v1.y) * (v1.x - x3)) / div;
 
 				// Return if intersecting
-				if(u_ray < 0.0f || u_ray > 1.0f || u_line < 0.0f || u_line > 1.0f) return false; //mxd
+				if(bounded && (u_ray < 0.0f || u_ray > 1.0f || u_line < 0.0f || u_line > 1.0f)) return false; //mxd
 				return true;
 			}
 
@@ -229,7 +253,12 @@ namespace CodeImp.DoomBuilder.Geometry
 
 		public bool GetIntersection(float x3, float y3, float x4, float y4, out float u_ray)
 		{
-			return Line2D.GetIntersection(v1, v2, x3, y3, x4, y4, out u_ray);
+			return Line2D.GetIntersection(v1, v2, x3, y3, x4, y4, out u_ray, true);
+		}
+
+		public bool GetIntersection(float x3, float y3, float x4, float y4, out float u_ray, bool bounded)
+		{
+			return Line2D.GetIntersection(v1, v2, x3, y3, x4, y4, out u_ray, bounded);
 		}
 
 		public bool GetIntersection(float x3, float y3, float x4, float y4, out float u_ray, out float u_line)
@@ -244,7 +273,12 @@ namespace CodeImp.DoomBuilder.Geometry
 
 		public bool GetIntersection(Line2D ray, out float u_ray)
 		{
-			return Line2D.GetIntersection(v1, v2, ray.v1.x, ray.v1.y, ray.v2.x, ray.v2.y, out u_ray);
+			return Line2D.GetIntersection(v1, v2, ray.v1.x, ray.v1.y, ray.v2.x, ray.v2.y, out u_ray, true);
+		}
+
+		public bool GetIntersection(Line2D ray, out float u_ray, bool bounded)
+		{
+			return Line2D.GetIntersection(v1, v2, ray.v1.x, ray.v1.y, ray.v2.x, ray.v2.y, out u_ray, bounded);
 		}
 
 		public bool GetIntersection(Line2D ray, out float u_ray, out float u_line)
