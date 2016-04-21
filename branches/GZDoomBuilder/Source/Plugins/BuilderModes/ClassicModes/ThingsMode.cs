@@ -246,7 +246,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				//mxd. Dynamic light radii
 				if(!General.Map.DOOM && General.Settings.GZDrawLightsMode != LightRenderMode.NONE)
+				{
 					eventlines.AddRange(dynamiclightshapes);
+					if(highlighted != null) eventlines.AddRange(GetDynamicLightShapes(new List<Thing> { highlighted } ));
+				}
 
 				//mxd
 				if(eventlines.Count > 0) renderer.RenderArrows(eventlines);
@@ -993,8 +996,103 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			persistenteventlines = LinksCollector.GetThingLinks(General.Map.ThingsFilter.VisibleThings);
 
 			// Update light radii
-			dynamiclightshapes = Tools.GetDynamicLightShapes();
+			dynamiclightshapes = GetDynamicLightShapes(General.Map.Map.Things);
 		}
+
+		//mxd
+		private List<Line3D> GetDynamicLightShapes(IEnumerable<Thing> things)
+		{
+			List<Line3D> circles = new List<Line3D>();
+			const int linealpha = 128;
+			foreach(Thing t in things)
+			{
+				int lightid = Array.IndexOf(GZBuilder.GZGeneral.GZ_LIGHTS, t.Type);
+				if(lightid == -1) continue;
+
+				// TODO: this basically duplicates VisualThing.UpdateLight()...
+				// Determine light radiii
+				int primaryradius;
+				int secondaryradius = 0;
+
+				if(lightid < GZBuilder.GZGeneral.GZ_LIGHT_TYPES[2]) //if it's gzdoom light
+				{
+					int n;
+					if(lightid < GZBuilder.GZGeneral.GZ_LIGHT_TYPES[0]) n = 0;
+					else if(lightid < GZBuilder.GZGeneral.GZ_LIGHT_TYPES[1]) n = 10;
+					else n = 20;
+					DynamicLightType lightType = (DynamicLightType)(t.Type - 9800 - n);
+
+					if(lightType == DynamicLightType.SECTOR)
+					{
+						if(t.Sector == null) t.DetermineSector();
+						int scaler = (t.Sector != null ? t.Sector.Brightness / 4 : 2);
+						primaryradius = (int)Math.Round((t.Args[3] * scaler) * General.Settings.GZDynamicLightRadius);
+					}
+					else
+					{
+						primaryradius = (int)Math.Round((t.Args[3] * 2) * General.Settings.GZDynamicLightRadius); //works... that.. way in GZDoom
+						if(lightType > 0)
+							secondaryradius = (int)Math.Round((t.Args[4] * 2) * General.Settings.GZDynamicLightRadius);
+					}
+				}
+				else //it's one of vavoom lights
+				{
+					primaryradius = (int)Math.Round((t.Args[0] * 8) * General.Settings.GZDynamicLightRadius);
+				}
+
+				// Check radii...
+				if(primaryradius < 1 && secondaryradius < 1) continue;
+
+				// Determine light color
+				PixelColor color;
+				if(t == highlighted)
+				{
+					color = General.Colors.Highlight.WithAlpha(linealpha);
+				}
+				else
+				{
+					switch(t.Type)
+					{
+						case 1502: // Vavoom light
+							color = new PixelColor(linealpha, 255, 255, 255);
+							break;
+
+						case 1503: // Vavoom colored light
+							color = new PixelColor(linealpha, (byte)t.Args[1], (byte)t.Args[2], (byte)t.Args[3]);
+							break;
+
+						default:
+							color = new PixelColor(linealpha, (byte)t.Args[0], (byte)t.Args[1], (byte)t.Args[2]);
+							break;
+					}
+				}
+
+				// Add lines if visible
+				const int numsides = 24;
+				if(primaryradius > 0) circles.AddRange(MakeCircleLines(t.Position, color, primaryradius, numsides));
+				if(secondaryradius > 0) circles.AddRange(MakeCircleLines(t.Position, color, secondaryradius, numsides));
+			}
+
+			// Done
+			return circles;
+		}
+
+		//mxd
+		private static IEnumerable<Line3D> MakeCircleLines(Vector2D pos, PixelColor color, float radius, int numsides)
+		{
+			List<Line3D> result = new List<Line3D>(numsides);
+			Vector2D start = new Vector2D(pos.x, pos.y + radius);
+			float anglestep = Angle2D.PI2 / numsides;
+
+			for(int i = 1; i < numsides + 1; i++)
+			{
+				Vector2D end = pos + new Vector2D((float)Math.Sin(anglestep * i) * radius, (float)Math.Cos(anglestep * i) * radius);
+				result.Add(new Line3D(start, end, color, false));
+				start = end;
+			}
+
+			return result;
+		} 
 
 		#endregion
 

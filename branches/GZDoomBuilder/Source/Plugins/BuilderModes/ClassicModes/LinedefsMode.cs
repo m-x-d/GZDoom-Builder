@@ -742,7 +742,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				DrawGeometryMode drawmode = new DrawGeometryMode();
 				bool snaptogrid = General.Interface.ShiftState ^ General.Interface.SnapToGrid;
 				bool snaptonearest = General.Interface.CtrlState ^ General.Interface.AutoMerge;
-				DrawnVertex v = DrawGeometryMode.GetCurrentPosition(mousemappos, snaptonearest, snaptogrid, false, renderer, new List<DrawnVertex>());
+				DrawnVertex v = DrawGeometryMode.GetCurrentPosition(mousemappos, snaptonearest, snaptogrid, false, false, renderer, new List<DrawnVertex>());
 
 				if(drawmode.DrawPointAt(v))
 					General.Editing.ChangeMode(drawmode);
@@ -868,7 +868,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					bool snaptogrid = General.Interface.ShiftState ^ General.Interface.SnapToGrid;
 					bool snaptonearest = General.Interface.CtrlState ^ General.Interface.AutoMerge;
-					Vector2D v = DrawGeometryMode.GetCurrentPosition(mousemappos, snaptonearest, snaptogrid, false, renderer, new List<DrawnVertex>()).pos;
+					Vector2D v = DrawGeometryMode.GetCurrentPosition(mousemappos, snaptonearest, snaptogrid, false, false, renderer, new List<DrawnVertex>()).pos;
 
 					if(v != insertpreview)
 					{
@@ -1287,7 +1287,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				bool snaptogrid = General.Interface.ShiftState ^ General.Interface.SnapToGrid;
 				bool snaptonearest = General.Interface.CtrlState ^ General.Interface.AutoMerge;
-				DrawnVertex v = DrawGeometryMode.GetCurrentPosition(mousemappos, snaptonearest, snaptogrid, false, renderer, new List<DrawnVertex>());
+				DrawnVertex v = DrawGeometryMode.GetCurrentPosition(mousemappos, snaptonearest, snaptogrid, false, false, renderer, new List<DrawnVertex>());
 				drawmode.DrawPointAt(v);
 			}
 			General.Editing.ChangeMode(drawmode);

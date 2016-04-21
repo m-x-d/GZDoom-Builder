@@ -23,6 +23,7 @@ using System.Windows.Forms;
 using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.Geometry;
+using CodeImp.DoomBuilder.GZBuilder.Geometry;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Windows;
@@ -54,20 +55,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Drawing points
 		protected List<DrawnVertex> points;
 		protected List<LineLengthLabel> labels;
-
-		// Keep track of view changes (never used. mxd)
-		//protected float lastoffsetx;
-		//protected float lastoffsety;
-		//protected float lastscale;
+		private LineLengthLabel[] guidelabels; //mxd
 
 		// Options
 		protected bool snaptogrid;		// SHIFT to toggle
 		protected bool snaptonearest;	// CTRL to enable
 		protected bool snaptocardinaldirection; //mxd. ALT-SHIFT to enable
-		protected static bool usefourcardinaldirections;
+		protected bool usefourcardinaldirections;
 		protected bool continuousdrawing; //mxd. Restart after finishing drawing?
 		protected bool autoclosedrawing;  //mxd. Finish drawing when new points and existing geometry form a closed shape
 		protected bool drawingautoclosed; //mxd
+		private bool showguidelines; //mxd
+
+		//mxd. Map area bounds
+		private Line2D top, bottom, left, right;
 
 		//mxd. Labels display style
 		protected bool labelshowangle = true;
@@ -109,8 +110,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(!isdisposed)
 			{
 				// Clean up
-				if(labels != null)
-					foreach(LineLengthLabel l in labels) l.Dispose();
+				if(labels != null) foreach(LineLengthLabel l in labels) l.Dispose();
+				if(guidelabels != null) foreach(LineLengthLabel l in guidelabels) l.Dispose();
 				
 				// Done
 				base.Dispose();
@@ -154,9 +155,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Update labels for already drawn lines
 				for(int i = 0; i < labels.Count - 1; i++)
+				{
+					labels[i].ShowAngle = showguidelines;
 					labels[i].Move(points[i].pos, points[i + 1].pos);
+				}
 
 				// Update label for active line
+				labels[labels.Count - 1].ShowAngle = showguidelines;
 				labels[labels.Count - 1].Move(points[points.Count - 1].pos, curp.pos);
 			}
 
@@ -167,6 +172,64 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				PixelColor color;
 				if(points.Count > 0)
 				{
+					//mxd
+					bool renderguidelabels = false;
+					if(showguidelines)
+					{
+						Vector2D prevp = points[points.Count - 1].pos;
+						if(curp.pos.x != prevp.x && curp.pos.y != prevp.y)
+						{
+							renderguidelabels = true;
+							
+							Vector2D tr = new Vector2D(Math.Max(curp.pos.x, prevp.x), Math.Max(curp.pos.y, prevp.y));
+							Vector2D bl = new Vector2D(Math.Min(curp.pos.x, prevp.x), Math.Min(curp.pos.y, prevp.y));
+							
+							// Create guidelines
+							PixelColor c = General.Colors.InfoLine.WithAlpha(80);
+							Line3D[] lines = new Line3D[5];
+							lines[0] = new Line3D(new Vector2D(tr.x, General.Map.Config.TopBoundary), new Vector2D(tr.x, General.Map.Config.BottomBoundary), c, false);
+							lines[1] = new Line3D(new Vector2D(bl.x, General.Map.Config.TopBoundary), new Vector2D(bl.x, General.Map.Config.BottomBoundary), c, false);
+							lines[2] = new Line3D(new Vector2D(General.Map.Config.LeftBoundary, tr.y), new Vector2D(General.Map.Config.RightBoundary, tr.y), c, false);
+							lines[3] = new Line3D(new Vector2D(General.Map.Config.LeftBoundary, bl.y), new Vector2D(General.Map.Config.RightBoundary, bl.y), c, false);
+
+							// Create current line extent. Make sure v1 is to the left of v2
+							Line2D current = (curp.pos.x < prevp.x ? new Line2D(curp.pos, prevp) : new Line2D(prevp, curp.pos));
+							
+							Vector2D extentstart, extentend;
+							if(current.v1.y < current.v2.y) // Start is lower
+							{
+								// Start point can hit left or bottom boundaries
+								extentstart = Line2D.GetIntersectionPoint(left, current, false);
+								if(extentstart.y < General.Map.Config.BottomBoundary) extentstart = Line2D.GetIntersectionPoint(bottom, current, false);
+
+								// End point can hit right or top boundaries
+								extentend = Line2D.GetIntersectionPoint(right, current, false);
+								if(extentend.y > General.Map.Config.TopBoundary) extentend = Line2D.GetIntersectionPoint(top, current, false);
+							}
+							else // Start is higher
+							{
+								// Start point can hit left or top boundaries
+								extentstart = Line2D.GetIntersectionPoint(left, current, false);
+								if(extentstart.y > General.Map.Config.TopBoundary) extentstart = Line2D.GetIntersectionPoint(top, current, false);
+
+								// End point can hit right or bottom boundaries
+								extentend = Line2D.GetIntersectionPoint(right, current, false);
+								if(extentend.y < General.Map.Config.BottomBoundary) extentend = Line2D.GetIntersectionPoint(bottom, current, false);
+							}
+
+							lines[4] = new Line3D(extentstart, extentend, c, false);
+
+							// Render them
+							renderer.RenderArrows(lines);
+
+							// Update horiz/vert length labels
+							guidelabels[0].Move(tr, new Vector2D(tr.x, bl.y));
+							guidelabels[1].Move(new Vector2D(bl.x, tr.y), tr);
+							guidelabels[2].Move(new Vector2D(tr.x, bl.y), bl);
+							guidelabels[3].Move(bl, new Vector2D(bl.x, tr.y));
+						}
+					}
+					
 					// Render lines
 					DrawnVertex lastp = points[0];
 					for(int i = 1; i < points.Count; i++)
@@ -197,6 +260,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						// Render vertex
 						renderer.RenderRectangleFilled(new RectangleF(points[i].pos.x - vsize, points[i].pos.y - vsize, vsize * 2.0f, vsize * 2.0f), color, true);
 					}
+
+					//mxd. Render guide labels?
+					if(renderguidelabels)
+					{
+						foreach(LineLengthLabel l in guidelabels) renderer.RenderText(l.TextLabel);
+					}
 				}
 
 				// Determine point color
@@ -226,14 +295,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 		
 		// This returns the aligned and snapped draw position
-		public static DrawnVertex GetCurrentPosition(Vector2D mousemappos, bool snaptonearest, bool snaptogrid, bool snaptocardinal, IRenderer2D renderer, List<DrawnVertex> points)
+		public static DrawnVertex GetCurrentPosition(Vector2D mousemappos, bool snaptonearest, bool snaptogrid, bool snaptocardinal, bool usefourcardinaldirections, IRenderer2D renderer, List<DrawnVertex> points)
 		{
 			DrawnVertex p = new DrawnVertex();
 			p.stitch = true; //mxd. Setting these to false seems to be a good way to create invalid geometry...
 			p.stitchline = true; //mxd
 
 			//mxd. If snap to cardinal directions is enabled and we have points, modify mouse position
-			Vector2D vm;
+			Vector2D vm, gridoffset;
 			if(snaptocardinal && points.Count > 0)
 			{
 				Vector2D offset = mousemappos - points[points.Count - 1].pos;
@@ -246,10 +315,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				offset = new Vector2D(0, -offset.GetLength()).GetRotated(angle);
 				vm = points[points.Count - 1].pos + offset;
+
+				//mxd. We need to be snapped relative to initial position
+				Vector2D prev = points[points.Count - 1].pos;
+				gridoffset = prev - General.Map.Grid.SnappedToGrid(prev);
 			}
 			else
 			{
 				vm = mousemappos;
+				gridoffset = new Vector2D();
 			}
 			
 			float vrange = BuilderPlug.Me.StitchRange / renderer.Scale;
@@ -260,31 +334,60 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Go for all drawn points
 				foreach(DrawnVertex v in points)
 				{
-					if(Vector2D.DistanceSq(mousemappos, v.pos) < (vrange * vrange))
+					if(Vector2D.DistanceSq(vm, v.pos) < (vrange * vrange))
 					{
 						p.pos = v.pos;
-						//p.stitch = true;
-						//p.stitchline = true;
 						return p;
 					}
 				}
 
 				// Try the nearest vertex
-				Vertex nv = General.Map.Map.NearestVertexSquareRange(mousemappos, vrange);
+				Vertex nv = General.Map.Map.NearestVertexSquareRange(vm, vrange);
 				if(nv != null)
 				{
-					p.pos = nv.Position;
-					//p.stitch = true;
-					//p.stitchline = true;
-					return p;
+					//mxd. Line angle must stay the same
+					if(snaptocardinal) //mxd
+					{
+						Line2D ourline = new Line2D(points[points.Count - 1].pos, vm);
+						if(Math.Round(ourline.GetSideOfLine(nv.Position), 1) == 0)
+						{
+							p.pos = nv.Position;
+							return p;
+						}
+					}
+					else
+					{
+						p.pos = nv.Position;
+						return p;
+					}
 				}
 
-				// Try the nearest linedef
-				Linedef nl = General.Map.Map.NearestLinedefRange(mousemappos, BuilderPlug.Me.StitchRange / renderer.Scale);
+				// Try the nearest linedef. mxd. We'll need much bigger stitch distance when snapping to cardinal directions
+				Linedef nl = General.Map.Map.NearestLinedefRange(vm, BuilderPlug.Me.StitchRange / renderer.Scale);
 				if(nl != null)
 				{
+					//mxd. Line angle must stay the same
+					if(snaptocardinal)
+					{
+						Line2D ourline = new Line2D(points[points.Count - 1].pos, vm);
+						Line2D nearestline = new Line2D(nl.Start.Position, nl.End.Position);
+						Vector2D intersection = Line2D.GetIntersectionPoint(nearestline, ourline, false);
+						if(!float.IsNaN(intersection.x))
+						{
+							// Intersection is on nearestline?
+							float u = Line2D.GetNearestOnLine(nearestline.v1, nearestline.v2, intersection);
+
+							if(u < 0f || u > 1f){}
+							else
+							{
+								p.pos = new Vector2D((float)Math.Round(intersection.x, General.Map.FormatInterface.VertexDecimals), 
+													 (float)Math.Round(intersection.y, General.Map.FormatInterface.VertexDecimals));
+								return p;
+							}
+						}
+					}
 					// Snap to grid?
-					if(snaptogrid)
+					else if(snaptogrid)
 					{
 						// Get grid intersection coordinates
 						List<Vector2D> coords = nl.GetGridIntersections();
@@ -295,7 +398,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						Vector2D found_coord = new Vector2D();
 						foreach(Vector2D v in coords)
 						{
-							Vector2D delta = mousemappos - v;
+							Vector2D delta = vm - v;
 							if(delta.GetLengthSq() < found_distance)
 							{
 								found_distance = delta.GetLengthSq();
@@ -308,17 +411,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						{
 							// Align to the closest grid intersection
 							p.pos = found_coord;
-							//p.stitch = true;
-							//p.stitchline = true;
 							return p;
 						}
 					}
 					else
 					{
 						// Aligned to line
-						p.pos = nl.NearestOnLine(mousemappos);
-						//p.stitch = true;
-						//p.stitchline = true;
+						p.pos = nl.NearestOnLine(vm);
 						return p;
 					}
 				}
@@ -328,11 +427,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Always snap to the first drawn vertex so that the user can finish a complete sector without stitching
 				if(points.Count > 0)
 				{
-					if(Vector2D.DistanceSq(mousemappos, points[0].pos) < (vrange * vrange))
+					if(Vector2D.DistanceSq(vm, points[0].pos) < (vrange * vrange))
 					{
 						p.pos = points[0].pos;
-						//p.stitch = true;
-						//p.stitchline = false;
 						return p;
 					}
 				}
@@ -374,31 +471,26 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					vm = points[points.Count - 1].pos;
 				else
 					vm = dline.GetCoordinatesAt(u);
-
 			}
-
 
 			// Snap to grid?
 			if(snaptogrid)
 			{
 				// Aligned to grid
-				p.pos = General.Map.Grid.SnappedToGrid(vm);
+				p.pos = General.Map.Grid.SnappedToGrid(vm - gridoffset) + gridoffset;
 
 				// special handling 
 				if(p.pos.x > General.Map.Config.RightBoundary) p.pos.x = General.Map.Config.RightBoundary;
 				if(p.pos.y < General.Map.Config.BottomBoundary) p.pos.y = General.Map.Config.BottomBoundary;
-				//p.stitch = snaptonearest;
-				//p.stitchline = snaptonearest;
+
 				return p;
 			}
 			else
 			{
 				// Normal position
-				vm.x = (float)Math.Round(vm.x); //mxd
-				vm.y = (float)Math.Round(vm.y); //mxd
-				p.pos = vm;
-				//p.stitch = snaptonearest;
-				//p.stitchline = snaptonearest;
+				p.pos.x = (float)Math.Round(vm.x); //mxd
+				p.pos.y = (float)Math.Round(vm.y); //mxd
+
 				return p;
 			}
 		}
@@ -406,7 +498,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This gets the aligned and snapped draw position
 		protected DrawnVertex GetCurrentPosition()
 		{
-			return GetCurrentPosition(mousemappos, snaptonearest, snaptogrid, snaptocardinaldirection, renderer, points);
+			return GetCurrentPosition(mousemappos, snaptonearest, snaptogrid, snaptocardinaldirection, usefourcardinaldirections, renderer, points);
 		}
 		
 		// This draws a point at a specific location
@@ -560,10 +652,29 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			panel = new DrawLineOptionsPanel();
 			panel.OnContinuousDrawingChanged += OnContinuousDrawingChanged;
 			panel.OnAutoCloseDrawingChanged += OnAutoCloseDrawingChanged;
+			panel.OnShowGuidelinesChanged += OnShowGuidelinesChanged;
 
 			// Needs to be set after adding the events...
 			panel.ContinuousDrawing = General.Settings.ReadPluginSetting("drawlinesmode.continuousdrawing", false);
 			panel.AutoCloseDrawing = General.Settings.ReadPluginSetting("drawlinesmode.autoclosedrawing", false);
+			panel.ShowGuidelines = General.Settings.ReadPluginSetting("drawlinesmode.showguidelines", false);
+
+			// Create guide labels
+			guidelabels = new LineLengthLabel[4];
+			for(int i = 0; i < guidelabels.Length; i++)
+			{
+				guidelabels[i] = new LineLengthLabel { ShowAngle = false, Color = General.Colors.InfoLine };
+			}
+
+			// Create map boudary lines
+			Vector2D btl = new Vector2D(General.Map.Config.LeftBoundary, General.Map.Config.TopBoundary);
+			Vector2D btr = new Vector2D(General.Map.Config.RightBoundary, General.Map.Config.TopBoundary);
+			Vector2D bbl = new Vector2D(General.Map.Config.LeftBoundary, General.Map.Config.BottomBoundary);
+			Vector2D bbr = new Vector2D(General.Map.Config.RightBoundary, General.Map.Config.BottomBoundary);
+			top = new Line2D(btl, btr);
+			right = new Line2D(btr, bbr);
+			bottom = new Line2D(bbl, bbr);
+			left = new Line2D(btl, bbl); 
 		}
 
 		protected virtual void AddInterface()
@@ -575,6 +686,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			General.Settings.WritePluginSetting("drawlinesmode.continuousdrawing", panel.ContinuousDrawing);
 			General.Settings.WritePluginSetting("drawlinesmode.autoclosedrawing", panel.AutoCloseDrawing);
+			General.Settings.WritePluginSetting("drawlinesmode.showguidelines", panel.ShowGuidelines);
 			panel.Unregister();
 		}
 
@@ -762,6 +874,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected void OnAutoCloseDrawingChanged(object value, EventArgs e)
 		{
 			autoclosedrawing = (bool)value;
+		}
+
+		//mxd
+		private void OnShowGuidelinesChanged(object value, EventArgs e)
+		{
+			showguidelines = (bool)value;
+			General.Interface.RedrawDisplay();
 		}
 		
 		#endregion

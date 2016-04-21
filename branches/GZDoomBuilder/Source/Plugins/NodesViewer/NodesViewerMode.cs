@@ -529,7 +529,7 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 					{
 						// Split line with plane and insert the vertex
 						float u;
-						Line2D.GetIntersection(split.pos, split.pos + split.delta, prev.x, prev.y, cur.x, cur.y, out u);
+						Line2D.GetIntersection(split.pos, split.pos + split.delta, prev.x, prev.y, cur.x, cur.y, out u, false);
 						Vector2D newv = prev + (cur - prev) * u;
 						newp.Add(newv);
 					}
@@ -543,7 +543,7 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 					{
 						// Split line with plane and insert the vertex
 						float u;
-						Line2D.GetIntersection(split.pos, split.pos + split.delta, prev.x, prev.y, cur.x, cur.y, out u);
+						Line2D.GetIntersection(split.pos, split.pos + split.delta, prev.x, prev.y, cur.x, cur.y, out u, false);
 						Vector2D newv = prev + (cur - prev) * u;
 						newp.Add(newv);
 					}

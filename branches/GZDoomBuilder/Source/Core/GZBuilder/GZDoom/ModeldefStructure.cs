@@ -335,10 +335,16 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						parser.SkipWhitespace(true);
 						int fimodelindnex;
 						token = parser.ReadToken();
-						if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out fimodelindnex) || fimodelindnex < 0)
+						if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out fimodelindnex))
 						{
 							// Not numeric!
 							parser.ReportError("Expected model index, but got \"" + token + "\"");
+							return false;
+						}
+						if(fimodelindnex < 0 || fimodelindnex > MAX_MODELS - 1)
+						{
+							// Out of bounds
+							parser.ReportError("Model index must be in [0.." + (MAX_MODELS - 1) + "] range");
 							return false;
 						}
 
@@ -407,10 +413,16 @@ namespace CodeImp.DoomBuilder.GZBuilder.GZDoom
 						parser.SkipWhitespace(true);
 						int modelindnex;
 						token = parser.ReadToken();
-						if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out modelindnex) || modelindnex < 0)
+						if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out modelindnex))
 						{
 							// Not numeric!
 							parser.ReportError("Expected model index, but got \"" + token + "\"");
+							return false;
+						}
+						if(modelindnex < 0 || modelindnex > MAX_MODELS - 1)
+						{
+							// Out of bounds
+							parser.ReportError("Model index must be in [0.." + (MAX_MODELS - 1) + "] range");
 							return false;
 						}
 

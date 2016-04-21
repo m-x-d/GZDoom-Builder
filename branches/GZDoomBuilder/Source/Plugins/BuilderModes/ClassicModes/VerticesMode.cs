@@ -355,7 +355,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					// Start drawing mode
 					DrawGeometryMode drawmode = new DrawGeometryMode();
-					DrawnVertex v = DrawGeometryMode.GetCurrentPosition(mousemappos, snaptonearest, snaptogrid, false, renderer, new List<DrawnVertex>());
+					DrawnVertex v = DrawGeometryMode.GetCurrentPosition(mousemappos, snaptonearest, snaptogrid, false, false, renderer, new List<DrawnVertex>());
 
 					if(drawmode.DrawPointAt(v))
 						General.Editing.ChangeMode(drawmode);
