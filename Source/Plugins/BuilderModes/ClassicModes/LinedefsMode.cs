@@ -349,6 +349,52 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			return selectionrect.Contains(l.Start.Position.x, l.Start.Position.y) && selectionrect.Contains(l.End.Position.x, l.End.Position.y);
 		}
 
+		//mxd. Gets map elements inside of selectionoutline and sorts them by distance to targetpoint
+		private List<Linedef> GetOrderedSelection(Vector2D targetpoint, List<Line2D> selectionoutline)
+		{
+			// Gather affected sectors
+			List<Linedef> result = new List<Linedef>();
+			foreach(Linedef l in General.Map.Map.Linedefs)
+			{
+				if(IsInSelectionRect(l, selectionoutline)) result.Add(l);
+			}
+
+			if(result.Count == 0) return result;
+
+			// Sort by distance to targetpoint
+			result.Sort(delegate(Linedef l1, Linedef l2)
+			{
+				if(l1 == l2) return 0;
+
+				// Get closest distance from l1 to selectstart
+				float closest1 = float.MaxValue;
+				
+				Vector2D pos = l1.Start.Position;
+				float curdistance = Vector2D.DistanceSq(pos, targetpoint);
+				if(curdistance < closest1) closest1 = curdistance;
+
+				pos = l1.End.Position;
+				curdistance = Vector2D.DistanceSq(pos, targetpoint);
+				if(curdistance < closest1) closest1 = curdistance;
+
+				// Get closest distance from l2 to selectstart
+				float closest2 = float.MaxValue;
+
+				pos = l2.Start.Position;
+				curdistance = Vector2D.DistanceSq(pos, targetpoint);
+				if(curdistance < closest2) closest2 = curdistance;
+
+				pos = l2.End.Position;
+				curdistance = Vector2D.DistanceSq(pos, targetpoint);
+				if(curdistance < closest2) closest2 = curdistance;
+
+				// Return closer one
+				return (int)(closest1 - closest2);
+			});
+
+			return result;
+		}
+
 		//mxd. This sets up new labels
 		private void SetupSectorLabels()
 		{
@@ -992,7 +1038,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			   
 			if(selectionvolume)
 			{
-				List<Line2D> selectionOutline = new List<Line2D> 
+				List<Line2D> selectionoutline = new List<Line2D> 
 				{
 					new Line2D(selectionrect.Left, selectionrect.Top, selectionrect.Right, selectionrect.Top),
 					new Line2D(selectionrect.Right, selectionrect.Top, selectionrect.Right, selectionrect.Bottom),
@@ -1005,8 +1051,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				switch(marqueSelectionMode) 
 				{
 					case MarqueSelectionMode.SELECT:
-						foreach(Linedef l in General.Map.Map.Linedefs)
-							l.Selected = IsInSelectionRect(l, selectionOutline);
+						// Get ordered selection
+						List<Linedef> selectresult = GetOrderedSelection(base.selectstart, selectionoutline);
+
+						// First deselect everything...
+						foreach(Linedef l in General.Map.Map.Linedefs) l.Selected = false;
+
+						// Then select lines in correct order
+						foreach(Linedef l in selectresult) l.Selected = true;
+
 						if(selectthings)
 						{
 							foreach(Thing t in General.Map.ThingsFilter.VisibleThings)
@@ -1015,8 +1068,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						break;
 
 					case MarqueSelectionMode.ADD:
-						foreach(Linedef l in General.Map.Map.Linedefs)
-							l.Selected |= IsInSelectionRect(l, selectionOutline);
+						// Get ordered selection
+						List<Linedef> addresult = GetOrderedSelection(selectstart, selectionoutline);
+
+						// First deselect everything inside of selection...
+						foreach(Linedef l in addresult) l.Selected = false;
+
+						// Then reselect in correct order
+						foreach(Linedef l in addresult) l.Selected = true;
+
 						if(selectthings)
 						{
 							foreach(Thing t in General.Map.ThingsFilter.VisibleThings)
@@ -1025,8 +1085,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						break;
 
 					case MarqueSelectionMode.SUBTRACT:
+						// Selection order doesn't matter here
 						foreach(Linedef l in General.Map.Map.Linedefs)
-							if(IsInSelectionRect(l, selectionOutline)) l.Selected = false;
+							if(IsInSelectionRect(l, selectionoutline)) l.Selected = false;
 						if(selectthings)
 						{
 							foreach(Thing t in General.Map.ThingsFilter.VisibleThings)
@@ -1034,9 +1095,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						}
 						break;
 
+					// Should be Intersect selection mode
 					default:
+						// Selection order doesn't matter here
 						foreach(Linedef l in General.Map.Map.Linedefs)
-							if(!IsInSelectionRect(l, selectionOutline)) l.Selected = false;
+							if(!IsInSelectionRect(l, selectionoutline)) l.Selected = false;
 						if(selectthings)
 						{
 							foreach(Thing t in General.Map.ThingsFilter.VisibleThings)
