@@ -173,5 +173,21 @@ namespace CodeImp.DoomBuilder.Geometry
 		}
 		
 		#endregion
+
+		#region ================== Statics (mxd)
+
+		// This compares a vector
+		public static bool operator ==(Plane a, Plane b)
+		{
+			return (a.normal == b.normal) && (a.offset == b.offset);
+		}
+
+		// This compares a vector
+		public static bool operator !=(Plane a, Plane b)
+		{
+			return (a.normal != b.normal) || (a.offset != b.offset);
+		}
+
+		#endregion
 	}
 }

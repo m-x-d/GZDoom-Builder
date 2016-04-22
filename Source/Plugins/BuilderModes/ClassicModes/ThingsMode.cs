@@ -1340,13 +1340,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				//mxd. Update helper lines
 				UpdateHelperObjects();
 
-				// Invoke a new mousemove so that the highlighted item updates
-				MouseEventArgs e = new MouseEventArgs(MouseButtons.None, 0, (int)mousepos.x, (int)mousepos.y, 0);
-				OnMouseMove(e);
-
 				// Redraw screen
 				UpdateSelectionInfo(); //mxd
 				General.Interface.RedrawDisplay();
+
+				// Invoke a new mousemove so that the highlighted item updates
+				OnMouseMove(new MouseEventArgs(MouseButtons.None, 0, (int)mousepos.x, (int)mousepos.y, 0));
 			}
 		}
 

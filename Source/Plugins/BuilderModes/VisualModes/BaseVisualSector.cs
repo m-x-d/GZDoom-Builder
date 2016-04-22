@@ -158,15 +158,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						if(mode.VisualSectorExists(sd.Other.Sector))
 						{
 							SectorData other = mode.GetSectorDataEx(sd.Other.Sector);
-							if(other != null)
-							{
-								other.Reset(false);
-							}
-							else
-							{
-								BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(sd.Other.Sector);
-								vs.Changed = true;
-							}
+							if(other != null) other.Reset(false);
 						}
 					}
 				}
