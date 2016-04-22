@@ -68,7 +68,7 @@ namespace CodeImp.DoomBuilder.Editing
 		// Selection
 		protected bool selecting;
 		protected bool selectpressed; //mxd
-		private Vector2D selectstart;
+		protected Vector2D selectstart;
 		protected RectangleF selectionrect;
 		protected MarqueSelectionMode marqueSelectionMode; //mxd
 
@@ -586,6 +586,31 @@ namespace CodeImp.DoomBuilder.Editing
 			
 			// Let the base class know
 			base.OnMouseUp(e);
+		}
+
+		//mxd
+		public override void OnKeyDown(KeyEventArgs e)
+		{
+			// Update marque color when modifier keys are pressed
+			if(selecting && (e.Control || e.Shift))
+			{
+				OnUpdateMultiSelection();
+				General.Interface.RedrawDisplay();
+			} 
+
+			base.OnKeyDown(e);
+		}
+
+		//mxd
+		public override void OnKeyUp(KeyEventArgs e)
+		{
+			// Update marque color when modifier keys are released
+			if(selecting && (!e.Control || !e.Shift))
+			{
+				OnUpdateMultiSelection();
+				General.Interface.RedrawDisplay();
+			}
+			base.OnKeyUp(e);
 		}
 
 		/// <summary>

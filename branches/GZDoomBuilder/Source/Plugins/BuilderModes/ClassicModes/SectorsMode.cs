@@ -606,6 +606,48 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			return false;
 		}
 
+		//mxd. Gets map elements inside of selectionoutline and sorts them by distance to targetpoint
+		private List<Sector> GetOrderedSelection(Vector2D targetpoint, List<Line2D> selectionoutline)
+		{
+			// Gather affected sectors
+			List<Sector> result = new List<Sector>();
+			foreach(Sector s in General.Map.Map.Sectors)
+			{
+				if(IsInSelectionRect(s, selectionoutline)) result.Add(s);
+			}
+
+			if(result.Count == 0) return result;
+
+			// Sort by distance to targetpoint
+			result.Sort(delegate(Sector s1, Sector s2)
+			{
+				if(s1 == s2) return 0;
+
+				// Get closest distance from s1 to selectstart
+				float closest1 = float.MaxValue;
+				foreach(Sidedef side in s1.Sidedefs)
+				{
+					Vector2D pos = (side.IsFront ? side.Line.Start : side.Line.End).Position;
+					float curdistance = Vector2D.DistanceSq(pos, targetpoint);
+					if(curdistance < closest1) closest1 = curdistance;
+				}
+
+				// Get closest distance from s2 to selectstart
+				float closest2 = float.MaxValue;
+				foreach(Sidedef side in s2.Sidedefs)
+				{
+					Vector2D pos = (side.IsFront ? side.Line.Start : side.Line.End).Position;
+					float curdistance = Vector2D.DistanceSq(pos, targetpoint);
+					if(curdistance < closest2) closest2 = curdistance;
+				}
+
+				// Return closer one
+				return (int)(closest1 - closest2);
+			});
+
+			return result;
+		}
+
 		//mxd
 		public override void SelectMapElement(SelectableElement element)
 		{
@@ -1195,54 +1237,63 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			return true;
 		}
 
-		// This is called wheh selection ends
+		//mxd. This is called wheh selection ends
 		protected override void OnEndMultiSelection()
 		{
 			bool selectionvolume = ((Math.Abs(base.selectionrect.Width) > 0.1f) && (Math.Abs(base.selectionrect.Height) > 0.1f));
 
 			if(selectionvolume)
 			{
-				List<Line2D> selectionOutline = new List<Line2D> {
+				List<Line2D> selectionoutline = new List<Line2D>
+				{
 					new Line2D(selectionrect.Left, selectionrect.Top, selectionrect.Right, selectionrect.Top),
 					new Line2D(selectionrect.Right, selectionrect.Top, selectionrect.Right, selectionrect.Bottom),
 					new Line2D(selectionrect.Left, selectionrect.Bottom, selectionrect.Right, selectionrect.Bottom),
 					new Line2D(selectionrect.Left, selectionrect.Bottom, selectionrect.Left, selectionrect.Top)
 				};
 				
-				//mxd. (de)select sectors
+				// (De)select sectors
 				switch(marqueSelectionMode) 
 				{
 					case MarqueSelectionMode.SELECT:
-						foreach(Sector s in General.Map.Map.Sectors)
-						{
-							bool select = IsInSelectionRect(s, selectionOutline);
-							if(select && !s.Selected) SelectSector(s, true, false);
-							else if(!select && s.Selected) SelectSector(s, false, false);
-						}
+						// Get ordered selection
+						List<Sector> selectresult = GetOrderedSelection(base.selectstart, selectionoutline);
+
+						// First deselect everything...
+						foreach(Sector s in General.Map.Map.Sectors) SelectSector(s, false, false);
+						
+						// Then select sectors in correct order
+						foreach(Sector s in selectresult) SelectSector(s, true, false);
 						break;
 
 					case MarqueSelectionMode.ADD:
-						foreach(Sector s in General.Map.Map.Sectors) 
-						{
-							if(!s.Selected && IsInSelectionRect(s, selectionOutline))
-								SelectSector(s, true, false);
-						}
+						// Get ordered selection
+						List<Sector> addresult = GetOrderedSelection(selectstart, selectionoutline);
+
+						// First deselect everything inside of selection...
+						foreach(Sector s in addresult) SelectSector(s, false, false);
+
+						// Then reselect in correct order
+						foreach(Sector s in addresult) SelectSector(s, true, false);
 						break;
 
 					case MarqueSelectionMode.SUBTRACT:
+						// Selection order doesn't matter here
 						foreach(Sector s in General.Map.Map.Sectors) 
 						{
 							if(!s.Selected) continue;
-							if(IsInSelectionRect(s, selectionOutline))
+							if(IsInSelectionRect(s, selectionoutline))
 								SelectSector(s, false, false);
 						}
 						break;
 
-					default: //should be Intersect
+					// Should be Intersect selection mode
+					default: 
+						// Selection order doesn't matter here
 						foreach(Sector s in General.Map.Map.Sectors) 
 						{
 							if(!s.Selected) continue;
-							if(!IsInSelectionRect(s, selectionOutline))
+							if(!IsInSelectionRect(s, selectionoutline))
 								SelectSector(s, false, false);
 						}
 						break;

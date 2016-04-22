@@ -804,21 +804,36 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				switch(marqueSelectionMode) 
 				{
 					case MarqueSelectionMode.SELECT:
-						foreach(Thing t in General.Map.ThingsFilter.VisibleThings)
-							t.Selected = selectionrect.Contains(t.Position.x, t.Position.y);
+						// Get ordered selection
+						List<Thing> selectresult = GetOrderedSelection(base.selectstart, selectionrect);
+
+						// First deselect everything...
+						foreach(Thing t in General.Map.Map.Things) t.Selected = false;
+
+						// Then select things in correct order
+						foreach(Thing t in selectresult) t.Selected = true;
 						break;
 
 					case MarqueSelectionMode.ADD:
-						foreach(Thing t in General.Map.ThingsFilter.VisibleThings)
-							t.Selected |= selectionrect.Contains(t.Position.x, t.Position.y);
+						// Get ordered selection
+						List<Thing> addresult = GetOrderedSelection(selectstart, selectionrect);
+
+						// First deselect everything inside of selection...
+						foreach(Thing t in addresult) t.Selected = false;
+
+						// Then reselect in correct order
+						foreach(Thing t in addresult) t.Selected = true;
 						break;
 
 					case MarqueSelectionMode.SUBTRACT:
+						// Selection order doesn't matter here
 						foreach(Thing t in General.Map.ThingsFilter.VisibleThings)
 							if(selectionrect.Contains(t.Position.x, t.Position.y)) t.Selected = false;
 						break;
 
-					default: //should be Intersect
+					// Should be Intersect selection mode
+					default:
+						// Selection order doesn't matter here
 						foreach(Thing t in General.Map.ThingsFilter.VisibleThings)
 							if(!selectionrect.Contains(t.Position.x, t.Position.y)) t.Selected = false;
 						break;
@@ -889,6 +904,34 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				PixelColor c = (t == highlighted ? General.Colors.Highlight : (t.Selected ? General.Colors.Selection : PixelColor.FromColor(Color.White)));
 				renderer.RenderRectangleFilled(rect, c, true, General.Map.Data.CommentTextures[iconindex]);
 			}
+		}
+
+		//mxd. Gets map elements inside of selectionoutline and sorts them by distance to targetpoint
+		private List<Thing> GetOrderedSelection(Vector2D targetpoint, RectangleF selection)
+		{
+			// Gather affected sectors
+			List<Thing> result = new List<Thing>();
+			foreach(Thing t in General.Map.ThingsFilter.VisibleThings)
+			{
+				if(selection.Contains(t.Position.x, t.Position.y)) result.Add(t);
+			}
+
+			if(result.Count == 0) return result;
+
+			// Sort by distance to targetpoint
+			result.Sort(delegate(Thing t1, Thing t2)
+			{
+				if(t1 == t2) return 0;
+
+				// Get closest distance from thing to selectstart
+				float closest1 = Vector2D.DistanceSq(t1.Position, targetpoint);
+				float closest2 = Vector2D.DistanceSq(t2.Position, targetpoint);
+
+				// Return closer one
+				return (int)(closest1 - closest2);
+			});
+
+			return result;
 		}
 
 		//mxd. This sets up new labels
