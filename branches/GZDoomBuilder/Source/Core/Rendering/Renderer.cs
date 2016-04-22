@@ -89,15 +89,12 @@ namespace CodeImp.DoomBuilder.Rendering
 		// This calculates the sector brightness level
 		public int CalculateBrightness(int level)
 		{
-			float flevel = level;
-
-			// Simulat doom light levels
+			// Simulate doom light levels
 			if((level < 192) && General.Map.Config.DoomLightLevels)
-				flevel = (192.0f - (192 - level) * 1.5f);
+				level = (int)(192.0f - (192 - level) * 1.5f);
 			
-			byte blevel = (byte)General.Clamp((int)flevel, 0, 255);
-			PixelColor c = new PixelColor(255, blevel, blevel, blevel);
-			return c.ToInt();
+			byte blevel = (byte)General.Clamp(level, 0, 255);
+			return new PixelColor(255, blevel, blevel, blevel).ToInt();
 		}
 
 		//mxd. This calculates wall brightness level with doom-style shading

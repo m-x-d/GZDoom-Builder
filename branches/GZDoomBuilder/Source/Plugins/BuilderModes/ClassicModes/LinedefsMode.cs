@@ -1320,14 +1320,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Map.IsChanged = true;
 			General.Map.Map.Update();
 
-			// Invoke a new mousemove so that the highlighted item updates
-			MouseEventArgs e = new MouseEventArgs(MouseButtons.None, 0, (int)mousepos.x, (int)mousepos.y, 0);
-			OnMouseMove(e);
-
 			// Redraw screen
+			SetupSectorLabels(); //mxd
 			UpdateSelectionInfo(); //mxd
 			General.Map.Renderer2D.UpdateExtraFloorFlag(); //mxd
 			General.Interface.RedrawDisplay();
+
+			// Invoke a new mousemove so that the highlighted item updates
+			OnMouseMove(new MouseEventArgs(MouseButtons.None, 0, (int)mousepos.x, (int)mousepos.y, 0));
 		}
 
 		[BeginAction("dissolveitem", BaseAction = true)] //mxd
@@ -1389,15 +1389,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Update cache values
 				General.Map.IsChanged = true;
 				General.Map.Map.Update();
-
-				// Invoke a new mousemove so that the highlighted item updates
-				MouseEventArgs e = new MouseEventArgs(MouseButtons.None, 0, (int)mousepos.x, (int)mousepos.y, 0);
-				OnMouseMove(e);
 				
 				// Redraw screen
+				SetupSectorLabels(); //mxd
 				UpdateSelectionInfo(); //mxd
 				General.Map.Renderer2D.UpdateExtraFloorFlag(); //mxd
 				General.Interface.RedrawDisplay();
+
+				// Invoke a new mousemove so that the highlighted item updates
+				OnMouseMove(new MouseEventArgs(MouseButtons.None, 0, (int)mousepos.x, (int)mousepos.y, 0));
 			}
 		}
 		

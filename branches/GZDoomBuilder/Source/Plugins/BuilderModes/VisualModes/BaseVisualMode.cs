@@ -493,11 +493,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This updates the VisualSectors and VisualThings that have their Changed property set
 		private void UpdateChangedObjects()
 		{
-			//mxd
-			SectorData[] toupdate = new SectorData[sectordata.Values.Count];
-			sectordata.Values.CopyTo(toupdate, 0);
-			foreach(SectorData data in toupdate) data.Update();
-			
 			foreach(KeyValuePair<Sector, VisualSector> vs in allsectors)
 			{
 				if(vs.Value != null)

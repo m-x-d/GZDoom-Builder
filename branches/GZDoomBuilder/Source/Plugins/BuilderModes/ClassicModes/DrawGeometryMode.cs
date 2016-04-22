@@ -636,7 +636,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Result position will split a line?
 				result = General.Map.Map.NearestLinedef(target);
-				if(result.DistanceTo(target, true) > BuilderPlug.Me.StitchRange) return null;
+				if(result.SideOfLine(target) != 0) return null;
 			}
 
 			return result;

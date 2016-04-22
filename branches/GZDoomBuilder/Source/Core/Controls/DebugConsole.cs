@@ -43,6 +43,7 @@ namespace CodeImp.DoomBuilder
 		private static long starttime = -1;
 		private static long storedtime;
 		private static int counter;
+		private static string storedtext = string.Empty;
 		private static DebugConsole me;
 
 		#endregion
@@ -95,6 +96,8 @@ namespace CodeImp.DoomBuilder
 
 		#region ================== Methods
 
+		public static void StoreText(string text) { storedtext += text + Environment.NewLine; }
+		public static void SetStoredText() { Write(DebugMessageType.INFO, storedtext, false); storedtext = string.Empty; }
 		public static void SetText(string text) { Write(DebugMessageType.INFO, text, false); } // Useful to display frequently updated text without flickering
 		public static void WriteLine(string text) { Write(DebugMessageType.INFO, text + Environment.NewLine, true); }
 		public static void WriteLine(DebugMessageType type, string text) { Write(type, text + Environment.NewLine, true); }
@@ -219,10 +222,21 @@ namespace CodeImp.DoomBuilder
 		private void AddMessage(DebugMessageType type, string text, bool scroll, bool append)
 		{
 			text = textheaders[type] + text;
-			console.SelectionStart = console.TextLength;
-			console.SelectionColor = textcolors[type];
-			if(append) console.AppendText(text);
-			else console.Text = text;
+			if(append)
+			{
+				console.SelectionStart = console.TextLength;
+				console.SelectionColor = textcolors[type];
+				console.AppendText(text);
+			}
+			else
+			{
+				console.SuspendLayout();
+				console.Text = text;
+				console.SelectAll();
+				console.SelectionColor = textcolors[type];
+				console.Select(0, 0);
+				console.ResumeLayout();
+			}
 			if(scroll && autoscroll.Checked) console.ScrollToCaret();
 		}
 

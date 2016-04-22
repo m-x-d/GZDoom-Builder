@@ -11,6 +11,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	{
 		// Linedef that is used to create this effect
 		private readonly Linedef l;
+		private Plane storedfloor; //mxd. SectorData recreates floor/ceiling planes before updating effects
+		private Plane storedceiling; //mxd
 		
 		// Constructor
 		public EffectLineSlope(SectorData data, Linedef sourcelinedef) : base(data)
@@ -45,6 +47,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			if(foundv == null) return; //mxd
+			bool updatesides = false;
 			
 			// Align floor with back of line
 			if((l.Args[0] == 1) && (l.Front.Sector == data.Sector))
@@ -52,10 +55,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				Vector3D v1 = new Vector3D(l.Start.Position.x, l.Start.Position.y, l.Back.Sector.FloorHeight);
 				Vector3D v2 = new Vector3D(l.End.Position.x, l.End.Position.y, l.Back.Sector.FloorHeight);
 				Vector3D v3 = new Vector3D(foundv.Position.x, foundv.Position.y, data.Sector.FloorHeight);
-				if(l.SideOfLine(v3) < 0.0f)
-					data.Floor.plane = new Plane(v1, v2, v3, true);
-				else
-					data.Floor.plane = new Plane(v2, v1, v3, true);
+				data.Floor.plane = (l.SideOfLine(v3) < 0.0f ? new Plane(v1, v2, v3, true) : new Plane(v2, v1, v3, true));
+
+				//mxd. Update only when actually changed
+				if(storedfloor != data.Floor.plane)
+				{
+					storedfloor = data.Floor.plane;
+					updatesides = true;
+				}
 			}
 			// Align floor with front of line
 			else if((l.Args[0] == 2) && (l.Back.Sector == data.Sector))
@@ -63,10 +70,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				Vector3D v1 = new Vector3D(l.Start.Position.x, l.Start.Position.y, l.Front.Sector.FloorHeight);
 				Vector3D v2 = new Vector3D(l.End.Position.x, l.End.Position.y, l.Front.Sector.FloorHeight);
 				Vector3D v3 = new Vector3D(foundv.Position.x, foundv.Position.y, data.Sector.FloorHeight);
-				if(l.SideOfLine(v3) < 0.0f)
-					data.Floor.plane = new Plane(v1, v2, v3, true);
-				else
-					data.Floor.plane = new Plane(v2, v1, v3, true);
+				data.Floor.plane = (l.SideOfLine(v3) < 0.0f ? new Plane(v1, v2, v3, true) : new Plane(v2, v1, v3, true));
+
+				//mxd. Update only when actually changed
+				if(storedfloor != data.Floor.plane)
+				{
+					storedfloor = data.Floor.plane;
+					updatesides = true;
+				}
 			}
 			
 			// Align ceiling with back of line
@@ -75,10 +86,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				Vector3D v1 = new Vector3D(l.Start.Position.x, l.Start.Position.y, l.Back.Sector.CeilHeight);
 				Vector3D v2 = new Vector3D(l.End.Position.x, l.End.Position.y, l.Back.Sector.CeilHeight);
 				Vector3D v3 = new Vector3D(foundv.Position.x, foundv.Position.y, data.Sector.CeilHeight);
-				if(l.SideOfLine(v3) > 0.0f)
-					data.Ceiling.plane = new Plane(v1, v2, v3, false);
-				else
-					data.Ceiling.plane = new Plane(v2, v1, v3, false);
+				data.Ceiling.plane = (l.SideOfLine(v3) > 0.0f ? new Plane(v1, v2, v3, false) : new Plane(v2, v1, v3, false));
+
+				//mxd. Update only when actually changed
+				if(storedceiling != data.Ceiling.plane)
+				{
+					storedceiling = data.Ceiling.plane;
+					updatesides = true;
+				}
 			}
 			// Align ceiling with front of line
 			else if((l.Args[1] == 2) && (l.Back.Sector == data.Sector))
@@ -86,10 +101,27 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				Vector3D v1 = new Vector3D(l.Start.Position.x, l.Start.Position.y, l.Front.Sector.CeilHeight);
 				Vector3D v2 = new Vector3D(l.End.Position.x, l.End.Position.y, l.Front.Sector.CeilHeight);
 				Vector3D v3 = new Vector3D(foundv.Position.x, foundv.Position.y, data.Sector.CeilHeight);
-				if(l.SideOfLine(v3) > 0.0f)
-					data.Ceiling.plane = new Plane(v1, v2, v3, false);
-				else
-					data.Ceiling.plane = new Plane(v2, v1, v3, false);
+				data.Ceiling.plane = (l.SideOfLine(v3) > 0.0f ? new Plane(v1, v2, v3, false) : new Plane(v2, v1, v3, false));
+
+				//mxd. Update only when actually changed
+				if(storedceiling != data.Ceiling.plane)
+				{
+					storedceiling = data.Ceiling.plane;
+					updatesides = true;
+				}
+			}
+
+			//mxd. Update outer sidedef geometry
+			if(updatesides)
+			{
+				foreach(Sidedef side in data.Sector.Sidedefs)
+				{
+					if(side.Other != null && side.Other.Sector != null && data.Mode.VisualSectorExists(side.Other.Sector))
+					{
+						BaseVisualSector vs = (BaseVisualSector)data.Mode.GetVisualSector(side.Other.Sector);
+						vs.GetSidedefParts(side.Other).SetupAllParts();
+					}
+				}
 			}
 		}
 	}
