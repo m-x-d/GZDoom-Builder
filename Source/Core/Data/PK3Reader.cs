@@ -420,6 +420,12 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			return files.GetAllFiles(path, subfolders).ToArray();
 		}
+
+		//mxd. This returns wad files in the root directory
+		protected override string[] GetWadFiles()
+		{
+			return files.GetWadFiles().ToArray();
+		}
 		
 		// This returns all files in a given directory that have the given title
 		protected override string[] GetAllFilesWithTitle(string path, string title, bool subfolders)
