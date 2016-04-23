@@ -73,7 +73,7 @@ namespace CodeImp.DoomBuilder.Data
 		protected virtual void Initialize()
 		{
 			// Load all WAD files in the root as WAD resources
-			string[] wadfiles = GetFilesWithExt("", "wad", false);
+			string[] wadfiles = GetWadFiles();
 			wads = new List<WADReader>(wadfiles.Length);
 			foreach(string w in wadfiles)
 			{
@@ -533,14 +533,12 @@ namespace CodeImp.DoomBuilder.Data
 			if(issuspended) throw new Exception("Data reader is suspended");
 
 			// Modedef should be in root folder
-			string[] files = GetAllFiles("", false);
+			string[] files = GetAllFilesWhichTitleStartsWith("", "MODELDEF", false);
 			List<TextResourceData> result = new List<TextResourceData>();
 
-			foreach(string s in files) 
-			{
-				if(Path.GetFileNameWithoutExtension(s).ToUpperInvariant().StartsWith("MODELDEF"))
-					result.Add(new TextResourceData(this, LoadFile(s), s, true));
-			}
+			// Add to collection
+			foreach(string s in files)
+				result.Add(new TextResourceData(this, LoadFile(s), s, true));
 
 			// Find in any of the wad files
 			foreach(WADReader wr in wads) result.AddRange(wr.GetModeldefData());
@@ -581,6 +579,7 @@ namespace CodeImp.DoomBuilder.Data
 			string[] files = GetAllFilesWithTitle("", "VOXELDEF", false);
 			List<TextResourceData> result = new List<TextResourceData>();
 
+			// Add to collection
 			foreach(string s in files) 
 				result.Add(new TextResourceData(this, LoadFile(s), s, true));
 
@@ -607,11 +606,9 @@ namespace CodeImp.DoomBuilder.Data
 			string[] files = GetAllFilesWithTitle("", "ZMAPINFO", false);
 			if(files.Length == 0) files = GetAllFilesWithTitle("", "MAPINFO", false);
 
-			if(files.Length > 0)
-			{
-				foreach(string s in files)
-					result.Add(new TextResourceData(this, LoadFile(s), s, true));
-			}
+			// Add to collection
+			foreach(string s in files)
+				result.Add(new TextResourceData(this, LoadFile(s), s, true));
 
 			// Find in any of the wad files
 			foreach(WADReader wr in wads) result.AddRange(wr.GetMapinfoData());
@@ -759,7 +756,7 @@ namespace CodeImp.DoomBuilder.Data
 				result.Add(new TextResourceData(this, LoadFile(s), s, true));
 
 			// Find in any of the wad files
-			foreach(WADReader wr in wads) result.AddRange(wr.GetTerrainData());
+			foreach(WADReader wr in wads) result.AddRange(wr.GetX11R6RGBData());
 
 			return result;
 		}
@@ -841,6 +838,9 @@ namespace CodeImp.DoomBuilder.Data
 
 		// This must return all files in a given directory that match the given extension
 		protected abstract string[] GetFilesWithExt(string path, string extension, bool subfolders);
+
+		//mxd. This must return wad files in the root directory
+		protected abstract string[] GetWadFiles();
 
 		// This must find the first file that has the specific name, regardless of file extension
 		internal abstract string FindFirstFile(string beginswith, bool subfolders);

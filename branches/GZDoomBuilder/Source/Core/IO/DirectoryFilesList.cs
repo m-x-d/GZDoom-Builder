@@ -27,16 +27,25 @@ namespace CodeImp.DoomBuilder.IO
 {
 	internal sealed class DirectoryFilesList
 	{
+		#region ================== Constants (mxd)
+
+		private static HashSet<string> EXLUDE_EXTENSIONS = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+		{
+			"wad", "pk3", "pk7", "bak", "backup1", "backup2", "backup3", "zip", "rar", "7z"
+		};
+
+		#endregion
+
 		#region ================== Variables
 
-		private readonly DirectoryFileEntry[] entries;
-		private readonly Dictionary<string, DirectoryFileEntry> hashedentries;
+		private Dictionary<string, DirectoryFileEntry> entries; //mxd
+		private List<string> wadentries; //mxd
 		
 		#endregion
 
 		#region ================== Properties
 
-		public int Count { get { return entries.Length; } }
+		public int Count { get { return entries.Count; } }
 
 		#endregion
 
@@ -48,32 +57,43 @@ namespace CodeImp.DoomBuilder.IO
 			path = Path.GetFullPath(path);
 			string[] files = Directory.GetFiles(path, "*", subdirectories ? SearchOption.AllDirectories : SearchOption.TopDirectoryOnly);
 			Array.Sort(files); //mxd
-			entries = new DirectoryFileEntry[files.Length];
-			hashedentries = new Dictionary<string, DirectoryFileEntry>(files.Length, StringComparer.Ordinal);
-			for(int i = 0; i < files.Length; i++)
+			entries = new Dictionary<string, DirectoryFileEntry>(files.Length, StringComparer.OrdinalIgnoreCase);
+			wadentries = new List<string>();
+			
+			foreach(string file in files) //mxd
 			{
-				entries[i] = new DirectoryFileEntry(files[i], path);
-				string hashkey = entries[i].filepathname.ToLowerInvariant();
-				if(hashedentries.ContainsKey(hashkey))
-					throw new IOException("Multiple files with the same filename in the same directory are not allowed. See: \"" + entries[i].filepathname + "\"");
-				hashedentries.Add(hashkey, entries[i]);
+				var e = new DirectoryFileEntry(file, path);
+				if(string.Compare(e.extension, "wad", true) == 0 && e.path.Length == 0)
+				{
+					wadentries.Add(file);
+					continue;
+				}
+				if(EXLUDE_EXTENSIONS.Contains(e.extension)) continue;
+			
+				if(entries.ContainsKey(e.filepathname))
+					throw new IOException("Multiple files with the same filename in the same directory are not allowed. See: \"" + e.filepathname + "\"");
+
+				entries.Add(e.filepathname, e);
 			}
 		}
 
 		// Constructor for custom list
 		public DirectoryFilesList(ICollection<DirectoryFileEntry> sourceentries)
 		{
-			int index = 0;
-			entries = new DirectoryFileEntry[sourceentries.Count];
-			hashedentries = new Dictionary<string, DirectoryFileEntry>(sourceentries.Count, StringComparer.Ordinal);
+			entries = new Dictionary<string, DirectoryFileEntry>(sourceentries.Count, StringComparer.OrdinalIgnoreCase);
+			wadentries = new List<string>();
 			foreach(DirectoryFileEntry e in sourceentries)
 			{
-				entries[index] = e;
-				string hashkey = e.filepathname.ToLowerInvariant();
-				if(hashedentries.ContainsKey(hashkey))
+				if(string.Compare(e.extension, "wad", true) == 0 && e.path.Length == 0)
+				{
+					wadentries.Add(e.filepathname);
+					continue;
+				}
+				if(EXLUDE_EXTENSIONS.Contains(e.extension)) continue;
+
+				if(entries.ContainsKey(e.filepathname))
 					throw new IOException("Multiple files with the same filename in the same directory are not allowed. See: \"" + e.filepathname + "\"");
-				hashedentries.Add(hashkey, e);
-				index++;
+				entries.Add(e.filepathname, e);
 			}
 		}
 
@@ -85,54 +105,57 @@ namespace CodeImp.DoomBuilder.IO
 		// The given file path must not be absolute
 		public bool FileExists(string filepathname)
 		{
-			return hashedentries.ContainsKey(filepathname.ToLowerInvariant());
+			return entries.ContainsKey(filepathname.ToLowerInvariant());
 		}
 
 		// This returns file information for the given file
 		// The given file path must not be absolute
 		public DirectoryFileEntry GetFileInfo(string filepathname)
 		{
-			return hashedentries[filepathname.ToLowerInvariant()];
+			return entries[filepathname.ToLowerInvariant()];
+		}
+
+		//mxd. This returns a list of all wad files (filepathname)
+		public List<string> GetWadFiles()
+		{
+			return wadentries;
 		}
 		
 		// This returns a list of all files (filepathname)
 		public List<string> GetAllFiles()
 		{
-			List<string> files = new List<string>(entries.Length);
-			for(int i = 0; i < entries.Length; i++) files.Add(entries[i].filepathname);
+			List<string> files = new List<string>(entries.Count);
+			foreach(DirectoryFileEntry e in entries.Values) files.Add(e.filepathname);
 			return files;
 		}
 
 		// This returns a list of all files optionally with subdirectories included
 		public List<string> GetAllFiles(bool subdirectories)
 		{
-			if(subdirectories)
-				return GetAllFiles();
-			else
-			{
-				List<string> files = new List<string>(entries.Length);
-				for(int i = 0; i < entries.Length; i++)
-					if(entries[i].path.Length == 0) files.Add(entries[i].filepathname);
-				return files;
-			}
+			if(subdirectories) return GetAllFiles();
+
+			List<string> files = new List<string>(entries.Count);
+			foreach(DirectoryFileEntry e in entries.Values)
+				if(e.path.Length == 0) files.Add(e.filepathname);
+			return files;
 		}
 
 		// This returns a list of all files that are in the given path and optionally in subdirectories
 		public List<string> GetAllFiles(string path, bool subdirectories)
 		{
-			path = CorrectPath(path).ToLowerInvariant();
+			path = CorrectPath(path);
 			if(subdirectories)
 			{
-				List<string> files = new List<string>(entries.Length);
-				for(int i = 0; i < entries.Length; i++)
-					if(entries[i].path.StartsWith(path)) files.Add(entries[i].filepathname);
+				List<string> files = new List<string>(entries.Count);
+				foreach(DirectoryFileEntry e in entries.Values)
+					if(e.path.StartsWith(path)) files.Add(e.filepathname);
 				return files;
 			}
 			else
 			{
-				List<string> files = new List<string>(entries.Length);
-				for(int i = 0; i < entries.Length; i++)
-					if(entries[i].path == path) files.Add(entries[i].filepathname);
+				List<string> files = new List<string>(entries.Count);
+				foreach(DirectoryFileEntry e in entries.Values)
+					if(e.path == path) files.Add(e.filepathname);
 				return files;
 			}
 		}
@@ -142,28 +165,23 @@ namespace CodeImp.DoomBuilder.IO
 		{
 			path = CorrectPath(path).ToLowerInvariant();
 			title = title.ToLowerInvariant();
-			List<string> files = new List<string>(entries.Length);
-			for(int i = 0; i < entries.Length; i++)
-				if(entries[i].path.StartsWith(path) && (entries[i].filetitle == title))
-					files.Add(entries[i].filepathname);
+			List<string> files = new List<string>(entries.Count);
+			foreach(DirectoryFileEntry e in entries.Values)
+				if(e.path.StartsWith(path) && e.filetitle == title) files.Add(e.filepathname);
 			return files;
 		}
 
 		// This returns a list of all files that are in the given path (optionally in subdirectories) and have the given title
 		public List<string> GetAllFilesWithTitle(string path, string title, bool subdirectories)
 		{
-			if(subdirectories)
-				return GetAllFilesWithTitle(path, title);
-			else
-			{
-				path = CorrectPath(path).ToLowerInvariant();
-				title = title.ToLowerInvariant();
-				List<string> files = new List<string>(entries.Length);
-				for(int i = 0; i < entries.Length; i++)
-					if((entries[i].path == path) && (entries[i].filetitle == title))
-						files.Add(entries[i].filepathname);
-				return files;
-			}
+			if(subdirectories) return GetAllFilesWithTitle(path, title);
+
+			path = CorrectPath(path).ToLowerInvariant();
+			title = title.ToLowerInvariant();
+			List<string> files = new List<string>(entries.Count);
+			foreach(DirectoryFileEntry e in entries.Values)
+				if(e.path == path && e.filetitle == title) files.Add(e.filepathname);
+			return files;
 		}
 
 		//mxd. This returns a list of all files that are in the given path and which names starts with title
@@ -171,28 +189,23 @@ namespace CodeImp.DoomBuilder.IO
 		{
 			path = CorrectPath(path).ToLowerInvariant();
 			title = title.ToLowerInvariant();
-			List<string> files = new List<string>(entries.Length);
-			for(int i = 0; i < entries.Length; i++)
-				if((entries[i].path.StartsWith(path)) && (entries[i].filetitle.StartsWith(title)))
-					files.Add(entries[i].filepathname);
+			List<string> files = new List<string>(entries.Count);
+			foreach(DirectoryFileEntry e in entries.Values)
+				if(e.path.StartsWith(path) && e.filetitle.StartsWith(title)) files.Add(e.filepathname);
 			return files;
 		}
 
 		//mxd. This returns a list of all files that are in the given path and which names starts with title
 		public List<string> GetAllFilesWhichTitleStartsWith(string path, string title, bool subdirectories) 
 		{
-			if(subdirectories)
-				return GetAllFilesWhichTitleStartsWith(path, title);
-			else
-			{
-				path = CorrectPath(path).ToLowerInvariant();
-				title = title.ToLowerInvariant();
-				List<string> files = new List<string>(entries.Length);
-				for(int i = 0; i < entries.Length; i++)
-					if((entries[i].path == path) && (entries[i].filetitle.StartsWith(title)))
-						files.Add(entries[i].filepathname);
-				return files;
-			}
+			if(subdirectories) return GetAllFilesWhichTitleStartsWith(path, title);
+
+			path = CorrectPath(path).ToLowerInvariant();
+			title = title.ToLowerInvariant();
+			List<string> files = new List<string>(entries.Count);
+			foreach(DirectoryFileEntry e in entries.Values)
+				if(e.path == path && e.filetitle.StartsWith(title)) files.Add(e.filepathname);
+			return files;
 		}
 
 		// This returns a list of all files that are in the given path and subdirectories and have the given extension
@@ -200,28 +213,23 @@ namespace CodeImp.DoomBuilder.IO
 		{
 			path = CorrectPath(path).ToLowerInvariant();
 			extension = extension.ToLowerInvariant();
-			List<string> files = new List<string>(entries.Length);
-			for(int i = 0; i < entries.Length; i++)
-				if(entries[i].path.StartsWith(path) && (entries[i].extension == extension))
-					files.Add(entries[i].filepathname);
+			List<string> files = new List<string>(entries.Count);
+			foreach(DirectoryFileEntry e in entries.Values)
+				if(e.path.StartsWith(path) && e.extension == extension) files.Add(e.filepathname);
 			return files;
 		}
 
 		// This returns a list of all files that are in the given path (optionally in subdirectories) and have the given extension
 		public List<string> GetAllFiles(string path, string extension, bool subdirectories)
 		{
-			if(subdirectories)
-				return GetAllFiles(path, extension);
-			else
-			{
-				path = CorrectPath(path).ToLowerInvariant();
-				extension = extension.ToLowerInvariant();
-				List<string> files = new List<string>(entries.Length);
-				for(int i = 0; i < entries.Length; i++)
-					if((entries[i].path == path) && (entries[i].extension == extension))
-						files.Add(entries[i].filepathname);
-				return files;
-			}
+			if(subdirectories) return GetAllFiles(path, extension);
+
+			path = CorrectPath(path).ToLowerInvariant();
+			extension = extension.ToLowerInvariant();
+			List<string> files = new List<string>(entries.Count);
+			foreach(DirectoryFileEntry e in entries.Values)
+				if(e.path == path && e.extension == extension) files.Add(e.filepathname);
+			return files;
 		}
 
 		// This finds the first file that has the specified name, regardless of file extension
@@ -230,15 +238,13 @@ namespace CodeImp.DoomBuilder.IO
 			title = title.ToLowerInvariant();
 			if(subdirectories)
 			{
-				for(int i = 0; i < entries.Length; i++)
-					if(entries[i].filetitle == title)
-						return entries[i].filepathname;
+				foreach(DirectoryFileEntry e in entries.Values)
+					if(e.filetitle == title) return e.filepathname;
 			}
 			else
 			{
-				for(int i = 0; i < entries.Length; i++)
-					if((entries[i].filetitle == title) && (entries[i].path.Length == 0))
-						return entries[i].filepathname;
+				foreach(DirectoryFileEntry e in entries.Values)
+					if(e.filetitle == title && e.path.Length == 0) return e.filepathname;
 			}
 
 			return null;
@@ -251,15 +257,13 @@ namespace CodeImp.DoomBuilder.IO
 			extension = extension.ToLowerInvariant();
 			if(subdirectories)
 			{
-				for(int i = 0; i < entries.Length; i++)
-					if((entries[i].filetitle == title) && (entries[i].extension == extension))
-						return entries[i].filepathname;
+				foreach(DirectoryFileEntry e in entries.Values)
+					if(e.filetitle == title && e.extension == extension) return e.filepathname;
 			}
 			else
 			{
-				for(int i = 0; i < entries.Length; i++)
-					if((entries[i].filetitle == title) && (entries[i].path.Length == 0) && (entries[i].extension == extension))
-						return entries[i].filepathname;
+				foreach(DirectoryFileEntry e in entries.Values)
+					if(e.filetitle == title && e.path.Length == 0 && e.extension == extension) return e.filepathname;
 			}
 
 			return null;
@@ -272,15 +276,15 @@ namespace CodeImp.DoomBuilder.IO
 			path = CorrectPath(path).ToLowerInvariant();
 			if(subdirectories)
 			{
-				for(int i = 0; i < entries.Length; i++)
-					if((entries[i].filetitle.Length > DataManager.CLASIC_IMAGE_NAME_LENGTH ? entries[i].filetitle.StartsWith(title) : entries[i].filetitle == title) && entries[i].path.StartsWith(path))
-						return entries[i].filepathname;
+				foreach(DirectoryFileEntry e in entries.Values)
+					if((e.filetitle.Length > DataManager.CLASIC_IMAGE_NAME_LENGTH ? e.filetitle.StartsWith(title) : e.filetitle == title)
+						&& e.path.StartsWith(path)) return e.filepathname;
 			}
 			else
 			{
-				for(int i = 0; i < entries.Length; i++)
-					if((entries[i].filetitle.Length > DataManager.CLASIC_IMAGE_NAME_LENGTH ? entries[i].filetitle.StartsWith(title) : entries[i].filetitle == title) && (entries[i].path == path))
-						return entries[i].filepathname;
+				foreach(DirectoryFileEntry e in entries.Values)
+					if((e.filetitle.Length > DataManager.CLASIC_IMAGE_NAME_LENGTH ? e.filetitle.StartsWith(title) : e.filetitle == title) 
+						&& e.path == path) return e.filepathname;
 			}
 
 			return null;
@@ -294,15 +298,13 @@ namespace CodeImp.DoomBuilder.IO
 			extension = extension.ToLowerInvariant();
 			if(subdirectories)
 			{
-				for(int i = 0; i < entries.Length; i++)
-					if((entries[i].filetitle == title) && entries[i].path.StartsWith(path) && (entries[i].extension == extension))
-						return entries[i].filepathname;
+				foreach(DirectoryFileEntry e in entries.Values)
+					if(e.filetitle == title && e.path.StartsWith(path) && e.extension == extension) return e.filepathname;
 			}
 			else
 			{
-				for(int i = 0; i < entries.Length; i++)
-					if((entries[i].filetitle == title) && (entries[i].path == path) && (entries[i].extension == extension))
-						return entries[i].filepathname;
+				foreach(DirectoryFileEntry e in entries.Values)
+					if(e.filetitle == title && e.path == path && e.extension == extension) return e.filepathname;
 			}
 
 			return null;

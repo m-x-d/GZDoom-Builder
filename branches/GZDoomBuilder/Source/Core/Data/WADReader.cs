@@ -932,7 +932,7 @@ namespace CodeImp.DoomBuilder.Data
 		public override IEnumerable<TextResourceData> GetVoxeldefData() 
 		{
 			if(issuspended) throw new Exception("Data reader is suspended");
-			return GetFirstLump("VOXELDEF");
+			return GetAllLumps("VOXELDEF");
 		}
 
 		//mxd. This finds and returns a voxel stream or null if no voxel was found
@@ -994,11 +994,11 @@ namespace CodeImp.DoomBuilder.Data
 			if(gametype != GameType.UNKNOWN)
 			{
 				string lumpname = Gldefs.GLDEFS_LUMPS_PER_GAME[(int)gametype];
-				result.AddRange(GetFirstLump(lumpname));
+				result.AddRange(GetAllLumps(lumpname));
 			}
 
-			// Should be only one entry per wad
-			result.AddRange(GetFirstLump("GLDEFS"));
+			// Can be many entries per wad
+			result.AddRange(GetAllLumps("GLDEFS"));
 			return result;
 		}
 
@@ -1006,21 +1006,21 @@ namespace CodeImp.DoomBuilder.Data
 		public override IEnumerable<TextResourceData> GetModeldefData() 
 		{
 			if(issuspended) throw new Exception("Data reader is suspended");
-			return GetFirstLump("MODELDEF");
+			return GetAllLumps("MODELDEF");
 		}
 
 		//mxd
 		public override IEnumerable<TextResourceData> GetReverbsData() 
 		{
 			if(issuspended) throw new Exception("Data reader is suspended");
-			return GetFirstLump("REVERBS");
+			return GetAllLumps("REVERBS");
 		}
 
 		//mxd
 		public override IEnumerable<TextResourceData> GetSndSeqData() 
 		{
 			if(issuspended) throw new Exception("Data reader is suspended");
-			return GetFirstLump("SNDSEQ");
+			return GetAllLumps("SNDSEQ");
 		}
 
 		//mxd

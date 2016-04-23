@@ -52,7 +52,7 @@ namespace CodeImp.DoomBuilder.Data
 		protected override void Initialize()
 		{
 			// Load all WAD files in the root as WAD resources
-			string[] wadfiles = GetFilesWithExt("", "wad", false);
+			string[] wadfiles = GetWadFiles(); //mxd
 			wads = new List<WADReader>(wadfiles.Length);
 			foreach(string wadfile in wadfiles)
 			{
@@ -406,6 +406,12 @@ namespace CodeImp.DoomBuilder.Data
 		protected override string[] GetAllFiles(string path, bool subfolders)
 		{
 			return files.GetAllFiles(path, subfolders).ToArray();
+		}
+
+		//mxd. This returns wad files in the root directory
+		protected override string[] GetWadFiles()
+		{
+			return files.GetWadFiles().ToArray();
 		}
 		
 		// This returns all files in a given directory that have the given file title
