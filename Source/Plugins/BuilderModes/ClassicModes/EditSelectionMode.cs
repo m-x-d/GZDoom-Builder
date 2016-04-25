@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Actions;
@@ -160,6 +161,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private List<float> thingangle;
 		private ICollection<Vertex> unselectedvertices;
 		private ICollection<Linedef> unselectedlines;
+		private ICollection<Linedef> unstablelines; //mxd
 
 		// Modification
 		private float rotation;
@@ -1088,6 +1090,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			foreach(Linedef l in markedlines) l.Selected = true;
 			selectedlines = General.Map.Map.LinedefsFromMarkedVertices(false, true, false);
 			unselectedlines = General.Map.Map.LinedefsFromMarkedVertices(true, false, false);
+			unstablelines = (pasting ? new Collection<Linedef>() : General.Map.Map.LinedefsFromMarkedVertices(false, false, true)); //mxd
 			
 			// Array to keep original coordinates
 			vertexpos = new List<Vector2D>(selectedvertices.Count);
@@ -1475,7 +1478,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Remove any virtual sectors
 					General.Map.Map.RemoveVirtualSectors();
 				}
-				
+
+				//mxd. Reattach/add/remove sidedefs only when there are no unstable lines in selection
+				if(unstablelines.Count == 0)
+				{
+					// Update outer sides of the selection
+					HashSet<Sector> affectedsectors = new HashSet<Sector>(General.Map.Map.GetSelectedSectors(true));
+					affectedsectors.UnionWith(General.Map.Map.GetUnselectedSectorsFromLinedefs(selectedlines));
+					Tools.AdjustOuterSidedefs(affectedsectors, selectedlines);
+				}
+
 				// Stitch geometry
 				if(snaptonearest) General.Map.Map.StitchGeometry();
 

@@ -118,6 +118,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// When not cancelled
 			if(!cancelled)
 			{
+				//mxd. Reattach/add/remove sidedefs only when there are no unstable lines in selection
+				if(unstablelines.Count == 0)
+				{
+					HashSet<Sector> toadjust = new HashSet<Sector>(selectedsectors);
+
+					// Add sectors, which are not selected, but have all their linedefs selected
+					// (otherwise those would be destroyed after moving the selection)
+					toadjust.UnionWith(General.Map.Map.GetUnselectedSectorsFromLinedefs(selectedlines));
+
+					// Process outer sidedefs
+					Tools.AdjustOuterSidedefs(toadjust, selectedlines);
+				}
+
 				// If only a single sector was selected, deselect it now
 				if(selectedsectors.Count == 1)
 				{
@@ -188,10 +201,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Redraw overlay
 			if(renderer.StartOverlay(true))
 			{
-				foreach(LineLengthLabel l in labels)
-				{
-					renderer.RenderText(l.TextLabel);
-				}
+				renderer.RenderText(labels);
 				renderer.Finish();
 			}
 		}

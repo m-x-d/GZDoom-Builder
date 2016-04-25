@@ -31,7 +31,23 @@ using Font = System.Drawing.Font;
 
 namespace CodeImp.DoomBuilder.Rendering
 {
-	public class TextLabel : IDisposable, ID3DResource
+	public interface ITextLabel //mxd. Methods and properties required to render a textlabel
+	{
+		// Required to render text label
+		bool SkipRendering { get; }
+		Texture Texture { get; } 
+		VertexBuffer VertexBuffer { get; }
+
+		// Access/setup
+		Font Font { get; }
+		string Text { get; set; }
+		PixelColor Color { get; set; }
+		PixelColor BackColor { get; set; }
+
+		void Update(float translatex, float translatey, float scalex, float scaley);
+	}
+	
+	public class TextLabel : IDisposable, ID3DResource, ITextLabel
 	{
 		#region ================== Constants
 
@@ -90,9 +106,9 @@ namespace CodeImp.DoomBuilder.Rendering
 		public PixelColor Color { get { return color; } set { if(!color.Equals(value)) { color = value; textureupdateneeded = true; } } }
 		public PixelColor BackColor { get { return backcolor; } set { if(!backcolor.Equals(value)) { backcolor = value; textureupdateneeded = true; } } }
 		public bool DrawBackground { get { return drawbg; } set { if(drawbg != value) { drawbg = value; textureupdateneeded = true; } } } //mxd
-		internal Texture Texture { get { return texture; } } //mxd
-		internal VertexBuffer VertexBuffer { get { return textbuffer; } }
-		internal bool SkipRendering { get { return skiprendering; } } //mxd
+		public Texture Texture { get { return texture; } } //mxd
+		public VertexBuffer VertexBuffer { get { return textbuffer; } }
+		public bool SkipRendering { get { return skiprendering; } } //mxd
 		
 		// Disposing
 		public bool IsDisposed { get { return isdisposed; } }
@@ -146,7 +162,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		#region ================== Methods
 		
 		// This updates the text if needed
-		internal void Update(float translatex, float translatey, float scalex, float scaley)
+		public void Update(float translatex, float translatey, float scalex, float scaley)
 		{
 			// Check if transformation changed and needs to be updated
 			if(transformcoords && (translatex != lasttranslatex || translatey != lasttranslatey ||

@@ -17,6 +17,7 @@
 #region ================== Namespaces
 
 using System;
+using System.Collections.Generic;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Geometry;
@@ -53,7 +54,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Constructor / Disposer
 
 		// Constructor to start dragging immediately
-		public DragVerticesMode(Vertex dragitem, Vector2D dragstartmappos)
+		public DragVerticesMode(Vector2D dragstartmappos)
 		{
 			// Mark what we are dragging
 			General.Map.Map.ClearAllMarks(false);
@@ -97,6 +98,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// When not cancelled
 			if(!cancelled)
 			{
+				//mxd. Reattach/add/remove sidedefs only when there are no unstable lines in selection
+				if(selectedverts.Count > 1 && unstablelines.Count == 0)
+				{
+					// Add sectors, which have all their linedefs selected
+					// (otherwise those would be destroyed after moving the selection)
+					ICollection<Linedef> selectedlines = General.Map.Map.LinedefsFromMarkedVertices(false, true, false);
+					HashSet<Sector> toadjust = General.Map.Map.GetUnselectedSectorsFromLinedefs(selectedlines);
+
+					// Process outer sidedefs
+					Tools.AdjustOuterSidedefs(toadjust, selectedlines);
+				}
+				
 				// If only a single vertex was selected, deselect it now
 				if(selectedverts.Count == 1) General.Map.Map.ClearSelectedVertices();
 			}
@@ -156,10 +169,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Redraw overlay
 			if(renderer.StartOverlay(true))
 			{
-				foreach(LineLengthLabel l in labels)
-				{
-					renderer.RenderText(l.TextLabel);
-				}
+				renderer.RenderText(labels);
 				renderer.Finish();
 			}
 		}

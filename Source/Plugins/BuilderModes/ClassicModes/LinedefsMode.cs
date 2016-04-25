@@ -633,7 +633,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				//mxd. Render sector tag labels
 				if(BuilderPlug.Me.ViewSelectionEffects)
 				{
-					List<TextLabel> torender = new List<TextLabel>(sectorlabels.Count);
+					List<ITextLabel> torender = new List<ITextLabel>(sectorlabels.Count);
 					foreach(KeyValuePair<Sector, string[]> group in sectortexts)
 					{
 						// Pick which text variant to use
@@ -668,7 +668,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				//mxd. Render selection labels
 				if(BuilderPlug.Me.ViewSelectionNumbers)
 				{
-					List<TextLabel> torender = new List<TextLabel>(labels.Count);
+					List<ITextLabel> torender = new List<ITextLabel>(labels.Count);
 					foreach(KeyValuePair<Linedef, SelectionLabel> group in labels)
 					{
 						// Render only when enough space for the label to see

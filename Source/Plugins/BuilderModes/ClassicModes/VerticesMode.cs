@@ -586,7 +586,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					// Start dragging the selection
 					if(!BuilderPlug.Me.DontMoveGeometryOutsideMapBoundary || CanDrag()) //mxd
-						General.Editing.ChangeMode(new DragVerticesMode(highlighted, mousedownmappos));
+						General.Editing.ChangeMode(new DragVerticesMode(mousedownmappos));
 				}
 			}
 		}

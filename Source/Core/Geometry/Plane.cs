@@ -144,8 +144,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		/// </summary>
 		public Vector3D ClosestOnPlane(Vector3D p)
 		{
-			float d = this.Distance(p);
-			return p - normal * d;
+			return p - normal * this.Distance(p);
 		}
 
 		/// <summary>
@@ -170,6 +169,20 @@ namespace CodeImp.DoomBuilder.Geometry
 		public Plane GetInverted()
 		{
 			return new Plane(-normal, -offset);
+		}
+
+		//mxd. Addeed to make compiler a bit more happy...
+		public override int GetHashCode()
+		{
+			return base.GetHashCode();
+		}
+
+		//mxd. Addeed to make compiler a bit more happy...
+		public override bool Equals(object obj)
+		{
+			if(!(obj is Plane)) return false;
+			Plane other = (Plane)obj;
+			return (normal != other.normal) || (offset != other.offset);
 		}
 		
 		#endregion
