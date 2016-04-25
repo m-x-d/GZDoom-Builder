@@ -7,8 +7,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 {
 	public class HintLabel : LineLengthLabel
 	{
-		public string Text { get { return label.Text; } set { label.Text = value; } }
-
 		public HintLabel() : base(false, false) { }
 		public HintLabel(PixelColor textcolor) : base(false, false)
 		{

@@ -262,10 +262,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 
 					//mxd. Render guide labels?
-					if(renderguidelabels)
-					{
-						foreach(LineLengthLabel l in guidelabels) renderer.RenderText(l.TextLabel);
-					}
+					if(renderguidelabels) renderer.RenderText(guidelabels);
+
+					// Render labels
+					renderer.RenderText(labels.ToArray());
 				}
 
 				// Determine point color
@@ -273,9 +273,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				// Render vertex at cursor
 				renderer.RenderRectangleFilled(new RectangleF(curp.pos.x - vsize, curp.pos.y - vsize, vsize * 2.0f, vsize * 2.0f), color, true);
-
-				// Go for all labels
-				foreach(LineLengthLabel l in labels) renderer.RenderText(l.TextLabel);
 
 				// Done
 				renderer.Finish();

@@ -193,7 +193,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				if(BuilderPlug.Me.ViewSelectionNumbers && orderedselection.Count < MAX_SECTOR_LABELS) 
 				{
-					List<TextLabel> torender = new List<TextLabel>(orderedselection.Count);
+					List<ITextLabel> torender = new List<ITextLabel>(orderedselection.Count);
 					foreach(Sector s in orderedselection) 
 					{
 						//mxd. Self-referencing (and probably some other) sectors don't have labels...
@@ -225,7 +225,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd
 		private void RenderEffectLabels(Dictionary<Sector, string[]> labelsGroup) 
 		{
-			List<TextLabel> torender = new List<TextLabel>(labelsGroup.Count);
+			List<ITextLabel> torender = new List<ITextLabel>(labelsGroup.Count);
 			foreach(KeyValuePair<Sector, string[]> group in labelsGroup) 
 			{
 				// Pick which text variant to use

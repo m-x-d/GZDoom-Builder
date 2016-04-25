@@ -2589,7 +2589,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		/// <summary>mxd. This finds the line closest to the specified position excluding given list of linedefs.</summary>
-		public Linedef NearestLinedef(Vector2D pos, List<Linedef> linesToExclude) 
+		public Linedef NearestLinedef(Vector2D pos, ICollection<Linedef> linesToExclude) 
 		{
 			Linedef closest = null;
 			float distance = float.MaxValue;
@@ -3111,6 +3111,38 @@ namespace CodeImp.DoomBuilder.Map
 			}
 
 			return null;
+		}
+
+		//mxd
+		/// <summary>Gets unselected sectors, which have all their linedefs selected</summary>
+		public HashSet<Sector> GetUnselectedSectorsFromLinedefs(IEnumerable<Linedef> lines)
+		{
+			HashSet<Sector> result = new HashSet<Sector>();
+			Dictionary<Sector, HashSet<Sidedef>> sectorsbysides = new Dictionary<Sector, HashSet<Sidedef>>();
+			HashSet<Sector> selectedsectors = new HashSet<Sector>(General.Map.Map.GetSelectedSectors(true));
+
+			// Collect unselected sectors, which sidedefs belong to selected lines 
+			foreach(Linedef line in lines)
+			{
+				if(line.Front != null && line.Front.Sector != null && !selectedsectors.Contains(line.Front.Sector))
+				{
+					if(!sectorsbysides.ContainsKey(line.Front.Sector)) sectorsbysides.Add(line.Front.Sector, new HashSet<Sidedef>());
+					sectorsbysides[line.Front.Sector].Add(line.Front);
+				}
+				if(line.Back != null && line.Back.Sector != null && !selectedsectors.Contains(line.Back.Sector))
+				{
+					if(!sectorsbysides.ContainsKey(line.Back.Sector)) sectorsbysides.Add(line.Back.Sector, new HashSet<Sidedef>());
+					sectorsbysides[line.Back.Sector].Add(line.Back);
+				}
+			}
+
+			// Add sectors, which have all their lines selected
+			foreach(var group in sectorsbysides)
+			{
+				if(group.Key.Sidedefs.Count == group.Value.Count) result.Add(group.Key);
+			}
+
+			return result;
 		}
 
 		/// <summary>This finds the line closest to the specified position.</summary>

@@ -920,6 +920,7 @@
     <Compile Include="Map\MapElementCollection.cs" />
     <Compile Include="Map\SplitLineBehavior.cs" />
     <Compile Include="Rendering\CommentType.cs" />
+    <Compile Include="Rendering\CustomTextLabel.cs" />
     <Compile Include="Rendering\SurfaceBufferSet.cs" />
     <Compile Include="Rendering\SurfaceEntry.cs" />
     <Compile Include="Rendering\SurfaceEntryCollection.cs" />

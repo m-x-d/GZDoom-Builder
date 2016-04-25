@@ -1626,7 +1626,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		// This renders text
-		public void RenderText(TextLabel label)
+		public void RenderText(ITextLabel label)
 		{
 			//mxd. Update the text if needed
 			label.Update(translatex, translatey, scale, -scale);
@@ -1653,11 +1653,11 @@ namespace CodeImp.DoomBuilder.Rendering
 		}
 
 		//mxd. This renders text
-		public void RenderText(List<TextLabel> labels)
+		public void RenderText(IList<ITextLabel> labels)
 		{
 			// Update labels
 			int skipped = 0;
-			foreach(TextLabel label in labels)
+			foreach(ITextLabel label in labels)
 			{
 				// Update the text if needed
 				label.Update(translatex, translatey, scale, -scale);
@@ -1680,7 +1680,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			graphics.Shaders.Display2D.Begin();
 			graphics.Shaders.Display2D.BeginPass(1);
 
-			foreach(TextLabel label in labels)
+			foreach(ITextLabel label in labels)
 			{
 				// Text is created?
 				if(!label.SkipRendering)

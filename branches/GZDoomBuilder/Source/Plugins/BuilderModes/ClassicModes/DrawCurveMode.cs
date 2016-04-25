@@ -140,8 +140,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Render vertex at cursor
 				renderer.RenderRectangleFilled(new RectangleF(curp.pos.x - vsize, curp.pos.y - vsize, vsize * 2.0f, vsize * 2.0f), color, true);
 
-				// Go for all labels
-				foreach(LineLengthLabel l in labels) renderer.RenderText(l.TextLabel);
+				// Render labels
+				renderer.RenderText(labels.ToArray());
 
 				//Render info label
 				Vector2D start = new Vector2D(mousemappos.x + (32 / renderer.Scale), mousemappos.y - (16 / renderer.Scale));

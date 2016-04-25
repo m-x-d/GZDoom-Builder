@@ -25,7 +25,7 @@ using System.Drawing;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	public class LineLengthLabel : IDisposable
+	public class LineLengthLabel : CustomTextLabel, IDisposable
 	{
 		#region ================== Constants
 
@@ -35,7 +35,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Variables
 
-		protected TextLabel label;
 		protected Vector2D start;
 		protected Vector2D end;
 
@@ -47,14 +46,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Properties
 
-		public TextLabel TextLabel { get { return label; } }
-
 		//mxd. Display options
 		public bool ShowAngle { get { return showangle; } set { showangle = value; UpdateText(); } }
 		public bool OffsetPosition { get { return offsetposition; } set { offsetposition = value; Move(start, end); } }
-		public PixelColor Color { get { return label.Color; } set { label.Color = value; } }
-		public PixelColor BackColor { get { return label.BackColor; } set { label.BackColor = value; } }
-		public SizeF TextSize { get { return label.TextSize; } }
 
 		#endregion
 

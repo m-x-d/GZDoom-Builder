@@ -2255,6 +2255,175 @@ namespace CodeImp.DoomBuilder.Geometry
 			return 0;
 		}
 
+		//mxd. Try to create/remove/reassign outer sidedefs. Selected linedefs and verts are marked
+		public static void AdjustOuterSidedefs(HashSet<Sector> selectedsectors, ICollection<Linedef> selectedlines)
+		{
+			HashSet<Sidedef> outersides = new HashSet<Sidedef>();
+			HashSet<Linedef> singlesidedlines = new HashSet<Linedef>();
+			HashSet<Linedef> lineswithoutsides = new HashSet<Linedef>();
+
+			// Collect lines without sidedefs and lines, which don't reference selected sectors
+			foreach(Linedef line in selectedlines)
+			{
+				if(line.Front == null && line.Back == null)
+				{
+					lineswithoutsides.Add(line);
+				}
+				else
+				{
+					if(line.Back != null && line.Back.Sector != null && !selectedsectors.Contains(line.Back.Sector))
+						outersides.Add(line.Back);
+					if(line.Front != null && line.Front.Sector != null && !selectedsectors.Contains(line.Front.Sector))
+						outersides.Add(line.Front);
+				}
+			}
+
+			// Collect outer sides and single-sided lines
+			foreach(Sector sector in selectedsectors)
+			{
+				foreach(Sidedef side in sector.Sidedefs)
+				{
+					if(side.Other == null) singlesidedlines.Add(side.Line);
+					else if(!selectedsectors.Contains(side.Other.Sector)) outersides.Add(side.Other);
+				}
+			}
+
+			// Check lines without sidedefs. Add new sidedefs if necessary
+			foreach(Linedef line in lineswithoutsides)
+			{
+				bool sideschanged = false;
+
+				// Add front side?
+				Vector2D testpoint = line.GetSidePoint(true);
+				Linedef nl = General.Map.Map.NearestLinedef(testpoint, selectedlines);
+				if(nl != null)
+				{
+					Sidedef ns = (nl.SideOfLine(testpoint) <= 0 ? nl.Front : nl.Back);
+					if(ns != null)
+					{
+						// Create new sidedef
+						Sidedef newside = General.Map.Map.CreateSidedef(line, true, ns.Sector);
+
+						// Copy props from the other side
+						ns.CopyPropertiesTo(newside);
+						newside.RemoveUnneededTextures(true, true, true);
+
+						sideschanged = true;
+					}
+				}
+
+				// Add back side?
+				testpoint = line.GetSidePoint(false);
+				nl = General.Map.Map.NearestLinedef(testpoint, selectedlines);
+				if(nl != null)
+				{
+					Sidedef ns = (nl.SideOfLine(testpoint) <= 0 ? nl.Front : nl.Back);
+					if(ns != null)
+					{
+						// Create new sidedef
+						Sidedef newside = General.Map.Map.CreateSidedef(line, false, ns.Sector);
+
+						// Copy props from the other side
+						ns.CopyPropertiesTo(newside);
+						newside.RemoveUnneededTextures(true, true, true);
+
+						sideschanged = true;
+					}
+				}
+
+				// Correct the sided flags
+				if(sideschanged)
+				{
+					// Correct the linedef
+					if((line.Front == null) && (line.Back != null))
+					{
+						line.FlipVertices();
+						line.FlipSidedefs();
+					}
+
+					// Correct the sided flags
+					line.ApplySidedFlags();
+				}
+			}
+
+			// Check single-sided lines. Add new sidedefs if necessary
+			foreach(Linedef line in singlesidedlines)
+			{
+				// Line is now inside a sector?
+				Vector2D testpoint = line.GetSidePoint(line.Front == null);
+				Linedef nl = General.Map.Map.NearestLinedef(testpoint, selectedlines);
+				if(nl != null)
+				{
+					Sidedef ns = (nl.SideOfLine(testpoint) <= 0 ? nl.Front : nl.Back);
+					if(ns != null)
+					{
+						// Create new sidedef
+						Sidedef newside = General.Map.Map.CreateSidedef(line, line.Front == null, ns.Sector);
+
+						// Copy props from the other side
+						Sidedef propssource = ((line.Front ?? line.Back) ?? ns);
+						propssource.CopyPropertiesTo(newside);
+						newside.RemoveUnneededTextures(true, true, true);
+						newside.Other.RemoveUnneededTextures(true, true, true);
+
+						// Correct the linedef
+						if((line.Front == null) && (line.Back != null))
+						{
+							line.FlipVertices();
+							line.FlipSidedefs();
+						}
+
+						// Correct the sided flags
+						line.ApplySidedFlags();
+					}
+				}
+			}
+
+			// Check outer sidedefs. Remove/change sector if necessary
+			foreach(Sidedef side in outersides)
+			{
+				// Side is inside a sector?
+				Vector2D testpoint = side.Line.GetSidePoint(side.IsFront);
+				Linedef nl = General.Map.Map.NearestLinedef(testpoint, selectedlines);
+				bool lineisoutside = true;
+				if(nl != null)
+				{
+					Sidedef ns = (nl.SideOfLine(testpoint) <= 0 ? nl.Front : nl.Back);
+					if(ns != null)
+					{
+						lineisoutside = false;
+						if(ns.Sector != null && side.Sector != ns.Sector)
+						{
+							// Reattach side
+							side.SetSector(ns.Sector);
+							side.RemoveUnneededTextures(true, true, true);
+						}
+					}
+				}
+
+				// Side points nowhere. Remove it
+				if(lineisoutside)
+				{
+					// Remove the sidedef
+					Linedef l = side.Line;
+					side.Dispose();
+
+					// Correct the linedef
+					if((l.Front == null) && (l.Back != null))
+					{
+						l.FlipVertices();
+						l.FlipSidedefs();
+					}
+
+					// Correct the sided flags
+					l.ApplySidedFlags();
+				}
+			}
+
+			// Update map geometry
+			General.Map.Map.Update();
+		}
+
 		#endregion
 
 		#region ================== Misc Exported Functions
