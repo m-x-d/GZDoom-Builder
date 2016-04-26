@@ -1,66 +1,62 @@
-﻿using System;
+﻿#region ================== Namespaces
+
+using System;
 using System.Drawing;
 using System.IO;
+
+#endregion
 
 namespace CodeImp.DoomBuilder.GZBuilder.Data 
 {
 	public class EngineInfo : IDisposable
 	{
-		// Disposing
-		private bool isdisposed;
-		
+		#region ================== Constants
+
 		public const string DEFAULT_ENGINE_NAME = "Engine with no name";
-		
+
+		#endregion
+
+		#region ================== Variables
+
+		// Settings
 		private string testprogramname;
-		public string TestProgramName { get { return testprogramname; } set { testprogramname = value; CheckProgramName(); } }
-		public string TestProgram;
+		private string testprogram;
+		private Bitmap icon;
 		public string TestParameters;
 		public bool CustomParameters;
 		public int TestSkill;
 		public bool TestShortPaths;
-		private Bitmap icon;
-		public Bitmap TestProgramIcon { get { return icon; } }
 
-		public EngineInfo() 
+		// Disposing
+		private bool isdisposed;
+
+		#endregion
+
+		#region ================== Properties
+
+		public string TestProgramName { get { return testprogramname; } set { testprogramname = value; CheckProgramName(); } }
+		public string TestProgram { get { return testprogram; } set { testprogram = value; CheckProgramName(); } }
+		public Bitmap TestProgramIcon { get { if(icon == null) UpdateIcon(); return icon; } }
+
+		#endregion
+
+		#region ================== Constructors / Disposer
+
+		public EngineInfo()
 		{
 			testprogramname = DEFAULT_ENGINE_NAME;
 		}
 
-		public EngineInfo(EngineInfo other) 
+		public EngineInfo(EngineInfo other)
 		{
 			testprogramname = other.TestProgramName;
-			TestProgram = other.TestProgram;
+			testprogram = other.testprogram;
 			TestParameters = other.TestParameters;
 			CustomParameters = other.CustomParameters;
 			TestSkill = other.TestSkill;
 			TestShortPaths = other.TestShortPaths;
-			icon = other.icon;
-		}
 
-		private void CheckProgramName() 
-		{
-			if(testprogramname == DEFAULT_ENGINE_NAME && !String.IsNullOrEmpty(TestProgram)) 
-			{
-				// Get engine name from path
-				testprogramname = Path.GetFileNameWithoutExtension(TestProgram);
-			}
-
-			// Update icon
-			if(icon != null)
-			{
-				icon.Dispose();
-				icon = null;
-			}
-
-			if(File.Exists(TestProgram))
-			{
-				Icon i = Icon.ExtractAssociatedIcon(TestProgram);
-				icon = (i != null ? i.ToBitmap() : new Bitmap(Properties.Resources.Question));
-			}
-			else
-			{
-				icon = new Bitmap(Properties.Resources.Warning);
-			}
+			UpdateIcon();
 		}
 
 		public void Dispose()
@@ -75,5 +71,39 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 				isdisposed = true;
 			}
 		}
+
+		#endregion
+
+		#region ================== Methods
+
+		private void CheckProgramName() 
+		{
+			if(testprogramname == DEFAULT_ENGINE_NAME && !String.IsNullOrEmpty(testprogram)) 
+			{
+				// Get engine name from path
+				testprogramname = Path.GetFileNameWithoutExtension(testprogram);
+			}
+		}
+
+		private void UpdateIcon()
+		{
+			if(icon != null)
+			{
+				icon.Dispose();
+				icon = null;
+			}
+
+			if(File.Exists(testprogram))
+			{
+				Icon i = Icon.ExtractAssociatedIcon(testprogram);
+				icon = (i != null ? i.ToBitmap() : new Bitmap(Properties.Resources.Question));
+			}
+			else
+			{
+				icon = new Bitmap(Properties.Resources.Warning);
+			}
+		}
+
+		#endregion
 	}
 }

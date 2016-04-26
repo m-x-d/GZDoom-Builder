@@ -698,29 +698,41 @@ namespace CodeImp.DoomBuilder.Windows
 		//mxd
 		private void btnNewEngine_Click(object sender, EventArgs e) 
 		{
-			preventchanges = true;
-			
-			EngineInfo newInfo = new EngineInfo();
-			newInfo.TestSkill = (int)Math.Ceiling(gameconfig.Skills.Count / 2f); //set Medium skill level
-			configinfo.TestEngines.Add(newInfo);
-			configinfo.Changed = true;
-			
-			//store current engine name
-			if(!String.IsNullOrEmpty(cbEngineSelector.Text))
-				configinfo.TestProgramName = cbEngineSelector.Text;
+			// Set initial directory?
+			if(testapplication.Text.Length > 0)
+			{
+				try { testprogramdialog.InitialDirectory = Path.GetDirectoryName(testapplication.Text); }
+				catch(Exception) { }
+			}
 
-			//refresh engines list
-			cbEngineSelector.Items.Clear();
-			foreach(EngineInfo info in configinfo.TestEngines)
-				cbEngineSelector.Items.Add(info.TestProgramName);
+			// Browse for test program
+			if(testprogramdialog.ShowDialog() == DialogResult.OK)
+			{
+				preventchanges = true;
 
-			cbEngineSelector.SelectedIndex = configinfo.TestEngines.Count - 1;
-			btnRemoveEngine.Enabled = true;
+				// Add new EngineInfo
+				EngineInfo newInfo = new EngineInfo();
+				newInfo.TestSkill = (int)Math.Ceiling(gameconfig.Skills.Count / 2f); // Set Medium skill level
+				configinfo.TestEngines.Add(newInfo);
+				configinfo.Changed = true;
 
-			preventchanges = false;
+				// Store current engine name
+				if(!String.IsNullOrEmpty(cbEngineSelector.Text))
+					configinfo.TestProgramName = cbEngineSelector.Text;
 
-			// Open engine browser
-			browsetestprogram_Click(this, EventArgs.Empty);
+				// Refresh engines list
+				cbEngineSelector.Items.Clear();
+				foreach(EngineInfo info in configinfo.TestEngines)
+					cbEngineSelector.Items.Add(info.TestProgramName);
+
+				cbEngineSelector.SelectedIndex = configinfo.TestEngines.Count - 1;
+				btnRemoveEngine.Enabled = true;
+
+				preventchanges = false;
+
+				// Set engine path
+				testapplication.Text = testprogramdialog.FileName;
+			}
 		}
 
 		//mxd
