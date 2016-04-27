@@ -18,13 +18,12 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Drawing;
-using CodeImp.DoomBuilder.IO;
-using CodeImp.DoomBuilder.Map;
-using SlimDX.Direct3D9;
-using SlimDX;
+using System.IO;
 using CodeImp.DoomBuilder.Data;
+using CodeImp.DoomBuilder.Map;
+using SlimDX;
+using SlimDX.Direct3D9;
 
 #endregion
 

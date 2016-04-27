@@ -26,7 +26,6 @@ using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.GZBuilder.Data; //mxd
-using CodeImp.DoomBuilder.GZBuilder.Geometry; //mxd
 using CodeImp.DoomBuilder.Config; //mxd
 
 #endregion

@@ -33,7 +33,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.cancel = new System.Windows.Forms.Button();
 			this.apply = new System.Windows.Forms.Button();
 			this.smallimages = new System.Windows.Forms.ImageList(this.components);
-			this.tvTextureSets = new CodeImp.DoomBuilder.GZBuilder.Controls.MultiSelectTreeview();
+			this.tvTextureSets = new CodeImp.DoomBuilder.Controls.MultiSelectTreeview();
 			this.browser = new CodeImp.DoomBuilder.Controls.ImageBrowserControl();
 			this.panel = new System.Windows.Forms.Panel();
 			this.splitter = new CodeImp.DoomBuilder.Controls.CollapsibleSplitContainer();
@@ -96,7 +96,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tvTextureSets.Name = "tvTextureSets";
 			this.tvTextureSets.SelectedImageIndex = 0;
 			this.tvTextureSets.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-			this.tvTextureSets.SelectionMode = CodeImp.DoomBuilder.GZBuilder.Controls.TreeViewSelectionMode.SingleSelect;
+			this.tvTextureSets.SelectionMode = CodeImp.DoomBuilder.Controls.TreeViewSelectionMode.SingleSelect;
 			this.tvTextureSets.Size = new System.Drawing.Size(198, 402);
 			this.tvTextureSets.TabIndex = 4;
 			this.tvTextureSets.TabStop = false;
@@ -188,7 +188,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.Button cancel;
 		private System.Windows.Forms.Button apply;
 		private System.Windows.Forms.ImageList smallimages;
-		private CodeImp.DoomBuilder.GZBuilder.Controls.MultiSelectTreeview tvTextureSets;
+		private CodeImp.DoomBuilder.Controls.MultiSelectTreeview tvTextureSets;
 		private System.Windows.Forms.Panel panel;
 		private CodeImp.DoomBuilder.Controls.CollapsibleSplitContainer splitter;
 	}

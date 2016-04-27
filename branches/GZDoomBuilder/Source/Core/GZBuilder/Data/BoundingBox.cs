@@ -1,6 +1,5 @@
 ﻿using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Rendering;
-using SlimDX;
 
 namespace CodeImp.DoomBuilder.GZBuilder.Data
 {

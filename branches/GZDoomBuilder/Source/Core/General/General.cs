@@ -2086,7 +2086,7 @@ namespace CodeImp.DoomBuilder
 			try 
 			{
 				// Try handling it in user-friendy way...
-				GZBuilder.Windows.ExceptionDialog dlg = new GZBuilder.Windows.ExceptionDialog(e);
+				ExceptionDialog dlg = new ExceptionDialog(e);
 				dlg.Setup();
 				if(dlg.ShowDialog() == DialogResult.Cancel) Terminate(false);
 			} 
@@ -2113,7 +2113,7 @@ namespace CodeImp.DoomBuilder
 			try
 			{
 				// Try handling it in user-friendy way...
-				GZBuilder.Windows.ExceptionDialog dlg = new GZBuilder.Windows.ExceptionDialog(e);
+				ExceptionDialog dlg = new ExceptionDialog(e);
 				dlg.Setup();
 				if(dlg.ShowDialog() == DialogResult.Cancel) Terminate(false);
 			}

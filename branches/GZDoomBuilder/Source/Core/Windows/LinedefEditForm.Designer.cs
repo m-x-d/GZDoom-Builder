@@ -53,7 +53,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.flagsgroup = new System.Windows.Forms.GroupBox();
 			this.flags = new CodeImp.DoomBuilder.Controls.CheckboxArrayControl();
 			this.idgroup = new System.Windows.Forms.GroupBox();
-			this.tagSelector = new CodeImp.DoomBuilder.GZBuilder.Controls.TagSelector();
+			this.tagSelector = new CodeImp.DoomBuilder.Controls.TagSelector();
 			this.frontside = new System.Windows.Forms.CheckBox();
 			this.frontgroup = new System.Windows.Forms.GroupBox();
 			this.replaceunusedfronttextures = new System.Windows.Forms.CheckBox();
@@ -61,7 +61,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.frontlow = new CodeImp.DoomBuilder.Controls.TextureSelectorControl();
 			this.frontmid = new CodeImp.DoomBuilder.Controls.TextureSelectorControl();
 			this.fronthigh = new CodeImp.DoomBuilder.Controls.TextureSelectorControl();
-			this.frontTextureOffset = new CodeImp.DoomBuilder.GZBuilder.Controls.PairedIntControl();
+			this.frontTextureOffset = new CodeImp.DoomBuilder.Controls.PairedIntControl();
 			this.backside = new System.Windows.Forms.CheckBox();
 			this.backgroup = new System.Windows.Forms.GroupBox();
 			this.replaceunusedbacktextures = new System.Windows.Forms.CheckBox();
@@ -69,7 +69,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backlow = new CodeImp.DoomBuilder.Controls.TextureSelectorControl();
 			this.backmid = new CodeImp.DoomBuilder.Controls.TextureSelectorControl();
 			this.backhigh = new CodeImp.DoomBuilder.Controls.TextureSelectorControl();
-			this.backTextureOffset = new CodeImp.DoomBuilder.GZBuilder.Controls.PairedIntControl();
+			this.backTextureOffset = new CodeImp.DoomBuilder.Controls.PairedIntControl();
 			this.panel = new System.Windows.Forms.Panel();
 			this.tooltip = new System.Windows.Forms.ToolTip(this.components);
 			label2 = new System.Windows.Forms.Label();
@@ -650,9 +650,9 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.GroupBox idgroup;
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox frontsector;
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox backsector;
-		private CodeImp.DoomBuilder.GZBuilder.Controls.TagSelector tagSelector;
-		private CodeImp.DoomBuilder.GZBuilder.Controls.PairedIntControl frontTextureOffset;
-		private CodeImp.DoomBuilder.GZBuilder.Controls.PairedIntControl backTextureOffset;
+		private CodeImp.DoomBuilder.Controls.TagSelector tagSelector;
+		private CodeImp.DoomBuilder.Controls.PairedIntControl frontTextureOffset;
+		private CodeImp.DoomBuilder.Controls.PairedIntControl backTextureOffset;
 		private System.Windows.Forms.Panel panel;
 		private CodeImp.DoomBuilder.Controls.ActionSpecialHelpButton actionhelp;
 		private System.Windows.Forms.ToolTip tooltip;

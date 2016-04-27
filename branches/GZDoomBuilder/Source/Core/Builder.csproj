@@ -165,16 +165,16 @@
     <Compile Include="Actions\ActionManager.cs" />
     <Compile Include="Config\CompilerInfo.cs" />
     <Compile Include="Config\ConfigurationInfo.cs" />
-    <Compile Include="GZBuilder\Controls\PairedFloatControl.cs">
+    <Compile Include="Controls\PairedFloatControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="GZBuilder\Controls\PairedFloatControl.Designer.cs">
+    <Compile Include="Controls\PairedFloatControl.Designer.cs">
       <DependentUpon>PairedFloatControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="GZBuilder\Windows\ThingStatisticsForm.cs">
+    <Compile Include="Windows\ThingStatisticsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="GZBuilder\Windows\ThingStatisticsForm.Designer.cs">
+    <Compile Include="Windows\ThingStatisticsForm.Designer.cs">
       <DependentUpon>ThingStatisticsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="VisualModes\VisualBlockMap.cs" />
@@ -543,10 +543,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="GZBuilder\Controls\PairedFloatControl.resx">
+    <EmbeddedResource Include="Controls\PairedFloatControl.resx">
       <DependentUpon>PairedFloatControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GZBuilder\Windows\ThingStatisticsForm.resx">
+    <EmbeddedResource Include="Windows\ThingStatisticsForm.resx">
       <DependentUpon>ThingStatisticsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Windows\AboutForm.resx">
@@ -828,46 +828,46 @@
     <Compile Include="General\UpdateChecker.cs" />
     <Compile Include="Geometry\CurveTools.cs" />
     <Compile Include="Geometry\InterpolationTools.cs" />
-    <Compile Include="GZBuilder\Controls\AngleControl.cs">
+    <Compile Include="Controls\AngleControlEx.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="GZBuilder\Controls\AngleControl.Designer.cs">
-      <DependentUpon>AngleControl.cs</DependentUpon>
+    <Compile Include="Controls\AngleControlEx.Designer.cs">
+      <DependentUpon>AngleControlEx.cs</DependentUpon>
     </Compile>
-    <Compile Include="GZBuilder\Controls\ColorFieldsControl.cs">
+    <Compile Include="Controls\ColorFieldsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="GZBuilder\Controls\ColorFieldsControl.Designer.cs">
+    <Compile Include="Controls\ColorFieldsControl.Designer.cs">
       <DependentUpon>ColorFieldsControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="GZBuilder\Controls\TagsSelector.cs">
+    <Compile Include="Controls\TagsSelector.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="GZBuilder\Controls\TagsSelector.Designer.cs">
+    <Compile Include="Controls\TagsSelector.Designer.cs">
       <DependentUpon>TagsSelector.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\CheckedColoredListBox.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="GZBuilder\Controls\MultiSelectTreeview.cs">
+    <Compile Include="Controls\MultiSelectTreeview.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="GZBuilder\Controls\PairedFieldsControl.cs">
+    <Compile Include="Controls\PairedFieldsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="GZBuilder\Controls\PairedFieldsControl.Designer.cs">
+    <Compile Include="Controls\PairedFieldsControl.Designer.cs">
       <DependentUpon>PairedFieldsControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="GZBuilder\Controls\PairedIntControl.cs">
+    <Compile Include="Controls\PairedIntControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="GZBuilder\Controls\PairedIntControl.Designer.cs">
+    <Compile Include="Controls\PairedIntControl.Designer.cs">
       <DependentUpon>PairedIntControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="GZBuilder\Controls\TagSelector.cs">
+    <Compile Include="Controls\TagSelector.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="GZBuilder\Controls\TagSelector.Designer.cs">
+    <Compile Include="Controls\TagSelector.Designer.cs">
       <DependentUpon>TagSelector.cs</DependentUpon>
     </Compile>
     <Compile Include="GZBuilder\Data\BoundingBox.cs" />
@@ -883,32 +883,30 @@
     <Compile Include="GZBuilder\Data\ScriptItem.cs" />
     <Compile Include="GZBuilder\Data\SharpCompressHelper.cs" />
     <Compile Include="GZBuilder\Data\SkyboxInfo.cs" />
-    <Compile Include="GZBuilder\Rendering\SizelessVisualThingCage.cs" />
-    <Compile Include="GZBuilder\Rendering\ThingBoundingBox.cs" />
     <Compile Include="GZBuilder\Data\ThingCopyData.cs" />
-    <Compile Include="GZBuilder\Rendering\VisualVertexHandle.cs" />
-    <Compile Include="GZBuilder\Geometry\Line3D.cs" />
-    <Compile Include="GZBuilder\GZDoom\DecorateParserSE.cs" />
-    <Compile Include="GZBuilder\GZDoom\GldefsParser.cs" />
-    <Compile Include="GZBuilder\GZDoom\MapinfoParser.cs" />
-    <Compile Include="GZBuilder\GZDoom\ModeldefParser.cs" />
-    <Compile Include="GZBuilder\GZDoom\ModeldefParserSE.cs" />
-    <Compile Include="GZBuilder\GZDoom\ModeldefStructure.cs" />
-    <Compile Include="GZBuilder\GZDoom\ScriptTypeParserSE.cs" />
+    <Compile Include="Rendering\VisualVertexHandle.cs" />
+    <Compile Include="Geometry\Line3D.cs" />
+    <Compile Include="ZDoom\Scripting\DecorateParserSE.cs" />
+    <Compile Include="ZDoom\GldefsParser.cs" />
+    <Compile Include="ZDoom\MapinfoParser.cs" />
+    <Compile Include="ZDoom\ModeldefParser.cs" />
+    <Compile Include="ZDoom\Scripting\ModeldefParserSE.cs" />
+    <Compile Include="ZDoom\ModeldefStructure.cs" />
+    <Compile Include="ZDoom\Scripting\ScriptTypeParserSE.cs" />
     <Compile Include="GZBuilder\GZGeneral.cs" />
     <Compile Include="GZBuilder\md3\GZModel.cs" />
     <Compile Include="GZBuilder\md3\ModelReader.cs" />
-    <Compile Include="GZBuilder\GZDoom\AcsParserSE.cs" />
-    <Compile Include="GZBuilder\Windows\ExceptionDialog.cs">
+    <Compile Include="ZDoom\Scripting\AcsParserSE.cs" />
+    <Compile Include="Windows\ExceptionDialog.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="GZBuilder\Windows\ExceptionDialog.designer.cs">
+    <Compile Include="Windows\ExceptionDialog.designer.cs">
       <DependentUpon>ExceptionDialog.cs</DependentUpon>
     </Compile>
-    <Compile Include="GZBuilder\Windows\TagStatisticsForm.cs">
+    <Compile Include="Windows\TagStatisticsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="GZBuilder\Windows\TagStatisticsForm.Designer.cs">
+    <Compile Include="Windows\TagStatisticsForm.Designer.cs">
       <DependentUpon>TagStatisticsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="IO\ClipboardStreamReader.cs" />
@@ -1074,28 +1072,28 @@
       <SubType>Designer</SubType>
       <DependentUpon>ThingBrowserControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GZBuilder\Controls\AngleControl.resx">
-      <DependentUpon>AngleControl.cs</DependentUpon>
+    <EmbeddedResource Include="Controls\AngleControlEx.resx">
+      <DependentUpon>AngleControlEx.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GZBuilder\Controls\ColorFieldsControl.resx">
+    <EmbeddedResource Include="Controls\ColorFieldsControl.resx">
       <DependentUpon>ColorFieldsControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GZBuilder\Controls\TagsSelector.resx">
+    <EmbeddedResource Include="Controls\TagsSelector.resx">
       <DependentUpon>TagsSelector.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GZBuilder\Controls\PairedFieldsControl.resx">
+    <EmbeddedResource Include="Controls\PairedFieldsControl.resx">
       <DependentUpon>PairedFieldsControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GZBuilder\Controls\PairedIntControl.resx">
+    <EmbeddedResource Include="Controls\PairedIntControl.resx">
       <DependentUpon>PairedIntControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GZBuilder\Controls\TagSelector.resx">
+    <EmbeddedResource Include="Controls\TagSelector.resx">
       <DependentUpon>TagSelector.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GZBuilder\Windows\ExceptionDialog.resx">
+    <EmbeddedResource Include="Windows\ExceptionDialog.resx">
       <DependentUpon>ExceptionDialog.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="GZBuilder\Windows\TagStatisticsForm.resx">
+    <EmbeddedResource Include="Windows\TagStatisticsForm.resx">
       <DependentUpon>TagStatisticsForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Crosshair.png" />

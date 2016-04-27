@@ -17,7 +17,6 @@
 #region ================== Namespaces
 
 using System.Collections.Generic;
-using CodeImp.DoomBuilder.GZBuilder.Geometry;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.VisualModes;
