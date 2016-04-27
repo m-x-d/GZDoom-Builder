@@ -16,7 +16,6 @@
 
 #region ================== Namespaces
 
-using System.Windows.Forms;
 using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.Plugins;

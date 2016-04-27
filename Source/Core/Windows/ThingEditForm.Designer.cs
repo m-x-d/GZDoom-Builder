@@ -40,7 +40,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.zlabel = new System.Windows.Forms.Label();
 			this.typegroup = new System.Windows.Forms.GroupBox();
 			this.thingtype = new CodeImp.DoomBuilder.Controls.ThingBrowserControl();
-			this.anglecontrol = new CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl();
+			this.anglecontrol = new CodeImp.DoomBuilder.Controls.AngleControlEx();
 			this.cbRandomAngle = new System.Windows.Forms.CheckBox();
 			this.angle = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
@@ -53,7 +53,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.action = new CodeImp.DoomBuilder.Controls.ActionSelectorControl();
 			this.browseaction = new System.Windows.Forms.Button();
 			this.idgroup = new System.Windows.Forms.GroupBox();
-			this.tagSelector = new CodeImp.DoomBuilder.GZBuilder.Controls.TagSelector();
+			this.tagSelector = new CodeImp.DoomBuilder.Controls.TagSelector();
 			this.cancel = new System.Windows.Forms.Button();
 			this.apply = new System.Windows.Forms.Button();
 			this.hint = new System.Windows.Forms.PictureBox();
@@ -498,8 +498,8 @@ namespace CodeImp.DoomBuilder.Windows
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox posX;
 		private System.Windows.Forms.CheckBox cbAbsoluteHeight;
 		private System.Windows.Forms.CheckBox cbRandomAngle;
-		private CodeImp.DoomBuilder.GZBuilder.Controls.TagSelector tagSelector;
-		private CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl anglecontrol;
+		private CodeImp.DoomBuilder.Controls.TagSelector tagSelector;
+		private CodeImp.DoomBuilder.Controls.AngleControlEx anglecontrol;
 		private System.Windows.Forms.PictureBox hint;
 		private System.Windows.Forms.Label hintlabel;
 		private System.Windows.Forms.PictureBox missingflags;

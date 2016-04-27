@@ -400,12 +400,12 @@ namespace CodeImp.DoomBuilder.Windows
 				if(s.Fields.GetValue("rotationceiling", 0.0f).ToString() != ceilRotation.Text) 
 				{
 					ceilRotation.Text = "";
-					ceilAngleControl.Angle = GZBuilder.Controls.AngleControl.NO_ANGLE;
+					ceilAngleControl.Angle = AngleControlEx.NO_ANGLE;
 				}
 				if(s.Fields.GetValue("rotationfloor", 0.0f).ToString() != floorRotation.Text)
 				{
 					floorRotation.Text = "";
-					floorAngleControl.Angle = GZBuilder.Controls.AngleControl.NO_ANGLE;
+					floorAngleControl.Angle = AngleControlEx.NO_ANGLE;
 				}
 
 				//Texture brightness
@@ -1039,7 +1039,7 @@ namespace CodeImp.DoomBuilder.Windows
 			//restore values
 			if(string.IsNullOrEmpty(floorRotation.Text))
 			{
-				floorAngleControl.Angle = GZBuilder.Controls.AngleControl.NO_ANGLE;
+				floorAngleControl.Angle = AngleControlEx.NO_ANGLE;
 				
 				foreach(Sector s in sectors) 
 				{
@@ -1070,7 +1070,7 @@ namespace CodeImp.DoomBuilder.Windows
 			//restore values
 			if(string.IsNullOrEmpty(ceilRotation.Text))
 			{
-				ceilAngleControl.Angle = GZBuilder.Controls.AngleControl.NO_ANGLE;
+				ceilAngleControl.Angle = AngleControlEx.NO_ANGLE;
 				
 				foreach(Sector s in sectors) 
 				{

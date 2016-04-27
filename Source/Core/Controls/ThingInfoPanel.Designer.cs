@@ -34,7 +34,7 @@ namespace CodeImp.DoomBuilder.Controls
 			System.Windows.Forms.Label label1;
 			this.labelaction = new System.Windows.Forms.Label();
 			this.infopanel = new System.Windows.Forms.GroupBox();
-			this.anglecontrol = new CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl();
+			this.anglecontrol = new CodeImp.DoomBuilder.Controls.AngleControlEx();
 			this.classname = new System.Windows.Forms.Label();
 			this.labelclass = new System.Windows.Forms.Label();
 			this.arg5 = new System.Windows.Forms.Label();
@@ -435,7 +435,7 @@ namespace CodeImp.DoomBuilder.Controls
 		private System.Windows.Forms.GroupBox flagsPanel;
 		private System.Windows.Forms.ListView flags;
 		private System.Windows.Forms.Label labelaction;
-		private CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl anglecontrol;
+		private CodeImp.DoomBuilder.Controls.AngleControlEx anglecontrol;
 		private ConfigurablePictureBox spritetex;
 		private System.Windows.Forms.Label classname;
 		private System.Windows.Forms.Label labelclass;

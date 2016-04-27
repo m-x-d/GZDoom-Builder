@@ -16,9 +16,6 @@
 
 #region ================== Namespaces
 
-using System;
-using System.IO;
-
 #endregion
 
 namespace CodeImp.DoomBuilder.Plugins.NodesViewer

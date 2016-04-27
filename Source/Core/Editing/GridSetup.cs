@@ -19,7 +19,6 @@
 using System;
 using System.IO;
 using System.Windows.Forms;
-using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Actions;

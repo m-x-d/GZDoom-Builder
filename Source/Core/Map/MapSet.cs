@@ -30,7 +30,6 @@ using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Types;
 using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.VisualModes;
-using CodeImp.DoomBuilder.Data;
 
 #endregion
 

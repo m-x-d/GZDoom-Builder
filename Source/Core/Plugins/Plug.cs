@@ -1,7 +1,6 @@
 #region ================== Namespaces
 
 using System;
-using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Editing;

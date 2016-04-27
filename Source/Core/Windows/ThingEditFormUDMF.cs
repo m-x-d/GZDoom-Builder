@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.Controls;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Types;
@@ -375,7 +376,7 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			if(preventchanges) return;
 			preventchanges = true;
-			anglecontrol.Angle = angle.GetResult(GZBuilder.Controls.AngleControl.NO_ANGLE);
+			anglecontrol.Angle = angle.GetResult(AngleControlEx.NO_ANGLE);
 			preventchanges = false;
 			if(!preventmapchange) ApplyAngleChange(); //mxd
 		}
@@ -391,9 +392,9 @@ namespace CodeImp.DoomBuilder.Windows
 		private void pitch_WhenTextChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
-			int p = pitch.GetResult(GZBuilder.Controls.AngleControl.NO_ANGLE);
+			int p = pitch.GetResult(AngleControlEx.NO_ANGLE);
 			preventchanges = true;
-			pitchControl.Angle = (p == GZBuilder.Controls.AngleControl.NO_ANGLE ? p : p + 90);
+			pitchControl.Angle = (p == AngleControlEx.NO_ANGLE ? p : p + 90);
 			preventchanges = false;
 			if(!preventmapchange) ApplyPitchChange();
 		}
@@ -408,9 +409,9 @@ namespace CodeImp.DoomBuilder.Windows
 		private void roll_WhenTextChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
-			int r = roll.GetResult(GZBuilder.Controls.AngleControl.NO_ANGLE);
+			int r = roll.GetResult(AngleControlEx.NO_ANGLE);
 			preventchanges = true;
-			rollControl.Angle = (r == GZBuilder.Controls.AngleControl.NO_ANGLE ? r : r + 90);
+			rollControl.Angle = (r == AngleControlEx.NO_ANGLE ? r : r + 90);
 			preventchanges = false;
 			if(!preventmapchange) ApplyRollChange();
 		}

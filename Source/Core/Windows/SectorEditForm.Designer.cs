@@ -42,7 +42,7 @@ namespace CodeImp.DoomBuilder.Windows
 			System.Windows.Forms.Label label4;
 			this.browseeffect = new System.Windows.Forms.Button();
 			this.effect = new CodeImp.DoomBuilder.Controls.ActionSelectorControl();
-			this.tagSelector = new CodeImp.DoomBuilder.GZBuilder.Controls.TagSelector();
+			this.tagSelector = new CodeImp.DoomBuilder.Controls.TagSelector();
 			this.heightoffset = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.brightness = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.ceilingheight = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
@@ -446,7 +446,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox ceilingheight;
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox floorheight;
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox brightness;
-		private CodeImp.DoomBuilder.GZBuilder.Controls.TagSelector tagSelector;
+		private CodeImp.DoomBuilder.Controls.TagSelector tagSelector;
 		private System.Windows.Forms.Panel panel1;
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox heightoffset;
 		private System.Windows.Forms.ToolTip tooltip;

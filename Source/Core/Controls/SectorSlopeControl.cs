@@ -129,7 +129,7 @@ namespace CodeImp.DoomBuilder.Controls
 			if(float.IsNaN(anglexy)) 
 			{
 				sloperotation.Text = "";
-				rotationcontrol.Angle = GZBuilder.Controls.AngleControl.NO_ANGLE;
+				rotationcontrol.Angle = AngleControlEx.NO_ANGLE;
 			} 
 			else 
 			{
@@ -173,7 +173,7 @@ namespace CodeImp.DoomBuilder.Controls
 			preventchanges = true;
 
 			anglexy = General.ClampAngle(sloperotation.GetResultFloat(float.NaN));
-			rotationcontrol.Angle = (float.IsNaN(anglexy) ? GZBuilder.Controls.AngleControl.NO_ANGLE : (int)Math.Round(anglexy + 90));
+			rotationcontrol.Angle = (float.IsNaN(anglexy) ? AngleControlEx.NO_ANGLE : (int)Math.Round(anglexy + 90));
 
 			if(OnAnglesChanged != null) OnAnglesChanged(this, EventArgs.Empty);
 			preventchanges = false;

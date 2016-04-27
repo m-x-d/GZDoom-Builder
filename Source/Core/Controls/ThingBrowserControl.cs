@@ -23,7 +23,6 @@ using System.Globalization;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Data;
-using CodeImp.DoomBuilder.GZBuilder.Controls;
 
 #endregion
 

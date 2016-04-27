@@ -21,7 +21,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Controls;
-using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Geometry;
 using SlimDX;
 using SlimDX.Direct3D9;

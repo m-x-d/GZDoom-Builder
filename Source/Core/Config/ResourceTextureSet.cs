@@ -18,7 +18,6 @@
 
 using System.Collections.Generic;
 using CodeImp.DoomBuilder.Data;
-using CodeImp.DoomBuilder.IO;
 
 #endregion
 

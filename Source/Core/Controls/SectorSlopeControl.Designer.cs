@@ -35,7 +35,7 @@
 			this.angletrackbar = new System.Windows.Forms.TrackBar();
 			this.label1 = new System.Windows.Forms.Label();
 			this.pivotmodeselector = new System.Windows.Forms.ComboBox();
-			this.rotationcontrol = new CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl();
+			this.rotationcontrol = new CodeImp.DoomBuilder.Controls.AngleControlEx();
 			this.slopeangle = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.sloperotation = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.slopeoffset = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
@@ -224,7 +224,7 @@
 		private System.Windows.Forms.Button reset;
 		private ButtonsNumericTextbox slopeoffset;
 		private System.Windows.Forms.Label label18;
-		private CodeImp.DoomBuilder.GZBuilder.Controls.AngleControl rotationcontrol;
+		private CodeImp.DoomBuilder.Controls.AngleControlEx rotationcontrol;
 		private System.Windows.Forms.TrackBar angletrackbar;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.ComboBox pivotmodeselector;

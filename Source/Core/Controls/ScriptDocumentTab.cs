@@ -27,7 +27,7 @@ using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Compilers;
 using CodeImp.DoomBuilder.GZBuilder.Data;
-using CodeImp.DoomBuilder.GZBuilder.GZDoom;
+using CodeImp.DoomBuilder.ZDoom.Scripting;
 using ScintillaNET;
 
 #endregion

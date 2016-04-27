@@ -23,7 +23,7 @@ using System.Windows.Forms;
 using CodeImp.DoomBuilder.Compilers;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Data;
-using CodeImp.DoomBuilder.GZBuilder.GZDoom;
+using CodeImp.DoomBuilder.ZDoom.Scripting;
 
 #endregion
 

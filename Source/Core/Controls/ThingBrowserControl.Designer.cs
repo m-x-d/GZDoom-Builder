@@ -46,7 +46,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.tbFilter = new System.Windows.Forms.TextBox();
 			this.bClear = new System.Windows.Forms.Button();
 			this.updatetimer = new System.Windows.Forms.Timer(this.components);
-			this.typelist = new CodeImp.DoomBuilder.GZBuilder.Controls.MultiSelectTreeview();
+			this.typelist = new CodeImp.DoomBuilder.Controls.MultiSelectTreeview();
 			this.spritetex = new CodeImp.DoomBuilder.Controls.ConfigurablePictureBox();
 			this.typeid = new CodeImp.DoomBuilder.Controls.NumericTextbox();
 			this.infopanel.SuspendLayout();
@@ -277,7 +277,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.typelist.Name = "typelist";
 			this.typelist.SelectedImageIndex = 0;
 			this.typelist.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-			this.typelist.SelectionMode = CodeImp.DoomBuilder.GZBuilder.Controls.TreeViewSelectionMode.SingleSelect;
+			this.typelist.SelectionMode = CodeImp.DoomBuilder.Controls.TreeViewSelectionMode.SingleSelect;
 			this.typelist.ShowNodeToolTips = true;
 			this.typelist.Size = new System.Drawing.Size(304, 203);
 			this.typelist.TabIndex = 22;
@@ -353,7 +353,7 @@ namespace CodeImp.DoomBuilder.Controls
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.TextBox tbFilter;
 		private System.Windows.Forms.Button bClear;
-		private CodeImp.DoomBuilder.GZBuilder.Controls.MultiSelectTreeview typelist;
+		private CodeImp.DoomBuilder.Controls.MultiSelectTreeview typelist;
 		private System.Windows.Forms.Panel spritepanel;
 		private System.Windows.Forms.Timer updatetimer;
 		private ConfigurablePictureBox spritetex;
