@@ -51,18 +51,15 @@ namespace CodeImp.DoomBuilder.Controls
 		#region ================== Constructor / Disposer
 		
 		// Constructor
-		public ScriptFileDocumentTab(ScriptEditorPanel panel, ScriptConfiguration config) : base(panel)
+		public ScriptFileDocumentTab(ScriptEditorPanel panel, ScriptConfiguration config) : base(panel, config)
 		{
 			string ext = "";
 			
 			// Initialize
 			this.filepathname = "";
-			this.config = config;
-			editor.SetupStyles(config);
 			if(config.Extensions.Length > 0) ext = "." + config.Extensions[0];
 			SetTitle("Untitled" + ext);
 			editor.ClearUndoRedo();
-			editor.FunctionBar.Enabled = (config.ScriptType != ScriptType.UNKNOWN); //mxd
 		}
 		
 		#endregion
@@ -359,12 +356,9 @@ namespace CodeImp.DoomBuilder.Controls
 		// This changes the script configurations
 		public override void ChangeScriptConfig(ScriptConfiguration newconfig)
 		{
-			this.config = newconfig;
-			editor.SetupStyles(config);
-
 			if(filepathname.Length == 0)
 			{
-				string ext = (config.Extensions.Length > 0 ? "." + config.Extensions[0] : "");
+				string ext = (newconfig.Extensions.Length > 0 ? "." + newconfig.Extensions[0] : "");
 				SetTitle("Untitled" + ext);
 			}
 			else

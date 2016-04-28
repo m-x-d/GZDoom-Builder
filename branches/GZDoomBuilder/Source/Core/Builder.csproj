@@ -813,6 +813,10 @@
     <Compile Include="Data\ColormapImage.cs" />
     <Compile Include="Data\CvarsCollection.cs" />
     <Compile Include="Data\HiResImage.cs" />
+    <Compile Include="Data\Scripting\AccScriptHandler.cs" />
+    <Compile Include="Data\Scripting\DecorateScriptHandler.cs" />
+    <Compile Include="Data\Scripting\ModeldefScriptHandler.cs" />
+    <Compile Include="Data\Scripting\ScriptHandler.cs" />
     <Compile Include="Data\TEXTURESImage.cs" />
     <Compile Include="Data\PK3FileImage.cs" />
     <Compile Include="Data\PK3StructuredReader.cs" />
@@ -886,6 +890,7 @@
     <Compile Include="GZBuilder\Data\ThingCopyData.cs" />
     <Compile Include="Rendering\VisualVertexHandle.cs" />
     <Compile Include="Geometry\Line3D.cs" />
+    <Compile Include="Data\Scripting\ScriptHandlerAttribute.cs" />
     <Compile Include="ZDoom\Scripting\DecorateParserSE.cs" />
     <Compile Include="ZDoom\GldefsParser.cs" />
     <Compile Include="ZDoom\MapinfoParser.cs" />

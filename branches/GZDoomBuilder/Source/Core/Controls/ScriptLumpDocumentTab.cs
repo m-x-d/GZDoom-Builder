@@ -51,7 +51,7 @@ namespace CodeImp.DoomBuilder.Controls
 		#region ================== Constructor / Disposer
 		
 		// Constructor
-		public ScriptLumpDocumentTab(ScriptEditorPanel panel, string lumpname, ScriptConfiguration config) : base(panel)
+		public ScriptLumpDocumentTab(ScriptEditorPanel panel, string lumpname, ScriptConfiguration config) : base(panel, config)
 		{
 			// Initialize
 			if(lumpname == MapManager.CONFIG_MAP_HEADER)
@@ -64,9 +64,6 @@ namespace CodeImp.DoomBuilder.Controls
 				this.lumpname = lumpname;
 				this.ismapheader = false;
 			}
-			
-			this.config = config;
-			editor.SetupStyles(config);
 			
 			// Load the lump data
 			MemoryStream stream = General.Map.GetLumpData(this.lumpname);
