@@ -134,17 +134,22 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected override void OnUpdateMultiSelection() 
 		{
 			base.OnUpdateMultiSelection();
-
-			if(General.Interface.CtrlState && General.Interface.ShiftState)
-				marqueSelectionMode = MarqueSelectionMode.INTERSECT;
-			else if(General.Interface.CtrlState)
-				marqueSelectionMode = MarqueSelectionMode.SUBTRACT;
-			else if(General.Interface.ShiftState ^ BuilderPlug.Me.AdditiveSelect)
-				marqueSelectionMode = MarqueSelectionMode.ADD;
-			else
-				marqueSelectionMode = MarqueSelectionMode.SELECT;
-
 			marqueSelectionIncludesThings = General.Interface.AltState;
+		}
+
+		//mxd
+		protected override MarqueSelectionMode GetMultiSelectionMode()
+		{
+			if(General.Interface.CtrlState && General.Interface.ShiftState)
+				return MarqueSelectionMode.INTERSECT;
+
+			if(General.Interface.CtrlState)
+				return MarqueSelectionMode.SUBTRACT;
+
+			if(General.Interface.ShiftState ^ BuilderPlug.Me.AdditiveSelect)
+				return MarqueSelectionMode.ADD;
+			
+			return MarqueSelectionMode.SELECT;
 		}
 
 		//mxd

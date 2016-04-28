@@ -592,11 +592,8 @@ namespace CodeImp.DoomBuilder.Editing
 		public override void OnKeyDown(KeyEventArgs e)
 		{
 			// Update marque color when modifier keys are pressed
-			if(selecting && (e.Control || e.Shift))
-			{
+			if(selecting && (e.Control || e.Shift) && marqueSelectionMode != GetMultiSelectionMode())
 				OnUpdateMultiSelection();
-				General.Interface.RedrawDisplay();
-			} 
 
 			base.OnKeyDown(e);
 		}
@@ -605,11 +602,9 @@ namespace CodeImp.DoomBuilder.Editing
 		public override void OnKeyUp(KeyEventArgs e)
 		{
 			// Update marque color when modifier keys are released
-			if(selecting && (!e.Control || !e.Shift))
-			{
+			if(selecting && (!e.Control || !e.Shift) && marqueSelectionMode != GetMultiSelectionMode())
 				OnUpdateMultiSelection();
-				General.Interface.RedrawDisplay();
-			}
+
 			base.OnKeyUp(e);
 		}
 
@@ -819,6 +814,8 @@ namespace CodeImp.DoomBuilder.Editing
 		/// </summary>
 		protected virtual void OnUpdateMultiSelection()
 		{
+			marqueSelectionMode = GetMultiSelectionMode(); //mxd
+			
 			selectionrect.X = selectstart.x;
 			selectionrect.Y = selectstart.y;
 			selectionrect.Width = mousemappos.x - selectstart.x;
@@ -835,6 +832,12 @@ namespace CodeImp.DoomBuilder.Editing
 				selectionrect.Height = -selectionrect.Height;
 				selectionrect.Y -= selectionrect.Height;
 			}
+		}
+
+		//mxd
+		protected virtual MarqueSelectionMode GetMultiSelectionMode()
+		{
+			return MarqueSelectionMode.SELECT;
 		}
 
 		/// <summary>
