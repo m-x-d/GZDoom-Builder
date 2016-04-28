@@ -26,7 +26,6 @@ using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Compilers;
-using CodeImp.DoomBuilder.GZBuilder.Data;
 using CodeImp.DoomBuilder.ZDoom.Scripting;
 using ScintillaNET;
 
@@ -89,10 +88,11 @@ namespace CodeImp.DoomBuilder.Controls
 		#region ================== Constructor
 		
 		// Constructor
-		protected ScriptDocumentTab(ScriptEditorPanel panel)
+		protected ScriptDocumentTab(ScriptEditorPanel panel, ScriptConfiguration config)
 		{
-			// Keep panel
+			// Keep panel and config
 			this.panel = panel;
+			this.config = config; //mxd
 			
 			// Make the script control
 			editor = new ScriptEditorControl();
@@ -114,8 +114,10 @@ namespace CodeImp.DoomBuilder.Controls
 			editor.OnTextChanged += editor_TextChanged; //mxd
 
 			//mxd. Bind functionbar events
-			editor.FunctionBar.DropDown += functionbar_DropDown;
-			editor.FunctionBar.SelectedIndexChanged += functionbar_SelectedIndexChanged;
+			editor.OnFunctionBarDropDown += functionbar_DropDown;
+
+			//mxd. Setup styles
+			editor.SetupStyles(config);
 		}
 		
 		// Disposer
@@ -203,6 +205,8 @@ namespace CodeImp.DoomBuilder.Controls
 		// This changes the script configurations
 		public virtual void ChangeScriptConfig(ScriptConfiguration newconfig)
 		{
+			config = newconfig; //mxd
+			editor.SetupStyles(newconfig); //mxd
 			List<CompilerError> errors = UpdateNavigator(); //mxd
 			if(panel.ActiveTab == this) panel.ShowErrors(errors); //mxd
 		}
@@ -275,131 +279,12 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		//mxd
-		//TODO: rewrite this using reflection, move UpdateNavigator[Type] to appropriate parsers
 		internal List<CompilerError> UpdateNavigator()
 		{
-			List<CompilerError> result = new List<CompilerError>();
-			
-			// Just clear the navigator when current tab has no text
-			if(editor.Text.Length == 0)
-			{
-				editor.FunctionBar.Items.Clear();
-				editor.FunctionBar.Enabled = false;
-				return result;
-			}
-			
-			// Store currently selected item name
-			string prevtext = editor.FunctionBar.Text;
-			switch(config.ScriptType)
-			{
-				case ScriptType.ACS:
-					result = UpdateNavigatorAcs(new MemoryStream(editor.GetText()));
-					break;
-
-				case ScriptType.DECORATE:
-					result = UpdateNavigatorDecorate(new MemoryStream(editor.GetText()));
-					break;
-
-				case ScriptType.MODELDEF:
-					result = UpdateNavigatorModeldef(new MemoryStream(editor.GetText()));
-					break;
-
-				default: // Unsupported script type. Just clear the items
-					editor.FunctionBar.Items.Clear();
-					break;
-			}
-
-			// Put some text in the navigator (but don't actually trigger selection event)
-			editor.FunctionBar.Enabled = (editor.FunctionBar.Items.Count > 0);
-			if(editor.FunctionBar.Items.Count > 0)
-			{
-				preventchanges = true;
-
-				// Put the text back if we still have the corresponding item
-				if(!string.IsNullOrEmpty(prevtext))
-				{
-					foreach(var item in editor.FunctionBar.Items)
-					{
-						if(item.ToString() == prevtext)
-						{
-							editor.FunctionBar.Text = item.ToString();
-							break;
-						}
-					}
-				}
-
-				// No dice. Use the first item
-				if(string.IsNullOrEmpty(editor.FunctionBar.Text))
-					editor.FunctionBar.Text = editor.FunctionBar.Items[0].ToString();
-
-				preventchanges = false;
-			}
-
-			return result;
-		}
-
-		//mxd
-		private List<CompilerError> UpdateNavigatorDecorate(MemoryStream stream) 
-		{
-			List<CompilerError> result = new List<CompilerError>();
-			if(stream == null) return result;
-			editor.FunctionBar.Items.Clear();
-
-			DecorateParserSE parser = new DecorateParserSE();
-			TextResourceData data = new TextResourceData(stream, new DataLocation(), "DECORATE", false);
-
-			if(parser.Parse(data, false))
-				editor.FunctionBar.Items.AddRange(parser.Actors.ToArray());
-
-			if(parser.HasError)
-				result.Add(new CompilerError(parser.ErrorDescription, parser.ErrorSource, parser.ErrorLine));
-
-			return result;
-		}
-
-		//mxd
-		private List<CompilerError> UpdateNavigatorModeldef(MemoryStream stream) 
-		{
-			List<CompilerError> result = new List<CompilerError>();
-			if(stream == null) return result;
-			editor.FunctionBar.Items.Clear();
-
-			ModeldefParserSE parser = new ModeldefParserSE();
-			TextResourceData data = new TextResourceData(stream, new DataLocation(), "MODELDEF", false);
-
-			if(parser.Parse(data, false))
-				editor.FunctionBar.Items.AddRange(parser.Models.ToArray());
-
-			if(parser.HasError)
-				result.Add(new CompilerError(parser.ErrorDescription, parser.ErrorSource, parser.ErrorLine));
-
-			return result;
-		}
-
-		//mxd
-		private List<CompilerError> UpdateNavigatorAcs(MemoryStream stream) 
-		{
-			List<CompilerError> result = new List<CompilerError>();
-			if(stream == null) return result;
-			editor.FunctionBar.Items.Clear();
-
-			AcsParserSE parser = new AcsParserSE { AddArgumentsToScriptNames = true, IsMapScriptsLump = this is ScriptLumpDocumentTab, IgnoreErrors = true };
-			TextResourceData data = new TextResourceData(stream, new DataLocation(), (parser.IsMapScriptsLump ? "?SCRIPTS" : Filename), false);
-			
-			if(parser.Parse(data, false))
-			{
-				editor.FunctionBar.Items.AddRange(parser.NamedScripts.ToArray());
-				editor.FunctionBar.Items.AddRange(parser.NumberedScripts.ToArray());
-				editor.FunctionBar.Items.AddRange(parser.Functions.ToArray());
-			}
-
-			if(parser.HasError)
-				result.Add(new CompilerError(parser.ErrorDescription, parser.ErrorSource, parser.ErrorLine));
-
-			return result;
+			return editor.UpdateNavigator(this);
 		}
 		
-		//mxd
+		//mxd. TODO: remove this
 		internal ScriptType VerifyScriptType() 
 		{
 			ScriptTypeParserSE parser = new ScriptTypeParserSE();
@@ -547,22 +432,6 @@ namespace CodeImp.DoomBuilder.Controls
 			// Focus to the editor!
 			editor.Focus();
 			editor.GrabFocus();
-		}
-
-		//mxd
-		private void functionbar_SelectedIndexChanged(object sender, EventArgs e) 
-		{
-			if(!preventchanges && editor.FunctionBar.SelectedItem is ScriptItem) 
-			{
-				ScriptItem si = (ScriptItem)editor.FunctionBar.SelectedItem;
-				editor.EnsureLineVisible(editor.LineFromPosition(si.CursorPosition));
-				editor.SelectionStart = si.CursorPosition;
-				editor.SelectionEnd = si.CursorPosition;
-				
-				// Focus to the editor!
-				editor.Focus();
-				editor.GrabFocus();
-			}
 		}
 
 		//mxd

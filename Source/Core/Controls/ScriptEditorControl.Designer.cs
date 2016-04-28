@@ -57,7 +57,6 @@ namespace CodeImp.DoomBuilder.Controls
 			this.scriptedit.CharAdded += new System.EventHandler<ScintillaNET.CharAddedEventArgs>(this.scriptedit_CharAdded);
 			this.scriptedit.AutoCCompleted += new System.EventHandler<ScintillaNET.AutoCSelectionEventArgs>(this.scriptedit_AutoCCompleted);
 			this.scriptedit.InsertCheck += new System.EventHandler<ScintillaNET.InsertCheckEventArgs>(this.scriptedit_InsertCheck);
-			this.scriptedit.KeyUp += new System.Windows.Forms.KeyEventHandler(this.scriptedit_KeyUp);
 			this.scriptedit.UpdateUI += new System.EventHandler<ScintillaNET.UpdateUIEventArgs>(this.scriptedit_UpdateUI);
 			this.scriptedit.KeyDown += new System.Windows.Forms.KeyEventHandler(this.scriptedit_KeyDown);
 			// 
@@ -83,6 +82,8 @@ namespace CodeImp.DoomBuilder.Controls
 			this.functionbar.Size = new System.Drawing.Size(474, 21);
 			this.functionbar.TabIndex = 2;
 			this.functionbar.TabStop = false;
+			this.functionbar.SelectedIndexChanged += new System.EventHandler(this.functionbar_SelectedIndexChanged);
+			this.functionbar.DropDown += new System.EventHandler(this.functionbar_DropDown);
 			// 
 			// ScriptEditorControl
 			// 
