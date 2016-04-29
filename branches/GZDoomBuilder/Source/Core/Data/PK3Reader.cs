@@ -19,8 +19,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using CodeImp.DoomBuilder.Compilers;
 using CodeImp.DoomBuilder.IO;
 using SharpCompress.Archive; //mxd
+using SharpCompress.Archive.Zip;
 using SharpCompress.Common; //mxd
 using SharpCompress.Reader; //mxd
 
@@ -49,7 +51,7 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public PK3Reader(DataLocation dl) : base(dl)
+		public PK3Reader(DataLocation dl, bool asreadonly) : base(dl, asreadonly)
 		{
 			General.WriteLogLine("Opening " + Path.GetExtension(location.location).ToUpper().Replace(".", "") + " resource \"" + location.location + "\"");
 
@@ -66,6 +68,7 @@ namespace CodeImp.DoomBuilder.Data
 			// Random access of 7z archives works TERRIBLY slow in SharpCompress
 			if(archivetype == ArchiveType.SevenZip) 
 			{
+				isreadonly = true; // Unsaveable...
 				sevenzipentries = new Dictionary<string, byte[]>(StringComparer.Ordinal);
 
 				IReader reader = archive.ExtractAllEntries();
@@ -410,6 +413,7 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		// This returns true if the specified file exists
+		internal override bool FileExists(string filename, int unused) { return files.FileExists(filename); }
 		internal override bool FileExists(string filename)
 		{
 			return files.FileExists(filename);
@@ -514,6 +518,26 @@ namespace CodeImp.DoomBuilder.Data
 			return filedata;
 		}
 
+		//mxd. TODO: test this
+		internal override bool SaveFile(MemoryStream stream, string filename, int unused) { return SaveFile(stream, filename); }
+		internal override bool SaveFile(MemoryStream stream, string filename)
+		{
+			// Not implemented in SevenZipArchive...
+			if(isreadonly || archivetype == ArchiveType.SevenZip) return false;
+
+			// Re-open the archive
+			using(ZipArchive za = (ZipArchive)ArchiveFactory.Open(location.location))
+			{
+				if(za == null) return false;
+
+				// Replace entry 
+				//TODO: Do we need to remove the old entry?
+				za.AddEntry(filename, stream, stream.Length, DateTime.Now);
+			}
+
+			return true;
+		}
+
 		// This creates a temp file for the speciied file and return the absolute path to the temp file
 		// NOTE: Callers are responsible for removing the temp file when done!
 		protected override string CreateTempFile(string filename)
@@ -548,6 +572,18 @@ namespace CodeImp.DoomBuilder.Data
 			}
 
 			return true;
+		}
+
+		#endregion
+
+		#region ================== Compiling (mxd)
+
+		// This compiles a script lump and returns any errors that may have occurred
+		// Returns true when our code worked properly (even when the compiler returned errors)
+		internal override bool CompileLump(string filename, int unused, out List<CompilerError> errors) { return CompileLump(filename, out errors); }
+		internal override bool CompileLump(string filename, out List<CompilerError> errors)
+		{
+			throw new NotImplementedException();
 		}
 
 		#endregion

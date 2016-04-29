@@ -289,7 +289,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 								l.Text = group.Value[0];
 							}
 
-							torender.Add(l);
+							if(!string.IsNullOrEmpty(l.Text)) torender.Add(l);
 						}
 					}
 

@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using CodeImp.DoomBuilder.Compilers;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.GZBuilder.Data;
 using CodeImp.DoomBuilder.ZDoom;
@@ -94,6 +95,7 @@ namespace CodeImp.DoomBuilder.Data
 		protected DataLocation location;
 		protected bool issuspended;
 		protected bool isdisposed;
+		protected bool isreadonly; //mxd
 		protected ResourceTextureSet textureset;
 
 		#endregion
@@ -103,6 +105,7 @@ namespace CodeImp.DoomBuilder.Data
 		public DataLocation Location { get { return location; } }
 		public bool IsDisposed { get { return isdisposed; } }
 		public bool IsSuspended { get { return issuspended; } }
+		public bool IsReadOnly { get { return isreadonly; } } //mxd
 		public ResourceTextureSet TextureSet { get { return textureset; } }
 
 		#endregion
@@ -110,10 +113,11 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		protected DataReader(DataLocation dl)
+		protected DataReader(DataLocation dl, bool asreadonly)
 		{
 			// Keep information
 			location = dl;
+			isreadonly = asreadonly;
 			textureset = new ResourceTextureSet(GetTitle(), dl);
 		}
 
@@ -256,9 +260,23 @@ namespace CodeImp.DoomBuilder.Data
 		//mxd. When implemented, this returns the voxel lump
 		public abstract Stream GetVoxelData(string name);
 
-		//mxd
+		#endregion
+
+		#region ================== Load/Save (mxd)
+
 		internal abstract MemoryStream LoadFile(string name);
+		internal abstract MemoryStream LoadFile(string name, int lumpindex);
+		internal abstract bool SaveFile(MemoryStream stream, string name);
+		internal abstract bool SaveFile(MemoryStream stream, string name, int lumpindex);
 		internal abstract bool FileExists(string filename);
+		internal abstract bool FileExists(string filename, int lumpindex);
+
+		#endregion
+
+		#region ================== Compiling (mxd)
+
+		internal abstract bool CompileLump(string lumpname, out List<CompilerError> errors);
+		internal abstract bool CompileLump(string lumpname, int lumpindex, out List<CompilerError> errors);
 
 		#endregion
 	}

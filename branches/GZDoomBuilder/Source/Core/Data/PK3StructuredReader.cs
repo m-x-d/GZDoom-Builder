@@ -62,7 +62,7 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Constructor / Disposer
 		
 		// Constructor
-		protected PK3StructuredReader(DataLocation dl) : base(dl)
+		protected PK3StructuredReader(DataLocation dl, bool asreadonly) : base(dl, asreadonly)
 		{
 			// Initialize
 			this.roottextures = dl.option1;
@@ -79,7 +79,7 @@ namespace CodeImp.DoomBuilder.Data
 			{
 				string tempfile = CreateTempFile(w);
 				DataLocation wdl = new DataLocation(DataLocation.RESOURCE_WAD, tempfile, Path.Combine(location.GetDisplayName(), Path.GetFileName(w)), false, false, true);
-				wads.Add(new WADReader(wdl));
+				wads.Add(new WADReader(wdl, location.type != DataLocation.RESOURCE_DIRECTORY));
 			}
 		}
 		
@@ -873,6 +873,12 @@ namespace CodeImp.DoomBuilder.Data
 				// Path is already relative
 				return anypath;
 			}
+		}
+
+		//mxd. Archives and Folders don't have lump indices
+		internal override MemoryStream LoadFile(string name, int unused)
+		{
+			return LoadFile(name);
 		}
 		
 		#endregion

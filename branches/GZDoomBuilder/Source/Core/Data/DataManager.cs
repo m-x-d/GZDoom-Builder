@@ -292,21 +292,20 @@ namespace CodeImp.DoomBuilder.Data
 		// This loads all data resources
 		internal void Load(DataLocationList configlist, DataLocationList maplist, DataLocation maplocation)
 		{
-			DataLocationList all = DataLocationList.Combined(configlist, maplist);
-			all.Remove(maplocation); //mxd. If maplocation was already added as a resource, make sure it's singular and is last in the list
-			all.Add(maplocation);
-			Load(all);
+			//mxd. Don't modify original lists
+			DataLocationList configlistcopy = new DataLocationList(configlist);
+			DataLocationList maplistcopy = new DataLocationList(maplist);
+
+			//mxd. If maplocation was already added as a resource, make sure it's singular and is the last in the list
+			configlistcopy.Remove(maplocation);
+			maplistcopy.Remove(maplocation);
+			maplistcopy.Add(maplocation);
+
+			Load(configlistcopy, maplistcopy);
 		}
 
 		// This loads all data resources
 		internal void Load(DataLocationList configlist, DataLocationList maplist)
-		{
-			DataLocationList all = DataLocationList.Combined(configlist, maplist);
-			Load(all);
-		}
-
-		// This loads all data resources
-		private void Load(DataLocationList locations)
 		{
 			Dictionary<long, ImageData> texturesonly = new Dictionary<long, ImageData>();
 			Dictionary<long, ImageData> colormapsonly = new Dictionary<long, ImageData>();
@@ -355,6 +354,7 @@ namespace CodeImp.DoomBuilder.Data
 			resourcetextures = new List<ResourceTextureSet>();
 			
 			// Go for all locations
+			DataLocationList locations = DataLocationList.Combined(configlist, maplist); //mxd
 			string prevofficialiwad = string.Empty; //mxd
 			foreach(DataLocation dl in locations)
 			{
@@ -372,7 +372,7 @@ namespace CodeImp.DoomBuilder.Data
 					{
 						// WAD file container
 						case DataLocation.RESOURCE_WAD:
-							c = new WADReader(dl);
+							c = new WADReader(dl, configlist.Contains(dl));
 							if(((WADReader)c).WadFile.IsOfficialIWAD) //mxd
 							{
 								if(!string.IsNullOrEmpty(prevofficialiwad))
@@ -383,12 +383,12 @@ namespace CodeImp.DoomBuilder.Data
 
 						// Directory container
 						case DataLocation.RESOURCE_DIRECTORY:
-							c = new DirectoryReader(dl);
+							c = new DirectoryReader(dl, configlist.Contains(dl));
 							break;
 
 						// PK3 file container
 						case DataLocation.RESOURCE_PK3:
-							c = new PK3Reader(dl);
+							c = new PK3Reader(dl, configlist.Contains(dl));
 							break;
 					}
 				}

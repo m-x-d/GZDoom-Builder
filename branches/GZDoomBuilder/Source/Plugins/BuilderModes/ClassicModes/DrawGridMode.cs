@@ -249,9 +249,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					//render hint
 					if(horizontalslices > 1 || verticalslices > 1) 
 					{
-						hintlabel.Text = "H: " + (slicesH - 1) + "; V: " + (slicesV - 1);
-						if(width > hintlabel.Text.Length * vsize && height > 16 * vsize) 
+						string text = "H: " + (slicesH - 1) + "; V: " + (slicesV - 1);
+						if(width > text.Length * vsize && height > 16 * vsize)
 						{
+							hintlabel.Text = text;
 							hintlabel.Move(start, end);
 							renderer.RenderText(hintlabel.TextLabel);
 						}

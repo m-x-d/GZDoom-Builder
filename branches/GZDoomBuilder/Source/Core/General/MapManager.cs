@@ -75,7 +75,7 @@ namespace CodeImp.DoomBuilder
 		private D3DDevice graphics;
 		private Renderer2D renderer2d;
 		private Renderer3D renderer3d;
-		private WAD tempwad;
+		private WADReader tempwadreader;
 		private GridSetup grid;
 		private UndoManager undoredo;
 		private CopyPasteManager copypaste;
@@ -122,6 +122,7 @@ namespace CodeImp.DoomBuilder
 		internal ScriptEditorForm ScriptEditor { get { return scriptwindow; } }
 		public VisualCamera VisualCamera { get { return visualcamera; } set { visualcamera = value; } }
 		public bool IsScriptsWindowOpen { get { return (scriptwindow != null) && !scriptwindow.IsDisposed; } }
+		internal WADReader TemporaryMapFile { get { return tempwadreader; } } //mxd
 
 		//mxd. Map format
 		public bool UDMF { get { return config.UDMF; } }
@@ -193,7 +194,7 @@ namespace CodeImp.DoomBuilder
 				General.WriteLogLine("Unloading data resources...");
 				if(data != null) data.Dispose();
 				General.WriteLogLine("Closing temporary file...");
-				if(tempwad != null) tempwad.Dispose();
+				if(tempwadreader != null) tempwadreader.Dispose(); //mxd
 				General.WriteLogLine("Unloading map data...");
 				if(map != null) map.Dispose();
 				General.WriteLogLine("Stopping graphics device...");
@@ -206,7 +207,7 @@ namespace CodeImp.DoomBuilder
 				copypaste = null;
 				undoredo = null;
 				data = null;
-				tempwad = null;
+				tempwadreader = null; //mxd
 				map = null;
 				renderer2d = null;
 				renderer3d = null;
@@ -278,12 +279,12 @@ namespace CodeImp.DoomBuilder
 			map = new MapSet();
 
 			// Create temp wadfile
-			string tempfile = General.MakeTempFilename(temppath);
-			General.WriteLogLine("Creating temporary file: " + tempfile);
+			DataLocation templocation = new DataLocation(DataLocation.RESOURCE_WAD, General.MakeTempFilename(temppath), false, false, false); //mxd
+			General.WriteLogLine("Creating temporary file: " + templocation.location);
 #if DEBUG
-			tempwad = new WAD(tempfile);
+			tempwadreader = new WADReader(templocation, false, true);
 #else
-			try { tempwad = new WAD(tempfile); }
+			try { tempwadreader = new WADReader(templocation, false, true); }
 			catch(Exception e)
 			{
 				General.ShowErrorMessage("Error while creating a temporary wad file:\n" + e.GetType().Name + ": " + e.Message, MessageBoxButtons.OK);
@@ -293,13 +294,13 @@ namespace CodeImp.DoomBuilder
 
 			// Read the map from temp file
 			General.WriteLogLine("Initializing map format interface " + config.FormatInterface + "...");
-			io = MapSetIO.Create(config.FormatInterface, tempwad, this);
+			io = MapSetIO.Create(config.FormatInterface, tempwadreader.WadFile, this);
 
 			// Create required lumps
 			General.WriteLogLine("Creating map data structures...");
-			tempwad.Insert(TEMP_MAP_HEADER, 0, 0);
+			tempwadreader.WadFile.Insert(TEMP_MAP_HEADER, 0, 0);
 			io.Write(map, TEMP_MAP_HEADER, 1);
-			CreateRequiredLumps(tempwad, TEMP_MAP_HEADER);
+			CreateRequiredLumps(tempwadreader.WadFile, TEMP_MAP_HEADER);
 
 			// Load data manager
 			General.WriteLogLine("Loading data resources...");
@@ -373,12 +374,12 @@ namespace CodeImp.DoomBuilder
 			map = new MapSet();
 
 			// Create temp wadfile
-			string tempfile = General.MakeTempFilename(temppath);
-			General.WriteLogLine("Creating temporary file: " + tempfile);
+			DataLocation templocation = new DataLocation(DataLocation.RESOURCE_WAD, General.MakeTempFilename(temppath), false, false, false); //mxd
+			General.WriteLogLine("Creating temporary file: " + templocation.location);
 #if DEBUG
-			tempwad = new WAD(tempfile);
+			tempwadreader = new WADReader(templocation, false, true);
 #else
-			try { tempwad = new WAD(tempfile); } catch(Exception e) 
+			try { tempwadreader = new WADReader(templocation, false, true); } catch(Exception e) 
 			{
 				General.ShowErrorMessage("Error while creating a temporary wad file:\n" + e.GetType().Name + ": " + e.Message, MessageBoxButtons.OK);
 				return false;
@@ -399,7 +400,7 @@ namespace CodeImp.DoomBuilder
 
 			// Copy the map lumps to the temp file
 			General.WriteLogLine("Copying map lumps to temporary file...");
-			CopyLumpsByType(mapwad, options.CurrentName, tempwad, TEMP_MAP_HEADER, REPLACE_TARGET_MAP, true, true, true, true);
+			CopyLumpsByType(mapwad, options.CurrentName, tempwadreader.WadFile, TEMP_MAP_HEADER, REPLACE_TARGET_MAP, true, true, true, true);
 
 			// Close the map file
 			mapwad.Dispose();
@@ -466,14 +467,14 @@ namespace CodeImp.DoomBuilder
 			WAD mapwad;
 
 			// Create temp wadfile
-			string tempfile = General.MakeTempFilename(temppath);
-			General.WriteLogLine("Creating temporary file: " + tempfile);
-			if(tempwad != null) tempwad.Dispose();
+			DataLocation templocation = new DataLocation(DataLocation.RESOURCE_WAD, General.MakeTempFilename(temppath), false, false, false); //mxd
+			General.WriteLogLine("Creating temporary file: " + templocation.location);
+			if(tempwadreader != null) tempwadreader.Dispose();
 
 #if DEBUG
-			tempwad = new WAD(tempfile);
+			tempwadreader = new WADReader(templocation, false, true);
 #else
-			try { tempwad = new WAD(tempfile); } catch(Exception e) 
+			try { tempwadreader = new WADReader(templocation, false, true); } catch(Exception e) 
 			{
 				General.ShowErrorMessage("Error while creating a temporary wad file:\n" + e.GetType().Name + ": " + e.Message, MessageBoxButtons.OK);
 				return false;
@@ -495,7 +496,7 @@ namespace CodeImp.DoomBuilder
 
 			// Copy the map lumps to the temp file
 			General.WriteLogLine("Copying map lumps to temporary file...");
-			CopyLumpsByType(mapwad, options.CurrentName, tempwad, TEMP_MAP_HEADER, REPLACE_TARGET_MAP, true, true, true, true);
+			CopyLumpsByType(mapwad, options.CurrentName, tempwadreader.WadFile, TEMP_MAP_HEADER, REPLACE_TARGET_MAP, true, true, true, true);
 
 			// Close the map file
 			mapwad.Dispose();
@@ -559,7 +560,7 @@ namespace CodeImp.DoomBuilder
 						   + "Would you like to restore the map from the backup?", MessageBoxButtons.YesNo) == DialogResult.Yes)
 					{
 						General.WriteLogLine("Initializing map format interface " + config.FormatInterface + "...");
-						io = MapSetIO.Create(config.FormatInterface, tempwad, this);
+						io = MapSetIO.Create(config.FormatInterface, tempwadreader.WadFile, this);
 						General.WriteLogLine("Restoring map from \"" + backuppath + "\"...");
 						
 #if DEBUG
@@ -591,7 +592,7 @@ namespace CodeImp.DoomBuilder
 			{
 				newmap.BeginAddRemove();
 				General.WriteLogLine("Initializing map format interface " + config.FormatInterface + "...");
-				io = MapSetIO.Create(config.FormatInterface, tempwad, this);
+				io = MapSetIO.Create(config.FormatInterface, tempwadreader.WadFile, this);
 				General.WriteLogLine("Reading map data from file...");
 #if DEBUG
 				newmap = io.Read(newmap, TEMP_MAP_HEADER);
@@ -699,7 +700,7 @@ namespace CodeImp.DoomBuilder
 
 			// Write to temporary file
 			General.WriteLogLine("Writing map data structures to file...");
-			int index = Math.Max(0, tempwad.FindLumpIndex(TEMP_MAP_HEADER));
+			int index = Math.Max(0, tempwadreader.WadFile.FindLumpIndex(TEMP_MAP_HEADER));
 			io.Write(outputset, TEMP_MAP_HEADER, index);
 			outputset.Dispose();
 
@@ -772,7 +773,7 @@ namespace CodeImp.DoomBuilder
 			else 
 			{
 				// Check if we have nodebuilder lumps
-				includenodes = VerifyNodebuilderLumps(tempwad, TEMP_MAP_HEADER);
+				includenodes = VerifyNodebuilderLumps(tempwadreader.WadFile, TEMP_MAP_HEADER);
 			}
 
 			//mxd. Target file is read-only?
@@ -969,7 +970,7 @@ namespace CodeImp.DoomBuilder
 			} 
 
 			// Copy map lumps to target file
-			CopyLumpsByType(tempwad, TEMP_MAP_HEADER, targetwad, origmapname, mapheaderindex, true, true, includenodes, true);
+			CopyLumpsByType(tempwadreader.WadFile, TEMP_MAP_HEADER, targetwad, origmapname, mapheaderindex, true, true, includenodes, true);
 
 			// mxd. Was the map renamed?
 			if(options.LevelNameChanged) 
@@ -1172,14 +1173,14 @@ namespace CodeImp.DoomBuilder
 #endif
 
 				// Determine source file
-				string sourcefile = (filepathname.Length > 0 ? filepathname : tempwad.Filename);
+				string sourcefile = (filepathname.Length > 0 ? filepathname : tempwadreader.WadFile.Filename);
 
 				//mxd.
-				RemoveUnneededLumps(tempwad, TEMP_MAP_HEADER, true);
+				RemoveUnneededLumps(tempwadreader.WadFile, TEMP_MAP_HEADER, true);
 
 				// Copy lumps to buildwad
 				General.WriteLogLine("Copying map lumps to temporary build file...");
-				CopyLumpsByType(tempwad, TEMP_MAP_HEADER, buildwad, BUILD_MAP_HEADER, REPLACE_TARGET_MAP, true, false, false, true);
+				CopyLumpsByType(tempwadreader.WadFile, TEMP_MAP_HEADER, buildwad, BUILD_MAP_HEADER, REPLACE_TARGET_MAP, true, false, false, true);
 
 				// Close buildwad
 				buildwad.Dispose();
@@ -1224,7 +1225,7 @@ namespace CodeImp.DoomBuilder
 					{
 						// Copy nodebuilder lumps to temp file
 						General.WriteLogLine("Copying nodebuilder lumps to temporary file...");
-						CopyLumpsByType(buildwad, BUILD_MAP_HEADER, tempwad, TEMP_MAP_HEADER, REPLACE_TARGET_MAP, false, false, true, false);
+						CopyLumpsByType(buildwad, BUILD_MAP_HEADER, tempwadreader.WadFile, TEMP_MAP_HEADER, REPLACE_TARGET_MAP, false, false, true, false);
 					}
 					else 
 					{
@@ -1309,7 +1310,7 @@ namespace CodeImp.DoomBuilder
 		// This is copied from the temp wad file and returns null when the lump is not found
 		public MemoryStream GetLumpData(string lumpname) 
 		{
-			Lump l = tempwad.FindLump(lumpname);
+			Lump l = tempwadreader.WadFile.FindLump(lumpname);
 			if(l != null) 
 			{
 				l.Stream.Seek(0, SeekOrigin.Begin);
@@ -1321,18 +1322,18 @@ namespace CodeImp.DoomBuilder
 		// This writes a copy of the data to a lump in the temp file
 		public void SetLumpData(string lumpname, MemoryStream lumpdata) 
 		{
-			int insertindex = tempwad.Lumps.Count;
+			int insertindex = tempwadreader.WadFile.Lumps.Count;
 
 			// Remove the lump if it already exists
-			int li = tempwad.FindLumpIndex(lumpname);
+			int li = tempwadreader.WadFile.FindLumpIndex(lumpname);
 			if(li > -1)
 			{
 				insertindex = li;
-				tempwad.RemoveAt(li);
+				tempwadreader.WadFile.RemoveAt(li);
 			}
 
 			// Insert new lump
-			Lump l = tempwad.Insert(lumpname, insertindex, (int)lumpdata.Length);
+			Lump l = tempwadreader.WadFile.Insert(lumpname, insertindex, (int)lumpdata.Length);
 			l.Stream.Seek(0, SeekOrigin.Begin);
 			lumpdata.WriteTo(l.Stream);
 
@@ -1343,7 +1344,7 @@ namespace CodeImp.DoomBuilder
 		// This checks if the specified lump exists in the temp file
 		public bool LumpExists(string lumpname) 
 		{
-			return (tempwad.FindLumpIndex(lumpname) > -1);
+			return (tempwadreader.WadFile.FindLumpIndex(lumpname) > -1);
 		}
 
 		// This creates empty lumps for those required
@@ -2002,11 +2003,11 @@ namespace CodeImp.DoomBuilder
 
 			// Find the lump
 			if(lumpname == CONFIG_MAP_HEADER) reallumpname = TEMP_MAP_HEADER;
-			Lump lump = tempwad.FindLump(reallumpname);
+			Lump lump = tempwadreader.WadFile.FindLump(reallumpname);
 			if(lump == null) throw new Exception("No such lump in temporary wad file \"" + reallumpname + "\".");
 
 			// Determine source file
-			string sourcefile = (filepathname.Length > 0 ? filepathname : tempwad.Filename);
+			string sourcefile = (filepathname.Length > 0 ? filepathname : tempwadreader.WadFile.Filename);
 
 			// New list of errors
 			if(clearerrors) errors.Clear();
@@ -2183,7 +2184,7 @@ namespace CodeImp.DoomBuilder
 						};
 
 						//INFO: CompileLump() prepends lumpname with "?" to distinguish between temporary files and files compiled in place
-						DataLocation location = new DataLocation { location = tempwad.Filename, type = DataLocation.RESOURCE_WAD };
+						DataLocation location = new DataLocation { location = tempwadreader.WadFile.Filename, type = DataLocation.RESOURCE_WAD };
 						TextResourceData data = new TextResourceData(stream, location, "?SCRIPTS", false);
 						if(parser.Parse(data, scriptconfig.Compiler.Files, true, AcsParserSE.IncludeType.NONE, false))
 						{
@@ -2431,14 +2432,14 @@ namespace CodeImp.DoomBuilder
 
 				// Setup new map format IO
 				General.WriteLogLine("Initializing map format interface " + config.FormatInterface + "...");
-				io = MapSetIO.Create(config.FormatInterface, tempwad, this);
+				io = MapSetIO.Create(config.FormatInterface, tempwadreader.WadFile, this);
 
 				//mxd. Some lumps may've become unneeded during map format conversion. 
 				if(oldiotype != io.GetType())
-					RemoveUnneededLumps(tempwad, TEMP_MAP_HEADER, false);
+					RemoveUnneededLumps(tempwadreader.WadFile, TEMP_MAP_HEADER, false);
 
 				// Create required lumps if they don't exist yet
-				CreateRequiredLumps(tempwad, TEMP_MAP_HEADER);
+				CreateRequiredLumps(tempwadreader.WadFile, TEMP_MAP_HEADER);
 
 				// Let the plugins know
 				General.Plugins.MapReconfigure();
