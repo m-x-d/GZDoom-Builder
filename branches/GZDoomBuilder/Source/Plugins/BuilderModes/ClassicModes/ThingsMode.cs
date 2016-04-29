@@ -999,13 +999,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Make text labels for selected linedefs
 			ICollection<Thing> orderedselection = General.Map.Map.GetSelectedThings(true);
+			labels = new Dictionary<Thing, TextLabel>(orderedselection.Count);
 
 			// Otherwise significant delays will occure.
 			// Also we probably won't care about selection ordering when selecting this many anyway
 			if(orderedselection.Count > MAX_THING_LABELS) return;
 
 			int index = 0;
-			labels = new Dictionary<Thing, TextLabel>(orderedselection.Count);
 			foreach(Thing thing in orderedselection)
 			{
 				TextLabel l = new TextLabel();
