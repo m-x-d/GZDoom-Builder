@@ -128,7 +128,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					toadjust.UnionWith(General.Map.Map.GetUnselectedSectorsFromLinedefs(selectedlines));
 
 					// Process outer sidedefs
-					Tools.AdjustOuterSidedefs(toadjust, selectedlines);
+					Tools.AdjustOuterSidedefs(toadjust, new HashSet<Linedef>(selectedlines));
 				}
 
 				// If only a single sector was selected, deselect it now

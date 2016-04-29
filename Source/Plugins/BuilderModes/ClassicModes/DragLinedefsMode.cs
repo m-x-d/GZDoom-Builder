@@ -119,7 +119,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					HashSet<Sector> toadjust = General.Map.Map.GetUnselectedSectorsFromLinedefs(selectedlines);
 
 					// Process outer sidedefs
-					Tools.AdjustOuterSidedefs(toadjust, selectedlines);
+					Tools.AdjustOuterSidedefs(toadjust, new HashSet<Linedef>(selectedlines));
 				}
 
 				// If only a single linedef was selected, deselect it now

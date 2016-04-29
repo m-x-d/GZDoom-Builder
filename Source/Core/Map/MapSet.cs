@@ -2588,7 +2588,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		/// <summary>mxd. This finds the line closest to the specified position excluding given list of linedefs.</summary>
-		public Linedef NearestLinedef(Vector2D pos, ICollection<Linedef> linesToExclude) 
+		public Linedef NearestLinedef(Vector2D pos, HashSet<Linedef> linesToExclude) 
 		{
 			Linedef closest = null;
 			float distance = float.MaxValue;
@@ -2596,7 +2596,7 @@ namespace CodeImp.DoomBuilder.Map
 			// Go for all linedefs in selection
 			foreach(Linedef l in linedefs) 
 			{
-				if(linesToExclude.Contains(l))	continue;
+				if(linesToExclude.Contains(l)) continue;
 				// Calculate distance and check if closer than previous find
 				float d = l.SafeDistanceToSq(pos, true);
 				if(d < distance) 

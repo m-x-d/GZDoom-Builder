@@ -3365,11 +3365,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			//align things
-			int thingsCount = General.Map.Map.Things.Count;
-
 			foreach(Thing t in things) 
 			{
-				List<Linedef> excludedLines = new List<Linedef>();
+				HashSet<Linedef> excludedLines = new HashSet<Linedef>();
 				bool aligned;
 
 				do 
@@ -3381,7 +3379,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					{
 						excludedLines.Add(l);
 
-						if(excludedLines.Count == thingsCount) 
+						if(excludedLines.Count == General.Map.Map.Linedefs.Count) 
 						{
 							ThingTypeInfo tti = General.Map.Data.GetThingInfo(t.Type);
 							General.ErrorLogger.Add(ErrorType.Warning, "Unable to align " + tti.Title + " (index " + t.Index + ") to any linedef!");

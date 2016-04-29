@@ -1485,7 +1485,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Update outer sides of the selection
 					HashSet<Sector> affectedsectors = new HashSet<Sector>(General.Map.Map.GetSelectedSectors(true));
 					affectedsectors.UnionWith(General.Map.Map.GetUnselectedSectorsFromLinedefs(selectedlines));
-					Tools.AdjustOuterSidedefs(affectedsectors, selectedlines);
+					Tools.AdjustOuterSidedefs(affectedsectors, new HashSet<Linedef>(selectedlines));
 				}
 
 				// Stitch geometry
