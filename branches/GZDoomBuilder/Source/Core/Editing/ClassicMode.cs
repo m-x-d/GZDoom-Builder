@@ -653,7 +653,8 @@ namespace CodeImp.DoomBuilder.Editing
 			if(renderer.StartOverlay(true))
 			{
 				//mxd. Center 2d view on camera position in 3d view
-				if(General.Settings.GZSynchCameras && General.Editing.PreviousMode != null && General.Editing.PreviousMode.IsSubclassOf(typeof (VisualMode)))
+				if(General.Settings.GZSynchCameras && !General.Interface.CtrlState 
+					&& General.Editing.PreviousMode != null && General.Editing.PreviousMode.IsSubclassOf(typeof(VisualMode)))
 				{
 					Vector2D campos = new Vector2D(General.Map.VisualCamera.Position.x, General.Map.VisualCamera.Position.y);
 					renderer2d.PositionView(campos.x, campos.y);

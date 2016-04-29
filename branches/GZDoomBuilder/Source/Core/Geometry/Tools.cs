@@ -2254,7 +2254,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		}
 
 		//mxd. Try to create/remove/reassign outer sidedefs. Selected linedefs and verts are marked
-		public static void AdjustOuterSidedefs(HashSet<Sector> selectedsectors, ICollection<Linedef> selectedlines)
+		public static void AdjustOuterSidedefs(HashSet<Sector> selectedsectors, HashSet<Linedef> selectedlines)
 		{
 			HashSet<Sidedef> outersides = new HashSet<Sidedef>();
 			HashSet<Linedef> singlesidedlines = new HashSet<Linedef>();

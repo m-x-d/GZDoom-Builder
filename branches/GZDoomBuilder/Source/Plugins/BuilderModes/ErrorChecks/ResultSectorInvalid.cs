@@ -100,7 +100,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				if(!merged)
 				{
-					List<Linedef> sectorlines = new List<Linedef>(sector.Sidedefs.Count);
+					HashSet<Linedef> sectorlines = new HashSet<Linedef>();
 					foreach(Sidedef side in sector.Sidedefs) sectorlines.Add(side.Line);
 
 					if(sectorlines.Count > 0)

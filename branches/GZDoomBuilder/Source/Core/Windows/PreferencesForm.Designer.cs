@@ -470,9 +470,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.cbSynchCameras.AutoSize = true;
 			this.cbSynchCameras.Location = new System.Drawing.Point(16, 371);
 			this.cbSynchCameras.Name = "cbSynchCameras";
-			this.cbSynchCameras.Size = new System.Drawing.Size(260, 17);
+			this.cbSynchCameras.Size = new System.Drawing.Size(294, 17);
 			this.cbSynchCameras.TabIndex = 12;
-			this.cbSynchCameras.Text = "Sync camera position between 2D and 3D modes";
+			this.cbSynchCameras.Text = "Synchronize camera position between 2D and 3D modes";
 			this.cbSynchCameras.UseVisualStyleBackColor = true;
 			// 
 			// showtexturesizes

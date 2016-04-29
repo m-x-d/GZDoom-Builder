@@ -103,7 +103,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					// Add sectors, which have all their linedefs selected
 					// (otherwise those would be destroyed after moving the selection)
-					ICollection<Linedef> selectedlines = General.Map.Map.LinedefsFromMarkedVertices(false, true, false);
+					HashSet<Linedef> selectedlines = new HashSet<Linedef>(General.Map.Map.LinedefsFromMarkedVertices(false, true, false));
 					HashSet<Sector> toadjust = General.Map.Map.GetUnselectedSectorsFromLinedefs(selectedlines);
 
 					// Process outer sidedefs

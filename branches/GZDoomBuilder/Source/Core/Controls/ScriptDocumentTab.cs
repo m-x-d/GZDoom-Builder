@@ -48,7 +48,6 @@ namespace CodeImp.DoomBuilder.Controls
 		
 		// The script edit control
 		protected readonly ScriptEditorControl editor;
-		private bool preventchanges; //mxd
 		private string title; //mxd
 
 		// Derived classes must set this!
@@ -437,7 +436,7 @@ namespace CodeImp.DoomBuilder.Controls
 		//mxd
 		private void functionbar_DropDown(object sender, EventArgs e) 
 		{
-			if(!preventchanges && editor.IsChanged) panel.ShowErrors(UpdateNavigator());
+			if(editor.IsChanged) panel.ShowErrors(UpdateNavigator());
 		}
 
 		//mxd

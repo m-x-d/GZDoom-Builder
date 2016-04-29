@@ -170,33 +170,37 @@ namespace CodeImp.DoomBuilder.VisualModes
 			//mxd. Synch camera position to cursor position or center of the screen in 2d-mode
 			if(General.Settings.GZSynchCameras) 
 			{
-				//If initial position is inside or nearby a sector - adjust camera.z accordingly
-				float posz = General.Map.VisualCamera.Position.z;
-				Sector nearestsector = General.Map.Map.GetSectorByCoordinates(initialcameraposition, blockmap);
-
-				if(nearestsector == null)
+				// Keep previous camera position if Control is held and camera was previously moved in Visual mode
+				if(!General.Interface.CtrlState || General.Map.VisualCamera.Position.GetLengthSq() == 0)
 				{
-					Linedef nearestline = MapSet.NearestLinedef(General.Map.Map.Linedefs, initialcameraposition);
-					if(nearestline != null) 
+					//If initial position is inside or nearby a sector - adjust camera.z accordingly
+					float posz = General.Map.VisualCamera.Position.z;
+					Sector nearestsector = General.Map.Map.GetSectorByCoordinates(initialcameraposition, blockmap);
+
+					if(nearestsector == null)
 					{
-						float side = nearestline.SideOfLine(initialcameraposition);
-						Sidedef nearestside = (side < 0.0f ? nearestline.Front : nearestline.Back) ?? (side < 0.0f ? nearestline.Back : nearestline.Front);
-						if(nearestside != null) nearestsector = nearestside.Sector;
+						Linedef nearestline = MapSet.NearestLinedef(General.Map.Map.Linedefs, initialcameraposition);
+						if(nearestline != null)
+						{
+							float side = nearestline.SideOfLine(initialcameraposition);
+							Sidedef nearestside = (side < 0.0f ? nearestline.Front : nearestline.Back) ?? (side < 0.0f ? nearestline.Back : nearestline.Front);
+							if(nearestside != null) nearestsector = nearestside.Sector;
+						}
 					}
-				}
 
-				if(nearestsector != null) 
-				{
-					int sectorheight = nearestsector.CeilHeight - nearestsector.FloorHeight;
-					if(sectorheight < 41)
-						posz = nearestsector.FloorHeight + Math.Max(16, sectorheight / 2);
-					else if(General.Map.VisualCamera.Position.z < nearestsector.FloorHeight + 41) 
-						posz = nearestsector.FloorHeight + 41; // same as in doom
-					else if(General.Map.VisualCamera.Position.z > nearestsector.CeilHeight) 
-						posz = nearestsector.CeilHeight - 4;
-				}
+					if(nearestsector != null)
+					{
+						int sectorheight = nearestsector.CeilHeight - nearestsector.FloorHeight;
+						if(sectorheight < 41)
+							posz = nearestsector.FloorHeight + Math.Max(16, sectorheight / 2);
+						else if(General.Map.VisualCamera.Position.z < nearestsector.FloorHeight + 41)
+							posz = nearestsector.FloorHeight + 41; // same as in doom
+						else if(General.Map.VisualCamera.Position.z > nearestsector.CeilHeight)
+							posz = nearestsector.CeilHeight - 4;
+					}
 
-				General.Map.VisualCamera.Position = new Vector3D(initialcameraposition.x, initialcameraposition.y, posz);
+					General.Map.VisualCamera.Position = new Vector3D(initialcameraposition.x, initialcameraposition.y, posz);
+				}
 			} 
 			else 
 			{
