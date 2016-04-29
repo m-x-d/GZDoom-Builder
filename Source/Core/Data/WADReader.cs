@@ -20,10 +20,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
+using CodeImp.DoomBuilder.Compilers;
+using CodeImp.DoomBuilder.GZBuilder.Data;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.ZDoom;
-using CodeImp.DoomBuilder.GZBuilder.Data;
-using System.Text.RegularExpressions;
 
 #endregion
 
@@ -50,17 +51,17 @@ namespace CodeImp.DoomBuilder.Data
 		// Source
 		private WAD file;
 		private bool is_iwad;
-		private readonly bool strictpatches;
+		private bool strictpatches;
 		
 		// Lump ranges
-		private readonly List<LumpRange> flatranges;
-		private readonly List<LumpRange> invertedflatranges; //mxd
-		private readonly List<LumpRange> patchranges;
-		private readonly List<LumpRange> spriteranges;
-		private readonly List<LumpRange> textureranges;
-		private readonly List<LumpRange> hiresranges; //mxd
-		private readonly List<LumpRange> colormapranges;
-		private readonly List<LumpRange> voxelranges; //mxd
+		private List<LumpRange> flatranges;
+		private List<LumpRange> invertedflatranges; //mxd
+		private List<LumpRange> patchranges;
+		private List<LumpRange> spriteranges;
+		private List<LumpRange> textureranges;
+		private List<LumpRange> hiresranges; //mxd
+		private List<LumpRange> colormapranges;
+		private List<LumpRange> voxelranges; //mxd
 		
 		#endregion
 
@@ -74,17 +75,49 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public WADReader(DataLocation dl) : base(dl)
+		public WADReader(DataLocation dl, bool asreadonly) : base(dl, asreadonly)
 		{
 			General.WriteLogLine("Opening WAD resource \"" + location.location + "\"");
 
 			if(!File.Exists(location.location))
 				throw new FileNotFoundException("Could not find the file \"" + location.location + "\"", location.location);
+
+			// Initialize
+			file = new WAD(location.location, asreadonly);
+			strictpatches = dl.option1;
+			Initialize(); //mxd
+
+			// We have no destructor
+			GC.SuppressFinalize(this);
+		}
+
+		//mxd. Constructor
+		internal WADReader(DataLocation dl, bool asreadonly, bool create) : base(dl, asreadonly)
+		{
+			if(!create)
+			{
+				General.WriteLogLine("Opening WAD resource \"" + location.location + "\"");
+
+				if(!File.Exists(location.location))
+					throw new FileNotFoundException("Could not find the file \"" + location.location + "\"", location.location);
+			}
+
+			// Initialize
+			file = new WAD(location.location, asreadonly);
+			strictpatches = dl.option1;
+			Initialize();
+
+			// We have no destructor
+			GC.SuppressFinalize(this);
+		}
+
+		//mxd
+		private void Initialize()
+		{
+			is_iwad = file.IsIWAD;
+			isreadonly = file.IsReadOnly; // I guess opening an official IWAD in write-enabled mode is possible
 			
 			// Initialize
-			file = new WAD(location.location, true);
-			is_iwad = file.IsIWAD;
-			strictpatches = dl.option1;
 			patchranges = new List<LumpRange>();
 			spriteranges = new List<LumpRange>();
 			flatranges = new List<LumpRange>();
@@ -133,9 +166,6 @@ namespace CodeImp.DoomBuilder.Data
 				LumpRange range = new LumpRange {start = 0, end = file.Lumps.Count - 1};
 				invertedflatranges.Add(range);
 			}
-
-			// We have no destructor
-			GC.SuppressFinalize(this);
 		}
 
 		// Disposer
@@ -1081,7 +1111,10 @@ namespace CodeImp.DoomBuilder.Data
 			return result;
 		}
 
-		//mxd
+		#endregion
+
+		#region ================== IO (mxd)
+
 		internal override MemoryStream LoadFile(string name) 
 		{
 			Lump l = file.FindLump(name);
@@ -1095,10 +1128,93 @@ namespace CodeImp.DoomBuilder.Data
 			return null;
 		}
 
-		//mxd
-		internal override bool FileExists(string name) 
+		internal override MemoryStream LoadFile(string name, int lumpindex)
 		{
-			return file.FindLumpIndex(name) != -1;
+			if(lumpindex < 0 || file.Lumps.Count <= lumpindex || file.Lumps[lumpindex].Name != name)
+				return null;
+
+			Lump l = file.Lumps[lumpindex];
+			l.Stream.Seek(0, SeekOrigin.Begin);
+			return new MemoryStream(l.Stream.ReadAllBytes());
+		}
+
+		internal override bool SaveFile(MemoryStream lumpdata, string lumpname)
+		{
+			if(isreadonly) return false;
+			int insertindex = file.Lumps.Count;
+
+			// Remove the lump if it already exists
+			int li = file.FindLumpIndex(lumpname);
+			if(li > -1)
+			{
+				insertindex = li;
+				file.RemoveAt(li);
+			}
+
+			// Insert new lump
+			Lump l = file.Insert(lumpname, insertindex, (int)lumpdata.Length);
+			l.Stream.Seek(0, SeekOrigin.Begin);
+			lumpdata.WriteTo(l.Stream);
+
+			return true;
+		}
+
+		internal override bool SaveFile(MemoryStream lumpdata, string lumpname, int lumpindex)
+		{
+			if(isreadonly || lumpindex < 0 || file.Lumps.Count <= lumpindex || file.Lumps[lumpindex].Name != lumpname)
+				return false;
+
+			// Remove the lump
+			file.RemoveAt(lumpindex);
+
+			// Insert new lump
+			Lump l = file.Insert(lumpname, lumpindex, (int)lumpdata.Length);
+			l.Stream.Seek(0, SeekOrigin.Begin);
+			lumpdata.WriteTo(l.Stream);
+
+			return true;
+		}
+
+		internal override bool FileExists(string lumpname) 
+		{
+			return file.FindLumpIndex(lumpname) != -1;
+		}
+
+		internal override bool FileExists(string lumpname, int lumpindex)
+		{
+			return file.FindLumpIndex(lumpname) == lumpindex;
+		}
+
+		#endregion
+
+		#region ================== Compiling (mxd)
+
+		// This compiles a script lump and returns any errors that may have occurred
+		// Returns true when our code worked properly (even when the compiler returned errors)
+		internal override bool CompileLump(string lumpname, out List<CompilerError> errors)
+		{
+			int index = file.FindLumpIndex(lumpname);
+			if(index == -1)
+			{
+				errors = new List<CompilerError>
+				{
+					new CompilerError
+					{
+						description = "Lump \"" + lumpname + "\" does not exist", 
+						filename = this.location.GetDisplayName()
+					}
+				};
+				return false;
+			}
+
+			return CompileLump(lumpname, index, out errors);
+		}
+
+		// This compiles a script lump and returns any errors that may have occurred
+		// Returns true when our code worked properly (even when the compiler returned errors)
+		internal override bool CompileLump(string lumpname, int lumpindex, out List<CompilerError> errors)
+		{
+			throw new NotImplementedException();
 		}
 
 		#endregion

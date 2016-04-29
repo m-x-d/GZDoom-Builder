@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using CodeImp.DoomBuilder.Compilers;
 using CodeImp.DoomBuilder.IO;
 
 #endregion
@@ -36,7 +37,7 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public DirectoryReader(DataLocation dl) : base(dl)
+		public DirectoryReader(DataLocation dl, bool asreadonly) : base(dl, asreadonly)
 		{
 			General.WriteLogLine("Opening directory resource \"" + location.location + "\"");
 			
@@ -57,7 +58,7 @@ namespace CodeImp.DoomBuilder.Data
 			foreach(string wadfile in wadfiles)
 			{
 				DataLocation wdl = new DataLocation(DataLocation.RESOURCE_WAD, Path.Combine(location.location, wadfile), false, false, true);
-				wads.Add(new WADReader(wdl));
+				wads.Add(new WADReader(wdl, isreadonly));
 			}
 		}
 
@@ -397,6 +398,7 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		// This returns true if the specified file exists
+		internal override bool FileExists(string filename, int unused) { return files.FileExists(filename); } //mxd
 		internal override bool FileExists(string filename)
 		{
 			return files.FileExists(filename);
@@ -473,6 +475,28 @@ namespace CodeImp.DoomBuilder.Data
 			return s;
 		}
 
+		//mxd
+		internal override bool SaveFile(MemoryStream stream, string filename, int unused) { return SaveFile(stream, filename); }
+		internal override bool SaveFile(MemoryStream stream, string filename)
+		{
+			if(isreadonly) return false;
+
+			try
+			{
+				lock(this)
+				{
+					File.WriteAllBytes(Path.Combine(location.location, filename), stream.ToArray());
+				}
+			}
+			catch(Exception e)
+			{
+				General.ErrorLogger.Add(ErrorType.Error, "Unable to save file: " + e.Message);
+				return false;
+			}
+
+			return true;
+		}
+
 		// This creates a temp file for the speciied file and return the absolute path to the temp file
 		// NOTE: Callers are responsible for removing the temp file when done!
 		protected override string CreateTempFile(string filename)
@@ -481,6 +505,18 @@ namespace CodeImp.DoomBuilder.Data
 			string tempfile = General.MakeTempFilename(General.Map.TempPath, "wad");
 			File.Copy(Path.Combine(location.location, filename), tempfile);
 			return tempfile;
+		}
+
+		#endregion
+
+		#region ================== Compiling (mxd)
+
+		// This compiles a script lump and returns any errors that may have occurred
+		// Returns true when our code worked properly (even when the compiler returned errors)
+		internal override bool CompileLump(string filename, int unused, out List<CompilerError> errors) { return CompileLump(filename, out errors); }
+		internal override bool CompileLump(string lumpname, out List<CompilerError> errors)
+		{
+			throw new NotImplementedException();
 		}
 
 		#endregion

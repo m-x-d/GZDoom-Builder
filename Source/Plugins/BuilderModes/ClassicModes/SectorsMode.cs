@@ -204,7 +204,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						for(int i = 0; i < s.Labels.Count; i++) 
 						{
 							// Render only when enough space for the label to see
-							if(requiredsize < s.Labels[i].radius) torender.Add(labelarray[i]);
+							if(!string.IsNullOrEmpty(labelarray[i].Text) && requiredsize < s.Labels[i].radius)
+								torender.Add(labelarray[i]);
 						}
 					}
 					renderer.RenderText(torender);
@@ -249,7 +250,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						l.Text = group.Value[0];
 					}
 
-					torender.Add(l);
+					if(!string.IsNullOrEmpty(l.Text)) torender.Add(l);
 				}
 			}
 
