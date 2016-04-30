@@ -108,7 +108,6 @@ namespace CodeImp.DoomBuilder.Controls
 		private int linenumbercharlength; //mxd. Current max number of chars in the line number
 		private int lastcaretpos; //mxd. Used in brace matching
 		private int caretoffset; //mxd. Used to modify caret position after autogenerating stuff
-		private bool skiptextinsert; //mxd. Gross hacks
 		private bool expandcodeblock; //mxd. More gross hacks
 		private string highlightedword; //mxd
 		private Encoding encoding; //mxd
@@ -176,37 +175,38 @@ namespace CodeImp.DoomBuilder.Controls
 			RegisterAutoCompleteImage(ImageIndex.ScriptProperty, Resources.ScriptProperty); //mxd
 			RegisterMarkerImage(ImageIndex.ScriptError, Resources.ScriptError);
 
-			//mxd. These key combinations put odd characters in the script. Let's disable them
+			// These key combinations put odd characters in the script. Let's disable them
 			scriptedit.AssignCmdKey(Keys.Control | Keys.Q, Command.Null);
 			scriptedit.AssignCmdKey(Keys.Control | Keys.W, Command.Null);
 			scriptedit.AssignCmdKey(Keys.Control | Keys.E, Command.Null);
 			scriptedit.AssignCmdKey(Keys.Control | Keys.R, Command.Null);
-			scriptedit.AssignCmdKey(Keys.Control | Keys.Y, Command.Null);
-			scriptedit.AssignCmdKey(Keys.Control | Keys.U, Command.Null);
 			scriptedit.AssignCmdKey(Keys.Control | Keys.I, Command.Null);
 			scriptedit.AssignCmdKey(Keys.Control | Keys.P, Command.Null);
-			scriptedit.AssignCmdKey(Keys.Control | Keys.Shift | Keys.A, Command.Null);
-			scriptedit.AssignCmdKey(Keys.Control | Keys.D, Command.Null);
 			scriptedit.AssignCmdKey(Keys.Control | Keys.G, Command.Null);
 			scriptedit.AssignCmdKey(Keys.Control | Keys.H, Command.Null);
-			scriptedit.AssignCmdKey(Keys.Control | Keys.J, Command.Null);
 			scriptedit.AssignCmdKey(Keys.Control | Keys.K, Command.Null);
-			scriptedit.AssignCmdKey(Keys.Control | Keys.L, Command.Null);
+			scriptedit.AssignCmdKey(Keys.Control | Keys.B, Command.Null);
+			scriptedit.AssignCmdKey(Keys.Control | Keys.N, Command.Null);
+			scriptedit.AssignCmdKey(Keys.Control | Keys.Shift | Keys.Q, Command.Null);
+			scriptedit.AssignCmdKey(Keys.Control | Keys.Shift | Keys.W, Command.Null);
+			scriptedit.AssignCmdKey(Keys.Control | Keys.Shift | Keys.E, Command.Null);
+			scriptedit.AssignCmdKey(Keys.Control | Keys.Shift | Keys.R, Command.Null);
+			scriptedit.AssignCmdKey(Keys.Control | Keys.Shift | Keys.Y, Command.Null);
+			scriptedit.AssignCmdKey(Keys.Control | Keys.Shift | Keys.O, Command.Null);
+			scriptedit.AssignCmdKey(Keys.Control | Keys.Shift | Keys.P, Command.Null);
+			scriptedit.AssignCmdKey(Keys.Control | Keys.Shift | Keys.A, Command.Null);
+			scriptedit.AssignCmdKey(Keys.Control | Keys.Shift | Keys.S, Command.Null);
+			scriptedit.AssignCmdKey(Keys.Control | Keys.Shift | Keys.D, Command.Null);
+			scriptedit.AssignCmdKey(Keys.Control | Keys.Shift | Keys.F, Command.Null);
+			scriptedit.AssignCmdKey(Keys.Control | Keys.Shift | Keys.G, Command.Null);
+			scriptedit.AssignCmdKey(Keys.Control | Keys.Shift | Keys.H, Command.Null);
+			scriptedit.AssignCmdKey(Keys.Control | Keys.Shift | Keys.K, Command.Null);
 			scriptedit.AssignCmdKey(Keys.Control | Keys.Shift | Keys.Z, Command.Null);
 			scriptedit.AssignCmdKey(Keys.Control | Keys.Shift | Keys.X, Command.Null);
 			scriptedit.AssignCmdKey(Keys.Control | Keys.Shift | Keys.C, Command.Null);
 			scriptedit.AssignCmdKey(Keys.Control | Keys.Shift | Keys.V, Command.Null);
-			scriptedit.AssignCmdKey(Keys.Control | Keys.B, Command.Null);
-			scriptedit.AssignCmdKey(Keys.Control | Keys.N, Command.Null);
-			scriptedit.AssignCmdKey(Keys.Control | Keys.M, Command.Null);
-
-			//mxd. These key combinations are used to perform special actions. Let's disable them
-			scriptedit.AssignCmdKey(Keys.F3, Command.Null); // F3 for Find Next
-			scriptedit.AssignCmdKey(Keys.F2, Command.Null); // F2 for Find Previous
-			scriptedit.AssignCmdKey(Keys.Control | Keys.F, Command.Null); // CTRL+F for find & replace
-			scriptedit.AssignCmdKey(Keys.Control | Keys.S, Command.Null); // CTRL+S for save
-			scriptedit.AssignCmdKey(Keys.Control | Keys.O, Command.Null); // CTRL+O for open
-			scriptedit.AssignCmdKey(Keys.Control | Keys.Space, Command.Null); // CTRL+Space to autocomplete <- TODO: this doesn't seem to work...
+			scriptedit.AssignCmdKey(Keys.Control | Keys.Shift | Keys.B, Command.Null);
+			scriptedit.AssignCmdKey(Keys.Control | Keys.Shift | Keys.N, Command.Null);
 		}
 		
 		#endregion
@@ -866,6 +866,77 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 		}
 
+		//mxd. Handle keyboard shortcuts
+		protected override bool ProcessCmdKey(ref Message msg, Keys keydata)
+		{
+			// F3 for Find Next
+			if(keydata == Keys.F3)
+			{
+				if(OnFindNext != null) OnFindNext();
+				return true;
+			}
+
+			//mxd. F2 for Find Previous
+			if(keydata == Keys.F2)
+			{
+				if(OnFindPrevious != null) OnFindPrevious();
+				return true;
+			}
+
+			// CTRL+F for find & replace
+			if(keydata == (Keys.Control | Keys.F))
+			{
+				if(OnOpenFindAndReplace != null) OnOpenFindAndReplace();
+				return true;
+			}
+
+			// CTRL+S for save
+			if(keydata == (Keys.Control | Keys.S))
+			{
+				if(OnExplicitSaveTab != null) OnExplicitSaveTab();
+				return true;
+			}
+
+			// CTRL+O for open
+			if(keydata == (Keys.Control | Keys.O))
+			{
+				if(OnOpenScriptBrowser != null) OnOpenScriptBrowser();
+				return true;
+			}
+
+			// CTRL+Space to autocomplete
+			if(keydata == (Keys.Control | Keys.Space))
+			{
+				// Hide call tip if any
+				scriptedit.CallTipCancel();
+
+				// Show autocomplete
+				handler.ShowAutoCompletionList();
+				return true;
+			}
+
+			//mxd. Tab to expand code snippet. Do it only when the text cursor is at the end of a keyword.
+			if(keydata == Keys.Tab && !scriptedit.AutoCActive)
+			{
+				string curword = GetCurrentWord().ToLowerInvariant();
+				if(scriptconfig.Snippets.Contains(curword) && scriptedit.CurrentPosition == scriptedit.WordEndPosition(scriptedit.CurrentPosition, true))
+				{
+					InsertSnippet(scriptconfig.GetSnippet(curword));
+					return true;
+				}
+			}
+
+			//mxd. Skip text insert when "save screenshot" action keys are pressed
+			Actions.Action[] actions = General.Actions.GetActionsByKey((int)keydata);
+			foreach(Actions.Action action in actions)
+			{
+				if(action.ShortName == "savescreenshot" || action.ShortName == "saveeditareascreenshot") return true;
+			}
+
+			// Pass to base
+			return base.ProcessCmdKey(ref msg, keydata);
+		}
+
 		#endregion
 		
 		#region ================== Events
@@ -1032,14 +1103,8 @@ namespace CodeImp.DoomBuilder.Controls
 		//mxd
 		private void scriptedit_InsertCheck(object sender, InsertCheckEventArgs e)
 		{
-			// Gross hacks...
-			if(skiptextinsert)
-			{
-				e.Text = string.Empty;
-				skiptextinsert = false;
-			}
 			// Do we want auto-indentation?
-			else if(!expandcodeblock && General.Settings.ScriptAutoIndent && e.Text == "\r\n")
+			if(!expandcodeblock && General.Settings.ScriptAutoIndent && e.Text == "\r\n")
 			{
 				// Get current line indentation up to the cursor position
 				string linetext = scriptedit.Lines[scriptedit.CurrentLine].Text;
@@ -1117,92 +1182,6 @@ namespace CodeImp.DoomBuilder.Controls
 					
 					// Update caret position
 					if(entrypos != -1) scriptedit.SetEmptySelection(startpos + entrypos);
-				}
-			}
-		}
-		
-		// Key pressed down
-		private void scriptedit_KeyDown(object sender, KeyEventArgs e)
-		{
-			// F3 for Find Next
-			if((e.KeyCode == Keys.F3) && (e.Modifiers == Keys.None))
-			{
-				if(OnFindNext != null)
-				{
-					OnFindNext();
-					skiptextinsert = true;
-				}
-			}
-			// F2 for Find Previous (mxd)
-			else if((e.KeyCode == Keys.F2) && (e.Modifiers == Keys.None))
-			{
-				if(OnFindPrevious != null)
-				{
-					OnFindPrevious();
-					skiptextinsert = true;
-				}
-			}
-			// CTRL+F for find & replace
-			else if((e.KeyCode == Keys.F) && (e.Modifiers == Keys.Control))
-			{
-				if(OnOpenFindAndReplace != null)
-				{
-					OnOpenFindAndReplace();
-					skiptextinsert = true;
-				}
-			}
-			// CTRL+S for save
-			else if((e.KeyCode == Keys.S) && (e.Modifiers == Keys.Control))
-			{
-				if(OnExplicitSaveTab != null)
-				{
-					OnExplicitSaveTab();
-					skiptextinsert = true;
-				}
-			}
-			// CTRL+O for open
-			else if((e.KeyCode == Keys.O) && (e.Modifiers == Keys.Control))
-			{
-				if(OnOpenScriptBrowser != null)
-				{
-					OnOpenScriptBrowser();
-					skiptextinsert = true;
-				}
-			}
-			// CTRL+Space to autocomplete
-			else if((e.KeyCode == Keys.Space) && (e.Modifiers == Keys.Control))
-			{
-				// Hide call tip if any
-				scriptedit.CallTipCancel();
-				
-				// Show autocomplete
-				handler.ShowAutoCompletionList();
-				skiptextinsert = true;
-			}
-			//mxd. Tab to expand code snippet. Do it only when the text cursor is at the end of a keyword.
-			else if(e.KeyCode == Keys.Tab)
-			{
-				if(!scriptedit.AutoCActive)
-				{
-					string curword = GetCurrentWord().ToLowerInvariant();
-					if(scriptconfig.Snippets.Contains(curword) && scriptedit.CurrentPosition == scriptedit.WordEndPosition(scriptedit.CurrentPosition, true))
-					{
-						InsertSnippet(scriptconfig.GetSnippet(curword));
-						skiptextinsert = true;
-					}
-				}
-			}
-			else
-			{
-				//mxd. Skip text insert when "save screenshot" action's keys are pressed
-				Actions.Action[] actions = General.Actions.GetActionsByKey((int)e.KeyData);
-				foreach(Actions.Action action in actions)
-				{
-					if(action.ShortName == "savescreenshot" || action.ShortName == "saveeditareascreenshot")
-					{
-						skiptextinsert = true;
-						return;
-					}
 				}
 			}
 		}
