@@ -58,7 +58,6 @@ namespace CodeImp.DoomBuilder.Controls
 			this.scriptedit.AutoCCompleted += new System.EventHandler<ScintillaNET.AutoCSelectionEventArgs>(this.scriptedit_AutoCCompleted);
 			this.scriptedit.InsertCheck += new System.EventHandler<ScintillaNET.InsertCheckEventArgs>(this.scriptedit_InsertCheck);
 			this.scriptedit.UpdateUI += new System.EventHandler<ScintillaNET.UpdateUIEventArgs>(this.scriptedit_UpdateUI);
-			this.scriptedit.KeyDown += new System.Windows.Forms.KeyEventHandler(this.scriptedit_KeyDown);
 			// 
 			// scriptpanel
 			// 
