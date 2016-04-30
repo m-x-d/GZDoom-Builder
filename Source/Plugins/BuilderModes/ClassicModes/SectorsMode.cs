@@ -1395,6 +1395,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
+		public override void OnViewSelectionNumbersChanged(bool enabled)
+		{
+			if(enabled) UpdateSelectedLabels();
+		}
+
+		//mxd
 		public override void ToggleHighlight()
 		{
 			// Update label colors

@@ -466,9 +466,15 @@ namespace CodeImp.DoomBuilder.Controls
 			foreach(ScriptDocumentTab t in tabs.TabPages) //mxd
 			{
 				if(t.ExplicitSave)
-					General.Map.Options.ScriptFileSettings.Add(t.Filename, t.GetViewSettings());
+				{
+					// Don't store tabs, which were never saved (this only happens when a new tab was created and no text was entered into it before closing the script editor)
+					if(!t.IsSaveAsRequired)
+						General.Map.Options.ScriptFileSettings[t.Filename] = t.GetViewSettings();
+				}
 				else
-					General.Map.Options.ScriptLumpSettings.Add(t.Filename, t.GetViewSettings());
+				{
+					General.Map.Options.ScriptLumpSettings[t.Filename] = t.GetViewSettings();
+				}
 			}
 		}
 		

@@ -269,6 +269,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			General.Map.Map.EndAddRemove(); //mxd
 		}
+
+		public virtual void OnViewSelectionNumbersChanged(bool enabled) { } //mxd
+		public virtual void OnViewSelectionEffectsChanged(bool enabled) { } //mxd
 		
 		#endregion
 
