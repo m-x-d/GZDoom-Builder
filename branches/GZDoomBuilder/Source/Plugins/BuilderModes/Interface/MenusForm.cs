@@ -223,6 +223,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private void buttonselectionnumbers_Click(object sender, EventArgs e)
 		{
 			BuilderPlug.Me.ViewSelectionNumbers = buttonselectionnumbers.Checked;
+
+			//mxd. Notify current mode
+			BaseClassicMode mode = General.Editing.Mode as BaseClassicMode;
+			if(mode != null) mode.OnViewSelectionNumbersChanged(BuilderPlug.Me.ViewSelectionNumbers);
+
 			General.Interface.RedrawDisplay();
 			General.Interface.DisplayStatus(StatusType.Info, (buttonselectionnumbers.Checked ?
 				"Show selection numbers" :
@@ -233,6 +238,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private void buttonselectioneffects_Click(object sender, EventArgs e) 
 		{
 			BuilderPlug.Me.ViewSelectionEffects = buttonselectioneffects.Checked;
+
+			// Notify current mode
+			BaseClassicMode mode = General.Editing.Mode as BaseClassicMode;
+			if(mode != null) mode.OnViewSelectionEffectsChanged(BuilderPlug.Me.ViewSelectionEffects);
+
 			General.Interface.RedrawDisplay();
 			General.Interface.DisplayStatus(StatusType.Info, (buttonselectioneffects.Checked ?
 				"Show sector tags and effects" :
