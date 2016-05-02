@@ -30,6 +30,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This makes sure we are updated with the source linedef information
 		public override void Update()
 		{
+			//mxd. Skip if arg0 is 0.
+			if(thing.Args[0] == 0) return;
+			
 			ThingData td = data.Mode.GetThingData(thing);
 			Thing t = thing;
 
