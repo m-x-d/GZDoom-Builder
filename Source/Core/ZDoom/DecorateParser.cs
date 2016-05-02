@@ -292,6 +292,14 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 						default:
 						{
+							//mxd. In some special cases (like the whole actor commented using "//") our special comments will be detected here...
+							if(objdeclaration.StartsWith("$"))
+							{
+								// So skip the whole line, then carry on
+								ReadLine();
+								break;
+							}
+							
 							// Unknown structure!
 							// Best we can do now is just find the first { and then
 							// follow the scopes until the matching } is found
