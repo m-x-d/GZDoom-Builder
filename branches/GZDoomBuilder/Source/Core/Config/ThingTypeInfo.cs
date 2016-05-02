@@ -547,7 +547,7 @@ namespace CodeImp.DoomBuilder.Config
 			// Skip sprites with strange names
 			if(sprite.Length != 6 && sprite.Length != 8)
 			{
-				General.ErrorLogger.Add(ErrorType.Error, "Error in actor \"" + title + "\":" + index + ". Unsupported sprite name fromat: \"" + sprite + "\"");
+				General.ErrorLogger.Add(ErrorType.Error, "Error in actor \"" + title + "\":" + index + ". Missing sprite or unsupported sprite name format :\"" + sprite.ToUpperInvariant() + "\"");
 				return;
 			}
 
