@@ -2559,82 +2559,48 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		[BeginAction("movetextureleft")]
-		public void MoveTextureLeft1()
-		{
-			PreAction(UndoGroup.TextureOffsetChange);
-			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
-			if(!General.Map.UDMF) objs = RemoveDuplicateSidedefs(objs); //mxd
-			foreach(IVisualEventReceiver i in objs) i.OnChangeTextureOffset(-1, 0, true);
-			PostAction();
-		}
+		public void MoveTextureLeft1() { MoveTextureByOffset(-1, 0); }
 
 		[BeginAction("movetextureright")]
-		public void MoveTextureRight1()
-		{
-			PreAction(UndoGroup.TextureOffsetChange);
-			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
-			if(!General.Map.UDMF) objs = RemoveDuplicateSidedefs(objs); //mxd
-			foreach(IVisualEventReceiver i in objs) i.OnChangeTextureOffset(1, 0, true);
-			PostAction();
-		}
+		public void MoveTextureRight1() { MoveTextureByOffset(1, 0); }
 
 		[BeginAction("movetextureup")]
-		public void MoveTextureUp1()
-		{
-			PreAction(UndoGroup.TextureOffsetChange);
-			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
-			if(!General.Map.UDMF) objs = RemoveDuplicateSidedefs(objs); //mxd
-			foreach(IVisualEventReceiver i in objs) i.OnChangeTextureOffset(0, -1, true);
-			PostAction();
-		}
+		public void MoveTextureUp1() { MoveTextureByOffset(0, -1); }
 
 		[BeginAction("movetexturedown")]
-		public void MoveTextureDown1()
-		{
-			PreAction(UndoGroup.TextureOffsetChange);
-			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
-			if(!General.Map.UDMF) objs = RemoveDuplicateSidedefs(objs); //mxd
-			foreach(IVisualEventReceiver i in objs) i.OnChangeTextureOffset(0, 1, true);
-			PostAction();
-		}
+		public void MoveTextureDown1() { MoveTextureByOffset(0, 1); }
 
 		[BeginAction("movetextureleft8")]
-		public void MoveTextureLeft8()
-		{
-			PreAction(UndoGroup.TextureOffsetChange);
-			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
-			if(!General.Map.UDMF) objs = RemoveDuplicateSidedefs(objs); //mxd
-			foreach(IVisualEventReceiver i in objs) i.OnChangeTextureOffset(-General.Map.Grid.GridSize, 0, true);
-			PostAction();
-		}
+		public void MoveTextureLeft8() { MoveTextureByOffset(-8, 0); }
 
 		[BeginAction("movetextureright8")]
-		public void MoveTextureRight8()
-		{
-			PreAction(UndoGroup.TextureOffsetChange);
-			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
-			if(!General.Map.UDMF) objs = RemoveDuplicateSidedefs(objs); //mxd
-			foreach(IVisualEventReceiver i in objs) i.OnChangeTextureOffset(General.Map.Grid.GridSize, 0, true);
-			PostAction();
-		}
+		public void MoveTextureRight8() { MoveTextureByOffset(8, 0); }
 
 		[BeginAction("movetextureup8")]
-		public void MoveTextureUp8()
-		{
-			PreAction(UndoGroup.TextureOffsetChange);
-			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
-			if(!General.Map.UDMF) objs = RemoveDuplicateSidedefs(objs); //mxd
-			foreach(IVisualEventReceiver i in objs) i.OnChangeTextureOffset(0, -General.Map.Grid.GridSize, true);
-			PostAction();
-		}
+		public void MoveTextureUp8() { MoveTextureByOffset(0, -8); }
 
 		[BeginAction("movetexturedown8")]
-		public void MoveTextureDown8()
+		public void MoveTextureDown8() { MoveTextureByOffset(0, 8); }
+
+		[BeginAction("movetextureleftgs")] //mxd
+		public void MoveTextureLeftGrid() { MoveTextureByOffset(-General.Map.Grid.GridSize, 0); }
+
+		[BeginAction("movetexturerightgs")] //mxd
+		public void MoveTextureRightGrid() { MoveTextureByOffset(General.Map.Grid.GridSize, 0); }
+
+		[BeginAction("movetextureupgs")] //mxd
+		public void MoveTextureUpGrid() { MoveTextureByOffset(0, -General.Map.Grid.GridSize); }
+
+		[BeginAction("movetexturedowngs")] //mxd
+		public void MoveTextureDownGrid() { MoveTextureByOffset(0, General.Map.Grid.GridSize); }
+
+		//mxd
+		private void MoveTextureByOffset(int ox, int oy)
 		{
 			PreAction(UndoGroup.TextureOffsetChange);
 			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
-			if(!General.Map.UDMF) objs = RemoveDuplicateSidedefs(objs); //mxd
-			foreach(IVisualEventReceiver i in objs) i.OnChangeTextureOffset(0, General.Map.Grid.GridSize, true);
+			if(!General.Map.UDMF) objs = RemoveDuplicateSidedefs(objs);
+			foreach(IVisualEventReceiver i in objs) i.OnChangeTextureOffset(ox, oy, true);
 			PostAction();
 		}
 
@@ -3247,6 +3213,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					BaseVisualThing t = (BaseVisualThing)obj;
 					t.SetAngle(General.ClampAngle(t.Thing.AngleDoom + increment));
+
+					// Visual sectors may be affected by this thing...
+					if(thingdata.ContainsKey(t.Thing))
+					{
+						// Update what must be updated
+						ThingData td = GetThingData(t.Thing);
+						foreach(KeyValuePair<Sector, bool> s in td.UpdateAlso)
+						{
+							if(VisualSectorExists(s.Key))
+							{
+								BaseVisualSector vs = (BaseVisualSector)GetVisualSector(s.Key);
+								vs.UpdateSectorGeometry(s.Value);
+							}
+						}
+					}
 				}
 				else if(obj is VisualFloor) 
 				{
