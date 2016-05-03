@@ -3100,6 +3100,17 @@ namespace CodeImp.DoomBuilder.Map
 
 		//mxd
 		/// <summary>This returns a sector if given coordinates are inside one.</summary>
+		public Sector GetSectorByCoordinates(Vector2D pos, HashSet<Sector> sectorsToExclude)
+		{
+			foreach(Sector s in sectors)
+			{
+				if(!sectorsToExclude.Contains(s) && s.Intersect(pos)) return s;
+			}
+			return null;
+		}
+
+		//mxd
+		/// <summary>This returns a sector if given coordinates are inside one.</summary>
 		public Sector GetSectorByCoordinates(Vector2D pos, VisualBlockMap blockmap) 
 		{
 			// Find nearest sectors using the blockmap
