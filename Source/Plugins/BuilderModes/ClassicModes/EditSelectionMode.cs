@@ -1479,6 +1479,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					General.Map.Map.RemoveVirtualSectors();
 				}
 
+				// Stitch geometry
+				if(snaptonearest) General.Map.Map.StitchGeometry();
+
+				// Make corrections for backward linedefs
+				MapSet.FlipBackwardLinedefs(General.Map.Map.Linedefs);
+
 				//mxd. Reattach/add/remove sidedefs only when there are no unstable lines in selection
 				if(unstablelines.Count == 0)
 				{
@@ -1487,12 +1493,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					affectedsectors.UnionWith(General.Map.Map.GetUnselectedSectorsFromLinedefs(selectedlines));
 					Tools.AdjustOuterSidedefs(affectedsectors, new HashSet<Linedef>(selectedlines));
 				}
-
-				// Stitch geometry
-				if(snaptonearest) General.Map.Map.StitchGeometry();
-
-				// Make corrections for backward linedefs
-				MapSet.FlipBackwardLinedefs(General.Map.Map.Linedefs);
 				
 				// Snap to map format accuracy
 				General.Map.Map.SnapAllToAccuracy(General.Map.UDMF && usepreciseposition);
