@@ -494,7 +494,7 @@
 			label17.Name = "label17";
 			label17.Size = new System.Drawing.Size(74, 14);
 			label17.TabIndex = 29;
-			label17.Text = "Ammount:";
+			label17.Text = "Amount:";
 			label17.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			this.tooltip.SetToolTip(label17, "Amount of damage inflicted by this sector.\r\nIf this is 0, all other damage proper" +
 					"ties will be ignored.\r\nSetting this to a negative value will create a healing se" +

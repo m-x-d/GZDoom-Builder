@@ -682,7 +682,7 @@ namespace CodeImp.DoomBuilder.Editing
 			{
 				if(!mouseinside)
 				{
-					General.MainWindow.DisplayStatus(StatusType.Warning, "Can't test from current position: mouse is outside editing vindow!");
+					General.MainWindow.DisplayStatus(StatusType.Warning, "Can't test from current position: mouse is outside editing window!");
 					return false;
 				}
 				

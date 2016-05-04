@@ -283,7 +283,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 			if(sectors.Count > 0) 
 			{
 				//make undo
-				General.Map.UndoRedo.CreateUndo("Fill all texturs for " + sectors.Count + (sectors.Count > 1 ? " sectors" : " sector"));
+				General.Map.UndoRedo.CreateUndo("Fill all textures for " + sectors.Count + (sectors.Count > 1 ? " sectors" : " sector"));
 
 				foreach(Sector s in sectors) 
 				{
@@ -306,7 +306,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 				if(lines.Count == 0) return;
 
 				//make undo
-				General.Map.UndoRedo.CreateUndo("Fill all texturs for " + lines.Count + (lines.Count > 1 ? " linedefs" : " linedef"));
+				General.Map.UndoRedo.CreateUndo("Fill all textures for " + lines.Count + (lines.Count > 1 ? " linedefs" : " linedef"));
 
 				//fill textures
 				foreach(Linedef l in lines) 

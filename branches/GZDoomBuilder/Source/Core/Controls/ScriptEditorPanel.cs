@@ -262,7 +262,7 @@ namespace CodeImp.DoomBuilder.Controls
 			if(!string.IsNullOrEmpty(findoptions.FindText) && (ActiveTab != null))
 			{
 				if(!ActiveTab.FindNext(findoptions))
-					DisplayStatus(ScriptStatusType.Warning, "Can't find any occurence of \"" + findoptions.FindText + "\".");
+					DisplayStatus(ScriptStatusType.Warning, "Can't find any occurrence of \"" + findoptions.FindText + "\".");
 			}
 			else
 			{
@@ -284,7 +284,7 @@ namespace CodeImp.DoomBuilder.Controls
 			if(!string.IsNullOrEmpty(findoptions.FindText) && (ActiveTab != null)) 
 			{
 				if(!ActiveTab.FindPrevious(findoptions))
-					DisplayStatus(ScriptStatusType.Warning, "Can't find any occurence of \"" + findoptions.FindText + "\".");
+					DisplayStatus(ScriptStatusType.Warning, "Can't find any occurrence of \"" + findoptions.FindText + "\".");
 			} 
 			else 
 			{
@@ -354,9 +354,9 @@ namespace CodeImp.DoomBuilder.Controls
 				
 				// Show result
 				if(replacements == 0)
-					DisplayStatus(ScriptStatusType.Warning, "Can't find any occurence of \"" + findoptions.FindText + "\".");
+					DisplayStatus(ScriptStatusType.Warning, "Can't find any occurrence of \"" + findoptions.FindText + "\".");
 				else
-					DisplayStatus(ScriptStatusType.Info, "Replaced " + replacements + " occurences of \"" + findoptions.FindText + "\" with \"" + findoptions.ReplaceWith + "\".");
+					DisplayStatus(ScriptStatusType.Info, "Replaced " + replacements + " occurrences of \"" + findoptions.FindText + "\" with \"" + findoptions.ReplaceWith + "\".");
 			}
 			else
 			{

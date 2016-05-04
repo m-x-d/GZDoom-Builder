@@ -550,11 +550,11 @@ namespace CodeImp.DoomBuilder.Windows
 			// label15
 			// 
 			this.label15.AutoSize = true;
-			this.label15.Location = new System.Drawing.Point(29, 94);
+			this.label15.Location = new System.Drawing.Point(26, 94);
 			this.label15.Name = "label15";
-			this.label15.Size = new System.Drawing.Size(88, 13);
+			this.label15.Size = new System.Drawing.Size(91, 13);
 			this.label15.TabIndex = 35;
-			this.label15.Text = "Autoscroll speed:";
+			this.label15.Text = "Auto-scroll speed:";
 			// 
 			// previewsize
 			// 
@@ -629,8 +629,8 @@ namespace CodeImp.DoomBuilder.Windows
 			label18.TabIndex = 25;
 			label18.Text = "Max. dynamic lights to render:";
 			label18.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			this.toolTip1.SetToolTip(label18, "Controlls how many dynamic lights could be \r\nrendered simultaneously in Visual mo" +
-					"de ");
+			this.toolTip1.SetToolTip(label18, "Controls how many dynamic lights could be \r\nrendered simultaneously in Visual mod" +
+					"e ");
 			// 
 			// label20
 			// 
@@ -665,11 +665,11 @@ namespace CodeImp.DoomBuilder.Windows
 			// label29
 			// 
 			label29.AutoSize = true;
-			label29.Location = new System.Drawing.Point(97, 356);
+			label29.Location = new System.Drawing.Point(90, 356);
 			label29.Name = "label29";
-			label29.Size = new System.Drawing.Size(91, 13);
+			label29.Size = new System.Drawing.Size(94, 13);
 			label29.TabIndex = 38;
-			label29.Text = "Edge Antialiasing:";
+			label29.Text = "Edge Anti-aliasing:";
 			label29.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// keyusedlabel

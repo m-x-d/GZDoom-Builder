@@ -31,7 +31,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			line = l;
 			viewobjects.Add(l);
 			hidden = l.IgnoredErrorChecks.Contains(this.GetType()); //mxd
-			description = "This linedef is shorter than 1 map unit. This can porentially cause nodebuilding errors.";
+			description = "This linedef is shorter than 1 map unit. This can potentially cause nodebuilding errors.";
 		}
 		
 		#endregion

@@ -568,7 +568,7 @@ namespace CodeImp.DoomBuilder.Data
 			// Output info
 			General.WriteLogLine("Loaded " + texcount + " textures, " + flatcount + " flats, " + hirestexcount + " hires textures, " +
 				colormapcount + " colormaps, " + spritecount + " sprites, " + 
-				thingcount + " decorate things, " + modeldefentries.Count + " model/voxel deinitions, " + 
+				thingcount + " decorate things, " + modeldefentries.Count + " model/voxel definitions, " + 
 				gldefsentries.Count + " dynamic light definitions, " + 
 				glowingflats.Count + " glowing flat definitions, " + skyboxes.Count + " skybox definitions, " +
 				reverbs.Count + " sound environment definitions");

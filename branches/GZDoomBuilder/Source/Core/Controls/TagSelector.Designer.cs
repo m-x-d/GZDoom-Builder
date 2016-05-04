@@ -47,7 +47,7 @@
 			this.label1.Size = new System.Drawing.Size(29, 13);
 			this.label1.TabIndex = 0;
 			this.label1.Text = "Tag:";
-			this.tooltip.SetToolTip(this.label1, "Use \">=\" or \"<=\" prefixes to create\r\nacsending or descending tags range.\r\nUse \"++" +
+			this.tooltip.SetToolTip(this.label1, "Use \">=\" or \"<=\" prefixes to create\r\nascending or descending tags range.\r\nUse \"++" +
 					"\" or \"--\" prefixes to increment\r\nor decrement already existing tags \r\nby given v" +
 					"alue.");
 			// 

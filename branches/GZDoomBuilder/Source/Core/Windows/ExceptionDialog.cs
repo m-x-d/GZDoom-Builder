@@ -52,7 +52,7 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			string[] titles =
 			{
-				"0x000000 at 0xFFFFFF. That's probaby bad",
+				"0x000000 at 0xFFFFFF. That's probably bad",
 				"Here we go again...",
 				"Uh oh, you're screwed",
 				"All is lost!",
@@ -76,7 +76,7 @@ namespace CodeImp.DoomBuilder.Windows
 				"You aren't expected to understand this",
 				"Back to the drawing board...",
 				"I'm sorry... :(",
-				"This is a horrbble day for you, and of course, the world",
+				"This is a horrible day for you, and of course, the world",
 				"Abort, Retry, Fail?",
 				"You are making progress. I'm afraid that's something I can't allow to happen",
 				"You are making progress. That's not OK",

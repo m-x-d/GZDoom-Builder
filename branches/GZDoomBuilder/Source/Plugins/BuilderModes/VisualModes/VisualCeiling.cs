@@ -558,7 +558,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			List<Sector> neighbours = new List<Sector>();
-			bool regularorvavoom = extrafloor == null || (extrafloor != null && extrafloor.VavoomType);
+			bool regularorvavoom = (extrafloor == null || extrafloor.VavoomType);
 
 			//collect neighbour sectors
 			foreach(Sidedef side in Sector.Sector.Sidedefs)
