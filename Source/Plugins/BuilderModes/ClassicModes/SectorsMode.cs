@@ -2471,14 +2471,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				s.Fields.BeforeFieldsChange();
 
 				//floor
-				if(General.Map.Renderer2D.ViewMode == ViewMode.FloorTextures || General.Map.Renderer2D.ViewMode != ViewMode.CeilingTextures)
+				if(General.Map.Renderer2D.ViewMode != ViewMode.CeilingTextures)
 				{
 					UniFields.SetFloat(s.Fields, "rotationfloor", General.ClampAngle(UniFields.GetFloat(s.Fields, "rotationfloor") + increment));
 					s.UpdateNeeded = true;
 				}
 
 				//ceiling
-				if(General.Map.Renderer2D.ViewMode == ViewMode.CeilingTextures || General.Map.Renderer2D.ViewMode != ViewMode.FloorTextures) 
+				if(General.Map.Renderer2D.ViewMode != ViewMode.FloorTextures) 
 				{
 					UniFields.SetFloat(s.Fields, "rotationceiling", General.ClampAngle(UniFields.GetFloat(s.Fields, "rotationceiling") + increment));
 					s.UpdateNeeded = true;

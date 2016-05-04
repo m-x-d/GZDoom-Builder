@@ -180,7 +180,7 @@
 			this.cbusevertexheight.Name = "cbusevertexheight";
 			this.cbusevertexheight.Size = new System.Drawing.Size(95, 17);
 			this.cbusevertexheight.TabIndex = 22;
-			this.cbusevertexheight.Text = "Sloped Terrian";
+			this.cbusevertexheight.Text = "Sloped Terrain";
 			this.cbusevertexheight.UseVisualStyleBackColor = true;
 			// 
 			// browse

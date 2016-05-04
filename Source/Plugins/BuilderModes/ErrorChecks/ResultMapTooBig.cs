@@ -56,7 +56,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ErrorChecks
 		public override string ToString()
 		{
 			if(toowide && toohigh) return "Map's width and height is bigger than " + CheckMapSize.MAXIMUM_DISTANCE + " m.u. This can cause rendering and physics issues.";
-			if(toowide) return "Map is wider than than " + CheckMapSize.MAXIMUM_DISTANCE + " m.u. This can cause rendering and physics issues.";
+			if(toowide) return "Map is wider than " + CheckMapSize.MAXIMUM_DISTANCE + " m.u. This can cause rendering and physics issues.";
 			return "Map is taller than " + CheckMapSize.MAXIMUM_DISTANCE + " m.u. This can cause rendering and physics issues.";
 		}
 

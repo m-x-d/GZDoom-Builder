@@ -49,7 +49,7 @@
 			this.curtaglabel.TabIndex = 0;
 			this.curtaglabel.Text = "Tag 1:";
 			this.curtaglabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			this.tooltip.SetToolTip(this.curtaglabel, "Use \">=\" or \"<=\" prefixes to create\r\nacsending or descending tags range.\r\nUse \"++" +
+			this.tooltip.SetToolTip(this.curtaglabel, "Use \">=\" or \"<=\" prefixes to create\r\nascending or descending tags range.\r\nUse \"++" +
 					"\" or \"--\" prefixes to increment\r\nor decrement already existing tags \r\nby given v" +
 					"alue.");
 			// 

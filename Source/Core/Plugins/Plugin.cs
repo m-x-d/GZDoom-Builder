@@ -102,7 +102,7 @@ namespace CodeImp.DoomBuilder.Plugins
 				{
 					string message = shortfilename + " plugin's assembly version (" + plug.MinimumRevision + ") doesn't match main module version (" + thisrevision + ").";
 					if(General.ShowWarningMessage(message + Environment.NewLine +
-												  "It's strongly recomended to update the editor." + Environment.NewLine + 
+												  "It's strongly recommended to update the editor." + Environment.NewLine + 
 												  "Program stability is not guaranteed." + Environment.NewLine + Environment.NewLine +
 					                              "Continue anyway?", MessageBoxButtons.YesNo, MessageBoxDefaultButton.Button2, false) == DialogResult.No)
 					{

@@ -110,7 +110,7 @@
 			this.deletepreset.Name = "deletepreset";
 			this.deletepreset.Size = new System.Drawing.Size(70, 25);
 			this.deletepreset.TabIndex = 10;
-			this.deletepreset.Text = "Delele";
+			this.deletepreset.Text = "Delete";
 			this.deletepreset.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.deletepreset.UseVisualStyleBackColor = true;
 			this.deletepreset.Click += new System.EventHandler(this.deletepreset_Click);

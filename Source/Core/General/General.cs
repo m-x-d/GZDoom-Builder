@@ -2096,7 +2096,7 @@ namespace CodeImp.DoomBuilder
 
 				// Try getting exception details...
 				try { exceptionmsg = "Fatal Windows Forms error occurred: " + e.Exception.Message + "\n\nStack Trace:\n" + e.Exception.StackTrace; }
-				catch(Exception exc) { exceptionmsg = "Failed to get initial excepton details: " + exc.Message + "\n\nStack Trace:\n" + exc.StackTrace; }
+				catch(Exception exc) { exceptionmsg = "Failed to get initial exception details: " + exc.Message + "\n\nStack Trace:\n" + exc.StackTrace; }
 
 				// Try logging it...
 				try { WriteLogLine(exceptionmsg); } catch { }
@@ -2129,7 +2129,7 @@ namespace CodeImp.DoomBuilder
 				}
 				catch(Exception exc)
 				{
-					exceptionmsg = "Failed to get initial excepton details: " + exc.Message + "\n\nStack Trace:\n" + exc.StackTrace;
+					exceptionmsg = "Failed to get initial exception details: " + exc.Message + "\n\nStack Trace:\n" + exc.StackTrace;
 				}
 
 				// Try logging it...

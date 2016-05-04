@@ -159,7 +159,7 @@ namespace CodeImp.DoomBuilder.Windows
 				
 				// Determine tooltip text
 				string tooltiptext = null;
-				if(nomatchesbutton.Checked) tooltiptext = "Doubleclick to include this texture";
+				if(nomatchesbutton.Checked) tooltiptext = "Double-click to include this texture";
 				
 				// Start adding
 				matcheslist.PreventSelection = matchesbutton.Checked;
