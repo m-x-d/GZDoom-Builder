@@ -100,12 +100,20 @@ namespace CodeImp.DoomBuilder.ZDoom
 								md.SetTransform(mrotation, moffset, mds.Scale);
 
 								// Add models
+								int disabledframescount = 0;
 								foreach(var fs in mds.Frames[targetsprite])
 								{
 									// Sanity checks
 									if(string.IsNullOrEmpty(mds.ModelNames[fs.ModelIndex]))
 									{
 										LogWarning("Model definition \"" + classname + "\", frame \"" + fs.SpriteName + " " + fs.FrameName + "\" references undefiend model index " + fs.ModelIndex);
+										continue;
+									}
+
+									//INFO: setting frame index to a negative number disables model rendering in GZDoom
+									if(fs.FrameIndex < 0)
+									{
+										disabledframescount++;
 										continue;
 									}
 									
@@ -121,7 +129,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 								// More sanity checks...
 								if(md.ModelNames.Count == 0)
 								{
-									LogWarning("Model definition \"" + classname + "\" has no defined models");
+									// Show warning only when frames were not delibeartely disabled
+									if(mds.Frames[targetsprite].Count > 0 && disabledframescount < mds.Frames[targetsprite].Count)
+										LogWarning("Model definition \"" + classname + "\" has no defined models");
 								}
 								else
 								{

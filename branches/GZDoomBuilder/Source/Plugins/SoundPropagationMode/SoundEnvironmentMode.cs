@@ -18,15 +18,14 @@
 #region ================== Namespaces
 
 using System;
-using System.Windows.Forms;
 using System.ComponentModel;
+using System.Windows.Forms;
 using CodeImp.DoomBuilder.Actions;
-using CodeImp.DoomBuilder.Geometry;
-using CodeImp.DoomBuilder.Windows;
+using CodeImp.DoomBuilder.Controls;
+using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
-using CodeImp.DoomBuilder.Editing;
-using CodeImp.DoomBuilder.Controls;
+using CodeImp.DoomBuilder.Windows;
 
 #endregion
 
@@ -48,6 +47,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 		// Highlighted item
 		private Sector highlighted;
 		private SoundEnvironment highlightedsoundenvironment;
+		private SoundEnvironment oldhighlightedsoundenvironment; //mxd
 		private Linedef highlightedline; //mxd
 		private Thing highlightedthing; //mxd
 
@@ -236,6 +236,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 		{
 			panel.HighlightSoundEnvironment(highlightedsoundenvironment); //mxd. Expand highlighted node in the treeview
 			General.Interface.DisplayStatus(StatusType.Ready, "Finished updating sound environments");
+			General.Interface.RedrawDisplay(); //mxd
 		}
 
 		private void worker_ProgressChanged(object sender, ProgressChangedEventArgs e)
@@ -285,7 +286,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 
 				// Since there will usually be way less blocking linedefs than total linedefs, it's presumably
 				// faster to draw them on their own instead of checking if each linedef is in BlockingLinedefs
-				lock (BuilderPlug.Me.BlockingLinedefs)
+				lock(BuilderPlug.Me.BlockingLinedefs)
 				{
 					foreach(Linedef ld in BuilderPlug.Me.BlockingLinedefs)
 					{
@@ -309,11 +310,20 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 				renderer.RenderThingSet(General.Map.ThingsFilter.HiddenThings, General.Settings.HiddenThingsAlpha);
 				renderer.RenderThingSet(General.Map.ThingsFilter.VisibleThings, General.Settings.InactiveThingsAlpha);
 
-				lock (BuilderPlug.Me.SoundEnvironments)
+				lock(BuilderPlug.Me.SoundEnvironments)
 				{
 					foreach(SoundEnvironment se in BuilderPlug.Me.SoundEnvironments)
 					{
-						if(se.Things.Count > 0) renderer.RenderThingSet(se.Things, General.Settings.ActiveThingsAlpha);
+						if(se.Things.Count == 0) continue;
+						if(se == highlightedsoundenvironment)
+						{
+							foreach(Thing t in se.Things)
+								renderer.RenderThing(t, General.Colors.Highlight, General.Settings.ActiveThingsAlpha);
+						}
+						else
+						{
+							renderer.RenderThingSet(se.Things, General.Settings.ActiveThingsAlpha);
+						}
 					}
 				}
 
@@ -327,7 +337,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			// Render overlay geometry (sectors)
 			if(BuilderPlug.Me.OverlayGeometry != null)
 			{
-				lock (BuilderPlug.Me.OverlayGeometry)
+				lock(BuilderPlug.Me.OverlayGeometry)
 				{
 					if(BuilderPlug.Me.OverlayGeometry.Length > 0 && renderer.StartOverlay(true))
 					{
@@ -407,6 +417,13 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 					redrawrequired = true;
 				}
 
+				//mxd. Highlighted environment changed?
+				if(oldhighlightedsoundenvironment != highlightedsoundenvironment)
+				{
+					oldhighlightedsoundenvironment = highlightedsoundenvironment;
+					redrawrequired = true;
+				}
+
 				//mxd. Find the nearest thing within default highlight range
 				if(highlightedline == null && highlightedsoundenvironment != null)
 				{
@@ -459,19 +476,48 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 
 		// This creates a new thing at the mouse position
 		[BeginAction("insertitem", BaseAction = true)]
-		public virtual void InsertThing() 
+		public void InsertThing()
 		{
 			// Mouse in window?
 			if(mouseinside) 
 			{
-				// Insert new thing
+				// Check the boundaries
+				if(mousemappos.x < General.Map.Config.LeftBoundary || mousemappos.x > General.Map.Config.RightBoundary ||
+				   mousemappos.y > General.Map.Config.TopBoundary || mousemappos.y < General.Map.Config.BottomBoundary)
+				{
+					General.Interface.DisplayStatus(StatusType.Warning, "Failed to insert thing: outside of map boundaries.");
+					return;
+				}
+				
+				// Create undo
 				General.Map.UndoRedo.CreateUndo("Insert sound environment thing");
-				Thing t = InsertThing(mousemappos);
-
-				if(t == null) 
+				
+				// Create thing
+				Thing t = General.Map.Map.CreateThing();
+				if(t == null)
 				{
 					General.Map.UndoRedo.WithdrawUndo();
 					return;
+				}
+
+				General.Settings.ApplyDefaultThingSettings(t);
+				t.Type = BuilderPlug.SOUND_ENVIROMNEMT_THING_TYPE;
+				t.Move(mousemappos);
+				t.UpdateConfiguration();
+
+				// Update things filter so that it includes this thing
+				General.Map.ThingsFilter.Update();
+
+				// Snap to grid enabled?
+				if(General.Interface.SnapToGrid)
+				{
+					// Snap to grid
+					t.SnapToGrid();
+				}
+				else
+				{
+					// Snap to map format accuracy
+					t.SnapToAccuracy();
 				}
 
 				// Add to current sound environment
@@ -499,44 +545,6 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 				// Redraw screen again
 				General.Interface.RedrawDisplay();
 			}
-		}
-
-		// This creates a new thing
-		private static Thing InsertThing(Vector2D pos) 
-		{
-			if(pos.x < General.Map.Config.LeftBoundary || pos.x > General.Map.Config.RightBoundary ||
-				pos.y > General.Map.Config.TopBoundary || pos.y < General.Map.Config.BottomBoundary) 
-			{
-				General.Interface.DisplayStatus(StatusType.Warning, "Failed to insert thing: outside of map boundaries.");
-				return null;
-			}
-
-			// Create thing
-			Thing t = General.Map.Map.CreateThing();
-			if(t != null) 
-			{
-				General.Settings.ApplyDefaultThingSettings(t);
-				t.Type = BuilderPlug.SOUND_ENVIROMNEMT_THING_TYPE;
-				t.Move(pos);
-				t.UpdateConfiguration();
-
-				// Update things filter so that it includes this thing
-				General.Map.ThingsFilter.Update();
-
-				// Snap to grid enabled?
-				if(General.Interface.SnapToGrid) 
-				{
-					// Snap to grid
-					t.SnapToGrid();
-				} 
-				else 
-				{
-					// Snap to map format accuracy
-					t.SnapToAccuracy();
-				}
-			}
-
-			return t;
 		}
 
 		[BeginAction("deleteitem", BaseAction = true)]

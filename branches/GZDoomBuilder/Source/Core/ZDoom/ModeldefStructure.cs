@@ -103,18 +103,19 @@ namespace CodeImp.DoomBuilder.ZDoom
 						parser.SkipWhitespace(true);
 
 						// Model index
-						int index;
+						int index = 0;
 						token = parser.ReadToken();
-						if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out index) || index < 0) 
+						if(!parser.ReadSignedInt(token, ref index))
 						{
 							// Not numeric!
 							parser.ReportError("Expected model index, but got \"" + token + "\"");
 							return false;
 						}
 
-						if(index >= MAX_MODELS) 
+						if(index < 0 || index > MAX_MODELS - 1)
 						{
-							parser.ReportError("GZDoom doesn't allow more than " + MAX_MODELS + " models per MODELDEF entry");
+							// Out of bounds
+							parser.ReportError("Model index must be in [0.." + (MAX_MODELS - 1) + "] range");
 							return false;
 						}
 
@@ -153,18 +154,19 @@ namespace CodeImp.DoomBuilder.ZDoom
 						parser.SkipWhitespace(true);
 
 						// Skin index
-						int skinindex;
+						int skinindex = 0;
 						token = parser.ReadToken();
-						if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out skinindex) || skinindex < 0) 
+						if(!parser.ReadSignedInt(token, ref skinindex))
 						{
 							// Not numeric!
 							parser.ReportError("Expected skin index, but got \"" + token + "\"");
 							return false;
 						}
 
-						if(skinindex >= MAX_MODELS) 
+						if(skinindex < 0 || skinindex >= MAX_MODELS)
 						{
-							parser.ReportError("GZDoom doesn't allow more than " + MAX_MODELS + " skins per MODELDEF entry");
+							// Out of bounds
+							parser.ReportError("Skin index must be in [0.." + (MAX_MODELS - 1) + "] range");
 							return false;
 						}
 
@@ -333,9 +335,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 						// Model index
 						parser.SkipWhitespace(true);
-						int fimodelindnex;
+						int fimodelindnex = 0;
 						token = parser.ReadToken();
-						if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out fimodelindnex))
+						if(!parser.ReadSignedInt(token, ref fimodelindnex))
 						{
 							// Not numeric!
 							parser.ReportError("Expected model index, but got \"" + token + "\"");
@@ -350,9 +352,10 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 						// Frame number
 						parser.SkipWhitespace(true);
-						int fiframeindnex;
+						int fiframeindnex = 0;
 						token = parser.ReadToken();
-						if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out fiframeindnex) || fiframeindnex < 0)
+						//INFO: setting frame index to a negative number disables model rendering in GZDoom
+						if(!parser.ReadSignedInt(token, ref fiframeindnex))
 						{
 							// Not numeric!
 							parser.ReportError("Expected frame index, but got \"" + token + "\"");
@@ -411,9 +414,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 						// Model index
 						parser.SkipWhitespace(true);
-						int modelindnex;
+						int modelindnex = 0;
 						token = parser.ReadToken();
-						if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out modelindnex))
+						if(!parser.ReadSignedInt(token, ref modelindnex))
 						{
 							// Not numeric!
 							parser.ReportError("Expected model index, but got \"" + token + "\"");
