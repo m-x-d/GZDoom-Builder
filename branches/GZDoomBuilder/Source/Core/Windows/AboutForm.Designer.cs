@@ -163,9 +163,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// pictureBox4
 			// 
 			this.pictureBox4.Image = global::CodeImp.DoomBuilder.Properties.Resources.MLogo;
-			this.pictureBox4.Location = new System.Drawing.Point(289, 6);
+			this.pictureBox4.Location = new System.Drawing.Point(291, 6);
 			this.pictureBox4.Name = "pictureBox4";
-			this.pictureBox4.Size = new System.Drawing.Size(88, 80);
+			this.pictureBox4.Size = new System.Drawing.Size(86, 88);
 			this.pictureBox4.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
 			this.pictureBox4.TabIndex = 16;
 			this.pictureBox4.TabStop = false;
@@ -187,9 +187,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// copyversion
 			// 
-			this.copyversion.Location = new System.Drawing.Point(269, 97);
+			this.copyversion.Location = new System.Drawing.Point(291, 95);
 			this.copyversion.Name = "copyversion";
-			this.copyversion.Size = new System.Drawing.Size(108, 25);
+			this.copyversion.Size = new System.Drawing.Size(81, 25);
 			this.copyversion.TabIndex = 13;
 			this.copyversion.Text = "Copy Version";
 			this.copyversion.UseVisualStyleBackColor = true;
@@ -199,7 +199,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.version.AutoSize = true;
 			this.version.FlatStyle = System.Windows.Forms.FlatStyle.System;
-			this.version.Location = new System.Drawing.Point(11, 102);
+			this.version.Location = new System.Drawing.Point(14, 102);
 			this.version.Name = "version";
 			this.version.Size = new System.Drawing.Size(150, 13);
 			this.version.TabIndex = 11;

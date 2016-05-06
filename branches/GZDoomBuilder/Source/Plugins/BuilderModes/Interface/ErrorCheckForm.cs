@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Editing;
@@ -747,12 +748,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Get results
 			StringBuilder sb = new StringBuilder();
 			foreach(ErrorResult result in results.SelectedItems) sb.AppendLine(result.ToString());
+			
+			try
+			{
+				//mxd. Set on clipboard
+				Clipboard.SetDataObject(sb.ToString(), true, 5, 200);
 
-			// Set on clipboard
-			Clipboard.SetDataObject(sb.ToString(), true, 5, 200); //mxd
-
-			// Inform the user
-			General.Interface.DisplayStatus(StatusType.Info, "Analysis results copied to clipboard.");
+				// Inform the user
+				General.Interface.DisplayStatus(StatusType.Info, "Analysis results copied to clipboard.");
+			}
+			catch(ExternalException)
+			{
+				// Inform the user
+				General.Interface.DisplayStatus(StatusType.Warning, "Failed to perform a Clipboard operation...");
+			}
 		}
 
 		private void results_KeyUp(object sender, KeyEventArgs e) 

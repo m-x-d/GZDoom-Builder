@@ -613,11 +613,11 @@ namespace CodeImp.DoomBuilder.Windows
 			// label1
 			// 
 			label1.AutoSize = true;
-			label1.Location = new System.Drawing.Point(45, 171);
+			label1.Location = new System.Drawing.Point(41, 171);
 			label1.Name = "label1";
-			label1.Size = new System.Drawing.Size(143, 13);
+			label1.Size = new System.Drawing.Size(145, 13);
 			label1.TabIndex = 20;
-			label1.Text = "Texture and Flats brightness:";
+			label1.Text = "Textures and flats brightness:";
 			label1.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// label18
@@ -667,9 +667,9 @@ namespace CodeImp.DoomBuilder.Windows
 			label29.AutoSize = true;
 			label29.Location = new System.Drawing.Point(90, 356);
 			label29.Name = "label29";
-			label29.Size = new System.Drawing.Size(94, 13);
+			label29.Size = new System.Drawing.Size(93, 13);
 			label29.TabIndex = 38;
-			label29.Text = "Edge Anti-aliasing:";
+			label29.Text = "Edge anti-aliasing:";
 			label29.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// keyusedlabel
@@ -1716,11 +1716,11 @@ namespace CodeImp.DoomBuilder.Windows
 			// label32
 			// 
 			this.label32.AutoSize = true;
-			this.label32.Location = new System.Drawing.Point(45, 134);
+			this.label32.Location = new System.Drawing.Point(44, 134);
 			this.label32.Name = "label32";
-			this.label32.Size = new System.Drawing.Size(143, 13);
+			this.label32.Size = new System.Drawing.Size(139, 13);
 			this.label32.TabIndex = 44;
-			this.label32.Text = "Hidden Things transparency:";
+			this.label32.Text = "Hidden things transparency:";
 			this.label32.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			this.toolTip1.SetToolTip(this.label32, "Sets transparency of things hidden \r\nby Things Filter in Things mode");
 			// 

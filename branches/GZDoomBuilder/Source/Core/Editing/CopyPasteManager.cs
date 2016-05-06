@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Config;
@@ -248,8 +249,19 @@ namespace CodeImp.DoomBuilder.Editing
 						ClipboardStreamWriter writer = new ClipboardStreamWriter(); //mxd
 						writer.Write(copyset, memstream);
 
-						// Set on clipboard
-						Clipboard.SetData(CLIPBOARD_DATA_FORMAT, memstream);
+						try
+						{
+							//mxd. Set on clipboard
+							DataObject copydata = new DataObject();
+							copydata.SetData(CLIPBOARD_DATA_FORMAT, memstream);
+							Clipboard.SetDataObject(copydata, true, 5, 200);
+						}
+						catch(ExternalException)
+						{
+							General.Interface.DisplayStatus(StatusType.Warning, "Failed to perform a Clipboard operation...");
+							memstream.Dispose();
+							return false;
+						}
 
 						// Done
 						memstream.Dispose();
