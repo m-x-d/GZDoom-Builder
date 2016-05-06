@@ -17,6 +17,7 @@
 #region ================== Namespaces
 
 using System;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 #endregion
@@ -60,7 +61,14 @@ namespace CodeImp.DoomBuilder.Windows
 		// This copies the version number to clipboard
 		private void copyversion_Click(object sender, EventArgs e)
 		{
-			Clipboard.SetDataObject(Application.ProductVersion, true, 5, 200); //mxd
+			try //mxd
+			{
+				Clipboard.SetDataObject(Application.ProductVersion, true, 5, 200);
+			}
+			catch(ExternalException)
+			{
+				General.Interface.DisplayStatus(StatusType.Warning, "Failed to perform a Clipboard operation...");
+			}
 		}
 	}
 }

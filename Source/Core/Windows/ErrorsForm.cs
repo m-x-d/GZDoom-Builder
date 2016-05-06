@@ -138,7 +138,7 @@ namespace CodeImp.DoomBuilder.Windows
 				//mxd
 				try 
 				{
-					Clipboard.SetDataObject(str.ToString(), true);
+					Clipboard.SetDataObject(str.ToString(), true, 5, 200);
 				} 
 				catch(ExternalException) 
 				{
