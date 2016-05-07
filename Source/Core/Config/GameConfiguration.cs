@@ -86,6 +86,7 @@ namespace CodeImp.DoomBuilder.Config
 		private readonly bool doomlightlevels;
 		private readonly string actionspecialhelp; //mxd
 		private readonly string thingclasshelp; //mxd
+		private readonly bool sidedefcompressionignoresaction; //mxd
 		
 		// Skills
 		private readonly List<SkillInfo> skills;
@@ -207,6 +208,7 @@ namespace CodeImp.DoomBuilder.Config
 		public bool DoomLightLevels { get { return doomlightlevels; } }
 		public string ActionSpecialHelp { get { return actionspecialhelp; } } //mxd
 		public string ThingClassHelp { get { return thingclasshelp; } } //mxd
+		internal bool SidedefCompressionIgnoresAction { get { return sidedefcompressionignoresaction; } } //mxd
 
 		// Skills
 		public List<SkillInfo> Skills { get { return skills; } }
@@ -357,6 +359,7 @@ namespace CodeImp.DoomBuilder.Config
 			doomlightlevels = cfg.ReadSetting("doomlightlevels", true);
 			actionspecialhelp = cfg.ReadSetting("actionspecialhelp", string.Empty); //mxd
 			thingclasshelp = cfg.ReadSetting("thingclasshelp", string.Empty); //mxd
+			sidedefcompressionignoresaction = cfg.ReadSetting("sidedefcompressionignoresaction", false); //mxd
 			defaultlinedefactivation = cfg.ReadSetting("defaultlinedefactivation", ""); //mxd
 			for(int i = 0; i < Linedef.NUM_ARGS; i++) makedoorargs[i] = cfg.ReadSetting("makedoorarg" + i.ToString(CultureInfo.InvariantCulture), 0);
 
