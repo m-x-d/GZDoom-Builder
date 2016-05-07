@@ -3216,6 +3216,14 @@ namespace CodeImp.DoomBuilder.Map
 				Sidedef stored = null;
 				Sidedef snsd = sidedefs[sn];
 
+				//mxd. Skip sidedef if it belongs to a linedef with an action?
+				if(!General.Map.Config.SidedefCompressionIgnoresAction && snsd.Line.Action != 0)
+				{
+					// Next!
+					sn++;
+					continue;
+				}
+
 				// Check if checksum is stored
 				bool samesidedef = false;
 				uint checksum = snsd.GetChecksum();
