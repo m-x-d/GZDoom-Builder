@@ -3803,7 +3803,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				foreach(IVisualEventReceiver i in selectedobjects)
 				{
-					BaseVisualGeometrySidedef side = (BaseVisualGeometrySidedef)i;
+					BaseVisualGeometrySidedef side = i as BaseVisualGeometrySidedef;
 					if(side != null && !selectedVisualSides.Contains(side)) selectedVisualSides.Add(side);
 				}
 			}
