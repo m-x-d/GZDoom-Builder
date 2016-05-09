@@ -190,7 +190,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if(args != null) 
 					{
 						int x = 0;
-						argtext = " args: (";
+						argtext = ". Args: ";
 
 						//mxd. Check script name...
 						if(!string.IsNullOrEmpty(arg0str)) 
@@ -211,9 +211,33 @@ namespace CodeImp.DoomBuilder.BuilderModes
 								match = false;
 								break;
 							}
-							argtext += (x == 0 ? "" : ",") + t.Args[x];
+							argtext += (x == 0 ? "" : ", ") + t.Args[x];
 						}
-						argtext += ")";
+					}
+					//mxd. Add action args
+					else
+					{
+						List<string> argslist = new List<string>();
+
+						// Process args, drop trailing zeroes
+						for(int i = t.Args.Length - 1; i > -1; i--)
+						{
+							if(t.Args[i] == 0 && argslist.Count == 0) continue; // Skip tail zeroes
+							argslist.Insert(0, t.Args[i].ToString());
+						}
+
+						// Process arg0str...
+						if(Array.IndexOf(GZGeneral.ACS_SPECIALS, t.Action) != -1)
+						{
+							string s = t.Fields.GetValue("arg0str", string.Empty);
+							if(!string.IsNullOrEmpty(s)) argslist[0] = "\"" + s + "\"";
+						}
+
+						// Create args string
+						if(argslist.Count > 0)
+						{
+							argtext = ". Args: " + string.Join(", ", argslist.ToArray());
+						}
 					}
 
 					if(match) 
@@ -242,7 +266,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 						// Add to list
 						ThingTypeInfo ti = General.Map.Data.GetThingInfo(t.Type);
-						objs.Add(new FindReplaceObject(t, "Thing " + t.Index + " (" + ti.Title + ")" + argtext));
+						objs.Add(new FindReplaceObject(t, "Thing " + t.Index + " (" + ti.Title + argtext + ")"));
 					}
 				}
 			}

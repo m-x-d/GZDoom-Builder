@@ -186,7 +186,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if(args != null) 
 					{
 						int x = 0;
-						argtext = " args: (";
+						argtext = ". Args: ";
 
 						//mxd. Check script name...
 						if(!string.IsNullOrEmpty(arg0str))
@@ -207,9 +207,33 @@ namespace CodeImp.DoomBuilder.BuilderModes
 								match = false;
 								break;
 							}
-							argtext += (x == 0 ? "" : ",") + l.Args[x];
+							argtext += (x == 0 ? "" : ", ") + l.Args[x];
 						}
-						argtext += ")";
+					}
+					//mxd. Add action args
+					else
+					{
+						List<string> argslist = new List<string>();
+						
+						// Process args, drop trailing zeroes
+						for(int i = l.Args.Length - 1; i > -1; i--)
+						{
+							if(l.Args[i] == 0 && argslist.Count == 0) continue; // Skip tail zeroes
+							argslist.Insert(0, l.Args[i].ToString());
+						}
+
+						// Process arg0str...
+						if(Array.IndexOf(GZGeneral.ACS_SPECIALS, l.Action) != -1)
+						{
+							string s = l.Fields.GetValue("arg0str", string.Empty);
+							if(!string.IsNullOrEmpty(s)) argslist[0] = "\"" + s + "\"";
+						}
+
+						// Create args string
+						if(argslist.Count > 0)
+						{
+							argtext = ". Args: " + string.Join(", ", argslist.ToArray());
+						}
 					}
 
 					if(match) 
@@ -239,9 +263,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						// Add to list
 						LinedefActionInfo info = General.Map.Config.GetLinedefActionInfo(l.Action);
 						if(!info.IsNull)
-							objs.Add(new FindReplaceObject(l, "Linedef " + l.Index + " (" + info.Title + ")" + argtext));
+							objs.Add(new FindReplaceObject(l, "Linedef " + l.Index + " (" + info.Title + argtext + ")"));
 						else
-							objs.Add(new FindReplaceObject(l, "Linedef " + l.Index + argtext));
+							objs.Add(new FindReplaceObject(l, "Linedef " + l.Index + " (Action " + l.Action + argtext + ")"));
 					}
 				}
 			}
