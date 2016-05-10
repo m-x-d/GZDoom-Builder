@@ -3216,8 +3216,8 @@ namespace CodeImp.DoomBuilder.Map
 				Sidedef stored = null;
 				Sidedef snsd = sidedefs[sn];
 
-				//mxd. Skip sidedef if it belongs to a linedef with an action?
-				if(!General.Map.Config.SidedefCompressionIgnoresAction && snsd.Line.Action != 0)
+				//mxd. Skip sidedef if it belongs to a linedef with an action or tag?
+				if(!General.Map.Config.SidedefCompressionIgnoresAction && (snsd.Line.Action != 0 || snsd.Line.Tag != 0))
 				{
 					// Next!
 					sn++;
