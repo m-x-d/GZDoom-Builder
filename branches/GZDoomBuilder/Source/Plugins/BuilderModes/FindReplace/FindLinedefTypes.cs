@@ -226,7 +226,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						if(Array.IndexOf(GZGeneral.ACS_SPECIALS, l.Action) != -1)
 						{
 							string s = l.Fields.GetValue("arg0str", string.Empty);
-							if(!string.IsNullOrEmpty(s)) argslist[0] = "\"" + s + "\"";
+							if(!string.IsNullOrEmpty(s))
+							{
+								if(argslist.Count > 0)
+									argslist[0] = "\"" + s + "\"";
+								else
+									argslist.Add("\"" + s + "\"");
+							}
 						}
 
 						// Create args string
