@@ -153,8 +153,8 @@ defaultskytextures
 	Default value is <b>false</b>.<br />
 	<br />
     <b class="fat">sidedefcompressionignoresaction</b> (boolean) - <span class="red">GZDB only</span>.<br />
-    When set to true, sidedefs will be compressed regardless of linedef action (DB2 behaviour, can potentially cause problems when target source port doesn't decompress sidedefs).<br />
-    When set to false, sidedefs, which belong to a line with an action, will be skipped when compressing sidedefs.<br />
+    When set to true, sidedefs will be compressed regardless of linedef action or tag(s) (DB2 behaviour, can potentially cause problems when target source port doesn't decompress sidedefs).<br />
+    When set to false, sidedefs, which belong to a line with an action or non-zero tag(s), will be skipped when compressing sidedefs.<br />
     Default value is <b>false</b>.<br />
 	</p>
 </div>
