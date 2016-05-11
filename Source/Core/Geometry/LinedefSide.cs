@@ -103,6 +103,14 @@ namespace CodeImp.DoomBuilder.Geometry
 			return (this.line == other.line) && (this.front == other.front);
 		}
 
+#if DEBUG
+		//mxd. Useful when debugging...
+		public override string ToString()
+		{
+			return line  + " (" + (front ? "front" : "back") + ")";
+		}
+#endif
+
 		#endregion
 	}
 }

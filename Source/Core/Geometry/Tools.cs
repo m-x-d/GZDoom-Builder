@@ -387,10 +387,12 @@ namespace CodeImp.DoomBuilder.Geometry
 					Linedef prevline = nextline;
 					nextline = (lines[0] == nextline ? lines[1] : lines[0]);
 
-					//mxd. Try to pick a line with lower tracecount...
-					// Otherwise we will just walk the same path trise
+					//mxd. Try to pick a line with lower tracecount, otherwise we will just walk the same path trise
 					int curcount = (!tracecount.ContainsKey(nextline) ? 0 : tracecount[nextline]);
-					if(curcount > 0)
+
+					//mxd. Don't pick a different line for start and end lines, otherwise the path can go away from it instead of closing the path
+					//mxd. Also don't pick a different line for marked lines (these are newly drawn lines, and we don't want to skip them)
+					if(curcount > 0 && !nextline.Marked && nextline != startline && nextline != endline)
 					{
 						foreach(Linedef l in lines)
 						{
@@ -406,8 +408,8 @@ namespace CodeImp.DoomBuilder.Geometry
 					if(!tracecount.ContainsKey(nextline) || (tracecount[nextline] < 3))
 					{
 						// Check if front side changes
-						if((prevline.Start == nextline.Start) ||
-						   (prevline.End == nextline.End)) nextfront = !nextfront;
+						if(prevline.Start == nextline.Start || prevline.End == nextline.End)
+							nextfront = !nextfront;
 					}
 					else
 					{
