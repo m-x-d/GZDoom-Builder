@@ -24,6 +24,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 		public PixelColor Color { get; set; }
 		public int ID { get; set; }
 		public string Name { get; set; } //mxd
+		public FlatVertex[] SectorsGeometry; //mxd
 
 		#endregion
 

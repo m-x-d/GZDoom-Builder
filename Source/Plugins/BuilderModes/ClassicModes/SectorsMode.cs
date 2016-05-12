@@ -144,7 +144,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			// Make text labels for sectors
-			PixelColor c = (BuilderPlug.Me.UseHighlight ? General.Colors.Highlight : General.Colors.Selection); //mxd
+			PixelColor c = (General.Settings.UseHighlight ? General.Colors.Highlight : General.Colors.Selection); //mxd
 			labels = new Dictionary<Sector, TextLabel[]>(General.Map.Map.Sectors.Count);
 			foreach(Sector s in General.Map.Map.Sectors)
 			{
@@ -173,13 +173,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				ICollection<Sector> orderedselection = General.Map.Map.GetSelectedSectors(true);
 				
 				//mxd. Render selected sectors
-				if(BuilderPlug.Me.UseHighlight) 
+				if(General.Settings.UseHighlight) 
 				{
 					renderer.RenderHighlight(overlayGeometry, General.Colors.Selection.WithAlpha(64).ToInt());
 				}
 
 				//mxd. Render highlighted sector
-				if(BuilderPlug.Me.UseHighlight && highlighted != null) 
+				if(General.Settings.UseHighlight && highlighted != null) 
 				{
 					renderer.RenderHighlight(highlighted.FlatVertices, General.Colors.Highlight.WithAlpha(64).ToInt());
 				}
@@ -424,7 +424,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if((highlighted != null) && !highlighted.IsDisposed)
 			{
 				TextLabel[] labelarray = labels[highlighted];
-				PixelColor c = (BuilderPlug.Me.UseHighlight ? General.Colors.Highlight : General.Colors.Selection);
+				PixelColor c = (General.Settings.UseHighlight ? General.Colors.Highlight : General.Colors.Selection);
 				foreach(TextLabel l in labelarray) l.Color = c;
 			}
 			
@@ -432,7 +432,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if((s != null) && !s.IsDisposed)
 			{
 				TextLabel[] labelarray = labels[s];
-				PixelColor c = (BuilderPlug.Me.UseHighlight ? General.Colors.Selection : General.Colors.Highlight);
+				PixelColor c = (General.Settings.UseHighlight ? General.Colors.Selection : General.Colors.Highlight);
 				foreach(TextLabel l in labelarray) l.Color = c;
 			}
 			
@@ -498,7 +498,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					{ 
 						//mxd
 						string selectedCount = General.Map.Map.SelectedSectorsCount.ToString();
-						PixelColor c = (BuilderPlug.Me.UseHighlight ? General.Colors.Highlight : General.Colors.Selection);
+						PixelColor c = (General.Settings.UseHighlight ? General.Colors.Highlight : General.Colors.Selection);
 						TextLabel[] labelarray = labels[s];
 						foreach(TextLabel l in labelarray) 
 						{
@@ -559,7 +559,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			// Go for all labels in all selected sectors
 			ICollection<Sector> orderedselection = General.Map.Map.GetSelectedSectors(true);
-			PixelColor c = (BuilderPlug.Me.UseHighlight ? General.Colors.Highlight : General.Colors.Selection); //mxd
+			PixelColor c = (General.Settings.UseHighlight ? General.Colors.Highlight : General.Colors.Selection); //mxd
 			int index = 0;
 			foreach(Sector s in orderedselection)
 			{
@@ -877,7 +877,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					// Update overlay
 					TextLabel[] labelarray = labels[highlighted];
-					PixelColor c = (BuilderPlug.Me.UseHighlight ? General.Colors.Selection : General.Colors.Highlight);
+					PixelColor c = (General.Settings.UseHighlight ? General.Colors.Selection : General.Colors.Highlight);
 					foreach(TextLabel l in labelarray) l.Color = c;
 					UpdateOverlaySurfaces(); //mxd
 					UpdateOverlay();
@@ -1401,10 +1401,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		public override void ToggleHighlight()
+		protected override void ToggleHighlight()
 		{
 			// Update label colors
-			PixelColor c = (BuilderPlug.Me.UseHighlight ? General.Colors.Selection : General.Colors.Highlight);
+			PixelColor c = (General.Settings.UseHighlight ? General.Colors.Selection : General.Colors.Highlight);
 			foreach(TextLabel[] labelarray in labels.Values)
 				foreach(TextLabel l in labelarray) l.Color = c;
 
@@ -1412,7 +1412,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if((highlighted != null) && !highlighted.IsDisposed)
 			{
 				TextLabel[] labelarray = labels[highlighted];
-				c = (BuilderPlug.Me.UseHighlight ? General.Colors.Highlight : General.Colors.Selection);
+				c = (General.Settings.UseHighlight ? General.Colors.Highlight : General.Colors.Selection);
 				foreach(TextLabel l in labelarray) l.Color = c;
 			}
 			

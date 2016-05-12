@@ -1157,6 +1157,14 @@ namespace CodeImp.DoomBuilder.VisualModes
 			}
 		}
 
+		//mxd
+		[BeginAction("togglehighlight", BaseAction = true)]
+		public void ToggleHighlight()
+		{
+			General.Settings.UseHighlight = !General.Settings.UseHighlight;
+			General.Interface.DisplayStatus(StatusType.Action, "Highlight is now " + (General.Settings.UseHighlight ? "ON" : "OFF") + ".");
+		}
+
 		#endregion
 	}
 }

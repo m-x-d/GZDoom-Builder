@@ -91,6 +91,7 @@ namespace CodeImp.DoomBuilder.Config
 		private bool locatetexturegroup; //mxd
 		private bool keeptexturefilterfocused; //mxd
 		private SplitLineBehavior splitlinebehavior; //mxd
+		private bool usehighlight; //mxd
 
 		//mxd. Script editor settings
 		private string scriptfontname;
@@ -203,6 +204,18 @@ namespace CodeImp.DoomBuilder.Config
 		public bool LocateTextureGroup { get { return locatetexturegroup; } internal set { locatetexturegroup = value; } } //mxd
 		public bool KeepTextureFilterFocused { get { return keeptexturefilterfocused; } internal set { keeptexturefilterfocused = value; } } //mxd
 		public SplitLineBehavior SplitLineBehavior { get { return splitlinebehavior; } set { splitlinebehavior = value; } } //mxd
+		
+		//mxd. Highlight mode
+		public bool UseHighlight
+		{ 
+			get { return usehighlight; } 
+			set
+			{
+				usehighlight = value;
+				General.Map.Renderer3D.ShowSelection = General.Settings.UseHighlight;
+				General.Map.Renderer3D.ShowHighlight = General.Settings.UseHighlight;
+			} 
+		}
 
 		//mxd. Script editor settings
 		public string ScriptFontName { get { return scriptfontname; } internal set { scriptfontname = value; } }
@@ -336,7 +349,8 @@ namespace CodeImp.DoomBuilder.Config
 				showtexturesizes = cfg.ReadSetting("showtexturesizes", true);
 				locatetexturegroup = cfg.ReadSetting("locatetexturegroup", true); //mxd
 				keeptexturefilterfocused = cfg.ReadSetting("keeptexturefilterfocused", true); //mxd
-				splitlinebehavior = (SplitLineBehavior) General.Clamp(cfg.ReadSetting("splitlinebehavior", 0), 0, 3); //mxd
+				splitlinebehavior = (SplitLineBehavior)General.Clamp(cfg.ReadSetting("splitlinebehavior", 0), 0, 3); //mxd
+				usehighlight = cfg.ReadSetting("usehighlight", true); //mxd
 
 				//mxd. Script editor
 				scriptfontname = cfg.ReadSetting("scriptfontname", "Courier New");
@@ -452,6 +466,7 @@ namespace CodeImp.DoomBuilder.Config
 			cfg.WriteSetting("locatetexturegroup", locatetexturegroup); //mxd
 			cfg.WriteSetting("keeptexturefilterfocused", keeptexturefilterfocused); //mxd
 			cfg.WriteSetting("splitlinebehavior", (int)splitlinebehavior); //mxd
+			cfg.WriteSetting("usehighlight", usehighlight); //mxd
 
 			//mxd. Script editor
 			cfg.WriteSetting("scriptfontname", scriptfontname);

@@ -374,17 +374,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		[BeginAction("togglehighlight")]
-		public virtual void ToggleHighlight() 
-		{
-			BuilderPlug.Me.UseHighlight = !BuilderPlug.Me.UseHighlight;
-			General.Interface.DisplayStatus(StatusType.Action, "Highlight is now " + (BuilderPlug.Me.UseHighlight ? "ON" : "OFF") + ".");
-
-			// Redraw display to show changes
-			General.Interface.RedrawDisplay();
-		}
-
-		//mxd
 		[BeginAction("syncedthingedit")]
 		public void ToggleSyncronizedThingsEdit()
 		{

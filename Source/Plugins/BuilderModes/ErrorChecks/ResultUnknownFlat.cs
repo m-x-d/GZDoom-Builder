@@ -89,7 +89,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd. More rendering
 		public override void RenderOverlaySelection(IRenderer2D renderer) 
 		{
-			if(!BuilderPlug.Me.UseHighlight) return;
+			if(!General.Settings.UseHighlight) return;
 			renderer.RenderHighlight(sector.FlatVertices, General.Colors.Selection.WithAlpha(64).ToInt());
 		}
 		

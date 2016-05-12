@@ -51,6 +51,7 @@ namespace CodeImp.DoomBuilder
 		#region ================== Properties
 
 		public bool AlwaysOnTop { get { return alwaysontop.Checked; } }
+		public static int Counter { get { return counter; } }
 
 		#endregion
 

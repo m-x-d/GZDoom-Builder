@@ -43,7 +43,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd. Render selection highlight
 		public override void RenderOverlaySelection(IRenderer2D renderer, FindReplaceObject[] selection) 
 		{
-			if(!BuilderPlug.Me.UseHighlight) return;
+			if(!General.Settings.UseHighlight) return;
 
 			int color = General.Colors.Selection.WithAlpha(64).ToInt();
 			foreach(FindReplaceObject o in selection)

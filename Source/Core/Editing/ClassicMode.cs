@@ -957,6 +957,17 @@ namespace CodeImp.DoomBuilder.Editing
 			}
 		}
 
+		//mxd
+		[BeginAction("togglehighlight", BaseAction = true)]
+		protected virtual void ToggleHighlight()
+		{
+			General.Settings.UseHighlight = !General.Settings.UseHighlight;
+			General.Interface.DisplayStatus(StatusType.Action, "Highlight is now " + (General.Settings.UseHighlight ? "ON" : "OFF") + ".");
+
+			// Redraw display to show changes
+			General.Interface.RedrawDisplay();
+		}
+
 		#endregion
 	}
 

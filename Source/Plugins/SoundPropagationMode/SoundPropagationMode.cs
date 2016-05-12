@@ -288,12 +288,12 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 
 			if(renderer.StartOverlay(true))
 			{
-				renderer.RenderGeometry(overlayGeometry, General.Map.Data.WhiteTexture, true);
+				renderer.RenderGeometry(overlayGeometry, null, true);
 
 				if(highlighted != null && !highlighted.IsDisposed)
 				{
 					SoundPropagationDomain spd = sector2domain[highlighted];
-					renderer.RenderGeometry(spd.Level1Geometry, General.Map.Data.WhiteTexture, true);
+					renderer.RenderGeometry(spd.Level1Geometry, null, true);
 
 					foreach(Sector s in spd.AdjacentSectors)
 					{
@@ -301,7 +301,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 
 						if(!renderedspds.Contains(aspd))
 						{
-							renderer.RenderGeometry(aspd.Level2Geometry, General.Map.Data.WhiteTexture, true);
+							renderer.RenderGeometry(aspd.Level2Geometry, null, true);
 							renderedspds.Add(aspd);
 						}
 					}
@@ -325,7 +325,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			FlatVertex[] fv = new FlatVertex[flatvertices.Length];
 			flatvertices.CopyTo(fv, 0);
 			for(int i = 0; i < fv.Length; i++) fv[i].c = color.ToInt();
-			renderer.RenderGeometry(fv, General.Map.Data.WhiteTexture, true);
+			renderer.RenderGeometry(fv, null, true);
 		}
 
 		//mxd. If a linedef is highlighted, toggle the sound blocking flag 
@@ -339,6 +339,26 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			// Toggle flag
 			highlightedline.SetFlag(BlockSoundFlag, !highlightedline.IsFlagSet(BlockSoundFlag));
 			
+			// Update
+			ResetSoundPropagation();
+			General.Interface.RedrawDisplay();
+		}
+
+		//mxd
+		public override void OnUndoEnd()
+		{
+			base.OnUndoEnd();
+
+			// Update
+			ResetSoundPropagation();
+			General.Interface.RedrawDisplay();
+		}
+
+		//mxd
+		public override void OnRedoEnd()
+		{
+			base.OnRedoEnd();
+
 			// Update
 			ResetSoundPropagation();
 			General.Interface.RedrawDisplay();
