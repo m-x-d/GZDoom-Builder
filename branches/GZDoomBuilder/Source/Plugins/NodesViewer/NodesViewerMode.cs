@@ -698,7 +698,7 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 			for(int i = 0; i < poly.Length; i++) poly[i].c = intcolor;
 
 			// Draw
-			renderer.RenderGeometry(poly, General.Map.Data.WhiteTexture, true);
+			renderer.RenderGeometry(poly, null, true);
 		}
 
 		// For rendering
@@ -706,7 +706,7 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 		{
 			if(vertices == null) return;
 			if(vertices.Length < 3) return;
-			renderer.RenderGeometry(vertices, General.Map.Data.WhiteTexture, true);
+			renderer.RenderGeometry(vertices, null, true);
 		}
 
 		// For rendering
@@ -774,7 +774,7 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 				}
 
 				// Draw
-				renderer.RenderGeometry(fverts, General.Map.Data.WhiteTexture, true);
+				renderer.RenderGeometry(fverts, null, true);
 			}
 		}
 

@@ -1195,9 +1195,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				renderer.SetFogMode(true);
 
 				// Set target for highlighting
-				renderer.ShowSelection = General.Settings.GZOldHighlightMode || BuilderPlug.Me.UseHighlight; //mxd
+				renderer.ShowSelection = General.Settings.GZOldHighlightMode || General.Settings.UseHighlight; //mxd
 
-				if(BuilderPlug.Me.UseHighlight)
+				if(General.Settings.UseHighlight)
 					renderer.SetHighlightedObject(target.picked);
 				
 				// Begin with geometry
@@ -2871,14 +2871,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			BuilderPlug.Me.UseGravity = !BuilderPlug.Me.UseGravity;
 			string onoff = BuilderPlug.Me.UseGravity ? "ON" : "OFF";
 			General.Interface.DisplayStatus(StatusType.Action, "Gravity is now " + onoff + ".");
-		}
-
-		[BeginAction("togglehighlight")]
-		public void ToggleHighlight()
-		{
-			BuilderPlug.Me.UseHighlight = !BuilderPlug.Me.UseHighlight;
-			string onoff = BuilderPlug.Me.UseHighlight ? "ON" : "OFF";
-			General.Interface.DisplayStatus(StatusType.Action, "Highlight is now " + onoff + ".");
 		}
 
 		[BeginAction("resettexture")]

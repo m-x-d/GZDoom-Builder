@@ -243,7 +243,9 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			// and id, no matter in what order they are discovered
 			for(int i = 0; i < soundenvironmenthings.Count; i++)
 			{
-				secolor[soundenvironmenthings[i]] = distinctcolors[i % distinctcolors.Count];
+				//mxd. Make sure same environments use the same color
+				int seid = (soundenvironmenthings[i].Args[0] << 8) + soundenvironmenthings[i].Args[1];
+				secolor[soundenvironmenthings[i]] = distinctcolors[seid % distinctcolors.Count];
 				senumber.Add(soundenvironmenthings[i], i + 1);
 			}
 
@@ -312,6 +314,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 				environment.ID = senumber[environment.Things[0]];
 
 				// Create the data for the overlay geometry
+				List<FlatVertex> severtslist = new List<FlatVertex>(environment.Sectors.Count * 3); //mxd
 				foreach(Sector s in environment.Sectors)
 				{
 					FlatVertex[] fv = new FlatVertex[s.FlatVertices.Length];
@@ -319,17 +322,21 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 					for(int j = 0; j < fv.Length; j++) fv[j].c = environment.Color.WithAlpha(128).ToInt();
 
 					vertsList.AddRange(fv);
+					severtslist.AddRange(fv); //mxd
 
 					// Get all Linedefs that will block sound environments
 					foreach(Sidedef sd in s.Sidedefs)
 					{
-						if(LinedefBlocksSoundEnvironment(sd.Line))
-							lock (blockinglinedefs)
-							{
-								blockinglinedefs.Add(sd.Line);
-							}
+						if(!LinedefBlocksSoundEnvironment(sd.Line)) continue;
+						lock(blockinglinedefs)
+						{
+							blockinglinedefs.Add(sd.Line);
+						}
 					}
 				}
+
+				//mxd. Store sector environment verts
+				environment.SectorsGeometry = severtslist.ToArray();
 
 				// Update the overlay geometry with the newly added sectors
 				if(overlayGeometry == null)
@@ -338,7 +345,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 				}
 				else
 				{
-					lock (overlayGeometry)
+					lock(overlayGeometry)
 					{
 						overlayGeometry = vertsList.ToArray();
 					}
@@ -380,7 +387,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 				//mxd. Still no suitable name?..
 				if(environment.Name == SoundEnvironment.DEFAULT_NAME) environment.Name += " " + environment.ID;
 
-				lock (soundenvironments)
+				lock(soundenvironments)
 				{
 					soundenvironments.Add(environment);
 				}
@@ -405,7 +412,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			}
 			else
 			{
-				lock (overlayGeometry)
+				lock(overlayGeometry)
 				{
 					overlayGeometry = vertsList.ToArray();
 				}

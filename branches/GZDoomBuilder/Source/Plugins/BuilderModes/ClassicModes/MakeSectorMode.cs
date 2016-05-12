@@ -155,7 +155,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					renderer.RenderGeometry(flashpolygon, null, true);
 				} 
-				else if(BuilderPlug.Me.UseHighlight) //mxd
+				else if(General.Settings.UseHighlight) //mxd
 				{
 					int color = General.Colors.Indication.WithAlpha(64).ToInt();
 					foreach(Sector s in associates.Keys)

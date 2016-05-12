@@ -37,6 +37,7 @@
 			this.clearalltags = new System.Windows.Forms.Button();
 			this.tagslist = new System.Windows.Forms.LinkLabel();
 			this.label1 = new System.Windows.Forms.Label();
+			this.buttons = new System.Windows.Forms.VScrollBar();
 			this.SuspendLayout();
 			// 
 			// curtaglabel
@@ -60,7 +61,7 @@
 			this.tagpicker.FormattingEnabled = true;
 			this.tagpicker.Location = new System.Drawing.Point(65, 7);
 			this.tagpicker.Name = "tagpicker";
-			this.tagpicker.Size = new System.Drawing.Size(230, 21);
+			this.tagpicker.Size = new System.Drawing.Size(210, 21);
 			this.tagpicker.TabIndex = 1;
 			this.tagpicker.TextChanged += new System.EventHandler(this.tagpicker_TextChanged);
 			// 
@@ -151,10 +152,23 @@
 			this.label1.TabIndex = 6;
 			this.label1.Text = "Tags:";
 			// 
+			// buttons
+			// 
+			this.buttons.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttons.LargeChange = 10000;
+			this.buttons.Location = new System.Drawing.Point(278, 5);
+			this.buttons.Maximum = 10000;
+			this.buttons.Minimum = -10000;
+			this.buttons.Name = "buttons";
+			this.buttons.Size = new System.Drawing.Size(18, 24);
+			this.buttons.TabIndex = 11;
+			this.buttons.ValueChanged += new System.EventHandler(this.buttons_ValueChanged);
+			// 
 			// TagsSelector
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+			this.Controls.Add(this.buttons);
 			this.Controls.Add(this.clearalltags);
 			this.Controls.Add(this.clear);
 			this.Controls.Add(this.addtag);
@@ -186,5 +200,6 @@
 		private System.Windows.Forms.Button addtag;
 		private System.Windows.Forms.Button clear;
 		private System.Windows.Forms.Button clearalltags;
+		private System.Windows.Forms.VScrollBar buttons;
 	}
 }

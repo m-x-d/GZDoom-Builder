@@ -257,7 +257,24 @@ namespace CodeImp.DoomBuilder.Controls
 			clear.Left = this.Width - clear.Width - clear.Margin.Right;
 			unusedTag.Left = clear.Left - unusedTag.Margin.Right - unusedTag.Width;
 			newTag.Left = unusedTag.Left - newTag.Margin.Right - newTag.Width;
-			cbTagPicker.Width = newTag.Left - cbTagPicker.Margin.Right - cbTagPicker.Left;
+			buttons.Left = newTag.Left - newTag.Margin.Left - buttons.Width;
+			cbTagPicker.Width = buttons.Left - cbTagPicker.Margin.Right - cbTagPicker.Left;
+		}
+
+		//mxd
+		private void buttons_ValueChanged(object sender, EventArgs e)
+		{
+			if(buttons.Value == 0) return;
+			
+			ValidateTag();
+
+			if(!valid) tag = 0;
+			else tag = General.Clamp(tag + (buttons.Value < 0 ? 1 : -1), General.Map.FormatInterface.MinTag, General.Map.FormatInterface.MaxTag);
+
+			cbTagPicker.SelectedIndex = -1;
+			cbTagPicker.Text = tag.ToString();
+			buttons.Value = 0;
+			valid = true;
 		}
 
 		#endregion

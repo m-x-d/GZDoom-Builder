@@ -232,6 +232,26 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			}
 		}
 
+		//mxd
+		public override void OnUndoEnd()
+		{
+			base.OnUndoEnd();
+
+			// Update
+			UpdateData();
+			General.Interface.RedrawDisplay();
+		}
+
+		//mxd
+		public override void OnRedoEnd()
+		{
+			base.OnRedoEnd();
+
+			// Update
+			UpdateData();
+			General.Interface.RedrawDisplay();
+		}
+
 		private void worker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
 		{
 			panel.HighlightSoundEnvironment(highlightedsoundenvironment); //mxd. Expand highlighted node in the treeview
@@ -341,7 +361,12 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 				{
 					if(BuilderPlug.Me.OverlayGeometry.Length > 0 && renderer.StartOverlay(true))
 					{
-						renderer.RenderGeometry(BuilderPlug.Me.OverlayGeometry, General.Map.Data.WhiteTexture, true);
+						renderer.RenderGeometry(BuilderPlug.Me.OverlayGeometry, null, true);
+						
+						//mxd. Render highlighted sound environment
+						if(General.Settings.UseHighlight && highlightedsoundenvironment != null)
+							renderer.RenderHighlight(highlightedsoundenvironment.SectorsGeometry, General.Colors.Highlight.WithAlpha(128).ToInt());
+
 						renderer.Finish();
 					}
 				}
@@ -576,12 +601,12 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			General.Map.IsChanged = true;
 			General.Map.ThingsFilter.Update();
 
-			// Invoke a new mousemove so that the highlighted item updates
-			MouseEventArgs e = new MouseEventArgs(MouseButtons.None, 0, (int)mousepos.x, (int)mousepos.y, 0);
-			OnMouseMove(e);
-
 			// Update sound environments
 			UpdateData();
+
+			// Invoke a new mousemove so that the highlighted item updates
+			highlightedsoundenvironment = null;
+			OnMouseMove(new MouseEventArgs(MouseButtons.None, 0, (int)mousepos.x, (int)mousepos.y, 0));
 
 			// Redraw screen
 			General.Interface.RedrawDisplay();

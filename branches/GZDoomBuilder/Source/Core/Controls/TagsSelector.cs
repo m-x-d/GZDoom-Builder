@@ -505,9 +505,41 @@ namespace CodeImp.DoomBuilder.Controls
 			clear.Left = this.Width - clear.Width - clear.Margin.Right;
 			unusedtag.Left = clear.Left - unusedtag.Margin.Right - unusedtag.Width;
 			newtag.Left = unusedtag.Left - newtag.Margin.Right - newtag.Width;
-			tagpicker.Width = newtag.Left - tagpicker.Margin.Right - tagpicker.Left;
+			buttons.Left = newtag.Left - newtag.Margin.Left - buttons.Width;
+			tagpicker.Width = buttons.Left - tagpicker.Margin.Right - tagpicker.Left;
 			removetag.Left = clear.Left;
 			addtag.Left = removetag.Left - addtag.Margin.Right - addtag.Width;
+		}
+
+		//mxd
+		private void buttons_ValueChanged(object sender, EventArgs e)
+		{
+			if(buttons.Value == 0) return;
+			
+			int tag = 0;
+			bool valid = false;
+
+			// Get current tag
+			if(tagpicker.SelectedItem != null)
+			{
+				TagInfo info = (TagInfo) tagpicker.SelectedItem;
+				tag = info.Tag;
+				valid = true;
+			}
+			else
+			{
+				string text = tagpicker.Text.Trim();
+				if(!string.IsNullOrEmpty(text) && int.TryParse(text, out tag))
+					valid = true;
+			}
+
+			// Increment it
+			if(valid) tag = General.Clamp(tag + (buttons.Value < 0 ? 1 : -1), General.Map.FormatInterface.MinTag, General.Map.FormatInterface.MaxTag);
+
+			// Apply it
+			tagpicker.SelectedIndex = -1;
+			tagpicker.Text = tag.ToString();
+			buttons.Value = 0;
 		}
 
 		#endregion

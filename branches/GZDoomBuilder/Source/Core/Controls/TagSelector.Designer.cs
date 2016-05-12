@@ -35,6 +35,7 @@
 			this.unusedTag = new System.Windows.Forms.Button();
 			this.tooltip = new System.Windows.Forms.ToolTip(this.components);
 			this.clear = new System.Windows.Forms.Button();
+			this.buttons = new System.Windows.Forms.VScrollBar();
 			this.SuspendLayout();
 			// 
 			// label1
@@ -58,7 +59,7 @@
 			this.cbTagPicker.FormattingEnabled = true;
 			this.cbTagPicker.Location = new System.Drawing.Point(42, 7);
 			this.cbTagPicker.Name = "cbTagPicker";
-			this.cbTagPicker.Size = new System.Drawing.Size(165, 21);
+			this.cbTagPicker.Size = new System.Drawing.Size(150, 21);
 			this.cbTagPicker.TabIndex = 1;
 			// 
 			// newTag
@@ -101,10 +102,23 @@
 			this.clear.UseVisualStyleBackColor = true;
 			this.clear.Click += new System.EventHandler(this.clear_Click);
 			// 
+			// buttons
+			// 
+			this.buttons.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.buttons.LargeChange = 10000;
+			this.buttons.Location = new System.Drawing.Point(192, 5);
+			this.buttons.Maximum = 10000;
+			this.buttons.Minimum = -10000;
+			this.buttons.Name = "buttons";
+			this.buttons.Size = new System.Drawing.Size(18, 24);
+			this.buttons.TabIndex = 5;
+			this.buttons.ValueChanged += new System.EventHandler(this.buttons_ValueChanged);
+			// 
 			// TagSelector
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+			this.Controls.Add(this.buttons);
 			this.Controls.Add(this.clear);
 			this.Controls.Add(this.unusedTag);
 			this.Controls.Add(this.newTag);
@@ -126,5 +140,6 @@
 		private System.Windows.Forms.Button unusedTag;
 		private System.Windows.Forms.ToolTip tooltip;
 		private System.Windows.Forms.Button clear;
+		private System.Windows.Forms.VScrollBar buttons;
 	}
 }

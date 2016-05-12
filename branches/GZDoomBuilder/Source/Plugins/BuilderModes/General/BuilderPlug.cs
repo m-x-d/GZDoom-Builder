@@ -119,7 +119,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private float highlightrange;
 		private float highlightthingsrange;
 		private float splitlinedefsrange;
-		private bool usehighlight;
 		private bool autodragonpaste;
 		private bool autoAlignTextureOffsetsOnCreate;//mxd
 		private bool dontMoveGeometryOutsideMapBoundary;//mxd
@@ -169,16 +168,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public float HighlightRange { get { return highlightrange; } }
 		public float HighlightThingsRange { get { return highlightthingsrange; } }
 		public float SplitLinedefsRange { get { return splitlinedefsrange; } }
-		public bool UseHighlight
-		{ 
-			get { return usehighlight; } 
-			set
-			{ 
-				usehighlight = value;
-				General.Map.Renderer3D.ShowSelection = usehighlight;
-				General.Map.Renderer3D.ShowHighlight = usehighlight;
-			} 
-		}
 		public bool AutoDragOnPaste { get { return autodragonpaste; } set { autodragonpaste = value; } }
 		public bool AutoDrawOnEdit { get { return autoDrawOnEdit; } set { autoDrawOnEdit = value; } } //mxd
 		public bool AutoAlignTextureOffsetsOnCreate { get { return autoAlignTextureOffsetsOnCreate; } set { autoAlignTextureOffsetsOnCreate = value; } } //mxd
@@ -204,7 +193,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Settings
 			showvisualthings = 2;
 			usegravity = false;
-			usehighlight = true;
 			LoadSettings();
 			LoadUISettings(); //mxd
 			
