@@ -17,12 +17,14 @@
 #region ================== Namespaces
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using CodeImp.DoomBuilder.Config;
 using System.Windows.Forms;
 using System.Text.RegularExpressions;
 using CodeImp.DoomBuilder.Data;
+using CodeImp.DoomBuilder.ZDoom.Scripting;
 
 #endregion
 
@@ -37,9 +39,18 @@ namespace CodeImp.DoomBuilder.Compilers
 		#endregion
 		
 		#region ================== Variables
+
+		private AcsParserSE parser; //mxd
 		
 		#endregion
-		
+
+		#region ================== Properties
+
+		public bool SourceIsMapScriptsLump; //mxd
+		internal AcsParserSE Parser { get { return parser; } } //mxd
+
+		#endregion
+
 		#region ================== Constructor
 		
 		// Constructor
@@ -71,31 +82,80 @@ namespace CodeImp.DoomBuilder.Compilers
 			int line = 0;
 			string sourcedir = Path.GetDirectoryName(sourcefile);
 
+			// Preprocess the file
+			parser = new AcsParserSE
+			{
+				OnInclude = delegate(AcsParserSE se, string includefile, AcsParserSE.IncludeType includetype)
+				{
+					TextResourceData data = General.Map.Data.GetTextResourceData(includefile);
+					if(data == null)
+					{
+						// Fial
+						ReportError(new CompilerError("Unable to find include file \"" + includefile + "\""));
+					}
+					else
+					{
+						se.Parse(data, true, includetype, false);
+					}
+				}
+			};
+
+			string inputfilepath = Path.Combine(this.tempdir.FullName, inputfile);
+			using(FileStream stream = File.OpenRead(inputfilepath))
+			{
+				DataLocation dl = new DataLocation(DataLocation.RESOURCE_DIRECTORY, Path.GetDirectoryName(inputfile), false, false, false);
+				TextResourceData data = new TextResourceData(stream, dl, inputfile, false);
+				if(!parser.Parse(data, info.Files, true, AcsParserSE.IncludeType.NONE, false))
+				{
+					// Check for errors
+					if(parser.HasError) ReportError(new CompilerError(parser.ErrorDescription, parser.ErrorSource, parser.ErrorLine));
+					return true;
+				}
+			}
+
+			//mxd. External lumps should be libraries
+			if(!SourceIsMapScriptsLump && !parser.IsLibrary)
+			{
+				ReportError(new CompilerError("External ACS files can only be compiled as libraries!", sourcefile));
+				return true;
+			}
+
+			//mxd. SCRIPTS lump can't be library
+			if(SourceIsMapScriptsLump && parser.IsLibrary)
+			{
+				ReportError(new CompilerError("SCRIPTS lump can't be compiled as library!", sourcefile));
+				return true;
+			}
+
+			//mxd. Update script names if we are compiling the map SCRIPTS lump
+			if(SourceIsMapScriptsLump)
+			{
+				General.Map.UpdateScriptNames(parser);
+			}
+
 			//xabis
 			// Copy includes from the resources into the compiler's folder, preserving relative pathing and naming
-			if(CopyIncludesToWorkingDirectory) //mxd
+			HashSet<string> includes = parser.GetIncludes(); //mxd
+			foreach(string include in includes)
 			{
-				foreach(string include in includes)
+				// Grab the script text from the resources
+				TextResourceData data = General.Map.Data.GetTextResourceData(include);
+				if(data != null && data.Stream != null)
 				{
-					// Grab the script text from the resources
-					TextResourceData data = General.Map.Data.GetTextResourceData(include);
-					if(data != null && data.Stream != null)
+					// Pull the pk3 or directory sub folder out if applicable
+					FileInfo fi = new FileInfo(Path.Combine(this.tempdir.FullName, include));
+
+					// Do not allow files to be overwritten, either accidentally or maliciously
+					if(!fi.Exists)
 					{
-						// Pull the pk3 or directory sub folder out if applicable
-						FileInfo fi = new FileInfo(Path.Combine(this.tempdir.FullName, include));
+						General.WriteLogLine("Copying script include: " + include);
 
-						// Do not allow files to be overwritten, either accidentally or maliciously
-						if(!fi.Exists)
-						{
-							General.WriteLogLine("Copying script include: " + include);
+						// Create the directory path as needed
+						if(!string.IsNullOrEmpty(fi.DirectoryName)) Directory.CreateDirectory(fi.DirectoryName);
 
-							// Create the directory path as needed
-							if(!string.IsNullOrEmpty(fi.DirectoryName)) Directory.CreateDirectory(fi.DirectoryName);
-
-							// Dump the script into the target file
-							BinaryReader reader = new BinaryReader(data.Stream);
-							File.WriteAllBytes(fi.FullName, reader.ReadBytes((int)data.Stream.Length));
-						}
+						// Dump the script into the target file
+						BinaryReader reader = new BinaryReader(data.Stream);
+						File.WriteAllBytes(fi.FullName, reader.ReadBytes((int)data.Stream.Length));
 					}
 				}
 			}
@@ -112,7 +172,6 @@ namespace CodeImp.DoomBuilder.Compilers
 			// Setup process info
 			ProcessStartInfo processinfo = new ProcessStartInfo();
 			processinfo.Arguments = args;
-			//processinfo.FileName = Path.Combine(this.tempdir.FullName, info.ProgramFile);
 			processinfo.FileName = Path.Combine(info.Path, info.ProgramFile); //mxd
 			processinfo.CreateNoWindow = false;
 			processinfo.ErrorDialog = false;
@@ -229,4 +288,3 @@ namespace CodeImp.DoomBuilder.Compilers
 		#endregion
 	}
 }
-

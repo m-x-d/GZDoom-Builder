@@ -121,8 +121,15 @@ namespace CodeImp.DoomBuilder.Controls
 				// Is this a script lump?
 				if(maplumpinfo.ScriptBuild) //mxd
 				{
+					ScriptConfiguration config = General.GetScriptConfiguration(ScriptType.ACS);
+					if(config == null)
+					{
+						General.ErrorLogger.Add(ErrorType.Warning, "Unable to find script configuration for \"" + ScriptType.ACS + "\" script type. Using plain text configuration.");
+						config = new ScriptConfiguration();
+					}
+
 					// Load this!
-					ScriptLumpDocumentTab t = new ScriptLumpDocumentTab(this, maplumpinfo.Name, General.CompiledScriptConfigs[General.Map.Options.ScriptCompiler]);
+					ScriptLumpDocumentTab t = new ScriptLumpDocumentTab(this, maplumpinfo.Name, config);
 					
 					//mxd. Apply stored settings?
 					if(General.Map.Options.ScriptLumpSettings.ContainsKey(maplumpinfo.Name))
@@ -198,7 +205,7 @@ namespace CodeImp.DoomBuilder.Controls
 			if(activetab != null)
 			{
 				List<CompilerError> errors = (General.Map.Errors.Count > 0 ? General.Map.Errors : activetab.UpdateNavigator());
-				if(errors.Count > 0) ShowErrors(errors);
+				if(errors.Count > 0) ShowErrors(errors, false);
 				else ClearErrors();
 			}
 			else
@@ -421,13 +428,35 @@ namespace CodeImp.DoomBuilder.Controls
 		
 		// This shows the errors panel with the given errors
 		// Also updates the scripts with markers for the given errors
-		public void ShowErrors(IEnumerable<CompilerError> errors)
+		public void ShowErrors(IEnumerable<CompilerError> errors, bool combine)
 		{
 			// Copy list
-			if(errors != null)
-				compilererrors = new List<CompilerError>(errors);
+			if(combine) //mxd
+			{
+				if(compilererrors == null) compilererrors = new List<CompilerError>();
+				if(errors != null)
+				{
+					// Combine 2 error lists...
+					foreach(CompilerError err in errors)
+					{
+						bool alreadyadded = false;
+						foreach(CompilerError compilererror in compilererrors)
+						{
+							if(compilererror.Equals(err))
+							{
+								alreadyadded = true;
+								break;
+							}
+						}
+
+						if(!alreadyadded) compilererrors.Add(err);
+					}
+				}
+			}
 			else
-				compilererrors = new List<CompilerError>();
+			{
+				compilererrors = (errors != null ? new List<CompilerError>(errors) : new List<CompilerError>());
+			}
 			
 			// Fill list
 			errorlist.BeginUpdate();
@@ -991,26 +1020,8 @@ namespace CodeImp.DoomBuilder.Controls
 			ScriptDocumentTab tab = e.TabPage as ScriptDocumentTab;
 			if(tab != null)
 			{
-				List<CompilerError> errors = tab.UpdateNavigator();
-				
-				// Combine 2 error lists...
-				foreach(CompilerError navigatorerror in errors)
-				{
-					bool alreadyadded = false;
-					foreach(CompilerError compilererror in compilererrors)
-					{
-						if(compilererror.Equals(navigatorerror))
-						{
-							alreadyadded = true;
-							break;
-						}
-					}
-
-					if(!alreadyadded) compilererrors.Add(navigatorerror);
-				}
-
 				// Show all errors...
-				ShowErrors(compilererrors);
+				ShowErrors(tab.UpdateNavigator(), true);
 			}
 
 			UpdateToolbar(true);

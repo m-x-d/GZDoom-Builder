@@ -207,7 +207,7 @@ namespace CodeImp.DoomBuilder.Controls
 			config = newconfig; //mxd
 			editor.SetupStyles(newconfig); //mxd
 			List<CompilerError> errors = UpdateNavigator(); //mxd
-			if(panel.ActiveTab == this) panel.ShowErrors(errors); //mxd
+			if(panel.ActiveTab == this) panel.ShowErrors(errors, true); //mxd
 		}
 
 		// Call this to set the tab title
@@ -296,7 +296,7 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 
 			if(parser.HasError)
-				panel.ShowErrors(new List<CompilerError> { new CompilerError(parser.ErrorDescription, parser.ErrorSource, parser.ErrorLine) });
+				panel.ShowErrors(new List<CompilerError> { new CompilerError(parser.ErrorDescription, parser.ErrorSource, parser.ErrorLine) }, true);
 
 			return ScriptType.UNKNOWN;
 		}
@@ -436,7 +436,7 @@ namespace CodeImp.DoomBuilder.Controls
 		//mxd
 		private void functionbar_DropDown(object sender, EventArgs e) 
 		{
-			if(editor.IsChanged) panel.ShowErrors(UpdateNavigator());
+			if(editor.IsChanged) panel.ShowErrors(UpdateNavigator(), true);
 		}
 
 		//mxd
