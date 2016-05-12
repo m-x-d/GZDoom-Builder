@@ -618,7 +618,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			foreach(IVisualEventReceiver obj in selectedobjects) 
 			{
-				if(!obj.IsSelected()) continue;
+				if(!obj.Selected) continue;
 
 				if(obj is BaseVisualThing) numThings++;
 				else if(obj is BaseVisualVertex) numVerts++;
@@ -1922,7 +1922,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				if(General.Interface.AltState)
 				{
-					target.SelectNeighbours(target.IsSelected(), General.Interface.ShiftState, General.Interface.CtrlState);
+					target.SelectNeighbours(target.Selected, General.Interface.ShiftState, General.Interface.CtrlState);
 				}
 				else
 				{
@@ -1930,7 +1930,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					selectedobjects.CopyTo(selection);
 					
 					foreach(IVisualEventReceiver obj in selection)
-						obj.SelectNeighbours(target.IsSelected(), General.Interface.ShiftState, General.Interface.CtrlState);
+						obj.SelectNeighbours(target.Selected, General.Interface.ShiftState, General.Interface.CtrlState);
 				}
 			}
 
@@ -3711,7 +3711,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					// Wrap the value within the width of the texture (to prevent ridiculous values)
 					// NOTE: We don't use ScaledWidth here because the texture offset is in pixels, not mappixels
-					if(texture.IsImageLoaded && Tools.SidedefTextureMatch(j.sidedef, texturehashes)) 
+					if(texture.IsImageLoaded && BuilderModesTools.SidedefTextureMatch(this, j.sidedef, texturehashes)) 
 					{
 						if(alignx) j.sidedef.OffsetX %= texture.Width;
 						if(aligny) j.sidedef.OffsetY %= texture.Height;
@@ -3737,7 +3737,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					// Wrap the value within the width of the texture (to prevent ridiculous values)
 					// NOTE: We don't use ScaledWidth here because the texture offset is in pixels, not mappixels
-					if(texture.IsImageLoaded && Tools.SidedefTextureMatch(j.sidedef, texturehashes)) 
+					if(texture.IsImageLoaded && BuilderModesTools.SidedefTextureMatch(this, j.sidedef, texturehashes)) 
 					{
 						if(alignx) j.sidedef.OffsetX %= texture.Width;
 						if(aligny) j.sidedef.OffsetY %= texture.Height;
@@ -3760,7 +3760,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// When resetsidemarks is set to true, all sidedefs will first be marked false (not aligned).
 		// Setting resetsidemarks to false is usefull to align only within a specific selection
 		// (set the marked property to true for the sidedefs outside the selection)
-		private void AutoAlignTexturesUDMF(BaseVisualGeometrySidedef start, ImageData texture, bool alignx, bool aligny, bool resetsidemarks, bool checkSelectedSidedefParts) 
+		private void AutoAlignTexturesUDMF(BaseVisualGeometrySidedef start, ImageData texture, bool alignx, bool aligny, bool resetsidemarks, bool checkselectedsidedefparts) 
 		{
 			// Mark all sidedefs false (they will be marked true when the texture is aligned)
 			if(resetsidemarks) General.Map.Map.ClearMarkedSidedefs(false);
@@ -3770,14 +3770,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			float scalex = (General.Map.Config.ScaledTextureOffsets && !texture.WorldPanning) ? texture.Scale.x : 1.0f;
 			float scaley = (General.Map.Config.ScaledTextureOffsets && !texture.WorldPanning) ? texture.Scale.y : 1.0f;
 
-			SidedefAlignJob first = new SidedefAlignJob();
-			first.sidedef = start.Sidedef;
-			first.offsetx = start.Sidedef.OffsetX;
-
-			if(start.GeometryType == VisualGeometryType.WALL_MIDDLE_3D)
-				first.controlSide = start.GetControlLinedef().Front;
-			else
-				first.controlSide = start.Sidedef;
+			SidedefAlignJob first = new SidedefAlignJob { sidedef = start.Sidedef, offsetx = start.Sidedef.OffsetX };
+			first.controlSide = (start.GeometryType == VisualGeometryType.WALL_MIDDLE_3D ? start.GetControlLinedef().Front : start.Sidedef);
 
 			//mxd. We potentially need to deal with 2 textures (because of long and short texture names)...
 			HashSet<long> texturehashes = new HashSet<long> { texture.LongName };
@@ -3799,7 +3793,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			//mxd
 			List<BaseVisualGeometrySidedef> selectedVisualSides = new List<BaseVisualGeometrySidedef>();
-			if(checkSelectedSidedefParts && !singleselection) 
+			if(checkselectedsidedefparts && !singleselection) 
 			{
 				foreach(IVisualEventReceiver i in selectedobjects)
 				{
@@ -3871,23 +3865,34 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			while(todo.Count > 0) 
 			{
 				Vertex v;
-				float forwardoffset;
-				float backwardoffset;
+				float forwardoffset, backwardoffset;
+				bool matchtop = false;
+				bool matchmid = false;
+				bool matchbottom = false;
 
 				// Get the align job to do
 				SidedefAlignJob j = todo.Pop();
 
-				bool matchtop = (!j.sidedef.Marked && (!singleselection || texturehashes.Contains(j.sidedef.LongHighTexture)) && j.sidedef.HighRequired());
-				bool matchbottom = (!j.sidedef.Marked && (!singleselection || texturehashes.Contains(j.sidedef.LongLowTexture)) && j.sidedef.LowRequired());
-				bool matchmid = ((!singleselection || texturehashes.Contains(j.controlSide.LongMiddleTexture)) && (j.controlSide.MiddleRequired() || j.controlSide.LongMiddleTexture != MapSet.EmptyLongName)); //mxd
-
-				//mxd. If there's a selection, check if matched part is actually selected
-				if(checkSelectedSidedefParts && !singleselection) 
+				//mxd. Get visual parts
+				if(VisualSectorExists(j.sidedef.Sector))
 				{
-					if(matchtop) matchtop = SidePartIsSelected(selectedVisualSides, j.sidedef, VisualGeometryType.WALL_UPPER);
-					if(matchbottom) matchbottom = SidePartIsSelected(selectedVisualSides, j.sidedef, VisualGeometryType.WALL_LOWER);
-					if(matchmid) matchmid = SidePartIsSelected(selectedVisualSides, j.sidedef, VisualGeometryType.WALL_MIDDLE) || 
-						SidePartIsSelected(selectedVisualSides, j.sidedef, VisualGeometryType.WALL_MIDDLE_3D);
+					VisualSidedefParts parts = ((BaseVisualSector)GetVisualSector(j.sidedef.Sector)).GetSidedefParts(j.sidedef);
+					VisualSidedefParts controlparts = (j.sidedef != j.controlSide ? ((BaseVisualSector)GetVisualSector(j.controlSide.Sector)).GetSidedefParts(j.controlSide) : parts);
+
+					matchtop = (!j.sidedef.Marked && (!singleselection || texturehashes.Contains(j.sidedef.LongHighTexture)) && (parts.upper != null && parts.upper.Triangles > 0));
+					matchbottom = (!j.sidedef.Marked && (!singleselection || texturehashes.Contains(j.sidedef.LongLowTexture)) && (parts.lower != null && parts.lower.Triangles > 0));
+					matchmid = ((!singleselection || texturehashes.Contains(j.controlSide.LongMiddleTexture))
+						&& ((controlparts.middledouble != null && controlparts.middledouble.Triangles > 0) || (controlparts.middlesingle != null && controlparts.middlesingle.Triangles > 0))); //mxd
+
+					//mxd. If there's a selection, check if matched part is actually selected
+					if(checkselectedsidedefparts && !singleselection)
+					{
+						if(matchtop) matchtop = parts.upper.Selected;
+						if(matchbottom) matchbottom = parts.lower.Selected;
+						if(matchmid) matchmid = ((parts.middledouble != null && parts.middledouble.Selected)
+											  || (parts.middlesingle != null && parts.middlesingle.Selected)
+											  || SidePartIsSelected(selectedVisualSides, j.sidedef, VisualGeometryType.WALL_MIDDLE_3D));
+					}
 				}
 
 				if(!matchbottom && !matchtop && !matchmid) continue; //mxd
@@ -4129,7 +4134,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					foreach(Sidedef s in controlSides) 
 					{
-						if(!singleselection || Tools.SidedefTextureMatch(s, texturelongnames)) 
+						if(!singleselection || BuilderModesTools.SidedefTextureMatch(this, s, texturelongnames)) 
 						{
 							SidedefAlignJob nj = new SidedefAlignJob();
 							nj.forward = forward;
@@ -4147,7 +4152,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					foreach(Sidedef s in controlSides) 
 					{
-						if(!singleselection || Tools.SidedefTextureMatch(s, texturelongnames)) 
+						if(!singleselection || BuilderModesTools.SidedefTextureMatch(this, s, texturelongnames)) 
 						{
 							SidedefAlignJob nj = new SidedefAlignJob();
 							nj.forward = forward;

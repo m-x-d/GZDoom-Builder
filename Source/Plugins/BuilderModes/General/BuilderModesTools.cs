@@ -692,5 +692,106 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		#endregion
+
+		#region ================== Texture Floodfill
+
+		// This performs texture floodfill along all walls that match with the same texture
+		// NOTE: This method uses the sidedefs marking to indicate which sides have been filled
+		// When resetsidemarks is set to true, all sidedefs will first be marked false (not aligned).
+		// Setting resetsidemarks to false is usefull to fill only within a specific selection
+		// (set the marked property to true for the sidedefs outside the selection)
+		public static void FloodfillTextures(BaseVisualMode mode, Sidedef start, HashSet<long> originaltextures, string filltexture, bool resetsidemarks)
+		{
+			Stack<Tools.SidedefFillJob> todo = new Stack<Tools.SidedefFillJob>(50);
+
+			// Mark all sidedefs false (they will be marked true when the texture is aligned)
+			if(resetsidemarks) General.Map.Map.ClearMarkedSidedefs(false);
+
+			// Begin with first sidedef
+			if(SidedefTextureMatch(mode, start, originaltextures))
+				todo.Push(new Tools.SidedefFillJob { sidedef = start, forward = true });
+
+			// Continue until nothing more to align
+			while(todo.Count > 0)
+			{
+				// Get the align job to do
+				Tools.SidedefFillJob j = todo.Pop();
+
+				//mxd. Get visual parts
+				if(mode.VisualSectorExists(j.sidedef.Sector))
+				{
+					VisualSidedefParts parts = ((BaseVisualSector)mode.GetVisualSector(j.sidedef.Sector)).GetSidedefParts(j.sidedef);
+					
+					// Apply texturing
+					if((parts.upper != null && parts.upper.Triangles > 0) && originaltextures.Contains(j.sidedef.LongHighTexture))
+						j.sidedef.SetTextureHigh(filltexture);
+					if(((parts.middledouble != null && parts.middledouble.Triangles > 0) || (parts.middlesingle != null && parts.middlesingle.Triangles > 0)) && originaltextures.Contains(j.sidedef.LongMiddleTexture))
+						j.sidedef.SetTextureMid(filltexture);
+					if((parts.lower != null && parts.lower.Triangles > 0) && originaltextures.Contains(j.sidedef.LongLowTexture))
+						j.sidedef.SetTextureLow(filltexture);
+				}
+
+				j.sidedef.Marked = true;
+
+				if(j.forward)
+				{
+					// Add sidedefs forward (connected to the right vertex)
+					Vertex v = j.sidedef.IsFront ? j.sidedef.Line.End : j.sidedef.Line.Start;
+					AddSidedefsForFloodfill(mode, todo, v, true, originaltextures);
+
+					// Add sidedefs backward (connected to the left vertex)
+					v = j.sidedef.IsFront ? j.sidedef.Line.Start : j.sidedef.Line.End;
+					AddSidedefsForFloodfill(mode, todo, v, false, originaltextures);
+				}
+				else
+				{
+					// Add sidedefs backward (connected to the left vertex)
+					Vertex v = j.sidedef.IsFront ? j.sidedef.Line.Start : j.sidedef.Line.End;
+					AddSidedefsForFloodfill(mode, todo, v, false, originaltextures);
+
+					// Add sidedefs forward (connected to the right vertex)
+					v = j.sidedef.IsFront ? j.sidedef.Line.End : j.sidedef.Line.Start;
+					AddSidedefsForFloodfill(mode, todo, v, true, originaltextures);
+				}
+			}
+		}
+
+		// This adds the matching, unmarked sidedefs from a vertex for texture alignment
+		private static void AddSidedefsForFloodfill(BaseVisualMode mode, Stack<Tools.SidedefFillJob> stack, Vertex v, bool forward, HashSet<long> texturelongnames)
+		{
+			foreach(Linedef ld in v.Linedefs)
+			{
+				Sidedef side1 = (forward ? ld.Front : ld.Back);
+				Sidedef side2 = (forward ? ld.Back : ld.Front);
+				if((ld.Start == v) && (side1 != null) && !side1.Marked)
+				{
+					if(SidedefTextureMatch(mode, side1, texturelongnames))
+						stack.Push(new Tools.SidedefFillJob { forward = forward, sidedef = side1 });
+				}
+				else if((ld.End == v) && (side2 != null) && !side2.Marked)
+				{
+					if(SidedefTextureMatch(mode, side2, texturelongnames))
+						stack.Push(new Tools.SidedefFillJob { forward = forward, sidedef = side2 });
+				}
+			}
+		}
+
+		#endregion
+
+		#region ================== Texture Alignment
+
+		//mxd. This checks if any of the sidedef texture match the given textures
+		public static bool SidedefTextureMatch(BaseVisualMode mode, Sidedef sd, HashSet<long> texturelongnames)
+		{
+			if(!mode.VisualSectorExists(sd.Sector)) return false;
+			VisualSidedefParts parts = ((BaseVisualSector)mode.GetVisualSector(sd.Sector)).GetSidedefParts(sd);
+
+			return (texturelongnames.Contains(sd.LongHighTexture) && (parts.upper != null && parts.upper.Triangles > 0)) ||
+				   (texturelongnames.Contains(sd.LongLowTexture) && (parts.lower != null && parts.lower.Triangles > 0)) ||
+				   (texturelongnames.Contains(sd.LongMiddleTexture)
+				   && ((parts.middledouble != null && parts.middledouble.Triangles > 0) || (parts.middlesingle != null && parts.middlesingle.Triangles > 0)));
+		}
+
+		#endregion
 	}
 }
