@@ -597,18 +597,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				Rectangle r = BuilderModesTools.GetSidedefPartSize(visualside);
 				if(r.Width == 0 || r.Height == 0) return;
-				if((matchtexture && visualside.Texture == Texture && r.IntersectsWith(sourcerect)) ||
-				   (matchheight && sourcerect.Height == r.Height && sourcerect.Y == r.Y))
+				if((!matchtexture || (visualside.Texture == Texture && r.IntersectsWith(sourcerect))) &&
+				   (!matchheight || (sourcerect.Height == r.Height && sourcerect.Y == r.Y)))
 				{
 					visualside.SelectNeighbours(select, matchtexture, matchheight);
 				}
 			}
-		}
-
-		//mxd
-		public virtual bool IsSelected() 
-		{
-			return selected;
 		}
 
 		//mxd
@@ -1022,7 +1016,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						}
 						
 						// Do the alignment
-						Tools.FloodfillTextures(Sidedef, texturehashes, newtexture, false);
+						BuilderModesTools.FloodfillTextures(mode, Sidedef, texturehashes, newtexture, false);
 
 						// Get the changed sidedefs
 						List<Sidedef> changes = General.Map.Map.GetMarkedSidedefs(true);

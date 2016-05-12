@@ -25,6 +25,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	// This doesn't do jack shit.
 	internal class NullVisualEventReceiver : IVisualEventReceiver
 	{
+		public bool Selected { get { return false; } } //mxd
+		
 		public void OnSelectBegin() { }
 		public void OnSelectEnd() { }
 		public void OnEditBegin() {	}
@@ -56,6 +58,5 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void ApplyLowerUnpegged(bool set) { }
 		public string GetTextureName() { return "";	}
 		public void SelectNeighbours(bool select, bool withSameTexture, bool withSameHeight) { } //mxd
-		public bool IsSelected() { return false; } //mxd
 	}
 }

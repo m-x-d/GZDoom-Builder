@@ -514,8 +514,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// When current floor is part of a 3d floor, it looks like a ceiling, so we need to select adjacent ceilings
 					if(level.sector != Sector.Sector && !regularorvavoom)
 					{
-						if((withSameTexture && side.Other.Sector.LongCeilTexture == level.sector.LongFloorTexture) ||
-							(withSameHeight && side.Other.Sector.CeilHeight == level.sector.FloorHeight)) 
+						if((!withSameTexture || side.Other.Sector.LongCeilTexture == level.sector.LongFloorTexture) &&
+							(!withSameHeight || side.Other.Sector.CeilHeight == level.sector.FloorHeight)) 
 						{
 							neighbours.Add(side.Other.Sector);
 
@@ -527,8 +527,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					else // Regular floor or vavoom-type extrafloor
 					{
 						// (De)select adjacent floor
-						if((withSameTexture && side.Other.Sector.LongFloorTexture == level.sector.LongFloorTexture) ||
-							(withSameHeight && side.Other.Sector.FloorHeight == level.sector.FloorHeight)) 
+						if((!withSameTexture || side.Other.Sector.LongFloorTexture == level.sector.LongFloorTexture) &&
+							(!withSameHeight || side.Other.Sector.FloorHeight == level.sector.FloorHeight)) 
 						{
 							neighbours.Add(side.Other.Sector);
 
@@ -542,8 +542,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					foreach(VisualFloor ef in vs.ExtraFloors) 
 					{
 						if(select == ef.Selected || ef.extrafloor.VavoomType != regularorvavoom) continue;
-						if((withSameTexture && level.sector.LongFloorTexture == ef.level.sector.LongFloorTexture) ||
-							(withSameHeight && level.sector.FloorHeight == ef.level.sector.FloorHeight)) 
+						if((!withSameTexture || level.sector.LongFloorTexture == ef.level.sector.LongFloorTexture) &&
+							(!withSameHeight || level.sector.FloorHeight == ef.level.sector.FloorHeight)) 
 						{
 							ef.SelectNeighbours(select, withSameTexture, withSameHeight);
 						}
@@ -553,8 +553,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					foreach(VisualCeiling ec in vs.ExtraCeilings) 
 					{
 						if(select == ec.Selected || ec.ExtraFloor.VavoomType == regularorvavoom) continue;
-						if((withSameTexture && level.sector.LongFloorTexture == ec.Level.sector.LongCeilTexture) ||
-							(withSameHeight && level.sector.FloorHeight == ec.Level.sector.CeilHeight)) 
+						if((!withSameTexture || level.sector.LongFloorTexture == ec.Level.sector.LongCeilTexture) &&
+							(!withSameHeight || level.sector.FloorHeight == ec.Level.sector.CeilHeight)) 
 						{
 							ec.SelectNeighbours(select, withSameTexture, withSameHeight);
 						}
@@ -589,8 +589,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							slopeSource = side.Line;
 							isFront = true;
 							break;
-						} 
-						else if(side.Line.Args[0] == 2 && side.Line.Back != null && side.Line.Back == side) 
+						}
+
+						if(side.Line.Args[0] == 2 && side.Line.Back != null && side.Line.Back == side) 
 						{
 							slopeSource = side.Line;
 							break;

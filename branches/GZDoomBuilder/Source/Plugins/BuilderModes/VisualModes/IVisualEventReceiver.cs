@@ -24,6 +24,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 {
 	internal interface IVisualEventReceiver
 	{
+		//mxd. Properties
+		bool Selected { get; }
+		
 		// The events that must be handled
 		void OnSelectBegin();
 		void OnSelectEnd();
@@ -60,6 +63,5 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Other methods
 		string GetTextureName();
 		void SelectNeighbours(bool select, bool matchtexture, bool matchheight); //mxd
-		bool IsSelected(); //mxd
 	}
 }

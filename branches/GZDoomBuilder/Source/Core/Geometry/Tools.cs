@@ -46,7 +46,7 @@ namespace CodeImp.DoomBuilder.Geometry
 			public string newtexlow;
 		}
 
-		private struct SidedefFillJob
+		public struct SidedefFillJob
 		{
 			public Sidedef sidedef;
 
