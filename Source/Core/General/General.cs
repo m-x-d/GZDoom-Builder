@@ -2075,6 +2075,30 @@ namespace CodeImp.DoomBuilder
 			GetShortPathName(longpath, shortname, maxlen);
 			return shortname.ToString();
 		}
+
+		//mxd
+		internal static ScriptConfiguration GetScriptConfiguration(ScriptType type)
+		{
+			if(type == ScriptType.ACS)
+			{
+				// Return map-defined compiler
+				string compiler = (!string.IsNullOrEmpty(Map.Options.ScriptCompiler) ? Map.Options.ScriptCompiler : Map.ConfigSettings.DefaultScriptCompiler);
+				foreach(KeyValuePair<string, ScriptConfiguration> group in scriptconfigs)
+				{
+					if(group.Key == compiler) return group.Value;
+				}
+			}
+			else
+			{
+				// Just pick the first one from the list
+				foreach(ScriptConfiguration cfg in scriptconfigs.Values)
+				{
+					if(cfg.ScriptType == type) return cfg;
+				}
+			}
+
+			return null;
+		}
 		
 		#endregion
 

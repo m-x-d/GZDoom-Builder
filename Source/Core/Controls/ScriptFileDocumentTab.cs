@@ -23,7 +23,6 @@ using System.Windows.Forms;
 using CodeImp.DoomBuilder.Compilers;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Data;
-using CodeImp.DoomBuilder.ZDoom.Scripting;
 
 #endregion
 
@@ -69,214 +68,16 @@ namespace CodeImp.DoomBuilder.Controls
 		// This compiles the script file
 		public override void Compile()
 		{
-			//mxd. ACS requires special handling...
-			if(config.ScriptType == ScriptType.ACS)
-			{
-				CompileACS();
-				return;
-			}
-
-			Compiler compiler;
+			//mxd. Compile
 			List<CompilerError> errors = new List<CompilerError>();
-			
-			try
+			if(DirectoryReader.CompileScriptLump(filepathname, config, errors))
 			{
-				// Initialize compiler
-				compiler = config.Compiler.Create();
+				//mxd. Update script navigator
+				errors.AddRange(UpdateNavigator());
 			}
-			catch(Exception e)
-			{
-				// Fail
-				errors.Add(new CompilerError("Unable to initialize compiler. " + e.GetType().Name + ": " + e.Message));
-				panel.ShowErrors(errors); //mxd
-				return;
-			}
-			
-			// Copy the source file into the temporary directory
-			string inputfile = Path.Combine(compiler.Location, Path.GetFileName(filepathname));
-			File.Copy(filepathname, inputfile);
-			
-			// Make random output filename
-			string outputfile = General.MakeTempFilename(compiler.Location, "tmp");
-
-			// Run compiler
-			compiler.Parameters = config.Parameters;
-			compiler.InputFile = Path.GetFileName(inputfile);
-			compiler.OutputFile = Path.GetFileName(outputfile);
-			compiler.SourceFile = filepathname;
-			compiler.WorkingDirectory = Path.GetDirectoryName(inputfile);
-			if(compiler.Run())
-			{
-				// Fetch errors
-				foreach(CompilerError e in compiler.Errors)
-				{
-					CompilerError newerr = e;
-
-					// If the error's filename equals our temporary file,
-					// replace it with the original source filename
-					if(string.Compare(e.filename, inputfile, true) == 0)
-						newerr.filename = filepathname;
-
-					errors.Add(newerr);
-				}
-			}
-			
-			// Dispose compiler
-			compiler.Dispose();
-
-			//mxd. Update script navigator
-			errors.AddRange(UpdateNavigator());
-			
-			// Feed errors to panel
-			panel.ShowErrors(errors);
-		}
-
-		//mxd. ACS requires special handling...
-		private void CompileACS()
-		{
-			Compiler compiler;
-			List<CompilerError> errors = new List<CompilerError>();
-			string inputfile = Path.GetFileName(filepathname);
-
-			// Which compiler to use?
-			ScriptConfiguration scriptconfig;
-			if(!string.IsNullOrEmpty(General.Map.Options.ScriptCompiler))
-			{
-				// Boilderplate
-				if(!General.CompiledScriptConfigs.ContainsKey(General.Map.Options.ScriptCompiler))
-				{
-					General.ShowErrorMessage("Unable to compile \"" + inputfile + "\". Unable to find required script compiler configuration (\"" + General.Map.Options.ScriptCompiler + "\").", MessageBoxButtons.OK);
-					return;
-				}
-
-				scriptconfig = General.CompiledScriptConfigs[General.Map.Options.ScriptCompiler];
-			}
-			else
-			{
-				scriptconfig = config;
-			}
-
-			// Initialize compiler
-			try
-			{
-				compiler = scriptconfig.Compiler.Create();
-			}
-			catch(Exception e)
-			{
-				// Fail
-				errors.Add(new CompilerError("Unable to initialize compiler. " + e.GetType().Name + ": " + e.Message));
-				panel.ShowErrors(errors);
-				return;
-			}
-
-			// Preprocess the file
-			AcsParserSE parser = new AcsParserSE
-			{
-				OnInclude = delegate(AcsParserSE se, string includefile, AcsParserSE.IncludeType includetype)
-				{
-					TextResourceData data = General.Map.Data.GetTextResourceData(includefile);
-					if(data == null)
-					{
-						// Fial
-						errors.Add(new CompilerError("Unable to find include file \"" + includefile + "\""));
-						panel.ShowErrors(errors);
-					}
-					else
-					{
-						se.Parse(data, true, includetype, false);
-					}
-				}
-			};
-			using(FileStream stream = File.OpenRead(filepathname))
-			{
-				TextResourceData data = new TextResourceData(stream, new DataLocation(), filepathname, false);
-				if(!parser.Parse(data, scriptconfig.Compiler.Files, true, AcsParserSE.IncludeType.NONE, false))
-				{
-					// Check for errors
-					if(parser.HasError)
-					{
-						errors.Add(new CompilerError(parser.ErrorDescription, parser.ErrorSource, parser.ErrorLine));
-						panel.ShowErrors(errors);
-					}
-
-					compiler.Dispose();
-					return;
-				}
-			}
-
-			//mxd. Only works for libraries
-			if(!parser.IsLibrary)
-			{
-				errors.Add(new CompilerError("External ACS files can only be compiled as libraries!", filepathname));
-				panel.ShowErrors(errors);
-				compiler.Dispose();
-				return;
-			}
-
-			// Make random output filename
-			string outputfile = General.MakeTempFilename(compiler.Location, "tmp");
-
-			// Run compiler
-			compiler.Parameters = config.Parameters;
-			compiler.InputFile = inputfile;
-			compiler.OutputFile = outputfile;
-			compiler.SourceFile = filepathname;
-			compiler.WorkingDirectory = Path.GetDirectoryName(filepathname);
-			compiler.Includes = parser.GetIncludes();
-			compiler.CopyIncludesToWorkingDirectory = false;
-			if(compiler.Run())
-			{
-				// Fetch errors
-				foreach(CompilerError e in compiler.Errors)
-				{
-					CompilerError newerr = e;
-
-					// If the error's filename equals our temporary file,
-					// replace it with the original source filename
-					if(string.Compare(e.filename, inputfile, true) == 0)
-						newerr.filename = filepathname;
-
-					errors.Add(newerr);
-				}
-
-				// No errors and output file exists?
-				if(compiler.Errors.Length == 0)
-				{
-					// Output file exists?
-					if(!File.Exists(outputfile))
-					{
-						// Fail
-						compiler.Dispose();
-						errors.Add(new CompilerError("Output file \"" + outputfile + "\" doesn't exist."));
-						panel.ShowErrors(errors);
-						return;
-					}
-
-					// Rename and copy to source file directory
-					string targetfilename = Path.Combine(Path.GetDirectoryName(filepathname), parser.LibraryName + ".o");
-					try
-					{
-						File.Copy(outputfile, targetfilename, true);
-					}
-					catch(Exception e)
-					{
-						// Fail
-						compiler.Dispose();
-						errors.Add(new CompilerError("Unable to create library file \"" + targetfilename + "\". " + e.GetType().Name + ": " + e.Message));
-						panel.ShowErrors(errors);
-						return;
-					}
-				}
-			}
-
-			// Dispose compiler
-			compiler.Dispose();
-
-			// Update script navigator
-			errors.AddRange(UpdateNavigator());
 
 			// Feed errors to panel
-			panel.ShowErrors(errors);
+			panel.ShowErrors(errors, false);
 		}
 
 		// This checks if a script error applies to this script
@@ -348,7 +149,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.filepathname = filepathname;
 			editor.ClearUndoRedo();
 			SetTitle(Path.GetFileName(filepathname));
-			panel.ShowErrors(UpdateNavigator()); //mxd
+			panel.ShowErrors(UpdateNavigator(), true); //mxd
 
 			return true;
 		}

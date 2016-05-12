@@ -88,7 +88,6 @@ namespace CodeImp.DoomBuilder
 		//mxd
 		private Dictionary<string, ScriptItem> namedscripts;
 		private Dictionary<int, ScriptItem> numberedscripts;
-		private readonly HashSet<string> scriptincludes;
 
 		// Disposing
 		private bool isdisposed;
@@ -161,7 +160,6 @@ namespace CodeImp.DoomBuilder
 			//mxd
 			numberedscripts = new Dictionary<int, ScriptItem>();
 			namedscripts = new Dictionary<string, ScriptItem>(StringComparer.OrdinalIgnoreCase);
-			scriptincludes = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 		}
 
 		// Disposer
@@ -274,6 +272,19 @@ namespace CodeImp.DoomBuilder
 			origmapconfigname = configinfo.Filename;//mxd
 			configinfo.ApplyDefaults(config);
 			General.Editing.UpdateCurrentEditModes();
+
+			//mxd. Check if default script compiler is required
+			if(string.IsNullOrEmpty(configinfo.DefaultScriptCompiler))
+			{
+				foreach(MapLumpInfo info in config.MapLumps.Values)
+				{
+					if(info.ScriptBuild)
+					{
+						General.ErrorLogger.Add(ErrorType.Error, "\"DefaultScriptCompiler\" property is not set in \"" + configinfo + "\" game configuration. The editor may fail to compile ACC scripts.");
+						break;
+					}
+				}
+			}
 
 			// Create map data
 			map = new MapSet();
@@ -425,8 +436,8 @@ namespace CodeImp.DoomBuilder
 			map.Update();
 			thingsfilter.Update();
 
-			//mxd. Update includes list and script names
-			UpdateScriptNames(true);
+			//mxd. Update script names
+			UpdateScriptNames();
 
 			//mxd. Restore selection groups
 			options.ReadSelectionGroups();
@@ -517,8 +528,8 @@ namespace CodeImp.DoomBuilder
 			// Skybox may've been changed
 			data.SetupSkybox();
 
-			// Update includes list and script names
-			UpdateScriptNames(true);
+			// Update script names
+			UpdateScriptNames();
 
 			// Restore selection groups
 			options.ReadSelectionGroups();
@@ -752,7 +763,7 @@ namespace CodeImp.DoomBuilder
 			// Show script window if there are any errors and we are going to test the map
 			// and always update the errors on the scripts window.
 			if((errors.Count > 0) && (scriptwindow == null) && (purpose == SavePurpose.Testing)) ShowScriptEditor();
-			if(scriptwindow != null) scriptwindow.Editor.ShowErrors(errors);
+			if(scriptwindow != null) scriptwindow.Editor.ShowErrors(errors, false);
 
 			// Only write the map and rebuild nodes when the actual map has changed
 			// (not when only scripts have changed)
@@ -1960,179 +1971,19 @@ namespace CodeImp.DoomBuilder
 				if(lumpinfo.Script != null || lumpinfo.ScriptBuild) 
 				{
 					// Compile it now
-					success &= CompileLump(lumpinfo.Name, false);
+					success &= tempwadreader.CompileLump(lumpinfo.Name, lumpinfo.Script, errors);
 				}
 			}
 
 			return success;
 		}
 
-		// This compiles a script lump and returns any errors that may have occurred
-		// Returns true when our code worked properly (even when the compiler returned errors)
-		internal bool CompileLump(string lumpname, bool clearerrors) 
+		//mxd. Update script numbers and names
+		private void UpdateScriptNames()
 		{
-			//mxd. Boilerplate
-			if(!config.MapLumps.ContainsKey(lumpname))
-			{
-				General.ShowErrorMessage("Unable to compile lump \"" + lumpname + "\". This lump is not defined in the current game configuration.", MessageBoxButtons.OK);
-				return false;
-			}
-			
-			string inputfile;
-			Compiler compiler;
-			string reallumpname = lumpname;
-
-			//mxd. Does lump require compiling?
-			ScriptConfiguration scriptconfig;
-			if(config.MapLumps[lumpname].ScriptBuild) 
-			{
-				//mxd. More boilderplate
-				if(!General.CompiledScriptConfigs.ContainsKey(General.Map.Options.ScriptCompiler))
-				{
-					General.ShowErrorMessage("Unable to compile lump \"" + lumpname + "\". Unable to find required script compiler configuration (\"" + General.Map.Options.ScriptCompiler + "\").", MessageBoxButtons.OK);
-					return false;
-				}
-				
-				scriptconfig = General.CompiledScriptConfigs[General.Map.Options.ScriptCompiler];
-			} 
-			else 
-			{
-				scriptconfig = config.MapLumps[lumpname].Script;
-			}
-			if(scriptconfig.Compiler == null) return true;
-
-			// Find the lump
-			if(lumpname == CONFIG_MAP_HEADER) reallumpname = TEMP_MAP_HEADER;
-			Lump lump = tempwadreader.WadFile.FindLump(reallumpname);
-			if(lump == null) throw new Exception("No such lump in temporary wad file \"" + reallumpname + "\".");
-
-			// Determine source file
-			string sourcefile = (filepathname.Length > 0 ? filepathname : tempwadreader.WadFile.Filename);
-
-			// New list of errors
-			if(clearerrors) errors.Clear();
-
-			// Determine the script configuration to use
-			try 
-			{
-				// Initialize compiler
-				compiler = scriptconfig.Compiler.Create();
-			} 
-			catch(Exception e) 
-			{
-				// Fail
-				errors.Add(new CompilerError("Unable to initialize compiler. " + e.GetType().Name + ": " + e.Message));
-				return false;
-			}
-
-			try 
-			{
-				// Write lump data to temp script file in compiler's temp directory
-				inputfile = General.MakeTempFilename(compiler.Location, "tmp");
-				lump.Stream.Seek(0, SeekOrigin.Begin);
-				BinaryReader reader = new BinaryReader(lump.Stream);
-				File.WriteAllBytes(inputfile, reader.ReadBytes((int)lump.Stream.Length));
-			} 
-			catch(Exception e) 
-			{
-				// Fail
-				compiler.Dispose();
-				errors.Add(new CompilerError("Unable to write script to working file. " + e.GetType().Name + ": " + e.Message));
-				return false;
-			}
-
-			// Make random output filename
-			string outputfile = General.MakeTempFilename(compiler.Location, "tmp");
-
-			// Run compiler
-			compiler.Parameters = scriptconfig.Parameters;
-			compiler.InputFile = Path.GetFileName(inputfile);
-			compiler.OutputFile = Path.GetFileName(outputfile);
-			compiler.SourceFile = sourcefile;
-			compiler.WorkingDirectory = Path.GetDirectoryName(inputfile);
-
-			//mxd
-			if(scriptconfig.ScriptType == ScriptType.ACS)
-			{
-				compiler.Includes = scriptincludes;
-				compiler.CopyIncludesToWorkingDirectory = true;
-			}
-
-			if(compiler.Run()) 
-			{
-				// Process errors
-				foreach(CompilerError e in compiler.Errors) 
-				{
-					CompilerError newerror = e;
-
-					// If the error's filename equals our temporary file,
-					// use the lump name instead and prefix it with ?
-					if(string.Compare(e.filename, inputfile, true) == 0)
-						newerror.filename = "?" + reallumpname;
-
-					errors.Add(newerror);
-				}
-
-				// No errors?
-				if(compiler.Errors.Length == 0) 
-				{
-					// Output file exists?
-					if(File.Exists(outputfile)) 
-					{
-						// Copy output file data into a lump?
-						if(!string.IsNullOrEmpty(scriptconfig.ResultLump)) 
-						{
-							// Do that now then
-							byte[] filedata;
-
-							try 
-							{
-								filedata = File.ReadAllBytes(outputfile);
-							} 
-							catch(Exception e) 
-							{
-								// Fail
-								compiler.Dispose();
-								errors.Add(new CompilerError("Unable to read compiler output file. " + e.GetType().Name + ": " + e.Message));
-								return false;
-							}
-
-							// Store data
-							MemoryStream stream = new MemoryStream(filedata);
-							SetLumpData(scriptconfig.ResultLump, stream);
-						}
-					}
-				}
-
-				// Clean up
-				compiler.Dispose();
-
-				// Done
-				return true;
-			}
-
-			// Fail
-			compiler.Dispose();
-			errors.Clear(); //mxd
-			return false;
-		}
-
-		// This clears all compiler errors
-		/*internal void ClearCompilerErrors() 
-		{
-			errors.Clear();
-		}*/
-
-		//mxd. Update includes list and script names
-		internal List<CompilerError> UpdateScriptNames(bool logerrors)
-		{
-			List<ScriptItem> namedscriptslist = new List<ScriptItem>();
-			List<ScriptItem> numberedscriptslist = new List<ScriptItem>();
-			List<string> scripincludeslist = new List<string>();
-			List<CompilerError> compilererrors = new List<CompilerError>();
 			General.Map.Data.TextResources[ScriptType.ACS] = new HashSet<TextResource>();
 
-			// Load the script lumps
+			// Find SCRIPTS lump and parse it
 			foreach(MapLumpInfo maplumpinfo in config.MapLumps.Values) 
 			{
 				// Is this a script lump?
@@ -2147,9 +1998,9 @@ namespace CodeImp.DoomBuilder
 							string error = "Unable to compile lump \"" + maplumpinfo.Name +
 							               "\". Unable to find required script compiler configuration (\"" +
 							               General.Map.Options.ScriptCompiler + "\").";
-							compilererrors.Add(new CompilerError(error));
-							if(logerrors) General.ErrorLogger.Add(ErrorType.Error, error);
-							return compilererrors;
+
+							General.ErrorLogger.Add(ErrorType.Error, error);
+							return;
 						}
 
 						scriptconfig = General.CompiledScriptConfigs[General.Map.Options.ScriptCompiler];
@@ -2161,7 +2012,7 @@ namespace CodeImp.DoomBuilder
 					
 					// Load the lump data
 					MemoryStream stream = GetLumpData(maplumpinfo.Name);
-					if(stream != null && stream.Length > 0 && scriptconfig != null && scriptconfig.Compiler != null)
+					if(stream != null && stream.Length > 0 && scriptconfig != null && scriptconfig.Compiler != null && scriptconfig.ScriptType == ScriptType.ACS)
 					{
 						// Get script names
 						AcsParserSE parser = new AcsParserSE
@@ -2188,52 +2039,60 @@ namespace CodeImp.DoomBuilder
 						TextResourceData data = new TextResourceData(stream, location, "?SCRIPTS", false);
 						if(parser.Parse(data, scriptconfig.Compiler.Files, true, AcsParserSE.IncludeType.NONE, false))
 						{
-							// Add them to arrays
-							namedscriptslist.AddRange(parser.NamedScripts);
-							numberedscriptslist.AddRange(parser.NumberedScripts);
-							scripincludeslist.AddRange(parser.GetIncludes());
-
 							// Add to text resource list
 							General.Map.Data.TextResources[parser.ScriptType].UnionWith(parser.TextResources.Values);
+
+							// Update the names
+							UpdateScriptNames(parser);
 						}
-						
-						// Check for errors
-						if(parser.HasError)
+						else
 						{
-							compilererrors.Add(new CompilerError(parser.ErrorDescription, parser.ErrorSource, parser.ErrorLine));
-							if(logerrors) parser.LogError();
-							break;
+							// Clear collections
+							namedscripts.Clear();
+							numberedscripts.Clear();
 						}
+
+						// Log errors, if any
+						if(parser.HasError) parser.LogError();
+
+						// Done here
+						return;
 					}
 				}
 			}
+		}
 
-			// Add to collections
-			scriptincludes.Clear();
-			if(compilererrors.Count == 0)
-			{
-				namedscripts = new Dictionary<string, ScriptItem>(namedscriptslist.Count);
-				numberedscripts = new Dictionary<int, ScriptItem>(numberedscriptslist.Count);
-
-				// Sort script names
-				namedscriptslist.Sort(ScriptItem.SortByName);
-				numberedscriptslist.Sort(ScriptItem.SortByIndex);
-
-				foreach(ScriptItem item in namedscriptslist)
-					if(!namedscripts.ContainsKey(item.Name.ToLowerInvariant())) namedscripts.Add(item.Name.ToLowerInvariant(), item);
-				foreach(ScriptItem item in numberedscriptslist)
-					if(!numberedscripts.ContainsKey(item.Index)) numberedscripts.Add(item.Index, item);
-				foreach(string include in scripincludeslist)
-					if(!scriptincludes.Contains(include)) scriptincludes.Add(include);
-			}
-			else
+		//mxd
+		internal void UpdateScriptNames(AcsParserSE parser)
+		{
+			if(parser.HasError)
 			{
 				// Clear collections
 				namedscripts.Clear();
 				numberedscripts.Clear();
 			}
+			else
+			{
+				// Add to collections
+				namedscripts = new Dictionary<string, ScriptItem>(parser.NamedScripts.Count);
+				numberedscripts = new Dictionary<int, ScriptItem>(parser.NumberedScripts.Count);
 
-			return compilererrors;
+				// Sort script names
+				parser.NamedScripts.Sort(ScriptItem.SortByName);
+				parser.NumberedScripts.Sort(ScriptItem.SortByIndex);
+
+				foreach(ScriptItem item in parser.NamedScripts)
+				{
+					if(!namedscripts.ContainsKey(item.Name.ToLowerInvariant()))
+						namedscripts.Add(item.Name.ToLowerInvariant(), item);
+				}
+
+				foreach(ScriptItem item in parser.NumberedScripts)
+				{
+					if(!numberedscripts.ContainsKey(item.Index))
+						numberedscripts.Add(item.Index, item);
+				}
+			}
 		}
 
 		#endregion
@@ -2389,8 +2248,8 @@ namespace CodeImp.DoomBuilder
 			General.MainWindow.DisplayStatus(oldstatus);
 			Cursor.Current = oldcursor;
 
-			//mxd. Update includes list and script names
-			UpdateScriptNames(true);
+			//mxd. Update script names
+			UpdateScriptNames();
 		}
 
 		// Game Configuration action

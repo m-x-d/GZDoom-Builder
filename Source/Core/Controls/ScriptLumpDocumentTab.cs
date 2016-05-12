@@ -18,6 +18,7 @@
 
 using System.Collections.Generic;
 using System.IO;
+using System.Windows.Forms;
 using CodeImp.DoomBuilder.Compilers;
 using CodeImp.DoomBuilder.Config;
 
@@ -84,25 +85,23 @@ namespace CodeImp.DoomBuilder.Controls
 		// Compile script
 		public override void Compile()
 		{
-			//mxd. List of errors. UpdateScriptNames can return errors and also updates acs includes list
-			List<CompilerError> errors = (config.ScriptType == ScriptType.ACS ? General.Map.UpdateScriptNames(false) : new List<CompilerError>());
-
-			//mxd. Errors already?..
-			if(errors.Count > 0)
+			//mxd. Boilerplate
+			if(!General.Map.Config.MapLumps.ContainsKey(lumpname))
 			{
-				// Feed errors to panel
-				panel.ShowErrors(errors);
+				General.ShowErrorMessage("Unable to compile lump \"" + lumpname + "\". This lump is not defined in the current game configuration.", MessageBoxButtons.OK);
 				return;
 			}
 
 			// Compile
-			General.Map.CompileLump((ismapheader ? MapManager.CONFIG_MAP_HEADER : lumpname), true);
-			
-			//mxd. Update script navigator
-			errors = UpdateNavigator();
+			List<CompilerError> errors = new List<CompilerError>();
+			if(General.Map.TemporaryMapFile.CompileLump((ismapheader ? MapManager.CONFIG_MAP_HEADER : lumpname), config, errors))
+			{
+				//mxd. Update script navigator
+				errors.AddRange(UpdateNavigator());
+			}
 
 			// Feed errors to panel
-			panel.ShowErrors(General.Map.Errors.Count > 0 ? General.Map.Errors : errors);
+			panel.ShowErrors(errors, false);
 		}
 		
 		// Implicit save

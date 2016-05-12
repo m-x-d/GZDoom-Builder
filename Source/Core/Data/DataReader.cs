@@ -275,8 +275,8 @@ namespace CodeImp.DoomBuilder.Data
 
 		#region ================== Compiling (mxd)
 
-		internal abstract bool CompileLump(string lumpname, out List<CompilerError> errors);
-		internal abstract bool CompileLump(string lumpname, int lumpindex, out List<CompilerError> errors);
+		internal abstract bool CompileLump(string lumpname, ScriptConfiguration scriptconfig, List<CompilerError> errors);
+		internal abstract bool CompileLump(string lumpname, int lumpindex, ScriptConfiguration scriptconfig, List<CompilerError> errors);
 
 		#endregion
 	}

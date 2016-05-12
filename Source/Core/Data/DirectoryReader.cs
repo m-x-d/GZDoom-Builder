@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using CodeImp.DoomBuilder.Compilers;
+using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.IO;
 
 #endregion
@@ -513,10 +514,111 @@ namespace CodeImp.DoomBuilder.Data
 
 		// This compiles a script lump and returns any errors that may have occurred
 		// Returns true when our code worked properly (even when the compiler returned errors)
-		internal override bool CompileLump(string filename, int unused, out List<CompilerError> errors) { return CompileLump(filename, out errors); }
-		internal override bool CompileLump(string lumpname, out List<CompilerError> errors)
+		internal override bool CompileLump(string filepathname, int unused, ScriptConfiguration scriptconfig, List<CompilerError> errors) { return CompileLump(filepathname, scriptconfig, errors); }
+		internal override bool CompileLump(string filepathname, ScriptConfiguration scriptconfig, List<CompilerError> errors)
 		{
-			throw new NotImplementedException();
+			return CompileScriptLump(filepathname, scriptconfig, errors);
+		}
+
+		internal static bool CompileScriptLump(string filepathname, ScriptConfiguration scriptconfig, List<CompilerError> errors)
+		{
+			// No compiling required
+			if(scriptconfig.Compiler == null) return true;
+
+			// Initialize compiler
+			Compiler compiler;
+			try
+			{
+				compiler = scriptconfig.Compiler.Create();
+			}
+			catch(Exception e)
+			{
+				// Fail
+				errors.Add(new CompilerError("Unable to initialize compiler. " + e.GetType().Name + ": " + e.Message));
+				return false;
+			}
+
+			// Copy the source file into the temporary directory
+			string inputfile = Path.Combine(compiler.Location, Path.GetFileName(filepathname));
+			File.Copy(filepathname, inputfile);
+
+			// Make random output filename
+			string outputfile = General.MakeTempFilename(compiler.Location, "tmp");
+
+			// Run compiler
+			compiler.Parameters = scriptconfig.Parameters;
+			compiler.InputFile = inputfile;
+			compiler.OutputFile = Path.GetFileName(outputfile);
+			compiler.SourceFile = filepathname;
+			compiler.WorkingDirectory = Path.GetDirectoryName(inputfile);
+			if(compiler.Run())
+			{
+				// Fetch errors
+				foreach(CompilerError e in compiler.Errors)
+				{
+					CompilerError newerr = e;
+
+					// If the error's filename equals our temporary file, replace it with the original source filename
+					if(String.Compare(e.filename, inputfile, true) == 0) newerr.filename = filepathname;
+
+					errors.Add(newerr);
+				}
+
+				// No errors and output file exists?
+				if(compiler.Errors.Length == 0)
+				{
+					// Output file exists?
+					if(!File.Exists(outputfile))
+					{
+						// Fail
+						compiler.Dispose();
+						errors.Add(new CompilerError("Output file \"" + outputfile + "\" doesn't exist."));
+						return false;
+					}
+
+					//mxd. Move and rename the result file
+					string targetfilename;
+					if(compiler is AccCompiler)
+					{
+						AccCompiler acccompiler = (AccCompiler)compiler;
+						targetfilename = Path.Combine(Path.GetDirectoryName(filepathname), acccompiler.Parser.LibraryName + ".o");
+					}
+					else
+					{
+						//mxd. No can't do...
+						if(String.IsNullOrEmpty(scriptconfig.ResultLump))
+						{
+							// Fail
+							compiler.Dispose();
+							errors.Add(new CompilerError("Unable to create target file: unable to determine target filename. Make sure \"ResultLump\" property is set in the \"" + scriptconfig + "\" script configuration."));
+							return false;
+						}
+						
+						targetfilename = Path.Combine(Path.GetDirectoryName(filepathname), scriptconfig.ResultLump);
+					}
+
+					// Rename and copy to source file directory
+					try
+					{
+						File.Copy(outputfile, targetfilename, true);
+					}
+					catch(Exception e)
+					{
+						// Fail
+						compiler.Dispose();
+						errors.Add(new CompilerError("Unable to create library file \"" + targetfilename + "\". " + e.GetType().Name + ": " + e.Message));
+						return false;
+					}
+				}
+
+				// Done
+				compiler.Dispose();
+				return true;
+			}
+
+			// Fail
+			compiler.Dispose();
+			return false;
 		}
 
 		#endregion

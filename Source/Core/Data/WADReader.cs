@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text.RegularExpressions;
 using CodeImp.DoomBuilder.Compilers;
+using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.GZBuilder.Data;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.ZDoom;
@@ -1191,30 +1192,139 @@ namespace CodeImp.DoomBuilder.Data
 
 		// This compiles a script lump and returns any errors that may have occurred
 		// Returns true when our code worked properly (even when the compiler returned errors)
-		internal override bool CompileLump(string lumpname, out List<CompilerError> errors)
+		internal override bool CompileLump(string lumpname, ScriptConfiguration scriptconfig, List<CompilerError> errors)
 		{
 			int index = file.FindLumpIndex(lumpname);
 			if(index == -1)
 			{
-				errors = new List<CompilerError>
-				{
-					new CompilerError
-					{
-						description = "Lump \"" + lumpname + "\" does not exist", 
-						filename = this.location.GetDisplayName()
-					}
-				};
+				errors.Add(new CompilerError { description = "Lump \"" + lumpname + "\" does not exist", filename = this.location.GetDisplayName() });
 				return false;
 			}
 
-			return CompileLump(lumpname, index, out errors);
+			return CompileLump(lumpname, index, scriptconfig, errors);
 		}
 
 		// This compiles a script lump and returns any errors that may have occurred
 		// Returns true when our code worked properly (even when the compiler returned errors)
-		internal override bool CompileLump(string lumpname, int lumpindex, out List<CompilerError> errors)
+		internal override bool CompileLump(string lumpname, int lumpindex, ScriptConfiguration scriptconfig, List<CompilerError> errors)
 		{
-			throw new NotImplementedException();
+			// No compiling required
+			if(scriptconfig.Compiler == null) return true;
+
+			string inputfile;
+			Compiler compiler;
+			string reallumpname = lumpname;
+
+			// Find the lump
+			if(lumpname == MapManager.CONFIG_MAP_HEADER) reallumpname = MapManager.TEMP_MAP_HEADER;
+			Lump lump = file.FindLump(reallumpname);
+			if(lump == null)
+				throw new Exception("Unable to find lump \"" + reallumpname + "\" to compile in \"" + location.GetDisplayName() + "\".");
+
+			// Determine source file
+			string sourcefile = (General.Map.FilePathName.Length > 0 ? General.Map.FilePathName : file.Filename);
+
+			// Initialize compiler
+			try
+			{
+				compiler = scriptconfig.Compiler.Create();
+			}
+			catch(Exception e)
+			{
+				// Fail
+				errors.Add(new CompilerError("Unable to initialize compiler. " + e.GetType().Name + ": " + e.Message));
+				return false;
+			}
+
+			try
+			{
+				// Write lump data to temp script file in compiler's temp directory
+				inputfile = General.MakeTempFilename(compiler.Location, "tmp");
+				lump.Stream.Seek(0, SeekOrigin.Begin);
+				BinaryReader reader = new BinaryReader(lump.Stream);
+				File.WriteAllBytes(inputfile, reader.ReadBytes((int)lump.Stream.Length));
+			}
+			catch(Exception e)
+			{
+				// Fail
+				compiler.Dispose();
+				errors.Add(new CompilerError("Unable to write script to working file. " + e.GetType().Name + ": " + e.Message));
+				return false;
+			}
+
+			// Make random output filename
+			string outputfile = General.MakeTempFilename(compiler.Location, "tmp");
+
+			// Run compiler
+			compiler.Parameters = scriptconfig.Parameters;
+			compiler.InputFile = Path.GetFileName(inputfile);
+			compiler.OutputFile = Path.GetFileName(outputfile);
+			compiler.SourceFile = sourcefile;
+			compiler.WorkingDirectory = Path.GetDirectoryName(inputfile);
+
+			//mxd. AccCompiler requires some additional settings...
+			if(scriptconfig.ScriptType == ScriptType.ACS)
+			{
+				AccCompiler acccompiler = compiler as AccCompiler;
+				if(acccompiler != null)
+				{
+					acccompiler.SourceIsMapScriptsLump = (this == General.Map.TemporaryMapFile && lumpname == "SCRIPTS");
+				}
+			}
+
+			if(compiler.Run())
+			{
+				// Process errors
+				foreach(CompilerError e in compiler.Errors)
+				{
+					CompilerError newerror = e;
+
+					// If the error's filename equals our temporary file, use the lump name instead and prefix it with ?
+					if(string.Compare(e.filename, inputfile, true) == 0) newerror.filename = "?" + reallumpname;
+
+					errors.Add(newerror);
+				}
+
+				// No errors?
+				if(compiler.Errors.Length == 0)
+				{
+					// Output file exists?
+					if(File.Exists(outputfile))
+					{
+						// Copy output file data into a lump?
+						if(!string.IsNullOrEmpty(scriptconfig.ResultLump))
+						{
+							// Do that now then
+							byte[] filedata;
+
+							try
+							{
+								filedata = File.ReadAllBytes(outputfile);
+							}
+							catch(Exception e)
+							{
+								// Fail
+								compiler.Dispose();
+								errors.Add(new CompilerError("Unable to read compiler output file. " + e.GetType().Name + ": " + e.Message));
+								return false;
+							}
+
+							// Store data
+							SaveFile(new MemoryStream(filedata), scriptconfig.ResultLump);
+						}
+					}
+				}
+
+				// Clean up
+				compiler.Dispose();
+
+				// Done
+				return true;
+			}
+
+			// Fail
+			compiler.Dispose();
+			return false;
 		}
 
 		#endregion

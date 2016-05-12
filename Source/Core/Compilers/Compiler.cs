@@ -24,7 +24,6 @@ using System.Reflection;
 using System.IO;
 using CodeImp.DoomBuilder.Config;
 
-
 #endregion
 
 namespace CodeImp.DoomBuilder.Compilers
@@ -40,7 +39,6 @@ namespace CodeImp.DoomBuilder.Compilers
 		protected string sourcefile;
 		protected string outputfile;
 		protected string inputfile;
-		protected HashSet<string> includes; //mxd
 		
 		// Files
 		protected readonly DirectoryInfo tempdir;
@@ -61,8 +59,6 @@ namespace CodeImp.DoomBuilder.Compilers
 		public string InputFile { get { return inputfile; } set { inputfile = value; } }
 		public string OutputFile { get { return outputfile; } set { outputfile = value; } }
 		public string Location { get { return tempdir.FullName; } }
-		public HashSet<string> Includes { get { return includes; } set { includes = value; } } //mxd
-		public bool CopyIncludesToWorkingDirectory; //mxd
 		public bool IsDisposed { get { return isdisposed; } }
 		public CompilerError[] Errors { get { return errors.ToArray(); } }
 		
@@ -76,7 +72,6 @@ namespace CodeImp.DoomBuilder.Compilers
 			// Initialize
 			this.info = info;
 			this.errors = new List<CompilerError>();
-			this.includes = new HashSet<string>(StringComparer.OrdinalIgnoreCase); //mxd
 
 			General.WriteLogLine("Creating compiler \"" + info.Name + "\" on interface \"" + this.GetType().Name + "\"...");
 			
