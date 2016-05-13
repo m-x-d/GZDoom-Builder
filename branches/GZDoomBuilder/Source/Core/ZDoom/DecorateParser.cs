@@ -100,6 +100,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			// Syntax
 			whitespace = "\n \t\r\u00A0"; //mxd. non-breaking space is also space :)
 			specialtokens = ":{}[]()+-\n;,";
+			skipregions = false; //mxd
 			
 			// Initialize
 			actors = new Dictionary<string, ActorStructure>(StringComparer.OrdinalIgnoreCase);
@@ -141,6 +142,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 			// Cannot process?
 			if(!base.Parse(data, clearerrors)) return false;
+
+			//mxd. Region-as-category stuff...
+			List<DecorateCategoryInfo> regions = new List<DecorateCategoryInfo>(); //mxd
 			
 			// Keep local data
 			Stream localstream = datastream;
@@ -163,7 +167,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 						case "actor":
 						{
 							// Read actor structure
-							ActorStructure actor = new ActorStructure(this);
+							ActorStructure actor = new ActorStructure(this, (regions.Count > 0 ? regions[regions.Count - 1] : null));
 							if(this.HasError) return false;
 						
 							// Add the actor
@@ -290,13 +294,52 @@ namespace CodeImp.DoomBuilder.ZDoom
 							}
 							break;
 
+						//mxd. Region-as-category handling
+						case "#region":
+							SkipWhitespace(false);
+							string cattitle = ReadLine();
+							if(!string.IsNullOrEmpty(cattitle))
+							{
+								// Make new category info
+								string[] parts = cattitle.Split(DataManager.CATEGORY_SPLITTER, StringSplitOptions.RemoveEmptyEntries);
+
+								DecorateCategoryInfo info = new DecorateCategoryInfo();
+								if(regions.Count > 0)
+								{
+									// Preserve nesting
+									info.Category.AddRange(regions[regions.Count - 1].Category);
+									info.Properties = new Dictionary<string, List<string>>(regions[regions.Count - 1].Properties);
+								}
+								info.Category.AddRange(parts);
+
+								// Add to collection
+								regions.Add(info);
+							}
+							break;
+
+						//mxd. Region-as-category handling
+						case "#endregion":
+							if(regions.Count > 0)
+								regions.RemoveAt(regions.Count - 1);
+							else
+								LogWarning("Unexpected #endregion token");
+							break;
+
 						default:
 						{
 							//mxd. In some special cases (like the whole actor commented using "//") our special comments will be detected here...
 							if(objdeclaration.StartsWith("$"))
 							{
-								// So skip the whole line, then carry on
-								ReadLine();
+								if(regions.Count > 0)
+								{
+									// Store region property
+									regions[regions.Count - 1].Properties[objdeclaration] = new List<string> { (SkipWhitespace(false) ? ReadLine() : "") };
+								}
+								else
+								{
+									// Skip the whole line, then carry on
+									ReadLine();
+								}
 								break;
 							}
 							

@@ -21,6 +21,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using CodeImp.DoomBuilder.IO;
+using CodeImp.DoomBuilder.ZDoom;
 
 #endregion
 
@@ -96,7 +97,7 @@ namespace CodeImp.DoomBuilder.Config
 		#region ================== Constructor / Disposer
 		
 		// Constructor
-		internal ThingCategory(ThingCategory parent, string name, string title)
+		internal ThingCategory(ThingCategory parent, string name, string title, DecorateCategoryInfo catinfo)
 		{
 			// Initialize
 			this.name = name;
@@ -141,6 +142,19 @@ namespace CodeImp.DoomBuilder.Config
 				this.fixedrotation = false; //mxd
 				this.absolutez = false;
 				this.spritescale = 1.0f;
+			}
+
+			//mxd. Apply DecorateCategoryInfo overrides...
+			if(catinfo != null && catinfo.Properties.Count > 0)
+			{
+				this.sprite = catinfo.GetPropertyValueString("$sprite", 0, this.sprite);
+				this.sorted = (catinfo.GetPropertyValueInt("$sort", 0, (this.sorted ? 1 : 0)) != 0);
+				this.color = catinfo.GetPropertyValueInt("$color", 0, this.color);
+				this.arrow = catinfo.GetPropertyValueInt("$arrow", 0, this.arrow);
+				this.errorcheck = catinfo.GetPropertyValueInt("$error", 0, this.errorcheck);
+				this.fixedsize = catinfo.GetPropertyValueBool("$fixedsize", 0, this.fixedsize);
+				this.fixedrotation = catinfo.GetPropertyValueBool("$fixedrotation", 0, this.fixedrotation);
+				this.absolutez = catinfo.GetPropertyValueBool("$absolutez", 0, this.absolutez);
 			}
 			
 			// We have no destructor

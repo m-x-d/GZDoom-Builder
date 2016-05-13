@@ -46,6 +46,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		// Parsing
 		protected string whitespace = "\n \t\r\u00A0\0"; //mxd. non-breaking space is also space :)
 		protected string specialtokens = ":{}+-\n;";
+		protected bool skipregions; //mxd
 		
 		// Input data stream
 		protected Stream datastream;
@@ -90,6 +91,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			errordesc = null;
 			textresources = new Dictionary<string, TextResource>(StringComparer.OrdinalIgnoreCase); //mxd
 			untrackedtextresources = new HashSet<string>(StringComparer.OrdinalIgnoreCase); //mxd
+			skipregions = true; //mxd
 		}
 		
 		#endregion
@@ -276,7 +278,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 					}
 				}
 				//mxd. Region/endregion handling
-				else if(c == '#')
+				else if(skipregions && c == '#')
 				{
 					string s = ReadToken(false).ToLowerInvariant();
 					if(s == "region" || s == "endregion")

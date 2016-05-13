@@ -54,6 +54,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 		// Properties
 		private Dictionary<string, List<string>> props;
 		private readonly Dictionary<string, UniversalType> uservars; //mxd
+
+		//mxd. Categories
+		private DecorateCategoryInfo catinfo;
 		
 		// States
 		private Dictionary<string, StateStructure> states;
@@ -70,15 +73,17 @@ namespace CodeImp.DoomBuilder.ZDoom
 		public ActorStructure BaseClass { get { return baseclass; } }
 		internal int DoomEdNum { get { return doomednum; } set { doomednum = value; } }
 		public Dictionary<string, UniversalType> UserVars { get { return uservars; } } //mxd
-		
+		internal DecorateCategoryInfo CategoryInfo { get { return catinfo; } } //mxd
+
 		#endregion
 		
 		#region ================== Constructor / Disposer
 		
 		// Constructor
-		internal ActorStructure(DecorateParser parser)
+		internal ActorStructure(DecorateParser parser, DecorateCategoryInfo catinfo)
 		{
 			// Initialize
+			this.catinfo = catinfo; //mxd
 			flags = new Dictionary<string, bool>(StringComparer.OrdinalIgnoreCase);
 			props = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
 			states = new Dictionary<string, StateStructure>(StringComparer.OrdinalIgnoreCase);
