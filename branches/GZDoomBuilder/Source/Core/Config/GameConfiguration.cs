@@ -1041,6 +1041,7 @@ namespace CodeImp.DoomBuilder.Config
 		}
 
 		//mxd
+		public static bool IsGeneralizedSectorEffect(int effect) { return IsGeneralizedSectorEffect(effect, General.Map.Config.GenEffectOptions); }
 		public static bool IsGeneralizedSectorEffect(int effect, List<GeneralizedOption> options) 
 		{
 			if(effect == 0) return false;
@@ -1053,6 +1054,7 @@ namespace CodeImp.DoomBuilder.Config
 					GeneralizedBit bit = options[i].Bits[j];
 					if(bit.Index > 0 && (cureffect & bit.Index) == bit.Index) return true;
 					cureffect -= bit.Index;
+					if(cureffect < 1) return false;
 				}
 			}
 
