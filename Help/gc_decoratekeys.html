@@ -15,7 +15,17 @@
   <h1>DECORATE keys</h1>
 </div>
 <div id="contents">
-  <p> Doom Builder 2 includes a DECORATE parser used to obtain relevant information (such as editor number, Radius, Height, Scale, and so on) from custom actors. Additional information can be conveyed with keys in the form of special comments inserted within an actor's declaration block:<br />
+  <p>GZDoom Builder includes a DECORATE parser used to obtain relevant information (such as editor number, Radius, Height, Scale, and so on) from custom actors.<br />
+  <br /><br />
+  <span class="big">Global definitions (GZDB only):</span>
+  <br />
+   Additional information can be conveyed with keys in the form of special comments inserted in the global DECORATE block:<br /><br />
+  <strong>//$GZDB_SKIP</strong><br />
+  DECORATE parser will stop parsing a file after encountering this comment. This can be used to speedup the parsing process by skipping files, which don't contain placeable actor definitions.<br />
+  <br /><br />
+  <span class="big">Actor definitions:</span>
+  <br />Additional information can be conveyed with keys in the form of special comments inserted within an actor's declaration block:<br />
+  
     <br />
     <strong>//$Angled</strong> - <span class="red">GZDB only</span>.<br />
     <strong>//$NotAngled</strong> - <span class="red">GZDB only</span>.<br />
@@ -50,7 +60,7 @@
     <strong><a name="argenum" id="argenum"></a>//$ArgNEnum &lt;string or structure&gt;</strong> - <span class="red">GZDB only</span>.<br />
     Allows to specify an enum for this argument. This can be either a name of an enum defined in the Game Configuration, or an explicit enum definition. This property can only be used in conjunction with &quot;<strong>//$ArgN</strong>&quot; property.<br />
     <br />
-    <strong>//$Color &lt;color index&gt;</strong> - <span class="red">GZDB only</span>.<br />
+    <strong><a name="color" id="color"></a>//$Color &lt;color index&gt;</strong> - <span class="red">GZDB only</span>.<br />
     Allows to override category color for this actor. Possible values are:
   <ul>
     <li>&nbsp;&nbsp;0 - <span style="color:#696969">&#9608;</span> Dark Gray;</li>
@@ -71,17 +81,12 @@
     <li>15 - <span style="color:#F5F5F5">&#9608;</span> White;</li>
     <li>16 - <span style="color:#FFB6C1">&#9608;</span> Pink;</li>
     <li>17 - <span style="color:#FF8C00">&#9608;</span> Light Orange;</li>
-    <li>18 - <span style="color:#BDB76B">&#9608;</span> Light Brown (default);</li>
+    <li>18 - <span style="color:#BDB76B">&#9608;</span> Light Brown (<strong>default</strong>);</li>
     <li>19 - <span style="color:#DAA520">&#9608;</span> Orange;</li>
   </ul>
     <strong>//$Obsolete &lt;reason&gt;</strong> - <span class="red">GZDB only</span>.<br />
     Marks the thing as obsolete. It will be detected by &quot;Check obsolete things&quot; <a href="e_mapanalysis.html">Map Analysis Mode</a> check and will be marked in the <a href="w_thingedit.html">Thing Properties Window</a> and the Thing Info panel.<br />
-    <br /><br />
-  
-  <h3>Additionaly, you can use the following special comments in the global block:</h3><br />
-  <strong>//$GZDB_SKIP</strong> - <span class="red">GZDB only</span>.<br />
-  DECORATE parser will stop parsing a file after encountering this comment. This can be used to speedup the parsing process by skipping files, which don't contain placeable actor definitions.<br />
-  <br />
+    <br />
   <strong>Note:</strong> It is a good idea to include the Doom Editor Number after the actor definition if you want it to show in Doom Builder, even if it is replacing a standard Doom actor.<br />
   <br />
   <strong>Example:</strong><br />
@@ -136,6 +141,59 @@ actor SuperGiantImpBall : DoomImpBall
   Scale 8.0
   Damage 30
 }
+</pre>
+<br /><br />
+<span class="big">Category definitions (GZDB only):</span><br />
+<br />
+Thing categories can be defined in DECORATE using <strong>#region</strong> / <strong>#endregion</strong> blocks. Region name is used as thing category title. &quot;<strong>//$Category</strong>&quot; actor block definition overrides these. Additional information can be conveyed with keys in the form of special comments inserted within <strong>#region</strong> / <strong>#endregion</strong> block (these keys replicate Game Configuration <a href="gc_thingsettings.html#catdefs">thing category properties</a> with a slightly different syntax):<br />
+<br />
+  <b class="fat">//$Sorted</b> (integer) [0 .. 1]<br />
+  When set to 1, items in this category will be sorted by title.<br />
+  <br />
+  <b class="fat">//$Color</b> (integer) [0 .. 19]<br />
+  Sets the color used by things in this category.<br />Uses the same values as &quot;<strong>//$Color</strong>&quot; <a href="#color">thing definition</a>.<br />
+  
+  <p><b class="fat">//$Arrow</b> (integer) [0 .. 1]<br />
+    When set to 1, thing angle will be shown as an arrow in Classic and Visual modes.<br />
+    <br />
+    <b class="fat">//$Sprite</b> (string)<br />
+    Sets the sprite graphic to use when rendering this thing or things in this category. This should be fully qualified sprite name without file extension, like &quot;CPOSA2&quot;.<br />
+    You can also use  images from the"Sprites" directory by prefixing an image name without extension with &quot;internal:&quot;, like so: &quot;internal:Actor&quot;.<br />
+    <br />
+  <b class="fat">//$Error</b> (integer) [0 .. 2]<br />
+  Sets the stuck things error checking mode to use on this thing. <br />
+  Possible values are:
+  
+  <ul>
+    <li>0 - Don't check this thing.</li>
+    <li>1 - Check if the thing is outside of map geometry.</li>
+    <li>2 - Check if the thing is outside of map geometry or stuck in another thing.</li>
+  </ul>
+  Default value is<strong> 1</strong>.<br />
+  <br />
+  <b class="fat">//$FixedSize</b> (boolean)<br />
+  When set to true, thing will be rendered as sizeless in Classic and Visual modes.<br />
+  <br />
+  <b class="fat">//$FixedRotation</b> (boolean)<br />
+  When set to true, thing's angle won't be changed when rotating things using Edit Selection mode.<br />
+  <br />
+  <b class="fat">//$AbsoluteZ</b> (boolean)<br />
+  When set to true, thing's vertical position will be used as an absolute value instead of distance from floor/ceiling in Visual mode.<br />
+  <br />
+  <strong>Example:</strong><br />
+<pre>
+#region Imp Balls
+//$Color 4
+//$Sprite "BALLS0"
+
+  actor SuperGiantImpBall : DoomImpBall
+  {
+    //$Title "I'm in the 'Imp Balls' group!"
+    Scale 8.0
+    Damage 30
+  }
+
+#endregion  
 </pre>
   </p>
 </div>

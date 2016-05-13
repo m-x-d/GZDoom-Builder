@@ -64,6 +64,7 @@ namespace CodeImp.DoomBuilder.Data
 		public const string INTERNAL_PREFIX = "internal:";
 		public const int CLASIC_IMAGE_NAME_LENGTH = 8; //mxd
 		private const int MAX_SKYTEXTURE_SIZE = 2048; //mxd
+		internal static readonly char[] CATEGORY_SPLITTER = { Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar }; //mxd
 
 		private long UNKNOWN_THING; //mxd
 		private long MISSING_THING; //mxd
@@ -1735,7 +1736,6 @@ namespace CodeImp.DoomBuilder.Data
 		private int LoadDecorateThings(Dictionary<int, string> spawnnumsoverride, Dictionary<int, string> doomednumsoverride)
 		{
 			int counter = 0;
-			char[] catsplitter = { Path.AltDirectorySeparatorChar }; //mxd
 			
 			// Create new parser
 			decorate = new DecorateParser { OnInclude = LoadDecorateFromLocation };
@@ -1792,13 +1792,6 @@ namespace CodeImp.DoomBuilder.Data
 						// Check if we want to add this actor
 						if(actor.DoomEdNum > 0)
 						{
-							string catname = ZDTextParser.StripQuotes(actor.GetPropertyAllValues("$category"));
-							string[] catnames; //mxd
-							if(string.IsNullOrEmpty(catname.Trim()))
-								catnames = new[] { "decorate" };
-							else
-								catnames = catname.Split(catsplitter, StringSplitOptions.RemoveEmptyEntries); //mxd
-							
 							// Check if we can find this thing in our existing collection
 							if(thingtypes.ContainsKey(actor.DoomEdNum))
 							{
@@ -1808,7 +1801,7 @@ namespace CodeImp.DoomBuilder.Data
 							else
 							{
 								// Find the category to put the actor in
-								ThingCategory cat = GetThingCategory(null, thingcategories, catnames); //mxd
+								ThingCategory cat = GetThingCategory(null, thingcategories, GetCategoryInfo(actor)); //mxd
 								
 								// Add new thing
 								ThingTypeInfo t = new ThingTypeInfo(cat, actor);
@@ -1864,14 +1857,7 @@ namespace CodeImp.DoomBuilder.Data
 							if(actor != null)
 							{
 								// Find the category to put the actor in
-								string catname = ZDTextParser.StripQuotes(actor.GetPropertyAllValues("$category"));
-								string[] catnames; //mxd
-								if(string.IsNullOrEmpty(catname.Trim()))
-									catnames = new[] { "decorate" };
-								else
-									catnames = catname.Split(catsplitter, StringSplitOptions.RemoveEmptyEntries); //mxd
-
-								ThingCategory cat = GetThingCategory(null, thingcategories, catnames); //mxd
+								ThingCategory cat = GetThingCategory(null, thingcategories, GetCategoryInfo(actor)); //mxd
 
 								// Add a new ThingTypeInfo, replacing already existing one if necessary
 								ThingTypeInfo info = new ThingTypeInfo(cat, actor, group.Key);
@@ -1965,17 +1951,21 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		//mxd
-		private static ThingCategory GetThingCategory(ThingCategory parent, List<ThingCategory> categories, string[] catnames) 
+		private static ThingCategory GetThingCategory(ThingCategory parent, List<ThingCategory> categories, DecorateCategoryInfo catinfo) 
 		{
 			// Find the category to put the actor in
 			ThingCategory cat = null;
-			string catname = catnames[0].ToLowerInvariant().Trim();
+			string catname = (catinfo.Category.Count > 0 ? catinfo.Category[0].Trim().ToLowerInvariant() : string.Empty); //catnames[0].ToLowerInvariant().Trim();
 			if(string.IsNullOrEmpty(catname)) catname = "decorate";
 
 			// First search by Title...
 			foreach(ThingCategory c in categories) 
 			{
-				if(c.Title.ToLowerInvariant() == catname) cat = c;
+				if(string.Equals(c.Title, catname, StringComparison.OrdinalIgnoreCase))
+				{
+					cat = c;
+					break;
+				}
 			}
 
 			// Make full name
@@ -1986,28 +1976,57 @@ namespace CodeImp.DoomBuilder.Data
 			{
 				foreach(ThingCategory c in categories) 
 				{
-					if(c.Name.ToLowerInvariant() == catname) cat = c;
+					if(string.Equals(c.Name, catname, StringComparison.OrdinalIgnoreCase))
+					{
+						cat = c;
+						break;
+					}
 				}
 			}
 
 			// Make the category if needed
 			if(cat == null)
 			{
-				string cattitle = catnames[0].Trim();
+				string cattitle = (catinfo.Category.Count > 0 ? catinfo.Category[0].Trim() : string.Empty);
 				if(string.IsNullOrEmpty(cattitle)) cattitle = "Decorate";
-				cat = new ThingCategory(parent, catname, cattitle);
+				cat = new ThingCategory(parent, catname, cattitle, catinfo);
 				categories.Add(cat); // ^.^
 			}
 
 			// Still have subcategories?
-			if(catnames.Length > 1)
+			if(catinfo.Category.Count > 1)
 			{
-				string[] remainingnames = new string[catnames.Length - 1];
-				Array.Copy(catnames, 1, remainingnames, 0, remainingnames.Length);
-				return GetThingCategory(cat, cat.Children, remainingnames);
+				catinfo.Category.RemoveAt(0);
+				return GetThingCategory(cat, cat.Children, catinfo);
 			}
 
 			return cat;
+		}
+
+		//mxd
+		private static DecorateCategoryInfo GetCategoryInfo(ActorStructure actor)
+		{
+			string catname = ZDTextParser.StripQuotes(actor.GetPropertyAllValues("$category")).Trim();
+			
+			DecorateCategoryInfo catinfo = new DecorateCategoryInfo();
+			if(string.IsNullOrEmpty(catname))
+			{
+				if(actor.CategoryInfo != null)
+				{
+					catinfo.Category = new List<string>(actor.CategoryInfo.Category);
+					catinfo.Properties = new Dictionary<string, List<string>>(actor.CategoryInfo.Properties);
+				}
+				else
+				{
+					catinfo.Category = new List<string> { "Decorate" };
+				}
+			}
+			else
+			{
+				catinfo.Category = catname.Split(CATEGORY_SPLITTER, StringSplitOptions.RemoveEmptyEntries).ToList(); //mxd
+			}
+
+			return catinfo;
 		}
 		
 		// This loads Decorate data from a specific file or lump name

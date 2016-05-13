@@ -891,6 +891,7 @@
     <Compile Include="Rendering\VisualVertexHandle.cs" />
     <Compile Include="Geometry\Line3D.cs" />
     <Compile Include="Data\Scripting\ScriptHandlerAttribute.cs" />
+    <Compile Include="ZDoom\DecorateCategoryInfo.cs" />
     <Compile Include="ZDoom\Scripting\DecorateParserSE.cs" />
     <Compile Include="ZDoom\GldefsParser.cs" />
     <Compile Include="ZDoom\MapinfoParser.cs" />
