@@ -373,7 +373,7 @@ namespace CodeImp.DoomBuilder.Data
 					{
 						// WAD file container
 						case DataLocation.RESOURCE_WAD:
-							c = new WADReader(dl, configlist.Contains(dl));
+							c = new WADReader(dl, configlist.Contains(dl) || new FileInfo(dl.location).IsReadOnly);
 							if(((WADReader)c).WadFile.IsOfficialIWAD) //mxd
 							{
 								if(!string.IsNullOrEmpty(prevofficialiwad))
@@ -389,7 +389,7 @@ namespace CodeImp.DoomBuilder.Data
 
 						// PK3 file container
 						case DataLocation.RESOURCE_PK3:
-							c = new PK3Reader(dl, configlist.Contains(dl));
+							c = new PK3Reader(dl, configlist.Contains(dl) || new FileInfo(dl.location).IsReadOnly);
 							break;
 					}
 				}
