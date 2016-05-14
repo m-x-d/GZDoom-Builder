@@ -1968,10 +1968,25 @@ namespace CodeImp.DoomBuilder
 			foreach(MapLumpInfo lumpinfo in config.MapLumps.Values) 
 			{
 				// Is this a script lump?
-				if(lumpinfo.Script != null || lumpinfo.ScriptBuild) 
+				if(lumpinfo.Script != null)
 				{
 					// Compile it now
 					success &= tempwadreader.CompileLump(lumpinfo.Name, lumpinfo.Script, errors);
+				}
+				//mxd. Is this ACS script?
+				else if(lumpinfo.ScriptBuild)
+				{
+					// Compile it using selected script compiler
+					ScriptConfiguration cfg = General.GetScriptConfiguration(ScriptType.ACS);
+					if(cfg != null)
+					{
+						success &= tempwadreader.CompileLump(lumpinfo.Name, cfg, errors);
+					}
+					else
+					{
+						General.ErrorLogger.Add(ErrorType.Error, "Unable to compile \"" + lumpinfo.Name + "\" script lump: unable to find suitable Script Configuration!");
+						success = false;
+					}
 				}
 			}
 
