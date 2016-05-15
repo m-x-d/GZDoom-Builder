@@ -66,6 +66,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public bool CeilingChanged { get { return ceilingchanged; } set { ceilingchanged |= value; } }
 		public List<SectorLevel> LightLevels { get { return lightlevels; } }
 		public List<Effect3DFloor> ExtraFloors { get { return extrafloors; } }
+		public List<SectorEffect> Effects { get { return alleffects; } } //mxd
 		public SectorLevel Floor { get { return floor; } }
 		public SectorLevel Ceiling { get { return ceiling; } }
 		public BaseVisualMode Mode { get { return mode; } }

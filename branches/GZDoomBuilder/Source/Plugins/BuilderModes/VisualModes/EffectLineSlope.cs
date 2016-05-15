@@ -1,5 +1,6 @@
 ﻿#region === Copyright (c) 2010 Pascal van der Heiden ===
 
+using System.Collections.Generic;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Map;
 
@@ -114,13 +115,45 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			//mxd. Update outer sidedef geometry
 			if(updatesides)
 			{
-				foreach(Sidedef side in data.Sector.Sidedefs)
+				UpdateSectorSides(data.Sector);
+
+				// Update sectors with PlaneCopySlope Effect...
+				List<SectorData> toupdate = new List<SectorData>();
+				foreach(Sector s in data.UpdateAlso.Keys)
 				{
-					if(side.Other != null && side.Other.Sector != null && data.Mode.VisualSectorExists(side.Other.Sector))
+					SectorData osd = data.Mode.GetSectorDataEx(s);
+					if(osd == null) continue;
+					foreach(SectorEffect e in osd.Effects)
 					{
-						BaseVisualSector vs = (BaseVisualSector)data.Mode.GetVisualSector(side.Other.Sector);
-						vs.GetSidedefParts(side.Other).SetupAllParts();
+						if(e is EffectPlaneCopySlope)
+						{
+							toupdate.Add(osd);
+							break;
+						}
 					}
+				}
+
+				// Do it in 2 steps, because SectorData.Reset() may change SectorData.UpdateAlso collection...
+				foreach(SectorData sd in toupdate)
+				{
+					// Update PlaneCopySlope Effect...
+					sd.Reset(false);
+
+					// Update outer sides...
+					UpdateSectorSides(sd.Sector);
+				}
+			}
+		}
+
+		//mxd
+		private void UpdateSectorSides(Sector s)
+		{
+			foreach(Sidedef side in s.Sidedefs)
+			{
+				if(side.Other != null && side.Other.Sector != null && data.Mode.VisualSectorExists(side.Other.Sector))
+				{
+					BaseVisualSector vs = (BaseVisualSector)data.Mode.GetVisualSector(side.Other.Sector);
+					vs.GetSidedefParts(side.Other).SetupAllParts();
 				}
 			}
 		}
