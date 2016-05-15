@@ -1,4 +1,5 @@
-﻿using CodeImp.DoomBuilder.Map;
+﻿using System.Collections.Generic;
+using CodeImp.DoomBuilder.Map;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
@@ -26,6 +27,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			Sector sourcesector = null;
 			SectorData sourcesectordata = null;
+			bool updatesides = false;
 
 			// Copy slopes from tagged sectors
 			//check which arguments we must use
@@ -51,6 +53,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					data.Floor.plane = sourcesectordata.Floor.plane;
 					sourcesectordata.AddUpdateSector(data.Sector, true);
+
+					updatesides = true;
 				}
 			}
 
@@ -77,6 +81,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 						data.Ceiling.plane = sourcesectordata.Ceiling.plane;
 						sourcesectordata.AddUpdateSector(data.Sector, true);
+
+						updatesides = true;
 					}
 
 				} 
@@ -105,26 +111,73 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			// Copy slope across the line
-			if(!copyFloor && !copyCeiling) return;
-
-			//get appropriate source sector data
-			sourcesectordata = data.Mode.GetSectorData(front ? linedef.Back.Sector : linedef.Front.Sector);
-			if(!sourcesectordata.Updated) sourcesectordata.Update();
-
-			//copy floor slope?
-			if(copyFloor) 
+			if((copyFloor || copyCeiling) && linedef.Front != null && linedef.Back != null)
 			{
-				data.Floor.plane = sourcesectordata.Floor.plane;
-				sourcesectordata.AddUpdateSector(data.Sector, true);
+				// Get appropriate source sector data
+				sourcesectordata = data.Mode.GetSectorData(front ? linedef.Back.Sector : linedef.Front.Sector);
+				if(!sourcesectordata.Updated) sourcesectordata.Update();
+
+				//copy floor slope?
+				if(copyFloor)
+				{
+					data.Floor.plane = sourcesectordata.Floor.plane;
+					sourcesectordata.AddUpdateSector(data.Sector, true);
+				}
+
+				//copy ceiling slope?
+				if(copyCeiling)
+				{
+					data.Ceiling.plane = sourcesectordata.Ceiling.plane;
+					sourcesectordata.AddUpdateSector(data.Sector, true);
+				}
+
+				updatesides = true;
 			}
 
-			//copy ceiling slope?
-			if(copyCeiling) 
+			// Update outer sidedef geometry
+			if(updatesides)
 			{
-				data.Ceiling.plane = sourcesectordata.Ceiling.plane;
-				sourcesectordata.AddUpdateSector(data.Sector, true);
+				UpdateSectorSides(data.Sector);
+
+				// Update sectors with PlaneCopySlope Effect...
+				List<SectorData> toupdate = new List<SectorData>();
+				foreach(Sector s in data.UpdateAlso.Keys)
+				{
+					SectorData osd = data.Mode.GetSectorDataEx(s);
+					if(osd == null) continue;
+					foreach(SectorEffect e in osd.Effects)
+					{
+						if(e is EffectPlaneCopySlope)
+						{
+							toupdate.Add(osd);
+							break;
+						}
+					}
+				}
+
+				// Do it in 2 steps, because SectorData.Reset() may change SectorData.UpdateAlso collection...
+				foreach(SectorData sd in toupdate)
+				{
+					// Update PlaneCopySlope Effect...
+					sd.Reset(false);
+
+					// Update outer sides...
+					UpdateSectorSides(sd.Sector);
+				}
 			}
-			
+		}
+
+		//mxd
+		private void UpdateSectorSides(Sector s)
+		{
+			foreach(Sidedef side in s.Sidedefs)
+			{
+				if(side.Other != null && side.Other.Sector != null && data.Mode.VisualSectorExists(side.Other.Sector))
+				{
+					BaseVisualSector vs = (BaseVisualSector)data.Mode.GetVisualSector(side.Other.Sector);
+					vs.GetSidedefParts(side.Other).SetupAllParts();
+				}
+			}
 		}
 	}
 }

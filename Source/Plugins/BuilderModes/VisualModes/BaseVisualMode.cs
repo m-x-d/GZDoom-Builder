@@ -1639,25 +1639,49 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		internal List<IVisualEventReceiver> RemoveDuplicateSidedefs(List<IVisualEventReceiver> objs) 
+		private static IEnumerable<IVisualEventReceiver> RemoveDuplicateSidedefs(IEnumerable<IVisualEventReceiver> objs) 
 		{
 			HashSet<Sidedef> processed = new HashSet<Sidedef>();
 			List<IVisualEventReceiver> result = new List<IVisualEventReceiver>();
 
-			foreach(IVisualEventReceiver i in objs)
+			if(General.Map.UDMF)
 			{
-				BaseVisualGeometrySidedef sidedef = i as BaseVisualGeometrySidedef;
-				if(sidedef != null)
+				// For UDMF maps, we only need to remove duplicate extrafloor sidedefs
+				foreach(IVisualEventReceiver i in objs)
 				{
-					if(!processed.Contains(sidedef.Sidedef))
+					if(i is VisualMiddle3D)
 					{
-						processed.Add(sidedef.Sidedef);
+						VisualMiddle3D vm = i as VisualMiddle3D;
+						if(!processed.Contains(vm.Sidedef))
+						{
+							processed.Add(vm.Sidedef);
+							result.Add(i);
+						}
+					}
+					else
+					{
 						result.Add(i);
 					}
 				}
-				else
+			}
+			else
+			{
+				// For Doom/Hexen maps, we need to remove all duplicates
+				foreach(IVisualEventReceiver i in objs)
 				{
-					result.Add(i);
+					BaseVisualGeometrySidedef sidedef = i as BaseVisualGeometrySidedef;
+					if(sidedef != null)
+					{
+						if(!processed.Contains(sidedef.Sidedef))
+						{
+							processed.Add(sidedef.Sidedef);
+							result.Add(i);
+						}
+					}
+					else
+					{
+						result.Add(i);
+					}
 				}
 			}
 
@@ -2598,8 +2622,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private void MoveTextureByOffset(int ox, int oy)
 		{
 			PreAction(UndoGroup.TextureOffsetChange);
-			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, false, false);
-			if(!General.Map.UDMF) objs = RemoveDuplicateSidedefs(objs);
+			IEnumerable<IVisualEventReceiver> objs = RemoveDuplicateSidedefs(GetSelectedObjects(true, true, false, false));
 			foreach(IVisualEventReceiver i in objs) i.OnChangeTextureOffset(ox, oy, true);
 			PostAction();
 		}
