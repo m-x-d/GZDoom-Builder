@@ -218,6 +218,11 @@ namespace CodeImp.DoomBuilder.Controls
 				list.SelectedIndex = itemindex;
 				list.Refresh();
 			}
+			//mxd. This may be generalized effect, and it may've changed
+			else if(itemindex == -1)
+			{
+				list.Refresh();
+			}
 
 			// Raise change event
 			//mxd. This HAS to be raised during Edit form setup, otherwise TypeHandlers in ArgumentBoxes won't be initialized
