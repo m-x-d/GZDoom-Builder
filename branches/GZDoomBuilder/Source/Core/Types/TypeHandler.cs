@@ -59,6 +59,7 @@ namespace CodeImp.DoomBuilder.Types
 		public virtual bool IsLimitedToEnums { get { return false; } }
 		
 		public virtual Image BrowseImage { get { return null; } }
+		public virtual bool DynamicImage { get { return false; } } //mxd. When set to true, the button image will be re-applied after value changes
 
 		#endregion
 

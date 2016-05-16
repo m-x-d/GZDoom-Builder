@@ -36,6 +36,7 @@ namespace CodeImp.DoomBuilder.Types
 		#region ================== Variables
 
 		protected int value;
+		protected Image[] angleicons;
 
 		#endregion
 
@@ -43,11 +44,27 @@ namespace CodeImp.DoomBuilder.Types
 
 		public override bool IsBrowseable { get { return true; } }
 
-		public override Image BrowseImage { get { return Properties.Resources.Angle; } }
-		
+		public override Image BrowseImage { get { return angleicons[General.ClampAngle(value + 22) / 45]; } }
+		public override bool DynamicImage { get { return true; } }
+
 		#endregion
 
 		#region ================== Constructor
+
+		public AngleDegreesHandler()
+		{
+			angleicons = new[]
+			{
+				Properties.Resources.Angle,
+				Properties.Resources.Angle7,
+				Properties.Resources.Angle6,
+				Properties.Resources.Angle5,
+				Properties.Resources.Angle4,
+				Properties.Resources.Angle3,
+				Properties.Resources.Angle2,
+				Properties.Resources.Angle1
+			};
+		}
 
 		#endregion
 

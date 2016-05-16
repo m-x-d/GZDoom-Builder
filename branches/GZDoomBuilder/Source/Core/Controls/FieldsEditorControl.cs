@@ -804,7 +804,9 @@ namespace CodeImp.DoomBuilder.Controls
 				if(row is FieldsEditorRow)
 				{
 					// Browse
-					(row as FieldsEditorRow).Browse(this.ParentForm);
+					FieldsEditorRow frow = (FieldsEditorRow)row;
+					frow.Browse(this.ParentForm);
+					if(frow.TypeHandler.DynamicImage) browsebutton.Image = frow.TypeHandler.BrowseImage; //mxd
 					fieldslist.Focus();
 				}
 			}

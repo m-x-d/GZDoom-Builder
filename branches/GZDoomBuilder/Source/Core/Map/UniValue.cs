@@ -126,6 +126,7 @@ namespace CodeImp.DoomBuilder.Map
 				}
 				
 				case UniversalType.AngleDegrees:
+				case UniversalType.AngleByte: //mxd
 				case UniversalType.Color:
 				case UniversalType.EnumBits:
 				case UniversalType.EnumOption:

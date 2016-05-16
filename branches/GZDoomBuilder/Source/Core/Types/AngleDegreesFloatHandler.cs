@@ -27,7 +27,7 @@ using CodeImp.DoomBuilder.Windows;
 namespace CodeImp.DoomBuilder.Types
 {
 	[TypeHandler(UniversalType.AngleDegreesFloat, "Degrees (Decimal)", true)]
-	internal class AngleDegreesFloatHandler : TypeHandler
+	internal class AngleDegreesFloatHandler : AngleDegreesHandler
 	{
 		#region ================== Constants
 
@@ -35,7 +35,7 @@ namespace CodeImp.DoomBuilder.Types
 
 		#region ================== Variables
 
-		private float value;
+		private new float value;
 
 		#endregion
 
@@ -43,7 +43,7 @@ namespace CodeImp.DoomBuilder.Types
 
 		public override bool IsBrowseable { get { return true; } }
 
-		public override Image BrowseImage { get { return Properties.Resources.Angle; } }
+		public override Image BrowseImage { get { return angleicons[General.ClampAngle((int)Math.Round(value) + 22) / 45]; } }
 		
 		#endregion
 
@@ -73,7 +73,8 @@ namespace CodeImp.DoomBuilder.Types
 				// Set directly
 				this.value = Convert.ToSingle(value);
 			}
-			else {
+			else
+			{
 				// Try parsing as string
 				float result;
 				if(float.TryParse(value.ToString(), NumberStyles.Float, CultureInfo.CurrentCulture, out result))

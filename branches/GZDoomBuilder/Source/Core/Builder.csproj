@@ -1126,6 +1126,13 @@
     <None Include="Resources\About.png" />
     <None Include="Resources\Configuration.png" />
     <EmbeddedResource Include="Resources\Black.png" />
+    <None Include="Resources\Angle1.png" />
+    <None Include="Resources\Angle2.png" />
+    <None Include="Resources\Angle3.png" />
+    <None Include="Resources\Angle4.png" />
+    <None Include="Resources\Angle5.png" />
+    <None Include="Resources\Angle6.png" />
+    <None Include="Resources\Angle7.png" />
     <Content Include="Resources\DB2.ico" />
     <None Include="Resources\GZDB2.ico" />
     <None Include="Resources\fog.png" />
