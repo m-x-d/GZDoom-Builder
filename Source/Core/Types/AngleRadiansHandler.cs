@@ -28,7 +28,7 @@ using CodeImp.DoomBuilder.Geometry;
 namespace CodeImp.DoomBuilder.Types
 {
 	[TypeHandler(UniversalType.AngleRadians, "Radians", true)]
-	internal class AngleRadiansHandler : TypeHandler
+	internal class AngleRadiansHandler : AngleDegreesHandler
 	{
 		#region ================== Constants
 
@@ -36,7 +36,7 @@ namespace CodeImp.DoomBuilder.Types
 
 		#region ================== Variables
 
-		private float value;
+		private new float value;
 
 		#endregion
 
@@ -44,7 +44,7 @@ namespace CodeImp.DoomBuilder.Types
 
 		public override bool IsBrowseable { get { return true; } }
 
-		public override Image BrowseImage { get { return Properties.Resources.Angle; } }
+		public override Image BrowseImage { get { return angleicons[General.ClampAngle(Angle2D.RealToDoom(value) + 22) / 45]; } }
 		
 		#endregion
 

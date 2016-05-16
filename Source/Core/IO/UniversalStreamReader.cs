@@ -225,7 +225,7 @@ namespace CodeImp.DoomBuilder.IO
 
 			// Go for all lines
 			map.SetCapacity(0, map.Linedefs.Count + linescolls.Count, map.Sidedefs.Count + sidescolls.Count, 0, 0);
-			char[] splitter = new[] { ' ' }; //mxd
+			char[] splitter = { ' ' }; //mxd
 			for(int i = 0; i < linescolls.Count; i++)
 			{
 				// Read fields
@@ -235,7 +235,8 @@ namespace CodeImp.DoomBuilder.IO
 				int v1 = GetCollectionEntry(lc, "v1", true, 0, where);
 				int v2 = GetCollectionEntry(lc, "v2", true, 0, where);
 
-				if(!vertexlink.ContainsKey(v1) || !vertexlink.ContainsKey(v2)) { //mxd
+				if(!vertexlink.ContainsKey(v1) || !vertexlink.ContainsKey(v2))
+				{ //mxd
 					General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + i + " references one or more invalid vertices. Linedef has been removed.");
 					continue;
 				}
@@ -508,7 +509,7 @@ namespace CodeImp.DoomBuilder.IO
 					//mxd. Try to find the type from configuration
 					if(setknowncustomtypes) 
 					{
-						type = General.Map.Config.ReadSetting("universalfields." + elementname + "." + e.Key + ".type", -1);
+						type = General.Map.Options.GetUniversalFieldType(elementname, e.Key, -1);
 
 						if(type != -1) 
 						{

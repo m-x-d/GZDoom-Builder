@@ -129,6 +129,13 @@ namespace CodeImp.DoomBuilder.Controls
 		private void combobox_TextChanged(object sender, EventArgs e)
 		{
 			scrollbuttons.Enabled = !CheckIsRelative();
+
+			//mxd. Update button image?
+			if(typehandler.DynamicImage)
+			{
+				combobox_Validating(sender, new CancelEventArgs());
+				button.Image = typehandler.BrowseImage;
+			}
 		}
 
 		// Mouse wheel used

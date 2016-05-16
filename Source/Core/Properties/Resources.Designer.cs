@@ -81,6 +81,55 @@ namespace CodeImp.DoomBuilder.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap Angle1 {
+            get {
+                object obj = ResourceManager.GetObject("Angle1", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap Angle2 {
+            get {
+                object obj = ResourceManager.GetObject("Angle2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap Angle3 {
+            get {
+                object obj = ResourceManager.GetObject("Angle3", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap Angle4 {
+            get {
+                object obj = ResourceManager.GetObject("Angle4", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap Angle5 {
+            get {
+                object obj = ResourceManager.GetObject("Angle5", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap Angle6 {
+            get {
+                object obj = ResourceManager.GetObject("Angle6", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap Angle7 {
+            get {
+                object obj = ResourceManager.GetObject("Angle7", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap ArrowDown {
             get {
                 object obj = ResourceManager.GetObject("ArrowDown", resourceCulture);
