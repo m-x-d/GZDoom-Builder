@@ -1052,9 +1052,9 @@ namespace CodeImp.DoomBuilder.Config
 				for(int j = options[i].Bits.Count - 1; j > -1; j--)
 				{
 					GeneralizedBit bit = options[i].Bits[j];
+					if(bit.Index > cureffect) continue;
 					if(bit.Index > 0 && (cureffect & bit.Index) == bit.Index) return true;
 					cureffect -= bit.Index;
-					if(cureffect < 1) return false;
 				}
 			}
 

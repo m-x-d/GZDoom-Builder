@@ -74,6 +74,12 @@ namespace CodeImp.DoomBuilder.TagExplorer
 			if(tagExplorer != null) tagExplorer.UpdateTreeSoon();
 		}
 
+		// Edit performed
+		public override void OnEditAccept()
+		{
+			if(tagExplorer != null) tagExplorer.UpdateTreeSoon();
+		}
+
 		public override void OnActionEnd(Actions.Action action) 
 		{
 			if(tagExplorer != null && action.Name == "builder_deleteitem")
