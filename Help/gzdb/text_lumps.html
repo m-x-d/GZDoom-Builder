@@ -22,7 +22,11 @@
 	</div>
 	
 	<div id="contents">
-    <p>GZDoom Builder will automatically load data from the following lumps if they are present in the map's resources.</p>
+    <p>GZDoom Builder will automatically load data from the following lumps if they are present in the map's resources:</p>
+    <h2>DECORATE:</h2>
+    Actor definitions are loaded and used to poulate Things list. Extra parameters can be assigned using <a href="../gc_decoratekeys.html">special comments</a>.<br />
+    DamageTypes are loaded and used in the "Damage Type" drop-down of the Edit Sector window (UDMF only).
+    
     <a name="textures" id="textures"></a><h2>TEXTURES:</h2>
     You can use "<strong>//$GZDB_SKIP</strong>" special comment to abort parsing of the current file. Useful if you don't want textures from certain files or parts of files to show up in the <a href="w_imagesbrowser.html">Image Browser</a> or want to increase resource loading speed.<br /><br />
     GZDoom Builder adds support for the following TEXTURES parameters:
@@ -53,6 +57,15 @@
     
     <h2>SNDSEQ:</h2>
     Sound Sequence and Sound Sequence Group definitions are loaded and can be selected in the "Sound sequence" drop-down of the Edit Sector window (UDMF only). 
+    
+    <h2>TERRAIN:</h2>
+    Terrain names are loaded and used in the floor and ceiling "Terrain" drop-downs of the Edit Sector window (UDMF only).
+    
+    <h2>X11R6RGB:</h2>
+    Colors are loaded and used by other text parsers where appropriate.
+    
+    <h2>CVARINFO:</h2>
+    CVARs are loaded. Currently the editor uses them only for "DistanceCheck" DECORATE property support.
          
     <a name="modeldef" id="modeldef"></a>
     <h2>MODELDEF:</h2>

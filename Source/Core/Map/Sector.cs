@@ -568,7 +568,7 @@ namespace CodeImp.DoomBuilder.Map
 		// This requires the sector triangulation to be up-to-date!
 		private RectangleF CreateBBox()
 		{
-			if(sidedefs.Count == 0) return  new RectangleF(); //mxd
+			if(sidedefs.Count == 0) return new RectangleF(); //mxd
 			
 			// Setup
 			float left = float.MaxValue;
@@ -576,29 +576,29 @@ namespace CodeImp.DoomBuilder.Map
 			float right = float.MinValue;
 			float bottom = float.MinValue;
 
-			Dictionary<Vertex, bool> processed = new Dictionary<Vertex, bool>(); //mxd
+			HashSet<Vertex> processed = new HashSet<Vertex>(); //mxd
 
 			//mxd. This way bbox will be created even if triangulation failed (sector with 2 or less sidedefs and 2 vertices)
 			foreach(Sidedef s in sidedefs) 
 			{
 				//start...
-				if(!processed.ContainsKey(s.Line.Start)) 
+				if(!processed.Contains(s.Line.Start)) 
 				{
 					if(s.Line.Start.Position.x < left) left = s.Line.Start.Position.x;
 					if(s.Line.Start.Position.x > right) right = s.Line.Start.Position.x;
 					if(s.Line.Start.Position.y < top) top = s.Line.Start.Position.y;
 					if(s.Line.Start.Position.y > bottom) bottom = s.Line.Start.Position.y;
-					processed.Add(s.Line.Start, false);
+					processed.Add(s.Line.Start);
 				}
 
 				//end...
-				if(!processed.ContainsKey(s.Line.End)) 
+				if(!processed.Contains(s.Line.End)) 
 				{
 					if(s.Line.End.Position.x < left) left = s.Line.End.Position.x;
 					if(s.Line.End.Position.x > right) right = s.Line.End.Position.x;
 					if(s.Line.End.Position.y < top) top = s.Line.End.Position.y;
 					if(s.Line.End.Position.y > bottom) bottom = s.Line.End.Position.y;
-					processed.Add(s.Line.End, false);
+					processed.Add(s.Line.End);
 				}
 			}
 			
@@ -791,7 +791,11 @@ namespace CodeImp.DoomBuilder.Map
 		// String representation
 		public override string ToString()
 		{
+#if DEBUG
+			return "Sector " + listindex + (marked ? " (marked)" : ""); //mxd
+#else
 			return "Sector " + listindex;
+#endif
 		}
 		
 		#endregion

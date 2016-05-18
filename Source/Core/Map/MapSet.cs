@@ -2167,8 +2167,7 @@ namespace CodeImp.DoomBuilder.Map
 						if(l1.Index == l2.Index) continue;
 						
 						// Sharing vertices?
-						if((l1.End == l2.End) ||
-						   (l1.End == l2.Start))
+						if(l1.End == l2.End || l1.End == l2.Start)
 						{
 							bool oppositedirection = (l1.End == l2.Start);
 							bool l2marked = l2.Marked;
@@ -2183,8 +2182,8 @@ namespace CodeImp.DoomBuilder.Map
 							{
 								l1.FrontInterior = l2.FrontInterior ^ oppositedirection;
 							}
-								// If l1 is marked as new geometry, we may need to flip it to preserve
-								// orientation of the original geometry, and update its FrontInterior
+							// If l1 is marked as new geometry, we may need to flip it to preserve
+							// orientation of the original geometry, and update its FrontInterior
 							else if(l1.Marked) 
 							{
 								if(oppositedirection) 
@@ -2209,8 +2208,7 @@ namespace CodeImp.DoomBuilder.Map
 						if(l1.Index == l2.Index) continue;
 						
 						// Sharing vertices?
-						if((l1.Start == l2.End) ||
-						   (l1.Start == l2.Start))
+						if(l1.Start == l2.End || l1.Start == l2.Start)
 						{
 							bool oppositedirection = (l1.Start == l2.End);
 							bool l2marked = l2.Marked;
@@ -2225,8 +2223,8 @@ namespace CodeImp.DoomBuilder.Map
 							{
 								l1.FrontInterior = l2.FrontInterior ^ oppositedirection;
 							}
-								// If l1 is marked as new geometry, we may need to flip it to preserve
-								// orientation of the original geometry, and update its FrontInterior
+							// If l1 is marked as new geometry, we may need to flip it to preserve
+							// orientation of the original geometry, and update its FrontInterior
 							else if(l1.Marked) 
 							{
 								if(oppositedirection) 
@@ -3094,17 +3092,6 @@ namespace CodeImp.DoomBuilder.Map
 			foreach(Sector s in sectors) 
 			{
 				if(s.Intersect(pos)) return s;
-			}
-			return null;
-		}
-
-		//mxd
-		/// <summary>This returns a sector if given coordinates are inside one.</summary>
-		public Sector GetSectorByCoordinates(Vector2D pos, HashSet<Sector> sectorsToExclude)
-		{
-			foreach(Sector s in sectors)
-			{
-				if(!sectorsToExclude.Contains(s) && s.Intersect(pos)) return s;
 			}
 			return null;
 		}

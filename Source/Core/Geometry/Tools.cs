@@ -2157,6 +2157,63 @@ namespace CodeImp.DoomBuilder.Geometry
 
 		#endregion
 
+		#region ================== Sectors (mxd)
+
+		public static void SplitOuterSectors(IEnumerable<Linedef> drawnlines)
+		{
+			Dictionary<Sector, HashSet<Sidedef>> sectorsidesref = new Dictionary<Sector, HashSet<Sidedef>>();
+
+			// Create drawn lines per sector collection
+			foreach(Linedef l in drawnlines)
+			{
+				if(l.Front != null && l.Front.Sector != null)
+				{
+					if(!sectorsidesref.ContainsKey(l.Front.Sector)) sectorsidesref.Add(l.Front.Sector, new HashSet<Sidedef>());
+					sectorsidesref[l.Front.Sector].Add(l.Front);
+				}
+
+				if(l.Back != null && l.Back.Sector != null)
+				{
+					if(!sectorsidesref.ContainsKey(l.Back.Sector)) sectorsidesref.Add(l.Back.Sector, new HashSet<Sidedef>());
+					sectorsidesref[l.Back.Sector].Add(l.Back);
+				}
+			}
+
+			// Split sectors
+			foreach(KeyValuePair<Sector, HashSet<Sidedef>> group in sectorsidesref)
+			{
+				// Sector has all sides selected?
+				if(group.Key.Sidedefs.Count == group.Value.Count)
+				{
+					group.Key.Marked = true; // Sometimes those are not marked...
+					continue;
+				}
+
+				// Process all sides
+				foreach(Sidedef side in group.Value)
+				{
+					// Sector was already split?
+					if(side.Sector != group.Key) continue;
+
+					// Find drawing interior
+					List<LinedefSide> sides = FindPotentialSectorAt(side.Line, side.IsFront);
+
+					// Number of potential sides fewer than the sector has?
+					if(sides != null && sides.Count > 0 && sides.Count < group.Key.Sidedefs.Count)
+					{
+						Sector newsector = MakeSector(sides, null, false);
+						if(newsector != null)
+						{
+							newsector.UpdateCache();
+							group.Key.UpdateCache();
+						}
+					}
+				}
+			}
+		}
+
+		#endregion
+
 		#region ================== Linedefs (mxd)
 
 		/// <summary>Flips sector linedefs so they all face either inward or outward.</summary>
@@ -2349,91 +2406,46 @@ namespace CodeImp.DoomBuilder.Geometry
 			// These steps must be done in 2 phases, otherwise we'll end up getting sidedefs modified in a previous adjustment loop step
 
 			// Find sidedefs to join singlesided lines
-			Dictionary<Linedef, Sidedef> linenearestsideref = new Dictionary<Linedef, Sidedef>();
+			Dictionary<Linedef, Sector> linesectorref = new Dictionary<Linedef, Sector>();
 			foreach(Linedef line in singlesidedlines)
 			{
-				// Line is now inside a sector?
-				Vector2D testpoint = line.GetSidePoint(line.Front == null);
-				Sector nearest = General.Map.Map.GetSectorByCoordinates(testpoint, selectedsectors);
+				// Line is now inside a sector? (check from the missing side!)
+				Sector nearest = FindPotentialSector(line, (line.Front == null), outersides);
 
-				if(nearest != null)
-				{
-					Linedef nl = null;
-					float distance = float.MaxValue;
-
-					// Find nearest linedef
-					foreach(Sidedef ns in nearest.Sidedefs)
-					{
-						float d = ns.Line.SafeDistanceToSq(testpoint, true);
-						if(d < distance)
-						{
-							// This one is closer
-							nl = ns.Line;
-							distance = d;
-						}
-					}
-
-					// Find nearest sidedef
-					if(nl != null)
-					{
-						Sidedef ns = (nl.SideOfLine(testpoint) <= 0 ? nl.Front : nl.Back);
-						if(ns != null) linenearestsideref[line] = ns;
-					}
-				}
+				// We can reattach our line!
+				if(nearest != null) linesectorref[line] = nearest;
 			}
 
 			// Find sidedefs to join outer sides
-			Dictionary<Sidedef, Sidedef> sidenearestsideref = new Dictionary<Sidedef, Sidedef>();
+			Dictionary<Sidedef, Sector> sidesectorref = new Dictionary<Sidedef, Sector>();
 			foreach(Sidedef side in outersides)
 			{
 				// Side is inside a sector?
-				Vector2D testpoint = side.Line.GetSidePoint(side.IsFront);
-				Sector nearest = General.Map.Map.GetSectorByCoordinates(testpoint, selectedsectors);
-				sidenearestsideref[side] = null; // This side will be removed in phase 2
+				Sector nearest = FindPotentialSector(side.Line, side.IsFront, outersides);
 
+				// We can reattach our side!
 				if(nearest != null)
 				{
-					Linedef nl = null;
-					float distance = float.MaxValue;
-
-					// Find nearest linedef
-					foreach(Sidedef ns in nearest.Sidedefs)
-					{
-						float d = ns.Line.SafeDistanceToSq(testpoint, true);
-						if(d < distance)
-						{
-							// This one is closer
-							nl = ns.Line;
-							distance = d;
-						}
-					}
-
-					// Find nearest sidedef
-					if(nl != null)
-					{
-						Sidedef ns = (nl.SideOfLine(testpoint) <= 0 ? nl.Front : nl.Back);
-						if(ns != null && ns.Sector != null)
-						{
-							if(side.Sector != ns.Sector) 
-								sidenearestsideref[side] = ns; // This side will be reattached in phase 2 
-							else
-								sidenearestsideref.Remove(side); // This side is already attached where it needs to be
-						}
-					}
+					if(side.Sector != nearest) sidesectorref[side] = nearest;  // This side will be reattached in phase 2
+					else sidesectorref.Remove(side); // This side is already attached where it needs to be
+				}
+				else
+				{
+					sidesectorref[side] = null; // This side will be removed in phase 2
 				}
 			}
 
 			// Check single-sided lines. Add new sidedefs if necessary
-			// Key is dragged single-sided line, value is the nearset side of a sector dragged line ended up in.
-			foreach(KeyValuePair<Linedef, Sidedef> group in linenearestsideref)
+			// Key is dragged single-sided line, value is a sector dragged line ended up in.
+			foreach(KeyValuePair<Linedef, Sector> group in linesectorref)
 			{
 				Linedef line = group.Key;
 
 				// Create new sidedef
-				Sidedef newside = General.Map.Map.CreateSidedef(line, line.Front == null, group.Value.Sector);
+				Sidedef newside = General.Map.Map.CreateSidedef(line, line.Front == null, group.Value);
 
 				// Copy props from the other side
-				Sidedef propssource = ((line.Front ?? line.Back) ?? group.Value);
+				Sidedef propssource = (line.Front ?? line.Back);
 				propssource.CopyPropertiesTo(newside);
 				newside.RemoveUnneededTextures(true, true, true);
 				newside.Other.RemoveUnneededTextures(true, true, true);
@@ -2450,8 +2462,8 @@ namespace CodeImp.DoomBuilder.Geometry
 			}
 
 			// Check outer sidedefs. Remove/change sector if necessary
-			// Key is outer sidedef of dragged geometry, value is nearset side of a sector dragged side ended up in.
-			foreach(KeyValuePair<Sidedef, Sidedef> group in sidenearestsideref)
+			// Key is outer sidedef of dragged geometry, value is a sector dragged side ended up in.
+			foreach(KeyValuePair<Sidedef, Sector> group in sidesectorref)
 			{
 				if(group.Value == null)
 				{
@@ -2472,13 +2484,34 @@ namespace CodeImp.DoomBuilder.Geometry
 				else
 				{
 					// Reattach side
-					group.Key.SetSector(group.Value.Sector);
+					group.Key.SetSector(group.Value);
 					group.Key.RemoveUnneededTextures(true, true, true);
 				}
 			}
 
 			// Update map geometry
 			General.Map.Map.Update();
+		}
+
+		//mxd
+		private static Sector FindPotentialSector(Linedef line, bool front, HashSet<Sidedef> sidestoexclude)
+		{
+			List<LinedefSide> sectorsides = FindPotentialSectorAt(line, front);
+			if(sectorsides == null) return null;
+
+			// Filter outersides from the list, proceed only if all sectorsides reference the same sector
+			Sector result = null;
+			foreach(LinedefSide sectorside in sectorsides)
+			{
+				Sidedef target = (sectorside.Front ? sectorside.Line.Front : sectorside.Line.Back);
+				if(target != null && !sidestoexclude.Contains(target))
+				{
+					if(result == null) result = target.Sector;
+					else if(result != target.Sector) return null; // Fial...
+				}
+			}
+
+			return result;
 		}
 
 		#endregion

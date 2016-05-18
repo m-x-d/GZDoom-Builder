@@ -107,7 +107,9 @@ namespace CodeImp.DoomBuilder.Geometry
 		//mxd. Useful when debugging...
 		public override string ToString()
 		{
-			return line  + " (" + (front ? "front" : "back") + ")";
+			Sidedef side = (front ? line.Front : line.Back);
+			Sector sector = (side != null ? side.Sector : null);
+			return line + " (" + (front ? "front" : "back") + ")" + (sector != null ? ", Sector " + sector.Index : "");
 		}
 #endif
 

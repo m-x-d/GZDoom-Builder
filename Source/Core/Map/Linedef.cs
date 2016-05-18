@@ -1073,23 +1073,23 @@ namespace CodeImp.DoomBuilder.Map
 		public bool Join(Linedef other)
 		{
 			// Check which lines were 2 sided
-			bool l1was2s = ((other.Front != null) && (other.Back != null));
-			bool l2was2s = ((this.Front != null) && (this.Back != null));
+			bool otherwas2s = ((other.Front != null) && (other.Back != null));
+			bool thiswas2s = ((this.Front != null) && (this.Back != null));
 			
 			// Get sector references
-			Sector l1fs = other.front != null ? other.front.Sector : null;
-			Sector l1bs = other.back != null ? other.back.Sector : null;
-			Sector l2fs = this.front != null ? this.front.Sector : null;
-			Sector l2bs = this.back != null ? this.back.Sector : null;
+			Sector otherfs = (other.front != null ? other.front.Sector : null);
+			Sector otherbs = (other.back != null ? other.back.Sector : null);
+			Sector thisfs = (this.front != null ? this.front.Sector : null);
+			Sector thisbs = (this.back != null ? this.back.Sector : null);
 
 			// This line has no sidedefs?
-			if((l2fs == null) && (l2bs == null))
+			if((thisfs == null) && (thisbs == null))
 			{
 				// We have no sidedefs, so we have no influence
 				// Nothing to change on the other line
 			}
 			// Other line has no sidedefs?
-			else if((l1fs == null) && (l1bs == null))
+			else if((otherfs == null) && (otherbs == null))
 			{
 				// The other has no sidedefs, so it has no influence
 				// Copy my sidedefs to the other
@@ -1110,44 +1110,44 @@ namespace CodeImp.DoomBuilder.Map
 			else
 			{
 				// Compare front sectors
-				if((l1fs != null) && (l1fs == l2fs))
+				if((otherfs != null) && (otherfs == thisfs))
 				{
 					// Copy textures
 					if(other.front != null) other.front.AddTexturesTo(this.back);
 					if(this.front != null) this.front.AddTexturesTo(other.back);
 
-					// Change sidedefs
-					if(!JoinChangeSidedefs(other, true, back)) return false;
+					// Change sidedefs?
+					if(back != null && !JoinChangeSidedefs(other, true, back)) return false;
 				}
 				// Compare back sectors
-				else if((l1bs != null) && (l1bs == l2bs))
+				else if((otherbs != null) && (otherbs == thisbs))
 				{
 					// Copy textures
 					if(other.back != null) other.back.AddTexturesTo(this.front);
 					if(this.back != null) this.back.AddTexturesTo(other.front);
 
-					// Change sidedefs
-					if(!JoinChangeSidedefs(other, false, front)) return false;
+					// Change sidedefs?
+					if(front != null && !JoinChangeSidedefs(other, false, front)) return false;
 				}
 				// Compare front and back
-				else if((l1fs != null) && (l1fs == l2bs))
+				else if((otherfs != null) && (otherfs == thisbs))
 				{
 					// Copy textures
 					if(other.front != null) other.front.AddTexturesTo(this.front);
 					if(this.back != null) this.back.AddTexturesTo(other.back);
 
-					// Change sidedefs
-					if(!JoinChangeSidedefs(other, true, front)) return false;
+					// Change sidedefs?
+					if(front != null && !JoinChangeSidedefs(other, true, front)) return false;
 				}
 				// Compare back and front
-				else if((l1bs != null) && (l1bs == l2fs))
+				else if((otherbs != null) && (otherbs == thisfs))
 				{
 					// Copy textures
 					if(other.back != null) other.back.AddTexturesTo(this.back);
 					if(this.front != null) this.front.AddTexturesTo(other.front);
 
-					// Change sidedefs
-					if(!JoinChangeSidedefs(other, false, back)) return false;
+					// Change sidedefs?
+					if(back != null && !JoinChangeSidedefs(other, false, back)) return false;
 				}
 				else
 				{
@@ -1158,20 +1158,18 @@ namespace CodeImp.DoomBuilder.Map
 						if(this.start == other.end)
 						{
 							// Copy textures
-							if(other.back != null) other.back.AddTexturesTo(this.front);
 							if(this.back != null) this.back.AddTexturesTo(other.front);
 
-							// Change sidedefs
-							if(!JoinChangeSidedefs(other, false, front)) return false;
+							// Change sidedefs?
+							if(front != null && !JoinChangeSidedefs(other, false, front)) return false;
 						}
 						else
 						{
 							// Copy textures
-							if(other.back != null) other.back.AddTexturesTo(this.back);
 							if(this.front != null) this.front.AddTexturesTo(other.front);
 
-							// Change sidedefs
-							if(!JoinChangeSidedefs(other, false, back)) return false;
+							// Change sidedefs?
+							if(back != null && !JoinChangeSidedefs(other, false, back)) return false;
 						}
 					}
 					// This line single sided?
@@ -1180,21 +1178,27 @@ namespace CodeImp.DoomBuilder.Map
 						// Other line with its back to this?
 						if(other.start == this.end)
 						{
-							// Copy textures
-							if(other.back != null) other.back.AddTexturesTo(this.front);
-							if(this.back != null) this.back.AddTexturesTo(other.front);
+							//mxd. Marked sector means other side belongs to a sector being moved...
+							if(otherbs == null || !otherbs.Marked)
+							{
+								// Copy textures
+								if(other.back != null) other.back.AddTexturesTo(this.front);
 
-							// Change sidedefs
-							if(!JoinChangeSidedefs(other, false, front)) return false;
+								// Change sidedefs
+								if(!JoinChangeSidedefs(other, false, front)) return false;
+							}
 						}
 						else
 						{
-							// Copy textures
-							if(other.front != null) other.front.AddTexturesTo(this.front);
-							if(this.back != null) this.back.AddTexturesTo(other.back);
+							//mxd. Marked sector means other side belongs to a sector being moved...
+							if(otherfs == null || !otherfs.Marked)
+							{
+								// Copy textures
+								if(other.front != null) other.front.AddTexturesTo(this.front);
 
-							// Change sidedefs
-							if(!JoinChangeSidedefs(other, true, front)) return false;
+								// Change sidedefs
+								if(!JoinChangeSidedefs(other, true, front)) return false;
+							}
 						}
 					}
 					else
@@ -1202,33 +1206,64 @@ namespace CodeImp.DoomBuilder.Map
 						// This line with its back to the other?
 						if(this.start == other.end)
 						{
-							// Copy textures
-							if(other.back != null) other.back.AddTexturesTo(this.front);
-							if(this.back != null) this.back.AddTexturesTo(other.front);
+							//mxd. Marked sector means other side belongs to a sector being moved...
+							//mxd. Attach our front to other back?
+							if(otherbs == null || !otherbs.Marked)
+							{
+								// Copy textures
+								if(other.back != null) other.back.AddTexturesTo(this.front);
+								if(this.back != null) this.back.AddTexturesTo(other.front);
 
-							// Change sidedefs
-							if(!JoinChangeSidedefs(other, false, front)) return false;
+								// Change sidedefs (replace other back with our front)
+								if(front != null && !JoinChangeSidedefs(other, false, front)) return false;
+							}
+							//mxd. Attach our back to other front?
+							else if(otherfs == null || !otherfs.Marked)
+							{
+								// Copy textures
+								if(other.front != null) other.front.AddTexturesTo(this.back);
+								if(this.front != null) this.front.AddTexturesTo(other.back);
+
+								// Change sidedefs (replace other back with our front)
+								if(back != null && !JoinChangeSidedefs(other, true, back)) return false;
+							}
 						}
+						// Both lines face the same way
 						else
 						{
-							// Copy textures
-							if(other.back != null) other.back.AddTexturesTo(this.back);
-							if(this.front != null) this.front.AddTexturesTo(other.front);
+							//mxd. Marked sector means other side belongs to a sector being moved...
+							//mxd. Attach our back to other back?
+							if(otherbs == null || !otherbs.Marked)
+							{
+								// Copy textures
+								if(other.back != null) other.back.AddTexturesTo(this.back);
+								if(this.front != null) this.front.AddTexturesTo(other.front);
 
-							// Change sidedefs
-							if(!JoinChangeSidedefs(other, false, back)) return false;
+								// Change sidedefs
+								if(back != null && !JoinChangeSidedefs(other, false, back)) return false;
+							}
+							//mxd. Attach our front to other front?
+							else if(otherfs == null || !otherfs.Marked)
+							{
+								// Copy textures
+								if(other.front != null) other.front.AddTexturesTo(this.front);
+								if(this.back != null) this.back.AddTexturesTo(other.back);
+
+								// Change sidedefs
+								if(front != null && !JoinChangeSidedefs(other, true, front)) return false;
+							}
 						}
 					}
 				}
 				
 				// Apply single/double sided flags if the double-sided-ness changed
-				if( (!l1was2s && ((other.Front != null) && (other.Back != null))) ||
-					(l1was2s && ((other.Front == null) || (other.Back == null))) )
+				if( (!otherwas2s && (other.Front != null && other.Back != null)) ||
+					 (otherwas2s && (other.Front == null || other.Back == null)) )
 					other.ApplySidedFlags();
 				
 				// Remove unneeded textures
-				if(other.front != null) other.front.RemoveUnneededTextures(!(l1was2s && l2was2s));
-				if(other.back != null) other.back.RemoveUnneededTextures(!(l1was2s && l2was2s));
+				if(other.front != null) other.front.RemoveUnneededTextures(!(otherwas2s && thiswas2s));
+				if(other.back != null) other.back.RemoveUnneededTextures(!(otherwas2s && thiswas2s));
 			}
 			
 			// If either of the two lines was selected, keep the other selected
@@ -1287,7 +1322,13 @@ namespace CodeImp.DoomBuilder.Map
 		// String representation
 		public override string ToString()
 		{
+#if DEBUG
+			string starttext = (start != null ? " (" + start : string.Empty);
+			string endtext = (end != null ? ", " + end + ")" : string.Empty);
+			return "Linedef " + listindex + (marked ? " (marked)" : "") + starttext + endtext; //mxd
+#else
 			return "Linedef " + listindex;
+#endif
 		}
 		
 		#endregion
