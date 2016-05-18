@@ -633,6 +633,17 @@ namespace CodeImp.DoomBuilder.Map
 
 			General.Map.IsChanged = true;
 		}
+
+		//mxd. String representation
+		public override string ToString()
+		{
+#if DEBUG
+			return "Sidedef " + listindex + (marked ? " (marked)" : "") + " (Line " + linedef.Index + (linedef.Marked ? " (marked)" : "") + ", Sector " + sector.Index + (sector.Marked ? " (marked)" : "") + ")";
+#else
+			return "Sidedef " + listindex;
+#endif
+		}
+
 		
 		#endregion
 

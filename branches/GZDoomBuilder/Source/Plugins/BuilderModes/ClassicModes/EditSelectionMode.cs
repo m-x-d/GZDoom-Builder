@@ -1480,22 +1480,41 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 
 				// Stitch geometry
-				if(snaptonearest) General.Map.Map.StitchGeometry();
+				General.Map.Map.StitchGeometry();
 
 				// Make corrections for backward linedefs
 				MapSet.FlipBackwardLinedefs(General.Map.Map.Linedefs);
 
+				// Snap to map format accuracy
+				General.Map.Map.SnapAllToAccuracy(General.Map.UDMF && usepreciseposition);
+
 				//mxd. Reattach/add/remove sidedefs only when there are no unstable lines in selection
 				if(unstablelines.Count == 0)
 				{
+					// Update cached values
+					General.Map.Map.Update();
+					
+					// Get new lines from linedef marks...
+					HashSet<Linedef> newlines = new HashSet<Linedef>(General.Map.Map.GetMarkedLinedefs(true));
+
+					// Marked lines were created during linedef splitting
+					HashSet<Linedef> changedlines = new HashSet<Linedef>(selectedlines);
+					changedlines.UnionWith(newlines);
+
 					// Update outer sides of the selection
-					HashSet<Sector> affectedsectors = new HashSet<Sector>(General.Map.Map.GetSelectedSectors(true));
-					affectedsectors.UnionWith(General.Map.Map.GetUnselectedSectorsFromLinedefs(selectedlines));
-					Tools.AdjustOuterSidedefs(affectedsectors, new HashSet<Linedef>(selectedlines));
+					if(changedlines.Count > 0)
+					{
+						// Get affected sectors
+						HashSet<Sector> affectedsectors = new HashSet<Sector>(General.Map.Map.GetSelectedSectors(true));
+						affectedsectors.UnionWith(General.Map.Map.GetUnselectedSectorsFromLinedefs(changedlines));
+
+						// Process outer sidedefs
+						Tools.AdjustOuterSidedefs(affectedsectors, new HashSet<Linedef>(changedlines));
+
+						// Split outer sectors
+						Tools.SplitOuterSectors(changedlines);
+					}
 				}
-				
-				// Snap to map format accuracy
-				General.Map.Map.SnapAllToAccuracy(General.Map.UDMF && usepreciseposition);
 				
 				// Update cached values
 				General.Map.Data.UpdateUsedTextures();

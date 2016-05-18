@@ -129,6 +129,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					// Process outer sidedefs
 					Tools.AdjustOuterSidedefs(toadjust, new HashSet<Linedef>(selectedlines));
+
+					// Split outer sectors
+					Tools.SplitOuterSectors(selectedlines);
 				}
 
 				// If only a single sector was selected, deselect it now

@@ -329,7 +329,11 @@ namespace CodeImp.DoomBuilder.Map
 		// String representation
 		public override string ToString()
 		{
+#if DEBUG
+			return "Vertex (" + pos + (marked ? "; marked" : "") + ")";
+#else
 			return "Vertex (" + pos + ")";
+#endif
 		}
 
 		#endregion

@@ -102,6 +102,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			ICollection<Vertex> verts = General.Map.Map.GetVerticesFromLinesMarks(true);
 			foreach(Vertex v in verts) v.Selected = true;
 
+			//mxd. Mark moved sectors (used in Linedef.Join())
+			HashSet<Sector> draggeddsectors = General.Map.Map.GetUnselectedSectorsFromLinedefs(selectedlines);
+			foreach(Sector s in draggeddsectors) s.Marked = true;
+
 			// Perform normal disengage
 			base.OnDisengage();
 
@@ -114,12 +118,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				//mxd. Reattach/add/remove sidedefs only when there are no unstable lines in selection
 				if(unstablelines.Count == 0)
 				{
-					// Add sectors, which have all their linedefs selected
-					// (otherwise those would be destroyed after moving the selection)
-					HashSet<Sector> toadjust = General.Map.Map.GetUnselectedSectorsFromLinedefs(selectedlines);
+					// Get new lines from linedef marks...
+					HashSet<Linedef> newlines = new HashSet<Linedef>(General.Map.Map.GetMarkedLinedefs(true));
+
+					// Marked lines were created during linedef splitting
+					HashSet<Linedef> changedlines = new HashSet<Linedef>(selectedlines);
+					changedlines.UnionWith(newlines);
+					
+					// Add sectors, which have all their linedefs selected (otherwise those would be destroyed after moving the selection)
+					HashSet<Sector> toadjust = General.Map.Map.GetUnselectedSectorsFromLinedefs(changedlines);
 
 					// Process outer sidedefs
-					Tools.AdjustOuterSidedefs(toadjust, new HashSet<Linedef>(selectedlines));
+					Tools.AdjustOuterSidedefs(toadjust, changedlines);
+
+					// Split outer sectors
+					Tools.SplitOuterSectors(changedlines);
 				}
 
 				// If only a single linedef was selected, deselect it now

@@ -92,7 +92,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Map.UndoRedo.CreateUndo("Grid draw");
 
 				// Make an analysis and show info
-				string[] adjectives = new[] { "gloomy", "sad", "unhappy", "lonely", "troubled", "depressed", "heartsick", "glum", "pessimistic", "bitter", "downcast" }; // aaand my english vocabulary ends here :)
+				string[] adjectives = { "gloomy", "sad", "unhappy", "lonely", "troubled", "depressed", "heartsick", "glum", "pessimistic", "bitter", "downcast" }; // aaand my english vocabulary ends here :)
 				string word = adjectives[new Random().Next(adjectives.Length - 1)];
 				string a = (word[0] == 'u' ? "an " : "a ");
 
@@ -113,6 +113,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 						// Clear selection
 						General.Map.Map.ClearAllSelected();
+
+						//mxd. Outer sectors may require some splittin...
+						Tools.SplitOuterSectors(General.Map.Map.GetMarkedLinedefs(true));
 
 						// Edit new sectors?
 						if(BuilderPlug.Me.EditNewSector && (newsectors.Count > 0))

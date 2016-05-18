@@ -385,6 +385,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Update cached values
 					General.Map.Map.Update();
 
+					//mxd. Outer sectors may require some splittin...
+					Tools.SplitOuterSectors(General.Map.Map.GetMarkedLinedefs(true));
+
 					// Edit new sectors?
 					List<Sector> newsectors = General.Map.Map.GetMarkedSectors(true);
 					if(BuilderPlug.Me.EditNewSector && (newsectors.Count > 0))

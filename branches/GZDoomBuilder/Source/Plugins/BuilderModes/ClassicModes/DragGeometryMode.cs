@@ -419,8 +419,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Move selected geometry to final position
 				MoveGeometryRelative(mousemappos - dragstartmappos, snaptogrid, snaptogridincrement, snaptonearest, snaptocardinaldirection);
 
+				//mxd. Used in Linedef.Join()...
+				General.Map.Map.MarkSelectedSectors(true, true);
+
 				// Stitch geometry
-				if(snaptonearest) General.Map.Map.StitchGeometry();
+				General.Map.Map.StitchGeometry();
 
 				// Make corrections for backward linedefs
 				MapSet.FlipBackwardLinedefs(General.Map.Map.Linedefs);
@@ -516,17 +519,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							s.CeilSlopeOffset = -Vector3D.DotProduct(s.CeilSlope, new Vector3D(center + offset, ceiling.GetZ(center)));
 						}
 					}
-
-					// Update cached values
-					General.Map.Map.Update();
-
-					//mxd. Let the plugins know
-					General.Editing.AcceptMode();
-
-					// Done
-					Cursor.Current = Cursors.Default;
-					General.Map.IsChanged = true;
 				}
+
+				// Update cached values
+				General.Map.Map.Update();
+
+				//mxd. Let the plugins know
+				General.Editing.AcceptMode();
+
+				// Done
+				Cursor.Current = Cursors.Default;
+				General.Map.IsChanged = true;
 			}
 		}
 

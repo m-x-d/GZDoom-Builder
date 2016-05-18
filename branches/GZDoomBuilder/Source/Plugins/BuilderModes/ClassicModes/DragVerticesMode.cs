@@ -91,7 +91,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Select vertices from marks
 			General.Map.Map.ClearSelectedVertices();
 			General.Map.Map.SelectMarkedVertices(true, true);
-			
+
+			//mxd. Mark stable lines now (marks will be carried to split lines by MapSet.StitchGeometry())
+			HashSet<Linedef> stablelines = (!cancelled ? new HashSet<Linedef>(General.Map.Map.LinedefsFromMarkedVertices(false, true, false)) : new HashSet<Linedef>());
+			foreach(Linedef l in stablelines) l.Marked = true;
+
+			//mxd. Mark moved sectors (used in Linedef.Join())
+			HashSet<Sector> draggeddsectors = (!cancelled ? General.Map.Map.GetUnselectedSectorsFromLinedefs(stablelines) : new HashSet<Sector>());
+			foreach(Sector s in draggeddsectors) s.Marked = true;
+
 			// Perform normal disengage
 			base.OnDisengage();
 			
@@ -99,15 +107,36 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(!cancelled)
 			{
 				//mxd. Reattach/add/remove sidedefs only when there are no unstable lines in selection
-				if(selectedverts.Count > 1 && unstablelines.Count == 0)
+				if(stablelines.Count > 0 && unstablelines.Count == 0)
 				{
-					// Add sectors, which have all their linedefs selected
-					// (otherwise those would be destroyed after moving the selection)
-					HashSet<Linedef> selectedlines = new HashSet<Linedef>(General.Map.Map.LinedefsFromMarkedVertices(false, true, false));
-					HashSet<Sector> toadjust = General.Map.Map.GetUnselectedSectorsFromLinedefs(selectedlines);
+					// Get new lines from linedef marks...
+					HashSet<Linedef> newlines = new HashSet<Linedef>(General.Map.Map.GetMarkedLinedefs(true));
 
-					// Process outer sidedefs
-					Tools.AdjustOuterSidedefs(toadjust, selectedlines);
+					// Marked lines were created during linedef splitting
+					HashSet<Linedef> changedlines = new HashSet<Linedef>(stablelines);
+					changedlines.UnionWith(newlines);
+
+					// Get sectors, which have all their linedefs selected (otherwise those would be destroyed after moving the selection)
+					HashSet<Sector> toadjust = General.Map.Map.GetUnselectedSectorsFromLinedefs(changedlines);
+
+					if(changedlines.Count > 0)
+					{
+						// Process outer sidedefs
+						Tools.AdjustOuterSidedefs(toadjust, changedlines);
+
+						// Split outer sectors
+						Tools.SplitOuterSectors(changedlines);
+
+						// Additional verts may've been created
+						if(selectedverts.Count > 1)
+						{
+							foreach(Linedef l in changedlines)
+							{
+								l.Start.Selected = true;
+								l.End.Selected = true;
+							}
+						}
+					}
 				}
 				
 				// If only a single vertex was selected, deselect it now
