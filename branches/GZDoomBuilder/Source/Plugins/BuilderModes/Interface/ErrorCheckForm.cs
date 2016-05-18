@@ -93,6 +93,31 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				object[] attr = t.GetCustomAttributes(typeof(ErrorCheckerAttribute), true);
 				if(attr.Length > 0)
 				{
+					//mxd. Skip this check?..
+					ErrorChecker checker;
+
+					try
+					{
+						// Create instance
+						checker = (ErrorChecker)Assembly.GetExecutingAssembly().CreateInstance(t.FullName, false, BindingFlags.Default, null, null, CultureInfo.CurrentCulture, new object[0]);
+					}
+					catch(TargetInvocationException ex)
+					{
+						// Error!
+						General.ErrorLogger.Add(ErrorType.Error, "Failed to create class instance \"" + t.Name + "\"");
+						General.WriteLogLine(ex.InnerException.GetType().Name + ": " + ex.InnerException.Message);
+						throw;
+					}
+					catch(Exception ex)
+					{
+						// Error!
+						General.ErrorLogger.Add(ErrorType.Error, "Failed to create class instance \"" + t.Name + "\"");
+						General.WriteLogLine(ex.GetType().Name + ": " + ex.Message);
+						throw;
+					}
+
+					if(checker.SkipCheck) continue;
+					
 					ErrorCheckerAttribute checkerattr = (attr[0] as ErrorCheckerAttribute);
 					
 					// Add the type to the checkbox list

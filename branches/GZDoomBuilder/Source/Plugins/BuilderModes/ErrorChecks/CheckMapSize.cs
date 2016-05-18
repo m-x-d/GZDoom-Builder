@@ -8,7 +8,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.ErrorChecks
 	public class CheckMapSize : ErrorChecker
 	{
 		private const int PROGRESS_STEP = 1000;
-		internal const int MAXIMUM_DISTANCE = 32767;
+
+		public override bool SkipCheck { get { return General.Map.Config.SafeBoundary <= 0; } }
 
 		// Constructor
 		public CheckMapSize() 
@@ -48,7 +49,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ErrorChecks
 			}
 
 			// Map elements should not be more than 32767 mu apart
-			if(maxx - minx > MAXIMUM_DISTANCE || maxy - miny > MAXIMUM_DISTANCE)
+			if(maxx - minx > General.Map.Config.SafeBoundary || maxy - miny > General.Map.Config.SafeBoundary)
 			{
 				SubmitResult(new ResultMapTooBig(new Vector2D(minx, miny), new Vector2D(maxx, maxy)));
 			}

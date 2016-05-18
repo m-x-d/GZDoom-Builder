@@ -83,6 +83,7 @@ namespace CodeImp.DoomBuilder.Config
 		private readonly int rightboundary;
 		private readonly int topboundary;
 		private readonly int bottomboundary;
+		private readonly int safeboundary; //mxd
 		private readonly bool doomlightlevels;
 		private readonly string actionspecialhelp; //mxd
 		private readonly string thingclasshelp; //mxd
@@ -205,6 +206,7 @@ namespace CodeImp.DoomBuilder.Config
 		public int RightBoundary { get { return rightboundary; } }
 		public int TopBoundary { get { return topboundary; } }
 		public int BottomBoundary { get { return bottomboundary; } }
+		public int SafeBoundary { get { return safeboundary; } } //mxd
 		public bool DoomLightLevels { get { return doomlightlevels; } }
 		public string ActionSpecialHelp { get { return actionspecialhelp; } } //mxd
 		public string ThingClassHelp { get { return thingclasshelp; } } //mxd
@@ -356,6 +358,7 @@ namespace CodeImp.DoomBuilder.Config
 			rightboundary = cfg.ReadSetting("rightboundary", 32767);
 			topboundary = cfg.ReadSetting("topboundary", 32767);
 			bottomboundary = cfg.ReadSetting("bottomboundary", -32768);
+			safeboundary = cfg.ReadSetting("safeboundary", 32767); //mxd
 			doomlightlevels = cfg.ReadSetting("doomlightlevels", true);
 			actionspecialhelp = cfg.ReadSetting("actionspecialhelp", string.Empty); //mxd
 			thingclasshelp = cfg.ReadSetting("thingclasshelp", string.Empty); //mxd

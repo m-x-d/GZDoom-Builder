@@ -17,6 +17,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#endregion
 
+		#region ================== Properties
+
+		// Only possible when the game configuration supports the use of decorate
+		public override bool SkipCheck { get { return string.IsNullOrEmpty(General.Map.Config.DecorateGames); } }
+
+		#endregion
+
 		#region ================== Constructor / Destructor
 
 		public CheckObsoleteThings()	

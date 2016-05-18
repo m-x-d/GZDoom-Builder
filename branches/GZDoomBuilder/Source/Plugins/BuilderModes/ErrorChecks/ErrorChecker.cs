@@ -37,7 +37,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Properties
 		
 		public int TotalProgress { get { return totalprogress; } }
-		
+		public virtual bool SkipCheck { get { return false; } } //mxd
+
 		#endregion
 		
 		#region ================== Constructor / Destructor
