@@ -7,6 +7,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	public class CheckShortLinedefs : ErrorChecker
 	{
 		private const int PROGRESS_STEP = 1000;
+
+		// Only possible in UDMF map format
+		public override bool SkipCheck { get { return !General.Map.UDMF; } }
 		
 		// Constructor
 		public CheckShortLinedefs() 

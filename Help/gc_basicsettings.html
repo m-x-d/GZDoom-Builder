@@ -93,6 +93,26 @@ damagetypes = "None BFGSplash Drowning Slime";
 	<br />
 	<b class="fat">impassableflag</b> (integer or string)<br />
 	This lets Doom Builder know the <a href="gc_linedefflags.html">linedef flag</a> that indicates a line which blocks players and monsters. Doom Builder uses this to give the line a special color and plugins can use this information to perform operations related to blocking sound lines. For map formats that use numeric flags (Doom and Hexen) this must be an integer specifying the flag value of the Impassable flag. For map formats that use named flags (UDMF), this must be a string indicating the name of the Impassable flag.<br />
+    <br />
+	<b class="fat">leftboundary</b> (integer)<br />
+	Left map boundary.<br />
+	Default value is <b>-32768</b>.<br />
+    <br />
+	<b class="fat">rightboundary</b> (integer)<br />
+	Right map boundary.<br />
+	Default value is <b>32767</b>.<br />
+    <br />
+	<b class="fat">topboundary</b> (integer)<br />
+	Top map boundary.<br />
+	Default value is <b>32767</b>.<br />
+    <br />
+	<b class="fat">bottomboundary</b> (integer)<br />
+	Bottom map boundary.<br />
+	Default value is <b>-32768</b>.<br />
+    <br />
+	<b class="fat">safeboundary</b> (integer) - <span class="red">GZDB only</span>.<br />
+	Maximum map bounding box size considered to be safe by "Check map size" <a href="e_mapanalysis.html">error check</a>. Setting this to <b>0</b> disables the check.<br />
+	Default value is <b>32767</b>.<br />
 	<br />
 	<b class="fat">defaultwalltexture</b> (string) - <span class="red">GZDB only</span>.<br />
 	Name of a texture to use on sidedefs when creating a new sector.<br />

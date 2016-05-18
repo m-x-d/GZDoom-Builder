@@ -488,6 +488,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			base.OnMapCloseEnd();
 			undoredopanel.UpdateList();
+			errorcheckform = null; //mxd. Error checks may need to be reinitialized
 
 			//mxd. Save settings
 			SaveUISettings();

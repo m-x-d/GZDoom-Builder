@@ -31,8 +31,8 @@ namespace CodeImp.DoomBuilder.BuilderModes.ErrorChecks
 			// Initialize
 			this.min = min;
 			this.max = max;
-			this.toowide = max.x - min.x > CheckMapSize.MAXIMUM_DISTANCE;
-			this.toohigh = max.y - min.y > CheckMapSize.MAXIMUM_DISTANCE;
+			this.toowide = max.x - min.x > General.Map.Config.SafeBoundary;
+			this.toohigh = max.y - min.y > General.Map.Config.SafeBoundary;
 			description = "Map is too big.";
 		}
 
@@ -55,9 +55,9 @@ namespace CodeImp.DoomBuilder.BuilderModes.ErrorChecks
 		// This must return the string that is displayed in the listbox
 		public override string ToString()
 		{
-			if(toowide && toohigh) return "Map's width and height is bigger than " + CheckMapSize.MAXIMUM_DISTANCE + " m.u. This can cause rendering and physics issues.";
-			if(toowide) return "Map is wider than " + CheckMapSize.MAXIMUM_DISTANCE + " m.u. This can cause rendering and physics issues.";
-			return "Map is taller than " + CheckMapSize.MAXIMUM_DISTANCE + " m.u. This can cause rendering and physics issues.";
+			if(toowide && toohigh) return "Map's width and height is bigger than " + General.Map.Config.SafeBoundary + " m.u. This can cause rendering and physics issues.";
+			if(toowide) return "Map is wider than " + General.Map.Config.SafeBoundary + " m.u. This can cause rendering and physics issues.";
+			return "Map is taller than " + General.Map.Config.SafeBoundary + " m.u. This can cause rendering and physics issues.";
 		}
 
 		#endregion

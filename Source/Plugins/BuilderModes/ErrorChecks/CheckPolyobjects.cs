@@ -19,6 +19,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#endregion
 
+		#region ================== Properties
+
+		// Only possible in Hexen/UDMF map formats
+		public override bool SkipCheck { get { return (!General.Map.UDMF && !General.Map.HEXEN); } }
+
+		#endregion
+
 		#region ================== Constructor / Destructor
 
 		public CheckPolyobjects() 
