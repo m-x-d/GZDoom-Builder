@@ -599,6 +599,15 @@ namespace CodeImp.DoomBuilder.Map
 
 				// Counts as a half coice for copying offsets
 				copyoffsets += 1;
+
+				//mxd. Also copy UDMF offsets and scale
+				if(General.Map.UDMF)
+				{
+					UniFields.SetFloat(s.Fields, "offsetx_top", Fields.GetValue("offsetx_top", 0f), 0f);
+					UniFields.SetFloat(s.Fields, "offsety_top", Fields.GetValue("offsety_top", 0f), 0f);
+					UniFields.SetFloat(s.Fields, "scalex_top",  Fields.GetValue("scalex_top", 1.0f), 1.0f);
+					UniFields.SetFloat(s.Fields, "scaley_top",  Fields.GetValue("scaley_top", 1.0f), 1.0f);
+				}
 			}
 
 			// Middle texture set?
@@ -610,6 +619,15 @@ namespace CodeImp.DoomBuilder.Map
 
 				// Counts for copying offsets
 				copyoffsets += 2;
+
+				//mxd. Also copy UDMF offsets and scale
+				if(General.Map.UDMF)
+				{
+					UniFields.SetFloat(s.Fields, "offsetx_mid", Fields.GetValue("offsetx_mid", 0f), 0f);
+					UniFields.SetFloat(s.Fields, "offsety_mid", Fields.GetValue("offsety_mid", 0f), 0f);
+					UniFields.SetFloat(s.Fields, "scalex_mid",  Fields.GetValue("scalex_mid", 1.0f), 1.0f);
+					UniFields.SetFloat(s.Fields, "scaley_mid",  Fields.GetValue("scaley_mid", 1.0f), 1.0f);
+				}
 			}
 
 			// Lower texture set?
@@ -621,6 +639,15 @@ namespace CodeImp.DoomBuilder.Map
 
 				// Counts as a half coice for copying offsets
 				copyoffsets += 1;
+
+				//mxd. Also copy UDMF offsets and scale
+				if(General.Map.UDMF)
+				{
+					UniFields.SetFloat(s.Fields, "offsetx_bottom", Fields.GetValue("offsetx_bottom", 0f), 0f);
+					UniFields.SetFloat(s.Fields, "offsety_bottom", Fields.GetValue("offsety_bottom", 0f), 0f);
+					UniFields.SetFloat(s.Fields, "scalex_bottom",  Fields.GetValue("scalex_bottom", 1.0f), 1.0f);
+					UniFields.SetFloat(s.Fields, "scaley_bottom",  Fields.GetValue("scaley_bottom", 1.0f), 1.0f);
+				}
 			}
 
 			// Copy offsets also?

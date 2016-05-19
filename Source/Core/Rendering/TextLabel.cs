@@ -87,6 +87,9 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		//mxd. Rendering
 		private bool skiprendering;
+
+		//mxd. Compatibility
+		private float scale;
 		
 		// Disposing
 		private bool isdisposed;
@@ -109,7 +112,27 @@ namespace CodeImp.DoomBuilder.Rendering
 		public Texture Texture { get { return texture; } } //mxd
 		public VertexBuffer VertexBuffer { get { return textbuffer; } }
 		public bool SkipRendering { get { return skiprendering; } } //mxd
-		
+
+		//mxd. Compatibility settings
+		[Obsolete("Backcolor property is deprecated, please use BackColor property instead.")]
+		public PixelColor Backcolor { get { return BackColor; } set { BackColor = value.WithAlpha(128); } }
+
+		[Obsolete("Scale property is deprecated, please assign the font directly using Font property instead.")]
+		public float Scale
+		{
+			get { return scale; } 
+			set
+			{
+				scale = value;
+				font = new Font(new FontFamily(General.Settings.TextLabelFontName), (float)Math.Round(scale * 0.75f), (General.Settings.TextLabelFontBold ? FontStyle.Bold : FontStyle.Regular));
+				textsize = Size.Empty; 
+				textureupdateneeded = true;
+			} 
+		}
+
+		[Obsolete("Rectangle property is deprecated, please use Location property instead.")]
+		public RectangleF Rectangle { get { return new RectangleF(location.x, location.y, 0f, 0f); } set { location = new Vector2D(value.X, value.Y); updateneeded = true; } }
+
 		// Disposing
 		public bool IsDisposed { get { return isdisposed; } }
 
@@ -136,6 +159,30 @@ namespace CodeImp.DoomBuilder.Rendering
 			// Register as resource
 			General.Map.Graphics.RegisterResource(this);
 			
+			// We have no destructor
+			GC.SuppressFinalize(this);
+		}
+
+		//mxd. Compatibility constructor...
+		[Obsolete("TextLabel(int capacity) is deprecated, please use TextLabel() instead.")]
+		public TextLabel(int unused)
+		{
+			// Initialize
+			this.text = "";
+			this.font = General.Settings.TextLabelFont;
+			this.location = new Vector2D();
+			this.color = new PixelColor(255, 255, 255, 255);
+			this.backcolor = new PixelColor(128, 0, 0, 0);
+			this.alignx = TextAlignmentX.Center;
+			this.aligny = TextAlignmentY.Top;
+			this.textsize = SizeF.Empty;
+			this.texturesize = Size.Empty;
+			this.updateneeded = true;
+			this.textureupdateneeded = true;
+
+			// Register as resource
+			General.Map.Graphics.RegisterResource(this);
+
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}

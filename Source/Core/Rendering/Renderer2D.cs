@@ -1624,6 +1624,10 @@ namespace CodeImp.DoomBuilder.Rendering
 			graphics.Shaders.Things2D.End();
 		}
 
+		//mxd. This renders text (DB2 compatibility)
+		[Obsolete("Method is deprecated, please use RenderText(ITextLabel label) method instead.")]
+		public void RenderText(TextLabel label){ RenderText((ITextLabel)label); }
+
 		// This renders text
 		public void RenderText(ITextLabel label)
 		{

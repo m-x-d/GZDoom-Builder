@@ -115,25 +115,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// When not cancelled
 			if(!cancelled)
 			{
-				//mxd. Reattach/add/remove sidedefs only when there are no unstable lines in selection
-				if(unstablelines.Count == 0)
-				{
-					// Get new lines from linedef marks...
-					HashSet<Linedef> newlines = new HashSet<Linedef>(General.Map.Map.GetMarkedLinedefs(true));
+				//mxd. Get new lines from linedef marks...
+				HashSet<Linedef> newlines = new HashSet<Linedef>(General.Map.Map.GetMarkedLinedefs(true));
 
-					// Marked lines were created during linedef splitting
-					HashSet<Linedef> changedlines = new HashSet<Linedef>(selectedlines);
-					changedlines.UnionWith(newlines);
-					
-					// Add sectors, which have all their linedefs selected (otherwise those would be destroyed after moving the selection)
-					HashSet<Sector> toadjust = General.Map.Map.GetUnselectedSectorsFromLinedefs(changedlines);
+				//mxd. Marked lines were created during linedef splitting
+				HashSet<Linedef> changedlines = new HashSet<Linedef>(selectedlines);
+				changedlines.UnionWith(newlines);
 
-					// Process outer sidedefs
-					Tools.AdjustOuterSidedefs(toadjust, changedlines);
+				//mxd. Add sectors, which have all their linedefs selected (otherwise those would be destroyed after moving the selection)
+				HashSet<Sector> toadjust = General.Map.Map.GetUnselectedSectorsFromLinedefs(changedlines);
 
-					// Split outer sectors
-					Tools.SplitOuterSectors(changedlines);
-				}
+				//mxd. Reattach/add/remove outer sidedefs
+				Tools.AdjustOuterSidedefs(toadjust, changedlines);
+
+				//mxd. Split outer sectors
+				Tools.SplitOuterSectors(changedlines);
 
 				// If only a single linedef was selected, deselect it now
 				if(selectedlines.Count == 1) General.Map.Map.ClearSelectedLinedefs();
