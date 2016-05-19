@@ -493,6 +493,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			//mxd. Save settings
 			SaveUISettings();
 		}
+
+		//mxd. Error checks may need to be reinitialized
+		public override void OnMapReconfigure()
+		{
+			errorcheckform = null;
+		}
 		
 		// Redo performed
 		public override void OnRedoEnd()

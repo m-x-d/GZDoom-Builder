@@ -106,8 +106,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// When not cancelled
 			if(!cancelled)
 			{
-				//mxd. Reattach/add/remove sidedefs only when there are no unstable lines in selection
-				if(stablelines.Count > 0 && unstablelines.Count == 0)
+				//mxd. If linedefs were dragged, reattach/add/remove sidedefs
+				if(stablelines.Count > 0)
 				{
 					// Get new lines from linedef marks...
 					HashSet<Linedef> newlines = new HashSet<Linedef>(General.Map.Map.GetMarkedLinedefs(true));
@@ -121,7 +121,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					if(changedlines.Count > 0)
 					{
-						// Process outer sidedefs
+						// Reattach/add/remove outer sidedefs
 						Tools.AdjustOuterSidedefs(toadjust, changedlines);
 
 						// Split outer sectors
