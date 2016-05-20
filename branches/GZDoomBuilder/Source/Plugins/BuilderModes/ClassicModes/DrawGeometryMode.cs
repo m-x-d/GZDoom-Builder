@@ -176,6 +176,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if(showguidelines)
 					{
 						Vector2D prevp = points[points.Count - 1].pos;
+						PixelColor c = General.Colors.InfoLine.WithAlpha(80);
 						if(curp.pos.x != prevp.x && curp.pos.y != prevp.y)
 						{
 							renderguidelabels = true;
@@ -184,7 +185,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							Vector2D bl = new Vector2D(Math.Min(curp.pos.x, prevp.x), Math.Min(curp.pos.y, prevp.y));
 							
 							// Create guidelines
-							PixelColor c = General.Colors.InfoLine.WithAlpha(80);
 							Line3D[] lines = new Line3D[5];
 							lines[0] = new Line3D(new Vector2D(tr.x, General.Map.Config.TopBoundary), new Vector2D(tr.x, General.Map.Config.BottomBoundary), c, false);
 							lines[1] = new Line3D(new Vector2D(bl.x, General.Map.Config.TopBoundary), new Vector2D(bl.x, General.Map.Config.BottomBoundary), c, false);
@@ -226,6 +226,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							guidelabels[1].Move(new Vector2D(bl.x, tr.y), tr);
 							guidelabels[2].Move(new Vector2D(tr.x, bl.y), bl);
 							guidelabels[3].Move(bl, new Vector2D(bl.x, tr.y));
+						}
+						// Render horizontal line
+						else if(curp.pos.x != prevp.x)
+						{
+							Line3D l = new Line3D(new Vector2D(General.Map.Config.LeftBoundary, curp.pos.y), new Vector2D(General.Map.Config.RightBoundary, curp.pos.y), c, false);
+							renderer.RenderArrows(new List<Line3D>{ l });
+						}
+						// Render vertical line
+						else if(curp.pos.y != prevp.y)
+						{
+							Line3D l = new Line3D(new Vector2D(curp.pos.x, General.Map.Config.TopBoundary), new Vector2D(curp.pos.x, General.Map.Config.BottomBoundary), c, false);
+							renderer.RenderArrows(new List<Line3D> { l });
 						}
 					}
 					

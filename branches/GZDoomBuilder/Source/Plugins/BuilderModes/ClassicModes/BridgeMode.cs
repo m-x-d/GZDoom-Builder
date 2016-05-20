@@ -212,7 +212,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 				General.Map.UndoRedo.CreateUndo("Bridge ("+form.Subdivisions+" subdivisions)");
 
 				List<List<SectorProperties>> sectorProps = new List<List<SectorProperties>>();
-				List<List<List<Sector>>> newSectors = new List<List<List<Sector>>>();
+				List<List<HashSet<Sector>>> newSectors = new List<List<HashSet<Sector>>>();
 				
 				//create sector properties collection
 				//sector row
@@ -229,7 +229,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 				//sector row
 				for(int i = 0; i < drawShapes.Count; i++) 
 				{
-					newSectors.Add(new List<List<Sector>>());
+					newSectors.Add(new List<HashSet<Sector>>());
 
 					//sector in row
 					for(int c = 0; c < drawShapes[i].Count; c++) 
@@ -244,11 +244,11 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 							return;
 						}
 
-						List<Sector> newsectors = General.Map.Map.GetMarkedSectors(true);
+						HashSet<Sector> newsectors = General.Map.Map.GetUnselectedSectorsFromLinedefs(General.Map.Map.GetMarkedLinedefs(true));
 						newSectors[i].Add(newsectors);
 
 						//set floor/ceiling heights and brightness
-						foreach(Sector s in newsectors) 
+						foreach(Sector s in newsectors)
 						{
 							SectorProperties sp = sectorProps[i][c];
 							s.Brightness = sp.Brightness;

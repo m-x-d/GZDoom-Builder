@@ -93,6 +93,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						(lines[i].Start == lines[c].End && lines[i].End == lines[c].Start)) 
 					{
 						lines[c].Join(lines[i]);
+
+						//mxd. Textures may've become unused
+						if(lines[c].Front != null) lines[c].Front.RemoveUnneededTextures(lines[c].Back != null, false, true);
+						if(lines[c].Back != null) lines[c].Back.RemoveUnneededTextures(lines[c].Front != null, false, true);
 					}
 				}
 			}

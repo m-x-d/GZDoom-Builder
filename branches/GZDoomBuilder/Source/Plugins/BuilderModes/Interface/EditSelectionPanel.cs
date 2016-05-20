@@ -33,20 +33,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Variables
 		
 		// Editing mode
-		readonly EditSelectionMode mode;
+		private readonly EditSelectionMode mode;
 		
 		// Input
 		private bool userinput;
 		private bool preventchanges; //mxd
 		
 		// Values
-		Vector2D orgpos;
-		Vector2D orgsize;
-		Vector2D abspos;
-		Vector2D relpos;
-		Vector2D abssize;
-		Vector2D relsize;
-		float absrotate;
+		private Vector2D orgpos;
+		private Vector2D orgsize;
+		private Vector2D abspos;
+		private Vector2D relpos;
+		private Vector2D abssize;
+		private Vector2D relsize;
+		private float absrotate;
 		
 		#endregion
 		
@@ -143,6 +143,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			floortexall.Checked = (mode.TransformFloorOffsets && mode.RotateFloorOffsets && mode.ScaleFloorOffsets);
 			ceiltexall.Checked = (mode.TransformCeilingOffsets && mode.RotateCeilingOffsets && mode.ScaleCeilingOffsets);
 
+			preventchanges = false;
+		}
+
+		//mxd
+		internal void SetHeightAdjustMode(EditSelectionMode.HeightAdjustMode adjustmode, bool enable)
+		{
+			preventchanges = true;
+			heightmode.SelectedIndex = (int)adjustmode;
+			heightmode.Enabled = enable;
 			preventchanges = false;
 		}
 
@@ -370,6 +379,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			mode.UsePrecisePosition = preciseposition.Checked;
 			General.Interface.FocusDisplay();
+		}
+
+		//mxd
+		private void heightmode_SelectedIndexChanged(object sender, EventArgs e)
+		{
+			if(preventchanges || heightmode.SelectedIndex == -1) return;
+			mode.SectorHeightAdjustMode = (EditSelectionMode.HeightAdjustMode)heightmode.SelectedIndex;
 		}
 		
 		#endregion

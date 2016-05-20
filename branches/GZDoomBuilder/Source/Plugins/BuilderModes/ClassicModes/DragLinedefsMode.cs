@@ -121,12 +121,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				//mxd. Marked lines were created during linedef splitting
 				HashSet<Linedef> changedlines = new HashSet<Linedef>(selectedlines);
 				changedlines.UnionWith(newlines);
+				foreach(Linedef l in unstablelines) if(!l.IsDisposed) changedlines.Add(l);
 
 				//mxd. Add sectors, which have all their linedefs selected (otherwise those would be destroyed after moving the selection)
 				HashSet<Sector> toadjust = General.Map.Map.GetUnselectedSectorsFromLinedefs(changedlines);
 
 				//mxd. Reattach/add/remove outer sidedefs
-				Tools.AdjustOuterSidedefs(toadjust, changedlines);
+				HashSet<Sidedef> adjustedsides = Tools.AdjustOuterSidedefs(toadjust, changedlines);
+
+				//mxd. Remove unneeded textures
+				foreach(Sidedef side in adjustedsides)
+				{
+					side.RemoveUnneededTextures(true, true, true);
+					if(side.Other != null) side.Other.RemoveUnneededTextures(true, true, true);
+				}
 
 				//mxd. Split outer sectors
 				Tools.SplitOuterSectors(changedlines);

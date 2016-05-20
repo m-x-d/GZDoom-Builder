@@ -1074,7 +1074,7 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			// Check which lines were 2 sided
 			bool otherwas2s = ((other.Front != null) && (other.Back != null));
-			bool thiswas2s = ((this.Front != null) && (this.Back != null));
+			//bool thiswas2s = ((this.Front != null) && (this.Back != null));
 			
 			// Get sector references
 			Sector otherfs = (other.front != null ? other.front.Sector : null);
@@ -1262,8 +1262,8 @@ namespace CodeImp.DoomBuilder.Map
 					other.ApplySidedFlags();
 				
 				// Remove unneeded textures
-				if(other.front != null) other.front.RemoveUnneededTextures(!(otherwas2s && thiswas2s));
-				if(other.back != null) other.back.RemoveUnneededTextures(!(otherwas2s && thiswas2s));
+				//if(other.front != null) other.front.RemoveUnneededTextures(!(otherwas2s && thiswas2s));
+				//if(other.back != null) other.back.RemoveUnneededTextures(!(otherwas2s && thiswas2s));
 			}
 			
 			// If either of the two lines was selected, keep the other selected

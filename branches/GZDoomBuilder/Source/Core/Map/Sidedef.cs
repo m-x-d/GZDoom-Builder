@@ -331,18 +331,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 		
 		// This removes textures that are not required
-		public void RemoveUnneededTextures(bool removemiddle)
-		{
-			RemoveUnneededTextures(removemiddle, false, false);
-		}
-
-		// This removes textures that are not required
-		public void RemoveUnneededTextures(bool removemiddle, bool force) 
-		{
-			RemoveUnneededTextures(removemiddle, force, false);
-		}
-		
-		// This removes textures that are not required
+		public void RemoveUnneededTextures(bool removemiddle) { RemoveUnneededTextures(removemiddle, false, false); }
 		public void RemoveUnneededTextures(bool removemiddle, bool force, bool shiftmiddle)
 		{
 			bool changed = false; //mxd

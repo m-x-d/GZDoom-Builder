@@ -357,14 +357,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd
 		private void ChangeVertexHeight(int amount) 
 		{
-			List<Vertex> verts = new List<Vertex>(3);
+			HashSet<Vertex> verts = new HashSet<Vertex>();
 
-			//do this only if all 3 verts have offsets
+			// Do this only if all 3 verts have offsets
 			foreach(Sidedef side in level.sector.Sidedefs) 
 			{
 				if(float.IsNaN(side.Line.Start.ZFloor) || float.IsNaN(side.Line.End.ZFloor)) return;
-				if(!verts.Contains(side.Line.Start)) verts.Add(side.Line.Start);
-				if(!verts.Contains(side.Line.End)) verts.Add(side.Line.End);
+				verts.Add(side.Line.Start);
+				verts.Add(side.Line.End);
 			}
 
 			foreach(Vertex v in verts) 

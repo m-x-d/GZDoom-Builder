@@ -283,9 +283,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.autodragonpaste.AutoSize = true;
 			this.autodragonpaste.Location = new System.Drawing.Point(13, 187);
 			this.autodragonpaste.Name = "autodragonpaste";
-			this.autodragonpaste.Size = new System.Drawing.Size(202, 17);
+			this.autodragonpaste.Size = new System.Drawing.Size(201, 17);
 			this.autodragonpaste.TabIndex = 6;
-			this.autodragonpaste.Text = "Drag selection automatically on paste";
+			this.autodragonpaste.Text = "Automatically drag selection on paste";
 			this.autodragonpaste.UseVisualStyleBackColor = true;
 			// 
 			// visualmodeclearselection
@@ -293,9 +293,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.visualmodeclearselection.AutoSize = true;
 			this.visualmodeclearselection.Location = new System.Drawing.Point(13, 162);
 			this.visualmodeclearselection.Name = "visualmodeclearselection";
-			this.visualmodeclearselection.Size = new System.Drawing.Size(216, 17);
+			this.visualmodeclearselection.Size = new System.Drawing.Size(231, 17);
 			this.visualmodeclearselection.TabIndex = 5;
-			this.visualmodeclearselection.Text = "Automatic clear selection in Visual Mode";
+			this.visualmodeclearselection.Text = "Automatically clear selection in Visual Mode";
 			this.visualmodeclearselection.UseVisualStyleBackColor = true;
 			// 
 			// autoclearselection
@@ -303,9 +303,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.autoclearselection.AutoSize = true;
 			this.autoclearselection.Location = new System.Drawing.Point(13, 137);
 			this.autoclearselection.Name = "autoclearselection";
-			this.autoclearselection.Size = new System.Drawing.Size(226, 17);
+			this.autoclearselection.Size = new System.Drawing.Size(241, 17);
 			this.autoclearselection.TabIndex = 4;
-			this.autoclearselection.Text = "Automatic clear selection in Classic Modes";
+			this.autoclearselection.Text = "Automatically clear selection in Classic Modes";
 			this.autoclearselection.UseVisualStyleBackColor = true;
 			// 
 			// editnewthing
@@ -323,9 +323,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.editnewsector.AutoSize = true;
 			this.editnewsector.Location = new System.Drawing.Point(13, 87);
 			this.editnewsector.Name = "editnewsector";
-			this.editnewsector.Size = new System.Drawing.Size(258, 17);
+			this.editnewsector.Size = new System.Drawing.Size(253, 17);
 			this.editnewsector.TabIndex = 2;
-			this.editnewsector.Text = "Edit sector properties when drawing a new sector";
+			this.editnewsector.Text = "Edit sector properties after drawing a new sector";
 			this.editnewsector.UseVisualStyleBackColor = true;
 			// 
 			// additiveselect
@@ -333,9 +333,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.additiveselect.AutoSize = true;
 			this.additiveselect.Location = new System.Drawing.Point(13, 112);
 			this.additiveselect.Name = "additiveselect";
-			this.additiveselect.Size = new System.Drawing.Size(205, 17);
+			this.additiveselect.Size = new System.Drawing.Size(207, 17);
 			this.additiveselect.TabIndex = 3;
-			this.additiveselect.Text = "Additive selecting without holding shift";
+			this.additiveselect.Text = "Additive selecting without holding Shift";
 			this.additiveselect.UseVisualStyleBackColor = true;
 			// 
 			// groupBox2
