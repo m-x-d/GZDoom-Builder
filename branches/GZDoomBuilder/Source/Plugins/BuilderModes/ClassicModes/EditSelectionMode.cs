@@ -1322,7 +1322,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Update
 				panel.ShowOriginalValues(baseoffset, basesize);
 				panel.SetTextureTransformSettings(General.Map.UDMF); //mxd
-				panel.SetHeightAdjustMode(heightadjustmode, selectedsectors.Count > 0); //mxd
+				panel.SetHeightAdjustMode(heightadjustmode, sectors.Count > 0); //mxd
 				UpdateRectangleComponents();
 				UpdatePanel();
 				Update();
