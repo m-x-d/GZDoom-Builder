@@ -36,7 +36,6 @@ namespace CodeImp.DoomBuilder.Config
 		
 		private int changetags;				// See TAGS_ constants
 		private bool removeactions;
-		private bool adjustheights;
 		
 		#endregion
 		
@@ -44,7 +43,6 @@ namespace CodeImp.DoomBuilder.Config
 		
 		public int ChangeTags { get { return changetags; } set { changetags = value; } }
 		public bool RemoveActions { get { return removeactions; } set { removeactions = value; } }
-		public bool AdjustHeights { get { return adjustheights; } set { adjustheights = value; } }
 		
 		#endregion
 		
@@ -60,7 +58,6 @@ namespace CodeImp.DoomBuilder.Config
 		{
 			this.changetags = p.changetags;
 			this.removeactions = p.removeactions;
-			this.adjustheights = p.adjustheights;
 		}
 		
 		#endregion
@@ -78,7 +75,6 @@ namespace CodeImp.DoomBuilder.Config
 		{
 			changetags = cfg.ReadSetting(path + ".changetags", 0);
 			removeactions = cfg.ReadSetting(path + ".removeactions", false);
-			adjustheights = cfg.ReadSetting(path + ".adjustheights", true);
 		}
 		
 		// This writes to configuration
@@ -86,7 +82,6 @@ namespace CodeImp.DoomBuilder.Config
 		{
 			cfg.WriteSetting(path + ".changetags", changetags);
 			cfg.WriteSetting(path + ".removeactions", removeactions);
-			cfg.WriteSetting(path + ".adjustheights", adjustheights);
 		}
 		
 		#endregion

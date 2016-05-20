@@ -53,7 +53,6 @@ namespace CodeImp.DoomBuilder.Controls
 			renumbertags.Checked = (options.ChangeTags == 1);
 			removetags.Checked = (options.ChangeTags == 2);
 			removeactions.Checked = options.RemoveActions;
-			adjustheights.Checked = options.AdjustHeights;
 		}
 		
 		// This returns the options as set by the user
@@ -62,14 +61,10 @@ namespace CodeImp.DoomBuilder.Controls
 			PasteOptions options = new PasteOptions();
 			
 			// Collect settings
-			if(keeptags.Checked)
-				options.ChangeTags = 0;
-			else if(renumbertags.Checked)
-				options.ChangeTags = 1;
-			else if(removetags.Checked)
-				options.ChangeTags = 2;
+			if(keeptags.Checked) options.ChangeTags = 0;
+			else if(renumbertags.Checked) options.ChangeTags = 1;
+			else if(removetags.Checked) options.ChangeTags = 2;
 			options.RemoveActions = removeactions.Checked;
-			options.AdjustHeights = adjustheights.Checked;
 			
 			return options;
 		}

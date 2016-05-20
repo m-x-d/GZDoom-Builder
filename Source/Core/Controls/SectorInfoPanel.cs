@@ -268,12 +268,13 @@ namespace CodeImp.DoomBuilder.Controls
 					}
 
 					//rotation
-					if(s.Fields.ContainsKey("rotationceiling")) 
+					float ceilangle = s.Fields.GetValue("rotationceiling", 0f);
+					if(ceilangle != 0f) 
 					{
 						showExtededCeilingInfo = true;
 						ceilingAngle.Enabled = true;
 						ceilingAngleLabel.Enabled = true;
-						ceilingAngle.Text = s.Fields["rotationceiling"].Value + "\u00B0";
+						ceilingAngle.Text = ceilangle + "\u00B0";
 					} 
 					else 
 					{
@@ -282,12 +283,13 @@ namespace CodeImp.DoomBuilder.Controls
 						ceilingAngleLabel.Enabled = false;
 					}
 
-					if(s.Fields.ContainsKey("rotationfloor")) 
+					float floorangle = s.Fields.GetValue("rotationfloor", 0f);
+					if(floorangle != 0f) 
 					{
 						showExtededFloorInfo = true;
 						floorAngle.Enabled = true;
 						floorAngleLabel.Enabled = true;
-						floorAngle.Text = s.Fields["rotationfloor"].Value + "\u00B0";
+						floorAngle.Text = floorangle + "\u00B0";
 					} 
 					else 
 					{

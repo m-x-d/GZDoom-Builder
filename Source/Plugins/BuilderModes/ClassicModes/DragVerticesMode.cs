@@ -106,31 +106,39 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// When not cancelled
 			if(!cancelled)
 			{
+				//mxd. Get new lines from linedef marks...
+				HashSet<Linedef> newlines = new HashSet<Linedef>(General.Map.Map.GetMarkedLinedefs(true));
+
+				//mxd. Marked lines were created during linedef splitting
+				HashSet<Linedef> changedlines = new HashSet<Linedef>(stablelines);
+				changedlines.UnionWith(newlines);
+				foreach(Linedef l in unstablelines) if(!l.IsDisposed) changedlines.Add(l);
+
+				//mxd. Get sectors, which have all their linedefs selected (otherwise those would be destroyed after moving the selection)
+				HashSet<Sector> toadjust = General.Map.Map.GetUnselectedSectorsFromLinedefs(changedlines);
+				
 				//mxd. If linedefs were dragged, reattach/add/remove sidedefs
-				if(stablelines.Count > 0)
+				if(changedlines.Count > 0)
 				{
-					// Get new lines from linedef marks...
-					HashSet<Linedef> newlines = new HashSet<Linedef>(General.Map.Map.GetMarkedLinedefs(true));
+					// Reattach/add/remove outer sidedefs
+					HashSet<Sidedef> adjustedsides = Tools.AdjustOuterSidedefs(toadjust, changedlines);
 
-					// Marked lines were created during linedef splitting
-					HashSet<Linedef> changedlines = new HashSet<Linedef>(stablelines);
-					changedlines.UnionWith(newlines);
-
-					// Get sectors, which have all their linedefs selected (otherwise those would be destroyed after moving the selection)
-					HashSet<Sector> toadjust = General.Map.Map.GetUnselectedSectorsFromLinedefs(changedlines);
-
-					if(changedlines.Count > 0)
+					// Remove unneeded textures
+					foreach(Sidedef side in adjustedsides)
 					{
-						// Reattach/add/remove outer sidedefs
-						Tools.AdjustOuterSidedefs(toadjust, changedlines);
+						side.RemoveUnneededTextures(true, true, true);
+						if(side.Other != null) side.Other.RemoveUnneededTextures(true, true, true);
+					}
 
-						// Split outer sectors
-						Tools.SplitOuterSectors(changedlines);
+					// Split outer sectors
+					Tools.SplitOuterSectors(changedlines);
 
-						// Additional verts may've been created
-						if(selectedverts.Count > 1)
+					// Additional verts may've been created
+					if(selectedverts.Count > 1)
+					{
+						foreach(Linedef l in changedlines)
 						{
-							foreach(Linedef l in changedlines)
+							if(!unstablelines.Contains(l))
 							{
 								l.Start.Selected = true;
 								l.End.Selected = true;

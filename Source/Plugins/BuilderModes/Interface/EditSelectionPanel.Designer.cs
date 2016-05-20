@@ -29,6 +29,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private void InitializeComponent()
 		{
 			this.components = new System.ComponentModel.Container();
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EditSelectionPanel));
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
 			this.preciseposition = new System.Windows.Forms.CheckBox();
 			this.orgposy = new System.Windows.Forms.Button();
@@ -74,6 +75,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.floortexall = new System.Windows.Forms.CheckBox();
 			this.floortexgroup = new System.Windows.Forms.GroupBox();
 			this.tooltip = new System.Windows.Forms.ToolTip(this.components);
+			this.label10 = new System.Windows.Forms.Label();
+			this.heightmode = new System.Windows.Forms.ComboBox();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -464,6 +467,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// 
 			this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox3.Controls.Add(this.heightmode);
+			this.groupBox3.Controls.Add(this.label10);
 			this.groupBox3.Controls.Add(this.label14);
 			this.groupBox3.Controls.Add(this.flipv);
 			this.groupBox3.Controls.Add(this.fliph);
@@ -472,7 +477,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.groupBox3.Controls.Add(this.absrot);
 			this.groupBox3.Location = new System.Drawing.Point(3, 272);
 			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Size = new System.Drawing.Size(243, 91);
+			this.groupBox3.Size = new System.Drawing.Size(243, 122);
 			this.groupBox3.TabIndex = 2;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "Transform:";
@@ -480,7 +485,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// label14
 			// 
 			this.label14.AutoSize = true;
-			this.label14.Location = new System.Drawing.Point(9, 61);
+			this.label14.Location = new System.Drawing.Point(9, 88);
 			this.label14.Name = "label14";
 			this.label14.Size = new System.Drawing.Size(46, 13);
 			this.label14.TabIndex = 27;
@@ -490,7 +495,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// 
 			this.flipv.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
 			this.flipv.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.FlipSelectionV;
-			this.flipv.Location = new System.Drawing.Point(94, 53);
+			this.flipv.Location = new System.Drawing.Point(94, 80);
 			this.flipv.Name = "flipv";
 			this.flipv.Size = new System.Drawing.Size(30, 30);
 			this.flipv.TabIndex = 2;
@@ -501,7 +506,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// 
 			this.fliph.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
 			this.fliph.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.FlipSelectionH;
-			this.fliph.Location = new System.Drawing.Point(58, 53);
+			this.fliph.Location = new System.Drawing.Point(58, 80);
 			this.fliph.Name = "fliph";
 			this.fliph.Size = new System.Drawing.Size(30, 30);
 			this.fliph.TabIndex = 1;
@@ -522,9 +527,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.label11.AutoSize = true;
 			this.label11.Location = new System.Drawing.Point(146, 28);
 			this.label11.Name = "label11";
-			this.label11.Size = new System.Drawing.Size(13, 13);
+			this.label11.Size = new System.Drawing.Size(28, 13);
 			this.label11.TabIndex = 22;
-			this.label11.Text = "º";
+			this.label11.Text = "deg.";
 			// 
 			// absrot
 			// 
@@ -554,7 +559,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.ceiltexgroup.Controls.Add(this.ceiltexoffset);
 			this.ceiltexgroup.Controls.Add(this.ceiltexrotation);
 			this.ceiltexgroup.Controls.Add(this.ceiltexscale);
-			this.ceiltexgroup.Location = new System.Drawing.Point(3, 369);
+			this.ceiltexgroup.Location = new System.Drawing.Point(3, 401);
 			this.ceiltexgroup.Name = "ceiltexgroup";
 			this.ceiltexgroup.Size = new System.Drawing.Size(243, 58);
 			this.ceiltexgroup.TabIndex = 3;
@@ -597,7 +602,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// ceiltexall
 			// 
 			this.ceiltexall.AutoSize = true;
-			this.ceiltexall.Location = new System.Drawing.Point(14, 368);
+			this.ceiltexall.Location = new System.Drawing.Point(14, 400);
 			this.ceiltexall.Name = "ceiltexall";
 			this.ceiltexall.Size = new System.Drawing.Size(154, 17);
 			this.ceiltexall.TabIndex = 0;
@@ -641,7 +646,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// floortexall
 			// 
 			this.floortexall.AutoSize = true;
-			this.floortexall.Location = new System.Drawing.Point(14, 432);
+			this.floortexall.Location = new System.Drawing.Point(14, 464);
 			this.floortexall.Name = "floortexall";
 			this.floortexall.Size = new System.Drawing.Size(146, 17);
 			this.floortexall.TabIndex = 1;
@@ -656,12 +661,39 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.floortexgroup.Controls.Add(this.floortexoffset);
 			this.floortexgroup.Controls.Add(this.floortexrotation);
 			this.floortexgroup.Controls.Add(this.floortexscale);
-			this.floortexgroup.Location = new System.Drawing.Point(3, 433);
+			this.floortexgroup.Location = new System.Drawing.Point(3, 465);
 			this.floortexgroup.Name = "floortexgroup";
 			this.floortexgroup.Size = new System.Drawing.Size(243, 58);
 			this.floortexgroup.TabIndex = 38;
 			this.floortexgroup.TabStop = false;
 			this.floortexgroup.Text = "  ";
+			// 
+			// label10
+			// 
+			this.label10.AutoSize = true;
+			this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+			this.label10.ForeColor = System.Drawing.SystemColors.HotTrack;
+			this.label10.Location = new System.Drawing.Point(14, 56);
+			this.label10.Name = "label10";
+			this.label10.Size = new System.Drawing.Size(41, 13);
+			this.label10.TabIndex = 28;
+			this.label10.Text = "Height:";
+			this.tooltip.SetToolTip(this.label10, resources.GetString("label10.ToolTip"));
+			// 
+			// heightmode
+			// 
+			this.heightmode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.heightmode.FormattingEnabled = true;
+			this.heightmode.Items.AddRange(new object[] {
+            "Don\'t adjust height",
+            "Adjust floor height",
+            "Adjust ceiling height",
+            "Adjust floor and ceiling heights"});
+			this.heightmode.Location = new System.Drawing.Point(58, 53);
+			this.heightmode.Name = "heightmode";
+			this.heightmode.Size = new System.Drawing.Size(171, 21);
+			this.heightmode.TabIndex = 29;
+			this.heightmode.SelectedIndexChanged += new System.EventHandler(this.heightmode_SelectedIndexChanged);
 			// 
 			// EditSelectionPanel
 			// 
@@ -738,5 +770,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private System.Windows.Forms.GroupBox floortexgroup;
 		private System.Windows.Forms.CheckBox preciseposition;
 		private System.Windows.Forms.ToolTip tooltip;
+		private System.Windows.Forms.ComboBox heightmode;
+		private System.Windows.Forms.Label label10;
 	}
 }

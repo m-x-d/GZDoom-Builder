@@ -71,6 +71,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			RotateLB
 		}
 
+		internal enum HeightAdjustMode
+		{
+			NONE,
+			ADJUST_FLOORS,
+			ADJUST_CEILINGS,
+			ADJUST_BOTH,
+		}
+
 		#endregion
 
 		#region ================== Structs (mxd)
@@ -141,6 +149,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private bool pasting;
 		private bool autodrag; //mxd
 		private PasteOptions pasteoptions;
+		private HeightAdjustMode heightadjustmode; //mxd
 		
 		// Docker
 		private EditSelectionPanel panel;
@@ -225,6 +234,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		internal bool RotateCeilingOffsets { get { return rotateceiloffsets; } set { rotateceiloffsets = value; UpdateAllChanges(); } }
 		internal bool ScaleFloorOffsets { get { return scaleflooroffsets; } set { scaleflooroffsets = value; UpdateAllChanges(); } }
 		internal bool ScaleCeilingOffsets { get { return scaleceiloffsets; } set { scaleceiloffsets = value; UpdateAllChanges(); } }
+
+		//mxd. Height offset mode
+		internal HeightAdjustMode SectorHeightAdjustMode { get { return heightadjustmode; } set { heightadjustmode = value; } }
 
 		#endregion
 
@@ -1018,13 +1030,131 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private void FlipLinedefs()
 		{
 			// Flip linedefs
-			foreach(Linedef ld in selectedlines)
-				ld.FlipVertices();
+			foreach(Linedef ld in selectedlines) ld.FlipVertices();
 			
 			// Done
 			linesflipped = !linesflipped;
 		}
 		
+		#endregion
+
+		#region ================== Sector height adjust methods (mxd)
+
+		private static Sector GetOutsideSector(IEnumerable<Sector> sectors)
+		{
+			Sector result = null;
+			foreach(Sector s in sectors)
+			{
+				foreach(Sidedef side in s.Sidedefs)
+				{
+					if(side.Other == null || side.Other.Sector == null) continue;
+					if(result == null) result = side.Other.Sector;
+					else if(result != side.Other.Sector) return null;
+				}
+			}
+
+			return result;
+		}
+
+		private static void AdjustSectorsHeight(ICollection<Sector> toadjust, HeightAdjustMode adjustmode, int oldfloorheight, int oldceilheight)
+		{
+			// Adjust only when selection is inside a single sector
+			if(adjustmode == HeightAdjustMode.NONE || oldfloorheight == int.MinValue || oldceilheight == int.MinValue) return;
+			Sector outsidesector = GetOutsideSector(toadjust);
+			if(outsidesector == null) return;
+
+			// Height differences
+			int floorheightdiff = outsidesector.FloorHeight - oldfloorheight;
+			int ceilheightdiff = outsidesector.CeilHeight - oldceilheight;
+
+			switch(adjustmode)
+			{
+				case HeightAdjustMode.ADJUST_FLOORS:
+					foreach(Sector s in toadjust) AdjustSectorHeight(s, floorheightdiff, int.MinValue);
+					break;
+
+				case HeightAdjustMode.ADJUST_CEILINGS:
+					foreach(Sector s in toadjust) AdjustSectorHeight(s, int.MinValue, ceilheightdiff);
+					break;
+
+				case HeightAdjustMode.ADJUST_BOTH:
+					foreach(Sector s in toadjust) AdjustSectorHeight(s, floorheightdiff, ceilheightdiff);
+					break;
+
+				default:
+					throw new NotImplementedException("Unknown HeightAdjustMode: " + adjustmode);
+			}
+		}
+
+		private static void AdjustSectorHeight(Sector s, int flooroffset, int ceiloffset)
+		{
+			// Adjust floor height
+			if(flooroffset != int.MinValue)
+			{
+				// Adjust regular height
+				s.FloorHeight += flooroffset;
+
+				if(General.Map.UDMF)
+				{
+					// Adjust slope height?
+					if(s.FloorSlope.GetLengthSq() > 0 && !float.IsNaN(s.FloorSlopeOffset / s.FloorSlope.z))
+					{
+						s.FloorSlopeOffset -= flooroffset * (float)Math.Sin(s.FloorSlope.GetAngleZ());
+					}
+					// Adjust vertex height?
+					else if(s.Sidedefs.Count == 3)
+					{
+						// Collect verts
+						HashSet<Vertex> verts = new HashSet<Vertex>();
+						foreach(Sidedef side in s.Sidedefs)
+						{
+							verts.Add(side.Line.Start);
+							verts.Add(side.Line.End);
+						}
+
+						// Offset verts
+						foreach(Vertex v in verts)
+						{
+							if(!float.IsNaN(v.ZFloor)) v.ZFloor += flooroffset;
+						}
+					}
+				}
+			}
+
+			// Adjust ceiling height
+			if(ceiloffset != int.MinValue)
+			{
+				// Adjust regular height
+				s.CeilHeight += ceiloffset;
+
+				if(General.Map.UDMF)
+				{
+					// Adjust slope height?
+					if(s.CeilSlope.GetLengthSq() > 0 && !float.IsNaN(s.CeilSlopeOffset / s.CeilSlope.z))
+					{
+						s.CeilSlopeOffset -= ceiloffset * (float)Math.Sin(s.CeilSlope.GetAngleZ());
+					}
+					// Adjust vertex height?
+					else if(s.Sidedefs.Count == 3)
+					{
+						// Collect verts
+						HashSet<Vertex> verts = new HashSet<Vertex>();
+						foreach(Sidedef side in s.Sidedefs)
+						{
+							verts.Add(side.Line.Start);
+							verts.Add(side.Line.End);
+						}
+
+						// Offset verts
+						foreach(Vertex v in verts)
+						{
+							if(!float.IsNaN(v.ZCeiling)) v.ZCeiling += ceiloffset;
+						}
+					}
+				}
+			}
+		}
+
 		#endregion
 
 		#region ================== Events
@@ -1047,7 +1177,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.FlipSelectionV);
 
 			//mxd. Get EditPanel-related settings
-			usepreciseposition = General.Settings.ReadPluginSetting("editselectionusespreciseposition", true);
+			usepreciseposition = General.Settings.ReadPluginSetting("editselectionmode.usepreciseposition", true);
+			heightadjustmode = (HeightAdjustMode)General.Settings.ReadPluginSetting("editselectionmode.heightadjustmode", (int)HeightAdjustMode.NONE);
 			
 			// Add docker
 			panel = new EditSelectionPanel(this);
@@ -1128,7 +1259,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if((t.Position.x + t.Size) > right.x) right.x = t.Position.x + t.Size;
 					if((t.Position.y + t.Size) > right.y) right.y = t.Position.y + t.Size;
 
-					
 					if(!fixedrotationthingtypes.Contains(t.Type)) //mxd
 					{
 						ThingTypeInfo tti = General.Map.Data.GetThingInfoEx(t.Type);
@@ -1192,6 +1322,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Update
 				panel.ShowOriginalValues(baseoffset, basesize);
 				panel.SetTextureTransformSettings(General.Map.UDMF); //mxd
+				panel.SetHeightAdjustMode(heightadjustmode, selectedsectors.Count > 0); //mxd
 				UpdateRectangleComponents();
 				UpdatePanel();
 				Update();
@@ -1392,6 +1523,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				
 				General.Map.Map.Update(true, true);
 				
+				//mxd
+				int oldoutsidefloorheight = int.MinValue;
+				int oldoutsideceilingheight = int.MinValue;
+
 				// When pasting, we want to join with the parent sector
 				// where the sidedefs are referencing a virtual sector
 				if(pasting)
@@ -1463,20 +1598,28 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Do we have a virtual and parent sector?
 					if((vsector != null) && (parent != null))
 					{
-						// Adjust the floor and ceiling heights of all new sectors
-						if(pasteoptions.AdjustHeights)
-						{
-							ICollection<Sector> newsectors = General.Map.Map.GetMarkedSectors(true);
-							foreach(Sector s in newsectors)
-							{
-								s.CeilHeight += parent.CeilHeight - vsector.CeilHeight;
-								s.FloorHeight += parent.FloorHeight - vsector.FloorHeight;
-							}
-						}
+						//mxd. Apply HeightAdjustMode
+						AdjustSectorsHeight(General.Map.Map.GetMarkedSectors(true), heightadjustmode, vsector.FloorHeight, vsector.CeilHeight);
 					}
 					
 					// Remove any virtual sectors
 					General.Map.Map.RemoveVirtualSectors();
+				}
+				else
+				{
+					//mxd. Get floor/ceiling height from outside sector
+					if(unstablelines.Count == 0 && heightadjustmode != HeightAdjustMode.NONE)
+					{
+						// Get affected sectors
+						HashSet<Sector> affectedsectors = new HashSet<Sector>(General.Map.Map.GetSelectedSectors(true));
+						
+						Sector curoutsidesector = GetOutsideSector(affectedsectors);
+						if(curoutsidesector != null)
+						{
+							oldoutsidefloorheight = curoutsidesector.FloorHeight;
+							oldoutsideceilingheight = curoutsidesector.CeilHeight;
+						}
+					}
 				}
 
 				// Stitch geometry
@@ -1491,12 +1634,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				//mxd. Update cached values
 				General.Map.Map.Update();
 
-				//mxd.  Get new lines from linedef marks...
+				//mxd. Get new lines from linedef marks...
 				HashSet<Linedef> newlines = new HashSet<Linedef>(General.Map.Map.GetMarkedLinedefs(true));
 
-				//mxd.  Marked lines were created during linedef splitting
+				//mxd. Marked lines were created during linedef splitting
 				HashSet<Linedef> changedlines = new HashSet<Linedef>(selectedlines);
 				changedlines.UnionWith(newlines);
+				foreach(Linedef l in unstablelines) if(!l.IsDisposed) changedlines.Add(l);
 
 				//mxd. Update outer sides of the selection
 				if(changedlines.Count > 0)
@@ -1506,7 +1650,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					affectedsectors.UnionWith(General.Map.Map.GetUnselectedSectorsFromLinedefs(changedlines));
 
 					// Reattach/add/remove outer sidedefs
-					Tools.AdjustOuterSidedefs(affectedsectors, new HashSet<Linedef>(changedlines));
+					HashSet<Sidedef> adjustedsides = Tools.AdjustOuterSidedefs(affectedsectors, changedlines);
+
+					// Change floor/ceiling height?
+					if(!pasting) AdjustSectorsHeight(affectedsectors, heightadjustmode, oldoutsidefloorheight, oldoutsideceilingheight);
+
+					// Remove unneeded textures (needs to be done AFTER adjusting floor/ceiling height)
+					foreach(Sidedef side in adjustedsides)
+					{
+						side.RemoveUnneededTextures(true, true, true);
+						if(side.Other != null) side.Other.RemoveUnneededTextures(true, true, true);
+					}
 
 					// Split outer sectors
 					Tools.SplitOuterSectors(changedlines);
@@ -1552,8 +1706,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.FlipSelectionV);
 
 			//mxd. Save EditPanel-related settings 
-			General.Settings.WritePluginSetting("editselectionusespreciseposition", usepreciseposition);
-			
+			General.Settings.WritePluginSetting("editselectionmode.usepreciseposition", usepreciseposition);
+			General.Settings.WritePluginSetting("editselectionmode.heightadjustmode", (int)heightadjustmode);
+
 			// Remove docker
 			General.Interface.RemoveDocker(docker);
 			panel.Dispose();

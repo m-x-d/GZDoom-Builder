@@ -21,6 +21,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -538,7 +539,9 @@ namespace CodeImp.DoomBuilder
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false); //mxd
 			//Application.DoEvents();		// This must be here to work around a .NET bug
-			//ToolStripManager.Renderer = new ToolStripProfessionalRenderer(new TanColorTable());
+
+			//mxd. Set CultureInfo
+			Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
 			
 			// Hook to DLL loading failure event
 			AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;

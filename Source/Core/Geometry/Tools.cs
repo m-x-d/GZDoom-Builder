@@ -2166,13 +2166,13 @@ namespace CodeImp.DoomBuilder.Geometry
 			// Create drawn lines per sector collection
 			foreach(Linedef l in drawnlines)
 			{
-				if(l.Front != null && l.Front.Sector != null)
+				if(l.Front != null && (l.Front.Sector != null && !SectorWasInvalid(l.Front.Sector)))
 				{
 					if(!sectorsidesref.ContainsKey(l.Front.Sector)) sectorsidesref.Add(l.Front.Sector, new HashSet<Sidedef>());
 					sectorsidesref[l.Front.Sector].Add(l.Front);
 				}
 
-				if(l.Back != null && l.Back.Sector != null)
+				if(l.Back != null && (l.Back.Sector != null && !SectorWasInvalid(l.Back.Sector)))
 				{
 					if(!sectorsidesref.ContainsKey(l.Back.Sector)) sectorsidesref.Add(l.Back.Sector, new HashSet<Sidedef>());
 					sectorsidesref[l.Back.Sector].Add(l.Back);
@@ -2207,9 +2207,41 @@ namespace CodeImp.DoomBuilder.Geometry
 							newsector.UpdateCache();
 							group.Key.UpdateCache();
 						}
+
+						// Existing sector may've become invalid
+						SectorWasInvalid(group.Key);
 					}
 				}
 			}
+		}
+
+		//mxd
+		private static bool SectorWasInvalid(Sector s)
+		{
+			if(s.Sidedefs.Count < 3 || s.FlatVertices.Length < 3)
+			{
+				// Collect changed lines
+				HashSet<Linedef> changedlines = new HashSet<Linedef>();
+				foreach(Sidedef side in s.Sidedefs) changedlines.Add(side.Line);
+
+				// Delete sector
+				s.Dispose();
+
+				// Correct lines
+				foreach(Linedef l in changedlines)
+				{
+					l.ApplySidedFlags();
+					if(l.Front == null)
+					{
+						l.FlipVertices();
+						l.FlipSidedefs();
+					}
+				}
+
+				return true;
+			}
+
+			return false;
 		}
 
 		#endregion
@@ -2313,13 +2345,15 @@ namespace CodeImp.DoomBuilder.Geometry
 		}
 
 		//mxd. Try to create/remove/reassign outer sidedefs. Selected linedefs and verts are marked
-		public static void AdjustOuterSidedefs(HashSet<Sector> selectedsectors, HashSet<Linedef> selectedlines)
+		public static HashSet<Sidedef> AdjustOuterSidedefs(HashSet<Sector> selectedsectors, HashSet<Linedef> selectedlines)
 		{
+			HashSet<Sidedef> adjustedsides = new HashSet<Sidedef>();
 			HashSet<Sidedef> outersides = new HashSet<Sidedef>();
+			HashSet<Sidedef> innersides = new HashSet<Sidedef>();
 			HashSet<Linedef> singlesidedlines = new HashSet<Linedef>();
 			HashSet<Linedef> lineswithoutsides = new HashSet<Linedef>();
 
-			// Collect lines without sidedefs and lines, which don't reference selected sectors
+			// Collect lines without sidedefs and inner and outer sides
 			foreach(Linedef line in selectedlines)
 			{
 				if(line.Front == null && line.Back == null)
@@ -2328,20 +2362,28 @@ namespace CodeImp.DoomBuilder.Geometry
 				}
 				else
 				{
-					if(line.Back != null && line.Back.Sector != null && !selectedsectors.Contains(line.Back.Sector))
-						outersides.Add(line.Back);
-					if(line.Front != null && line.Front.Sector != null && !selectedsectors.Contains(line.Front.Sector))
-						outersides.Add(line.Front);
+					if(line.Back != null && line.Back.Sector != null)
+					{
+						if(!selectedsectors.Contains(line.Back.Sector)) outersides.Add(line.Back);
+						else innersides.Add(line.Back);
+					}
+
+					if(line.Front != null && line.Front.Sector != null)
+					{
+						if(!selectedsectors.Contains(line.Front.Sector)) outersides.Add(line.Front);
+						else innersides.Add(line.Front);
+					}
 				}
 			}
 
-			// Collect outer sides and single-sided lines
+			// Collect inner and outer sides and single-sided lines
 			foreach(Sector sector in selectedsectors)
 			{
 				foreach(Sidedef side in sector.Sidedefs)
 				{
 					if(side.Other == null) singlesidedlines.Add(side.Line);
 					else if(!selectedsectors.Contains(side.Other.Sector)) outersides.Add(side.Other);
+					innersides.Add(side);
 				}
 			}
 
@@ -2363,7 +2405,9 @@ namespace CodeImp.DoomBuilder.Geometry
 
 						// Copy props from the other side
 						ns.CopyPropertiesTo(newside);
-						newside.RemoveUnneededTextures(true, true, true);
+
+						// Store
+						adjustedsides.Add(newside);
 
 						sideschanged = true;
 					}
@@ -2382,7 +2426,9 @@ namespace CodeImp.DoomBuilder.Geometry
 
 						// Copy props from the other side
 						ns.CopyPropertiesTo(newside);
-						newside.RemoveUnneededTextures(true, true, true);
+						
+						// Store
+						adjustedsides.Add(newside);
 
 						sideschanged = true;
 					}
@@ -2447,8 +2493,9 @@ namespace CodeImp.DoomBuilder.Geometry
 				// Copy props from the other side
 				Sidedef propssource = (line.Front ?? line.Back);
 				propssource.CopyPropertiesTo(newside);
-				newside.RemoveUnneededTextures(true, true, true);
-				newside.Other.RemoveUnneededTextures(true, true, true);
+
+				// Store
+				adjustedsides.Add(newside);
 
 				// Correct the linedef
 				if((line.Front == null) && (line.Back != null))
@@ -2467,6 +2514,9 @@ namespace CodeImp.DoomBuilder.Geometry
 			{
 				if(group.Value == null)
 				{
+					// Other side textures may require updating...
+					if(group.Key.Other != null) adjustedsides.Add(group.Key.Other);
+					
 					// Side points nowhere. Remove it
 					Linedef l = group.Key.Line;
 					group.Key.Dispose();
@@ -2485,12 +2535,23 @@ namespace CodeImp.DoomBuilder.Geometry
 				{
 					// Reattach side
 					group.Key.SetSector(group.Value);
-					group.Key.RemoveUnneededTextures(true, true, true);
+
+					// Store
+					adjustedsides.Add(group.Key);
 				}
+			}
+
+			// Inner side textures may need updating
+			foreach(Sidedef s in innersides)
+			{
+				if(!s.IsDisposed) s.RemoveUnneededTextures(s.Other != null, false, true);
 			}
 
 			// Update map geometry
 			General.Map.Map.Update();
+
+			// Done
+			return adjustedsides;
 		}
 
 		//mxd

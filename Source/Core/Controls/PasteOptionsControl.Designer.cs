@@ -28,38 +28,13 @@ namespace CodeImp.DoomBuilder.Controls
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.sectorheightsgroup = new System.Windows.Forms.GroupBox();
-			this.adjustheights = new System.Windows.Forms.CheckBox();
 			this.tagsgroup = new System.Windows.Forms.GroupBox();
 			this.removeactions = new System.Windows.Forms.CheckBox();
 			this.removetags = new System.Windows.Forms.RadioButton();
 			this.renumbertags = new System.Windows.Forms.RadioButton();
 			this.keeptags = new System.Windows.Forms.RadioButton();
-			this.sectorheightsgroup.SuspendLayout();
 			this.tagsgroup.SuspendLayout();
 			this.SuspendLayout();
-			// 
-			// sectorheightsgroup
-			// 
-			this.sectorheightsgroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.sectorheightsgroup.Controls.Add(this.adjustheights);
-			this.sectorheightsgroup.Location = new System.Drawing.Point(0, 138);
-			this.sectorheightsgroup.Name = "sectorheightsgroup";
-			this.sectorheightsgroup.Size = new System.Drawing.Size(443, 50);
-			this.sectorheightsgroup.TabIndex = 3;
-			this.sectorheightsgroup.TabStop = false;
-			this.sectorheightsgroup.Text = " Floor and Ceiling heights ";
-			// 
-			// adjustheights
-			// 
-			this.adjustheights.AutoSize = true;
-			this.adjustheights.Location = new System.Drawing.Point(30, 24);
-			this.adjustheights.Name = "adjustheights";
-			this.adjustheights.Size = new System.Drawing.Size(292, 17);
-			this.adjustheights.TabIndex = 0;
-			this.adjustheights.Text = "Adjust heights to match relatively with surrounding sector";
-			this.adjustheights.UseVisualStyleBackColor = true;
 			// 
 			// tagsgroup
 			// 
@@ -123,12 +98,9 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-			this.Controls.Add(this.sectorheightsgroup);
 			this.Controls.Add(this.tagsgroup);
 			this.Name = "PasteOptionsControl";
-			this.Size = new System.Drawing.Size(443, 208);
-			this.sectorheightsgroup.ResumeLayout(false);
-			this.sectorheightsgroup.PerformLayout();
+			this.Size = new System.Drawing.Size(443, 139);
 			this.tagsgroup.ResumeLayout(false);
 			this.tagsgroup.PerformLayout();
 			this.ResumeLayout(false);
@@ -137,8 +109,6 @@ namespace CodeImp.DoomBuilder.Controls
 
 		#endregion
 
-		private System.Windows.Forms.GroupBox sectorheightsgroup;
-		private System.Windows.Forms.CheckBox adjustheights;
 		private System.Windows.Forms.GroupBox tagsgroup;
 		private System.Windows.Forms.CheckBox removeactions;
 		private System.Windows.Forms.RadioButton removetags;
