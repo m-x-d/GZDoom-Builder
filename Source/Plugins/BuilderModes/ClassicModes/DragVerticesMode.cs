@@ -123,15 +123,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Reattach/add/remove outer sidedefs
 					HashSet<Sidedef> adjustedsides = Tools.AdjustOuterSidedefs(toadjust, changedlines);
 
+					// Split outer sectors
+					Tools.SplitOuterSectors(changedlines);
+
 					// Remove unneeded textures
 					foreach(Sidedef side in adjustedsides)
 					{
+						if(side.IsDisposed) continue;
 						side.RemoveUnneededTextures(true, true, true);
 						if(side.Other != null) side.Other.RemoveUnneededTextures(true, true, true);
 					}
-
-					// Split outer sectors
-					Tools.SplitOuterSectors(changedlines);
 
 					// Additional verts may've been created
 					if(selectedverts.Count > 1)

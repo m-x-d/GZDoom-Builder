@@ -1655,15 +1655,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Change floor/ceiling height?
 					if(!pasting) AdjustSectorsHeight(affectedsectors, heightadjustmode, oldoutsidefloorheight, oldoutsideceilingheight);
 
+					// Split outer sectors
+					Tools.SplitOuterSectors(changedlines);
+
 					// Remove unneeded textures (needs to be done AFTER adjusting floor/ceiling height)
 					foreach(Sidedef side in adjustedsides)
 					{
+						if(side.IsDisposed) continue;
 						side.RemoveUnneededTextures(true, true, true);
 						if(side.Other != null) side.Other.RemoveUnneededTextures(true, true, true);
 					}
-
-					// Split outer sectors
-					Tools.SplitOuterSectors(changedlines);
 				}
 				
 				// Update cached values

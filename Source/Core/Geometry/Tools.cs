@@ -2474,6 +2474,9 @@ namespace CodeImp.DoomBuilder.Geometry
 				{
 					if(side.Sector != nearest) sidesectorref[side] = nearest;  // This side will be reattached in phase 2
 					else sidesectorref.Remove(side); // This side is already attached where it needs to be
+
+					// Store
+					adjustedsides.Add(side);
 				}
 				else
 				{
@@ -2559,9 +2562,41 @@ namespace CodeImp.DoomBuilder.Geometry
 		{
 			List<LinedefSide> sectorsides = FindPotentialSectorAt(line, front);
 			if(sectorsides == null) return null;
+			Sector result = null;
+
+			// Special case: if sectorsides match sidestoexclude and all sidestoexclude reference the same sector, return that sector
+			if(sidestoexclude.Count > 2 && sectorsides.Count == sidestoexclude.Count)
+			{
+				bool allsidesmatch = true;
+
+				// Check if all sidestoexclude reference the same sector...
+				foreach(Sidedef s in sidestoexclude)
+				{
+					if(result == null) result = s.Sector;
+					else if(result != s.Sector)
+					{
+						allsidesmatch = false;
+						break;
+					}
+				}
+
+				// Check if sidestoexclude match sectorsides...
+				if(allsidesmatch)
+				{
+					HashSet<Sidedef> sectorsidesset = new HashSet<Sidedef>();
+					foreach(LinedefSide ls in sectorsides)
+					{
+						sectorsidesset.Add(ls.Front ? ls.Line.Front : ls.Line.Back);
+					}
+
+					allsidesmatch = sectorsidesset.SetEquals(sidestoexclude);
+				}
+
+				// Sides are already where they need to be
+				if(allsidesmatch) return result;
+			}
 
 			// Filter outersides from the list, proceed only if all sectorsides reference the same sector
-			Sector result = null;
 			foreach(LinedefSide sectorside in sectorsides)
 			{
 				Sidedef target = (sectorside.Front ? sectorside.Line.Front : sectorside.Line.Back);
