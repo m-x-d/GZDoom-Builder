@@ -129,15 +129,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				//mxd. Reattach/add/remove outer sidedefs
 				HashSet<Sidedef> adjustedsides = Tools.AdjustOuterSidedefs(toadjust, changedlines);
 
+				//mxd. Split outer sectors
+				Tools.SplitOuterSectors(changedlines);
+
 				//mxd. Remove unneeded textures
 				foreach(Sidedef side in adjustedsides)
 				{
+					if(side.IsDisposed) continue;
 					side.RemoveUnneededTextures(true, true, true);
 					if(side.Other != null) side.Other.RemoveUnneededTextures(true, true, true);
 				}
-
-				//mxd. Split outer sectors
-				Tools.SplitOuterSectors(changedlines);
 
 				// If only a single linedef was selected, deselect it now
 				if(selectedlines.Count == 1) General.Map.Map.ClearSelectedLinedefs();

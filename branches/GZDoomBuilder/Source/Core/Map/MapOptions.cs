@@ -440,7 +440,12 @@ namespace CodeImp.DoomBuilder.Map
 
 			// Copy information from Configuration to ScriptDocumentSaveSettings
 			if(scfinfo.Contains("filename") && (scfinfo["filename"] is string)) settings.Filename = (string)scfinfo["filename"];
-			if(scfinfo.Contains("hash") && (scfinfo["hash"] is long)) settings.Hash = (long)scfinfo["hash"];
+			if(scfinfo.Contains("hash"))
+			{
+				// Configuration will parse the value as int if it's inside int type bounds.
+				if(scfinfo["hash"] is int) settings.Hash = (int)scfinfo["hash"];
+				else if(scfinfo["hash"] is long) settings.Hash = (long)scfinfo["hash"];
+			}
 			if(scfinfo.Contains("caretposition") && (scfinfo["caretposition"] is int)) settings.CaretPosition = (int)scfinfo["caretposition"];
 			if(scfinfo.Contains("firstvisibleline") && (scfinfo["firstvisibleline"] is int)) settings.FirstVisibleLine = (int)scfinfo["firstvisibleline"];
 			if(scfinfo.Contains("activetab") && (scfinfo["activetab"] is bool)) settings.IsActiveTab = (bool)scfinfo["activetab"];
