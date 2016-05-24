@@ -44,6 +44,7 @@ namespace CodeImp.DoomBuilder.Config
 		TERRAIN,
 		X11R6RGB,
 		CVARINFO,
+		SNDINFO,
 	}
 	
 	internal class ScriptConfiguration : IComparable<ScriptConfiguration>

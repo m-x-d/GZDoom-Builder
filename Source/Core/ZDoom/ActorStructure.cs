@@ -331,7 +331,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 							int arrlen = -1;
 							if(!parser.ReadSignedInt(ref arrlen))
 							{
-								parser.ReportError("Expected User Array length, but got \"" + next + "\"");
+								parser.ReportError("Expected User Array length");
 								return;
 							}
 							if(arrlen < 1)

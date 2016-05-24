@@ -38,7 +38,8 @@
     Both new and old MAPINFO definition styles are supported.<br />
     You can use "<strong>//$GZDB_SKIP</strong>" special comment to abort parsing of the current file.<br />
     <strong>DoomEdNum</strong> overrides are supported.<br />
-    <strong>SpawnNums</strong> overrides are supported. The values are used to update "spawnthing" Game Configuration enum.<br /><br />
+    <strong>SpawnNums</strong> overrides are supported. The values are used to update "<strong>spawnthing</strong>" Game Configuration enum.<br />
+    <br />
     In addition, following values from (Z)MAPINFO are supported by Visual mode:
 <ul>
   <li>fade;</li>
@@ -54,6 +55,9 @@
 	<a name="reverbs" id="reverbs"></a>
     <h2>REVERBS:</h2>
     Sound environment definitions are loaded and can be used in the <a href="features/classic_modes/mode_soundenvironment.html">Sound Environment Mode</a>.
+    
+    <h2>SNDINFO:</h2>
+    Ambient sound definitions are loaded. The values are used to update the titles of &quot;<strong>Ambient Sound NN</strong>&quot; things and to populate &quot;<strong>ambient_sounds</strong>&quot; Game Configuration enum.
     
     <h2>SNDSEQ:</h2>
     Sound Sequence and Sound Sequence Group definitions are loaded and can be selected in the "Sound sequence" drop-down of the Edit Sector window (UDMF only). 

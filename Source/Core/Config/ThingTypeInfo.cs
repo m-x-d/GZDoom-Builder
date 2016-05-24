@@ -95,7 +95,7 @@ namespace CodeImp.DoomBuilder.Config
 		#region ================== Properties
 
 		public int Index { get { return index; } }
-		public string Title { get { return title; } }
+		public string Title { get { return title; } internal set { title = value; } } //mxd. Added setter
 		public string Sprite { get { return sprite; } }
 		public SpriteFrameInfo[] SpriteFrame { get { return spriteframe; } }
 		public ActorStructure Actor { get { return actor; } }
@@ -405,7 +405,8 @@ namespace CodeImp.DoomBuilder.Config
 		#region ================== Methods
 		
 		// This updates the properties from a decorate actor
-		internal void ModifyByDecorateActor(ActorStructure actor)
+		internal void ModifyByDecorateActor(ActorStructure actor) { ModifyByDecorateActor(actor, false); } //mxd
+		internal void ModifyByDecorateActor(ActorStructure actor, bool replacetitle)
 		{
 			// Keep reference to actor
 			this.actor = actor;
@@ -420,7 +421,7 @@ namespace CodeImp.DoomBuilder.Config
 				if(!tag.StartsWith("\"$")) title = tag; //mxd. Don't use LANGUAGE keywords.
 			}
 
-			if(string.IsNullOrEmpty(title)) title = actor.ClassName;
+			if(string.IsNullOrEmpty(title) || replacetitle) title = actor.ClassName;
 				
 			//mxd. Color override?
 			if(actor.HasPropertyWithValue("$color")) 

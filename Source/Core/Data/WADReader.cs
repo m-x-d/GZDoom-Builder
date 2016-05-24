@@ -1048,6 +1048,13 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		//mxd
+		public override IEnumerable<TextResourceData> GetSndInfoData()
+		{
+			if(issuspended) throw new Exception("Data reader is suspended");
+			return GetAllLumps("SNDINFO");
+		}
+
+		//mxd
 		public override IEnumerable<TextResourceData> GetSndSeqData() 
 		{
 			if(issuspended) throw new Exception("Data reader is suspended");

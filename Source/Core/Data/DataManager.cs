@@ -432,6 +432,7 @@ namespace CodeImp.DoomBuilder.Data
 			//mxd. Load more stuff
 			LoadReverbs();
 			LoadSndSeq();
+			LoadSndInfo();
 			LoadVoxels();
 			Dictionary<string, int> actorsbyclass = CreateActorsByClassList();
 			LoadModeldefs(actorsbyclass);
@@ -1785,12 +1786,26 @@ namespace CodeImp.DoomBuilder.Data
 					// Apply to collection
 					damagetypes = new string[dtypes.Count];
 					dtypes.CopyTo(damagetypes);
+
+					// Step 0. Create ThingTypeInfo by classname collection...
+					Dictionary<string, ThingTypeInfo> thingtypesbyclass = new Dictionary<string, ThingTypeInfo>(thingtypes.Count, StringComparer.OrdinalIgnoreCase);
+					foreach(ThingTypeInfo info in thingtypes.Values)
+						if(!string.IsNullOrEmpty(info.ClassName)) thingtypesbyclass[info.ClassName] = info;
 					
 					// Step 1. Go for all actors in the decorate to make things or update things
 					foreach(ActorStructure actor in decorate.Actors)
 					{
+						//mxd. Apply "replaces" DECORATE override...
+						if(!string.IsNullOrEmpty(actor.ReplacesClass) && thingtypesbyclass.ContainsKey(actor.ReplacesClass))
+						{
+							// Update info
+							thingtypesbyclass[actor.ReplacesClass].ModifyByDecorateActor(actor, true);
+							
+							// Count
+							counter++;
+						}
 						// Check if we want to add this actor
-						if(actor.DoomEdNum > 0)
+						else if(actor.DoomEdNum > 0)
 						{
 							// Check if we can find this thing in our existing collection
 							if(thingtypes.ContainsKey(actor.DoomEdNum))
@@ -1818,13 +1833,6 @@ namespace CodeImp.DoomBuilder.Data
 					if(doomednumsoverride.Count > 0) 
 					{
 						List<int> toremove = new List<int>();
-						Dictionary<string, ThingTypeInfo> thingtypesbyclass = new Dictionary<string, ThingTypeInfo>();
-						foreach(KeyValuePair<int, ThingTypeInfo> group in thingtypes)
-						{
-							if(string.IsNullOrEmpty(group.Value.ClassName)) continue;
-							thingtypesbyclass[group.Value.ClassName.ToLowerInvariant()] = group.Value;
-						}
-
 						foreach(KeyValuePair<int, string> group in doomednumsoverride) 
 						{
 							// Remove thing from the list?
@@ -2093,7 +2101,7 @@ namespace CodeImp.DoomBuilder.Data
 				if(!string.IsNullOrEmpty(ti.Value.ClassName))
 				{
 					if(actors.ContainsKey(ti.Value.ClassName) && actors[ti.Value.ClassName] != ti.Key)
-						General.ErrorLogger.Add(ErrorType.Warning, "Actor \"" + ti.Value.ClassName + "\" has several editor numbers! Only the last one (" + ti.Key + ") will be used.");
+						General.ErrorLogger.Add(ErrorType.Warning, "Actor \"" + ti.Value.ClassName + "\" has several editor numbers (" + actors[ti.Value.ClassName] + " and " + ti.Key + "). Only the last one will be used.");
 					actors[ti.Value.ClassName] = ti.Key;
 				}
 			}
@@ -2451,6 +2459,81 @@ namespace CodeImp.DoomBuilder.Data
 			reverbs = parser.GetReverbs();
 		}
 
+		//mxd. This loads SNDINFO
+		private void LoadSndInfo()
+		{
+			// Bail out when not supported by current game configuration
+			if(string.IsNullOrEmpty(General.Map.Config.DecorateGames)) return;
+
+			SndInfoParser parser = new SndInfoParser();
+			foreach(DataReader dr in containers)
+			{
+				currentreader = dr;
+				IEnumerable<TextResourceData> streams = dr.GetSndInfoData();
+
+				// Parse the data
+				foreach(TextResourceData data in streams)
+				{
+					parser.Parse(data, true);
+
+					// Report errors?
+					if(parser.HasError) parser.LogError();
+				}
+			}
+
+			// Add to text resources collection
+			textresources[parser.ScriptType] = new HashSet<TextResource>(parser.TextResources.Values);
+			currentreader = null;
+
+			// Anything to do?
+			if(parser.AmbientSounds.Count > 0)
+			{
+				// Update or create the main enums list
+				Dictionary<int, EnumItem> configenums = new Dictionary<int, EnumItem>();
+				if(General.Map.Config.Enums.ContainsKey("ambient_sounds"))
+				{
+					foreach(EnumItem item in General.Map.Config.Enums["ambient_sounds"])
+						configenums.Add(item.GetIntValue(), item);
+				}
+				if(configenums.ContainsKey(0)) configenums.Remove(0);
+
+				foreach(KeyValuePair<int, string> group in parser.AmbientSounds)
+				{
+					configenums[group.Key] = new EnumItem(group.Key.ToString(), group.Value);
+				}
+
+				// Store results in "ambient_sounds" enum
+				EnumList newenums = new EnumList();
+				newenums.AddRange(configenums.Values);
+				newenums.Sort((a, b) => a.Title.CompareTo(b.Title)); // Sort by title
+				newenums.Insert(0, new EnumItem("0", "None")); // Add "None" value
+				General.Map.Config.Enums["ambient_sounds"] = newenums;
+
+				// Update all ArgumentInfos...
+				foreach(ThingTypeInfo info in thingtypes.Values)
+				{
+					foreach(ArgumentInfo ai in info.Args)
+						if(ai.Enum.Name == "ambient_sounds") ai.Enum = newenums;
+				}
+
+				foreach(LinedefActionInfo info in General.Map.Config.LinedefActions.Values)
+				{
+					foreach(ArgumentInfo ai in info.Args)
+						if(ai.Enum.Name == "ambient_sounds") ai.Enum = newenums;
+				}
+
+				// Update "Ambient Sound XX" thing names. Hardcoded for things 14001 - 14064 for now...
+				for(int i = 14001; i < 14065; i++)
+				{
+					int ambsoundindex = i - 14000;
+					if(!configenums.ContainsKey(ambsoundindex) || !thingtypes.ContainsKey(i) || !string.IsNullOrEmpty(thingtypes[i].ClassName)) continue;
+					
+					// Update title
+					thingtypes[i].Title += " (" + configenums[ambsoundindex] + ")";
+				}
+			}
+		}
+
 		//mxd. This loads SNDSEQ
 		private void LoadSndSeq()
 		{
@@ -2473,7 +2556,7 @@ namespace CodeImp.DoomBuilder.Data
 				}
 			}
 
-			//mxd. Add to text resources collection
+			// Add to text resources collection
 			textresources[parser.ScriptType] = new HashSet<TextResource>(parser.TextResources.Values);
 			currentreader = null;
 			soundsequences = parser.GetSoundSequences();

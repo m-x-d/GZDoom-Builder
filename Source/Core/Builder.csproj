@@ -1035,6 +1035,7 @@
     <Compile Include="ZDoom\CvarInfoParser.cs" />
     <Compile Include="ZDoom\PatchStructure.cs" />
     <Compile Include="ZDoom\ReverbsParser.cs" />
+    <Compile Include="ZDoom\SndInfoParser.cs" />
     <Compile Include="ZDoom\SndSeqParser.cs" />
     <Compile Include="ZDoom\StateGoto.cs" />
     <Compile Include="ZDoom\TerrainParser.cs" />
