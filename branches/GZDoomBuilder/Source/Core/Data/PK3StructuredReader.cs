@@ -675,6 +675,28 @@ namespace CodeImp.DoomBuilder.Data
 
 		#endregion
 
+		#region ================== SNDINFO (mxd)
+
+		public override IEnumerable<TextResourceData> GetSndInfoData()
+		{
+			// Error when suspended
+			if(issuspended) throw new Exception("Data reader is suspended");
+
+			List<TextResourceData> result = new List<TextResourceData>();
+			string[] files = GetAllFilesWithTitle("", "SNDINFO", false);
+
+			// Add to collection
+			foreach(string s in files)
+				result.Add(new TextResourceData(this, LoadFile(s), s, true));
+
+			// Find in any of the wad files
+			foreach(WADReader wr in wads) result.AddRange(wr.GetSndInfoData());
+
+			return result;
+		}
+
+		#endregion
+
 		#region ================== SNDSEQ (mxd)
 
 		public override IEnumerable<TextResourceData> GetSndSeqData() 
