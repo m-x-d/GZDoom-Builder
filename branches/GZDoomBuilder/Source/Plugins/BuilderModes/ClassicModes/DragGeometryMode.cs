@@ -419,14 +419,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Move selected geometry to final position
 				MoveGeometryRelative(mousemappos - dragstartmappos, snaptogrid, snaptogridincrement, snaptonearest, snaptocardinaldirection);
 
-				//mxd. Used in Linedef.Join()...
-				General.Map.Map.MarkSelectedSectors(true, true);
-
 				// Stitch geometry
-				General.Map.Map.StitchGeometry();
-
-				// Make corrections for backward linedefs
-				MapSet.FlipBackwardLinedefs(General.Map.Map.Linedefs);
+				General.Map.Map.StitchGeometry(true);
 				
 				// Snap to map format accuracy
 				General.Map.Map.SnapAllToAccuracy();
@@ -435,11 +429,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(General.Map.UDMF) 
 				{
 					Vector2D offset = dragitem.Position - dragitemposition;
+
+					// Sectors may've been created/removed when applying dragging...
+					HashSet<Sector> draggedsectors = new HashSet<Sector>(General.Map.Map.GetMarkedSectors(true));
+					foreach(Sector ss in selectedsectors) if(!ss.IsDisposed) draggedsectors.Add(ss);
 					
 					// Update floor/ceiling texture offsets?
 					if(BuilderPlug.Me.LockSectorTextureOffsetsWhileDragging)
 					{
-						foreach(Sector s in selectedsectors) 
+
+						foreach(Sector s in draggedsectors) 
 						{
 							s.Fields.BeforeFieldsChange();
 
@@ -501,7 +500,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 
 					// Update slopes
-					foreach(Sector s in selectedsectors) 
+					foreach(Sector s in draggedsectors) 
 					{
 						// Update floor slope?
 						if(s.FloorSlope.GetLengthSq() > 0 && !float.IsNaN(s.FloorSlopeOffset / s.FloorSlope.z)) 

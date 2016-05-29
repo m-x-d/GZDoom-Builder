@@ -1260,8 +1260,8 @@ namespace CodeImp.DoomBuilder.Geometry
 				// self intersections for which splits were made above.
 				map.Update(true, false);
 				map.BeginAddRemove();
-				MapSet.SplitLinesByVertices(newlines, intersectverts, MapSet.STITCH_DISTANCE, null);
-				MapSet.SplitLinesByVertices(newlines, mergeverts, MapSet.STITCH_DISTANCE, null);
+				MapSet.SplitLinesByVertices(newlines, intersectverts, MapSet.STITCH_DISTANCE, null, false);
+				MapSet.SplitLinesByVertices(newlines, mergeverts, MapSet.STITCH_DISTANCE, null, false);
 				map.EndAddRemove();
 				
 				/***************************************************\
@@ -1328,7 +1328,7 @@ namespace CodeImp.DoomBuilder.Geometry
 				// Before this point, the new geometry is not linked with the existing geometry.
 				// Now perform standard geometry stitching to merge the new geometry with the rest
 				// of the map. The marked vertices indicate the new geometry.
-				map.StitchGeometry();
+				map.StitchGeometry(false);
 				map.Update(true, false);
 
 				// Find our new lines again, because they have been merged with the other geometry
@@ -2215,7 +2215,6 @@ namespace CodeImp.DoomBuilder.Geometry
 			}
 		}
 
-		//mxd
 		private static bool SectorWasInvalid(Sector s)
 		{
 			if(s.Sidedefs.Count < 3 || s.FlatVertices.Length < 3)
@@ -2344,263 +2343,18 @@ namespace CodeImp.DoomBuilder.Geometry
 			return 0;
 		}
 
-		//mxd. Try to create/remove/reassign outer sidedefs. Selected linedefs and verts are marked
-		public static HashSet<Sidedef> AdjustOuterSidedefs(HashSet<Sector> selectedsectors, HashSet<Linedef> selectedlines)
-		{
-			HashSet<Sidedef> adjustedsides = new HashSet<Sidedef>();
-			HashSet<Sidedef> outersides = new HashSet<Sidedef>();
-			HashSet<Sidedef> innersides = new HashSet<Sidedef>();
-			HashSet<Linedef> singlesidedlines = new HashSet<Linedef>();
-			HashSet<Linedef> lineswithoutsides = new HashSet<Linedef>();
-
-			// Collect lines without sidedefs and inner and outer sides
-			foreach(Linedef line in selectedlines)
-			{
-				if(line.Front == null && line.Back == null)
-				{
-					lineswithoutsides.Add(line);
-				}
-				else
-				{
-					if(line.Back != null && line.Back.Sector != null)
-					{
-						if(!selectedsectors.Contains(line.Back.Sector)) outersides.Add(line.Back);
-						else innersides.Add(line.Back);
-					}
-
-					if(line.Front != null && line.Front.Sector != null)
-					{
-						if(!selectedsectors.Contains(line.Front.Sector)) outersides.Add(line.Front);
-						else innersides.Add(line.Front);
-					}
-				}
-			}
-
-			// Collect inner and outer sides and single-sided lines
-			foreach(Sector sector in selectedsectors)
-			{
-				foreach(Sidedef side in sector.Sidedefs)
-				{
-					if(side.Other == null) singlesidedlines.Add(side.Line);
-					else if(!selectedsectors.Contains(side.Other.Sector)) outersides.Add(side.Other);
-					innersides.Add(side);
-				}
-			}
-
-			// Check lines without sidedefs. Add new sidedefs if necessary
-			foreach(Linedef line in lineswithoutsides)
-			{
-				bool sideschanged = false;
-
-				// Add front side?
-				Vector2D testpoint = line.GetSidePoint(true);
-				Linedef nl = General.Map.Map.NearestLinedef(testpoint, selectedlines);
-				if(nl != null)
-				{
-					Sidedef ns = (nl.SideOfLine(testpoint) <= 0 ? nl.Front : nl.Back);
-					if(ns != null)
-					{
-						// Create new sidedef
-						Sidedef newside = General.Map.Map.CreateSidedef(line, true, ns.Sector);
-
-						// Copy props from the other side
-						ns.CopyPropertiesTo(newside);
-
-						// Store
-						adjustedsides.Add(newside);
-
-						sideschanged = true;
-					}
-				}
-
-				// Add back side?
-				testpoint = line.GetSidePoint(false);
-				nl = General.Map.Map.NearestLinedef(testpoint, selectedlines);
-				if(nl != null)
-				{
-					Sidedef ns = (nl.SideOfLine(testpoint) <= 0 ? nl.Front : nl.Back);
-					if(ns != null)
-					{
-						// Create new sidedef
-						Sidedef newside = General.Map.Map.CreateSidedef(line, false, ns.Sector);
-
-						// Copy props from the other side
-						ns.CopyPropertiesTo(newside);
-						
-						// Store
-						adjustedsides.Add(newside);
-
-						sideschanged = true;
-					}
-				}
-
-				// Correct the sided flags
-				if(sideschanged)
-				{
-					// Correct the linedef
-					if((line.Front == null) && (line.Back != null))
-					{
-						line.FlipVertices();
-						line.FlipSidedefs();
-					}
-
-					// Correct the sided flags
-					line.ApplySidedFlags();
-				}
-			}
-
-			// These steps must be done in 2 phases, otherwise we'll end up getting sidedefs modified in a previous adjustment loop step
-
-			// Find sidedefs to join singlesided lines
-			Dictionary<Linedef, Sector> linesectorref = new Dictionary<Linedef, Sector>();
-			foreach(Linedef line in singlesidedlines)
-			{
-				// Line is now inside a sector? (check from the missing side!)
-				Sector nearest = FindPotentialSector(line, (line.Front == null), outersides);
-
-				// We can reattach our line!
-				if(nearest != null) linesectorref[line] = nearest;
-			}
-
-			// Find sidedefs to join outer sides
-			Dictionary<Sidedef, Sector> sidesectorref = new Dictionary<Sidedef, Sector>();
-			foreach(Sidedef side in outersides)
-			{
-				// Side is inside a sector?
-				Sector nearest = FindPotentialSector(side.Line, side.IsFront, outersides);
-
-				// We can reattach our side!
-				if(nearest != null)
-				{
-					if(side.Sector != nearest) sidesectorref[side] = nearest;  // This side will be reattached in phase 2
-					else sidesectorref.Remove(side); // This side is already attached where it needs to be
-
-					// Store
-					adjustedsides.Add(side);
-				}
-				else
-				{
-					sidesectorref[side] = null; // This side will be removed in phase 2
-				}
-			}
-
-			// Check single-sided lines. Add new sidedefs if necessary
-			// Key is dragged single-sided line, value is a sector dragged line ended up in.
-			foreach(KeyValuePair<Linedef, Sector> group in linesectorref)
-			{
-				Linedef line = group.Key;
-
-				// Create new sidedef
-				Sidedef newside = General.Map.Map.CreateSidedef(line, line.Front == null, group.Value);
-
-				// Copy props from the other side
-				Sidedef propssource = (line.Front ?? line.Back);
-				propssource.CopyPropertiesTo(newside);
-
-				// Store
-				adjustedsides.Add(newside);
-
-				// Correct the linedef
-				if((line.Front == null) && (line.Back != null))
-				{
-					line.FlipVertices();
-					line.FlipSidedefs();
-				}
-
-				// Correct the sided flags
-				line.ApplySidedFlags();
-			}
-
-			// Check outer sidedefs. Remove/change sector if necessary
-			// Key is outer sidedef of dragged geometry, value is a sector dragged side ended up in.
-			foreach(KeyValuePair<Sidedef, Sector> group in sidesectorref)
-			{
-				if(group.Value == null)
-				{
-					// Other side textures may require updating...
-					if(group.Key.Other != null) adjustedsides.Add(group.Key.Other);
-					
-					// Side points nowhere. Remove it
-					Linedef l = group.Key.Line;
-					group.Key.Dispose();
-
-					// Correct the linedef
-					if((l.Front == null) && (l.Back != null))
-					{
-						l.FlipVertices();
-						l.FlipSidedefs();
-					}
-
-					// Correct the sided flags
-					l.ApplySidedFlags();
-				}
-				else
-				{
-					// Reattach side
-					group.Key.SetSector(group.Value);
-
-					// Store
-					adjustedsides.Add(group.Key);
-				}
-			}
-
-			// Inner side textures may need updating
-			foreach(Sidedef s in innersides)
-			{
-				if(!s.IsDisposed) s.RemoveUnneededTextures(s.Other != null, false, true);
-			}
-
-			// Update map geometry
-			General.Map.Map.Update();
-
-			// Done
-			return adjustedsides;
-		}
-
 		//mxd
-		private static Sector FindPotentialSector(Linedef line, bool front, HashSet<Sidedef> sidestoexclude)
+		public static Sector FindPotentialSector(Linedef line, bool front)
 		{
 			List<LinedefSide> sectorsides = FindPotentialSectorAt(line, front);
 			if(sectorsides == null) return null;
 			Sector result = null;
 
-			// Special case: if sectorsides match sidestoexclude and all sidestoexclude reference the same sector, return that sector
-			if(sidestoexclude.Count > 2 && sectorsides.Count == sidestoexclude.Count)
-			{
-				bool allsidesmatch = true;
-
-				// Check if all sidestoexclude reference the same sector...
-				foreach(Sidedef s in sidestoexclude)
-				{
-					if(result == null) result = s.Sector;
-					else if(result != s.Sector)
-					{
-						allsidesmatch = false;
-						break;
-					}
-				}
-
-				// Check if sidestoexclude match sectorsides...
-				if(allsidesmatch)
-				{
-					HashSet<Sidedef> sectorsidesset = new HashSet<Sidedef>();
-					foreach(LinedefSide ls in sectorsides)
-					{
-						sectorsidesset.Add(ls.Front ? ls.Line.Front : ls.Line.Back);
-					}
-
-					allsidesmatch = sectorsidesset.SetEquals(sidestoexclude);
-				}
-
-				// Sides are already where they need to be
-				if(allsidesmatch) return result;
-			}
-
-			// Filter outersides from the list, proceed only if all sectorsides reference the same sector
+			// Proceed only if all sectorsides reference the same sector
 			foreach(LinedefSide sectorside in sectorsides)
 			{
 				Sidedef target = (sectorside.Front ? sectorside.Line.Front : sectorside.Line.Back);
-				if(target != null && !sidestoexclude.Contains(target))
+				if(target != null)
 				{
 					if(result == null) result = target.Sector;
 					else if(result != target.Sector) return null; // Fial...

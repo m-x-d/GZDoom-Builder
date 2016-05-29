@@ -35,6 +35,7 @@ namespace CodeImp.DoomBuilder.Geometry
 
 		private Linedef line;
 		private bool front;
+		private bool ignore; //mxd
 		
 		#endregion
 
@@ -42,6 +43,7 @@ namespace CodeImp.DoomBuilder.Geometry
 
 		public Linedef Line { get { return line; } set { line = value; } }
 		public bool Front { get { return front; } set { front = value; } }
+		public bool Ignore { get { return ignore; } set { ignore = value; } } //mxd
 
 		#endregion
 
@@ -109,7 +111,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		{
 			Sidedef side = (front ? line.Front : line.Back);
 			Sector sector = (side != null ? side.Sector : null);
-			return line + " (" + (front ? "front" : "back") + ")" + (sector != null ? ", Sector " + sector.Index : "");
+			return line + " (" + (front ? "front" : "back") + ")" + (sector != null ? ", Sector " + sector.Index : ", no sector");
 		}
 #endif
 

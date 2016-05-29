@@ -157,7 +157,11 @@ namespace CodeImp.DoomBuilder
 			else
 				message = message.TrimEnd() + " " + duration + " ms.";
 
+#if DEBUG
 			WriteLine(DebugMessageType.SPECIAL, message);
+#else
+			General.ShowErrorMessage(message, MessageBoxButtons.OK, false);
+#endif
 
 			starttime = -1;
 			storedtime = 0;

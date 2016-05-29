@@ -1988,9 +1988,9 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		/// <summary>This filters lines by a rectangular area.</summary>
-		public static ICollection<Linedef> FilterByArea(ICollection<Linedef> lines, ref RectangleF area)
+		public static List<Linedef> FilterByArea(ICollection<Linedef> lines, ref RectangleF area)
 		{
-			ICollection<Linedef> newlines = new List<Linedef>(lines.Count);
+			List<Linedef> newlines = new List<Linedef>(lines.Count);
 			
 			// Go for all lines
 			foreach(Linedef l in lines)
@@ -2045,17 +2045,18 @@ namespace CodeImp.DoomBuilder.Map
 		/// <summary>
 		/// Stitches marked geometry with non-marked geometry. Returns false when the operation failed.
 		/// </summary>
-		public bool StitchGeometry()
+		public bool StitchGeometry() { return StitchGeometry(false); } //mxd. Compatibility
+		public bool StitchGeometry(bool correctsectorrefs)
 		{
 			// Find vertices
 			ICollection<Vertex> movingverts = General.Map.Map.GetMarkedVertices(true);
 			ICollection<Vertex> fixedverts = General.Map.Map.GetMarkedVertices(false);
 			
 			// Find lines that moved during the drag
-			ICollection<Linedef> movinglines = LinedefsFromMarkedVertices(false, true, true);
+			List<Linedef> movinglines = LinedefsFromMarkedVertices(false, true, true);
 			
 			// Find all non-moving lines
-			ICollection<Linedef> fixedlines = LinedefsFromMarkedVertices(true, false, false);
+			List<Linedef> fixedlines = LinedefsFromMarkedVertices(true, false, false);
 			
 			// Determine area in which we are editing
 			RectangleF editarea = CreateArea(movinglines);
@@ -2074,24 +2075,382 @@ namespace CodeImp.DoomBuilder.Map
 			
 			// Split moving lines with unselected vertices
 			ICollection<Vertex> nearbyfixedverts = FilterByArea(fixedverts, ref editarea);
-			if(!SplitLinesByVertices(movinglines, nearbyfixedverts, STITCH_DISTANCE, movinglines))
+			if(!SplitLinesByVertices(movinglines, nearbyfixedverts, STITCH_DISTANCE, movinglines, correctsectorrefs))
 				return false;
 			
 			// Split non-moving lines with selected vertices
 			fixedlines = FilterByArea(fixedlines, ref editarea);
-			if(!SplitLinesByVertices(fixedlines, movingverts, STITCH_DISTANCE, movinglines))
+			if(!SplitLinesByVertices(fixedlines, movingverts, STITCH_DISTANCE, movinglines, correctsectorrefs))
 				return false;
+
+			//mxd. Split moving lines with fixed lines
+			if(!SplitLinesByLines(fixedlines, movinglines, correctsectorrefs)) return false;
 			
 			// Remove looped linedefs
 			RemoveLoopedLinedefs(movinglines);
 			
 			// Join overlapping lines
-			if(!JoinOverlappingLines(movinglines))
-				return false;
-			
+			if(!JoinOverlappingLines(movinglines)) return false;
+
 			EndAddRemove();
+
+			//mxd. Correct sector references
+			if(correctsectorrefs)
+			{
+				// Linedefs cache needs to be up to date...
+				Update(true, false);
+
+				// Fix stuff...
+				List<Linedef> changedlines = LinedefsFromMarkedVertices(false, true, true);
+				CorrectSectorReferences(changedlines, true);
+				CorrectOuterSides(new HashSet<Linedef>(changedlines));
+			}
 			
 			return true;
+		}
+
+		//mxd. Shameless SLADEMap::correctSectors ripoff... Corrects/builds sectors for all lines in [lines]
+		private static void CorrectSectorReferences(List<Linedef> lines, bool existing_only)
+		{
+			// Create a list of sidedefs to perform sector creation with
+			List<LinedefSide> edges = new List<LinedefSide>();
+			if(existing_only)
+			{
+				foreach(Linedef l in lines)
+				{
+					// Add only existing sides as edges (or front side if line has none)
+					if(l.Front != null || l.Back == null)
+						edges.Add(new LinedefSide(l, true));
+					if(l.Back != null)
+						edges.Add(new LinedefSide(l, false));
+				}
+			}
+			else
+			{
+				foreach(Linedef l in lines)
+				{
+					// Add front side
+					edges.Add(new LinedefSide(l, true));
+
+					// Add back side if there's a sector
+					if(General.Map.Map.GetSectorByCoordinates(l.GetSidePoint(false)) != null)
+						edges.Add(new LinedefSide(l, false));
+				}
+			}
+
+			HashSet<Sidedef> sides_correct = new HashSet<Sidedef>();
+			foreach(LinedefSide ls in edges)
+			{
+				if(ls.Front && ls.Line.Front != null)
+					sides_correct.Add(ls.Line.Front);
+				else if(!ls.Front && ls.Line.Back != null)
+					sides_correct.Add(ls.Line.Back);
+			}
+
+			//mxd. Get affected sectors
+			HashSet<Sector> affectedsectors = new HashSet<Sector>(General.Map.Map.GetSelectedSectors(true));
+			affectedsectors.UnionWith(General.Map.Map.GetUnselectedSectorsFromLinedefs(lines));
+
+			//mxd. Collect their lines
+			HashSet<Linedef> sectorlines = new HashSet<Linedef>();
+			foreach(Sector s in affectedsectors)
+			{
+				foreach(Sidedef side in s.Sidedefs)
+				{
+					if(side.Line != null) sectorlines.Add(side.Line);
+				}
+			}
+
+			// Build sectors
+			SectorBuilder builder = new SectorBuilder();
+			List<Sector> sectors_reused = new List<Sector>();
+
+			foreach(LinedefSide ls in edges)
+			{
+				// Skip if edge is ignored
+				if(ls.Ignore) continue;
+
+				// Run sector builder on current edge
+				if(!builder.TraceSector(ls.Line, ls.Front)) continue; // Don't create sector if trace failed
+
+				// Find any subsequent edges that were part of the sector created
+				bool has_existing_lines = false;
+				bool has_existing_sides = false;
+				bool has_zero_sided_lines = false;
+				bool has_sides_belonging_to_dragged_sectors = false; //mxd
+				List<LinedefSide> edges_in_sector = new List<LinedefSide>();
+				foreach(LinedefSide edge in builder.SectorEdges)
+				{
+					bool line_is_ours = false;
+					if(sectorlines.Contains(edge.Line)) has_sides_belonging_to_dragged_sectors = true; //mxd
+
+					foreach(LinedefSide ls2 in edges)
+					{
+						if(ls2.Line == edge.Line)
+						{
+							line_is_ours = true;
+							if(ls2.Front == edge.Front)
+							{
+								edges_in_sector.Add(ls2);
+								break;
+							}
+						}
+					}
+
+					if(line_is_ours)
+					{
+						if(edge.Line.Front == null && edge.Line.Back == null)
+							has_zero_sided_lines = true;
+					}
+					else
+					{
+						has_existing_lines = true;
+						if(edge.Front ? edge.Line.Front != null : edge.Line.Back != null)
+							has_existing_sides = true;
+					}
+				}
+
+				// Pasting or moving a two-sided line into an enclosed void should NOT
+				// create a new sector out of the entire void.
+				// Heuristic: if the traced sector includes any edges that are NOT
+				// "ours", and NONE of those edges already exist, that sector must be
+				// in an enclosed void, and should not be drawn.
+				// However, if existing_only is false, the caller expects us to create
+				// new sides anyway; skip this check.
+				if(existing_only && has_existing_lines && !has_existing_sides && !has_sides_belonging_to_dragged_sectors) continue;
+
+				// Ignore traced edges when trying to create any further sectors
+				foreach(LinedefSide ls3 in edges_in_sector) ls3.Ignore = true;
+
+				// Check if sector traced is already valid
+				if(builder.IsValidSector()) continue;
+
+				// Check if we traced over an existing sector (or part of one)
+				Sector sector = builder.FindExistingSector(sides_correct);
+				if(sector != null)
+				{
+					// Check if it's already been (re)used
+					bool reused = false;
+					foreach(Sector s in sectors_reused)
+					{
+						if(s == sector)
+						{
+							reused = true;
+							break;
+						}
+					}
+
+					// If we can reuse the sector, do so
+					if(!reused)
+						sectors_reused.Add(sector);
+					else
+						sector = null;
+				}
+
+				// Create sector
+				builder.CreateSector(sector, null);
+			}
+
+			// Remove any sides that weren't part of a sector
+			foreach(LinedefSide ls in edges)
+			{
+				if(ls.Ignore || ls.Line == null) continue;
+
+				if(ls.Front)
+				{
+					if(ls.Line.Front != null)
+					{
+						ls.Line.Front.Dispose();
+
+						// Update doublesided flag
+						ls.Line.ApplySidedFlags();
+					}
+				}
+				else
+				{
+					if(ls.Line.Back != null)
+					{
+						ls.Line.Back.Dispose();
+
+						// Update doublesided flag
+						ls.Line.ApplySidedFlags();
+					}
+				}
+			}
+
+			// Check if any lines need to be flipped
+			FlipBackwardLinedefs(lines);
+
+			// Find an adjacent sector to copy properties from
+			Sector sector_copy = null;
+			foreach(Linedef l in lines)
+			{
+				// Check front sector
+				Sector sector = (l.Front != null ? l.Front.Sector : null);
+				if(sector != null && !sector.Marked)
+				{
+					// Copy this sector if it isn't newly created
+					sector_copy = sector;
+					break;
+				}
+
+				// Check back sector
+				sector = (l.Back != null ? l.Back.Sector : null);
+				if(sector != null && !sector.Marked)
+				{
+					// Copy this sector if it isn't newly created
+					sector_copy = sector;
+					break;
+				}
+			}
+
+			// Go through newly created sectors
+			List<Sector> newsectors = General.Map.Map.GetMarkedSectors(true); //mxd
+			foreach(Sector s in newsectors)
+			{
+				// Skip if sector already has properties
+				if(s.CeilTexture != "-") continue;
+
+				// Copy from adjacent sector if any
+				if(sector_copy != null)
+				{
+					sector_copy.CopyPropertiesTo(s);
+					continue;
+				}
+
+				// Otherwise, use defaults from game configuration
+				s.SetFloorTexture(General.Map.Options.DefaultFloorTexture);
+				s.SetCeilTexture(General.Map.Options.DefaultCeilingTexture);
+				s.FloorHeight = General.Settings.DefaultFloorHeight;
+				s.CeilHeight = General.Settings.DefaultCeilingHeight;
+				s.Brightness = General.Settings.DefaultBrightness;
+			}
+
+			// Update line textures
+			List<Sidedef> newsides = General.Map.Map.GetMarkedSidedefs(true);
+			foreach(Sidedef side in newsides)
+			{
+				// Clear any unneeded textures
+				side.RemoveUnneededTextures(side.Other != null);
+
+				// Set middle texture if needed
+				if(side.MiddleRequired() && side.MiddleTexture == "-")
+				{
+					// Find adjacent texture (any)
+					string tex = GetAdjacentMiddleTexture(side.Line.Start);
+					if(tex == "-") tex = GetAdjacentMiddleTexture(side.Line.End);
+
+					// If no adjacent texture, get default from game configuration
+					if(tex == "-") tex = General.Settings.DefaultTexture;
+
+					// Set texture
+					side.SetTextureMid(tex);
+				}
+
+				// Update sided flags
+				side.Line.ApplySidedFlags();
+			}
+
+			// Remove any extra sectors
+			General.Map.Map.RemoveUnusedSectors(false);
+		}
+
+		//mxd. Try to create outer sidedefs if needed
+		private static void CorrectOuterSides(HashSet<Linedef> changedlines)
+		{
+			HashSet<Linedef> linesmissingfront = new HashSet<Linedef>();
+			HashSet<Linedef> linesmissingback = new HashSet<Linedef>();
+
+			// Collect lines without front/back sides
+			foreach(Linedef line in changedlines)
+			{
+				if(line.Back == null) linesmissingback.Add(line);
+				if(line.Front == null) linesmissingfront.Add(line);
+			}
+
+			// Find sectors to join singlesided lines
+			Dictionary<Linedef, Sector> linefrontsectorref = new Dictionary<Linedef, Sector>();
+			foreach(Linedef line in linesmissingfront)
+			{
+				// Line is now inside a sector? (check from the missing side!)
+				Sector nearest = Tools.FindPotentialSector(line, true);
+
+				// We can reattach our line!
+				if(nearest != null) linefrontsectorref[line] = nearest;
+			}
+
+			Dictionary<Linedef, Sector> linebacksectorref = new Dictionary<Linedef, Sector>();
+			foreach(Linedef line in linesmissingback)
+			{
+				// Line is now inside a sector? (check from the missing side!)
+				Sector nearest = Tools.FindPotentialSector(line, false);
+
+				// We can reattach our line!
+				if(nearest != null) linebacksectorref[line] = nearest;
+			}
+
+			// Check single-sided lines. Add new sidedefs if necessary
+			// Key is dragged single-sided line, value is a sector dragged line ended up in.
+			foreach(KeyValuePair<Linedef, Sector> group in linefrontsectorref)
+			{
+				Linedef line = group.Key;
+
+				// Create new sidedef
+				Sidedef newside = General.Map.Map.CreateSidedef(line, true, group.Value);
+
+				// Copy props from the other side
+				Sidedef propssource = (line.Front ?? line.Back);
+				propssource.CopyPropertiesTo(newside);
+
+				// Correct the linedef
+				if((line.Front == null) && (line.Back != null))
+				{
+					line.FlipVertices();
+					line.FlipSidedefs();
+				}
+			}
+
+			foreach(KeyValuePair<Linedef, Sector> group in linebacksectorref)
+			{
+				Linedef line = group.Key;
+
+				// Create new sidedef
+				Sidedef newside = General.Map.Map.CreateSidedef(line, false, group.Value);
+
+				// Copy props from the other side
+				Sidedef propssource = (line.Front ?? line.Back);
+				propssource.CopyPropertiesTo(newside);
+
+				// Correct the linedef
+				if((line.Front == null) && (line.Back != null))
+				{
+					line.FlipVertices();
+					line.FlipSidedefs();
+				}
+			}
+
+			// Adjust textures
+			foreach(Linedef l in changedlines)
+			{
+				if(l.Front != null) l.Front.RemoveUnneededTextures(l.Back != null);
+				if(l.Back != null) l.Back.RemoveUnneededTextures(l.Front != null);
+
+				// Correct the sided flags
+				l.ApplySidedFlags();
+			}
+		}
+
+		//mxd
+		private static string GetAdjacentMiddleTexture(Vertex v)
+		{
+			// Go through adjacent lines
+			foreach(Linedef l in v.Linedefs)
+			{
+				if(l.Front != null && l.Front.MiddleTexture != "-") return l.Front.MiddleTexture;
+				if(l.Back != null && l.Back.MiddleTexture != "-") return l.Back.MiddleTexture;
+			}
+
+			return "-";
 		}
 		
 		#endregion
@@ -2421,12 +2780,12 @@ namespace CodeImp.DoomBuilder.Map
 
 		/// <summary>This splits the given lines with the given vertices. All affected lines
 		/// will be added to changedlines. Returns false when the operation failed.</summary>
-		public static bool SplitLinesByVertices(ICollection<Linedef> lines, ICollection<Vertex> verts, float splitdist, ICollection<Linedef> changedlines)
+		public static bool SplitLinesByVertices(ICollection<Linedef> lines, ICollection<Vertex> verts, float splitdist, ICollection<Linedef> changedlines) { return SplitLinesByVertices(lines, verts, splitdist, changedlines, false); }
+		public static bool SplitLinesByVertices(ICollection<Linedef> lines, ICollection<Vertex> verts, float splitdist, ICollection<Linedef> changedlines, bool removeinnerlines)
 		{
 			if(verts.Count == 0 || lines.Count == 0) return true; //mxd
 			
 			float splitdist2 = splitdist * splitdist;
-			bool splitted;
 
 			//mxd. Create blockmap
 			RectangleF area = CreateArea(lines);
@@ -2438,70 +2797,238 @@ namespace CodeImp.DoomBuilder.Map
 			int bmHeight = blockmap.Size.Height;
 			BlockEntry[,] bmap = blockmap.Map;
 
-			do
+			//mxd
+			//HashSet<Vertex> splitverts = new HashSet<Vertex>();
+			//HashSet<Sector> changedsectors = (removeinnerlines ? General.Map.Map.GetSectorsFromLinedefs(changedlines) : new HashSet<Sector>());
+			//HashSet<Linedef> initialchanedlines = new HashSet<Linedef>(changedlines);
+
+			for(int w = 0; w < bmWidth; w++) 
 			{
-				// No split yet
-				splitted = false;
-
-				for(int w = 0; w < bmWidth; w++) 
+				for(int h = 0; h < bmHeight; h++) 
 				{
-					for(int h = 0; h < bmHeight; h++) 
+					BlockEntry block = bmap[w, h];
+					if(block.Vertices.Count == 0 || block.Lines.Count == 0) continue;
+
+					// Go for all the lines
+					for(int i = 0; i < block.Lines.Count; i++)
 					{
-						BlockEntry block = bmap[w, h];
-						if(block.Vertices.Count == 0 || block.Lines.Count == 0) continue;
-
-						// Go for all the lines
-						foreach(Linedef l in block.Lines) 
+						Linedef l = block.Lines[i];
+						
+						// Go for all the vertices
+						for(int c = 0; c < block.Vertices.Count; c++)
 						{
-							// Go for all the vertices
-							foreach(Vertex v in block.Vertices) 
+							Vertex v = block.Vertices[c];
+
+							// Check if v is close enough to l for splitting
+							if(l.DistanceToSq(v.Position, true) <= splitdist2) 
 							{
-								// Check if v is close enough to l for splitting
-								if(l.DistanceToSq(v.Position, true) <= splitdist2) 
+								// Line is not already referencing v?
+								Vector2D deltastart = l.Start.Position - v.Position;
+								Vector2D deltaend = l.End.Position - v.Position;
+								if(((Math.Abs(deltastart.x) > 0.001f) || (Math.Abs(deltastart.y) > 0.001f)) &&
+								   ((Math.Abs(deltaend.x) > 0.001f) || (Math.Abs(deltaend.y) > 0.001f))) 
 								{
-									// Line is not already referencing v?
-									Vector2D deltastart = l.Start.Position - v.Position;
-									Vector2D deltaend = l.End.Position - v.Position;
-									if(((Math.Abs(deltastart.x) > 0.001f) || (Math.Abs(deltastart.y) > 0.001f)) &&
-									   ((Math.Abs(deltaend.x) > 0.001f) || (Math.Abs(deltaend.y) > 0.001f))) 
+									// Split line l with vertex v
+									Linedef nl = l.Split(v);
+									if(nl == null) return false;
+									v.Marked = true; //mxd
+									//splitverts.Add(v); //mxd
+
+									// Add the new line to the list
+									lines.Add(nl);
+									blockmap.AddLinedef(nl);
+
+									// Both lines must be updated because their new length is relevant for next iterations!
+									l.UpdateCache();
+									nl.UpdateCache();
+
+									// Add both lines to changedlines
+									if(changedlines != null) 
 									{
-										// Split line l with vertex v
-										Linedef nl = l.Split(v);
-										if(nl == null) return false;
-
-										// Add the new line to the list
-										lines.Add(nl);
-										blockmap.AddLinedef(nl);
-
-										// Both lines must be updated because their new length
-										// is relevant for next iterations!
-										l.UpdateCache();
-										nl.UpdateCache();
-
-										// Add both lines to changedlines
-										if(changedlines != null) 
-										{
-											changedlines.Add(l);
-											changedlines.Add(nl);
-										}
-
-										// Count the split
-										splitted = true;
-										break;
+										changedlines.Add(l);
+										changedlines.Add(nl);
 									}
 								}
 							}
-
-							// Will have to restart when splitted
-							// TODO: If we make (linked) lists from the collections first,
-							// we don't have to restart when splitted?
-							if(splitted) break;
 						}
 					}
 				}
 			}
-			while(splitted);
+
+			//mxd. Remove lines, which are inside affected sectors
+			/*if(removeinnerlines)
+			{
+				HashSet<Linedef> alllines = new HashSet<Linedef>(lines);
+				if(changedlines != null) alllines.UnionWith(changedlines);
+
+				foreach(Linedef l in alllines) l.UpdateCache();
+				foreach(Sector s in changedsectors) s.UpdateBBox();
+				foreach(Linedef l in alllines)
+				{
+					// Remove line when both it's start and end are inside a changed sector and neither side references it
+					if(l.Start != null && l.End != null && !initialchanedlines.Contains(l) &&
+					  (l.Front == null || !changedsectors.Contains(l.Front.Sector)) &&
+					  (l.Back == null || !changedsectors.Contains(l.Back.Sector)))
+					{
+						foreach(Sector s in changedsectors)
+						{
+							if(s.Intersect(l.Start.Position) && s.Intersect(l.End.Position))
+							{
+								Vertex[] tocheck = new[] { l.Start, l.End };
+
+								// Remove from collections and dispose
+								lines.Remove(l);
+								if(changedlines != null) changedlines.Remove(l);
+								l.Dispose();
+
+								foreach(Vertex v in tocheck)
+								{
+									// If the vertex only has 2 linedefs attached, then merge the linedefs
+									if(v.Linedefs.Count == 2)
+									{
+										Linedef ld1 = General.GetByIndex(v.Linedefs, 0);
+										Linedef ld2 = General.GetByIndex(v.Linedefs, 1);
+										Vertex v2 = (ld2.Start == v) ? ld2.End : ld2.Start;
+										if(ld1.Start == v) ld1.SetStartVertex(v2); else ld1.SetEndVertex(v2);
+										
+										// Remove from collections and dispose
+										lines.Remove(ld2);
+										if(changedlines != null) changedlines.Remove(ld2);
+										ld2.Dispose();
+
+										// Trash vertex
+										v.Dispose();
+									}
+								}
+
+								break;
+							}
+						}
+					}
+				}
+			}*/
 			
+			return true;
+		}
+
+		/// <summary>Splits lines by lines. Adds new lines to the second collection. Returns false when the operation failed.</summary>
+		public static bool SplitLinesByLines(IList<Linedef> lines, IList<Linedef> changedlines, bool removeinnerlines) //mxd
+		{
+			if(lines.Count == 0 || changedlines.Count == 0) return true;
+			
+			// Create blockmap
+			RectangleF area = RectangleF.Union(CreateArea(lines), CreateArea(changedlines));
+			BlockMap<BlockEntry> blockmap = new BlockMap<BlockEntry>(area);
+			blockmap.AddLinedefsSet(lines);
+			blockmap.AddLinedefsSet(changedlines);
+			int bmWidth = blockmap.Size.Width;
+			int bmHeight = blockmap.Size.Height;
+			BlockEntry[,] bmap = blockmap.Map;
+
+			//mxd
+			HashSet<Vertex> splitverts = new HashSet<Vertex>();
+			HashSet<Sector> changedsectors = (removeinnerlines ? General.Map.Map.GetSectorsFromLinedefs(changedlines) : new HashSet<Sector>());
+			HashSet<Linedef> initialchanedlines = new HashSet<Linedef>(changedlines);
+
+			// Check for intersections
+			for(int w = 0; w < bmWidth; w++)
+			{
+				for(int h = 0; h < bmHeight; h++)
+				{
+					BlockEntry block = bmap[w, h];
+					if(block.Lines.Count == 0) continue;
+
+					for(int i = 0; i < block.Lines.Count; i++)
+					{
+						Linedef l1 = block.Lines[i];
+						for(int c = 0; c < block.Lines.Count; c++)
+						{
+							if(i == c) continue;
+
+							Linedef l2 = block.Lines[c];
+							if(l1 == l2 
+								|| l1.Start.Position == l2.Start.Position
+								|| l1.Start.Position == l2.End.Position
+								|| l1.End.Position == l2.Start.Position
+								|| l1.End.Position == l2.End.Position) continue;
+
+							// Check for intersection
+							Vector2D intersection = Line2D.GetIntersectionPoint(new Line2D(l1), new Line2D(l2), true);
+							if(!float.IsNaN(intersection.x))
+							{
+								// Create split vertex
+								Vertex splitvertex = General.Map.Map.CreateVertex(intersection);
+								if(splitvertex == null) return false;
+
+								// Split both lines
+								Linedef nl1 = l1.Split(splitvertex);
+								if(nl1 == null) return false;
+
+								Linedef nl2 = l2.Split(splitvertex);
+								if(nl2 == null) return false;
+
+								// Mark split vertex
+								splitvertex.Marked = true;
+								splitverts.Add(splitvertex); //mxd
+
+								// Add to the second collection
+								changedlines.Add(nl1);
+								changedlines.Add(nl2);
+
+								// And to the block entry
+								blockmap.AddLinedef(nl1);
+								blockmap.AddLinedef(nl2);
+							}
+						}
+					}
+				}
+			}
+
+			//mxd. Remove lines, which are inside affected sectors
+			if(removeinnerlines)
+			{
+				HashSet<Linedef> alllines = new HashSet<Linedef>(lines);
+				alllines.UnionWith(changedlines);
+
+				foreach(Linedef l in alllines) l.UpdateCache();
+				foreach(Sector s in changedsectors) s.UpdateBBox();
+				foreach(Linedef l in alllines)
+				{
+					// Remove line when both it's start and end are inside a changed sector and neither side references it
+					if(l.Start != null && l.End != null && !initialchanedlines.Contains(l) &&
+					  (l.Front == null || !changedsectors.Contains(l.Front.Sector)) &&
+					  (l.Back == null || !changedsectors.Contains(l.Back.Sector)))
+					{
+						foreach(Sector s in changedsectors)
+						{
+							if(s.Intersect(l.Start.Position) && s.Intersect(l.End.Position))
+							{
+								Vertex[] tocheck = new[] { l.Start, l.End };
+								l.Dispose();
+
+								foreach(Vertex v in tocheck)
+								{
+									// If the vertex only has 2 linedefs attached, then merge the linedefs
+									if(!v.IsDisposed && v.Linedefs.Count == 2)
+									{
+										Linedef ld1 = General.GetByIndex(v.Linedefs, 0);
+										Linedef ld2 = General.GetByIndex(v.Linedefs, 1);
+										Vertex v2 = (ld2.Start == v) ? ld2.End : ld2.Start;
+										if(ld1.Start == v) ld1.SetStartVertex(v2); else ld1.SetEndVertex(v2);
+										ld2.Dispose();
+
+										// Trash vertex
+										v.Dispose();
+									}
+								}
+
+								break;
+							}
+						}
+					}
+				}
+			}
+
 			return true;
 		}
 
@@ -3033,7 +3560,7 @@ namespace CodeImp.DoomBuilder.Map
 		
 		/// <summary>This makes a list of lines related to marked vertices.
 		/// A line is unstable when one vertex is marked and the other isn't.</summary>
-		public ICollection<Linedef> LinedefsFromMarkedVertices(bool includeunselected, bool includestable, bool includeunstable)
+		public List<Linedef> LinedefsFromMarkedVertices(bool includeunmarked, bool includestable, bool includeunstable)
 		{
 			List<Linedef> list = new List<Linedef>((numlinedefs / 2) + 1);
 			
@@ -3043,7 +3570,7 @@ namespace CodeImp.DoomBuilder.Map
 				// Check if this is to be included
 				if((includestable && (l.Start.Marked && l.End.Marked)) ||
 				   (includeunstable && (l.Start.Marked ^ l.End.Marked)) ||
-				   (includeunselected && (!l.Start.Marked && !l.End.Marked)))
+				   (includeunmarked && (!l.Start.Marked && !l.End.Marked)))
 				{
 					// Add to list
 					list.Add(l);
@@ -3127,6 +3654,37 @@ namespace CodeImp.DoomBuilder.Map
 					sectorsbysides[line.Front.Sector].Add(line.Front);
 				}
 				if(line.Back != null && line.Back.Sector != null && !selectedsectors.Contains(line.Back.Sector))
+				{
+					if(!sectorsbysides.ContainsKey(line.Back.Sector)) sectorsbysides.Add(line.Back.Sector, new HashSet<Sidedef>());
+					sectorsbysides[line.Back.Sector].Add(line.Back);
+				}
+			}
+
+			// Add sectors, which have all their lines selected
+			foreach(var group in sectorsbysides)
+			{
+				if(group.Key.Sidedefs.Count == group.Value.Count) result.Add(group.Key);
+			}
+
+			return result;
+		}
+
+		//mxd
+		/// <summary>Gets sectors, which have all their linedefs selected</summary>
+		public HashSet<Sector> GetSectorsFromLinedefs(IEnumerable<Linedef> lines)
+		{
+			HashSet<Sector> result = new HashSet<Sector>();
+			Dictionary<Sector, HashSet<Sidedef>> sectorsbysides = new Dictionary<Sector, HashSet<Sidedef>>();
+
+			// Collect unselected sectors, which sidedefs belong to selected lines 
+			foreach(Linedef line in lines)
+			{
+				if(line.Front != null && line.Front.Sector != null)
+				{
+					if(!sectorsbysides.ContainsKey(line.Front.Sector)) sectorsbysides.Add(line.Front.Sector, new HashSet<Sidedef>());
+					sectorsbysides[line.Front.Sector].Add(line.Front);
+				}
+				if(line.Back != null && line.Back.Sector != null)
 				{
 					if(!sectorsbysides.ContainsKey(line.Back.Sector)) sectorsbysides.Add(line.Back.Sector, new HashSet<Sidedef>());
 					sectorsbysides[line.Back.Sector].Add(line.Back);

@@ -103,8 +103,12 @@ namespace CodeImp.DoomBuilder.Compilers
 			string inputfilepath = Path.Combine(this.tempdir.FullName, inputfile);
 			using(FileStream stream = File.OpenRead(inputfilepath))
 			{
-				DataLocation dl = new DataLocation(DataLocation.RESOURCE_DIRECTORY, Path.GetDirectoryName(inputfile), false, false, false);
-				TextResourceData data = new TextResourceData(stream, dl, inputfile, false);
+				// Map SCRIPTS lump is empty. Abort the process without generating any warnings or errors. 
+				if(SourceIsMapScriptsLump && stream.Length == 0) return false;
+				
+				string targetfile = (SourceIsMapScriptsLump ? Path.GetDirectoryName(General.Map.FilePathName) : inputfile);
+				DataLocation dl = new DataLocation(DataLocation.RESOURCE_DIRECTORY, Path.GetDirectoryName(General.Map.FilePathName), false, false, false);
+				TextResourceData data = new TextResourceData(stream, dl, targetfile, false);
 				if(!parser.Parse(data, info.Files, true, AcsParserSE.IncludeType.NONE, false))
 				{
 					// Check for errors

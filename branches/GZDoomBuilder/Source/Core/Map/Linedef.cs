@@ -1074,7 +1074,7 @@ namespace CodeImp.DoomBuilder.Map
 		{
 			// Check which lines were 2 sided
 			bool otherwas2s = ((other.Front != null) && (other.Back != null));
-			//bool thiswas2s = ((this.Front != null) && (this.Back != null));
+			bool thiswas2s = ((this.Front != null) && (this.Back != null));
 			
 			// Get sector references
 			Sector otherfs = (other.front != null ? other.front.Sector : null);
@@ -1178,8 +1178,7 @@ namespace CodeImp.DoomBuilder.Map
 						// Other line with its back to this?
 						if(other.start == this.end)
 						{
-							//mxd. Marked sector means other side belongs to a sector being moved...
-							if(otherbs == null || !otherbs.Marked)
+							if(otherbs == null)
 							{
 								// Copy textures
 								if(other.back != null) other.back.AddTexturesTo(this.front);
@@ -1190,8 +1189,7 @@ namespace CodeImp.DoomBuilder.Map
 						}
 						else
 						{
-							//mxd. Marked sector means other side belongs to a sector being moved...
-							if(otherfs == null || !otherfs.Marked)
+							if(otherfs == null)
 							{
 								// Copy textures
 								if(other.front != null) other.front.AddTexturesTo(this.front);
@@ -1206,9 +1204,8 @@ namespace CodeImp.DoomBuilder.Map
 						// This line with its back to the other?
 						if(this.start == other.end)
 						{
-							//mxd. Marked sector means other side belongs to a sector being moved...
 							//mxd. Attach our front to other back?
-							if(otherbs == null || !otherbs.Marked)
+							if(otherbs == null)
 							{
 								// Copy textures
 								if(other.back != null) other.back.AddTexturesTo(this.front);
@@ -1218,7 +1215,7 @@ namespace CodeImp.DoomBuilder.Map
 								if(front != null && !JoinChangeSidedefs(other, false, front)) return false;
 							}
 							//mxd. Attach our back to other front?
-							else if(otherfs == null || !otherfs.Marked)
+							else if(otherfs == null)
 							{
 								// Copy textures
 								if(other.front != null) other.front.AddTexturesTo(this.back);
@@ -1231,9 +1228,8 @@ namespace CodeImp.DoomBuilder.Map
 						// Both lines face the same way
 						else
 						{
-							//mxd. Marked sector means other side belongs to a sector being moved...
 							//mxd. Attach our back to other back?
-							if(otherbs == null || !otherbs.Marked)
+							if(otherbs == null)
 							{
 								// Copy textures
 								if(other.back != null) other.back.AddTexturesTo(this.back);
@@ -1243,7 +1239,7 @@ namespace CodeImp.DoomBuilder.Map
 								if(back != null && !JoinChangeSidedefs(other, false, back)) return false;
 							}
 							//mxd. Attach our front to other front?
-							else if(otherfs == null || !otherfs.Marked)
+							else if(otherfs == null)
 							{
 								// Copy textures
 								if(other.front != null) other.front.AddTexturesTo(this.front);
@@ -1262,8 +1258,8 @@ namespace CodeImp.DoomBuilder.Map
 					other.ApplySidedFlags();
 				
 				// Remove unneeded textures
-				//if(other.front != null) other.front.RemoveUnneededTextures(!(otherwas2s && thiswas2s));
-				//if(other.back != null) other.back.RemoveUnneededTextures(!(otherwas2s && thiswas2s));
+				if(other.front != null) other.front.RemoveUnneededTextures(!(otherwas2s && thiswas2s));
+				if(other.back != null) other.back.RemoveUnneededTextures(!(otherwas2s && thiswas2s));
 			}
 			
 			// If either of the two lines was selected, keep the other selected
