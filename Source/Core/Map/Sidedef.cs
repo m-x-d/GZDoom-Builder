@@ -341,7 +341,7 @@ namespace CodeImp.DoomBuilder.Map
 			if(force || ((linedef.Tag == 0) && (linedef.Action == 0) && (sector.Tag == 0) &&
 				((Other == null) || (Other.sector.Tag == 0))))
 			{
-				if(!HighRequired())
+				/*if(!HighRequired())
 				{
 					BeforePropsChange(); //mxd
 					changed = true;
@@ -349,13 +349,13 @@ namespace CodeImp.DoomBuilder.Map
 					this.longtexnamehigh = MapSet.EmptyLongName;
 					General.Map.IsChanged = true;
 				} 
-				else if(shiftmiddle && this.longtexnamehigh == MapSet.EmptyLongName) //mxd
+				else*/ if(shiftmiddle && this.longtexnamehigh == MapSet.EmptyLongName && HighRequired()) //mxd
 				{
 					SetTextureHigh(this.texnamemid);
 					changed = true;
 				}
 
-				if(!LowRequired())
+				/*if(!LowRequired())
 				{
 					if(!changed) //mxd
 					{
@@ -365,8 +365,8 @@ namespace CodeImp.DoomBuilder.Map
 					this.texnamelow = "-";
 					this.longtexnamelow = MapSet.EmptyLongName;
 					General.Map.IsChanged = true;
-				} 
-				else if(shiftmiddle && this.longtexnamelow == MapSet.EmptyLongName) //mxd 
+				}
+				else*/ if(shiftmiddle && this.longtexnamelow == MapSet.EmptyLongName && LowRequired()) //mxd 
 				{
 					SetTextureLow(this.texnamemid);
 					changed = true;

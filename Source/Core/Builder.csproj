@@ -888,6 +888,7 @@
     <Compile Include="GZBuilder\Data\SharpCompressHelper.cs" />
     <Compile Include="GZBuilder\Data\SkyboxInfo.cs" />
     <Compile Include="GZBuilder\Data\ThingCopyData.cs" />
+    <Compile Include="Map\SectorBuilder.cs" />
     <Compile Include="Rendering\VisualVertexHandle.cs" />
     <Compile Include="Geometry\Line3D.cs" />
     <Compile Include="Data\Scripting\ScriptHandlerAttribute.cs" />

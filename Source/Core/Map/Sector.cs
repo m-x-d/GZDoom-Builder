@@ -524,44 +524,36 @@ namespace CodeImp.DoomBuilder.Map
 		}
 		
 		// This checks if the given point is inside the sector polygon
+		// See: http://paulbourke.net/geometry/polygonmesh/index.html#insidepoly
 		public bool Intersect(Vector2D p) 
 		{
 			//mxd. Check bounding box first
 			if(p.x < bbox.Left || p.x > bbox.Right || p.y < bbox.Top || p.y > bbox.Bottom) return false;
 			
 			uint c = 0;
+			Vector2D v1, v2;
 			
 			// Go for all sidedefs
 			foreach(Sidedef sd in sidedefs)
 			{
 				// Get vertices
-				Vector2D v1 = sd.Line.Start.Position;
-				Vector2D v2 = sd.Line.End.Position;
+				v1 = sd.Line.Start.Position;
+				v2 = sd.Line.End.Position;
 
 				//mxd. On top of a vertex?
 				if(p == v1 || p == v2) return true;
-				
-				// Determine min/max values
-				float miny = Math.Min(v1.y, v2.y);
-				float maxy = Math.Max(v1.y, v2.y);
-				float maxx = Math.Max(v1.x, v2.x);
-				
+
 				// Check for intersection
-				if((p.y > miny) && (p.y <= maxy))
-				{
-					if(p.x <= maxx)
-					{
-						if(v1.y != v2.y)
-						{
-							float xint = (p.y - v1.y) * (v2.x - v1.x) / (v2.y - v1.y) + v1.x;
-							if((v1.x == v2.x) || (p.x <= xint)) c++;
-						}
-					}
-				}
+				if(v1.y != v2.y //mxd. If line is not horizontal...
+				  && p.y >  (v1.y < v2.y ? v1.y : v2.y) //mxd. ...And test point y intersects with the line y bounds...
+				  && p.y <= (v1.y > v2.y ? v1.y : v2.y) //mxd
+				  && (p.x < (v1.x < v2.x ? v1.x : v2.x) || (p.x <= (v1.x > v2.x ? v1.x : v2.x) //mxd. ...And test point x is to the left of the line, or is inside line x bounds and intersects it
+						&& (v1.x == v2.x || p.x <= ((p.y - v1.y) * (v2.x - v1.x) / (v2.y - v1.y) + v1.x)))))
+					c++; //mxd. ...Count the line as crossed
 			}
-			
-			// Inside this polygon?
-			return ((c & 0x00000001UL) != 0);
+
+			// Inside this polygon when we crossed odd number of polygon lines
+			return (c % 2 != 0);
 		}
 		
 		// This creates a bounding box rectangle
@@ -604,6 +596,12 @@ namespace CodeImp.DoomBuilder.Map
 			
 			// Return rectangle
 			return new RectangleF(left, top, right - left, bottom - top);
+		}
+
+		//mxd
+		internal void UpdateBBox()
+		{
+			bbox = CreateBBox();
 		}
 		
 		// This joins the sector with another sector

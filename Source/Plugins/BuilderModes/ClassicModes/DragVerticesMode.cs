@@ -92,62 +92,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Map.Map.ClearSelectedVertices();
 			General.Map.Map.SelectMarkedVertices(true, true);
 
-			//mxd. Mark stable lines now (marks will be carried to split lines by MapSet.StitchGeometry())
-			HashSet<Linedef> stablelines = (!cancelled ? new HashSet<Linedef>(General.Map.Map.LinedefsFromMarkedVertices(false, true, false)) : new HashSet<Linedef>());
-			foreach(Linedef l in stablelines) l.Marked = true;
-
-			//mxd. Mark moved sectors (used in Linedef.Join())
-			HashSet<Sector> draggeddsectors = (!cancelled ? General.Map.Map.GetUnselectedSectorsFromLinedefs(stablelines) : new HashSet<Sector>());
-			foreach(Sector s in draggeddsectors) s.Marked = true;
-
 			// Perform normal disengage
 			base.OnDisengage();
 			
 			// When not cancelled
 			if(!cancelled)
 			{
-				//mxd. Get new lines from linedef marks...
-				HashSet<Linedef> newlines = new HashSet<Linedef>(General.Map.Map.GetMarkedLinedefs(true));
-
-				//mxd. Marked lines were created during linedef splitting
-				HashSet<Linedef> changedlines = new HashSet<Linedef>(stablelines);
-				changedlines.UnionWith(newlines);
-				foreach(Linedef l in unstablelines) if(!l.IsDisposed) changedlines.Add(l);
-
-				//mxd. Get sectors, which have all their linedefs selected (otherwise those would be destroyed after moving the selection)
-				HashSet<Sector> toadjust = General.Map.Map.GetUnselectedSectorsFromLinedefs(changedlines);
-				
-				//mxd. If linedefs were dragged, reattach/add/remove sidedefs
-				if(changedlines.Count > 0)
-				{
-					// Reattach/add/remove outer sidedefs
-					HashSet<Sidedef> adjustedsides = Tools.AdjustOuterSidedefs(toadjust, changedlines);
-
-					// Split outer sectors
-					Tools.SplitOuterSectors(changedlines);
-
-					// Remove unneeded textures
-					foreach(Sidedef side in adjustedsides)
-					{
-						if(side.IsDisposed) continue;
-						side.RemoveUnneededTextures(true, true, true);
-						if(side.Other != null) side.Other.RemoveUnneededTextures(true, true, true);
-					}
-
-					// Additional verts may've been created
-					if(selectedverts.Count > 1)
-					{
-						foreach(Linedef l in changedlines)
-						{
-							if(!unstablelines.Contains(l))
-							{
-								l.Start.Selected = true;
-								l.End.Selected = true;
-							}
-						}
-					}
-				}
-				
 				// If only a single vertex was selected, deselect it now
 				if(selectedverts.Count == 1) General.Map.Map.ClearSelectedVertices();
 			}

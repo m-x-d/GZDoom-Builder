@@ -118,31 +118,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// When not cancelled
 			if(!cancelled)
 			{
-				//mxd. Collect changed lines
-				HashSet<Linedef> changedlines = new HashSet<Linedef>(selectedlines);
-				foreach(Linedef l in unstablelines) if(!l.IsDisposed) changedlines.Add(l);
-
-				//mxd. Collect changed sectors
-				HashSet<Sector> toadjust = new HashSet<Sector>(selectedsectors);
-
-				//mxd. Add sectors, which are not selected, but have all their linedefs selected
-				// (otherwise those would be destroyed after moving the selection)
-				toadjust.UnionWith(General.Map.Map.GetUnselectedSectorsFromLinedefs(changedlines));
-
-				//mxd. Process outer sidedefs
-				HashSet<Sidedef> adjustedsides = Tools.AdjustOuterSidedefs(toadjust, changedlines);
-
-				//mxd. Split outer sectors
-				Tools.SplitOuterSectors(changedlines);
-
-				//mxd. Remove unneeded textures
-				foreach(Sidedef side in adjustedsides)
-				{
-					if(side.IsDisposed) continue;
-					side.RemoveUnneededTextures(true, true, true);
-					if(side.Other != null) side.Other.RemoveUnneededTextures(true, true, true);
-				}
-
 				// If only a single sector was selected, deselect it now
 				if(selectedsectors.Count == 1)
 				{

@@ -17,6 +17,7 @@
 #region ================== Namespaces
 
 using System;
+using CodeImp.DoomBuilder.Map;
 
 #endregion
 
@@ -64,6 +65,13 @@ namespace CodeImp.DoomBuilder.Geometry
 		{
 			this.v1 = new Vector2D(x1, y1);
 			this.v2 = new Vector2D(x2, y2);
+		}
+
+		//mxd. Constructor
+		public Line2D(Linedef line)
+		{
+			this.v1 = line.Start.Position;
+			this.v2 = line.End.Position;
 		}
 		
 		#endregion

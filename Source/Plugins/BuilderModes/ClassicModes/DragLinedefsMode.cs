@@ -102,10 +102,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			ICollection<Vertex> verts = General.Map.Map.GetVerticesFromLinesMarks(true);
 			foreach(Vertex v in verts) v.Selected = true;
 
-			//mxd. Mark moved sectors (used in Linedef.Join())
-			HashSet<Sector> draggeddsectors = General.Map.Map.GetUnselectedSectorsFromLinedefs(selectedlines);
-			foreach(Sector s in draggeddsectors) s.Marked = true;
-
 			// Perform normal disengage
 			base.OnDisengage();
 
@@ -115,31 +111,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// When not cancelled
 			if(!cancelled)
 			{
-				//mxd. Get new lines from linedef marks...
-				HashSet<Linedef> newlines = new HashSet<Linedef>(General.Map.Map.GetMarkedLinedefs(true));
-
-				//mxd. Marked lines were created during linedef splitting
-				HashSet<Linedef> changedlines = new HashSet<Linedef>(selectedlines);
-				changedlines.UnionWith(newlines);
-				foreach(Linedef l in unstablelines) if(!l.IsDisposed) changedlines.Add(l);
-
-				//mxd. Add sectors, which have all their linedefs selected (otherwise those would be destroyed after moving the selection)
-				HashSet<Sector> toadjust = General.Map.Map.GetUnselectedSectorsFromLinedefs(changedlines);
-
-				//mxd. Reattach/add/remove outer sidedefs
-				HashSet<Sidedef> adjustedsides = Tools.AdjustOuterSidedefs(toadjust, changedlines);
-
-				//mxd. Split outer sectors
-				Tools.SplitOuterSectors(changedlines);
-
-				//mxd. Remove unneeded textures
-				foreach(Sidedef side in adjustedsides)
-				{
-					if(side.IsDisposed) continue;
-					side.RemoveUnneededTextures(true, true, true);
-					if(side.Other != null) side.Other.RemoveUnneededTextures(true, true, true);
-				}
-
 				// If only a single linedef was selected, deselect it now
 				if(selectedlines.Count == 1) General.Map.Map.ClearSelectedLinedefs();
 			}

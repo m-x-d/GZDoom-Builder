@@ -910,7 +910,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(scaleoffsets)
 			{
 				fields["xscale" + si.Part] = new UniValue(UniversalType.Float, (float) Math.Round(si.Scale.x * scale.x, General.Map.FormatInterface.VertexDecimals));
-				fields["yscale" + si.Part] = new UniValue(UniversalType.Float, (float) Math.Round(si.Scale.y * scale.y, General.Map.FormatInterface.VertexDecimals));
+				fields["yscale" + si.Part] = new UniValue(UniversalType.Float, (float) Math.Round(-si.Scale.y * scale.y, General.Map.FormatInterface.VertexDecimals));
 			}
 			// Restore scale
 			else 
@@ -1040,41 +1040,66 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Sector height adjust methods (mxd)
 
-		private static Sector GetOutsideSector(IEnumerable<Sector> sectors)
+		//x = floor height, y = ceiling height
+		private static Point GetOutsideHeights(HashSet<Sector> sectors)
 		{
-			Sector result = null;
+			Sector target = null;
+			Point result = new Point { X = int.MinValue, Y = int.MinValue };
 			foreach(Sector s in sectors)
 			{
 				foreach(Sidedef side in s.Sidedefs)
 				{
-					if(side.Other == null || side.Other.Sector == null) continue;
-					if(result == null) result = side.Other.Sector;
-					else if(result != side.Other.Sector) return null;
+					// Don't compare with our own stuff, among other things
+					if(side.Other == null || side.Other.Sector == null || sectors.Contains(side.Other.Sector)) continue;
+					if(target == null)
+					{
+						target = side.Other.Sector;
+						result.X = target.FloorHeight;
+						result.Y = target.CeilHeight;
+					}
+					else if(target != side.Other.Sector)
+					{
+						// Compare heights
+						if(target.FloorHeight != side.Other.Sector.FloorHeight)
+							result.X = int.MinValue;
+						if(target.CeilHeight != side.Other.Sector.CeilHeight)
+							result.Y = int.MinValue;
+						
+						// We can stop now...
+						if(result.X == int.MinValue && result.Y == int.MinValue)
+							return result;
+					}
 				}
 			}
 
 			return result;
 		}
 
-		private static void AdjustSectorsHeight(ICollection<Sector> toadjust, HeightAdjustMode adjustmode, int oldfloorheight, int oldceilheight)
+		private static void AdjustSectorsHeight(HashSet<Sector> toadjust, HeightAdjustMode adjustmode, int oldfloorheight, int oldceilheight)
 		{
 			// Adjust only when selection is inside a single sector
 			if(adjustmode == HeightAdjustMode.NONE || oldfloorheight == int.MinValue || oldceilheight == int.MinValue) return;
-			Sector outsidesector = GetOutsideSector(toadjust);
-			if(outsidesector == null) return;
+			Point outsideheights = GetOutsideHeights(toadjust);
+			if(outsideheights.X == int.MinValue && outsideheights.Y == int.MinValue) return;
 
 			// Height differences
-			int floorheightdiff = outsidesector.FloorHeight - oldfloorheight;
-			int ceilheightdiff = outsidesector.CeilHeight - oldceilheight;
+			int floorheightdiff = (outsideheights.X == int.MinValue ? int.MinValue : outsideheights.X - oldfloorheight);
+			int ceilheightdiff = (outsideheights.Y == int.MinValue ? int.MinValue : outsideheights.Y - oldceilheight);
 
 			switch(adjustmode)
 			{
 				case HeightAdjustMode.ADJUST_FLOORS:
-					foreach(Sector s in toadjust) AdjustSectorHeight(s, floorheightdiff, int.MinValue);
+					if(floorheightdiff != int.MinValue)
+					{
+						foreach(Sector s in toadjust) AdjustSectorHeight(s, floorheightdiff, int.MinValue);
+					}
 					break;
 
 				case HeightAdjustMode.ADJUST_CEILINGS:
-					foreach(Sector s in toadjust) AdjustSectorHeight(s, int.MinValue, ceilheightdiff);
+					if(ceilheightdiff != int.MinValue)
+					{
+						foreach(Sector s in toadjust) AdjustSectorHeight(s, int.MinValue, ceilheightdiff);
+					}
 					break;
 
 				case HeightAdjustMode.ADJUST_BOTH:
@@ -1221,7 +1246,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			foreach(Linedef l in markedlines) l.Selected = true;
 			selectedlines = General.Map.Map.LinedefsFromMarkedVertices(false, true, false);
 			unselectedlines = General.Map.Map.LinedefsFromMarkedVertices(true, false, false);
-			unstablelines = (pasting ? new Collection<Linedef>() : General.Map.Map.LinedefsFromMarkedVertices(false, false, true)); //mxd
+			unstablelines = (pasting ? new List<Linedef>() : General.Map.Map.LinedefsFromMarkedVertices(false, false, true)); //mxd
 			
 			// Array to keep original coordinates
 			vertexpos = new List<Vector2D>(selectedvertices.Count);
@@ -1598,8 +1623,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Do we have a virtual and parent sector?
 					if((vsector != null) && (parent != null))
 					{
-						//mxd. Apply HeightAdjustMode
-						AdjustSectorsHeight(General.Map.Map.GetMarkedSectors(true), heightadjustmode, vsector.FloorHeight, vsector.CeilHeight);
+						//mxd. Store floor/ceiling height
+						oldoutsidefloorheight = vsector.FloorHeight;
+						oldoutsideceilingheight = vsector.CeilHeight;
 					}
 					
 					// Remove any virtual sectors
@@ -1607,32 +1633,23 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 				else
 				{
-					//mxd. Get floor/ceiling height from outside sector
+					//mxd. Get floor/ceiling height from outside sectors
 					if(unstablelines.Count == 0 && heightadjustmode != HeightAdjustMode.NONE)
 					{
 						// Get affected sectors
 						HashSet<Sector> affectedsectors = new HashSet<Sector>(General.Map.Map.GetSelectedSectors(true));
 						
-						Sector curoutsidesector = GetOutsideSector(affectedsectors);
-						if(curoutsidesector != null)
-						{
-							oldoutsidefloorheight = curoutsidesector.FloorHeight;
-							oldoutsideceilingheight = curoutsidesector.CeilHeight;
-						}
+						Point outsideheights = GetOutsideHeights(affectedsectors);
+						oldoutsidefloorheight = outsideheights.X;
+						oldoutsideceilingheight = outsideheights.Y;
 					}
 				}
 
 				// Stitch geometry
-				General.Map.Map.StitchGeometry();
-
-				// Make corrections for backward linedefs
-				MapSet.FlipBackwardLinedefs(General.Map.Map.Linedefs);
+				General.Map.Map.StitchGeometry(true);
 
 				// Snap to map format accuracy
 				General.Map.Map.SnapAllToAccuracy(General.Map.UDMF && usepreciseposition);
-
-				//mxd. Update cached values
-				General.Map.Map.Update();
 
 				//mxd. Get new lines from linedef marks...
 				HashSet<Linedef> newlines = new HashSet<Linedef>(General.Map.Map.GetMarkedLinedefs(true));
@@ -1640,31 +1657,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				//mxd. Marked lines were created during linedef splitting
 				HashSet<Linedef> changedlines = new HashSet<Linedef>(selectedlines);
 				changedlines.UnionWith(newlines);
-				foreach(Linedef l in unstablelines) if(!l.IsDisposed) changedlines.Add(l);
 
-				//mxd. Update outer sides of the selection
-				if(changedlines.Count > 0)
+				//mxd. Update sector height?
+				if(changedlines.Count > 0 && heightadjustmode != HeightAdjustMode.NONE 
+					&& oldoutsidefloorheight != int.MinValue && oldoutsideceilingheight != int.MinValue)
 				{
-					// Get affected sectors
-					HashSet<Sector> affectedsectors = new HashSet<Sector>(General.Map.Map.GetSelectedSectors(true));
-					affectedsectors.UnionWith(General.Map.Map.GetUnselectedSectorsFromLinedefs(changedlines));
+					// Sectors may've been created/removed when applying dragging...
+					HashSet<Sector> draggedsectors = new HashSet<Sector>(General.Map.Map.GetMarkedSectors(true));
+					foreach(Sector ss in selectedsectors.Keys) if(!ss.IsDisposed) draggedsectors.Add(ss);
 
-					// Reattach/add/remove outer sidedefs
-					HashSet<Sidedef> adjustedsides = Tools.AdjustOuterSidedefs(affectedsectors, changedlines);
-
-					// Change floor/ceiling height?
-					if(!pasting) AdjustSectorsHeight(affectedsectors, heightadjustmode, oldoutsidefloorheight, oldoutsideceilingheight);
-
-					// Split outer sectors
-					Tools.SplitOuterSectors(changedlines);
-
-					// Remove unneeded textures (needs to be done AFTER adjusting floor/ceiling height)
-					foreach(Sidedef side in adjustedsides)
-					{
-						if(side.IsDisposed) continue;
-						side.RemoveUnneededTextures(true, true, true);
-						if(side.Other != null) side.Other.RemoveUnneededTextures(true, true, true);
-					}
+					// Change floor/ceiling height
+					AdjustSectorsHeight(draggedsectors, heightadjustmode, oldoutsidefloorheight, oldoutsideceilingheight);
 				}
 				
 				// Update cached values
