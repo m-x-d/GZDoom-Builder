@@ -2037,15 +2037,10 @@ namespace CodeImp.DoomBuilder
 							OnInclude = delegate(AcsParserSE se, string includefile, AcsParserSE.IncludeType includetype)
 							{
 								TextResourceData includedata = General.Map.Data.GetTextResourceData(includefile);
-								if(includedata != null)
-								{
-									includedata.Trackable = true;
-									se.Parse(includedata, true, includetype, false);
-								}
-								else
-								{
-									General.ErrorLogger.Add(ErrorType.Error, "Unable to find include file \"" + includefile + "\"");
-								}
+								if(includedata == null) return false; // Fial
+
+								includedata.Trackable = true;
+								return se.Parse(includedata, true, includetype, false);
 							}
 						};
 
