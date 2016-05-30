@@ -2408,6 +2408,13 @@ namespace CodeImp.DoomBuilder.Map
 					line.FlipVertices();
 					line.FlipSidedefs();
 				}
+
+				// Adjust textures
+				if(line.Front != null) line.Front.RemoveUnneededTextures(line.Back != null, false, true);
+				if(line.Back != null) line.Back.RemoveUnneededTextures(line.Front != null, false, true);
+
+				// Correct the sided flags
+				line.ApplySidedFlags();
 			}
 
 			foreach(KeyValuePair<Linedef, Sector> group in linebacksectorref)
@@ -2427,16 +2434,13 @@ namespace CodeImp.DoomBuilder.Map
 					line.FlipVertices();
 					line.FlipSidedefs();
 				}
-			}
 
-			// Adjust textures
-			foreach(Linedef l in changedlines)
-			{
-				if(l.Front != null) l.Front.RemoveUnneededTextures(l.Back != null);
-				if(l.Back != null) l.Back.RemoveUnneededTextures(l.Front != null);
+				// Adjust textures
+				if(line.Front != null) line.Front.RemoveUnneededTextures(line.Back != null, false, true);
+				if(line.Back != null) line.Back.RemoveUnneededTextures(line.Front != null, false, true);
 
 				// Correct the sided flags
-				l.ApplySidedFlags();
+				line.ApplySidedFlags();
 			}
 		}
 

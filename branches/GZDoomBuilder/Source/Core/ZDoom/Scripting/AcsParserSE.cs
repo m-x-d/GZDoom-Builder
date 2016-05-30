@@ -17,7 +17,7 @@ namespace CodeImp.DoomBuilder.ZDoom.Scripting
 	{
 		#region ================== Event Delegates
 
-		internal delegate void IncludeDelegate(AcsParserSE parser, string includefile, IncludeType includetype);
+		internal delegate bool IncludeDelegate(AcsParserSE parser, string includefile, IncludeType includetype);
 		internal IncludeDelegate OnInclude;
 
 		#endregion
@@ -217,8 +217,8 @@ namespace CodeImp.DoomBuilder.ZDoom.Scripting
 					case "#library":
 						if(IsMapScriptsLump)
 						{
-							ReportError("SCRIPTS lump can not be compiled as a library");
-							if(!IgnoreErrors) return false;
+							if(!IgnoreErrors) ReportError("SCRIPTS lump can not be compiled as a library");
+							return IgnoreErrors;
 						}
 						
 						SkipWhitespace(true);
@@ -226,7 +226,7 @@ namespace CodeImp.DoomBuilder.ZDoom.Scripting
 
 						if(!libname.StartsWith("\"") || !libname.EndsWith("\""))
 						{
-							ReportError("#library name should be quoted");
+							if(!IgnoreErrors) ReportError("#library name should be quoted");
 							return IgnoreErrors;
 						}
 
@@ -234,7 +234,7 @@ namespace CodeImp.DoomBuilder.ZDoom.Scripting
 
 						if(string.IsNullOrEmpty(libname))
 						{
-							ReportError("Expected library name");
+							if(!IgnoreErrors) ReportError("Expected library name");
 							return IgnoreErrors;
 						}
 
@@ -260,7 +260,7 @@ namespace CodeImp.DoomBuilder.ZDoom.Scripting
 
 							if(!includelump.StartsWith("\"") || !includelump.EndsWith("\""))
 							{
-								ReportError(token + " filename should be quoted");
+								if(!IgnoreErrors) ReportError(token + " filename should be quoted");
 								return IgnoreErrors;
 							}
 
@@ -268,7 +268,7 @@ namespace CodeImp.DoomBuilder.ZDoom.Scripting
 
 							if(string.IsNullOrEmpty(includelump))
 							{
-								ReportError("Expected file name to " + token);
+								if(!IgnoreErrors) ReportError("Expected file name to " + token);
 								return IgnoreErrors;
 							}
 
@@ -280,7 +280,7 @@ namespace CodeImp.DoomBuilder.ZDoom.Scripting
 								// These can also be included several times...
 								if(includes[includecategory].Contains(includelump))
 								{
-									ReportError("Already parsed \"" + includelump + "\". Check your " + token + " directives");
+									if(!IgnoreErrors) ReportError("Already parsed \"" + includelump + "\". Check your " + token + " directives");
 									return IgnoreErrors;
 								}
 
@@ -293,13 +293,13 @@ namespace CodeImp.DoomBuilder.ZDoom.Scripting
 							string includelumppath = GetRootedPath(source, includelump);
 
 							// Rooting succeeded?
-							if((HasError && !IgnoreErrors) || string.IsNullOrEmpty(includelumppath))
+							if(this.HasError || string.IsNullOrEmpty(includelumppath))
 								return IgnoreErrors;
 
 							// Already parsed?
 							if(includes[includecategory].Contains(includelumppath))
 							{
-								ReportError("Already parsed \"" + includelump + "\". Check your " + token + " directives");
+								if(!IgnoreErrors) ReportError("Already parsed \"" + includelump + "\". Check your " + token + " directives");
 								return IgnoreErrors;
 							}
 
@@ -310,11 +310,12 @@ namespace CodeImp.DoomBuilder.ZDoom.Scripting
 							if(OnInclude != null)
 							{
 								IsMapScriptsLump = false;
-								OnInclude(this, includelumppath, (token == "#import" ? IncludeType.LIBRARY : IncludeType.INCLUDE));
+								if(!OnInclude(this, includelumppath, (token == "#import" ? IncludeType.LIBRARY : IncludeType.INCLUDE)))
+									return IgnoreErrors; // Bail out on errors
 							}
 
 							// Bail out on error
-							if(this.HasError && !IgnoreErrors) return false;
+							if(this.HasError) return IgnoreErrors;
 
 							// Set our buffers back to continue parsing
 							datastream = localstream;

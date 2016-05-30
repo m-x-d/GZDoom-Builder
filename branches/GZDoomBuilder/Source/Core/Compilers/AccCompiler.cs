@@ -90,13 +90,11 @@ namespace CodeImp.DoomBuilder.Compilers
 					TextResourceData data = General.Map.Data.GetTextResourceData(includefile);
 					if(data == null)
 					{
-						// Fial
-						ReportError(new CompilerError("Unable to find include file \"" + includefile + "\""));
+						se.ReportError("Unable to find include file \"" + includefile + "\"");
+						return false; // Fial
 					}
-					else
-					{
-						se.Parse(data, true, includetype, false);
-					}
+
+					return se.Parse(data, true, includetype, false);
 				}
 			};
 
@@ -105,10 +103,9 @@ namespace CodeImp.DoomBuilder.Compilers
 			{
 				// Map SCRIPTS lump is empty. Abort the process without generating any warnings or errors. 
 				if(SourceIsMapScriptsLump && stream.Length == 0) return false;
-				
-				string targetfile = (SourceIsMapScriptsLump ? Path.GetDirectoryName(General.Map.FilePathName) : inputfile);
-				DataLocation dl = new DataLocation(DataLocation.RESOURCE_DIRECTORY, Path.GetDirectoryName(General.Map.FilePathName), false, false, false);
-				TextResourceData data = new TextResourceData(stream, dl, targetfile, false);
+
+				DataLocation dl = new DataLocation(DataLocation.RESOURCE_DIRECTORY, Path.GetDirectoryName(inputfilepath), false, false, false);
+				TextResourceData data = new TextResourceData(stream, dl, inputfile, false);
 				if(!parser.Parse(data, info.Files, true, AcsParserSE.IncludeType.NONE, false))
 				{
 					// Check for errors
