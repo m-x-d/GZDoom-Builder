@@ -85,12 +85,13 @@ namespace CodeImp.DoomBuilder.Compilers
 			// Preprocess the file
 			parser = new AcsParserSE
 			{
+				IsMapScriptsLump = SourceIsMapScriptsLump,
 				OnInclude = delegate(AcsParserSE se, string includefile, AcsParserSE.IncludeType includetype)
 				{
 					TextResourceData data = General.Map.Data.GetTextResourceData(includefile);
 					if(data == null)
 					{
-						se.ReportError("Unable to find include file \"" + includefile + "\"");
+						se.ReportError("Unable to find include file \"" + includefile + "\".");
 						return false; // Fial
 					}
 
@@ -105,7 +106,8 @@ namespace CodeImp.DoomBuilder.Compilers
 				if(SourceIsMapScriptsLump && stream.Length == 0) return false;
 
 				DataLocation dl = new DataLocation(DataLocation.RESOURCE_DIRECTORY, Path.GetDirectoryName(inputfilepath), false, false, false);
-				TextResourceData data = new TextResourceData(stream, dl, inputfile, false);
+				//mxd. TextResourceData must point to temp path when compiling WAD lumps for lump to be recognized as map lump when reporting errors...
+				TextResourceData data = new TextResourceData(stream, dl, (SourceIsMapScriptsLump ? inputfile : sourcefile), false);
 				if(!parser.Parse(data, info.Files, true, AcsParserSE.IncludeType.NONE, false))
 				{
 					// Check for errors
@@ -117,14 +119,7 @@ namespace CodeImp.DoomBuilder.Compilers
 			//mxd. External lumps should be libraries
 			if(!SourceIsMapScriptsLump && !parser.IsLibrary)
 			{
-				ReportError(new CompilerError("External ACS files can only be compiled as libraries!", sourcefile));
-				return true;
-			}
-
-			//mxd. SCRIPTS lump can't be library
-			if(SourceIsMapScriptsLump && parser.IsLibrary)
-			{
-				ReportError(new CompilerError("SCRIPTS lump can't be compiled as library!", sourcefile));
+				ReportError(new CompilerError("External ACS files can only be compiled as libraries.", sourcefile));
 				return true;
 			}
 
@@ -215,6 +210,7 @@ namespace CodeImp.DoomBuilder.Compilers
 					// Read all lines
 					bool erroradded = false; //mxd
 					string[] errlines = File.ReadAllLines(errfile);
+					string temppath = this.tempdir.FullName + Path.DirectorySeparatorChar.ToString(); //mxd. Need trailing slash..
 					while(line < errlines.Length)
 					{
 						// Check line
@@ -235,7 +231,7 @@ namespace CodeImp.DoomBuilder.Compilers
 							err.filename = linestr.Substring(0, match.Index).Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
 
 							//mxd. Get rid of temp directory path
-							if(err.filename.StartsWith(this.tempdir.Name)) err.filename = err.filename.Replace(this.tempdir.Name, string.Empty);
+							if(err.filename.StartsWith(temppath)) err.filename = err.filename.Replace(temppath, string.Empty);
 							
 							if(!Path.IsPathRooted(err.filename))
 							{
