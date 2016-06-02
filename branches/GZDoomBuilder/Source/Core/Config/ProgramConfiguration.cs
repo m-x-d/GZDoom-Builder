@@ -91,6 +91,7 @@ namespace CodeImp.DoomBuilder.Config
 		private bool locatetexturegroup; //mxd
 		private bool keeptexturefilterfocused; //mxd
 		private SplitLineBehavior splitlinebehavior; //mxd
+		private MergeGeometryMode mergegeomode; //mxd
 		private bool usehighlight; //mxd
 
 		//mxd. Script editor settings
@@ -204,6 +205,7 @@ namespace CodeImp.DoomBuilder.Config
 		public bool LocateTextureGroup { get { return locatetexturegroup; } internal set { locatetexturegroup = value; } } //mxd
 		public bool KeepTextureFilterFocused { get { return keeptexturefilterfocused; } internal set { keeptexturefilterfocused = value; } } //mxd
 		public SplitLineBehavior SplitLineBehavior { get { return splitlinebehavior; } set { splitlinebehavior = value; } } //mxd
+		public MergeGeometryMode MergeGeometryMode { get { return mergegeomode; } internal set { mergegeomode = value; } } //mxd
 		
 		//mxd. Highlight mode
 		public bool UseHighlight
@@ -349,7 +351,8 @@ namespace CodeImp.DoomBuilder.Config
 				showtexturesizes = cfg.ReadSetting("showtexturesizes", true);
 				locatetexturegroup = cfg.ReadSetting("locatetexturegroup", true); //mxd
 				keeptexturefilterfocused = cfg.ReadSetting("keeptexturefilterfocused", true); //mxd
-				splitlinebehavior = (SplitLineBehavior)General.Clamp(cfg.ReadSetting("splitlinebehavior", 0), 0, 3); //mxd
+				splitlinebehavior = (SplitLineBehavior)General.Clamp(cfg.ReadSetting("splitlinebehavior", 0), 0, Enum.GetValues(typeof(SplitLineBehavior)).Length - 1); //mxd
+				mergegeomode = (MergeGeometryMode)General.Clamp(cfg.ReadSetting("mergegeometrymode", (int)MergeGeometryMode.REPLACE), 0, Enum.GetValues(typeof(MergeGeometryMode)).Length - 1); //mxd
 				usehighlight = cfg.ReadSetting("usehighlight", true); //mxd
 
 				//mxd. Script editor
@@ -466,6 +469,7 @@ namespace CodeImp.DoomBuilder.Config
 			cfg.WriteSetting("locatetexturegroup", locatetexturegroup); //mxd
 			cfg.WriteSetting("keeptexturefilterfocused", keeptexturefilterfocused); //mxd
 			cfg.WriteSetting("splitlinebehavior", (int)splitlinebehavior); //mxd
+			cfg.WriteSetting("mergegeometrymode", (int)mergegeomode); //mxd
 			cfg.WriteSetting("usehighlight", usehighlight); //mxd
 
 			//mxd. Script editor

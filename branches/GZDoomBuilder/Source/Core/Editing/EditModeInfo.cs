@@ -17,10 +17,13 @@
 #region ================== Namespaces
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Plugins;
+using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.VisualModes;
 
 #endregion
@@ -159,6 +162,15 @@ namespace CodeImp.DoomBuilder.Editing
 				{
 					// Switch back to last classic mode
 					General.Editing.ChangeMode(General.Editing.PreviousClassicMode.Name);
+				}
+				//mxd. The same mode? Switch view modes instead
+				else if(General.Editing.Mode is ClassicMode && General.Editing.Mode.GetType().FullName == type.FullName)
+				{
+					List<ViewMode> vmodes = new List<ViewMode>(Enum.GetValues(typeof(ViewMode)).Cast<ViewMode>());
+					int curmode = vmodes.IndexOf(General.Map.Renderer2D.ViewMode);
+					curmode = (curmode == vmodes.Count - 1 ? 0 : ++curmode);
+
+					ClassicMode.SetViewMode(vmodes[curmode]);
 				}
 				else
 				{

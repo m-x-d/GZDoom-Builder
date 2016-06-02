@@ -420,7 +420,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				MoveGeometryRelative(mousemappos - dragstartmappos, snaptogrid, snaptogridincrement, snaptonearest, snaptocardinaldirection);
 
 				// Stitch geometry
-				General.Map.Map.StitchGeometry(true);
+				General.Map.Map.StitchGeometry(General.Settings.MergeGeometryMode);
 				
 				// Snap to map format accuracy
 				General.Map.Map.SnapAllToAccuracy();

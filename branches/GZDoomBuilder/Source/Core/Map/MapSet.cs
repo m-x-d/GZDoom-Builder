@@ -1988,9 +1988,9 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		/// <summary>This filters lines by a rectangular area.</summary>
-		public static List<Linedef> FilterByArea(ICollection<Linedef> lines, ref RectangleF area)
+		public static HashSet<Linedef> FilterByArea(ICollection<Linedef> lines, ref RectangleF area)
 		{
-			List<Linedef> newlines = new List<Linedef>(lines.Count);
+			HashSet<Linedef> newlines = new HashSet<Linedef>();
 			
 			// Go for all lines
 			foreach(Linedef l in lines)
@@ -2045,18 +2045,18 @@ namespace CodeImp.DoomBuilder.Map
 		/// <summary>
 		/// Stitches marked geometry with non-marked geometry. Returns false when the operation failed.
 		/// </summary>
-		public bool StitchGeometry() { return StitchGeometry(false); } //mxd. Compatibility
-		public bool StitchGeometry(bool correctsectorrefs)
+		public bool StitchGeometry() { return StitchGeometry(MergeGeometryMode.CLASSIC); } //mxd. Compatibility
+		public bool StitchGeometry(MergeGeometryMode mergemode)
 		{
 			// Find vertices
-			ICollection<Vertex> movingverts = General.Map.Map.GetMarkedVertices(true);
-			ICollection<Vertex> fixedverts = General.Map.Map.GetMarkedVertices(false);
+			HashSet<Vertex> movingverts = new HashSet<Vertex>(General.Map.Map.GetMarkedVertices(true));
+			HashSet<Vertex> fixedverts = new HashSet<Vertex>(General.Map.Map.GetMarkedVertices(false));
 			
 			// Find lines that moved during the drag
-			List<Linedef> movinglines = LinedefsFromMarkedVertices(false, true, true);
+			HashSet<Linedef> movinglines = new HashSet<Linedef>(LinedefsFromMarkedVertices(false, true, true));
 			
 			// Find all non-moving lines
-			List<Linedef> fixedlines = LinedefsFromMarkedVertices(true, false, false);
+			HashSet<Linedef> fixedlines = new HashSet<Linedef>(LinedefsFromMarkedVertices(true, false, false));
 			
 			// Determine area in which we are editing
 			RectangleF editarea = CreateArea(movinglines);
@@ -2075,16 +2075,16 @@ namespace CodeImp.DoomBuilder.Map
 			
 			// Split moving lines with unselected vertices
 			ICollection<Vertex> nearbyfixedverts = FilterByArea(fixedverts, ref editarea);
-			if(!SplitLinesByVertices(movinglines, nearbyfixedverts, STITCH_DISTANCE, movinglines, correctsectorrefs))
+			if(!SplitLinesByVertices(movinglines, nearbyfixedverts, STITCH_DISTANCE, movinglines, mergemode))
 				return false;
 			
 			// Split non-moving lines with selected vertices
 			fixedlines = FilterByArea(fixedlines, ref editarea);
-			if(!SplitLinesByVertices(fixedlines, movingverts, STITCH_DISTANCE, movinglines, correctsectorrefs))
+			if(!SplitLinesByVertices(fixedlines, movingverts, STITCH_DISTANCE, movinglines, mergemode))
 				return false;
 
 			//mxd. Split moving lines with fixed lines
-			if(!SplitLinesByLines(fixedlines, movinglines, correctsectorrefs)) return false;
+			if(!SplitLinesByLines(fixedlines, movinglines, mergemode)) return false;
 			
 			// Remove looped linedefs
 			RemoveLoopedLinedefs(movinglines);
@@ -2092,10 +2092,49 @@ namespace CodeImp.DoomBuilder.Map
 			// Join overlapping lines
 			if(!JoinOverlappingLines(movinglines)) return false;
 
+			//mxd. Remove remaining new verts from dragged shape if possible
+			if(mergemode == MergeGeometryMode.REPLACE)
+			{
+				// Get lines, which belong to dragged sectors
+				HashSet<Sector> draggedsectors = GetSectorsFromLinedefs(movinglines);
+				HashSet<Linedef> sectorlines = new HashSet<Linedef>();
+				foreach(Sector s in draggedsectors)
+				{
+					foreach(Sidedef side in s.Sidedefs)
+						sectorlines.Add(side.Line);
+				}
+
+				HashSet<Vertex> tocheck = new HashSet<Vertex>();
+
+				foreach(Linedef l in sectorlines)
+				{
+					if(l.IsDisposed) continue;
+					if(!movingverts.Contains(l.Start)) tocheck.Add(l.Start);
+					if(!movingverts.Contains(l.End)) tocheck.Add(l.End);
+				}
+
+				// Remove verts, which are not part of initially dragged verts
+				foreach(Vertex v in tocheck)
+				{
+					if(!v.IsDisposed && v.Linedefs.Count == 2)
+					{
+						Linedef ld1 = General.GetByIndex(v.Linedefs, 0);
+						Linedef ld2 = General.GetByIndex(v.Linedefs, 1);
+
+						Vertex v2 = (ld2.Start == v) ? ld2.End : ld2.Start;
+						if(ld1.Start == v) ld1.SetStartVertex(v2); else ld1.SetEndVertex(v2);
+						ld2.Dispose();
+
+						// Trash vertex
+						v.Dispose();
+					}
+				}
+			}
+
 			EndAddRemove();
 
 			//mxd. Correct sector references
-			if(correctsectorrefs)
+			if(mergemode != MergeGeometryMode.CLASSIC)
 			{
 				// Linedefs cache needs to be up to date...
 				Update(true, false);
@@ -2104,6 +2143,11 @@ namespace CodeImp.DoomBuilder.Map
 				List<Linedef> changedlines = LinedefsFromMarkedVertices(false, true, true);
 				CorrectSectorReferences(changedlines, true);
 				CorrectOuterSides(new HashSet<Linedef>(changedlines));
+
+				// Mark only fully selected sectors
+				ClearMarkedSectors(false);
+				HashSet<Sector> changedsectors = GetSectorsFromLinedefs(changedlines);
+				foreach(Sector s in changedsectors) s.Marked = true;
 			}
 			
 			return true;
@@ -2112,6 +2156,9 @@ namespace CodeImp.DoomBuilder.Map
 		//mxd. Shameless SLADEMap::correctSectors ripoff... Corrects/builds sectors for all lines in [lines]
 		private static void CorrectSectorReferences(List<Linedef> lines, bool existing_only)
 		{
+			//DebugConsole.Clear();
+			//DebugConsole.WriteLine("CorrectSectorReferences for " + lines.Count + " lines");
+			
 			// Create a list of sidedefs to perform sector creation with
 			List<LinedefSide> edges = new List<LinedefSide>();
 			if(existing_only)
@@ -2151,15 +2198,9 @@ namespace CodeImp.DoomBuilder.Map
 			HashSet<Sector> affectedsectors = new HashSet<Sector>(General.Map.Map.GetSelectedSectors(true));
 			affectedsectors.UnionWith(General.Map.Map.GetUnselectedSectorsFromLinedefs(lines));
 
-			//mxd. Collect their lines
-			HashSet<Linedef> sectorlines = new HashSet<Linedef>();
-			foreach(Sector s in affectedsectors)
-			{
-				foreach(Sidedef side in s.Sidedefs)
-				{
-					if(side.Line != null) sectorlines.Add(side.Line);
-				}
-			}
+			//mxd. Collect their sidedefs
+			HashSet<Sidedef> sectorsides = new HashSet<Sidedef>();
+			foreach(Sector s in affectedsectors) sectorsides.UnionWith(s.Sidedefs);
 
 			// Build sectors
 			SectorBuilder builder = new SectorBuilder();
@@ -2168,6 +2209,7 @@ namespace CodeImp.DoomBuilder.Map
 			foreach(LinedefSide ls in edges)
 			{
 				// Skip if edge is ignored
+				//DebugConsole.WriteLine((ls.Ignore ? "Ignoring line " : "Processing line ") + ls.Line.Index);
 				if(ls.Ignore) continue;
 
 				// Run sector builder on current edge
@@ -2176,13 +2218,15 @@ namespace CodeImp.DoomBuilder.Map
 				// Find any subsequent edges that were part of the sector created
 				bool has_existing_lines = false;
 				bool has_existing_sides = false;
-				bool has_zero_sided_lines = false;
-				bool has_sides_belonging_to_dragged_sectors = false; //mxd
+				//bool has_zero_sided_lines = false;
+				bool has_dragged_sides = false; //mxd
 				List<LinedefSide> edges_in_sector = new List<LinedefSide>();
 				foreach(LinedefSide edge in builder.SectorEdges)
 				{
 					bool line_is_ours = false;
-					if(sectorlines.Contains(edge.Line)) has_sides_belonging_to_dragged_sectors = true; //mxd
+					bool side_exists = (edge.Front ? edge.Line.Front != null : edge.Line.Back != null); //mxd
+					if(side_exists && sectorsides.Contains(edge.Front ? edge.Line.Front : edge.Line.Back))
+						has_dragged_sides = true; //mxd
 
 					foreach(LinedefSide ls2 in edges)
 					{
@@ -2199,14 +2243,13 @@ namespace CodeImp.DoomBuilder.Map
 
 					if(line_is_ours)
 					{
-						if(edge.Line.Front == null && edge.Line.Back == null)
-							has_zero_sided_lines = true;
+						//if(edge.Line.Front == null && edge.Line.Back == null)
+							//has_zero_sided_lines = true;
 					}
 					else
 					{
 						has_existing_lines = true;
-						if(edge.Front ? edge.Line.Front != null : edge.Line.Back != null)
-							has_existing_sides = true;
+						has_existing_sides |= side_exists; //mxd
 					}
 				}
 
@@ -2217,7 +2260,8 @@ namespace CodeImp.DoomBuilder.Map
 				// in an enclosed void, and should not be drawn.
 				// However, if existing_only is false, the caller expects us to create
 				// new sides anyway; skip this check.
-				if(existing_only && has_existing_lines && !has_existing_sides && !has_sides_belonging_to_dragged_sectors) continue;
+				if(existing_only && has_existing_lines && !has_existing_sides && !has_dragged_sides)
+					continue;
 
 				// Ignore traced edges when trying to create any further sectors
 				foreach(LinedefSide ls3 in edges_in_sector) ls3.Ignore = true;
@@ -2331,7 +2375,7 @@ namespace CodeImp.DoomBuilder.Map
 			foreach(Sidedef side in newsides)
 			{
 				// Clear any unneeded textures
-				side.RemoveUnneededTextures(side.Other != null);
+				side.RemoveUnneededTextures(side.Other != null, false, true);
 
 				// Set middle texture if needed
 				if(side.MiddleRequired() && side.MiddleTexture == "-")
@@ -2627,8 +2671,8 @@ namespace CodeImp.DoomBuilder.Map
 				// Go for all the lines
 				foreach(Linedef l in lines)
 				{
-					// Check if referencing the same vertex twice
-					if(l.Start == l.End)
+					// Check if referencing the same vertex twice (mxd. Or if both verts are null)
+					if(l.Start == l.End || l.Start.Position == l.End.Position)
 					{
 						// Remove this line
 						while(lines.Remove(l));
@@ -2784,8 +2828,8 @@ namespace CodeImp.DoomBuilder.Map
 
 		/// <summary>This splits the given lines with the given vertices. All affected lines
 		/// will be added to changedlines. Returns false when the operation failed.</summary>
-		public static bool SplitLinesByVertices(ICollection<Linedef> lines, ICollection<Vertex> verts, float splitdist, ICollection<Linedef> changedlines) { return SplitLinesByVertices(lines, verts, splitdist, changedlines, false); }
-		public static bool SplitLinesByVertices(ICollection<Linedef> lines, ICollection<Vertex> verts, float splitdist, ICollection<Linedef> changedlines, bool removeinnerlines)
+		public static bool SplitLinesByVertices(ICollection<Linedef> lines, ICollection<Vertex> verts, float splitdist, ICollection<Linedef> changedlines) { return SplitLinesByVertices(lines, verts, splitdist, changedlines, MergeGeometryMode.CLASSIC); }
+		public static bool SplitLinesByVertices(ICollection<Linedef> lines, ICollection<Vertex> verts, float splitdist, ICollection<Linedef> changedlines, MergeGeometryMode mergemode)
 		{
 			if(verts.Count == 0 || lines.Count == 0) return true; //mxd
 			
@@ -2802,9 +2846,14 @@ namespace CodeImp.DoomBuilder.Map
 			BlockEntry[,] bmap = blockmap.Map;
 
 			//mxd
-			//HashSet<Vertex> splitverts = new HashSet<Vertex>();
-			//HashSet<Sector> changedsectors = (removeinnerlines ? General.Map.Map.GetSectorsFromLinedefs(changedlines) : new HashSet<Sector>());
-			//HashSet<Linedef> initialchanedlines = new HashSet<Linedef>(changedlines);
+			HashSet<Vertex> splitverts = new HashSet<Vertex>();
+			HashSet<Sector> changedsectors = (mergemode == MergeGeometryMode.REPLACE ? General.Map.Map.GetSectorsFromLinedefs(changedlines) : new HashSet<Sector>());
+			HashSet<Vertex> lineverts = new HashSet<Vertex>();
+			foreach(Linedef l in lines)
+			{
+				lineverts.Add(l.Start);
+				lineverts.Add(l.End);
+			}
 
 			for(int w = 0; w < bmWidth; w++) 
 			{
@@ -2836,7 +2885,7 @@ namespace CodeImp.DoomBuilder.Map
 									Linedef nl = l.Split(v);
 									if(nl == null) return false;
 									v.Marked = true; //mxd
-									//splitverts.Add(v); //mxd
+									splitverts.Add(v); //mxd
 
 									// Add the new line to the list
 									lines.Add(nl);
@@ -2860,7 +2909,7 @@ namespace CodeImp.DoomBuilder.Map
 			}
 
 			//mxd. Remove lines, which are inside affected sectors
-			/*if(removeinnerlines)
+			if(mergemode == MergeGeometryMode.REPLACE && changedsectors.Count > 0)
 			{
 				HashSet<Linedef> alllines = new HashSet<Linedef>(lines);
 				if(changedlines != null) alllines.UnionWith(changedlines);
@@ -2870,7 +2919,7 @@ namespace CodeImp.DoomBuilder.Map
 				foreach(Linedef l in alllines)
 				{
 					// Remove line when both it's start and end are inside a changed sector and neither side references it
-					if(l.Start != null && l.End != null && !initialchanedlines.Contains(l) &&
+					if(l.Start != null && l.End != null &&
 					  (l.Front == null || !changedsectors.Contains(l.Front.Sector)) &&
 					  (l.Back == null || !changedsectors.Contains(l.Back.Sector)))
 					{
@@ -2878,30 +2927,29 @@ namespace CodeImp.DoomBuilder.Map
 						{
 							if(s.Intersect(l.Start.Position) && s.Intersect(l.End.Position))
 							{
-								Vertex[] tocheck = new[] { l.Start, l.End };
-
-								// Remove from collections and dispose
-								lines.Remove(l);
-								if(changedlines != null) changedlines.Remove(l);
+								Vertex[] tocheck = { l.Start, l.End };
+								while(lines.Remove(l));
+								if(changedlines != null) while(changedlines.Remove(l));
 								l.Dispose();
 
 								foreach(Vertex v in tocheck)
 								{
-									// If the vertex only has 2 linedefs attached, then merge the linedefs
-									if(v.Linedefs.Count == 2)
+									// If the newly created vertex only has 2 linedefs attached, then merge the linedefs
+									if(!v.IsDisposed && v.Linedefs.Count == 2 && splitverts.Contains(v))
 									{
 										Linedef ld1 = General.GetByIndex(v.Linedefs, 0);
 										Linedef ld2 = General.GetByIndex(v.Linedefs, 1);
-										Vertex v2 = (ld2.Start == v) ? ld2.End : ld2.Start;
-										if(ld1.Start == v) ld1.SetStartVertex(v2); else ld1.SetEndVertex(v2);
-										
-										// Remove from collections and dispose
-										lines.Remove(ld2);
-										if(changedlines != null) changedlines.Remove(ld2);
-										ld2.Dispose();
+										if(!ld1.Marked && !ld2.Marked)
+										{
+											Vertex v2 = (ld2.Start == v) ? ld2.End : ld2.Start;
+											if(ld1.Start == v) ld1.SetStartVertex(v2); else ld1.SetEndVertex(v2);
+											while(lines.Remove(ld2));
+											if(changedlines != null) while(changedlines.Remove(ld2));
+											ld2.Dispose();
 
-										// Trash vertex
-										v.Dispose();
+											// Trash vertex
+											v.Dispose();
+										}
 									}
 								}
 
@@ -2910,29 +2958,41 @@ namespace CodeImp.DoomBuilder.Map
 						}
 					}
 				}
-			}*/
+			}
 			
 			return true;
 		}
 
 		/// <summary>Splits lines by lines. Adds new lines to the second collection. Returns false when the operation failed.</summary>
-		public static bool SplitLinesByLines(IList<Linedef> lines, IList<Linedef> changedlines, bool removeinnerlines) //mxd
+		public static bool SplitLinesByLines(HashSet<Linedef> lines, HashSet<Linedef> changedlines, MergeGeometryMode mergemode) //mxd
 		{
-			if(lines.Count == 0 || changedlines.Count == 0) return true;
+			if(lines.Count == 0 || changedlines.Count == 0 || mergemode == MergeGeometryMode.CLASSIC) return true;
 			
 			// Create blockmap
+			HashSet<Vertex> verts = new HashSet<Vertex>(); //mxd
+			foreach(Linedef l in lines)
+			{
+				verts.Add(l.Start);
+				verts.Add(l.End);
+			}
+			foreach(Linedef l in changedlines)
+			{
+				verts.Add(l.Start);
+				verts.Add(l.End);
+			}
+
 			RectangleF area = RectangleF.Union(CreateArea(lines), CreateArea(changedlines));
 			BlockMap<BlockEntry> blockmap = new BlockMap<BlockEntry>(area);
 			blockmap.AddLinedefsSet(lines);
 			blockmap.AddLinedefsSet(changedlines);
+			blockmap.AddVerticesSet(verts); //mxd
 			int bmWidth = blockmap.Size.Width;
 			int bmHeight = blockmap.Size.Height;
 			BlockEntry[,] bmap = blockmap.Map;
 
 			//mxd
 			HashSet<Vertex> splitverts = new HashSet<Vertex>();
-			HashSet<Sector> changedsectors = (removeinnerlines ? General.Map.Map.GetSectorsFromLinedefs(changedlines) : new HashSet<Sector>());
-			HashSet<Linedef> initialchanedlines = new HashSet<Linedef>(changedlines);
+			HashSet<Sector> changedsectors = (mergemode == MergeGeometryMode.REPLACE ? General.Map.Map.GetSectorsFromLinedefs(changedlines) : new HashSet<Sector>());
 
 			// Check for intersections
 			for(int w = 0; w < bmWidth; w++)
@@ -2960,8 +3020,25 @@ namespace CodeImp.DoomBuilder.Map
 							Vector2D intersection = Line2D.GetIntersectionPoint(new Line2D(l1), new Line2D(l2), true);
 							if(!float.IsNaN(intersection.x))
 							{
-								// Create split vertex
-								Vertex splitvertex = General.Map.Map.CreateVertex(intersection);
+								//mxd. Round to map format precision
+								intersection.x = (float)Math.Round(intersection.x, General.Map.FormatInterface.VertexDecimals);
+								intersection.y = (float)Math.Round(intersection.y, General.Map.FormatInterface.VertexDecimals);
+
+								//mxd. Do we already have a vertex here?
+								bool existingvert = false;
+								Vertex splitvertex = null;
+								foreach(Vertex v in block.Vertices)
+								{
+									if(v.Position == intersection)
+									{
+										splitvertex = v;
+										existingvert = true;
+										break;
+									}
+								}
+
+								//mxd. Create split vertex?
+								if(splitvertex == null) splitvertex = General.Map.Map.CreateVertex(intersection);
 								if(splitvertex == null) return false;
 
 								// Split both lines
@@ -2971,9 +3048,12 @@ namespace CodeImp.DoomBuilder.Map
 								Linedef nl2 = l2.Split(splitvertex);
 								if(nl2 == null) return false;
 
-								// Mark split vertex
-								splitvertex.Marked = true;
-								splitverts.Add(splitvertex); //mxd
+								// Mark split vertex?
+								if(!existingvert)
+								{
+									splitvertex.Marked = true;
+									splitverts.Add(splitvertex); //mxd
+								}
 
 								// Add to the second collection
 								changedlines.Add(nl1);
@@ -2989,7 +3069,7 @@ namespace CodeImp.DoomBuilder.Map
 			}
 
 			//mxd. Remove lines, which are inside affected sectors
-			if(removeinnerlines)
+			if(mergemode == MergeGeometryMode.REPLACE)
 			{
 				HashSet<Linedef> alllines = new HashSet<Linedef>(lines);
 				alllines.UnionWith(changedlines);
@@ -2999,34 +3079,40 @@ namespace CodeImp.DoomBuilder.Map
 				foreach(Linedef l in alllines)
 				{
 					// Remove line when both it's start and end are inside a changed sector and neither side references it
-					if(l.Start != null && l.End != null && !initialchanedlines.Contains(l) &&
-					  (l.Front == null || !changedsectors.Contains(l.Front.Sector)) &&
-					  (l.Back == null || !changedsectors.Contains(l.Back.Sector)))
+					if(l.Start != null && l.End != null)
 					{
-						foreach(Sector s in changedsectors)
+						if(l.Front == null && l.Back == null)
 						{
-							if(s.Intersect(l.Start.Position) && s.Intersect(l.End.Position))
+							l.Dispose();
+						}
+						else if((l.Front == null || !changedsectors.Contains(l.Front.Sector)) &&
+								(l.Back == null || !changedsectors.Contains(l.Back.Sector)))
+						{
+							foreach(Sector s in changedsectors)
 							{
-								Vertex[] tocheck = new[] { l.Start, l.End };
-								l.Dispose();
-
-								foreach(Vertex v in tocheck)
+								if(s.Intersect(l.Start.Position) && s.Intersect(l.End.Position))
 								{
-									// If the vertex only has 2 linedefs attached, then merge the linedefs
-									if(!v.IsDisposed && v.Linedefs.Count == 2)
+									Vertex[] tocheck = { l.Start, l.End };
+									l.Dispose();
+
+									foreach(Vertex v in tocheck)
 									{
-										Linedef ld1 = General.GetByIndex(v.Linedefs, 0);
-										Linedef ld2 = General.GetByIndex(v.Linedefs, 1);
-										Vertex v2 = (ld2.Start == v) ? ld2.End : ld2.Start;
-										if(ld1.Start == v) ld1.SetStartVertex(v2); else ld1.SetEndVertex(v2);
-										ld2.Dispose();
+										// If the newly created vertex only has 2 linedefs attached, then merge the linedefs
+										if(!v.IsDisposed && v.Linedefs.Count == 2 && splitverts.Contains(v))
+										{
+											Linedef ld1 = General.GetByIndex(v.Linedefs, 0);
+											Linedef ld2 = General.GetByIndex(v.Linedefs, 1);
+											Vertex v2 = (ld2.Start == v) ? ld2.End : ld2.Start;
+											if(ld1.Start == v) ld1.SetStartVertex(v2); else ld1.SetEndVertex(v2);
+											ld2.Dispose();
 
-										// Trash vertex
-										v.Dispose();
+											// Trash vertex
+											v.Dispose();
+										}
 									}
-								}
 
-								break;
+									break;
+								}
 							}
 						}
 					}

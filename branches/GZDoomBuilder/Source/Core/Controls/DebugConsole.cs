@@ -173,14 +173,18 @@ namespace CodeImp.DoomBuilder
 			counter += incrementby;
 		}
 
+		public static void ResetCounter() { ResetCounter(string.Empty); }
 		public static void ResetCounter(string message)
 		{
-			if(message.Contains("%"))
-				message = message.Replace("%", counter.ToString());
-			else
-				message = message.TrimEnd() + ": " + counter;
+			if(!string.IsNullOrEmpty(message))
+			{
+				if(message.Contains("%"))
+					message = message.Replace("%", counter.ToString());
+				else
+					message = message.TrimEnd() + ": " + counter;
 
-			WriteLine(DebugMessageType.SPECIAL, message);
+				WriteLine(DebugMessageType.SPECIAL, message);
+			}
 
 			counter = 0;
 		}

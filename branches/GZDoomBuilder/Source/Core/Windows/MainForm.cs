@@ -137,6 +137,10 @@ namespace CodeImp.DoomBuilder.Windows
 		// View modes
 		private ToolStripButton[] viewmodesbuttons;
 		private ToolStripMenuItem[] viewmodesitems;
+
+		//mxd. Geometry merge modes
+		private ToolStripButton[] geomergemodesbuttons;
+		private ToolStripMenuItem[] geomergemodesitems;
 		
 		// Edit modes
 		private List<ToolStripItem> editmodeitems;
@@ -247,6 +251,17 @@ namespace CodeImp.DoomBuilder.Windows
 			viewmodesitems[(int)ViewMode.Brightness] = itemviewbrightness;
 			viewmodesitems[(int)ViewMode.FloorTextures] = itemviewfloors;
 			viewmodesitems[(int)ViewMode.CeilingTextures] = itemviewceilings;
+
+			//mxd. Make arrays for geometry merge modes
+			int numgeomodes = Enum.GetValues(typeof(MergeGeometryMode)).Length;
+			geomergemodesbuttons = new ToolStripButton[numgeomodes];
+			geomergemodesbuttons[(int)MergeGeometryMode.CLASSIC] = buttonmergegeoclassic;
+			geomergemodesbuttons[(int)MergeGeometryMode.MERGE] = buttonmergegeo;
+			geomergemodesbuttons[(int)MergeGeometryMode.REPLACE] = buttonplacegeo;
+			geomergemodesitems = new ToolStripMenuItem[numgeomodes];
+			geomergemodesitems[(int)MergeGeometryMode.CLASSIC] = itemmergegeoclassic;
+			geomergemodesitems[(int)MergeGeometryMode.MERGE] = itemmergegeo;
+			geomergemodesitems[(int)MergeGeometryMode.REPLACE] = itemreplacegeo;
 			
 			// Visual Studio IDE doesn't let me set these in the designer :(
 			buttonzoom.Font = menufile.Font;
@@ -312,10 +327,18 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			// View mode only matters in classic editing modes
+			bool isclassicmode = (General.Editing.Mode is ClassicMode);
 			for(int i = 0; i < Renderer2D.NUM_VIEW_MODES; i++)
 			{
-				viewmodesitems[i].Enabled = (General.Editing.Mode is ClassicMode);
-				viewmodesbuttons[i].Enabled = (General.Editing.Mode is ClassicMode);
+				viewmodesitems[i].Enabled = isclassicmode;
+				viewmodesbuttons[i].Enabled = isclassicmode;
+			}
+
+			//mxd. Merge geometry mode only matters in classic editing modes
+			for(int i = 0; i < geomergemodesbuttons.Length; i++)
+			{
+				geomergemodesbuttons[i].Enabled = isclassicmode;
+				geomergemodesitems[i].Enabled = isclassicmode;
 			}
 
 			UpdateEditMenu();
@@ -2079,6 +2102,10 @@ namespace CodeImp.DoomBuilder.Windows
 			buttonviewceilings.Visible = General.Settings.ToolbarViewModes && maploaded;
 			buttonviewfloors.Visible = General.Settings.ToolbarViewModes && maploaded;
 			buttonviewnormal.Visible = General.Settings.ToolbarViewModes && maploaded;
+			separatorgeomergemodes.Visible = General.Settings.ToolbarGeometry && maploaded; //mxd
+			buttonmergegeoclassic.Visible = General.Settings.ToolbarGeometry && maploaded; //mxd
+			buttonmergegeo.Visible = General.Settings.ToolbarGeometry && maploaded; //mxd
+			buttonplacegeo.Visible = General.Settings.ToolbarGeometry && maploaded; //mxd
 			buttonsnaptogrid.Visible = General.Settings.ToolbarGeometry && maploaded;
 			buttontoggledynamicgrid.Visible = General.Settings.ToolbarGeometry && maploaded; //mxd
 			buttontoggledynamicgrid.Checked = General.Settings.DynamicGridSize; //mxd
@@ -2756,6 +2783,17 @@ namespace CodeImp.DoomBuilder.Windows
 			buttoncut.Enabled = itemcut.Enabled;
 			buttoncopy.Enabled = itemcopy.Enabled;
 			buttonpaste.Enabled = itempaste.Enabled;
+
+			//mxd. Geometry merge mode items
+			if(General.Map != null)
+			{
+				for(int i = 0; i < geomergemodesbuttons.Length; i++)
+				{
+					// Check the correct item
+					geomergemodesbuttons[i].Checked = (i == (int)General.Settings.MergeGeometryMode);
+					geomergemodesitems[i].Checked = (i == (int)General.Settings.MergeGeometryMode);
+				}
+			}
 		}
 
 		//mxd
@@ -2917,6 +2955,36 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			ThingStatisticsForm f = new ThingStatisticsForm();
 			f.ShowDialog(this);
+		}
+
+		//mxd
+		[BeginAction("geomergeclassic")]
+		private void GeoMergeClassic()
+		{
+			General.Settings.MergeGeometryMode = MergeGeometryMode.CLASSIC;
+			UpdateToolbar();
+			UpdateEditMenu();
+			DisplayStatus(StatusType.Action, "\"Merge Dragged Vertices Only\" mode selected");
+		}
+
+		//mxd
+		[BeginAction("geomerge")]
+		private void GeoMerge()
+		{
+			General.Settings.MergeGeometryMode = MergeGeometryMode.MERGE;
+			UpdateToolbar();
+			UpdateEditMenu();
+			DisplayStatus(StatusType.Action, "\"Merge Dragged Geometry\" mode selected");
+		}
+
+		//mxd
+		[BeginAction("georeplace")]
+		private void GeoReplace()
+		{
+			General.Settings.MergeGeometryMode = MergeGeometryMode.REPLACE;
+			UpdateToolbar();
+			UpdateEditMenu();
+			DisplayStatus(StatusType.Action, "\"Replace with Dragged Geometry\" mode selected");
 		}
 		
 		#endregion

@@ -64,19 +64,32 @@ namespace CodeImp.DoomBuilder.Map
 			for(int a = 0; a < 10000; a++)
 			{
 				// Trace outline
-				if(!TraceOutline(line, front)) break;
+				if(!TraceOutline(line, front))
+				{
+					//DebugConsole.WriteLine("TraceSector: find outmost outline failed");
+					break;
+				}
 
 				// Discard any vertices outside the traced outline
 				vertex_valid.RemoveWhere(PointOutsideOutline);
+				//DebugConsole.WriteLine("vertex_valid: " + vertex_valid.Count + " verts after RemoveWhere");
 
 				// If it is clockwise, we've found the outmost outline
-				if(o_clockwise) break;
+				if(o_clockwise)
+				{
+					//DebugConsole.WriteLine("TraceSector: found outmost outline");
+					break;
+				}
 
 				// Otherwise, find the next edge outside the outline
 				LinedefSide next = FindOuterEdge();
 
 				// If none was found, we're outside the map
-				if(next == null) return false;
+				if(next == null)
+				{
+					//DebugConsole.WriteLine("TraceSector aborted: no outer edge");
+					return false;
+				}
 
 				// Repeat with this edge
 				line = next.Line;
@@ -93,17 +106,25 @@ namespace CodeImp.DoomBuilder.Map
 				LinedefSide edge = FindInnerEdge();
 
 				// Check if we're done
-				if(edge == null) break;
+				if(edge == null)
+				{
+					//DebugConsole.WriteLine("No inner edge found (no edge)");
+					break;
+				}
 
 				// Trace outline from edge
-				if(!TraceOutline(edge.Line, edge.Front)) break;
+				if(!TraceOutline(edge.Line, edge.Front))
+				{
+					//DebugConsole.WriteLine("No inner edge found (TraceOutline failed)");
+					break;
+				}
 
 				// Discard any vertices outside the traced outline
 				vertex_valid.RemoveWhere(PointOutsideOutline);
+				//DebugConsole.WriteLine("vertex_valid: " + vertex_valid.Count + " verts after RemoveWhere");
 			}
 
 			//DebugConsole.WriteLine("FindInnerEdge: " + o_edges.Count + " lines");
-
 			return true;
 		}
 
@@ -119,6 +140,7 @@ namespace CodeImp.DoomBuilder.Map
 
 			// Init outline
 			o_edges.Clear();
+			o_bbox = RectangleF.Empty;
 			LinedefSide start = new LinedefSide(line, front);
 			o_edges.Add(start);
 			int edge_sum = 0;
@@ -144,11 +166,13 @@ namespace CodeImp.DoomBuilder.Map
 				// Get next edge. If no valid next edge was found, go back along the current line
 				LinedefSide edge_next = (NextEdge(edge, visited_lines) ?? new LinedefSide(edge.Line, !edge.Front));
 
-				//DebugConsole.WriteLine("Next line " + edge_next.Line.Index + (edge_next.Front ? " (front)" : " (back)"));
+				//DebugConsole.WriteLine("Next line for " + edge.Line.Index + (edge.Front ? " (front)" : " (back)") + ": " + edge_next.Line.Index + (edge_next.Front ? " (front)" : " (back)"));
 
 				// Discard edge vertices
 				vertex_valid.Remove(edge_next.Line.Start);
 				vertex_valid.Remove(edge_next.Line.End);
+
+				//DebugConsole.WriteLine("vertex_valid: " + vertex_valid.Count + " verts after Remove (in TraceOutline)");
 
 				// Check if we're back to the start
 				if(edge_next.Line == start.Line && edge_next.Front == start.Front)
@@ -166,11 +190,14 @@ namespace CodeImp.DoomBuilder.Map
 					Math.Max(edge.Line.Start.Position.x, edge.Line.End.Position.x),  // right
 					Math.Max(edge.Line.Start.Position.y, edge.Line.End.Position.y)); // bottom
 
-				o_bbox = (o_bbox.IsEmpty ? l_bbox : RectangleF.Union(o_bbox, l_bbox));
+				//mxd. As it turned out, o_bbox.IsEmpty was not what we needed...
+				o_bbox = (o_bbox == RectangleF.Empty ? l_bbox : RectangleF.Union(o_bbox, l_bbox));
 			}
 
 			// Check if outline is clockwise
 			o_clockwise = (edge_sum < 0);
+
+			//DebugConsole.WriteLine("TraceOutline for line " + line.Index + " (" + (front ? "front":"back") + ") found " + o_edges.Count + " edges; o_clockwise=" + o_clockwise);
 
 			// Add outline edges to sector edge list
 			sector_edges.AddRange(o_edges);
@@ -230,6 +257,8 @@ namespace CodeImp.DoomBuilder.Map
 		/// <summary>Find the closest edge within the current outline (that isn't part of the current outline)</summary>
 		private LinedefSide FindInnerEdge()
 		{
+			//DebugConsole.WriteLine("FindInnerEdge: processing " + vertex_valid.Count + " verts");
+			
 			// Find rightmost non-discarded vertex
 			vertex_right = null;
 			foreach(Vertex v in vertex_valid)
@@ -247,7 +276,11 @@ namespace CodeImp.DoomBuilder.Map
 			}
 
 			// If no vertex was found, we're done
-			if(vertex_right == null) return null;
+			if(vertex_right == null)
+			{
+				//DebugConsole.WriteLine("FindInnerEdge: no vertex_right");
+				return null;
+			}
 
 			// Go through vertex's connected lines, to find
 			// the line with the smallest angle parallel with
@@ -280,6 +313,8 @@ namespace CodeImp.DoomBuilder.Map
 			{
 				// Discard vertex and try again
 				vertex_valid.Remove(vertex_right);
+				//DebugConsole.WriteLine("vertex_valid: " + vertex_valid.Count + " verts after Remove (in FindInnerEdge)");
+				
 				return FindInnerEdge();
 			}
 
@@ -384,11 +419,20 @@ namespace CodeImp.DoomBuilder.Map
 																	   //mxd. The meaning of 0.0 is also inverted!!!
 
 				// Return false if it is on the correct side
-				if(side > 0 && o_edges[nearest].Front) return false;
-				if(side <= 0 && !o_edges[nearest].Front) return false;
+				if(side > 0 && o_edges[nearest].Front)
+				{
+					//DebugConsole.WriteLine("Point " + point + " is within outline (infront of line) " + nearest);
+					return false;
+				}
+				if(side <= 0 && !o_edges[nearest].Front)
+				{
+					//DebugConsole.WriteLine("Point " + point + " is within outline (at the back of line) " + nearest);
+					return false;
+				}
 			}
 
 			// Not within the outline
+			//DebugConsole.WriteLine("Point " + point + " is outside outline");
 			return true;
 		}
 
@@ -491,7 +535,10 @@ namespace CodeImp.DoomBuilder.Map
 				if(sector_copy != null) sector_copy.CopyPropertiesTo(sector);
 			}
 
+			//DebugConsole.WriteLine(" ");
 			//DebugConsole.WriteLine("Creating sector " + sector.Index + " from " + sector_edges.Count + " lines");
+			//DebugConsole.WriteLine("*************************************************************");
+			//DebugConsole.WriteLine(" ");
 
 			// Set sides to new sector
 			foreach(LinedefSide edge in sector_edges)
@@ -501,14 +548,26 @@ namespace CodeImp.DoomBuilder.Map
 				{
 					if(target.Sector != sector)
 					{
+						bool targetwas2s = (target.Other != null);
 						target.SetSector(sector); //mxd. Reattach side
-						target.Marked = true; //mxd. Mark it
+
+						//mxd. Mark for texture adjustments if sidedness was changed.
+						//mxd. Also keep existing mark if the side was already marked.
+						target.Marked |= ((targetwas2s && target.Other == null) || (!targetwas2s && target.Other != null));
 					}
 				}
 				else
 				{
 					target = General.Map.Map.CreateSidedef(edge.Line, edge.Front, sector); //mxd. Create new side
-					target.Marked = true; //mxd. Mark it
+					target.Marked = true; //mxd. Mark it for texture adjustments
+					if(target.Other != null)
+					{
+						//mxd. Better than nothing
+						target.Other.CopyPropertiesTo(target);
+
+						//mxd. Other was singlesided. We'll need to adjust it's textures as well
+						target.Other.Marked = true; 
+					}
 				}
 			}
 		}
