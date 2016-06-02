@@ -97,6 +97,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.itemviewfloors = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemviewceilings = new System.Windows.Forms.ToolStripMenuItem();
 			this.seperatorviewviews = new System.Windows.Forms.ToolStripSeparator();
+			this.itemmergegeoclassic = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemmergegeo = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemreplacegeo = new System.Windows.Forms.ToolStripMenuItem();
+			this.separatorgeomerge = new System.Windows.Forms.ToolStripSeparator();
 			this.itemfullbrightness = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemtogglegrid = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
@@ -180,6 +184,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.buttonviewbrightness = new System.Windows.Forms.ToolStripButton();
 			this.buttonviewfloors = new System.Windows.Forms.ToolStripButton();
 			this.buttonviewceilings = new System.Windows.Forms.ToolStripButton();
+			this.separatorgeomergemodes = new System.Windows.Forms.ToolStripSeparator();
+			this.buttonmergegeoclassic = new System.Windows.Forms.ToolStripButton();
+			this.buttonmergegeo = new System.Windows.Forms.ToolStripButton();
+			this.buttonplacegeo = new System.Windows.Forms.ToolStripButton();
 			this.seperatorviews = new System.Windows.Forms.ToolStripSeparator();
 			this.buttontogglecomments = new System.Windows.Forms.ToolStripButton();
 			this.buttontogglefixedthingsscale = new System.Windows.Forms.ToolStripButton();
@@ -518,6 +526,10 @@ namespace CodeImp.DoomBuilder.Windows
             this.itempaste,
             this.itempastespecial,
             this.seperatoreditcopypaste,
+			this.itemmergegeoclassic,
+			this.itemmergegeo,
+			this.itemreplacegeo,
+			this.separatorgeomerge,
             this.itemsnaptogrid,
             this.itemdynamicgridsize,
             this.itemautomerge,
@@ -619,7 +631,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.itemautomerge.Name = "itemautomerge";
 			this.itemautomerge.Size = new System.Drawing.Size(219, 22);
 			this.itemautomerge.Tag = "builder_toggleautomerge";
-			this.itemautomerge.Text = "&Merge Geometry";
+			this.itemautomerge.Text = "Snap to &Geometry";
 			this.itemautomerge.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// itemautoclearsidetextures
@@ -818,6 +830,38 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.seperatorviewviews.Name = "seperatorviewviews";
 			this.seperatorviewviews.Size = new System.Drawing.Size(212, 6);
+			// 
+			// itemmergegeoclassic
+			// 
+			this.itemmergegeoclassic.Image = global::CodeImp.DoomBuilder.Properties.Resources.MergeGeoClassic;
+			this.itemmergegeoclassic.Name = "itemmergegeoclassic";
+			this.itemmergegeoclassic.Size = new System.Drawing.Size(215, 22);
+			this.itemmergegeoclassic.Tag = "builder_geomergeclassic";
+			this.itemmergegeoclassic.Text = "Merge Dragged Vertices Only";
+			this.itemmergegeoclassic.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// itemmergegeo
+			// 
+			this.itemmergegeo.Image = global::CodeImp.DoomBuilder.Properties.Resources.MergeGeo;
+			this.itemmergegeo.Name = "itemmergegeo";
+			this.itemmergegeo.Size = new System.Drawing.Size(215, 22);
+			this.itemmergegeo.Tag = "builder_geomerge";
+			this.itemmergegeo.Text = "Merge Dragged Geometry";
+			this.itemmergegeo.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// itemreplacegeo
+			// 
+			this.itemreplacegeo.Image = global::CodeImp.DoomBuilder.Properties.Resources.MergeGeoRemoveLines;
+			this.itemreplacegeo.Name = "itemreplacegeo";
+			this.itemreplacegeo.Size = new System.Drawing.Size(215, 22);
+			this.itemreplacegeo.Tag = "builder_georeplace";
+			this.itemreplacegeo.Text = "Replace with Dragged Geometry";
+			this.itemreplacegeo.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// separatorgeomerge
+			// 
+			this.separatorgeomerge.Name = "separatorgeomerge";
+			this.separatorgeomerge.Size = new System.Drawing.Size(212, 6);
 			// 
 			// itemfullbrightness
 			// 
@@ -1254,6 +1298,10 @@ namespace CodeImp.DoomBuilder.Windows
             this.buttonviewbrightness,
             this.buttonviewfloors,
             this.buttonviewceilings,
+			this.separatorgeomergemodes,
+			this.buttonmergegeoclassic,
+			this.buttonmergegeo,
+			this.buttonplacegeo,
             this.seperatorviews,
             this.buttonsnaptogrid,
             this.buttontoggledynamicgrid,
@@ -1645,6 +1693,48 @@ namespace CodeImp.DoomBuilder.Windows
 			this.buttonviewceilings.Text = "View Ceiling Textures";
 			this.buttonviewceilings.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
+			// separatorgeomergemodes
+			// 
+			this.separatorgeomergemodes.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+			this.separatorgeomergemodes.Name = "separatorgeomergemodes";
+			this.separatorgeomergemodes.Size = new System.Drawing.Size(6, 25);
+			// 
+			// buttonmergegeoclassic
+			// 
+			this.buttonmergegeoclassic.CheckOnClick = true;
+			this.buttonmergegeoclassic.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttonmergegeoclassic.Image = global::CodeImp.DoomBuilder.Properties.Resources.MergeGeoClassic;
+			this.buttonmergegeoclassic.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttonmergegeoclassic.Name = "buttonmergegeoclassic";
+			this.buttonmergegeoclassic.Size = new System.Drawing.Size(23, 22);
+			this.buttonmergegeoclassic.Tag = "builder_geomergeclassic";
+			this.buttonmergegeoclassic.Text = "Merge Dragged Vertices Only";
+			this.buttonmergegeoclassic.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// buttonmergegeoclassic
+			// 
+			this.buttonmergegeo.CheckOnClick = true;
+			this.buttonmergegeo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttonmergegeo.Image = global::CodeImp.DoomBuilder.Properties.Resources.MergeGeo;
+			this.buttonmergegeo.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttonmergegeo.Name = "buttonmergegeo";
+			this.buttonmergegeo.Size = new System.Drawing.Size(23, 22);
+			this.buttonmergegeo.Tag = "builder_geomerge";
+			this.buttonmergegeo.Text = "Merge Dragged Geometry";
+			this.buttonmergegeo.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// buttonmergegeoclassic
+			// 
+			this.buttonplacegeo.CheckOnClick = true;
+			this.buttonplacegeo.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttonplacegeo.Image = global::CodeImp.DoomBuilder.Properties.Resources.MergeGeoRemoveLines;
+			this.buttonplacegeo.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttonplacegeo.Name = "buttonmergegeoclassic";
+			this.buttonplacegeo.Size = new System.Drawing.Size(23, 22);
+			this.buttonplacegeo.Tag = "builder_georeplace";
+			this.buttonplacegeo.Text = "Replace with Dragged Geometry";
+			this.buttonplacegeo.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
 			// seperatorviews
 			// 
 			this.seperatorviews.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
@@ -1700,7 +1790,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.buttonautomerge.Name = "buttonautomerge";
 			this.buttonautomerge.Size = new System.Drawing.Size(23, 22);
 			this.buttonautomerge.Tag = "builder_toggleautomerge";
-			this.buttonautomerge.Text = "Merge Geometry";
+			this.buttonautomerge.Text = "Snap to Geometry";
 			this.buttonautomerge.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// buttonautoclearsidetextures
@@ -2607,6 +2697,10 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.ToolStripButton buttonviewbrightness;
 		private System.Windows.Forms.ToolStripButton buttonviewfloors;
 		private System.Windows.Forms.ToolStripButton buttonviewceilings;
+		private System.Windows.Forms.ToolStripSeparator separatorgeomergemodes;
+		private System.Windows.Forms.ToolStripButton buttonmergegeoclassic;
+		private System.Windows.Forms.ToolStripButton buttonmergegeo;
+		private System.Windows.Forms.ToolStripButton buttonplacegeo;
 		private System.Windows.Forms.ToolStripSeparator seperatortoolsresources;
 		private System.Windows.Forms.ToolStripButton buttonscripteditor;
 		private System.Windows.Forms.ToolStripMenuItem menuview;
@@ -2617,6 +2711,10 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.ToolStripMenuItem itemviewfloors;
 		private System.Windows.Forms.ToolStripMenuItem itemviewceilings;
 		private System.Windows.Forms.ToolStripSeparator seperatorviewzoom;
+		private System.Windows.Forms.ToolStripMenuItem itemmergegeoclassic;
+		private System.Windows.Forms.ToolStripMenuItem itemmergegeo;
+		private System.Windows.Forms.ToolStripMenuItem itemreplacegeo;
+		private System.Windows.Forms.ToolStripSeparator separatorgeomerge;
 		private System.Windows.Forms.ToolStripMenuItem itemscripteditor;
 		private System.Windows.Forms.ToolStripSeparator seperatortoolsconfig;
 		private System.Windows.Forms.ToolStripMenuItem itemtestmap;

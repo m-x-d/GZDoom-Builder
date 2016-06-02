@@ -633,7 +633,7 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 
 		// This sets the view mode
-		private static void SetViewMode(ViewMode mode)
+		internal static void SetViewMode(ViewMode mode)
 		{
 			General.Map.CRenderer2D.SetViewMode(mode);
 			General.MainWindow.UpdateInterface();

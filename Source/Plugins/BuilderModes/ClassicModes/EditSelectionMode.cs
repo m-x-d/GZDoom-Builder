@@ -1645,8 +1645,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 				}
 
+				//mxd. We'll need sidedefs marked by StitchGeometry, not all sidedefs from selection...
+				General.Map.Map.ClearMarkedSidedefs(false);
+
 				// Stitch geometry
-				General.Map.Map.StitchGeometry(true);
+				General.Map.Map.StitchGeometry(General.Settings.MergeGeometryMode);
 
 				// Snap to map format accuracy
 				General.Map.Map.SnapAllToAccuracy(General.Map.UDMF && usepreciseposition);

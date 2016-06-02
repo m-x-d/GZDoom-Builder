@@ -557,6 +557,20 @@ namespace CodeImp.DoomBuilder.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap MergeGeo {
+            get {
+                object obj = ResourceManager.GetObject("MergeGeo", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap MergeGeoClassic {
+            get {
+                object obj = ResourceManager.GetObject("MergeGeoClassic", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap mergegeometry {
             get {
                 object obj = ResourceManager.GetObject("mergegeometry", resourceCulture);
@@ -567,6 +581,13 @@ namespace CodeImp.DoomBuilder.Properties {
         internal static System.Drawing.Bitmap mergegeometry2 {
             get {
                 object obj = ResourceManager.GetObject("mergegeometry2", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap MergeGeoRemoveLines {
+            get {
+                object obj = ResourceManager.GetObject("MergeGeoRemoveLines", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

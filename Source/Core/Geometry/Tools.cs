@@ -1260,8 +1260,8 @@ namespace CodeImp.DoomBuilder.Geometry
 				// self intersections for which splits were made above.
 				map.Update(true, false);
 				map.BeginAddRemove();
-				MapSet.SplitLinesByVertices(newlines, intersectverts, MapSet.STITCH_DISTANCE, null, false);
-				MapSet.SplitLinesByVertices(newlines, mergeverts, MapSet.STITCH_DISTANCE, null, false);
+				MapSet.SplitLinesByVertices(newlines, intersectverts, MapSet.STITCH_DISTANCE, null);
+				MapSet.SplitLinesByVertices(newlines, mergeverts, MapSet.STITCH_DISTANCE, null);
 				map.EndAddRemove();
 				
 				/***************************************************\
@@ -1328,7 +1328,7 @@ namespace CodeImp.DoomBuilder.Geometry
 				// Before this point, the new geometry is not linked with the existing geometry.
 				// Now perform standard geometry stitching to merge the new geometry with the rest
 				// of the map. The marked vertices indicate the new geometry.
-				map.StitchGeometry(false);
+				map.StitchGeometry();
 				map.Update(true, false);
 
 				// Find our new lines again, because they have been merged with the other geometry

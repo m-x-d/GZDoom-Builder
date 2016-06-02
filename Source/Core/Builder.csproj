@@ -888,6 +888,7 @@
     <Compile Include="GZBuilder\Data\SharpCompressHelper.cs" />
     <Compile Include="GZBuilder\Data\SkyboxInfo.cs" />
     <Compile Include="GZBuilder\Data\ThingCopyData.cs" />
+    <Compile Include="Map\MergeGeometryMode.cs" />
     <Compile Include="Map\SectorBuilder.cs" />
     <Compile Include="Rendering\VisualVertexHandle.cs" />
     <Compile Include="Geometry\Line3D.cs" />
@@ -1168,6 +1169,9 @@
     <None Include="Resources\MixedThings.png" />
     <None Include="Resources\LinedefColorPresets.png" />
     <EmbeddedResource Include="Resources\MissingSky3D.png" />
+    <None Include="Resources\MergeGeo.png" />
+    <None Include="Resources\MergeGeoClassic.png" />
+    <None Include="Resources\MergeGeoRemoveLines.png" />
     <Content Include="Resources\Model.png" />
     <None Include="Resources\ModelDisabled.png" />
     <None Include="Resources\ModelFiltered.png" />
