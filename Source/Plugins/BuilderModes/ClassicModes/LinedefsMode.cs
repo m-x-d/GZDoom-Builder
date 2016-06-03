@@ -1795,7 +1795,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				foreach(Linedef l in orderedselection) 
 				{
 					float u = index / (float)(orderedselection.Count - 1);
-					int b = InterpolationTools.Interpolate(startbrightness, endbrightness, u, interpolationmode);
+					int b = (int)Math.Round(InterpolationTools.Interpolate(startbrightness, endbrightness, u, interpolationmode));
 					if(SidedefHasVisibleParts(l.Front)) ApplySidedefBrighness(l.Front, b);
 					if(SidedefHasVisibleParts(l.Back)) ApplySidedefBrighness(l.Back, b);
 					index++;

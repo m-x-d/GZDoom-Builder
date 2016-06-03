@@ -125,9 +125,10 @@
 based on floor/ceiling heights difference between 
 sectors outside selected sectors.
 
-Applied only when selected sectors were inside a single 
-sector when the mode was enabled, and are inside a 
-single sector when the mode is applied.</value>
+Applied only when selected sectors were surrounded 
+by sectors with the same target height when the mode 
+was enabled, and are surrounded by sectors with the 
+same target height when the mode is applied.</value>
   </data>
   <metadata name="$this.Locked" type="System.Boolean, mscorlib, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>

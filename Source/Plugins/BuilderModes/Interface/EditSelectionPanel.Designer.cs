@@ -58,6 +58,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.abssizex = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.label3 = new System.Windows.Forms.Label();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
+			this.heightmode = new System.Windows.Forms.ComboBox();
+			this.label10 = new System.Windows.Forms.Label();
 			this.label14 = new System.Windows.Forms.Label();
 			this.flipv = new System.Windows.Forms.Button();
 			this.fliph = new System.Windows.Forms.Button();
@@ -75,8 +77,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.floortexall = new System.Windows.Forms.CheckBox();
 			this.floortexgroup = new System.Windows.Forms.GroupBox();
 			this.tooltip = new System.Windows.Forms.ToolTip(this.components);
-			this.label10 = new System.Windows.Forms.Label();
-			this.heightmode = new System.Windows.Forms.ComboBox();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.groupBox3.SuspendLayout();
@@ -482,6 +482,33 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "Transform:";
 			// 
+			// heightmode
+			// 
+			this.heightmode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.heightmode.FormattingEnabled = true;
+			this.heightmode.Items.AddRange(new object[] {
+            "Don\'t adjust height",
+            "Adjust floor height",
+            "Adjust ceiling height",
+            "Adjust floor and ceiling heights"});
+			this.heightmode.Location = new System.Drawing.Point(58, 53);
+			this.heightmode.Name = "heightmode";
+			this.heightmode.Size = new System.Drawing.Size(171, 21);
+			this.heightmode.TabIndex = 29;
+			this.heightmode.SelectedIndexChanged += new System.EventHandler(this.heightmode_SelectedIndexChanged);
+			// 
+			// label10
+			// 
+			this.label10.AutoSize = true;
+			this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+			this.label10.ForeColor = System.Drawing.SystemColors.HotTrack;
+			this.label10.Location = new System.Drawing.Point(14, 56);
+			this.label10.Name = "label10";
+			this.label10.Size = new System.Drawing.Size(41, 13);
+			this.label10.TabIndex = 28;
+			this.label10.Text = "Height:";
+			this.tooltip.SetToolTip(this.label10, resources.GetString("label10.ToolTip"));
+			// 
 			// label14
 			// 
 			this.label14.AutoSize = true;
@@ -667,33 +694,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.floortexgroup.TabIndex = 38;
 			this.floortexgroup.TabStop = false;
 			this.floortexgroup.Text = "  ";
-			// 
-			// label10
-			// 
-			this.label10.AutoSize = true;
-			this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-			this.label10.ForeColor = System.Drawing.SystemColors.HotTrack;
-			this.label10.Location = new System.Drawing.Point(14, 56);
-			this.label10.Name = "label10";
-			this.label10.Size = new System.Drawing.Size(41, 13);
-			this.label10.TabIndex = 28;
-			this.label10.Text = "Height:";
-			this.tooltip.SetToolTip(this.label10, resources.GetString("label10.ToolTip"));
-			// 
-			// heightmode
-			// 
-			this.heightmode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.heightmode.FormattingEnabled = true;
-			this.heightmode.Items.AddRange(new object[] {
-            "Don\'t adjust height",
-            "Adjust floor height",
-            "Adjust ceiling height",
-            "Adjust floor and ceiling heights"});
-			this.heightmode.Location = new System.Drawing.Point(58, 53);
-			this.heightmode.Name = "heightmode";
-			this.heightmode.Size = new System.Drawing.Size(171, 21);
-			this.heightmode.TabIndex = 29;
-			this.heightmode.SelectedIndexChanged += new System.EventHandler(this.heightmode_SelectedIndexChanged);
 			// 
 			// EditSelectionPanel
 			// 

@@ -112,8 +112,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Vector2D[] shape = new Vector2D[subdivisions + 1];
 
 			bool doBevel = false;
-			int hw = width / 2;
-			int hh = height / 2;
+			float hw = width / 2.0f;
+			float hh = height / 2.0f;
 
 			Vector2D center = new Vector2D(pStart.x + hw, pStart.y + hh);
 			float curAngle = angle;
@@ -121,16 +121,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			for(int i = 0; i < subdivisions; i++) 
 			{
-				int px, py;
+				float px, py;
 				if(doBevel) 
 				{
-					px = (int)(center.x - (float)Math.Sin(curAngle) * (hw + currentbevelwidth));
-					py = (int)(center.y - (float)Math.Cos(curAngle) * (hh + currentbevelwidth));
+					px = (float)Math.Round(center.x - (float)Math.Sin(curAngle) * (hw + currentbevelwidth));
+					py = (float)Math.Round(center.y - (float)Math.Cos(curAngle) * (hh + currentbevelwidth));
 				} 
 				else 
 				{
-					px = (int)(center.x - (float)Math.Sin(curAngle) * hw);
-					py = (int)(center.y - (float)Math.Cos(curAngle) * hh);
+					px = (float)Math.Round(center.x - (float)Math.Sin(curAngle) * hw);
+					py = (float)Math.Round(center.y - (float)Math.Cos(curAngle) * hh);
 				}
 				doBevel = !doBevel;
 				shape[i] = new Vector2D(px, py);

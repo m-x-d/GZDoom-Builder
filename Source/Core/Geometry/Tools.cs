@@ -2399,15 +2399,13 @@ namespace CodeImp.DoomBuilder.Geometry
 		}
 
 		//mxd
-		public static Color GetSectorFadeColor(Sector s)
+		public static PixelColor GetSectorFadeColor(Sector s)
 		{
-			if(s.Fields.ContainsKey("fadecolor")) return PixelColor.FromInt(s.Fields.GetValue("fadecolor", 0)).ToColor();
+			if(s.Fields.ContainsKey("fadecolor")) return PixelColor.FromInt(s.Fields.GetValue("fadecolor", 0));
 			if(General.Map.Data.MapInfo.HasOutsideFogColor && s.CeilTexture == General.Map.Config.SkyFlatName)
-			{
-				return General.Map.Data.MapInfo.OutsideFogColor.ToColor();
-			}
- 
-			return (General.Map.Data.MapInfo.HasFadeColor ? General.Map.Data.MapInfo.FadeColor.ToColor() : Color.Black);
+				return PixelColor.FromColor(General.Map.Data.MapInfo.OutsideFogColor.ToColor());
+
+			return PixelColor.FromColor(General.Map.Data.MapInfo.HasFadeColor ? General.Map.Data.MapInfo.FadeColor.ToColor() : Color.Black);
 		}
 
 		#endregion

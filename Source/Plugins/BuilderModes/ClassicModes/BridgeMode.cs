@@ -724,16 +724,16 @@ namespace CodeImp.DoomBuilder.BuilderModes.ClassicModes
 					return Math.Min(val1, val2);
 				
 				case BridgeInterpolationMode.LINEAR:
-					return InterpolationTools.Linear(val1, val2, delta);
+					return (int)Math.Round(InterpolationTools.Linear(val1, val2, delta));
 
 				case BridgeInterpolationMode.IN_SINE:
-					return InterpolationTools.EaseInSine(val1, val2, delta);
+					return (int)Math.Round(InterpolationTools.EaseInSine(val1, val2, delta));
 
 				case BridgeInterpolationMode.OUT_SINE:
-					return InterpolationTools.EaseOutSine(val1, val2, delta);
+					return (int)Math.Round(InterpolationTools.EaseOutSine(val1, val2, delta));
 
 				case BridgeInterpolationMode.IN_OUT_SINE:
-					return InterpolationTools.EaseInOutSine(val1, val2, delta);
+					return (int)Math.Round(InterpolationTools.EaseInOutSine(val1, val2, delta));
 
 				default:
 					throw new Exception("DrawBezierPathMode.IntepolateValue: \"" + mode + "\" mode is not supported!");

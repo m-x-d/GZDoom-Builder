@@ -58,8 +58,13 @@ namespace CodeImp.DoomBuilder.Data
 			wads = new List<WADReader>(wadfiles.Length);
 			foreach(string wadfile in wadfiles)
 			{
-				DataLocation wdl = new DataLocation(DataLocation.RESOURCE_WAD, Path.Combine(location.location, wadfile), false, false, true);
-				wads.Add(new WADReader(wdl, isreadonly));
+				//mxd. Don't add the map file. Otherwise DataManager will try to load it twice (and fial).
+				string wadfilepath = Path.Combine(location.location, wadfile);
+				if(General.Map.FilePathName != wadfilepath)
+				{
+					DataLocation wdl = new DataLocation(DataLocation.RESOURCE_WAD, wadfilepath, false, false, true);
+					wads.Add(new WADReader(wdl, isreadonly));
+				}
 			}
 		}
 

@@ -399,10 +399,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				for(int h = 0; h < slicesV; h++) 
 				{
-					float left = InterpolationTools.Interpolate(s.x, e.x, (float)w / slicesH, horizontalinterpolation);
-					float top = InterpolationTools.Interpolate(s.y, e.y, (float)h / slicesV, verticalinterpolation);
-					float right = InterpolationTools.Interpolate(s.x, e.x, (w + 1.0f) / slicesH, horizontalinterpolation);
-					float bottom = InterpolationTools.Interpolate(s.y, e.y, (h + 1.0f)/ slicesV, verticalinterpolation);
+					float left = (float)Math.Round(InterpolationTools.Interpolate(s.x, e.x, (float)w / slicesH, horizontalinterpolation));
+					float top = (float)Math.Round(InterpolationTools.Interpolate(s.y, e.y, (float)h / slicesV, verticalinterpolation));
+					float right = (float)Math.Round(InterpolationTools.Interpolate(s.x, e.x, (w + 1.0f) / slicesH, horizontalinterpolation));
+					float bottom = (float)Math.Round(InterpolationTools.Interpolate(s.y, e.y, (h + 1.0f)/ slicesV, verticalinterpolation));
 					blocks[w, h] = RectangleF.FromLTRB(left, top, right, bottom);
 				}
 			}
