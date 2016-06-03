@@ -947,8 +947,12 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 		
 		// This changes coordinates display
-		public void UpdateCoordinates(Vector2D coords)
+		public void UpdateCoordinates(Vector2D coords){ UpdateCoordinates(coords, false); } //mxd
+		public void UpdateCoordinates(Vector2D coords, bool snaptogrid)
 		{
+			//mxd
+			if(snaptogrid) coords = General.Map.Grid.SnappedToGrid(coords);
+			
 			// X position
 			xposlabel.Text = (float.IsNaN(coords.x) ? "--" : coords.x.ToString("####0"));
 

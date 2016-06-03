@@ -493,7 +493,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 				if(Thing.IsDirectional)
 				{
 					Matrix transform = Matrix.Scaling(thing.Size, thing.Size, thing.Size)
-						* (Matrix.RotationY(-Thing.RollRad) * Matrix.RotationX(-Thing.PitchRad) * Matrix.RotationZ(Thing.Angle))
+						* (Matrix.RotationY(-Thing.RollRad) * Matrix.RotationX(Thing.PitchRad) * Matrix.RotationZ(Thing.Angle))
 						* (sizeless ? position : position * Matrix.Translation(0.0f, 0.0f, thingheight / 2f));
 
 					WorldVertex a0 = new WorldVertex(Vector3D.Transform(0.0f, 0.0f, 0.0f, transform)); //start

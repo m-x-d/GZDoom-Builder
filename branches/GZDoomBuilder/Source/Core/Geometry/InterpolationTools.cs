@@ -13,7 +13,7 @@ namespace CodeImp.DoomBuilder.Geometry
 			EASE_OUT_SINE,
 		}
 
-		public static int Interpolate(float val1, float val2, float delta, Mode mode)
+		public static float Interpolate(float val1, float val2, float delta, Mode mode)
 		{
 			switch(mode)
 			{
@@ -26,44 +26,53 @@ namespace CodeImp.DoomBuilder.Geometry
 		}
 		
 		//Based on Robert Penner's original easing equations (http://www.robertpenner.com/easing/)
-		public static int Linear(float val1, float val2, float delta)
+		public static float Linear(float val1, float val2, float delta)
 		{
-			return (int)Math.Round(delta * val2 + (1.0f - delta) * val1);
+			return delta * val2 + (1.0f - delta) * val1;
 		}
 		
 		/**
 		 * Easing equation function for a sinusoidal (sin(t)) easing in: accelerating from zero velocity.
 		 */
-		public static int EaseInSine(float val1, float val2, float delta) 
+		public static float EaseInSine(float val1, float val2, float delta) 
 		{
 			float f_val1 = val1;
 			float f_val2 = val2 - f_val1;
-			return (int)Math.Round(-f_val2 * Math.Cos(delta * Angle2D.PIHALF) + f_val2 + f_val1);
+			return -f_val2 * (float)Math.Cos(delta * Angle2D.PIHALF) + f_val2 + f_val1;
 		}
 
 		/**
 		 * Easing equation function for a sinusoidal (sin(t)) easing out: decelerating from zero velocity.
 		 */
-		public static int EaseOutSine(float val1, float val2, float delta) 
+		public static float EaseOutSine(float val1, float val2, float delta) 
 		{
-			return (int)Math.Round((val2 - val1) * Math.Sin(delta * Angle2D.PIHALF) + val1);
+			return (val2 - val1) * (float)Math.Sin(delta * Angle2D.PIHALF) + val1;
 		}
 
 		/**
 		 * Easing equation function for a sinusoidal (sin(t)) easing in/out: acceleration until halfway, then deceleration.
 		 */
-		public static int EaseInOutSine(float val1, float val2, float delta)
+		public static float EaseInOutSine(float val1, float val2, float delta)
 		{
-			return (int)Math.Round(-(val2 - val1) / 2 * (float)(Math.Cos(Math.PI * delta) - 1) + val1);
+			return -(val2 - val1) / 2 * (float)(Math.Cos(Angle2D.PI * delta) - 1) + val1;
 		}
 
 		//mxd
 		public static int InterpolateColor(PixelColor c1, PixelColor c2, float delta)
 		{
 			float invdelta = 1.0f - delta;
-			byte r = (byte)(c1.r * delta + c2.r * invdelta);
-			byte g = (byte)(c1.g * delta + c2.g * invdelta);
-			byte b = (byte)(c1.b * delta + c2.b * invdelta);
+			byte r = (byte)(c1.r * invdelta + c2.r * delta);
+			byte g = (byte)(c1.g * invdelta + c2.g * delta);
+			byte b = (byte)(c1.b * invdelta + c2.b * delta);
+			return new PixelColor(255, r, g, b).ToInt();
+		}
+
+		//mxd
+		public static int InterpolateColor(PixelColor c1, PixelColor c2, float delta, Mode mode)
+		{
+			byte r = (byte)Math.Round(Interpolate(c1.r, c2.r, delta, mode));
+			byte g = (byte)Math.Round(Interpolate(c1.g, c2.g, delta, mode));
+			byte b = (byte)Math.Round(Interpolate(c1.b, c2.b, delta, mode));
 			return new PixelColor(255, r, g, b).ToInt();
 		}
 	}

@@ -2151,12 +2151,12 @@ namespace CodeImp.DoomBuilder
 				// Try getting exception details...
 				try
 				{
-					Exception ex = (Exception) e.ExceptionObject;
-					exceptionmsg = "Fatal Non-UI error occurred: " + ex.Message + "\n\nStack Trace:\n" + ex.StackTrace;
+					Exception ex = (Exception)e.ExceptionObject;
+					exceptionmsg = "Fatal Non-UI error:\n" + ex.Message + "\n\nStack Trace:\n" + ex.StackTrace;
 				}
 				catch(Exception exc)
 				{
-					exceptionmsg = "Failed to get initial exception details: " + exc.Message + "\n\nStack Trace:\n" + exc.StackTrace;
+					exceptionmsg = "Failed to get initial exception details:\n" + exc.Message + "\n\nStack Trace:\n" + exc.StackTrace;
 				}
 
 				// Try logging it...

@@ -1992,7 +1992,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						{
 							s.Fields.BeforeFieldsChange();
 							float u = index / (float) (orderedselection.Count - 1);
-							float b = InterpolationTools.Interpolate(startbrightness, endbrightness, u, interpolationmode);
+							float b = (float)Math.Round(InterpolationTools.Interpolate(startbrightness, endbrightness, u, interpolationmode));
 
 							//absolute flag set?
 							if(s.Fields.GetValue(lightAbsKey, false)) 
@@ -2032,7 +2032,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					foreach(Sector s in orderedselection) 
 					{
 						float u = index / (float)(orderedselection.Count - 1);
-						s.Brightness = InterpolationTools.Interpolate(start.Brightness, end.Brightness, u, interpolationmode); //mxd
+						s.Brightness = (int)Math.Round(InterpolationTools.Interpolate(start.Brightness, end.Brightness, u, interpolationmode)); //mxd
 						index++;
 					}
 				}
@@ -2058,16 +2058,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			} 
 			else 
 			{
-				Color startColor, endColor;
+				PixelColor startcolor, endcolor;
 				if(key == "fadecolor")
 				{
-					startColor = Tools.GetSectorFadeColor(start);
-					endColor = Tools.GetSectorFadeColor(end);
+					startcolor = Tools.GetSectorFadeColor(start);
+					endcolor = Tools.GetSectorFadeColor(end);
 				}
 				else
 				{
-					startColor = PixelColor.FromInt(start.Fields.GetValue(key, defaultvalue)).ToColor();
-					endColor = PixelColor.FromInt(end.Fields.GetValue(key, defaultvalue)).ToColor();
+					startcolor = PixelColor.FromInt(start.Fields.GetValue(key, defaultvalue));
+					endcolor = PixelColor.FromInt(end.Fields.GetValue(key, defaultvalue));
 				}
 
 				// Go for all sectors in between first and last
@@ -2077,12 +2077,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if(index > 0 && index < orderedselection.Count - 1)
 					{
 						s.Fields.BeforeFieldsChange();
-						float u = index / (float) (orderedselection.Count - 1);
-						Color c = Color.FromArgb(0, General.Clamp(InterpolationTools.Interpolate(startColor.R, endColor.R, u, interpolationmode), 0, 255),
-						                         General.Clamp(InterpolationTools.Interpolate(startColor.G, endColor.G, u, interpolationmode), 0, 255),
-						                         General.Clamp(InterpolationTools.Interpolate(startColor.B, endColor.B, u, interpolationmode), 0, 255));
+						float u = index / (orderedselection.Count - 1.0f);
+						int c = InterpolationTools.InterpolateColor(startcolor, endcolor, u, interpolationmode);
 
-						UniFields.SetInteger(s.Fields, key, c.ToArgb(), defaultvalue);
+						UniFields.SetInteger(s.Fields, key, c, defaultvalue);
 						s.UpdateNeeded = true;
 					}
 					index++;
@@ -2111,7 +2109,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				foreach(Sector s in orderedselection) 
 				{
 					float u = index / (float)(orderedselection.Count - 1);
-					s.FloorHeight = InterpolationTools.Interpolate(startlevel, endlevel, u, interpolationmode); //mxd
+					s.FloorHeight = (int)Math.Round(InterpolationTools.Interpolate(startlevel, endlevel, u, interpolationmode)); //mxd
 					index++;
 				}
 
@@ -2146,7 +2144,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				foreach(Sector s in orderedselection) 
 				{
 					float u = (float)index / (orderedselection.Count - 1);
-					s.CeilHeight = InterpolationTools.Interpolate(startlevel, endlevel, u, interpolationmode);
+					s.CeilHeight = (int)Math.Round(InterpolationTools.Interpolate(startlevel, endlevel, u, interpolationmode));
 					index++;
 				}
 

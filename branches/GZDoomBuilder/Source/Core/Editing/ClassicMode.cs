@@ -214,7 +214,7 @@ namespace CodeImp.DoomBuilder.Editing
 
 			// Determine new unprojected mouse coordinates
 			mousemappos = renderer2d.DisplayToMap(mousepos);
-			General.MainWindow.UpdateCoordinates(mousemappos);
+			General.MainWindow.UpdateCoordinates(mousemappos, true);
 		}
 
 		// This sets the view to be centered at x,y
@@ -511,7 +511,7 @@ namespace CodeImp.DoomBuilder.Editing
 			mousebuttons = MouseButtons.None;
 			
 			// Determine new unprojected mouse coordinates
-			General.MainWindow.UpdateCoordinates(mousemappos);
+			General.MainWindow.UpdateCoordinates(mousemappos, true);
 			
 			// Let the base class know
 			base.OnMouseLeave(e);
@@ -528,7 +528,7 @@ namespace CodeImp.DoomBuilder.Editing
 			mousebuttons = e.Button;
 			
 			// Update labels in main window
-			General.MainWindow.UpdateCoordinates(mousemappos);
+			General.MainWindow.UpdateCoordinates(mousemappos, true);
 			
 			// Holding a button?
 			if(e.Button != MouseButtons.None)

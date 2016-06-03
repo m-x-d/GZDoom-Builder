@@ -302,7 +302,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(v.z > cgz)
 				{
 					float cz = data.Ceiling.plane.GetZ(v.x, v.y);
-					float delta = ((v.z - cgz) / (cz - cgz)) * 0.9f;
+					float delta = 1.0f - (((v.z - cgz) / (cz - cgz)) * 0.9f);
 					PixelColor vc = PixelColor.FromInt(v.c);
 					v.c = InterpolationTools.InterpolateColor(GetGlowColor(data.CeilingGlow, vc), vc, delta);
 				}
@@ -317,7 +317,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(v.z < fgz)
 				{
 					float fz = data.Floor.plane.GetZ(v.x, v.y);
-					float delta = ((v.z - fz) / (fgz - fz)) * 0.9f;
+					float delta = 1.0f - (((v.z - fz) / (fgz - fz)) * 0.9f);
 					PixelColor vc = PixelColor.FromInt(v.c);
 					v.c = InterpolationTools.InterpolateColor(vc, GetGlowColor(data.FloorGlow, vc), delta);
 				}
