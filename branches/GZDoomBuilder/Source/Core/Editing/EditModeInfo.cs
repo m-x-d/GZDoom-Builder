@@ -143,42 +143,33 @@ namespace CodeImp.DoomBuilder.Editing
 			}
 		}
 		
-		// This switches to the mode by user command
-		// (when user presses shortcut key)
+		// This switches to the mode by user command (when user presses shortcut key)
 		public void UserSwitchToMode()
 		{
 			// Only when a map is opened
 			if(General.Map != null)
 			{
-				// Switching from volatile mode to volatile mode?
-				if((General.Editing.Mode != null) && General.Editing.Mode.Attributes.Volatile && this.attribs.Volatile)
+				//mxd. Not the same mode?
+				if(type != General.Editing.Mode.GetType())
 				{
-					// First cancel previous volatile mode
-					General.Editing.CancelVolatileMode();
+					// Switching from volatile mode to a different volatile mode?
+					if((General.Editing.Mode != null) && General.Editing.Mode.Attributes.Volatile && this.attribs.Volatile)
+					{
+						// First cancel previous volatile mode
+						General.Editing.CancelVolatileMode();
+					}
+					
+					// Create instance
+					EditMode newmode = plugin.CreateObject<EditMode>(type);
+
+					//mxd. Switch mode?
+					if(newmode != null) General.Editing.ChangeMode(newmode);
 				}
-				
-				// When in VisualMode and switching to the same VisualMode, then we switch back to the previous classic mode
-				if((General.Editing.Mode is VisualMode) && (type == General.Editing.Mode.GetType()))
+				// When in VisualMode and switching to the same VisualMode, switch back to the previous classic mode
+				else if(General.Editing.Mode is VisualMode)
 				{
 					// Switch back to last classic mode
 					General.Editing.ChangeMode(General.Editing.PreviousClassicMode.Name);
-				}
-				//mxd. The same mode? Switch view modes instead
-				else if(General.Editing.Mode is ClassicMode && General.Editing.Mode.GetType().FullName == type.FullName)
-				{
-					List<ViewMode> vmodes = new List<ViewMode>(Enum.GetValues(typeof(ViewMode)).Cast<ViewMode>());
-					int curmode = vmodes.IndexOf(General.Map.Renderer2D.ViewMode);
-					curmode = (curmode == vmodes.Count - 1 ? 0 : ++curmode);
-
-					ClassicMode.SetViewMode(vmodes[curmode]);
-				}
-				else
-				{
-					// Create instance
-					EditMode newmode = plugin.CreateObject<EditMode>(type);
-					
-					//mxd. Switch mode?
-					if(newmode != null) General.Editing.ChangeMode(newmode);
 				}
 			}
 		}

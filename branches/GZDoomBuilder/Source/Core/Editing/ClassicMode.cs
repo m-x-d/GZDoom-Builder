@@ -17,7 +17,9 @@
 #region ================== Namespaces
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Geometry;
@@ -941,6 +943,28 @@ namespace CodeImp.DoomBuilder.Editing
 		protected virtual void ViewModeCeilings()
 		{
 			SetViewMode(ViewMode.CeilingTextures);
+		}
+
+		//mxd
+		[BeginAction("nextviewmode", BaseAction = true)]
+		protected virtual void NextViewMode()
+		{
+			List<ViewMode> vmodes = new List<ViewMode>(Enum.GetValues(typeof(ViewMode)).Cast<ViewMode>());
+			int curmode = vmodes.IndexOf(General.Map.Renderer2D.ViewMode);
+			curmode = (curmode == vmodes.Count - 1 ? 0 : ++curmode);
+
+			SetViewMode(vmodes[curmode]);
+		}
+
+		//mxd
+		[BeginAction("previousviewmode", BaseAction = true)]
+		protected virtual void PreviousViewMode()
+		{
+			List<ViewMode> vmodes = new List<ViewMode>(Enum.GetValues(typeof(ViewMode)).Cast<ViewMode>());
+			int curmode = vmodes.IndexOf(General.Map.Renderer2D.ViewMode);
+			curmode = (curmode == 0 ? vmodes.Count - 1 : --curmode);
+
+			SetViewMode(vmodes[curmode]);
 		}
 
 		//mxd
