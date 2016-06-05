@@ -47,6 +47,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		protected string whitespace = "\n \t\r\u00A0\0"; //mxd. non-breaking space is also space :)
 		protected string specialtokens = ":{}+-\n;";
 		protected bool skipregions; //mxd
+		protected bool skipeditorcomments; //mxd
 		
 		// Input data stream
 		protected Stream datastream;
@@ -238,7 +239,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 						// Check if not a special comment with a token
 						if(datastream.Position == datastream.Length) return false;
 						char c3 = (char)datareader.ReadByte();
-						if(c3 != '$')
+						if(skipeditorcomments || c3 != '$') //mxd. Added skipeditorcomments
 						{
 							// Skip entire line
 							char c4 = ' ';

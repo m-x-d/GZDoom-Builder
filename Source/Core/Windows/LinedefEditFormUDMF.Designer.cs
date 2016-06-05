@@ -60,7 +60,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabfront = new System.Windows.Forms.TabPage();
 			this.frontside = new System.Windows.Forms.CheckBox();
 			this.frontgroup = new System.Windows.Forms.GroupBox();
-			this.replaceunusedfronttextures = new System.Windows.Forms.CheckBox();
 			this.frontflagsgroup = new System.Windows.Forms.GroupBox();
 			this.flagsFront = new CodeImp.DoomBuilder.Controls.CheckboxArrayControl();
 			this.frontscalegroup = new System.Windows.Forms.GroupBox();
@@ -91,7 +90,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabback = new System.Windows.Forms.TabPage();
 			this.backside = new System.Windows.Forms.CheckBox();
 			this.backgroup = new System.Windows.Forms.GroupBox();
-			this.replaceunusedbacktextures = new System.Windows.Forms.CheckBox();
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
 			this.resetbacklight = new System.Windows.Forms.Button();
 			this.backsector = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
@@ -498,7 +496,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.frontgroup.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.frontgroup.Controls.Add(this.replaceunusedfronttextures);
 			this.frontgroup.Controls.Add(this.frontflagsgroup);
 			this.frontgroup.Controls.Add(this.frontscalegroup);
 			this.frontgroup.Controls.Add(this.groupBox6);
@@ -513,17 +510,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.frontgroup.TabIndex = 1;
 			this.frontgroup.TabStop = false;
 			this.frontgroup.Text = "     ";
-			// 
-			// replaceunusedfronttextures
-			// 
-			this.replaceunusedfronttextures.AutoSize = true;
-			this.replaceunusedfronttextures.Location = new System.Drawing.Point(312, 15);
-			this.replaceunusedfronttextures.Name = "replaceunusedfronttextures";
-			this.replaceunusedfronttextures.Size = new System.Drawing.Size(144, 17);
-			this.replaceunusedfronttextures.TabIndex = 46;
-			this.replaceunusedfronttextures.Text = "Replace unused textures";
-			this.replaceunusedfronttextures.UseVisualStyleBackColor = true;
-			this.replaceunusedfronttextures.CheckedChanged += new System.EventHandler(this.replaceunusedfronttextures_CheckedChanged);
 			// 
 			// frontflagsgroup
 			// 
@@ -864,11 +850,11 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// frontlow
 			// 
-			this.frontlow.Location = new System.Drawing.Point(309, 415);
+			this.frontlow.Location = new System.Drawing.Point(309, 409);
 			this.frontlow.MultipleTextures = false;
 			this.frontlow.Name = "frontlow";
 			this.frontlow.Required = false;
-			this.frontlow.Size = new System.Drawing.Size(220, 184);
+			this.frontlow.Size = new System.Drawing.Size(220, 189);
 			this.frontlow.TabIndex = 6;
 			this.frontlow.TextureName = "";
 			this.frontlow.UsePreviews = false;
@@ -876,11 +862,11 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// frontmid
 			// 
-			this.frontmid.Location = new System.Drawing.Point(309, 225);
+			this.frontmid.Location = new System.Drawing.Point(309, 214);
 			this.frontmid.MultipleTextures = false;
 			this.frontmid.Name = "frontmid";
 			this.frontmid.Required = false;
-			this.frontmid.Size = new System.Drawing.Size(220, 184);
+			this.frontmid.Size = new System.Drawing.Size(220, 189);
 			this.frontmid.TabIndex = 5;
 			this.frontmid.TextureName = "";
 			this.frontmid.UsePreviews = false;
@@ -888,11 +874,11 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// fronthigh
 			// 
-			this.fronthigh.Location = new System.Drawing.Point(309, 35);
+			this.fronthigh.Location = new System.Drawing.Point(309, 19);
 			this.fronthigh.MultipleTextures = false;
 			this.fronthigh.Name = "fronthigh";
 			this.fronthigh.Required = false;
-			this.fronthigh.Size = new System.Drawing.Size(220, 184);
+			this.fronthigh.Size = new System.Drawing.Size(220, 189);
 			this.fronthigh.TabIndex = 4;
 			this.fronthigh.TextureName = "";
 			this.fronthigh.UsePreviews = false;
@@ -928,7 +914,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backgroup.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.backgroup.Controls.Add(this.replaceunusedbacktextures);
 			this.backgroup.Controls.Add(this.groupBox4);
 			this.backgroup.Controls.Add(this.backflagsgroup);
 			this.backgroup.Controls.Add(this.backscalegroup);
@@ -943,17 +928,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backgroup.TabIndex = 1;
 			this.backgroup.TabStop = false;
 			this.backgroup.Text = "     ";
-			// 
-			// replaceunusedbacktextures
-			// 
-			this.replaceunusedbacktextures.AutoSize = true;
-			this.replaceunusedbacktextures.Location = new System.Drawing.Point(312, 15);
-			this.replaceunusedbacktextures.Name = "replaceunusedbacktextures";
-			this.replaceunusedbacktextures.Size = new System.Drawing.Size(144, 17);
-			this.replaceunusedbacktextures.TabIndex = 47;
-			this.replaceunusedbacktextures.Text = "Replace unused textures";
-			this.replaceunusedbacktextures.UseVisualStyleBackColor = true;
-			this.replaceunusedbacktextures.CheckedChanged += new System.EventHandler(this.replaceunusedbacktextures_CheckedChanged);
 			// 
 			// groupBox4
 			// 
@@ -1304,11 +1278,11 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// backlow
 			// 
-			this.backlow.Location = new System.Drawing.Point(309, 415);
+			this.backlow.Location = new System.Drawing.Point(309, 409);
 			this.backlow.MultipleTextures = false;
 			this.backlow.Name = "backlow";
 			this.backlow.Required = false;
-			this.backlow.Size = new System.Drawing.Size(220, 184);
+			this.backlow.Size = new System.Drawing.Size(220, 189);
 			this.backlow.TabIndex = 6;
 			this.backlow.TextureName = "";
 			this.backlow.UsePreviews = false;
@@ -1316,11 +1290,11 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// backmid
 			// 
-			this.backmid.Location = new System.Drawing.Point(309, 225);
+			this.backmid.Location = new System.Drawing.Point(309, 214);
 			this.backmid.MultipleTextures = false;
 			this.backmid.Name = "backmid";
 			this.backmid.Required = false;
-			this.backmid.Size = new System.Drawing.Size(220, 184);
+			this.backmid.Size = new System.Drawing.Size(220, 189);
 			this.backmid.TabIndex = 5;
 			this.backmid.TextureName = "";
 			this.backmid.UsePreviews = false;
@@ -1328,11 +1302,11 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// backhigh
 			// 
-			this.backhigh.Location = new System.Drawing.Point(309, 35);
+			this.backhigh.Location = new System.Drawing.Point(309, 19);
 			this.backhigh.MultipleTextures = false;
 			this.backhigh.Name = "backhigh";
 			this.backhigh.Required = false;
-			this.backhigh.Size = new System.Drawing.Size(220, 184);
+			this.backhigh.Size = new System.Drawing.Size(220, 189);
 			this.backhigh.TabIndex = 4;
 			this.backhigh.TextureName = "";
 			this.backhigh.UsePreviews = false;
@@ -1433,7 +1407,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabfront.ResumeLayout(false);
 			this.tabfront.PerformLayout();
 			this.frontgroup.ResumeLayout(false);
-			this.frontgroup.PerformLayout();
 			this.frontflagsgroup.ResumeLayout(false);
 			this.frontscalegroup.ResumeLayout(false);
 			this.groupBox6.ResumeLayout(false);
@@ -1442,7 +1415,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabback.ResumeLayout(false);
 			this.tabback.PerformLayout();
 			this.backgroup.ResumeLayout(false);
-			this.backgroup.PerformLayout();
 			this.groupBox4.ResumeLayout(false);
 			this.groupBox4.PerformLayout();
 			this.backflagsgroup.ResumeLayout(false);
@@ -1546,7 +1518,5 @@ namespace CodeImp.DoomBuilder.Windows
 		private CodeImp.DoomBuilder.Controls.TagsSelector tagsselector;
 		private System.Windows.Forms.Button resetfrontlight;
 		private System.Windows.Forms.Button resetbacklight;
-		private System.Windows.Forms.CheckBox replaceunusedfronttextures;
-		private System.Windows.Forms.CheckBox replaceunusedbacktextures;
 	}
 }

@@ -56,7 +56,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tagSelector = new CodeImp.DoomBuilder.Controls.TagSelector();
 			this.frontside = new System.Windows.Forms.CheckBox();
 			this.frontgroup = new System.Windows.Forms.GroupBox();
-			this.replaceunusedfronttextures = new System.Windows.Forms.CheckBox();
 			this.frontsector = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.frontlow = new CodeImp.DoomBuilder.Controls.TextureSelectorControl();
 			this.frontmid = new CodeImp.DoomBuilder.Controls.TextureSelectorControl();
@@ -64,7 +63,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.frontTextureOffset = new CodeImp.DoomBuilder.Controls.PairedIntControl();
 			this.backside = new System.Windows.Forms.CheckBox();
 			this.backgroup = new System.Windows.Forms.GroupBox();
-			this.replaceunusedbacktextures = new System.Windows.Forms.CheckBox();
 			this.backsector = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.backlow = new CodeImp.DoomBuilder.Controls.TextureSelectorControl();
 			this.backmid = new CodeImp.DoomBuilder.Controls.TextureSelectorControl();
@@ -365,7 +363,6 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.frontgroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.frontgroup.Controls.Add(this.replaceunusedfronttextures);
 			this.frontgroup.Controls.Add(this.labelFrontTextureOffset);
 			this.frontgroup.Controls.Add(this.frontsector);
 			this.frontgroup.Controls.Add(label11);
@@ -383,17 +380,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.frontgroup.TabIndex = 1;
 			this.frontgroup.TabStop = false;
 			this.frontgroup.Text = "     ";
-			// 
-			// replaceunusedfronttextures
-			// 
-			this.replaceunusedfronttextures.AutoSize = true;
-			this.replaceunusedfronttextures.Location = new System.Drawing.Point(90, 121);
-			this.replaceunusedfronttextures.Name = "replaceunusedfronttextures";
-			this.replaceunusedfronttextures.Size = new System.Drawing.Size(144, 17);
-			this.replaceunusedfronttextures.TabIndex = 43;
-			this.replaceunusedfronttextures.Text = "Replace unused textures";
-			this.replaceunusedfronttextures.UseVisualStyleBackColor = true;
-			this.replaceunusedfronttextures.CheckedChanged += new System.EventHandler(this.replaceunusedfronttextures_CheckedChanged);
 			// 
 			// frontsector
 			// 
@@ -476,7 +462,6 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.backgroup.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.backgroup.Controls.Add(this.replaceunusedbacktextures);
 			this.backgroup.Controls.Add(this.labelBackTextureOffset);
 			this.backgroup.Controls.Add(this.backsector);
 			this.backgroup.Controls.Add(label12);
@@ -494,17 +479,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backgroup.TabIndex = 1;
 			this.backgroup.TabStop = false;
 			this.backgroup.Text = "     ";
-			// 
-			// replaceunusedbacktextures
-			// 
-			this.replaceunusedbacktextures.AutoSize = true;
-			this.replaceunusedbacktextures.Location = new System.Drawing.Point(90, 121);
-			this.replaceunusedbacktextures.Name = "replaceunusedbacktextures";
-			this.replaceunusedbacktextures.Size = new System.Drawing.Size(144, 17);
-			this.replaceunusedbacktextures.TabIndex = 44;
-			this.replaceunusedbacktextures.Text = "Replace unused textures";
-			this.replaceunusedbacktextures.UseVisualStyleBackColor = true;
-			this.replaceunusedbacktextures.CheckedChanged += new System.EventHandler(this.replaceunusedbacktextures_CheckedChanged);
 			// 
 			// backsector
 			// 
@@ -617,9 +591,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.flagsgroup.ResumeLayout(false);
 			this.idgroup.ResumeLayout(false);
 			this.frontgroup.ResumeLayout(false);
-			this.frontgroup.PerformLayout();
 			this.backgroup.ResumeLayout(false);
-			this.backgroup.PerformLayout();
 			this.panel.ResumeLayout(false);
 			this.panel.PerformLayout();
 			this.ResumeLayout(false);
@@ -659,7 +631,5 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.Label labelFrontTextureOffset;
 		private System.Windows.Forms.Label labelBackTextureOffset;
 		private CodeImp.DoomBuilder.Controls.ArgumentsControl argscontrol;
-		private System.Windows.Forms.CheckBox replaceunusedfronttextures;
-		private System.Windows.Forms.CheckBox replaceunusedbacktextures;
 	}
 }

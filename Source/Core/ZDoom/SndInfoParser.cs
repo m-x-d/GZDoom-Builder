@@ -30,6 +30,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		{
 			specialtokens = "";
 			ambientsounds = new Dictionary<int, string>();
+			skipeditorcomments = true; // otherwise //$AMBIENT will be treated like one...
 		}
 
 		#endregion
