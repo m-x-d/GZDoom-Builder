@@ -171,6 +171,11 @@ namespace CodeImp.DoomBuilder.Editing
 					// Switch back to last classic mode
 					General.Editing.ChangeMode(General.Editing.PreviousClassicMode.Name);
 				}
+				//mxd. Switch between view floor and view ceiling textures?
+				else if(General.Editing.Mode is ClassicMode && General.Settings.SwitchViewModes)
+				{
+					ClassicMode.SetViewMode(General.Map.Renderer2D.ViewMode == ViewMode.FloorTextures ? ViewMode.CeilingTextures : ViewMode.FloorTextures);
+				}
 			}
 		}
 		

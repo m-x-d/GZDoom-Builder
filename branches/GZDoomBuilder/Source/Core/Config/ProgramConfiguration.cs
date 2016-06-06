@@ -93,6 +93,7 @@ namespace CodeImp.DoomBuilder.Config
 		private SplitLineBehavior splitlinebehavior; //mxd
 		private MergeGeometryMode mergegeomode; //mxd
 		private bool usehighlight; //mxd
+		private bool switchviewmodes; //mxd
 
 		//mxd. Script editor settings
 		private string scriptfontname;
@@ -218,6 +219,8 @@ namespace CodeImp.DoomBuilder.Config
 				General.Map.Renderer3D.ShowHighlight = General.Settings.UseHighlight;
 			} 
 		}
+
+		public bool SwitchViewModes { get { return switchviewmodes; } set { switchviewmodes = value; } } //mxd
 
 		//mxd. Script editor settings
 		public string ScriptFontName { get { return scriptfontname; } internal set { scriptfontname = value; } }
@@ -354,6 +357,7 @@ namespace CodeImp.DoomBuilder.Config
 				splitlinebehavior = (SplitLineBehavior)General.Clamp(cfg.ReadSetting("splitlinebehavior", 0), 0, Enum.GetValues(typeof(SplitLineBehavior)).Length - 1); //mxd
 				mergegeomode = (MergeGeometryMode)General.Clamp(cfg.ReadSetting("mergegeometrymode", (int)MergeGeometryMode.REPLACE), 0, Enum.GetValues(typeof(MergeGeometryMode)).Length - 1); //mxd
 				usehighlight = cfg.ReadSetting("usehighlight", true); //mxd
+				switchviewmodes = cfg.ReadSetting("switchviewmodes", false); //mxd
 
 				//mxd. Script editor
 				scriptfontname = cfg.ReadSetting("scriptfontname", "Courier New");
@@ -471,6 +475,7 @@ namespace CodeImp.DoomBuilder.Config
 			cfg.WriteSetting("splitlinebehavior", (int)splitlinebehavior); //mxd
 			cfg.WriteSetting("mergegeometrymode", (int)mergegeomode); //mxd
 			cfg.WriteSetting("usehighlight", usehighlight); //mxd
+			cfg.WriteSetting("switchviewmodes", switchviewmodes); //mxd
 
 			//mxd. Script editor
 			cfg.WriteSetting("scriptfontname", scriptfontname);

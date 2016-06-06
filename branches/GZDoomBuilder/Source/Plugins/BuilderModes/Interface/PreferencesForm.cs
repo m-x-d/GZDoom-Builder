@@ -57,6 +57,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			autoaligntexturesoncreate.Checked = BuilderPlug.Me.AutoAlignTextureOffsetsOnCreate; //mxd
 			dontMoveGeometryOutsideBounds.Checked = BuilderPlug.Me.DontMoveGeometryOutsideMapBoundary; //mxd
 			syncSelection.Checked = BuilderPlug.Me.SyncSelection; //mxd
+			switchviewmodes.Checked = General.Settings.SwitchViewModes; //mxd
 			autodrawonedit.Checked = BuilderPlug.Me.AutoDrawOnEdit;
 			defaultbrightness.Text = General.Settings.DefaultBrightness.ToString(); //mxd
 			defaultceilheight.Text = General.Settings.DefaultCeilingHeight.ToString();//mxd
@@ -86,6 +87,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Settings.WritePluginSetting("autoaligntextureoffsetsoncreate", autoaligntexturesoncreate.Checked);//mxd
 			General.Settings.WritePluginSetting("dontmovegeometryoutsidemapboundary", dontMoveGeometryOutsideBounds.Checked);//mxd
 			General.Settings.WritePluginSetting("syncselection", syncSelection.Checked);//mxd
+			General.Settings.SwitchViewModes = switchviewmodes.Checked; //mxd
 			General.Settings.SplitLineBehavior = (SplitLineBehavior)splitbehavior.SelectedIndex;//mxd
 
 			//default sector values

@@ -68,6 +68,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.label10 = new System.Windows.Forms.Label();
 			this.label1 = new System.Windows.Forms.Label();
 			this.heightbysidedef = new System.Windows.Forms.ComboBox();
+			this.switchviewmodes = new System.Windows.Forms.CheckBox();
 			this.tabs.SuspendLayout();
 			this.taboptions.SuspendLayout();
 			this.groupBox4.SuspendLayout();
@@ -87,7 +88,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.tabs.Name = "tabs";
 			this.tabs.Padding = new System.Drawing.Point(24, 3);
 			this.tabs.SelectedIndex = 0;
-			this.tabs.Size = new System.Drawing.Size(677, 424);
+			this.tabs.Size = new System.Drawing.Size(677, 454);
 			this.tabs.TabIndex = 0;
 			// 
 			// taboptions
@@ -100,7 +101,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.taboptions.Location = new System.Drawing.Point(4, 22);
 			this.taboptions.Name = "taboptions";
 			this.taboptions.Padding = new System.Windows.Forms.Padding(3);
-			this.taboptions.Size = new System.Drawing.Size(669, 398);
+			this.taboptions.Size = new System.Drawing.Size(669, 428);
 			this.taboptions.TabIndex = 0;
 			this.taboptions.Text = "Editing";
 			this.taboptions.UseVisualStyleBackColor = true;
@@ -117,7 +118,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.groupBox4.Controls.Add(this.label11);
 			this.groupBox4.Location = new System.Drawing.Point(6, 261);
 			this.groupBox4.Name = "groupBox4";
-			this.groupBox4.Size = new System.Drawing.Size(272, 130);
+			this.groupBox4.Size = new System.Drawing.Size(272, 160);
 			this.groupBox4.TabIndex = 2;
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = " Default sector settings";
@@ -220,6 +221,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// 
 			// groupBox3
 			// 
+			this.groupBox3.Controls.Add(this.switchviewmodes);
 			this.groupBox3.Controls.Add(this.autodrawonedit);
 			this.groupBox3.Controls.Add(this.syncSelection);
 			this.groupBox3.Controls.Add(this.dontMoveGeometryOutsideBounds);
@@ -232,7 +234,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.groupBox3.Controls.Add(this.additiveselect);
 			this.groupBox3.Location = new System.Drawing.Point(284, 104);
 			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Size = new System.Drawing.Size(379, 287);
+			this.groupBox3.Size = new System.Drawing.Size(379, 317);
 			this.groupBox3.TabIndex = 3;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = " Options ";
@@ -564,11 +566,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.heightbysidedef.Size = new System.Drawing.Size(309, 21);
 			this.heightbysidedef.TabIndex = 0;
 			// 
+			// switchviewmodes
+			// 
+			this.switchviewmodes.AutoSize = true;
+			this.switchviewmodes.Location = new System.Drawing.Point(13, 287);
+			this.switchviewmodes.Name = "switchviewmodes";
+			this.switchviewmodes.Size = new System.Drawing.Size(317, 17);
+			this.switchviewmodes.TabIndex = 10;
+			this.switchviewmodes.Text = "Switch view modes when switching to the same Classic Mode";
+			this.switchviewmodes.UseVisualStyleBackColor = true;
+			// 
 			// PreferencesForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-			this.ClientSize = new System.Drawing.Size(701, 448);
+			this.ClientSize = new System.Drawing.Size(701, 478);
 			this.Controls.Add(this.tabs);
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
@@ -632,5 +644,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private System.Windows.Forms.Label label15;
 		private System.Windows.Forms.Label label14;
 		private System.Windows.Forms.CheckBox autodrawonedit;
+		private System.Windows.Forms.CheckBox switchviewmodes;
 	}
 }
