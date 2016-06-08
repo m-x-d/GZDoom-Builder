@@ -76,11 +76,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			ICollection<Thing> list = withinselection ? General.Map.Map.GetSelectedThings(true) : General.Map.Map.Things;
 
 			// Find what? (mxd)
-			List<string> findflagslist = new List<string>();
+			Dictionary<string, bool> findflagslist = new Dictionary<string, bool>();
 			foreach(string flag in value.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
 			{
 				string f = flag.Trim();
-				if(General.Map.Config.ThingFlags.ContainsKey(f)) findflagslist.Add(f);
+				bool setflag = true;
+				if(f.StartsWith("!"))
+				{
+					setflag = false;
+					f = f.Substring(1, f.Length - 1);
+				}
+
+				if(General.Map.Config.ThingFlags.ContainsKey(f)) findflagslist.Add(f, setflag);
 			}
 			if(findflagslist.Count == 0) 
 			{
@@ -89,19 +96,26 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			// Replace with what? (mxd)
-			List<string> replaceflagslist = new List<string>();
+			Dictionary<string, bool> replaceflagslist = new Dictionary<string, bool>();
 			if(replace)
 			{
 				string[] replaceflags = replacewith.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 				foreach(string flag in replaceflags) 
 				{
 					string f = flag.Trim();
+					bool setflag = true;
+					if(f.StartsWith("!"))
+					{
+						setflag = false;
+						f = f.Substring(1, f.Length - 1);
+					}
+
 					if(!General.Map.Config.ThingFlags.ContainsKey(f))
 					{
 						MessageBox.Show("Invalid replace value \"" + f + "\" for this search type!", "Find and Replace", MessageBoxButtons.OK, MessageBoxIcon.Error);
 						return objs.ToArray();
 					}
-					replaceflagslist.Add(f);
+					replaceflagslist.Add(f, setflag);
 				}
 			}
 
@@ -111,10 +125,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				bool match = true;
 
 				// Parse the value string...
-				foreach(string flag in findflagslist)
+				foreach(KeyValuePair<string, bool> group in findflagslist)
 				{
-					// ... and check if the flags don't match
-					if(!t.IsFlagSet(flag))
+					// ...and check if the flag doesn't match
+					if((group.Value && !t.IsFlagSet(group.Key)) || t.IsFlagSet(group.Key))
 					{
 						match = false;
 						break;
@@ -127,11 +141,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Replace flags (mxd)
 					if(replace)
 					{
-						// Clear all flags
-						t.ClearFlags();
-
 						// Set new flags
-						foreach(string flag in replaceflagslist) t.SetFlag(flag, true);
+						foreach(KeyValuePair<string, bool> group in replaceflagslist) t.SetFlag(group.Key, group.Value);
 					}
 					
 					// Add to list

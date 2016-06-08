@@ -45,6 +45,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 		private readonly int xoffset;
 		private readonly int yoffset;
 		private readonly bool worldpanning;
+		private readonly bool optional; //mxd
+		private readonly bool nulltexture; //mxd
 		
 		// Patches
 		private readonly List<PatchStructure> patches;
@@ -61,7 +63,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 		public float YScale { get { return yscale; } }
 		public int XOffset { get { return xoffset; } }
 		public int YOffset { get { return yoffset; } }
-		public bool WorldPanning { get { return worldpanning; } }
+		public bool Optional { get { return optional; } }
+		public bool NullTexture { get { return nulltexture; } }
 		public ICollection<PatchStructure> Patches { get { return patches; } }
 
 		#endregion
@@ -88,6 +91,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			//mxd. It can also be "optional" keyword.
 			if(name.ToLowerInvariant() == "optional")
 			{
+				optional = true;
 				parser.SkipWhitespace(true);
 				name = parser.StripTokenQuotes(parser.ReadToken(false)); //mxd. Don't skip newline
 			}
@@ -148,6 +152,10 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 					case "worldpanning":
 						worldpanning = true;
+						break;
+
+					case "nulltexture": //mxd
+						nulltexture = true;
 						break;
 
 					case "offset":
@@ -241,7 +249,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			float scaley = ((yscale == 0.0f) ? General.Map.Config.DefaultTextureScale : 1f / yscale);
 
 			// Make texture
-			TEXTURESImage tex = new TEXTURESImage(name, virtualpath, width, height, scalex, scaley, worldpanning, typename == "flat");
+			TEXTURESImage tex = new TEXTURESImage(name, virtualpath, width, height, scalex, scaley, worldpanning, typename == "flat", optional, nulltexture);
 
 			// Add patches
 			foreach(PatchStructure p in patches) tex.AddPatch(new TexturePatch(p));//mxd

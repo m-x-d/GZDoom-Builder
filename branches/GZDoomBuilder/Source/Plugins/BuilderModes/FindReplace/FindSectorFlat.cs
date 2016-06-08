@@ -28,7 +28,7 @@ using System.Drawing;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	[FindReplace("Sector Flat", BrowseButton = true)]
+	[FindReplace("Sector Flat (Any)", BrowseButton = true)]
 	internal class FindSectorFlat : BaseFindSector
 	{
 		#region ================== Constants

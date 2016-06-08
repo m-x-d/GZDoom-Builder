@@ -33,9 +33,27 @@ namespace CodeImp.DoomBuilder.Windows
 			this.value = value;
 			flagdefs = inflags;
 
+			//mxd. Store current size...
+			int flagswidth = flags.Width;
+			int flagsheight = flags.Height;
+
+			//mxd. How many columns will be required?
+			flags.Columns = Math.Max(1, flagdefs.Count / 8);
+
 			// Fill flags list
 			foreach(KeyValuePair<string, string> tf in flagdefs)
-				flags.Add(tf.Value, tf.Key);
+			{
+				CheckBox cb = flags.Add(tf.Value, tf.Key);
+				cb.ThreeState = true; //mxd
+				cb.CheckState = CheckState.Indeterminate; //mxd
+			}
+
+			//mxd. Resize window?
+			int newflagswidth = flags.GetWidth();
+			int newflagsheight = flags.GetHeight();
+
+			if(flagswidth != newflagswidth) this.Width += (newflagswidth - flagswidth);
+			if(flagsheight != newflagsheight) this.Height += (newflagsheight - flagsheight);
 
 			// Parse the value string and check the boxes if necessary
 			if(!string.IsNullOrEmpty(value.Trim()))
@@ -44,14 +62,20 @@ namespace CodeImp.DoomBuilder.Windows
 				{
 					string str = s.Trim();
 
+					//mxd. Negative flag?
+					bool setflag = true;
+					if(str.StartsWith("!"))
+					{
+						setflag = false;
+						str = str.Substring(1, str.Length - 1);
+					}
+
 					// Make sure the given flag actually exists
-					if(!flagdefs.ContainsKey(str))
-						continue;
+					if(!flagdefs.ContainsKey(str)) continue;
 
 					foreach(CheckBox c in flags.Checkboxes)
 					{
-						if(c.Text == flagdefs[str])
-							c.Checked = true;
+						if(c.Text == flagdefs[str]) c.Checked = setflag;
 					}
 				}
 			}
@@ -78,14 +102,14 @@ namespace CodeImp.DoomBuilder.Windows
 
 			foreach(CheckBox c in flags.Checkboxes)
 			{
-				if(c.Checked == false) continue;
+				if(c.CheckState == CheckState.Indeterminate) continue;
 
 				foreach(KeyValuePair<string, string> lf in flagdefs)
 				{
 					if(lf.Value == c.Text)
 					{
 						if(!string.IsNullOrEmpty(value)) value += ",";
-						value += lf.Key;
+						value += (c.CheckState == CheckState.Unchecked ? "!" + lf.Key : lf.Key);
 					}
 				}
 			}

@@ -28,7 +28,7 @@ using System.Drawing;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	[FindReplace("Sidedef Texture", BrowseButton = true)]
+	[FindReplace("Sidedef Texture (Any)", BrowseButton = true)]
 	internal class FindSidedefTexture : BaseFindSidedef
 	{
 		#region ================== Constants
