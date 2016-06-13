@@ -133,15 +133,19 @@ namespace CodeImp.DoomBuilder.Actions
 			int button = key & ~((int)Keys.Control | (int)Keys.Shift | (int)Keys.Alt);
 
 			// When the button is a control key, then remove the control itsself
-			if((button == (int)Keys.ControlKey) ||
-			   (button == (int)Keys.ShiftKey))
+			if((button == (int)Keys.ControlKey) || (button == (int)Keys.ShiftKey) || (button == (int)Keys.Alt))
 			{
 				ctrl = 0;
 				key = key & ~((int)Keys.Control | (int)Keys.Shift | (int)Keys.Alt);
 			}
 			
-			// Determine control prefix
-			if(ctrl != 0) ctrlprefix = conv.ConvertToString(key);
+			//mxd. Determine control prefix
+			if(ctrl != 0)
+			{
+				if((key & (int)Keys.Control) != 0) ctrlprefix += "Ctrl+";
+				if((key & (int)Keys.Alt) != 0) ctrlprefix += "Alt+";
+				if((key & (int)Keys.Shift) != 0) ctrlprefix += "Shift+";
+			}
 			
 			// Check if button is special
 			switch(button)

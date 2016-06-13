@@ -326,7 +326,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd. Alpha based picking
 		public override bool PickAccurate(Vector3D from, Vector3D to, Vector3D dir, ref float u_ray)
 		{
-			if(!Texture.IsImageLoaded || (!Texture.IsTranslucent && !Texture.IsMasked)) return base.PickAccurate(from, to, dir, ref u_ray);
+			if(!BuilderPlug.Me.AlphaBasedTextureHighlighting || !Texture.IsImageLoaded || (!Texture.IsTranslucent && !Texture.IsMasked)) return base.PickAccurate(from, to, dir, ref u_ray);
 
 			float u;
 			Sidedef sourceside = extrafloor.Linedef.Front;

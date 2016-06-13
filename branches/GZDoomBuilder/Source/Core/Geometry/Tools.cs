@@ -2162,6 +2162,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		public static void SplitOuterSectors(IEnumerable<Linedef> drawnlines)
 		{
 			Dictionary<Sector, HashSet<Sidedef>> sectorsidesref = new Dictionary<Sector, HashSet<Sidedef>>();
+			HashSet<Sidedef> drawnsides = new HashSet<Sidedef>();
 
 			// Create drawn lines per sector collection
 			foreach(Linedef l in drawnlines)
@@ -2170,12 +2171,14 @@ namespace CodeImp.DoomBuilder.Geometry
 				{
 					if(!sectorsidesref.ContainsKey(l.Front.Sector)) sectorsidesref.Add(l.Front.Sector, new HashSet<Sidedef>());
 					sectorsidesref[l.Front.Sector].Add(l.Front);
+					drawnsides.Add(l.Front);
 				}
 
 				if(l.Back != null && (l.Back.Sector != null && !SectorWasInvalid(l.Back.Sector)))
 				{
 					if(!sectorsidesref.ContainsKey(l.Back.Sector)) sectorsidesref.Add(l.Back.Sector, new HashSet<Sidedef>());
 					sectorsidesref[l.Back.Sector].Add(l.Back);
+					drawnsides.Add(l.Back);
 				}
 			}
 
@@ -2196,20 +2199,38 @@ namespace CodeImp.DoomBuilder.Geometry
 					if(side.Sector != group.Key) continue;
 
 					// Find drawing interior
-					List<LinedefSide> sides = FindPotentialSectorAt(side.Line, side.IsFront);
+					List<LinedefSide> linedefsides = FindPotentialSectorAt(side.Line, side.IsFront);
 
 					// Number of potential sides fewer than the sector has?
-					if(sides != null && sides.Count > 0 && sides.Count < group.Key.Sidedefs.Count)
+					if(linedefsides != null && linedefsides.Count > 0 && linedefsides.Count < group.Key.Sidedefs.Count)
 					{
-						Sector newsector = MakeSector(sides, null, false);
-						if(newsector != null)
+						// Collect sidedefs from new sector shape...
+						HashSet<Sidedef> newsectorsides = new HashSet<Sidedef>();
+						foreach(LinedefSide ls in linedefsides)
 						{
-							newsector.UpdateCache();
-							group.Key.UpdateCache();
+							Sidedef s = (ls.Front ? ls.Line.Front : ls.Line.Back);
+							if(s != null) newsectorsides.Add(s);
 						}
 
-						// Existing sector may've become invalid
-						SectorWasInvalid(group.Key);
+						// Make new sector only if one of the remaining sector sides was also drawn...
+						foreach(Sidedef s in group.Key.Sidedefs)
+						{
+							if(newsectorsides.Contains(s)) continue;
+							if(drawnsides.Contains(s))
+							{
+								Sector newsector = MakeSector(linedefsides, null, false);
+								if(newsector != null)
+								{
+									newsector.UpdateCache();
+									group.Key.UpdateCache();
+								}
+
+								// Existing sector may've become invalid
+								SectorWasInvalid(group.Key);
+
+								break;
+							}
+						}
 					}
 				}
 			}

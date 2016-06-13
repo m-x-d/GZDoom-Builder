@@ -31,7 +31,6 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			this.components = new System.ComponentModel.Container();
 			System.Windows.Forms.Label label7;
-			System.Windows.Forms.Label label6;
 			System.Windows.Forms.Label label5;
 			System.Windows.Forms.GroupBox groupBox1;
 			System.Windows.Forms.Label label1;
@@ -221,7 +220,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.browseScreenshotsFolderDialog = new System.Windows.Forms.FolderBrowserDialog();
 			label7 = new System.Windows.Forms.Label();
-			label6 = new System.Windows.Forms.Label();
 			label5 = new System.Windows.Forms.Label();
 			groupBox1 = new System.Windows.Forms.GroupBox();
 			label1 = new System.Windows.Forms.Label();
@@ -280,15 +278,6 @@ namespace CodeImp.DoomBuilder.Windows
 			label7.Size = new System.Drawing.Size(182, 13);
 			label7.TabIndex = 7;
 			label7.Text = "Or select a special input control here:";
-			// 
-			// label6
-			// 
-			label6.AutoSize = true;
-			label6.Location = new System.Drawing.Point(20, 30);
-			label6.Name = "label6";
-			label6.Size = new System.Drawing.Size(40, 13);
-			label6.TabIndex = 2;
-			label6.Text = "Action:";
 			// 
 			// label5
 			// 
@@ -1507,14 +1496,13 @@ namespace CodeImp.DoomBuilder.Windows
 			this.actioncontrolpanel.Controls.Add(label7);
 			this.actioncontrolpanel.Controls.Add(this.actiontitle);
 			this.actioncontrolpanel.Controls.Add(this.actioncontrolclear);
-			this.actioncontrolpanel.Controls.Add(label6);
 			this.actioncontrolpanel.Controls.Add(this.actionkey);
 			this.actioncontrolpanel.Controls.Add(label5);
 			this.actioncontrolpanel.Enabled = false;
 			this.actioncontrolpanel.Location = new System.Drawing.Point(377, 12);
 			this.actioncontrolpanel.Margin = new System.Windows.Forms.Padding(6);
 			this.actioncontrolpanel.Name = "actioncontrolpanel";
-			this.actioncontrolpanel.Size = new System.Drawing.Size(282, 488);
+			this.actioncontrolpanel.Size = new System.Drawing.Size(296, 488);
 			this.actioncontrolpanel.TabIndex = 9;
 			this.actioncontrolpanel.TabStop = false;
 			this.actioncontrolpanel.Text = " Action control ";
@@ -1526,7 +1514,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.actiondescription.Multiline = true;
 			this.actiondescription.Name = "actiondescription";
 			this.actiondescription.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-			this.actiondescription.Size = new System.Drawing.Size(256, 72);
+			this.actiondescription.Size = new System.Drawing.Size(266, 72);
 			this.actiondescription.TabIndex = 12;
 			// 
 			// keyusedlist
@@ -1538,7 +1526,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.keyusedlist.Location = new System.Drawing.Point(23, 307);
 			this.keyusedlist.Name = "keyusedlist";
 			this.keyusedlist.SelectionMode = System.Windows.Forms.SelectionMode.None;
-			this.keyusedlist.Size = new System.Drawing.Size(238, 115);
+			this.keyusedlist.Size = new System.Drawing.Size(263, 115);
 			this.keyusedlist.Sorted = true;
 			this.keyusedlist.TabIndex = 11;
 			this.keyusedlist.Visible = false;
@@ -1547,12 +1535,12 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.disregardshiftlabel.Location = new System.Drawing.Point(20, 224);
 			this.disregardshiftlabel.Name = "disregardshiftlabel";
-			this.disregardshiftlabel.Size = new System.Drawing.Size(245, 47);
+			this.disregardshiftlabel.Size = new System.Drawing.Size(266, 47);
 			this.disregardshiftlabel.TabIndex = 9;
-			this.disregardshiftlabel.Tag = "The selected actions uses %s to modify its behavior. These modifiers can not be u" +
-				"sed in a key combination for this action.";
-			this.disregardshiftlabel.Text = "The selected actions uses Shift, Alt and Control to modify its behavior. These mo" +
-				"difiers can not be used in a key combination for this action.";
+			this.disregardshiftlabel.Tag = "The selected action uses %s to modify its behavior. These modifiers can not be us" +
+				"ed in a key combination for this action.";
+			this.disregardshiftlabel.Text = "The selected action uses Shift, Alt and Control to modify its behavior. These mod" +
+				"ifiers can not be used in a key combination for this action.";
 			this.disregardshiftlabel.Visible = false;
 			// 
 			// actioncontrol
@@ -1562,7 +1550,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.actioncontrol.ImeMode = System.Windows.Forms.ImeMode.Off;
 			this.actioncontrol.Location = new System.Drawing.Point(23, 190);
 			this.actioncontrol.Name = "actioncontrol";
-			this.actioncontrol.Size = new System.Drawing.Size(238, 21);
+			this.actioncontrol.Size = new System.Drawing.Size(196, 21);
 			this.actioncontrol.TabIndex = 8;
 			this.actioncontrol.TabStop = false;
 			this.actioncontrol.SelectedIndexChanged += new System.EventHandler(this.actioncontrol_SelectedIndexChanged);
@@ -1571,7 +1559,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.actiontitle.AutoSize = true;
 			this.actiontitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.actiontitle.Location = new System.Drawing.Point(67, 30);
+			this.actiontitle.Location = new System.Drawing.Point(17, 29);
 			this.actiontitle.Name = "actiontitle";
 			this.actiontitle.Size = new System.Drawing.Size(176, 13);
 			this.actiontitle.TabIndex = 1;

@@ -84,7 +84,7 @@ namespace CodeImp.DoomBuilder.Data
 				throw new FileNotFoundException("Could not find the file \"" + location.location + "\"", location.location);
 
 			// Initialize
-			file = new WAD(location.location, asreadonly);
+			file = new WAD(location.location, true);
 			strictpatches = dl.option1;
 			Initialize(); //mxd
 
@@ -92,7 +92,7 @@ namespace CodeImp.DoomBuilder.Data
 			GC.SuppressFinalize(this);
 		}
 
-		//mxd. Constructor
+		//mxd. Constructor for temporary WAD files
 		internal WADReader(DataLocation dl, bool asreadonly, bool create) : base(dl, asreadonly)
 		{
 			if(!create)

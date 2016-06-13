@@ -134,17 +134,16 @@ namespace CodeImp.DoomBuilder.Data
 					loadfailed = true;
 				}
 
-				//mxd. Empty image will suffice here, I suppose...
-				if(nulltexture)
-				{
-					base.LocalLoadImage();
-					return;
-				}
-
 				int missingpatches = 0; //mxd
-
 				if(patches.Count == 0) //mxd
 				{
+					//mxd. Empty image will suffice here, I suppose...
+					if(nulltexture)
+					{
+						base.LocalLoadImage();
+						return;
+					}
+					
 					// No patches!
 					General.ErrorLogger.Add(ErrorType.Warning, "No patches are defined for texture \"" + this.Name + "\"");
 					loadfailed = true;
@@ -182,7 +181,7 @@ namespace CodeImp.DoomBuilder.Data
 								if(reader is UnknownImageReader) 
 								{
 									// Data is in an unknown format!
-									General.ErrorLogger.Add((optional ? ErrorType.Warning : ErrorType.Error), "Patch lump \"" + Path.Combine(patchlocation, p.LumpName) + "\" data format could not be read, while loading texture \"" + this.Name + "\"");
+									if(!nulltexture) General.ErrorLogger.Add((optional ? ErrorType.Warning : ErrorType.Error), "Patch lump \"" + Path.Combine(patchlocation, p.LumpName) + "\" data format could not be read, while loading texture \"" + this.Name + "\"");
 									missingpatches++; //mxd
 								}
 							}
@@ -196,7 +195,7 @@ namespace CodeImp.DoomBuilder.Data
 								catch(InvalidDataException)
 								{
 									// Data cannot be read!
-									General.ErrorLogger.Add((optional ? ErrorType.Warning : ErrorType.Error), "Patch lump \"" + p.LumpName + "\" data format could not be read, while loading texture \"" + this.Name + "\"");
+									if(!nulltexture) General.ErrorLogger.Add((optional ? ErrorType.Warning : ErrorType.Error), "Patch lump \"" + p.LumpName + "\" data format could not be read, while loading texture \"" + this.Name + "\"");
 									missingpatches++; //mxd
 								}
 
@@ -238,14 +237,14 @@ namespace CodeImp.DoomBuilder.Data
 							}
 							
 							// Missing a patch lump!
-							General.ErrorLogger.Add((optional ? ErrorType.Warning : ErrorType.Error), "Missing patch lump \"" + p.LumpName + "\" while loading texture \"" + this.Name + "\"");
+							if(!nulltexture) General.ErrorLogger.Add((optional ? ErrorType.Warning : ErrorType.Error), "Missing patch lump \"" + p.LumpName + "\" while loading texture \"" + this.Name + "\"");
 							missingpatches++; //mxd
 						}
 					}
 				}
 				
 				// Dispose bitmap if load failed
-				if((bitmap != null) && (loadfailed || missingpatches >= patches.Count)) //mxd. We can still display texture if at least one of the patches was loaded
+				if(!nulltexture && (bitmap != null) && (loadfailed || missingpatches >= patches.Count)) //mxd. We can still display texture if at least one of the patches was loaded
 				{
 					bitmap.Dispose();
 					bitmap = null;
