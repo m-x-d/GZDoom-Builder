@@ -351,7 +351,8 @@ namespace CodeImp.DoomBuilder.IO
 		#region ================== Lumps
 
 		// This creates a new lump in the WAD file
-		public Lump Insert(string name, int position, int datalength)
+		public Lump Insert(string name, int position, int datalength) { return Insert(name, position, datalength, true); } //mxd
+		public Lump Insert(string name, int position, int datalength, bool writeheaders)
 		{
 			// We will be adding a lump
 			numlumps++;
@@ -367,7 +368,7 @@ namespace CodeImp.DoomBuilder.IO
 			lumpsoffset += datalength;
 
 			// Write the new headers
-			WriteHeaders();
+			if(writeheaders) WriteHeaders();
 
 			// Return the new lump
 			return lump;

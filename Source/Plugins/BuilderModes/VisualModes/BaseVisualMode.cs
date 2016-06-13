@@ -3655,7 +3655,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			General.Interface.DisplayStatus(StatusType.Action, "Toggled Slope for " + toUpdate.Count + (toUpdate.Count == 1 ? " surface." : " surfaces."));
 		}
-		
+
+		//mxd
+		[BeginAction("alphabasedtexturehighlighting")]
+		public void ToggleAlphaBasedTextureHighlighting()
+		{
+			BuilderPlug.Me.AlphaBasedTextureHighlighting = !BuilderPlug.Me.AlphaBasedTextureHighlighting;
+			General.Interface.DisplayStatus(StatusType.Info, "Alpha-based textures highlighting is " + (BuilderPlug.Me.AlphaBasedTextureHighlighting ? "ENABLED" : "DISABLED"));
+		}
+
 		#endregion
 
 		#region ================== Texture Alignment

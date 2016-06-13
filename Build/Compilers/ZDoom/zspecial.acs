@@ -363,8 +363,9 @@ special
 	-93:GetMaxInventory(2),
 	-94:SetSectorDamage(2,5),
 	-95:SetSectorTerrain(3),
-	-96:SpawnParticle(1,15),
+	-96:SpawnParticle(1,16),
 	-97:SetMusicVolume(1),
+	-98:CheckProximity(3, 6),
 	
 	// Zandronum's
 	-100:ResetMap(0),

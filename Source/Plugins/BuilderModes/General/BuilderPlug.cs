@@ -127,6 +127,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private bool syncSelection; //mxd. Sync selection between Visual and Classic modes.
 		private bool lockSectorTextureOffsetsWhileDragging; //mxd
 		private bool syncthingedit; //mxd
+		private bool alphabasedtexturehighlighting; //mxd
 		
 		#endregion
 
@@ -176,6 +177,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public bool SyncSelection { get { return syncSelection; } set { syncSelection = value; } } //mxd
 		public bool LockSectorTextureOffsetsWhileDragging { get { return lockSectorTextureOffsetsWhileDragging; } internal set { lockSectorTextureOffsetsWhileDragging = value; } } //mxd
 		public bool SyncronizeThingEdit { get { return syncthingedit; } internal set { syncthingedit = value; } } //mxd
+		public bool AlphaBasedTextureHighlighting { get { return alphabasedtexturehighlighting; } internal set { alphabasedtexturehighlighting = value; } } //mxd
 
 		//mxd. "Make Door" action persistent settings
 		internal MakeDoorSettings MakeDoor;
@@ -282,10 +284,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd. Load settings, which can be changed via UI
 		private void LoadUISettings()
 		{
-			lockSectorTextureOffsetsWhileDragging = General.Settings.ReadPluginSetting("locktextureoffsets", false); //mxd
+			lockSectorTextureOffsetsWhileDragging = General.Settings.ReadPluginSetting("locktextureoffsets", false);
 			viewselectionnumbers = General.Settings.ReadPluginSetting("viewselectionnumbers", true);
-			viewselectioneffects = General.Settings.ReadPluginSetting("viewselectioneffects", true); //mxd
-			syncthingedit = General.Settings.ReadPluginSetting("syncthingedit", true); //mxd
+			viewselectioneffects = General.Settings.ReadPluginSetting("viewselectioneffects", true);
+			syncthingedit = General.Settings.ReadPluginSetting("syncthingedit", true);
+			alphabasedtexturehighlighting = General.Settings.ReadPluginSetting("alphabasedtexturehighlighting", true);
 		}
 
 		//mxd. Save settings, which can be changed via UI
@@ -295,6 +298,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Settings.WritePluginSetting("viewselectionnumbers", viewselectionnumbers);
 			General.Settings.WritePluginSetting("viewselectioneffects", viewselectioneffects);
 			General.Settings.WritePluginSetting("syncthingedit", syncthingedit);
+			General.Settings.WritePluginSetting("alphabasedtexturehighlighting", alphabasedtexturehighlighting);
 		}
 
 		//mxd. These should be reset when changing maps

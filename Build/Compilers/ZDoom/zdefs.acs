@@ -1088,3 +1088,17 @@
 #define WARPF_USEPTR 0x2000
 #define WARPF_COPYVELOCITY 0x4000
 #define WARPF_COPYPITCH 0x8000
+
+#define CPXF_ANCESTOR    (1 << 0)
+#define CPXF_LESSOREQUAL (1 << 1)
+#define CPXF_NOZ         (1 << 2)
+#define CPXF_COUNTDEAD   (1 << 3)
+#define CPXF_DEADONLY    (1 << 4)
+#define CPXF_EXACT       (1 << 5)
+#define CPXF_SETTARGET   (1 << 6)
+#define CPXF_SETMASTER   (1 << 7)
+#define CPXF_SETTRACER   (1 << 8)
+#define CPXF_FARTHEST    (1 << 9)
+#define CPXF_CLOSEST     (1 << 10)
+#define CPXF_SETONPTR    (1 << 11)
+#define CPXF_CHECKSIGHT  (1 << 12)

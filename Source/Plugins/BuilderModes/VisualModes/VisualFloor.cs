@@ -435,7 +435,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			//mxd. Alpha based picking. Used only on extrafloors with transparent or masked textures
 			if((side <= 0.0f && sd.IsFront) || (side > 0.0f && !sd.IsFront))
 			{
-				if(!Texture.IsImageLoaded || extrafloor == null || RenderPass == RenderPass.Solid || (!Texture.IsTranslucent && !Texture.IsMasked))
+				if(!BuilderPlug.Me.AlphaBasedTextureHighlighting || !Texture.IsImageLoaded || extrafloor == null || RenderPass == RenderPass.Solid || (!Texture.IsTranslucent && !Texture.IsMasked))
 					return true;
 
 				// Some textures (e.g. HiResImage) may lie about their size, so use bitmap size instead

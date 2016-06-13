@@ -1392,7 +1392,7 @@ namespace CodeImp.DoomBuilder
 
 						// Create new, emtpy lump
 						General.WriteLogLine(lumpname + " is required! Created empty lump.");
-						target.Insert(lumpname, insertindex, 0);
+						target.Insert(lumpname, insertindex, 0, false);
 					}
 					else
 					{
@@ -1401,6 +1401,8 @@ namespace CodeImp.DoomBuilder
 					}
 				}
 			}
+
+			target.WriteHeaders(); //mxd
 		}
 
 		//mxd. This is called on tempwad, which should only have the current map inside it.
@@ -1465,10 +1467,12 @@ namespace CodeImp.DoomBuilder
 				if(!skipping) 
 				{
 					// Copy lump over!
-					Lump tgtlump = target.Insert(srclump.Name, target.Lumps.Count, srclump.Length);
+					Lump tgtlump = target.Insert(srclump.Name, target.Lumps.Count, srclump.Length, false);
 					srclump.CopyTo(tgtlump);
 				}
 			}
+
+			target.WriteHeaders(); //mxd
 
 			return headerpos;
 		}
@@ -1528,7 +1532,7 @@ namespace CodeImp.DoomBuilder
 							// Copy the lump to the target
 							//General.WriteLogLine(srclumpname + " copying as " + tgtlumpname);
 							Lump lump = source.Lumps[sourceindex];
-							Lump newlump = target.Insert(tgtlumpname, targetindex, lump.Length);
+							Lump newlump = target.Insert(tgtlumpname, targetindex, lump.Length, false);
 							lump.CopyTo(newlump);
 
 							//mxd. We still need to increment targetindex...
@@ -1545,6 +1549,8 @@ namespace CodeImp.DoomBuilder
 						}
 					}
 				}
+
+				target.WriteHeaders(); //mxd
 			}
 		}
 
