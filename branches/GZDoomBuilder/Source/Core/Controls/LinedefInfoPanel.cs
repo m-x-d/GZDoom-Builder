@@ -511,7 +511,17 @@ namespace CodeImp.DoomBuilder.Controls
 			flagsPanel.Visible = (flags.Items.Count > 0);
 			if(flags.Items.Count > 0) 
 			{
-				flags.Width = flags.GetItemRect(0).Width * (int)Math.Ceiling(flags.Items.Count / 4.0f);
+				Rectangle rect = flags.GetItemRect(0);
+				int itemspercolumn = 1;
+
+				// Check how many items per column we have...
+				for(int i = 1; i < flags.Items.Count; i++)
+				{
+					if(flags.GetItemRect(i).X != rect.X) break;
+					itemspercolumn++;
+				}
+
+				flags.Width = rect.Width * (int)Math.Ceiling(flags.Items.Count / (float)itemspercolumn);
 				flagsPanel.Width = flags.Width + flags.Left * 2;
 			}
 

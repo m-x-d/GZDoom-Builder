@@ -71,7 +71,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.labelFloorTextureSize = new System.Windows.Forms.Label();
 			this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
 			this.flagsPanel = new System.Windows.Forms.GroupBox();
-			this.flags = new System.Windows.Forms.ListView();
+			this.flags = new CodeImp.DoomBuilder.Controls.TransparentListView();
 			label13 = new System.Windows.Forms.Label();
 			label5 = new System.Windows.Forms.Label();
 			this.sectorinfo.SuspendLayout();
@@ -128,7 +128,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.taglabel.Text = "Tag:";
 			this.taglabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
-			// labelEffect
+			// effectlabel
 			// 
 			this.effectlabel.Location = new System.Drawing.Point(8, 19);
 			this.effectlabel.Name = "effectlabel";
@@ -531,7 +531,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.flags.Name = "flags";
 			this.flags.Scrollable = false;
 			this.flags.ShowGroups = false;
-			this.flags.Size = new System.Drawing.Size(443, 73);
+			this.flags.Size = new System.Drawing.Size(443, 88);
 			this.flags.TabIndex = 0;
 			this.flags.UseCompatibleStateImageBehavior = false;
 			this.flags.View = System.Windows.Forms.View.List;
@@ -600,7 +600,7 @@ namespace CodeImp.DoomBuilder.Controls
 		private System.Windows.Forms.Label labelFade;
 		private System.Windows.Forms.Label labelLight;
 		private System.Windows.Forms.GroupBox flagsPanel;
-		private System.Windows.Forms.ListView flags;
+		private CodeImp.DoomBuilder.Controls.TransparentListView flags;
 		private System.Windows.Forms.Label taglabel;
 		private System.Windows.Forms.Label effectlabel;
 		private System.Windows.Forms.Label labelfloor;

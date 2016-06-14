@@ -57,7 +57,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.spritetex = new CodeImp.DoomBuilder.Controls.ConfigurablePictureBox();
 			this.flagsPanel = new System.Windows.Forms.GroupBox();
-			this.flags = new System.Windows.Forms.ListView();
+			this.flags = new CodeImp.DoomBuilder.Controls.TransparentListView();
 			label5 = new System.Windows.Forms.Label();
 			label4 = new System.Windows.Forms.Label();
 			label3 = new System.Windows.Forms.Label();
@@ -385,7 +385,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.flags.Name = "flags";
 			this.flags.Scrollable = false;
 			this.flags.ShowGroups = false;
-			this.flags.Size = new System.Drawing.Size(556, 73);
+			this.flags.Size = new System.Drawing.Size(556, 88);
 			this.flags.TabIndex = 0;
 			this.flags.UseCompatibleStateImageBehavior = false;
 			this.flags.View = System.Windows.Forms.View.List;
@@ -433,7 +433,7 @@ namespace CodeImp.DoomBuilder.Controls
 		private System.Windows.Forms.Label arg1;
 		private System.Windows.Forms.GroupBox infopanel;
 		private System.Windows.Forms.GroupBox flagsPanel;
-		private System.Windows.Forms.ListView flags;
+		private CodeImp.DoomBuilder.Controls.TransparentListView flags;
 		private System.Windows.Forms.Label labelaction;
 		private CodeImp.DoomBuilder.Controls.AngleControlEx anglecontrol;
 		private ConfigurablePictureBox spritetex;

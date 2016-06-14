@@ -2402,31 +2402,37 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// linedefinfo
 			// 
+			this.linedefinfo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.linedefinfo.Location = new System.Drawing.Point(3, 3);
 			this.linedefinfo.MaximumSize = new System.Drawing.Size(10000, 100);
 			this.linedefinfo.MinimumSize = new System.Drawing.Size(100, 100);
 			this.linedefinfo.Name = "linedefinfo";
-			this.linedefinfo.Size = new System.Drawing.Size(1560, 100);
+			this.linedefinfo.Size = new System.Drawing.Size(1006, 100);
 			this.linedefinfo.TabIndex = 0;
 			this.linedefinfo.Visible = false;
 			// 
 			// thinginfo
 			// 
+			this.thinginfo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.thinginfo.Location = new System.Drawing.Point(3, 3);
 			this.thinginfo.MaximumSize = new System.Drawing.Size(10000, 100);
 			this.thinginfo.MinimumSize = new System.Drawing.Size(100, 100);
 			this.thinginfo.Name = "thinginfo";
-			this.thinginfo.Size = new System.Drawing.Size(1190, 100);
+			this.thinginfo.Size = new System.Drawing.Size(1006, 100);
 			this.thinginfo.TabIndex = 3;
 			this.thinginfo.Visible = false;
 			// 
 			// sectorinfo
 			// 
+			this.sectorinfo.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
 			this.sectorinfo.Location = new System.Drawing.Point(3, 3);
 			this.sectorinfo.MaximumSize = new System.Drawing.Size(10000, 100);
 			this.sectorinfo.MinimumSize = new System.Drawing.Size(100, 100);
 			this.sectorinfo.Name = "sectorinfo";
-			this.sectorinfo.Size = new System.Drawing.Size(1090, 100);
+			this.sectorinfo.Size = new System.Drawing.Size(1006, 100);
 			this.sectorinfo.TabIndex = 2;
 			this.sectorinfo.Visible = false;
 			// 
