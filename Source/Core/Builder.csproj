@@ -804,6 +804,9 @@
     <Compile Include="Controls\ToolStripNumericUpDown.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Controls\TransparentListView.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\TransparentPanel.cs">
       <SubType>Component</SubType>
     </Compile>

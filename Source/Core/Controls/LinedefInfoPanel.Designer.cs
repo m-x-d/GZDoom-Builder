@@ -109,7 +109,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.backlowname = new System.Windows.Forms.Label();
 			this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
 			this.flagsPanel = new System.Windows.Forms.GroupBox();
-			this.flags = new System.Windows.Forms.ListView();
+			this.flags = new CodeImp.DoomBuilder.Controls.TransparentListView();
 			this.infopanel.SuspendLayout();
 			this.frontpanel.SuspendLayout();
 			this.flowLayoutPanelFront.SuspendLayout();
@@ -1017,7 +1017,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.flags.Name = "flags";
 			this.flags.Scrollable = false;
 			this.flags.ShowGroups = false;
-			this.flags.Size = new System.Drawing.Size(443, 73);
+			this.flags.Size = new System.Drawing.Size(443, 88);
 			this.flags.TabIndex = 0;
 			this.flags.UseCompatibleStateImageBehavior = false;
 			this.flags.View = System.Windows.Forms.View.List;
@@ -1145,7 +1145,7 @@ namespace CodeImp.DoomBuilder.Controls
 		private System.Windows.Forms.Label labelTextureBackBottom;
 		private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
 		private System.Windows.Forms.GroupBox flagsPanel;
-		private System.Windows.Forms.ListView flags;
+		private CodeImp.DoomBuilder.Controls.TransparentListView flags;
 		private System.Windows.Forms.Label taglabel;
 		private System.Windows.Forms.Label anglelabel;
 		private System.Windows.Forms.Label lengthlabel;
