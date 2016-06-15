@@ -148,6 +148,9 @@ namespace CodeImp.DoomBuilder.Windows
 				posZ.AllowDecimal = true;
 			}
 
+			//mxd. Use doom angle clamping?
+			anglecontrol.DoomAngleClamping = General.Map.Config.DoomThingRotationAngles;
+
 			// Value linking
 			scale.LinkValues = linkscale;
 
@@ -462,7 +465,12 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				// Coordination
 				//mxd. Randomize rotations?
-				if(cbrandomangle.Checked) t.Rotate(General.Random(0, 359));
+				if(cbrandomangle.Checked)
+				{
+					int newangle = General.Random(0, 359);
+					if(General.Map.Config.DoomThingRotationAngles) newangle = newangle / 45 * 45;
+					t.Rotate(newangle);
+				}
 				if(cbrandompitch.Checked) t.SetPitch(General.Random(0, 359));
 				if(cbrandomroll.Checked) t.SetRoll(General.Random(0, 359));
 

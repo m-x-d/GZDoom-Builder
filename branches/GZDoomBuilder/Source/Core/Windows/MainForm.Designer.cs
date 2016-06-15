@@ -75,6 +75,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.itempastespecial = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemsnaptogrid = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemautomerge = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemsplitjoinedsectors = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemautoclearsidetextures = new System.Windows.Forms.ToolStripMenuItem();
 			this.seperatoreditgeometry = new System.Windows.Forms.ToolStripSeparator();
 			this.itemgridinc = new System.Windows.Forms.ToolStripMenuItem();
@@ -193,6 +194,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.buttontogglefixedthingsscale = new System.Windows.Forms.ToolStripButton();
 			this.buttonsnaptogrid = new System.Windows.Forms.ToolStripButton();
 			this.buttonautomerge = new System.Windows.Forms.ToolStripButton();
+			this.buttonsplitjoinedsectors = new System.Windows.Forms.ToolStripButton();
 			this.buttonautoclearsidetextures = new System.Windows.Forms.ToolStripButton();
 			this.seperatorgeometry = new System.Windows.Forms.ToolStripSeparator();
 			this.buttontogglefx = new System.Windows.Forms.ToolStripButton();
@@ -533,6 +535,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.itemsnaptogrid,
             this.itemdynamicgridsize,
             this.itemautomerge,
+			this.itemsplitjoinedsectors,
             this.itemautoclearsidetextures,
             this.seperatoreditgeometry,
             this.itemgridinc,
@@ -633,6 +636,17 @@ namespace CodeImp.DoomBuilder.Windows
 			this.itemautomerge.Tag = "builder_toggleautomerge";
 			this.itemautomerge.Text = "Snap to &Geometry";
 			this.itemautomerge.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// itemsplitjoinedsectors
+			// 
+			this.itemsplitjoinedsectors.Checked = true;
+			this.itemsplitjoinedsectors.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.itemsplitjoinedsectors.Image = global::CodeImp.DoomBuilder.Properties.Resources.SplitSectors;
+			this.itemsplitjoinedsectors.Name = "itemsplitjoinedsectors";
+			this.itemsplitjoinedsectors.Size = new System.Drawing.Size(219, 22);
+			this.itemsplitjoinedsectors.Tag = "builder_togglejoinedsectorssplitting";
+			this.itemsplitjoinedsectors.Text = "Split &Joined Sectors when Drawing Lines";
+			this.itemsplitjoinedsectors.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// itemautoclearsidetextures
 			// 
@@ -1306,6 +1320,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.buttonsnaptogrid,
             this.buttontoggledynamicgrid,
             this.buttonautomerge,
+			this.buttonsplitjoinedsectors,
             this.buttonautoclearsidetextures,
             this.seperatorgeometry,
             this.buttontogglefx,
@@ -1792,6 +1807,19 @@ namespace CodeImp.DoomBuilder.Windows
 			this.buttonautomerge.Tag = "builder_toggleautomerge";
 			this.buttonautomerge.Text = "Snap to Geometry";
 			this.buttonautomerge.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// buttonsplitjoinedsectors
+			// 
+			this.buttonsplitjoinedsectors.Checked = true;
+			this.buttonsplitjoinedsectors.CheckState = System.Windows.Forms.CheckState.Checked;
+			this.buttonsplitjoinedsectors.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttonsplitjoinedsectors.Image = global::CodeImp.DoomBuilder.Properties.Resources.SplitSectors;
+			this.buttonsplitjoinedsectors.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttonsplitjoinedsectors.Name = "buttonsplitjoinedsectors";
+			this.buttonsplitjoinedsectors.Size = new System.Drawing.Size(23, 22);
+			this.buttonsplitjoinedsectors.Tag = "builder_togglejoinedsectorssplitting";
+			this.buttonsplitjoinedsectors.Text = "Split Joined Sectors when Drawing Lines";
+			this.buttonsplitjoinedsectors.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// buttonautoclearsidetextures
 			// 
@@ -2680,6 +2708,8 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.ToolStripMenuItem itemsnaptogrid;
 		private System.Windows.Forms.ToolStripButton buttonautomerge;
 		private System.Windows.Forms.ToolStripMenuItem itemautomerge;
+		private System.Windows.Forms.ToolStripButton buttonsplitjoinedsectors;
+		private System.Windows.Forms.ToolStripMenuItem itemsplitjoinedsectors;
 		private System.Windows.Forms.Timer processor;
 		private System.Windows.Forms.ToolStripSeparator separatorgzmodes;
 		private System.Windows.Forms.ToolStripSeparator seperatorfilesave;

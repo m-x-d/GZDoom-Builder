@@ -115,7 +115,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						General.Map.Map.ClearAllSelected();
 
 						//mxd. Outer sectors may require some splittin...
-						Tools.SplitOuterSectors(General.Map.Map.GetMarkedLinedefs(true));
+						if(General.Settings.SplitJoinedSectors) Tools.SplitOuterSectors(General.Map.Map.GetMarkedLinedefs(true));
 
 						// Edit new sectors?
 						if(BuilderPlug.Me.EditNewSector && (newsectors.Count > 0))
