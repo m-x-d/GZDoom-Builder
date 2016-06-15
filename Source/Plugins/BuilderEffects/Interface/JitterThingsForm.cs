@@ -201,9 +201,13 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 		private void ApplyRotation(int ammount) 
 		{
 			for(int i = 0; i < selection.Count; i++)
-				selection[i].Rotate((int)((thingData[i].Angle + ammount * thingData[i].JitterRotation) % 360));
+			{
+				int newangle = (int)Math.Round(thingData[i].Angle + ammount * thingData[i].JitterRotation);
+				if(General.Map.Config.DoomThingRotationAngles) newangle = newangle / 45 * 45;
+				selection[i].Rotate(newangle % 360);
+			}
 
-			//update view
+			// Update view
 			if(editingModeName == "ThingsMode") General.Interface.RedrawDisplay();
 		}
 

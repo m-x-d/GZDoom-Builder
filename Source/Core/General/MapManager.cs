@@ -2258,7 +2258,13 @@ namespace CodeImp.DoomBuilder
 			General.Plugins.ReloadResources();
 
 			// Inform editing mode that the resources are reloaded
-			if(General.Editing.Mode != null) General.Editing.Mode.OnReloadResources();
+			if(General.Editing.Mode != null)
+			{
+				General.Editing.Mode.OnReloadResources();
+
+				//mxd. Also Check appropriate button on interface
+				General.MainWindow.CheckEditModeButton(General.Editing.Mode.EditModeButtonName); 
+			}
 
 			// Reset status
 			General.MainWindow.DisplayStatus(oldstatus);

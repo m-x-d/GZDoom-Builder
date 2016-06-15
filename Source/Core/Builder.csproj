@@ -1179,6 +1179,7 @@
     <None Include="Resources\ModelDisabled.png" />
     <None Include="Resources\ModelFiltered.png" />
     <Content Include="Resources\Model_selected.png" />
+    <None Include="Resources\SplitSectors.png" />
     <None Include="Resources\ScriptProperty.png" />
     <None Include="Resources\TextWhitespace.png" />
     <None Include="Resources\TextIndent.png" />

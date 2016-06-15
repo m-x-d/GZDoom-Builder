@@ -265,6 +265,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				//mxd. Render sector tag labels
 				if(BuilderPlug.Me.ViewSelectionEffects && General.Map.FormatInterface.HasThingAction)
 				{
+					//mxd. sectorlabels will be null after switching map configuration from one 
+					// without ThingAction to one with it while in Things mode
+					if(sectorlabels == null) SetupSectorLabels(); 
+					
 					List<ITextLabel> torender = new List<ITextLabel>(sectorlabels.Count);
 					foreach(KeyValuePair<Sector, string[]> group in sectortexts)
 					{
@@ -1494,25 +1498,33 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Interface.DisplayStatus(StatusType.Action, "Rotated a thing.");
 			}
 
-			//change angle
-			if(General.Interface.CtrlState) //point away
+			// Change angle
+			if(General.Interface.CtrlState) // Point away
 			{ 
 				foreach(Thing t in selected) 
 				{
 					ThingTypeInfo info = General.Map.Data.GetThingInfo(t.Type);
 					if(info == null || info.Category == null || info.Category.Arrow == 0)
 						continue;
-					t.Rotate(Vector2D.GetAngle(mousemappos, t.Position) + Angle2D.PI);
+
+					int newangle = Angle2D.RealToDoom(Vector2D.GetAngle(mousemappos, t.Position) + Angle2D.PI);
+					if(General.Map.Config.DoomThingRotationAngles) newangle = (newangle + 22) / 45 * 45;
+
+					t.Rotate(newangle);
 				}
 			} 
-			else //point at
+			else // Point at cursor
 			{ 
 				foreach(Thing t in selected) 
 				{
 					ThingTypeInfo info = General.Map.Data.GetThingInfo(t.Type);
 					if(info == null || info.Category == null || info.Category.Arrow == 0)
 						continue;
-					t.Rotate(Vector2D.GetAngle(mousemappos, t.Position));
+
+					int newangle = Angle2D.RealToDoom(Vector2D.GetAngle(mousemappos, t.Position));
+					if(General.Map.Config.DoomThingRotationAngles) newangle = (newangle + 22) / 45 * 45;
+
+					t.Rotate(newangle);
 				}
 			}
 
@@ -1524,14 +1536,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("rotateclockwise")]
 		public void RotateCW() 
 		{
-			RotateThings(-5);
+			RotateThings(General.Map.Config.DoomThingRotationAngles ? -45 : -5);
 		}
 
 		//mxd. rotate counterclockwise
 		[BeginAction("rotatecounterclockwise")]
 		public void RotateCCW() 
 		{
-			RotateThings(5);
+			RotateThings(General.Map.Config.DoomThingRotationAngles ? 45 : 5);
 		}
 
 		//mxd
@@ -1560,8 +1572,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Interface.DisplayStatus(StatusType.Action, "Rotated a thing.");
 			}
 
-			//change angle
-			foreach(Thing t in selected) t.Rotate(General.ClampAngle(t.AngleDoom + increment));
+			// Change angle
+			foreach(Thing t in selected)
+			{
+				int newangle = t.AngleDoom + increment;
+				if(General.Map.Config.DoomThingRotationAngles) newangle = (newangle + 22) / 45 * 45;
+
+				t.Rotate(General.ClampAngle(newangle));
+			}
 
 			// Redraw screen
 			General.Interface.RedrawDisplay();

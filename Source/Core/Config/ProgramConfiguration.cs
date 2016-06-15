@@ -92,6 +92,7 @@ namespace CodeImp.DoomBuilder.Config
 		private bool keeptexturefilterfocused; //mxd
 		private SplitLineBehavior splitlinebehavior; //mxd
 		private MergeGeometryMode mergegeomode; //mxd
+		private bool splitjoinedsectors; //mxd
 		private bool usehighlight; //mxd
 		private bool switchviewmodes; //mxd
 
@@ -207,7 +208,8 @@ namespace CodeImp.DoomBuilder.Config
 		public bool KeepTextureFilterFocused { get { return keeptexturefilterfocused; } internal set { keeptexturefilterfocused = value; } } //mxd
 		public SplitLineBehavior SplitLineBehavior { get { return splitlinebehavior; } set { splitlinebehavior = value; } } //mxd
 		public MergeGeometryMode MergeGeometryMode { get { return mergegeomode; } internal set { mergegeomode = value; } } //mxd
-		
+		public bool SplitJoinedSectors { get { return splitjoinedsectors; } internal set { splitjoinedsectors = value; } } //mxd
+
 		//mxd. Highlight mode
 		public bool UseHighlight
 		{ 
@@ -356,6 +358,7 @@ namespace CodeImp.DoomBuilder.Config
 				keeptexturefilterfocused = cfg.ReadSetting("keeptexturefilterfocused", true); //mxd
 				splitlinebehavior = (SplitLineBehavior)General.Clamp(cfg.ReadSetting("splitlinebehavior", 0), 0, Enum.GetValues(typeof(SplitLineBehavior)).Length - 1); //mxd
 				mergegeomode = (MergeGeometryMode)General.Clamp(cfg.ReadSetting("mergegeometrymode", (int)MergeGeometryMode.REPLACE), 0, Enum.GetValues(typeof(MergeGeometryMode)).Length - 1); //mxd
+				splitjoinedsectors = cfg.ReadSetting("splitjoinedsectors", true); //mxd
 				usehighlight = cfg.ReadSetting("usehighlight", true); //mxd
 				switchviewmodes = cfg.ReadSetting("switchviewmodes", false); //mxd
 
@@ -474,6 +477,7 @@ namespace CodeImp.DoomBuilder.Config
 			cfg.WriteSetting("keeptexturefilterfocused", keeptexturefilterfocused); //mxd
 			cfg.WriteSetting("splitlinebehavior", (int)splitlinebehavior); //mxd
 			cfg.WriteSetting("mergegeometrymode", (int)mergegeomode); //mxd
+			cfg.WriteSetting("splitjoinedsectors", splitjoinedsectors); //mxd
 			cfg.WriteSetting("usehighlight", usehighlight); //mxd
 			cfg.WriteSetting("switchviewmodes", switchviewmodes); //mxd
 

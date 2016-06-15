@@ -26,6 +26,8 @@ namespace CodeImp.DoomBuilder.Controls
 		private const int markScaler = 5;
 		private Point origin;
 
+		private bool doomangleclamping;
+
 		//UI colors
 		private readonly Color fillColor = SystemColors.Window;
 		private readonly Color fillInactiveColor = SystemColors.Control;
@@ -44,6 +46,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 		public int Angle { get { return (angle == NO_ANGLE ? NO_ANGLE : angle - angleoffset); } set { angle = (value == NO_ANGLE ? NO_ANGLE : value + angleoffset); this.Refresh(); } }
 		public int AngleOffset { get { return angleoffset; } set { angleoffset = value; this.Refresh(); } }
+		public bool DoomAngleClamping { get { return doomangleclamping; } set { doomangleclamping = value; } }
 		public const int NO_ANGLE = int.MinValue;
 
 		#endregion
@@ -189,7 +192,7 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				int thisAngle = XYToDegrees(new Point(e.X, e.Y), origin);
 
-				if(e.Button == MouseButtons.Left) 
+				if(e.Button == MouseButtons.Left || doomangleclamping) 
 				{
 					thisAngle = (int)Math.Round(thisAngle / 45f) * 45;
 					if(thisAngle == 360) thisAngle = 0;

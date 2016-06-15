@@ -2114,6 +2114,8 @@ namespace CodeImp.DoomBuilder.Windows
 			buttontoggledynamicgrid.Visible = General.Settings.ToolbarGeometry && maploaded; //mxd
 			buttontoggledynamicgrid.Checked = General.Settings.DynamicGridSize; //mxd
 			buttonautomerge.Visible = General.Settings.ToolbarGeometry && maploaded;
+			buttonsplitjoinedsectors.Visible = General.Settings.ToolbarGeometry && maploaded; //mxd
+			buttonsplitjoinedsectors.Checked = General.Settings.SplitJoinedSectors; //mxd
 			buttonautoclearsidetextures.Visible = General.Settings.ToolbarGeometry && maploaded; //mxd
 			buttontest.Visible = General.Settings.ToolbarTesting && maploaded;
 
@@ -2762,6 +2764,7 @@ namespace CodeImp.DoomBuilder.Windows
 			itemcopy.Enabled = (General.Map != null) && (General.Editing.Mode != null) && General.Editing.Mode.Attributes.AllowCopyPaste;
 			itempaste.Enabled = (General.Map != null) && (General.Editing.Mode != null) && General.Editing.Mode.Attributes.AllowCopyPaste;
 			itempastespecial.Enabled = (General.Map != null) && (General.Editing.Mode != null) && General.Editing.Mode.Attributes.AllowCopyPaste;
+			itemsplitjoinedsectors.Checked = General.Settings.SplitJoinedSectors; //mxd
 			itemautoclearsidetextures.Checked = General.Settings.AutoClearSidedefTextures; //mxd
 			itemdynamicgridsize.Enabled = (General.Map != null); //mxd
 			itemdynamicgridsize.Checked = General.Settings.DynamicGridSize; //mxd
@@ -2892,6 +2895,16 @@ namespace CodeImp.DoomBuilder.Windows
 			buttonautomerge.Checked = !buttonautomerge.Checked;
 			itemautomerge.Checked = buttonautomerge.Checked;
 			DisplayStatus(StatusType.Action, "Snap to geometry is " + (buttonautomerge.Checked ? "ENABLED" : "DISABLED"));
+		}
+
+		//mxd
+		[BeginAction("togglejoinedsectorssplitting")]
+		internal void ToggleJoinedSectorsSplitting()
+		{
+			buttonsplitjoinedsectors.Checked = !buttonsplitjoinedsectors.Checked;
+			itemsplitjoinedsectors.Checked = buttonsplitjoinedsectors.Checked;
+			General.Settings.SplitJoinedSectors = buttonsplitjoinedsectors.Checked;
+			DisplayStatus(StatusType.Action, "Joined sectors splitting is " + (General.Settings.SplitJoinedSectors ? "ENABLED" : "DISABLED"));
 		}
 
 		//mxd

@@ -114,6 +114,9 @@ namespace CodeImp.DoomBuilder.Windows
 				posZ.AllowDecimal = true;
 			}
 
+			//mxd. Use doom angle clamping?
+			anglecontrol.DoomAngleClamping = General.Map.Config.DoomThingRotationAngles;
+
 			//mxd. Arrange inteface
 			int targetheight;
 			if(General.Map.FormatInterface.HasThingAction)
@@ -364,7 +367,12 @@ namespace CodeImp.DoomBuilder.Windows
 			foreach(Thing t in things)
 			{
 				// Coordination
-				if(cbRandomAngle.Checked) t.Rotate(General.Random(0, 359)); //mxd
+				if(cbRandomAngle.Checked) //mxd
+				{
+					int newangle = General.Random(0, 359);
+					if(General.Map.Config.DoomThingRotationAngles) newangle = newangle / 45 * 45;
+					t.Rotate(newangle);
+				}
 
 				//mxd. Check position
 				float px = General.Clamp(t.Position.x, General.Map.Config.LeftBoundary, General.Map.Config.RightBoundary);

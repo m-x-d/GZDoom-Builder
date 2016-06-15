@@ -780,7 +780,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					General.Map.Map.Update();
 
 					//mxd. Outer sectors may require some splittin...
-					Tools.SplitOuterSectors(General.Map.Map.GetMarkedLinedefs(true));
+					if(General.Settings.SplitJoinedSectors) Tools.SplitOuterSectors(General.Map.Map.GetMarkedLinedefs(true));
 
 					// Edit new sectors?
 					List<Sector> newsectors = General.Map.Map.GetMarkedSectors(true);

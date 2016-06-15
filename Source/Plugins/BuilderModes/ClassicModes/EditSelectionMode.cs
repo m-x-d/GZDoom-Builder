@@ -18,7 +18,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Drawing;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Actions;
@@ -848,8 +847,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			index = 0;
 			foreach(Thing t in selectedthings)
 			{
-				if(!fixedrotationthingtypes.Contains(t.Type)) //mxd. Polyobject Anchors, I hate you!
-					t.Rotate(Angle2D.Normalized(newthingangle[index]));
+				//mxd. Added special Polyobj Anchor handling and Doom angle clamping
+				if(!fixedrotationthingtypes.Contains(t.Type))
+				{
+					int newangle = Angle2D.RealToDoom(Angle2D.Normalized(newthingangle[index]));
+					if(General.Map.Config.DoomThingRotationAngles) newangle = newangle / 45 * 45;
+					t.Rotate(newangle);
+				}
+				
 				index++;
 			}
 			
