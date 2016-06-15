@@ -323,6 +323,15 @@ namespace CodeImp.DoomBuilder.Map
 			return new Dictionary<string, bool>(flags);
 		}
 
+		//mxd. This returns enabled flags
+		public HashSet<string> GetEnabledFlags()
+		{
+			HashSet<string> result = new HashSet<string>();
+			foreach(KeyValuePair<string, bool> group in flags)
+				if(group.Value) result.Add(group.Key);
+			return result;
+		} 
+
 		// This clears all flags
 		public void ClearFlags() 
 		{
