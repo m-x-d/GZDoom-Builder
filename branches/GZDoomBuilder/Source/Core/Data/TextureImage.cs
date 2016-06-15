@@ -39,13 +39,14 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public TextureImage(string group, string name, int width, int height, float scalex, float scaley)
+		public TextureImage(string group, string name, int width, int height, float scalex, float scaley, bool worldpanning)
 		{
 			// Initialize
 			this.width = width;
 			this.height = height;
 			this.scale.x = scalex;
 			this.scale.y = scaley;
+			this.worldpanning = worldpanning; //mxd
 			this.patches = new List<TexturePatch>();
 			SetName(name);
 			virtualname = "[" + group + "]/" + this.name; //mxd

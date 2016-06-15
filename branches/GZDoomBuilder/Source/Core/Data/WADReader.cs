@@ -35,6 +35,9 @@ namespace CodeImp.DoomBuilder.Data
 	{
 		#region ================== Constants
 
+		//mxd. TEXTUREx flags
+		private const int TX_WORLDPANNING = 0x8000;
+
 		#endregion
 
 		#region ================== Structures
@@ -531,6 +534,7 @@ namespace CodeImp.DoomBuilder.Data
 				// Read texture properties
 				byte[] namebytes = reader.ReadBytes(8);
 				int flags = reader.ReadUInt16();
+				bool worldpanning = (flags & TX_WORLDPANNING) != 0; //mxd
 				byte scalebytex = reader.ReadByte();
 				byte scalebytey = reader.ReadByte();
 				int width = reader.ReadInt16();
@@ -565,7 +569,7 @@ namespace CodeImp.DoomBuilder.Data
 					{
 						// Make the image object
 						image = new TextureImage(sourcename, Lump.MakeNormalName(namebytes, WAD.ENCODING),
-												 width, height, scalex, scaley);
+												 width, height, scalex, scaley, worldpanning);
 					}
 					else
 					{
