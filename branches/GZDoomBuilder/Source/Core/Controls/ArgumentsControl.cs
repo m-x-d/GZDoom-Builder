@@ -26,12 +26,24 @@ namespace CodeImp.DoomBuilder.Controls
 
 		#endregion
 
+		#region ================== Enums
+
+		private enum ArgZeroMode
+		{
+			DEFAULT,
+			SCRIPT_NUMBER,
+			SCRIPT_NAME,
+		}
+
+		#endregion
+
 		#region ================== Variables
 
 		private string arg0str;
 		private bool havearg0str;
 		private int action;
 		private ArgumentInfo[] arginfo;
+		private ArgZeroMode argzeromode;
 
 		#endregion
 
@@ -124,29 +136,36 @@ namespace CodeImp.DoomBuilder.Controls
 		public void Apply(Linedef l)
 		{
 			//mxd. Script name/number handling
-			if(scriptnumbers.Visible)
-			{
-				//apply script number
-				if(!string.IsNullOrEmpty(scriptnumbers.Text))
-				{
-					if(scriptnumbers.SelectedItem != null)
-						l.Args[0] = ((ScriptItem)((ColoredComboBoxItem)scriptnumbers.SelectedItem).Value).Index;
-					else if(!int.TryParse(scriptnumbers.Text.Trim(), out l.Args[0]))
-						l.Args[0] = 0;
-
-					if(l.Fields.ContainsKey("arg0str")) l.Fields.Remove("arg0str");
-				}
-			}
-			else if(scriptnames.Visible)
+			// We can't rely on control visibility here, because all controlls will be invisible if ArgumentsControl is invisible
+			// (for example, when a different tab is selected)
+			switch(argzeromode)
 			{
 				// Apply arg0str
-				if(!string.IsNullOrEmpty(scriptnames.Text))
-					l.Fields["arg0str"] = new UniValue(UniversalType.String, scriptnames.Text);
-			}
-			else
-			{
-				l.Args[0] = arg0.GetResult(l.Args[0]);
-				if(l.Fields.ContainsKey("arg0str")) l.Fields.Remove("arg0str");
+				case ArgZeroMode.SCRIPT_NAME:
+					if(!string.IsNullOrEmpty(scriptnames.Text))
+						l.Fields["arg0str"] = new UniValue(UniversalType.String, scriptnames.Text);
+					break;
+
+				// Apply script number
+				case ArgZeroMode.SCRIPT_NUMBER:
+					if(!string.IsNullOrEmpty(scriptnumbers.Text))
+					{
+						if(scriptnumbers.SelectedItem != null)
+							l.Args[0] = ((ScriptItem)((ColoredComboBoxItem)scriptnumbers.SelectedItem).Value).Index;
+						else if(!int.TryParse(scriptnumbers.Text.Trim(), out l.Args[0]))
+							l.Args[0] = 0;
+
+						if(l.Fields.ContainsKey("arg0str")) l.Fields.Remove("arg0str");
+					}
+					break;
+
+				// Apply classic arg
+				case ArgZeroMode.DEFAULT:
+					l.Args[0] = arg0.GetResult(l.Args[0]);
+					if(l.Fields.ContainsKey("arg0str")) l.Fields.Remove("arg0str");
+					break;
+
+				default: throw new NotImplementedException("Unknown ArgZeroMode");
 			}
 
 			// Apply the rest of args
@@ -159,29 +178,36 @@ namespace CodeImp.DoomBuilder.Controls
 		public void Apply(Thing t)
 		{
 			//mxd. Script name/number handling
-			if(scriptnumbers.Visible)
-			{
-				//apply script number
-				if(!string.IsNullOrEmpty(scriptnumbers.Text))
-				{
-					if(scriptnumbers.SelectedItem != null)
-						t.Args[0] = ((ScriptItem)((ColoredComboBoxItem)scriptnumbers.SelectedItem).Value).Index;
-					else if(!int.TryParse(scriptnumbers.Text.Trim(), out t.Args[0]))
-						t.Args[0] = 0;
-
-					if(t.Fields.ContainsKey("arg0str")) t.Fields.Remove("arg0str");
-				}
-			}
-			else if(scriptnames.Visible)
+			// We can't rely on control visibility here, because all controlls will be invisible if ArgumentsControl is invisible
+			// (for example, when a different tab is selected)
+			switch(argzeromode)
 			{
 				// Apply arg0str
-				if(!string.IsNullOrEmpty(scriptnames.Text))
-					t.Fields["arg0str"] = new UniValue(UniversalType.String, scriptnames.Text);
-			}
-			else
-			{
-				t.Args[0] = arg0.GetResult(t.Args[0]);
-				if(t.Fields.ContainsKey("arg0str")) t.Fields.Remove("arg0str");
+				case ArgZeroMode.SCRIPT_NAME:
+					if(!string.IsNullOrEmpty(scriptnames.Text))
+						t.Fields["arg0str"] = new UniValue(UniversalType.String, scriptnames.Text);
+					break;
+
+				// Apply script number
+				case ArgZeroMode.SCRIPT_NUMBER:
+					if(!string.IsNullOrEmpty(scriptnumbers.Text))
+					{
+						if(scriptnumbers.SelectedItem != null)
+							t.Args[0] = ((ScriptItem)((ColoredComboBoxItem)scriptnumbers.SelectedItem).Value).Index;
+						else if(!int.TryParse(scriptnumbers.Text.Trim(), out t.Args[0]))
+							t.Args[0] = 0;
+
+						if(t.Fields.ContainsKey("arg0str")) t.Fields.Remove("arg0str");
+					}
+					break;
+
+				// Apply classic arg
+				case ArgZeroMode.DEFAULT:
+					t.Args[0] = arg0.GetResult(t.Args[0]);
+					if(t.Fields.ContainsKey("arg0str")) t.Fields.Remove("arg0str");
+					break;
+
+				default: throw new NotImplementedException("Unknown ArgZeroMode");
 			}
 
 			// Apply the rest of args
@@ -270,6 +296,7 @@ namespace CodeImp.DoomBuilder.Controls
 				// Update named script name
 				if(shownamedscripts)
 				{
+					argzeromode = ArgZeroMode.SCRIPT_NAME;
 					if(General.Map.NamedScripts.ContainsKey(arg0str))
 					{
 						int i = 0;
@@ -293,6 +320,7 @@ namespace CodeImp.DoomBuilder.Controls
 				else
 				{
 					// Update numbered script name
+					argzeromode = ArgZeroMode.SCRIPT_NUMBER;
 					int a0 = arg0.GetResult(0);
 					if(General.Map.NumberedScripts.ContainsKey(a0))
 					{
@@ -322,6 +350,7 @@ namespace CodeImp.DoomBuilder.Controls
 				scriptnames.Visible = false;
 				scriptnumbers.Visible = false;
 				cbuseargstr.Checked = false;
+				argzeromode = ArgZeroMode.DEFAULT;
 			}
 
 			arg0.Visible = (!scriptnames.Visible && !scriptnumbers.Visible);
@@ -436,6 +465,7 @@ namespace CodeImp.DoomBuilder.Controls
 			scriptnames.Visible = cbuseargstr.Checked;
 			scriptnumbers.Visible = !cbuseargstr.Checked;
 			arg0label.Text = (cbuseargstr.Checked ? "Script Name:" : "Script Number:");
+			argzeromode = (cbuseargstr.Checked ? ArgZeroMode.SCRIPT_NAME : ArgZeroMode.SCRIPT_NUMBER);
 		}
 
 		private void scriptnumbers_TextChanged(object sender, EventArgs e)

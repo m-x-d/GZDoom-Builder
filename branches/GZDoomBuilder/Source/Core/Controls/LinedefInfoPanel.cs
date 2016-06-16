@@ -96,6 +96,7 @@ namespace CodeImp.DoomBuilder.Controls
 			if(!General.Map.FormatInterface.HasBuiltInActivations && General.Map.FormatInterface.HasNumericLinedefActivations) //Hexen map format?
 			{ 
 				activation.Visible = true;
+				activationlabel.Text = "Activation:";
 				activationlabel.Visible = true;
 				taglabel.Visible = false;
 				tag.Visible = false;
@@ -115,8 +116,49 @@ namespace CodeImp.DoomBuilder.Controls
 			} 
 			else 
 			{
-				activation.Visible = false;
-				activationlabel.Visible = false;
+				if(General.Map.UDMF)
+				{
+					// Hijack activation labels to show lock numer...
+					activationlabel.Text = "Lock:";
+					activationlabel.Visible = true;
+					activation.Visible = true;
+
+					int locknum = l.Fields.GetValue("locknumber", 0);
+					if(locknum != 0)
+					{
+						activationlabel.Enabled = true;
+						activation.Enabled = true;
+
+						if(General.Map.Config.Enums.ContainsKey("keys"))
+						{
+							foreach(EnumItem item in General.Map.Config.Enums["keys"])
+							{
+								if(item.GetIntValue() == locknum)
+								{
+									activation.Text = locknum + " - " + item.Title;
+									break;
+								}
+							}
+						}
+						else
+						{
+							activation.Text = locknum.ToString();
+						}
+					}
+					else
+					{
+						activationlabel.Enabled = false;
+						activation.Enabled = false;
+						activation.Text = "None";
+					}
+				}
+				else
+				{
+					// Should be Doom map format 
+					activationlabel.Visible = false;
+					activation.Visible = false;
+				}
+				
 				taglabel.Visible = true;
 				tag.Visible = true;
 
