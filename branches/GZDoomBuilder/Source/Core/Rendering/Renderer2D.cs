@@ -105,6 +105,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		private float linenormalsize;
 		private float minlinelength; //mxd. Linedef should be longer than this to be rendered
 		private float minlinenormallength; //mxd. Linedef direction indicator should be longer than this to be rendered 
+		private bool drawmapcenter = true; //mxd
+		private bool lastdrawmapcenter = true; //mxd
 		private float lastgridscale = -1f;
 		private int lastgridsize;
 		private float lastgridx;
@@ -125,6 +127,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		public float TranslateY { get { return translatey; } }
 		public float Scale { get { return scale; } }
 		public int VertexSize { get { return vertexsize; } }
+		public bool DrawMapCenter { get { return drawmapcenter; } set { drawmapcenter = value; } } //mxd
 		public ViewMode ViewMode { get { return viewmode; } }
 		public SurfaceManager Surfaces { get { return surfaces; } }
 		public RectangleF Viewport { get { return viewport; } } //mxd
@@ -810,8 +813,8 @@ namespace CodeImp.DoomBuilder.Rendering
 		private unsafe void RenderBackgroundGrid()
 		{
 			// Do we need to redraw grid?
-			if((lastgridsize != General.Map.Grid.GridSize) || (lastgridscale != scale) ||
-			   (lastgridx != offsetx) || (lastgridy != offsety))
+			if(lastgridsize != General.Map.Grid.GridSize || lastgridscale != scale ||
+			   lastgridx != offsetx || lastgridy != offsety || drawmapcenter != lastdrawmapcenter)
 			{
 				// Lock background rendertarget memory
 				DataRectangle lockedrect = backtex.LockRectangle(0, LockFlags.NoSystemLock);
@@ -841,12 +844,15 @@ namespace CodeImp.DoomBuilder.Rendering
 				}
 
 				//mxd. Render center of map
-				Vector2D center = new Vector2D().GetTransformed(translatex, translatey, scale, -scale);
-				int cx = (int)center.x;
-				int cy = (int)center.y;
-				PixelColor c = General.Colors.Highlight;
-				gridplotter.DrawLineSolid(cx, cy + MAP_CENTER_SIZE, cx, cy - MAP_CENTER_SIZE, ref c);
-				gridplotter.DrawLineSolid(cx - MAP_CENTER_SIZE, cy, cx + MAP_CENTER_SIZE, cy, ref c);
+				if(drawmapcenter)
+				{
+					Vector2D center = new Vector2D().GetTransformed(translatex, translatey, scale, -scale);
+					int cx = (int)center.x;
+					int cy = (int)center.y;
+					PixelColor c = General.Colors.Highlight;
+					gridplotter.DrawLineSolid(cx, cy + MAP_CENTER_SIZE, cx, cy - MAP_CENTER_SIZE, ref c);
+					gridplotter.DrawLineSolid(cx - MAP_CENTER_SIZE, cy, cx + MAP_CENTER_SIZE, cy, ref c);
+				}
 
 				// Done
 				backtex.UnlockRectangle(0);
@@ -855,6 +861,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				lastgridsize = General.Map.Grid.GridSize;
 				lastgridx = offsetx;
 				lastgridy = offsety;
+				lastdrawmapcenter = drawmapcenter; //mxd
 			}
 		}
 		
@@ -2031,14 +2038,15 @@ namespace CodeImp.DoomBuilder.Rendering
 		}	
 
 		// This renders a simple line
-		public void PlotLine(Vector2D start, Vector2D end, PixelColor c)
+		public void PlotLine(Vector2D start, Vector2D end, PixelColor c) { PlotLine(start, end, c, 0.0625f); }
+		public void PlotLine(Vector2D start, Vector2D end, PixelColor c, float lengthscaler)
 		{
 			// Transform coordinates
 			Vector2D v1 = start.GetTransformed(translatex, translatey, scale, -scale);
 			Vector2D v2 = end.GetTransformed(translatex, translatey, scale, -scale);
 			
 			//mxd. Should we bother?
-			if((v2 - v1).GetLengthSq() < linenormalsize * 0.0625f) return;
+			if((v2 - v1).GetLengthSq() < linenormalsize * lengthscaler) return;
 
 			// Draw line
 			plotter.DrawLineSolid((int)v1.x, (int)v1.y, (int)v2.x, (int)v2.y, ref c);

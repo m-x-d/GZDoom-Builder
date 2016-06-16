@@ -9,7 +9,7 @@ using System.Resources;
 [assembly: AssemblyDescription("GZDoom Builder Editing Modes")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("CodeImp, MaxED")]
-[assembly: AssemblyProduct("Doom Builder")]
+[assembly: AssemblyProduct("GZDoom Builder")]
 [assembly: AssemblyCopyright("Copyright ©  2007, 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -29,5 +29,5 @@ using System.Resources;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion("2.3.0.2411")]
+[assembly: AssemblyVersion("2.3.0.2651")]
 [assembly: NeutralResourcesLanguageAttribute("en")]
