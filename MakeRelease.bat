@@ -61,6 +61,15 @@ IF %ERRORLEVEL% NEQ 0 GOTO ERRORFAIL
 IF NOT EXIST "Build\Builder.exe" GOTO FILEFAIL
 
 ECHO.
+ECHO Compiling Automap Mode plugin...
+ECHO.
+IF EXIST "Build\Plugins\AutomapMode.dll" DEL /F /Q "Build\Plugins\AutomapMode.dll" > NUL
+IF EXIST "Source\Plugins\AutomapMode\obj" RD /S /Q "Source\Plugins\AutomapMode\obj"
+msbuild "Source\Plugins\AutomapMode\AutomapMode.csproj" /t:Rebuild /p:Configuration=Release /p:Platform=x86 /v:minimal
+IF %ERRORLEVEL% NEQ 0 GOTO ERRORFAIL
+IF NOT EXIST "Build\Plugins\AutomapMode.dll" GOTO FILEFAIL
+
+ECHO.
 ECHO Compiling Builder Effects plugin...
 ECHO.
 IF EXIST "Build\Plugins\BuilderEffects.dll" DEL /F /Q "Build\Plugins\BuilderEffects.dll" > NUL

@@ -35,6 +35,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		float TranslateY { get; }
 		float Scale { get; }
 		int VertexSize { get; }
+		bool DrawMapCenter { get; set; } //mxd
 		ViewMode ViewMode { get; }
 
 		// View methods
@@ -58,6 +59,7 @@ namespace CodeImp.DoomBuilder.Rendering
 
 		// Drawing methods
 		void PlotLine(Vector2D start, Vector2D end, PixelColor c);
+		void PlotLine(Vector2D start, Vector2D end, PixelColor c, float lengthscaler); //mxd
 		void PlotLinedef(Linedef l, PixelColor c);
 		void PlotLinedefSet(ICollection<Linedef> linedefs);
 		void PlotSector(Sector s);

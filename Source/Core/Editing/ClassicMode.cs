@@ -665,6 +665,9 @@ namespace CodeImp.DoomBuilder.Editing
 				renderer.Finish();
 			}
 			
+			//mxd. We want map center drawn by default
+			renderer.DrawMapCenter = true;
+
 			base.OnEngage();
 		}
 
