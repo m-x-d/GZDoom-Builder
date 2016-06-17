@@ -662,6 +662,7 @@ namespace CodeImp.DoomBuilder
 			if(map.Sidedefs.Count > io.MaxSidedefs)
 			{
 				// Compress sidedefs
+				int initialsidescount = outputset.Sidedefs.Count; //mxd
 				General.MainWindow.DisplayStatus(StatusType.Busy, "Compressing sidedefs...");
 				outputset.CompressSidedefs();
 
@@ -669,7 +670,9 @@ namespace CodeImp.DoomBuilder
 				if(outputset.Sidedefs.Count > io.MaxSidedefs)
 				{
 					// Problem! Can't save the map like this!
-					General.ShowErrorMessage("Unable to save the map: There are too many unique sidedefs!", MessageBoxButtons.OK);
+					General.ShowErrorMessage("Unable to save the map: there are too many unique sidedefs!" + Environment.NewLine + Environment.NewLine
+						+ "Sidedefs before compresion: " + initialsidescount + Environment.NewLine
+						+ "Sidedefs after compresion: " + outputset.Sidedefs.Count, MessageBoxButtons.OK);
 					General.MainWindow.DisplayStatus(oldstatus);
 					return false;
 				}

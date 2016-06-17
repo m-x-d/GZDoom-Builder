@@ -937,6 +937,7 @@ namespace CodeImp.DoomBuilder.Geometry
 				if(points[0].stitch) mergeverts.Add(v1); else nonmergeverts.Add(v1);
 
 				// Go for all other points
+				int roundprecision = (General.Map.FormatInterface.VertexDecimals > 0 ? General.Map.FormatInterface.VertexDecimals - 1 : 0); //mxd
 				for(int i = 1; i < points.Count; i++)
 				{
 					// Create vertex for point
@@ -998,6 +999,10 @@ namespace CodeImp.DoomBuilder.Geometry
 							// We use measureline for this, because the original line
 							// may already have changed in length due to a previous split
 							Vector2D splitpoint = measureline.GetCoordinatesAt(u);
+
+							//mxd. Work around some imprecisions when splitting very long lines (like 19000 mu long)
+							splitpoint.x = (float)Math.Round(splitpoint.x, roundprecision);
+							splitpoint.y = (float)Math.Round(splitpoint.y, roundprecision);
 
 							// Make the vertex
 							Vertex splitvertex = map.CreateVertex(splitpoint);

@@ -1576,8 +1576,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			foreach(Thing t in selected)
 			{
 				int newangle = t.AngleDoom + increment;
-				if(General.Map.Config.DoomThingRotationAngles) newangle = (newangle + 22) / 45 * 45;
-
+				if(General.Map.Config.DoomThingRotationAngles) newangle = newangle / 45 * 45;
 				t.Rotate(General.ClampAngle(newangle));
 			}
 
