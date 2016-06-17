@@ -364,7 +364,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					int step = width / slicesH;
 					for(int w = 0; w < slicesH; w++)
 					{
-						shapes.Add(new[] { new Vector2D((int)s.x + step * w, (int)s.y), new Vector2D((int)s.x + step * w + step, (int)s.y) });
+						shapes.Add(new[] { new Vector2D((float)Math.Round(s.x + step * w), (float)Math.Round(s.y)), 
+										   new Vector2D((float)Math.Round(s.x + step * w + step), (float)Math.Round(s.y)) });
 					}
 					return shapes;
 				}
@@ -375,7 +376,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					int step = height / slicesV;
 					for(int h = 0; h < slicesV; h++)
 					{
-						shapes.Add(new[] {new Vector2D((int) s.x, (int) s.y + step * h), new Vector2D((int) s.x, (int) s.y + step * h + step)});
+						shapes.Add(new[] { new Vector2D((float)Math.Round(s.x), (float)Math.Round(s.y + step * h)), 
+										   new Vector2D((float)Math.Round(s.x), (float)Math.Round(s.y + step * h + step)) });
 					}
 					return shapes;
 				}
@@ -384,7 +386,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				return new List<Vector2D[]> {new[] {s, e}};
 			}
 
-			// Create shape
+			// Create grid shape
 			List<Vector2D> rect = new List<Vector2D> { s, new Vector2D((int)s.x, (int)e.y), e, new Vector2D((int)e.x, (int)s.y), s };
 			if(slicesH == 1 && slicesV == 1) 
 			{
@@ -397,7 +399,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			RectangleF[,] blocks = new RectangleF[slicesH, slicesV];
 			for(int w = 0; w < slicesH; w++) 
 			{
-				for(int h = 0; h < slicesV; h++) 
+				for(int h = 0; h < slicesV; h++)
 				{
 					float left = (float)Math.Round(InterpolationTools.Interpolate(s.x, e.x, (float)w / slicesH, horizontalinterpolation));
 					float top = (float)Math.Round(InterpolationTools.Interpolate(s.y, e.y, (float)h / slicesV, verticalinterpolation));
@@ -412,15 +414,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				for(int w = 1; w < slicesH; w++) 
 				{
-					int px = (int) Math.Round(blocks[w, 0].X);
-					shapes.Add(new[] {new Vector2D(px, s.y), new Vector2D(px, e.y)});
+					float px = (float)Math.Round(blocks[w, 0].X);
+					shapes.Add(new[] { new Vector2D(px, s.y), new Vector2D(px, e.y) });
 				}
 			}
 			if(slicesV > 1) 
 			{
 				for(int h = 1; h < slicesV; h++) 
 				{
-					int py = (int) Math.Round(blocks[0, h].Y);
+					float py = (float)Math.Round(blocks[0, h].Y);
 					shapes.Add(new[] { new Vector2D(s.x, py), new Vector2D(e.x, py) });
 				}
 			}
