@@ -42,7 +42,18 @@
   <ItemGroup>
     <Compile Include="BuilderPlug.cs" />
     <Compile Include="AutomapMode.cs" />
+    <Compile Include="Interface\MenusForm.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Interface\MenusForm.Designer.cs">
+      <DependentUpon>MenusForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Core\Builder.csproj">
@@ -56,7 +67,10 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Resources\automap.png" />
@@ -65,6 +79,19 @@
     <EmbeddedResource Include="Resources\Actions.cfg" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Interface\MenusForm.resx">
+      <DependentUpon>MenusForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\Hints.cfg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ShowHiddenLines.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ShowSecrets.png" />
   </ItemGroup>
 </Project>

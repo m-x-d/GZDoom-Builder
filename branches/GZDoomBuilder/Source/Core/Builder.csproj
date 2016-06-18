@@ -708,6 +708,7 @@
     <Compile Include="Config\ModelAndLightRenderModes.cs" />
     <Compile Include="Config\PasteOptions.cs" />
     <Compile Include="Config\ScriptDocumentSettings.cs" />
+    <Compile Include="Config\SectorEffectData.cs" />
     <Compile Include="Config\ThingsFlagsCompare.cs" />
     <Compile Include="Controls\ActionSpecialHelpButton.cs">
       <SubType>UserControl</SubType>
