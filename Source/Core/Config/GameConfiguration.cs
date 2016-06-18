@@ -1068,10 +1068,10 @@ namespace CodeImp.DoomBuilder.Config
 		}
 
 		//mxd
-		public static HashSet<int> GetGeneralizedSectorEffectBits(int effect) { return GetGeneralizedSectorEffectBits(effect, General.Map.Config.GenEffectOptions); }
-		public static HashSet<int> GetGeneralizedSectorEffectBits(int effect, List<GeneralizedOption> options)
+		public SectorEffectData GetSectorEffectData(int effect) { return GetSectorEffectData(effect, General.Map.Config.GenEffectOptions); }
+		public SectorEffectData GetSectorEffectData(int effect, List<GeneralizedOption> options)
 		{
-			HashSet<int> result = new HashSet<int>();
+			SectorEffectData result = new SectorEffectData();
 			if(effect > 0)
 			{
 				int cureffect = effect;
@@ -1083,12 +1083,12 @@ namespace CodeImp.DoomBuilder.Config
 						if(bit.Index > 0 && (cureffect & bit.Index) == bit.Index)
 						{
 							cureffect -= bit.Index;
-							result.Add(bit.Index);
+							result.GeneralizedBits.Add(bit.Index);
 						}
 					}
 				}
 
-				if(cureffect > 0) result.Add(cureffect);
+				if(cureffect > 0) result.Effect = cureffect;
 			}
 
 			return result;

@@ -85,7 +85,11 @@ namespace CodeImp.DoomBuilder.AutomapMode
 		public override void OnMapOpenEnd()
 		{
 			AutomapMode mode = General.Editing.Mode as AutomapMode;
-			if(mode != null) mode.UpdateValidLinedefs();
+			if(mode != null)
+			{
+				mode.UpdateValidLinedefs();
+				mode.UpdateSecretSectors();
+			}
 			
 			base.OnMapOpenEnd();
 		}
@@ -94,7 +98,11 @@ namespace CodeImp.DoomBuilder.AutomapMode
 		public override void OnMapNewEnd()
 		{
 			AutomapMode mode = General.Editing.Mode as AutomapMode;
-			if(mode != null) mode.UpdateValidLinedefs();
+			if(mode != null)
+			{
+				mode.UpdateValidLinedefs();
+				mode.UpdateSecretSectors();
+			}
 			
 			base.OnMapNewEnd();
 		}

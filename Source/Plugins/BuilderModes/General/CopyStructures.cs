@@ -810,11 +810,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(!General.Map.Config.GeneralizedEffects || source.Effect == 0 || target.Effect == 0) return false;
 
 				// Get effect bits...
-				HashSet<int> sourcebits = GameConfiguration.GetGeneralizedSectorEffectBits(source.Effect);
-				HashSet<int> targetbits = GameConfiguration.GetGeneralizedSectorEffectBits(target.Effect);
+				SectorEffectData sourcedata = General.Map.Config.GetSectorEffectData(source.Effect);
+				SectorEffectData targetdata = General.Map.Config.GetSectorEffectData(target.Effect);
 				
 				// No bits match when at least one effect is not generalized, or when bits don't overlap 
-				if(sourcebits.Count == 0 || targetbits.Count == 0 || !sourcebits.Overlaps(targetbits)) return false;
+				if(sourcedata.Effect != targetdata.Effect 
+					|| sourcedata.GeneralizedBits.Count != targetdata.GeneralizedBits.Count 
+					|| !sourcedata.GeneralizedBits.Overlaps(targetdata.GeneralizedBits)) return false;
 			}
 
 			if(!General.Map.UDMF) return true;

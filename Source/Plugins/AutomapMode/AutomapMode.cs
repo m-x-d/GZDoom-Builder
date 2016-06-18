@@ -18,7 +18,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Editing;
@@ -32,11 +34,21 @@ namespace CodeImp.DoomBuilder.AutomapMode
 			  ButtonImage = "automap.png",	// Image resource name for the button
 			  ButtonOrder = int.MinValue + 503,	// Position of the button (lower is more to the bottom)
 			  ButtonGroup = "000_editing",
-			  UseByDefault = true,
-			  SafeStartMode = true)]
+			  UseByDefault = true)]
 
 	public class AutomapMode : ClassicMode
 	{
+		#region ================== Enums
+
+		internal enum ColorPreset
+		{
+			DOOM,
+			HEXEN,
+			STRIFE,
+		}
+
+		#endregion
+
 		#region ================== Constants
 
 		private const float LINE_LENGTH_SCALER = 0.001f; //mxd
@@ -47,9 +59,23 @@ namespace CodeImp.DoomBuilder.AutomapMode
 
 		private CustomPresentation automappresentation;
 		private List<Linedef> validlinedefs;
+		private HashSet<Sector> secretsectors; //mxd
 
 		// Highlighted item
 		private Linedef highlighted;
+
+		//mxd. UI
+		private MenusForm menusform;
+
+		//mxd. Colors
+		private PixelColor ColorSingleSided;
+		private PixelColor ColorSecret;
+		private PixelColor ColorFloorDiff;
+		private PixelColor ColorCeilDiff;
+		private PixelColor ColorMatchingHeight;
+		private PixelColor ColorHiddenFlag;
+		private PixelColor ColorInvisible;
+		private PixelColor ColorBackground;
 		
 		#endregion
 
@@ -60,6 +86,37 @@ namespace CodeImp.DoomBuilder.AutomapMode
 		#endregion
 
 		#region ================== Constructor / Disposer
+
+		//mxd
+		public AutomapMode()
+		{
+			// Create and setup menu
+			menusform = new MenusForm();
+			menusform.ShowHiddenLines = General.Settings.ReadPluginSetting("automapmode.showhiddenlines", false);
+			menusform.ShowSecretSectors = General.Settings.ReadPluginSetting("automapmode.showsecretsectors", false);
+			menusform.ColorPreset = (ColorPreset)General.Settings.ReadPluginSetting("automapmode.colorpreset", (int)ColorPreset.DOOM);
+
+			// Handle events
+			menusform.OnShowHiddenLinesChanged += delegate
+			{
+				UpdateValidLinedefs();
+				General.Interface.RedrawDisplay();
+			};
+
+			menusform.OnShowSecretSectorsChanged += delegate
+			{
+				General.Interface.RedrawDisplay();
+			};
+
+			menusform.OnColorPresetChanged += delegate
+			{
+				ApplyColorPreset(menusform.ColorPreset);
+				General.Interface.RedrawDisplay();
+			};
+
+			// Apply color preset
+			ApplyColorPreset(menusform.ColorPreset);
+		}
 
 		#endregion
 
@@ -74,7 +131,7 @@ namespace CodeImp.DoomBuilder.AutomapMode
 				// Undraw previous highlight
 				if((highlighted != null) && !highlighted.IsDisposed)
 				{
-					PixelColor c = LinedefIsValid(highlighted) ? DetermineLinedefColor(highlighted) : new PixelColor(255, 0, 0, 0);
+					PixelColor c = LinedefIsValid(highlighted) ? DetermineLinedefColor(highlighted) : PixelColor.Transparent;
 					renderer.PlotLine(highlighted.Start.Position, highlighted.End.Position, c, LINE_LENGTH_SCALER);
 				}
 
@@ -107,37 +164,101 @@ namespace CodeImp.DoomBuilder.AutomapMode
 				if(LinedefIsValid(ld)) validlinedefs.Add(ld);
 		}
 
-		private static PixelColor DetermineLinedefColor(Linedef ld)
+		//mxd
+		internal void UpdateSecretSectors()
 		{
-			if(ld.IsFlagSet(BuilderPlug.Me.HiddenFlag))
-				return new PixelColor(255, 192, 192, 192);
+			secretsectors = new HashSet<Sector>();
+			foreach(Sector s in General.Map.Map.Sectors)
+				if(SectorIsSecret(s)) secretsectors.Add(s);
+		}
 
-			if(ld.Back == null || ld.IsFlagSet(BuilderPlug.Me.SecretFlag))
-				return new PixelColor(255, 252, 0, 0);
+		private PixelColor DetermineLinedefColor(Linedef ld)
+		{
+			//mxd
+			if(menusform.ShowSecretSectors &&
+			   (ld.Front != null && secretsectors.Contains(ld.Front.Sector) || ld.Back != null && secretsectors.Contains(ld.Back.Sector)))
+				return ColorSecret;
 
-			if(ld.Front.Sector.FloorHeight != ld.Back.Sector.FloorHeight)
-				return new PixelColor(255, 188, 120, 72);
-
-			if(ld.Front.Sector.CeilHeight != ld.Back.Sector.CeilHeight)
-				return new PixelColor(255, 252, 252, 0);
+			if(ld.IsFlagSet(BuilderPlug.Me.HiddenFlag)) return ColorHiddenFlag;
+			if(ld.Back == null || ld.IsFlagSet(BuilderPlug.Me.SecretFlag)) return ColorSingleSided;
+			if(ld.Front.Sector.FloorHeight != ld.Back.Sector.FloorHeight) return ColorFloorDiff;
+			if(ld.Front.Sector.CeilHeight != ld.Back.Sector.CeilHeight) return ColorCeilDiff;
 
 			if(ld.Front.Sector.CeilHeight == ld.Back.Sector.CeilHeight && ld.Front.Sector.FloorHeight == ld.Back.Sector.FloorHeight)
-				return new PixelColor(255, 128, 128, 128);
+				return ColorMatchingHeight;
 
-			if(General.Interface.CtrlState)
-				return new PixelColor(255, 192, 192, 192);
+			if(menusform.ShowHiddenLines ^ General.Interface.CtrlState) return ColorInvisible; 
 
 			return new PixelColor(255, 255, 255, 255);
 		}
 
-		private static bool LinedefIsValid(Linedef ld)
+		private bool LinedefIsValid(Linedef ld)
 		{
-			if(General.Interface.CtrlState) return true;
+			if(menusform.ShowHiddenLines ^ General.Interface.CtrlState) return true;
 			if(ld.IsFlagSet(BuilderPlug.Me.HiddenFlag)) return false;
 			if(ld.Back == null || ld.IsFlagSet(BuilderPlug.Me.SecretFlag)) return true;
 			if(ld.Back != null && (ld.Front.Sector.FloorHeight != ld.Back.Sector.FloorHeight || ld.Front.Sector.CeilHeight != ld.Back.Sector.CeilHeight)) return true;
 
 			return false;
+		}
+
+		//mxd
+		private static bool SectorIsSecret(Sector s)
+		{
+			SectorEffectData data = General.Map.Config.GetSectorEffectData(s.Effect);
+
+			if(General.Map.DOOM)
+			{
+				// Sector is secret when it's Special is 9 or it has generalized flag 128
+				if(data.Effect == 9 || data.GeneralizedBits.Contains(128)) return true;
+			}
+			else
+			{
+				//Hexen/UDMF: sector is secret when it has generalized flag 1024
+				if(data.GeneralizedBits.Contains(1024)) return true;
+			}
+
+			return false;
+		}
+
+		//mxd
+		private void ApplyColorPreset(ColorPreset preset)
+		{
+			switch(preset)
+			{
+				case ColorPreset.DOOM:
+					ColorSingleSided = new PixelColor(255, 252, 0, 0);
+					ColorSecret = new PixelColor(255, 255, 0, 255);
+					ColorFloorDiff = new PixelColor(255, 188, 120, 72);
+					ColorCeilDiff = new PixelColor(255, 252, 252, 0);
+					ColorHiddenFlag = new PixelColor(255, 192, 192, 192);
+					ColorInvisible = new PixelColor(255, 192, 192, 192);
+					ColorMatchingHeight = new PixelColor(255, 108, 108, 108);
+					ColorBackground = new PixelColor(255, 0, 0, 0);
+					break;
+
+				case ColorPreset.HEXEN:
+					ColorSingleSided = new PixelColor(255, 89, 64, 27);
+					ColorSecret = new PixelColor(255, 255, 0, 255);
+					ColorFloorDiff = new PixelColor(255, 208, 176, 133);
+					ColorCeilDiff = new PixelColor(255, 103, 59, 31);
+					ColorHiddenFlag = new PixelColor(255, 192, 192, 192);
+					ColorInvisible = new PixelColor(255, 108, 108, 108);
+					ColorMatchingHeight = new PixelColor(255, 108, 108, 108);
+					ColorBackground = new PixelColor(255, 163, 129, 84);
+					break;
+
+				case ColorPreset.STRIFE:
+					ColorSingleSided = new PixelColor(255, 199, 195, 195);
+					ColorSecret = new PixelColor(255, 255, 0, 255);
+					ColorFloorDiff = new PixelColor(255, 55, 59, 91);
+					ColorCeilDiff = new PixelColor(255, 108, 108, 108);
+					ColorHiddenFlag = new PixelColor(255, 0, 87, 130);
+					ColorInvisible = new PixelColor(255, 192, 192, 192);
+					ColorMatchingHeight = new PixelColor(255, 112, 112, 160);
+					ColorBackground = new PixelColor(255, 0, 0, 0);
+					break;
+			}
 		}
 
 		#endregion
@@ -166,12 +287,16 @@ namespace CodeImp.DoomBuilder.AutomapMode
 
 			// Automap presentation without the surfaces
 			automappresentation = new CustomPresentation();
-			automappresentation.AddLayer(new PresentLayer(RendererLayer.Background, BlendingMode.Mask, General.Settings.BackgroundAlpha));
+			automappresentation.AddLayer(new PresentLayer(RendererLayer.Overlay, BlendingMode.Mask));
 			automappresentation.AddLayer(new PresentLayer(RendererLayer.Grid, BlendingMode.Mask));
 			automappresentation.AddLayer(new PresentLayer(RendererLayer.Geometry, BlendingMode.Alpha, 1f, true));
 			renderer.SetPresentation(automappresentation);
 
 			UpdateValidLinedefs();
+			UpdateSecretSectors(); //mxd
+
+			//mxd. Show UI
+			menusform.Register();
 		}
 		
 		// Mode disengages
@@ -179,8 +304,34 @@ namespace CodeImp.DoomBuilder.AutomapMode
 		{
 			base.OnDisengage();
 
+			//mxd. Store settings
+			General.Settings.WritePluginSetting("automapmode.showhiddenlines", menusform.ShowHiddenLines);
+			General.Settings.WritePluginSetting("automapmode.showsecretsectors", menusform.ShowSecretSectors);
+			General.Settings.WritePluginSetting("automapmode.colorpreset", (int)menusform.ColorPreset);
+
+			//mxd. Hide UI
+			menusform.Unregister();
+
 			// Hide highlight info
 			General.Interface.HideInfo();
+		}
+
+		//mxd
+		public override void OnUndoEnd()
+		{
+			UpdateValidLinedefs();
+			UpdateSecretSectors();
+
+			base.OnUndoEnd();
+		}
+
+		//mxd
+		public override void OnRedoEnd()
+		{
+			UpdateValidLinedefs();
+			UpdateSecretSectors();
+
+			base.OnRedoEnd();
 		}
 
 		// This redraws the display
@@ -205,6 +356,14 @@ namespace CodeImp.DoomBuilder.AutomapMode
 				renderer.Finish();
 			}
 
+			//mxd. Render background
+			if(renderer.StartOverlay(true))
+			{
+				RectangleF screenrect = new RectangleF(0, 0, General.Interface.Display.Width, General.Interface.Display.Height);
+				renderer.RenderRectangleFilled(screenrect, ColorBackground, false);
+				renderer.Finish();
+			}
+
 			renderer.Present();
 		}
 
@@ -213,7 +372,7 @@ namespace CodeImp.DoomBuilder.AutomapMode
 			// Item highlighted?
 			if((highlighted != null) && !highlighted.IsDisposed)
 			{
-				General.Map.UndoRedo.CreateUndo("Toggle linedef show as 1-sided on automap flag");
+				General.Map.UndoRedo.CreateUndo("Toggle \"Shown as 1-sided on automap\" linedef flag");
 
 				// Toggle flag
 				highlighted.SetFlag(BuilderPlug.Me.SecretFlag, !highlighted.IsFlagSet(BuilderPlug.Me.SecretFlag));
@@ -228,7 +387,7 @@ namespace CodeImp.DoomBuilder.AutomapMode
 			// Item highlighted?
 			if((highlighted != null) && !highlighted.IsDisposed)
 			{
-				General.Map.UndoRedo.CreateUndo("Toggle linedef not shown on automap flag");
+				General.Map.UndoRedo.CreateUndo("Toggle \"Not shown on automap\" linedef flag");
 
 				// Toggle flag
 				highlighted.SetFlag(BuilderPlug.Me.HiddenFlag, !highlighted.IsFlagSet(BuilderPlug.Me.HiddenFlag));
