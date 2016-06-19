@@ -2702,7 +2702,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public void TextureCopy()
 		{
 			PreActionNoChange();
-			GetTargetEventReceiver(true).OnCopyTexture(); //mxd
+			IVisualEventReceiver i = GetTargetEventReceiver(true);
+			i.OnCopyTexture(); //mxd
+			if(!(i is VisualThing)) copybuffer.Clear(); //mxd. Not copying things any more...
 			PostAction();
 		}
 
@@ -3119,7 +3121,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				VisualThing vt = (VisualThing)i;
 				if(vt != null) copybuffer.Add(new ThingCopyData(vt.Thing));
 			}
-			General.Interface.DisplayStatus(StatusType.Info, "Copied " + copybuffer.Count + " Things");
+
+			string rest = copybuffer.Count + (copybuffer.Count > 1 ? " things." : " thing.");
+			General.Interface.DisplayStatus(StatusType.Info, "Copied " + rest);
 		}
 
 		//mxd
@@ -3129,7 +3133,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			CopySelection();
 
 			//Create undo
-			string rest = copybuffer.Count + " thing" + (copybuffer.Count > 1 ? "s." : ".");
+			string rest = copybuffer.Count + (copybuffer.Count > 1 ? " things." : " thing.");
 			CreateUndo("Cut " + rest);
 			General.Interface.DisplayStatus(StatusType.Info, "Cut " + rest);
 
@@ -3155,7 +3159,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			if(copybuffer.Count == 0)
 			{
-				General.Interface.DisplayStatus(StatusType.Warning, "Nothing to paste, cut or copy some Things first!");
+				TexturePaste(); // I guess we may paste a texture or two instead
 				return;
 			}
 			
@@ -3167,7 +3171,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				return;
 			}
 
-			string rest = copybuffer.Count + " thing" + (copybuffer.Count > 1 ? "s" : "");
+			string rest = copybuffer.Count + (copybuffer.Count > 1 ? " things." : " thing.");
 			General.Map.UndoRedo.CreateUndo("Paste " + rest);
 			General.Interface.DisplayStatus(StatusType.Info, "Pasted " + rest);
 			

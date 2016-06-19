@@ -722,7 +722,7 @@ namespace CodeImp.DoomBuilder.Editing
 
 				if(s == null)
 				{
-					General.MainWindow.DisplayStatus(StatusType.Warning, "Can't test from current position: cursor is not inside sector!");
+					General.MainWindow.DisplayStatus(StatusType.Warning, "Can't test from current position: mouse cursor must be inside a sector!");
 					return false;
 				}
 

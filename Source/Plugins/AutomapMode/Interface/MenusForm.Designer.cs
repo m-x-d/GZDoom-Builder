@@ -91,7 +91,7 @@
             "Hexen",
             "Strife"});
 			this.colorpreset.Name = "colorpreset";
-			this.colorpreset.Size = new System.Drawing.Size(121, 25);
+			this.colorpreset.Size = new System.Drawing.Size(75, 25);
 			this.colorpreset.SelectedIndexChanged += new System.EventHandler(this.colorpreset_SelectedIndexChanged);
 			// 
 			// MenusForm

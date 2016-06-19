@@ -17,6 +17,7 @@
 #region ================== Namespaces
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
@@ -39,10 +40,10 @@ namespace CodeImp.DoomBuilder
 		#region ================== Variables
 
 		private string tempwad;
-		private Process process; //mxd
+		private Dictionary<Process, string> processes; //mxd
 		private bool isdisposed;
 
-		delegate void EngineExitedCallback(); //mxd
+		delegate void EngineExitedCallback(Process p); //mxd
 		
 		#endregion
 
@@ -59,6 +60,7 @@ namespace CodeImp.DoomBuilder
 		{
 			// Initialize
 			CleanTempFile(manager);
+			processes = new Dictionary<Process, string>(); //mxd
 
 			// Bind actions
 			General.Actions.BindMethods(this);
@@ -73,16 +75,30 @@ namespace CodeImp.DoomBuilder
 				// Unbind actions
 				General.Actions.UnbindMethods(this);
 
-				//mxd. Terminate process?
-				if(process != null) 
+				//mxd. Terminate running processes?
+				if(processes != null) 
 				{
-					process.CloseMainWindow();
-					process.Close();
+					foreach(KeyValuePair<Process, string> group in processes)
+					{
+						// Close engine
+						group.Key.CloseMainWindow();
+						group.Key.Close();
+
+						// Remove temporary file
+						if(File.Exists(group.Value))
+						{
+							try { File.Delete(group.Value); }
+							catch { }
+						}
+					}
 				}
 				
 				// Remove temporary file
-				try { File.Delete(tempwad); }
-				catch(Exception) { }
+				if(File.Exists(tempwad))
+				{
+					try { File.Delete(tempwad); }
+					catch { }
+				}
 				
 				// Done
 				isdisposed = true;
@@ -232,18 +248,6 @@ namespace CodeImp.DoomBuilder
 			return outp;
 		}
 
-		//mxd
-		private bool AlreadyTesting()
-		{
-			if(process != null)
-			{
-				General.ShowWarningMessage("Game engine is already running." + Environment.NewLine + "Please close \"" + process.MainModule.FileName + "\" first.", MessageBoxButtons.OK);
-				return true;
-			}
-
-			return false;
-		}
-
 		#endregion
 
 		#region ================== Test
@@ -252,23 +256,22 @@ namespace CodeImp.DoomBuilder
 		[BeginAction("testmap")]
 		public void Test()
 		{
-			if(AlreadyTesting() || !General.Editing.Mode.OnMapTestBegin(false)) return; //mxd
-			TestAtSkill(General.Map.ConfigSettings.TestSkill);
-			General.Editing.Mode.OnMapTestEnd(false); //mxd
+			TestAtSkill(General.Map.ConfigSettings.TestSkill, false);
 		}
 
 		//mxd
 		[BeginAction("testmapfromview")]
 		public void TestFromView() 
 		{
-			if(AlreadyTesting() || !General.Editing.Mode.OnMapTestBegin(true)) return;
-			TestAtSkill(General.Map.ConfigSettings.TestSkill);
-			General.Editing.Mode.OnMapTestEnd(true);
+			TestAtSkill(General.Map.ConfigSettings.TestSkill, true);
 		}
 		
 		// This saves the map to a temporary file and launches a test with the given skill
-		public void TestAtSkill(int skill)
+		public void TestAtSkill(int skill) { TestAtSkill(skill, false); }
+		public void TestAtSkill(int skill, bool testfromcurrentposition)
 		{
+			if(!General.Editing.Mode.OnMapTestBegin(testfromcurrentposition)) return; //mxd
+			
 			Cursor oldcursor = Cursor.Current;
 
 			// Check if configuration is OK
@@ -301,8 +304,11 @@ namespace CodeImp.DoomBuilder
 			}
 			
 			// Remove temporary file
-			try { File.Delete(tempwad); }
-			catch(Exception) { }
+			if(File.Exists(tempwad) && !processes.ContainsValue(tempwad))
+			{
+				try { File.Delete(tempwad); }
+				catch { }
+			}
 			
 			// Save map to temporary file
 			Cursor.Current = Cursors.WaitCursor;
@@ -334,9 +340,10 @@ namespace CodeImp.DoomBuilder
 					try
 					{
 						// Start the program
-						process = Process.Start(processinfo);
+						Process process = Process.Start(processinfo);
 						process.EnableRaisingEvents = true; //mxd
 						process.Exited += ProcessOnExited; //mxd
+						processes.Add(process, tempwad); //mxd
 						Cursor.Current = oldcursor; //mxd
 					}
 					catch(Exception e)
@@ -351,16 +358,33 @@ namespace CodeImp.DoomBuilder
 				}
 			}
 			General.Plugins.OnMapSaveEnd(SavePurpose.Testing);
+			General.Editing.Mode.OnMapTestEnd(testfromcurrentposition); //mxd
 		}
 
 		//mxd
-		private void TestingFinished() 
+		private void TestingFinished(Process process) 
 		{
 			// Done
 			TimeSpan deltatime = TimeSpan.FromTicks(process.ExitTime.Ticks - process.StartTime.Ticks);
-			process = null;
-			General.WriteLogLine("Test program has finished.");
+			General.WriteLogLine("Testing with \"" + process.StartInfo.FileName + "\" has finished.");
 			General.WriteLogLine("Run time: " + deltatime.TotalSeconds.ToString("###########0.00") + " seconds");
+
+			//mxd. Remove from active processes list
+			string closedtempfile = processes[process];
+			processes.Remove(process);
+
+			//mxd. Still have running engines?..
+			if(processes.Count > 0)
+			{
+				// Remove temp file
+				if(File.Exists(closedtempfile))
+				{
+					try { File.Delete(closedtempfile); }
+					catch { }
+				}
+				return; 
+			}
+			
 			General.MainWindow.DisplayReady();
 
 			// Clean up temp file
@@ -374,20 +398,15 @@ namespace CodeImp.DoomBuilder
 					General.Map.Graphics.Reset();
 					General.MainWindow.RedrawDisplay();
 				}
-				/*else if(General.Editing.Mode is VisualMode)
-				{
-					General.MainWindow.StopExclusiveMouseInput();
-					General.MainWindow.StartExclusiveMouseInput();
-				}*/
 			}
 
 			General.MainWindow.FocusDisplay();
 		}
 
 		//mxd
-		private void ProcessOnExited(object sender, EventArgs eventArgs) 
+		private void ProcessOnExited(object sender, EventArgs e)
 		{
-			General.MainWindow.Invoke(new EngineExitedCallback(TestingFinished));
+			General.MainWindow.Invoke(new EngineExitedCallback(TestingFinished), new[] { sender });
 		}
 
 		// This deletes the previous temp file and creates a new, empty temp file
@@ -395,7 +414,7 @@ namespace CodeImp.DoomBuilder
 		{
 			// Remove temporary file
 			try { File.Delete(tempwad); }
-			catch(Exception) { }
+			catch { }
 			
 			// Make new empty temp file
 			tempwad = General.MakeTempFilename(manager.TempPath, "wad");

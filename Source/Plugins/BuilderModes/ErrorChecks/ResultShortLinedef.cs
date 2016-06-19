@@ -1,6 +1,7 @@
 ﻿#region ================== Namespaces
 
 using System;
+using System.Drawing;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
 
@@ -50,7 +51,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This must return the string that is displayed in the listbox
 		public override string ToString()
 		{
-			return "Linedef " + line.Index + " is shorter than 1 m.u.";
+			return "Linedef " + line.Index + " is shorter than 1 mu.";
 		}
 		
 		// Rendering
@@ -59,6 +60,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			renderer.PlotLinedef(line, General.Colors.Selection);
 			renderer.PlotVertex(line.Start, ColorCollection.VERTICES);
 			renderer.PlotVertex(line.End, ColorCollection.VERTICES);
+		}
+
+		// We must zoom in way more than usual...
+		public override RectangleF GetZoomArea()
+		{
+			// Get Area
+			RectangleF area = base.GetZoomArea();
+
+			// Remove padding
+			area.Inflate(-97f, -97f);
+
+			// Return area
+			return area;
 		}
 		
 		#endregion
