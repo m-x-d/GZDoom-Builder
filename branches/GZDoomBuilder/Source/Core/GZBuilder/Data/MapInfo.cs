@@ -8,6 +8,21 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 {
 	public sealed class MapInfo
 	{
+		#region ================== Enums
+
+		public enum GZDoomLightMode
+		{
+			STANDARD,
+			BRIGHT,
+			DOOM,
+			DARK,
+			LEGACY,
+			SOFTWARE,
+			UNDEFINED
+		}
+
+		#endregion
+
 		#region ================== Variables
 
 		private bool isdefined;
@@ -27,6 +42,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 
 		private bool evenlighting;
 		private bool smoothlighting;
+		private GZDoomLightMode lightmode;
 		private int vertwallshade;
 		private int horizwallshade;
 
@@ -51,6 +67,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 
 		public bool EvenLighting { get { return evenlighting; } internal set { evenlighting = value; isdefined = true; } }
 		public bool SmoothLighting { get { return smoothlighting; } internal set { smoothlighting = value; isdefined = true; } }
+		public GZDoomLightMode LightMode { get { return lightmode; } internal set { lightmode = value; isdefined = true; } }
 		public int VertWallShade { get { return vertwallshade; } internal set { vertwallshade = value; isdefined = true; } }
 		public int HorizWallShade { get { return horizwallshade; } internal set { horizwallshade = value; isdefined = true; } }
 
@@ -64,6 +81,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 			horizwallshade = -16;
 			fogdensity = 255;
 			outsidefogdensity = 255;
+			lightmode = GZDoomLightMode.UNDEFINED;
 		}
 
 		#endregion

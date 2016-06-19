@@ -464,6 +464,10 @@ namespace CodeImp.DoomBuilder.ZDoom
 						mapinfo.SmoothLighting = true;
 						break;
 
+					case "lightmode":
+						if(!ParseLightMode()) return false;
+						break;
+
 					case "}": return true; // Block end
 
 					case "{": // Skip inner blocks
@@ -653,14 +657,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 		private bool ParseFogDensity(string densitytype)
 		{
 			SkipWhitespace(true);
+			if(!NextTokenIs("=")) return false; // New format only
+			SkipWhitespace(true);
 			string token = ReadToken();
-
-			// New format
-			if(token == "=")
-			{
-				SkipWhitespace(true);
-				token = ReadToken();
-			}
 
 			int val;
 			if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out val))
@@ -670,13 +669,34 @@ namespace CodeImp.DoomBuilder.ZDoom
 				return false;
 			}
 
-			val = Math.Max(0, val);
 			if(densitytype == "fogdensity") mapinfo.FogDensity = val;
 			else mapinfo.OutsideFogDensity = val;
 
 			// All done here
 			return true;
 		}
+
+		private bool ParseLightMode()
+		{
+			SkipWhitespace(true);
+			if(!NextTokenIs("=")) return false; // New format only
+			SkipWhitespace(true);
+			string token = ReadToken();
+
+			int val;
+			if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out val))
+			{
+				// Not numeric!
+				ReportError("Expected LightMode value, but got \"" + token + "\"");
+				return false;
+			}
+
+			// Store
+			mapinfo.LightMode = (MapInfo.GZDoomLightMode)val;
+
+			// All done here
+			return true;
+		} 
 
 		#endregion
 
