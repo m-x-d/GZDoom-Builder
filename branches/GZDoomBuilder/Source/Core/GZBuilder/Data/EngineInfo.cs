@@ -96,7 +96,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 			if(File.Exists(testprogram))
 			{
 				Icon i = Icon.ExtractAssociatedIcon(testprogram);
-				icon = (i != null ? i.ToBitmap() : new Bitmap(Properties.Resources.Question));
+				icon = new Bitmap(i != null ? i.ToBitmap() : Properties.Resources.Question);
 			}
 			else
 			{

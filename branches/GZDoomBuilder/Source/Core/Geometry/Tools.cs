@@ -937,7 +937,6 @@ namespace CodeImp.DoomBuilder.Geometry
 				if(points[0].stitch) mergeverts.Add(v1); else nonmergeverts.Add(v1);
 
 				// Go for all other points
-				int roundprecision = (General.Map.FormatInterface.VertexDecimals > 0 ? General.Map.FormatInterface.VertexDecimals - 1 : 0); //mxd
 				for(int i = 1; i < points.Count; i++)
 				{
 					// Create vertex for point
@@ -963,7 +962,7 @@ namespace CodeImp.DoomBuilder.Geometry
 						// Check if any other lines intersect this line
 						List<float> intersections = new List<float>();
 						Line2D measureline = ld.Line;
-						Dictionary<Linedef, bool> processed = new Dictionary<Linedef, bool>(); //mxd
+						HashSet<Linedef> processed = new HashSet<Linedef>(); //mxd
 
 						//mxd
 						foreach(Sector s in map.Sectors) 
@@ -973,7 +972,7 @@ namespace CodeImp.DoomBuilder.Geometry
 							{
 								foreach(Sidedef side in s.Sidedefs) 
 								{
-									if(processed.ContainsKey(side.Line)) continue;
+									if(processed.Contains(side.Line)) continue;
 									if(side.Line == ld) continue;
 
 									float u;
@@ -983,7 +982,7 @@ namespace CodeImp.DoomBuilder.Geometry
 										intersections.Add(u);
 									}
 
-									processed.Add(side.Line, false);
+									processed.Add(side.Line);
 								}
 							}
 						}
@@ -999,10 +998,6 @@ namespace CodeImp.DoomBuilder.Geometry
 							// We use measureline for this, because the original line
 							// may already have changed in length due to a previous split
 							Vector2D splitpoint = measureline.GetCoordinatesAt(u);
-
-							//mxd. Work around some imprecisions when splitting very long lines (like 19000 mu long)
-							splitpoint.x = (float)Math.Round(splitpoint.x, roundprecision);
-							splitpoint.y = (float)Math.Round(splitpoint.y, roundprecision);
 
 							// Make the vertex
 							Vertex splitvertex = map.CreateVertex(splitpoint);

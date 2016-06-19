@@ -46,7 +46,7 @@ namespace CodeImp.DoomBuilder.Map
 
 		/// <summary>Stiching distance. This is only to get around inaccuracies. Basically,
 		/// geometry only stitches when exactly on top of each other.</summary>
-		public const float STITCH_DISTANCE = 0.001f;
+		public const float STITCH_DISTANCE = 0.005f; //mxd. 0.001f is not enough when drawing very long lines...
 		
 		// Virtual sector identification
 		// This contains a character that is invalid in the UDMF standard, but valid
