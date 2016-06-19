@@ -17,6 +17,7 @@
 #region ================== Namespaces
 
 using System;
+using CodeImp.DoomBuilder.GZBuilder.Data;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Geometry;
 
@@ -89,7 +90,16 @@ namespace CodeImp.DoomBuilder.Rendering
 		public int CalculateBrightness(int level)
 		{
 			// Simulate doom light levels
-			if((level < 192) && General.Map.Config.DoomLightLevels)
+			bool usedoomlightlevels = General.Map.Config.DoomLightLevels; //mxd
+
+			//mxd. Very limited LightMode support...
+			switch(General.Map.Data.MapInfo.LightMode)
+			{
+				case MapInfo.GZDoomLightMode.DOOM: usedoomlightlevels = true; break;
+				case MapInfo.GZDoomLightMode.STANDARD: usedoomlightlevels = false; break;
+			}
+
+			if(level < 192 && usedoomlightlevels)
 				level = (int)(192.0f - (192 - level) * 1.5f);
 			
 			byte blevel = (byte)General.Clamp(level, 0, 255);
