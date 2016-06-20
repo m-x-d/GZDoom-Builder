@@ -218,7 +218,7 @@ namespace CodeImp.DoomBuilder.Map
 			float min_dist = float.MaxValue;
 			Linedef nearest = null;
 
-			// Go through map lines
+			// Fire a ray east from the vertex and find the first line it crosses
 			foreach(Linedef line in General.Map.Map.Linedefs)
 			{
 				// Ignore if the line is completely left of the vertex
@@ -238,10 +238,22 @@ namespace CodeImp.DoomBuilder.Map
 				float dist = Math.Abs(int_x - vr_x);
 
 				// Check if closest
-				if(dist < min_dist)
+				if(nearest == null || dist < min_dist)
 				{
 					min_dist = dist;
 					nearest = line;
+				}
+				else if(Math.Abs(dist - min_dist) < 0.001f)
+				{
+					// In the case of a tie, use the distance to each line as a tiebreaker - this fixes cases where the ray hits a vertex
+					// shared by two lines.  Choosing the further line would mean choosing an inner edge, which is clearly wrong.
+					float line_dist = line.SafeDistanceToSq(vertex_right.Position, true);
+					float nearest_dist = nearest.SafeDistanceToSq(vertex_right.Position, true);
+					if(line_dist < nearest_dist)
+					{
+						min_dist = dist;
+						nearest = line;
+					}
 				}
 			}
 
@@ -250,8 +262,7 @@ namespace CodeImp.DoomBuilder.Map
 
 			// Determine the edge side
 			float side = -nearest.SideOfLine(vertex_right.Position); //mxd. SideOfLine logic is inverted in Slade 3
-			return new LinedefSide(nearest, side > 0);				 //mxd. The meaning of 0.0 is also inverted!!!
-																	 //mxd. I've spent 2 days figuring this out... :( 
+			return new LinedefSide(nearest, side > 0);				 //mxd. The meaning of 0.0 is also inverted!!! (I've spent 2 days figuring this out...)
 		}
 
 		/// <summary>Find the closest edge within the current outline (that isn't part of the current outline)</summary>

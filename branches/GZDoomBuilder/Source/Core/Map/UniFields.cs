@@ -224,11 +224,11 @@ namespace CodeImp.DoomBuilder.Map
 		public static bool UniValuesMatch(UniValue val1, UniValue val2)
 		{
 			if(val1.Type != val2.Type) return false;
-			if(val1.Value is int) return (int)val1.Value != (int)val2.Value;
-			if(val1.Value is float) return (float)val1.Value != (float)val2.Value;
-			if(val1.Value is bool) return (bool)val1.Value != (bool)val2.Value;
-			if(val1.Value is string) return (string)val1.Value != (string)val2.Value;
-			throw new Exception("Got unknown Custom Field type to compare: " + val1.Value.GetType());
+			if(val1.Value is int) return (int)val1.Value == (int)val2.Value;
+			if(val1.Value is float) return (float)val1.Value == (float)val2.Value;
+			if(val1.Value is bool) return (bool)val1.Value == (bool)val2.Value;
+			if(val1.Value is string) return (string)val1.Value == (string)val2.Value;
+			throw new NotImplementedException("Unknown Custom Field type: " + val1.Value.GetType());
 		}
 
 		/// <summary>This compares types and values of given UniFields by key.</summary>

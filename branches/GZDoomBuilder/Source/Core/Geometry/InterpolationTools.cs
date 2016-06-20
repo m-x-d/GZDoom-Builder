@@ -58,22 +58,24 @@ namespace CodeImp.DoomBuilder.Geometry
 		}
 
 		//mxd
-		public static int InterpolateColor(PixelColor c1, PixelColor c2, float delta)
+		public static PixelColor InterpolateColor(PixelColor c1, PixelColor c2, float delta)
 		{
 			float invdelta = 1.0f - delta;
+			byte a = (byte)(c1.a * invdelta + c2.a * delta);
 			byte r = (byte)(c1.r * invdelta + c2.r * delta);
 			byte g = (byte)(c1.g * invdelta + c2.g * delta);
 			byte b = (byte)(c1.b * invdelta + c2.b * delta);
-			return new PixelColor(255, r, g, b).ToInt();
+			return new PixelColor(a, r, g, b);
 		}
 
 		//mxd
-		public static int InterpolateColor(PixelColor c1, PixelColor c2, float delta, Mode mode)
+		public static PixelColor InterpolateColor(PixelColor c1, PixelColor c2, float delta, Mode mode)
 		{
+			byte a = (byte)Math.Round(Interpolate(c1.a, c2.a, delta, mode));
 			byte r = (byte)Math.Round(Interpolate(c1.r, c2.r, delta, mode));
 			byte g = (byte)Math.Round(Interpolate(c1.g, c2.g, delta, mode));
 			byte b = (byte)Math.Round(Interpolate(c1.b, c2.b, delta, mode));
-			return new PixelColor(255, r, g, b).ToInt();
+			return new PixelColor(a, r, g, b);
 		}
 	}
 }

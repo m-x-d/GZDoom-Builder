@@ -1935,7 +1935,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			var form = new SelectSimilarElementOptionsPanel();
-			if(form.Setup(this)) form.ShowDialog();
+			if(form.Setup(this)) form.ShowDialog(General.Interface);
 		}
 
 		//mxd
