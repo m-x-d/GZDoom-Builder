@@ -2078,7 +2078,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					{
 						s.Fields.BeforeFieldsChange();
 						float u = index / (orderedselection.Count - 1.0f);
-						int c = InterpolationTools.InterpolateColor(startcolor, endcolor, u, interpolationmode);
+						int c = InterpolationTools.InterpolateColor(startcolor, endcolor, u, interpolationmode).WithAlpha(0).ToInt(); // No alpha here!
 
 						UniFields.SetInteger(s.Fields, key, c, defaultvalue);
 						s.UpdateNeeded = true;
@@ -2502,7 +2502,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			var form = new SelectSimilarElementOptionsPanel();
-			if(form.Setup(this)) form.ShowDialog();
+			if(form.Setup(this)) form.ShowDialog(General.Interface);
 		}
 		
 		//mxd

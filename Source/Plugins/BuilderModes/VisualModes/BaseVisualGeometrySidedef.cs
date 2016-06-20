@@ -304,7 +304,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					float cz = data.Ceiling.plane.GetZ(v.x, v.y);
 					float delta = 1.0f - (((v.z - cgz) / (cz - cgz)) * 0.9f);
 					PixelColor vc = PixelColor.FromInt(v.c);
-					v.c = InterpolationTools.InterpolateColor(GetGlowColor(data.CeilingGlow, vc), vc, delta);
+					v.c = InterpolationTools.InterpolateColor(GetGlowColor(data.CeilingGlow, vc), vc, delta).WithAlpha(255).ToInt();
 				}
 			}
 
@@ -319,7 +319,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					float fz = data.Floor.plane.GetZ(v.x, v.y);
 					float delta = 1.0f - (((v.z - fz) / (fgz - fz)) * 0.9f);
 					PixelColor vc = PixelColor.FromInt(v.c);
-					v.c = InterpolationTools.InterpolateColor(vc, GetGlowColor(data.FloorGlow, vc), delta);
+					v.c = InterpolationTools.InterpolateColor(vc, GetGlowColor(data.FloorGlow, vc), delta).WithAlpha(255).ToInt();
 				}
 			}
 

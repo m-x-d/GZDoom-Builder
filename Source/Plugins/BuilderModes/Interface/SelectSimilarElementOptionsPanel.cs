@@ -11,7 +11,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 {
 	public partial class SelectSimilarElementOptionsPanel : DelayedForm
 	{
-		private static Size size = Size.Empty;
 		private static Point location = Point.Empty;
 		private static readonly object[] flags = {
 			                                new SectorPropertiesCopySettings(),
@@ -30,10 +29,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			InitializeComponent();
 
 			//apply window size and location
-			if(!size.IsEmpty && !location.IsEmpty) 
+			if(!location.IsEmpty) 
 			{
 				this.StartPosition = FormStartPosition.Manual;
-				this.Size = size;
 				this.Location = location;
 			}
 
@@ -79,6 +77,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			//fill flags
 			showntabs = new List<TabPage>();
+			int maxheight = int.MinValue;
 			foreach(TabPage page in activetabs) 
 			{
 				CheckboxArrayControl curControl = page.Controls[0] as CheckboxArrayControl;
@@ -102,7 +101,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					curControl.PositionCheckboxes();
 					showntabs.Add(page);
+
+					// Store height
+					maxheight = Math.Max(maxheight, curControl.GetHeight());
 				}
+			}
+
+			// Apply height
+			if(maxheight != int.MinValue)
+			{
+				this.Height += maxheight - activetabs[0].Controls[0].Height;
 			}
 
 			// Got anything to show?
@@ -124,7 +132,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		private void SelectSimilarElementOptionsPanel_FormClosing(object sender, FormClosingEventArgs e) 
 		{
-			size = this.Size;
 			location = this.Location;
 		}
 
