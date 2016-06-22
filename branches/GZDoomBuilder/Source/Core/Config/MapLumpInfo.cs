@@ -44,7 +44,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.NodeBuild = cfg.ReadSetting("maplumpnames." + name + ".nodebuild", false);
 			this.AllowEmpty = cfg.ReadSetting("maplumpnames." + name + ".allowempty", false);
 			this.ScriptBuild = cfg.ReadSetting("maplumpnames." + name + ".scriptbuild", false); //mxd
-			string scriptconfig = cfg.ReadSetting("maplumpnames." + name + ".script", "");
+			string scriptconfig = (this.ScriptBuild ? string.Empty : cfg.ReadSetting("maplumpnames." + name + ".script", "")); //mxd. Setting Script when "scriptbuild" is true can result in unexpected behaviour...
 			
 			// Find script configuration
 			if(scriptconfig.Length > 0)
