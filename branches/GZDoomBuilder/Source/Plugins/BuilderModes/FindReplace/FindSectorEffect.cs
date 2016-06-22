@@ -93,16 +93,32 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(int.TryParse(value, out effect))
 			{
 				//mxd
-				List<int> expectedbits = GetGeneralizedBits(effect);
+				SectorEffectData sd = General.Map.Config.GetSectorEffectData(effect);
 				
 				// Where to search?
-				ICollection<Sector> list = withinselection ? General.Map.Map.GetSelectedSectors(true) : General.Map.Map.Sectors;
+				ICollection<Sector> list = (withinselection ? General.Map.Map.GetSelectedSectors(true) : General.Map.Map.Sectors);
 
 				// Go for all sectors
 				foreach(Sector s in list)
 				{
-					// Effect matches? -1 means any effect (mxd)
-					if((effect == -1 && s.Effect > 0) || (effect > -1 && (s.Effect == effect || BitsMatch(s.Effect, expectedbits))))
+					bool match = false;
+
+					//mxd. Effect matches? -1 means any effect
+					if(effect == -1)
+					{
+						match = s.Effect > 0;
+					}
+					else if(effect == s.Effect)
+					{
+						match = true;
+					}
+					else if(General.Map.Config.GeneralizedEffects && effect != 0 && s.Effect != 0)
+					{
+						SectorEffectData sdo = General.Map.Config.GetSectorEffectData(s.Effect);
+						match = (sd.Effect == sdo.Effect || (sd.GeneralizedBits.Count == sdo.GeneralizedBits.Count && sd.GeneralizedBits.Overlaps(sdo.GeneralizedBits)));
+					}
+					
+					if(match)
 					{
 						// Replace
 						if(replace) s.Effect = replaceeffect;
@@ -117,37 +133,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			return objs.ToArray();
-		}
-
-		//mxd
-		private static List<int> GetGeneralizedBits(int effect) 
-		{
-			if(!General.Map.Config.GeneralizedEffects) return new List<int>();
-			List<int> bits = new List<int>();
-
-			foreach(GeneralizedOption option in General.Map.Config.GenEffectOptions) 
-			{
-				foreach(GeneralizedBit bit in option.Bits) 
-				{
-					if(bit.Index > 0 && (effect & bit.Index) == bit.Index)
-						bits.Add(bit.Index);
-				}
-			}
-
-			return bits;
-		}
-
-		//mxd
-		private static bool BitsMatch(int effect, IEnumerable<int> expectedbits) 
-		{
-			if(!General.Map.Config.GeneralizedEffects) return false;
-
-			foreach(int bit in expectedbits) 
-			{
-				if((effect & bit) != bit) return false;
-			}
-
-			return true;
 		}
 
 		#endregion

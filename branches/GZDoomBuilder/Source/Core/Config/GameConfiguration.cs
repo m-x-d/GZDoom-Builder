@@ -1075,15 +1075,19 @@ namespace CodeImp.DoomBuilder.Config
 			if(effect > 0)
 			{
 				int cureffect = effect;
-				for(int i = options.Count - 1; i > -1; i--)
+
+				if(General.Map.Config.GeneralizedEffects)
 				{
-					for(int j = options[i].Bits.Count - 1; j > -1; j--)
+					for(int i = options.Count - 1; i > -1; i--)
 					{
-						GeneralizedBit bit = options[i].Bits[j];
-						if(bit.Index > 0 && (cureffect & bit.Index) == bit.Index)
+						for(int j = options[i].Bits.Count - 1; j > -1; j--)
 						{
-							cureffect -= bit.Index;
-							result.GeneralizedBits.Add(bit.Index);
+							GeneralizedBit bit = options[i].Bits[j];
+							if(bit.Index > 0 && (cureffect & bit.Index) == bit.Index)
+							{
+								cureffect -= bit.Index;
+								result.GeneralizedBits.Add(bit.Index);
+							}
 						}
 					}
 				}
