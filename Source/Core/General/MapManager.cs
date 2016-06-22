@@ -753,9 +753,9 @@ namespace CodeImp.DoomBuilder
 			// If the scripts window is open, save the scripts first
 			if(IsScriptsWindowOpen) scriptwindow.Editor.ImplicitSave();
 
-			// Only recompile scripts when the scripts have changed
+			// Only recompile scripts when the scripts have changed or there are compiler errors (mxd)
 			// (not when only the map changed)
-			if(localscriptschanged && !CompileScriptLumps()) 
+			if((localscriptschanged || errors.Count > 0) && !CompileScriptLumps()) 
 			{
 				// Compiler failure
 				if(errors.Count > 0)
