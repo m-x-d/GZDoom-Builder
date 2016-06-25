@@ -1,5 +1,6 @@
 ﻿#region ================== Namespaces
 
+using System;
 using System.Collections.Generic;
 using CodeImp.DoomBuilder.Map;
 using System.Windows.Forms;
@@ -11,6 +12,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	[FindReplace("Sector Brightness", BrowseButton = false)]
 	internal class FindSectorBrightness : BaseFindSector
 	{
+		#region ================== Properties
+
+		//mxd. Prefixes usage
+		public override string UsageHint { get { return "Supported prefixes:" + Environment.NewLine
+													+ "\"<=\" - finds values less or equal to given value;" + Environment.NewLine
+													+ "\">=\" - finds values greater or equal to given value;" + Environment.NewLine
+													+ "\"<\" - finds values less than given value;" + Environment.NewLine
+													+ "\">\" - finds values greater than given value."; } }
+
+		#endregion
+
 		#region ================== Methods
 
 		// This is called to perform a search (and replace)
@@ -37,6 +49,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Interpret the number given
 			int brightness;
+			string prefix = string.Empty; //mxd
+
+			//mxd. Check prefixes
+			value = value.Trim().Replace(" ", "");
+			if(value.StartsWith(">=") || value.StartsWith("<=")) prefix = value.Substring(0, 2);
+			else if(value.StartsWith(">") || value.StartsWith("<")) prefix = value.Substring(0, 1);
+			value = value.Remove(0, prefix.Length);
+
 			if(int.TryParse(value, out brightness)) 
 			{
 				// Where to search?
@@ -46,12 +66,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				foreach(Sector s in list) 
 				{
 					// Brightness matches?
-					if(s.Brightness == brightness) 
+					if(BrightnessMatches(s.Brightness, brightness, prefix)) 
 					{
 						// Replace
 						if(replace) s.Brightness = replacebrightness;
 
-						objs.Add(new FindReplaceObject(s, "Sector " + s.Index));
+						objs.Add(new FindReplaceObject(s, "Sector " + s.Index + (!replace ? " (Brightness " + s.Brightness + ")" : "")));
 					}
 				}
 			}
@@ -64,6 +84,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			return objs.ToArray();
+		}
+
+		//mxd
+		private static bool BrightnessMatches(int sectorbrightness, int brightness, string prefix)
+		{
+			switch(prefix)
+			{
+				case "": return sectorbrightness == brightness;
+				case "<=": return sectorbrightness <= brightness;
+				case ">=": return sectorbrightness >= brightness;
+				case "<": return sectorbrightness < brightness;
+				case ">": return sectorbrightness > brightness;
+				default: throw new NotImplementedException("Unknown prefix");
+			}
 		}
 
 		#endregion

@@ -180,7 +180,7 @@ namespace CodeImp.DoomBuilder.AutomapMode
 				return ColorSecret;
 
 			if(ld.IsFlagSet(BuilderPlug.Me.HiddenFlag)) return ColorHiddenFlag;
-			if(ld.Back == null || ld.IsFlagSet(BuilderPlug.Me.SecretFlag)) return ColorSingleSided;
+			if(ld.Back == null || ld.Front == null || ld.IsFlagSet(BuilderPlug.Me.SecretFlag)) return ColorSingleSided;
 			if(ld.Front.Sector.FloorHeight != ld.Back.Sector.FloorHeight) return ColorFloorDiff;
 			if(ld.Front.Sector.CeilHeight != ld.Back.Sector.CeilHeight) return ColorCeilDiff;
 
@@ -196,8 +196,8 @@ namespace CodeImp.DoomBuilder.AutomapMode
 		{
 			if(menusform.ShowHiddenLines ^ General.Interface.CtrlState) return true;
 			if(ld.IsFlagSet(BuilderPlug.Me.HiddenFlag)) return false;
-			if(ld.Back == null || ld.IsFlagSet(BuilderPlug.Me.SecretFlag)) return true;
-			if(ld.Back != null && (ld.Front.Sector.FloorHeight != ld.Back.Sector.FloorHeight || ld.Front.Sector.CeilHeight != ld.Back.Sector.CeilHeight)) return true;
+			if(ld.Back == null || ld.Front == null || ld.IsFlagSet(BuilderPlug.Me.SecretFlag)) return true;
+			if(ld.Back != null && ld.Front != null && (ld.Front.Sector.FloorHeight != ld.Back.Sector.FloorHeight || ld.Front.Sector.CeilHeight != ld.Back.Sector.CeilHeight)) return true;
 
 			return false;
 		}
