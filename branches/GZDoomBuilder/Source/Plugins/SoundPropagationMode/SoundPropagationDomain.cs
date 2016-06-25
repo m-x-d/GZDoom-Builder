@@ -60,7 +60,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 					if(blocksound) blockinglines.Add(sd.Line);
 
 					// If the line is one sided, the sound can travel nowhere, so try the next one
-					if(sd.Line.Back == null || blocksound) continue;
+					if(sd.Other == null || blocksound) continue;
 	
 					// Get the sector on the other side of the line we're checking right now
 					Sector oppositesector = sd.Other.Sector;
@@ -87,7 +87,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			{
 				// Lines that don't have a back side, or where the sound is blocked due to
 				// the sector heights on each side can be skipped
-				if(ld.Back == null || IsSoundBlockedByHeight(ld)) continue;
+				if(IsSoundBlockedByHeight(ld)) continue;
 				if(!sectors.Contains(ld.Front.Sector)) adjacentsectors.Add(ld.Front.Sector);
 				if(!sectors.Contains(ld.Back.Sector)) adjacentsectors.Add(ld.Back.Sector);
 			}
@@ -111,7 +111,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 
 		private static bool IsSoundBlockedByHeight(Linedef ld)
 		{
-			if(ld.Back == null) return false;
+			if(ld.Back == null || ld.Front == null) return false;
 
 			Sector s1 = ld.Front.Sector;
 			Sector s2 = ld.Back.Sector;

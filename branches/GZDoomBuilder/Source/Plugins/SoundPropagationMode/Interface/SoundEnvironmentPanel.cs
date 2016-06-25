@@ -133,7 +133,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 				linedefnode.ImageIndex = iconindex; //mxd
 				linedefnode.SelectedImageIndex = iconindex; //mxd
 
-				if(ld.Back == null)
+				if(ld.Back == null || ld.Front == null)
 				{
 					showwarning = true;
 					linedefnode.ToolTipText = "This line is single-sided, but has\nthe sound boundary flag set.";

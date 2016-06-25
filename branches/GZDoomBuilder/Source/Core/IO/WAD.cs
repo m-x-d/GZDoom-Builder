@@ -363,9 +363,18 @@ namespace CodeImp.DoomBuilder.IO
 			// Create the lump
 			Lump lump = new Lump(file, this, Lump.MakeFixedName(name, ENCODING), lumpsoffset, datalength);
 			lumps.Insert(position, lump);
+
+			//dbg
+			int oldlumpoffset = lumpsoffset;
 			
 			// Advance lumps table offset
 			lumpsoffset += datalength;
+
+			//dbg
+			if(lumpsoffset < 0)
+			{
+				throw new InvalidOperationException("Invalid lumpsoffset (" + lumpsoffset + ") after inserting lump \"" + name + "\" at position " + position + ", datalength=" + datalength + ". Previous lumpoffset was " + oldlumpoffset);
+			}
 
 			// Write the new headers
 			if(writeheaders) WriteHeaders();

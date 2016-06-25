@@ -290,7 +290,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 							continue;
 						}
 
-						if(sd.Line.Back == null) continue;
+						if(sd.Other == null) continue;
 
 						Sector oppositesector = (sd.Line.Front.Sector == sector ? sd.Line.Back.Sector : sd.Line.Front.Sector);
 
