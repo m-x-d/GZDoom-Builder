@@ -830,7 +830,7 @@ namespace CodeImp.DoomBuilder
 				{
 					if(checkresult.Processes.Count > 0)
 					{
-						string rest = "Press 'Retry' to close " + (checkresult.Processes.Count > 1 ? "all processes" : "the process")
+						string rest = Environment.NewLine + "Press 'Retry' to close " + (checkresult.Processes.Count > 1 ? "all processes" : "the process")
 							+ " and retry." + Environment.NewLine + "Press 'Cancel' to cancel saving.";
 
 						if(General.ShowErrorMessage(checkresult.Error + rest, MessageBoxButtons.RetryCancel) == DialogResult.Retry)
