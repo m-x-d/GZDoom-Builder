@@ -546,11 +546,7 @@ namespace CodeImp.DoomBuilder.Config
 			if(string.IsNullOrEmpty(sprite) || sprite.StartsWith(DataManager.INTERNAL_PREFIX)) return;
 
 			// Skip sprites with strange names
-			if(sprite.Length != 6 && sprite.Length != 8)
-			{
-				General.ErrorLogger.Add(ErrorType.Error, "Error in actor \"" + title + "\":" + index + ". Missing sprite or unsupported sprite name format :\"" + sprite.ToUpperInvariant() + "\"");
-				return;
-			}
+			if(sprite.Length != 6 && sprite.Length != 8) return;
 
 			// Get sprite angle
 			string anglestr = sprite.Substring(5, 1);
@@ -581,7 +577,7 @@ namespace CodeImp.DoomBuilder.Config
 			char sourceframe = sprite[4];
 			foreach(string s in spritenames)
 			{
-				//Check first frame block
+				// Check first frame block
 				char targetframe = s[4];
 				if(targetframe == sourceframe)
 				{

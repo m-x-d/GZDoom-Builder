@@ -1579,6 +1579,23 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				return;
 			}
 
+			//mxd. Remove single-sided lines with only front side
+			int selectedcount = selected.Count; // Store initial selection size...
+			List<Linedef> filtered = new List<Linedef>(selectedcount);
+			foreach(Linedef l in selected)
+			{
+				if(l.Back != null || l.Front == null) filtered.Add(l);
+			}
+			selected = filtered;
+
+			//mxd. Any valid lines?
+			if(selected.Count == 0)
+			{
+				General.Interface.DisplayStatus(StatusType.Warning, (selectedcount > 1 ? "Selected linedefs already point in the right direction!" 
+																					   : "Selected linedef already points in the right direction!"));
+				return;
+			}
+
 			// Make undo
 			if(selected.Count > 1)
 			{
@@ -1599,7 +1616,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			// Remove selection if only one linedef was selected
-			if(selected.Count == 1)
+			if(selectedcount == 1)
 			{
 				foreach(Linedef ld in selected) ld.Selected = false;
 				selected.Clear();

@@ -248,7 +248,7 @@ namespace CodeImp.DoomBuilder.IO
 				args[2] = GetCollectionEntry(lc, "arg2", false, 0, where);
 				args[3] = GetCollectionEntry(lc, "arg3", false, 0, where);
 				args[4] = GetCollectionEntry(lc, "arg4", false, 0, where);
-				int s1 = GetCollectionEntry(lc, "sidefront", true, -1, where);
+				int s1 = GetCollectionEntry(lc, "sidefront", false, -1, where);
 				int s2 = GetCollectionEntry(lc, "sideback", false, -1, where);
 
 				//mxd. MoreIDs
