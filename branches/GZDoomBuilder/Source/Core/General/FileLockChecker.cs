@@ -153,8 +153,7 @@ namespace CodeImp.DoomBuilder
 					{
 						result.Processes = new List<Process>((int)pnProcInfo);
 
-						// Enumerate all of the results and add them to the 
-						// list to be returned
+						// Enumerate all of the results and add them to the list to be returned
 						for(int i = 0; i < pnProcInfo; i++)
 						{
 							try
@@ -175,22 +174,29 @@ namespace CodeImp.DoomBuilder
 
 							foreach(Process process in result.Processes)
 							{
-								result.Error += Path.GetFileName(process.MainModule.FileName)
-									+ " (\"" + process.MainModule.FileName
-									+ "\", started at " + process.StartTime + ")" 
-									+ Environment.NewLine + Environment.NewLine;
+								string processpath = string.Empty;
+								try
+								{
+									// All manner of exceptions are possible here...
+									processpath = process.MainModule.FileName;
+								}catch {}
+								
+								result.Error += process.ProcessName 
+									+ " (" + (!string.IsNullOrEmpty(processpath) ? "\"" + processpath + "\"" : "")
+									+ ", started at " + process.StartTime + ")" 
+									+ Environment.NewLine;
 							}
 						}
 					}
 					else
 					{
-						result.Error = "Error " + res + ". Could not list processes locking resource."; //mxd
+						result.Error = "Error " + res + ". Could not list processes locking the resource."; //mxd
 						return result;
 					}
 				}
 				else if(res != 0)
 				{
-					result.Error = "Error " + res + ". Could not list processes locking resource. Failed to get size of result."; //mxd
+					result.Error = "Error " + res + ". Could not list processes locking resource. Failed to get result size."; //mxd
 					return result;
 				}
 			}
