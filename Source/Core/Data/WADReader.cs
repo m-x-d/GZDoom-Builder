@@ -38,6 +38,10 @@ namespace CodeImp.DoomBuilder.Data
 		//mxd. TEXTUREx flags
 		private const int TX_WORLDPANNING = 0x8000;
 
+		//mxd. Sprite recognition. Also http://regexr.com/ is a nice site ^.^
+		private static readonly Regex sprite6 = new Regex(@"(\S{4}[A-Za-z\[\]\\]{1}[0-8]{1})");
+		private static readonly Regex sprite8 = new Regex(@"(\S{4}[A-Za-z\[\]\\]{1}[0-8]{1}[A-Za-z\[\]\\]{1}[0-8]{1})");
+
 		#endregion
 
 		#region ================== Structures
@@ -817,7 +821,7 @@ namespace CodeImp.DoomBuilder.Data
 		
 		#endregion
 
-		#region ================== Sprite
+		#region ================== Sprites
 
 		// This loads the textures
 		public override IEnumerable<ImageData> LoadSprites(Dictionary<string, TexturesParser> cachedparsers)
@@ -929,12 +933,18 @@ namespace CodeImp.DoomBuilder.Data
 			{
 				for(int i = range.start; i < range.end + 1; i++)
 				{
-					if(file.Lumps[i].Name.StartsWith(startswith))
+					if(file.Lumps[i].Name.StartsWith(startswith) && IsValidSpriteName(file.Lumps[i].Name))
 						result.Add(file.Lumps[i].Name);
 				}
 			}
 
 			return result;
+		}
+
+		//mxd
+		internal static bool IsValidSpriteName(string name)
+		{
+			return (name.Length == 6 && sprite6.IsMatch(name)) || (name.Length == 8 && sprite8.IsMatch(name));
 		}
 
 		#endregion

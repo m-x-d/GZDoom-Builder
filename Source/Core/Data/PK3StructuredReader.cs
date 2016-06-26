@@ -441,7 +441,9 @@ namespace CodeImp.DoomBuilder.Data
 			string[] files = GetAllFilesWhichTitleStartsWith(SPRITES_DIR, startswith, true);
 			foreach(string file in files)
 			{
-				result.Add(Path.GetFileNameWithoutExtension(file).ToUpperInvariant());
+				// Some users tend to place all manner of graphics into the "Sprites" folder...
+				string spritename = Path.GetFileNameWithoutExtension(file).ToUpperInvariant();
+				if(WADReader.IsValidSpriteName(spritename)) result.Add(spritename); 
 			}
 
 			return result;

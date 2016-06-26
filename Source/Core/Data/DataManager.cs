@@ -1541,7 +1541,7 @@ namespace CodeImp.DoomBuilder.Data
 						}
 						else
 						{
-							General.ErrorLogger.Add(ErrorType.Error, "Missing sprite lump \"" + info.Sprite + "\". Forgot to include required resources?");
+							General.ErrorLogger.Add(ErrorType.Error, "Unable to find sprite lump \"" + info.Sprite + "\" used by actor \"" + ti.Title + "\":" + ti.Index + ". Forgot to include required resources?");
 						}
 					}
 					else

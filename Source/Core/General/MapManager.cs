@@ -429,6 +429,10 @@ namespace CodeImp.DoomBuilder
 			// Remove unused sectors
 			map.RemoveUnusedSectors(true);
 
+			//mxd. Flip linedefs with only back side
+			int flipsdone = MapSet.FlipBackwardLinedefs(map.Linedefs);
+			if(flipsdone > 0) General.WriteLogLine(flipsdone + " single-sided linedefs were flipped.");
+
 			// Update structures
 			options.ApplyGridSettings();
 			map.UpdateConfiguration();
