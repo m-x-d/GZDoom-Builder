@@ -85,6 +85,17 @@ namespace CodeImp.DoomBuilder.IO
 		
 		#endregion
 
+		#region ================== Structs (mxd)
+
+		private struct LumpCopyData
+		{
+			public byte[] Data;
+			public byte[] FixedName;
+			public int Index;
+		}
+
+		#endregion
+
 		#region ================== Variables
 
 		// File objects
@@ -333,6 +344,66 @@ namespace CodeImp.DoomBuilder.IO
 				fs.Dispose();
 			}
 		}
+
+		//mxd. This rebuilds the WAD file, removing all "dead" entries
+		// Tech info: WAD.Remove() doesn't remove lump data, so MapManager.TemporaryMapFile slowly gets bigger
+		// with every map save/test, which leads to lumpsoffset overflowing when TemporaryMapFile size reaches 
+		// int.MaxValue bytes in size (that's ~2Gb). 
+		internal void Compress()
+		{
+			// No can't do...
+			if(isreadonly) return;
+			
+			// Gather existing data
+			int totaldatalength = 0;
+			List<LumpCopyData> copydata = new List<LumpCopyData>(lumps.Count);
+			for(int i = 0; i < lumps.Count; i++)
+			{
+				// Copy lump...
+				LumpCopyData lcd = new LumpCopyData();
+				Lump l = lumps[i];
+
+				lcd.FixedName = l.FixedName;
+				lcd.Index = i;
+				lcd.Data = l.Stream.ReadAllBytes();
+
+				// Store data
+				copydata.Add(lcd);
+
+				// Track total length
+				totaldatalength += l.Length;
+
+				// Dispose lump
+				l.Dispose();
+			}
+
+			// Compression required?
+			if(totaldatalength >= lumpsoffset + 12) return;
+
+			// Set new file length
+			file.SetLength(totaldatalength + lumps.Count * 16);
+
+			// Reset lumpsoffset
+			lumpsoffset = 12;
+
+			// Reset lumps collection
+			lumps = new List<Lump>(copydata.Count);
+			numlumps = copydata.Count;
+
+			// Recreate all lumps
+			foreach(LumpCopyData lcd in copydata)
+			{
+				Lump l = new Lump(file, this, lcd.FixedName, lumpsoffset, lcd.Data.Length);
+				l.Stream.Write(lcd.Data, 0, lcd.Data.Length);
+				l.Stream.Seek(0, SeekOrigin.Begin);
+				lumps.Insert(lcd.Index, l);
+
+				lumpsoffset += lcd.Data.Length;
+			}
+
+			// Write new headers
+			WriteHeaders();
+		}
 		
 		// This flushes writing changes
 		/*public void Flush()
@@ -363,18 +434,9 @@ namespace CodeImp.DoomBuilder.IO
 			// Create the lump
 			Lump lump = new Lump(file, this, Lump.MakeFixedName(name, ENCODING), lumpsoffset, datalength);
 			lumps.Insert(position, lump);
-
-			//dbg
-			int oldlumpoffset = lumpsoffset;
 			
 			// Advance lumps table offset
 			lumpsoffset += datalength;
-
-			//dbg
-			if(lumpsoffset < 0)
-			{
-				throw new InvalidOperationException("Invalid lumpsoffset (" + lumpsoffset + ") after inserting lump \"" + name + "\" at position " + position + ", datalength=" + datalength + ". Previous lumpoffset was " + oldlumpoffset);
-			}
 
 			// Write the new headers
 			if(writeheaders) WriteHeaders();
