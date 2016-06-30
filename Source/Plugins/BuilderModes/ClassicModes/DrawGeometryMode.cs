@@ -377,20 +377,23 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					//mxd. Line angle must stay the same
 					if(snaptocardinal)
 					{
-						Line2D ourline = new Line2D(points[points.Count - 1].pos, vm);
-						Line2D nearestline = new Line2D(nl.Start.Position, nl.End.Position);
-						Vector2D intersection = Line2D.GetIntersectionPoint(nearestline, ourline, false);
-						if(!float.IsNaN(intersection.x))
+						if(points.Count > 0)
 						{
-							// Intersection is on nearestline?
-							float u = Line2D.GetNearestOnLine(nearestline.v1, nearestline.v2, intersection);
-
-							if(u < 0f || u > 1f){}
-							else
+							Line2D ourline = new Line2D(points[points.Count - 1].pos, vm);
+							Line2D nearestline = new Line2D(nl.Start.Position, nl.End.Position);
+							Vector2D intersection = Line2D.GetIntersectionPoint(nearestline, ourline, false);
+							if(!float.IsNaN(intersection.x))
 							{
-								p.pos = new Vector2D((float)Math.Round(intersection.x, General.Map.FormatInterface.VertexDecimals), 
-													 (float)Math.Round(intersection.y, General.Map.FormatInterface.VertexDecimals));
-								return p;
+								// Intersection is on nearestline?
+								float u = Line2D.GetNearestOnLine(nearestline.v1, nearestline.v2, intersection);
+
+								if(u < 0f || u > 1f) { }
+								else
+								{
+									p.pos = new Vector2D((float)Math.Round(intersection.x, General.Map.FormatInterface.VertexDecimals),
+														 (float)Math.Round(intersection.y, General.Map.FormatInterface.VertexDecimals));
+									return p;
+								}
 							}
 						}
 					}
