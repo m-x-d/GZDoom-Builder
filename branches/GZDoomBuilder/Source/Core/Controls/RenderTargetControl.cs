@@ -32,7 +32,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 		#region ================== Variables
 
-		private readonly ToolTip tip; //mxd
+		private ToolTip tooltip; //mxd
 
 		#endregion
 
@@ -53,11 +53,18 @@ namespace CodeImp.DoomBuilder.Controls
 			this.SetStyle(ControlStyles.FixedHeight, true);
 
 			//mxd. Create tooltip
-			tip = new ToolTip();
-			tip.UseAnimation = false;
-			tip.UseFading = false;
-			tip.InitialDelay = 0;
-			tip.AutoPopDelay = 9000;
+			tooltip = new ToolTip { UseAnimation = false, UseFading = false, InitialDelay = 0, AutoPopDelay = 9000 };
+		}
+
+		//mxd
+		protected override void Dispose(bool disposing)
+		{
+			if(disposing)
+			{
+				tooltip.Dispose();
+				tooltip = null;
+			}
+			base.Dispose(disposing);
 		}
 
 		#endregion
@@ -117,14 +124,14 @@ namespace CodeImp.DoomBuilder.Controls
 		//mxd. This shows tooltip at given position
 		public void ShowToolTip(string title, string text, int x, int y)
 		{
-			tip.ToolTipTitle = title;
-			tip.Show(text, this, x, y);
+			tooltip.ToolTipTitle = title;
+			tooltip.Show(text, this, x, y);
 		}
 
 		//mxd. This hides it
 		public void HideToolTip()
 		{
-			tip.Hide(this);
+			tooltip.Hide(this);
 		}
 
 		#endregion

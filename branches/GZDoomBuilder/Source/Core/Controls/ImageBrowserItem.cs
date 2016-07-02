@@ -134,19 +134,21 @@ namespace CodeImp.DoomBuilder.Controls
 			if(General.Settings.ShowTextureSizes && !string.IsNullOrEmpty(imagesize))
 			{
 				// Setup
-				Font sizefont = new Font(this.ListView.Font.FontFamily, this.ListView.Font.SizeInPoints - 1);
-				textsize = g.MeasureString(imagesize, sizefont, bounds.Width * 2);
-				textpos = new PointF(bounds.Left + textsize.Width / 2, bounds.Top + 1);
-				imagerect = new Rectangle(bounds.Left + 1, bounds.Top + 1, (int)textsize.Width, (int)textsize.Height);
+				using(Font sizefont = new Font(this.ListView.Font.FontFamily, this.ListView.Font.SizeInPoints - 1))
+				{
+					textsize = g.MeasureString(imagesize, sizefont, bounds.Width * 2);
+					textpos = new PointF(bounds.Left + textsize.Width / 2, bounds.Top + 1);
+					imagerect = new Rectangle(bounds.Left + 1, bounds.Top + 1, (int)textsize.Width, (int)textsize.Height);
 
-				// Draw
-				using(SolidBrush labelbg = new SolidBrush(Color.FromArgb(196, base.ListView.ForeColor)))
-				{
-					g.FillRectangle(labelbg, imagerect);
-				}
-				using(SolidBrush labelcolor = new SolidBrush(base.ListView.BackColor))
-				{
-					g.DrawString(imagesize, sizefont, labelcolor, textpos, format);
+					// Draw
+					using(SolidBrush labelbg = new SolidBrush(Color.FromArgb(196, base.ListView.ForeColor)))
+					{
+						g.FillRectangle(labelbg, imagerect);
+					}
+					using(SolidBrush labelcolor = new SolidBrush(base.ListView.BackColor))
+					{
+						g.DrawString(imagesize, sizefont, labelcolor, textpos, format);
+					}
 				}
 			}
 		}

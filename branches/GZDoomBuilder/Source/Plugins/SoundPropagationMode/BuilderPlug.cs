@@ -46,6 +46,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 		#region ================== Constants
 
 		internal const int SOUND_ENVIROMNEMT_THING_TYPE = 9048; //mxd
+		internal const float LINE_LENGTH_SCALER = 0.001f; //mxd
 
 		#endregion
 

@@ -33,7 +33,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Variables
 		
 		// Editing mode
-		private readonly EditSelectionMode mode;
+		private EditSelectionMode mode;
 		
 		// Input
 		private bool userinput;
@@ -59,17 +59,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.mode = mode;
 
 			//mxd
+			preventchanges = true;
 			if(General.Map.UDMF)
 			{
 				preciseposition.Checked = mode.UsePrecisePosition;
 				preciseposition.Enabled = true;
-				preciseposition.CheckedChanged += preciseposition_CheckedChanged;
 			}
 			else
 			{
 				preciseposition.Checked = false;
 				preciseposition.Enabled = false;
 			}
+			preventchanges = false;
 
 			//mxd. Otherwise the focus will go to one of TextBoxes 
 			// and stay there forever preventing tab collapsing when in collapsed mode
@@ -377,6 +378,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd
 		private void preciseposition_CheckedChanged(object sender, EventArgs e) 
 		{
+			if(preventchanges) return;
 			mode.UsePrecisePosition = preciseposition.Checked;
 			General.Interface.FocusDisplay();
 		}

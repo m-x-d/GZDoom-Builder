@@ -146,6 +146,7 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 
 			graphics.DrawImage(drawimage, bounds.X, bounds.Y);
+			drawimage.Dispose();
 		}
 		
 		#endregion

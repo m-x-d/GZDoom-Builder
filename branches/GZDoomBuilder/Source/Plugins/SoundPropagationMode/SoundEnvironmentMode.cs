@@ -38,6 +38,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			  ButtonGroup = "000_editing",
 			  UseByDefault = true,
 			  SafeStartMode = false,
+			  SupportedMapFormats = new[] { "UniversalMapSetIO" }, //mxd
 			  Volatile = false)]
 
 	public class SoundEnvironmentMode : ClassicMode
@@ -104,12 +105,6 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			}
 
 			panel.HighlightSoundEnvironment(highlightedsoundenvironment);
-
-			// Show highlight info
-			if((highlighted != null) && !highlighted.IsDisposed)
-				General.Interface.ShowSectorInfo(highlighted);
-			else
-				General.Interface.HideInfo();
 		}
 
 		private void UpdateData() 
@@ -188,7 +183,6 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 		//mxd. If a linedef is highlighted, toggle the sound blocking flag, if a sound environment is clicked, select it in the tree view
 		protected override void OnSelectEnd() 
 		{
-			if(!General.Map.UDMF) return;
 			if(highlightedline != null)
 			{
 				// Make undo
@@ -276,6 +270,8 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			worker.Dispose();
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.ColorConfiguration);
 			General.Interface.RemoveDocker(docker);
+			panel.Dispose(); //mxd
+			panel = null; //mxd
 
 			// Hide highlight info
 			General.Interface.HideInfo();
@@ -301,7 +297,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 					else
 						c = General.Colors.Linedefs.WithAlpha(General.Settings.DoubleSidedAlphaByte);
 
-					renderer.PlotLine(ld.Start.Position, ld.End.Position, c);
+					renderer.PlotLine(ld.Start.Position, ld.End.Position, c, BuilderPlug.LINE_LENGTH_SCALER);
 				}
 
 				// Since there will usually be way less blocking linedefs than total linedefs, it's presumably
@@ -310,17 +306,16 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 				{
 					foreach(Linedef ld in BuilderPlug.Me.BlockingLinedefs)
 					{
-						renderer.PlotLine(ld.Start.Position, ld.End.Position, BuilderPlug.Me.BlockSoundColor);
+						renderer.PlotLine(ld.Start.Position, ld.End.Position, BuilderPlug.Me.BlockSoundColor, BuilderPlug.LINE_LENGTH_SCALER);
 					}
 				}
 
 				//mxd. Render highlighted line
 				if(highlightedline != null) 
 				{
-					renderer.PlotLine(highlightedline.Start.Position, highlightedline.End.Position, General.Colors.Highlight);
+					renderer.PlotLine(highlightedline.Start.Position, highlightedline.End.Position, General.Colors.Highlight, BuilderPlug.LINE_LENGTH_SCALER);
 				}
 
-				renderer.PlotVerticesSet(General.Map.Map.Vertices);
 				renderer.Finish();
 			}
 
@@ -399,7 +394,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 							// Highlight if not the same
 							if(l.Back.Sector != highlighted) Highlight(l.Back.Sector);
 						}
-						else
+						else if(highlighted != null)
 						{
 							// Highlight nothing
 							Highlight(null);
@@ -413,14 +408,14 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 							// Highlight if not the same
 							if(l.Front.Sector != highlighted) Highlight(l.Front.Sector);
 						}
-						else
+						else if(highlighted != null)
 						{
 							// Highlight nothing
 							Highlight(null);
 						}
 					}
 				}
-				else
+				else if(highlighted != null)
 				{
 					// Highlight nothing
 					Highlight(null);
@@ -429,10 +424,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 				//mxd. Find the nearest linedef within default highlight range
 				l = General.Map.Map.NearestLinedefRange(mousemappos, 20 / renderer.Scale);
 				//mxd. We are not interested in single-sided lines, unless they have zoneboundary flag...
-				if(l != null && ((l.Front == null || l.Back == null) && (General.Map.UDMF && !l.IsFlagSet(ZoneBoundaryFlag))))
-				{
-					l = null;
-				}
+				if(l != null && ((l.Front == null || l.Back == null) && !l.IsFlagSet(ZoneBoundaryFlag))) l = null;
 
 				//mxd. Set as highlighted
 				bool redrawrequired = false;
@@ -465,8 +457,20 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 					redrawrequired = true;
 				}
 
-				//mxd. Redraw display?
-				if(redrawrequired) General.Interface.RedrawDisplay();
+				//mxd
+				if(redrawrequired)
+				{
+					// Show highlight info
+					if(highlightedline != null && !highlightedline.IsDisposed)
+						General.Interface.ShowLinedefInfo(highlightedline);
+					else if(highlighted != null && !highlighted.IsDisposed)
+						General.Interface.ShowSectorInfo(highlighted);
+					else
+						General.Interface.HideInfo();
+
+					// Redraw display
+					General.Interface.RedrawDisplay();
+				}
 			}
 		}
 

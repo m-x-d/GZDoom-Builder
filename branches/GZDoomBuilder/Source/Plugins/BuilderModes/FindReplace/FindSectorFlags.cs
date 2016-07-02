@@ -98,7 +98,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				foreach(KeyValuePair<string, bool> group in findflagslist)
 				{
 					// ...and check if the flag doesn't match
-					if((group.Value && !s.IsFlagSet(group.Key)) || s.IsFlagSet(group.Key))
+					if(group.Value != s.IsFlagSet(group.Key))
 					{
 						match = false;
 						break;

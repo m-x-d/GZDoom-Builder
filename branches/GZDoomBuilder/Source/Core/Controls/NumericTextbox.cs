@@ -39,7 +39,7 @@ namespace CodeImp.DoomBuilder.Controls
 		private bool allowdecimal;		// Allow decimal (float) numbers
 		private bool controlpressed;
 		private int incrementstep; //mxd. Step for +++ and  --- prefixes
-		private readonly ToolTip tooltip; //mxd
+		private ToolTip tooltip; //mxd
 		
 		#endregion
 
@@ -60,6 +60,17 @@ namespace CodeImp.DoomBuilder.Controls
 
 			//mxd. Setup tooltip
 			this.tooltip = new ToolTip { AutomaticDelay = 100, AutoPopDelay = 8000, InitialDelay = 100, ReshowDelay = 100 };
+		}
+
+		//mxd
+		protected override void Dispose(bool disposing)
+		{
+			if(disposing)
+			{
+				tooltip.Dispose();
+				tooltip = null;
+			}
+			base.Dispose(disposing);
 		}
 
 		#endregion

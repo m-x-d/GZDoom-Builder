@@ -54,7 +54,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This is called when the browse button is pressed
 		public override string Browse(string initialvalue)
 		{
-			return FlagsForm.ShowDialog(Form.ActiveForm, initialvalue, General.Map.Config.LinedefFlags);
+			//mxd. Combine regular and activation flags
+			Dictionary<string, string> flags = new Dictionary<string, string>(General.Map.Config.LinedefFlags);
+			foreach(LinedefActivateInfo ai in General.Map.Config.LinedefActivates) flags.Add(ai.Key, ai.Title);
+
+			return FlagsForm.ShowDialog(Form.ActiveForm, initialvalue, flags);
 		}
 
 		// This is called to perform a search (and replace)
@@ -120,7 +124,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				foreach(KeyValuePair<string, bool> group in findflagslist)
 				{
 					// ...and check if the flag doesn't match
-					if((group.Value && !l.IsFlagSet(group.Key)) || l.IsFlagSet(group.Key))
+					if(group.Value != l.IsFlagSet(group.Key))
 					{
 						match = false;
 						break;
