@@ -16,6 +16,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(disposing && (components != null))
 			{
 				components.Dispose();
+				mode = null; //mxd
 			}
 			base.Dispose(disposing);
 		}
@@ -119,6 +120,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.tooltip.SetToolTip(this.preciseposition, "When checked, thing and vertex positions will be set using floating point precisi" +
 					"on.\r\nOtherwise, they will be rounded to the nearest integer.");
 			this.preciseposition.UseVisualStyleBackColor = true;
+			this.preciseposition.CheckedChanged += new System.EventHandler(this.preciseposition_CheckedChanged);
 			// 
 			// orgposy
 			// 

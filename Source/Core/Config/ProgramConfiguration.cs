@@ -19,7 +19,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
@@ -114,8 +113,6 @@ namespace CodeImp.DoomBuilder.Config
 		private string textlabelfontname;
 		private int textlabelfontsize;
 		private bool textlabelfontbold;
-		private Font textlabelfont;
-		private bool textlabelfontupdaterequired;
 
 		//mxd
 		private ModelRenderMode gzDrawModelsMode;
@@ -239,10 +236,9 @@ namespace CodeImp.DoomBuilder.Config
 		public bool ScriptAutoShowAutocompletion { get { return scriptautoshowautocompletion; } internal set { scriptautoshowautocompletion = value; } } //mxd
 
 		//mxd. Text labels settings
-		public string TextLabelFontName { get { return textlabelfontname; } internal set { textlabelfontname = value; textlabelfontupdaterequired = true; } }
-		public int TextLabelFontSize { get { return textlabelfontsize; } internal set { textlabelfontsize = value; textlabelfontupdaterequired = true; } }
-		public bool TextLabelFontBold { get { return textlabelfontbold; } internal set { textlabelfontbold = value; textlabelfontupdaterequired = true; } }
-		public Font TextLabelFont { get { return GetTextLabelFont(); } }
+		public string TextLabelFontName { get { return textlabelfontname; } internal set { textlabelfontname = value; } }
+		public int TextLabelFontSize { get { return textlabelfontsize; } internal set { textlabelfontsize = value; } }
+		public bool TextLabelFontBold { get { return textlabelfontbold; } internal set { textlabelfontbold = value; } }
 
 		//mxd 
 		public ModelRenderMode GZDrawModelsMode { get { return gzDrawModelsMode; } internal set { gzDrawModelsMode = value; } }
@@ -380,7 +376,6 @@ namespace CodeImp.DoomBuilder.Config
 				textlabelfontname = cfg.ReadSetting("textlabelfontname", "Microsoft Sans Serif");
 				textlabelfontsize = cfg.ReadSetting("textlabelfontsize", 10);
 				textlabelfontbold = cfg.ReadSetting("textlabelfontbold", false);
-				textlabelfontupdaterequired = true;
 
 				//mxd 
 				gzDrawModelsMode = (ModelRenderMode)cfg.ReadSetting("gzdrawmodels", (int)ModelRenderMode.ALL);
@@ -670,17 +665,6 @@ namespace CodeImp.DoomBuilder.Config
 		// DeleteSetting
 		internal bool DeleteSetting(string setting) { return cfg.DeleteSetting(setting); }
 		internal bool DeleteSetting(string setting, string pathseperator) { return cfg.DeleteSetting(setting, pathseperator); }
-
-		//mxd
-		private Font GetTextLabelFont()
-		{
-			if(textlabelfontupdaterequired)
-			{
-				textlabelfont = new Font(new FontFamily(textlabelfontname), textlabelfontsize, (textlabelfontbold ? FontStyle.Bold : FontStyle.Regular));
-				textlabelfontupdaterequired = false;
-			}
-			return textlabelfont;
-		}
 
 		#endregion
 

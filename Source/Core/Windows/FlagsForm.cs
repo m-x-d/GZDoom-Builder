@@ -63,10 +63,10 @@ namespace CodeImp.DoomBuilder.Windows
 					string str = s.Trim();
 
 					//mxd. Negative flag?
-					bool setflag = true;
+					CheckState setflag = CheckState.Checked;
 					if(str.StartsWith("!"))
 					{
-						setflag = false;
+						setflag = CheckState.Unchecked;
 						str = str.Substring(1, str.Length - 1);
 					}
 
@@ -75,7 +75,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 					foreach(CheckBox c in flags.Checkboxes)
 					{
-						if(c.Text == flagdefs[str]) c.Checked = setflag;
+						if(c.Text == flagdefs[str]) c.CheckState = setflag;
 					}
 				}
 			}

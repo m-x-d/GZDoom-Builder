@@ -12,9 +12,8 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 	{
 		#region ================== Variables
 
-		private List<Sector> sectors;
-		private List<Sector> adjacentsectors;
-		private List<Linedef> blockinglines;
+		private HashSet<Sector> sectors;
+		private HashSet<Sector> adjacentsectors;
 		private FlatVertex[] level1geometry;
 		private FlatVertex[] level2geometry;
 
@@ -22,11 +21,11 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 
 		#region ================== Properties
 
-		public List<Sector> Sectors { get { return sectors; } }
-		public List<Sector> AdjacentSectors { get { return adjacentsectors; } }
-		public List<Linedef> BlockingLines { get { return blockinglines; } }
+		public HashSet<Sector> Sectors { get { return sectors; } }
+		public HashSet<Sector> AdjacentSectors { get { return adjacentsectors; } }
 		public FlatVertex[] Level1Geometry { get { return level1geometry; } }
 		public FlatVertex[] Level2Geometry { get { return level2geometry; } }
+		public int Color { get; set; } //mxd
 
 		#endregion
 
@@ -34,9 +33,8 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 
 		public SoundPropagationDomain(Sector sector)
 		{
-			sectors = new List<Sector>();
-			adjacentsectors = new List<Sector>();
-			blockinglines = new List<Linedef>();
+			sectors = new HashSet<Sector>();
+			adjacentsectors = new HashSet<Sector>();
 
 			CreateSoundPropagationDomain(sector);
 		}
@@ -48,6 +46,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 		private void CreateSoundPropagationDomain(Sector sourcesector)
 		{
 			List<Sector> sectorstocheck = new List<Sector> { sourcesector };
+			HashSet<Linedef> blockinglines = new HashSet<Linedef>(); //mxd
 
 			while(sectorstocheck.Count > 0)
 			{
@@ -57,7 +56,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 				foreach(Sidedef sd in sector.Sidedefs)
 				{
 					bool blocksound = sd.Line.IsFlagSet(SoundPropagationMode.BlockSoundFlag);
-					if(blocksound) blockinglines.Add(sd.Line);
+					if(blocksound && sd.Other != null) blockinglines.Add(sd.Line);
 
 					// If the line is one sided, the sound can travel nowhere, so try the next one
 					if(sd.Other == null || blocksound) continue;
@@ -119,7 +118,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			// Check if the sound will be blocked because of sector floor and ceiling heights
 			// (like closed doors, raised lifts etc.)
 			return (s1.CeilHeight <= s2.FloorHeight || s1.FloorHeight >= s2.CeilHeight ||
-			       s2.CeilHeight <= s2.FloorHeight || s1.CeilHeight <= s1.FloorHeight);
+			        s2.CeilHeight <= s2.FloorHeight || s1.CeilHeight <= s1.FloorHeight);
 		}
 
 		#endregion

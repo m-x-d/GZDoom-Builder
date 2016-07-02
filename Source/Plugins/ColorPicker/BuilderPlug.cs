@@ -17,7 +17,7 @@ namespace CodeImp.DoomBuilder.ColorPicker
 		private static BuilderPlug me;
 		public static BuilderPlug Me { get { return me; } }
 
-		public override int MinimumRevision { get { return 1869; } }
+		public override int MinimumRevision { get { return 2600; } }
 
 		public override string Name { get { return "Color Picker"; } }
 
@@ -40,25 +40,25 @@ namespace CodeImp.DoomBuilder.ColorPicker
 		public override void OnMapOpenEnd() 
 		{
 			base.OnMapOpenEnd();
-			toolsform.Register();
+			if(!General.Map.DOOM) toolsform.Register();
 		}
 
 		public override void OnMapNewEnd() 
 		{
 			base.OnMapNewEnd();
-			toolsform.Register();
+			if(!General.Map.DOOM) toolsform.Register();
 		}
 
 		public override void OnMapCloseEnd() 
 		{
 			base.OnMapCloseEnd();
-			toolsform.Unregister();
+			if(!General.Map.DOOM) toolsform.Unregister();
 		}
 
 		public override void OnReloadResources() 
 		{
 			base.OnReloadResources();
-			toolsform.Register();
+			if(!General.Map.DOOM) toolsform.Register();
 		}
 
 		public override void Dispose() 
@@ -80,7 +80,7 @@ namespace CodeImp.DoomBuilder.ColorPicker
 		[BeginAction("togglelightpannel")]
 		private void ToggleLightPannel() 
 		{
-			if(General.Editing.Mode == null) return;
+			if(General.Editing.Mode == null || General.Map.DOOM) return;
 			string currentModeName = General.Editing.Mode.GetType().Name;
 
 			//display one of colorPickers or tell the user why we can't do that

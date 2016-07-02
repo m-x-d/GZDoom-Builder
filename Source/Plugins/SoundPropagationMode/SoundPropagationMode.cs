@@ -83,7 +83,7 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			BuilderPlug.Me.DataIsDirty = false;
 			List<FlatVertex> vertsList = new List<FlatVertex>();
 
-			// Go for all selected sectors
+			// Go for all sectors
 			foreach(Sector s in General.Map.Map.Sectors) vertsList.AddRange(s.FlatVertices);
 			overlayGeometry = vertsList.ToArray();
 
@@ -98,14 +98,6 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			highlighted = s;
 
 			UpdateSoundPropagation();
-
-			// Show highlight info
-			if((highlighted != null) && !highlighted.IsDisposed)
-				General.Interface.ShowSectorInfo(highlighted);
-			else
-				General.Interface.HideInfo();
-
-			General.Interface.RedrawDisplay();
 		}
 
 		//mxd
@@ -120,30 +112,27 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 		private void UpdateSoundPropagation()
 		{
 			huntingThings.Clear();
-
 			BuilderPlug.Me.BlockingLinedefs.Clear();
 
 			foreach(Linedef ld in General.Map.Map.Linedefs)
-				if(ld.IsFlagSet(BlockSoundFlag))
-					BuilderPlug.Me.BlockingLinedefs.Add(ld);
-
-			if(highlighted == null || highlighted.IsDisposed) return;
-
-			if(!sector2domain.ContainsKey(highlighted))
 			{
-				SoundPropagationDomain spd = new SoundPropagationDomain(highlighted);
-				foreach(Sector s in spd.Sectors) sector2domain[s] = spd;
-				propagationdomains.Add(spd);
+				if(ld.IsFlagSet(BlockSoundFlag)) BuilderPlug.Me.BlockingLinedefs.Add(ld);
 			}
 
-			foreach(Sector adjacent in sector2domain[highlighted].AdjacentSectors)
+			//mxd. Create sound propagation for the whole map
+			int counter = 0;
+			foreach(Sector sector in General.Map.Map.Sectors)
 			{
-				if(!sector2domain.ContainsKey(adjacent))
+				if(!sector2domain.ContainsKey(sector))
 				{
-					SoundPropagationDomain aspd = new SoundPropagationDomain(adjacent);
-					foreach(Sector s in aspd.Sectors) sector2domain[s] = aspd;
+					SoundPropagationDomain spd = new SoundPropagationDomain(sector);
+					foreach(Sector s in spd.Sectors) sector2domain[s] = spd;
+					spd.Color = BuilderPlug.Me.DistinctColors[counter++ % BuilderPlug.Me.DistinctColors.Count].WithAlpha(255).ToInt();
+					propagationdomains.Add(spd);
 				}
 			}
+
+			if(highlighted == null || highlighted.IsDisposed) return;
 
 			//mxd. Create the list of sectors, which will be affected by noise made in highlighted sector
 			SoundPropagationDomain curdomain = sector2domain[highlighted];
@@ -245,30 +234,19 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 				// and can make it harder to see the sound environment propagation
 				foreach(Linedef ld in General.Map.Map.Linedefs)
 				{
-					PixelColor c;
-
-					if(ld.IsFlagSet(General.Map.Config.ImpassableFlag))
-						c = General.Colors.Linedefs;
-					else
-						c = General.Colors.Linedefs.WithAlpha(General.Settings.DoubleSidedAlphaByte);
-
-					renderer.PlotLine(ld.Start.Position, ld.End.Position, c);
+					PixelColor c = (ld.IsFlagSet(General.Map.Config.ImpassableFlag) ? 
+						General.Colors.Linedefs : General.Colors.Linedefs.WithAlpha(General.Settings.DoubleSidedAlphaByte));
+					renderer.PlotLine(ld.Start.Position, ld.End.Position, c, BuilderPlug.LINE_LENGTH_SCALER);
 				}
 
 				// Since there will usually be way less blocking linedefs than total linedefs, it's presumably
 				// faster to draw them on their own instead of checking if each linedef is in BlockingLinedefs
 				foreach(Linedef ld in BuilderPlug.Me.BlockingLinedefs)
-				{
-					renderer.PlotLine(ld.Start.Position, ld.End.Position, BuilderPlug.Me.BlockSoundColor);
-				}
+					renderer.PlotLine(ld.Start.Position, ld.End.Position, BuilderPlug.Me.BlockSoundColor, BuilderPlug.LINE_LENGTH_SCALER);
 
 				//mxd. Render highlighted line
 				if(highlightedline != null)
-				{
-					renderer.PlotLine(highlightedline.Start.Position, highlightedline.End.Position, General.Colors.Highlight);
-				}
-
-				renderer.PlotVerticesSet(General.Map.Map.Vertices);
+					renderer.PlotLine(highlightedline.Start.Position, highlightedline.End.Position, General.Colors.Highlight, BuilderPlug.LINE_LENGTH_SCALER);
 
 				renderer.Finish();
 			}
@@ -279,26 +257,24 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 				renderer.RenderThingSet(General.Map.ThingsFilter.HiddenThings, General.Settings.HiddenThingsAlpha);
 				renderer.RenderThingSet(General.Map.ThingsFilter.VisibleThings, General.Settings.InactiveThingsAlpha);
 				foreach(Thing thing in huntingThings)
-				{
 					renderer.RenderThing(thing, General.Colors.Selection, General.Settings.ActiveThingsAlpha);
-				}
 
 				renderer.Finish();
 			}
 
 			if(renderer.StartOverlay(true))
 			{
-				renderer.RenderGeometry(overlayGeometry, null, true);
-
+				// Render highlighted domain and domains adjacent to it
 				if(highlighted != null && !highlighted.IsDisposed)
 				{
+					renderer.RenderGeometry(overlayGeometry, null, true); //mxd
+					
 					SoundPropagationDomain spd = sector2domain[highlighted];
 					renderer.RenderGeometry(spd.Level1Geometry, null, true);
 
 					foreach(Sector s in spd.AdjacentSectors)
 					{
 						SoundPropagationDomain aspd = sector2domain[s];
-
 						if(!renderedspds.Contains(aspd))
 						{
 							renderer.RenderGeometry(aspd.Level2Geometry, null, true);
@@ -306,26 +282,19 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 						}
 					}
 
-					RenderColoredSector(highlighted, BuilderPlug.Me.HighlightColor.WithAlpha(128));
+					renderer.RenderHighlight(highlighted.FlatVertices, BuilderPlug.Me.HighlightColor.WithAlpha(128).ToInt()); //mxd
+				}
+				else
+				{
+					//mxd. Render all domains using domain colors
+					foreach(SoundPropagationDomain spd in propagationdomains)
+						renderer.RenderHighlight(spd.Level1Geometry, spd.Color);
 				}
 
 				renderer.Finish();
 			}
 			
 			renderer.Present();
-		}
-
-		private void RenderColoredSector(Sector sector, PixelColor color)
-		{
-			RenderColoredSector(sector.FlatVertices, color);
-		}
-
-		private void RenderColoredSector(FlatVertex[] flatvertices, PixelColor color)
-		{
-			FlatVertex[] fv = new FlatVertex[flatvertices.Length];
-			flatvertices.CopyTo(fv, 0);
-			for(int i = 0; i < fv.Length; i++) fv[i].c = color.ToInt();
-			renderer.RenderGeometry(fv, null, true);
 		}
 
 		//mxd. If a linedef is highlighted, toggle the sound blocking flag 
@@ -374,6 +343,15 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 			{
 				General.Interface.SetCursor(Cursors.Default);
 
+				//mxd. Find the nearest linedef within default highlight range
+				Linedef nl = General.Map.Map.NearestLinedefRange(mousemappos, 20 / renderer.Scale);
+				//mxd. We are not interested in single-sided lines (unless they have "blocksound" flag set)...
+				if(nl != null && (nl.Front == null || nl.Back == null) && !nl.IsFlagSet(BlockSoundFlag)) nl = null;
+
+				//mxd. Set as highlighted
+				bool redrawrequired = (highlightedline != nl);
+				highlightedline = nl;
+				
 				// Find the nearest linedef within highlight range
 				Linedef l = General.Map.Map.NearestLinedef(mousemappos);
 				if(l != null)
@@ -386,12 +364,17 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 						if(l.Back != null)
 						{
 							// Highlight if not the same
-							if(l.Back.Sector != highlighted) Highlight(l.Back.Sector);
+							if(l.Back.Sector != highlighted)
+							{
+								Highlight(l.Back.Sector);
+								redrawrequired = true; //mxd
+							}
 						}
-						else
+						else if(highlighted != null)
 						{
 							// Highlight nothing
 							Highlight(null);
+							redrawrequired = true; //mxd
 						}
 					}
 					else
@@ -400,30 +383,39 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 						if(l.Front != null)
 						{
 							// Highlight if not the same
-							if(l.Front.Sector != highlighted) Highlight(l.Front.Sector);
+							if(l.Front.Sector != highlighted)
+							{
+								Highlight(l.Front.Sector);
+								redrawrequired = true; //mxd
+							}
 						}
-						else
+						else if(highlighted != null)
 						{
 							// Highlight nothing
 							Highlight(null);
+							redrawrequired = true; //mxd
 						}
 					}
 				}
-				else
+				else if(highlighted != null)
 				{
 					// Highlight nothing
 					Highlight(null);
+					redrawrequired = true; //mxd
 				}
 
-				//mxd. Find the nearest linedef within default highlight range
-				l = General.Map.Map.NearestLinedefRange(mousemappos, 20 / renderer.Scale);
-				//mxd. We are not interested in single-sided lines (unless they have "blocksound" flag set)...
-				if(l != null && (l.Front == null || l.Back == null) && !l.IsFlagSet(BlockSoundFlag)) l = null;
-				
-				//mxd. Set as highlighted
-				if(highlightedline != l)
+				//mxd
+				if(redrawrequired)
 				{
-					highlightedline = l;
+					// Show highlight info
+					if(highlightedline != null && !highlightedline.IsDisposed)
+						General.Interface.ShowLinedefInfo(highlightedline);
+					else if(highlighted != null && !highlighted.IsDisposed)
+						General.Interface.ShowSectorInfo(highlighted);
+					else
+						General.Interface.HideInfo();
+					
+					// Redraw display
 					General.Interface.RedrawDisplay();
 				}
 			}
@@ -445,10 +437,10 @@ namespace CodeImp.DoomBuilder.SoundPropagationMode
 		[BeginAction("soundpropagationcolorconfiguration")]
 		public void ConfigureColors()
 		{
-			ColorConfiguration cc = new ColorConfiguration();
-			if(cc.ShowDialog((Form)General.Interface) == DialogResult.OK) 
+			using(ColorConfiguration cc = new ColorConfiguration())
 			{
-				General.Interface.RedrawDisplay();
+				if(cc.ShowDialog((Form)General.Interface) == DialogResult.OK)
+					General.Interface.RedrawDisplay();
 			}
 		}
 

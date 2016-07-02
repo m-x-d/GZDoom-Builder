@@ -289,6 +289,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Interface.Focus();
 				General.Editing.CancelMode();
 			}
+
+			//mxd
+			hintfont.Dispose();
 		}
 
 		// Close button clicked
