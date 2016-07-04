@@ -139,7 +139,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// When lower unpegged is set, the lower texture is bound to the bottom
 				tp.tlt.y = tsz.y - ((float)Sidedef.Sector.CeilHeight - Sidedef.Other.Sector.CeilHeight);
 			}
-			tp.trb.x = tp.tlt.x + Sidedef.Line.Length;
+			tp.trb.x = tp.tlt.x + (float)Math.Round(Sidedef.Line.Length); //mxd. (G)ZDoom snaps texture coordinates to integral linedef length
 			tp.trb.y = tp.tlt.y + (Sidedef.Sector.CeilHeight - (Sidedef.Other.Sector.CeilHeight + ceilbias));
 			
 			// Apply texture offset
