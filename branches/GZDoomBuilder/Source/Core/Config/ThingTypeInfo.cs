@@ -85,10 +85,10 @@ namespace CodeImp.DoomBuilder.Config
 		private bool obsolete; //mxd
 		private string obsoletemessage; //mxd
 
-		//mxd. GLOOME rendering settings
-		private Thing.SpriteRenderMode rendermode;
+		//mxd. GZDoom rendering properties
+		private ThingRenderMode rendermode;
 		private bool rollsprite;
-		private bool sticktoplane;
+		private bool dontflip;
 		
 		#endregion
 
@@ -125,10 +125,10 @@ namespace CodeImp.DoomBuilder.Config
 		public string ClassName { get { return classname; } } //mxd. Need this to add model overrides for things defined in configs
 		public string LightName { get { return lightname; } } //mxd
 
-		//mxd. GLOOME rendering flags
-		public Thing.SpriteRenderMode RenderMode { get { return rendermode; } }
+		//mxd. GZDoom rendering properties
+		public ThingRenderMode RenderMode { get { return rendermode; } }
 		public bool RollSprite { get { return rollsprite; } }
-		public bool StickToPlane { get { return sticktoplane; } }
+		public bool DontFlip { get { return dontflip; } }
 
 		#endregion
 
@@ -391,9 +391,9 @@ namespace CodeImp.DoomBuilder.Config
 			this.xybillboard = other.xybillboard; //mxd
 			this.spritescale = new SizeF(other.spritescale.Width, other.spritescale.Height);
 
-			//mxd. Copy GLOOME properties
+			//mxd. Copy GZDoom rendering properties
 			this.rendermode = other.rendermode;
-			this.sticktoplane = other.sticktoplane;
+			this.dontflip = other.dontflip;
 			this.rollsprite = other.rollsprite;
 
 			// We have no destructor
@@ -527,13 +527,22 @@ namespace CodeImp.DoomBuilder.Config
 			blocking = actor.GetFlagValue("solid", (blocking != 0)) ? blockvalue : 0;
 			xybillboard = actor.GetFlagValue("forcexybillboard", false); //mxd
 
-			//mxd. GLOOME rendering flags. ORDER: WALLSPRITE -> FLOORSPRITE || CEILSPRITE
+			//mxd. GZDoom rendering flags
 			rollsprite = actor.GetFlagValue("rollsprite", false); 
-			if(actor.GetFlagValue("wallsprite", false)) rendermode = Thing.SpriteRenderMode.WALL_SPRITE;
-			else if(actor.GetFlagValue("floorsprite", false)) rendermode = Thing.SpriteRenderMode.FLOOR_SPRITE;
-			else if(actor.GetFlagValue("ceilsprite", false)) rendermode = Thing.SpriteRenderMode.CEILING_SPRITE;
-			if(rendermode == Thing.SpriteRenderMode.FLOOR_SPRITE || rendermode == Thing.SpriteRenderMode.CEILING_SPRITE)
-				sticktoplane = actor.GetFlagValue("sticktoplane", false); // Works only for Floor/Ceil sprites
+			if(actor.GetFlagValue("wallsprite", false)) rendermode = ThingRenderMode.WALLSPRITE;
+			if(actor.GetFlagValue("flatsprite", false))
+			{
+				// WALLSPRITE + FLATSPRITE = HORRIBLE GLITCHES in GZDoom
+				if(rendermode == ThingRenderMode.WALLSPRITE)
+				{
+					General.ErrorLogger.Add(ErrorType.Error, "Error in actor \"" + title + "\":" + index + ". WALLSPRITE and FLATSPRITE flags can not be combined");
+				}
+				else
+				{
+					rendermode = ThingRenderMode.FLATSPRITE;
+					dontflip = actor.GetFlagValue("dontflip", false);
+				}
+			}
 
 			//mxd
 			if(blocking > THING_BLOCKING_NONE) errorcheck = THING_ERROR_INSIDE_STUCK;

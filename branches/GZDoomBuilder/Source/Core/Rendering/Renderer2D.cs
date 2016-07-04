@@ -1174,8 +1174,8 @@ namespace CodeImp.DoomBuilder.Rendering
 					//mxd. Highlighted thing should be rendered separately
 					if(!fixedcolor && t.Highlighted) continue;
 					
-					//collect models
-					if(t.IsModel) 
+					// Collect models
+					if(t.RenderMode == ThingRenderMode.MODEL) 
 					{
 						if(!modelsByType.ContainsKey(t.Type)) modelsByType.Add(t.Type, new List<Thing>());
 						modelsByType[t.Type].Add(t);
@@ -1233,7 +1233,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				foreach(KeyValuePair<int, List<Thing>> group in thingsByType)
 				{
 					// Skip when all things of this type will be rendered as models
-					if(group.Value[0].IsModel && (General.Settings.GZDrawModelsMode == ModelRenderMode.ALL)) continue;
+					if(group.Value[0].RenderMode == ThingRenderMode.MODEL && (General.Settings.GZDrawModelsMode == ModelRenderMode.ALL)) continue;
 					
 					// Find thing information
 					ThingTypeInfo info = General.Map.Data.GetThingInfo(group.Key);
@@ -1285,7 +1285,7 @@ namespace CodeImp.DoomBuilder.Rendering
 
 						foreach(Thing t in framegroup.Value)
 						{
-							if(t.IsModel && ((General.Settings.GZDrawModelsMode == ModelRenderMode.SELECTION && t.Selected) || (General.Settings.GZDrawModelsMode == ModelRenderMode.ACTIVE_THINGS_FILTER && alpha == 1.0f)))
+							if(t.RenderMode == ThingRenderMode.MODEL && ((General.Settings.GZDrawModelsMode == ModelRenderMode.SELECTION && t.Selected) || (General.Settings.GZDrawModelsMode == ModelRenderMode.ACTIVE_THINGS_FILTER && alpha == 1.0f)))
 								continue;
 
 							bool forcespriterendering;

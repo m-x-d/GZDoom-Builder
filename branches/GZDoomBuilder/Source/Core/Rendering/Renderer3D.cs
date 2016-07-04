@@ -1238,29 +1238,37 @@ namespace CodeImp.DoomBuilder.Rendering
 		//mxd
 		private Matrix CreateThingPositionMatrix(VisualThing t)
 		{
-			//mxd. Create the matrix for positioning 
-			if(t.Info.RenderMode == Thing.SpriteRenderMode.NORMAL) // Apply billboarding?
+			// Create the matrix for positioning
+			switch(t.Thing.RenderMode)
 			{
-				if(t.Info.XYBillboard)
-				{
-					return Matrix.Translation(0f, 0f, -t.LocalCenterZ)
-						* Matrix.RotationX(Angle2D.PI - General.Map.VisualCamera.AngleZ)
-						* Matrix.Translation(0f, 0f, t.LocalCenterZ)
-						* billboard
-						* Matrix.Scaling(t.Thing.ScaleX, t.Thing.ScaleX, t.Thing.ScaleY)
-						* t.Position;
-				}
-				else
-				{
-					return billboard
+				case ThingRenderMode.NORMAL:
+					if(t.Info.XYBillboard) // Apply billboarding?
+					{
+						return Matrix.Translation(0f, 0f, -t.LocalCenterZ)
+							* Matrix.RotationX(Angle2D.PI - General.Map.VisualCamera.AngleZ)
+							* Matrix.Translation(0f, 0f, t.LocalCenterZ)
+							* billboard
 							* Matrix.Scaling(t.Thing.ScaleX, t.Thing.ScaleX, t.Thing.ScaleY)
 							* t.Position;
-				}
-			}
-			else
-			{
-				return Matrix.Scaling(t.Thing.ScaleX, t.Thing.ScaleX, t.Thing.ScaleY)
-						* t.Position;
+					}
+					else
+					{
+						return billboard
+								* Matrix.Scaling(t.Thing.ScaleX, t.Thing.ScaleX, t.Thing.ScaleY)
+								* t.Position;
+					}
+
+				case ThingRenderMode.FLATSPRITE:
+					// Apply DontFlip flag?
+					float sx = ((t.Info.DontFlip && Angle2D.Normalized((General.Map.VisualCamera.Position - t.Thing.Position).GetAngleXY() - t.Thing.Angle + Angle2D.PIHALF) > Angle2D.PI) ? -1 : 1)
+						* t.Thing.ScaleX;
+					return Matrix.Scaling(sx, sx, t.Thing.ScaleY) * t.Position;
+
+				case ThingRenderMode.WALLSPRITE:
+				case ThingRenderMode.MODEL:
+					return Matrix.Scaling(t.Thing.ScaleX, t.Thing.ScaleX, t.Thing.ScaleY) * t.Position;
+
+				default: throw new NotImplementedException("Unknown ThingRenderMode");
 			}
 		}
 
@@ -1714,7 +1722,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			}
 
 			//mxd. Gather models
-			if(t.Thing.IsModel && 
+			if(t.Thing.RenderMode == ThingRenderMode.MODEL && 
 				(General.Settings.GZDrawModelsMode == ModelRenderMode.ALL ||
 				 General.Settings.GZDrawModelsMode == ModelRenderMode.ACTIVE_THINGS_FILTER ||
 				(General.Settings.GZDrawModelsMode == ModelRenderMode.SELECTION && t.Selected))) 

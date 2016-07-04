@@ -357,7 +357,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			//mxd
-			SetVertices(allverts, floor, ceiling);
+			SetVertices(allverts/*, floor, ceiling*/);
 			
 			// Determine position
 			Vector3D pos = Thing.Position;

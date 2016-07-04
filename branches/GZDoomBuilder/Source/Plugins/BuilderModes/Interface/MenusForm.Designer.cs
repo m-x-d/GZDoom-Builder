@@ -461,7 +461,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.alignToWallItem.Name = "alignToWallItem";
 			this.alignToWallItem.Size = new System.Drawing.Size(245, 22);
 			this.alignToWallItem.Tag = "thingaligntowall";
-			this.alignToWallItem.Text = "&Align To Closest Linedef";
+			this.alignToWallItem.Text = "&Align Things to Nearest Linedef";
 			this.alignToWallItem.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// pointAtCursorItem
@@ -766,7 +766,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.buttonAlignThingsToWall.Name = "buttonAlignThingsToWall";
 			this.buttonAlignThingsToWall.Size = new System.Drawing.Size(23, 22);
 			this.buttonAlignThingsToWall.Tag = "thingaligntowall";
-			this.buttonAlignThingsToWall.ToolTipText = "Align selected things to closest linedef";
+			this.buttonAlignThingsToWall.ToolTipText = "Align Things to Nearest Linedef";
 			this.buttonAlignThingsToWall.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// buttonTextureOffsetLock
