@@ -36,18 +36,10 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Constants
 
 		public const int NUM_ARGS = 5;
-
-		#endregion
-
-		#region ================== Enums
-
-		public enum SpriteRenderMode
+		public static HashSet<ThingRenderMode> AlignableRenderModes = new HashSet<ThingRenderMode>
 		{
-			NORMAL,
-			WALL_SPRITE,
-			FLOOR_SPRITE,
-			CEILING_SPRITE
-		}
+			ThingRenderMode.FLATSPRITE, ThingRenderMode.WALLSPRITE, ThingRenderMode.MODEL
+		}; 
 
 		#endregion
 
@@ -78,10 +70,10 @@ namespace CodeImp.DoomBuilder.Map
 		private int roll; //mxd. Used in model rendering
 		private float pitchrad; //mxd
 		private float rollrad; //mxd
-		private bool ismodel; //mxd
 		private bool highlighted; //mxd
 
-		//mxd. GLOOME rendering settings
+		//mxd. GZDoom rendering properties
+		private ThingRenderMode rendermode;
 		private bool rollsprite; //mxd
 
 		// Configuration
@@ -116,7 +108,7 @@ namespace CodeImp.DoomBuilder.Map
 		public bool FixedSize { get { return fixedsize; } }
 		public int Tag { get { return tag; } set { BeforePropsChange(); tag = value; if((tag < General.Map.FormatInterface.MinTag) || (tag > General.Map.FormatInterface.MaxTag)) throw new ArgumentOutOfRangeException("Tag", "Invalid tag number"); } }
 		public Sector Sector { get { return sector; } }
-		public bool IsModel { get { return ismodel; } } //mxd
+		public ThingRenderMode RenderMode { get { return rendermode; } } //mxd
 		public bool IsDirectional { get { return directional; } } //mxd
 		public bool Highlighted { get { return highlighted; } set { highlighted = value; } } //mxd
 
@@ -250,7 +242,7 @@ namespace CodeImp.DoomBuilder.Map
 			t.color = color;
 			t.directional = directional;
 			t.fixedsize = fixedsize;
-			t.ismodel = ismodel; //mxd
+			t.rendermode = rendermode; //mxd
 			t.rollsprite = rollsprite; //mxd
 
 			base.CopyPropertiesTo(t);
@@ -451,7 +443,8 @@ namespace CodeImp.DoomBuilder.Map
 			BeforePropsChange();
 
 			pitch = General.ClampAngle(newpitch);
-			pitchrad = ((ismodel && General.Map.Data.ModeldefEntries[type].InheritActorPitch) ? Angle2D.DegToRad(pitch) : 0);
+			pitchrad = ((rendermode == ThingRenderMode.FLATSPRITE || (rendermode == ThingRenderMode.MODEL && General.Map.Data.ModeldefEntries[type].InheritActorPitch))
+				? Angle2D.DegToRad(pitch) : 0);
 
 			if(type != General.Map.Config.Start3DModeThingType)
 				General.Map.IsChanged = true;
@@ -463,7 +456,8 @@ namespace CodeImp.DoomBuilder.Map
 			BeforePropsChange();
 
 			roll = General.ClampAngle(newroll);
-			rollrad = ( (rollsprite || (ismodel && General.Map.Data.ModeldefEntries[type].InheritActorRoll)) ? Angle2D.DegToRad(roll) : 0);
+			rollrad = ((rollsprite || (rendermode == ThingRenderMode.MODEL && General.Map.Data.ModeldefEntries[type].InheritActorRoll))
+				? Angle2D.DegToRad(roll) : 0);
 
 			if(type != General.Map.Config.Start3DModeThingType)
 				General.Map.IsChanged = true;
@@ -539,37 +533,49 @@ namespace CodeImp.DoomBuilder.Map
 			}
 			
 			directional = ti.Arrow; //mxd
+			rendermode = ti.RenderMode; //mxd
 			rollsprite = ti.RollSprite; //mxd
 			UpdateCache(); //mxd
 		}
 
-		//mxd. This checks if the thing has model override
+		//mxd. This checks if the thing has model override and whether pitch/roll values should be used
 		internal void UpdateCache()
 		{
-			if(General.Map.Data == null)
+			if(General.Map.Data == null) return;
+
+			// Check if the thing has model override
+			if(General.Map.Data.ModeldefEntries.ContainsKey(type))
 			{
-				ismodel = false;
-				return;
+				if(General.Map.Data.ModeldefEntries[type].LoadState == ModelLoadState.None)
+				{
+					if(General.Map.Data.ProcessModel(type)) rendermode = ThingRenderMode.MODEL;
+				}
+				else
+				{
+					rendermode = ThingRenderMode.MODEL;
+				}
 			}
 
-			ismodel = General.Map.Data.ModeldefEntries.ContainsKey(type);
-			if(ismodel && General.Map.Data.ModeldefEntries[type].LoadState == ModelLoadState.None)
-				ismodel = General.Map.Data.ProcessModel(type);
+			// Update radian versions of pitch and roll
+			switch(rendermode)
+			{
+				case ThingRenderMode.MODEL:
+					rollrad = (General.Map.Data.ModeldefEntries[type].InheritActorRoll ? Angle2D.DegToRad(roll) : 0);
+					pitchrad = (General.Map.Data.ModeldefEntries[type].InheritActorPitch ? Angle2D.DegToRad(pitch) : 0);
+					break;
 
-			if(ismodel) 
-			{
-				rollrad = (General.Map.Data.ModeldefEntries[type].InheritActorRoll ? Angle2D.DegToRad(roll) : 0);
-				pitchrad = (General.Map.Data.ModeldefEntries[type].InheritActorPitch ? Angle2D.DegToRad(pitch) : 0);
-			}
-			else if(rollsprite)
-			{
-				rollrad = Angle2D.DegToRad(roll);
-				pitchrad = 0;
-			}
-			else
-			{
-				rollrad = 0;
-				pitchrad = 0;
+				case ThingRenderMode.FLATSPRITE:
+					rollrad = (rollsprite ? Angle2D.DegToRad(roll) : 0);
+					pitchrad = Angle2D.DegToRad(pitch);
+					break;
+
+				case ThingRenderMode.WALLSPRITE:
+				case ThingRenderMode.NORMAL:
+					rollrad = (rollsprite ? Angle2D.DegToRad(roll) : 0);
+					pitchrad = 0;
+					break;
+
+				default: throw new NotImplementedException("Unknown ThingRenderMode");
 			}
 		}
 		
@@ -580,10 +586,7 @@ namespace CodeImp.DoomBuilder.Map
 		// This checks and returns a flag without creating it
 		public bool IsFlagSet(string flagname)
 		{
-			if(flags.ContainsKey(flagname))
-				return flags[flagname];
-			else
-				return false;
+			return flags.ContainsKey(flagname) && flags[flagname];
 		}
 		
 		// This sets a flag

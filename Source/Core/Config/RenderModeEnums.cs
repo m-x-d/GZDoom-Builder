@@ -14,4 +14,12 @@
 		ALL,
 		ALL_ANIMATED,
 	}
+
+	public enum ThingRenderMode
+	{
+		NORMAL,
+		MODEL,
+		WALLSPRITE,
+		FLATSPRITE,
+	}
 }

@@ -18,12 +18,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.Editing;
+using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
-using CodeImp.DoomBuilder.Geometry;
-using System.Drawing;
-using CodeImp.DoomBuilder.Editing;
 
 #endregion
 
@@ -430,7 +430,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			snaptogridincrement = (!snaptocardinaldirection && General.Interface.AltState); //mxd
 
 			//mxd. Snap to nearest linedef
-			if(selectedthings.Count == 1 && dragitem.IsModel && snaptonearest && !snaptocardinaldirection && MoveThingsRelative(mousemappos - dragstartmappos, snaptogrid, snaptogridincrement, false, false)) 
+			if(selectedthings.Count == 1 && snaptonearest && !snaptocardinaldirection 
+				&& Thing.AlignableRenderModes.Contains(dragitem.RenderMode)
+				&& MoveThingsRelative(mousemappos - dragstartmappos, snaptogrid, snaptogridincrement, false, false)) 
 			{
 				Linedef l = General.Map.Map.NearestLinedefRange(oldpositions[0] + mousemappos - dragstartmappos, BuilderPlug.Me.StitchRange / renderer.Scale);
 				bool restoresettings = false;

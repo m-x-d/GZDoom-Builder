@@ -705,7 +705,7 @@
     <Compile Include="Actions\HintsManager.cs" />
     <Compile Include="Config\AllTexturesSet.cs" />
     <Compile Include="Config\FlagTranslation.cs" />
-    <Compile Include="Config\ModelAndLightRenderModes.cs" />
+    <Compile Include="Config\RenderModeEnums.cs" />
     <Compile Include="Config\PasteOptions.cs" />
     <Compile Include="Config\ScriptDocumentSettings.cs" />
     <Compile Include="Config\SectorEffectData.cs" />

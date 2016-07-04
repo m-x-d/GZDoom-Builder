@@ -265,7 +265,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		}
 
 		// This sets the vertices for the thing sprite
-		protected void SetVertices(WorldVertex[][] verts, Plane floor, Plane ceiling)
+		protected void SetVertices(WorldVertex[][] verts/*, Plane floor, Plane ceiling*/)
 		{
 			// Copy vertices
 			vertices = new WorldVertex[verts.Length][];
@@ -281,28 +281,47 @@ namespace CodeImp.DoomBuilder.VisualModes
 
 			updategeo = true;
 			
-			//mxd. Do some GLOOME shenanigans...
+			//mxd. Do some special GZDoom rendering shenanigans...
 			for(int c = 0; c < vertices.Length; c++)
 			{
 				if(triangles[c] < 2) continue;
 				float localcenterz = vertices[c][1].z * 0.5f;
-				Matrix m;
+				Matrix transform, rotation;
 
-				switch(info.RenderMode)
+				switch(thing.RenderMode)
 				{
-					// TODO: Currently broken in GLOOME...
-					case Thing.SpriteRenderMode.WALL_SPRITE:
-						m = Matrix.Translation(0f, 0f, -localcenterz) * Matrix.RotationY(Thing.RollRad) * Matrix.RotationZ(thing.Angle) * Matrix.Translation(0f, 0f, localcenterz);
+					// Don't do anything
+					case ThingRenderMode.MODEL: break;
+					
+					// Actor becomes a flat sprite which can be tilted with the use of the Pitch actor property.
+					case ThingRenderMode.FLATSPRITE:
+						rotation = (info.RollSprite ? Matrix.RotationY(-thing.RollRad) * Matrix.RotationX(thing.PitchRad) : Matrix.RotationX(thing.PitchRad))
+							* Matrix.RotationZ(thing.Angle);
+						transform = Matrix.Translation(0f, 0f, -localcenterz) * rotation * Matrix.Translation(0f, 0f, localcenterz);
 						for(int i = 0; i < vertices[c].Length; i++)
 						{
-							Vector4 transformed = Vector3.Transform(new Vector3(vertices[c][i].x, vertices[c][i].y, vertices[c][i].z), m);
+							Vector4 transformed = Vector3.Transform(new Vector3(vertices[c][i].x, vertices[c][i].y, vertices[c][i].z), transform);
 							vertices[c][i].x = transformed.X;
 							vertices[c][i].y = transformed.Y;
 							vertices[c][i].z = transformed.Z;
 						}
 						break;
 
-					case Thing.SpriteRenderMode.FLOOR_SPRITE:
+					// Similar to FLATSPRITE but is not affected by pitch.
+					case ThingRenderMode.WALLSPRITE:
+						rotation = (info.RollSprite ? Matrix.RotationY(-thing.RollRad) * Matrix.RotationZ(thing.Angle) : Matrix.RotationZ(thing.Angle));
+						transform = Matrix.Translation(0f, 0f, -localcenterz) * rotation * Matrix.Translation(0f, 0f, localcenterz);
+						for(int i = 0; i < vertices[c].Length; i++)
+						{
+							Vector4 transformed = Vector3.Transform(new Vector3(vertices[c][i].x, vertices[c][i].y, vertices[c][i].z), transform);
+							vertices[c][i].x = transformed.X;
+							vertices[c][i].y = transformed.Y;
+							vertices[c][i].z = transformed.Z;
+						}
+						break;
+
+					// Some old GLOOME stuff
+					/*case Thing.SpriteRenderMode.FLOOR_SPRITE:
 						Matrix floorrotation = Matrix.RotationZ(info.RollSprite ? Thing.RollRad : 0f)
 											 * Matrix.RotationY(Thing.Angle)
 											 * Matrix.RotationX(Angle2D.PIHALF);
@@ -386,15 +405,15 @@ namespace CodeImp.DoomBuilder.VisualModes
 									vertices[c][i].z = ceiling.GetZ(vertices[c][i].x + Thing.Position.x, vertices[c][i].y + Thing.Position.y) + voffset;
 							}
 						}
-						break;
+						break;*/
 
 					default:
 						if(info.RollSprite)
 						{
-							m = Matrix.Translation(0f, 0f, -localcenterz) * Matrix.RotationY(Thing.RollRad) * Matrix.Translation(0f, 0f, localcenterz);
+							transform = Matrix.Translation(0f, 0f, -localcenterz) * Matrix.RotationY(-thing.RollRad) * Matrix.Translation(0f, 0f, localcenterz);
 							for(int i = 0; i < vertices[c].Length; i++)
 							{
-								Vector4 transformed = Vector3.Transform(new Vector3(vertices[c][i].x, vertices[c][i].y, vertices[c][i].z), m);
+								Vector4 transformed = Vector3.Transform(new Vector3(vertices[c][i].x, vertices[c][i].y, vertices[c][i].z), transform);
 								vertices[c][i].x = transformed.X;
 								vertices[c][i].y = transformed.Y;
 								vertices[c][i].z = transformed.Z;

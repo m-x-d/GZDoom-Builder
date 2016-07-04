@@ -2052,7 +2052,8 @@ namespace CodeImp.DoomBuilder.Geometry
 			if(side < 0) 
 			{ 
 				//got any walls to align to?
-				if(CanAlignThingTo(t, l.Front.Sector, l.Back.Sector)) 
+				if((l.Front.LongMiddleTexture != MapSet.EmptyLongName && CanAlignThingTo(t, l.Front.Sector)) 
+					|| CanAlignThingTo(t, l.Front.Sector, l.Back.Sector)) 
 				{
 					AlignThingToLine(t, l, true);
 					return true;
@@ -2063,7 +2064,8 @@ namespace CodeImp.DoomBuilder.Geometry
 
 			//thing is on back side of the line
 			//got any walls to align to?
-			if(CanAlignThingTo(t, l.Back.Sector, l.Front.Sector)) 
+			if((l.Back.LongMiddleTexture != MapSet.EmptyLongName && CanAlignThingTo(t, l.Back.Sector)) 
+				|| CanAlignThingTo(t, l.Back.Sector, l.Front.Sector)) 
 			{
 				AlignThingToLine(t, l, false);
 				return true;
