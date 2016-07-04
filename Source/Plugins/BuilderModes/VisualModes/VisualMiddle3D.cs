@@ -163,7 +163,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			TexturePlane tp = new TexturePlane();
 			float floorbias = (sourcetopheight == sourcebottomheight) ? 1.0f : 0.0f;
 
-			tp.trb.x = tp.tlt.x + Sidedef.Line.Length;
+			tp.trb.x = tp.tlt.x + (float)Math.Round(Sidedef.Line.Length); //mxd. (G)ZDoom snaps texture coordinates to integral linedef length
 			tp.trb.y = tp.tlt.y + (sourcetopheight - sourcebottomheight) + floorbias;
 			
 			// Apply texture offset

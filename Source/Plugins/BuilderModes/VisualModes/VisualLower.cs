@@ -144,7 +144,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					tp.tlt.y = (float) Sidedef.Sector.CeilHeight - Sidedef.Other.Sector.FloorHeight;
 				}
 			}
-			tp.trb.x = tp.tlt.x + Sidedef.Line.Length;
+			tp.trb.x = tp.tlt.x + (float)Math.Round(Sidedef.Line.Length); //mxd. (G)ZDoom snaps texture coordinates to integral linedef length
 			tp.trb.y = tp.tlt.y + (Sidedef.Other.Sector.FloorHeight - (Sidedef.Sector.FloorHeight + floorbias));
 			
 			// Apply texture offset

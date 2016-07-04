@@ -4036,7 +4036,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						}
 					}
 
-					forwardoffset = j.offsetx + (float)Math.Round(j.sidedef.Line.Length / scalex * first.scaleX, General.Map.FormatInterface.VertexDecimals);
+					forwardoffset = j.offsetx + (float)Math.Round((float)Math.Round(j.sidedef.Line.Length) / scalex * first.scaleX, General.Map.FormatInterface.VertexDecimals);
 					backwardoffset = j.offsetx;
 
 					// Done this sidedef
@@ -4056,7 +4056,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Apply alignment
 					if(alignx) 
 					{
-						float offset = j.offsetx - (float)Math.Round(j.sidedef.Line.Length / scalex * first.scaleX, General.Map.FormatInterface.VertexDecimals);
+						float offset = j.offsetx - (float)Math.Round((float)Math.Round(j.sidedef.Line.Length) / scalex * first.scaleX, General.Map.FormatInterface.VertexDecimals);
 						offset -= j.sidedef.OffsetX;
 
 						if(matchtop)
@@ -4133,7 +4133,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 
 					forwardoffset = j.offsetx;
-					backwardoffset = j.offsetx - (float)Math.Round(j.sidedef.Line.Length / scalex * first.scaleX, General.Map.FormatInterface.VertexDecimals);
+					backwardoffset = j.offsetx - (float)Math.Round((float)Math.Round(j.sidedef.Line.Length) / scalex * first.scaleX, General.Map.FormatInterface.VertexDecimals);
 
 					// Done this sidedef
 					j.sidedef.Marked = true;
