@@ -209,8 +209,7 @@ namespace CodeImp.DoomBuilder.Controls
 				if(newtags.Count == 0) newtags.Add(0);
 
 				// Apply it
-				me.Tags.Clear();
-				me.Tags.AddRange(newtags);
+				me.Tags = new List<int>(newtags);
 
 				// We are making progress...
 				offset++;

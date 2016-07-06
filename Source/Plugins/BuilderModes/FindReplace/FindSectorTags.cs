@@ -86,8 +86,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						// Replace
 						if(replace)
 						{
-							s.Tags[index] = replacetag; //mxd
-							s.Tags = s.Tags.Distinct().ToList(); //mxd. We don't want duplicates
+							//mxd. Make a copy of tags, otherwise BeforePropsChange will be triggered after tag changes
+							List<int> tags = new List<int>(s.Tags);
+							tags[index] = replacetag;
+							s.Tags = tags.Distinct().ToList(); // We don't want duplicates
 						}
 
 						// Add to list
