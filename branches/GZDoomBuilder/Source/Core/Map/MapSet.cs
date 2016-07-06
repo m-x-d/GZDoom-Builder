@@ -3543,18 +3543,20 @@ namespace CodeImp.DoomBuilder.Map
 				{
 					//mxd. Multiple tags support...
 					bool changed = false;
-					for(int i = 0; i < s.Tags.Count; i++)
+					// Make a copy of tags, otherwise BeforePropsChange will be triggered after tag changes
+					List<int> tags = new List<int>(s.Tags);
+					for(int i = 0; i < tags.Count; i++)
 					{
-						int tag = s.Tags[i];
+						int tag = tags[i];
 						handler(s, false, UniversalType.SectorTag, ref tag, obj);
-						if(tag != s.Tags[i])
+						if(tag != tags[i])
 						{
-							s.Tags[i] = tag;
+							tags[i] = tag;
 							changed = true;
 						}
 					}
 
-					if(changed) s.Tags = s.Tags.Distinct().ToList();
+					if(changed) s.Tags = tags.Distinct().ToList();
 				}
 			}
 
@@ -3602,18 +3604,20 @@ namespace CodeImp.DoomBuilder.Map
 					{
 						//mxd. Multiple tags support...
 						bool changed = false;
-						for(int i = 0; i < l.Tags.Count; i++)
+						// Make a copy of tags, otherwise BeforePropsChange will be triggered after tag changes
+						List<int> tags = new List<int>(l.Tags);
+						for(int i = 0; i < tags.Count; i++)
 						{
-							int tag = l.Tags[i];
+							int tag = tags[i];
 							handler(l, false, UniversalType.LinedefTag, ref tag, obj);
-							if(tag != l.Tags[i])
+							if(tag != tags[i])
 							{
-								l.Tags[i] = tag;
+								tags[i] = tag;
 								changed = true;
 							}
 						}
 
-						if(changed) l.Tags = l.Tags.Distinct().ToList();
+						if(changed) l.Tags = tags.Distinct().ToList();
 					}
 				}
 			}
