@@ -1035,7 +1035,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private void FlipLinedefs()
 		{
 			// Flip linedefs
-			foreach(Linedef ld in selectedlines) ld.FlipVertices();
+			foreach(Linedef ld in selectedlines)
+			{
+				ld.FlipVertices();
+				ld.FlipSidedefs(); //mxd
+			}
 			
 			// Done
 			linesflipped = !linesflipped;
