@@ -528,6 +528,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.flipv.Name = "flipv";
 			this.flipv.Size = new System.Drawing.Size(30, 30);
 			this.flipv.TabIndex = 2;
+			this.tooltip.SetToolTip(this.flipv, "Flip Selection Vertically");
 			this.flipv.UseVisualStyleBackColor = true;
 			this.flipv.Click += new System.EventHandler(this.flipv_Click);
 			// 
@@ -539,6 +540,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.fliph.Name = "fliph";
 			this.fliph.Size = new System.Drawing.Size(30, 30);
 			this.fliph.TabIndex = 1;
+			this.tooltip.SetToolTip(this.fliph, "Flip Selection Horizontally");
 			this.fliph.UseVisualStyleBackColor = true;
 			this.fliph.Click += new System.EventHandler(this.fliph_Click);
 			// 
