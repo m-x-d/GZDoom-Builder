@@ -42,6 +42,9 @@ namespace CodeImp.DoomBuilder.Data
 		private static readonly Regex sprite6 = new Regex(@"(\S{4}[A-Za-z\[\]\\]{1}[0-8]{1})");
 		private static readonly Regex sprite8 = new Regex(@"(\S{4}[A-Za-z\[\]\\]{1}[0-8]{1}[A-Za-z\[\]\\]{1}[0-8]{1})");
 
+		//mxd. Voxel recognition.
+		private static readonly Regex voxel = new Regex(@"^\S{4}(([A-Za-z][0-9]){0,2}|[A-Za-z]{0,1})$");
+
 		#endregion
 
 		#region ================== Structures
@@ -919,23 +922,17 @@ namespace CodeImp.DoomBuilder.Data
 			return false;
 		}
 
-		//mxd. Returns all sprites, which name starts with given string
-		public override HashSet<string> GetSpriteNames(string startswith)
+		//mxd. This returns all sprite names in the WAD
+		public override HashSet<string> GetSpriteNames()
 		{
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
 
 			HashSet<string> result = new HashSet<string>();
-			if(startswith.Length > 8) return result;
-
-			startswith = startswith.ToUpperInvariant();
 			foreach(LumpRange range in spriteranges)
 			{
 				for(int i = range.start; i < range.end + 1; i++)
-				{
-					if(file.Lumps[i].Name.StartsWith(startswith) && IsValidSpriteName(file.Lumps[i].Name))
-						result.Add(file.Lumps[i].Name);
-				}
+					if(IsValidSpriteName(file.Lumps[i].Name)) result.Add(file.Lumps[i].Name);
 			}
 
 			return result;
@@ -952,25 +949,23 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Voxels (mxd)
 
 		//mxd. This returns the list of voxels, which can be used without VOXELDEF definition
-		public override IEnumerable<string> GetVoxelNames() 
+		public override HashSet<string> GetVoxelNames() 
 		{
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
 
-			List<string> voxels = new List<string>();
-			Regex spriteName = new Regex(SPRITE_NAME_PATTERN);
-
+			HashSet<string> result = new HashSet<string>();
 			foreach(LumpRange range in voxelranges) 
 			{
 				if(range.start == range.end) continue;
 
 				for(int i = range.start + 1; i < range.end; i++) 
 				{
-					if(spriteName.IsMatch(file.Lumps[i].Name)) voxels.Add(file.Lumps[i].Name);
+					if(IsValidVoxelName(file.Lumps[i].Name)) result.Add(file.Lumps[i].Name);
 				}
 			}
 
-			return voxels.ToArray();
+			return result;
 		}
 
 		//mxd
@@ -981,7 +976,7 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		//mxd. This finds and returns a voxel stream or null if no voxel was found
-		public override Stream GetVoxelData(string name) 
+		public override Stream GetVoxelData(string name, ref string voxellocation) 
 		{
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
@@ -990,10 +985,20 @@ namespace CodeImp.DoomBuilder.Data
 			{
 				if(range.start == range.end) continue;
 				Lump lump = file.FindLump(name, range.start, range.end);
-				if(lump != null) return lump.Stream;
+				if(lump != null)
+				{
+					voxellocation = location.GetDisplayName();
+					return lump.Stream;
+				}
 			}
 
 			return null;
+		}
+
+		//mxd
+		internal static bool IsValidVoxelName(string name)
+		{
+			return (name.Length > 3 && name.Length < 7) && voxel.IsMatch(name);
 		}
 
 		#endregion

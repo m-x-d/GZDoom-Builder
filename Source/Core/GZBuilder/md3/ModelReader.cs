@@ -58,12 +58,13 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 		private static void LoadKVX(ModelData mde, List<DataReader> containers, Device device) 
 		{
 			mde.Model = new GZModel();
+			string unused = string.Empty;
 			foreach(string name in mde.ModelNames)
 			{
 				//find the model
 				foreach(DataReader dr in containers) 
 				{
-					Stream ms = dr.GetVoxelData(name);
+					Stream ms = dr.GetVoxelData(name, ref unused);
 					if(ms == null) continue;
 
 					//load kvx

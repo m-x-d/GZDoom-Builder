@@ -293,7 +293,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Determine sprite size and offset
 					float radius = sprite.ScaledWidth * 0.5f;
 					float height = sprite.ScaledHeight;
-					SpriteImage spriteimg = sprite as SpriteImage;
+					ISpriteImage spriteimg = sprite as ISpriteImage;
 					if(spriteimg != null)
 					{
 						offsetx = radius - spriteimg.OffsetX;

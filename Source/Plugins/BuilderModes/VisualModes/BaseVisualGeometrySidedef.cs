@@ -635,15 +635,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(options.FitWidth) 
 			{
 				float scalex, offsetx;
+				float linelength = (float)Math.Round(Sidedef.Line.Length); // Let's use ZDoom-compatible line length here
 
 				if(options.FitAcrossSurfaces) 
 				{
-					scalex = Texture.ScaledWidth / (Sidedef.Line.Length * (options.GlobalBounds.Width / Sidedef.Line.Length)) * options.HorizontalRepeat;
+					scalex = Texture.ScaledWidth / (linelength * (options.GlobalBounds.Width / linelength)) * options.HorizontalRepeat;
 					offsetx = (float)Math.Round((options.Bounds.X * scalex - Sidedef.OffsetX - options.ControlSideOffsetX) % Texture.Width, General.Map.FormatInterface.VertexDecimals);
 				} 
 				else 
 				{
-					scalex = Texture.ScaledWidth / Sidedef.Line.Length * options.HorizontalRepeat;
+					scalex = Texture.ScaledWidth / linelength * options.HorizontalRepeat;
 					offsetx = -Sidedef.OffsetX - options.ControlSideOffsetX;
 				}
 

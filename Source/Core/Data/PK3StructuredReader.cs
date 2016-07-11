@@ -422,8 +422,8 @@ namespace CodeImp.DoomBuilder.Data
 			return new List<ImageData>(images.Values);
 		}
 
-		//mxd. Returns all sprites, which name starts with given string
-		public override HashSet<string> GetSpriteNames(string startswith)
+		//mxd. This returns all sprite names
+		public override HashSet<string> GetSpriteNames()
 		{
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
@@ -434,11 +434,11 @@ namespace CodeImp.DoomBuilder.Data
 			// Note the backward order, because the last wad's images have priority
 			for(int i = wads.Count - 1; i >= 0; i--)
 			{
-				result.UnionWith(wads[i].GetSpriteNames(startswith));
+				result.UnionWith(wads[i].GetSpriteNames());
 			}
 
 			// Load from out own files
-			string[] files = GetAllFilesWhichTitleStartsWith(SPRITES_DIR, startswith, true);
+			string[] files = GetAllFiles(SPRITES_DIR, true);
 			foreach(string file in files)
 			{
 				// Some users tend to place all manner of graphics into the "Sprites" folder...
@@ -553,22 +553,29 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== VOXELDEF (mxd)
 
 		//mxd. This returns the list of voxels, which can be used without VOXELDEF definition
-		public override IEnumerable<string> GetVoxelNames() 
+		public override HashSet<string> GetVoxelNames() 
 		{
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
 
-			string[] files = GetAllFiles("voxels", false);
-			List<string> voxels = new List<string>();
-			Regex spritename = new Regex(SPRITE_NAME_PATTERN);
+			HashSet<string> result = new HashSet<string>();
 
+			// Load from wad files
+			// Note the backward order, because the last wad's images have priority
+			for(int i = wads.Count - 1; i >= 0; i--)
+			{
+				result.UnionWith(wads[i].GetVoxelNames());
+			}
+
+			// Load from out own files
+			string[] files = GetAllFiles("voxels", false);
 			foreach(string t in files)
 			{
 				string s = Path.GetFileNameWithoutExtension(t).ToUpperInvariant();
-				if(spritename.IsMatch(s)) voxels.Add(s);
+				if(WADReader.IsValidVoxelName(s)) result.Add(s);
 			}
 
-			return voxels.ToArray();
+			return result;
 		}
 
 		//mxd

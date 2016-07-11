@@ -24,6 +24,7 @@ using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.GZBuilder.Data;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Map;
+using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.ZDoom;
 
 #endregion
@@ -459,9 +460,8 @@ namespace CodeImp.DoomBuilder.Config
 			
 			// Set sprite
 			StateStructure.FrameInfo info = actor.FindSuitableSprite(); //mxd
-			string suitablesprite = (locksprite ? string.Empty : info.Sprite); //mxd
-			if(!string.IsNullOrEmpty(suitablesprite)) 
-				sprite = suitablesprite;
+			if(!locksprite && !string.IsNullOrEmpty(info.Sprite)) //mxd. Added locksprite property
+				sprite = info.Sprite;
 			else if(string.IsNullOrEmpty(sprite))//mxd
 				sprite = DataManager.INTERNAL_PREFIX + "unknownthing";
 
@@ -548,42 +548,121 @@ namespace CodeImp.DoomBuilder.Config
 			if(blocking > THING_BLOCKING_NONE) errorcheck = THING_ERROR_INSIDE_STUCK;
 		}
 
-		//mxd. This tries to find all possible sprite rotations
-		internal void SetupSpriteFrame()
+		//mxd. This tries to find all possible sprite rotations. Returns true when voxel substitute exists
+		internal bool SetupSpriteFrame(HashSet<string> allspritenames, HashSet<string> allvoxelnames)
 		{
-			// Empty or internal sprites don't have rotations
-			if(string.IsNullOrEmpty(sprite) || sprite.StartsWith(DataManager.INTERNAL_PREFIX)) return;
+			// Empty, invalid or internal sprites don't have rotations
+			// Info: we can have either partial 5-char sprite name from DECORATE parser,
+			// or fully defined 6/8-char sprite name defined in Game configuration or by $Sprite property 
+			if(string.IsNullOrEmpty(sprite) || sprite.StartsWith(DataManager.INTERNAL_PREFIX) 
+				|| (sprite.Length != 5 && sprite.Length != 6 && sprite.Length != 8)) return false;
 
-			// Skip sprites with strange names
-			if(sprite.Length != 6 && sprite.Length != 8) return;
+			string sourcename = sprite.Substring(0, 4);
+			char   sourceframe = sprite[4];
+
+			// First try voxels
+			if(allvoxelnames.Count > 0)
+			{
+				// Find a voxel, which matches sourcename
+				HashSet<string> voxelnames = new HashSet<string>();
+				foreach(string s in allvoxelnames)
+				{
+					if(s.StartsWith(sourcename)) voxelnames.Add(s);
+				}
+
+				// Find a voxel, which matches baseframe
+				// Valid voxel can be either 4-char (POSS), 5-char (POSSA) or 6-char (POSSA0)
+				string newsprite = string.Empty;
+
+				// Check 6-char voxels...
+				foreach(string v in voxelnames)
+				{
+					if(v.Length == 6 && v.StartsWith(sourcename + sourceframe) && WADReader.IsValidSpriteName(v))
+					{
+						newsprite = v;
+						break;
+					}
+				}
+
+				// Check 5-char voxels...
+				if(voxelnames.Contains(sourcename + sourceframe)) newsprite = sourcename + sourceframe;
+
+				// Check 4-char voxels...
+				if(voxelnames.Contains(sourcename)) newsprite = sourcename;
+
+				// Voxel found?
+				if(!string.IsNullOrEmpty(newsprite))
+				{
+					// Assign new sprite
+					sprite = newsprite;
+
+					// Recreate sprite frame
+					spriteframe = new[] { new SpriteFrameInfo { Sprite = sprite, SpriteLongName = Lump.MakeLongName(sprite, true) } };
+
+					// Substitute voxel found
+					return true;
+				}
+			}
+
+			// Then try sprites
+			// Find a sprite, which matches sourcename
+			string sourcesprite = string.Empty;
+			HashSet<string> spritenames = new HashSet<string>();
+			foreach(string s in allspritenames)
+			{
+				if(s.StartsWith(sourcename)) spritenames.Add(s);
+			}
+
+			// Find a sprite, which matches baseframe
+			foreach(string s in spritenames)
+			{
+				if(s[4] == sourceframe || (s.Length == 8 && s[6] == sourceframe))
+				{
+					sourcesprite = s;
+					break;
+				}
+			}
+
+			// Abort if no sprite was found
+			if(string.IsNullOrEmpty(sourcesprite)) return false;
 
 			// Get sprite angle
-			string anglestr = sprite.Substring(5, 1);
+			string anglestr = sourcesprite.Substring(5, 1);
 			int sourceangle;
 			if(!int.TryParse(anglestr, NumberStyles.Integer, CultureInfo.InvariantCulture, out sourceangle))
 			{
-				General.ErrorLogger.Add(ErrorType.Error, "Error in actor \"" + title + "\":" + index + ". Unable to get sprite angle from sprite \"" + sprite + "\"");
-				return;
+				General.ErrorLogger.Add(ErrorType.Error, "Error in actor \"" + title + "\":" + index + ". Unable to get sprite angle from sprite \"" + sourcesprite + "\"");
+				return false;
 			}
 
 			if(sourceangle < 0 || sourceangle > 8)
 			{
-				General.ErrorLogger.Add(ErrorType.Error, "Error in actor \"" + title + "\":" + index + ", sprite \"" + sprite + "\". Sprite angle must be in [0..8] range");
-				return;
+				General.ErrorLogger.Add(ErrorType.Error, "Error in actor \"" + title + "\":" + index + ", sprite \"" + sourcesprite + "\". Sprite angle must be in [0..8] range");
+				return false;
 			}
 
-			// No rotations?
-			if(sourceangle == 0) return;
+			// No rotations? Then spriteframe is already setup
+			if(sourceangle == 0)
+			{
+				// Sprite name still incomplete?
+				if(sprite.Length < 6)
+				{
+					sprite = sourcesprite;
+
+					// Recreate sprite frame. Mirror the sprite if sourceframe matches the second frame block
+					spriteframe = new[] { new SpriteFrameInfo { Sprite = sprite, SpriteLongName = Lump.MakeLongName(sprite, true), 
+																Mirror = (sprite.Length == 8 && sprite[6] == sourceframe) } };
+				}
+				
+				return false;
+			}
 			
 			// Gather rotations
 			string[] frames = new string[8];
 			bool[] mirror = new bool[8];
 			int processedcount = 0;
-			string sourcename = sprite.Substring(0, 4);
-			IEnumerable<string> spritenames = General.Map.Data.GetSpriteNames(sourcename);
 
 			// Process gathered sprites
-			char sourceframe = sprite[4];
 			foreach(string s in spritenames)
 			{
 				// Check first frame block
@@ -596,7 +675,7 @@ namespace CodeImp.DoomBuilder.Config
 					if(!int.TryParse(anglestr, NumberStyles.Integer, CultureInfo.InvariantCulture, out targetangle))
 					{
 						General.ErrorLogger.Add(ErrorType.Error, "Error in actor \"" + title + "\":" + index + ". Unable to get sprite angle from sprite \"" + s + "\"");
-						return;
+						return false;
 					}
 
 					// Sanity checks
@@ -610,7 +689,7 @@ namespace CodeImp.DoomBuilder.Config
 					if(targetangle < 1 || targetangle > 8)
 					{
 						General.ErrorLogger.Add(ErrorType.Error, "Error in actor \"" + title + "\":" + index + ", sprite \"" + s + "\". Expected sprite angle in [1..8] range");
-						return;
+						return false;
 					}
 
 					// Even more sanity checks
@@ -640,7 +719,7 @@ namespace CodeImp.DoomBuilder.Config
 					if(!int.TryParse(anglestr, NumberStyles.Integer, CultureInfo.InvariantCulture, out targetangle))
 					{
 						General.ErrorLogger.Add(ErrorType.Error, "Error in actor \"" + title + "\":" + index + ". Unable to get sprite angle from sprite \"" + s + "\"");
-						return;
+						return false;
 					}
 
 					// Sanity checks
@@ -654,7 +733,7 @@ namespace CodeImp.DoomBuilder.Config
 					if(targetangle < 1 || targetangle > 8)
 					{
 						General.ErrorLogger.Add(ErrorType.Error, "Error in actor \"" + title + "\":" + index + ", sprite \"" + s + "\". Expected sprite angle in [1..8] range");
-						return;
+						return false;
 					}
 
 					// Even more sanity checks
@@ -697,7 +776,7 @@ namespace CodeImp.DoomBuilder.Config
 				}
 
 				General.ErrorLogger.Add(ErrorType.Error, "Error in actor \"" + title + "\":" + index + ". Sprite rotations " + ma + " for sprite " + sourcename + ", frame " + sourceframe + " are missing");
-				return;
+				return false;
 			}
 
 			// Create collection
@@ -706,6 +785,12 @@ namespace CodeImp.DoomBuilder.Config
 			{
 				spriteframe[i] = new SpriteFrameInfo { Sprite = frames[i], SpriteLongName = Lump.MakeLongName(frames[i]), Mirror = mirror[i] };
 			}
+
+			// Update preview sprite
+			sprite = spriteframe[1].Sprite;
+
+			// Done
+			return false;
 		}
 
 		// This is used for sorting

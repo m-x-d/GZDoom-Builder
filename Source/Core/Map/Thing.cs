@@ -36,7 +36,7 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Constants
 
 		public const int NUM_ARGS = 5;
-		public static HashSet<ThingRenderMode> AlignableRenderModes = new HashSet<ThingRenderMode>
+		public static readonly HashSet<ThingRenderMode> AlignableRenderModes = new HashSet<ThingRenderMode>
 		{
 			ThingRenderMode.FLATSPRITE, ThingRenderMode.WALLSPRITE, ThingRenderMode.MODEL
 		}; 
@@ -546,14 +546,9 @@ namespace CodeImp.DoomBuilder.Map
 			// Check if the thing has model override
 			if(General.Map.Data.ModeldefEntries.ContainsKey(type))
 			{
-				if(General.Map.Data.ModeldefEntries[type].LoadState == ModelLoadState.None)
-				{
-					if(General.Map.Data.ProcessModel(type)) rendermode = ThingRenderMode.MODEL;
-				}
-				else
-				{
-					rendermode = ThingRenderMode.MODEL;
-				}
+				ModelData md = General.Map.Data.ModeldefEntries[type];
+				if((md.LoadState == ModelLoadState.None && General.Map.Data.ProcessModel(type)) || md.LoadState != ModelLoadState.None)
+					rendermode = (General.Map.Data.ModeldefEntries[type].IsVoxel ? ThingRenderMode.VOXEL : ThingRenderMode.MODEL);
 			}
 
 			// Update radian versions of pitch and roll
@@ -572,6 +567,11 @@ namespace CodeImp.DoomBuilder.Map
 				case ThingRenderMode.WALLSPRITE:
 				case ThingRenderMode.NORMAL:
 					rollrad = (rollsprite ? Angle2D.DegToRad(roll) : 0);
+					pitchrad = 0;
+					break;
+
+				case ThingRenderMode.VOXEL:
+					rollrad = 0;
 					pitchrad = 0;
 					break;
 

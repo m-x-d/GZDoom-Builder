@@ -1238,8 +1238,17 @@ namespace CodeImp.DoomBuilder.Rendering
 		//mxd
 		private Matrix CreateThingPositionMatrix(VisualThing t)
 		{
+			// Use normal ThingRenderMode when model rendering is disabled for this thing
+			ThingRenderMode rendermode = t.Thing.RenderMode;
+			if((t.Thing.RenderMode == ThingRenderMode.MODEL || t.Thing.RenderMode == ThingRenderMode.VOXEL) &&
+			   (General.Settings.GZDrawModelsMode == ModelRenderMode.NONE ||
+			   (General.Settings.GZDrawModelsMode == ModelRenderMode.SELECTION && !t.Selected)))
+			{
+				rendermode = ThingRenderMode.NORMAL;
+			}
+			
 			// Create the matrix for positioning
-			switch(t.Thing.RenderMode)
+			switch(rendermode)
 			{
 				case ThingRenderMode.NORMAL:
 					if(t.Info.XYBillboard) // Apply billboarding?
@@ -1266,6 +1275,7 @@ namespace CodeImp.DoomBuilder.Rendering
 
 				case ThingRenderMode.WALLSPRITE:
 				case ThingRenderMode.MODEL:
+				case ThingRenderMode.VOXEL:
 					return Matrix.Scaling(t.Thing.ScaleX, t.Thing.ScaleX, t.Thing.ScaleY) * t.Position;
 
 				default: throw new NotImplementedException("Unknown ThingRenderMode");
@@ -1722,7 +1732,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			}
 
 			//mxd. Gather models
-			if(t.Thing.RenderMode == ThingRenderMode.MODEL && 
+			if((t.Thing.RenderMode == ThingRenderMode.MODEL || t.Thing.RenderMode == ThingRenderMode.VOXEL) && 
 				(General.Settings.GZDrawModelsMode == ModelRenderMode.ALL ||
 				 General.Settings.GZDrawModelsMode == ModelRenderMode.ACTIVE_THINGS_FILTER ||
 				(General.Settings.GZDrawModelsMode == ModelRenderMode.SELECTION && t.Selected))) 
