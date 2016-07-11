@@ -1499,6 +1499,22 @@ namespace CodeImp.DoomBuilder.Data
 		// This loads the sprites that we really need for things
 		private int LoadThingSprites()
 		{
+			//mxd. Get all sprite names
+			HashSet<string> spritenames = new HashSet<string>(StringComparer.Ordinal);
+			foreach(DataReader dr in containers)
+			{
+				IEnumerable<string> result = dr.GetSpriteNames();
+				if(result != null) spritenames.UnionWith(result);
+			}
+			
+			//mxd. Get names of all voxel models, which can be used "as is" (these do not require corresponding sprite to work)
+			HashSet<string> voxelnames = new HashSet<string>(StringComparer.Ordinal);
+			foreach(DataReader dr in containers)
+			{
+				IEnumerable<string> result = dr.GetVoxelNames();
+				if(result != null) voxelnames.UnionWith(result);
+			}
+			
 			// Go for all things
 			foreach(ThingTypeInfo ti in General.Map.Data.ThingTypes)
 			{
@@ -1506,51 +1522,69 @@ namespace CodeImp.DoomBuilder.Data
 				if(ti.Sprite.Length == 0 || ti.Sprite.Length > CLASIC_IMAGE_NAME_LENGTH) continue; //mxd
 					
 				//mxd. Find all sprite angles
-				ti.SetupSpriteFrame();
+				bool isvoxel = ti.SetupSpriteFrame(spritenames, voxelnames);
 
-				//mxd. Load them all
-				foreach(SpriteFrameInfo info in ti.SpriteFrame)
+				//mxd. Create voxel sprite?
+				if(isvoxel)
 				{
-					ImageData image = null;
-					
-					// Sprite not in our collection yet?
-					if(!sprites.ContainsKey(info.SpriteLongName))
+					if(!sprites.ContainsKey(Lump.MakeLongName(ti.Sprite)))
 					{
-						//mxd. Go for all opened containers
-						bool spritefound = false;
-						if(!string.IsNullOrEmpty(info.Sprite))
+						// Make new voxel image
+						VoxelImage image = new VoxelImage(ti.Sprite, ti.Sprite);
+
+						// Add to collection
+						sprites.Add(image.LongName, image);
+
+						// Add to preview manager
+						previews.AddImage(image);
+					}
+				}
+				else
+				{
+					//mxd. Load all sprites
+					foreach(SpriteFrameInfo info in ti.SpriteFrame)
+					{
+						ImageData image = null;
+
+						// Sprite not in our collection yet?
+						if(!sprites.ContainsKey(info.SpriteLongName))
 						{
-							for(int i = containers.Count - 1; i >= 0; i--)
+							//mxd. Go for all opened containers
+							bool spritefound = false;
+							if(!string.IsNullOrEmpty(info.Sprite))
 							{
-								// This contain provides this sprite?
-								if(containers[i].GetSpriteExists(info.Sprite))
+								for(int i = containers.Count - 1; i >= 0; i--)
 								{
-									spritefound = true;
-									break;
+									// This container provides this sprite?
+									if(containers[i].GetSpriteExists(info.Sprite))
+									{
+										spritefound = true;
+										break;
+									}
 								}
 							}
-						}
 
-						if(spritefound)
-						{
-							// Make new sprite image
-							image = new SpriteImage(info.Sprite);
+							if(spritefound)
+							{
+								// Make new sprite image
+								image = new SpriteImage(info.Sprite);
 
-							// Add to collection
-							sprites.Add(info.SpriteLongName, image);
+								// Add to collection
+								sprites.Add(info.SpriteLongName, image);
+							}
+							else
+							{
+								General.ErrorLogger.Add(ErrorType.Error, "Unable to find sprite lump \"" + info.Sprite + "\" used by actor \"" + ti.Title + "\":" + ti.Index + ". Forgot to include required resources?");
+							}
 						}
 						else
 						{
-							General.ErrorLogger.Add(ErrorType.Error, "Unable to find sprite lump \"" + info.Sprite + "\" used by actor \"" + ti.Title + "\":" + ti.Index + ". Forgot to include required resources?");
+							image = sprites[info.SpriteLongName];
 						}
-					}
-					else
-					{
-						image = sprites[info.SpriteLongName];
-					}
 
-					// Add to preview manager
-					if(image != null) previews.AddImage(image);
+						// Add to preview manager
+						if(image != null) previews.AddImage(image);
+					}
 				}
 			}
 			
@@ -1566,7 +1600,7 @@ namespace CodeImp.DoomBuilder.Data
 				// Go for all opened containers
 				for(int i = containers.Count - 1; i >= 0; i--)
 				{
-					// This contain provides this sprite?
+					// This container provides this sprite?
 					Stream spritedata = containers[i].GetSpriteData(pname, ref spritelocation);
 					if(spritedata != null) return spritedata;
 				}
@@ -1719,16 +1753,38 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		//mxd. Returns all sprite names, which start with given string
-		internal IEnumerable<string> GetSpriteNames(string startswith)
+		internal IEnumerable<string> GetSpriteNames()
 		{
 			HashSet<string> result = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
 			foreach(DataReader reader in containers)
-				result.UnionWith(reader.GetSpriteNames(startswith));
+				result.UnionWith(reader.GetSpriteNames());
 
 			return result;
 		}
 		
+		#endregion
+
+		#region ================== mxd. Voxels
+
+		// This returns a specific voxel stream
+		internal Stream GetVoxelData(string pname, ref string voxellocation)
+		{
+			if(!string.IsNullOrEmpty(pname))
+			{
+				// Go for all opened containers
+				for(int i = containers.Count - 1; i >= 0; i--)
+				{
+					// This container provides this sprite?
+					Stream spritedata = containers[i].GetVoxelData(pname, ref voxellocation);
+					if(spritedata != null) return spritedata;
+				}
+			}
+
+			// No such voxel found
+			return null;
+		}
+
 		#endregion
 
 		#region ================== Things
@@ -2210,43 +2266,14 @@ namespace CodeImp.DoomBuilder.Data
 			// Bail out when not supported by current game configuration
 			if(string.IsNullOrEmpty(General.Map.Config.DecorateGames)) return;
 			
-			// Get names of all voxel models, which can be used "as is"
-			HashSet<string> voxelnames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-			
-			foreach(DataReader dr in containers) 
-			{
-				currentreader = dr;
-
-				IEnumerable<string> result = dr.GetVoxelNames();
-				if(result == null) continue;
-
-				foreach(string s in result) 
-				{
-					if(!voxelnames.Contains(s)) voxelnames.Add(s);
-				}
-			}
-
-			Dictionary<string, List<int>> sprites = new Dictionary<string, List<int>>(StringComparer.Ordinal);
-
 			// Go for all things
+			Dictionary<string, List<int>> allsprites = new Dictionary<string, List<int>>(StringComparer.Ordinal);
 			foreach(ThingTypeInfo ti in thingtypes.Values) 
 			{
 				// Valid sprite name?
-				string sprite;
-
-				if(ti.Sprite.Length == 0 || ti.Sprite.Length > CLASIC_IMAGE_NAME_LENGTH) 
-				{
-					if(ti.Actor == null) continue;
-					sprite = ti.Actor.FindSuitableVoxel(voxelnames);
-				} 
-				else 
-				{
-					sprite = ti.Sprite;
-				}
-
-				if(string.IsNullOrEmpty(sprite)) continue;
-				if(!sprites.ContainsKey(sprite)) sprites.Add(sprite, new List<int>());
-				sprites[sprite].Add(ti.Index);
+				if(string.IsNullOrEmpty(ti.Sprite) || ti.Sprite.Length > CLASIC_IMAGE_NAME_LENGTH) continue;
+				if(!allsprites.ContainsKey(ti.Sprite)) allsprites.Add(ti.Sprite, new List<int>());
+				allsprites[ti.Sprite].Add(ti.Index);
 			}
 
 			VoxeldefParser parser = new VoxeldefParser();
@@ -2264,13 +2291,34 @@ namespace CodeImp.DoomBuilder.Data
 					{
 						foreach(KeyValuePair<string, ModelData> entry in parser.Entries)
 						{
-							foreach(KeyValuePair<string, List<int>> sc in sprites)
+							foreach(KeyValuePair<string, List<int>> sc in allsprites)
 							{
-								if(sc.Key.Contains(entry.Key))
+								if(sc.Key.StartsWith(entry.Key, StringComparison.OrdinalIgnoreCase))
 								{
-									foreach(int id in sc.Value)
-										modeldefentries[id] = entry.Value;
-									processed.Add(entry.Key);
+									foreach(int id in sc.Value) modeldefentries[id] = entry.Value;
+									processed.Add(sc.Key);
+
+									// Create preview image if it doesn't exist...
+									ImageData sprite = GetSpriteImage(sc.Key);
+									if(sprite == null)
+									{
+										// Make new voxel image
+										sprite = new VoxelImage(sc.Key, entry.Value.ModelNames[0]);
+
+										// Add to collection
+										sprites.Add(sprite.LongName, sprite);
+
+										// Add to preview manager
+										previews.AddImage(sprite);
+									}
+
+									// Apply VOXELDEF settings to the preview image...
+									VoxelImage vi = sprite as VoxelImage;
+									if(vi != null)
+									{
+										vi.AngleOffset = (int)Math.Round(entry.Value.AngleOffset);
+										vi.OverridePalette = entry.Value.OverridePalette;
+									}
 								}
 							}
 						}
@@ -2286,19 +2334,18 @@ namespace CodeImp.DoomBuilder.Data
 			currentreader = null;
 
 			// Get voxel models
-			foreach(string voxelname in voxelnames) 
+			foreach(KeyValuePair<string, List<int>> sc in allsprites)
 			{
-				if(processed.Contains(voxelname)) continue;
-				foreach(KeyValuePair<string, List<int>> sc in sprites) 
+				if(processed.Contains(sc.Key)) continue;
+				
+				VoxelImage vi = GetSpriteImage(sc.Key) as VoxelImage;
+				if(vi != null)
 				{
-					if(sc.Key.Contains(voxelname)) 
-					{
-						// It's a model without a definition, and it corresponds to a sprite we can display, so let's add it
-						ModelData data = new ModelData { IsVoxel = true };
-						data.ModelNames.Add(voxelname);
+					// It's a model without a definition, and it corresponds to a sprite we can display, so let's add it
+					ModelData data = new ModelData { IsVoxel = true };
+					data.ModelNames.Add(vi.VoxelName);
 
-						foreach(int id in sprites[sc.Key]) modeldefentries[id] = data;
-					}
+					foreach(int id in sc.Value) modeldefentries[id] = data;
 				}
 			}
 		}

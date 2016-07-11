@@ -359,7 +359,7 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Voxels (mxd)
 
 		//mxd. This finds and returns a voxel stream or null if no voxel was found
-		public override Stream GetVoxelData(string name) 
+		public override Stream GetVoxelData(string name, ref string voxellocation) 
 		{
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
@@ -367,7 +367,7 @@ namespace CodeImp.DoomBuilder.Data
 			// Find in any of the wad files
 			for(int i = wads.Count - 1; i >= 0; i--) 
 			{
-				Stream voxel = wads[i].GetVoxelData(name);
+				Stream voxel = wads[i].GetVoxelData(name, ref voxellocation);
 				if(voxel != null) return voxel;
 			}
 
@@ -377,6 +377,7 @@ namespace CodeImp.DoomBuilder.Data
 			string filename = FindFirstFile(VOXELS_DIR, pfilename, true);
 			if((filename != null) && FileExists(filename)) 
 			{
+				voxellocation = location.GetDisplayName();
 				return LoadFile(filename);
 			}
 

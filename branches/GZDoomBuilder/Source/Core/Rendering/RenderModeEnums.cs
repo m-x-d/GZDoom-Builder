@@ -1,4 +1,4 @@
-﻿namespace CodeImp.DoomBuilder.Config
+﻿namespace CodeImp.DoomBuilder.Rendering
 {
 	public enum ModelRenderMode
 	{
@@ -19,6 +19,7 @@
 	{
 		NORMAL,
 		MODEL,
+		VOXEL,
 		WALLSPRITE,
 		FLATSPRITE,
 	}

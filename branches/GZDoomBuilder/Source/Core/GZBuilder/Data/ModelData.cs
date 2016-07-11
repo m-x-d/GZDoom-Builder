@@ -38,7 +38,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 
 		internal Vector3 Scale { get { return scale; } }
 		internal Matrix Transform { get { return (General.Settings.GZStretchView ? transformstretched : transform); } }
-		internal bool OverridePalette; //used for voxel models only 
+		internal bool OverridePalette; // Used for voxel models only 
+		internal float AngleOffset; // Used for voxel models only
 		internal bool InheritActorPitch;
 		internal bool InheritActorRoll;
 

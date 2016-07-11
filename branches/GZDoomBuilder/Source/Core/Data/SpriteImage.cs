@@ -17,16 +17,22 @@
 #region ================== Namespaces
 
 using System;
-using CodeImp.DoomBuilder.IO;
 using System.IO;
 using System.Runtime.InteropServices;
+using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Windows;
 
 #endregion
 
 namespace CodeImp.DoomBuilder.Data
 {
-	public sealed class SpriteImage : ImageData
+	public interface ISpriteImage //mxd
+	{
+		int OffsetX { get; }
+		int OffsetY { get; }
+	}
+
+	public sealed class SpriteImage : ImageData, ISpriteImage
 	{
 		#region ================== Variables
 

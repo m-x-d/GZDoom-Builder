@@ -61,13 +61,12 @@ namespace CodeImp.DoomBuilder.ZDoom
 						return false;
 					}
 
-					modelName = StripQuotes(token).ToLowerInvariant();
+					modelName = StripQuotes(token).ToUpperInvariant();
 				} 
 				else if(token == "{") //read the settings
 				{
 					ModelData mde = new ModelData { IsVoxel = true };
 					float scale = 1.0f;
-					float angleoffset = 0;
 
 					while(SkipWhitespace(true)) 
 					{
@@ -79,7 +78,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 							if(!string.IsNullOrEmpty(modelName) && spriteNames.Count > 0) 
 							{
 								mde.ModelNames.Add(modelName);
-								mde.SetTransform(Matrix.RotationZ(Angle2D.DegToRad(angleoffset)), Matrix.Identity, new Vector3(scale));
+								mde.SetTransform(Matrix.RotationZ(Angle2D.DegToRad(mde.AngleOffset)), Matrix.Identity, new Vector3(scale));
 
 								foreach(string s in spriteNames)
 								{
@@ -104,7 +103,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 							if(!NextTokenIs("=")) return false;
 
 							token = ReadToken();
-							if(!ReadSignedFloat(token, ref angleoffset))
+							if(!ReadSignedFloat(token, ref mde.AngleOffset))
 							{
 								// Not numeric!
 								ReportError("Expected AngleOffset value, but got \"" + token + "\"");

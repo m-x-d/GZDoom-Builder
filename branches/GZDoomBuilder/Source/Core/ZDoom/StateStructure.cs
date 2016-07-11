@@ -66,8 +66,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			while(parser.SkipWhitespace(true))
 			{
 				// Read first token
-				string token = parser.ReadToken();
-				token = token.ToLowerInvariant();
+				string token = parser.ReadToken().ToLowerInvariant();
 				
 				// One of the flow control statements?
 				if((token == "loop") || (token == "stop") || (token == "wait") || (token == "fail"))
@@ -147,25 +146,31 @@ namespace CodeImp.DoomBuilder.ZDoom
 					FrameInfo info = new FrameInfo(); //mxd
 					if(spriteframes.Length > 0)
 					{
-						// Make the sprite name
-						string spritename = token + spriteframes[0];
-						spritename = spritename.ToUpperInvariant();
-						
-						// Ignore some odd ZDoom things
-						if(!spritename.StartsWith("TNT1") && !spritename.StartsWith("----") && !spritename.Contains("#"))
+						//mxd. I'm not even 50% sure the parser handles all bizzare cases without shifting sprite name / frame blocks,
+						// so let's log it as a warning, not an error...
+						if(token.Length != 4)
 						{
-							info.Sprite = spritename; //mxd
-							sprites.Add(info);
+							parser.LogWarning("Invalid sprite name \"" + token.ToUpperInvariant() + "\". Sprite names must be exactly 4 characters long");
+						}
+						else
+						{
+							// Make the sprite name
+							string spritename = (token + spriteframes[0]).ToUpperInvariant();
+
+							// Ignore some odd ZDoom things
+							if(!spritename.StartsWith("TNT1") && !spritename.StartsWith("----") && !spritename.Contains("#"))
+							{
+								info.Sprite = spritename; //mxd
+								sprites.Add(info);
+							}
 						}
 					}
 					
 					// Continue until the end of the line
+					parser.SkipWhitespace(false);
 					string t = parser.ReadToken();
 					while(!string.IsNullOrEmpty(t) && t != "\n")
 					{
-						parser.SkipWhitespace(false);
-						t = parser.ReadToken().ToLowerInvariant();
-
 						//mxd. Bright keyword support...
 						if(t == "bright")
 						{
@@ -206,9 +211,23 @@ namespace CodeImp.DoomBuilder.ZDoom
 							// Break out of this loop
 							break;
 						}
-						
+						//mxd. Function params start (those can span multiple lines)
+						else if(t == "(")
+						{
+							int bracelevel = 1;
+							while(!string.IsNullOrEmpty(token) && bracelevel > 0)
+							{
+								parser.SkipWhitespace(true);
+								token = parser.ReadToken();
+								switch(token)
+								{
+									case "(": bracelevel++; break;
+									case ")": bracelevel--; break;
+								}
+							}
+						}
 						//mxd. Because stuff like this is also valid: "Actor Oneliner { States { Spawn: WOOT A 1 A_FadeOut(0.1) Loop }}"
-						if(t == "}")
+						else if(t == "}")
 						{
 							// Rewind so that this scope end can be read again
 							parser.DataStream.Seek(-1, SeekOrigin.Current);
@@ -216,6 +235,10 @@ namespace CodeImp.DoomBuilder.ZDoom
 							// Done here
 							return;
 						}
+
+						// Read next token
+						parser.SkipWhitespace(false);
+						t = parser.ReadToken().ToLowerInvariant();
 					}
 				}
 				

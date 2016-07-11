@@ -292,6 +292,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 				{
 					// Don't do anything
 					case ThingRenderMode.MODEL: break;
+					case ThingRenderMode.VOXEL: break;
 					
 					// Actor becomes a flat sprite which can be tilted with the use of the Pitch actor property.
 					case ThingRenderMode.FLATSPRITE:
@@ -407,7 +408,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 						}
 						break;*/
 
-					default:
+					case ThingRenderMode.NORMAL:
 						if(info.RollSprite)
 						{
 							transform = Matrix.Translation(0f, 0f, -localcenterz) * Matrix.RotationY(-thing.RollRad) * Matrix.Translation(0f, 0f, localcenterz);
@@ -420,6 +421,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 							}
 						}
 						break;
+
+					default: throw new NotImplementedException("Unknown ThingRenderMode");
 				}
 			}
 		}
