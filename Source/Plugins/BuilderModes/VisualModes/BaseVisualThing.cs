@@ -275,19 +275,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			//mxd. Create verts for all sprite angles
 			WorldVertex[][] allverts = new WorldVertex[info.SpriteFrame.Length][];
+			Vector2D[] alloffsets = new Vector2D[info.SpriteFrame.Length];
 			base.textures = new ImageData[info.SpriteFrame.Length];
 			isloaded = true;
 
 			for(int i = 0; i < sprites.Length; i++)
 			{
+				Vector2D offsets = new Vector2D();
+
 				// Check if the texture is loaded
 				ImageData sprite = sprites[i];
 				sprite.LoadImage();
 				if(sprite.IsImageLoaded)
 				{
-					float offsetx = 0.0f;
-					float offsety = 0.0f;
-
 					base.textures[i] = sprite;
 
 					// Determine sprite size and offset
@@ -296,16 +296,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					ISpriteImage spriteimg = sprite as ISpriteImage;
 					if(spriteimg != null)
 					{
-						offsetx = radius - spriteimg.OffsetX;
-						offsety = spriteimg.OffsetY - height;
+						offsets.x = radius - spriteimg.OffsetX;
+						offsets.y = spriteimg.OffsetY - height;
 					}
 
 					// Scale by thing type/actor scale
 					// We do this after the offset x/y determination above, because that is entirely in sprite pixels space
 					radius *= info.SpriteScale.Width;
 					height *= info.SpriteScale.Height;
-					offsetx *= info.SpriteScale.Width;
-					offsety *= info.SpriteScale.Height;
+					offsets.x *= info.SpriteScale.Width;
+					offsets.y *= info.SpriteScale.Height;
 
 					// Make vertices
 					WorldVertex[] verts = new WorldVertex[6];
@@ -317,21 +317,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if(sizeless) //mxd
 					{ 
 						float hh = height / 2;
-						verts[0] = new WorldVertex(-radius + offsetx, 0.0f, offsety - hh, sectorcolor, ul, 1.0f);
-						verts[1] = new WorldVertex(-radius + offsetx, 0.0f, hh + offsety, sectorcolor, ul, 0.0f);
-						verts[2] = new WorldVertex(+radius + offsetx, 0.0f, hh + offsety, sectorcolor, ur, 0.0f);
+						verts[0] = new WorldVertex(-radius + offsets.x, 0.0f, offsets.y - hh, sectorcolor, ul, 1.0f);
+						verts[1] = new WorldVertex(-radius + offsets.x, 0.0f, hh + offsets.y, sectorcolor, ul, 0.0f);
+						verts[2] = new WorldVertex(+radius + offsets.x, 0.0f, hh + offsets.y, sectorcolor, ur, 0.0f);
 						verts[3] = verts[0];
 						verts[4] = verts[2];
-						verts[5] = new WorldVertex(+radius + offsetx, 0.0f, offsety - hh, sectorcolor, ur, 1.0f);
+						verts[5] = new WorldVertex(+radius + offsets.x, 0.0f, offsets.y - hh, sectorcolor, ur, 1.0f);
 					} 
 					else 
 					{
-						verts[0] = new WorldVertex(-radius + offsetx, 0.0f, offsety, sectorcolor, ul, 1.0f);
-						verts[1] = new WorldVertex(-radius + offsetx, 0.0f, height + offsety, sectorcolor, ul, 0.0f);
-						verts[2] = new WorldVertex(+radius + offsetx, 0.0f, height + offsety, sectorcolor, ur, 0.0f);
+						verts[0] = new WorldVertex(-radius + offsets.x, 0.0f, offsets.y, sectorcolor, ul, 1.0f);
+						verts[1] = new WorldVertex(-radius + offsets.x, 0.0f, height + offsets.y, sectorcolor, ul, 0.0f);
+						verts[2] = new WorldVertex(+radius + offsets.x, 0.0f, height + offsets.y, sectorcolor, ur, 0.0f);
 						verts[3] = verts[0];
 						verts[4] = verts[2];
-						verts[5] = new WorldVertex(+radius + offsetx, 0.0f, offsety, sectorcolor, ur, 1.0f);
+						verts[5] = new WorldVertex(+radius + offsets.x, 0.0f, offsets.y, sectorcolor, ur, 1.0f);
 					}
 					allverts[i] = verts;
 				}
@@ -344,6 +344,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					float radius = Math.Min(thingradius, thingheight / 2f);
 					float height = Math.Min(thingradius * 2f, thingheight);
 
+					//mxd. Determine sprite offsets
+					offsets.x = radius;
+					offsets.y = height / 2;
+
 					// Make vertices
 					WorldVertex[] verts = new WorldVertex[6];
 					verts[0] = new WorldVertex(-radius, 0.0f, 0.0f, sectorcolor, 0.0f, 1.0f);
@@ -354,10 +358,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					verts[5] = new WorldVertex(+radius, 0.0f, 0.0f, sectorcolor, 1.0f, 1.0f);
 					allverts[i] = verts;
 				}
+
+				//mxd. Store offsets
+				alloffsets[i] = offsets;
 			}
 
 			//mxd
-			SetVertices(allverts/*, floor, ceiling*/);
+			SetVertices(allverts, alloffsets/*, floor, ceiling*/);
 			
 			// Determine position
 			Vector3D pos = Thing.Position;
