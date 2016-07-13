@@ -265,7 +265,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		}
 
 		// This sets the vertices for the thing sprite
-		protected void SetVertices(WorldVertex[][] verts/*, Plane floor, Plane ceiling*/)
+		protected void SetVertices(WorldVertex[][] verts, Vector2D[] offsets/*, Plane floor, Plane ceiling*/)
 		{
 			// Copy vertices
 			vertices = new WorldVertex[verts.Length][];
@@ -285,8 +285,23 @@ namespace CodeImp.DoomBuilder.VisualModes
 			for(int c = 0; c < vertices.Length; c++)
 			{
 				if(triangles[c] < 2) continue;
-				float localcenterz = vertices[c][1].z * 0.5f;
+
 				Matrix transform, rotation;
+				float centerx, centerz;
+
+				// ROLLCENTER flag support
+				if(info.RollSprite && info.RollCenter && thing.Roll != 0)
+				{
+					// Rotate around sprite center
+					centerx = offsets[c].x;
+					centerz = vertices[c][1].z * 0.5f - offsets[c].y;
+				}
+				else
+				{
+					// Sprite center is already where it needs to be
+					centerx = 0f;
+					centerz = 0f;
+				}
 
 				switch(thing.RenderMode)
 				{
@@ -296,9 +311,35 @@ namespace CodeImp.DoomBuilder.VisualModes
 					
 					// Actor becomes a flat sprite which can be tilted with the use of the Pitch actor property.
 					case ThingRenderMode.FLATSPRITE:
-						rotation = (info.RollSprite ? Matrix.RotationY(-thing.RollRad) * Matrix.RotationX(thing.PitchRad) : Matrix.RotationX(thing.PitchRad))
-							* Matrix.RotationZ(thing.Angle);
-						transform = Matrix.Translation(0f, 0f, -localcenterz) * rotation * Matrix.Translation(0f, 0f, localcenterz);
+						transform = Matrix.Identity;
+
+						// Apply roll
+						if(info.RollSprite && thing.Roll != 0)
+						{
+							if(info.RollCenter)
+							{
+								rotation = Matrix.RotationY(-thing.RollRad);
+								transform = Matrix.Translation(-centerx, -centerx, -centerz) * rotation * Matrix.Translation(centerx, centerx, centerz);
+							}
+							else
+							{
+								// Sprite center is already where it needs to be
+								transform = Matrix.RotationY(-thing.RollRad);
+							}
+						}
+
+						// Pitch should be performed from the center of the sprite regardless of ROLLCENTER flag...
+						if(thing.Pitch != 0)
+						{
+							float localcenterz = vertices[c][1].z * 0.5f;
+							rotation = Matrix.RotationX(-thing.PitchRad);
+							transform *= Matrix.Translation(0f, 0f, -localcenterz) * rotation * Matrix.Translation(0f, 0f, localcenterz);
+						}
+
+						// Add thing angle into the mix
+						transform *= Matrix.RotationZ(thing.Angle);
+
+						// Apply transform
 						for(int i = 0; i < vertices[c].Length; i++)
 						{
 							Vector4 transformed = Vector3.Transform(new Vector3(vertices[c][i].x, vertices[c][i].y, vertices[c][i].z), transform);
@@ -310,8 +351,21 @@ namespace CodeImp.DoomBuilder.VisualModes
 
 					// Similar to FLATSPRITE but is not affected by pitch.
 					case ThingRenderMode.WALLSPRITE:
-						rotation = (info.RollSprite ? Matrix.RotationY(-thing.RollRad) * Matrix.RotationZ(thing.Angle) : Matrix.RotationZ(thing.Angle));
-						transform = Matrix.Translation(0f, 0f, -localcenterz) * rotation * Matrix.Translation(0f, 0f, localcenterz);
+						// Apply sprite roll?
+						if(info.RollSprite && thing.Roll != 0)
+						{
+							rotation = Matrix.RotationY(-thing.RollRad) * Matrix.RotationZ(thing.Angle);
+							if(info.RollCenter)
+								transform = Matrix.Translation(-centerx, -centerx, -centerz) * rotation * Matrix.Translation(centerx, centerx, centerz);
+							else
+								transform = rotation; // Sprite center is already where it needs to be
+						}
+						else
+						{
+							transform = Matrix.RotationZ(thing.Angle);
+						}
+
+						// Apply transform
 						for(int i = 0; i < vertices[c].Length; i++)
 						{
 							Vector4 transformed = Vector3.Transform(new Vector3(vertices[c][i].x, vertices[c][i].y, vertices[c][i].z), transform);
@@ -321,7 +375,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 						}
 						break;
 
-					// Some old GLOOME stuff
+					#region Some old GLOOME FLOOR_SPRITE/CEILING_SPRITE support code
 					/*case Thing.SpriteRenderMode.FLOOR_SPRITE:
 						Matrix floorrotation = Matrix.RotationZ(info.RollSprite ? Thing.RollRad : 0f)
 											 * Matrix.RotationY(Thing.Angle)
@@ -407,11 +461,18 @@ namespace CodeImp.DoomBuilder.VisualModes
 							}
 						}
 						break;*/
+					#endregion
 
 					case ThingRenderMode.NORMAL:
-						if(info.RollSprite)
+						if(info.RollSprite && thing.Roll != 0)
 						{
-							transform = Matrix.Translation(0f, 0f, -localcenterz) * Matrix.RotationY(-thing.RollRad) * Matrix.Translation(0f, 0f, localcenterz);
+							rotation = Matrix.RotationY(-thing.RollRad);
+							if(info.RollCenter)
+								transform = Matrix.Translation(-centerx, -centerx, -centerz) * rotation * Matrix.Translation(centerx, centerx, centerz);
+							else
+								transform = rotation; // Sprite center is already where it needs to be
+							
+							// Apply transform
 							for(int i = 0; i < vertices[c].Length; i++)
 							{
 								Vector4 transformed = Vector3.Transform(new Vector3(vertices[c][i].x, vertices[c][i].y, vertices[c][i].z), transform);
@@ -515,7 +576,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 				if(Thing.IsDirectional)
 				{
 					Matrix transform = Matrix.Scaling(thing.Size, thing.Size, thing.Size)
-						* (Matrix.RotationY(-Thing.RollRad) * Matrix.RotationX(Thing.PitchRad) * Matrix.RotationZ(Thing.Angle))
+						* (Matrix.RotationY(-Thing.RollRad) * Matrix.RotationX(-Thing.PitchRad) * Matrix.RotationZ(Thing.Angle))
 						* (sizeless ? position : position * Matrix.Translation(0.0f, 0.0f, thingheight / 2f));
 
 					WorldVertex a0 = new WorldVertex(Vector3D.Transform(0.0f, 0.0f, 0.0f, transform)); //start

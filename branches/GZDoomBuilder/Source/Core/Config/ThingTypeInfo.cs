@@ -89,6 +89,7 @@ namespace CodeImp.DoomBuilder.Config
 		//mxd. GZDoom rendering properties
 		private ThingRenderMode rendermode;
 		private bool rollsprite;
+		private bool rollcenter;
 		private bool dontflip;
 		
 		#endregion
@@ -129,6 +130,7 @@ namespace CodeImp.DoomBuilder.Config
 		//mxd. GZDoom rendering properties
 		public ThingRenderMode RenderMode { get { return rendermode; } }
 		public bool RollSprite { get { return rollsprite; } }
+		public bool RollCenter { get { return rollcenter; } }
 		public bool DontFlip { get { return dontflip; } }
 
 		#endregion
@@ -396,6 +398,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.rendermode = other.rendermode;
 			this.dontflip = other.dontflip;
 			this.rollsprite = other.rollsprite;
+			this.rollcenter = other.rollcenter;
 
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -460,13 +463,13 @@ namespace CodeImp.DoomBuilder.Config
 			
 			// Set sprite
 			StateStructure.FrameInfo info = actor.FindSuitableSprite(); //mxd
-			if(!locksprite && !string.IsNullOrEmpty(info.Sprite)) //mxd. Added locksprite property
+			if(!locksprite && info != null) //mxd. Added locksprite property
 				sprite = info.Sprite;
 			else if(string.IsNullOrEmpty(sprite))//mxd
 				sprite = DataManager.INTERNAL_PREFIX + "unknownthing";
 
 			//mxd. Store dynamic light name
-			lightname = info.LightName;
+			lightname = (info != null ? info.LightName : string.Empty);
 
 			//mxd. Create sprite frame
 			this.spriteframe = new[] { new SpriteFrameInfo { Sprite = sprite, SpriteLongName = Lump.MakeLongName(sprite, true) } };
@@ -514,7 +517,7 @@ namespace CodeImp.DoomBuilder.Config
 			}
 
 			//mxd. BRIGHT
-			this.bright = info.Bright || actor.GetFlagValue("bright", false);
+			this.bright = (info != null && info.Bright) || actor.GetFlagValue("bright", false);
 			
 			// Safety
 			if(this.radius < 4f || this.fixedsize) this.radius = THING_FIXED_SIZE;
@@ -528,7 +531,8 @@ namespace CodeImp.DoomBuilder.Config
 			xybillboard = actor.GetFlagValue("forcexybillboard", false); //mxd
 
 			//mxd. GZDoom rendering flags
-			rollsprite = actor.GetFlagValue("rollsprite", false); 
+			rollsprite = actor.GetFlagValue("rollsprite", false);
+			if(rollsprite) rollcenter = actor.GetFlagValue("rollcenter", false);
 			if(actor.GetFlagValue("wallsprite", false)) rendermode = ThingRenderMode.WALLSPRITE;
 			if(actor.GetFlagValue("flatsprite", false))
 			{

@@ -3079,40 +3079,34 @@ namespace CodeImp.DoomBuilder.Map
 				foreach(Linedef l in alllines)
 				{
 					// Remove line when it's start, center and end are inside a changed sector and neither side references it
-					if(l.Start != null && l.End != null)
+					if(l.Start != null && l.End != null 
+						&& (l.Front == null || !changedsectors.Contains(l.Front.Sector)) 
+						&& (l.Back == null || !changedsectors.Contains(l.Back.Sector)))
 					{
-						if(l.Front == null && l.Back == null)
+						foreach(Sector s in changedsectors)
 						{
-							l.Dispose();
-						}
-						else if((l.Front == null || !changedsectors.Contains(l.Front.Sector)) &&
-								(l.Back == null || !changedsectors.Contains(l.Back.Sector)))
-						{
-							foreach(Sector s in changedsectors)
+							if(s.Intersect(l.Start.Position) && s.Intersect(l.End.Position) && s.Intersect(l.GetCenterPoint()))
 							{
-								if(s.Intersect(l.Start.Position) && s.Intersect(l.End.Position) && s.Intersect(l.GetCenterPoint()))
+								Vertex[] tocheck = { l.Start, l.End };
+								l.Dispose();
+
+								foreach(Vertex v in tocheck)
 								{
-									Vertex[] tocheck = { l.Start, l.End };
-									l.Dispose();
-
-									foreach(Vertex v in tocheck)
+									// If the newly created vertex only has 2 linedefs attached, then merge the linedefs
+									if(!v.IsDisposed && v.Linedefs.Count == 2 && splitverts.Contains(v))
 									{
-										// If the newly created vertex only has 2 linedefs attached, then merge the linedefs
-										if(!v.IsDisposed && v.Linedefs.Count == 2 && splitverts.Contains(v))
-										{
-											Linedef ld1 = General.GetByIndex(v.Linedefs, 0);
-											Linedef ld2 = General.GetByIndex(v.Linedefs, 1);
-											Vertex v2 = (ld2.Start == v) ? ld2.End : ld2.Start;
-											if(ld1.Start == v) ld1.SetStartVertex(v2); else ld1.SetEndVertex(v2);
-											ld2.Dispose();
+										Linedef ld1 = General.GetByIndex(v.Linedefs, 0);
+										Linedef ld2 = General.GetByIndex(v.Linedefs, 1);
+										Vertex v2 = (ld2.Start == v) ? ld2.End : ld2.Start;
+										if(ld1.Start == v) ld1.SetStartVertex(v2); else ld1.SetEndVertex(v2);
+										ld2.Dispose();
 
-											// Trash vertex
-											v.Dispose();
-										}
+										// Trash vertex
+										v.Dispose();
 									}
-
-									break;
 								}
+
+								break;
 							}
 						}
 					}
