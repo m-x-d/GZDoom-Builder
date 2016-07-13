@@ -538,16 +538,29 @@ namespace CodeImp.DoomBuilder
 			// Restore selection groups
 			options.ReadSelectionGroups();
 
-			// Center map in screen or on stored coordinates
-			ClassicMode mode = General.Editing.Mode as ClassicMode;
-			if(mode != null) 
+			if(General.Editing.Mode != null)
 			{
-				mode.OnRedoEnd();
+				if(General.Editing.Mode is ClassicMode)
+				{
+					ClassicMode mode = (ClassicMode)General.Editing.Mode;
+					mode.OnRedoEnd();
 
-				if(options.ViewPosition.IsFinite() && !float.IsNaN(options.ViewScale))
-					mode.CenterOnCoordinates(options.ViewPosition, options.ViewScale);
-				else
-					mode.CenterInScreen();
+					// Center map in screen or on stored coordinates
+					if(options.ViewPosition.IsFinite() && !float.IsNaN(options.ViewScale))
+						mode.CenterOnCoordinates(options.ViewPosition, options.ViewScale);
+					else
+						mode.CenterInScreen();
+				}
+				else if(General.Editing.Mode is VisualMode)
+				{
+					VisualMode mode = (VisualMode)General.Editing.Mode;
+					
+					// This will rebuild blockmap, among the other things
+					General.Editing.Mode.OnReloadResources();
+
+					// Update camera position
+					if(options.ViewPosition.IsFinite()) mode.CenterOnCoordinates(options.ViewPosition);
+				}
 			}
 
 			// Success

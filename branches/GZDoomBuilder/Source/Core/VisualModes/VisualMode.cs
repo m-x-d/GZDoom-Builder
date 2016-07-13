@@ -1143,18 +1143,22 @@ namespace CodeImp.DoomBuilder.VisualModes
 		[BeginAction("centeroncoordinates", BaseAction = true)]
 		protected virtual void CenterOnCoordinates() 
 		{
-			//show form...
+			// Show form...
 			CenterOnCoordinatesForm form = new CenterOnCoordinatesForm();
-			if(form.ShowDialog() == DialogResult.OK) 
-			{
-				Sector s = General.Map.Map.GetSectorByCoordinates(form.Coordinates, blockmap);
+			if(form.ShowDialog() == DialogResult.OK) CenterOnCoordinates(form.Coordinates);
+		}
 
-				if(s == null)
-					General.Map.VisualCamera.Position = form.Coordinates;
-				else
-					General.Map.VisualCamera.Position = new Vector3D(form.Coordinates.x, form.Coordinates.y, s.FloorHeight + 54);
-				General.Map.VisualCamera.Sector = s;
-			}
+		//mxd
+		public void CenterOnCoordinates(Vector2D coords)
+		{
+			Sector s = General.Map.Map.GetSectorByCoordinates(coords, blockmap);
+
+			if(s == null)
+				General.Map.VisualCamera.Position = coords;
+			else
+				General.Map.VisualCamera.Position = new Vector3D(coords.x, coords.y, s.FloorHeight + 54);
+
+			General.Map.VisualCamera.Sector = s;
 		}
 
 		//mxd
