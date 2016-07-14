@@ -360,6 +360,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 						if(token.Length == 0) quotedstring = true;
 						
 						token += c;
+
+						//mxd. Break after closing quote
+						if(!quotedstring) break;
 					}
 					// Potential comment?
 					else if((c == '/') && !quotedstring)
@@ -443,6 +446,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 						if(token.Length == 0) quotedstring = true;
 
 						token += c;
+
+						//mxd. Break after closing quote
+						if(!quotedstring) break;
 					}
 					// Potential comment?
 					else if((c == '/') && !quotedstring) 

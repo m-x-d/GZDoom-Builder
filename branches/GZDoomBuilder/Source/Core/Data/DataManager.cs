@@ -1506,6 +1506,9 @@ namespace CodeImp.DoomBuilder.Data
 				IEnumerable<string> result = dr.GetSpriteNames();
 				if(result != null) spritenames.UnionWith(result);
 			}
+
+			//mxd. Add sprites from sprites collection (because GetSpriteNames() doesn't return TEXTURES sprites)
+			foreach(ImageData data in sprites.Values) spritenames.Add(data.Name);
 			
 			//mxd. Get names of all voxel models, which can be used "as is" (these do not require corresponding sprite to work)
 			HashSet<string> voxelnames = new HashSet<string>(StringComparer.Ordinal);
