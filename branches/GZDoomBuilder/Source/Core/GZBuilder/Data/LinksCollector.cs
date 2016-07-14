@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Geometry;
+using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.VisualModes;
 
 namespace CodeImp.DoomBuilder.GZBuilder.Data 
@@ -70,6 +72,39 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 				}
 			}
 		}
+
+		public static IEnumerable<Line3D> MakeCircleLines(Vector2D pos, PixelColor color, float radius, int numsides)
+		{
+			List<Line3D> result = new List<Line3D>(numsides);
+			Vector2D start = new Vector2D(pos.x, pos.y + radius);
+			float anglestep = Angle2D.PI2 / numsides;
+
+			for(int i = 1; i < numsides + 1; i++)
+			{
+				Vector2D end = pos + new Vector2D((float)Math.Sin(anglestep * i) * radius, (float)Math.Cos(anglestep * i) * radius);
+				result.Add(new Line3D(start, end, color, false));
+				start = end;
+			}
+
+			return result;
+		}
+
+		public static IEnumerable<Line3D> MakeRectangleLines(Vector2D pos, PixelColor color, float size)
+		{
+			float halfsize = size / 2;
+			Vector2D tl = new Vector2D(pos.x - halfsize, pos.y - halfsize);
+			Vector2D tr = new Vector2D(pos.x + halfsize, pos.y - halfsize);
+			Vector2D bl = new Vector2D(pos.x - halfsize, pos.y + halfsize);
+			Vector2D br = new Vector2D(pos.x + halfsize, pos.y + halfsize);
+			
+			return new List<Line3D>
+			{
+				new Line3D(tl, tr, color, false),
+				new Line3D(tr, br, color, false),
+				new Line3D(bl, br, color, false),
+				new Line3D(bl, tl, color, false),
+			};
+		} 
 
 		public static List<Line3D> GetThingLinks(IEnumerable<Thing> things) { return GetThingLinks(things, null); }
 		public static List<Line3D> GetThingLinks(IEnumerable<Thing> things, VisualBlockMap blockmap) 
@@ -363,6 +398,34 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 					{
 						bool isskipped = (startnode || (targetnode.IsCurved && targetnode.NextNodes.Count == 0));
 						lines.Add(new Line3D(node.Position, targetnode.Position, (isskipped ? General.Colors.Highlight : General.Colors.InfoLine), !isskipped));
+					}
+				}
+			}
+
+			// Process arg helpers
+			const int numsides = 24;
+			foreach(Thing t in General.Map.ThingsFilter.VisibleThings)
+			{
+				if(t.Action != 0) continue;
+				ThingTypeInfo tti = General.Map.Data.GetThingInfoEx(t.Type);
+				if(tti == null) continue;
+
+				for(int i = 0; i < t.Args.Length; i++)
+				{
+					if(t.Args[i] != 0 && tti.Args[i].RenderStyle != ArgumentInfo.ArgumentRenderStyle.NONE)
+					{
+						switch(tti.Args[i].RenderStyle)
+						{
+							case ArgumentInfo.ArgumentRenderStyle.CIRCLE:
+								lines.AddRange(MakeCircleLines(t.Position, tti.Args[i].RenderColor, t.Args[i], numsides));
+								break;
+
+							case ArgumentInfo.ArgumentRenderStyle.RECTANGLE:
+								lines.AddRange(MakeRectangleLines(t.Position, tti.Args[i].RenderColor, t.Args[i]));
+								break;
+
+							default: throw new NotImplementedException("Unknown ArgumentRenderStyle");
+						}
 					}
 				}
 			}

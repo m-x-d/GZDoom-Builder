@@ -443,7 +443,9 @@ namespace CodeImp.DoomBuilder.Config
 				int argtype = actor.GetPropertyValueInt("$arg" + i + "type", 0);
 				int defaultvalue = actor.GetPropertyValueInt("$arg" + i + "default", 0);
 				string argenum = ZDTextParser.StripQuotes(actor.GetPropertyAllValues("$arg" + i + "enum"));
-				args[i] = new ArgumentInfo(title, argtitle, argtooltip, argtype, defaultvalue, argenum, General.Map.Config.Enums);
+				string argrenderstyle = ZDTextParser.StripQuotes(actor.GetPropertyAllValues("$arg" + i + "renderstyle"));
+				string argrendercolor = ZDTextParser.StripQuotes(actor.GetPropertyAllValues("$arg" + i + "rendercolor"));
+				args[i] = new ArgumentInfo(title, argtitle, argtooltip, argrenderstyle, argrendercolor, argtype, defaultvalue, argenum, General.Map.Config.Enums);
 			}
 
 			//mxd. Some SLADE compatibility

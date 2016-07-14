@@ -48,21 +48,39 @@
     Allows to override default argument names for this actor.<br />
     <br />
     <strong><a name="argdefault" id="argdefault"></a>//$ArgNDefault &lt;integer&gt;</strong> - <span class="red">GZDB only</span>.<br />
-    Allows to set the default value for this argument. This property can only be used in conjunction with &quot;<strong>//$ArgN</strong>&quot; property.<br />
+    Allows to set the default value for this argument. This property must be used in conjunction with the &quot;<strong>//$ArgN</strong>&quot; property.<br />
     <br />
     <strong><a name="argtooltip" id="argtooltip"></a>//$ArgNTooltip &lt;text&gt;</strong> - <span class="red">GZDB only</span>.<br />
-    Allows to specify a tooltip text displayed for this argument. Newline character (&quot;\n&quot;) can be used to format the  text. This property can only be used in conjunction with &quot;<strong>//$ArgN</strong>&quot; property.<br />
+    Allows to specify a tooltip text displayed for this argument. Newline character (&quot;\n&quot;) can be used to format the  text. This property must be used in conjunction with the &quot;<strong>//$ArgN</strong>&quot; property.<br />
     Argument tooltips can be also set for <a href="gc_argumentsettings.html#argtooltip">things and linedefs</a> in a Game Configuration.<br />
     <br />
     <strong><a name="argtype" id="argtype"></a>//$ArgNType &lt;integer&gt;</strong> - <span class="red">GZDB only</span>.<br />
-    Allows to specify an <a href="gc_argumentsettings.html#argtype">argument type</a> for this argument. This property can only be used in conjunction with &quot;<strong>//$ArgN</strong>&quot; property.<br />
+    Allows to specify an <a href="gc_argumentsettings.html#argtype">argument type</a> for this argument. This property must be used in conjunction with the &quot;<strong>//$ArgN</strong>&quot; property.<br />
     <br />
-    <strong><a name="argenum" id="argenum"></a>//$ArgNEnum &lt;string or structure&gt;</strong> - <span class="red">GZDB only</span>.<br />
-    Allows to specify an enum for this argument. This can be either a name of an enum defined in the Game Configuration, or an explicit enum definition. This property can only be used in conjunction with &quot;<strong>//$ArgN</strong>&quot; property.<br />
-    <br />
-    <strong><a name="color" id="color"></a>//$Color &lt;color index&gt;</strong> - <span class="red">GZDB only</span>.<br />
-    Allows to override category color for this actor. Possible values are:
-  <ul>
+	
+	<strong><a name="argrenderstyle" id="argrenderstyle"></a>//$ArgNRenderStyle &lt;string&gt;</strong> - <span class="red">GZDB only</span>.<br />
+    Allows to specify a rendering shape to display the value of this argument. Supported values are:<br />
+   <ul>
+   	<li>&quot;<strong>Rectangle</strong>&quot;. The argument value is used as rectangle size.</li>
+   	<li>&quot;<strong>Circle</strong>&quot;. The argument value is used as circle radius.</li>
+   </ul> 
+   Rendering shapes can be toggled using &quot;<strong><a href="gzdb/features/general/rendering_toolbar.html">Toggle Event Lines</a></strong>&quot; action/menu button.<br />
+   Currently rendering shapes are shown only in Classic modes.<br />
+   This property must be used in conjunction with the &quot;<strong>//$ArgN</strong>&quot; property.<br />
+  	<br />
+  	<strong><a name="argrendercolor" id="argrendercolor"></a>//$ArgNRenderColor &lt;integer&gt;</strong> - <span class="red">GZDB only</span>.<br />
+  	Allows to specify a color used by rendering shape. Supported values are hex color (like &quot;<strong>FF0000</strong>&quot;), HTML-formatted hex color (like &quot;<strong>#F00</strong>&quot; or &quot;<strong>#FF0000</strong>&quot;) or color name (like &quot;<strong>Red</strong>&quot;).<br />
+  	By default rendering shapes will use Event line <a href="w_preferences.html">editor color</a>.<br />
+  	This property must be used in conjunction with &quot;<strong>//$ArgN</strong>&quot; and &quot;<strong>//$ArgNRenderStyle</strong>&quot; properties.<br />
+  	<br />
+  	
+  	
+  	<strong><a name="argenum" id="argenum"></a>//$ArgNEnum &lt;string or structure&gt;</strong> - <span class="red">GZDB only</span>.<br />
+  	Allows to specify an enum for this argument. This can be either a name of an enum defined in the Game Configuration, or an explicit enum definition. This property must be used in conjunction with the &quot;<strong>//$ArgN</strong>&quot; property.<br />
+  	<br />
+  	<strong><a name="color" id="color"></a>//$Color &lt;color index&gt;</strong> - <span class="red">GZDB only</span>.<br />
+  	Allows to override category color for this actor. Possible values are:
+  	<ul>
     <li>&nbsp;&nbsp;0 - <span style="color:#696969">&#9608;</span> Dark Gray;</li>
     <li>&nbsp;&nbsp;1 - <span style="color:#4169E1">&#9608;</span> Blue;</li>
     <li>&nbsp;&nbsp;2 - <span style="color:#228B22">&#9608;</span> Green;</li>
@@ -117,6 +135,8 @@ Actor ChexShield : ResistanceRune replaces ResistanceRune 5104
   //$Arg3 "Radius"
   //$Arg3Type 23
   //$Arg3Default 32
+  //$Arg3RenderStyle &quot;Circle&quot;
+  //$Arg3RenderColor #ff00ff
 	
   //$Arg4 "Height"
   //$Arg4Type 24
@@ -142,7 +162,7 @@ actor SuperGiantImpBall : DoomImpBall
   Damage 30
 }
 </pre>
-<br /><br />
+	<br /><br />
 <span class="big">Category definitions (GZDB only):</span><br />
 <br />
 Thing categories can be defined in DECORATE using <strong>#region</strong> / <strong>#endregion</strong> blocks. Region name is used as thing category title. &quot;<strong>//$Category</strong>&quot; actor block definition overrides these. Additional information can be conveyed with keys in the form of special comments inserted within <strong>#region</strong> / <strong>#endregion</strong> block (these keys replicate Game Configuration <a href="gc_thingsettings.html#catdefs">thing category properties</a> with a slightly different syntax):<br />
@@ -163,7 +183,6 @@ Thing categories can be defined in DECORATE using <strong>#region</strong> / <st
   <b class="fat">//$Error</b> (integer) [0 .. 2]<br />
   Sets the stuck things error checking mode to use on this thing. <br />
   Possible values are:
-  
   <ul>
     <li>0 - Don't check this thing.</li>
     <li>1 - Check if the thing is outside of map geometry.</li>

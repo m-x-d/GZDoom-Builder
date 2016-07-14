@@ -21,7 +21,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using CodeImp.DoomBuilder.IO;
+using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Types;
+using CodeImp.DoomBuilder.ZDoom;
 
 #endregion
 
@@ -30,6 +32,19 @@ namespace CodeImp.DoomBuilder.Config
 	public class ArgumentInfo
 	{
 		#region ================== Constants
+
+		private const int HELPER_SHAPE_ALPHA = 192; //mxd
+
+		#endregion
+
+		#region ================== Enums (mxd)
+
+		public enum ArgumentRenderStyle
+		{
+			NONE,
+			CIRCLE,
+			RECTANGLE,
+		}
 
 		#endregion
 
@@ -43,6 +58,8 @@ namespace CodeImp.DoomBuilder.Config
 		private EnumList flagslist; //mxd
 		private readonly object defaultvalue; //mxd
 		private readonly HashSet<string> targetclasses; //mxd
+		private readonly ArgumentRenderStyle renderstyle; //mxd
+		private readonly PixelColor rendercolor; //mxd
 
 		#endregion
 
@@ -56,6 +73,8 @@ namespace CodeImp.DoomBuilder.Config
 		public EnumList Enum { get { return enumlist; } internal set { enumlist = value; } }
 		public EnumList Flags { get { return flagslist; } internal set { flagslist = value; } } //mxd
 		public object DefaultValue { get { return defaultvalue; } } //mxd
+		public ArgumentRenderStyle RenderStyle { get { return renderstyle; } } //mxd
+		public PixelColor RenderColor { get { return rendercolor; } } //mxd
 
 		#endregion
 
@@ -71,6 +90,44 @@ namespace CodeImp.DoomBuilder.Config
 			this.tooltip = cfg.ReadSetting(argspath + ".arg" + istr + ".tooltip", string.Empty); //mxd
 			this.type = cfg.ReadSetting(argspath + ".arg" + istr + ".type", 0);
 			this.defaultvalue = cfg.ReadSetting(argspath + ".arg" + istr + ".default", 0); //mxd
+
+			//mxd. Get rendering hint settings
+			string renderstyle = cfg.ReadSetting(argspath + ".arg" + istr + ".renderstyle", string.Empty);
+			switch(renderstyle.ToLowerInvariant())
+			{
+				case "circle":
+					this.renderstyle = ArgumentRenderStyle.CIRCLE;
+					break;
+				case "rectangle":
+					this.renderstyle = ArgumentRenderStyle.RECTANGLE;
+					break;
+				default:
+					this.renderstyle = ArgumentRenderStyle.NONE;
+					if(!string.IsNullOrEmpty(renderstyle))
+						General.ErrorLogger.Add(ErrorType.Error, "\"" + argspath + ".arg" + istr + "\": action argument \"" + this.title + "\" has unknown renderstyle \"" + renderstyle + "\"!");
+					break;
+			}
+
+			if(this.renderstyle != ArgumentRenderStyle.NONE)
+			{
+				string rendercolor = cfg.ReadSetting(argspath + ".arg" + istr + ".rendercolor", string.Empty);
+				if(!string.IsNullOrEmpty(rendercolor))
+				{
+					if(!ZDTextParser.GetColorFromString(rendercolor, ref this.rendercolor))
+					{
+						General.ErrorLogger.Add(ErrorType.Error, "\"" + argspath + ".arg" + istr + "\": action argument \"" + this.title + "\": unable to get rendercolor from value \"" + rendercolor + "\"!");
+						this.rendercolor = General.Colors.InfoLine.WithAlpha(HELPER_SHAPE_ALPHA);
+					}
+					else
+					{
+						this.rendercolor.a = HELPER_SHAPE_ALPHA;
+					}
+				}
+				else
+				{
+					this.rendercolor = General.Colors.InfoLine.WithAlpha(HELPER_SHAPE_ALPHA);
+				}
+			}
 
 			//mxd. Check for TargetClass?
 			this.targetclasses = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
@@ -138,13 +195,46 @@ namespace CodeImp.DoomBuilder.Config
 		}
 
 		//mxd. Constructor for an argument info defined in DECORATE
-		internal ArgumentInfo(string actorname, string argtitle, string tooltip, int type, int defaultvalue, string enumstr, IDictionary<string, EnumList> enums)
+		internal ArgumentInfo(string actorname, string argtitle, string tooltip, string renderstyle, string rendercolor,
+			int type, int defaultvalue, string enumstr, IDictionary<string, EnumList> enums)
 		{
 			this.used = true;
 			this.title = argtitle;
 			this.tooltip = tooltip;
 			this.defaultvalue = defaultvalue;
 			this.flagslist = new EnumList(); //mxd
+
+			// Get rendering hint settings
+			switch(renderstyle.ToLowerInvariant())
+			{
+				case "circle": this.renderstyle = ArgumentRenderStyle.CIRCLE; break;
+				case "rectangle": this.renderstyle = ArgumentRenderStyle.RECTANGLE; break;
+				default:
+					this.renderstyle = ArgumentRenderStyle.NONE;
+					if(!string.IsNullOrEmpty(renderstyle))
+						General.ErrorLogger.Add(ErrorType.Error, actorname + ": action argument \"" + argtitle + "\" has unknown renderstyle \"" + renderstyle + "\"!");
+					break;
+			}
+
+			if(this.renderstyle != ArgumentRenderStyle.NONE)
+			{
+				if(!string.IsNullOrEmpty(rendercolor))
+				{
+					if(!ZDTextParser.GetColorFromString(rendercolor, ref this.rendercolor))
+					{
+						General.ErrorLogger.Add(ErrorType.Error, actorname + ": action argument \"" + argtitle + "\": unable to get rendercolor from value \"" + rendercolor + "\"!");
+						this.rendercolor = General.Colors.InfoLine.WithAlpha(HELPER_SHAPE_ALPHA);
+					}
+					else
+					{
+						this.rendercolor.a = HELPER_SHAPE_ALPHA;
+					}
+				}
+				else
+				{
+					this.rendercolor = General.Colors.InfoLine.WithAlpha(HELPER_SHAPE_ALPHA);
+				}
+			}
 
 			// Get argument type
 			if(System.Enum.IsDefined(typeof(UniversalType), type))

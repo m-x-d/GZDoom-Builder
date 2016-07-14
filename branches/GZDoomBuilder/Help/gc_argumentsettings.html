@@ -91,7 +91,19 @@ arg0
 </pre>
   Enums can be also set in <a href="gc_decoratekeys.html#argenum">DECORATE</a>.<br />
   
-  <p><b class="fat">flags</b> (structure or string) - <span class="red">GZDB only</span><br />
+  <p><b class="fat">renderstyle</b> (string) - <span class="red">GZDB only</span><br />
+    Allows to specify a rendering shape to display the value of this argument. Supported values are:<br />
+	<ul>
+	<li>&quot;<strong>Rectangle</strong>&quot;. The argument value is used as rectangle size.</li>
+  	<li>&quot;<strong>Circle</strong>&quot;. The argument value is used as circle radius.</li>
+  	</ul>
+  Rendering shapes can be toggled using "<strong><a href="gzdb/features/general/rendering_toolbar.html">Toggle Event Lines</a></strong>" action/menu button.<br />
+  Currently rendering shapes are supported only for Thing arguments.<br />Currently rendering shapes are shown only in Classic modes.</p>
+  <p><b class="fat">rendercolor</b> (integer) - <span class="red">GZDB only</span><br />
+    Allows to specify a color used by rendering shape. Supported values are hex color (like &quot;<strong>FF0000</strong>&quot;), HTML-formatted hex color (like &quot;<strong>#F00</strong>&quot; or &quot;<strong>#FF0000</strong>&quot;) or color name (like &quot;<strong>Red</strong>&quot;).<br />
+    By default rendering shapes will use Event line <a href="w_preferences.html">editor color</a>.<br />
+    This property must be used in conjunction with the &quot;<b class="fat">renderstyle</b>&quot; property.</p>
+<p><b class="fat">flags</b> (structure or string) - <span class="red">GZDB only</span><br />
     Provides a list of predefined bit flag values to display for this argument. Used  only when argument <strong>type</strong> is 26.<br />
     The value can be either a name of a predefined enum or an explicit definition.<br />
 	<strong>Example:</strong>
