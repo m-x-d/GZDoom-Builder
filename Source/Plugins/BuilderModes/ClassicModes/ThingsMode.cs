@@ -1115,30 +1115,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				// Add lines if visible
 				const int numsides = 24;
-				if(primaryradius > 0) circles.AddRange(MakeCircleLines(t.Position, color, primaryradius, numsides));
-				if(secondaryradius > 0) circles.AddRange(MakeCircleLines(t.Position, color, secondaryradius, numsides));
+				if(primaryradius > 0) circles.AddRange(LinksCollector.MakeCircleLines(t.Position, color, primaryradius, numsides));
+				if(secondaryradius > 0) circles.AddRange(LinksCollector.MakeCircleLines(t.Position, color, secondaryradius, numsides));
 			}
 
 			// Done
 			return circles;
 		}
-
-		//mxd
-		private static IEnumerable<Line3D> MakeCircleLines(Vector2D pos, PixelColor color, float radius, int numsides)
-		{
-			List<Line3D> result = new List<Line3D>(numsides);
-			Vector2D start = new Vector2D(pos.x, pos.y + radius);
-			float anglestep = Angle2D.PI2 / numsides;
-
-			for(int i = 1; i < numsides + 1; i++)
-			{
-				Vector2D end = pos + new Vector2D((float)Math.Sin(anglestep * i) * radius, (float)Math.Cos(anglestep * i) * radius);
-				result.Add(new Line3D(start, end, color, false));
-				start = end;
-			}
-
-			return result;
-		} 
 
 		#endregion
 
