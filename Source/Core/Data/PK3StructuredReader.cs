@@ -19,8 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text.RegularExpressions;
-using CodeImp.DoomBuilder.GZBuilder.Data;
+using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.ZDoom;
 
 #endregion
@@ -630,7 +629,7 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== GLDEFS (mxd)
 
 		//mxd
-		public override IEnumerable<TextResourceData> GetGldefsData(GameType gametype) 
+		public override IEnumerable<TextResourceData> GetGldefsData(string basegame) 
 		{
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
@@ -641,9 +640,9 @@ namespace CodeImp.DoomBuilder.Data
 			List<string> files = new List<string>();
 
 			// Try to load game specific GLDEFS first
-			if(gametype != GameType.UNKNOWN) 
+			if(basegame != GameType.UNKNOWN)
 			{
-				string lumpname = Gldefs.GLDEFS_LUMPS_PER_GAME[(int)gametype];
+				string lumpname = GameType.GldefsLumpsPerGame[basegame];
 				files.AddRange(GetAllFilesWhichTitleStartsWith("", lumpname, false));
 			}
 
@@ -655,7 +654,7 @@ namespace CodeImp.DoomBuilder.Data
 				result.Add(new TextResourceData(this, LoadFile(s), s, true));
 
 			// Find in any of the wad files
-			foreach(WADReader wr in wads) result.AddRange(wr.GetGldefsData(gametype));
+			foreach(WADReader wr in wads) result.AddRange(wr.GetGldefsData(basegame));
 
 			return result;
 		}
@@ -810,6 +809,28 @@ namespace CodeImp.DoomBuilder.Data
 
 			// Find in any of the wad files
 			foreach(WADReader wr in wads) result.AddRange(wr.GetCvarInfoData());
+
+			return result;
+		}
+
+		#endregion
+
+		#region ================== Lockdefs (mxd)
+
+		public override IEnumerable<TextResourceData> GetLockDefsData()
+		{
+			// Error when suspended
+			if(issuspended) throw new Exception("Data reader is suspended");
+
+			List<TextResourceData> result = new List<TextResourceData>();
+			string[] files = GetAllFilesWithTitle("", "LOCKDEFS", false);
+
+			// Add to collection
+			foreach(string s in files)
+				result.Add(new TextResourceData(this, LoadFile(s), s, true));
+
+			// Find in any of the wad files
+			foreach(WADReader wr in wads) result.AddRange(wr.GetLockDefsData());
 
 			return result;
 		}

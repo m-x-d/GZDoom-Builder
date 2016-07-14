@@ -1034,16 +1034,16 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		//mxd
-		public override IEnumerable<TextResourceData> GetGldefsData(GameType gametype) 
+		public override IEnumerable<TextResourceData> GetGldefsData(string basegame) 
 		{
 			if(issuspended) throw new Exception("Data reader is suspended");
 
 			List<TextResourceData> result = new List<TextResourceData>();
 
 			// Try to load game specific GLDEFS first
-			if(gametype != GameType.UNKNOWN)
+			if(basegame != GameType.UNKNOWN)
 			{
-				string lumpname = Gldefs.GLDEFS_LUMPS_PER_GAME[(int)gametype];
+				string lumpname = GameType.GldefsLumpsPerGame[basegame];
 				result.AddRange(GetAllLumps(lumpname));
 			}
 
@@ -1106,6 +1106,13 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			if(issuspended) throw new Exception("Data reader is suspended");
 			return GetAllLumps("CVARINFO");
+		}
+
+		//mxd
+		public override IEnumerable<TextResourceData> GetLockDefsData()
+		{
+			if(issuspended) throw new Exception("Data reader is suspended");
+			return GetAllLumps("LOCKDEFS");
 		}
 
 		//mxd

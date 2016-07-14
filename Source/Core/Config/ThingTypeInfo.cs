@@ -514,7 +514,7 @@ namespace CodeImp.DoomBuilder.Config
 			}
 			else if(actor.HasProperty("defaultalpha"))
 			{
-				this.alpha = (General.Map.Config.GameType == GameType.HERETIC ? 0.4f : 0.6f);
+				this.alpha = (General.Map.Config.BaseGame == GameType.HERETIC ? 0.4f : 0.6f);
 				this.alphabyte = (byte)(this.alpha * 255);
 			}
 

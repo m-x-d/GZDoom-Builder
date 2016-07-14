@@ -229,7 +229,7 @@ namespace CodeImp.DoomBuilder.Data
 		public abstract IEnumerable<TextResourceData> GetMapinfoData();
 
 		//mxd. When implemented, this returns GLDEFS lumps
-		public abstract IEnumerable<TextResourceData> GetGldefsData(GameType gametype);
+		public abstract IEnumerable<TextResourceData> GetGldefsData(string basegame);
 
 		//mxd. When implemented, this returns REVERBS lumps
 		public abstract IEnumerable<TextResourceData> GetReverbsData();
@@ -254,6 +254,9 @@ namespace CodeImp.DoomBuilder.Data
 
 		//mxd. When implemented, this returns CVARINFO lumps
 		public abstract IEnumerable<TextResourceData> GetCvarInfoData();
+
+		//mxd. When implemented, this returns LOCKDEFS lumps
+		public abstract IEnumerable<TextResourceData> GetLockDefsData();
 
 		//mxd. When implemented, this returns the list of voxel model names
 		public abstract HashSet<string> GetVoxelNames();

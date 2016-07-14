@@ -45,6 +45,7 @@ namespace CodeImp.DoomBuilder.Config
 		X11R6RGB,
 		CVARINFO,
 		SNDINFO,
+		LOCKDEFS,
 	}
 	
 	internal class ScriptConfiguration : IComparable<ScriptConfiguration>

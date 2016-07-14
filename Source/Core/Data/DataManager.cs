@@ -423,6 +423,7 @@ namespace CodeImp.DoomBuilder.Data
 			Dictionary<int, string> spawnnums, doomednums;
 			LoadMapInfo(out spawnnums, out doomednums);
 			LoadCvarInfo();
+			LoadLockDefs();
 
 			int thingcount = LoadDecorateThings(spawnnums, doomednums);
 			int spritecount = LoadThingSprites();
@@ -2366,7 +2367,7 @@ namespace CodeImp.DoomBuilder.Data
 			{
 				currentreader = dr;
 				parser.ClearIncludesList();
-				IEnumerable<TextResourceData> streams = dr.GetGldefsData(General.Map.Config.GameType);
+				IEnumerable<TextResourceData> streams = dr.GetGldefsData(General.Map.Config.BaseGame);
 
 				foreach(TextResourceData data in streams)
 				{
@@ -2769,6 +2770,52 @@ namespace CodeImp.DoomBuilder.Data
 
 			// Set as collection
 			cvars = parser.Cvars;
+		}
+
+		//mxd. This loads LOCKDEFS lumps
+		private void LoadLockDefs()
+		{
+			LockDefsParser parser = new LockDefsParser();
+
+			foreach(DataReader dr in containers)
+			{
+				currentreader = dr;
+				IEnumerable<TextResourceData> streams = dr.GetLockDefsData();
+
+				// Parse the data
+				foreach(TextResourceData data in streams)
+				{
+					parser.Parse(data, true);
+
+					// Report errors?
+					if(parser.HasError) parser.LogError();
+				}
+			}
+
+			// Add to text resources collection
+			textresources[parser.ScriptType] = new HashSet<TextResource>(parser.TextResources.Values);
+			currentreader = null;
+
+			// Apply to the enums list?
+			EnumList keys = parser.GetLockDefs();
+			if(keys.Count > 0)
+			{
+				keys.Insert(0, new EnumItem("0", "None"));
+				General.Map.Config.Enums["keys"] = keys;
+				
+				// Update all ArgumentInfos...
+				foreach(ThingTypeInfo info in thingtypes.Values)
+				{
+					foreach(ArgumentInfo ai in info.Args)
+						if(ai.Enum.Name == "keys") ai.Enum = General.Map.Config.Enums["keys"];
+				}
+
+				foreach(LinedefActionInfo info in General.Map.Config.LinedefActions.Values)
+				{
+					foreach(ArgumentInfo ai in info.Args)
+						if(ai.Enum.Name == "keys") ai.Enum = General.Map.Config.Enums["keys"];
+				}
+			}
 		}
 
 		//mxd

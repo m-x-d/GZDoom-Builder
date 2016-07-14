@@ -52,19 +52,19 @@ namespace CodeImp.DoomBuilder.ZDoom
 				switch(token)
 				{
 					case "ifheretic":
-						skipdefinitions = (General.Map.Config.GameType != GameType.HERETIC);
+						skipdefinitions = (General.Map.Config.BaseGame != GameType.HERETIC);
 						break;
 
 					case "ifhexen":
-						skipdefinitions = (General.Map.Config.GameType != GameType.HEXEN);
+						skipdefinitions = (General.Map.Config.BaseGame != GameType.HEXEN);
 						break;
 
 					case "ifstrife":
-						skipdefinitions = (General.Map.Config.GameType != GameType.STRIFE);
+						skipdefinitions = (General.Map.Config.BaseGame != GameType.STRIFE);
 						break;
 
 					case "ifdoom": // TODO: is it even a thing?..
-						skipdefinitions = (General.Map.Config.GameType != GameType.DOOM);
+						skipdefinitions = (General.Map.Config.BaseGame != GameType.DOOM);
 						break;
 
 					case "terrain":
