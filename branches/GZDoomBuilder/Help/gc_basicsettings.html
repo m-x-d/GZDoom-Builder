@@ -31,10 +31,10 @@
 		<b class="fat">thingclasshelp</b> (string) - <span class="red">GZDB only</span>.<br />
 		The URL to  open when thing class name is clicked in the Thing Edit form. &quot;<strong>%K</strong>&quot; wildcard is replaced by <strong>classname</strong> property defined in thing definition or by DECORATE actor name.<br />
 		<br />
-		<b class="fat">basegame</b> (integer) [0 .. 4] - <span class="red">GZDB only</span>.<br />
+		<b class="fat">basegame</b> (string) - <span class="red">GZDB only</span>.<br />
 		Indicates which game the current configuration is based on. Used to load game-specific GLDEFS lumps (DOOMDEFS, HTICDEFS, HEXNDEFS or STRFDEFS). <br />
-		<b>Possible values:</b> 1 (DOOM), 2 (HERETIC), 3 (HEXEN) or 4 (STRIFE).<br />
-		Default value is <b>0</b> (don't load game-specific lumps).<br />
+		<b>Possible values:</b> &quot;Doom&quot;, &quot;Heretic&quot;, &quot;Hexen&quot;, &quot;Strife&quot; or &quot;Chex&quot;.<br />
+		If left unset, game-specific lumps won't be loaded.<br />
 		<br />
 		<b class="fat">engine</b> (string)<br />
 		Game engine/sourceport name. This is used as the UDMF namespace for UDMF map format interface. It currently has no other function.<br />

@@ -159,7 +159,7 @@ namespace CodeImp.DoomBuilder.Config
 		private readonly List<ThingsFilter> thingfilters;
 
 		//mxd. Holds base game type (doom, heretic, hexen or strife)
-		private readonly GameType gametype;
+		private readonly string basegame;
 		
 		#endregion
 
@@ -281,7 +281,7 @@ namespace CodeImp.DoomBuilder.Config
 		public List<ThingsFilter> ThingsFilters { get { return thingfilters; } }
 
 		//mxd
-		public GameType GameType { get { return gametype; } }
+		public string BaseGame { get { return basegame; } }
 		
 		#endregion
 
@@ -328,8 +328,13 @@ namespace CodeImp.DoomBuilder.Config
 			configname = cfg.ReadSetting("game", "<unnamed game>");
 
 			//mxd
-			int gt = (cfg.ReadSetting("basegame", (int)GameType.UNKNOWN));
-			gametype = ( (gt > -1 && gt < Gldefs.GLDEFS_LUMPS_PER_GAME.Length) ? (GameType)gt : GameType.UNKNOWN);
+			basegame = cfg.ReadSetting("basegame", string.Empty).ToLowerInvariant();
+			if(!GameType.GameTypes.Contains(basegame))
+			{
+				if(!string.IsNullOrEmpty(basegame))
+					General.ErrorLogger.Add(ErrorType.Error, "Unknown basegame value specified in current Game Configuration: \"" + basegame + "\"");
+				basegame = GameType.UNKNOWN;
+			}
 
 			enginename = cfg.ReadSetting("engine", "");
 			defaultsavecompiler = cfg.ReadSetting("defaultsavecompiler", "");
