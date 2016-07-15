@@ -50,6 +50,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private bool undocreated; //mxd
 		private static bool useabsoluteheight; //mxd
 		private List<ThingProperties> thingprops; //mxd
+		private Dictionary<string, string> flagsrename; //mxd
 
 		//mxd. Window setup stuff
 		private static Point location = Point.Empty;
@@ -186,6 +187,9 @@ namespace CodeImp.DoomBuilder.Windows
 			posY.ButtonStep = General.Map.Grid.GridSize;
 			posZ.ButtonStep = General.Map.Grid.GridSize;
 
+			//mxd
+			thinginfo = General.Map.Data.GetThingInfoEx(ft.Type);
+
 			// Action/tags
 			action.Value = ft.Action;
 			if(General.Map.FormatInterface.HasThingTag) //mxd
@@ -213,7 +217,10 @@ namespace CodeImp.DoomBuilder.Windows
 				ThingTypeInfo info = thingtype.GetSelectedInfo(); //mxd
 
 				if(info != null && info.Index != t.Type)
+				{
 					thingtype.ClearSelectedType();
+					thinginfo = null; //mxd
+				}
 				
 				// Flags
 				foreach(CheckBox c in flags.Checkboxes)
@@ -263,6 +270,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 			argscontrol.UpdateScriptControls(); //mxd
 			actionhelp.UpdateAction(action.GetValue()); //mxd
+			UpdateFlagNames(); //mxd
 		}
 
 		//mxd
@@ -273,6 +281,51 @@ namespace CodeImp.DoomBuilder.Windows
 
 			//mxd. Make undo
 			General.Map.UndoRedo.CreateUndo("Edit " + (things.Count > 1 ? things.Count + " things" : "thing"));
+		}
+
+		//mxd
+		private void UpdateFlagNames()
+		{
+			Dictionary<string, string> newflagsrename = (thinginfo != null ? thinginfo.FlagsRename : null);
+
+			// Update flag names?
+			if(flagsrename != null || newflagsrename != null)
+			{
+				flags.SuspendLayout();
+
+				// Restore default flags?
+				if(flagsrename != null)
+				{
+					foreach(CheckBox cb in flags.Checkboxes)
+					{
+						string flag = cb.Tag.ToString();
+						if(flagsrename.ContainsKey(flag))
+						{
+							cb.Text = General.Map.Config.ThingFlags[flag];
+							cb.ForeColor = SystemColors.WindowText;
+						}
+					}
+				}
+
+				// Apply new renaming?
+				if(newflagsrename != null)
+				{
+					foreach(CheckBox cb in flags.Checkboxes)
+					{
+						string flag = cb.Tag.ToString();
+						if(newflagsrename.ContainsKey(flag))
+						{
+							cb.Text = newflagsrename[flag];
+							cb.ForeColor = SystemColors.HotTrack;
+						}
+					}
+				}
+
+				flags.ResumeLayout();
+			}
+
+			// Store current flag names
+			flagsrename = newflagsrename;
 		}
 		
 		#endregion
@@ -568,6 +621,8 @@ namespace CodeImp.DoomBuilder.Windows
 				// Update settings
 				t.UpdateConfiguration();
 			}
+
+			UpdateFlagNames(); //mxd
 
 			General.Map.IsChanged = true;
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);

@@ -7,10 +7,12 @@ namespace CodeImp.DoomBuilder.AutomapMode
 	{
 		public event EventHandler OnShowHiddenLinesChanged;
 		public event EventHandler OnShowSecretSectorsChanged;
+		public event EventHandler OnShowLocksChanged;
 		internal event EventHandler OnColorPresetChanged;
 
 		public bool ShowHiddenLines { get { return showhiddenlines.Checked; } set { showhiddenlines.Checked = value; } }
 		public bool ShowSecretSectors { get { return showsecretsectors.Checked; } set { showsecretsectors.Checked = value; } }
+		public bool ShowLocks { get { return showlocks.Checked; } set { showlocks.Checked = value; } }
 		internal AutomapMode.ColorPreset ColorPreset { get { return (AutomapMode.ColorPreset)colorpreset.SelectedIndex; } set { colorpreset.SelectedIndex = (int)value; } }
 		
 		public MenusForm()
@@ -22,6 +24,7 @@ namespace CodeImp.DoomBuilder.AutomapMode
 		{
 			General.Interface.AddButton(showhiddenlines);
 			General.Interface.AddButton(showsecretsectors);
+			if(!General.Map.DOOM) General.Interface.AddButton(showlocks);
 			General.Interface.AddButton(colorpresetseparator);
 			General.Interface.AddButton(colorpresetlabel);
 			General.Interface.AddButton(colorpreset);
@@ -32,6 +35,7 @@ namespace CodeImp.DoomBuilder.AutomapMode
 			General.Interface.RemoveButton(colorpreset);
 			General.Interface.RemoveButton(colorpresetlabel);
 			General.Interface.RemoveButton(colorpresetseparator);
+			if(!General.Map.DOOM) General.Interface.RemoveButton(showlocks);
 			General.Interface.RemoveButton(showsecretsectors);
 			General.Interface.RemoveButton(showhiddenlines);
 		}
@@ -44,6 +48,11 @@ namespace CodeImp.DoomBuilder.AutomapMode
 		private void showsecretsectors_CheckedChanged(object sender, EventArgs e)
 		{
 			if(OnShowSecretSectorsChanged != null) OnShowSecretSectorsChanged(showsecretsectors.Checked, EventArgs.Empty);
+		}
+
+		private void showlocks_CheckedChanged(object sender, EventArgs e)
+		{
+			if(OnShowLocksChanged != null) OnShowLocksChanged(showlocks.Checked, EventArgs.Empty);
 		}
 
 		private void colorpreset_SelectedIndexChanged(object sender, EventArgs e)

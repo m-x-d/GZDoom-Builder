@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Data;
+using CodeImp.DoomBuilder.Rendering;
 
 namespace CodeImp.DoomBuilder.ZDoom
 {
@@ -9,10 +10,14 @@ namespace CodeImp.DoomBuilder.ZDoom
 		internal override ScriptType ScriptType { get { return ScriptType.LOCKDEFS; } }
 
 		private Dictionary<int, string> locks;
+		private Dictionary<int, PixelColor> mapcolors;
+
+		public Dictionary<int, PixelColor> MapColors { get { return mapcolors; } }
 
 		public LockDefsParser()
 		{
 			locks = new Dictionary<int, string>();
+			mapcolors = new Dictionary<int, PixelColor>();
 		}
 
 		public override bool Parse(TextResourceData data, bool clearerrors)
@@ -32,6 +37,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 			string locktitle = string.Empty;
 			string game = string.Empty;
 			int bracelevel = 0;
+			long lockstartpos = -1;
+			PixelColor mapcolor = new PixelColor();
 
 			while(SkipWhitespace(true))
 			{
@@ -64,9 +71,12 @@ namespace CodeImp.DoomBuilder.ZDoom
 						//wiki: The locknumber must be in the 1-to-255 range
 						if(locknum < 1 || locknum > 255)
 						{
-							ReportError("The locknumber must be in the 1-to-255 range, but is " + locknum);
+							ReportError("The locknumber must be in the [1 .. 255] range, but is " + locknum);
 							return false;
 						}
+
+						// Store position
+						lockstartpos = datastream.Position;
 
 						SkipWhitespace(true);
 						token = ReadToken().ToLowerInvariant();
@@ -93,6 +103,51 @@ namespace CodeImp.DoomBuilder.ZDoom
 						locktitle = StripQuotes(ReadToken(false));
 						break;
 
+					// Mapcolor r g b
+					case "mapcolor":
+						int r = 0;
+						int g = 0;
+						int b = 0;
+
+						SkipWhitespace(false);
+						if(!ReadSignedInt(ref r))
+						{
+							ReportError("Expected Mapcolor Red value");
+							return false;
+						}
+						if(r < 0 || r > 255)
+						{
+							ReportError("Mapcolor Red value must be in [0 .. 255] range, but is " + r);
+							return false;
+						}
+
+						SkipWhitespace(false);
+						if(!ReadSignedInt(ref g))
+						{
+							ReportError("Expected Mapcolor Green value");
+							return false;
+						}
+						if(g < 0 || g > 255)
+						{
+							ReportError("Mapcolor Green value must be in [0 .. 255] range, but is " + g);
+							return false;
+						}
+
+						SkipWhitespace(false);
+						if(!ReadSignedInt(ref b))
+						{
+							ReportError("Expected Mapcolor Blue value");
+							return false;
+						}
+						if(b < 0 || b > 255)
+						{
+							ReportError("Mapcolor Blue value must be in [0 .. 255] range, but is " + b);
+							return false;
+						}
+
+						mapcolor = new PixelColor(255, (byte)r, (byte)g, (byte)b);
+						break;
+
 					case "{":
 						bracelevel++;
 						break;
@@ -104,18 +159,32 @@ namespace CodeImp.DoomBuilder.ZDoom
 						if(locknum > 0 && (string.IsNullOrEmpty(game) || General.Map.Config.BaseGame == game))
 						{
 							// No custom title given?
-							if(string.IsNullOrEmpty(locktitle)) locktitle = "Lock " + locknum;
+							if(string.IsNullOrEmpty(locktitle))
+							{
+								locktitle = "Lock " + locknum;
+							}
 
+							// Lock already defined?
 							if(locks.ContainsKey(locknum))
+							{
+								// Do some stream poition hacking to make the warning point to the correct line
+								long curpos = datastream.Position;
+								if(lockstartpos != -1) datastream.Position = lockstartpos;
 								LogWarning("Lock " + locknum + " is double-defined as \"" + locks[locknum] + "\" and \"" + locktitle + "\"");
+								datastream.Position = curpos;
+							}
 
+							// Add to collections
 							locks[locknum] = locktitle;
+							if(mapcolor.a == 255) mapcolors[locknum] = mapcolor;
 						}
 
 						// Reset values
 						locknum = -1;
 						locktitle = string.Empty;
 						game = string.Empty;
+						mapcolor = new PixelColor();
+						lockstartpos = -1;
 						break;
 				}
 			}

@@ -17,6 +17,7 @@
 #region ================== Namespaces
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
@@ -85,6 +86,7 @@ namespace CodeImp.DoomBuilder.Config
 		private readonly bool locksprite; //mxd
 		private bool obsolete; //mxd
 		private string obsoletemessage; //mxd
+		private Dictionary<string, Dictionary<string, string>> flagsrename; //mxd. <MapSetIOName, <flag, title>>
 
 		//mxd. GZDoom rendering properties
 		private ThingRenderMode rendermode;
@@ -126,6 +128,7 @@ namespace CodeImp.DoomBuilder.Config
 		public SizeF SpriteScale { get { return spritescale; } }
 		public string ClassName { get { return classname; } } //mxd. Need this to add model overrides for things defined in configs
 		public string LightName { get { return lightname; } } //mxd
+		public Dictionary<string, string> FlagsRename { get { return flagsrename.ContainsKey(General.Map.Config.FormatInterface) ? flagsrename[General.Map.Config.FormatInterface] : null ; } } //mxd
 
 		//mxd. GZDoom rendering properties
 		public ThingRenderMode RenderMode { get { return rendermode; } }
@@ -168,6 +171,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.absolutez = false;
 			this.xybillboard = false;
 			this.locksprite = false; //mxd
+			this.flagsrename = new Dictionary<string, Dictionary<string, string>>(StringComparer.OrdinalIgnoreCase); //mxd
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -207,6 +211,28 @@ namespace CodeImp.DoomBuilder.Config
 			this.spritescale = new SizeF(sscale, sscale);
 			this.locksprite = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".locksprite", false); //mxd
 			this.classname = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".class", String.Empty); //mxd
+
+			//mxd. Read flagsrename
+			this.flagsrename = new Dictionary<string, Dictionary<string, string>>(StringComparer.OrdinalIgnoreCase);
+			IDictionary maindic = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".flagsrename", new Hashtable());
+			foreach(DictionaryEntry de in maindic)
+			{
+				string ioname = de.Key.ToString().ToLowerInvariant();
+				switch(ioname)
+				{
+					case "doommapsetio":
+					case "hexenmapsetio":
+					case "universalmapsetio":
+						IDictionary flagdic = de.Value as IDictionary;
+						if(flagdic == null) continue;
+						flagsrename.Add(ioname, new Dictionary<string, string>());
+						foreach(DictionaryEntry fe in flagdic)
+							flagsrename[ioname].Add(fe.Key.ToString(), fe.Value.ToString());
+						break;
+
+					default: throw new NotImplementedException("Unsupported MapSetIO");
+				}
+			}
 			
 			// Read the args
 			for(int i = 0; i < Linedef.NUM_ARGS; i++)
@@ -254,7 +280,8 @@ namespace CodeImp.DoomBuilder.Config
 			this.fixedrotation = cat.FixedRotation; //mxd
 			this.absolutez = cat.AbsoluteZ;
 			this.spritescale = new SizeF(cat.SpriteScale, cat.SpriteScale);
-			this.locksprite = false;
+			this.locksprite = false; //mxd
+			this.flagsrename = new Dictionary<string, Dictionary<string, string>>(StringComparer.OrdinalIgnoreCase); //mxd
 
 			// Safety
 			if(this.radius < 4f || this.fixedsize) this.radius = THING_FIXED_SIZE;
@@ -298,6 +325,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.fixedrotation = cat.FixedRotation; //mxd
 			this.absolutez = cat.AbsoluteZ;
 			this.spritescale = new SizeF(cat.SpriteScale, cat.SpriteScale);
+			this.flagsrename = new Dictionary<string, Dictionary<string, string>>(StringComparer.OrdinalIgnoreCase); //mxd
 
 			// Safety
 			if(this.hangs && this.absolutez) this.hangs = false; //mxd
@@ -344,6 +372,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.fixedrotation = cat.FixedRotation; //mxd
 			this.absolutez = cat.AbsoluteZ;
 			this.spritescale = new SizeF(cat.SpriteScale, cat.SpriteScale);
+			this.flagsrename = new Dictionary<string, Dictionary<string, string>>(StringComparer.OrdinalIgnoreCase); //mxd
 
 			// Safety
 			if(this.hangs && this.absolutez) this.hangs = false; //mxd
@@ -393,6 +422,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.absolutez = other.absolutez;
 			this.xybillboard = other.xybillboard; //mxd
 			this.spritescale = new SizeF(other.spritescale.Width, other.spritescale.Height);
+			this.flagsrename = new Dictionary<string, Dictionary<string, string>>(StringComparer.OrdinalIgnoreCase); //mxd
 
 			//mxd. Copy GZDoom rendering properties
 			this.rendermode = other.rendermode;

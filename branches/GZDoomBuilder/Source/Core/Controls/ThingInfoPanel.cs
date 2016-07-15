@@ -153,8 +153,8 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 
 			// Apply script args?
-			Label[] arglabels = new[] { arglbl1, arglbl2, arglbl3, arglbl4, arglbl5 };
-			Label[] args = new[] { arg1, arg2, arg3, arg4, arg5 };
+			Label[] arglabels = { arglbl1, arglbl2, arglbl3, arglbl4, arglbl5 };
+			Label[] args = { arg1, arg2, arg3, arg4, arg5 };
 
 			if(scriptitem != null)
 			{
@@ -195,10 +195,17 @@ namespace CodeImp.DoomBuilder.Controls
 
 			//mxd. Flags
 			flags.Items.Clear();
+			Dictionary<string, string> flagsrename = ti.FlagsRename;
 			foreach(KeyValuePair<string, string> group in General.Map.Config.ThingFlags)
 			{
 				if(t.Flags.ContainsKey(group.Key) && t.Flags[group.Key])
-					flags.Items.Add(new ListViewItem(group.Value) { Checked = true });
+				{
+					ListViewItem lvi = (flagsrename != null && flagsrename.ContainsKey(group.Key)) 
+						? new ListViewItem(flagsrename[group.Key]) { ForeColor = SystemColors.HotTrack } 
+						: new ListViewItem(group.Value);
+					lvi.Checked = true;
+					flags.Items.Add(lvi);
+				}
 			}
 
 			//mxd. Flags panel visibility and size

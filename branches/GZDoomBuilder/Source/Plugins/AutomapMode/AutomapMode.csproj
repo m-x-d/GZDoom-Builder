@@ -94,4 +94,7 @@
   <ItemGroup>
     <None Include="Resources\ShowSecrets.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\ShowLocks.png" />
+  </ItemGroup>
 </Project>
