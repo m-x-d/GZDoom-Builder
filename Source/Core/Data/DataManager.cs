@@ -105,6 +105,8 @@ namespace CodeImp.DoomBuilder.Data
 		private string[] damagetypes;
 		private Dictionary<string, PixelColor> knowncolors; // Colors parsed from X11R6RGB lump. Color names are lowercase without spaces
 		private CvarsCollection cvars; // Variables parsed from CVARINFO
+		private Dictionary<int, PixelColor> lockcolors; // Lock colors defined in LOCKDEFS
+		private Dictionary<int, int> lockableactions; // <Action number, arg referenceing "keys" enum number>
 
 		//mxd. Text resources
 		private Dictionary<ScriptType, HashSet<TextResource>> textresources; 
@@ -168,6 +170,8 @@ namespace CodeImp.DoomBuilder.Data
 		public Dictionary<string, PixelColor> KnownColors { get { return knowncolors; } }
 		internal Dictionary<ScriptType, HashSet<TextResource>> TextResources { get { return textresources; } }
 		internal CvarsCollection CVars { get { return cvars; } }
+		public Dictionary<int, PixelColor> LockColors { get { return lockcolors; } }
+		public Dictionary<int, int> LockableActions { get { return lockableactions; } }
 
 		//mxd
 		internal IEnumerable<DataReader> Containers { get { return containers; } }
@@ -2798,6 +2802,7 @@ namespace CodeImp.DoomBuilder.Data
 
 			// Apply to the enums list?
 			EnumList keys = parser.GetLockDefs();
+			lockableactions = new Dictionary<int, int>();
 			if(keys.Count > 0)
 			{
 				keys.Insert(0, new EnumItem("0", "None"));
@@ -2812,9 +2817,22 @@ namespace CodeImp.DoomBuilder.Data
 
 				foreach(LinedefActionInfo info in General.Map.Config.LinedefActions.Values)
 				{
-					foreach(ArgumentInfo ai in info.Args)
-						if(ai.Enum.Name == "keys") ai.Enum = General.Map.Config.Enums["keys"];
+					for(int i = 0; i < info.Args.Length; i++)
+					{
+						if(info.Args[i].Enum.Name == "keys")
+						{
+							info.Args[i].Enum = General.Map.Config.Enums["keys"];
+							lockableactions[info.Index] = i;
+						}
+					}
 				}
+
+				// Also store lock colors
+				lockcolors = parser.MapColors;
+			}
+			else
+			{
+				lockcolors = new Dictionary<int, PixelColor>();
 			}
 		}
 

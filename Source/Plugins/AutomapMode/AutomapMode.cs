@@ -94,6 +94,7 @@ namespace CodeImp.DoomBuilder.AutomapMode
 			menusform = new MenusForm();
 			menusform.ShowHiddenLines = General.Settings.ReadPluginSetting("automapmode.showhiddenlines", false);
 			menusform.ShowSecretSectors = General.Settings.ReadPluginSetting("automapmode.showsecretsectors", false);
+			menusform.ShowLocks = General.Settings.ReadPluginSetting("automapmode.showlocks", true);
 			menusform.ColorPreset = (ColorPreset)General.Settings.ReadPluginSetting("automapmode.colorpreset", (int)ColorPreset.DOOM);
 
 			// Handle events
@@ -103,10 +104,8 @@ namespace CodeImp.DoomBuilder.AutomapMode
 				General.Interface.RedrawDisplay();
 			};
 
-			menusform.OnShowSecretSectorsChanged += delegate
-			{
-				General.Interface.RedrawDisplay();
-			};
+			menusform.OnShowSecretSectorsChanged += delegate { General.Interface.RedrawDisplay(); };
+			menusform.OnShowLocksChanged += delegate { General.Interface.RedrawDisplay(); };
 
 			menusform.OnColorPresetChanged += delegate
 			{
@@ -175,6 +174,13 @@ namespace CodeImp.DoomBuilder.AutomapMode
 		private PixelColor DetermineLinedefColor(Linedef ld)
 		{
 			//mxd
+			if(menusform.ShowLocks)
+			{
+				PixelColor lockcolor = new PixelColor();
+				if(GetLockColor(ld, ref lockcolor)) return lockcolor;
+			}
+			
+			//mxd
 			if(menusform.ShowSecretSectors &&
 			   (ld.Front != null && secretsectors.Contains(ld.Front.Sector) || ld.Back != null && secretsectors.Contains(ld.Back.Sector)))
 				return ColorSecret;
@@ -218,6 +224,33 @@ namespace CodeImp.DoomBuilder.AutomapMode
 				if(data.GeneralizedBits.Contains(1024)) return true;
 			}
 
+			return false;
+		}
+
+		//mxd
+		private static bool GetLockColor(Linedef l, ref PixelColor lockcolor)
+		{
+			int locknum = 0;
+
+			// Check locknumber property
+			if(General.Map.UDMF)
+			{
+				locknum = UniFields.GetInteger(l.Fields, "locknumber");
+			}
+
+			// Check action
+			if(locknum == 0 && l.Action != 0 && General.Map.Data.LockableActions.ContainsKey(l.Action))
+			{
+				locknum = l.Args[General.Map.Data.LockableActions[l.Action]];
+			}
+
+			if(locknum != 0 && General.Map.Data.LockColors.ContainsKey(locknum))
+			{
+				lockcolor = General.Map.Data.LockColors[locknum];
+				return true;
+			}
+
+			// No dice
 			return false;
 		}
 
@@ -307,6 +340,7 @@ namespace CodeImp.DoomBuilder.AutomapMode
 			//mxd. Store settings
 			General.Settings.WritePluginSetting("automapmode.showhiddenlines", menusform.ShowHiddenLines);
 			General.Settings.WritePluginSetting("automapmode.showsecretsectors", menusform.ShowSecretSectors);
+			General.Settings.WritePluginSetting("automapmode.showlocks", menusform.ShowLocks);
 			General.Settings.WritePluginSetting("automapmode.colorpreset", (int)menusform.ColorPreset);
 
 			//mxd. Hide UI
