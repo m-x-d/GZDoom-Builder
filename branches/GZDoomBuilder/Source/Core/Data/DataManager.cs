@@ -1999,7 +1999,7 @@ namespace CodeImp.DoomBuilder.Data
 						// Update the main collection
 						EnumList newenums = new EnumList();
 						newenums.AddRange(configspawnnums.Values);
-						newenums.Sort();
+						newenums.Sort((a, b) => a.Title.CompareTo(b.Title));
 						General.Map.Config.Enums["spawnthing"] = newenums;
 
 						// Update all ArgumentInfos...
@@ -2805,6 +2805,7 @@ namespace CodeImp.DoomBuilder.Data
 			lockableactions = new Dictionary<int, int>();
 			if(keys.Count > 0)
 			{
+				keys.Sort((a, b) => a.Title.CompareTo(b.Title));
 				keys.Insert(0, new EnumItem("0", "None"));
 				General.Map.Config.Enums["keys"] = keys;
 				

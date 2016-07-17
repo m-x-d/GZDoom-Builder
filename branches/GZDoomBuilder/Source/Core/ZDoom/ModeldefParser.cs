@@ -92,7 +92,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 							if(mds.Frames.ContainsKey(targetsprite))
 							{
 								// Create model data
-								ModelData md = new ModelData { InheritActorPitch = mds.InheritActorPitch, InheritActorRoll = mds.InheritActorRoll };
+								ModelData md = new ModelData { InheritActorPitch = mds.InheritActorPitch, UseActorPitch = mds.UseActorPitch, UseActorRoll = mds.UseActorRoll };
 
 								// Things are complicated in GZDoom...
 								Matrix moffset = Matrix.Translation(mds.Offset.Y, -mds.Offset.X, mds.Offset.Z);

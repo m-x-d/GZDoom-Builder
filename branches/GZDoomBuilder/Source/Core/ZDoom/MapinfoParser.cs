@@ -412,7 +412,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			bool classicformat = !NextTokenIs("{", false);
 			
 			// Track brace level
-			int bracelevel = 0;
+			int bracelevel = (classicformat ? 0 : 1); // Track map block opening brace
 
 			// Parse required values
 			while(SkipWhitespace(true))

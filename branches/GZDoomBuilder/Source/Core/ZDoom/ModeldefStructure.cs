@@ -42,7 +42,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 		private float pitchoffset;
 		private float rolloffset;
 		private bool inheritactorpitch;
-		private bool inheritactorroll;
+		private bool useactorpitch;
+		private bool useactorroll;
 
 		private Dictionary<string, HashSet<FrameStructure>> frames;
 
@@ -58,7 +59,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 		public float PitchOffset { get { return pitchoffset; } }
 		public float RollOffset { get { return rolloffset; } }
 		public bool InheritActorPitch { get { return inheritactorpitch; } }
-		public bool InheritActorRoll { get { return inheritactorroll; } }
+		public bool UseActorPitch { get { return useactorpitch; } }
+		public bool UseActorRoll { get { return useactorroll; } }
 
 		public Dictionary<string, HashSet<FrameStructure>> Frames { get { return frames; } }
 
@@ -297,8 +299,25 @@ namespace CodeImp.DoomBuilder.ZDoom
 						}
 						break;
 
-					case "inheritactorpitch": inheritactorpitch = true; break;
-					case "inheritactorroll": inheritactorroll = true; break;
+					case "useactorpitch":
+						inheritactorpitch = false;
+						useactorpitch = true;
+						break;
+
+					case "useactorroll":
+						useactorroll = true;
+						break;
+
+					case "inheritactorpitch":
+						inheritactorpitch = true;
+						useactorpitch = false;
+						parser.LogWarning("INHERITACTORPITCH flag is deprecated. Consider using USEACTORPITCH flag instead");
+						break;
+
+					case "inheritactorroll": 
+						useactorroll = true;
+						parser.LogWarning("INHERITACTORROLL flag is deprecated. Consider using USEACTORROLL flag instead");
+						break;
 
 					//FrameIndex <XXXX> <X> <model index> <frame number>
 					case "frameindex":
