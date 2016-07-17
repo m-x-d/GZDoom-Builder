@@ -1467,7 +1467,7 @@ namespace CodeImp.DoomBuilder.Rendering
 							float sy = t.ScaleY * t.ActorScale.Height;
 							
 							Matrix modelscale = Matrix.Scaling(sx, sx, sy);
-							Matrix rotation = Matrix.RotationY(-t.RollRad) * Matrix.RotationX(t.PitchRad) * Matrix.RotationZ(t.Angle);
+							Matrix rotation = Matrix.RotationY(-t.RollRad) * Matrix.RotationX(-t.PitchRad) * Matrix.RotationZ(t.Angle);
 							Matrix position = Matrix.Translation(screenpos.x, screenpos.y, 0.0f);
 							Matrix world = General.Map.Data.ModeldefEntries[t.Type].Transform * modelscale * rotation * viewscale * position;
 

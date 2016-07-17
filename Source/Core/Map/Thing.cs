@@ -443,8 +443,9 @@ namespace CodeImp.DoomBuilder.Map
 			BeforePropsChange();
 
 			pitch = General.ClampAngle(newpitch);
-			pitchrad = ((rendermode == ThingRenderMode.FLATSPRITE || (rendermode == ThingRenderMode.MODEL && General.Map.Data.ModeldefEntries[type].InheritActorPitch))
-				? Angle2D.DegToRad(pitch) : 0);
+			ModelData md = General.Map.Data.ModeldefEntries[type];
+			pitchrad = ((rendermode == ThingRenderMode.FLATSPRITE || (rendermode == ThingRenderMode.MODEL && (md.InheritActorPitch || md.UseActorPitch)))
+				? Angle2D.DegToRad(md.InheritActorPitch ? -pitch : pitch) : 0);
 
 			if(type != General.Map.Config.Start3DModeThingType)
 				General.Map.IsChanged = true;
@@ -456,7 +457,7 @@ namespace CodeImp.DoomBuilder.Map
 			BeforePropsChange();
 
 			roll = General.ClampAngle(newroll);
-			rollrad = ((rollsprite || (rendermode == ThingRenderMode.MODEL && General.Map.Data.ModeldefEntries[type].InheritActorRoll))
+			rollrad = ((rollsprite || (rendermode == ThingRenderMode.MODEL && General.Map.Data.ModeldefEntries[type].UseActorRoll))
 				? Angle2D.DegToRad(roll) : 0);
 
 			if(type != General.Map.Config.Start3DModeThingType)
@@ -555,8 +556,9 @@ namespace CodeImp.DoomBuilder.Map
 			switch(rendermode)
 			{
 				case ThingRenderMode.MODEL:
-					rollrad = (General.Map.Data.ModeldefEntries[type].InheritActorRoll ? Angle2D.DegToRad(roll) : 0);
-					pitchrad = (General.Map.Data.ModeldefEntries[type].InheritActorPitch ? Angle2D.DegToRad(pitch) : 0);
+					ModelData md = General.Map.Data.ModeldefEntries[type];
+					rollrad = (md.UseActorRoll ? Angle2D.DegToRad(roll) : 0);
+					pitchrad = ((md.InheritActorPitch || md.UseActorPitch) ? Angle2D.DegToRad(md.InheritActorPitch ? -pitch : pitch) : 0);
 					break;
 
 				case ThingRenderMode.FLATSPRITE:

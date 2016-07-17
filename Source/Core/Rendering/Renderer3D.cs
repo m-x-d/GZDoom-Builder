@@ -19,7 +19,6 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.GZBuilder.Data;
@@ -1444,7 +1443,7 @@ namespace CodeImp.DoomBuilder.Rendering
 					float sy = t.Thing.ScaleY * t.Thing.ActorScale.Height;
 
 					Matrix modelscale = Matrix.Scaling(sx, sx, sy);
-					Matrix modelrotation = Matrix.RotationY(-t.Thing.RollRad) * Matrix.RotationX(t.Thing.PitchRad) * Matrix.RotationZ(t.Thing.Angle);
+					Matrix modelrotation = Matrix.RotationY(-t.Thing.RollRad) * Matrix.RotationX(-t.Thing.PitchRad) * Matrix.RotationZ(t.Thing.Angle);
 
 					world = General.Map.Data.ModeldefEntries[t.Thing.Type].Transform * modelscale * modelrotation * t.Position;
 					ApplyMatrices3D();
@@ -1543,7 +1542,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				float sy = t.Thing.ScaleY * t.Thing.ActorScale.Height;
 
 				Matrix modelscale = Matrix.Scaling(sx, sx, sy);
-				Matrix modelrotation = Matrix.RotationY(-t.Thing.RollRad) * Matrix.RotationX(t.Thing.PitchRad) * Matrix.RotationZ(t.Thing.Angle);
+				Matrix modelrotation = Matrix.RotationY(-t.Thing.RollRad) * Matrix.RotationX(-t.Thing.PitchRad) * Matrix.RotationZ(t.Thing.Angle);
 
 				world = General.Map.Data.ModeldefEntries[t.Thing.Type].Transform * modelscale * modelrotation * t.Position;
 				ApplyMatrices3D();
