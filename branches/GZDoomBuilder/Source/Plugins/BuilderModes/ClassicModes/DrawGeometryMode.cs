@@ -308,10 +308,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			DrawnVertex p = new DrawnVertex();
 			p.stitch = true; //mxd. Setting these to false seems to be a good way to create invalid geometry...
 			p.stitchline = true; //mxd
+			snaptocardinal = (snaptocardinal && points.Count > 0); //mxd. Don't snap to cardinal when there are no points
 
 			//mxd. If snap to cardinal directions is enabled and we have points, modify mouse position
 			Vector2D vm, gridoffset;
-			if(snaptocardinal && points.Count > 0)
+			if(snaptocardinal)
 			{
 				Vector2D offset = mousemappos - points[points.Count - 1].pos;
 				
@@ -354,7 +355,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(nv != null)
 				{
 					//mxd. Line angle must stay the same
-					if(snaptocardinal) //mxd
+					if(snaptocardinal)
 					{
 						Line2D ourline = new Line2D(points[points.Count - 1].pos, vm);
 						if(Math.Round(ourline.GetSideOfLine(nv.Position), 1) == 0)
@@ -377,23 +378,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					//mxd. Line angle must stay the same
 					if(snaptocardinal)
 					{
-						if(points.Count > 0)
+						Line2D ourline = new Line2D(points[points.Count - 1].pos, vm);
+						Line2D nearestline = new Line2D(nl.Start.Position, nl.End.Position);
+						Vector2D intersection = Line2D.GetIntersectionPoint(nearestline, ourline, false);
+						if(!float.IsNaN(intersection.x))
 						{
-							Line2D ourline = new Line2D(points[points.Count - 1].pos, vm);
-							Line2D nearestline = new Line2D(nl.Start.Position, nl.End.Position);
-							Vector2D intersection = Line2D.GetIntersectionPoint(nearestline, ourline, false);
-							if(!float.IsNaN(intersection.x))
-							{
-								// Intersection is on nearestline?
-								float u = Line2D.GetNearestOnLine(nearestline.v1, nearestline.v2, intersection);
+							// Intersection is on nearestline?
+							float u = Line2D.GetNearestOnLine(nearestline.v1, nearestline.v2, intersection);
 
-								if(u < 0f || u > 1f) { }
-								else
-								{
-									p.pos = new Vector2D((float)Math.Round(intersection.x, General.Map.FormatInterface.VertexDecimals),
-														 (float)Math.Round(intersection.y, General.Map.FormatInterface.VertexDecimals));
-									return p;
-								}
+							if(u < 0f || u > 1f) { }
+							else
+							{
+								p.pos = new Vector2D((float)Math.Round(intersection.x, General.Map.FormatInterface.VertexDecimals),
+													 (float)Math.Round(intersection.y, General.Map.FormatInterface.VertexDecimals));
+								return p;
 							}
 						}
 					}
