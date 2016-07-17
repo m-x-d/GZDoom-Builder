@@ -443,9 +443,25 @@ namespace CodeImp.DoomBuilder.Map
 			BeforePropsChange();
 
 			pitch = General.ClampAngle(newpitch);
-			ModelData md = General.Map.Data.ModeldefEntries[type];
-			pitchrad = ((rendermode == ThingRenderMode.FLATSPRITE || (rendermode == ThingRenderMode.MODEL && (md.InheritActorPitch || md.UseActorPitch)))
-				? Angle2D.DegToRad(md.InheritActorPitch ? -pitch : pitch) : 0);
+
+			switch(rendermode)
+			{
+				case ThingRenderMode.MODEL:
+					ModelData md = General.Map.Data.ModeldefEntries[type];
+					if(md.InheritActorPitch || md.UseActorPitch)
+						pitchrad = Angle2D.DegToRad(md.InheritActorPitch ? -pitch : pitch);
+					else
+						pitchrad = 0;
+					break;
+
+				case ThingRenderMode.FLATSPRITE:
+					pitchrad = Angle2D.DegToRad(pitch);
+					break;
+
+				default:
+					pitchrad = 0;
+					break;
+			}
 
 			if(type != General.Map.Config.Start3DModeThingType)
 				General.Map.IsChanged = true;
