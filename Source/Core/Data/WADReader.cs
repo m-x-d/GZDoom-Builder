@@ -988,7 +988,10 @@ namespace CodeImp.DoomBuilder.Data
 				if(lump != null)
 				{
 					voxellocation = location.GetDisplayName();
-					return lump.Stream;
+					
+					// Copy stream, because model/voxel streams are expected to be disposed
+					lump.Stream.Seek(0, SeekOrigin.Begin); // Rewind before use
+					return new MemoryStream(lump.Stream.ReadAllBytes());
 				}
 			}
 
