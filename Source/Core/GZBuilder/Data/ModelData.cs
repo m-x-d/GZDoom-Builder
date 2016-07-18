@@ -30,7 +30,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 		#region ================== Properties
 
 		internal List<string> ModelNames;
-		internal List<string> TextureNames;
+		internal List<string> SkinNames;
+		internal List<Dictionary<int, string>> SurfaceSkinNames;
 		internal List<string> FrameNames;
 		internal List<int> FrameIndices;
 
@@ -62,7 +63,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 		internal ModelData() 
 		{
 			ModelNames = new List<string>();
-			TextureNames = new List<string>();
+			SkinNames = new List<string>();
+			SurfaceSkinNames = new List<Dictionary<int, string>>();
 			FrameNames = new List<string>();
 			FrameIndices = new List<int>();
 			transform = Matrix.Identity;

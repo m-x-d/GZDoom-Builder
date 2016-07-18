@@ -3210,7 +3210,7 @@ namespace CodeImp.DoomBuilder.Data
 			// Load the skysphere model...
 			BoundingBoxSizes bbs = new BoundingBoxSizes();
 			Stream modeldata = General.ThisAssembly.GetManifestResourceStream("CodeImp.DoomBuilder.Resources.SkySphere.md3");
-			ModelReader.MD3LoadResult meshes = ModelReader.ReadMD3Model(ref bbs, true, modeldata, device, 0);
+			ModelReader.MD3LoadResult meshes = ModelReader.ReadMD3Model(ref bbs, new Dictionary<int, string>(), modeldata, device, 0);
 			if(meshes.Meshes.Count != 3) throw new Exception("Skybox creation failed: " 
 				+ (string.IsNullOrEmpty(meshes.Errors) ? "skybox model must contain 3 surfaces" : meshes.Errors));
 

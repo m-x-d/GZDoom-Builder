@@ -602,7 +602,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label1
 			// 
 			label1.AutoSize = true;
-			label1.Location = new System.Drawing.Point(41, 171);
+			label1.Location = new System.Drawing.Point(43, 171);
 			label1.Name = "label1";
 			label1.Size = new System.Drawing.Size(145, 13);
 			label1.TabIndex = 20;
@@ -612,11 +612,11 @@ namespace CodeImp.DoomBuilder.Windows
 			// label18
 			// 
 			label18.AutoSize = true;
-			label18.Location = new System.Drawing.Point(41, 208);
+			label18.Location = new System.Drawing.Point(80, 208);
 			label18.Name = "label18";
-			label18.Size = new System.Drawing.Size(147, 13);
+			label18.Size = new System.Drawing.Size(108, 13);
 			label18.TabIndex = 25;
-			label18.Text = "Max. dynamic lights to render:";
+			label18.Text = "Dynamic lights count:";
 			label18.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			this.toolTip1.SetToolTip(label18, "Controls how many dynamic lights could be \r\nrendered simultaneously in Visual mod" +
 					"e ");
@@ -654,7 +654,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label29
 			// 
 			label29.AutoSize = true;
-			label29.Location = new System.Drawing.Point(90, 356);
+			label29.Location = new System.Drawing.Point(96, 356);
 			label29.Name = "label29";
 			label29.Size = new System.Drawing.Size(93, 13);
 			label29.TabIndex = 38;
@@ -1704,7 +1704,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label32
 			// 
 			this.label32.AutoSize = true;
-			this.label32.Location = new System.Drawing.Point(44, 134);
+			this.label32.Location = new System.Drawing.Point(49, 134);
 			this.label32.Name = "label32";
 			this.label32.Size = new System.Drawing.Size(139, 13);
 			this.label32.TabIndex = 44;
@@ -1724,7 +1724,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label30
 			// 
 			this.label30.AutoSize = true;
-			this.label30.Location = new System.Drawing.Point(16, 97);
+			this.label30.Location = new System.Drawing.Point(15, 97);
 			this.label30.Name = "label30";
 			this.label30.Size = new System.Drawing.Size(173, 13);
 			this.label30.TabIndex = 41;
@@ -1845,14 +1845,13 @@ namespace CodeImp.DoomBuilder.Windows
 			// tbDynLightCount
 			// 
 			this.tbDynLightCount.BackColor = System.Drawing.SystemColors.Window;
-			this.tbDynLightCount.LargeChange = 3;
+			this.tbDynLightCount.LargeChange = 1;
 			this.tbDynLightCount.Location = new System.Drawing.Point(199, 197);
-			this.tbDynLightCount.Maximum = 32;
+			this.tbDynLightCount.Maximum = 8;
 			this.tbDynLightCount.Minimum = 1;
 			this.tbDynLightCount.Name = "tbDynLightCount";
 			this.tbDynLightCount.Size = new System.Drawing.Size(154, 45);
 			this.tbDynLightCount.TabIndex = 5;
-			this.tbDynLightCount.TickFrequency = 4;
 			this.tbDynLightCount.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
 			this.tbDynLightCount.Value = 1;
 			this.tbDynLightCount.ValueChanged += new System.EventHandler(this.tbDynLightCount_ValueChanged);

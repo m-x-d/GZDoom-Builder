@@ -33,7 +33,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 		#region ================== Variables
 
-		private string[] texturenames;
+		private string[] skinnames;
+		private Dictionary<int, string>[] surfaceskinenames;
 		private string[] modelnames;
 		private string path;
 		private Vector3 scale;
@@ -51,7 +52,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 		#region ================== Properties
 
-		public string[] TextureNames { get { return texturenames; } }
+		public string[] SkinNames { get { return skinnames; } }
+		public Dictionary<int, string>[] SurfaceSkinNames { get { return surfaceskinenames; } }
 		public string[] ModelNames { get { return modelnames; } }
 		public Vector3 Scale { get { return scale; } }
 		public Vector3 Offset { get { return offset; } }
@@ -70,10 +72,15 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 		internal ModeldefStructure()
 		{
-			texturenames = new string[MAX_MODELS];
+			skinnames = new string[MAX_MODELS];
 			modelnames = new string[MAX_MODELS];
 			frames = new Dictionary<string, HashSet<FrameStructure>>(StringComparer.OrdinalIgnoreCase);
 			scale = new Vector3(1.0f, 1.0f, 1.0f);
+			surfaceskinenames = new Dictionary<int, string>[MAX_MODELS];
+			for(int i = 0; i < MAX_MODELS; i++)
+			{
+				surfaceskinenames[i] = new Dictionary<int, string>();
+			}
 		}
 
 		#endregion
@@ -194,7 +201,72 @@ namespace CodeImp.DoomBuilder.ZDoom
 						} 
 
 						// GZDoom allows skins with identical index, it uses the last one encountered
-						texturenames[skinindex] = Path.Combine(path, token);
+						skinnames[skinindex] = Path.Combine(path, token);
+						break;
+
+					// SurfaceSkin <int modelindex> <int surfaceindex> <string skinfile>
+					case "surfaceskin":
+						parser.SkipWhitespace(true);
+
+						// Model index
+						int modelindex = 0;
+						token = parser.ReadToken();
+						if(!parser.ReadSignedInt(token, ref modelindex))
+						{
+							// Not numeric!
+							parser.ReportError("Expected model index, but got \"" + token + "\"");
+							return false;
+						}
+
+						if(modelindex < 0 || modelindex >= MAX_MODELS)
+						{
+							// Out of bounds
+							parser.ReportError("Model index must be in [0.." + (MAX_MODELS - 1) + "] range");
+							return false;
+						}
+
+						parser.SkipWhitespace(true);
+
+						// Surfaceindex index
+						int surfaceindex = 0;
+						token = parser.ReadToken();
+						if(!parser.ReadSignedInt(token, ref surfaceindex))
+						{
+							// Not numeric!
+							parser.ReportError("Expected surface index, but got \"" + token + "\"");
+							return false;
+						}
+
+						if(surfaceindex < 0)
+						{
+							// Out of bounds
+							parser.ReportError("Surface index must be positive integer");
+							return false;
+						}
+
+						parser.SkipWhitespace(true);
+
+						// Skin path
+						token = parser.StripTokenQuotes(parser.ReadToken(false)).ToLowerInvariant(); // Don't skip newline
+						if(string.IsNullOrEmpty(token))
+						{
+							parser.ReportError("Expected skin path");
+							return false;
+						}
+
+						// Check invalid path chars
+						if(!parser.CheckInvalidPathChars(token)) return false;
+
+						// Check extension
+						string skinext = Path.GetExtension(token);
+						if(Array.IndexOf(ModelData.SUPPORTED_TEXTURE_EXTENSIONS, skinext) == -1)
+						{
+							parser.ReportError("Image format \"" + skinext + "\" is not supported");
+							return false;
+						} 
+
+						// Store
+						surfaceskinenames[modelindex][surfaceindex] = Path.Combine(path, token);
 						break;
 
 					case "scale":
@@ -511,11 +583,21 @@ namespace CodeImp.DoomBuilder.ZDoom
 			}
 
 			// Check skin-model associations
-			for(int i = 0; i < texturenames.Length; i++)
+			for(int i = 0; i < skinnames.Length; i++)
 			{
-				if(!string.IsNullOrEmpty(texturenames[i]) && string.IsNullOrEmpty(modelnames[i]))
+				if(!string.IsNullOrEmpty(skinnames[i]) && string.IsNullOrEmpty(modelnames[i]))
 				{
-					parser.ReportError("No model is defined for skin " + i + ":\"" + texturenames[i] + "\"");
+					parser.ReportError("No model is defined for skin " + i + ":\"" + skinnames[i] + "\"");
+					return false;
+				}
+			}
+
+			// Check surfaceskin-model associations
+			for(int i = 0; i < surfaceskinenames.Length; i++)
+			{
+				if(surfaceskinenames[i].Count > 0 && string.IsNullOrEmpty(modelnames[i]))
+				{
+					parser.ReportError("No model is defined for surface skin " + i);
 					return false;
 				}
 			}

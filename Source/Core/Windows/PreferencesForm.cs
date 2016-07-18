@@ -97,7 +97,7 @@ namespace CodeImp.DoomBuilder.Windows
 			checkforupdates.Checked = General.Settings.CheckForUpdates;
 			toolbar_gzdoom.Checked = General.Settings.GZToolbarGZDoom;
 			cbSynchCameras.Checked = General.Settings.GZSynchCameras;
-			tbDynLightCount.Value = General.Clamp(General.Settings.GZMaxDynamicLights, tbDynLightCount.Minimum, tbDynLightCount.Maximum);
+			tbDynLightCount.Value = General.Clamp(General.Settings.GZMaxDynamicLights / 8, tbDynLightCount.Minimum, tbDynLightCount.Maximum);
 			labelDynLightCount.Text = General.Settings.GZMaxDynamicLights.ToString();
 			tbDynLightSize.Value = General.Clamp((int)(General.Settings.GZDynamicLightRadius * 10), tbDynLightSize.Minimum, tbDynLightSize.Maximum);
 			labelDynLightSize.Text = General.Settings.GZDynamicLightRadius.ToString();
@@ -409,7 +409,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 			//mxd
 			General.Settings.GZSynchCameras = cbSynchCameras.Checked;
-			General.Settings.GZMaxDynamicLights = tbDynLightCount.Value;
+			General.Settings.GZMaxDynamicLights = tbDynLightCount.Value * 8;
 			General.Settings.GZDynamicLightRadius = (tbDynLightSize.Value / 10.0f);
 			General.Settings.GZDynamicLightIntensity = (tbDynLightIntensity.Value / 10.0f);
 			General.Settings.FilterAnisotropy = D3DDevice.AF_STEPS[anisotropicfiltering.Value];
@@ -1006,7 +1006,7 @@ namespace CodeImp.DoomBuilder.Windows
 		//mxd
 		private void tbDynLightCount_ValueChanged(object sender, EventArgs e) 
 		{
-			labelDynLightCount.Text = tbDynLightCount.Value.ToString();
+			labelDynLightCount.Text = (tbDynLightCount.Value * 8).ToString();
 		}
 
 		//mxd

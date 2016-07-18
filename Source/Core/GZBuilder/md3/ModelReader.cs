@@ -77,7 +77,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 			}
 
 			//clear unneeded data
-			mde.TextureNames = null;
+			mde.SkinNames = null;
 			mde.ModelNames = null;
 
 			if(mde.Model.Meshes == null || mde.Model.Meshes.Count == 0) 
@@ -95,10 +95,15 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 			//load models and textures
 			for(int i = 0; i < mde.ModelNames.Count; i++) 
 			{
-				//need to use model skins?
-				bool useSkins = string.IsNullOrEmpty(mde.TextureNames[i]);
+				// Use model skins?
+				// INFO: Skin MODELDEF property overrides both embedded surface names and ones set using SurfaceSkin MODELDEF property 
+				Dictionary<int, string> skins = null;
+				if(string.IsNullOrEmpty(mde.SkinNames[i]))
+				{
+					skins = (mde.SurfaceSkinNames[i].Count > 0 ? mde.SurfaceSkinNames[i] : new Dictionary<int, string>());
+				}
 			
-				//load mesh
+				// Load mesh
 				MemoryStream ms = LoadFile(containers, mde.ModelNames[i], true);
 				if(ms == null) 
 				{
@@ -115,7 +120,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 							General.ErrorLogger.Add(ErrorType.Error, "Error while loading \"" + mde.ModelNames[i] + "\": frame names are not supported for MD3 models!");
 							continue;
 						}
-						result = ReadMD3Model(ref bbs, useSkins, ms, device, mde.FrameIndices[i]);
+						result = ReadMD3Model(ref bbs, skins, ms, device, mde.FrameIndices[i]);
 						break;
 					case ".md2":
 						result = ReadMD2Model(ref bbs, ms, device, mde.FrameIndices[i], mde.FrameNames[i]);
@@ -145,7 +150,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 					List<string> errors = new List<string>();
 
 					// Texture not defined in MODELDEF?
-					if(useSkins) 
+					if(skins != null) 
 					{
 						//try to use model's own skins 
 						for(int m = 0; m < result.Meshes.Count; m++) 
@@ -169,7 +174,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 
 							//relative path?
 							if(path.IndexOf(Path.DirectorySeparatorChar) == -1)
-								path = Path.Combine(Path.GetDirectoryName(mde.ModelNames[useSkins ? i : m]), path);
+								path = Path.Combine(Path.GetDirectoryName(mde.ModelNames[i]), path);
 
 							Texture t = LoadTexture(containers, path, device);
 
@@ -186,11 +191,11 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 					//Try to use texture loaded from MODELDEFS
 					else
 					{
-						Texture t = LoadTexture(containers, mde.TextureNames[i], device);
+						Texture t = LoadTexture(containers, mde.SkinNames[i], device);
 						if(t == null) 
 						{
 							mde.Model.Textures.Add(General.Map.Data.UnknownTexture3D.Texture);
-							errors.Add("unable to load texture \"" + mde.TextureNames[i] + "\"");
+							errors.Add("unable to load texture \"" + mde.SkinNames[i] + "\"");
 						} 
 						else 
 						{
@@ -208,7 +213,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 			}
 
 			//clear unneeded data
-			mde.TextureNames = null;
+			mde.SkinNames = null;
 			mde.ModelNames = null;
 
 			if(mde.Model.Meshes == null || mde.Model.Meshes.Count == 0) 
@@ -231,7 +236,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 
 		#region ================== MD3
 
-		internal static MD3LoadResult ReadMD3Model(ref BoundingBoxSizes bbs, bool useSkins, Stream s, Device device, int frame) 
+		internal static MD3LoadResult ReadMD3Model(ref BoundingBoxSizes bbs, Dictionary<int, string> skins, Stream s, Device device, int frame) 
 		{
 			long start = s.Position;
 			MD3LoadResult result = new MD3LoadResult();
@@ -265,6 +270,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 				Dictionary<string, List<List<int>>> polyIndecesListsPerTexture = new Dictionary<string, List<List<int>>>(StringComparer.Ordinal);
 				Dictionary<string, List<WorldVertex>> vertListsPerTexture = new Dictionary<string, List<WorldVertex>>(StringComparer.Ordinal);
 				Dictionary<string, List<int>> vertexOffsets = new Dictionary<string, List<int>>(StringComparer.Ordinal);
+				bool useskins = false;
 
 				for(int c = 0; c < numSurfaces; c++) 
 				{
@@ -277,8 +283,22 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 						return result;
 					}
 
-					if(useSkins) 
+					// Pick a skin to use
+					if(skins == null)
 					{
+						// skins is null when Skin MODELDEF property is set
+						skin = string.Empty;
+					}
+					else if(skins.ContainsKey(c))
+					{
+						// Overrtide surface skin with SurfaceSkin MODELDEF property
+						skin = skins[c];
+					}
+
+					if(!string.IsNullOrEmpty(skin))
+					{
+						useskins = true;
+						
 						if(polyIndecesListsPerTexture.ContainsKey(skin)) 
 						{
 							polyIndecesListsPerTexture[skin].Add(polyIndecesList);
@@ -298,8 +318,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.MD3
 					}
 				}
 
-				if(!useSkins) 
-				{ 
+				if(!useskins) 
+				{
 					//create mesh
 					CreateMesh(device, ref result, vertList, polyIndecesList);
 					result.Skins.Add("");
