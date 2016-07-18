@@ -308,6 +308,8 @@ namespace CodeImp.DoomBuilder.Data
 							}
 						}
 					}
+
+					lumpdata.Dispose();
 				}
 				else
 				{

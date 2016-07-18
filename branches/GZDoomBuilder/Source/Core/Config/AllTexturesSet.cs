@@ -16,6 +16,7 @@
 
 #region ================== Namespaces
 
+using System;
 using System.Collections.Generic;
 using CodeImp.DoomBuilder.Data;
 
@@ -27,22 +28,22 @@ namespace CodeImp.DoomBuilder.Config
 	{
 		#region ================== Constants
 
-		public const string NAME = "All";
+		private const string NAME = "All";
 
 		#endregion
 
 		#region ================== Variables
 
 		// Matching textures and flats
-		private List<ImageData> textures;
-		private List<ImageData> flats;
+		private Dictionary<string, ImageData> textures;
+		private Dictionary<string, ImageData> flats;
 
 		#endregion
 
 		#region ================== Properties
 
-		public ICollection<ImageData> Textures { get { return textures; } }
-		public ICollection<ImageData> Flats { get { return flats; } }
+		public ICollection<ImageData> Textures { get { return textures.Values; } }
+		public ICollection<ImageData> Flats { get { return flats.Values; } }
 
 		#endregion
 
@@ -52,8 +53,8 @@ namespace CodeImp.DoomBuilder.Config
 		public AllTextureSet()
 		{
 			this.name = NAME;
-			this.textures = new List<ImageData>();
-			this.flats = new List<ImageData>();
+			this.textures = new Dictionary<string, ImageData>(StringComparer.Ordinal);
+			this.flats = new Dictionary<string, ImageData>(StringComparer.Ordinal);
 		}
 
 		#endregion
@@ -62,12 +63,15 @@ namespace CodeImp.DoomBuilder.Config
 
 		internal void AddTexture(ImageData image)
 		{
-			textures.Add(image);
+			//mxd. Use short name when adding a texture with "classic" name to override same-named textures 
+			// with textures loaded from directory/pk3 containters
+			textures[image.DisplayName.Length > 8 ? image.Name : image.ShortName] = image;
 		}
 
 		internal void AddFlat(ImageData image)
 		{
-			flats.Add(image);
+			//mxd. Same with flats
+			flats[image.DisplayName.Length > 8 ? image.Name : image.ShortName] = image;
 		}
 
 		#endregion
