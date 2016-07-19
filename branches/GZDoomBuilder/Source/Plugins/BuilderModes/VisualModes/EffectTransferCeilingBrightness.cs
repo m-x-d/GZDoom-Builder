@@ -1,6 +1,7 @@
 ﻿#region === Copyright (c) 2015 MaxED ===
 
 using CodeImp.DoomBuilder.Map;
+using CodeImp.DoomBuilder.Rendering;
 
 #endregion
 
@@ -31,8 +32,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(!sd.Updated) sd.Update();
 			sd.AddUpdateSector(data.Sector, false);
 
-			// Transfer ceiling brightness
-			data.Ceiling.color = General.Map.Renderer3D.CalculateBrightness(sd.Sector.Brightness);
+			// Transfer ceiling brightness, keep sector color
+			PixelColor lightcolor = PixelColor.FromInt(data.Sector.Fields.GetValue("lightcolor", -1));
+			PixelColor brightness = PixelColor.FromInt(General.Map.Renderer3D.CalculateBrightness(sd.Sector.Brightness));
+			data.Ceiling.color = PixelColor.Modulate(lightcolor, brightness).WithAlpha(255).ToInt();
 		}
 	}
 }
