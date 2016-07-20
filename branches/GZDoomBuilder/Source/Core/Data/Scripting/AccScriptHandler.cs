@@ -25,7 +25,7 @@ namespace CodeImp.DoomBuilder.Data.Scripting
 			target.Items.Clear();
 
 			AcsParserSE parser = new AcsParserSE { AddArgumentsToScriptNames = true, IsMapScriptsLump = tab is ScriptLumpDocumentTab, IgnoreErrors = true };
-			DataLocation dl = new DataLocation(DataLocation.RESOURCE_DIRECTORY, Path.GetDirectoryName(tab.Filename), false, false, false);
+			DataLocation dl = new DataLocation(DataLocation.RESOURCE_DIRECTORY, Path.GetDirectoryName(string.IsNullOrEmpty(tab.Filename)? tab.Title : tab.Filename), false, false, false);
 			TextResourceData data = new TextResourceData(stream, dl, (parser.IsMapScriptsLump ? "?SCRIPTS" : tab.Filename), false);
 
 			if(parser.Parse(data, false))

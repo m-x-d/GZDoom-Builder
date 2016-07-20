@@ -745,19 +745,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This requires that the blockmap is up-to-date!
 		internal void RebuildElementData()
 		{
-			//mxd
-			Sector[] sectorsWithEffects = null;
+			HashSet<Sector> effectsectors = null; //mxd
 
-			if(!General.Settings.GZDoomRenderingEffects) 
+			if(!General.Settings.GZDoomRenderingEffects) //mxd
 			{
-				//store all sectors with effects
+				// Store all sectors with effects
 				if(sectordata != null && sectordata.Count > 0) 
-				{
-					sectorsWithEffects = new Sector[sectordata.Count];
-					sectordata.Keys.CopyTo(sectorsWithEffects, 0);
-				}
+					effectsectors = new HashSet<Sector>(sectordata.Keys);
 
-				//remove all vertex handles from selection
+				// Remove all vertex handles from selection
 				if(vertices != null && vertices.Count > 0) 
 				{
 					foreach(IVisualEventReceiver i in selectedobjects)
@@ -771,17 +767,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			sectordata = new Dictionary<Sector, SectorData>(General.Map.Map.Sectors.Count);
 			thingdata = new Dictionary<Thing, ThingData>(General.Map.Map.Things.Count);
 
-			//mxd. rebuild all sectors with effects
-			if(sectorsWithEffects != null) 
+			//mxd. Rebuild all sectors with effects
+			if(effectsectors != null) 
 			{
-				for(int i = 0; i < sectorsWithEffects.Length; i++) 
+				foreach(Sector s in effectsectors)
 				{
+					if(!VisualSectorExists(s)) continue;
+
 					// The visual sector associated is now outdated
-					if(VisualSectorExists(sectorsWithEffects[i])) 
-					{
-						BaseVisualSector vs = (BaseVisualSector)GetVisualSector(sectorsWithEffects[i]);
-						vs.UpdateSectorGeometry(true);
-					}
+					BaseVisualSector vs = (BaseVisualSector)GetVisualSector(s);
+					vs.UpdateSectorGeometry(true);
 				}
 			}
 
@@ -793,7 +788,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			if(!General.Settings.GZDoomRenderingEffects) return; //mxd
 			
-			// Find all sector who's tag is not 0 and hash them so that we can find them quicly
+			// Find all sector who's tag is not 0 and hash them so that we can find them quickly
 			foreach(Sector s in General.Map.Map.Sectors)
 			{
 				foreach(int tag in s.Tags)
@@ -852,10 +847,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Find interesting linedefs (such as line slopes)
 			foreach(Linedef l in General.Map.Map.Linedefs)
 			{
-				switch(l.Action)
+				//mxd. Rewritten to use action ID instead of number
+				if(l.Action == 0 || !General.Map.Config.LinedefActions.ContainsKey(l.Action)) continue;
+
+				switch(General.Map.Config.LinedefActions[l.Action].Id.ToLowerInvariant())
 				{
-					// ========== Plane Align (see http://zdoom.org/wiki/Plane_Align) ==========
-					case 181:
+					// ========== Plane Align (181) (see http://zdoom.org/wiki/Plane_Align) ==========
+					case "plane_align":
 						if(((l.Args[0] == 1) || (l.Args[1] == 1)) && (l.Front != null))
 						{
 							SectorData sd = GetSectorData(l.Front.Sector);
@@ -868,8 +866,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						}
 						break;
 
-					// ========== Plane Copy (mxd) (see http://zdoom.org/wiki/Plane_Copy) ==========
-					case 118: 
+					// ========== Plane Copy (118) (mxd) (see http://zdoom.org/wiki/Plane_Copy) ==========
+					case "plane_copy": 
 					{
 						//check the flags...
 						bool floorCopyToBack = false;
@@ -907,8 +905,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 						break;
 
-					// ========== Sector 3D floor (see http://zdoom.org/wiki/Sector_Set3dFloor) ==========
-					case 160:
+					// ========== Sector 3D floor (160) (see http://zdoom.org/wiki/Sector_Set3dFloor) ==========
+					case "sector_set3dfloor":
 						if(l.Front != null)
 						{
 							//mxd. Added hi-tag/line ID check 
@@ -925,8 +923,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						}
 						break;
 
-					// ========== Transfer Brightness (see http://zdoom.org/wiki/ExtraFloor_LightOnly) =========
-					case 50:
+					// ========== Transfer Brightness (50) (see http://zdoom.org/wiki/ExtraFloor_LightOnly) =========
+					case "extrafloor_lightonly":
 						if(l.Front != null && sectortags.ContainsKey(l.Args[0]))
 						{
 							List<Sector> sectors = sectortags[l.Args[0]];
@@ -938,8 +936,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						}
 						break;
 
-					// ========== mxd. Transfer Floor Brightness (see http://www.zdoom.org/w/index.php?title=Transfer_FloorLight) =========
-					case 210:
+					// ========== mxd. Transfer Floor Brightness (210) (see http://www.zdoom.org/w/index.php?title=Transfer_FloorLight) =========
+					case "transfer_floorlight":
 						if(l.Front != null && sectortags.ContainsKey(l.Args[0])) 
 						{
 							List<Sector> sectors = sectortags[l.Args[0]];
@@ -951,8 +949,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						}
 						break;
 
-					// ========== mxd. Transfer Ceiling Brightness (see http://www.zdoom.org/w/index.php?title=Transfer_CeilingLight) =========
-					case 211:
+					// ========== mxd. Transfer Ceiling Brightness (211) (see http://www.zdoom.org/w/index.php?title=Transfer_CeilingLight) =========
+					case "transfer_ceilinglight":
 						if(l.Front != null && sectortags.ContainsKey(l.Args[0])) 
 						{
 							List<Sector> sectors = sectortags[l.Args[0]];
@@ -963,10 +961,37 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							}
 						}
 						break;
+
+					// ========== mxd. BOOM: Set Tagged Floor Lighting to Lighting on 1st Sidedef's Sector (213) =========
+					case "boom_transfer_floorlight":
+						if(l.Front != null && sectortags.ContainsKey(l.Tag))
+						{
+							List<Sector> sectors = sectortags[l.Tag];
+							foreach(Sector s in sectors)
+							{
+								SectorData sd = GetSectorData(s);
+								sd.AddEffectTransferFloorBrightness(l);
+							}
+						}
+						break;
+
+					// ========== mxd. BOOM: Set Tagged Ceiling Lighting to Lighting on 1st Sidedef's Sector (261) =========
+					case "boom_transfer_ceilinglight":
+						if(l.Front != null && sectortags.ContainsKey(l.Tag))
+						{
+							List<Sector> sectors = sectortags[l.Tag];
+							foreach(Sector s in sectors)
+							{
+								SectorData sd = GetSectorData(s);
+								sd.AddEffectTransferCeilingBrightness(l);
+							}
+						}
+						break;
 				}
 			}
 
 			// Find interesting things (such as sector slopes)
+			//TODO: rewrite using classnames instead of numbers
 			foreach(Thing t in General.Map.Map.Things)
 			{
 				switch(t.Type)

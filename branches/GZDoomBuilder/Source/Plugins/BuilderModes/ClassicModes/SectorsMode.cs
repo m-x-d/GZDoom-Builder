@@ -2524,13 +2524,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Make undo
 			if(selected.Count > 1)
 			{
-				General.Map.UndoRedo.CreateUndo("Align linedefs of " + selected.Count + " sectors");
-				General.Interface.DisplayStatus(StatusType.Action, "Aligned linedefs of " + selected.Count + "sectors.");
+				General.Map.UndoRedo.CreateUndo("Flip linedefs of " + selected.Count + " sectors");
+				General.Interface.DisplayStatus(StatusType.Action, "Flipped linedefs of " + selected.Count + "sectors.");
 			}
 			else
 			{
-				General.Map.UndoRedo.CreateUndo("Align sector linedefs");
-				General.Interface.DisplayStatus(StatusType.Action, "Aligned sector linedefs.");
+				General.Map.UndoRedo.CreateUndo("Flip sector linedefs");
+				General.Interface.DisplayStatus(StatusType.Action, "Flipped sector linedefs.");
 			}
 
 			HashSet<Linedef> selectedlines = new HashSet<Linedef>();
@@ -2538,7 +2538,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				foreach(Sidedef side in s.Sidedefs)
 				{
-					if(!selectedlines.Contains(side.Line)) selectedlines.Add(side.Line);
+					// Skip single-sided lines with only front side
+					if(!selectedlines.Contains(side.Line) && (side.Line.Back != null || side.Line.Front == null))
+						selectedlines.Add(side.Line);
 				}
 			}
 
