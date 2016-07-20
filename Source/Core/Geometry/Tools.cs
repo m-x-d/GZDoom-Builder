@@ -2314,8 +2314,12 @@ namespace CodeImp.DoomBuilder.Geometry
 				{
 					foreach(Linedef l in frontlines) 
 					{
-						l.FlipVertices();
-						l.FlipSidedefs();
+						// Skip single-sided lines with only front side
+						if(l.Back != null)
+						{
+							l.FlipVertices();
+							l.FlipSidedefs();
+						}
 					}
 				}
 			}
