@@ -72,6 +72,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 		internal ModeldefStructure()
 		{
+			path = string.Empty;
 			skinnames = new string[MAX_MODELS];
 			modelnames = new string[MAX_MODELS];
 			frames = new Dictionary<string, HashSet<FrameStructure>>(StringComparer.OrdinalIgnoreCase);
@@ -156,7 +157,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 						}
 
 						// GZDoom allows models with identical index, it uses the last one encountered
-						modelnames[index] = Path.Combine(path, token);
+						modelnames[index] = Path.Combine(path, token).Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
 						break;
 
 					case "skin":
@@ -201,7 +202,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 						} 
 
 						// GZDoom allows skins with identical index, it uses the last one encountered
-						skinnames[skinindex] = Path.Combine(path, token);
+						skinnames[skinindex] = Path.Combine(path, token).Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
 						break;
 
 					// SurfaceSkin <int modelindex> <int surfaceindex> <string skinfile>
@@ -266,7 +267,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 						} 
 
 						// Store
-						surfaceskinenames[modelindex][surfaceindex] = Path.Combine(path, token);
+						surfaceskinenames[modelindex][surfaceindex] = Path.Combine(path, token).Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar);
 						break;
 
 					case "scale":
