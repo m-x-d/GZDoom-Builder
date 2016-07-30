@@ -387,8 +387,14 @@ namespace CodeImp.DoomBuilder.Controls
 		// Item dropped
 		private void resourceitems_DragDrop(object sender, DragEventArgs e)
 		{
-			if(!e.Data.GetDataPresent(DataFormats.FileDrop)) return;
+			if(!e.Data.GetDataPresent(DataFormats.FileDrop))
+			{
+				//mxd. Items were rearranged. Raise content changed event
+				if(OnContentChanged != null) OnContentChanged();
+				return;
+			}
 
+			//mxd. Accept filesystem drop
 			string[] paths = (string[])e.Data.GetData(DataFormats.FileDrop);
 			int addedfiles = 0;
 			foreach(string path in paths)

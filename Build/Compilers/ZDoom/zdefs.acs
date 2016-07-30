@@ -293,6 +293,7 @@
 #define APROP_DamageMultiplier	43
 #define APROP_MaxStepHeight 44
 #define APROP_MaxDropOffHeight 45
+#define APROP_DamageType	46
 
 // Render Styles ------------------------------------------------------------
 
@@ -368,6 +369,8 @@
 #define MRF_UNDOBYDEATH			0x00000200
 #define MRF_UNDOBYDEATHFORCED	0x00000400
 #define MRF_UNDOBYDEATHSAVES	0x00000800
+#define MRF_UNDOALWAYS			0x00001000
+#define MRF_TRANSFERTRANSLATION 0x00002000
 
 // Shared spawnable things from Hexen. You can spawn these in the other -----
 // games if you provide sprites for them, otherwise they'll be invisible. ---
