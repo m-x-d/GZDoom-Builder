@@ -387,45 +387,43 @@ namespace CodeImp.DoomBuilder.Controls
 		// Item dropped
 		private void resourceitems_DragDrop(object sender, DragEventArgs e)
 		{
-			if(!e.Data.GetDataPresent(DataFormats.FileDrop))
-			{
-				//mxd. Items were rearranged. Raise content changed event
-				if(OnContentChanged != null) OnContentChanged();
-				return;
-			}
-
 			//mxd. Accept filesystem drop
-			string[] paths = (string[])e.Data.GetData(DataFormats.FileDrop);
-			int addedfiles = 0;
-			foreach(string path in paths)
+			if(e.Data.GetDataPresent(DataFormats.FileDrop))
 			{
-				if(File.Exists(path))
+				string[] paths = (string[])e.Data.GetData(DataFormats.FileDrop);
+				int addedfiles = 0;
+				foreach(string path in paths)
 				{
-					string ext = Path.GetExtension(path);
-					if(string.IsNullOrEmpty(ext)) continue;
-					switch(ext.ToLower())
+					if(File.Exists(path))
 					{
-						case ".wad":
-							if(AddItem(new DataLocation(DataLocation.RESOURCE_WAD, path, false, false, false)))
-								addedfiles++;
-							break;
-						case ".pk7":
-						case ".pk3":
-							if(AddItem(new DataLocation(DataLocation.RESOURCE_PK3, path, false, false, false)))
-								addedfiles++;
-							break;
+						string ext = Path.GetExtension(path);
+						if(string.IsNullOrEmpty(ext)) continue;
+						switch(ext.ToLower())
+						{
+							case ".wad":
+								if(AddItem(new DataLocation(DataLocation.RESOURCE_WAD, path, false, false, false))) addedfiles++;
+								break;
+							case ".pk7":
+							case ".pk3":
+								if(AddItem(new DataLocation(DataLocation.RESOURCE_PK3, path, false, false, false))) addedfiles++;
+								break;
+						}
+					}
+					else if(Directory.Exists(path))
+					{
+						if(AddItem(new DataLocation(DataLocation.RESOURCE_DIRECTORY, path, false, false, false))) addedfiles++;
 					}
 				}
-				else if(Directory.Exists(path))
+
+				if(addedfiles == 0)
 				{
-					if(AddItem(new DataLocation(DataLocation.RESOURCE_DIRECTORY, path, false, false, false)))
-						addedfiles++;
+					General.Interface.DisplayStatus(StatusType.Warning, "Invalid or duplicate resources!");
+					return;
 				}
 			}
 			
 			// Raise content changed event
-			if(addedfiles > 0 && OnContentChanged != null) OnContentChanged();
-			if(addedfiles == 0) General.Interface.DisplayStatus(StatusType.Warning, "Invalid or duplicate resources!"); //mxd
+			if(OnContentChanged != null) OnContentChanged();
 		}
 
 		// Client size changed

@@ -50,7 +50,8 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 			public PathNode(Thing t, VisualBlockMap blockmap)
 			{
 				thing = t;
-				position = new Vector3D(t.Position, (blockmap != null ? t.Position.z + GetCorrectHeight(t, blockmap) : t.Position.z));
+				position = t.Position;
+				position.z += GetCorrectHeight(t, blockmap, true);
 				nextnodes = new Dictionary<int, PathNode>();
 				prevnodes = new Dictionary<int, PathNode>();
 			}
@@ -73,15 +74,15 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 			}
 		}
 
-		public static IEnumerable<Line3D> MakeCircleLines(Vector2D pos, PixelColor color, float radius, int numsides)
+		public static IEnumerable<Line3D> MakeCircleLines(Vector3D pos, PixelColor color, float radius, int numsides)
 		{
 			List<Line3D> result = new List<Line3D>(numsides);
-			Vector2D start = new Vector2D(pos.x, pos.y + radius);
+			Vector3D start = new Vector3D(pos.x, pos.y + radius, pos.z);
 			float anglestep = Angle2D.PI2 / numsides;
 
 			for(int i = 1; i < numsides + 1; i++)
 			{
-				Vector2D end = pos + new Vector2D((float)Math.Sin(anglestep * i) * radius, (float)Math.Cos(anglestep * i) * radius);
+				Vector3D end = pos + new Vector3D((float)Math.Sin(anglestep * i) * radius, (float)Math.Cos(anglestep * i) * radius, 0f);
 				result.Add(new Line3D(start, end, color, false));
 				start = end;
 			}
@@ -89,13 +90,13 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 			return result;
 		}
 
-		public static IEnumerable<Line3D> MakeRectangleLines(Vector2D pos, PixelColor color, float size)
+		public static IEnumerable<Line3D> MakeRectangleLines(Vector3D pos, PixelColor color, float size)
 		{
 			float halfsize = size / 2;
-			Vector2D tl = new Vector2D(pos.x - halfsize, pos.y - halfsize);
-			Vector2D tr = new Vector2D(pos.x + halfsize, pos.y - halfsize);
-			Vector2D bl = new Vector2D(pos.x - halfsize, pos.y + halfsize);
-			Vector2D br = new Vector2D(pos.x + halfsize, pos.y + halfsize);
+			Vector3D tl = new Vector3D(pos.x - halfsize, pos.y - halfsize, pos.z);
+			Vector3D tr = new Vector3D(pos.x + halfsize, pos.y - halfsize, pos.z);
+			Vector3D bl = new Vector3D(pos.x - halfsize, pos.y + halfsize, pos.z);
+			Vector3D br = new Vector3D(pos.x + halfsize, pos.y + halfsize, pos.z);
 			
 			return new List<Line3D>
 			{
@@ -214,12 +215,12 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 					if(!result.PatrolPoints.ContainsKey(t.Args[0])) continue;
 					
 					start = t.Position;
-					start.z += GetCorrectHeight(t, blockmap);
+					start.z += GetCorrectHeight(t, blockmap, true);
 
 					foreach(Thing tt in result.PatrolPoints[t.Args[0]])
 					{
 						end = tt.Position;
-						end.z += GetCorrectHeight(tt, blockmap);
+						end.z += GetCorrectHeight(tt, blockmap, true);
 						lines.Add(new Line3D(start, end));
 					}
 				}
@@ -231,12 +232,12 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 				if(!result.PatrolPoints.ContainsKey(t.Args[1])) continue;
 
 				start = t.Position;
-				start.z += GetCorrectHeight(t, blockmap);
+				start.z += GetCorrectHeight(t, blockmap, true);
 
 				foreach(Thing tt in result.PatrolPoints[t.Args[1]]) 
 				{
 					end = tt.Position;
-					end.z += GetCorrectHeight(tt, blockmap);
+					end.z += GetCorrectHeight(tt, blockmap, true);
 
 					lines.Add(new Line3D(start, end, General.Colors.Selection));
 				}
@@ -246,11 +247,11 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 			foreach(Thing t in result.Cameras)
 			{
 				int targettag = t.Args[0] + (t.Args[1] << 8);
-				if(targettag == 0 || !result.InterpolationPoints.ContainsKey(targettag)) continue; //no target / target desn't exist
+				if(targettag == 0 || !result.InterpolationPoints.ContainsKey(targettag)) continue; //no target / target doesn't exist
 				bool interpolatepath = ((t.Args[2] & 1) != 1);
 
 				start = t.Position;
-				start.z += GetCorrectHeight(t, blockmap);
+				start.z += GetCorrectHeight(t, blockmap, true);
 
 				foreach(PathNode node in result.InterpolationPoints[targettag]) 
 				{
@@ -271,7 +272,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 					{
 						bool interpolatepath = ((t.Args[2] & 1) != 1);
 						start = t.Position;
-						start.z += GetCorrectHeight(t, blockmap);
+						start.z += GetCorrectHeight(t, blockmap, true);
 
 						foreach(PathNode node in result.InterpolationPoints[targettag])
 						{
@@ -284,12 +285,12 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 					if(actormovertargets.ContainsKey(t.Args[3]))
 					{
 						start = t.Position;
-						start.z += GetCorrectHeight(t, blockmap);
+						start.z += GetCorrectHeight(t, blockmap, true);
 
 						foreach(Thing tt in actormovertargets[t.Args[3]])
 						{
 							end = tt.Position;
-							end.z += GetCorrectHeight(tt, blockmap);
+							end.z += GetCorrectHeight(tt, blockmap, true);
 							lines.Add(new Line3D(start, end, General.Colors.Selection));
 						}
 					}
@@ -300,11 +301,11 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 			foreach(Thing t in result.PathFollowers)
 			{
 				int targettag = t.Args[0] + (t.Args[1] << 8);
-				if(targettag == 0 || !result.InterpolationPoints.ContainsKey(targettag)) continue; //no target / target desn't exist
+				if(targettag == 0 || !result.InterpolationPoints.ContainsKey(targettag)) continue; //no target / target doesn't exist
 				bool interpolatepath = (t.Args[2] & 1) != 1;
 
 				start = t.Position;
-				start.z += GetCorrectHeight(t, blockmap);
+				start.z += GetCorrectHeight(t, blockmap, true);
 
 				foreach(PathNode node in result.InterpolationPoints[targettag])
 				{
@@ -320,12 +321,12 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 				foreach(Thing anchor in group.Value)
 				{
 					start = anchor.Position;
-					start.z += GetCorrectHeight(anchor, blockmap);
+					start.z += GetCorrectHeight(anchor, blockmap, true);
 
 					foreach(Thing startspot in result.PolyobjectStartSpots[group.Key]) 
 					{
 						end = startspot.Position;
-						end.z += GetCorrectHeight(startspot, blockmap);
+						end.z += GetCorrectHeight(startspot, blockmap, true);
 						lines.Add(new Line3D(start, end, General.Colors.Selection));
 					}
 				}
@@ -410,6 +411,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 				ThingTypeInfo tti = General.Map.Data.GetThingInfoEx(t.Type);
 				if(tti == null) continue;
 
+				Vector3D pos = t.Position;
+				pos.z += GetCorrectHeight(t, blockmap, false);
+
 				for(int i = 0; i < t.Args.Length; i++)
 				{
 					if(t.Args[i] != 0 && tti.Args[i].RenderStyle != ArgumentInfo.ArgumentRenderStyle.NONE)
@@ -417,11 +421,11 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 						switch(tti.Args[i].RenderStyle)
 						{
 							case ArgumentInfo.ArgumentRenderStyle.CIRCLE:
-								lines.AddRange(MakeCircleLines(t.Position, tti.Args[i].RenderColor, t.Args[i], numsides));
+								lines.AddRange(MakeCircleLines(pos, tti.Args[i].RenderColor, t.Args[i], numsides));
 								break;
 
 							case ArgumentInfo.ArgumentRenderStyle.RECTANGLE:
-								lines.AddRange(MakeRectangleLines(t.Position, tti.Args[i].RenderColor, t.Args[i]));
+								lines.AddRange(MakeRectangleLines(pos, tti.Args[i].RenderColor, t.Args[i]));
 								break;
 
 							default: throw new NotImplementedException("Unknown ArgumentRenderStyle");
@@ -447,10 +451,10 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 		}
 
 		// Required only when called from VisualMode
-		private static float GetCorrectHeight(Thing thing, VisualBlockMap blockmap)
+		private static float GetCorrectHeight(Thing thing, VisualBlockMap blockmap, bool usethingcenter)
 		{
 			if(blockmap == null) return 0f;
-			float height = thing.Height / 2f;
+			float height = (usethingcenter ? thing.Height / 2f : 0f);
 			if(thing.Sector == null) thing.DetermineSector(blockmap);
 			if(thing.Sector != null) height += thing.Sector.FloorHeight;
 			return height;
