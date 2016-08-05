@@ -2139,8 +2139,24 @@ namespace CodeImp.DoomBuilder.Map
 				// Linedefs cache needs to be up to date...
 				Update(true, false);
 
+				// Collect changed lines... We need those in by-vertex-index order
+				// (otherwise SectorBuilder logic in some cases will incorrectly assign sector propertes)
+				List<Vertex> markedverts = GetMarkedVertices(true);
+				List<Linedef> changedlines = new List<Linedef>(markedverts.Count / 2);
+				HashSet<Linedef> changedlineshash = new HashSet<Linedef>();
+				foreach(Vertex v in markedverts)
+				{
+					foreach(Linedef l in v.Linedefs)
+					{
+						if(!changedlineshash.Contains(l))
+						{
+							changedlines.Add(l);
+							changedlineshash.Add(l);
+						}
+					}
+				}
+
 				// Fix stuff...
-				List<Linedef> changedlines = LinedefsFromMarkedVertices(false, true, true);
 				CorrectSectorReferences(changedlines, true);
 				CorrectOuterSides(new HashSet<Linedef>(changedlines));
 
@@ -2353,7 +2369,10 @@ namespace CodeImp.DoomBuilder.Map
 			foreach(Sector s in newsectors)
 			{
 				// Skip if sector already has properties
-				if(s.CeilTexture != "-") continue;
+				if(s.CeilTexture != "-" || s.FloorTexture != "-"
+					|| s.FloorHeight != General.Settings.DefaultFloorHeight
+					|| s.CeilHeight != General.Settings.DefaultCeilingHeight)
+					continue;
 
 				// Copy from adjacent sector if any
 				if(sector_copy != null)
