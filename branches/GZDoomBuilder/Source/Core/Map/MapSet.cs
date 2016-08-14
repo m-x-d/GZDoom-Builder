@@ -3043,6 +3043,11 @@ namespace CodeImp.DoomBuilder.Map
 								intersection.x = (float)Math.Round(intersection.x, General.Map.FormatInterface.VertexDecimals);
 								intersection.y = (float)Math.Round(intersection.y, General.Map.FormatInterface.VertexDecimals);
 
+								//mxd. Skip when intersection matches start/end position.
+								// Otherwise infinite ammount of 0-length lines will be created...
+								if( l1.Start.Position == intersection || l1.End.Position == intersection ||
+									l2.Start.Position == intersection || l2.End.Position == intersection) continue;
+
 								//mxd. Do we already have a vertex here?
 								bool existingvert = false;
 								Vertex splitvertex = null;
