@@ -211,6 +211,30 @@ namespace CodeImp.DoomBuilder.ZDoom
 							ReportError("Expected Blue color value, but got \"" + token + "\"");
 							return false;
 						}
+
+						// Check the value
+						if(light.Color.Red == 0.0f && light.Color.Green == 0.0f && light.Color.Blue == 0.0f)
+						{
+							LogWarning("\"" + lightname + "\" light Color is " 
+								+ light.Color.Red + "," + light.Color.Green + "," + light.Color.Blue 
+								+ ". It won't be shown in GZDoom");
+						}
+						else if(light.Color.Red > 1.0f || light.Color.Green > 1.0f || light.Color.Blue > 1.0f ||
+								light.Color.Red < 0.0f || light.Color.Green < 0.0f || light.Color.Blue < 0.0f)
+						{
+							// Store borked colors
+							string oldcolors = light.Color.Red + ", " + light.Color.Green + ", " + light.Color.Blue;
+
+							// Clamp values
+							light.Color.Red = General.Clamp(light.Color.Red, 0.0f, 1.0f);
+							light.Color.Green = General.Clamp(light.Color.Green, 0.0f, 1.0f);
+							light.Color.Blue = General.Clamp(light.Color.Blue, 0.0f, 1.0f);
+
+							// Notify user
+							LogWarning("\"" + lightname + "\" light Color was clamped from " + oldcolors + " to " 
+								+ light.Color.Red + ", " + light.Color.Green + ", " + light.Color.Blue 
+								+ ". Color values must be in [0.0 .. 1.0] range");
+						}
 					break;
 
 					case "size":
@@ -225,6 +249,13 @@ namespace CodeImp.DoomBuilder.ZDoom
 								ReportError("Expected Size value, but got \"" + token + "\"");
 								return false;
 							}
+
+							if(light.PrimaryRadius < 0)
+							{
+								ReportError("Size value should be positive, but is \"" + light.PrimaryRadius + "\"");
+								return false;
+							}
+
 							light.PrimaryRadius *= 2;
 
 						}
@@ -304,15 +335,19 @@ namespace CodeImp.DoomBuilder.ZDoom
 							SkipWhitespace(true);
 
 							token = ReadToken();
-							float interval;
-							if(!float.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out interval))
+							float interval = 0f;
+							if(!ReadSignedFloat(token, ref interval))
 							{
 								// Not numeric!
 								ReportError("Expected Interval value, but got \"" + token + "\"");
 								return false;
 							}
 
-							if(interval == 0) LogWarning("Interval value should be greater than zero");
+							if(interval <= 0)
+							{
+								ReportError("Interval value should be greater than zero, but is \"" + interval + "\"");
+								return false;
+							}
 
 							//I wrote logic for dynamic lights animation first, so here I modify gldefs settings to fit in existing logic
 							if(lighttype == GldefsLightType.PULSE)
@@ -337,10 +372,16 @@ namespace CodeImp.DoomBuilder.ZDoom
 							SkipWhitespace(true);
 
 							token = ReadToken();
-							if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out light.SecondaryRadius))
+							if(!ReadSignedInt(token, ref light.SecondaryRadius))
 							{
 								// Not numeric!
 								ReportError("Expected SecondarySize value, but got \"" + token + "\"");
+								return false;
+							}
+
+							if(light.SecondaryRadius < 0)
+							{
+								ReportError("SecondarySize value should be positive, but is \"" + light.SecondaryRadius + "\"");
 								return false;
 							}
 
@@ -359,11 +400,18 @@ namespace CodeImp.DoomBuilder.ZDoom
 							SkipWhitespace(true);
 
 							token = ReadToken();
-							float chance;
-							if(!float.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out chance))
+							float chance = 0f;
+							if(!ReadSignedFloat(token, ref chance))
 							{
 								// Not numeric!
 								ReportError("Expected Chance value, but got \"" + token + "\"");
+								return false;
+							}
+
+							// Check range
+							if(chance > 1.0f || chance < 0.0f)
+							{
+								ReportError("Chance must be in [0.0 .. 1.0] range, but is " + chance);
 								return false;
 							}
 
@@ -383,17 +431,18 @@ namespace CodeImp.DoomBuilder.ZDoom
 							SkipWhitespace(true);
 
 							token = ReadToken();
-							float scale;
-							if(!float.TryParse(token, NumberStyles.Float, CultureInfo.InvariantCulture, out scale))
+							float scale = 0f;
+							if(!ReadSignedFloat(token, ref scale))
 							{
 								// Not numeric!
 								ReportError("Expected Scale value, but got \"" + token + "\"");
 								return false;
 							}
 
-							if(scale > 1.0f)
+							// Check range
+							if(scale > 1.0f || scale < 0.0f)
 							{
-								ReportError("Scale must be in 0.0 - 1.0 range, but is " + scale);
+								ReportError("Scale must be in [0.0 .. 1.0] range, but is " + scale);
 								return false;
 							}
 
@@ -410,14 +459,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 					case "}":
 					{
-						bool skip = false;
-
-						// General checks
-						if(light.Color.Red == 0.0f && light.Color.Green == 0.0f && light.Color.Blue == 0.0f)
-						{
-							LogWarning("\"" + lightname + "\" light Color is " + light.Color.Red + "," + light.Color.Green + "," + light.Color.Blue + ". It won't be shown in GZDoom");
-							skip = true;
-						}
+						bool skip = (light.Color.Red == 0.0f && light.Color.Green == 0.0f && light.Color.Blue == 0.0f);
 
 						// Light-type specific checks
 						if(light.Type == DynamicLightType.NORMAL && light.PrimaryRadius == 0)
@@ -430,7 +472,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 						{
 							if(light.PrimaryRadius == 0 && light.SecondaryRadius == 0)
 							{
-								LogWarning("\"" + lightname + "\" light Size and SecondarySize are 0. This light won't be shown in GZDoom");
+								LogWarning("\"" + lightname + "\" light Size and SecondarySize are 0. It won't be shown in GZDoom");
 								skip = true;
 							}
 						}
