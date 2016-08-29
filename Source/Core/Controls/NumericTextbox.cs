@@ -226,7 +226,7 @@ namespace CodeImp.DoomBuilder.Controls
 			string textpart = this.Text;
 			
 			// Strip prefixes
-			textpart = textpart.Replace("+", "").Replace("-", "").Replace("*", "").Replace("/", ""); //mxd
+			textpart = textpart.TrimStart('+', '-', '*', '/'); //mxd
 			
 			// Any numbers left?
 			if(textpart.Length > 0)

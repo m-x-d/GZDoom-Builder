@@ -215,25 +215,20 @@ namespace CodeImp.DoomBuilder.ZDoom
 						// Check the value
 						if(light.Color.Red == 0.0f && light.Color.Green == 0.0f && light.Color.Blue == 0.0f)
 						{
-							LogWarning("\"" + lightname + "\" light Color is " 
+							LogWarning("\"" + lightname + "\" light Color value is " 
 								+ light.Color.Red + "," + light.Color.Green + "," + light.Color.Blue 
 								+ ". It won't be shown in GZDoom");
 						}
 						else if(light.Color.Red > 1.0f || light.Color.Green > 1.0f || light.Color.Blue > 1.0f ||
 								light.Color.Red < 0.0f || light.Color.Green < 0.0f || light.Color.Blue < 0.0f)
 						{
-							// Store borked colors
-							string oldcolors = light.Color.Red + ", " + light.Color.Green + ", " + light.Color.Blue;
-
 							// Clamp values
 							light.Color.Red = General.Clamp(light.Color.Red, 0.0f, 1.0f);
 							light.Color.Green = General.Clamp(light.Color.Green, 0.0f, 1.0f);
 							light.Color.Blue = General.Clamp(light.Color.Blue, 0.0f, 1.0f);
 
 							// Notify user
-							LogWarning("\"" + lightname + "\" light Color was clamped from " + oldcolors + " to " 
-								+ light.Color.Red + ", " + light.Color.Green + ", " + light.Color.Blue 
-								+ ". Color values must be in [0.0 .. 1.0] range");
+							LogWarning("\"" + lightname + "\" light Color value was clamped. Color values must be in [0.0 .. 1.0] range");
 						}
 					break;
 
