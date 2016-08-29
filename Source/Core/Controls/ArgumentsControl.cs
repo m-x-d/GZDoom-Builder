@@ -133,7 +133,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 		#region ================== Apply
 
-		public void Apply(Linedef l)
+		public void Apply(Linedef l, int offset)
 		{
 			//mxd. Script name/number handling
 			// We can't rely on control visibility here, because all controlls will be invisible if ArgumentsControl is invisible
@@ -161,7 +161,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 				// Apply classic arg
 				case ArgZeroMode.DEFAULT:
-					l.Args[0] = arg0.GetResult(l.Args[0]);
+					l.Args[0] = arg0.GetResult(l.Args[0], offset);
 					if(l.Fields.ContainsKey("arg0str")) l.Fields.Remove("arg0str");
 					break;
 
@@ -169,13 +169,13 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 
 			// Apply the rest of args
-			l.Args[1] = arg1.GetResult(l.Args[1]);
-			l.Args[2] = arg2.GetResult(l.Args[2]);
-			l.Args[3] = arg3.GetResult(l.Args[3]);
-			l.Args[4] = arg4.GetResult(l.Args[4]);
+			l.Args[1] = arg1.GetResult(l.Args[1], offset);
+			l.Args[2] = arg2.GetResult(l.Args[2], offset);
+			l.Args[3] = arg3.GetResult(l.Args[3], offset);
+			l.Args[4] = arg4.GetResult(l.Args[4], offset);
 		}
 
-		public void Apply(Thing t)
+		public void Apply(Thing t, int offset)
 		{
 			//mxd. Script name/number handling
 			// We can't rely on control visibility here, because all controlls will be invisible if ArgumentsControl is invisible
@@ -203,7 +203,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 				// Apply classic arg
 				case ArgZeroMode.DEFAULT:
-					t.Args[0] = arg0.GetResult(t.Args[0]);
+					t.Args[0] = arg0.GetResult(t.Args[0], offset);
 					if(t.Fields.ContainsKey("arg0str")) t.Fields.Remove("arg0str");
 					break;
 
@@ -211,10 +211,10 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 
 			// Apply the rest of args
-			t.Args[1] = arg1.GetResult(t.Args[1]);
-			t.Args[2] = arg2.GetResult(t.Args[2]);
-			t.Args[3] = arg3.GetResult(t.Args[3]);
-			t.Args[4] = arg4.GetResult(t.Args[4]);
+			t.Args[1] = arg1.GetResult(t.Args[1], offset);
+			t.Args[2] = arg2.GetResult(t.Args[2], offset);
+			t.Args[3] = arg3.GetResult(t.Args[3], offset);
+			t.Args[4] = arg4.GetResult(t.Args[4], offset);
 		}
 
 		#endregion

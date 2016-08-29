@@ -263,36 +263,54 @@ namespace CodeImp.DoomBuilder.Controls
 		// This checks if the number is relative
 		public bool CheckIsRelative()
 		{
-			// Prefixed with ++ or --?
-			return (combobox.Text.Trim().StartsWith("++") || combobox.Text.Trim().StartsWith("--"));
+			// Prefixed with +++, ---, ++ or --?
+			string str = combobox.Text.Trim();
+			return (str.StartsWith("+++") || str.StartsWith("---") || str.StartsWith("++") || str.StartsWith("--"));
 		}
 		
 		// This returns the selected value
-		public int GetResult(int original)
+		public int GetResult(int original) { return GetResult(original, 0); } //mxd
+		public int GetResult(int original, int offset)
 		{
 			int result;
 			
 			// Strip prefixes
 			string str = combobox.Text.Trim().ToLowerInvariant();
-			str = str.TrimStart('+', '-');
+			string numstr = str.TrimStart('+', '-'); //mxd
 
 			// Anything in the box?
-			if(combobox.Text.Trim().Length > 0)
+			if(numstr.Length > 0)
 			{
+				//mxd. Prefixed with +++?
+				if(str.StartsWith("+++"))
+				{
+					// Add offset to number
+					int num;
+					if(!int.TryParse(numstr, out num)) num = 0;
+					result = num + offset;
+				}
+				//mxd. Prefixed with ---?
+				else if(str.StartsWith("---"))
+				{
+					// Subtract offset from number
+					int num;
+					if(!int.TryParse(numstr, out num)) num = 0;
+					result = num - offset;
+				}
 				// Prefixed with ++?
-				if(combobox.Text.Trim().StartsWith("++"))
+				else if(str.StartsWith("++"))
 				{
 					// Add number to original
 					int num;
-					if(!int.TryParse(str, out num)) num = 0;
+					if(!int.TryParse(numstr, out num)) num = 0;
 					result = original + num;
 				}
 				// Prefixed with --?
-				else if(combobox.Text.Trim().StartsWith("--"))
+				else if(str.StartsWith("--"))
 				{
 					// Subtract number from original
 					int num;
-					if(!int.TryParse(str, out num)) num = 0;
+					if(!int.TryParse(numstr, out num)) num = 0;
 					result = original - num;
 				}
 				else

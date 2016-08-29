@@ -4164,6 +4164,17 @@ namespace CodeImp.DoomBuilder.Windows
 			processingcount = 0;
 			processor.Enabled = false;
 		}
+
+		//mxd
+		internal void ResetClock()
+		{
+			Clock.Reset();
+			lastupdatetime = 0;
+			
+			// Let the mode know...
+			if(General.Editing.Mode != null)
+				General.Editing.Mode.OnClockReset();
+		}
 		
 		// Processor event
 		private void processor_Tick(object sender, EventArgs e)

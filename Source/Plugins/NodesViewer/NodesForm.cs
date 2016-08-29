@@ -168,6 +168,7 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 			NodesViewerMode newmode = new NodesViewerMode();
 			General.Editing.ChangeMode(newmode);
 			newmode.Form.showsegsvertices.Checked = this.showsegsvertices.Checked;
+			newmode.Form.Location = this.Location; //mxd
 		}
 
 		#endregion

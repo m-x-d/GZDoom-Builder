@@ -1209,7 +1209,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			MouseEventArgs args = new MouseEventArgs(General.Interface.MouseButtons, 0, 0, 0, 0);
 			OnMouseMove(args);
 		}
-		
+
+		//mxd
+		public override void OnClockReset()
+		{
+			base.OnClockReset();
+			lastpicktime = 0;
+		}
+
 		// This draws a frame
 		public override void OnRedrawDisplay()
 		{

@@ -512,7 +512,7 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			// Go for all the things
-			int tagoffset = 0; //mxd
+			int offset = 0; //mxd
 			foreach(Thing t in things) 
 			{
 				// Coordination
@@ -532,11 +532,11 @@ namespace CodeImp.DoomBuilder.Windows
 				if(t.Position.x != px || t.Position.y != py) t.Move(new Vector2D(px, py));
 
 				// Action/tags
-				t.Tag = General.Clamp(tagSelector.GetSmartTag(t.Tag, tagoffset++), General.Map.FormatInterface.MinTag, General.Map.FormatInterface.MaxTag); //mxd
+				t.Tag = General.Clamp(tagSelector.GetSmartTag(t.Tag, offset), General.Map.FormatInterface.MinTag, General.Map.FormatInterface.MaxTag); //mxd
 				if(!action.Empty) t.Action = action.Value;
 
 				//mxd. Apply args
-				argscontrol.Apply(t);
+				argscontrol.Apply(t, offset);
 
 				//mxd. Custom fields
 				fieldslist.Apply(t.Fields);
@@ -563,6 +563,9 @@ namespace CodeImp.DoomBuilder.Windows
 
 				// Update settings
 				t.UpdateConfiguration();
+
+				//mxd. Increase offset...
+				offset++;
 			}
 
 			// Set as defaults

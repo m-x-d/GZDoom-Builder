@@ -759,7 +759,6 @@ namespace CodeImp.DoomBuilder.VisualModes
 				return;
 			}
 
-			long time = Clock.CurrentTime;
 			float rMin = Math.Min(lightPrimaryRadius, lightSecondaryRadius);
 			float rMax = Math.Max(lightPrimaryRadius, lightSecondaryRadius);
 			float diff = rMax - rMin;
@@ -767,12 +766,12 @@ namespace CodeImp.DoomBuilder.VisualModes
 			switch(lightType) 
 			{
 				case DynamicLightType.PULSE:
-					lightDelta = ((float)Math.Sin(time / (interval * 4.0f)) + 1.0f) / 2.0f; //just playing by the eye here... in [0.0 ... 1.0] interval
+					lightDelta = ((float)Math.Sin(Clock.CurrentTime / (interval * 4.0f)) + 1.0f) / 2.0f; //just playing by the eye here... in [0.0 ... 1.0] interval
 					lightRadius = rMin + diff * lightDelta;
 					break;
 
-				case DynamicLightType.FLICKER: 
-					float fdelta = (float)Math.Sin(time / 0.1f); //just playing by the eye here...
+				case DynamicLightType.FLICKER:
+					float fdelta = (float)Math.Sin(Clock.CurrentTime / 0.1f); //just playing by the eye here...
 					if(Math.Sign(fdelta) != Math.Sign(lightDelta)) 
 					{
 						lightDelta = fdelta;
@@ -781,7 +780,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 					break;
 
 				case DynamicLightType.RANDOM:
-					float rdelta = (float)Math.Sin(time / (interval * 9.0f)); //just playing by the eye here...
+					float rdelta = (float)Math.Sin(Clock.CurrentTime / (interval * 9.0f)); //just playing by the eye here...
 					if(Math.Sign(rdelta) != Math.Sign(lightDelta)) 
 					{
 						lightRadius = rMin + (General.Random(0, (int) (diff * 10))) / 10.0f;

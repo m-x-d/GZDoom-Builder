@@ -396,6 +396,9 @@ special
 	-124:EndDBTransaction(0),
 	-125:GetDBEntries(1),
 	
+	// -1xx are reserved for Zandronum
+	-200:CheckClass(1),
+	
 	// ZDaemon's
 	-19620:GetTeamScore(1),
 	-19621:SetTeamScore(2),
