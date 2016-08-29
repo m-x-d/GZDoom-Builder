@@ -162,9 +162,14 @@ namespace CodeImp.DoomBuilder.Data
 						if(patchdata != null)
 						{
 							// Copy patch data to memory
-							patchdata.Seek(0, SeekOrigin.Begin);
 							byte[] membytes = new byte[(int)patchdata.Length];
-							patchdata.Read(membytes, 0, (int)patchdata.Length);
+
+							lock(patchdata) //mxd
+							{
+								patchdata.Seek(0, SeekOrigin.Begin);
+								patchdata.Read(membytes, 0, (int)patchdata.Length);
+							}
+							
 							MemoryStream mem = new MemoryStream(membytes);
 							mem.Seek(0, SeekOrigin.Begin);
 

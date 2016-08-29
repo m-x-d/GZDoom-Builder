@@ -22,5 +22,12 @@ namespace CodeImp.DoomBuilder
 	{
 		// This queries the system for the current time
 		public static long CurrentTime { get { return Configuration.Timer.ElapsedMilliseconds; } }
+
+		//mxd. Timer needs to be reset from time to time (like, every 2 days of continuously running the editor) to prevent float precision degradation.
+		internal static void Reset()
+		{
+			Configuration.Timer.Reset();
+			Configuration.Timer.Start();
+		}
 	}
 }

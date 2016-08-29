@@ -246,6 +246,7 @@ namespace CodeImp.DoomBuilder.Editing
 
 		// Processing events
 		public virtual void OnProcess(long deltatime) { }
+		public virtual void OnClockReset() { } //mxd
 		
 		// Generic events
 		public virtual void OnReloadResources() { }

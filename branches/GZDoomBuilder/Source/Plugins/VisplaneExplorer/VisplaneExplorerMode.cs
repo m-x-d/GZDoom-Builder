@@ -59,7 +59,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		private Dictionary<Point, Tile> tiles = new Dictionary<Point, Tile>();
 
 		// Time when to do another update
-		private DateTime nextupdate;
+		private long nextupdate;
 
 		// Are we processing?
 		private bool processingenabled;
@@ -323,7 +323,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 			renderer.SetPresentation(p);
 
 			// Setup processing
-			nextupdate = DateTime.Now + new TimeSpan(0, 0, 0, 0, 100);
+			nextupdate = Clock.CurrentTime + 100;
 			General.Interface.EnableProcessing();
 			processingenabled = true;
 
@@ -358,7 +358,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 			RedrawAllTiles();
 			
 			// Update the screen sooner
-			nextupdate = DateTime.Now + new TimeSpan(0, 0, 0, 0, 100);
+			nextupdate = Clock.CurrentTime + 100;
 		}
 
 		// Draw the display
@@ -383,7 +383,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		public override void OnProcess(long deltatime)
 		{
 			base.OnProcess(deltatime);
-			if(DateTime.Now >= nextupdate)
+			if(Clock.CurrentTime >= nextupdate)
 			{
 				// Get the processed points from the VPO manager
 				List<PointData> points = new List<PointData>();
@@ -405,7 +405,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 				RedrawAllTiles();
 				General.Interface.RedrawDisplay();
 
-				nextupdate = DateTime.Now + new TimeSpan(0, 0, 0, 0, 500);
+				nextupdate = Clock.CurrentTime + 500;
 			}
 			else
 			{

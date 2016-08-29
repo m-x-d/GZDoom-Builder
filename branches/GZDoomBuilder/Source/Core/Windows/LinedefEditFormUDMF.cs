@@ -668,6 +668,7 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 			
 			// Go for all the lines
+			int offset = 0; //mxd
 			foreach(Linedef l in lines)
 			{
 				// UDMF activations
@@ -685,7 +686,7 @@ namespace CodeImp.DoomBuilder.Windows
 				if(!action.Empty) l.Action = action.Value;
 
 				//mxd. Apply args
-				argscontrol.Apply(l);
+				argscontrol.Apply(l, offset++);
 				
 				// Remove front side?
 				if((l.Front != null) && (frontside.CheckState == CheckState.Unchecked))

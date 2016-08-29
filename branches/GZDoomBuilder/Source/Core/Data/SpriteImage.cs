@@ -89,9 +89,14 @@ namespace CodeImp.DoomBuilder.Data
 				if(lumpdata != null)
 				{
 					// Copy lump data to memory
-					lumpdata.Seek(0, SeekOrigin.Begin);
 					byte[] membytes = new byte[(int)lumpdata.Length];
-					lumpdata.Read(membytes, 0, (int)lumpdata.Length);
+
+					lock(lumpdata) //mxd
+					{
+						lumpdata.Seek(0, SeekOrigin.Begin);
+						lumpdata.Read(membytes, 0, (int)lumpdata.Length);
+					}
+					
 					MemoryStream mem = new MemoryStream(membytes);
 					mem.Seek(0, SeekOrigin.Begin);
 					
