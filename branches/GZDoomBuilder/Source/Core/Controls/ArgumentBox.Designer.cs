@@ -28,18 +28,24 @@ namespace CodeImp.DoomBuilder.Controls
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			this.combobox = new System.Windows.Forms.ComboBox();
 			this.button = new System.Windows.Forms.Button();
 			this.scrollbuttons = new System.Windows.Forms.VScrollBar();
+			this.tooltip = new System.Windows.Forms.ToolTip(this.components);
 			this.SuspendLayout();
 			// 
 			// combobox
 			// 
 			this.combobox.DropDownWidth = 130;
+			this.combobox.ForeColor = System.Drawing.SystemColors.HotTrack;
 			this.combobox.Location = new System.Drawing.Point(0, 2);
 			this.combobox.Name = "combobox";
 			this.combobox.Size = new System.Drawing.Size(149, 21);
 			this.combobox.TabIndex = 0;
+			this.tooltip.SetToolTip(this.combobox, "Use ++ or -- prefixes to change by given value.\r\nUse +++ or --- prefixes to incre" +
+					"mentally change by given value.\r\nUse < or > prefixes to decrementally or increme" +
+					"ntally set given value.");
 			this.combobox.Validating += new System.ComponentModel.CancelEventHandler(this.combobox_Validating);
 			this.combobox.TextChanged += new System.EventHandler(this.combobox_TextChanged);
 			// 
@@ -86,5 +92,6 @@ namespace CodeImp.DoomBuilder.Controls
 		private System.Windows.Forms.ComboBox combobox;
 		private System.Windows.Forms.Button button;
 		private System.Windows.Forms.VScrollBar scrollbuttons;
+		private System.Windows.Forms.ToolTip tooltip;
 	}
 }

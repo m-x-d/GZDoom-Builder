@@ -86,7 +86,7 @@ namespace CodeImp.DoomBuilder.Controls
 		private void combobox_Validating(object sender, CancelEventArgs e)
 		{
 			string str = combobox.Text.Trim().ToLowerInvariant();
-			str = str.TrimStart('+', '-');
+			str = str.TrimStart('+', '-', '<', '>');
 
 			// Anything in the box?
 			if(combobox.Text.Trim().Length > 0)
@@ -263,20 +263,22 @@ namespace CodeImp.DoomBuilder.Controls
 		// This checks if the number is relative
 		public bool CheckIsRelative()
 		{
-			// Prefixed with +++, ---, ++ or --?
+			// Prefixed with +++, ---, <, >, ++ or --?
 			string str = combobox.Text.Trim();
-			return (str.StartsWith("+++") || str.StartsWith("---") || str.StartsWith("++") || str.StartsWith("--"));
+			return (str.StartsWith("+++") || str.StartsWith("---") 
+				|| str.StartsWith("++") || str.StartsWith("--") 
+				|| str.StartsWith("<") || str.StartsWith(">"));
 		}
 		
 		// This returns the selected value
 		public int GetResult(int original) { return GetResult(original, 0); } //mxd
-		public int GetResult(int original, int offset)
+		public int GetResult(int original, int step)
 		{
 			int result;
 			
 			// Strip prefixes
 			string str = combobox.Text.Trim().ToLowerInvariant();
-			string numstr = str.TrimStart('+', '-'); //mxd
+			string numstr = str.TrimStart('+', '-', '<', '>'); //mxd
 
 			// Anything in the box?
 			if(numstr.Length > 0)
@@ -287,7 +289,7 @@ namespace CodeImp.DoomBuilder.Controls
 					// Add offset to number
 					int num;
 					if(!int.TryParse(numstr, out num)) num = 0;
-					result = num + offset;
+					result = original + num * step;
 				}
 				//mxd. Prefixed with ---?
 				else if(str.StartsWith("---"))
@@ -295,7 +297,23 @@ namespace CodeImp.DoomBuilder.Controls
 					// Subtract offset from number
 					int num;
 					if(!int.TryParse(numstr, out num)) num = 0;
-					result = num - offset;
+					result = original - num * step;
+				}
+				// mxd. Prefixed with <?
+				else if(str.StartsWith("<"))
+				{
+					// Incremental decrease
+					int num;
+					if(!int.TryParse(numstr, out num)) num = 0;
+					result = num - step;
+				}
+				// mxd. Prefixed with >?
+				else if(str.StartsWith(">"))
+				{
+					// Incremental increase
+					int num;
+					if(!int.TryParse(numstr, out num)) num = 0;
+					result = num + step;
 				}
 				// Prefixed with ++?
 				else if(str.StartsWith("++"))
