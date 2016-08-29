@@ -128,11 +128,12 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 				if(General.Map.FormatInterface.HasThingHeight) 
 				{
 					if(t.Sector == null) t.DetermineSector();
-					if(t.Sector == null) continue;
-
-					d.SectorHeight = Math.Max(0, t.Sector.CeilHeight - (int)t.Height - t.Sector.FloorHeight);
-					if(MaxSafeHeightDistance < d.SectorHeight) MaxSafeHeightDistance = d.SectorHeight;
-					d.ZOffset = (int)t.Position.z;
+					if(t.Sector != null)
+					{
+						d.SectorHeight = Math.Max(0, t.Sector.CeilHeight - (int)t.Height - t.Sector.FloorHeight);
+						if(MaxSafeHeightDistance < d.SectorHeight) MaxSafeHeightDistance = d.SectorHeight;
+						d.ZOffset = (int)t.Position.z;
+					}
 				}
 
 				thingData.Add(d);
@@ -257,6 +258,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 		{
 			for(int i = 0; i < selection.Count; i++) 
 			{
+				if(thingData[i].SectorHeight == 0) continue;
 				int curAmmount = Math.Min(thingData[i].SectorHeight, Math.Max(0, thingData[i].ZOffset + ammount));
 				selection[i].Move(selection[i].Position.x, selection[i].Position.y, curAmmount * thingData[i].JitterHeight);
 			}
