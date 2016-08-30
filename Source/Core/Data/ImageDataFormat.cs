@@ -120,18 +120,30 @@ namespace CodeImp.DoomBuilder.Data
 		//mxd. This tries to guess if a given image is in TGA format...
 		private static bool CheckTgaSignature(Stream data)
 		{
+			// TGA header is 18 bytes long
+			if(data.Length < 18) return false;
+			
 			// Rewind the data first
 			data.Seek(0, SeekOrigin.Begin);
-			
-			byte idfieldlength = (byte)data.ReadByte(); // Can be 0 or the length of ID string, whatever that is
-			byte colormap = (byte)data.ReadByte();		// Can be 0 or 1
-			byte imagetype = (byte)data.ReadByte();		// Can be 0, 1, 2, 3, 9, 10, 11
-			data.Position += 13;						// Skip some stuff...
-			byte bitsperpixel = (byte)data.ReadByte();  // Can be 8, 15, 16, 24, 32
 
-				// Check if data is valid...
-			return ((colormap == 0 || colormap == 1) && (imagetype < 4 || (imagetype > 8 && imagetype < 12)) &&
-			        (bitsperpixel == 8 || bitsperpixel == 15 || bitsperpixel == 16 || bitsperpixel == 24 || bitsperpixel == 32));
+			// Read TGA header
+			int idlength = data.ReadByte(); // Can be 0 or the length of ID string, whatever that is
+			int colormap = data.ReadByte(); // Can be 0 or 1
+			if(colormap != 0 && colormap != 1) return false;
+
+			int imagetype = data.ReadByte(); // Can be 0, 1, 2, 3, 9, 10, 11
+			if((imagetype > 3 && imagetype < 9) || imagetype > 11) return false;
+
+			data.Position += 9; // Skip some stuff...
+
+			int width = data.ReadByte() + (data.ReadByte() << 8);
+			if(width < 0 || width > 8192) return false;
+
+			int height = data.ReadByte() + (data.ReadByte() << 8);
+			if(height < 0 || height > 8192) return false;
+
+			int bitsperpixel = data.ReadByte();  // Can be 8, 16, 24, 32
+			return (bitsperpixel == 8 || bitsperpixel == 16 || bitsperpixel == 24 || bitsperpixel == 32);
 		}
 	}
 }
