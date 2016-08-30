@@ -1028,7 +1028,9 @@ namespace CodeImp.DoomBuilder
 				if(PendingUpdateRev != 0)
 				{
 					General.WriteLogLine("Initiating update to R" + PendingUpdateRev + "...");
-					Process.Start(Path.Combine(apppath, "Updater.exe"), "-rev " + PendingUpdateRev);
+
+					// Working directory must be set
+					Process.Start(new ProcessStartInfo { WorkingDirectory = apppath, FileName = "Updater.exe", Arguments = "-rev " + PendingUpdateRev } );
 				}
 
 				// Application ends here and now
