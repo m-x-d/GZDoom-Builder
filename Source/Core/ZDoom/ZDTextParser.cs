@@ -281,6 +281,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 				//mxd. Region/endregion handling
 				else if(skipregions && c == '#')
 				{
+					long startpos = datastream.Position - 1;
 					string s = ReadToken(false).ToLowerInvariant();
 					if(s == "region" || s == "endregion")
 					{
@@ -292,7 +293,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 					else
 					{
 						// Rewind so this structure can be read again
-						DataStream.Seek(-s.Length - 2, SeekOrigin.Current);
+						DataStream.Seek(startpos, SeekOrigin.Begin);
 						return true;
 					}
 				}
