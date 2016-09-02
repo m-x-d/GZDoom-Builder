@@ -434,7 +434,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd. Only control sidedef scale is used by GZDoom
 		public override void OnChangeScale(int incrementX, int incrementY)
 		{
-			if(!General.Map.UDMF || !Texture.IsImageLoaded) return;
+			if(!General.Map.UDMF || Texture == null || !Texture.IsImageLoaded) return;
 
 			if((General.Map.UndoRedo.NextUndo == null) || (General.Map.UndoRedo.NextUndo.TicketID != undoticket))
 				undoticket = mode.CreateUndo("Change wall scale");

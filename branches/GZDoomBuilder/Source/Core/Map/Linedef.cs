@@ -1378,7 +1378,8 @@ namespace CodeImp.DoomBuilder.Map
 							texture = General.Map.Data.GetTextureImage(newline.front.LowTexture);
 
 						//clamp offsetX
-						if(texture != null) newline.front.OffsetX %= texture.Width;
+						if(texture != null && texture.IsImageLoaded) 
+							newline.front.OffsetX %= texture.Width;
 					}
 
 					if((oldline.back != null) && (newline.back != null)) 
@@ -1394,7 +1395,8 @@ namespace CodeImp.DoomBuilder.Map
 							texture = General.Map.Data.GetTextureImage(newline.back.LowTexture);
 
 						//clamp offsetX
-						if(texture != null) newline.back.OffsetX %= texture.Width;
+						if(texture != null && texture.IsImageLoaded) 
+							newline.back.OffsetX %= texture.Width;
 					}
 
 					break;
