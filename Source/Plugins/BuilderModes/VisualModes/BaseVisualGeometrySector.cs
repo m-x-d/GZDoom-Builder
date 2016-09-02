@@ -300,13 +300,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			if(alignx) 
 			{
-				if(Texture != null)	offset.x %= Texture.Width / scaleX;
+				if(Texture != null && Texture.IsImageLoaded) offset.x %= Texture.Width / scaleX;
 				UniFields.SetFloat(Sector.Sector.Fields, (isFloor ? "xpanningfloor" : "xpanningceiling"), (float)Math.Round(-offset.x), 0f);
 			}
 
 			if(aligny) 
 			{
-				if(Texture != null)	offset.y %= Texture.Height / scaleY;
+				if(Texture != null && Texture.IsImageLoaded) offset.y %= Texture.Height / scaleY;
 				UniFields.SetFloat(Sector.Sector.Fields, (isFloor ? "ypanningfloor" : "ypanningceiling"), (float)Math.Round(offset.y), 0f);
 			}
 
@@ -390,13 +390,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			if(alignx) 
 			{
-				if(Texture != null)	offset.x %= Texture.Width / scaleX;
+				if(Texture != null && Texture.IsImageLoaded) offset.x %= Texture.Width / scaleX;
 				UniFields.SetFloat(Sector.Sector.Fields, (isFloor ? "xpanningfloor" : "xpanningceiling"), (float)Math.Round(-offset.x), 0f);
 			}
 
 			if(aligny) 
 			{
-				if(Texture != null)	offset.y %= Texture.Height / scaleY;
+				if(Texture != null && Texture.IsImageLoaded) offset.y %= Texture.Height / scaleY;
 				UniFields.SetFloat(Sector.Sector.Fields, (isFloor ? "ypanningfloor" : "ypanningceiling"), (float)Math.Round(offset.y), 0f);
 			}
 

@@ -348,10 +348,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			float oldy = Sidedef.Fields.GetValue("offsety_mid", 0.0f);
 			float scalex = Sidedef.Fields.GetValue("scalex_mid", 1.0f);
 			float scaley = Sidedef.Fields.GetValue("scaley_mid", 1.0f);
-			Sidedef.Fields["offsetx_mid"] = new UniValue(UniversalType.Float, GetRoundedTextureOffset(oldx, xy.X, scalex, Texture != null ? Texture.Width : -1)); //mxd
+			bool textureloaded = (Texture != null && Texture.IsImageLoaded); //mxd
+			Sidedef.Fields["offsetx_mid"] = new UniValue(UniversalType.Float, GetRoundedTextureOffset(oldx, xy.X, scalex, textureloaded ? Texture.Width : -1)); //mxd
 
 			//mxd. Don't clamp offsetY of clipped mid textures
-			bool dontClamp = (Texture == null || (!Sidedef.IsFlagSet("wrapmidtex") && !Sidedef.Line.IsFlagSet("wrapmidtex")));
+			bool dontClamp = (!textureloaded || (!Sidedef.IsFlagSet("wrapmidtex") && !Sidedef.Line.IsFlagSet("wrapmidtex")));
 			Sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, GetRoundedTextureOffset(oldy, xy.Y, scaley, dontClamp ? -1 : Texture.Height));
 		}
 

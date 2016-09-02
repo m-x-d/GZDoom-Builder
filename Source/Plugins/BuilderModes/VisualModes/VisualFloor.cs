@@ -236,6 +236,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd. Texture scale change
 		protected override void ChangeTextureScale(int incrementX, int incrementY) 
 		{
+			if(Texture == null || !Texture.IsImageLoaded) return;
 			Sector s = GetControlSector();
 			float scaleX = s.Fields.GetValue("xscalefloor", 1.0f);
 			float scaleY = s.Fields.GetValue("yscalefloor", 1.0f);

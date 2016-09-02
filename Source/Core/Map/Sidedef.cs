@@ -751,7 +751,8 @@ namespace CodeImp.DoomBuilder.Map
 				float scaleTop = Fields.GetValue("scalex_top", 1.0f);
 
 				float value = Fields.GetValue("offsetx_top", 0f);
-				float result = (float)(Math.Round(value + offset * scaleTop) % texture.Width);
+				float result = (float)(Math.Round(value + offset * scaleTop));
+				if(texture.IsImageLoaded) result %= texture.Width;
 				UniFields.SetFloat(Fields, "offsetx_top", result);
 			}
 
@@ -762,7 +763,8 @@ namespace CodeImp.DoomBuilder.Map
 				float scaleMid = Fields.GetValue("scalex_mid", 1.0f);
 
 				float value = Fields.GetValue("offsetx_mid", 0f);
-				float result = (float)(Math.Round(value + offset * scaleMid) % texture.Width);
+				float result = (float)(Math.Round(value + offset * scaleMid));
+				if(texture.IsImageLoaded) result %= texture.Width;
 				UniFields.SetFloat(Fields, "offsetx_mid", result);
 			}
 
@@ -773,7 +775,8 @@ namespace CodeImp.DoomBuilder.Map
 				float scaleLow = Fields.GetValue("scalex_bottom", 1.0f);
 
 				float value = Fields.GetValue("offsetx_bottom", 0f);
-				float result = (float)(Math.Round(value + offset * scaleLow) % texture.Width);
+				float result = (float)(Math.Round(value + offset * scaleLow));
+				if(texture.IsImageLoaded) result %= texture.Width;
 				UniFields.SetFloat(Fields, "offsetx_bottom", result);
 			}
 		}
