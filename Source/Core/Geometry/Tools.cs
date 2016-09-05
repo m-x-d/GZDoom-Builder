@@ -1564,7 +1564,7 @@ namespace CodeImp.DoomBuilder.Geometry
 			float totalLength = 0f;
 			foreach(Linedef l in strip) totalLength += l.Length;
 
-			if(General.Map.UDMF)
+			if(General.Map.UDMF && General.Map.Config.UseLocalSidedefTextureOffsets)
 				AutoAlignTexturesOnSidesUdmf(strip, totalLength, (strip[0].End != strip[1].Start));
 			else
 				AutoAlignTexturesOnSides(strip, totalLength, (strip[0].End != strip[1].Start));	

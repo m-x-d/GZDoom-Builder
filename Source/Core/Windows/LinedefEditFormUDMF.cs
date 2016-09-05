@@ -232,6 +232,26 @@ namespace CodeImp.DoomBuilder.Windows
 			pfcBackScaleTop.LinkValues = linkBackTopScale;
 			pfcBackScaleMid.LinkValues = linkBackMidScale;
 			pfcBackScaleBottom.LinkValues = linkBackBottomScale;
+
+			// Disable top/mid/bottom texture offset controls?
+			if(!General.Map.Config.UseLocalSidedefTextureOffsets)
+			{
+				pfcFrontOffsetTop.Enabled = false;
+				pfcFrontOffsetMid.Enabled = false;
+				pfcFrontOffsetBottom.Enabled = false;
+
+				pfcBackOffsetTop.Enabled = false;
+				pfcBackOffsetMid.Enabled = false;
+				pfcBackOffsetBottom.Enabled = false;
+
+				labelFrontOffsetTop.Enabled = false;
+				labelFrontOffsetMid.Enabled = false;
+				labelFrontOffsetBottom.Enabled = false;
+
+				labelBackOffsetTop.Enabled = false;
+				labelBackOffsetMid.Enabled = false;
+				labelBackOffsetBottom.Enabled = false;
+			}
 		}
 
 		#endregion
