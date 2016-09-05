@@ -1468,9 +1468,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				undoticket = mode.CreateUndo("Change texture offsets");
 			
 			//mxd
-			if(General.Map.UDMF) 
+			if(General.Map.UDMF && General.Map.Config.UseLocalSidedefTextureOffsets)
 			{
-				// Apply UDMF offsets
+				// Apply per-texture offsets
 				MoveTextureOffset(new Point(-horizontal, -vertical));
 				Point p = GetTextureOffset();
 				mode.SetActionResult("Changed texture offsets to " + p.X + ", " + p.Y + ".");

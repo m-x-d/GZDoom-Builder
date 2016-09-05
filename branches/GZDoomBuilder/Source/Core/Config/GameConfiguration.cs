@@ -89,6 +89,7 @@ namespace CodeImp.DoomBuilder.Config
 		private readonly string actionspecialhelp; //mxd
 		private readonly string thingclasshelp; //mxd
 		private readonly bool sidedefcompressionignoresaction; //mxd
+		private readonly bool localsidedeftextureoffsets; //MaxW
 		
 		// Skills
 		private readonly List<SkillInfo> skills;
@@ -224,6 +225,8 @@ namespace CodeImp.DoomBuilder.Config
 		public bool UDMF { get { return universalmapformat; } }
 		public bool HEXEN { get { return hexenmapformat; } }
 		public bool DOOM { get { return doommapformat; } }
+
+		public bool UseLocalSidedefTextureOffsets { get { return localsidedeftextureoffsets; } } //MaxW
 
 		// Texture/flat/voxel sources
 		public IDictionary TextureRanges { get { return textureranges; } }
@@ -372,6 +375,7 @@ namespace CodeImp.DoomBuilder.Config
 			thingclasshelp = cfg.ReadSetting("thingclasshelp", string.Empty); //mxd
 			sidedefcompressionignoresaction = cfg.ReadSetting("sidedefcompressionignoresaction", false); //mxd
 			defaultlinedefactivation = cfg.ReadSetting("defaultlinedefactivation", ""); //mxd
+			localsidedeftextureoffsets = (cfg.ReadSetting("localsidedeftextureoffsets", false)); //MaxW
 			for(int i = 0; i < Linedef.NUM_ARGS; i++) makedoorargs[i] = cfg.ReadSetting("makedoorarg" + i.ToString(CultureInfo.InvariantCulture), 0);
 
 			//mxd. Update map format flags
