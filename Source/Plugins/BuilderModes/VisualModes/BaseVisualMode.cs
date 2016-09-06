@@ -2615,41 +2615,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			PostAction();
 		}
 
-		[BeginAction("movetextureleft")]
-		public void MoveTextureLeft1() { MoveTextureByOffset(-1, 0); }
-
-		[BeginAction("movetextureright")]
-		public void MoveTextureRight1() { MoveTextureByOffset(1, 0); }
-
-		[BeginAction("movetextureup")]
-		public void MoveTextureUp1() { MoveTextureByOffset(0, -1); }
-
-		[BeginAction("movetexturedown")]
-		public void MoveTextureDown1() { MoveTextureByOffset(0, 1); }
-
-		[BeginAction("movetextureleft8")]
-		public void MoveTextureLeft8() { MoveTextureByOffset(-8, 0); }
-
-		[BeginAction("movetextureright8")]
-		public void MoveTextureRight8() { MoveTextureByOffset(8, 0); }
-
-		[BeginAction("movetextureup8")]
-		public void MoveTextureUp8() { MoveTextureByOffset(0, -8); }
-
-		[BeginAction("movetexturedown8")]
-		public void MoveTextureDown8() { MoveTextureByOffset(0, 8); }
-
-		[BeginAction("movetextureleftgs")] //mxd
-		public void MoveTextureLeftGrid() { MoveTextureByOffset(-General.Map.Grid.GridSize, 0); }
-
-		[BeginAction("movetexturerightgs")] //mxd
-		public void MoveTextureRightGrid() { MoveTextureByOffset(General.Map.Grid.GridSize, 0); }
-
-		[BeginAction("movetextureupgs")] //mxd
-		public void MoveTextureUpGrid() { MoveTextureByOffset(0, -General.Map.Grid.GridSize); }
-
-		[BeginAction("movetexturedowngs")] //mxd
-		public void MoveTextureDownGrid() { MoveTextureByOffset(0, General.Map.Grid.GridSize); }
+		[BeginAction("movetextureleft")]	public void MoveTextureLeft1() { MoveTextureByOffset(-1, 0); }
+		[BeginAction("movetextureright")]	public void MoveTextureRight1() { MoveTextureByOffset(1, 0); }
+		[BeginAction("movetextureup")]		public void MoveTextureUp1() { MoveTextureByOffset(0, -1); }
+		[BeginAction("movetexturedown")]	public void MoveTextureDown1() { MoveTextureByOffset(0, 1); }
+		[BeginAction("movetextureleft8")]	public void MoveTextureLeft8() { MoveTextureByOffset(-8, 0); }
+		[BeginAction("movetextureright8")]	public void MoveTextureRight8() { MoveTextureByOffset(8, 0); }
+		[BeginAction("movetextureup8")]		public void MoveTextureUp8() { MoveTextureByOffset(0, -8); }
+		[BeginAction("movetexturedown8")]	public void MoveTextureDown8() { MoveTextureByOffset(0, 8); }
+		[BeginAction("movetextureleftgs")]	public void MoveTextureLeftGrid() { MoveTextureByOffset(-General.Map.Grid.GridSize, 0); }  //mxd
+		[BeginAction("movetexturerightgs")]	public void MoveTextureRightGrid() { MoveTextureByOffset(General.Map.Grid.GridSize, 0); }  //mxd
+		[BeginAction("movetextureupgs")]	public void MoveTextureUpGrid() { MoveTextureByOffset(0, -General.Map.Grid.GridSize); } //mxd
+		[BeginAction("movetexturedowngs")]	public void MoveTextureDownGrid() { MoveTextureByOffset(0, General.Map.Grid.GridSize); } //mxd
 
 		//mxd
 		private void MoveTextureByOffset(int ox, int oy)
@@ -2661,62 +2638,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		[BeginAction("scaleup")]
-		public void ScaleTextureUp() 
-		{
-			PreAction(UndoGroup.TextureScaleChange);
-			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true, false);
-			foreach(IVisualEventReceiver i in objs) i.OnChangeScale(1, 1);
-			PostAction();
-		}
+		[BeginAction("scaleup")]	public void ScaleTextureUp() { ScaleTexture(1, 1); }
+		[BeginAction("scaledown")]  public void ScaleTextureDown() { ScaleTexture(-1, -1); }
+		[BeginAction("scaleupx")]   public void ScaleTextureUpX() { ScaleTexture(1, 0); }
+		[BeginAction("scaledownx")] public void ScaleTextureDownX() { ScaleTexture(-1, 0); }
+		[BeginAction("scaleupy")]   public void ScaleTextureUpY() { ScaleTexture(0, 1); } 
+		[BeginAction("scaledowny")] public void ScaleTextureDownY() { ScaleTexture(0, -1); }
 
 		//mxd
-		[BeginAction("scaledown")]
-		public void ScaleTextureDown() 
+		private void ScaleTexture(int incrementx, int incrementy)
 		{
 			PreAction(UndoGroup.TextureScaleChange);
 			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true, false);
-			foreach(IVisualEventReceiver i in objs) i.OnChangeScale(-1, -1);
-			PostAction();
-		}
-
-		//mxd
-		[BeginAction("scaleupx")]
-		public void ScaleTextureUpX() 
-		{
-			PreAction(UndoGroup.TextureScaleChange);
-			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true, false);
-			foreach(IVisualEventReceiver i in objs) i.OnChangeScale(1, 0);
-			PostAction();
-		}
-
-		//mxd
-		[BeginAction("scaledownx")]
-		public void ScaleTextureDownX() 
-		{
-			PreAction(UndoGroup.TextureScaleChange);
-			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true, false);
-			foreach(IVisualEventReceiver i in objs) i.OnChangeScale(-1, 0);
-			PostAction();
-		}
-
-		//mxd
-		[BeginAction("scaleupy")]
-		public void ScaleTextureUpY() 
-		{
-			PreAction(UndoGroup.TextureScaleChange);
-			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true, false);
-			foreach(IVisualEventReceiver i in objs) i.OnChangeScale(0, 1);
-			PostAction();
-		}
-
-		//mxd
-		[BeginAction("scaledowny")]
-		public void ScaleTextureDownY() 
-		{
-			PreAction(UndoGroup.TextureScaleChange);
-			List<IVisualEventReceiver> objs = GetSelectedObjects(true, true, true, false);
-			foreach(IVisualEventReceiver i in objs) i.OnChangeScale(0, -1);
+			foreach(IVisualEventReceiver i in objs) i.OnChangeScale(incrementx, incrementy);
 			PostAction();
 		}
 

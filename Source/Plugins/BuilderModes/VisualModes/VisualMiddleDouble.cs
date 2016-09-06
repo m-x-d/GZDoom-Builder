@@ -341,7 +341,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, (float)y);
 		}
 
-		protected override void MoveTextureOffset(Point xy)
+		protected override void MoveTextureOffset(int offsetx, int offsety)
 		{
 			Sidedef.Fields.BeforeFieldsChange();
 			float oldx = Sidedef.Fields.GetValue("offsetx_mid", 0.0f);
@@ -349,11 +349,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			float scalex = Sidedef.Fields.GetValue("scalex_mid", 1.0f);
 			float scaley = Sidedef.Fields.GetValue("scaley_mid", 1.0f);
 			bool textureloaded = (Texture != null && Texture.IsImageLoaded); //mxd
-			Sidedef.Fields["offsetx_mid"] = new UniValue(UniversalType.Float, GetRoundedTextureOffset(oldx, xy.X, scalex, textureloaded ? Texture.Width : -1)); //mxd
+			Sidedef.Fields["offsetx_mid"] = new UniValue(UniversalType.Float, GetRoundedTextureOffset(oldx, offsetx, scalex, textureloaded ? Texture.Width : -1)); //mxd
 
 			//mxd. Don't clamp offsetY of clipped mid textures
 			bool dontClamp = (!textureloaded || (!Sidedef.IsFlagSet("wrapmidtex") && !Sidedef.Line.IsFlagSet("wrapmidtex")));
-			Sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, GetRoundedTextureOffset(oldy, xy.Y, scaley, dontClamp ? -1 : Texture.Height));
+			Sidedef.Fields["offsety_mid"] = new UniValue(UniversalType.Float, GetRoundedTextureOffset(oldy, offsety, scaley, dontClamp ? -1 : Texture.Height));
 		}
 
 		protected override Point GetTextureOffset()
