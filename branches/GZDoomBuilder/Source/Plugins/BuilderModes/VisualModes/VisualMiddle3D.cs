@@ -491,7 +491,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd
 		public override void OnResetLocalTextureOffset()
 		{
-			if(!General.Map.UDMF)
+			if(!General.Map.UDMF || !General.Map.Config.UseLocalSidedefTextureOffsets)
 			{
 				OnResetTextureOffset();
 				return;
