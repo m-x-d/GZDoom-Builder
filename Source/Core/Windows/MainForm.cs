@@ -276,6 +276,7 @@ namespace CodeImp.DoomBuilder.Windows
 			toolbarContextMenu.KeyDown += toolbarContextMenu_KeyDown;
 			toolbarContextMenu.KeyUp += toolbarContextMenu_KeyUp;
 			linedefcolorpresets.DropDown.MouseLeave += linedefcolorpresets_MouseLeave;
+			this.MouseCaptureChanged += MainForm_MouseCaptureChanged;
 			
 			// Apply shortcut keys
 			ApplyShortcutKeys();
@@ -648,6 +649,14 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			BreakExclusiveMouseInput();
 			ReleaseAllKeys();
+		}
+
+		//mxd. Looks like in some cases StartMouseExclusive is called before app aquires the mouse
+		// which results in setting Cursor.Clip not taking effect.
+		private void MainForm_MouseCaptureChanged(object sender, EventArgs e)
+		{
+			if(mouseexclusive && windowactive && mouseinside && Cursor.Clip != display.RectangleToScreen(display.ClientRectangle))
+				Cursor.Clip = display.RectangleToScreen(display.ClientRectangle);
 		}
 		
 		// Window is moved
@@ -1219,7 +1228,9 @@ namespace CodeImp.DoomBuilder.Windows
 		private void display_MouseEnter(object sender, EventArgs e)
 		{
 			mouseinside = true;
-			if((General.Map != null) && (mouseinput == null) && (General.Editing.Mode != null))
+			//mxd. Skip when in mouseexclusive (e.g. Visual) mode to avoid mouse disappearing when moving it
+			// on top of inactive editor window while Visual mode is active
+			if((General.Map != null) && (mouseinput == null) && (General.Editing.Mode != null) && !mouseexclusive)
 			{
 				General.Plugins.OnEditMouseEnter(e);
 				General.Editing.Mode.OnMouseEnter(e);

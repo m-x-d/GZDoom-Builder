@@ -57,6 +57,9 @@ namespace CodeImp.DoomBuilder.Geometry
 		#endregion
 		
 		#region ================== Constants
+
+		//mxd
+		private const float MINIMUM_INTERSECTION_DISTANCE = 0.25f;
 		
 		#endregion
 
@@ -979,7 +982,20 @@ namespace CodeImp.DoomBuilder.Geometry
 									if(side.Line.Line.GetIntersection(measureline, out u)) 
 									{
 										if(float.IsNaN(u) || (u <= 0.0f) || (u >= 1.0f)) continue;
-										intersections.Add(u);
+
+										//mxd. Skip intersection if both start and end of one line are closer than given distance from the other line.
+										// This allows to avoid creating "unexpected" splits when drawing on top of non-cardinal lines.
+
+										//mxd. Check if both ends of measureline are too close to side.Line.Line
+										bool valid = (side.Line.Line.GetDistanceToLineSq(measureline.v1, true) > MINIMUM_INTERSECTION_DISTANCE ||
+													  side.Line.Line.GetDistanceToLineSq(measureline.v2, true) > MINIMUM_INTERSECTION_DISTANCE);
+										
+										//mxd. Check if both ends of side.Line.Line are too close to measureline
+										valid = (valid && (measureline.GetDistanceToLineSq(side.Line.Line.v1, true) > MINIMUM_INTERSECTION_DISTANCE ||
+														   measureline.GetDistanceToLineSq(side.Line.Line.v2, true) > MINIMUM_INTERSECTION_DISTANCE));
+
+										// Store inersection
+										if(valid) intersections.Add(u);
 									}
 
 									processed.Add(side.Line);
