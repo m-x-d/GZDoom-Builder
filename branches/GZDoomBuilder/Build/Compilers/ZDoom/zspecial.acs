@@ -398,6 +398,7 @@ special
 	
 	// -1xx are reserved for Zandronum
 	-200:CheckClass(1),
+	-201:DamageActor(6), // [arookas]
 	
 	// ZDaemon's
 	-19620:GetTeamScore(1),

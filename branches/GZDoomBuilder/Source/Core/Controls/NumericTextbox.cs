@@ -57,6 +57,7 @@ namespace CodeImp.DoomBuilder.Controls
 		public NumericTextbox()
 		{
 			this.ImeMode = ImeMode.Off;
+			this.incrementstep = 1; //mxd
 
 			//mxd. Setup tooltip
 			this.tooltip = new ToolTip { AutomaticDelay = 100, AutoPopDelay = 8000, InitialDelay = 100, ReshowDelay = 100 };
@@ -94,7 +95,7 @@ namespace CodeImp.DoomBuilder.Controls
 		// When a key is pressed
 		protected override void OnKeyPress(KeyPressEventArgs e)
 		{
-			incrementstep = 0; //mxd
+			incrementstep = 1; //mxd
 			string allowedchars = "0123456789\b";
 			
 			// Determine allowed chars

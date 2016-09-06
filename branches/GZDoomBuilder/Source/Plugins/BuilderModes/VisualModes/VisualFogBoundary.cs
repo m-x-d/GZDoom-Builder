@@ -151,7 +151,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Unused
 		protected override void SetTextureOffsetX(int x) { }
 		protected override void SetTextureOffsetY(int y) { }
-		protected override void MoveTextureOffset(Point xy) { }
+		protected override void MoveTextureOffset(int offsetx, int offsety) { }
 		protected override Point GetTextureOffset() { return Point.Empty; }
 
 		#endregion

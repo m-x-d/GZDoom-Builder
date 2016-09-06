@@ -739,7 +739,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected abstract void SetTextureOffsetX(int x);
 		protected abstract void SetTextureOffsetY(int y);
 		protected virtual void ResetTextureScale() { } //mxd
-		protected abstract void MoveTextureOffset(Point xy);
+		protected abstract void MoveTextureOffset(int offsetx, int offsety);
 		protected abstract Point GetTextureOffset();
 		public virtual void OnTextureFit(FitTextureOptions options) { } //mxd
 		
@@ -1471,7 +1471,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(General.Map.UDMF && General.Map.Config.UseLocalSidedefTextureOffsets)
 			{
 				// Apply per-texture offsets
-				MoveTextureOffset(new Point(-horizontal, -vertical));
+				MoveTextureOffset(-horizontal, -vertical);
 				Point p = GetTextureOffset();
 				mode.SetActionResult("Changed texture offsets to " + p.X + ", " + p.Y + ".");
 

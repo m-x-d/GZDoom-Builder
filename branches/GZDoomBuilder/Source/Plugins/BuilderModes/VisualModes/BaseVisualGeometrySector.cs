@@ -182,60 +182,76 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			offsetx = (int)Math.Round(v.x);
 			offsety = (int)Math.Round(v.y);
 
-			// Apply offsets
+			// Calculate deltas
+			int deltax, deltay;
 			if(General.Interface.CtrlState && General.Interface.ShiftState) 
 			{ 
 				//mxd. Clamp to grid size?
 				int newoffsetx = startoffsetx - (int)Math.Round(offsetx);
 				int newoffsety = startoffsety + (int)Math.Round(offsety);
-				int dx = prevoffsetx - newoffsetx;
-				int dy = prevoffsety - newoffsety;
+				deltax = prevoffsetx - newoffsetx;
+				deltay = prevoffsety - newoffsety;
 
-				if(Math.Abs(dx) >= General.Map.Grid.GridSize) 
+				if(Math.Abs(deltax) >= General.Map.Grid.GridSize) 
 				{
-					dx = General.Map.Grid.GridSize * Math.Sign(dx);
+					deltax = General.Map.Grid.GridSize * Math.Sign(deltax);
 					prevoffsetx = newoffsetx;
 				} 
 				else 
 				{
-					dx = 0;
+					deltax = 0;
 				}
 
-				if(Math.Abs(dy) >= General.Map.Grid.GridSize) 
+				if(Math.Abs(deltay) >= General.Map.Grid.GridSize) 
 				{
-					dy = General.Map.Grid.GridSize * Math.Sign(dy);
+					deltay = General.Map.Grid.GridSize * Math.Sign(deltay);
 					prevoffsety = newoffsety;
 				} 
 				else 
 				{
-					dy = 0;
+					deltay = 0;
 				}
-
-				if(dx != 0 || dy != 0) mode.ApplyFlatOffsetChange(dx, dy);
 			} 
 			else 
 			{
 				int newoffsetx = startoffsetx - (int)Math.Round(offsetx);
 				int newoffsety = startoffsety + (int)Math.Round(offsety);
-				mode.ApplyFlatOffsetChange(prevoffsetx - newoffsetx, prevoffsety - newoffsety);
+
+				deltax = prevoffsetx - newoffsetx;
+				deltay = prevoffsety - newoffsety;
+
 				prevoffsetx = newoffsetx;
 				prevoffsety = newoffsety;
+			}
+
+			//mxd. Apply offset?
+			if(deltax != 0 || deltay != 0)
+			{
+				mode.ApplyFlatOffsetChange(deltax, deltay);
+
+				// Update sector geometry
+				Sector s = GetControlSector();
+				if(s.Index != Sector.Sector.Index)
+				{
+					s.UpdateNeeded = true;
+					s.UpdateCache();
+					mode.GetSectorData(s).Update();
+					BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(s);
+					vs.UpdateSectorGeometry(false);
+					vs.Rebuild();
+				}
+
+				Sector.Sector.UpdateNeeded = true;
+				Sector.Sector.UpdateCache();
+				Sector.UpdateSectorGeometry(false);
+				Sector.Rebuild();
 			}
 
 			mode.ShowTargetInfo();
 		}
 
 		//mxd
-		public override Sector GetControlSector() 
-		{
-			return level.sector;
-		}
-
-		//mxd
-		public virtual bool IsSelected() 
-		{
-			return selected;
-		}
+		public override Sector GetControlSector() { return level.sector; }
 
 		//mxd
 		protected void AlignTextureToClosestLine(bool alignx, bool aligny) 
@@ -453,7 +469,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected virtual void SetTexture(string texturename) { }
 		public virtual void ApplyUpperUnpegged(bool set) { }
 		public virtual void ApplyLowerUnpegged(bool set) { }
-		protected abstract void MoveTextureOffset(Point xy);
+		protected abstract void MoveTextureOffset(int offsetx, int offsety);
 		protected abstract Point GetTextureOffset();
 
 		// Setup this plane
@@ -843,7 +859,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				undoticket = mode.CreateUndo("Change texture offsets");
 
 			//mxd
-			if(doSurfaceAngleCorrection) 
+			changed = true;
+
+			//mxd
+			if(doSurfaceAngleCorrection)
 			{
 				Point p = new Point(horizontal, vertical);
 				float angle = Angle2D.RadToDeg(General.Map.VisualCamera.AngleXY);
@@ -876,24 +895,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			// Apply offsets
-			MoveTextureOffset(new Point(-horizontal, -vertical));
+			MoveTextureOffset(-horizontal, -vertical);
 
-			// Update sector geometry
-			Sector s = GetControlSector();
-			if(s.Index != Sector.Sector.Index) 
+			// Rebuild sector
+			BaseVisualSector vs;
+			if(mode.VisualSectorExists(level.sector))
 			{
-				s.UpdateNeeded = true;
-				s.UpdateCache();
-				mode.GetSectorData(s).Update();
-				BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(s);
-				vs.UpdateSectorGeometry(false);
-				vs.Rebuild();
+				vs = (BaseVisualSector)mode.GetVisualSector(level.sector);
+			}
+			else
+			{
+				//mxd. Need this to apply changes to 3d-floor even if control sector doesn't exist as BaseVisualSector
+				vs = mode.CreateBaseVisualSector(level.sector);
 			}
 
-			Sector.Sector.UpdateNeeded = true;
-			Sector.Sector.UpdateCache();
-			Sector.UpdateSectorGeometry(false);
-			Sector.Rebuild();
+			if(vs != null) vs.UpdateSectorGeometry(false);
 		}
 
 		//mxd
@@ -907,23 +923,27 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			string key = (GeometryType == VisualGeometryType.FLOOR ? "rotationfloor" : "rotationceiling");
 			mode.SetActionResult( (GeometryType == VisualGeometryType.FLOOR ? "Floor" : "Ceiling") + " rotation changed to " + angle);
 
-			//set value
+			// Set new angle
 			Sector s = GetControlSector();
 			s.Fields.BeforeFieldsChange();
 			UniFields.SetFloat(s.Fields, key, angle, 0.0f);
 
-			if(s.Index != Sector.Sector.Index) 
+			// Mark as changed
+			changed = true;
+
+			// Rebuild sector
+			BaseVisualSector vs;
+			if(mode.VisualSectorExists(level.sector))
 			{
-				s.UpdateNeeded = true;
-				s.UpdateCache();
-				mode.GetSectorData(s).Update();
-				BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(s);
-				vs.UpdateSectorGeometry(false);
+				vs = (BaseVisualSector)mode.GetVisualSector(level.sector);
+			}
+			else
+			{
+				//mxd. Need this to apply changes to 3d-floor even if control sector doesn't exist as BaseVisualSector
+				vs = mode.CreateBaseVisualSector(level.sector);
 			}
 
-			Sector.Sector.UpdateNeeded = true;
-			Sector.Sector.UpdateCache();
-			Sector.UpdateSectorGeometry(false);
+			if(vs != null) vs.UpdateSectorGeometry(false);
 		}
 
 		//mxd
@@ -931,10 +951,47 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			if(!General.Map.UDMF || !Texture.IsImageLoaded) return;
 
+			changed = true;
+
 			if((General.Map.UndoRedo.NextUndo == null) || (General.Map.UndoRedo.NextUndo.TicketID != undoticket))
 				undoticket = mode.CreateUndo("Change texture scale");
 
-			ChangeTextureScale(incrementX, incrementY);
+			// Adjust to camera view
+			float angle = Angle2D.RadToDeg(General.Map.VisualCamera.AngleXY);
+			if(GeometryType == VisualGeometryType.CEILING) angle += level.sector.Fields.GetValue("rotationceiling", 0f);
+			else angle += level.sector.Fields.GetValue("rotationfloor", 0f);
+			angle = General.ClampAngle(angle);
+
+			if(angle > 315 || angle < 46)
+			{
+				ChangeTextureScale(incrementX, incrementY);
+			}
+			else if(angle > 225)
+			{
+				ChangeTextureScale(incrementY, incrementX);
+			}
+			else if(angle > 135)
+			{
+				ChangeTextureScale(incrementX, incrementY);
+			}
+			else
+			{
+				ChangeTextureScale(incrementY, incrementX);
+			}
+
+			// Rebuild sector
+			BaseVisualSector vs;
+			if(mode.VisualSectorExists(level.sector))
+			{
+				vs = (BaseVisualSector)mode.GetVisualSector(level.sector);
+			}
+			else
+			{
+				//mxd. Need this to apply changes to 3d-floor even if control sector doesn't exist as BaseVisualSector
+				vs = mode.CreateBaseVisualSector(level.sector);
+			}
+
+			if(vs != null) vs.UpdateSectorGeometry(false);
 		}
 		
 		#endregion
