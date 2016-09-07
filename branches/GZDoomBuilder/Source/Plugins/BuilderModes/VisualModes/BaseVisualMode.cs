@@ -747,7 +747,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			HashSet<Sector> effectsectors = null; //mxd
 
-			if(!General.Settings.GZDoomRenderingEffects) //mxd
+			if(!General.Settings.EnhancedRenderingEffects) //mxd
 			{
 				// Store all sectors with effects
 				if(sectordata != null && sectordata.Count > 0) 
@@ -786,7 +786,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				vertices.Clear();
 			}
 
-			if(!General.Settings.GZDoomRenderingEffects) return; //mxd
+			if(!General.Settings.EnhancedRenderingEffects) return; //mxd
 			
 			// Find all sector who's tag is not 0 and hash them so that we can find them quickly
 			foreach(Sector s in General.Map.Map.Sectors)
@@ -3296,13 +3296,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		[BeginAction("togglegzdoomgeometryeffects")]
-		public void ToggleGZDoomRenderingEffects() 
+		[BeginAction("gztoggleenhancedrendering", BaseAction = true)]
+		public void ToggleEnhancedRendering() 
 		{
-			General.Settings.GZDoomRenderingEffects = !General.Settings.GZDoomRenderingEffects;
+			// Actual toggling is done in MainForm.ToggleEnhancedRendering(), so we only need to update the view here
 			RebuildElementData();
 			UpdateChangedObjects();
-			General.Interface.DisplayStatus(StatusType.Info, "(G)ZDoom geometry effects are " + (General.Settings.GZDoomRenderingEffects ? "ENABLED" : "DISABLED"));
 		}
 
 		//mxd

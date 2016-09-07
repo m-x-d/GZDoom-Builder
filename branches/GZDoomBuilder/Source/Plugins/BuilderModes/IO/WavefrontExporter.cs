@@ -197,10 +197,10 @@ namespace CodeImp.DoomBuilder.BuilderModes.IO
 			BaseVisualMode mode = new BaseVisualMode();
 			bool renderingEffectsDisabled = false;
 
-			if(!General.Settings.GZDoomRenderingEffects) 
+			if(!General.Settings.EnhancedRenderingEffects) 
 			{
 				renderingEffectsDisabled = true;
-				mode.ToggleGZDoomRenderingEffects();
+				mode.ToggleEnhancedRendering();
 			}
 
 			mode.RebuildElementData();
@@ -224,7 +224,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.IO
 			List<Dictionary<string, List<WorldVertex[]>>> geometryByTexture = SortGeometry(visualSectors);
 
 			//restore vm settings
-			if(renderingEffectsDisabled) mode.ToggleGZDoomRenderingEffects();
+			if(renderingEffectsDisabled) mode.ToggleEnhancedRendering();
 			mode.Dispose();
 
 			//create obj

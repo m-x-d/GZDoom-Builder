@@ -99,10 +99,6 @@ namespace CodeImp.DoomBuilder.Windows
 			cbSynchCameras.Checked = General.Settings.GZSynchCameras;
 			tbDynLightCount.Value = General.Clamp(General.Settings.GZMaxDynamicLights / 8, tbDynLightCount.Minimum, tbDynLightCount.Maximum);
 			labelDynLightCount.Text = General.Settings.GZMaxDynamicLights.ToString();
-			tbDynLightSize.Value = General.Clamp((int)(General.Settings.GZDynamicLightRadius * 10), tbDynLightSize.Minimum, tbDynLightSize.Maximum);
-			labelDynLightSize.Text = General.Settings.GZDynamicLightRadius.ToString();
-			tbDynLightIntensity.Value = General.Clamp((int)(General.Settings.GZDynamicLightIntensity * 10), tbDynLightIntensity.Minimum, tbDynLightIntensity.Maximum);
-			labelDynLightIntensity.Text = General.Settings.GZDynamicLightIntensity.ToString();
 			cbStretchView.Checked = General.Settings.GZStretchView;
 			cbOldHighlightMode.Checked = General.Settings.GZOldHighlightMode;
 			vertexScale.Value = General.Clamp((int)(General.Settings.GZVertexScale2D), vertexScale.Minimum, vertexScale.Maximum);
@@ -410,8 +406,6 @@ namespace CodeImp.DoomBuilder.Windows
 			//mxd
 			General.Settings.GZSynchCameras = cbSynchCameras.Checked;
 			General.Settings.GZMaxDynamicLights = tbDynLightCount.Value * 8;
-			General.Settings.GZDynamicLightRadius = (tbDynLightSize.Value / 10.0f);
-			General.Settings.GZDynamicLightIntensity = (tbDynLightIntensity.Value / 10.0f);
 			General.Settings.FilterAnisotropy = D3DDevice.AF_STEPS[anisotropicfiltering.Value];
 			General.Settings.AntiAliasingSamples = D3DDevice.AA_STEPS[antialiasing.Value];
 			General.Settings.GZStretchView = cbStretchView.Checked;
@@ -1007,18 +1001,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private void tbDynLightCount_ValueChanged(object sender, EventArgs e) 
 		{
 			labelDynLightCount.Text = (tbDynLightCount.Value * 8).ToString();
-		}
-
-		//mxd
-		private void tbDynLightSize_ValueChanged(object sender, EventArgs e) 
-		{
-			labelDynLightSize.Text = ((float)tbDynLightSize.Value / 10).ToString();
-		}
-
-		//mxd
-		private void tbDynLightIntensity_ValueChanged(object sender, EventArgs e) 
-		{
-			labelDynLightIntensity.Text = ((float)tbDynLightIntensity.Value / 10).ToString();
 		}
 
 		//mxd

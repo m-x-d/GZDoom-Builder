@@ -37,6 +37,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 		#region ================== Constants
 
 		protected const int FIXED_RADIUS = 8; //mxd. Used to render things with zero width and radius
+		private const float DYNLIGHT_INTENSITY_SCALER = 255.0f;
+		private const float SUBLIGHT_INTENSITY_SCALER = 255.0f * 1.5f; // Scaler for subtractive dynamic lights
 
 		#endregion
 		
@@ -652,8 +654,6 @@ namespace CodeImp.DoomBuilder.VisualModes
 		//mxd. Update light info
 		private void UpdateLight(int lightId) 
 		{
-			float scaled_intensity = 255.0f / General.Settings.GZDynamicLightIntensity;
-
 			if(lightId < GZBuilder.GZGeneral.GZ_LIGHT_TYPES[2]) //if it's gzdoom light
 			{ 
 				int n;
@@ -662,19 +662,28 @@ namespace CodeImp.DoomBuilder.VisualModes
 					n = 0;
 					lightRenderStyle = DynamicLightRenderStyle.NORMAL;
 					//lightColor.Alpha used in shader to perform some calculations based on light type
-					lightColor = new Color4((float)lightRenderStyle / 100.0f, thing.Args[0] / scaled_intensity / 2, thing.Args[1] / scaled_intensity / 2, thing.Args[2] / scaled_intensity / 2);
+					lightColor = new Color4((float)lightRenderStyle / 100.0f, 
+						thing.Args[0] / DYNLIGHT_INTENSITY_SCALER,
+						thing.Args[1] / DYNLIGHT_INTENSITY_SCALER,
+						thing.Args[2] / DYNLIGHT_INTENSITY_SCALER);
 				} 
 				else if(lightId < GZBuilder.GZGeneral.GZ_LIGHT_TYPES[1]) 
 				{
 					n = 10;
 					lightRenderStyle = DynamicLightRenderStyle.ADDITIVE;
-					lightColor = new Color4((float)lightRenderStyle / 100.0f, thing.Args[0] / scaled_intensity / 2, thing.Args[1] / scaled_intensity / 2, thing.Args[2] / scaled_intensity / 2);
+					lightColor = new Color4((float)lightRenderStyle / 100.0f, 
+						thing.Args[0] / DYNLIGHT_INTENSITY_SCALER,
+						thing.Args[1] / DYNLIGHT_INTENSITY_SCALER,
+						thing.Args[2] / DYNLIGHT_INTENSITY_SCALER);
 				} 
 				else 
 				{
 					n = 20;
 					lightRenderStyle = DynamicLightRenderStyle.NEGATIVE;
-					lightColor = new Color4((float)lightRenderStyle / 100.0f, thing.Args[0] / scaled_intensity / 3, thing.Args[1] / scaled_intensity / 3, thing.Args[2] / scaled_intensity / 3);
+					lightColor = new Color4((float)lightRenderStyle / 100.0f, 
+						thing.Args[0] / SUBLIGHT_INTENSITY_SCALER,
+						thing.Args[1] / SUBLIGHT_INTENSITY_SCALER,
+						thing.Args[2] / SUBLIGHT_INTENSITY_SCALER);
 				}
 				lightType = (DynamicLightType)(thing.Type - 9800 - n);
 
@@ -682,12 +691,12 @@ namespace CodeImp.DoomBuilder.VisualModes
 				{
 					int scaler = 1;
 					if(thing.Sector != null) scaler = thing.Sector.Brightness / 4;
-					lightPrimaryRadius = (thing.Args[3] * scaler) * General.Settings.GZDynamicLightRadius;
+					lightPrimaryRadius = (thing.Args[3] * scaler);
 				} 
 				else 
 				{
-					lightPrimaryRadius = (thing.Args[3] * 2) * General.Settings.GZDynamicLightRadius; //works... that.. way in GZDoom
-					if(lightType > 0) lightSecondaryRadius = (thing.Args[4] * 2) * General.Settings.GZDynamicLightRadius;
+					lightPrimaryRadius = (thing.Args[3] * 2); //works... that.. way in GZDoom
+					if(lightType > 0) lightSecondaryRadius = (thing.Args[4] * 2);
 				}
 			}
 			else //it's one of vavoom lights
@@ -695,10 +704,18 @@ namespace CodeImp.DoomBuilder.VisualModes
 				lightRenderStyle = DynamicLightRenderStyle.VAVOOM;
 				lightType = (DynamicLightType)thing.Type;
 				if(lightType == DynamicLightType.VAVOOM_COLORED)
-					lightColor = new Color4((float)lightRenderStyle / 100.0f, thing.Args[1] / scaled_intensity / 2, thing.Args[2] / scaled_intensity / 2, thing.Args[3] / scaled_intensity / 2);
+				{
+					lightColor = new Color4((float)lightRenderStyle / 100.0f, 
+						thing.Args[1] / DYNLIGHT_INTENSITY_SCALER,
+						thing.Args[2] / DYNLIGHT_INTENSITY_SCALER,
+						thing.Args[3] / DYNLIGHT_INTENSITY_SCALER);
+				}
 				else
-					lightColor = new Color4((float)lightRenderStyle / 100.0f, General.Settings.GZDynamicLightIntensity / 2, General.Settings.GZDynamicLightIntensity / 2, General.Settings.GZDynamicLightIntensity / 2);
-				lightPrimaryRadius = (thing.Args[0] * 8) * General.Settings.GZDynamicLightRadius;
+				{
+					lightColor = new Color4((float)lightRenderStyle / 100.0f, 0.5f, 0.5f, 0.5f);
+				}
+					
+				lightPrimaryRadius = (thing.Args[0] * 8);
 			}
 
 			UpdateLightRadius();
@@ -708,12 +725,10 @@ namespace CodeImp.DoomBuilder.VisualModes
 		private void UpdateGldefsLight() 
 		{
 			DynamicLightData light = General.Map.Data.GldefsEntries[thing.Type];
-			float intensity_mod = General.Settings.GZDynamicLightIntensity;
-			float scale_mod = General.Settings.GZDynamicLightRadius;
 
 			//apply settings
 			lightRenderStyle = light.Subtractive ? DynamicLightRenderStyle.NEGATIVE : DynamicLightRenderStyle.NORMAL;
-			lightColor = new Color4((float)lightRenderStyle / 100.0f, light.Color.Red * intensity_mod, light.Color.Green * intensity_mod, light.Color.Blue * intensity_mod);
+			lightColor = new Color4((float)lightRenderStyle / 100.0f, light.Color.Red, light.Color.Green, light.Color.Blue);
 			Vector2D o = new Vector2D(light.Offset.X, light.Offset.Y).GetRotated(thing.Angle - Angle2D.PIHALF);
 			lightOffset = new Vector3(o.x, o.y, light.Offset.Z);
 			lightType = light.Type;
@@ -724,8 +739,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 			} 
 			else 
 			{
-				lightPrimaryRadius = light.PrimaryRadius * scale_mod;
-				lightSecondaryRadius = light.SecondaryRadius * scale_mod;
+				lightPrimaryRadius = light.PrimaryRadius;
+				lightSecondaryRadius = light.SecondaryRadius;
 			}
 
 			lightInterval = light.Interval;

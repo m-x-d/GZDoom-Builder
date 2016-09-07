@@ -1072,18 +1072,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					{
 						if(t.Sector == null) t.DetermineSector();
 						int scaler = (t.Sector != null ? t.Sector.Brightness / 4 : 2);
-						primaryradius = (int)Math.Round((t.Args[3] * scaler) * General.Settings.GZDynamicLightRadius);
+						primaryradius = t.Args[3] * scaler;
 					}
 					else
 					{
-						primaryradius = (int)Math.Round((t.Args[3] * 2) * General.Settings.GZDynamicLightRadius); //works... that.. way in GZDoom
-						if(lightType > 0)
-							secondaryradius = (int)Math.Round((t.Args[4] * 2) * General.Settings.GZDynamicLightRadius);
+						primaryradius = t.Args[3] * 2; //works... that.. way in GZDoom
+						if(lightType > 0) secondaryradius = t.Args[4] * 2;
 					}
 				}
 				else //it's one of vavoom lights
 				{
-					primaryradius = (int)Math.Round((t.Args[0] * 8) * General.Settings.GZDynamicLightRadius);
+					primaryradius = t.Args[0] * 8;
 				}
 
 				// Check radii...

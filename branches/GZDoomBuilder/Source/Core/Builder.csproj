@@ -1145,7 +1145,6 @@
     <Content Include="Resources\DB2.ico" />
     <None Include="Resources\GZDB2.ico" />
     <None Include="Resources\fog.png" />
-    <None Include="Resources\fx.png" />
     <None Include="Resources\GZDB_Logo_small.png" />
     <None Include="Resources\InfoLine.png" />
     <None Include="Resources\Keyboard.png" />

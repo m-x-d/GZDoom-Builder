@@ -124,8 +124,6 @@ namespace CodeImp.DoomBuilder.Config
 		private bool gzShowEventLines;
 		private bool gzOldHighlightMode;
 		private int gzMaxDynamicLights;
-		private float gzDynamicLightRadius;
-		private float gzDynamicLightIntensity;
 		private bool gzStretchView;
 		private float gzVertexScale2D;
 		private bool gzShowVisualVertices;
@@ -133,7 +131,7 @@ namespace CodeImp.DoomBuilder.Config
 		private string lastUsedConfigName;
 		private string lastUsedMapFolder;
 		private bool gzMarkExtraFloors;
-		private bool gzdoomrenderingeffects = true; //mxd
+		private bool enhancedrenderingeffects = true; //mxd
 		private int maxRecentFiles;
 		private bool autoClearSideTextures;
 		private bool storeSelectedEditTab;
@@ -250,8 +248,6 @@ namespace CodeImp.DoomBuilder.Config
 		public bool GZShowEventLines { get { return gzShowEventLines; } internal set { gzShowEventLines = value; } }
 		public bool GZOldHighlightMode { get { return gzOldHighlightMode; } internal set { gzOldHighlightMode = value; } }
 		public int GZMaxDynamicLights { get { return gzMaxDynamicLights; } internal set { gzMaxDynamicLights = value; } }
-		public float GZDynamicLightRadius { get { return gzDynamicLightRadius; } internal set { gzDynamicLightRadius = value; } }
-		public float GZDynamicLightIntensity { get { return gzDynamicLightIntensity; } internal set { gzDynamicLightIntensity = value; } }
 		public bool GZStretchView { get { return gzStretchView; } internal set { gzStretchView = value; } }
 		public float GZVertexScale2D { get { return gzVertexScale2D; } internal set { gzVertexScale2D = value; } }
 		public bool GZShowVisualVertices { get { return gzShowVisualVertices; } internal set { gzShowVisualVertices = value; } }
@@ -259,7 +255,7 @@ namespace CodeImp.DoomBuilder.Config
 		public string LastUsedConfigName { get { return lastUsedConfigName; } internal set { lastUsedConfigName = value; } }
 		public string LastUsedMapFolder { get { return lastUsedMapFolder; } internal set { lastUsedMapFolder = value; } }
 		public bool GZMarkExtraFloors { get { return gzMarkExtraFloors; } internal set { gzMarkExtraFloors = value; } }
-		public bool GZDoomRenderingEffects { get { return gzdoomrenderingeffects; } set { gzdoomrenderingeffects = value; } } //mxd
+		public bool EnhancedRenderingEffects { get { return enhancedrenderingeffects; } set { enhancedrenderingeffects = value; } } //mxd
 		public int MaxRecentFiles { get { return maxRecentFiles; } internal set { maxRecentFiles = General.Clamp(value, 8, 25); } }
 		public bool AutoClearSidedefTextures { get { return autoClearSideTextures; } internal set { autoClearSideTextures = value; } }
 		public bool StoreSelectedEditTab { get { return storeSelectedEditTab; } internal set { storeSelectedEditTab = value; } }
@@ -387,8 +383,6 @@ namespace CodeImp.DoomBuilder.Config
 				gzShowEventLines = cfg.ReadSetting("gzshoweventlines", true);
 				gzOldHighlightMode = cfg.ReadSetting("gzoldhighlightmode", false);
 				gzMaxDynamicLights = cfg.ReadSetting("gzmaxdynamiclights", 16);
-				gzDynamicLightRadius = cfg.ReadSetting("gzdynamiclightradius", 1.0f);
-				gzDynamicLightIntensity = cfg.ReadSetting("gzdynamiclightintensity", 1.0f);
 				gzStretchView = cfg.ReadSetting("gzstretchview", true);
 				gzVertexScale2D = cfg.ReadSetting("gzvertexscale2d", 1.0f);
 				gzShowVisualVertices = cfg.ReadSetting("gzshowvisualvertices", true);
@@ -505,8 +499,6 @@ namespace CodeImp.DoomBuilder.Config
 			cfg.WriteSetting("gzoldhighlightmode", gzOldHighlightMode);
 			cfg.WriteSetting("gztoolbargzdoom", gzToolbarGZDoom);
 			cfg.WriteSetting("gzmaxdynamiclights", gzMaxDynamicLights);
-			cfg.WriteSetting("gzdynamiclightradius", gzDynamicLightRadius);
-			cfg.WriteSetting("gzdynamiclightintensity", gzDynamicLightIntensity);
 			cfg.WriteSetting("gzstretchview", gzStretchView);
 			cfg.WriteSetting("gzvertexscale2d", gzVertexScale2D);
 			cfg.WriteSetting("gzshowvisualvertices", gzShowVisualVertices);
