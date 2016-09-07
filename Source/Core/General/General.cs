@@ -1786,13 +1786,17 @@ namespace CodeImp.DoomBuilder
 		//mxd. This clamps angle between 0 and 359
 		public static int ClampAngle(int angle) 
 		{
-			return (angle + 360) % 360;
+			angle %= 360;
+			if(angle < 0) angle += 360;
+			return angle;
 		}
 
 		//mxd. This clamps angle between 0 and 359
 		public static float ClampAngle(float angle) 
 		{
-			return (angle + 360) % 360;
+			angle %= 360;
+			if(angle < 0) angle += 360;
+			return angle;
 		}
 
 		//mxd
