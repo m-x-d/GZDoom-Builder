@@ -35,8 +35,6 @@ namespace CodeImp.DoomBuilder.Windows
 			System.Windows.Forms.GroupBox groupBox1;
 			System.Windows.Forms.Label label1;
 			System.Windows.Forms.Label label18;
-			System.Windows.Forms.Label label20;
-			System.Windows.Forms.Label label21;
 			System.Windows.Forms.Label label27;
 			System.Windows.Forms.Label label29;
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PreferencesForm));
@@ -160,10 +158,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.labelanisotropicfiltering = new System.Windows.Forms.Label();
 			this.anisotropicfiltering = new System.Windows.Forms.TrackBar();
 			this.cbOldHighlightMode = new System.Windows.Forms.CheckBox();
-			this.labelDynLightIntensity = new System.Windows.Forms.Label();
-			this.tbDynLightIntensity = new System.Windows.Forms.TrackBar();
-			this.labelDynLightSize = new System.Windows.Forms.Label();
-			this.tbDynLightSize = new System.Windows.Forms.TrackBar();
 			this.labelDynLightCount = new System.Windows.Forms.Label();
 			this.tbDynLightCount = new System.Windows.Forms.TrackBar();
 			this.imagebrightness = new System.Windows.Forms.TrackBar();
@@ -224,8 +218,6 @@ namespace CodeImp.DoomBuilder.Windows
 			groupBox1 = new System.Windows.Forms.GroupBox();
 			label1 = new System.Windows.Forms.Label();
 			label18 = new System.Windows.Forms.Label();
-			label20 = new System.Windows.Forms.Label();
-			label21 = new System.Windows.Forms.Label();
 			label27 = new System.Windows.Forms.Label();
 			label29 = new System.Windows.Forms.Label();
 			groupBox1.SuspendLayout();
@@ -255,8 +247,6 @@ namespace CodeImp.DoomBuilder.Windows
 			((System.ComponentModel.ISupportInitialize)(this.activethingsalpha)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.antialiasing)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.anisotropicfiltering)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.tbDynLightIntensity)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.tbDynLightSize)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.tbDynLightCount)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.imagebrightness)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.hiddenthingsalpha)).BeginInit();
@@ -602,7 +592,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label1
 			// 
 			label1.AutoSize = true;
-			label1.Location = new System.Drawing.Point(43, 171);
+			label1.Location = new System.Drawing.Point(44, 203);
 			label1.Name = "label1";
 			label1.Size = new System.Drawing.Size(145, 13);
 			label1.TabIndex = 20;
@@ -612,7 +602,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label18
 			// 
 			label18.AutoSize = true;
-			label18.Location = new System.Drawing.Point(80, 208);
+			label18.Location = new System.Drawing.Point(80, 248);
 			label18.Name = "label18";
 			label18.Size = new System.Drawing.Size(108, 13);
 			label18.TabIndex = 25;
@@ -621,30 +611,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.toolTip1.SetToolTip(label18, "Controls how many dynamic lights could be \r\nrendered simultaneously in Visual mod" +
 					"e ");
 			// 
-			// label20
-			// 
-			label20.AutoSize = true;
-			label20.Location = new System.Drawing.Point(94, 245);
-			label20.Name = "label20";
-			label20.Size = new System.Drawing.Size(94, 13);
-			label20.TabIndex = 28;
-			label20.Text = "Dynamic light size:";
-			label20.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			// 
-			// label21
-			// 
-			label21.AutoSize = true;
-			label21.Location = new System.Drawing.Point(74, 282);
-			label21.Name = "label21";
-			label21.Size = new System.Drawing.Size(114, 13);
-			label21.TabIndex = 31;
-			label21.Text = "Dynamic light intensity:";
-			label21.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			// 
 			// label27
 			// 
 			label27.AutoSize = true;
-			label27.Location = new System.Drawing.Point(90, 319);
+			label27.Location = new System.Drawing.Point(90, 293);
 			label27.Name = "label27";
 			label27.Size = new System.Drawing.Size(98, 13);
 			label27.TabIndex = 35;
@@ -654,7 +624,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label29
 			// 
 			label29.AutoSize = true;
-			label29.Location = new System.Drawing.Point(96, 356);
+			label29.Location = new System.Drawing.Point(95, 338);
 			label29.Name = "label29";
 			label29.Size = new System.Drawing.Size(93, 13);
 			label29.TabIndex = 38;
@@ -1620,16 +1590,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.appearancegroup1.Controls.Add(this.labelanisotropicfiltering);
 			this.appearancegroup1.Controls.Add(this.anisotropicfiltering);
 			this.appearancegroup1.Controls.Add(this.cbOldHighlightMode);
-			this.appearancegroup1.Controls.Add(label21);
-			this.appearancegroup1.Controls.Add(this.labelDynLightIntensity);
 			this.appearancegroup1.Controls.Add(this.cbStretchView);
-			this.appearancegroup1.Controls.Add(this.tbDynLightIntensity);
-			this.appearancegroup1.Controls.Add(label20);
 			this.appearancegroup1.Controls.Add(this.doublesidedalphalabel);
 			this.appearancegroup1.Controls.Add(this.qualitydisplay);
-			this.appearancegroup1.Controls.Add(this.labelDynLightSize);
 			this.appearancegroup1.Controls.Add(this.label2);
-			this.appearancegroup1.Controls.Add(this.tbDynLightSize);
 			this.appearancegroup1.Controls.Add(label18);
 			this.appearancegroup1.Controls.Add(this.labelDynLightCount);
 			this.appearancegroup1.Controls.Add(this.tbDynLightCount);
@@ -1652,7 +1616,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// activethingsalphalabel
 			// 
 			this.activethingsalphalabel.AutoSize = true;
-			this.activethingsalphalabel.Location = new System.Drawing.Point(359, 60);
+			this.activethingsalphalabel.Location = new System.Drawing.Point(359, 68);
 			this.activethingsalphalabel.Name = "activethingsalphalabel";
 			this.activethingsalphalabel.Size = new System.Drawing.Size(21, 13);
 			this.activethingsalphalabel.TabIndex = 48;
@@ -1661,7 +1625,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label31
 			// 
 			this.label31.AutoSize = true;
-			this.label31.Location = new System.Drawing.Point(12, 60);
+			this.label31.Location = new System.Drawing.Point(12, 68);
 			this.label31.Name = "label31";
 			this.label31.Size = new System.Drawing.Size(176, 13);
 			this.label31.TabIndex = 47;
@@ -1685,7 +1649,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.activethingsalpha.BackColor = System.Drawing.SystemColors.Window;
 			this.activethingsalpha.LargeChange = 3;
-			this.activethingsalpha.Location = new System.Drawing.Point(199, 49);
+			this.activethingsalpha.Location = new System.Drawing.Point(199, 57);
 			this.activethingsalpha.Name = "activethingsalpha";
 			this.activethingsalpha.Size = new System.Drawing.Size(154, 45);
 			this.activethingsalpha.TabIndex = 1;
@@ -1695,7 +1659,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// hiddenthingsalphalabel
 			// 
 			this.hiddenthingsalphalabel.AutoSize = true;
-			this.hiddenthingsalphalabel.Location = new System.Drawing.Point(359, 134);
+			this.hiddenthingsalphalabel.Location = new System.Drawing.Point(359, 158);
 			this.hiddenthingsalphalabel.Name = "hiddenthingsalphalabel";
 			this.hiddenthingsalphalabel.Size = new System.Drawing.Size(21, 13);
 			this.hiddenthingsalphalabel.TabIndex = 45;
@@ -1704,7 +1668,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label32
 			// 
 			this.label32.AutoSize = true;
-			this.label32.Location = new System.Drawing.Point(49, 134);
+			this.label32.Location = new System.Drawing.Point(49, 158);
 			this.label32.Name = "label32";
 			this.label32.Size = new System.Drawing.Size(139, 13);
 			this.label32.TabIndex = 44;
@@ -1715,7 +1679,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// inactivethingsalphalabel
 			// 
 			this.inactivethingsalphalabel.AutoSize = true;
-			this.inactivethingsalphalabel.Location = new System.Drawing.Point(359, 97);
+			this.inactivethingsalphalabel.Location = new System.Drawing.Point(359, 113);
 			this.inactivethingsalphalabel.Name = "inactivethingsalphalabel";
 			this.inactivethingsalphalabel.Size = new System.Drawing.Size(21, 13);
 			this.inactivethingsalphalabel.TabIndex = 42;
@@ -1724,7 +1688,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label30
 			// 
 			this.label30.AutoSize = true;
-			this.label30.Location = new System.Drawing.Point(15, 97);
+			this.label30.Location = new System.Drawing.Point(15, 113);
 			this.label30.Name = "label30";
 			this.label30.Size = new System.Drawing.Size(173, 13);
 			this.label30.TabIndex = 41;
@@ -1735,7 +1699,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// labelantialiasing
 			// 
 			this.labelantialiasing.AutoSize = true;
-			this.labelantialiasing.Location = new System.Drawing.Point(359, 356);
+			this.labelantialiasing.Location = new System.Drawing.Point(359, 338);
 			this.labelantialiasing.Name = "labelantialiasing";
 			this.labelantialiasing.Size = new System.Drawing.Size(54, 13);
 			this.labelantialiasing.TabIndex = 39;
@@ -1745,7 +1709,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.antialiasing.BackColor = System.Drawing.SystemColors.Window;
 			this.antialiasing.LargeChange = 1;
-			this.antialiasing.Location = new System.Drawing.Point(199, 345);
+			this.antialiasing.Location = new System.Drawing.Point(199, 327);
 			this.antialiasing.Maximum = 3;
 			this.antialiasing.Name = "antialiasing";
 			this.antialiasing.Size = new System.Drawing.Size(154, 45);
@@ -1757,7 +1721,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// labelanisotropicfiltering
 			// 
 			this.labelanisotropicfiltering.AutoSize = true;
-			this.labelanisotropicfiltering.Location = new System.Drawing.Point(359, 319);
+			this.labelanisotropicfiltering.Location = new System.Drawing.Point(359, 293);
 			this.labelanisotropicfiltering.Name = "labelanisotropicfiltering";
 			this.labelanisotropicfiltering.Size = new System.Drawing.Size(24, 13);
 			this.labelanisotropicfiltering.TabIndex = 36;
@@ -1767,7 +1731,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.anisotropicfiltering.BackColor = System.Drawing.SystemColors.Window;
 			this.anisotropicfiltering.LargeChange = 1;
-			this.anisotropicfiltering.Location = new System.Drawing.Point(199, 308);
+			this.anisotropicfiltering.Location = new System.Drawing.Point(199, 282);
 			this.anisotropicfiltering.Maximum = 4;
 			this.anisotropicfiltering.Name = "anisotropicfiltering";
 			this.anisotropicfiltering.Size = new System.Drawing.Size(154, 45);
@@ -1788,55 +1752,10 @@ namespace CodeImp.DoomBuilder.Windows
 					"ighlight\" mode is disabled \r\n(Doom Builder 2 behaviour).");
 			this.cbOldHighlightMode.UseVisualStyleBackColor = true;
 			// 
-			// labelDynLightIntensity
-			// 
-			this.labelDynLightIntensity.AutoSize = true;
-			this.labelDynLightIntensity.Location = new System.Drawing.Point(359, 282);
-			this.labelDynLightIntensity.Name = "labelDynLightIntensity";
-			this.labelDynLightIntensity.Size = new System.Drawing.Size(22, 13);
-			this.labelDynLightIntensity.TabIndex = 32;
-			this.labelDynLightIntensity.Text = "1.0";
-			// 
-			// tbDynLightIntensity
-			// 
-			this.tbDynLightIntensity.BackColor = System.Drawing.SystemColors.Window;
-			this.tbDynLightIntensity.LargeChange = 1;
-			this.tbDynLightIntensity.Location = new System.Drawing.Point(199, 271);
-			this.tbDynLightIntensity.Minimum = 1;
-			this.tbDynLightIntensity.Name = "tbDynLightIntensity";
-			this.tbDynLightIntensity.Size = new System.Drawing.Size(154, 45);
-			this.tbDynLightIntensity.TabIndex = 7;
-			this.tbDynLightIntensity.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
-			this.tbDynLightIntensity.Value = 10;
-			this.tbDynLightIntensity.ValueChanged += new System.EventHandler(this.tbDynLightIntensity_ValueChanged);
-			// 
-			// labelDynLightSize
-			// 
-			this.labelDynLightSize.AutoSize = true;
-			this.labelDynLightSize.Location = new System.Drawing.Point(359, 245);
-			this.labelDynLightSize.Name = "labelDynLightSize";
-			this.labelDynLightSize.Size = new System.Drawing.Size(22, 13);
-			this.labelDynLightSize.TabIndex = 29;
-			this.labelDynLightSize.Text = "1.0";
-			// 
-			// tbDynLightSize
-			// 
-			this.tbDynLightSize.BackColor = System.Drawing.SystemColors.Window;
-			this.tbDynLightSize.LargeChange = 1;
-			this.tbDynLightSize.Location = new System.Drawing.Point(199, 234);
-			this.tbDynLightSize.Maximum = 20;
-			this.tbDynLightSize.Minimum = 1;
-			this.tbDynLightSize.Name = "tbDynLightSize";
-			this.tbDynLightSize.Size = new System.Drawing.Size(154, 45);
-			this.tbDynLightSize.TabIndex = 6;
-			this.tbDynLightSize.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
-			this.tbDynLightSize.Value = 10;
-			this.tbDynLightSize.ValueChanged += new System.EventHandler(this.tbDynLightSize_ValueChanged);
-			// 
 			// labelDynLightCount
 			// 
 			this.labelDynLightCount.AutoSize = true;
-			this.labelDynLightCount.Location = new System.Drawing.Point(359, 208);
+			this.labelDynLightCount.Location = new System.Drawing.Point(359, 248);
 			this.labelDynLightCount.Name = "labelDynLightCount";
 			this.labelDynLightCount.Size = new System.Drawing.Size(19, 13);
 			this.labelDynLightCount.TabIndex = 26;
@@ -1846,7 +1765,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.tbDynLightCount.BackColor = System.Drawing.SystemColors.Window;
 			this.tbDynLightCount.LargeChange = 1;
-			this.tbDynLightCount.Location = new System.Drawing.Point(199, 197);
+			this.tbDynLightCount.Location = new System.Drawing.Point(199, 237);
 			this.tbDynLightCount.Maximum = 8;
 			this.tbDynLightCount.Minimum = 1;
 			this.tbDynLightCount.Name = "tbDynLightCount";
@@ -1860,7 +1779,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.imagebrightness.BackColor = System.Drawing.SystemColors.Window;
 			this.imagebrightness.LargeChange = 3;
-			this.imagebrightness.Location = new System.Drawing.Point(199, 160);
+			this.imagebrightness.Location = new System.Drawing.Point(199, 192);
 			this.imagebrightness.Name = "imagebrightness";
 			this.imagebrightness.Size = new System.Drawing.Size(154, 45);
 			this.imagebrightness.TabIndex = 4;
@@ -1881,7 +1800,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.hiddenthingsalpha.BackColor = System.Drawing.SystemColors.Window;
 			this.hiddenthingsalpha.LargeChange = 3;
-			this.hiddenthingsalpha.Location = new System.Drawing.Point(199, 123);
+			this.hiddenthingsalpha.Location = new System.Drawing.Point(199, 147);
 			this.hiddenthingsalpha.Name = "hiddenthingsalpha";
 			this.hiddenthingsalpha.Size = new System.Drawing.Size(154, 45);
 			this.hiddenthingsalpha.TabIndex = 3;
@@ -1892,7 +1811,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.inactivethingsalpha.BackColor = System.Drawing.SystemColors.Window;
 			this.inactivethingsalpha.LargeChange = 3;
-			this.inactivethingsalpha.Location = new System.Drawing.Point(199, 86);
+			this.inactivethingsalpha.Location = new System.Drawing.Point(199, 102);
 			this.inactivethingsalpha.Name = "inactivethingsalpha";
 			this.inactivethingsalpha.Size = new System.Drawing.Size(154, 45);
 			this.inactivethingsalpha.TabIndex = 2;
@@ -1922,7 +1841,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// imagebrightnesslabel
 			// 
 			this.imagebrightnesslabel.AutoSize = true;
-			this.imagebrightnesslabel.Location = new System.Drawing.Point(360, 171);
+			this.imagebrightnesslabel.Location = new System.Drawing.Point(360, 203);
 			this.imagebrightnesslabel.Name = "imagebrightnesslabel";
 			this.imagebrightnesslabel.Size = new System.Drawing.Size(30, 13);
 			this.imagebrightnesslabel.TabIndex = 22;
@@ -2541,8 +2460,6 @@ namespace CodeImp.DoomBuilder.Windows
 			((System.ComponentModel.ISupportInitialize)(this.activethingsalpha)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.antialiasing)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.anisotropicfiltering)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.tbDynLightIntensity)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.tbDynLightSize)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.tbDynLightCount)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.imagebrightness)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.hiddenthingsalpha)).EndInit();
@@ -2648,10 +2565,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.CheckBox toolbar_gzdoom;
 		private System.Windows.Forms.Label labelDynLightCount;
 		private System.Windows.Forms.TrackBar tbDynLightCount;
-		private System.Windows.Forms.Label labelDynLightSize;
-		private System.Windows.Forms.TrackBar tbDynLightSize;
-		private System.Windows.Forms.Label labelDynLightIntensity;
-		private System.Windows.Forms.TrackBar tbDynLightIntensity;
 		private System.Windows.Forms.CheckBox cbSynchCameras;
 		private System.Windows.Forms.CheckBox cbStretchView;
 		private System.Windows.Forms.ToolTip toolTip1;

@@ -1827,63 +1827,6 @@ namespace CodeImp.DoomBuilder
 			General.MainWindow.UpdateGZDoomPanel();
 		}
 
-		[BeginAction("gztogglefog")]
-		internal void ToggleFog()
-		{
-			General.Settings.GZDrawFog = !General.Settings.GZDrawFog;
-			General.MainWindow.DisplayStatus(StatusType.Action, "Fog rendering is " + (General.Settings.GZDrawFog ? "ENABLED" : "DISABLED"));
-			General.MainWindow.RedrawDisplay();
-			General.MainWindow.UpdateGZDoomPanel();
-		}
-
-		[BeginAction("gztogglesky")]
-		internal void ToggleSky()
-		{
-			General.Settings.GZDrawSky = !General.Settings.GZDrawSky;
-			General.MainWindow.DisplayStatus(StatusType.Action, "Sky rendering is " + (General.Settings.GZDrawSky ? "ENABLED" : "DISABLED"));
-			General.MainWindow.RedrawDisplay();
-			General.MainWindow.UpdateGZDoomPanel();
-		}
-
-		[BeginAction("gztogglefx")]
-		internal void ToggleFx()
-		{
-			int on = 0;
-			on += General.Settings.GZDrawFog ? 1 : -1;
-			on += General.Settings.GZDrawSky ? 1 : -1;
-			on += General.Settings.GZDrawLightsMode != LightRenderMode.NONE ? 1 : -1;
-			on += General.Settings.GZDrawModelsMode != ModelRenderMode.NONE ? 1 : -1;
-
-			bool enable = (on < 0);
-
-			General.Settings.GZDrawFog = enable;
-			General.Settings.GZDrawSky = enable;
-			General.Settings.GZDrawLightsMode = (enable ? LightRenderMode.ALL : LightRenderMode.NONE);
-			General.Settings.GZDrawModelsMode = (enable ? ModelRenderMode.ALL : ModelRenderMode.NONE);
-			General.MainWindow.DisplayStatus(StatusType.Action, "Advanced effects are " + (enable ? "ENABLED" : "DISABLED"));
-
-			General.MainWindow.RedrawDisplay();
-			General.MainWindow.UpdateGZDoomPanel();
-		}
-
-		[BeginAction("gztoggleeventlines")]
-		internal void ToggleEventLines()
-		{
-			General.Settings.GZShowEventLines = !General.Settings.GZShowEventLines;
-			General.MainWindow.DisplayStatus(StatusType.Action, "Event lines are " + (General.Settings.GZShowEventLines ? "ENABLED" : "DISABLED"));
-			General.MainWindow.RedrawDisplay();
-			General.MainWindow.UpdateGZDoomPanel();
-		}
-
-		[BeginAction("gztogglevisualvertices")]
-		internal void ToggleVisualVertices()
-		{
-			General.Settings.GZShowVisualVertices = !General.Settings.GZShowVisualVertices;
-			General.MainWindow.DisplayStatus(StatusType.Action, "Visual vertices are " + (General.Settings.GZShowVisualVertices ? "ENABLED" : "DISABLED"));
-			General.MainWindow.RedrawDisplay();
-			General.MainWindow.UpdateGZDoomPanel();
-		}
-
 		[BeginAction("gzreloadmodeldef")]
 		internal void ReloadModeldef()
 		{

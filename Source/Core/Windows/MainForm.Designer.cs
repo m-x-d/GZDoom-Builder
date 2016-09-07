@@ -177,6 +177,20 @@ namespace CodeImp.DoomBuilder.Windows
 			this.buttonlinededfcolors = new System.Windows.Forms.ToolStripButton();
 			this.linedefcolorpresets = new System.Windows.Forms.ToolStripDropDownButton();
 			this.separatorfilters = new System.Windows.Forms.ToolStripSeparator();
+			this.separatorrendering = new System.Windows.Forms.ToolStripSeparator();
+			this.itemdynlightmodes = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemnodynlights = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemdynlights = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemdynlightsanim = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemmodelmodes = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemnomdl = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemselmdl = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemfiltermdl = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemallmdl = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemtogglefog = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemtogglesky = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemtoggleeventlines = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemtogglevisualverts = new System.Windows.Forms.ToolStripMenuItem();
 			this.buttonfullbrightness = new System.Windows.Forms.ToolStripButton();
 			this.buttontogglegrid = new System.Windows.Forms.ToolStripButton();
 			this.buttontoggledynamicgrid = new System.Windows.Forms.ToolStripButton();
@@ -197,7 +211,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.buttonsplitjoinedsectors = new System.Windows.Forms.ToolStripButton();
 			this.buttonautoclearsidetextures = new System.Windows.Forms.ToolStripButton();
 			this.seperatorgeometry = new System.Windows.Forms.ToolStripSeparator();
-			this.buttontogglefx = new System.Windows.Forms.ToolStripButton();
 			this.dynamiclightmode = new System.Windows.Forms.ToolStripSplitButton();
 			this.sightsdontshow = new System.Windows.Forms.ToolStripMenuItem();
 			this.lightsshow = new System.Windows.Forms.ToolStripMenuItem();
@@ -769,6 +782,13 @@ namespace CodeImp.DoomBuilder.Windows
             this.itemtogglegrid,
             this.itemtogglecomments,
 			this.itemtogglefixedthingsscale,
+			this.separatorrendering,
+            this.itemdynlightmodes,
+            this.itemmodelmodes,
+            this.itemtogglefog,
+            this.itemtogglesky,
+            this.itemtoggleeventlines,
+            this.itemtogglevisualverts,
             this.toolStripSeparator4,
             this.menuzoom,
             this.itemgotocoords,
@@ -1323,7 +1343,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.buttonsplitjoinedsectors,
             this.buttonautoclearsidetextures,
             this.seperatorgeometry,
-            this.buttontogglefx,
             this.dynamiclightmode,
             this.modelrendermode,
             this.buttontogglefog,
@@ -1612,6 +1631,144 @@ namespace CodeImp.DoomBuilder.Windows
 			this.separatorfilters.Name = "separatorfilters";
 			this.separatorfilters.Size = new System.Drawing.Size(6, 25);
 			// 
+			// separatorrendering
+			// 
+			this.separatorrendering.Name = "separatorrendering";
+			this.separatorrendering.Size = new System.Drawing.Size(270, 6);
+			// 
+			// itemdynlightmodes
+			// 
+			this.itemdynlightmodes.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.itemnodynlights,
+            this.itemdynlights,
+            this.itemdynlightsanim});
+			this.itemdynlightmodes.Image = global::CodeImp.DoomBuilder.Properties.Resources.Light;
+			this.itemdynlightmodes.Name = "itemdynlightmodes";
+			this.itemdynlightmodes.Size = new System.Drawing.Size(273, 22);
+			this.itemdynlightmodes.Text = "Dynamic light rendering mode";
+			// 
+			// itemnodynlights
+			// 
+			this.itemnodynlights.CheckOnClick = true;
+			this.itemnodynlights.Image = global::CodeImp.DoomBuilder.Properties.Resources.LightDisabled;
+			this.itemnodynlights.Name = "itemnodynlights";
+			this.itemnodynlights.Size = new System.Drawing.Size(237, 22);
+			this.itemnodynlights.Tag = 0;
+			this.itemnodynlights.Text = "Don\'t show dynamic lights";
+			this.itemnodynlights.Click += new System.EventHandler(this.ChangeLightRenderingMode);
+			// 
+			// itemdynlights
+			// 
+			this.itemdynlights.CheckOnClick = true;
+			this.itemdynlights.Image = global::CodeImp.DoomBuilder.Properties.Resources.Light;
+			this.itemdynlights.Name = "itemdynlights";
+			this.itemdynlights.Size = new System.Drawing.Size(237, 22);
+			this.itemdynlights.Tag = 1;
+			this.itemdynlights.Text = "Show dynamic lights";
+			this.itemdynlights.Click += new System.EventHandler(this.ChangeLightRenderingMode);
+			// 
+			// itemdynlightsanim
+			// 
+			this.itemdynlightsanim.CheckOnClick = true;
+			this.itemdynlightsanim.Image = global::CodeImp.DoomBuilder.Properties.Resources.Light_animate;
+			this.itemdynlightsanim.Name = "itemdynlightsanim";
+			this.itemdynlightsanim.Size = new System.Drawing.Size(237, 22);
+			this.itemdynlightsanim.Tag = 2;
+			this.itemdynlightsanim.Text = "Show animated dynamic lights";
+			this.itemdynlightsanim.Click += new System.EventHandler(this.ChangeLightRenderingMode);
+			// 
+			// itemmodelmodes
+			// 
+			this.itemmodelmodes.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.itemnomdl,
+            this.itemselmdl,
+            this.itemfiltermdl,
+            this.itemallmdl});
+			this.itemmodelmodes.Image = global::CodeImp.DoomBuilder.Properties.Resources.Model;
+			this.itemmodelmodes.Name = "itemmodelmodes";
+			this.itemmodelmodes.Size = new System.Drawing.Size(273, 22);
+			this.itemmodelmodes.Text = "Model rendering mode";
+			// 
+			// itemnomdl
+			// 
+			this.itemnomdl.CheckOnClick = true;
+			this.itemnomdl.Image = global::CodeImp.DoomBuilder.Properties.Resources.ModelDisabled;
+			this.itemnomdl.Name = "itemnomdl";
+			this.itemnomdl.Size = new System.Drawing.Size(298, 22);
+			this.itemnomdl.Tag = 0;
+			this.itemnomdl.Text = "Don\'t show models";
+			this.itemnomdl.Click += new System.EventHandler(this.ChangeModelRenderingMode);
+			// 
+			// itemselmdl
+			// 
+			this.itemselmdl.CheckOnClick = true;
+			this.itemselmdl.Image = global::CodeImp.DoomBuilder.Properties.Resources.Model_selected;
+			this.itemselmdl.Name = "itemselmdl";
+			this.itemselmdl.Size = new System.Drawing.Size(298, 22);
+			this.itemselmdl.Tag = 1;
+			this.itemselmdl.Text = "Show models for selected Things only";
+			this.itemselmdl.Click += new System.EventHandler(this.ChangeModelRenderingMode);
+			// 
+			// itemfiltermdl
+			// 
+			this.itemfiltermdl.CheckOnClick = true;
+			this.itemfiltermdl.Image = global::CodeImp.DoomBuilder.Properties.Resources.ModelFiltered;
+			this.itemfiltermdl.Name = "itemfiltermdl";
+			this.itemfiltermdl.Size = new System.Drawing.Size(298, 22);
+			this.itemfiltermdl.Tag = 2;
+			this.itemfiltermdl.Text = "Show models for current Things Filter only";
+			this.itemfiltermdl.Click += new System.EventHandler(this.ChangeModelRenderingMode);
+			// 
+			// itemallmdl
+			// 
+			this.itemallmdl.CheckOnClick = true;
+			this.itemallmdl.Image = global::CodeImp.DoomBuilder.Properties.Resources.Model;
+			this.itemallmdl.Name = "itemallmdl";
+			this.itemallmdl.Size = new System.Drawing.Size(298, 22);
+			this.itemallmdl.Tag = 3;
+			this.itemallmdl.Text = "Always show models";
+			this.itemallmdl.Click += new System.EventHandler(this.ChangeModelRenderingMode);
+			// 
+			// itemfog
+			// 
+			this.itemtogglefog.CheckOnClick = true;
+			this.itemtogglefog.Image = global::CodeImp.DoomBuilder.Properties.Resources.fog;
+			this.itemtogglefog.Name = "itemtogglefog";
+			this.itemtogglefog.Size = new System.Drawing.Size(273, 22);
+			this.itemtogglefog.Tag = "builder_gztogglefog";
+			this.itemtogglefog.Text = "Render fog (Visual mode)";
+			this.itemtogglefog.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// itemsky
+			// 
+			this.itemtogglesky.CheckOnClick = true;
+			this.itemtogglesky.Image = global::CodeImp.DoomBuilder.Properties.Resources.Sky;
+			this.itemtogglesky.Name = "itemtogglesky";
+			this.itemtogglesky.Size = new System.Drawing.Size(273, 22);
+			this.itemtogglesky.Tag = "builder_gztogglesky";
+			this.itemtogglesky.Text = "Render sky (Visual mode)";
+			this.itemtogglesky.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// itemeventlines
+			// 
+			this.itemtoggleeventlines.CheckOnClick = true;
+			this.itemtoggleeventlines.Image = global::CodeImp.DoomBuilder.Properties.Resources.InfoLine;
+			this.itemtoggleeventlines.Name = "itemtoggleeventlines";
+			this.itemtoggleeventlines.Size = new System.Drawing.Size(273, 22);
+			this.itemtoggleeventlines.Tag = "builder_gztoggleeventlines";
+			this.itemtoggleeventlines.Text = "Show Event Lines";
+			this.itemtoggleeventlines.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// itemvisualverts
+			// 
+			this.itemtogglevisualverts.CheckOnClick = true;
+			this.itemtogglevisualverts.Image = global::CodeImp.DoomBuilder.Properties.Resources.VisualVertices;
+			this.itemtogglevisualverts.Name = "itemtogglevisualverts";
+			this.itemtogglevisualverts.Size = new System.Drawing.Size(273, 22);
+			this.itemtogglevisualverts.Tag = "builder_gztogglevisualvertices";
+			this.itemtogglevisualverts.Text = "Show Editable Vertices (Visual mode)";
+			this.itemtogglevisualverts.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
 			// buttonfullbrightness
 			// 
 			this.buttonfullbrightness.Checked = true;
@@ -1840,17 +1997,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.seperatorgeometry.Name = "seperatorgeometry";
 			this.seperatorgeometry.Size = new System.Drawing.Size(6, 25);
 			// 
-			// buttontogglefx
-			// 
-			this.buttontogglefx.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.buttontogglefx.Image = global::CodeImp.DoomBuilder.Properties.Resources.fx;
-			this.buttontogglefx.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.buttontogglefx.Name = "buttontogglefx";
-			this.buttontogglefx.Size = new System.Drawing.Size(23, 22);
-			this.buttontogglefx.Tag = "builder_gztogglefx";
-			this.buttontogglefx.Text = "Toggle GZDoom Effects";
-			this.buttontogglefx.Click += new System.EventHandler(this.InvokeTaggedAction);
-			// 
 			// dynamiclightmode
 			// 
 			this.dynamiclightmode.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -1961,7 +2107,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.buttontogglefog.Name = "buttontogglefog";
 			this.buttontogglefog.Size = new System.Drawing.Size(23, 20);
 			this.buttontogglefog.Tag = "builder_gztogglefog";
-			this.buttontogglefog.Text = "Toggle Fog Rendering";
+			this.buttontogglefog.Text = "Render Fog (Visual mode)";
 			this.buttontogglefog.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// buttontogglesky
@@ -1973,7 +2119,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.buttontogglesky.Name = "buttontogglesky";
 			this.buttontogglesky.Size = new System.Drawing.Size(23, 20);
 			this.buttontogglesky.Tag = "builder_gztogglesky";
-			this.buttontogglesky.Text = "Toggle Sky Rendering";
+			this.buttontogglesky.Text = "Render Sky (Visual mode)";
 			this.buttontogglesky.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// buttontoggleeventlines
@@ -1984,7 +2130,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.buttontoggleeventlines.Name = "buttontoggleeventlines";
 			this.buttontoggleeventlines.Size = new System.Drawing.Size(23, 20);
 			this.buttontoggleeventlines.Tag = "builder_gztoggleeventlines";
-			this.buttontoggleeventlines.Text = "Toggle Event Lines";
+			this.buttontoggleeventlines.Text = "Show Event Lines";
 			this.buttontoggleeventlines.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// buttontogglevisualvertices
@@ -1995,7 +2141,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.buttontogglevisualvertices.Name = "buttontogglevisualvertices";
 			this.buttontogglevisualvertices.Size = new System.Drawing.Size(23, 20);
 			this.buttontogglevisualvertices.Tag = "builder_gztogglevisualvertices";
-			this.buttontogglevisualvertices.Text = "Show Editable Vertices in Visual Mode";
+			this.buttontogglevisualvertices.Text = "Show Editable Vertices (Visual mode)";
 			this.buttontogglevisualvertices.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// separatorgzmodes
@@ -2793,7 +2939,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.ToolStripSeparator seperatoreditgrid;
 		private System.Windows.Forms.ToolStripSeparator seperatoreditcopypaste;
 		private System.Windows.Forms.ToolStripSeparator seperatorgeometry;
-		private System.Windows.Forms.ToolStripButton buttontogglefx;
 		private System.Windows.Forms.ToolStripButton buttontogglefog;
 		private System.Windows.Forms.ToolStripButton buttontogglesky;
 		private System.Windows.Forms.ToolStripStatusLabel warnsLabel;
@@ -2840,6 +2985,20 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.ToolStripButton buttonfullbrightness;
 		private System.Windows.Forms.ToolStripSeparator separatorfullbrightness;
 		private System.Windows.Forms.ToolStripSeparator separatorfilters;
+		private System.Windows.Forms.ToolStripSeparator separatorrendering;
+		private System.Windows.Forms.ToolStripMenuItem itemdynlightmodes;
+		private System.Windows.Forms.ToolStripMenuItem itemnodynlights;
+		private System.Windows.Forms.ToolStripMenuItem itemdynlights;
+		private System.Windows.Forms.ToolStripMenuItem itemdynlightsanim;
+		private System.Windows.Forms.ToolStripMenuItem itemmodelmodes;
+		private System.Windows.Forms.ToolStripMenuItem itemnomdl;
+		private System.Windows.Forms.ToolStripMenuItem itemselmdl;
+		private System.Windows.Forms.ToolStripMenuItem itemfiltermdl;
+		private System.Windows.Forms.ToolStripMenuItem itemallmdl;
+		private System.Windows.Forms.ToolStripMenuItem itemtogglefog;
+		private System.Windows.Forms.ToolStripMenuItem itemtogglesky;
+		private System.Windows.Forms.ToolStripMenuItem itemtoggleeventlines;
+		private System.Windows.Forms.ToolStripMenuItem itemtogglevisualverts;
 		private ToolStripMenuItem itemimport;
 		private ToolStripMenuItem itemexport;
 		private ToolStripSeparator separatorio;

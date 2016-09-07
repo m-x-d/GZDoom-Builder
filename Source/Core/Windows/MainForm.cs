@@ -2133,7 +2133,6 @@ namespace CodeImp.DoomBuilder.Windows
 			//mxd
 			modelrendermode.Visible = General.Settings.GZToolbarGZDoom && maploaded;
 			dynamiclightmode.Visible = General.Settings.GZToolbarGZDoom && maploaded;
-			buttontogglefx.Visible = General.Settings.GZToolbarGZDoom && maploaded;
 			buttontogglefog.Visible = General.Settings.GZToolbarGZDoom && maploaded;
 			buttontogglesky.Visible = General.Settings.GZToolbarGZDoom && maploaded;
 			buttontoggleeventlines.Visible = General.Settings.GZToolbarGZDoom && maploaded;
@@ -3019,7 +3018,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 		#region ================== View Menu
 
-		// This sets up the modes menu
+		// This sets up the View menu
 		private void UpdateViewMenu()
 		{
 			menuview.Visible = (General.Map != null); //mxd
@@ -3032,6 +3031,25 @@ namespace CodeImp.DoomBuilder.Windows
 			itemtogglecomments.Checked = General.Settings.RenderComments; //mxd
 			itemtogglefixedthingsscale.Visible = (General.Map != null); //mxd
 			itemtogglefixedthingsscale.Checked = General.Settings.FixedThingsScale; //mxd
+			itemtogglefog.Checked = General.Settings.GZDrawFog;
+			itemtogglesky.Checked = General.Settings.GZDrawSky;
+			itemtoggleeventlines.Checked = General.Settings.GZShowEventLines;
+			itemtogglevisualverts.Visible = (General.Map != null && General.Map.UDMF);
+			itemtogglevisualverts.Checked = General.Settings.GZShowVisualVertices;
+
+			// Update Model Rendering Mode items...
+			foreach(ToolStripMenuItem item in itemmodelmodes.DropDownItems)
+			{
+				item.Checked = ((ModelRenderMode)item.Tag == General.Settings.GZDrawModelsMode);
+				if(item.Checked) itemmodelmodes.Image = item.Image;
+			}
+
+			// Update Dynamic Light Mode items...
+			foreach(ToolStripMenuItem item in itemdynlightmodes.DropDownItems)
+			{
+				item.Checked = ((LightRenderMode)item.Tag == General.Settings.GZDrawLightsMode);
+				if(item.Checked) itemdynlightmodes.Image = item.Image;
+			}
 			
 			// View mode items
 			if(General.Map != null)
@@ -3043,6 +3061,76 @@ namespace CodeImp.DoomBuilder.Windows
 					viewmodesitems[i].Checked = (i == (int)General.Map.CRenderer2D.ViewMode);
 				}
 			}
+		}
+
+		//mxd
+		[BeginAction("gztoggleenhancedrendering")]
+		public void ToggleEnhancedRendering()
+		{
+			General.Settings.EnhancedRenderingEffects = !General.Settings.EnhancedRenderingEffects;
+
+			General.Settings.GZDrawFog = General.Settings.EnhancedRenderingEffects;
+			General.Settings.GZDrawSky = General.Settings.EnhancedRenderingEffects;
+			General.Settings.GZDrawLightsMode = (General.Settings.EnhancedRenderingEffects ? LightRenderMode.ALL : LightRenderMode.NONE);
+			General.Settings.GZDrawModelsMode = (General.Settings.EnhancedRenderingEffects ? ModelRenderMode.ALL : ModelRenderMode.NONE);
+
+			UpdateGZDoomPanel();
+			UpdateViewMenu();
+			DisplayStatus(StatusType.Info, "Enhanced rendering effects are " + (General.Settings.EnhancedRenderingEffects ? "ENABLED" : "DISABLED"));
+		}
+
+		//mxd
+		[BeginAction("gztogglefog")]
+		internal void ToggleFog()
+		{
+			General.Settings.GZDrawFog = !General.Settings.GZDrawFog;
+
+			itemtogglefog.Checked = General.Settings.GZDrawFog;
+			buttontogglefog.Checked = General.Settings.GZDrawFog;
+
+			General.MainWindow.DisplayStatus(StatusType.Action, "Fog rendering is " + (General.Settings.GZDrawFog ? "ENABLED" : "DISABLED"));
+			General.MainWindow.RedrawDisplay();
+			General.MainWindow.UpdateGZDoomPanel();
+		}
+
+		//mxd
+		[BeginAction("gztogglesky")]
+		internal void ToggleSky()
+		{
+			General.Settings.GZDrawSky = !General.Settings.GZDrawSky;
+
+			itemtogglesky.Checked = General.Settings.GZDrawSky;
+			buttontogglesky.Checked = General.Settings.GZDrawSky;
+
+			General.MainWindow.DisplayStatus(StatusType.Action, "Sky rendering is " + (General.Settings.GZDrawSky ? "ENABLED" : "DISABLED"));
+			General.MainWindow.RedrawDisplay();
+			General.MainWindow.UpdateGZDoomPanel();
+		}
+
+		[BeginAction("gztoggleeventlines")]
+		internal void ToggleEventLines()
+		{
+			General.Settings.GZShowEventLines = !General.Settings.GZShowEventLines;
+
+			itemtoggleeventlines.Checked = General.Settings.GZShowEventLines;
+			buttontoggleeventlines.Checked = General.Settings.GZShowEventLines;
+
+			General.MainWindow.DisplayStatus(StatusType.Action, "Event lines are " + (General.Settings.GZShowEventLines ? "ENABLED" : "DISABLED"));
+			General.MainWindow.RedrawDisplay();
+			General.MainWindow.UpdateGZDoomPanel();
+		}
+
+		[BeginAction("gztogglevisualvertices")]
+		internal void ToggleVisualVertices()
+		{
+			General.Settings.GZShowVisualVertices = !General.Settings.GZShowVisualVertices;
+
+			itemtogglevisualverts.Checked = General.Settings.GZShowVisualVertices;
+			buttontogglevisualvertices.Checked = General.Settings.GZShowVisualVertices;
+
+			General.MainWindow.DisplayStatus(StatusType.Action, "Visual vertices are " + (General.Settings.GZShowVisualVertices ? "ENABLED" : "DISABLED"));
+			General.MainWindow.RedrawDisplay();
+			General.MainWindow.UpdateGZDoomPanel();
 		}
 
 		#endregion
@@ -3501,7 +3589,8 @@ namespace CodeImp.DoomBuilder.Windows
 					General.MainWindow.DisplayStatus(StatusType.Action, "Models rendering mode: ALL");
 					break;
 			}
-			
+
+			UpdateViewMenu();
 			UpdateGZDoomPanel();
 			RedrawDisplay();
 		}
@@ -3524,7 +3613,8 @@ namespace CodeImp.DoomBuilder.Windows
 					General.MainWindow.DisplayStatus(StatusType.Action, "Models rendering mode: ANIMATED");
 					break;
 			}
-			
+
+			UpdateViewMenu();
 			UpdateGZDoomPanel();
 			RedrawDisplay();
 		}
