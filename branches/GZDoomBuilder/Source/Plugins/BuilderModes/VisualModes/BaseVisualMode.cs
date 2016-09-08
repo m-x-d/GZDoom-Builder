@@ -1591,15 +1591,57 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Apply flat offsets
 		public void ApplyFlatOffsetChange(int dx, int dy)
 		{
-			HashSet<Sector> donesectors = new HashSet<Sector>();
+			HashSet<int> donesectors = new HashSet<int>();
 			List<IVisualEventReceiver> objs = GetSelectedObjects(true, false, false, false);
 			foreach(IVisualEventReceiver i in objs)
 			{
 				BaseVisualGeometrySector bvs = (BaseVisualGeometrySector)i;
-				if(bvs != null && !donesectors.Contains(bvs.Sector.Sector))
+				if(bvs != null && !donesectors.Contains(bvs.Sector.Sector.Index))
 				{
-					bvs.OnChangeTextureOffset(dx, dy, false);
-					donesectors.Add(bvs.Sector.Sector);
+					//mxd. Sector surface belongs to 3d-floor?
+					if(bvs.Level.sector.Index != bvs.Sector.Sector.Index)
+					{
+						// Don't update control sector several times
+						if(!donesectors.Contains(bvs.Level.sector.Index))
+						{
+							// Update the offsets
+							bvs.OnChangeTextureOffset(dx, dy, false);
+
+							// Update control sector
+							SectorData sd = GetSectorData(bvs.Level.sector);
+							sd.Update();
+							BaseVisualSector vs = (BaseVisualSector)GetVisualSector(bvs.Level.sector);
+							vs.Rebuild();
+
+							// Add to collection
+							donesectors.Add(bvs.Level.sector.Index);
+
+							// Update 3d-floors
+							List<Sector> updatealso = new List<Sector>(sd.UpdateAlso.Keys);
+							foreach(Sector other in updatealso)
+							{
+								if(!donesectors.Contains(other.Index))
+								{
+									BaseVisualSector vsother = (BaseVisualSector)GetVisualSector(other);
+									vsother.Rebuild();
+
+									// Add to collection
+									donesectors.Add(other.Index);
+								}
+							}
+						}
+					}
+					else
+					{
+						//mxd. Regular sector surface. Just update the offsets
+						bvs.OnChangeTextureOffset(dx, dy, false);
+
+						//mxd. Add to collection
+						donesectors.Add(bvs.Sector.Sector.Index);
+					}
+
+					//mxd. Update sector geometry
+					bvs.Sector.Rebuild();
 				}
 			}
 		}

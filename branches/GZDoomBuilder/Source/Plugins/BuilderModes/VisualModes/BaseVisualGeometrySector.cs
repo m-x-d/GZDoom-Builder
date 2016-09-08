@@ -225,28 +225,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			//mxd. Apply offset?
-			if(deltax != 0 || deltay != 0)
-			{
-				mode.ApplyFlatOffsetChange(deltax, deltay);
-
-				// Update sector geometry
-				Sector s = GetControlSector();
-				if(s.Index != Sector.Sector.Index)
-				{
-					s.UpdateNeeded = true;
-					s.UpdateCache();
-					mode.GetSectorData(s).Update();
-					BaseVisualSector vs = (BaseVisualSector)mode.GetVisualSector(s);
-					vs.UpdateSectorGeometry(false);
-					vs.Rebuild();
-				}
-
-				Sector.Sector.UpdateNeeded = true;
-				Sector.Sector.UpdateCache();
-				Sector.UpdateSectorGeometry(false);
-				Sector.Rebuild();
-			}
-
+			if(deltax != 0 || deltay != 0) mode.ApplyFlatOffsetChange(deltax, deltay);
 			mode.ShowTargetInfo();
 		}
 
