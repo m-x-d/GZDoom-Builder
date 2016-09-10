@@ -2256,11 +2256,14 @@ namespace CodeImp.DoomBuilder.Geometry
 
 		private static bool SectorWasInvalid(Sector s)
 		{
-			if(s.Sidedefs.Count < 3 || s.FlatVertices.Length < 3)
+			if(s.Sidedefs == null || s.Sidedefs.Count < 3 || s.FlatVertices.Length < 3)
 			{
 				// Collect changed lines
 				HashSet<Linedef> changedlines = new HashSet<Linedef>();
-				foreach(Sidedef side in s.Sidedefs) changedlines.Add(side.Line);
+				if(s.Sidedefs != null)
+				{
+					foreach(Sidedef side in s.Sidedefs) changedlines.Add(side.Line);
+				}
 
 				// Delete sector
 				s.Dispose();
@@ -2387,24 +2390,26 @@ namespace CodeImp.DoomBuilder.Geometry
 		}
 
 		//mxd
-		public static Sector FindPotentialSector(Linedef line, bool front)
+		public static Sector FindSectorContaining(Linedef line, bool front)
 		{
 			List<LinedefSide> sectorsides = FindPotentialSectorAt(line, front);
 			if(sectorsides == null) return null;
 			Sector result = null;
+			bool foundstartline = false;
 
-			// Proceed only if all sectorsides reference the same sector
+			// Proceed only if all sectorsides reference the same sector and the start line is among them
 			foreach(LinedefSide sectorside in sectorsides)
 			{
 				Sidedef target = (sectorside.Front ? sectorside.Line.Front : sectorside.Line.Back);
-				if(target != null)
-				{
-					if(result == null) result = target.Sector;
-					else if(result != target.Sector) return null; // Fial...
-				}
+				if(target == null) return null; // Fial...
+				
+				if(result == null) result = target.Sector;
+				else if(result != target.Sector) return null; // Fial...
+
+				if(sectorside.Line == line) foundstartline = true;
 			}
 
-			return result;
+			return (foundstartline ? result : null);
 		}
 
 		#endregion
