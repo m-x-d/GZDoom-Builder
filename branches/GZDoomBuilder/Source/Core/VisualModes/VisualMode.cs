@@ -508,7 +508,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		// This preforms visibility culling
 		protected void DoCulling()
 		{
-			Dictionary<Linedef, Linedef> visiblelines = new Dictionary<Linedef, Linedef>(200);
+			HashSet<Linedef> visiblelines = new HashSet<Linedef>();
 			Vector2D campos2d = General.Map.VisualCamera.Position;
 			
 			// Make collections
@@ -528,10 +528,10 @@ namespace CodeImp.DoomBuilder.VisualModes
 					foreach(Linedef ld in block.Lines)
 					{
 						// Line not already processed?
-						if(!visiblelines.ContainsKey(ld))
+						if(!visiblelines.Contains(ld))
 						{
 							// Add line if not added yet
-							visiblelines.Add(ld, ld);
+							visiblelines.Add(ld);
 
 							// Which side of the line is the camera on?
 							if(ld.SideOfLine(campos2d) < 0)
@@ -565,12 +565,12 @@ namespace CodeImp.DoomBuilder.VisualModes
 						{
 							// Create new visual thing
 							vt = CreateVisualThing(t);
-							allthings.Add(t, vt);
+							allthings[t] = vt;
 						}
 
 						if(vt != null && !visiblethings.ContainsKey(vt.Thing))
 						{
-							visiblethings.Add(vt.Thing, vt);
+							visiblethings[vt.Thing] = vt;
 						}
 					}
 				}
@@ -579,7 +579,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 			if(processgeometry)
 			{
 				// Find camera sector
-				Linedef nld = MapSet.NearestLinedef(visiblelines.Values, campos2d);
+				Linedef nld = MapSet.NearestLinedef(visiblelines, campos2d);
 				if(nld != null)
 				{
 					General.Map.VisualCamera.Sector = GetCameraSectorFromLinedef(nld);

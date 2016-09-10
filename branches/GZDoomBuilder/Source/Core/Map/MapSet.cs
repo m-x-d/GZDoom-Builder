@@ -2133,29 +2133,29 @@ namespace CodeImp.DoomBuilder.Map
 
 			EndAddRemove();
 
+			// Collect changed lines... We need those in by-vertex-index order
+			// (otherwise SectorBuilder logic in some cases will incorrectly assign sector propertes)
+			List<Vertex> markedverts = GetMarkedVertices(true);
+			List<Linedef> changedlines = new List<Linedef>(markedverts.Count / 2);
+			HashSet<Linedef> changedlineshash = new HashSet<Linedef>();
+			foreach(Vertex v in markedverts)
+			{
+				foreach(Linedef l in v.Linedefs)
+				{
+					if(!changedlineshash.Contains(l))
+					{
+						changedlines.Add(l);
+						changedlineshash.Add(l);
+					}
+				}
+			}
+
 			//mxd. Correct sector references
 			if(mergemode != MergeGeometryMode.CLASSIC)
 			{
 				// Linedefs cache needs to be up to date...
 				Update(true, false);
-
-				// Collect changed lines... We need those in by-vertex-index order
-				// (otherwise SectorBuilder logic in some cases will incorrectly assign sector propertes)
-				List<Vertex> markedverts = GetMarkedVertices(true);
-				List<Linedef> changedlines = new List<Linedef>(markedverts.Count / 2);
-				HashSet<Linedef> changedlineshash = new HashSet<Linedef>();
-				foreach(Vertex v in markedverts)
-				{
-					foreach(Linedef l in v.Linedefs)
-					{
-						if(!changedlineshash.Contains(l))
-						{
-							changedlines.Add(l);
-							changedlineshash.Add(l);
-						}
-					}
-				}
-
+				
 				// Fix stuff...
 				CorrectSectorReferences(changedlines, true);
 				CorrectOuterSides(new HashSet<Linedef>(changedlines));
@@ -2164,6 +2164,10 @@ namespace CodeImp.DoomBuilder.Map
 				ClearMarkedSectors(false);
 				HashSet<Sector> changedsectors = GetSectorsFromLinedefs(changedlines);
 				foreach(Sector s in changedsectors) s.Marked = true;
+			}
+			else
+			{
+				FlipBackwardLinedefs(changedlines);
 			}
 			
 			return true;
@@ -2436,7 +2440,7 @@ namespace CodeImp.DoomBuilder.Map
 			foreach(Linedef line in linesmissingfront)
 			{
 				// Line is now inside a sector? (check from the missing side!)
-				Sector nearest = Tools.FindPotentialSector(line, true);
+				Sector nearest = Tools.FindSectorContaining(line, true);
 
 				// We can reattach our line!
 				if(nearest != null) linefrontsectorref[line] = nearest;
@@ -2446,7 +2450,7 @@ namespace CodeImp.DoomBuilder.Map
 			foreach(Linedef line in linesmissingback)
 			{
 				// Line is now inside a sector? (check from the missing side!)
-				Sector nearest = Tools.FindPotentialSector(line, false);
+				Sector nearest = Tools.FindSectorContaining(line, false);
 
 				// We can reattach our line!
 				if(nearest != null) linebacksectorref[line] = nearest;

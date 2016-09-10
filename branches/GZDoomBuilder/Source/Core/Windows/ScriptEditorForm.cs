@@ -96,7 +96,7 @@ namespace CodeImp.DoomBuilder.Windows
 			editor.SaveSettings();
 			
 			// Only when closed by the user
-			if(!appclose)
+			if(!appclose && (e.CloseReason == CloseReason.UserClosing || e.CloseReason == CloseReason.FormOwnerClosing))
 			{
 				// Remember if scipts are changed
 				General.Map.ApplyScriptChanged();
