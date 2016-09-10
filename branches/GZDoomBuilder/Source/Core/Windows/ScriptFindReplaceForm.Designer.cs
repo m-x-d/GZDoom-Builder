@@ -167,7 +167,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "ScriptFindReplaceForm";
-			this.Opacity = 1;
+			this.Opacity = 0;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.Text = "Find and Replace";

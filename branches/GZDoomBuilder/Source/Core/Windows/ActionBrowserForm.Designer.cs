@@ -502,7 +502,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "ActionBrowserForm";
-			this.Opacity = 1;
+			this.Opacity = 0;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Edit Action";

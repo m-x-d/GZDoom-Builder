@@ -214,7 +214,7 @@
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "ObjImportSettingsForm";
-			this.Opacity = 1;
+			this.Opacity = 0;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.Text = "Import Wavefront .obj";

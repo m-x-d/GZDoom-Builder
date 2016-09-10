@@ -52,14 +52,13 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.KeyPreview = true;
 			this.Name = "ScriptEditorForm";
+			this.Opacity = 0;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "Script Editor";
 			this.Load += new System.EventHandler(this.ScriptEditorForm_Load);
 			this.Shown += new System.EventHandler(this.ScriptEditorForm_Shown);
-			this.Move += new System.EventHandler(this.ScriptEditorForm_Move);
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ScriptEditorForm_FormClosing);
 			this.HelpRequested += new System.Windows.Forms.HelpEventHandler(this.ScriptEditorForm_HelpRequested);
-			this.ResizeEnd += new System.EventHandler(this.ScriptEditorForm_ResizeEnd);
 			this.ResumeLayout(false);
 
 		}

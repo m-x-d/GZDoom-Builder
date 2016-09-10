@@ -30,7 +30,7 @@ using CodeImp.DoomBuilder.Config;
 
 namespace CodeImp.DoomBuilder.Windows
 {
-	internal partial class OpenMapOptionsForm : Form
+	internal partial class OpenMapOptionsForm : DelayedForm
 	{
 		// Variables
 		private Configuration mapsettings;
@@ -40,7 +40,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private string selectedmapname;
 		
 		// Properties
-		public string FilePathName { get { return filepathname; } }
+		//public string FilePathName { get { return filepathname; } }
 		public MapOptions Options { get { return options; } }
 		
 		// Constructor

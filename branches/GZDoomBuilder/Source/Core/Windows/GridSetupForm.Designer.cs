@@ -72,7 +72,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.gridsize.AllowNegative = false;
 			this.gridsize.AllowRelative = true;
 			this.gridsize.ButtonStep = 8;
+			this.gridsize.ButtonStepBig = 10F;
 			this.gridsize.ButtonStepFloat = 1F;
+			this.gridsize.ButtonStepSmall = 0.1F;
+			this.gridsize.ButtonStepsUseModifierKeys = false;
 			this.gridsize.ButtonStepsWrapAround = false;
 			this.gridsize.Location = new System.Drawing.Point(146, 26);
 			this.gridsize.Name = "gridsize";
@@ -117,7 +120,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backscaley.AllowNegative = false;
 			this.backscaley.AllowRelative = true;
 			this.backscaley.ButtonStep = 1;
+			this.backscaley.ButtonStepBig = 10F;
 			this.backscaley.ButtonStepFloat = 1F;
+			this.backscaley.ButtonStepSmall = 0.1F;
+			this.backscaley.ButtonStepsUseModifierKeys = false;
 			this.backscaley.ButtonStepsWrapAround = false;
 			this.backscaley.Enabled = false;
 			this.backscaley.Location = new System.Drawing.Point(197, 212);
@@ -132,7 +138,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backscalex.AllowNegative = false;
 			this.backscalex.AllowRelative = true;
 			this.backscalex.ButtonStep = 1;
+			this.backscalex.ButtonStepBig = 10F;
 			this.backscalex.ButtonStepFloat = 1F;
+			this.backscalex.ButtonStepSmall = 0.1F;
+			this.backscalex.ButtonStepsUseModifierKeys = false;
 			this.backscalex.ButtonStepsWrapAround = false;
 			this.backscalex.Enabled = false;
 			this.backscalex.Location = new System.Drawing.Point(124, 212);
@@ -147,7 +156,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backoffsety.AllowNegative = true;
 			this.backoffsety.AllowRelative = true;
 			this.backoffsety.ButtonStep = 1;
+			this.backoffsety.ButtonStepBig = 10F;
 			this.backoffsety.ButtonStepFloat = 1F;
+			this.backoffsety.ButtonStepSmall = 0.1F;
+			this.backoffsety.ButtonStepsUseModifierKeys = false;
 			this.backoffsety.ButtonStepsWrapAround = false;
 			this.backoffsety.Enabled = false;
 			this.backoffsety.Location = new System.Drawing.Point(197, 173);
@@ -162,7 +174,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backoffsetx.AllowNegative = true;
 			this.backoffsetx.AllowRelative = true;
 			this.backoffsetx.ButtonStep = 1;
+			this.backoffsetx.ButtonStepBig = 10F;
 			this.backoffsetx.ButtonStepFloat = 1F;
+			this.backoffsetx.ButtonStepSmall = 0.1F;
+			this.backoffsetx.ButtonStepsUseModifierKeys = false;
 			this.backoffsetx.ButtonStepsWrapAround = false;
 			this.backoffsetx.Enabled = false;
 			this.backoffsetx.Location = new System.Drawing.Point(124, 173);
@@ -289,7 +304,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "GridSetupForm";
-			this.Opacity = 1;
+			this.Opacity = 0;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

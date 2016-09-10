@@ -58,7 +58,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private readonly List<PairedFieldsControl> backUdmfControls; //mxd
 
 		//mxd. Window setup stuff
-		private static Point location = Point.Empty;
 		private static int activetab;
 
 		private struct LinedefProperties //mxd
@@ -150,18 +149,13 @@ namespace CodeImp.DoomBuilder.Windows
 			InitializeComponent();
 
 			// Widow setup
-			if(location != Point.Empty) 
+			if(General.Settings.StoreSelectedEditTab && activetab > 0)
 			{
-				this.StartPosition = FormStartPosition.Manual;
-				this.Location = location;
-				if(General.Settings.StoreSelectedEditTab && activetab > 0)
-				{
-					// When front or back tab was previously selected, switch to appropriate side (selectfront/selectback are set in BaseVisualGeometrySidedef.OnEditEnd)
-					if((selectfront || selectback) && (activetab == 1 || activetab == 2))
-						tabs.SelectTab(selectfront ? 1 : 2);
-					else
-						tabs.SelectTab(activetab);
-				}
+				// When front or back tab was previously selected, switch to appropriate side (selectfront/selectback are set in BaseVisualGeometrySidedef.OnEditEnd)
+				if((selectfront || selectback) && (activetab == 1 || activetab == 2))
+					tabs.SelectTab(selectfront ? 1 : 2);
+				else
+					tabs.SelectTab(activetab);
 			}
 			
 			// Fill flags lists
@@ -852,7 +846,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private void LinedefEditForm_FormClosing(object sender, FormClosingEventArgs e) 
 		{
 			// Save location and active tab
-			location = this.Location;
 			activetab = tabs.SelectedIndex;
 		}
 

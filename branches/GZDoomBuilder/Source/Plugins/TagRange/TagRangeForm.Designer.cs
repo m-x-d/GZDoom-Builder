@@ -49,7 +49,10 @@ namespace CodeImp.DoomBuilder.TagRange
 			this.rangestart.AllowNegative = false;
 			this.rangestart.AllowRelative = false;
 			this.rangestart.ButtonStep = 1;
+			this.rangestart.ButtonStepBig = 10F;
 			this.rangestart.ButtonStepFloat = 1F;
+			this.rangestart.ButtonStepSmall = 0.1F;
+			this.rangestart.ButtonStepsUseModifierKeys = false;
 			this.rangestart.ButtonStepsWrapAround = false;
 			this.rangestart.Location = new System.Drawing.Point(76, 12);
 			this.rangestart.Name = "rangestart";
@@ -164,7 +167,10 @@ namespace CodeImp.DoomBuilder.TagRange
 			this.rangestep.AllowNegative = true;
 			this.rangestep.AllowRelative = false;
 			this.rangestep.ButtonStep = 1;
+			this.rangestep.ButtonStepBig = 10F;
 			this.rangestep.ButtonStepFloat = 1F;
+			this.rangestep.ButtonStepSmall = 0.1F;
+			this.rangestep.ButtonStepsUseModifierKeys = false;
 			this.rangestep.ButtonStepsWrapAround = false;
 			this.rangestep.Location = new System.Drawing.Point(76, 42);
 			this.rangestep.Name = "rangestep";
@@ -220,6 +226,7 @@ namespace CodeImp.DoomBuilder.TagRange
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "TagRangeForm";
+			this.Opacity = 0;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

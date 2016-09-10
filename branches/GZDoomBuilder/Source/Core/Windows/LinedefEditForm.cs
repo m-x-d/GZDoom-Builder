@@ -43,9 +43,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private bool preventchanges;
 		private bool undocreated; //mxd
 
-		//mxd. Window setup stuff
-		private static Point location = Point.Empty;
-
 		private struct LinedefProperties //mxd
 		{
 			public readonly Dictionary<string, bool> Flags;
@@ -90,13 +87,6 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			// Initialize
 			InitializeComponent();
-
-			//mxd. Widow setup
-			if(location != Point.Empty) 
-			{
-				this.StartPosition = FormStartPosition.Manual;
-				this.Location = location;
-			}
 			
 			// Fill flags lists
 			foreach(KeyValuePair<string, string> lf in General.Map.Config.LinedefFlags)
@@ -524,13 +514,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private void browseaction_Click(object sender, EventArgs e)
 		{
 			action.Value = ActionBrowserForm.BrowseAction(this, action.Value);
-		}
-
-		//mxd. Store window location
-		private void LinedefEditForm_FormClosing(object sender, FormClosingEventArgs e) 
-		{
-			// Save location
-			location = this.Location;
 		}
 
 		// Help!

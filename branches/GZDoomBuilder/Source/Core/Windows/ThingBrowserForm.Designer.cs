@@ -82,7 +82,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.MinimizeBox = false;
 			this.MinimumSize = new System.Drawing.Size(264, 300);
 			this.Name = "ThingBrowserForm";
-			this.Opacity = 1;
+			this.Opacity = 0;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

@@ -146,6 +146,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.splitter.Panel2MinSize = 100;
 			this.splitter.Size = new System.Drawing.Size(784, 442);
 			this.splitter.SplitterDistance = 573;
+			this.splitter.SplitterWidth = 8;
 			this.splitter.TabIndex = 0;
 			this.splitter.TabStop = false;
 			// 
@@ -161,18 +162,15 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Controls.Add(this.splitter);
 			this.MinimizeBox = false;
 			this.Name = "TextureBrowserForm";
-			this.Opacity = 1;
+			this.Opacity = 0;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "Browse Textures";
-			this.Load += new System.EventHandler(this.TextureBrowserForm_Load);
 			this.Shown += new System.EventHandler(this.TextureBrowserForm_Shown);
 			this.Activated += new System.EventHandler(this.TextureBrowserForm_Activated);
-			this.Move += new System.EventHandler(this.TextureBrowserForm_Move);
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.TextureBrowserForm_FormClosing);
 			this.HelpRequested += new System.Windows.Forms.HelpEventHandler(this.TextureBrowserForm_HelpRequested);
-			this.ResizeEnd += new System.EventHandler(this.TextureBrowserForm_ResizeEnd);
 			this.panel.ResumeLayout(false);
 			this.splitter.Panel1.ResumeLayout(false);
 			this.splitter.Panel2.ResumeLayout(false);

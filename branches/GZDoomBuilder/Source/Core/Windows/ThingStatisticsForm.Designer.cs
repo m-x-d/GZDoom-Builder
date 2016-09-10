@@ -157,7 +157,7 @@
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
 			this.MinimizeBox = false;
 			this.Name = "ThingStatisticsForm";
-			this.Opacity = 1;
+			this.Opacity = 0;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.Text = "Thing statistics";

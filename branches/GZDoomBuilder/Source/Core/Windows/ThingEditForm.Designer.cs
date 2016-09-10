@@ -219,6 +219,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.anglecontrol.Angle = 0;
 			this.anglecontrol.AngleOffset = 0;
+			this.anglecontrol.DoomAngleClamping = false;
 			this.anglecontrol.Location = new System.Drawing.Point(20, 40);
 			this.anglecontrol.Name = "anglecontrol";
 			this.anglecontrol.Size = new System.Drawing.Size(69, 69);
@@ -452,13 +453,12 @@ namespace CodeImp.DoomBuilder.Windows
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "ThingEditForm";
-			this.Opacity = 1;
+			this.Opacity = 0;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Edit Thing";
 			this.Shown += new System.EventHandler(this.ThingEditForm_Shown);
-			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ThingEditForm_FormClosing);
 			this.HelpRequested += new System.Windows.Forms.HelpEventHandler(this.ThingEditForm_HelpRequested);
 			groupBox2.ResumeLayout(false);
 			groupBox2.PerformLayout();

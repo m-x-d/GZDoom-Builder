@@ -134,6 +134,7 @@
 			this.MinimizeBox = false;
 			this.MinimumSize = new System.Drawing.Size(667, 250);
 			this.Name = "UpdateForm";
+			this.Opacity = 0;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Newsflash (R[rev])!";

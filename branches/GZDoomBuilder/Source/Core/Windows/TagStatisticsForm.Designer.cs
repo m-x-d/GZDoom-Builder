@@ -187,7 +187,7 @@
 			this.MinimizeBox = false;
 			this.MinimumSize = new System.Drawing.Size(120, 80);
 			this.Name = "TagStatisticsForm";
-			this.Opacity = 1;
+			this.Opacity = 0;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.Text = "Tag statistics";

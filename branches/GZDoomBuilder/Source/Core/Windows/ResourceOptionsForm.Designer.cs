@@ -114,10 +114,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.wadfiletab.Controls.Add(this.wadlocation);
 			this.wadfiletab.Controls.Add(label1);
 			this.wadfiletab.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.wadfiletab.Location = new System.Drawing.Point(4, 23);
+			this.wadfiletab.Location = new System.Drawing.Point(4, 22);
 			this.wadfiletab.Name = "wadfiletab";
 			this.wadfiletab.Padding = new System.Windows.Forms.Padding(3);
-			this.wadfiletab.Size = new System.Drawing.Size(361, 184);
+			this.wadfiletab.Size = new System.Drawing.Size(361, 185);
 			this.wadfiletab.TabIndex = 0;
 			this.wadfiletab.Text = "From WAD File";
 			this.wadfiletab.UseVisualStyleBackColor = true;
@@ -169,10 +169,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.directorytab.Controls.Add(this.dirlocation);
 			this.directorytab.Controls.Add(label2);
 			this.directorytab.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.directorytab.Location = new System.Drawing.Point(4, 23);
+			this.directorytab.Location = new System.Drawing.Point(4, 22);
 			this.directorytab.Name = "directorytab";
 			this.directorytab.Padding = new System.Windows.Forms.Padding(3);
-			this.directorytab.Size = new System.Drawing.Size(361, 184);
+			this.directorytab.Size = new System.Drawing.Size(361, 185);
 			this.directorytab.TabIndex = 1;
 			this.directorytab.Text = "From Directory";
 			this.directorytab.UseVisualStyleBackColor = true;
@@ -238,9 +238,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.pk3filetab.Controls.Add(this.pk3location);
 			this.pk3filetab.Controls.Add(label3);
 			this.pk3filetab.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.pk3filetab.Location = new System.Drawing.Point(4, 23);
+			this.pk3filetab.Location = new System.Drawing.Point(4, 22);
 			this.pk3filetab.Name = "pk3filetab";
-			this.pk3filetab.Size = new System.Drawing.Size(361, 184);
+			this.pk3filetab.Size = new System.Drawing.Size(361, 185);
 			this.pk3filetab.TabIndex = 2;
 			this.pk3filetab.Text = "From PK3/PK7";
 			this.pk3filetab.UseVisualStyleBackColor = true;
@@ -340,7 +340,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "ResourceOptionsForm";
-			this.Opacity = 1;
+			this.Opacity = 0;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
