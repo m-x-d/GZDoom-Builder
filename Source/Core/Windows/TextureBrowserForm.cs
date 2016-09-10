@@ -33,8 +33,6 @@ namespace CodeImp.DoomBuilder.Windows
 	{
 		// Variables
 		private string selectedname;
-		private Point lastposition;
-		private Size lastsize;
 		private readonly ListViewGroup usedgroup;
 		private readonly ListViewGroup availgroup;
 		private TreeNode selectedset; //mxd
@@ -66,7 +64,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Text = "Browse " + imagetype;
 
 			// Setup texture browser
-			ImageBrowserControl.ShowTexturesFromSubDirectories = General.Settings.ReadSetting("browserwindow.showtexturesfromsubdirs", true);
+			ImageBrowserControl.ShowTexturesFromSubDirectories = General.Settings.ReadSetting("windows." + configname + ".showtexturesfromsubdirs", true);
 			ImageBrowserControl.UseLongTextureNames = General.Map.Options.UseLongTextureNames;
 			browser.BrowseFlats = browseflats;
 			browser.ApplySettings();
@@ -84,7 +82,7 @@ namespace CodeImp.DoomBuilder.Windows
 			availgroup = browser.AddGroup("Available " + imagetype + ":");
 
 			//mxd. Make "Used" group collapsible
-			usedgroupcollapsed = General.Settings.ReadSetting("browserwindow.usedgroupcollapsed", false);
+			usedgroupcollapsed = General.Settings.ReadSetting("windows." + configname + ".usedgroupcollapsed", false);
 			browser.SetGroupCollapsed(usedgroup, usedgroupcollapsed);
 
 			//mxd. Fill texture sets list with normal texture sets
@@ -129,7 +127,7 @@ namespace CodeImp.DoomBuilder.Windows
 			if(General.Settings.LocateTextureGroup)
 			{
 				//mxd. Get the previously selected texture set
-				string prevtextureset = General.Settings.ReadSetting("browserwindow.textureset", "");
+				string prevtextureset = General.Settings.ReadSetting("windows." + configname + ".textureset", "");
 				TreeNode match;
 
 				// When texture set name is empty, select "All" texture set
@@ -180,38 +178,12 @@ namespace CodeImp.DoomBuilder.Windows
 
 			tvTextureSets.EndUpdate();//mxd
 
-			// Keep last position and size
-			lastposition = this.Location;
-			lastsize = this.Size;
-
-			this.SuspendLayout();
-
-			// Position window from configuration settings
-			this.Size = new Size(General.Settings.ReadSetting("browserwindow.sizewidth", this.Size.Width),
-								 General.Settings.ReadSetting("browserwindow.sizeheight", this.Size.Height));
-			this.WindowState = (FormWindowState)General.Settings.ReadSetting("browserwindow.windowstate", (int)FormWindowState.Normal);
-			
-			//mxd
-			if(this.WindowState == FormWindowState.Normal) 
-			{
-				Point location = new Point(General.Settings.ReadSetting("browserwindow.positionx", int.MaxValue), General.Settings.ReadSetting("browserwindow.positiony", int.MaxValue));
-				if(location.X < int.MaxValue && location.Y < int.MaxValue) 
-				{
-					this.Location = location;
-				} 
-				else 
-				{
-					this.StartPosition = FormStartPosition.CenterParent;
-				}
-			}
-
-			this.ResumeLayout(true);
-
 			//mxd. Set splitter position and state (doesn't work when layout is suspended)
-			if(General.Settings.ReadSetting("browserwindow.splittercollapsed", false)) splitter.IsCollapsed = true;
+			if(General.Settings.ReadSetting("windows." + configname + ".splittercollapsed", false))
+				splitter.IsCollapsed = true;
 
 			//mxd. Looks like SplitterDistance is unaffected by DPI scaling. Let's fix that...
-			int splitterdistance = General.Settings.ReadSetting("browserwindow.splitterdistance", int.MinValue);
+			int splitterdistance = General.Settings.ReadSetting("windows." + configname + ".splitterdistance", int.MinValue);
 			if(splitterdistance == int.MinValue)
 			{
 				splitterdistance = 210;
@@ -234,7 +206,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private TreeNode FindTextureByLongName(TreeNode node, long longname) 
 		{
 			//first search in child nodes
-
 			foreach(TreeNode n in node.Nodes)
 			{
 				TreeNode match = FindTextureByLongName(n, longname);
@@ -274,7 +245,7 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			int imageIndex = set.Location.type + 5;
-			char[] separator = new[] { Path.AltDirectorySeparatorChar };
+			char[] separator = { Path.AltDirectorySeparatorChar };
 			
 			ImageData[] images;
 			if(browseflats)
@@ -300,7 +271,6 @@ namespace CodeImp.DoomBuilder.Windows
 				string category = set.Name;
 				for(int i = 0; i < parts.Length - 1; i++) 
 				{
-					//string category = parts[i];
 					category += (Path.DirectorySeparatorChar + parts[i]);
 					
 					//already got such category?
@@ -355,7 +325,6 @@ namespace CodeImp.DoomBuilder.Windows
 			ResourceTextureSet ts = node.Tag as ResourceTextureSet;
 			if(ts == null) throw new Exception("Expected IFilledTextureSet, but got null...");
 			
-
 			if(node.Parent != null && General.Map.Config.MixTexturesFlats)
 			{
 				ts.MixTexturesAndFlats();
@@ -409,69 +378,20 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Interface.EnableProcessing(); //mxd
 		}
 
-		// Loading
-		private void TextureBrowserForm_Load(object sender, EventArgs e)
-		{
-			// Normal windowstate?
-			if(this.WindowState == FormWindowState.Normal)
-			{
-				// Keep last position and size
-				lastposition = this.Location;
-				lastsize = this.Size;
-			}
-		}
-
-		// Resized
-		private void TextureBrowserForm_ResizeEnd(object sender, EventArgs e)
-		{
-			// Normal windowstate?
-			if(this.WindowState == FormWindowState.Normal)
-			{
-				// Keep last position and size
-				lastposition = this.Location;
-				lastsize = this.Size;
-			}
-		}
-
-		// Moved
-		private void TextureBrowserForm_Move(object sender, EventArgs e)
-		{
-			// Normal windowstate?
-			if(this.WindowState == FormWindowState.Normal)
-			{
-				// Keep last position and size
-				lastposition = this.Location;
-				lastsize = this.Size;
-			}
-		}
-
 		// Closing
 		private void TextureBrowserForm_FormClosing(object sender, FormClosingEventArgs e)
 		{
-			int windowstate;
-
-			// Determine window state to save
-			if(this.WindowState != FormWindowState.Minimized)
-				windowstate = (int)this.WindowState;
-			else
-				windowstate = (int)FormWindowState.Normal;
-
 			// Save window settings
-			General.Settings.WriteSetting("browserwindow.positionx", lastposition.X);
-			General.Settings.WriteSetting("browserwindow.positiony", lastposition.Y);
-			General.Settings.WriteSetting("browserwindow.sizewidth", lastsize.Width);
-			General.Settings.WriteSetting("browserwindow.sizeheight", lastsize.Height);
-			General.Settings.WriteSetting("browserwindow.windowstate", windowstate);
-			General.Settings.WriteSetting("browserwindow.splitterdistance", splitter.SplitPosition); //mxd
-			General.Settings.WriteSetting("browserwindow.splittercollapsed", splitter.IsCollapsed); //mxd
-			General.Settings.WriteSetting("browserwindow.usedgroupcollapsed", browser.IsGroupCollapsed(usedgroup)); //mxd
+			General.Settings.WriteSetting("windows." + configname + ".splitterdistance", splitter.SplitPosition); //mxd
+			General.Settings.WriteSetting("windows." + configname + ".splittercollapsed", splitter.IsCollapsed); //mxd
+			General.Settings.WriteSetting("windows." + configname + ".usedgroupcollapsed", browser.IsGroupCollapsed(usedgroup)); //mxd
 
 			//mxd. Save last selected texture set
 			if(this.DialogResult == DialogResult.OK && tvTextureSets.SelectedNodes.Count > 0)
-				General.Settings.WriteSetting("browserwindow.textureset", tvTextureSets.SelectedNodes[0].Name);
+				General.Settings.WriteSetting("windows." + configname + ".textureset", tvTextureSets.SelectedNodes[0].Name);
 
 			//mxd. Save ImageBrowserControl settings
-			General.Settings.WriteSetting("browserwindow.showtexturesfromsubdirs", ImageBrowserControl.ShowTexturesFromSubDirectories);
+			General.Settings.WriteSetting("windows." + configname + ".showtexturesfromsubdirs", ImageBrowserControl.ShowTexturesFromSubDirectories);
 			if(General.Map.Config.UseLongTextureNames) General.Map.Options.UseLongTextureNames = ImageBrowserControl.UseLongTextureNames;
 			
 			// Clean up

@@ -275,6 +275,7 @@
 			// 
 			this.anglecontrol.Angle = 0;
 			this.anglecontrol.AngleOffset = 0;
+			this.anglecontrol.DoomAngleClamping = false;
 			this.anglecontrol.Location = new System.Drawing.Point(7, 17);
 			this.anglecontrol.Name = "anglecontrol";
 			this.anglecontrol.Size = new System.Drawing.Size(64, 64);
@@ -389,6 +390,7 @@
 			// 
 			this.rollControl.Angle = -90;
 			this.rollControl.AngleOffset = 0;
+			this.rollControl.DoomAngleClamping = false;
 			this.rollControl.Location = new System.Drawing.Point(7, 17);
 			this.rollControl.Name = "rollControl";
 			this.rollControl.Size = new System.Drawing.Size(64, 64);
@@ -409,6 +411,7 @@
 			// 
 			this.pitchControl.Angle = -90;
 			this.pitchControl.AngleOffset = 0;
+			this.pitchControl.DoomAngleClamping = false;
 			this.pitchControl.Location = new System.Drawing.Point(7, 17);
 			this.pitchControl.Name = "pitchControl";
 			this.pitchControl.Size = new System.Drawing.Size(64, 64);
@@ -990,7 +993,7 @@
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "ThingEditFormUDMF";
-			this.Opacity = 1;
+			this.Opacity = 0;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

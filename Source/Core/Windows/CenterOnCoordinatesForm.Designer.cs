@@ -81,7 +81,10 @@
 			this.gotoy.AllowNegative = true;
 			this.gotoy.AllowRelative = false;
 			this.gotoy.ButtonStep = 1;
+			this.gotoy.ButtonStepBig = 10F;
 			this.gotoy.ButtonStepFloat = 1F;
+			this.gotoy.ButtonStepSmall = 0.1F;
+			this.gotoy.ButtonStepsUseModifierKeys = false;
 			this.gotoy.ButtonStepsWrapAround = false;
 			this.gotoy.Location = new System.Drawing.Point(32, 42);
 			this.gotoy.Name = "gotoy";
@@ -95,7 +98,10 @@
 			this.gotox.AllowNegative = true;
 			this.gotox.AllowRelative = false;
 			this.gotox.ButtonStep = 1;
+			this.gotox.ButtonStepBig = 10F;
 			this.gotox.ButtonStepFloat = 1F;
+			this.gotox.ButtonStepSmall = 0.1F;
+			this.gotox.ButtonStepsUseModifierKeys = false;
 			this.gotox.ButtonStepsWrapAround = false;
 			this.gotox.Location = new System.Drawing.Point(32, 12);
 			this.gotox.Name = "gotox";
@@ -120,7 +126,7 @@
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "CenterOnCoordinatesForm";
-			this.Opacity = 1;
+			this.Opacity = 0;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
 			this.Text = "Go To Coordinates:";

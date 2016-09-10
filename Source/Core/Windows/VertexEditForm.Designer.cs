@@ -270,6 +270,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.fieldslist.Name = "fieldslist";
 			this.fieldslist.PropertyColumnVisible = true;
 			this.fieldslist.PropertyColumnWidth = 150;
+			this.fieldslist.ShowFixedFields = true;
 			this.fieldslist.Size = new System.Drawing.Size(406, 188);
 			this.fieldslist.TabIndex = 2;
 			this.fieldslist.TypeColumnVisible = true;
@@ -313,7 +314,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "VertexEditForm";
-			this.Opacity = 1;
+			this.Opacity = 0;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

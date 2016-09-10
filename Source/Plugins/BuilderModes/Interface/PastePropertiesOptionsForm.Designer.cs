@@ -232,7 +232,7 @@
 			this.MinimizeBox = false;
 			this.MinimumSize = new System.Drawing.Size(300, 200);
 			this.Name = "PastePropertiesOptionsForm";
-			this.Opacity = 1;
+			this.Opacity = 0;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

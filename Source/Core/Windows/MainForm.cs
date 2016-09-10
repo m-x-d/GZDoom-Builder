@@ -113,8 +113,6 @@ namespace CodeImp.DoomBuilder.Windows
 		#region ================== Variables
 
 		// Position/size
-		private Point lastposition;
-		private Size lastsize;
 		private bool displayresized = true;
 		private bool windowactive;
 		
@@ -286,10 +284,6 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			// Show splash
 			ShowSplashDisplay();
-			
-			// Keep last position and size
-			lastposition = this.Location;
-			lastsize = this.Size;
 
 			//mxd
 			blinkTimer = new System.Timers.Timer {Interval = 500};
@@ -600,34 +594,13 @@ namespace CodeImp.DoomBuilder.Windows
 		// Window is loaded
 		private void MainForm_Load(object sender, EventArgs e)
 		{
-			// Position window from configuration settings
-			this.SuspendLayout();
-			this.Size = new Size(General.Settings.ReadSetting("mainwindow.sizewidth", this.Size.Width),
-								 General.Settings.ReadSetting("mainwindow.sizeheight", this.Size.Height));
-			this.Location = new Point(General.Clamp(General.Settings.ReadSetting("mainwindow.positionx", this.Location.X), 
-													SystemInformation.VirtualScreen.Left - this.Size.Width + 128,
-													SystemInformation.VirtualScreen.Right - 128),
-									  General.Clamp(General.Settings.ReadSetting("mainwindow.positiony", this.Location.Y),
-													SystemInformation.VirtualScreen.Top,
-													SystemInformation.VirtualScreen.Bottom - 128));
-			this.WindowState = (FormWindowState)General.Settings.ReadSetting("mainwindow.windowstate", (int)FormWindowState.Maximized);
-			this.ResumeLayout(true);
-			
-			// Normal windowstate?
-			if(this.WindowState == FormWindowState.Normal)
-			{
-				// Keep last position and size
-				lastposition = this.Location;
-				lastsize = this.Size;
-			}
-
 			//mxd. Enable drag and drop
 			this.AllowDrop = true;
 			this.DragEnter += OnDragEnter;
 			this.DragDrop += OnDragDrop;
 
 			// Info panel state?
-			bool expandedpanel = General.Settings.ReadSetting("mainwindow.expandedinfopanel", true);
+			bool expandedpanel = General.Settings.ReadSetting("windows." + configname + ".expandedinfopanel", true);
 			if(expandedpanel != IsInfoPanelExpanded) ToggleInfoPanel();
 		}
 
@@ -658,38 +631,6 @@ namespace CodeImp.DoomBuilder.Windows
 			if(mouseexclusive && windowactive && mouseinside && Cursor.Clip != display.RectangleToScreen(display.ClientRectangle))
 				Cursor.Clip = display.RectangleToScreen(display.ClientRectangle);
 		}
-		
-		// Window is moved
-		private void MainForm_Move(object sender, EventArgs e)
-		{
-			// Normal windowstate?
-			if(this.WindowState == FormWindowState.Normal)
-			{
-				// Keep last position and size
-				lastposition = this.Location;
-				lastsize = this.Size;
-			}
-		}
-
-		// Window resizes
-		private void MainForm_Resize(object sender, EventArgs e)
-		{
-			// Resizing
-			//this.SuspendLayout();
-			//resized = true;
-		}
-
-		// Window was resized
-		private void MainForm_ResizeEnd(object sender, EventArgs e)
-		{
-			// Normal windowstate?
-			if(this.WindowState == FormWindowState.Normal)
-			{
-				// Keep last position and size
-				lastposition = this.Location;
-				lastsize = this.Size;
-			}
-		}
 
 		// Window is being closed
 		protected override void OnFormClosing(FormClosingEventArgs e) 
@@ -715,19 +656,7 @@ namespace CodeImp.DoomBuilder.Windows
 				General.Actions.UnbindMethods(this);
 
 				// Determine window state to save
-				int windowstate;
-				if(this.WindowState != FormWindowState.Minimized)
-					windowstate = (int)this.WindowState;
-				else
-					windowstate = (int)FormWindowState.Normal;
-
-				// Save window settings
-				General.Settings.WriteSetting("mainwindow.positionx", lastposition.X);
-				General.Settings.WriteSetting("mainwindow.positiony", lastposition.Y);
-				General.Settings.WriteSetting("mainwindow.sizewidth", lastsize.Width);
-				General.Settings.WriteSetting("mainwindow.sizeheight", lastsize.Height);
-				General.Settings.WriteSetting("mainwindow.windowstate", windowstate);
-				General.Settings.WriteSetting("mainwindow.expandedinfopanel", IsInfoPanelExpanded);
+				General.Settings.WriteSetting("windows." + configname + ".expandedinfopanel", IsInfoPanelExpanded);
 
 				// Save recent files
 				SaveRecentFiles();

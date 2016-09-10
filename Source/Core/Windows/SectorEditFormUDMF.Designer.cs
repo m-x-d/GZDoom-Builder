@@ -800,8 +800,9 @@
 			// 
 			// floorAngleControl
 			// 
-			this.floorAngleControl.Angle = -1440;
+			this.floorAngleControl.Angle = 0;
 			this.floorAngleControl.AngleOffset = 90;
+			this.floorAngleControl.DoomAngleClamping = false;
 			this.floorAngleControl.Location = new System.Drawing.Point(6, 156);
 			this.floorAngleControl.Name = "floorAngleControl";
 			this.floorAngleControl.Size = new System.Drawing.Size(44, 44);
@@ -1080,8 +1081,9 @@
 			// 
 			// ceilAngleControl
 			// 
-			this.ceilAngleControl.Angle = -1440;
+			this.ceilAngleControl.Angle = 0;
 			this.ceilAngleControl.AngleOffset = 90;
+			this.ceilAngleControl.DoomAngleClamping = false;
 			this.ceilAngleControl.Location = new System.Drawing.Point(6, 156);
 			this.ceilAngleControl.Name = "ceilAngleControl";
 			this.ceilAngleControl.Size = new System.Drawing.Size(44, 44);
@@ -1405,7 +1407,7 @@
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "SectorEditFormUDMF";
-			this.Opacity = 1;
+			this.Opacity = 0;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

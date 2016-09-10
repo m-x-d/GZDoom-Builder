@@ -3,7 +3,7 @@ using System.Windows.Forms;
 
 namespace CodeImp.DoomBuilder.Windows
 {
-	public partial class UpdateForm : Form
+	public partial class UpdateForm : DelayedForm
 	{
 		public bool IgnoreThisUpdate { get { return ignorethisupdate.Checked; } }
 

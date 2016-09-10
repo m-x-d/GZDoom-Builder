@@ -54,7 +54,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private Dictionary<string, string> flagsrename; //mxd
 
 		//mxd. Window setup stuff
-		private static Point location = Point.Empty;
 		private static int activetab;
 
 		//mxd. Persistent settings
@@ -101,12 +100,7 @@ namespace CodeImp.DoomBuilder.Windows
 			InitializeComponent();
 
 			//mxd. Widow setup
-			if(location != Point.Empty) 
-			{
-				this.StartPosition = FormStartPosition.Manual;
-				this.Location = location;
-				if(General.Settings.StoreSelectedEditTab && activetab > 0) tabs.SelectTab(activetab);
-			}
+			if(General.Settings.StoreSelectedEditTab && activetab > 0) tabs.SelectTab(activetab);
 
 			// Fill flags list
 			foreach(KeyValuePair<string, string> tf in General.Map.Config.ThingFlags)
@@ -134,7 +128,7 @@ namespace CodeImp.DoomBuilder.Windows
 			fieldslist.ListFixedFields(General.Map.Config.ThingFields);
 
 			//mxd. Show fixed fields?
-			hidefixedfields.Checked = !General.Settings.ReadSetting("customfieldsshowfixed", true);
+			hidefixedfields.Checked = !General.Settings.ReadSetting("windows." + configname + ".customfieldsshowfixed", true);
 
 			// Thing height?
 			posZ.Visible = General.Map.FormatInterface.HasThingHeight;
@@ -648,9 +642,8 @@ namespace CodeImp.DoomBuilder.Windows
 		//mxd
 		private void ThingEditForm_FormClosing(object sender, FormClosingEventArgs e) 
 		{
-			location = this.Location;
 			activetab = tabs.SelectedIndex;
-			General.Settings.WriteSetting("customfieldsshowfixed", !hidefixedfields.Checked);
+			General.Settings.WriteSetting("windows." + configname + ".customfieldsshowfixed", !hidefixedfields.Checked);
 		}
 
 		// Help

@@ -199,7 +199,7 @@
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
 			this.Name = "BridgeModeForm";
-			this.Opacity = 1;
+			this.Opacity = 0;
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.Text = "Options";

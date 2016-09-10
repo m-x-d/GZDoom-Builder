@@ -52,9 +52,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private List<ThingProperties> thingprops; //mxd
 		private Dictionary<string, string> flagsrename; //mxd
 
-		//mxd. Window setup stuff
-		private static Point location = Point.Empty;
-
 		private struct ThingProperties //mxd
 		{
 			//public readonly int Type;
@@ -82,13 +79,6 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			// Initialize
 			InitializeComponent();
-
-			//mxd. Widow setup
-			if(location != Point.Empty) 
-			{
-				this.StartPosition = FormStartPosition.Manual;
-				this.Location = location;
-			}
 			
 			// Fill flags list
 			foreach(KeyValuePair<string, string> tf in General.Map.Config.ThingFlags)
@@ -524,12 +514,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private void ThingEditForm_Shown(object sender, EventArgs e)
 		{
 			thingtype.FocusTextbox();
-		}
-
-		//mxd
-		private void ThingEditForm_FormClosing(object sender, FormClosingEventArgs e) 
-		{
-			location = this.Location;
 		}
 
 		// Help
