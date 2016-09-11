@@ -86,7 +86,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 						ThingTypeInfo info = General.Map.Data.GetThingInfoEx(actorsbyclass[classname]);
 
 						// Actor has a valid sprite?
-						if(info != null && !string.IsNullOrEmpty(info.Sprite) && !info.Sprite.ToLowerInvariant().StartsWith(DataManager.INTERNAL_PREFIX))
+						if(info != null && !string.IsNullOrEmpty(info.Sprite) && !info.Sprite.ToLowerInvariant().StartsWith(DataManager.INTERNAL_PREFIX)
+							&& (info.Sprite.Length == 6 || info.Sprite.Length == 8))
 						{
 							string targetsprite = info.Sprite.Substring(0, 5);
 							if(mds.Frames.ContainsKey(targetsprite))
