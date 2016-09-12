@@ -1,6 +1,8 @@
 ﻿#region ================== Namespaces
 
 using System;
+using System.Collections.Generic;
+using System.Windows.Forms;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
 
@@ -19,8 +21,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Properties
 
-		public override int Buttons { get { return 1; } }
-		public override string Button1Text { get { return "Delete Thing"; } }
+		public override int Buttons { get { return 2; } }
+		public override string Button1Text { get { return "Edit Thing..."; } }
+		public override string Button2Text { get { return "Delete Thing"; } }
 
 		#endregion
 
@@ -32,7 +35,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			thing = t;
 			viewobjects.Add(t);
 			hidden = t.IgnoredErrorChecks.Contains(this.GetType()); //mxd
-			description = "This thing has unknown type (eg. it's not defined in DECORATE or current game configuration).";
+			description = "This thing has unknown type (it's not defined in DECORATE or current game configuration).";
 		}
 
 		#endregion
@@ -55,15 +58,30 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		// Rendering
-		public override void  RenderOverlaySelection(IRenderer2D renderer) 
+		public override void RenderOverlaySelection(IRenderer2D renderer) 
 		{
 			renderer.RenderThing(thing, General.Colors.Selection, General.Settings.ActiveThingsAlpha);
 		}
+
+		// This edits the thing
+		public override bool Button1Click(bool batchMode)
+		{
+			if(!batchMode) General.Map.UndoRedo.CreateUndo("Edit unknown thing");
+
+			if(General.Interface.ShowEditThings(new List<Thing> { thing }) == DialogResult.OK)
+			{
+				General.Map.IsChanged = true;
+				General.Map.ThingsFilter.Update();
+				return true;
+			}
+
+			return false;
+		}
 		
 		// This removes the thing
-		public override bool Button1Click(bool batchMode) 
+		public override bool Button2Click(bool batchMode) 
 		{
-			if(!batchMode) General.Map.UndoRedo.CreateUndo("Delete thing");
+			if(!batchMode) General.Map.UndoRedo.CreateUndo("Delete unknown thing");
 			thing.Dispose();
 			General.Map.IsChanged = true;
 			General.Map.ThingsFilter.Update();

@@ -255,6 +255,7 @@
     <Compile Include="ErrorChecks\CheckTextureAlignment.cs" />
     <Compile Include="ErrorChecks\CheckUnknownActions.cs" />
     <Compile Include="ErrorChecks\CheckUnknownFlats.cs" />
+    <Compile Include="ErrorChecks\CheckUnknownScripts.cs" />
     <Compile Include="ErrorChecks\CheckUnknownTextures.cs" />
     <Compile Include="ErrorChecks\CheckUnknownThings.cs" />
     <Compile Include="ErrorChecks\CheckUnusedTextures.cs" />
@@ -273,10 +274,12 @@
     <Compile Include="ErrorChecks\ResultTexturesMisaligned.cs" />
     <Compile Include="ErrorChecks\ResultUnknownFlat.cs" />
     <Compile Include="ErrorChecks\ResultUnknownLinedefAction.cs" />
+    <Compile Include="ErrorChecks\ResultUnknownLinedefScript.cs" />
     <Compile Include="ErrorChecks\ResultUnknownSectorEffect.cs" />
     <Compile Include="ErrorChecks\ResultUnknownTexture.cs" />
     <Compile Include="ErrorChecks\ResultUnknownThing.cs" />
     <Compile Include="ErrorChecks\ResultUnknownThingAction.cs" />
+    <Compile Include="ErrorChecks\ResultUnknownThingScript.cs" />
     <Compile Include="ErrorChecks\ResultUnusedTexture.cs" />
     <Compile Include="ErrorChecks\ResultUnusedThing.cs" />
     <Compile Include="ErrorChecks\ResultVertexOverlappingLine.cs" />
