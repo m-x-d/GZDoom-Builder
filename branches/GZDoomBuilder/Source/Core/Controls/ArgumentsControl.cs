@@ -299,22 +299,14 @@ namespace CodeImp.DoomBuilder.Controls
 					argzeromode = ArgZeroMode.SCRIPT_NAME;
 					if(General.Map.NamedScripts.ContainsKey(arg0str))
 					{
-						int i = 0;
-						foreach(ScriptItem item in General.Map.NamedScripts.Values)
-						{
-							if(item.Name == arg0str)
-							{
-								scriptnames.SelectedIndex = i;
-								UpdateScriptArguments(item);
-								break;
-							}
-							i++;
-						}
+						scriptnames.SelectedText = arg0str;
+						UpdateScriptArguments(General.Map.NamedScripts[arg0str]);
 					}
 					else
 					{
 						// Unknown script name
 						scriptnames.Text = arg0str;
+						arg0label.Text = "Script Name:";
 					}
 				}
 				else
@@ -353,7 +345,7 @@ namespace CodeImp.DoomBuilder.Controls
 				argzeromode = ArgZeroMode.DEFAULT;
 			}
 
-			arg0.Visible = (!scriptnames.Visible && !scriptnumbers.Visible);
+			arg0.Visible = (argzeromode == ArgZeroMode.DEFAULT);
 		}
 
 		private void UpdateArgument(ArgumentBox arg, Label label, ArgumentInfo info)

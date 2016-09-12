@@ -10,11 +10,12 @@ using CodeImp.DoomBuilder.Rendering;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
-	public class ResultObsoleteThing : ErrorResult
+	public class ResultUnknownThingScript : ErrorResult
 	{
 		#region ================== Variables
 
 		private readonly Thing thing;
+		private readonly bool namedscript;
 
 		#endregion
 
@@ -28,17 +29,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		#region ================== Constructor / Destructor
 
-		public ResultObsoleteThing(Thing t, string message) 
+		public ResultUnknownThingScript(Thing t, bool isnamedscript) 
 		{
 			// Initialize
-			this.thing = t;
-			this.viewobjects.Add(t);
-			this.hidden = t.IgnoredErrorChecks.Contains(this.GetType());
-
-			if(string.IsNullOrEmpty(message))
-				this.description = "This thing is marked as obsolete in DECORATE. You should probably replace or delete it.";
-			else
-				this.description = "This thing is marked as obsolete in DECORATE: " + message;
+			thing = t;
+			namedscript = isnamedscript;
+			viewobjects.Add(t);
+			hidden = t.IgnoredErrorChecks.Contains(this.GetType()); //mxd
+			description = "This thing references unknown ACS script " + (namedscript ? "name" : "number") + ".";
 		}
 
 		#endregion
@@ -57,11 +55,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This must return the string that is displayed in the listbox
 		public override string ToString() 
 		{
-			return "Thing " + thing.Index + " (" + General.Map.Data.GetThingInfo(thing.Type).Title + ") at " + thing.Position.x + ", " + thing.Position.y + " is obsolete.";
+			if(namedscript)
+				return "Thing references unknown ACS script name \"" + thing.Fields.GetValue("arg0str", string.Empty) + "\".";
+
+			return "Thing references unknown ACS script number \"" + thing.Args[0] + "\".";
 		}
 
 		// Rendering
-		public override void  RenderOverlaySelection(IRenderer2D renderer) 
+		public override void RenderOverlaySelection(IRenderer2D renderer) 
 		{
 			renderer.RenderThing(thing, General.Colors.Selection, General.Settings.ActiveThingsAlpha);
 		}
@@ -69,7 +70,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This edits the thing
 		public override bool Button1Click(bool batchMode)
 		{
-			if(!batchMode) General.Map.UndoRedo.CreateUndo("Edit obsolete thing");
+			if(!batchMode) General.Map.UndoRedo.CreateUndo("Edit thing");
 
 			if(General.Interface.ShowEditThings(new List<Thing> { thing }) == DialogResult.OK)
 			{
@@ -84,7 +85,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This removes the thing
 		public override bool Button2Click(bool batchMode) 
 		{
-			if(!batchMode) General.Map.UndoRedo.CreateUndo("Delete obsolete thing");
+			if(!batchMode) General.Map.UndoRedo.CreateUndo("Delete thing");
 			thing.Dispose();
 			General.Map.IsChanged = true;
 			General.Map.ThingsFilter.Update();

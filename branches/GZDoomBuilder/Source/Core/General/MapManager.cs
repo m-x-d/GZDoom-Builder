@@ -1897,7 +1897,10 @@ namespace CodeImp.DoomBuilder
 		internal void ApplyScriptChanged() 
 		{
 			// Remember if lumps are changed
-			scriptschanged |= scriptwindow.Editor.CheckImplicitChanges();
+			if(scriptwindow != null)
+			{
+				scriptschanged |= scriptwindow.Editor.CheckImplicitChanges();
+			}
 		}
 
 		// Close the script editor
@@ -2079,6 +2082,18 @@ namespace CodeImp.DoomBuilder
 						numberedscripts.Add(item.Index, item);
 				}
 			}
+		}
+
+		//mxd
+		public bool ScriptNumberExists(int scriptnumber)
+		{
+			return numberedscripts.ContainsKey(scriptnumber);
+		}
+
+		//mxd
+		public bool ScriptNameExists(string scriptname)
+		{
+			return namedscripts.ContainsKey(scriptname);
 		}
 
 		#endregion

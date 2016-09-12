@@ -832,31 +832,34 @@ namespace CodeImp.DoomBuilder.Windows
 		private void flags_OnValueChanged(object sender, EventArgs e) 
 		{
 			if(preventchanges) return;
-			MakeUndo(); //mxd
-			int i = 0;
-
-			// Apply flags
-			foreach(Thing t in things)
+			if(!preventmapchange) //mxd
 			{
-				// Apply all flags
-				foreach(CheckBox c in flags.Checkboxes)
+				MakeUndo();
+				int i = 0;
+
+				// Apply flags
+				foreach(Thing t in things)
 				{
-					if(c.CheckState == CheckState.Checked)
-						t.SetFlag(c.Tag.ToString(), true);
-					else if(c.CheckState == CheckState.Unchecked)
-						t.SetFlag(c.Tag.ToString(), false);
-					else if(thingprops[i].Flags.ContainsKey(c.Tag.ToString()))
-						t.SetFlag(c.Tag.ToString(), thingprops[i].Flags[c.Tag.ToString()]);
-					else //things created in the editor have empty Flags by default
-						t.SetFlag(c.Tag.ToString(), false);
+					// Apply all flags
+					foreach(CheckBox c in flags.Checkboxes)
+					{
+						if(c.CheckState == CheckState.Checked)
+							t.SetFlag(c.Tag.ToString(), true);
+						else if(c.CheckState == CheckState.Unchecked)
+							t.SetFlag(c.Tag.ToString(), false);
+						else if(thingprops[i].Flags.ContainsKey(c.Tag.ToString()))
+							t.SetFlag(c.Tag.ToString(), thingprops[i].Flags[c.Tag.ToString()]);
+						else //things created in the editor have empty Flags by default
+							t.SetFlag(c.Tag.ToString(), false);
+					}
+
+					i++;
 				}
 
-				i++;
+				// Dispatch event
+				General.Map.IsChanged = true;
+				if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 			}
-
-			// Dispatch event
-			General.Map.IsChanged = true;
-			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 
 			// Gather enabled flags
 			HashSet<string> activeflags = new HashSet<string>();

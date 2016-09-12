@@ -84,61 +84,68 @@ namespace CodeImp.DoomBuilder.ZDoom
 					if(haveplaceableactor)
 					{
 						ThingTypeInfo info = General.Map.Data.GetThingInfoEx(actorsbyclass[classname]);
-
-						// Actor has a valid sprite?
-						if(info != null && !string.IsNullOrEmpty(info.Sprite) && !info.Sprite.ToLowerInvariant().StartsWith(DataManager.INTERNAL_PREFIX)
-							&& (info.Sprite.Length == 6 || info.Sprite.Length == 8))
+						if(info != null)
 						{
-							string targetsprite = info.Sprite.Substring(0, 5);
-							if(mds.Frames.ContainsKey(targetsprite))
+							// Already have a voxel model?
+							if(General.Map.Data.ModeldefEntries.ContainsKey(info.Index) && General.Map.Data.ModeldefEntries[info.Index].IsVoxel)
 							{
-								// Create model data
-								ModelData md = new ModelData { InheritActorPitch = mds.InheritActorPitch, UseActorPitch = mds.UseActorPitch, UseActorRoll = mds.UseActorRoll };
-
-								// Things are complicated in GZDoom...
-								Matrix moffset = Matrix.Translation(mds.Offset.Y, -mds.Offset.X, mds.Offset.Z);
-								Matrix mrotation = Matrix.RotationY(-Angle2D.DegToRad(mds.RollOffset)) * Matrix.RotationX(-Angle2D.DegToRad(mds.PitchOffset)) * Matrix.RotationZ(Angle2D.DegToRad(mds.AngleOffset));
-								md.SetTransform(mrotation, moffset, mds.Scale);
-
-								// Add models
-								int disabledframescount = 0;
-								foreach(var fs in mds.Frames[targetsprite])
+								LogWarning("Both voxel(s) and model(s) are defined for actor\"" + classname + "\". Consider using either former or latter");
+							}
+							// Actor has a valid sprite?
+							else if(!string.IsNullOrEmpty(info.Sprite) && !info.Sprite.ToLowerInvariant().StartsWith(DataManager.INTERNAL_PREFIX)
+								&& (info.Sprite.Length == 6 || info.Sprite.Length == 8))
+							{
+								string targetsprite = info.Sprite.Substring(0, 5);
+								if(mds.Frames.ContainsKey(targetsprite))
 								{
-									// Sanity checks
-									if(string.IsNullOrEmpty(mds.ModelNames[fs.ModelIndex]))
+									// Create model data
+									ModelData md = new ModelData { InheritActorPitch = mds.InheritActorPitch, UseActorPitch = mds.UseActorPitch, UseActorRoll = mds.UseActorRoll };
+
+									// Things are complicated in GZDoom...
+									Matrix moffset = Matrix.Translation(mds.Offset.Y, -mds.Offset.X, mds.Offset.Z);
+									Matrix mrotation = Matrix.RotationY(-Angle2D.DegToRad(mds.RollOffset)) * Matrix.RotationX(-Angle2D.DegToRad(mds.PitchOffset)) * Matrix.RotationZ(Angle2D.DegToRad(mds.AngleOffset));
+									md.SetTransform(mrotation, moffset, mds.Scale);
+
+									// Add models
+									int disabledframescount = 0;
+									foreach(var fs in mds.Frames[targetsprite])
 									{
-										LogWarning("Model definition \"" + classname + "\", frame \"" + fs.SpriteName + " " + fs.FrameName + "\" references undefiend model index " + fs.ModelIndex);
-										continue;
+										// Sanity checks
+										if(string.IsNullOrEmpty(mds.ModelNames[fs.ModelIndex]))
+										{
+											LogWarning("Model definition \"" + classname + "\", frame \"" + fs.SpriteName + " " + fs.FrameName + "\" references undefiend model index " + fs.ModelIndex);
+											continue;
+										}
+
+										//INFO: setting frame index to a negative number disables model rendering in GZDoom
+										if(fs.FrameIndex < 0)
+										{
+											disabledframescount++;
+											continue;
+										}
+
+										// Texture name will be empty when skin path is embedded in the model
+										string skinname = (!string.IsNullOrEmpty(mds.SkinNames[fs.ModelIndex]) ? mds.SkinNames[fs.ModelIndex].ToLowerInvariant() : string.Empty);
+
+										md.SkinNames.Add(skinname);
+										md.SurfaceSkinNames.Add(mds.SurfaceSkinNames[fs.ModelIndex]);
+										md.ModelNames.Add(mds.ModelNames[fs.ModelIndex].ToLowerInvariant());
+										md.FrameNames.Add(fs.FrameName);
+										md.FrameIndices.Add(fs.FrameIndex);
 									}
 
-									//INFO: setting frame index to a negative number disables model rendering in GZDoom
-									if(fs.FrameIndex < 0)
+									// More sanity checks...
+									if(md.ModelNames.Count == 0)
 									{
-										disabledframescount++;
-										continue;
+										// Show warning only when frames were not delibeartely disabled
+										if(mds.Frames[targetsprite].Count > 0 && disabledframescount < mds.Frames[targetsprite].Count)
+											LogWarning("Model definition \"" + classname + "\" has no defined models");
 									}
-									
-									// Texture name will be empty when skin path is embedded in the model
-									string skinname = (!string.IsNullOrEmpty(mds.SkinNames[fs.ModelIndex]) ? mds.SkinNames[fs.ModelIndex].ToLowerInvariant() : string.Empty);
-
-									md.SkinNames.Add(skinname);
-									md.SurfaceSkinNames.Add(mds.SurfaceSkinNames[fs.ModelIndex]); 
-									md.ModelNames.Add(mds.ModelNames[fs.ModelIndex].ToLowerInvariant());
-									md.FrameNames.Add(fs.FrameName);
-									md.FrameIndices.Add(fs.FrameIndex);
-								}
-
-								// More sanity checks...
-								if(md.ModelNames.Count == 0)
-								{
-									// Show warning only when frames were not delibeartely disabled
-									if(mds.Frames[targetsprite].Count > 0 && disabledframescount < mds.Frames[targetsprite].Count)
-										LogWarning("Model definition \"" + classname + "\" has no defined models");
-								}
-								else
-								{
-									// Add to collection
-									entries[classname] = md;
+									else
+									{
+										// Add to collection
+										entries[classname] = md;
+									}
 								}
 							}
 						}

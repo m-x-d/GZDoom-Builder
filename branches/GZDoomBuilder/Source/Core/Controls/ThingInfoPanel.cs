@@ -140,6 +140,10 @@ namespace CodeImp.DoomBuilder.Controls
 			string scriptname = (isnamedacsscript ? t.Fields.GetValue("arg0str", string.Empty) : string.Empty);
 			ScriptItem scriptitem = null;
 
+			//mxd. Set default label colors
+			arg1.ForeColor = SystemColors.ControlText;
+			arglbl1.ForeColor = SystemColors.ControlText;
+
 			// Named script?
 			if(isnamedacsscript && General.Map.NamedScripts.ContainsKey(scriptname.ToLowerInvariant()))
 			{
@@ -182,6 +186,14 @@ namespace CodeImp.DoomBuilder.Controls
 					arglabels[i].Text = arginfo[i].Title + ":";
 					arglabels[i].Enabled = arginfo[i].Used;
 					args[i].Enabled = arginfo[i].Used;
+				}
+
+				// Special cases: unknown script name/index
+				if(isacsscript || isnamedacsscript)
+				{
+					arglbl1.Text = "Unknown script " + (isnamedacsscript ? "name" : "number") + ":";
+					arg1.ForeColor = Color.DarkRed;
+					arglbl1.ForeColor = Color.DarkRed;
 				}
 			}
 

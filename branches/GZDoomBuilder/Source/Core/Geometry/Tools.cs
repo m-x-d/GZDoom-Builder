@@ -2394,22 +2394,21 @@ namespace CodeImp.DoomBuilder.Geometry
 		{
 			List<LinedefSide> sectorsides = FindPotentialSectorAt(line, front);
 			if(sectorsides == null) return null;
-			Sector result = null;
-			bool foundstartline = false;
 
-			// Proceed only if all sectorsides reference the same sector and the start line is among them
+			// Check potential sectors
 			foreach(LinedefSide sectorside in sectorsides)
 			{
 				Sidedef target = (sectorside.Front ? sectorside.Line.Front : sectorside.Line.Back);
-				if(target == null) return null; // Fial...
-				
-				if(result == null) result = target.Sector;
-				else if(result != target.Sector) return null; // Fial...
-
-				if(sectorside.Line == line) foundstartline = true;
+				if(target != null && target.Sector != null)
+				{
+					// Check if target line is inside the found sector
+					if(target.Sector.Intersect(line.Start.Position) && target.Sector.Intersect(line.End.Position))
+						return target.Sector;
+				}
 			}
 
-			return (foundstartline ? result : null);
+			// No dice...
+			return null;
 		}
 
 		#endregion
