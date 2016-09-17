@@ -36,7 +36,7 @@ namespace CodeImp.DoomBuilder.Windows
 	{
 		// Variables
 		private Timer formshowtimer;
-		protected string configname; //mxd
+		protected readonly string configname; //mxd
 		
 		// Constructor
 		protected DelayedForm()
@@ -47,6 +47,9 @@ namespace CodeImp.DoomBuilder.Windows
 				this.KeyPreview = true;
 				this.KeyUp += OnKeyUp;
 			}
+
+			//mxd
+			configname = this.GetType().Name.ToLowerInvariant();
 			
 			// Create a timer that we need to show the form
 			formshowtimer = new Timer { Interval = 1 };
@@ -58,7 +61,6 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			//mxd. Restore location and size
 			this.SuspendLayout();
-			configname = this.Name.ToLowerInvariant();
 
 			// Restore location
 			Point validlocation = Point.Empty;
