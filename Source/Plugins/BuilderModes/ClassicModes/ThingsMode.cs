@@ -569,6 +569,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			base.OnUndoEnd();
 
+			UpdateSelectionInfo(); // Update selection info and labels
 			UpdateHelperObjects(); // Update helper lines
 			SetupSectorLabels(); // And sector labels
 		}
@@ -578,6 +579,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			base.OnRedoEnd();
 
+			UpdateSelectionInfo(); // Update selection info and labels
 			UpdateHelperObjects(); // Update helper lines
 			SetupSectorLabels(); // And sector labels
 		}

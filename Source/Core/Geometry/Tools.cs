@@ -2402,7 +2402,7 @@ namespace CodeImp.DoomBuilder.Geometry
 				if(target != null && target.Sector != null)
 				{
 					// Check if target line is inside the found sector
-					if(target.Sector.Intersect(line.Start.Position) && target.Sector.Intersect(line.End.Position))
+					if(target.Sector.Intersect(line.Start.Position, false) && target.Sector.Intersect(line.End.Position, false))
 						return target.Sector;
 				}
 			}

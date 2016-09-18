@@ -842,7 +842,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			base.OnUndoEnd();
 
-			SetupSectorLabels(); // Update sector labels
+			// Update selection info and labels
+			UpdateSelectionInfo();
+			SetupSectorLabels();
 		}
 
 		//mxd
@@ -850,7 +852,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			base.OnRedoEnd();
 
-			SetupSectorLabels(); // Update sector labels
+			// Update selection info and labels
+			UpdateSelectionInfo();
+			SetupSectorLabels();
 		}
 
 		// Mouse moves
