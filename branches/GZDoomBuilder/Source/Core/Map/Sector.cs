@@ -534,7 +534,8 @@ namespace CodeImp.DoomBuilder.Map
 		
 		// This checks if the given point is inside the sector polygon
 		// See: http://paulbourke.net/geometry/polygonmesh/index.html#insidepoly
-		public bool Intersect(Vector2D p) 
+		public bool Intersect(Vector2D p) { return Intersect(p, true); }
+		public bool Intersect(Vector2D p, bool countontopastrue)
 		{
 			//mxd. Check bounding box first
 			if(p.x < bbox.Left || p.x > bbox.Right || p.y < bbox.Top || p.y > bbox.Bottom) return false;
@@ -550,7 +551,7 @@ namespace CodeImp.DoomBuilder.Map
 				v2 = sd.Line.End.Position;
 
 				//mxd. On top of a vertex?
-				if(p == v1 || p == v2) return true;
+				if(p == v1 || p == v2) return countontopastrue;
 
 				// Check for intersection
 				if(v1.y != v2.y //mxd. If line is not horizontal...
