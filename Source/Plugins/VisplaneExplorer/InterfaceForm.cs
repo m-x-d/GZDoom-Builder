@@ -16,11 +16,15 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 
 		#endregion
 
+		#region ================== mxd. Event handlers
+
+		public event EventHandler OnOpenDoorsChanged;
+
+		#endregion
+
 		#region ================== Variables
 
 		private ViewStats viewstats;
-		private static bool opendoors; //mxd
-		private static bool showheatmap; //mxd
 		private Point oldttposition;
 
 		#endregion
@@ -28,8 +32,8 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		#region ================== Properties
 
 		internal ViewStats ViewStats { get { return viewstats; } }
-		internal bool OpenDoors { get { return opendoors; } } //mxd
-		internal bool ShowHeatmap { get { return showheatmap; } } //mxd
+		internal bool OpenDoors { get { return cbopendoors.Checked; } } //mxd
+		internal bool ShowHeatmap { get { return cbheatmap.Checked; } } //mxd
 
 		#endregion
 
@@ -39,8 +43,8 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		public InterfaceForm()
 		{
 			InitializeComponent();
-			cbopendoors.Checked = opendoors; //mxd
-			cbheatmap.Checked = showheatmap; //mxd
+			cbopendoors.Checked = General.Settings.ReadPluginSetting("opendoors", false); //mxd
+			cbheatmap.Checked = General.Settings.ReadPluginSetting("showheatmap", false); //mxd
 		}
 
 		#endregion
@@ -63,6 +67,10 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 			General.Interface.RemoveButton(cbopendoors); //mxd
 			General.Interface.RemoveButton(separator); //mxd
 			General.Interface.RemoveButton(statsbutton);
+
+			//mxd. Save settings
+			General.Settings.WritePluginSetting("opendoors", cbopendoors.Checked);
+			General.Settings.WritePluginSetting("showheatmap", cbheatmap.Checked);
 		}
 
 		// This shows a tooltip
@@ -106,18 +114,13 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		//mxd
 		private void cbheatmap_Click(object sender, EventArgs e)
 		{
-			showheatmap = cbheatmap.Checked;
 			General.Interface.RedrawDisplay();
 		}
 
 		//mxd
 		private void cbopendoors_Click(object sender, EventArgs e)
 		{
-			opendoors = cbopendoors.Checked;
-			
-			// Restart processing 
-			BuilderPlug.VPO.Restart();
-			General.Interface.RedrawDisplay();
+			if(OnOpenDoorsChanged != null) OnOpenDoorsChanged(this, EventArgs.Empty);
 		}
 
 		#endregion
