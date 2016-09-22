@@ -3,12 +3,12 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Editing;
-using System.Drawing.Imaging;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
@@ -29,10 +29,6 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 			  AllowCopyPaste = false)]
 	public class VisplaneExplorerMode : ClassicMode
 	{
-		#region ================== Constants
-
-		#endregion
-		
 		#region ================== APIs
 
 		[DllImport("kernel32.dll")]
@@ -64,14 +60,6 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		// Are we processing?
 		private bool processingenabled;
 		
-		#endregion
-
-		#region ================== Properties
-
-		#endregion
-
-		#region ================== Constructor / Destructor
-
 		#endregion
 
 		#region ================== Methods
@@ -130,8 +118,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 			int viewstats = (int)BuilderPlug.InterfaceForm.ViewStats;
 			Palette pal = (BuilderPlug.InterfaceForm.ShowHeatmap ? BuilderPlug.Palettes[(int)ViewStats.Heatmap] : BuilderPlug.Palettes[viewstats]);
 
-			Size canvassize = canvas.Size;
-			BitmapData bd = canvas.LockBits(new Rectangle(0, 0, canvassize.Width, canvassize.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
+			BitmapData bd = canvas.LockBits(new Rectangle(0, 0, canvas.Size.Width, canvas.Size.Height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 			RtlZeroMemory(bd.Scan0, bd.Width * bd.Height * 4);
 			int* p = (int*)bd.Scan0.ToPointer();
 
@@ -253,9 +240,12 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 			base.OnEngage();
 			General.Interface.DisplayStatus(StatusType.Busy, "Setting up test environment...");
 
+			BuilderPlug.InitVPO(); //mxd
+
 			CleanUp();
 
 			BuilderPlug.InterfaceForm.AddToInterface();
+			BuilderPlug.InterfaceForm.OnOpenDoorsChanged += OnOpenDoorsChanged; //mxd
 			lastviewstats = BuilderPlug.InterfaceForm.ViewStats;
 
 			// Export the current map to a temporary WAD file
@@ -276,29 +266,7 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 			mapbounds = Rectangle.Round(MapSet.CreateArea(General.Map.Map.Vertices));
 
 			// Create tiles for all points inside the map
-			Point lt = TileForPoint(mapbounds.Left - Tile.TILE_SIZE, mapbounds.Top - Tile.TILE_SIZE);
-			Point rb = TileForPoint(mapbounds.Right + Tile.TILE_SIZE, mapbounds.Bottom + Tile.TILE_SIZE);
-			Rectangle tilesrect = new Rectangle(lt.X, lt.Y, rb.X - lt.X, rb.Y - lt.Y);
-			NearestLineBlockmap blockmap = new NearestLineBlockmap(tilesrect);
-			for(int x = tilesrect.X; x <= tilesrect.Right; x += Tile.TILE_SIZE) 
-			{
-				for(int y = tilesrect.Y; y <= tilesrect.Bottom; y += Tile.TILE_SIZE) 
-				{
-					// If the tile is obviously outside the map, don't create it
-					Vector2D pc = new Vector2D(x + (Tile.TILE_SIZE >> 1), y + (Tile.TILE_SIZE >> 1));
-					Linedef ld = MapSet.NearestLinedef(blockmap.GetBlockAt(pc).Lines, pc);
-					float distancesq = ld.DistanceToSq(pc, true);
-					if(distancesq > (Tile.TILE_SIZE * Tile.TILE_SIZE)) 
-					{
-						float side = ld.SideOfLine(pc);
-						if((side > 0.0f) && (ld.Back == null))
-							continue;
-					}
-
-					Point tp = new Point(x, y);
-					tiles.Add(tp, new Tile(tp));
-				}
-			}
+			CreateTiles(); //mxd
 
 			QueuePoints(0);
 
@@ -331,6 +299,34 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 			Cursor.Current = Cursors.Default;
 			General.Interface.SetCursor(Cursors.Cross);
 			General.Interface.DisplayReady();
+		}
+
+		//mxd
+		private void CreateTiles()
+		{
+			Point lt = TileForPoint(mapbounds.Left - Tile.TILE_SIZE, mapbounds.Top - Tile.TILE_SIZE);
+			Point rb = TileForPoint(mapbounds.Right + Tile.TILE_SIZE, mapbounds.Bottom + Tile.TILE_SIZE);
+			Rectangle tilesrect = new Rectangle(lt.X, lt.Y, rb.X - lt.X, rb.Y - lt.Y);
+			NearestLineBlockmap blockmap = new NearestLineBlockmap(tilesrect);
+			for(int x = tilesrect.X; x <= tilesrect.Right; x += Tile.TILE_SIZE)
+			{
+				for(int y = tilesrect.Y; y <= tilesrect.Bottom; y += Tile.TILE_SIZE)
+				{
+					// If the tile is obviously outside the map, don't create it
+					Vector2D pc = new Vector2D(x + (Tile.TILE_SIZE >> 1), y + (Tile.TILE_SIZE >> 1));
+					Linedef ld = MapSet.NearestLinedef(blockmap.GetBlockAt(pc).Lines, pc);
+					float distancesq = ld.DistanceToSq(pc, true);
+					if(distancesq > (Tile.TILE_SIZE * Tile.TILE_SIZE))
+					{
+						float side = ld.SideOfLine(pc);
+						if((side > 0.0f) && (ld.Back == null))
+							continue;
+					}
+
+					Point tp = new Point(x, y);
+					tiles.Add(tp, new Tile(tp));
+				}
+			}
 		}
 
 		// Mode ends
@@ -483,6 +479,17 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		{
 			base.OnMouseLeave(e);
 			BuilderPlug.InterfaceForm.HideTooltip();
+		}
+
+		//mxd
+		private void OnOpenDoorsChanged(object sender, EventArgs e)
+		{
+			// Restart processing 
+			BuilderPlug.VPO.Stop();
+			tiles.Clear();
+			CreateTiles();
+			BuilderPlug.VPO.Start(tempfile, General.Map.Options.LevelName);
+			General.Interface.RedrawDisplay();
 		}
 
 		#endregion

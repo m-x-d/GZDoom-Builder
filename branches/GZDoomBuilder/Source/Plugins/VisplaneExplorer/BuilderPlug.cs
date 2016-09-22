@@ -34,7 +34,6 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		private static BuilderPlug me;
 		private VPOManager vpo;
 		private InterfaceForm interfaceform;
-		private bool enabled; //mxd
 
 		// Palettes
 		private Palette[] palettes;
@@ -54,22 +53,22 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 
 		#region ================== Initialize / Dispose
 
-		//mxd. Initialize when we can check the map format
-		public override void OnMapNewEnd() { OnMapOpenEnd(); }
-		public override void OnMapOpenEnd()
+		public override void OnInitialize()
 		{
-			enabled = (General.Map.DOOM || General.Map.HEXEN);
-			if(enabled)
-			{
-				// Load interface controls
-				interfaceform = new InterfaceForm();
+			base.OnInitialize();
 
-				// Load VPO manager (manages multithreading and communication with vpo.dll)
-				vpo = new VPOManager();
+			// Keep a static reference
+			me = this;
+		}
 
-				// Keep a static reference
-				me = this;
-			}
+		//mxd
+		public static void InitVPO()
+		{
+			// Load interface controls
+			if(me.interfaceform == null) me.interfaceform = new InterfaceForm();
+
+			// Load VPO manager (manages multithreading and communication with vpo.dll)
+			if(me.vpo == null) me.vpo = new VPOManager();
 		}
 
 		// Preferences changed
@@ -85,17 +84,20 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 			//mxd. Active and not already disposed?
 			if(!IsDisposed)
 			{
-				if(enabled)
+				if(interfaceform != null)
 				{
-					// Clean up
 					interfaceform.Dispose();
 					interfaceform = null;
+				}
+
+				if(vpo != null)
+				{
 					vpo.Dispose();
 					vpo = null;
-
-					// Done
-					me = null;
 				}
+
+				// Done
+				me = null;
 
 				base.Dispose();
 			}

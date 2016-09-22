@@ -251,21 +251,14 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 			}
 		}
 
-		//mxd
-		internal void Restart() 
-		{
-			Stop();
-			Start(filename, mapname);
-		}
-
 		// This clears the list of enqueued points
-		public void ClearPoints()
+		/*public void ClearPoints()
 		{
 			lock(points)
 			{
 				points.Clear();
 			}
-		}
+		}*/
 
 		// This gives points to process and returns the total points left in the buffer
 		public int EnqueuePoints(IEnumerable<TilePoint> newpoints)
