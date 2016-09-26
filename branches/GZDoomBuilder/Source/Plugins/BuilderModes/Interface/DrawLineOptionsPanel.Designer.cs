@@ -75,8 +75,8 @@
 			this.showguidelines.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.showguidelines.Margin = new System.Windows.Forms.Padding(2, 1, 0, 2);
 			this.showguidelines.Name = "showguidelines";
-			this.showguidelines.Size = new System.Drawing.Size(113, 22);
-			this.showguidelines.Text = "Show guidelines";
+			this.showguidelines.Size = new System.Drawing.Size(82, 22);
+			this.showguidelines.Text = "Guidelines";
 			this.showguidelines.CheckedChanged += new System.EventHandler(this.showguidelines_CheckedChanged);
 			// 
 			// DrawLineOptionsPanel

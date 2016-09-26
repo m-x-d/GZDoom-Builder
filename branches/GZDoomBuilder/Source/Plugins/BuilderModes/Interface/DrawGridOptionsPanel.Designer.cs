@@ -43,6 +43,7 @@
 			this.label3 = new System.Windows.Forms.Label();
 			this.label4 = new System.Windows.Forms.Label();
 			this.groupBox3 = new System.Windows.Forms.GroupBox();
+			this.showguidelines = new System.Windows.Forms.CheckBox();
 			this.continuousdrawing = new System.Windows.Forms.CheckBox();
 			this.groupBox1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.slicesV)).BeginInit();
@@ -214,13 +215,25 @@
 			// 
 			this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox3.Controls.Add(this.showguidelines);
 			this.groupBox3.Controls.Add(this.continuousdrawing);
 			this.groupBox3.Location = new System.Drawing.Point(3, 225);
 			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Size = new System.Drawing.Size(200, 55);
+			this.groupBox3.Size = new System.Drawing.Size(200, 71);
 			this.groupBox3.TabIndex = 11;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = "Additional options";
+			// 
+			// showguidelines
+			// 
+			this.showguidelines.AutoSize = true;
+			this.showguidelines.Location = new System.Drawing.Point(20, 47);
+			this.showguidelines.Name = "showguidelines";
+			this.showguidelines.Size = new System.Drawing.Size(75, 17);
+			this.showguidelines.TabIndex = 16;
+			this.showguidelines.Text = "Guidelines";
+			this.showguidelines.UseVisualStyleBackColor = true;
+			this.showguidelines.CheckedChanged += new System.EventHandler(this.showguidelines_CheckedChanged);
 			// 
 			// continuousdrawing
 			// 
@@ -272,5 +285,6 @@
 		private System.Windows.Forms.CheckBox continuousdrawing;
 		private System.Windows.Forms.ComboBox gridlockmode;
 		private System.Windows.Forms.Label label5;
+		private System.Windows.Forms.CheckBox showguidelines;
 	}
 }

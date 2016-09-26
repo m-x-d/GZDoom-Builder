@@ -37,7 +37,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		private const float DARK_ADDITION = -0.2f;
 
 		// Palette size
-		private const int NUM_COLORS = 52;
+		private const int NUM_COLORS = 53;
 		public const int NUM_THING_COLORS = 20;
 		public const int THING_COLORS_OFFSET = 20;
 
@@ -94,6 +94,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		public const int SCRIPTFOLDFORE = 49;
 		public const int SCRIPTFOLDBACK = 50;
 		public const int PROPERTIES = 51;
+		public const int GUIDELINECOLOR = 52; //mxd
 		
 		#endregion
 
@@ -127,6 +128,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		//mxd
 		public PixelColor ModelWireframe { get { return colors[MODELWIRECOLOR]; } internal set { colors[MODELWIRECOLOR] = value; } }
 		public PixelColor InfoLine { get { return colors[INFOLINECOLOR]; } internal set { colors[INFOLINECOLOR] = value; } }
+		public PixelColor Guideline { get { return colors[GUIDELINECOLOR]; } internal set { colors[GUIDELINECOLOR] = value; } }
 		public PixelColor ThreeDFloor { get { return colors[THREEDFLOORCOLOR]; } internal set { colors[THREEDFLOORCOLOR] = value;} }
 		
 		public PixelColor Crosshair3D { get { return colors[CROSSHAIR3D]; } internal set { colors[CROSSHAIR3D] = value; } }
@@ -192,6 +194,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			if(colors[KEYWORDS].ToInt() == 0) colors[KEYWORDS] = PixelColor.FromInt(-16741493);
 			if(colors[LITERALS].ToInt() == 0) colors[LITERALS] = PixelColor.FromInt(-16776999);
 			if(colors[CONSTANTS].ToInt() == 0) colors[CONSTANTS] = PixelColor.FromInt(-8372160);
+			if(colors[GUIDELINECOLOR].ToInt() == 0) colors[GUIDELINECOLOR] = PixelColor.FromInt(-256);
 
 			// Set new thing colors
 			if(colors[THINGCOLOR00].ToInt() == 0) colors[THINGCOLOR00] = PixelColor.FromColor(Color.DimGray);

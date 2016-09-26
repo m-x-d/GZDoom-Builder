@@ -226,6 +226,7 @@ namespace CodeImp.DoomBuilder.Windows
 			//mxd
 			colorMD3.Color = General.Colors.ModelWireframe;
 			colorInfo.Color = General.Colors.InfoLine;
+			colorguidelines.Color = General.Colors.Guideline;
 			color3dFloors.Color = General.Colors.ThreeDFloor;
 
 			// Script editor colors
@@ -394,6 +395,7 @@ namespace CodeImp.DoomBuilder.Windows
 			//mxd
 			General.Colors.ModelWireframe = colorMD3.Color;
 			General.Colors.InfoLine = colorInfo.Color;
+			General.Colors.Guideline = colorguidelines.Color;
 			General.Colors.ThreeDFloor = color3dFloors.Color;
 
 			General.Colors.CreateAssistColors();

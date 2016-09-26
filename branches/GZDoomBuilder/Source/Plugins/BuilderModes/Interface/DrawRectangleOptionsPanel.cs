@@ -7,6 +7,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	{
 		public event EventHandler OnValueChanged;
 		public event EventHandler OnContinuousDrawingChanged;
+		public event EventHandler OnShowGuidelinesChanged;
+
 		private bool blockevents;
 
 		public int BevelWidth { get { return (int)radius.Value; } set { blockevents = true; radius.Value = value; blockevents = false; } }
@@ -16,6 +18,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public int MaxSubdivisions { get { return (int)subdivs.Maximum; } set { subdivs.Maximum = value; } }
 		public int MinSubdivisions { get { return (int)subdivs.Minimum; } set { subdivs.Minimum = value; } }
 		public bool ContinuousDrawing { get { return continuousdrawing.Checked; } set { continuousdrawing.Checked = value; } }
+		public bool ShowGuidelines { get { return showguidelines.Checked; } set { showguidelines.Checked = value; } }
 
 		public DrawRectangleOptionsPanel() 
 		{
@@ -28,6 +31,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			subdivs.ValueChanged += ValueChanged;
 
 			General.Interface.AddButton(continuousdrawing);
+			General.Interface.AddButton(showguidelines);
 			General.Interface.AddButton(toolStripSeparator1);
 			General.Interface.AddButton(radiuslabel);
 			General.Interface.AddButton(radius);
@@ -44,6 +48,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.RemoveButton(radius);
 			General.Interface.RemoveButton(radiuslabel);
 			General.Interface.RemoveButton(toolStripSeparator1);
+			General.Interface.RemoveButton(showguidelines);
 			General.Interface.RemoveButton(continuousdrawing);
 		}
 
@@ -67,6 +72,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private void continuousdrawing_CheckedChanged(object sender, EventArgs e)
 		{
 			if(OnContinuousDrawingChanged != null) OnContinuousDrawingChanged(continuousdrawing.Checked, EventArgs.Empty);
+		}
+
+		private void showguidelines_CheckedChanged(object sender, EventArgs e)
+		{
+			if(OnShowGuidelinesChanged != null) OnShowGuidelinesChanged(showguidelines.Checked, EventArgs.Empty);
 		}
 	}
 }

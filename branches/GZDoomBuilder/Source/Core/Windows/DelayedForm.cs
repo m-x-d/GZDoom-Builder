@@ -59,6 +59,9 @@ namespace CodeImp.DoomBuilder.Windows
 		// When form is shown
 		protected override void OnShown(EventArgs e)
 		{
+			//mxd
+			if(this.DesignMode) return;
+			
 			//mxd. Restore location and size
 			this.SuspendLayout();
 

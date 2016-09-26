@@ -67,9 +67,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			panel.Subdivisions = subdivisions;
 			panel.OnValueChanged += OptionsPanelOnValueChanged;
 			panel.OnContinuousDrawingChanged += OnContinuousDrawingChanged;
+			panel.OnShowGuidelinesChanged += OnShowGuidelinesChanged;
 
 			// Needs to be set after adding the OnContinuousDrawingChanged event...
 			panel.ContinuousDrawing = General.Settings.ReadPluginSetting("drawellipsemode.continuousdrawing", false);
+			panel.ShowGuidelines = General.Settings.ReadPluginSetting("drawellipsemode.showguidelines", false);
 		}
 
 		override protected void AddInterface() 
@@ -84,6 +86,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Settings.WritePluginSetting("drawellipsemode.bevelwidth", bevelwidth);
 			General.Settings.WritePluginSetting("drawellipsemode.angle", panel.Angle);
 			General.Settings.WritePluginSetting("drawellipsemode.continuousdrawing", panel.ContinuousDrawing);
+			General.Settings.WritePluginSetting("drawellipsemode.showguidelines", panel.ShowGuidelines);
 
 			// Remove the buttons
 			panel.Unregister();
@@ -139,6 +142,60 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Add final point
 			shape[subdivisions] = shape[0];
+
+			// Now fit it inside the bounding box
+			float minx = float.MaxValue;
+			float miny = float.MaxValue;
+			float maxx = float.MinValue;
+			float maxy = float.MinValue;
+
+			// Calculate shape extents
+			foreach(Vector2D v in shape)
+			{
+				if(v.x < minx) minx = v.x;
+				if(v.x > maxx) maxx = v.x;
+				if(v.y < miny) miny = v.y;
+				if(v.y > maxy) maxy = v.y;
+			}
+
+			// Calculate scalers
+			float scalerx = 1.0f;
+			float scalery = 1.0f;
+			
+			if(minx != pStart.x || maxx != pEnd.x)
+				scalerx = (pEnd.x - pStart.x) / (maxx - minx);
+			if(miny != pStart.y)
+				scalery = (pEnd.y - pStart.y) / (maxy - miny);
+
+			// Apply scalers
+			if(scalerx != 1.0f || scalery != 1.0f)
+			{
+				for(int i = 0; i < shape.Length; i++)
+				{
+					shape[i].x = ((center.x - shape[i].x) * scalerx + center.x);
+					shape[i].y = ((center.y - shape[i].y) * scalery + center.y);
+				}
+			}
+
+			// Calculate shape extents again...
+			minx = float.MaxValue;
+			miny = float.MaxValue;
+			foreach(Vector2D v in shape)
+			{
+				if(v.x < minx) minx = v.x;
+				if(v.y < miny) miny = v.y;
+			}
+
+			// Calculate shape offset...
+			Vector2D offset = new Vector2D();
+			if(minx != pStart.x) offset.x = pStart.x - minx;
+			if(miny != pStart.y) offset.y = pStart.y - miny;
+
+			// Apply offset...
+			if(offset.x != 0.0f || offset.y != 0.0f)
+				for(int i = 0; i < shape.Length; i++) shape[i] += offset;
+
+			// Done
 			return shape;
 		}
 

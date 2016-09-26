@@ -213,6 +213,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.pasteoptions = new CodeImp.DoomBuilder.Controls.PasteOptionsControl();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.browseScreenshotsFolderDialog = new System.Windows.Forms.FolderBrowserDialog();
+			this.colorguidelines = new CodeImp.DoomBuilder.Controls.ColorControl();
 			label7 = new System.Windows.Forms.Label();
 			label5 = new System.Windows.Forms.Label();
 			groupBox1 = new System.Windows.Forms.GroupBox();
@@ -645,6 +646,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.colorsgroup1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)));
+			this.colorsgroup1.Controls.Add(this.colorguidelines);
 			this.colorsgroup1.Controls.Add(this.color3dFloors);
 			this.colorsgroup1.Controls.Add(this.colorInfo);
 			this.colorsgroup1.Controls.Add(this.colorMD3);
@@ -668,7 +670,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.color3dFloors.BackColor = System.Drawing.Color.Transparent;
 			this.color3dFloors.Label = "3D Floors:";
-			this.color3dFloors.Location = new System.Drawing.Point(15, 307);
+			this.color3dFloors.Location = new System.Drawing.Point(15, 336);
 			this.color3dFloors.MaximumSize = new System.Drawing.Size(10000, 23);
 			this.color3dFloors.MinimumSize = new System.Drawing.Size(100, 23);
 			this.color3dFloors.Name = "color3dFloors";
@@ -2403,6 +2405,17 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.browseScreenshotsFolderDialog.Description = "Select a Folder to Save Screenshots Into";
 			// 
+			// colorguidelines
+			// 
+			this.colorguidelines.BackColor = System.Drawing.Color.Transparent;
+			this.colorguidelines.Label = "Guidelines:";
+			this.colorguidelines.Location = new System.Drawing.Point(15, 307);
+			this.colorguidelines.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorguidelines.MinimumSize = new System.Drawing.Size(100, 23);
+			this.colorguidelines.Name = "colorguidelines";
+			this.colorguidelines.Size = new System.Drawing.Size(168, 23);
+			this.colorguidelines.TabIndex = 11;
+			// 
 			// PreferencesForm
 			// 
 			this.AcceptButton = this.apply;
@@ -2656,5 +2669,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.CheckBox textlabelfontbold;
 		private System.Windows.Forms.Label label33;
 		private System.Windows.Forms.ComboBox textlabelfontsize;
+		private CodeImp.DoomBuilder.Controls.ColorControl colorguidelines;
 	}
 }
