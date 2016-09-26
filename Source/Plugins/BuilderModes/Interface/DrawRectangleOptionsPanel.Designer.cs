@@ -29,12 +29,13 @@
 		private void InitializeComponent() 
 		{
 			this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+			this.continuousdrawing = new System.Windows.Forms.ToolStripButton();
+			this.showguidelines = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.radiuslabel = new System.Windows.Forms.ToolStripLabel();
 			this.radius = new CodeImp.DoomBuilder.Controls.ToolStripNumericUpDown();
 			this.subdivslabel = new System.Windows.Forms.ToolStripLabel();
 			this.subdivs = new CodeImp.DoomBuilder.Controls.ToolStripNumericUpDown();
-			this.continuousdrawing = new System.Windows.Forms.ToolStripButton();
 			this.reset = new System.Windows.Forms.ToolStripButton();
 			this.toolStrip1.SuspendLayout();
 			this.SuspendLayout();
@@ -43,6 +44,7 @@
 			// 
 			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.continuousdrawing,
+            this.showguidelines,
             this.toolStripSeparator1,
             this.radiuslabel,
             this.radius,
@@ -51,9 +53,30 @@
             this.reset});
 			this.toolStrip1.Location = new System.Drawing.Point(0, 0);
 			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.Size = new System.Drawing.Size(488, 25);
+			this.toolStrip1.Size = new System.Drawing.Size(750, 25);
 			this.toolStrip1.TabIndex = 7;
 			this.toolStrip1.Text = "toolStrip1";
+			// 
+			// continuousdrawing
+			// 
+			this.continuousdrawing.CheckOnClick = true;
+			this.continuousdrawing.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.Repeat;
+			this.continuousdrawing.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.continuousdrawing.Name = "continuousdrawing";
+			this.continuousdrawing.Size = new System.Drawing.Size(135, 22);
+			this.continuousdrawing.Text = "Continuous drawing";
+			this.continuousdrawing.CheckedChanged += new System.EventHandler(this.continuousdrawing_CheckedChanged);
+			// 
+			// showguidelines
+			// 
+			this.showguidelines.CheckOnClick = true;
+			this.showguidelines.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.Guidelines;
+			this.showguidelines.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.showguidelines.Margin = new System.Windows.Forms.Padding(2, 1, 0, 2);
+			this.showguidelines.Name = "showguidelines";
+			this.showguidelines.Size = new System.Drawing.Size(82, 22);
+			this.showguidelines.Text = "Guidelines";
+			this.showguidelines.CheckedChanged += new System.EventHandler(this.showguidelines_CheckedChanged);
 			// 
 			// toolStripSeparator1
 			// 
@@ -118,16 +141,6 @@
             0,
             0});
 			// 
-			// continuousdrawing
-			// 
-			this.continuousdrawing.CheckOnClick = true;
-			this.continuousdrawing.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.Repeat;
-			this.continuousdrawing.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.continuousdrawing.Name = "continuousdrawing";
-			this.continuousdrawing.Size = new System.Drawing.Size(135, 22);
-			this.continuousdrawing.Text = "Continuous drawing";
-			this.continuousdrawing.CheckedChanged += new System.EventHandler(this.continuousdrawing_CheckedChanged);
-			// 
 			// reset
 			// 
 			this.reset.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
@@ -144,7 +157,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.Controls.Add(this.toolStrip1);
 			this.Name = "DrawRectangleOptionsPanel";
-			this.Size = new System.Drawing.Size(488, 60);
+			this.Size = new System.Drawing.Size(750, 60);
 			this.toolStrip1.ResumeLayout(false);
 			this.toolStrip1.PerformLayout();
 			this.ResumeLayout(false);
@@ -162,5 +175,6 @@
 		private System.Windows.Forms.ToolStripButton reset;
 		private System.Windows.Forms.ToolStripButton continuousdrawing;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+		private System.Windows.Forms.ToolStripButton showguidelines;
 	}
 }

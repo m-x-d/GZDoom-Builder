@@ -98,9 +98,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			panel.Subdivisions = subdivisions;
 			panel.OnValueChanged += OptionsPanelOnValueChanged;
 			panel.OnContinuousDrawingChanged += OnContinuousDrawingChanged;
+			panel.OnShowGuidelinesChanged += OnShowGuidelinesChanged;
 
 			// Needs to be set after adding the OnContinuousDrawingChanged event...
 			panel.ContinuousDrawing = General.Settings.ReadPluginSetting("drawrectanglemode.continuousdrawing", false);
+			panel.ShowGuidelines = General.Settings.ReadPluginSetting("drawrectanglemode.showguidelines", false);
 		}
 
 		protected override void AddInterface() 
@@ -114,6 +116,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Settings.WritePluginSetting("drawrectanglemode.subdivisions", subdivisions);
 			General.Settings.WritePluginSetting("drawrectanglemode.bevelwidth", bevelwidth);
 			General.Settings.WritePluginSetting("drawrectanglemode.continuousdrawing", panel.ContinuousDrawing);
+			General.Settings.WritePluginSetting("drawrectanglemode.showguidelines", panel.ShowGuidelines);
 
 			// Remove the buttons
 			panel.Unregister();
@@ -145,6 +148,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					UpdateReferencePoints(points[0], curp);
 					Vector2D[] shape = GetShape(start, end);
 
+					// Render guidelines
+					if(showguidelines)
+						RenderGuidelines(start, end, General.Colors.Guideline.WithAlpha(80));
+
 					//render shape
 					for(int i = 1; i < shape.Length; i++)
 						renderer.RenderLine(shape[i - 1], shape[i], LINE_THICKNESS, color, true);
@@ -154,27 +161,37 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						renderer.RenderRectangleFilled(new RectangleF(shape[i].x - vsize, shape[i].y - vsize, vsize * 2.0f, vsize * 2.0f), color, true);
 
 					//and labels
-					Vector2D[] labelCoords = new[] { start, new Vector2D(end.x, start.y), end, new Vector2D(start.x, end.y), start };
-					for(int i = 1; i < 5; i++) 
+					if(shape.Length == 2)
 					{
-						labels[i - 1].Move(labelCoords[i], labelCoords[i - 1]);
-						renderer.RenderText(labels[i - 1].TextLabel);
+						// Render label for line
+						labels[0].Move(start, end);
+						renderer.RenderText(labels[0].TextLabel);
 					}
-
-					//got beveled corners? 
-					if(alwaysrendershapehints || shape.Length > minpointscount + 1) 
+					else if(shape.Length > 3)
 					{
-						//render hint
-						if(width > 64 * vsize && height > 16 * vsize) 
+						// Render labels for rectangle
+						Vector2D[] labelCoords = { start, new Vector2D(end.x, start.y), end, new Vector2D(start.x, end.y), start };
+						for(int i = 1; i < 5; i++) 
 						{
-							hintlabel.Move(start, end);
-							hintlabel.Text = GetHintText();
-							renderer.RenderText(hintlabel.TextLabel);
+							labels[i - 1].Move(labelCoords[i], labelCoords[i - 1]);
+							renderer.RenderText(labels[i - 1].TextLabel);
 						}
-						
-						//and shape corners
-						for(int i = 0; i < 4; i++)
-							renderer.RenderRectangleFilled(new RectangleF(labelCoords[i].x - vsize, labelCoords[i].y - vsize, vsize * 2.0f, vsize * 2.0f), General.Colors.InfoLine, true);
+
+						//got beveled corners? 
+						if(alwaysrendershapehints || shape.Length > minpointscount + 1)
+						{
+							//render hint
+							if(width > 64 * vsize && height > 16 * vsize)
+							{
+								hintlabel.Move(start, end);
+								hintlabel.Text = GetHintText();
+								renderer.RenderText(hintlabel.TextLabel);
+							}
+
+							//and shape corners
+							for(int i = 0; i < 4; i++)
+								renderer.RenderRectangleFilled(new RectangleF(labelCoords[i].x - vsize, labelCoords[i].y - vsize, vsize * 2.0f, vsize * 2.0f), General.Colors.InfoLine, true);
+						}
 					}
 				} 
 				else 

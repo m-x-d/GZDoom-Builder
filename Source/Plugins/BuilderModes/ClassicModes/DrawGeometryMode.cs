@@ -64,7 +64,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected bool continuousdrawing; //mxd. Restart after finishing drawing?
 		protected bool autoclosedrawing;  //mxd. Finish drawing when new points and existing geometry form a closed shape
 		protected bool drawingautoclosed; //mxd
-		private bool showguidelines; //mxd
+		protected bool showguidelines; //mxd
 
 		//mxd. Map area bounds
 		private Line2D top, bottom, left, right;
@@ -176,69 +176,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if(showguidelines)
 					{
 						Vector2D prevp = points[points.Count - 1].pos;
-						PixelColor c = General.Colors.InfoLine.WithAlpha(80);
-						if(curp.pos.x != prevp.x && curp.pos.y != prevp.y)
-						{
-							renderguidelabels = true;
-							
-							Vector2D tr = new Vector2D(Math.Max(curp.pos.x, prevp.x), Math.Max(curp.pos.y, prevp.y));
-							Vector2D bl = new Vector2D(Math.Min(curp.pos.x, prevp.x), Math.Min(curp.pos.y, prevp.y));
-							
-							// Create guidelines
-							Line3D[] lines = new Line3D[5];
-							lines[0] = new Line3D(new Vector2D(tr.x, General.Map.Config.TopBoundary), new Vector2D(tr.x, General.Map.Config.BottomBoundary), c, false);
-							lines[1] = new Line3D(new Vector2D(bl.x, General.Map.Config.TopBoundary), new Vector2D(bl.x, General.Map.Config.BottomBoundary), c, false);
-							lines[2] = new Line3D(new Vector2D(General.Map.Config.LeftBoundary, tr.y), new Vector2D(General.Map.Config.RightBoundary, tr.y), c, false);
-							lines[3] = new Line3D(new Vector2D(General.Map.Config.LeftBoundary, bl.y), new Vector2D(General.Map.Config.RightBoundary, bl.y), c, false);
-
-							// Create current line extent. Make sure v1 is to the left of v2
-							Line2D current = (curp.pos.x < prevp.x ? new Line2D(curp.pos, prevp) : new Line2D(prevp, curp.pos));
-							
-							Vector2D extentstart, extentend;
-							if(current.v1.y < current.v2.y) // Start is lower
-							{
-								// Start point can hit left or bottom boundaries
-								extentstart = Line2D.GetIntersectionPoint(left, current, false);
-								if(extentstart.y < General.Map.Config.BottomBoundary) extentstart = Line2D.GetIntersectionPoint(bottom, current, false);
-
-								// End point can hit right or top boundaries
-								extentend = Line2D.GetIntersectionPoint(right, current, false);
-								if(extentend.y > General.Map.Config.TopBoundary) extentend = Line2D.GetIntersectionPoint(top, current, false);
-							}
-							else // Start is higher
-							{
-								// Start point can hit left or top boundaries
-								extentstart = Line2D.GetIntersectionPoint(left, current, false);
-								if(extentstart.y > General.Map.Config.TopBoundary) extentstart = Line2D.GetIntersectionPoint(top, current, false);
-
-								// End point can hit right or bottom boundaries
-								extentend = Line2D.GetIntersectionPoint(right, current, false);
-								if(extentend.y < General.Map.Config.BottomBoundary) extentend = Line2D.GetIntersectionPoint(bottom, current, false);
-							}
-
-							lines[4] = new Line3D(extentstart, extentend, c, false);
-
-							// Render them
-							renderer.RenderArrows(lines);
-
-							// Update horiz/vert length labels
-							guidelabels[0].Move(tr, new Vector2D(tr.x, bl.y));
-							guidelabels[1].Move(new Vector2D(bl.x, tr.y), tr);
-							guidelabels[2].Move(new Vector2D(tr.x, bl.y), bl);
-							guidelabels[3].Move(bl, new Vector2D(bl.x, tr.y));
-						}
-						// Render horizontal line
-						else if(curp.pos.x != prevp.x)
-						{
-							Line3D l = new Line3D(new Vector2D(General.Map.Config.LeftBoundary, curp.pos.y), new Vector2D(General.Map.Config.RightBoundary, curp.pos.y), c, false);
-							renderer.RenderArrows(new List<Line3D>{ l });
-						}
-						// Render vertical line
-						else if(curp.pos.y != prevp.y)
-						{
-							Line3D l = new Line3D(new Vector2D(curp.pos.x, General.Map.Config.TopBoundary), new Vector2D(curp.pos.x, General.Map.Config.BottomBoundary), c, false);
-							renderer.RenderArrows(new List<Line3D> { l });
-						}
+						renderguidelabels = (curp.pos.x != prevp.x && curp.pos.y != prevp.y);
+						RenderGuidelines(prevp, curp.pos, General.Colors.Guideline.WithAlpha(80));
 					}
 					
 					// Render lines
@@ -291,6 +230,89 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Done
 			renderer.Present();
+		}
+
+		//mxd
+		protected void RenderGuidelines(Vector2D start, Vector2D end, PixelColor c)
+		{
+			if(end.x != start.x && end.y != start.y)
+			{
+				Vector2D tr = new Vector2D(Math.Max(end.x, start.x), Math.Max(end.y, start.y));
+				Vector2D bl = new Vector2D(Math.Min(end.x, start.x), Math.Min(end.y, start.y));
+
+				// Create guidelines
+				Line3D[] lines = new Line3D[5];
+				lines[0] = new Line3D(new Vector2D(tr.x, General.Map.Config.TopBoundary), new Vector2D(tr.x, General.Map.Config.BottomBoundary), c, false);
+				lines[1] = new Line3D(new Vector2D(bl.x, General.Map.Config.TopBoundary), new Vector2D(bl.x, General.Map.Config.BottomBoundary), c, false);
+				lines[2] = new Line3D(new Vector2D(General.Map.Config.LeftBoundary, tr.y), new Vector2D(General.Map.Config.RightBoundary, tr.y), c, false);
+				lines[3] = new Line3D(new Vector2D(General.Map.Config.LeftBoundary, bl.y), new Vector2D(General.Map.Config.RightBoundary, bl.y), c, false);
+
+				// Create current line extent. Make sure v1 is to the left of v2
+				Line2D current = (end.x < start.x ? new Line2D(end, start) : new Line2D(start, end));
+
+				Vector2D extentstart, extentend;
+				if(current.v1.y < current.v2.y) // Start is lower
+				{
+					// Start point can hit left or bottom boundaries
+					extentstart = Line2D.GetIntersectionPoint(left, current, false);
+					if(extentstart.y < General.Map.Config.BottomBoundary)
+						extentstart = Line2D.GetIntersectionPoint(bottom, current, false);
+
+					// End point can hit right or top boundaries
+					extentend = Line2D.GetIntersectionPoint(right, current, false);
+					if(extentend.y > General.Map.Config.TopBoundary)
+						extentend = Line2D.GetIntersectionPoint(top, current, false);
+				}
+				else // Start is higher
+				{
+					// Start point can hit left or top boundaries
+					extentstart = Line2D.GetIntersectionPoint(left, current, false);
+					if(extentstart.y > General.Map.Config.TopBoundary)
+						extentstart = Line2D.GetIntersectionPoint(top, current, false);
+
+					// End point can hit right or bottom boundaries
+					extentend = Line2D.GetIntersectionPoint(right, current, false);
+					if(extentend.y < General.Map.Config.BottomBoundary)
+						extentend = Line2D.GetIntersectionPoint(bottom, current, false);
+				}
+
+				lines[4] = new Line3D(extentstart, extentend, c, false);
+
+				// Render them
+				renderer.RenderArrows(lines);
+
+				// Update horiz/vert length labels
+				if(guidelabels != null)
+				{
+					guidelabels[0].Move(tr, new Vector2D(tr.x, bl.y));
+					guidelabels[1].Move(new Vector2D(bl.x, tr.y), tr);
+					guidelabels[2].Move(new Vector2D(tr.x, bl.y), bl);
+					guidelabels[3].Move(bl, new Vector2D(bl.x, tr.y));
+				}
+			}
+			// Render horizontal line + 2 vertical guidelines
+			else if(end.x != start.x)
+			{
+				Line3D l = new Line3D(new Vector2D(General.Map.Config.LeftBoundary, end.y), new Vector2D(General.Map.Config.RightBoundary, end.y), c, false);
+				Line3D gs = new Line3D(new Vector2D(start.x, General.Map.Config.TopBoundary), new Vector2D(start.x, General.Map.Config.BottomBoundary), c, false);
+				Line3D ge = new Line3D(new Vector2D(end.x, General.Map.Config.TopBoundary), new Vector2D(end.x, General.Map.Config.BottomBoundary), c, false);
+				renderer.RenderArrows(new List<Line3D> { l, gs, ge });
+			}
+			// Render vertical line + 2 horizontal guidelines
+			else if(end.y != start.y)
+			{
+				Line3D l = new Line3D(new Vector2D(end.x, General.Map.Config.TopBoundary), new Vector2D(end.x, General.Map.Config.BottomBoundary), c, false);
+				Line3D gs = new Line3D(new Vector2D(General.Map.Config.LeftBoundary, start.y), new Vector2D(General.Map.Config.RightBoundary, start.y), c, false);
+				Line3D ge = new Line3D(new Vector2D(General.Map.Config.LeftBoundary, end.y), new Vector2D(General.Map.Config.RightBoundary, end.y), c, false);
+				renderer.RenderArrows(new List<Line3D> {l, gs, ge});
+			}
+			// Start and end match. Render a cross
+			else
+			{
+				Line3D gs = new Line3D(new Vector2D(General.Map.Config.LeftBoundary, start.y), new Vector2D(General.Map.Config.RightBoundary, start.y), c, false);
+				Line3D ge = new Line3D(new Vector2D(start.x, General.Map.Config.TopBoundary), new Vector2D(start.x, General.Map.Config.BottomBoundary), c, false);
+				renderer.RenderArrows(new List<Line3D> { gs, ge });
+			}
 		}
 
 		//mxd
@@ -889,7 +911,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		private void OnShowGuidelinesChanged(object value, EventArgs e)
+		protected void OnShowGuidelinesChanged(object value, EventArgs e)
 		{
 			showguidelines = (bool)value;
 			General.Interface.RedrawDisplay();

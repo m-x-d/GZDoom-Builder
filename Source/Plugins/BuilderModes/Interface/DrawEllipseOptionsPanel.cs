@@ -7,6 +7,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	{
 		public event EventHandler OnValueChanged;
 		public event EventHandler OnContinuousDrawingChanged;
+		public event EventHandler OnShowGuidelinesChanged;
+
 		private bool blockevents;
 
 		public int Spikiness { get { return (int)spikiness.Value; } set { blockevents = true; spikiness.Value = value; blockevents = false; } }
@@ -17,6 +19,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public int MaxSpikiness { get { return (int)spikiness.Maximum; } set { spikiness.Maximum = value; } }
 		public int MinSpikiness { get { return (int)spikiness.Minimum; } set { spikiness.Minimum = value; } }
 		public bool ContinuousDrawing { get { return continuousdrawing.Checked; } set { continuousdrawing.Checked = value; } }
+		public bool ShowGuidelines { get { return showguidelines.Checked; } set { showguidelines.Checked = value; } }
 		
 		public DrawEllipseOptionsPanel() 
 		{
@@ -30,6 +33,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			angle.ValueChanged += ValueChanged;
 
 			General.Interface.AddButton(continuousdrawing);
+			General.Interface.AddButton(showguidelines);
 			General.Interface.AddButton(toolStripSeparator1);
 			General.Interface.AddButton(subdivslabel);
 			General.Interface.AddButton(subdivs);
@@ -50,6 +54,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.RemoveButton(subdivs);
 			General.Interface.RemoveButton(subdivslabel);
 			General.Interface.RemoveButton(toolStripSeparator1);
+			General.Interface.RemoveButton(showguidelines);
 			General.Interface.RemoveButton(continuousdrawing);
 		}
 
@@ -74,6 +79,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private void continuousdrawing_CheckedChanged(object sender, EventArgs e)
 		{
 			if(OnContinuousDrawingChanged != null) OnContinuousDrawingChanged(continuousdrawing.Checked, EventArgs.Empty);
+		}
+
+		private void showguidelines_CheckedChanged(object sender, EventArgs e)
+		{
+			if(OnShowGuidelinesChanged != null) OnShowGuidelinesChanged(showguidelines.Checked, EventArgs.Empty);
 		}
 	}
 }

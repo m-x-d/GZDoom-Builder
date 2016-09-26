@@ -227,6 +227,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					UpdateReferencePoints(points[0], curp);
 					List<Vector2D[]> shapes = GetShapes(start, end);
 
+					// Render guidelines
+					if(showguidelines)
+						RenderGuidelines(start, end, General.Colors.Guideline.WithAlpha(80));
+
 					//render shape
 					foreach(Vector2D[] shape in shapes) 
 					{
@@ -242,11 +246,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 
 					//and labels
-					Vector2D[] labelCoords = new[] { start, new Vector2D(end.x, start.y), end, new Vector2D(start.x, end.y), start };
-					for(int i = 1; i < 5; i++) 
+					if(width == 0 || height == 0)
 					{
-						labels[i - 1].Move(labelCoords[i], labelCoords[i - 1]);
-						renderer.RenderText(labels[i - 1].TextLabel);
+						// Render label for line
+						labels[0].Move(start, end);
+						renderer.RenderText(labels[0].TextLabel);
+					}
+					else
+					{
+						// Render labels for grid
+						Vector2D[] labelCoords = { start, new Vector2D(end.x, start.y), end, new Vector2D(start.x, end.y), start };
+						for(int i = 1; i < 5; i++)
+						{
+							labels[i - 1].Move(labelCoords[i], labelCoords[i - 1]);
+							renderer.RenderText(labels[i - 1].TextLabel);
+						}
 					}
 
 					//render hint
@@ -512,9 +526,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			panel.OnValueChanged += OptionsPanelOnValueChanged;
 			panel.OnGridLockModeChanged += OptionsPanelOnGridLockChanged;
 			panel.OnContinuousDrawingChanged += OnContinuousDrawingChanged;
+			panel.OnShowGuidelinesChanged += OnShowGuidelinesChanged;
 
 			// Needs to be set after adding the OnContinuousDrawingChanged event...
 			panel.ContinuousDrawing = General.Settings.ReadPluginSetting("drawgridmode.continuousdrawing", false);
+			panel.ShowGuidelines = General.Settings.ReadPluginSetting("drawgridmode.showguidelines", false);
 		}
 
 		protected override void AddInterface()
@@ -535,6 +551,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Settings.WritePluginSetting("drawgridmode.horizontalinterpolation", (int)horizontalinterpolation);
 			General.Settings.WritePluginSetting("drawgridmode.verticalinterpolation", (int)verticalinterpolation);
 			General.Settings.WritePluginSetting("drawgridmode.continuousdrawing", panel.ContinuousDrawing);
+			General.Settings.WritePluginSetting("drawgridmode.showguidelines", panel.ShowGuidelines);
 
 			// Remove docker
 			General.Interface.RemoveDocker(docker);

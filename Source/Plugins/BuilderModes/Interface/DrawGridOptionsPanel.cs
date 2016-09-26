@@ -10,6 +10,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public event EventHandler OnValueChanged;
 		public event EventHandler OnGridLockModeChanged;
 		public event EventHandler OnContinuousDrawingChanged;
+		public event EventHandler OnShowGuidelinesChanged;
+
 		private bool blockevents;
 
 		public bool Triangulate { get { return triangulate.Checked; } set { blockevents = true; triangulate.Checked = value; blockevents = false; } }
@@ -19,6 +21,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public int VerticalSlices { get { return (int)slicesV.Value; } set { blockevents = true; slicesV.Value = value; blockevents = false; } }
 		public int MaxVerticalSlices { get { return (int)slicesV.Maximum; } set { slicesV.Maximum = value; } }
 		public bool ContinuousDrawing { get { return continuousdrawing.Checked; } set { continuousdrawing.Checked = value; } }
+		public bool ShowGuidelines { get { return showguidelines.Checked; } set { showguidelines.Checked = value; } }
+
 		public InterpolationMode HorizontalInterpolationMode 
 		{
 			get
@@ -88,6 +92,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private void continuousdrawing_CheckedChanged(object sender, EventArgs e)
 		{
 			if(OnContinuousDrawingChanged != null) OnContinuousDrawingChanged(continuousdrawing.Checked, EventArgs.Empty);
+		}
+
+		private void showguidelines_CheckedChanged(object sender, EventArgs e)
+		{
+			if(OnShowGuidelinesChanged != null) OnShowGuidelinesChanged(showguidelines.Checked, EventArgs.Empty);
 		}
 	}
 }

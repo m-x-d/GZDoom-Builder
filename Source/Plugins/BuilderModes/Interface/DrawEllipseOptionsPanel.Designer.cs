@@ -38,6 +38,7 @@
 			this.anglelabel = new System.Windows.Forms.ToolStripLabel();
 			this.angle = new CodeImp.DoomBuilder.Controls.ToolStripNumericUpDown();
 			this.reset = new System.Windows.Forms.ToolStripButton();
+			this.showguidelines = new System.Windows.Forms.ToolStripButton();
 			this.toolStrip1.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -45,6 +46,7 @@
 			// 
 			this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.continuousdrawing,
+            this.showguidelines,
             this.toolStripSeparator1,
             this.subdivslabel,
             this.subdivs,
@@ -55,7 +57,7 @@
             this.reset});
 			this.toolStrip1.Location = new System.Drawing.Point(0, 0);
 			this.toolStrip1.Name = "toolStrip1";
-			this.toolStrip1.Size = new System.Drawing.Size(582, 25);
+			this.toolStrip1.Size = new System.Drawing.Size(646, 25);
 			this.toolStrip1.TabIndex = 6;
 			this.toolStrip1.Text = "toolStrip1";
 			// 
@@ -171,13 +173,24 @@
 			this.reset.Text = "Reset";
 			this.reset.Click += new System.EventHandler(this.reset_Click);
 			// 
+			// showguidelines
+			// 
+			this.showguidelines.CheckOnClick = true;
+			this.showguidelines.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.Guidelines;
+			this.showguidelines.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.showguidelines.Margin = new System.Windows.Forms.Padding(2, 1, 0, 2);
+			this.showguidelines.Name = "showguidelines";
+			this.showguidelines.Size = new System.Drawing.Size(82, 22);
+			this.showguidelines.Text = "Guidelines";
+			this.showguidelines.CheckedChanged += new System.EventHandler(this.showguidelines_CheckedChanged);
+			// 
 			// DrawEllipseOptionsPanel
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.Controls.Add(this.toolStrip1);
 			this.Name = "DrawEllipseOptionsPanel";
-			this.Size = new System.Drawing.Size(582, 60);
+			this.Size = new System.Drawing.Size(646, 60);
 			this.toolStrip1.ResumeLayout(false);
 			this.toolStrip1.PerformLayout();
 			this.ResumeLayout(false);
@@ -197,5 +210,6 @@
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
 		private System.Windows.Forms.ToolStripLabel anglelabel;
 		private CodeImp.DoomBuilder.Controls.ToolStripNumericUpDown angle;
+		private System.Windows.Forms.ToolStripButton showguidelines;
 	}
 }
