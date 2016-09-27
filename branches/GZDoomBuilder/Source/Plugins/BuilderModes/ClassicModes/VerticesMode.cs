@@ -54,6 +54,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		// Interface
 		private bool editpressed;
+		private bool selectionfromhighlight; //mxd
 
 		#endregion
 
@@ -271,12 +272,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(!highlighted.Selected && (BuilderPlug.Me.AutoClearSelection || (General.Map.Map.SelectedVerticessCount == 0)))
 				{
 					// Make this the only selection
+					selectionfromhighlight = true; //mxd
 					General.Map.Map.ClearSelectedVertices();
 					highlighted.Selected = true;
+					UpdateSelectionInfo(); //mxd
 					General.Interface.RedrawDisplay();
-
-					//mxd
-					General.Interface.DisplayStatus(StatusType.Selection, "1 vertex selected.");
 				}
 
 				// Update display
@@ -385,7 +385,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						General.Interface.OnEditFormValuesChanged -= vertexEditForm_OnValuesChanged;
 
 						// When a single vertex was selected, deselect it now
-						if(selected.Count == 1) 
+						if(selected.Count == 1 && selectionfromhighlight) 
 						{
 							General.Map.Map.ClearSelectedVertices();
 						} 
@@ -393,14 +393,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						{ 
 							foreach(Vertex v in selected) v.Selected = true;
 						}
+
+						// Update entire display
+						UpdateSelectionInfo(); //mxd
 						General.Interface.RedrawDisplay();
 					}
 				}
-
-				UpdateSelectionInfo(); //mxd
 			}
 
 			editpressed = false;
+			selectionfromhighlight = false; //mxd
 			base.OnEditEnd();
 		}
 

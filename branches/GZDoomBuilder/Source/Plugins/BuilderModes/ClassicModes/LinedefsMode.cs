@@ -67,6 +67,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		// Interface
 		private bool editpressed;
+		private bool selectionfromhighlight; //mxd
 		
 		#endregion
 
@@ -453,8 +454,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			base.UpdateSelectionInfo();
 			
-			// Dispose old labels
-			if(labels != null) foreach(SelectionLabel l in labels.Values) l.Dispose();
+			if(labels != null)
+			{
+				// Dispose old labels
+				foreach(SelectionLabel l in labels.Values) l.Dispose();
+				
+				// Don't show lables for selected-from-highlight item
+				if(selectionfromhighlight)
+				{
+					labels.Clear();
+					return;
+				}
+			}
 
 			// Make text labels for selected linedefs
 			ICollection<Linedef> orderedselection = General.Map.Map.GetSelectedLinedefs(true);
@@ -765,8 +776,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(!highlighted.Selected && (BuilderPlug.Me.AutoClearSelection || (General.Map.Map.SelectedLinedefsCount == 0)))
 				{
 					// Make this the only selection
+					selectionfromhighlight = true; //mxd
 					General.Map.Map.ClearSelectedLinedefs();
 					highlighted.Selected = true;
+					UpdateSelectionInfo(); //mxd
 					General.Interface.RedrawDisplay();
 				}
 
@@ -815,7 +828,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						General.Map.Map.Update();
 						
 						// When a single line was selected, deselect it now
-						if(selected.Count == 1) 
+						if(selected.Count == 1 && selectionfromhighlight) 
 						{
 							General.Map.Map.ClearSelectedLinedefs();
 						} 
@@ -826,14 +839,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 						// Update entire display
 						General.Map.Renderer2D.UpdateExtraFloorFlag(); //mxd
+						UpdateSelectionInfo(); //mxd
 						General.Interface.RedrawDisplay();
 					}
 				}
-
-				UpdateSelectionInfo(); //mxd
 			}
 
 			editpressed = false;
+			selectionfromhighlight = false; //mxd
 			base.OnEditEnd();
 		}
 
