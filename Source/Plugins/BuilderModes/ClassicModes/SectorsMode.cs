@@ -58,6 +58,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		// Interface
 		private bool editpressed;
+		private bool selectionfromhighlight; //mxd
 
 		// Labels
 		private Dictionary<Sector, TextLabel[]> labels;
@@ -557,6 +558,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This updates labels from the selected sectors
 		private void UpdateSelectedLabels()
 		{
+			// Don't show lables for selected-from-highlight item
+			if(selectionfromhighlight) return;
+			
 			// Go for all labels in all selected sectors
 			ICollection<Sector> orderedselection = General.Map.Map.GetSelectedSectors(true);
 			PixelColor c = (General.Settings.UseHighlight ? General.Colors.Highlight : General.Colors.Selection); //mxd
@@ -923,11 +927,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(!highlighted.Selected && (BuilderPlug.Me.AutoClearSelection || (General.Map.Map.SelectedSectorsCount == 0)))
 				{
 					// Make this the only selection
+					selectionfromhighlight = true; //mxd
 					General.Map.Map.ClearSelectedSectors();
 					General.Map.Map.ClearSelectedLinedefs();
 					SelectSector(highlighted, true, false);
 					UpdateSelectedLabels(); //mxd
 					UpdateOverlaySurfaces(); //mxd
+					UpdateSelectionInfo(); //mxd
 					General.Interface.RedrawDisplay();
 				}
 
@@ -977,7 +983,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						General.Map.Renderer2D.UpdateExtraFloorFlag(); //mxd
 
 						// When a single sector was selected, deselect it now
-						if(selected.Count == 1) 
+						if(selected.Count == 1 && selectionfromhighlight) 
 						{
 							General.Map.Map.ClearSelectedSectors();
 							General.Map.Map.ClearSelectedLinedefs();
@@ -1007,6 +1013,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			editpressed = false;
+			selectionfromhighlight = false; //mxd
 			base.OnEditEnd();
 		}
 

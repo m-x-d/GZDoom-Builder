@@ -62,6 +62,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private bool editpressed;
 		private bool thinginserted;
 		private bool awaitingMouseClick; //mxd
+		private bool selectionfromhighlight; //mxd
 
 		//mxd. Event lines
 		private List<Line3D> persistenteventlines;
@@ -477,8 +478,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(!highlighted.Selected && (BuilderPlug.Me.AutoClearSelection || (General.Map.Map.SelectedThingsCount == 0)))
 				{
 					// Make this the only selection
+					selectionfromhighlight = true; //mxd
 					General.Map.Map.ClearSelectedThings();
 					highlighted.Selected = true;
+					UpdateSelectionInfo(); //mxd
 					General.Interface.RedrawDisplay();
 				}
 
@@ -538,7 +541,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							General.Interface.OnEditFormValuesChanged -= thingEditForm_OnValuesChanged;
 
 							// When a single thing was selected, deselect it now
-							if(selected.Count == 1) 
+							if(selected.Count == 1 && selectionfromhighlight) 
 							{
 								General.Map.Map.ClearSelectedThings();
 							} 
@@ -561,6 +564,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			editpressed = false;
+			selectionfromhighlight = false; //mxd
 			base.OnEditEnd();
 		}
 
@@ -1000,8 +1004,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			base.UpdateSelectionInfo();
 			
-			// Dispose old labels
-			if(labels != null) foreach(TextLabel l in labels.Values) l.Dispose();
+			if(labels != null)
+			{
+				// Dispose old labels
+				foreach(TextLabel l in labels.Values) l.Dispose();
+
+				// Don't show lables for selected-from-highlight item
+				if(selectionfromhighlight)
+				{
+					labels.Clear();
+					return;
+				}
+			}
 
 			// Make text labels for selected linedefs
 			ICollection<Thing> orderedselection = General.Map.Map.GetSelectedThings(true);
