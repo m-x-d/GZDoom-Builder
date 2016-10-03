@@ -64,11 +64,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private bool awaitingMouseClick; //mxd
 		private bool selectionfromhighlight; //mxd
 
-		//mxd. Event lines
+		//mxd. Helper shapes
 		private List<Line3D> persistenteventlines;
-
-		//mxd. Dynamic light shapes
 		private List<Line3D> dynamiclightshapes;
+		private List<Line3D> ambientsoundshapes;
 
 		//mxd. Text labels
 		private Dictionary<Thing, TextLabel> labels;
@@ -157,6 +156,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.SeparatorSectors1); //mxd
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.AlignThingsToWall); //mxd
+
+			//mxd. Add radii buttons/items...
+			General.Interface.AddButton(BuilderPlug.Me.MenusForm.ButtonLightRadii, ToolbarSection.Helpers);
+			General.Interface.AddButton(BuilderPlug.Me.MenusForm.ButtonSoundRadii, ToolbarSection.Helpers);
+			General.Interface.AddMenu(BuilderPlug.Me.MenusForm.ItemLightRadii, MenuSection.ViewHelpers);
+			General.Interface.AddMenu(BuilderPlug.Me.MenusForm.ItemSoundRadii, MenuSection.ViewHelpers);
 			General.Interface.EndToolbarUpdate(); //mxd
 			
 			// Convert geometry selection to linedefs selection
@@ -183,6 +188,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.ViewSelectionEffects); //mxd
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.SeparatorSectors1); //mxd
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.AlignThingsToWall); //mxd
+
+			//mxd. Remove radii buttons/items...
+			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.ButtonLightRadii);
+			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.ButtonSoundRadii);
+			General.Interface.RemoveMenu(BuilderPlug.Me.MenusForm.ItemLightRadii);
+			General.Interface.RemoveMenu(BuilderPlug.Me.MenusForm.ItemSoundRadii);
 			General.Interface.EndToolbarUpdate(); //mxd
 
 			//mxd. Do some highlight management...
@@ -245,10 +256,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(General.Settings.GZShowEventLines) eventlines.AddRange(persistenteventlines);
 
 				//mxd. Dynamic light radii
-				if(!General.Map.DOOM && General.Settings.GZDrawLightsMode != LightRenderMode.NONE)
+				if(BuilderPlug.Me.ShowLightRadii)
 				{
 					eventlines.AddRange(dynamiclightshapes);
 					if(highlighted != null) eventlines.AddRange(GetDynamicLightShapes(new List<Thing> { highlighted } ));
+				}
+
+				//mxd. Ambient sound radii
+				if(BuilderPlug.Me.ShowSoundRadii)
+				{
+					eventlines.AddRange(ambientsoundshapes);
+					if(highlighted != null) eventlines.AddRange(GetAmbientSoundShapes(new List<Thing> { highlighted }));
 				}
 
 				//mxd
@@ -1059,12 +1077,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Update light radii
 			dynamiclightshapes = GetDynamicLightShapes(General.Map.Map.Things);
+
+			// Update ambient sound radii
+			ambientsoundshapes = GetAmbientSoundShapes(General.Map.Map.Things);
 		}
 
 		//mxd
 		private List<Line3D> GetDynamicLightShapes(IEnumerable<Thing> things)
 		{
 			List<Line3D> circles = new List<Line3D>();
+			if(General.Map.DOOM) return circles;
+
 			const int linealpha = 128;
 			foreach(Thing t in things)
 			{
@@ -1135,6 +1158,31 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			// Done
+			return circles;
+		}
+
+		//mxd
+		private List<Line3D> GetAmbientSoundShapes(IEnumerable<Thing> things)
+		{
+			List<Line3D> circles = new List<Line3D>();
+			const int linealpha = 128;
+			foreach(Thing t in things)
+			{
+				ThingTypeInfo info = General.Map.Data.GetThingInfoEx(t.Type);
+				if(info != null && info.AmbientSound != null)
+				{
+					// Determine color
+					PixelColor color = (t == highlighted ? General.Colors.Highlight.WithAlpha(linealpha) : t.Color.WithAlpha(linealpha));
+
+					// Add lines if visible
+					const int numsides = 24;
+					if(info.AmbientSound.MinimumRadius > 0)
+						circles.AddRange(LinksCollector.MakeCircleLines(t.Position, color, info.AmbientSound.MinimumRadius, numsides));
+					if(info.AmbientSound.MaximumRadius > 0)
+						circles.AddRange(LinksCollector.MakeCircleLines(t.Position, color, info.AmbientSound.MaximumRadius, numsides));
+				}
+			}
+
 			return circles;
 		}
 

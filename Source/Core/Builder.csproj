@@ -898,6 +898,7 @@
     <Compile Include="Rendering\VisualVertexHandle.cs" />
     <Compile Include="Geometry\Line3D.cs" />
     <Compile Include="Data\Scripting\ScriptHandlerAttribute.cs" />
+    <Compile Include="ZDoom\AmbientSoundInfo.cs" />
     <Compile Include="ZDoom\DecorateCategoryInfo.cs" />
     <Compile Include="ZDoom\LockDefsParser.cs" />
     <Compile Include="ZDoom\Scripting\DecorateParserSE.cs" />
@@ -1045,6 +1046,7 @@
     <Compile Include="ZDoom\ReverbsParser.cs" />
     <Compile Include="ZDoom\SndInfoParser.cs" />
     <Compile Include="ZDoom\SndSeqParser.cs" />
+    <Compile Include="ZDoom\SoundInfo.cs" />
     <Compile Include="ZDoom\StateGoto.cs" />
     <Compile Include="ZDoom\TerrainParser.cs" />
     <Compile Include="ZDoom\TexturesParser.cs" />

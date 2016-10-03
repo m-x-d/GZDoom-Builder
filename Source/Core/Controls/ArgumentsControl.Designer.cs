@@ -28,19 +28,19 @@
 			this.components = new System.ComponentModel.Container();
 			this.splitcontainer = new System.Windows.Forms.SplitContainer();
 			this.cbuseargstr = new System.Windows.Forms.CheckBox();
+			this.scriptnames = new CodeImp.DoomBuilder.Controls.ColoredComboBox();
+			this.scriptnumbers = new CodeImp.DoomBuilder.Controls.ColoredComboBox();
 			this.arg0label = new System.Windows.Forms.Label();
 			this.arg1label = new System.Windows.Forms.Label();
 			this.arg2label = new System.Windows.Forms.Label();
-			this.arg3label = new System.Windows.Forms.Label();
-			this.arg4label = new System.Windows.Forms.Label();
-			this.tooltip = new System.Windows.Forms.ToolTip(this.components);
-			this.scriptnames = new CodeImp.DoomBuilder.Controls.ColoredComboBox();
-			this.scriptnumbers = new CodeImp.DoomBuilder.Controls.ColoredComboBox();
 			this.arg0 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
 			this.arg1 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
 			this.arg2 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
+			this.arg3label = new System.Windows.Forms.Label();
+			this.arg4label = new System.Windows.Forms.Label();
 			this.arg3 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
 			this.arg4 = new CodeImp.DoomBuilder.Controls.ArgumentBox();
+			this.tooltip = new System.Windows.Forms.ToolTip(this.components);
 			this.splitcontainer.Panel1.SuspendLayout();
 			this.splitcontainer.Panel2.SuspendLayout();
 			this.splitcontainer.SuspendLayout();
@@ -49,6 +49,7 @@
 			// splitcontainer
 			// 
 			this.splitcontainer.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.splitcontainer.IsSplitterFixed = true;
 			this.splitcontainer.Location = new System.Drawing.Point(0, 0);
 			this.splitcontainer.Name = "splitcontainer";
 			// 
@@ -86,6 +87,34 @@
 			this.cbuseargstr.UseVisualStyleBackColor = true;
 			this.cbuseargstr.CheckedChanged += new System.EventHandler(this.cbuseargstr_CheckedChanged);
 			// 
+			// scriptnames
+			// 
+			this.scriptnames.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.scriptnames.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+			this.scriptnames.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+			this.scriptnames.BackColor = System.Drawing.Color.Honeydew;
+			this.scriptnames.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+			this.scriptnames.FormattingEnabled = true;
+			this.scriptnames.Location = new System.Drawing.Point(237, 104);
+			this.scriptnames.Name = "scriptnames";
+			this.scriptnames.Size = new System.Drawing.Size(110, 21);
+			this.scriptnames.TabIndex = 41;
+			this.scriptnames.TextChanged += new System.EventHandler(this.scriptnames_TextChanged);
+			// 
+			// scriptnumbers
+			// 
+			this.scriptnumbers.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.scriptnumbers.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+			this.scriptnumbers.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+			this.scriptnumbers.BackColor = System.Drawing.Color.LemonChiffon;
+			this.scriptnumbers.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+			this.scriptnumbers.FormattingEnabled = true;
+			this.scriptnumbers.Location = new System.Drawing.Point(237, 80);
+			this.scriptnumbers.Name = "scriptnumbers";
+			this.scriptnumbers.Size = new System.Drawing.Size(110, 21);
+			this.scriptnumbers.TabIndex = 40;
+			this.scriptnumbers.TextChanged += new System.EventHandler(this.scriptnumbers_TextChanged);
+			// 
 			// arg0label
 			// 
 			this.arg0label.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -119,56 +148,6 @@
 			this.arg2label.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			this.arg2label.UseMnemonic = false;
 			// 
-			// arg3label
-			// 
-			this.arg3label.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.arg3label.Location = new System.Drawing.Point(55, 8);
-			this.arg3label.Name = "arg3label";
-			this.arg3label.Size = new System.Drawing.Size(179, 14);
-			this.arg3label.TabIndex = 44;
-			this.arg3label.Text = "Argument 4:";
-			this.arg3label.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			this.arg3label.UseMnemonic = false;
-			// 
-			// arg4label
-			// 
-			this.arg4label.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.arg4label.Location = new System.Drawing.Point(55, 33);
-			this.arg4label.Name = "arg4label";
-			this.arg4label.Size = new System.Drawing.Size(179, 14);
-			this.arg4label.TabIndex = 46;
-			this.arg4label.Text = "Argument 5:";
-			this.arg4label.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			this.arg4label.UseMnemonic = false;
-			// 
-			// scriptnames
-			// 
-			this.scriptnames.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.scriptnames.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
-			this.scriptnames.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-			this.scriptnames.BackColor = System.Drawing.Color.Honeydew;
-			this.scriptnames.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-			this.scriptnames.FormattingEnabled = true;
-			this.scriptnames.Location = new System.Drawing.Point(237, 104);
-			this.scriptnames.Name = "scriptnames";
-			this.scriptnames.Size = new System.Drawing.Size(110, 21);
-			this.scriptnames.TabIndex = 41;
-			this.scriptnames.TextChanged += new System.EventHandler(this.scriptnames_TextChanged);
-			// 
-			// scriptnumbers
-			// 
-			this.scriptnumbers.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-			this.scriptnumbers.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
-			this.scriptnumbers.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-			this.scriptnumbers.BackColor = System.Drawing.Color.LemonChiffon;
-			this.scriptnumbers.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-			this.scriptnumbers.FormattingEnabled = true;
-			this.scriptnumbers.Location = new System.Drawing.Point(237, 80);
-			this.scriptnumbers.Name = "scriptnumbers";
-			this.scriptnumbers.Size = new System.Drawing.Size(110, 21);
-			this.scriptnumbers.TabIndex = 40;
-			this.scriptnumbers.TextChanged += new System.EventHandler(this.scriptnumbers_TextChanged);
-			// 
 			// arg0
 			// 
 			this.arg0.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -192,6 +171,28 @@
 			this.arg2.Name = "arg2";
 			this.arg2.Size = new System.Drawing.Size(110, 24);
 			this.arg2.TabIndex = 35;
+			// 
+			// arg3label
+			// 
+			this.arg3label.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.arg3label.Location = new System.Drawing.Point(55, 8);
+			this.arg3label.Name = "arg3label";
+			this.arg3label.Size = new System.Drawing.Size(179, 14);
+			this.arg3label.TabIndex = 44;
+			this.arg3label.Text = "Argument 4:";
+			this.arg3label.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			this.arg3label.UseMnemonic = false;
+			// 
+			// arg4label
+			// 
+			this.arg4label.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+			this.arg4label.Location = new System.Drawing.Point(55, 33);
+			this.arg4label.Name = "arg4label";
+			this.arg4label.Size = new System.Drawing.Size(179, 14);
+			this.arg4label.TabIndex = 46;
+			this.arg4label.Text = "Argument 5:";
+			this.arg4label.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			this.arg4label.UseMnemonic = false;
 			// 
 			// arg3
 			// 

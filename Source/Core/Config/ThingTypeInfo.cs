@@ -93,6 +93,9 @@ namespace CodeImp.DoomBuilder.Config
 		private bool rollsprite;
 		private bool rollcenter;
 		private bool dontflip;
+
+		//mxd. Ambinent sound info
+		private AmbientSoundInfo ambientsound;
 		
 		#endregion
 
@@ -135,6 +138,9 @@ namespace CodeImp.DoomBuilder.Config
 		public bool RollSprite { get { return rollsprite; } }
 		public bool RollCenter { get { return rollcenter; } }
 		public bool DontFlip { get { return dontflip; } }
+
+		//mxd. Ambinent sound info
+		public AmbientSoundInfo AmbientSound { get { return ambientsound; } internal set { ambientsound = value; } }
 
 		#endregion
 

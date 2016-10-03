@@ -128,6 +128,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private bool lockSectorTextureOffsetsWhileDragging; //mxd
 		private bool syncthingedit; //mxd
 		private bool alphabasedtexturehighlighting; //mxd
+		private bool showlightradii; //mxd
+		private bool showsoundradii; //mxd
 		
 		#endregion
 
@@ -178,6 +180,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public bool LockSectorTextureOffsetsWhileDragging { get { return lockSectorTextureOffsetsWhileDragging; } internal set { lockSectorTextureOffsetsWhileDragging = value; } } //mxd
 		public bool SyncronizeThingEdit { get { return syncthingedit; } internal set { syncthingedit = value; } } //mxd
 		public bool AlphaBasedTextureHighlighting { get { return alphabasedtexturehighlighting; } internal set { alphabasedtexturehighlighting = value; } } //mxd
+		public bool ShowLightRadii { get { return showlightradii; } internal set { showlightradii = value; } } //mxd
+		public bool ShowSoundRadii { get { return showsoundradii; } internal set { showsoundradii = value; } } //mxd
 
 		//mxd. "Make Door" action persistent settings
 		internal MakeDoorSettings MakeDoor;
@@ -205,6 +209,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			menusform.SyncronizeThingEditButton.Checked = syncthingedit; //mxd
 			menusform.SyncronizeThingEditSectorsItem.Checked = syncthingedit; //mxd
 			menusform.SyncronizeThingEditLinedefsItem.Checked = syncthingedit; //mxd
+			menusform.ItemLightRadii.Checked = showlightradii;
+			menusform.ButtonLightRadii.Checked = showlightradii;
+			menusform.ItemSoundRadii.Checked = showsoundradii;
+			menusform.ButtonSoundRadii.Checked = showsoundradii;
 			
 			// Load Undo\Redo docker
 			undoredopanel = new UndoRedoPanel();
@@ -289,6 +297,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			viewselectioneffects = General.Settings.ReadPluginSetting("viewselectioneffects", true);
 			syncthingedit = General.Settings.ReadPluginSetting("syncthingedit", true);
 			alphabasedtexturehighlighting = General.Settings.ReadPluginSetting("alphabasedtexturehighlighting", true);
+			showlightradii = General.Settings.ReadPluginSetting("showlightradii", true);
+			showsoundradii = General.Settings.ReadPluginSetting("showsoundradii", true);
 		}
 
 		//mxd. Save settings, which can be changed via UI
@@ -299,6 +309,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Settings.WritePluginSetting("viewselectioneffects", viewselectioneffects);
 			General.Settings.WritePluginSetting("syncthingedit", syncthingedit);
 			General.Settings.WritePluginSetting("alphabasedtexturehighlighting", alphabasedtexturehighlighting);
+			General.Settings.WritePluginSetting("showlightradii", showlightradii);
+			General.Settings.WritePluginSetting("showsoundradii", showsoundradii);
 		}
 
 		//mxd. These should be reset when changing maps

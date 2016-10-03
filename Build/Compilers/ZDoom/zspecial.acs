@@ -400,6 +400,7 @@ special
 	-200:CheckClass(1),
 	-201:DamageActor(6), // [arookas]
 	-202:SetActorFlag(3),
+	-203:SetTranslation(2),
 	
 	// ZDaemon's
 	-19620:GetTeamScore(1),

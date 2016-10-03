@@ -30,6 +30,7 @@ namespace CodeImp.DoomBuilder.Windows
 		Things,
 		Views,
 		Geometry,
+		Helpers, //mxd
 		Testing,
 		Custom,
 		Modes //mxd

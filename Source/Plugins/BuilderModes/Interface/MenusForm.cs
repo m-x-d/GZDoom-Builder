@@ -90,6 +90,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public ToolStripMenuItem SyncronizeThingEditLinedefsItem { get { return syncthingeditlinedefsitem; } } //mxd
 		public ToolStripButton MakeDoor { get { return buttonMakeDoor; } } //mxd
 
+		//mxd. Thing mode radii buttons
+		public ToolStripMenuItem ItemLightRadii { get { return itemlightradii; } }
+		public ToolStripMenuItem ItemSoundRadii { get { return itemsoundradii; } }
+		public ToolStripButton ButtonLightRadii { get { return buttonlightradii; } }
+		public ToolStripButton ButtonSoundRadii { get { return buttonsoundradii; } }
+
 		#endregion
 
 		#region ================== Constructor / Disposer
@@ -278,6 +284,28 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private void gradientMode_DropDownClosed(object sender, EventArgs e) 
 		{
 			General.Interface.FocusDisplay();
+		}
+
+		//mxd
+		private void buttonlightradii_Click(object sender, EventArgs e)
+		{
+			BuilderPlug.Me.ShowLightRadii = !BuilderPlug.Me.ShowLightRadii;
+			buttonlightradii.Checked = BuilderPlug.Me.ShowLightRadii;
+			itemlightradii.Checked = BuilderPlug.Me.ShowLightRadii;
+
+			General.Interface.DisplayStatus(StatusType.Info, "Light radii are " + (BuilderPlug.Me.ShowLightRadii ? "SHOWN" : "HIDDEN"));
+			General.Interface.RedrawDisplay();
+		}
+
+		//mxd
+		private void buttonsoundradii_Click(object sender, EventArgs e)
+		{
+			BuilderPlug.Me.ShowSoundRadii = !BuilderPlug.Me.ShowSoundRadii;
+			buttonsoundradii.Checked = BuilderPlug.Me.ShowSoundRadii;
+			itemsoundradii.Checked = BuilderPlug.Me.ShowSoundRadii;
+
+			General.Interface.DisplayStatus(StatusType.Info, "Sound radii are " + (BuilderPlug.Me.ShowSoundRadii ? "SHOWN" : "HIDDEN"));
+			General.Interface.RedrawDisplay();
 		}
 
 		#endregion
