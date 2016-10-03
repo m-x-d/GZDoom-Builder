@@ -38,6 +38,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.selectdoublesideditem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
 			this.fliplinedefsitem = new System.Windows.Forms.ToolStripMenuItem();
+			this.alignlinedefsitem = new System.Windows.Forms.ToolStripMenuItem();
 			this.flipsidedefsitem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
 			this.curvelinedefsitem = new System.Windows.Forms.ToolStripMenuItem();
@@ -59,6 +60,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.mergesectorsitem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
 			this.flipsectorlinedefsitem = new System.Windows.Forms.ToolStripMenuItem();
+			this.alignsectorlinedefsitem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
 			this.makedooritem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
@@ -99,6 +101,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.syncthingteditbutton = new System.Windows.Forms.ToolStripButton();
 			this.buttonAlignThingsToWall = new System.Windows.Forms.ToolStripButton();
 			this.buttonTextureOffsetLock = new System.Windows.Forms.ToolStripButton();
+			this.buttonlightradii = new System.Windows.Forms.ToolStripButton();
+			this.buttonsoundradii = new System.Windows.Forms.ToolStripButton();
 			this.fileMenuStrip = new System.Windows.Forms.MenuStrip();
 			this.exportStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripMenuItem();
@@ -107,8 +111,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.itemcopyprops = new System.Windows.Forms.ToolStripMenuItem();
 			this.itempasteprops = new System.Windows.Forms.ToolStripMenuItem();
 			this.itempastepropsoptions = new System.Windows.Forms.ToolStripMenuItem();
-			this.alignsectorlinedefsitem = new System.Windows.Forms.ToolStripMenuItem();
-			this.alignlinedefsitem = new System.Windows.Forms.ToolStripMenuItem();
+			this.viewmenuitem = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemlightradii = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemsoundradii = new System.Windows.Forms.ToolStripMenuItem();
 			this.menustrip.SuspendLayout();
 			this.manualstrip.SuspendLayout();
 			this.fileMenuStrip.SuspendLayout();
@@ -209,6 +214,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.fliplinedefsitem.Tag = "fliplinedefs";
 			this.fliplinedefsitem.Text = "&Flip Linedefs";
 			this.fliplinedefsitem.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// alignlinedefsitem
+			// 
+			this.alignlinedefsitem.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.Flip;
+			this.alignlinedefsitem.Name = "alignlinedefsitem";
+			this.alignlinedefsitem.Size = new System.Drawing.Size(224, 22);
+			this.alignlinedefsitem.Tag = "alignlinedefs";
+			this.alignlinedefsitem.Text = "Align &Linedefs";
 			// 
 			// flipsidedefsitem
 			// 
@@ -388,6 +401,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.flipsectorlinedefsitem.Text = "&Flip Linedefs";
 			this.flipsectorlinedefsitem.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
+			// alignsectorlinedefsitem
+			// 
+			this.alignsectorlinedefsitem.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.Flip;
+			this.alignsectorlinedefsitem.Name = "alignsectorlinedefsitem";
+			this.alignsectorlinedefsitem.Size = new System.Drawing.Size(224, 22);
+			this.alignsectorlinedefsitem.Tag = "alignlinedefs";
+			this.alignsectorlinedefsitem.Text = "Align &Linedefs";
+			this.alignsectorlinedefsitem.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
 			// toolStripSeparator8
 			// 
 			this.toolStripSeparator8.Name = "toolStripSeparator8";
@@ -553,7 +575,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
             this.buttonMarqueSelectTouching,
             this.syncthingteditbutton,
             this.buttonAlignThingsToWall,
-            this.buttonTextureOffsetLock});
+            this.buttonTextureOffsetLock,
+            this.buttonlightradii,
+            this.buttonsoundradii});
 			this.manualstrip.Location = new System.Drawing.Point(0, 73);
 			this.manualstrip.Name = "manualstrip";
 			this.manualstrip.Size = new System.Drawing.Size(794, 25);
@@ -781,11 +805,34 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				"tant while sector is dragged";
 			this.buttonTextureOffsetLock.Click += new System.EventHandler(this.buttonTextureOffsetLock_Click);
 			// 
+			// buttonlightradii
+			// 
+			this.buttonlightradii.CheckOnClick = true;
+			this.buttonlightradii.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttonlightradii.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.LightRadius;
+			this.buttonlightradii.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttonlightradii.Name = "buttonlightradii";
+			this.buttonlightradii.Size = new System.Drawing.Size(23, 22);
+			this.buttonlightradii.Text = "Dynamic Light Radii";
+			this.buttonlightradii.Click += new System.EventHandler(this.buttonlightradii_Click);
+			// 
+			// buttonsoundradii
+			// 
+			this.buttonsoundradii.CheckOnClick = true;
+			this.buttonsoundradii.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttonsoundradii.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.SoundRadius;
+			this.buttonsoundradii.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttonsoundradii.Name = "buttonsoundradii";
+			this.buttonsoundradii.Size = new System.Drawing.Size(23, 22);
+			this.buttonsoundradii.Text = "Sound Radii";
+			this.buttonsoundradii.Click += new System.EventHandler(this.buttonsoundradii_Click);
+			// 
 			// fileMenuStrip
 			// 
 			this.fileMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.exportStripMenuItem,
-            this.editmenuitem});
+            this.editmenuitem,
+            this.viewmenuitem});
 			this.fileMenuStrip.Location = new System.Drawing.Point(0, 0);
 			this.fileMenuStrip.Name = "fileMenuStrip";
 			this.fileMenuStrip.Size = new System.Drawing.Size(794, 24);
@@ -851,22 +898,32 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.itempastepropsoptions.Text = "Paste Properties Special...";
 			this.itempastepropsoptions.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
-			// alignsectorlinedefsitem
+			// viewmenuitem
 			// 
-			this.alignsectorlinedefsitem.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.Flip;
-			this.alignsectorlinedefsitem.Name = "alignsectorlinedefsitem";
-			this.alignsectorlinedefsitem.Size = new System.Drawing.Size(224, 22);
-			this.alignsectorlinedefsitem.Tag = "alignlinedefs";
-			this.alignsectorlinedefsitem.Text = "Align &Linedefs";
-			this.alignsectorlinedefsitem.Click += new System.EventHandler(this.InvokeTaggedAction);
+			this.viewmenuitem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.itemlightradii,
+            this.itemsoundradii});
+			this.viewmenuitem.Name = "viewmenuitem";
+			this.viewmenuitem.Size = new System.Drawing.Size(44, 20);
+			this.viewmenuitem.Text = "View";
 			// 
-			// alignlinedefsitem
+			// itemlightradii
 			// 
-			this.alignlinedefsitem.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.Flip;
-			this.alignlinedefsitem.Name = "alignlinedefsitem";
-			this.alignlinedefsitem.Size = new System.Drawing.Size(224, 22);
-			this.alignlinedefsitem.Tag = "alignlinedefs";
-			this.alignlinedefsitem.Text = "Align &Linedefs";
+			this.itemlightradii.CheckOnClick = true;
+			this.itemlightradii.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.LightRadius;
+			this.itemlightradii.Name = "itemlightradii";
+			this.itemlightradii.Size = new System.Drawing.Size(212, 22);
+			this.itemlightradii.Text = "Show Dynamic Light Radii";
+			this.itemlightradii.Click += new System.EventHandler(this.buttonlightradii_Click);
+			// 
+			// itemsoundradii
+			// 
+			this.itemsoundradii.CheckOnClick = true;
+			this.itemsoundradii.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.SoundRadius;
+			this.itemsoundradii.Name = "itemsoundradii";
+			this.itemsoundradii.Size = new System.Drawing.Size(212, 22);
+			this.itemsoundradii.Text = "Show Sound Radii";
+			this.itemsoundradii.Click += new System.EventHandler(this.buttonsoundradii_Click);
 			// 
 			// MenusForm
 			// 
@@ -978,5 +1035,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private System.Windows.Forms.ToolStripSeparator separatorcopyprops;
 		private System.Windows.Forms.ToolStripMenuItem alignsectorlinedefsitem;
 		private System.Windows.Forms.ToolStripMenuItem alignlinedefsitem;
+		private System.Windows.Forms.ToolStripButton buttonlightradii;
+		private System.Windows.Forms.ToolStripButton buttonsoundradii;
+		private System.Windows.Forms.ToolStripMenuItem viewmenuitem;
+		private System.Windows.Forms.ToolStripMenuItem itemlightradii;
+		private System.Windows.Forms.ToolStripMenuItem itemsoundradii;
 	}
 }

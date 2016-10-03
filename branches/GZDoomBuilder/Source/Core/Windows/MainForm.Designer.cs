@@ -104,7 +104,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.separatorgeomerge = new System.Windows.Forms.ToolStripSeparator();
 			this.itemfullbrightness = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemtogglegrid = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
+			this.separatorhelpers = new System.Windows.Forms.ToolStripSeparator();
 			this.menuzoom = new System.Windows.Forms.ToolStripMenuItem();
 			this.item2zoom800 = new System.Windows.Forms.ToolStripMenuItem();
 			this.item2zoom400 = new System.Windows.Forms.ToolStripMenuItem();
@@ -789,7 +789,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.itemtogglesky,
             this.itemtoggleeventlines,
             this.itemtogglevisualverts,
-            this.toolStripSeparator4,
+            this.separatorhelpers,
             this.menuzoom,
             this.itemgotocoords,
             this.itemfittoscreen,
@@ -923,8 +923,8 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// toolStripSeparator4
 			// 
-			this.toolStripSeparator4.Name = "toolStripSeparator4";
-			this.toolStripSeparator4.Size = new System.Drawing.Size(212, 6);
+			this.separatorhelpers.Name = "separatorhelpers";
+			this.separatorhelpers.Size = new System.Drawing.Size(212, 6);
 			// 
 			// menuzoom
 			// 
@@ -2978,7 +2978,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel;
 		private System.Windows.Forms.ToolStrip modecontrolsloolbar;
 		private System.Windows.Forms.ToolStripMenuItem itemfullbrightness;
-		private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
+		private System.Windows.Forms.ToolStripSeparator separatorhelpers;
 		private System.Windows.Forms.ToolStripButton buttonfullbrightness;
 		private System.Windows.Forms.ToolStripSeparator separatorfullbrightness;
 		private System.Windows.Forms.ToolStripSeparator separatorfilters;

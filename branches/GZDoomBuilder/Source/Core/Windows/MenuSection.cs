@@ -35,6 +35,8 @@ namespace CodeImp.DoomBuilder.Windows
 		EditMapOptions,
 		ViewThings,
 		ViewViews,
+		ViewHelpers, //mxd
+		ViewRendering, //mxd
 		ViewZoom,
 		ViewScriptEdit,
 		PrefabsInsert,

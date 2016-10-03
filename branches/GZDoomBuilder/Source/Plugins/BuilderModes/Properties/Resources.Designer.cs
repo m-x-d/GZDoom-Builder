@@ -242,6 +242,13 @@ namespace CodeImp.DoomBuilder.BuilderModes.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap LightRadius {
+            get {
+                object obj = ResourceManager.GetObject("LightRadius", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap List {
             get {
                 object obj = ResourceManager.GetObject("List", resourceCulture);
@@ -350,6 +357,13 @@ namespace CodeImp.DoomBuilder.BuilderModes.Properties {
         internal static System.Drawing.Bitmap Similar {
             get {
                 object obj = ResourceManager.GetObject("Similar", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap SoundRadius {
+            get {
+                object obj = ResourceManager.GetObject("SoundRadius", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

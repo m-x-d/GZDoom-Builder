@@ -1884,6 +1884,7 @@ namespace CodeImp.DoomBuilder.Windows
 				case ToolbarSection.Things: toolbar.Items.Insert(toolbar.Items.IndexOf(buttonviewnormal), button); break;
 				case ToolbarSection.Views: toolbar.Items.Insert(toolbar.Items.IndexOf(seperatorviews), button); break;
 				case ToolbarSection.Geometry: toolbar.Items.Insert(toolbar.Items.IndexOf(seperatorgeometry), button); break;
+				case ToolbarSection.Helpers: toolbar.Items.Insert(toolbar.Items.IndexOf(separatorgzmodes), button); break; //mxd
 				case ToolbarSection.Testing: toolbar.Items.Insert(toolbar.Items.IndexOf(seperatortesting), button); break;
 				case ToolbarSection.Modes: modestoolbar.Items.Add(button); break; //mxd
 				case ToolbarSection.Custom: modecontrolsloolbar.Items.Add(button); modecontrolsloolbar.Visible = true; break; //mxd
@@ -2381,6 +2382,8 @@ namespace CodeImp.DoomBuilder.Windows
 				case MenuSection.EditGeometry: menuedit.DropDownItems.Insert(menuedit.DropDownItems.IndexOf(seperatoreditgeometry), menu); break;
 				case MenuSection.EditGrid: menuedit.DropDownItems.Insert(menuedit.DropDownItems.IndexOf(seperatoreditgrid), menu); break;
 				case MenuSection.EditMapOptions: menuedit.DropDownItems.Add(menu); break;
+				case MenuSection.ViewHelpers: menuview.DropDownItems.Insert(menuview.DropDownItems.IndexOf(separatorhelpers), menu); break; //mxd
+				case MenuSection.ViewRendering: menuview.DropDownItems.Insert(menuview.DropDownItems.IndexOf(separatorrendering), menu); break; //mxd
 				case MenuSection.ViewThings: menuview.DropDownItems.Insert(menuview.DropDownItems.IndexOf(seperatorviewthings), menu); break;
 				case MenuSection.ViewViews: menuview.DropDownItems.Insert(menuview.DropDownItems.IndexOf(seperatorviewviews), menu); break;
 				case MenuSection.ViewZoom: menuview.DropDownItems.Insert(menuview.DropDownItems.IndexOf(seperatorviewzoom), menu); break;

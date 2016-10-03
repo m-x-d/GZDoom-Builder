@@ -2541,6 +2541,7 @@ namespace CodeImp.DoomBuilder.Data
 			currentreader = null;
 
 			// Anything to do?
+			parser.FinishSetup();
 			if(parser.AmbientSounds.Count > 0)
 			{
 				// Update or create the main enums list
@@ -2552,9 +2553,9 @@ namespace CodeImp.DoomBuilder.Data
 				}
 				if(configenums.ContainsKey(0)) configenums.Remove(0);
 
-				foreach(KeyValuePair<int, string> group in parser.AmbientSounds)
+				foreach(KeyValuePair<int, AmbientSoundInfo> group in parser.AmbientSounds)
 				{
-					configenums[group.Key] = new EnumItem(group.Key.ToString(), group.Value);
+					configenums[group.Key] = new EnumItem(group.Key.ToString(), group.Value.SoundName);
 				}
 
 				// Store results in "ambient_sounds" enum
@@ -2581,10 +2582,14 @@ namespace CodeImp.DoomBuilder.Data
 				for(int i = 14001; i < 14065; i++)
 				{
 					int ambsoundindex = i - 14000;
-					if(!configenums.ContainsKey(ambsoundindex) || !thingtypes.ContainsKey(i) || !string.IsNullOrEmpty(thingtypes[i].ClassName)) continue;
-					
+
+					// Attach AmbientSoundInfo
+					if(parser.AmbientSounds.ContainsKey(ambsoundindex)) 
+						thingtypes[i].AmbientSound = parser.AmbientSounds[ambsoundindex];
+
 					// Update title
-					thingtypes[i].Title += " (" + configenums[ambsoundindex] + ")";
+					if(configenums.ContainsKey(ambsoundindex) && thingtypes.ContainsKey(i) && string.IsNullOrEmpty(thingtypes[i].ClassName))
+						thingtypes[i].Title += " (" + configenums[ambsoundindex] + ")";
 				}
 			}
 		}
