@@ -192,13 +192,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				sizeless = false;
 			}
 
-			Plane floor = new Plane(); //mxd
-			Plane ceiling = new Plane(); //mxd
 			if(Thing.Sector != null)
 			{
 				SectorData sd = mode.GetSectorData(Thing.Sector);
-				floor = sd.Floor.plane; //mxd
-				ceiling = sd.Ceiling.plane; //mxd
+				Plane floor = sd.Floor.plane; //mxd
 
 				if(!info.Bright)
 				{

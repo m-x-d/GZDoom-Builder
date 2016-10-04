@@ -81,6 +81,16 @@ skills
 damagetypes = "None BFGSplash Drowning Slime";
 </pre>
 	<br />
+	
+	<b class="fat">internalsoundnames</b> (string) - <span class="red">GZDB only</span>.<br />
+	Space-separated list of built-in logical sound names. These names won't trigger an editor warning when they are not bound to actual sounds in SNDINFO.<br />
+	<br />
+	<strong>Example:</strong>
+	<pre>
+internalsoundnames = "*death *xdeath *wimpydeath *crazydeath *burndeath";
+</pre>
+	<br />
+	
 	<b class="fat">linetagindicatesectors</b> (boolean)<br />
 	When <b>true</b>, Doom Builder will highlight sectors associated with the same tag number when a line is highlighted. This is only really useful for Doom format maps, because Hexen format and UDMF format has no single tag on linedefs (in those formats, the arguments of the linedef's action can be tags, which also works to highlight sectors).<br />
 	Default value is <b>false</b>.<br />

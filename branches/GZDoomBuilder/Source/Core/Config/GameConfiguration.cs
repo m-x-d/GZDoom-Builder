@@ -153,7 +153,10 @@ namespace CodeImp.DoomBuilder.Config
 		private readonly Dictionary<string, EnumList> enums;
 
 		//mxd. DamageTypes
-		private HashSet<string> damagetypes; 
+		private HashSet<string> damagetypes;
+
+		//mxd. Internal sounds. These logical sound names won't trigger a warning when they are not bound to actual sounds in SOUNDINFO.
+		private HashSet<string> internalsoundnames;
 		
 		// Defaults
 		private readonly List<DefinedTextureSet> texturesets;
@@ -278,6 +281,9 @@ namespace CodeImp.DoomBuilder.Config
 
 		//mxd. DamageTypes
 		internal IEnumerable<string> DamageTypes { get { return damagetypes; } }
+
+		//mxd. Internal sounds
+		internal HashSet<string> InternalSoundNames { get { return internalsoundnames; } }
 
 		// Defaults
 		internal List<DefinedTextureSet> TextureSets { get { return texturesets; } }
@@ -418,8 +424,10 @@ namespace CodeImp.DoomBuilder.Config
 			// Enums
 			LoadEnums();
 
-			//mxd. Damage types
-			LoadDamageTypes();
+			//mxd. Load damage types and internal sound names
+			char[] splitter = {' '};
+			damagetypes = new HashSet<string>(cfg.ReadSetting("damagetypes", "None").Split(splitter, StringSplitOptions.RemoveEmptyEntries), StringComparer.OrdinalIgnoreCase);
+			internalsoundnames = new HashSet<string>(cfg.ReadSetting("internalsoundnames", string.Empty).Split(splitter, StringSplitOptions.RemoveEmptyEntries), StringComparer.OrdinalIgnoreCase);
 			
 			// Things
 			LoadThingFlags();
@@ -498,25 +506,6 @@ namespace CodeImp.DoomBuilder.Config
 				// Make new enum
 				EnumList list = new EnumList(de.Key.ToString(), cfg);
 				enums.Add(de.Key.ToString(), list);
-			}
-		}
-
-		//mxd. This loads built-in DamageTypes
-		private void LoadDamageTypes()
-		{
-			string dtypes = cfg.ReadSetting("damagetypes", "None");
-			string[] dtypesarr = dtypes.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-			damagetypes = new HashSet<string>();
-
-			foreach(string dtype in dtypesarr)
-			{
-				if(damagetypes.Contains(dtype))
-				{
-					General.ErrorLogger.Add(ErrorType.Warning, "DamageType \"" + dtype + "\" is double defined in the \"" + this.Name + "\" game configuration");
-					continue;
-				}
-
-				damagetypes.Add(dtype);
 			}
 		}
 		
