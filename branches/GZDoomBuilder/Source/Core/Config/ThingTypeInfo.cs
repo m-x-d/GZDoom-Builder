@@ -566,8 +566,6 @@ namespace CodeImp.DoomBuilder.Config
 			xybillboard = actor.GetFlagValue("forcexybillboard", false); //mxd
 
 			//mxd. GZDoom rendering flags
-			rollsprite = actor.GetFlagValue("rollsprite", false);
-			if(rollsprite) rollcenter = actor.GetFlagValue("rollcenter", false);
 			if(actor.GetFlagValue("wallsprite", false)) rendermode = ThingRenderMode.WALLSPRITE;
 			if(actor.GetFlagValue("flatsprite", false))
 			{
@@ -577,6 +575,9 @@ namespace CodeImp.DoomBuilder.Config
 				else
 					rendermode = ThingRenderMode.FLATSPRITE;
 			}
+			//mxd. WALLSPRITE and FLATSPRITE support rolling without the ROLLSPRITE flag
+			rollsprite = actor.GetFlagValue("rollsprite", (rendermode == ThingRenderMode.WALLSPRITE || rendermode == ThingRenderMode.FLATSPRITE));
+			if(rollsprite) rollcenter = actor.GetFlagValue("rollcenter", false);
 
 			//mxd
 			if(blocking > THING_BLOCKING_NONE) errorcheck = THING_ERROR_INSIDE_STUCK;

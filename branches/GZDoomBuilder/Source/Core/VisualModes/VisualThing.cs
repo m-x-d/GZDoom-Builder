@@ -313,10 +313,10 @@ namespace CodeImp.DoomBuilder.VisualModes
 					
 					// Actor becomes a flat sprite which can be tilted with the use of the Pitch actor property.
 					case ThingRenderMode.FLATSPRITE:
-						transform = Matrix.Scaling(-thing.ScaleX, -thing.ScaleX, thing.ScaleY); // FLATSPRITES are horizontally flipped in GZDoom //BUG?
+						transform = Matrix.Scaling(thing.ScaleX, thing.ScaleX, thing.ScaleY);
 
-						// Apply roll
-						if(info.RollSprite && thing.Roll != 0)
+						// Apply roll?
+						if(thing.Roll != 0)
 						{
 							if(info.RollCenter)
 							{
@@ -351,8 +351,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 					case ThingRenderMode.WALLSPRITE:
 						transform = Matrix.Scaling(thing.ScaleX, thing.ScaleX, thing.ScaleY);
 						
-						// Apply sprite roll?
-						if(info.RollSprite && thing.Roll != 0)
+						// Apply roll?
+						if(thing.Roll != 0)
 						{
 							rotation = Matrix.RotationY(-thing.RollRad) * Matrix.RotationZ(thing.Angle);
 							if(info.RollCenter)
@@ -465,6 +465,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 
 					case ThingRenderMode.NORMAL:
 						transform = Matrix.Scaling(thing.ScaleX, thing.ScaleX, thing.ScaleY);
+
+						// Apply roll?
 						if(info.RollSprite && thing.Roll != 0)
 						{
 							rotation = Matrix.RotationY(-thing.RollRad);
