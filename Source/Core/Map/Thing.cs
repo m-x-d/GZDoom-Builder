@@ -578,11 +578,15 @@ namespace CodeImp.DoomBuilder.Map
 					break;
 
 				case ThingRenderMode.FLATSPRITE:
-					rollrad = (rollsprite ? Angle2D.DegToRad(roll) : 0);
+					rollrad = Angle2D.DegToRad(roll);
 					pitchrad = Angle2D.DegToRad(pitch);
 					break;
 
 				case ThingRenderMode.WALLSPRITE:
+					rollrad = Angle2D.DegToRad(roll);
+					pitchrad = 0;
+					break;
+
 				case ThingRenderMode.NORMAL:
 					rollrad = (rollsprite ? Angle2D.DegToRad(roll) : 0);
 					pitchrad = 0;

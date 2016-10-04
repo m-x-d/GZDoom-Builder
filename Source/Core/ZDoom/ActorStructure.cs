@@ -108,6 +108,13 @@ namespace CodeImp.DoomBuilder.ZDoom
 				return;
 			}
 
+			//mxd. Fail on duplicates
+			if(parser.ActorsByClass.ContainsKey(classname.ToLowerInvariant()))
+			{
+				parser.ReportError("Actor \"" + classname + "\" is double-defined");
+				return;
+			}
+
 			// Parse tokens before entering the actor scope
 			while(parser.SkipWhitespace(true))
 			{
@@ -179,7 +186,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 							if((doomednum < General.Map.FormatInterface.MinThingType) || (doomednum > General.Map.FormatInterface.MaxThingType))
 							{
 								// Out of bounds!
-								parser.ReportError("\"" + classname + "\" actor's editor number must be between " 
+								parser.ReportError("Actor \"" + classname + "\" has invalid editor number. Editor number must be between " 
 									+ General.Map.FormatInterface.MinThingType + " and " + General.Map.FormatInterface.MaxThingType);
 								return;
 							}
