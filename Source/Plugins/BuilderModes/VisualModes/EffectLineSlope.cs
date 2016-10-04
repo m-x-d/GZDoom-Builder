@@ -142,6 +142,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Update outer sides...
 					UpdateSectorSides(sd.Sector);
 				}
+
+				// Update all things in the sector
+				foreach(Thing t in General.Map.Map.Things)
+				{
+					if(t.Sector == data.Sector)
+					{
+						if(data.Mode.VisualThingExists(t))
+						{
+							// Update thing
+							BaseVisualThing vt = (BaseVisualThing)data.Mode.GetVisualThing(t);
+							vt.Changed = true;
+						}
+					}
+				}
 			}
 		}
 

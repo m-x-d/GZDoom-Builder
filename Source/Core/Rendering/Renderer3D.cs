@@ -1255,26 +1255,15 @@ namespace CodeImp.DoomBuilder.Rendering
 							* Matrix.RotationX(Angle2D.PI - General.Map.VisualCamera.AngleZ)
 							* Matrix.Translation(0f, 0f, t.LocalCenterZ)
 							* billboard
-							* Matrix.Scaling(t.Thing.ScaleX, t.Thing.ScaleX, t.Thing.ScaleY)
 							* t.Position;
 					}
-					else
-					{
-						return billboard
-								* Matrix.Scaling(t.Thing.ScaleX, t.Thing.ScaleX, t.Thing.ScaleY)
-								* t.Position;
-					}
+					return billboard * t.Position;
 
 				case ThingRenderMode.FLATSPRITE:
-					// Apply DontFlip flag?
-					float sx = ((t.Info.DontFlip && Angle2D.Normalized((General.Map.VisualCamera.Position - t.Thing.Position).GetAngleXY() - t.Thing.Angle + Angle2D.PIHALF) > Angle2D.PI) ? -1 : 1)
-						* t.Thing.ScaleX;
-					return Matrix.Scaling(sx, sx, t.Thing.ScaleY) * t.Position;
-
 				case ThingRenderMode.WALLSPRITE:
 				case ThingRenderMode.MODEL:
 				case ThingRenderMode.VOXEL:
-					return Matrix.Scaling(t.Thing.ScaleX, t.Thing.ScaleX, t.Thing.ScaleY) * t.Position;
+					return t.Position;
 
 				default: throw new NotImplementedException("Unknown ThingRenderMode");
 			}

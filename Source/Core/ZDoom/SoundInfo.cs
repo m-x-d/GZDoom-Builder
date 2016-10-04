@@ -28,18 +28,6 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 		#endregion
 
-		#region ================== Constants
-
-		//TODO: this probably should be defined in the Game Configuration...
-		public static readonly HashSet<string> SPECIAL_SOUNDS = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-        {
-            "*death", "*xdeath", "*wimpydeath", "*crazydeath", "*burndeath", "*gibbed", "*splat", "*pain100", "*pain75",
-            "*pain50", "*pain25", "*grunt", "*land", "*falling", "*jump", "*fist", "*fistgrunt", "*usefail", "*evillaugh",
-            "*weaponlaugh", "*puzzfail", "*poison", "*dive", "*surface", "*gasp", "*taunt", "*regenerate", "*drainhealth"         
-        };
-
-		#endregion
-
 		#region ================== Variables
 
 		private string name;

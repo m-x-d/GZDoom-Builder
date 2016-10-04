@@ -313,7 +313,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 					
 					// Actor becomes a flat sprite which can be tilted with the use of the Pitch actor property.
 					case ThingRenderMode.FLATSPRITE:
-						transform = Matrix.Identity;
+						transform = Matrix.Scaling(-thing.ScaleX, -thing.ScaleX, thing.ScaleY); // FLATSPRITES are horizontally flipped in GZDoom //BUG?
 
 						// Apply roll
 						if(info.RollSprite && thing.Roll != 0)
@@ -321,50 +321,48 @@ namespace CodeImp.DoomBuilder.VisualModes
 							if(info.RollCenter)
 							{
 								rotation = Matrix.RotationY(-thing.RollRad);
-								transform = Matrix.Translation(-centerx, -centerx, -centerz) * rotation * Matrix.Translation(centerx, centerx, centerz);
+								transform *= Matrix.Translation(-centerx, -centerx, -centerz) * rotation * Matrix.Translation(centerx, centerx, centerz);
 							}
 							else
 							{
 								// Sprite center is already where it needs to be
-								transform = Matrix.RotationY(-thing.RollRad);
+								transform *= Matrix.RotationY(-thing.RollRad);
 							}
 						}
 
-						// Pitch should be performed from the center of the sprite regardless of ROLLCENTER flag...
-						if(thing.Pitch != 0)
-						{
-							float localcenterz = vertices[c][1].z * 0.5f;
-							rotation = Matrix.RotationX(-thing.PitchRad);
-							transform *= Matrix.Translation(0f, 0f, -localcenterz) * rotation * Matrix.Translation(0f, 0f, localcenterz);
-						}
+						// Apply pitch
+						transform *= Matrix.RotationX(thing.PitchRad + Angle2D.PIHALF);
 
-						// Add thing angle into the mix
+						// Apply angle
 						transform *= Matrix.RotationZ(thing.Angle);
 
 						// Apply transform
+						float zoffset = ((thing.Pitch == 0f && thing.Position.z == 0f) ? 0.1f : 0f); // Slight offset to avoid z-fighting...
 						for(int i = 0; i < vertices[c].Length; i++)
 						{
 							Vector4 transformed = Vector3.Transform(new Vector3(vertices[c][i].x, vertices[c][i].y, vertices[c][i].z), transform);
 							vertices[c][i].x = transformed.X;
 							vertices[c][i].y = transformed.Y;
-							vertices[c][i].z = transformed.Z;
+							vertices[c][i].z = transformed.Z + zoffset;
 						}
 						break;
 
 					// Similar to FLATSPRITE but is not affected by pitch.
 					case ThingRenderMode.WALLSPRITE:
+						transform = Matrix.Scaling(thing.ScaleX, thing.ScaleX, thing.ScaleY);
+						
 						// Apply sprite roll?
 						if(info.RollSprite && thing.Roll != 0)
 						{
 							rotation = Matrix.RotationY(-thing.RollRad) * Matrix.RotationZ(thing.Angle);
 							if(info.RollCenter)
-								transform = Matrix.Translation(-centerx, -centerx, -centerz) * rotation * Matrix.Translation(centerx, centerx, centerz);
+								transform *= Matrix.Translation(-centerx, -centerx, -centerz) * rotation * Matrix.Translation(centerx, centerx, centerz);
 							else
-								transform = rotation; // Sprite center is already where it needs to be
+								transform *= rotation; // Sprite center is already where it needs to be
 						}
 						else
 						{
-							transform = Matrix.RotationZ(thing.Angle);
+							transform *= Matrix.RotationZ(thing.Angle);
 						}
 
 						// Apply transform
@@ -466,22 +464,23 @@ namespace CodeImp.DoomBuilder.VisualModes
 					#endregion
 
 					case ThingRenderMode.NORMAL:
+						transform = Matrix.Scaling(thing.ScaleX, thing.ScaleX, thing.ScaleY);
 						if(info.RollSprite && thing.Roll != 0)
 						{
 							rotation = Matrix.RotationY(-thing.RollRad);
 							if(info.RollCenter)
-								transform = Matrix.Translation(-centerx, -centerx, -centerz) * rotation * Matrix.Translation(centerx, centerx, centerz);
+								transform *= Matrix.Translation(-centerx, -centerx, -centerz) * rotation * Matrix.Translation(centerx, centerx, centerz);
 							else
-								transform = rotation; // Sprite center is already where it needs to be
-							
-							// Apply transform
-							for(int i = 0; i < vertices[c].Length; i++)
-							{
-								Vector4 transformed = Vector3.Transform(new Vector3(vertices[c][i].x, vertices[c][i].y, vertices[c][i].z), transform);
-								vertices[c][i].x = transformed.X;
-								vertices[c][i].y = transformed.Y;
-								vertices[c][i].z = transformed.Z;
-							}
+								transform *= rotation; // Sprite center is already where it needs to be
+						}
+
+						// Apply transform
+						for(int i = 0; i < vertices[c].Length; i++)
+						{
+							Vector4 transformed = Vector3.Transform(new Vector3(vertices[c][i].x, vertices[c][i].y, vertices[c][i].z), transform);
+							vertices[c][i].x = transformed.X;
+							vertices[c][i].y = transformed.Y;
+							vertices[c][i].z = transformed.Z;
 						}
 						break;
 

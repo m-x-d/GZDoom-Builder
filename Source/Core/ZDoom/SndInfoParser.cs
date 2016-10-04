@@ -490,7 +490,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			switch(info.Type)
 			{
 				case SoundInfo.SoundInfoType.SOUND:
-					return !string.IsNullOrEmpty(info.LumpName) || SoundInfo.SPECIAL_SOUNDS.Contains(info.Name);
+					return !string.IsNullOrEmpty(info.LumpName) || General.Map.Config.InternalSoundNames.Contains(info.Name);
 
 				case SoundInfo.SoundInfoType.GROUP_RANDOM:
 					foreach(SoundInfo child in info.Children)

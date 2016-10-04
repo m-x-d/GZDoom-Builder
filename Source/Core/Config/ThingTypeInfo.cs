@@ -92,7 +92,6 @@ namespace CodeImp.DoomBuilder.Config
 		private ThingRenderMode rendermode;
 		private bool rollsprite;
 		private bool rollcenter;
-		private bool dontflip;
 
 		//mxd. Ambinent sound info
 		private AmbientSoundInfo ambientsound;
@@ -137,7 +136,6 @@ namespace CodeImp.DoomBuilder.Config
 		public ThingRenderMode RenderMode { get { return rendermode; } }
 		public bool RollSprite { get { return rollsprite; } }
 		public bool RollCenter { get { return rollcenter; } }
-		public bool DontFlip { get { return dontflip; } }
 
 		//mxd. Ambinent sound info
 		public AmbientSoundInfo AmbientSound { get { return ambientsound; } internal set { ambientsound = value; } }
@@ -432,7 +430,6 @@ namespace CodeImp.DoomBuilder.Config
 
 			//mxd. Copy GZDoom rendering properties
 			this.rendermode = other.rendermode;
-			this.dontflip = other.dontflip;
 			this.rollsprite = other.rollsprite;
 			this.rollcenter = other.rollcenter;
 
@@ -576,14 +573,9 @@ namespace CodeImp.DoomBuilder.Config
 			{
 				// WALLSPRITE + FLATSPRITE = HORRIBLE GLITCHES in GZDoom
 				if(rendermode == ThingRenderMode.WALLSPRITE)
-				{
 					General.ErrorLogger.Add(ErrorType.Error, "Error in actor \"" + title + "\":" + index + ". WALLSPRITE and FLATSPRITE flags can not be combined");
-				}
 				else
-				{
 					rendermode = ThingRenderMode.FLATSPRITE;
-					dontflip = actor.GetFlagValue("dontflip", false);
-				}
 			}
 
 			//mxd
