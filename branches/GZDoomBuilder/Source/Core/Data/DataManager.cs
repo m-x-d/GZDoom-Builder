@@ -107,6 +107,7 @@ namespace CodeImp.DoomBuilder.Data
 		private CvarsCollection cvars; // Variables parsed from CVARINFO
 		private Dictionary<int, PixelColor> lockcolors; // Lock colors defined in LOCKDEFS
 		private Dictionary<int, int> lockableactions; // <Action number, arg referenceing "keys" enum number>
+		private Dictionary<int, AmbientSoundInfo> ambientsounds;
 
 		//mxd. Text resources
 		private Dictionary<ScriptType, HashSet<TextResource>> textresources; 
@@ -172,6 +173,7 @@ namespace CodeImp.DoomBuilder.Data
 		internal CvarsCollection CVars { get { return cvars; } }
 		public Dictionary<int, PixelColor> LockColors { get { return lockcolors; } }
 		public Dictionary<int, int> LockableActions { get { return lockableactions; } }
+		public Dictionary<int, AmbientSoundInfo> AmbientSounds { get { return ambientsounds; } }
 
 		//mxd
 		internal IEnumerable<DataReader> Containers { get { return containers; } }
@@ -345,7 +347,8 @@ namespace CodeImp.DoomBuilder.Data
 			textresources = new Dictionary<ScriptType, HashSet<TextResource>>();
 			damagetypes = new string[0];
 			knowncolors = new Dictionary<string, PixelColor>(StringComparer.OrdinalIgnoreCase);
-			cvars = new CvarsCollection(); //mxd
+			cvars = new CvarsCollection();
+			ambientsounds = new Dictionary<int, AmbientSoundInfo>();
 			
 			// Load texture sets
 			foreach(DefinedTextureSet ts in General.Map.ConfigSettings.TextureSets)
@@ -2592,6 +2595,9 @@ namespace CodeImp.DoomBuilder.Data
 						thingtypes[i].Title += " (" + configenums[ambsoundindex] + ")";
 				}
 			}
+
+			// Store collection
+			ambientsounds = parser.AmbientSounds;
 		}
 
 		//mxd. This loads SNDSEQ

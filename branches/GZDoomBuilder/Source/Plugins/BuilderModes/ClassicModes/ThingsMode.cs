@@ -1089,6 +1089,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(General.Map.DOOM) return circles;
 
 			const int linealpha = 128;
+			const int numsides = 24;
 			foreach(Thing t in things)
 			{
 				int lightid = Array.IndexOf(GZBuilder.GZGeneral.GZ_LIGHTS, t.Type);
@@ -1152,7 +1153,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 
 				// Add lines if visible
-				const int numsides = 24;
 				if(primaryradius > 0) circles.AddRange(LinksCollector.MakeCircleLines(t.Position, color, primaryradius, numsides));
 				if(secondaryradius > 0) circles.AddRange(LinksCollector.MakeCircleLines(t.Position, color, secondaryradius, numsides));
 			}
@@ -1166,21 +1166,53 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			List<Line3D> circles = new List<Line3D>();
 			const int linealpha = 128;
+			const int numsides = 24;
+
 			foreach(Thing t in things)
 			{
 				ThingTypeInfo info = General.Map.Data.GetThingInfoEx(t.Type);
-				if(info != null && info.AmbientSound != null)
+				if(info == null) continue;
+				
+				float minradius, maxradius;
+				if(info.AmbientSound != null)
 				{
-					// Determine color
-					PixelColor color = (t == highlighted ? General.Colors.Highlight.WithAlpha(linealpha) : t.Color.WithAlpha(linealpha));
-
-					// Add lines if visible
-					const int numsides = 24;
-					if(info.AmbientSound.MinimumRadius > 0)
-						circles.AddRange(LinksCollector.MakeCircleLines(t.Position, color, info.AmbientSound.MinimumRadius, numsides));
-					if(info.AmbientSound.MaximumRadius > 0)
-						circles.AddRange(LinksCollector.MakeCircleLines(t.Position, color, info.AmbientSound.MaximumRadius, numsides));
+					minradius = info.AmbientSound.MinimumRadius;
+					maxradius = info.AmbientSound.MaximumRadius;
 				}
+				else if(!General.Map.DOOM && (info.ClassName == "AmbientSound" || info.ClassName == "AmbientSoundNoGravity"))
+				{
+					//arg0: ambient slot
+					//arg1: (optional) sound volume, in percent. 1 is nearly silent, 100 and above are full volume. If left to zero, full volume is also used.
+					//arg2: (optional) minimum distance, in map units, at which volume attenuation begins. Note that arg3 must also be set. If both are left to zero, normal rolloff is used instead.
+					//arg3: (optional) maximum distance, in map units, at which the sound can be heard. If left to zero or lower than arg2, normal rolloff is used instead.
+					//arg4: (optional) scalar by which to multiply the values of arg2 and arg3. If left to zero, no multiplication takes place.
+
+					if(t.Args[0] == 0 || !General.Map.Data.AmbientSounds.ContainsKey(t.Args[0]))
+						continue;
+
+					// Use custom radii?
+					if(t.Args[2] > 0 && t.Args[3] > 0 && t.Args[3] > t.Args[2])
+					{
+						minradius = t.Args[2] * (t.Args[4] != 0 ? t.Args[4] : 1.0f);
+						maxradius = t.Args[3] * (t.Args[4] != 0 ? t.Args[4] : 1.0f);
+					}
+					else
+					{
+						minradius = General.Map.Data.AmbientSounds[t.Args[0]].MinimumRadius;
+						maxradius = General.Map.Data.AmbientSounds[t.Args[0]].MaximumRadius;
+					}
+				}
+				else
+				{
+					continue;
+				}
+
+				// Determine color
+				PixelColor color = (t == highlighted ? General.Colors.Highlight.WithAlpha(linealpha) : t.Color.WithAlpha(linealpha));
+
+				// Add lines if visible
+				if(minradius > 0) circles.AddRange(LinksCollector.MakeCircleLines(t.Position, color, minradius, numsides));
+				if(maxradius > 0) circles.AddRange(LinksCollector.MakeCircleLines(t.Position, color, maxradius, numsides));
 			}
 
 			return circles;
