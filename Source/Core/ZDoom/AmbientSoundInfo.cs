@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 
 namespace CodeImp.DoomBuilder.ZDoom
 {
@@ -77,10 +76,24 @@ namespace CodeImp.DoomBuilder.ZDoom
 		internal bool Setup(SndInfoParser parser)
 		{
 			// Read index
-			if(!parser.ReadSignedInt(ref index) || index < 0)
+			if(!parser.ReadSignedInt(ref index))
 			{
 				// Not numeric!
 				parser.ReportError("Expected $ambient <index> value");
+				return false;
+			}
+
+			// Check index
+			//INFO: Up to 64 ambient sounds can be used in the Doom map format and 256 in Hexen format. UDMF maps have no limit.
+			//TODO: can index be zero/negative in UDMF?
+			if(General.Map.DOOM && (index < 1 || index > 64))
+			{
+				parser.ReportError("$ambient <index> must be in [1..64] range");
+				return false;
+			}
+			if(General.Map.HEXEN && (index < 1 || index > 256))
+			{
+				parser.ReportError("$ambient <index> must be in [1..256] range");
 				return false;
 			}
 
