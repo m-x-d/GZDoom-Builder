@@ -49,7 +49,16 @@ namespace mxd.GZDBUpdater
 		{
 			//open a data stream from the supplied URL
 			WebRequest webReq = WebRequest.Create(url);
-			WebResponse webResponse = webReq.GetResponse();
+			WebResponse webResponse;
+			try
+			{
+				webResponse = webReq.GetResponse();
+			}
+			catch(Exception e)
+			{
+				MainForm.ErrorDescription = "Failed to retrieve remote revision info...\n" + e.Message;
+				return null;
+			}
 			Stream dataStream = webResponse.GetResponseStream();
 
 			//Download the data in chuncks

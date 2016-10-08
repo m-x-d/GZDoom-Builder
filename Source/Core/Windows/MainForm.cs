@@ -4358,20 +4358,12 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				// Show the window
 				UpdateForm form = new UpdateForm(remoterev, changelog);
-				DialogResult result = form.ShowDialog(this);
-
-				// Update ignored revision number
-				General.Settings.IgnoredRemoteRevision = (form.IgnoreThisUpdate ? remoterev : 0);
-
-				if(result == DialogResult.OK)
+				form.FormClosing += delegate
 				{
-					// Updater will be launched from General.Terminate
-					General.PendingUpdateRev = remoterev;
-
-					// Close
-					General.WriteLogLine("Initiating shutdown due to update request...");
-					General.Exit(true);
-				}
+					// Update ignored revision number
+					General.Settings.IgnoredRemoteRevision = (form.IgnoreThisUpdate ? remoterev : 0);
+				};
+				form.Show(this);
 			}
 		}
 

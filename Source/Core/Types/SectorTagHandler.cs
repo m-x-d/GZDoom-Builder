@@ -61,6 +61,7 @@ namespace CodeImp.DoomBuilder.Types
 		// When set up for a universal field
 		public override void SetupField(TypeHandlerAttribute attr, UniversalFieldInfo fieldinfo) 
 		{
+			defaultvalue = (fieldinfo != null ? new EnumItem(fieldinfo.Default.ToString(), fieldinfo.Default.ToString()) : new EnumItem("0", "0")); //mxd
 			base.SetupField(attr, fieldinfo);
 
 			// Create enum list reference
