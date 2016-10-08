@@ -28,19 +28,20 @@ namespace mxd.GZDBUpdater
         /// </summary>
         private void InitializeComponent()
         {
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
 			this.progressbar = new System.Windows.Forms.ProgressBar();
 			this.label1 = new System.Windows.Forms.Label();
 			this.cancel = new System.Windows.Forms.Button();
 			this.SuspendLayout();
 			// 
-			// progressBar1
+			// progressbar
 			// 
 			this.progressbar.Location = new System.Drawing.Point(10, 43);
 			this.progressbar.Name = "progressbar";
 			this.progressbar.Size = new System.Drawing.Size(230, 23);
 			this.progressbar.TabIndex = 0;
 			// 
-			// line1
+			// label1
 			// 
 			this.label1.AutoSize = true;
 			this.label1.Location = new System.Drawing.Point(7, 17);
@@ -59,7 +60,7 @@ namespace mxd.GZDBUpdater
 			this.cancel.UseVisualStyleBackColor = true;
 			this.cancel.Click += new System.EventHandler(this.cancel_Click);
 			// 
-			// Updater
+			// MainForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
@@ -68,6 +69,7 @@ namespace mxd.GZDBUpdater
 			this.Controls.Add(this.label1);
 			this.Controls.Add(this.progressbar);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MaximizeBox = false;
 			this.Name = "MainForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
