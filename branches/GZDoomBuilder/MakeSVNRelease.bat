@@ -51,6 +51,13 @@ IF NOT EXIST "setenv.bat" GOTO FILEFAIL
 CALL "setenv.bat"
 DEL /F /Q "setenv.bat"
 
+VersionFromEXE.exe "Build\Updater.exe" "setenv.bat"
+IF %ERRORLEVEL% NEQ 0 GOTO ERRORFAIL
+IF NOT EXIST "setenv.bat" GOTO FILEFAIL
+
+CALL "setenv.bat"
+DEL /F /Q "setenv.bat"
+
 ECHO.
 ECHO Compiling GZDoom Builder core...
 ECHO.
@@ -170,13 +177,16 @@ ECHO Packing release...
 ECHO.
 IF EXIST "SVN_Build\*.7z" DEL /F /Q "SVN_Build\*.7z" > NUL
 "%SEVENZIPDIR%\7z" a .\SVN_Build\gzdb.7z .\Build\* -xr!*.xml -xr!JetBrains.Profiler.Core.Api.dll -xr!ScintillaNET.3.5.pdb -x!Setup
+"%SEVENZIPDIR%\7z" a .\SVN_Build\GZDB_Updater.7z .\Build\Updater.exe .\Build\Updater.ini
 IF %ERRORLEVEL% NEQ 0 GOTO PACKFAIL
 IF NOT EXIST .\SVN_Build\gzdb.7z GOTO FILEFAIL
+IF NOT EXIST .\SVN_Build\GZDB_Updater.7z GOTO FILEFAIL
 
 REN "SVN_Build\gzdb.7z" GZDoom_Builder-r%REVISIONNUMBER%.7z
 IF EXIST "Build\Changelog.txt" DEL /F /Q "Build\Changelog.txt" > NUL
 
 @ECHO %REVISIONNUMBER%> .\SVN_Build\Version.txt
+@ (ECHO %REVISIONNUMBER% && ECHO %EXEREVISIONNUMBER%) > .\SVN_Build\Versions.txt
 
 svn revert "Source\Core\Properties\AssemblyInfo.cs" > NUL
 svn revert "Source\Plugins\BuilderModes\Properties\AssemblyInfo.cs" > NUL

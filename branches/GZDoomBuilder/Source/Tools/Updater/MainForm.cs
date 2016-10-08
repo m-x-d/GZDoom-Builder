@@ -3,16 +3,15 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Reflection;
-using System.Windows.Forms;
-using System.IO;
 using System.Diagnostics;
-using System.Threading;
-using SharpCompress.Archive;
-using SharpCompress.Common;
-using SharpCompress.Reader;
+using System.IO;
+using System.Reflection;
 using System.Security.AccessControl;
 using System.Security.Principal;
+using System.Threading;
+using System.Windows.Forms;
+using SharpCompress.Archives;
+using SharpCompress.Readers;
 
 #endregion
 
@@ -31,7 +30,7 @@ namespace mxd.GZDBUpdater
 	    private static BackgroundWorker worker;
 	    private static bool appclosing;
 	    private static MainForm me;
-	    private const string ERROR_TITLE = "Updater";
+	    private const string MESSAGEBOX_TITLE = "Updater";
 
 		#endregion
 
@@ -56,7 +55,7 @@ namespace mxd.GZDBUpdater
         {
             if(!CheckPremissions(Application.StartupPath))
             {
-                ErrorDescription = "Update failed: your account does not have write access to the destination folder \"" + Application.StartupPath + "\"";
+                ErrorDescription = "Update failed: your user account does not have write access to the destination folder \"" + Application.StartupPath + "\"\n\nMove the editor to a folder with write access,\nor run the updater as Administrator.";
                 InvokeClose();
             }
             else if(!File.Exists("Updater.ini"))
@@ -99,46 +98,9 @@ namespace mxd.GZDBUpdater
             }
 
 			// Check if the editor is running...
-			try
+			if(!EditorClosed())
 			{
-				Process[] processes = Process.GetProcesses();
-				List<Process> toclose = new List<Process>();
-				
-				// Gather all running editor processes...
-				foreach(Process process in processes)
-				{
-					if(process.ProcessName == processToEnd 
-						&& Path.GetDirectoryName(process.MainModule.FileName) == Application.StartupPath)
-					{
-						toclose.Add(process);
-					}
-				}
-
-				// Close them
-				if(toclose.Count > 0)
-				{
-					TaskbarProgress.SetState(this.Handle, TaskbarProgress.TaskbarStates.Paused);
-					if(MessageBox.Show(this, "The editor needs to be closed.\n\nPress OK to close it and proceed with update.\nPress Cancel to cancel update.",
-						ERROR_TITLE, MessageBoxButtons.OKCancel) == DialogResult.OK)
-					{
-						UpdateLabel(label1, "3/6: Stopping " + processToEnd);
-						Thread.Sleep(500);
-
-						foreach(Process p in toclose)
-						{
-							if(p != null) p.Kill();
-						}
-					}
-					else
-					{
-						e.Cancel = true;
-						return;
-					}
-				}
-			}
-			catch(Exception ex)
-			{
-				ErrorDescription = "Failed to stop the main process...\n" + ex.Message;
+				// Error or user canceled
 				e.Cancel = true;
 				return;
 			}
@@ -158,6 +120,53 @@ namespace mxd.GZDBUpdater
 			UpdateLabel(label1, "6/6: Wrapping up...");
             Thread.Sleep(500);
 			PostDownload();
+		}
+
+		private bool EditorClosed()
+		{
+			try
+			{
+				Process[] processes = Process.GetProcesses();
+				List<Process> toclose = new List<Process>();
+
+				// Gather all running editor processes...
+				foreach(Process process in processes)
+				{
+					if(process.ProcessName == processToEnd && Path.GetDirectoryName(process.MainModule.FileName) == Application.StartupPath)
+					{
+						toclose.Add(process);
+						break;
+					}
+				}
+
+				// Ask the user how to proceed...
+				if(toclose.Count > 0)
+				{
+					TaskbarProgress.SetState(this.Handle, TaskbarProgress.TaskbarStates.Paused);
+
+					switch(MessageBox.Show(this, "The editor needs to be closed.\n\n"
+						+ "Press \"Abort\" to cancel the update.\n"
+						+ "Close the editor, then press \"Retry\" to proceed with the update.\n"
+						+ "Press \"Ignore\" to terminate the editor and proceed with the update.",
+						MESSAGEBOX_TITLE, MessageBoxButtons.AbortRetryIgnore))
+					{
+						case DialogResult.Abort: return false;
+						case DialogResult.Retry: return EditorClosed();
+						case DialogResult.Ignore:
+							UpdateLabel(label1, "3/6: Stopping " + processToEnd);
+							Thread.Sleep(500);
+							foreach(Process p in toclose) if(p != null) p.Kill();
+							break;
+					}
+				}
+			}
+			catch(Exception ex)
+			{
+				ErrorDescription = "Failed to stop the main process...\n" + ex.Message;
+				return false;
+			}
+
+			return true;
 		}
 
 	    private static void StopBackgroundWorker()
@@ -210,12 +219,12 @@ namespace mxd.GZDBUpdater
 					{
 						ErrorDescription += Environment.NewLine + Environment.NewLine + "Would you like to download the update manually?";
 						TaskbarProgress.SetState(this.Handle, TaskbarProgress.TaskbarStates.Error);
-						if(MessageBox.Show(this, ErrorDescription, ERROR_TITLE, MessageBoxButtons.YesNo) == DialogResult.Yes)
+						if(MessageBox.Show(this, ErrorDescription, MESSAGEBOX_TITLE, MessageBoxButtons.YesNo) == DialogResult.Yes)
 							Process.Start(URL);
 					}
 					else
 					{
-						MessageBox.Show(this, ErrorDescription, ERROR_TITLE, MessageBoxButtons.OK);
+						MessageBox.Show(this, ErrorDescription, MESSAGEBOX_TITLE, MessageBoxButtons.OK);
 					}
 				}
 
@@ -236,18 +245,18 @@ namespace mxd.GZDBUpdater
 			
 			// Get remote revision number
 			int remoterev;
-			using(MemoryStream stream = Webdata.DownloadWebFile(Path.Combine(URL, "Version.txt")))
+			using(MemoryStream stream = Webdata.DownloadWebFile(Path.Combine(URL, "Versions.txt")))
 			{
 				if(stream == null)
 				{
-					ErrorDescription = "Failed to retrieve remote revision info.";
+					if(string.IsNullOrEmpty(ErrorDescription)) ErrorDescription = "Failed to retrieve remote revision info.";
 					return false;
 				}
 
 				string s;
 				using(StreamReader reader = new StreamReader(stream))
 				{
-					s = reader.ReadToEnd();
+					s = reader.ReadLine(); // First line should be editor revision
 				}
 
 				if(!int.TryParse(s, out remoterev))
@@ -326,17 +335,17 @@ namespace mxd.GZDBUpdater
 
 					// Get number of files...
 					int curentry = 0;
-					int totalentries = 0;
-					foreach(var entry in arc.Entries) totalentries++;
+					int totalentries = arc.NumEntries;
 
 					string ourname = Path.GetFileName(Process.GetCurrentProcess().MainModule.FileName);
 
 					// Unpack all
+					ExtractionOptions options = new ExtractionOptions {ExtractFullPath = true, Overwrite = true};
 					while(reader.MoveToNextEntry())
 					{
 						if(appclosing) break;
 						if(reader.Entry.IsDirectory || Path.GetFileName(reader.Entry.Key) == ourname) continue; // Don't try to overrite ourselves...
-						reader.WriteEntryToDirectory(unZipTo, ExtractOptions.ExtractFullPath | ExtractOptions.Overwrite);
+						reader.WriteEntryToDirectory(unZipTo, options);
 						UpdateProgressBar(new ByteArgs { Downloaded = curentry++, Total = totalentries }, 1, 2);
 					}
 				}
@@ -405,7 +414,7 @@ namespace mxd.GZDBUpdater
 			DirectoryInfo di = new DirectoryInfo(updateFolder);
             FileInfo[] files = di.GetFiles();
 
-            foreach (FileInfo fi in files)
+            foreach(FileInfo fi in files)
             {
 				if(fi.Name != downloadFile) File.Copy(updateFolder + fi.Name, Application.StartupPath + fi.Name, true);
             }
@@ -441,7 +450,7 @@ namespace mxd.GZDBUpdater
 		private void MainForm_Load(object sender, EventArgs e)
 		{
 			Version version = Assembly.GetEntryAssembly().GetName().Version;
-			this.Text += " v" + version.Major + "." + version.Minor;
+			this.Text += " v" + version.Major + "." + version.Revision.ToString("#00");
 
 			worker = new BackgroundWorker();
 			worker.DoWork += BackgroundWorker;

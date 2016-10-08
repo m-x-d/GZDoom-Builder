@@ -1,5 +1,4 @@
 using System;
-using System.Reflection;
 using System.Windows.Forms;
 
 namespace mxd.GZDBUpdater
@@ -12,18 +11,10 @@ namespace mxd.GZDBUpdater
         [STAThread]
         static void Main()
         {
-			EmbeddedAssembly.Load("mxd.GZDBUpdater.Resources.SharpCompress.dll", "SharpCompress.dll");
-			AppDomain.CurrentDomain.AssemblyResolve += AssemblyResolve;
-
 			Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 			MainForm form = new MainForm();
 			if(!form.IsDisposed) Application.Run(form);
         }
-
-	    private static Assembly AssemblyResolve(object sender, ResolveEventArgs args)
-		{
-			return EmbeddedAssembly.Get(args.Name);
-		}
     }
 }

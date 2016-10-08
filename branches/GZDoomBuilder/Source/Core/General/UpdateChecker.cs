@@ -1,12 +1,17 @@
 ﻿#region ================== Namespaces
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Text;
 using System.Windows.Forms;
 using System.Xml;
+using SharpCompress.Archive.SevenZip;
+using SharpCompress.Common;
+using SharpCompress.Reader;
 
 #endregion
 
@@ -27,6 +32,17 @@ namespace CodeImp.DoomBuilder
 			if(worker != null && worker.IsBusy)
 			{
 				if(verbosemode) General.ShowWarningMessage("Update check is already running!", MessageBoxButtons.OK);
+				return;
+			}
+
+			// Check if we have write access...
+			if(!General.CheckWritePremissions(General.AppPath))
+			{
+				string msg = "Cannot perform update: your user account does not have write access to the destination folder \"" + General.AppPath + "\"" 
+					+ "Move the editor to a folder with write access, or run it as Administrator.";
+
+				if(verbosemode) General.ShowWarningMessage(msg, MessageBoxButtons.OK);
+				else General.ErrorLogger.Add(ErrorType.Error, msg);
 				return;
 			}
 
@@ -57,10 +73,26 @@ namespace CodeImp.DoomBuilder
 				return;
 			}
 
-			string url = GetDownloadUrl(inipath);
+			// Get some ini values...
+			string url = string.Empty;
+			string updaterpackname = string.Empty;
+			string[] inilines = File.ReadAllLines(inipath);
+			foreach(string line in inilines)
+			{
+				if(line.StartsWith("URL")) url = line.Substring(3).Trim();
+				else if(line.StartsWith("UpdaterName")) updaterpackname = line.Substring(11).Trim();
+			}
+
 			if(string.IsNullOrEmpty(url))
 			{
 				ShowResult("Update check failed: failed to get update url from Updater.ini!");
+				e.Cancel = true;
+				return;
+			}
+
+			if(string.IsNullOrEmpty(updaterpackname))
+			{
+				ShowResult("Update check failed: failed to get updater pack name from Updater.ini!");
 				e.Cancel = true;
 				return;
 			}
@@ -70,9 +102,9 @@ namespace CodeImp.DoomBuilder
 			int actuallocalrev = localrev;
 			if(!verbose) localrev = Math.Max(localrev, General.Settings.IgnoredRemoteRevision);
 
-			// Get remote revision number
-			int remoterev;
-			MemoryStream stream = DownloadWebFile(Path.Combine(url, "Version.txt"));
+			// Get remote revision numbers
+			int remoterev, remoteupdaterrev;
+			MemoryStream stream = DownloadWebFile(Path.Combine(url, "Versions.txt"));
 			if(stream == null)
 			{
 				ShowResult("Update check failed: failed to retrieve remote revision info.\nCheck your Internet connection and try again.");
@@ -80,15 +112,38 @@ namespace CodeImp.DoomBuilder
 				return;
 			}
 
-			string s;
+			List<string> lines = new List<string>(2);
 			using(StreamReader reader = new StreamReader(stream))
 			{
-				s = reader.ReadToEnd();
+				while(!reader.EndOfStream) lines.Add(reader.ReadLine());
 			}
 
-			if(!int.TryParse(s, out remoterev))
+			if(lines.Count != 2)
+			{
+				ShowResult("Update check failed: invalid remote revision number.");
+				e.Cancel = true;
+				return;
+			}
+
+			if(!int.TryParse(lines[0], out remoterev))
 			{
 				ShowResult("Update check failed: failed to retrieve remote revision number.");
+				e.Cancel = true;
+				return;
+			}
+
+			if(!int.TryParse(lines[1], out remoteupdaterrev))
+			{
+				ShowResult("Update check failed: failed to retrieve remote updater revision number.");
+				e.Cancel = true;
+				return;
+			}
+
+			// Update the updater!
+			string result = UpdateUpdater(url, updaterpackname, remoteupdaterrev);
+			if(!string.IsNullOrEmpty(result))
+			{
+				ShowResult("Update check failed: " + result);
 				e.Cancel = true;
 				return;
 			}
@@ -112,6 +167,64 @@ namespace CodeImp.DoomBuilder
 			{
 				ShowResult(NO_UPDATE_REQUIRED);
 			}
+		}
+
+		private static string UpdateUpdater(string url, string updaterpackname, int remoterev)
+		{
+			// Check if updater is running...
+			try
+			{
+				Process[] processes = Process.GetProcesses();
+
+				// Abort if it's running...
+				foreach(Process process in processes)
+				{
+					if(process.ProcessName == "Updater" &&
+					   Path.GetDirectoryName(process.MainModule.FileName) == Application.StartupPath)
+					{
+						return "Updater.exe is already running.";
+					}
+				}
+			}
+			catch(Exception e)
+			{
+				return "failed to check Updater process: " + e.Message;
+			}
+
+			// Check local revision
+			int localrev = FileVersionInfo.GetVersionInfo("Updater.exe").ProductPrivatePart;
+			if(localrev < remoterev)
+			{
+				// Download update
+				MemoryStream stream = DownloadWebFile(Path.Combine(url, updaterpackname));
+				if(stream == null)
+				{
+					return "failed to download Updater package.";
+				}
+
+				// Unpack update
+				try
+				{
+					using(SevenZipArchive arc = SevenZipArchive.Open(stream))
+					{
+						if(!arc.IsComplete) return "downloaded Updater package is not complete.";
+						IReader reader = arc.ExtractAllEntries();
+
+						// Unpack all
+						while(reader.MoveToNextEntry())
+						{
+							if(reader.Entry.IsDirectory) continue; // Shouldn't be there, but who knows...
+							reader.WriteEntryToDirectory(General.AppPath, ExtractOptions.ExtractFullPath | ExtractOptions.Overwrite);
+						}
+					}
+				}
+				catch(Exception e)
+				{
+					return "failed to unpack the Updater: " + e.Message;
+				}
+			}
+
+			return string.Empty;
 		}
 
 		private static void ShowResult(string message)
@@ -217,17 +330,6 @@ namespace CodeImp.DoomBuilder
 			// Rewind and return the stream
 			result.Position = 0;
 			return result;
-		}
-
-		private static string GetDownloadUrl(string filename)
-		{
-			string[] lines = File.ReadAllLines(filename);
-			foreach(string line in lines)
-			{
-				if(line.StartsWith("URL")) return line.Substring(3).Trim();
-			}
-
-			return string.Empty;
 		}
 	}
 }

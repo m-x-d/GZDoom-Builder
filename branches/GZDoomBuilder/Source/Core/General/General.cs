@@ -232,7 +232,6 @@ namespace CodeImp.DoomBuilder
 		public static bool NoSettings { get { return nosettings; } }
 		public static EditingManager Editing { get { return editing; } }
 		public static ErrorLogger ErrorLogger { get { return errorlogger; } }
-		internal static int PendingUpdateRev; //mxd
 
 		#endregion
 
@@ -997,7 +996,7 @@ namespace CodeImp.DoomBuilder
 			// Terminate properly?
 			if(properexit)
 			{
-				General.WriteLogLine(PendingUpdateRev != 0 ? "Program update requested" : "Termination requested");
+				General.WriteLogLine("Termination requested");
 				
 				// Unbind static methods from actions
 				General.Actions.UnbindMethods(typeof(General));
@@ -1023,15 +1022,6 @@ namespace CodeImp.DoomBuilder
 				if(actions != null) { actions.Dispose(); actions = null; }
 				if(types != null) { types.Dispose(); types = null; }
 				try { D3DDevice.Terminate(); } catch { }
-
-				//mxd. Launch the updater?
-				if(PendingUpdateRev != 0)
-				{
-					General.WriteLogLine("Initiating update to R" + PendingUpdateRev + "...");
-
-					// Working directory must be set
-					Process.Start(new ProcessStartInfo { WorkingDirectory = apppath, FileName = "Updater.exe", Arguments = "-rev " + PendingUpdateRev } );
-				}
 
 				// Application ends here and now
 				General.WriteLogLine("Termination done");
@@ -2121,6 +2111,35 @@ namespace CodeImp.DoomBuilder
 			}
 
 			return null;
+		}
+
+		//mxd
+		public static bool CheckWritePremissions(string path)
+		{
+			try
+			{
+				DirectoryInfo di = new DirectoryInfo(path);
+				DirectorySecurity ds = di.GetAccessControl();
+				AuthorizationRuleCollection rules = ds.GetAccessRules(true, true, typeof(NTAccount));
+				WindowsIdentity currentuser = WindowsIdentity.GetCurrent();
+
+				if(currentuser != null)
+				{
+					WindowsPrincipal principal = new WindowsPrincipal(currentuser);
+					foreach(AuthorizationRule rule in rules)
+					{
+						FileSystemAccessRule fsar = rule as FileSystemAccessRule;
+						if(fsar != null && (fsar.FileSystemRights & FileSystemRights.WriteData) > 0)
+						{
+							NTAccount account = rule.IdentityReference as NTAccount;
+							if(account != null && principal.IsInRole(account.Value)) return true;
+						}
+					}
+				}
+			}
+			catch(UnauthorizedAccessException) { }
+
+			return false;
 		}
 		
 		#endregion

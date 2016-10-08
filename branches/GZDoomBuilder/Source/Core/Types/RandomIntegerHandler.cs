@@ -38,6 +38,7 @@ namespace CodeImp.DoomBuilder.Types
 
 		public override void SetupField(TypeHandlerAttribute attr, UniversalFieldInfo fieldinfo) 
 		{
+			defaultvalue = (fieldinfo != null ? (int)fieldinfo.Default : 0); //mxd
 			base.SetupField(attr, fieldinfo);
 
 			//mxd. We don't want to store this type
