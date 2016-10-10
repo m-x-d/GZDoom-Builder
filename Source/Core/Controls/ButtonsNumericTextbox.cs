@@ -54,6 +54,7 @@ namespace CodeImp.DoomBuilder.Controls
 		public bool AllowDecimal { get { return textbox.AllowDecimal; } set { textbox.AllowDecimal = value; UpdateButtonsTooltip(); } }
 		public bool AllowNegative { get { return textbox.AllowNegative; } set { textbox.AllowNegative = value; } }
 		public bool AllowRelative { get { return textbox.AllowRelative; } set { textbox.AllowRelative = value; } }
+		public bool AllowExpressions { get { return textbox.AllowExpressions; } set { textbox.AllowExpressions = value; } } //mxd/mgr_inz_rafal
 		public int ButtonStep { get { return stepsize; } set { stepsize = value; } }
 		public float ButtonStepFloat { get { return stepsizeFloat; } set { stepsizeFloat = value; } } //mxd. This is used when AllowDecimal is true
 		public float ButtonStepBig { get { return stepsizeBig; } set { stepsizeBig = value; } } //mxd

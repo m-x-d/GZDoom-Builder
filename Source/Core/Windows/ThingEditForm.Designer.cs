@@ -125,6 +125,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.posX.AllowDecimal = false;
 			this.posX.AllowNegative = true;
 			this.posX.AllowRelative = true;
+			this.posX.AllowExpressions = true;
 			this.posX.ButtonStep = 8;
 			this.posX.ButtonStepBig = 16F;
 			this.posX.ButtonStepFloat = 1F;
@@ -143,6 +144,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.posY.AllowDecimal = false;
 			this.posY.AllowNegative = true;
 			this.posY.AllowRelative = true;
+			this.posY.AllowExpressions = true;
 			this.posY.ButtonStep = 8;
 			this.posY.ButtonStepBig = 16F;
 			this.posY.ButtonStepFloat = 1F;
@@ -161,6 +163,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.posZ.AllowDecimal = false;
 			this.posZ.AllowNegative = true;
 			this.posZ.AllowRelative = true;
+			this.posZ.AllowExpressions = true;
 			this.posZ.ButtonStep = 8;
 			this.posZ.ButtonStepBig = 16F;
 			this.posZ.ButtonStepFloat = 1F;
@@ -242,6 +245,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.angle.AllowDecimal = false;
 			this.angle.AllowNegative = true;
 			this.angle.AllowRelative = true;
+			this.posX.AllowExpressions = true;
 			this.angle.ButtonStep = 5;
 			this.angle.ButtonStepBig = 15F;
 			this.angle.ButtonStepFloat = 1F;

@@ -214,6 +214,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.heightoffset.AllowDecimal = false;
 			this.heightoffset.AllowNegative = true;
 			this.heightoffset.AllowRelative = true;
+			this.heightoffset.AllowExpressions = true;
 			this.heightoffset.ButtonStep = 8;
 			this.heightoffset.ButtonStepBig = 16F;
 			this.heightoffset.ButtonStepFloat = 1F;
@@ -250,6 +251,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.ceilingheight.AllowDecimal = false;
 			this.ceilingheight.AllowNegative = true;
 			this.ceilingheight.AllowRelative = true;
+			this.ceilingheight.AllowExpressions = true;
 			this.ceilingheight.ButtonStep = 8;
 			this.ceilingheight.ButtonStepBig = 16F;
 			this.ceilingheight.ButtonStepFloat = 1F;
@@ -317,6 +319,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.floorheight.AllowDecimal = false;
 			this.floorheight.AllowNegative = true;
 			this.floorheight.AllowRelative = true;
+			this.floorheight.AllowExpressions = true;
 			this.floorheight.ButtonStep = 8;
 			this.floorheight.ButtonStepBig = 16F;
 			this.floorheight.ButtonStepFloat = 1F;

@@ -18,6 +18,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Data;
 using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
@@ -30,6 +31,8 @@ namespace CodeImp.DoomBuilder.Controls
 	{
 		#region ================== Constants
 
+		private const int ROUNDING_PRECISION = 4; //mxd
+
 		#endregion
 
 		#region ================== Variables
@@ -37,9 +40,13 @@ namespace CodeImp.DoomBuilder.Controls
 		private bool allownegative;		// Allow negative numbers
 		private bool allowrelative;		// Allow ++, --, * and / prefix for relative changes
 		private bool allowdecimal;		// Allow decimal (float) numbers
+		private bool allowexpressions;  // mxd/mgr_inz_rafal. Allow expressions
 		private bool controlpressed;
 		private int incrementstep; //mxd. Step for +++ and  --- prefixes
 		private ToolTip tooltip; //mxd
+
+		//mxd. Used to compute expressions
+		private static DataTable datatable = new DataTable();
 		
 		#endregion
 
@@ -48,6 +55,7 @@ namespace CodeImp.DoomBuilder.Controls
 		public bool AllowNegative { get { return allownegative; } set { allownegative = value; } }
 		public bool AllowRelative { get { return allowrelative; } set { allowrelative = value; UpdateTextboxStyle(); } }
 		public bool AllowDecimal  { get { return allowdecimal; } set { allowdecimal = value; } }
+		public bool AllowExpressions { get { return allowexpressions; } set { allowexpressions = value; } } //mxd/mgr_inz_rafal
 
 		#endregion
 
@@ -101,8 +109,13 @@ namespace CodeImp.DoomBuilder.Controls
 			// Determine allowed chars
 			if(allownegative) allowedchars += CultureInfo.CurrentCulture.NumberFormat.NegativeSign;
 			if(allowrelative) allowedchars += "+-*/"; //mxd
+			if(allowexpressions)
+			{
+				allowedchars += "()"; //mxd/mgr_inz_rafal
+				if(!allowrelative) allowedchars += "+-*/"; //mxd
+			}
 			if(controlpressed) allowedchars += "\u0018\u0003\u0016";
-			if(allowdecimal || this.Text.StartsWith("*") || this.Text.StartsWith("/")) //mxd
+			if(allowdecimal || allowexpressions || this.Text.StartsWith("*") || this.Text.StartsWith("/")) //mxd
 				allowedchars += CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
 			
 			// Check if key is not allowed
@@ -111,7 +124,7 @@ namespace CodeImp.DoomBuilder.Controls
 				// Cancel this
 				e.Handled = true;
 			}
-			else
+			else if(!allowexpressions)
 			{
 				//mxd. Check if * or / is pressed
 				if(e.KeyChar == '*' || e.KeyChar == '/') 
@@ -180,6 +193,22 @@ namespace CodeImp.DoomBuilder.Controls
 			base.OnKeyPress(e);
 		}
 
+		//mxd
+		protected override void OnTextChanged(EventArgs e)
+		{
+			// Validate expression
+			if(allowexpressions)
+			{
+				// Check if expression is valid. We may want "++" and "--" on their own...
+				if(IsValidResult(StripPrefixes(this.Text)) || this.Text == "++" || this.Text == "--")
+					this.ForeColor = (allowrelative ? SystemColors.HotTrack : SystemColors.WindowText);
+				else
+					this.ForeColor = Color.DarkRed;
+			}
+			
+			base.OnTextChanged(e);
+		}
+
 		// Validate contents
 		protected override void OnValidating(CancelEventArgs e)
 		{
@@ -190,20 +219,46 @@ namespace CodeImp.DoomBuilder.Controls
 				base.OnValidating(e);
 				return;
 			}
-			
-			// Strip prefixes
-			string textpart = this.Text.Replace("+", "").Replace("*", "").Replace("/", ""); //mxd
-			if(!allownegative) textpart = textpart.Replace("-", "");
-			
-			// No numbers left?
-			if(textpart.Length == 0)
+
+			if(allowexpressions) //mxd
 			{
-				// Make the textbox empty
-				this.Text = "";
-			} 
+				if(!IsValidResult(StripPrefixes(this.Text)))
+				{
+					// Make the textbox empty
+					this.Text = "";
+				}
+			}
+			else
+			{
+				// Strip prefixes
+				string textpart = this.Text.Replace("+", "").Replace("*", "").Replace("/", ""); //mxd
+				if(!allownegative)
+					textpart = textpart.Replace("-", "");
+
+				// No numbers left?
+				if(textpart.Length == 0)
+				{
+					// Make the textbox empty
+					this.Text = "";
+				}
+			}
 			
 			// Call base
 			base.OnValidating(e);
+		}
+
+		//mxd
+		private string StripPrefixes(string input)
+		{
+			if(allowrelative)
+			{
+				// Strip prefixes
+				if(input.StartsWith("+++") || input.StartsWith("---")) return input.Substring(3);
+				if(input.StartsWith("++") || input.StartsWith("--")) return input.Substring(2);
+				if(input.StartsWith("*") || input.StartsWith("/")) return input.Substring(1);
+			}
+
+			return input;
 		}
 		
 		// This checks if the number is relative
@@ -211,8 +266,8 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			// Prefixed with +++, ---, ++, --, * or /?
 			return ( (this.Text.Length > 3 && (this.Text.StartsWith("+++") || this.Text.StartsWith("---"))) || //mxd
-				(this.Text.Length > 2 && (this.Text.StartsWith("++") || this.Text.StartsWith("--") || this.Text.StartsWith("**") || this.Text.StartsWith("//"))) || //mxd
-				(this.Text.Length > 1 && (this.Text.StartsWith("*") || this.Text.StartsWith("/"))) ); //mxd
+					 (this.Text.Length > 2 && (this.Text.StartsWith("++") || this.Text.StartsWith("--") )) || //mxd
+					 (this.Text.Length > 1 && (this.Text.StartsWith("*") || this.Text.StartsWith("/"))) ); //mxd
 		}
 		
 		//mxd. This determines the result value
@@ -224,78 +279,7 @@ namespace CodeImp.DoomBuilder.Controls
 		//mxd. This determines the result value
 		public int GetResult(int original, int step)
 		{
-			string textpart = this.Text;
-			
-			// Strip prefixes
-			textpart = textpart.TrimStart('+', '-', '*', '/'); //mxd
-			
-			// Any numbers left?
-			if(textpart.Length > 0)
-			{
-				int result;
-
-				//mxd. Prefixed with +++?
-				if(this.Text.StartsWith("+++"))
-				{
-					// Add number to original
-					int.TryParse(textpart, out result);
-					return original + result * step;
-				}
-				//mxd. Prefixed with ---?
-				if(this.Text.StartsWith("---"))
-				{
-					// Subtract number from original
-					int.TryParse(textpart, out result);
-					int newvalue = original - result * step;
-					if(!allownegative && (newvalue < 0)) newvalue = 0;
-					return newvalue;
-				}
-				// Prefixed with ++?
-				if(this.Text.StartsWith("++"))
-				{
-					// Add number to original
-					int.TryParse(textpart, out result);
-					return original + result;
-				}
-				// Prefixed with --?
-				if(this.Text.StartsWith("--"))
-				{
-					// Subtract number from original
-					int.TryParse(textpart, out result);
-					int newvalue = original - result;
-					if(!allownegative && (newvalue < 0)) newvalue = 0;
-					return newvalue;
-				}
-				//mxd. Prefixed with *?
-				if(this.Text.StartsWith("*")) 
-				{
-					// Multiply original by number
-					float resultf;
-					float.TryParse(textpart, NumberStyles.Float, CultureInfo.CurrentCulture, out resultf);
-					int newvalue = (int)Math.Round(original * resultf);
-					if(!allownegative && (newvalue < 0)) newvalue = 0;
-					return newvalue;
-				}
-				//mxd. Prefixed with /?
-				if(this.Text.StartsWith("/")) 
-				{
-					// Divide original by number
-					float resultf;
-					float.TryParse(textpart, NumberStyles.Float, CultureInfo.CurrentCulture, out resultf);
-					if(resultf == 0) return original;
-					int newvalue = (int)Math.Round(original / resultf);
-					if(!allownegative && (newvalue < 0)) newvalue = 0;
-					return newvalue;
-				}
-
-				//mxd. Return the new value
-				if(!int.TryParse(this.Text, out result)) return original;
-				if(!allownegative && (result < 0)) return 0;
-				return result;
-			}
-
-			// Nothing given, keep original value
-			return original;
+			return (int)Math.Round(GetResultFloat(original, step));
 		}
 
 		//mxd. This determines the result value
@@ -308,68 +292,97 @@ namespace CodeImp.DoomBuilder.Controls
 		public float GetResultFloat(float original, int step)
 		{
 			// Strip prefixes
-			string textpart = this.Text.Replace("+", "").Replace("-", "").Replace("*", "").Replace("/", ""); //mxd;
+			string textpart = StripPrefixes(this.Text);
 
 			// Any numbers left?
 			if(textpart.Length > 0)
 			{
 				float result;
-				
-				//mxd. Prefixed with +++?
-				if(this.Text.StartsWith("+++"))
+				if(allowrelative)
 				{
-					// Add number to original
-					if(!float.TryParse(textpart, NumberStyles.Float, CultureInfo.CurrentCulture, out result)) result = 0;
-					return original + result * step;
-				}
-				//mxd. Prefixed with ---?
-				if(this.Text.StartsWith("---"))
-				{
-					// Subtract number from original
-					if(!float.TryParse(textpart, NumberStyles.Float, CultureInfo.CurrentCulture, out result)) result = 0;
-					float newvalue = original - result * step;
-					if(!allownegative && (newvalue < 0)) newvalue = 0;
-					return newvalue;
-				}
-				// Prefixed with ++?
-				if(this.Text.StartsWith("++"))
-				{
-					// Add number to original
-					if(!float.TryParse(textpart, NumberStyles.Float, CultureInfo.CurrentCulture, out result)) result = 0;
-					return original + result;
-				}
-				// Prefixed with --?
-				if(this.Text.StartsWith("--"))
-				{
-					// Subtract number from original
-					if(!float.TryParse(textpart, NumberStyles.Float, CultureInfo.CurrentCulture, out result)) result = 0;
-					float newvalue = original - result;
-					if(!allownegative && (newvalue < 0)) newvalue = 0;
-					return newvalue;
-				}
-				//mxd. Prefixed with *?
-				if(this.Text.StartsWith("*")) 
-				{
-					// Multiply original by number
-					if(!float.TryParse(textpart, NumberStyles.Float, CultureInfo.CurrentCulture, out result)) result = 0;
-					float newvalue = original * result;
-					if(!allownegative && (newvalue < 0)) newvalue = 0;
-					return newvalue;
-				}
-				//mxd. Prefixed with /?
-				if(this.Text.StartsWith("/")) 
-				{
-					// Divide original by number
-					if(!float.TryParse(textpart, NumberStyles.Float, CultureInfo.CurrentCulture, out result) || result == 0) return original;
-					float newvalue = (float)Math.Round(original / result, 3);
-					if(!allownegative && (newvalue < 0)) newvalue = 0;
-					return newvalue;
+					//mxd. Prefixed with +++?
+					if(this.Text.StartsWith("+++"))
+					{
+						// Add number to original
+						if(TryGetResultValue(textpart, out result))
+							return original + result * step;
+
+						// Keep original value
+						return original;
+					}
+
+					//mxd. Prefixed with ---?
+					if(this.Text.StartsWith("---"))
+					{
+						// Subtract number from original
+						if(TryGetResultValue(textpart, out result))
+						{
+							float newvalue = original - result * step;
+							return (!allownegative && (newvalue < 0)) ? original : newvalue;
+						}
+
+						// Keep original value
+						return original;
+					}
+
+					// Prefixed with ++?
+					if(this.Text.StartsWith("++"))
+					{
+						// Add number to original
+						if(TryGetResultValue(textpart, out result))
+							return original + result;
+
+						// Keep original value
+						return original;
+					}
+
+					// Prefixed with --?
+					if(this.Text.StartsWith("--"))
+					{
+						// Subtract number from original
+						if(TryGetResultValue(textpart, out result))
+						{
+							float newvalue = original - result;
+							return (!allownegative && (newvalue < 0)) ? original : newvalue;
+						}
+
+						// Keep original value
+						return original;
+					}
+
+					//mxd. Prefixed with *?
+					if(this.Text.StartsWith("*"))
+					{
+						// Multiply original by number
+						if(TryGetResultValue(textpart, out result))
+						{
+							float newvalue = (float)Math.Round(original * result, ROUNDING_PRECISION);
+							return (!allownegative && (newvalue < 0f)) ? original : newvalue;
+						}
+
+						// Keep original value
+						return original;
+					}
+
+					//mxd. Prefixed with /?
+					if(this.Text.StartsWith("/"))
+					{
+						// Divide original by number
+						if(TryGetResultValue(textpart, out result))
+						{
+							if(result == 0.0f) return original;
+							float newvalue = (float)Math.Round(original / result, ROUNDING_PRECISION);
+							return (!allownegative && (newvalue < 0f)) ? original : newvalue;
+						}
+
+						// Keep original value
+						return original;
+					}
 				}
 
 				//mxd. Return the new value
-				if(!float.TryParse(this.Text, NumberStyles.Float, CultureInfo.CurrentCulture, out result)) return original;
-				if(!allownegative && (result < 0)) return 0;
-				return result;
+				if(TryGetResultValue(textpart, out result))
+					return (!allownegative && (result < 0f)) ? original : result;
 			}
 
 			// Nothing given, keep original value
@@ -377,20 +390,50 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		//mxd
-		public void UpdateTextboxStyle()
+		private bool IsValidResult(string expression)
 		{
-			UpdateTextboxStyle(string.Empty);
+			float unused;
+			return TryGetResultValue(expression, out unused);
 		}
 
 		//mxd
-		public void UpdateTextboxStyle(string tip) 
+		private bool TryGetResultValue(string expression, out float value)
+		{
+			//Compute expression
+			if(allowexpressions)
+			{
+				try { expression = datatable.Compute(expression, null).ToString(); }
+				catch
+				{
+					value = 0f;
+					return false;
+				}
+			}
+
+			// Parse result
+			return float.TryParse(expression, NumberStyles.Float, CultureInfo.InvariantCulture, out value);
+		}
+
+		//mxd
+		public void UpdateTextboxStyle() { UpdateTextboxStyle(string.Empty); }
+		public void UpdateTextboxStyle(string tip)
 		{
 			this.ForeColor = (allowrelative ? SystemColors.HotTrack : SystemColors.WindowText);
-			if(allowrelative)
+			if(allowrelative || allowexpressions)
 			{
-				tooltip.SetToolTip(this, "Use ++ or -- prefixes to change by given value." + Environment.NewLine +
-					"Use +++ or --- prefixes to incrementally change by given value." + Environment.NewLine + 
-					"Use * or / prefixes to multiply or divide by given value." + Environment.NewLine + tip);
+				string s = string.Empty;
+				if(allowexpressions)
+				{
+					s += "You can use expressions. Example: (128+64)*2.5" + Environment.NewLine;
+				}
+				if(allowrelative)
+				{
+					s += "Use ++ or -- prefixes to change by given value." + Environment.NewLine +
+						 "Use +++ or --- prefixes to incrementally change by given value." + Environment.NewLine +
+						 "Use * or / prefixes to multiply or divide by given value." + Environment.NewLine;
+				}
+				
+				tooltip.SetToolTip(this, s + tip);
 			}
 			else if(!string.IsNullOrEmpty(tip))
 			{

@@ -39,6 +39,7 @@
 			this.value1.AllowDecimal = true;
 			this.value1.AllowNegative = true;
 			this.value1.AllowRelative = true;
+			this.value1.AllowExpressions = true;
 			this.value1.ButtonStep = 1;
 			this.value1.ButtonStepFloat = 1F;
 			this.value1.ButtonStepsWrapAround = false;
@@ -56,6 +57,7 @@
 			this.value2.AllowDecimal = true;
 			this.value2.AllowNegative = true;
 			this.value2.AllowRelative = true;
+			this.value2.AllowExpressions = true;
 			this.value2.ButtonStep = 1;
 			this.value2.ButtonStepFloat = 1F;
 			this.value2.ButtonStepsWrapAround = false;
