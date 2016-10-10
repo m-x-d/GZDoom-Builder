@@ -195,6 +195,7 @@
 			this.roll.AllowDecimal = false;
 			this.roll.AllowNegative = true;
 			this.roll.AllowRelative = true;
+			this.roll.AllowExpressions = true;
 			this.roll.ButtonStep = 5;
 			this.roll.ButtonStepBig = 15F;
 			this.roll.ButtonStepFloat = 1F;
@@ -222,6 +223,7 @@
 			this.pitch.AllowDecimal = false;
 			this.pitch.AllowNegative = true;
 			this.pitch.AllowRelative = true;
+			this.pitch.AllowExpressions = true;
 			this.pitch.ButtonStep = 5;
 			this.pitch.ButtonStepBig = 15F;
 			this.pitch.ButtonStepFloat = 1F;
@@ -249,6 +251,7 @@
 			this.angle.AllowDecimal = false;
 			this.angle.AllowNegative = true;
 			this.angle.AllowRelative = true;
+			this.angle.AllowExpressions = true;
 			this.angle.ButtonStep = 5;
 			this.angle.ButtonStepBig = 15F;
 			this.angle.ButtonStepFloat = 1F;
@@ -478,6 +481,7 @@
 			this.posX.AllowDecimal = true;
 			this.posX.AllowNegative = true;
 			this.posX.AllowRelative = true;
+			this.posX.AllowExpressions = true;
 			this.posX.ButtonStep = 8;
 			this.posX.ButtonStepBig = 8F;
 			this.posX.ButtonStepFloat = 1F;
@@ -496,6 +500,7 @@
 			this.posY.AllowDecimal = true;
 			this.posY.AllowNegative = true;
 			this.posY.AllowRelative = true;
+			this.posY.AllowExpressions = true;
 			this.posY.ButtonStep = 8;
 			this.posY.ButtonStepBig = 8F;
 			this.posY.ButtonStepFloat = 1F;
@@ -514,6 +519,7 @@
 			this.posZ.AllowDecimal = true;
 			this.posZ.AllowNegative = true;
 			this.posZ.AllowRelative = true;
+			this.posZ.AllowExpressions = true;
 			this.posZ.ButtonStep = 8;
 			this.posZ.ButtonStepBig = 8F;
 			this.posZ.ButtonStepFloat = 1F;

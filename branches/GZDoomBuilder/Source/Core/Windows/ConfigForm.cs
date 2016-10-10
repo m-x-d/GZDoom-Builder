@@ -303,7 +303,7 @@ namespace CodeImp.DoomBuilder.Windows
 			configinfo.TestProgram = testapplication.Text;
 			
 			//mxd. User entered engine name before picking the engine?
-			if(cbEngineSelector.SelectedIndex == -1)
+			if(cbEngineSelector.SelectedIndex == -1 || string.IsNullOrEmpty(configinfo.TestProgram))
 			{
 				ApplyTestEngineNameChange();
 			}
@@ -710,15 +710,14 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				preventchanges = true;
 
+				// Remove EngineInfos without program path
+				configinfo.TestEngines.RemoveAll(info => string.IsNullOrEmpty(info.TestProgram));
+
 				// Add new EngineInfo
 				EngineInfo newInfo = new EngineInfo();
 				newInfo.TestSkill = (int)Math.Ceiling(gameconfig.Skills.Count / 2f); // Set Medium skill level
 				configinfo.TestEngines.Add(newInfo);
 				configinfo.Changed = true;
-
-				// Store current engine name
-				if(!String.IsNullOrEmpty(cbEngineSelector.Text))
-					configinfo.TestProgramName = cbEngineSelector.Text;
 
 				// Refresh engines list
 				cbEngineSelector.Items.Clear();
@@ -726,11 +725,11 @@ namespace CodeImp.DoomBuilder.Windows
 					cbEngineSelector.Items.Add(info.TestProgramName);
 
 				cbEngineSelector.SelectedIndex = configinfo.TestEngines.Count - 1;
-				btnRemoveEngine.Enabled = true;
+				btnRemoveEngine.Enabled = (configinfo.TestEngines.Count > 1);
 
 				preventchanges = false;
 
-				// Set engine path
+				// Set engine path (will also update current engine name)
 				testapplication.Text = testprogramdialog.FileName;
 			}
 		}
@@ -766,6 +765,8 @@ namespace CodeImp.DoomBuilder.Windows
 		private void cbEngineSelector_SelectedIndexChanged(object sender, EventArgs e) 
 		{
 			if(cbEngineSelector.SelectedIndex == -1) return;
+
+			preventchanges = true;
 			
 			//set new values
 			configinfo.CurrentEngineIndex = cbEngineSelector.SelectedIndex;
@@ -788,6 +789,8 @@ namespace CodeImp.DoomBuilder.Windows
 			skill.Value = skilllevel - 1; //mxd. WHY???
 			skill.Value = skilllevel;
 			customparameters.Checked = configinfo.CustomParameters;
+
+			preventchanges = false;
 		}
 
 		//mxd

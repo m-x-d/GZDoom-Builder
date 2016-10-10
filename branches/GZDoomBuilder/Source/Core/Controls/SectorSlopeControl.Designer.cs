@@ -166,6 +166,7 @@
 			this.slopeoffset.AllowDecimal = true;
 			this.slopeoffset.AllowNegative = true;
 			this.slopeoffset.AllowRelative = true;
+			this.slopeoffset.AllowExpressions = true;
 			this.slopeoffset.ButtonStep = 1;
 			this.slopeoffset.ButtonStepBig = 16F;
 			this.slopeoffset.ButtonStepFloat = 8F;
