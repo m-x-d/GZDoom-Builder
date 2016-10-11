@@ -165,6 +165,16 @@ namespace CodeImp.DoomBuilder.IO
 					if(stringflags.ContainsKey(flag.Key)) continue;
 					stringflags.Add(flag.Key, false);
 				}
+				foreach(KeyValuePair<string, string> flag in General.Map.Config.CeilingPortalFlags)
+				{
+					if(stringflags.ContainsKey(flag.Key)) continue;
+					stringflags.Add(flag.Key, false);
+				}
+				foreach(KeyValuePair<string, string> flag in General.Map.Config.FloorPortalFlags)
+				{
+					if(stringflags.ContainsKey(flag.Key)) continue;
+					stringflags.Add(flag.Key, false);
+				}
 
 				// Create new item
 				Dictionary<string, UniValue> fields = ReadCustomFields(reader);

@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Map;
@@ -26,13 +27,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This is called to test if the item should be displayed
 		public override bool DetermineVisiblity() 
 		{
-			return General.Map.Config.SectorFlags.Count > 0;
+			return General.Map.Config.SectorFlags.Count > 0 
+				|| General.Map.Config.CeilingPortalFlags.Count > 0 
+				|| General.Map.Config.FloorPortalFlags.Count > 0;
 		}
 
 		// This is called when the browse button is pressed
 		public override string Browse(string initialvalue)
 		{
-			return FlagsForm.ShowDialog(Form.ActiveForm, initialvalue, General.Map.Config.SectorFlags);
+			return FlagsForm.ShowDialog(Form.ActiveForm, initialvalue, GetAllFlags());
 		}
 
 		// This is called to perform a search (and replace)
@@ -44,6 +47,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Where to search?
 			ICollection<Sector> list = withinselection ? General.Map.Map.GetSelectedSectors(true) : General.Map.Map.Sectors;
+
+			// Combine all sector flags...
+			Dictionary<string, string> allflags = GetAllFlags();
 
 			// Find what? (mxd)
 			Dictionary<string, bool> findflagslist = new Dictionary<string, bool>();
@@ -57,7 +63,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					f = f.Substring(1, f.Length - 1);
 				}
 
-				if(General.Map.Config.SectorFlags.ContainsKey(f)) findflagslist.Add(f, setflag);
+				if(allflags.ContainsKey(f)) findflagslist.Add(f, setflag);
 			}
 			if(findflagslist.Count == 0) 
 			{
@@ -80,7 +86,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						f = f.Substring(1, f.Length - 1);
 					}
 
-					if(!General.Map.Config.SectorFlags.ContainsKey(f))
+					if(!allflags.ContainsKey(f))
 					{
 						MessageBox.Show("Invalid replace value \"" + f + "\" for this search type!", "Find and Replace", MessageBoxButtons.OK, MessageBoxIcon.Error);
 						return objs.ToArray();
@@ -126,6 +132,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			return objs.ToArray();
 		}
+
+		private static Dictionary<string, string> GetAllFlags()
+		{
+			// Combine all sector flags...
+			Dictionary<string, string> allflags = new Dictionary<string, string>(General.Map.Config.SectorFlags);
+			
+			foreach(var group in General.Map.Config.CeilingPortalFlags)
+				allflags[group.Key] = group.Value + " (ceil. portal)";
+
+			foreach(var group in General.Map.Config.FloorPortalFlags)
+				allflags[group.Key] = group.Value + " (floor portal)";
+
+			return allflags;
+		} 
 
 		#endregion
 	}

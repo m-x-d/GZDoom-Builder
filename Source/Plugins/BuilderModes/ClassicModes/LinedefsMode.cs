@@ -1233,11 +1233,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Apply properties to selection
 					string rest = (sel.Count == 1 ? "a single linedef" : sel.Count + " linedefs"); //mxd
 					General.Map.UndoRedo.CreateUndo("Paste properties to " + rest);
-					foreach(Linedef l in sel)
-					{
-						BuilderPlug.Me.CopiedLinedefProps.Apply(l, false);
-						l.UpdateCache();
-					}
+					BuilderPlug.Me.CopiedLinedefProps.Apply(sel, false);
+					foreach(Linedef l in sel) l.UpdateCache();
 					General.Interface.DisplayStatus(StatusType.Action, "Pasted properties to " + rest + ".");
 					
 					// Update and redraw
@@ -1278,11 +1275,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						// Apply properties to selection
 						string rest = (sel.Count == 1 ? "a single linedef" : sel.Count + " linedefs");
 						General.Map.UndoRedo.CreateUndo("Paste properties with options to " + rest);
-						foreach(Linedef l in sel)
-						{
-							BuilderPlug.Me.CopiedLinedefProps.Apply(l, true);
-							l.UpdateCache();
-						}
+						BuilderPlug.Me.CopiedLinedefProps.Apply(sel, true);
+						foreach(Linedef l in sel) l.UpdateCache();
 						General.Interface.DisplayStatus(StatusType.Action, "Pasted properties with options to " + rest + ".");
 
 						// Update and redraw

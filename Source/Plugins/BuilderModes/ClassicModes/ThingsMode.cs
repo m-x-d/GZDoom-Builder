@@ -1260,11 +1260,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Apply properties to selection
 					string rest = (sel.Count == 1 ? "a single thing" : sel.Count + " things"); //mxd
 					General.Map.UndoRedo.CreateUndo("Paste properties to " + rest);
-					foreach(Thing t in sel)
-					{
-						BuilderPlug.Me.CopiedThingProps.Apply(t, false);
-						t.UpdateConfiguration();
-					}
+					BuilderPlug.Me.CopiedThingProps.Apply(sel, false);
+					foreach(Thing t in sel) t.UpdateConfiguration();
 					General.Interface.DisplayStatus(StatusType.Action, "Pasted properties to" + rest + ".");
 					
 					// Update
@@ -1310,11 +1307,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						// Apply properties to selection
 						string rest = (sel.Count == 1 ? "a single thing" : sel.Count + " things");
 						General.Map.UndoRedo.CreateUndo("Paste properties with options to " + rest);
-						foreach(Thing t in sel)
-						{
-							BuilderPlug.Me.CopiedThingProps.Apply(t, true);
-							t.UpdateConfiguration();
-						}
+						BuilderPlug.Me.CopiedThingProps.Apply(sel, true);
+						foreach(Thing t in sel) t.UpdateConfiguration();
 						General.Interface.DisplayStatus(StatusType.Action, "Pasted properties with options to " + rest + ".");
 
 						// Update

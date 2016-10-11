@@ -742,10 +742,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Apply properties to selection
 					string rest = (sel.Count == 1 ? "a single vertex" : sel.Count + " vertices"); //mxd
 					General.Map.UndoRedo.CreateUndo("Paste properties to " + rest);
-					foreach(Vertex v in sel)
-					{
-						BuilderPlug.Me.CopiedVertexProps.Apply(v, false);
-					}
+					BuilderPlug.Me.CopiedVertexProps.Apply(sel, false);
 					General.Interface.DisplayStatus(StatusType.Action, "Pasted properties to " + rest + ".");
 
 					// Update and redraw
@@ -785,10 +782,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						// Apply properties to selection
 						string rest = (sel.Count == 1 ? "a single vertex" : sel.Count + " vertices");
 						General.Map.UndoRedo.CreateUndo("Paste properties with options to " + rest);
-						foreach(Vertex v in sel)
-						{
-							BuilderPlug.Me.CopiedVertexProps.Apply(v, true);
-						}
+						BuilderPlug.Me.CopiedVertexProps.Apply(sel, true);
 						General.Interface.DisplayStatus(StatusType.Action, "Pasted properties with options to " + rest + ".");
 
 						// Update and redraw

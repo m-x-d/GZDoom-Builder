@@ -104,6 +104,10 @@ namespace CodeImp.DoomBuilder.IO
 					//mxd. Add sector flags
 					foreach(KeyValuePair<string, string> flag in General.Map.Config.SectorFlags)
 						config.WriteSetting("managedfields.sector." + flag.Key, true);
+					foreach(KeyValuePair<string, string> flag in General.Map.Config.CeilingPortalFlags)
+						config.WriteSetting("managedfields.sector." + flag.Key, true);
+					foreach(KeyValuePair<string, string> flag in General.Map.Config.FloorPortalFlags)
+						config.WriteSetting("managedfields.sector." + flag.Key, true);
 
 					// Add thing flags
 					foreach(KeyValuePair<string, string> flag in General.Map.Config.ThingFlags)
@@ -412,6 +416,10 @@ namespace CodeImp.DoomBuilder.IO
 				//mxd. Read flags
 				Dictionary<string, bool> stringflags = new Dictionary<string, bool>(StringComparer.Ordinal);
 				foreach(KeyValuePair<string, string> flag in General.Map.Config.SectorFlags)
+					stringflags[flag.Key] = GetCollectionEntry(c, flag.Key, false, false, where);
+				foreach(KeyValuePair<string, string> flag in General.Map.Config.CeilingPortalFlags)
+					stringflags[flag.Key] = GetCollectionEntry(c, flag.Key, false, false, where);
+				foreach(KeyValuePair<string, string> flag in General.Map.Config.FloorPortalFlags)
 					stringflags[flag.Key] = GetCollectionEntry(c, flag.Key, false, false, where);
 
 				// Create new item

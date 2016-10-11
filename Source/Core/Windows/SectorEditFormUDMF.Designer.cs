@@ -124,6 +124,18 @@
 			this.cancel = new System.Windows.Forms.Button();
 			this.apply = new System.Windows.Forms.Button();
 			this.tooltip = new System.Windows.Forms.ToolTip(this.components);
+			this.groupBox6 = new System.Windows.Forms.GroupBox();
+			this.ceilportalrenderstylelabel = new System.Windows.Forms.Label();
+			this.ceilportalrenderstyle = new System.Windows.Forms.ComboBox();
+			this.label21 = new System.Windows.Forms.Label();
+			this.ceilportalalpha = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
+			this.ceilportalflags = new CodeImp.DoomBuilder.Controls.CheckboxArrayControl();
+			this.groupBox7 = new System.Windows.Forms.GroupBox();
+			this.floorportalflags = new CodeImp.DoomBuilder.Controls.CheckboxArrayControl();
+			this.label22 = new System.Windows.Forms.Label();
+			this.floorportalalpha = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
+			this.floorportalrenderstylelabel = new System.Windows.Forms.Label();
+			this.floorportalrenderstyle = new System.Windows.Forms.ComboBox();
 			groupaction = new System.Windows.Forms.GroupBox();
 			groupeffect = new System.Windows.Forms.GroupBox();
 			label14 = new System.Windows.Forms.Label();
@@ -154,6 +166,8 @@
 			this.groupBox4.SuspendLayout();
 			this.tabcomment.SuspendLayout();
 			this.tabcustom.SuspendLayout();
+			this.groupBox6.SuspendLayout();
+			this.groupBox7.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// groupaction
@@ -550,7 +564,7 @@
 			this.tabs.Location = new System.Drawing.Point(10, 10);
 			this.tabs.Margin = new System.Windows.Forms.Padding(1);
 			this.tabs.Name = "tabs";
-			this.tabs.Padding = new System.Drawing.Point(24, 3);
+			this.tabs.Padding = new System.Drawing.Point(20, 3);
 			this.tabs.SelectedIndex = 0;
 			this.tabs.Size = new System.Drawing.Size(511, 504);
 			this.tabs.TabIndex = 1;
@@ -803,7 +817,7 @@
 			// 
 			// floorAngleControl
 			// 
-			this.floorAngleControl.Angle = 0;
+			this.floorAngleControl.Angle = -270;
 			this.floorAngleControl.AngleOffset = 90;
 			this.floorAngleControl.DoomAngleClamping = false;
 			this.floorAngleControl.Location = new System.Drawing.Point(6, 156);
@@ -1084,7 +1098,7 @@
 			// 
 			// ceilAngleControl
 			// 
-			this.ceilAngleControl.Angle = 0;
+			this.ceilAngleControl.Angle = -270;
 			this.ceilAngleControl.AngleOffset = 90;
 			this.ceilAngleControl.DoomAngleClamping = false;
 			this.ceilAngleControl.Location = new System.Drawing.Point(6, 156);
@@ -1261,6 +1275,8 @@
 			// 
 			// tabslopes
 			// 
+			this.tabslopes.Controls.Add(this.groupBox7);
+			this.tabslopes.Controls.Add(this.groupBox6);
 			this.tabslopes.Controls.Add(this.groupBox5);
 			this.tabslopes.Controls.Add(this.groupBox4);
 			this.tabslopes.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -1268,7 +1284,7 @@
 			this.tabslopes.Name = "tabslopes";
 			this.tabslopes.Size = new System.Drawing.Size(503, 478);
 			this.tabslopes.TabIndex = 3;
-			this.tabslopes.Text = "Slopes";
+			this.tabslopes.Text = "Slopes / Portals";
 			this.tabslopes.UseVisualStyleBackColor = true;
 			// 
 			// groupBox5
@@ -1276,16 +1292,16 @@
 			this.groupBox5.Controls.Add(this.floorslopecontrol);
 			this.groupBox5.Location = new System.Drawing.Point(3, 239);
 			this.groupBox5.Name = "groupBox5";
-			this.groupBox5.Size = new System.Drawing.Size(497, 230);
+			this.groupBox5.Size = new System.Drawing.Size(298, 230);
 			this.groupBox5.TabIndex = 1;
 			this.groupBox5.TabStop = false;
-			this.groupBox5.Text = " Floor ";
+			this.groupBox5.Text = " Floor slope ";
 			// 
 			// floorslopecontrol
 			// 
-			this.floorslopecontrol.Location = new System.Drawing.Point(6, 19);
+			this.floorslopecontrol.Location = new System.Drawing.Point(4, 19);
 			this.floorslopecontrol.Name = "floorslopecontrol";
-			this.floorslopecontrol.Size = new System.Drawing.Size(431, 178);
+			this.floorslopecontrol.Size = new System.Drawing.Size(290, 178);
 			this.floorslopecontrol.TabIndex = 0;
 			this.floorslopecontrol.UseLineAngles = false;
 			this.floorslopecontrol.OnUseLineAnglesChanged += new System.EventHandler(this.floorslopecontrol_OnUseLineAnglesChanged);
@@ -1298,16 +1314,16 @@
 			this.groupBox4.Controls.Add(this.ceilingslopecontrol);
 			this.groupBox4.Location = new System.Drawing.Point(3, 3);
 			this.groupBox4.Name = "groupBox4";
-			this.groupBox4.Size = new System.Drawing.Size(497, 230);
+			this.groupBox4.Size = new System.Drawing.Size(298, 230);
 			this.groupBox4.TabIndex = 0;
 			this.groupBox4.TabStop = false;
-			this.groupBox4.Text = " Ceiling ";
+			this.groupBox4.Text = " Ceiling slope ";
 			// 
 			// ceilingslopecontrol
 			// 
-			this.ceilingslopecontrol.Location = new System.Drawing.Point(6, 19);
+			this.ceilingslopecontrol.Location = new System.Drawing.Point(4, 19);
 			this.ceilingslopecontrol.Name = "ceilingslopecontrol";
-			this.ceilingslopecontrol.Size = new System.Drawing.Size(431, 178);
+			this.ceilingslopecontrol.Size = new System.Drawing.Size(290, 178);
 			this.ceilingslopecontrol.TabIndex = 1;
 			this.ceilingslopecontrol.UseLineAngles = false;
 			this.ceilingslopecontrol.OnUseLineAnglesChanged += new System.EventHandler(this.ceilingslopecontrol_OnUseLineAnglesChanged);
@@ -1396,6 +1412,154 @@
 			this.tooltip.InitialDelay = 10;
 			this.tooltip.ReshowDelay = 100;
 			// 
+			// groupBox6
+			// 
+			this.groupBox6.Controls.Add(this.ceilportalflags);
+			this.groupBox6.Controls.Add(this.label21);
+			this.groupBox6.Controls.Add(this.ceilportalalpha);
+			this.groupBox6.Controls.Add(this.ceilportalrenderstylelabel);
+			this.groupBox6.Controls.Add(this.ceilportalrenderstyle);
+			this.groupBox6.Location = new System.Drawing.Point(307, 3);
+			this.groupBox6.Name = "groupBox6";
+			this.groupBox6.Size = new System.Drawing.Size(193, 230);
+			this.groupBox6.TabIndex = 2;
+			this.groupBox6.TabStop = false;
+			this.groupBox6.Text = " Ceiling portal ";
+			// 
+			// ceilportalrenderstylelabel
+			// 
+			this.ceilportalrenderstylelabel.Location = new System.Drawing.Point(6, 26);
+			this.ceilportalrenderstylelabel.Name = "ceilportalrenderstylelabel";
+			this.ceilportalrenderstylelabel.Size = new System.Drawing.Size(72, 14);
+			this.ceilportalrenderstylelabel.TabIndex = 56;
+			this.ceilportalrenderstylelabel.Tag = "";
+			this.ceilportalrenderstylelabel.Text = "Render style:";
+			this.ceilportalrenderstylelabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// ceilportalrenderstyle
+			// 
+			this.ceilportalrenderstyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.ceilportalrenderstyle.FormattingEnabled = true;
+			this.ceilportalrenderstyle.Location = new System.Drawing.Point(84, 22);
+			this.ceilportalrenderstyle.Name = "ceilportalrenderstyle";
+			this.ceilportalrenderstyle.Size = new System.Drawing.Size(103, 21);
+			this.ceilportalrenderstyle.TabIndex = 55;
+			// 
+			// label21
+			// 
+			this.label21.Location = new System.Drawing.Point(6, 54);
+			this.label21.Name = "label21";
+			this.label21.Size = new System.Drawing.Size(72, 14);
+			this.label21.TabIndex = 58;
+			this.label21.Tag = "";
+			this.label21.Text = "Alpha:";
+			this.label21.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// ceilportalalpha
+			// 
+			this.ceilportalalpha.AllowDecimal = true;
+			this.ceilportalalpha.AllowNegative = false;
+			this.ceilportalalpha.AllowRelative = false;
+			this.ceilportalalpha.ButtonStep = 1;
+			this.ceilportalalpha.ButtonStepBig = 0.25F;
+			this.ceilportalalpha.ButtonStepFloat = 0.1F;
+			this.ceilportalalpha.ButtonStepSmall = 0.01F;
+			this.ceilportalalpha.ButtonStepsUseModifierKeys = true;
+			this.ceilportalalpha.ButtonStepsWrapAround = false;
+			this.ceilportalalpha.Location = new System.Drawing.Point(84, 49);
+			this.ceilportalalpha.Name = "ceilportalalpha";
+			this.ceilportalalpha.Size = new System.Drawing.Size(62, 24);
+			this.ceilportalalpha.StepValues = null;
+			this.ceilportalalpha.TabIndex = 57;
+			this.ceilportalalpha.Tag = "";
+			// 
+			// ceilportalflags
+			// 
+			this.ceilportalflags.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.ceilportalflags.AutoScroll = true;
+			this.ceilportalflags.Columns = 2;
+			this.ceilportalflags.Location = new System.Drawing.Point(6, 79);
+			this.ceilportalflags.Name = "ceilportalflags";
+			this.ceilportalflags.Size = new System.Drawing.Size(181, 145);
+			this.ceilportalflags.TabIndex = 59;
+			this.ceilportalflags.VerticalSpacing = 1;
+			// 
+			// groupBox7
+			// 
+			this.groupBox7.Controls.Add(this.floorportalflags);
+			this.groupBox7.Controls.Add(this.label22);
+			this.groupBox7.Controls.Add(this.floorportalalpha);
+			this.groupBox7.Controls.Add(this.floorportalrenderstylelabel);
+			this.groupBox7.Controls.Add(this.floorportalrenderstyle);
+			this.groupBox7.Location = new System.Drawing.Point(307, 239);
+			this.groupBox7.Name = "groupBox7";
+			this.groupBox7.Size = new System.Drawing.Size(193, 230);
+			this.groupBox7.TabIndex = 60;
+			this.groupBox7.TabStop = false;
+			this.groupBox7.Text = " Floor portal ";
+			// 
+			// floorportalflags
+			// 
+			this.floorportalflags.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.floorportalflags.AutoScroll = true;
+			this.floorportalflags.Columns = 2;
+			this.floorportalflags.Location = new System.Drawing.Point(6, 79);
+			this.floorportalflags.Name = "floorportalflags";
+			this.floorportalflags.Size = new System.Drawing.Size(181, 145);
+			this.floorportalflags.TabIndex = 59;
+			this.floorportalflags.VerticalSpacing = 1;
+			// 
+			// label22
+			// 
+			this.label22.Location = new System.Drawing.Point(6, 54);
+			this.label22.Name = "label22";
+			this.label22.Size = new System.Drawing.Size(72, 14);
+			this.label22.TabIndex = 58;
+			this.label22.Tag = "";
+			this.label22.Text = "Alpha:";
+			this.label22.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// floorportalalpha
+			// 
+			this.floorportalalpha.AllowDecimal = true;
+			this.floorportalalpha.AllowNegative = false;
+			this.floorportalalpha.AllowRelative = false;
+			this.floorportalalpha.ButtonStep = 1;
+			this.floorportalalpha.ButtonStepBig = 0.25F;
+			this.floorportalalpha.ButtonStepFloat = 0.1F;
+			this.floorportalalpha.ButtonStepSmall = 0.01F;
+			this.floorportalalpha.ButtonStepsUseModifierKeys = true;
+			this.floorportalalpha.ButtonStepsWrapAround = false;
+			this.floorportalalpha.Location = new System.Drawing.Point(84, 49);
+			this.floorportalalpha.Name = "floorportalalpha";
+			this.floorportalalpha.Size = new System.Drawing.Size(62, 24);
+			this.floorportalalpha.StepValues = null;
+			this.floorportalalpha.TabIndex = 57;
+			this.floorportalalpha.Tag = "";
+			// 
+			// floorportalrenderstylelabel
+			// 
+			this.floorportalrenderstylelabel.Location = new System.Drawing.Point(6, 26);
+			this.floorportalrenderstylelabel.Name = "floorportalrenderstylelabel";
+			this.floorportalrenderstylelabel.Size = new System.Drawing.Size(72, 14);
+			this.floorportalrenderstylelabel.TabIndex = 56;
+			this.floorportalrenderstylelabel.Tag = "";
+			this.floorportalrenderstylelabel.Text = "Render style:";
+			this.floorportalrenderstylelabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// floorportalrenderstyle
+			// 
+			this.floorportalrenderstyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.floorportalrenderstyle.FormattingEnabled = true;
+			this.floorportalrenderstyle.Location = new System.Drawing.Point(84, 22);
+			this.floorportalrenderstyle.Name = "floorportalrenderstyle";
+			this.floorportalrenderstyle.Size = new System.Drawing.Size(103, 21);
+			this.floorportalrenderstyle.TabIndex = 55;
+			// 
 			// SectorEditFormUDMF
 			// 
 			this.AcceptButton = this.apply;
@@ -1436,6 +1600,8 @@
 			this.groupBox4.ResumeLayout(false);
 			this.tabcomment.ResumeLayout(false);
 			this.tabcustom.ResumeLayout(false);
+			this.groupBox6.ResumeLayout(false);
+			this.groupBox7.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -1522,5 +1688,17 @@
 		private System.Windows.Forms.ComboBox damagetype;
 		private System.Windows.Forms.Button resetfloorterrain;
 		private System.Windows.Forms.Button resetceilterrain;
+		private System.Windows.Forms.GroupBox groupBox6;
+		private System.Windows.Forms.Label ceilportalrenderstylelabel;
+		private System.Windows.Forms.ComboBox ceilportalrenderstyle;
+		private System.Windows.Forms.Label label21;
+		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox ceilportalalpha;
+		private CodeImp.DoomBuilder.Controls.CheckboxArrayControl ceilportalflags;
+		private System.Windows.Forms.GroupBox groupBox7;
+		private CodeImp.DoomBuilder.Controls.CheckboxArrayControl floorportalflags;
+		private System.Windows.Forms.Label label22;
+		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox floorportalalpha;
+		private System.Windows.Forms.Label floorportalrenderstylelabel;
+		private System.Windows.Forms.ComboBox floorportalrenderstyle;
 	}
 }

@@ -36,13 +36,25 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private bool hexen = true;
 		private bool udmf = true;
 		private string description = "Unnamed field";
+		private string fieldname1;
+		private string fieldname2;
 
 		public bool DOOM { get { return doom; } set { doom = value; } }
 		public bool HEXEN { get { return hexen; } set { hexen = value; } }
 		public bool UDMF { get { return udmf; } set { udmf = value; } }
 		public string Description { get { return description; } set { description = value; } }
+		public string Field1 { get { return fieldname1; } set { fieldname1 = value; } }
+		public string Field2 { get { return fieldname2; } set { fieldname2 = value; } }
 
-		public bool SupportsCurrentMapFormat { get { return General.Map != null && (General.Map.DOOM && doom || General.Map.HEXEN && hexen || General.Map.UDMF && udmf); } }
+		public bool SupportsCurrentMapFormat
+		{
+			get
+			{
+				if(General.Map == null) return false;
+				if(!string.IsNullOrEmpty(fieldname1) || !string.IsNullOrEmpty(fieldname2)) return General.Map.UDMF;
+				return (General.Map.DOOM && doom || General.Map.HEXEN && hexen || General.Map.UDMF && udmf);
+			}
+		}
 	}
 
 	public abstract class MapElementPropertiesCopySettings
@@ -55,11 +67,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				foreach(Attribute attr in Attribute.GetCustomAttributes(prop))
 				{
-					if(attr.GetType() == typeof(FieldDescription))
-					{
-						FieldDescription fd = (FieldDescription)attr;
-						prop.SetValue(this, fd.SupportsCurrentMapFormat);
-					}
+					if(attr.GetType() != typeof(FieldDescription)) continue;
+					FieldDescription fd = (FieldDescription)attr;
+					prop.SetValue(this, fd.SupportsCurrentMapFormat);
 				}
 			}
 		}
@@ -87,6 +97,28 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					uifields.Add(group.Key, new UniValue(group.Value));
 				else
 					fields.Add(group.Key, new UniValue(group.Value));
+			}
+		}
+
+		protected void ApplyUIFields<T>(ICollection<T> collection, MapElementPropertiesCopySettings settings) where T : MapElement
+		{
+			FieldInfo[] props = settings.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
+			foreach(FieldInfo prop in props)
+			{
+				// Property set?
+				if(!(bool)prop.GetValue(settings)) continue;
+				foreach(Attribute attr in Attribute.GetCustomAttributes(prop))
+				{
+					if(attr.GetType() != typeof(FieldDescription)) continue;
+					FieldDescription fd = (FieldDescription)attr;
+					if(fd.SupportsCurrentMapFormat && !string.IsNullOrEmpty(fd.Field1))
+					{
+						if(!string.IsNullOrEmpty(fd.Field2))
+							foreach(T me in collection) Apply(me.Fields, fd.Field1, fd.Field2);
+						else
+							foreach(T me in collection) Apply(me.Fields, fd.Field1);
+					}
+				}
 			}
 		}
 
@@ -125,13 +157,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	//mxd
 	public class VertexPropertiesCopySettings : MapElementPropertiesCopySettings
 	{
-		[FieldDescription(Description = "Vertex Floor Height", DOOM = false, HEXEN = false)]
+		[FieldDescription(Description = "Vertex floor height", Field1 = "zfloor")]
 		public bool ZFloor = true;
-		
-		[FieldDescription(Description = "Vertex Ceiling Height", DOOM = false, HEXEN = false)]
+
+		[FieldDescription(Description = "Vertex ceiling height", Field1 = "zceiling")]
 		public bool ZCeiling = true;
 		
-		[FieldDescription(Description = "Custom Fields", DOOM = false, HEXEN = false)]
+		[FieldDescription(Description = "Custom fields", DOOM = false, HEXEN = false)]
 		public bool Fields = true;
 	}
 	
@@ -151,20 +183,23 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd. Applies coped properties
-		public void Apply(Vertex v, bool usecopysettings)
+		public void Apply(ICollection<Vertex> verts, bool usecopysettings)
 		{
-			Apply(v, (usecopysettings ? CopySettings : defaultsettings));
+			Apply(verts, (usecopysettings ? CopySettings : defaultsettings));
 		}
 
 		//mxd. Applies coped properties using selected settings
-		public void Apply(Vertex v, VertexPropertiesCopySettings settings)
+		public void Apply(ICollection<Vertex> verts, VertexPropertiesCopySettings settings)
 		{
-			if(settings.ZCeiling) v.ZCeiling = zceiling;
-			if(settings.ZFloor) v.ZFloor = zfloor;
-			if(settings.Fields)
+			foreach(Vertex v in verts)
 			{
-				v.Fields.BeforeFieldsChange();
-				ApplyCustomFields(v.Fields);
+				if(settings.ZCeiling) v.ZCeiling = zceiling;
+				if(settings.ZFloor) v.ZFloor = zfloor;
+				if(settings.Fields)
+				{
+					v.Fields.BeforeFieldsChange();
+					ApplyCustomFields(v.Fields);
+				}
 			}
 		}
 	}
@@ -176,62 +211,80 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	//mxd
 	public class SectorPropertiesCopySettings : MapElementPropertiesCopySettings
 	{
-		[FieldDescription(Description = "Floor Height")]
+		[FieldDescription(Description = "Floor height")]
 		public bool FloorHeight = true;
 		
-		[FieldDescription(Description = "Ceiling Height")]
+		[FieldDescription(Description = "Ceiling height")]
 		public bool CeilingHeight = true;
 		
-		[FieldDescription(Description = "Floor Texture")]
+		[FieldDescription(Description = "Floor texture")]
 		public bool FloorTexture = true;
 		
-		[FieldDescription(Description = "Ceiling Texture")]
+		[FieldDescription(Description = "Ceiling texture")]
 		public bool CeilingTexture = true;
 
-		[FieldDescription(Description = "Floor Texture Offset", DOOM = false, HEXEN = false)]
+		[FieldDescription(Description = "Floor texture offsets", Field1 = "xpanningfloor", Field2 = "ypanningfloor")]
 		public bool FloorTextureOffset = true;
 
-		[FieldDescription(Description = "Ceiling Texture Offset", DOOM = false, HEXEN = false)]
+		[FieldDescription(Description = "Ceiling texture offsets", Field1 = "xpanningceiling", Field2 = "ypanningceiling")]
 		public bool CeilingTextureOffset = true;
 
-		[FieldDescription(Description = "Floor Texture Scale", DOOM = false, HEXEN = false)]
+		[FieldDescription(Description = "Floor texture scale", Field1 = "xscalefloor", Field2 = "yscalefloor")]
 		public bool FloorTextureScale = true;
 
-		[FieldDescription(Description = "Ceiling Texture Scale", DOOM = false, HEXEN = false)]
+		[FieldDescription(Description = "Ceiling texture scale", Field1 = "xscaleceiling", Field2 = "yscaleceiling")]
 		public bool CeilingTextureScale = true;
 
-		[FieldDescription(Description = "Floor Texture Rotation", DOOM = false, HEXEN = false)]
+		[FieldDescription(Description = "Floor texture rotation", Field1 = "rotationfloor")]
 		public bool FloorTextureRotation = true;
 
-		[FieldDescription(Description = "Ceiling Texture Rotation", DOOM = false, HEXEN = false)]
+		[FieldDescription(Description = "Ceiling texture rotation", Field1 = "rotationceiling")]
 		public bool CeilingTextureRotation = true;
 
-		[FieldDescription(Description = "Floor Alpha", DOOM = false, HEXEN = false)]
+		[FieldDescription(Description = "Floor alpha", Field1 = "alphafloor")]
 		public bool FloorAlpha = true;
 
-		[FieldDescription(Description = "Ceiling Alpha", DOOM = false, HEXEN = false)]
+		[FieldDescription(Description = "Ceiling alpha", Field1 = "alphaceiling")]
 		public bool CeilingAlpha = true;
 
-		[FieldDescription(Description = "Sector Brightness")]
+		[FieldDescription(Description = "Floor portal alpha", Field1 = "portal_floor_alpha")]
+		public bool FloorPortalAlpha = true;
+
+		[FieldDescription(Description = "Ceiling portal alpha", Field1 = "portal_ceil_alpha")]
+		public bool CeilingPortalAlpha = true;
+
+		[FieldDescription(Description = "Sector brightness")]
 		public bool Brightness = true;
 
-		[FieldDescription(Description = "Floor Brightness", DOOM = false, HEXEN = false)]
+		[FieldDescription(Description = "Floor brightness", Field1 = "lightfloor", Field2 = "lightfloorabsolute")]
 		public bool FloorBrightness = true;
 
-		[FieldDescription(Description = "Ceiling Brightness", DOOM = false, HEXEN = false)]
+		[FieldDescription(Description = "Ceiling brightness", Field1 = "lightceiling", Field2 = "lightceilingabsolute")]
 		public bool CeilingBrightness = true;
 
-		[FieldDescription(Description = "Floor Render Style", DOOM = false, HEXEN = false)]
+		[FieldDescription(Description = "Floor render style", Field1 = "renderstylefloor")]
 		public bool FloorRenderStyle = true;
 
-		[FieldDescription(Description = "Ceiling Render Style", DOOM = false, HEXEN = false)]
+		[FieldDescription(Description = "Ceiling render style", Field1 = "renderstyleceiling")]
 		public bool CeilingRenderStyle = true;
+
+		[FieldDescription(Description = "Floor portal render style", Field1 = "portal_floor_overlaytype")]
+		public bool FloorPortalRenderStyle = true;
+
+		[FieldDescription(Description = "Ceiling portal render style", Field1 = "portal_ceil_overlaytype")]
+		public bool CeilingPortalRenderStyle = true;
 		
-		[FieldDescription(Description = "Floor Slope", DOOM = false, HEXEN = false)]
+		[FieldDescription(Description = "Floor slope", DOOM = false, HEXEN = false)]
 		public bool FloorSlope = true;
 
-		[FieldDescription(Description = "Ceiling Slope", DOOM = false, HEXEN = false)]
+		[FieldDescription(Description = "Ceiling slope", DOOM = false, HEXEN = false)]
 		public bool CeilingSlope = true;
+
+		[FieldDescription(Description = "Floor terrain", Field1 = "floorterrain")]
+		public bool FloorTerrain = true;
+
+		[FieldDescription(Description = "Ceiling terrain", Field1 = "ceilingterrain")]
+		public bool CeilingTerrain = true;
 		
 		[FieldDescription(Description = "Tags")]
 		public bool Tag = true;
@@ -242,25 +295,37 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[FieldDescription(Description = "Flags", DOOM = false, HEXEN = false)]
 		public bool Flags = true;
 
-		[FieldDescription(Description = "Light Color", DOOM = false, HEXEN = false)]
+		[FieldDescription(Description = "Light color", Field1 = "lightcolor")]
 		public bool LightColor = true;
 
-		[FieldDescription(Description = "Fade Color", DOOM = false, HEXEN = false)]
+		[FieldDescription(Description = "Fade color", Field1 = "fadecolor")]
 		public bool FadeColor = true;
 
-		[FieldDescription(Description = "Desaturation", DOOM = false, HEXEN = false)]
+		[FieldDescription(Description = "Desaturation", Field1 = "desaturation")]
 		public bool Desaturation = true;
 
-		[FieldDescription(Description = "Sound Sequence", DOOM = false, HEXEN = false)]
+		[FieldDescription(Description = "Damage type", Field1 = "damagetype")]
+		public bool DamageType = true;
+
+		[FieldDescription(Description = "Damage amount", Field1 = "damageamount")]
+		public bool DamageAmount = true;
+
+		[FieldDescription(Description = "Damage interval", Field1 = "damageinterval")]
+		public bool DamageInterval = true;
+
+		[FieldDescription(Description = "Damage leakiness", Field1 = "leakiness")]
+		public bool DamageLeakiness = true;
+
+		[FieldDescription(Description = "Sound sequence", Field1 = "soundsequence")]
 		public bool SoundSequence = true;
 
-		[FieldDescription(Description = "Gravity", DOOM = false, HEXEN = false)]
+		[FieldDescription(Description = "Gravity", Field1 = "gravity")]
 		public bool Gravity = true;
 		
-		[FieldDescription(Description = "Custom Fields", DOOM = false, HEXEN = false)]
+		[FieldDescription(Description = "Custom fields", DOOM = false, HEXEN = false)]
 		public bool Fields = true;
 
-		[FieldDescription(Description = "Comment", DOOM = false, HEXEN = false)]
+		[FieldDescription(Description = "Comment", Field1 = "comment")]
 		public bool Comment = true;
 	}
 
@@ -301,66 +366,53 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 		
 		//mxd. Applies coped properties
-		public void Apply(Sector s, bool usecopysettings)
+		public void Apply(ICollection<Sector> sectors, bool usecopysettings)
 		{
-			Apply(s, (usecopysettings ? CopySettings : defaultsettings));
+			Apply(sectors, (usecopysettings ? CopySettings : defaultsettings));
 		}
 
 		//mxd. Applies coped properties using selected settings
-		public void Apply(Sector s, SectorPropertiesCopySettings settings)
+		public void Apply(ICollection<Sector> sectors, SectorPropertiesCopySettings settings)
 		{
-			if(settings.FloorHeight) s.FloorHeight = floorheight;
-			if(settings.CeilingHeight) s.CeilHeight = ceilheight;
-			if(settings.FloorTexture) s.SetFloorTexture(floortexture);
-			if(settings.CeilingTexture) s.SetCeilTexture(ceilingtexture);
-			if(settings.Brightness) s.Brightness = brightness;
-			if(settings.Tag) s.Tags = new List<int>(tags); //mxd
-			if(settings.Special) s.Effect = effect;
-			if(settings.CeilingSlope) 
+			foreach(Sector s in sectors)
 			{
-				s.CeilSlopeOffset = ceilslopeoffset;
-				s.CeilSlope = ceilslope;
-			}
-			if(settings.FloorSlope) 
-			{
-				s.FloorSlopeOffset = floorslopeoffset;
-				s.FloorSlope = floorslope;
-			}
-			if(settings.Flags) 
-			{
-				s.ClearFlags(); //mxd
-				foreach(KeyValuePair<string, bool> f in flags) //mxd
-					s.SetFlag(f.Key, f.Value);
+				if(settings.FloorHeight) s.FloorHeight = floorheight;
+				if(settings.CeilingHeight) s.CeilHeight = ceilheight;
+				if(settings.FloorTexture) s.SetFloorTexture(floortexture);
+				if(settings.CeilingTexture) s.SetCeilTexture(ceilingtexture);
+				if(settings.Brightness) s.Brightness = brightness;
+				if(settings.Tag) s.Tags = new List<int>(tags); //mxd
+				if(settings.Special) s.Effect = effect;
+				if(settings.CeilingSlope)
+				{
+					s.CeilSlopeOffset = ceilslopeoffset;
+					s.CeilSlope = ceilslope;
+				}
+				if(settings.FloorSlope)
+				{
+					s.FloorSlopeOffset = floorslopeoffset;
+					s.FloorSlope = floorslope;
+				}
+				if(settings.Flags)
+				{
+					s.ClearFlags(); //mxd
+					foreach(KeyValuePair<string, bool> f in flags) //mxd
+						s.SetFlag(f.Key, f.Value);
+				}
 			}
 
 			// Should we bother?
 			if(!General.Map.UDMF) return;
 
-			// Apply fields
-			s.Fields.BeforeFieldsChange();
+			// Apply custom fields
+			foreach(Sector s in sectors)
+			{
+				s.Fields.BeforeFieldsChange();
+				if(settings.Fields) ApplyCustomFields(s.Fields);
+			}
 
 			// Apply UI fields
-			if(settings.FloorTextureOffset)     Apply(s.Fields, "xpanningfloor", "ypanningfloor");
-			if(settings.CeilingTextureOffset)   Apply(s.Fields, "xpanningceiling", "ypanningceiling");
-			if(settings.FloorTextureScale)      Apply(s.Fields, "xscalefloor", "yscalefloor");
-			if(settings.CeilingTextureScale)    Apply(s.Fields, "xscaleceiling", "yscaleceiling");
-			if(settings.FloorTextureRotation)   Apply(s.Fields, "rotationfloor");
-			if(settings.CeilingTextureRotation) Apply(s.Fields, "rotationceiling");
-			if(settings.FloorBrightness)        Apply(s.Fields, "lightfloor", "lightfloorabsolute");
-			if(settings.CeilingBrightness)      Apply(s.Fields, "lightceiling", "lightceilingabsolute");
-			if(settings.FloorAlpha)				Apply(s.Fields, "alphafloor");
-			if(settings.CeilingAlpha)			Apply(s.Fields, "alphaceiling");
-			if(settings.FloorRenderStyle)		Apply(s.Fields, "renderstylefloor");
-			if(settings.CeilingRenderStyle)		Apply(s.Fields, "renderstyleceiling");
-			if(settings.Gravity)				Apply(s.Fields, "gravity");
-			if(settings.LightColor)				Apply(s.Fields, "lightcolor");
-			if(settings.FadeColor)				Apply(s.Fields, "fadecolor");
-			if(settings.Desaturation)			Apply(s.Fields, "desaturation");
-			if(settings.SoundSequence)			Apply(s.Fields, "soundsequence");
-			if(settings.Comment)				Apply(s.Fields, "comment");
-
-			// Apply custom fields
-			if(settings.Fields) ApplyCustomFields(s.Fields);
+			ApplyUIFields(sectors, settings);
 		}
 	}
 
@@ -371,46 +423,46 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	//mxd
 	public class SidedefPropertiesCopySettings : MapElementPropertiesCopySettings
 	{
-		[FieldDescription(Description = "Upper Texture")]
+		[FieldDescription(Description = "Upper texture")]
 		public bool UpperTexture = true;
 		
-		[FieldDescription(Description = "Middle Texture")]
+		[FieldDescription(Description = "Middle texture")]
 		public bool MiddleTexture = true;
 		
-		[FieldDescription(Description = "Lower Texture")]
+		[FieldDescription(Description = "Lower texture")]
 		public bool LowerTexture = true;
 		
-		[FieldDescription(Description = "Texture Offset X")]
+		[FieldDescription(Description = "Texture offset X")]
 		public bool OffsetX = true;
 		
-		[FieldDescription(Description = "Texture Offset Y")]
+		[FieldDescription(Description = "Texture offset Y")]
 		public bool OffsetY = true;
 
-		[FieldDescription(Description = "Upper Texture Offset", DOOM = false, HEXEN = false)]
+		[FieldDescription(Description = "Upper texture offsets", Field1 = "offsetx_top", Field2 = "offsety_top")]
 		public bool UpperTextureOffset = true;
 
-		[FieldDescription(Description = "Middle Texture Offset", DOOM = false, HEXEN = false)]
+		[FieldDescription(Description = "Middle texture offsets", Field1 = "offsetx_mid", Field2 = "offsety_mid")]
 		public bool MiddleTextureOffset = true;
 
-		[FieldDescription(Description = "Lower Texture Offset", DOOM = false, HEXEN = false)]
+		[FieldDescription(Description = "Lower texture offsets", Field1 = "offsetx_bottom", Field2 = "offsety_bottom")]
 		public bool LowerTextureOffset = true;
 
-		[FieldDescription(Description = "Upper Texture Scale", DOOM = false, HEXEN = false)]
+		[FieldDescription(Description = "Upper texture scale", Field1 = "scalex_top", Field2 = "scaley_top")]
 		public bool UpperTextureScale = true;
 
-		[FieldDescription(Description = "Middle Texture Scale", DOOM = false, HEXEN = false)]
+		[FieldDescription(Description = "Middle texture scale", Field1 = "scalex_mid", Field2 = "scaley_mid")]
 		public bool MiddleTextureScale = true;
 
-		[FieldDescription(Description = "Lower Texture Scale", DOOM = false, HEXEN = false)]
+		[FieldDescription(Description = "Lower texture scale", Field1 = "scalex_bottom", Field2 = "scaley_bottom")]
 		public bool LowerTextureScale = true;
 
-		[FieldDescription(Description = "Brightness", DOOM = false, HEXEN = false)]
+		[FieldDescription(Description = "Brightness", Field1 = "light", Field2 = "lightabsolute")]
 		public bool Brightness = true;
 		
 		[FieldDescription(Description = "Flags", DOOM = false, HEXEN = false)]
 		public bool Flags = true;
 		
-		[FieldDescription(Description = "Custom Fields", DOOM = false, HEXEN = false)]
+		[FieldDescription(Description = "Custom fields", DOOM = false, HEXEN = false)]
 		public bool Fields = true;
 	}
 
@@ -439,43 +491,41 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd. Applies coped properties with all settings enabled
-		public void Apply(Sidedef s, bool usecopysettings)
+		public void Apply(ICollection<Sidedef> sides, bool usecopysettings)
 		{
-			Apply(s, (usecopysettings ? CopySettings : DefaultSettings));
+			Apply(sides, (usecopysettings ? CopySettings : DefaultSettings));
 		}
 
 		//mxd. Applies selected settings
-		public void Apply(Sidedef s, SidedefPropertiesCopySettings settings)
+		public void Apply(ICollection<Sidedef> sides, SidedefPropertiesCopySettings settings)
 		{
-			if(settings.UpperTexture) s.SetTextureHigh(hightexture);
-			if(settings.MiddleTexture) s.SetTextureMid(middletexture);
-			if(settings.LowerTexture) s.SetTextureLow(lowtexture);
-			if(settings.OffsetX) s.OffsetX = offsetx;
-			if(settings.OffsetY) s.OffsetY = offsety;
-			if(settings.Flags)
+			foreach(Sidedef s in sides)
 			{
-				s.ClearFlags(); //mxd
-				foreach(KeyValuePair<string, bool> f in flags) //mxd
-					s.SetFlag(f.Key, f.Value);
+				if(settings.UpperTexture) s.SetTextureHigh(hightexture);
+				if(settings.MiddleTexture) s.SetTextureMid(middletexture);
+				if(settings.LowerTexture) s.SetTextureLow(lowtexture);
+				if(settings.OffsetX) s.OffsetX = offsetx;
+				if(settings.OffsetY) s.OffsetY = offsety;
+				if(settings.Flags)
+				{
+					s.ClearFlags(); //mxd
+					foreach(KeyValuePair<string, bool> f in flags) //mxd
+						s.SetFlag(f.Key, f.Value);
+				}
 			}
 
 			// Should we bother?
 			if(!General.Map.UDMF) return;
 
 			// Apply fields
-			s.Fields.BeforeFieldsChange();
+			foreach(Sidedef s in sides)
+			{
+				s.Fields.BeforeFieldsChange();
+				if(settings.Fields) ApplyCustomFields(s.Fields);
+			}
 
 			// Apply UI fields
-			if(settings.UpperTextureOffset)  Apply(s.Fields, "offsetx_top", "offsety_top");
-			if(settings.MiddleTextureOffset) Apply(s.Fields, "offsetx_mid", "offsety_mid");
-			if(settings.LowerTextureOffset)  Apply(s.Fields, "offsetx_bottom", "offsety_bottom");
-			if(settings.UpperTextureScale)   Apply(s.Fields, "scalex_top", "scaley_top");
-			if(settings.MiddleTextureScale)  Apply(s.Fields, "scalex_mid", "scaley_mid");
-			if(settings.LowerTextureScale)   Apply(s.Fields, "scalex_bottom", "scaley_bottom");
-			if(settings.Brightness)			 Apply(s.Fields, "light", "lightabsolute");
-
-			// Apply custom fields
-			if(settings.Fields) ApplyCustomFields(s.Fields);
+			ApplyUIFields(sides, settings);
 		}
 	}
 
@@ -489,7 +539,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[FieldDescription(Description = "Action")]
 		public bool Action = true;
 		
-		[FieldDescription(Description = "Action Arguments", DOOM = false)]
+		[FieldDescription(Description = "Action arguments", DOOM = false)]
 		public bool Arguments = true;
 		
 		[FieldDescription(Description = "Activation", DOOM = false, UDMF = false)]
@@ -501,19 +551,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[FieldDescription(Description = "Flags")]
 		public bool Flags = true;
 
-		[FieldDescription(Description = "Alpha", DOOM = false, HEXEN = false)]
+		[FieldDescription(Description = "Alpha", Field1 = "alpha")]
 		public bool Alpha = true;
 
-		[FieldDescription(Description = "Render Style", DOOM = false, HEXEN = false)]
+		[FieldDescription(Description = "Render style", Field1 = "renderstyle")]
 		public bool RenderStyle = true;
 
-		[FieldDescription(Description = "Lock Number", DOOM = false, HEXEN = false)]
+		[FieldDescription(Description = "Lock number", Field1 = "locknumber")]
 		public bool LockNumber = true;
 		
-		[FieldDescription(Description = "Custom Fields", DOOM = false, HEXEN = false)]
+		[FieldDescription(Description = "Custom fields", DOOM = false, HEXEN = false)]
 		public bool Fields = true;
 
-		[FieldDescription(Description = "Comment", DOOM = false, HEXEN = false)]
+		[FieldDescription(Description = "Comment", Field1 = "comment")]
 		public bool Comment = true;
 	}
 
@@ -545,64 +595,74 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd. Applies coped properties with all settings enabled
-		public void Apply(Linedef l, bool usecopysettings) { Apply(l, usecopysettings, true); }
-		public void Apply(Linedef l, bool usecopysettings, bool applytosidedefs)
+		public void Apply(ICollection<Linedef> lines, bool usecopysettings) { Apply(lines, usecopysettings, true); }
+		public void Apply(ICollection<Linedef> lines, bool usecopysettings, bool applytosidedefs)
 		{
 			if(usecopysettings)
-				Apply(l, CopySettings, (applytosidedefs ? SidedefProperties.CopySettings : null));
+				Apply(lines, CopySettings, (applytosidedefs ? SidedefProperties.CopySettings : null));
 			else
-				Apply(l, defaultsettings, (applytosidedefs ? SidedefProperties.DefaultSettings : null));
+				Apply(lines, defaultsettings, (applytosidedefs ? SidedefProperties.DefaultSettings : null));
 		}
 
 		//mxd. Applies selected linededf and sidedef settings
-		public void Apply(Linedef l, LinedefPropertiesCopySettings settings, SidedefPropertiesCopySettings sidesettings)
+		public void Apply(ICollection<Linedef> lines, LinedefPropertiesCopySettings settings, SidedefPropertiesCopySettings sidesettings)
 		{
-			if(sidesettings != null)
+			List<Sidedef> frontsides = new List<Sidedef>(lines.Count);
+			List<Sidedef> backsides = new List<Sidedef>(lines.Count);
+			foreach(Linedef l in lines)
 			{
-				if((front != null) && (l.Front != null)) front.Apply(l.Front, sidesettings);
-				if((back != null) && (l.Back != null)) back.Apply(l.Back, sidesettings);
-			}
-			if(settings.Flags) 
-			{
-				l.ClearFlags();
-				foreach(KeyValuePair<string, bool> f in flags)
-					l.SetFlag(f.Key, f.Value);
-			}
-			if(settings.Activation) l.Activate = activate;
-			if(settings.Tag) l.Tags = new List<int>(tags); //mxd
-			if(settings.Action) l.Action = action;
-			if(settings.Arguments)
-			{
-				for(int i = 0; i < l.Args.Length; i++)
-					l.Args[i] = args[i];
+				if(settings.Flags)
+				{
+					l.ClearFlags();
+					foreach(KeyValuePair<string, bool> f in flags)
+						l.SetFlag(f.Key, f.Value);
+				}
+				if(settings.Activation) l.Activate = activate;
+				if(settings.Tag) l.Tags = new List<int>(tags); //mxd
+				if(settings.Action) l.Action = action;
+				if(settings.Arguments)
+				{
+					for(int i = 0; i < l.Args.Length; i++)
+						l.Args[i] = args[i];
+				}
+
+				if(l.Front != null) frontsides.Add(l.Front);
+				if(l.Back != null) backsides.Add(l.Back);
 			}
 
 			// Should we bother?
 			if(!General.Map.UDMF) return;
 
 			// Apply fields
-			l.Fields.BeforeFieldsChange();
-
-			// Apply string arguments
-			if(settings.Arguments)
+			foreach(Linedef l in lines)
 			{
-				Apply(l.Fields, "arg0str");
+				l.Fields.BeforeFieldsChange();
+				
+				// Apply string arguments
+				if(settings.Arguments)
+				{
+					Apply(l.Fields, "arg0str");
 
-				//TODO: re-enable when UI part is ready
-				//Apply(l.Fields, "arg1str");
-				//Apply(l.Fields, "arg2str");
-				//Apply(l.Fields, "arg3str");
-				//Apply(l.Fields, "arg4str");
+					//TODO: re-enable when UI part is ready
+					//Apply(l.Fields, "arg1str");
+					//Apply(l.Fields, "arg2str");
+					//Apply(l.Fields, "arg3str");
+					//Apply(l.Fields, "arg4str");
+				}
+
+				// Apply custom fields
+				if(settings.Fields) ApplyCustomFields(l.Fields);
 			}
 
 			// Apply UI fields
-			if(settings.Alpha)		 Apply(l.Fields, "alpha");
-			if(settings.RenderStyle) Apply(l.Fields, "renderstyle");
-			if(settings.LockNumber)  Apply(l.Fields, "locknumber");
-			if(settings.Comment)	 Apply(l.Fields, "comment");
+			ApplyUIFields(lines, settings);
 
-			// Apply custom fields
-			if(settings.Fields) ApplyCustomFields(l.Fields);
+			// Apply sidedef settings
+			if(sidesettings != null)
+			{
+				if(front != null) front.Apply(frontsides, sidesettings);
+				if(back != null) back.Apply(backsides, sidesettings);
+			}
 		}
 	}
 
@@ -619,7 +679,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[FieldDescription(Description = "Angle")]
 		public bool Angle = true;
 
-		[FieldDescription(Description = "Z Height", DOOM = false)]
+		[FieldDescription(Description = "Z-height", DOOM = false)]
 		public bool ZHeight = true;
 		
 		[FieldDescription(Description = "Pitch", DOOM = false, HEXEN = false)]
@@ -634,7 +694,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[FieldDescription(Description = "Action", DOOM = false)]
 		public bool Action = true;
 		
-		[FieldDescription(Description = "Action Arguments", DOOM = false)]
+		[FieldDescription(Description = "Action arguments", DOOM = false)]
 		public bool Arguments = true;
 		
 		[FieldDescription(Description = "Tag", DOOM = false)]
@@ -643,31 +703,34 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[FieldDescription(Description = "Flags")]
 		public bool Flags = true;
 
-		[FieldDescription(Description = "Conversation ID", DOOM = false, HEXEN = false)]
+		[FieldDescription(Description = "Conversation ID", Field1 = "conversation")]
 		public bool Conversation = true;
 
-		[FieldDescription(Description = "Gravity", DOOM = false, HEXEN = false)]
+		[FieldDescription(Description = "Gravity", Field1 = "gravity")]
 		public bool Gravity = true;
 
-		[FieldDescription(Description = "Health Multiplier", DOOM = false, HEXEN = false)]
+		[FieldDescription(Description = "Health multiplier", Field1 = "health")]
 		public bool Health = true;
 
-		[FieldDescription(Description = "Score", DOOM = false, HEXEN = false)]
+		[FieldDescription(Description = "Score", Field1 = "score")]
 		public bool Score = true;
 
-		[FieldDescription(Description = "Alpha", DOOM = false, HEXEN = false)]
+		[FieldDescription(Description = "Float bob phase", Field1 = "floatbobphase")]
+		public bool FloatBobPhase = true;
+
+		[FieldDescription(Description = "Alpha", Field1 = "alpha")]
 		public bool Alpha = true;
 
-		[FieldDescription(Description = "Fill Color", DOOM = false, HEXEN = false)]
+		[FieldDescription(Description = "Fill color", Field1 = "fillcolor")]
 		public bool FillColor = true;
 
-		[FieldDescription(Description = "Render Style", DOOM = false, HEXEN = false)]
+		[FieldDescription(Description = "Render style", Field1 = "renderstyle")]
 		public bool RenderStyle = true;
 		
-		[FieldDescription(Description = "Custom Fields", DOOM = false, HEXEN = false)]
+		[FieldDescription(Description = "Custom fields", DOOM = false, HEXEN = false)]
 		public bool Fields = true;
 
-		[FieldDescription(Description = "Comment", DOOM = false, HEXEN = false)]
+		[FieldDescription(Description = "Comment", Field1 = "comment")]
 		public bool Comment = true;
 	}
 	
@@ -706,64 +769,63 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd. Applies coped properties with all settings enabled
-		public void Apply(Thing t, bool usecopysettings)
+		public void Apply(ICollection<Thing> things, bool usecopysettings)
 		{
-			Apply(t, (usecopysettings ? CopySettings : defaultsettings));
+			Apply(things, (usecopysettings ? CopySettings : defaultsettings));
 		}
 		
 		//mxd. Applies selected settings
-		public void Apply(Thing t, ThingPropertiesCopySettings settings)
+		public void Apply(ICollection<Thing> things, ThingPropertiesCopySettings settings)
 		{
-			if(settings.Type) t.Type = type;
-			if(settings.Angle) t.Rotate(angle);
-			if(settings.ZHeight) t.Move(t.Position.x, t.Position.y, zheight);
-			if(settings.Pitch) t.SetPitch(pitch);
-			if(settings.Roll) t.SetRoll(roll);
-			if(settings.Scale) t.SetScale(scalex, scaley);
-			if(settings.Flags) 
+			foreach(Thing t in things)
 			{
-				t.ClearFlags();
-				foreach(KeyValuePair<string, bool> f in flags)
-					t.SetFlag(f.Key, f.Value);
-			}
-			if(settings.Tag) t.Tag = tag;
-			if(settings.Action) t.Action = action;
-			if(settings.Arguments)
-			{
-				for(int i = 0; i < t.Args.Length; i++)
-					t.Args[i] = args[i];
+				if(settings.Type) t.Type = type;
+				if(settings.Angle) t.Rotate(angle);
+				if(settings.ZHeight) t.Move(t.Position.x, t.Position.y, zheight);
+				if(settings.Pitch) t.SetPitch(pitch);
+				if(settings.Roll) t.SetRoll(roll);
+				if(settings.Scale) t.SetScale(scalex, scaley);
+				if(settings.Flags)
+				{
+					t.ClearFlags();
+					foreach(KeyValuePair<string, bool> f in flags)
+						t.SetFlag(f.Key, f.Value);
+				}
+				if(settings.Tag) t.Tag = tag;
+				if(settings.Action) t.Action = action;
+				if(settings.Arguments)
+				{
+					for(int i = 0; i < t.Args.Length; i++)
+						t.Args[i] = args[i];
+				}
 			}
 
 			// Should we bother?
 			if(!General.Map.UDMF) return;
 
-			// Apply fields
-			t.Fields.BeforeFieldsChange();
-
-			// Apply string arguments
-			if(settings.Arguments)
+			foreach(Thing t in things)
 			{
-				Apply(t.Fields, "arg0str");
+				// Apply fields
+				t.Fields.BeforeFieldsChange();
 
-				//TODO: re-enable when UI part is ready
-				//Apply(t.Fields, "arg1str");
-				//Apply(t.Fields, "arg2str");
-				//Apply(t.Fields, "arg3str");
-				//Apply(t.Fields, "arg4str");
+				// Apply string arguments
+				if(settings.Arguments)
+				{
+					Apply(t.Fields, "arg0str");
+
+					//TODO: re-enable when UI part is ready
+					//Apply(t.Fields, "arg1str");
+					//Apply(t.Fields, "arg2str");
+					//Apply(t.Fields, "arg3str");
+					//Apply(t.Fields, "arg4str");
+				}
+
+				// Apply custom fields
+				if(settings.Fields) ApplyCustomFields(t.Fields);
 			}
 
 			// Apply UI fields
-			if(settings.Conversation) Apply(t.Fields, "conversation");
-			if(settings.Gravity)	  Apply(t.Fields, "gravity");
-			if(settings.Health)		  Apply(t.Fields, "health");
-			if(settings.FillColor)	  Apply(t.Fields, "fillcolor");
-			if(settings.Alpha)		  Apply(t.Fields, "alpha");
-			if(settings.Score)		  Apply(t.Fields, "score");
-			if(settings.RenderStyle)  Apply(t.Fields, "renderstyle");
-			if(settings.Comment)	  Apply(t.Fields, "comment");
-
-			// Apply custom fields
-			if(settings.Fields) ApplyCustomFields(t.Fields);
+			ApplyUIFields(things, settings);
 		}
 	}
 
@@ -822,24 +884,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(!General.Map.UDMF) return true;
 
 			// UI fields
-			if(flags.FloorTextureOffset && !UniFields.ValuesMatch("xpanningfloor", "ypanningfloor", source, target)) return false;
-			if(flags.CeilingTextureOffset && !UniFields.ValuesMatch("xpanningceiling", "ypanningceiling", source, target)) return false;
-			if(flags.FloorTextureScale && !UniFields.ValuesMatch("xscalefloor", "yscalefloor", source, target)) return false;
-			if(flags.CeilingTextureScale && !UniFields.ValuesMatch("xscaleceiling", "yscaleceiling", source, target)) return false;
-			if(flags.FloorTextureRotation && !UniFields.ValuesMatch("rotationfloor", source, target)) return false;
-			if(flags.CeilingTextureRotation && !UniFields.ValuesMatch("rotationceiling", source, target)) return false;
-			if(flags.FloorBrightness && !UniFields.ValuesMatch("lightfloor", "lightfloorabsolute", source, target)) return false;
-			if(flags.CeilingBrightness && !UniFields.ValuesMatch("lightceiling", "lightceilingabsolute", source, target)) return false;
-			if(flags.FloorAlpha && !UniFields.ValuesMatch("alphafloor", source, target)) return false;
-			if(flags.CeilingAlpha && !UniFields.ValuesMatch("alphaceiling", source, target)) return false;
-			if(flags.FloorRenderStyle && !UniFields.ValuesMatch("renderstylefloor", source, target)) return false;
-			if(flags.CeilingRenderStyle && !UniFields.ValuesMatch("renderstyleceiling", source, target)) return false;
-			if(flags.Gravity && !UniFields.ValuesMatch("gravity", source, target)) return false;
-			if(flags.LightColor && !UniFields.ValuesMatch("lightcolor", source, target)) return false;
-			if(flags.FadeColor && !UniFields.ValuesMatch("fadecolor", source, target)) return false;
-			if(flags.Desaturation && !UniFields.ValuesMatch("desaturation", source, target)) return false;
-			if(flags.SoundSequence && !UniFields.ValuesMatch("soundsequence", source, target)) return false;
-			if(flags.Comment && !UniFields.ValuesMatch("comment", source, target)) return false;
+			if(!UIFieldsMatch(flags, source, target)) return false;
 
 			// Custom fields
 			return !flags.Fields || UniFields.CustomFieldsMatch(source.Fields, target.Fields);
@@ -876,10 +921,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(General.Map.UDMF)
 			{
 				// UI fields
-				if(linedefflags.Alpha && !UniFields.ValuesMatch("alpha", source, target)) return false;
-				if(linedefflags.RenderStyle && !UniFields.ValuesMatch("renderstyle", source, target)) return false;
-				if(linedefflags.LockNumber && !UniFields.ValuesMatch("locknumber", source, target)) return false;
-				if(linedefflags.Comment && !UniFields.ValuesMatch("comment", source, target)) return false;
+				if(!UIFieldsMatch(linedefflags, source, target)) return false;
 
 				// Custom fields
 				if(linedefflags.Fields && !UniFields.CustomFieldsMatch(source.Fields, target.Fields)) return false;
@@ -910,13 +952,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(flags.Flags && !FlagsMatch(source.GetEnabledFlags(), target.GetEnabledFlags())) return false;
 
 			// UI fields
-			if(flags.UpperTextureScale && !UniFields.ValuesMatch("scalex_top", "scaley_top", source, target)) return false;
-			if(flags.MiddleTextureScale && !UniFields.ValuesMatch("scalex_mid", "scaley_mid", source, target)) return false;
-			if(flags.LowerTextureScale && !UniFields.ValuesMatch("scalex_bottom", "scaley_bottom", source, target)) return false;
-			if(flags.UpperTextureOffset && !UniFields.ValuesMatch("offsetx_top", "offsety_top", source, target)) return false;
-			if(flags.MiddleTextureOffset && !UniFields.ValuesMatch("offsetx_mid", "offsety_mid", source, target)) return false;
-			if(flags.LowerTextureOffset && !UniFields.ValuesMatch("offsetx_bottom", "offsety_bottom", source, target)) return false;
-			if(flags.Brightness && !UniFields.ValuesMatch("light", "lightabsolute", source, target)) return false;
+			if(!UIFieldsMatch(flags, source, target)) return false;
 
 			// Custom fields
 			return !flags.Fields || UniFields.CustomFieldsMatch(source.Fields, target.Fields);
@@ -958,20 +994,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(flags.Scale && (source.ScaleX != target.ScaleX) || (source.ScaleY != target.ScaleY)) return false;
 
 			// UI fields
-			if(flags.Conversation && !UniFields.ValuesMatch("conversation", source, target)) return false;
-			if(flags.Gravity && !UniFields.ValuesMatch("gravity", source, target)) return false;
-			if(flags.Health && !UniFields.ValuesMatch("health", source, target)) return false;
-			if(flags.FillColor && !UniFields.ValuesMatch("fillcolor", source, target)) return false;
-			if(flags.Alpha && !UniFields.ValuesMatch("alpha", source, target)) return false;
-			if(flags.Score && !UniFields.ValuesMatch("score", source, target)) return false;
-			if(flags.RenderStyle && !UniFields.ValuesMatch("renderstyle", source, target)) return false;
-			if(flags.Comment && !UniFields.ValuesMatch("comment", source, target)) return false;
+			if(!UIFieldsMatch(flags, source, target)) return false;
 
 			// Custom fields
 			return !flags.Fields || UniFields.CustomFieldsMatch(source.Fields, target.Fields);
 		}
 
 		#endregion
+
+		#region Utility
 
 		private static bool FlagsMatch(HashSet<string> flags1, HashSet<string> flags2)
 		{
@@ -1006,6 +1037,37 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			return count.Values.All(c => c == 0);
 		}
+
+		private static bool UIFieldsMatch(MapElementPropertiesCopySettings settings, MapElement first, MapElement second)
+		{
+			FieldInfo[] props = settings.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
+			foreach(FieldInfo prop in props)
+			{
+				// Property set?
+				if(!(bool)prop.GetValue(settings)) continue;
+
+				foreach(Attribute attr in Attribute.GetCustomAttributes(prop))
+				{
+					if(attr.GetType() != typeof(FieldDescription)) continue;
+					FieldDescription fd = (FieldDescription)attr;
+					if(fd.SupportsCurrentMapFormat && !string.IsNullOrEmpty(fd.Field1))
+					{
+						if(!string.IsNullOrEmpty(fd.Field2))
+						{
+							if(!UniFields.ValuesMatch(fd.Field1, fd.Field2, first, second)) return false;
+						}
+						else
+						{
+							if(!UniFields.ValuesMatch(fd.Field1, first, second)) return false;
+						}
+					}
+				}
+			}
+
+			return true;
+		}
+
+		#endregion
 	}
 
 	#endregion

@@ -36,7 +36,8 @@ namespace CodeImp.DoomBuilder.Windows
 		private bool preventchanges; //mxd
 		private bool undocreated; //mxd
 		private StepsList anglesteps; //mxd
-		private readonly string[] renderstyles; //mxd
+		private readonly List<string> renderstyles; //mxd
+		private readonly List<string> portalrenderstyles; //mxd
 
 		//mxd. Persistent settings
 		private static bool linkCeilingScale;
@@ -187,19 +188,60 @@ namespace CodeImp.DoomBuilder.Windows
 				flags.Add(lf.Value, lf.Key);
 			flags.Enabled = General.Map.Config.SectorFlags.Count > 0;
 
+			// Fill floor protal flags list
+			foreach(KeyValuePair<string, string> lf in General.Map.Config.FloorPortalFlags)
+				floorportalflags.Add(lf.Value, lf.Key);
+			floorportalflags.Enabled = General.Map.Config.FloorPortalFlags.Count > 0;
+
+			// Fill ceiling protal flags list
+			foreach(KeyValuePair<string, string> lf in General.Map.Config.CeilingPortalFlags)
+				ceilportalflags.Add(lf.Value, lf.Key);
+			ceilportalflags.Enabled = General.Map.Config.CeilingPortalFlags.Count > 0;
+
 			// Setup renderstyles
-			renderstyles = new string[General.Map.Config.SectorRenderStyles.Count];
-			General.Map.Config.SectorRenderStyles.Keys.CopyTo(renderstyles, 0);
-			floorRenderStyle.Enabled = (General.Map.Config.SectorRenderStyles.Count > 0);
-			labelfloorrenderstyle.Enabled = (General.Map.Config.SectorRenderStyles.Count > 0);
-			ceilRenderStyle.Enabled = (General.Map.Config.SectorRenderStyles.Count > 0);
-			labelceilrenderstyle.Enabled = (General.Map.Config.SectorRenderStyles.Count > 0);
+			if(General.Map.Config.SectorRenderStyles.Count > 0)
+			{
+				string[] rskeys = new string[General.Map.Config.SectorRenderStyles.Count];
+				General.Map.Config.SectorRenderStyles.Keys.CopyTo(rskeys, 0);
+				renderstyles = new List<string>(rskeys);
+			}
+			else
+			{
+				renderstyles = new List<string>();
+			}
+			floorRenderStyle.Enabled = (renderstyles.Count > 0);
+			labelfloorrenderstyle.Enabled = (renderstyles.Count > 0);
+			ceilRenderStyle.Enabled = (renderstyles.Count > 0);
+			labelceilrenderstyle.Enabled = (renderstyles.Count > 0);
 
 			// Fill renderstyles
-			foreach(KeyValuePair<string, string> lf in General.Map.Config.SectorRenderStyles) 
+			foreach(string name in General.Map.Config.SectorRenderStyles.Values) 
 			{
-				floorRenderStyle.Items.Add(lf.Value);
-				ceilRenderStyle.Items.Add(lf.Value);
+				floorRenderStyle.Items.Add(name);
+				ceilRenderStyle.Items.Add(name);
+			}
+
+			// Setup portal renderstyles
+			if(General.Map.Config.SectorPortalRenderStyles.Count > 0)
+			{
+				string[] rskeys = new string[General.Map.Config.SectorPortalRenderStyles.Count];
+				General.Map.Config.SectorPortalRenderStyles.Keys.CopyTo(rskeys, 0);
+				portalrenderstyles = new List<string>(rskeys);
+			}
+			else
+			{
+				portalrenderstyles = new List<string>();
+			}
+			floorportalrenderstyle.Enabled = (portalrenderstyles.Count > 0);
+			floorportalrenderstylelabel.Enabled = (portalrenderstyles.Count > 0);
+			ceilportalrenderstyle.Enabled = (portalrenderstyles.Count > 0);
+			ceilportalrenderstylelabel.Enabled = (portalrenderstyles.Count > 0);
+
+			// Fill portal renderstyles
+			foreach(string name in General.Map.Config.SectorPortalRenderStyles.Values)
+			{
+				floorportalrenderstyle.Items.Add(name);
+				ceilportalrenderstyle.Items.Add(name);
 			}
 
 			// Fill effects list
@@ -277,6 +319,12 @@ namespace CodeImp.DoomBuilder.Windows
 			foreach(CheckBox c in flags.Checkboxes)
 				if(sc.Flags.ContainsKey(c.Tag.ToString())) c.Checked = sc.Flags[c.Tag.ToString()];
 
+			// Portal flags
+			foreach(CheckBox c in floorportalflags.Checkboxes)
+				if(sc.Flags.ContainsKey(c.Tag.ToString())) c.Checked = sc.Flags[c.Tag.ToString()];
+			foreach(CheckBox c in ceilportalflags.Checkboxes)
+				if(sc.Flags.ContainsKey(c.Tag.ToString())) c.Checked = sc.Flags[c.Tag.ToString()];
+
 			// Effects
 			effect.Value = sc.Effect;
 			brightness.Text = sc.Brightness.ToString();
@@ -316,9 +364,17 @@ namespace CodeImp.DoomBuilder.Windows
 			ceilAlpha.Text = General.Clamp(sc.Fields.GetValue("alphaceiling", 1.0f), 0f, 1f).ToString();
 			floorAlpha.Text = General.Clamp(sc.Fields.GetValue("alphafloor", 1.0f), 0f, 1f).ToString();
 
+			// Portal alpha
+			ceilportalalpha.Text = General.Clamp(sc.Fields.GetValue("portal_ceil_alpha", 1.0f), 0f, 1f).ToString();
+			floorportalalpha.Text = General.Clamp(sc.Fields.GetValue("portal_floor_alpha", 1.0f), 0f, 1f).ToString();
+
 			//Render style
-			ceilRenderStyle.SelectedIndex = Array.IndexOf(renderstyles, sc.Fields.GetValue("renderstyleceiling", "translucent"));
-			floorRenderStyle.SelectedIndex = Array.IndexOf(renderstyles, sc.Fields.GetValue("renderstylefloor", "translucent"));
+			ceilRenderStyle.SelectedIndex = renderstyles.IndexOf(sc.Fields.GetValue("renderstyleceiling", "translucent"));
+			floorRenderStyle.SelectedIndex = renderstyles.IndexOf(sc.Fields.GetValue("renderstylefloor", "translucent"));
+
+			// Portal render style
+			ceilportalrenderstyle.SelectedIndex = portalrenderstyles.IndexOf(sc.Fields.GetValue("portal_ceil_overlaytype", "translucent"));
+			floorportalrenderstyle.SelectedIndex = portalrenderstyles.IndexOf(sc.Fields.GetValue("portal_floor_overlaytype", "translucent"));
 
 			//Damage
 			damagetype.Text = sc.Fields.GetValue("damagetype", NO_DAMAGETYPE);
@@ -359,15 +415,9 @@ namespace CodeImp.DoomBuilder.Windows
 			foreach(Sector s in sectors) 
 			{
 				// Flags
-				foreach(CheckBox c in flags.Checkboxes) 
-				{
-					if(c.CheckState == CheckState.Indeterminate) continue; //mxd
-					if(s.IsFlagSet(c.Tag.ToString()) != c.Checked) 
-					{
-						c.ThreeState = true;
-						c.CheckState = CheckState.Indeterminate;
-					}
-				}
+				SetupFlags(flags, s);
+				SetupFlags(ceilportalflags, s);
+				SetupFlags(floorportalflags, s);
 
 				// Effects
 				if(s.Effect != effect.Value) effect.Empty = true;
@@ -427,11 +477,21 @@ namespace CodeImp.DoomBuilder.Windows
 				if(s.Fields.GetValue("alphaceiling", 1.0f).ToString() != ceilAlpha.Text) ceilAlpha.Text = "";
 				if(s.Fields.GetValue("alphafloor", 1.0f).ToString() != floorAlpha.Text) floorAlpha.Text = "";
 
+				// Portal alpha
+				if(s.Fields.GetValue("portal_ceil_alpha", 1.0f).ToString() != ceilportalalpha.Text) ceilportalalpha.Text = "";
+				if(s.Fields.GetValue("portal_floor_alpha", 1.0f).ToString() != floorportalalpha.Text) floorportalalpha.Text = "";
+
 				//Render style
-				if(ceilRenderStyle.SelectedIndex > -1 && ceilRenderStyle.SelectedIndex != Array.IndexOf(renderstyles, s.Fields.GetValue("renderstyleceiling", "translucent")))
+				if(ceilRenderStyle.SelectedIndex > -1 && ceilRenderStyle.SelectedIndex != renderstyles.IndexOf(s.Fields.GetValue("renderstyleceiling", "translucent")))
 					ceilRenderStyle.SelectedIndex = -1;
-				if(floorRenderStyle.SelectedIndex > -1 && floorRenderStyle.SelectedIndex != Array.IndexOf(renderstyles, s.Fields.GetValue("renderstylefloor", "translucent")))
+				if(floorRenderStyle.SelectedIndex > -1 && floorRenderStyle.SelectedIndex != renderstyles.IndexOf(s.Fields.GetValue("renderstylefloor", "translucent")))
 					floorRenderStyle.SelectedIndex = -1;
+
+				// Portal render style
+				if(ceilportalrenderstyle.SelectedIndex > -1 && ceilportalrenderstyle.SelectedIndex != portalrenderstyles.IndexOf(s.Fields.GetValue("portal_ceil_overlaytype", "translucent")))
+					ceilportalrenderstyle.SelectedIndex = -1;
+				if(floorportalrenderstyle.SelectedIndex > -1 && floorportalrenderstyle.SelectedIndex != portalrenderstyles.IndexOf(s.Fields.GetValue("portal_floor_overlaytype", "translucent")))
+					floorportalrenderstyle.SelectedIndex = -1;
 
 				//Damage
 				if(damagetype.SelectedIndex > -1 && s.Fields.GetValue("damagetype", NO_DAMAGETYPE) != damagetype.Text) 
@@ -510,6 +570,43 @@ namespace CodeImp.DoomBuilder.Windows
 			commenteditor.FinishSetup();
 
 			preventchanges = false; //mxd
+		}
+
+		//mxd
+		private static void SetupFlags(CheckboxArrayControl control, Sector s)
+		{
+			foreach(CheckBox c in control.Checkboxes)
+			{
+				if(c.CheckState == CheckState.Indeterminate) continue; //mxd
+				if(s.IsFlagSet(c.Tag.ToString()) != c.Checked)
+				{
+					c.ThreeState = true;
+					c.CheckState = CheckState.Indeterminate;
+				}
+			}
+		}
+
+		//mxd
+		private static void ApplyFlags(CheckboxArrayControl control, Sector s)
+		{
+			foreach(CheckBox c in control.Checkboxes)
+			{
+				switch(c.CheckState)
+				{
+					case CheckState.Checked: s.SetFlag(c.Tag.ToString(), true); break;
+					case CheckState.Unchecked: s.SetFlag(c.Tag.ToString(), false); break;
+				}
+			}
+		}
+
+		//mxd
+		private static void ApplyAlpha(ButtonsNumericTextbox control, Sector s, string key)
+		{
+			if(!string.IsNullOrEmpty(control.Text))
+			{
+				float ceilAlphaVal = General.Clamp(control.GetResultFloat(s.Fields.GetValue(key, 1.0f)), 0f, 1f);
+				UniFields.SetFloat(s.Fields, key, ceilAlphaVal, 1.0f);
+			}
 		}
 
 		//mxd
@@ -684,28 +781,15 @@ namespace CodeImp.DoomBuilder.Windows
 				return;
 			}
 
-			//mxd
-			string[] rskeys = null;
-			if(General.Map.Config.SectorRenderStyles.Count > 0) 
-			{
-				rskeys = new string[General.Map.Config.SectorRenderStyles.Count];
-				General.Map.Config.SectorRenderStyles.Keys.CopyTo(rskeys, 0);
-			}
-
 			MakeUndo(); //mxd
 
 			// Go for all sectors
 			foreach(Sector s in sectors) 
 			{
 				// Apply all flags
-				foreach(CheckBox c in flags.Checkboxes) 
-				{
-					switch(c.CheckState)
-					{
-						case CheckState.Checked: s.SetFlag(c.Tag.ToString(), true); break;
-						case CheckState.Unchecked: s.SetFlag(c.Tag.ToString(), false); break;
-					}
-				}
+				ApplyFlags(flags, s);
+				ApplyFlags(ceilportalflags, s);
+				ApplyFlags(floorportalflags, s);
 
 				// Effects
 				if(!effect.Empty) s.Effect = effect.Value;
@@ -717,25 +801,29 @@ namespace CodeImp.DoomBuilder.Windows
 				commenteditor.Apply(s.Fields);
 
 				// Alpha
-				if(!string.IsNullOrEmpty(ceilAlpha.Text)) 
+				ApplyAlpha(ceilAlpha, s, "alphaceiling");
+				ApplyAlpha(floorAlpha, s, "alphafloor");
+
+				// Portal alpha
+				ApplyAlpha(ceilportalalpha, s, "portal_ceil_alpha");
+				ApplyAlpha(floorportalalpha, s, "portal_floor_alpha");
+
+				// Renderstyle
+				if(renderstyles.Count > 0) 
 				{
-					float ceilAlphaVal = General.Clamp(ceilAlpha.GetResultFloat(s.Fields.GetValue("alphaceiling", 1.0f)), 0f, 1f);
-					UniFields.SetFloat(s.Fields, "alphaceiling", ceilAlphaVal, 1.0f);
-				}
-				
-				if(!string.IsNullOrEmpty(floorAlpha.Text))
-				{
-					float floorAlphaVal = General.Clamp(floorAlpha.GetResultFloat(s.Fields.GetValue("alphafloor", 1.0f)), 0f, 1f);
-					UniFields.SetFloat(s.Fields, "alphafloor", floorAlphaVal, 1.0f);
+					if(ceilRenderStyle.SelectedIndex > -1)
+						UniFields.SetString(s.Fields, "renderstyleceiling", renderstyles[ceilRenderStyle.SelectedIndex], "translucent");
+					if(floorRenderStyle.SelectedIndex > -1)
+						UniFields.SetString(s.Fields, "renderstylefloor", renderstyles[floorRenderStyle.SelectedIndex], "translucent");
 				}
 
-				//renderstyle
-				if(rskeys != null) 
+				// Portal renderstyles
+				if(portalrenderstyles.Count > 0)
 				{
-					if(ceilRenderStyle.SelectedIndex > -1) 
-						UniFields.SetString(s.Fields, "renderstyleceiling", rskeys[ceilRenderStyle.SelectedIndex], "translucent");
-					if(floorRenderStyle.SelectedIndex > -1) 
-						UniFields.SetString(s.Fields, "renderstylefloor", rskeys[floorRenderStyle.SelectedIndex], "translucent");
+					if(ceilportalrenderstyle.SelectedIndex > -1)
+						UniFields.SetString(s.Fields, "portal_ceil_overlaytype", portalrenderstyles[ceilportalrenderstyle.SelectedIndex], "translucent");
+					if(floorportalrenderstyle.SelectedIndex > -1)
+						UniFields.SetString(s.Fields, "portal_floor_overlaytype", portalrenderstyles[floorportalrenderstyle.SelectedIndex], "translucent");
 				}
 
 				//Damage
