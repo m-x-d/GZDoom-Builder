@@ -296,7 +296,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				mode.CreateUndo("Paste vertex properties");
 				mode.SetActionResult("Pasted vertex properties.");
-				BuilderPlug.Me.CopiedVertexProps.Apply(vertex, usecopysettings);
+				BuilderPlug.Me.CopiedVertexProps.Apply(new List<Vertex> { vertex }, usecopysettings);
 				
 				//update affected sectors
 				UpdateGeometry(vertex);

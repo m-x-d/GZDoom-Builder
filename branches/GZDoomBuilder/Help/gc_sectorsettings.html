@@ -22,6 +22,12 @@
     <b class="fat">sectorflags</b> (structure) - <span class="red">GZDB only, UDMF only</span>.<br />
     Lists the options that can be set on a sector.<br />
     <br />
+    <b class="fat">ceilingportalflags</b> (structure) - <span class="red">GZDB only, UDMF only</span>.<br />
+    Lists the options that can be set on a sector's ceiling portal.<br />
+	<br />
+    <b class="fat">floorportalflags</b> (structure) - <span class="red">GZDB only, UDMF only</span>.<br />
+    Lists the options that can be set on a sector's floor portal.<br />
+	<br />
     <b class="fat">sectorrenderstyles </b>(structure) - <span class="red">GZDB only, UDMF only</span>.<br />
     Lists the renderstyles that can be set on a sector.<br />
     <br />
@@ -33,6 +39,10 @@ sectorrenderstyles
 	add = "Additive";
 }
 </pre>
+ <br />
+    <b class="fat">sectorportalrenderstyles </b>(structure) - <span class="red">GZDB only, UDMF only</span>.<br />
+    Same as <b class="fat">sectorrenderstyles</b>, but for floor/ceiling portals.<br />
+    <br />
   <b class="fat">sectorbrightness</b> (structure)<br />
   This structure provides Doom Builder with a list of sector brightness levels that are most common. Doom Builder will use these levels to increase/decrease the brightness quickly. The structure must contain numeric setting names for the brightness levels. The settings don't need a value and any value will be ignored by Doom Builder.<br />
   <br />

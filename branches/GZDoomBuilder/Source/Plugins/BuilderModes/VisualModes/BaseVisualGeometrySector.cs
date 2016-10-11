@@ -689,7 +689,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				mode.SetActionResult("Pasted sector properties.");
 
 				//mxd. Added "usecopysettings"
-				BuilderPlug.Me.CopiedSectorProps.Apply(level.sector, usecopysettings);
+				BuilderPlug.Me.CopiedSectorProps.Apply(new List<Sector> { level.sector }, usecopysettings);
 
 				if(mode.VisualSectorExists(level.sector))
 				{

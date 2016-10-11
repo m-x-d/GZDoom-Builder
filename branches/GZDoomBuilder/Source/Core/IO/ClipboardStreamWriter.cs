@@ -66,6 +66,10 @@ namespace CodeImp.DoomBuilder.IO
 					//mxd. Add sector flags
 					foreach(KeyValuePair<string, string> flag in General.Map.Config.SectorFlags)
 						config.WriteSetting("managedfields.sector." + flag.Key, true);
+					foreach(KeyValuePair<string, string> flag in General.Map.Config.CeilingPortalFlags)
+						config.WriteSetting("managedfields.sector." + flag.Key, true);
+					foreach(KeyValuePair<string, string> flag in General.Map.Config.FloorPortalFlags)
+						config.WriteSetting("managedfields.sector." + flag.Key, true);
 
 					// Add thing flags
 					foreach(KeyValuePair<string, string> flag in General.Map.Config.ThingFlags)

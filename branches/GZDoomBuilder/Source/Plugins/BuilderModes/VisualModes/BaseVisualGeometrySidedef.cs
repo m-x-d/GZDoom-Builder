@@ -1206,8 +1206,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				string pastetarget = (pastesideprops ? "linedef and sidedef" : "linedef"); //mxd
 				mode.CreateUndo("Paste " + pastetarget + " properties");
 				mode.SetActionResult("Pasted " + pastetarget + " properties.");
-				BuilderPlug.Me.CopiedLinedefProps.Apply(Sidedef.Line, usecopysettings, false); //mxd
-				if(pastesideprops) BuilderPlug.Me.CopiedSidedefProps.Apply(Sidedef, usecopysettings); //mxd. Added "usecopysettings"
+				BuilderPlug.Me.CopiedLinedefProps.Apply(new List<Linedef> { Sidedef.Line }, usecopysettings, false); //mxd
+				if(pastesideprops) BuilderPlug.Me.CopiedSidedefProps.Apply(new List<Sidedef> { Sidedef }, usecopysettings); //mxd. Added "usecopysettings"
 				
 				// Update sectors on both sides
 				BaseVisualSector front = (BaseVisualSector)mode.GetVisualSector(Sidedef.Sector);

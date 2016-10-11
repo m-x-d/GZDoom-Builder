@@ -306,6 +306,16 @@ namespace CodeImp.DoomBuilder.Controls
 					if(s.Flags.ContainsKey(group.Key) && s.Flags[group.Key])
 						flags.Items.Add(new ListViewItem(group.Value) { Checked = true });
 				}
+				foreach(KeyValuePair<string, string> group in General.Map.Config.CeilingPortalFlags)
+				{
+					if(s.Flags.ContainsKey(group.Key) && s.Flags[group.Key])
+						flags.Items.Add(new ListViewItem(group.Value + " (ceil. portal)") { Checked = true });
+				}
+				foreach(KeyValuePair<string, string> group in General.Map.Config.FloorPortalFlags)
+				{
+					if(s.Flags.ContainsKey(group.Key) && s.Flags[group.Key])
+						flags.Items.Add(new ListViewItem(group.Value + " (floor portal)") { Checked = true });
+				}
 
 				//mxd. Flags panel visibility and size
 				flagsPanel.Visible = (flags.Items.Count > 0);

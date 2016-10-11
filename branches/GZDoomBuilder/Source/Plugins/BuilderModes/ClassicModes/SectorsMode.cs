@@ -1497,9 +1497,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					// Apply properties to selection
 					string rest = (sel.Count == 1 ? "a single sector" : sel.Count + " sectors"); //mxd
 					General.Map.UndoRedo.CreateUndo("Paste properties to " + rest);
+					BuilderPlug.Me.CopiedSectorProps.Apply(sel, false);
 					foreach(Sector s in sel)
 					{
-						BuilderPlug.Me.CopiedSectorProps.Apply(s, false);
 						s.UpdateCeilingSurface();
 						s.UpdateFloorSurface();
 					}
@@ -1544,9 +1544,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						// Apply properties to selection
 						string rest = (sel.Count == 1 ? "a single sector" : sel.Count + " sectors");
 						General.Map.UndoRedo.CreateUndo("Paste properties with options to " + rest);
+						BuilderPlug.Me.CopiedSectorProps.Apply(sel, true);
 						foreach(Sector s in sel)
 						{
-							BuilderPlug.Me.CopiedSectorProps.Apply(s, true);
 							s.UpdateCeilingSurface();
 							s.UpdateFloorSurface();
 						}

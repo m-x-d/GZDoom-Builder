@@ -693,7 +693,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				mode.CreateUndo("Paste thing properties");
 				mode.SetActionResult("Pasted thing properties.");
-				BuilderPlug.Me.CopiedThingProps.Apply(Thing, usecopysettings); //mxd. Added "usecopysettings"
+				BuilderPlug.Me.CopiedThingProps.Apply(new List<Thing> { Thing }, usecopysettings); //mxd. Added "usecopysettings"
 				Thing.UpdateConfiguration();
 				this.Rebuild();
 				mode.ShowTargetInfo();

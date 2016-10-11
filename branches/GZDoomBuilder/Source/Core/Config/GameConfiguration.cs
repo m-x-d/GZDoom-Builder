@@ -136,11 +136,14 @@ namespace CodeImp.DoomBuilder.Config
 		
 		// Sectors
 		private readonly Dictionary<string, string> sectorflags; //mxd
+		private readonly Dictionary<string, string> ceilportalflags; //mxd
+		private readonly Dictionary<string, string> floorportalflags; //mxd
 		private readonly Dictionary<int, SectorEffectInfo> sectoreffects;
 		private readonly List<SectorEffectInfo> sortedsectoreffects;
 		private readonly List<GeneralizedOption> geneffectoptions;
 		private readonly StepsList brightnesslevels;
 		private readonly Dictionary<string, string> sectorrenderstyles; //mxd
+		private readonly Dictionary<string, string> sectorportalrenderstyles; //mxd
 
 		// Universal fields
 		private readonly List<UniversalFieldInfo> linedeffields;
@@ -263,11 +266,14 @@ namespace CodeImp.DoomBuilder.Config
 
 		// Sectors
 		public IDictionary<string, string> SectorFlags { get { return sectorflags; } } //mxd
+		public IDictionary<string, string> CeilingPortalFlags { get { return ceilportalflags; } } //mxd
+		public IDictionary<string, string> FloorPortalFlags { get { return floorportalflags; } } //mxd
 		public IDictionary<int, SectorEffectInfo> SectorEffects { get { return sectoreffects; } }
 		public List<SectorEffectInfo> SortedSectorEffects { get { return sortedsectoreffects; } }
 		public List<GeneralizedOption> GenEffectOptions { get { return geneffectoptions; } }
 		public StepsList BrightnessLevels { get { return brightnesslevels; } }
 		public Dictionary<string, string> SectorRenderStyles { get { return sectorrenderstyles; } } //mxd
+		public Dictionary<string, string> SectorPortalRenderStyles { get { return sectorportalrenderstyles; } } //mxd
 
 		// Universal fields
 		public List<UniversalFieldInfo> LinedefFields { get { return linedeffields; } }
@@ -314,6 +320,8 @@ namespace CodeImp.DoomBuilder.Config
 			this.sidedefflags = new Dictionary<string, string>(StringComparer.Ordinal); //mxd
 			this.genactioncategories = new List<GeneralizedCategory>();
 			this.sectorflags = new Dictionary<string, string>(StringComparer.Ordinal); //mxd
+			this.ceilportalflags = new Dictionary<string, string>(StringComparer.Ordinal); //mxd
+			this.floorportalflags = new Dictionary<string, string>(StringComparer.Ordinal); //mxd
 			this.sectoreffects = new Dictionary<int, SectorEffectInfo>();
 			this.sortedsectoreffects = new List<SectorEffectInfo>();
 			this.geneffectoptions = new List<GeneralizedOption>();
@@ -330,6 +338,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.makedoorflags = new Dictionary<string, bool>(StringComparer.Ordinal);
 			this.linedefrenderstyles = new Dictionary<string, string>(StringComparer.Ordinal); //mxd
 			this.sectorrenderstyles = new Dictionary<string, string>(StringComparer.Ordinal); //mxd
+			this.sectorportalrenderstyles = new Dictionary<string, string>(StringComparer.Ordinal); //mxd
 			this.thingrenderstyles = new Dictionary<string, string>(StringComparer.Ordinal); //mxd
 			this.defaultskytextures = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase); //mxd
 			
@@ -447,10 +456,13 @@ namespace CodeImp.DoomBuilder.Config
 
 			// Sectors
 			LoadStringDictionary(sectorflags, "sectorflags"); //mxd
+			LoadStringDictionary(ceilportalflags, "ceilingportalflags"); //mxd
+			LoadStringDictionary(floorportalflags, "floorportalflags"); //mxd
 			LoadBrightnessLevels();
 			LoadSectorEffects();
 			LoadSectorGeneralizedEffects();
 			LoadStringDictionary(sectorrenderstyles, "sectorrenderstyles"); //mxd
+			LoadStringDictionary(sectorportalrenderstyles, "sectorportalrenderstyles"); //mxd
 			
 			// Universal fields
 			linedeffields = LoadUniversalFields("linedef");
