@@ -56,6 +56,11 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="SharpCompressStripped, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\SharpCompressStripped.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -64,6 +69,7 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers\EmbeddedAssembly.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -91,70 +97,6 @@
     </None>
     <Compile Include="Helpers\TaskbarProgress.cs" />
     <Compile Include="Helpers\Webdata.cs" />
-    <Compile Include="SharpCompress\Archives\AbstractArchive.cs" />
-    <Compile Include="SharpCompress\Archives\ArchiveFactory.cs" />
-    <Compile Include="SharpCompress\Archives\IArchive.cs" />
-    <Compile Include="SharpCompress\Archives\IArchiveEntry.cs" />
-    <Compile Include="SharpCompress\Archives\IArchiveExtractionListener.cs" />
-    <Compile Include="SharpCompress\Archives\SevenZip\SevenZipArchive.cs" />
-    <Compile Include="SharpCompress\Archives\SevenZip\SevenZipArchiveEntry.cs" />
-    <Compile Include="SharpCompress\Common\ArchiveExtractionEventArgs.cs" />
-    <Compile Include="SharpCompress\Common\ArchiveType.cs" />
-    <Compile Include="SharpCompress\Common\CompressionType.cs" />
-    <Compile Include="SharpCompress\Common\Entry.cs" />
-    <Compile Include="SharpCompress\Common\EntryStream.cs" />
-    <Compile Include="SharpCompress\Common\FilePart.cs" />
-    <Compile Include="SharpCompress\Common\FilePartExtractionBeginEventArgs.cs" />
-    <Compile Include="SharpCompress\Common\IEntry.cs" />
-    <Compile Include="SharpCompress\Common\IEntry.Extensions.cs" />
-    <Compile Include="SharpCompress\Common\IVolume.cs" />
-    <Compile Include="SharpCompress\Common\ReaderExtractionEventArgs.cs" />
-    <Compile Include="SharpCompress\Common\SevenZip\ArchiveDatabase.cs" />
-    <Compile Include="SharpCompress\Common\SevenZip\ArchiveReader.cs" />
-    <Compile Include="SharpCompress\Common\SevenZip\CBindPair.cs" />
-    <Compile Include="SharpCompress\Common\SevenZip\CCoderInfo.cs" />
-    <Compile Include="SharpCompress\Common\SevenZip\CFileItem.cs" />
-    <Compile Include="SharpCompress\Common\SevenZip\CFolder.cs" />
-    <Compile Include="SharpCompress\Common\SevenZip\CMethodId.cs" />
-    <Compile Include="SharpCompress\Common\SevenZip\CStreamSwitch.cs" />
-    <Compile Include="SharpCompress\Common\SevenZip\DataReader.cs" />
-    <Compile Include="SharpCompress\Common\SevenZip\SevenZipEntry.cs" />
-    <Compile Include="SharpCompress\Common\SevenZip\SevenZipFilePart.cs" />
-    <Compile Include="SharpCompress\Common\SevenZip\SevenZipVolume.cs" />
-    <Compile Include="SharpCompress\Common\Volume.cs" />
-    <Compile Include="SharpCompress\Compressors\Filters\BCJFilter.cs" />
-    <Compile Include="SharpCompress\Compressors\Filters\Filter.cs" />
-    <Compile Include="SharpCompress\Compressors\LZMA\BitVector.cs" />
-    <Compile Include="SharpCompress\Compressors\LZMA\CRC.cs" />
-    <Compile Include="SharpCompress\Compressors\LZMA\DecoderStream.cs" />
-    <Compile Include="SharpCompress\Compressors\LZMA\ICoder.cs" />
-    <Compile Include="SharpCompress\Compressors\LZMA\LzmaBase.cs" />
-    <Compile Include="SharpCompress\Compressors\LZMA\LzmaDecoder.cs" />
-    <Compile Include="SharpCompress\Compressors\LZMA\LzmaEncoder.cs" />
-    <Compile Include="SharpCompress\Compressors\LZMA\LzmaEncoderProperties.cs" />
-    <Compile Include="SharpCompress\Compressors\LZMA\LzmaStream.cs" />
-    <Compile Include="SharpCompress\Compressors\LZMA\LZ\CRC.cs" />
-    <Compile Include="SharpCompress\Compressors\LZMA\LZ\LzBinTree.cs" />
-    <Compile Include="SharpCompress\Compressors\LZMA\LZ\LzInWindow.cs" />
-    <Compile Include="SharpCompress\Compressors\LZMA\LZ\LzOutWindow.cs" />
-    <Compile Include="SharpCompress\Compressors\LZMA\RangeCoder\RangeCoder.cs" />
-    <Compile Include="SharpCompress\Compressors\LZMA\RangeCoder\RangeCoderBit.cs" />
-    <Compile Include="SharpCompress\Compressors\LZMA\RangeCoder\RangeCoderBitTree.cs" />
-    <Compile Include="SharpCompress\Compressors\LZMA\Registry.cs" />
-    <Compile Include="SharpCompress\Compressors\LZMA\Utilities\CrcCheckStream.cs" />
-    <Compile Include="SharpCompress\Compressors\LZMA\Utilities\IPasswordProvider.cs" />
-    <Compile Include="SharpCompress\Compressors\LZMA\Utilities\Utils.cs" />
-    <Compile Include="SharpCompress\Converters\DataConverter.cs" />
-    <Compile Include="SharpCompress\IO\BufferedSubStream.cs" />
-    <Compile Include="SharpCompress\IO\NonDisposingStream.cs" />
-    <Compile Include="SharpCompress\IO\ReadOnlySubStream.cs" />
-    <Compile Include="SharpCompress\LazyReadOnlyCollection.cs" />
-    <Compile Include="SharpCompress\Readers\AbstractReader.cs" />
-    <Compile Include="SharpCompress\Readers\ExtractionOptions.cs" />
-    <Compile Include="SharpCompress\Readers\IReader.cs" />
-    <Compile Include="SharpCompress\Readers\IReaderExtensions.cs" />
-    <Compile Include="SharpCompress\Readers\ReaderOptions.cs" />
-    <Compile Include="SharpCompress\Utility.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -185,6 +127,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Updater.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="SharpCompressStripped.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
