@@ -81,7 +81,6 @@ skills
 damagetypes = "None BFGSplash Drowning Slime";
 </pre>
 	<br />
-	
 	<b class="fat">internalsoundnames</b> (string) - <span class="red">GZDB only</span>.<br />
 	Space-separated list of built-in logical sound names. These names won't trigger an editor warning when they are not bound to actual sounds in SNDINFO.<br />
 	<br />
@@ -90,7 +89,22 @@ damagetypes = "None BFGSplash Drowning Slime";
 internalsoundnames = "*death *xdeath *wimpydeath *crazydeath *burndeath";
 </pre>
 	<br />
-	
+    <b class="fat">ignoredextensions</b> (string) - <span class="red">GZDB only</span>.<br />
+	Space-separated list of file extensions. Files with these extensions will be ignored when loading PK3/PK7/Directory resources.<br />
+	<br />
+	<strong>Example:</strong>
+	<pre>
+ignoredextensions = "wad pk3 pk7 bak backup1 backup2 backup3 zip rar 7z";
+</pre>
+<br />
+<b class="fat">ignoreddirectories</b> (string) - <span class="red">GZDB only</span>.<br />
+	Space-separated list of directory names. These directory names are ignored when loading PK3/PK7/Directory resources. This applies to top level directories only.<br />
+	<br />
+	<strong>Example:</strong>
+	<pre>
+ignoreddirectories = ".svn .git";
+</pre>
+<br />
 	<b class="fat">linetagindicatesectors</b> (boolean)<br />
 	When <b>true</b>, Doom Builder will highlight sectors associated with the same tag number when a line is highlighted. This is only really useful for Doom format maps, because Hexen format and UDMF format has no single tag on linedefs (in those formats, the arguments of the linedef's action can be tags, which also works to highlight sectors).<br />
 	Default value is <b>false</b>.<br />

@@ -97,7 +97,7 @@ namespace CodeImp.DoomBuilder.Data
 			archive = null;
 
 			// Make files list
-			files = new DirectoryFilesList(fileentries);
+			files = new DirectoryFilesList(dl.GetDisplayName(), fileentries);
 			
 			// Initialize without path (because we use paths relative to the PK3 file)
 			Initialize();

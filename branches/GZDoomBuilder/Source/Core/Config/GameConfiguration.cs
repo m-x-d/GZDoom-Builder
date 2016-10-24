@@ -160,6 +160,10 @@ namespace CodeImp.DoomBuilder.Config
 
 		//mxd. Internal sounds. These logical sound names won't trigger a warning when they are not bound to actual sounds in SOUNDINFO.
 		private HashSet<string> internalsoundnames;
+
+		//mxd. Stuff to ignore
+		private HashSet<string> ignoreddirectories;
+		private HashSet<string> ignoredextensions;
 		
 		// Defaults
 		private readonly List<DefinedTextureSet> texturesets;
@@ -290,6 +294,10 @@ namespace CodeImp.DoomBuilder.Config
 
 		//mxd. Internal sounds
 		internal HashSet<string> InternalSoundNames { get { return internalsoundnames; } }
+
+		//mxd. Stuff to ignore
+		internal HashSet<string> IgnoredFileExtensions { get { return ignoredextensions; } }
+		internal HashSet<string> IgnoredDirectoryNames { get { return ignoreddirectories; } }
 
 		// Defaults
 		internal List<DefinedTextureSet> TextureSets { get { return texturesets; } }
@@ -438,6 +446,10 @@ namespace CodeImp.DoomBuilder.Config
 			damagetypes = new HashSet<string>(cfg.ReadSetting("damagetypes", "None").Split(splitter, StringSplitOptions.RemoveEmptyEntries), StringComparer.OrdinalIgnoreCase);
 			internalsoundnames = new HashSet<string>(cfg.ReadSetting("internalsoundnames", string.Empty).Split(splitter, StringSplitOptions.RemoveEmptyEntries), StringComparer.OrdinalIgnoreCase);
 			
+			//mxd. Load stuff to ignore
+			ignoreddirectories = new HashSet<string>(cfg.ReadSetting("ignoreddirectories", string.Empty).Split(splitter, StringSplitOptions.RemoveEmptyEntries), StringComparer.OrdinalIgnoreCase);
+			ignoredextensions = new HashSet<string>(cfg.ReadSetting("ignoredextensions", string.Empty).Split(splitter, StringSplitOptions.RemoveEmptyEntries), StringComparer.OrdinalIgnoreCase);
+
 			// Things
 			LoadThingFlags();
 			LoadDefaultThingFlags();
