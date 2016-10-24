@@ -29,11 +29,6 @@ namespace CodeImp.DoomBuilder.IO
 	{
 		#region ================== Constants (mxd)
 
-		private static HashSet<string> EXLUDE_EXTENSIONS = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-		{
-			"wad", "pk3", "pk7", "bak", "backup1", "backup2", "backup3", "zip", "rar", "7z"
-		};
-
 		#endregion
 
 		#region ================== Variables
@@ -68,17 +63,26 @@ namespace CodeImp.DoomBuilder.IO
 					wadentries.Add(file);
 					continue;
 				}
-				if(EXLUDE_EXTENSIONS.Contains(e.extension)) continue;
-			
-				if(entries.ContainsKey(e.filepathname))
-					throw new IOException("Multiple files with the same filename in the same directory are not allowed. See: \"" + e.filepathname + "\"");
+
+				if(General.Map.Config.IgnoredFileExtensions.Contains(e.extension)) continue;
+
+				bool skipfolder = false;
+				foreach(string ef in General.Map.Config.IgnoredDirectoryNames)
+				{
+					if(e.path.StartsWith(ef + Path.DirectorySeparatorChar))
+					{
+						skipfolder = true;
+						break;
+					}
+				}
+				if(skipfolder) continue;
 
 				entries.Add(e.filepathname, e);
 			}
 		}
 
 		// Constructor for custom list
-		public DirectoryFilesList(ICollection<DirectoryFileEntry> sourceentries)
+		public DirectoryFilesList(string resourcename, ICollection<DirectoryFileEntry> sourceentries)
 		{
 			entries = new Dictionary<string, DirectoryFileEntry>(sourceentries.Count, StringComparer.OrdinalIgnoreCase);
 			wadentries = new List<string>();
@@ -89,10 +93,26 @@ namespace CodeImp.DoomBuilder.IO
 					wadentries.Add(e.filepathname);
 					continue;
 				}
-				if(EXLUDE_EXTENSIONS.Contains(e.extension)) continue;
+
+				if(General.Map.Config.IgnoredFileExtensions.Contains(e.extension)) continue;
+
+				bool skipfolder = false;
+				foreach(string ef in General.Map.Config.IgnoredDirectoryNames)
+				{
+					if(e.path.StartsWith(ef + Path.DirectorySeparatorChar))
+					{
+						skipfolder = true;
+						break;
+					}
+				}
+				if(skipfolder) continue;
 
 				if(entries.ContainsKey(e.filepathname))
-					throw new IOException("Multiple files with the same filename in the same directory are not allowed. See: \"" + e.filepathname + "\"");
+				{
+					General.ErrorLogger.Add(ErrorType.Warning, "Resource \"" + resourcename + "\" contains multiple files with the same filename. See: \"" + e.filepathname + "\"");
+					continue;
+				}
+
 				entries.Add(e.filepathname, e);
 			}
 		}

@@ -545,6 +545,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				pos.y > General.Map.Config.TopBoundary || pos.y < General.Map.Config.BottomBoundary)
 				return false;
 
+			//mxd. Avoid zero-length lines...
+			if(points.Count > 0)
+			{
+				Vector2D delta = points[points.Count - 1].pos - pos;
+				if((Math.Abs(delta.x) <= 0.001f) && (Math.Abs(delta.y) <= 0.001f))
+					return true;
+			}
+
 			DrawnVertex newpoint = new DrawnVertex();
 			newpoint.pos = pos;
 			newpoint.stitch = stitch;

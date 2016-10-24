@@ -374,18 +374,18 @@ namespace CodeImp.DoomBuilder.Geometry
 			Vertex found = null;
 			
 			// Go for all sides to find the right-most side
-			foreach(KeyValuePair<Sidedef, bool> sd in sides)
+			foreach(Sidedef sd in sides.Keys)
 			{
 				// First found?
-				if((found == null) && !ignores.ContainsKey(sd.Key.Line.Start)) found = sd.Key.Line.Start;
-				if((found == null) && !ignores.ContainsKey(sd.Key.Line.End)) found = sd.Key.Line.End;
+				if((found == null) && !ignores.ContainsKey(sd.Line.Start)) found = sd.Line.Start;
+				if((found == null) && !ignores.ContainsKey(sd.Line.End)) found = sd.Line.End;
 				
 				// Compare?
 				if(found != null)
 				{
 					// Check if more to the right than the previous found
-					if((sd.Key.Line.Start.Position.x > found.Position.x) && !ignores.ContainsKey(sd.Key.Line.Start)) found = sd.Key.Line.Start;
-					if((sd.Key.Line.End.Position.x > found.Position.x) && !ignores.ContainsKey(sd.Key.Line.End)) found = sd.Key.Line.End;
+					if((sd.Line.Start.Position.x > found.Position.x) && !ignores.ContainsKey(sd.Line.Start)) found = sd.Line.Start;
+					if((sd.Line.End.Position.x > found.Position.x) && !ignores.ContainsKey(sd.Line.End)) found = sd.Line.End;
 				}
 			}
 			
@@ -779,11 +779,16 @@ namespace CodeImp.DoomBuilder.Geometry
 		// This checks if a given ear is a valid (no intersections from reflex vertices)
 		private static bool CheckValidEar(EarClipVertex[] t, LinkedList<EarClipVertex> reflexes)
 		{
+			//mxd
+			Vector2D pos0 = t[0].Position;
+			Vector2D pos1 = t[1].Position;
+			Vector2D pos2 = t[2].Position;
+			
 			// Go for all reflex vertices
 			foreach(EarClipVertex rv in reflexes)
 			{
 				// Not one of the triangle corners?
-				if((rv.Position != t[0].Position) && (rv.Position != t[1].Position) && (rv.Position != t[2].Position))
+				if((rv.Position != pos0) && (rv.Position != pos1) && (rv.Position != pos2))
 				{
 					// Return false on intersection
 					if(PointInsideTriangle(t, rv.MainListNode)) return false;
@@ -797,11 +802,12 @@ namespace CodeImp.DoomBuilder.Geometry
 		// This returns the 3-vertex array triangle for an ear
 		private static EarClipVertex[] GetTriangle(EarClipVertex v)
 		{
-			EarClipVertex[] t = new EarClipVertex[3];
-			t[0] = (v.MainListNode.Previous == null) ? v.MainListNode.List.Last.Value : v.MainListNode.Previous.Value;
-			t[1] = v;
-			t[2] = (v.MainListNode.Next == null) ? v.MainListNode.List.First.Value : v.MainListNode.Next.Value;
-			return t;
+			return new []
+			{
+				(v.MainListNode.Previous == null) ? v.MainListNode.List.Last.Value : v.MainListNode.Previous.Value,
+				v,
+				(v.MainListNode.Next == null) ? v.MainListNode.List.First.Value : v.MainListNode.Next.Value
+			};
 		}
 		
 		// This checks if a vertex is reflex (corner > 180 deg) or convex (corner < 180 deg)
@@ -820,18 +826,23 @@ namespace CodeImp.DoomBuilder.Geometry
 			// If the triangle has no area, there can never be a point inside
 			if(TriangleHasArea(t))
 			{
-				float lineside01 = Line2D.GetSideOfLine(t[0].Position, t[1].Position, p.Value.Position);
-				float lineside12 = Line2D.GetSideOfLine(t[1].Position, t[2].Position, p.Value.Position);
-				float lineside20 = Line2D.GetSideOfLine(t[2].Position, t[0].Position, p.Value.Position);
+				//mxd
+				Vector2D pos0 = t[0].Position;
+				Vector2D pos1 = t[1].Position;
+				Vector2D pos2 = t[2].Position;
+
+				float lineside01 = Line2D.GetSideOfLine(pos0, pos1, p.Value.Position);
+				float lineside12 = Line2D.GetSideOfLine(pos1, pos2, p.Value.Position);
+				float lineside20 = Line2D.GetSideOfLine(pos2, pos0, p.Value.Position);
 				float u_on_line = 0.5f;
 
 				// If point p is on the line of an edge, find out where on the edge segment p is.
 				if(lineside01 == 0.0f)
-					u_on_line = Line2D.GetNearestOnLine(t[0].Position, t[1].Position, p.Value.Position);
+					u_on_line = Line2D.GetNearestOnLine(pos0, pos1, p.Value.Position);
 				else if(lineside12 == 0.0f)
-					u_on_line = Line2D.GetNearestOnLine(t[1].Position, t[2].Position, p.Value.Position);
+					u_on_line = Line2D.GetNearestOnLine(pos1, pos2, p.Value.Position);
 				else if(lineside20 == 0.0f)
-					u_on_line = Line2D.GetNearestOnLine(t[2].Position, t[0].Position, p.Value.Position);
+					u_on_line = Line2D.GetNearestOnLine(pos2, pos0, p.Value.Position);
 				
 				// If any of the lineside results are 0 then that means the point p lies on that edge and we
 				// need to test if the lines adjacent to the point p are in the triangle or not.
@@ -877,9 +888,10 @@ namespace CodeImp.DoomBuilder.Geometry
 				// Line is inside triangle, because p2 is
 				return true;
 			}
+
 			// Test if p2 is on an edge of the triangle and if it is we would
 			// like to know where on the edge segment p2 is
-			else if(s01 == 0.0f)
+			if(s01 == 0.0f)
 			{
 				p2_on_edge = Line2D.GetNearestOnLine(t[0].Position, t[1].Position, p2);
 				p1_on_same_edge = Line2D.GetSideOfLine(t[0].Position, t[1].Position, p1);
@@ -912,13 +924,10 @@ namespace CodeImp.DoomBuilder.Geometry
 			Line2D t20 = new Line2D(t[2].Position, t[0].Position);
 			float pu, pt;
 			
-			// Test intersections
-			t01.GetIntersection(p, out pu, out pt);
-			if(!float.IsNaN(pu) && (pu >= 0.0f) && (pu <= 1.0f) && (pt >= 0.0f) && (pt <= 1.0f)) return true;
-			t12.GetIntersection(p, out pu, out pt);
-			if(!float.IsNaN(pu) && (pu >= 0.0f) && (pu <= 1.0f) && (pt >= 0.0f) && (pt <= 1.0f)) return true;
-			t20.GetIntersection(p, out pu, out pt);
-			if(!float.IsNaN(pu) && (pu >= 0.0f) && (pu <= 1.0f) && (pt >= 0.0f) && (pt <= 1.0f)) return true;
+			//mxd. Test intersections
+			if(t01.GetIntersection(p, out pu, out pt)) return true;
+			if(t12.GetIntersection(p, out pu, out pt)) return true;
+			if(t20.GetIntersection(p, out pu, out pt)) return true;
 			
 			return false;
 		}
@@ -926,24 +935,33 @@ namespace CodeImp.DoomBuilder.Geometry
 		// This checks if the triangle has an area greater than 0
 		private static bool TriangleHasArea(EarClipVertex[] t)
 		{
-			return ((t[0].Position.x * (t[1].Position.y - t[2].Position.y) +
-					 t[1].Position.x * (t[2].Position.y - t[0].Position.y) +
-					 t[2].Position.x * (t[0].Position.y - t[1].Position.y)) != 0.0f);
+			Vector2D tp0 = t[0].Position;
+			Vector2D tp1 = t[1].Position;
+			Vector2D tp2 = t[2].Position;
+
+			return ((tp0.x * (tp1.y - tp2.y) +
+					 tp1.x * (tp2.y - tp0.y) +
+					 tp2.x * (tp0.y - tp1.y)) != 0.0f);
 		}
 		
 		// This adds an array of vertices
 		private static void AddTriangleToList(EarClipVertex[] triangle, List<Vector2D> verticeslist, List<Sidedef> sidedefslist, bool last)
 		{
-			// Create triangle
-			verticeslist.Add(triangle[0].Position);
-			sidedefslist.Add(triangle[0].Sidedef);
-			verticeslist.Add(triangle[1].Position);
-			sidedefslist.Add(triangle[1].Sidedef);
-			verticeslist.Add(triangle[2].Position);
-			if(!last) sidedefslist.Add(null); else sidedefslist.Add(triangle[2].Sidedef);
+			//mxd
+			EarClipVertex v0 = triangle[0];
+			EarClipVertex v1 = triangle[1];
+			EarClipVertex v2 = triangle[2];
 			
+			// Create triangle
+			verticeslist.Add(v0.Position);
+			sidedefslist.Add(v0.Sidedef);
+			verticeslist.Add(v1.Position);
+			sidedefslist.Add(v1.Sidedef);
+			verticeslist.Add(v2.Position);
+			sidedefslist.Add(!last ? null : v2.Sidedef);
+
 			// Modify the first earclipvertex of this triangle, it no longer lies along a sidedef
-			triangle[0].Sidedef = null;
+			v0.Sidedef = null;
 		}
 		
 		#endregion

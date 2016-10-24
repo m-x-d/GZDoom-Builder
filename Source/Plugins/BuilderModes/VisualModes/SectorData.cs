@@ -56,6 +56,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private bool floorchanged;
 		private bool ceilingchanged;
 
+		//mxd. Absolute lights are not affected by brightness transfers...
+		private bool lightfloorabsolute;
+		private bool lightceilingabsolute;
+		private int lightfloor;
+		private int lightceiling;
+
 		#endregion
 		
 		#region ================== Properties
@@ -288,17 +294,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			// Fetch ZDoom fields
 			int color = sector.Fields.GetValue("lightcolor", -1);
-			int flight = sector.Fields.GetValue("lightfloor", 0);
-			bool fabs = sector.Fields.GetValue("lightfloorabsolute", false);
-			int clight = sector.Fields.GetValue("lightceiling", 0);
-			bool cabs = sector.Fields.GetValue("lightceilingabsolute", false);
+			lightfloor = sector.Fields.GetValue("lightfloor", 0);
+			lightfloorabsolute = sector.Fields.GetValue("lightfloorabsolute", false);
+			lightceiling = sector.Fields.GetValue("lightceiling", 0);
+			lightceilingabsolute = sector.Fields.GetValue("lightceilingabsolute", false);
 
 			// Determine colors & light levels
 			PixelColor lightcolor = PixelColor.FromInt(color);
-			if(!fabs) flight = sector.Brightness + flight;
-			if(!cabs) clight = sector.Brightness + clight;
-			PixelColor floorbrightness = PixelColor.FromInt(mode.CalculateBrightness(flight));
-			PixelColor ceilingbrightness = PixelColor.FromInt(mode.CalculateBrightness(clight));
+			if(!lightfloorabsolute) lightfloor = sector.Brightness + lightfloor;
+			if(!lightceilingabsolute) lightceiling = sector.Brightness + lightceiling;
+			PixelColor floorbrightness = PixelColor.FromInt(mode.CalculateBrightness(lightfloor));
+			PixelColor ceilingbrightness = PixelColor.FromInt(mode.CalculateBrightness(lightceiling));
 			PixelColor floorcolor = PixelColor.Modulate(lightcolor, floorbrightness);
 			PixelColor ceilingcolor = PixelColor.Modulate(lightcolor, ceilingbrightness);
 			floor.color = floorcolor.WithAlpha(255).ToInt();
@@ -357,7 +363,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					lightlevels[lightlevels.Count - 1].colorbelow = stored.colorbelow;
 					lightlevels[lightlevels.Count - 1].brightnessbelow = stored.brightnessbelow;
-					lightlevels[lightlevels.Count - 1].color = GetLevelColor(stored);
+					lightlevels[lightlevels.Count - 1].color = GetLevelColor(stored, lightlevels[lightlevels.Count - 1]);
 				}
 
 				//mxd. Cast light properties from top to bottom
@@ -378,12 +384,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					{
 						l.colorbelow = stored.colorbelow;
 						l.brightnessbelow = stored.brightnessbelow;
-						l.color = GetLevelColor(stored);
+						l.color = GetLevelColor(stored, l);
 					}
 					else if(l.restrictlighting)
 					{
 						if(!pl.restrictlighting && pl != ceiling) stored = pl;
-						l.color = GetLevelColor(stored);
+						l.color = GetLevelColor(stored, l);
 
 						// This is the bottom side of extrafloor with "restrict lighting" flag. Make it cast stored light props. 
 						if(l.type == SectorLevelType.Ceiling)
@@ -394,10 +400,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 								// Use light and color settings from previous layer
 								l.colorbelow = pl.colorbelow;
 								l.brightnessbelow = pl.brightnessbelow;
-								l.color = GetLevelColor(pl);
+								l.color = GetLevelColor(pl, l);
 
 								// Also colorize previous layer using next higher level color 
-								if(i + 2 < lightlevels.Count) pl.color = GetLevelColor(lightlevels[i + 2]);
+								if(i + 2 < lightlevels.Count) pl.color = GetLevelColor(lightlevels[i + 2], pl);
 							}
 							else
 							{
@@ -439,7 +445,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						if(src.colorbelow.a > 0 && src.brightnessbelow != -1)
 						{
 							// Only surface brightness is retained when a glowing flat is used as extrafloor texture
-							if(!l.affectedbyglow) l.color = GetLevelColor(src);
+							if(!l.affectedbyglow) l.color = GetLevelColor(src, l);
 
 							// Transfer brightnessbelow and colorbelow if current level is not extrafloor top
 							if(!(l.extrafloor && l.type == SectorLevelType.Floor))
@@ -594,9 +600,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		}
 
 		//mxd
-		private int GetLevelColor(SectorLevel src)
+		private int GetLevelColor(SectorLevel src, SectorLevel target)
 		{
-			PixelColor brightness = PixelColor.FromInt(mode.CalculateBrightness(src.brightnessbelow));
+			PixelColor brightness;
+			if(lightfloorabsolute && target == floor)
+				brightness = PixelColor.FromInt(mode.CalculateBrightness(lightfloor));
+			else if(lightceilingabsolute && target == ceiling)
+				brightness = PixelColor.FromInt(mode.CalculateBrightness(lightceiling));
+			else
+				brightness = PixelColor.FromInt(mode.CalculateBrightness(src.brightnessbelow));
+			
 			PixelColor color = PixelColor.Modulate(src.colorbelow, brightness);
 			return color.WithAlpha(255).ToInt();
 		}
