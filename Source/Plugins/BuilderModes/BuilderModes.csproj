@@ -97,12 +97,6 @@
     <Compile Include="General\Association.cs" />
     <Compile Include="General\BuilderPlug.cs" />
     <Compile Include="General\CopyStructures.cs" />
-    <Compile Include="Interface\CurveLinedefsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Interface\CurveLinedefsForm.Designer.cs">
-      <DependentUpon>CurveLinedefsForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Interface\ErrorCheckForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -163,10 +157,6 @@
     <EmbeddedResource Include="Resources\SectorsMode.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Interface\CurveLinedefsForm.resx">
-      <SubType>Designer</SubType>
-      <DependentUpon>CurveLinedefsForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Interface\MenusForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>MenusForm.cs</DependentUpon>
@@ -327,6 +317,12 @@
     </Compile>
     <Compile Include="Interface\BridgeModeForm.Designer.cs">
       <DependentUpon>BridgeModeForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Interface\CurveLinedefsOptionsPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Interface\CurveLinedefsOptionsPanel.Designer.cs">
+      <DependentUpon>CurveLinedefsOptionsPanel.cs</DependentUpon>
     </Compile>
     <Compile Include="Interface\DrawCurveOptionsPanel.cs">
       <SubType>UserControl</SubType>
@@ -549,6 +545,9 @@
     <EmbeddedResource Include="Resources\DrawGeometryMode.png" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Interface\CurveLinedefsOptionsPanel.resx">
+      <DependentUpon>CurveLinedefsOptionsPanel.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Interface\DrawLineOptionsPanel.resx">
       <DependentUpon>DrawLineOptionsPanel.cs</DependentUpon>
     </EmbeddedResource>
@@ -625,6 +624,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\SoundRadius.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Check.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Close.png" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

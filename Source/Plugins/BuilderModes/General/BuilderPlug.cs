@@ -85,7 +85,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		
 		// Main objects
 		private MenusForm menusform;
-		private CurveLinedefsForm curvelinedefsform;
 		private FindReplaceForm findreplaceform;
 		private ErrorCheckForm errorcheckform;
 		private PreferencesForm preferencesform;
@@ -143,7 +142,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override int MinimumRevision { get { return Assembly.GetExecutingAssembly().GetName().Version.Revision; } }
 		
 		public MenusForm MenusForm { get { return menusform; } }
-		public CurveLinedefsForm CurveLinedefsForm { get { return curvelinedefsform ?? (curvelinedefsform = new CurveLinedefsForm()); } }
 		public FindReplaceForm FindReplaceForm { get { return findreplaceform ?? (findreplaceform = new FindReplaceForm()); } }
 		public ErrorCheckForm ErrorCheckForm { get { return errorcheckform ?? (errorcheckform = new ErrorCheckForm()); } }
 		public PreferencesForm PreferencesForm { get { return preferencesform; } }
@@ -243,11 +241,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				menusform = null;
 
 				//mxd. These are created on demand, so they may be nulls.
-				if(curvelinedefsform != null)
-				{
-					curvelinedefsform.Dispose();
-					curvelinedefsform = null;
-				}
 				if(findreplaceform != null)
 				{
 					findreplaceform.Dispose();

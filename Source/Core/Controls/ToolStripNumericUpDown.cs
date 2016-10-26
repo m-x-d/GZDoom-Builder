@@ -12,6 +12,7 @@ namespace CodeImp.DoomBuilder.Controls
 		public decimal Value { get { return nud.Value; } set { nud.Value = value; } }
 		public decimal Minimum { get { return nud.Minimum; } set { nud.Minimum = value; } }
 		public decimal Maximum { get { return nud.Maximum; } set { nud.Maximum = value; } }
+		public decimal Increment { get { return nud.Increment; } set { nud.Increment = value; } }
 
 		private NumericUpDown nud;
 

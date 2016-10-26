@@ -70,6 +70,7 @@ namespace CodeImp.DoomBuilder.Editing
 		// Selection
 		protected bool selecting;
 		protected bool selectpressed; //mxd
+		protected bool editpressed; //mxd
 		protected Vector2D selectstart;
 		protected RectangleF selectionrect;
 		protected MarqueSelectionMode marqueSelectionMode; //mxd
@@ -761,6 +762,7 @@ namespace CodeImp.DoomBuilder.Editing
 		[BeginAction("classicedit", BaseAction = true)]
 		protected virtual void OnEditBegin()
 		{
+			editpressed = true; //mxd
 		}
 
 		/// <summary>
@@ -770,6 +772,7 @@ namespace CodeImp.DoomBuilder.Editing
 		[EndAction("classicedit", BaseAction = true)]
 		protected virtual void OnEditEnd()
 		{
+			editpressed = false; //mxd
 		}
 
 		/// <summary>

@@ -18,7 +18,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.Actions;
+using CodeImp.DoomBuilder.BuilderModes.Interface;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Geometry;
@@ -35,6 +38,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 	{
 		#region ================== Constants
 
+		internal const int DEFAULT_VERTICES_COUNT = 8; //mxd
+		internal const int DEFAULT_DISTANCE = 128; //mxd
+		internal const int DEFAULT_ANGLE = 180; //mxd
 		private const float LINE_THICKNESS = 0.6f;
 
 		#endregion
@@ -44,6 +50,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// Collections
 		private ICollection<Linedef> selectedlines;
 		private ICollection<Linedef> unselectedlines;
+		private Dictionary<Linedef, List<Vector2D>> curves; //mxd
+
+		//mxd. UI and controls
+		private CurveLinedefsOptionsPanel panel;
+		private Linedef closestline;
+		private Vector2D mousedownoffset;
+		private int prevoffset;
 		
 		#endregion
 
@@ -57,91 +70,141 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		public CurveLinedefsMode(EditMode basemode)
+		public CurveLinedefsMode()
 		{
 			// Make collections by selection
 			selectedlines = General.Map.Map.GetSelectedLinedefs(true);
 			unselectedlines = General.Map.Map.GetSelectedLinedefs(false);
-		}
-		
-		// Disposer
-		public override void Dispose()
-		{
-			// Not already disposed?
-			if(!isdisposed)
-			{
-				// Clean up
+			curves = new Dictionary<Linedef, List<Vector2D>>(selectedlines.Count); //mxd
 
-				// Done
-				base.Dispose();
-			}
+			//mxd. UI
+			panel = new CurveLinedefsOptionsPanel();
 		}
 
 		#endregion
 
 		#region ================== Methods
 
-		// This generates the vertices to split the line with, from start to end
-		private static List<Vector2D> GenerateCurve(Linedef line)
+		//mxd
+		private void GenerateCurves()
 		{
-			// Fetch settings from window
-			int vertices = BuilderPlug.Me.CurveLinedefsForm.Vertices;
-			float distance = BuilderPlug.Me.CurveLinedefsForm.Distance;
-			float angle = BuilderPlug.Me.CurveLinedefsForm.Angle;
-			bool fixedcurve = BuilderPlug.Me.CurveLinedefsForm.FixedCurve;
-			bool backwards = BuilderPlug.Me.CurveLinedefsForm.Backwards;
+			foreach(Linedef ld in selectedlines) curves[ld] = GenerateCurve(ld);
+		}
+
+		// This generates the vertices to split the line with, from start to end
+		private List<Vector2D> GenerateCurve(Linedef line)
+		{
+			// Fetch settings from the panel
+			bool fixedcurve = panel.FixedCurve;
+			int vertices = Math.Min(panel.Vertices, (int)Math.Ceiling(line.Length / 4));
+			int distance = panel.Distance;
+			int angle = (!fixedcurve && distance == 0 ? Math.Max(5, panel.Angle) : panel.Angle);
+			float theta = Angle2D.DegToRad(angle);
+			if(distance < 0) theta = -theta; //mxd
 
 			// Make list
 			List<Vector2D> points = new List<Vector2D>(vertices);
 
-			//Added by Anders Åstrand 2008-05-18
-			//The formulas used are taken from http://mathworld.wolfram.com/CircularSegment.html
-			//c and theta are known (length of line and angle parameter). d, R and h are
-			//calculated from those two
-			//If the curve is not supposed to be a circular segment it's simply deformed to fit
-			//the value set for distance.
+			float segDelta = 1.0f / (vertices + 1); //mxd
+			Vector2D linecenter = line.GetCenterPoint(); //mxd
 
-			//The vertices are generated to be evenly distributed (by angle) along the curve
-			//and lastly they are rotated and moved to fit with the original line
-
-			//calculate some identities of a circle segment (refer to the graph in the url above)
-			float c = line.Length;
-			float theta = angle;
-
-			float d = (c / (float)Math.Tan(theta / 2)) / 2;
-			float R = d / (float)Math.Cos(theta / 2);
-			float h = R - d;
-
-			float yDeform = fixedcurve ? 1 : distance / h;
-			if(backwards) yDeform = -yDeform;
-
-			for(int v = 1; v <= vertices; v++)
+			//mxd. Special cases...
+			if(theta == 0.0f)
 			{
-				//calculate the angle for this vertex
-				//the curve starts at PI/2 - theta/2 and is segmented into vertices+1 segments
-				//this assumes the line is horisontal and on y = 0, the point is rotated and moved later
-
-				float a = (Angle2D.PI - theta) / 2 + v * (theta / (vertices + 1));
-
-				//calculate the coordinates of the point, and distort the y coordinate
-				//using the deform factor calculated above
-				float x = (float)Math.Cos(a) * R;
-				float y = ((float)Math.Sin(a) * R - d) * yDeform;
-
-				//rotate and transform to fit original line
-				Vector2D vertex = new Vector2D(x, y).GetRotated(line.Angle + Angle2D.PIHALF);
-				vertex = vertex.GetTransformed(line.GetCenterPoint().x, line.GetCenterPoint().y, 1, 1);
-
-				points.Add(vertex);
+				for(int v = 1; v <= vertices; v++)
+				{
+					float x = (line.Length * segDelta) * (vertices - v + 1) - line.Length * 0.5f; // Line segment coord
+					
+					// Rotate and transform to fit original line
+					Vector2D vertex = new Vector2D(x, 0).GetRotated(line.Angle + Angle2D.PIHALF) + linecenter;
+					points.Add(vertex);
+				}
 			}
+			else
+			{
+				//Added by Anders Åstrand 2008-05-18
+				//The formulas used are taken from http://mathworld.wolfram.com/CircularSegment.html
+				//c and theta are known (length of line and angle parameter). d, R and h are
+				//calculated from those two
+				//If the curve is not supposed to be a circular segment it's simply deformed to fit
+				//the value set for distance.
 
+				//The vertices are generated to be evenly distributed (by angle) along the curve
+				//and lastly they are rotated and moved to fit with the original line
+
+				//calculate some identities of a circle segment (refer to the graph in the url above)
+				float c = line.Length;
+
+				float d = (c / (float)Math.Tan(theta / 2)) / 2;
+				float R = d / (float)Math.Cos(theta / 2);
+				float h = R - d;
+
+				float yDeform = (fixedcurve ? 1 : distance / h);
+				float xDelta = Math.Min(1, yDeform); //mxd
+				
+				for(int v = 1; v <= vertices; v++)
+				{
+					//calculate the angle for this vertex
+					//the curve starts at PI/2 - theta/2 and is segmented into vertices+1 segments
+					//this assumes the line is horisontal and on y = 0, the point is rotated and moved later
+
+					float a = (Angle2D.PI - theta) / 2 + v * (theta / (vertices + 1));
+
+					//calculate the coordinates of the point, and distort the y coordinate
+					//using the deform factor calculated above
+					float xr = (float)Math.Cos(a) * R; //mxd. Circle segment coord
+					float xl = (line.Length * segDelta) * (vertices - v + 1) - line.Length * 0.5f; // mxd. Line segment coord
+					float x = InterpolationTools.Linear(xl, xr, xDelta); //mxd
+					float y = ((float)Math.Sin(a) * R - d) * yDeform;
+
+					//rotate and transform to fit original line
+					Vector2D vertex = new Vector2D(x, y).GetRotated(line.Angle + Angle2D.PIHALF) + linecenter;
+					points.Add(vertex);
+				}
+			}
 
 			// Done
 			return points;
 		}
 		
 		#endregion
-		
+
+		#region ================== Settings panel (mxd)
+
+		private void AddInterface()
+		{
+			panel = new CurveLinedefsOptionsPanel();
+			int vertices = General.Settings.ReadPluginSetting("curvelinedefsmode.vertices", DEFAULT_VERTICES_COUNT);
+			int distance = General.Settings.ReadPluginSetting("curvelinedefsmode.distance", DEFAULT_DISTANCE);
+			int angle = General.Settings.ReadPluginSetting("curvelinedefsmode.angle", DEFAULT_ANGLE);
+			bool fixedcurve = General.Settings.ReadPluginSetting("curvelinedefsmode.fixedcurve", false);
+
+			panel.SetValues(vertices, distance, angle, fixedcurve);
+			panel.Register();
+			panel.OnValueChanged += OnValuesChanged;
+		}
+
+		private void RemoveInterface()
+		{
+			panel.OnValueChanged -= OnValuesChanged;
+			General.Settings.WritePluginSetting("curvelinedefsmode.vertices", panel.Vertices);
+			General.Settings.WritePluginSetting("curvelinedefsmode.distance", panel.Distance);
+			General.Settings.WritePluginSetting("curvelinedefsmode.angle", panel.Angle);
+			General.Settings.WritePluginSetting("curvelinedefsmode.fixedcurve", panel.FixedCurve);
+			panel.Unregister();
+		}
+
+		private void OnValuesChanged(object sender, EventArgs e)
+		{
+			// Update curves
+			GenerateCurves();
+
+			// Redraw display
+			General.Interface.RedrawDisplay();
+		}
+
+		#endregion
+
 		#region ================== Events
 
 		public override void OnHelp()
@@ -165,8 +228,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnEngage();
 			renderer.SetPresentation(Presentation.Standard);
 			
-			// Show toolbox window
-			BuilderPlug.Me.CurveLinedefsForm.Show((Form)General.Interface);
+			//mxd
+			AddInterface();
+			GenerateCurves();
 		}
 
 		// Disenagaging
@@ -175,20 +239,21 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnDisengage();
 
 			// Hide toolbox window
-			BuilderPlug.Me.CurveLinedefsForm.Hide();
+			RemoveInterface();
 		}
 
 		// This applies the curves and returns to the base mode
 		public override void OnAccept()
 		{
 			// Create undo
-			General.Map.UndoRedo.CreateUndo("Curve linedefs");
+			string rest = (selectedlines.Count == 1 ? "a linedef" : selectedlines.Count + " linedefs"); //mxd
+			General.Map.UndoRedo.CreateUndo("Curve " + rest);
 			
 			// Go for all selected lines
 			foreach(Linedef ld in selectedlines)
 			{
 				// Make curve for line
-				List<Vector2D> points = GenerateCurve(ld);
+				List<Vector2D> points = curves[ld];
 				if(points.Count > 0)
 				{
 					// TODO: We may want some sector create/join code in here
@@ -196,10 +261,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					// Go for all points to split the line
 					Linedef splitline = ld;
-					for(int i = 0; i < points.Count; i++)
+					foreach(Vector2D p in points)
 					{
 						// Make vertex
-						Vertex v = General.Map.Map.CreateVertex(points[i]);
+						Vertex v = General.Map.Map.CreateVertex(p);
 						if(v == null)
 						{
 							General.Map.UndoRedo.WithdrawUndo();
@@ -252,10 +317,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(renderer.StartOverlay(true))
 			{
 				// Go for all selected lines
+				float vsize = (renderer.VertexSize + 1.0f) / renderer.Scale; //mxd
 				foreach(Linedef ld in selectedlines)
 				{
 					// Make curve for line
-					List<Vector2D> points = GenerateCurve(ld);
+					List<Vector2D> points = curves[ld];
 					if(points.Count > 0)
 					{
 						Vector2D p1 = ld.Start.Position;
@@ -272,6 +338,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 						// Draw last line
 						renderer.RenderLine(p2, ld.End.Position, LINE_THICKNESS, General.Colors.Highlight, true);
+
+						//mxd. Draw verts
+						foreach(Vector2D p in points)
+							renderer.RenderRectangleFilled(new RectangleF(p.x - vsize, p.y - vsize, vsize * 2.0f, vsize * 2.0f), General.Colors.Selection, true);
 					}
 				}
 				renderer.Finish();
@@ -279,7 +349,83 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			renderer.Present();
 		}
+
+		//mxd
+		public override void OnMouseDown(MouseEventArgs e)
+		{
+			base.OnMouseDown(e);
+			closestline = MapSet.NearestLinedef(selectedlines, mousedownmappos);
+
+			// Store offset between intial mouse position and curve top
+			Vector2D perpendicular = closestline.Line.GetPerpendicular().GetNormal();
+			if(panel.Distance != 0) perpendicular *= panel.Distance; // Special cases...
+			Vector2D curvetop = closestline.GetCenterPoint() - perpendicular;
+			mousedownoffset = mousedownmappos - curvetop;
+		}
+
+		//mxd
+		public override void OnMouseUp(MouseEventArgs e)
+		{
+			base.OnMouseUp(e);
+			closestline = null;
+			prevoffset = 0;
+		}
+
+		//mxd
+		public override void OnMouseMove(MouseEventArgs e)
+		{
+			base.OnMouseMove(e);
+
+			// Anything to do?
+			if((!selectpressed && !editpressed) || closestline == null) return;
+
+			// Do something...
+			Vector2D perpendicular = closestline.Line.GetPerpendicular().GetNormal();
+			if(panel.Distance != 0) perpendicular *= panel.Distance; // Special cases...
+			Vector2D center = closestline.GetCenterPoint();
+			Line2D radius = new Line2D(center, center - perpendicular);
+			float u = radius.GetNearestOnLine(mousemappos - mousedownoffset);
+			int dist = (panel.Distance == 0 ? 1 : panel.Distance); // Special cases...
+			int offset = (int)Math.Round(dist * u - dist);
+
+			// Change distance
+			if(selectpressed)
+			{
+				if(float.IsNaN(u)) panel.Distance = 0; // Special cases...
+				else panel.Distance += offset;
+			}
+			// Change angle
+			else if(editpressed && prevoffset != 0)
+			{
+				int diff = (int)Math.Round((offset - prevoffset) * renderer.Scale);
+				if(panel.Angle + diff > 0) panel.Angle += diff;
+			}
+
+			prevoffset = offset;
+		}
 		
+		#endregion
+
+		#region ================== Actions (mxd)
+
+		[BeginAction("increasesubdivlevel")]
+		private void IncreaseSubdivLevel() { panel.Vertices += 1; }
+
+		[BeginAction("decreasesubdivlevel")]
+		private void DecreaseSubdivLevel() { panel.Vertices -= 1; }
+
+		[BeginAction("increasebevel")]
+		private void IncreaseBevel() { panel.Distance += panel.DistanceIncrement; }
+
+		[BeginAction("decreasebevel")]
+		private void DecreaseBevel() { panel.Distance -= panel.DistanceIncrement; }
+
+		[BeginAction("rotateclockwise")]
+		private void IncreaseAngle() { panel.Angle += panel.AngleIncrement; }
+
+		[BeginAction("rotatecounterclockwise")]
+		private void DecreaseAngle() { panel.Angle -= panel.AngleIncrement; }
+
 		#endregion
 	}
 }

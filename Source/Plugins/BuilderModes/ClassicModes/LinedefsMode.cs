@@ -1563,7 +1563,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(selected.Count > 0)
 			{
 				// Go into curve linedefs mode
-				General.Editing.ChangeMode(new CurveLinedefsMode(new LinedefsMode()));
+				General.Editing.ChangeMode(new CurveLinedefsMode());
 			}
 		}
 		
