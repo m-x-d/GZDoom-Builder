@@ -60,8 +60,8 @@ namespace CodeImp.DoomBuilder
 		[DllImport("kernel32.dll", EntryPoint = "RtlZeroMemory", SetLastError = false)]
 		internal static extern void ZeroMemory(IntPtr dest, int size);
 
-		[DllImport("kernel32.dll", EntryPoint = "RtlMoveMemory", SetLastError = false)]
-		internal static extern unsafe void CopyMemory(void* dst, void* src, uint length);
+		//[DllImport("kernel32.dll", EntryPoint = "RtlMoveMemory", SetLastError = false)]
+		//internal static extern unsafe void CopyMemory(void* dst, void* src, uint length);
 
 		[DllImport("user32.dll", EntryPoint = "SendMessage", SetLastError = true, CallingConvention = CallingConvention.StdCall)]
 		internal static extern int SendMessage(IntPtr hwnd, uint Msg, int wParam, int lParam);
@@ -2168,7 +2168,7 @@ namespace CodeImp.DoomBuilder
 				try { WriteLogLine(exceptionmsg); } catch { }
 
 				// Try displaying it to the user...
-				try { MessageBox.Show("Fatal Windows Forms Error", exceptionmsg, MessageBoxButtons.OK, MessageBoxIcon.Stop); }
+				try { MessageBox.Show(exceptionmsg, "Fatal Windows Forms Error", MessageBoxButtons.OK, MessageBoxIcon.Stop); }
 				finally { Process.GetCurrentProcess().Kill(); }
 			}
 		}
@@ -2202,7 +2202,7 @@ namespace CodeImp.DoomBuilder
 				try { WriteLogLine(exceptionmsg); } catch {}
 
 				// Try displaying it to the user...
-				try { MessageBox.Show("Fatal Windows Forms Error", exceptionmsg, MessageBoxButtons.OK, MessageBoxIcon.Stop); }
+				try { MessageBox.Show(exceptionmsg, "Fatal Non-UI Error", MessageBoxButtons.OK, MessageBoxIcon.Stop); }
 				finally { Process.GetCurrentProcess().Kill(); }
 			}
 		}

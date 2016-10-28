@@ -83,7 +83,7 @@ namespace CodeImp.DoomBuilder.IO
 			int width, height;
 
 			// Read pixel data
-			PixelColorBlock pixeldata = ReadAsPixelData(stream, out width, out height);
+			PixelColor[] pixeldata = ReadAsPixelData(stream, out width, out height);
 			if(pixeldata != null)
 			{
 				try
@@ -93,8 +93,10 @@ namespace CodeImp.DoomBuilder.IO
 					BitmapData bitmapdata = bmp.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 					PixelColor* targetdata = (PixelColor*)bitmapdata.Scan0.ToPointer();
 
-					// Copy the pixels
-					General.CopyMemory(targetdata, pixeldata.Pointer, (uint)(width * height * sizeof(PixelColor)));
+					//mxd. Copy the pixels
+					int size = pixeldata.Length - 1;
+					for(PixelColor* cp = targetdata + size; cp >= targetdata; cp--)
+						*cp = pixeldata[size--];
 
 					// Done
 					bmp.UnlockBits(bitmapdata);
@@ -151,7 +153,7 @@ namespace CodeImp.DoomBuilder.IO
 
 		// This creates pixel color data from the given data
 		// Returns null on failure
-		private unsafe PixelColorBlock ReadAsPixelData(Stream stream, out int width, out int height)
+		private PixelColor[] ReadAsPixelData(Stream stream, out int width, out int height)
 		{
 			// Image will be 128x128
 			width = 128;
@@ -163,8 +165,7 @@ namespace CodeImp.DoomBuilder.IO
 #endif
 
 			// Allocate memory
-			PixelColorBlock pixeldata = new PixelColorBlock(width, height);
-			pixeldata.Clear();
+			PixelColor[] pixeldata = new PixelColor[width * height];
 
 			// Read flat bytes from stream
 			byte[] bytes = new byte[width * height];
@@ -189,11 +190,11 @@ namespace CodeImp.DoomBuilder.IO
 							
 							// We make the borders slightly brighter and darker
 							if((py == 0) || (px == 0))
-								pixeldata.Pointer[p] = bc1;
+								pixeldata[p] = bc1;
 							else if((py == 7) || (px  == 7))
-								pixeldata.Pointer[p] = bc2;
+								pixeldata[p] = bc2;
 							else
-								pixeldata.Pointer[p] = bc;
+								pixeldata[p] = bc;
 						}
 					}
 				}

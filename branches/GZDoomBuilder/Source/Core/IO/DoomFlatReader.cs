@@ -83,7 +83,7 @@ namespace CodeImp.DoomBuilder.IO
 			Bitmap bmp;
 
 			// Read pixel data
-			PixelColorBlock pixeldata = ReadAsPixelData(stream, out width, out height);
+			PixelColor[] pixeldata = ReadAsPixelData(stream, out width, out height);
 			if(pixeldata != null)
 			{
 				try
@@ -93,8 +93,10 @@ namespace CodeImp.DoomBuilder.IO
 					BitmapData bitmapdata = bmp.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 					PixelColor* targetdata = (PixelColor*)bitmapdata.Scan0.ToPointer();
 
-					// Copy the pixels
-					General.CopyMemory(targetdata, pixeldata.Pointer, (uint)(width * height * sizeof(PixelColor)));
+					//mxd. Copy the pixels
+					int size = pixeldata.Length - 1;
+					for(PixelColor* cp = targetdata + size; cp >= targetdata; cp--)
+						*cp = pixeldata[size--];
 
 					// Done
 					bmp.UnlockBits(bitmapdata);
@@ -153,7 +155,7 @@ namespace CodeImp.DoomBuilder.IO
 
 		// This creates pixel color data from the given data
 		// Returns null on failure
-		private PixelColorBlock ReadAsPixelData(Stream stream, out int width, out int height)
+		private PixelColor[] ReadAsPixelData(Stream stream, out int width, out int height)
 		{
 			// Check if the flat is square
 			float sqrlength = (float)Math.Sqrt(stream.Length);
@@ -187,15 +189,14 @@ namespace CodeImp.DoomBuilder.IO
 			if((width <= 0) || (height <= 0)) return null;
 
 			// Allocate memory
-			PixelColorBlock pixeldata = new PixelColorBlock(width, height);
-			pixeldata.Clear();
+			PixelColor[] pixeldata = new PixelColor[width * height];
 
 			// Read flat bytes from stream
 			byte[] bytes = new byte[width * height];
 			stream.Read(bytes, 0, width * height);
 
 			// Convert bytes with palette
-			for(uint i = 0; i < width * height; i++) pixeldata.Pointer[i] = palette[bytes[i]];
+			for(uint i = 0; i < width * height; i++) pixeldata[i] = palette[bytes[i]];
 
 			// Return pointer
 			return pixeldata;
