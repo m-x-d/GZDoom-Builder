@@ -59,7 +59,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private readonly Association highlightasso = new Association();
 
 		// Interface
-		private bool editpressed;
+		new private bool editpressed;
 		private bool thinginserted;
 		private bool awaitingMouseClick; //mxd
 		private bool selectionfromhighlight; //mxd

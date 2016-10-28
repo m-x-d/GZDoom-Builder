@@ -57,7 +57,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private long flashstarttime;
 		
 		// Interface
-		protected bool editpressed;
+		new private bool editpressed;
 
 		//mxd. Used in overlay rendering
 		private Dictionary<Sector, Sector> associates;
