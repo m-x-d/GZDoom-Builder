@@ -102,7 +102,7 @@ namespace CodeImp.DoomBuilder.IO
 			Bitmap bmp;
 
 			// Read pixel data
-			PixelColorBlock pixeldata = ReadAsPixelData(stream, out width, out height, out offsetx, out offsety);
+			PixelColor[] pixeldata = ReadAsPixelData(stream, out width, out height, out offsetx, out offsety);
 			if(pixeldata != null)
 			{
 				// Create bitmap and lock pixels
@@ -112,8 +112,10 @@ namespace CodeImp.DoomBuilder.IO
 					BitmapData bitmapdata = bmp.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.WriteOnly, PixelFormat.Format32bppArgb);
 					PixelColor* targetdata = (PixelColor*)bitmapdata.Scan0.ToPointer();
 
-					// Copy the pixels
-					General.CopyMemory(targetdata, pixeldata.Pointer, (uint)(width * height * sizeof(PixelColor)));
+					//mxd. Copy the pixels
+					int size = pixeldata.Length - 1;
+					for(PixelColor* cp = targetdata + size; cp >= targetdata; cp--)
+						*cp = pixeldata[size--];
 
 					// Done
 					bmp.UnlockBits(bitmapdata);
@@ -142,7 +144,7 @@ namespace CodeImp.DoomBuilder.IO
 			int width, height, ox, oy;
 
 			// Read pixel data
-			PixelColorBlock pixeldata = ReadAsPixelData(stream, out width, out height, out ox, out oy);
+			PixelColor[] pixeldata = ReadAsPixelData(stream, out width, out height, out ox, out oy);
 			if(pixeldata != null)
 			{
 				// Go for all source pixels
@@ -152,22 +154,26 @@ namespace CodeImp.DoomBuilder.IO
 					for(oy = 0; oy < height; oy++)
 					{
 						// Copy this pixel?
-						if(pixeldata.Pointer[oy * width + ox].a > 0.5f)
+						if(pixeldata[oy * width + ox].a > 0.5f)
 						{
 							// Calculate target pixel and copy when within bounds
 							int tx = x + ox;
 							int ty = y + oy;
 							if((tx >= 0) && (tx < targetwidth) && (ty >= 0) && (ty < targetheight))
-								target[ty * targetwidth + tx] = pixeldata.Pointer[oy * width + ox];
+								target[ty * targetwidth + tx] = pixeldata[oy * width + ox];
 						}
 					}
 				}
+			}
+			else
+			{
+				throw new InvalidDataException("Failed to read pixeldata"); //mxd. Let's throw exception on failure
 			}
 		}
 
 		// This creates pixel color data from the given data
 		// Returns null on failure
-		private PixelColorBlock ReadAsPixelData(Stream stream, out int width, out int height, out int offsetx, out int offsety)
+		private PixelColor[] ReadAsPixelData(Stream stream, out int width, out int height, out int offsetx, out int offsety)
 		{
 			BinaryReader reader = new BinaryReader(stream);
 
@@ -200,8 +206,7 @@ namespace CodeImp.DoomBuilder.IO
 			for(int x = 0; x < width; x++) columns[x] = reader.ReadInt32();
 			
 			// Allocate memory
-			PixelColorBlock pixeldata = new PixelColorBlock(width, height);
-			pixeldata.Clear();
+			PixelColor[] pixeldata = new PixelColor[width * height];
 			
 			// Go for all columns
 			for(int x = 0; x < width; x++)
@@ -228,8 +233,12 @@ namespace CodeImp.DoomBuilder.IO
 						// Read pixel color index
 						int p = reader.ReadByte();
 
+						//mxd. Sanity check required...
+						int offset = (y + yo) * width + x;
+						if(offset > pixeldata.Length - 1) return null;
+
 						// Draw pixel
-						pixeldata.Pointer[(y + yo) * width + x] = palette[p];
+						pixeldata[offset] = palette[p];
 					}
 
 					// Skip unused pixel
@@ -237,7 +246,7 @@ namespace CodeImp.DoomBuilder.IO
 
 					// Read next post start
 					read_y = reader.ReadByte();
-					if(read_y < y || (height > 255 && read_y == y)) y += read_y; else y = read_y; //mxd. Fix for tall patches higher than 508 pixels
+					if(read_y < y || (height > 256 && read_y == y)) y += read_y; else y = read_y; //mxd. Fix for tall patches higher than 508 pixels
 				}
 			}
 
