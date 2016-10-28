@@ -66,7 +66,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private Dictionary<Sector, string[]> sectortexts;
 		
 		// Interface
-		private bool editpressed;
+		new private bool editpressed;
 		private bool selectionfromhighlight; //mxd
 		
 		#endregion

@@ -53,7 +53,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private Vector2D insertpreview = new Vector2D(float.NaN, float.NaN); //mxd
 
 		// Interface
-		private bool editpressed;
+		new private bool editpressed;
 		private bool selectionfromhighlight; //mxd
 
 		#endregion
