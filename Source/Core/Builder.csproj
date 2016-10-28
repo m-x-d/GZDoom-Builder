@@ -511,7 +511,6 @@
     <Compile Include="Rendering\TextLabel.cs" />
     <Compile Include="VisualModes\VisualGeometry.cs" />
     <Compile Include="Rendering\PixelColor.cs" />
-    <Compile Include="Rendering\PixelColorBlock.cs" />
     <Compile Include="Rendering\Plotter.cs" />
     <Compile Include="Rendering\Renderer.cs" />
     <Compile Include="Rendering\Renderer2D.cs" />
