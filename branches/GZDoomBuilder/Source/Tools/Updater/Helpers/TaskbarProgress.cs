@@ -1,11 +1,17 @@
-﻿using System;
+﻿#region ======================== Namespaces
+
+using System;
 using System.Runtime.InteropServices;
+
+#endregion
 
 namespace mxd.GZDBUpdater
 {
 	// http://stackoverflow.com/questions/1295890/windows-7-progress-bar-in-taskbar-in-c
 	public static class TaskbarProgress
 	{
+		#region ======================== TaskbarInstance
+
 		public enum TaskbarStates
 		{
 			NoProgress = 0,
@@ -15,7 +21,9 @@ namespace mxd.GZDBUpdater
 			Paused = 0x8
 		}
 
-		[ComImportAttribute()]
+		
+
+		[ComImportAttribute]
 		[GuidAttribute("ea1afb91-9e28-4b86-90e9-9e9f8a5eefaf")]
 		[InterfaceTypeAttribute(ComInterfaceType.InterfaceIsIUnknown)]
 		private interface ITaskbarList3
@@ -45,22 +53,45 @@ namespace mxd.GZDBUpdater
 
 		[GuidAttribute("56FDF344-FD6D-11d0-958A-006097C9A090")]
 		[ClassInterfaceAttribute(ClassInterfaceType.None)]
-		[ComImportAttribute()]
+		[ComImportAttribute]
 		private class TaskbarInstance
 		{
 		}
 
-		private static ITaskbarList3 taskbarInstance = (ITaskbarList3)new TaskbarInstance();
-		private static bool taskbarSupported = Environment.OSVersion.Version >= new Version(6, 1);
+		#endregion
+
+		#region ======================== Variables
+
+		private static ITaskbarList3 taskbarinstance;
+		private static bool taskbarsupported; //mxd. Environment.OSVersion.Version won't save us here...
+
+		#endregion
+
+		#region ======================== Methods
 
 		public static void SetState(IntPtr windowHandle, TaskbarStates taskbarState)
 		{
-			if(taskbarSupported) taskbarInstance.SetProgressState(windowHandle, taskbarState);
+			if(TaskBarSupported()) taskbarinstance.SetProgressState(windowHandle, taskbarState);
 		}
 
 		public static void SetValue(IntPtr windowHandle, double progressValue, double progressMax)
 		{
-			if(taskbarSupported) taskbarInstance.SetProgressValue(windowHandle, (ulong)progressValue, (ulong)progressMax);
+			if(TaskBarSupported()) taskbarinstance.SetProgressValue(windowHandle, (ulong)progressValue, (ulong)progressMax);
 		}
+
+		//mxd
+		private static bool TaskBarSupported()
+		{
+			if(taskbarinstance == null)
+			{
+				taskbarsupported = true;
+				try { taskbarinstance = (ITaskbarList3)new TaskbarInstance(); }
+				catch { taskbarsupported = false; }
+			}
+
+			return taskbarsupported;
+		}
+
+		#endregion
 	}
 }
