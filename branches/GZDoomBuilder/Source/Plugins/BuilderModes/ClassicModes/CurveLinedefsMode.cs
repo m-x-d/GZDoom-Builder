@@ -398,6 +398,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			else if(editpressed && prevoffset != 0)
 			{
 				int diff = (int)Math.Round((offset - prevoffset) * renderer.Scale);
+				if(panel.FixedCurve) diff *= Math.Sign(panel.Distance); // Special cases...
 				if(panel.Angle + diff > 0) panel.Angle += diff;
 			}
 

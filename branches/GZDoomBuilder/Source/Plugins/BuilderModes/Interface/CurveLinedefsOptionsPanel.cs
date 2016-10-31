@@ -60,6 +60,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 			General.Interface.AddButton(distance);
 			General.Interface.AddButton(anglelabel);
 			General.Interface.AddButton(angle);
+			General.Interface.AddButton(flip);
 			General.Interface.AddButton(reset);
 			General.Interface.AddButton(separator1);
 			General.Interface.AddButton(fixedcurve);
@@ -77,6 +78,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 			General.Interface.RemoveButton(fixedcurve);
 			General.Interface.RemoveButton(separator1);
 			General.Interface.RemoveButton(reset);
+			General.Interface.RemoveButton(flip);
 			General.Interface.RemoveButton(angle);
 			General.Interface.RemoveButton(anglelabel);
 			General.Interface.RemoveButton(distance);
@@ -113,6 +115,11 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 			distancelabel.Enabled = !fixedcurve.Checked;
 
 			if(!blockevents && OnValueChanged != null) OnValueChanged(this, EventArgs.Empty);
+		}
+
+		private void flip_Click(object sender, EventArgs e)
+		{
+			distance.Value = -distance.Value;
 		}
 
 		private void reset_Click(object sender, EventArgs e)

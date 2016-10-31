@@ -223,8 +223,13 @@ namespace CodeImp.DoomBuilder.Geometry
 						LinedefTracePath tracepath = new LinedefTracePath(innerlines);
 						EarClipPolygon innerpoly = tracepath.MakePolygon(true);
 
+						//mxd. Check bbox first...
+						Vector2D foundsidepoint = foundline.GetSidePoint(foundlinefront);
+						RectangleF innerbbox = innerpoly.CreateBBox();
+						bool outsidebbox = (foundsidepoint.x < innerbbox.Left || foundsidepoint.x > innerbbox.Right || foundsidepoint.y < innerbbox.Top || foundsidepoint.y > innerbbox.Bottom);
+
 						// Check if the front of the line is outside the polygon
-						if(!innerpoly.Intersect(foundline.GetSidePoint(foundlinefront)))
+						if(outsidebbox || !innerpoly.Intersect(foundsidepoint))
 						{
 							// Valid hole found!
 							alllines.AddRange(innerlines);
@@ -244,6 +249,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		{
 			Linedef scanline = line;
 			bool scanfront = front;
+			Vector2D sidepoint = line.GetSidePoint(front); //mxd
 
 			do
 			{
@@ -255,8 +261,12 @@ namespace CodeImp.DoomBuilder.Geometry
 					LinedefTracePath tracepath = new LinedefTracePath(pathlines);
 					EarClipPolygon poly = tracepath.MakePolygon(true);
 
+					//mxd. Check bbox first...
+					RectangleF bbox = poly.CreateBBox();
+					bool outsidebbox = (sidepoint.x < bbox.Left || sidepoint.x > bbox.Right || sidepoint.y < bbox.Top || sidepoint.y > bbox.Bottom);
+
 					// Check if the front of the line is inside the polygon
-					if(poly.Intersect(line.GetSidePoint(front)))
+					if(!outsidebbox && poly.Intersect(sidepoint))
 					{
 						// Outer lines found!
 						alllines.AddRange(pathlines);
@@ -921,6 +931,11 @@ namespace CodeImp.DoomBuilder.Geometry
 			List<Vertex> nonmergeverts = new List<Vertex>(General.Map.Map.Vertices);
 			MapSet map = General.Map.Map;
 
+			//mxd. Let's use a blockmap...
+			RectangleF area = MapSet.CreateArea(oldlines);
+			BlockMap<BlockEntry> oldlinesmap = new BlockMap<BlockEntry>(area);
+			oldlinesmap.AddLinedefsSet(oldlines);
+
 			General.Map.Map.ClearAllMarks(false);
 			
 			// Any points to do?
@@ -1065,7 +1080,7 @@ namespace CodeImp.DoomBuilder.Geometry
 						foreach(Linedef ld in newlines)
 						{
 							Vector2D ldcp = ld.GetCenterPoint();
-							Linedef nld = MapSet.NearestLinedef(oldlines, ldcp);
+							Linedef nld = MapSet.NearestLinedef(oldlinesmap, ldcp); //mxd. Lines collection -> Blockmap
 							if(nld != null)
 							{
 								float ldside = nld.SideOfLine(ldcp);
@@ -1102,7 +1117,7 @@ namespace CodeImp.DoomBuilder.Geometry
 								List<LinedefSide> endpoints = new List<LinedefSide>();
 
 								// Find out where the start will stitch and create test points
-								Linedef l1 = MapSet.NearestLinedefRange(oldlines, firstline.Start.Position, MapSet.STITCH_DISTANCE);
+								Linedef l1 = MapSet.NearestLinedefRange(oldlinesmap, firstline.Start.Position, MapSet.STITCH_DISTANCE); //mxd. Lines collection -> Blockmap
 								Vertex vv1 = null;
 								if(l1 != null)
 								{
@@ -1127,7 +1142,7 @@ namespace CodeImp.DoomBuilder.Geometry
 								}
 
 								// Find out where the end will stitch and create test points
-								Linedef l2 = MapSet.NearestLinedefRange(oldlines, lastline.End.Position, MapSet.STITCH_DISTANCE);
+								Linedef l2 = MapSet.NearestLinedefRange(oldlinesmap, lastline.End.Position, MapSet.STITCH_DISTANCE); //mxd. Lines collection -> Blockmap
 								Vertex vv2 = null;
 								if(l2 != null)
 								{
@@ -2187,15 +2202,23 @@ namespace CodeImp.DoomBuilder.Geometry
 			{
 				if(l.Front != null && (l.Front.Sector != null && !SectorWasInvalid(l.Front.Sector)))
 				{
-					if(!sectorsidesref.ContainsKey(l.Front.Sector)) sectorsidesref.Add(l.Front.Sector, new HashSet<Sidedef>());
-					sectorsidesref[l.Front.Sector].Add(l.Front);
+					// Add only multipart sectors
+					if(l.Front.Sector.Triangles.IslandVertices.Count > 1)
+					{
+						if(!sectorsidesref.ContainsKey(l.Front.Sector)) sectorsidesref[l.Front.Sector] = new HashSet<Sidedef>();
+						sectorsidesref[l.Front.Sector].Add(l.Front);
+					}
 					drawnsides.Add(l.Front);
 				}
 
 				if(l.Back != null && (l.Back.Sector != null && !SectorWasInvalid(l.Back.Sector)))
 				{
-					if(!sectorsidesref.ContainsKey(l.Back.Sector)) sectorsidesref.Add(l.Back.Sector, new HashSet<Sidedef>());
-					sectorsidesref[l.Back.Sector].Add(l.Back);
+					// Add only multipart sectors
+					if(l.Back.Sector.Triangles.IslandVertices.Count > 1)
+					{
+						if(!sectorsidesref.ContainsKey(l.Back.Sector)) sectorsidesref[l.Back.Sector] = new HashSet<Sidedef>();
+						sectorsidesref[l.Back.Sector].Add(l.Back);
+					}
 					drawnsides.Add(l.Back);
 				}
 			}
@@ -2387,28 +2410,6 @@ namespace CodeImp.DoomBuilder.Geometry
 			}
 
 			return 0;
-		}
-
-		//mxd
-		public static Sector FindSectorContaining(Linedef line, bool front)
-		{
-			List<LinedefSide> sectorsides = FindPotentialSectorAt(line, front);
-			if(sectorsides == null) return null;
-
-			// Check potential sectors
-			foreach(LinedefSide sectorside in sectorsides)
-			{
-				Sidedef target = (sectorside.Front ? sectorside.Line.Front : sectorside.Line.Back);
-				if(target != null && target.Sector != null)
-				{
-					// Check if target line is inside the found sector
-					if(target.Sector.Intersect(line.Start.Position, false) && target.Sector.Intersect(line.End.Position, false))
-						return target.Sector;
-				}
-			}
-
-			// No dice...
-			return null;
 		}
 
 		#endregion

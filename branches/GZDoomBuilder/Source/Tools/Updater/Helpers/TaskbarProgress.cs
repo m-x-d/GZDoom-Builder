@@ -64,6 +64,7 @@ namespace mxd.GZDBUpdater
 
 		private static ITaskbarList3 taskbarinstance;
 		private static bool taskbarsupported; //mxd. Environment.OSVersion.Version won't save us here...
+		private static bool checkperformed;
 
 		#endregion
 
@@ -82,8 +83,9 @@ namespace mxd.GZDBUpdater
 		//mxd
 		private static bool TaskBarSupported()
 		{
-			if(taskbarinstance == null)
+			if(!checkperformed)
 			{
+				checkperformed = true;
 				taskbarsupported = true;
 				try { taskbarinstance = (ITaskbarList3)new TaskbarInstance(); }
 				catch { taskbarsupported = false; }
