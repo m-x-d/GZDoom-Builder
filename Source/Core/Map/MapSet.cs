@@ -1987,6 +1987,32 @@ namespace CodeImp.DoomBuilder.Map
 			return new RectangleF(l, t, r - l, b - t);
 		}
 
+		/// <summary>This increases and existing area with the given linedefs.</summary>
+		public static RectangleF IncreaseArea(RectangleF area, ICollection<Linedef> lines) //mxd
+		{
+			float l = area.Left;
+			float t = area.Top;
+			float r = area.Right;
+			float b = area.Bottom;
+
+			// Go for all vertices
+			foreach(Linedef ld in lines)
+			{
+				// Adjust boundaries by vertices
+				if(ld.Start.Position.x < l) l = ld.Start.Position.x;
+				if(ld.Start.Position.x > r) r = ld.Start.Position.x;
+				if(ld.Start.Position.y < t) t = ld.Start.Position.y;
+				if(ld.Start.Position.y > b) b = ld.Start.Position.y;
+				if(ld.End.Position.x < l) l = ld.End.Position.x;
+				if(ld.End.Position.x > r) r = ld.End.Position.x;
+				if(ld.End.Position.y < t) t = ld.End.Position.y;
+				if(ld.End.Position.y > b) b = ld.End.Position.y;
+			}
+
+			// Return a rect
+			return new RectangleF(l, t, r - l, b - t);
+		}
+
 		/// <summary>This filters lines by a rectangular area.</summary>
 		public static HashSet<Linedef> FilterByArea(ICollection<Linedef> lines, ref RectangleF area)
 		{
@@ -2435,12 +2461,21 @@ namespace CodeImp.DoomBuilder.Map
 				if(line.Front == null) linesmissingfront.Add(line);
 			}
 
+			// Anything to do?
+			if(linesmissingfront.Count == 0 && linesmissingback.Count == 0) return;
+
+			// Let's use a blockmap...
+			RectangleF area = CreateArea(linesmissingfront);
+			area = IncreaseArea(area, linesmissingback);
+			BlockMap<BlockEntry> blockmap = new BlockMap<BlockEntry>(area);
+			blockmap.AddSectorsSet(General.Map.Map.Sectors);
+
 			// Find sectors to join singlesided lines
 			Dictionary<Linedef, Sector> linefrontsectorref = new Dictionary<Linedef, Sector>();
 			foreach(Linedef line in linesmissingfront)
 			{
-				// Line is now inside a sector? (check from the missing side!)
-				Sector nearest = Tools.FindSectorContaining(line, true);
+				// Line is now inside a sector?
+				Sector nearest = FindSectorContaining(blockmap, line);
 
 				// We can reattach our line!
 				if(nearest != null) linefrontsectorref[line] = nearest;
@@ -2449,8 +2484,8 @@ namespace CodeImp.DoomBuilder.Map
 			Dictionary<Linedef, Sector> linebacksectorref = new Dictionary<Linedef, Sector>();
 			foreach(Linedef line in linesmissingback)
 			{
-				// Line is now inside a sector? (check from the missing side!)
-				Sector nearest = Tools.FindSectorContaining(line, false);
+				// Line is now inside a sector?
+				Sector nearest = FindSectorContaining(blockmap, line);
 
 				// We can reattach our line!
 				if(nearest != null) linebacksectorref[line] = nearest;
@@ -2509,6 +2544,28 @@ namespace CodeImp.DoomBuilder.Map
 				// Correct the sided flags
 				line.ApplySidedFlags();
 			}
+		}
+
+		//mxd
+		private static Sector FindSectorContaining(BlockMap<BlockEntry> sectorsmap, Linedef line)
+		{
+			HashSet<BlockEntry> blocks = new HashSet<BlockEntry>
+			{
+				sectorsmap.GetBlockAt(line.Start.Position),
+				sectorsmap.GetBlockAt(line.End.Position),
+			};
+
+			foreach(BlockEntry be in blocks)
+			{
+				foreach(Sector sector in be.Sectors)
+				{
+					// Check if target line is inside the found sector
+					if(sector.Intersect(line.Start.Position, false) && sector.Intersect(line.End.Position, false))
+						return sector;
+				}
+			}
+
+			return null;
 		}
 
 		//mxd
@@ -2726,46 +2783,78 @@ namespace CodeImp.DoomBuilder.Map
 
 			do
 			{
+				//mxd. Create blockmap
+				ICollection<Vertex> biggerset, smallerset;
+				bool keepsmaller;
+				if(set1.Count > set2.Count)
+				{
+					biggerset = set1;
+					smallerset = set2;
+					keepsmaller = !keepsecond;
+				}
+				else
+				{
+					biggerset = set2;
+					smallerset = set1;
+					keepsmaller = keepsecond;
+				}
+				
+				RectangleF area = CreateArea(biggerset);
+				BlockMap<BlockEntry> blockmap = new BlockMap<BlockEntry>(area);
+				blockmap.AddVerticesSet(biggerset);
+				
 				// No joins yet
 				joined = false;
 
-				// Go for all vertices in the first set
-				foreach(Vertex v1 in set1)
+				// Go for all vertices in the smaller set
+				foreach(Vertex v1 in smallerset)
 				{
-					// Go for all vertices in the second set
-					foreach(Vertex v2 in set2)
+					HashSet<BlockEntry> blocks = new HashSet<BlockEntry>
 					{
-						// Check if vertices are close enough
-						if(v1.DistanceToSq(v2.Position) <= joindist2)
+						blockmap.GetBlockAt(v1.Position), 
+						blockmap.GetBlockAt(new Vector2D(v1.Position.x + joindist, v1.Position.y + joindist)), 
+						blockmap.GetBlockAt(new Vector2D(v1.Position.x + joindist, v1.Position.y - joindist)), 
+						blockmap.GetBlockAt(new Vector2D(v1.Position.x - joindist, v1.Position.y + joindist)), 
+						blockmap.GetBlockAt(new Vector2D(v1.Position.x - joindist, v1.Position.y - joindist))
+					};
+
+					foreach(BlockEntry be in blocks)
+					{
+						if(be == null) continue;
+						foreach(Vertex v2 in be.Vertices)
 						{
-							// Check if not the same vertex
-							if(v1 != v2)
+							// Check if vertices are close enough
+							if(v1.DistanceToSq(v2.Position) <= joindist2)
 							{
-								// Move the second vertex to match the first
-								v2.Move(v1.Position);
-								
-								// Check which one to keep
-								if(keepsecond)
+								// Check if not the same vertex
+								if(v1 != v2)
 								{
-									// Join the first into the second
-									// Second is kept, first is removed
-									v1.Join(v2);
-									set1.Remove(v1);
-									set2.Remove(v1);
+									// Move the second vertex to match the first
+									v2.Move(v1.Position);
+
+									// Check which one to keep
+									if(keepsmaller)
+									{
+										// Join the first into the second
+										// Second is kept, first is removed
+										v1.Join(v2);
+										biggerset.Remove(v1);
+										smallerset.Remove(v1);
+									}
+									else
+									{
+										// Join the second into the first
+										// First is kept, second is removed
+										v2.Join(v1);
+										biggerset.Remove(v2);
+										smallerset.Remove(v2);
+									}
+
+									// Count the join
+									joinsdone++;
+									joined = true;
+									break;
 								}
-								else
-								{
-									// Join the second into the first
-									// First is kept, second is removed
-									v2.Join(v1);
-									set1.Remove(v2);
-									set2.Remove(v2);
-								}
-								
-								// Count the join
-								joinsdone++;
-								joined = true;
-								break;
 							}
 						}
 					}
@@ -3178,6 +3267,62 @@ namespace CodeImp.DoomBuilder.Map
 		}
 
 		/// <summary>This finds the line closest to the specified position.</summary>
+		public static Linedef NearestLinedef(BlockMap<BlockEntry> selectionmap, Vector2D pos) //mxd
+		{
+			Linedef closest = null;
+			float distance = float.MaxValue;
+
+			Point p = selectionmap.GetBlockCoordinates(pos);
+			int minx = p.X;
+			int maxx = p.X;
+			int miny = p.Y;
+			int maxy = p.Y;
+			int step = 0;
+
+			// Check square block ranges around pos...
+			while(true)
+			{
+				bool noblocksfound = true;
+				for(int x = minx; x < maxx + 1; x++)
+				{
+					for(int y = miny; y < maxy + 1; y++)
+					{
+						// Skip inner blocks...
+						if(x > minx && x < maxx && y > miny && y < maxy) continue;
+						if(!selectionmap.IsInRange(new Point(x, y))) continue;
+
+						// Go for all linedefs in block
+						BlockEntry be = selectionmap.Map[x, y];
+						foreach(Linedef l in be.Lines)
+						{
+							// Calculate distance and check if closer than previous find
+							float d = l.SafeDistanceToSq(pos, true);
+							if(d < distance)
+							{
+								// This one is closer
+								closest = l;
+								distance = d;
+							}
+						}
+
+						noblocksfound = false;
+					}
+				}
+
+				// Abort if line was found or when outside of blockmap range...
+				// Check at least 3x3 blocks, because there's a possibility that a line closer to pos exists in a nearby block than in the first block
+				if(noblocksfound || (closest != null && step > 0)) return closest;
+
+				// Increase search range...
+				minx--;
+				maxx++;
+				miny--;
+				maxy++;
+				step++;
+			}
+		}
+
+		/// <summary>This finds the line closest to the specified position.</summary>
 		public static Linedef NearestLinedef(ICollection<Linedef> selection, Vector2D pos)
 		{
 			Linedef closest = null;
@@ -3220,6 +3365,48 @@ namespace CodeImp.DoomBuilder.Map
 				}
 			}
 			
+			// Return result
+			return closest;
+		}
+
+		/// <summary>This finds the line closest to the specified position.</summary>
+		public static Linedef NearestLinedefRange(BlockMap<BlockEntry> selectionmap, Vector2D pos, float maxrange) //mxd
+		{
+			Linedef closest = null;
+			float distance = float.MaxValue;
+			float maxrangesq = maxrange * maxrange;
+			HashSet<Linedef> processed = new HashSet<Linedef>();
+			
+			HashSet<BlockEntry> blocks = new HashSet<BlockEntry>
+			{
+				selectionmap.GetBlockAt(pos), 
+				selectionmap.GetBlockAt(new Vector2D(pos.x + maxrange, pos.y + maxrange)), 
+				selectionmap.GetBlockAt(new Vector2D(pos.x + maxrange, pos.y - maxrange)), 
+				selectionmap.GetBlockAt(new Vector2D(pos.x - maxrange, pos.y + maxrange)), 
+				selectionmap.GetBlockAt(new Vector2D(pos.x - maxrange, pos.y - maxrange))
+			};
+
+			foreach(BlockEntry be in blocks)
+			{
+				if(be == null) continue;
+
+				foreach(Linedef l in be.Lines)
+				{
+					if(processed.Contains(l)) continue;
+					
+					// Calculate distance and check if closer than previous find
+					float d = l.SafeDistanceToSq(pos, true);
+					if(d < distance && d <= maxrangesq)
+					{
+						// This one is closer
+						closest = l;
+						distance = d;
+					}
+
+					processed.Add(l);
+				}
+			}
+
 			// Return result
 			return closest;
 		}

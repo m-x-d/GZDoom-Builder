@@ -105,7 +105,7 @@ namespace CodeImp.DoomBuilder.Map
 		#region ================== Methods
 		
 		// This returns the block coordinates
-		protected Point GetBlockCoordinates(Vector2D v)
+		internal Point GetBlockCoordinates(Vector2D v)
 		{
 			return new Point((int)(v.x - range.Left) >> blocksizeshift,
 							 (int)(v.y - range.Top) >> blocksizeshift);
@@ -119,7 +119,7 @@ namespace CodeImp.DoomBuilder.Map
 		}
 		
 		// This returns true when the given block is inside range
-		protected bool IsInRange(Point p)
+		internal bool IsInRange(Point p)
 		{
 			return (p.X >= 0) && (p.X < size.Width) && (p.Y >= 0) && (p.Y < size.Height);
 		}
@@ -356,6 +356,9 @@ namespace CodeImp.DoomBuilder.Map
 		// This puts a sector in the blockmap
 		public virtual void AddSector(Sector s)
 		{
+			//mxd. Check range. Sector can be bigger than blockmap range
+			if(!range.IntersectsWith(s.BBox)) return;
+			
 			Point p1 = GetBlockCoordinates(new Vector2D(s.BBox.Left, s.BBox.Top));
 			Point p2 = GetBlockCoordinates(new Vector2D(s.BBox.Right, s.BBox.Bottom));
 			p1 = CropToRange(p1);

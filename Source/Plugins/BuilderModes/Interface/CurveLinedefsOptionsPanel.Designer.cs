@@ -35,12 +35,13 @@
 			this.distance = new CodeImp.DoomBuilder.Controls.ToolStripNumericUpDown();
 			this.anglelabel = new System.Windows.Forms.ToolStripLabel();
 			this.angle = new CodeImp.DoomBuilder.Controls.ToolStripNumericUpDown();
+			this.reset = new System.Windows.Forms.ToolStripButton();
 			this.separator1 = new System.Windows.Forms.ToolStripSeparator();
 			this.fixedcurve = new System.Windows.Forms.ToolStripButton();
 			this.separator2 = new System.Windows.Forms.ToolStripSeparator();
 			this.apply = new System.Windows.Forms.ToolStripButton();
 			this.cancel = new System.Windows.Forms.ToolStripButton();
-			this.reset = new System.Windows.Forms.ToolStripButton();
+			this.flip = new System.Windows.Forms.ToolStripButton();
 			this.toolstrip.SuspendLayout();
 			this.SuspendLayout();
 			// 
@@ -53,6 +54,7 @@
             this.distance,
             this.anglelabel,
             this.angle,
+            this.flip,
             this.reset,
             this.separator1,
             this.fixedcurve,
@@ -61,7 +63,7 @@
             this.cancel});
 			this.toolstrip.Location = new System.Drawing.Point(0, 0);
 			this.toolstrip.Name = "toolstrip";
-			this.toolstrip.Size = new System.Drawing.Size(620, 25);
+			this.toolstrip.Size = new System.Drawing.Size(760, 25);
 			this.toolstrip.TabIndex = 0;
 			this.toolstrip.Text = "toolStrip1";
 			// 
@@ -170,6 +172,17 @@
             0});
 			this.angle.ValueChanged += new System.EventHandler(this.OnUIValuesChanged);
 			// 
+			// reset
+			// 
+			this.reset.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.reset.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.Reset;
+			this.reset.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.reset.Margin = new System.Windows.Forms.Padding(0, 1, 3, 2);
+			this.reset.Name = "reset";
+			this.reset.Size = new System.Drawing.Size(23, 22);
+			this.reset.Text = "Reset";
+			this.reset.Click += new System.EventHandler(this.reset_Click);
+			// 
 			// separator1
 			// 
 			this.separator1.Name = "separator1";
@@ -212,16 +225,15 @@
 			this.cancel.Text = "Cancel";
 			this.cancel.Click += new System.EventHandler(this.cancel_Click);
 			// 
-			// reset
+			// flip
 			// 
-			this.reset.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.reset.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.Reset;
-			this.reset.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.reset.Margin = new System.Windows.Forms.Padding(0, 1, 3, 2);
-			this.reset.Name = "reset";
-			this.reset.Size = new System.Drawing.Size(23, 22);
-			this.reset.Text = "Reset";
-			this.reset.Click += new System.EventHandler(this.reset_Click);
+			this.flip.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.flip.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.Flip;
+			this.flip.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.flip.Name = "flip";
+			this.flip.Size = new System.Drawing.Size(23, 22);
+			this.flip.Text = "Flip Curve";
+			this.flip.Click += new System.EventHandler(this.flip_Click);
 			// 
 			// CurveLinedefsOptionsPanel
 			// 
@@ -229,7 +241,7 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.Controls.Add(this.toolstrip);
 			this.Name = "CurveLinedefsOptionsPanel";
-			this.Size = new System.Drawing.Size(620, 60);
+			this.Size = new System.Drawing.Size(760, 60);
 			this.toolstrip.ResumeLayout(false);
 			this.toolstrip.PerformLayout();
 			this.ResumeLayout(false);
@@ -252,5 +264,6 @@
 		private System.Windows.Forms.ToolStripButton apply;
 		private System.Windows.Forms.ToolStripButton cancel;
 		private System.Windows.Forms.ToolStripButton reset;
+		private System.Windows.Forms.ToolStripButton flip;
 	}
 }

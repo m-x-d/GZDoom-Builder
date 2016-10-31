@@ -1586,6 +1586,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 					// Go for all sidedes in the new geometry
 					List<Sidedef> newsides = General.Map.Map.GetMarkedSidedefs(true);
+					List<Linedef> oldlines = General.Map.Map.GetMarkedLinedefs(false); //mxd
+
+					//mxd. Let's use a blockmap...
+					RectangleF area = MapSet.CreateArea(oldlines);
+					BlockMap<BlockEntry> blockmap = new BlockMap<BlockEntry>(area);
+					blockmap.AddLinedefsSet(oldlines);
+
 					foreach(Sidedef s in newsides) 
 					{
 						// Connected to a virtual sector?
@@ -1604,7 +1611,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							{
 								// Find out in which sector this was pasted
 								Vector2D testpoint = s.Line.GetSidePoint(!s.IsFront);
-								Linedef nl = MapSet.NearestLinedef(General.Map.Map.GetMarkedLinedefs(false), testpoint);
+								Linedef nl = MapSet.NearestLinedef(blockmap, testpoint); //mxd
 								if(nl != null) 
 								{
 									Sidedef joinsidedef = (nl.SideOfLine(testpoint) <= 0 ? nl.Front : nl.Back);

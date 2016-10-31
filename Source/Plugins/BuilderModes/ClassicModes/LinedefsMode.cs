@@ -263,7 +263,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			if(lines.Count == 0) 
 			{
-				General.Interface.DisplayStatus(StatusType.Warning, "This action requires a selection");
+				General.Interface.DisplayStatus(StatusType.Warning, "This action requires a selection!");
 				return;
 			}
 
@@ -1564,6 +1564,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				// Go into curve linedefs mode
 				General.Editing.ChangeMode(new CurveLinedefsMode());
+			}
+			else
+			{
+				//mxd
+				General.Interface.DisplayStatus(StatusType.Warning, "This action requres a selection!");
 			}
 		}
 		
