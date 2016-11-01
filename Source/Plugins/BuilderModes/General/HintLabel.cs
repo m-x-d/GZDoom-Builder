@@ -39,14 +39,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				RectangleF labelarea = new RectangleF(minx, miny, maxx - minx, maxy - miny);
 				labelarea.Intersect(viewport);
 
-				label.Location = new Vector2D(labelarea.X + labelarea.Width * 0.5f, labelarea.Y + labelarea.Height * 0.5f);
+				if(!labelarea.IsEmpty)
+				{
+					label.Location = new Vector2D(labelarea.X + labelarea.Width * 0.5f, labelarea.Y + labelarea.Height * 0.5f);
+					return;
+				}
 			}
-			else
-			{
-				Vector2D delta = end - start;
 
-				label.Location = new Vector2D(start.x + delta.x * 0.5f, start.y + delta.y * 0.5f);
-			}
+			Vector2D delta = end - start;
+			label.Location = new Vector2D(start.x + delta.x * 0.5f, start.y + delta.y * 0.5f);
 		}
 	}
 }

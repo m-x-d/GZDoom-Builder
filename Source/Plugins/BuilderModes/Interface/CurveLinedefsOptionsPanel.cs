@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows.Forms;
-using CodeImp.DoomBuilder.Geometry;
 
 namespace CodeImp.DoomBuilder.BuilderModes.Interface
 {
@@ -25,6 +24,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 		public int DistanceIncrement { get { return (int)distance.Increment; } }
 		public int Angle { get { return (int)angle.Value; } set { angle.Value = (decimal)General.Clamp(value, (float)angle.Minimum, (float)angle.Maximum); } }
 		public int AngleIncrement { get { return (int)angle.Increment; } }
+		public int MaximumAngle { get { return (int)angle.Maximum; } }
 		public bool FixedCurve { get { return fixedcurve.Checked; } }
 
 		#endregion
@@ -44,9 +44,9 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 		{
 			blockevents = true;
 
-			this.verts.Value = verts;
-			this.distance.Value = distance;
-			this.angle.Value = angle;
+			this.verts.Value = General.Clamp(verts, (int)this.verts.Minimum, (int)this.verts.Maximum);
+			this.distance.Value = General.Clamp(distance, (int)this.distance.Minimum, (int)this.distance.Maximum);
+			this.angle.Value = General.Clamp(angle, (int)this.angle.Minimum, (int)this.angle.Maximum);
 			this.fixedcurve.Checked = fixedcurve;
 
 			blockevents = false;

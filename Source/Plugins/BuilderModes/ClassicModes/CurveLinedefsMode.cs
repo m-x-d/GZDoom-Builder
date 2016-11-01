@@ -53,6 +53,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		private Dictionary<Linedef, List<Vector2D>> curves; //mxd
 
 		//mxd. UI and controls
+		private HintLabel hintlabel;
 		private CurveLinedefsOptionsPanel panel;
 		private Linedef closestline;
 		private Vector2D mousedownoffset;
@@ -79,6 +80,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			//mxd. UI
 			panel = new CurveLinedefsOptionsPanel();
+			hintlabel = new HintLabel(General.Colors.InfoLine);
+		}
+
+		public override void Dispose() //mxd
+		{
+			// Not already disposed?
+			if(!isdisposed)
+			{
+				// Clean up
+				if(hintlabel != null) hintlabel.Dispose();
+
+				// Done
+				base.Dispose();
+			}
 		}
 
 		#endregion
@@ -109,7 +124,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Vector2D linecenter = line.GetCenterPoint(); //mxd
 
 			//mxd. Special cases...
-			if(theta == 0.0f)
+			if(angle == 0)
 			{
 				for(int v = 1; v <= vertices; v++)
 				{
@@ -238,7 +253,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			base.OnDisengage();
 
-			// Hide toolbox window
+			// Hide toolbox panel
 			RemoveInterface();
 		}
 
@@ -248,39 +263,54 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Create undo
 			string rest = (selectedlines.Count == 1 ? "a linedef" : selectedlines.Count + " linedefs"); //mxd
 			General.Map.UndoRedo.CreateUndo("Curve " + rest);
+
+			//mxd
+			General.Map.Map.ClearAllMarks(false);
 			
 			// Go for all selected lines
 			foreach(Linedef ld in selectedlines)
 			{
-				// Make curve for line
-				List<Vector2D> points = curves[ld];
-				if(points.Count > 0)
-				{
-					// TODO: We may want some sector create/join code in here
-					// to allow curves that overlap lines and some geometry merging
+				if(curves[ld].Count < 1) continue;
 
-					// Go for all points to split the line
-					Linedef splitline = ld;
-					foreach(Vector2D p in points)
+				// Make curve for line
+				Linedef splitline = ld;
+
+				//mxd. Mark all changed geometry...
+				splitline.Marked = true;
+				splitline.Start.Marked = true;
+				splitline.End.Marked = true;
+
+				// Go for all points to split the line
+				foreach(Vector2D p in curves[ld])
+				{
+					// Make vertex
+					Vertex v = General.Map.Map.CreateVertex(p);
+					if(v == null)
 					{
-						// Make vertex
-						Vertex v = General.Map.Map.CreateVertex(p);
-						if(v == null)
-						{
-							General.Map.UndoRedo.WithdrawUndo();
-							return;
-						}
-						
-						// Split the line and move on with this line
-						splitline = splitline.Split(v);
-						if(splitline == null)
-						{
-							General.Map.UndoRedo.WithdrawUndo();
-							return;
-						}
+						General.Map.UndoRedo.WithdrawUndo();
+						return;
 					}
+						
+					// Split the line and move on with this line
+					splitline = splitline.Split(v);
+					if(splitline == null)
+					{
+						General.Map.UndoRedo.WithdrawUndo();
+						return;
+					}
+
+					//mxd. Mark all changed geometry...
+					splitline.Marked = true;
+					splitline.Start.Marked = true;
+					splitline.End.Marked = true;
 				}
 			}
+
+			//mxd
+			General.Map.Map.Update();
+
+			//mxd. Stitch geometry
+			General.Map.Map.StitchGeometry(General.Settings.MergeGeometryMode);
 
 			// Snap to map format accuracy
 			General.Map.Map.SnapAllToAccuracy();
@@ -344,6 +374,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							renderer.RenderRectangleFilled(new RectangleF(p.x - vsize, p.y - vsize, vsize * 2.0f, vsize * 2.0f), General.Colors.Selection, true);
 					}
 				}
+
+				//mxd. Render hint
+				renderer.RenderText(hintlabel);
+
 				renderer.Finish();
 			}
 
@@ -356,9 +390,31 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnMouseDown(e);
 			closestline = MapSet.NearestLinedef(selectedlines, mousedownmappos);
 
+			// Special cases...
+			int distance;
+			if(panel.FixedCurve)
+			{
+				if(panel.Angle > 0)
+				{
+					// Calculate diameter for current angle...
+					float ma = Angle2D.DegToRad(panel.Angle);
+					float d = (closestline.Length / (float)Math.Tan(ma / 2f)) / 2;
+					float D = d / (float)Math.Cos(ma / 2f);
+					distance = (int)Math.Round(D - d) * Math.Sign(panel.Distance);
+				}
+				else
+				{
+					distance = 0; // Special cases...
+				}
+			}
+			else
+			{
+				distance = panel.Distance;
+			}
+
 			// Store offset between intial mouse position and curve top
 			Vector2D perpendicular = closestline.Line.GetPerpendicular().GetNormal();
-			if(panel.Distance != 0) perpendicular *= panel.Distance; // Special cases...
+			if(distance != 0) perpendicular *= distance; // Special cases...
 			Vector2D curvetop = closestline.GetCenterPoint() - perpendicular;
 			mousedownoffset = mousedownmappos - curvetop;
 		}
@@ -377,7 +433,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnMouseMove(e);
 
 			// Anything to do?
-			if((!selectpressed && !editpressed) || closestline == null) return;
+			if((!selectpressed && !editpressed) || closestline == null)
+			{
+				hintlabel.Text = string.Empty;
+				return;
+			}
 
 			// Do something...
 			Vector2D perpendicular = closestline.Line.GetPerpendicular().GetNormal();
@@ -387,21 +447,137 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			float u = radius.GetNearestOnLine(mousemappos - mousedownoffset);
 			int dist = (panel.Distance == 0 ? 1 : panel.Distance); // Special cases...
 			int offset = (int)Math.Round(dist * u - dist);
+			bool updaterequired = false;
 
-			// Change distance
-			if(selectpressed)
+			// Clamp values?
+			bool clampvalue = !General.Interface.ShiftState;
+
+			// Change verts amount
+			if(selectpressed && editpressed)
 			{
-				if(float.IsNaN(u)) panel.Distance = 0; // Special cases...
-				else panel.Distance += offset;
+				if(prevoffset != 0)
+				{
+					// Set new verts count without triggering the update...
+					panel.SetValues(panel.Vertices + Math.Sign(prevoffset - offset), panel.Distance, panel.Angle, panel.FixedCurve);
+
+					// Update hint text
+					hintlabel.Text = "Vertices: " + panel.Vertices;
+					updaterequired = true;
+				}
+			}
+			// Change distance
+			else if(selectpressed && !panel.FixedCurve)
+			{
+				if(float.IsNaN(u))
+				{
+					// Set new distance without triggering the update...
+					panel.SetValues(panel.Vertices, 0, panel.Angle, panel.FixedCurve); // Special cases...
+				}
+				else
+				{
+					int newoffset;
+					if(clampvalue)
+						newoffset = (panel.Distance + offset) / panel.DistanceIncrement * panel.DistanceIncrement; // Clamp to 8 mu increments
+					else
+						newoffset = panel.Distance + offset;
+
+					// Set new distance without triggering the update...
+					panel.SetValues(panel.Vertices, newoffset, panel.Angle, panel.FixedCurve);
+				}
+
+				// Update hint text
+				hintlabel.Text = "Distance: " + panel.Distance;
+				updaterequired = true;
 			}
 			// Change angle
 			else if(editpressed && prevoffset != 0)
 			{
-				int diff = (int)Math.Round((offset - prevoffset) * renderer.Scale);
-				if(panel.FixedCurve) diff *= Math.Sign(panel.Distance); // Special cases...
-				if(panel.Angle + diff > 0) panel.Angle += diff;
+				int newangle = 0;
+				if(panel.FixedCurve)
+				{
+					// Flip required?
+					if(panel.Angle == 0 && (Math.Sign(offset - prevoffset) != Math.Sign(panel.Distance)))
+					{
+						// Set new distance without triggering the update...
+						panel.SetValues(panel.Vertices, -panel.Distance, panel.Angle, panel.FixedCurve);
+
+						// Recalculate affected values...
+						perpendicular *= -1;
+						radius.v2 = center - perpendicular;
+						u = radius.GetNearestOnLine(mousemappos - mousedownoffset);
+					}
+
+					//TODO: there surely is a way to get new angle without iteration...
+					float targetoffset = radius.GetLength() * u;
+					float prevdiff = float.MaxValue;
+					int increment = (clampvalue ? panel.AngleIncrement : 1);
+					for(int i = 1; i < panel.MaximumAngle; i += increment)
+					{
+						// Calculate diameter for current angle...
+						float ma = Angle2D.DegToRad(i);
+						float d = (closestline.Length / (float)Math.Tan(ma / 2f)) / 2;
+						float D = d / (float)Math.Cos(ma / 2f);
+						float h = D - d;
+
+						float curdiff = Math.Abs(h - targetoffset);
+
+						// This one matches better...
+						if(curdiff < prevdiff) newangle = i;
+						prevdiff = curdiff;
+					}
+
+					// Clamp to 5 deg increments
+					if(clampvalue) newangle = (newangle / panel.AngleIncrement) * panel.AngleIncrement; 
+				}
+				else
+				{
+					int diff = (int)Math.Round((offset - prevoffset) * renderer.Scale);
+					if(panel.Angle + diff > 0)
+					{
+						if(clampvalue) newangle = (panel.Angle / panel.AngleIncrement + Math.Sign(diff)) * panel.AngleIncrement; // Clamp to 5 deg increments
+						else newangle = panel.Angle + diff;
+					}
+				}
+
+				// Set new angle without triggering the update...
+				panel.SetValues(panel.Vertices, panel.Distance, newangle, panel.FixedCurve);
+
+				// Update hint text
+				hintlabel.Text = "Angle: " + panel.Angle;
+				updaterequired = true;
 			}
 
+			// Update UI
+			if(updaterequired)
+			{
+				// Update label position
+				float labeldistance;
+
+				if(panel.Angle == 0)
+				{
+					labeldistance = 0; // Special cases!
+				}
+				else if(panel.FixedCurve)
+				{
+					float ma = Angle2D.DegToRad(panel.Angle);
+					float d = (closestline.Length / (float)Math.Tan(ma / 2f)) / 2;
+					float D = d / (float)Math.Cos(ma / 2f);
+					labeldistance = D - d;
+				}
+				else
+				{
+					labeldistance = Math.Abs(panel.Distance);
+				}
+
+				labeldistance += 16 / renderer.Scale;
+				Vector2D labelpos = radius.GetCoordinatesAt(labeldistance / radius.GetLength());
+				hintlabel.Move(labelpos, labelpos);
+
+				// Trigger update
+				OnValuesChanged(null, EventArgs.Empty);
+			}
+
+			// Store current offset
 			prevoffset = offset;
 		}
 		
