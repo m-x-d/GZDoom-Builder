@@ -122,19 +122,19 @@
     <Compile Include="Controls\ArgumentBox.Designer.cs">
       <DependentUpon>ArgumentBox.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\ScriptDocumentTab.cs">
+    <Compile Include="Controls\Scripting\ScriptDocumentTab.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\ScriptEditorPanel.cs">
+    <Compile Include="Controls\Scripting\ScriptEditorPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\ScriptEditorPanel.Designer.cs">
+    <Compile Include="Controls\Scripting\ScriptEditorPanel.Designer.cs">
       <DependentUpon>ScriptEditorPanel.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\ScriptFileDocumentTab.cs">
+    <Compile Include="Controls\Scripting\ScriptFileDocumentTab.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\ScriptLumpDocumentTab.cs">
+    <Compile Include="Controls\Scripting\ScriptLumpDocumentTab.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Data\DirectoryReader.cs" />
@@ -692,10 +692,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.manifest" />
-    <EmbeddedResource Include="Controls\ScriptEditorControl.resx">
+    <EmbeddedResource Include="Controls\Scripting\ScriptEditorControl.resx">
       <DependentUpon>ScriptEditorControl.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Controls\ScriptEditorPreviewControl.resx">
+    <EmbeddedResource Include="Controls\Scripting\ScriptEditorPreviewControl.resx">
       <DependentUpon>ScriptEditorPreviewControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\SkySphere.md3" />
@@ -770,16 +770,16 @@
     <Compile Include="Controls\PasteOptionsControl.Designer.cs">
       <DependentUpon>PasteOptionsControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\ScriptEditorControl.cs">
+    <Compile Include="Controls\Scripting\ScriptEditorControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\ScriptEditorControl.designer.cs">
+    <Compile Include="Controls\Scripting\ScriptEditorControl.designer.cs">
       <DependentUpon>ScriptEditorControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controls\ScriptEditorPreviewControl.cs">
+    <Compile Include="Controls\Scripting\ScriptEditorPreviewControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="Controls\ScriptEditorPreviewControl.Designer.cs">
+    <Compile Include="Controls\Scripting\ScriptEditorPreviewControl.Designer.cs">
       <DependentUpon>ScriptEditorPreviewControl.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\SectorSlopeControl.cs">
@@ -1271,7 +1271,7 @@
     <None Include="Resources\SaveScript.png" />
     <None Include="Resources\OpenScript.png" />
     <None Include="Resources\NewScript.png" />
-    <EmbeddedResource Include="Controls\ScriptEditorPanel.resx">
+    <EmbeddedResource Include="Controls\Scripting\ScriptEditorPanel.resx">
       <SubType>Designer</SubType>
       <DependentUpon>ScriptEditorPanel.cs</DependentUpon>
     </EmbeddedResource>
