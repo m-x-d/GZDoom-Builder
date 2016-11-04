@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Reflection;
 using System.Security.AccessControl;
@@ -46,8 +47,9 @@ namespace mxd.GZDBUpdater
 
 		public static string ErrorDescription;
 	    public static bool AppClosing { get { return appclosing; } }
+	    public static Icon AppIcon { get { return me.Icon; } }
 
-		#endregion
+	    #endregion
 
 		#region ======================== Constructor
 
@@ -126,48 +128,50 @@ namespace mxd.GZDBUpdater
 		{
 			try
 			{
-				Process[] processes = Process.GetProcesses();
-				List<Process> toclose = new List<Process>();
-
-				// Gather all running editor processes...
-				foreach(Process process in processes)
-				{
-					if(process.ProcessName == processToEnd && Path.GetDirectoryName(process.MainModule.FileName) == Application.StartupPath)
-					{
-						toclose.Add(process);
-						break;
-					}
-				}
+				// Gather processes...
+				List<Process> toclose = GetProcesses(processToEnd);
 
 				// Ask the user how to proceed...
 				if(toclose.Count > 0)
 				{
 					TaskbarProgress.SetState(this.Handle, TaskbarProgress.TaskbarStates.Paused);
-
-					switch(MessageBox.Show(this, "The editor needs to be closed.\n\n"
-						+ "Press \"Abort\" to cancel the update.\n"
-						+ "Close the editor, then press \"Retry\" to proceed with the update.\n"
-						+ "Press \"Ignore\" to terminate the editor and proceed with the update.",
-						MESSAGEBOX_TITLE, MessageBoxButtons.AbortRetryIgnore))
+					UpdateBlockedForm form = new UpdateBlockedForm();
+					switch(form.ShowDialog(this))
 					{
-						case DialogResult.Abort: return false;
-						case DialogResult.Retry: return EditorClosed();
-						case DialogResult.Ignore:
+						case DialogResult.Cancel: return false;
+						case DialogResult.OK:
 							UpdateLabel(label1, "3/6: Stopping " + processToEnd);
-							Thread.Sleep(500);
+							Thread.Sleep(50);
+							toclose = GetProcesses(processToEnd); // Re-gather processes
 							foreach(Process p in toclose) if(p != null) p.Kill();
-							break;
+							return true;
 					}
 				}
 			}
 			catch(Exception ex)
 			{
-				ErrorDescription = "Failed to stop the main process...\n" + ex.Message;
+				ErrorDescription = "Failed to stop the editor process...\n" + ex.Message;
 				return false;
 			}
 
 			return true;
 		}
+
+		private static List<Process> GetProcesses(string processToEnd)
+	    {
+			Process[] processes = Process.GetProcesses();
+			List<Process> toclose = new List<Process>();
+
+			// Gather all running editor processes...
+			foreach(Process process in processes)
+			{
+				if(process.ProcessName == processToEnd 
+					&& Path.GetDirectoryName(process.MainModule.FileName) == Application.StartupPath)
+					toclose.Add(process);
+			}
+
+			return toclose;
+	    }
 
 	    private static void StopBackgroundWorker()
 		{
