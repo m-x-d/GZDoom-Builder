@@ -65,8 +65,10 @@
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
     </Reference>
+    <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Helpers\EmbeddedAssembly.cs" />
@@ -97,6 +99,12 @@
     </None>
     <Compile Include="Helpers\TaskbarProgress.cs" />
     <Compile Include="Helpers\Webdata.cs" />
+    <Compile Include="UpdateBlockedForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UpdateBlockedForm.Designer.cs">
+      <DependentUpon>UpdateBlockedForm.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
@@ -130,6 +138,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="SharpCompressStripped.dll" />
+    <EmbeddedResource Include="UpdateBlockedForm.resx">
+      <DependentUpon>UpdateBlockedForm.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
