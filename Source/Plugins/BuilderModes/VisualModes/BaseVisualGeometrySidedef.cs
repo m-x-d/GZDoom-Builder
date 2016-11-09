@@ -303,8 +303,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					float cz = data.Ceiling.plane.GetZ(v.x, v.y);
 					float delta = 1.0f - (((v.z - cgz) / (cz - cgz)) * 0.9f);
-					PixelColor vc = PixelColor.FromInt(v.c);
-					v.c = InterpolationTools.InterpolateColor(GetGlowColor(data.CeilingGlow, vc), vc, delta).WithAlpha(255).ToInt();
+					PixelColor vertexcolor = PixelColor.FromInt(v.c);
+					PixelColor glowcolor = PixelColor.Add(vertexcolor, data.CeilingGlow.Color);
+					v.c = InterpolationTools.InterpolateColor(glowcolor, vertexcolor, delta).WithAlpha(255).ToInt();
 				}
 			}
 
@@ -318,19 +319,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					float fz = data.Floor.plane.GetZ(v.x, v.y);
 					float delta = 1.0f - (((v.z - fz) / (fgz - fz)) * 0.9f);
-					PixelColor vc = PixelColor.FromInt(v.c);
-					v.c = InterpolationTools.InterpolateColor(vc, GetGlowColor(data.FloorGlow, vc), delta).WithAlpha(255).ToInt();
+					PixelColor vertexcolor = PixelColor.FromInt(v.c);
+					PixelColor glowcolor = PixelColor.Add(vertexcolor, data.FloorGlow.Color);
+					v.c = InterpolationTools.InterpolateColor(vertexcolor, glowcolor, delta).WithAlpha(255).ToInt();
 				}
 			}
 
 			return v;
-		}
-
-		//mxd
-		private static PixelColor GetGlowColor(GlowingFlatData data, PixelColor vertexcolor)
-		{
-			if(data.Subtractive) return PixelColor.Subtract(vertexcolor, data.Color);
-			return PixelColor.Add(vertexcolor, data.Color);
 		}
 		
 		// This splits a polygon with a plane and returns the other part as a new polygon

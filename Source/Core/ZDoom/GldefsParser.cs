@@ -579,11 +579,12 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 						while(SkipWhitespace(true))
 						{
-							token = ReadToken();
+							token = StripQuotes(ReadToken(false));
+							if(string.IsNullOrEmpty(token)) continue;
 							if(token == "}") break;
 
-							// Add glow data
-							long flatnamehash = General.Map.Data.GetFullLongFlatName(Lump.MakeLongName(token, General.Map.Options.UseLongTextureNames));
+							// Add glow data. Hash the name exactly as given. 
+							long flatnamehash = Lump.MakeLongName(token, true);
 							glowingflats[flatnamehash] = new GlowingFlatData
 														 {
                                                              Height = DEFAULT_GLOW_HEIGHT * 2,
@@ -594,43 +595,16 @@ namespace CodeImp.DoomBuilder.ZDoom
 						}
 					break;
 
-					case "subwalls":
-					case "subflats":
-						if(!NextTokenIs("{", false))
-						{
-							ReportError("Expected opening brace");
-							return false;
-						}
-
-						while(SkipWhitespace(true))
-						{
-							token = ReadToken();
-							if(token == "}") break;
-
-							// Add glow data
-							long flatnamehash = General.Map.Data.GetFullLongFlatName(Lump.MakeLongName(token, General.Map.Options.UseLongTextureNames));
-							glowingflats[flatnamehash] = new GlowingFlatData
-														 {
-                                                             Height = DEFAULT_GLOW_HEIGHT * 2,
-                                                             Fullblack = true,
-                                                             Subtractive = true,
-                                                             Color = new PixelColor(255, 0, 0, 0),
-                                                             CalculateTextureColor = false
-                                                         };
-						}
-					break;
-
-					case "subtexture":
 					case "texture":
 					{
-						int color;
+						PixelColor color = new PixelColor();
 						int glowheight = DEFAULT_GLOW_HEIGHT;
-						bool subtractivetexture = (token == "subtexture");
-						string texturename = StripQuotes(ReadToken(false));
+						string texturename;
 
+						if(!ReadTextureName(out texturename)) return false;
 						if(string.IsNullOrEmpty(texturename))
 						{
-							ReportError("expected " + token + " name");
+							ReportError("Expected " + token + " name");
 							return false;
 						}
 
@@ -643,25 +617,16 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 						// Next is color
 						SkipWhitespace(true);
-						token = ReadToken();
+						token = ReadToken(false);
 
-						if(!int.TryParse(token, NumberStyles.HexNumber, CultureInfo.InvariantCulture, out color))
+						if(!GetColorFromString(token, ref color))
 						{
-							//probably it's a color name?
-							Color c = Color.FromName(token); //should be similar to C++ color name detection, I suppose
-							if(c.IsKnownColor)
-							{
-								color = PixelColor.FromColor(c).ToInt();
-							}
-							else
-							{
-								ReportError("expected glow color value, but got \"" + token + "\"");
-								return false;
-							}
+							ReportError("Expected glow color value, but got \"" + token + "\"");
+							return false;
 						}
 
-						// The glow data is valid at thispoint. Let's get texture hash 
-						long texturehash = General.Map.Data.GetFullLongFlatName(Lump.MakeLongName(texturename, General.Map.Options.UseLongTextureNames));
+						// The glow data is valid at thispoint. Hash the name exactly as given. 
+						long texturehash = Lump.MakeLongName(texturename, true);
 
 						// Now we can find a comma
 						if(!NextTokenIs(",", false))
@@ -670,8 +635,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 							glowingflats[texturehash] = new GlowingFlatData
 							                            {
 								                            Height = glowheight * 2,
-								                            Subtractive = subtractivetexture,
-								                            Color = PixelColor.FromInt(color).WithAlpha(255),
+								                            Color = color.WithAlpha(255),
 								                            CalculateTextureColor = false
 							                            };
 							continue;
@@ -694,8 +658,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 								glowingflats[texturehash] = new GlowingFlatData
 								                            {
 									                            Height = glowheight * 2,
-									                            Subtractive = subtractivetexture,
-									                            Color = PixelColor.FromInt(color).WithAlpha(255),
+									                            Color = color.WithAlpha(255),
 									                            CalculateTextureColor = false
 								                            };
 								continue;
@@ -706,14 +669,10 @@ namespace CodeImp.DoomBuilder.ZDoom
 							token = ReadToken().ToLowerInvariant();
 						}
 
-						// Next is "fullbright" or "fullblack" flag
-						bool fullbright = (token == "fullbright");
-						bool fullblack = (!subtractivetexture && token == "fullblack");
-
-						if(!fullblack && !fullbright)
+						// Next must be "fullbright" flag
+						if(token != "fullbright")
 						{
-							string expectedflags = (subtractivetexture ? "\"fullbright\"" : "\"fullbright\" or \"fullblack\"");
-							ReportError("expected " + expectedflags + " flag, but got \"" + token + "\"");
+							ReportError("Expected \"fullbright\" flag, but got \"" + token + "\"");
 							return false;
 						}
 
@@ -721,10 +680,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 						glowingflats[texturehash] = new GlowingFlatData
 						                            {
 							                            Height = glowheight * 2,
-							                            Fullbright = fullbright,
-							                            Fullblack = fullblack,
-							                            Subtractive = subtractivetexture,
-							                            Color = PixelColor.FromInt(color).WithAlpha(255),
+							                            Fullbright = true,
+							                            Color = color.WithAlpha(255),
 							                            CalculateTextureColor = false
 						                            };
 					}
@@ -739,8 +696,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 		private bool ParseSkybox()
 		{
 			SkipWhitespace(true);
-			string name = StripQuotes(ReadToken());
+			string name;
 
+			if(!ReadTextureName(out name)) return false;
 			if(string.IsNullOrEmpty(name))
 			{
 				ReportError("Expected skybox name");

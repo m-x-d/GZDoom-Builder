@@ -465,18 +465,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			//mxd. Apply ceiling glow effect?
-			if(CeilingGlow != null)
+			if(CeilingGlow != null && CeilingGlow.Fullbright)
 			{
-				if(CeilingGlow.Fullbright)     ceiling.color = PixelColor.INT_WHITE;
-				else if(CeilingGlow.Fullblack) ceiling.color = PixelColor.INT_BLACK;
+				ceiling.color = PixelColor.INT_WHITE;
 			}
 
 			//mxd. Apply floor glow effect?
 			if(FloorGlow != null)
 			{
 				// Update floor color
-				if(FloorGlow.Fullbright)     floor.color = PixelColor.INT_WHITE;
-				else if(FloorGlow.Fullblack) floor.color = PixelColor.INT_BLACK;
+				if(FloorGlow.Fullbright) floor.color = PixelColor.INT_WHITE;
 
 				// Update brightness
 				floor.brightnessbelow = (FloorGlow.Fullbright ? 255 : Math.Max(128, floor.brightnessbelow));

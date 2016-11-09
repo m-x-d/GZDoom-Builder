@@ -214,6 +214,24 @@ namespace CodeImp.DoomBuilder.ZDoom
 			
 			return token;
 		}
+
+		//mxd
+		internal bool ReadTextureName(out string name) { return ReadTextureName(out name, "texture"); }
+		internal bool ReadTextureName(out string name, string elementname)
+		{
+			string token = ReadToken(false);
+			name = StripQuotes(token);
+
+			if(!string.IsNullOrEmpty(name)
+				&& name.Length > DataManager.CLASIC_IMAGE_NAME_LENGTH
+				&& name.Length == token.Length)
+			{
+				ReportError("Long " + elementname + " names must be quoted. See \"" + token + "\"");
+				return false;
+			}
+
+			return true;
+		}
 		
 		// This skips whitespace on the stream, placing the read
 		// position right before the first non-whitespace character

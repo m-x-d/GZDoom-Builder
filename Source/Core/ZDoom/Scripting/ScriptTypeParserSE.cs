@@ -9,7 +9,7 @@ using CodeImp.DoomBuilder.Data;
 //mxd. Parser used to determine which script type given text is.
 namespace CodeImp.DoomBuilder.ZDoom.Scripting
 {
-	internal sealed class ScriptTypeParserSE :ZDTextParser 
+	internal sealed class ScriptTypeParserSE : ZDTextParser 
 	{
 		internal override ScriptType ScriptType { get { return scripttype; } }
 		private ScriptType scripttype;
