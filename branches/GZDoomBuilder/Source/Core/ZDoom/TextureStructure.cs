@@ -86,14 +86,14 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 			// First token is the texture name
 			parser.SkipWhitespace(true);
-			name = parser.StripTokenQuotes(parser.ReadToken(false)); //mxd. Don't skip newline
+			if(!parser.ReadTextureName(out name, typename)) return; //mxd
 
 			//mxd. It can also be "optional" keyword.
 			if(name.ToLowerInvariant() == "optional")
 			{
 				optional = true;
 				parser.SkipWhitespace(true);
-				name = parser.StripTokenQuotes(parser.ReadToken(false)); //mxd. Don't skip newline
+				if(!parser.ReadTextureName(out name, typename)) return; //mxd
 			}
 
 			if(string.IsNullOrEmpty(name))

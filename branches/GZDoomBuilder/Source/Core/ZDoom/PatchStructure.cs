@@ -84,7 +84,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 			// First token is the class name
 			parser.SkipWhitespace(true);
-			name = parser.StripTokenQuotes(parser.ReadToken(false)); //mxd. Don't skip newline
+			if(!parser.ReadTextureName(out name, "patch")) return; //mxd
 			if(string.IsNullOrEmpty(name))
 			{
 				parser.ReportError("Expected patch name");
