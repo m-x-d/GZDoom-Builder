@@ -632,6 +632,12 @@ namespace CodeImp.DoomBuilder.Data
 			imageque = null;
 			mapinfo = null; //mxd
 		}
+
+		//mxd. Called before Clock is reset
+		internal void OnBeforeClockReset()
+		{
+			if(loadstarttime > 0) loadstarttime -= Clock.CurrentTime;
+		}
 		
 		#endregion
 		
@@ -817,6 +823,7 @@ namespace CodeImp.DoomBuilder.Data
 								loadfinishtime = Clock.CurrentTime;
 								string deltatimesec = ((loadfinishtime - loadstarttime) / 1000.0f).ToString("########0.00");
 								General.WriteLogLine("Resources loading took " + deltatimesec + " seconds");
+								loadstarttime = 0; //mxd
 
 								//mxd. Show more detailed message
 								if(notifiedbusy)

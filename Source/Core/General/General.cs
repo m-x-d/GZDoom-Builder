@@ -1054,9 +1054,6 @@ namespace CodeImp.DoomBuilder
 			// Ask the user to save changes (if any)
 			if(AskSaveMap())
 			{
-				//mxd. Reset the clock...
-				MainWindow.ResetClock();
-				
 				// Open map options dialog
 				MapOptionsForm optionswindow = new MapOptionsForm(newoptions, true);
 				if(optionswindow.ShowDialog(mainwindow) == DialogResult.OK)
@@ -1115,6 +1112,9 @@ namespace CodeImp.DoomBuilder
 					}
 					else
 						mainwindow.DisplayReady();
+
+					//mxd. Also reset the clock...
+					MainWindow.ResetClock();
 					
 					Cursor.Current = Cursors.Default;
 				}

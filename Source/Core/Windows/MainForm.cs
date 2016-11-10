@@ -4201,6 +4201,10 @@ namespace CodeImp.DoomBuilder.Windows
 		//mxd
 		internal void ResetClock()
 		{
+			// Let the data manager know...
+			if(General.Map != null && General.Map.Data != null)
+				General.Map.Data.OnBeforeClockReset();
+			
 			Clock.Reset();
 			lastupdatetime = 0;
 			
