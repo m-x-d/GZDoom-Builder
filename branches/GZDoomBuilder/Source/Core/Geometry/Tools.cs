@@ -581,12 +581,6 @@ namespace CodeImp.DoomBuilder.Geometry
 				newsector.Brightness = General.Settings.DefaultBrightness;
 			}
 
-			//mxd. Better any height than none
-			if(newsector.CeilHeight - newsector.FloorHeight <= 0)
-			{
-				newsector.CeilHeight = newsector.FloorHeight + (General.Settings.DefaultCeilingHeight - General.Settings.DefaultFloorHeight);
-			}
-
 			//mxd. Apply overrides?
 			if(useOverrides) 
 			{
@@ -595,6 +589,11 @@ namespace CodeImp.DoomBuilder.Geometry
 				if(General.Map.Options.OverrideCeilingHeight) newsector.CeilHeight = General.Map.Options.CustomCeilingHeight;
 				if(General.Map.Options.OverrideFloorHeight) newsector.FloorHeight = General.Map.Options.CustomFloorHeight;
 				if(General.Map.Options.OverrideBrightness) newsector.Brightness = General.Map.Options.CustomBrightness;
+			}
+			//mxd. Avoid invalid height
+			else if(newsector.CeilHeight < newsector.FloorHeight)
+			{
+				 newsector.CeilHeight = newsector.FloorHeight;
 			}
 
 			// Go for all sides to make sidedefs
