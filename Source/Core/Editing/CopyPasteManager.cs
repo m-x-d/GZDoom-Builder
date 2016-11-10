@@ -27,6 +27,7 @@ using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.GZBuilder.Data;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Map;
+using CodeImp.DoomBuilder.Types;
 using CodeImp.DoomBuilder.Windows;
 
 #endregion
@@ -38,6 +39,7 @@ namespace CodeImp.DoomBuilder.Editing
 		#region ================== Constants
 		
 		private const string CLIPBOARD_DATA_FORMAT = "GZDOOM_BUILDER_GEOMETRY";
+		private const string CLIPBOARD_DATA_FORMAT_DB2 = "DOOM_BUILDER_GEOMETRY";
 
 		#endregion
 		
@@ -287,8 +289,11 @@ namespace CodeImp.DoomBuilder.Editing
 			// Check if possible to copy/paste
 			if(General.Editing.Mode.Attributes.AllowCopyPaste)
 			{
+				bool havepastedata = Clipboard.ContainsData(CLIPBOARD_DATA_FORMAT); //mxd
+				bool havedb2pastedata = Clipboard.ContainsData(CLIPBOARD_DATA_FORMAT_DB2); //mxd
+				
 				// Anything to paste?
-				if(Clipboard.ContainsData(CLIPBOARD_DATA_FORMAT))
+				if(havepastedata || havedb2pastedata)
 				{
 					// Cancel volatile mode
 					General.Editing.DisengageVolatileMode();
@@ -307,21 +312,41 @@ namespace CodeImp.DoomBuilder.Editing
 							General.Map.Map.ClearAllMarks(true);
 
 							// Read from clipboard
-							using(Stream memstream = (Stream)Clipboard.GetData(CLIPBOARD_DATA_FORMAT))
+							if(havepastedata)
 							{
-								// Rewind before use
-								memstream.Seek(0, SeekOrigin.Begin);
-								
-								// Read data stream
-								ClipboardStreamReader reader = new ClipboardStreamReader(); //mxd
-								General.Map.Map.BeginAddRemove();
-								bool success = reader.Read(General.Map.Map, memstream);
-								General.Map.Map.EndAddRemove();
-								if(!success) //mxd
+								using(Stream memstream = (Stream)Clipboard.GetData(CLIPBOARD_DATA_FORMAT))
 								{
-									General.Map.UndoRedo.WithdrawUndo(); // This will also mess with the marks...
-									General.Map.Map.ClearAllMarks(true); // So re-mark all current geometry...
+									// Rewind before use
+									memstream.Seek(0, SeekOrigin.Begin);
+
+									// Read data stream
+									ClipboardStreamReader reader = new ClipboardStreamReader(); //mxd
+									General.Map.Map.BeginAddRemove();
+									bool success = reader.Read(General.Map.Map, memstream);
+									General.Map.Map.EndAddRemove();
+									if(!success) //mxd
+									{
+										General.Map.UndoRedo.WithdrawUndo(); // This will also mess with the marks...
+										General.Map.Map.ClearAllMarks(true); // So re-mark all current geometry...
+									}
 								}
+							}
+							// mxd. DB2/DB64 interop
+							else if(havedb2pastedata)
+							{
+								using(Stream memstream = (Stream)Clipboard.GetData(CLIPBOARD_DATA_FORMAT_DB2))
+								{
+									// Read data stream
+									UniversalStreamReader reader = new UniversalStreamReader(new Dictionary<MapElementType, Dictionary<string, UniversalType>>());
+									reader.StrictChecking = false;
+									General.Map.Map.BeginAddRemove();
+									reader.Read(General.Map.Map, memstream);
+									General.Map.Map.EndAddRemove();
+								}
+							}
+							else
+							{
+								throw new NotImplementedException("Unknown clipboard data format!");
 							}
 							
 							// The new geometry is not marked, so invert the marks to get it marked
