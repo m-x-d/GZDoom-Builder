@@ -966,6 +966,9 @@ namespace CodeImp.DoomBuilder
 					{
 						ConfigurationInfo ci = General.GetConfigurationInfo(origmapconfigname);
 						origcfg = new GameConfiguration(ci.Configuration);
+
+						// Needed only once!
+						origmapconfigname = configinfo.Filename;
 					}
 
 					mapheaderindex = CopyAllLumpsExceptMap(origwad, targetwad, origcfg, origmapname);
