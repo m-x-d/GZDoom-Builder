@@ -631,31 +631,32 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			// Should we bother?
-			if(!General.Map.UDMF) return;
-
-			// Apply fields
-			foreach(Linedef l in lines)
+			if(General.Map.UDMF)
 			{
-				l.Fields.BeforeFieldsChange();
-				
-				// Apply string arguments
-				if(settings.Arguments)
+				// Apply fields
+				foreach(Linedef l in lines)
 				{
-					Apply(l.Fields, "arg0str");
+					l.Fields.BeforeFieldsChange();
 
-					//TODO: re-enable when UI part is ready
-					//Apply(l.Fields, "arg1str");
-					//Apply(l.Fields, "arg2str");
-					//Apply(l.Fields, "arg3str");
-					//Apply(l.Fields, "arg4str");
+					// Apply string arguments
+					if(settings.Arguments)
+					{
+						Apply(l.Fields, "arg0str");
+
+						//TODO: re-enable when UI part is ready
+						//Apply(l.Fields, "arg1str");
+						//Apply(l.Fields, "arg2str");
+						//Apply(l.Fields, "arg3str");
+						//Apply(l.Fields, "arg4str");
+					}
+
+					// Apply custom fields
+					if(settings.Fields) ApplyCustomFields(l.Fields);
 				}
 
-				// Apply custom fields
-				if(settings.Fields) ApplyCustomFields(l.Fields);
+				// Apply UI fields
+				ApplyUIFields(lines, settings);
 			}
-
-			// Apply UI fields
-			ApplyUIFields(lines, settings);
 
 			// Apply sidedef settings
 			if(sidesettings != null)
