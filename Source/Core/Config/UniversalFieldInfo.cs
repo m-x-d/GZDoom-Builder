@@ -20,6 +20,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using CodeImp.DoomBuilder.IO;
+using CodeImp.DoomBuilder.Types;
 
 #endregion
 
@@ -53,7 +54,7 @@ namespace CodeImp.DoomBuilder.Config
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		internal UniversalFieldInfo(string path, string name, Configuration cfg, IDictionary<string, EnumList> enums)
+		internal UniversalFieldInfo(string path, string name, string configname, Configuration cfg, IDictionary<string, EnumList> enums)
 		{
 			string setting = "universalfields." + path + "." + name;
 
@@ -61,8 +62,26 @@ namespace CodeImp.DoomBuilder.Config
 			this.name = name.ToLowerInvariant();
 
 			// Read type
-			this.type = cfg.ReadSetting(setting + ".type", 0);
+			this.type = cfg.ReadSetting(setting + ".type", int.MinValue);
 			this.defaultvalue = cfg.ReadSettingObject(setting + ".default", null);
+
+			//mxd. Check type
+			if(this.type == int.MinValue)
+			{
+				General.ErrorLogger.Add(ErrorType.Warning, "No type is defined for universal field \"" + name + "\" defined in \"" + configname + "\". Integer type will be used.");
+				this.type = (int)UniversalType.Integer;
+			}
+
+			TypeHandler th = General.Types.GetFieldHandler(this);
+			if(th is NullHandler)
+			{
+				General.ErrorLogger.Add(ErrorType.Warning, "Universal field \"" + name + "\" defined in \"" + configname + "\" has unknown type " + this.type + ". String type will be used instead.");
+				this.type = (int)UniversalType.String;
+				if(this.defaultvalue == null) this.defaultvalue = "";
+			}
+
+			//mxd. Default value is missing? Get it from typehandler
+			if(this.defaultvalue == null) this.defaultvalue = th.GetDefaultValue();
 			
 			// Read enum
 			object enumsetting = cfg.ReadSettingObject(setting + ".enum", null);

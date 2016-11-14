@@ -71,28 +71,31 @@ namespace CodeImp.DoomBuilder.Types
 		//mxd
 		protected virtual EnumList CreateEnumList() 
 		{
-			//collect tags
+			// Collect tags
 			List<int> tags = new List<int>();
 			HashSet<int> tagshash = new HashSet<int>();
 			EnumList taglist = new EnumList();
 
-			foreach(Sector s in General.Map.Map.Sectors)
+			if(General.Map.Map != null)
 			{
-				if(s.Tag == 0 || tagshash.IsSupersetOf(s.Tags)) continue;
-				tags.AddRange(s.Tags);
-				foreach(int i in s.Tags) tagshash.Add(i);
-			}
+				foreach(Sector s in General.Map.Map.Sectors)
+				{
+					if(s.Tag == 0 || tagshash.IsSupersetOf(s.Tags)) continue;
+					tags.AddRange(s.Tags);
+					foreach(int i in s.Tags) tagshash.Add(i);
+				}
 
-			//now sort them in descending order
-			tags.Sort((a, b) => -1 * a.CompareTo(b));
+				// Now sort them in descending order
+				tags.Sort((a, b) => -1 * a.CompareTo(b));
 
-			//create enum items
-			foreach(int tag in tags) 
-			{
-				if(General.Map.Options.TagLabels.ContainsKey(tag)) //tag labels
-					taglist.Add(new EnumItem(tag.ToString(), tag + ": " + General.Map.Options.TagLabels[tag]));
-				else
-					taglist.Add(new EnumItem(tag.ToString(), tag.ToString()));
+				// Create enum items
+				foreach(int tag in tags)
+				{
+					if(General.Map.Options.TagLabels.ContainsKey(tag)) // Tag labels
+						taglist.Add(new EnumItem(tag.ToString(), tag + ": " + General.Map.Options.TagLabels[tag]));
+					else
+						taglist.Add(new EnumItem(tag.ToString(), tag.ToString()));
+				}
 			}
 
 			return taglist;
