@@ -839,13 +839,18 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			if(listconfigs.SelectedIndices.Count < 1) return;
 
-			//get current configinfo
+			// Get current configinfo
 			ConfigurationInfo current = listconfigs.SelectedItems[0].Tag as ConfigurationInfo;
 			current.PasteFrom(configinfocopy);
 
-			//update display
+			// Update display
 			cbEngineSelector.Text = string.Empty; // Otherwise current text from cbEngineSelector will override the pasted one
 			listconfigs_SelectedIndexChanged(listconfigs, EventArgs.Empty);
+			
+			// Resources need reloading?
+			if(General.Map != null && General.Map.ConfigSettings.Name == current.Name)
+				reloadresources = true;
+			
 			General.Interface.DisplayStatus(StatusType.Info, "Pasted game configuration from \"" + configinfocopy.Name + "\"");
 		}
 
@@ -853,12 +858,17 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			if(listconfigs.SelectedIndices.Count < 1) return;
 
-			//get current configinfo
+			// Get current configinfo
 			ConfigurationInfo current = listconfigs.SelectedItems[0].Tag as ConfigurationInfo;
 			current.PasteResourcesFrom(configinfocopy);
 
-			//update display
+			// Update display
 			listconfigs_SelectedIndexChanged(listconfigs, EventArgs.Empty);
+
+			// Resources need reloading?
+			if(General.Map != null && General.Map.ConfigSettings.Name == current.Name)
+				reloadresources = true;
+			
 			General.Interface.DisplayStatus(StatusType.Info, "Pasted resources from \"" + configinfocopy.Name + "\"");
 		}
 
@@ -866,11 +876,11 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			if(listconfigs.SelectedIndices.Count < 1) return;
 
-			//get current configinfo
+			// Get current configinfo
 			ConfigurationInfo current = listconfigs.SelectedItems[0].Tag as ConfigurationInfo;
 			current.PasteTestEnginesFrom(configinfocopy);
 
-			//update display
+			// Update display
 			cbEngineSelector.Text = string.Empty; // Otherwise current text from cbEngineSelector will override the pasted one
 			listconfigs_SelectedIndexChanged(listconfigs, EventArgs.Empty);
 			General.Interface.DisplayStatus(StatusType.Info, "Pasted engines list from \"" + configinfocopy.Name + "\"");
@@ -880,11 +890,11 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			if(listconfigs.SelectedIndices.Count < 1) return;
 
-			//get current configinfo
+			// Get current configinfo
 			ConfigurationInfo current = listconfigs.SelectedItems[0].Tag as ConfigurationInfo;
 			current.PasteColorPresetsFrom(configinfocopy);
 
-			//update display
+			// Update display
 			listconfigs_SelectedIndexChanged(listconfigs, EventArgs.Empty);
 			General.Interface.DisplayStatus(StatusType.Info, "Pasted color presets from \"" + configinfocopy.Name + "\"");
 		}

@@ -542,16 +542,20 @@ namespace CodeImp.DoomBuilder.Config
 			IDictionary dic = cfg.ReadSetting("universalfields." + elementname, new Hashtable());
 			foreach(DictionaryEntry de in dic)
 			{
+#if !DEBUG
 				try
 				{
+#endif
 					// Read the field info and add to list
-					UniversalFieldInfo uf = new UniversalFieldInfo(elementname, de.Key.ToString(), cfg, enums);
+					UniversalFieldInfo uf = new UniversalFieldInfo(elementname, de.Key.ToString(), this.Name, cfg, enums);
 					list.Add(uf);
+#if !DEBUG
 				}
 				catch(Exception)
 				{
 					General.ErrorLogger.Add(ErrorType.Warning, "Unable to read universal field definition \"universalfields." + elementname + "." + de.Key + "\" from game configuration \"" + this.Name + "\"");
 				}
+#endif
 			}
 
 			// Return result

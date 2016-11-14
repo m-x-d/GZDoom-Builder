@@ -27,7 +27,7 @@ namespace CodeImp.DoomBuilder.Types
 	[TypeHandler(UniversalType.ThingTag, "Thing Tag", true)]
 	internal class ThingTagHandler : SectorTagHandler
 	{
-		#region ================== Setup
+		#region ================== Setup (mxd)
 
 		protected override EnumList CreateEnumList() 
 		{
@@ -35,30 +35,34 @@ namespace CodeImp.DoomBuilder.Types
 			List<int> tags = new List<int>();
 			EnumList taglist = new EnumList();
 
-			foreach(Thing t in General.Map.Map.Things) 
+			if(General.Map.Map != null)
 			{
-				if(t.Tag == 0 || tags.Contains(t.Tag)) continue;
-
-				// Check target class?
-				if(arginfo.TargetClasses.Count > 0)
+				foreach(Thing t in General.Map.Map.Things)
 				{
-					ThingTypeInfo info = General.Map.Data.GetThingInfoEx(t.Type);
-					if(info != null && !arginfo.TargetClasses.Contains(info.ClassName)) continue;
+					if(t.Tag == 0 || tags.Contains(t.Tag)) continue;
+
+					// Check target class?
+					if(arginfo.TargetClasses.Count > 0)
+					{
+						ThingTypeInfo info = General.Map.Data.GetThingInfoEx(t.Type);
+						if(info != null && !arginfo.TargetClasses.Contains(info.ClassName))
+							continue;
+					}
+
+					tags.Add(t.Tag);
 				}
 
-				tags.Add(t.Tag);
-			}
+				// Now sort them in descending order
+				tags.Sort((a, b) => -1 * a.CompareTo(b));
 
-			// Now sort them in descending order
-			tags.Sort((a, b) => -1 * a.CompareTo(b));
-
-			// Create enum items
-			foreach(int tag in tags) 
-			{
-				if(General.Map.Options.TagLabels.ContainsKey(tag)) // Tag labels
-					taglist.Add(new EnumItem(tag.ToString(), General.Map.Options.TagLabels[tag]));
-				else
-					taglist.Add(new EnumItem(tag.ToString(), tag.ToString()));
+				// Create enum items
+				foreach(int tag in tags)
+				{
+					if(General.Map.Options.TagLabels.ContainsKey(tag)) // Tag labels
+						taglist.Add(new EnumItem(tag.ToString(), General.Map.Options.TagLabels[tag]));
+					else
+						taglist.Add(new EnumItem(tag.ToString(), tag.ToString()));
+				}
 			}
 
 			return taglist;

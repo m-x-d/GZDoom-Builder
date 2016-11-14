@@ -27,32 +27,35 @@ namespace CodeImp.DoomBuilder.Types
 	[TypeHandler(UniversalType.LinedefTag, "Linedef Tag", true)]
 	internal class LinedefTagHandler : SectorTagHandler
 	{
-		#region ================== Setup
+		#region ================== Setup (mxd)
 
 		protected override EnumList CreateEnumList()
 		{
-			//collect tags
+			// Collect tags
 			List<int> tags = new List<int>();
 			HashSet<int> tagshash = new HashSet<int>();
 			EnumList taglist = new EnumList();
 
-			foreach(Linedef l in General.Map.Map.Linedefs)
+			if(General.Map.Map != null)
 			{
-				if(l.Tag == 0 || tagshash.IsSupersetOf(l.Tags)) continue;
-				tags.AddRange(l.Tags);
-				foreach(int i in l.Tags) tagshash.Add(i);
-			}
+				foreach(Linedef l in General.Map.Map.Linedefs)
+				{
+					if(l.Tag == 0 || tagshash.IsSupersetOf(l.Tags)) continue;
+					tags.AddRange(l.Tags);
+					foreach(int i in l.Tags) tagshash.Add(i);
+				}
 
-			//now sort them in descending order
-			tags.Sort((a, b) => -1 * a.CompareTo(b));
+				// Now sort them in descending order
+				tags.Sort((a, b) => -1 * a.CompareTo(b));
 
-			//create enum items
-			foreach(int tag in tags) 
-			{
-				if(General.Map.Options.TagLabels.ContainsKey(tag)) //tag labels
-					taglist.Add(new EnumItem(tag.ToString(), General.Map.Options.TagLabels[tag]));
-				else
-					taglist.Add(new EnumItem(tag.ToString(), tag.ToString()));
+				// Create enum items
+				foreach(int tag in tags)
+				{
+					if(General.Map.Options.TagLabels.ContainsKey(tag)) // Tag labels
+						taglist.Add(new EnumItem(tag.ToString(), General.Map.Options.TagLabels[tag]));
+					else
+						taglist.Add(new EnumItem(tag.ToString(), tag.ToString()));
+				}
 			}
 
 			return taglist;
