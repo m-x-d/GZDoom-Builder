@@ -15,7 +15,7 @@ using CodeImp.DoomBuilder.Map;
 
 namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 {
-	[EditMode(DisplayName = "Nodes Viewer",
+	[EditMode(DisplayName = "Nodes Viewer Mode",
 			  SwitchAction = "nodesviewermode",
 			  ButtonImage = "NodesView.png",
 			  ButtonOrder = 350,

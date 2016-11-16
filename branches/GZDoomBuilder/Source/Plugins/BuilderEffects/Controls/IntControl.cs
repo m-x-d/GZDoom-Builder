@@ -23,6 +23,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 				blockEvents = true;
 				previousValue = General.Clamp(value, (int)numericUpDown1.Minimum, (int)numericUpDown1.Maximum);
 				numericUpDown1.Value = previousValue;
+				trackBar1.Value = previousValue;
 				valueChanged = false;
 				blockEvents = false;
 			}

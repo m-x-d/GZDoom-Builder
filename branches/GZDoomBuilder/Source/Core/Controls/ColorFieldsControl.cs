@@ -33,6 +33,16 @@ namespace CodeImp.DoomBuilder.Controls
 		public int DefaultValue { get { return defaultvalue; } set { defaultvalue = value; } }
 		public string Label { get { return cpColor.Label; } set { cpColor.Label = value; } }
 		public string Field { get { return field; } set { field = value; } }
+		public PixelColor Color
+		{
+			get { return cpColor.Color; }
+			set
+			{
+				blockevents = true;
+				tbColor.Text = String.Format("{0:X6}", value.ToInt() & 0x00FFFFFF);
+				blockevents = false;
+			}
+		}
 
 		#endregion
 

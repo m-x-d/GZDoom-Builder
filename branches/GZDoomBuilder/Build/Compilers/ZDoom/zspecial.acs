@@ -327,7 +327,7 @@ special
 	-58:GetUserCVarString(2),
 	-59:SetUserCVarString(3),
 	-60:LineAttack(4,9),
-	-61:PlaySound(2,6),
+	-61:PlaySound(2,7),
 	-62:StopSound(1,2),
 	-63:strcmp(2,3),
 	-64:stricmp(2,3),
@@ -401,6 +401,10 @@ special
 	-201:DamageActor(6), // [arookas]
 	-202:SetActorFlag(3),
 	-203:SetTranslation(2),
+	
+	// Eternity's
+	-300:GetLineX(3),
+	-301:GetLineY(3),
 	
 	// ZDaemon's
 	-19620:GetTeamScore(1),

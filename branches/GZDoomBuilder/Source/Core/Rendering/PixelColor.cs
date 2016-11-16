@@ -33,6 +33,9 @@ namespace CodeImp.DoomBuilder.Rendering
 		//mxd. Some color constants, full alpha
 		public const int INT_BLACK = -16777216;
 		public const int INT_WHITE = -1;
+
+		//mxd. Some color constants, no alpha
+		public const int INT_WHITE_NO_ALPHA = 16777215;
 		
 		#endregion
 
