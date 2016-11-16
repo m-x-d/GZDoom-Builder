@@ -26,12 +26,14 @@
 		/// </summary>
 		private void InitializeComponent() {
 			this.menuStrip = new System.Windows.Forms.MenuStrip();
-			this.importStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.stripimport = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
-			this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
-			this.jitterItem = new System.Windows.Forms.ToolStripMenuItem();
+			this.stripmodes = new System.Windows.Forms.ToolStripMenuItem();
+			this.menujitter = new System.Windows.Forms.ToolStripMenuItem();
+			this.menusectorflatshading = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolStrip = new System.Windows.Forms.ToolStrip();
-			this.jitterButton = new System.Windows.Forms.ToolStripButton();
+			this.buttonjitter = new System.Windows.Forms.ToolStripButton();
+			this.buttonsectorflatshading = new System.Windows.Forms.ToolStripButton();
 			this.menuStrip.SuspendLayout();
 			this.toolStrip.SuspendLayout();
 			this.SuspendLayout();
@@ -39,21 +41,21 @@
 			// menuStrip
 			// 
 			this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.importStripMenuItem,
-            this.toolStripMenuItem3});
+            this.stripimport,
+            this.stripmodes});
 			this.menuStrip.Location = new System.Drawing.Point(0, 0);
 			this.menuStrip.Name = "menuStrip";
 			this.menuStrip.Size = new System.Drawing.Size(452, 24);
 			this.menuStrip.TabIndex = 0;
 			this.menuStrip.Text = "menuStrip1";
 			// 
-			// importStripMenuItem
+			// stripimport
 			// 
-			this.importStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+			this.stripimport.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripMenuItem1});
-			this.importStripMenuItem.Name = "importStripMenuItem";
-			this.importStripMenuItem.Size = new System.Drawing.Size(55, 20);
-			this.importStripMenuItem.Text = "Import";
+			this.stripimport.Name = "stripimport";
+			this.stripimport.Size = new System.Drawing.Size(55, 20);
+			this.stripimport.Text = "Import";
 			// 
 			// toolStripMenuItem1
 			// 
@@ -64,43 +66,65 @@
 			this.toolStripMenuItem1.Text = "Wavefront .obj as Terrain...";
 			this.toolStripMenuItem1.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
-			// toolStripMenuItem3
+			// stripmodes
 			// 
-			this.toolStripMenuItem3.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.jitterItem});
-			this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-			this.toolStripMenuItem3.Size = new System.Drawing.Size(55, 20);
-			this.toolStripMenuItem3.Text = "Modes";
+			this.stripmodes.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menujitter,
+            this.menusectorflatshading});
+			this.stripmodes.Name = "stripmodes";
+			this.stripmodes.Size = new System.Drawing.Size(55, 20);
+			this.stripmodes.Text = "Modes";
 			// 
-			// jitterItem
+			// menujitter
 			// 
-			this.jitterItem.Image = global::CodeImp.DoomBuilder.BuilderEffects.Properties.Resources.Jitter;
-			this.jitterItem.Name = "jitterItem";
-			this.jitterItem.Size = new System.Drawing.Size(133, 22);
-			this.jitterItem.Tag = "applyjitter";
-			this.jitterItem.Text = "Randomize";
-			this.jitterItem.Click += new System.EventHandler(this.InvokeTaggedAction);
+			this.menujitter.Image = global::CodeImp.DoomBuilder.BuilderEffects.Properties.Resources.Jitter;
+			this.menujitter.Name = "menujitter";
+			this.menujitter.Size = new System.Drawing.Size(220, 22);
+			this.menujitter.Tag = "applyjitter";
+			this.menujitter.Text = "Randomize...";
+			this.menujitter.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// menusectorflatshading
+			// 
+			this.menusectorflatshading.Image = global::CodeImp.DoomBuilder.BuilderEffects.Properties.Resources.FlatShading;
+			this.menusectorflatshading.Name = "menusectorflatshading";
+			this.menusectorflatshading.Size = new System.Drawing.Size(220, 22);
+			this.menusectorflatshading.Tag = "applydirectionalshading";
+			this.menusectorflatshading.Text = "Apply Directional Shading...";
+			this.menusectorflatshading.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// toolStrip
 			// 
 			this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.jitterButton});
+            this.buttonjitter,
+            this.buttonsectorflatshading});
 			this.toolStrip.Location = new System.Drawing.Point(0, 24);
 			this.toolStrip.Name = "toolStrip";
 			this.toolStrip.Size = new System.Drawing.Size(452, 25);
 			this.toolStrip.TabIndex = 1;
 			this.toolStrip.Text = "toolStrip1";
 			// 
-			// jitterButton
+			// buttonjitter
 			// 
-			this.jitterButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.jitterButton.Image = global::CodeImp.DoomBuilder.BuilderEffects.Properties.Resources.Jitter;
-			this.jitterButton.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.jitterButton.Name = "jitterButton";
-			this.jitterButton.Size = new System.Drawing.Size(23, 22);
-			this.jitterButton.Tag = "applyjitter";
-			this.jitterButton.Text = "Randomize";
-			this.jitterButton.Click += new System.EventHandler(this.InvokeTaggedAction);
+			this.buttonjitter.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttonjitter.Image = global::CodeImp.DoomBuilder.BuilderEffects.Properties.Resources.Jitter;
+			this.buttonjitter.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttonjitter.Name = "buttonjitter";
+			this.buttonjitter.Size = new System.Drawing.Size(23, 22);
+			this.buttonjitter.Tag = "applyjitter";
+			this.buttonjitter.Text = "Randomize";
+			this.buttonjitter.Click += new System.EventHandler(this.InvokeTaggedAction);
+			// 
+			// buttonsectorflatshading
+			// 
+			this.buttonsectorflatshading.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+			this.buttonsectorflatshading.Image = global::CodeImp.DoomBuilder.BuilderEffects.Properties.Resources.FlatShading;
+			this.buttonsectorflatshading.ImageTransparentColor = System.Drawing.Color.Magenta;
+			this.buttonsectorflatshading.Name = "buttonsectorflatshading";
+			this.buttonsectorflatshading.Size = new System.Drawing.Size(23, 22);
+			this.buttonsectorflatshading.Tag = "applydirectionalshading";
+			this.buttonsectorflatshading.Text = "Apply Directional Shading";
+			this.buttonsectorflatshading.Click += new System.EventHandler(this.InvokeTaggedAction);
 			// 
 			// MenusForm
 			// 
@@ -124,11 +148,13 @@
 		#endregion
 
 		private System.Windows.Forms.MenuStrip menuStrip;
-		private System.Windows.Forms.ToolStripMenuItem importStripMenuItem;
+		private System.Windows.Forms.ToolStripMenuItem stripimport;
 		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
 		private System.Windows.Forms.ToolStrip toolStrip;
-		private System.Windows.Forms.ToolStripButton jitterButton;
-		private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem3;
-		private System.Windows.Forms.ToolStripMenuItem jitterItem;
+		private System.Windows.Forms.ToolStripButton buttonjitter;
+		private System.Windows.Forms.ToolStripMenuItem stripmodes;
+		private System.Windows.Forms.ToolStripMenuItem menujitter;
+		private System.Windows.Forms.ToolStripMenuItem menusectorflatshading;
+		private System.Windows.Forms.ToolStripButton buttonsectorflatshading;
 	}
 }

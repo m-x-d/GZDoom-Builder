@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using CodeImp.DoomBuilder.Controls;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Map;
+using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Types;
 
 #endregion
@@ -113,7 +114,7 @@ namespace CodeImp.DoomBuilder.Windows
 				CeilTexture = s.CeilTexture;
 
 				//UDMF stuff
-				LightColor = UniFields.GetInteger(s.Fields, "lightcolor", 16777215);
+				LightColor = UniFields.GetInteger(s.Fields, "lightcolor", PixelColor.INT_WHITE_NO_ALPHA);
 				FadeColor = UniFields.GetInteger(s.Fields, "fadecolor", 0);
 
 				//UDMF Ceiling
