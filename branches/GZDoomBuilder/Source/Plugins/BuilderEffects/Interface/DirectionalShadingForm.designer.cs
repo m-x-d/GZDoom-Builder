@@ -200,7 +200,7 @@
 			this.Name = "DirectionalShadingForm";
 			this.ShowInTaskbar = false;
 			this.Text = "Terrain Shading";
-			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.TerrainShadingForm_FormClosing);
+			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.DirectionalShadingForm_FormClosing);
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox2.ResumeLayout(false);
 			this.groupBox3.ResumeLayout(false);
