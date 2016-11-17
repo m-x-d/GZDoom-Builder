@@ -212,6 +212,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						// Use sector brightness for color shading
 						int brightness = level.brightnessbelow;
 
+						//mxd. Apply lightfloor value
+						// TECH: In (G)ZDoom, this is ignored when ceiling texture is sky or a thing is below a 3D floor
+						// It's probably more involved than this, but for now let's do it only when there are no 3d floors in Thing.Sector...
+						if(General.Map.UDMF && sd.LightLevels.Count == 2 && Thing.Sector.CeilTexture != General.Map.Config.SkyFlatName)
+						{
+							if(sd.Sector.Fields.GetValue("lightfloorabsolute", false))
+								brightness = UniFields.GetInteger(sd.Sector.Fields, "lightfloor");
+							else
+								brightness += UniFields.GetInteger(sd.Sector.Fields, "lightfloor");
+						}
+
 						// Level is glowing
 						if(level.affectedbyglow && level.type == SectorLevelType.Floor)
 						{

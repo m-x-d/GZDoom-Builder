@@ -46,7 +46,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 				sectorcolors[s] = UniFields.GetInteger(s.Fields, "lightcolor", PixelColor.INT_WHITE_NO_ALPHA);
 
 				// Store initial brightness
-				if(s.IsFlagSet("lightfloorabsolute"))
+				if(s.Fields.GetValue("lightfloorabsolute", false))
 					sectorbrightness[s] = UniFields.GetInteger(s.Fields, "lightfloor");
 				else
 					sectorbrightness[s] = s.Brightness;
@@ -62,7 +62,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 				sides.Add(sd, normal);
 
 				// Store initial brightness
-				if(sd.IsFlagSet("lightabsolute"))
+				if(sd.Fields.GetValue("lightabsolute", false))
 					sidebrightness[sd] = UniFields.GetInteger(sd.Fields, "light");
 				else
 					sidebrightness[sd] = sd.Sector.Brightness;
@@ -125,7 +125,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 				}
 
 				// Apply settings
-				if(group.Key.IsFlagSet("lightfloorabsolute"))
+				if(group.Key.Fields.GetValue("lightfloorabsolute", false))
 					UniFields.SetInteger(group.Key.Fields, "lightfloor", General.Clamp(targetlight + sectorbrightness[group.Key], 0, 255), 0);
 				else
 					UniFields.SetInteger(group.Key.Fields, "lightfloor", General.Clamp(targetlight, -255, 255), 0);
@@ -164,7 +164,7 @@ namespace CodeImp.DoomBuilder.BuilderEffects
 				}
 
 				// Apply settings
-				if(group.Key.IsFlagSet("lightabsolute"))
+				if(group.Key.Fields.GetValue("lightabsolute", false))
 					UniFields.SetInteger(group.Key.Fields, "light", General.Clamp(targetlight + sidebrightness[group.Key], 0, 255), 0);
 				else
 					UniFields.SetInteger(group.Key.Fields, "light", General.Clamp(targetlight, -255, 255), 0);
