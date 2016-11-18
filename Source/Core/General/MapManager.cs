@@ -324,7 +324,7 @@ namespace CodeImp.DoomBuilder
 			map.Update();
 			thingsfilter.Update();
 
-			namedscripts = new Dictionary<string, ScriptItem>(); //mxd
+			namedscripts = new Dictionary<string, ScriptItem>(StringComparer.OrdinalIgnoreCase); //mxd
 			numberedscripts = new Dictionary<int, ScriptItem>(); //mxd
 
 			// Bind any methods
@@ -2066,7 +2066,7 @@ namespace CodeImp.DoomBuilder
 			else
 			{
 				// Add to collections
-				namedscripts = new Dictionary<string, ScriptItem>(parser.NamedScripts.Count);
+				namedscripts = new Dictionary<string, ScriptItem>(parser.NamedScripts.Count, StringComparer.OrdinalIgnoreCase);
 				numberedscripts = new Dictionary<int, ScriptItem>(parser.NumberedScripts.Count);
 
 				// Sort script names

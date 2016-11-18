@@ -47,6 +47,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		protected int minpointscount;
 		protected bool alwaysrendershapehints;
 
+		private bool blockupdate;
+
 		// Interface
 		private DrawRectangleOptionsPanel panel;
 
@@ -128,6 +130,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		override protected void Update() 
 		{
+			if(blockupdate) return;
+			
 			PixelColor stitchcolor = General.Colors.Highlight;
 			PixelColor losecolor = General.Colors.Selection;
 
@@ -192,6 +196,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							for(int i = 0; i < 4; i++)
 								renderer.RenderRectangleFilled(new RectangleF(labelCoords[i].x - vsize, labelCoords[i].y - vsize, vsize * 2.0f, vsize * 2.0f), General.Colors.InfoLine, true);
 						}
+					}
+					else
+					{
+						// Render vertex at points[0]
+						renderer.RenderRectangleFilled(new RectangleF(start.x - vsize, start.y - vsize, vsize * 2.0f, vsize * 2.0f), General.Colors.InfoLine, true);
 					}
 				} 
 				else 
@@ -354,7 +363,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				points = new List<DrawnVertex>(); //clear points
 				Vector2D[] shape = GetShape(start, end);
 
+				// We don't want base.DrawPointAt to call Update() here, because it will mess labels[] 
+				// and trigger shape.Count number of display redraws...
+				blockupdate = true;
 				foreach(Vector2D t in shape) base.DrawPointAt(t, true, true);
+				blockupdate = false;
 
 				FinishDraw();
 			}
