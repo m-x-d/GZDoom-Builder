@@ -824,7 +824,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.buttonsoundradii.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.buttonsoundradii.Name = "buttonsoundradii";
 			this.buttonsoundradii.Size = new System.Drawing.Size(23, 22);
-			this.buttonsoundradii.Text = "Sound Radii";
+			this.buttonsoundradii.Text = "Ambient Sound Radii";
 			this.buttonsoundradii.Click += new System.EventHandler(this.buttonsoundradii_Click);
 			// 
 			// fileMenuStrip
@@ -922,7 +922,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.itemsoundradii.Image = global::CodeImp.DoomBuilder.BuilderModes.Properties.Resources.SoundRadius;
 			this.itemsoundradii.Name = "itemsoundradii";
 			this.itemsoundradii.Size = new System.Drawing.Size(212, 22);
-			this.itemsoundradii.Text = "Show Sound Radii";
+			this.itemsoundradii.Text = "Show Ambient Sound Radii";
 			this.itemsoundradii.Click += new System.EventHandler(this.buttonsoundradii_Click);
 			// 
 			// MenusForm
