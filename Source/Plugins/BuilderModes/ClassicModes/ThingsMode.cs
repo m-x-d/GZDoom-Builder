@@ -233,7 +233,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				renderer.PlotVerticesSet(General.Map.Map.Vertices);
 
 				for(int i = 0; i < Thing.NUM_ARGS; i++) BuilderPlug.PlotAssociations(renderer, association[i], eventlines);
-				if((highlighted != null) && !highlighted.IsDisposed) BuilderPlug.PlotReverseAssociations(renderer, highlightasso, eventlines);
+				if(highlighted != null && !highlighted.IsDisposed) BuilderPlug.PlotReverseAssociations(renderer, highlightasso, eventlines);
 				
 				renderer.Finish();
 			}
@@ -246,7 +246,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				renderer.RenderThingSet(General.Map.ThingsFilter.VisibleThings, alpha);
 				for(int i = 0; i < Thing.NUM_ARGS; i++) BuilderPlug.RenderAssociations(renderer, association[i], eventlines);
 				
-				if((highlighted != null) && !highlighted.IsDisposed)
+				if(highlighted != null && !highlighted.IsDisposed)
 				{
 					renderer.RenderThing(highlighted, General.Colors.Highlight, alpha);
 					BuilderPlug.RenderReverseAssociations(renderer, highlightasso, eventlines); //mxd
@@ -259,14 +259,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				if(BuilderPlug.Me.ShowLightRadii)
 				{
 					eventlines.AddRange(dynamiclightshapes);
-					if(highlighted != null) eventlines.AddRange(GetDynamicLightShapes(new List<Thing> { highlighted } ));
+					if(highlighted != null && !highlighted.IsDisposed)
+						eventlines.AddRange(GetDynamicLightShapes(new List<Thing> { highlighted } ));
 				}
 
 				//mxd. Ambient sound radii
 				if(BuilderPlug.Me.ShowSoundRadii)
 				{
 					eventlines.AddRange(ambientsoundshapes);
-					if(highlighted != null) eventlines.AddRange(GetAmbientSoundShapes(new List<Thing> { highlighted }));
+					if(highlighted != null && !highlighted.IsDisposed)
+						eventlines.AddRange(GetAmbientSoundShapes(new List<Thing> { highlighted }));
 				}
 
 				//mxd

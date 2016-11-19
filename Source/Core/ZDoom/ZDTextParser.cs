@@ -704,7 +704,11 @@ namespace CodeImp.DoomBuilder.ZDoom
 				errorsource = Path.Combine(datalocation.location, sourcename);
 			}
 			
-			if(sourcelumpindex != -1) errorsource += ":" + sourcelumpindex; //mxd
+			if(sourcelumpindex != -1) //mxd
+			{
+				errorsource += ":" + sourcelumpindex;
+				shorterrorsource += ":" + sourcelumpindex;
+			}
 		}
 
 		//mxd. This adds a warning to the ErrorLogger
