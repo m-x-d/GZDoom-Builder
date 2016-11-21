@@ -257,8 +257,10 @@ namespace CodeImp.DoomBuilder.Geometry
 		// This calculates the angle
 		public float GetAngle()
 		{
-			// Calculate and return the angle
-			return -(float)Math.Atan2(-y, x) + Angle2D.PIHALF; //mxd
+			//mxd. Let's make sure the angle is in [0 .. PI2] range...
+			float angle = -(float)Math.Atan2(-y, x) + Angle2D.PIHALF;
+			if(angle < 0f) angle += Angle2D.PI2;
+			return angle;
 		}
 
 		// This calculates the length

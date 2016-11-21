@@ -178,17 +178,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				Linedef nl = General.Map.Map.NearestLinedef(mousemappos);
 				if(nl != null)
 				{
-					float side = nl.SideOfLine(mousemappos);
-					LinedefSide newnearest = new LinedefSide(nl, (side <= 0.0f));
+					bool front = (nl.SideOfLine(mousemappos) <= 0.0f); //mxd
+					LinedefSide newnearest = new LinedefSide(nl, front);
 					if(newnearest != nearestside)
 					{
 						// Only change when buttons are not pressed
 						if(!buttonspressed || (editside == newnearest))
 						{
 							// Find new sector
-							General.Interface.SetCursor(Cursors.AppStarting);
 							nearestside = newnearest;
-							allsides = Tools.FindPotentialSectorAt(mousemappos);
+							allsides = Tools.FindPotentialSectorAt(nl, front); //mxd
 							if(allsides != null)
 							{
 								alllines = new List<Linedef>(allsides.Count);
@@ -198,7 +197,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							{
 								alllines = null;
 							}
-							General.Interface.SetCursor(Cursors.Default);
 						}
 						else
 						{
@@ -456,10 +454,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override void OnMouseMove(MouseEventArgs e)
 		{
 			base.OnMouseMove(e);
-			if(panning) return; //mxd. Skip all this jass while panning
+			if(panning) return; //mxd. Skip all this jazz while panning
 
 			// Highlight the region
-			Highlight((e.Button != MouseButtons.None));
+			Highlight(e.Button != MouseButtons.None);
 		}
 
 		// Mouse leaves
@@ -531,4 +529,3 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		#endregion
 	}
 }
-
