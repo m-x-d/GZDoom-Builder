@@ -290,11 +290,11 @@ namespace CodeImp.DoomBuilder.Geometry
 						// path we received from FindClosestPath!
 						if(foundv == null) throw new Exception("FAIL!");
 						
-						// From the right-most vertex trace outward to the right to
-						// find the next closest linedef, this is based on the idea that
-						// all sectors are closed.
-						Vector2D lineoffset = new Vector2D(100.0f, 0.0f);
-						Line2D testline = new Line2D(foundv.Position, foundv.Position + lineoffset);
+						// From the right-most vertex trace outward to the right to find the next closest linedef,
+						// this is based on the idea that all sectors are closed.
+
+						//mxd. Intersection test is bounded, so extend end position x to the right map boundary
+						Line2D testline = new Line2D(foundv.Position, new Vector2D(General.Map.Config.RightBoundary, foundv.Position.y));
 						scanline = null;
 						float foundu = float.MaxValue;
 
@@ -313,10 +313,25 @@ namespace CodeImp.DoomBuilder.Geometry
 									// Check if this linedef intersects our test line at a closer range
 									float thisu;
 									ld.Line.GetIntersection(testline, out thisu);
-									if((thisu > 0.00001f) && (thisu < foundu) && !float.IsNaN(thisu))
+									if(!float.IsNaN(thisu) && (thisu > 0.00001f))
 									{
-										scanline = ld;
-										foundu = thisu;
+										if(thisu < foundu)
+										{
+											scanline = ld;
+											foundu = thisu;
+										}
+										//mxd. Special cases: when foundv.y matches ld's start or end y, 
+										// prefer the line, which is clser to being parallel to the x axis
+										else if(scanline != null && Math.Round(thisu, 4) == Math.Round(foundu, 4))
+										{
+											float ldanglerel, scanlineanglerel;
+											if(GetRelativeAngle(ld, foundv.Position, out ldanglerel) 
+												&& GetRelativeAngle(scanline, foundv.Position, out scanlineanglerel)
+												&& (ldanglerel < scanlineanglerel))
+											{
+												scanline = ld; // foundu already matches
+											}
+										}
 									}
 								}
 							}
@@ -342,6 +357,26 @@ namespace CodeImp.DoomBuilder.Geometry
 				}
 			}
 			while(true);
+		}
+
+		//mxd. Gets angle between pos and l when pos.y matches l.Start.Position.y or l.End.Position.y
+		private static bool GetRelativeAngle(Linedef l, Vector2D pos, out float result)
+		{
+			if(l.Start.Position.y == pos.y)
+			{
+				result = Angle2D.GetAngle(pos, l.Start.Position, l.End.Position);
+				return true;
+			}
+
+			if(l.End.Position.y == pos.y)
+			{
+				result = Angle2D.GetAngle(pos, l.End.Position, l.Start.Position);
+				return true;
+			}
+
+			// We just don't know...
+			result = float.MaxValue;
+			return false;
 		}
 
 		/// <summary>

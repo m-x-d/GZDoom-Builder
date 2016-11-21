@@ -197,10 +197,14 @@ namespace CodeImp.DoomBuilder.Controls
 				peggedness = "None";
 			
 			// Linedef info
+#if DEBUG
+			infopanel.Text = " Linedef " + l.Index + " (vert. " + l.Start.Index + " - vert. " + l.End.Index + ") ";
+#else
 			infopanel.Text = " Linedef " + l.Index + " ";
+#endif
 			action.Text = act.ToString();
 			length.Text = l.Length.ToString("0.##");
-			angle.Text = General.ClampAngle(l.AngleDeg) + "\u00B0";
+			angle.Text = l.AngleDeg + "\u00B0";
 			unpegged.Text = peggedness;
 			unpegged.Enabled = (peggedness != "None"); //mxd
 			peglabel.Enabled = (peggedness != "None"); //mxd
