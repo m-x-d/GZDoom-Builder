@@ -35,8 +35,11 @@ namespace CodeImp.DoomBuilder.Windows
 	public class DelayedForm : Form
 	{
 		// Variables
-		private Timer formshowtimer;
 		protected readonly string configname; //mxd
+
+		//mxd. Stored window size and location. Tracks location and size of FormWindowState.Normal window 
+		private Size windowsize = Size.Empty;
+		private Point windowlocation = Point.Empty;
 		
 		// Constructor
 		protected DelayedForm()
@@ -48,22 +51,38 @@ namespace CodeImp.DoomBuilder.Windows
 				this.KeyUp += OnKeyUp;
 			}
 
-			//mxd
-			configname = this.GetType().Name.ToLowerInvariant();
-			
-			// Create a timer that we need to show the form
-			formshowtimer = new Timer { Interval = 1 };
-			formshowtimer.Tick += formshowtimer_Tick;
+			//mxd. Only when running (this.DesignMode doesn't seem to cut it here,
+			// probably because not this, but a child class is in design mode...)
+			if(LicenseManager.UsageMode != LicenseUsageMode.Designtime)
+			{
+				configname = this.GetType().Name.ToLowerInvariant();
+				General.Actions.BindMethods(this);
+			}
 		}
-		
-		// When form is shown
-		protected override void OnShown(EventArgs e)
+
+		//mxd
+		protected override void OnLoad(EventArgs e)
 		{
-			//mxd
+			// Let the base class know
+			base.OnLoad(e);
+
 			if(this.DesignMode) return;
 			
-			//mxd. Restore location and size
+			// Restore location and size
 			this.SuspendLayout();
+
+			// Restore windowstate
+			if(this.MaximizeBox)
+			{
+				this.WindowState = (FormWindowState)General.Settings.ReadSetting("windows." + configname + ".windowstate", (int)FormWindowState.Normal);
+			}
+
+			// Form size matters?
+			if(this.FormBorderStyle == FormBorderStyle.Sizable || this.FormBorderStyle == FormBorderStyle.SizableToolWindow)
+			{
+				this.Size = new Size(General.Settings.ReadSetting("windows." + configname + ".sizewidth", this.Size.Width),
+									 General.Settings.ReadSetting("windows." + configname + ".sizeheight", this.Size.Height));
+			}
 
 			// Restore location
 			Point validlocation = Point.Empty;
@@ -75,10 +94,7 @@ namespace CodeImp.DoomBuilder.Windows
 				// Location withing screen bounds?
 				Rectangle bounds = new Rectangle(location, this.Size);
 				bounds.Inflate(16, 16); // Add some safety padding
-				if(SystemInformation.VirtualScreen.IntersectsWith(bounds))
-				{
-					validlocation = location;
-				}
+				if(SystemInformation.VirtualScreen.IntersectsWith(bounds)) validlocation = location;
 			}
 
 			if(validlocation == Point.Empty && !(this is MainForm))
@@ -99,31 +115,10 @@ namespace CodeImp.DoomBuilder.Windows
 				this.Location = validlocation;
 			}
 
-			// Restore windowstate
-			if(this.MaximizeBox)
-			{
-				this.WindowState = (FormWindowState)General.Settings.ReadSetting("windows." + configname + ".windowstate", (int)FormWindowState.Normal);
-			}
-
-			// Form size matters?
-			if(this.WindowState == FormWindowState.Normal
-				&& (this.FormBorderStyle == FormBorderStyle.Sizable || this.FormBorderStyle == FormBorderStyle.SizableToolWindow))
-			{
-				this.Size = new Size(General.Settings.ReadSetting("windows." + configname + ".sizewidth", this.Size.Width),
-									 General.Settings.ReadSetting("windows." + configname + ".sizeheight", this.Size.Height));
-			}
+			// Show the form if needed
+			if(this.Opacity < 1.0) this.Opacity = 1.0;
 
 			this.ResumeLayout();
-			//mxd end
-
-			// Let the base class know
-			base.OnShown(e);
-
-			// Start the timer to show the form
-			formshowtimer.Enabled = true;
-
-			// Bind any methods (mxd)
-			if(!DesignMode) General.Actions.BindMethods(this);
 		}
 
 		//mxd. When form is closing
@@ -149,27 +144,36 @@ namespace CodeImp.DoomBuilder.Windows
 			// Form size matters?
 			if(this.FormBorderStyle == FormBorderStyle.Sizable || this.FormBorderStyle == FormBorderStyle.SizableToolWindow)
 			{
-				General.Settings.WriteSetting("windows." + configname + ".sizewidth", this.Size.Width);
-				General.Settings.WriteSetting("windows." + configname + ".sizeheight", this.Size.Height);
+				Size size = ((windowsize.IsEmpty && this.WindowState == FormWindowState.Normal) ? this.Size : windowsize); // Prefer stored size if it was set
+				if(!size.IsEmpty)
+				{
+					General.Settings.WriteSetting("windows." + configname + ".sizewidth", size.Width);
+					General.Settings.WriteSetting("windows." + configname + ".sizeheight", size.Height);
+				}
 			}
 
 			// Save location
-			General.Settings.WriteSetting("windows." + configname + ".positionx", this.Location.X);
-			General.Settings.WriteSetting("windows." + configname + ".positiony", this.Location.Y);
+			Point location = ((windowlocation.IsEmpty && this.WindowState == FormWindowState.Normal) ? this.Location : windowlocation); // Prefer stored location if it was set
+			if(!location.IsEmpty)
+			{
+				General.Settings.WriteSetting("windows." + configname + ".positionx", location.X);
+				General.Settings.WriteSetting("windows." + configname + ".positiony", location.Y);
+			}
 		}
 
-		// When the form is to be shown
-		private void formshowtimer_Tick(object sender, EventArgs e)
+		//mxd. Also triggered when the window is dragged.
+		protected override void OnResizeEnd(EventArgs e)
 		{
-			// Get rid of the timer
-			formshowtimer.Dispose();
-			formshowtimer = null;
-			
-			if(!this.IsDisposed)
+			// Store location and size when window is not minimized or maximized
+			if(this.WindowState == FormWindowState.Normal)
 			{
-				// Make the form visible
-				this.Opacity = 1.0;
+				// Form size matters?
+				if(this.FormBorderStyle == FormBorderStyle.Sizable || this.FormBorderStyle == FormBorderStyle.SizableToolWindow)
+					windowsize = this.Size;
+				windowlocation = this.Location;
 			}
+
+			base.OnResizeEnd(e);
 		}
 
 		//mxd. Special handling to call "save screenshot" actions from any form, 
