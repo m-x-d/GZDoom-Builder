@@ -82,6 +82,8 @@ namespace CodeImp.DoomBuilder.Controls
 		public delegate void OpenFindReplaceDelegate();
 		public delegate void FindNextDelegate();
 		public delegate void FindPreviousDelegate(); //mxd
+		public delegate void GoToLineDelegate(); //mxd
+		public delegate void CompileScriptDelegate(); //mxd
 
 		public event ExplicitSaveTabDelegate OnExplicitSaveTab;
 		public event OpenScriptBrowserDelegate OnOpenScriptBrowser;
@@ -90,6 +92,8 @@ namespace CodeImp.DoomBuilder.Controls
 		public event FindPreviousDelegate OnFindPrevious; //mxd
 		public new event EventHandler OnTextChanged; //mxd
 		public event EventHandler OnFunctionBarDropDown; //mxd
+		public event GoToLineDelegate OnGoToLine; //mxd
+		public event CompileScriptDelegate OnCompileScript; //mxd
 
 		#endregion
 
@@ -126,7 +130,7 @@ namespace CodeImp.DoomBuilder.Controls
 		public string SelectedText { get { return scriptedit.SelectedText; } } //mxd
 		public bool ShowWhitespace { get { return scriptedit.ViewWhitespace != WhitespaceMode.Invisible; } set { scriptedit.ViewWhitespace = value ? WhitespaceMode.VisibleAlways : WhitespaceMode.Invisible; } }
 		public bool WrapLongLines { get { return scriptedit.WrapMode != WrapMode.None; } set { scriptedit.WrapMode = (value ? WrapMode.Char : WrapMode.None); } }
-		public Scintilla Scintilla { get { return scriptedit; } } //mxd
+		internal Scintilla Scintilla { get { return scriptedit; } } //mxd
 
 		#endregion
 
@@ -238,6 +242,9 @@ namespace CodeImp.DoomBuilder.Controls
 		// This moves the caret to a given line and ensures the line is visible
 		public void MoveToLine(int linenumber)
 		{
+			//mxd. Safety required
+			linenumber = General.Clamp(linenumber, 0, scriptedit.Lines.Count);
+			
 			scriptedit.Lines[linenumber].Goto();
 			EnsureLineVisible(linenumber);
 			scriptedit.SetEmptySelection(scriptedit.Lines[linenumber].Position);
@@ -736,6 +743,12 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		//mxd
+		public void DuplicateLine()
+		{
+			scriptedit.DirectMessage(NativeMethods.SCI_LINEDUPLICATE);
+		}
+
+		//mxd
 		internal List<CompilerError> UpdateNavigator(ScriptDocumentTab tab)
 		{
 			List<CompilerError> result = new List<CompilerError>();
@@ -883,6 +896,13 @@ namespace CodeImp.DoomBuilder.Controls
 				return true;
 			}
 
+			//mxd. F5 for Compile Script
+			if(keydata == Keys.F5)
+			{
+				if(OnCompileScript != null) OnCompileScript();
+				return true;
+			}
+
 			// CTRL+F for find & replace
 			if(keydata == (Keys.Control | Keys.F))
 			{
@@ -890,8 +910,15 @@ namespace CodeImp.DoomBuilder.Controls
 				return true;
 			}
 
+			// CTRL+G for go to line
+			if(keydata == (Keys.Control | Keys.G))
+			{
+				if(OnGoToLine != null) OnGoToLine();
+				return true;
+			}
+
 			// CTRL+S for save
-			if(keydata == (Keys.Control | Keys.S))
+			if(!scriptedit.ReadOnly && keydata == (Keys.Control | Keys.S))
 			{
 				if(OnExplicitSaveTab != null) OnExplicitSaveTab();
 				return true;
@@ -905,7 +932,7 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 
 			// CTRL+Space to autocomplete
-			if(keydata == (Keys.Control | Keys.Space))
+			if(!scriptedit.ReadOnly && keydata == (Keys.Control | Keys.Space))
 			{
 				// Hide call tip if any
 				scriptedit.CallTipCancel();
@@ -916,7 +943,7 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 
 			//mxd. Tab to expand code snippet. Do it only when the text cursor is at the end of a keyword.
-			if(keydata == Keys.Tab && !scriptedit.AutoCActive)
+			if(!scriptedit.ReadOnly && keydata == Keys.Tab && !scriptedit.AutoCActive)
 			{
 				string curword = GetCurrentWord().ToLowerInvariant();
 				if(scriptconfig.Snippets.Contains(curword) && scriptedit.CurrentPosition == scriptedit.WordEndPosition(scriptedit.CurrentPosition, true))
@@ -1041,7 +1068,7 @@ namespace CodeImp.DoomBuilder.Controls
 				}
 			}
 
-			if(General.Settings.ScriptAutoShowAutocompletion)
+			if(!scriptedit.ReadOnly && General.Settings.ScriptAutoShowAutocompletion)
 			{
 				// Display the autocompletion list
 				handler.ShowAutoCompletionList();
@@ -1163,25 +1190,28 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				InsertSnippet(lines);
 			}
-			// Format editor comment?
-			else if(e.Text.StartsWith("$"))
+			else
 			{
 				string definition = scriptconfig.GetFunctionDefinition(e.Text);
 				if(!string.IsNullOrEmpty(definition))
 				{
 					int entrypos = definition.IndexOf(ENTRY_POSITION_MARKER, StringComparison.OrdinalIgnoreCase);
 					
-					// Remove the marker
-					if(entrypos != -1) definition = definition.Remove(entrypos, 4);
-					
-					// Replace insterted text with expanded comment
-					int startpos = scriptedit.WordStartPosition(scriptedit.CurrentPosition, true);
-					scriptedit.SelectionStart = startpos;
-					scriptedit.SelectionEnd = scriptedit.WordEndPosition(scriptedit.CurrentPosition, true);
-					scriptedit.ReplaceSelection(definition);
-					
-					// Update caret position
-					if(entrypos != -1) scriptedit.SetEmptySelection(startpos + entrypos);
+					// Replace inserted text with expanded version?
+					if(e.Text.StartsWith("$") || entrypos != -1)
+					{
+						// Remove the marker
+						if(entrypos != -1) definition = definition.Remove(entrypos, 4);
+						
+						// Replace insterted text with expanded comment
+						int startpos = scriptedit.WordStartPosition(scriptedit.CurrentPosition, true);
+						scriptedit.SelectionStart = startpos;
+						scriptedit.SelectionEnd = scriptedit.WordEndPosition(scriptedit.CurrentPosition, true);
+						scriptedit.ReplaceSelection(definition);
+
+						// Update caret position
+						if(entrypos != -1) scriptedit.SetEmptySelection(startpos + entrypos);
+					}
 				}
 			}
 		}

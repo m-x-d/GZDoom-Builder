@@ -54,16 +54,16 @@ namespace CodeImp.DoomBuilder.Data
 		protected override void Initialize()
 		{
 			// Load all WAD files in the root as WAD resources
-			string[] wadfiles = GetWadFiles(); //mxd
+			string[] wadfiles = GetWadFiles();
 			wads = new List<WADReader>(wadfiles.Length);
 			foreach(string wadfile in wadfiles)
 			{
-				//mxd. Don't add the map file. Otherwise DataManager will try to load it twice (and fial).
+				// Don't add the map file. Otherwise DataManager will try to load it twice (and fial).
 				string wadfilepath = Path.Combine(location.location, wadfile);
 				if(General.Map.FilePathName != wadfilepath)
 				{
 					DataLocation wdl = new DataLocation(DataLocation.RESOURCE_WAD, wadfilepath, false, false, true);
-					wads.Add(new WADReader(wdl, isreadonly));
+					wads.Add(new WADReader(wdl, isreadonly) { ParentResource = this } );
 				}
 			}
 		}

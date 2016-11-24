@@ -2758,7 +2758,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
 			this.MainMenuStrip = this.menumain;
 			this.Name = "MainForm";
-			this.Opacity = 0;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
 			this.Text = "GZDoom Builder";
 			this.Deactivate += new System.EventHandler(this.MainForm_Deactivate);

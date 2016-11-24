@@ -28,6 +28,7 @@ namespace CodeImp.DoomBuilder.Windows
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			System.Windows.Forms.ColumnHeader columnHeader1;
 			System.Windows.Forms.Label label1;
 			System.Windows.Forms.Label label2;
@@ -43,6 +44,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.mapslist = new System.Windows.Forms.ListView();
 			this.scriptcompiler = new System.Windows.Forms.ComboBox();
 			this.scriptcompilerlabel = new System.Windows.Forms.Label();
+			this.readonlyresources = new System.Windows.Forms.CheckBox();
+			this.tooltip = new System.Windows.Forms.ToolTip(this.components);
 			columnHeader1 = new System.Windows.Forms.ColumnHeader();
 			label1 = new System.Windows.Forms.Label();
 			label2 = new System.Windows.Forms.Label();
@@ -76,7 +79,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label3
 			// 
 			label3.AutoSize = true;
-			label3.Location = new System.Drawing.Point(14, 207);
+			label3.Location = new System.Drawing.Point(14, 227);
 			label3.Name = "label3";
 			label3.Size = new System.Drawing.Size(299, 52);
 			label3.TabIndex = 17;
@@ -86,13 +89,14 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.panelres.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.panelres.Controls.Add(this.readonlyresources);
 			this.panelres.Controls.Add(this.longtexturenames);
 			this.panelres.Controls.Add(this.strictpatches);
 			this.panelres.Controls.Add(this.datalocations);
 			this.panelres.Controls.Add(label3);
 			this.panelres.Location = new System.Drawing.Point(12, 246);
 			this.panelres.Name = "panelres";
-			this.panelres.Size = new System.Drawing.Size(396, 270);
+			this.panelres.Size = new System.Drawing.Size(396, 292);
 			this.panelres.TabIndex = 2;
 			this.panelres.TabStop = false;
 			this.panelres.Text = " Resources ";
@@ -121,7 +125,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.datalocations.AllowDrop = true;
 			this.datalocations.DialogOffset = new System.Drawing.Point(40, 20);
-			this.datalocations.Location = new System.Drawing.Point(14, 71);
+			this.datalocations.Location = new System.Drawing.Point(14, 91);
 			this.datalocations.Name = "datalocations";
 			this.datalocations.Size = new System.Drawing.Size(368, 127);
 			this.datalocations.TabIndex = 0;
@@ -129,7 +133,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// apply
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(178, 524);
+			this.apply.Location = new System.Drawing.Point(178, 544);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
 			this.apply.TabIndex = 3;
@@ -141,7 +145,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(296, 524);
+			this.cancel.Location = new System.Drawing.Point(296, 544);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
 			this.cancel.TabIndex = 4;
@@ -205,13 +209,24 @@ namespace CodeImp.DoomBuilder.Windows
 			this.scriptcompilerlabel.Text = "Script Type:";
 			this.scriptcompilerlabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
+			// readonlyresources
+			// 
+			this.readonlyresources.AutoSize = true;
+			this.readonlyresources.Location = new System.Drawing.Point(14, 68);
+			this.readonlyresources.Name = "readonlyresources";
+			this.readonlyresources.Size = new System.Drawing.Size(210, 17);
+			this.readonlyresources.TabIndex = 21;
+			this.readonlyresources.Text = "Open map resources in read-only mode";
+			this.tooltip.SetToolTip(this.readonlyresources, resources.GetString("readonlyresources.ToolTip"));
+			this.readonlyresources.UseVisualStyleBackColor = true;
+			// 
 			// OpenMapOptionsForm
 			// 
 			this.AcceptButton = this.apply;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.cancel;
-			this.ClientSize = new System.Drawing.Size(420, 559);
+			this.ClientSize = new System.Drawing.Size(420, 579);
 			this.Controls.Add(this.scriptcompiler);
 			this.Controls.Add(this.scriptcompilerlabel);
 			this.Controls.Add(this.mapslist);
@@ -251,6 +266,8 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.ComboBox scriptcompiler;
 		private System.Windows.Forms.Label scriptcompilerlabel;
 		private System.Windows.Forms.CheckBox longtexturenames;
+		private System.Windows.Forms.CheckBox readonlyresources;
+		private System.Windows.Forms.ToolTip tooltip;
 
 
 	}

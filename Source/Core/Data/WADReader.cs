@@ -23,6 +23,7 @@ using System.IO;
 using System.Text.RegularExpressions;
 using CodeImp.DoomBuilder.Compilers;
 using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.Data.Scripting;
 using CodeImp.DoomBuilder.GZBuilder.Data;
 using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.ZDoom;
@@ -80,6 +81,7 @@ namespace CodeImp.DoomBuilder.Data
 
 		public bool IsIWAD { get { return is_iwad; } }
 		internal WAD WadFile { get { return file; } } //mxd
+		internal PK3StructuredReader ParentResource; //mxd
 
 		#endregion
 
@@ -94,7 +96,7 @@ namespace CodeImp.DoomBuilder.Data
 				throw new FileNotFoundException("Could not find the file \"" + location.location + "\"", location.location);
 
 			// Initialize
-			file = new WAD(location.location, true);
+			file = new WAD(location.location, asreadonly);
 			strictpatches = dl.option1;
 			Initialize(); //mxd
 
@@ -126,7 +128,7 @@ namespace CodeImp.DoomBuilder.Data
 		private void Initialize()
 		{
 			is_iwad = file.IsIWAD;
-			isreadonly = file.IsReadOnly; // I guess opening an official IWAD in write-enabled mode is possible
+			isreadonly |= is_iwad; // Just in case...
 			
 			// Initialize
 			patchranges = new List<LumpRange>();
@@ -510,11 +512,11 @@ namespace CodeImp.DoomBuilder.Data
 			}
 
 			//mxd. Add to text resources collection
-			if(!General.Map.Data.TextResources.ContainsKey(parser.ScriptType))
-				General.Map.Data.TextResources[parser.ScriptType] = new HashSet<TextResource>();
+			if(!General.Map.Data.ScriptResources.ContainsKey(parser.ScriptType))
+				General.Map.Data.ScriptResources[parser.ScriptType] = new HashSet<ScriptResource>();
 
-			foreach(KeyValuePair<string, TextResource> group in parser.TextResources)
-				General.Map.Data.TextResources[parser.ScriptType].Add(group.Value);
+			foreach(KeyValuePair<string, ScriptResource> group in parser.ScriptResources)
+				General.Map.Data.ScriptResources[parser.ScriptType].Add(group.Value);
 
 			return parser; //mxd
 		}
@@ -792,11 +794,11 @@ namespace CodeImp.DoomBuilder.Data
 			}
 
 			//mxd. Add to text resources collection
-			if(!General.Map.Data.TextResources.ContainsKey(parser.ScriptType))
-				General.Map.Data.TextResources[parser.ScriptType] = new HashSet<TextResource>();
+			if(!General.Map.Data.ScriptResources.ContainsKey(parser.ScriptType))
+				General.Map.Data.ScriptResources[parser.ScriptType] = new HashSet<ScriptResource>();
 
-			foreach(KeyValuePair<string, TextResource> group in parser.TextResources)
-				General.Map.Data.TextResources[parser.ScriptType].Add(group.Value);
+			foreach(KeyValuePair<string, ScriptResource> group in parser.ScriptResources)
+				General.Map.Data.ScriptResources[parser.ScriptType].Add(group.Value);
 
 			return parser; //mxd
 		}
@@ -877,11 +879,11 @@ namespace CodeImp.DoomBuilder.Data
 			}
 
 			//mxd. Add to text resources collection
-			if(!General.Map.Data.TextResources.ContainsKey(parser.ScriptType))
-				General.Map.Data.TextResources[parser.ScriptType] = new HashSet<TextResource>();
+			if(!General.Map.Data.ScriptResources.ContainsKey(parser.ScriptType))
+				General.Map.Data.ScriptResources[parser.ScriptType] = new HashSet<ScriptResource>();
 
-			foreach(KeyValuePair<string, TextResource> group in parser.TextResources)
-				General.Map.Data.TextResources[parser.ScriptType].Add(group.Value);
+			foreach(KeyValuePair<string, ScriptResource> group in parser.ScriptResources)
+				General.Map.Data.ScriptResources[parser.ScriptType].Add(group.Value);
 
 			return parser; //mxd
 		}
@@ -1167,7 +1169,7 @@ namespace CodeImp.DoomBuilder.Data
 
 		internal override MemoryStream LoadFile(string name, int lumpindex)
 		{
-			if(lumpindex < 0 || file.Lumps.Count <= lumpindex || file.Lumps[lumpindex].Name != name)
+			if(lumpindex < 0 || file.Lumps.Count <= lumpindex || file.Lumps[lumpindex].Name != name.ToUpperInvariant())
 				return null;
 
 			Lump l = file.Lumps[lumpindex];
@@ -1193,12 +1195,15 @@ namespace CodeImp.DoomBuilder.Data
 			l.Stream.Seek(0, SeekOrigin.Begin);
 			lumpdata.WriteTo(l.Stream);
 
+			// Update WAD file
+			file.WriteHeaders();
+
 			return true;
 		}
 
 		internal override bool SaveFile(MemoryStream lumpdata, string lumpname, int lumpindex)
 		{
-			if(isreadonly || lumpindex < 0 || file.Lumps.Count <= lumpindex || file.Lumps[lumpindex].Name != lumpname)
+			if(isreadonly || lumpindex < 0 || file.Lumps.Count <= lumpindex || file.Lumps[lumpindex].Name != lumpname.ToUpperInvariant())
 				return false;
 
 			// Remove the lump
@@ -1208,6 +1213,9 @@ namespace CodeImp.DoomBuilder.Data
 			Lump l = file.Insert(lumpname, lumpindex, (int)lumpdata.Length);
 			l.Stream.Seek(0, SeekOrigin.Begin);
 			lumpdata.WriteTo(l.Stream);
+
+			// Update WAD file
+			file.WriteHeaders();
 
 			return true;
 		}
@@ -1253,7 +1261,7 @@ namespace CodeImp.DoomBuilder.Data
 
 			// Find the lump
 			if(lumpname == MapManager.CONFIG_MAP_HEADER) reallumpname = MapManager.TEMP_MAP_HEADER;
-			Lump lump = file.FindLump(reallumpname);
+			Lump lump = file.FindLump(reallumpname, lumpindex, lumpindex);
 			if(lump == null)
 				throw new Exception("Unable to find lump \"" + reallumpname + "\" to compile in \"" + location.GetDisplayName() + "\".");
 
@@ -1270,6 +1278,29 @@ namespace CodeImp.DoomBuilder.Data
 				// Fail
 				errors.Add(new CompilerError("Unable to initialize compiler. " + e.GetType().Name + ": " + e.Message));
 				return false;
+			}
+
+			//mxd. AccCompiler requires some additional settings...
+			if(scriptconfig.ScriptType == ScriptType.ACS)
+			{
+				AccCompiler acccompiler = compiler as AccCompiler;
+				if(acccompiler == null)
+				{
+					// Fail
+					errors.Add(new CompilerError("Unexpected ACS compiler: " + compiler));
+					return false;
+				}
+				
+				if(lumpname == "SCRIPTS" && this == General.Map.TemporaryMapFile)
+				{
+					acccompiler.SourceIsMapScriptsLump = true;
+				}
+				else
+				{
+					//TODO: implement library compiling...
+					errors.Add(new CompilerError("Compilation of ACS libraries is not supported yet..."));
+					return false;
+				}
 			}
 
 			try
@@ -1297,16 +1328,6 @@ namespace CodeImp.DoomBuilder.Data
 			compiler.OutputFile = Path.GetFileName(outputfile);
 			compiler.SourceFile = sourcefile;
 			compiler.WorkingDirectory = Path.GetDirectoryName(inputfile);
-
-			//mxd. AccCompiler requires some additional settings...
-			if(scriptconfig.ScriptType == ScriptType.ACS)
-			{
-				AccCompiler acccompiler = compiler as AccCompiler;
-				if(acccompiler != null)
-				{
-					acccompiler.SourceIsMapScriptsLump = (this == General.Map.TemporaryMapFile && lumpname == "SCRIPTS");
-				}
-			}
 
 			if(compiler.Run())
 			{

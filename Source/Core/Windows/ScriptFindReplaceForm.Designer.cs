@@ -33,7 +33,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.casesensitive = new System.Windows.Forms.CheckBox();
 			this.wordonly = new System.Windows.Forms.CheckBox();
 			this.replacetext = new System.Windows.Forms.TextBox();
-			this.label2 = new System.Windows.Forms.Label();
+			this.labelreplace = new System.Windows.Forms.Label();
 			this.findnextbutton = new System.Windows.Forms.Button();
 			this.replaceallbutton = new System.Windows.Forms.Button();
 			this.closebutton = new System.Windows.Forms.Button();
@@ -84,14 +84,14 @@ namespace CodeImp.DoomBuilder.Windows
 			this.replacetext.Size = new System.Drawing.Size(152, 20);
 			this.replacetext.TabIndex = 1;
 			// 
-			// label2
+			// labelreplace
 			// 
-			this.label2.AutoSize = true;
-			this.label2.Location = new System.Drawing.Point(14, 54);
-			this.label2.Name = "label2";
-			this.label2.Size = new System.Drawing.Size(72, 13);
-			this.label2.TabIndex = 6;
-			this.label2.Text = "Replace with:";
+			this.labelreplace.AutoSize = true;
+			this.labelreplace.Location = new System.Drawing.Point(14, 54);
+			this.labelreplace.Name = "labelreplace";
+			this.labelreplace.Size = new System.Drawing.Size(72, 13);
+			this.labelreplace.TabIndex = 6;
+			this.labelreplace.Text = "Replace with:";
 			// 
 			// findnextbutton
 			// 
@@ -157,7 +157,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Controls.Add(this.closebutton);
 			this.Controls.Add(this.replaceallbutton);
 			this.Controls.Add(this.findnextbutton);
-			this.Controls.Add(this.label2);
+			this.Controls.Add(this.labelreplace);
 			this.Controls.Add(this.replacetext);
 			this.Controls.Add(this.wordonly);
 			this.Controls.Add(this.casesensitive);
@@ -184,7 +184,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.CheckBox casesensitive;
 		private System.Windows.Forms.CheckBox wordonly;
 		private System.Windows.Forms.TextBox replacetext;
-		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.Label labelreplace;
 		private System.Windows.Forms.Button findnextbutton;
 		private System.Windows.Forms.Button replaceallbutton;
 		private System.Windows.Forms.Button closebutton;

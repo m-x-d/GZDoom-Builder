@@ -50,7 +50,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.Controls.Add(this.editor);
 			this.DoubleBuffered = true;
 			this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-			this.KeyPreview = true;
 			this.Name = "ScriptEditorForm";
 			this.Opacity = 0;
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;

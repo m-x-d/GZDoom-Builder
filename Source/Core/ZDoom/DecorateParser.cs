@@ -188,7 +188,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 							}
 
 							//mxd. Add to current text resource
-							if(!textresources[textresourcepath].Entries.Contains(actor.ClassName)) textresources[textresourcepath].Entries.Add(actor.ClassName);
+							if(!scriptresources[textresourcepath].Entries.Contains(actor.ClassName)) scriptresources[textresourcepath].Entries.Add(actor.ClassName);
 						}
 						break;
 

@@ -57,9 +57,8 @@ namespace CodeImp.DoomBuilder.Map
 		// Additional resources
 		private DataLocationList resources;
 
-		//mxd. View settings for opened script files and lumps
-		private Dictionary<string, ScriptDocumentSettings> scriptfilesettings;
-		private Dictionary<string, ScriptDocumentSettings> scriptlumpsettings;
+		//mxd. View settings for opened script files, resources and lumps
+		private Dictionary<string, ScriptDocumentSettings> scriptsettings;
 
 		// mxd. Script compiler
 		private string scriptcompiler;
@@ -86,6 +85,7 @@ namespace CodeImp.DoomBuilder.Map
 
 		//mxd.
 		private bool uselongtexturenames;
+		private bool useresourcesinreadonlymode;
 
 		//mxd. Position and scale
 		private readonly Vector2D viewposition;
@@ -98,8 +98,7 @@ namespace CodeImp.DoomBuilder.Map
 		internal string ConfigFile { get { return configfile; } set { configfile = value; } }
 		internal DataLocationList Resources { get { return resources; } }
 		internal bool StrictPatches { get { return strictpatches; } set { strictpatches = value; } }
-		internal Dictionary<string, ScriptDocumentSettings> ScriptFileSettings { get { return scriptfilesettings; } } //mxd
-		internal Dictionary<string, ScriptDocumentSettings> ScriptLumpSettings { get { return scriptlumpsettings; } } //mxd
+		internal Dictionary<string, ScriptDocumentSettings> ScriptDocumentSettings { get { return scriptsettings; } } //mxd
 		internal string ScriptCompiler { get { return scriptcompiler; } set { scriptcompiler = value; } } //mxd
 		internal string PreviousName { get { return previousname; } set { previousname = value; } }
 		internal string CurrentName
@@ -144,6 +143,7 @@ namespace CodeImp.DoomBuilder.Map
 
 		//mxd
 		public bool UseLongTextureNames { get { return uselongtexturenames; } set { uselongtexturenames = value; } }
+		public bool UseResourcesInReadonlyMode { get { return useresourcesinreadonlymode; } set { useresourcesinreadonlymode = value; } }
 
 		//mxd. Position and scale
 		public Vector2D ViewPosition { get { return viewposition; } }
@@ -163,8 +163,7 @@ namespace CodeImp.DoomBuilder.Map
 			this.strictpatches = false;
 			this.resources = new DataLocationList();
 			this.mapconfig = new Configuration(true);
-			this.scriptfilesettings = new Dictionary<string, ScriptDocumentSettings>(); //mxd
-			this.scriptlumpsettings = new Dictionary<string, ScriptDocumentSettings>(); //mxd
+			this.scriptsettings = new Dictionary<string, ScriptDocumentSettings>(StringComparer.OrdinalIgnoreCase); //mxd
 			this.scriptcompiler = ""; //mxd
 			this.tagLabels = new Dictionary<int, string>(); //mxd
 			this.viewposition = new Vector2D(float.NaN, float.NaN); //mxd
@@ -185,8 +184,7 @@ namespace CodeImp.DoomBuilder.Map
 			this.configfile = cfg.ReadSetting("gameconfig", "");
 			this.resources = new DataLocationList();
 			this.mapconfig = new Configuration(true);
-			this.scriptfilesettings = new Dictionary<string, ScriptDocumentSettings>(); //mxd
-			this.scriptlumpsettings = new Dictionary<string, ScriptDocumentSettings>(); //mxd
+			this.scriptsettings = new Dictionary<string, ScriptDocumentSettings>(StringComparer.OrdinalIgnoreCase); //mxd
 			
 			// Read map configuration
 			this.mapconfig.Root = cfg.ReadSetting("maps." + mapname, new Hashtable());
@@ -238,6 +236,7 @@ namespace CodeImp.DoomBuilder.Map
 
 			//mxd
 			uselongtexturenames = longtexturenamessupported && this.mapconfig.ReadSetting("uselongtexturenames", false);
+			useresourcesinreadonlymode = this.mapconfig.ReadSetting("useresourcesinreadonlymode", false);
 
 			//mxd. Position and scale
 			float vpx = this.mapconfig.ReadSetting("viewpositionx", float.NaN);
@@ -267,8 +266,8 @@ namespace CodeImp.DoomBuilder.Map
 				}
 			}
 
-			//mxd. Script files settings
-			IDictionary sflist = this.mapconfig.ReadSetting("scriptfiles", new Hashtable());
+			//mxd. Read script documents settings
+			IDictionary sflist = this.mapconfig.ReadSetting("scriptdocuments", new Hashtable());
 			foreach(DictionaryEntry mp in sflist)
 			{
 				// Item is a structure?
@@ -276,32 +275,10 @@ namespace CodeImp.DoomBuilder.Map
 				if(scfinfo != null)
 				{
 					ScriptDocumentSettings settings = ReadScriptDocumentSettings(scfinfo);
-					if(!string.IsNullOrEmpty(settings.Filename)) scriptfilesettings.Add(settings.Filename, settings);
-				}
-			}
-
-			//mxd. Script lumps settings
-			IDictionary sllist = this.mapconfig.ReadSetting("scriptlumps", new Hashtable());
-			foreach(DictionaryEntry mp in sllist)
-			{
-				// Item is a structure?
-				IDictionary sclinfo = mp.Value as IDictionary;
-				if(sclinfo != null)
-				{
-					ScriptDocumentSettings settings = ReadScriptDocumentSettings(sclinfo);
-					if(!string.IsNullOrEmpty(settings.Filename)) scriptlumpsettings.Add(settings.Filename, settings);
+					if(!string.IsNullOrEmpty(settings.Filename)) scriptsettings[settings.Filename] = settings;
 				}
 			}
 		}
-
-		//mxd. Is that really needed?..
-		/*~MapOptions()
-		{
-			// Clean up
-			this.resources = null;
-			this.scriptfilesettings = null; //mxd
-			this.scriptlumpsettings = null; //mxd
-		}*/
 		
 		#endregion
 
@@ -391,6 +368,7 @@ namespace CodeImp.DoomBuilder.Map
 
 			//mxd
 			mapconfig.WriteSetting("uselongtexturenames", uselongtexturenames);
+			mapconfig.WriteSetting("useresourcesinreadonlymode", useresourcesinreadonlymode);
 
 			//mxd. Position and scale
 			mapconfig.WriteSetting("viewpositionx", General.Map.Renderer2D.OffsetX);
@@ -404,16 +382,11 @@ namespace CodeImp.DoomBuilder.Map
 			// Write grid settings
 			General.Map.Grid.WriteToConfig(mapconfig, "grid");
 
-			//mxd. Write script files settings to config
-			mapconfig.DeleteSetting("scriptfiles");
-			foreach(ScriptDocumentSettings settings in scriptfilesettings.Values)
-				WriteScriptDocumentSettings(mapconfig, "scriptfiles.file", settings);
-				
-
-			//mxd. Write script lumps settings to config
-			mapconfig.DeleteSetting("scriptlumps");
-			foreach(ScriptDocumentSettings settings in scriptlumpsettings.Values)
-				WriteScriptDocumentSettings(mapconfig, "scriptlumps.lump", settings);
+			//mxd. Write script document settings to config
+			int sdcounter = 0;
+			mapconfig.DeleteSetting("scriptdocuments");
+			foreach(ScriptDocumentSettings settings in scriptsettings.Values)
+				WriteScriptDocumentSettings(mapconfig, "scriptdocuments.document" + (sdcounter++), settings);
 
 			// Load the file or make a new file
 			if(File.Exists(settingsfile))
@@ -446,6 +419,9 @@ namespace CodeImp.DoomBuilder.Map
 				if(scfinfo["hash"] is int) settings.Hash = (int)scfinfo["hash"];
 				else if(scfinfo["hash"] is long) settings.Hash = (long)scfinfo["hash"];
 			}
+			if(scfinfo.Contains("resource") && (scfinfo["resource"] is string)) settings.ResourceLocation = (string)scfinfo["resource"];
+			if(scfinfo.Contains("tabtype") && (scfinfo["tabtype"] is int)) settings.TabType = (ScriptDocumentTabType)scfinfo["tabtype"];
+			if(scfinfo.Contains("scripttype") && (scfinfo["scripttype"] is int)) settings.ScriptType = (ScriptType)scfinfo["scripttype"];
 			if(scfinfo.Contains("caretposition") && (scfinfo["caretposition"] is int)) settings.CaretPosition = (int)scfinfo["caretposition"];
 			if(scfinfo.Contains("firstvisibleline") && (scfinfo["firstvisibleline"] is int)) settings.FirstVisibleLine = (int)scfinfo["firstvisibleline"];
 			if(scfinfo.Contains("activetab") && (scfinfo["activetab"] is bool)) settings.IsActiveTab = (bool)scfinfo["activetab"];
@@ -498,6 +474,9 @@ namespace CodeImp.DoomBuilder.Map
 			ListDictionary data = new ListDictionary();
 			data.Add("filename", settings.Filename);
 			data.Add("hash", settings.Hash);
+			data.Add("resource", settings.ResourceLocation);
+			data.Add("tabtype", (int)settings.TabType);
+			data.Add("scripttype", (int)settings.ScriptType);
 			if(settings.CaretPosition > 0) data.Add("caretposition", settings.CaretPosition);
 			if(settings.FirstVisibleLine > 0) data.Add("firstvisibleline", settings.FirstVisibleLine);
 			if(settings.IsActiveTab) data.Add("activetab", true);

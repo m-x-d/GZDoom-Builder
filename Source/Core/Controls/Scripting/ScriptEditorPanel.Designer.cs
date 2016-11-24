@@ -30,10 +30,10 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			this.components = new System.ComponentModel.Container();
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ScriptEditorPanel));
-			this.tabs = new System.Windows.Forms.TabControl();
 			this.toolbar = new System.Windows.Forms.ToolStrip();
 			this.buttonnew = new System.Windows.Forms.ToolStripDropDownButton();
 			this.buttonopen = new System.Windows.Forms.ToolStripButton();
+			this.toolStripSeparator7 = new System.Windows.Forms.ToolStripSeparator();
 			this.buttonsave = new System.Windows.Forms.ToolStripButton();
 			this.buttonsaveall = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -53,7 +53,6 @@ namespace CodeImp.DoomBuilder.Controls
 			this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
 			this.buttonscriptconfig = new System.Windows.Forms.ToolStripDropDownButton();
 			this.buttoncompile = new System.Windows.Forms.ToolStripButton();
-			this.buttonclose = new System.Windows.Forms.ToolStripButton();
 			this.buttonkeywordhelp = new System.Windows.Forms.ToolStripButton();
 			this.buttonsearch = new System.Windows.Forms.ToolStripButton();
 			this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
@@ -64,12 +63,6 @@ namespace CodeImp.DoomBuilder.Controls
 			this.searchwholeword = new System.Windows.Forms.ToolStripButton();
 			this.openfile = new System.Windows.Forms.OpenFileDialog();
 			this.savefile = new System.Windows.Forms.SaveFileDialog();
-			this.splitter = new System.Windows.Forms.SplitContainer();
-			this.label1 = new System.Windows.Forms.Label();
-			this.errorlist = new System.Windows.Forms.ListView();
-			this.colIndex = new System.Windows.Forms.ColumnHeader();
-			this.colDescription = new System.Windows.Forms.ColumnHeader();
-			this.colFile = new System.Windows.Forms.ColumnHeader();
 			this.errorimages = new System.Windows.Forms.ImageList(this.components);
 			this.statusbar = new System.Windows.Forms.StatusStrip();
 			this.statuslabel = new System.Windows.Forms.ToolStripStatusLabel();
@@ -77,28 +70,65 @@ namespace CodeImp.DoomBuilder.Controls
 			this.scripttype = new System.Windows.Forms.ToolStripStatusLabel();
 			this.statusflasher = new System.Windows.Forms.Timer(this.components);
 			this.statusresetter = new System.Windows.Forms.Timer(this.components);
+			this.menustrip = new System.Windows.Forms.MenuStrip();
+			this.filemenuitem = new System.Windows.Forms.ToolStripMenuItem();
+			this.menunew = new System.Windows.Forms.ToolStripMenuItem();
+			this.menuopen = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator13 = new System.Windows.Forms.ToolStripSeparator();
+			this.menusave = new System.Windows.Forms.ToolStripMenuItem();
+			this.menusaveall = new System.Windows.Forms.ToolStripMenuItem();
+			this.editmenuitem = new System.Windows.Forms.ToolStripMenuItem();
+			this.menuundo = new System.Windows.Forms.ToolStripMenuItem();
+			this.menuredo = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator10 = new System.Windows.Forms.ToolStripSeparator();
+			this.menucut = new System.Windows.Forms.ToolStripMenuItem();
+			this.menucopy = new System.Windows.Forms.ToolStripMenuItem();
+			this.menupaste = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator9 = new System.Windows.Forms.ToolStripSeparator();
+			this.menusnippets = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator12 = new System.Windows.Forms.ToolStripSeparator();
+			this.menuindent = new System.Windows.Forms.ToolStripMenuItem();
+			this.menuunindent = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator14 = new System.Windows.Forms.ToolStripSeparator();
+			this.menugotoline = new System.Windows.Forms.ToolStripMenuItem();
+			this.menuduplicateline = new System.Windows.Forms.ToolStripMenuItem();
+			this.viewmenuitem = new System.Windows.Forms.ToolStripMenuItem();
+			this.menuwhitespace = new System.Windows.Forms.ToolStripMenuItem();
+			this.menuwordwrap = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolStripSeparator11 = new System.Windows.Forms.ToolStripSeparator();
+			this.menustayontop = new System.Windows.Forms.ToolStripMenuItem();
+			this.searchmenuitem = new System.Windows.Forms.ToolStripMenuItem();
+			this.menufind = new System.Windows.Forms.ToolStripMenuItem();
+			this.menufindnext = new System.Windows.Forms.ToolStripMenuItem();
+			this.menufindprevious = new System.Windows.Forms.ToolStripMenuItem();
+			this.toolsmenu = new System.Windows.Forms.ToolStripMenuItem();
+			this.menucompile = new System.Windows.Forms.ToolStripMenuItem();
+			this.scripticons = new System.Windows.Forms.ImageList(this.components);
+			this.projecticons = new System.Windows.Forms.ImageList(this.components);
+			this.mainsplitter = new CodeImp.DoomBuilder.Controls.CollapsibleSplitContainer();
+			this.projecttabs = new System.Windows.Forms.TabControl();
+			this.tabresources = new System.Windows.Forms.TabPage();
+			this.scriptresources = new CodeImp.DoomBuilder.Controls.ScriptResourcesControl();
+			this.splitter = new System.Windows.Forms.SplitContainer();
+			this.tabs = new CodeImp.DoomBuilder.Controls.VSTabControl();
+			this.label1 = new System.Windows.Forms.Label();
+			this.errorlist = new System.Windows.Forms.ListView();
+			this.colIndex = new System.Windows.Forms.ColumnHeader();
+			this.colDescription = new System.Windows.Forms.ColumnHeader();
+			this.colFile = new System.Windows.Forms.ColumnHeader();
 			this.toolbar.SuspendLayout();
+			this.statusbar.SuspendLayout();
+			this.menustrip.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.mainsplitter)).BeginInit();
+			this.mainsplitter.Panel1.SuspendLayout();
+			this.mainsplitter.Panel2.SuspendLayout();
+			this.mainsplitter.SuspendLayout();
+			this.projecttabs.SuspendLayout();
+			this.tabresources.SuspendLayout();
 			this.splitter.Panel1.SuspendLayout();
 			this.splitter.Panel2.SuspendLayout();
 			this.splitter.SuspendLayout();
-			this.statusbar.SuspendLayout();
 			this.SuspendLayout();
-			// 
-			// tabs
-			// 
-			this.tabs.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.tabs.Location = new System.Drawing.Point(3, 8);
-			this.tabs.Margin = new System.Windows.Forms.Padding(3, 8, 3, 3);
-			this.tabs.Name = "tabs";
-			this.tabs.Padding = new System.Drawing.Point(12, 3);
-			this.tabs.SelectedIndex = 0;
-			this.tabs.Size = new System.Drawing.Size(794, 379);
-			this.tabs.TabIndex = 0;
-			this.tabs.TabStop = false;
-			this.tabs.Selecting += new System.Windows.Forms.TabControlCancelEventHandler(this.tabs_Selecting);
-			this.tabs.MouseUp += new System.Windows.Forms.MouseEventHandler(this.tabs_MouseUp);
 			// 
 			// toolbar
 			// 
@@ -107,6 +137,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.toolbar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.buttonnew,
             this.buttonopen,
+            this.toolStripSeparator7,
             this.buttonsave,
             this.buttonsaveall,
             this.toolStripSeparator1,
@@ -126,7 +157,6 @@ namespace CodeImp.DoomBuilder.Controls
             this.toolStripSeparator4,
             this.buttonscriptconfig,
             this.buttoncompile,
-            this.buttonclose,
             this.buttonkeywordhelp,
             this.buttonsearch,
             this.toolStripSeparator5,
@@ -135,17 +165,17 @@ namespace CodeImp.DoomBuilder.Controls
             this.searchnext,
             this.searchmatchcase,
             this.searchwholeword});
-			this.toolbar.Location = new System.Drawing.Point(0, 0);
+			this.toolbar.Location = new System.Drawing.Point(0, 24);
 			this.toolbar.Name = "toolbar";
-			this.toolbar.Size = new System.Drawing.Size(800, 25);
+			this.toolbar.Size = new System.Drawing.Size(928, 25);
 			this.toolbar.TabIndex = 1;
 			// 
 			// buttonnew
 			// 
 			this.buttonnew.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.buttonnew.Image = global::CodeImp.DoomBuilder.Properties.Resources.NewScript;
+			this.buttonnew.Image = global::CodeImp.DoomBuilder.Properties.Resources.ScriptNew;
 			this.buttonnew.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.buttonnew.Margin = new System.Windows.Forms.Padding(6, 1, 0, 2);
+			this.buttonnew.Margin = new System.Windows.Forms.Padding(7, 1, 0, 2);
 			this.buttonnew.Name = "buttonnew";
 			this.buttonnew.Size = new System.Drawing.Size(29, 22);
 			this.buttonnew.Text = "New File";
@@ -153,19 +183,24 @@ namespace CodeImp.DoomBuilder.Controls
 			// buttonopen
 			// 
 			this.buttonopen.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.buttonopen.Image = global::CodeImp.DoomBuilder.Properties.Resources.OpenScript;
+			this.buttonopen.Image = global::CodeImp.DoomBuilder.Properties.Resources.OpenMap;
 			this.buttonopen.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.buttonopen.Margin = new System.Windows.Forms.Padding(3, 1, 0, 2);
 			this.buttonopen.Name = "buttonopen";
 			this.buttonopen.Size = new System.Drawing.Size(23, 22);
 			this.buttonopen.Text = "Open File";
 			this.buttonopen.Click += new System.EventHandler(this.buttonopen_Click);
 			// 
+			// toolStripSeparator7
+			// 
+			this.toolStripSeparator7.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
+			this.toolStripSeparator7.Name = "toolStripSeparator7";
+			this.toolStripSeparator7.Size = new System.Drawing.Size(6, 25);
+			// 
 			// buttonsave
 			// 
 			this.buttonsave.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.buttonsave.Enabled = false;
-			this.buttonsave.Image = global::CodeImp.DoomBuilder.Properties.Resources.SaveScript;
+			this.buttonsave.Image = global::CodeImp.DoomBuilder.Properties.Resources.SaveMap;
 			this.buttonsave.ImageTransparentColor = System.Drawing.Color.Magenta;
 			this.buttonsave.Name = "buttonsave";
 			this.buttonsave.Size = new System.Drawing.Size(23, 22);
@@ -330,22 +365,10 @@ namespace CodeImp.DoomBuilder.Controls
 			this.buttoncompile.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
 			this.buttoncompile.Image = global::CodeImp.DoomBuilder.Properties.Resources.ScriptCompile;
 			this.buttoncompile.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.buttoncompile.Margin = new System.Windows.Forms.Padding(3, 1, 0, 2);
 			this.buttoncompile.Name = "buttoncompile";
 			this.buttoncompile.Size = new System.Drawing.Size(23, 22);
 			this.buttoncompile.Text = "Compile Script";
 			this.buttoncompile.Click += new System.EventHandler(this.buttoncompile_Click);
-			// 
-			// buttonclose
-			// 
-			this.buttonclose.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
-			this.buttonclose.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-			this.buttonclose.Image = global::CodeImp.DoomBuilder.Properties.Resources.Close;
-			this.buttonclose.ImageTransparentColor = System.Drawing.Color.Magenta;
-			this.buttonclose.Name = "buttonclose";
-			this.buttonclose.Size = new System.Drawing.Size(23, 22);
-			this.buttonclose.Text = "Close File";
-			this.buttonclose.Click += new System.EventHandler(this.buttonclose_Click);
 			// 
 			// buttonkeywordhelp
 			// 
@@ -435,12 +458,484 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			this.savefile.Title = "Save Script As";
 			// 
+			// errorimages
+			// 
+			this.errorimages.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("errorimages.ImageStream")));
+			this.errorimages.TransparentColor = System.Drawing.Color.Transparent;
+			this.errorimages.Images.SetKeyName(0, "ScriptError3.png");
+			// 
+			// statusbar
+			// 
+			this.statusbar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.statuslabel,
+            this.positionlabel,
+            this.scripttype});
+			this.statusbar.Location = new System.Drawing.Point(0, 498);
+			this.statusbar.Name = "statusbar";
+			this.statusbar.Size = new System.Drawing.Size(928, 22);
+			this.statusbar.TabIndex = 3;
+			this.statusbar.Text = "statusStrip1";
+			// 
+			// statuslabel
+			// 
+			this.statuslabel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
+			this.statuslabel.Image = global::CodeImp.DoomBuilder.Properties.Resources.Status0;
+			this.statuslabel.Margin = new System.Windows.Forms.Padding(3, 3, 0, 2);
+			this.statuslabel.Name = "statuslabel";
+			this.statuslabel.Size = new System.Drawing.Size(60, 17);
+			this.statuslabel.Text = "Ready.";
+			// 
+			// positionlabel
+			// 
+			this.positionlabel.Name = "positionlabel";
+			this.positionlabel.Size = new System.Drawing.Size(762, 17);
+			this.positionlabel.Spring = true;
+			this.positionlabel.Text = "100 : 12 (120)";
+			this.positionlabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			// 
+			// scripttype
+			// 
+			this.scripttype.Margin = new System.Windows.Forms.Padding(30, 3, 0, 2);
+			this.scripttype.Name = "scripttype";
+			this.scripttype.Size = new System.Drawing.Size(58, 17);
+			this.scripttype.Text = "Plain Text";
+			this.scripttype.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+			// 
+			// statusflasher
+			// 
+			this.statusflasher.Tick += new System.EventHandler(this.statusflasher_Tick);
+			// 
+			// statusresetter
+			// 
+			this.statusresetter.Tick += new System.EventHandler(this.statusresetter_Tick);
+			// 
+			// menustrip
+			// 
+			this.menustrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.filemenuitem,
+            this.editmenuitem,
+            this.viewmenuitem,
+            this.searchmenuitem,
+            this.toolsmenu});
+			this.menustrip.Location = new System.Drawing.Point(0, 0);
+			this.menustrip.Name = "menustrip";
+			this.menustrip.Size = new System.Drawing.Size(928, 24);
+			this.menustrip.TabIndex = 4;
+			this.menustrip.Text = "menuStrip1";
+			// 
+			// filemenuitem
+			// 
+			this.filemenuitem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menunew,
+            this.menuopen,
+            this.toolStripSeparator13,
+            this.menusave,
+            this.menusaveall});
+			this.filemenuitem.Name = "filemenuitem";
+			this.filemenuitem.Size = new System.Drawing.Size(37, 20);
+			this.filemenuitem.Text = "File";
+			this.filemenuitem.DropDownOpening += new System.EventHandler(this.filemenuitem_DropDownOpening);
+			// 
+			// menunew
+			// 
+			this.menunew.Image = global::CodeImp.DoomBuilder.Properties.Resources.ScriptNew;
+			this.menunew.Name = "menunew";
+			this.menunew.Size = new System.Drawing.Size(185, 22);
+			this.menunew.Text = "New";
+			// 
+			// menuopen
+			// 
+			this.menuopen.Image = global::CodeImp.DoomBuilder.Properties.Resources.OpenMap;
+			this.menuopen.Name = "menuopen";
+			this.menuopen.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
+			this.menuopen.Size = new System.Drawing.Size(185, 22);
+			this.menuopen.Text = "Open...";
+			// 
+			// toolStripSeparator13
+			// 
+			this.toolStripSeparator13.Name = "toolStripSeparator13";
+			this.toolStripSeparator13.Size = new System.Drawing.Size(182, 6);
+			// 
+			// menusave
+			// 
+			this.menusave.Image = global::CodeImp.DoomBuilder.Properties.Resources.SaveMap;
+			this.menusave.Name = "menusave";
+			this.menusave.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
+			this.menusave.Size = new System.Drawing.Size(185, 22);
+			this.menusave.Text = "Save";
+			this.menusave.Click += new System.EventHandler(this.buttonsave_Click);
+			// 
+			// menusaveall
+			// 
+			this.menusaveall.Image = global::CodeImp.DoomBuilder.Properties.Resources.SaveAll;
+			this.menusaveall.Name = "menusaveall";
+			this.menusaveall.ShortcutKeys = ((System.Windows.Forms.Keys)(((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Shift)
+						| System.Windows.Forms.Keys.S)));
+			this.menusaveall.Size = new System.Drawing.Size(185, 22);
+			this.menusaveall.Text = "Save all";
+			this.menusaveall.Click += new System.EventHandler(this.buttonsaveall_Click);
+			// 
+			// editmenuitem
+			// 
+			this.editmenuitem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuundo,
+            this.menuredo,
+            this.toolStripSeparator10,
+            this.menucut,
+            this.menucopy,
+            this.menupaste,
+            this.toolStripSeparator9,
+            this.menusnippets,
+            this.toolStripSeparator12,
+            this.menuindent,
+            this.menuunindent,
+            this.toolStripSeparator14,
+            this.menugotoline,
+            this.menuduplicateline});
+			this.editmenuitem.Name = "editmenuitem";
+			this.editmenuitem.Size = new System.Drawing.Size(39, 20);
+			this.editmenuitem.Text = "Edit";
+			this.editmenuitem.DropDownOpening += new System.EventHandler(this.editmenuitem_DropDownOpening);
+			// 
+			// menuundo
+			// 
+			this.menuundo.Image = global::CodeImp.DoomBuilder.Properties.Resources.Undo;
+			this.menuundo.Name = "menuundo";
+			this.menuundo.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Z)));
+			this.menuundo.Size = new System.Drawing.Size(188, 22);
+			this.menuundo.Text = "Undo";
+			this.menuundo.Click += new System.EventHandler(this.buttonundo_Click);
+			// 
+			// menuredo
+			// 
+			this.menuredo.Image = global::CodeImp.DoomBuilder.Properties.Resources.Redo;
+			this.menuredo.Name = "menuredo";
+			this.menuredo.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Y)));
+			this.menuredo.Size = new System.Drawing.Size(188, 22);
+			this.menuredo.Text = "Redo";
+			this.menuredo.Click += new System.EventHandler(this.buttonredo_Click);
+			// 
+			// toolStripSeparator10
+			// 
+			this.toolStripSeparator10.Name = "toolStripSeparator10";
+			this.toolStripSeparator10.Size = new System.Drawing.Size(185, 6);
+			// 
+			// menucut
+			// 
+			this.menucut.Image = global::CodeImp.DoomBuilder.Properties.Resources.Cut;
+			this.menucut.Name = "menucut";
+			this.menucut.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
+			this.menucut.Size = new System.Drawing.Size(188, 22);
+			this.menucut.Text = "Cut";
+			this.menucut.Click += new System.EventHandler(this.buttoncut_Click);
+			// 
+			// menucopy
+			// 
+			this.menucopy.Image = global::CodeImp.DoomBuilder.Properties.Resources.Copy;
+			this.menucopy.Name = "menucopy";
+			this.menucopy.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.C)));
+			this.menucopy.Size = new System.Drawing.Size(188, 22);
+			this.menucopy.Text = "Copy";
+			this.menucopy.Click += new System.EventHandler(this.buttoncopy_Click);
+			// 
+			// menupaste
+			// 
+			this.menupaste.Image = global::CodeImp.DoomBuilder.Properties.Resources.Paste;
+			this.menupaste.Name = "menupaste";
+			this.menupaste.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.V)));
+			this.menupaste.Size = new System.Drawing.Size(188, 22);
+			this.menupaste.Text = "Paste";
+			this.menupaste.Click += new System.EventHandler(this.buttonpaste_Click);
+			// 
+			// toolStripSeparator9
+			// 
+			this.toolStripSeparator9.Name = "toolStripSeparator9";
+			this.toolStripSeparator9.Size = new System.Drawing.Size(185, 6);
+			// 
+			// menusnippets
+			// 
+			this.menusnippets.Image = global::CodeImp.DoomBuilder.Properties.Resources.PuzzlePiece;
+			this.menusnippets.Name = "menusnippets";
+			this.menusnippets.Size = new System.Drawing.Size(188, 22);
+			this.menusnippets.Text = "Insert snippet";
+			// 
+			// toolStripSeparator12
+			// 
+			this.toolStripSeparator12.Name = "toolStripSeparator12";
+			this.toolStripSeparator12.Size = new System.Drawing.Size(185, 6);
+			// 
+			// menuindent
+			// 
+			this.menuindent.Image = global::CodeImp.DoomBuilder.Properties.Resources.TextIndent;
+			this.menuindent.Name = "menuindent";
+			this.menuindent.Size = new System.Drawing.Size(188, 22);
+			this.menuindent.Text = "Increase indentation";
+			this.menuindent.Click += new System.EventHandler(this.buttonindent_Click);
+			// 
+			// menuunindent
+			// 
+			this.menuunindent.Image = global::CodeImp.DoomBuilder.Properties.Resources.TextUnindent;
+			this.menuunindent.Name = "menuunindent";
+			this.menuunindent.Size = new System.Drawing.Size(188, 22);
+			this.menuunindent.Text = "Decrease indentation";
+			this.menuunindent.Click += new System.EventHandler(this.buttonunindent_Click);
+			// 
+			// toolStripSeparator14
+			// 
+			this.toolStripSeparator14.Name = "toolStripSeparator14";
+			this.toolStripSeparator14.Size = new System.Drawing.Size(185, 6);
+			// 
+			// menugotoline
+			// 
+			this.menugotoline.Name = "menugotoline";
+			this.menugotoline.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.G)));
+			this.menugotoline.Size = new System.Drawing.Size(188, 22);
+			this.menugotoline.Text = "Go to line...";
+			this.menugotoline.Click += new System.EventHandler(this.menugotoline_Click);
+			// 
+			// menuduplicateline
+			// 
+			this.menuduplicateline.Name = "menuduplicateline";
+			this.menuduplicateline.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.D)));
+			this.menuduplicateline.Size = new System.Drawing.Size(188, 22);
+			this.menuduplicateline.Text = "Duplicate line";
+			this.menuduplicateline.Click += new System.EventHandler(this.menuduplicateline_Click);
+			// 
+			// viewmenuitem
+			// 
+			this.viewmenuitem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuwhitespace,
+            this.menuwordwrap,
+            this.toolStripSeparator11,
+            this.menustayontop});
+			this.viewmenuitem.Name = "viewmenuitem";
+			this.viewmenuitem.Size = new System.Drawing.Size(44, 20);
+			this.viewmenuitem.Text = "View";
+			// 
+			// menuwhitespace
+			// 
+			this.menuwhitespace.CheckOnClick = true;
+			this.menuwhitespace.Image = global::CodeImp.DoomBuilder.Properties.Resources.TextWhitespace;
+			this.menuwhitespace.Name = "menuwhitespace";
+			this.menuwhitespace.Size = new System.Drawing.Size(165, 22);
+			this.menuwhitespace.Text = "Show whitespace";
+			this.menuwhitespace.Click += new System.EventHandler(this.buttonwhitespace_Click);
+			// 
+			// menuwordwrap
+			// 
+			this.menuwordwrap.CheckOnClick = true;
+			this.menuwordwrap.Image = global::CodeImp.DoomBuilder.Properties.Resources.WordWrap;
+			this.menuwordwrap.Name = "menuwordwrap";
+			this.menuwordwrap.Size = new System.Drawing.Size(165, 22);
+			this.menuwordwrap.Text = "Show word wrap";
+			this.menuwordwrap.Click += new System.EventHandler(this.buttonwordwrap_Click);
+			// 
+			// toolStripSeparator11
+			// 
+			this.toolStripSeparator11.Name = "toolStripSeparator11";
+			this.toolStripSeparator11.Size = new System.Drawing.Size(162, 6);
+			// 
+			// menustayontop
+			// 
+			this.menustayontop.CheckOnClick = true;
+			this.menustayontop.Image = global::CodeImp.DoomBuilder.Properties.Resources.Pin;
+			this.menustayontop.Name = "menustayontop";
+			this.menustayontop.Size = new System.Drawing.Size(165, 22);
+			this.menustayontop.Text = "Always on top";
+			this.menustayontop.Click += new System.EventHandler(this.menustayontop_Click);
+			// 
+			// searchmenuitem
+			// 
+			this.searchmenuitem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menufind,
+            this.menufindnext,
+            this.menufindprevious});
+			this.searchmenuitem.Name = "searchmenuitem";
+			this.searchmenuitem.Size = new System.Drawing.Size(54, 20);
+			this.searchmenuitem.Text = "Search";
+			this.searchmenuitem.DropDownOpening += new System.EventHandler(this.searchmenuitem_DropDownOpening);
+			// 
+			// menufind
+			// 
+			this.menufind.Image = global::CodeImp.DoomBuilder.Properties.Resources.Search;
+			this.menufind.Name = "menufind";
+			this.menufind.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F)));
+			this.menufind.Size = new System.Drawing.Size(164, 22);
+			this.menufind.Text = "Find...";
+			this.menufind.Click += new System.EventHandler(this.buttonsearch_Click);
+			// 
+			// menufindnext
+			// 
+			this.menufindnext.Image = global::CodeImp.DoomBuilder.Properties.Resources.SearchNext;
+			this.menufindnext.Name = "menufindnext";
+			this.menufindnext.ShortcutKeys = System.Windows.Forms.Keys.F3;
+			this.menufindnext.Size = new System.Drawing.Size(164, 22);
+			this.menufindnext.Text = "Find next";
+			this.menufindnext.Click += new System.EventHandler(this.searchnext_Click);
+			// 
+			// menufindprevious
+			// 
+			this.menufindprevious.Image = global::CodeImp.DoomBuilder.Properties.Resources.SearchPrev;
+			this.menufindprevious.Name = "menufindprevious";
+			this.menufindprevious.ShortcutKeys = System.Windows.Forms.Keys.F2;
+			this.menufindprevious.Size = new System.Drawing.Size(164, 22);
+			this.menufindprevious.Text = "Find previous";
+			this.menufindprevious.Click += new System.EventHandler(this.searchprev_Click);
+			// 
+			// toolsmenu
+			// 
+			this.toolsmenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menucompile});
+			this.toolsmenu.Name = "toolsmenu";
+			this.toolsmenu.Size = new System.Drawing.Size(48, 20);
+			this.toolsmenu.Text = "Tools";
+			this.toolsmenu.DropDownOpening += new System.EventHandler(this.toolsmenu_DropDownOpening);
+			// 
+			// menucompile
+			// 
+			this.menucompile.Image = global::CodeImp.DoomBuilder.Properties.Resources.ScriptCompile;
+			this.menucompile.Name = "menucompile";
+			this.menucompile.ShortcutKeys = System.Windows.Forms.Keys.F5;
+			this.menucompile.Size = new System.Drawing.Size(138, 22);
+			this.menucompile.Text = "Compile";
+			this.menucompile.Click += new System.EventHandler(this.buttoncompile_Click);
+			// 
+			// scripticons
+			// 
+			this.scripticons.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("scripticons.ImageStream")));
+			this.scripticons.TransparentColor = System.Drawing.Color.Transparent;
+			this.scripticons.Images.SetKeyName(0, "File.ico");
+			this.scripticons.Images.SetKeyName(1, "GroupUnknown.png");
+			this.scripticons.Images.SetKeyName(2, "PK3.ico");
+			this.scripticons.Images.SetKeyName(3, "ResourceMAP.png");
+			this.scripticons.Images.SetKeyName(4, "Script.png");
+			this.scripticons.Images.SetKeyName(5, "ScriptACS.png");
+			this.scripticons.Images.SetKeyName(6, "ScriptMODELDEF.png");
+			this.scripticons.Images.SetKeyName(7, "ScriptDECORATE.png");
+			this.scripticons.Images.SetKeyName(8, "ScriptGLDEFS.png");
+			this.scripticons.Images.SetKeyName(9, "ScriptSNDSEQ.png");
+			this.scripticons.Images.SetKeyName(10, "ScriptMAPINFO.png");
+			this.scripticons.Images.SetKeyName(11, "ScriptVOXELDEF.png");
+			this.scripticons.Images.SetKeyName(12, "ScriptTEXTURES.png");
+			this.scripticons.Images.SetKeyName(13, "ScriptANIMDEFS.png");
+			this.scripticons.Images.SetKeyName(14, "ScriptREVERBS.png");
+			this.scripticons.Images.SetKeyName(15, "ScriptTERRAIN.png");
+			this.scripticons.Images.SetKeyName(16, "ScriptX11.png");
+			this.scripticons.Images.SetKeyName(17, "ScriptCVARINFO.png");
+			this.scripticons.Images.SetKeyName(18, "ScriptSNDINFO.png");
+			this.scripticons.Images.SetKeyName(19, "ScriptLOCKDEFS.png");
+			this.scripticons.Images.SetKeyName(20, "ScriptMENUDEF.png");
+			this.scripticons.Images.SetKeyName(21, "ScriptSBARINFO.png");
+			this.scripticons.Images.SetKeyName(22, "ScriptUSDF.png");
+			this.scripticons.Images.SetKeyName(23, "GroupUnknown.png");
+			this.scripticons.Images.SetKeyName(24, "GroupACS.png");
+			this.scripticons.Images.SetKeyName(25, "GroupMODELDEF.png");
+			this.scripticons.Images.SetKeyName(26, "GroupDECORATE.png");
+			this.scripticons.Images.SetKeyName(27, "GroupGLDEFS.png");
+			this.scripticons.Images.SetKeyName(28, "GroupSNDSEQ.png");
+			this.scripticons.Images.SetKeyName(29, "GroupMAPINFO.png");
+			this.scripticons.Images.SetKeyName(30, "GroupVOXELDEF.png");
+			this.scripticons.Images.SetKeyName(31, "GroupTEXTURES.png");
+			this.scripticons.Images.SetKeyName(32, "GroupANIMDEFS.png");
+			this.scripticons.Images.SetKeyName(33, "GroupREVERBS.png");
+			this.scripticons.Images.SetKeyName(34, "GroupTERRAIN.png");
+			this.scripticons.Images.SetKeyName(35, "GroupX11.png");
+			this.scripticons.Images.SetKeyName(36, "GroupCVARINFO.png");
+			this.scripticons.Images.SetKeyName(37, "GroupSNDINFO.png");
+			this.scripticons.Images.SetKeyName(38, "GroupLOCKDEFS.png");
+			this.scripticons.Images.SetKeyName(39, "GroupMENUDEF.png");
+			this.scripticons.Images.SetKeyName(40, "GroupSBARINFO.png");
+			this.scripticons.Images.SetKeyName(41, "GroupUSDF.png");
+			this.scripticons.Images.SetKeyName(42, "GroupOpen.png");
+			this.scripticons.Images.SetKeyName(43, "OpenGroupACS.png");
+			this.scripticons.Images.SetKeyName(44, "OpenGroupMODELDEF.png");
+			this.scripticons.Images.SetKeyName(45, "OpenGroupDECORATE.png");
+			this.scripticons.Images.SetKeyName(46, "OpenGroupGLDEFS.png");
+			this.scripticons.Images.SetKeyName(47, "OpenGroupSNDSEQ.png");
+			this.scripticons.Images.SetKeyName(48, "OpenGroupMAPINFO.png");
+			this.scripticons.Images.SetKeyName(49, "OpenGroupVOXELDEF.png");
+			this.scripticons.Images.SetKeyName(50, "OpenGroupTEXTURES.png");
+			this.scripticons.Images.SetKeyName(51, "OpenGroupANIMDEFS.png");
+			this.scripticons.Images.SetKeyName(52, "OpenGroupREVERBS.png");
+			this.scripticons.Images.SetKeyName(53, "OpenGroupTERRAIN.png");
+			this.scripticons.Images.SetKeyName(54, "OpenGroupX11.png");
+			this.scripticons.Images.SetKeyName(55, "OpenGroupCVARINFO.png");
+			this.scripticons.Images.SetKeyName(56, "OpenGroupSNDINFO.png");
+			this.scripticons.Images.SetKeyName(57, "OpenGroupLOCKDEFS.png");
+			this.scripticons.Images.SetKeyName(58, "OpenGroupMENUDEF.png");
+			this.scripticons.Images.SetKeyName(59, "OpenGroupSBARINFO.png");
+			this.scripticons.Images.SetKeyName(60, "OpenGroupUSDF.png");
+			// 
+			// projecticons
+			// 
+			this.projecticons.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("projecticons.ImageStream")));
+			this.projecticons.TransparentColor = System.Drawing.Color.Transparent;
+			this.projecticons.Images.SetKeyName(0, "Resources.png");
+			// 
+			// mainsplitter
+			// 
+			this.mainsplitter.Cursor = System.Windows.Forms.Cursors.Default;
+			this.mainsplitter.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.mainsplitter.FixedPanel = System.Windows.Forms.FixedPanel.Panel1;
+			this.mainsplitter.Location = new System.Drawing.Point(0, 49);
+			this.mainsplitter.Name = "mainsplitter";
+			// 
+			// mainsplitter.Panel1
+			// 
+			this.mainsplitter.Panel1.Controls.Add(this.projecttabs);
+			this.mainsplitter.Panel1.Padding = new System.Windows.Forms.Padding(3, 3, 0, 0);
+			this.mainsplitter.Panel1MinSize = 180;
+			// 
+			// mainsplitter.Panel2
+			// 
+			this.mainsplitter.Panel2.Controls.Add(this.splitter);
+			this.mainsplitter.Panel2.Padding = new System.Windows.Forms.Padding(0, 3, 3, 1);
+			this.mainsplitter.Size = new System.Drawing.Size(928, 449);
+			this.mainsplitter.SplitterDistance = 200;
+			this.mainsplitter.SplitterWidth = 8;
+			this.mainsplitter.TabIndex = 1;
+			// 
+			// projecttabs
+			// 
+			this.projecttabs.Controls.Add(this.tabresources);
+			this.projecttabs.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.projecttabs.ImageList = this.projecticons;
+			this.projecttabs.Location = new System.Drawing.Point(3, 3);
+			this.projecttabs.Name = "projecttabs";
+			this.projecttabs.Padding = new System.Drawing.Point(3, 3);
+			this.projecttabs.SelectedIndex = 0;
+			this.projecttabs.Size = new System.Drawing.Size(197, 446);
+			this.projecttabs.TabIndex = 0;
+			// 
+			// tabresources
+			// 
+			this.tabresources.BackColor = System.Drawing.SystemColors.ControlLightLight;
+			this.tabresources.Controls.Add(this.scriptresources);
+			this.tabresources.ImageIndex = 0;
+			this.tabresources.Location = new System.Drawing.Point(4, 23);
+			this.tabresources.Name = "tabresources";
+			this.tabresources.Padding = new System.Windows.Forms.Padding(3);
+			this.tabresources.Size = new System.Drawing.Size(189, 419);
+			this.tabresources.TabIndex = 0;
+			this.tabresources.Text = " Resources ";
+			this.tabresources.UseVisualStyleBackColor = true;
+			// 
+			// scriptresources
+			// 
+			this.scriptresources.BackColor = System.Drawing.SystemColors.ControlLightLight;
+			this.scriptresources.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.scriptresources.Location = new System.Drawing.Point(3, 3);
+			this.scriptresources.Margin = new System.Windows.Forms.Padding(0);
+			this.scriptresources.Name = "scriptresources";
+			this.scriptresources.Size = new System.Drawing.Size(183, 413);
+			this.scriptresources.TabIndex = 0;
+			// 
 			// splitter
 			// 
 			this.splitter.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.splitter.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
 			this.splitter.IsSplitterFixed = true;
-			this.splitter.Location = new System.Drawing.Point(0, 25);
+			this.splitter.Location = new System.Drawing.Point(0, 3);
 			this.splitter.Name = "splitter";
 			this.splitter.Orientation = System.Windows.Forms.Orientation.Horizontal;
 			// 
@@ -452,10 +947,34 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			this.splitter.Panel2.Controls.Add(this.label1);
 			this.splitter.Panel2.Controls.Add(this.errorlist);
-			this.splitter.Size = new System.Drawing.Size(800, 516);
-			this.splitter.SplitterDistance = 390;
+			this.splitter.Size = new System.Drawing.Size(717, 445);
+			this.splitter.SplitterDistance = 319;
 			this.splitter.TabIndex = 2;
 			this.splitter.TabStop = false;
+			// 
+			// tabs
+			// 
+			this.tabs.ActiveColor = System.Drawing.SystemColors.HotTrack;
+			this.tabs.AllowDrop = true;
+			this.tabs.BackTabColor = System.Drawing.SystemColors.Control;
+			this.tabs.BorderColor = System.Drawing.SystemColors.ControlDark;
+			this.tabs.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.tabs.HighlightColor = System.Drawing.SystemColors.Highlight;
+			this.tabs.ItemSize = new System.Drawing.Size(240, 22);
+			this.tabs.Location = new System.Drawing.Point(0, 0);
+			this.tabs.Name = "tabs";
+			this.tabs.Padding = new System.Drawing.Point(12, 3);
+			this.tabs.SelectedIndex = 0;
+			this.tabs.SelectedTextColor = System.Drawing.SystemColors.HighlightText;
+			this.tabs.ShowClosingButton = true;
+			this.tabs.ShowToolTips = true;
+			this.tabs.Size = new System.Drawing.Size(717, 319);
+			this.tabs.TabIndex = 0;
+			this.tabs.TabStop = false;
+			this.tabs.TextColor = System.Drawing.SystemColors.WindowText;
+			this.tabs.Selecting += new System.Windows.Forms.TabControlCancelEventHandler(this.tabs_Selecting);
+			this.tabs.MouseUp += new System.Windows.Forms.MouseEventHandler(this.tabs_MouseUp);
+			this.tabs.OnCloseTabClicked += new System.EventHandler<System.Windows.Forms.TabControlEventArgs>(this.tabs_OnCloseTabClicked);
 			// 
 			// label1
 			// 
@@ -467,7 +986,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.label1.Location = new System.Drawing.Point(3, 0);
 			this.label1.Name = "label1";
 			this.label1.Padding = new System.Windows.Forms.Padding(1);
-			this.label1.Size = new System.Drawing.Size(794, 16);
+			this.label1.Size = new System.Drawing.Size(711, 16);
 			this.label1.TabIndex = 1;
 			this.label1.Text = "Errors";
 			// 
@@ -488,7 +1007,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.errorlist.MultiSelect = false;
 			this.errorlist.Name = "errorlist";
 			this.errorlist.ShowGroups = false;
-			this.errorlist.Size = new System.Drawing.Size(794, 100);
+			this.errorlist.Size = new System.Drawing.Size(711, 100);
 			this.errorlist.SmallImageList = this.errorimages;
 			this.errorlist.TabIndex = 0;
 			this.errorlist.TabStop = false;
@@ -511,74 +1030,32 @@ namespace CodeImp.DoomBuilder.Controls
 			this.colFile.Text = "File";
 			this.colFile.Width = 150;
 			// 
-			// errorimages
-			// 
-			this.errorimages.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("errorimages.ImageStream")));
-			this.errorimages.TransparentColor = System.Drawing.Color.Transparent;
-			this.errorimages.Images.SetKeyName(0, "ScriptError3.png");
-			// 
-			// statusbar
-			// 
-			this.statusbar.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.statuslabel,
-            this.positionlabel,
-            this.scripttype});
-			this.statusbar.Location = new System.Drawing.Point(0, 541);
-			this.statusbar.Name = "statusbar";
-			this.statusbar.Size = new System.Drawing.Size(800, 22);
-			this.statusbar.TabIndex = 3;
-			this.statusbar.Text = "statusStrip1";
-			// 
-			// statuslabel
-			// 
-			this.statuslabel.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold);
-			this.statuslabel.Image = global::CodeImp.DoomBuilder.Properties.Resources.Status0;
-			this.statuslabel.Margin = new System.Windows.Forms.Padding(3, 3, 0, 2);
-			this.statuslabel.Name = "statuslabel";
-			this.statuslabel.Size = new System.Drawing.Size(60, 17);
-			this.statuslabel.Text = "Ready.";
-			// 
-			// positionlabel
-			// 
-			this.positionlabel.Name = "positionlabel";
-			this.positionlabel.Size = new System.Drawing.Size(634, 17);
-			this.positionlabel.Spring = true;
-			this.positionlabel.Text = "100 : 12 (120)";
-			this.positionlabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			// 
-			// scripttype
-			// 
-			this.scripttype.Margin = new System.Windows.Forms.Padding(30, 3, 0, 2);
-			this.scripttype.Name = "scripttype";
-			this.scripttype.Size = new System.Drawing.Size(58, 17);
-			this.scripttype.Text = "Plain Text";
-			this.scripttype.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-			// 
-			// statusflasher
-			// 
-			this.statusflasher.Tick += new System.EventHandler(this.statusflasher_Tick);
-			// 
-			// statusresetter
-			// 
-			this.statusresetter.Tick += new System.EventHandler(this.statusresetter_Tick);
-			// 
 			// ScriptEditorPanel
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.BackColor = System.Drawing.SystemColors.Control;
-			this.Controls.Add(this.splitter);
+			this.Controls.Add(this.mainsplitter);
 			this.Controls.Add(this.statusbar);
 			this.Controls.Add(this.toolbar);
+			this.Controls.Add(this.menustrip);
 			this.Name = "ScriptEditorPanel";
-			this.Size = new System.Drawing.Size(800, 563);
+			this.Size = new System.Drawing.Size(928, 520);
 			this.toolbar.ResumeLayout(false);
 			this.toolbar.PerformLayout();
+			this.statusbar.ResumeLayout(false);
+			this.statusbar.PerformLayout();
+			this.menustrip.ResumeLayout(false);
+			this.menustrip.PerformLayout();
+			this.mainsplitter.Panel1.ResumeLayout(false);
+			this.mainsplitter.Panel2.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.mainsplitter)).EndInit();
+			this.mainsplitter.ResumeLayout(false);
+			this.projecttabs.ResumeLayout(false);
+			this.tabresources.ResumeLayout(false);
 			this.splitter.Panel1.ResumeLayout(false);
 			this.splitter.Panel2.ResumeLayout(false);
 			this.splitter.ResumeLayout(false);
-			this.statusbar.ResumeLayout(false);
-			this.statusbar.PerformLayout();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 
@@ -586,7 +1063,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 		#endregion
 
-		private System.Windows.Forms.TabControl tabs;
+		private CodeImp.DoomBuilder.Controls.VSTabControl tabs;
 		private System.Windows.Forms.ToolStrip toolbar;
 		private System.Windows.Forms.ToolStripButton buttonopen;
 		private System.Windows.Forms.ToolStripDropDownButton buttonnew;
@@ -604,7 +1081,6 @@ namespace CodeImp.DoomBuilder.Controls
 		private System.Windows.Forms.ToolStripButton buttonpaste;
 		private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
 		private System.Windows.Forms.ToolStripDropDownButton buttonscriptconfig;
-		private System.Windows.Forms.ToolStripButton buttonclose;
 		private System.Windows.Forms.SplitContainer splitter;
 		private System.Windows.Forms.ListView errorlist;
 		private System.Windows.Forms.Label label1;
@@ -633,5 +1109,45 @@ namespace CodeImp.DoomBuilder.Controls
 		private System.Windows.Forms.ToolStripButton buttonindent;
 		private System.Windows.Forms.ToolStripButton buttonwhitespace;
 		private System.Windows.Forms.ToolStripButton buttonwordwrap;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator7;
+		private System.Windows.Forms.MenuStrip menustrip;
+		private System.Windows.Forms.ToolStripMenuItem filemenuitem;
+		private System.Windows.Forms.ToolStripMenuItem menusave;
+		private System.Windows.Forms.ToolStripMenuItem menusaveall;
+		private System.Windows.Forms.ToolStripMenuItem editmenuitem;
+		private System.Windows.Forms.ToolStripMenuItem menuundo;
+		private System.Windows.Forms.ToolStripMenuItem menuredo;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator10;
+		private System.Windows.Forms.ToolStripMenuItem menucut;
+		private System.Windows.Forms.ToolStripMenuItem menucopy;
+		private System.Windows.Forms.ToolStripMenuItem menupaste;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator9;
+		private System.Windows.Forms.ToolStripMenuItem menusnippets;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator12;
+		private System.Windows.Forms.ToolStripMenuItem menuindent;
+		private System.Windows.Forms.ToolStripMenuItem menuunindent;
+		private System.Windows.Forms.ToolStripMenuItem viewmenuitem;
+		private System.Windows.Forms.ToolStripMenuItem menuwhitespace;
+		private System.Windows.Forms.ToolStripMenuItem menuwordwrap;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator11;
+		private System.Windows.Forms.ToolStripMenuItem menustayontop;
+		private System.Windows.Forms.ToolStripMenuItem searchmenuitem;
+		private System.Windows.Forms.ToolStripMenuItem menufind;
+		private System.Windows.Forms.ToolStripMenuItem menufindnext;
+		private System.Windows.Forms.ToolStripMenuItem menufindprevious;
+		private System.Windows.Forms.ToolStripMenuItem toolsmenu;
+		private System.Windows.Forms.ToolStripMenuItem menucompile;
+		private CollapsibleSplitContainer mainsplitter;
+		private System.Windows.Forms.TabControl projecttabs;
+		private System.Windows.Forms.TabPage tabresources;
+		private ScriptResourcesControl scriptresources;
+		private System.Windows.Forms.ImageList scripticons;
+		private System.Windows.Forms.ImageList projecticons;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator14;
+		private System.Windows.Forms.ToolStripMenuItem menugotoline;
+		private System.Windows.Forms.ToolStripMenuItem menuopen;
+		private System.Windows.Forms.ToolStripSeparator toolStripSeparator13;
+		private System.Windows.Forms.ToolStripMenuItem menuduplicateline;
+		private System.Windows.Forms.ToolStripMenuItem menunew;
 	}
 }
