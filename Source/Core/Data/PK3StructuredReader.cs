@@ -816,7 +816,7 @@ namespace CodeImp.DoomBuilder.Data
 
 		#endregion
 
-		#region ================== Lockdefs (mxd)
+		#region ================== LOCKDEFS (mxd)
 
 		public override IEnumerable<TextResourceData> GetLockDefsData()
 		{
@@ -832,6 +832,50 @@ namespace CodeImp.DoomBuilder.Data
 
 			// Find in any of the wad files
 			foreach(WADReader wr in wads) result.AddRange(wr.GetLockDefsData());
+
+			return result;
+		}
+
+		#endregion
+
+		#region ================== MENUDEF (mxd)
+
+		public override IEnumerable<TextResourceData> GetMenuDefData()
+		{
+			// Error when suspended
+			if(issuspended) throw new Exception("Data reader is suspended");
+
+			List<TextResourceData> result = new List<TextResourceData>();
+			string file = FindFirstFile("MENUDEF", false);
+
+			// Add to collection
+			if(!string.IsNullOrEmpty(file))
+				result.Add(new TextResourceData(this, LoadFile(file), file, true));
+
+			// Find in any of the wad files
+			foreach(WADReader wr in wads) result.AddRange(wr.GetMenuDefData());
+
+			return result;
+		}
+
+		#endregion
+
+		#region ================== SBARINFO (mxd)
+
+		public override IEnumerable<TextResourceData> GetSBarInfoData()
+		{
+			// Error when suspended
+			if(issuspended) throw new Exception("Data reader is suspended");
+
+			List<TextResourceData> result = new List<TextResourceData>();
+			string file = FindFirstFile("SBARINFO", false);
+
+			// Add to collection
+			if(!string.IsNullOrEmpty(file))
+				result.Add(new TextResourceData(this, LoadFile(file), file, true));
+
+			// Find in any of the wad files
+			foreach(WADReader wr in wads) result.AddRange(wr.GetSBarInfoData());
 
 			return result;
 		}
@@ -890,7 +934,7 @@ namespace CodeImp.DoomBuilder.Data
 		protected abstract string[] GetAllFilesWhichTitleStartsWith(string path, string title, bool subfolders);
 
 		// This must return all files in a given directory that match the given extension
-		protected abstract string[] GetFilesWithExt(string path, string extension, bool subfolders);
+		internal abstract string[] GetFilesWithExt(string path, string extension, bool subfolders);
 
 		//mxd. This must return wad files in the root directory
 		protected abstract string[] GetWadFiles();

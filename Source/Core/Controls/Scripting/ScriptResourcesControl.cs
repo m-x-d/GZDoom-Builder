@@ -287,14 +287,18 @@ namespace CodeImp.DoomBuilder.Controls
 							}
 							else
 							{
-								scriptroot = new TreeNode(typename, groupiconindex, groupiconindex);
-								scriptroot.Name = typename;
-								scriptroot.Tag = new TextResourceNodeData 
-												 {
-													 ResourceLocation = key,
-												     NodeType = TextResourceNodeType.DIRECTORY,
-													 ScriptType = res.ScriptType,
-												 };
+								var rdata = new TextResourceNodeData
+											{
+												ResourceLocation = key,
+												NodeType = TextResourceNodeType.DIRECTORY,
+												ScriptType = res.ScriptType,
+											};
+								scriptroot = new TreeNode(typename, groupiconindex, groupiconindex)
+											 {
+												 Tag = rdata, 
+												 Name = typename, 
+												 ToolTipText = rdata.ToString()
+											 };
 								if(asreadonly) scriptroot.ForeColor = SystemColors.GrayText;
 								root.Nodes.Add(scriptroot);
 								
@@ -324,7 +328,7 @@ namespace CodeImp.DoomBuilder.Controls
 										var cdata = new TextResourceNodeData
 										            {
 											            ResourceLocation = key, 
-														LocationInResource = localpath, 
+														LocationInResource = path, 
 														NodeType = TextResourceNodeType.DIRECTORY, 
 														ScriptType = res.ScriptType
 										            };
@@ -345,11 +349,12 @@ namespace CodeImp.DoomBuilder.Controls
 							TextResourceNodeData data = new TextResourceNodeData
 							                            {
 								                            ResourceLocation = key, 
-															LocationInResource = localpath, 
+															LocationInResource = path, 
 															NodeType = TextResourceNodeType.NODE, 
 															Resource = res,
 							                            };
-							TreeNode scriptnode = new TreeNode(res.ToString(), iconindex, iconindex) { Tag = data, ToolTipText = data.ToString() };
+							string includepath = (res.ScriptType == ScriptType.ACS ? "\nInclude path: \"" + res.Filename + "\"" : "");
+							TreeNode scriptnode = new TreeNode(res.ToString(), iconindex, iconindex) { Tag = data, ToolTipText = data + includepath };
 							if(asreadonly) scriptnode.ForeColor = SystemColors.GrayText;
 							TrySelectNode(selected, scriptnode, ref toselect);
 

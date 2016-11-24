@@ -1218,9 +1218,6 @@ namespace CodeImp.DoomBuilder.Controls
 			// Save to same filename
 			t.Save();
 
-			//mxd. Also compile if needed
-			if(t.Config.Compiler != null) t.Compile();
-
 			return true;
 		}
 		

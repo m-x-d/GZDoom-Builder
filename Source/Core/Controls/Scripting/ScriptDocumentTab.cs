@@ -302,7 +302,7 @@ namespace CodeImp.DoomBuilder.Controls
 		internal ScriptType VerifyScriptType() 
 		{
 			ScriptTypeParserSE parser = new ScriptTypeParserSE();
-			TextResourceData data = new TextResourceData(new MemoryStream(editor.GetText()), new DataLocation(), config.Description, false);
+			TextResourceData data = new TextResourceData(new MemoryStream(editor.GetText()), new DataLocation(), config.Description);
 			
 			if(parser.Parse(data, false))
 			{
