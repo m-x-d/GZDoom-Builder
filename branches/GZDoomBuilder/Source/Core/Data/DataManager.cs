@@ -27,6 +27,7 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.Data.Scripting;
 using CodeImp.DoomBuilder.GZBuilder.Data;
 using CodeImp.DoomBuilder.GZBuilder.MD3;
 using CodeImp.DoomBuilder.Geometry;
@@ -43,20 +44,6 @@ using Matrix = SlimDX.Matrix;
 
 namespace CodeImp.DoomBuilder.Data
 {
-	public struct TextResource //mxd
-	{
-		public string Filename; // Path to text file inside of Resource
-		public int LumpIndex;   // Text lump index if Resource is wad
-		internal DataReader Resource;
-		public HashSet<string> Entries; // Actors/models/sounds etc.
-		public ScriptType ScriptType;
-
-		public override string ToString()
-		{
-			return Filename + (LumpIndex != -1 ? ":" + LumpIndex : "") + " (" + Entries.Count + " entries)";
-		}
-	}
-	
 	public sealed class DataManager
 	{
 		#region ================== Constants
@@ -110,7 +97,7 @@ namespace CodeImp.DoomBuilder.Data
 		private Dictionary<int, AmbientSoundInfo> ambientsounds;
 
 		//mxd. Text resources
-		private Dictionary<ScriptType, HashSet<TextResource>> textresources; 
+		private Dictionary<ScriptType, HashSet<ScriptResource>> scriptresources; 
 		
 		// Background loading
 		private Queue<ImageData> imageque;
@@ -169,7 +156,7 @@ namespace CodeImp.DoomBuilder.Data
 		public string[] TerrainNames { get { return terrainnames; } }
 		public string[] DamageTypes { get { return damagetypes; } }
 		public Dictionary<string, PixelColor> KnownColors { get { return knowncolors; } }
-		internal Dictionary<ScriptType, HashSet<TextResource>> TextResources { get { return textresources; } }
+		internal Dictionary<ScriptType, HashSet<ScriptResource>> ScriptResources { get { return scriptresources; } }
 		internal CvarsCollection CVars { get { return cvars; } }
 		public Dictionary<int, PixelColor> LockColors { get { return lockcolors; } }
 		public Dictionary<int, int> LockableActions { get { return lockableactions; } }
@@ -344,7 +331,7 @@ namespace CodeImp.DoomBuilder.Data
 			skyboxes = new Dictionary<string, SkyboxInfo>(StringComparer.Ordinal);
 			soundsequences = new string[0];
 			terrainnames = new string[0];
-			textresources = new Dictionary<ScriptType, HashSet<TextResource>>();
+			scriptresources = new Dictionary<ScriptType, HashSet<ScriptResource>>();
 			damagetypes = new string[0];
 			knowncolors = new Dictionary<string, PixelColor>(StringComparer.OrdinalIgnoreCase);
 			cvars = new CvarsCollection();
@@ -378,9 +365,15 @@ namespace CodeImp.DoomBuilder.Data
 					// Choose container type
 					switch(dl.type)
 					{
+						//mxd. Load resource in read-only mode if:
+						// 1. UseResourcesInReadonlyMode map option is set.
+						// 2. OR file has "Read only" flag set.
+						// 3. OR resource has "Exclude from testing parameters" flag set.
+						// 4. OR resource is official IWAD.
+
 						// WAD file container
 						case DataLocation.RESOURCE_WAD:
-							c = new WADReader(dl, configlist.Contains(dl) || new FileInfo(dl.location).IsReadOnly);
+							c = new WADReader(dl, General.Map.Options.UseResourcesInReadonlyMode || dl.notfortesting || new FileInfo(dl.location).IsReadOnly);
 							if(((WADReader)c).WadFile.IsOfficialIWAD) //mxd
 							{
 								if(!string.IsNullOrEmpty(prevofficialiwad))
@@ -391,12 +384,12 @@ namespace CodeImp.DoomBuilder.Data
 
 						// Directory container
 						case DataLocation.RESOURCE_DIRECTORY:
-							c = new DirectoryReader(dl, configlist.Contains(dl));
+							c = new DirectoryReader(dl, General.Map.Options.UseResourcesInReadonlyMode || dl.notfortesting);
 							break;
 
 						// PK3 file container
 						case DataLocation.RESOURCE_PK3:
-							c = new PK3Reader(dl, configlist.Contains(dl) || new FileInfo(dl.location).IsReadOnly);
+							c = new PK3Reader(dl, General.Map.Options.UseResourcesInReadonlyMode || dl.notfortesting || new FileInfo(dl.location).IsReadOnly);
 							break;
 					}
 				}
@@ -623,7 +616,7 @@ namespace CodeImp.DoomBuilder.Data
 			skyboxes = null; //mxd
 			soundsequences = null; //mxd
 			terrainnames = null; //mxd
-			textresources = null; //mxd
+			scriptresources = null; //mxd
 			damagetypes = null; //mxd
 			knowncolors = null; //mxd
 			cvars = null; //mxd
@@ -1842,7 +1835,7 @@ namespace CodeImp.DoomBuilder.Data
 				}
 
 				//mxd. Add to text resources collection
-				textresources[decorate.ScriptType] = new HashSet<TextResource>(decorate.TextResources.Values);
+				scriptresources[decorate.ScriptType] = new HashSet<ScriptResource>(decorate.ScriptResources.Values);
 				currentreader = null;
 				
 				if(!decorate.HasError)
@@ -2266,7 +2259,7 @@ namespace CodeImp.DoomBuilder.Data
 			}
 
 			// Add to text resources collection
-			textresources[parser.ScriptType] = new HashSet<TextResource>(parser.TextResources.Values);
+			scriptresources[parser.ScriptType] = new HashSet<ScriptResource>(parser.ScriptResources.Values);
 			currentreader = null;
 
 			foreach(KeyValuePair<string, ModelData> e in parser.Entries) 
@@ -2348,7 +2341,7 @@ namespace CodeImp.DoomBuilder.Data
 			}
 
 			// Add to text resources collection
-			textresources[parser.ScriptType] = new HashSet<TextResource>(parser.TextResources.Values);
+			scriptresources[parser.ScriptType] = new HashSet<ScriptResource>(parser.ScriptResources.Values);
 			currentreader = null;
 
 			// Get voxel models
@@ -2398,7 +2391,7 @@ namespace CodeImp.DoomBuilder.Data
 			}
 
 			//mxd. Add to text resources collection
-			textresources[parser.ScriptType] = new HashSet<TextResource>(parser.TextResources.Values);
+			scriptresources[parser.ScriptType] = new HashSet<ScriptResource>(parser.ScriptResources.Values);
 			currentreader = null;
 
 			// Create Gldefs Entries dictionary
@@ -2485,7 +2478,7 @@ namespace CodeImp.DoomBuilder.Data
 			}
 
 			//mxd. Add to text resources collection
-			textresources[parser.ScriptType] = new HashSet<TextResource>(parser.TextResources.Values);
+			scriptresources[parser.ScriptType] = new HashSet<ScriptResource>(parser.ScriptResources.Values);
 			currentreader = null;
 		}
 
@@ -2519,7 +2512,7 @@ namespace CodeImp.DoomBuilder.Data
 			}
 
 			//mxd. Add to text resources collection
-			textresources[parser.ScriptType] = new HashSet<TextResource>(parser.TextResources.Values);
+			scriptresources[parser.ScriptType] = new HashSet<ScriptResource>(parser.ScriptResources.Values);
 			currentreader = null;
 			reverbs = parser.GetReverbs();
 		}
@@ -2547,7 +2540,7 @@ namespace CodeImp.DoomBuilder.Data
 			}
 
 			// Add to text resources collection
-			textresources[parser.ScriptType] = new HashSet<TextResource>(parser.TextResources.Values);
+			scriptresources[parser.ScriptType] = new HashSet<ScriptResource>(parser.ScriptResources.Values);
 			currentreader = null;
 
 			// Anything to do?
@@ -2630,7 +2623,7 @@ namespace CodeImp.DoomBuilder.Data
 			}
 
 			// Add to text resources collection
-			textresources[parser.ScriptType] = new HashSet<TextResource>(parser.TextResources.Values);
+			scriptresources[parser.ScriptType] = new HashSet<ScriptResource>(parser.ScriptResources.Values);
 			currentreader = null;
 			soundsequences = parser.GetSoundSequences();
 		}
@@ -2700,7 +2693,7 @@ namespace CodeImp.DoomBuilder.Data
 			}
 
 			//mxd. Add to text resources collection
-			textresources[parser.ScriptType] = new HashSet<TextResource>(parser.TextResources.Values);
+			scriptresources[parser.ScriptType] = new HashSet<ScriptResource>(parser.ScriptResources.Values);
 			currentreader = null;
 		}
 
@@ -2727,7 +2720,7 @@ namespace CodeImp.DoomBuilder.Data
 			}
 
 			// Add to text resources collection
-			textresources[parser.ScriptType] = new HashSet<TextResource>(parser.TextResources.Values);
+			scriptresources[parser.ScriptType] = new HashSet<ScriptResource>(parser.ScriptResources.Values);
 			currentreader = null;
 
 			// Sort
@@ -2759,7 +2752,7 @@ namespace CodeImp.DoomBuilder.Data
 			}
 
 			// Add to text resources collection
-			textresources[parser.ScriptType] = new HashSet<TextResource>(parser.TextResources.Values);
+			scriptresources[parser.ScriptType] = new HashSet<ScriptResource>(parser.ScriptResources.Values);
 			currentreader = null;
 
 			// Set as collection
@@ -2787,7 +2780,7 @@ namespace CodeImp.DoomBuilder.Data
 			}
 
 			// Add to text resources collection
-			textresources[parser.ScriptType] = new HashSet<TextResource>(parser.TextResources.Values);
+			scriptresources[parser.ScriptType] = new HashSet<ScriptResource>(parser.ScriptResources.Values);
 			currentreader = null;
 
 			// Set as collection
@@ -2815,7 +2808,7 @@ namespace CodeImp.DoomBuilder.Data
 			}
 
 			// Add to text resources collection
-			textresources[parser.ScriptType] = new HashSet<TextResource>(parser.TextResources.Values);
+			scriptresources[parser.ScriptType] = new HashSet<ScriptResource>(parser.ScriptResources.Values);
 			currentreader = null;
 
 			// Apply to the enums list?

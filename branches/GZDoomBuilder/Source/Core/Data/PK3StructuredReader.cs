@@ -55,6 +55,7 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Properties
 
 		protected readonly string[] PatchLocations = { PATCHES_DIR, TEXTURES_DIR, FLATS_DIR, SPRITES_DIR, GRAPHICS_DIR }; //mxd. Because ZDoom looks for patches and sprites in this order
+		internal List<WADReader> Wads { get { return wads; } } //mxd
 
 		#endregion
 
@@ -78,7 +79,7 @@ namespace CodeImp.DoomBuilder.Data
 			{
 				string tempfile = CreateTempFile(w);
 				DataLocation wdl = new DataLocation(DataLocation.RESOURCE_WAD, tempfile, Path.Combine(location.GetDisplayName(), Path.GetFileName(w)), false, false, true);
-				wads.Add(new WADReader(wdl, location.type != DataLocation.RESOURCE_DIRECTORY));
+				wads.Add(new WADReader(wdl, location.type != DataLocation.RESOURCE_DIRECTORY) { ParentResource = this } );
 			}
 		}
 		

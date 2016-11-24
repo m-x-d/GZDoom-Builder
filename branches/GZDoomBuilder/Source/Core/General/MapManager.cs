@@ -26,6 +26,7 @@ using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Compilers;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Data;
+using CodeImp.DoomBuilder.Data.Scripting;
 using CodeImp.DoomBuilder.Editing;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.GZBuilder.Data; //mxd
@@ -1852,31 +1853,19 @@ namespace CodeImp.DoomBuilder
 		{
 			Cursor.Current = Cursors.WaitCursor;
 
-			if(scriptwindow == null) 
-			{
-				// Load the window
-				scriptwindow = new ScriptEditorForm();
-			}
+			// Load the window?
+			if(scriptwindow == null) scriptwindow = new ScriptEditorForm();
 
 			// Window not yet visible?
-			if(!scriptwindow.Visible) 
-			{
-				// Show the window
-				if(General.Settings.ScriptOnTop) 
-				{
-					if(scriptwindow.Visible && (scriptwindow.Owner == null)) scriptwindow.Hide();
-					scriptwindow.Show(General.MainWindow);
-				}
-				else 
-				{
-					if(scriptwindow.Visible && (scriptwindow.Owner != null)) scriptwindow.Hide();
-					scriptwindow.Show();
-				}
-			}
+			if(!scriptwindow.Visible) scriptwindow.Show();
 
-			if(scriptwindow.WindowState == FormWindowState.Minimized) scriptwindow.WindowState = FormWindowState.Normal; //mxd
+			scriptwindow.TopMost = General.Settings.ScriptOnTop; //mxd
+			if(scriptwindow.WindowState == FormWindowState.Minimized)
+				scriptwindow.WindowState = FormWindowState.Normal; //mxd
+
 			scriptwindow.Activate();
 			scriptwindow.Focus();
+
 			Cursor.Current = Cursors.Default;
 		}
 
@@ -1978,7 +1967,7 @@ namespace CodeImp.DoomBuilder
 		//mxd. Update script numbers and names
 		private void UpdateScriptNames()
 		{
-			General.Map.Data.TextResources[ScriptType.ACS] = new HashSet<TextResource>();
+			General.Map.Data.ScriptResources[ScriptType.ACS] = new HashSet<ScriptResource>();
 
 			// Find SCRIPTS lump and parse it
 			foreach(MapLumpInfo maplumpinfo in config.MapLumps.Values) 
@@ -2032,7 +2021,7 @@ namespace CodeImp.DoomBuilder
 						if(parser.Parse(data, scriptconfig.Compiler.Files, true, AcsParserSE.IncludeType.NONE, false))
 						{
 							// Add to text resource list
-							General.Map.Data.TextResources[parser.ScriptType].UnionWith(parser.TextResources.Values);
+							General.Map.Data.ScriptResources[parser.ScriptType].UnionWith(parser.ScriptResources.Values);
 
 							// Update the names
 							UpdateScriptNames(parser);
@@ -2254,12 +2243,15 @@ namespace CodeImp.DoomBuilder
 				General.MainWindow.CheckEditModeButton(General.Editing.Mode.EditModeButtonName); 
 			}
 
+			//mxd. Update script names
+			UpdateScriptNames();
+
+			//mxd. Script Editor may need updating...
+			if(scriptwindow != null) scriptwindow.OnReloadResources();
+
 			// Reset status
 			General.MainWindow.DisplayStatus(oldstatus);
 			Cursor.Current = oldcursor;
-
-			//mxd. Update script names
-			UpdateScriptNames();
 		}
 
 		// Game Configuration action

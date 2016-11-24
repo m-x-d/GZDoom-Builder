@@ -46,6 +46,9 @@ namespace CodeImp.DoomBuilder.Config
 		CVARINFO,
 		SNDINFO,
 		LOCKDEFS,
+		MENUDEF,
+		SBARINFO,
+		USDF,
 	}
 	
 	internal class ScriptConfiguration : IComparable<ScriptConfiguration>
@@ -203,8 +206,28 @@ namespace CodeImp.DoomBuilder.Config
 			arrayclose = cfg.ReadSetting("arrayclose", ""); //mxd
 			argumentdelimiter = cfg.ReadSetting("argumentdelimiter", "");
 			terminator = cfg.ReadSetting("terminator", "");
-			scripttype = (ScriptType)cfg.ReadSetting("scripttype", (int)ScriptType.UNKNOWN); //mxd
 			extrawordchars = cfg.ReadSetting("extrawordchars", ""); //mxd
+
+			//mxd. Get script type...
+			string scripttypestr = cfg.ReadSetting("scripttype", string.Empty);
+			if(!string.IsNullOrEmpty(scripttypestr))
+			{
+				List<string> typenames = new List<string>(Enum.GetNames(typeof(ScriptType)));
+				int pos = typenames.IndexOf(scripttypestr.ToUpperInvariant());
+				if(pos == -1)
+				{
+					scripttype = ScriptType.UNKNOWN;
+					General.ErrorLogger.Add(ErrorType.Warning, "Unknown script type \"" + scripttypestr.ToUpperInvariant() + "\" in \"" + description + "\" script configuration.");
+				}
+				else
+				{
+					scripttype = (ScriptType)pos;
+				}
+			}
+			else
+			{
+				scripttype = ScriptType.UNKNOWN;
+			}
 
 			//mxd. Make braces array
 			if(!string.IsNullOrEmpty(functionopen)) braces.Add(functionopen[0]);

@@ -392,6 +392,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// Update long texture names checkbox (mxd)
 			longtexturenames.Enabled = cfg.ReadSetting("longtexturenames", false);
 			longtexturenames.Checked = (longtexturenames.Enabled && options != null && options.UseLongTextureNames);
+
+			// Update resource usage
+			readonlyresources.Checked = (options != null && options.UseResourcesInReadonlyMode);
 		}
 		
 		// OK clicked
@@ -479,6 +482,9 @@ namespace CodeImp.DoomBuilder.Windows
 
 			//mxd. Use long texture names?
 			if(longtexturenames.Enabled) options.UseLongTextureNames = longtexturenames.Checked;
+
+			//mxd. Resource usage
+			options.UseResourcesInReadonlyMode = readonlyresources.Checked;
 
 			// Hide window
 			wadfile.Dispose();

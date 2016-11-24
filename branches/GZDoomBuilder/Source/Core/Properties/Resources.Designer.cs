@@ -662,13 +662,6 @@ namespace CodeImp.DoomBuilder.Properties {
             }
         }
         
-        internal static System.Drawing.Bitmap NewScript {
-            get {
-                object obj = ResourceManager.GetObject("NewScript", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
         internal static System.Drawing.Bitmap OpenMap {
             get {
                 object obj = ResourceManager.GetObject("OpenMap", resourceCulture);
@@ -847,6 +840,13 @@ namespace CodeImp.DoomBuilder.Properties {
         internal static System.Drawing.Bitmap ScriptKeyword {
             get {
                 object obj = ResourceManager.GetObject("ScriptKeyword", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap ScriptNew {
+            get {
+                object obj = ResourceManager.GetObject("ScriptNew", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

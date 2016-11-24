@@ -49,6 +49,7 @@ namespace CodeImp.DoomBuilder.Controls
 		// The script edit control
 		protected readonly ScriptEditorControl editor;
 		private string title; //mxd
+		protected ScriptDocumentTabType tabtype; //mxd
 
 		// Derived classes must set this!
 		protected ScriptConfiguration config;
@@ -64,9 +65,10 @@ namespace CodeImp.DoomBuilder.Controls
 		public virtual bool IsSaveAsRequired { get { return true; } }
 		public virtual bool IsClosable { get { return true; } }
 		public virtual bool IsReconfigurable { get { return true; } }
+		public virtual bool IsReadOnly { get { return false; } } //mxd
 		public virtual string Filename { get { return null; } }
 		public ScriptEditorPanel Panel { get { return panel; } }
-		internal Scintilla Scintilla { get { return editor.Scintilla; } } //mxd
+		public ScriptEditorControl Editor { get { return editor; } } //mxd
 		public string Title { get { return title; } } //mxd
 		public bool IsChanged { get { return editor.IsChanged; } }
 		public int SelectionStart { get { return editor.SelectionStart; } set { editor.SelectionStart = value; } }
@@ -92,6 +94,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// Keep panel and config
 			this.panel = panel;
 			this.config = config; //mxd
+			this.BackColor = SystemColors.ControlLightLight; //mxd
 			
 			// Make the script control
 			editor = new ScriptEditorControl();
@@ -111,12 +114,21 @@ namespace CodeImp.DoomBuilder.Controls
 			editor.OnFindNext += panel.FindNext;
 			editor.OnFindPrevious += panel.FindPrevious; //mxd
 			editor.OnTextChanged += editor_TextChanged; //mxd
+			editor.OnGoToLine += panel.GoToLine; //mxd
+			editor.OnCompileScript -= Compile; //mxd
 
 			//mxd. Bind functionbar events
 			editor.OnFunctionBarDropDown += functionbar_DropDown;
 
 			//mxd. Setup styles
 			editor.SetupStyles(config);
+
+			//mxd. Apply panel settings
+			editor.ShowWhitespace = panel.ShowWhitespace;
+			editor.WrapLongLines = panel.WrapLongLines;
+
+			//mxd. Set icon
+			this.ImageIndex = panel.Icons.GetScriptIcon(config.ScriptType);
 		}
 		
 		// Disposer
@@ -129,6 +141,8 @@ namespace CodeImp.DoomBuilder.Controls
 			editor.OnFindNext -= panel.FindNext;
 			editor.OnFindPrevious -= panel.FindPrevious; //mxd
 			editor.OnTextChanged -= editor_TextChanged; //mxd
+			editor.OnGoToLine -= panel.GoToLine; //mxd
+			editor.OnCompileScript -= Compile; //mxd 
 			
 			base.Dispose(disposing);
 		}
@@ -208,6 +222,7 @@ namespace CodeImp.DoomBuilder.Controls
 			editor.SetupStyles(newconfig); //mxd
 			List<CompilerError> errors = UpdateNavigator(); //mxd
 			if(panel.ActiveTab == this) panel.ShowErrors(errors, true); //mxd
+			this.ImageIndex = panel.Icons.GetScriptIcon(config.ScriptType); //mxd. Set icon
 		}
 
 		// Call this to set the tab title
@@ -315,21 +330,23 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		//mxd
-		internal void SetViewSettings(ScriptDocumentSettings settings)
+		internal virtual void SetViewSettings(ScriptDocumentSettings settings)
 		{
+			if(settings.TabType != tabtype) throw new Exception("TabType mismatch!");
+			
 			// Text must be exactly the same
 			long hash = MurmurHash2.Hash(Text);
-			bool applyfolding = General.Settings.ScriptShowFolding && (Scintilla.Lexer == Lexer.Cpp || Scintilla.Lexer == Lexer.CppNoCase);
+			bool applyfolding = General.Settings.ScriptShowFolding && (editor.Scintilla.Lexer == Lexer.Cpp || editor.Scintilla.Lexer == Lexer.CppNoCase);
 			if(hash == settings.Hash)
 			{
 				// Restore fold levels
 				if(applyfolding) ApplyFolding(settings.FoldLevels ?? GetFoldLevels());
 
 				// Restore scroll
-				Scintilla.FirstVisibleLine = settings.FirstVisibleLine;
+				editor.Scintilla.FirstVisibleLine = settings.FirstVisibleLine;
 
 				// Restore caret position
-				Scintilla.SetEmptySelection(settings.CaretPosition);
+				editor.Scintilla.SetEmptySelection(settings.CaretPosition);
 			}
 			// Do what Visual Studio does: fold all #regions 
 			else if(applyfolding)
@@ -340,7 +357,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 		internal void SetDefaultViewSettings()
 		{
-			if(General.Settings.ScriptShowFolding && (Scintilla.Lexer == Lexer.Cpp || Scintilla.Lexer == Lexer.CppNoCase))
+			if(General.Settings.ScriptShowFolding && (editor.Scintilla.Lexer == Lexer.Cpp || editor.Scintilla.Lexer == Lexer.CppNoCase))
 				ApplyFolding(GetFoldLevels());
 		}
 
@@ -356,7 +373,7 @@ namespace CodeImp.DoomBuilder.Controls
 			foreach(int level in foldlevels)
 			{
 				foreach(int line in foldlevelsarr[level])
-					Scintilla.Lines[line].FoldLine(FoldAction.Contract);
+					editor.Scintilla.Lines[line].FoldLine(FoldAction.Contract);
 			}
 		}
 
@@ -365,9 +382,9 @@ namespace CodeImp.DoomBuilder.Controls
 			Dictionary<int, HashSet<int>> foldlevels = new Dictionary<int, HashSet<int>>();
 			int foldlevel = NativeMethods.SC_FOLDLEVELBASE;
 
-			for(int i = 0; i < Scintilla.Lines.Count; i++)
+			for(int i = 0; i < editor.Scintilla.Lines.Count; i++)
 			{
-				string line = Scintilla.Lines[i].Text.TrimStart();
+				string line = editor.Scintilla.Lines[i].Text.TrimStart();
 				if(line.StartsWith("#region", true, CultureInfo.InvariantCulture))
 				{
 					foldlevel++;
@@ -384,17 +401,17 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		//mxd
-		internal ScriptDocumentSettings GetViewSettings()
+		internal virtual ScriptDocumentSettings GetViewSettings()
 		{
 			Dictionary<int, HashSet<int>> foldlevels = new Dictionary<int, HashSet<int>>();
 
-			for(int i = 0; i < Scintilla.Lines.Count; i++)
+			for(int i = 0; i < editor.Scintilla.Lines.Count; i++)
 			{
-				if(!Scintilla.Lines[i].Expanded)
+				if(!editor.Scintilla.Lines[i].Expanded)
 				{
-					if(!foldlevels.ContainsKey(Scintilla.Lines[i].FoldLevel))
-						foldlevels.Add(Scintilla.Lines[i].FoldLevel, new HashSet<int>());
-					foldlevels[Scintilla.Lines[i].FoldLevel].Add(i);
+					if(!foldlevels.ContainsKey(editor.Scintilla.Lines[i].FoldLevel))
+						foldlevels.Add(editor.Scintilla.Lines[i].FoldLevel, new HashSet<int>());
+					foldlevels[editor.Scintilla.Lines[i].FoldLevel].Add(i);
 				}
 			}
 
@@ -402,9 +419,11 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				Filename = this.Filename,
 				FoldLevels = foldlevels,
-				CaretPosition = Scintilla.SelectionStart,
+				ScriptType = config.ScriptType,
+				CaretPosition = editor.Scintilla.SelectionStart,
+				TabType = tabtype,
 				IsActiveTab = (this.Panel.ActiveTab == this),
-				FirstVisibleLine = Scintilla.FirstVisibleLine,
+				FirstVisibleLine = editor.Scintilla.FirstVisibleLine,
 				Hash = MurmurHash2.Hash(Text),
 			};
 		}

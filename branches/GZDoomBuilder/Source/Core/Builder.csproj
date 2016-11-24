@@ -698,6 +698,9 @@
     <EmbeddedResource Include="Controls\Scripting\ScriptEditorPreviewControl.resx">
       <DependentUpon>ScriptEditorPreviewControl.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Controls\Scripting\ScriptResourcesControl.resx">
+      <DependentUpon>ScriptResourcesControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Resources\SkySphere.md3" />
     <None Include="Resources\ThingStatistics.png" />
     <None Include="Resources\Copy.png" />
@@ -706,6 +709,20 @@
     <Compile Include="Actions\HintsManager.cs" />
     <Compile Include="Config\AllTexturesSet.cs" />
     <Compile Include="Config\FlagTranslation.cs" />
+    <Compile Include="Controls\Scripting\ScriptIconsManager.cs" />
+    <Compile Include="Controls\Scripting\ScriptResourceDocumentTab.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\Scripting\ScriptResourcesControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Scripting\ScriptResourcesControl.designer.cs">
+      <DependentUpon>ScriptResourcesControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\VisualStudioTabControl.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Data\Scripting\ScriptResource.cs" />
     <Compile Include="Rendering\RenderModeEnums.cs" />
     <Compile Include="Config\PasteOptions.cs" />
     <Compile Include="Config\ScriptDocumentSettings.cs" />
@@ -899,6 +916,12 @@
     <Compile Include="Rendering\VisualVertexHandle.cs" />
     <Compile Include="Geometry\Line3D.cs" />
     <Compile Include="Data\Scripting\ScriptHandlerAttribute.cs" />
+    <Compile Include="Windows\ScriptGoToLineForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Windows\ScriptGoToLineForm.Designer.cs">
+      <DependentUpon>ScriptGoToLineForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="ZDoom\AmbientSoundInfo.cs" />
     <Compile Include="ZDoom\DecorateCategoryInfo.cs" />
     <Compile Include="ZDoom\LockDefsParser.cs" />
@@ -1111,6 +1134,9 @@
     <EmbeddedResource Include="Windows\ExceptionDialog.resx">
       <DependentUpon>ExceptionDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Windows\ScriptGoToLineForm.resx">
+      <DependentUpon>ScriptGoToLineForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Windows\TagStatisticsForm.resx">
       <DependentUpon>TagStatisticsForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -1184,6 +1210,7 @@
     <None Include="Resources\ModelDisabled.png" />
     <None Include="Resources\ModelFiltered.png" />
     <Content Include="Resources\Model_selected.png" />
+    <None Include="Resources\Script.png" />
     <None Include="Resources\SplitSectors.png" />
     <None Include="Resources\ScriptProperty.png" />
     <None Include="Resources\TextWhitespace.png" />
@@ -1264,7 +1291,6 @@
       <DependentUpon>AngleForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Windows\PreferencesController.cs" />
-    <None Include="Resources\Script2.png" />
     <None Include="Resources\ScriptCompile.png" />
     <None Include="Resources\ScriptPalette.png" />
     <None Include="Resources\SaveAll.png" />

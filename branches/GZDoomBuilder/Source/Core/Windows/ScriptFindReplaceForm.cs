@@ -28,10 +28,24 @@ namespace CodeImp.DoomBuilder.Windows
 		#region ================== Variables
 
 		private bool appclose;
+		private bool canreplace;
 
 		#endregion
 
 		#region ================== Properties
+
+		internal bool CanReplace //mxd
+		{
+			get { return canreplace; }
+			set
+			{
+				canreplace = value;
+				labelreplace.Enabled = canreplace;
+				replacetext.Enabled = canreplace;
+				replacebutton.Enabled = canreplace;
+				replaceallbutton.Enabled = canreplace;
+			}
+		} 
 		
 		#endregion
 

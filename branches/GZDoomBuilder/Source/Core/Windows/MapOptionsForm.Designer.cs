@@ -28,6 +28,7 @@ namespace CodeImp.DoomBuilder.Windows
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
 			System.Windows.Forms.Label label3;
 			System.Windows.Forms.Label label2;
 			System.Windows.Forms.Label label1;
@@ -45,6 +46,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.longtexturenames = new System.Windows.Forms.CheckBox();
 			this.strictpatches = new System.Windows.Forms.CheckBox();
 			this.datalocations = new CodeImp.DoomBuilder.Controls.ResourceListEditor();
+			this.readonlyresources = new System.Windows.Forms.CheckBox();
+			this.tooltip = new System.Windows.Forms.ToolTip(this.components);
 			label3 = new System.Windows.Forms.Label();
 			label2 = new System.Windows.Forms.Label();
 			label1 = new System.Windows.Forms.Label();
@@ -154,7 +157,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label4
 			// 
 			label4.AutoSize = true;
-			label4.Location = new System.Drawing.Point(14, 207);
+			label4.Location = new System.Drawing.Point(14, 229);
 			label4.Name = "label4";
 			label4.Size = new System.Drawing.Size(299, 52);
 			label4.TabIndex = 17;
@@ -163,7 +166,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// apply
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(179, 405);
+			this.apply.Location = new System.Drawing.Point(179, 427);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
 			this.apply.TabIndex = 2;
@@ -175,7 +178,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(297, 405);
+			this.cancel.Location = new System.Drawing.Point(297, 427);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
 			this.cancel.TabIndex = 3;
@@ -187,13 +190,14 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.panelres.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.panelres.Controls.Add(this.readonlyresources);
 			this.panelres.Controls.Add(this.longtexturenames);
 			this.panelres.Controls.Add(this.strictpatches);
 			this.panelres.Controls.Add(this.datalocations);
 			this.panelres.Controls.Add(label4);
 			this.panelres.Location = new System.Drawing.Point(12, 130);
 			this.panelres.Name = "panelres";
-			this.panelres.Size = new System.Drawing.Size(397, 269);
+			this.panelres.Size = new System.Drawing.Size(397, 291);
 			this.panelres.TabIndex = 1;
 			this.panelres.TabStop = false;
 			this.panelres.Text = " Resources ";
@@ -222,10 +226,23 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.datalocations.AllowDrop = true;
 			this.datalocations.DialogOffset = new System.Drawing.Point(40, 20);
-			this.datalocations.Location = new System.Drawing.Point(14, 71);
+			this.datalocations.Location = new System.Drawing.Point(14, 93);
 			this.datalocations.Name = "datalocations";
 			this.datalocations.Size = new System.Drawing.Size(368, 127);
 			this.datalocations.TabIndex = 0;
+			// 
+			// readonlyresources
+			// 
+			this.readonlyresources.AutoSize = true;
+			this.readonlyresources.Location = new System.Drawing.Point(14, 69);
+			this.readonlyresources.Name = "readonlyresources";
+			this.readonlyresources.Size = new System.Drawing.Size(210, 17);
+			this.readonlyresources.TabIndex = 22;
+			this.readonlyresources.Text = "Open map resources in read-only mode";
+			this.tooltip.SetToolTip(this.readonlyresources, "When enabled, map resources will be loaded in read-only mode,\r\nwhich allows to ed" +
+					"it them in an external application while the map\r\nis opened. You won\'t be able t" +
+					"o edit resources in the Script Editor.");
+			this.readonlyresources.UseVisualStyleBackColor = true;
 			// 
 			// MapOptionsForm
 			// 
@@ -233,7 +250,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.cancel;
-			this.ClientSize = new System.Drawing.Size(421, 438);
+			this.ClientSize = new System.Drawing.Size(421, 460);
 			this.Controls.Add(this.panelres);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
@@ -269,6 +286,8 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.Label scriptcompilerlabel;
 		private System.Windows.Forms.Label examplelabel;
 		private System.Windows.Forms.CheckBox longtexturenames;
+		private System.Windows.Forms.CheckBox readonlyresources;
+		private System.Windows.Forms.ToolTip tooltip;
 
 
 	}

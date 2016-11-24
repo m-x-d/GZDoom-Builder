@@ -135,4 +135,13 @@ Drag items to change order (lower items override higher items).
 Use the context menu to cut, copy, paste or remove items.
 Grayed items are loaded according to the game configuration.</value>
   </data>
+  <metadata name="tooltip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+  <data name="readonlyresources.ToolTip" xml:space="preserve">
+    <value>When enabled, map resources will be loaded in read-only mode,
+which allows to edit them in an external application while the map
+is opened. You won't be able to edit resources in the Script Editor.
+</value>
+  </data>
 </root>

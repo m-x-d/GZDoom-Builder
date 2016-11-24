@@ -24,6 +24,7 @@ using System.IO;
 using CodeImp.DoomBuilder.Compilers;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Data;
+using CodeImp.DoomBuilder.Data.Scripting;
 using CodeImp.DoomBuilder.Rendering;
 
 #endregion
@@ -65,7 +66,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 		//mxd. Text lumps
 		protected string textresourcepath;
-		protected readonly Dictionary<string, TextResource> textresources;
+		protected readonly Dictionary<string, ScriptResource> scriptresources;
 		protected readonly HashSet<string> untrackedtextresources; 
 		
 		#endregion
@@ -79,7 +80,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		public string ErrorSource { get { return errorsource; } }
 		public bool HasError { get { return (errordesc != null); } }
 		internal abstract ScriptType ScriptType { get; } //mxd
-		internal Dictionary<string, TextResource> TextResources { get { return textresources; } } //mxd
+		internal Dictionary<string, ScriptResource> ScriptResources { get { return scriptresources; } } //mxd
 
 		#endregion
 		
@@ -90,7 +91,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		{
 			// Initialize
 			errordesc = null;
-			textresources = new Dictionary<string, TextResource>(StringComparer.OrdinalIgnoreCase); //mxd
+			scriptresources = new Dictionary<string, ScriptResource>(StringComparer.OrdinalIgnoreCase); //mxd
 			untrackedtextresources = new HashSet<string>(StringComparer.OrdinalIgnoreCase); //mxd
 			skipregions = true; //mxd
 		}
@@ -148,23 +149,15 @@ namespace CodeImp.DoomBuilder.ZDoom
 			}
 
 			string path = Path.Combine(parsedata.SourceLocation.location, parsedata.Filename + (parsedata.LumpIndex != -1 ? "#" + parsedata.LumpIndex : ""));
-			if(textresources.ContainsKey(path) || untrackedtextresources.Contains(path))
+			if(scriptresources.ContainsKey(path) || untrackedtextresources.Contains(path))
 				return false;
 
 			//mxd. Create TextResource for this file
 			if(parsedata.Trackable)
 			{
 				textresourcepath = path;
-				TextResource res = new TextResource
-				{
-					Resource = parsedata.Source,
-					Entries = new HashSet<string>(StringComparer.OrdinalIgnoreCase),
-					Filename = parsedata.Filename.Replace(Path.AltDirectorySeparatorChar, Path.DirectorySeparatorChar),
-					LumpIndex = parsedata.LumpIndex,
-					ScriptType = this.ScriptType,
-				};
-
-				textresources.Add(textresourcepath, res);
+				ScriptResource res = new ScriptResource(parsedata, this.ScriptType);
+				scriptresources.Add(textresourcepath, res);
 			}
 			// Track the untrackable!
 			else

@@ -55,6 +55,7 @@ namespace CodeImp.DoomBuilder.Controls
 		public ScriptLumpDocumentTab(ScriptEditorPanel panel, string lumpname, ScriptConfiguration config) : base(panel, config)
 		{
 			// Initialize
+			tabtype = ScriptDocumentTabType.LUMP; //mxd
 			if(lumpname == MapManager.CONFIG_MAP_HEADER)
 			{
 				this.lumpname = MapManager.TEMP_MAP_HEADER;

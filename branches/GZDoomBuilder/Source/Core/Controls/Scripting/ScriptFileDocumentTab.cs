@@ -56,9 +56,23 @@ namespace CodeImp.DoomBuilder.Controls
 			
 			// Initialize
 			this.filepathname = "";
+			tabtype = ScriptDocumentTabType.FILE; //mxd
 			if(config.Extensions.Length > 0) ext = "." + config.Extensions[0];
 			SetTitle("Untitled" + ext);
 			editor.ClearUndoRedo();
+		}
+
+		//mxd. Replace constructor
+		internal ScriptFileDocumentTab(ScriptResourceDocumentTab sourcetab)
+			: base(sourcetab.Panel, sourcetab.Config)
+		{
+			// Set text and view settings
+			tabtype = ScriptDocumentTabType.FILE;
+			editor.Scintilla.Text = sourcetab.Editor.Scintilla.Text;
+			SetViewSettings(sourcetab.GetViewSettings());
+
+			// Set title
+			SetTitle(sourcetab.Filename);
 		}
 		
 		#endregion
@@ -149,6 +163,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.filepathname = filepathname;
 			editor.ClearUndoRedo();
 			SetTitle(Path.GetFileName(filepathname));
+			this.ToolTipText = filepathname; //mxd
 			panel.ShowErrors(UpdateNavigator(), true); //mxd
 
 			return true;

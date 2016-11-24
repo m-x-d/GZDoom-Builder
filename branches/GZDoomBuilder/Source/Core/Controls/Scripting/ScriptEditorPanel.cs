@@ -23,6 +23,8 @@ using System.IO;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Compilers;
 using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.Controls.Scripting;
+using CodeImp.DoomBuilder.Data.Scripting;
 using CodeImp.DoomBuilder.Windows;
 using ScintillaNET;
 
@@ -55,13 +57,25 @@ namespace CodeImp.DoomBuilder.Controls
 		private ScriptStatusInfo status;
 		private int statusflashcount;
 		private bool statusflashicon;
+
+		//mxd
+		private ScriptEditorForm parentform;
+		private ScriptIconsManager iconsmgr;
+
+		//mxd. Text editor settings
+		private bool showwhitespace;
+		private bool wraplonglines;
+		private bool blockupdate;
 		
 		#endregion
 		
 		#region ================== Properties
 		
 		public ScriptDocumentTab ActiveTab { get { return (tabs.SelectedTab as ScriptDocumentTab); } }
-		
+		internal ScriptIconsManager Icons { get { return iconsmgr; } }
+		public bool ShowWhitespace { get { return showwhitespace; } }
+		public bool WrapLongLines { get { return wraplonglines; } }
+
 		#endregion
 		
 		#region ================== Constructor
@@ -70,11 +84,15 @@ namespace CodeImp.DoomBuilder.Controls
 		public ScriptEditorPanel()
 		{
 			InitializeComponent();
+			iconsmgr = new ScriptIconsManager(scripticons); //mxd
+			tabs.ImageList = scripticons; //mxd
 		}
 		
 		// This initializes the control
-		public void Initialize()
+		public void Initialize(ScriptEditorForm form)
 		{
+			parentform = form; //mxd
+			
 			// Make list of script configs
 			scriptconfigs = new List<ScriptConfiguration>(General.ScriptConfigs.Values);
 			scriptconfigs.Add(new ScriptConfiguration());
@@ -83,19 +101,28 @@ namespace CodeImp.DoomBuilder.Controls
 			// Fill the list of new document types
 			foreach(ScriptConfiguration cfg in scriptconfigs)
 			{
+				Image icon = scripticons.Images[iconsmgr.GetScriptIcon(cfg.ScriptType)]; //mxd
+				
 				// Button for new script menu
 				ToolStripMenuItem item = new ToolStripMenuItem(cfg.Description);
-				//item.Image = buttonnew.Image;
+				item.Image = icon; //mxd
 				item.Tag = cfg;
 				item.Click += buttonnew_Click;
 				buttonnew.DropDownItems.Add(item);
 				
 				// Button for script type menu
 				item = new ToolStripMenuItem(cfg.Description);
-				//item.Image = buttonnew.Image;
+				item.Image = icon; //mxd
 				item.Tag = cfg;
 				item.Click += buttonscriptconfig_Click;
 				buttonscriptconfig.DropDownItems.Add(item);
+
+				//mxd. Button for the "New" menu item
+				item = new ToolStripMenuItem(cfg.Description);
+				item.Image = icon; //mxd
+				item.Tag = cfg;
+				item.Click += buttonnew_Click;
+				menunew.DropDownItems.Add(item);
 			}
 			
 			// Setup supported extensions
@@ -113,6 +140,9 @@ namespace CodeImp.DoomBuilder.Controls
 				}
 			}
 			openfile.Filter = "Script files|" + filterall + "|" + filterseperate + "|All files|*.*";
+
+			//mxd. Initialize script resources control
+			scriptresources.Setup(this, General.Map.Data.ScriptResources);
 			
 			// Load the script lumps
 			ScriptDocumentTab activetab = null; //mxd
@@ -132,10 +162,10 @@ namespace CodeImp.DoomBuilder.Controls
 					ScriptLumpDocumentTab t = new ScriptLumpDocumentTab(this, maplumpinfo.Name, config);
 					
 					//mxd. Apply stored settings?
-					if(General.Map.Options.ScriptLumpSettings.ContainsKey(maplumpinfo.Name))
+					if(General.Map.Options.ScriptDocumentSettings.ContainsKey(maplumpinfo.Name))
 					{
-						t.SetViewSettings(General.Map.Options.ScriptLumpSettings[maplumpinfo.Name]);
-						if(General.Map.Options.ScriptLumpSettings[maplumpinfo.Name].IsActiveTab) 
+						t.SetViewSettings(General.Map.Options.ScriptDocumentSettings[maplumpinfo.Name]);
+						if(General.Map.Options.ScriptDocumentSettings[maplumpinfo.Name].IsActiveTab) 
 							activetab = t;
 					}
 					else
@@ -144,7 +174,7 @@ namespace CodeImp.DoomBuilder.Controls
 					}
 					
 					t.OnTextChanged += tabpage_OnLumpTextChanged; //mxd
-					t.Scintilla.UpdateUI += scintilla_OnUpdateUI; //mxd
+					t.Editor.Scintilla.UpdateUI += scintilla_OnUpdateUI; //mxd
 					tabs.TabPages.Add(t);
 				} 
 				else if(maplumpinfo.Script != null)
@@ -153,10 +183,10 @@ namespace CodeImp.DoomBuilder.Controls
 					ScriptLumpDocumentTab t = new ScriptLumpDocumentTab(this, maplumpinfo.Name, maplumpinfo.Script);
 
 					//mxd. Apply stored settings?
-					if(General.Map.Options.ScriptLumpSettings.ContainsKey(maplumpinfo.Name))
+					if(General.Map.Options.ScriptDocumentSettings.ContainsKey(maplumpinfo.Name))
 					{
-						t.SetViewSettings(General.Map.Options.ScriptLumpSettings[maplumpinfo.Name]);
-						if(General.Map.Options.ScriptLumpSettings[maplumpinfo.Name].IsActiveTab)
+						t.SetViewSettings(General.Map.Options.ScriptDocumentSettings[maplumpinfo.Name]);
+						if(General.Map.Options.ScriptDocumentSettings[maplumpinfo.Name].IsActiveTab)
 							activetab = t;
 					}
 					else
@@ -165,21 +195,48 @@ namespace CodeImp.DoomBuilder.Controls
 					}
 					
 					t.OnTextChanged += tabpage_OnLumpTextChanged; //mxd
-					t.Scintilla.UpdateUI += scintilla_OnUpdateUI; //mxd
+					t.Editor.Scintilla.UpdateUI += scintilla_OnUpdateUI; //mxd
 					tabs.TabPages.Add(t);
 				}
 			}
 
-			// Load the files that were previously opened for this map
-			foreach(ScriptDocumentSettings settings in General.Map.Options.ScriptFileSettings.Values)
+			// Load files, which were previously opened for this map
+			foreach(ScriptDocumentSettings settings in General.Map.Options.ScriptDocumentSettings.Values)
 			{
-				// Does this file exist?
-				if(File.Exists(settings.Filename))
+				switch(settings.TabType)
 				{
-					// Load this!
-					ScriptFileDocumentTab t = OpenFile(settings.Filename);
-					t.SetViewSettings(settings); //mxd
-					if(settings.IsActiveTab) activetab = t;
+					//TODO: load all tab types here...
+					case ScriptDocumentTabType.LUMP: continue;
+
+					case ScriptDocumentTabType.FILE:
+						// Does this file exist?
+						if(File.Exists(settings.Filename))
+						{
+							// Load this!
+							ScriptFileDocumentTab t = OpenFile(settings.Filename);
+							t.SetViewSettings(settings); //mxd
+							if(settings.IsActiveTab) activetab = t;
+						}
+						break;
+
+					case ScriptDocumentTabType.RESOURCE:
+						// Find target resource...
+						if(!General.Map.Data.ScriptResources.ContainsKey(settings.ScriptType)) continue;
+						foreach(ScriptResource res in General.Map.Data.ScriptResources[settings.ScriptType])
+						{
+							if(res.Resource.Location.location == settings.ResourceLocation)
+							{
+								// Load this!
+								ScriptResourceDocumentTab t = OpenResource(res);
+								t.SetViewSettings(settings);
+								if(settings.IsActiveTab) activetab = t;
+								break;
+							}
+						}
+						break;
+
+					default:
+						throw new NotImplementedException("Unknown ScriptDocumentTabType!");
 				}
 			}
 
@@ -188,10 +245,19 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				tabs.SelectedTab = activetab;
 			}
-			//mxd. Select "Scripts" tab, because that's what user will want 99% of time
+			//mxd. Select the "Scripts" tab, because that's what user will want 99% of time
 			else if(tabs.TabPages.Count > 0)
 			{
-				int scriptsindex = GetTabPageIndex("SCRIPTS");
+				int scriptsindex = -1;
+				for(int i = 0; i < tabs.TabPages.Count; i++)
+				{
+					if(tabs.TabPages[i].Text == "SCRIPTS")
+					{
+						scriptsindex = i;
+						break;
+					}
+				}
+
 				tabs.SelectedIndex = (scriptsindex == -1 ? 0 : scriptsindex);
 				activetab = tabs.TabPages[tabs.SelectedIndex] as ScriptDocumentTab;
 			}
@@ -214,18 +280,39 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 			
 			// Done
-			UpdateToolbar(true);
+			UpdateInterface(true);
 		}
 		
 		// This applies user preferences
 		public void ApplySettings()
 		{
+			// Set Errors panel settings
 			errorlist.Columns[0].Width = General.Settings.ReadSetting("scriptspanel.errorscolumn0width", errorlist.Columns[0].Width);
 			errorlist.Columns[1].Width = General.Settings.ReadSetting("scriptspanel.errorscolumn1width", errorlist.Columns[1].Width);
 			errorlist.Columns[2].Width = General.Settings.ReadSetting("scriptspanel.errorscolumn2width", errorlist.Columns[2].Width);
-			buttonwhitespace.Checked = General.Settings.ReadSetting("scriptspanel.showwhitespace", false); //mxd
-			buttonwordwrap.Checked = General.Settings.ReadSetting("scriptspanel.wraplonglines", false); //mxd
-			ApplyTabSettings(); //mxd
+
+			//mxd. Set splitter position and state
+			if(General.Settings.ReadSetting("scriptspanel.splittercollapsed", false))
+				mainsplitter.IsCollapsed = true;
+
+			int splitterdistance = General.Settings.ReadSetting("scriptspanel.splitterdistance", int.MinValue);
+			if(splitterdistance == int.MinValue)
+			{
+				splitterdistance = 200;
+				if(MainForm.DPIScaler.Width != 1.0f)
+					splitterdistance = (int)Math.Round(splitterdistance * MainForm.DPIScaler.Width);
+			}
+			mainsplitter.SplitPosition = splitterdistance;
+
+			//mxd. Set text editor settings
+			showwhitespace = General.Settings.ReadSetting("scriptspanel.showwhitespace", false);
+			buttonwhitespace.Checked = showwhitespace;
+			menuwhitespace.Checked = showwhitespace;
+			wraplonglines = General.Settings.ReadSetting("scriptspanel.wraplonglines", false);
+			buttonwordwrap.Checked = wraplonglines;
+			menuwordwrap.Checked = wraplonglines;
+			menustayontop.Checked = General.Settings.ScriptOnTop;
+			ApplyTabSettings();
 		}
 		
 		// This saves user preferences
@@ -233,8 +320,11 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			General.Settings.WriteSetting("scriptspanel.errorscolumn0width", errorlist.Columns[0].Width);
 			General.Settings.WriteSetting("scriptspanel.errorscolumn1width", errorlist.Columns[1].Width);
-			General.Settings.WriteSetting("scriptspanel.showwhitespace", buttonwhitespace.Checked); //mxd
-			General.Settings.WriteSetting("scriptspanel.wraplonglines", buttonwordwrap.Checked); //mxd
+			General.Settings.WriteSetting("scriptspanel.errorscolumn2width", errorlist.Columns[2].Width); //mxd
+			General.Settings.WriteSetting("scriptspanel.splittercollapsed", mainsplitter.IsCollapsed); //mxd
+			General.Settings.WriteSetting("scriptspanel.splitterdistance", mainsplitter.SplitPosition); //mxd
+			General.Settings.WriteSetting("scriptspanel.showwhitespace", showwhitespace); //mxd
+			General.Settings.WriteSetting("scriptspanel.wraplonglines", wraplonglines); //mxd
 		}
 
 		//mxd
@@ -248,6 +338,41 @@ namespace CodeImp.DoomBuilder.Controls
 					scripttab.WrapLongLines = buttonwordwrap.Checked;
 					scripttab.ShowWhitespace = buttonwhitespace.Checked;
 				}
+			}
+		}
+
+		//mxd
+		internal void OnReloadResources()
+		{
+			// Re-initialize script resources control
+			scriptresources.Setup(this, General.Map.Data.ScriptResources);
+
+			// Resource tabs may need re-linking...
+			foreach(var tp in tabs.TabPages)
+			{
+				var tab = (tp as ScriptResourceDocumentTab);
+				if(tab != null) tab.OnReloadResources();
+			}
+		}
+
+		//mxd. Handle heavy resource loss
+		internal void OnScriptResourceLost(ScriptResourceDocumentTab sourcetab)
+		{
+			// Resource was lost. Remove tab
+			if(!sourcetab.IsChanged)
+			{
+				tabs.TabPages.Remove(sourcetab);
+			}
+			// Resource was lost, but the tab contains unsaved changes. Replace it with ScriptFileDocumentTab
+			else
+			{
+				int tabindex = tabs.TabPages.IndexOf(sourcetab);
+				var newtab = new ScriptFileDocumentTab(sourcetab);
+
+				tabs.SuspendLayout();
+				tabs.TabPages.Remove(sourcetab);
+				tabs.TabPages.Insert(tabindex, newtab);
+				tabs.ResumeLayout();
 			}
 		}
 		
@@ -302,7 +427,7 @@ namespace CodeImp.DoomBuilder.Controls
 		// Replace if possible
 		public void Replace(FindReplaceOptions options)
 		{
-			if(!string.IsNullOrEmpty(findoptions.FindText) && (options.ReplaceWith != null) && (ActiveTab != null))
+			if(!string.IsNullOrEmpty(findoptions.FindText) && options.ReplaceWith != null && ActiveTab != null && !ActiveTab.IsReadOnly)
 			{
 				if(string.Compare(ActiveTab.SelectedText, options.FindText, !options.CaseSensitive) == 0)
 				{
@@ -321,7 +446,7 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			int replacements = 0;
 			findoptions = options;
-			if(!string.IsNullOrEmpty(findoptions.FindText) && (options.ReplaceWith != null) && (ActiveTab != null))
+			if(!string.IsNullOrEmpty(findoptions.FindText) && options.ReplaceWith != null && ActiveTab != null && !ActiveTab.IsReadOnly)
 			{
 				int firstfindpos = -1;
 				int lastpos = -1;
@@ -389,6 +514,8 @@ namespace CodeImp.DoomBuilder.Controls
 
 			try
 			{
+				findreplaceform.CanReplace = !ActiveTab.IsReadOnly; //mxd
+				
 				if(findreplaceform.Visible)
 					findreplaceform.Focus();
 				else
@@ -397,9 +524,18 @@ namespace CodeImp.DoomBuilder.Controls
 				if(ActiveTab.SelectionEnd != ActiveTab.SelectionStart)
 					findreplaceform.SetFindText(ActiveTab.SelectedText);
 			}
-			catch(Exception)
+			catch { } // If we can't pop up the find/replace form right now, thats just too bad.
+		}
+
+		//mxd
+		public void GoToLine()
+		{
+			if(ActiveTab == null) return;
+
+			var form = new ScriptGoToLineForm { LineNumber = ActiveTab.Editor.Scintilla.CurrentLine };
+			if(form.ShowDialog(this.parentform) == DialogResult.OK)
 			{
-				// If we can't pop up the find/replace form right now, thats just too bad.
+				ActiveTab.MoveToLine(form.LineNumber - 1);
 			}
 		}
 
@@ -489,20 +625,27 @@ namespace CodeImp.DoomBuilder.Controls
 		// This writes all explicitly opened files to the configuration
 		public void WriteOpenFilesToConfiguration()
 		{
-			General.Map.Options.ScriptFileSettings.Clear(); //mxd
-			General.Map.Options.ScriptLumpSettings.Clear(); //mxd
-
+			General.Map.Options.ScriptDocumentSettings.Clear(); //mxd
 			foreach(ScriptDocumentTab t in tabs.TabPages) //mxd
 			{
-				if(t.ExplicitSave)
+				if(t is ScriptFileDocumentTab)
 				{
-					// Don't store tabs, which were never saved (this only happens when a new tab was created and no text was entered into it before closing the script editor)
-					if(!t.IsSaveAsRequired)
-						General.Map.Options.ScriptFileSettings[t.Filename] = t.GetViewSettings();
+					// Don't store tabs, which were never saved (this only happens when a new tab was created and no text 
+					// was entered into it before closing the script editor)
+					if(t.ExplicitSave && !t.IsSaveAsRequired)
+					{
+						var settings = t.GetViewSettings();
+						General.Map.Options.ScriptDocumentSettings[settings.Filename] = settings;
+					}
+				}
+				else if(t is ScriptLumpDocumentTab || t is ScriptResourceDocumentTab)
+				{
+					var settings = t.GetViewSettings();
+					General.Map.Options.ScriptDocumentSettings[settings.Filename] = settings;
 				}
 				else
 				{
-					General.Map.Options.ScriptLumpSettings[t.Filename] = t.GetViewSettings();
+					throw new NotImplementedException("Unknown ScriptDocumentTab type");
 				}
 			}
 		}
@@ -579,11 +722,11 @@ namespace CodeImp.DoomBuilder.Controls
 				if(!t.ExplicitSave) t.Save();
 			}
 			
-			UpdateToolbar(false);
+			UpdateInterface(false);
 		}
 		
 		// This updates the toolbar for the current status
-		private void UpdateToolbar(bool focuseditor)
+		private void UpdateInterface(bool focuseditor)
 		{
 			int numscriptsopen = tabs.TabPages.Count;
 			int explicitsavescripts = 0;
@@ -591,33 +734,53 @@ namespace CodeImp.DoomBuilder.Controls
 			
 			// Any explicit save scripts?
 			foreach(ScriptDocumentTab dt in tabs.TabPages)
-				if(dt.ExplicitSave) explicitsavescripts++;
+				if(dt.ExplicitSave && !dt.IsReadOnly) explicitsavescripts++;
 			
 			// Get current script, if any are open
-			if(numscriptsopen > 0)
-				t = (tabs.SelectedTab as ScriptDocumentTab);
+			if(numscriptsopen > 0) t = (tabs.SelectedTab as ScriptDocumentTab);
 			
 			// Enable/disable buttons
-			buttonsave.Enabled = (t != null && t.ExplicitSave && t.IsChanged);
+			bool tabiseditable = (t != null && !t.IsReadOnly); //mxd
+
+			buttonsave.Enabled = (tabiseditable && t.ExplicitSave && t.IsChanged);
 			buttonsaveall.Enabled = (explicitsavescripts > 0);
-			buttoncompile.Enabled = (t != null && t.Config.Compiler != null);
+			buttoncompile.Enabled = (tabiseditable && t.Config.Compiler != null);
 			buttonsearch.Enabled = (t != null); //mxd
 			buttonkeywordhelp.Enabled = (t != null && !string.IsNullOrEmpty(t.Config.KeywordHelp));
-			buttonscriptconfig.Enabled = (t != null && t.IsReconfigurable);
-			buttonundo.Enabled = (t != null && t.Scintilla.CanUndo);
-			buttonredo.Enabled = (t != null && t.Scintilla.CanRedo);
-			buttoncopy.Enabled = (t != null && t.Scintilla.SelectionStart < t.Scintilla.SelectionEnd);
-			buttoncut.Enabled = (t != null && t.Scintilla.SelectionStart < t.Scintilla.SelectionEnd);
-			buttonpaste.Enabled = (t != null && t.Scintilla.CanPaste);
-			buttonclose.Enabled = (t != null && t.IsClosable);
-			buttonsnippets.DropDownItems.Clear(); //mxd
-			buttonsnippets.Enabled = (t != null && t.Config.Snippets.Count > 0); //mxd
-			buttonindent.Enabled = (t != null); //mxd
-			buttonunindent.Enabled = (t != null && t.Scintilla.Lines[t.Scintilla.CurrentLine].Indentation > 0); //mxd
-			buttonwhitespace.Enabled = (t != null); //mxd
-			buttonwordwrap.Enabled = (t != null); //mxd
-			searchmatchcase.Enabled = (t != null); //mxd
-			searchwholeword.Enabled = (t != null); //mxd
+			buttonscriptconfig.Enabled = (tabiseditable && t.IsReconfigurable);
+			
+			// Undo/Redo
+			buttonundo.Enabled = (tabiseditable && t.Editor.Scintilla.CanUndo);
+			buttonredo.Enabled = (tabiseditable && t.Editor.Scintilla.CanRedo);
+
+			// Cut/Copy/Paste
+			buttoncopy.Enabled = (t != null && t.Editor.Scintilla.SelectionStart < t.Editor.Scintilla.SelectionEnd);
+			buttoncut.Enabled = (tabiseditable && t.Editor.Scintilla.SelectionStart < t.Editor.Scintilla.SelectionEnd);
+			buttonpaste.Enabled = (tabiseditable && t.Editor.Scintilla.CanPaste);
+			
+			//mxd. Snippets
+			buttonsnippets.DropDownItems.Clear();
+			menusnippets.DropDownItems.Clear();
+
+			bool havesnippets = (tabiseditable && t.Config.Snippets.Count > 0);
+			buttonsnippets.Enabled = havesnippets;
+			menusnippets.Enabled = havesnippets;
+
+			//mxd. Indent/Unindent
+			buttonindent.Enabled = tabiseditable;
+			buttonunindent.Enabled = (tabiseditable && t.Editor.Scintilla.Lines[t.Editor.Scintilla.CurrentLine].Indentation > 0);
+
+			//mxd. Whitespace
+			buttonwhitespace.Enabled = (t != null);
+			menuwhitespace.Enabled = (t != null);
+
+			//mxd. Wordwrap
+			buttonwordwrap.Enabled = (t != null);
+			menuwordwrap.Enabled = (t != null);
+
+			//mxd. Quick search options
+			searchmatchcase.Enabled = (t != null);
+			searchwholeword.Enabled = (t != null);
 			
 			if(t != null)
 			{
@@ -625,7 +788,7 @@ namespace CodeImp.DoomBuilder.Controls
 				searchbox.Enabled = true;
 				if(searchbox.Text.Length > 0)
 				{
-					if(t.Scintilla.Text.IndexOf(searchbox.Text, searchmatchcase.Checked ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase) != -1)
+					if(t.Editor.Scintilla.Text.IndexOf(searchbox.Text, searchmatchcase.Checked ? StringComparison.Ordinal : StringComparison.OrdinalIgnoreCase) != -1)
 					{
 						searchprev.Enabled = true;
 						searchnext.Enabled = true;
@@ -655,7 +818,13 @@ namespace CodeImp.DoomBuilder.Controls
 				if(t.Config != null && t.Config.Snippets.Count > 0)
 				{
 					if(t.Config.Snippets.Count > 0)
-						foreach(string snippetname in t.Config.Snippets) buttonsnippets.DropDownItems.Add(snippetname).Click += OnInsertSnippetClick;
+					{
+						foreach(string snippetname in t.Config.Snippets)
+						{
+							buttonsnippets.DropDownItems.Add(snippetname).Click += OnInsertSnippetClick;
+							menusnippets.DropDownItems.Add(snippetname).Click += OnInsertSnippetClick;
+						}
+					}
 				}
 				
 				// Focus to script editor
@@ -673,22 +842,22 @@ namespace CodeImp.DoomBuilder.Controls
 			scripttype.Text = ((t != null && t.Config != null) ? t.Config.Description : "Plain Text");
 		}
 
-		//mxd
-		private int GetTabPageIndex(string title)
-		{
-			if(tabs.TabPages.Count == 0) return -1;
-
-			for(int i = 0; i < tabs.TabPages.Count; i++)
-			{
-				if(tabs.TabPages[i].Text == title) return i;
-			}
-
-			return -1;
-		}
-
 		// This opens the given file, returns null when failed
 		public ScriptFileDocumentTab OpenFile(string filename)
 		{
+			//mxd. Check if we already have this file opened
+			foreach(var tab in tabs.TabPages)
+			{
+				if(!(tab is ScriptFileDocumentTab)) continue;
+				ScriptFileDocumentTab filetab = (ScriptFileDocumentTab)tab;
+
+				if(filetab.Filename == filename)
+				{
+					tabs.SelectedTab = filetab;
+					return filetab;
+				}
+			}
+			
 			ScriptConfiguration foundconfig = new ScriptConfiguration();
 
 			// Find the most suitable script configuration to use
@@ -732,13 +901,53 @@ namespace CodeImp.DoomBuilder.Controls
 
 				// Done
 				t.OnTextChanged += tabpage_OnTextChanged; //mxd
-				t.Scintilla.UpdateUI += scintilla_OnUpdateUI;
-				UpdateToolbar(true);
+				t.Editor.Scintilla.UpdateUI += scintilla_OnUpdateUI;
+				UpdateInterface(true);
 				return t;
 			}
 
 			// Failed
 			return null;
+		}
+
+		//mxd
+		internal ScriptResourceDocumentTab OpenResource(ScriptResource resource)
+		{
+			// Check if we already have this file opened
+			foreach(var tab in tabs.TabPages)
+			{
+				if(!(tab is ScriptResourceDocumentTab)) continue;
+				ScriptResourceDocumentTab restab = (ScriptResourceDocumentTab)tab;
+
+				if(restab.Filename == resource.FilePathName)
+				{
+					tabs.SelectedTab = restab;
+					return restab;
+				}
+			}
+			
+			// Create new document
+			ScriptConfiguration config = General.GetScriptConfiguration(resource.ScriptType);
+			if(config == null || config.ScriptType != resource.ScriptType)
+			{
+				General.ErrorLogger.Add(ErrorType.Warning, "Incorrect or missing script configuration for \"" + resource.ScriptType + "\" script type. Using plain text configuration.");
+				config = new ScriptConfiguration();
+			}
+
+			var t = new ScriptResourceDocumentTab(this, resource, config);
+			
+			// Mark any errors this script may have
+			if(compilererrors != null) t.MarkScriptErrors(compilererrors);
+
+			// Add to tabs
+			tabs.TabPages.Add(t);
+			tabs.SelectedTab = t;
+
+			// Done
+			t.OnTextChanged += tabpage_OnTextChanged;
+			t.Editor.Scintilla.UpdateUI += scintilla_OnUpdateUI;
+			UpdateInterface(true);
+			return t;
 		}
 
 		// This saves the current open script
@@ -891,7 +1100,7 @@ namespace CodeImp.DoomBuilder.Controls
 			scripttype.Text = scriptconfig.Description;
 
 			// Done
-			UpdateToolbar(true);
+			UpdateInterface(true);
 		}
 		
 		// When new script is clicked
@@ -906,7 +1115,7 @@ namespace CodeImp.DoomBuilder.Controls
 			tabs.SelectedTab = t;
 			
 			// Done
-			UpdateToolbar(true);
+			UpdateInterface(true);
 		}
 		
 		// Open script clicked
@@ -931,21 +1140,15 @@ namespace CodeImp.DoomBuilder.Controls
 						ScriptFileDocumentTab t = OpenFile(name);
 						
 						// Apply document settings
-						bool settingsfound = false;
-						foreach(ScriptDocumentSettings settings in General.Map.Options.ScriptFileSettings.Values)
+						if(General.Map.Options.ScriptDocumentSettings.ContainsKey(t.Filename))
 						{
-							// Does this file exist?
-							if(settings.Filename == t.Filename)
-							{
-								// Apply stored settings
-								t.SetViewSettings(settings);
-								settingsfound = true;
-								break;
-							}
+							t.SetViewSettings(General.Map.Options.ScriptDocumentSettings[t.Filename]);
 						}
-
-						// Apply default settings
-						if(!settingsfound) t.SetDefaultViewSettings();
+						else
+						{
+							// Apply default settings
+							t.SetDefaultViewSettings();
+						}
 					}
 				}
 
@@ -968,7 +1171,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// Save the current script
 			ScriptDocumentTab t = (tabs.SelectedTab as ScriptDocumentTab);
 			SaveScript(t);
-			UpdateToolbar(true);
+			UpdateInterface(true);
 		}
 
 		// Save All clicked
@@ -984,7 +1187,7 @@ namespace CodeImp.DoomBuilder.Controls
 				}
 			}
 			
-			UpdateToolbar(true);
+			UpdateInterface(true);
 		}
 
 		// This is called by Save and Save All to save a script
@@ -1001,6 +1204,10 @@ namespace CodeImp.DoomBuilder.Controls
 				{
 					// Save to new filename
 					t.SaveAs(savefile.FileName);
+
+					//mxd. Also compile if needed
+					if(t.Config.Compiler != null) t.Compile();
+
 					return true;
 				}
 				
@@ -1010,6 +1217,10 @@ namespace CodeImp.DoomBuilder.Controls
 
 			// Save to same filename
 			t.Save();
+
+			//mxd. Also compile if needed
+			if(t.Config.Compiler != null) t.Compile();
+
 			return true;
 		}
 		
@@ -1024,15 +1235,7 @@ namespace CodeImp.DoomBuilder.Controls
 				ShowErrors(tab.UpdateNavigator(), true);
 			}
 
-			UpdateToolbar(true);
-		}
-		
-		// This closes the current file
-		private void buttonclose_Click(object sender, EventArgs e)
-		{
-			ScriptDocumentTab t = (tabs.SelectedTab as ScriptDocumentTab);
-			CloseScript(t, false);
-			UpdateToolbar(true);
+			UpdateInterface(true);
 		}
 		
 		// Compile Script clicked
@@ -1075,7 +1278,7 @@ namespace CodeImp.DoomBuilder.Controls
 				DisplayStatus(ScriptStatusType.Info, "Script \"" + t.Title + "\" compiled without errors.");
 
 			Cursor.Current = Cursors.Default;
-			UpdateToolbar(true);
+			UpdateInterface(true);
 		}
 		
 		// Undo clicked
@@ -1083,7 +1286,7 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			ScriptDocumentTab t = (tabs.SelectedTab as ScriptDocumentTab);
 			t.Undo();
-			UpdateToolbar(true);
+			UpdateInterface(true);
 		}
 		
 		// Redo clicked
@@ -1091,7 +1294,7 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			ScriptDocumentTab t = (tabs.SelectedTab as ScriptDocumentTab);
 			t.Redo();
-			UpdateToolbar(true);
+			UpdateInterface(true);
 		}
 		
 		// Cut clicked
@@ -1099,7 +1302,7 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			ScriptDocumentTab t = (tabs.SelectedTab as ScriptDocumentTab);
 			t.Cut();
-			UpdateToolbar(true);
+			UpdateInterface(true);
 		}
 		
 		// Copy clicked
@@ -1107,7 +1310,7 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			ScriptDocumentTab t = (tabs.SelectedTab as ScriptDocumentTab);
 			t.Copy();
-			UpdateToolbar(true);
+			UpdateInterface(true);
 		}
 
 		// Paste clicked
@@ -1115,7 +1318,7 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			ScriptDocumentTab t = (tabs.SelectedTab as ScriptDocumentTab);
 			t.Paste();
-			UpdateToolbar(true);
+			UpdateInterface(true);
 		}
 
 		//mxd
@@ -1135,12 +1338,28 @@ namespace CodeImp.DoomBuilder.Controls
 		//mxd
 		private void buttonwhitespace_Click(object sender, EventArgs e)
 		{
+			if(blockupdate) return;
+
+			blockupdate = true;
+			showwhitespace = !showwhitespace;
+			buttonwhitespace.Checked = showwhitespace;
+			menuwhitespace.Checked = showwhitespace;
+			blockupdate = false;
+			
 			ApplyTabSettings();
 		}
 
 		//mxd
 		private void buttonwordwrap_Click(object sender, EventArgs e)
 		{
+			if(blockupdate) return;
+
+			blockupdate = true;
+			wraplonglines = !wraplonglines;
+			buttonwordwrap.Checked = wraplonglines;
+			menuwordwrap.Checked = wraplonglines;
+			blockupdate = false;
+			
 			ApplyTabSettings();
 		}
 
@@ -1148,6 +1367,25 @@ namespace CodeImp.DoomBuilder.Controls
 		private void buttonsearch_Click(object sender, EventArgs e) 
 		{
 			OpenFindAndReplace();
+		}
+
+		//mxd
+		private void menugotoline_Click(object sender, EventArgs e)
+		{
+			GoToLine();
+		}
+
+		//mxd
+		private void menuduplicateline_Click(object sender, EventArgs e)
+		{
+			if(ActiveTab != null) ActiveTab.Editor.DuplicateLine();
+		}
+
+		//mxd
+		private void menustayontop_Click(object sender, EventArgs e)
+		{
+			General.Settings.ScriptOnTop = menustayontop.Checked;
+			parentform.TopMost = General.Settings.ScriptOnTop;
 		}
 
 		//mxd
@@ -1163,6 +1401,18 @@ namespace CodeImp.DoomBuilder.Controls
 			ForceFocus();
 		}
 
+		//mxd
+		private void tabs_OnCloseTabClicked(object sender, TabControlEventArgs e)
+		{
+			ScriptDocumentTab t = (e.TabPage as ScriptDocumentTab);
+			
+			//TODO: allow any tab to be closed.
+			if(!t.IsClosable) return;
+			
+			CloseScript(t, false);
+			UpdateInterface(true);
+		}
+
 		//mxd. Text in ScriptFileDocumentTab was changed
 		private void tabpage_OnTextChanged(object sender, EventArgs eventArgs)
 		{
@@ -1172,8 +1422,8 @@ namespace CodeImp.DoomBuilder.Controls
 				if(curtab != null)
 				{
 					buttonsave.Enabled = (curtab.ExplicitSave && curtab.IsChanged);
-					buttonundo.Enabled = curtab.Scintilla.CanUndo;
-					buttonredo.Enabled = curtab.Scintilla.CanRedo;
+					buttonundo.Enabled = curtab.Editor.Scintilla.CanUndo;
+					buttonredo.Enabled = curtab.Editor.Scintilla.CanRedo;
 				}
 			}
 		}
@@ -1186,8 +1436,8 @@ namespace CodeImp.DoomBuilder.Controls
 				ScriptDocumentTab curtab = tabs.SelectedTab as ScriptDocumentTab;
 				if(curtab != null)
 				{
-					buttonundo.Enabled = curtab.Scintilla.CanUndo;
-					buttonredo.Enabled = curtab.Scintilla.CanRedo;
+					buttonundo.Enabled = curtab.Editor.Scintilla.CanUndo;
+					buttonredo.Enabled = curtab.Editor.Scintilla.CanRedo;
 				}
 			}
 		}
@@ -1269,15 +1519,15 @@ namespace CodeImp.DoomBuilder.Controls
 
 		private void searchnext_Click(object sender, EventArgs e)
 		{
-			ActiveTab.FindNext(GetQuickSearchOptions());
+			FindNext();
 		}
 
 		private void searchprev_Click(object sender, EventArgs e) 
 		{
-			ActiveTab.FindPrevious(GetQuickSearchOptions());
+			FindPrevious();
 		}
 
-		//mxd. This flashes the status icon
+		// This flashes the status icon
 		private void statusflasher_Tick(object sender, EventArgs e)
 		{
 			statusflashicon = !statusflashicon;
@@ -1286,13 +1536,84 @@ namespace CodeImp.DoomBuilder.Controls
 			if(statusflashcount == 0) statusflasher.Stop();
 		}
 
-		//mxd. This resets the status to ready
+		// This resets the status to ready
 		private void statusresetter_Tick(object sender, EventArgs e)
 		{
 			DisplayStatus(ScriptStatusType.Ready, null);
 		}
 
 		#endregion
-		
+
+		#region ================== Menu opening events (mxd)
+
+		private void filemenuitem_DropDownOpening(object sender, EventArgs e)
+		{
+			ScriptDocumentTab t = ActiveTab;
+			menusave.Enabled = (t != null && !t.IsReadOnly && t.ExplicitSave && t.IsChanged);
+
+			// Any explicit save scripts?
+			int explicitsavescripts = 0;
+			foreach(ScriptDocumentTab dt in tabs.TabPages)
+				if(dt.ExplicitSave && !dt.IsReadOnly) explicitsavescripts++;
+
+			menusaveall.Enabled = (explicitsavescripts > 0);
+		}
+
+		private void editmenuitem_DropDownOpening(object sender, EventArgs e)
+		{
+			ScriptDocumentTab t = ActiveTab;
+			if(t != null)
+			{
+				Scintilla s = t.Editor.Scintilla;
+				
+				menuundo.Enabled = s.CanUndo;
+				menuredo.Enabled = s.CanRedo;
+
+				menucut.Enabled = (s.SelectionEnd > s.SelectionStart);
+				menucopy.Enabled = (s.SelectionEnd > s.SelectionStart);
+				menupaste.Enabled = s.CanPaste;
+
+				menuindent.Enabled = true;
+				menuunindent.Enabled = s.Lines[s.CurrentLine].Indentation > 0;
+
+				menugotoline.Enabled = true;
+				menuduplicateline.Enabled = true;
+			}
+			else
+			{
+				menuundo.Enabled = false;
+				menuredo.Enabled = false;
+
+				menucut.Enabled = false;
+				menucopy.Enabled = false;
+				menupaste.Enabled = false;
+
+				menusnippets.Enabled = false;
+
+				menuindent.Enabled = false;
+				menuunindent.Enabled = false;
+
+				menugotoline.Enabled = false;
+				menuduplicateline.Enabled = false;
+			}
+		}
+
+		private void searchmenuitem_DropDownOpening(object sender, EventArgs e)
+		{
+			ScriptDocumentTab t = ActiveTab;
+			menufind.Enabled = (t != null);
+
+			bool enable = (!string.IsNullOrEmpty(findoptions.FindText) && t != null);
+			menufindnext.Enabled = enable;
+			menufindprevious.Enabled = enable;
+		}
+
+		private void toolsmenu_DropDownOpening(object sender, EventArgs e)
+		{
+			ScriptDocumentTab t = ActiveTab;
+			menucompile.Enabled = (ActiveTab != null && !t.IsReadOnly && t.Config.Compiler != null);
+		}
+
+		#endregion
 	}
 }

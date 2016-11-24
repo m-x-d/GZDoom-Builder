@@ -22,10 +22,10 @@ using System.IO;
 using CodeImp.DoomBuilder.Compilers;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.IO;
-using SharpCompress.Archive; //mxd
+using SharpCompress.Archive;
 using SharpCompress.Archive.Zip;
-using SharpCompress.Common; //mxd
-using SharpCompress.Reader; //mxd
+using SharpCompress.Common;
+using SharpCompress.Reader;
 
 #endregion
 
@@ -520,21 +520,68 @@ namespace CodeImp.DoomBuilder.Data
 			return filedata;
 		}
 
-		//mxd. TODO: test this
+		//mxd
 		internal override bool SaveFile(MemoryStream stream, string filename, int unused) { return SaveFile(stream, filename); }
 		internal override bool SaveFile(MemoryStream stream, string filename)
 		{
 			// Not implemented in SevenZipArchive...
 			if(isreadonly || archivetype == ArchiveType.SevenZip) return false;
 
-			// Re-open the archive
-			using(ZipArchive za = (ZipArchive)ArchiveFactory.Open(location.location))
-			{
-				if(za == null) return false;
+			// Convert slashes...
+			filename = filename.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
 
-				// Replace entry 
-				//TODO: Do we need to remove the old entry?
-				za.AddEntry(filename, stream, stream.Length, DateTime.Now);
+			// Check if target file is locked...
+			var checkresult = FileLockChecker.CheckFile(location.location);
+			if(!string.IsNullOrEmpty(checkresult.Error))
+			{
+				string errmsg = "Unable to save file \"" + filename + "\" into archive \"" + location.GetDisplayName() + "\".";
+				if(checkresult.Processes.Count > 0)
+				{
+					string processpath = string.Empty;
+					try
+					{
+						// All manner of exceptions are possible here...
+						processpath = checkresult.Processes[0].MainModule.FileName;
+					}
+					catch { }
+
+					errmsg += " Archive is locked by " + checkresult.Processes[0].ProcessName
+						+ " (" + (!string.IsNullOrEmpty(processpath) ? "\"" + processpath + "\"" : "")
+						+ ", started at " + checkresult.Processes[0].StartTime + ").";
+				}
+				
+				General.ErrorLogger.Add(ErrorType.Error, errmsg);
+				return false;
+			}
+
+			using(MemoryStream savestream = new MemoryStream())
+			{
+				using(ZipArchive za = (ZipArchive)ArchiveFactory.Open(location.location))
+				{
+					if(za == null)
+					{
+						string errmsg = "Unable to save file \"" + filename + "\" into archive \"" + location.GetDisplayName() + "\". Unable to open target file as a zip archive.";
+						General.ErrorLogger.Add(ErrorType.Error, errmsg);
+						return false;
+					}
+
+					// Find and remove original entry...
+					foreach(ZipArchiveEntry entry in za.Entries)
+					{
+						if(!entry.IsDirectory && entry.Key == filename)
+						{
+							za.RemoveEntry(entry);
+							break;
+						}
+					}
+
+					// Add new entry and save the archive to stream...
+					za.AddEntry(filename, stream, 0L, DateTime.Now);
+					za.SaveTo(savestream, CompressionType.Deflate);
+				}
+
+				// Replace archive file...
+				File.WriteAllBytes(location.location, savestream.ToArray());
 			}
 
 			return true;

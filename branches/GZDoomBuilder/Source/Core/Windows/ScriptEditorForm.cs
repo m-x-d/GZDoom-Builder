@@ -17,7 +17,6 @@
 #region ================== Namespaces
 
 using System;
-using System.Drawing;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Controls;
 
@@ -46,7 +45,7 @@ namespace CodeImp.DoomBuilder.Windows
 		public ScriptEditorForm()
 		{
 			InitializeComponent();
-			editor.Initialize();
+			editor.Initialize(this);
 		}
 		
 		#endregion
@@ -70,6 +69,12 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			appclose = true;
 			base.Close();
+		}
+
+		//mxd
+		internal void OnReloadResources()
+		{
+			editor.OnReloadResources();
 		}
 
 		#endregion
