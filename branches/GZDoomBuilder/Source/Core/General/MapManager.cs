@@ -442,7 +442,7 @@ namespace CodeImp.DoomBuilder
 			thingsfilter.Update();
 
 			//mxd. Update script names
-			UpdateScriptNames();
+			LoadACS();
 
 			//mxd. Restore selection groups
 			options.ReadSelectionGroups();
@@ -534,7 +534,7 @@ namespace CodeImp.DoomBuilder
 			data.SetupSkybox();
 
 			// Update script names
-			UpdateScriptNames();
+			LoadACS();
 
 			// Restore selection groups
 			options.ReadSelectionGroups();
@@ -1964,9 +1964,13 @@ namespace CodeImp.DoomBuilder
 			return success;
 		}
 
-		//mxd. Update script numbers and names
-		private void UpdateScriptNames()
+		//mxd. Update script numbers and names, collect loose ACS files.
+		private void LoadACS()
 		{
+			///////////////////////////////////////////
+			// Step 1: Update script numbers and names
+			///////////////////////////////////////////
+			
 			General.Map.Data.ScriptResources[ScriptType.ACS] = new HashSet<ScriptResource>();
 
 			// Find SCRIPTS lump and parse it
@@ -2009,16 +2013,14 @@ namespace CodeImp.DoomBuilder
 							{
 								TextResourceData includedata = General.Map.Data.GetTextResourceData(includefile);
 								if(includedata == null) return false; // Fial
-
-								includedata.Trackable = true;
 								return se.Parse(includedata, true, includetype, false);
 							}
 						};
 
 						//INFO: CompileLump() prepends lumpname with "?" to distinguish between temporary files and files compiled in place
 						DataLocation location = new DataLocation { location = tempwadreader.WadFile.Filename, type = DataLocation.RESOURCE_WAD };
-						TextResourceData data = new TextResourceData(stream, location, "?SCRIPTS", false);
-						if(parser.Parse(data, scriptconfig.Compiler.Files, true, AcsParserSE.IncludeType.NONE, false))
+						TextResourceData trd = new TextResourceData(stream, location, "?SCRIPTS");
+						if(parser.Parse(trd, scriptconfig.Compiler.Files, true, AcsParserSE.IncludeType.NONE, false))
 						{
 							// Add to text resource list
 							General.Map.Data.ScriptResources[parser.ScriptType].UnionWith(parser.ScriptResources.Values);
@@ -2037,10 +2039,47 @@ namespace CodeImp.DoomBuilder
 						if(parser.HasError) parser.LogError();
 
 						// Done here
-						return;
+						break;
 					}
 				}
 			}
+
+			///////////////////////////////////////////
+			// Step 2: Try to load unused ACS files
+			///////////////////////////////////////////
+
+			Dictionary<string, HashSet<string>> existingacsfiles = new Dictionary<string, HashSet<string>>();
+
+			// Gather already parsed files...
+			foreach(ScriptResource sr in General.Map.Data.ScriptResources[ScriptType.ACS])
+			{
+				if(!existingacsfiles.ContainsKey(sr.Resource.Location.location))
+					existingacsfiles.Add(sr.Resource.Location.location, new HashSet<string>());
+
+				existingacsfiles[sr.Resource.Location.location].Add(sr.Filename);
+			}
+
+			HashSet<ScriptResource> looseacsfiles = new HashSet<ScriptResource>();
+			foreach(DataReader dr in General.Map.Data.Containers)
+			{
+				//TODO: implement for WADs
+				if(dr is PK3StructuredReader)
+				{
+					PK3StructuredReader pkr = (PK3StructuredReader)dr;
+					string[] acsfiles = pkr.GetFilesWithExt("", "acs", true);
+					foreach(string acsfile in acsfiles)
+					{
+						if(!existingacsfiles.ContainsKey(pkr.Location.location) || !existingacsfiles[pkr.Location.location].Contains(acsfile))
+						{
+							TextResourceData trd = new TextResourceData(dr, dr.LoadFile(acsfile), acsfile, true);
+							looseacsfiles.Add(new ScriptResource(trd, ScriptType.ACS));
+						}
+					}
+				}
+			}
+
+			// Add to the main collection
+			General.Map.Data.ScriptResources[ScriptType.ACS].UnionWith(looseacsfiles);
 		}
 
 		//mxd
@@ -2244,7 +2283,7 @@ namespace CodeImp.DoomBuilder
 			}
 
 			//mxd. Update script names
-			UpdateScriptNames();
+			LoadACS();
 
 			//mxd. Script Editor may need updating...
 			if(scriptwindow != null) scriptwindow.OnReloadResources();

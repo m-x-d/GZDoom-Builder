@@ -25,7 +25,7 @@ namespace CodeImp.DoomBuilder.Data.Scripting
 			target.Items.Clear();
 
 			ModeldefParserSE parser = new ModeldefParserSE();
-			TextResourceData data = new TextResourceData(stream, new DataLocation(), "MODELDEF", false);
+			TextResourceData data = new TextResourceData(stream, new DataLocation(), "MODELDEF");
 
 			if(parser.Parse(data, false))
 				target.Items.AddRange(parser.Models.ToArray());

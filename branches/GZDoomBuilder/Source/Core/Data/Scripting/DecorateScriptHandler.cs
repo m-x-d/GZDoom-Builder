@@ -25,7 +25,7 @@ namespace CodeImp.DoomBuilder.Data.Scripting
 			target.Items.Clear();
 
 			DecorateParserSE parser = new DecorateParserSE();
-			TextResourceData data = new TextResourceData(stream, new DataLocation(), "DECORATE", false);
+			TextResourceData data = new TextResourceData(stream, new DataLocation(), "DECORATE");
 
 			if(parser.Parse(data, false))
 				target.Items.AddRange(parser.Actors.ToArray());

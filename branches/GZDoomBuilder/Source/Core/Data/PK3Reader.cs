@@ -446,7 +446,7 @@ namespace CodeImp.DoomBuilder.Data
 		}
 		
 		// This returns all files in a given directory that match the given extension
-		protected override string[] GetFilesWithExt(string path, string extension, bool subfolders)
+		internal override string[] GetFilesWithExt(string path, string extension, bool subfolders)
 		{
 			return files.GetAllFiles(path, extension, subfolders).ToArray();
 		}

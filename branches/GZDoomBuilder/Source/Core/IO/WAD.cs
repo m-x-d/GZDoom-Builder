@@ -508,7 +508,7 @@ namespace CodeImp.DoomBuilder.IO
 		// This finds a lump by name, returns -1 when not found
 		public int FindLumpIndex(string name, int start, int end)
 		{
-			if(name.Length > 8)	return -1;//mxd. Can't be here. Go away!
+			if(name.Length > 8)	return -1; //mxd. Can't be here. Go away!
 			
 			long longname = Lump.MakeLongName(name);
 			
@@ -516,7 +516,9 @@ namespace CodeImp.DoomBuilder.IO
 			if(end > (lumps.Count - 1)) end = lumps.Count - 1;
 
 			// Loop through the lumps
-			for(int i = start; i <= end; i++)
+			//mxd. ZDoom seems to prefer the last lump with the matching name
+			//TODO: is that always the case?
+			for(int i = end; i > start - 1; i--)
 			{
 				// Check if the lump name matches
 				if(lumps[i].LongName == longname)

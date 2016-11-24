@@ -43,42 +43,43 @@ namespace CodeImp.DoomBuilder.Data
 		internal DataLocation SourceLocation { get { return sourcelocation; } }
 		internal string Filename { get { return filename; } } // Lump name/Filename
 		internal int LumpIndex { get { return lumpindex; } } // Lump index in a WAD
-		internal bool Trackable { get { return trackable; } set { trackable = value; } } // When false, wont be added to DataManager.TextResources
+		internal bool Trackable { get { return trackable; } } // When false, wont be added to DataManager.TextResources
 
 
-		internal TextResourceData(DataReader Source, Stream Stream, string Filename, bool Trackable)
+		internal TextResourceData(DataReader source, Stream stream, string filename, bool trackable)
 		{
-			source = Source;
-			sourcelocation = Source.Location;
-			stream = Stream;
-			filename = Filename;
-			trackable = Trackable;
+			this.source = source;
+			this.sourcelocation = source.Location;
+			this.stream = stream;
+			this.filename = filename;
+			this.trackable = trackable;
 
 			WADReader reader = source as WADReader;
 			if(reader != null)
-				lumpindex = reader.WadFile.FindLumpIndex(filename);
+				this.lumpindex = reader.WadFile.FindLumpIndex(filename);
 			else
-				lumpindex = -1;
+				this.lumpindex = -1;
 		}
 
-		internal TextResourceData(DataReader Source, Stream Stream, string Filename, int LumpIndex, bool Trackable)
+		internal TextResourceData(DataReader source, Stream stream, string filename, int lumpindex, bool trackable)
 		{
-			source = Source;
-			sourcelocation = Source.Location;
-			stream = Stream;
-			filename = Filename;
-			lumpindex = LumpIndex;
-			trackable = Trackable;
+			this.source = source;
+			this.sourcelocation = source.Location;
+			this.stream = stream;
+			this.filename = filename;
+			this.lumpindex = lumpindex;
+			this.trackable = trackable;
 		}
 
-		internal TextResourceData(Stream Stream, DataLocation Location, string Filename, bool Trackable)
+		// Adds an untrackable resource without DataReader
+		internal TextResourceData(Stream stream, DataLocation location, string filename)
 		{
-			source = null;
-			sourcelocation = Location;
-			stream = Stream;
-			filename = Filename;
-			lumpindex = -1;
-			trackable = Trackable;
+			this.source = null;
+			this.sourcelocation = location;
+			this.stream = stream;
+			this.filename = filename;
+			this.lumpindex = -1;
+			this.trackable = false;
 		}
 	}
 	
@@ -257,6 +258,12 @@ namespace CodeImp.DoomBuilder.Data
 
 		//mxd. When implemented, this returns LOCKDEFS lumps
 		public abstract IEnumerable<TextResourceData> GetLockDefsData();
+
+		//mxd. When implemented, this returns MENUDEF lumps
+		public abstract IEnumerable<TextResourceData> GetMenuDefData();
+
+		//mxd. When implemented, this returns SBARINFO lumps
+		public abstract IEnumerable<TextResourceData> GetSBarInfoData();
 
 		//mxd. When implemented, this returns the list of voxel model names
 		public abstract HashSet<string> GetVoxelNames();

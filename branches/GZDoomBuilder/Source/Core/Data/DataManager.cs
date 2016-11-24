@@ -425,6 +425,9 @@ namespace CodeImp.DoomBuilder.Data
 			LoadCvarInfo();
 			LoadLockDefs();
 
+			//mxd. Load Script Editor-only stuff...
+			LoadExtraTextLumps();
+
 			int thingcount = LoadDecorateThings(spawnnums, doomednums);
 			int spritecount = LoadThingSprites();
 			LoadInternalSprites();
@@ -2848,6 +2851,41 @@ namespace CodeImp.DoomBuilder.Data
 			}
 		}
 
+		//mxd. This collects ZDoom text lumps, which are not used by the editor anywhere outside the Script Editor
+		private void LoadExtraTextLumps()
+		{
+			// Load MENUDEFS
+			HashSet<ScriptResource> menudefs = new HashSet<ScriptResource>();
+			foreach(DataReader dr in containers)
+			{
+				currentreader = dr;
+				IEnumerable<TextResourceData> streams = dr.GetMenuDefData();
+
+				// Add text tesources
+				foreach(TextResourceData data in streams)
+					menudefs.Add(new ScriptResource(data, ScriptType.MENUDEF));
+			}
+
+			// Add to collection
+			if(menudefs.Count > 0) scriptresources[ScriptType.MENUDEF] = menudefs;
+
+			// Load SBARINFO
+			//TODO: SBARINFO supports #include
+			HashSet<ScriptResource> sbarinfos = new HashSet<ScriptResource>();
+			foreach(DataReader dr in containers)
+			{
+				currentreader = dr;
+				IEnumerable<TextResourceData> streams = dr.GetSBarInfoData();
+
+				// Add text tesources
+				foreach(TextResourceData data in streams)
+					sbarinfos.Add(new ScriptResource(data, ScriptType.SBARINFO));
+			}
+
+			// Add to collection
+			if(sbarinfos.Count > 0) scriptresources[ScriptType.SBARINFO] = sbarinfos;
+		}
+
 		//mxd
 		internal TextResourceData GetTextResourceData(string name) 
 		{
@@ -2857,7 +2895,7 @@ namespace CodeImp.DoomBuilder.Data
 				if(File.Exists(name))
 				{
 					DataLocation location = new DataLocation{ location = name, type = DataLocation.RESOURCE_DIRECTORY };
-					return new TextResourceData(File.OpenRead(name), location, name, false);
+					return new TextResourceData(File.OpenRead(name), location, name);
 				}
 
 				return null;
@@ -2867,7 +2905,7 @@ namespace CodeImp.DoomBuilder.Data
 			for(int i = containers.Count - 1; i >= 0; i--)
 			{
 				if(containers[i].FileExists(name))
-					return new TextResourceData(containers[i], containers[i].LoadFile(name), name, false);
+					return new TextResourceData(containers[i], containers[i].LoadFile(name), name, true);
 			}
 
 			return null;

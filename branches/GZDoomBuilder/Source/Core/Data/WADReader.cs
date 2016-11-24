@@ -1031,10 +1031,10 @@ namespace CodeImp.DoomBuilder.Data
 			
 			// First look for ZMAPINFO
 			List<TextResourceData> result = new List<TextResourceData>();
-			result.AddRange(GetFirstLump("ZMAPINFO"));
+			result.AddRange(GetLastLump("ZMAPINFO"));
 
 			// Then for MAPINFO
-			if(result.Count == 0) result.AddRange(GetFirstLump("MAPINFO"));
+			if(result.Count == 0) result.AddRange(GetLastLump("MAPINFO"));
 			return result;
 		}
 
@@ -1121,7 +1121,21 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		//mxd
-		private IEnumerable<TextResourceData> GetFirstLump(string name)
+		public override IEnumerable<TextResourceData> GetMenuDefData()
+		{
+			if(issuspended) throw new Exception("Data reader is suspended");
+			return GetLastLump("MENUDEF");
+		}
+
+		//mxd
+		public override IEnumerable<TextResourceData> GetSBarInfoData()
+		{
+			if(issuspended) throw new Exception("Data reader is suspended");
+			return GetLastLump("SBARINFO");
+		}
+
+		//mxd
+		private IEnumerable<TextResourceData> GetLastLump(string name)
 		{
 			List<TextResourceData> result = new List<TextResourceData>();
 			int lumpindex = file.FindLumpIndex(name);

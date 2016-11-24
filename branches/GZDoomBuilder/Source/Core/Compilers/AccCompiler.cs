@@ -107,7 +107,7 @@ namespace CodeImp.DoomBuilder.Compilers
 
 				DataLocation dl = new DataLocation(DataLocation.RESOURCE_DIRECTORY, Path.GetDirectoryName(inputfilepath), false, false, false);
 				//mxd. TextResourceData must point to temp path when compiling WAD lumps for lump to be recognized as map lump when reporting errors...
-				TextResourceData data = new TextResourceData(stream, dl, (SourceIsMapScriptsLump ? inputfile : sourcefile), false);
+				TextResourceData data = new TextResourceData(stream, dl, (SourceIsMapScriptsLump ? inputfile : sourcefile));
 				if(!parser.Parse(data, info.Files, true, AcsParserSE.IncludeType.NONE, false))
 				{
 					// Check for errors
