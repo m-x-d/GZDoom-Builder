@@ -74,8 +74,8 @@ A character used as an expression terminator.  <br />
   <b class="fat">snippetsdir</b> (string) - <span class="red">GZDB only</span>.<br />
   Directory name inside of the &quot;Snippets&quot; directory, which holds snippets for current script configuration.<br />
   <br />
-  <b class="fat">scripttype</b> (integer) - <span class="red">GZDB only</span>.<br />
-  Marks current script configuration as one of script types, recognized by GZDB. Possible values are: 1 - ACC; 2 - MODELDEF; 3 - DECORATE. Default value is <strong>0</strong> (unknown script).<br />
+  <b class="fat">scripttype</b> (string) - <span class="red">GZDB only</span>.<br />
+  Marks current script configuration as one of script types, recognized by GZDB. Possible values are &quot;UNKNOWN&quot; (default), &quot;ACS&quot;, &quot;MODELDEF&quot;, &quot;DECORATE&quot;, &quot;GLDEFS&quot;, &quot;SNDSEQ&quot;, &quot;MAPINFO&quot;, &quot;VOXELDEF&quot;, &quot;TEXTURES&quot;, &quot;ANIMDEFS&quot;, &quot;REVERBS&quot;, &quot;TERRAIN&quot;, &quot;X11R6RGB&quot;, &quot;CVARINFO&quot;, &quot;SNDINFO&quot;, &quot;LOCKDEFS&quot;, &quot;MENUDEF&quot;, &quot;SBARINFO&quot; and &quot;USDF&quot;.<br />
   <h2>"keywords" block:</h2>
   <br />
   Defines a list of keywords to highlight and show code completion 

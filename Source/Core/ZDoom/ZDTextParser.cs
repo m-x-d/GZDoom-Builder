@@ -736,7 +736,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			                 + (errorline != CompilerError.NO_LINE_NUMBER ? "\", line " + (errorline + 1) : "\"") + ". "
 			                 + errordesc + ".";
 			
-			TextResourceErrorItem error = new TextResourceErrorItem(ErrorType.Warning,
+			TextResourceErrorItem error = new TextResourceErrorItem(ErrorType.Error,
 				ScriptType, datalocation,
 				(sourcename.StartsWith("?") ? sourcename.Substring(1) : sourcename),
 				sourcelumpindex, errorline, message);

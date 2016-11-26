@@ -508,17 +508,18 @@ namespace CodeImp.DoomBuilder.IO
 		// This finds a lump by name, returns -1 when not found
 		public int FindLumpIndex(string name, int start, int end)
 		{
-			if(name.Length > 8)	return -1; //mxd. Can't be here. Go away!
+			if(name.Length > 8 || lumps.Count == 0)	return -1; //mxd. Can't be here. Go away!
 			
 			long longname = Lump.MakeLongName(name);
 			
-			// Fix end when it exceeds length
-			if(end > (lumps.Count - 1)) end = lumps.Count - 1;
+			// Fix start/end when they exceed safe bounds
+			start = General.Clamp(start, 0, lumps.Count - 1);
+			end = General.Clamp(end, 0, lumps.Count - 1);
 
 			// Loop through the lumps
-			//mxd. ZDoom seems to prefer the last lump with the matching name
-			//TODO: is that always the case?
-			for(int i = end; i > start - 1; i--)
+			//TODO: ZDoom seems to prefer the last lump with the matching name,
+			//TODO: but our own logic (for example, WadReader.FindRanges) expect this to work as currently implemented
+			for(int i = start; i < end + 1; i++)
 			{
 				// Check if the lump name matches
 				if(lumps[i].LongName == longname)

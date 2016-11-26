@@ -1328,6 +1328,13 @@ namespace CodeImp.DoomBuilder.Controls
 		// Undo clicked
 		private void buttonundo_Click(object sender, EventArgs e)
 		{
+			//mxd. Special cases...
+			if(searchbox.Focused)
+			{
+				searchbox.Undo();
+				return;
+			}
+			
 			ScriptDocumentTab t = (tabs.SelectedTab as ScriptDocumentTab);
 			t.Undo();
 			UpdateInterface(true);
@@ -1336,6 +1343,13 @@ namespace CodeImp.DoomBuilder.Controls
 		// Redo clicked
 		private void buttonredo_Click(object sender, EventArgs e)
 		{
+			//mxd. Special cases...
+			if(searchbox.Focused)
+			{
+				searchbox.Undo();
+				return;
+			}
+			
 			ScriptDocumentTab t = (tabs.SelectedTab as ScriptDocumentTab);
 			t.Redo();
 			UpdateInterface(true);
@@ -1344,6 +1358,13 @@ namespace CodeImp.DoomBuilder.Controls
 		// Cut clicked
 		private void buttoncut_Click(object sender, EventArgs e)
 		{
+			//mxd. Special cases...
+			if(searchbox.Focused)
+			{
+				if(searchbox.TextBox != null) searchbox.TextBox.Cut();
+				return;
+			}
+
 			ScriptDocumentTab t = (tabs.SelectedTab as ScriptDocumentTab);
 			t.Cut();
 			UpdateInterface(true);
@@ -1352,6 +1373,13 @@ namespace CodeImp.DoomBuilder.Controls
 		// Copy clicked
 		private void buttoncopy_Click(object sender, EventArgs e)
 		{
+			//mxd. Special cases...
+			if(searchbox.Focused)
+			{
+				searchbox.Copy();
+				return;
+			}
+
 			ScriptDocumentTab t = (tabs.SelectedTab as ScriptDocumentTab);
 			t.Copy();
 			UpdateInterface(true);
@@ -1360,6 +1388,13 @@ namespace CodeImp.DoomBuilder.Controls
 		// Paste clicked
 		private void buttonpaste_Click(object sender, EventArgs e)
 		{
+			//mxd. Special cases...
+			if(searchbox.Focused)
+			{
+				searchbox.Paste();
+				return; 
+			}
+
 			ScriptDocumentTab t = (tabs.SelectedTab as ScriptDocumentTab);
 			t.Paste();
 			UpdateInterface(true);
@@ -1563,12 +1598,12 @@ namespace CodeImp.DoomBuilder.Controls
 
 		private void searchnext_Click(object sender, EventArgs e)
 		{
-			FindNext();
+			if(!ActiveTab.FindNext(GetQuickSearchOptions(), false)) General.MessageBeep(MessageBeepType.Default);
 		}
 
 		private void searchprev_Click(object sender, EventArgs e) 
 		{
-			FindPrevious();
+			if(!ActiveTab.FindPrevious(GetQuickSearchOptions())) General.MessageBeep(MessageBeepType.Default);
 		}
 
 		// This flashes the status icon
