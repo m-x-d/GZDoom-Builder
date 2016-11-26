@@ -291,6 +291,20 @@ namespace CodeImp.DoomBuilder.Properties {
             }
         }
         
+        internal static System.Drawing.Bitmap ErrorLargeMapObject {
+            get {
+                object obj = ResourceManager.GetObject("ErrorLargeMapObject", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap ErrorLargeText {
+            get {
+                object obj = ResourceManager.GetObject("ErrorLargeText", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
         internal static System.Drawing.Bitmap Expand {
             get {
                 object obj = ResourceManager.GetObject("Expand", resourceCulture);
@@ -1141,6 +1155,20 @@ namespace CodeImp.DoomBuilder.Properties {
         internal static System.Drawing.Bitmap WarningLarge {
             get {
                 object obj = ResourceManager.GetObject("WarningLarge", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap WarningLargeMapObject {
+            get {
+                object obj = ResourceManager.GetObject("WarningLargeMapObject", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        internal static System.Drawing.Bitmap WarningLargeText {
+            get {
+                object obj = ResourceManager.GetObject("WarningLargeText", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -165,8 +165,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				General.Interface.RemoveMenu(i);
 
 			// Remove the buttons from the core
+			General.Interface.BeginToolbarUpdate(); //mxd
 			foreach(ToolStripItem b in buttons)
 				General.Interface.RemoveButton(b);
+			General.Interface.EndToolbarUpdate(); //mxd
 
 			//mxd. Export menu
 			foreach(ToolStripItem i in exportmenuitems)

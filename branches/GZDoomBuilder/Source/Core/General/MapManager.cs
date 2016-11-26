@@ -1053,7 +1053,7 @@ namespace CodeImp.DoomBuilder
 					filetitle = Path.GetFileName(filepathname);
 
 					// Reload resources
-					ReloadResources();
+					ReloadResources(true);
 				}
 
 				try 
@@ -2208,7 +2208,7 @@ namespace CodeImp.DoomBuilder
 			DebugConsole.Clear();
 #endif
 
-			ReloadResources();
+			ReloadResources(true);
 
 			if(General.ErrorLogger.IsErrorAdded)
 			{
@@ -2223,7 +2223,7 @@ namespace CodeImp.DoomBuilder
 
 		}
 
-		internal void ReloadResources() 
+		internal void ReloadResources(bool clearerrors) //mxd. clearerrors flag
 		{
 			// Keep old display info
 			StatusInfo oldstatus = General.MainWindow.Status;
@@ -2242,8 +2242,8 @@ namespace CodeImp.DoomBuilder
 			GC.WaitForPendingFinalizers();
 			GC.Collect(); //mxd
 
-			// Clear errors
-			General.ErrorLogger.Clear();
+			// Clear errors?
+			if(clearerrors) General.ErrorLogger.Clear();
 
 			// Reload game configuration
 			General.WriteLogLine("Reloading game configuration...");
@@ -2309,6 +2309,9 @@ namespace CodeImp.DoomBuilder
 
 				// Stop data manager
 				data.Dispose();
+
+				//mxd. Clear errors
+				General.ErrorLogger.Clear();
 
 				// Apply new options
 				this.options = optionsform.Options;
@@ -2383,7 +2386,7 @@ namespace CodeImp.DoomBuilder
 				map.UpdateCustomLinedefColors();
 
 				// Reload resources
-				ReloadResources();
+				ReloadResources(false);
 
 				// Update interface
 				General.MainWindow.SetupInterface();

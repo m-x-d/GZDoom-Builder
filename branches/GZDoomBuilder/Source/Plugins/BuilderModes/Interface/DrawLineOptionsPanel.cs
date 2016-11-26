@@ -20,16 +20,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		public void Register()
 		{
+			General.Interface.BeginToolbarUpdate();
 			General.Interface.AddButton(continuousdrawing);
 			General.Interface.AddButton(autoclosedrawing);
 			General.Interface.AddButton(showguidelines);
+			General.Interface.EndToolbarUpdate();
 		}
 
 		public void Unregister()
 		{
+			General.Interface.BeginToolbarUpdate();
 			General.Interface.RemoveButton(showguidelines);
 			General.Interface.RemoveButton(autoclosedrawing);
 			General.Interface.RemoveButton(continuousdrawing);
+			General.Interface.EndToolbarUpdate();
 		}
 
 		private void continuousdrawing_CheckedChanged(object sender, EventArgs e)

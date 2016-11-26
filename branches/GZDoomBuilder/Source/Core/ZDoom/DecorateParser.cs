@@ -144,7 +144,10 @@ namespace CodeImp.DoomBuilder.ZDoom
 			if(!base.Parse(data, clearerrors)) return false;
 
 			//mxd. Region-as-category stuff...
-			List<DecorateCategoryInfo> regions = new List<DecorateCategoryInfo>(); //mxd
+			List<DecorateCategoryInfo> regions = new List<DecorateCategoryInfo>();
+			
+			//mxd. Regions tracking...
+			List<KeyValuePair<int, string>> regionlines = new List<KeyValuePair<int, string>>(); // <line number, region title>
 			
 			// Keep local data
 			Stream localstream = datastream;
@@ -296,8 +299,10 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 						//mxd. Region-as-category handling
 						case "#region":
+							int line = GetCurrentLineNumber();
 							SkipWhitespace(false);
 							string cattitle = ReadLine();
+							regionlines.Add(new KeyValuePair<int, string>(line, cattitle));
 							if(!string.IsNullOrEmpty(cattitle))
 							{
 								// Make new category info
@@ -319,10 +324,11 @@ namespace CodeImp.DoomBuilder.ZDoom
 
 						//mxd. Region-as-category handling
 						case "#endregion":
-							if(regions.Count > 0)
-								regions.RemoveAt(regions.Count - 1);
+							if(regions.Count > 0) regions.RemoveAt(regions.Count - 1);
+							if(regionlines.Count > 0)
+								regionlines.RemoveAt(regionlines.Count - 1);
 							else
-								LogWarning("Unexpected #endregion token");
+								LogWarning("Unexpected #endregion");
 							break;
 
 						default:
@@ -368,6 +374,18 @@ namespace CodeImp.DoomBuilder.ZDoom
 						}
 						break;
 					}
+				}
+			}
+
+			//mxd. Check unclosed #regions
+			if(regionlines.Count > 0)
+			{
+				foreach(var group in regionlines)
+				{
+					if(!string.IsNullOrEmpty(group.Value))
+						LogWarning("Unclosed #region \"" + group.Value + "\"", group.Key);
+					else
+						LogWarning("Unclosed #region", group.Key);
 				}
 			}
 			

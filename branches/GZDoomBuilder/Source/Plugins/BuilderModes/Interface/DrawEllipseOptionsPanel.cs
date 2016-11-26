@@ -32,6 +32,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			subdivs.ValueChanged += ValueChanged;
 			angle.ValueChanged += ValueChanged;
 
+			General.Interface.BeginToolbarUpdate();
 			General.Interface.AddButton(continuousdrawing);
 			General.Interface.AddButton(showguidelines);
 			General.Interface.AddButton(toolStripSeparator1);
@@ -42,10 +43,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.AddButton(anglelabel);
 			General.Interface.AddButton(angle);
 			General.Interface.AddButton(reset);
+			General.Interface.EndToolbarUpdate();
 		}
 
 		public void Unregister() 
 		{
+			General.Interface.BeginToolbarUpdate();
 			General.Interface.RemoveButton(reset);
 			General.Interface.RemoveButton(angle);
 			General.Interface.RemoveButton(anglelabel);
@@ -56,6 +59,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.RemoveButton(toolStripSeparator1);
 			General.Interface.RemoveButton(showguidelines);
 			General.Interface.RemoveButton(continuousdrawing);
+			General.Interface.EndToolbarUpdate();
 		}
 
 		private void ValueChanged(object sender, EventArgs e) 

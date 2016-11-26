@@ -22,22 +22,26 @@ namespace CodeImp.DoomBuilder.AutomapMode
 
 		public void Register()
 		{
+			General.Interface.BeginToolbarUpdate(); //mxd
 			General.Interface.AddButton(showhiddenlines);
 			General.Interface.AddButton(showsecretsectors);
 			if(!General.Map.DOOM) General.Interface.AddButton(showlocks);
 			General.Interface.AddButton(colorpresetseparator);
 			General.Interface.AddButton(colorpresetlabel);
 			General.Interface.AddButton(colorpreset);
+			General.Interface.EndToolbarUpdate(); //mxd
 		}
 
 		public void Unregister()
 		{
+			General.Interface.BeginToolbarUpdate(); //mxd
 			General.Interface.RemoveButton(colorpreset);
 			General.Interface.RemoveButton(colorpresetlabel);
 			General.Interface.RemoveButton(colorpresetseparator);
-			if(!General.Map.DOOM) General.Interface.RemoveButton(showlocks);
+			General.Interface.RemoveButton(showlocks);
 			General.Interface.RemoveButton(showsecretsectors);
 			General.Interface.RemoveButton(showhiddenlines);
+			General.Interface.EndToolbarUpdate(); //mxd
 		}
 
 		private void showhiddenlines_CheckedChanged(object sender, EventArgs e)

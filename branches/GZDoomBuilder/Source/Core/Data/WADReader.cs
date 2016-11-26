@@ -1255,7 +1255,7 @@ namespace CodeImp.DoomBuilder.Data
 			int index = file.FindLumpIndex(lumpname);
 			if(index == -1)
 			{
-				errors.Add(new CompilerError { description = "Lump \"" + lumpname + "\" does not exist", filename = this.location.GetDisplayName() });
+				errors.Add(new CompilerError("Lump \"" + lumpname + "\" does not exist", location.GetDisplayName()));
 				return false;
 			}
 

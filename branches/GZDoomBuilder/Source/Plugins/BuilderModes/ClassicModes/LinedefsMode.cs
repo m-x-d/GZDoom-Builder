@@ -555,15 +555,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.ViewSelectionNumbers); //mxd
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.ViewSelectionEffects); //mxd
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.SeparatorSectors1); //mxd
-			if(General.Map.UDMF) //mxd
-			{
-				General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.MakeGradientBrightness);
-				General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.GradientInterpolationMenu);
-			}
+			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.MakeGradientBrightness);
+			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.GradientInterpolationMenu);
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.CurveLinedefs);
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.MarqueSelectTouching); //mxd
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.SyncronizeThingEditButton); //mxd
-			if(General.Map.UDMF) General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.TextureOffsetLock); //mxd
+			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.TextureOffsetLock); //mxd
 			General.Interface.EndToolbarUpdate(); //mxd
 
 			// Going to EditSelectionMode?

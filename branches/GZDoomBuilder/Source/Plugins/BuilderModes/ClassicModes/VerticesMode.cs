@@ -112,15 +112,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnDisengage();
 
 			// Remove toolbar buttons
-			if(General.Map.UDMF)
-			{
-				General.Interface.BeginToolbarUpdate();
-				General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.CopyProperties);
-				General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.PasteProperties);
-				General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.PastePropertiesOptions); //mxd
-				General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.TextureOffsetLock); //mxd
-				General.Interface.EndToolbarUpdate();
-			}
+			General.Interface.BeginToolbarUpdate();
+			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.CopyProperties);
+			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.PasteProperties);
+			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.PastePropertiesOptions); //mxd
+			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.TextureOffsetLock); //mxd
+			General.Interface.EndToolbarUpdate();
 
 			// Going to EditSelectionMode?
 			EditSelectionMode mode = General.Editing.NewMode as EditSelectionMode;

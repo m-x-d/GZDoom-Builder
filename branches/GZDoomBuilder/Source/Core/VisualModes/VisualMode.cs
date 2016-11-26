@@ -234,6 +234,9 @@ namespace CodeImp.DoomBuilder.VisualModes
 			//mxd
 			selectedVisualSectors = null;
 			selectedVisualThings = null;
+
+			//mxd. Extra floors may've been edited
+			General.Map.Renderer2D.UpdateExtraFloorFlag();
 			
 			// Stop special input mode
 			General.Interface.DisableProcessing();

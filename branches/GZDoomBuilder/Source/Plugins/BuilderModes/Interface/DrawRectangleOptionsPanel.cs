@@ -30,6 +30,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			radius.ValueChanged += ValueChanged;
 			subdivs.ValueChanged += ValueChanged;
 
+			General.Interface.BeginToolbarUpdate();
 			General.Interface.AddButton(continuousdrawing);
 			General.Interface.AddButton(showguidelines);
 			General.Interface.AddButton(toolStripSeparator1);
@@ -38,10 +39,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.AddButton(subdivslabel);
 			General.Interface.AddButton(subdivs);
 			General.Interface.AddButton(reset);
+			General.Interface.EndToolbarUpdate();
 		}
 
 		public void Unregister() 
 		{
+			General.Interface.BeginToolbarUpdate();
 			General.Interface.RemoveButton(reset);
 			General.Interface.RemoveButton(subdivs);
 			General.Interface.RemoveButton(subdivslabel);
@@ -50,6 +53,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.RemoveButton(toolStripSeparator1);
 			General.Interface.RemoveButton(showguidelines);
 			General.Interface.RemoveButton(continuousdrawing);
+			General.Interface.EndToolbarUpdate();
 		}
 
 		private void ValueChanged(object sender, EventArgs e) 

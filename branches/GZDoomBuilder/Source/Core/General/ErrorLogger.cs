@@ -76,23 +76,23 @@ namespace CodeImp.DoomBuilder
 		}
 		
 		// This adds a new error
-		public void Add(ErrorType type, string message)
+		public void Add(ErrorType type, string message) { Add(new ErrorItem(type, message)); }
+		public void Add(ErrorItem error) //mxd
 		{
-			string prefix = "";
-			
 			lock(threadlock)
 			{
 				//mxd. Don't add duplicate messages
-				if(errors.Count == 0 || message != errors[errors.Count - 1].message || type != errors[errors.Count - 1].type)
+				if(errors.Count == 0 || error.Description != errors[errors.Count - 1].Description || error.Type != errors[errors.Count - 1].Type)
 				{
-					errors.Add(new ErrorItem(type, message));
-					switch(type)
+					errors.Add(error);
+					string prefix = "";
+					switch(error.Type)
 					{
 						case ErrorType.Error:
 							erroradded = true;
 							prefix = "ERROR: ";
 #if DEBUG
-							DebugConsole.WriteLine(DebugMessageType.ERROR, message);
+							DebugConsole.WriteLine(DebugMessageType.ERROR, error.Description);
 #endif
 							break;
 
@@ -100,17 +100,17 @@ namespace CodeImp.DoomBuilder
 							warningadded = true;
 							prefix = "WARNING: ";
 #if DEBUG
-							DebugConsole.WriteLine(DebugMessageType.WARNING, message);
+							DebugConsole.WriteLine(DebugMessageType.WARNING, error.Description);
 #endif
 							break;
 					}
 
 					changed = true;
-					General.WriteLogLine(prefix + message);
+					General.WriteLogLine(prefix + error.Description);
 					General.MainWindow.SetWarningsCount(errors.Count, erroradded); //mxd
 				}
-				//mxd. But still blink the indicator on errors
-				else if(type == ErrorType.Error)
+				// But still blink the indicator on errors
+				else if(error.Type == ErrorType.Error)
 				{
 					General.MainWindow.SetWarningsCount(errors.Count, true);
 				}

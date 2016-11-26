@@ -54,6 +54,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 
 		public void Register()
 		{
+			General.Interface.BeginToolbarUpdate();
 			General.Interface.AddButton(vertslabel);
 			General.Interface.AddButton(verts);
 			General.Interface.AddButton(distancelabel);
@@ -67,10 +68,12 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 			General.Interface.AddButton(separator2);
 			General.Interface.AddButton(apply);
 			General.Interface.AddButton(cancel);
+			General.Interface.EndToolbarUpdate();
 		}
 
 		public void Unregister()
 		{
+			General.Interface.BeginToolbarUpdate();
 			General.Interface.RemoveButton(cancel);
 			General.Interface.RemoveButton(apply);
 			General.Interface.RemoveButton(anglelabel);
@@ -85,6 +88,7 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 			General.Interface.RemoveButton(distancelabel);
 			General.Interface.RemoveButton(verts);
 			General.Interface.RemoveButton(vertslabel);
+			General.Interface.EndToolbarUpdate();
 		}
 
 		#endregion

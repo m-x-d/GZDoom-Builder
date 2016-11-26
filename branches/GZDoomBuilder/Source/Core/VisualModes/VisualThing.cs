@@ -757,11 +757,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 		//mxd
 		private void UpdateLightRadius(int interval) 
 		{
-			if(lightType == DynamicLightType.NONE) 
-			{
-				General.ErrorLogger.Add(ErrorType.Error, "Please check that thing is light before accessing it's PositionAndRadius! You can use lightType, which is -1 if thing isn't light");
-				return;
-			}
+			if(lightType == DynamicLightType.NONE) return;
 
 			if(General.Settings.GZDrawLightsMode == LightRenderMode.ALL || Array.IndexOf(GZBuilder.GZGeneral.GZ_ANIMATED_LIGHT_TYPES, lightType) == -1) 
 			{

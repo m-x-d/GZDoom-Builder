@@ -273,7 +273,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 							if(datastream.Position == datastream.Length) //mxd
 							{
 								// ZDoom doesn't give even a warning message about this, so we shouldn't report error or fail parsing.
-								General.ErrorLogger.Add(ErrorType.Warning, "DECORATE warning in \"" + sourcename + "\", line " + GetCurrentLineNumber() + ". Block comment is not closed.");
+								string message = ScriptType + " warning in \"" + sourcename + "\", line " + GetCurrentLineNumber() + ". Block comment is not closed.";
+								TextResourceErrorItem error = new TextResourceErrorItem(ErrorType.Warning, ScriptType, datalocation, sourcename, sourcelumpindex, GetCurrentLineNumber(), message);
+								General.ErrorLogger.Add(error);
 								return false;
 							}
 
@@ -705,23 +707,41 @@ namespace CodeImp.DoomBuilder.ZDoom
 		}
 
 		//mxd. This adds a warning to the ErrorLogger
-		protected internal void LogWarning(string message)
+		protected internal void LogWarning(string message) { LogWarning(message, CompilerError.NO_LINE_NUMBER); }
+		protected internal void LogWarning(string message, int linenumber)
 		{
 			// Add a warning
-			int errline = (datastream != null ? GetCurrentLineNumber() : CompilerError.NO_LINE_NUMBER);
+			int errline = (linenumber != CompilerError.NO_LINE_NUMBER 
+				? linenumber 
+				: (datastream != null ? GetCurrentLineNumber() : CompilerError.NO_LINE_NUMBER));
 			string errsource = (ScriptType == ScriptType.ACS && sourcename.StartsWith("?") ? sourcename.Substring(1) : Path.Combine(datalocation.GetDisplayName(), sourcename));
 			if(sourcelumpindex != -1) errsource += ":" + sourcelumpindex;
-			General.ErrorLogger.Add(ErrorType.Warning, ScriptType + " warning in \"" + errsource
-								+ (errline != CompilerError.NO_LINE_NUMBER ? "\", line " + (errline + 1) : "\"") + ". " 
-								+ message + ".");
+
+			message = ScriptType + " warning in \"" + errsource
+			          + (errline != CompilerError.NO_LINE_NUMBER ? "\", line " + (errline + 1) : "\"") + ". "
+			          + message + ".";
+
+			TextResourceErrorItem error = new TextResourceErrorItem(ErrorType.Warning,
+				ScriptType, datalocation,
+				(sourcename.StartsWith("?") ? sourcename.Substring(1) : sourcename),
+				sourcelumpindex, errline, message);
+
+			General.ErrorLogger.Add(error);
 		}
 
 		//mxd. This adds an error to the ErrorLogger
 		public void LogError()
 		{
-			General.ErrorLogger.Add(ErrorType.Error, ScriptType + " error in \"" + shorterrorsource
-								+ (errorline != CompilerError.NO_LINE_NUMBER ? "\", line " + (errorline + 1) : "\"") + ". "
-								+ errordesc + ".");
+			string message = ScriptType + " error in \"" + shorterrorsource
+			                 + (errorline != CompilerError.NO_LINE_NUMBER ? "\", line " + (errorline + 1) : "\"") + ". "
+			                 + errordesc + ".";
+			
+			TextResourceErrorItem error = new TextResourceErrorItem(ErrorType.Warning,
+				ScriptType, datalocation,
+				(sourcename.StartsWith("?") ? sourcename.Substring(1) : sourcename),
+				sourcelumpindex, errorline, message);
+
+			General.ErrorLogger.Add(error);
 		}
 
 		//mxd

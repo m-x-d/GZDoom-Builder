@@ -38,6 +38,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.grid = new System.Windows.Forms.DataGridView();
 			this.iconcolumn = new System.Windows.Forms.DataGridViewImageColumn();
 			this.textcolumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+			this.showsource = new System.Windows.Forms.Button();
 			((System.ComponentModel.ISupportInitialize)(this.grid)).BeginInit();
 			this.SuspendLayout();
 			// 
@@ -47,8 +48,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.copyselected.Enabled = false;
 			this.copyselected.Location = new System.Drawing.Point(12, 416);
 			this.copyselected.Name = "copyselected";
-			this.copyselected.Size = new System.Drawing.Size(122, 25);
-			this.copyselected.TabIndex = 1;
+			this.copyselected.Size = new System.Drawing.Size(110, 25);
+			this.copyselected.TabIndex = 0;
 			this.copyselected.Text = "Copy Selection";
 			this.copyselected.UseVisualStyleBackColor = true;
 			this.copyselected.Click += new System.EventHandler(this.copyselected_Click);
@@ -56,10 +57,10 @@ namespace CodeImp.DoomBuilder.Windows
 			// clearlist
 			// 
 			this.clearlist.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-			this.clearlist.Location = new System.Drawing.Point(150, 416);
+			this.clearlist.Location = new System.Drawing.Point(128, 416);
 			this.clearlist.Name = "clearlist";
-			this.clearlist.Size = new System.Drawing.Size(122, 25);
-			this.clearlist.TabIndex = 2;
+			this.clearlist.Size = new System.Drawing.Size(110, 25);
+			this.clearlist.TabIndex = 1;
 			this.clearlist.Text = "Clear";
 			this.clearlist.UseVisualStyleBackColor = true;
 			this.clearlist.Click += new System.EventHandler(this.clearlist_Click);
@@ -85,7 +86,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.checkshow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
 			this.checkshow.AutoSize = true;
-			this.checkshow.Location = new System.Drawing.Point(301, 421);
+			this.checkshow.Location = new System.Drawing.Point(363, 421);
 			this.checkshow.Name = "checkshow";
 			this.checkshow.Size = new System.Drawing.Size(199, 17);
 			this.checkshow.TabIndex = 3;
@@ -129,17 +130,18 @@ namespace CodeImp.DoomBuilder.Windows
 			this.grid.Size = new System.Drawing.Size(732, 395);
 			this.grid.StandardTab = true;
 			this.grid.TabIndex = 5;
+			this.grid.CellContentDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.grid_CellContentDoubleClick);
 			this.grid.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.grid_CellContentClick);
 			// 
 			// iconcolumn
 			// 
 			this.iconcolumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
 			this.iconcolumn.HeaderText = "Icon";
-			this.iconcolumn.MinimumWidth = 20;
+			this.iconcolumn.MinimumWidth = 30;
 			this.iconcolumn.Name = "iconcolumn";
 			this.iconcolumn.ReadOnly = true;
 			this.iconcolumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-			this.iconcolumn.Width = 24;
+			this.iconcolumn.Width = 32;
 			// 
 			// textcolumn
 			// 
@@ -147,12 +149,25 @@ namespace CodeImp.DoomBuilder.Windows
 			this.textcolumn.Name = "textcolumn";
 			this.textcolumn.ReadOnly = true;
 			// 
+			// showsource
+			// 
+			this.showsource.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+			this.showsource.Enabled = false;
+			this.showsource.Location = new System.Drawing.Point(244, 416);
+			this.showsource.Name = "showsource";
+			this.showsource.Size = new System.Drawing.Size(110, 25);
+			this.showsource.TabIndex = 2;
+			this.showsource.Text = "Show source";
+			this.showsource.UseVisualStyleBackColor = true;
+			this.showsource.Click += new System.EventHandler(this.showsource_Click);
+			// 
 			// ErrorsForm
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.close;
 			this.ClientSize = new System.Drawing.Size(756, 453);
+			this.Controls.Add(this.showsource);
 			this.Controls.Add(this.checkshow);
 			this.Controls.Add(this.close);
 			this.Controls.Add(this.clearlist);
@@ -184,6 +199,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.Timer checkerrors;
 		private System.Windows.Forms.CheckBox checkshow;
 		private System.Windows.Forms.DataGridView grid;
+		private System.Windows.Forms.Button showsource;
 		private System.Windows.Forms.DataGridViewImageColumn iconcolumn;
 		private System.Windows.Forms.DataGridViewTextBoxColumn textcolumn;
 	}
