@@ -26,22 +26,26 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 		public void Register() 
 		{
+			General.Interface.BeginToolbarUpdate();
 			General.Interface.AddButton(continuousdrawing);
 			General.Interface.AddButton(autoclosedrawing);
 			General.Interface.AddButton(toolStripSeparator1);
 			General.Interface.AddButton(seglabel);
 			General.Interface.AddButton(seglen);
 			General.Interface.AddButton(reset);
+			General.Interface.EndToolbarUpdate();
 		}
 
 		public void Unregister() 
 		{
+			General.Interface.BeginToolbarUpdate();
 			General.Interface.RemoveButton(reset);
 			General.Interface.RemoveButton(seglen);
 			General.Interface.RemoveButton(seglabel);
 			General.Interface.RemoveButton(toolStripSeparator1);
 			General.Interface.RemoveButton(autoclosedrawing);
 			General.Interface.RemoveButton(continuousdrawing);
+			General.Interface.EndToolbarUpdate();
 		}
 
 		private void seglen_ValueChanged(object sender, EventArgs e) 

@@ -24,6 +24,7 @@ using System.Windows.Forms;
 using CodeImp.DoomBuilder.Compilers;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Controls.Scripting;
+using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Data.Scripting;
 using CodeImp.DoomBuilder.Windows;
 using ScintillaNET;
@@ -213,7 +214,7 @@ namespace CodeImp.DoomBuilder.Controls
 						if(File.Exists(settings.Filename))
 						{
 							// Load this!
-							ScriptFileDocumentTab t = OpenFile(settings.Filename);
+							ScriptFileDocumentTab t = OpenFile(settings.Filename, settings.ScriptType);
 							t.SetViewSettings(settings); //mxd
 							if(settings.IsActiveTab) activetab = t;
 						}
@@ -621,7 +622,43 @@ namespace CodeImp.DoomBuilder.Controls
 			// Show/hide panel
 			splitter.Panel2Collapsed = (errorlist.Items.Count == 0);
 		}
-		
+
+		//mxd
+		internal void ShowError(TextResourceErrorItem item)
+		{
+			// Resource exists?
+			DataReader dr = null;
+			foreach(DataReader reader in General.Map.Data.Containers)
+			{
+				if(reader.Location.location == item.ResourceLocation)
+				{
+					dr = reader;
+					break;
+				}
+			}
+
+			// Target lump exists?
+			if(dr == null || !dr.FileExists(item.LumpName, item.LumpIndex)) return;
+
+			TextResourceData trd = new TextResourceData(dr, dr.LoadFile(item.LumpName, item.LumpIndex), item.LumpName, item.LumpIndex, false);
+			var targettab = OpenResource(new ScriptResource(trd, item.ScriptType));
+
+			// Go to error line
+			if(targettab != null && item.LineNumber != CompilerError.NO_LINE_NUMBER)
+				targettab.MoveToLine(item.LineNumber);
+		}
+
+		//mxd
+		/*internal void ShowError(TextFileErrorItem item)
+		{
+			// File exists?
+			ScriptDocumentTab targettab = OpenFile(item.Filename, item.ScriptType);
+
+			// Go to error line
+			if(targettab != null && item.LineNumber != CompilerError.NO_LINE_NUMBER)
+				targettab.MoveToLine(item.LineNumber);
+		}*/
+
 		// This writes all explicitly opened files to the configuration
 		public void WriteOpenFilesToConfiguration()
 		{
@@ -843,7 +880,7 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		// This opens the given file, returns null when failed
-		public ScriptFileDocumentTab OpenFile(string filename)
+		public ScriptFileDocumentTab OpenFile(string filename, ScriptType scripttype)
 		{
 			//mxd. Check if we already have this file opened
 			foreach(var tab in tabs.TabPages)
@@ -861,33 +898,43 @@ namespace CodeImp.DoomBuilder.Controls
 			ScriptConfiguration foundconfig = new ScriptConfiguration();
 
 			// Find the most suitable script configuration to use
-			foreach(ScriptConfiguration cfg in scriptconfigs)
+			if(scripttype == ScriptType.UNKNOWN)
 			{
-				foreach(string ext in cfg.Extensions)
+				foreach(ScriptConfiguration cfg in scriptconfigs)
 				{
-					// Use this configuration if the extension matches
-					if(filename.EndsWith("." + ext, StringComparison.OrdinalIgnoreCase))
+					foreach(string ext in cfg.Extensions)
 					{
-						foundconfig = cfg;
-						break;
+						// Use this configuration if the extension matches
+						if(filename.EndsWith("." + ext, StringComparison.OrdinalIgnoreCase))
+						{
+							foundconfig = cfg;
+							break;
+						}
 					}
 				}
+			}
+			else
+			{
+				foundconfig = General.GetScriptConfiguration(scripttype);
 			}
 
 			// Create new document
 			ScriptFileDocumentTab t = new ScriptFileDocumentTab(this, foundconfig);
 			if(t.Open(filename))
 			{
-				//mxd
-				ScriptType st = t.VerifyScriptType();
-				if(st != ScriptType.UNKNOWN) 
+				//mxd. Try to determine script type from file contents...
+				if(scripttype == ScriptType.UNKNOWN)
 				{
-					foreach(ScriptConfiguration cfg in scriptconfigs) 
+					ScriptType st = t.VerifyScriptType();
+					if(st != ScriptType.UNKNOWN)
 					{
-						if(cfg.ScriptType == st) 
+						foreach(ScriptConfiguration cfg in scriptconfigs)
 						{
-							t.ChangeScriptConfig(cfg);
-							break;
+							if(cfg.ScriptType == st)
+							{
+								t.ChangeScriptConfig(cfg);
+								break;
+							}
 						}
 					}
 				}
@@ -1137,7 +1184,7 @@ namespace CodeImp.DoomBuilder.Controls
 				{
 					if(!openedfiles.Contains(name))
 					{
-						ScriptFileDocumentTab t = OpenFile(name);
+						ScriptFileDocumentTab t = OpenFile(name, ScriptType.UNKNOWN);
 						
 						// Apply document settings
 						if(General.Map.Options.ScriptDocumentSettings.ContainsKey(t.Filename))
@@ -1484,7 +1531,7 @@ namespace CodeImp.DoomBuilder.Controls
 				// If we don't have the script opened, see if we can find the file and open the script
 				if(!foundscript && File.Exists(err.filename))
 				{
-					ScriptDocumentTab t = OpenFile(err.filename);
+					ScriptDocumentTab t = OpenFile(err.filename, ScriptType.UNKNOWN);
 					if(t != null) t.MoveToLine(err.linenumber);
 				}
 				

@@ -1222,8 +1222,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			snaptonearest = General.Interface.AutoMerge; //mxd
 			
 			// Add toolbar buttons
+			General.Interface.BeginToolbarUpdate(); //mxd
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.FlipSelectionH);
 			General.Interface.AddButton(BuilderPlug.Me.MenusForm.FlipSelectionV);
+			General.Interface.EndToolbarUpdate(); //mxd
 
 			//mxd. Get EditPanel-related settings
 			usepreciseposition = General.Settings.ReadPluginSetting("editselectionmode.usepreciseposition", true);
@@ -1740,8 +1742,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			base.OnDisengage();
 
 			// Remove toolbar buttons
+			General.Interface.BeginToolbarUpdate(); //mxd
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.FlipSelectionH);
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.FlipSelectionV);
+			General.Interface.EndToolbarUpdate(); //mxd
 
 			//mxd. Save EditPanel-related settings 
 			General.Settings.WritePluginSetting("editselectionmode.usepreciseposition", usepreciseposition);

@@ -77,6 +77,18 @@ namespace CodeImp.DoomBuilder.Windows
 			editor.OnReloadResources();
 		}
 
+		//mxd
+		internal void DisplayError(TextResourceErrorItem error)
+		{
+			editor.ShowError(error);
+		}
+
+		//mxd
+		/*internal void DisplayError(TextFileErrorItem error)
+		{
+			editor.ShowError(error);
+		}*/
+
 		#endregion
 		
 		#region ================== Events

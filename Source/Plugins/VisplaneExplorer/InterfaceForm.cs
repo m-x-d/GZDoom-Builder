@@ -54,19 +54,23 @@ namespace CodeImp.DoomBuilder.Plugins.VisplaneExplorer
 		// This adds the buttons to the toolbar
 		public void AddToInterface()
 		{
+			General.Interface.BeginToolbarUpdate(); //mxd
 			General.Interface.AddButton(statsbutton);
 			General.Interface.AddButton(separator); //mxd
 			General.Interface.AddButton(cbopendoors); //mxd
 			General.Interface.AddButton(cbheatmap); //mxd
+			General.Interface.EndToolbarUpdate(); //mxd
 		}
 
 		// This removes the buttons from the toolbar
 		public void RemoveFromInterface()
 		{
+			General.Interface.BeginToolbarUpdate(); //mxd
 			General.Interface.RemoveButton(cbheatmap); //mxd
 			General.Interface.RemoveButton(cbopendoors); //mxd
 			General.Interface.RemoveButton(separator); //mxd
 			General.Interface.RemoveButton(statsbutton);
+			General.Interface.EndToolbarUpdate(); //mxd
 
 			//mxd. Save settings
 			General.Settings.WritePluginSetting("opendoors", cbopendoors.Checked);

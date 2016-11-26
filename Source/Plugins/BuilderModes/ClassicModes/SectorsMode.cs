@@ -762,14 +762,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.MakeDoor); //mxd
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.SeparatorSectors2); //mxd
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.MakeGradientBrightness);
-			if(General.Map.UDMF) General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.GradientModeMenu); //mxd
+			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.GradientModeMenu); //mxd
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.GradientInterpolationMenu); //mxd
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.MakeGradientFloors);
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.MakeGradientCeilings);
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.SeparatorSectors3); //mxd
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.MarqueSelectTouching); //mxd
 			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.SyncronizeThingEditButton); //mxd
-			if(General.Map.UDMF) General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.TextureOffsetLock); //mxd
+			General.Interface.RemoveButton(BuilderPlug.Me.MenusForm.TextureOffsetLock); //mxd
 			General.Interface.EndToolbarUpdate(); //mxd
 			
 			// Keep only sectors selected

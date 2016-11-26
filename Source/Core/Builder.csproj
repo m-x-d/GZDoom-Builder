@@ -1191,6 +1191,8 @@
     <None Include="Resources\GridDecrease.png" />
     <None Include="Resources\GridIncrease.png" />
     <None Include="Resources\FixedThingsScale.png" />
+    <None Include="Resources\ErrorLargeMapObject.png" />
+    <None Include="Resources\ErrorLargeText.png" />
     <Content Include="Resources\Light.png" />
     <None Include="Resources\Lightbulb.png" />
     <None Include="Resources\LightDisabled.png" />
@@ -1210,6 +1212,8 @@
     <None Include="Resources\ModelDisabled.png" />
     <None Include="Resources\ModelFiltered.png" />
     <Content Include="Resources\Model_selected.png" />
+    <None Include="Resources\WarningLargeText.png" />
+    <None Include="Resources\WarningLargeMapObject.png" />
     <None Include="Resources\Script.png" />
     <None Include="Resources\SplitSectors.png" />
     <None Include="Resources\ScriptProperty.png" />

@@ -593,7 +593,8 @@ namespace CodeImp.DoomBuilder.Map
 						//Convert tag to arg0
 						if(tags[0] < General.Map.FormatInterface.MinArgument || tags[0] > General.Map.FormatInterface.MaxArgument)
 						{
-							General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + Index + ": unable to convert Tag (" + tags[0] + ") to LineID because it's outside of supported argument range [" + General.Map.FormatInterface.MinArgument + ".." + General.Map.FormatInterface.MaxArgument + "].");
+							string message = "Linedef " + Index + ": unable to convert Tag (" + tags[0] + ") to LineID because it's outside of supported argument range [" + General.Map.FormatInterface.MinArgument + ".." + General.Map.FormatInterface.MaxArgument + "].";
+							General.ErrorLogger.Add(new MapElementErrorItem(ErrorType.Warning, this, message));
 						}
 						else
 						{
@@ -621,18 +622,21 @@ namespace CodeImp.DoomBuilder.Map
 
 							if(tags[0] != 0)
 							{
-								General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + Index + ": unable to convert Tag (" + tags[0] + ") to LineID, because target sector tag (arg0) is greater than " + General.Map.FormatInterface.MaxArgument + ".");
+								string message = "Linedef " + Index + ": unable to convert Tag (" + tags[0] + ") to LineID, because target sector tag (arg0) is greater than " + General.Map.FormatInterface.MaxArgument + ".";
+								General.ErrorLogger.Add(new MapElementErrorItem(ErrorType.Warning, this, message));
 							}
 						}
 						else if(args[0] < General.Map.FormatInterface.MinArgument) 
 						{
-							General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + Index + ": unable to convert arg0 (" + args[0] + "), because it's outside of supported argument range [" + General.Map.FormatInterface.MinArgument + ".." + General.Map.FormatInterface.MaxArgument + "].");
+							string message = "Linedef " + Index + ": unable to convert arg0 (" + args[0] + "), because it's outside of supported argument range [" + General.Map.FormatInterface.MinArgument + ".." + General.Map.FormatInterface.MaxArgument + "].";
+							General.ErrorLogger.Add(new MapElementErrorItem(ErrorType.Warning, this, message));
 						} 
 						else if(tags[0] > General.Map.FormatInterface.MinArgument) // Convert to LineID?
 						{
 							if(tags[0] > General.Map.FormatInterface.MaxArgument)
 							{
-								General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + Index + ": unable to convert Tag (" + tags[0] + ") to LineID, because linedef tag is greater than " + General.Map.FormatInterface.MaxArgument + ".");
+								string message = "Linedef " + Index + ": unable to convert Tag (" + tags[0] + ") to LineID, because linedef tag is greater than " + General.Map.FormatInterface.MaxArgument + ".";
+								General.ErrorLogger.Add(new MapElementErrorItem(ErrorType.Warning, this, message));
 							}
 							else
 							{
@@ -647,7 +651,8 @@ namespace CodeImp.DoomBuilder.Map
 						{
 							if(action != 0)
 							{
-								General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + Index + ": unable to convert Tag (" + tags[0] + ") to LineID, because linedef already has an action.");
+								string message = "Linedef " + Index + ": unable to convert Tag (" + tags[0] + ") to LineID, because linedef already has an action.";
+								General.ErrorLogger.Add(new MapElementErrorItem(ErrorType.Warning, this, message));
 							}
 							else // Convert to Line_SetIdentification
 							{
@@ -662,7 +667,8 @@ namespace CodeImp.DoomBuilder.Map
 						} 
 						else if(tags[0] < General.Map.FormatInterface.MinArgument) 
 						{
-							General.ErrorLogger.Add(ErrorType.Warning, "Linedef " + Index + ": unable to convert Tag (" + tags[0] + ") to LineID, because it's outside of supported argument range [" + General.Map.FormatInterface.MinArgument + ".." + General.Map.FormatInterface.MaxArgument + "].");
+							string message = "Linedef " + Index + ": unable to convert Tag (" + tags[0] + ") to LineID, because it's outside of supported argument range [" + General.Map.FormatInterface.MinArgument + ".." + General.Map.FormatInterface.MaxArgument + "].";
+							General.ErrorLogger.Add(new MapElementErrorItem(ErrorType.Warning, this, message));
 						}
 						break;
 				}
