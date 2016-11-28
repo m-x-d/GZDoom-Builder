@@ -1831,8 +1831,7 @@ namespace CodeImp.DoomBuilder.Data
 						if(decorate.HasError)
 						{
 							decorate.LogError();
-							currentreader = null;
-							return counter;
+							break;
 						}
 					}
 				}
@@ -2021,6 +2020,11 @@ namespace CodeImp.DoomBuilder.Data
 								if(ai.Enum.Name == "spawnthing") ai.Enum = newenums;
 						}
 					}
+				}
+				else
+				{
+					// Return after adding parsed resources
+					return counter;
 				}
 			}
 			
@@ -2375,6 +2379,8 @@ namespace CodeImp.DoomBuilder.Data
 			// Load gldefs from resources
 			foreach(DataReader dr in containers) 
 			{
+				if(parser.HasError) break;
+
 				currentreader = dr;
 				parser.ClearIncludesList();
 				IEnumerable<TextResourceData> streams = dr.GetGldefsData(General.Map.Config.BaseGame);
@@ -2387,8 +2393,7 @@ namespace CodeImp.DoomBuilder.Data
 					if(parser.HasError)
 					{
 						parser.LogError();
-						currentreader = null;
-						return;
+						break;
 					}
 				}
 			}
@@ -2396,6 +2401,9 @@ namespace CodeImp.DoomBuilder.Data
 			//mxd. Add to text resources collection
 			scriptresources[parser.ScriptType] = new HashSet<ScriptResource>(parser.ScriptResources.Values);
 			currentreader = null;
+
+			//mxd. Abort on errors, but after adding parsed text resources
+			if(parser.HasError) return;
 
 			// Create Gldefs Entries dictionary
 			foreach(KeyValuePair<string, string> e in parser.Objects) //<ClassName, Light name>

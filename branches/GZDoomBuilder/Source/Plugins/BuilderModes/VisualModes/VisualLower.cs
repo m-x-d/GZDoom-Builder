@@ -62,6 +62,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			Vector2D vl, vr;
 
+			//mxd. Apply sky hack?
+			UpdateSkyRenderFlag();
+
 			//mxd. lightfog flag support
 			int lightvalue;
 			bool lightabsolute;
@@ -205,6 +208,28 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			base.SetVertices(null); //mxd
 			return false;
+		}
+
+		//mxd
+		internal void UpdateSkyRenderFlag()
+		{
+			bool isdoublesided = (Sidedef.Other != null && Sidedef.Sector != null && Sidedef.Other.Sector != null);
+
+			//TECH: when a side part has no texture, sky hack will be applied when either front or back sectors' floor uses SkyFlatName texture
+			//TECH: this glitches in both ZDoom and GZDoom when only lower sector's floor has SkyFlatName
+			if(Sidedef.LowTexture == "-")
+			{
+				renderassky = (isdoublesided
+					&& (Sidedef.Sector.FloorTexture == General.Map.Config.SkyFlatName
+					|| Sidedef.Other.Sector.FloorTexture == General.Map.Config.SkyFlatName));
+			}
+			//TECH: otherwise, sky hack will be applied when both front and back sector floors use SkyFlatName texture
+			else
+			{
+				renderassky = (isdoublesided
+					&& Sidedef.Sector.FloorTexture == General.Map.Config.SkyFlatName
+					&& Sidedef.Other.Sector.FloorTexture == General.Map.Config.SkyFlatName);
+			}
 		}
 		
 		#endregion

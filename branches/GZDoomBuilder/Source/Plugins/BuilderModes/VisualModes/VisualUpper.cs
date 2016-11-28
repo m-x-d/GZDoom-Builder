@@ -204,9 +204,23 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd
 		internal void UpdateSkyRenderFlag()
 		{
-			renderassky = (Sidedef.Other != null && Sidedef.Sector != null && Sidedef.Other.Sector != null &&
-						   Sidedef.Sector.CeilTexture == General.Map.Config.SkyFlatName &&
-						   Sidedef.Other.Sector.CeilTexture == General.Map.Config.SkyFlatName);
+			bool isdoublesided = (Sidedef.Other != null && Sidedef.Sector != null && Sidedef.Other.Sector != null);
+			
+			//TECH: when a side part has no texture, sky hack will be applied when either front or back sectors' ceiling uses SkyFlatName texture
+			//TECH: this glitches in both ZDoom and GZDoom when only higher sector's ceiling has SkyFlatName
+			if(Sidedef.HighTexture == "-")
+			{
+				renderassky = (isdoublesided
+					&& (Sidedef.Sector.CeilTexture == General.Map.Config.SkyFlatName 
+					|| Sidedef.Other.Sector.CeilTexture == General.Map.Config.SkyFlatName));
+			}
+			//TECH: otherwise, sky hack will be applied when both front and back sector ceilings use SkyFlatName texture
+			else
+			{
+				renderassky = (isdoublesided 
+					&& Sidedef.Sector.CeilTexture == General.Map.Config.SkyFlatName 
+					&& Sidedef.Other.Sector.CeilTexture == General.Map.Config.SkyFlatName);
+			}
 		}
 		
 		#endregion

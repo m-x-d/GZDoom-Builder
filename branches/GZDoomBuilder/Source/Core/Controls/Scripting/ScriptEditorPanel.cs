@@ -628,12 +628,35 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			// Resource exists?
 			DataReader dr = null;
-			foreach(DataReader reader in General.Map.Data.Containers)
+
+			// Resource is a temporary file?
+			if(item.ResourceLocation.StartsWith(General.Map.TempPath))
 			{
-				if(reader.Location.location == item.ResourceLocation)
+				// Search in PK3-embedded wads only
+				foreach(DataReader reader in General.Map.Data.Containers)
 				{
-					dr = reader;
-					break;
+					if(!(reader is PK3Reader)) continue;
+					PK3Reader pkr = (PK3Reader)reader;
+					foreach(WADReader wadreader in pkr.Wads)
+					{
+						if(wadreader.Location.location == item.ResourceLocation)
+						{
+							dr = wadreader;
+							break;
+						}
+					}
+				}
+			}
+			else
+			{
+				// Search among resources
+				foreach(DataReader reader in General.Map.Data.Containers)
+				{
+					if(reader.Location.location == item.ResourceLocation)
+					{
+						dr = reader;
+						break;
+					}
 				}
 			}
 
@@ -643,9 +666,14 @@ namespace CodeImp.DoomBuilder.Controls
 			TextResourceData trd = new TextResourceData(dr, dr.LoadFile(item.LumpName, item.LumpIndex), item.LumpName, item.LumpIndex, false);
 			var targettab = OpenResource(new ScriptResource(trd, item.ScriptType));
 
-			// Go to error line
-			if(targettab != null && item.LineNumber != CompilerError.NO_LINE_NUMBER)
-				targettab.MoveToLine(item.LineNumber);
+			if(targettab != null)
+			{
+				// Go to error line
+				if(item.LineNumber != CompilerError.NO_LINE_NUMBER) targettab.MoveToLine(item.LineNumber);
+
+				// Show in resources tree
+				scriptresources.SelectItem(item.ResourceLocation, item.LumpName, item.LumpIndex, item.ScriptType);
+			}
 		}
 
 		//mxd

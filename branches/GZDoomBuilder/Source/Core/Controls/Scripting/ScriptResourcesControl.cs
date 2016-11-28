@@ -185,6 +185,41 @@ namespace CodeImp.DoomBuilder.Controls
 
 		#region ================== Methods
 
+		public void SelectItem(string resourcelocation, string lumpname, int lumpindex, ScriptType scripttype)
+		{
+			TreeNode target = FindItem(projecttree.Nodes, resourcelocation, lumpname, lumpindex, scripttype);
+			if(target != null)
+			{
+				projecttree.SelectedNode = target;
+			}
+		}
+
+		private static TreeNode FindItem(TreeNodeCollection nodes, string resourcelocation, string lumpname, int lumpindex, ScriptType scripttype)
+		{
+			foreach(TreeNode node in nodes)
+			{
+				// Is this the item we are looking for?
+				TextResourceNodeData data = (TextResourceNodeData)node.Tag;
+
+				if(data.NodeType == TextResourceNodeType.NODE && data.ResourceLocation == resourcelocation 
+					&& data.ScriptType == scripttype && data.Resource.Filename == lumpname && data.Resource.LumpIndex == lumpindex)
+				{
+					// Found it!
+					return node;
+				}
+				
+				// Try children...
+				if(node.Nodes.Count > 0)
+				{
+					TreeNode item = FindItem(node.Nodes, resourcelocation, lumpname, lumpindex, scripttype);
+					if(item != null) return item;
+				}
+			}
+
+			// No dice...
+			return null;
+		}
+
 		private void UpdateResourcesTree()
 		{
 			ScriptType targettype = (filterbytype.SelectedIndex > -1 ? ((ScriptTypeItem)filterbytype.SelectedItem).Type : ScriptType.UNKNOWN);
@@ -352,6 +387,7 @@ namespace CodeImp.DoomBuilder.Controls
 															LocationInResource = path, 
 															NodeType = TextResourceNodeType.NODE, 
 															Resource = res,
+															ScriptType = res.ScriptType,
 							                            };
 							string includepath = (res.ScriptType == ScriptType.ACS ? "\nInclude path: \"" + res.Filename + "\"" : "");
 							TreeNode scriptnode = new TreeNode(res.ToString(), iconindex, iconindex) { Tag = data, ToolTipText = data + includepath };
