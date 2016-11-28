@@ -218,19 +218,25 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				foreach(Sidedef side in level.sector.Sidedefs)
 				{
 					VisualSidedefParts parts = Sector.GetSidedefParts(side);
-					if(parts.upper != null) parts.upper.UpdateSkyRenderFlag();
-					else if(parts.middlesingle != null) parts.middlesingle.UpdateSkyRenderFlag();
-
-					// On the other side as well...
-					if(side.Other != null && side.Other.Sector != null &&
-					   side.Other.Sector.CeilTexture == General.Map.Config.SkyFlatName)
+					if(parts.upper != null)
 					{
-						BaseVisualSector other = (BaseVisualSector)mode.GetVisualSector(side.Other.Sector);
-						if(other != null && other.Sides != null)
+						parts.upper.UpdateSkyRenderFlag();
+
+						// On the other side as well...
+						if(side.Other != null && side.Other.Sector != null &&
+						   (side.Other.HighTexture == "-" || side.Other.Sector.CeilTexture == General.Map.Config.SkyFlatName))
 						{
-							parts = other.GetSidedefParts(side.Other);
-							if(parts.upper != null) parts.upper.UpdateSkyRenderFlag();
+							BaseVisualSector other = (BaseVisualSector)mode.GetVisualSector(side.Other.Sector);
+							if(other != null && other.Sides != null)
+							{
+								parts = other.GetSidedefParts(side.Other);
+								if(parts.upper != null) parts.upper.UpdateSkyRenderFlag();
+							}
 						}
+					}
+					else if(parts.middlesingle != null)
+					{
+						parts.middlesingle.UpdateSkyRenderFlag();
 					}
 				}
 			}

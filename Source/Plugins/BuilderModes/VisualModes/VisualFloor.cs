@@ -198,11 +198,30 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			renderassky = (level.sector.FloorTexture == General.Map.Config.SkyFlatName || level.sector.LongFloorTexture == MapSet.EmptyLongName);
 			if(isrenderedassky != renderassky && Sector.Sides != null)
 			{
-				// Middle geometry may need updating...
+				// Middle/Lower geometry may need updating...
 				foreach(Sidedef side in level.sector.Sidedefs)
 				{
 					VisualSidedefParts parts = Sector.GetSidedefParts(side);
-					if(parts.middlesingle != null) parts.middlesingle.UpdateSkyRenderFlag();
+					if(parts.lower != null)
+					{
+						parts.lower.UpdateSkyRenderFlag();
+						
+						// On the other side as well...
+						if(side.Other != null && side.Other.Sector != null &&
+						   (side.Other.LowTexture == "-" || side.Other.Sector.FloorTexture == General.Map.Config.SkyFlatName))
+						{
+							BaseVisualSector other = (BaseVisualSector)mode.GetVisualSector(side.Other.Sector);
+							if(other != null && other.Sides != null)
+							{
+								parts = other.GetSidedefParts(side.Other);
+								if(parts.lower != null) parts.lower.UpdateSkyRenderFlag();
+							}
+						}
+					}
+					else if(parts.middlesingle != null)
+					{
+						parts.middlesingle.UpdateSkyRenderFlag();
+					}
 				}
 			}
 		}
