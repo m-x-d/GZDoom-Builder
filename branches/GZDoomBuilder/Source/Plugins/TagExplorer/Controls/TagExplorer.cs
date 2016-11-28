@@ -659,8 +659,8 @@ namespace CodeImp.DoomBuilder.TagExplorer
 			//update Export button
 			bExportToFile.Enabled = (treeView.Nodes != null && treeView.Nodes.Count > 0);
 
-			//loose focus
-			if(focusDisplay) General.Interface.FocusDisplay();
+			// Loose focus when the main windows is active
+			if(focusDisplay && Form.ActiveForm == General.Interface) General.Interface.FocusDisplay();
 		}
 
 //tag/action search
