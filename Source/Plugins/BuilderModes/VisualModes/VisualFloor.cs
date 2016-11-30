@@ -184,46 +184,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			//mxd. Update sky render flag
-			UpdateSkyRenderFlag();
+			renderassky = (level.sector.FloorTexture == General.Map.Config.SkyFlatName);
 			
 			// Apply vertices
 			base.SetVertices(verts);
 			return (verts.Length > 0);
-		}
-
-		//mxd
-		protected override void UpdateSkyRenderFlag()
-		{
-			bool isrenderedassky = renderassky;
-			renderassky = (level.sector.FloorTexture == General.Map.Config.SkyFlatName || level.sector.LongFloorTexture == MapSet.EmptyLongName);
-			if(isrenderedassky != renderassky && Sector.Sides != null)
-			{
-				// Middle/Lower geometry may need updating...
-				foreach(Sidedef side in level.sector.Sidedefs)
-				{
-					VisualSidedefParts parts = Sector.GetSidedefParts(side);
-					if(parts.lower != null)
-					{
-						parts.lower.UpdateSkyRenderFlag();
-						
-						// On the other side as well...
-						if(side.Other != null && side.Other.Sector != null &&
-						   (side.Other.LowTexture == "-" || side.Other.Sector.FloorTexture == General.Map.Config.SkyFlatName))
-						{
-							BaseVisualSector other = (BaseVisualSector)mode.GetVisualSector(side.Other.Sector);
-							if(other != null && other.Sides != null)
-							{
-								parts = other.GetSidedefParts(side.Other);
-								if(parts.lower != null) parts.lower.UpdateSkyRenderFlag();
-							}
-						}
-					}
-					else if(parts.middlesingle != null)
-					{
-						parts.middlesingle.UpdateSkyRenderFlag();
-					}
-				}
-			}
 		}
 
 		#endregion

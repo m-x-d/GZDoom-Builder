@@ -68,7 +68,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override bool Setup()
 		{
 			//mxd
-			if(Sidedef.LongMiddleTexture == MapSet.EmptyLongName) return false;
+			if(Sidedef.LongMiddleTexture == MapSet.EmptyLongName)
+			{
+				base.SetVertices(null);
+				return false;
+			}
 			
 			Vector2D vl, vr;
 

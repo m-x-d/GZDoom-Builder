@@ -660,7 +660,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
 			bExportToFile.Enabled = (treeView.Nodes != null && treeView.Nodes.Count > 0);
 
 			// Loose focus when the main windows is active
-			if(focusDisplay && Form.ActiveForm == General.Interface) General.Interface.FocusDisplay();
+			if(focusDisplay) General.Interface.FocusDisplay();
 		}
 
 //tag/action search
@@ -1098,7 +1098,7 @@ namespace CodeImp.DoomBuilder.TagExplorer
 		private void updatetimer_Tick(object sender, EventArgs e) 
 		{
 			updatetimer.Stop();
-			UpdateTree(true);
+			UpdateTree(Form.ActiveForm == General.Interface);
 		}
 
 		private void bExportToFile_Click(object sender, EventArgs e) 

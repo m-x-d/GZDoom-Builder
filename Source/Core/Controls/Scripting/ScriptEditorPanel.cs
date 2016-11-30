@@ -994,7 +994,7 @@ namespace CodeImp.DoomBuilder.Controls
 				if(!(tab is ScriptResourceDocumentTab)) continue;
 				ScriptResourceDocumentTab restab = (ScriptResourceDocumentTab)tab;
 
-				if(restab.Filename == resource.FilePathName)
+				if(restab.Resource.LumpIndex == resource.LumpIndex && restab.Resource.FilePathName == resource.FilePathName)
 				{
 					tabs.SelectedTab = restab;
 					return restab;

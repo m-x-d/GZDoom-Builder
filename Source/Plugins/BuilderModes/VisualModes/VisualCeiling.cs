@@ -200,46 +200,37 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			//mxd. Update sky render flag
-			UpdateSkyRenderFlag();
-			
-			// Apply vertices
-			base.SetVertices(verts);
-			return (verts.Length > 0);
-		}
-
-		//mxd
-		protected override void UpdateSkyRenderFlag()
-		{
 			bool isrenderedassky = renderassky;
 			renderassky = (level.sector.CeilTexture == General.Map.Config.SkyFlatName);
 			if(isrenderedassky != renderassky && Sector.Sides != null)
 			{
-				// Upper/middle geometry may need updating...
+				// Upper sidedef geometry may need updating...
 				foreach(Sidedef side in level.sector.Sidedefs)
 				{
 					VisualSidedefParts parts = Sector.GetSidedefParts(side);
-					if(parts.upper != null)
+
+					// Upper side can exist in either our, or the neightbouring sector, right?
+					if(parts.upper != null && parts.upper.Triangles > 0)
 					{
 						parts.upper.UpdateSkyRenderFlag();
-
-						// On the other side as well...
-						if(side.Other != null && side.Other.Sector != null &&
-						   (side.Other.HighTexture == "-" || side.Other.Sector.CeilTexture == General.Map.Config.SkyFlatName))
-						{
-							BaseVisualSector other = (BaseVisualSector)mode.GetVisualSector(side.Other.Sector);
-							if(other != null && other.Sides != null)
-							{
-								parts = other.GetSidedefParts(side.Other);
-								if(parts.upper != null) parts.upper.UpdateSkyRenderFlag();
-							}
-						}
 					}
-					else if(parts.middlesingle != null)
+					else if(side.Other != null && side.Other.Sector != null && side.Other.Sector.CeilTexture == General.Map.Config.SkyFlatName)
 					{
-						parts.middlesingle.UpdateSkyRenderFlag();
+						// Update upper side of the neightbouring sector
+						BaseVisualSector other = (BaseVisualSector)mode.GetVisualSector(side.Other.Sector);
+						if(other != null && other.Sides != null)
+						{
+							parts = other.GetSidedefParts(side.Other);
+							if(parts.upper != null && parts.upper.Triangles > 0)
+								parts.upper.UpdateSkyRenderFlag();
+						}
 					}
 				}
 			}
+			
+			// Apply vertices
+			base.SetVertices(verts);
+			return (verts.Length > 0);
 		}
 
 		#endregion
