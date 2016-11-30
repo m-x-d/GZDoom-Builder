@@ -61,19 +61,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override bool Setup()
 		{
 			Vector2D vl, vr;
-
-			//mxd. Apply sky hack?
-			UpdateSkyRenderFlag();
-
-			//mxd. lightfog flag support
-			int lightvalue;
-			bool lightabsolute;
-			GetLightValue(out lightvalue, out lightabsolute);
-			
-			Vector2D tscale = new Vector2D(Sidedef.Fields.GetValue("scalex_bottom", 1.0f),
-										   Sidedef.Fields.GetValue("scaley_bottom", 1.0f));
-			Vector2D toffset = new Vector2D(Sidedef.Fields.GetValue("offsetx_bottom", 0.0f),
-											Sidedef.Fields.GetValue("offsety_bottom", 0.0f));
 			
 			// Left and right vertices for this sidedef
 			if(Sidedef.IsFront)
@@ -91,6 +78,29 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			SectorData sd = Sector.GetSectorData();
 			SectorData osd = mode.GetSectorData(Sidedef.Other.Sector);
 			if(!osd.Updated) osd.Update();
+
+			//mxd
+			float vlzf = sd.Floor.plane.GetZ(vl);
+			float vrzf = sd.Floor.plane.GetZ(vr);
+			float ovlzf = osd.Floor.plane.GetZ(vl);
+			float ovrzf = osd.Floor.plane.GetZ(vr);
+
+			//mxd. Side is visible when our sector's floor is lower than the other's at any vertex
+			if(!(vlzf < ovlzf || vrzf < ovrzf))
+			{
+				base.SetVertices(null);
+				return false;
+			}
+
+			//mxd. lightfog flag support
+			int lightvalue;
+			bool lightabsolute;
+			GetLightValue(out lightvalue, out lightabsolute);
+
+			Vector2D tscale = new Vector2D(Sidedef.Fields.GetValue("scalex_bottom", 1.0f),
+										   Sidedef.Fields.GetValue("scaley_bottom", 1.0f));
+			Vector2D toffset = new Vector2D(Sidedef.Fields.GetValue("offsetx_bottom", 0.0f),
+											Sidedef.Fields.GetValue("offsety_bottom", 0.0f));
 			
 			// Texture given?
 			if(Sidedef.LongLowTexture != MapSet.EmptyLongName)
@@ -168,10 +178,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			// Create initial polygon, which is just a quad between floor and ceiling
 			WallPolygon poly = new WallPolygon();
-			poly.Add(new Vector3D(vl.x, vl.y, sd.Floor.plane.GetZ(vl)));
+			poly.Add(new Vector3D(vl.x, vl.y, vlzf));
 			poly.Add(new Vector3D(vl.x, vl.y, sd.Ceiling.plane.GetZ(vl)));
 			poly.Add(new Vector3D(vr.x, vr.y, sd.Ceiling.plane.GetZ(vr)));
-			poly.Add(new Vector3D(vr.x, vr.y, sd.Floor.plane.GetZ(vr)));
+			poly.Add(new Vector3D(vr.x, vr.y, vrzf));
 			
 			// Determine initial color
 			int lightlevel = lightabsolute ? lightvalue : sd.Ceiling.brightnessbelow + lightvalue;
@@ -184,7 +194,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			// Cut off the part above the other floor
 			CropPoly(ref poly, osd.Floor.plane, false);
-			CropPoly(ref poly, osd.Ceiling.plane, true);
+
+			//INFO: Makes sence only when ceiling plane is lower than floor plane. Also ZDoom clips ceiling instead here.
+			if(ovlzf > osd.Ceiling.plane.GetZ(vl) || ovrzf > osd.Ceiling.plane.GetZ(vr))
+				CropPoly(ref poly, osd.Ceiling.plane, true);
 
 			// Cut out pieces that overlap 3D floors in this sector
 			List<WallPolygon> polygons = new List<WallPolygon> { poly };
@@ -208,28 +221,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			
 			base.SetVertices(null); //mxd
 			return false;
-		}
-
-		//mxd
-		internal void UpdateSkyRenderFlag()
-		{
-			bool isdoublesided = (Sidedef.Other != null && Sidedef.Sector != null && Sidedef.Other.Sector != null);
-
-			//TECH: when a side part has no texture, sky hack will be applied when either front or back sectors' floor uses SkyFlatName texture
-			//TECH: this glitches in both ZDoom and GZDoom when only lower sector's floor has SkyFlatName
-			if(Sidedef.LowTexture == "-")
-			{
-				renderassky = (isdoublesided
-					&& (Sidedef.Sector.FloorTexture == General.Map.Config.SkyFlatName
-					|| Sidedef.Other.Sector.FloorTexture == General.Map.Config.SkyFlatName));
-			}
-			//TECH: otherwise, sky hack will be applied when both front and back sector floors use SkyFlatName texture
-			else
-			{
-				renderassky = (isdoublesided
-					&& Sidedef.Sector.FloorTexture == General.Map.Config.SkyFlatName
-					&& Sidedef.Other.Sector.FloorTexture == General.Map.Config.SkyFlatName);
-			}
 		}
 		
 		#endregion

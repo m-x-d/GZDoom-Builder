@@ -61,19 +61,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		public override bool Setup()
 		{
 			Vector2D vl, vr;
-
-			//mxd. Apply sky hack?
-			UpdateSkyRenderFlag();
-			
-			//mxd. lightfog flag support
-			int lightvalue;
-			bool lightabsolute;
-			GetLightValue(out lightvalue, out lightabsolute);
-			
-			Vector2D tscale = new Vector2D(Sidedef.Fields.GetValue("scalex_top", 1.0f),
-										   Sidedef.Fields.GetValue("scaley_top", 1.0f));
-			Vector2D toffset = new Vector2D(Sidedef.Fields.GetValue("offsetx_top", 0.0f),
-											Sidedef.Fields.GetValue("offsety_top", 0.0f));
 			
 			// Left and right vertices for this sidedef
 			if(Sidedef.IsFront)
@@ -91,6 +78,30 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			SectorData sd = Sector.GetSectorData();
 			SectorData osd = mode.GetSectorData(Sidedef.Other.Sector);
 			if(!osd.Updated) osd.Update();
+
+			//mxd
+			float vlzc = sd.Ceiling.plane.GetZ(vl);
+			float vrzc = sd.Ceiling.plane.GetZ(vr);
+
+			//mxd. Side is visible when our sector's ceiling is higher than the other's at any vertex
+			if(!(vlzc > osd.Ceiling.plane.GetZ(vl) || vrzc > osd.Ceiling.plane.GetZ(vr)))
+			{
+				base.SetVertices(null);
+				return false;
+			}
+
+			//mxd. Apply sky hack?
+			UpdateSkyRenderFlag();
+
+			//mxd. lightfog flag support
+			int lightvalue;
+			bool lightabsolute;
+			GetLightValue(out lightvalue, out lightabsolute);
+
+			Vector2D tscale = new Vector2D(Sidedef.Fields.GetValue("scalex_top", 1.0f),
+										   Sidedef.Fields.GetValue("scaley_top", 1.0f));
+			Vector2D toffset = new Vector2D(Sidedef.Fields.GetValue("offsetx_top", 0.0f),
+											Sidedef.Fields.GetValue("offsety_top", 0.0f));
 			
 			// Texture given?
 			if((Sidedef.LongHighTexture != MapSet.EmptyLongName))
@@ -161,8 +172,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Create initial polygon, which is just a quad between floor and ceiling
 			WallPolygon poly = new WallPolygon();
 			poly.Add(new Vector3D(vl.x, vl.y, sd.Floor.plane.GetZ(vl)));
-			poly.Add(new Vector3D(vl.x, vl.y, sd.Ceiling.plane.GetZ(vl)));
-			poly.Add(new Vector3D(vr.x, vr.y, sd.Ceiling.plane.GetZ(vr)));
+			poly.Add(new Vector3D(vl.x, vl.y, vlzc));
+			poly.Add(new Vector3D(vr.x, vr.y, vrzc));
 			poly.Add(new Vector3D(vr.x, vr.y, sd.Floor.plane.GetZ(vr)));
 			
 			// Determine initial color
@@ -204,23 +215,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd
 		internal void UpdateSkyRenderFlag()
 		{
-			bool isdoublesided = (Sidedef.Other != null && Sidedef.Sector != null && Sidedef.Other.Sector != null);
-			
-			//TECH: when a side part has no texture, sky hack will be applied when either front or back sectors' ceiling uses SkyFlatName texture
-			//TECH: this glitches in both ZDoom and GZDoom when only higher sector's ceiling has SkyFlatName
-			if(Sidedef.HighTexture == "-")
-			{
-				renderassky = (isdoublesided
-					&& (Sidedef.Sector.CeilTexture == General.Map.Config.SkyFlatName 
-					|| Sidedef.Other.Sector.CeilTexture == General.Map.Config.SkyFlatName));
-			}
-			//TECH: otherwise, sky hack will be applied when both front and back sector ceilings use SkyFlatName texture
-			else
-			{
-				renderassky = (isdoublesided 
-					&& Sidedef.Sector.CeilTexture == General.Map.Config.SkyFlatName 
-					&& Sidedef.Other.Sector.CeilTexture == General.Map.Config.SkyFlatName);
-			}
+			renderassky = (Sidedef.Other != null && Sidedef.Sector != null && Sidedef.Other.Sector != null 
+				&& Sidedef.Sector.CeilTexture == General.Map.Config.SkyFlatName 
+				&& Sidedef.Other.Sector.CeilTexture == General.Map.Config.SkyFlatName);
 		}
 		
 		#endregion

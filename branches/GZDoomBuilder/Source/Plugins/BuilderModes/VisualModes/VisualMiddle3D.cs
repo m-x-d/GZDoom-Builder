@@ -68,7 +68,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			this.extrafloor = extrafloor;
 
 			//mxd. Extrafloor may've become invalid during undo/redo...
-			if(sourceside == null) return false;
+			if(sourceside == null)
+			{
+				base.SetVertices(null);
+				return false;
+			}
 
 			Vector2D vl, vr;
 
