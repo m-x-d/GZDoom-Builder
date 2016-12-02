@@ -403,6 +403,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.searchbox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
 			this.searchbox.Name = "searchbox";
 			this.searchbox.Size = new System.Drawing.Size(100, 25);
+			this.searchbox.ToolTipText = "Quick search";
 			this.searchbox.TextChanged += new System.EventHandler(this.searchbox_TextChanged);
 			// 
 			// searchprev
@@ -914,7 +915,6 @@ namespace CodeImp.DoomBuilder.Controls
 			this.tabresources.ImageIndex = 0;
 			this.tabresources.Location = new System.Drawing.Point(4, 23);
 			this.tabresources.Name = "tabresources";
-			this.tabresources.Padding = new System.Windows.Forms.Padding(3);
 			this.tabresources.Size = new System.Drawing.Size(189, 419);
 			this.tabresources.TabIndex = 0;
 			this.tabresources.Text = " Resources ";
@@ -924,10 +924,11 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			this.scriptresources.BackColor = System.Drawing.SystemColors.ControlLightLight;
 			this.scriptresources.Dock = System.Windows.Forms.DockStyle.Fill;
-			this.scriptresources.Location = new System.Drawing.Point(3, 3);
+			this.scriptresources.Location = new System.Drawing.Point(0, 0);
 			this.scriptresources.Margin = new System.Windows.Forms.Padding(0);
 			this.scriptresources.Name = "scriptresources";
-			this.scriptresources.Size = new System.Drawing.Size(183, 413);
+			this.scriptresources.Padding = new System.Windows.Forms.Padding(0, 3, 3, 0);
+			this.scriptresources.Size = new System.Drawing.Size(189, 419);
 			this.scriptresources.TabIndex = 0;
 			// 
 			// splitter

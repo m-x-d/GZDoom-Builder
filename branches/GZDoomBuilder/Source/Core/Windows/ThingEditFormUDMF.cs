@@ -48,16 +48,12 @@ namespace CodeImp.DoomBuilder.Windows
 		private bool preventchanges;
 		private bool preventmapchange; //mxd
 		private bool undocreated; //mxd
-		private static bool useabsoluteheight; //mxd
 		private List<ThingProperties> thingprops; //mxd
 		private readonly string[] renderstyles; //mxd
 		private Dictionary<string, string> flagsrename; //mxd
 
-		//mxd. Window setup stuff
-		private static int activetab;
-
 		//mxd. Persistent settings
-		private static bool linkscale;
+		private bool useabsoluteheight;
 
 		private struct ThingProperties //mxd
 		{
@@ -99,8 +95,15 @@ namespace CodeImp.DoomBuilder.Windows
 			// Initialize
 			InitializeComponent();
 
+			//mxd. Load settings
+			useabsoluteheight = General.Settings.ReadSetting("windows." + configname + ".useabsoluteheight", false);
+
 			//mxd. Widow setup
-			if(General.Settings.StoreSelectedEditTab && activetab > 0) tabs.SelectTab(activetab);
+			if(General.Settings.StoreSelectedEditTab)
+			{
+				int activetab = General.Settings.ReadSetting("windows." + configname + ".activetab", 0);
+				tabs.SelectTab(activetab);
+			}
 
 			// Fill flags list
 			foreach(KeyValuePair<string, string> tf in General.Map.Config.ThingFlags)
@@ -147,7 +150,7 @@ namespace CodeImp.DoomBuilder.Windows
 			anglecontrol.DoomAngleClamping = General.Map.Config.DoomThingRotationAngles;
 
 			// Value linking
-			scale.LinkValues = linkscale;
+			scale.LinkValues = General.Settings.ReadSetting("windows." + configname + ".linkscale", false);
 
 			// Setup types list
 			thingtype.Setup();
@@ -571,9 +574,6 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Settings.DefaultThingAngle = Angle2D.DegToRad((float)angle.GetResult((int)Angle2D.RadToDeg(General.Settings.DefaultThingAngle) - 90) + 90);
 			General.Settings.SetDefaultThingFlags(defaultflags);
 
-			// Store value linking
-			linkscale = scale.LinkValues;
-
 			// Done
 			General.Map.IsChanged = true;
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty); //mxd
@@ -632,7 +632,7 @@ namespace CodeImp.DoomBuilder.Windows
 		//mxd
 		private void ThingEditFormUDMF_Shown(object sender, EventArgs e)
 		{
-			if(activetab == 0)
+			if(tabs.SelectedIndex == 0)
 			{
 				thingtype.Focus();
 				thingtype.FocusTextbox();
@@ -642,7 +642,10 @@ namespace CodeImp.DoomBuilder.Windows
 		//mxd
 		private void ThingEditForm_FormClosing(object sender, FormClosingEventArgs e) 
 		{
-			activetab = tabs.SelectedIndex;
+			// Save settings
+			General.Settings.WriteSetting("windows." + configname + ".activetab", tabs.SelectedIndex);
+			General.Settings.WriteSetting("windows." + configname + ".linkscale", scale.LinkValues);
+			General.Settings.WriteSetting("windows." + configname + ".useabsoluteheight", useabsoluteheight);
 			General.Settings.WriteSetting("windows." + configname + ".customfieldsshowfixed", !hidefixedfields.Checked);
 		}
 

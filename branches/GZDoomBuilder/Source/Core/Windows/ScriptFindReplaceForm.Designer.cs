@@ -28,76 +28,70 @@ namespace CodeImp.DoomBuilder.Windows
 		/// </summary>
 		private void InitializeComponent()
 		{
+			this.components = new System.ComponentModel.Container();
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ScriptFindReplaceForm));
 			this.label1 = new System.Windows.Forms.Label();
-			this.findtext = new System.Windows.Forms.TextBox();
-			this.casesensitive = new System.Windows.Forms.CheckBox();
-			this.wordonly = new System.Windows.Forms.CheckBox();
-			this.replacetext = new System.Windows.Forms.TextBox();
-			this.labelreplace = new System.Windows.Forms.Label();
+			this.findmatchcase = new System.Windows.Forms.CheckBox();
+			this.findwholeword = new System.Windows.Forms.CheckBox();
 			this.findnextbutton = new System.Windows.Forms.Button();
 			this.replaceallbutton = new System.Windows.Forms.Button();
-			this.closebutton = new System.Windows.Forms.Button();
 			this.replacebutton = new System.Windows.Forms.Button();
 			this.findpreviousbutton = new System.Windows.Forms.Button();
+			this.tabs = new System.Windows.Forms.TabControl();
+			this.tabfind = new System.Windows.Forms.TabPage();
+			this.findinbox = new System.Windows.Forms.ComboBox();
+			this.label2 = new System.Windows.Forms.Label();
+			this.findbox = new System.Windows.Forms.ComboBox();
+			this.tabreplace = new System.Windows.Forms.TabPage();
+			this.replacebox = new System.Windows.Forms.ComboBox();
+			this.label5 = new System.Windows.Forms.Label();
+			this.replaceinbox = new System.Windows.Forms.ComboBox();
+			this.label3 = new System.Windows.Forms.Label();
+			this.replacefindbox = new System.Windows.Forms.ComboBox();
+			this.label4 = new System.Windows.Forms.Label();
+			this.replacematchcase = new System.Windows.Forms.CheckBox();
+			this.replacewholeword = new System.Windows.Forms.CheckBox();
+			this.imagelist = new System.Windows.Forms.ImageList(this.components);
+			this.tabs.SuspendLayout();
+			this.tabfind.SuspendLayout();
+			this.tabreplace.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// label1
 			// 
 			this.label1.AutoSize = true;
-			this.label1.Location = new System.Drawing.Point(29, 23);
+			this.label1.Location = new System.Drawing.Point(6, 16);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(56, 13);
 			this.label1.TabIndex = 0;
 			this.label1.Text = "Find what:";
 			// 
-			// findtext
+			// findmatchcase
 			// 
-			this.findtext.Location = new System.Drawing.Point(93, 20);
-			this.findtext.Name = "findtext";
-			this.findtext.Size = new System.Drawing.Size(152, 20);
-			this.findtext.TabIndex = 0;
+			this.findmatchcase.AutoSize = true;
+			this.findmatchcase.Location = new System.Drawing.Point(9, 116);
+			this.findmatchcase.Name = "findmatchcase";
+			this.findmatchcase.Size = new System.Drawing.Size(82, 17);
+			this.findmatchcase.TabIndex = 2;
+			this.findmatchcase.Text = "Match case";
+			this.findmatchcase.UseVisualStyleBackColor = true;
 			// 
-			// casesensitive
+			// findwholeword
 			// 
-			this.casesensitive.AutoSize = true;
-			this.casesensitive.Location = new System.Drawing.Point(93, 81);
-			this.casesensitive.Name = "casesensitive";
-			this.casesensitive.Size = new System.Drawing.Size(94, 17);
-			this.casesensitive.TabIndex = 2;
-			this.casesensitive.Text = "Case sensitive";
-			this.casesensitive.UseVisualStyleBackColor = true;
-			// 
-			// wordonly
-			// 
-			this.wordonly.AutoSize = true;
-			this.wordonly.Location = new System.Drawing.Point(93, 105);
-			this.wordonly.Name = "wordonly";
-			this.wordonly.Size = new System.Drawing.Size(105, 17);
-			this.wordonly.TabIndex = 3;
-			this.wordonly.Text = "Whole word only";
-			this.wordonly.UseVisualStyleBackColor = true;
-			// 
-			// replacetext
-			// 
-			this.replacetext.Location = new System.Drawing.Point(93, 51);
-			this.replacetext.Name = "replacetext";
-			this.replacetext.Size = new System.Drawing.Size(152, 20);
-			this.replacetext.TabIndex = 1;
-			// 
-			// labelreplace
-			// 
-			this.labelreplace.AutoSize = true;
-			this.labelreplace.Location = new System.Drawing.Point(14, 54);
-			this.labelreplace.Name = "labelreplace";
-			this.labelreplace.Size = new System.Drawing.Size(72, 13);
-			this.labelreplace.TabIndex = 6;
-			this.labelreplace.Text = "Replace with:";
+			this.findwholeword.AutoSize = true;
+			this.findwholeword.Location = new System.Drawing.Point(97, 116);
+			this.findwholeword.Name = "findwholeword";
+			this.findwholeword.Size = new System.Drawing.Size(113, 17);
+			this.findwholeword.TabIndex = 3;
+			this.findwholeword.Text = "Match whole word";
+			this.findwholeword.UseVisualStyleBackColor = true;
 			// 
 			// findnextbutton
 			// 
-			this.findnextbutton.Location = new System.Drawing.Point(251, 17);
+			this.findnextbutton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.findnextbutton.Location = new System.Drawing.Point(79, 185);
 			this.findnextbutton.Name = "findnextbutton";
-			this.findnextbutton.Size = new System.Drawing.Size(80, 25);
+			this.findnextbutton.Size = new System.Drawing.Size(100, 25);
 			this.findnextbutton.TabIndex = 4;
 			this.findnextbutton.Text = "Find Next";
 			this.findnextbutton.UseVisualStyleBackColor = true;
@@ -105,31 +99,19 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// replaceallbutton
 			// 
-			this.replaceallbutton.Location = new System.Drawing.Point(337, 48);
+			this.replaceallbutton.Location = new System.Drawing.Point(185, 185);
 			this.replaceallbutton.Name = "replaceallbutton";
-			this.replaceallbutton.Size = new System.Drawing.Size(86, 25);
+			this.replaceallbutton.Size = new System.Drawing.Size(100, 25);
 			this.replaceallbutton.TabIndex = 7;
 			this.replaceallbutton.Text = "Replace All";
 			this.replaceallbutton.UseVisualStyleBackColor = true;
 			this.replaceallbutton.Click += new System.EventHandler(this.replaceallbutton_Click);
 			// 
-			// closebutton
-			// 
-			this.closebutton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.closebutton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.closebutton.Location = new System.Drawing.Point(325, 96);
-			this.closebutton.Name = "closebutton";
-			this.closebutton.Size = new System.Drawing.Size(98, 25);
-			this.closebutton.TabIndex = 8;
-			this.closebutton.Text = "Close";
-			this.closebutton.UseVisualStyleBackColor = true;
-			this.closebutton.Click += new System.EventHandler(this.closebutton_Click);
-			// 
 			// replacebutton
 			// 
-			this.replacebutton.Location = new System.Drawing.Point(251, 48);
+			this.replacebutton.Location = new System.Drawing.Point(79, 185);
 			this.replacebutton.Name = "replacebutton";
-			this.replacebutton.Size = new System.Drawing.Size(80, 25);
+			this.replacebutton.Size = new System.Drawing.Size(100, 25);
 			this.replacebutton.TabIndex = 6;
 			this.replacebutton.Text = "Replace";
 			this.replacebutton.UseVisualStyleBackColor = true;
@@ -137,32 +119,212 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// findpreviousbutton
 			// 
-			this.findpreviousbutton.Location = new System.Drawing.Point(337, 17);
+			this.findpreviousbutton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.findpreviousbutton.Location = new System.Drawing.Point(185, 185);
 			this.findpreviousbutton.Name = "findpreviousbutton";
-			this.findpreviousbutton.Size = new System.Drawing.Size(86, 25);
+			this.findpreviousbutton.Size = new System.Drawing.Size(100, 25);
 			this.findpreviousbutton.TabIndex = 5;
 			this.findpreviousbutton.Text = "Find Previous";
 			this.findpreviousbutton.UseVisualStyleBackColor = true;
 			this.findpreviousbutton.Click += new System.EventHandler(this.findpreviousbutton_Click);
+			// 
+			// tabs
+			// 
+			this.tabs.Controls.Add(this.tabfind);
+			this.tabs.Controls.Add(this.tabreplace);
+			this.tabs.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+			this.tabs.ImageList = this.imagelist;
+			this.tabs.Location = new System.Drawing.Point(3, 3);
+			this.tabs.Margin = new System.Windows.Forms.Padding(0);
+			this.tabs.Name = "tabs";
+			this.tabs.Padding = new System.Drawing.Point(10, 3);
+			this.tabs.SelectedIndex = 0;
+			this.tabs.Size = new System.Drawing.Size(299, 242);
+			this.tabs.TabIndex = 9;
+			this.tabs.SelectedIndexChanged += new System.EventHandler(this.tabs_SelectedIndexChanged);
+			// 
+			// tabfind
+			// 
+			this.tabfind.Controls.Add(this.findinbox);
+			this.tabfind.Controls.Add(this.findpreviousbutton);
+			this.tabfind.Controls.Add(this.label2);
+			this.tabfind.Controls.Add(this.findbox);
+			this.tabfind.Controls.Add(this.label1);
+			this.tabfind.Controls.Add(this.findnextbutton);
+			this.tabfind.Controls.Add(this.findmatchcase);
+			this.tabfind.Controls.Add(this.findwholeword);
+			this.tabfind.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+			this.tabfind.ImageIndex = 0;
+			this.tabfind.Location = new System.Drawing.Point(4, 22);
+			this.tabfind.Name = "tabfind";
+			this.tabfind.Padding = new System.Windows.Forms.Padding(3, 16, 3, 3);
+			this.tabfind.Size = new System.Drawing.Size(291, 216);
+			this.tabfind.TabIndex = 0;
+			this.tabfind.Text = "Find";
+			this.tabfind.UseVisualStyleBackColor = true;
+			// 
+			// findinbox
+			// 
+			this.findinbox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.findinbox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.findinbox.FormattingEnabled = true;
+			this.findinbox.Items.AddRange(new object[] {
+            "Current tab",
+            "All opened tabs (current script type)",
+            "All opened tabs (any script type)",
+            "All resources (current script type)",
+            "All resources (any script type)"});
+			this.findinbox.Location = new System.Drawing.Point(9, 80);
+			this.findinbox.Name = "findinbox";
+			this.findinbox.Size = new System.Drawing.Size(276, 21);
+			this.findinbox.TabIndex = 3;
+			// 
+			// label2
+			// 
+			this.label2.AutoSize = true;
+			this.label2.Location = new System.Drawing.Point(6, 62);
+			this.label2.Name = "label2";
+			this.label2.Size = new System.Drawing.Size(45, 13);
+			this.label2.TabIndex = 2;
+			this.label2.Text = "Look in:";
+			// 
+			// findbox
+			// 
+			this.findbox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.findbox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+			this.findbox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+			this.findbox.FormattingEnabled = true;
+			this.findbox.Location = new System.Drawing.Point(9, 34);
+			this.findbox.Name = "findbox";
+			this.findbox.Size = new System.Drawing.Size(276, 21);
+			this.findbox.TabIndex = 1;
+			// 
+			// tabreplace
+			// 
+			this.tabreplace.Controls.Add(this.replacebox);
+			this.tabreplace.Controls.Add(this.label5);
+			this.tabreplace.Controls.Add(this.replaceinbox);
+			this.tabreplace.Controls.Add(this.replacebutton);
+			this.tabreplace.Controls.Add(this.label3);
+			this.tabreplace.Controls.Add(this.replacefindbox);
+			this.tabreplace.Controls.Add(this.replaceallbutton);
+			this.tabreplace.Controls.Add(this.label4);
+			this.tabreplace.Controls.Add(this.replacematchcase);
+			this.tabreplace.Controls.Add(this.replacewholeword);
+			this.tabreplace.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+			this.tabreplace.ImageIndex = 1;
+			this.tabreplace.Location = new System.Drawing.Point(4, 22);
+			this.tabreplace.Name = "tabreplace";
+			this.tabreplace.Padding = new System.Windows.Forms.Padding(3);
+			this.tabreplace.Size = new System.Drawing.Size(291, 216);
+			this.tabreplace.TabIndex = 1;
+			this.tabreplace.Text = "Replace";
+			this.tabreplace.UseVisualStyleBackColor = true;
+			// 
+			// replacebox
+			// 
+			this.replacebox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.replacebox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+			this.replacebox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+			this.replacebox.FormattingEnabled = true;
+			this.replacebox.Location = new System.Drawing.Point(9, 79);
+			this.replacebox.Name = "replacebox";
+			this.replacebox.Size = new System.Drawing.Size(276, 21);
+			this.replacebox.TabIndex = 11;
+			// 
+			// label5
+			// 
+			this.label5.AutoSize = true;
+			this.label5.Location = new System.Drawing.Point(6, 61);
+			this.label5.Name = "label5";
+			this.label5.Size = new System.Drawing.Size(72, 13);
+			this.label5.TabIndex = 10;
+			this.label5.Text = "Replace with:";
+			// 
+			// replaceinbox
+			// 
+			this.replaceinbox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.replaceinbox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.replaceinbox.FormattingEnabled = true;
+			this.replaceinbox.Items.AddRange(new object[] {
+            "Current tab",
+            "All opened tabs (current script type)",
+            "All opened tabs (any script type)",
+            "All resources (current script type)",
+            "All resources (any script type)"});
+			this.replaceinbox.Location = new System.Drawing.Point(9, 124);
+			this.replaceinbox.Name = "replaceinbox";
+			this.replaceinbox.Size = new System.Drawing.Size(276, 21);
+			this.replaceinbox.TabIndex = 9;
+			// 
+			// label3
+			// 
+			this.label3.AutoSize = true;
+			this.label3.Location = new System.Drawing.Point(6, 106);
+			this.label3.Name = "label3";
+			this.label3.Size = new System.Drawing.Size(45, 13);
+			this.label3.TabIndex = 7;
+			this.label3.Text = "Look in:";
+			// 
+			// replacefindbox
+			// 
+			this.replacefindbox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.replacefindbox.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+			this.replacefindbox.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+			this.replacefindbox.FormattingEnabled = true;
+			this.replacefindbox.Location = new System.Drawing.Point(9, 34);
+			this.replacefindbox.Name = "replacefindbox";
+			this.replacefindbox.Size = new System.Drawing.Size(276, 21);
+			this.replacefindbox.TabIndex = 5;
+			// 
+			// label4
+			// 
+			this.label4.AutoSize = true;
+			this.label4.Location = new System.Drawing.Point(6, 16);
+			this.label4.Name = "label4";
+			this.label4.Size = new System.Drawing.Size(56, 13);
+			this.label4.TabIndex = 4;
+			this.label4.Text = "Find what:";
+			// 
+			// replacematchcase
+			// 
+			this.replacematchcase.AutoSize = true;
+			this.replacematchcase.Location = new System.Drawing.Point(9, 160);
+			this.replacematchcase.Name = "replacematchcase";
+			this.replacematchcase.Size = new System.Drawing.Size(82, 17);
+			this.replacematchcase.TabIndex = 6;
+			this.replacematchcase.Text = "Match case";
+			this.replacematchcase.UseVisualStyleBackColor = true;
+			// 
+			// replacewholeword
+			// 
+			this.replacewholeword.AutoSize = true;
+			this.replacewholeword.Location = new System.Drawing.Point(97, 160);
+			this.replacewholeword.Name = "replacewholeword";
+			this.replacewholeword.Size = new System.Drawing.Size(113, 17);
+			this.replacewholeword.TabIndex = 8;
+			this.replacewholeword.Text = "Match whole word";
+			this.replacewholeword.UseVisualStyleBackColor = true;
+			// 
+			// imagelist
+			// 
+			this.imagelist.ImageStream = ((System.Windows.Forms.ImageListStreamer)(resources.GetObject("imagelist.ImageStream")));
+			this.imagelist.TransparentColor = System.Drawing.Color.Transparent;
+			this.imagelist.Images.SetKeyName(0, "Search.png");
+			this.imagelist.Images.SetKeyName(1, "Replace.png");
 			// 
 			// ScriptFindReplaceForm
 			// 
 			this.AcceptButton = this.findnextbutton;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
-			this.CancelButton = this.closebutton;
-			this.ClientSize = new System.Drawing.Size(436, 127);
-			this.Controls.Add(this.findpreviousbutton);
-			this.Controls.Add(this.replacebutton);
-			this.Controls.Add(this.closebutton);
-			this.Controls.Add(this.replaceallbutton);
-			this.Controls.Add(this.findnextbutton);
-			this.Controls.Add(this.labelreplace);
-			this.Controls.Add(this.replacetext);
-			this.Controls.Add(this.wordonly);
-			this.Controls.Add(this.casesensitive);
-			this.Controls.Add(this.findtext);
-			this.Controls.Add(this.label1);
+			this.ClientSize = new System.Drawing.Size(304, 247);
+			this.Controls.Add(this.tabs);
 			this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
 			this.MaximizeBox = false;
 			this.MinimizeBox = false;
@@ -172,23 +334,38 @@ namespace CodeImp.DoomBuilder.Windows
 			this.ShowInTaskbar = false;
 			this.Text = "Find and Replace";
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ScriptFindReplaceForm_FormClosing);
+			this.tabs.ResumeLayout(false);
+			this.tabfind.ResumeLayout(false);
+			this.tabfind.PerformLayout();
+			this.tabreplace.ResumeLayout(false);
+			this.tabreplace.PerformLayout();
 			this.ResumeLayout(false);
-			this.PerformLayout();
 
 		}
 
 		#endregion
 
 		private System.Windows.Forms.Label label1;
-		private System.Windows.Forms.TextBox findtext;
-		private System.Windows.Forms.CheckBox casesensitive;
-		private System.Windows.Forms.CheckBox wordonly;
-		private System.Windows.Forms.TextBox replacetext;
-		private System.Windows.Forms.Label labelreplace;
+		private System.Windows.Forms.CheckBox findmatchcase;
+		private System.Windows.Forms.CheckBox findwholeword;
 		private System.Windows.Forms.Button findnextbutton;
 		private System.Windows.Forms.Button replaceallbutton;
-		private System.Windows.Forms.Button closebutton;
 		private System.Windows.Forms.Button replacebutton;
 		private System.Windows.Forms.Button findpreviousbutton;
+		private System.Windows.Forms.TabControl tabs;
+		private System.Windows.Forms.TabPage tabfind;
+		private System.Windows.Forms.TabPage tabreplace;
+		private System.Windows.Forms.ImageList imagelist;
+		private System.Windows.Forms.ComboBox findinbox;
+		private System.Windows.Forms.Label label2;
+		private System.Windows.Forms.ComboBox findbox;
+		private System.Windows.Forms.ComboBox replacebox;
+		private System.Windows.Forms.Label label5;
+		private System.Windows.Forms.ComboBox replaceinbox;
+		private System.Windows.Forms.Label label3;
+		private System.Windows.Forms.ComboBox replacefindbox;
+		private System.Windows.Forms.Label label4;
+		private System.Windows.Forms.CheckBox replacematchcase;
+		private System.Windows.Forms.CheckBox replacewholeword;
 	}
 }

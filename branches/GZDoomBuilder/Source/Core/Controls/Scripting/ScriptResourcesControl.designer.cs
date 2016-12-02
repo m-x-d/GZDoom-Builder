@@ -28,34 +28,19 @@
 		/// </summary>
 		private void InitializeComponent()
 		{
-			this.projecttree = new CodeImp.DoomBuilder.Controls.BufferedTreeView();
 			this.filterproject = new System.Windows.Forms.TextBox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.filterprojectclear = new System.Windows.Forms.Button();
 			this.filterbytype = new System.Windows.Forms.ComboBox();
 			this.label2 = new System.Windows.Forms.Label();
+			this.projecttree = new CodeImp.DoomBuilder.Controls.BufferedTreeView();
 			this.SuspendLayout();
-			// 
-			// projecttree
-			// 
-			this.projecttree.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.projecttree.HideSelection = false;
-			this.projecttree.Location = new System.Drawing.Point(3, 56);
-			this.projecttree.Name = "projecttree";
-			this.projecttree.ShowNodeToolTips = true;
-			this.projecttree.Size = new System.Drawing.Size(293, 494);
-			this.projecttree.TabIndex = 7;
-			this.projecttree.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.projecttree_NodeMouseDoubleClick);
-			this.projecttree.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.projecttree_BeforeExpand);
-			this.projecttree.BeforeCollapse += new System.Windows.Forms.TreeViewCancelEventHandler(this.projecttree_BeforeCollapse);
 			// 
 			// filterproject
 			// 
 			this.filterproject.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.filterproject.Location = new System.Drawing.Point(75, 3);
+			this.filterproject.Location = new System.Drawing.Point(76, 3);
 			this.filterproject.Name = "filterproject";
 			this.filterproject.Size = new System.Drawing.Size(190, 20);
 			this.filterproject.TabIndex = 5;
@@ -76,7 +61,7 @@
 			this.filterprojectclear.Image = global::CodeImp.DoomBuilder.Properties.Resources.SearchClear;
 			this.filterprojectclear.Location = new System.Drawing.Point(271, 1);
 			this.filterprojectclear.Name = "filterprojectclear";
-			this.filterprojectclear.Size = new System.Drawing.Size(25, 23);
+			this.filterprojectclear.Size = new System.Drawing.Size(25, 24);
 			this.filterprojectclear.TabIndex = 6;
 			this.filterprojectclear.UseVisualStyleBackColor = true;
 			this.filterprojectclear.Click += new System.EventHandler(this.filterprojectclear_Click);
@@ -101,6 +86,21 @@
 			this.label2.Size = new System.Drawing.Size(60, 13);
 			this.label2.TabIndex = 9;
 			this.label2.Text = "Script type:";
+			// 
+			// projecttree
+			// 
+			this.projecttree.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.projecttree.HideSelection = false;
+			this.projecttree.Location = new System.Drawing.Point(3, 56);
+			this.projecttree.Name = "projecttree";
+			this.projecttree.ShowNodeToolTips = true;
+			this.projecttree.Size = new System.Drawing.Size(293, 494);
+			this.projecttree.TabIndex = 7;
+			this.projecttree.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.projecttree_NodeMouseDoubleClick);
+			this.projecttree.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.projecttree_BeforeExpand);
+			this.projecttree.BeforeCollapse += new System.Windows.Forms.TreeViewCancelEventHandler(this.projecttree_BeforeCollapse);
 			// 
 			// ScriptResourcesControl
 			// 

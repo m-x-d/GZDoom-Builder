@@ -382,119 +382,440 @@ namespace CodeImp.DoomBuilder.Controls
 		#region ================== Methods
 
 		// Find Next
-		public void FindNext(FindReplaceOptions options)
+		public bool FindNext(FindReplaceOptions options)
 		{
 			// Save the options
 			findoptions = options;
-			FindNext();
+			return FindNext();
 		}
 
 		// Find Next with saved options
-		public void FindNext()
+		public bool FindNext()
 		{
 			if(!string.IsNullOrEmpty(findoptions.FindText) && (ActiveTab != null))
 			{
 				if(!ActiveTab.FindNext(findoptions))
+				{
 					DisplayStatus(ScriptStatusType.Warning, "Can't find any occurrence of \"" + findoptions.FindText + "\".");
+					return false;
+				}
+
+				return true;
 			}
 			else
 			{
 				General.MessageBeep(MessageBeepType.Default);
+				return false;
 			}
 		}
 
 		// Find Previous
-		public void FindPrevious(FindReplaceOptions options) 
+		public bool FindPrevious(FindReplaceOptions options) 
 		{
 			// Save the options
 			findoptions = options;
-			FindPrevious();
+			return FindPrevious();
 		}
 
 		// Find Previous with saved options (mxd)
-		public void FindPrevious() 
+		public bool FindPrevious() 
 		{
 			if(!string.IsNullOrEmpty(findoptions.FindText) && (ActiveTab != null)) 
 			{
 				if(!ActiveTab.FindPrevious(findoptions))
+				{
 					DisplayStatus(ScriptStatusType.Warning, "Can't find any occurrence of \"" + findoptions.FindText + "\".");
+					return false;
+				}
+
+				return true;
 			} 
 			else 
 			{
 				General.MessageBeep(MessageBeepType.Default);
+				return false;
+			}
+		}
+
+		//mxd
+		public bool FindNextWrapAround(FindReplaceOptions options)
+		{
+			var curtab = ActiveTab;
+			if(curtab == null) return false; // Boilerplate
+			switch(options.SearchMode)
+			{
+				case FindReplaceSearchMode.CURRENT_FILE: return false; // Let the tab handle wrap-around
+
+				case FindReplaceSearchMode.OPENED_TABS_CURRENT_SCRIPT_TYPE:
+				case FindReplaceSearchMode.OPENED_TABS_ALL_SCRIPT_TYPES:
+					ScriptType targettabtype = curtab.Config.ScriptType;
+					bool checktabtype = (options.SearchMode == FindReplaceSearchMode.OPENED_TABS_CURRENT_SCRIPT_TYPE);
+
+					// Search in processed tab only
+					var searchoptions = new FindReplaceOptions(options) { SearchMode = FindReplaceSearchMode.CURRENT_FILE };
+
+					// Find next suitable tab...
+					int start = tabs.TabPages.IndexOf(curtab);
+
+					// Search after current tab
+					for(int i = start + 1; i < tabs.TabPages.Count; i++)
+					{
+						var t = tabs.TabPages[i] as ScriptDocumentTab;
+						if(t != null && (!checktabtype || t.Config.ScriptType == targettabtype) && t.FindNext(searchoptions))
+						{
+							// Next match found!
+							tabs.SelectTab(t);
+							return true;
+						}
+					}
+
+					// Search before current tab
+					if(start > 0)
+					{
+						for(int i = 0; i < start; i++)
+						{
+							var t = tabs.TabPages[i] as ScriptDocumentTab;
+							if(t != null && (!checktabtype || t.Config.ScriptType == targettabtype) && t.FindNext(searchoptions))
+							{
+								// Next match found!
+								tabs.SelectTab(t);
+								return true;
+							}
+						}
+					}
+
+					// No dice
+					return false;
+
+				case FindReplaceSearchMode.CURRENT_PROJECT_CURRENT_SCRIPT_TYPE:
+				case FindReplaceSearchMode.CURRENT_PROJECT_ALL_SCRIPT_TYPES:
+					ScriptType targetrestype = curtab.Config.ScriptType;
+					bool searchallresources = (options.SearchMode == FindReplaceSearchMode.CURRENT_PROJECT_ALL_SCRIPT_TYPES);
+
+					// Search in processed tab only
+					var ressearchoptions = new FindReplaceOptions(options) { SearchMode = FindReplaceSearchMode.CURRENT_FILE };
+					bool replacemode = (options.ReplaceWith != null);
+
+					// Find current resource, then search
+					if(General.Map.Data.ScriptResources.ContainsKey(targetrestype))
+					{
+						var reslist = new List<ScriptResource>(General.Map.Data.ScriptResources[targetrestype]);
+
+						// Determine starting resource
+						int startres = -1;
+						if(curtab is ScriptResourceDocumentTab)
+						{
+							startres = reslist.IndexOf(((ScriptResourceDocumentTab)curtab).Resource);
+						}
+						else if(curtab is ScriptLumpDocumentTab)
+						{
+							// Only temporary map wad qualifies 
+							var scripttab = (ScriptLumpDocumentTab)curtab;
+							for(int i = 0; i < reslist.Count; i++)
+							{
+								if(reslist[i].Resource == General.Map.TemporaryMapFile && reslist[i].Filename == scripttab.Filename)
+								{
+									startres = i;
+									break;
+								}
+							}
+						}
+
+						// Search after current resource
+						// This will search among all resources of targetrestype when startres == -1
+						for(int i = startres + 1; i < reslist.Count; i++)
+						{
+							// Perform search...
+							if((!reslist[i].IsReadOnly || !replacemode) && reslist[i].ContainsText(ressearchoptions))
+							{
+								// Found it!
+								var newtab = OpenResource(reslist[i]);
+								newtab.FindNext(ressearchoptions); // Search again using actual tab...
+								return true;
+							}
+						}
+
+						if(searchallresources)
+						{
+							// Search all script types after current ScriptType
+							var usedscripttypes = new List<ScriptType>(General.Map.Data.ScriptResources.Keys);
+							int startrestypepos = usedscripttypes.IndexOf(targetrestype);
+							for(int i = startrestypepos + 1; i < usedscripttypes.Count; i++)
+							{
+								foreach(ScriptResource sr in General.Map.Data.ScriptResources[usedscripttypes[i]])
+								{
+									// Perform search...
+									if((!sr.IsReadOnly || !replacemode) && sr.ContainsText(ressearchoptions))
+									{
+										// Found it!
+										var newtab = OpenResource(sr);
+										newtab.FindNext(ressearchoptions); // Search again using actual tab...
+										return true;
+									}
+								}
+							}
+
+							// Search all script types before current ScriptType
+							if(startrestypepos > 0)
+							{
+								for(int i = 0; i < startrestypepos; i++)
+								{
+									foreach(ScriptResource sr in General.Map.Data.ScriptResources[usedscripttypes[i]])
+									{
+										// Perform search...
+										if((!sr.IsReadOnly || !replacemode) && sr.ContainsText(ressearchoptions))
+										{
+											// Found it!
+											var newtab = OpenResource(sr);
+											newtab.FindNext(ressearchoptions); // Search again using actual tab...
+											return true;
+										}
+									}
+								}
+							}
+						}
+
+						// Search before current resource
+						if(startres > 0)
+						{
+							for(int i = 0; i < startres; i++)
+							{
+								// Perform search...
+								if((!reslist[i].IsReadOnly || !replacemode) && reslist[i].ContainsText(ressearchoptions))
+								{
+									// Found it!
+									var newtab = OpenResource(reslist[i]);
+									newtab.FindNext(ressearchoptions); // Search again using actual tab...
+									return true;
+								}
+							}
+						}
+
+					}
+					else if(searchallresources)
+					{
+						// Just search among all resources
+						var usedscripttypes = new List<ScriptType>(General.Map.Data.ScriptResources.Keys);
+						for(int i = 0; i < usedscripttypes.Count; i++)
+						{
+							foreach(ScriptResource sr in General.Map.Data.ScriptResources[usedscripttypes[i]])
+							{
+								// Perform search...
+								if((!sr.IsReadOnly || !replacemode) && sr.ContainsText(ressearchoptions))
+								{
+									// Found it!
+									var newtab = OpenResource(sr);
+									newtab.FindNext(ressearchoptions); // Search again using actual tab...
+									return true;
+								}
+							}
+						}
+					}
+
+					// No dice
+					return false;
+
+				default: throw new NotImplementedException("Unknown FindReplaceSearchMode!");
+			}
+		}
+
+		//mxd
+		public bool FindPreviousWrapAround(FindReplaceOptions options)
+		{
+			var curtab = ActiveTab;
+			if(curtab == null) return false; // Boilerplate
+			switch(options.SearchMode)
+			{
+				case FindReplaceSearchMode.CURRENT_FILE: return false; // Let the tab handle wrap-around
+
+				case FindReplaceSearchMode.OPENED_TABS_CURRENT_SCRIPT_TYPE:
+				case FindReplaceSearchMode.OPENED_TABS_ALL_SCRIPT_TYPES:
+					ScriptType targettabtype = curtab.Config.ScriptType;
+					bool checktabtype = (options.SearchMode == FindReplaceSearchMode.OPENED_TABS_CURRENT_SCRIPT_TYPE);
+
+					// Search in processed tab only
+					var searchoptions = new FindReplaceOptions(options) { SearchMode = FindReplaceSearchMode.CURRENT_FILE };
+
+					// Find previous suitable tab...
+					int start = tabs.TabPages.IndexOf(curtab);
+
+					// Search before current tab
+					for(int i = start - 1; i > -1; i--)
+					{
+						var t = tabs.TabPages[i] as ScriptDocumentTab;
+						if(t != null && (!checktabtype || t.Config.ScriptType == targettabtype) && t.FindPrevious(searchoptions))
+						{
+							// Previous match found!
+							tabs.SelectTab(t);
+							return true;
+						}
+					}
+
+					// Search after current tab
+					if(start < tabs.TabPages.Count - 1)
+					{
+						for(int i = tabs.TabPages.Count - 1; i > start; i--)
+						{
+							var t = tabs.TabPages[i] as ScriptDocumentTab;
+							if(t != null && (!checktabtype || t.Config.ScriptType == targettabtype) && t.FindPrevious(searchoptions))
+							{
+								// Previous match found!
+								tabs.SelectTab(t);
+								return true;
+							}
+						}
+					}
+
+					// No dice
+					return false;
+
+				case FindReplaceSearchMode.CURRENT_PROJECT_CURRENT_SCRIPT_TYPE:
+				case FindReplaceSearchMode.CURRENT_PROJECT_ALL_SCRIPT_TYPES:
+					ScriptType targetrestype = curtab.Config.ScriptType;
+					bool searchallresources = (options.SearchMode == FindReplaceSearchMode.CURRENT_PROJECT_ALL_SCRIPT_TYPES);
+
+					// Search in processed tab only
+					var ressearchoptions = new FindReplaceOptions(options) { SearchMode = FindReplaceSearchMode.CURRENT_FILE };
+					bool replacemode = (options.ReplaceWith != null);
+
+					// Find current resource, then search
+					if(General.Map.Data.ScriptResources.ContainsKey(targetrestype))
+					{
+						var reslist = new List<ScriptResource>(General.Map.Data.ScriptResources[targetrestype]);
+
+						// Determine starting resource
+						int startres = -1;
+						if(curtab is ScriptResourceDocumentTab)
+						{
+							startres = reslist.IndexOf(((ScriptResourceDocumentTab)curtab).Resource);
+						}
+						else if(curtab is ScriptLumpDocumentTab)
+						{
+							// Only temporary map wad qualifies 
+							var scripttab = (ScriptLumpDocumentTab)curtab;
+							for(int i = 0; i < reslist.Count; i++)
+							{
+								if(reslist[i].Resource == General.Map.TemporaryMapFile && reslist[i].Filename == scripttab.Filename)
+								{
+									startres = i;
+									break;
+								}
+							}
+						}
+
+						// Search before current resource
+						// This will search among all resources of targetrestype when startres == -1
+						for(int i = startres - 1; i > -1; i--)
+						{
+							// Perform search...
+							if((!reslist[i].IsReadOnly || !replacemode) && reslist[i].ContainsText(ressearchoptions))
+							{
+								// Found it!
+								var newtab = OpenResource(reslist[i]);
+								newtab.FindPrevious(ressearchoptions); // Search again using actual tab...
+								return true;
+							}
+						}
+
+						if(searchallresources)
+						{
+							// Search all script types before current ScriptType
+							var usedscripttypes = new List<ScriptType>(General.Map.Data.ScriptResources.Keys);
+							int startrestypepos = usedscripttypes.IndexOf(targetrestype);
+							for(int i = startrestypepos - 1; i > 0; i--)
+							{
+								foreach(ScriptResource sr in General.Map.Data.ScriptResources[usedscripttypes[i]])
+								{
+									// Perform search...
+									if((!sr.IsReadOnly || !replacemode) && sr.ContainsText(ressearchoptions))
+									{
+										// Found it!
+										var newtab = OpenResource(sr);
+										newtab.FindPrevious(ressearchoptions); // Search again using actual tab...
+										return true;
+									}
+								}
+							}
+
+							// Search all script types after current ScriptType
+							if(startrestypepos < usedscripttypes.Count)
+							{
+								for(int i = usedscripttypes.Count - 1; i > startrestypepos; i--)
+								{
+									foreach(ScriptResource sr in General.Map.Data.ScriptResources[usedscripttypes[i]])
+									{
+										// Perform search...
+										if((!sr.IsReadOnly || !replacemode) && sr.ContainsText(ressearchoptions))
+										{
+											// Found it!
+											var newtab = OpenResource(sr);
+											newtab.FindPrevious(ressearchoptions); // Search again using actual tab...
+											return true;
+										}
+									}
+								}
+							}
+						}
+
+						// Search after current resource
+						if(startres > 0)
+						{
+							for(int i = reslist.Count - 1; i > startres; i--)
+							{
+								// Perform search...
+								if((!reslist[i].IsReadOnly || !replacemode) && reslist[i].ContainsText(ressearchoptions))
+								{
+									// Found it!
+									var newtab = OpenResource(reslist[i]);
+									newtab.FindPrevious(ressearchoptions); // Search again using actual tab...
+									return true;
+								}
+							}
+						}
+
+					}
+					else if(searchallresources)
+					{
+						// Just search among all resources
+						var usedscripttypes = new List<ScriptType>(General.Map.Data.ScriptResources.Keys);
+						for(int i = usedscripttypes.Count - 1; i > -1; i--)
+						{
+							foreach(ScriptResource sr in General.Map.Data.ScriptResources[usedscripttypes[i]])
+							{
+								// Perform search...
+								if((!sr.IsReadOnly || !replacemode) && sr.ContainsText(ressearchoptions))
+								{
+									// Found it!
+									var newtab = OpenResource(sr);
+									newtab.FindPrevious(ressearchoptions); // Search again using actual tab...
+									return true;
+								}
+							}
+						}
+					}
+
+					// No dice
+					return false;
+
+				default: throw new NotImplementedException("Unknown FindReplaceSearchMode!");
 			}
 		}
 		
 		// Replace if possible
-		public void Replace(FindReplaceOptions options)
+		public bool Replace(FindReplaceOptions options)
 		{
-			if(!string.IsNullOrEmpty(findoptions.FindText) && options.ReplaceWith != null && ActiveTab != null && !ActiveTab.IsReadOnly)
+			ScriptDocumentTab curtab = ActiveTab; //mxd
+			if(!string.IsNullOrEmpty(options.FindText) && options.ReplaceWith != null && curtab != null && !curtab.IsReadOnly)
 			{
-				if(string.Compare(ActiveTab.SelectedText, options.FindText, !options.CaseSensitive) == 0)
+				if(string.Compare(curtab.SelectedText, options.FindText, !options.CaseSensitive) == 0)
 				{
 					// Replace selection
-					ActiveTab.ReplaceSelection(options.ReplaceWith);
+					curtab.ReplaceSelection(options.ReplaceWith);
+					return true;
 				}
 			}
-			else
-			{
-				General.MessageBeep(MessageBeepType.Default);
-			}
-		}
-		
-		// Replace all
-		public void ReplaceAll(FindReplaceOptions options)
-		{
-			int replacements = 0;
-			findoptions = options;
-			if(!string.IsNullOrEmpty(findoptions.FindText) && options.ReplaceWith != null && ActiveTab != null && !ActiveTab.IsReadOnly)
-			{
-				int firstfindpos = -1;
-				int lastpos = -1;
-				bool firstreplace = true;
-				bool wrappedaround = false;
-				int selectionstart = Math.Min(ActiveTab.SelectionStart, ActiveTab.SelectionEnd);
-				
-				// Continue finding and replacing until nothing more found
-				while(ActiveTab.FindNext(findoptions))
-				{
-					int curpos = Math.Min(ActiveTab.SelectionStart, ActiveTab.SelectionEnd);
-					if(curpos <= lastpos)
-						wrappedaround = true;
-					
-					if(firstreplace)
-					{
-						// Remember where we started replacing
-						firstfindpos = curpos;
-					}
-					else if(wrappedaround)
-					{
-						// Make sure we don't go past our start point, or we could be in an endless loop
-						if(curpos >= firstfindpos)
-							break;
-					}
-					
-					Replace(findoptions);
-					replacements++;
-					firstreplace = false;
 
-					lastpos = curpos;
-				}
-
-				// Restore selection
-				ActiveTab.SelectionStart = selectionstart;
-				ActiveTab.SelectionEnd = selectionstart;
-				
-				// Show result
-				if(replacements == 0)
-					DisplayStatus(ScriptStatusType.Warning, "Can't find any occurrence of \"" + findoptions.FindText + "\".");
-				else
-					DisplayStatus(ScriptStatusType.Info, "Replaced " + replacements + " occurrences of \"" + findoptions.FindText + "\" with \"" + findoptions.ReplaceWith + "\".");
-			}
-			else
-			{
-				General.MessageBeep(MessageBeepType.Default);
-			}
+			return false;
 		}
 		
 		// This closed the Find & Replace subwindow
@@ -1059,8 +1380,8 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		//mxd. This changes status text
-		private void DisplayStatus(ScriptStatusType type, string message) { DisplayStatus(new ScriptStatusInfo(type, message)); }
-		private void DisplayStatus(ScriptStatusInfo newstatus)
+		internal void DisplayStatus(ScriptStatusType type, string message) { DisplayStatus(new ScriptStatusInfo(type, message)); }
+		internal void DisplayStatus(ScriptStatusInfo newstatus)
 		{
 			// Stop timers
 			if(!newstatus.displayed)

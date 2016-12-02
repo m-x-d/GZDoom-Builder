@@ -39,20 +39,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private StepsList anglesteps; //mxd
 		private readonly List<string> renderstyles; //mxd
 		private readonly List<string> portalrenderstyles; //mxd
-
-		//mxd. Persistent settings
-		private static bool linkCeilingScale;
-		private static bool linkFloorScale;
-		private static bool useFloorLineAngles;
-		private static bool useCeilLineAngles;
-		private static bool useFloorSlopeLineAngles;
-		private static bool useCeilSlopeLineAngles;
-		private static SlopePivotMode ceilpivotmode = SlopePivotMode.LOCAL;
-		private static SlopePivotMode floorpivotmode = SlopePivotMode.LOCAL;
-
-		//mxd. Window setup stuff
-		private static Point location = Point.Empty;
-		private static int activetab;
 	
 		//mxd. Slope pivots
 		private Vector2D globalslopepivot;
@@ -176,12 +162,11 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			InitializeComponent();
 
-			//mxd. Widow setup
-			if(location != Point.Empty) 
+			//mxd. Load settings
+			if(General.Settings.StoreSelectedEditTab)
 			{
-				this.StartPosition = FormStartPosition.Manual;
-				this.Location = location;
-				if(General.Settings.StoreSelectedEditTab && activetab > 0) tabs.SelectTab(activetab);
+				int activetab = General.Settings.ReadSetting("windows." + configname + ".activetab", 0);
+				tabs.SelectTab(activetab);
 			}
 
 			// Fill flags list
@@ -276,18 +261,18 @@ namespace CodeImp.DoomBuilder.Windows
 			// Set steps for brightness field
 			brightness.StepValues = General.Map.Config.BrightnessLevels;
 
-			// Value linking
-			ceilScale.LinkValues = linkCeilingScale;
-			floorScale.LinkValues = linkFloorScale;
+			// Apply settings
+			ceilScale.LinkValues = General.Settings.ReadSetting("windows." + configname + ".linkceilingscale", false);
+			floorScale.LinkValues = General.Settings.ReadSetting("windows." + configname + ".linkfloorscale", false);
 
-			cbUseCeilLineAngles.Checked = useCeilLineAngles;
-			cbUseFloorLineAngles.Checked = useFloorLineAngles;
+			cbUseCeilLineAngles.Checked = General.Settings.ReadSetting("windows." + configname + ".useceillineangles", false);
+			cbUseFloorLineAngles.Checked = General.Settings.ReadSetting("windows." + configname + ".usefloorlineangles", false);
 
-			floorslopecontrol.UseLineAngles = useFloorSlopeLineAngles;
-			ceilingslopecontrol.UseLineAngles = useCeilSlopeLineAngles;
+			ceilingslopecontrol.UseLineAngles = General.Settings.ReadSetting("windows." + configname + ".useceilslopelineangles", false);
+			floorslopecontrol.UseLineAngles = General.Settings.ReadSetting("windows." + configname + ".usefloorslopelineangles", false);
 
-			floorslopecontrol.PivotMode = floorpivotmode;
-			ceilingslopecontrol.PivotMode = ceilpivotmode;
+			ceilingslopecontrol.PivotMode = (SlopePivotMode)General.Settings.ReadSetting("windows." + configname + ".ceilpivotmode", (int)SlopePivotMode.LOCAL);
+			floorslopecontrol.PivotMode = (SlopePivotMode)General.Settings.ReadSetting("windows." + configname + ".floorpivotmode", (int)SlopePivotMode.LOCAL);
 		}
 
 		#endregion
@@ -562,10 +547,10 @@ namespace CodeImp.DoomBuilder.Windows
 
 			//mxd. Angle steps
 			anglesteps.Sort();
-			if(useCeilLineAngles) ceilRotation.StepValues = anglesteps;
-			if(useFloorLineAngles) floorRotation.StepValues = anglesteps;
-			if(useCeilSlopeLineAngles) ceilingslopecontrol.StepValues = anglesteps;
-			if(useFloorSlopeLineAngles) floorslopecontrol.StepValues = anglesteps;
+			if(cbUseCeilLineAngles.Checked) ceilRotation.StepValues = anglesteps;
+			if(cbUseFloorLineAngles.Checked) floorRotation.StepValues = anglesteps;
+			if(ceilingslopecontrol.UseLineAngles) ceilingslopecontrol.StepValues = anglesteps;
+			if(floorslopecontrol.UseLineAngles) floorslopecontrol.StepValues = anglesteps;
 
 			//mxd. Comments
 			commenteditor.FinishSetup();
@@ -873,16 +858,6 @@ namespace CodeImp.DoomBuilder.Windows
 			// Update the used textures
 			General.Map.Data.UpdateUsedTextures();
 
-			// Store value linking
-			linkCeilingScale = ceilScale.LinkValues;
-			linkFloorScale = floorScale.LinkValues;
-			useCeilLineAngles = cbUseCeilLineAngles.Checked;
-			useFloorLineAngles = cbUseFloorLineAngles.Checked;
-			useCeilSlopeLineAngles = ceilingslopecontrol.UseLineAngles;
-			useFloorSlopeLineAngles = floorslopecontrol.UseLineAngles;
-			floorpivotmode = floorslopecontrol.PivotMode;
-			ceilpivotmode = ceilingslopecontrol.PivotMode;
-
 			// Done
 			General.Map.IsChanged = true;
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty); //mxd
@@ -908,8 +883,20 @@ namespace CodeImp.DoomBuilder.Windows
 		//mxd
 		private void SectorEditFormUDMF_FormClosing(object sender, FormClosingEventArgs e) 
 		{
-			location = this.Location;
-			activetab = tabs.SelectedIndex;
+			// Save settings
+			General.Settings.WriteSetting("windows." + configname + ".activetab", tabs.SelectedIndex);
+
+			General.Settings.WriteSetting("windows." + configname + ".linkceilingscale", ceilScale.LinkValues);
+			General.Settings.WriteSetting("windows." + configname + ".linkfloorscale", floorScale.LinkValues);
+
+			General.Settings.WriteSetting("windows." + configname + ".useceillineangles", cbUseCeilLineAngles.Checked);
+			General.Settings.WriteSetting("windows." + configname + ".usefloorlineangles", cbUseFloorLineAngles.Checked);
+
+			General.Settings.WriteSetting("windows." + configname + ".useceilslopelineangles", ceilingslopecontrol.UseLineAngles);
+			General.Settings.WriteSetting("windows." + configname + ".usefloorslopelineangles", floorslopecontrol.UseLineAngles);
+
+			General.Settings.WriteSetting("windows." + configname + ".ceilpivotmode", (int)ceilingslopecontrol.PivotMode);
+			General.Settings.WriteSetting("windows." + configname + ".floorpivotmode", (int)floorslopecontrol.PivotMode);
 		}
 
 		private void SectorEditFormUDMF_HelpRequested(object sender, HelpEventArgs hlpevent) 

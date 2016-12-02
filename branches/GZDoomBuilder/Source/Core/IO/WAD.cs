@@ -517,9 +517,70 @@ namespace CodeImp.DoomBuilder.IO
 			end = General.Clamp(end, 0, lumps.Count - 1);
 
 			// Loop through the lumps
-			//TODO: ZDoom seems to prefer the last lump with the matching name,
-			//TODO: but our own logic (for example, WadReader.FindRanges) expect this to work as currently implemented
 			for(int i = start; i < end + 1; i++)
+			{
+				// Check if the lump name matches
+				if(lumps[i].LongName == longname)
+				{
+					// Found the lump!
+					return i;
+				}
+			}
+
+			// Nothing found
+			return -1;
+		}
+
+		//mxd. Same as above, but searches in reversed order
+
+		// This finds a lump by name, returns null when not found
+		public Lump FindLastLump(string name)
+		{
+			int index = FindLastLumpIndex(name);
+			return (index == -1 ? null : lumps[index]);
+		}
+
+		// This finds a lump by name, returns null when not found
+		public Lump FindLastLump(string name, int start)
+		{
+			int index = FindLastLumpIndex(name, start);
+			return (index == -1 ? null : lumps[index]);
+		}
+
+		// This finds a lump by name, returns null when not found
+		public Lump FindLastLump(string name, int start, int end)
+		{
+			int index = FindLastLumpIndex(name, start, end);
+			return (index == -1 ? null : lumps[index]);
+		}
+
+		// This finds a lump by name, returns -1 when not found
+		public int FindLastLumpIndex(string name)
+		{
+			// Do search
+			return FindLastLumpIndex(name, 0, lumps.Count - 1);
+		}
+
+		// This finds a lump by name, returns -1 when not found
+		public int FindLastLumpIndex(string name, int start)
+		{
+			// Do search
+			return FindLastLumpIndex(name, start, lumps.Count - 1);
+		}
+
+		// This finds a lump by name, returns -1 when not found
+		public int FindLastLumpIndex(string name, int start, int end)
+		{
+			if(name.Length > 8 || lumps.Count == 0 || start > lumps.Count - 1) return -1; //mxd. Can't be here. Go away!
+
+			long longname = Lump.MakeLongName(name);
+
+			// Fix start/end when they exceed safe bounds
+			start = Math.Max(start, 0);
+			end = General.Clamp(end, 0, lumps.Count - 1);
+
+			// Loop through the lumps in backwards order
+			for(int i = end; i > start - 1; i--)
 			{
 				// Check if the lump name matches
 				if(lumps[i].LongName == longname)

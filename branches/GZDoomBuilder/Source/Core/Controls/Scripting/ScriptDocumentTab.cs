@@ -113,6 +113,8 @@ namespace CodeImp.DoomBuilder.Controls
 			editor.OnOpenFindAndReplace += panel.OpenFindAndReplace;
 			editor.OnFindNext += panel.FindNext;
 			editor.OnFindPrevious += panel.FindPrevious; //mxd
+			editor.OnFindNextWrapAround += panel.FindNextWrapAround;
+			editor.OnFindPreviousWrapAround += panel.FindPreviousWrapAround;
 			editor.OnTextChanged += editor_TextChanged; //mxd
 			editor.OnGoToLine += panel.GoToLine; //mxd
 			editor.OnCompileScript -= Compile; //mxd

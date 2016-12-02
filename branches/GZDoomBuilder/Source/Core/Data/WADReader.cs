@@ -974,7 +974,7 @@ namespace CodeImp.DoomBuilder.Data
 		public override IEnumerable<TextResourceData> GetVoxeldefData() 
 		{
 			if(issuspended) throw new Exception("Data reader is suspended");
-			return GetAllLumps("VOXELDEF");
+			return GetAllLumpsData("VOXELDEF");
 		}
 
 		//mxd. This finds and returns a voxel stream or null if no voxel was found
@@ -1014,7 +1014,7 @@ namespace CodeImp.DoomBuilder.Data
 		public override IEnumerable<TextResourceData> GetDecorateData(string pname)
 		{
 			if(issuspended) throw new Exception("Data reader is suspended");
-			List<TextResourceData> result = GetAllLumps(pname); //mxd
+			List<TextResourceData> result = GetAllLumpsData(pname); //mxd
 
 			//mxd. Return ALL DECORATE lumps
 			if(result.Count == 0 || string.Compare(pname, "DECORATE", StringComparison.OrdinalIgnoreCase) == 0)
@@ -1031,10 +1031,10 @@ namespace CodeImp.DoomBuilder.Data
 			
 			// First look for ZMAPINFO
 			List<TextResourceData> result = new List<TextResourceData>();
-			result.AddRange(GetLastLump("ZMAPINFO"));
+			result.AddRange(GetLastLumpData("ZMAPINFO"));
 
 			// Then for MAPINFO
-			if(result.Count == 0) result.AddRange(GetLastLump("MAPINFO"));
+			if(result.Count == 0) result.AddRange(GetLastLumpData("MAPINFO"));
 			return result;
 		}
 
@@ -1049,11 +1049,11 @@ namespace CodeImp.DoomBuilder.Data
 			if(basegame != GameType.UNKNOWN)
 			{
 				string lumpname = GameType.GldefsLumpsPerGame[basegame];
-				result.AddRange(GetAllLumps(lumpname));
+				result.AddRange(GetAllLumpsData(lumpname));
 			}
 
 			// Can be many entries per wad
-			result.AddRange(GetAllLumps("GLDEFS"));
+			result.AddRange(GetAllLumpsData("GLDEFS"));
 			return result;
 		}
 
@@ -1061,81 +1061,81 @@ namespace CodeImp.DoomBuilder.Data
 		public override IEnumerable<TextResourceData> GetModeldefData() 
 		{
 			if(issuspended) throw new Exception("Data reader is suspended");
-			return GetAllLumps("MODELDEF");
+			return GetAllLumpsData("MODELDEF");
 		}
 
 		//mxd
 		public override IEnumerable<TextResourceData> GetReverbsData() 
 		{
 			if(issuspended) throw new Exception("Data reader is suspended");
-			return GetAllLumps("REVERBS");
+			return GetAllLumpsData("REVERBS");
 		}
 
 		//mxd
 		public override IEnumerable<TextResourceData> GetSndInfoData()
 		{
 			if(issuspended) throw new Exception("Data reader is suspended");
-			return GetAllLumps("SNDINFO");
+			return GetAllLumpsData("SNDINFO");
 		}
 
 		//mxd
 		public override IEnumerable<TextResourceData> GetSndSeqData() 
 		{
 			if(issuspended) throw new Exception("Data reader is suspended");
-			return GetAllLumps("SNDSEQ");
+			return GetAllLumpsData("SNDSEQ");
 		}
 
 		//mxd
 		public override IEnumerable<TextResourceData> GetAnimdefsData()
 		{
 			if(issuspended) throw new Exception("Data reader is suspended");
-			return GetAllLumps("ANIMDEFS");
+			return GetAllLumpsData("ANIMDEFS");
 		}
 
 		//mxd
 		public override IEnumerable<TextResourceData> GetTerrainData()
 		{
 			if(issuspended) throw new Exception("Data reader is suspended");
-			return GetAllLumps("TERRAIN");
+			return GetAllLumpsData("TERRAIN");
 		}
 
 		//mxd
 		public override IEnumerable<TextResourceData> GetX11R6RGBData()
 		{
 			if(issuspended) throw new Exception("Data reader is suspended");
-			return GetAllLumps("X11R6RGB");
+			return GetAllLumpsData("X11R6RGB");
 		}
 
 		//mxd
 		public override IEnumerable<TextResourceData> GetCvarInfoData()
 		{
 			if(issuspended) throw new Exception("Data reader is suspended");
-			return GetAllLumps("CVARINFO");
+			return GetAllLumpsData("CVARINFO");
 		}
 
 		//mxd
 		public override IEnumerable<TextResourceData> GetLockDefsData()
 		{
 			if(issuspended) throw new Exception("Data reader is suspended");
-			return GetAllLumps("LOCKDEFS");
+			return GetAllLumpsData("LOCKDEFS");
 		}
 
 		//mxd
 		public override IEnumerable<TextResourceData> GetMenuDefData()
 		{
 			if(issuspended) throw new Exception("Data reader is suspended");
-			return GetLastLump("MENUDEF");
+			return GetLastLumpData("MENUDEF");
 		}
 
 		//mxd
 		public override IEnumerable<TextResourceData> GetSBarInfoData()
 		{
 			if(issuspended) throw new Exception("Data reader is suspended");
-			return GetLastLump("SBARINFO");
+			return GetLastLumpData("SBARINFO");
 		}
 
 		//mxd
-		private IEnumerable<TextResourceData> GetLastLump(string name)
+		private IEnumerable<TextResourceData> GetFirstLumpData(string name)
 		{
 			List<TextResourceData> result = new List<TextResourceData>();
 			int lumpindex = file.FindLumpIndex(name);
@@ -1146,7 +1146,18 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		//mxd
-		private List<TextResourceData> GetAllLumps(string name)
+		private IEnumerable<TextResourceData> GetLastLumpData(string name)
+		{
+			List<TextResourceData> result = new List<TextResourceData>();
+			int lumpindex = file.FindLastLumpIndex(name);
+			if(lumpindex != -1)
+				result.Add(new TextResourceData(this, file.Lumps[lumpindex].Stream, name, lumpindex, true));
+
+			return result;
+		}
+
+		//mxd
+		private List<TextResourceData> GetAllLumpsData(string name)
 		{
 			List<TextResourceData> result = new List<TextResourceData>();
 

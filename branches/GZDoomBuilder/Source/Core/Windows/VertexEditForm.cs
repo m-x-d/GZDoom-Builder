@@ -48,10 +48,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private bool undocreated; //mxd
 		private List<VertexProperties> vertexprops; //mxd
 
-		//mxd. Window setup stuff
-		private static Point location = Point.Empty;
-		private static int activetab;
-
 		private struct VertexProperties //mxd
 		{
 			public readonly float X;
@@ -77,12 +73,11 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			InitializeComponent();
 
-			//mxd. Widow setup
-			if(location != Point.Empty) 
+			//mxd. Load settings
+			if(General.Settings.StoreSelectedEditTab)
 			{
-				this.StartPosition = FormStartPosition.Manual;
-				this.Location = location;
-				if(General.Settings.StoreSelectedEditTab && activetab > 0 && activetab < tabs.TabCount) tabs.SelectTab(activetab);
+				int activetab = General.Settings.ReadSetting("windows." + configname + ".activetab", 0);
+				tabs.SelectTab(activetab);
 			}
 
 			if(General.Map.FormatInterface.HasCustomFields) //mxd
@@ -377,8 +372,8 @@ namespace CodeImp.DoomBuilder.Windows
 		//mxd
 		private void VertexEditForm_FormClosing(object sender, FormClosingEventArgs e) 
 		{
-			location = this.Location;
-			activetab = tabs.SelectedIndex;
+			// Save settings
+			General.Settings.WriteSetting("windows." + configname + ".activetab", tabs.SelectedIndex);
 		}
 
 		// Help requested
