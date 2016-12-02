@@ -80,8 +80,10 @@ namespace CodeImp.DoomBuilder.Controls
 		public delegate void ExplicitSaveTabDelegate();
 		public delegate void OpenScriptBrowserDelegate();
 		public delegate void OpenFindReplaceDelegate();
-		public delegate void FindNextDelegate();
-		public delegate void FindPreviousDelegate(); //mxd
+		public delegate bool FindNextDelegate();
+		public delegate bool FindPreviousDelegate(); //mxd
+		public delegate bool FindNextWrapAroundDelegate(FindReplaceOptions options); //mxd
+		public delegate bool FindPreviousWrapAroundDelegate(FindReplaceOptions options); //mxd
 		public delegate void GoToLineDelegate(); //mxd
 		public delegate void CompileScriptDelegate(); //mxd
 
@@ -90,6 +92,8 @@ namespace CodeImp.DoomBuilder.Controls
 		public event OpenFindReplaceDelegate OnOpenFindAndReplace;
 		public event FindNextDelegate OnFindNext;
 		public event FindPreviousDelegate OnFindPrevious; //mxd
+		public event FindNextWrapAroundDelegate OnFindNextWrapAround; //mxd
+		public event FindPreviousWrapAroundDelegate OnFindPreviousWrapAround; //mxd
 		public new event EventHandler OnTextChanged; //mxd
 		public event EventHandler OnFunctionBarDropDown; //mxd
 		public event GoToLineDelegate OnGoToLine; //mxd
@@ -114,7 +118,7 @@ namespace CodeImp.DoomBuilder.Controls
 		private int caretoffset; //mxd. Used to modify caret position after autogenerating stuff
 		private bool expandcodeblock; //mxd. More gross hacks
 		private string highlightedword; //mxd
-		private Encoding encoding; //mxd
+		private static Encoding encoding = Encoding.GetEncoding(1251); //mxd. ASCII with cyrillic support...
 
 		//mxd. Event propagation
 		private bool preventchanges;
@@ -131,6 +135,7 @@ namespace CodeImp.DoomBuilder.Controls
 		public bool ShowWhitespace { get { return scriptedit.ViewWhitespace != WhitespaceMode.Invisible; } set { scriptedit.ViewWhitespace = value ? WhitespaceMode.VisibleAlways : WhitespaceMode.Invisible; } }
 		public bool WrapLongLines { get { return scriptedit.WrapMode != WrapMode.None; } set { scriptedit.WrapMode = (value ? WrapMode.Char : WrapMode.None); } }
 		internal Scintilla Scintilla { get { return scriptedit; } } //mxd
+		internal static Encoding Encoding { get { return encoding; } } //mxd
 
 		#endregion
 
@@ -141,9 +146,6 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			// Initialize
 			InitializeComponent();
-
-			//mxd. ASCII with cyrillic support...
-			encoding = Encoding.GetEncoding(1251);
 			
 			// Script editor properties
 			//TODO: use ScintillaNET properties instead when they become available
@@ -655,6 +657,15 @@ namespace CodeImp.DoomBuilder.Controls
 		public bool FindNext(FindReplaceOptions options, bool useselectionstart)
 		{
 			if(string.IsNullOrEmpty(options.FindText)) return false;
+
+			// Find next match/abort when trying to replace in read-only tab
+			if(scriptedit.ReadOnly && options.ReplaceWith != null)
+			{
+				if(options.SearchMode != FindReplaceSearchMode.CURRENT_FILE && OnFindNextWrapAround != null)
+					return OnFindNextWrapAround(options);
+				return false;
+			}
+
 			int startpos = (useselectionstart ? Math.Min(scriptedit.SelectionStart, scriptedit.SelectionEnd) : Math.Max(scriptedit.SelectionStart, scriptedit.SelectionEnd));
 
 			// Search the document
@@ -668,6 +679,12 @@ namespace CodeImp.DoomBuilder.Controls
 			// Wrap around?
 			if(result == -1)
 			{
+				if(options.SearchMode != FindReplaceSearchMode.CURRENT_FILE 
+					&& OnFindNextWrapAround != null && OnFindNextWrapAround(options))
+				{
+					return true;
+				}
+
 				scriptedit.TargetStart = 0;
 				scriptedit.TargetEnd = startpos;
 				result = scriptedit.SearchInTarget(options.FindText);
@@ -694,6 +711,15 @@ namespace CodeImp.DoomBuilder.Controls
 		public bool FindPrevious(FindReplaceOptions options)
 		{
 			if(string.IsNullOrEmpty(options.FindText)) return false;
+
+			// Find previous match/abort when trying to replace in read-only tab
+			if(scriptedit.ReadOnly && options.ReplaceWith != null)
+			{
+				if(options.SearchMode != FindReplaceSearchMode.CURRENT_FILE && OnFindPreviousWrapAround != null)
+					return OnFindPreviousWrapAround(options);
+				return false;
+			}
+
 			int endpos = Math.Max(0, Math.Min(scriptedit.SelectionStart, scriptedit.SelectionEnd) - 1);
 
 			// Search the document
@@ -707,6 +733,12 @@ namespace CodeImp.DoomBuilder.Controls
 			// Wrap around?
 			if(result == -1)
 			{
+				if(options.SearchMode != FindReplaceSearchMode.CURRENT_FILE 
+					&& OnFindPreviousWrapAround != null && OnFindPreviousWrapAround(options))
+				{
+					return true;
+				}
+
 				scriptedit.TargetStart = scriptedit.TextLength;
 				scriptedit.TargetEnd = endpos;
 				result = scriptedit.SearchInTarget(options.FindText);

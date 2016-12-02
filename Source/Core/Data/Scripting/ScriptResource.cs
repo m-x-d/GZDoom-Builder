@@ -3,7 +3,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 using CodeImp.DoomBuilder.Config;
+using CodeImp.DoomBuilder.Controls;
+using CodeImp.DoomBuilder.Windows;
 
 #endregion
 
@@ -66,6 +69,32 @@ namespace CodeImp.DoomBuilder.Data.Scripting
 		#endregion
 
 		#region ================== Methods
+
+		internal bool ContainsText(FindReplaceOptions options)
+		{
+			// Get text
+			DataReader res = GetResource();
+			if(res == null) return false;
+			MemoryStream stream = res.LoadFile(filename, lumpindex);
+			if(stream != null)
+			{
+				// Add word boundary delimiter?
+				string findtext = (options.WholeWord ? "\\b" + options.FindText + "\\b" : options.FindText);
+				RegexOptions ro = (options.CaseSensitive ? RegexOptions.None : RegexOptions.IgnoreCase);
+				Regex regex = new Regex(findtext, ro);
+				
+				using(StreamReader reader = new StreamReader(stream, ScriptEditorControl.Encoding))
+				{
+					while(!reader.EndOfStream)
+					{
+						if(regex.IsMatch(reader.ReadLine())) return true;
+					}
+				}
+			}
+
+			// No dice...
+			return false;
+		}
 
 		private DataReader GetResource()
 		{

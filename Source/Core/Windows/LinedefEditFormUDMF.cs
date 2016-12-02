@@ -45,20 +45,8 @@ namespace CodeImp.DoomBuilder.Windows
 		private bool undocreated; //mxd
 		private readonly string[] renderstyles; //mxd
 		private readonly List<int> keynumbers; //mxd 
-
-		//mxd. Persistent settings
-		private static bool linkFrontTopScale;
-		private static bool linkFrontMidScale;
-		private static bool linkFrontBottomScale;
-		private static bool linkBackTopScale;
-		private static bool linkBackMidScale;
-		private static bool linkBackBottomScale;
-
 		private readonly List<PairedFieldsControl> frontUdmfControls; //mxd
 		private readonly List<PairedFieldsControl> backUdmfControls; //mxd
-
-		//mxd. Window setup stuff
-		private static int activetab;
 
 		private struct LinedefProperties //mxd
 		{
@@ -149,8 +137,10 @@ namespace CodeImp.DoomBuilder.Windows
 			InitializeComponent();
 
 			// Widow setup
-			if(General.Settings.StoreSelectedEditTab && activetab > 0)
+			if(General.Settings.StoreSelectedEditTab)
 			{
+				int activetab = General.Settings.ReadSetting("windows." + configname + ".activetab", 0);
+				
 				// When front or back tab was previously selected, switch to appropriate side (selectfront/selectback are set in BaseVisualGeometrySidedef.OnEditEnd)
 				if((selectfront || selectback) && (activetab == 1 || activetab == 2))
 					tabs.SelectTab(selectfront ? 1 : 2);
@@ -220,12 +210,12 @@ namespace CodeImp.DoomBuilder.Windows
 				renderStyle.Items.Add(lf.Value);
 
 			// Restore value linking
-			pfcFrontScaleTop.LinkValues = linkFrontTopScale;
-			pfcFrontScaleMid.LinkValues = linkFrontMidScale;
-			pfcFrontScaleBottom.LinkValues = linkFrontBottomScale;
-			pfcBackScaleTop.LinkValues = linkBackTopScale;
-			pfcBackScaleMid.LinkValues = linkBackMidScale;
-			pfcBackScaleBottom.LinkValues = linkBackBottomScale;
+			pfcFrontScaleTop.LinkValues = General.Settings.ReadSetting("windows." + configname + ".linkfronttopscale", false);
+			pfcFrontScaleMid.LinkValues = General.Settings.ReadSetting("windows." + configname + ".linkfrontmidscale", false);
+			pfcFrontScaleBottom.LinkValues = General.Settings.ReadSetting("windows." + configname + ".linkfrontbottomscale", false);
+			pfcBackScaleTop.LinkValues = General.Settings.ReadSetting("windows." + configname + ".linkbacktopscale", false);
+			pfcBackScaleMid.LinkValues = General.Settings.ReadSetting("windows." + configname + ".linkbackmidscale", false);
+			pfcBackScaleBottom.LinkValues = General.Settings.ReadSetting("windows." + configname + ".linkbackbottomscale", false);
 
 			// Disable top/mid/bottom texture offset controls?
 			if(!General.Map.Config.UseLocalSidedefTextureOffsets)
@@ -761,14 +751,6 @@ namespace CodeImp.DoomBuilder.Windows
 			//mxd. Apply tags
 			tagsselector.ApplyTo(lines);
 
-			//mxd. Store value linking
-			linkFrontTopScale = pfcFrontScaleTop.LinkValues;
-			linkFrontMidScale = pfcFrontScaleMid.LinkValues;
-			linkFrontBottomScale = pfcFrontScaleBottom.LinkValues;
-			linkBackTopScale = pfcBackScaleTop.LinkValues;
-			linkBackMidScale = pfcBackScaleMid.LinkValues;
-			linkBackBottomScale = pfcBackScaleBottom.LinkValues;
-
 			// Update the used textures
 			General.Map.Data.UpdateUsedTextures();
 			
@@ -845,8 +827,15 @@ namespace CodeImp.DoomBuilder.Windows
 		//mxd. Store window settings
 		private void LinedefEditForm_FormClosing(object sender, FormClosingEventArgs e) 
 		{
-			// Save location and active tab
-			activetab = tabs.SelectedIndex;
+			// Save settings
+			General.Settings.WriteSetting("windows." + configname + ".activetab", tabs.SelectedIndex);
+
+			General.Settings.WriteSetting("windows." + configname + ".linkfronttopscale", pfcFrontScaleTop.LinkValues);
+			General.Settings.WriteSetting("windows." + configname + ".linkfrontmidscale", pfcFrontScaleMid.LinkValues);
+			General.Settings.WriteSetting("windows." + configname + ".linkfrontbottomscale", pfcFrontScaleBottom.LinkValues);
+			General.Settings.WriteSetting("windows." + configname + ".linkbacktopscale", pfcBackScaleTop.LinkValues);
+			General.Settings.WriteSetting("windows." + configname + ".linkbackmidscale", pfcBackScaleMid.LinkValues);
+			General.Settings.WriteSetting("windows." + configname + ".linkbackbottomscale", pfcBackScaleBottom.LinkValues);
 		}
 
 		// Help!

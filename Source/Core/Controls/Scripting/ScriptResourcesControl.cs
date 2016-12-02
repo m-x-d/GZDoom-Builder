@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Data.Scripting;
+using CodeImp.DoomBuilder.Windows;
 
 #endregion
 
@@ -450,6 +451,22 @@ namespace CodeImp.DoomBuilder.Controls
 
 			// Found match!
 			toselect = node;
+		}
+
+		protected override void OnLoad(EventArgs e)
+		{
+			// Manual reposition required...
+			if(MainForm.DPIScaler.Width != 1.0f || MainForm.DPIScaler.Height != 1.0f)
+			{
+				filterprojectclear.Left = this.Width - filterprojectclear.Width - filterprojectclear.Margin.Right;
+				filterproject.Width = filterprojectclear.Left - filterprojectclear.Margin.Left - filterproject.Left;
+				filterbytype.Left = filterproject.Left;
+				filterbytype.Width = filterprojectclear.Right - filterproject.Left;
+				projecttree.Width = this.Width - projecttree.Left - projecttree.Margin.Right;
+				projecttree.Height = this.Height - projecttree.Top - projecttree.Margin.Bottom;
+			}
+			
+			base.OnLoad(e);
 		}
 
 		#endregion
