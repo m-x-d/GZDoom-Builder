@@ -440,6 +440,10 @@ namespace CodeImp.DoomBuilder.ZDoom
 						if(!ParseSky(token)) return false;
 						break;
 
+					case "skybox":
+						if(!ParseSkybox()) return false;
+						break;
+
 					case "outsidefog": case "fade":
 						if(!ParseFade(token)) return false;
 						break;
@@ -580,6 +584,28 @@ namespace CodeImp.DoomBuilder.ZDoom
 				else
 					mapinfo.Sky2ScrollSpeed = scrollspeed;
 			}
+
+			// All done here
+			return true;
+		}
+
+		// Skybox = "<texture>"
+		private bool ParseSkybox()
+		{
+			// New format only!
+			if(!NextTokenIs("=")) return false;
+
+			SkipWhitespace(true);
+			string token = StripQuotes(ReadToken());
+
+			if(string.IsNullOrEmpty(token))
+			{
+				ReportError("Expected Skybox texture name");
+				return false;
+			}
+
+			mapinfo.Sky1 = token.ToUpperInvariant();
+			mapinfo.Sky1ScrollSpeed = 0;
 
 			// All done here
 			return true;

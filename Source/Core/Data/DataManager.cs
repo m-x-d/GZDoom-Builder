@@ -3515,22 +3515,21 @@ namespace CodeImp.DoomBuilder.Data
 			CubeTexture cubemap = new CubeTexture(General.Map.Graphics.Device, targetsize, 1, Usage.None, Format.A8R8G8B8, Pool.Managed);
 
 			// Draw faces
-			sides[3].RotateFlip(RotateFlipType.Rotate180FlipX);
+			sides[3].RotateFlip(RotateFlipType.Rotate90FlipNone);
 			DrawCubemapFace(cubemap, CubeMapFace.NegativeX, sides[3]); // West
 
-			sides[0].RotateFlip(RotateFlipType.Rotate90FlipX);
 			DrawCubemapFace(cubemap, CubeMapFace.NegativeY, sides[0]); // North
 
-			sides[1].RotateFlip(RotateFlipType.RotateNoneFlipX);
+			sides[1].RotateFlip(RotateFlipType.Rotate270FlipNone);
 			DrawCubemapFace(cubemap, CubeMapFace.PositiveX, sides[1]); // East
 
-			sides[2].RotateFlip(RotateFlipType.Rotate270FlipX);
+			sides[2].RotateFlip(RotateFlipType.Rotate180FlipNone);
 			DrawCubemapFace(cubemap, CubeMapFace.PositiveY, sides[2]); // South
 
-			sides[4].RotateFlip(fliptop ? RotateFlipType.Rotate90FlipX : RotateFlipType.Rotate90FlipNone);
+			if(!fliptop) sides[4].RotateFlip(RotateFlipType.Rotate180FlipX);
 			DrawCubemapFace(cubemap, CubeMapFace.PositiveZ, sides[4]); // Top
 
-			sides[5].RotateFlip(RotateFlipType.Rotate270FlipX);
+			sides[5].RotateFlip(RotateFlipType.Rotate180FlipNone);
 			DrawCubemapFace(cubemap, CubeMapFace.NegativeZ, sides[5]); // Bottom
 
 			// All done...
@@ -3540,25 +3539,13 @@ namespace CodeImp.DoomBuilder.Data
 		private static void DrawCubemapFace(CubeTexture texture, CubeMapFace face, Bitmap image)
 		{
 			DataRectangle rect = texture.LockRectangle(face, 0, LockFlags.NoSystemLock);
-			SurfaceDescription desc = texture.GetLevelDescription(0);
-
+			
 			if(rect.Data.CanWrite)
 			{
-				for(int row = 0; row < desc.Height; row++)
-				{
-					int rowstart = row * rect.Pitch;
-					rect.Data.Seek(rowstart, SeekOrigin.Begin);
-
-					for(int col = 0; col < desc.Width; col++)
-					{
-						Color color = image.GetPixel(row, col);
-
-						rect.Data.WriteByte(color.B);
-						rect.Data.WriteByte(color.G);
-						rect.Data.WriteByte(color.R);
-						rect.Data.WriteByte(color.A);
-					}
-				}
+				BitmapData data = image.LockBits(new Rectangle(0, 0, image.Width, image.Height), ImageLockMode.ReadOnly, PixelFormat.Format32bppArgb);
+				int len = Math.Abs(data.Stride) * image.Height;
+				rect.Data.WriteRange(data.Scan0, len);
+				image.UnlockBits(data);
 			}
 			else
 			{
