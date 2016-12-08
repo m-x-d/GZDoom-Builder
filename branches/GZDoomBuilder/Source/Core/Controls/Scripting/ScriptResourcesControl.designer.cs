@@ -101,6 +101,7 @@
 			this.projecttree.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.projecttree_NodeMouseDoubleClick);
 			this.projecttree.BeforeExpand += new System.Windows.Forms.TreeViewCancelEventHandler(this.projecttree_BeforeExpand);
 			this.projecttree.BeforeCollapse += new System.Windows.Forms.TreeViewCancelEventHandler(this.projecttree_BeforeCollapse);
+			this.projecttree.NodeMouseClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.projecttree_NodeMouseClick);
 			// 
 			// ScriptResourcesControl
 			// 

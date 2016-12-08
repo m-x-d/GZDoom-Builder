@@ -74,6 +74,7 @@ namespace CodeImp.DoomBuilder.Controls
 		
 		public ScriptDocumentTab ActiveTab { get { return (tabs.SelectedTab as ScriptDocumentTab); } }
 		internal ScriptIconsManager Icons { get { return iconsmgr; } }
+		internal ScriptResourcesControl ScriptResourcesControl { get { return scriptresources; } }
 		public bool ShowWhitespace { get { return showwhitespace; } }
 		public bool WrapLongLines { get { return wraplonglines; } }
 
@@ -144,6 +145,9 @@ namespace CodeImp.DoomBuilder.Controls
 
 			//mxd. Initialize script resources control
 			scriptresources.Setup(this, General.Map.Data.ScriptResources);
+
+			//mxd. Initialize "find usages" control
+			findusages.Setup(this);
 			
 			// Load the script lumps
 			ScriptDocumentTab activetab = null; //mxd
@@ -292,7 +296,7 @@ namespace CodeImp.DoomBuilder.Controls
 			errorlist.Columns[1].Width = General.Settings.ReadSetting("scriptspanel.errorscolumn1width", errorlist.Columns[1].Width);
 			errorlist.Columns[2].Width = General.Settings.ReadSetting("scriptspanel.errorscolumn2width", errorlist.Columns[2].Width);
 
-			//mxd. Set splitter position and state
+			//mxd. Set script navigator splitter position and state
 			if(General.Settings.ReadSetting("scriptspanel.splittercollapsed", false))
 				mainsplitter.IsCollapsed = true;
 
@@ -304,6 +308,22 @@ namespace CodeImp.DoomBuilder.Controls
 					splitterdistance = (int)Math.Round(splitterdistance * MainForm.DPIScaler.Width);
 			}
 			mainsplitter.SplitPosition = splitterdistance;
+
+			//mxd. Set script splitter position and state
+			if(General.Settings.ReadSetting("scriptspanel.scriptsplittercollapsed", false))
+				scriptsplitter.IsCollapsed = true;
+
+			splitterdistance = General.Settings.ReadSetting("scriptspanel.scriptsplitterdistance", int.MinValue);
+			if(splitterdistance == int.MinValue)
+			{
+				splitterdistance = 250;
+				if(MainForm.DPIScaler.Width != 1.0f)
+					splitterdistance = (int)Math.Round(splitterdistance * MainForm.DPIScaler.Width);
+			}
+			scriptsplitter.SplitPosition = splitterdistance;
+
+			//mxd. Selected info tab
+			infotabs.SelectedIndex = General.Settings.ReadSetting("scriptspanel.infotabindex", 0);
 
 			//mxd. Set text editor settings
 			showwhitespace = General.Settings.ReadSetting("scriptspanel.showwhitespace", false);
@@ -324,6 +344,9 @@ namespace CodeImp.DoomBuilder.Controls
 			General.Settings.WriteSetting("scriptspanel.errorscolumn2width", errorlist.Columns[2].Width); //mxd
 			General.Settings.WriteSetting("scriptspanel.splittercollapsed", mainsplitter.IsCollapsed); //mxd
 			General.Settings.WriteSetting("scriptspanel.splitterdistance", mainsplitter.SplitPosition); //mxd
+			General.Settings.WriteSetting("scriptspanel.scriptsplittercollapsed", scriptsplitter.IsCollapsed); //mxd
+			General.Settings.WriteSetting("scriptspanel.scriptsplitterdistance", scriptsplitter.SplitPosition); //mxd
+			General.Settings.WriteSetting("scriptspanel.infotabindex", infotabs.SelectedIndex); //mxd
 			General.Settings.WriteSetting("scriptspanel.showwhitespace", showwhitespace); //mxd
 			General.Settings.WriteSetting("scriptspanel.wraplonglines", wraplonglines); //mxd
 		}
@@ -817,6 +840,51 @@ namespace CodeImp.DoomBuilder.Controls
 
 			return false;
 		}
+
+		//mxd
+		internal bool FindUsages()
+		{
+			ScriptDocumentTab t = ActiveTab;
+			if(t != null)
+			{
+				string text = t.Editor.Scintilla.GetWordFromPosition(t.Editor.Scintilla.SelectionStart);
+				if(string.IsNullOrEmpty(text))
+				{
+					DisplayStatus(ScriptStatusType.Warning, "Unable to get search query from the text cursor position!");
+				}
+				else
+				{
+					var options = new FindReplaceOptions
+					{
+						FindText = text,
+						SearchMode = FindReplaceSearchMode.CURRENT_PROJECT_CURRENT_SCRIPT_TYPE,
+						WholeWord = true,
+						CaseSensitive = t.Config.CaseSensitive
+					};
+
+					return FindUsages(options, t.Config.ScriptType);
+				}
+			}
+			else
+			{
+				DisplayStatus(ScriptStatusType.Warning, "An active tab is required to perform Find Usages action!");
+			}
+
+			return false;
+		}
+
+		//mxd
+		public bool FindUsages(FindReplaceOptions options, ScriptType scripttype)
+		{
+			if(findusages.FindUsages(options, scripttype))
+			{
+				infotabs.SelectedTab = tabsearchresults;
+				scriptsplitter.IsCollapsed = false;
+				return true;
+			}
+
+			return false;
+		}
 		
 		// This closed the Find & Replace subwindow
 		public void CloseFindReplace(bool closing)
@@ -874,7 +942,7 @@ namespace CodeImp.DoomBuilder.Controls
 		public void ClearErrors()
 		{
 			// Hide list
-			splitter.Panel2Collapsed = true;
+			if(infotabs.SelectedTab == taberrors) scriptsplitter.Panel2Collapsed = true;
 			errorlist.Items.Clear();
 
 			// Clear marks
@@ -940,8 +1008,16 @@ namespace CodeImp.DoomBuilder.Controls
 				t.MarkScriptErrors(compilererrors);
 			}
 			
-			// Show/hide panel
-			splitter.Panel2Collapsed = (errorlist.Items.Count == 0);
+			//mxd. Show/hide panel
+			if(errorlist.Items.Count > 0)
+			{
+				infotabs.SelectedTab = taberrors;
+				scriptsplitter.Panel2Collapsed = false;
+			}
+			else if(infotabs.SelectedTab == taberrors)
+			{
+				scriptsplitter.Panel2Collapsed = true;
+			}
 		}
 
 		//mxd
@@ -1471,6 +1547,9 @@ namespace CodeImp.DoomBuilder.Controls
 			//mxd. Stop status timers
 			statusresetter.Stop();
 			statusflasher.Stop();
+
+			//mxd
+			findusages.OnClose();
 			
 			// Close the sub windows now
 			if(findreplaceform != null) findreplaceform.Dispose();
@@ -1830,6 +1909,13 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 
 		//mxd
+		private void tabs_MouseDoubleClick(object sender, MouseEventArgs e)
+		{
+			// Show corresponding resource
+			scriptresources.SelectItem(tabs.SelectedTab as ScriptResourceDocumentTab);
+		}
+
+		//mxd
 		private void tabs_OnCloseTabClicked(object sender, TabControlEventArgs e)
 		{
 			ScriptDocumentTab t = (e.TabPage as ScriptDocumentTab);
@@ -1921,6 +2007,11 @@ namespace CodeImp.DoomBuilder.Controls
 				
 				ForceFocus();
 			}
+		}
+
+		private void menufindusages_Click(object sender, EventArgs e)
+		{
+			FindUsages();
 		}
 		
 		#endregion
@@ -2030,6 +2121,7 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			ScriptDocumentTab t = ActiveTab;
 			menufind.Enabled = (t != null);
+			menufindusages.Enabled = (t != null);
 
 			bool enable = (!string.IsNullOrEmpty(findoptions.FindText) && t != null);
 			menufindnext.Enabled = enable;

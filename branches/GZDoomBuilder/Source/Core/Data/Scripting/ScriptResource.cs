@@ -96,6 +96,38 @@ namespace CodeImp.DoomBuilder.Data.Scripting
 			return false;
 		}
 
+		// Finds text occurencies in the resource. Whole word / ignode case only.
+		internal List<FindUsagesResult> FindUsages(FindReplaceOptions options)
+		{
+			var result = new List<FindUsagesResult>();
+
+			// Get text
+			DataReader res = GetResource();
+			if(res == null) return result;
+			MemoryStream stream = res.LoadFile(filename, lumpindex);
+			if(stream != null)
+			{
+				// Add word boundary delimiter
+				string findtext = (options.WholeWord ? "\\b" + options.FindText + "\\b" : options.FindText);
+				Regex regex = new Regex(findtext, (options.CaseSensitive ? RegexOptions.None : RegexOptions.IgnoreCase));
+
+				using(StreamReader reader = new StreamReader(stream, ScriptEditorControl.Encoding))
+				{
+					int lineindex = 0;
+					while(!reader.EndOfStream)
+					{
+						string line = reader.ReadLine();
+						foreach(Match match in regex.Matches(line))
+							result.Add(new FindUsagesResult(this, match, line, lineindex));
+
+						lineindex++;
+					}
+				}
+			}
+
+			return result;
+		}
+
 		private DataReader GetResource()
 		{
 			if(resource == null || resource.IsDisposed)

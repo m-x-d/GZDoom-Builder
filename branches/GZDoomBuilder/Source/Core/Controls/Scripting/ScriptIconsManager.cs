@@ -5,9 +5,9 @@ namespace CodeImp.DoomBuilder.Controls.Scripting
 {
 	internal class ScriptIconsManager
 	{
-		private const int SCRIPT_TYPE_ICONS_OFFSET = 4;
-		private const int SCRIPT_GROUP_ICONS_OFFSET = 23;
-		private const int SCRIPT_GROUP_OPEN_ICONS_OFFSET = 42;
+		internal const int SCRIPT_TYPE_ICONS_OFFSET = 4;
+		internal const int SCRIPT_GROUP_ICONS_OFFSET = 23;
+		internal const int SCRIPT_GROUP_OPEN_ICONS_OFFSET = 42;
 		
 		private ImageList icons;
 		public ImageList Icons { get { return icons; } }

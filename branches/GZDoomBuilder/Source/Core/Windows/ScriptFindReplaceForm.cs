@@ -21,6 +21,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Controls;
 
 #endregion
@@ -250,12 +251,33 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Map.ScriptEditor.Editor.FindNext(options);
 		}
 
-		// Find Previous (mxd)
+		//mxd. Find Previous
 		private void findpreviousbutton_Click(object sender, EventArgs e) 
 		{
-			FindReplaceOptions options = MakeOptions(); //mxd
-			AddComboboxText(findbox, options.FindText); //mxd
+			FindReplaceOptions options = MakeOptions();
+			AddComboboxText(findbox, options.FindText);
 			General.Map.ScriptEditor.Editor.FindPrevious(options);
+		}
+
+		//mxd. Bookmark all
+		private void bookmarkallbutton_Click(object sender, EventArgs e)
+		{
+			FindReplaceOptions options = MakeOptions();
+			AddComboboxText(findbox, options.FindText);
+
+			// Determine script type
+			ScriptType scripttype = ScriptType.UNKNOWN;
+			switch(options.SearchMode)
+			{
+				case FindReplaceSearchMode.CURRENT_FILE:
+				case FindReplaceSearchMode.CURRENT_PROJECT_CURRENT_SCRIPT_TYPE:
+				case FindReplaceSearchMode.OPENED_TABS_CURRENT_SCRIPT_TYPE:
+					ScriptDocumentTab t = General.Map.ScriptEditor.Editor.ActiveTab;
+					if(t != null) scripttype = t.Config.ScriptType;
+					break;
+			}
+
+			if(General.Map.ScriptEditor.Editor.FindUsages(options, scripttype)) this.Close();
 		}
 		
 		//mxd. Replace
