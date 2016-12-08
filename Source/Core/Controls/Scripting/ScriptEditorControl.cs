@@ -1269,5 +1269,69 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 		
 		#endregion
+
+		#region ================== Context menu Events
+
+		private void contextmenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+		{
+			menuundo.Enabled = scriptedit.CanUndo;
+			menuredo.Enabled = scriptedit.CanRedo;
+
+			bool cancopy = (scriptedit.SelectionEnd > scriptedit.SelectionStart);
+			menucut.Enabled = cancopy;
+			menucopy.Enabled = cancopy;
+			menupaste.Enabled = scriptedit.CanPaste;
+			menudelete.Enabled = cancopy;
+
+			menufindusages.Enabled = !string.IsNullOrEmpty(scriptedit.GetWordFromPosition(scriptedit.SelectionStart));
+		}
+
+		private void menuundo_Click(object sender, EventArgs e)
+		{
+			scriptedit.Undo();
+		}
+
+		private void menuredo_Click(object sender, EventArgs e)
+		{
+			scriptedit.Redo();
+		}
+
+		private void menucut_Click(object sender, EventArgs e)
+		{
+			scriptedit.Cut();
+		}
+
+		private void menucopy_Click(object sender, EventArgs e)
+		{
+			scriptedit.Copy();
+		}
+
+		private void menupaste_Click(object sender, EventArgs e)
+		{
+			scriptedit.Paste();
+		}
+
+		private void menudelete_Click(object sender, EventArgs e)
+		{
+			scriptedit.DeleteRange(scriptedit.SelectionStart, scriptedit.SelectionEnd - scriptedit.SelectionStart);
+		}
+
+		private void menuduplicateline_Click(object sender, EventArgs e)
+		{
+			DuplicateLine();
+		}
+
+		private void menuselectall_Click(object sender, EventArgs e)
+		{
+			scriptedit.SelectAll();
+		}
+
+		private void menufindusages_Click(object sender, EventArgs e)
+		{
+			General.Map.ScriptEditor.Editor.FindUsages();
+		}
+
+		#endregion
+
 	}
 }

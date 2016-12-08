@@ -186,6 +186,13 @@ namespace CodeImp.DoomBuilder.Controls
 
 		#region ================== Methods
 
+		public void SelectItem(ScriptResourceDocumentTab tab)
+		{
+			if(tab == null) return;
+			SelectItem(tab.Resource.Resource.Location.location, tab.Resource.Filename, 
+				tab.Resource.LumpIndex, tab.Resource.ScriptType);
+		}
+
 		public void SelectItem(string resourcelocation, string lumpname, int lumpindex, ScriptType scripttype)
 		{
 			TreeNode target = FindItem(projecttree.Nodes, resourcelocation, lumpname, lumpindex, scripttype);
@@ -486,6 +493,12 @@ namespace CodeImp.DoomBuilder.Controls
 		private void filterbytype_SelectedIndexChanged(object sender, EventArgs e)
 		{
 			UpdateResourcesTree();
+		}
+
+		private void projecttree_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+		{
+			// Select node on Right-click
+			projecttree.SelectedNode = e.Node;
 		}
 
 		private void projecttree_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)

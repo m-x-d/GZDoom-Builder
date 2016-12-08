@@ -39,6 +39,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.findpreviousbutton = new System.Windows.Forms.Button();
 			this.tabs = new System.Windows.Forms.TabControl();
 			this.tabfind = new System.Windows.Forms.TabPage();
+			this.bookmarkallbutton = new System.Windows.Forms.Button();
 			this.findinbox = new System.Windows.Forms.ComboBox();
 			this.label2 = new System.Windows.Forms.Label();
 			this.findbox = new System.Windows.Forms.ComboBox();
@@ -89,30 +90,30 @@ namespace CodeImp.DoomBuilder.Windows
 			// findnextbutton
 			// 
 			this.findnextbutton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.findnextbutton.Location = new System.Drawing.Point(79, 185);
+			this.findnextbutton.Location = new System.Drawing.Point(103, 185);
 			this.findnextbutton.Name = "findnextbutton";
-			this.findnextbutton.Size = new System.Drawing.Size(100, 25);
-			this.findnextbutton.TabIndex = 4;
+			this.findnextbutton.Size = new System.Drawing.Size(88, 25);
+			this.findnextbutton.TabIndex = 5;
 			this.findnextbutton.Text = "Find Next";
 			this.findnextbutton.UseVisualStyleBackColor = true;
 			this.findnextbutton.Click += new System.EventHandler(this.findnextbutton_Click);
 			// 
 			// replaceallbutton
 			// 
-			this.replaceallbutton.Location = new System.Drawing.Point(185, 185);
+			this.replaceallbutton.Location = new System.Drawing.Point(197, 185);
 			this.replaceallbutton.Name = "replaceallbutton";
-			this.replaceallbutton.Size = new System.Drawing.Size(100, 25);
-			this.replaceallbutton.TabIndex = 7;
+			this.replaceallbutton.Size = new System.Drawing.Size(88, 25);
+			this.replaceallbutton.TabIndex = 6;
 			this.replaceallbutton.Text = "Replace All";
 			this.replaceallbutton.UseVisualStyleBackColor = true;
 			this.replaceallbutton.Click += new System.EventHandler(this.replaceallbutton_Click);
 			// 
 			// replacebutton
 			// 
-			this.replacebutton.Location = new System.Drawing.Point(79, 185);
+			this.replacebutton.Location = new System.Drawing.Point(103, 185);
 			this.replacebutton.Name = "replacebutton";
-			this.replacebutton.Size = new System.Drawing.Size(100, 25);
-			this.replacebutton.TabIndex = 6;
+			this.replacebutton.Size = new System.Drawing.Size(88, 25);
+			this.replacebutton.TabIndex = 5;
 			this.replacebutton.Text = "Replace";
 			this.replacebutton.UseVisualStyleBackColor = true;
 			this.replacebutton.Click += new System.EventHandler(this.replacebutton_Click);
@@ -120,10 +121,10 @@ namespace CodeImp.DoomBuilder.Windows
 			// findpreviousbutton
 			// 
 			this.findpreviousbutton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.findpreviousbutton.Location = new System.Drawing.Point(185, 185);
+			this.findpreviousbutton.Location = new System.Drawing.Point(197, 185);
 			this.findpreviousbutton.Name = "findpreviousbutton";
-			this.findpreviousbutton.Size = new System.Drawing.Size(100, 25);
-			this.findpreviousbutton.TabIndex = 5;
+			this.findpreviousbutton.Size = new System.Drawing.Size(88, 25);
+			this.findpreviousbutton.TabIndex = 6;
 			this.findpreviousbutton.Text = "Find Previous";
 			this.findpreviousbutton.UseVisualStyleBackColor = true;
 			this.findpreviousbutton.Click += new System.EventHandler(this.findpreviousbutton_Click);
@@ -145,6 +146,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// tabfind
 			// 
+			this.tabfind.Controls.Add(this.bookmarkallbutton);
 			this.tabfind.Controls.Add(this.findinbox);
 			this.tabfind.Controls.Add(this.findpreviousbutton);
 			this.tabfind.Controls.Add(this.label2);
@@ -155,13 +157,24 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabfind.Controls.Add(this.findwholeword);
 			this.tabfind.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.tabfind.ImageIndex = 0;
-			this.tabfind.Location = new System.Drawing.Point(4, 22);
+			this.tabfind.Location = new System.Drawing.Point(4, 23);
 			this.tabfind.Name = "tabfind";
 			this.tabfind.Padding = new System.Windows.Forms.Padding(3, 16, 3, 3);
-			this.tabfind.Size = new System.Drawing.Size(291, 216);
+			this.tabfind.Size = new System.Drawing.Size(291, 215);
 			this.tabfind.TabIndex = 0;
 			this.tabfind.Text = "Find";
 			this.tabfind.UseVisualStyleBackColor = true;
+			// 
+			// bookmarkallbutton
+			// 
+			this.bookmarkallbutton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+			this.bookmarkallbutton.Location = new System.Drawing.Point(9, 185);
+			this.bookmarkallbutton.Name = "bookmarkallbutton";
+			this.bookmarkallbutton.Size = new System.Drawing.Size(88, 25);
+			this.bookmarkallbutton.TabIndex = 4;
+			this.bookmarkallbutton.Text = "Find Usages";
+			this.bookmarkallbutton.UseVisualStyleBackColor = true;
+			this.bookmarkallbutton.Click += new System.EventHandler(this.bookmarkallbutton_Click);
 			// 
 			// findinbox
 			// 
@@ -178,7 +191,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.findinbox.Location = new System.Drawing.Point(9, 80);
 			this.findinbox.Name = "findinbox";
 			this.findinbox.Size = new System.Drawing.Size(276, 21);
-			this.findinbox.TabIndex = 3;
+			this.findinbox.TabIndex = 1;
 			// 
 			// label2
 			// 
@@ -199,7 +212,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.findbox.Location = new System.Drawing.Point(9, 34);
 			this.findbox.Name = "findbox";
 			this.findbox.Size = new System.Drawing.Size(276, 21);
-			this.findbox.TabIndex = 1;
+			this.findbox.TabIndex = 0;
 			// 
 			// tabreplace
 			// 
@@ -215,10 +228,10 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabreplace.Controls.Add(this.replacewholeword);
 			this.tabreplace.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.tabreplace.ImageIndex = 1;
-			this.tabreplace.Location = new System.Drawing.Point(4, 22);
+			this.tabreplace.Location = new System.Drawing.Point(4, 23);
 			this.tabreplace.Name = "tabreplace";
 			this.tabreplace.Padding = new System.Windows.Forms.Padding(3);
-			this.tabreplace.Size = new System.Drawing.Size(291, 216);
+			this.tabreplace.Size = new System.Drawing.Size(291, 215);
 			this.tabreplace.TabIndex = 1;
 			this.tabreplace.Text = "Replace";
 			this.tabreplace.UseVisualStyleBackColor = true;
@@ -233,7 +246,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.replacebox.Location = new System.Drawing.Point(9, 79);
 			this.replacebox.Name = "replacebox";
 			this.replacebox.Size = new System.Drawing.Size(276, 21);
-			this.replacebox.TabIndex = 11;
+			this.replacebox.TabIndex = 1;
 			// 
 			// label5
 			// 
@@ -259,7 +272,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.replaceinbox.Location = new System.Drawing.Point(9, 124);
 			this.replaceinbox.Name = "replaceinbox";
 			this.replaceinbox.Size = new System.Drawing.Size(276, 21);
-			this.replaceinbox.TabIndex = 9;
+			this.replaceinbox.TabIndex = 2;
 			// 
 			// label3
 			// 
@@ -280,7 +293,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.replacefindbox.Location = new System.Drawing.Point(9, 34);
 			this.replacefindbox.Name = "replacefindbox";
 			this.replacefindbox.Size = new System.Drawing.Size(276, 21);
-			this.replacefindbox.TabIndex = 5;
+			this.replacefindbox.TabIndex = 0;
 			// 
 			// label4
 			// 
@@ -297,7 +310,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.replacematchcase.Location = new System.Drawing.Point(9, 160);
 			this.replacematchcase.Name = "replacematchcase";
 			this.replacematchcase.Size = new System.Drawing.Size(82, 17);
-			this.replacematchcase.TabIndex = 6;
+			this.replacematchcase.TabIndex = 3;
 			this.replacematchcase.Text = "Match case";
 			this.replacematchcase.UseVisualStyleBackColor = true;
 			// 
@@ -307,7 +320,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.replacewholeword.Location = new System.Drawing.Point(97, 160);
 			this.replacewholeword.Name = "replacewholeword";
 			this.replacewholeword.Size = new System.Drawing.Size(113, 17);
-			this.replacewholeword.TabIndex = 8;
+			this.replacewholeword.TabIndex = 4;
 			this.replacewholeword.Text = "Match whole word";
 			this.replacewholeword.UseVisualStyleBackColor = true;
 			// 
@@ -320,7 +333,6 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// ScriptFindReplaceForm
 			// 
-			this.AcceptButton = this.findnextbutton;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.ClientSize = new System.Drawing.Size(304, 247);
@@ -367,5 +379,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.Label label4;
 		private System.Windows.Forms.CheckBox replacematchcase;
 		private System.Windows.Forms.CheckBox replacewholeword;
+		private System.Windows.Forms.Button bookmarkallbutton;
 	}
 }

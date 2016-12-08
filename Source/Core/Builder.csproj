@@ -542,6 +542,9 @@
     <Reference Include="System.Management" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="TabControlEX, Version=0.0.3271.41578, Culture=neutral, PublicKeyToken=1db242dc828e4b4e">
+      <Private>False</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Controls\PairedFloatControl.resx">
@@ -692,6 +695,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.manifest" />
+    <EmbeddedResource Include="Controls\Scripting\FindUsagesControl.resx">
+      <DependentUpon>FindUsagesControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Controls\Scripting\ScriptEditorControl.resx">
       <DependentUpon>ScriptEditorControl.cs</DependentUpon>
     </EmbeddedResource>
@@ -709,6 +715,13 @@
     <Compile Include="Actions\HintsManager.cs" />
     <Compile Include="Config\AllTexturesSet.cs" />
     <Compile Include="Config\FlagTranslation.cs" />
+    <Compile Include="Controls\Scripting\FindUsagesControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Scripting\FindUsagesControl.Designer.cs">
+      <DependentUpon>FindUsagesControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Data\Scripting\FindUsagesResult.cs" />
     <Compile Include="Controls\Scripting\ScriptIconsManager.cs" />
     <Compile Include="Controls\Scripting\ScriptResourceDocumentTab.cs">
       <SubType>Component</SubType>
