@@ -146,7 +146,7 @@ namespace CodeImp.DoomBuilder.Controls
 			// 
 			this.menudelete.Image = global::CodeImp.DoomBuilder.Properties.Resources.Close;
 			this.menudelete.Name = "menudelete";
-			this.menudelete.ShortcutKeys = System.Windows.Forms.Keys.Delete;
+			this.menudelete.ShortcutKeyDisplayString = "Del";
 			this.menudelete.Size = new System.Drawing.Size(208, 22);
 			this.menudelete.Text = "Delete";
 			this.menudelete.Click += new System.EventHandler(this.menudelete_Click);

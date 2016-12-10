@@ -297,21 +297,16 @@ namespace CodeImp.DoomBuilder.Controls
 				if(shownamedscripts)
 				{
 					argzeromode = ArgZeroMode.SCRIPT_NAME;
+					scriptnames.Text = arg0str;
+					
 					if(General.Map.NamedScripts.ContainsKey(arg0str))
-					{
-						scriptnames.SelectedText = arg0str;
 						UpdateScriptArguments(General.Map.NamedScripts[arg0str]);
-					}
 					else
-					{
-						// Unknown script name
-						scriptnames.Text = arg0str;
-						arg0label.Text = "Script Name:";
-					}
+						arg0label.Text = "Script Name:"; // Unknown script name
 				}
+				// Update numbered script name
 				else
 				{
-					// Update numbered script name
 					argzeromode = ArgZeroMode.SCRIPT_NUMBER;
 					int a0 = arg0.GetResult(0);
 					if(General.Map.NumberedScripts.ContainsKey(a0))

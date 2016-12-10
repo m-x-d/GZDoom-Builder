@@ -3136,15 +3136,22 @@ namespace CodeImp.DoomBuilder.Data
 				if(string.IsNullOrEmpty(skytex))
 					General.ErrorLogger.Add(ErrorType.Warning, "Skybox creation failed: Sky1 property is missing from the MAPINFO map definition");
 				else
-					General.ErrorLogger.Add(ErrorType.Warning, "Skybox creation failed: unable to load \"" + skytex + "\" texture");
+					General.ErrorLogger.Add(ErrorType.Warning, "Skybox creation failed: unable to load texture \"" + skytex + "\"");
 				
 				// Use the built-in texture
-				ImageData tex = LoadInternalTexture("MissingSky3D.png");
-				tex.CreateTexture();
-				Bitmap sky = new Bitmap(tex.GetBitmap());
-				sky.RotateFlip(RotateFlipType.RotateNoneFlipX); // We don't want our built-in image mirrored...
-				skybox = MakeClassicSkyBox(sky);
-				tex.Dispose();
+				if(General.Map.Graphics.CheckAvailability())
+				{
+					ImageData tex = LoadInternalTexture("MissingSky3D.png");
+					tex.CreateTexture();
+					Bitmap sky = new Bitmap(tex.GetBitmap());
+					sky.RotateFlip(RotateFlipType.RotateNoneFlipX); // We don't want our built-in image mirrored...
+					skybox = MakeClassicSkyBox(sky);
+					tex.Dispose();
+				}
+				else
+				{
+					General.ErrorLogger.Add(ErrorType.Warning, "Skybox creation failed: Direct3D device is not available");
+				}
 			}
 		}
 

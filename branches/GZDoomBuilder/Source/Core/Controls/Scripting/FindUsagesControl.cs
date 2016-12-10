@@ -276,8 +276,13 @@ namespace CodeImp.DoomBuilder.Controls.Scripting
 		{
 			if(findusagestree.SelectedNode != null)
 			{
-				persistentnodes.Remove(findusagestree.SelectedNode);
-				findusagestree.Nodes.Remove(findusagestree.SelectedNode);
+				// Remove parent node when the current one is it's only child node
+				TreeNode target = findusagestree.SelectedNode;
+				while(target.Parent != null && target.Parent.Nodes.Count == 1) 
+					target = target.Parent;
+
+				persistentnodes.Remove(target);
+				findusagestree.Nodes.Remove(target);
 			}
 		}
 
@@ -308,8 +313,16 @@ namespace CodeImp.DoomBuilder.Controls.Scripting
 
 		private void contextmenu_Opening(object sender, System.ComponentModel.CancelEventArgs e)
 		{
-			menuremove.Enabled = (findusagestree.SelectedNode != null);
-			menurepeat.Enabled = (findusagestree.SelectedNode != null);
+			if(findusagestree.Nodes.Count > 0)
+			{
+				menuremove.Enabled = (findusagestree.SelectedNode != null);
+				menurepeat.Enabled = (findusagestree.SelectedNode != null);
+			}
+			else
+			{
+				// Don't show the menu when there are no valid options
+				e.Cancel = true;
+			}
 		}
 
 		private void findusagestree_BeforeExpand(object sender, TreeViewCancelEventArgs e)
