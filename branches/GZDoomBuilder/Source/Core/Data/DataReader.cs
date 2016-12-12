@@ -21,7 +21,6 @@ using System.Collections.Generic;
 using System.IO;
 using CodeImp.DoomBuilder.Compilers;
 using CodeImp.DoomBuilder.Config;
-using CodeImp.DoomBuilder.GZBuilder.Data;
 using CodeImp.DoomBuilder.ZDoom;
 
 #endregion
@@ -223,47 +222,14 @@ namespace CodeImp.DoomBuilder.Data
 		// When implemented, this returns DECORATE lumps
 		public abstract IEnumerable<TextResourceData> GetDecorateData(string pname);
 
-		//mxd. When implemented, this returns MODELDEF lumps
-		public abstract IEnumerable<TextResourceData> GetModeldefData();
-
 		//mxd. When implemented, this returns MAPINFO lumps
 		public abstract IEnumerable<TextResourceData> GetMapinfoData();
 
 		//mxd. When implemented, this returns GLDEFS lumps
 		public abstract IEnumerable<TextResourceData> GetGldefsData(string basegame);
 
-		//mxd. When implemented, this returns REVERBS lumps
-		public abstract IEnumerable<TextResourceData> GetReverbsData();
-
-		//mxd. When implemented, this returns VOXELDEF lumps
-		public abstract IEnumerable<TextResourceData> GetVoxeldefData();
-
-		//mxd. When implemented, this returns SNDINFO lumps
-		public abstract IEnumerable<TextResourceData> GetSndInfoData();
-
-		//mxd. When implemented, this returns SNDSEQ lumps
-		public abstract IEnumerable<TextResourceData> GetSndSeqData();
-
-		//mxd. When implemented, this returns ANIMDEFS lumps
-		public abstract IEnumerable<TextResourceData> GetAnimdefsData();
-
-		//mxd. When implemented, this returns TERRAIN lumps
-		public abstract IEnumerable<TextResourceData> GetTerrainData();
-
-		//mxd. When implemented, this returns X11R6RGB lumps
-		public abstract IEnumerable<TextResourceData> GetX11R6RGBData();
-
-		//mxd. When implemented, this returns CVARINFO lumps
-		public abstract IEnumerable<TextResourceData> GetCvarInfoData();
-
-		//mxd. When implemented, this returns LOCKDEFS lumps
-		public abstract IEnumerable<TextResourceData> GetLockDefsData();
-
-		//mxd. When implemented, this returns MENUDEF lumps
-		public abstract IEnumerable<TextResourceData> GetMenuDefData();
-
-		//mxd. When implemented, this returns SBARINFO lumps
-		public abstract IEnumerable<TextResourceData> GetSBarInfoData();
+		//mxd. When implemented, this returns generic text lump data
+		public abstract IEnumerable<TextResourceData> GetTextLumpData(ScriptType scripttype, bool singular, bool partialtitlematch);
 
 		//mxd. When implemented, this returns the list of voxel model names
 		public abstract HashSet<string> GetVoxelNames();

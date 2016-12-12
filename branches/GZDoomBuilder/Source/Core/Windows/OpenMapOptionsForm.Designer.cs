@@ -56,6 +56,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// columnHeader1
 			// 
 			columnHeader1.Text = "Map name";
+			columnHeader1.Width = -1;
 			// 
 			// label1
 			// 

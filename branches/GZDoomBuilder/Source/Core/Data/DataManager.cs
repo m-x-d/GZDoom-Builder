@@ -2254,7 +2254,7 @@ namespace CodeImp.DoomBuilder.Data
 			{
 				currentreader = dr;
 
-				IEnumerable<TextResourceData> streams = dr.GetModeldefData();
+				IEnumerable<TextResourceData> streams = dr.GetTextLumpData(ScriptType.MODELDEF, false, true);
 				foreach(TextResourceData data in streams) 
 				{
 					// Parse the data
@@ -2302,7 +2302,7 @@ namespace CodeImp.DoomBuilder.Data
 			{
 				currentreader = dr;
 
-				IEnumerable<TextResourceData> streams = dr.GetVoxeldefData();
+				IEnumerable<TextResourceData> streams = dr.GetTextLumpData(ScriptType.VOXELDEF, false, false);
 				foreach(TextResourceData data in streams)
 				{
 					if(parser.Parse(data, true))
@@ -2511,7 +2511,7 @@ namespace CodeImp.DoomBuilder.Data
 			foreach(DataReader dr in containers) 
 			{
 				currentreader = dr;
-				IEnumerable<TextResourceData> streams = dr.GetReverbsData();
+				IEnumerable<TextResourceData> streams = dr.GetTextLumpData(ScriptType.REVERBS, false, false);
 				foreach(TextResourceData data in streams) 
 				{
 					// Parse the data
@@ -2538,7 +2538,7 @@ namespace CodeImp.DoomBuilder.Data
 			foreach(DataReader dr in containers)
 			{
 				currentreader = dr;
-				IEnumerable<TextResourceData> streams = dr.GetSndInfoData();
+				IEnumerable<TextResourceData> streams = dr.GetTextLumpData(ScriptType.SNDINFO, false, false);
 
 				// Parse the data
 				foreach(TextResourceData data in streams)
@@ -2621,7 +2621,7 @@ namespace CodeImp.DoomBuilder.Data
 			foreach(DataReader dr in containers) 
 			{
 				currentreader = dr;
-				IEnumerable<TextResourceData> streams = dr.GetSndSeqData();
+				IEnumerable<TextResourceData> streams = dr.GetTextLumpData(ScriptType.SNDSEQ, false, false);
 
 				// Parse the data
 				foreach(TextResourceData data in streams)
@@ -2649,7 +2649,7 @@ namespace CodeImp.DoomBuilder.Data
 			foreach(DataReader dr in containers)
 			{
 				currentreader = dr;
-				IEnumerable<TextResourceData> streams = dr.GetAnimdefsData();
+				IEnumerable<TextResourceData> streams = dr.GetTextLumpData(ScriptType.ANIMDEFS, false, false);
 
 				// Parse the data
 				foreach(TextResourceData data in streams)
@@ -2718,7 +2718,7 @@ namespace CodeImp.DoomBuilder.Data
 			foreach(DataReader dr in containers)
 			{
 				currentreader = dr;
-				IEnumerable<TextResourceData> streams = dr.GetTerrainData();
+				IEnumerable<TextResourceData> streams = dr.GetTextLumpData(ScriptType.TERRAIN, false, false);
 
 				// Parse the data
 				foreach(TextResourceData data in streams)
@@ -2750,7 +2750,7 @@ namespace CodeImp.DoomBuilder.Data
 			foreach(DataReader dr in containers)
 			{
 				currentreader = dr;
-				IEnumerable<TextResourceData> streams = dr.GetX11R6RGBData();
+				IEnumerable<TextResourceData> streams = dr.GetTextLumpData(ScriptType.X11R6RGB, true, false);
 
 				// Parse the data
 				foreach(TextResourceData data in streams)
@@ -2778,7 +2778,7 @@ namespace CodeImp.DoomBuilder.Data
 			foreach(DataReader dr in containers)
 			{
 				currentreader = dr;
-				IEnumerable<TextResourceData> streams = dr.GetCvarInfoData();
+				IEnumerable<TextResourceData> streams = dr.GetTextLumpData(ScriptType.CVARINFO, false, false);
 
 				// Parse the data
 				foreach(TextResourceData data in streams)
@@ -2806,7 +2806,7 @@ namespace CodeImp.DoomBuilder.Data
 			foreach(DataReader dr in containers)
 			{
 				currentreader = dr;
-				IEnumerable<TextResourceData> streams = dr.GetLockDefsData();
+				IEnumerable<TextResourceData> streams = dr.GetTextLumpData(ScriptType.LOCKDEFS, false, false);
 
 				// Parse the data
 				foreach(TextResourceData data in streams)
@@ -2862,36 +2862,31 @@ namespace CodeImp.DoomBuilder.Data
 		//mxd. This collects ZDoom text lumps, which are not used by the editor anywhere outside the Script Editor
 		private void LoadExtraTextLumps()
 		{
-			// Load MENUDEFS
-			HashSet<ScriptResource> menudefs = new HashSet<ScriptResource>();
-			foreach(DataReader dr in containers)
+			Dictionary<ScriptType, bool> extralumptypes = new Dictionary<ScriptType, bool> // <script type, singular>
 			{
-				currentreader = dr;
-				IEnumerable<TextResourceData> streams = dr.GetMenuDefData();
+				{ ScriptType.MENUDEF, true },
+				{ ScriptType.SBARINFO, true }, //TODO: SBARINFO supports #include
+				{ ScriptType.GAMEINFO, true },
+				{ ScriptType.KEYCONF, true },
+				{ ScriptType.FONTDEFS, true },
+				//TODO: load/create SCRIPTS and DIALOG here?
+			};
 
-				// Add text tesources
-				foreach(TextResourceData data in streams)
-					menudefs.Add(new ScriptResource(data, ScriptType.MENUDEF));
-			}
-
-			// Add to collection
-			if(menudefs.Count > 0) scriptresources[ScriptType.MENUDEF] = menudefs;
-
-			// Load SBARINFO
-			//TODO: SBARINFO supports #include
-			HashSet<ScriptResource> sbarinfos = new HashSet<ScriptResource>();
-			foreach(DataReader dr in containers)
+			foreach(KeyValuePair<ScriptType, bool> group in extralumptypes)
 			{
-				currentreader = dr;
-				IEnumerable<TextResourceData> streams = dr.GetSBarInfoData();
+				HashSet<ScriptResource> resources = new HashSet<ScriptResource>();
+				foreach(DataReader dr in containers)
+				{
+					currentreader = dr;
+					IEnumerable<TextResourceData> streams = dr.GetTextLumpData(group.Key, group.Value, false);
 
-				// Add text tesources
-				foreach(TextResourceData data in streams)
-					sbarinfos.Add(new ScriptResource(data, ScriptType.SBARINFO));
+					// Add text tesources
+					foreach(TextResourceData data in streams) resources.Add(new ScriptResource(data, group.Key));
+				}
+
+				// Add to collection
+				if(resources.Count > 0) scriptresources[group.Key] = resources;
 			}
-
-			// Add to collection
-			if(sbarinfos.Count > 0) scriptresources[ScriptType.SBARINFO] = sbarinfos;
 		}
 
 		//mxd

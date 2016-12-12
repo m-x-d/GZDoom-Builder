@@ -526,30 +526,6 @@ namespace CodeImp.DoomBuilder.Data
 
 		#endregion
 
-		#region ================== MODELDEF (mxd)
-
-		//mxd
-		public override IEnumerable<TextResourceData> GetModeldefData() 
-		{
-			// Error when suspended
-			if(issuspended) throw new Exception("Data reader is suspended");
-
-			// Modedef should be in root folder
-			string[] files = GetAllFilesWhichTitleStartsWith("", "MODELDEF", false);
-			List<TextResourceData> result = new List<TextResourceData>();
-
-			// Add to collection
-			foreach(string s in files)
-				result.Add(new TextResourceData(this, LoadFile(s), s, true));
-
-			// Find in any of the wad files
-			foreach(WADReader wr in wads) result.AddRange(wr.GetModeldefData());
-
-			return result;
-		}
-
-		#endregion 
-
 		#region ================== VOXELDEF (mxd)
 
 		//mxd. This returns the list of voxels, which can be used without VOXELDEF definition
@@ -574,26 +550,6 @@ namespace CodeImp.DoomBuilder.Data
 				string s = Path.GetFileNameWithoutExtension(t).ToUpperInvariant();
 				if(WADReader.IsValidVoxelName(s)) result.Add(s);
 			}
-
-			return result;
-		}
-
-		//mxd
-		public override IEnumerable<TextResourceData> GetVoxeldefData() 
-		{
-			// Error when suspended
-			if(issuspended) throw new Exception("Data reader is suspended");
-
-			// VOXELDEF should be in root folder
-			string[] files = GetAllFilesWithTitle("", "VOXELDEF", false);
-			List<TextResourceData> result = new List<TextResourceData>();
-
-			// Add to collection
-			foreach(string s in files) 
-				result.Add(new TextResourceData(this, LoadFile(s), s, true));
-
-			// Find in any of the wad files
-			foreach(WADReader wr in wads) result.AddRange(wr.GetVoxeldefData());
 
 			return result;
 		}
@@ -662,220 +618,36 @@ namespace CodeImp.DoomBuilder.Data
 
 		#endregion
 
-		#region ================== REVERBS (mxd)
+		#region ================== Generic text lumps loading (mxd)
 
-		public override IEnumerable<TextResourceData> GetReverbsData() 
+		public override IEnumerable<TextResourceData> GetTextLumpData(ScriptType scripttype, bool singular, bool partialtitlematch)
 		{
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");
 
 			List<TextResourceData> result = new List<TextResourceData>();
-			string[] files = GetAllFilesWithTitle("", "REVERBS", false);
+			List<string> files = new List<string>();
+			string lumpname = Enum.GetName(typeof(ScriptType), scripttype).ToUpperInvariant();
+
+			if(singular)
+			{
+				string file = FindFirstFile(lumpname, false);
+				if(!string.IsNullOrEmpty(file)) files.Add(file);
+			}
+			else
+			{
+				files = new List<string>(partialtitlematch ? 
+					GetAllFilesWhichTitleStartsWith("", lumpname, false) : 
+					GetAllFilesWithTitle("", lumpname, false));
+			}
 
 			// Add to collection
 			foreach(string s in files)
 				result.Add(new TextResourceData(this, LoadFile(s), s, true));
 
 			// Find in any of the wad files
-			foreach(WADReader wr in wads) result.AddRange(wr.GetReverbsData());
-
-			return result;
-		}
-
-		#endregion
-
-		#region ================== SNDINFO (mxd)
-
-		public override IEnumerable<TextResourceData> GetSndInfoData()
-		{
-			// Error when suspended
-			if(issuspended) throw new Exception("Data reader is suspended");
-
-			List<TextResourceData> result = new List<TextResourceData>();
-			string[] files = GetAllFilesWithTitle("", "SNDINFO", false);
-
-			// Add to collection
-			foreach(string s in files)
-				result.Add(new TextResourceData(this, LoadFile(s), s, true));
-
-			// Find in any of the wad files
-			foreach(WADReader wr in wads) result.AddRange(wr.GetSndInfoData());
-
-			return result;
-		}
-
-		#endregion
-
-		#region ================== SNDSEQ (mxd)
-
-		public override IEnumerable<TextResourceData> GetSndSeqData() 
-		{
-			// Error when suspended
-			if(issuspended) throw new Exception("Data reader is suspended");
-
-			List<TextResourceData> result = new List<TextResourceData>();
-			string[] files = GetAllFilesWithTitle("", "SNDSEQ", false);
-
-			// Add to collection
-			foreach(string s in files)
-				result.Add(new TextResourceData(this, LoadFile(s), s, true));
-
-			// Find in any of the wad files
-			foreach(WADReader wr in wads) result.AddRange(wr.GetSndSeqData());
-
-			return result;
-		}
-
-		#endregion
-
-		#region ================== ANIMDEFS (mxd)
-
-		public override IEnumerable<TextResourceData> GetAnimdefsData()
-		{
-			// Error when suspended
-			if(issuspended) throw new Exception("Data reader is suspended");
-
-			List<TextResourceData> result = new List<TextResourceData>();
-			string[] files = GetAllFilesWithTitle("", "ANIMDEFS", false);
-
-			// Add to collection
-			foreach(string s in files)
-				result.Add(new TextResourceData(this, LoadFile(s), s, true));
-
-			// Find in any of the wad files
-			foreach(WADReader wr in wads) result.AddRange(wr.GetAnimdefsData());
-
-			return result;
-		}
-
-		#endregion
-
-		#region ================== TERRAIN (mxd)
-
-		public override IEnumerable<TextResourceData> GetTerrainData()
-		{
-			// Error when suspended
-			if(issuspended) throw new Exception("Data reader is suspended");
-
-			List<TextResourceData> result = new List<TextResourceData>();
-			string[] files = GetAllFilesWithTitle("", "TERRAIN", false);
-
-			// Add to collection
-			foreach(string s in files)
-				result.Add(new TextResourceData(this, LoadFile(s), s, true));
-
-			// Find in any of the wad files
-			foreach(WADReader wr in wads) result.AddRange(wr.GetTerrainData());
-
-			return result;
-		}
-
-		#endregion
-
-		#region ================== XBRSBSBB11 (mxd)
-
-		public override IEnumerable<TextResourceData> GetX11R6RGBData()
-		{
-			// Error when suspended
-			if(issuspended) throw new Exception("Data reader is suspended");
-
-			List<TextResourceData> result = new List<TextResourceData>();
-			string[] files = GetAllFilesWithTitle("", "X11R6RGB", false);
-
-			// Add to collection
-			foreach(string s in files)
-				result.Add(new TextResourceData(this, LoadFile(s), s, true));
-
-			// Find in any of the wad files
-			foreach(WADReader wr in wads) result.AddRange(wr.GetX11R6RGBData());
-
-			return result;
-		}
-
-		#endregion
-
-		#region ================== CVARINFO (mxd)
-
-		public override IEnumerable<TextResourceData> GetCvarInfoData()
-		{
-			// Error when suspended
-			if(issuspended) throw new Exception("Data reader is suspended");
-
-			List<TextResourceData> result = new List<TextResourceData>();
-			string[] files = GetAllFilesWithTitle("", "CVARINFO", false);
-
-			// Add to collection
-			foreach(string s in files)
-				result.Add(new TextResourceData(this, LoadFile(s), s, true));
-
-			// Find in any of the wad files
-			foreach(WADReader wr in wads) result.AddRange(wr.GetCvarInfoData());
-
-			return result;
-		}
-
-		#endregion
-
-		#region ================== LOCKDEFS (mxd)
-
-		public override IEnumerable<TextResourceData> GetLockDefsData()
-		{
-			// Error when suspended
-			if(issuspended) throw new Exception("Data reader is suspended");
-
-			List<TextResourceData> result = new List<TextResourceData>();
-			string[] files = GetAllFilesWithTitle("", "LOCKDEFS", false);
-
-			// Add to collection
-			foreach(string s in files)
-				result.Add(new TextResourceData(this, LoadFile(s), s, true));
-
-			// Find in any of the wad files
-			foreach(WADReader wr in wads) result.AddRange(wr.GetLockDefsData());
-
-			return result;
-		}
-
-		#endregion
-
-		#region ================== MENUDEF (mxd)
-
-		public override IEnumerable<TextResourceData> GetMenuDefData()
-		{
-			// Error when suspended
-			if(issuspended) throw new Exception("Data reader is suspended");
-
-			List<TextResourceData> result = new List<TextResourceData>();
-			string file = FindFirstFile("MENUDEF", false);
-
-			// Add to collection
-			if(!string.IsNullOrEmpty(file))
-				result.Add(new TextResourceData(this, LoadFile(file), file, true));
-
-			// Find in any of the wad files
-			foreach(WADReader wr in wads) result.AddRange(wr.GetMenuDefData());
-
-			return result;
-		}
-
-		#endregion
-
-		#region ================== SBARINFO (mxd)
-
-		public override IEnumerable<TextResourceData> GetSBarInfoData()
-		{
-			// Error when suspended
-			if(issuspended) throw new Exception("Data reader is suspended");
-
-			List<TextResourceData> result = new List<TextResourceData>();
-			string file = FindFirstFile("SBARINFO", false);
-
-			// Add to collection
-			if(!string.IsNullOrEmpty(file))
-				result.Add(new TextResourceData(this, LoadFile(file), file, true));
-
-			// Find in any of the wad files
-			foreach(WADReader wr in wads) result.AddRange(wr.GetSBarInfoData());
+			foreach(WADReader wr in wads)
+				result.AddRange(wr.GetTextLumpData(scripttype, singular, partialtitlematch));
 
 			return result;
 		}
