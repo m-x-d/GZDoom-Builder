@@ -331,7 +331,7 @@ namespace CodeImp.DoomBuilder.Controls.Scripting
 			SearchData data = e.Node.Tag as SearchData;
 			if(data != null)
 			{
-				e.Node.ImageIndex = ScriptIconsManager.SCRIPT_GROUP_OPEN_ICONS_OFFSET;
+				e.Node.ImageIndex = General.Map.ScriptEditor.Editor.Icons.ScriptGroupOpenIconsOffset;
 				e.Node.SelectedImageIndex = e.Node.ImageIndex;
 			}
 		}
@@ -342,7 +342,7 @@ namespace CodeImp.DoomBuilder.Controls.Scripting
 			SearchData data = e.Node.Tag as SearchData;
 			if(data != null)
 			{
-				e.Node.ImageIndex = ScriptIconsManager.SCRIPT_GROUP_ICONS_OFFSET;
+				e.Node.ImageIndex = General.Map.ScriptEditor.Editor.Icons.ScriptGroupIconsOffset;
 				e.Node.SelectedImageIndex = e.Node.ImageIndex;
 			}
 		}

@@ -49,6 +49,9 @@ namespace CodeImp.DoomBuilder.Config
 		MENUDEF,
 		SBARINFO,
 		USDF,
+		GAMEINFO,
+		KEYCONF,
+		FONTDEFS,
 	}
 	
 	internal class ScriptConfiguration : IComparable<ScriptConfiguration>

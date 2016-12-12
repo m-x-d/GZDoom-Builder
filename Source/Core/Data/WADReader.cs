@@ -970,13 +970,6 @@ namespace CodeImp.DoomBuilder.Data
 			return result;
 		}
 
-		//mxd
-		public override IEnumerable<TextResourceData> GetVoxeldefData() 
-		{
-			if(issuspended) throw new Exception("Data reader is suspended");
-			return GetAllLumpsData("VOXELDEF");
-		}
-
 		//mxd. This finds and returns a voxel stream or null if no voxel was found
 		public override Stream GetVoxelData(string name, ref string voxellocation) 
 		{
@@ -1058,80 +1051,11 @@ namespace CodeImp.DoomBuilder.Data
 		}
 
 		//mxd
-		public override IEnumerable<TextResourceData> GetModeldefData() 
+		public override IEnumerable<TextResourceData> GetTextLumpData(ScriptType scripttype, bool singular, bool ignored)
 		{
 			if(issuspended) throw new Exception("Data reader is suspended");
-			return GetAllLumpsData("MODELDEF");
-		}
-
-		//mxd
-		public override IEnumerable<TextResourceData> GetReverbsData() 
-		{
-			if(issuspended) throw new Exception("Data reader is suspended");
-			return GetAllLumpsData("REVERBS");
-		}
-
-		//mxd
-		public override IEnumerable<TextResourceData> GetSndInfoData()
-		{
-			if(issuspended) throw new Exception("Data reader is suspended");
-			return GetAllLumpsData("SNDINFO");
-		}
-
-		//mxd
-		public override IEnumerable<TextResourceData> GetSndSeqData() 
-		{
-			if(issuspended) throw new Exception("Data reader is suspended");
-			return GetAllLumpsData("SNDSEQ");
-		}
-
-		//mxd
-		public override IEnumerable<TextResourceData> GetAnimdefsData()
-		{
-			if(issuspended) throw new Exception("Data reader is suspended");
-			return GetAllLumpsData("ANIMDEFS");
-		}
-
-		//mxd
-		public override IEnumerable<TextResourceData> GetTerrainData()
-		{
-			if(issuspended) throw new Exception("Data reader is suspended");
-			return GetAllLumpsData("TERRAIN");
-		}
-
-		//mxd
-		public override IEnumerable<TextResourceData> GetX11R6RGBData()
-		{
-			if(issuspended) throw new Exception("Data reader is suspended");
-			return GetAllLumpsData("X11R6RGB");
-		}
-
-		//mxd
-		public override IEnumerable<TextResourceData> GetCvarInfoData()
-		{
-			if(issuspended) throw new Exception("Data reader is suspended");
-			return GetAllLumpsData("CVARINFO");
-		}
-
-		//mxd
-		public override IEnumerable<TextResourceData> GetLockDefsData()
-		{
-			if(issuspended) throw new Exception("Data reader is suspended");
-			return GetAllLumpsData("LOCKDEFS");
-		}
-
-		//mxd
-		public override IEnumerable<TextResourceData> GetMenuDefData()
-		{
-			if(issuspended) throw new Exception("Data reader is suspended");
-			return GetLastLumpData("MENUDEF");
-		}
-
-		//mxd
-		public override IEnumerable<TextResourceData> GetSBarInfoData()
-		{
-			if(issuspended) throw new Exception("Data reader is suspended");
-			return GetLastLumpData("SBARINFO");
+			string lumpname = Enum.GetName(typeof(ScriptType), scripttype).ToUpperInvariant();
+			return (singular ? GetLastLumpData(lumpname) : GetAllLumpsData(lumpname));
 		}
 
 		//mxd
