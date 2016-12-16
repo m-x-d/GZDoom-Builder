@@ -941,15 +941,22 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 		}
 		
-		// Remove a point
+		// Remove last point
 		[BeginAction("removepoint")]
-		public virtual void RemovePoint()
+		public virtual void RemovePoint() { RemovePointAt(points.Count - 1); }
+
+		//mxd. Remove first point 
+		[BeginAction("removefirstpoint")]
+		public virtual void RemoveFirstPoint() { RemovePointAt(0); }
+
+		//mxd
+		private void RemovePointAt(int index)
 		{
-			if(points.Count > 0) points.RemoveAt(points.Count - 1);
-			if(labels.Count > 0)
+			if(points.Count > 0 && points.Count > index) points.RemoveAt(index);
+			if(labels.Count > 0 && labels.Count > index)
 			{
-				labels[labels.Count - 1].Dispose();
-				labels.RemoveAt(labels.Count - 1);
+				labels[index].Dispose();
+				labels.RemoveAt(index);
 			}
 			
 			Update();
