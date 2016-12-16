@@ -208,8 +208,11 @@ namespace CodeImp.DoomBuilder.Editing
 		// This scrolls anywhere
 		private void ScrollBy(float deltax, float deltay)
 		{
+			//mxd. Don't stroll too far from map boundaries
+			Vector2D offset = ClampViewOffset(renderer2d.OffsetX + deltax, renderer2d.OffsetY + deltay);
+
 			// Scroll now
-			renderer2d.PositionView(renderer2d.OffsetX + deltax, renderer2d.OffsetY + deltay);
+			renderer2d.PositionView(offset.x, offset.y);
 			this.OnViewChanged();
 			
 			// Redraw
@@ -265,9 +268,10 @@ namespace CodeImp.DoomBuilder.Editing
 
 			// Calculate view position difference
 			Vector2D diff = ((clientsize / newscale) - (clientsize / renderer2d.Scale)) * zoompos;
+			Vector2D offset = ClampViewOffset(renderer2d.OffsetX - diff.x, renderer2d.OffsetY + diff.y); //mxd
 
 			// Zoom now
-			renderer2d.PositionView(renderer2d.OffsetX - diff.x, renderer2d.OffsetY + diff.y);
+			renderer2d.PositionView(offset.x, offset.y);
 			renderer2d.ScaleView(newscale);
 			this.OnViewChanged();
 
@@ -279,6 +283,15 @@ namespace CodeImp.DoomBuilder.Editing
 			
 			// Give a new mousemove event to update coordinates
 			if(mouseinside) OnMouseMove(new MouseEventArgs(mousebuttons, 0, (int)mousepos.x, (int)mousepos.y, 0));
+		}
+
+		//mxd. Makes sure given offset stays within map boundaries
+		private static Vector2D ClampViewOffset(float x, float y)
+		{
+			Vector2D diff = new Vector2D(x, y);
+			Vector2D safediff = new Vector2D(General.Clamp(diff.x, General.Map.Config.LeftBoundary, General.Map.Config.RightBoundary),
+											 General.Clamp(diff.y, General.Map.Config.BottomBoundary, General.Map.Config.TopBoundary));
+			return diff - (diff - safediff);
 		}
 
 		//mxd. This changes current grid size based on current zoom level
@@ -659,7 +672,7 @@ namespace CodeImp.DoomBuilder.Editing
 				if(General.Settings.GZSynchCameras && !General.Interface.CtrlState 
 					&& General.Editing.PreviousMode != null && General.Editing.PreviousMode.IsSubclassOf(typeof(VisualMode)))
 				{
-					Vector2D campos = new Vector2D(General.Map.VisualCamera.Position.x, General.Map.VisualCamera.Position.y);
+					Vector2D campos = ClampViewOffset(General.Map.VisualCamera.Position.x, General.Map.VisualCamera.Position.y);
 					renderer2d.PositionView(campos.x, campos.y);
 				}
 

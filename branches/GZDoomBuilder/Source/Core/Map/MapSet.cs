@@ -2121,22 +2121,11 @@ namespace CodeImp.DoomBuilder.Map
 			//mxd. Remove remaining new verts from dragged shape if possible
 			if(mergemode == MergeGeometryMode.REPLACE)
 			{
-				// Get lines, which belong to dragged sectors
-				HashSet<Sector> draggedsectors = GetSectorsFromLinedefs(movinglines);
-				HashSet<Linedef> sectorlines = new HashSet<Linedef>();
-				foreach(Sector s in draggedsectors)
-				{
-					foreach(Sidedef side in s.Sidedefs)
-						sectorlines.Add(side.Line);
-				}
-
+				// Collect verts created by splitting. Can't use GetMarkedVertices here, because we are in the middle of AddRemove
 				HashSet<Vertex> tocheck = new HashSet<Vertex>();
-
-				foreach(Linedef l in sectorlines)
+				foreach(Vertex v in vertices)
 				{
-					if(l.IsDisposed) continue;
-					if(!movingverts.Contains(l.Start)) tocheck.Add(l.Start);
-					if(!movingverts.Contains(l.End)) tocheck.Add(l.End);
+					if(v != null && v.Marked && !movingverts.Contains(v)) tocheck.Add(v);
 				}
 
 				// Remove verts, which are not part of initially dragged verts

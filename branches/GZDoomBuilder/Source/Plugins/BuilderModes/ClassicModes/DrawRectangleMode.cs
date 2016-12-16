@@ -381,6 +381,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			Update();
 		}
 
+		public override void RemoveFirstPoint()
+		{
+			RemovePoint();
+		}
+
 		#endregion
 
 		#region ================== Events
