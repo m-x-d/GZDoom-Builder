@@ -148,6 +148,21 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 				return false;
 			}
 
+			//mxd. ZDoom SEGS overflow error
+			if(numsegs >= ushort.MaxValue)
+			{
+				// Cancel mode
+				MessageBox.Show("The map has too many SEGS (" + numsegs + "/" + ushort.MaxValue + ").\nIt won't load in most Doom source ports.", "THY SEGS ARETH WAAAY TOO PHAT!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				General.Editing.CancelMode();
+				return false;
+			}
+
+			//mxd. Vanilla SEGS overflow warning
+			if(numsegs >= short.MaxValue)
+			{
+				MessageBox.Show("The map has too many SEGS (" + numsegs + "/" + short.MaxValue + ").\nIt won't load in Vanilla-style source ports.", "THY SEGS ARETH TOO PHAT!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+			}
+
 			segs = new Seg[numsegs];
 			for(int i = 0; i < segs.Length; i++)
 			{
@@ -199,8 +214,8 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 			ssectors = new Subsector[numssec];
 			for(int i = 0; i < ssectors.Length; i++)
 			{
-				ssectors[i].numsegs = ssecreader.ReadInt16();
-				ssectors[i].firstseg = ssecreader.ReadInt16();
+				ssectors[i].numsegs = ssecreader.ReadUInt16(); //TECH: these are short in Doom, ushort in ZDoom/PRBoom+
+				ssectors[i].firstseg = ssecreader.ReadUInt16();
 			}
 			ssecreader.Close();
 
@@ -344,7 +359,7 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 				// Boilerplate...
 				if(nodescount < 1) 
 				{
-					MessageBox.Show("The map has only one subsector.", "Why are you doing this, Stanley?..", MessageBoxButtons.OK, MessageBoxIcon.Error);
+					MessageBox.Show("The map has only one subsector.\nPlease add more sectors before using this mode.", "Why are you doing this, Stanley?..", MessageBoxButtons.OK, MessageBoxIcon.Error);
 					return false;
 				}
 

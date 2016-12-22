@@ -363,6 +363,7 @@ namespace CodeImp.DoomBuilder.Windows
 					findbox.Items.AddRange(items);
 				}
 				findbox.SelectAll();
+				findbox.Focus();
 
 				findinbox.SelectedIndex = replaceinbox.SelectedIndex;
 
@@ -380,6 +381,7 @@ namespace CodeImp.DoomBuilder.Windows
 					replacefindbox.Items.AddRange(items);
 				}
 				replacefindbox.SelectAll();
+				replacefindbox.Focus();
 
 				replaceinbox.SelectedIndex = findinbox.SelectedIndex;
 
@@ -390,6 +392,14 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				throw new NotImplementedException("Unsupported tab type");
 			}
+		}
+
+		//mxd. Focus text input
+		private void ScriptFindReplaceForm_Shown(object sender, EventArgs e)
+		{
+			if(tabs.SelectedTab == tabfind) findbox.Focus();
+			else if(tabs.SelectedTab == tabreplace) replacefindbox.Focus();
+			else throw new NotImplementedException("Unsupported tab type");
 		}
 
 		#endregion

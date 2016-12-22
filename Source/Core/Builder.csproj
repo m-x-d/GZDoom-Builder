@@ -715,11 +715,18 @@
     <Compile Include="Actions\HintsManager.cs" />
     <Compile Include="Config\AllTexturesSet.cs" />
     <Compile Include="Config\FlagTranslation.cs" />
+    <Compile Include="Controls\ImageBrowserCategoryItem.cs" />
+    <Compile Include="Controls\ImageSelectorPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\Scripting\FindUsagesControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
     <Compile Include="Controls\Scripting\FindUsagesControl.Designer.cs">
       <DependentUpon>FindUsagesControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\TransparentLabel.cs">
+      <SubType>Component</SubType>
     </Compile>
     <Compile Include="Data\Scripting\FindUsagesResult.cs" />
     <Compile Include="Controls\Scripting\ScriptIconsManager.cs" />
@@ -1206,6 +1213,8 @@
     <None Include="Resources\FixedThingsScale.png" />
     <None Include="Resources\ErrorLargeMapObject.png" />
     <None Include="Resources\ErrorLargeText.png" />
+    <EmbeddedResource Include="Resources\Folder96.png" />
+    <EmbeddedResource Include="Resources\Folder96Up.png" />
     <Content Include="Resources\Light.png" />
     <None Include="Resources\Lightbulb.png" />
     <None Include="Resources\LightDisabled.png" />

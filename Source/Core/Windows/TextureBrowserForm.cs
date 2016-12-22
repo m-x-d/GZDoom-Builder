@@ -17,7 +17,7 @@
 #region ================== Namespaces
 
 using System;
-using System.Drawing;
+using System.Collections.Generic;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Controls;
 using CodeImp.DoomBuilder.IO;
@@ -31,13 +31,19 @@ namespace CodeImp.DoomBuilder.Windows
 {
 	internal partial class TextureBrowserForm : DelayedForm
 	{
+		//mxd. Structs
+		private struct TreeNodeData
+		{
+			public IFilledTextureSet Set;
+			public string FolderName;
+		}
+		
 		// Variables
 		private string selectedname;
-		private readonly ListViewGroup usedgroup;
-		private readonly ListViewGroup availgroup;
+		private readonly string usedgroup;
+		private readonly string availgroup;
 		private TreeNode selectedset; //mxd
 		private long selecttextureonfill; //mxd. Was string, which wasn't reliable whem dealing with long texture names
-		private readonly bool usedgroupcollapsed; //mxd
 		private readonly bool browseflats; //mxd
 		
 		// Properties
@@ -63,11 +69,14 @@ namespace CodeImp.DoomBuilder.Windows
 			string imagetype = (browseflats ? "flats" : "textures");
 			this.Text = "Browse " + imagetype;
 
+			// Make groups
+			usedgroup = "Used " + imagetype + ":";
+			availgroup = "Available " + imagetype + ":";
+			browser.AddGroup(availgroup);
+			browser.AddGroup(usedgroup);
+
 			// Setup texture browser
-			ImageBrowserControl.ShowTexturesFromSubDirectories = General.Settings.ReadSetting("windows." + configname + ".showtexturesfromsubdirs", true);
-			ImageBrowserControl.UseLongTextureNames = General.Map.Options.UseLongTextureNames;
-			browser.BrowseFlats = browseflats;
-			browser.ApplySettings();
+			browser.ApplySettings("windows." + configname, browseflats);
 			
 			// Update the used textures
 			General.Map.Data.UpdateUsedTextures();
@@ -76,14 +85,6 @@ namespace CodeImp.DoomBuilder.Windows
 
 			//mxd. Texture longname to select when list is filled
 			selecttextureonfill = longname;
-
-			// Make groups
-			usedgroup = browser.AddGroup("Used " + imagetype + ":");
-			availgroup = browser.AddGroup("Available " + imagetype + ":");
-
-			//mxd. Make "Used" group collapsible
-			usedgroupcollapsed = General.Settings.ReadSetting("windows." + configname + ".usedgroupcollapsed", false);
-			browser.SetGroupCollapsed(usedgroup, usedgroupcollapsed);
 
 			//mxd. Fill texture sets list with normal texture sets
 			foreach(IFilledTextureSet ts in General.Map.Data.TextureSets) 
@@ -94,7 +95,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 				item = tvTextureSets.Nodes.Add(ts.Name + " [" + count + "]");
 				item.Name = ts.Name;
-				item.Tag = ts;
+				item.Tag = new TreeNodeData { Set = ts, FolderName = ts.Name };
 				item.ImageIndex = 0;
 			}
 
@@ -105,9 +106,9 @@ namespace CodeImp.DoomBuilder.Windows
 				if((count == 0 && !General.Map.Config.MixTexturesFlats) || (ts.Flats.Count == 0 && ts.Textures.Count == 0))
 					continue;
 
-				item = tvTextureSets.Nodes.Add(ts.Name + " [" + count + "]");
+				item = tvTextureSets.Nodes.Add(ts.Name);
 				item.Name = ts.Name;
-				item.Tag = ts;
+				item.Tag = new TreeNodeData { Set = ts, FolderName = ts.Name };
 				item.ImageIndex = 2 + ts.Location.type;
 				item.SelectedImageIndex = item.ImageIndex;
 
@@ -119,7 +120,7 @@ namespace CodeImp.DoomBuilder.Windows
 			count = (browseflats ? General.Map.Data.AllTextureSet.Flats.Count : General.Map.Data.AllTextureSet.Textures.Count);
 			item = tvTextureSets.Nodes.Add(General.Map.Data.AllTextureSet.Name + " [" + count + "]");
 			item.Name = General.Map.Data.AllTextureSet.Name;
-			item.Tag = General.Map.Data.AllTextureSet;
+			item.Tag = new TreeNodeData { Set = General.Map.Data.AllTextureSet, FolderName = General.Map.Data.AllTextureSet.Name };
 			item.ImageIndex = 1;
 			item.SelectedImageIndex = item.ImageIndex;
 
@@ -142,7 +143,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 				if(match != null)
 				{
-					IFilledTextureSet set = (match.Tag as IFilledTextureSet);
+					IFilledTextureSet set = ((TreeNodeData)match.Tag).Set;
 					foreach(ImageData img in (browseflats ? set.Flats : set.Textures))
 					{
 						if(img.LongName == longname)
@@ -176,7 +177,7 @@ namespace CodeImp.DoomBuilder.Windows
 				selectedset.EnsureVisible();
 			}
 
-			tvTextureSets.EndUpdate();//mxd
+			tvTextureSets.EndUpdate(); //mxd
 
 			//mxd. Set splitter position and state (doesn't work when layout is suspended)
 			if(General.Settings.ReadSetting("windows." + configname + ".splittercollapsed", false))
@@ -199,7 +200,13 @@ namespace CodeImp.DoomBuilder.Windows
 		//mxd
 		private static int SortImageData(ImageData img1, ImageData img2) 
 		{
-			return String.Compare(img1.FilePathName, img2.FilePathName, StringComparison.Ordinal);
+			return String.Compare(img1.Name, img2.Name, StringComparison.OrdinalIgnoreCase);
+		}
+
+		//mxd
+		private static int SortTreeNodes(TreeNode n1, TreeNode n2)
+		{
+			return String.Compare(n1.Text, n2.Text, StringComparison.OrdinalIgnoreCase);
 		}
 
 		//mxd
@@ -213,7 +220,7 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			//then - in current node
-			IFilledTextureSet set = (node.Tag as IFilledTextureSet);
+			IFilledTextureSet set = ((TreeNodeData)node.Tag).Set;
 
 			foreach(ImageData img in (browseflats ? set.Flats : set.Textures))
 				if(img.LongName == longname) return node;
@@ -235,9 +242,10 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		private void CreateNodes(TreeNode root) 
+		private void CreateNodes(TreeNode root)
 		{
-			ResourceTextureSet set = root.Tag as ResourceTextureSet;
+			TreeNodeData rootdata = (TreeNodeData)root.Tag;
+			ResourceTextureSet set = rootdata.Set as ResourceTextureSet;
 			if(set == null) 
 			{
 				General.ErrorLogger.Add(ErrorType.Error, "Resource " + root.Name + " doesn't have TextureSet!");
@@ -260,14 +268,19 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 			Array.Sort(images, SortImageData);
 
+			List<ImageData> rootimages = new List<ImageData>();
 			foreach(ImageData image in images) 
 			{
 				string[] parts = image.VirtualName.Split(separator, StringSplitOptions.RemoveEmptyEntries);
 				TreeNode curNode = root;
 
-				if(parts.Length == 1) continue;
-				int localindex = (parts[0] == "[TEXTURES]" ? 8 : imageIndex);
+				if(parts.Length == 1)
+				{
+					rootimages.Add(image);
+					continue;
+				}
 
+				int localindex = ((parts[0] == "[TEXTURES]" || image is TEXTURESImage) ? 8 : imageIndex);
 				string category = set.Name;
 				for(int i = 0; i < parts.Length - 1; i++) 
 				{
@@ -281,77 +294,94 @@ namespace CodeImp.DoomBuilder.Windows
 					else //create a new one
 					{
 						TreeNode n = new TreeNode(parts[i]) { Name = category, ImageIndex = localindex, SelectedImageIndex = localindex };
-
 						curNode.Nodes.Add(n);
 						curNode = n;
-
-						ResourceTextureSet ts = new ResourceTextureSet(category, set.Location);
-						ts.Level = i + 1;
-						curNode.Tag = ts;
+						curNode.Tag = new TreeNodeData { Set = new ResourceTextureSet(category, set.Location), FolderName = parts[i] };
 					}
 
-					//add to current and parent nodes
+					// Add to current node
 					if(i == parts.Length - 2) 
 					{
-						TreeNode cn = curNode;
-						while(cn != root) 
-						{
-							ResourceTextureSet curTs = cn.Tag as ResourceTextureSet;
-							if(image.IsFlat)
-								curTs.AddFlat(image);
-							else
-								curTs.AddTexture(image);
-							cn = cn.Parent;
-						}
+						ResourceTextureSet curTs = ((TreeNodeData)curNode.Tag).Set as ResourceTextureSet;
+						if(image.IsFlat)
+							curTs.AddFlat(image);
+						else
+							curTs.AddTexture(image);
 					}
 				}
 			}
 
+			// Shift the tree up when only single child node was added
 			if(root.Nodes.Count == 1 && root.Nodes[0].Nodes.Count > 0) 
 			{
 				TreeNode[] children = new TreeNode[root.Nodes[0].Nodes.Count];
 				root.Nodes[0].Nodes.CopyTo(children, 0);
 				root.Nodes.Clear();
 				root.Nodes.AddRange(children);
-				((ResourceTextureSet)root.Tag).Level++;
 			}
 
+			// Sort immediate child nodes...
+			TreeNode[] rootnodes = new TreeNode[root.Nodes.Count];
+			root.Nodes.CopyTo(rootnodes, 0);
+			Array.Sort(rootnodes, SortTreeNodes);
+			root.Nodes.Clear();
+			root.Nodes.AddRange(rootnodes);
+
+			// Re-add root images
+			ResourceTextureSet rootset = new ResourceTextureSet(set.Name, set.Location);
+			if(browseflats)
+			{
+				foreach(ImageData data in rootimages) rootset.AddFlat(data);
+			}
+			else
+			{
+				foreach(ImageData data in rootimages) rootset.AddTexture(data);
+			}
+
+			// Store root data
+			rootdata.Set = rootset;
+			root.Tag = rootdata;
+
+			// Set root images count
+			if(rootimages.Count > 0) root.Text += " [" + rootimages.Count + "]";
+
+			// Add image count to node titles
 			foreach(TreeNode n in root.Nodes) SetItemsCount(n);
 		}
 
 		//mxd
 		private void SetItemsCount(TreeNode node) 
 		{
-			ResourceTextureSet ts = node.Tag as ResourceTextureSet;
-			if(ts == null) throw new Exception("Expected IFilledTextureSet, but got null...");
+			ResourceTextureSet ts = ((TreeNodeData)node.Tag).Set as ResourceTextureSet;
+			if(ts == null) throw new Exception("Expected ResourceTextureSet, but got null...");
 			
 			if(node.Parent != null && General.Map.Config.MixTexturesFlats)
 			{
 				ts.MixTexturesAndFlats();
-				node.Text += " [" + ts.Textures.Count + "]";
+				if(ts.Textures.Count > 0) node.Text += " [" + ts.Textures.Count + "]";
 			} 
 			else
 			{
-				node.Text += " [" + (browseflats ? ts.Flats.Count : ts.Textures.Count) + "]";
+				int texcount = (browseflats ? ts.Flats.Count : ts.Textures.Count);
+				if(texcount > 0) node.Text += " [" + texcount + "]";
 			}
 
 			foreach(TreeNode child in node.Nodes) SetItemsCount(child);
 		}
 
 		// Selection changed
-		private void browser_SelectedItemChanged()
+		private void browser_SelectedItemChanged(ImageBrowserItem item)
 		{
-			apply.Enabled = (browser.SelectedItem != null);
+			apply.Enabled = (item != null && item.ItemType == ImageBrowserItemType.IMAGE);
 		}
 
 		// OK clicked
 		private void apply_Click(object sender, EventArgs e)
 		{
 			// Set selected name and close
-			if(browser.SelectedItem != null)
+			if(browser.SelectedItem != null && browser.SelectedItem.ItemType == ImageBrowserItemType.IMAGE)
 			{
-				ImageBrowserItem item = browser.SelectedItem as ImageBrowserItem;
-				selectedname = item.TextureName;
+				selectedname = browser.SelectedItem.TextureName;
 				DialogResult = DialogResult.OK;
 			}
 			else
@@ -384,92 +414,175 @@ namespace CodeImp.DoomBuilder.Windows
 			// Save window settings
 			General.Settings.WriteSetting("windows." + configname + ".splitterdistance", splitter.SplitPosition); //mxd
 			General.Settings.WriteSetting("windows." + configname + ".splittercollapsed", splitter.IsCollapsed); //mxd
-			General.Settings.WriteSetting("windows." + configname + ".usedgroupcollapsed", browser.IsGroupCollapsed(usedgroup)); //mxd
 
 			//mxd. Save last selected texture set
 			if(this.DialogResult == DialogResult.OK && tvTextureSets.SelectedNodes.Count > 0)
 				General.Settings.WriteSetting("windows." + configname + ".textureset", tvTextureSets.SelectedNodes[0].Name);
-
-			//mxd. Save ImageBrowserControl settings
-			General.Settings.WriteSetting("windows." + configname + ".showtexturesfromsubdirs", ImageBrowserControl.ShowTexturesFromSubDirectories);
-			if(General.Map.Config.UseLongTextureNames) General.Map.Options.UseLongTextureNames = ImageBrowserControl.UseLongTextureNames;
 			
 			// Clean up
-			browser.CleanUp();
+			browser.OnClose("windows." + configname);
 		}
 
-		// Static method to browse for texture or flat
-		// Returns null when cancelled.
-		public static string Browse(IWin32Window parent, string select, bool browseFlats)
+		// Static method to browse for texture or flat.
+		public static string Browse(IWin32Window parent, string select, bool browseflats)
 		{
-			TextureBrowserForm browser = new TextureBrowserForm(select, browseFlats);
-			if(browser.ShowDialog(parent) == DialogResult.OK) return browser.SelectedName; // Return result
-			
-			// Cancelled
-			return select;
+			TextureBrowserForm browser = new TextureBrowserForm(select, browseflats);
+			return (browser.ShowDialog(parent) == DialogResult.OK ? browser.SelectedName : select);
 		}
 
 		// Item double clicked
-		private void browser_SelectedItemDoubleClicked()
+		private void browser_SelectedItemDoubleClicked(ImageBrowserItem item)
 		{
-			if(apply.Enabled) apply_Click(this, EventArgs.Empty);
+			if(item == null) return;
+			switch(item.ItemType)
+			{
+				case ImageBrowserItemType.IMAGE:
+					if(selectedset == null) throw new NotSupportedException("selectedset required!");
+					if(apply.Enabled) apply_Click(this, EventArgs.Empty);
+					break;
+
+				case ImageBrowserItemType.FOLDER_UP:
+					if(selectedset == null) throw new NotSupportedException("selectedset required!");
+					if(selectedset.Parent != null)
+					{
+						// Select the node
+						tvTextureSets.SelectedNodes.Clear();
+						tvTextureSets.SelectedNodes.Add(selectedset.Parent);
+						selectedset.Parent.EnsureVisible();
+
+						// Update textures list
+						selectedset = selectedset.Parent;
+					}
+					else
+					{
+						tvTextureSets.SelectedNodes.Clear();
+						selectedset = null;
+					}
+					FillImagesList();
+					break;
+
+				case ImageBrowserItemType.FOLDER:
+					// selectedset is null when at root level
+					TreeNodeCollection nodes = (selectedset == null ? tvTextureSets.Nodes : selectedset.Nodes); 
+					foreach(TreeNode child in nodes)
+					{
+						TreeNodeData data = (TreeNodeData)child.Tag;
+						if(data.FolderName == item.TextureName)
+						{
+							// Select the node
+							tvTextureSets.SelectedNodes.Clear();
+							tvTextureSets.SelectedNodes.Add(child);
+							child.EnsureVisible();
+
+							// Update textures list
+							selectedset = child;
+							FillImagesList();
+							break;
+						}
+					}
+					break;
+
+				default: throw new NotImplementedException("Unsupported ImageBrowserItemType");
+			}
 		}
 
 		// This fills the list of textures, depending on the selected texture set
 		private void FillImagesList()
 		{
+			//mxd. Show root items
+			if(selectedset == null)
+			{
+				FillCategoriesList();
+				return;
+			}
+			
 			// Get the selected texture set
-			IFilledTextureSet set = (selectedset.Tag as IFilledTextureSet);
+			IFilledTextureSet set = ((TreeNodeData)selectedset.Tag).Set;
 
 			// Start adding
-			browser.BeginAdding(set.Level, false); //mxd. Pass current folder level
+			browser.BeginAdding(false);
 
+			//mxd. Add "Browse up" item
+			if(selectedset.Parent != null)
+			{
+				TreeNodeData data = (TreeNodeData)selectedset.Parent.Tag;
+				browser.AddFolder(ImageBrowserItemType.FOLDER_UP, availgroup, data.FolderName);
+			}
+			else
+			{
+				browser.AddFolder(ImageBrowserItemType.FOLDER_UP, availgroup, "All Texture Sets");
+			}
+
+			//mxd. Add folders
+			foreach(TreeNode child in selectedset.Nodes)
+			{
+				TreeNodeData data = (TreeNodeData)child.Tag;
+				browser.AddFolder(ImageBrowserItemType.FOLDER, availgroup, data.FolderName);
+			}
+
+			// Add textures
 			if(browseflats) 
 			{
 				// Add all available flats
 				foreach(ImageData img in set.Flats)
-					browser.Add(img, img, availgroup);
+					browser.AddItem(img, availgroup);
 
 				// Add all used flats
 				foreach(ImageData img in set.Flats)
-					if(img.UsedInMap) browser.Add(img, img, usedgroup);
+					if(img.UsedInMap) browser.AddItem(img, usedgroup);
 			}
 			else
 			{
 				// Add all available textures and mark the images for temporary loading
 				foreach(ImageData img in set.Textures)
-					browser.Add(img, img, availgroup);
+					browser.AddItem(img, availgroup);
 
 				// Add all used textures and mark the images for permanent loading
 				foreach(ImageData img in set.Textures)
-					if(img.UsedInMap) browser.Add(img, img, usedgroup);
+					if(img.UsedInMap) browser.AddItem(img, usedgroup);
 			}
 			
 			// Done adding
 			browser.EndAdding();
 		}
 
+		private void FillCategoriesList()
+		{
+			// Start adding
+			browser.BeginAdding(false);
+
+			foreach(TreeNode node in tvTextureSets.Nodes)
+			{
+				TreeNodeData data = (TreeNodeData)node.Tag;
+				browser.AddFolder(ImageBrowserItemType.FOLDER, availgroup, data.FolderName);
+				browser.AddFolder(ImageBrowserItemType.FOLDER, usedgroup, data.FolderName);
+			}
+
+			// Done adding
+			browser.EndAdding();
+		}
+
 		// Help
-		private void TextureBrowserForm_HelpRequested(object sender, HelpEventArgs hlpevent)
+		private void TextureBrowserForm_HelpRequested(object sender, HelpEventArgs e)
 		{
 			General.ShowHelp("w_imagesbrowser.html");
-			hlpevent.Handled = true;
+			e.Handled = true;
 		}
 
 		private void TextureBrowserForm_Shown(object sender, EventArgs e)
 		{
-			if(selectedset != null) //mxd. Calling FillImagesList() from constructor leads to TERRIBLE load times. Why? I have no sodding idea...
-				FillImagesList();
+			//mxd. Calling FillImagesList() from constructor results in TERRIBLE load times. Why? I have no sodding idea...
+			if(selectedset != null) FillImagesList();
 			
 			// Select texture
 			if(selecttextureonfill != 0)
 			{
-				browser.SelectItem(selecttextureonfill, (usedgroupcollapsed ? availgroup : usedgroup)); //mxd. availgroup/usedgroup switch.
+				browser.SelectItem(selecttextureonfill, browser.SelectedGroup);
 				selecttextureonfill = 0;
 			}
 
-			//mxd. Focus the textbox. Calling this from TextureBrowserForm_Activated (like it's done in DB2) fails when the form is maximized. Again, I've no idea why...
-			browser.FocusTextbox();
+			//mxd. Focus the textures list. Calling this from TextureBrowserForm_Activated (like it's done in DB2) fails when the form is maximized. Again, I've no idea why...
+			browser.FocusList();
 		}
 
 		//mxd

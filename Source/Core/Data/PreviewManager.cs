@@ -34,15 +34,11 @@ namespace CodeImp.DoomBuilder.Data
 		private const PixelFormat IMAGE_FORMAT = PixelFormat.Format32bppArgb;
 
 		// Dimensions of a single preview image
-		public static readonly int[] PREVIEW_SIZES = new[] { 48, 64, 80, 96, 112, 128 };
+		public const int MAX_PREVIEW_SIZE = 256; //mxd
 
 		#endregion
 
 		#region ================== Variables
-		
-		// Dimensions of a single preview image
-		private readonly int maxpreviewwidth;
-		private readonly int maxpreviewheight;
 		
 		// Images
 		private List<Bitmap> images;
@@ -57,10 +53,6 @@ namespace CodeImp.DoomBuilder.Data
 		#endregion
 
 		#region ================== Properties
-
-		// Constants
-		public int MaxImageWidth { get { return maxpreviewwidth; } }
-		public int MaxImageHeight { get { return maxpreviewheight; } }
 		
 		// Disposing
 		internal bool IsDisposed { get { return isdisposed; } }
@@ -84,8 +76,6 @@ namespace CodeImp.DoomBuilder.Data
 			// Initialize
 			images = new List<Bitmap>();
 			imageque = new Queue<ImageData>();
-			maxpreviewwidth = PREVIEW_SIZES[General.Settings.PreviewImageSize];
-			maxpreviewheight = PREVIEW_SIZES[General.Settings.PreviewImageSize];
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -131,8 +121,8 @@ namespace CodeImp.DoomBuilder.Data
 				}
 				
 				// Determine preview size
-				float scalex = (img.Width > maxpreviewwidth) ? (maxpreviewwidth / (float)imagewidth) : 1.0f;
-				float scaley = (img.Height > maxpreviewheight) ? (maxpreviewheight / (float)imageheight) : 1.0f;
+				float scalex = (img.Width > MAX_PREVIEW_SIZE) ? (MAX_PREVIEW_SIZE / (float)imagewidth) : 1.0f;
+				float scaley = (img.Height > MAX_PREVIEW_SIZE) ? (MAX_PREVIEW_SIZE / (float)imageheight) : 1.0f;
 				float scale = Math.Min(scalex, scaley);
 				int previewwidth = (int)(imagewidth * scale);
 				int previewheight = (int)(imageheight * scale);
@@ -193,8 +183,8 @@ namespace CodeImp.DoomBuilder.Data
 			lock(images) { image = images[previewindex]; }
 
 			// Adjust offset for the size of the preview image
-			targetpos.X += (maxpreviewwidth - image.Width) >> 1;
-			targetpos.Y += (maxpreviewheight - image.Height) >> 1;
+			targetpos.X += (MAX_PREVIEW_SIZE - image.Width) >> 1;
+			targetpos.Y += (MAX_PREVIEW_SIZE - image.Height) >> 1;
 			
 			// Draw from atlas to target
 			lock(syncroot)

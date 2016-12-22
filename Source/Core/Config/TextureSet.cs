@@ -28,7 +28,6 @@ namespace CodeImp.DoomBuilder.Config
 		#region ================== Variables
 
 		protected string name;
-		private int level; //mxd. Folder depth of this item
 		protected List<string> filters;
 		
 		#endregion
@@ -36,7 +35,6 @@ namespace CodeImp.DoomBuilder.Config
 		#region ================== Properties
 		
 		public string Name { get { return name; } set { name = value; } }
-		public int Level { get { return level; } set { level = value; } }
 		internal List<string> Filters { get { return filters; } }
 		
 		#endregion

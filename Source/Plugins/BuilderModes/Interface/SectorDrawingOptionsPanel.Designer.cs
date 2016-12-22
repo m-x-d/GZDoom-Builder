@@ -99,7 +99,6 @@
 			this.ceiling.Size = new System.Drawing.Size(68, 90);
 			this.ceiling.TabIndex = 30;
 			this.ceiling.TextureName = "";
-			this.ceiling.UsePreviews = true;
 			this.ceiling.OnValueChanged += new System.EventHandler(this.ceiling_OnValueChanged);
 			// 
 			// floor
@@ -110,7 +109,6 @@
 			this.floor.Size = new System.Drawing.Size(68, 90);
 			this.floor.TabIndex = 29;
 			this.floor.TextureName = "";
-			this.floor.UsePreviews = true;
 			this.floor.OnValueChanged += new System.EventHandler(this.floor_OnValueChanged);
 			// 
 			// cbOverrideFloorTexture
@@ -282,7 +280,6 @@
 			this.bottom.Size = new System.Drawing.Size(68, 90);
 			this.bottom.TabIndex = 25;
 			this.bottom.TextureName = "";
-			this.bottom.UsePreviews = true;
 			this.bottom.OnValueChanged += new System.EventHandler(this.bottom_OnValueChanged);
 			// 
 			// cbOverrideTopTexture
@@ -305,7 +302,6 @@
 			this.middle.Size = new System.Drawing.Size(68, 90);
 			this.middle.TabIndex = 24;
 			this.middle.TextureName = "";
-			this.middle.UsePreviews = true;
 			this.middle.OnValueChanged += new System.EventHandler(this.middle_OnValueChanged);
 			// 
 			// top
@@ -317,7 +313,6 @@
 			this.top.Size = new System.Drawing.Size(68, 90);
 			this.top.TabIndex = 23;
 			this.top.TextureName = "";
-			this.top.UsePreviews = true;
 			this.top.OnValueChanged += new System.EventHandler(this.top_OnValueChanged);
 			// 
 			// groupBox3

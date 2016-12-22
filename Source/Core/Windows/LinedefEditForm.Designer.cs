@@ -407,7 +407,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.frontlow.Size = new System.Drawing.Size(83, 107);
 			this.frontlow.TabIndex = 6;
 			this.frontlow.TextureName = "";
-			this.frontlow.UsePreviews = true;
 			this.frontlow.OnValueChanged += new System.EventHandler(this.frontlow_OnValueChanged);
 			// 
 			// frontmid
@@ -419,7 +418,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.frontmid.Size = new System.Drawing.Size(83, 107);
 			this.frontmid.TabIndex = 5;
 			this.frontmid.TextureName = "";
-			this.frontmid.UsePreviews = true;
 			this.frontmid.OnValueChanged += new System.EventHandler(this.frontmid_OnValueChanged);
 			// 
 			// fronthigh
@@ -431,7 +429,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.fronthigh.Size = new System.Drawing.Size(83, 107);
 			this.fronthigh.TabIndex = 4;
 			this.fronthigh.TextureName = "";
-			this.fronthigh.UsePreviews = true;
 			this.fronthigh.OnValueChanged += new System.EventHandler(this.fronthigh_OnValueChanged);
 			// 
 			// frontTextureOffset
@@ -506,7 +503,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backlow.Size = new System.Drawing.Size(83, 107);
 			this.backlow.TabIndex = 6;
 			this.backlow.TextureName = "";
-			this.backlow.UsePreviews = true;
 			this.backlow.OnValueChanged += new System.EventHandler(this.backlow_OnValueChanged);
 			// 
 			// backmid
@@ -518,7 +514,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backmid.Size = new System.Drawing.Size(83, 107);
 			this.backmid.TabIndex = 5;
 			this.backmid.TextureName = "";
-			this.backmid.UsePreviews = true;
 			this.backmid.OnValueChanged += new System.EventHandler(this.backmid_OnValueChanged);
 			// 
 			// backhigh
@@ -530,7 +525,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backhigh.Size = new System.Drawing.Size(83, 107);
 			this.backhigh.TabIndex = 4;
 			this.backhigh.TextureName = "";
-			this.backhigh.UsePreviews = true;
 			this.backhigh.OnValueChanged += new System.EventHandler(this.backhigh_OnValueChanged);
 			// 
 			// backTextureOffset

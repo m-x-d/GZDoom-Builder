@@ -129,17 +129,6 @@ namespace CodeImp.DoomBuilder.Data
 
 			this.longname = Lump.MakeLongName(this.name, uselongtexturenames);
 			this.filepathname = filepathname;
-			this.level = virtualname.Split(new[] { Path.AltDirectorySeparatorChar }).Length - 1;
-
-			if(General.Settings.CapitalizeTextureNames && !string.IsNullOrEmpty(this.displayname))
-			{
-				this.displayname = this.displayname.ToUpperInvariant();
-			}
-
-			if(this.displayname.Length > ImageBrowserItem.MAX_NAME_LENGTH)
-			{
-				this.displayname = this.displayname.Substring(0, ImageBrowserItem.MAX_NAME_LENGTH);
-			}
 		}
 
 		// This loads the image

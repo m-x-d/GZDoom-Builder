@@ -75,13 +75,17 @@ namespace CodeImp.DoomBuilder.Controls
 				if(string.IsNullOrEmpty(texture.FilePathName) || texture is UnknownImage) DisplayImageSize(0, 0); //mxd
 				else DisplayImageSize(texture.ScaledWidth, texture.ScaledHeight); //mxd
 
-				if(usepreviews && !texture.IsPreviewLoaded) timer.Start(); //mxd
-				else if(!texture.IsImageLoaded) texture.LoadImage(); //mxd. In some cases the image may never me loaded by the DataManager
+				if(!texture.IsPreviewLoaded) timer.Start(); //mxd
 
 				// Set the image
-				// mxd. GetPreview() returns a copy of preview, GetBitmap() returns actual bitmap
-				return (usepreviews ? texture.GetPreview() : new Bitmap(texture.GetBitmap()));
+				return texture.GetPreview();
 			}
+		}
+
+		//mxd. This gets ImageData by name...
+		protected override ImageData GetImageData(string imagename)
+		{
+			return General.Map.Data.GetTextureImage(imagename);
 		}
 
 		// This browses for a texture

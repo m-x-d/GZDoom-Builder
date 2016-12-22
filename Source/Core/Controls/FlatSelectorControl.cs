@@ -16,6 +16,7 @@
 
 #region ================== Namespaces
 
+using System;
 using System.Drawing;
 using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.Data;
@@ -64,12 +65,17 @@ namespace CodeImp.DoomBuilder.Controls
 
 				if(string.IsNullOrEmpty(texture.FilePathName) || texture is UnknownImage) DisplayImageSize(0, 0); //mxd
 				else DisplayImageSize(texture.ScaledWidth, texture.ScaledHeight); //mxd
-				if(usepreviews ? !texture.IsPreviewLoaded : !texture.IsImageLoaded) timer.Start(); //mxd
+				if(!texture.IsPreviewLoaded) timer.Start(); //mxd
 				
 				// Set the image
-				// mxd. GetPreview() returns a copy of preview, GetBitmap() returns actual bitmap
-				return (usepreviews ? texture.GetPreview() : new Bitmap(texture.GetBitmap()));
+				return texture.GetPreview();
 			}
+		}
+
+		//mxd. This gets ImageData by name...
+		protected override ImageData GetImageData(string imagename)
+		{
+			return General.Map.Data.GetFlatImage(imagename);
 		}
 
 		// This browses for a flat

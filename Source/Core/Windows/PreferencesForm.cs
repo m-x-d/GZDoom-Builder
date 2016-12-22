@@ -73,7 +73,6 @@ namespace CodeImp.DoomBuilder.Windows
 			vertexScale3D.Value = General.Clamp((int)(General.Settings.GZVertexScale3D * 10), vertexScale3D.Minimum, vertexScale3D.Maximum); //mxd
 			viewdistance.Value = General.Clamp((int)(General.Settings.ViewDistance / 200.0f), viewdistance.Minimum, viewdistance.Maximum);
 			invertyaxis.Checked = General.Settings.InvertYAxis;
-			previewsize.Value = General.Clamp(General.Settings.PreviewImageSize, previewsize.Minimum, previewsize.Maximum);
 			autoscrollspeed.Value = General.Clamp(General.Settings.AutoScrollSpeed, autoscrollspeed.Minimum, autoscrollspeed.Maximum);
 			zoomfactor.Value = General.Clamp(General.Settings.ZoomFactor, zoomfactor.Minimum, zoomfactor.Maximum);
 			animatevisualselection.Checked = General.Settings.AnimateVisualSelection;
@@ -92,7 +91,6 @@ namespace CodeImp.DoomBuilder.Windows
 
 			//mxd
 			locatetexturegroup.Checked = General.Settings.LocateTextureGroup;
-			keepfilterfocused.Checked = General.Settings.KeepTextureFilterFocused;
 			cbStoreEditTab.Checked = General.Settings.StoreSelectedEditTab;
 			checkforupdates.Checked = General.Settings.CheckForUpdates;
 			toolbar_gzdoom.Checked = General.Settings.GZToolbarGZDoom;
@@ -253,7 +251,6 @@ namespace CodeImp.DoomBuilder.Windows
 			scriptcolorpresets.SelectedIndex = 0;
 
 			blackbrowsers.Checked = General.Settings.BlackBrowsers;
-			capitalizetexturenames.Checked = General.Settings.CapitalizeTextureNames; //mxd
 			classicbilinear.Checked = General.Settings.ClassicBilinear;
 			visualbilinear.Checked = General.Settings.VisualBilinear;
 			qualitydisplay.Checked = General.Settings.QualityDisplay;
@@ -291,7 +288,6 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			// Check if we need to reload the resources
 			reloadresources |= (General.Settings.ImageBrightness != imagebrightness.Value);
-			reloadresources |= (General.Settings.PreviewImageSize != previewsize.Value);
 
 			// Apply interface
 			General.Settings.ImageBrightness = imagebrightness.Value;
@@ -306,7 +302,6 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Settings.GZVertexScale3D = vertexScale3D.Value * 0.1f; //mxd
 			General.Settings.ViewDistance = viewdistance.Value * 200.0f;
 			General.Settings.InvertYAxis = invertyaxis.Checked;
-			General.Settings.PreviewImageSize = previewsize.Value;
 			General.Settings.AutoScrollSpeed = autoscrollspeed.Value;
 			General.Settings.ZoomFactor = zoomfactor.Value;
 			General.Settings.AnimateVisualSelection = animatevisualselection.Checked;
@@ -326,7 +321,6 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Settings.StoreSelectedEditTab = cbStoreEditTab.Checked; //mxd
 			General.Settings.CheckForUpdates = checkforupdates.Checked; //mxd
 			General.Settings.LocateTextureGroup = locatetexturegroup.Checked; //mxd
-			General.Settings.KeepTextureFilterFocused = keepfilterfocused.Checked; //mxd
 			General.Settings.MaxRecentFiles = recentFiles.Value; //mxd
 			General.Settings.ScreenshotsPath = screenshotsfolderpath.Text.Trim(); //mxd
 
@@ -400,7 +394,6 @@ namespace CodeImp.DoomBuilder.Windows
 
 			General.Colors.CreateAssistColors();
 			General.Settings.BlackBrowsers = blackbrowsers.Checked;
-			General.Settings.CapitalizeTextureNames = capitalizetexturenames.Checked; //mxd
 			General.Settings.ClassicBilinear = classicbilinear.Checked;
 			General.Settings.VisualBilinear = visualbilinear.Checked;
 			General.Settings.QualityDisplay = qualitydisplay.Checked;
@@ -478,12 +471,6 @@ namespace CodeImp.DoomBuilder.Windows
 		#endregion
 
 		#region ================== Interface Panel
-
-		private void previewsize_ValueChanged(object sender, EventArgs e)
-		{
-			int size = PreviewManager.PREVIEW_SIZES[previewsize.Value];
-			previewsizelabel.Text = size + " x " + size;
-		}
 		
 		private void fieldofview_ValueChanged(object sender, EventArgs e)
 		{

@@ -27,7 +27,6 @@ namespace CodeImp.DoomBuilder.Config
 	{
 		// Properties
 		string Name { get; }
-		int Level { get; } //mxd
 		ICollection<ImageData> Textures { get; }
 		ICollection<ImageData> Flats { get; }
 	}

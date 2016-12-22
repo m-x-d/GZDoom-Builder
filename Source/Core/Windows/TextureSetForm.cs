@@ -19,6 +19,7 @@
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.Controls;
 using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Config;
 
@@ -170,7 +171,7 @@ namespace CodeImp.DoomBuilder.Windows
 				{
 					bool ismatch = set.IsMatch(img);
 					if((ismatch && matchesbutton.Checked) || (!ismatch && nomatchesbutton.Checked))
-						matcheslist.Add(img, img, null, tooltiptext);
+						matcheslist.AddItem(img, null, tooltiptext);
 				}
 				
 				// If not already mixed, add flats as well
@@ -181,7 +182,7 @@ namespace CodeImp.DoomBuilder.Windows
 					{
 						bool ismatch = set.IsMatch(img);
 						if((ismatch && matchesbutton.Checked) || (!ismatch && nomatchesbutton.Checked))
-							matcheslist.Add(img, img, null, tooltiptext);
+							matcheslist.AddItem(img, null, tooltiptext);
 					}
 				}
 				
@@ -213,11 +214,10 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 		
 		// Texture doubleclicked
-		private void matcheslist_SelectedItemDoubleClicked()
+		private void matcheslist_SelectedItemDoubleClicked(ImageBrowserItem item)
 		{
 			// Add texture name to the list
-			if(matcheslist.SelectedItem != null)
-				filters.Items.Add(matcheslist.SelectedItem.Text);
+			if(item != null) filters.Items.Add(item.TextureName);
 			
 			// Run the timer
 			filterstimer.Start();

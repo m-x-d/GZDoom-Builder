@@ -229,7 +229,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.matcheslist.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
 						| System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
-			this.matcheslist.BrowseFlats = false;
 			this.matcheslist.HideInputBox = true;
 			this.matcheslist.Location = new System.Drawing.Point(18, 55);
 			this.matcheslist.Name = "matcheslist";

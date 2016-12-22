@@ -58,7 +58,6 @@ namespace CodeImp.DoomBuilder.Data
 			//mxd
 			SetName(name);
 			this.virtualname = (!string.IsNullOrEmpty(virtualpath) ? virtualpath : "[TEXTURES]") + Path.AltDirectorySeparatorChar + this.name;
-			this.level = virtualname.Split(new[] { Path.AltDirectorySeparatorChar }).Length - 1;
 			this.isFlat = isflat;
 			
 			// We have no destructor
@@ -80,16 +79,6 @@ namespace CodeImp.DoomBuilder.Data
 			}
 			
 			base.SetName(name);
-
-			if(General.Settings.CapitalizeTextureNames && !string.IsNullOrEmpty(this.displayname)) 
-			{
-				this.displayname = this.displayname.ToUpperInvariant();
-			}
-
-			if(this.displayname.Length > ImageBrowserItem.MAX_NAME_LENGTH) 
-			{
-				this.displayname = this.displayname.Substring(0, ImageBrowserItem.MAX_NAME_LENGTH);
-			}
 
 			this.shortname = this.displayname.ToUpperInvariant();
 			if(this.shortname.Length > DataManager.CLASIC_IMAGE_NAME_LENGTH) 

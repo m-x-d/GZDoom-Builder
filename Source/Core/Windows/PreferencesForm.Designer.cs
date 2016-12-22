@@ -38,9 +38,7 @@ namespace CodeImp.DoomBuilder.Windows
 			System.Windows.Forms.Label label27;
 			System.Windows.Forms.Label label29;
 			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PreferencesForm));
-			this.capitalizetexturenames = new System.Windows.Forms.CheckBox();
 			this.blackbrowsers = new System.Windows.Forms.CheckBox();
-			this.keepfilterfocused = new System.Windows.Forms.CheckBox();
 			this.checkforupdates = new System.Windows.Forms.CheckBox();
 			this.cbStoreEditTab = new System.Windows.Forms.CheckBox();
 			this.locatetexturegroup = new System.Windows.Forms.CheckBox();
@@ -59,13 +57,11 @@ namespace CodeImp.DoomBuilder.Windows
 			this.autoscrollspeed = new System.Windows.Forms.TrackBar();
 			this.autoscrollspeedlabel = new System.Windows.Forms.Label();
 			this.label15 = new System.Windows.Forms.Label();
-			this.previewsize = new System.Windows.Forms.TrackBar();
-			this.previewsizelabel = new System.Windows.Forms.Label();
-			this.label12 = new System.Windows.Forms.Label();
 			this.label14 = new System.Windows.Forms.Label();
 			this.defaultviewmode = new System.Windows.Forms.ComboBox();
 			this.keyusedlabel = new System.Windows.Forms.Label();
 			this.colorsgroup1 = new System.Windows.Forms.GroupBox();
+			this.colorguidelines = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.color3dFloors = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.colorInfo = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.colorMD3 = new CodeImp.DoomBuilder.Controls.ColorControl();
@@ -213,7 +209,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.pasteoptions = new CodeImp.DoomBuilder.Controls.PasteOptionsControl();
 			this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
 			this.browseScreenshotsFolderDialog = new System.Windows.Forms.FolderBrowserDialog();
-			this.colorguidelines = new CodeImp.DoomBuilder.Controls.ColorControl();
 			label7 = new System.Windows.Forms.Label();
 			label5 = new System.Windows.Forms.Label();
 			groupBox1 = new System.Windows.Forms.GroupBox();
@@ -226,7 +221,6 @@ namespace CodeImp.DoomBuilder.Windows
 			((System.ComponentModel.ISupportInitialize)(this.vertexScale)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.zoomfactor)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.autoscrollspeed)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.previewsize)).BeginInit();
 			this.colorsgroup1.SuspendLayout();
 			((System.ComponentModel.ISupportInitialize)(this.doublesidedalpha)).BeginInit();
 			this.tabs.SuspendLayout();
@@ -281,9 +275,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// groupBox1
 			// 
-			groupBox1.Controls.Add(this.capitalizetexturenames);
 			groupBox1.Controls.Add(this.blackbrowsers);
-			groupBox1.Controls.Add(this.keepfilterfocused);
 			groupBox1.Controls.Add(this.checkforupdates);
 			groupBox1.Controls.Add(this.cbStoreEditTab);
 			groupBox1.Controls.Add(this.locatetexturegroup);
@@ -302,9 +294,6 @@ namespace CodeImp.DoomBuilder.Windows
 			groupBox1.Controls.Add(this.autoscrollspeed);
 			groupBox1.Controls.Add(this.autoscrollspeedlabel);
 			groupBox1.Controls.Add(this.label15);
-			groupBox1.Controls.Add(this.previewsize);
-			groupBox1.Controls.Add(this.previewsizelabel);
-			groupBox1.Controls.Add(this.label12);
 			groupBox1.Controls.Add(this.label14);
 			groupBox1.Controls.Add(this.defaultviewmode);
 			groupBox1.Location = new System.Drawing.Point(8, 8);
@@ -314,44 +303,20 @@ namespace CodeImp.DoomBuilder.Windows
 			groupBox1.TabStop = false;
 			groupBox1.Text = " Options ";
 			// 
-			// capitalizetexturenames
-			// 
-			this.capitalizetexturenames.AutoSize = true;
-			this.capitalizetexturenames.Location = new System.Drawing.Point(16, 350);
-			this.capitalizetexturenames.Name = "capitalizetexturenames";
-			this.capitalizetexturenames.Size = new System.Drawing.Size(140, 17);
-			this.capitalizetexturenames.TabIndex = 11;
-			this.capitalizetexturenames.Text = "Capitalize texture names";
-			this.toolTip1.SetToolTip(this.capitalizetexturenames, "When enabled, texture names will be shown \r\nand saved as all caps\r\n(Doom Builder " +
-					"2 behaviour)");
-			this.capitalizetexturenames.UseVisualStyleBackColor = true;
-			// 
 			// blackbrowsers
 			// 
 			this.blackbrowsers.AutoSize = true;
-			this.blackbrowsers.Location = new System.Drawing.Point(16, 329);
+			this.blackbrowsers.Location = new System.Drawing.Point(16, 277);
 			this.blackbrowsers.Name = "blackbrowsers";
 			this.blackbrowsers.Size = new System.Drawing.Size(195, 17);
 			this.blackbrowsers.TabIndex = 10;
 			this.blackbrowsers.Text = "Black background in image browser";
 			this.blackbrowsers.UseVisualStyleBackColor = true;
 			// 
-			// keepfilterfocused
-			// 
-			this.keepfilterfocused.AutoSize = true;
-			this.keepfilterfocused.Location = new System.Drawing.Point(16, 308);
-			this.keepfilterfocused.Name = "keepfilterfocused";
-			this.keepfilterfocused.Size = new System.Drawing.Size(280, 17);
-			this.keepfilterfocused.TabIndex = 9;
-			this.keepfilterfocused.Text = "Keep Filter input focused when image browser is open";
-			this.toolTip1.SetToolTip(this.keepfilterfocused, "When enabled, all key presses in \r\nimage browsers will be redirected \r\nto the Fil" +
-					"ter textbox.");
-			this.keepfilterfocused.UseVisualStyleBackColor = true;
-			// 
 			// checkforupdates
 			// 
 			this.checkforupdates.AutoSize = true;
-			this.checkforupdates.Location = new System.Drawing.Point(16, 413);
+			this.checkforupdates.Location = new System.Drawing.Point(16, 346);
 			this.checkforupdates.Name = "checkforupdates";
 			this.checkforupdates.Size = new System.Drawing.Size(160, 17);
 			this.checkforupdates.TabIndex = 14;
@@ -361,7 +326,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// cbStoreEditTab
 			// 
 			this.cbStoreEditTab.AutoSize = true;
-			this.cbStoreEditTab.Location = new System.Drawing.Point(16, 392);
+			this.cbStoreEditTab.Location = new System.Drawing.Point(16, 323);
 			this.cbStoreEditTab.Name = "cbStoreEditTab";
 			this.cbStoreEditTab.Size = new System.Drawing.Size(203, 17);
 			this.cbStoreEditTab.TabIndex = 13;
@@ -371,7 +336,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// locatetexturegroup
 			// 
 			this.locatetexturegroup.AutoSize = true;
-			this.locatetexturegroup.Location = new System.Drawing.Point(16, 287);
+			this.locatetexturegroup.Location = new System.Drawing.Point(16, 254);
 			this.locatetexturegroup.Name = "locatetexturegroup";
 			this.locatetexturegroup.Size = new System.Drawing.Size(267, 17);
 			this.locatetexturegroup.TabIndex = 8;
@@ -384,7 +349,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.recentFiles.BackColor = System.Drawing.SystemColors.Window;
 			this.recentFiles.LargeChange = 1;
-			this.recentFiles.Location = new System.Drawing.Point(127, 193);
+			this.recentFiles.Location = new System.Drawing.Point(127, 156);
 			this.recentFiles.Maximum = 25;
 			this.recentFiles.Minimum = 8;
 			this.recentFiles.Name = "recentFiles";
@@ -397,7 +362,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// labelRecentFiles
 			// 
 			this.labelRecentFiles.AutoSize = true;
-			this.labelRecentFiles.Location = new System.Drawing.Point(249, 205);
+			this.labelRecentFiles.Location = new System.Drawing.Point(249, 168);
 			this.labelRecentFiles.Name = "labelRecentFiles";
 			this.labelRecentFiles.Size = new System.Drawing.Size(13, 13);
 			this.labelRecentFiles.TabIndex = 48;
@@ -406,7 +371,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label25
 			// 
 			this.label25.AutoSize = true;
-			this.label25.Location = new System.Drawing.Point(31, 206);
+			this.label25.Location = new System.Drawing.Point(31, 169);
 			this.label25.Name = "label25";
 			this.label25.Size = new System.Drawing.Size(87, 13);
 			this.label25.TabIndex = 47;
@@ -416,7 +381,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// vertexScaleLabel
 			// 
 			this.vertexScaleLabel.AutoSize = true;
-			this.vertexScaleLabel.Location = new System.Drawing.Point(249, 168);
+			this.vertexScaleLabel.Location = new System.Drawing.Point(249, 131);
 			this.vertexScaleLabel.Name = "vertexScaleLabel";
 			this.vertexScaleLabel.Size = new System.Drawing.Size(74, 13);
 			this.vertexScaleLabel.TabIndex = 45;
@@ -425,7 +390,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label22
 			// 
 			this.label22.AutoSize = true;
-			this.label22.Location = new System.Drawing.Point(26, 168);
+			this.label22.Location = new System.Drawing.Point(26, 131);
 			this.label22.Name = "label22";
 			this.label22.Size = new System.Drawing.Size(91, 13);
 			this.label22.TabIndex = 44;
@@ -436,7 +401,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.vertexScale.BackColor = System.Drawing.SystemColors.Window;
 			this.vertexScale.LargeChange = 1;
-			this.vertexScale.Location = new System.Drawing.Point(127, 156);
+			this.vertexScale.Location = new System.Drawing.Point(127, 119);
 			this.vertexScale.Minimum = 1;
 			this.vertexScale.Name = "vertexScale";
 			this.vertexScale.Size = new System.Drawing.Size(116, 45);
@@ -448,7 +413,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// cbSynchCameras
 			// 
 			this.cbSynchCameras.AutoSize = true;
-			this.cbSynchCameras.Location = new System.Drawing.Point(16, 371);
+			this.cbSynchCameras.Location = new System.Drawing.Point(16, 300);
 			this.cbSynchCameras.Name = "cbSynchCameras";
 			this.cbSynchCameras.Size = new System.Drawing.Size(294, 17);
 			this.cbSynchCameras.TabIndex = 12;
@@ -458,7 +423,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// showtexturesizes
 			// 
 			this.showtexturesizes.AutoSize = true;
-			this.showtexturesizes.Location = new System.Drawing.Point(16, 266);
+			this.showtexturesizes.Location = new System.Drawing.Point(16, 231);
 			this.showtexturesizes.Name = "showtexturesizes";
 			this.showtexturesizes.Size = new System.Drawing.Size(208, 17);
 			this.showtexturesizes.TabIndex = 7;
@@ -468,7 +433,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// scriptontop
 			// 
 			this.scriptontop.AutoSize = true;
-			this.scriptontop.Location = new System.Drawing.Point(16, 245);
+			this.scriptontop.Location = new System.Drawing.Point(16, 208);
 			this.scriptontop.Name = "scriptontop";
 			this.scriptontop.Size = new System.Drawing.Size(227, 17);
 			this.scriptontop.TabIndex = 6;
@@ -479,7 +444,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.zoomfactor.BackColor = System.Drawing.SystemColors.Window;
 			this.zoomfactor.LargeChange = 1;
-			this.zoomfactor.Location = new System.Drawing.Point(127, 119);
+			this.zoomfactor.Location = new System.Drawing.Point(127, 82);
 			this.zoomfactor.Minimum = 1;
 			this.zoomfactor.Name = "zoomfactor";
 			this.zoomfactor.Size = new System.Drawing.Size(116, 45);
@@ -491,7 +456,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// zoomfactorlabel
 			// 
 			this.zoomfactorlabel.AutoSize = true;
-			this.zoomfactorlabel.Location = new System.Drawing.Point(249, 131);
+			this.zoomfactorlabel.Location = new System.Drawing.Point(249, 94);
 			this.zoomfactorlabel.Name = "zoomfactorlabel";
 			this.zoomfactorlabel.Size = new System.Drawing.Size(27, 13);
 			this.zoomfactorlabel.TabIndex = 39;
@@ -500,7 +465,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label19
 			// 
 			this.label19.AutoSize = true;
-			this.label19.Location = new System.Drawing.Point(52, 131);
+			this.label19.Location = new System.Drawing.Point(52, 94);
 			this.label19.Name = "label19";
 			this.label19.Size = new System.Drawing.Size(67, 13);
 			this.label19.TabIndex = 38;
@@ -510,7 +475,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.autoscrollspeed.BackColor = System.Drawing.SystemColors.Window;
 			this.autoscrollspeed.LargeChange = 1;
-			this.autoscrollspeed.Location = new System.Drawing.Point(127, 82);
+			this.autoscrollspeed.Location = new System.Drawing.Point(127, 45);
 			this.autoscrollspeed.Maximum = 5;
 			this.autoscrollspeed.Name = "autoscrollspeed";
 			this.autoscrollspeed.Size = new System.Drawing.Size(116, 45);
@@ -521,7 +486,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// autoscrollspeedlabel
 			// 
 			this.autoscrollspeedlabel.AutoSize = true;
-			this.autoscrollspeedlabel.Location = new System.Drawing.Point(249, 94);
+			this.autoscrollspeedlabel.Location = new System.Drawing.Point(249, 57);
 			this.autoscrollspeedlabel.Name = "autoscrollspeedlabel";
 			this.autoscrollspeedlabel.Size = new System.Drawing.Size(21, 13);
 			this.autoscrollspeedlabel.TabIndex = 36;
@@ -530,42 +495,11 @@ namespace CodeImp.DoomBuilder.Windows
 			// label15
 			// 
 			this.label15.AutoSize = true;
-			this.label15.Location = new System.Drawing.Point(26, 94);
+			this.label15.Location = new System.Drawing.Point(26, 57);
 			this.label15.Name = "label15";
 			this.label15.Size = new System.Drawing.Size(91, 13);
 			this.label15.TabIndex = 35;
 			this.label15.Text = "Auto-scroll speed:";
-			// 
-			// previewsize
-			// 
-			this.previewsize.BackColor = System.Drawing.SystemColors.Window;
-			this.previewsize.LargeChange = 1;
-			this.previewsize.Location = new System.Drawing.Point(127, 45);
-			this.previewsize.Maximum = 5;
-			this.previewsize.Name = "previewsize";
-			this.previewsize.Size = new System.Drawing.Size(116, 45);
-			this.previewsize.TabIndex = 1;
-			this.previewsize.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
-			this.previewsize.Value = 5;
-			this.previewsize.ValueChanged += new System.EventHandler(this.previewsize_ValueChanged);
-			// 
-			// previewsizelabel
-			// 
-			this.previewsizelabel.AutoSize = true;
-			this.previewsizelabel.Location = new System.Drawing.Point(249, 57);
-			this.previewsizelabel.Name = "previewsizelabel";
-			this.previewsizelabel.Size = new System.Drawing.Size(54, 13);
-			this.previewsizelabel.TabIndex = 33;
-			this.previewsizelabel.Text = "128 x 128";
-			// 
-			// label12
-			// 
-			this.label12.AutoSize = true;
-			this.label12.Location = new System.Drawing.Point(17, 57);
-			this.label12.Name = "label12";
-			this.label12.Size = new System.Drawing.Size(100, 13);
-			this.label12.TabIndex = 32;
-			this.label12.Text = "Preview image size:";
 			// 
 			// label14
 			// 
@@ -665,6 +599,17 @@ namespace CodeImp.DoomBuilder.Windows
 			this.colorsgroup1.TabStop = false;
 			this.colorsgroup1.Text = " Colors ";
 			this.colorsgroup1.Visible = false;
+			// 
+			// colorguidelines
+			// 
+			this.colorguidelines.BackColor = System.Drawing.Color.Transparent;
+			this.colorguidelines.Label = "Guidelines:";
+			this.colorguidelines.Location = new System.Drawing.Point(15, 307);
+			this.colorguidelines.MaximumSize = new System.Drawing.Size(10000, 23);
+			this.colorguidelines.MinimumSize = new System.Drawing.Size(100, 23);
+			this.colorguidelines.Name = "colorguidelines";
+			this.colorguidelines.Size = new System.Drawing.Size(168, 23);
+			this.colorguidelines.TabIndex = 11;
 			// 
 			// color3dFloors
 			// 
@@ -1978,6 +1923,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// scripttabwidth
 			// 
 			this.scripttabwidth.AllowDecimal = false;
+			this.scripttabwidth.AllowExpressions = false;
 			this.scripttabwidth.AllowNegative = false;
 			this.scripttabwidth.AllowRelative = false;
 			this.scripttabwidth.ButtonStep = 2;
@@ -2405,17 +2351,6 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.browseScreenshotsFolderDialog.Description = "Select a Folder to Save Screenshots Into";
 			// 
-			// colorguidelines
-			// 
-			this.colorguidelines.BackColor = System.Drawing.Color.Transparent;
-			this.colorguidelines.Label = "Guidelines:";
-			this.colorguidelines.Location = new System.Drawing.Point(15, 307);
-			this.colorguidelines.MaximumSize = new System.Drawing.Size(10000, 23);
-			this.colorguidelines.MinimumSize = new System.Drawing.Size(100, 23);
-			this.colorguidelines.Name = "colorguidelines";
-			this.colorguidelines.Size = new System.Drawing.Size(168, 23);
-			this.colorguidelines.TabIndex = 11;
-			// 
 			// PreferencesForm
 			// 
 			this.AcceptButton = this.apply;
@@ -2443,7 +2378,6 @@ namespace CodeImp.DoomBuilder.Windows
 			((System.ComponentModel.ISupportInitialize)(this.vertexScale)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.zoomfactor)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.autoscrollspeed)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.previewsize)).EndInit();
 			this.colorsgroup1.ResumeLayout(false);
 			((System.ComponentModel.ISupportInitialize)(this.doublesidedalpha)).EndInit();
 			this.tabs.ResumeLayout(false);
@@ -2544,9 +2478,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.CheckBox qualitydisplay;
 		private System.Windows.Forms.CheckBox visualbilinear;
 		private System.Windows.Forms.CheckBox classicbilinear;
-		private System.Windows.Forms.TrackBar previewsize;
-		private System.Windows.Forms.Label previewsizelabel;
-		private System.Windows.Forms.Label label12;
 		private System.Windows.Forms.TrackBar autoscrollspeed;
 		private System.Windows.Forms.Label autoscrollspeedlabel;
 		private System.Windows.Forms.Label label15;
@@ -2647,7 +2578,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.ComboBox scriptcolorpresets;
 		private System.Windows.Forms.Label label23;
 		private CodeImp.DoomBuilder.Controls.ColorControl colorproperties;
-		private System.Windows.Forms.CheckBox keepfilterfocused;
 		private System.Windows.Forms.Label labelantialiasing;
 		private System.Windows.Forms.TrackBar antialiasing;
 		private System.Windows.Forms.Label labelanisotropicfiltering;
@@ -2661,7 +2591,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.Label activethingsalphalabel;
 		private System.Windows.Forms.Label label31;
 		private System.Windows.Forms.TrackBar activethingsalpha;
-		private System.Windows.Forms.CheckBox capitalizetexturenames;
 		private System.Windows.Forms.CheckBox blackbrowsers;
 		private System.Windows.Forms.GroupBox groupBox11;
 		private System.Windows.Forms.Label label28;

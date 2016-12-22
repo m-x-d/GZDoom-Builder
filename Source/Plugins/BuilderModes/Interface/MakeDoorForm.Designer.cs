@@ -50,7 +50,6 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 			this.doortexture.Size = new System.Drawing.Size(83, 105);
 			this.doortexture.TabIndex = 0;
 			this.doortexture.TextureName = "";
-			this.doortexture.UsePreviews = true;
 			// 
 			// label1
 			// 
@@ -80,7 +79,6 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 			this.ceilingtexture.Size = new System.Drawing.Size(83, 105);
 			this.ceilingtexture.TabIndex = 1;
 			this.ceilingtexture.TextureName = "";
-			this.ceilingtexture.UsePreviews = true;
 			// 
 			// floortexture
 			// 
@@ -90,7 +88,6 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 			this.floortexture.Size = new System.Drawing.Size(83, 105);
 			this.floortexture.TabIndex = 2;
 			this.floortexture.TextureName = "";
-			this.floortexture.UsePreviews = true;
 			// 
 			// label3
 			// 
@@ -144,7 +141,6 @@ namespace CodeImp.DoomBuilder.BuilderModes.Interface
 			this.tracktexture.Size = new System.Drawing.Size(83, 105);
 			this.tracktexture.TabIndex = 6;
 			this.tracktexture.TextureName = "";
-			this.tracktexture.UsePreviews = true;
 			// 
 			// label4
 			// 
