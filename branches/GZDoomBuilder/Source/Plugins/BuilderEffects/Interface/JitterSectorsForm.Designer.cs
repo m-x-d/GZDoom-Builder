@@ -133,7 +133,6 @@
 			this.textureUpper.Size = new System.Drawing.Size(83, 112);
 			this.textureUpper.TabIndex = 2;
 			this.textureUpper.TextureName = "";
-			this.textureUpper.UsePreviews = true;
 			this.textureUpper.OnValueChanged += new System.EventHandler(this.textureUpper_OnValueChanged);
 			// 
 			// cbPegTop
@@ -156,7 +155,6 @@
 			this.textureLower.Size = new System.Drawing.Size(83, 112);
 			this.textureLower.TabIndex = 4;
 			this.textureLower.TextureName = "";
-			this.textureLower.UsePreviews = true;
 			this.textureLower.OnValueChanged += new System.EventHandler(this.textureLower_OnValueChanged);
 			// 
 			// cbPegBottom

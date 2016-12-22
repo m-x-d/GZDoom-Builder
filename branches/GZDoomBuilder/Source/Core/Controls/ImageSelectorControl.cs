@@ -40,14 +40,12 @@ namespace CodeImp.DoomBuilder.Controls
 		private ImageData image; //mxd
 		private string previousimagename; //mxd
 		protected bool multipletextures; //mxd
-		protected bool usepreviews = true; //mxd
 		
 		#endregion
 
 		#region ================== Properties
 		
 		public string TextureName { get { return name.Text; } set { name.Text = value; } }
-		public bool UsePreviews { get { return usepreviews; } set { usepreviews = value; } } //mxd
 
 		[Browsable(false)]
 		public bool MultipleTextures { get { return multipletextures; } set { multipletextures = value; } }
@@ -68,7 +66,7 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			// set the max length of texture names
 			name.MaxLength = General.Map.Config.MaxTextureNameLength;
-			if(General.Settings.CapitalizeTextureNames) this.name.CharacterCasing = CharacterCasing.Upper; //mxd
+			if(!General.Map.Options.UseLongTextureNames) this.name.CharacterCasing = CharacterCasing.Upper; //mxd
 			labelSize.BackColor = Color.FromArgb(196, labelSize.BackColor);
 		}
 		
@@ -101,7 +99,12 @@ namespace CodeImp.DoomBuilder.Controls
 			switch(button)
 			{
 				case MouseButtons.Right: name.Text = "-"; break;
-				case MouseButtons.Left: name.Text = BrowseImage(name.Text); break;
+				case MouseButtons.Left:
+					// We need to change CharacterCasing before applying the text, so let's hack around a bit...
+					string newname = BrowseImage(name.Text);
+					name.CharacterCasing = (IsLongTextureName(newname) ? CharacterCasing.Normal : CharacterCasing.Upper);
+					name.Text = newname;
+					break;
 			}
 		}
 		
@@ -155,7 +158,16 @@ namespace CodeImp.DoomBuilder.Controls
 		private void togglefullname_Click(object sender, EventArgs e)
 		{
 			// Toggle between short and full name
-			name.Text = (name.Text == image.ShortName ? image.Name : image.ShortName);
+			if(string.Compare(name.Text, image.ShortName, StringComparison.OrdinalIgnoreCase) == 0)
+			{
+				name.CharacterCasing = CharacterCasing.Normal;
+				name.Text = image.Name;
+			}
+			else
+			{
+				name.CharacterCasing = CharacterCasing.Upper;
+				name.Text = image.ShortName;
+			}
 
 			// Update icon and tooltip
 			UpdateToggleImageNameButton(image);
@@ -208,9 +220,25 @@ namespace CodeImp.DoomBuilder.Controls
 			labelSize.Text = (width > 0 && height > 0) ? width + "x" + height : string.Empty;
 			ImageSelectorControl_EnabledChanged(this, EventArgs.Empty);
 		}
+
+		//mxd
+		private bool IsLongTextureName(string imagename)
+		{
+			if(!General.Map.Config.UseLongTextureNames || string.IsNullOrEmpty(imagename) || imagename == "-") 
+				return false;
+
+			ImageData texture = GetImageData(imagename);
+			if(texture == null || !texture.HasLongName) return false;
+
+			return string.Compare(imagename, texture.ShortName, StringComparison.OrdinalIgnoreCase) != 0;
+		}
+
 		
 		// This must determine and return the image to show
 		protected abstract Image FindImage(string imagename);
+
+		//mxd. This gets ImageData by name...
+		protected abstract ImageData GetImageData(string imagename);
 
 		// This must show the image browser and return the selected texture name
 		protected abstract string BrowseImage(string imagename);
@@ -228,7 +256,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 			// Update icon and tooltip
 			togglefullname.Visible = true;
-			if(image.ShortName == name.Text)
+			if(string.Compare(image.ShortName, name.Text, StringComparison.OrdinalIgnoreCase) == 0)
 			{
 				togglefullname.Image = Properties.Resources.Expand;
 				tooltip.SetToolTip(togglefullname, "Switch to full name");

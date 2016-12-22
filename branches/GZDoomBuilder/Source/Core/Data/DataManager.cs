@@ -120,6 +120,10 @@ namespace CodeImp.DoomBuilder.Data
 		private ImageData blacktexture; //mxd
 		private ImageData thingtexture; //mxd
 
+		//mxd. Texture Browser images
+		private ImageData foldertexture;
+		private ImageData folderuptexture;
+
 		//mxd. Sky textures
 		private CubeTexture skybox; // GZDoom skybox
 
@@ -180,6 +184,8 @@ namespace CodeImp.DoomBuilder.Data
 		public ImageData WhiteTexture { get { return whitetexture; } }
 		public ImageData BlackTexture { get { return blacktexture; } } //mxd
 		public ImageData ThingTexture { get { return thingtexture; } } //mxd
+		internal ImageData FolderTexture { get { return foldertexture; } } //mxd
+		internal ImageData FolderUpTexture { get { return folderuptexture; } } //mxd
 		public ImageData[] CommentTextures { get { return commenttextures; } } //mxd
 		internal CubeTexture SkyBox { get { return skybox; } } //mxd
 		public List<ThingCategory> ThingCategories { get { return thingcategories; } }
@@ -218,14 +224,20 @@ namespace CodeImp.DoomBuilder.Data
 			blacktexture.CreateTexture(); //mxd
 			unknownimage = new UnknownImage(Properties.Resources.UnknownImage); //mxd. There should be only one!
 
+			//mxd. Textures browser images
+			foldertexture = new ResourceImage("CodeImp.DoomBuilder.Resources.Folder96.png") { UseColorCorrection = false };
+			foldertexture.LoadImage();
+			folderuptexture = new ResourceImage("CodeImp.DoomBuilder.Resources.Folder96Up.png") { UseColorCorrection = false };
+			folderuptexture.LoadImage();
+
 			//mxd. Create comment icons
 			commenttextures = new ImageData[]
 			                  {
-				                  new ResourceImage("CodeImp.DoomBuilder.Resources.CommentRegular.png"),
-								  new ResourceImage("CodeImp.DoomBuilder.Resources.CommentInfo.png"),
-								  new ResourceImage("CodeImp.DoomBuilder.Resources.CommentQuestion.png"),
-								  new ResourceImage("CodeImp.DoomBuilder.Resources.CommentProblem.png"),
-								  new ResourceImage("CodeImp.DoomBuilder.Resources.CommentSmile.png"),
+				                  new ResourceImage("CodeImp.DoomBuilder.Resources.CommentRegular.png") { UseColorCorrection = false },
+								  new ResourceImage("CodeImp.DoomBuilder.Resources.CommentInfo.png") { UseColorCorrection = false },
+								  new ResourceImage("CodeImp.DoomBuilder.Resources.CommentQuestion.png") { UseColorCorrection = false },
+								  new ResourceImage("CodeImp.DoomBuilder.Resources.CommentProblem.png") { UseColorCorrection = false },
+								  new ResourceImage("CodeImp.DoomBuilder.Resources.CommentSmile.png") { UseColorCorrection = false },
 			                  };
 
 			//mxd. Load comment icons
@@ -262,6 +274,10 @@ namespace CodeImp.DoomBuilder.Data
 				thingtexture = null; //mxd
 				unknownimage.Dispose(); //mxd
 				unknownimage = null; //mxd
+				foldertexture.Dispose(); //mxd
+				foldertexture = null; //mxd
+				folderuptexture.Dispose(); //mxd
+				folderuptexture = null; //mxd
 				for(int i = 0; i < commenttextures.Length; i++) //mxd
 				{
 					commenttextures[i].Dispose();

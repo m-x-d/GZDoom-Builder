@@ -988,7 +988,6 @@
 			this.floortex.Size = new System.Drawing.Size(190, 204);
 			this.floortex.TabIndex = 11;
 			this.floortex.TextureName = "";
-			this.floortex.UsePreviews = false;
 			this.floortex.OnValueChanged += new System.EventHandler(this.floortex_OnValueChanged);
 			// 
 			// groupBox1
@@ -1270,7 +1269,6 @@
 			this.ceilingtex.Size = new System.Drawing.Size(190, 204);
 			this.ceilingtex.TabIndex = 11;
 			this.ceilingtex.TextureName = "";
-			this.ceilingtex.UsePreviews = false;
 			this.ceilingtex.OnValueChanged += new System.EventHandler(this.ceilingtex_OnValueChanged);
 			// 
 			// tabslopes

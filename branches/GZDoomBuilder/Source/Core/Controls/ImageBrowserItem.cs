@@ -1,190 +1,167 @@
-
-#region ================== Copyright (c) 2007 Pascal vd Heiden
-
-/*
- * Copyright (c) 2007 Pascal vd Heiden, www.codeimp.com
- * This program is released under GNU General Public License
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- */
-
-#endregion
-
-#region ================== Namespaces
+﻿#region ================== Namespaces
 
 using System;
 using System.Drawing;
-using System.Windows.Forms;
 using CodeImp.DoomBuilder.Data;
-using System.Drawing.Drawing2D;
-using SlimDX;
 
 #endregion
 
 namespace CodeImp.DoomBuilder.Controls
 {
-	internal class ImageBrowserItem : ListViewItem, IComparable<ImageBrowserItem>
+	#region ================== mxd. ImageBrowserItemType
+
+	internal enum ImageBrowserItemType
 	{
-		#region ================== Constants
+		// Values order is used when sorting ImageBrowserItems!
+		FOLDER_UP,
+		FOLDER,
+		IMAGE,
+	}
 
-		internal const int MAX_NAME_LENGTH = 14; //mxd
+	#endregion
 
-		#endregion
-		
+	internal class ImageBrowserItem : IComparable<ImageBrowserItem>
+	{
 		#region ================== Variables
 
-		// Display image and text
-		public readonly ImageData Icon;
-		private string imagesize; //mxd
-		private bool showfullname; //mxd
-		private static readonly StringFormat format = new StringFormat { Alignment = StringAlignment.Center }; //mxd
-		
-		// Group
-		private ListViewGroup listgroup;
-		
-		// Image cache
+		protected ImageData icon;
 		private bool imageloaded;
-		
+		private bool showfullname;
+		protected ImageBrowserItemType itemtype;
+		private string tooltip;
+
 		#endregion
 
 		#region ================== Properties
 
-		public ListViewGroup ListGroup { get { return listgroup; } set { listgroup = value; } }
-		public bool IsPreviewLoaded { get { return imageloaded; } }
-		public bool ShowFullName { set { showfullname = value; UpdateName(); } }
-		public string TextureName { get { return showfullname ? Icon.Name : Icon.ShortName; } }
+		public ImageData Icon { get { return icon; } }
+		public ImageBrowserItemType ItemType { get { return itemtype; } }
+		public virtual bool IsPreviewLoaded { get { return imageloaded; } }
+		public bool ShowFullName { set { showfullname = value; } }
+		public virtual string TextureName { get { return (showfullname ? icon.Name : icon.ShortName); } }
+		public string ToolTip { get { return tooltip; } }
 
 		#endregion
 
-		#region ================== Constructor / Disposer
+		#region ================== Constructor
 
 		// Constructors
-		public ImageBrowserItem(ImageData icon, object tag, bool showfullname)
+		protected ImageBrowserItem() { } //mxd. Needed for inheritance...
+		public ImageBrowserItem(ImageData icon, string tooltip, bool showfullname)
 		{
 			// Initialize
-			this.Icon = icon;
-			this.Tag = tag;
+			this.icon = icon;
+			this.itemtype = ImageBrowserItemType.IMAGE; //mxd
 			this.showfullname = showfullname; //mxd
-			UpdateName(); //mxd
+			this.imageloaded = icon.IsPreviewLoaded; //mxd
+			this.tooltip = tooltip; //mxd
 		}
-		
+
 		#endregion
-		
+
 		#region ================== Methods
-		
-		// This checks if a redraw is needed
-		public bool CheckRedrawNeeded()
+
+		internal bool CheckRedrawNeeded()
 		{
-			UpdateName(); //mxd. Update texture size if needed
-			return (Icon.IsPreviewLoaded != imageloaded);
-		}
-		
-		// This draws the images
-		public void Draw(Graphics g, Rectangle bounds)
-		{
-			Brush forecolor;
-			Brush backcolor;
-
-			// Remember if the preview is loaded
-			imageloaded = Icon.IsPreviewLoaded;
-
-			// Drawing settings
-			g.CompositingQuality = CompositingQuality.HighSpeed;
-			g.InterpolationMode = InterpolationMode.NearestNeighbor;
-			g.SmoothingMode = SmoothingMode.HighSpeed;
-			g.PixelOffsetMode = PixelOffsetMode.None;
-
-			// Determine coordinates
-			SizeF textsize = g.MeasureString(Text, this.ListView.Font, bounds.Width * 2);
-			Rectangle imagerect = new Rectangle(bounds.Left + ((bounds.Width - General.Map.Data.Previews.MaxImageWidth) >> 1),
-				bounds.Top + ((bounds.Height - General.Map.Data.Previews.MaxImageHeight - (int)textsize.Height) >> 1),
-				General.Map.Data.Previews.MaxImageWidth, General.Map.Data.Previews.MaxImageHeight);
-			PointF textpos = new PointF(bounds.Left + (bounds.Width * 0.5f), bounds.Bottom - textsize.Height - 2);
-
-			// Determine colors
-			if(this.Selected)
+			if(icon.IsPreviewLoaded != imageloaded)
 			{
-				// Highlighted
-				backcolor = new LinearGradientBrush(new Point(0, bounds.Top - 1), new Point(0, bounds.Bottom + 1),
-					AdjustedColor(SystemColors.Highlight, 0.2f),
-					AdjustedColor(SystemColors.Highlight, -0.1f));
-				forecolor = new SolidBrush(SystemColors.HighlightText);
+				imageloaded = icon.IsPreviewLoaded;
+				return true;
+			}
+			return false;
+		}
+
+		internal void Draw(Graphics g, Image bmp, int x, int y, int w, int h, bool selected)
+		{
+			if(bmp == null) return;
+
+			var iw = bmp.Width;
+			var ih = bmp.Height;
+
+			if(iw > w && iw >= ih)
+			{
+				ih = (int)Math.Floor(h * (ih / (float)iw));
+				iw = w;
+			}
+			else if(ih > h)
+			{
+				iw = (int)Math.Floor(w * (iw / (float)ih));
+				ih = h;
+			}
+
+			int ix = (iw < w ? x + (w - iw) / 2 : x + 1);
+			int iy = (ih < h ? y + (h - ih) / 2 : y + 1);
+
+			// Pick colors and brushes
+			Brush bgbrush, fgbrush, selectedbgbrush, selectionbrush;
+			Color bgcolor;
+			Pen selection;
+			if(General.Settings.BlackBrowsers)
+			{
+				bgcolor = Color.Black;
+				bgbrush = Brushes.Black;
+				fgbrush = Brushes.White;
+				selectedbgbrush = Brushes.Gray;
+				selection = Pens.Red;
+				selectionbrush = Brushes.Red;
 			}
 			else
 			{
-				// Normal
-				backcolor = new SolidBrush(base.ListView.BackColor);
-				forecolor = new SolidBrush(base.ListView.ForeColor);
+				bgcolor = SystemColors.Window;
+				bgbrush = SystemBrushes.Window;
+				fgbrush = SystemBrushes.ControlText;
+				selectedbgbrush = SystemBrushes.ActiveCaption;
+				selection = SystemPens.HotTrack;
+				selectionbrush = SystemBrushes.HotTrack;
 			}
 
-			// Draw!
-			g.FillRectangle(backcolor, bounds);
-			Icon.DrawPreview(g, imagerect.Location);
-			g.DrawString(Text, this.ListView.Font, forecolor, textpos, format);
+			// Item bg
+			g.FillRectangle(bgbrush, x - 3, y - 3, w + 6, h + 10 + SystemFonts.MessageBoxFont.Height);
 
-			//mxd. Dispose brushes
-			backcolor.Dispose();
-			forecolor.Dispose();
+			// Selected image bg
+			if(selected) g.FillRectangle(selectedbgbrush, x - 1, y - 1, w + 2, h + 2);
 
-			//mxd. Draw size label?
-			if(General.Settings.ShowTextureSizes && !string.IsNullOrEmpty(imagesize))
+			// Image
+			g.DrawImage(bmp, ix, iy, iw, ih);
+
+			// Frame
+			if(selected)
 			{
-				// Setup
-				using(Font sizefont = new Font(this.ListView.Font.FontFamily, this.ListView.Font.SizeInPoints - 1))
-				{
-					textsize = g.MeasureString(imagesize, sizefont, bounds.Width * 2);
-					textpos = new PointF(bounds.Left + textsize.Width / 2, bounds.Top + 1);
-					imagerect = new Rectangle(bounds.Left + 1, bounds.Top + 1, (int)textsize.Width, (int)textsize.Height);
-
-					// Draw
-					using(SolidBrush labelbg = new SolidBrush(Color.FromArgb(196, base.ListView.ForeColor)))
-					{
-						g.FillRectangle(labelbg, imagerect);
-					}
-					using(SolidBrush labelcolor = new SolidBrush(base.ListView.BackColor))
-					{
-						g.DrawString(imagesize, sizefont, labelcolor, textpos, format);
-					}
-				}
+				g.DrawRectangle(selection, x - 1, y - 1, w + 1, h + 1);
+				g.DrawRectangle(selection, x - 2, y - 2, w + 3, h + 3);
 			}
-		}
+			else
+			{
+				g.DrawRectangle(Pens.Gray, x - 2, y - 2, w + 3, h + 3);
+			}
 
-		// This brightens or darkens a color
-		private static Color AdjustedColor(Color c, float amount)
-		{
-			Color4 cc = new Color4(c);
-			
-			// Adjust color
-			cc.Red = Saturate((cc.Red * (1f + amount)) + (amount * 0.5f));
-			cc.Green = Saturate((cc.Green * (1f + amount)) + (amount * 0.5f));
-			cc.Blue = Saturate((cc.Blue * (1f + amount)) + (amount * 0.5f));
-			
-			// Return result
-			return Color.FromArgb(cc.ToArgb());
-		}
+			// Image name
+			g.DrawString(TextureName, SystemFonts.MessageBoxFont, (selected ? selectionbrush : fgbrush), x - 2, y + h + 3);
 
-		// This clamps a value between 0 and 1
-		private static float Saturate(float v)
-		{
-			if(v < 0f) return 0f; else if(v > 1f) return 1f; else return v;
-		}
+			// Image size
+			if(General.Settings.ShowTextureSizes && icon.IsPreviewLoaded && itemtype == ImageBrowserItemType.IMAGE)
+			{
+				string imagesize = Math.Abs(icon.ScaledWidth) + "x" + Math.Abs(icon.ScaledHeight);
+				SizeF textsize = g.MeasureString(imagesize, SystemFonts.MessageBoxFont);
+				textsize.Width += 2;
+				textsize.Height -= 2;
 
-		//mxd
-		private void UpdateName() 
-		{
-			Text = (showfullname ? Icon.DisplayName : Icon.ShortName);
-			if(General.Settings.ShowTextureSizes && Icon.IsPreviewLoaded)
-				imagesize = Math.Abs(Icon.ScaledWidth) + "x" + Math.Abs(Icon.ScaledHeight);
+				// Draw bg
+				using(Brush bg = new SolidBrush(Color.FromArgb(192, bgcolor)))
+				{
+					g.FillRectangle(bg, x, y, textsize.Width, textsize.Height);
+				}
+
+				// Draw text
+				g.DrawString(imagesize, SystemFonts.MessageBoxFont, (selected ? selectionbrush : fgbrush), x, y - 1);
+			}
 		}
 
 		// Comparer
 		public int CompareTo(ImageBrowserItem other)
 		{
-			return this.Text.ToUpperInvariant().CompareTo(other.Text.ToUpperInvariant());
+			if(itemtype != other.itemtype) return ((int)itemtype).CompareTo((int)other.itemtype);
+			return this.TextureName.ToUpperInvariant().CompareTo(other.TextureName.ToUpperInvariant());
 		}
 
 		#endregion

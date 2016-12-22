@@ -44,7 +44,6 @@ namespace CodeImp.DoomBuilder.Config
 		
 		// Cached variables
 		private bool blackbrowsers;
-		private bool capitalizetexturenames; //mxd
 		private int visualfov;
 		private float visualmousesensx;
 		private float visualmousesensy;
@@ -65,7 +64,6 @@ namespace CodeImp.DoomBuilder.Config
 		private float viewdistance;
 		private bool invertyaxis;
 		private string screenshotspath; //mxd
-		private int previewimagesize;
 		private int autoscrollspeed;
 		private int zoomfactor;
 		private bool showerrorswindow;
@@ -88,7 +86,6 @@ namespace CodeImp.DoomBuilder.Config
 		private int antialiasingsamples; //mxd
 		private bool showtexturesizes;
 		private bool locatetexturegroup; //mxd
-		private bool keeptexturefilterfocused; //mxd
 		private SplitLineBehavior splitlinebehavior; //mxd
 		private MergeGeometryMode mergegeomode; //mxd
 		private bool splitjoinedsectors; //mxd
@@ -156,7 +153,6 @@ namespace CodeImp.DoomBuilder.Config
 
 		internal Configuration Config { get { return cfg; } }
 		public bool BlackBrowsers { get { return blackbrowsers; } internal set { blackbrowsers = value; } }
-		public bool CapitalizeTextureNames { get { return capitalizetexturenames; } internal set { capitalizetexturenames = value; } } //mxd
 		public int VisualFOV { get { return visualfov; } internal set { visualfov = value; } }
 		public int ImageBrightness { get { return imagebrightness; } internal set { imagebrightness = value; } }
 		public float DoubleSidedAlpha { get { return doublesidedalpha; } internal set { doublesidedalpha = value; doublesidedalphabyte = (byte)(doublesidedalpha * 255f); } }
@@ -176,7 +172,6 @@ namespace CodeImp.DoomBuilder.Config
 		public int MoveSpeed { get { return movespeed; } internal set { movespeed = value; } }
 		public float ViewDistance { get { return viewdistance; } internal set { viewdistance = value; } }
 		public bool InvertYAxis { get { return invertyaxis; } internal set { invertyaxis = value; } }
-		public int PreviewImageSize { get { return previewimagesize; } internal set { previewimagesize = value; } }
 		public int AutoScrollSpeed { get { return autoscrollspeed; } internal set { autoscrollspeed = value; } }
 		public int ZoomFactor { get { return zoomfactor; } internal set { zoomfactor = value; } }
 		public bool ShowErrorsWindow { get { return showerrorswindow; } internal set { showerrorswindow = value; } }
@@ -200,7 +195,6 @@ namespace CodeImp.DoomBuilder.Config
 		public int AntiAliasingSamples { get { return antialiasingsamples; } internal set { antialiasingsamples = value; } } //mxd
 		public bool ShowTextureSizes { get { return showtexturesizes; } internal set { showtexturesizes = value; } }
 		public bool LocateTextureGroup { get { return locatetexturegroup; } internal set { locatetexturegroup = value; } } //mxd
-		public bool KeepTextureFilterFocused { get { return keeptexturefilterfocused; } internal set { keeptexturefilterfocused = value; } } //mxd
 		public SplitLineBehavior SplitLineBehavior { get { return splitlinebehavior; } set { splitlinebehavior = value; } } //mxd
 		public MergeGeometryMode MergeGeometryMode { get { return mergegeomode; } internal set { mergegeomode = value; } } //mxd
 		public bool SplitJoinedSectors { get { return splitjoinedsectors; } internal set { splitjoinedsectors = value; } } //mxd
@@ -302,8 +296,6 @@ namespace CodeImp.DoomBuilder.Config
 			{
 				// Read the cache variables
 				blackbrowsers = cfg.ReadSetting("blackbrowsers", false);
-				capitalizetexturenames = cfg.ReadSetting("capitalizetexturenames", true); //mxd
-				//undolevels = cfg.ReadSetting("undolevels", 20);
 				visualfov = cfg.ReadSetting("visualfov", 80);
 				visualmousesensx = cfg.ReadSetting("visualmousesensx", 40f);
 				visualmousesensy = cfg.ReadSetting("visualmousesensy", 40f);
@@ -324,7 +316,6 @@ namespace CodeImp.DoomBuilder.Config
 				viewdistance = cfg.ReadSetting("viewdistance", 3000.0f);
 				invertyaxis = cfg.ReadSetting("invertyaxis", false);
 				screenshotspath = cfg.ReadSetting("screenshotspath", General.DefaultScreenshotsPath); //mxd
-				previewimagesize = cfg.ReadSetting("previewimagesize", 1);
 				autoscrollspeed = cfg.ReadSetting("autoscrollspeed", 0);
 				zoomfactor = cfg.ReadSetting("zoomfactor", 3);
 				showerrorswindow = cfg.ReadSetting("showerrorswindow", true);
@@ -347,7 +338,6 @@ namespace CodeImp.DoomBuilder.Config
 				antialiasingsamples = General.Clamp(cfg.ReadSetting("antialiasingsamples", 4), 0, 8) / 2 * 2; //mxd
 				showtexturesizes = cfg.ReadSetting("showtexturesizes", true);
 				locatetexturegroup = cfg.ReadSetting("locatetexturegroup", true); //mxd
-				keeptexturefilterfocused = cfg.ReadSetting("keeptexturefilterfocused", true); //mxd
 				splitlinebehavior = (SplitLineBehavior)General.Clamp(cfg.ReadSetting("splitlinebehavior", 0), 0, Enum.GetValues(typeof(SplitLineBehavior)).Length - 1); //mxd
 				mergegeomode = (MergeGeometryMode)General.Clamp(cfg.ReadSetting("mergegeometrymode", (int)MergeGeometryMode.REPLACE), 0, Enum.GetValues(typeof(MergeGeometryMode)).Length - 1); //mxd
 				splitjoinedsectors = cfg.ReadSetting("splitjoinedsectors", true); //mxd
@@ -419,8 +409,6 @@ namespace CodeImp.DoomBuilder.Config
 			
 			// Write the cache variables
 			cfg.WriteSetting("blackbrowsers", blackbrowsers);
-			cfg.WriteSetting("capitalizetexturenames", capitalizetexturenames); //mxd
-			//cfg.WriteSetting("undolevels", undolevels);
 			cfg.WriteSetting("visualfov", visualfov);
 			cfg.WriteSetting("visualmousesensx", visualmousesensx);
 			cfg.WriteSetting("visualmousesensy", visualmousesensy);
@@ -440,7 +428,6 @@ namespace CodeImp.DoomBuilder.Config
 			cfg.WriteSetting("viewdistance", viewdistance);
 			cfg.WriteSetting("invertyaxis", invertyaxis);
 			cfg.WriteSetting("screenshotspath", screenshotspath); //mxd
-			cfg.WriteSetting("previewimagesize", previewimagesize);
 			cfg.WriteSetting("autoscrollspeed", autoscrollspeed);
 			cfg.WriteSetting("zoomfactor", zoomfactor);
 			cfg.WriteSetting("showerrorswindow", showerrorswindow);
@@ -463,7 +450,6 @@ namespace CodeImp.DoomBuilder.Config
 			cfg.WriteSetting("antialiasingsamples", antialiasingsamples); //mxd
 			cfg.WriteSetting("showtexturesizes", showtexturesizes);
 			cfg.WriteSetting("locatetexturegroup", locatetexturegroup); //mxd
-			cfg.WriteSetting("keeptexturefilterfocused", keeptexturefilterfocused); //mxd
 			cfg.WriteSetting("splitlinebehavior", (int)splitlinebehavior); //mxd
 			cfg.WriteSetting("mergegeometrymode", (int)mergegeomode); //mxd
 			cfg.WriteSetting("splitjoinedsectors", splitjoinedsectors); //mxd

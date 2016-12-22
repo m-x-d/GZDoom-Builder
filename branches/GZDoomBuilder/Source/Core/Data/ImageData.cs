@@ -58,7 +58,6 @@ namespace CodeImp.DoomBuilder.Data
 		protected bool ismasked; //mxd. If true, has pixels with zero alpha
 		protected bool hasLongName; //mxd. Texture name is longer than DataManager.CLASIC_IMAGE_NAME_LENGTH
 		protected bool hasPatchWithSameName; //mxd
-		protected int level; //mxd. Folder depth of this item
 
 		//mxd. Hashing
 		private static int hashcounter;
@@ -121,7 +120,6 @@ namespace CodeImp.DoomBuilder.Data
 		public virtual float ScaledHeight { get { return (float)Math.Round(height * scale.y); } }
 		public virtual Vector2D Scale { get { return scale; } }
 		public bool WorldPanning { get { return worldpanning; } }
-		public int Level { get { return level; } } //mxd
 
 		#endregion
 
@@ -534,15 +532,15 @@ namespace CodeImp.DoomBuilder.Data
 				else if(loadfailed)
 				{
 					// Draw error bitmap
-					targetpos = new Point(targetpos.X + ((General.Map.Data.Previews.MaxImageWidth - Properties.Resources.Hourglass.Width) >> 1),
-										  targetpos.Y + ((General.Map.Data.Previews.MaxImageHeight - Properties.Resources.Hourglass.Height) >> 1));
+					targetpos = new Point(targetpos.X + ((PreviewManager.MAX_PREVIEW_SIZE - Properties.Resources.Hourglass.Width) >> 1),
+										  targetpos.Y + ((PreviewManager.MAX_PREVIEW_SIZE - Properties.Resources.Hourglass.Height) >> 1));
 					target.DrawImageUnscaled(Properties.Resources.Failed, targetpos);
 				}
 				else
 				{
 					// Draw loading bitmap
-					targetpos = new Point(targetpos.X + ((General.Map.Data.Previews.MaxImageWidth - Properties.Resources.Hourglass.Width) >> 1),
-										  targetpos.Y + ((General.Map.Data.Previews.MaxImageHeight - Properties.Resources.Hourglass.Height) >> 1));
+					targetpos = new Point(targetpos.X + ((PreviewManager.MAX_PREVIEW_SIZE - Properties.Resources.Hourglass.Width) >> 1),
+										  targetpos.Y + ((PreviewManager.MAX_PREVIEW_SIZE - Properties.Resources.Hourglass.Height) >> 1));
 					target.DrawImageUnscaled(Properties.Resources.Hourglass, targetpos);
 				}
 			}

@@ -591,7 +591,7 @@ namespace CodeImp.DoomBuilder.Controls
 		private static void UpdateTexturePanel(Panel panel, string texturename, Label texturenamelabel, Label sizelabel, int maxlabelright, Panel image, int sizeref, bool extendedinfoshown, bool required)
 		{
 			// Set texture name
-			texturenamelabel.Text = texturename;
+			texturenamelabel.Text = (texturename.Length > DataManager.CLASIC_IMAGE_NAME_LENGTH ? texturename : texturename.ToUpperInvariant());
 
 			// And image
 			DisplayTextureImage(image, sizelabel, texturename, required);

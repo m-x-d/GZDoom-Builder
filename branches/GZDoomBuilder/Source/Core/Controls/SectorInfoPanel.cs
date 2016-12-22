@@ -20,6 +20,7 @@ using System;
 using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.IO;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Data;
 using CodeImp.DoomBuilder.Rendering;
@@ -67,8 +68,8 @@ namespace CodeImp.DoomBuilder.Controls
 			floor.Text = s.FloorHeight.ToString();
 			height.Text = sheight.ToString();
 			brightness.Text = s.Brightness.ToString();
-			floorname.Text = s.FloorTexture;
-			ceilingname.Text = s.CeilTexture;
+			floorname.Text = (s.FloorTexture.Length > DataManager.CLASIC_IMAGE_NAME_LENGTH ? s.FloorTexture : s.FloorTexture.ToUpperInvariant());
+			ceilingname.Text = (s.CeilTexture.Length > DataManager.CLASIC_IMAGE_NAME_LENGTH ? s.CeilTexture : s.CeilTexture.ToUpperInvariant());
 
 			//mxd. Set tags
 			if(s.Tags.Count > 1)

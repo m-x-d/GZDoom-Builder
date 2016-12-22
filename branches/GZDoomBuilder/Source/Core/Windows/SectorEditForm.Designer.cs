@@ -53,8 +53,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.ceilingtex = new CodeImp.DoomBuilder.Controls.FlatSelectorControl();
 			this.cancel = new System.Windows.Forms.Button();
 			this.apply = new System.Windows.Forms.Button();
-			this.flatSelectorControl2 = new CodeImp.DoomBuilder.Controls.FlatSelectorControl();
-			this.flatSelectorControl1 = new CodeImp.DoomBuilder.Controls.FlatSelectorControl();
 			this.panel1 = new System.Windows.Forms.Panel();
 			this.tooltip = new System.Windows.Forms.ToolTip(this.components);
 			label1 = new System.Windows.Forms.Label();
@@ -311,7 +309,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.floortex.Size = new System.Drawing.Size(114, 138);
 			this.floortex.TabIndex = 2;
 			this.floortex.TextureName = "";
-			this.floortex.UsePreviews = true;
 			this.floortex.OnValueChanged += new System.EventHandler(this.floortex_OnValueChanged);
 			// 
 			// floorheight
@@ -341,7 +338,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.ceilingtex.Size = new System.Drawing.Size(114, 138);
 			this.ceilingtex.TabIndex = 3;
 			this.ceilingtex.TextureName = "";
-			this.ceilingtex.UsePreviews = true;
 			this.ceilingtex.OnValueChanged += new System.EventHandler(this.ceilingtex_OnValueChanged);
 			// 
 			// cancel
@@ -366,26 +362,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.apply.Text = "OK";
 			this.apply.UseVisualStyleBackColor = true;
 			this.apply.Click += new System.EventHandler(this.apply_Click);
-			// 
-			// flatSelectorControl2
-			// 
-			this.flatSelectorControl2.Location = new System.Drawing.Point(271, 37);
-			this.flatSelectorControl2.MultipleTextures = false;
-			this.flatSelectorControl2.Name = "flatSelectorControl2";
-			this.flatSelectorControl2.Size = new System.Drawing.Size(83, 105);
-			this.flatSelectorControl2.TabIndex = 13;
-			this.flatSelectorControl2.TextureName = "";
-			this.flatSelectorControl2.UsePreviews = true;
-			// 
-			// flatSelectorControl1
-			// 
-			this.flatSelectorControl1.Location = new System.Drawing.Point(363, 37);
-			this.flatSelectorControl1.MultipleTextures = false;
-			this.flatSelectorControl1.Name = "flatSelectorControl1";
-			this.flatSelectorControl1.Size = new System.Drawing.Size(83, 105);
-			this.flatSelectorControl1.TabIndex = 12;
-			this.flatSelectorControl1.TextureName = "";
-			this.flatSelectorControl1.UsePreviews = true;
 			// 
 			// panel1
 			// 
@@ -439,8 +415,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.Button apply;
 		private CodeImp.DoomBuilder.Controls.FlatSelectorControl floortex;
 		private CodeImp.DoomBuilder.Controls.FlatSelectorControl ceilingtex;
-		private CodeImp.DoomBuilder.Controls.FlatSelectorControl flatSelectorControl2;
-		private CodeImp.DoomBuilder.Controls.FlatSelectorControl flatSelectorControl1;
 		private System.Windows.Forms.Label sectorheight;
 		private CodeImp.DoomBuilder.Controls.ActionSelectorControl effect;
 		private System.Windows.Forms.Button browseeffect;

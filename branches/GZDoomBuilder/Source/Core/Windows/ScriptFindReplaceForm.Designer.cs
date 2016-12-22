@@ -345,6 +345,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.ShowIcon = false;
 			this.ShowInTaskbar = false;
 			this.Text = "Find and Replace";
+			this.Shown += new System.EventHandler(this.ScriptFindReplaceForm_Shown);
 			this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ScriptFindReplaceForm_FormClosing);
 			this.tabs.ResumeLayout(false);
 			this.tabfind.ResumeLayout(false);
