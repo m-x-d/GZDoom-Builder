@@ -584,6 +584,9 @@ namespace CodeImp.DoomBuilder.Data
 				File.WriteAllBytes(location.location, savestream.ToArray());
 			}
 
+			// Rewind the stream (because DirectoryReader/WADReader don't modify stream Position in SaveFile)
+			stream.Position = 0;
+
 			return true;
 		}
 

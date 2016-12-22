@@ -10,10 +10,13 @@ namespace CodeImp.DoomBuilder
 		
 		public static string Get(Stream stream)
 		{
+			// Rewind the stream
+			stream.Position = 0;
+			
 			// Check hash
 			byte[] data = hasher.ComputeHash(stream);
 
-			// Rewind the stream
+			// Rewind the stream again...
 			stream.Position = 0;
 
 			// Create a new Stringbuilder to collect the bytes and create a string.
