@@ -1263,7 +1263,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					General.Map.UndoRedo.CreateUndo("Paste properties to " + rest);
 					BuilderPlug.Me.CopiedThingProps.Apply(sel, false);
 					foreach(Thing t in sel) t.UpdateConfiguration();
-					General.Interface.DisplayStatus(StatusType.Action, "Pasted properties to" + rest + ".");
+					General.Interface.DisplayStatus(StatusType.Action, "Pasted properties to " + rest + ".");
 					
 					// Update
 					General.Map.IsChanged = true;
