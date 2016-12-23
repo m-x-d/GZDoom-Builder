@@ -295,7 +295,7 @@ namespace CodeImp.DoomBuilder.Config
 			if(Read(cfgfilepathname, defaultfilepathname))
 			{
 				// Read the cache variables
-				blackbrowsers = cfg.ReadSetting("blackbrowsers", false);
+				blackbrowsers = cfg.ReadSetting("blackbrowsers", true);
 				visualfov = cfg.ReadSetting("visualfov", 80);
 				visualmousesensx = cfg.ReadSetting("visualmousesensx", 40f);
 				visualmousesensy = cfg.ReadSetting("visualmousesensy", 40f);

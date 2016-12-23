@@ -138,6 +138,7 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			// ensure that the hot state is removed
 			this.hot = false;
+			this.Cursor = Cursors.Default; //mxd
 			this.Invalidate();
 		}
 
