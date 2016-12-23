@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
@@ -17,8 +16,6 @@ namespace CodeImp.DoomBuilder.Controls
 	internal class ImageSelectorPanel : Panel
 	{
 		#region ================== Constants
-
-		internal const string DEFAULT_GROUP = "[DEFAULT_GROUP]";
 
 		#endregion
 
@@ -136,7 +133,7 @@ namespace CodeImp.DoomBuilder.Controls
 			selection = new List<ImageBrowserItem>();
 			imagesize = 128;
 			rectangles = new List<Rectangle>();
-			title = "Default group";
+			title = "All images:";
 
 			Controls.Add(scrollbar);
 		}
@@ -151,16 +148,13 @@ namespace CodeImp.DoomBuilder.Controls
 
 		#region ================== Add/Remove/Get Textures
 
-		//mxd
+		//mxd. Clears the list without redrawing it
 		public void Clear()
 		{
 			selection.Clear();
 			items.Clear();
 			lastselecteditem = null;
 			rectangles.Clear();
-
-			OnSelectionChanged(selection);
-			Refresh();
 		}
 
 		//mxd
@@ -470,12 +464,6 @@ namespace CodeImp.DoomBuilder.Controls
 			return false;
 		}
 
-		/*protected override void OnMouseEnter(EventArgs e)
-		{
-			Focus();
-			base.OnMouseEnter(e);
-		}*/
-
 		#endregion
 
 		#region ================== Updating Rectangles & Dimensions
@@ -492,7 +480,7 @@ namespace CodeImp.DoomBuilder.Controls
 		private void UpdateRectangles()
 		{
 			int w = ClientRectangle.Width - scrollbar.Width;
-			const int pad = 3;
+			const int pad = 2;
 			int font = 4 + SystemFonts.MessageBoxFont.Height;
 			int cx = 0;
 			int cy = titleheight;
@@ -566,12 +554,12 @@ namespace CodeImp.DoomBuilder.Controls
 					if(rec.Top > y + height) break;
 
 					Image bmp = GetPreview(items[i], imagesize);
-					items[i].Draw(g, bmp, rec.X, rec.Y - y, rec.Width, rec.Height, selection.Contains(items[i]));
+					items[i].Draw(g, bmp, rec.X, rec.Y - y, rec.Width, rec.Height, selection.Contains(items[i]), items[i].Icon.UsedInMap);
 				}
 			}
 
 			// Draw title on top of items
-			if(title != DEFAULT_GROUP)
+			if(!string.IsNullOrEmpty(title))
 			{
 				// Draw group name bg
 				bool blackbrowsers = (General.Settings != null && General.Settings.BlackBrowsers);
@@ -628,7 +616,7 @@ namespace CodeImp.DoomBuilder.Controls
 				{
 					g.PageUnit = GraphicsUnit.Pixel;
 					g.InterpolationMode = InterpolationMode.NearestNeighbor;
-					g.PixelOffsetMode = PixelOffsetMode.None;
+					g.PixelOffsetMode = PixelOffsetMode.Half;
 
 					g.DrawImage(img, new Rectangle(0, 0, previewwidth, previewheight));
 				}

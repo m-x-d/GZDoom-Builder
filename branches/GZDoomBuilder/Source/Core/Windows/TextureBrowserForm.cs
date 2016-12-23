@@ -40,8 +40,6 @@ namespace CodeImp.DoomBuilder.Windows
 		
 		// Variables
 		private string selectedname;
-		private readonly string usedgroup;
-		private readonly string availgroup;
 		private TreeNode selectedset; //mxd
 		private long selecttextureonfill; //mxd. Was string, which wasn't reliable whem dealing with long texture names
 		private readonly bool browseflats; //mxd
@@ -65,15 +63,10 @@ namespace CodeImp.DoomBuilder.Windows
 			// Initialize
 			InitializeComponent();
 
-			//mxd. Set title
+			//mxd. Set titles
 			string imagetype = (browseflats ? "flats" : "textures");
 			this.Text = "Browse " + imagetype;
-
-			// Make groups
-			usedgroup = "Used " + imagetype + ":";
-			availgroup = "Available " + imagetype + ":";
-			browser.AddGroup(availgroup);
-			browser.AddGroup(usedgroup);
+			browser.ElementName = imagetype;
 
 			// Setup texture browser
 			browser.ApplySettings("windows." + configname, browseflats);
@@ -506,40 +499,30 @@ namespace CodeImp.DoomBuilder.Windows
 			if(selectedset.Parent != null)
 			{
 				TreeNodeData data = (TreeNodeData)selectedset.Parent.Tag;
-				browser.AddFolder(ImageBrowserItemType.FOLDER_UP, availgroup, data.FolderName);
+				browser.AddFolder(ImageBrowserItemType.FOLDER_UP, data.FolderName);
 			}
 			else
 			{
-				browser.AddFolder(ImageBrowserItemType.FOLDER_UP, availgroup, "All Texture Sets");
+				browser.AddFolder(ImageBrowserItemType.FOLDER_UP, "All Texture Sets");
 			}
 
 			//mxd. Add folders
 			foreach(TreeNode child in selectedset.Nodes)
 			{
 				TreeNodeData data = (TreeNodeData)child.Tag;
-				browser.AddFolder(ImageBrowserItemType.FOLDER, availgroup, data.FolderName);
+				browser.AddFolder(ImageBrowserItemType.FOLDER, data.FolderName);
 			}
 
 			// Add textures
 			if(browseflats) 
 			{
 				// Add all available flats
-				foreach(ImageData img in set.Flats)
-					browser.AddItem(img, availgroup);
-
-				// Add all used flats
-				foreach(ImageData img in set.Flats)
-					if(img.UsedInMap) browser.AddItem(img, usedgroup);
+				foreach(ImageData img in set.Flats) browser.AddItem(img);
 			}
 			else
 			{
-				// Add all available textures and mark the images for temporary loading
-				foreach(ImageData img in set.Textures)
-					browser.AddItem(img, availgroup);
-
-				// Add all used textures and mark the images for permanent loading
-				foreach(ImageData img in set.Textures)
-					if(img.UsedInMap) browser.AddItem(img, usedgroup);
+				// Add all available textures
+				foreach(ImageData img in set.Textures) browser.AddItem(img);
 			}
 			
 			// Done adding
@@ -554,8 +537,7 @@ namespace CodeImp.DoomBuilder.Windows
 			foreach(TreeNode node in tvTextureSets.Nodes)
 			{
 				TreeNodeData data = (TreeNodeData)node.Tag;
-				browser.AddFolder(ImageBrowserItemType.FOLDER, availgroup, data.FolderName);
-				browser.AddFolder(ImageBrowserItemType.FOLDER, usedgroup, data.FolderName);
+				browser.AddFolder(ImageBrowserItemType.FOLDER, data.FolderName);
 			}
 
 			// Done adding
@@ -577,7 +559,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// Select texture
 			if(selecttextureonfill != 0)
 			{
-				browser.SelectItem(selecttextureonfill, browser.SelectedGroup);
+				browser.SelectItem(selecttextureonfill);
 				selecttextureonfill = 0;
 			}
 
