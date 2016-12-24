@@ -130,7 +130,6 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// splitter
 			// 
-			this.splitter.Cursor = System.Windows.Forms.Cursors.Hand;
 			this.splitter.Dock = System.Windows.Forms.DockStyle.Fill;
 			this.splitter.FixedPanel = System.Windows.Forms.FixedPanel.Panel2;
 			this.splitter.Location = new System.Drawing.Point(0, 0);

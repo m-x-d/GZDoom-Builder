@@ -31,6 +31,9 @@ namespace CodeImp.DoomBuilder.Windows
 {
 	internal partial class TextureBrowserForm : DelayedForm
 	{
+		//mxd. Constants
+		private const string ALL_IMAGES = "[All]";
+		
 		//mxd. Structs
 		private struct TreeNodeData
 		{
@@ -199,12 +202,14 @@ namespace CodeImp.DoomBuilder.Windows
 		//mxd
 		private static int SortTreeNodes(TreeNode n1, TreeNode n2)
 		{
-			return String.Compare(n1.Text, n2.Text, StringComparison.OrdinalIgnoreCase);
+			return String.Compare(n1.Text, n2.Text, StringComparison.InvariantCultureIgnoreCase);
 		}
 
 		//mxd
 		private TreeNode FindTextureByLongName(TreeNode node, long longname) 
 		{
+			if(node.Name == ALL_IMAGES) return null; // Skip "All images" set
+			
 			//first search in child nodes
 			foreach(TreeNode n in node.Nodes)
 			{
@@ -313,6 +318,19 @@ namespace CodeImp.DoomBuilder.Windows
 				root.Nodes.AddRange(children);
 			}
 
+			// Add "All set textures" node
+			if(General.Map.Config.MixTexturesFlats && root.Nodes.Count > 1)
+			{
+				TreeNode allnode = new TreeNode(ALL_IMAGES)
+				{
+					Name = ALL_IMAGES,
+					ImageIndex = imageIndex,
+					SelectedImageIndex = imageIndex,
+					Tag = new TreeNodeData { Set = set, FolderName = ALL_IMAGES }
+				};
+				root.Nodes.Add(allnode);
+			}
+
 			// Sort immediate child nodes...
 			TreeNode[] rootnodes = new TreeNode[root.Nodes.Count];
 			root.Nodes.CopyTo(rootnodes, 0);
@@ -330,13 +348,15 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				foreach(ImageData data in rootimages) rootset.AddTexture(data);
 			}
+			if(General.Map.Config.MixTexturesFlats) rootset.MixTexturesAndFlats();
 
 			// Store root data
 			rootdata.Set = rootset;
 			root.Tag = rootdata;
 
 			// Set root images count
-			if(rootimages.Count > 0) root.Text += " [" + rootimages.Count + "]";
+			var rootsetimages = (browseflats ? rootset.Flats : rootset.Textures);
+			if(rootsetimages.Count > 0) root.Text += " [" + rootsetimages.Count + "]";
 
 			// Add image count to node titles
 			foreach(TreeNode n in root.Nodes) SetItemsCount(n);
