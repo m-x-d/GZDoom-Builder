@@ -233,15 +233,16 @@ namespace CodeImp.DoomBuilder.Controls
 		// Key pressed in textbox
 		private void objectname_KeyDown(object sender, KeyEventArgs e)
 		{
-			// Let the list handle arrow keys and such
-			if(list.ProcessKeyDown(e))
-			{
-				e.SuppressKeyPress = true;
-			}
 			// Toggle used items sorting
-			else if(e.KeyData == Keys.Tab)
+			if(e.KeyData == Keys.Tab)
 			{
 				usedtexturesfirst.Checked = !usedtexturesfirst.Checked;
+				e.SuppressKeyPress = true;
+			}
+			//mxd. Clear text field instead of typing strange chars...
+			else if(e.KeyData == (Keys.Back | Keys.Control))
+			{
+				if(objectname.Text.Length > 0) objectname.Clear();
 				e.SuppressKeyPress = true;
 			}
 		}
@@ -292,26 +293,24 @@ namespace CodeImp.DoomBuilder.Controls
 		//mxd. Transfer input to Filter textbox
 		private void list_KeyPress(object sender, KeyPressEventArgs e)
 		{
-			if(e.KeyChar == '\b') // Any better way to check for Backspace?..
+			if(e.KeyChar == 8) // Backspace
 			{
-				if(!string.IsNullOrEmpty(objectname.Text) && objectname.SelectionStart > 0 && objectname.SelectionLength == 0)
+				if(objectname.Text.Length > 0)
 				{
-					int s = objectname.SelectionStart - 1;
-					objectname.Text = objectname.Text.Remove(s, 1);
-					objectname.SelectionStart = s;
+					if(objectname.SelectionLength > 0)
+					{
+						objectname.Text = objectname.Text.Substring(0, objectname.SelectionStart) +
+							objectname.Text.Substring(objectname.SelectionStart + objectname.SelectionLength);
+					}
+					else
+					{
+						objectname.Text = objectname.Text.Substring(0, objectname.Text.Length - 1);
+					}
 				}
 			}
-			if(e.KeyChar == 8 && objectname.Text.Length > 0)
+			else if(e.KeyChar == 127) // Ctrl-Backspace
 			{
-				if(objectname.SelectionLength > 0)
-				{
-					objectname.Text = objectname.Text.Substring(0, objectname.SelectionStart) +
-										 objectname.Text.Substring(objectname.SelectionStart + objectname.SelectionLength);
-				}
-				else
-				{
-					objectname.Text = objectname.Text.Substring(0, objectname.Text.Length - 1);
-				}
+				if(objectname.Text.Length > 0) objectname.Clear();
 			}
 			else if((e.KeyChar >= 'a' && e.KeyChar <= 'z') || (e.KeyChar >= '0' && e.KeyChar <= '9') || AllowedSpecialChars.Contains(e.KeyChar))
 			{
@@ -483,10 +482,26 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				// Add item if valid
 				items[i].ShowFullName = uselongtexturenames; //mxd
-				if(ValidateItem(items[i], previtem) && ValidateItemSize(items[i], w, h)) 
+				switch(items[i].ItemType)
 				{
-					visibleitems.Add(items[i]);
-					previtem = items[i];
+					case ImageBrowserItemType.IMAGE:
+						if(ValidateItem(items[i], previtem) && ValidateItemSize(items[i], w, h))
+						{
+							visibleitems.Add(items[i]);
+							previtem = items[i];
+						}
+						break;
+
+					case ImageBrowserItemType.FOLDER_UP: //mxd. "Browse Up" items are always valid
+						visibleitems.Add(items[i]);
+						break;
+
+					case ImageBrowserItemType.FOLDER: //mxd. Only apply name filtering to "Folder" items
+						if(items[i].TextureName.ToUpperInvariant().Contains(objectname.Text.ToUpperInvariant()))
+							visibleitems.Add(items[i]);
+						break;
+
+					default: throw new NotImplementedException("Unknown ImageBrowserItemType");
 				}
 			}
 			

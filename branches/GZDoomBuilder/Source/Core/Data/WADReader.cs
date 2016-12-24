@@ -128,7 +128,7 @@ namespace CodeImp.DoomBuilder.Data
 		private void Initialize()
 		{
 			is_iwad = file.IsIWAD;
-			isreadonly |= is_iwad; // Just in case...
+			isreadonly |= file.IsReadOnly; // Just in case...
 			
 			// Initialize
 			patchranges = new List<LumpRange>();

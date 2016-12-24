@@ -432,36 +432,23 @@ namespace CodeImp.DoomBuilder.Controls
 
 		protected override void OnKeyDown(KeyEventArgs e)
 		{
-			ProcessKeyDown(e);
-			base.OnKeyDown(e);
-		}
-
-		internal bool ProcessKeyDown(KeyEventArgs e)
-		{
 			switch(e.KeyCode)
 			{
 				//mxd. Cursor keys
-				case Keys.Left: SelectNextItem(SearchDirectionHint.Left); return true;
-				case Keys.Right: SelectNextItem(SearchDirectionHint.Right); return true;
-				case Keys.Up: SelectNextItem(SearchDirectionHint.Up); return true;
-				case Keys.Down: SelectNextItem(SearchDirectionHint.Down); return true;
+				case Keys.Left: SelectNextItem(SearchDirectionHint.Left); break;
+				case Keys.Right: SelectNextItem(SearchDirectionHint.Right); break;
+				case Keys.Up: SelectNextItem(SearchDirectionHint.Up); break;
+				case Keys.Down: SelectNextItem(SearchDirectionHint.Down); break;
 
-				case Keys.PageDown: ScrollByAmount(scrollbar.LargeChange); return true;
-				case Keys.PageUp: ScrollByAmount(-scrollbar.LargeChange); return true;
-				case Keys.End: ScrollByAmount(int.MaxValue); return true;
-				case Keys.Home: ScrollByAmount(-int.MaxValue); return true;
-				
-				case Keys.Enter:
-					if(selection.Count > 0)
-					{
-						OnItemDoubleClicked(selection[0]);
-						return true;
-					}
-					break;
+				case Keys.PageDown: ScrollByAmount(scrollbar.LargeChange); break;
+				case Keys.PageUp: ScrollByAmount(-scrollbar.LargeChange); break;
+				case Keys.End: ScrollByAmount(int.MaxValue); break;
+				case Keys.Home: ScrollByAmount(-int.MaxValue); break;
 
+				case Keys.Enter: if(selection.Count > 0) OnItemDoubleClicked(selection[0]); break;
 			}
-
-			return false;
+			
+			base.OnKeyDown(e);
 		}
 
 		#endregion
