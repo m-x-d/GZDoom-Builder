@@ -422,13 +422,25 @@ namespace CodeImp.DoomBuilder.Data.Scripting
 						}
 					}
 
-					//mxd. If the tip obscures the view, move it down
-					int tippos;
+					// Determine callip position
+					int tippos = curfunctionstartpos;
 					int funcline = scriptedit.LineFromPosition(curfunctionstartpos);
+
+					//mxd. If the tip obscures the view, move it down
 					if(scriptedit.CurrentLine > funcline)
-						tippos = scriptedit.Lines[scriptedit.CurrentLine].Position + scriptedit.Lines[scriptedit.CurrentLine].Indentation; //scriptedit.PositionFromLine(curline) /*+ (curfunctionstartpos - scriptedit.PositionFromLine(funcline))*/;
-					else
-						tippos = curfunctionstartpos;
+					{
+						int offset = curfunctionstartpos - scriptedit.Lines[funcline].Position;
+						tippos = scriptedit.Lines[scriptedit.CurrentLine].Position + offset;
+					}
+
+					//mxd. Take line wrapping into account
+					if(scriptedit.Lines[scriptedit.CurrentLine].WrapCount > 0)
+					{
+						int x = scriptedit.PointXFromPosition(tippos);
+						int y = scriptedit.PointYFromPosition(scriptedit.CurrentPosition);
+						int newtippos = scriptedit.CharPositionFromPointClose(x, y);
+						if(newtippos != -1) tippos = newtippos;
+					}
 
 					// Show tip
 					scriptedit.CallTipShow(tippos, functiondef);
