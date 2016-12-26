@@ -2,8 +2,8 @@
 
 ECHO.
 ECHO.     This build script requires the following software to be installed:
-ECHO.       - Subversion command-line client
-ECHO.       - Microsoft Visual Studio 2008
+ECHO.       - Git command-line client
+ECHO.       - Microsoft Visual Studio 2008 or newer
 ECHO.       - Microsoft HTML Help compiler
 ECHO.       - Inno Setup 5
 ECHO.
@@ -21,14 +21,19 @@ CALL "%STUDIODIR%\Common7\Tools\vsvars32.bat"
 
 MKDIR "Release"
 
-svn revert "Source\Core\Properties\AssemblyInfo.cs" > NUL
-svn revert "Source\Plugins\BuilderModes\Properties\AssemblyInfo.cs" > NUL
+git checkout "Source\Core\Properties\AssemblyInfo.cs" > NUL
+git checkout "Source\Plugins\BuilderModes\Properties\AssemblyInfo.cs" > NUL
 
 ECHO.
-ECHO Writing SVN log file...
+ECHO Writing GIT log file...
 ECHO.
 IF EXIST "Release\Changelog.xml" DEL /F /Q "Release\Changelog.xml" > NUL
-svn log --xml -r HEAD:1496 > "Release\Changelog.xml"
+(
+echo [OB]?xml version="1.0" encoding="UTF-8"?[CB]
+echo [OB]log[CB]
+git log master --since=2012-04-17 --pretty=format:"[OB]logentry commit=\"%%h\"[CB]%%n[OB]author[CB]%%an[OB]/author[CB]%%n[OB]date[CB]%%aI[OB]/date[CB]%%n[OB]msg[CB]%%B[OB]/msg[CB]%%n[OB]/logentry[CB]"
+echo [OB]/log[CB]
+) >"Release\Changelog.xml"
 IF %ERRORLEVEL% NEQ 0 GOTO ERRORFAIL
 IF NOT EXIST "Release\Changelog.xml" GOTO FILEFAIL
 
@@ -44,7 +49,7 @@ ECHO.
 ECHO Looking up current repository revision numbers...
 ECHO.
 IF EXIST "setenv.bat" DEL /F /Q "setenv.bat" > NUL
-VersionFromSVN.exe "Source\Core\Properties\AssemblyInfo.cs" "Source\Plugins\BuilderModes\Properties\AssemblyInfo.cs" -O "setenv.bat"
+VersionFromGIT.exe "Source\Core\Properties\AssemblyInfo.cs" "Source\Plugins\BuilderModes\Properties\AssemblyInfo.cs" -O "setenv.bat"
 IF %ERRORLEVEL% NEQ 0 GOTO ERRORFAIL
 IF NOT EXIST "setenv.bat" GOTO FILEFAIL
 
@@ -162,7 +167,7 @@ IF NOT EXIST "Build\Plugins\VisplaneExplorer.dll" GOTO FILEFAIL
 ECHO.
 ECHO Creating changelog...
 ECHO.
-ChangelogMaker.exe "SVN_Build\Changelog.xml" "Build" "m-x-d"
+ChangelogMaker.exe "Release\Changelog.xml" "Build" "MaxED" %REVISIONNUMBER%
 IF %ERRORLEVEL% NEQ 0 GOTO LOGFAIL
 
 ECHO.
@@ -175,8 +180,8 @@ IF NOT EXIST "Release\GZDoom Builder Setup.exe" GOTO FILEFAIL
 
 REN "Release\GZDoom Builder Setup.exe" "GZDoom Builder R%REVISIONNUMBER% Setup.exe"
 
-svn revert "Source\Core\Properties\AssemblyInfo.cs" > NUL
-svn revert "Source\Plugins\BuilderModes\Properties\AssemblyInfo.cs" > NUL
+git checkout "Source\Core\Properties\AssemblyInfo.cs" > NUL
+git checkout "Source\Plugins\BuilderModes\Properties\AssemblyInfo.cs" > NUL
 
 ECHO.
 ECHO.     BUILD DONE !

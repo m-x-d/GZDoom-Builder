@@ -9,13 +9,13 @@ using System.Reflection;
 
 #endregion
 
-namespace mxd.VersionFromSVN
+namespace mxd.VersionFromGIT
 {
 	public static class Program
 	{
 		#region ======================== Constants
 
-		private const string SVN_INFO = "svn info -r HEAD > versionfromsvn.tmp\r\n";
+		private const string GIT_INFO = "@echo off\r\ngit rev-list --count master";
 
 		#endregion
 
@@ -81,51 +81,38 @@ namespace mxd.VersionFromSVN
 
 			if(dorevisionlookup)
 			{
-				Console.WriteLine("Looking up latest subversion revision...");
+				Console.WriteLine("Looking up latest git revision...");
 
-				string tmppath = Path.Combine(apppath, "versionfromsvn.tmp");
-				string batpath = Path.Combine(apppath, "versionfromsvn.bat");
-				File.WriteAllText(batpath, SVN_INFO);
-					
-				ProcessStartInfo info = new ProcessStartInfo
-				                        {
-					                        FileName = batpath,
-											CreateNoWindow = false,
-											ErrorDialog = false,
-											UseShellExecute = true,
-											WindowStyle = ProcessWindowStyle.Hidden,
-											WorkingDirectory = apppath
-				                        };
+				string batpath = Path.Combine(apppath, "versionfromgit.bat");
+				File.WriteAllText(batpath, GIT_INFO);
 
-				Process.Start(info).WaitForExit();
-
-				if(File.Exists(tmppath))
+				// Redirect the output stream of the child process.
+				Process p = new Process
 				{
-					foreach(string str in File.ReadAllLines(tmppath))
+					StartInfo =
 					{
-						if(str.StartsWith("Revision", StringComparison.InvariantCultureIgnoreCase))
-						{
-							string[] parts = str.Split(new[]{ ' ' });
-							if(parts.Length > 1)
-							{
-								revision = parts[1];
-								Console.Write(revision);
-								dorevisionlookup = false;
-							}
-						}
+						UseShellExecute = false, 
+						RedirectStandardOutput = true,
+						WindowStyle = ProcessWindowStyle.Hidden,
+						FileName = batpath,
+						WorkingDirectory = apppath
 					}
+				};
+				// Redirect the output stream of the child process.
+				p.Start();
 
-					File.Delete(tmppath);
-				}
-
+				// Read the output stream first and then wait.
+				revision = p.StandardOutput.ReadToEnd().Trim();
+				p.WaitForExit();
 				File.Delete(batpath);
-			}
 
-
-			if(dorevisionlookup)
-			{
-				Console.WriteLine("Unable to find revision number from Subversion. You must install Subversion from http://subversion.tigris.org/.");
-				return 1;
+				//mxd. Check what we've got
+				int unused;
+				if(string.IsNullOrEmpty(revision) || !int.TryParse(revision, out unused) || unused < 1)
+				{
+					Console.WriteLine("Unable to get Git commits count from string \"" + revision + "\". You must install Git from https://git-scm.com");
+					return 1;
+				}
 			}
 
 			if(!string.IsNullOrEmpty(revisionoutputfile))
@@ -137,9 +124,9 @@ namespace mxd.VersionFromSVN
 
 				string contents = "";
 				foreach(string str in targetfiles)
-					contents += "svn revert \"" + str + "\"\r\n";
+					contents += "git checkout \"" + str + "\"\r\n";
 						
-				string path = Path.Combine(apppath, "versionfromsvn.bat");
+				string path = Path.Combine(apppath, "versionfromgit.bat");
 				File.WriteAllText(path, contents);
 
 				ProcessStartInfo info = new ProcessStartInfo
@@ -203,19 +190,19 @@ namespace mxd.VersionFromSVN
 
 		private static void ShowUsageInfo()
 		{
-			Console.WriteLine("Version From SVN is a tool programmed by Pascal vd Heiden.\r\nThis tool requires that Subversion commandline client is installed.\r\nSee http://subversion.tigris.org/\r\n");
-			Console.WriteLine("Usage: versionfromsvn.exe targetfile [targetfile ...] [options]");
-			Console.WriteLine("Where targetfile is any text file in which the version placeholder %SVNREVISION% must be replaced with the latest revision from the SVN working copy.\r\n");
+			Console.WriteLine("Version From GIT is a tool programmed by MaxED.\r\nThis tool requires that Git commandline client is installed.\r\nSee https://git-scm.com\r\n");
+			Console.WriteLine("Usage: versionfromgit.exe targetfile [targetfile ...] [options]");
+			Console.WriteLine("Where targetfile is AssemblyInfo.cs file in which AssemblyVersion property value must be replaced with the commits count of the GIT master branch.\r\n");
 
 			Console.WriteLine("Options:\r\n");
 			Console.WriteLine("-F number");
-			Console.WriteLine("When this is used, the given number will be used as revision number and this program will not use Subversion to look for the real revision number (faster).\r\n");
+			Console.WriteLine("When this is used, the given number will be used as commits count and this program will not use Git to look for the real commits count (faster).\r\n");
 
 			Console.WriteLine("-R");
-			Console.WriteLine("This will revert all changes in the specified target files (same as SVN revert function). This will not apply any revision number to the target files.\r\n");
+			Console.WriteLine("This will revert all changes in the specified target files (same as GIT checkout function). This will not apply commits count to the target files.\r\n");
 
 			Console.WriteLine("-O filename");
-			Console.WriteLine("Creates a bath file, which sets REVISIONNUMBER environment variable to the SVN revision number.\r\n");
+			Console.WriteLine("Creates a bath file, which sets REVISIONNUMBER environment variable to the GIT revision number.\r\n");
 
 			Console.WriteLine("Press any key to quit.");
 		}

@@ -5,7 +5,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Updater", "Updater\Updater.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VersionFromEXE", "VersionFromEXE\VersionFromEXE.csproj", "{72734EB9-2733-4C05-A091-7FA591AF53C3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VersionFromSVN", "VersionFromSVN\VersionFromSVN.csproj", "{58D7AB05-5FA0-47EE-8F74-463AC2AED47C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VersionFromGIT", "VersionFromSVN\VersionFromGIT.csproj", "{58D7AB05-5FA0-47EE-8F74-463AC2AED47C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ChangelogMaker", "ChangelogMaker\ChangelogMaker.csproj", "{5023F443-E5D2-4252-9691-19700622349E}"
 EndProject

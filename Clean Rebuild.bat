@@ -2,7 +2,7 @@
 
 ECHO.
 ECHO.     This build script requires the following software to be installed:
-ECHO.       - Microsoft Visual Studio 2008
+ECHO.       - Microsoft Visual Studio 2008 or newer
 ECHO.
 
 SET STUDIODIR=c:\Program Files (x86)\Microsoft Visual Studio 9.0
