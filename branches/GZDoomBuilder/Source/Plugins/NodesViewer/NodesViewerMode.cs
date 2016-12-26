@@ -132,7 +132,7 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 
 			// Add additional properties to nodes
 			nodes[nodes.Length - 1].parent = -1;
-			RecursiveSetupNodes(nodes.Length - 1);
+			SetupNodes(); //mxd
 
 			// Load the segs structure
 			MemoryStream segsstream = General.Map.GetLumpData("SEGS");
@@ -152,13 +152,12 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 			if(numsegs >= ushort.MaxValue)
 			{
 				// Cancel mode
-				MessageBox.Show("The map has too many SEGS (" + numsegs + "/" + ushort.MaxValue + ").\nIt won't load in most Doom source ports.", "THY SEGS ARETH WAAAY TOO PHAT!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+				MessageBox.Show("The map has too many SEGS (" + numsegs + "/" + ushort.MaxValue + ").\nIt won't load in Vanilla-style source ports\nand may not load in some enhanced source ports.", "THY SEGS ARETH WAAAY TOO PHAT!", MessageBoxButtons.OK, MessageBoxIcon.Error);
 				General.Editing.CancelMode();
 				return false;
 			}
-
 			//mxd. Vanilla SEGS overflow warning
-			if(numsegs >= short.MaxValue)
+			else if(numsegs >= short.MaxValue)
 			{
 				MessageBox.Show("The map has too many SEGS (" + numsegs + "/" + short.MaxValue + ").\nIt won't load in Vanilla-style source ports.", "THY SEGS ARETH TOO PHAT!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
 			}
@@ -404,7 +403,7 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 
 				// Add additional properties to nodes
 				nodes[nodes.Length - 1].parent = -1;
-				RecursiveSetupNodes(nodes.Length - 1);
+				SetupNodes(); //mxd
 			}
 
 			return true;
@@ -413,7 +412,7 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 		/// <summary>
 		/// This recursively sets up the nodes structure with additional properties
 		/// </summary>
-		private void RecursiveSetupNodes(int nodeindex)
+		/*private void RecursiveSetupNodes(int nodeindex)
 		{
 			Node n = nodes[nodeindex];
 			if(!n.leftsubsector)
@@ -425,6 +424,19 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 			{
 				nodes[n.rightchild].parent = nodeindex;
 				RecursiveSetupNodes(n.rightchild);
+			}
+		}*/
+
+		/// <summary>
+		/// This sets up the nodes structure with additional properties
+		/// </summary>
+		private void SetupNodes() //mxd. StackOverflowless implementation :)
+		{
+			for(int i = nodes.Length - 1; i > -1; i--)
+			{
+				Node n = nodes[i];
+				if(!n.leftsubsector) nodes[n.leftchild].parent = i;
+				if(!n.rightsubsector) nodes[n.rightchild].parent = i;
 			}
 		}
 
@@ -719,8 +731,7 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 		// For rendering
 		private void DrawSubsectorArea(FlatVertex[] vertices)
 		{
-			if(vertices == null) return;
-			if(vertices.Length < 3) return;
+			if(vertices == null || vertices.Length < 3) return;
 			renderer.RenderGeometry(vertices, null, true);
 		}
 
@@ -1059,72 +1070,70 @@ namespace CodeImp.DoomBuilder.Plugins.NodesViewer
 
 			if(renderer.StartOverlay(true))
 			{
-				if(form.SelectedTab == 0)
+				switch(form.SelectedTab)
 				{
-					if(mouseinssector > -1)
-					{
-						// Render all subsectors in original color
-						for(int si = 0; si < ssectors.Length; si++)
+					case 0:
+						if(mouseinssector > -1)
 						{
-							Subsector s = ssectors[si];
-							DrawSubsectorArea(s.vertices);
+							// Render all subsectors in original color
+							for(int si = 0; si < ssectors.Length; si++)
+							{
+								Subsector s = ssectors[si];
+								DrawSubsectorArea(s.vertices);
+							}
+							DrawSubsectorArea(ssectors[mouseinssector].vertices, General.Colors.Highlight);
 						}
-						DrawSubsectorArea(ssectors[mouseinssector].vertices, General.Colors.Highlight);
-					}
-					else
-					{
-						// Render all subsectors with distinct colors
-						for(int si = 0; si < ssectors.Length; si++)
+						else
 						{
-							Subsector s = ssectors[si];
-							PixelColor color = distinctcolors[si % distinctcolors.Count];
-							DrawSubsectorArea(s.vertices, color);
+							// Render all subsectors with distinct colors
+							for(int si = 0; si < ssectors.Length; si++)
+							{
+								Subsector s = ssectors[si];
+								PixelColor color = distinctcolors[si % distinctcolors.Count];
+								DrawSubsectorArea(s.vertices, color);
+							}
 						}
-					}
-				}
+						break;
 
-				if(form.SelectedTab == 1)
-				{
-					// Render selected node split
-					if((form.ViewSplitIndex >= 0) && (form.ViewSplitIndex < nodes.Length))
-					{
-						Node n = nodes[form.ViewSplitIndex];
-
-						// Draw areas. We draw these first, because they would otherwise erase any splits we want to show.
-						DrawSplitArea(n.leftbox, form.ViewSplitIndex, true, new PixelColor(100, 50, 80, 255));
-						DrawSplitArea(n.rightbox, form.ViewSplitIndex, false, new PixelColor(100, 20, 220, 20));
-
-						// Draw parent splits
-						int parentsplit = n.parent;
-						while(parentsplit > -1)
+					case 1:
+						if((form.ViewSplitIndex >= 0) && (form.ViewSplitIndex < nodes.Length))
 						{
-							Node pn = nodes[parentsplit];
-							renderer.RenderLine(pn.linestart, pn.linestart + pn.linedelta, 1f, General.Colors.Selection, true);
-							parentsplit = pn.parent;
+							Node n = nodes[form.ViewSplitIndex];
+
+							// Draw areas. We draw these first, because they would otherwise erase any splits we want to show.
+							DrawSplitArea(n.leftbox, form.ViewSplitIndex, true, new PixelColor(100, 50, 80, 255));
+							DrawSplitArea(n.rightbox, form.ViewSplitIndex, false, new PixelColor(100, 20, 220, 20));
+
+							// Draw parent splits
+							int parentsplit = n.parent;
+							while(parentsplit > -1)
+							{
+								Node pn = nodes[parentsplit];
+								renderer.RenderLine(pn.linestart, pn.linestart + pn.linedelta, 1f, General.Colors.Selection, true);
+								parentsplit = pn.parent;
+							}
+
+							// Draw this split
+							renderer.RenderLine(n.linestart, n.linestart + n.linedelta, 1f, General.Colors.Highlight, true);
 						}
+						break;
 
-						// Draw this split
-						renderer.RenderLine(n.linestart, n.linestart + n.linedelta, 1f, General.Colors.Highlight, true);
-					}
-				}
-
-				if(form.SelectedTab == 2)
-				{
-					// Render selected subsector
-					if((form.ViewSubsectorIndex >= 0) && (form.ViewSubsectorIndex < ssectors.Length))
-					{
-						Subsector s = ssectors[form.ViewSubsectorIndex];
-
-						// Draw area
-						DrawSubsectorArea(s.vertices, General.Colors.Highlight);
-
-						// Draw selected segment
-						if(form.ViewSegIndex > -1)
+					case 2:
+						if((form.ViewSubsectorIndex >= 0) && (form.ViewSubsectorIndex < ssectors.Length))
 						{
-							Seg sg = segs[form.ViewSegIndex];
-							renderer.RenderLine(verts[sg.startvertex], verts[sg.endvertex], 1f, General.Colors.Selection, true);
+							Subsector s = ssectors[form.ViewSubsectorIndex];
+
+							// Draw area
+							DrawSubsectorArea(s.vertices, General.Colors.Highlight);
+
+							// Draw selected segment
+							if(form.ViewSegIndex > -1)
+							{
+								Seg sg = segs[form.ViewSegIndex];
+								renderer.RenderLine(verts[sg.startvertex], verts[sg.endvertex], 1f, General.Colors.Selection, true);
+							}
 						}
-					}
+						break;
 				}
 				
 				renderer.Finish();
