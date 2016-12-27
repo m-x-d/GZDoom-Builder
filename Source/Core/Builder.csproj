@@ -1215,6 +1215,7 @@
     <None Include="Resources\ErrorLargeText.png" />
     <EmbeddedResource Include="Resources\Folder96.png" />
     <EmbeddedResource Include="Resources\Folder96Up.png" />
+    <None Include="Resources\Github.png" />
     <Content Include="Resources\Light.png" />
     <None Include="Resources\Lightbulb.png" />
     <None Include="Resources\LightDisabled.png" />
@@ -1440,7 +1441,12 @@
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
-    <PostBuildEvent>call "%25VSINSTALLDIR%25\Common7\Tools\vsvars32.bat"
-EDITBIN.EXE /NOLOGO /LARGEADDRESSAWARE "$(TargetPath)"</PostBuildEvent>
+    <PostBuildEvent>if exist "%25VS140COMNTOOLS%25" call "%25VS140COMNTOOLS%25vsvars32.bat"
+else if exist "%25VS120COMNTOOLS%25" call "%25VS120COMNTOOLS%25vsvars32.bat"
+else if exist "%25VS110COMNTOOLS%25" call "%25VS110COMNTOOLS%25vsvars32.bat"
+else if exist "%25VS100COMNTOOLS%25" call "%25VS100COMNTOOLS%25vsvars32.bat"
+else if exist "%25VS90COMNTOOLS%25" call "%25VS90COMNTOOLS%25vsvars32.bat"
+
+editbin.exe /NOLOGO /LARGEADDRESSAWARE "$(TargetPath)"</PostBuildEvent>
   </PropertyGroup>
 </Project>

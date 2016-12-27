@@ -3091,6 +3091,12 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			UpdateChecker.PerformCheck(true);
 		}
+
+		//mxd. Github issues clicked
+		private void itemhelpissues_Click(object sender, EventArgs e)
+		{
+			General.OpenWebsite("https://github.com/m-x-d/GZDoom-Builder/issues");
+		}
 		
 		// About clicked
 		private void itemhelpabout_Click(object sender, EventArgs e)

@@ -147,6 +147,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.itemhelpeditmode = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemhelpcheckupdates = new System.Windows.Forms.ToolStripMenuItem();
 			this.seperatorhelpmanual = new System.Windows.Forms.ToolStripSeparator();
+			this.itemhelpissues = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemhelpabout = new System.Windows.Forms.ToolStripMenuItem();
 			this.toolbar = new System.Windows.Forms.ToolStrip();
 			this.toolbarContextMenu = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -1231,6 +1232,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.itemShortcutReference,
 			this.itemopenconfigfolder,
             this.itemhelpeditmode,
+			this.itemhelpissues,
             this.itemhelpcheckupdates,
             this.seperatorhelpmanual,
             this.itemhelpabout});
@@ -1285,6 +1287,14 @@ namespace CodeImp.DoomBuilder.Windows
 			this.seperatorhelpmanual.Margin = new System.Windows.Forms.Padding(0, 3, 0, 3);
 			this.seperatorhelpmanual.Name = "seperatorhelpmanual";
 			this.seperatorhelpmanual.Size = new System.Drawing.Size(229, 6);
+			// 
+			// itemhelpissues
+			// 
+			this.itemhelpissues.Image = global::CodeImp.DoomBuilder.Properties.Resources.Github;
+			this.itemhelpissues.Name = "itemhelpissues";
+			this.itemhelpissues.Size = new System.Drawing.Size(232, 22);
+			this.itemhelpissues.Text = "&GitHub issues tracker";
+			this.itemhelpissues.Click += new System.EventHandler(this.itemhelpissues_Click);
 			// 
 			// itemhelpabout
 			// 
@@ -2799,6 +2809,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.ToolStripMenuItem itemclosemap;
 		private System.Windows.Forms.Timer redrawtimer;
 		private System.Windows.Forms.ToolStripMenuItem menuhelp;
+		private System.Windows.Forms.ToolStripMenuItem itemhelpissues;
 		private System.Windows.Forms.ToolStripMenuItem itemhelpabout;
 		private System.Windows.Forms.ToolStripMenuItem itemhelpcheckupdates;
 		private CodeImp.DoomBuilder.Controls.RenderTargetControl display;
