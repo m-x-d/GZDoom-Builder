@@ -197,9 +197,9 @@ namespace CodeImp.DoomBuilder.Windows
 			posX.Text = (ft.Position.x).ToString();
 			posY.Text = (ft.Position.y).ToString();
 			posZ.Text = (useabsoluteheight ? ((float)Math.Round(ft.Position.z + floorheight, General.Map.FormatInterface.VertexDecimals)).ToString() : (ft.Position.z).ToString());
-			posX.ButtonStep = General.Map.Grid.GridSize;
-			posY.ButtonStep = General.Map.Grid.GridSize;
-			posZ.ButtonStep = General.Map.Grid.GridSize;
+			posX.ButtonStep = General.Map.Grid.GridSizeI;
+			posY.ButtonStep = General.Map.Grid.GridSizeI;
+			posZ.ButtonStep = General.Map.Grid.GridSizeI;
 
 			//mxd. User vars. Should be done before adding regular fields
 			ThingTypeInfo fti = General.Map.Data.GetThingInfoEx(ft.Type);

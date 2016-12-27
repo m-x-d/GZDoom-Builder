@@ -746,8 +746,15 @@ namespace CodeImp.DoomBuilder.Windows
 				zoomlabel.Enabled = true;
 				buttonzoom.Enabled = true;
 				gridlabel.Enabled = true;
+				itemgrid05.Visible = General.Map.UDMF; //mxd
+				itemgrid025.Visible = General.Map.UDMF; //mxd
+				itemgrid0125.Visible = General.Map.UDMF; //mxd
 				buttongrid.Enabled = true;
 				configlabel.Text = General.Map.Config.Name;
+				
+				//mxd. Raise grid size to 1 if it was lower and the map isn't in UDMF
+				if(!General.Map.UDMF && General.Map.Grid.GridSize < GridSetup.MINIMUM_GRID_SIZE)
+					General.Map.Grid.SetGridSize(GridSetup.MINIMUM_GRID_SIZE);
 			}
 			else
 			{
@@ -933,10 +940,10 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		// This changes grid display
-		internal void UpdateGrid(int gridsize)
+		internal void UpdateGrid(float gridsize)
 		{
 			// Update grid label
-			gridlabel.Text = (gridsize == 0 ? "--" : gridsize.ToString("###0") + " mp");
+			gridlabel.Text = (gridsize == 0 ? "--" : gridsize + " mp");
 		}
 
 		// Set grid to a specified size
@@ -951,8 +958,8 @@ namespace CodeImp.DoomBuilder.Windows
 				ToolStripMenuItem item = sender as ToolStripMenuItem;
 				if(item != null)
 				{
-					// Get integral zoom level
-					int size = int.Parse(item.Tag.ToString(), CultureInfo.InvariantCulture);
+					//mxd. Get decimal zoom level
+					float size = float.Parse(item.Tag.ToString(), CultureInfo.InvariantCulture);
 
 					//mxd. Disable automatic grid resizing
 					DisableDynamicGridResize();

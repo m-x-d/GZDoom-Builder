@@ -2665,10 +2665,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		[BeginAction("movetextureright8")]	public void MoveTextureRight8() { MoveTextureByOffset(8, 0); }
 		[BeginAction("movetextureup8")]		public void MoveTextureUp8() { MoveTextureByOffset(0, -8); }
 		[BeginAction("movetexturedown8")]	public void MoveTextureDown8() { MoveTextureByOffset(0, 8); }
-		[BeginAction("movetextureleftgs")]	public void MoveTextureLeftGrid() { MoveTextureByOffset(-General.Map.Grid.GridSize, 0); }  //mxd
-		[BeginAction("movetexturerightgs")]	public void MoveTextureRightGrid() { MoveTextureByOffset(General.Map.Grid.GridSize, 0); }  //mxd
-		[BeginAction("movetextureupgs")]	public void MoveTextureUpGrid() { MoveTextureByOffset(0, -General.Map.Grid.GridSize); } //mxd
-		[BeginAction("movetexturedowngs")]	public void MoveTextureDownGrid() { MoveTextureByOffset(0, General.Map.Grid.GridSize); } //mxd
+		[BeginAction("movetextureleftgs")]	public void MoveTextureLeftGrid() { MoveTextureByOffset(-General.Map.Grid.GridSizeI, 0); }  //mxd
+		[BeginAction("movetexturerightgs")]	public void MoveTextureRightGrid() { MoveTextureByOffset(General.Map.Grid.GridSizeI, 0); }  //mxd
+		[BeginAction("movetextureupgs")]	public void MoveTextureUpGrid() { MoveTextureByOffset(0, -General.Map.Grid.GridSizeI); } //mxd
+		[BeginAction("movetexturedowngs")]	public void MoveTextureDownGrid() { MoveTextureByOffset(0, General.Map.Grid.GridSizeI); } //mxd
 
 		//mxd
 		private void MoveTextureByOffset(int ox, int oy)

@@ -108,7 +108,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		private bool drawmapcenter = true; //mxd
 		private bool lastdrawmapcenter = true; //mxd
 		private float lastgridscale = -1f;
-		private int lastgridsize;
+		private float lastgridsize;
 		private float lastgridx;
 		private float lastgridy;
 		private RectangleF viewport;
@@ -357,7 +357,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			if(thingsvertices != null) thingsvertices.Dispose();
 			thingsvertices = null;
 			lastgridscale = -1f;
-			lastgridsize = 0;
+			lastgridsize = 0.0f;
 		}
 		
 		// Allocates new image memory to render on
@@ -413,7 +413,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			
 			// Force update of view
 			lastgridscale = -1f;
-			lastgridsize = 0;
+			lastgridsize = 0.0f;
 			lastgridx = 0.0f;
 			lastgridy = 0.0f;
 			UpdateTransformations();

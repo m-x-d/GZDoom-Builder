@@ -33,8 +33,9 @@ namespace CodeImp.DoomBuilder.Editing
 	{
 		#region ================== Constants
 
-		private const int DEFAULT_GRID_SIZE = 32;
-		private const int MINIMUM_GRID_SIZE = 1; //mxd
+		private const float DEFAULT_GRID_SIZE = 32f;
+		internal const float MINIMUM_GRID_SIZE_UDMF = 0.125f; //mxd
+		internal const float MINIMUM_GRID_SIZE = 1.0f; //mxd
 
 		public const int SOURCE_TEXTURES = 0;
 		public const int SOURCE_FLATS = 1;
@@ -45,9 +46,9 @@ namespace CodeImp.DoomBuilder.Editing
 		#region ================== Variables
 
 		// Grid
-		private int gridsize;
-		private float gridsizef;
-		private float gridsizefinv;
+		private int gridsizei;
+		private float gridsize;
+		private float gridsizeinv;
 
 		// Background
 		private string background = "";
@@ -63,8 +64,8 @@ namespace CodeImp.DoomBuilder.Editing
 
 		#region ================== Properties
 
-		public int GridSize { get { return gridsize; } }
-		public float GridSizeF { get { return gridsizef; } }
+		public int GridSizeI { get { return gridsizei; } } //mxd
+		public float GridSize { get { return gridsize; } }
 		internal string BackgroundName { get { return background; } }
 		internal int BackgroundSource { get { return backsource; } }
 		internal ImageData Background { get { return backimage; } }
@@ -147,15 +148,15 @@ namespace CodeImp.DoomBuilder.Editing
 		}
 
 		// This sets the grid size
-		internal void SetGridSize(int size)
+		internal void SetGridSize(float size)
 		{
 			//mxd. Bad things happen when size <= 0
-			size = Math.Max(size, MINIMUM_GRID_SIZE);
+			size = Math.Max(size, ((General.Map != null && General.Map.UDMF) ? MINIMUM_GRID_SIZE_UDMF : MINIMUM_GRID_SIZE));
 			
 			// Change grid
-			this.gridsize = size;
-			this.gridsizef = gridsize;
-			this.gridsizefinv = 1f / gridsizef;
+			gridsize = size;
+			gridsizei = (int)Math.Max(1, Math.Round(gridsize)); //mxd
+			gridsizeinv = 1f / gridsize;
 
 			// Update in main window
 			General.MainWindow.UpdateGrid(gridsize);
@@ -213,19 +214,19 @@ namespace CodeImp.DoomBuilder.Editing
 		// This returns the next higher coordinate
 		public float GetHigher(float offset)
 		{
-			return (float)Math.Round((offset + (gridsizef * 0.5f)) * gridsizefinv) * gridsizef;
+			return (float)Math.Round((offset + (gridsize * 0.5f)) * gridsizeinv) * gridsize;
 		}
 
 		// This returns the next lower coordinate
 		public float GetLower(float offset)
 		{
-			return (float)Math.Round((offset - (gridsizef * 0.5f)) * gridsizefinv) * gridsizef;
+			return (float)Math.Round((offset - (gridsize * 0.5f)) * gridsizeinv) * gridsize;
 		}
 		
 		// This snaps to the nearest grid coordinate
 		public Vector2D SnappedToGrid(Vector2D v)
 		{
-			return SnappedToGrid(v, gridsizef, gridsizefinv);
+			return SnappedToGrid(v, gridsize, gridsizeinv);
 		}
 
 		// This snaps to the nearest grid coordinate
@@ -267,14 +268,15 @@ namespace CodeImp.DoomBuilder.Editing
 		[BeginAction("gridinc")]
 		internal void DecreaseGrid()
 		{
-			// Not lower than 1
-			if(gridsize >= 2)
+			//mxd. Not lower than 0.125 in UDMF or 1 otherwise
+			float preminsize = (General.Map.UDMF ? MINIMUM_GRID_SIZE_UDMF * 2 : MINIMUM_GRID_SIZE * 2);
+			if(gridsize >= preminsize)
 			{
 				//mxd. Disable automatic grid resizing
 				General.MainWindow.DisableDynamicGridResize();
 				
 				// Change grid
-				SetGridSize(gridsize >> 1);
+				SetGridSize(gridsize / 2);
 				
 				// Redraw display
 				General.MainWindow.RedrawDisplay();
@@ -293,7 +295,7 @@ namespace CodeImp.DoomBuilder.Editing
 				General.MainWindow.DisableDynamicGridResize();
 				
 				// Change grid
-				SetGridSize(gridsize << 1);
+				SetGridSize(gridsize * 2);
 
 				// Redraw display
 				General.MainWindow.RedrawDisplay();

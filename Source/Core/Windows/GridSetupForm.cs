@@ -141,7 +141,7 @@ namespace CodeImp.DoomBuilder.Windows
 		private void apply_Click(object sender, EventArgs e)
 		{
 			//mxd. Apply
-			int newgridsize = gridsize.GetResult(General.Map.Grid.GridSize);
+			float newgridsize = gridsize.GetResultFloat(General.Map.Grid.GridSize);
 			if(newgridsize != General.Map.Grid.GridSize)
 			{
 				//Disable automatic grid resizing

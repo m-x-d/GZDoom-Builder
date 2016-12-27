@@ -304,7 +304,7 @@ namespace CodeImp.DoomBuilder.Editing
 											   General.Map.Graphics.RenderTarget.ClientSize.Height);
 
 			Vector2D clientscale = clientsize / renderer2d.Scale;
-			int targetsize = (int)Math.Ceiling(Math.Min(clientscale.x, clientscale.y) / 32);
+			int targetsize = (int)Math.Ceiling(Math.Min(clientscale.x, clientscale.y) / 32) * 8;
 
 			// Convert to nearest power of 2
 			targetsize--;
@@ -316,7 +316,7 @@ namespace CodeImp.DoomBuilder.Editing
 			targetsize++;
 
 			// Apply changes
-			General.Map.Grid.SetGridSize(targetsize);
+			General.Map.Grid.SetGridSize(targetsize / 8f);
 		}
 
 		// This zooms to a specific level

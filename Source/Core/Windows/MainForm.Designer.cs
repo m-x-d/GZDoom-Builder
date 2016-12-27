@@ -243,6 +243,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.itemgrid8 = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemgrid4 = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemgrid1 = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemgrid05 = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemgrid025 = new System.Windows.Forms.ToolStripMenuItem();
+			this.itemgrid0125 = new System.Windows.Forms.ToolStripMenuItem();
 			this.itemgridcustom = new System.Windows.Forms.ToolStripMenuItem();
 			this.zoomlabel = new System.Windows.Forms.ToolStripStatusLabel();
 			this.buttonzoom = new System.Windows.Forms.ToolStripDropDownButton();
@@ -2228,7 +2231,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.gridlabel.AutoSize = false;
 			this.gridlabel.AutoToolTip = true;
 			this.gridlabel.Name = "gridlabel";
-			this.gridlabel.Size = new System.Drawing.Size(62, 18);
+			this.gridlabel.Size = new System.Drawing.Size(64, 18);
 			this.gridlabel.Text = "32 mp";
 			this.gridlabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
 			this.gridlabel.TextImageRelation = System.Windows.Forms.TextImageRelation.Overlay;
@@ -2249,6 +2252,9 @@ namespace CodeImp.DoomBuilder.Windows
             this.itemgrid8,
             this.itemgrid4,
             this.itemgrid1,
+            this.itemgrid05,
+            this.itemgrid025,
+            this.itemgrid0125,
             toolStripMenuItem4,
             this.itemgridcustom});
 			this.buttongrid.Image = global::CodeImp.DoomBuilder.Properties.Resources.Grid2_arrowup;
@@ -2338,6 +2344,30 @@ namespace CodeImp.DoomBuilder.Windows
 			this.itemgrid1.Tag = "1";
 			this.itemgrid1.Text = "1 mp";
 			this.itemgrid1.Click += new System.EventHandler(this.itemgridsize_Click);
+			// 
+			// itemgrid05
+			// 
+			this.itemgrid05.Name = "itemgrid05";
+			this.itemgrid05.Size = new System.Drawing.Size(153, 22);
+			this.itemgrid05.Tag = "0.5";
+			this.itemgrid05.Text = "0.5 mp";
+			this.itemgrid05.Click += new System.EventHandler(this.itemgridsize_Click);
+			// 
+			// itemgrid025
+			// 
+			this.itemgrid025.Name = "itemgrid025";
+			this.itemgrid025.Size = new System.Drawing.Size(153, 22);
+			this.itemgrid025.Tag = "0.25";
+			this.itemgrid025.Text = "0.25 mp";
+			this.itemgrid025.Click += new System.EventHandler(this.itemgridsize_Click);
+			// 
+			// itemgrid0125
+			// 
+			this.itemgrid0125.Name = "itemgrid0125";
+			this.itemgrid0125.Size = new System.Drawing.Size(153, 22);
+			this.itemgrid0125.Tag = "0.125";
+			this.itemgrid0125.Text = "0.125 mp";
+			this.itemgrid0125.Click += new System.EventHandler(this.itemgridsize_Click);
 			// 
 			// itemgridcustom
 			// 
@@ -2977,6 +3007,9 @@ namespace CodeImp.DoomBuilder.Windows
 		private System.Windows.Forms.ToolStripMenuItem itemopenconfigfolder;
 		private System.Windows.Forms.ToolStripMenuItem itemopenmapincurwad;
 		private System.Windows.Forms.ToolStripMenuItem itemgrid1;
+		private System.Windows.Forms.ToolStripMenuItem itemgrid05;
+		private System.Windows.Forms.ToolStripMenuItem itemgrid025;
+		private System.Windows.Forms.ToolStripMenuItem itemgrid0125;
 		private System.Windows.Forms.ToolStripMenuItem itemzoom400;
 		private System.Windows.Forms.Label modename;
 		private System.Windows.Forms.ToolStripMenuItem itemautoclearsidetextures;

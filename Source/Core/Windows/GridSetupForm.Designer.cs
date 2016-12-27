@@ -68,13 +68,14 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			// gridsize
 			// 
-			this.gridsize.AllowDecimal = false;
+			this.gridsize.AllowDecimal = true;
+			this.gridsize.AllowExpressions = false;
 			this.gridsize.AllowNegative = false;
-			this.gridsize.AllowRelative = true;
+			this.gridsize.AllowRelative = false;
 			this.gridsize.ButtonStep = 8;
 			this.gridsize.ButtonStepBig = 10F;
 			this.gridsize.ButtonStepFloat = 1F;
-			this.gridsize.ButtonStepSmall = 0.1F;
+			this.gridsize.ButtonStepSmall = 0.25F;
 			this.gridsize.ButtonStepsUseModifierKeys = false;
 			this.gridsize.ButtonStepsWrapAround = false;
 			this.gridsize.Location = new System.Drawing.Point(146, 26);
@@ -117,6 +118,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// backscaley
 			// 
 			this.backscaley.AllowDecimal = false;
+			this.backscaley.AllowExpressions = false;
 			this.backscaley.AllowNegative = false;
 			this.backscaley.AllowRelative = true;
 			this.backscaley.ButtonStep = 1;
@@ -135,6 +137,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// backscalex
 			// 
 			this.backscalex.AllowDecimal = false;
+			this.backscalex.AllowExpressions = false;
 			this.backscalex.AllowNegative = false;
 			this.backscalex.AllowRelative = true;
 			this.backscalex.ButtonStep = 1;
@@ -153,6 +156,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// backoffsety
 			// 
 			this.backoffsety.AllowDecimal = false;
+			this.backoffsety.AllowExpressions = false;
 			this.backoffsety.AllowNegative = true;
 			this.backoffsety.AllowRelative = true;
 			this.backoffsety.ButtonStep = 1;
@@ -171,6 +175,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// backoffsetx
 			// 
 			this.backoffsetx.AllowDecimal = false;
+			this.backoffsetx.AllowExpressions = false;
 			this.backoffsetx.AllowNegative = true;
 			this.backoffsetx.AllowRelative = true;
 			this.backoffsetx.ButtonStep = 1;
