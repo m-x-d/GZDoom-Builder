@@ -174,7 +174,7 @@ IF NOT EXIST "Build\Plugins\VisplaneExplorer.dll" GOTO FILEFAIL
 ECHO.
 ECHO Creating changelog...
 ECHO.
-ChangelogMaker.exe "GIT_Build\Changelog.xml" "Build" "MaxED" %REVISIONNUMBER%
+ChangelogMaker.exe "GIT_Build\Changelog.xml" "Build" "m-x-d>MaxED" %REVISIONNUMBER%
 IF %ERRORLEVEL% NEQ 0 GOTO LOGFAIL
 
 ECHO.

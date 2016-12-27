@@ -1441,12 +1441,33 @@
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
-    <PostBuildEvent>if exist "%25VS140COMNTOOLS%25" call "%25VS140COMNTOOLS%25vsvars32.bat"
-else if exist "%25VS120COMNTOOLS%25" call "%25VS120COMNTOOLS%25vsvars32.bat"
-else if exist "%25VS110COMNTOOLS%25" call "%25VS110COMNTOOLS%25vsvars32.bat"
-else if exist "%25VS100COMNTOOLS%25" call "%25VS100COMNTOOLS%25vsvars32.bat"
-else if exist "%25VS90COMNTOOLS%25" call "%25VS90COMNTOOLS%25vsvars32.bat"
+    <PostBuildEvent>if exist "%25VS140COMNTOOLS%25" goto tools140 
+if exist "%25VS120COMNTOOLS%25" goto tools120 
+if exist "%25VS110COMNTOOLS%25" goto tools110 
+if exist "%25VS100COMNTOOLS%25" goto tools100
+if exist "%25VS90COMNTOOLS%25" goto tools90 
 
+:tools140
+call "%25VS140COMNTOOLS%25vsvars32.bat"
+goto end
+
+:tools120
+call "%25VS120COMNTOOLS%25vsvars32.bat"
+goto end
+
+:tools110
+call "%25VS110COMNTOOLS%25vsvars32.bat"
+goto end
+
+:tools100
+call "%25VS100COMNTOOLS%25vsvars32.bat"
+goto end
+
+:tools90
+call "%25VS90COMNTOOLS%25vsvars32.bat"
+goto end
+
+:end
 editbin.exe /NOLOGO /LARGEADDRESSAWARE "$(TargetPath)"</PostBuildEvent>
   </PropertyGroup>
 </Project>
