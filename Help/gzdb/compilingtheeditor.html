@@ -51,10 +51,10 @@
 GZDB source comes with several batch files, which can be used to automatically compile and package the editor. Before launching a batch file for the first time, make sure to open it and check that variables holding software paths point to the right directories. These variables are always located near the top of the file, after the info block.
 <ul>
   <li><strong>Clean Rebuild.bat</strong> - removes project cache files, then compiles it in Release mode.<br />Requires Visual C# Express Edition / Visual Studio.</li><br />
-  <li><strong>CompileHelp.bat</strong> - compiles &quot;Build\Refmanual.chm&quot;. Help source files are located in the &quot;Help&quot; directory.<br />Requires Microsoft HTML Help compiler.</li><br />
-  <li><strong>MakeRelease.bat</strong> - removes project cache files,  sets project version number to match the latest SVN revision, compiles the project in Release mode, generates &quot;Build\Changelog.txt&quot;, compiles &quot;Build\Refmanual.chm&quot;, creates an installer and places it in the &quot;Release&quot; folder.<br />
+  <li><strong>Compile Help.bat</strong> - compiles &quot;Build\Refmanual.chm&quot;. Help source files are located in the &quot;Help&quot; directory.<br />Requires Microsoft HTML Help compiler.</li><br />
+  <li><strong>Make Release.bat</strong> - removes project cache files,  sets project version number to match the latest SVN revision, compiles the project in Release mode, generates &quot;Build\Changelog.txt&quot;, compiles &quot;Build\Refmanual.chm&quot;, creates an installer and places it in the &quot;Release&quot; folder.<br />
   Requires Git command-line client, Visual C#  Express Edition / Visual Studio, Microsoft HTML Help compiler and Inno Setup 5.</li><br />
-  <li><strong>MakeGITRelease.bat</strong> - removes project cache files,  sets project version number to match the number of commits in the master branch, compiles the project in Release mode, generates &quot;Build\Changelog.txt&quot;, compiles &quot;Build\Refmanual.chm&quot;, packs the build into 7-zip archive and places it in the &quot;GIT_Build&quot; folder.<br />
+  <li><strong>Make GIT Build.bat</strong> - removes project cache files,  sets project version number to match the number of commits in the master branch, compiles the project in Release mode, generates &quot;Build\Changelog.txt&quot;, compiles &quot;Build\Refmanual.chm&quot;, packs the build into 7-zip archive and places it in the &quot;GIT_Build&quot; folder.<br />
   Requires Git command-line client, Visual C# Express Edition / Visual Studio, Microsoft HTML Help compiler and 7-zip archiver.</li>
 </ul>
 </div>
