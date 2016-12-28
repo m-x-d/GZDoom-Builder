@@ -19,6 +19,7 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using CodeImp.DoomBuilder.Config;
 
 #endregion
 
@@ -36,7 +37,7 @@ namespace CodeImp.DoomBuilder.Windows
 #if DEBUG
 			version.Text = Application.ProductName + " [DEVBUILD]";
 #else
-			version.Text = Application.ProductName + " v" + Application.ProductVersion;
+			version.Text = Application.ProductName + " v" + Application.ProductVersion + " (" + General.CommitHash + ")";
 #endif
 		}
 
@@ -69,7 +70,7 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			try //mxd
 			{
-				Clipboard.SetDataObject(Application.ProductVersion, true, 5, 200);
+				Clipboard.SetDataObject(Application.ProductVersion + " (" + General.CommitHash + ")", true, 5, 200);
 			}
 			catch(ExternalException)
 			{

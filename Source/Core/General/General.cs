@@ -164,6 +164,7 @@ namespace CodeImp.DoomBuilder
 		private static ColorCollection colors;
 		private static TypesManager types;
 		private static ErrorLogger errorlogger;
+		private static string commithash; //mxd. Git commit hash
 		//private static Mutex appmutex;
 		
 		// Configurations
@@ -232,6 +233,7 @@ namespace CodeImp.DoomBuilder
 		public static bool NoSettings { get { return nosettings; } }
 		public static EditingManager Editing { get { return editing; } }
 		public static ErrorLogger ErrorLogger { get { return errorlogger; } }
+		public static string CommitHash { get { return commithash; } } //mxd
 
 		#endregion
 
@@ -555,8 +557,6 @@ namespace CodeImp.DoomBuilder
 			thisasm = Assembly.GetExecutingAssembly();
 			
 			// Find application path
-			//Uri localpath = new Uri(Path.GetDirectoryName(thisasm.GetName().CodeBase));
-			//apppath = Uri.UnescapeDataString(localpath.AbsolutePath);
 			apppath = Path.GetDirectoryName(Application.ExecutablePath); //mxd. What was the point of using Uri here (other than to prevent lauching from a shared folder)?
 
 			// Parse command-line arguments
@@ -578,10 +578,22 @@ namespace CodeImp.DoomBuilder
 			
 			// Make program settings directory if missing
 			if(!portablemode && !Directory.Exists(settingspath)) Directory.CreateDirectory(settingspath);
+
+			//mxd. Get git commit hash
+			var hashes = (AssemblyHashAttribute[])thisasm.GetCustomAttributes(typeof(AssemblyHashAttribute), false);
+			if(hashes.Length == 1)
+			{
+				commithash = hashes[0].CommitHash;
+			}
+			else
+			{
+				WriteLogLine("Unable to determine commit hash. Missing AssemblyHashAttribute?");
+				commithash = "0000000";
+			}
 			
 			// Remove the previous log file and start logging
 			if(File.Exists(logfile)) File.Delete(logfile);
-			General.WriteLogLine("GZDoom Builder R" + thisasm.GetName().Version.Revision + " startup"); //mxd
+			General.WriteLogLine("GZDoom Builder R" + thisasm.GetName().Version.Revision + " (" + commithash + ") startup"); //mxd
 			General.WriteLogLine("Application path:        \"" + apppath + "\"");
 			General.WriteLogLine("Temporary path:          \"" + temppath + "\"");
 			General.WriteLogLine("Local settings path:     \"" + settingspath + "\"");

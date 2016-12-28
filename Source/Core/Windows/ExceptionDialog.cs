@@ -193,25 +193,19 @@ namespace CodeImp.DoomBuilder.Windows
 			return message;
 		}
 
-		private void reportLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) 
+		private void reportlink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) 
 		{
 			if(!File.Exists(logpath)) return;
-			System.Diagnostics.Process.Start("explorer.exe", @"/select, " + logpath);
-			reportLink.LinkVisited = true;
+			try { System.Diagnostics.Process.Start("explorer.exe", @"/select, " + logpath); }
+			catch { MessageBox.Show("Unable to show the error report location..."); }
+			reportlink.LinkVisited = true;
 		}
 
-		private void threadLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) 
+		private void newissue_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) 
 		{
-			try 
-			{
-				System.Diagnostics.Process.Start("http://forum.zdoom.org/viewtopic.php?f=3&t=32392&start=9999999");
-			} 
-			catch(Exception) 
-			{
-				MessageBox.Show("Unable to open URL...");
-			}
-			
-			threadLink.LinkVisited = true;
+			try { System.Diagnostics.Process.Start("https://github.com/m-x-d/GZDoom-Builder/issues"); } 
+			catch { MessageBox.Show("Unable to open URL..."); }
+			newissue.LinkVisited = true;
 		}
 
 		private void bContinue_Click(object sender, EventArgs e) 

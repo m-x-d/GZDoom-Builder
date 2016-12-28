@@ -963,13 +963,6 @@ namespace CodeImp.DoomBuilder.Properties {
             }
         }
         
-        internal static System.Drawing.Bitmap SlimDX_small {
-            get {
-                object obj = ResourceManager.GetObject("SlimDX_small", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
         internal static System.Drawing.Bitmap SnapVerts {
             get {
                 object obj = ResourceManager.GetObject("SnapVerts", resourceCulture);
