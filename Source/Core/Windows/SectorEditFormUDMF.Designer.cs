@@ -31,6 +31,8 @@
 			this.components = new System.ComponentModel.Container();
 			System.Windows.Forms.GroupBox groupaction;
 			System.Windows.Forms.GroupBox groupeffect;
+			System.Windows.Forms.Label label4;
+			System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SectorEditFormUDMF));
 			System.Windows.Forms.Label label14;
 			System.Windows.Forms.Label label9;
 			System.Windows.Forms.Label label13;
@@ -45,6 +47,7 @@
 			System.Windows.Forms.Label label18;
 			System.Windows.Forms.Label label19;
 			this.tagsselector = new CodeImp.DoomBuilder.Controls.TagsSelector();
+			this.fogdensity = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.soundsequence = new System.Windows.Forms.ComboBox();
 			this.resetsoundsequence = new System.Windows.Forms.Button();
 			this.fadeColor = new CodeImp.DoomBuilder.Controls.ColorFieldsControl();
@@ -71,6 +74,14 @@
 			this.flags = new CodeImp.DoomBuilder.Controls.CheckboxArrayControl();
 			this.tabSurfaces = new System.Windows.Forms.TabPage();
 			this.groupBox2 = new System.Windows.Forms.GroupBox();
+			this.disablefloorglow = new System.Windows.Forms.CheckBox();
+			this.resetfloorglowheight = new System.Windows.Forms.Button();
+			this.floorglowheightlabel = new System.Windows.Forms.Label();
+			this.floorglowheight = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
+			this.floorglowcolor = new CodeImp.DoomBuilder.Controls.ColorFieldsControl();
+			this.reset_floor_reflect = new System.Windows.Forms.Button();
+			this.label23 = new System.Windows.Forms.Label();
+			this.floor_reflect = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.resetfloorterrain = new System.Windows.Forms.Button();
 			this.label3 = new System.Windows.Forms.Label();
 			this.floorterrain = new System.Windows.Forms.ComboBox();
@@ -80,8 +91,6 @@
 			this.cbUseFloorLineAngles = new System.Windows.Forms.CheckBox();
 			this.floorAngleControl = new CodeImp.DoomBuilder.Controls.AngleControlEx();
 			this.labelfloorrenderstyle = new System.Windows.Forms.Label();
-			this.label10 = new System.Windows.Forms.Label();
-			this.floorAlpha = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.label11 = new System.Windows.Forms.Label();
 			this.floorRotation = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.floorLightAbsolute = new System.Windows.Forms.CheckBox();
@@ -92,6 +101,14 @@
 			this.floorOffsets = new CodeImp.DoomBuilder.Controls.PairedFieldsControl();
 			this.floortex = new CodeImp.DoomBuilder.Controls.FlatSelectorControl();
 			this.groupBox1 = new System.Windows.Forms.GroupBox();
+			this.disableceilingglow = new System.Windows.Forms.CheckBox();
+			this.resetceilingglowheight = new System.Windows.Forms.Button();
+			this.ceilingglowheightlabel = new System.Windows.Forms.Label();
+			this.ceilingglowheight = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
+			this.ceilingglowcolor = new CodeImp.DoomBuilder.Controls.ColorFieldsControl();
+			this.reset_ceiling_reflect = new System.Windows.Forms.Button();
+			this.label20 = new System.Windows.Forms.Label();
+			this.ceiling_reflect = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.resetceilterrain = new System.Windows.Forms.Button();
 			this.label7 = new System.Windows.Forms.Label();
 			this.ceilterrain = new System.Windows.Forms.ComboBox();
@@ -101,8 +118,6 @@
 			this.cbUseCeilLineAngles = new System.Windows.Forms.CheckBox();
 			this.ceilAngleControl = new CodeImp.DoomBuilder.Controls.AngleControlEx();
 			this.labelceilrenderstyle = new System.Windows.Forms.Label();
-			this.label4 = new System.Windows.Forms.Label();
-			this.ceilAlpha = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.label1 = new System.Windows.Forms.Label();
 			this.ceilRotation = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.ceilLightAbsolute = new System.Windows.Forms.CheckBox();
@@ -113,6 +128,20 @@
 			this.ceilOffsets = new CodeImp.DoomBuilder.Controls.PairedFieldsControl();
 			this.ceilingtex = new CodeImp.DoomBuilder.Controls.FlatSelectorControl();
 			this.tabslopes = new System.Windows.Forms.TabPage();
+			this.groupBox7 = new System.Windows.Forms.GroupBox();
+			this.resetalphafloor = new System.Windows.Forms.Button();
+			this.floorportalflags = new CodeImp.DoomBuilder.Controls.CheckboxArrayControl();
+			this.label22 = new System.Windows.Forms.Label();
+			this.alphafloor = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
+			this.floorportalrenderstylelabel = new System.Windows.Forms.Label();
+			this.floorportalrenderstyle = new System.Windows.Forms.ComboBox();
+			this.groupBox6 = new System.Windows.Forms.GroupBox();
+			this.resetalphaceiling = new System.Windows.Forms.Button();
+			this.ceilportalflags = new CodeImp.DoomBuilder.Controls.CheckboxArrayControl();
+			this.label21 = new System.Windows.Forms.Label();
+			this.alphaceiling = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
+			this.ceilportalrenderstylelabel = new System.Windows.Forms.Label();
+			this.ceilportalrenderstyle = new System.Windows.Forms.ComboBox();
 			this.groupBox5 = new System.Windows.Forms.GroupBox();
 			this.floorslopecontrol = new CodeImp.DoomBuilder.Controls.SectorSlopeControl();
 			this.groupBox4 = new System.Windows.Forms.GroupBox();
@@ -124,20 +153,9 @@
 			this.cancel = new System.Windows.Forms.Button();
 			this.apply = new System.Windows.Forms.Button();
 			this.tooltip = new System.Windows.Forms.ToolTip(this.components);
-			this.groupBox6 = new System.Windows.Forms.GroupBox();
-			this.ceilportalrenderstylelabel = new System.Windows.Forms.Label();
-			this.ceilportalrenderstyle = new System.Windows.Forms.ComboBox();
-			this.label21 = new System.Windows.Forms.Label();
-			this.ceilportalalpha = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
-			this.ceilportalflags = new CodeImp.DoomBuilder.Controls.CheckboxArrayControl();
-			this.groupBox7 = new System.Windows.Forms.GroupBox();
-			this.floorportalflags = new CodeImp.DoomBuilder.Controls.CheckboxArrayControl();
-			this.label22 = new System.Windows.Forms.Label();
-			this.floorportalalpha = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
-			this.floorportalrenderstylelabel = new System.Windows.Forms.Label();
-			this.floorportalrenderstyle = new System.Windows.Forms.ComboBox();
 			groupaction = new System.Windows.Forms.GroupBox();
 			groupeffect = new System.Windows.Forms.GroupBox();
+			label4 = new System.Windows.Forms.Label();
 			label14 = new System.Windows.Forms.Label();
 			label9 = new System.Windows.Forms.Label();
 			label13 = new System.Windows.Forms.Label();
@@ -162,12 +180,12 @@
 			this.groupBox2.SuspendLayout();
 			this.groupBox1.SuspendLayout();
 			this.tabslopes.SuspendLayout();
+			this.groupBox7.SuspendLayout();
+			this.groupBox6.SuspendLayout();
 			this.groupBox5.SuspendLayout();
 			this.groupBox4.SuspendLayout();
 			this.tabcomment.SuspendLayout();
 			this.tabcustom.SuspendLayout();
-			this.groupBox6.SuspendLayout();
-			this.groupBox7.SuspendLayout();
 			this.SuspendLayout();
 			// 
 			// groupaction
@@ -175,7 +193,7 @@
 			groupaction.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
 			groupaction.Controls.Add(this.tagsselector);
-			groupaction.Location = new System.Drawing.Point(7, 394);
+			groupaction.Location = new System.Drawing.Point(7, 498);
 			groupaction.Name = "groupaction";
 			groupaction.Size = new System.Drawing.Size(490, 80);
 			groupaction.TabIndex = 2;
@@ -193,6 +211,8 @@
 			// 
 			groupeffect.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			groupeffect.Controls.Add(this.fogdensity);
+			groupeffect.Controls.Add(label4);
 			groupeffect.Controls.Add(this.soundsequence);
 			groupeffect.Controls.Add(this.resetsoundsequence);
 			groupeffect.Controls.Add(this.fadeColor);
@@ -207,12 +227,43 @@
 			groupeffect.Controls.Add(this.browseeffect);
 			groupeffect.Controls.Add(this.effect);
 			groupeffect.Controls.Add(label8);
-			groupeffect.Location = new System.Drawing.Point(7, 256);
+			groupeffect.Location = new System.Drawing.Point(7, 330);
 			groupeffect.Name = "groupeffect";
-			groupeffect.Size = new System.Drawing.Size(490, 132);
+			groupeffect.Size = new System.Drawing.Size(490, 162);
 			groupeffect.TabIndex = 1;
 			groupeffect.TabStop = false;
 			groupeffect.Text = " Effects ";
+			// 
+			// fogdensity
+			// 
+			this.fogdensity.AllowDecimal = true;
+			this.fogdensity.AllowExpressions = false;
+			this.fogdensity.AllowNegative = false;
+			this.fogdensity.AllowRelative = false;
+			this.fogdensity.ButtonStep = 1;
+			this.fogdensity.ButtonStepBig = 0.25F;
+			this.fogdensity.ButtonStepFloat = 0.1F;
+			this.fogdensity.ButtonStepSmall = 0.01F;
+			this.fogdensity.ButtonStepsUseModifierKeys = true;
+			this.fogdensity.ButtonStepsWrapAround = false;
+			this.fogdensity.Location = new System.Drawing.Point(89, 132);
+			this.fogdensity.Name = "fogdensity";
+			this.fogdensity.Size = new System.Drawing.Size(81, 24);
+			this.fogdensity.StepValues = null;
+			this.fogdensity.TabIndex = 10;
+			this.fogdensity.WhenTextChanged += new System.EventHandler(this.fogdensity_WhenTextChanged);
+			// 
+			// label4
+			// 
+			label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			label4.ForeColor = System.Drawing.SystemColors.HotTrack;
+			label4.Location = new System.Drawing.Point(9, 137);
+			label4.Name = "label4";
+			label4.Size = new System.Drawing.Size(74, 14);
+			label4.TabIndex = 9;
+			label4.Text = "Fog density:";
+			label4.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			this.tooltip.SetToolTip(label4, resources.GetString("label4.ToolTip"));
 			// 
 			// soundsequence
 			// 
@@ -220,7 +271,7 @@
 			this.soundsequence.Location = new System.Drawing.Point(283, 48);
 			this.soundsequence.Name = "soundsequence";
 			this.soundsequence.Size = new System.Drawing.Size(167, 21);
-			this.soundsequence.TabIndex = 5;
+			this.soundsequence.TabIndex = 12;
 			this.soundsequence.MouseDown += new System.Windows.Forms.MouseEventHandler(this.soundsequence_MouseDown);
 			this.soundsequence.TextChanged += new System.EventHandler(this.soundsequence_TextChanged);
 			// 
@@ -230,7 +281,7 @@
 			this.resetsoundsequence.Location = new System.Drawing.Point(456, 46);
 			this.resetsoundsequence.Name = "resetsoundsequence";
 			this.resetsoundsequence.Size = new System.Drawing.Size(28, 25);
-			this.resetsoundsequence.TabIndex = 6;
+			this.resetsoundsequence.TabIndex = 13;
 			this.resetsoundsequence.Text = " ";
 			this.resetsoundsequence.UseVisualStyleBackColor = true;
 			this.resetsoundsequence.Click += new System.EventHandler(this.resetsoundsequence_Click);
@@ -243,7 +294,7 @@
 			this.fadeColor.Location = new System.Drawing.Point(215, 99);
 			this.fadeColor.Name = "fadeColor";
 			this.fadeColor.Size = new System.Drawing.Size(207, 31);
-			this.fadeColor.TabIndex = 8;
+			this.fadeColor.TabIndex = 15;
 			this.fadeColor.OnValueChanged += new System.EventHandler(this.fadeColor_OnValueChanged);
 			// 
 			// lightColor
@@ -254,12 +305,13 @@
 			this.lightColor.Location = new System.Drawing.Point(215, 71);
 			this.lightColor.Name = "lightColor";
 			this.lightColor.Size = new System.Drawing.Size(207, 29);
-			this.lightColor.TabIndex = 7;
+			this.lightColor.TabIndex = 14;
 			this.lightColor.OnValueChanged += new System.EventHandler(this.lightColor_OnValueChanged);
 			// 
 			// brightness
 			// 
 			this.brightness.AllowDecimal = false;
+			this.brightness.AllowExpressions = false;
 			this.brightness.AllowNegative = false;
 			this.brightness.AllowRelative = true;
 			this.brightness.ButtonStep = 8;
@@ -272,12 +324,13 @@
 			this.brightness.Name = "brightness";
 			this.brightness.Size = new System.Drawing.Size(81, 24);
 			this.brightness.StepValues = null;
-			this.brightness.TabIndex = 2;
+			this.brightness.TabIndex = 4;
 			this.brightness.WhenTextChanged += new System.EventHandler(this.brightness_WhenTextChanged);
 			// 
 			// desaturation
 			// 
 			this.desaturation.AllowDecimal = true;
+			this.desaturation.AllowExpressions = false;
 			this.desaturation.AllowNegative = false;
 			this.desaturation.AllowRelative = false;
 			this.desaturation.ButtonStep = 1;
@@ -290,7 +343,7 @@
 			this.desaturation.Name = "desaturation";
 			this.desaturation.Size = new System.Drawing.Size(81, 24);
 			this.desaturation.StepValues = null;
-			this.desaturation.TabIndex = 4;
+			this.desaturation.TabIndex = 8;
 			// 
 			// label14
 			// 
@@ -298,7 +351,7 @@
 			label14.Location = new System.Drawing.Point(186, 52);
 			label14.Name = "label14";
 			label14.Size = new System.Drawing.Size(91, 13);
-			label14.TabIndex = 3;
+			label14.TabIndex = 11;
 			label14.Text = "Sound sequence:";
 			// 
 			// label9
@@ -307,7 +360,7 @@
 			label9.Location = new System.Drawing.Point(21, 51);
 			label9.Name = "label9";
 			label9.Size = new System.Drawing.Size(59, 13);
-			label9.TabIndex = 2;
+			label9.TabIndex = 3;
 			label9.Text = "Brightness:";
 			// 
 			// label13
@@ -315,13 +368,14 @@
 			label13.Location = new System.Drawing.Point(9, 107);
 			label13.Name = "label13";
 			label13.Size = new System.Drawing.Size(74, 14);
-			label13.TabIndex = 27;
+			label13.TabIndex = 7;
 			label13.Text = "Desaturation:";
 			label13.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// gravity
 			// 
 			this.gravity.AllowDecimal = true;
+			this.gravity.AllowExpressions = false;
 			this.gravity.AllowNegative = true;
 			this.gravity.AllowRelative = true;
 			this.gravity.ButtonStep = 1;
@@ -334,14 +388,14 @@
 			this.gravity.Name = "gravity";
 			this.gravity.Size = new System.Drawing.Size(81, 24);
 			this.gravity.StepValues = null;
-			this.gravity.TabIndex = 3;
+			this.gravity.TabIndex = 6;
 			// 
 			// label2
 			// 
 			label2.Location = new System.Drawing.Point(9, 79);
 			label2.Name = "label2";
 			label2.Size = new System.Drawing.Size(74, 14);
-			label2.TabIndex = 23;
+			label2.TabIndex = 5;
 			label2.Text = "Gravity:";
 			label2.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
@@ -351,7 +405,7 @@
 			this.browseeffect.Location = new System.Drawing.Point(456, 16);
 			this.browseeffect.Name = "browseeffect";
 			this.browseeffect.Size = new System.Drawing.Size(28, 25);
-			this.browseeffect.TabIndex = 1;
+			this.browseeffect.TabIndex = 2;
 			this.browseeffect.Text = " ";
 			this.browseeffect.UseVisualStyleBackColor = true;
 			this.browseeffect.Click += new System.EventHandler(this.browseeffect_Click);
@@ -366,7 +420,7 @@
 			this.effect.Location = new System.Drawing.Point(89, 18);
 			this.effect.Name = "effect";
 			this.effect.Size = new System.Drawing.Size(361, 21);
-			this.effect.TabIndex = 0;
+			this.effect.TabIndex = 1;
 			this.effect.Value = 402;
 			// 
 			// label8
@@ -390,7 +444,7 @@
 			groupfloorceiling.Controls.Add(this.sectorheightlabel);
 			groupfloorceiling.Controls.Add(this.sectorheight);
 			groupfloorceiling.Controls.Add(this.floorheight);
-			groupfloorceiling.Location = new System.Drawing.Point(7, 112);
+			groupfloorceiling.Location = new System.Drawing.Point(7, 186);
 			groupfloorceiling.Name = "groupfloorceiling";
 			groupfloorceiling.Size = new System.Drawing.Size(187, 138);
 			groupfloorceiling.TabIndex = 0;
@@ -404,7 +458,7 @@
 			label15.Location = new System.Drawing.Point(9, 83);
 			label15.Name = "label15";
 			label15.Size = new System.Drawing.Size(74, 14);
-			label15.TabIndex = 27;
+			label15.TabIndex = 4;
 			label15.Text = "Height offset:";
 			label15.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			this.tooltip.SetToolTip(label15, "Changes floor and ceiling height by given value.\r\nUse \"++\" to raise by sector hei" +
@@ -415,7 +469,7 @@
 			label6.Location = new System.Drawing.Point(9, 23);
 			label6.Name = "label6";
 			label6.Size = new System.Drawing.Size(74, 14);
-			label6.TabIndex = 19;
+			label6.TabIndex = 0;
 			label6.Text = "Ceiling height:";
 			label6.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
@@ -424,16 +478,16 @@
 			label5.Location = new System.Drawing.Point(9, 53);
 			label5.Name = "label5";
 			label5.Size = new System.Drawing.Size(74, 14);
-			label5.TabIndex = 17;
+			label5.TabIndex = 2;
 			label5.Text = "Floor height:";
 			label5.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// heightoffset
 			// 
 			this.heightoffset.AllowDecimal = false;
+			this.heightoffset.AllowExpressions = true;
 			this.heightoffset.AllowNegative = true;
 			this.heightoffset.AllowRelative = true;
-			this.heightoffset.AllowExpressions = true;
 			this.heightoffset.ButtonStep = 8;
 			this.heightoffset.ButtonStepBig = 16F;
 			this.heightoffset.ButtonStepFloat = 1F;
@@ -444,15 +498,15 @@
 			this.heightoffset.Name = "heightoffset";
 			this.heightoffset.Size = new System.Drawing.Size(81, 24);
 			this.heightoffset.StepValues = null;
-			this.heightoffset.TabIndex = 2;
+			this.heightoffset.TabIndex = 5;
 			this.heightoffset.WhenTextChanged += new System.EventHandler(this.heightoffset_WhenTextChanged);
 			// 
 			// ceilingheight
 			// 
 			this.ceilingheight.AllowDecimal = false;
+			this.ceilingheight.AllowExpressions = true;
 			this.ceilingheight.AllowNegative = true;
 			this.ceilingheight.AllowRelative = true;
-			this.ceilingheight.AllowExpressions = true;
 			this.ceilingheight.ButtonStep = 8;
 			this.ceilingheight.ButtonStepBig = 16F;
 			this.ceilingheight.ButtonStepFloat = 1F;
@@ -463,7 +517,7 @@
 			this.ceilingheight.Name = "ceilingheight";
 			this.ceilingheight.Size = new System.Drawing.Size(81, 24);
 			this.ceilingheight.StepValues = null;
-			this.ceilingheight.TabIndex = 0;
+			this.ceilingheight.TabIndex = 1;
 			this.ceilingheight.WhenTextChanged += new System.EventHandler(this.ceilingheight_WhenTextChanged);
 			// 
 			// sectorheightlabel
@@ -471,7 +525,7 @@
 			this.sectorheightlabel.Location = new System.Drawing.Point(9, 113);
 			this.sectorheightlabel.Name = "sectorheightlabel";
 			this.sectorheightlabel.Size = new System.Drawing.Size(74, 14);
-			this.sectorheightlabel.TabIndex = 20;
+			this.sectorheightlabel.TabIndex = 6;
 			this.sectorheightlabel.Text = "Sector height:";
 			this.sectorheightlabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
@@ -481,15 +535,15 @@
 			this.sectorheight.Location = new System.Drawing.Point(89, 114);
 			this.sectorheight.Name = "sectorheight";
 			this.sectorheight.Size = new System.Drawing.Size(13, 13);
-			this.sectorheight.TabIndex = 3;
+			this.sectorheight.TabIndex = 7;
 			this.sectorheight.Text = "0";
 			// 
 			// floorheight
 			// 
 			this.floorheight.AllowDecimal = false;
+			this.floorheight.AllowExpressions = true;
 			this.floorheight.AllowNegative = true;
 			this.floorheight.AllowRelative = true;
-			this.floorheight.AllowExpressions = true;
 			this.floorheight.ButtonStep = 8;
 			this.floorheight.ButtonStepBig = 16F;
 			this.floorheight.ButtonStepFloat = 1F;
@@ -500,7 +554,7 @@
 			this.floorheight.Name = "floorheight";
 			this.floorheight.Size = new System.Drawing.Size(81, 24);
 			this.floorheight.StepValues = null;
-			this.floorheight.TabIndex = 1;
+			this.floorheight.TabIndex = 3;
 			this.floorheight.WhenTextChanged += new System.EventHandler(this.floorheight_WhenTextChanged);
 			// 
 			// label17
@@ -510,7 +564,7 @@
 			label17.Location = new System.Drawing.Point(10, 51);
 			label17.Name = "label17";
 			label17.Size = new System.Drawing.Size(74, 14);
-			label17.TabIndex = 29;
+			label17.TabIndex = 3;
 			label17.Text = "Amount:";
 			label17.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			this.tooltip.SetToolTip(label17, "Amount of damage inflicted by this sector.\r\nIf this is 0, all other damage proper" +
@@ -522,7 +576,7 @@
 			label16.Location = new System.Drawing.Point(10, 23);
 			label16.Name = "label16";
 			label16.Size = new System.Drawing.Size(74, 14);
-			label16.TabIndex = 36;
+			label16.TabIndex = 0;
 			label16.Text = "Type:";
 			label16.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
@@ -533,7 +587,7 @@
 			label18.Location = new System.Drawing.Point(10, 81);
 			label18.Name = "label18";
 			label18.Size = new System.Drawing.Size(74, 14);
-			label18.TabIndex = 37;
+			label18.TabIndex = 5;
 			label18.Text = "Interval:";
 			label18.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			this.tooltip.SetToolTip(label18, "Interval in tics between damage application.");
@@ -545,7 +599,7 @@
 			label19.Location = new System.Drawing.Point(10, 111);
 			label19.Name = "label19";
 			label19.Size = new System.Drawing.Size(74, 14);
-			label19.TabIndex = 39;
+			label19.TabIndex = 7;
 			label19.Text = "Leakiness:";
 			label19.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			this.tooltip.SetToolTip(label19, "Probability of leaking through radiation suit\r\n(0 = never, 256 = always)");
@@ -566,7 +620,7 @@
 			this.tabs.Name = "tabs";
 			this.tabs.Padding = new System.Drawing.Point(20, 3);
 			this.tabs.SelectedIndex = 0;
-			this.tabs.Size = new System.Drawing.Size(511, 504);
+			this.tabs.Size = new System.Drawing.Size(511, 610);
 			this.tabs.TabIndex = 1;
 			// 
 			// tabproperties
@@ -580,7 +634,7 @@
 			this.tabproperties.Location = new System.Drawing.Point(4, 22);
 			this.tabproperties.Name = "tabproperties";
 			this.tabproperties.Padding = new System.Windows.Forms.Padding(3);
-			this.tabproperties.Size = new System.Drawing.Size(503, 478);
+			this.tabproperties.Size = new System.Drawing.Size(503, 584);
 			this.tabproperties.TabIndex = 0;
 			this.tabproperties.Text = "Properties";
 			this.tabproperties.UseVisualStyleBackColor = true;
@@ -596,7 +650,7 @@
 			this.groupdamage.Controls.Add(this.resetdamagetype);
 			this.groupdamage.Controls.Add(this.damageamount);
 			this.groupdamage.Controls.Add(this.damagetype);
-			this.groupdamage.Location = new System.Drawing.Point(200, 112);
+			this.groupdamage.Location = new System.Drawing.Point(200, 188);
 			this.groupdamage.Name = "groupdamage";
 			this.groupdamage.Size = new System.Drawing.Size(297, 136);
 			this.groupdamage.TabIndex = 4;
@@ -606,6 +660,7 @@
 			// leakiness
 			// 
 			this.leakiness.AllowDecimal = false;
+			this.leakiness.AllowExpressions = false;
 			this.leakiness.AllowNegative = false;
 			this.leakiness.AllowRelative = true;
 			this.leakiness.ButtonStep = 8;
@@ -618,11 +673,12 @@
 			this.leakiness.Name = "leakiness";
 			this.leakiness.Size = new System.Drawing.Size(81, 24);
 			this.leakiness.StepValues = null;
-			this.leakiness.TabIndex = 4;
+			this.leakiness.TabIndex = 8;
 			// 
 			// damageinterval
 			// 
 			this.damageinterval.AllowDecimal = false;
+			this.damageinterval.AllowExpressions = false;
 			this.damageinterval.AllowNegative = false;
 			this.damageinterval.AllowRelative = true;
 			this.damageinterval.ButtonStep = 8;
@@ -635,7 +691,7 @@
 			this.damageinterval.Name = "damageinterval";
 			this.damageinterval.Size = new System.Drawing.Size(81, 24);
 			this.damageinterval.StepValues = null;
-			this.damageinterval.TabIndex = 3;
+			this.damageinterval.TabIndex = 6;
 			// 
 			// resetdamagetype
 			// 
@@ -643,7 +699,7 @@
 			this.resetdamagetype.Location = new System.Drawing.Point(263, 17);
 			this.resetdamagetype.Name = "resetdamagetype";
 			this.resetdamagetype.Size = new System.Drawing.Size(28, 25);
-			this.resetdamagetype.TabIndex = 1;
+			this.resetdamagetype.TabIndex = 2;
 			this.resetdamagetype.Text = " ";
 			this.resetdamagetype.UseVisualStyleBackColor = true;
 			this.resetdamagetype.Click += new System.EventHandler(this.resetdamagetype_Click);
@@ -651,6 +707,7 @@
 			// damageamount
 			// 
 			this.damageamount.AllowDecimal = false;
+			this.damageamount.AllowExpressions = false;
 			this.damageamount.AllowNegative = true;
 			this.damageamount.AllowRelative = true;
 			this.damageamount.ButtonStep = 8;
@@ -663,7 +720,7 @@
 			this.damageamount.Name = "damageamount";
 			this.damageamount.Size = new System.Drawing.Size(81, 24);
 			this.damageamount.StepValues = null;
-			this.damageamount.TabIndex = 2;
+			this.damageamount.TabIndex = 4;
 			// 
 			// damagetype
 			// 
@@ -671,7 +728,7 @@
 			this.damagetype.Location = new System.Drawing.Point(90, 19);
 			this.damagetype.Name = "damagetype";
 			this.damagetype.Size = new System.Drawing.Size(167, 21);
-			this.damagetype.TabIndex = 0;
+			this.damagetype.TabIndex = 1;
 			this.damagetype.MouseDown += new System.Windows.Forms.MouseEventHandler(this.damagetype_MouseDown);
 			this.damagetype.TextChanged += new System.EventHandler(this.damagetype_TextChanged);
 			// 
@@ -680,8 +737,8 @@
 			this.groupBox3.Controls.Add(this.flags);
 			this.groupBox3.Location = new System.Drawing.Point(7, 6);
 			this.groupBox3.Name = "groupBox3";
-			this.groupBox3.Size = new System.Drawing.Size(490, 100);
-			this.groupBox3.TabIndex = 3;
+			this.groupBox3.Size = new System.Drawing.Size(490, 174);
+			this.groupBox3.TabIndex = 0;
 			this.groupBox3.TabStop = false;
 			this.groupBox3.Text = " Flags ";
 			// 
@@ -694,7 +751,7 @@
 			this.flags.Columns = 2;
 			this.flags.Location = new System.Drawing.Point(15, 21);
 			this.flags.Name = "flags";
-			this.flags.Size = new System.Drawing.Size(469, 73);
+			this.flags.Size = new System.Drawing.Size(469, 147);
 			this.flags.TabIndex = 0;
 			this.flags.VerticalSpacing = 1;
 			// 
@@ -705,7 +762,7 @@
 			this.tabSurfaces.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tabSurfaces.Location = new System.Drawing.Point(4, 22);
 			this.tabSurfaces.Name = "tabSurfaces";
-			this.tabSurfaces.Size = new System.Drawing.Size(503, 478);
+			this.tabSurfaces.Size = new System.Drawing.Size(503, 584);
 			this.tabSurfaces.TabIndex = 2;
 			this.tabSurfaces.Text = "Surfaces";
 			this.tabSurfaces.UseVisualStyleBackColor = true;
@@ -714,6 +771,14 @@
 			// 
 			this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox2.Controls.Add(this.disablefloorglow);
+			this.groupBox2.Controls.Add(this.resetfloorglowheight);
+			this.groupBox2.Controls.Add(this.floorglowheightlabel);
+			this.groupBox2.Controls.Add(this.floorglowheight);
+			this.groupBox2.Controls.Add(this.floorglowcolor);
+			this.groupBox2.Controls.Add(this.reset_floor_reflect);
+			this.groupBox2.Controls.Add(this.label23);
+			this.groupBox2.Controls.Add(this.floor_reflect);
 			this.groupBox2.Controls.Add(this.resetfloorterrain);
 			this.groupBox2.Controls.Add(this.label3);
 			this.groupBox2.Controls.Add(this.floorterrain);
@@ -723,8 +788,6 @@
 			this.groupBox2.Controls.Add(this.cbUseFloorLineAngles);
 			this.groupBox2.Controls.Add(this.floorAngleControl);
 			this.groupBox2.Controls.Add(this.labelfloorrenderstyle);
-			this.groupBox2.Controls.Add(this.label10);
-			this.groupBox2.Controls.Add(this.floorAlpha);
 			this.groupBox2.Controls.Add(this.label11);
 			this.groupBox2.Controls.Add(this.floorRotation);
 			this.groupBox2.Controls.Add(this.floorLightAbsolute);
@@ -734,12 +797,117 @@
 			this.groupBox2.Controls.Add(this.floorScale);
 			this.groupBox2.Controls.Add(this.floorOffsets);
 			this.groupBox2.Controls.Add(this.floortex);
-			this.groupBox2.Location = new System.Drawing.Point(3, 239);
+			this.groupBox2.Location = new System.Drawing.Point(3, 295);
 			this.groupBox2.Name = "groupBox2";
-			this.groupBox2.Size = new System.Drawing.Size(497, 230);
+			this.groupBox2.Size = new System.Drawing.Size(497, 286);
 			this.groupBox2.TabIndex = 55;
 			this.groupBox2.TabStop = false;
 			this.groupBox2.Text = " Floor ";
+			// 
+			// disablefloorglow
+			// 
+			this.disablefloorglow.AutoSize = true;
+			this.disablefloorglow.Location = new System.Drawing.Point(252, 230);
+			this.disablefloorglow.Name = "disablefloorglow";
+			this.disablefloorglow.Size = new System.Drawing.Size(61, 17);
+			this.disablefloorglow.TabIndex = 21;
+			this.disablefloorglow.Tag = "";
+			this.disablefloorglow.Text = "Disable";
+			this.disablefloorglow.UseVisualStyleBackColor = true;
+			this.disablefloorglow.CheckedChanged += new System.EventHandler(this.disablefloorglow_CheckedChanged);
+			// 
+			// resetfloorglowheight
+			// 
+			this.resetfloorglowheight.Image = global::CodeImp.DoomBuilder.Properties.Resources.Reset;
+			this.resetfloorglowheight.Location = new System.Drawing.Point(179, 254);
+			this.resetfloorglowheight.Name = "resetfloorglowheight";
+			this.resetfloorglowheight.Size = new System.Drawing.Size(23, 23);
+			this.resetfloorglowheight.TabIndex = 24;
+			this.tooltip.SetToolTip(this.resetfloorglowheight, "Reset Ceiling Brightness");
+			this.resetfloorglowheight.UseVisualStyleBackColor = true;
+			this.resetfloorglowheight.Click += new System.EventHandler(this.resetfloorglowheight_Click);
+			// 
+			// floorglowheightlabel
+			// 
+			this.floorglowheightlabel.Location = new System.Drawing.Point(26, 259);
+			this.floorglowheightlabel.Name = "floorglowheightlabel";
+			this.floorglowheightlabel.Size = new System.Drawing.Size(80, 14);
+			this.floorglowheightlabel.TabIndex = 22;
+			this.floorglowheightlabel.Tag = "";
+			this.floorglowheightlabel.Text = "Glow height:";
+			this.floorglowheightlabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// floorglowheight
+			// 
+			this.floorglowheight.AllowDecimal = true;
+			this.floorglowheight.AllowExpressions = false;
+			this.floorglowheight.AllowNegative = false;
+			this.floorglowheight.AllowRelative = false;
+			this.floorglowheight.ButtonStep = 1;
+			this.floorglowheight.ButtonStepBig = 0.25F;
+			this.floorglowheight.ButtonStepFloat = 0.1F;
+			this.floorglowheight.ButtonStepSmall = 0.01F;
+			this.floorglowheight.ButtonStepsUseModifierKeys = true;
+			this.floorglowheight.ButtonStepsWrapAround = false;
+			this.floorglowheight.Location = new System.Drawing.Point(113, 254);
+			this.floorglowheight.Name = "floorglowheight";
+			this.floorglowheight.Size = new System.Drawing.Size(62, 24);
+			this.floorglowheight.StepValues = null;
+			this.floorglowheight.TabIndex = 23;
+			this.floorglowheight.Tag = "";
+			this.floorglowheight.WhenTextChanged += new System.EventHandler(this.floorglowheight_WhenTextChanged);
+			// 
+			// floorglowcolor
+			// 
+			this.floorglowcolor.DefaultValue = 0;
+			this.floorglowcolor.Field = "floorglowcolor";
+			this.floorglowcolor.Label = "Glow:";
+			this.floorglowcolor.Location = new System.Drawing.Point(44, 223);
+			this.floorglowcolor.Name = "floorglowcolor";
+			this.floorglowcolor.Size = new System.Drawing.Size(207, 29);
+			this.floorglowcolor.TabIndex = 20;
+			this.floorglowcolor.OnValueChanged += new System.EventHandler(this.floorglowcolor_OnValueChanged);
+			// 
+			// reset_floor_reflect
+			// 
+			this.reset_floor_reflect.Image = global::CodeImp.DoomBuilder.Properties.Resources.Reset;
+			this.reset_floor_reflect.Location = new System.Drawing.Point(179, 198);
+			this.reset_floor_reflect.Name = "reset_floor_reflect";
+			this.reset_floor_reflect.Size = new System.Drawing.Size(23, 23);
+			this.reset_floor_reflect.TabIndex = 19;
+			this.tooltip.SetToolTip(this.reset_floor_reflect, "Reset Ceiling Brightness");
+			this.reset_floor_reflect.UseVisualStyleBackColor = true;
+			this.reset_floor_reflect.Click += new System.EventHandler(this.reset_floor_reflect_Click);
+			// 
+			// label23
+			// 
+			this.label23.Location = new System.Drawing.Point(24, 202);
+			this.label23.Name = "label23";
+			this.label23.Size = new System.Drawing.Size(80, 14);
+			this.label23.TabIndex = 17;
+			this.label23.Tag = "";
+			this.label23.Text = "Reflectivity:";
+			this.label23.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// floor_reflect
+			// 
+			this.floor_reflect.AllowDecimal = true;
+			this.floor_reflect.AllowExpressions = false;
+			this.floor_reflect.AllowNegative = false;
+			this.floor_reflect.AllowRelative = false;
+			this.floor_reflect.ButtonStep = 1;
+			this.floor_reflect.ButtonStepBig = 0.25F;
+			this.floor_reflect.ButtonStepFloat = 0.1F;
+			this.floor_reflect.ButtonStepSmall = 0.01F;
+			this.floor_reflect.ButtonStepsUseModifierKeys = true;
+			this.floor_reflect.ButtonStepsWrapAround = false;
+			this.floor_reflect.Location = new System.Drawing.Point(113, 197);
+			this.floor_reflect.Name = "floor_reflect";
+			this.floor_reflect.Size = new System.Drawing.Size(62, 24);
+			this.floor_reflect.StepValues = null;
+			this.floor_reflect.TabIndex = 18;
+			this.floor_reflect.Tag = "";
+			this.floor_reflect.WhenTextChanged += new System.EventHandler(this.floor_reflect_WhenTextChanged);
 			// 
 			// resetfloorterrain
 			// 
@@ -747,7 +915,7 @@
 			this.resetfloorterrain.Location = new System.Drawing.Point(246, 110);
 			this.resetfloorterrain.Name = "resetfloorterrain";
 			this.resetfloorterrain.Size = new System.Drawing.Size(23, 23);
-			this.resetfloorterrain.TabIndex = 4;
+			this.resetfloorterrain.TabIndex = 8;
 			this.resetfloorterrain.Text = " ";
 			this.resetfloorterrain.UseVisualStyleBackColor = true;
 			this.resetfloorterrain.Click += new System.EventHandler(this.resetfloorterrain_Click);
@@ -757,7 +925,7 @@
 			this.label3.Location = new System.Drawing.Point(24, 114);
 			this.label3.Name = "label3";
 			this.label3.Size = new System.Drawing.Size(80, 14);
-			this.label3.TabIndex = 62;
+			this.label3.TabIndex = 6;
 			this.label3.Tag = "";
 			this.label3.Text = "Terrain:";
 			this.label3.TextAlign = System.Drawing.ContentAlignment.TopRight;
@@ -768,7 +936,7 @@
 			this.floorterrain.Location = new System.Drawing.Point(113, 111);
 			this.floorterrain.Name = "floorterrain";
 			this.floorterrain.Size = new System.Drawing.Size(130, 21);
-			this.floorterrain.TabIndex = 3;
+			this.floorterrain.TabIndex = 7;
 			this.floorterrain.MouseDown += new System.Windows.Forms.MouseEventHandler(this.floorterrain_MouseDown);
 			this.floorterrain.TextChanged += new System.EventHandler(this.floorterrain_TextChanged);
 			// 
@@ -778,7 +946,7 @@
 			this.resetfloorlight.Location = new System.Drawing.Point(246, 138);
 			this.resetfloorlight.Name = "resetfloorlight";
 			this.resetfloorlight.Size = new System.Drawing.Size(23, 23);
-			this.resetfloorlight.TabIndex = 7;
+			this.resetfloorlight.TabIndex = 12;
 			this.tooltip.SetToolTip(this.resetfloorlight, "Reset Floor Brightness");
 			this.resetfloorlight.UseVisualStyleBackColor = true;
 			this.resetfloorlight.Click += new System.EventHandler(this.resetfloorlight_Click);
@@ -788,7 +956,7 @@
 			this.labelFloorOffsets.Location = new System.Drawing.Point(6, 27);
 			this.labelFloorOffsets.Name = "labelFloorOffsets";
 			this.labelFloorOffsets.Size = new System.Drawing.Size(98, 14);
-			this.labelFloorOffsets.TabIndex = 59;
+			this.labelFloorOffsets.TabIndex = 0;
 			this.labelFloorOffsets.Tag = "";
 			this.labelFloorOffsets.Text = "Texture Offsets:";
 			this.labelFloorOffsets.TextAlign = System.Drawing.ContentAlignment.TopRight;
@@ -798,7 +966,7 @@
 			this.labelFloorScale.Location = new System.Drawing.Point(9, 59);
 			this.labelFloorScale.Name = "labelFloorScale";
 			this.labelFloorScale.Size = new System.Drawing.Size(95, 14);
-			this.labelFloorScale.TabIndex = 58;
+			this.labelFloorScale.TabIndex = 2;
 			this.labelFloorScale.Tag = "";
 			this.labelFloorScale.Text = "Texture Scale:";
 			this.labelFloorScale.TextAlign = System.Drawing.ContentAlignment.TopRight;
@@ -809,7 +977,7 @@
 			this.cbUseFloorLineAngles.Location = new System.Drawing.Point(181, 172);
 			this.cbUseFloorLineAngles.Name = "cbUseFloorLineAngles";
 			this.cbUseFloorLineAngles.Size = new System.Drawing.Size(113, 17);
-			this.cbUseFloorLineAngles.TabIndex = 9;
+			this.cbUseFloorLineAngles.TabIndex = 16;
 			this.cbUseFloorLineAngles.Tag = "";
 			this.cbUseFloorLineAngles.Text = "Use linedef angles";
 			this.cbUseFloorLineAngles.UseVisualStyleBackColor = true;
@@ -817,13 +985,13 @@
 			// 
 			// floorAngleControl
 			// 
-			this.floorAngleControl.Angle = -270;
+			this.floorAngleControl.Angle = -1440;
 			this.floorAngleControl.AngleOffset = 90;
 			this.floorAngleControl.DoomAngleClamping = false;
 			this.floorAngleControl.Location = new System.Drawing.Point(6, 156);
 			this.floorAngleControl.Name = "floorAngleControl";
 			this.floorAngleControl.Size = new System.Drawing.Size(44, 44);
-			this.floorAngleControl.TabIndex = 56;
+			this.floorAngleControl.TabIndex = 13;
 			this.floorAngleControl.AngleChanged += new System.EventHandler(this.floorAngleControl_AngleChanged);
 			// 
 			// labelfloorrenderstyle
@@ -831,45 +999,17 @@
 			this.labelfloorrenderstyle.Location = new System.Drawing.Point(24, 88);
 			this.labelfloorrenderstyle.Name = "labelfloorrenderstyle";
 			this.labelfloorrenderstyle.Size = new System.Drawing.Size(80, 14);
-			this.labelfloorrenderstyle.TabIndex = 54;
+			this.labelfloorrenderstyle.TabIndex = 4;
 			this.labelfloorrenderstyle.Tag = "";
 			this.labelfloorrenderstyle.Text = "Render style:";
 			this.labelfloorrenderstyle.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			// 
-			// label10
-			// 
-			this.label10.Location = new System.Drawing.Point(24, 202);
-			this.label10.Name = "label10";
-			this.label10.Size = new System.Drawing.Size(80, 14);
-			this.label10.TabIndex = 52;
-			this.label10.Tag = "";
-			this.label10.Text = "Alpha:";
-			this.label10.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			// 
-			// floorAlpha
-			// 
-			this.floorAlpha.AllowDecimal = true;
-			this.floorAlpha.AllowNegative = false;
-			this.floorAlpha.AllowRelative = false;
-			this.floorAlpha.ButtonStep = 1;
-			this.floorAlpha.ButtonStepBig = 0.25F;
-			this.floorAlpha.ButtonStepFloat = 0.1F;
-			this.floorAlpha.ButtonStepSmall = 0.01F;
-			this.floorAlpha.ButtonStepsUseModifierKeys = true;
-			this.floorAlpha.ButtonStepsWrapAround = false;
-			this.floorAlpha.Location = new System.Drawing.Point(113, 197);
-			this.floorAlpha.Name = "floorAlpha";
-			this.floorAlpha.Size = new System.Drawing.Size(62, 24);
-			this.floorAlpha.StepValues = null;
-			this.floorAlpha.TabIndex = 10;
-			this.floorAlpha.Tag = "";
 			// 
 			// label11
 			// 
 			this.label11.Location = new System.Drawing.Point(24, 172);
 			this.label11.Name = "label11";
 			this.label11.Size = new System.Drawing.Size(80, 14);
-			this.label11.TabIndex = 50;
+			this.label11.TabIndex = 14;
 			this.label11.Tag = "";
 			this.label11.Text = "Rotation:";
 			this.label11.TextAlign = System.Drawing.ContentAlignment.TopRight;
@@ -877,6 +1017,7 @@
 			// floorRotation
 			// 
 			this.floorRotation.AllowDecimal = true;
+			this.floorRotation.AllowExpressions = false;
 			this.floorRotation.AllowNegative = true;
 			this.floorRotation.AllowRelative = true;
 			this.floorRotation.ButtonStep = 5;
@@ -889,7 +1030,7 @@
 			this.floorRotation.Name = "floorRotation";
 			this.floorRotation.Size = new System.Drawing.Size(62, 24);
 			this.floorRotation.StepValues = null;
-			this.floorRotation.TabIndex = 8;
+			this.floorRotation.TabIndex = 15;
 			this.floorRotation.Tag = "";
 			this.floorRotation.WhenTextChanged += new System.EventHandler(this.floorRotation_WhenTextChanged);
 			// 
@@ -899,7 +1040,7 @@
 			this.floorLightAbsolute.Location = new System.Drawing.Point(181, 142);
 			this.floorLightAbsolute.Name = "floorLightAbsolute";
 			this.floorLightAbsolute.Size = new System.Drawing.Size(67, 17);
-			this.floorLightAbsolute.TabIndex = 6;
+			this.floorLightAbsolute.TabIndex = 11;
 			this.floorLightAbsolute.Text = "Absolute";
 			this.floorLightAbsolute.UseVisualStyleBackColor = true;
 			this.floorLightAbsolute.CheckedChanged += new System.EventHandler(this.floorLightAbsolute_CheckedChanged);
@@ -909,7 +1050,7 @@
 			this.label12.Location = new System.Drawing.Point(24, 142);
 			this.label12.Name = "label12";
 			this.label12.Size = new System.Drawing.Size(80, 14);
-			this.label12.TabIndex = 47;
+			this.label12.TabIndex = 9;
 			this.label12.Tag = "";
 			this.label12.Text = "Brightness:";
 			this.label12.TextAlign = System.Drawing.ContentAlignment.TopRight;
@@ -917,6 +1058,7 @@
 			// floorBrightness
 			// 
 			this.floorBrightness.AllowDecimal = false;
+			this.floorBrightness.AllowExpressions = false;
 			this.floorBrightness.AllowNegative = true;
 			this.floorBrightness.AllowRelative = true;
 			this.floorBrightness.ButtonStep = 16;
@@ -929,7 +1071,7 @@
 			this.floorBrightness.Name = "floorBrightness";
 			this.floorBrightness.Size = new System.Drawing.Size(62, 24);
 			this.floorBrightness.StepValues = null;
-			this.floorBrightness.TabIndex = 5;
+			this.floorBrightness.TabIndex = 10;
 			this.floorBrightness.Tag = "lightfloor";
 			this.floorBrightness.WhenTextChanged += new System.EventHandler(this.floorBrightness_WhenTextChanged);
 			// 
@@ -940,7 +1082,7 @@
 			this.floorRenderStyle.Location = new System.Drawing.Point(113, 85);
 			this.floorRenderStyle.Name = "floorRenderStyle";
 			this.floorRenderStyle.Size = new System.Drawing.Size(130, 21);
-			this.floorRenderStyle.TabIndex = 2;
+			this.floorRenderStyle.TabIndex = 5;
 			// 
 			// floorScale
 			// 
@@ -958,7 +1100,7 @@
 			this.floorScale.Location = new System.Drawing.Point(110, 53);
 			this.floorScale.Name = "floorScale";
 			this.floorScale.Size = new System.Drawing.Size(186, 26);
-			this.floorScale.TabIndex = 1;
+			this.floorScale.TabIndex = 3;
 			this.floorScale.OnValuesChanged += new System.EventHandler(this.floorScale_OnValuesChanged);
 			// 
 			// floorOffsets
@@ -977,16 +1119,16 @@
 			this.floorOffsets.Location = new System.Drawing.Point(110, 21);
 			this.floorOffsets.Name = "floorOffsets";
 			this.floorOffsets.Size = new System.Drawing.Size(186, 26);
-			this.floorOffsets.TabIndex = 0;
+			this.floorOffsets.TabIndex = 1;
 			this.floorOffsets.OnValuesChanged += new System.EventHandler(this.floorOffsets_OnValuesChanged);
 			// 
 			// floortex
 			// 
-			this.floortex.Location = new System.Drawing.Point(300, 13);
+			this.floortex.Location = new System.Drawing.Point(307, 12);
 			this.floortex.MultipleTextures = false;
 			this.floortex.Name = "floortex";
-			this.floortex.Size = new System.Drawing.Size(190, 204);
-			this.floortex.TabIndex = 11;
+			this.floortex.Size = new System.Drawing.Size(184, 208);
+			this.floortex.TabIndex = 25;
 			this.floortex.TextureName = "";
 			this.floortex.OnValueChanged += new System.EventHandler(this.floortex_OnValueChanged);
 			// 
@@ -994,6 +1136,14 @@
 			// 
 			this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.groupBox1.Controls.Add(this.disableceilingglow);
+			this.groupBox1.Controls.Add(this.resetceilingglowheight);
+			this.groupBox1.Controls.Add(this.ceilingglowheightlabel);
+			this.groupBox1.Controls.Add(this.ceilingglowheight);
+			this.groupBox1.Controls.Add(this.ceilingglowcolor);
+			this.groupBox1.Controls.Add(this.reset_ceiling_reflect);
+			this.groupBox1.Controls.Add(this.label20);
+			this.groupBox1.Controls.Add(this.ceiling_reflect);
 			this.groupBox1.Controls.Add(this.resetceilterrain);
 			this.groupBox1.Controls.Add(this.label7);
 			this.groupBox1.Controls.Add(this.ceilterrain);
@@ -1003,8 +1153,6 @@
 			this.groupBox1.Controls.Add(this.cbUseCeilLineAngles);
 			this.groupBox1.Controls.Add(this.ceilAngleControl);
 			this.groupBox1.Controls.Add(this.labelceilrenderstyle);
-			this.groupBox1.Controls.Add(this.label4);
-			this.groupBox1.Controls.Add(this.ceilAlpha);
 			this.groupBox1.Controls.Add(this.label1);
 			this.groupBox1.Controls.Add(this.ceilRotation);
 			this.groupBox1.Controls.Add(this.ceilLightAbsolute);
@@ -1016,10 +1164,115 @@
 			this.groupBox1.Controls.Add(this.ceilingtex);
 			this.groupBox1.Location = new System.Drawing.Point(3, 3);
 			this.groupBox1.Name = "groupBox1";
-			this.groupBox1.Size = new System.Drawing.Size(497, 230);
+			this.groupBox1.Size = new System.Drawing.Size(497, 286);
 			this.groupBox1.TabIndex = 0;
 			this.groupBox1.TabStop = false;
 			this.groupBox1.Text = " Ceiling ";
+			// 
+			// disableceilingglow
+			// 
+			this.disableceilingglow.AutoSize = true;
+			this.disableceilingglow.Location = new System.Drawing.Point(252, 230);
+			this.disableceilingglow.Name = "disableceilingglow";
+			this.disableceilingglow.Size = new System.Drawing.Size(61, 17);
+			this.disableceilingglow.TabIndex = 21;
+			this.disableceilingglow.Tag = "";
+			this.disableceilingglow.Text = "Disable";
+			this.disableceilingglow.UseVisualStyleBackColor = true;
+			this.disableceilingglow.CheckedChanged += new System.EventHandler(this.disableceilingglow_CheckedChanged);
+			// 
+			// resetceilingglowheight
+			// 
+			this.resetceilingglowheight.Image = global::CodeImp.DoomBuilder.Properties.Resources.Reset;
+			this.resetceilingglowheight.Location = new System.Drawing.Point(179, 254);
+			this.resetceilingglowheight.Name = "resetceilingglowheight";
+			this.resetceilingglowheight.Size = new System.Drawing.Size(23, 23);
+			this.resetceilingglowheight.TabIndex = 24;
+			this.tooltip.SetToolTip(this.resetceilingglowheight, "Reset Ceiling Brightness");
+			this.resetceilingglowheight.UseVisualStyleBackColor = true;
+			this.resetceilingglowheight.Click += new System.EventHandler(this.resetceilingglowheight_Click);
+			// 
+			// ceilingglowheightlabel
+			// 
+			this.ceilingglowheightlabel.Location = new System.Drawing.Point(26, 259);
+			this.ceilingglowheightlabel.Name = "ceilingglowheightlabel";
+			this.ceilingglowheightlabel.Size = new System.Drawing.Size(80, 14);
+			this.ceilingglowheightlabel.TabIndex = 22;
+			this.ceilingglowheightlabel.Tag = "";
+			this.ceilingglowheightlabel.Text = "Glow height:";
+			this.ceilingglowheightlabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// ceilingglowheight
+			// 
+			this.ceilingglowheight.AllowDecimal = true;
+			this.ceilingglowheight.AllowExpressions = false;
+			this.ceilingglowheight.AllowNegative = false;
+			this.ceilingglowheight.AllowRelative = false;
+			this.ceilingglowheight.ButtonStep = 1;
+			this.ceilingglowheight.ButtonStepBig = 0.25F;
+			this.ceilingglowheight.ButtonStepFloat = 0.1F;
+			this.ceilingglowheight.ButtonStepSmall = 0.01F;
+			this.ceilingglowheight.ButtonStepsUseModifierKeys = true;
+			this.ceilingglowheight.ButtonStepsWrapAround = false;
+			this.ceilingglowheight.Location = new System.Drawing.Point(113, 254);
+			this.ceilingglowheight.Name = "ceilingglowheight";
+			this.ceilingglowheight.Size = new System.Drawing.Size(62, 24);
+			this.ceilingglowheight.StepValues = null;
+			this.ceilingglowheight.TabIndex = 23;
+			this.ceilingglowheight.Tag = "";
+			this.ceilingglowheight.WhenTextChanged += new System.EventHandler(this.ceilingglowheight_WhenTextChanged);
+			// 
+			// ceilingglowcolor
+			// 
+			this.ceilingglowcolor.DefaultValue = 0;
+			this.ceilingglowcolor.Field = "ceilingglowcolor";
+			this.ceilingglowcolor.Label = "Glow:";
+			this.ceilingglowcolor.Location = new System.Drawing.Point(44, 223);
+			this.ceilingglowcolor.Name = "ceilingglowcolor";
+			this.ceilingglowcolor.Size = new System.Drawing.Size(207, 29);
+			this.ceilingglowcolor.TabIndex = 20;
+			this.ceilingglowcolor.OnValueChanged += new System.EventHandler(this.ceilingglowcolor_OnValueChanged);
+			// 
+			// reset_ceiling_reflect
+			// 
+			this.reset_ceiling_reflect.Image = global::CodeImp.DoomBuilder.Properties.Resources.Reset;
+			this.reset_ceiling_reflect.Location = new System.Drawing.Point(179, 198);
+			this.reset_ceiling_reflect.Name = "reset_ceiling_reflect";
+			this.reset_ceiling_reflect.Size = new System.Drawing.Size(23, 23);
+			this.reset_ceiling_reflect.TabIndex = 19;
+			this.tooltip.SetToolTip(this.reset_ceiling_reflect, "Reset Ceiling Brightness");
+			this.reset_ceiling_reflect.UseVisualStyleBackColor = true;
+			this.reset_ceiling_reflect.Click += new System.EventHandler(this.reset_ceiling_reflect_Click);
+			// 
+			// label20
+			// 
+			this.label20.Location = new System.Drawing.Point(26, 202);
+			this.label20.Name = "label20";
+			this.label20.Size = new System.Drawing.Size(80, 14);
+			this.label20.TabIndex = 17;
+			this.label20.Tag = "";
+			this.label20.Text = "Reflectivity:";
+			this.label20.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// ceiling_reflect
+			// 
+			this.ceiling_reflect.AllowDecimal = true;
+			this.ceiling_reflect.AllowExpressions = false;
+			this.ceiling_reflect.AllowNegative = false;
+			this.ceiling_reflect.AllowRelative = false;
+			this.ceiling_reflect.ButtonStep = 1;
+			this.ceiling_reflect.ButtonStepBig = 0.25F;
+			this.ceiling_reflect.ButtonStepFloat = 0.1F;
+			this.ceiling_reflect.ButtonStepSmall = 0.01F;
+			this.ceiling_reflect.ButtonStepsUseModifierKeys = true;
+			this.ceiling_reflect.ButtonStepsWrapAround = false;
+			this.ceiling_reflect.Location = new System.Drawing.Point(113, 197);
+			this.ceiling_reflect.Name = "ceiling_reflect";
+			this.ceiling_reflect.Size = new System.Drawing.Size(62, 24);
+			this.ceiling_reflect.StepValues = null;
+			this.ceiling_reflect.TabIndex = 18;
+			this.ceiling_reflect.Tag = "";
+			this.ceiling_reflect.WhenTextChanged += new System.EventHandler(this.ceiling_reflect_WhenTextChanged);
 			// 
 			// resetceilterrain
 			// 
@@ -1027,17 +1280,17 @@
 			this.resetceilterrain.Location = new System.Drawing.Point(246, 110);
 			this.resetceilterrain.Name = "resetceilterrain";
 			this.resetceilterrain.Size = new System.Drawing.Size(23, 23);
-			this.resetceilterrain.TabIndex = 4;
+			this.resetceilterrain.TabIndex = 8;
 			this.resetceilterrain.Text = " ";
 			this.resetceilterrain.UseVisualStyleBackColor = true;
 			this.resetceilterrain.Click += new System.EventHandler(this.resetceilterrain_Click);
 			// 
 			// label7
 			// 
-			this.label7.Location = new System.Drawing.Point(24, 114);
+			this.label7.Location = new System.Drawing.Point(26, 114);
 			this.label7.Name = "label7";
 			this.label7.Size = new System.Drawing.Size(80, 14);
-			this.label7.TabIndex = 64;
+			this.label7.TabIndex = 6;
 			this.label7.Tag = "";
 			this.label7.Text = "Terrain:";
 			this.label7.TextAlign = System.Drawing.ContentAlignment.TopRight;
@@ -1048,7 +1301,7 @@
 			this.ceilterrain.Location = new System.Drawing.Point(113, 111);
 			this.ceilterrain.Name = "ceilterrain";
 			this.ceilterrain.Size = new System.Drawing.Size(130, 21);
-			this.ceilterrain.TabIndex = 3;
+			this.ceilterrain.TabIndex = 7;
 			this.ceilterrain.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ceilterrain_MouseDown);
 			this.ceilterrain.TextChanged += new System.EventHandler(this.ceilterrain_TextChanged);
 			// 
@@ -1058,27 +1311,27 @@
 			this.resetceillight.Location = new System.Drawing.Point(246, 138);
 			this.resetceillight.Name = "resetceillight";
 			this.resetceillight.Size = new System.Drawing.Size(23, 23);
-			this.resetceillight.TabIndex = 7;
+			this.resetceillight.TabIndex = 12;
 			this.tooltip.SetToolTip(this.resetceillight, "Reset Ceiling Brightness");
 			this.resetceillight.UseVisualStyleBackColor = true;
 			this.resetceillight.Click += new System.EventHandler(this.resetceillight_Click);
 			// 
 			// labelCeilOffsets
 			// 
-			this.labelCeilOffsets.Location = new System.Drawing.Point(6, 27);
+			this.labelCeilOffsets.Location = new System.Drawing.Point(8, 27);
 			this.labelCeilOffsets.Name = "labelCeilOffsets";
 			this.labelCeilOffsets.Size = new System.Drawing.Size(98, 14);
-			this.labelCeilOffsets.TabIndex = 61;
+			this.labelCeilOffsets.TabIndex = 0;
 			this.labelCeilOffsets.Tag = "";
 			this.labelCeilOffsets.Text = "Texture Offsets:";
 			this.labelCeilOffsets.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// labelCeilScale
 			// 
-			this.labelCeilScale.Location = new System.Drawing.Point(9, 59);
+			this.labelCeilScale.Location = new System.Drawing.Point(11, 59);
 			this.labelCeilScale.Name = "labelCeilScale";
 			this.labelCeilScale.Size = new System.Drawing.Size(95, 14);
-			this.labelCeilScale.TabIndex = 60;
+			this.labelCeilScale.TabIndex = 2;
 			this.labelCeilScale.Tag = "";
 			this.labelCeilScale.Text = "Texture Scale:";
 			this.labelCeilScale.TextAlign = System.Drawing.ContentAlignment.TopRight;
@@ -1089,7 +1342,7 @@
 			this.cbUseCeilLineAngles.Location = new System.Drawing.Point(181, 172);
 			this.cbUseCeilLineAngles.Name = "cbUseCeilLineAngles";
 			this.cbUseCeilLineAngles.Size = new System.Drawing.Size(113, 17);
-			this.cbUseCeilLineAngles.TabIndex = 9;
+			this.cbUseCeilLineAngles.TabIndex = 16;
 			this.cbUseCeilLineAngles.Tag = "";
 			this.cbUseCeilLineAngles.Text = "Use linedef angles";
 			this.cbUseCeilLineAngles.UseVisualStyleBackColor = true;
@@ -1097,59 +1350,31 @@
 			// 
 			// ceilAngleControl
 			// 
-			this.ceilAngleControl.Angle = -270;
+			this.ceilAngleControl.Angle = -1440;
 			this.ceilAngleControl.AngleOffset = 90;
 			this.ceilAngleControl.DoomAngleClamping = false;
 			this.ceilAngleControl.Location = new System.Drawing.Point(6, 156);
 			this.ceilAngleControl.Name = "ceilAngleControl";
 			this.ceilAngleControl.Size = new System.Drawing.Size(44, 44);
-			this.ceilAngleControl.TabIndex = 55;
+			this.ceilAngleControl.TabIndex = 13;
 			this.ceilAngleControl.AngleChanged += new System.EventHandler(this.ceilAngleControl_AngleChanged);
 			// 
 			// labelceilrenderstyle
 			// 
-			this.labelceilrenderstyle.Location = new System.Drawing.Point(24, 88);
+			this.labelceilrenderstyle.Location = new System.Drawing.Point(26, 88);
 			this.labelceilrenderstyle.Name = "labelceilrenderstyle";
 			this.labelceilrenderstyle.Size = new System.Drawing.Size(80, 14);
-			this.labelceilrenderstyle.TabIndex = 54;
+			this.labelceilrenderstyle.TabIndex = 4;
 			this.labelceilrenderstyle.Tag = "";
 			this.labelceilrenderstyle.Text = "Render style:";
 			this.labelceilrenderstyle.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
-			// label4
-			// 
-			this.label4.Location = new System.Drawing.Point(24, 202);
-			this.label4.Name = "label4";
-			this.label4.Size = new System.Drawing.Size(80, 14);
-			this.label4.TabIndex = 52;
-			this.label4.Tag = "";
-			this.label4.Text = "Alpha:";
-			this.label4.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			// 
-			// ceilAlpha
-			// 
-			this.ceilAlpha.AllowDecimal = true;
-			this.ceilAlpha.AllowNegative = false;
-			this.ceilAlpha.AllowRelative = false;
-			this.ceilAlpha.ButtonStep = 1;
-			this.ceilAlpha.ButtonStepBig = 0.25F;
-			this.ceilAlpha.ButtonStepFloat = 0.1F;
-			this.ceilAlpha.ButtonStepSmall = 0.01F;
-			this.ceilAlpha.ButtonStepsUseModifierKeys = true;
-			this.ceilAlpha.ButtonStepsWrapAround = false;
-			this.ceilAlpha.Location = new System.Drawing.Point(113, 197);
-			this.ceilAlpha.Name = "ceilAlpha";
-			this.ceilAlpha.Size = new System.Drawing.Size(62, 24);
-			this.ceilAlpha.StepValues = null;
-			this.ceilAlpha.TabIndex = 10;
-			this.ceilAlpha.Tag = "";
-			// 
 			// label1
 			// 
-			this.label1.Location = new System.Drawing.Point(24, 172);
+			this.label1.Location = new System.Drawing.Point(26, 172);
 			this.label1.Name = "label1";
 			this.label1.Size = new System.Drawing.Size(80, 14);
-			this.label1.TabIndex = 50;
+			this.label1.TabIndex = 14;
 			this.label1.Tag = "";
 			this.label1.Text = "Rotation:";
 			this.label1.TextAlign = System.Drawing.ContentAlignment.TopRight;
@@ -1157,6 +1382,7 @@
 			// ceilRotation
 			// 
 			this.ceilRotation.AllowDecimal = true;
+			this.ceilRotation.AllowExpressions = false;
 			this.ceilRotation.AllowNegative = true;
 			this.ceilRotation.AllowRelative = true;
 			this.ceilRotation.ButtonStep = 5;
@@ -1169,7 +1395,7 @@
 			this.ceilRotation.Name = "ceilRotation";
 			this.ceilRotation.Size = new System.Drawing.Size(62, 24);
 			this.ceilRotation.StepValues = null;
-			this.ceilRotation.TabIndex = 8;
+			this.ceilRotation.TabIndex = 15;
 			this.ceilRotation.Tag = "";
 			this.ceilRotation.WhenTextChanged += new System.EventHandler(this.ceilRotation_WhenTextChanged);
 			// 
@@ -1179,7 +1405,7 @@
 			this.ceilLightAbsolute.Location = new System.Drawing.Point(181, 142);
 			this.ceilLightAbsolute.Name = "ceilLightAbsolute";
 			this.ceilLightAbsolute.Size = new System.Drawing.Size(67, 17);
-			this.ceilLightAbsolute.TabIndex = 6;
+			this.ceilLightAbsolute.TabIndex = 11;
 			this.ceilLightAbsolute.Tag = "";
 			this.ceilLightAbsolute.Text = "Absolute";
 			this.ceilLightAbsolute.UseVisualStyleBackColor = true;
@@ -1187,10 +1413,10 @@
 			// 
 			// labelLightFront
 			// 
-			this.labelLightFront.Location = new System.Drawing.Point(24, 142);
+			this.labelLightFront.Location = new System.Drawing.Point(26, 142);
 			this.labelLightFront.Name = "labelLightFront";
 			this.labelLightFront.Size = new System.Drawing.Size(80, 14);
-			this.labelLightFront.TabIndex = 47;
+			this.labelLightFront.TabIndex = 9;
 			this.labelLightFront.Tag = "";
 			this.labelLightFront.Text = "Brightness:";
 			this.labelLightFront.TextAlign = System.Drawing.ContentAlignment.TopRight;
@@ -1198,6 +1424,7 @@
 			// ceilBrightness
 			// 
 			this.ceilBrightness.AllowDecimal = false;
+			this.ceilBrightness.AllowExpressions = false;
 			this.ceilBrightness.AllowNegative = true;
 			this.ceilBrightness.AllowRelative = true;
 			this.ceilBrightness.ButtonStep = 16;
@@ -1210,7 +1437,7 @@
 			this.ceilBrightness.Name = "ceilBrightness";
 			this.ceilBrightness.Size = new System.Drawing.Size(62, 24);
 			this.ceilBrightness.StepValues = null;
-			this.ceilBrightness.TabIndex = 5;
+			this.ceilBrightness.TabIndex = 10;
 			this.ceilBrightness.Tag = "lightceiling";
 			this.ceilBrightness.WhenTextChanged += new System.EventHandler(this.ceilBrightness_WhenTextChanged);
 			// 
@@ -1221,7 +1448,7 @@
 			this.ceilRenderStyle.Location = new System.Drawing.Point(113, 85);
 			this.ceilRenderStyle.Name = "ceilRenderStyle";
 			this.ceilRenderStyle.Size = new System.Drawing.Size(130, 21);
-			this.ceilRenderStyle.TabIndex = 2;
+			this.ceilRenderStyle.TabIndex = 5;
 			// 
 			// ceilScale
 			// 
@@ -1239,7 +1466,7 @@
 			this.ceilScale.Location = new System.Drawing.Point(110, 53);
 			this.ceilScale.Name = "ceilScale";
 			this.ceilScale.Size = new System.Drawing.Size(186, 26);
-			this.ceilScale.TabIndex = 1;
+			this.ceilScale.TabIndex = 3;
 			this.ceilScale.OnValuesChanged += new System.EventHandler(this.ceilScale_OnValuesChanged);
 			// 
 			// ceilOffsets
@@ -1258,16 +1485,16 @@
 			this.ceilOffsets.Location = new System.Drawing.Point(110, 21);
 			this.ceilOffsets.Name = "ceilOffsets";
 			this.ceilOffsets.Size = new System.Drawing.Size(186, 26);
-			this.ceilOffsets.TabIndex = 0;
+			this.ceilOffsets.TabIndex = 1;
 			this.ceilOffsets.OnValuesChanged += new System.EventHandler(this.ceilOffsets_OnValuesChanged);
 			// 
 			// ceilingtex
 			// 
-			this.ceilingtex.Location = new System.Drawing.Point(300, 13);
+			this.ceilingtex.Location = new System.Drawing.Point(307, 12);
 			this.ceilingtex.MultipleTextures = false;
 			this.ceilingtex.Name = "ceilingtex";
-			this.ceilingtex.Size = new System.Drawing.Size(190, 204);
-			this.ceilingtex.TabIndex = 11;
+			this.ceilingtex.Size = new System.Drawing.Size(184, 208);
+			this.ceilingtex.TabIndex = 25;
 			this.ceilingtex.TextureName = "";
 			this.ceilingtex.OnValueChanged += new System.EventHandler(this.ceilingtex_OnValueChanged);
 			// 
@@ -1280,17 +1507,193 @@
 			this.tabslopes.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
 			this.tabslopes.Location = new System.Drawing.Point(4, 22);
 			this.tabslopes.Name = "tabslopes";
-			this.tabslopes.Size = new System.Drawing.Size(503, 478);
+			this.tabslopes.Size = new System.Drawing.Size(503, 584);
 			this.tabslopes.TabIndex = 3;
 			this.tabslopes.Text = "Slopes / Portals";
 			this.tabslopes.UseVisualStyleBackColor = true;
 			// 
+			// groupBox7
+			// 
+			this.groupBox7.Controls.Add(this.resetalphafloor);
+			this.groupBox7.Controls.Add(this.floorportalflags);
+			this.groupBox7.Controls.Add(this.label22);
+			this.groupBox7.Controls.Add(this.alphafloor);
+			this.groupBox7.Controls.Add(this.floorportalrenderstylelabel);
+			this.groupBox7.Controls.Add(this.floorportalrenderstyle);
+			this.groupBox7.Location = new System.Drawing.Point(307, 295);
+			this.groupBox7.Name = "groupBox7";
+			this.groupBox7.Size = new System.Drawing.Size(193, 286);
+			this.groupBox7.TabIndex = 60;
+			this.groupBox7.TabStop = false;
+			this.groupBox7.Text = " Floor portal ";
+			// 
+			// resetalphafloor
+			// 
+			this.resetalphafloor.Image = global::CodeImp.DoomBuilder.Properties.Resources.Reset;
+			this.resetalphafloor.Location = new System.Drawing.Point(149, 49);
+			this.resetalphafloor.Name = "resetalphafloor";
+			this.resetalphafloor.Size = new System.Drawing.Size(23, 23);
+			this.resetalphafloor.TabIndex = 70;
+			this.tooltip.SetToolTip(this.resetalphafloor, "Reset Ceiling Brightness");
+			this.resetalphafloor.UseVisualStyleBackColor = true;
+			this.resetalphafloor.Click += new System.EventHandler(this.resetalphafloor_Click);
+			// 
+			// floorportalflags
+			// 
+			this.floorportalflags.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.floorportalflags.AutoScroll = true;
+			this.floorportalflags.Columns = 2;
+			this.floorportalflags.Location = new System.Drawing.Point(6, 79);
+			this.floorportalflags.Name = "floorportalflags";
+			this.floorportalflags.Size = new System.Drawing.Size(181, 201);
+			this.floorportalflags.TabIndex = 59;
+			this.floorportalflags.VerticalSpacing = 1;
+			// 
+			// label22
+			// 
+			this.label22.Location = new System.Drawing.Point(6, 54);
+			this.label22.Name = "label22";
+			this.label22.Size = new System.Drawing.Size(72, 14);
+			this.label22.TabIndex = 58;
+			this.label22.Tag = "";
+			this.label22.Text = "Alpha:";
+			this.label22.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// alphafloor
+			// 
+			this.alphafloor.AllowDecimal = true;
+			this.alphafloor.AllowExpressions = false;
+			this.alphafloor.AllowNegative = false;
+			this.alphafloor.AllowRelative = false;
+			this.alphafloor.ButtonStep = 1;
+			this.alphafloor.ButtonStepBig = 0.25F;
+			this.alphafloor.ButtonStepFloat = 0.1F;
+			this.alphafloor.ButtonStepSmall = 0.01F;
+			this.alphafloor.ButtonStepsUseModifierKeys = true;
+			this.alphafloor.ButtonStepsWrapAround = false;
+			this.alphafloor.Location = new System.Drawing.Point(84, 49);
+			this.alphafloor.Name = "alphafloor";
+			this.alphafloor.Size = new System.Drawing.Size(62, 24);
+			this.alphafloor.StepValues = null;
+			this.alphafloor.TabIndex = 57;
+			this.alphafloor.Tag = "";
+			this.alphafloor.WhenTextChanged += new System.EventHandler(this.alphafloor_WhenTextChanged);
+			// 
+			// floorportalrenderstylelabel
+			// 
+			this.floorportalrenderstylelabel.Location = new System.Drawing.Point(6, 26);
+			this.floorportalrenderstylelabel.Name = "floorportalrenderstylelabel";
+			this.floorportalrenderstylelabel.Size = new System.Drawing.Size(72, 14);
+			this.floorportalrenderstylelabel.TabIndex = 56;
+			this.floorportalrenderstylelabel.Tag = "";
+			this.floorportalrenderstylelabel.Text = "Render style:";
+			this.floorportalrenderstylelabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// floorportalrenderstyle
+			// 
+			this.floorportalrenderstyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.floorportalrenderstyle.FormattingEnabled = true;
+			this.floorportalrenderstyle.Location = new System.Drawing.Point(84, 22);
+			this.floorportalrenderstyle.Name = "floorportalrenderstyle";
+			this.floorportalrenderstyle.Size = new System.Drawing.Size(103, 21);
+			this.floorportalrenderstyle.TabIndex = 55;
+			// 
+			// groupBox6
+			// 
+			this.groupBox6.Controls.Add(this.resetalphaceiling);
+			this.groupBox6.Controls.Add(this.ceilportalflags);
+			this.groupBox6.Controls.Add(this.label21);
+			this.groupBox6.Controls.Add(this.alphaceiling);
+			this.groupBox6.Controls.Add(this.ceilportalrenderstylelabel);
+			this.groupBox6.Controls.Add(this.ceilportalrenderstyle);
+			this.groupBox6.Location = new System.Drawing.Point(307, 3);
+			this.groupBox6.Name = "groupBox6";
+			this.groupBox6.Size = new System.Drawing.Size(193, 286);
+			this.groupBox6.TabIndex = 2;
+			this.groupBox6.TabStop = false;
+			this.groupBox6.Text = " Ceiling portal ";
+			// 
+			// resetalphaceiling
+			// 
+			this.resetalphaceiling.Image = global::CodeImp.DoomBuilder.Properties.Resources.Reset;
+			this.resetalphaceiling.Location = new System.Drawing.Point(149, 49);
+			this.resetalphaceiling.Name = "resetalphaceiling";
+			this.resetalphaceiling.Size = new System.Drawing.Size(23, 23);
+			this.resetalphaceiling.TabIndex = 68;
+			this.tooltip.SetToolTip(this.resetalphaceiling, "Reset Ceiling Brightness");
+			this.resetalphaceiling.UseVisualStyleBackColor = true;
+			this.resetalphaceiling.Click += new System.EventHandler(this.resetalphaceiling_Click);
+			// 
+			// ceilportalflags
+			// 
+			this.ceilportalflags.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+						| System.Windows.Forms.AnchorStyles.Left)
+						| System.Windows.Forms.AnchorStyles.Right)));
+			this.ceilportalflags.AutoScroll = true;
+			this.ceilportalflags.Columns = 2;
+			this.ceilportalflags.Location = new System.Drawing.Point(6, 79);
+			this.ceilportalflags.Name = "ceilportalflags";
+			this.ceilportalflags.Size = new System.Drawing.Size(181, 201);
+			this.ceilportalflags.TabIndex = 59;
+			this.ceilportalflags.VerticalSpacing = 1;
+			// 
+			// label21
+			// 
+			this.label21.Location = new System.Drawing.Point(6, 54);
+			this.label21.Name = "label21";
+			this.label21.Size = new System.Drawing.Size(72, 14);
+			this.label21.TabIndex = 58;
+			this.label21.Tag = "";
+			this.label21.Text = "Alpha:";
+			this.label21.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// alphaceiling
+			// 
+			this.alphaceiling.AllowDecimal = true;
+			this.alphaceiling.AllowExpressions = false;
+			this.alphaceiling.AllowNegative = false;
+			this.alphaceiling.AllowRelative = false;
+			this.alphaceiling.ButtonStep = 1;
+			this.alphaceiling.ButtonStepBig = 0.25F;
+			this.alphaceiling.ButtonStepFloat = 0.1F;
+			this.alphaceiling.ButtonStepSmall = 0.01F;
+			this.alphaceiling.ButtonStepsUseModifierKeys = true;
+			this.alphaceiling.ButtonStepsWrapAround = false;
+			this.alphaceiling.Location = new System.Drawing.Point(84, 49);
+			this.alphaceiling.Name = "alphaceiling";
+			this.alphaceiling.Size = new System.Drawing.Size(62, 24);
+			this.alphaceiling.StepValues = null;
+			this.alphaceiling.TabIndex = 57;
+			this.alphaceiling.Tag = "";
+			this.alphaceiling.WhenTextChanged += new System.EventHandler(this.alphaceiling_WhenTextChanged);
+			// 
+			// ceilportalrenderstylelabel
+			// 
+			this.ceilportalrenderstylelabel.Location = new System.Drawing.Point(6, 26);
+			this.ceilportalrenderstylelabel.Name = "ceilportalrenderstylelabel";
+			this.ceilportalrenderstylelabel.Size = new System.Drawing.Size(72, 14);
+			this.ceilportalrenderstylelabel.TabIndex = 56;
+			this.ceilportalrenderstylelabel.Tag = "";
+			this.ceilportalrenderstylelabel.Text = "Render style:";
+			this.ceilportalrenderstylelabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
+			// 
+			// ceilportalrenderstyle
+			// 
+			this.ceilportalrenderstyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+			this.ceilportalrenderstyle.FormattingEnabled = true;
+			this.ceilportalrenderstyle.Location = new System.Drawing.Point(84, 22);
+			this.ceilportalrenderstyle.Name = "ceilportalrenderstyle";
+			this.ceilportalrenderstyle.Size = new System.Drawing.Size(103, 21);
+			this.ceilportalrenderstyle.TabIndex = 55;
+			// 
 			// groupBox5
 			// 
 			this.groupBox5.Controls.Add(this.floorslopecontrol);
-			this.groupBox5.Location = new System.Drawing.Point(3, 239);
+			this.groupBox5.Location = new System.Drawing.Point(3, 295);
 			this.groupBox5.Name = "groupBox5";
-			this.groupBox5.Size = new System.Drawing.Size(298, 230);
+			this.groupBox5.Size = new System.Drawing.Size(298, 286);
 			this.groupBox5.TabIndex = 1;
 			this.groupBox5.TabStop = false;
 			this.groupBox5.Text = " Floor slope ";
@@ -1312,7 +1715,7 @@
 			this.groupBox4.Controls.Add(this.ceilingslopecontrol);
 			this.groupBox4.Location = new System.Drawing.Point(3, 3);
 			this.groupBox4.Name = "groupBox4";
-			this.groupBox4.Size = new System.Drawing.Size(298, 230);
+			this.groupBox4.Size = new System.Drawing.Size(298, 286);
 			this.groupBox4.TabIndex = 0;
 			this.groupBox4.TabStop = false;
 			this.groupBox4.Text = " Ceiling slope ";
@@ -1335,16 +1738,17 @@
 			this.tabcomment.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
 			this.tabcomment.Location = new System.Drawing.Point(4, 22);
 			this.tabcomment.Name = "tabcomment";
-			this.tabcomment.Size = new System.Drawing.Size(503, 478);
+			this.tabcomment.Size = new System.Drawing.Size(503, 584);
 			this.tabcomment.TabIndex = 4;
 			this.tabcomment.Text = "Comment";
 			this.tabcomment.UseVisualStyleBackColor = true;
 			// 
 			// commenteditor
 			// 
-			this.commenteditor.Location = new System.Drawing.Point(3, 3);
+			this.commenteditor.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.commenteditor.Location = new System.Drawing.Point(0, 0);
 			this.commenteditor.Name = "commenteditor";
-			this.commenteditor.Size = new System.Drawing.Size(497, 472);
+			this.commenteditor.Size = new System.Drawing.Size(503, 584);
 			this.commenteditor.TabIndex = 0;
 			// 
 			// tabcustom
@@ -1354,7 +1758,7 @@
 			this.tabcustom.Location = new System.Drawing.Point(4, 22);
 			this.tabcustom.Name = "tabcustom";
 			this.tabcustom.Padding = new System.Windows.Forms.Padding(3);
-			this.tabcustom.Size = new System.Drawing.Size(503, 478);
+			this.tabcustom.Size = new System.Drawing.Size(503, 584);
 			this.tabcustom.TabIndex = 1;
 			this.tabcustom.Text = "Custom";
 			this.tabcustom.UseVisualStyleBackColor = true;
@@ -1363,18 +1767,16 @@
 			// fieldslist
 			// 
 			this.fieldslist.AllowInsert = true;
-			this.fieldslist.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
 			this.fieldslist.AutoInsertUserPrefix = true;
 			this.fieldslist.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-			this.fieldslist.Location = new System.Drawing.Point(11, 11);
+			this.fieldslist.Dock = System.Windows.Forms.DockStyle.Fill;
+			this.fieldslist.Location = new System.Drawing.Point(3, 3);
 			this.fieldslist.Margin = new System.Windows.Forms.Padding(8);
 			this.fieldslist.Name = "fieldslist";
 			this.fieldslist.PropertyColumnVisible = true;
 			this.fieldslist.PropertyColumnWidth = 150;
 			this.fieldslist.ShowFixedFields = true;
-			this.fieldslist.Size = new System.Drawing.Size(481, 444);
+			this.fieldslist.Size = new System.Drawing.Size(497, 578);
 			this.fieldslist.TabIndex = 1;
 			this.fieldslist.TypeColumnVisible = true;
 			this.fieldslist.TypeColumnWidth = 100;
@@ -1384,7 +1786,7 @@
 			// 
 			this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
 			this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-			this.cancel.Location = new System.Drawing.Point(407, 518);
+			this.cancel.Location = new System.Drawing.Point(407, 624);
 			this.cancel.Name = "cancel";
 			this.cancel.Size = new System.Drawing.Size(112, 25);
 			this.cancel.TabIndex = 4;
@@ -1395,7 +1797,7 @@
 			// apply
 			// 
 			this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-			this.apply.Location = new System.Drawing.Point(289, 518);
+			this.apply.Location = new System.Drawing.Point(289, 624);
 			this.apply.Name = "apply";
 			this.apply.Size = new System.Drawing.Size(112, 25);
 			this.apply.TabIndex = 3;
@@ -1410,161 +1812,13 @@
 			this.tooltip.InitialDelay = 10;
 			this.tooltip.ReshowDelay = 100;
 			// 
-			// groupBox6
-			// 
-			this.groupBox6.Controls.Add(this.ceilportalflags);
-			this.groupBox6.Controls.Add(this.label21);
-			this.groupBox6.Controls.Add(this.ceilportalalpha);
-			this.groupBox6.Controls.Add(this.ceilportalrenderstylelabel);
-			this.groupBox6.Controls.Add(this.ceilportalrenderstyle);
-			this.groupBox6.Location = new System.Drawing.Point(307, 3);
-			this.groupBox6.Name = "groupBox6";
-			this.groupBox6.Size = new System.Drawing.Size(193, 230);
-			this.groupBox6.TabIndex = 2;
-			this.groupBox6.TabStop = false;
-			this.groupBox6.Text = " Ceiling portal ";
-			// 
-			// ceilportalrenderstylelabel
-			// 
-			this.ceilportalrenderstylelabel.Location = new System.Drawing.Point(6, 26);
-			this.ceilportalrenderstylelabel.Name = "ceilportalrenderstylelabel";
-			this.ceilportalrenderstylelabel.Size = new System.Drawing.Size(72, 14);
-			this.ceilportalrenderstylelabel.TabIndex = 56;
-			this.ceilportalrenderstylelabel.Tag = "";
-			this.ceilportalrenderstylelabel.Text = "Render style:";
-			this.ceilportalrenderstylelabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			// 
-			// ceilportalrenderstyle
-			// 
-			this.ceilportalrenderstyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.ceilportalrenderstyle.FormattingEnabled = true;
-			this.ceilportalrenderstyle.Location = new System.Drawing.Point(84, 22);
-			this.ceilportalrenderstyle.Name = "ceilportalrenderstyle";
-			this.ceilportalrenderstyle.Size = new System.Drawing.Size(103, 21);
-			this.ceilportalrenderstyle.TabIndex = 55;
-			// 
-			// label21
-			// 
-			this.label21.Location = new System.Drawing.Point(6, 54);
-			this.label21.Name = "label21";
-			this.label21.Size = new System.Drawing.Size(72, 14);
-			this.label21.TabIndex = 58;
-			this.label21.Tag = "";
-			this.label21.Text = "Alpha:";
-			this.label21.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			// 
-			// ceilportalalpha
-			// 
-			this.ceilportalalpha.AllowDecimal = true;
-			this.ceilportalalpha.AllowNegative = false;
-			this.ceilportalalpha.AllowRelative = false;
-			this.ceilportalalpha.ButtonStep = 1;
-			this.ceilportalalpha.ButtonStepBig = 0.25F;
-			this.ceilportalalpha.ButtonStepFloat = 0.1F;
-			this.ceilportalalpha.ButtonStepSmall = 0.01F;
-			this.ceilportalalpha.ButtonStepsUseModifierKeys = true;
-			this.ceilportalalpha.ButtonStepsWrapAround = false;
-			this.ceilportalalpha.Location = new System.Drawing.Point(84, 49);
-			this.ceilportalalpha.Name = "ceilportalalpha";
-			this.ceilportalalpha.Size = new System.Drawing.Size(62, 24);
-			this.ceilportalalpha.StepValues = null;
-			this.ceilportalalpha.TabIndex = 57;
-			this.ceilportalalpha.Tag = "";
-			// 
-			// ceilportalflags
-			// 
-			this.ceilportalflags.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.ceilportalflags.AutoScroll = true;
-			this.ceilportalflags.Columns = 2;
-			this.ceilportalflags.Location = new System.Drawing.Point(6, 79);
-			this.ceilportalflags.Name = "ceilportalflags";
-			this.ceilportalflags.Size = new System.Drawing.Size(181, 145);
-			this.ceilportalflags.TabIndex = 59;
-			this.ceilportalflags.VerticalSpacing = 1;
-			// 
-			// groupBox7
-			// 
-			this.groupBox7.Controls.Add(this.floorportalflags);
-			this.groupBox7.Controls.Add(this.label22);
-			this.groupBox7.Controls.Add(this.floorportalalpha);
-			this.groupBox7.Controls.Add(this.floorportalrenderstylelabel);
-			this.groupBox7.Controls.Add(this.floorportalrenderstyle);
-			this.groupBox7.Location = new System.Drawing.Point(307, 239);
-			this.groupBox7.Name = "groupBox7";
-			this.groupBox7.Size = new System.Drawing.Size(193, 230);
-			this.groupBox7.TabIndex = 60;
-			this.groupBox7.TabStop = false;
-			this.groupBox7.Text = " Floor portal ";
-			// 
-			// floorportalflags
-			// 
-			this.floorportalflags.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-						| System.Windows.Forms.AnchorStyles.Left)
-						| System.Windows.Forms.AnchorStyles.Right)));
-			this.floorportalflags.AutoScroll = true;
-			this.floorportalflags.Columns = 2;
-			this.floorportalflags.Location = new System.Drawing.Point(6, 79);
-			this.floorportalflags.Name = "floorportalflags";
-			this.floorportalflags.Size = new System.Drawing.Size(181, 145);
-			this.floorportalflags.TabIndex = 59;
-			this.floorportalflags.VerticalSpacing = 1;
-			// 
-			// label22
-			// 
-			this.label22.Location = new System.Drawing.Point(6, 54);
-			this.label22.Name = "label22";
-			this.label22.Size = new System.Drawing.Size(72, 14);
-			this.label22.TabIndex = 58;
-			this.label22.Tag = "";
-			this.label22.Text = "Alpha:";
-			this.label22.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			// 
-			// floorportalalpha
-			// 
-			this.floorportalalpha.AllowDecimal = true;
-			this.floorportalalpha.AllowNegative = false;
-			this.floorportalalpha.AllowRelative = false;
-			this.floorportalalpha.ButtonStep = 1;
-			this.floorportalalpha.ButtonStepBig = 0.25F;
-			this.floorportalalpha.ButtonStepFloat = 0.1F;
-			this.floorportalalpha.ButtonStepSmall = 0.01F;
-			this.floorportalalpha.ButtonStepsUseModifierKeys = true;
-			this.floorportalalpha.ButtonStepsWrapAround = false;
-			this.floorportalalpha.Location = new System.Drawing.Point(84, 49);
-			this.floorportalalpha.Name = "floorportalalpha";
-			this.floorportalalpha.Size = new System.Drawing.Size(62, 24);
-			this.floorportalalpha.StepValues = null;
-			this.floorportalalpha.TabIndex = 57;
-			this.floorportalalpha.Tag = "";
-			// 
-			// floorportalrenderstylelabel
-			// 
-			this.floorportalrenderstylelabel.Location = new System.Drawing.Point(6, 26);
-			this.floorportalrenderstylelabel.Name = "floorportalrenderstylelabel";
-			this.floorportalrenderstylelabel.Size = new System.Drawing.Size(72, 14);
-			this.floorportalrenderstylelabel.TabIndex = 56;
-			this.floorportalrenderstylelabel.Tag = "";
-			this.floorportalrenderstylelabel.Text = "Render style:";
-			this.floorportalrenderstylelabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
-			// 
-			// floorportalrenderstyle
-			// 
-			this.floorportalrenderstyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-			this.floorportalrenderstyle.FormattingEnabled = true;
-			this.floorportalrenderstyle.Location = new System.Drawing.Point(84, 22);
-			this.floorportalrenderstyle.Name = "floorportalrenderstyle";
-			this.floorportalrenderstyle.Size = new System.Drawing.Size(103, 21);
-			this.floorportalrenderstyle.TabIndex = 55;
-			// 
 			// SectorEditFormUDMF
 			// 
 			this.AcceptButton = this.apply;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.cancel;
-			this.ClientSize = new System.Drawing.Size(531, 548);
+			this.ClientSize = new System.Drawing.Size(531, 654);
 			this.Controls.Add(this.cancel);
 			this.Controls.Add(this.apply);
 			this.Controls.Add(this.tabs);
@@ -1594,12 +1848,12 @@
 			this.groupBox1.ResumeLayout(false);
 			this.groupBox1.PerformLayout();
 			this.tabslopes.ResumeLayout(false);
+			this.groupBox7.ResumeLayout(false);
+			this.groupBox6.ResumeLayout(false);
 			this.groupBox5.ResumeLayout(false);
 			this.groupBox4.ResumeLayout(false);
 			this.tabcomment.ResumeLayout(false);
 			this.tabcustom.ResumeLayout(false);
-			this.groupBox6.ResumeLayout(false);
-			this.groupBox7.ResumeLayout(false);
 			this.ResumeLayout(false);
 
 		}
@@ -1625,8 +1879,6 @@
 		private CodeImp.DoomBuilder.Controls.FlatSelectorControl ceilingtex;
 		private CodeImp.DoomBuilder.Controls.PairedFieldsControl ceilScale;
 		private System.Windows.Forms.ComboBox ceilRenderStyle;
-		private System.Windows.Forms.Label label4;
-		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox ceilAlpha;
 		private System.Windows.Forms.Label label1;
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox ceilRotation;
 		private System.Windows.Forms.CheckBox ceilLightAbsolute;
@@ -1635,8 +1887,6 @@
 		private System.Windows.Forms.Label labelceilrenderstyle;
 		private System.Windows.Forms.GroupBox groupBox2;
 		private System.Windows.Forms.Label labelfloorrenderstyle;
-		private System.Windows.Forms.Label label10;
-		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox floorAlpha;
 		private System.Windows.Forms.Label label11;
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox floorRotation;
 		private System.Windows.Forms.CheckBox floorLightAbsolute;
@@ -1690,13 +1940,32 @@
 		private System.Windows.Forms.Label ceilportalrenderstylelabel;
 		private System.Windows.Forms.ComboBox ceilportalrenderstyle;
 		private System.Windows.Forms.Label label21;
-		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox ceilportalalpha;
+		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox alphaceiling;
 		private CodeImp.DoomBuilder.Controls.CheckboxArrayControl ceilportalflags;
 		private System.Windows.Forms.GroupBox groupBox7;
 		private CodeImp.DoomBuilder.Controls.CheckboxArrayControl floorportalflags;
 		private System.Windows.Forms.Label label22;
-		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox floorportalalpha;
+		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox alphafloor;
 		private System.Windows.Forms.Label floorportalrenderstylelabel;
 		private System.Windows.Forms.ComboBox floorportalrenderstyle;
+		private System.Windows.Forms.Label label20;
+		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox ceiling_reflect;
+		private System.Windows.Forms.Button reset_floor_reflect;
+		private System.Windows.Forms.Label label23;
+		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox floor_reflect;
+		private System.Windows.Forms.Button reset_ceiling_reflect;
+		private System.Windows.Forms.Button resetalphafloor;
+		private System.Windows.Forms.Button resetalphaceiling;
+		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox fogdensity;
+		private System.Windows.Forms.Label ceilingglowheightlabel;
+		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox ceilingglowheight;
+		private CodeImp.DoomBuilder.Controls.ColorFieldsControl ceilingglowcolor;
+		private System.Windows.Forms.Label floorglowheightlabel;
+		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox floorglowheight;
+		private CodeImp.DoomBuilder.Controls.ColorFieldsControl floorglowcolor;
+		private System.Windows.Forms.Button resetceilingglowheight;
+		private System.Windows.Forms.Button resetfloorglowheight;
+		private System.Windows.Forms.CheckBox disableceilingglow;
+		private System.Windows.Forms.CheckBox disablefloorglow;
 	}
 }

@@ -406,6 +406,10 @@ special
 	-300:GetLineX(3),
 	-301:GetLineY(3),
 	
+	// GZDoom OpenGL
+	-400:SetSectorGlow(5),
+	-401:SetFogDensity(2),
+	
 	// ZDaemon's
 	-19620:GetTeamScore(1),
 	-19621:SetTeamScore(2),

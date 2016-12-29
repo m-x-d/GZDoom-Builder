@@ -199,7 +199,7 @@ git checkout "Source\Plugins\BuilderModes\Properties\AssemblyInfo.cs" > NUL
 ECHO.
 ECHO.     BUILD DONE !
 ECHO.
-ECHO.     Revision:  %REVISIONNUMBER%
+ECHO.     Revision:  %REVISIONNUMBER% (%REVISIONHASH%)
 ECHO.
 PAUSE > NUL
 GOTO LEAVE

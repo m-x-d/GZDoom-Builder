@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Controls;
 using CodeImp.DoomBuilder.Geometry;
@@ -59,6 +58,7 @@ namespace CodeImp.DoomBuilder.Windows
 			//UDMF stuff
 			public readonly int LightColor;
 			public readonly int FadeColor;
+			public readonly int FogDensity;
 			//public float Desaturation;
 
 			//UDMF Ceiling
@@ -70,6 +70,8 @@ namespace CodeImp.DoomBuilder.Windows
 			public readonly float CeilRotation;
 			public readonly int CeilBrightness;
 			public readonly bool CeilLightAbsoulte;
+			public readonly int CeilGlowColor;
+			public readonly float CeilGlowHeight;
 
 			//UDMF Floor
 			public readonly float FloorOffsetX;
@@ -80,6 +82,8 @@ namespace CodeImp.DoomBuilder.Windows
 			public readonly float FloorRotation;
 			public readonly int FloorBrightness;
 			public readonly bool FloorLightAbsoulte;
+			public readonly int FloorGlowColor;
+			public readonly float FloorGlowHeight;
 
 			//UDMF slopes. Angles are in degrees
 			public readonly Vector3D FloorSlope;
@@ -102,6 +106,7 @@ namespace CodeImp.DoomBuilder.Windows
 				//UDMF stuff
 				LightColor = UniFields.GetInteger(s.Fields, "lightcolor", PixelColor.INT_WHITE_NO_ALPHA);
 				FadeColor = UniFields.GetInteger(s.Fields, "fadecolor", 0);
+				FogDensity = UniFields.GetInteger(s.Fields, "fogdensity", 0);
 
 				//UDMF Ceiling
 				CeilOffsetX = UniFields.GetFloat(s.Fields, "xpanningceiling", 0f);
@@ -112,6 +117,8 @@ namespace CodeImp.DoomBuilder.Windows
 				CeilRotation = s.Fields.GetValue("rotationceiling", 0.0f);
 				CeilBrightness = s.Fields.GetValue("lightceiling", 0);
 				CeilLightAbsoulte = s.Fields.GetValue("lightceilingabsolute", false);
+				CeilGlowColor = s.Fields.GetValue("ceilingglowcolor", 0);
+				CeilGlowHeight = s.Fields.GetValue("ceilingglowheight", 0f);
 
 				//UDMF Floor
 				FloorOffsetX = UniFields.GetFloat(s.Fields, "xpanningfloor", 0f);
@@ -122,6 +129,8 @@ namespace CodeImp.DoomBuilder.Windows
 				FloorRotation = s.Fields.GetValue("rotationfloor", 0.0f);
 				FloorBrightness = s.Fields.GetValue("lightfloor", 0);
 				FloorLightAbsoulte = s.Fields.GetValue("lightfloorabsolute", false);
+				FloorGlowColor = s.Fields.GetValue("floorglowcolor", 0);
+				FloorGlowHeight = s.Fields.GetValue("floorglowheight", 0f);
 
 				//UDMF slopes
 				if(s.FloorSlope.GetLengthSq() > 0)
@@ -284,6 +293,9 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			preventchanges = true; //mxd
 
+			int floorglowcolorval = 0;
+			int ceilingglowcolorval = 0;
+
 			// Keep this list
 			this.sectors = sectors;
 			if(sectors.Count > 1) this.Text = "Edit Sectors (" + sectors.Count + ")";
@@ -321,16 +333,16 @@ namespace CodeImp.DoomBuilder.Windows
 			floortex.TextureName = sc.FloorTexture;
 			ceilingtex.TextureName = sc.CeilTexture;
 
-			//UDMF stuff
-			//Texture offsets
+			// UDMF stuff
+			// Texture offsets
 			ceilOffsets.SetValuesFrom(sc.Fields, true);
 			floorOffsets.SetValuesFrom(sc.Fields, true);
 
-			//Texture scale
+			// Texture scale
 			ceilScale.SetValuesFrom(sc.Fields, true);
 			floorScale.SetValuesFrom(sc.Fields, true);
 
-			//Texture rotation
+			// Texture rotation
 			float ceilAngle = sc.Fields.GetValue("rotationceiling", 0.0f);
 			float floorAngle = sc.Fields.GetValue("rotationfloor", 0.0f);
 
@@ -340,21 +352,34 @@ namespace CodeImp.DoomBuilder.Windows
 			ceilAngleControl.Angle = General.ClampAngle(360 - (int)ceilAngle);
 			floorAngleControl.Angle = General.ClampAngle(360 - (int)floorAngle);
 
-			//Texture brightness
+			// Texture brightness
 			ceilBrightness.Text = sc.Fields.GetValue("lightceiling", 0).ToString();
 			floorBrightness.Text = sc.Fields.GetValue("lightfloor", 0).ToString();
 			ceilLightAbsolute.Checked = sc.Fields.GetValue("lightceilingabsolute", false);
 			floorLightAbsolute.Checked = sc.Fields.GetValue("lightfloorabsolute", false);
 
-			//Alpha
-			ceilAlpha.Text = General.Clamp(sc.Fields.GetValue("alphaceiling", 1.0f), 0f, 1f).ToString();
-			floorAlpha.Text = General.Clamp(sc.Fields.GetValue("alphafloor", 1.0f), 0f, 1f).ToString();
-
 			// Portal alpha
-			ceilportalalpha.Text = General.Clamp(sc.Fields.GetValue("portal_ceil_alpha", 1.0f), 0f, 1f).ToString();
-			floorportalalpha.Text = General.Clamp(sc.Fields.GetValue("portal_floor_alpha", 1.0f), 0f, 1f).ToString();
+			alphaceiling.Text = General.Clamp(sc.Fields.GetValue("alphaceiling", 1f), 0f, 1f).ToString();
+			alphafloor.Text = General.Clamp(sc.Fields.GetValue("alphafloor", 1f), 0f, 1f).ToString();
 
-			//Render style
+			// Reflectivity
+			ceiling_reflect.Text = General.Clamp(sc.Fields.GetValue("ceiling_reflect", 0f), 0f, 1f).ToString();
+			floor_reflect.Text = General.Clamp(sc.Fields.GetValue("floor_reflect", 0f), 0f, 1f).ToString();
+
+			// Fog density
+			fogdensity.Text = General.Clamp(sc.Fields.GetValue("fogdensity", 0), 0, 510).ToString();
+
+			// Floor/ceiling glow
+			ceilingglowcolorval = sc.Fields.GetValue("ceilingglowcolor", 0);
+			floorglowcolorval = sc.Fields.GetValue("floorglowcolor", 0);
+			ceilingglowcolor.SetValueFrom(sc.Fields, true);
+			floorglowcolor.SetValueFrom(sc.Fields, true);
+
+			// Floor/ceiling glow height
+			ceilingglowheight.Text = sc.Fields.GetValue("ceilingglowheight", 0f).ToString();
+			floorglowheight.Text = sc.Fields.GetValue("floorglowheight", 0f).ToString();
+
+			// Render style
 			ceilRenderStyle.SelectedIndex = renderstyles.IndexOf(sc.Fields.GetValue("renderstyleceiling", "translucent"));
 			floorRenderStyle.SelectedIndex = renderstyles.IndexOf(sc.Fields.GetValue("renderstylefloor", "translucent"));
 
@@ -362,33 +387,33 @@ namespace CodeImp.DoomBuilder.Windows
 			ceilportalrenderstyle.SelectedIndex = portalrenderstyles.IndexOf(sc.Fields.GetValue("portal_ceil_overlaytype", "translucent"));
 			floorportalrenderstyle.SelectedIndex = portalrenderstyles.IndexOf(sc.Fields.GetValue("portal_floor_overlaytype", "translucent"));
 
-			//Damage
+			// Damage
 			damagetype.Text = sc.Fields.GetValue("damagetype", NO_DAMAGETYPE);
 			damageamount.Text = sc.Fields.GetValue("damageamount", 0).ToString();
 			damageinterval.Text = sc.Fields.GetValue("damageinterval", 32).ToString();
 			leakiness.Text = General.Clamp(sc.Fields.GetValue("leakiness", 0), 0, 256).ToString();
 
-			//Terrain
+			// Terrain
 			ceilterrain.Text = sc.Fields.GetValue("ceilingterrain", NO_TERRAIN);
 			floorterrain.Text = sc.Fields.GetValue("floorterrain", NO_TERRAIN);
 
-			//Misc
+			// Misc
 			soundsequence.Text = sc.Fields.GetValue("soundsequence", NO_SOUND_SEQUENCE);
 			gravity.Text = sc.Fields.GetValue("gravity", 1.0f).ToString();
 			desaturation.Text = General.Clamp(sc.Fields.GetValue("desaturation", 0.0f), 0f, 1f).ToString();
 
-			//Sector colors
+			// Sector colors
 			fadeColor.SetValueFrom(sc.Fields, true);
 			lightColor.SetValueFrom(sc.Fields, true);
 
-			//Slopes
+			// Slopes
 			SetupFloorSlope(sc, true);
 			SetupCeilingSlope(sc, true);
 
 			// Custom fields
 			fieldslist.SetValues(sc.Fields, true);
 
-			//mxd. Comments
+			// Comments
 			commenteditor.SetValues(sc.Fields, true);
 
 			anglesteps = new StepsList();
@@ -423,16 +448,16 @@ namespace CodeImp.DoomBuilder.Windows
 					ceilingtex.TextureName = "";
 				}
 
-				//mxd. UDMF stuff
-				//Texture offsets
+				// UDMF stuff
+				// Texture offsets
 				ceilOffsets.SetValuesFrom(s.Fields, false);
 				floorOffsets.SetValuesFrom(s.Fields, false);
 
-				//Texture scale
+				// Texture scale
 				ceilScale.SetValuesFrom(s.Fields, false);
 				floorScale.SetValuesFrom(s.Fields, false);
 
-				//Texture rotation
+				// Texture rotation
 				if(s.Fields.GetValue("rotationceiling", 0.0f).ToString() != ceilRotation.Text) 
 				{
 					ceilRotation.Text = "";
@@ -444,7 +469,7 @@ namespace CodeImp.DoomBuilder.Windows
 					floorAngleControl.Angle = AngleControlEx.NO_ANGLE;
 				}
 
-				//Texture brightness
+				// Texture brightness
 				if(s.Fields.GetValue("lightceiling", 0).ToString() != ceilBrightness.Text) ceilBrightness.Text = "";
 				if(s.Fields.GetValue("lightfloor", 0).ToString() != floorBrightness.Text) floorBrightness.Text = "";
 
@@ -459,15 +484,28 @@ namespace CodeImp.DoomBuilder.Windows
 					floorLightAbsolute.CheckState = CheckState.Indeterminate;
 				}
 
-				//Alpha
-				if(s.Fields.GetValue("alphaceiling", 1.0f).ToString() != ceilAlpha.Text) ceilAlpha.Text = "";
-				if(s.Fields.GetValue("alphafloor", 1.0f).ToString() != floorAlpha.Text) floorAlpha.Text = "";
-
 				// Portal alpha
-				if(s.Fields.GetValue("portal_ceil_alpha", 1.0f).ToString() != ceilportalalpha.Text) ceilportalalpha.Text = "";
-				if(s.Fields.GetValue("portal_floor_alpha", 1.0f).ToString() != floorportalalpha.Text) floorportalalpha.Text = "";
+				if(s.Fields.GetValue("alphaceiling", 1.0f).ToString() != alphaceiling.Text) alphaceiling.Text = "";
+				if(s.Fields.GetValue("alphafloor", 1.0f).ToString() != alphafloor.Text) alphafloor.Text = "";
 
-				//Render style
+				// Reflectivity
+				if(s.Fields.GetValue("ceiling_reflect", 0f).ToString() != ceiling_reflect.Text) ceiling_reflect.Text = "";
+				if(s.Fields.GetValue("floor_reflect", 0f).ToString() != floor_reflect.Text) floor_reflect.Text = "";
+
+				// Fog density
+				if(s.Fields.GetValue("fogdensity", 0).ToString() != fogdensity.Text) fogdensity.Text = "";
+
+				// Floor/ceiling glow
+				if(floorglowcolorval != s.Fields.GetValue("floorglowcolor", 0)) floorglowcolorval = 0;
+				if(ceilingglowcolorval != s.Fields.GetValue("ceilingglowcolor", 0)) ceilingglowcolorval = 0;
+				ceilingglowcolor.SetValueFrom(s.Fields, false);
+				floorglowcolor.SetValueFrom(s.Fields, false);
+
+				// Floor/ceiling glow height
+				if(s.Fields.GetValue("ceilingglowheight", 0f).ToString() != ceilingglowheight.Text) ceilingglowheight.Text = "";
+				if(s.Fields.GetValue("floorglowheight", 0f).ToString() != floorglowheight.Text) floorglowheight.Text = "";
+
+				// Render style
 				if(ceilRenderStyle.SelectedIndex > -1 && ceilRenderStyle.SelectedIndex != renderstyles.IndexOf(s.Fields.GetValue("renderstyleceiling", "translucent")))
 					ceilRenderStyle.SelectedIndex = -1;
 				if(floorRenderStyle.SelectedIndex > -1 && floorRenderStyle.SelectedIndex != renderstyles.IndexOf(s.Fields.GetValue("renderstylefloor", "translucent")))
@@ -479,30 +517,30 @@ namespace CodeImp.DoomBuilder.Windows
 				if(floorportalrenderstyle.SelectedIndex > -1 && floorportalrenderstyle.SelectedIndex != portalrenderstyles.IndexOf(s.Fields.GetValue("portal_floor_overlaytype", "translucent")))
 					floorportalrenderstyle.SelectedIndex = -1;
 
-				//Damage
+				// Damage
 				if(damagetype.SelectedIndex > -1 && s.Fields.GetValue("damagetype", NO_DAMAGETYPE) != damagetype.Text) 
 					damagetype.SelectedIndex = -1;
 				if(s.Fields.GetValue("damageamount", 0).ToString() != damageamount.Text) damageamount.Text = "";
 				if(s.Fields.GetValue("damageinterval", 32).ToString() != damageinterval.Text) damageinterval.Text = "";
 				if(s.Fields.GetValue("leakiness", 0).ToString() != leakiness.Text) leakiness.Text = "";
 
-				//Terrain
+				// Terrain
 				if(ceilterrain.SelectedIndex > -1 && s.Fields.GetValue("ceilingterrain", NO_TERRAIN) != ceilterrain.Text)
 					ceilterrain.SelectedIndex = -1;
 				if(floorterrain.SelectedIndex > -1 && s.Fields.GetValue("floorterrain", NO_TERRAIN) != floorterrain.Text)
 					floorterrain.SelectedIndex = -1;
 
-				//Misc
+				// Misc
 				if(soundsequence.SelectedIndex > -1 && s.Fields.GetValue("soundsequence", NO_SOUND_SEQUENCE) != soundsequence.Text)
 					soundsequence.SelectedIndex = -1;
 				if(s.Fields.GetValue("gravity", 1.0f).ToString() != gravity.Text) gravity.Text = "";
 				if(s.Fields.GetValue("desaturation", 0.0f).ToString() != desaturation.Text) desaturation.Text = "";
 
-				//Sector colors
+				// Sector colors
 				fadeColor.SetValueFrom(s.Fields, false);
 				lightColor.SetValueFrom(s.Fields, false);
 
-				//Slopes
+				// Slopes
 				SetupFloorSlope(s, false);
 				SetupCeilingSlope(s, false);
 
@@ -524,6 +562,30 @@ namespace CodeImp.DoomBuilder.Windows
 					if(!anglesteps.Contains(angle)) anglesteps.Add(angle);
 				}
 			}
+
+			//mxd. Glow is disabled?
+			if(floorglowcolorval == -1)
+			{
+				disablefloorglow.Checked = true;
+				floorglowcolor.Enabled = false;
+				floorglowheight.Enabled = false;
+				floorglowheightlabel.Enabled = false;
+				resetfloorglowheight.Visible = false;
+			}
+			if(ceilingglowcolorval == -1)
+			{
+				disableceilingglow.Checked = true;
+				ceilingglowcolor.Enabled = false;
+				ceilingglowheight.Enabled = false;
+				ceilingglowheightlabel.Enabled = false;
+				resetceilingglowheight.Visible = false;
+			}
+
+			//mxd. Update "Reset" buttons...
+			if(ceiling_reflect.Text == "0") reset_ceiling_reflect.Visible = false;
+			if(floor_reflect.Text == "0") reset_floor_reflect.Visible = false;
+			if(ceilingglowheight.Text == "0") resetceilingglowheight.Visible = false;
+			if(floorglowheight.Text == "0") resetfloorglowheight.Visible = false;
 
 			//mxd. Setup tags
 			tagsselector.SetValues(sectors);
@@ -586,12 +648,12 @@ namespace CodeImp.DoomBuilder.Windows
 		}
 
 		//mxd
-		private static void ApplyAlpha(ButtonsNumericTextbox control, Sector s, string key)
+		private static void ApplyFloatProperty(ButtonsNumericTextbox control, Sector s, float defaultvalue)
 		{
 			if(!string.IsNullOrEmpty(control.Text))
 			{
-				float ceilAlphaVal = General.Clamp(control.GetResultFloat(s.Fields.GetValue(key, 1.0f)), 0f, 1f);
-				UniFields.SetFloat(s.Fields, key, ceilAlphaVal, 1.0f);
+				float ceilAlphaVal = General.Clamp(control.GetResultFloat(s.Fields.GetValue(control.Name, defaultvalue)), 0f, 1f);
+				UniFields.SetFloat(s.Fields, control.Name, ceilAlphaVal, defaultvalue);
 			}
 		}
 
@@ -786,13 +848,13 @@ namespace CodeImp.DoomBuilder.Windows
 				//mxd. Comments
 				commenteditor.Apply(s.Fields);
 
-				// Alpha
-				ApplyAlpha(ceilAlpha, s, "alphaceiling");
-				ApplyAlpha(floorAlpha, s, "alphafloor");
-
 				// Portal alpha
-				ApplyAlpha(ceilportalalpha, s, "portal_ceil_alpha");
-				ApplyAlpha(floorportalalpha, s, "portal_floor_alpha");
+				ApplyFloatProperty(alphaceiling, s, 1.0f);
+				ApplyFloatProperty(alphafloor, s, 1.0f);
+
+				// Reflectivity
+				ApplyFloatProperty(ceiling_reflect, s, 0.0f);
+				ApplyFloatProperty(floor_reflect, s, 0.0f);
 
 				// Renderstyle
 				if(renderstyles.Count > 0) 
@@ -992,6 +1054,46 @@ namespace CodeImp.DoomBuilder.Windows
 		private void soundsequence_MouseDown(object sender, MouseEventArgs e) 
 		{
 			if(soundsequence.Text == NO_SOUND_SEQUENCE) soundsequence.SelectAll();
+		}
+
+		private void ceiling_reflect_WhenTextChanged(object sender, EventArgs e)
+		{
+			reset_ceiling_reflect.Visible = (string.IsNullOrEmpty(ceiling_reflect.Text) || ceiling_reflect.GetResultFloat(0.0f) != 0.0f);
+		}
+
+		private void floor_reflect_WhenTextChanged(object sender, EventArgs e)
+		{
+			reset_floor_reflect.Visible = (string.IsNullOrEmpty(floor_reflect.Text) || floor_reflect.GetResultFloat(0.0f) != 0.0f);
+		}
+
+		private void reset_ceiling_reflect_Click(object sender, EventArgs e)
+		{
+			ceiling_reflect.Text = "0";
+		}
+
+		private void reset_floor_reflect_Click(object sender, EventArgs e)
+		{
+			floor_reflect.Text = "0";
+		}
+
+		private void alphaceiling_WhenTextChanged(object sender, EventArgs e)
+		{
+			resetalphaceiling.Visible = (string.IsNullOrEmpty(alphaceiling.Text) || alphaceiling.GetResultFloat(1.0f) != 1.0f);
+		}
+
+		private void alphafloor_WhenTextChanged(object sender, EventArgs e)
+		{
+			resetalphafloor.Visible = (string.IsNullOrEmpty(alphafloor.Text) || alphafloor.GetResultFloat(1.0f) != 1.0f);
+		}
+
+		private void resetalphafloor_Click(object sender, EventArgs e)
+		{
+			alphafloor.Text = "1";
+		}
+
+		private void resetalphaceiling_Click(object sender, EventArgs e)
+		{
+			alphaceiling.Text = "1";
 		}
 
 		#endregion
@@ -1485,6 +1587,34 @@ namespace CodeImp.DoomBuilder.Windows
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
 
+		private void fogdensity_WhenTextChanged(object sender, EventArgs e)
+		{
+			if(preventchanges) return;
+			MakeUndo();
+
+			// Restore values
+			if(string.IsNullOrEmpty(fogdensity.Text))
+			{
+				foreach(Sector s in sectors)
+				{
+					UniFields.SetInteger(s.Fields, "fogdensity", sectorprops[s].FogDensity, 0);
+					s.UpdateNeeded = true;
+				}
+			}
+			else // Update values
+			{
+				foreach(Sector s in sectors)
+				{
+					int value = General.Clamp(fogdensity.GetResult(sectorprops[s].FogDensity), 0, 510);
+					UniFields.SetInteger(s.Fields, "fogdensity", value, 0);
+					s.UpdateNeeded = true;
+				}
+			}
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
 		#endregion
 
 		#region ================== Slope Utility (mxd)
@@ -1714,6 +1844,172 @@ namespace CodeImp.DoomBuilder.Windows
 		private void floorslopecontrol_OnUseLineAnglesChanged(object sender, EventArgs e) 
 		{
 			floorslopecontrol.StepValues = (floorslopecontrol.UseLineAngles ? anglesteps : null);
+		}
+
+		#endregion
+
+		#region ================== Glow relatime events (mxd)
+
+		private void ceilingglowcolor_OnValueChanged(object sender, EventArgs e)
+		{
+			if(preventchanges) return;
+			MakeUndo();
+
+			foreach(Sector s in sectors)
+			{
+				ceilingglowcolor.ApplyTo(s.Fields, sectorprops[s].CeilGlowColor);
+				s.UpdateNeeded = true;
+			}
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		private void floorglowcolor_OnValueChanged(object sender, EventArgs e)
+		{
+			if(preventchanges) return;
+			MakeUndo();
+
+			foreach(Sector s in sectors)
+			{
+				floorglowcolor.ApplyTo(s.Fields, sectorprops[s].FloorGlowColor);
+				s.UpdateNeeded = true;
+			}
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		private void disableceilingglow_CheckedChanged(object sender, EventArgs e)
+		{
+			if(preventchanges) return;
+			MakeUndo();
+
+			// Update controls
+			ceilingglowcolor.Enabled = !disableceilingglow.Checked;
+			ceilingglowheight.Enabled = !disableceilingglow.Checked;
+			ceilingglowheightlabel.Enabled = !disableceilingglow.Checked;
+
+			if(disableceilingglow.Checked)
+			{
+				// Set glow color to -1
+				foreach(Sector s in sectors)
+				{
+					UniFields.SetInteger(s.Fields, "ceilingglowcolor", -1, 0);
+					s.UpdateNeeded = true;
+				}
+
+				// Trigger update
+				General.Map.IsChanged = true;
+				if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+			}
+			else
+			{
+				// Trigger update to restore/update values
+				ceilingglowcolor_OnValueChanged(this, EventArgs.Empty);
+			}
+		}
+
+		private void disablefloorglow_CheckedChanged(object sender, EventArgs e)
+		{
+			if(preventchanges) return;
+			MakeUndo();
+
+			// Update controls
+			floorglowcolor.Enabled = !disablefloorglow.Checked;
+			floorglowheight.Enabled = !disablefloorglow.Checked;
+			floorglowheightlabel.Enabled = !disablefloorglow.Checked;
+
+			if(disablefloorglow.Checked)
+			{
+				// Set glow color to -1
+				foreach(Sector s in sectors)
+				{
+					UniFields.SetInteger(s.Fields, "floorglowcolor", -1, 0);
+					s.UpdateNeeded = true;
+				}
+
+				// Trigger update
+				General.Map.IsChanged = true;
+				if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+			}
+			else
+			{
+				// Trigger glow color update to restore/update values
+				floorglowcolor_OnValueChanged(this, EventArgs.Empty);
+			}
+		}
+
+		private void ceilingglowheight_WhenTextChanged(object sender, EventArgs e)
+		{
+			if(preventchanges) return;
+			MakeUndo();
+
+			// Restore values
+			if(string.IsNullOrEmpty(ceilingglowheight.Text))
+			{
+				foreach(Sector s in sectors)
+				{
+					UniFields.SetFloat(s.Fields, "ceilingglowheight", sectorprops[s].CeilGlowHeight, 0f);
+					s.UpdateNeeded = true;
+				}
+			}
+			else // Update values
+			{
+				foreach(Sector s in sectors)
+				{
+					float value = General.Clamp(ceilingglowheight.GetResultFloat(sectorprops[s].CeilGlowHeight), 0f, float.MaxValue);
+					UniFields.SetFloat(s.Fields, "ceilingglowheight", value, 0f);
+					s.UpdateNeeded = true;
+				}
+			}
+
+			// Update "Reset" button
+			resetceilingglowheight.Visible = (ceilingglowheight.GetResultFloat(0f) != 0f);
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		private void floorglowheight_WhenTextChanged(object sender, EventArgs e)
+		{
+			if(preventchanges) return;
+			MakeUndo();
+
+			// Restore values
+			if(string.IsNullOrEmpty(floorglowheight.Text))
+			{
+				foreach(Sector s in sectors)
+				{
+					UniFields.SetFloat(s.Fields, "floorglowheight", sectorprops[s].FloorGlowHeight, 0f);
+					s.UpdateNeeded = true;
+				}
+			}
+			else // Update values
+			{
+				foreach(Sector s in sectors)
+				{
+					float value = General.Clamp(floorglowheight.GetResultFloat(sectorprops[s].FloorGlowHeight), 0f, float.MaxValue);
+					UniFields.SetFloat(s.Fields, "floorglowheight", value, 0f);
+					s.UpdateNeeded = true;
+				}
+			}
+
+			// Update "Reset" button
+			resetfloorglowheight.Visible = (floorglowheight.GetResultFloat(0f) != 0f);
+
+			General.Map.IsChanged = true;
+			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		private void resetceilingglowheight_Click(object sender, EventArgs e)
+		{
+			ceilingglowheight.Text = "0";
+		}
+
+		private void resetfloorglowheight_Click(object sender, EventArgs e)
+		{
+			floorglowheight.Text = "0";
 		}
 
 		#endregion

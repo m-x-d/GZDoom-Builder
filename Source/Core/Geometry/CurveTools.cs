@@ -196,7 +196,6 @@ namespace CodeImp.DoomBuilder.Geometry
 					segment.Start = points[i];
 					segment.End = points[i + 1];
 					segment.Points = new[] { segment.Start, segment.End };
-					segment.UpdateLength();
 					result.Segments.Add(segment);
 				}
 			}
@@ -209,7 +208,6 @@ namespace CodeImp.DoomBuilder.Geometry
 		{
 			segment.CurveType = CurveSegmentType.QUADRATIC;
 			segment.Points = GetQuadraticCurve(segment.Start, segment.CPMid, segment.End, steps);
-			segment.UpdateLength();
 		}
 
 		//this returns array of Vector2D to draw 3-point bezier curve
@@ -235,7 +233,6 @@ namespace CodeImp.DoomBuilder.Geometry
 		{
 			segment.CurveType = CurveSegmentType.CUBIC;
 			segment.Points = GetCubicCurve(segment.Start, segment.End, segment.CPStart, segment.CPEnd, steps);
-			segment.UpdateLength();
 		}
 
 		//this returns array of Vector2D to draw 4-point bezier curve
@@ -310,7 +307,6 @@ namespace CodeImp.DoomBuilder.Geometry
 	{
 		public List<CurveSegment> Segments;
 		public List<Vector2D> Shape;
-		public float Length;
 
 		public Curve() 
 		{
@@ -320,26 +316,14 @@ namespace CodeImp.DoomBuilder.Geometry
 		public void UpdateShape() 
 		{
 			Shape = new List<Vector2D>();
-			Length = 0;
-
 			foreach(CurveSegment segment in Segments) 
 			{
-				Length += segment.Length;
-
 				foreach(Vector2D point in segment.Points) 
 				{
 					if(Shape.Count == 0 || point != Shape[Shape.Count - 1])
 						Shape.Add(point);
 				}
 			}
-
-			/*float curDelta = 0;
-			for(int i = 0; i < Segments.Count; i++) 
-			{
-				Segments[i].Delta = Segments[i].Length / Length;
-				curDelta += Segments[i].Delta;
-				Segments[i].GlobalDelta = curDelta;
-			}*/
 		}
 	}
 
@@ -351,20 +335,7 @@ namespace CodeImp.DoomBuilder.Geometry
 		public Vector2D CPStart;
 		public Vector2D CPMid;
 		public Vector2D CPEnd;
-		public float Length;
-		//public float Delta; //length of this segment / total curve length
-		//public float GlobalDelta; //length of this segment / total curve length + deltas of previous segments
 		public CurveSegmentType CurveType;
-
-		public void UpdateLength() 
-		{
-			if(Points.Length < 2)
-				return;
-
-			Length = 0;
-			for(int i = 1; i < Points.Length; i++)
-				Length += Vector2D.Distance(Points[i], Points[i - 1]);
-		}
 	}
 
 	public enum CurveSegmentType

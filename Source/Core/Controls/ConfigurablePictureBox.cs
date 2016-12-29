@@ -51,6 +51,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 			if(Highlighted)
 			{
+				pe.Graphics.PixelOffsetMode = PixelOffsetMode.None;
 				ControlPaint.DrawBorder(pe.Graphics, DisplayRectangle,
 								  highlight, BORDER_SIZE, ButtonBorderStyle.Solid,
 								  highlight, BORDER_SIZE, ButtonBorderStyle.Solid,
