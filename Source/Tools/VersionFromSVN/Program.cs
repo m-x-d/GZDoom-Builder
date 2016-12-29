@@ -15,7 +15,7 @@ namespace mxd.VersionFromGIT
 	{
 		#region ======================== Constants
 
-		private const string GIT_INFO = "@echo off\r\ngit rev-list --count master\r\ngit rev-parse --short master";
+		private const string GIT_INFO = "@echo off\r\ngit rev-list --count master\r\ngit rev-parse --short=7 master";
 
 		#endregion
 
