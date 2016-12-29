@@ -15,7 +15,7 @@ namespace mxd.VersionFromGIT
 	{
 		#region ======================== Constants
 
-		private const string GIT_INFO = "@echo off\r\ngit rev-list --count master";
+		private const string GIT_INFO = "@echo off\r\ngit rev-list --count master\r\ngit rev-parse --short master";
 
 		#endregion
 
@@ -28,6 +28,7 @@ namespace mxd.VersionFromGIT
 			bool dorevisionlookup = true;
 			bool reverttargets = false;
 			string revision = "";
+			string shorthash = "";
 			string apppath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
 			string revisionoutputfile = "";
 
@@ -102,12 +103,28 @@ namespace mxd.VersionFromGIT
 				p.Start();
 
 				// Read the output stream first and then wait.
-				revision = p.StandardOutput.ReadToEnd().Trim();
+				string output = p.StandardOutput.ReadToEnd().Trim(); //mxd. first line is revision, second - short hash
 				p.WaitForExit();
 				File.Delete(batpath);
 
-				//mxd. Check what we've got
+				string[] parts = output.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries); 
+				if(parts.Length != 2)
+				{
+					Console.WriteLine("Unable to get Git info from string \"" + output + "\". You must install Git from https://git-scm.com");
+					return 3;
+				}
+
+				//mxd. Check hash
+				shorthash = parts[1];
+				if(shorthash.Length != 7)
+				{
+					Console.WriteLine("Unable to get Git hash from string \"" + shorthash + "\". You must install Git from https://git-scm.com");
+					return 4;
+				}
+				
+				//mxd. Check revision
 				int unused;
+				revision = parts[0];
 				if(string.IsNullOrEmpty(revision) || !int.TryParse(revision, out unused) || unused < 1)
 				{
 					Console.WriteLine("Unable to get Git commits count from string \"" + revision + "\". You must install Git from https://git-scm.com");
@@ -116,7 +133,7 @@ namespace mxd.VersionFromGIT
 			}
 
 			if(!string.IsNullOrEmpty(revisionoutputfile))
-				File.AppendAllText(revisionoutputfile, "SET REVISIONNUMBER=" + revision + "\n");
+				File.AppendAllText(revisionoutputfile, "SET REVISIONNUMBER=" + revision + "\nSET REVISIONHASH=" + shorthash);
 					
 			if(reverttargets)
 			{
@@ -144,7 +161,7 @@ namespace mxd.VersionFromGIT
 			}
 			else
 			{
-				Console.WriteLine("Writing revision " + revision + " to target files...");
+				Console.WriteLine("Writing revision " + revision + ", hash " + shorthash + " to target files...");
 				foreach(string file in targetfiles)
 				{
 					bool changed = false;
@@ -162,6 +179,22 @@ namespace mxd.VersionFromGIT
 							string linestart = line.Substring(0, revisiondotpos + 1);
 							string lineend = line.Substring(endbracepos);
 							string result = linestart + revision + lineend;
+
+							if(string.Compare(contents[i], result, true) != 0)
+							{
+								contents[i] = result;
+								changed = true;
+							}
+						}
+						//mxd. Apply hash
+						else if(line.Trim().StartsWith("[assembly: AssemblyHash", true, CultureInfo.InvariantCulture))
+						{
+							int startbracepos = line.IndexOf("\"", 0);
+							int endbracepos = line.IndexOf("\"", startbracepos + 1);
+
+							string linestart = line.Substring(0, startbracepos + 1);
+							string lineend = line.Substring(endbracepos);
+							string result = linestart + shorthash + lineend;
 
 							if(string.Compare(contents[i], result, true) != 0)
 							{
@@ -202,7 +235,7 @@ namespace mxd.VersionFromGIT
 			Console.WriteLine("This will revert all changes in the specified target files (same as GIT checkout function). This will not apply commits count to the target files.\r\n");
 
 			Console.WriteLine("-O filename");
-			Console.WriteLine("Creates a bath file, which sets REVISIONNUMBER environment variable to the GIT revision number.\r\n");
+			Console.WriteLine("Creates a bath file, which sets REVISIONNUMBER environment variable to the GIT revision number and REVISIONHASH environment variable to the GIT revision short hash.\r\n");
 
 			Console.WriteLine("Press any key to quit.");
 		}

@@ -32,8 +32,8 @@
 			this.bContinue = new System.Windows.Forms.Button();
 			this.errorMessage = new System.Windows.Forms.TextBox();
 			this.pictureBox1 = new System.Windows.Forms.PictureBox();
-			this.reportLink = new System.Windows.Forms.LinkLabel();
-			this.threadLink = new System.Windows.Forms.LinkLabel();
+			this.reportlink = new System.Windows.Forms.LinkLabel();
+			this.newissue = new System.Windows.Forms.LinkLabel();
 			this.bToClipboard = new System.Windows.Forms.Button();
 			this.errorDescription = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -59,7 +59,7 @@
 			this.bContinue.ImageAlign = System.Drawing.ContentAlignment.MiddleLeft;
 			this.bContinue.Location = new System.Drawing.Point(446, 212);
 			this.bContinue.Name = "bContinue";
-			this.bContinue.Size = new System.Drawing.Size(85, 28);
+			this.bContinue.Size = new System.Drawing.Size(88, 28);
 			this.bContinue.TabIndex = 1;
 			this.bContinue.Text = "Continue";
 			this.bContinue.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -85,34 +85,34 @@
 			this.pictureBox1.TabIndex = 2;
 			this.pictureBox1.TabStop = false;
 			// 
-			// reportLink
+			// reportlink
 			// 
-			this.reportLink.AutoSize = true;
-			this.reportLink.LinkArea = new System.Windows.Forms.LinkArea(53, 4);
-			this.reportLink.LinkColor = System.Drawing.SystemColors.HotTrack;
-			this.reportLink.Location = new System.Drawing.Point(77, 188);
-			this.reportLink.Name = "reportLink";
-			this.reportLink.Size = new System.Drawing.Size(286, 17);
-			this.reportLink.TabIndex = 5;
-			this.reportLink.TabStop = true;
-			this.reportLink.Text = "Error report with additional information was created here";
-			this.reportLink.UseCompatibleTextRendering = true;
-			this.reportLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.reportLink_LinkClicked);
+			this.reportlink.AutoSize = true;
+			this.reportlink.LinkArea = new System.Windows.Forms.LinkArea(101, 16);
+			this.reportlink.LinkColor = System.Drawing.SystemColors.HotTrack;
+			this.reportlink.Location = new System.Drawing.Point(75, 211);
+			this.reportlink.Name = "reportlink";
+			this.reportlink.Size = new System.Drawing.Size(369, 30);
+			this.reportlink.TabIndex = 5;
+			this.reportlink.TabStop = true;
+			this.reportlink.Text = "Including the steps required to reproduce this error, a test map/resource\r\nrequre" +
+				"d to trigger it and the error report can immensely help fixing it.";
+			this.reportlink.UseCompatibleTextRendering = true;
+			this.reportlink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.reportlink_LinkClicked);
 			// 
-			// threadLink
+			// gitissueslink
 			// 
-			this.threadLink.AutoSize = true;
-			this.threadLink.LinkArea = new System.Windows.Forms.LinkArea(101, 28);
-			this.threadLink.LinkColor = System.Drawing.SystemColors.HotTrack;
-			this.threadLink.Location = new System.Drawing.Point(77, 210);
-			this.threadLink.Name = "threadLink";
-			this.threadLink.Size = new System.Drawing.Size(349, 30);
-			this.threadLink.TabIndex = 8;
-			this.threadLink.TabStop = true;
-			this.threadLink.Text = "You can help fixing this error if you provide the ways to reproduce it \r\nand the " +
-				"error report at the official thread at ZDoom.org";
-			this.threadLink.UseCompatibleTextRendering = true;
-			this.threadLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.threadLink_LinkClicked);
+			this.newissue.AutoSize = true;
+			this.newissue.LinkArea = new System.Windows.Forms.LinkArea(51, 21);
+			this.newissue.LinkColor = System.Drawing.SystemColors.HotTrack;
+			this.newissue.Location = new System.Drawing.Point(75, 188);
+			this.newissue.Name = "newissue";
+			this.newissue.Size = new System.Drawing.Size(359, 17);
+			this.newissue.TabIndex = 8;
+			this.newissue.TabStop = true;
+			this.newissue.Text = "Help fixing this error by creating an Issue at the GitHub Issues Tracker.";
+			this.newissue.UseCompatibleTextRendering = true;
+			this.newissue.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.newissue_LinkClicked);
 			// 
 			// bToClipboard
 			// 
@@ -144,10 +144,10 @@
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
 			this.CancelButton = this.bQuit;
 			this.ClientSize = new System.Drawing.Size(624, 244);
-			this.Controls.Add(this.reportLink);
+			this.Controls.Add(this.reportlink);
 			this.Controls.Add(this.errorDescription);
 			this.Controls.Add(this.bToClipboard);
-			this.Controls.Add(this.threadLink);
+			this.Controls.Add(this.newissue);
 			this.Controls.Add(this.errorMessage);
 			this.Controls.Add(this.pictureBox1);
 			this.Controls.Add(this.bContinue);
@@ -173,8 +173,8 @@
 		private System.Windows.Forms.Button bContinue;
 		private System.Windows.Forms.PictureBox pictureBox1;
 		private System.Windows.Forms.TextBox errorMessage;
-		private System.Windows.Forms.LinkLabel reportLink;
-		private System.Windows.Forms.LinkLabel threadLink;
+		private System.Windows.Forms.LinkLabel reportlink;
+		private System.Windows.Forms.LinkLabel newissue;
 		private System.Windows.Forms.Button bToClipboard;
 		private System.Windows.Forms.Label errorDescription;
 	}

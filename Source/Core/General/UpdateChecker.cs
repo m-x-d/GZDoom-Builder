@@ -268,21 +268,28 @@ namespace CodeImp.DoomBuilder
 					if(log.ChildNodes.Count == 0) continue;
 					foreach(XmlNode logentry in log.ChildNodes)
 					{
+						if(logentry.Attributes == null) continue;
+						var revnode = logentry.Attributes.GetNamedItem("revision");
+						var comnode = logentry.Attributes.GetNamedItem("commit");
+						if(revnode == null || comnode == null) continue;
+
 						int noderev;
-						if(logentry.Attributes == null || !int.TryParse(logentry.Attributes.GetNamedItem("revision").Value, out noderev)) continue;
+						if(!int.TryParse(revnode.Value, out noderev)) continue;
 						if(noderev <= localrev) break;
 
-						// Add info
-						sb.Append(@"{\b R" + noderev + @":}\par ");
+						string commit = comnode.Value;
+						string message = string.Empty;
+						XmlNode msgnode = logentry["msg"];
+						if(msgnode != null) message = msgnode.InnerText.Trim().Replace(Environment.NewLine, @"\par ");
 
-						foreach(XmlNode prop in logentry.ChildNodes)
-						{
-							if(prop.Name == "msg")
-							{
-								sb.Append(prop.InnerText.Trim().Replace(Environment.NewLine, @"\par ")).Append(@"\par\par ");
-								break;
-							}
-						}
+						// Add info
+						sb.Append(@"{\b R")
+							.Append(noderev)
+							.Append(" | ")
+							.Append(commit)
+							.Append(@":}\par ")
+							.Append(message)
+							.Append(@"\par\par ");
 					}
 				}
 			}

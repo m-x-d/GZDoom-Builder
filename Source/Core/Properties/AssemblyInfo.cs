@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Resources;
+using CodeImp.DoomBuilder;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
@@ -31,3 +32,4 @@ using System.Resources;
 //
 [assembly: AssemblyVersion("2.3.0.2651")]
 [assembly: NeutralResourcesLanguageAttribute("en")]
+[assembly: AssemblyHash("0000000")]
