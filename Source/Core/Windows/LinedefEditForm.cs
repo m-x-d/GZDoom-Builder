@@ -334,16 +334,6 @@ namespace CodeImp.DoomBuilder.Windows
 
 			argscontrol.UpdateScriptControls(); //mxd
 			actionhelp.UpdateAction(action.GetValue()); //mxd
-
-			//mxd. Update some labels
-			if(frontside.CheckState != CheckState.Unchecked) 
-			{
-				labelFrontTextureOffset.Enabled = frontTextureOffset.NonDefaultValue;
-			}
-			if(backside.CheckState != CheckState.Unchecked) 
-			{
-				labelBackTextureOffset.Enabled = backTextureOffset.NonDefaultValue;
-			}
 		}
 
 		//mxd
@@ -771,7 +761,6 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			General.Map.IsChanged = true;
-			labelFrontTextureOffset.Enabled = frontTextureOffset.NonDefaultValue;
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
 
@@ -801,7 +790,6 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 			
 			General.Map.IsChanged = true;
-			labelBackTextureOffset.Enabled = backTextureOffset.NonDefaultValue;
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
 

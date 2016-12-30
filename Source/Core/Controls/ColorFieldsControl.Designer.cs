@@ -28,9 +28,11 @@
 		/// </summary>
 		private void InitializeComponent() 
 		{
+			this.components = new System.ComponentModel.Container();
 			this.bReset = new System.Windows.Forms.Button();
 			this.cpColor = new CodeImp.DoomBuilder.Controls.ColorControl();
 			this.tbColor = new CodeImp.DoomBuilder.Controls.AutoSelectTextbox();
+			this.tooltip = new System.Windows.Forms.ToolTip(this.components);
 			this.SuspendLayout();
 			// 
 			// bReset
@@ -40,6 +42,7 @@
 			this.bReset.Name = "bReset";
 			this.bReset.Size = new System.Drawing.Size(23, 23);
 			this.bReset.TabIndex = 43;
+			this.tooltip.SetToolTip(this.bReset, "Reset");
 			this.bReset.UseVisualStyleBackColor = true;
 			this.bReset.Visible = false;
 			this.bReset.Click += new System.EventHandler(this.bReset_Click);
@@ -83,5 +86,6 @@
 		private System.Windows.Forms.Button bReset;
 		private CodeImp.DoomBuilder.Controls.ColorControl cpColor;
 		private CodeImp.DoomBuilder.Controls.AutoSelectTextbox tbColor;
+		private System.Windows.Forms.ToolTip tooltip;
 	}
 }

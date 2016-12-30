@@ -558,37 +558,10 @@ namespace CodeImp.DoomBuilder.Windows
 			actionhelp.UpdateAction(action.GetValue()); //mxd
 			commenteditor.FinishSetup(); //mxd
 
-			//mxd. Update brightness reset buttons
+			//mxd. Update "Reset" buttons
 			resetfrontlight.Visible = (cbLightAbsoluteFront.CheckState != CheckState.Unchecked || lightFront.GetResult(0) != 0);
 			resetbacklight.Visible = (cbLightAbsoluteBack.CheckState != CheckState.Unchecked || lightBack.GetResult(0) != 0);
-
-			//mxd. Update some labels
-			if(frontside.CheckState != CheckState.Unchecked)
-			{
-				// Update Offset labels
-				labelFrontTextureOffset.Enabled = frontTextureOffset.NonDefaultValue;
-				labelFrontOffsetTop.Enabled = pfcFrontOffsetTop.NonDefaultValue;
-				labelFrontOffsetMid.Enabled = pfcFrontOffsetMid.NonDefaultValue;
-				labelFrontOffsetBottom.Enabled = pfcFrontOffsetBottom.NonDefaultValue;
-
-				// Update Scale labels
-				labelFrontScaleTop.Enabled = pfcFrontScaleTop.NonDefaultValue;
-				labelFrontScaleMid.Enabled = pfcFrontScaleMid.NonDefaultValue;
-				labelFrontScaleBottom.Enabled = pfcFrontScaleBottom.NonDefaultValue;
-			}
-			if(backside.CheckState != CheckState.Unchecked)
-			{
-				// Update Offset labels
-				labelBackTextureOffset.Enabled = backTextureOffset.NonDefaultValue;
-				labelBackOffsetTop.Enabled = pfcBackOffsetTop.NonDefaultValue;
-				labelBackOffsetMid.Enabled = pfcBackOffsetMid.NonDefaultValue;
-				labelBackOffsetBottom.Enabled = pfcBackOffsetBottom.NonDefaultValue;
-
-				// Update Scale labels
-				labelBackScaleTop.Enabled = pfcBackScaleTop.NonDefaultValue;
-				labelBackScaleMid.Enabled = pfcBackScaleMid.NonDefaultValue;
-				labelBackScaleBottom.Enabled = pfcBackScaleBottom.NonDefaultValue;
-			}
+			if(alpha.Text == "1") resetalpha.Visible = false;
 		}
 
 		//mxd
@@ -883,8 +856,15 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 			}
 
+			resetalpha.Visible = (alpha.GetResultFloat(1.0f) != 1.0f);
+
 			General.Map.IsChanged = true;
 			if(OnValuesChanged != null)	OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		private void resetalpha_Click(object sender, EventArgs e)
+		{
+			alpha.Text = "1";
 		}
 
 		private void flags_OnValueChanged(object sender, EventArgs e) 
@@ -1506,7 +1486,6 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			General.Map.IsChanged = true;
-			labelFrontTextureOffset.Enabled = frontTextureOffset.NonDefaultValue;
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
 
@@ -1536,7 +1515,6 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 			
 			General.Map.IsChanged = true;
-			labelBackTextureOffset.Enabled = backTextureOffset.NonDefaultValue;
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
 
@@ -1562,7 +1540,6 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			General.Map.IsChanged = true;
-			labelFrontOffsetTop.Enabled = pfcFrontOffsetTop.NonDefaultValue;
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
 
@@ -1585,7 +1562,6 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			General.Map.IsChanged = true;
-			labelFrontOffsetMid.Enabled = pfcFrontOffsetMid.NonDefaultValue;
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
 
@@ -1608,7 +1584,6 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			General.Map.IsChanged = true;
-			labelFrontOffsetBottom.Enabled = pfcFrontOffsetBottom.NonDefaultValue;
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
 
@@ -1631,7 +1606,6 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			General.Map.IsChanged = true;
-			labelBackOffsetTop.Enabled = pfcBackOffsetTop.NonDefaultValue;
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
 
@@ -1654,7 +1628,6 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			General.Map.IsChanged = true;
-			labelBackOffsetMid.Enabled = pfcBackOffsetMid.NonDefaultValue;
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
 
@@ -1677,7 +1650,6 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			General.Map.IsChanged = true;
-			labelBackOffsetBottom.Enabled = pfcBackOffsetBottom.NonDefaultValue;
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
 
@@ -1704,7 +1676,6 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			General.Map.IsChanged = true;
-			labelFrontScaleTop.Enabled = pfcFrontScaleTop.NonDefaultValue;
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
 
@@ -1727,7 +1698,6 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			General.Map.IsChanged = true;
-			labelFrontScaleMid.Enabled = pfcFrontScaleMid.NonDefaultValue;
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
 
@@ -1750,7 +1720,6 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			General.Map.IsChanged = true;
-			labelFrontScaleBottom.Enabled = pfcFrontScaleBottom.NonDefaultValue;
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
 
@@ -1773,7 +1742,6 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			General.Map.IsChanged = true;
-			labelBackScaleTop.Enabled = pfcBackScaleTop.NonDefaultValue;
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
 
@@ -1796,7 +1764,6 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			General.Map.IsChanged = true;
-			labelBackScaleMid.Enabled = pfcBackScaleMid.NonDefaultValue;
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
 
@@ -1819,7 +1786,6 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			General.Map.IsChanged = true;
-			labelBackScaleBottom.Enabled = pfcBackScaleBottom.NonDefaultValue;
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
 
