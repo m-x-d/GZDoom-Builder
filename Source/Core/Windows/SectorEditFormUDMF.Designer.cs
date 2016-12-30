@@ -236,14 +236,14 @@
 			// 
 			// fogdensity
 			// 
-			this.fogdensity.AllowDecimal = true;
+			this.fogdensity.AllowDecimal = false;
 			this.fogdensity.AllowExpressions = false;
 			this.fogdensity.AllowNegative = false;
 			this.fogdensity.AllowRelative = false;
-			this.fogdensity.ButtonStep = 1;
-			this.fogdensity.ButtonStepBig = 0.25F;
-			this.fogdensity.ButtonStepFloat = 0.1F;
-			this.fogdensity.ButtonStepSmall = 0.01F;
+			this.fogdensity.ButtonStep = 8;
+			this.fogdensity.ButtonStepBig = 16F;
+			this.fogdensity.ButtonStepFloat = 1F;
+			this.fogdensity.ButtonStepSmall = 1F;
 			this.fogdensity.ButtonStepsUseModifierKeys = true;
 			this.fogdensity.ButtonStepsWrapAround = false;
 			this.fogdensity.Location = new System.Drawing.Point(89, 132);
@@ -845,10 +845,10 @@
 			this.floorglowheight.AllowExpressions = false;
 			this.floorglowheight.AllowNegative = false;
 			this.floorglowheight.AllowRelative = false;
-			this.floorglowheight.ButtonStep = 1;
-			this.floorglowheight.ButtonStepBig = 0.25F;
-			this.floorglowheight.ButtonStepFloat = 0.1F;
-			this.floorglowheight.ButtonStepSmall = 0.01F;
+			this.floorglowheight.ButtonStep = 8;
+			this.floorglowheight.ButtonStepBig = 16F;
+			this.floorglowheight.ButtonStepFloat = 1F;
+			this.floorglowheight.ButtonStepSmall = 1F;
 			this.floorglowheight.ButtonStepsUseModifierKeys = true;
 			this.floorglowheight.ButtonStepsWrapAround = false;
 			this.floorglowheight.Location = new System.Drawing.Point(113, 254);
@@ -988,7 +988,7 @@
 			// 
 			// floorAngleControl
 			// 
-			this.floorAngleControl.Angle = -1620;
+			this.floorAngleControl.Angle = -1710;
 			this.floorAngleControl.AngleOffset = 90;
 			this.floorAngleControl.DoomAngleClamping = false;
 			this.floorAngleControl.Location = new System.Drawing.Point(6, 156);
@@ -1211,10 +1211,10 @@
 			this.ceilingglowheight.AllowExpressions = false;
 			this.ceilingglowheight.AllowNegative = false;
 			this.ceilingglowheight.AllowRelative = false;
-			this.ceilingglowheight.ButtonStep = 1;
-			this.ceilingglowheight.ButtonStepBig = 0.25F;
-			this.ceilingglowheight.ButtonStepFloat = 0.1F;
-			this.ceilingglowheight.ButtonStepSmall = 0.01F;
+			this.ceilingglowheight.ButtonStep = 8;
+			this.ceilingglowheight.ButtonStepBig = 16F;
+			this.ceilingglowheight.ButtonStepFloat = 1F;
+			this.ceilingglowheight.ButtonStepSmall = 1F;
 			this.ceilingglowheight.ButtonStepsUseModifierKeys = true;
 			this.ceilingglowheight.ButtonStepsWrapAround = false;
 			this.ceilingglowheight.Location = new System.Drawing.Point(113, 254);
@@ -1354,7 +1354,7 @@
 			// 
 			// ceilAngleControl
 			// 
-			this.ceilAngleControl.Angle = -1620;
+			this.ceilAngleControl.Angle = -1710;
 			this.ceilAngleControl.AngleOffset = 90;
 			this.ceilAngleControl.DoomAngleClamping = false;
 			this.ceilAngleControl.Location = new System.Drawing.Point(6, 156);

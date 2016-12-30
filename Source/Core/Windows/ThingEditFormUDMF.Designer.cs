@@ -98,6 +98,7 @@
 			this.hint = new System.Windows.Forms.PictureBox();
 			this.hintlabel = new System.Windows.Forms.Label();
 			this.tooltip = new System.Windows.Forms.ToolTip(this.components);
+			this.resetalpha = new System.Windows.Forms.Button();
 			this.groupBox1.SuspendLayout();
 			this.groupBox2.SuspendLayout();
 			this.tabs.SuspendLayout();
@@ -193,9 +194,9 @@
 			// roll
 			// 
 			this.roll.AllowDecimal = false;
+			this.roll.AllowExpressions = true;
 			this.roll.AllowNegative = true;
 			this.roll.AllowRelative = true;
-			this.roll.AllowExpressions = true;
 			this.roll.ButtonStep = 5;
 			this.roll.ButtonStepBig = 15F;
 			this.roll.ButtonStepFloat = 1F;
@@ -221,9 +222,9 @@
 			// pitch
 			// 
 			this.pitch.AllowDecimal = false;
+			this.pitch.AllowExpressions = true;
 			this.pitch.AllowNegative = true;
 			this.pitch.AllowRelative = true;
-			this.pitch.AllowExpressions = true;
 			this.pitch.ButtonStep = 5;
 			this.pitch.ButtonStepBig = 15F;
 			this.pitch.ButtonStepFloat = 1F;
@@ -249,9 +250,9 @@
 			// angle
 			// 
 			this.angle.AllowDecimal = false;
+			this.angle.AllowExpressions = true;
 			this.angle.AllowNegative = true;
 			this.angle.AllowRelative = true;
-			this.angle.AllowExpressions = true;
 			this.angle.ButtonStep = 5;
 			this.angle.ButtonStepBig = 15F;
 			this.angle.ButtonStepFloat = 1F;
@@ -479,9 +480,9 @@
 			// posX
 			// 
 			this.posX.AllowDecimal = true;
+			this.posX.AllowExpressions = true;
 			this.posX.AllowNegative = true;
 			this.posX.AllowRelative = true;
-			this.posX.AllowExpressions = true;
 			this.posX.ButtonStep = 8;
 			this.posX.ButtonStepBig = 8F;
 			this.posX.ButtonStepFloat = 1F;
@@ -498,9 +499,9 @@
 			// posY
 			// 
 			this.posY.AllowDecimal = true;
+			this.posY.AllowExpressions = true;
 			this.posY.AllowNegative = true;
 			this.posY.AllowRelative = true;
-			this.posY.AllowExpressions = true;
 			this.posY.ButtonStep = 8;
 			this.posY.ButtonStepBig = 8F;
 			this.posY.ButtonStepFloat = 1F;
@@ -517,9 +518,9 @@
 			// posZ
 			// 
 			this.posZ.AllowDecimal = true;
+			this.posZ.AllowExpressions = true;
 			this.posZ.AllowNegative = true;
 			this.posZ.AllowRelative = true;
-			this.posZ.AllowExpressions = true;
 			this.posZ.ButtonStep = 8;
 			this.posZ.ButtonStepBig = 8F;
 			this.posZ.ButtonStepFloat = 1F;
@@ -579,6 +580,7 @@
 			// floatbobphase
 			// 
 			this.floatbobphase.AllowDecimal = false;
+			this.floatbobphase.AllowExpressions = false;
 			this.floatbobphase.AllowNegative = true;
 			this.floatbobphase.AllowRelative = false;
 			this.floatbobphase.ButtonStep = 1;
@@ -605,6 +607,7 @@
 			// conversationID
 			// 
 			this.conversationID.AllowDecimal = false;
+			this.conversationID.AllowExpressions = false;
 			this.conversationID.AllowNegative = false;
 			this.conversationID.AllowRelative = false;
 			this.conversationID.ButtonStep = 1;
@@ -631,6 +634,7 @@
 			// health
 			// 
 			this.health.AllowDecimal = false;
+			this.health.AllowExpressions = false;
 			this.health.AllowNegative = true;
 			this.health.AllowRelative = false;
 			this.health.ButtonStep = 8;
@@ -661,6 +665,7 @@
 			// score
 			// 
 			this.score.AllowDecimal = false;
+			this.score.AllowExpressions = false;
 			this.score.AllowNegative = false;
 			this.score.AllowRelative = false;
 			this.score.ButtonStep = 8;
@@ -687,6 +692,7 @@
 			// gravity
 			// 
 			this.gravity.AllowDecimal = true;
+			this.gravity.AllowExpressions = false;
 			this.gravity.AllowNegative = true;
 			this.gravity.AllowRelative = false;
 			this.gravity.ButtonStep = 8;
@@ -703,6 +709,7 @@
 			// 
 			// grouprendering
 			// 
+			this.grouprendering.Controls.Add(this.resetalpha);
 			this.grouprendering.Controls.Add(this.labelScale);
 			this.grouprendering.Controls.Add(this.scale);
 			this.grouprendering.Controls.Add(this.color);
@@ -754,6 +761,7 @@
 			// alpha
 			// 
 			this.alpha.AllowDecimal = true;
+			this.alpha.AllowExpressions = false;
 			this.alpha.AllowNegative = true;
 			this.alpha.AllowRelative = false;
 			this.alpha.ButtonStep = 8;
@@ -983,6 +991,17 @@
 			this.tooltip.InitialDelay = 10;
 			this.tooltip.ReshowDelay = 100;
 			// 
+			// resetalpha
+			// 
+			this.resetalpha.Image = global::CodeImp.DoomBuilder.Properties.Resources.Reset;
+			this.resetalpha.Location = new System.Drawing.Point(166, 86);
+			this.resetalpha.Name = "resetalpha";
+			this.resetalpha.Size = new System.Drawing.Size(23, 23);
+			this.resetalpha.TabIndex = 69;
+			this.tooltip.SetToolTip(this.resetalpha, "Reset");
+			this.resetalpha.UseVisualStyleBackColor = true;
+			this.resetalpha.Click += new System.EventHandler(this.resetalpha_Click);
+			// 
 			// ThingEditFormUDMF
 			// 
 			this.AcceptButton = this.apply;
@@ -1107,5 +1126,6 @@
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox floatbobphase;
 		private System.Windows.Forms.Label label1;
 		private System.Windows.Forms.CheckBox hidefixedfields;
+		private System.Windows.Forms.Button resetalpha;
 	}
 }
