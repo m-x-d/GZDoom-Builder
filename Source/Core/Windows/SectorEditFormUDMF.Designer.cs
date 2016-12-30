@@ -236,14 +236,14 @@
 			// 
 			// fogdensity
 			// 
-			this.fogdensity.AllowDecimal = true;
+			this.fogdensity.AllowDecimal = false;
 			this.fogdensity.AllowExpressions = false;
 			this.fogdensity.AllowNegative = false;
 			this.fogdensity.AllowRelative = false;
-			this.fogdensity.ButtonStep = 1;
-			this.fogdensity.ButtonStepBig = 0.25F;
-			this.fogdensity.ButtonStepFloat = 0.1F;
-			this.fogdensity.ButtonStepSmall = 0.01F;
+			this.fogdensity.ButtonStep = 8;
+			this.fogdensity.ButtonStepBig = 16F;
+			this.fogdensity.ButtonStepFloat = 1F;
+			this.fogdensity.ButtonStepSmall = 1F;
 			this.fogdensity.ButtonStepsUseModifierKeys = true;
 			this.fogdensity.ButtonStepsWrapAround = false;
 			this.fogdensity.Location = new System.Drawing.Point(89, 132);
@@ -283,6 +283,7 @@
 			this.resetsoundsequence.Size = new System.Drawing.Size(28, 25);
 			this.resetsoundsequence.TabIndex = 13;
 			this.resetsoundsequence.Text = " ";
+			this.tooltip.SetToolTip(this.resetsoundsequence, "Reset");
 			this.resetsoundsequence.UseVisualStyleBackColor = true;
 			this.resetsoundsequence.Click += new System.EventHandler(this.resetsoundsequence_Click);
 			// 
@@ -701,6 +702,7 @@
 			this.resetdamagetype.Size = new System.Drawing.Size(28, 25);
 			this.resetdamagetype.TabIndex = 2;
 			this.resetdamagetype.Text = " ";
+			this.tooltip.SetToolTip(this.resetdamagetype, "Reset");
 			this.resetdamagetype.UseVisualStyleBackColor = true;
 			this.resetdamagetype.Click += new System.EventHandler(this.resetdamagetype_Click);
 			// 
@@ -823,7 +825,7 @@
 			this.resetfloorglowheight.Name = "resetfloorglowheight";
 			this.resetfloorglowheight.Size = new System.Drawing.Size(23, 23);
 			this.resetfloorglowheight.TabIndex = 24;
-			this.tooltip.SetToolTip(this.resetfloorglowheight, "Reset Ceiling Brightness");
+			this.tooltip.SetToolTip(this.resetfloorglowheight, "Reset");
 			this.resetfloorglowheight.UseVisualStyleBackColor = true;
 			this.resetfloorglowheight.Click += new System.EventHandler(this.resetfloorglowheight_Click);
 			// 
@@ -843,10 +845,10 @@
 			this.floorglowheight.AllowExpressions = false;
 			this.floorglowheight.AllowNegative = false;
 			this.floorglowheight.AllowRelative = false;
-			this.floorglowheight.ButtonStep = 1;
-			this.floorglowheight.ButtonStepBig = 0.25F;
-			this.floorglowheight.ButtonStepFloat = 0.1F;
-			this.floorglowheight.ButtonStepSmall = 0.01F;
+			this.floorglowheight.ButtonStep = 8;
+			this.floorglowheight.ButtonStepBig = 16F;
+			this.floorglowheight.ButtonStepFloat = 1F;
+			this.floorglowheight.ButtonStepSmall = 1F;
 			this.floorglowheight.ButtonStepsUseModifierKeys = true;
 			this.floorglowheight.ButtonStepsWrapAround = false;
 			this.floorglowheight.Location = new System.Drawing.Point(113, 254);
@@ -875,7 +877,7 @@
 			this.reset_floor_reflect.Name = "reset_floor_reflect";
 			this.reset_floor_reflect.Size = new System.Drawing.Size(23, 23);
 			this.reset_floor_reflect.TabIndex = 19;
-			this.tooltip.SetToolTip(this.reset_floor_reflect, "Reset Ceiling Brightness");
+			this.tooltip.SetToolTip(this.reset_floor_reflect, "Reset");
 			this.reset_floor_reflect.UseVisualStyleBackColor = true;
 			this.reset_floor_reflect.Click += new System.EventHandler(this.reset_floor_reflect_Click);
 			// 
@@ -917,6 +919,7 @@
 			this.resetfloorterrain.Size = new System.Drawing.Size(23, 23);
 			this.resetfloorterrain.TabIndex = 8;
 			this.resetfloorterrain.Text = " ";
+			this.tooltip.SetToolTip(this.resetfloorterrain, "Reset");
 			this.resetfloorterrain.UseVisualStyleBackColor = true;
 			this.resetfloorterrain.Click += new System.EventHandler(this.resetfloorterrain_Click);
 			// 
@@ -947,7 +950,7 @@
 			this.resetfloorlight.Name = "resetfloorlight";
 			this.resetfloorlight.Size = new System.Drawing.Size(23, 23);
 			this.resetfloorlight.TabIndex = 12;
-			this.tooltip.SetToolTip(this.resetfloorlight, "Reset Floor Brightness");
+			this.tooltip.SetToolTip(this.resetfloorlight, "Reset");
 			this.resetfloorlight.UseVisualStyleBackColor = true;
 			this.resetfloorlight.Click += new System.EventHandler(this.resetfloorlight_Click);
 			// 
@@ -985,7 +988,7 @@
 			// 
 			// floorAngleControl
 			// 
-			this.floorAngleControl.Angle = -1440;
+			this.floorAngleControl.Angle = -1710;
 			this.floorAngleControl.AngleOffset = 90;
 			this.floorAngleControl.DoomAngleClamping = false;
 			this.floorAngleControl.Location = new System.Drawing.Point(6, 156);
@@ -1188,7 +1191,7 @@
 			this.resetceilingglowheight.Name = "resetceilingglowheight";
 			this.resetceilingglowheight.Size = new System.Drawing.Size(23, 23);
 			this.resetceilingglowheight.TabIndex = 24;
-			this.tooltip.SetToolTip(this.resetceilingglowheight, "Reset Ceiling Brightness");
+			this.tooltip.SetToolTip(this.resetceilingglowheight, "Reset");
 			this.resetceilingglowheight.UseVisualStyleBackColor = true;
 			this.resetceilingglowheight.Click += new System.EventHandler(this.resetceilingglowheight_Click);
 			// 
@@ -1208,10 +1211,10 @@
 			this.ceilingglowheight.AllowExpressions = false;
 			this.ceilingglowheight.AllowNegative = false;
 			this.ceilingglowheight.AllowRelative = false;
-			this.ceilingglowheight.ButtonStep = 1;
-			this.ceilingglowheight.ButtonStepBig = 0.25F;
-			this.ceilingglowheight.ButtonStepFloat = 0.1F;
-			this.ceilingglowheight.ButtonStepSmall = 0.01F;
+			this.ceilingglowheight.ButtonStep = 8;
+			this.ceilingglowheight.ButtonStepBig = 16F;
+			this.ceilingglowheight.ButtonStepFloat = 1F;
+			this.ceilingglowheight.ButtonStepSmall = 1F;
 			this.ceilingglowheight.ButtonStepsUseModifierKeys = true;
 			this.ceilingglowheight.ButtonStepsWrapAround = false;
 			this.ceilingglowheight.Location = new System.Drawing.Point(113, 254);
@@ -1240,7 +1243,7 @@
 			this.reset_ceiling_reflect.Name = "reset_ceiling_reflect";
 			this.reset_ceiling_reflect.Size = new System.Drawing.Size(23, 23);
 			this.reset_ceiling_reflect.TabIndex = 19;
-			this.tooltip.SetToolTip(this.reset_ceiling_reflect, "Reset Ceiling Brightness");
+			this.tooltip.SetToolTip(this.reset_ceiling_reflect, "Reset");
 			this.reset_ceiling_reflect.UseVisualStyleBackColor = true;
 			this.reset_ceiling_reflect.Click += new System.EventHandler(this.reset_ceiling_reflect_Click);
 			// 
@@ -1282,6 +1285,7 @@
 			this.resetceilterrain.Size = new System.Drawing.Size(23, 23);
 			this.resetceilterrain.TabIndex = 8;
 			this.resetceilterrain.Text = " ";
+			this.tooltip.SetToolTip(this.resetceilterrain, "Reset");
 			this.resetceilterrain.UseVisualStyleBackColor = true;
 			this.resetceilterrain.Click += new System.EventHandler(this.resetceilterrain_Click);
 			// 
@@ -1312,7 +1316,7 @@
 			this.resetceillight.Name = "resetceillight";
 			this.resetceillight.Size = new System.Drawing.Size(23, 23);
 			this.resetceillight.TabIndex = 12;
-			this.tooltip.SetToolTip(this.resetceillight, "Reset Ceiling Brightness");
+			this.tooltip.SetToolTip(this.resetceillight, "Reset");
 			this.resetceillight.UseVisualStyleBackColor = true;
 			this.resetceillight.Click += new System.EventHandler(this.resetceillight_Click);
 			// 
@@ -1350,7 +1354,7 @@
 			// 
 			// ceilAngleControl
 			// 
-			this.ceilAngleControl.Angle = -1440;
+			this.ceilAngleControl.Angle = -1710;
 			this.ceilAngleControl.AngleOffset = 90;
 			this.ceilAngleControl.DoomAngleClamping = false;
 			this.ceilAngleControl.Location = new System.Drawing.Point(6, 156);
@@ -1534,7 +1538,7 @@
 			this.resetalphafloor.Name = "resetalphafloor";
 			this.resetalphafloor.Size = new System.Drawing.Size(23, 23);
 			this.resetalphafloor.TabIndex = 70;
-			this.tooltip.SetToolTip(this.resetalphafloor, "Reset Ceiling Brightness");
+			this.tooltip.SetToolTip(this.resetalphafloor, "Reset");
 			this.resetalphafloor.UseVisualStyleBackColor = true;
 			this.resetalphafloor.Click += new System.EventHandler(this.resetalphafloor_Click);
 			// 
@@ -1545,9 +1549,9 @@
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.floorportalflags.AutoScroll = true;
 			this.floorportalflags.Columns = 2;
-			this.floorportalflags.Location = new System.Drawing.Point(6, 79);
+			this.floorportalflags.Location = new System.Drawing.Point(9, 79);
 			this.floorportalflags.Name = "floorportalflags";
-			this.floorportalflags.Size = new System.Drawing.Size(181, 201);
+			this.floorportalflags.Size = new System.Drawing.Size(178, 201);
 			this.floorportalflags.TabIndex = 59;
 			this.floorportalflags.VerticalSpacing = 1;
 			// 
@@ -1622,7 +1626,7 @@
 			this.resetalphaceiling.Name = "resetalphaceiling";
 			this.resetalphaceiling.Size = new System.Drawing.Size(23, 23);
 			this.resetalphaceiling.TabIndex = 68;
-			this.tooltip.SetToolTip(this.resetalphaceiling, "Reset Ceiling Brightness");
+			this.tooltip.SetToolTip(this.resetalphaceiling, "Reset");
 			this.resetalphaceiling.UseVisualStyleBackColor = true;
 			this.resetalphaceiling.Click += new System.EventHandler(this.resetalphaceiling_Click);
 			// 
@@ -1633,9 +1637,9 @@
 						| System.Windows.Forms.AnchorStyles.Right)));
 			this.ceilportalflags.AutoScroll = true;
 			this.ceilportalflags.Columns = 2;
-			this.ceilportalflags.Location = new System.Drawing.Point(6, 79);
+			this.ceilportalflags.Location = new System.Drawing.Point(9, 79);
 			this.ceilportalflags.Name = "ceilportalflags";
-			this.ceilportalflags.Size = new System.Drawing.Size(181, 201);
+			this.ceilportalflags.Size = new System.Drawing.Size(178, 201);
 			this.ceilportalflags.TabIndex = 59;
 			this.ceilportalflags.VerticalSpacing = 1;
 			// 

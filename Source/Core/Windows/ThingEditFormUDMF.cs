@@ -315,6 +315,9 @@ namespace CodeImp.DoomBuilder.Windows
 
 			preventchanges = false;
 
+			//mxd. Update "Reset" button
+			if(alpha.Text == "1") resetalpha.Visible = false;
+
 			//mxd. Trigger updates manually...
 			preventmapchange = true;
 			angle_WhenTextChanged(angle, EventArgs.Empty);
@@ -325,7 +328,6 @@ namespace CodeImp.DoomBuilder.Windows
 
 			argscontrol.UpdateScriptControls(); //mxd
 			actionhelp.UpdateAction(action.GetValue()); //mxd
-			labelScale.Enabled = scale.NonDefaultValue; //mxd
 			commenteditor.FinishSetup(); //mxd
 			UpdateFlagNames(); //mxd
 		}
@@ -731,7 +733,6 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			General.Map.IsChanged = true;
-			labelScale.Enabled = scale.NonDefaultValue;
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
 
@@ -938,8 +939,15 @@ namespace CodeImp.DoomBuilder.Windows
 				}
 			}
 
+			resetalpha.Visible = (alpha.GetResultFloat(1.0f) != 1.0f);
+
 			General.Map.IsChanged = true;
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
+		}
+
+		private void resetalpha_Click(object sender, EventArgs e)
+		{
+			alpha.Text = "1";
 		}
 
 		private void hidefixedfields_CheckedChanged(object sender, EventArgs e)

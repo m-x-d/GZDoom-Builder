@@ -124,6 +124,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.fieldslist = new CodeImp.DoomBuilder.Controls.FieldsEditorControl();
 			this.imagelist = new System.Windows.Forms.ImageList(this.components);
 			this.tooltip = new System.Windows.Forms.ToolTip(this.components);
+			this.resetalpha = new System.Windows.Forms.Button();
 			label2 = new System.Windows.Forms.Label();
 			label11 = new System.Windows.Forms.Label();
 			label12 = new System.Windows.Forms.Label();
@@ -182,7 +183,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// label6
 			// 
 			label6.AutoSize = true;
-			label6.Location = new System.Drawing.Point(199, 21);
+			label6.Location = new System.Drawing.Point(189, 21);
 			label6.Name = "label6";
 			label6.Size = new System.Drawing.Size(37, 13);
 			label6.TabIndex = 17;
@@ -374,6 +375,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// 
 			this.groupsettings.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
 						| System.Windows.Forms.AnchorStyles.Right)));
+			this.groupsettings.Controls.Add(this.resetalpha);
 			this.groupsettings.Controls.Add(this.lockpick);
 			this.groupsettings.Controls.Add(this.alpha);
 			this.groupsettings.Controls.Add(label6);
@@ -398,6 +400,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// alpha
 			// 
 			this.alpha.AllowDecimal = true;
+			this.alpha.AllowExpressions = false;
 			this.alpha.AllowNegative = false;
 			this.alpha.AllowRelative = false;
 			this.alpha.ButtonStep = 1;
@@ -406,7 +409,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.alpha.ButtonStepSmall = 0.01F;
 			this.alpha.ButtonStepsUseModifierKeys = true;
 			this.alpha.ButtonStepsWrapAround = false;
-			this.alpha.Location = new System.Drawing.Point(243, 16);
+			this.alpha.Location = new System.Drawing.Point(233, 16);
 			this.alpha.Name = "alpha";
 			this.alpha.Size = new System.Drawing.Size(65, 24);
 			this.alpha.StepValues = null;
@@ -793,6 +796,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// frontsector
 			// 
 			this.frontsector.AllowDecimal = false;
+			this.frontsector.AllowExpressions = false;
 			this.frontsector.AllowNegative = false;
 			this.frontsector.AllowRelative = false;
 			this.frontsector.ButtonStep = 1;
@@ -820,6 +824,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// lightFront
 			// 
 			this.lightFront.AllowDecimal = false;
+			this.lightFront.AllowExpressions = false;
 			this.lightFront.AllowNegative = true;
 			this.lightFront.AllowRelative = true;
 			this.lightFront.ButtonStep = 16;
@@ -955,6 +960,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// backsector
 			// 
 			this.backsector.AllowDecimal = false;
+			this.backsector.AllowExpressions = false;
 			this.backsector.AllowNegative = false;
 			this.backsector.AllowRelative = false;
 			this.backsector.ButtonStep = 1;
@@ -982,6 +988,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// lightBack
 			// 
 			this.lightBack.AllowDecimal = false;
+			this.lightBack.AllowExpressions = false;
 			this.lightBack.AllowNegative = true;
 			this.lightBack.AllowRelative = true;
 			this.lightBack.ButtonStep = 1;
@@ -1367,6 +1374,17 @@ namespace CodeImp.DoomBuilder.Windows
 			this.imagelist.Images.SetKeyName(0, "Check.png");
 			this.imagelist.Images.SetKeyName(1, "SearchClear.png");
 			// 
+			// resetalpha
+			// 
+			this.resetalpha.Image = global::CodeImp.DoomBuilder.Properties.Resources.Reset;
+			this.resetalpha.Location = new System.Drawing.Point(301, 16);
+			this.resetalpha.Name = "resetalpha";
+			this.resetalpha.Size = new System.Drawing.Size(23, 23);
+			this.resetalpha.TabIndex = 70;
+			this.tooltip.SetToolTip(this.resetalpha, "Reset");
+			this.resetalpha.UseVisualStyleBackColor = true;
+			this.resetalpha.Click += new System.EventHandler(this.resetalpha_Click);
+			// 
 			// LinedefEditFormUDMF
 			// 
 			this.AcceptButton = this.apply;
@@ -1512,5 +1530,6 @@ namespace CodeImp.DoomBuilder.Windows
 		private CodeImp.DoomBuilder.Controls.TagsSelector tagsselector;
 		private System.Windows.Forms.Button resetfrontlight;
 		private System.Windows.Forms.Button resetbacklight;
+		private System.Windows.Forms.Button resetalpha;
 	}
 }

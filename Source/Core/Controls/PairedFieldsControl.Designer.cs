@@ -28,10 +28,12 @@
 		/// </summary>
 		private void InitializeComponent() 
 		{
+			this.components = new System.ComponentModel.Container();
 			this.bReset = new System.Windows.Forms.Button();
 			this.bLink = new System.Windows.Forms.Button();
 			this.value1 = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.value2 = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
+			this.tooltip = new System.Windows.Forms.ToolTip(this.components);
 			this.SuspendLayout();
 			// 
 			// bReset
@@ -41,6 +43,7 @@
 			this.bReset.Name = "bReset";
 			this.bReset.Size = new System.Drawing.Size(23, 23);
 			this.bReset.TabIndex = 40;
+			this.tooltip.SetToolTip(this.bReset, "Reset");
 			this.bReset.UseVisualStyleBackColor = true;
 			this.bReset.Visible = false;
 			this.bReset.Click += new System.EventHandler(this.bReset_Click);
@@ -52,17 +55,21 @@
 			this.bLink.Name = "bLink";
 			this.bLink.Size = new System.Drawing.Size(23, 23);
 			this.bLink.TabIndex = 39;
+			this.tooltip.SetToolTip(this.bLink, "Link values");
 			this.bLink.UseVisualStyleBackColor = true;
 			this.bLink.Click += new System.EventHandler(this.bLink_Click);
 			// 
 			// value1
 			// 
 			this.value1.AllowDecimal = false;
+			this.value1.AllowExpressions = true;
 			this.value1.AllowNegative = true;
 			this.value1.AllowRelative = true;
-			this.value1.AllowExpressions = true;
 			this.value1.ButtonStep = 1;
+			this.value1.ButtonStepBig = 10F;
 			this.value1.ButtonStepFloat = 1F;
+			this.value1.ButtonStepSmall = 0.1F;
+			this.value1.ButtonStepsUseModifierKeys = false;
 			this.value1.ButtonStepsWrapAround = false;
 			this.value1.Location = new System.Drawing.Point(3, 1);
 			this.value1.Name = "value1";
@@ -75,11 +82,14 @@
 			// value2
 			// 
 			this.value2.AllowDecimal = false;
+			this.value2.AllowExpressions = true;
 			this.value2.AllowNegative = true;
 			this.value2.AllowRelative = true;
-			this.value2.AllowExpressions = true;
 			this.value2.ButtonStep = 1;
+			this.value2.ButtonStepBig = 10F;
 			this.value2.ButtonStepFloat = 1F;
+			this.value2.ButtonStepSmall = 0.1F;
+			this.value2.ButtonStepsUseModifierKeys = false;
 			this.value2.ButtonStepsWrapAround = false;
 			this.value2.Location = new System.Drawing.Point(71, 1);
 			this.value2.Name = "value2";
@@ -109,5 +119,6 @@
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox value1;
 		private CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox value2;
 		private System.Windows.Forms.Button bReset;
+		private System.Windows.Forms.ToolTip tooltip;
 	}
 }

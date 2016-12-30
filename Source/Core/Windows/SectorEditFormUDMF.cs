@@ -597,12 +597,6 @@ namespace CodeImp.DoomBuilder.Windows
 			// Show sector height
 			UpdateSectorHeight();
 
-			//mxd. Update some labels
-			labelCeilOffsets.Enabled = ceilOffsets.NonDefaultValue;
-			labelCeilScale.Enabled = ceilScale.NonDefaultValue;
-			labelFloorOffsets.Enabled = floorOffsets.NonDefaultValue;
-			labelFloorScale.Enabled = floorScale.NonDefaultValue;
-
 			//mxd. Update brightness reset buttons
 			resetceillight.Visible = (ceilLightAbsolute.CheckState != CheckState.Unchecked || ceilBrightness.GetResult(0) != 0);
 			resetfloorlight.Visible = (floorLightAbsolute.CheckState != CheckState.Unchecked || floorBrightness.GetResult(0) != 0);
@@ -1317,7 +1311,6 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			General.Map.IsChanged = true;
-			labelCeilOffsets.Enabled = ceilOffsets.NonDefaultValue;
 			if(OnValuesChanged != null)	OnValuesChanged(this, EventArgs.Empty);
 		}
 
@@ -1333,7 +1326,6 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			General.Map.IsChanged = true;
-			labelFloorOffsets.Enabled = floorOffsets.NonDefaultValue;
 			if(OnValuesChanged != null)	OnValuesChanged(this, EventArgs.Empty);
 		}
 
@@ -1349,7 +1341,6 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			General.Map.IsChanged = true;
-			labelCeilScale.Enabled = ceilScale.NonDefaultValue;
 			if(OnValuesChanged != null)	OnValuesChanged(this, EventArgs.Empty);
 		}
 
@@ -1365,7 +1356,6 @@ namespace CodeImp.DoomBuilder.Windows
 			}
 
 			General.Map.IsChanged = true;
-			labelFloorScale.Enabled = floorScale.NonDefaultValue;
 			if(OnValuesChanged != null)	OnValuesChanged(this, EventArgs.Empty);
 		}
 
