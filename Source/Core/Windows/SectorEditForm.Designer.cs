@@ -101,7 +101,7 @@ namespace CodeImp.DoomBuilder.Windows
 			groupeffect.Size = new System.Drawing.Size(436, 92);
 			groupeffect.TabIndex = 1;
 			groupeffect.TabStop = false;
-			groupeffect.Text = "Effect and Identification";
+			groupeffect.Text = "Effect and identification";
 			// 
 			// browseeffect
 			// 
@@ -174,7 +174,7 @@ namespace CodeImp.DoomBuilder.Windows
 			groupfloorceiling.Size = new System.Drawing.Size(436, 186);
 			groupfloorceiling.TabIndex = 0;
 			groupfloorceiling.TabStop = false;
-			groupfloorceiling.Text = "Floor and Ceiling ";
+			groupfloorceiling.Text = "Floor and ceiling ";
 			// 
 			// label7
 			// 
@@ -210,9 +210,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// heightoffset
 			// 
 			this.heightoffset.AllowDecimal = false;
+			this.heightoffset.AllowExpressions = true;
 			this.heightoffset.AllowNegative = true;
 			this.heightoffset.AllowRelative = true;
-			this.heightoffset.AllowExpressions = true;
 			this.heightoffset.ButtonStep = 8;
 			this.heightoffset.ButtonStepBig = 16F;
 			this.heightoffset.ButtonStepFloat = 1F;
@@ -229,6 +229,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// brightness
 			// 
 			this.brightness.AllowDecimal = false;
+			this.brightness.AllowExpressions = false;
 			this.brightness.AllowNegative = true;
 			this.brightness.AllowRelative = true;
 			this.brightness.ButtonStep = 8;
@@ -247,9 +248,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// ceilingheight
 			// 
 			this.ceilingheight.AllowDecimal = false;
+			this.ceilingheight.AllowExpressions = true;
 			this.ceilingheight.AllowNegative = true;
 			this.ceilingheight.AllowRelative = true;
-			this.ceilingheight.AllowExpressions = true;
 			this.ceilingheight.ButtonStep = 8;
 			this.ceilingheight.ButtonStepBig = 16F;
 			this.ceilingheight.ButtonStepFloat = 1F;
@@ -314,9 +315,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// floorheight
 			// 
 			this.floorheight.AllowDecimal = false;
+			this.floorheight.AllowExpressions = true;
 			this.floorheight.AllowNegative = true;
 			this.floorheight.AllowRelative = true;
-			this.floorheight.AllowExpressions = true;
 			this.floorheight.ButtonStep = 8;
 			this.floorheight.ButtonStepBig = 16F;
 			this.floorheight.ButtonStepFloat = 1F;

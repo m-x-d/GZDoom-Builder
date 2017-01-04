@@ -1,4 +1,5 @@
-﻿using CodeImp.DoomBuilder.Rendering;
+﻿using CodeImp.DoomBuilder.GZBuilder.Data;
+using CodeImp.DoomBuilder.Rendering;
 
 namespace CodeImp.DoomBuilder.BuilderModes
 {
@@ -16,10 +17,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			data = sourcedata;
 		}
 
-		public void Update() 
+		public void Update()
 		{
 			// Create ceiling glow effect?
-			if(General.Map.Data.GlowingFlats.ContainsKey(data.Sector.LongCeilTexture))
+			data.CeilingGlow = GetGlowData(false);
+			if(data.CeilingGlow != null)
 			{
 				// Create ceiling level?
 				if(ceillevel == null)
@@ -29,20 +31,16 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 
 				// Update ceiling level
-				data.CeilingGlow = General.Map.Data.GlowingFlats[data.Sector.LongCeilTexture];
 				ceillevel.brightnessbelow = -1; // We need this plane for clipping only,
 				ceillevel.color = 0;            // so we need to reset all shading and coloring
 				ceillevel.plane = data.Ceiling.plane;
 				ceillevel.plane.Offset -= data.CeilingGlow.Height;
 				data.CeilingGlowPlane = ceillevel.plane;
 			}
-			else
-			{
-				data.CeilingGlow = null;
-			}
 
 			// Create floor glow effect?
-			if(General.Map.Data.GlowingFlats.ContainsKey(data.Sector.LongFloorTexture))
+			data.FloorGlow = GetGlowData(true);
+			if(data.FloorGlow != null)
 			{
 				// Create floor level?
 				if(floorlevel == null)
@@ -52,7 +50,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 
 				// Update floor level
-				data.FloorGlow = General.Map.Data.GlowingFlats[data.Sector.LongFloorTexture];
 				floorlevel.plane = data.Floor.plane.GetInverted();
 				floorlevel.plane.Offset += data.FloorGlow.Height;
 
@@ -72,10 +69,39 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 				data.FloorGlowPlane = floorlevel.plane;
 			}
-			else
+		}
+
+		private GlowingFlatData GetGlowData(bool floor)
+		{
+			// Check UDMF glow properties
+			if(General.Map.UDMF)
 			{
-				data.FloorGlow = null;
+				int glowcolor = data.Sector.Fields.GetValue((floor ? "floorglowcolor" : "ceilingglowcolor"), 0);
+
+				// Glow is explicidly disabled?
+				if(glowcolor == -1) return null;
+
+				// Avoid black glows
+				if(glowcolor > 0)
+				{
+					float glowheight = data.Sector.Fields.GetValue((floor ? "floorglowheight" : "ceilingglowheight"), 0f);
+					if(glowheight > 0f)
+					{
+						// Create glow data
+						PixelColor c = PixelColor.FromInt(glowcolor);
+						return new GlowingFlatData
+						{
+							Color = c,
+							Height = glowheight,
+							Brightness = (c.r + c.g + c.b) / 3,
+						};
+					}
+				}
 			}
+
+			// Use GLDEFS glow if available
+			long texture = (floor ? data.Sector.LongFloorTexture : data.Sector.LongCeilTexture);
+			return (General.Map.Data.GlowingFlats.ContainsKey(texture) ? General.Map.Data.GlowingFlats[texture] : null);
 		}
 	}
 }

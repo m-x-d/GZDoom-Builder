@@ -50,6 +50,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.tabs = new System.Windows.Forms.TabControl();
 			this.tabproperties = new System.Windows.Forms.TabPage();
 			this.groupsettings = new System.Windows.Forms.GroupBox();
+			this.resetalpha = new System.Windows.Forms.Button();
 			this.lockpick = new System.Windows.Forms.ComboBox();
 			this.alpha = new CodeImp.DoomBuilder.Controls.ButtonsNumericTextbox();
 			this.renderStyle = new System.Windows.Forms.ComboBox();
@@ -124,7 +125,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.fieldslist = new CodeImp.DoomBuilder.Controls.FieldsEditorControl();
 			this.imagelist = new System.Windows.Forms.ImageList(this.components);
 			this.tooltip = new System.Windows.Forms.ToolTip(this.components);
-			this.resetalpha = new System.Windows.Forms.Button();
 			label2 = new System.Windows.Forms.Label();
 			label11 = new System.Windows.Forms.Label();
 			label12 = new System.Windows.Forms.Label();
@@ -168,7 +168,7 @@ namespace CodeImp.DoomBuilder.Windows
 			label11.Name = "label11";
 			label11.Size = new System.Drawing.Size(80, 14);
 			label11.TabIndex = 13;
-			label11.Text = "Sector Index:";
+			label11.Text = "Sector index:";
 			label11.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// label12
@@ -177,7 +177,7 @@ namespace CodeImp.DoomBuilder.Windows
 			label12.Name = "label12";
 			label12.Size = new System.Drawing.Size(80, 14);
 			label12.TabIndex = 16;
-			label12.Text = "Sector Index:";
+			label12.Text = "Sector index:";
 			label12.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// label6
@@ -389,6 +389,17 @@ namespace CodeImp.DoomBuilder.Windows
 			this.groupsettings.TabStop = false;
 			this.groupsettings.Text = " Settings";
 			// 
+			// resetalpha
+			// 
+			this.resetalpha.Image = global::CodeImp.DoomBuilder.Properties.Resources.Reset;
+			this.resetalpha.Location = new System.Drawing.Point(301, 16);
+			this.resetalpha.Name = "resetalpha";
+			this.resetalpha.Size = new System.Drawing.Size(23, 23);
+			this.resetalpha.TabIndex = 70;
+			this.tooltip.SetToolTip(this.resetalpha, "Reset");
+			this.resetalpha.UseVisualStyleBackColor = true;
+			this.resetalpha.Click += new System.EventHandler(this.resetalpha_Click);
+			// 
 			// lockpick
 			// 
 			this.lockpick.FormattingEnabled = true;
@@ -488,9 +499,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.frontside.AutoSize = true;
 			this.frontside.Location = new System.Drawing.Point(20, 6);
 			this.frontside.Name = "frontside";
-			this.frontside.Size = new System.Drawing.Size(74, 17);
+			this.frontside.Size = new System.Drawing.Size(72, 17);
 			this.frontside.TabIndex = 0;
-			this.frontside.Text = "Front Side";
+			this.frontside.Text = "Front side";
 			this.frontside.UseVisualStyleBackColor = true;
 			this.frontside.CheckStateChanged += new System.EventHandler(this.frontside_CheckStateChanged);
 			// 
@@ -551,7 +562,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.frontscalegroup.Size = new System.Drawing.Size(290, 112);
 			this.frontscalegroup.TabIndex = 44;
 			this.frontscalegroup.TabStop = false;
-			this.frontscalegroup.Text = " Texture Scale ";
+			this.frontscalegroup.Text = " Texture scale ";
 			// 
 			// labelFrontScaleBottom
 			// 
@@ -560,7 +571,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.labelFrontScaleBottom.Size = new System.Drawing.Size(80, 14);
 			this.labelFrontScaleBottom.TabIndex = 42;
 			this.labelFrontScaleBottom.Tag = "";
-			this.labelFrontScaleBottom.Text = "Lower Scale:";
+			this.labelFrontScaleBottom.Text = "Lower scale:";
 			this.labelFrontScaleBottom.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// labelFrontScaleMid
@@ -570,7 +581,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.labelFrontScaleMid.Size = new System.Drawing.Size(80, 14);
 			this.labelFrontScaleMid.TabIndex = 41;
 			this.labelFrontScaleMid.Tag = "";
-			this.labelFrontScaleMid.Text = "Middle Scale:";
+			this.labelFrontScaleMid.Text = "Middle scale:";
 			this.labelFrontScaleMid.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// labelFrontScaleTop
@@ -580,7 +591,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.labelFrontScaleTop.Size = new System.Drawing.Size(80, 14);
 			this.labelFrontScaleTop.TabIndex = 28;
 			this.labelFrontScaleTop.Tag = "";
-			this.labelFrontScaleTop.Text = "Upper Scale:";
+			this.labelFrontScaleTop.Text = "Upper scale:";
 			this.labelFrontScaleTop.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// pfcFrontScaleTop
@@ -655,7 +666,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.groupBox6.Size = new System.Drawing.Size(290, 143);
 			this.groupBox6.TabIndex = 43;
 			this.groupBox6.TabStop = false;
-			this.groupBox6.Text = " Texture Offsets ";
+			this.groupBox6.Text = " Texture offsets ";
 			// 
 			// labelFrontTextureOffset
 			// 
@@ -664,7 +675,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.labelFrontTextureOffset.Size = new System.Drawing.Size(80, 14);
 			this.labelFrontTextureOffset.TabIndex = 46;
 			this.labelFrontTextureOffset.Tag = "";
-			this.labelFrontTextureOffset.Text = "Sidedef Offset:";
+			this.labelFrontTextureOffset.Text = "Sidedef offset:";
 			this.labelFrontTextureOffset.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// labelFrontOffsetBottom
@@ -674,7 +685,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.labelFrontOffsetBottom.Size = new System.Drawing.Size(80, 14);
 			this.labelFrontOffsetBottom.TabIndex = 45;
 			this.labelFrontOffsetBottom.Tag = "";
-			this.labelFrontOffsetBottom.Text = "Lower Offset:";
+			this.labelFrontOffsetBottom.Text = "Lower offset:";
 			this.labelFrontOffsetBottom.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// frontTextureOffset
@@ -697,7 +708,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.labelFrontOffsetMid.Size = new System.Drawing.Size(80, 14);
 			this.labelFrontOffsetMid.TabIndex = 44;
 			this.labelFrontOffsetMid.Tag = "";
-			this.labelFrontOffsetMid.Text = "Middle Offset:";
+			this.labelFrontOffsetMid.Text = "Middle offset:";
 			this.labelFrontOffsetMid.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// pfcFrontOffsetTop
@@ -726,7 +737,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.labelFrontOffsetTop.Size = new System.Drawing.Size(80, 14);
 			this.labelFrontOffsetTop.TabIndex = 43;
 			this.labelFrontOffsetTop.Tag = "";
-			this.labelFrontOffsetTop.Text = "Upper Offset:";
+			this.labelFrontOffsetTop.Text = "Upper offset:";
 			this.labelFrontOffsetTop.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// pfcFrontOffsetMid
@@ -905,9 +916,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backside.AutoSize = true;
 			this.backside.Location = new System.Drawing.Point(20, 6);
 			this.backside.Name = "backside";
-			this.backside.Size = new System.Drawing.Size(75, 17);
+			this.backside.Size = new System.Drawing.Size(73, 17);
 			this.backside.TabIndex = 0;
-			this.backside.Text = "Back Side";
+			this.backside.Text = "Back side";
 			this.backside.UseVisualStyleBackColor = true;
 			this.backside.CheckStateChanged += new System.EventHandler(this.backside_CheckStateChanged);
 			// 
@@ -1064,7 +1075,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backscalegroup.Size = new System.Drawing.Size(290, 112);
 			this.backscalegroup.TabIndex = 44;
 			this.backscalegroup.TabStop = false;
-			this.backscalegroup.Text = " Texture Scale";
+			this.backscalegroup.Text = " Texture scale";
 			// 
 			// labelBackScaleBottom
 			// 
@@ -1073,7 +1084,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.labelBackScaleBottom.Size = new System.Drawing.Size(80, 14);
 			this.labelBackScaleBottom.TabIndex = 45;
 			this.labelBackScaleBottom.Tag = "";
-			this.labelBackScaleBottom.Text = "Lower Scale:";
+			this.labelBackScaleBottom.Text = "Lower scale:";
 			this.labelBackScaleBottom.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// labelBackScaleMid
@@ -1083,7 +1094,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.labelBackScaleMid.Size = new System.Drawing.Size(80, 14);
 			this.labelBackScaleMid.TabIndex = 44;
 			this.labelBackScaleMid.Tag = "";
-			this.labelBackScaleMid.Text = "Middle Scale:";
+			this.labelBackScaleMid.Text = "Middle scale:";
 			this.labelBackScaleMid.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// labelBackScaleTop
@@ -1093,7 +1104,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.labelBackScaleTop.Size = new System.Drawing.Size(80, 14);
 			this.labelBackScaleTop.TabIndex = 43;
 			this.labelBackScaleTop.Tag = "";
-			this.labelBackScaleTop.Text = "Upper Scale:";
+			this.labelBackScaleTop.Text = "Upper scale:";
 			this.labelBackScaleTop.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// pfcBackScaleTop
@@ -1168,7 +1179,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.groupBox1.Size = new System.Drawing.Size(290, 143);
 			this.groupBox1.TabIndex = 43;
 			this.groupBox1.TabStop = false;
-			this.groupBox1.Text = " Texture Offsets ";
+			this.groupBox1.Text = " Texture offsets ";
 			// 
 			// labelBackTextureOffset
 			// 
@@ -1177,7 +1188,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.labelBackTextureOffset.Size = new System.Drawing.Size(80, 14);
 			this.labelBackTextureOffset.TabIndex = 50;
 			this.labelBackTextureOffset.Tag = "";
-			this.labelBackTextureOffset.Text = "Sidedef Offset:";
+			this.labelBackTextureOffset.Text = "Sidedef offset:";
 			this.labelBackTextureOffset.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// labelBackOffsetBottom
@@ -1187,7 +1198,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.labelBackOffsetBottom.Size = new System.Drawing.Size(80, 14);
 			this.labelBackOffsetBottom.TabIndex = 49;
 			this.labelBackOffsetBottom.Tag = "";
-			this.labelBackOffsetBottom.Text = "Lower Offset:";
+			this.labelBackOffsetBottom.Text = "Lower offset:";
 			this.labelBackOffsetBottom.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// labelBackOffsetMid
@@ -1197,7 +1208,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.labelBackOffsetMid.Size = new System.Drawing.Size(80, 14);
 			this.labelBackOffsetMid.TabIndex = 48;
 			this.labelBackOffsetMid.Tag = "";
-			this.labelBackOffsetMid.Text = "Middle Offset:";
+			this.labelBackOffsetMid.Text = "Middle offset:";
 			this.labelBackOffsetMid.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// labelBackOffsetTop
@@ -1207,7 +1218,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.labelBackOffsetTop.Size = new System.Drawing.Size(80, 14);
 			this.labelBackOffsetTop.TabIndex = 47;
 			this.labelBackOffsetTop.Tag = "";
-			this.labelBackOffsetTop.Text = "Upper Offset:";
+			this.labelBackOffsetTop.Text = "Upper offset:";
 			this.labelBackOffsetTop.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// pfcBackOffsetTop
@@ -1373,17 +1384,6 @@ namespace CodeImp.DoomBuilder.Windows
 			this.imagelist.TransparentColor = System.Drawing.Color.Transparent;
 			this.imagelist.Images.SetKeyName(0, "Check.png");
 			this.imagelist.Images.SetKeyName(1, "SearchClear.png");
-			// 
-			// resetalpha
-			// 
-			this.resetalpha.Image = global::CodeImp.DoomBuilder.Properties.Resources.Reset;
-			this.resetalpha.Location = new System.Drawing.Point(301, 16);
-			this.resetalpha.Name = "resetalpha";
-			this.resetalpha.Size = new System.Drawing.Size(23, 23);
-			this.resetalpha.TabIndex = 70;
-			this.tooltip.SetToolTip(this.resetalpha, "Reset");
-			this.resetalpha.UseVisualStyleBackColor = true;
-			this.resetalpha.Click += new System.EventHandler(this.resetalpha_Click);
 			// 
 			// LinedefEditFormUDMF
 			// 

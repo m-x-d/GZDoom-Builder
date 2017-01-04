@@ -203,22 +203,26 @@ namespace CodeImp.DoomBuilder.VisualModes
 		//TODO: this doesn't match any GZDoom light mode...
 		//GZDoom: gl_renderstate.h, SetFog();
 		//GZDoom: gl_lightlevel.cpp gl_SetFog();
-		protected float CalculateFogFactor(int brightness) { return CalculateFogFactor(Sector.Sector.FogMode, brightness); }
-		public static float CalculateFogFactor(SectorFogMode mode, int brightness)
+		protected float CalculateFogFactor(int brightness) { return CalculateFogFactor(Sector.Sector, brightness); }
+		public static float CalculateFogFactor(Sector sector, int brightness)
 		{
 			float density;
-			switch(mode)
+			int fogdensity = (General.Map.UDMF ? General.Clamp(sector.Fields.GetValue("fogdensity", 0), 0, 510) : 0);
+			switch(sector.FogMode)
 			{
 				case SectorFogMode.OUTSIDEFOGDENSITY:
-					density = General.Map.Data.MapInfo.OutsideFogDensity * FADE_MULTIPLIER;
+					if(fogdensity < 3) fogdensity = General.Map.Data.MapInfo.OutsideFogDensity;
+					density = fogdensity * FADE_MULTIPLIER;
 					break;
 
 				case SectorFogMode.FOGDENSITY:
-					density = General.Map.Data.MapInfo.FogDensity * FADE_MULTIPLIER;
+					if(fogdensity < 3) fogdensity = General.Map.Data.MapInfo.FogDensity;
+					density = fogdensity * FADE_MULTIPLIER;
 					break;
 
 				case SectorFogMode.FADE:
-					density = General.Clamp(255 - brightness, 30, 255) * FADE_MULTIPLIER;
+					if(fogdensity < 3) fogdensity = General.Clamp(255 - brightness, 30, 255);
+					density = fogdensity * FADE_MULTIPLIER;
 					break;
 
 				case SectorFogMode.CLASSIC:

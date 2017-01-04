@@ -164,7 +164,7 @@ namespace CodeImp.DoomBuilder.Windows
 			label11.Name = "label11";
 			label11.Size = new System.Drawing.Size(80, 14);
 			label11.TabIndex = 13;
-			label11.Text = "Sector Index:";
+			label11.Text = "Sector index:";
 			label11.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// label12
@@ -173,7 +173,7 @@ namespace CodeImp.DoomBuilder.Windows
 			label12.Name = "label12";
 			label12.Size = new System.Drawing.Size(80, 14);
 			label12.TabIndex = 16;
-			label12.Text = "Sector Index:";
+			label12.Text = "Sector index:";
 			label12.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// activationlabel
@@ -191,7 +191,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.labelFrontTextureOffset.Name = "labelFrontTextureOffset";
 			this.labelFrontTextureOffset.Size = new System.Drawing.Size(80, 14);
 			this.labelFrontTextureOffset.TabIndex = 42;
-			this.labelFrontTextureOffset.Text = "Texture Offset:";
+			this.labelFrontTextureOffset.Text = "Texture offset:";
 			this.labelFrontTextureOffset.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// labelBackTextureOffset
@@ -200,7 +200,7 @@ namespace CodeImp.DoomBuilder.Windows
 			this.labelBackTextureOffset.Name = "labelBackTextureOffset";
 			this.labelBackTextureOffset.Size = new System.Drawing.Size(80, 14);
 			this.labelBackTextureOffset.TabIndex = 43;
-			this.labelBackTextureOffset.Text = "Texture Offset:";
+			this.labelBackTextureOffset.Text = "Texture offset:";
 			this.labelBackTextureOffset.TextAlign = System.Drawing.ContentAlignment.TopRight;
 			// 
 			// cancel
@@ -353,9 +353,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.frontside.AutoSize = true;
 			this.frontside.Location = new System.Drawing.Point(17, 4);
 			this.frontside.Name = "frontside";
-			this.frontside.Size = new System.Drawing.Size(74, 17);
+			this.frontside.Size = new System.Drawing.Size(72, 17);
 			this.frontside.TabIndex = 0;
-			this.frontside.Text = "Front Side";
+			this.frontside.Text = "Front side";
 			this.frontside.UseVisualStyleBackColor = true;
 			this.frontside.CheckStateChanged += new System.EventHandler(this.frontside_CheckStateChanged);
 			// 
@@ -384,6 +384,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// frontsector
 			// 
 			this.frontsector.AllowDecimal = false;
+			this.frontsector.AllowExpressions = false;
 			this.frontsector.AllowNegative = false;
 			this.frontsector.AllowRelative = false;
 			this.frontsector.ButtonStep = 1;
@@ -449,9 +450,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.backside.AutoSize = true;
 			this.backside.Location = new System.Drawing.Point(17, 158);
 			this.backside.Name = "backside";
-			this.backside.Size = new System.Drawing.Size(75, 17);
+			this.backside.Size = new System.Drawing.Size(73, 17);
 			this.backside.TabIndex = 0;
-			this.backside.Text = "Back Side";
+			this.backside.Text = "Back side";
 			this.backside.UseVisualStyleBackColor = true;
 			this.backside.CheckStateChanged += new System.EventHandler(this.backside_CheckStateChanged);
 			// 
@@ -480,6 +481,7 @@ namespace CodeImp.DoomBuilder.Windows
 			// backsector
 			// 
 			this.backsector.AllowDecimal = false;
+			this.backsector.AllowExpressions = false;
 			this.backsector.AllowNegative = false;
 			this.backsector.AllowRelative = false;
 			this.backsector.ButtonStep = 1;

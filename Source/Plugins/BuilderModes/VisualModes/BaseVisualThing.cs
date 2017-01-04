@@ -265,7 +265,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						sectorcolor = areacolor.WithAlpha(alpha).ToInt();
 
 						//mxd. Calculate fogfactor
-						fogfactor = VisualGeometry.CalculateFogFactor(level.sector.FogMode, brightness);
+						fogfactor = VisualGeometry.CalculateFogFactor(level.sector, brightness);
 					}
 				}
 				//TECH: even Bright Thing frames are affected by custom fade...
@@ -277,7 +277,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					if(level != null && level.sector.FogMode > SectorFogMode.CLASSIC)
 					{
 						//mxd. Calculate fogfactor
-						fogfactor = VisualGeometry.CalculateFogFactor(level.sector.FogMode, level.brightnessbelow);
+						fogfactor = VisualGeometry.CalculateFogFactor(level.sector, level.brightnessbelow);
 					}
 				}
 			}

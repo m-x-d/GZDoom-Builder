@@ -5,7 +5,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 	public class GlowingFlatData
 	{
 		public PixelColor Color;
-		public int Height;
+		public float Height;
 		public int Brightness = 255;
 		public bool Fullbright;
 		public bool CalculateTextureColor;

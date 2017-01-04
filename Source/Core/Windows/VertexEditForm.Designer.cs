@@ -123,9 +123,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// zceiling
 			// 
 			this.zceiling.AllowDecimal = false;
+			this.zceiling.AllowExpressions = true;
 			this.zceiling.AllowNegative = true;
 			this.zceiling.AllowRelative = true;
-			this.zceiling.AllowExpressions = true;
 			this.zceiling.ButtonStep = 8;
 			this.zceiling.ButtonStepBig = 16F;
 			this.zceiling.ButtonStepFloat = 1F;
@@ -142,9 +142,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// zfloor
 			// 
 			this.zfloor.AllowDecimal = false;
+			this.zfloor.AllowExpressions = true;
 			this.zfloor.AllowNegative = true;
 			this.zfloor.AllowRelative = true;
-			this.zfloor.AllowExpressions = true;
 			this.zfloor.ButtonStep = 8;
 			this.zfloor.ButtonStepBig = 16F;
 			this.zfloor.ButtonStepFloat = 1F;
@@ -163,25 +163,25 @@ namespace CodeImp.DoomBuilder.Windows
 			label2.AutoSize = true;
 			label2.Location = new System.Drawing.Point(68, 37);
 			label2.Name = "label2";
-			label2.Size = new System.Drawing.Size(111, 13);
+			label2.Size = new System.Drawing.Size(106, 13);
 			label2.TabIndex = 26;
-			label2.Text = "Absolute Floor Height:";
+			label2.Text = "Absolute floor height:";
 			// 
 			// label3
 			// 
 			label3.AutoSize = true;
 			label3.Location = new System.Drawing.Point(60, 5);
 			label3.Name = "label3";
-			label3.Size = new System.Drawing.Size(119, 13);
+			label3.Size = new System.Drawing.Size(116, 13);
 			label3.TabIndex = 27;
-			label3.Text = "Absolute Ceiling Height:";
+			label3.Text = "Absolute ceiling height:";
 			// 
 			// positiony
 			// 
 			this.positiony.AllowDecimal = false;
+			this.positiony.AllowExpressions = true;
 			this.positiony.AllowNegative = true;
 			this.positiony.AllowRelative = true;
-			this.positiony.AllowExpressions = true;
 			this.positiony.ButtonStep = 1;
 			this.positiony.ButtonStepBig = 8F;
 			this.positiony.ButtonStepFloat = 1F;
@@ -198,9 +198,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// positionx
 			// 
 			this.positionx.AllowDecimal = false;
+			this.positionx.AllowExpressions = true;
 			this.positionx.AllowNegative = true;
 			this.positionx.AllowRelative = true;
-			this.positionx.AllowExpressions = true;
 			this.positionx.ButtonStep = 1;
 			this.positionx.ButtonStepBig = 8F;
 			this.positionx.ButtonStepFloat = 1F;

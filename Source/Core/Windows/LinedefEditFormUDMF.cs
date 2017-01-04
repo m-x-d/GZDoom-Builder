@@ -864,6 +864,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void resetalpha_Click(object sender, EventArgs e)
 		{
+			alpha.Focus();
 			alpha.Text = "1";
 		}
 

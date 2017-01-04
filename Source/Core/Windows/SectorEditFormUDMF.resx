@@ -130,7 +130,8 @@
     <value>17, 17</value>
   </metadata>
   <data name="label4.ToolTip" xml:space="preserve">
-    <value>Sets an explicit fog density for the sector, overriding the default calculation from the light level.
+    <value>Applied only when the sector is affected by either Fade or MAPINFO fogdensity/outsidefogdensity.
+Sets an explicit fog density for the sector, overriding the default calculation from the light level.
 Value range is 0-510, 0 meaning that the default is to be used, 2 equalling the density
 of a light level of 250, and 255 equalling the density of a light level of 0.</value>
   </data>

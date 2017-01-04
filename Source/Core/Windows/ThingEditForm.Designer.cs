@@ -96,9 +96,9 @@ namespace CodeImp.DoomBuilder.Windows
 			this.cbAbsoluteHeight.AutoSize = true;
 			this.cbAbsoluteHeight.Location = new System.Drawing.Point(12, 111);
 			this.cbAbsoluteHeight.Name = "cbAbsoluteHeight";
-			this.cbAbsoluteHeight.Size = new System.Drawing.Size(101, 17);
+			this.cbAbsoluteHeight.Size = new System.Drawing.Size(99, 17);
 			this.cbAbsoluteHeight.TabIndex = 16;
-			this.cbAbsoluteHeight.Text = "Absolute Height";
+			this.cbAbsoluteHeight.Text = "Absolute height";
 			this.cbAbsoluteHeight.UseVisualStyleBackColor = true;
 			this.cbAbsoluteHeight.CheckedChanged += new System.EventHandler(this.cbAbsoluteHeight_CheckedChanged);
 			// 
@@ -123,9 +123,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// posX
 			// 
 			this.posX.AllowDecimal = false;
+			this.posX.AllowExpressions = true;
 			this.posX.AllowNegative = true;
 			this.posX.AllowRelative = true;
-			this.posX.AllowExpressions = true;
 			this.posX.ButtonStep = 8;
 			this.posX.ButtonStepBig = 16F;
 			this.posX.ButtonStepFloat = 1F;
@@ -142,9 +142,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// posY
 			// 
 			this.posY.AllowDecimal = false;
+			this.posY.AllowExpressions = true;
 			this.posY.AllowNegative = true;
 			this.posY.AllowRelative = true;
-			this.posY.AllowExpressions = true;
 			this.posY.ButtonStep = 8;
 			this.posY.ButtonStepBig = 16F;
 			this.posY.ButtonStepFloat = 1F;
@@ -161,9 +161,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// posZ
 			// 
 			this.posZ.AllowDecimal = false;
+			this.posZ.AllowExpressions = true;
 			this.posZ.AllowNegative = true;
 			this.posZ.AllowRelative = true;
-			this.posZ.AllowExpressions = true;
 			this.posZ.ButtonStep = 8;
 			this.posZ.ButtonStepBig = 16F;
 			this.posZ.ButtonStepFloat = 1F;
@@ -243,9 +243,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// angle
 			// 
 			this.angle.AllowDecimal = false;
+			this.angle.AllowExpressions = false;
 			this.angle.AllowNegative = true;
 			this.angle.AllowRelative = true;
-			this.posX.AllowExpressions = true;
 			this.angle.ButtonStep = 5;
 			this.angle.ButtonStepBig = 15F;
 			this.angle.ButtonStepFloat = 1F;

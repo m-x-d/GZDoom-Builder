@@ -5,6 +5,7 @@
 //The Code Project - http://www.codeproject.com
 
 using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Windows.Forms;
@@ -44,7 +45,13 @@ namespace CodeImp.DoomBuilder.Controls
 
 		public event EventHandler AngleChanged;
 
-		public int Angle { get { return (angle == NO_ANGLE ? NO_ANGLE : angle - angleoffset); } set { angle = (value == NO_ANGLE ? NO_ANGLE : value + angleoffset); this.Refresh(); } }
+		public int Angle { get { return (angle == NO_ANGLE ? NO_ANGLE : angle - angleoffset); } set {
+			if(LicenseManager.UsageMode != LicenseUsageMode.Designtime)
+			{
+				angle = (value == NO_ANGLE ? NO_ANGLE : value + angleoffset);
+				this.Refresh();
+			}
+		} }
 		public int AngleOffset { get { return angleoffset; } set { angleoffset = value; this.Refresh(); } }
 		public bool DoomAngleClamping { get { return doomangleclamping; } set { doomangleclamping = value; } }
 		public const int NO_ANGLE = int.MinValue;

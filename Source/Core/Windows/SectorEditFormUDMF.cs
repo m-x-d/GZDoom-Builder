@@ -293,9 +293,6 @@ namespace CodeImp.DoomBuilder.Windows
 		{
 			preventchanges = true; //mxd
 
-			int floorglowcolorval = 0;
-			int ceilingglowcolorval = 0;
-
 			// Keep this list
 			this.sectors = sectors;
 			if(sectors.Count > 1) this.Text = "Edit Sectors (" + sectors.Count + ")";
@@ -370,8 +367,8 @@ namespace CodeImp.DoomBuilder.Windows
 			fogdensity.Text = General.Clamp(sc.Fields.GetValue("fogdensity", 0), 0, 510).ToString();
 
 			// Floor/ceiling glow
-			ceilingglowcolorval = sc.Fields.GetValue("ceilingglowcolor", 0);
-			floorglowcolorval = sc.Fields.GetValue("floorglowcolor", 0);
+			int ceilingglowcolorval = sc.Fields.GetValue("ceilingglowcolor", 0);
+			int floorglowcolorval = sc.Fields.GetValue("floorglowcolor", 0);
 			ceilingglowcolor.SetValueFrom(sc.Fields, true);
 			floorglowcolor.SetValueFrom(sc.Fields, true);
 
@@ -586,6 +583,10 @@ namespace CodeImp.DoomBuilder.Windows
 			if(floor_reflect.Text == "0") reset_floor_reflect.Visible = false;
 			if(ceilingglowheight.Text == "0") resetceilingglowheight.Visible = false;
 			if(floorglowheight.Text == "0") resetfloorglowheight.Visible = false;
+
+			//mxd. Cause Graf was not into non-zero default glow height...
+			UpdateCeilingGlowHeightWarning();
+			UpdateFloorGlowHeightWarning();
 
 			//mxd. Setup tags
 			tagsselector.SetValues(sectors);
@@ -990,6 +991,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void resetfloorterrain_Click(object sender, EventArgs e)
 		{
+			floorterrain.Focus();
 			floorterrain.Text = NO_TERRAIN;
 		}
 
@@ -1005,6 +1007,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void resetceilterrain_Click(object sender, EventArgs e)
 		{
+			ceilterrain.Focus();
 			ceilterrain.Text = NO_TERRAIN;
 		}
 
@@ -1062,11 +1065,13 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void reset_ceiling_reflect_Click(object sender, EventArgs e)
 		{
+			ceiling_reflect.Focus();
 			ceiling_reflect.Text = "0";
 		}
 
 		private void reset_floor_reflect_Click(object sender, EventArgs e)
 		{
+			floor_reflect.Focus();
 			floor_reflect.Text = "0";
 		}
 
@@ -1082,11 +1087,13 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void resetalphafloor_Click(object sender, EventArgs e)
 		{
+			alphafloor.Focus();
 			alphafloor.Text = "1";
 		}
 
 		private void resetalphaceiling_Click(object sender, EventArgs e)
 		{
+			alphaceiling.Focus();
 			alphaceiling.Text = "1";
 		}
 
@@ -1840,6 +1847,18 @@ namespace CodeImp.DoomBuilder.Windows
 
 		#region ================== Glow relatime events (mxd)
 
+		private void UpdateCeilingGlowHeightWarning()
+		{
+			ceilingglowheightrequired.Visible = (ceilingglowcolor.Color.WithAlpha(0).ToInt() != ceilingglowcolor.DefaultValue
+				&& ceilingglowheight.GetResultFloat(0f) == 0f);
+		}
+
+		private void UpdateFloorGlowHeightWarning()
+		{
+			floorglowheightrequired.Visible = (floorglowcolor.Color.WithAlpha(0).ToInt() != floorglowcolor.DefaultValue
+				&& floorglowheight.GetResultFloat(0f) == 0f);
+		}
+
 		private void ceilingglowcolor_OnValueChanged(object sender, EventArgs e)
 		{
 			if(preventchanges) return;
@@ -1850,6 +1869,9 @@ namespace CodeImp.DoomBuilder.Windows
 				ceilingglowcolor.ApplyTo(s.Fields, sectorprops[s].CeilGlowColor);
 				s.UpdateNeeded = true;
 			}
+
+			// Show height warning?
+			UpdateCeilingGlowHeightWarning();
 
 			General.Map.IsChanged = true;
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
@@ -1865,6 +1887,9 @@ namespace CodeImp.DoomBuilder.Windows
 				floorglowcolor.ApplyTo(s.Fields, sectorprops[s].FloorGlowColor);
 				s.UpdateNeeded = true;
 			}
+
+			// Show height warning?
+			UpdateFloorGlowHeightWarning();
 
 			General.Map.IsChanged = true;
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
@@ -1888,6 +1913,9 @@ namespace CodeImp.DoomBuilder.Windows
 					UniFields.SetInteger(s.Fields, "ceilingglowcolor", -1, 0);
 					s.UpdateNeeded = true;
 				}
+
+				// Hide height warning
+				ceilingglowheightrequired.Visible = false;
 
 				// Trigger update
 				General.Map.IsChanged = true;
@@ -1918,6 +1946,9 @@ namespace CodeImp.DoomBuilder.Windows
 					UniFields.SetInteger(s.Fields, "floorglowcolor", -1, 0);
 					s.UpdateNeeded = true;
 				}
+
+				// Hide height warning
+				floorglowheightrequired.Visible = false;
 
 				// Trigger update
 				General.Map.IsChanged = true;
@@ -1957,6 +1988,9 @@ namespace CodeImp.DoomBuilder.Windows
 			// Update "Reset" button
 			resetceilingglowheight.Visible = (ceilingglowheight.GetResultFloat(0f) != 0f);
 
+			// Show height warning?
+			UpdateCeilingGlowHeightWarning();
+
 			General.Map.IsChanged = true;
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
@@ -1988,17 +2022,22 @@ namespace CodeImp.DoomBuilder.Windows
 			// Update "Reset" button
 			resetfloorglowheight.Visible = (floorglowheight.GetResultFloat(0f) != 0f);
 
+			// Show height warning?
+			UpdateFloorGlowHeightWarning();
+
 			General.Map.IsChanged = true;
 			if(OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
 		}
 
 		private void resetceilingglowheight_Click(object sender, EventArgs e)
 		{
+			ceilingglowheight.Focus();
 			ceilingglowheight.Text = "0";
 		}
 
 		private void resetfloorglowheight_Click(object sender, EventArgs e)
 		{
+			floorglowheight.Focus();
 			floorglowheight.Text = "0";
 		}
 
