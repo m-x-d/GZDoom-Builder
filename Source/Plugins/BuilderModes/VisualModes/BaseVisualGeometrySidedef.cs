@@ -1359,9 +1359,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				int dx = prevoffsetx - newoffsetx;
 				int dy = prevoffsety - newoffsety;
 
-				if(Math.Abs(dx) >= General.Map.Grid.GridSizeI) 
+				if(Math.Abs(dx) >= General.Map.Grid.GridSize) 
 				{
-					dx = General.Map.Grid.GridSizeI * Math.Sign(dx);
+					dx = General.Map.Grid.GridSize * Math.Sign(dx);
 					prevoffsetx = newoffsetx;
 				} 
 				else 
@@ -1369,9 +1369,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					dx = 0;
 				}
 
-				if(Math.Abs(dy) >= General.Map.Grid.GridSizeI) 
+				if(Math.Abs(dy) >= General.Map.Grid.GridSize) 
 				{
-					dy = General.Map.Grid.GridSizeI * Math.Sign(dy);
+					dy = General.Map.Grid.GridSize * Math.Sign(dy);
 					prevoffsety = newoffsety;
 				} 
 				else 

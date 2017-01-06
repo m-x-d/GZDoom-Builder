@@ -173,9 +173,9 @@ namespace CodeImp.DoomBuilder.Windows
 			posX.Text = ((int)ft.Position.x).ToString();
 			posY.Text = ((int)ft.Position.y).ToString();
 			posZ.Text = (useabsoluteheight ? ((int)Math.Round(ft.Position.z + floorheight)).ToString() : ((int)ft.Position.z).ToString());
-			posX.ButtonStep = General.Map.Grid.GridSizeI;
-			posY.ButtonStep = General.Map.Grid.GridSizeI;
-			posZ.ButtonStep = General.Map.Grid.GridSizeI;
+			posX.ButtonStep = General.Map.Grid.GridSize;
+			posY.ButtonStep = General.Map.Grid.GridSize;
+			posZ.ButtonStep = General.Map.Grid.GridSize;
 
 			//mxd
 			thinginfo = General.Map.Data.GetThingInfoEx(ft.Type);

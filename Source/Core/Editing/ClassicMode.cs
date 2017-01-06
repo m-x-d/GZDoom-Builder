@@ -304,7 +304,9 @@ namespace CodeImp.DoomBuilder.Editing
 											   General.Map.Graphics.RenderTarget.ClientSize.Height);
 
 			Vector2D clientscale = clientsize / renderer2d.Scale;
-			int targetsize = (int)Math.Ceiling(Math.Min(clientscale.x, clientscale.y) / 32) * 8;
+
+			// Aim for 32 grid lines on screen, multiplied by 8 to support integer representation of 0.125 grid size (clientscale / 32 * 8)
+			int targetsize = (int)Math.Ceiling(Math.Min(clientscale.x, clientscale.y) / 4);
 
 			// Convert to nearest power of 2
 			targetsize--;

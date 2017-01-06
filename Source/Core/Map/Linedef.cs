@@ -936,7 +936,7 @@ namespace CodeImp.DoomBuilder.Map
 			float gx = General.Map.Grid.GetHigher(minx) + gridoffset.x;
 			if(gx < maxx)
 			{
-				for(; gx < maxx; gx += General.Map.Grid.GridSize)
+				for(; gx < maxx; gx += General.Map.Grid.GridSizeF)
 				{
 					// Add intersection point at this x coordinate
 					float u = (gx - minx) / (maxx - minx);
@@ -951,7 +951,7 @@ namespace CodeImp.DoomBuilder.Map
 			float gy = General.Map.Grid.GetHigher(miny) + gridoffset.y;
 			if(gy < maxy)
 			{
-				for(; gy < maxy; gy += General.Map.Grid.GridSize)
+				for(; gy < maxy; gy += General.Map.Grid.GridSizeF)
 				{
 					// Add intersection point at this y coordinate
 					float u = (gy - miny) / (maxy - miny);

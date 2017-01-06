@@ -438,25 +438,25 @@ namespace CodeImp.DoomBuilder.VisualModes
 		[BeginAction("movethingleft", BaseAction = true)]
 		protected void MoveSelectedThingsLeft() 
 		{
-			MoveSelectedThings(new Vector2D(0f, -General.Map.Grid.GridSize), false);
+			MoveSelectedThings(new Vector2D(0f, -General.Map.Grid.GridSizeF), false);
 		}
 		//mxd
 		[BeginAction("movethingright", BaseAction = true)]
 		protected void MoveSelectedThingsRight() 
 		{
-			MoveSelectedThings(new Vector2D(0f, General.Map.Grid.GridSize), false);
+			MoveSelectedThings(new Vector2D(0f, General.Map.Grid.GridSizeF), false);
 		}
 		//mxd
 		[BeginAction("movethingfwd", BaseAction = true)]
 		protected void MoveSelectedThingsForward() 
 		{
-			MoveSelectedThings(new Vector2D(-General.Map.Grid.GridSize, 0f), false);
+			MoveSelectedThings(new Vector2D(-General.Map.Grid.GridSizeF, 0f), false);
 		}
 		//mxd
 		[BeginAction("movethingback", BaseAction = true)]
 		protected void MoveSelectedThingsBackward() 
 		{
-			MoveSelectedThings(new Vector2D(General.Map.Grid.GridSize, 0f), false);
+			MoveSelectedThings(new Vector2D(General.Map.Grid.GridSizeF, 0f), false);
 		}
 
 		//mxd

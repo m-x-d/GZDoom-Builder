@@ -515,7 +515,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			if(points.Count < 2 || currentbevelwidth == bevelwidth || bevelwidth < 0) 
 			{
-				bevelwidth = Math.Min(bevelwidth + General.Map.Grid.GridSizeI, panel.MaxBevelWidth);
+				bevelwidth = Math.Min(bevelwidth + General.Map.Grid.GridSize, panel.MaxBevelWidth);
 				panel.BevelWidth = bevelwidth;
 				Update();
 			}
@@ -526,7 +526,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		{
 			if(currentbevelwidth == bevelwidth || bevelwidth > 0) 
 			{
-				bevelwidth = Math.Max(bevelwidth - General.Map.Grid.GridSizeI, panel.MinBevelWidth);
+				bevelwidth = Math.Max(bevelwidth - General.Map.Grid.GridSize, panel.MinBevelWidth);
 				panel.BevelWidth = bevelwidth;
 				Update();
 			}

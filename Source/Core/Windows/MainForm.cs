@@ -753,7 +753,7 @@ namespace CodeImp.DoomBuilder.Windows
 				configlabel.Text = General.Map.Config.Name;
 				
 				//mxd. Raise grid size to 1 if it was lower and the map isn't in UDMF
-				if(!General.Map.UDMF && General.Map.Grid.GridSize < GridSetup.MINIMUM_GRID_SIZE)
+				if(!General.Map.UDMF && General.Map.Grid.GridSizeF < GridSetup.MINIMUM_GRID_SIZE)
 					General.Map.Grid.SetGridSize(GridSetup.MINIMUM_GRID_SIZE);
 			}
 			else

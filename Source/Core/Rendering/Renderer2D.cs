@@ -813,7 +813,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		private unsafe void RenderBackgroundGrid()
 		{
 			// Do we need to redraw grid?
-			if(lastgridsize != General.Map.Grid.GridSize || lastgridscale != scale ||
+			if(lastgridsize != General.Map.Grid.GridSizeF || lastgridscale != scale ||
 			   lastgridx != offsetx || lastgridy != offsety || drawmapcenter != lastdrawmapcenter)
 			{
 				// Lock background rendertarget memory
@@ -826,10 +826,10 @@ namespace CodeImp.DoomBuilder.Rendering
 				if(General.Settings.RenderGrid) //mxd
 				{
 					// Render normal grid
-					RenderGrid(General.Map.Grid.GridSize, General.Colors.Grid, gridplotter);
+					RenderGrid(General.Map.Grid.GridSizeF, General.Colors.Grid, gridplotter);
 
 					// Render 64 grid
-					if(General.Map.Grid.GridSize <= 64) RenderGrid(64f, General.Colors.Grid64, gridplotter);
+					if(General.Map.Grid.GridSizeF <= 64) RenderGrid(64f, General.Colors.Grid64, gridplotter);
 				}
 				else
 				{
@@ -858,7 +858,7 @@ namespace CodeImp.DoomBuilder.Rendering
 				backtex.UnlockRectangle(0);
 				lockedrect.Data.Dispose();
 				lastgridscale = scale;
-				lastgridsize = General.Map.Grid.GridSize;
+				lastgridsize = General.Map.Grid.GridSizeF;
 				lastgridx = offsetx;
 				lastgridy = offsety;
 				lastdrawmapcenter = drawmapcenter; //mxd

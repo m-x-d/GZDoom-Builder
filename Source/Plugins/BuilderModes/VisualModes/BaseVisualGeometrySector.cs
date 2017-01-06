@@ -191,9 +191,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				deltax = prevoffsetx - newoffsetx;
 				deltay = prevoffsety - newoffsety;
 
-				if(Math.Abs(deltax) >= General.Map.Grid.GridSizeI) 
+				if(Math.Abs(deltax) >= General.Map.Grid.GridSize) 
 				{
-					deltax = General.Map.Grid.GridSizeI * Math.Sign(deltax);
+					deltax = General.Map.Grid.GridSize * Math.Sign(deltax);
 					prevoffsetx = newoffsetx;
 				} 
 				else 
@@ -201,9 +201,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					deltax = 0;
 				}
 
-				if(Math.Abs(deltay) >= General.Map.Grid.GridSizeI) 
+				if(Math.Abs(deltay) >= General.Map.Grid.GridSize) 
 				{
-					deltay = General.Map.Grid.GridSizeI * Math.Sign(deltay);
+					deltay = General.Map.Grid.GridSize * Math.Sign(deltay);
 					prevoffsety = newoffsety;
 				} 
 				else 

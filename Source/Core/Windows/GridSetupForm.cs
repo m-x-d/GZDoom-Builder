@@ -40,7 +40,7 @@ namespace CodeImp.DoomBuilder.Windows
 			InitializeComponent();
 
 			// Show grid size
-			gridsize.Text = General.Map.Grid.GridSize.ToString();
+			gridsize.Text = General.Map.Grid.GridSizeF.ToString();
 			
 			// Background image?
 			if((General.Map.Grid.Background != null) &&
@@ -141,8 +141,8 @@ namespace CodeImp.DoomBuilder.Windows
 		private void apply_Click(object sender, EventArgs e)
 		{
 			//mxd. Apply
-			float newgridsize = gridsize.GetResultFloat(General.Map.Grid.GridSize);
-			if(newgridsize != General.Map.Grid.GridSize)
+			float newgridsize = gridsize.GetResultFloat(General.Map.Grid.GridSizeF);
+			if(newgridsize != General.Map.Grid.GridSizeF)
 			{
 				//Disable automatic grid resizing
 				General.MainWindow.DisableDynamicGridResize();

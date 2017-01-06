@@ -46,9 +46,9 @@ namespace CodeImp.DoomBuilder.Editing
 		#region ================== Variables
 
 		// Grid
-		private int gridsizei;
-		private float gridsize;
-		private float gridsizeinv;
+		private int gridsize;
+		private float gridsizef;
+		private float gridsizefinv;
 
 		// Background
 		private string background = "";
@@ -64,8 +64,8 @@ namespace CodeImp.DoomBuilder.Editing
 
 		#region ================== Properties
 
-		public int GridSizeI { get { return gridsizei; } } //mxd
-		public float GridSize { get { return gridsize; } }
+		public int GridSize { get { return gridsize; } } //mxd
+		public float GridSizeF { get { return gridsizef; } }
 		internal string BackgroundName { get { return background; } }
 		internal int BackgroundSource { get { return backsource; } }
 		internal ImageData Background { get { return backimage; } }
@@ -127,7 +127,7 @@ namespace CodeImp.DoomBuilder.Editing
 			cfg.WriteSetting(path + ".backoffsety", backoffsety);
 			cfg.WriteSetting(path + ".backscalex", (int)(backscalex * 100.0f));
 			cfg.WriteSetting(path + ".backscaley", (int)(backscaley * 100.0f));
-			cfg.WriteSetting(path + ".gridsize", gridsize);
+			cfg.WriteSetting(path + ".gridsize", gridsizef);
 		}
 
 		// Read settings from configuration
@@ -140,10 +140,10 @@ namespace CodeImp.DoomBuilder.Editing
 			backoffsety = cfg.ReadSetting(path + ".backoffsety", 0);
 			backscalex = cfg.ReadSetting(path + ".backscalex", 100) / 100.0f;
 			backscaley = cfg.ReadSetting(path + ".backscaley", 100) / 100.0f;
-			gridsize = cfg.ReadSetting(path + ".gridsize", DEFAULT_GRID_SIZE);
+			gridsizef = cfg.ReadSetting(path + ".gridsize", DEFAULT_GRID_SIZE);
 
 			// Setup
-			SetGridSize(gridsize);
+			SetGridSize(gridsizef);
 			LinkBackground();
 		}
 
@@ -154,12 +154,12 @@ namespace CodeImp.DoomBuilder.Editing
 			size = Math.Max(size, ((General.Map != null && General.Map.UDMF) ? MINIMUM_GRID_SIZE_UDMF : MINIMUM_GRID_SIZE));
 			
 			// Change grid
-			gridsize = size;
-			gridsizei = (int)Math.Max(1, Math.Round(gridsize)); //mxd
-			gridsizeinv = 1f / gridsize;
+			gridsizef = size;
+			gridsize = (int)Math.Max(1, Math.Round(gridsizef)); //mxd
+			gridsizefinv = 1f / gridsizef;
 
 			// Update in main window
-			General.MainWindow.UpdateGrid(gridsize);
+			General.MainWindow.UpdateGrid(gridsizef);
 		}
 
 		// This sets the background
@@ -214,19 +214,19 @@ namespace CodeImp.DoomBuilder.Editing
 		// This returns the next higher coordinate
 		public float GetHigher(float offset)
 		{
-			return (float)Math.Round((offset + (gridsize * 0.5f)) * gridsizeinv) * gridsize;
+			return (float)Math.Round((offset + (gridsizef * 0.5f)) * gridsizefinv) * gridsizef;
 		}
 
 		// This returns the next lower coordinate
 		public float GetLower(float offset)
 		{
-			return (float)Math.Round((offset - (gridsize * 0.5f)) * gridsizeinv) * gridsize;
+			return (float)Math.Round((offset - (gridsizef * 0.5f)) * gridsizefinv) * gridsizef;
 		}
 		
 		// This snaps to the nearest grid coordinate
 		public Vector2D SnappedToGrid(Vector2D v)
 		{
-			return SnappedToGrid(v, gridsize, gridsizeinv);
+			return SnappedToGrid(v, gridsizef, gridsizefinv);
 		}
 
 		// This snaps to the nearest grid coordinate
@@ -270,13 +270,13 @@ namespace CodeImp.DoomBuilder.Editing
 		{
 			//mxd. Not lower than 0.125 in UDMF or 1 otherwise
 			float preminsize = (General.Map.UDMF ? MINIMUM_GRID_SIZE_UDMF * 2 : MINIMUM_GRID_SIZE * 2);
-			if(gridsize >= preminsize)
+			if(gridsizef >= preminsize)
 			{
 				//mxd. Disable automatic grid resizing
 				General.MainWindow.DisableDynamicGridResize();
 				
 				// Change grid
-				SetGridSize(gridsize / 2);
+				SetGridSize(gridsizef / 2);
 				
 				// Redraw display
 				General.MainWindow.RedrawDisplay();
@@ -289,13 +289,13 @@ namespace CodeImp.DoomBuilder.Editing
 		internal void IncreaseGrid()
 		{
 			// Not higher than 1024
-			if(gridsize <= 512)
+			if(gridsizef <= 512)
 			{
 				//mxd. Disable automatic grid resizing
 				General.MainWindow.DisableDynamicGridResize();
 				
 				// Change grid
-				SetGridSize(gridsize * 2);
+				SetGridSize(gridsizef * 2);
 
 				// Redraw display
 				General.MainWindow.RedrawDisplay();

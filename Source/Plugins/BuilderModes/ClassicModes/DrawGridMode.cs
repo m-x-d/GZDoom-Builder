@@ -353,18 +353,18 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					break;
 
 				case GridLockMode.HORIZONTAL:
-					slicesH = width / General.Map.Grid.GridSizeI;
+					slicesH = width / General.Map.Grid.GridSize;
 					slicesV = verticalslices;
 					break;
 
 				case GridLockMode.VERTICAL:
 					slicesH = horizontalslices;
-					slicesV = height / General.Map.Grid.GridSizeI;
+					slicesV = height / General.Map.Grid.GridSize;
 					break;
 
 				case GridLockMode.BOTH:
-					slicesH = width / General.Map.Grid.GridSizeI;
-					slicesV = height / General.Map.Grid.GridSizeI;
+					slicesH = width / General.Map.Grid.GridSize;
+					slicesV = height / General.Map.Grid.GridSize;
 					break;
 			}
 
@@ -444,7 +444,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Triangulate?
 			if(triangulate) 
 			{
-				bool startflip = ((int)Math.Round(((s.x + e.y) / General.Map.Grid.GridSize) % 2) == 0);
+				bool startflip = ((int)Math.Round(((s.x + e.y) / General.Map.Grid.GridSizeF) % 2) == 0);
 				bool flip = startflip;
 
 				for(int w = 0; w < slicesH; w++) 
