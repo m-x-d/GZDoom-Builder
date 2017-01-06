@@ -477,8 +477,23 @@ namespace CodeImp.DoomBuilder.Config
 				int defaultvalue = actor.GetPropertyValueInt("$arg" + i + "default", 0);
 				string argenum = ZDTextParser.StripQuotes(actor.GetPropertyAllValues("$arg" + i + "enum"));
 				string argrenderstyle = ZDTextParser.StripQuotes(actor.GetPropertyAllValues("$arg" + i + "renderstyle"));
-				string argrendercolor = ZDTextParser.StripQuotes(actor.GetPropertyAllValues("$arg" + i + "rendercolor"));
-				args[i] = new ArgumentInfo(title, argtitle, argtooltip, argrenderstyle, argrendercolor, argtype, defaultvalue, argenum, General.Map.Config.Enums);
+				string argrendercolor, minrange, maxrange, minrangecolor, maxrangecolor;
+				if(!string.IsNullOrEmpty(argrenderstyle))
+				{
+					argrendercolor = ZDTextParser.StripQuotes(actor.GetPropertyAllValues("$arg" + i + "rendercolor"));
+					minrange = ZDTextParser.StripQuotes(actor.GetPropertyAllValues("$arg" + i + "minrange"));
+					minrangecolor = ZDTextParser.StripQuotes(actor.GetPropertyAllValues("$arg" + i + "minrangecolor"));
+					maxrange = ZDTextParser.StripQuotes(actor.GetPropertyAllValues("$arg" + i + "maxrange"));
+					maxrangecolor = ZDTextParser.StripQuotes(actor.GetPropertyAllValues("$arg" + i + "maxrangecolor"));
+				}
+				else
+				{
+					argrendercolor = string.Empty; minrange = string.Empty; maxrange = string.Empty; minrangecolor = string.Empty; maxrangecolor = string.Empty;
+				}
+				
+				args[i] = new ArgumentInfo(title, argtitle, argtooltip, argrenderstyle, argrendercolor, 
+					minrange, minrangecolor, maxrange, maxrangecolor, 
+					argtype, defaultvalue, argenum, General.Map.Config.Enums);
 			}
 
 			//mxd. Some SLADE compatibility

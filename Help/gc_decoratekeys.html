@@ -73,6 +73,29 @@
   	This property must be used in conjunction with &quot;<strong>//$ArgN</strong>&quot; and &quot;<strong>//$ArgNRenderStyle</strong>&quot; properties.<br />
   	<br />
   	
+  	<strong><a name="argminrange" id="argminrange"></a>//$ArgNMinRange &lt;integer&gt;</strong> - <span class="red">GZDB only</span>.<br />
+  	Allows to specify minimum range for the rendering shape. <br />
+  	By default minimum range shapes will use Indication  <a href="w_preferences.html">editor color</a>.<br />
+  	This property must be used in conjunction with &quot;<strong>//$ArgN</strong>&quot; and &quot;<strong>//$ArgNRenderStyle</strong>&quot; properties.<br />
+  	<br />
+	
+	<strong><a name="argminrangecolor" id="argminrangecolor"></a>//$ArgNMinRangeColor &lt;integer&gt;</strong> - <span class="red">GZDB only</span>.<br />
+  	Allows to specify the color used when rendering the minimum range shape. Supported values are hex color (like &quot;<strong>FF0000</strong>&quot;), HTML-formatted hex color (like &quot;<strong>#F00</strong>&quot; or &quot;<strong>#FF0000</strong>&quot;) or color name (like &quot;<strong>Red</strong>&quot;).<br />
+  	By default minimum range shapes will use Indication  <a href="w_preferences.html">editor color</a>.<br />
+  	This property must be used in conjunction with &quot;<strong>//$ArgN</strong>&quot;, &quot;<strong>//$ArgNRenderStyle</strong>&quot; and &quot;<strong>//$ArgNMinRange</strong>&quot; properties.<br />
+  	<br />
+	
+	<strong><a name="argmaxrange" id="argmaxrange"></a>//$ArgNMaxRange &lt;integer&gt;</strong> - <span class="red">GZDB only</span>.<br />
+  	Allows to specify maximum range for the rendering shape. <br />
+  	By default maximum range shapes will use Indication  <a href="w_preferences.html">editor color</a>.<br />
+  	This property must be used in conjunction with &quot;<strong>//$ArgN</strong>&quot; and &quot;<strong>//$ArgNRenderStyle</strong>&quot; properties.<br />
+  	<br />
+	
+	<strong><a name="argmaxrangecolor" id="argmaxrangecolor"></a>//$ArgNMaxRangeColor &lt;integer&gt;</strong> - <span class="red">GZDB only</span>.<br />
+  	Allows to specify the color used when rendering the maximum range shape. Supported values are hex color (like &quot;<strong>FF0000</strong>&quot;), HTML-formatted hex color (like &quot;<strong>#F00</strong>&quot; or &quot;<strong>#FF0000</strong>&quot;) or color name (like &quot;<strong>Red</strong>&quot;).<br />
+  	By default maximum range shapes will use Indication  <a href="w_preferences.html">editor color</a>.<br />
+  	This property must be used in conjunction with &quot;<strong>//$ArgN</strong>&quot;, &quot;<strong>//$ArgNRenderStyle</strong>&quot; and &quot;<strong>//$ArgNMaxRange</strong>&quot; properties.<br />
+  	<br />
   	
   	<strong><a name="argenum" id="argenum"></a>//$ArgNEnum &lt;string or structure&gt;</strong> - <span class="red">GZDB only</span>.<br />
   	Allows to specify an enum for this argument. This can be either a name of an enum defined in the Game Configuration, or an explicit enum definition. This property must be used in conjunction with the &quot;<strong>//$ArgN</strong>&quot; property.<br />
@@ -136,15 +159,21 @@ Actor ChexShield : ResistanceRune replaces ResistanceRune 5104
   //$Arg3Default 32
   //$Arg3RenderStyle &quot;Circle&quot;
   //$Arg3RenderColor #ff00ff
+  //$Arg3MinRange 32
+  //$Arg3MaxRange 512
+  //$Arg3MinRangeColor #0000ff
+  //$Arg3MaxRangeColor #ff0000
 	
   //$Arg4 "Height"
   //$Arg4Type 24
   //$Arg4Default 64
+  
 
   Height 44
   Radius 26
   RenderStyle None
   Inventory.PickupMessage "Picked up the energized Chex armor!"
+  
 
   States
   {

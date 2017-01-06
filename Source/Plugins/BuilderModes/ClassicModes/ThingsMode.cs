@@ -1081,6 +1081,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 			// Update ambient sound radii
 			ambientsoundshapes = GetAmbientSoundShapes(General.Map.Map.Things);
+
+			// Update argument range shapes
+			persistenteventlines.AddRange(GetArgumentRangeShapes(General.Map.Map.Things));
 		}
 
 		//mxd
@@ -1217,6 +1220,43 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			return circles;
+		}
+
+		private List<Line3D> GetArgumentRangeShapes(IEnumerable<Thing> things)
+		{
+			List<Line3D> lines = new List<Line3D>();
+			const int numsides = 24;
+
+			foreach(Thing t in things)
+			{
+				ThingTypeInfo info = General.Map.Data.GetThingInfoEx(t.Type);
+				if(info == null) continue;
+
+				// Process argument based range finders
+				for(int i = 0; i < t.Args.Length; i++)
+				{
+					if(t.Args[i] == 0) continue; // Avoid visual noise
+
+					var a = info.Args[i];
+					switch(a.RenderStyle)
+					{
+						case ArgumentInfo.ArgumentRenderStyle.CIRCLE:
+							if(a.MinRange > 0) lines.AddRange(LinksCollector.MakeCircleLines(t.Position, a.MinRangeColor, a.MinRange, numsides));
+							if(a.MaxRange > 0) lines.AddRange(LinksCollector.MakeCircleLines(t.Position, a.MaxRangeColor, a.MaxRange, numsides));
+							break;
+
+						case ArgumentInfo.ArgumentRenderStyle.RECTANGLE:
+							if(a.MinRange > 0) lines.AddRange(LinksCollector.MakeRectangleLines(t.Position, a.MinRangeColor, a.MinRange));
+							if(a.MaxRange > 0) lines.AddRange(LinksCollector.MakeRectangleLines(t.Position, a.MaxRangeColor, a.MaxRange));
+							break;
+
+						case ArgumentInfo.ArgumentRenderStyle.NONE:break;
+						default: throw new NotImplementedException("Unknown ArgumentRenderStyle");
+					}
+				}
+			}
+
+			return lines;
 		}
 
 		#endregion

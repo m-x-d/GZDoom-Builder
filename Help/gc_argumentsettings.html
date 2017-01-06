@@ -103,6 +103,27 @@ arg0
     Allows to specify a color used by rendering shape. Supported values are hex color (like &quot;<strong>FF0000</strong>&quot;), HTML-formatted hex color (like &quot;<strong>#F00</strong>&quot; or &quot;<strong>#FF0000</strong>&quot;) or color name (like &quot;<strong>Red</strong>&quot;).<br />
     By default rendering shapes will use Event line <a href="w_preferences.html">editor color</a>.<br />
     This property must be used in conjunction with the &quot;<b class="fat">renderstyle</b>&quot; property.</p>
+	
+	<p><b class="fat">minrange</b> (integer) - <span class="red">GZDB only</span><br />
+  	Allows to specify minimum range for the rendering shape.<br />
+  	By default minimum range shapes will use Indication  <a href="w_preferences.html">editor color</a>.<br />
+    This property must be used in conjunction with the &quot;<b class="fat">renderstyle</b>&quot; property.</p>
+	
+	<p><b class="fat">minrangecolor</b> (integer) - <span class="red">GZDB only</span><br />
+		Allows to specify the color used when rendering the minimum range shape. Supported values are hex color (like &quot;<strong>FF0000</strong>&quot;), HTML-formatted hex color (like &quot;<strong>#F00</strong>&quot; or &quot;<strong>#FF0000</strong>&quot;) or color name (like &quot;<strong>Red</strong>&quot;).<br />
+By default minimum range shapes will use Indication <a href="w_preferences.html">editor color</a>.<br />
+    This property must be used in conjunction with  &quot;<b class="fat">renderstyle</b>&quot; and &quot;<b class="fat">minrange</b>&quot; properties.</p>
+	
+	<p><b class="fat">maxrange</b> (integer) - <span class="red">GZDB only</span><br />
+  	Allows to specify maximum range for the rendering shape.<br />
+  	By default maximum range shapes will use Indication  <a href="w_preferences.html">editor color</a>.<br />
+    This property must be used in conjunction with the &quot;<b class="fat">renderstyle</b>&quot; property.</p>
+	
+	<p><b class="fat">maxrangecolor</b> (integer) - <span class="red">GZDB only</span><br />
+		Allows to specify the color used when rendering the maximum range shape. Supported values are hex color (like &quot;<strong>FF0000</strong>&quot;), HTML-formatted hex color (like &quot;<strong>#F00</strong>&quot; or &quot;<strong>#FF0000</strong>&quot;) or color name (like &quot;<strong>Red</strong>&quot;).<br />
+By default maximum range shapes will use Indication <a href="w_preferences.html">editor color</a>.<br />
+    This property must be used in conjunction with  &quot;<b class="fat">renderstyle</b>&quot; and &quot;<b class="fat">maxrange</b>&quot; properties.</p>
+	
 <p><b class="fat">flags</b> (structure or string) - <span class="red">GZDB only</span><br />
     Provides a list of predefined bit flag values to display for this argument. Used  only when argument <strong>type</strong> is 26.<br />
     The value can be either a name of a predefined enum or an explicit definition.<br />

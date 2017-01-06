@@ -34,6 +34,7 @@ namespace CodeImp.DoomBuilder.Config
 		#region ================== Constants
 
 		private const int HELPER_SHAPE_ALPHA = 192; //mxd
+		private const int RANGE_SHAPE_ALPHA = 96; //mxd
 
 		#endregion
 
@@ -60,6 +61,10 @@ namespace CodeImp.DoomBuilder.Config
 		private readonly HashSet<string> targetclasses; //mxd
 		private readonly ArgumentRenderStyle renderstyle; //mxd
 		private readonly PixelColor rendercolor; //mxd
+		private readonly PixelColor minrangecolor; //mxd
+		private readonly PixelColor maxrangecolor; //mxd
+		private readonly int minrange; //mxd
+		private readonly int maxrange; //mxd
 
 		#endregion
 
@@ -75,6 +80,10 @@ namespace CodeImp.DoomBuilder.Config
 		public object DefaultValue { get { return defaultvalue; } } //mxd
 		public ArgumentRenderStyle RenderStyle { get { return renderstyle; } } //mxd
 		public PixelColor RenderColor { get { return rendercolor; } } //mxd
+		public PixelColor MinRangeColor { get { return minrangecolor; } } //mxd
+		public PixelColor MaxRangeColor { get { return maxrangecolor; } } //mxd
+		public int MinRange { get { return minrange; } } //mxd
+		public int MaxRange { get { return maxrange; } } //mxd
 
 		#endregion
 
@@ -110,22 +119,54 @@ namespace CodeImp.DoomBuilder.Config
 
 			if(this.renderstyle != ArgumentRenderStyle.NONE)
 			{
+				// Get rendercolor
 				string rendercolor = cfg.ReadSetting(argspath + ".arg" + istr + ".rendercolor", string.Empty);
-				if(!string.IsNullOrEmpty(rendercolor))
+				this.rendercolor = General.Colors.InfoLine;
+
+				if(!string.IsNullOrEmpty(rendercolor) && !ZDTextParser.GetColorFromString(rendercolor, ref this.rendercolor))
+					General.ErrorLogger.Add(ErrorType.Error, "\"" + argspath + ".arg" + istr + "\": action argument \"" + this.title + "\": unable to get rendercolor from value \"" + rendercolor + "\"!");
+
+				this.rendercolor.a = HELPER_SHAPE_ALPHA;
+
+				// Get minrange settings
+				string minrange = cfg.ReadSetting(argspath + ".arg" + istr + ".minrange", string.Empty);
+				if(int.TryParse(minrange, NumberStyles.Integer, CultureInfo.InvariantCulture, out this.minrange) && this.minrange > 0f)
 				{
-					if(!ZDTextParser.GetColorFromString(rendercolor, ref this.rendercolor))
-					{
-						General.ErrorLogger.Add(ErrorType.Error, "\"" + argspath + ".arg" + istr + "\": action argument \"" + this.title + "\": unable to get rendercolor from value \"" + rendercolor + "\"!");
-						this.rendercolor = General.Colors.InfoLine.WithAlpha(HELPER_SHAPE_ALPHA);
-					}
-					else
-					{
-						this.rendercolor.a = HELPER_SHAPE_ALPHA;
-					}
+					// Get minrangecolor
+					string minrangecolor = cfg.ReadSetting(argspath + ".arg" + istr + ".minrangecolor", string.Empty);
+					this.minrangecolor = General.Colors.Indication;
+
+					if(!string.IsNullOrEmpty(minrangecolor) && !ZDTextParser.GetColorFromString(minrangecolor, ref this.minrangecolor))
+						General.ErrorLogger.Add(ErrorType.Error, "\"" + argspath + ".arg" + istr + "\": action argument \"" + this.title + "\": unable to get minrangecolor from value \"" + minrangecolor + "\"!");
+
+					this.minrangecolor.a = RANGE_SHAPE_ALPHA;
 				}
-				else
+
+				// Get maxrange settings
+				string maxrange = cfg.ReadSetting(argspath + ".arg" + istr + ".maxrange", string.Empty);
+				if(int.TryParse(maxrange, NumberStyles.Integer, CultureInfo.InvariantCulture, out this.maxrange) && this.maxrange > 0f)
 				{
-					this.rendercolor = General.Colors.InfoLine.WithAlpha(HELPER_SHAPE_ALPHA);
+					// Get minrangecolor
+					string maxrangecolor = cfg.ReadSetting(argspath + ".arg" + istr + ".maxrangecolor", string.Empty);
+					this.maxrangecolor = General.Colors.Indication;
+
+					if(!string.IsNullOrEmpty(maxrangecolor) && !ZDTextParser.GetColorFromString(maxrangecolor, ref this.maxrangecolor))
+						General.ErrorLogger.Add(ErrorType.Error, "\"" + argspath + ".arg" + istr + "\": action argument \"" + this.title + "\": unable to get maxrangecolor from value \"" + maxrangecolor + "\"!");
+
+					this.maxrangecolor.a = RANGE_SHAPE_ALPHA;
+				}
+
+				// Update tooltip?
+				if(this.minrange > 0f || this.maxrange > 0f)
+				{
+					if(!string.IsNullOrEmpty(this.tooltip)) this.tooltip += Environment.NewLine;
+
+					if(this.minrange > 0f && this.maxrange > 0f)
+						this.tooltip += "Range: " + this.minrange + " - " + this.maxrange;
+					else if(this.minrange > 0f)
+						this.tooltip += "Minimum range: " + this.minrange;
+					else
+						this.tooltip += "Maximum range: " + this.maxrange;
 				}
 			}
 
@@ -196,6 +237,7 @@ namespace CodeImp.DoomBuilder.Config
 
 		//mxd. Constructor for an argument info defined in DECORATE
 		internal ArgumentInfo(string actorname, string argtitle, string tooltip, string renderstyle, string rendercolor,
+			string minrange, string minrangecolor, string maxrange, string maxrangecolor,
 			int type, int defaultvalue, string enumstr, IDictionary<string, EnumList> enums)
 		{
 			this.used = true;
@@ -218,21 +260,49 @@ namespace CodeImp.DoomBuilder.Config
 
 			if(this.renderstyle != ArgumentRenderStyle.NONE)
 			{
-				if(!string.IsNullOrEmpty(rendercolor))
+				// Get rendercolor
+				this.rendercolor = General.Colors.InfoLine;
+
+				if(!string.IsNullOrEmpty(rendercolor) && !ZDTextParser.GetColorFromString(rendercolor, ref this.rendercolor))
+					General.ErrorLogger.Add(ErrorType.Error, actorname + ": action argument \"" + argtitle + "\": unable to get rendercolor from value \"" + rendercolor + "\"!");
+
+				this.rendercolor.a = HELPER_SHAPE_ALPHA;
+
+				// Get minrange settings
+				if(int.TryParse(minrange, NumberStyles.Integer, CultureInfo.InvariantCulture, out this.minrange) && this.minrange > 0f)
 				{
-					if(!ZDTextParser.GetColorFromString(rendercolor, ref this.rendercolor))
-					{
-						General.ErrorLogger.Add(ErrorType.Error, actorname + ": action argument \"" + argtitle + "\": unable to get rendercolor from value \"" + rendercolor + "\"!");
-						this.rendercolor = General.Colors.InfoLine.WithAlpha(HELPER_SHAPE_ALPHA);
-					}
-					else
-					{
-						this.rendercolor.a = HELPER_SHAPE_ALPHA;
-					}
+					// Get minrangecolor
+					this.minrangecolor = General.Colors.Indication;
+
+					if(!string.IsNullOrEmpty(minrangecolor) && !ZDTextParser.GetColorFromString(minrangecolor, ref this.minrangecolor))
+						General.ErrorLogger.Add(ErrorType.Error, actorname + ": action argument \"" + this.title + "\": unable to get minrangecolor from value \"" + minrangecolor + "\"!");
+
+					this.minrangecolor.a = RANGE_SHAPE_ALPHA;
 				}
-				else
+
+				// Get maxrange settings
+				if(int.TryParse(maxrange, NumberStyles.Integer, CultureInfo.InvariantCulture, out this.maxrange) && this.maxrange > 0f)
 				{
-					this.rendercolor = General.Colors.InfoLine.WithAlpha(HELPER_SHAPE_ALPHA);
+					// Get minrangecolor
+					this.maxrangecolor = General.Colors.Indication;
+
+					if(!string.IsNullOrEmpty(maxrangecolor) && !ZDTextParser.GetColorFromString(maxrangecolor, ref this.maxrangecolor))
+						General.ErrorLogger.Add(ErrorType.Error, actorname + ": action argument \"" + this.title + "\": unable to get maxrangecolor from value \"" + maxrangecolor + "\"!");
+
+					this.maxrangecolor.a = RANGE_SHAPE_ALPHA;
+				}
+
+				// Update tooltip?
+				if(this.minrange > 0f || this.maxrange > 0f)
+				{
+					if(!string.IsNullOrEmpty(this.tooltip)) this.tooltip += Environment.NewLine + Environment.NewLine;
+
+					if(this.minrange > 0f && this.maxrange > 0f)
+						this.tooltip += "Expected range: " + this.minrange + " - " + this.maxrange;
+					else if(this.minrange > 0f)
+						this.tooltip += "Minimum: " + this.minrange;
+					else
+						this.tooltip += "Maximum: " + this.maxrange;
 				}
 			}
 
