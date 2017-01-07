@@ -777,7 +777,16 @@ namespace CodeImp.DoomBuilder.Controls
 		//mxd
 		public void DuplicateLine()
 		{
-			scriptedit.DirectMessage(NativeMethods.SCI_LINEDUPLICATE);
+			//scriptedit.DirectMessage(NativeMethods.SCI_LINEDUPLICATE);
+			
+			// Do it manually instead of using Scintilla's builtin variant to avoid triggering InsertCheck event, 
+			// which conatains only "\r\n" text, which in turn messes with our scriptedit_InsertCheck handler logic
+			// resulting in extra indentation...
+			var curline = scriptedit.Lines[scriptedit.CurrentLine];
+			scriptedit.InsertText(curline.EndPosition, curline.Text);
+
+			// Offset selection by line length
+			scriptedit.SetEmptySelection(curline.EndPosition + (scriptedit.SelectionStart - curline.Position));
 		}
 
 		//mxd

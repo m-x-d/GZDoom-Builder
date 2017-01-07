@@ -677,13 +677,23 @@ namespace CodeImp.DoomBuilder.Config
 							// Check if the item value is a structure
 							if(de.Value is IDictionary)
 							{
-								// Make the line type
-								LinedefActionInfo ai = new LinedefActionInfo(actionnumber, cfg, cde.Key.ToString(), enums);
-
-								// Add action to category and sorted list
-								sortedlinedefactions.Add(ai);
-								linedefactions.Add(actionnumber, ai);
-								ac.Add(ai);
+								//mxd. Sanity check...
+								if(linedefactions.ContainsKey(actionnumber))
+								{
+									General.ErrorLogger.Add(ErrorType.Error, "Structure \"linedeftypes\" contains duplicate action definition for action " + actionnumber 
+										+ " in the \"" + this.Name + "\" game configuration. If you want to override the existing action definition, make sure to put it in the same category (\"" 
+										+ linedefactions[actionnumber].Category + "\").");
+								}
+								else
+								{
+									// Make the line type
+									LinedefActionInfo ai = new LinedefActionInfo(actionnumber, cfg, cde.Key.ToString(), enums);
+									
+									// Add action to category and sorted list
+									sortedlinedefactions.Add(ai);
+									linedefactions.Add(actionnumber, ai);
+									ac.Add(ai);
+								}
 							}
 							else
 							{

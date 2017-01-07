@@ -942,7 +942,7 @@ namespace CodeImp.DoomBuilder.Controls
 		public void ClearErrors()
 		{
 			// Hide list
-			if(infotabs.SelectedTab == taberrors) scriptsplitter.Panel2Collapsed = true;
+			if(infotabs.SelectedTab == taberrors) scriptsplitter.IsCollapsed = true;
 			errorlist.Items.Clear();
 
 			// Clear marks
@@ -1012,11 +1012,11 @@ namespace CodeImp.DoomBuilder.Controls
 			if(errorlist.Items.Count > 0)
 			{
 				infotabs.SelectedTab = taberrors;
-				scriptsplitter.Panel2Collapsed = false;
+				scriptsplitter.IsCollapsed = false;
 			}
 			else if(infotabs.SelectedTab == taberrors)
 			{
-				scriptsplitter.Panel2Collapsed = true;
+				scriptsplitter.IsCollapsed = true;
 			}
 		}
 
