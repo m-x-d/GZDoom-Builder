@@ -1243,11 +1243,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						case ArgumentInfo.ArgumentRenderStyle.CIRCLE:
 							if(a.MinRange > 0) lines.AddRange(LinksCollector.MakeCircleLines(t.Position, a.MinRangeColor, a.MinRange, numsides));
 							if(a.MaxRange > 0) lines.AddRange(LinksCollector.MakeCircleLines(t.Position, a.MaxRangeColor, a.MaxRange, numsides));
+							if(a.Type == (int)UniversalType.ThingRange) lines.AddRange(LinksCollector.MakeCircleLines(t.Position, a.AutoRangeColor, t.Args[i], numsides));
 							break;
 
 						case ArgumentInfo.ArgumentRenderStyle.RECTANGLE:
 							if(a.MinRange > 0) lines.AddRange(LinksCollector.MakeRectangleLines(t.Position, a.MinRangeColor, a.MinRange));
 							if(a.MaxRange > 0) lines.AddRange(LinksCollector.MakeRectangleLines(t.Position, a.MaxRangeColor, a.MaxRange));
+							if (a.Type == (int)UniversalType.ThingRange) lines.AddRange(LinksCollector.MakeRectangleLines(t.Position, a.AutoRangeColor, t.Args[i]));
 							break;
 
 						case ArgumentInfo.ArgumentRenderStyle.NONE:break;

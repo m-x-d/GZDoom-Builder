@@ -49,5 +49,6 @@ namespace CodeImp.DoomBuilder.Types
 		ThingHeight = 24, //mxd
 		PolyobjectNumber = 25, //mxd
 		EnumOptionAndBits = 26, //mxd
+		ThingRange = 27
 	}
 }

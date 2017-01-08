@@ -63,6 +63,7 @@ namespace CodeImp.DoomBuilder.Config
 		private readonly PixelColor rendercolor; //mxd
 		private readonly PixelColor minrangecolor; //mxd
 		private readonly PixelColor maxrangecolor; //mxd
+		private readonly PixelColor autorangecolor; //mxd
 		private readonly int minrange; //mxd
 		private readonly int maxrange; //mxd
 
@@ -82,6 +83,7 @@ namespace CodeImp.DoomBuilder.Config
 		public PixelColor RenderColor { get { return rendercolor; } } //mxd
 		public PixelColor MinRangeColor { get { return minrangecolor; } } //mxd
 		public PixelColor MaxRangeColor { get { return maxrangecolor; } } //mxd
+		public PixelColor AutoRangeColor { get { return autorangecolor; } } //mxd
 		public int MinRange { get { return minrange; } } //mxd
 		public int MaxRange { get { return maxrange; } } //mxd
 
@@ -127,6 +129,19 @@ namespace CodeImp.DoomBuilder.Config
 					General.ErrorLogger.Add(ErrorType.Error, "\"" + argspath + ".arg" + istr + "\": action argument \"" + this.title + "\": unable to get rendercolor from value \"" + rendercolor + "\"!");
 
 				this.rendercolor.a = HELPER_SHAPE_ALPHA;
+
+				// Get autorange settings
+				if (this.type == (int)UniversalType.ThingRange)
+				{
+					// Get autorangecolor
+					string autorangecolor = cfg.ReadSetting(argspath + ".arg" + istr + ".autorangecolor", string.Empty);
+					this.autorangecolor = General.Colors.Indication;
+
+					if (!string.IsNullOrEmpty(autorangecolor) && !ZDTextParser.GetColorFromString(autorangecolor, ref this.autorangecolor))
+						General.ErrorLogger.Add(ErrorType.Error, "\"" + argspath + ".arg" + istr + "\": action argument \"" + this.title + "\": unable to get autorangecolor from value \"" + autorangecolor + "\"!");
+
+					this.autorangecolor.a = RANGE_SHAPE_ALPHA;
+				}
 
 				// Get minrange settings
 				string minrange = cfg.ReadSetting(argspath + ".arg" + istr + ".minrange", string.Empty);
@@ -237,7 +252,7 @@ namespace CodeImp.DoomBuilder.Config
 
 		//mxd. Constructor for an argument info defined in DECORATE
 		internal ArgumentInfo(string actorname, string argtitle, string tooltip, string renderstyle, string rendercolor,
-			string minrange, string minrangecolor, string maxrange, string maxrangecolor,
+			string minrange, string minrangecolor, string maxrange, string maxrangecolor, string autorangecolor,
 			int type, int defaultvalue, string enumstr, IDictionary<string, EnumList> enums)
 		{
 			this.used = true;
@@ -267,6 +282,18 @@ namespace CodeImp.DoomBuilder.Config
 					General.ErrorLogger.Add(ErrorType.Error, actorname + ": action argument \"" + argtitle + "\": unable to get rendercolor from value \"" + rendercolor + "\"!");
 
 				this.rendercolor.a = HELPER_SHAPE_ALPHA;
+
+				// Get autorange settings
+				if (type == (int)UniversalType.ThingRange)
+				{
+					// Get autorangecolor
+					this.autorangecolor = General.Colors.Indication;
+
+					if (!string.IsNullOrEmpty(autorangecolor) && !ZDTextParser.GetColorFromString(autorangecolor, ref this.autorangecolor))
+						General.ErrorLogger.Add(ErrorType.Error, actorname + ": action argument \"" + this.title + "\": unable to get autorangecolor from value \"" + autorangecolor + "\"!");
+
+					this.autorangecolor.a = RANGE_SHAPE_ALPHA;
+				}
 
 				// Get minrange settings
 				if(int.TryParse(minrange, NumberStyles.Integer, CultureInfo.InvariantCulture, out this.minrange) && this.minrange > 0f)
