@@ -464,7 +464,7 @@ namespace CodeImp.DoomBuilder.Controls
 			if(selection.Count > 0) ScrollToItem(selection[0]);
 		}
 
-		private void UpdateRectangles()
+		internal void UpdateRectangles()
 		{
 			int w = ClientRectangle.Width - scrollbar.Width;
 			const int pad = 2;
@@ -479,7 +479,7 @@ namespace CodeImp.DoomBuilder.Controls
 				Image preview = GetPreview(ti, imagesize);
 				
 				int rw = w - cx;
-				int wid = (imagesize > 0 ? imagesize : preview.Width) + pad + pad;
+				int wid = Math.Max((imagesize > 0 ? imagesize : preview.Width), ti.TextureNameWidth) + pad + pad;
 				int hei = (imagesize > 0 ? imagesize : preview.Height) + pad + pad + font;
 				
 				if(rw < wid)

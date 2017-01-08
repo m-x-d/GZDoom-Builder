@@ -29,6 +29,8 @@ namespace CodeImp.DoomBuilder.Controls
 		private bool showfullname;
 		protected ImageBrowserItemType itemtype;
 		private string tooltip;
+		private int namewidth;
+		private int shortnamewidth;
 
 		#endregion
 
@@ -39,6 +41,7 @@ namespace CodeImp.DoomBuilder.Controls
 		public virtual bool IsPreviewLoaded { get { return icon.IsPreviewLoaded; } }
 		public bool ShowFullName { set { showfullname = value; } }
 		public virtual string TextureName { get { return (showfullname ? icon.Name : icon.ShortName); } }
+		public virtual int TextureNameWidth { get { return (showfullname ? namewidth : shortnamewidth); } }
 		public string ToolTip { get { return tooltip; } }
 
 		#endregion
@@ -55,6 +58,10 @@ namespace CodeImp.DoomBuilder.Controls
 			this.showfullname = showfullname; //mxd
 			this.imageloaded = icon.IsPreviewLoaded; //mxd
 			this.tooltip = tooltip; //mxd
+
+			//mxd. Calculate names width
+			this.namewidth = (int)Math.Ceiling(General.Interface.MeasureString(icon.Name, SystemFonts.MessageBoxFont, 10000, StringFormat.GenericTypographic).Width);
+			this.shortnamewidth = (int)Math.Ceiling(General.Interface.MeasureString(icon.ShortName, SystemFonts.MessageBoxFont, 10000, StringFormat.GenericTypographic).Width);
 		}
 
 		#endregion
