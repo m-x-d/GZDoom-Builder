@@ -516,7 +516,7 @@ namespace CodeImp.DoomBuilder.Controls
             foreach (var ti in items)
 			{
 				Image preview = GetPreview(ti, imagesize);
-                if (classicview && (ti == firstItem || (currentType == ImageBrowserItemType.IMAGE && ti.ItemType != ImageBrowserItemType.IMAGE) || (usedtexturesfirst && currentUsedInMap != ti.Icon.UsedInMap)))
+                if (classicview && (ti == firstItem || ((currentType == ImageBrowserItemType.IMAGE) != (ti.ItemType == ImageBrowserItemType.IMAGE)) || (usedtexturesfirst && currentUsedInMap != ti.Icon.UsedInMap)))
                 {
                     // new row, also provide space for category name.
                     cx = 0;
@@ -615,13 +615,13 @@ namespace CodeImp.DoomBuilder.Controls
 
                 for (var i = 0; i < items.Count; i++)
 				{
-                    if (classicview && (i == 0 || (currentType == ImageBrowserItemType.IMAGE && items[i].ItemType != ImageBrowserItemType.IMAGE) || (usedtexturesfirst && currentUsedInMap != items[i].Icon.UsedInMap)))
+                    if (classicview && (i == 0 || ((currentType == ImageBrowserItemType.IMAGE) != (items[i].ItemType == ImageBrowserItemType.IMAGE)) || (usedtexturesfirst && currentUsedInMap != items[i].Icon.UsedInMap)))
                     {
                         // draw corresponding title right above this item.
                         string hdrname;
                         if (items[i].ItemType == ImageBrowserItemType.IMAGE)
                         {
-                            if (items[i].Icon.UsedInMap) hdrname = "Used " + contenttype + ":";
+                            if (usedtexturesfirst && items[i].Icon.UsedInMap) hdrname = "Used " + contenttype + ":";
                             else hdrname = "All " + contenttype + ":";
                         }
                         else hdrname = "Directories:";
