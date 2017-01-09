@@ -28,6 +28,7 @@ namespace CodeImp.DoomBuilder.Controls
 		private ImageBrowserItem lastselecteditem;
 		private int imagesize = 128;
         private bool classicview = false;
+        private bool usedtexturesfirst = false;
         private string contenttype = "Textures";
 		private string title;
 		private int titleheight = SystemFonts.MessageBoxFont.Height + 6;
@@ -120,6 +121,17 @@ namespace CodeImp.DoomBuilder.Controls
             set
             {
                 classicview = value;
+                UpdateRectangles();
+                if (selection.Count > 0) ScrollToItem(selection[0]);
+            }
+        }
+
+        public bool UsedTexturesFirst
+        {
+            get { return usedtexturesfirst; }
+            set
+            {
+                usedtexturesfirst = value;
                 UpdateRectangles();
                 if (selection.Count > 0) ScrollToItem(selection[0]);
             }
@@ -498,7 +510,7 @@ namespace CodeImp.DoomBuilder.Controls
             foreach (var ti in items)
 			{
 				Image preview = GetPreview(ti, imagesize);
-                if (classicview && (ti == firstItem || (currentType == ImageBrowserItemType.IMAGE && ti.ItemType != ImageBrowserItemType.IMAGE) || currentUsedInMap != ti.Icon.UsedInMap))
+                if (classicview && (ti == firstItem || (currentType == ImageBrowserItemType.IMAGE && ti.ItemType != ImageBrowserItemType.IMAGE) || (usedtexturesfirst && currentUsedInMap != ti.Icon.UsedInMap)))
                 {
                     // new row, also provide space for category name.
                     cx = 0;
@@ -597,7 +609,7 @@ namespace CodeImp.DoomBuilder.Controls
 
                 for (var i = 0; i < items.Count; i++)
 				{
-                    if (classicview && (i == 0 || (currentType == ImageBrowserItemType.IMAGE && items[i].ItemType != ImageBrowserItemType.IMAGE) || currentUsedInMap != items[i].Icon.UsedInMap))
+                    if (classicview && (i == 0 || (currentType == ImageBrowserItemType.IMAGE && items[i].ItemType != ImageBrowserItemType.IMAGE) || (usedtexturesfirst && currentUsedInMap != items[i].Icon.UsedInMap)))
                     {
                         // draw corresponding title right above this item.
                         string hdrname;

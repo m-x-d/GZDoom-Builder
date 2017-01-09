@@ -119,7 +119,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.browseflats = browseflats;
 			uselongtexturenames = General.Map.Options.UseLongTextureNames;
 			texturetype = General.Settings.ReadSetting(settingpath + ".texturetype", 0);
-			usedtexturesfirst.Checked = General.Settings.ReadSetting(settingpath + ".showusedtexturesfirst", false);
+            list.UsedTexturesFirst = usedtexturesfirst.Checked = General.Settings.ReadSetting(settingpath + ".showusedtexturesfirst", false);
             list.ClassicView = classicview.Checked = General.Settings.ReadSetting(settingpath + ".classicview", false);
 			
 			int imagesize = General.Settings.ReadSetting(settingpath + ".imagesize", 128);
@@ -364,7 +364,8 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			if(!blockupdate)
 			{
-				RefillList(false);
+                list.UsedTexturesFirst = usedtexturesfirst.Checked;
+                RefillList(false);
 				list.Focus();
 			}
 		}
