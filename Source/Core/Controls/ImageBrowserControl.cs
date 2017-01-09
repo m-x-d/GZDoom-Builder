@@ -81,7 +81,8 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				usedfirstgroup = "Available " + value + " (used first):";
 				availgroup = "Available " + value + ":";
-			}
+                list.ContentType = value;
+            }
 		}
 
 		#endregion
@@ -116,9 +117,11 @@ namespace CodeImp.DoomBuilder.Controls
 			blockupdate = true;
 
 			this.browseflats = browseflats;
-			uselongtexturenames = General.Map.Options.UseLongTextureNames;
+            uselongtexturenames = General.Map.Options.UseLongTextureNames;
 			texturetype = General.Settings.ReadSetting(settingpath + ".texturetype", 0);
-			usedtexturesfirst.Checked = General.Settings.ReadSetting(settingpath + ".showusedtexturesfirst", false);
+            ElementName = (texturetype == 2 || (texturetype == 3 && browseflats)) ? "flats" : "textures";
+            list.UsedTexturesFirst = usedtexturesfirst.Checked = General.Settings.ReadSetting(settingpath + ".showusedtexturesfirst", false);
+            list.ClassicView = classicview.Checked = General.Settings.ReadSetting(settingpath + ".classicview", false);
 			
 			int imagesize = General.Settings.ReadSetting(settingpath + ".imagesize", 128);
 			sizecombo.Text = (imagesize == 0 ? sizecombo.Items[0].ToString() : imagesize.ToString());
@@ -172,6 +175,7 @@ namespace CodeImp.DoomBuilder.Controls
 		public virtual void OnClose(string settingpath)
 		{
 			General.Settings.WriteSetting(settingpath + ".showusedtexturesfirst", usedtexturesfirst.Checked);
+            General.Settings.WriteSetting(settingpath + ".classicview", classicview.Checked);
 			General.Settings.WriteSetting(settingpath + ".imagesize", list.ImageSize);
 			if(General.Map.Config.UseLongTextureNames) General.Map.Options.UseLongTextureNames = uselongtexturenames;
 
@@ -331,7 +335,9 @@ namespace CodeImp.DoomBuilder.Controls
 		private void texturetypecombo_SelectedIndexChanged(object sender, EventArgs e) 
 		{
 			texturetype = texturetypecombo.SelectedIndex;
-			RefillList(false);
+            ElementName = (texturetype == 2 || (texturetype == 3 && browseflats)) ? "flats" : "textures";
+
+            RefillList(false);
 		}
 
 		//mxd
@@ -340,7 +346,7 @@ namespace CodeImp.DoomBuilder.Controls
 			if(blockupdate) return;
 			list.ImageSize = (sizecombo.SelectedIndex == 0 ? 0 : Convert.ToInt32(sizecombo.SelectedItem));
 			list.Focus();
-		}
+        }
 
 		//mxd
 		private void longtexturenames_CheckedChanged(object sender, EventArgs e)
@@ -361,17 +367,28 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			if(!blockupdate)
 			{
-				RefillList(false);
+                list.UsedTexturesFirst = usedtexturesfirst.Checked;
+                RefillList(false);
 				list.Focus();
 			}
 		}
-		
-		#endregion
 
-		#region ================== Methods
+        //
+        private void classicview_CheckedChanged(object sender, EventArgs e)
+        {
+            if(!blockupdate)
+            {
+                list.ClassicView = classicview.Checked;
+                list.Focus();
+            }
+        }
 
-		// This selects an item by longname (mxd - changed from name to longname)
-		public void SelectItem(long longname)
+        #endregion
+
+        #region ================== Methods
+
+        // This selects an item by longname (mxd - changed from name to longname)
+        public void SelectItem(long longname)
 		{
 			// Not when selecting is prevented
 			if(preventselection) return;
@@ -615,7 +632,7 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			list.Focus();
 		}
-		
-		#endregion
-	}
+
+        #endregion
+    }
 }

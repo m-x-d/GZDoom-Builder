@@ -27,8 +27,17 @@ namespace CodeImp.DoomBuilder.Controls
 		private List<Rectangle> rectangles;
 		private ImageBrowserItem lastselecteditem;
 		private int imagesize = 128;
+        private bool classicview = false;
+        private bool usedtexturesfirst = false;
+        private string contenttype = "Textures";
 		private string title;
-		private int titleheight = SystemFonts.MessageBoxFont.Height + 6;
+		private int titleheight
+        {
+            get
+            {
+                return classicview ? 0 : SystemFonts.MessageBoxFont.Height + 6;
+            }
+        }
 
 		//mxd. Tooltips
 		private ToolTip tooltip;
@@ -112,9 +121,32 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 		}
 
+        public bool ClassicView
+        {
+            get { return classicview; }
+            set
+            {
+                classicview = value;
+                UpdateRectangles();
+                if (selection.Count > 0) ScrollToItem(selection[0]);
+            }
+        }
+
+        public bool UsedTexturesFirst
+        {
+            get { return usedtexturesfirst; }
+            set
+            {
+                usedtexturesfirst = value;
+                UpdateRectangles();
+                if (selection.Count > 0) ScrollToItem(selection[0]);
+            }
+        }
+
 		public List<ImageBrowserItem> Items { get { return items; } }
 		public List<ImageBrowserItem> SelectedItems { get { return selection; } }
 		public string Title { get { return title; } set { title = value; } }
+        public string ContentType { get { return contenttype; } set { contenttype = value; } } // why do encapsulation when it's not needed?
 
 		#endregion
 
@@ -383,16 +415,17 @@ namespace CodeImp.DoomBuilder.Controls
 
 		public int GetIndexAt(int x, int y)
 		{
-			const int pad = 3;
+			int padhorz = classicview?13:2;
+            int padvert = 2;
 			int font = 4 + SystemFonts.MessageBoxFont.Height;
 
 			for(var i = 0; i < rectangles.Count; i++)
 			{
 				var rec = rectangles[i];
-				if(rec.Left - pad <= x
-					&& rec.Right + pad >= x
-					&& rec.Top - pad <= y
-					&& rec.Bottom + pad + font >= y)
+				if(rec.Left - padhorz <= x
+					&& rec.Right + padhorz >= x
+					&& rec.Top - padvert <= y
+					&& rec.Bottom + padvert + font >= y)
 				{
 					return i;
 				}
@@ -467,20 +500,35 @@ namespace CodeImp.DoomBuilder.Controls
 		internal void UpdateRectangles()
 		{
 			int w = ClientRectangle.Width - scrollbar.Width;
-			const int pad = 2;
+			int padhorz = classicview?13:2;
+            int padvert = 2;
 			int font = 4 + SystemFonts.MessageBoxFont.Height;
 			int cx = 0;
 			int cy = titleheight;
 			int my = 0;
 			rectangles.Clear();
 
-			foreach(var ti in items)
+            //
+            ImageBrowserItemType currentType = ImageBrowserItemType.IMAGE; // initialized to random value
+            bool currentUsedInMap = false;
+            var firstItem = (items.Count > 0) ? items[0] : null;
+
+            foreach (var ti in items)
 			{
 				Image preview = GetPreview(ti, imagesize);
+                if (classicview && (ti == firstItem || ((currentType == ImageBrowserItemType.IMAGE) != (ti.ItemType == ImageBrowserItemType.IMAGE)) || (usedtexturesfirst && currentUsedInMap != ti.Icon.UsedInMap)))
+                {
+                    // new row, also provide space for category name.
+                    cx = 0;
+                    cy += SystemFonts.MessageBoxFont.Height + 6 + my + ((ti != firstItem) ? 16 : 0);
+                    my = 0;
+                    currentType = ti.ItemType;
+                    currentUsedInMap = ti.Icon.UsedInMap;
+                }
 				
 				int rw = w - cx;
-				int wid = Math.Max((imagesize > 0 ? imagesize : preview.Width), ti.TextureNameWidth) + pad + pad;
-				int hei = (imagesize > 0 ? imagesize : preview.Height) + pad + pad + font;
+				int wid = Math.Max((imagesize > 0 ? imagesize : preview.Width), ti.TextureNameWidth) + padhorz + padhorz;
+				int hei = (imagesize > 0 ? imagesize : preview.Height) + padvert + padvert + font;
 				
 				if(rw < wid)
 				{
@@ -491,7 +539,7 @@ namespace CodeImp.DoomBuilder.Controls
 				}
 
 				my = Math.Max(my, hei);
-				var rect = new Rectangle(cx + pad, cy + pad, wid - pad - pad, hei - pad - pad - font);
+				var rect = new Rectangle(cx + padhorz, cy + padvert, wid - padhorz - padhorz, hei - padvert - padvert - font);
 				rectangles.Add(rect);
 				cx += wid;
 			}
@@ -499,7 +547,7 @@ namespace CodeImp.DoomBuilder.Controls
 			if(rectangles.Count > 0)
 			{
 				scrollbar.Maximum = cy + my;
-				scrollbar.SmallChange = (imagesize > 0 ? imagesize : 128) + pad + pad + font;
+				scrollbar.SmallChange = (imagesize > 0 ? imagesize : 128) + padvert + padvert + font;
 				scrollbar.LargeChange = ClientRectangle.Height;
 				scrollbar.Visible = (scrollbar.Maximum > ClientRectangle.Height);
 
@@ -526,40 +574,75 @@ namespace CodeImp.DoomBuilder.Controls
 			DrawTextures(e.Graphics);
 		}
 
+        private void DrawTextureHeader(Graphics g, string text, Rectangle rec, bool background)
+        {
+            bool blackbrowsers = (General.Settings != null && General.Settings.BlackBrowsers);
+
+            if (background)
+            {
+                // Draw group name bg
+                Color bgcolor = (blackbrowsers ? Color.Gray : SystemColors.Control);
+                using (Brush bg = new SolidBrush(Color.FromArgb(192, bgcolor)))
+                {
+                    g.FillRectangle(bg, rec.X, rec.Y, rec.Width, rec.Height);
+                }
+            }
+            else
+            {
+                // Draw underline
+                Color underlinecolor = blackbrowsers ? Color.FromArgb(0x7FFFFFFF) : Color.FromArgb((SystemColors.ControlText.ToArgb()&0xFFFFFF)|0x7F000000);
+                g.DrawLine(new Pen(underlinecolor), rec.Left, rec.Bottom, rec.Right - 2, rec.Bottom);
+            }
+
+            // Draw group name
+            Brush fgbrush = (blackbrowsers ? Brushes.White : SystemBrushes.ControlText);
+            Font bf = new Font(SystemFonts.MessageBoxFont, FontStyle.Bold);
+            g.DrawString(text, bf, fgbrush, rec.X, rec.Y);
+        }
+
 		private void DrawTextures(Graphics g)
 		{
-			// Draw items
-			if(items.Count > 0)
+            // Draw items
+            int scrollwidth = (scrollbar.Visible ? scrollbar.Width : 0);
+
+            if (items.Count > 0)
 			{
 				int y = scrollbar.Value;
 				int height = ClientRectangle.Height - titleheight;
 
-				for(var i = 0; i < items.Count; i++)
+                ImageBrowserItemType currentType = ImageBrowserItemType.IMAGE; // initialized to random value
+                bool currentUsedInMap = false;
+
+                for (var i = 0; i < items.Count; i++)
 				{
+                    if (classicview && (i == 0 || ((currentType == ImageBrowserItemType.IMAGE) != (items[i].ItemType == ImageBrowserItemType.IMAGE)) || (usedtexturesfirst && currentUsedInMap != items[i].Icon.UsedInMap)))
+                    {
+                        // draw corresponding title right above this item.
+                        string hdrname;
+                        if (items[i].ItemType == ImageBrowserItemType.IMAGE)
+                        {
+                            if (usedtexturesfirst && items[i].Icon.UsedInMap) hdrname = "Used " + contenttype + ":";
+                            else hdrname = "All " + contenttype + ":";
+                        }
+                        else hdrname = "Directories:";
+                        DrawTextureHeader(g, hdrname, new Rectangle(2, rectangles[i].Y - (SystemFonts.MessageBoxFont.Height + 6) - y, ClientRectangle.Width - scrollwidth - 4, SystemFonts.MessageBoxFont.Height), false);
+                        currentType = items[i].ItemType;
+                        currentUsedInMap = items[i].Icon.UsedInMap;
+                    }
+
 					Rectangle rec = rectangles[i];
 					if(rec.Bottom < y) continue;
 					if(rec.Top > y + height) break;
 
 					Image bmp = GetPreview(items[i], imagesize);
-					items[i].Draw(g, bmp, rec.X, rec.Y - y, rec.Width, rec.Height, selection.Contains(items[i]), items[i].Icon.UsedInMap);
+					items[i].Draw(g, bmp, rec.X, rec.Y - y, rec.Width, rec.Height, selection.Contains(items[i]), items[i].Icon.UsedInMap, classicview);
 				}
 			}
 
 			// Draw title on top of items
-			if(!string.IsNullOrEmpty(title))
+			if(!string.IsNullOrEmpty(title) && !classicview)
 			{
-				// Draw group name bg
-				bool blackbrowsers = (General.Settings != null && General.Settings.BlackBrowsers);
-				Color bgcolor = (blackbrowsers ? Color.Gray : SystemColors.Control);
-				using(Brush bg = new SolidBrush(Color.FromArgb(192, bgcolor)))
-				{
-					int scrollwidth = (scrollbar.Visible ? scrollbar.Width : 0);
-					g.FillRectangle(bg, 2, 2, ClientRectangle.Width - scrollwidth - 4, SystemFonts.MessageBoxFont.Height);
-				}
-
-				// Draw group name
-				Brush fgbrush = (blackbrowsers ? Brushes.White : SystemBrushes.ControlText);
-				g.DrawString(title, SystemFonts.MessageBoxFont, fgbrush, 2, 2);
+                DrawTextureHeader(g, title, new Rectangle(2, 2, ClientRectangle.Width - scrollwidth - 4, SystemFonts.MessageBoxFont.Height), true);
 			}
 		}
 
