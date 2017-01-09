@@ -31,7 +31,13 @@ namespace CodeImp.DoomBuilder.Controls
         private bool usedtexturesfirst = false;
         private string contenttype = "Textures";
 		private string title;
-		private int titleheight = SystemFonts.MessageBoxFont.Height + 6;
+		private int titleheight
+        {
+            get
+            {
+                return classicview ? 0 : SystemFonts.MessageBoxFont.Height + 6;
+            }
+        }
 
 		//mxd. Tooltips
 		private ToolTip tooltip;
@@ -514,7 +520,7 @@ namespace CodeImp.DoomBuilder.Controls
                 {
                     // new row, also provide space for category name.
                     cx = 0;
-                    cy += titleheight + my + ((ti != firstItem) ? 16 : 0);
+                    cy += SystemFonts.MessageBoxFont.Height + 6 + my + ((ti != firstItem) ? 16 : 0);
                     my = 0;
                     currentType = ti.ItemType;
                     currentUsedInMap = ti.Icon.UsedInMap;
@@ -619,7 +625,7 @@ namespace CodeImp.DoomBuilder.Controls
                             else hdrname = "All " + contenttype + ":";
                         }
                         else hdrname = "Directories:";
-                        DrawTextureHeader(g, hdrname, new Rectangle(2, rectangles[i].Y - titleheight - y, ClientRectangle.Width - scrollwidth - 4, SystemFonts.MessageBoxFont.Height), false);
+                        DrawTextureHeader(g, hdrname, new Rectangle(2, rectangles[i].Y - (SystemFonts.MessageBoxFont.Height + 6) - y, ClientRectangle.Width - scrollwidth - 4, SystemFonts.MessageBoxFont.Height), false);
                         currentType = items[i].ItemType;
                         currentUsedInMap = items[i].Icon.UsedInMap;
                     }
@@ -634,7 +640,7 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 
 			// Draw title on top of items
-			if(!string.IsNullOrEmpty(title))
+			if(!string.IsNullOrEmpty(title) && !classicview)
 			{
                 DrawTextureHeader(g, title, new Rectangle(2, 2, ClientRectangle.Width - scrollwidth - 4, SystemFonts.MessageBoxFont.Height), true);
 			}
