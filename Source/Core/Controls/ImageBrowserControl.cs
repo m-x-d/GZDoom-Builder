@@ -117,8 +117,9 @@ namespace CodeImp.DoomBuilder.Controls
 			blockupdate = true;
 
 			this.browseflats = browseflats;
-			uselongtexturenames = General.Map.Options.UseLongTextureNames;
+            uselongtexturenames = General.Map.Options.UseLongTextureNames;
 			texturetype = General.Settings.ReadSetting(settingpath + ".texturetype", 0);
+            ElementName = (texturetype == 2 || (texturetype == 3 && browseflats)) ? "flats" : "textures";
             list.UsedTexturesFirst = usedtexturesfirst.Checked = General.Settings.ReadSetting(settingpath + ".showusedtexturesfirst", false);
             list.ClassicView = classicview.Checked = General.Settings.ReadSetting(settingpath + ".classicview", false);
 			
@@ -334,7 +335,9 @@ namespace CodeImp.DoomBuilder.Controls
 		private void texturetypecombo_SelectedIndexChanged(object sender, EventArgs e) 
 		{
 			texturetype = texturetypecombo.SelectedIndex;
-			RefillList(false);
+            ElementName = (texturetype == 2 || (texturetype == 3 && browseflats)) ? "flats" : "textures";
+
+            RefillList(false);
 		}
 
 		//mxd
@@ -343,7 +346,7 @@ namespace CodeImp.DoomBuilder.Controls
 			if(blockupdate) return;
 			list.ImageSize = (sizecombo.SelectedIndex == 0 ? 0 : Convert.ToInt32(sizecombo.SelectedItem));
 			list.Focus();
-		}
+        }
 
 		//mxd
 		private void longtexturenames_CheckedChanged(object sender, EventArgs e)
