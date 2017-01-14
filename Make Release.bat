@@ -176,9 +176,9 @@ ECHO.
 IF EXIST "Release\*.exe" DEL /F /Q "Release\*.exe" > NUL
 "%ISSDIR%\iscc.exe" "Setup\gzbuilder_setup.iss"
 IF %ERRORLEVEL% NEQ 0 GOTO ERRORFAIL
-IF NOT EXIST "Release\GZDoom Builder Setup.exe" GOTO FILEFAIL
+IF NOT EXIST "Release\GZDB-Bugfix Setup.exe" GOTO FILEFAIL
 
-REN "Release\GZDoom Builder Setup.exe" "GZDoom Builder R%REVISIONNUMBER% Setup.exe"
+REN "Release\GZDB-Bugfix Setup.exe" "GZDB-Bugfix R%REVISIONNUMBER% Setup.exe"
 
 git checkout "Source\Core\Properties\AssemblyInfo.cs" > NUL
 git checkout "Source\Plugins\BuilderModes\Properties\AssemblyInfo.cs" > NUL

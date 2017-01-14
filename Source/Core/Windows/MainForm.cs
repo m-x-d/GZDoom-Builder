@@ -439,24 +439,22 @@ namespace CodeImp.DoomBuilder.Windows
 		//mxd
 		private void UpdateTitle()
 		{
-			// Map opened?
-			if(General.Map != null)
+            string programname = this.Text = Application.ProductName + " R" + General.ThisAssembly.GetName().Version.Revision;
+
+            // Map opened?
+            if (General.Map != null)
 			{
 				// Get nice name
 				string maptitle = (!string.IsNullOrEmpty(General.Map.Data.MapInfo.Title) ? ": " + General.Map.Data.MapInfo.Title : "");
 				
 				// Show map name and filename in caption
-				this.Text = (mapchanged ? "\u25CF " : "") + General.Map.FileTitle + " (" + General.Map.Options.CurrentName + maptitle + ") - " + Application.ProductName;
+				this.Text = (mapchanged ? "\u25CF " : "") + General.Map.FileTitle + " (" + General.Map.Options.CurrentName + maptitle + ") - " + programname;
 			}
 			else
 			{
-				// Show normal caption
-#if DEBUG
-				this.Text = Application.ProductName + " - DEVBUILD";
-#else
-				this.Text = Application.ProductName + " R" + General.ThisAssembly.GetName().Version.Revision;
-#endif
-			}
+                // Show normal caption
+                this.Text = programname;
+            }
 		}
 		
 		// Generic event that invokes the tagged action
