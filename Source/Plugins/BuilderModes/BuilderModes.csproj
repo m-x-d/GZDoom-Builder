@@ -1,4 +1,5 @@
-﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="14.0">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -12,10 +13,25 @@
     <RunPostBuildEvent>Always</RunPostBuildEvent>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
-    <OldToolsVersion>2.0</OldToolsVersion>
+    <OldToolsVersion>3.5</OldToolsVersion>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -97,21 +113,15 @@
     <Compile Include="General\Association.cs" />
     <Compile Include="General\BuilderPlug.cs" />
     <Compile Include="General\CopyStructures.cs" />
-    <Compile Include="Interface\ErrorCheckForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="Interface\ErrorCheckForm.cs" />
     <Compile Include="Interface\ErrorCheckForm.Designer.cs">
       <DependentUpon>ErrorCheckForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interface\FindReplaceForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="Interface\FindReplaceForm.cs" />
     <Compile Include="Interface\FindReplaceForm.Designer.cs">
       <DependentUpon>FindReplaceForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interface\MakeDoorForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="Interface\MakeDoorForm.cs" />
     <Compile Include="Interface\MakeDoorForm.Designer.cs">
       <DependentUpon>MakeDoorForm.cs</DependentUpon>
     </Compile>
@@ -121,9 +131,7 @@
     <Compile Include="Interface\MenusForm.Designer.cs">
       <DependentUpon>MenusForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interface\PreferencesForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="Interface\PreferencesForm.cs" />
     <Compile Include="Interface\PreferencesForm.Designer.cs">
       <DependentUpon>PreferencesForm.cs</DependentUpon>
     </Compile>
@@ -312,9 +320,7 @@
     <Compile Include="General\BuilderModesTools.cs" />
     <Compile Include="General\SelectionLabel.cs" />
     <Compile Include="General\UndoGroup.cs" />
-    <Compile Include="Interface\BridgeModeForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="Interface\BridgeModeForm.cs" />
     <Compile Include="Interface\BridgeModeForm.Designer.cs">
       <DependentUpon>BridgeModeForm.cs</DependentUpon>
     </Compile>
@@ -360,21 +366,15 @@
     <Compile Include="Interface\EditSelectionPanel.Designer.cs">
       <DependentUpon>EditSelectionPanel.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interface\FilterSelectedThingsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="Interface\FilterSelectedThingsForm.cs" />
     <Compile Include="Interface\FilterSelectedThingsForm.Designer.cs">
       <DependentUpon>FilterSelectedThingsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interface\FitTexturesForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="Interface\FitTexturesForm.cs" />
     <Compile Include="Interface\FitTexturesForm.Designer.cs">
       <DependentUpon>FitTexturesForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interface\PastePropertiesOptionsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="Interface\PastePropertiesOptionsForm.cs" />
     <Compile Include="Interface\PastePropertiesOptionsForm.Designer.cs">
       <DependentUpon>PastePropertiesOptionsForm.cs</DependentUpon>
     </Compile>
@@ -384,15 +384,11 @@
     <Compile Include="Interface\SectorDrawingOptionsPanel.Designer.cs">
       <DependentUpon>SectorDrawingOptionsPanel.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interface\SelectSimilarElementOptionsPanel.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="Interface\SelectSimilarElementOptionsPanel.cs" />
     <Compile Include="Interface\SelectSimilarElementOptionsPanel.Designer.cs">
       <DependentUpon>SelectSimilarElementOptionsPanel.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interface\WavefrontSettingsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="Interface\WavefrontSettingsForm.cs" />
     <Compile Include="Interface\WavefrontSettingsForm.Designer.cs">
       <DependentUpon>WavefrontSettingsForm.cs</DependentUpon>
     </Compile>
@@ -630,6 +626,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Close.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

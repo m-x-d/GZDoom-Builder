@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Resources;
 using CodeImp.DoomBuilder;
@@ -30,6 +30,6 @@ using CodeImp.DoomBuilder;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion("2.3.0.2651")]
+[assembly: AssemblyVersion("2.3.0.2796")]
 [assembly: NeutralResourcesLanguageAttribute("en")]
-[assembly: AssemblyHash("0000000")]
+[assembly: AssemblyHash("36a5aa6")]

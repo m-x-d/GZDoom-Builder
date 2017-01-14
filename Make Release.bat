@@ -13,7 +13,7 @@ ECHO.     the 'Release' directory may be overwritten.
 ECHO.
 ECHO.
 
-SET STUDIODIR=c:\Program Files (x86)\Microsoft Visual Studio 9.0
+SET STUDIODIR=c:\Program Files (x86)\Microsoft Visual Studio 14.0
 SET HHWDIR=c:\Program Files (x86)\HTML Help Workshop
 SET ISSDIR=c:\Program Files (x86)\Inno Setup 5
 

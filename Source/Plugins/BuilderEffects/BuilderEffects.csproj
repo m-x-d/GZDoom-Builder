@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="3.5" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
@@ -12,6 +12,26 @@
     <AssemblyName>BuilderEffects</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -60,30 +80,20 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BuilderPlug.cs" />
-    <Compile Include="Controls\NumericUpDownEx.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\IntControl.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Include="Controls\NumericUpDownEx.cs" />
+    <Compile Include="Controls\IntControl.cs" />
     <Compile Include="Controls\IntControl.designer.cs">
       <DependentUpon>IntControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interface\JitterSectorsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="Interface\JitterSectorsForm.cs" />
     <Compile Include="Interface\JitterSectorsForm.Designer.cs">
       <DependentUpon>JitterSectorsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interface\JitterThingsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="Interface\JitterThingsForm.cs" />
     <Compile Include="Interface\JitterThingsForm.Designer.cs">
       <DependentUpon>JitterThingsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interface\JitterVerticesForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="Interface\JitterVerticesForm.cs" />
     <Compile Include="Interface\JitterVerticesForm.Designer.cs">
       <DependentUpon>JitterVerticesForm.cs</DependentUpon>
     </Compile>
@@ -93,15 +103,11 @@
     <Compile Include="Interface\MenusForm.Designer.cs">
       <DependentUpon>MenusForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interface\ObjImportSettingsForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="Interface\ObjImportSettingsForm.cs" />
     <Compile Include="Interface\ObjImportSettingsForm.Designer.cs">
       <DependentUpon>ObjImportSettingsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interface\DirectionalShadingForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="Interface\DirectionalShadingForm.cs" />
     <Compile Include="Interface\DirectionalShadingForm.designer.cs">
       <DependentUpon>DirectionalShadingForm.cs</DependentUpon>
     </Compile>
@@ -164,6 +170,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\FlatShading.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
