@@ -94,7 +94,7 @@ namespace CodeImp.DoomBuilder.Windows
 			ResourcesLoaded = General.WM_USER + 4,
 		}
 		
-		#endregion
+		#endregion 
 
 		#region ================== Delegates
 

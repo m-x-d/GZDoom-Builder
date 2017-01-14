@@ -80,7 +80,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="TagRangeForm.cs" />
+    <Compile Include="TagRangeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="TagRangeForm.Designer.cs">
       <DependentUpon>TagRangeForm.cs</DependentUpon>
     </Compile>

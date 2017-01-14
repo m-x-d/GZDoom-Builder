@@ -81,7 +81,9 @@
   <ItemGroup>
     <Compile Include="BuilderPlug.cs" />
     <Compile Include="Node.cs" />
-    <Compile Include="NodesForm.cs" />
+    <Compile Include="NodesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="NodesForm.Designer.cs">
       <DependentUpon>NodesForm.cs</DependentUpon>
     </Compile>

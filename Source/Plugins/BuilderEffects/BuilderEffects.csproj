@@ -85,15 +85,21 @@
     <Compile Include="Controls\IntControl.designer.cs">
       <DependentUpon>IntControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interface\JitterSectorsForm.cs" />
+    <Compile Include="Interface\JitterSectorsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Interface\JitterSectorsForm.Designer.cs">
       <DependentUpon>JitterSectorsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interface\JitterThingsForm.cs" />
+    <Compile Include="Interface\JitterThingsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Interface\JitterThingsForm.Designer.cs">
       <DependentUpon>JitterThingsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interface\JitterVerticesForm.cs" />
+    <Compile Include="Interface\JitterVerticesForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Interface\JitterVerticesForm.Designer.cs">
       <DependentUpon>JitterVerticesForm.cs</DependentUpon>
     </Compile>
@@ -103,11 +109,15 @@
     <Compile Include="Interface\MenusForm.Designer.cs">
       <DependentUpon>MenusForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interface\ObjImportSettingsForm.cs" />
+    <Compile Include="Interface\ObjImportSettingsForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Interface\ObjImportSettingsForm.Designer.cs">
       <DependentUpon>ObjImportSettingsForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="Interface\DirectionalShadingForm.cs" />
+    <Compile Include="Interface\DirectionalShadingForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Interface\DirectionalShadingForm.designer.cs">
       <DependentUpon>DirectionalShadingForm.cs</DependentUpon>
     </Compile>

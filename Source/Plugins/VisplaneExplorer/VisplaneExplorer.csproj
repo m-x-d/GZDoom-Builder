@@ -86,7 +86,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BuilderPlug.cs" />
-    <Compile Include="InterfaceForm.cs" />
+    <Compile Include="InterfaceForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="InterfaceForm.Designer.cs">
       <DependentUpon>InterfaceForm.cs</DependentUpon>
     </Compile>

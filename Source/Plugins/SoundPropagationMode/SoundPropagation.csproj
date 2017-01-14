@@ -91,7 +91,9 @@
     <Compile Include="SoundEnvironment.cs" />
     <Compile Include="SoundEnvironmentMode.cs" />
     <Compile Include="SoundPropagationDomain.cs" />
-    <Compile Include="Windows\ColorConfiguration.cs" />
+    <Compile Include="Windows\ColorConfiguration.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Windows\ColorConfiguration.designer.cs">
       <DependentUpon>ColorConfiguration.cs</DependentUpon>
     </Compile>
@@ -103,7 +105,9 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SoundPropagationMode.cs" />
-    <Compile Include="Windows\ReverbsPickerForm.cs" />
+    <Compile Include="Windows\ReverbsPickerForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Windows\ReverbsPickerForm.Designer.cs">
       <DependentUpon>ReverbsPickerForm.cs</DependentUpon>
     </Compile>

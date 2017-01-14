@@ -105,11 +105,15 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <Compile Include="Windows\LightColorPicker.cs" />
+    <Compile Include="Windows\LightColorPicker.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Windows\LightColorPicker.Designer.cs">
       <DependentUpon>LightColorPicker.cs</DependentUpon>
     </Compile>
-    <Compile Include="Windows\SectorColorPicker.cs" />
+    <Compile Include="Windows\SectorColorPicker.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Windows\SectorColorPicker.Designer.cs">
       <DependentUpon>SectorColorPicker.cs</DependentUpon>
     </Compile>
