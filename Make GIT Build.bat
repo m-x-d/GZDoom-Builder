@@ -13,7 +13,7 @@ ECHO.     Files in the 'GIT_Build' directory may be overwritten.
 ECHO.
 ECHO.
 
-SET STUDIODIR=c:\Program Files (x86)\Microsoft Visual Studio 9.0
+SET STUDIODIR=c:\Program Files (x86)\Microsoft Visual Studio 14.0
 SET HHWDIR=c:\Program Files (x86)\HTML Help Workshop
 SET SEVENZIPDIR=c:\Program Files (x86)\7-Zip
 
@@ -187,7 +187,7 @@ IF %ERRORLEVEL% NEQ 0 GOTO PACKFAIL
 IF NOT EXIST .\GIT_Build\gzdb.7z GOTO FILEFAIL
 IF NOT EXIST .\GIT_Build\GZDB_Updater.7z GOTO FILEFAIL
 
-REN "GIT_Build\gzdb.7z" GZDoom_Builder-r%REVISIONNUMBER%.7z
+REN "GIT_Build\gzdb.7z" GZDoom_Builder_Bugfix-r%REVISIONNUMBER%.7z
 IF EXIST "Build\Changelog.txt" DEL /F /Q "Build\Changelog.txt" > NUL
 
 @ECHO %REVISIONNUMBER%> .\GIT_Build\Version.txt
