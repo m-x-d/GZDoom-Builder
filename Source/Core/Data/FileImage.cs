@@ -142,38 +142,51 @@ namespace CodeImp.DoomBuilder.Data
 				// Load file data
 				if(bitmap != null) bitmap.Dispose(); bitmap = null;
 
-				MemoryStream filedata = new MemoryStream(File.ReadAllBytes(filepathname));
+                MemoryStream filedata = null;
+                try
+                {
+                    filedata = new MemoryStream(File.ReadAllBytes(filepathname));
+                }
+                catch (IOException)
+                {
+                    General.ErrorLogger.Add(ErrorType.Error, "Image file \"" + filepathname + "\" could not be read, while loading image \"" + this.Name + "\". Consider reloading resources.");
+                    loadfailed = true;
+                }
 
-				// Get a reader for the data
-				IImageReader reader = ImageDataFormat.GetImageReader(filedata, probableformat, General.Map.Data.Palette);
-				if(!(reader is UnknownImageReader)) 
-				{
-					// Load the image
-					filedata.Seek(0, SeekOrigin.Begin);
-					try { bitmap = reader.ReadAsBitmap(filedata); } 
-					catch(InvalidDataException) 
-					{
-						// Data cannot be read!
-						bitmap = null;
-					}
-				}
+                if (filedata != null)
+                {
+                    // Get a reader for the data
+                    IImageReader reader = ImageDataFormat.GetImageReader(filedata, probableformat, General.Map.Data.Palette);
+                    if (!(reader is UnknownImageReader))
+                    {
+                        // Load the image
+                        filedata.Seek(0, SeekOrigin.Begin);
+                        try { bitmap = reader.ReadAsBitmap(filedata); }
+                        catch (InvalidDataException)
+                        {
+                            // Data cannot be read!
+                            bitmap = null;
+                        }
+                    }
 
-				// Not loaded?
-				if(bitmap == null) 
-				{
-					General.ErrorLogger.Add(ErrorType.Error, "Image file \"" + filepathname + "\" data format could not be read, while loading image \"" + this.Name + "\". Is this a valid picture file at all?");
-					loadfailed = true;
-				} 
-				else 
-				{
-					// Get width and height
-					width = bitmap.Size.Width;
-					height = bitmap.Size.Height;
-				}
+                    // Not loaded?
+                    if (bitmap == null)
+                    {
+                        General.ErrorLogger.Add(ErrorType.Error, "Image file \"" + filepathname + "\" data format could not be read, while loading image \"" + this.Name + "\". Is this a valid picture file at all?");
+                        loadfailed = true;
+                    }
+                    else
+                    {
+                        // Get width and height
+                        width = bitmap.Size.Width;
+                        height = bitmap.Size.Height;
+                    }
 
-				// Pass on to base
-				filedata.Dispose();
-				base.LocalLoadImage();
+                    filedata.Dispose();
+                }
+
+                // Pass on to base
+                base.LocalLoadImage();
 			}
 		}
 		
