@@ -21,8 +21,8 @@ CALL "%STUDIODIR%\Common7\Tools\vsvars32.bat"
 
 MKDIR "Release"
 
-git checkout "Source\Core\Properties\AssemblyInfo.cs" > NUL
-git checkout "Source\Plugins\BuilderModes\Properties\AssemblyInfo.cs" > NUL
+git checkout "Source/Core/Properties/AssemblyInfo.cs" > NUL
+git checkout "Source/Plugins/BuilderModes/Properties/AssemblyInfo.cs" > NUL
 
 ECHO.
 ECHO Writing GIT log file...
@@ -213,3 +213,4 @@ PAUSE > NUL
 GOTO LEAVE
 
 :LEAVE
+exit
