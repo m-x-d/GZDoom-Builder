@@ -13,8 +13,7 @@
 - [Git builds at DRDTeam.org](http://devbuilds.drdteam.org/doombuilder2-gzdb/) 
 
 **This fork:**
-This fork was created for maintenance of seemingly discontinued official branch.
-- [Official thread at ZDoom.org](https://forum.zdoom.org/viewtopic.php?f=44&t=54957)
+- This fork was created for maintenance of seemingly discontinued official branch. [Alternate official thread](https://forum.zdoom.org/viewtopic.php?f=44&t=54957) can be found here.
 
 More detailed info can be found in the **editor documentation** (Refmanual.chm)
 
