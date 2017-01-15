@@ -62,7 +62,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		private string errordesc;
 		private string errorsource; // Rooted path to the troubling file
 		private string shorterrorsource; //mxd. Resource name + filename
-		private long prevstreamposition; //mxd. Text stream position storted before performing ReadToken.
+		protected long prevstreamposition; //mxd. Text stream position storted before performing ReadToken.
 
 		//mxd. Text lumps
 		protected string textresourcepath;
@@ -757,7 +757,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		protected int GetCurrentLineNumber()
 		{
 			long pos = datastream.Position;
-			long finishpos = Math.Min(prevstreamposition, pos);
+			long finishpos = (prevstreamposition >= 0 ? Math.Min(prevstreamposition, pos) : pos);
 			long readpos = 0;
 			int linenumber = -1;
 

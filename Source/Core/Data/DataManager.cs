@@ -136,6 +136,7 @@ namespace CodeImp.DoomBuilder.Data
 		
 		// Things combined with things created from Decorate
 		private DecorateParser decorate;
+        private ZScriptParser zscript;
 		private List<ThingCategory> thingcategories;
 		private Dictionary<int, ThingTypeInfo> thingtypes;
 		
@@ -191,6 +192,7 @@ namespace CodeImp.DoomBuilder.Data
 		public List<ThingCategory> ThingCategories { get { return thingcategories; } }
 		public ICollection<ThingTypeInfo> ThingTypes { get { return thingtypes.Values; } }
 		public DecorateParser Decorate { get { return decorate; } }
+        public ZScriptParser ZScript { get { return zscript; } }
 		internal ICollection<MatchingTextureSet> TextureSets { get { return texturesets; } }
 		internal ICollection<ResourceTextureSet> ResourceTextureSets { get { return resourcetextures; } }
 		internal AllTextureSet AllTextureSet { get { return alltextures; } }
@@ -444,7 +446,7 @@ namespace CodeImp.DoomBuilder.Data
 			//mxd. Load Script Editor-only stuff...
 			LoadExtraTextLumps();
 
-			int thingcount = LoadDecorateThings(spawnnums, doomednums);
+			int thingcount = LoadZScriptThings(spawnnums, doomednums) + LoadDecorateThings(spawnnums, doomednums);
 			int spritecount = LoadThingSprites();
 			LoadInternalSprites();
 			LoadInternalTextures(); //mxd
@@ -1819,6 +1821,57 @@ namespace CodeImp.DoomBuilder.Data
 
 		#region ================== Things
 		
+        private int LoadZScriptThings(Dictionary<int, string> spawnnumsoverride, Dictionary<int, string> doomednumsoverride)
+        {
+            int counter = 0;
+
+            // Create new parser
+            zscript = new ZScriptParser { OnInclude = LoadZScriptFromLocation };
+
+            // Only load these when the game configuration supports the use of decorate
+            if (!string.IsNullOrEmpty(General.Map.Config.DecorateGames))
+            {
+                // Go for all opened containers
+                foreach (DataReader dr in containers)
+                {
+                    // Load Decorate info cumulatively (the last Decorate is added to the previous)
+                    // I'm not sure if this is the right thing to do though.
+                    currentreader = dr;
+                    IEnumerable<TextResourceData> streams = dr.GetDecorateData("ZSCRIPT");
+                    foreach (TextResourceData data in streams)
+                    {
+                        // Parse the data
+                        data.Stream.Seek(0, SeekOrigin.Begin);
+                        zscript.Parse(data, true);
+
+                        //mxd. DECORATE lumps are interdepandable. Can't carry on...
+                        if (zscript.HasError)
+                        {
+                            zscript.LogError();
+                            break;
+                        }
+                    }
+                }
+
+                //mxd. Add to text resources collection
+                scriptresources[zscript.ScriptType] = new HashSet<ScriptResource>(zscript.ScriptResources.Values);
+                currentreader = null;
+
+                if (!zscript.HasError)
+                {
+                    
+                }
+                else
+                {
+                    // Return after adding parsed resources
+                    return counter;
+                }
+            }
+
+            // Output info
+            return counter;
+        }
+
 		// This loads the things from Decorate
 		private int LoadDecorateThings(Dictionary<int, string> spawnnumsoverride, Dictionary<int, string> doomednumsoverride)
 		{
@@ -2145,6 +2198,23 @@ namespace CodeImp.DoomBuilder.Data
 				}
 			}
 		}
+
+        private void LoadZScriptFromLocation(ZScriptParser parser, string location)
+        {
+            IEnumerable<TextResourceData> streams = currentreader.GetZScriptData(location);
+            foreach (TextResourceData data in streams)
+            {
+                // Parse this data
+                parser.Parse(data, false);
+
+                //mxd. DECORATE lumps are interdepandable. Can't carry on...
+                if (parser.HasError)
+                {
+                    parser.LogError();
+                    return;
+                }
+            }
+        }
 		
 		// This gets thing information by index
 		public ThingTypeInfo GetThingInfo(int thingtype)

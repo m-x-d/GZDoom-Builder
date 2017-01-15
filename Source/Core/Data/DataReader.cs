@@ -222,8 +222,11 @@ namespace CodeImp.DoomBuilder.Data
 		// When implemented, this returns DECORATE lumps
 		public abstract IEnumerable<TextResourceData> GetDecorateData(string pname);
 
-		//mxd. When implemented, this returns MAPINFO lumps
-		public abstract IEnumerable<TextResourceData> GetMapinfoData();
+        // [ZZ] When implemented, this returns ZSCRIPT lumps
+        public abstract IEnumerable<TextResourceData> GetZScriptData(string pname);
+
+        //mxd. When implemented, this returns MAPINFO lumps
+        public abstract IEnumerable<TextResourceData> GetMapinfoData();
 
 		//mxd. When implemented, this returns GLDEFS lumps
 		public abstract IEnumerable<TextResourceData> GetGldefsData(string basegame);
