@@ -3100,7 +3100,7 @@ namespace CodeImp.DoomBuilder.Windows
 		//mxd. Github issues clicked
 		private void itemhelpissues_Click(object sender, EventArgs e)
 		{
-			General.OpenWebsite("https://github.com/m-x-d/GZDoom-Builder/issues");
+			General.OpenWebsite("https://github.com/jewalky/GZDoom-Builder-Bugfix/issues");
 		}
 		
 		// About clicked
