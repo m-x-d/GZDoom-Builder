@@ -754,7 +754,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		}
 
 		//mxd 
-		protected int GetCurrentLineNumber()
+		protected virtual int GetCurrentLineNumber()
 		{
 			long pos = datastream.Position;
 			long finishpos = (prevstreamposition >= 0 ? Math.Min(prevstreamposition, pos) : pos);

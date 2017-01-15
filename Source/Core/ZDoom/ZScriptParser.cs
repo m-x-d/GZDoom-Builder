@@ -294,7 +294,7 @@ namespace CodeImp.DoomBuilder.ZDoom
             return ol;
         }
 
-        private bool ParseClassOrStruct(bool isstruct)
+        private bool ParseClassOrStruct(bool isstruct, bool extend)
         {
             // 'class' keyword is already parsed
             tokenizer.SkipWhitespace();
@@ -395,7 +395,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 
             string log_inherits = ((tok_parentname != null) ? "inherits " + tok_parentname.Value : "");
             if (tok_replacename != null) log_inherits += ((log_inherits.Length > 0) ? ", " : "") + "replaces " + tok_replacename.Value;
-            LogWarning(string.Format("parsed {0} {1} {2}", isstruct ? "struct" : "class", tok_classname.Value, log_inherits));
+            if (extend) log_inherits += ((log_inherits.Length > 0) ? ", " : "") + "extends";
+            if (log_inherits.Length > 0) log_inherits = " (" + log_inherits + ")";
+            LogWarning(string.Format("Parsed {0} {1}{2}", isstruct ? "struct" : "class", tok_classname.Value, log_inherits));
 
             return true;
         }
@@ -483,13 +485,26 @@ namespace CodeImp.DoomBuilder.ZDoom
                             // the only type that we really care about is class, as it's the one that has all actors.
                             switch (token.Value.ToLowerInvariant())
                             {
+                                case "extend":
+                                    tokenizer.SkipWhitespace();
+                                    token = tokenizer.ExpectToken(ZScriptTokenType.Identifier);
+                                    if (token == null || !token.IsValid || ((token.Value.ToLowerInvariant() != "class") && (token.Value.ToLowerInvariant() != "struct")))
+                                    {
+                                        ReportError("Expected class or struct, got " + ((Object)token ?? "<null>").ToString());
+                                        return false;
+                                    }
+                                    if (!ParseClassOrStruct((token.Value.ToLowerInvariant() == "struct"), true))
+                                        return false;
+                                    break;
                                 case "class":
                                     // todo parse class
-                                    if (!ParseClassOrStruct(false)) return false;
+                                    if (!ParseClassOrStruct(false, false))
+                                        return false;
                                     break;
                                 case "struct":
                                     // todo parse struct
-                                    if (!ParseClassOrStruct(true)) return false;
+                                    if (!ParseClassOrStruct(true, false))
+                                        return false;
                                     break;
                                 case "const":
                                     // const blablabla = <expression>;
@@ -532,6 +547,9 @@ namespace CodeImp.DoomBuilder.ZDoom
                                     if (ParseBlock(false) == null) return false; // anything between { and }
                                     LogWarning(string.Format("Parsed enum {0}", token.Value));
                                     break;
+                                default:
+                                    ReportError("Expected preprocessor statement, const, enum or class declaraction, got " + token);
+                                    return false;
                             }
                             break;
                         }
@@ -544,6 +562,12 @@ namespace CodeImp.DoomBuilder.ZDoom
         #endregion
 
         #region ================== Methods
+
+        protected override int GetCurrentLineNumber()
+        {
+            prevstreamposition = (tokenizer != null) ? tokenizer.LastPosition : -1;
+            return base.GetCurrentLineNumber();
+        }
 
         /// <summary>
         /// This returns a supported actor by name. Returns null when no supported actor with the specified name can be found. This operation is of O(1) complexity.

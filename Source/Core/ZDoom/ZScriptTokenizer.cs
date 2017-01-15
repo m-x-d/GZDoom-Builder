@@ -118,6 +118,8 @@ namespace CodeImp.DoomBuilder.ZDoom
         private Dictionary<string, ZScriptTokenType> namedtokentypes; // these are tokens that have precise equivalent in the enum (like operators)
         private List<string> namedtokentypesorder; // this is the list of said tokens ordered by length.
 
+        public long LastPosition { get; private set; }
+
         public ZScriptTokenizer(BinaryReader br)
         {
             reader = br;
@@ -188,6 +190,7 @@ namespace CodeImp.DoomBuilder.ZDoom
                 Preprocessor*/
                 long cpos = reader.BaseStream.Position; // I really hope we can rewind this <_<
                 char c = reader.ReadChar();
+                LastPosition = cpos;
 
                 // 
                 string whitespace = " \r\t\u00A0";
