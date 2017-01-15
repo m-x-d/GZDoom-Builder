@@ -12,5 +12,9 @@
 - [Unofficial thread at iddqd.ru](http://i.iddqd.ru/viewtopic.php?t=522) (in russian)
 - [Git builds at DRDTeam.org](http://devbuilds.drdteam.org/doombuilder2-gzdb/) 
 
+**This fork:**
+This fork was created for maintenance of seemingly discontinued official branch.
+- [Official thread at ZDoom.org](https://forum.zdoom.org/viewtopic.php?f=44&t=54957)
+
 More detailed info can be found in the **editor documentation** (Refmanual.chm)
 
