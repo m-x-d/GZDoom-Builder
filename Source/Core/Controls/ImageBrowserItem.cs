@@ -138,12 +138,12 @@ namespace CodeImp.DoomBuilder.Controls
                 }
                 else
                 {
-                    Color topselected = Color.FromArgb(255, 151, 67, 37);
-                    Color bottomselected = Color.FromArgb(255, 83, 20, 1);
+                    Color topselected = Color.FromArgb(255, 37, 67, 151);
+                    Color bottomselected = Color.FromArgb(255, 1, 20, 83);
                     selectedbgbrush = new LinearGradientBrush(new Point(x - 2, y - 3), new Point(x - 2, y + h + 4 + SystemFonts.MessageBoxFont.Height), topselected, bottomselected);
                 }
 
-				frame = (used ? SystemPens.HotTrack : SystemPens.ActiveBorder);
+                frame = (used ? SystemPens.HotTrack : SystemPens.ActiveBorder);
 				selection = SystemPens.HotTrack;
 				selectionbrush = SystemBrushes.HotTrack;
 				selectiontextbrush = SystemBrushes.Window;

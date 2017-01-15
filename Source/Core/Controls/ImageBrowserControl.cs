@@ -49,6 +49,7 @@ namespace CodeImp.DoomBuilder.Controls
 		
 		// Properties
 		private bool preventselection;
+        private int imagesize;
 		
 		// States
 		private int keepselected;
@@ -84,6 +85,12 @@ namespace CodeImp.DoomBuilder.Controls
                 list.ContentType = value;
             }
 		}
+
+        public int ImageSize
+        {
+            get { return imagesize; }
+            set { imagesize = value; }
+        }
 
 		#endregion
 
@@ -123,9 +130,9 @@ namespace CodeImp.DoomBuilder.Controls
             list.UsedTexturesFirst = usedtexturesfirst.Checked = General.Settings.ReadSetting(settingpath + ".showusedtexturesfirst", false);
             list.ClassicView = classicview.Checked = General.Settings.ReadSetting(settingpath + ".classicview", false);
 			
-			int imagesize = General.Settings.ReadSetting(settingpath + ".imagesize", 128);
-			sizecombo.Text = (imagesize == 0 ? sizecombo.Items[0].ToString() : imagesize.ToString());
-			list.ImageSize = imagesize;
+			int _imagesize = General.Settings.ReadSetting(settingpath + ".imagesize", 128);
+			sizecombo.Text = (_imagesize == 0 ? sizecombo.Items[0].ToString() : _imagesize.ToString());
+			list.ImageSize = _imagesize;
 
 			ApplySettings();
 
@@ -166,6 +173,9 @@ namespace CodeImp.DoomBuilder.Controls
 				longtexturenames.Enabled = false; //mxd
 				uselongtexturenames = false; //mxd
 			}
+
+            // If we have override for preview images, set this here.
+            if (imagesize > 0) list.ImageSize = imagesize;
 
 			//mxd
 			objectname.CharacterCasing = (longtexturenames.Checked ? CharacterCasing.Normal : CharacterCasing.Upper);

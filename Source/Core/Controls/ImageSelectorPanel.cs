@@ -608,7 +608,7 @@ namespace CodeImp.DoomBuilder.Controls
             if (items.Count > 0)
 			{
 				int y = scrollbar.Value;
-				int height = ClientRectangle.Height - titleheight;
+				int height = ClientRectangle.Height;
 
                 ImageBrowserItemType currentType = ImageBrowserItemType.IMAGE; // initialized to random value
                 bool currentUsedInMap = false;
