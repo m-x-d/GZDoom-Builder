@@ -259,7 +259,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					eventlines.AddRange(dynamiclightshapes);
 					if(highlighted != null && !highlighted.IsDisposed)
-						eventlines.AddRange(GetDynamicLightShapes(new List<Thing> { highlighted } ));
+						eventlines.AddRange(LinksCollector.GetDynamicLightShapes(new List<Thing> { highlighted }, true));
 				}
 
 				//mxd. Ambient sound radii
@@ -267,7 +267,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				{
 					eventlines.AddRange(ambientsoundshapes);
 					if(highlighted != null && !highlighted.IsDisposed)
-						eventlines.AddRange(GetAmbientSoundShapes(new List<Thing> { highlighted }));
+						eventlines.AddRange(LinksCollector.GetAmbientSoundShapes(new List<Thing> { highlighted }, true));
 				}
 
 				//mxd
@@ -1073,190 +1073,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd
 		private void UpdateHelperObjects()
 		{
-			// Update event lines
-			persistenteventlines = LinksCollector.GetThingLinks(General.Map.ThingsFilter.VisibleThings);
+			// Update event lines and argument shapes
+			persistenteventlines = LinksCollector.GetHelperShapes(General.Map.ThingsFilter.VisibleThings);
 
 			// Update light radii
-			dynamiclightshapes = GetDynamicLightShapes(General.Map.Map.Things);
+			dynamiclightshapes = LinksCollector.GetDynamicLightShapes(General.Map.ThingsFilter.VisibleThings, false);
 
 			// Update ambient sound radii
-			ambientsoundshapes = GetAmbientSoundShapes(General.Map.Map.Things);
-
-			// Update argument range shapes
-			persistenteventlines.AddRange(GetArgumentRangeShapes(General.Map.Map.Things));
-		}
-
-		//mxd
-		private List<Line3D> GetDynamicLightShapes(IEnumerable<Thing> things)
-		{
-			List<Line3D> circles = new List<Line3D>();
-			if(General.Map.DOOM) return circles;
-
-			const int linealpha = 128;
-			const int numsides = 24;
-			foreach(Thing t in things)
-			{
-				int lightid = Array.IndexOf(GZBuilder.GZGeneral.GZ_LIGHTS, t.Type);
-				if(lightid == -1) continue;
-
-				// TODO: this basically duplicates VisualThing.UpdateLight()...
-				// Determine light radiii
-				int primaryradius;
-				int secondaryradius = 0;
-
-				if(lightid < GZBuilder.GZGeneral.GZ_LIGHT_TYPES[2]) //if it's gzdoom light
-				{
-					int n;
-					if(lightid < GZBuilder.GZGeneral.GZ_LIGHT_TYPES[0]) n = 0;
-					else if(lightid < GZBuilder.GZGeneral.GZ_LIGHT_TYPES[1]) n = 10;
-					else n = 20;
-					DynamicLightType lightType = (DynamicLightType)(t.Type - 9800 - n);
-
-					if(lightType == DynamicLightType.SECTOR)
-					{
-						if(t.Sector == null) t.DetermineSector();
-						int scaler = (t.Sector != null ? t.Sector.Brightness / 4 : 2);
-						primaryradius = t.Args[3] * scaler;
-					}
-					else
-					{
-						primaryradius = t.Args[3] * 2; //works... that.. way in GZDoom
-						if(lightType > 0) secondaryradius = t.Args[4] * 2;
-					}
-				}
-				else //it's one of vavoom lights
-				{
-					primaryradius = t.Args[0] * 8;
-				}
-
-				// Check radii...
-				if(primaryradius < 1 && secondaryradius < 1) continue;
-
-				// Determine light color
-				PixelColor color;
-				if(t == highlighted)
-				{
-					color = General.Colors.Highlight.WithAlpha(linealpha);
-				}
-				else
-				{
-					switch(t.Type)
-					{
-						case 1502: // Vavoom light
-							color = new PixelColor(linealpha, 255, 255, 255);
-							break;
-
-						case 1503: // Vavoom colored light
-							color = new PixelColor(linealpha, (byte)t.Args[1], (byte)t.Args[2], (byte)t.Args[3]);
-							break;
-
-						default:
-							color = new PixelColor(linealpha, (byte)t.Args[0], (byte)t.Args[1], (byte)t.Args[2]);
-							break;
-					}
-				}
-
-				// Add lines if visible
-				if(primaryradius > 0) circles.AddRange(LinksCollector.MakeCircleLines(t.Position, color, primaryradius, numsides));
-				if(secondaryradius > 0) circles.AddRange(LinksCollector.MakeCircleLines(t.Position, color, secondaryradius, numsides));
-			}
-
-			// Done
-			return circles;
-		}
-
-		//mxd
-		private List<Line3D> GetAmbientSoundShapes(IEnumerable<Thing> things)
-		{
-			List<Line3D> circles = new List<Line3D>();
-			const int linealpha = 128;
-			const int numsides = 24;
-
-			foreach(Thing t in things)
-			{
-				ThingTypeInfo info = General.Map.Data.GetThingInfoEx(t.Type);
-				if(info == null) continue;
-				
-				float minradius, maxradius;
-				if(info.AmbientSound != null)
-				{
-					minradius = info.AmbientSound.MinimumRadius;
-					maxradius = info.AmbientSound.MaximumRadius;
-				}
-				else if(!General.Map.DOOM && (info.ClassName == "AmbientSound" || info.ClassName == "AmbientSoundNoGravity"))
-				{
-					//arg0: ambient slot
-					//arg1: (optional) sound volume, in percent. 1 is nearly silent, 100 and above are full volume. If left to zero, full volume is also used.
-					//arg2: (optional) minimum distance, in map units, at which volume attenuation begins. Note that arg3 must also be set. If both are left to zero, normal rolloff is used instead.
-					//arg3: (optional) maximum distance, in map units, at which the sound can be heard. If left to zero or lower than arg2, normal rolloff is used instead.
-					//arg4: (optional) scalar by which to multiply the values of arg2 and arg3. If left to zero, no multiplication takes place.
-
-					if(t.Args[0] == 0 || !General.Map.Data.AmbientSounds.ContainsKey(t.Args[0]))
-						continue;
-
-					// Use custom radii?
-					if(t.Args[2] > 0 && t.Args[3] > 0 && t.Args[3] > t.Args[2])
-					{
-						minradius = t.Args[2] * (t.Args[4] != 0 ? t.Args[4] : 1.0f);
-						maxradius = t.Args[3] * (t.Args[4] != 0 ? t.Args[4] : 1.0f);
-					}
-					else
-					{
-						minradius = General.Map.Data.AmbientSounds[t.Args[0]].MinimumRadius;
-						maxradius = General.Map.Data.AmbientSounds[t.Args[0]].MaximumRadius;
-					}
-				}
-				else
-				{
-					continue;
-				}
-
-				// Determine color
-				PixelColor color = (t == highlighted ? General.Colors.Highlight.WithAlpha(linealpha) : t.Color.WithAlpha(linealpha));
-
-				// Add lines if visible
-				if(minradius > 0) circles.AddRange(LinksCollector.MakeCircleLines(t.Position, color, minradius, numsides));
-				if(maxradius > 0) circles.AddRange(LinksCollector.MakeCircleLines(t.Position, color, maxradius, numsides));
-			}
-
-			return circles;
-		}
-
-		private List<Line3D> GetArgumentRangeShapes(IEnumerable<Thing> things)
-		{
-			List<Line3D> lines = new List<Line3D>();
-			const int numsides = 24;
-
-			foreach(Thing t in things)
-			{
-				ThingTypeInfo info = General.Map.Data.GetThingInfoEx(t.Type);
-				if(info == null) continue;
-
-				// Process argument based range finders
-				for(int i = 0; i < t.Args.Length; i++)
-				{
-					if(t.Args[i] == 0) continue; // Avoid visual noise
-
-					var a = info.Args[i];
-					switch(a.RenderStyle)
-					{
-						case ArgumentInfo.ArgumentRenderStyle.CIRCLE:
-							if(a.MinRange > 0) lines.AddRange(LinksCollector.MakeCircleLines(t.Position, a.MinRangeColor, a.MinRange, numsides));
-							if(a.MaxRange > 0) lines.AddRange(LinksCollector.MakeCircleLines(t.Position, a.MaxRangeColor, a.MaxRange, numsides));
-							break;
-
-						case ArgumentInfo.ArgumentRenderStyle.RECTANGLE:
-							if(a.MinRange > 0) lines.AddRange(LinksCollector.MakeRectangleLines(t.Position, a.MinRangeColor, a.MinRange));
-							if(a.MaxRange > 0) lines.AddRange(LinksCollector.MakeRectangleLines(t.Position, a.MaxRangeColor, a.MaxRange));
-							break;
-
-						case ArgumentInfo.ArgumentRenderStyle.NONE:break;
-						default: throw new NotImplementedException("Unknown ArgumentRenderStyle");
-					}
-				}
-			}
-
-			return lines;
+			ambientsoundshapes = LinksCollector.GetAmbientSoundShapes(General.Map.ThingsFilter.VisibleThings, false);
 		}
 
 		#endregion

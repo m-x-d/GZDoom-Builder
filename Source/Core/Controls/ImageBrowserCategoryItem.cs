@@ -1,6 +1,7 @@
 ﻿#region ================== Namespaces
 
 using System;
+using System.Drawing;
 using CodeImp.DoomBuilder.Data;
 
 #endregion
@@ -12,6 +13,7 @@ namespace CodeImp.DoomBuilder.Controls
 		#region ================== Variables
 
 		private string groupname;
+		private int groupnamewidth;
 
 		#endregion
 
@@ -19,6 +21,7 @@ namespace CodeImp.DoomBuilder.Controls
 
 		public override bool IsPreviewLoaded { get { return true; } }
 		public override string TextureName { get { return groupname; } }
+		public override int TextureNameWidth { get { return groupnamewidth; } }
 
 		#endregion
 
@@ -43,6 +46,9 @@ namespace CodeImp.DoomBuilder.Controls
 				default:
 					throw new NotImplementedException("Unsupported ItemType");
 			}
+
+			// Calculate name width
+			this.groupnamewidth = (int)Math.Ceiling(General.Interface.MeasureString(this.groupname, SystemFonts.MessageBoxFont, 10000, StringFormat.GenericTypographic).Width);
 		}
 
 		#endregion

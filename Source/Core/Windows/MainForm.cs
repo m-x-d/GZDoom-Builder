@@ -4393,6 +4393,11 @@ namespace CodeImp.DoomBuilder.Windows
 			return graphics.MeasureString(text, font);
 		}
 
+		public SizeF MeasureString(string text, Font font, int width, StringFormat format)
+		{
+			return graphics.MeasureString(text, font, width, format);
+		}
+
 		#endregion
 	}
 }

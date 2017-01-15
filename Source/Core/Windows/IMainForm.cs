@@ -78,6 +78,7 @@ namespace CodeImp.DoomBuilder.Windows
 		void SetCursor(Cursor cursor);
 		void MessageBeep(MessageBeepType type);
 		SizeF MeasureString(string text, Font font); //mxd
+		SizeF MeasureString(string text, Font font, int width, StringFormat format); //mxd
 
 		/// <summary>
 		/// This moves the focus to the editing display.

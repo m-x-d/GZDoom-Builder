@@ -1,4 +1,6 @@
-﻿using System;
+﻿#region ================== Namespaces
+
+using System;
 using System.Collections.Generic;
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Map;
@@ -6,10 +8,14 @@ using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.VisualModes;
 
+#endregion
+
 namespace CodeImp.DoomBuilder.GZBuilder.Data 
 {
-	public static class LinksCollector 
+	public static class LinksCollector
 	{
+		#region ================== SpecialThings
+
 		private class SpecialThings 
 		{
 			public readonly Dictionary<int, List<Thing>> PatrolPoints; // PatrolPoint tag, list of PatrolPoints
@@ -33,6 +39,10 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 				PolyobjectStartSpots = new Dictionary<int, List<Thing>>();
 			}
 		}
+
+		#endregion
+
+		#region ================== PathNode
 
 		private class PathNode
 		{
@@ -74,7 +84,17 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 			}
 		}
 
-		public static IEnumerable<Line3D> MakeCircleLines(Vector3D pos, PixelColor color, float radius, int numsides)
+		#endregion
+
+		#region ================== Constants
+
+		private const int CIRCLE_SIDES = 24;
+
+		#endregion
+
+		#region ================== Shape creation methods
+
+		private static IEnumerable<Line3D> MakeCircleLines(Vector3D pos, PixelColor color, float radius, int numsides)
 		{
 			List<Line3D> result = new List<Line3D>(numsides);
 			Vector3D start = new Vector3D(pos.x, pos.y + radius, pos.z);
@@ -90,7 +110,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 			return result;
 		}
 
-		public static IEnumerable<Line3D> MakeRectangleLines(Vector3D pos, PixelColor color, float size)
+		private static IEnumerable<Line3D> MakeRectangleLines(Vector3D pos, PixelColor color, float size)
 		{
 			float halfsize = size / 2;
 			Vector3D tl = new Vector3D(pos.x - halfsize, pos.y - halfsize, pos.z);
@@ -105,15 +125,21 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 				new Line3D(bl, br, color, false),
 				new Line3D(bl, tl, color, false),
 			};
-		} 
-
-		public static List<Line3D> GetThingLinks(IEnumerable<Thing> things) { return GetThingLinks(things, null); }
-		public static List<Line3D> GetThingLinks(IEnumerable<Thing> things, VisualBlockMap blockmap) 
-		{
-			return GetThingLinks(GetSpecialThings(things, blockmap), blockmap);
 		}
 
-		private static SpecialThings GetSpecialThings(IEnumerable<Thing> things, VisualBlockMap blockmap) 
+		#endregion
+
+		#region ================== GetHelperShapes
+
+		public static List<Line3D> GetHelperShapes(ICollection<Thing> things) { return GetHelperShapes(things, null); }
+		public static List<Line3D> GetHelperShapes(ICollection<Thing> things, VisualBlockMap blockmap)
+		{
+			var lines = GetHelperShapes(GetSpecialThings(things, blockmap), blockmap);
+			lines.AddRange(GetThingArgumentShapes(things, blockmap, CIRCLE_SIDES));
+			return lines;
+		}
+
+		private static SpecialThings GetSpecialThings(ICollection<Thing> things, VisualBlockMap blockmap) 
 		{
 			SpecialThings result = new SpecialThings();
 
@@ -189,7 +215,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 			return result;
 		}
 
-		private static List<Line3D> GetThingLinks(SpecialThings result, VisualBlockMap blockmap) 
+		private static List<Line3D> GetHelperShapes(SpecialThings result, VisualBlockMap blockmap) 
 		{
 			var lines = new List<Line3D>();
 			var actormovertargets = new Dictionary<int, List<Thing>>();
@@ -403,9 +429,19 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 				}
 			}
 
-			// Process arg helpers
-			const int numsides = 24;
-			foreach(Thing t in General.Map.ThingsFilter.VisibleThings)
+			return lines;
+		}
+
+		#endregion
+
+		#region ================== GetThingArgumentShapes
+
+		// Create argument value/min/max shapes
+		private static List<Line3D> GetThingArgumentShapes(ICollection<Thing> things, VisualBlockMap blockmap, int numsides)
+		{
+			var lines = new List<Line3D>();
+			
+			foreach(Thing t in things)
 			{
 				if(t.Action != 0) continue;
 				ThingTypeInfo tti = General.Map.Data.GetThingInfoEx(t.Type);
@@ -416,26 +452,177 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 
 				for(int i = 0; i < t.Args.Length; i++)
 				{
-					if(t.Args[i] != 0 && tti.Args[i].RenderStyle != ArgumentInfo.ArgumentRenderStyle.NONE)
+					if(t.Args[i] == 0) continue; // Avoid visual noise
+					var a = tti.Args[i]; //TODO: can this be null?
+					
+					switch(a.RenderStyle)
 					{
-						switch(tti.Args[i].RenderStyle)
-						{
-							case ArgumentInfo.ArgumentRenderStyle.CIRCLE:
-								lines.AddRange(MakeCircleLines(pos, tti.Args[i].RenderColor, t.Args[i], numsides));
-								break;
+						case ArgumentInfo.ArgumentRenderStyle.CIRCLE:
+							lines.AddRange(MakeCircleLines(pos, a.RenderColor, t.Args[i], numsides));
+							if(a.MinRange > 0) lines.AddRange(MakeCircleLines(pos, a.MinRangeColor, a.MinRange, numsides));
+							if(a.MaxRange > 0) lines.AddRange(MakeCircleLines(pos, a.MaxRangeColor, a.MaxRange, numsides));
+							break;
 
-							case ArgumentInfo.ArgumentRenderStyle.RECTANGLE:
-								lines.AddRange(MakeRectangleLines(pos, tti.Args[i].RenderColor, t.Args[i]));
-								break;
+						case ArgumentInfo.ArgumentRenderStyle.RECTANGLE:
+							lines.AddRange(MakeRectangleLines(pos, a.RenderColor, t.Args[i]));
+							if(a.MinRange > 0) lines.AddRange(MakeRectangleLines(pos, a.MinRangeColor, a.MinRange));
+							if(a.MaxRange > 0) lines.AddRange(MakeRectangleLines(pos, a.MaxRangeColor, a.MaxRange));
+							break;
 
-							default: throw new NotImplementedException("Unknown ArgumentRenderStyle");
-						}
+						case ArgumentInfo.ArgumentRenderStyle.NONE:
+							break;
+
+						default: throw new NotImplementedException("Unknown ArgumentRenderStyle");
 					}
 				}
 			}
 
 			return lines;
 		}
+
+		#endregion
+
+		#region ================== GetDynamicLightShapes
+
+		public static List<Line3D> GetDynamicLightShapes(IEnumerable<Thing> things, bool highlight)
+		{
+			List<Line3D> circles = new List<Line3D>();
+			if(General.Map.DOOM) return circles;
+
+			const int linealpha = 128;
+			foreach(Thing t in things)
+			{
+				int lightid = Array.IndexOf(GZGeneral.GZ_LIGHTS, t.Type);
+				if(lightid == -1) continue;
+
+				// TODO: this basically duplicates VisualThing.UpdateLight()...
+				// Determine light radiii
+				int primaryradius;
+				int secondaryradius = 0;
+
+				if(lightid < GZGeneral.GZ_LIGHT_TYPES[2]) //if it's gzdoom light
+				{
+					int n;
+					if(lightid < GZGeneral.GZ_LIGHT_TYPES[0]) n = 0;
+					else if(lightid < GZGeneral.GZ_LIGHT_TYPES[1]) n = 10;
+					else n = 20;
+					DynamicLightType lightType = (DynamicLightType)(t.Type - 9800 - n);
+
+					if(lightType == DynamicLightType.SECTOR)
+					{
+						if(t.Sector == null) t.DetermineSector();
+						int scaler = (t.Sector != null ? t.Sector.Brightness / 4 : 2);
+						primaryradius = t.Args[3] * scaler;
+					}
+					else
+					{
+						primaryradius = t.Args[3] * 2; //works... that.. way in GZDoom
+						if(lightType > 0) secondaryradius = t.Args[4] * 2;
+					}
+				}
+				else //it's one of vavoom lights
+				{
+					primaryradius = t.Args[0] * 8;
+				}
+
+				// Check radii...
+				if(primaryradius < 1 && secondaryradius < 1) continue;
+
+				// Determine light color
+				PixelColor color;
+				if(highlight)
+				{
+					color = General.Colors.Highlight.WithAlpha(linealpha);
+				}
+				else
+				{
+					switch(t.Type)
+					{
+						case 1502: // Vavoom light
+							color = new PixelColor(linealpha, 255, 255, 255);
+							break;
+
+						case 1503: // Vavoom colored light
+							color = new PixelColor(linealpha, (byte)t.Args[1], (byte)t.Args[2], (byte)t.Args[3]);
+							break;
+
+						default:
+							color = new PixelColor(linealpha, (byte)t.Args[0], (byte)t.Args[1], (byte)t.Args[2]);
+							break;
+					}
+				}
+
+				// Add lines if visible
+				if(primaryradius > 0) circles.AddRange(MakeCircleLines(t.Position, color, primaryradius, CIRCLE_SIDES));
+				if(secondaryradius > 0) circles.AddRange(MakeCircleLines(t.Position, color, secondaryradius, CIRCLE_SIDES));
+			}
+
+			// Done
+			return circles;
+		}
+
+		#endregion
+
+		#region ================== GetAmbientSoundShapes
+
+		public static List<Line3D> GetAmbientSoundShapes(IEnumerable<Thing> things, bool highlight)
+		{
+			List<Line3D> circles = new List<Line3D>();
+			const int linealpha = 128;
+
+			foreach(Thing t in things)
+			{
+				ThingTypeInfo info = General.Map.Data.GetThingInfoEx(t.Type);
+				if(info == null) continue;
+
+				float minradius, maxradius;
+				if(info.AmbientSound != null)
+				{
+					minradius = info.AmbientSound.MinimumRadius;
+					maxradius = info.AmbientSound.MaximumRadius;
+				}
+				else if(!General.Map.DOOM && (info.ClassName == "AmbientSound" || info.ClassName == "AmbientSoundNoGravity"))
+				{
+					//arg0: ambient slot
+					//arg1: (optional) sound volume, in percent. 1 is nearly silent, 100 and above are full volume. If left to zero, full volume is also used.
+					//arg2: (optional) minimum distance, in map units, at which volume attenuation begins. Note that arg3 must also be set. If both are left to zero, normal rolloff is used instead.
+					//arg3: (optional) maximum distance, in map units, at which the sound can be heard. If left to zero or lower than arg2, normal rolloff is used instead.
+					//arg4: (optional) scalar by which to multiply the values of arg2 and arg3. If left to zero, no multiplication takes place.
+
+					if(t.Args[0] == 0 || !General.Map.Data.AmbientSounds.ContainsKey(t.Args[0]))
+						continue;
+
+					// Use custom radii?
+					if(t.Args[2] > 0 && t.Args[3] > 0 && t.Args[3] > t.Args[2])
+					{
+						minradius = t.Args[2] * (t.Args[4] != 0 ? t.Args[4] : 1.0f);
+						maxradius = t.Args[3] * (t.Args[4] != 0 ? t.Args[4] : 1.0f);
+					}
+					else
+					{
+						minradius = General.Map.Data.AmbientSounds[t.Args[0]].MinimumRadius;
+						maxradius = General.Map.Data.AmbientSounds[t.Args[0]].MaximumRadius;
+					}
+				}
+				else
+				{
+					continue;
+				}
+
+				// Determine color
+				PixelColor color = (highlight ? General.Colors.Highlight.WithAlpha(linealpha) : t.Color.WithAlpha(linealpha));
+
+				// Add lines if visible
+				if(minradius > 0) circles.AddRange(MakeCircleLines(t.Position, color, minradius, CIRCLE_SIDES));
+				if(maxradius > 0) circles.AddRange(MakeCircleLines(t.Position, color, maxradius, CIRCLE_SIDES));
+			}
+
+			return circles;
+		}
+
+		#endregion
+
+		#region ================== Utility
 
 		// Taken from Xabis' "curved interpolation points paths" patch.
 		private static float SplineLerp(float u, float p1, float p2, float p3, float p4)
@@ -459,5 +646,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 			if(thing.Sector != null) height += thing.Sector.FloorHeight;
 			return height;
 		}
+
+		#endregion
 	}
 }

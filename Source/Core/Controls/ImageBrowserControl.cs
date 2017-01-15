@@ -351,7 +351,7 @@ namespace CodeImp.DoomBuilder.Controls
 				objectname.CharacterCasing = (uselongtexturenames ? CharacterCasing.Normal : CharacterCasing.Upper);
 
 				foreach(var item in items) item.ShowFullName = uselongtexturenames;
-				list.Refresh();
+				list.UpdateRectangles();
 				list.Focus();
 			}
 		}

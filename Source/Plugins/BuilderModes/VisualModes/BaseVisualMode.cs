@@ -518,7 +518,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			//mxd. Update event lines (still better than updating them on every frame redraw)
-			renderer.SetEventLines(LinksCollector.GetThingLinks(General.Map.ThingsFilter.VisibleThings, blockmap));
+			renderer.SetEventLines(LinksCollector.GetHelperShapes(General.Map.ThingsFilter.VisibleThings, blockmap));
 		}
 
 		//mxd
@@ -1062,7 +1062,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			RebuildElementData();
 
 			//mxd. Update event lines
-			renderer.SetEventLines(LinksCollector.GetThingLinks(General.Map.ThingsFilter.VisibleThings, blockmap));
+			renderer.SetEventLines(LinksCollector.GetHelperShapes(General.Map.ThingsFilter.VisibleThings, blockmap));
 		}
 
 		// When returning to another mode
@@ -3159,7 +3159,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			General.Map.ThingsFilter.Update();
 
 			// Update event lines
-			renderer.SetEventLines(LinksCollector.GetThingLinks(General.Map.ThingsFilter.VisibleThings, blockmap));
+			renderer.SetEventLines(LinksCollector.GetHelperShapes(General.Map.ThingsFilter.VisibleThings, blockmap));
 		}
 
 		//mxd. We'll just use currently selected objects 
