@@ -248,6 +248,94 @@ namespace CodeImp.DoomBuilder.ZDoom
                     return tok;
                 }
 
+                // check integer
+                if ((c >= '0' && c <= '9') || c == '.')
+                {
+                    bool isint = true;
+                    bool isdouble = (c == '.');
+                    bool isexponent = false;
+                    if (isdouble) // make sure next character is an integer, otherwise its probably a member access
+                    {
+                        char cnext = reader.ReadChar();
+                        if (!(cnext >= '0' && cnext <= '9'))
+                        {
+                            isint = false;
+                            reader.BaseStream.Position--;
+                        }
+                    }
+
+                    if (isint)
+                    {
+                        bool isoctal = (c == '0');
+                        bool ishex = false;
+                        string i_content = "";
+                        i_content += c;
+                        while (true)
+                        {
+                            char cnext = reader.ReadChar();
+                            if (!isdouble && (cnext == 'x') && i_content.Length == 1)
+                            {
+                                isoctal = false;
+                                ishex = true;
+                            }
+                            else if ((cnext >= '0' && cnext <= '7') ||
+                                     (!isoctal && cnext >= '8' && cnext <= '9') ||
+                                     (ishex && ((cnext >= 'a' && cnext <= 'f') || (cnext >= 'A' && cnext <= 'F'))))
+                            {
+                                i_content += cnext;
+                            }
+                            else if (!ishex && !isdouble && !isexponent && cnext == '.')
+                            {
+                                isdouble = true;
+                                isoctal = false;
+                                i_content += '.';
+                            }
+                            else if (!isoctal && !ishex && !isexponent && (cnext == 'e' || cnext == 'E'))
+                            {
+                                isexponent = true;
+                                isdouble = true;
+                                i_content += 'e';
+                                cnext = reader.ReadChar();
+                                if (cnext == '-') i_content += '-';
+                                else reader.BaseStream.Position--;
+                            }
+                            else
+                            {
+                                reader.BaseStream.Position--;
+                                break;
+                            }
+                        }
+
+                        tok = new ZScriptToken();
+                        tok.Type = (isdouble ? ZScriptTokenType.Double : ZScriptTokenType.Integer);
+                        tok.Value = i_content;
+                        try
+                        {
+                            if (ishex || isoctal || !isdouble)
+                            {
+                                int numbase = 10;
+                                if (ishex) numbase = 16;
+                                else if (isoctal) numbase = 8;
+                                tok.ValueInt = Convert.ToInt32(tok.Value, numbase);
+                                tok.ValueDouble = tok.ValueInt;
+                            }
+                            else if (isdouble)
+                            {
+                                string dval = (tok.Value[0] == '.') ? "0" + tok.Value : tok.Value;
+                                tok.ValueDouble = Convert.ToDouble(dval);
+                                tok.ValueInt = (int)tok.ValueDouble;
+                            }
+                        }
+                        catch (Exception)
+                        {
+                            //throw new Exception(tok.ToString());
+                            return null;
+                        }
+
+                        return tok;
+                    }
+                }
+
                 // check everything else
                 switch (c)
                 {
