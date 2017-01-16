@@ -368,5 +368,13 @@ namespace CodeImp.DoomBuilder.ZDoom
                 return null;
             }
         }
+
+        public static string TokensToString(IEnumerable<ZScriptToken> tokens)
+        {
+            string outs = "";
+            foreach (ZScriptToken tok in tokens)
+                outs += tok.Value;
+            return outs;
+        }
     }
 }

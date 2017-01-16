@@ -1853,6 +1853,10 @@ namespace CodeImp.DoomBuilder.Data
                     }
                 }
 
+                zscript.Finalize();
+                if (zscript.HasError)
+                    zscript.LogError();
+
                 //mxd. Add to text resources collection
                 scriptresources[zscript.ScriptType] = new HashSet<ScriptResource>(zscript.ScriptResources.Values);
                 currentreader = null;

@@ -9,8 +9,124 @@ using System.Text;
 
 namespace CodeImp.DoomBuilder.ZDoom
 {
+    public sealed class ZScriptActorStructure : ActorStructure
+    {
+        internal ZScriptActorStructure(ZDTextParser zdparser, DecorateCategoryInfo catinfo, string _classname, string _replacesname, string _parentname) : base(zdparser, catinfo)
+        {
+            classname = _classname;
+            replaceclass = _replacesname;
+            
+        }
+    }
+
     public sealed class ZScriptParser : ZDTextParser
     {
+        #region ================== Internal classes
+
+        public class ZScriptClassStructure
+        {
+            // these are used for the class itself
+            public string ClassName { get; internal set; }
+            public string ReplacementName { get; internal set; }
+            public string ParentName { get; internal set; }
+            public ZScriptActorStructure Actor { get; internal set; }
+
+            // these are used for parsing and error reporting
+            public ZScriptParser Parser { get; internal set; }
+            public Stream Stream { get; internal set; }
+            public long Position { get; internal set; }
+            public BinaryReader DataReader { get; internal set; }
+            public string SourceName { get; internal set; }
+
+            // textresourcepath
+            public string TextResourcePath { get; internal set; }
+
+            public ZScriptClassStructure(ZScriptParser parser, string classname, string replacesname, string parentname)
+            {
+                Parser = parser;
+
+                Stream = parser.datastream;
+                Position = parser.datastream.Position;
+                DataReader = parser.datareader;
+                SourceName = parser.sourcename;
+                TextResourcePath = parser.textresourcepath;
+
+                ClassName = classname;
+                ReplacementName = replacesname;
+                ParentName = parentname;
+                Actor = null;
+            }
+
+            internal void RestoreStreamData()
+            {
+                Parser.datastream = Stream;
+                Parser.datastream.Position = Position;
+                Parser.datareader = DataReader;
+                Parser.sourcename = SourceName;
+                Parser.prevstreamposition = -1;
+            }
+
+            public bool Process()
+            {
+                RestoreStreamData();
+
+                bool isactor = false;
+                ZScriptClassStructure _pstruct = this;
+                while (_pstruct != null)
+                {
+                    if (_pstruct.ClassName.ToLowerInvariant() == "actor")
+                    {
+                        isactor = true;
+                        break;
+                    }
+
+                    if (_pstruct.ParentName != null)
+                    {
+                        string _pname = _pstruct.ParentName.ToLowerInvariant();
+                        Parser.allclasses.TryGetValue(_pname, out _pstruct);
+                    }
+                    else _pstruct = null;
+                }
+
+                string log_inherits = ((ParentName != null) ? "inherits " + ParentName : "");
+                if (ReplacementName != null) log_inherits += ((log_inherits.Length > 0) ? ", " : "") + "replaces " + ReplacementName;
+                if (log_inherits.Length > 0) log_inherits = " (" + log_inherits + ")";
+
+                if (isactor)
+                {
+                    Actor = new ZScriptActorStructure(Parser, null, ClassName, ReplacementName, ParentName);
+                    if (Parser.HasError)
+                        return false;
+
+                    // check actor replacement.
+                    Parser.archivedactors[Actor.ClassName.ToLowerInvariant()] = Actor;
+                    if (Actor.CheckActorSupported())
+                        Parser.actors[Actor.ClassName.ToLowerInvariant()] = Actor;
+
+                    // Replace an actor?
+                    if (Actor.ReplacesClass != null)
+                    {
+                        if (Parser.GetArchivedActorByName(Actor.ReplacesClass) != null)
+                            Parser.archivedactors[Actor.ReplacesClass.ToLowerInvariant()] = Actor;
+                        else
+                            Parser.LogWarning("Unable to find \"" + Actor.ReplacesClass + "\" class to replace, while parsing \"" + Actor.ClassName + "\"");
+
+                        if (Actor.CheckActorSupported() && Parser.GetActorByName(Actor.ReplacesClass) != null)
+                            Parser.actors[Actor.ReplacesClass.ToLowerInvariant()] = Actor;
+                    }
+
+                    //mxd. Add to current text resource
+                    if (!Parser.scriptresources[TextResourcePath].Entries.Contains(Actor.ClassName)) Parser.scriptresources[TextResourcePath].Entries.Add(Actor.ClassName);
+                }
+
+                //Parser.LogWarning(string.Format("Parsed {0}class {1}{2}", isactor?"actor ":"", ClassName, log_inherits));
+
+                return true;
+            }
+        }
+
+        #endregion
+
         #region ================== Delegates
 
         public delegate void IncludeDelegate(ZScriptParser parser, string includefile);
@@ -33,6 +149,10 @@ namespace CodeImp.DoomBuilder.ZDoom
 
         // These are all parsed actors, also those from other games
         private Dictionary<string, ActorStructure> archivedactors;
+
+        // In ZScript, you can inherit an actor before defining it. So we need to postpone all processing after the classes have been gathered.
+        private Dictionary<string, ZScriptClassStructure> allclasses;
+        private List<ZScriptClassStructure> allclasseslist;
 
         //mxd. Includes tracking
         private HashSet<string> parsedlumps;
@@ -382,7 +502,9 @@ namespace CodeImp.DoomBuilder.ZDoom
                 }
             }
 
-            // do nothing else atm
+            // do nothing else atm, except remember the position to put it into the class parsing code
+            tokenizer.SkipWhitespace();
+            long cpos = datastream.Position;
             List<ZScriptToken> classblocktokens = ParseBlock(false);
             if (classblocktokens == null) return false;
 
@@ -390,7 +512,24 @@ namespace CodeImp.DoomBuilder.ZDoom
             if (tok_replacename != null) log_inherits += ((log_inherits.Length > 0) ? ", " : "") + "replaces " + tok_replacename.Value;
             if (extend) log_inherits += ((log_inherits.Length > 0) ? ", " : "") + "extends";
             if (log_inherits.Length > 0) log_inherits = " (" + log_inherits + ")";
-            LogWarning(string.Format("Parsed {0} {1}{2}", isstruct ? "struct" : "class", tok_classname.Value, log_inherits));
+
+            // now if we are a class, and we inherit actor, parse this entry as an actor. don't process extensions.
+            if (!isstruct && !extend)
+            {
+                ZScriptClassStructure cls = new ZScriptClassStructure(this, tok_classname.Value, (tok_replacename != null) ? tok_replacename.Value : null, (tok_parentname != null) ? tok_parentname.Value : null);
+                cls.Position = cpos;
+                string clskey = cls.ClassName.ToLowerInvariant();
+                if (allclasses.ContainsKey(clskey))
+                {
+                    ReportError("Class "+cls.ClassName+" is double-defined.");
+                    return false;
+                }
+
+                allclasses.Add(cls.ClassName.ToLowerInvariant(), cls);
+                allclasseslist.Add(cls);
+            }
+
+            //LogWarning(string.Format("Parsed {0} {1}{2}", (isstruct ? "struct" : "class"), tok_classname.Value, log_inherits));
 
             return true;
         }
@@ -525,7 +664,7 @@ namespace CodeImp.DoomBuilder.ZDoom
                                         ReportError("Expected ;, got " + ((Object)token ?? "<null>").ToString());
                                         return false;
                                     }
-                                    LogWarning(string.Format("Parsed const {0}", constname));
+                                    //LogWarning(string.Format("Parsed const {0}", constname));
                                     break;
                                 case "enum":
                                     // enum blablabla {}
@@ -538,7 +677,7 @@ namespace CodeImp.DoomBuilder.ZDoom
                                     }
                                     tokenizer.SkipWhitespace();
                                     if (ParseBlock(false) == null) return false; // anything between { and }
-                                    LogWarning(string.Format("Parsed enum {0}", token.Value));
+                                    //LogWarning(string.Format("Parsed enum {0}", token.Value));
                                     break;
                                 default:
                                     ReportError("Expected preprocessor statement, const, enum or class declaraction, got " + token);
@@ -547,6 +686,19 @@ namespace CodeImp.DoomBuilder.ZDoom
                             break;
                         }
                 }
+            }
+
+            return true;
+        }
+
+        public bool Finalize()
+        {
+            ClearError();
+
+            foreach (ZScriptClassStructure cls in allclasseslist)
+            {
+                if (!cls.Process())
+                    return false;
             }
 
             return true;
@@ -595,6 +747,8 @@ namespace CodeImp.DoomBuilder.ZDoom
             actors = new Dictionary<string, ActorStructure>(StringComparer.OrdinalIgnoreCase);
             archivedactors = new Dictionary<string, ActorStructure>(StringComparer.OrdinalIgnoreCase);
             parsedlumps = new HashSet<string>(StringComparer.OrdinalIgnoreCase); //mxd
+            allclasses = new Dictionary<string, ZScriptClassStructure>();
+            allclasseslist = new List<ZScriptClassStructure>();
         }
 
         #endregion
