@@ -403,7 +403,7 @@ namespace CodeImp.DoomBuilder.ZDoom
                     {
                         //states
                         if (states.Count == 0 && !string.IsNullOrEmpty(ti.Value.Sprite))
-                            states.Add("spawn", new StateStructure(ti.Value.Sprite.Substring(0, 5)));
+                            states.Add("spawn", new StateStructure(ti.Value.Sprite.Substring(0, 5), parser.DataManager));
 
                         //flags
                         if (ti.Value.Hangs && !flags.ContainsKey("spawnceiling"))

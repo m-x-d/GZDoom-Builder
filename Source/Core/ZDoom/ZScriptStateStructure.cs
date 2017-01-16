@@ -26,6 +26,9 @@ namespace CodeImp.DoomBuilder.ZDoom
                     (token.Value == ";") ||
                     ((outs.Length > 0 && token.Value[0] != outs[0]) && specialinvalid.Contains(token.Value[0])))
                 {
+                    if (outs.Length == 0 && (token.Type == ZScriptTokenType.String || token.Type == ZScriptTokenType.Name))
+                        return token;
+
                     stream.Position = cpos;
                     break;
                 }
@@ -141,11 +144,32 @@ namespace CodeImp.DoomBuilder.ZDoom
                 // duration
                 int duration;
                 tokenizer.SkipWhitespace();
-                if (!parser.ParseInteger(out duration))
-                    return;
+                // this can be a function call, or a constant.
+                token = tokenizer.ExpectToken(ZScriptTokenType.Identifier);
+                if (token != null && token.IsValid)
+                {
+                    tokenizer.SkipWhitespace();
+                    token = tokenizer.ExpectToken(ZScriptTokenType.OpenParen);
+                    if (token != null && token.IsValid)
+                    {
+                        List<ZScriptToken> tokens = parser.ParseExpression(true);
+                        tokenizer.SkipWhitespace();
+                        token = tokenizer.ExpectToken(ZScriptTokenType.CloseParen);
+                        if (token == null || !token.IsValid)
+                        {
+                            parser.ReportError("Expected ), got " + ((Object)token ?? "<null>").ToString());
+                            return;
+                        }
+                    }
+                }
+                else
+                {
+                    if (!parser.ParseInteger(out duration))
+                        return;
+                }
 
                 // now, it can also contain BRIGHT, LIGHT(), OFFSET()
-                string[] allspecials = new string[] { "bright", "light", "offset", "fast", "slow" };
+                string[] allspecials = new string[] { "bright", "light", "offset", "fast", "slow", "nodelay", "canraise" };
                 HashSet<string> specials = new HashSet<string>();
                 // maybe something else. I don't know.
                 FrameInfo info = new FrameInfo();
@@ -260,8 +284,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 
                                 // possibly do something with the arguments? not now though.
                             }
-                                
+
                             // expect semicolon and break.
+                            tokenizer.SkipWhitespace();
                             token = tokenizer.ExpectToken(ZScriptTokenType.Semicolon);
                             if (token == null || !token.IsValid)
                             {

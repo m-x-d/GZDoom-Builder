@@ -63,9 +63,10 @@ namespace CodeImp.DoomBuilder.ZDoom
 		}
 
 		//mxd
-		internal StateStructure(string spritename) 
+		internal StateStructure(string spritename, DataManager dataman) 
 		{
 			this.gotostate = null;
+            this.dataman = dataman;
 			this.sprites = new List<FrameInfo> { new FrameInfo { Sprite = spritename } };
 		}
 

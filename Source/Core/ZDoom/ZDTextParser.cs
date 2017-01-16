@@ -93,7 +93,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 		// Constructor
 		protected ZDTextParser(DataManager dataman = null)
 		{
-			// Initialize
+            // Initialize
+            this.dataman = dataman;
 			errordesc = null;
 			scriptresources = new Dictionary<string, ScriptResource>(StringComparer.OrdinalIgnoreCase); //mxd
 			untrackedtextresources = new HashSet<string>(StringComparer.OrdinalIgnoreCase); //mxd
