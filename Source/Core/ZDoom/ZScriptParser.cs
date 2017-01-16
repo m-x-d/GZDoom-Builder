@@ -11,6 +11,33 @@ namespace CodeImp.DoomBuilder.ZDoom
 {
     public sealed class ZScriptActorStructure : ActorStructure
     {
+        private string ParseDottedIdentifier(ZScriptParser parser, Stream stream, ZScriptTokenizer tokenizer)
+        {
+            string name = "";
+            while (true)
+            {
+                ZScriptToken token = tokenizer.ExpectToken(ZScriptTokenType.Identifier);
+                if (token == null || !token.IsValid)
+                {
+                    parser.ReportError("Expected identifier, got " + ((Object)token ?? "<null>").ToString());
+                    return null;
+                }
+
+                if (name.Length > 0) name += '.';
+                name += token.Value.ToLowerInvariant();
+
+                long cpos = stream.Position;
+                token = tokenizer.ReadToken();
+                if (token.Type != ZScriptTokenType.Dot)
+                {
+                    stream.Position = cpos;
+                    break;
+                }
+            }
+
+            return name;
+        }
+
         private bool ParseDefaultBlock(ZScriptParser parser, Stream stream, ZScriptTokenizer tokenizer)
         {
             tokenizer.SkipWhitespace();
@@ -21,11 +48,77 @@ namespace CodeImp.DoomBuilder.ZDoom
                 return false;
             }
 
-            // todo parse defaults block
-            stream.Position--;
-            List<ZScriptToken> tokens = parser.ParseBlock(false); // do nothing for now
+            ZScriptTokenType[] whitespacetypes = new ZScriptTokenType[] {ZScriptTokenType.Newline, ZScriptTokenType.Whitespace, ZScriptTokenType.BlockComment, ZScriptTokenType.LineComment};
 
-            return (tokens != null);
+            // todo parse defaults block
+            while (true)
+            {
+                tokenizer.SkipWhitespace();
+                long cpos = stream.Position;
+                token = tokenizer.ReadToken();
+                if (token == null)
+                {
+                    parser.ReportError("Expected a token");
+                    return false;
+                }
+
+                if (token.Type == ZScriptTokenType.CloseCurly)
+                    break;
+
+                switch (token.Type)
+                {
+                    case ZScriptTokenType.Whitespace:
+                    case ZScriptTokenType.BlockComment:
+                    case ZScriptTokenType.Newline:
+                        break;
+
+                    // flag definition (+/-)
+                    case ZScriptTokenType.OpAdd:
+                    case ZScriptTokenType.OpSubtract:
+                        {
+                            bool flagset = (token.Type == ZScriptTokenType.OpAdd);
+                            string flagname = ParseDottedIdentifier(parser, stream, tokenizer);
+                            if (flagname == null) return false;
+
+                            //parser.LogWarning(string.Format("{0}{1}", (flagset ? '+' : '-'), flagname));
+                            break;
+                        }
+
+                    // property or combo definition
+                    case ZScriptTokenType.Identifier:
+                        {
+                            stream.Position = cpos;
+                            string propertyname = ParseDottedIdentifier(parser, stream, tokenizer);
+                            if (propertyname == null) return false;
+                            List<string> propertyvalues = new List<string>();
+
+                            // read in property values, until semicolon reached
+                            while (true)
+                            {
+                                tokenizer.SkipWhitespace();
+                                List<ZScriptToken> expr = parser.ParseExpression();
+                                string exprstring = ZScriptTokenizer.TokensToString(expr);
+
+                                token = tokenizer.ExpectToken(ZScriptTokenType.Comma, ZScriptTokenType.Semicolon);
+                                if (token == null || !token.IsValid)
+                                {
+                                    parser.ReportError("Expected comma or ;, got " + ((Object)token ?? "<null>").ToString());
+                                    return false;
+                                }
+
+                                propertyvalues.Add(exprstring);
+                                if (token.Type == ZScriptTokenType.Semicolon)
+                                    break;
+                            }
+
+                            //parser.LogWarning(string.Format("{0} = [{1}]", propertyname, string.Join(", ", propertyvalues.ToArray())));
+                            break;
+                        }
+                }
+                
+            }
+
+            return true;
         }
 
         private bool ParseStatesBlock(ZScriptParser parser, Stream stream, ZScriptTokenizer tokenizer)
@@ -725,7 +818,7 @@ namespace CodeImp.DoomBuilder.ZDoom
             {
                 if (!allowsingle)
                 {
-                    ReportError("Expected opening curly brace, got " + token);
+                    ReportError("Expected {, got " + token);
                     return null;
                 }
 
