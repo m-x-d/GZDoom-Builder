@@ -446,7 +446,9 @@ namespace CodeImp.DoomBuilder.Data
 			//mxd. Load Script Editor-only stuff...
 			LoadExtraTextLumps();
 
-			int thingcount = LoadZScriptThings(spawnnums, doomednums) + LoadDecorateThings(spawnnums, doomednums);
+            LoadZScriptThings();
+            LoadDecorateThings();
+            int thingcount = ApplyZDoomThings(spawnnums, doomednums);
 			int spritecount = LoadThingSprites();
 			LoadInternalSprites();
 			LoadInternalTextures(); //mxd
@@ -1821,10 +1823,8 @@ namespace CodeImp.DoomBuilder.Data
 
 		#region ================== Things
 		
-        private int LoadZScriptThings(Dictionary<int, string> spawnnumsoverride, Dictionary<int, string> doomednumsoverride)
+        private void LoadZScriptThings()
         {
-            int counter = 0;
-
             // Create new parser
             zscript = new ZScriptParser { OnInclude = LoadZScriptFromLocation };
 
@@ -1856,29 +1856,17 @@ namespace CodeImp.DoomBuilder.Data
                 //mxd. Add to text resources collection
                 scriptresources[zscript.ScriptType] = new HashSet<ScriptResource>(zscript.ScriptResources.Values);
                 currentreader = null;
-
-                if (!zscript.HasError)
-                {
-                    
-                }
-                else
-                {
-                    // Return after adding parsed resources
-                    return counter;
-                }
             }
 
-            // Output info
-            return counter;
+            if (zscript.HasError)
+                zscript.ClearActors();
         }
 
 		// This loads the things from Decorate
-		private int LoadDecorateThings(Dictionary<int, string> spawnnumsoverride, Dictionary<int, string> doomednumsoverride)
+		private void LoadDecorateThings()
 		{
-			int counter = 0;
-			
 			// Create new parser
-			decorate = new DecorateParser { OnInclude = LoadDecorateFromLocation };
+			decorate = new DecorateParser(zscript.AllActorsByClass) { OnInclude = LoadDecorateFromLocation };
 
 			// Only load these when the game configuration supports the use of decorate
 			if(!string.IsNullOrEmpty(General.Map.Config.DecorateGames))
@@ -1908,201 +1896,209 @@ namespace CodeImp.DoomBuilder.Data
 				//mxd. Add to text resources collection
 				scriptresources[decorate.ScriptType] = new HashSet<ScriptResource>(decorate.ScriptResources.Values);
 				currentreader = null;
-				
-				if(!decorate.HasError)
-				{
-					//mxd. Create DamageTypes list
-					// Combine damage types from config and decorate
-					HashSet<string> dtset = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-					dtset.UnionWith(General.Map.Config.DamageTypes);
-					dtset.UnionWith(decorate.DamageTypes);
-
-					// Sort values
-					List<string> dtypes = new List<string>(dtset);
-					dtypes.Sort();
-					
-					// Apply to collection
-					damagetypes = new string[dtypes.Count];
-					dtypes.CopyTo(damagetypes);
-
-					// Step 0. Create ThingTypeInfo by classname collection...
-					Dictionary<string, ThingTypeInfo> thingtypesbyclass = new Dictionary<string, ThingTypeInfo>(thingtypes.Count, StringComparer.OrdinalIgnoreCase);
-					foreach(ThingTypeInfo info in thingtypes.Values)
-						if(!string.IsNullOrEmpty(info.ClassName)) thingtypesbyclass[info.ClassName] = info;
-					
-					// Step 1. Go for all actors in the decorate to make things or update things
-					foreach(ActorStructure actor in decorate.Actors)
-					{
-						//mxd. Apply "replaces" DECORATE override...
-						if(!string.IsNullOrEmpty(actor.ReplacesClass) && thingtypesbyclass.ContainsKey(actor.ReplacesClass))
-						{
-							// Update info
-							thingtypesbyclass[actor.ReplacesClass].ModifyByDecorateActor(actor, true);
-							
-							// Count
-							counter++;
-						}
-						// Check if we want to add this actor
-						else if(actor.DoomEdNum > 0)
-						{
-							// Check if we can find this thing in our existing collection
-							if(thingtypes.ContainsKey(actor.DoomEdNum))
-							{
-								// Update the thing
-								thingtypes[actor.DoomEdNum].ModifyByDecorateActor(actor);
-							}
-							else
-							{
-								// Find the category to put the actor in
-								ThingCategory cat = GetThingCategory(null, thingcategories, GetCategoryInfo(actor)); //mxd
-								
-								// Add new thing
-								ThingTypeInfo t = new ThingTypeInfo(cat, actor);
-								cat.AddThing(t);
-								thingtypes.Add(t.Index, t);
-							}
-							
-							// Count
-							counter++;
-						}
-					}
-
-					//mxd. Step 2. Apply DoomEdNum MAPINFO overrides, remove actors disabled in MAPINFO
-					if(doomednumsoverride.Count > 0) 
-					{
-						List<int> toremove = new List<int>();
-						foreach(KeyValuePair<int, string> group in doomednumsoverride) 
-						{
-							// Remove thing from the list?
-							if(group.Value == "none") 
-							{
-								toremove.Add(group.Key);
-								continue;
-							}
-
-							// Skip if already added.
-							if(thingtypes.ContainsKey(group.Key) && thingtypes[group.Key].ClassName.ToLowerInvariant() == group.Value) 
-							{
-								continue;
-							}
-
-							// Try to find the actor...
-							ActorStructure actor = null;
-
-							//... in ActorsByClass
-							if(decorate.ActorsByClass.ContainsKey(group.Value))
-							{
-								actor = decorate.ActorsByClass[group.Value];
-							}
-							// Try finding in ArchivedActors
-							else if(decorate.AllActorsByClass.ContainsKey(group.Value))
-							{
-								actor = decorate.AllActorsByClass[group.Value];
-							}
-
-							if(actor != null)
-							{
-								// Find the category to put the actor in
-								ThingCategory cat = GetThingCategory(null, thingcategories, GetCategoryInfo(actor)); //mxd
-
-								// Add a new ThingTypeInfo, replacing already existing one if necessary
-								ThingTypeInfo info = new ThingTypeInfo(cat, actor, group.Key);
-								thingtypes[group.Key] = info;
-								cat.AddThing(info);
-							}
-							// Check thingtypes...
-							else if(thingtypesbyclass.ContainsKey(group.Value))
-							{
-								ThingTypeInfo t = new ThingTypeInfo(group.Key, thingtypesbyclass[group.Value]);
-
-								// Add new thing, replacing already existing one if necessary
-								t.Category.AddThing(t);
-								thingtypes[group.Key] = t;
-							}
-							// Loudly give up...
-							else
-							{
-								General.ErrorLogger.Add(ErrorType.Warning, "Failed to apply MAPINFO DoomEdNum override \"" + group.Key + " = " + group.Value + "\": failed to find corresponding actor class...");
-							}
-						}
-
-						// Remove items
-						foreach(int id in toremove) 
-						{
-							if(thingtypes.ContainsKey(id))
-							{
-								thingtypes[id].Category.RemoveThing(thingtypes[id]);
-								thingtypes.Remove(id);
-							}
-						}
-					}
-
-					//mxd. Step 3. Gather DECORATE SpawnIDs
-					Dictionary<int, EnumItem> configspawnnums = new Dictionary<int, EnumItem>();
-
-					// Update or create the main enums list
-					if(General.Map.Config.Enums.ContainsKey("spawnthing")) 
-					{
-						foreach(EnumItem item in General.Map.Config.Enums["spawnthing"])
-							configspawnnums.Add(item.GetIntValue(), item);
-					}
-
-					bool spawnidschanged = false;
-					foreach(ActorStructure actor in decorate.Actors)
-					{
-						int spawnid = actor.GetPropertyValueInt("spawnid", 0);
-						if(spawnid != 0)
-						{
-							configspawnnums[spawnid] = new EnumItem(spawnid.ToString(), (actor.HasPropertyWithValue("$title") ? actor.GetPropertyAllValues("$title") : actor.ClassName));
-							spawnidschanged = true;
-						}
-					}
-
-					//mxd. Step 4. Update SpawnNums using MAPINFO overrides
-					if(spawnnumsoverride.Count > 0)
-					{
-						// Modify by MAPINFO data
-						foreach(KeyValuePair<int, string> group in spawnnumsoverride) 
-							configspawnnums[group.Key] = new EnumItem(group.Key.ToString(), (thingtypes.ContainsKey(group.Key) ? thingtypes[group.Key].Title : group.Value));
-
-						spawnidschanged = true;
-					}
-
-					if(spawnidschanged)
-					{
-						// Update the main collection
-						EnumList newenums = new EnumList();
-						newenums.AddRange(configspawnnums.Values);
-						newenums.Sort((a, b) => a.Title.CompareTo(b.Title));
-						General.Map.Config.Enums["spawnthing"] = newenums;
-
-						// Update all ArgumentInfos...
-						foreach(ThingTypeInfo info in thingtypes.Values)
-						{
-							foreach(ArgumentInfo ai in info.Args) 
-								if(ai.Enum.Name == "spawnthing") ai.Enum = newenums;
-						}
-
-						foreach(LinedefActionInfo info in General.Map.Config.LinedefActions.Values)
-						{
-							foreach(ArgumentInfo ai in info.Args)
-								if(ai.Enum.Name == "spawnthing") ai.Enum = newenums;
-						}
-					}
-				}
-				else
-				{
-					// Return after adding parsed resources
-					return counter;
-				}
 			}
-			
-			// Output info
-			return counter;
+
+            if (decorate.HasError)
+                decorate.ClearActors();
 		}
 
-		//mxd
-		private static ThingCategory GetThingCategory(ThingCategory parent, List<ThingCategory> categories, DecorateCategoryInfo catinfo) 
+        // [ZZ] this merges in the parsed actor lists from zscript+decorate using the original DECORATE merging code
+        private int ApplyZDoomThings(Dictionary<int, string> spawnnumsoverride, Dictionary<int, string> doomednumsoverride)
+        {
+            int counter = 0;
+
+            /////////////// ====================== DAMAGETYPES
+            //mxd. Create DamageTypes list
+            // Combine damage types from config and decorate
+            HashSet<string> dtset = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            dtset.UnionWith(General.Map.Config.DamageTypes);
+            if (!decorate.HasError) dtset.UnionWith(decorate.DamageTypes);
+
+            // Sort values
+            List<string> dtypes = new List<string>(dtset);
+            dtypes.Sort();
+
+            // Apply to collection
+            damagetypes = new string[dtypes.Count];
+            dtypes.CopyTo(damagetypes);
+            /////////////// ====================== /DAMAGETYPES
+
+            // Step 0. Create ThingTypeInfo by classname collection...
+            Dictionary<string, ThingTypeInfo> thingtypesbyclass = new Dictionary<string, ThingTypeInfo>(thingtypes.Count, StringComparer.OrdinalIgnoreCase);
+            foreach (ThingTypeInfo info in thingtypes.Values)
+                if (!string.IsNullOrEmpty(info.ClassName)) thingtypesbyclass[info.ClassName] = info;
+
+            // [ZZ] create combined array of actors to process.
+            IEnumerable<ActorStructure> mergedActors = zscript.Actors.Union(decorate.Actors);
+            IEnumerable<ActorStructure> mergedAllActors = zscript.AllActors.Union(decorate.AllActors);
+            Dictionary<string, ActorStructure> mergedActorsByClass = zscript.ActorsByClass.Union(decorate.ActorsByClass).ToDictionary(k => k.Key, v => v.Value);
+            Dictionary<string, ActorStructure> mergedAllActorsByClass = zscript.AllActorsByClass.Union(decorate.AllActorsByClass).ToDictionary(k => k.Key, v => v.Value);
+
+            // Step 1. Go for all actors in the decorate to make things or update things
+            foreach (ActorStructure actor in mergedActors)
+            {
+                //mxd. Apply "replaces" DECORATE override...
+                if (!string.IsNullOrEmpty(actor.ReplacesClass) && thingtypesbyclass.ContainsKey(actor.ReplacesClass))
+                {
+                    // Update info
+                    thingtypesbyclass[actor.ReplacesClass].ModifyByDecorateActor(actor, true);
+
+                    // Count
+                    counter++;
+                }
+                // Check if we want to add this actor
+                else if (actor.DoomEdNum > 0)
+                {
+                    // Check if we can find this thing in our existing collection
+                    if (thingtypes.ContainsKey(actor.DoomEdNum))
+                    {
+                        // Update the thing
+                        thingtypes[actor.DoomEdNum].ModifyByDecorateActor(actor);
+                    }
+                    else
+                    {
+                        // Find the category to put the actor in
+                        ThingCategory cat = GetThingCategory(null, thingcategories, GetCategoryInfo(actor)); //mxd
+
+                        // Add new thing
+                        ThingTypeInfo t = new ThingTypeInfo(cat, actor);
+                        cat.AddThing(t);
+                        thingtypes.Add(t.Index, t);
+                    }
+
+                    // Count
+                    counter++;
+                }
+            }
+
+            //mxd. Step 2. Apply DoomEdNum MAPINFO overrides, remove actors disabled in MAPINFO
+            if (doomednumsoverride.Count > 0)
+            {
+                List<int> toremove = new List<int>();
+                foreach (KeyValuePair<int, string> group in doomednumsoverride)
+                {
+                    // Remove thing from the list?
+                    if (group.Value == "none")
+                    {
+                        toremove.Add(group.Key);
+                        continue;
+                    }
+
+                    // Skip if already added.
+                    if (thingtypes.ContainsKey(group.Key) && thingtypes[group.Key].ClassName.ToLowerInvariant() == group.Value)
+                    {
+                        continue;
+                    }
+
+                    // Try to find the actor...
+                    ActorStructure actor = null;
+
+                    //... in ActorsByClass
+                    if (mergedActorsByClass.ContainsKey(group.Value))
+                    {
+                        actor = mergedActorsByClass[group.Value];
+                    }
+                    // Try finding in ArchivedActors
+                    else if (mergedAllActorsByClass.ContainsKey(group.Value))
+                    {
+                        actor = mergedAllActorsByClass[group.Value];
+                    }
+
+                    if (actor != null)
+                    {
+                        // Find the category to put the actor in
+                        ThingCategory cat = GetThingCategory(null, thingcategories, GetCategoryInfo(actor)); //mxd
+
+                        // Add a new ThingTypeInfo, replacing already existing one if necessary
+                        ThingTypeInfo info = new ThingTypeInfo(cat, actor, group.Key);
+                        thingtypes[group.Key] = info;
+                        cat.AddThing(info);
+                    }
+                    // Check thingtypes...
+                    else if (thingtypesbyclass.ContainsKey(group.Value))
+                    {
+                        ThingTypeInfo t = new ThingTypeInfo(group.Key, thingtypesbyclass[group.Value]);
+
+                        // Add new thing, replacing already existing one if necessary
+                        t.Category.AddThing(t);
+                        thingtypes[group.Key] = t;
+                    }
+                    // Loudly give up...
+                    else
+                    {
+                        General.ErrorLogger.Add(ErrorType.Warning, "Failed to apply MAPINFO DoomEdNum override \"" + group.Key + " = " + group.Value + "\": failed to find corresponding actor class...");
+                    }
+                }
+
+                // Remove items
+                foreach (int id in toremove)
+                {
+                    if (thingtypes.ContainsKey(id))
+                    {
+                        thingtypes[id].Category.RemoveThing(thingtypes[id]);
+                        thingtypes.Remove(id);
+                    }
+                }
+            }
+
+            //mxd. Step 3. Gather DECORATE SpawnIDs
+            Dictionary<int, EnumItem> configspawnnums = new Dictionary<int, EnumItem>();
+
+            // Update or create the main enums list
+            if (General.Map.Config.Enums.ContainsKey("spawnthing"))
+            {
+                foreach (EnumItem item in General.Map.Config.Enums["spawnthing"])
+                    configspawnnums.Add(item.GetIntValue(), item);
+            }
+
+            bool spawnidschanged = false;
+            foreach (ActorStructure actor in mergedActors)
+            {
+                int spawnid = actor.GetPropertyValueInt("spawnid", 0);
+                if (spawnid != 0)
+                {
+                    configspawnnums[spawnid] = new EnumItem(spawnid.ToString(), (actor.HasPropertyWithValue("$title") ? actor.GetPropertyAllValues("$title") : actor.ClassName));
+                    spawnidschanged = true;
+                }
+            }
+
+            //mxd. Step 4. Update SpawnNums using MAPINFO overrides
+            if (spawnnumsoverride.Count > 0)
+            {
+                // Modify by MAPINFO data
+                foreach (KeyValuePair<int, string> group in spawnnumsoverride)
+                    configspawnnums[group.Key] = new EnumItem(group.Key.ToString(), (thingtypes.ContainsKey(group.Key) ? thingtypes[group.Key].Title : group.Value));
+
+                spawnidschanged = true;
+            }
+
+            if (spawnidschanged)
+            {
+                // Update the main collection
+                EnumList newenums = new EnumList();
+                newenums.AddRange(configspawnnums.Values);
+                newenums.Sort((a, b) => a.Title.CompareTo(b.Title));
+                General.Map.Config.Enums["spawnthing"] = newenums;
+
+                // Update all ArgumentInfos...
+                foreach (ThingTypeInfo info in thingtypes.Values)
+                {
+                    foreach (ArgumentInfo ai in info.Args)
+                        if (ai.Enum.Name == "spawnthing") ai.Enum = newenums;
+                }
+
+                foreach (LinedefActionInfo info in General.Map.Config.LinedefActions.Values)
+                {
+                    foreach (ArgumentInfo ai in info.Args)
+                        if (ai.Enum.Name == "spawnthing") ai.Enum = newenums;
+                }
+            }
+
+            return counter;
+        }
+
+        //mxd
+        private static ThingCategory GetThingCategory(ThingCategory parent, List<ThingCategory> categories, DecorateCategoryInfo catinfo) 
 		{
 			// Find the category to put the actor in
 			ThingCategory cat = null;

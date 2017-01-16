@@ -35,10 +35,7 @@ namespace CodeImp.DoomBuilder.ZDoom
         private Dictionary<string, ActorStructure> archivedactors;
 
         //mxd. Includes tracking
-        private readonly HashSet<string> parsedlumps;
-
-        //mxd. Custom damagetypes
-        private readonly HashSet<string> damagetypes;
+        private HashSet<string> parsedlumps;
 
         //mxd. Disposing. Is that really needed?..
         private bool isdisposed;
@@ -77,11 +74,7 @@ namespace CodeImp.DoomBuilder.ZDoom
         // Constructor
         public ZScriptParser()
         {
-            // Initialize
-            actors = new Dictionary<string, ActorStructure>(StringComparer.OrdinalIgnoreCase);
-            archivedactors = new Dictionary<string, ActorStructure>(StringComparer.OrdinalIgnoreCase);
-            parsedlumps = new HashSet<string>(StringComparer.OrdinalIgnoreCase); //mxd
-            damagetypes = new HashSet<string>(StringComparer.OrdinalIgnoreCase); //mxd
+            ClearActors();
         }
 
         // Disposer
@@ -594,6 +587,14 @@ namespace CodeImp.DoomBuilder.ZDoom
         {
             name = name.ToLowerInvariant();
             return (archivedactors.ContainsKey(name) ? archivedactors[name] : null);
+        }
+
+        internal void ClearActors()
+        {
+            // Initialize
+            actors = new Dictionary<string, ActorStructure>(StringComparer.OrdinalIgnoreCase);
+            archivedactors = new Dictionary<string, ActorStructure>(StringComparer.OrdinalIgnoreCase);
+            parsedlumps = new HashSet<string>(StringComparer.OrdinalIgnoreCase); //mxd
         }
 
         #endregion
