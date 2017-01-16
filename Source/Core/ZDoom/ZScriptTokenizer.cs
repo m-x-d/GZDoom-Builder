@@ -60,6 +60,7 @@ namespace CodeImp.DoomBuilder.ZDoom
         // ternary operator (x ? y : z), also the colon after state labels
         [ZScriptTokenString("?")] Questionmark,
         [ZScriptTokenString(":")] Colon,
+        [ZScriptTokenString("::")] DoubleColon,
 
         // + - * / << >> ~ ^ & |
         [ZScriptTokenString("+")] OpAdd,
@@ -183,32 +184,32 @@ namespace CodeImp.DoomBuilder.ZDoom
                 // 
                 string whitespace = " \r\t\u00A0";
 
-                if (!short_circuit)
+                // check whitespace
+                if (whitespace.Contains(c))
                 {
-                    // check whitespace
-                    if (whitespace.Contains(c))
+                    string ws_content = "";
+                    ws_content += c;
+                    while (true)
                     {
-                        string ws_content = "";
-                        ws_content += c;
-                        while (true)
+                        char cnext = reader.ReadChar();
+                        if (whitespace.Contains(cnext))
                         {
-                            char cnext = reader.ReadChar();
-                            if (whitespace.Contains(cnext))
-                            {
-                                ws_content += cnext;
-                                continue;
-                            }
-
-                            reader.BaseStream.Position--;
-                            break;
+                            ws_content += cnext;
+                            continue;
                         }
 
-                        tok = new ZScriptToken();
-                        tok.Type = ZScriptTokenType.Whitespace;
-                        tok.Value = ws_content;
-                        return tok;
+                        reader.BaseStream.Position--;
+                        break;
                     }
 
+                    tok = new ZScriptToken();
+                    tok.Type = ZScriptTokenType.Whitespace;
+                    tok.Value = ws_content;
+                    return tok;
+                }
+
+                if (!short_circuit)
+                {
                     // check identifier
                     if ((c >= 'a' && c <= 'z') ||
                         (c >= 'A' && c <= 'Z') ||

@@ -45,6 +45,11 @@ namespace CodeImp.DoomBuilder.ZDoom
 		#region ================== Constructor / Disposer
 		
 		// Constructor
+        internal StateGoto()
+        {
+
+        }
+
 		internal StateGoto(ActorStructure actor, ZDTextParser parser)
 		{
 
