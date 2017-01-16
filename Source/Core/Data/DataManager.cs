@@ -137,6 +137,7 @@ namespace CodeImp.DoomBuilder.Data
 		// Things combined with things created from Decorate
 		private DecorateParser decorate;
         private ZScriptParser zscript;
+        private Dictionary<string, ActorStructure> zdoomclasses;
 		private List<ThingCategory> thingcategories;
 		private Dictionary<int, ThingTypeInfo> thingtypes;
 		
@@ -1826,7 +1827,7 @@ namespace CodeImp.DoomBuilder.Data
         private void LoadZScriptThings()
         {
             // Create new parser
-            zscript = new ZScriptParser { OnInclude = LoadZScriptFromLocation };
+            zscript = new ZScriptParser(this) { OnInclude = LoadZScriptFromLocation };
 
             // Only load these when the game configuration supports the use of decorate
             if (!string.IsNullOrEmpty(General.Map.Config.DecorateGames))
@@ -1870,7 +1871,7 @@ namespace CodeImp.DoomBuilder.Data
 		private void LoadDecorateThings()
 		{
 			// Create new parser
-			decorate = new DecorateParser(zscript.AllActorsByClass) { OnInclude = LoadDecorateFromLocation };
+			decorate = new DecorateParser(this, zscript.AllActorsByClass) { OnInclude = LoadDecorateFromLocation };
 
 			// Only load these when the game configuration supports the use of decorate
 			if(!string.IsNullOrEmpty(General.Map.Config.DecorateGames))
@@ -1906,6 +1907,16 @@ namespace CodeImp.DoomBuilder.Data
                 decorate.ClearActors();
 		}
 
+        // [ZZ] this retrieves ZDoom actor structure by class name.
+        public ActorStructure GetZDoomActor(string classname)
+        {
+            classname = classname.ToLowerInvariant();
+            ActorStructure outv;
+            if (!zdoomclasses.TryGetValue(classname, out outv))
+                return null;
+            return outv;
+        }
+
         // [ZZ] this merges in the parsed actor lists from zscript+decorate using the original DECORATE merging code
         private int ApplyZDoomThings(Dictionary<int, string> spawnnumsoverride, Dictionary<int, string> doomednumsoverride)
         {
@@ -1937,6 +1948,7 @@ namespace CodeImp.DoomBuilder.Data
             IEnumerable<ActorStructure> mergedAllActors = zscript.AllActors.Union(decorate.AllActors);
             Dictionary<string, ActorStructure> mergedActorsByClass = zscript.ActorsByClass.Union(decorate.ActorsByClass).ToDictionary(k => k.Key, v => v.Value);
             Dictionary<string, ActorStructure> mergedAllActorsByClass = zscript.AllActorsByClass.Union(decorate.AllActorsByClass).ToDictionary(k => k.Key, v => v.Value);
+            zdoomclasses = mergedAllActorsByClass;
 
             // Step 1. Go for all actors in the decorate to make things or update things
             foreach (ActorStructure actor in mergedActors)

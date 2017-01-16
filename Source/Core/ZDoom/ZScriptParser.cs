@@ -81,6 +81,8 @@ namespace CodeImp.DoomBuilder.ZDoom
                             if (flagname == null) return false;
 
                             //parser.LogWarning(string.Format("{0}{1}", (flagset ? '+' : '-'), flagname));
+                            // set flag
+                            flags[flagname] = flagset;
                             break;
                         }
 
@@ -112,6 +114,8 @@ namespace CodeImp.DoomBuilder.ZDoom
                             }
 
                             //parser.LogWarning(string.Format("{0} = [{1}]", propertyname, string.Join(", ", propertyvalues.ToArray())));
+                            // set property
+                            props[propertyname] = propertyvalues;
                             break;
                         }
                 }
@@ -660,7 +664,7 @@ namespace CodeImp.DoomBuilder.ZDoom
         #region ================== Constructor / Disposer
 
         // Constructor
-        public ZScriptParser()
+        public ZScriptParser(DataManager dataman) : base(dataman)
         {
             ClearActors();
         }
@@ -798,6 +802,62 @@ namespace CodeImp.DoomBuilder.ZDoom
 
                 ol.Add(token);
             }
+        }
+
+        internal bool SkipBlock()
+        {
+            List<ZScriptToken> ol = new List<ZScriptToken>();
+            //
+            int nestingLevel = 0;
+            //
+            long cpos = datastream.Position;
+            ZScriptToken token = tokenizer.ExpectToken(ZScriptTokenType.OpenCurly);
+            if (token == null || !token.IsValid)
+            {
+                ReportError("Expected {, got " + ((Object)token ?? "<null>").ToString());
+                return false;
+            }
+
+            // parse everything between { and }
+            nestingLevel = 1;
+            while (nestingLevel > 0)
+            {
+                cpos = datastream.Position;
+                token = tokenizer.ReadToken(true);
+                //LogWarning(token.ToString());
+                if (token == null)
+                {
+                    ReportError("Expected a token");
+                    return false;
+                }
+
+                if (token.Type != ZScriptTokenType.Invalid)
+                    continue;
+
+                if (token.Value == "{")
+                {
+                    nestingLevel++;
+                }
+                else if (token.Value == "}")
+                {
+                    nestingLevel--;
+                    if (nestingLevel < 0)
+                    {
+                        ReportError("Closing parenthesis without an opening one");
+                        return false;
+                    }
+                }
+
+                ol.Add(token);
+            }
+
+            // there is POTENTIALLY a semicolon after the class definition. it's not supposed to be there, but it's acceptable (GZDoom.pk3 has this)
+            ZScriptToken tailtoken = tokenizer.ReadToken();
+            cpos = datastream.Position;
+            if (tailtoken == null || tailtoken.Type != ZScriptTokenType.Semicolon)
+                datastream.Position = cpos;
+
+            return true;
         }
 
         internal List<ZScriptToken> ParseBlock(bool allowsingle)
@@ -1020,8 +1080,9 @@ namespace CodeImp.DoomBuilder.ZDoom
             // do nothing else atm, except remember the position to put it into the class parsing code
             tokenizer.SkipWhitespace();
             long cpos = datastream.Position;
-            List<ZScriptToken> classblocktokens = ParseBlock(false);
-            if (classblocktokens == null) return false;
+            //List<ZScriptToken> classblocktokens = ParseBlock(false);
+            //if (classblocktokens == null) return false;
+            if (!SkipBlock()) return false;
 
             string log_inherits = ((tok_parentname != null) ? "inherits " + tok_parentname.Value : "");
             if (tok_replacename != null) log_inherits += ((log_inherits.Length > 0) ? ", " : "") + "replaces " + tok_replacename.Value;

@@ -169,25 +169,13 @@ namespace CodeImp.DoomBuilder.ZDoom
             return tok;
         }
 
-        public ZScriptToken ReadToken()
+        // short_circuit only checks for string literals and "everything else", reporting "everything else" as invalid tokens
+        public ZScriptToken ReadToken(bool short_circuit = false)
         {
             try
             {
                 ZScriptToken tok;
 
-                // general tokens
-                /*
-                Identifier, // meow
-                Integer, // -666
-                Double, // 1.3
-                String, // "..."
-                Name, // '...'
-
-                LineComment,
-                BlockComment,
-                Whitespace,
-
-                Preprocessor*/
                 long cpos = reader.BaseStream.Position; // I really hope we can rewind this <_<
                 char c = reader.ReadChar();
                 LastPosition = cpos;
@@ -195,144 +183,147 @@ namespace CodeImp.DoomBuilder.ZDoom
                 // 
                 string whitespace = " \r\t\u00A0";
 
-                // check whitespace
-                if (whitespace.Contains(c))
+                if (!short_circuit)
                 {
-                    string ws_content = "";
-                    ws_content += c;
-                    while (true)
+                    // check whitespace
+                    if (whitespace.Contains(c))
                     {
-                        char cnext = reader.ReadChar();
-                        if (whitespace.Contains(cnext))
-                        {
-                            ws_content += cnext;
-                            continue;
-                        }
-
-                        reader.BaseStream.Position--;
-                        break;
-                    }
-
-                    tok = new ZScriptToken();
-                    tok.Type = ZScriptTokenType.Whitespace;
-                    tok.Value = ws_content;
-                    return tok;
-                }
-
-                // check identifier
-                if ((c >= 'a' && c <= 'z') ||
-                    (c >= 'A' && c <= 'Z') ||
-                    (c == '_'))
-                {
-                    string id_content = "";
-                    id_content += c;
-                    while (true)
-                    {
-                        char cnext = reader.ReadChar();
-                        if ((cnext >= 'a' && cnext <= 'z') ||
-                            (cnext >= 'A' && cnext <= 'Z') ||
-                            (cnext == '_') ||
-                            (cnext >= '0' && cnext <= '9'))
-                        {
-                            id_content += cnext;
-                            continue;
-                        }
-
-                        reader.BaseStream.Position--;
-                        break;
-                    }
-
-                    tok = new ZScriptToken();
-                    tok.Type = ZScriptTokenType.Identifier;
-                    tok.Value = id_content;
-                    return tok;
-                }
-
-                // check integer
-                if ((c >= '0' && c <= '9') || c == '.')
-                {
-                    bool isint = true;
-                    bool isdouble = (c == '.');
-                    bool isexponent = false;
-                    if (isdouble) // make sure next character is an integer, otherwise its probably a member access
-                    {
-                        char cnext = reader.ReadChar();
-                        if (!(cnext >= '0' && cnext <= '9'))
-                        {
-                            isint = false;
-                            reader.BaseStream.Position--;
-                        }
-                    }
-
-                    if (isint)
-                    {
-                        bool isoctal = (c == '0');
-                        bool ishex = false;
-                        string i_content = "";
-                        i_content += c;
+                        string ws_content = "";
+                        ws_content += c;
                         while (true)
                         {
                             char cnext = reader.ReadChar();
-                            if (!isdouble && (cnext == 'x') && i_content.Length == 1)
+                            if (whitespace.Contains(cnext))
                             {
-                                isoctal = false;
-                                ishex = true;
+                                ws_content += cnext;
+                                continue;
                             }
-                            else if ((cnext >= '0' && cnext <= '7') ||
-                                     (!isoctal && cnext >= '8' && cnext <= '9') ||
-                                     (ishex && ((cnext >= 'a' && cnext <= 'f') || (cnext >= 'A' && cnext <= 'F'))))
-                            {
-                                i_content += cnext;
-                            }
-                            else if (!ishex && !isdouble && !isexponent && cnext == '.')
-                            {
-                                isdouble = true;
-                                isoctal = false;
-                                i_content += '.';
-                            }
-                            else if (!isoctal && !ishex && !isexponent && (cnext == 'e' || cnext == 'E'))
-                            {
-                                isexponent = true;
-                                isdouble = true;
-                                i_content += 'e';
-                                cnext = reader.ReadChar();
-                                if (cnext == '-') i_content += '-';
-                                else reader.BaseStream.Position--;
-                            }
-                            else
-                            {
-                                reader.BaseStream.Position--;
-                                break;
-                            }
+
+                            reader.BaseStream.Position--;
+                            break;
                         }
 
                         tok = new ZScriptToken();
-                        tok.Type = (isdouble ? ZScriptTokenType.Double : ZScriptTokenType.Integer);
-                        tok.Value = i_content;
-                        try
+                        tok.Type = ZScriptTokenType.Whitespace;
+                        tok.Value = ws_content;
+                        return tok;
+                    }
+
+                    // check identifier
+                    if ((c >= 'a' && c <= 'z') ||
+                        (c >= 'A' && c <= 'Z') ||
+                        (c == '_'))
+                    {
+                        string id_content = "";
+                        id_content += c;
+                        while (true)
                         {
-                            if (ishex || isoctal || !isdouble)
+                            char cnext = reader.ReadChar();
+                            if ((cnext >= 'a' && cnext <= 'z') ||
+                                (cnext >= 'A' && cnext <= 'Z') ||
+                                (cnext == '_') ||
+                                (cnext >= '0' && cnext <= '9'))
                             {
-                                int numbase = 10;
-                                if (ishex) numbase = 16;
-                                else if (isoctal) numbase = 8;
-                                tok.ValueInt = Convert.ToInt32(tok.Value, numbase);
-                                tok.ValueDouble = tok.ValueInt;
+                                id_content += cnext;
+                                continue;
                             }
-                            else if (isdouble)
-                            {
-                                string dval = (tok.Value[0] == '.') ? "0" + tok.Value : tok.Value;
-                                tok.ValueDouble = Convert.ToDouble(dval);
-                                tok.ValueInt = (int)tok.ValueDouble;
-                            }
-                        }
-                        catch (Exception)
-                        {
-                            //throw new Exception(tok.ToString());
-                            return null;
+
+                            reader.BaseStream.Position--;
+                            break;
                         }
 
+                        tok = new ZScriptToken();
+                        tok.Type = ZScriptTokenType.Identifier;
+                        tok.Value = id_content;
                         return tok;
+                    }
+
+                    // check integer
+                    if ((c >= '0' && c <= '9') || c == '.')
+                    {
+                        bool isint = true;
+                        bool isdouble = (c == '.');
+                        bool isexponent = false;
+                        if (isdouble) // make sure next character is an integer, otherwise its probably a member access
+                        {
+                            char cnext = reader.ReadChar();
+                            if (!(cnext >= '0' && cnext <= '9'))
+                            {
+                                isint = false;
+                                reader.BaseStream.Position--;
+                            }
+                        }
+
+                        if (isint)
+                        {
+                            bool isoctal = (c == '0');
+                            bool ishex = false;
+                            string i_content = "";
+                            i_content += c;
+                            while (true)
+                            {
+                                char cnext = reader.ReadChar();
+                                if (!isdouble && (cnext == 'x') && i_content.Length == 1)
+                                {
+                                    isoctal = false;
+                                    ishex = true;
+                                }
+                                else if ((cnext >= '0' && cnext <= '7') ||
+                                         (!isoctal && cnext >= '8' && cnext <= '9') ||
+                                         (ishex && ((cnext >= 'a' && cnext <= 'f') || (cnext >= 'A' && cnext <= 'F'))))
+                                {
+                                    i_content += cnext;
+                                }
+                                else if (!ishex && !isdouble && !isexponent && cnext == '.')
+                                {
+                                    isdouble = true;
+                                    isoctal = false;
+                                    i_content += '.';
+                                }
+                                else if (!isoctal && !ishex && !isexponent && (cnext == 'e' || cnext == 'E'))
+                                {
+                                    isexponent = true;
+                                    isdouble = true;
+                                    i_content += 'e';
+                                    cnext = reader.ReadChar();
+                                    if (cnext == '-') i_content += '-';
+                                    else reader.BaseStream.Position--;
+                                }
+                                else
+                                {
+                                    reader.BaseStream.Position--;
+                                    break;
+                                }
+                            }
+
+                            tok = new ZScriptToken();
+                            tok.Type = (isdouble ? ZScriptTokenType.Double : ZScriptTokenType.Integer);
+                            tok.Value = i_content;
+                            try
+                            {
+                                if (ishex || isoctal || !isdouble)
+                                {
+                                    int numbase = 10;
+                                    if (ishex) numbase = 16;
+                                    else if (isoctal) numbase = 8;
+                                    tok.ValueInt = Convert.ToInt32(tok.Value, numbase);
+                                    tok.ValueDouble = tok.ValueInt;
+                                }
+                                else if (isdouble)
+                                {
+                                    string dval = (tok.Value[0] == '.') ? "0" + tok.Value : tok.Value;
+                                    tok.ValueDouble = Convert.ToDouble(dval);
+                                    tok.ValueInt = (int)tok.ValueDouble;
+                                }
+                            }
+                            catch (Exception)
+                            {
+                                //throw new Exception(tok.ToString());
+                                return null;
+                            }
+
+                            return tok;
+                        }
                     }
                 }
 
@@ -427,19 +418,22 @@ namespace CodeImp.DoomBuilder.ZDoom
 
                 reader.BaseStream.Position = cpos;
 
-                // named tokens
-                char[] namedtoken_buf = reader.ReadChars(namedtokentypesorder[0].Length);
-                string namedtoken = new string(namedtoken_buf);
-                foreach (string namedtokentype in namedtokentypesorder)
+                if (!short_circuit)
                 {
-                    if (namedtoken.StartsWith(namedtokentype))
+                    // named tokens
+                    char[] namedtoken_buf = reader.ReadChars(namedtokentypesorder[0].Length);
+                    string namedtoken = new string(namedtoken_buf);
+                    foreach (string namedtokentype in namedtokentypesorder)
                     {
-                        // found the token.
-                        reader.BaseStream.Position = cpos + namedtokentype.Length;
-                        tok = new ZScriptToken();
-                        tok.Type = namedtokentypes[namedtokentype];
-                        tok.Value = namedtokentype;
-                        return tok;
+                        if (namedtoken.StartsWith(namedtokentype))
+                        {
+                            // found the token.
+                            reader.BaseStream.Position = cpos + namedtokentype.Length;
+                            tok = new ZScriptToken();
+                            tok.Type = namedtokentypes[namedtokentype];
+                            tok.Value = namedtokentype;
+                            return tok;
+                        }
                     }
                 }
 
