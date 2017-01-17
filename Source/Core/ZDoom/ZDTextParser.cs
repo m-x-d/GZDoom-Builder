@@ -68,10 +68,6 @@ namespace CodeImp.DoomBuilder.ZDoom
 		protected string textresourcepath;
 		protected readonly Dictionary<string, ScriptResource> scriptresources;
 		protected readonly HashSet<string> untrackedtextresources;
-
-        // [ZZ] this is required so that ActorStructure can query all other actor structures (i.e. decorate -> zscript)
-        private DataManager dataman;
-		
 		#endregion
 		
 		#region ================== Properties
@@ -84,17 +80,15 @@ namespace CodeImp.DoomBuilder.ZDoom
 		public bool HasError { get { return (errordesc != null); } }
 		internal abstract ScriptType ScriptType { get; } //mxd
 		internal Dictionary<string, ScriptResource> ScriptResources { get { return scriptresources; } } //mxd
-        internal DataManager DataManager { get { return dataman; } }
 
 		#endregion
 		
 		#region ================== Constructor / Disposer
 		
 		// Constructor
-		protected ZDTextParser(DataManager dataman = null)
+		protected ZDTextParser()
 		{
             // Initialize
-            this.dataman = dataman;
 			errordesc = null;
 			scriptresources = new Dictionary<string, ScriptResource>(StringComparer.OrdinalIgnoreCase); //mxd
 			untrackedtextresources = new HashSet<string>(StringComparer.OrdinalIgnoreCase); //mxd

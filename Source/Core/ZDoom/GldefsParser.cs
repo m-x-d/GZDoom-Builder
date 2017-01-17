@@ -499,7 +499,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			}
 
 			// Check if actor exists
-			if(!General.Map.Data.Decorate.ActorsByClass.ContainsKey(objectclass))
+			if(General.Map.Data.GetZDoomActor(objectclass) == null)
 				LogWarning("DECORATE class \"" + objectclass + "\" does not exist");
 
 			// Now find opening brace

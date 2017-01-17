@@ -1827,7 +1827,7 @@ namespace CodeImp.DoomBuilder.Data
         private void LoadZScriptThings()
         {
             // Create new parser
-            zscript = new ZScriptParser(this) { OnInclude = LoadZScriptFromLocation };
+            zscript = new ZScriptParser { OnInclude = LoadZScriptFromLocation };
 
             // Only load these when the game configuration supports the use of decorate
             if (!string.IsNullOrEmpty(General.Map.Config.DecorateGames))
@@ -1871,7 +1871,7 @@ namespace CodeImp.DoomBuilder.Data
 		private void LoadDecorateThings()
 		{
 			// Create new parser
-			decorate = new DecorateParser(this, zscript.AllActorsByClass) { OnInclude = LoadDecorateFromLocation };
+			decorate = new DecorateParser(zscript.AllActorsByClass) { OnInclude = LoadDecorateFromLocation };
 
 			// Only load these when the game configuration supports the use of decorate
 			if(!string.IsNullOrEmpty(General.Map.Config.DecorateGames))

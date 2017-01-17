@@ -42,7 +42,6 @@ namespace CodeImp.DoomBuilder.ZDoom
 		// All we care about is the first sprite in the sequence
 		internal List<FrameInfo> sprites;
 		internal StateGoto gotostate;
-        internal DataManager dataman;
 		
 		#endregion
 
@@ -55,18 +54,16 @@ namespace CodeImp.DoomBuilder.ZDoom
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		internal StateStructure(ActorStructure actor, ZDTextParser parser, DataManager dataman)
+		internal StateStructure(ActorStructure actor, ZDTextParser parser)
 		{
 			this.gotostate = null;
-            this.dataman = dataman;
 			this.sprites = new List<FrameInfo>();
 		}
 
 		//mxd
-		internal StateStructure(string spritename, DataManager dataman) 
+		internal StateStructure(string spritename) 
 		{
 			this.gotostate = null;
-            this.dataman = dataman;
 			this.sprites = new List<FrameInfo> { new FrameInfo { Sprite = spritename } };
 		}
 
@@ -90,7 +87,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			if(gotostate != null)
 			{
 				// Find the class
-				ActorStructure a = dataman.GetZDoomActor(gotostate.ClassName);
+				ActorStructure a = General.Map.Data.GetZDoomActor(gotostate.ClassName);
 				if(a != null)
 				{
 					StateStructure s = a.GetState(gotostate.StateName);

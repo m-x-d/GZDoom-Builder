@@ -146,7 +146,7 @@ namespace CodeImp.DoomBuilder.ZDoom
             {
                 // parse a state block.
                 // this is a seriously broken approach, but let it be for now.
-                StateStructure st = new ZScriptStateStructure(this, parser, parser.DataManager);
+                StateStructure st = new ZScriptStateStructure(this, parser);
                 parser.tokenizer = tokenizer;
                 if (parser.HasError) return false;
                 states[statelabel] = st;

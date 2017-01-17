@@ -48,7 +48,7 @@ namespace CodeImp.DoomBuilder.ZDoom
             return null;
         }
 
-        internal ZScriptStateStructure(ActorStructure actor, ZDTextParser zdparser, DataManager dataman) : base(actor, zdparser, dataman)
+        internal ZScriptStateStructure(ActorStructure actor, ZDTextParser zdparser) : base(actor, zdparser)
         {
             ZScriptParser parser = (ZScriptParser)zdparser;
             Stream stream = parser.DataStream;

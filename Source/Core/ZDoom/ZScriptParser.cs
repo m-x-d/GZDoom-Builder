@@ -188,7 +188,7 @@ namespace CodeImp.DoomBuilder.ZDoom
         #region ================== Constructor / Disposer
 
         // Constructor
-        public ZScriptParser(DataManager dataman) : base(dataman)
+        public ZScriptParser()
         {
             ClearActors();
         }

@@ -98,7 +98,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		#region ================== Constructor / Disposer
 		
 		// Constructor
-		public DecorateParser(DataManager dataman, Dictionary<string, ActorStructure> _zscriptactors) : base(dataman)
+		public DecorateParser(Dictionary<string, ActorStructure> _zscriptactors)
 		{
 			// Syntax
 			whitespace = "\n \t\r\u00A0"; //mxd. non-breaking space is also space :)
