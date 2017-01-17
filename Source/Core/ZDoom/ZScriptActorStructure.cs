@@ -269,7 +269,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 
             classname = _classname;
             replaceclass = _replacesname;
-            baseclass = parser.GetArchivedActorByName(_parentname);
+            //baseclass = parser.GetArchivedActorByName(_parentname); // this is not guaranteed to work here
 
             ZScriptToken cls_open = tokenizer.ExpectToken(ZScriptTokenType.OpenCurly);
             if (cls_open == null || !cls_open.IsValid)
@@ -348,7 +348,7 @@ namespace CodeImp.DoomBuilder.ZDoom
                 List<string> names = new List<string>();
                 List<int> arraylens = new List<int>();
                 List<ZScriptToken> args = null; // this is for the future
-                List<ZScriptToken> body = null;
+                //List<ZScriptToken> body = null;
 
                 while (true)
                 {

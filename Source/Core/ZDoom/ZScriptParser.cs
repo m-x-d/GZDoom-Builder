@@ -821,10 +821,58 @@ namespace CodeImp.DoomBuilder.ZDoom
         {
             ClearError();
 
+            // parse class data
             foreach (ZScriptClassStructure cls in allclasseslist)
             {
                 if (!cls.Process())
                     return false;
+            }
+
+            // inject superclasses, since everything is parsed by now
+            foreach (ZScriptClassStructure cls in allclasseslist)
+            {
+                ActorStructure actor = cls.Actor;
+                if (actor != null && cls.ParentName != null)
+                {
+                    actor.baseclass = GetArchivedActorByName(cls.ParentName);
+                    string inheritclass = cls.ParentName;
+                    if (actor.baseclass == null)
+                    {
+                        //check if this class inherits from a class defined in game configuration
+                        Dictionary<int, ThingTypeInfo> things = General.Map.Config.GetThingTypes();
+                        string inheritclasscheck = inheritclass.ToLowerInvariant();
+
+                        bool thingfound = false;
+                        foreach (KeyValuePair<int, ThingTypeInfo> ti in things)
+                        {
+                            if (!string.IsNullOrEmpty(ti.Value.ClassName) && ti.Value.ClassName.ToLowerInvariant() == inheritclasscheck)
+                            {
+                                //states
+                                if (actor.states.Count == 0 && !string.IsNullOrEmpty(ti.Value.Sprite))
+                                    actor.states.Add("spawn", new StateStructure(ti.Value.Sprite.Substring(0, 5)));
+
+                                //flags
+                                if (ti.Value.Hangs && !actor.flags.ContainsKey("spawnceiling"))
+                                    actor.flags["spawnceiling"] = true;
+
+                                if (ti.Value.Blocking > 0 && !actor.flags.ContainsKey("solid"))
+                                    actor.flags["solid"] = true;
+
+                                //properties
+                                if (!actor.props.ContainsKey("height"))
+                                    actor.props["height"] = new List<string> { ti.Value.Height.ToString() };
+
+                                if (!actor.props.ContainsKey("radius"))
+                                    actor.props["radius"] = new List<string> { ti.Value.Radius.ToString() };
+
+                                thingfound = true;
+                                break;
+                            }
+                        }
+
+                        if (!thingfound) LogWarning("Unable to find \"" + inheritclass + "\" class to inherit from, while parsing \"" + cls.ClassName + "\"");
+                    }
+                }
             }
 
             return true;
