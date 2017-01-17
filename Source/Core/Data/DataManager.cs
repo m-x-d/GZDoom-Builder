@@ -2119,7 +2119,7 @@ namespace CodeImp.DoomBuilder.Data
 			// Find the category to put the actor in
 			ThingCategory cat = null;
 			string catname = (catinfo.Category.Count > 0 ? catinfo.Category[0].Trim().ToLowerInvariant() : string.Empty); //catnames[0].ToLowerInvariant().Trim();
-			if(string.IsNullOrEmpty(catname)) catname = "decorate";
+			if(string.IsNullOrEmpty(catname)) catname = "custom";
 
 			// First search by Title...
 			foreach(ThingCategory c in categories) 
@@ -2151,7 +2151,7 @@ namespace CodeImp.DoomBuilder.Data
 			if(cat == null)
 			{
 				string cattitle = (catinfo.Category.Count > 0 ? catinfo.Category[0].Trim() : string.Empty);
-				if(string.IsNullOrEmpty(cattitle)) cattitle = "Decorate";
+				if(string.IsNullOrEmpty(cattitle)) cattitle = "User-defined";
 				cat = new ThingCategory(parent, catname, cattitle, catinfo);
 				categories.Add(cat); // ^.^
 			}
@@ -2181,7 +2181,7 @@ namespace CodeImp.DoomBuilder.Data
 				}
 				else
 				{
-					catinfo.Category = new List<string> { "Decorate" };
+					catinfo.Category = new List<string> { "User-defined" };
 				}
 			}
 			else
