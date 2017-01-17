@@ -96,13 +96,14 @@ namespace CodeImp.DoomBuilder.ZDoom
 
                     // check actor replacement.
                     Parser.archivedactors[Actor.ClassName.ToLowerInvariant()] = Actor;
+                    Parser.realarchivedactors[Actor.ClassName.ToLowerInvariant()] = Actor;
                     if (Actor.CheckActorSupported())
                         Parser.actors[Actor.ClassName.ToLowerInvariant()] = Actor;
 
                     // Replace an actor?
                     if (Actor.ReplacesClass != null)
                     {
-                        if (Parser.GetArchivedActorByName(Actor.ReplacesClass) != null)
+                        if (Parser.GetArchivedActorByName(Actor.ReplacesClass, false) != null)
                             Parser.archivedactors[Actor.ReplacesClass.ToLowerInvariant()] = Actor;
                         else
                             Parser.LogWarning("Unable to find \"" + Actor.ReplacesClass + "\" class to replace, while parsing \"" + Actor.ClassName + "\"");
@@ -145,6 +146,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 
         // These are all parsed actors, also those from other games
         private Dictionary<string, ActorStructure> archivedactors;
+
+        // These are archivedactors, but also without replacements, for inheritance purposes
+        private Dictionary<string, ActorStructure> realarchivedactors;
 
         // In ZScript, you can inherit an actor before defining it. So we need to postpone all processing after the classes have been gathered.
         private Dictionary<string, ZScriptClassStructure> allclasses;
@@ -832,9 +836,9 @@ namespace CodeImp.DoomBuilder.ZDoom
             foreach (ZScriptClassStructure cls in allclasseslist)
             {
                 ActorStructure actor = cls.Actor;
-                if (actor != null && cls.ParentName != null)
+                if (actor != null && cls.ParentName != null && cls.ParentName.ToLowerInvariant() != "thinker") // don't try to inherit this one
                 {
-                    actor.baseclass = GetArchivedActorByName(cls.ParentName);
+                    actor.baseclass = GetArchivedActorByName(cls.ParentName, true);
                     string inheritclass = cls.ParentName;
                     if (actor.baseclass == null)
                     {
@@ -909,10 +913,11 @@ namespace CodeImp.DoomBuilder.ZDoom
 
         // This returns an actor by name
         // Returns null when actor cannot be found
-        internal ActorStructure GetArchivedActorByName(string name)
+        internal ActorStructure GetArchivedActorByName(string name, bool unique)
         {
+            Dictionary<string, ActorStructure> dict = (unique) ? realarchivedactors : archivedactors;
             name = name.ToLowerInvariant();
-            return (archivedactors.ContainsKey(name) ? archivedactors[name] : null);
+            return (dict.ContainsKey(name) ? dict[name] : null);
         }
 
         internal void ClearActors()
@@ -920,6 +925,7 @@ namespace CodeImp.DoomBuilder.ZDoom
             // Initialize
             actors = new Dictionary<string, ActorStructure>(StringComparer.OrdinalIgnoreCase);
             archivedactors = new Dictionary<string, ActorStructure>(StringComparer.OrdinalIgnoreCase);
+            realarchivedactors = new Dictionary<string, ActorStructure>(StringComparer.OrdinalIgnoreCase);
             parsedlumps = new HashSet<string>(StringComparer.OrdinalIgnoreCase); //mxd
             allclasses = new Dictionary<string, ZScriptClassStructure>();
             allclasseslist = new List<ZScriptClassStructure>();
