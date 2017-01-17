@@ -287,8 +287,10 @@ namespace CodeImp.DoomBuilder.ZDoom
             return true;
         }
 
-        internal ZScriptActorStructure(ZDTextParser zdparser, DecorateCategoryInfo catinfo, string _classname, string _replacesname, string _parentname) : base(zdparser, catinfo)
+        internal ZScriptActorStructure(ZDTextParser zdparser, DecorateCategoryInfo catinfo, string _classname, string _replacesname, string _parentname)
         {
+            this.catinfo = catinfo; //mxd
+
             parser = (ZScriptParser)zdparser;
             stream = parser.DataStream;
             tokenizer = new ZScriptTokenizer(parser.DataReader);

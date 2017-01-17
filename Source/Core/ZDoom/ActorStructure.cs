@@ -80,10 +80,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 		#region ================== Constructor / Disposer
 		
 		// Constructor
-		internal ActorStructure(ZDTextParser parser, DecorateCategoryInfo catinfo)
+		internal ActorStructure()
 		{
 			// Initialize
-			this.catinfo = catinfo; //mxd
 			flags = new Dictionary<string, bool>(StringComparer.OrdinalIgnoreCase);
 			props = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
 			states = new Dictionary<string, StateStructure>(StringComparer.OrdinalIgnoreCase);

@@ -8,7 +8,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 {
     internal sealed class ZScriptStateGoto : StateGoto
     {
-        internal ZScriptStateGoto(ActorStructure actor, ZDTextParser zdparser) : base(actor, zdparser)
+        internal ZScriptStateGoto(ActorStructure actor, ZDTextParser zdparser)
         {
             // goto syntax that is accepted by GZDB is [classname::]statename[+offset]
 

@@ -50,11 +50,6 @@ namespace CodeImp.DoomBuilder.ZDoom
 
         }
 
-		internal StateGoto(ActorStructure actor, ZDTextParser parser)
-		{
-
-		}
-		
 		#endregion
 		
 		#region ================== Methods

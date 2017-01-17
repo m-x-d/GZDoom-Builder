@@ -54,7 +54,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 		#region ================== Constructor / Disposer
 
 		// Constructor
-		internal StateStructure(ActorStructure actor, ZDTextParser parser)
+		internal StateStructure()
 		{
 			this.gotostate = null;
 			this.sprites = new List<FrameInfo>();

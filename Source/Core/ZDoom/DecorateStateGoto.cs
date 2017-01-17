@@ -9,7 +9,7 @@ namespace CodeImp.DoomBuilder.ZDoom
     {
         #region ================== DECORATE State Goto parsing
 
-        internal DecorateStateGoto(ActorStructure actor, ZDTextParser parser) : base(actor, parser)
+        internal DecorateStateGoto(ActorStructure actor, ZDTextParser parser)
         {
             string firsttarget = "";
             string secondtarget = "";

@@ -13,8 +13,10 @@ namespace CodeImp.DoomBuilder.ZDoom
     {
         #region ================== DECORATE Actor Structure parsing
 
-        internal DecorateActorStructure(ZDTextParser zdparser, DecorateCategoryInfo catinfo) : base(zdparser, catinfo)
+        internal DecorateActorStructure(ZDTextParser zdparser, DecorateCategoryInfo catinfo)
         {
+            this.catinfo = catinfo; //mxd
+
             DecorateParser parser = (DecorateParser)zdparser;
             bool done = false; //mxd
 

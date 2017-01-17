@@ -15,7 +15,7 @@ namespace CodeImp.DoomBuilder.ZDoom
     {
         #region ================== DECORATE State Structure parsing
 
-        internal DecorateStateStructure(ActorStructure actor, ZDTextParser zdparser) : base(actor, zdparser)
+        internal DecorateStateStructure(ActorStructure actor, ZDTextParser zdparser)
         {
             DecorateParser parser = (DecorateParser)zdparser;
             string lasttoken = "";
