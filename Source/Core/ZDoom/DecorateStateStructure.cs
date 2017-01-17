@@ -116,7 +116,7 @@ namespace CodeImp.DoomBuilder.ZDoom
                             string spritename = (token + spriteframes[0]).ToUpperInvariant();
 
                             // Ignore some odd ZDoom things
-                            if (!spritename.StartsWith("TNT1") && !spritename.StartsWith("----") && !spritename.Contains("#"))
+                            if (/*!realspritename.StartsWith("TNT1") && */!spritename.StartsWith("----") && !spritename.Contains("#")) // [ZZ] some actors have only TNT1 state and receive a random image because of this
                             {
                                 info.Sprite = spritename; //mxd
                                 sprites.Add(info);
