@@ -120,6 +120,7 @@ namespace CodeImp.DoomBuilder.ZDoom
         private Dictionary<ZScriptTokenType, string> namedtokentypesreverse; // these are tokens that have precise equivalent in the enum (like operators)
         private List<string> namedtokentypesorder; // this is the list of said tokens ordered by length.
 
+        public BinaryReader Reader { get { return reader; } }
         public long LastPosition { get; private set; }
 
         public ZScriptTokenizer(BinaryReader br)
@@ -518,7 +519,7 @@ namespace CodeImp.DoomBuilder.ZDoom
             // token was not found, try to read the token that was actually found and return that
             reader.BaseStream.Position = cpos;
             ZScriptToken invalid = ReadToken();
-            invalid.IsValid = false;
+            if (invalid != null) invalid.IsValid = false;
             reader.BaseStream.Position = cpos;
             return invalid;
         }

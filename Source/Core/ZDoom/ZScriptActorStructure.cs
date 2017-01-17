@@ -14,6 +14,27 @@ namespace CodeImp.DoomBuilder.ZDoom
         private ZScriptTokenizer tokenizer;
         // ========
 
+        private bool ParseGZDBComment(string text)
+        {
+            text = text.Trim();
+            // check if it's a GZDB comment
+            if (text[0] != '$')
+                return false;
+            // check next occurrence of " \t\r\u00A0", then put everything else as property without parsing
+            int nextWhitespace = text.IndexOfAny(new char[] { ' ', '\t', '\r', '\u00A0' });
+
+            string propertyname = text;
+            string propertyvalue = "";
+            if (nextWhitespace >= 0)
+            {
+                propertyname = propertyname.Substring(0, nextWhitespace);
+                propertyvalue = text.Substring(nextWhitespace + 1);
+            }
+
+            props[propertyname] = new List<string> { propertyvalue };
+            return true;
+        }
+
         private bool ParseDefaultBlock()
         {
             tokenizer.SkipWhitespace();
@@ -29,14 +50,16 @@ namespace CodeImp.DoomBuilder.ZDoom
             // todo parse defaults block
             while (true)
             {
-                tokenizer.SkipWhitespace();
                 long cpos = stream.Position;
-                token = tokenizer.ReadToken();
-                if (token == null)
+                token = tokenizer.ExpectToken(ZScriptTokenType.Whitespace, ZScriptTokenType.BlockComment, ZScriptTokenType.Newline, ZScriptTokenType.LineComment, ZScriptTokenType.OpAdd, ZScriptTokenType.OpSubtract, ZScriptTokenType.Identifier, ZScriptTokenType.CloseCurly, ZScriptTokenType.Semicolon);
+                if (token == null || !token.IsValid)
                 {
-                    parser.ReportError("Expected a token");
+                    parser.ReportError("Expected comment, flag, property, or }, got " + ((Object)token ?? "<null>").ToString());
                     return false;
                 }
+
+                //if (ClassName == "Enforcer")
+                //    parser.LogWarning(token.ToString());
 
                 if (token.Type == ZScriptTokenType.CloseCurly)
                     break;
@@ -46,6 +69,10 @@ namespace CodeImp.DoomBuilder.ZDoom
                     case ZScriptTokenType.Whitespace:
                     case ZScriptTokenType.BlockComment:
                     case ZScriptTokenType.Newline:
+                        break;
+
+                    case ZScriptTokenType.LineComment:
+                        ParseGZDBComment(token.Value);
                         break;
 
                     // flag definition (+/-)
