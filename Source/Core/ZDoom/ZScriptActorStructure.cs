@@ -403,7 +403,8 @@ namespace CodeImp.DoomBuilder.ZDoom
                         if (token.Type == ZScriptTokenType.OpenCurly)
                         {
                             stream.Position = cpos;
-                            body = parser.ParseBlock(false);
+                            parser.SkipBlock();
+                            //body = parser.ParseBlock(false);
                         }
                     }
                     else
