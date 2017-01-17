@@ -51,6 +51,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 
         // == != < > <= >=
         [ZScriptTokenString("==")] OpEquals,
+        [ZScriptTokenString("~==")] OpEqualsCaseInsensitive,
         [ZScriptTokenString("!=")] OpNotEquals,
         [ZScriptTokenString("<")] OpLessThan,
         [ZScriptTokenString(">")] OpGreaterThan,
@@ -73,6 +74,7 @@ namespace CodeImp.DoomBuilder.ZDoom
         [ZScriptTokenString("^")] OpXor,
         [ZScriptTokenString("&")] OpAnd,
         [ZScriptTokenString("|")] OpOr,
+        [ZScriptTokenString("..")] OpStringConcat,
 
         // = += -= *= /= <<= >>= ~= ^= &= |=
         [ZScriptTokenString("=")] OpAssign,
