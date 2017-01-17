@@ -28,7 +28,7 @@ namespace CodeImp.DoomBuilder.ZDoom
             if (nextWhitespace >= 0)
             {
                 propertyname = propertyname.Substring(0, nextWhitespace);
-                propertyvalue = text.Substring(nextWhitespace + 1);
+                propertyvalue = text.Substring(nextWhitespace + 1).Trim();
             }
 
             props[propertyname] = new List<string> { propertyvalue };
