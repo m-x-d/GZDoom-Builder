@@ -833,6 +833,7 @@ namespace CodeImp.DoomBuilder.ZDoom
             }
 
             // inject superclasses, since everything is parsed by now
+            Dictionary<int, ThingTypeInfo> things = General.Map.Config.GetThingTypes();
             foreach (ZScriptClassStructure cls in allclasseslist)
             {
                 ActorStructure actor = cls.Actor;
@@ -843,7 +844,6 @@ namespace CodeImp.DoomBuilder.ZDoom
                     if (actor.baseclass == null)
                     {
                         //check if this class inherits from a class defined in game configuration
-                        Dictionary<int, ThingTypeInfo> things = General.Map.Config.GetThingTypes();
                         string inheritclasscheck = inheritclass.ToLowerInvariant();
 
                         bool thingfound = false;
