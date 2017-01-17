@@ -8,7 +8,13 @@ namespace CodeImp.DoomBuilder.ZDoom
 {
     public sealed class ZScriptActorStructure : ActorStructure
     {
-        private bool ParseDefaultBlock(ZScriptParser parser, Stream stream, ZScriptTokenizer tokenizer)
+        // privates
+        private ZScriptParser parser;
+        private Stream stream;
+        private ZScriptTokenizer tokenizer;
+        // ========
+
+        private bool ParseDefaultBlock()
         {
             tokenizer.SkipWhitespace();
             ZScriptToken token = tokenizer.ExpectToken(ZScriptTokenType.OpenCurly);
@@ -95,7 +101,7 @@ namespace CodeImp.DoomBuilder.ZDoom
             return true;
         }
 
-        private bool ParseStatesBlock(ZScriptParser parser, Stream stream, ZScriptTokenizer tokenizer)
+        private bool ParseStatesBlock()
         {
             tokenizer.SkipWhitespace();
             ZScriptToken token = tokenizer.ExpectToken(ZScriptTokenType.OpenParen, ZScriptTokenType.OpenCurly);
@@ -174,7 +180,7 @@ namespace CodeImp.DoomBuilder.ZDoom
             return true;
         }
 
-        private string ParseTypeName(ZScriptParser parser, Stream stream, ZScriptTokenizer tokenizer)
+        private string ParseTypeName()
         {
             ZScriptToken token = tokenizer.ExpectToken(ZScriptTokenType.Identifier);
             if (token == null || !token.IsValid)
@@ -190,7 +196,7 @@ namespace CodeImp.DoomBuilder.ZDoom
             token = tokenizer.ReadToken();
             if (token != null && token.Type == ZScriptTokenType.OpLessThan) // <
             {
-                string internal_type = ParseTypeName(parser, stream, tokenizer);
+                string internal_type = ParseTypeName();
                 if (internal_type == null)
                     return null;
                 token = tokenizer.ExpectToken(ZScriptTokenType.OpGreaterThan);
@@ -208,11 +214,57 @@ namespace CodeImp.DoomBuilder.ZDoom
             }
         }
 
+        private bool ParseProperty()
+        {
+            // property identifier: identifier, identifier, identifier, ...;
+            tokenizer.SkipWhitespace();
+            ZScriptToken token = tokenizer.ExpectToken(ZScriptTokenType.Identifier);
+            if (token == null || !token.IsValid)
+            {
+                parser.ReportError("Expected property name, got " + ((Object)token ?? "<null>").ToString());
+                return false;
+            }
+
+            tokenizer.SkipWhitespace();
+            token = tokenizer.ExpectToken(ZScriptTokenType.Colon);
+            if (token == null || !token.IsValid)
+            {
+                parser.ReportError("Expected :, got " + ((Object)token ?? "<null>").ToString());
+                return false;
+            }
+
+            while (true)
+            {
+                // expect identifier, then either a comma or a semicolon.
+                // semicolon means end of definition, comma means we parse next identifier.
+                tokenizer.SkipWhitespace();
+                token = tokenizer.ExpectToken(ZScriptTokenType.Identifier);
+                if (token == null || !token.IsValid)
+                {
+                    parser.ReportError("Expected variable, got " + ((Object)token ?? "<null>").ToString());
+                    return false;
+                }
+
+                tokenizer.SkipWhitespace();
+                token = tokenizer.ExpectToken(ZScriptTokenType.Semicolon, ZScriptTokenType.Comma);
+                if (token == null || !token.IsValid)
+                {
+                    parser.ReportError("Expected comma or ;, got " + ((Object)token ?? "<null>").ToString());
+                    return false;
+                }
+
+                if (token.Type == ZScriptTokenType.Semicolon)
+                    break;
+            }
+
+            return true;
+        }
+
         internal ZScriptActorStructure(ZDTextParser zdparser, DecorateCategoryInfo catinfo, string _classname, string _replacesname, string _parentname) : base(zdparser, catinfo)
         {
-            ZScriptParser parser = (ZScriptParser)zdparser;
-            Stream stream = parser.DataStream;
-            ZScriptTokenizer tokenizer = new ZScriptTokenizer(parser.DataReader);
+            parser = (ZScriptParser)zdparser;
+            stream = parser.DataStream;
+            tokenizer = new ZScriptTokenizer(parser.DataReader);
             parser.tokenizer = tokenizer;
 
             classname = _classname;
@@ -251,12 +303,12 @@ namespace CodeImp.DoomBuilder.ZDoom
                 switch (b_lower)
                 {
                     case "default":
-                        if (!ParseDefaultBlock(parser, stream, tokenizer))
+                        if (!ParseDefaultBlock())
                             return;
                         continue;
 
                     case "states":
-                        if (!ParseStatesBlock(parser, stream, tokenizer))
+                        if (!ParseStatesBlock())
                             return;
                         continue;
 
@@ -276,6 +328,12 @@ namespace CodeImp.DoomBuilder.ZDoom
                             return;
                         continue;
 
+                    // new properties syntax
+                    case "property":
+                        if (!ParseProperty())
+                            return;
+                        continue;
+
                     default:
                         stream.Position = ocpos;
                         break;
@@ -283,7 +341,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 
                 // try to read in a variable/method.
                 bool bmethod = false;
-                string[] availablemodifiers = new string[] { "static", "native", "action", "readonly", "protected", "private", "virtual", "override", "meta", "deprecated", "final" };
+                string[] availablemodifiers = new string[] { "static", "native", "action", "readonly", "protected", "private", "virtual", "override", "meta", "transient", "deprecated", "final" };
                 string[] methodmodifiers = new string[] { "action", "virtual", "override", "final" };
                 HashSet<string> modifiers = new HashSet<string>();
                 List<string> types = new List<string>();
@@ -331,7 +389,7 @@ namespace CodeImp.DoomBuilder.ZDoom
                 while (true)
                 {
                     tokenizer.SkipWhitespace();
-                    string typename = ParseTypeName(parser, stream, tokenizer);
+                    string typename = ParseTypeName();
                     if (typename == null)
                         return;
                     types.Add(typename.ToLowerInvariant());
