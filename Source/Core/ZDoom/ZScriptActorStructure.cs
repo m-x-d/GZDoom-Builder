@@ -118,7 +118,15 @@ namespace CodeImp.DoomBuilder.ZDoom
 
                             //parser.LogWarning(string.Format("{0} = [{1}]", propertyname, string.Join(", ", propertyvalues.ToArray())));
                             // set property
-                            props[propertyname] = propertyvalues;
+                            // translate "scale" to x and y scale
+                            if (propertyname == "scale")
+                            {
+                                props["xscale"] = props["yscale"] = propertyvalues;
+                            }
+                            else
+                            {
+                                props[propertyname] = propertyvalues;
+                            }
                             break;
                         }
                 }

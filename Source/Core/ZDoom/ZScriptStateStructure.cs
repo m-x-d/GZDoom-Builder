@@ -82,7 +82,7 @@ namespace CodeImp.DoomBuilder.ZDoom
                 if (token.Type == ZScriptTokenType.CloseCurly)
                 {
                     stream.Position--;
-                    return; // done
+                    break; // done
                 }
                 else if (token.Type == ZScriptTokenType.Identifier)
                 {
@@ -299,6 +299,8 @@ namespace CodeImp.DoomBuilder.ZDoom
                     } // if identifier
                 } // frame parsing loop (inner)
             } // state parsing loop (outer)
+
+            TrimLeft();
         }
     }
 }

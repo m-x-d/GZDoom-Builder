@@ -45,7 +45,7 @@ namespace CodeImp.DoomBuilder.ZDoom
                         parser.DataStream.Seek(-(lasttoken.Length + 1), SeekOrigin.Current);
 
                     // Done here
-                    return;
+                    goto endofallthings;
                 }
                 //mxd. Start of inner scope?
                 else if (token == "{")
@@ -69,7 +69,7 @@ namespace CodeImp.DoomBuilder.ZDoom
                     parser.DataStream.Seek(-1, SeekOrigin.Current);
 
                     // Done here
-                    return;
+                    goto endofallthings;
                 }
                 else
                 {
@@ -97,7 +97,7 @@ namespace CodeImp.DoomBuilder.ZDoom
                         parser.DataStream.Seek(-(token.Length + 1), SeekOrigin.Current);
 
                         // Done here
-                        return;
+                        goto endofallthings;
                     }
 
                     // No first sprite yet?
@@ -158,7 +158,11 @@ namespace CodeImp.DoomBuilder.ZDoom
                                 return;
                             }
 
-                            if (!parser.NextTokenIs(")")) return;
+                            if (!parser.NextTokenIs(")"))
+                            {
+                                parser.ReportError("Expected closing parenthesis in Light()");
+                                return;
+                            }
                         }
                         //mxd. Inner scope start. Step back and reparse using parent loop
                         else if (t == "{")
@@ -191,7 +195,7 @@ namespace CodeImp.DoomBuilder.ZDoom
                             parser.DataStream.Seek(-1, SeekOrigin.Current);
 
                             // Done here
-                            return;
+                            goto endofallthings;
                         }
 
                         // Read next token
@@ -202,6 +206,11 @@ namespace CodeImp.DoomBuilder.ZDoom
 
                 lasttoken = token;
             }
+
+            // return
+        endofallthings:
+
+            TrimLeft();
         }
 
         #endregion

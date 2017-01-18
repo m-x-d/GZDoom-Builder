@@ -70,6 +70,24 @@ namespace CodeImp.DoomBuilder.ZDoom
 		#endregion
 
 		#region ================== Methods
+
+        // This removes useless images from the start of the state (TNT1)
+        protected void TrimLeft() // :)
+        {
+            // postprocess: if there are only TNT1 sprites, do nothing. however, if there were normal sprites as well, use these.
+            int firstNonEmpty = -1;
+            for (int i = 0; i < sprites.Count; i++)
+            {
+                if (!sprites[i].Sprite.StartsWith("TNT1"))
+                {
+                    firstNonEmpty = i;
+                    break;
+                }
+            }
+
+            if (firstNonEmpty > 0)
+                sprites.RemoveRange(0, firstNonEmpty);
+        }
 		
 		// This finds the first valid sprite and returns it
 		public FrameInfo GetSprite(int index)
