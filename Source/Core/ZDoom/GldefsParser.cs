@@ -303,8 +303,8 @@ namespace CodeImp.DoomBuilder.ZDoom
 							return false;
 						}
 
-                        if (i == 1) light.Style = DynamicLightRenderStyle.NEGATIVE;
-					}
+                            light.Style = (i == 1) ? DynamicLightRenderStyle.NEGATIVE : DynamicLightRenderStyle.NORMAL;
+                        }
 					break;
 
                     case "attenuate":
@@ -320,7 +320,7 @@ namespace CodeImp.DoomBuilder.ZDoom
                             return false;
                         }
 
-                        if (i == 1) light.Style = DynamicLightRenderStyle.ATTENUATED;
+                        light.Style = (i == 1) ? DynamicLightRenderStyle.ATTENUATED : DynamicLightRenderStyle.NORMAL;
                     }
                     break;
 
