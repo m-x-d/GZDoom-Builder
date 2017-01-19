@@ -30,8 +30,8 @@ namespace CodeImp.DoomBuilder.ZDoom
                 return;
             }
 
-            //mxd. Fail on duplicates
-            if (parser.ActorsByClass.ContainsKey(classname.ToLowerInvariant()))
+            //mxd. Fail on duplicates // [ZZ] archived +zscript
+            if (parser.GetArchivedActorByName(classname) != null)
             {
                 parser.ReportError("Actor \"" + classname + "\" is double-defined");
                 return;
