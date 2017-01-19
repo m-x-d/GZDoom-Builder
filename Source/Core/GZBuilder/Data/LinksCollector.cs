@@ -500,12 +500,13 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 				int primaryradius;
 				int secondaryradius = 0;
 
-				if(lightid < GZGeneral.GZ_LIGHT_TYPES[2]) //if it's gzdoom light
+				if(lightid < GZGeneral.GZ_LIGHT_TYPES[3]) //if it's gzdoom light
 				{
 					int n;
-					if(lightid < GZGeneral.GZ_LIGHT_TYPES[0]) n = 0;
-					else if(lightid < GZGeneral.GZ_LIGHT_TYPES[1]) n = 10;
-					else n = 20;
+                    if (lightid < GZGeneral.GZ_LIGHT_TYPES[0]) n = 0;
+                    else if (lightid < GZGeneral.GZ_LIGHT_TYPES[1]) n = 10;
+                    else if (lightid < GZGeneral.GZ_LIGHT_TYPES[2]) n = 20;
+                    else n = 30;
 					DynamicLightType lightType = (DynamicLightType)(t.Type - 9800 - n);
 
 					if(lightType == DynamicLightType.SECTOR)

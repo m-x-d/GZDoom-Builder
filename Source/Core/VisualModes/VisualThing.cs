@@ -655,10 +655,10 @@ namespace CodeImp.DoomBuilder.VisualModes
 		//mxd. Update light info
 		private void UpdateLight(int lightId) 
 		{
-			if(lightId < GZBuilder.GZGeneral.GZ_LIGHT_TYPES[2]) //if it's gzdoom light
+			if(lightId < GZBuilder.GZGeneral.GZ_LIGHT_TYPES[3]) //if it's gzdoom light
 			{ 
 				int n;
-				if(lightId < GZBuilder.GZGeneral.GZ_LIGHT_TYPES[0]) 
+				if(lightId < GZBuilder.GZGeneral.GZ_LIGHT_TYPES[0]) // normal
 				{
 					n = 0;
 					lightRenderStyle = DynamicLightRenderStyle.NORMAL;
@@ -668,7 +668,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 						thing.Args[1] / DYNLIGHT_INTENSITY_SCALER,
 						thing.Args[2] / DYNLIGHT_INTENSITY_SCALER);
 				} 
-				else if(lightId < GZBuilder.GZGeneral.GZ_LIGHT_TYPES[1]) 
+				else if(lightId < GZBuilder.GZGeneral.GZ_LIGHT_TYPES[1]) // additive
 				{
 					n = 10;
 					lightRenderStyle = DynamicLightRenderStyle.ADDITIVE;
@@ -677,7 +677,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 						thing.Args[1] / DYNLIGHT_INTENSITY_SCALER,
 						thing.Args[2] / DYNLIGHT_INTENSITY_SCALER);
 				} 
-				else 
+				else if (lightId < GZBuilder.GZGeneral.GZ_LIGHT_TYPES[2]) // negative
 				{
 					n = 20;
 					lightRenderStyle = DynamicLightRenderStyle.NEGATIVE;
@@ -686,6 +686,15 @@ namespace CodeImp.DoomBuilder.VisualModes
 						thing.Args[1] / SUBLIGHT_INTENSITY_SCALER,
 						thing.Args[2] / SUBLIGHT_INTENSITY_SCALER);
 				}
+                else
+                {
+                    n = 30;
+                    lightRenderStyle = DynamicLightRenderStyle.ATTENUATED;
+                    lightColor = new Color4((float)lightRenderStyle / 100.0f,
+                        thing.Args[0] / DYNLIGHT_INTENSITY_SCALER,
+                        thing.Args[1] / DYNLIGHT_INTENSITY_SCALER,
+                        thing.Args[2] / DYNLIGHT_INTENSITY_SCALER);
+                }
 				lightType = (DynamicLightType)(thing.Type - 9800 - n);
 
 				if(lightType == DynamicLightType.SECTOR) 

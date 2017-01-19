@@ -237,8 +237,11 @@ float4 ps_vertex_color(PixelData pd) : COLOR
 float4 ps_lightpass(LitPixelData pd) : COLOR 
 {
 	//is face facing away from light source?
-	if(dot(pd.normal, normalize(lightPosAndRadius.xyz - pd.pos_w)) < -0.1f) // (lightPosAndRadius.xyz - pd.pos_w) == direction from light to current pixel
+	// [ZZ] oddly enough pd.normal is not a proper normal, so using dot on it returns rather unexpected results. wrapped in normalize().
+	float diffuseContribution = dot(normalize(pd.normal), normalize(lightPosAndRadius.xyz - pd.pos_w));
+	if (diffuseContribution < -0.1f) // (lightPosAndRadius.xyz - pd.pos_w) == direction from light to current pixel
 		clip(-1);
+	diffuseContribution = max(diffuseContribution, 0); // to make sure
 
 	//is pixel in light range?
 	float dist = distance(pd.pos_w, lightPosAndRadius.xyz);
@@ -254,10 +257,12 @@ float4 ps_lightpass(LitPixelData pd) : COLOR
 	float4 lightColorMod = float4(0.0f, 0.0f, 0.0f, 0.0f);
 
 	lightColorMod.rgb = lightColor.rgb * max(lightPosAndRadius.w - dist, 0.0f) / lightPosAndRadius.w;
+	if (lightColor.a > 0.979f && lightColor.a < 0.981f) // attenuated light 98%
+		lightColorMod.rgb *= diffuseContribution;
 	if(lightColorMod.r > 0.0f || lightColorMod.g > 0.0f || lightColorMod.b > 0.0f)
 	{
 		lightColorMod.rgb *= lightColor.a;
-		if(lightColor.a > 0.4f) //Normal, vavoom or negative light
+		if (lightColor.a > 0.4f) //Normal, vavoom or negative light (or attenuated)
 			return tcolor * lightColorMod;
 		return lightColorMod; //Additive light
 	}

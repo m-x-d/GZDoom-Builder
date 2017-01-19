@@ -35,10 +35,11 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 	//divide these by 100 to get light color alpha
 	public enum DynamicLightRenderStyle
 	{
-		NONE = 0,
-		NORMAL = 99,
-		VAVOOM = 50,
+        NEGATIVE = 100,
+        NORMAL = 99,
+        ATTENUATED = 98,
+        VAVOOM = 50,
 		ADDITIVE = 25,
-		NEGATIVE = 100,
-	}
+        NONE = 0,
+    }
 }

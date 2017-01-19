@@ -523,7 +523,7 @@ namespace CodeImp.DoomBuilder.Rendering
 
 			// Sort things by light render style
 			lightthings.Sort((t1, t2) => Math.Sign(t1.LightRenderStyle - t2.LightRenderStyle));
-			lightOffsets = new int[3];
+			lightOffsets = new int[4];
 
 			foreach(VisualThing t in lightthings) 
 			{
@@ -533,7 +533,8 @@ namespace CodeImp.DoomBuilder.Rendering
 					case DynamicLightRenderStyle.NORMAL:
 					case DynamicLightRenderStyle.VAVOOM: lightOffsets[0]++; break;
 					case DynamicLightRenderStyle.ADDITIVE: lightOffsets[1]++; break;
-					default: lightOffsets[2]++; break;
+                    case DynamicLightRenderStyle.NEGATIVE: lightOffsets[2]++; break;
+					default: lightOffsets[3]++; break;
 				}
 			}
 		}
@@ -1332,8 +1333,8 @@ namespace CodeImp.DoomBuilder.Rendering
 						}
 					}
 
-					//additive lights
-					if(lightOffsets[1] > 0) 
+                    //additive lights
+                    if (lightOffsets[1] > 0) 
 					{
 						count += lightOffsets[1];
 						graphics.Device.SetRenderState(RenderState.BlendOperation, BlendOperation.Add);
@@ -1372,7 +1373,27 @@ namespace CodeImp.DoomBuilder.Rendering
 							}
 						}
 					}
-				}
+
+                    //attenuated lights
+                    if (lightOffsets[3] > 0)
+                    {
+                        count += lightOffsets[3];
+                        graphics.Device.SetRenderState(RenderState.BlendOperation, BlendOperation.Add);
+
+                        for (int i = lightOffsets[0] + lightOffsets[1] + lightOffsets[2]; i < count; i++)
+                        {
+                            if (BoundingBoxesIntersect(g.BoundingBox, lights[i].BoundingBox))
+                            {
+                                lpr = new Vector4(lights[i].Center, lights[i].LightRadius);
+                                if (lpr.W == 0) continue;
+                                graphics.Shaders.World3D.LightColor = lights[i].LightColor;
+                                graphics.Shaders.World3D.LightPositionAndRadius = lpr;
+                                graphics.Shaders.World3D.ApplySettings();
+                                graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, g.VertexOffset, g.Triangles);
+                            }
+                        }
+                    }
+                }
 			}
 
 			graphics.Shaders.World3D.EndPass();
