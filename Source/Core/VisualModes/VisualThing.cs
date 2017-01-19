@@ -736,8 +736,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 		{
 			DynamicLightData light = General.Map.Data.GldefsEntries[thing.Type];
 
-			//apply settings
-			lightRenderStyle = light.Subtractive ? DynamicLightRenderStyle.NEGATIVE : DynamicLightRenderStyle.NORMAL;
+            //apply settings
+            lightRenderStyle = light.Style;
 			lightColor = new Color4((float)lightRenderStyle / 100.0f, light.Color.Red, light.Color.Green, light.Color.Blue);
 			Vector2D o = new Vector2D(light.Offset.X, light.Offset.Y).GetRotated(thing.Angle - Angle2D.PIHALF);
 			lightOffset = new Vector3(o.x, o.y, light.Offset.Z);

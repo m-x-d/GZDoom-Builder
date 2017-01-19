@@ -303,11 +303,28 @@ namespace CodeImp.DoomBuilder.ZDoom
 							return false;
 						}
 
-						light.Subtractive = (i == 1);
+                        if (i == 1) light.Style = DynamicLightRenderStyle.NEGATIVE;
 					}
 					break;
 
-					case "dontlightself":
+                    case "attenuate":
+                    {
+                        SkipWhitespace(true);
+
+                        token = ReadToken();
+                        int i;
+                        if (!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out i))
+                        {
+                            // Not numeric!
+                            ReportError("expected Attenuate value, but got \"" + token + "\"");
+                            return false;
+                        }
+
+                        if (i == 1) light.Style = DynamicLightRenderStyle.ATTENUATED;
+                    }
+                    break;
+
+                    case "dontlightself":
 					{
 						SkipWhitespace(true);
 

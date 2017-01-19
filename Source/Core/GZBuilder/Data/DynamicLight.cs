@@ -10,11 +10,12 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 		public int SecondaryRadius;
 		public int Interval;
 		public Vector3 Offset;
-		public bool Subtractive;
-		public bool DontLightSelf;
+        public DynamicLightRenderStyle Style;
+        public bool DontLightSelf;
 
 		public DynamicLightData() 
 		{
+            Style = DynamicLightRenderStyle.NORMAL;
 			Color = new Color3();
 			Offset = new Vector3();
 		}
