@@ -740,7 +740,12 @@ namespace CodeImp.DoomBuilder.ZDoom
                     case ZScriptTokenType.Whitespace:
                     case ZScriptTokenType.Newline:
                     case ZScriptTokenType.BlockComment:
+                        break;
+
                     case ZScriptTokenType.LineComment:
+                        // check for $GZDB_SKIP
+                        if (token.Value.Trim().ToLowerInvariant() == "$gzdb_skip")
+                            return true;
                         break;
 
                     case ZScriptTokenType.Preprocessor:

@@ -30,6 +30,6 @@ using CodeImp.DoomBuilder;
 //      Build Number
 //      Revision
 //
-[assembly: AssemblyVersion("2.3.0.2840")]
+[assembly: AssemblyVersion("2.3.0.2841")]
 [assembly: NeutralResourcesLanguageAttribute("en")]
-[assembly: AssemblyHash("a5a942c")]
+[assembly: AssemblyHash("8c9514f")]
