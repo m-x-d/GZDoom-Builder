@@ -72,8 +72,10 @@ namespace CodeImp.DoomBuilder.Data
 		// Call this to initialize this class
 		protected virtual void Initialize()
 		{
-			// Load all WAD files in the root as WAD resources
-			string[] wadfiles = GetWadFiles();
+            // [ZZ] we can have wad files already. dispose if any.
+            if (wads != null) foreach (WADReader wr in wads) wr.Dispose();
+            // Load all WAD files in the root as WAD resources
+            string[] wadfiles = GetWadFiles();
 			wads = new List<WADReader>(wadfiles.Length);
 			foreach(string w in wadfiles)
 			{
@@ -114,13 +116,13 @@ namespace CodeImp.DoomBuilder.Data
 			foreach(WADReader wr in wads) wr.Resume();
 			base.Resume();
 		}
-		
-		#endregion
-		
-		#region ================== Palette
 
-		// This loads the PLAYPAL palette
-		public override Playpal LoadPalette()
+        #endregion
+
+        #region ================== Palette
+
+        // This loads the PLAYPAL palette
+        public override Playpal LoadPalette()
 		{
 			// Error when suspended
 			if(issuspended) throw new Exception("Data reader is suspended");

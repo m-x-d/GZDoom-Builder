@@ -98,33 +98,43 @@ namespace CodeImp.DoomBuilder.Controls
 			// Find lump, check it's hash
 			bool dosave = true;
 			DataReader reader = source.Resource;
-			if(reader.FileExists(source.Filename, source.LumpIndex))
-			{
-				using(MemoryStream ms = reader.LoadFile(source.Filename, source.LumpIndex))
-				{
-					if(MD5Hash.Get(ms) != hash
-						&& MessageBox.Show("Target lump was modified by another application. Do you still want to replace it?", "Warning", MessageBoxButtons.OKCancel) 
-						== DialogResult.Cancel)
-					{
-						dosave = false;
-					}
-				}
-			}
+            // reload the reader
+            bool wasReadOnly = reader.IsReadOnly;
+            reader.Reload(false);
+            try
+            {
+                if (reader.FileExists(source.Filename, source.LumpIndex))
+                {
+                    using (MemoryStream ms = reader.LoadFile(source.Filename, source.LumpIndex))
+                    {
+                        if (MD5Hash.Get(ms) != hash
+                            && MessageBox.Show("Target lump was modified by another application. Do you still want to replace it?", "Warning", MessageBoxButtons.OKCancel)
+                            == DialogResult.Cancel)
+                        {
+                            dosave = false;
+                        }
+                    }
+                }
 
-			if(dosave)
-			{
-				// Store the lump data
-				using(MemoryStream stream = new MemoryStream(editor.GetText()))
-				{
-					if(reader.SaveFile(stream, source.Filename, source.LumpIndex))
-					{
-						// Update what must be updated
-						hash = MD5Hash.Get(stream);
-						editor.SetSavePoint();
-						UpdateTitle();
-					}
-				}
-			}
+                if (dosave)
+                {
+                    // Store the lump data
+                    using (MemoryStream stream = new MemoryStream(editor.GetText()))
+                    {
+                        if (reader.SaveFile(stream, source.Filename, source.LumpIndex))
+                        {
+                            // Update what must be updated
+                            hash = MD5Hash.Get(stream);
+                            editor.SetSavePoint();
+                            UpdateTitle();
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                reader.Reload(wasReadOnly);
+            }
 
 			return dosave;
 		}

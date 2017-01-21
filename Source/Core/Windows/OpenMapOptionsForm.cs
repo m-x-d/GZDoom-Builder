@@ -211,9 +211,12 @@ namespace CodeImp.DoomBuilder.Windows
 					}
 				}
 			}
-			
-			//mxd. Bail out if still no dice...
-			if(config.SelectedIndex == -1 || mapslist.Items.Count == 0)
+
+            // [ZZ] dispose of wadfile
+            wadfile.Dispose();
+
+            //mxd. Bail out if still no dice...
+            if (config.SelectedIndex == -1 || mapslist.Items.Count == 0)
 			{
 				General.ShowWarningMessage("Unable to find maps using any game configuration.\nDoes this wad contain any maps at all?..", MessageBoxButtons.OK);
 				cancel_Click(this, EventArgs.Empty);

@@ -141,14 +141,26 @@ namespace CodeImp.DoomBuilder.Data
 		// This suspends use of this resource
 		public virtual void Suspend()
 		{
+            // [ZZ] validate
+            if (issuspended) throw new Exception("Tried to suspend already suspended resource!");
 			issuspended = true;
+            isreadonly = true;
 		}
 
 		// This resumes use of this resource
 		public virtual void Resume()
 		{
-			issuspended = false;
+            // [ZZ] validate
+            if (!issuspended) throw new Exception("Tried to resume already resumed resource!");
+            issuspended = false;
+            isreadonly = false;
 		}
+
+        // This reloads the resource (possibly as readonly).
+        public virtual void Reload(bool newreadonly)
+        {
+
+        }
 
 		#endregion
 

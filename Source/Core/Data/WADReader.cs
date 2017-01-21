@@ -211,19 +211,28 @@ namespace CodeImp.DoomBuilder.Data
 		public override void Suspend()
 		{
 			file.Dispose();
+            file = null;
 			base.Suspend();
 		}
 
 		// This resumes use of this resource
 		public override void Resume()
 		{
-			file = new WAD(location.location, true);
-			is_iwad = file.IsIWAD;
+            Reload(true);
 			base.Resume();
 		}
 
-		// This fills a ranges list
-		private void FindRanges(List<LumpRange> ranges, IDictionary rangeinfos, string rangename, string elementname)
+        // This reloads the resource
+        public override void Reload(bool newreadonly)
+        {
+            if (file != null) file.Dispose();
+            file = new WAD(location.location, newreadonly);
+            is_iwad = file.IsIWAD;
+            base.Reload(newreadonly);
+        }
+
+        // This fills a ranges list
+        private void FindRanges(List<LumpRange> ranges, IDictionary rangeinfos, string rangename, string elementname)
 		{
 			Dictionary<LumpRange, KeyValuePair<string, string>> failedranges = new Dictionary<LumpRange, KeyValuePair<string, string>>(); //mxd
 			Dictionary<int, bool> successfulrangestarts = new Dictionary<int, bool>(); //mxd
@@ -1169,16 +1178,16 @@ namespace CodeImp.DoomBuilder.Data
 			if(isreadonly || lumpindex < 0 || file.Lumps.Count <= lumpindex || file.Lumps[lumpindex].Name != lumpname.ToUpperInvariant())
 				return false;
 
-			// Remove the lump
-			file.RemoveAt(lumpindex);
+            // Remove the lump
+            file.RemoveAt(lumpindex);
 
-			// Insert new lump
-			Lump l = file.Insert(lumpname, lumpindex, (int)lumpdata.Length);
-			l.Stream.Seek(0, SeekOrigin.Begin);
-			lumpdata.WriteTo(l.Stream);
+            // Insert new lump
+            Lump l = file.Insert(lumpname, lumpindex, (int)lumpdata.Length);
+            l.Stream.Seek(0, SeekOrigin.Begin);
+            lumpdata.WriteTo(l.Stream);
 
-			// Update WAD file
-			file.WriteHeaders();
+            // Update WAD file
+            file.WriteHeaders();
 
 			return true;
 		}
