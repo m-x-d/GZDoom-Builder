@@ -14,7 +14,7 @@ namespace CodeImp.DoomBuilder.ZDoom
         private ZScriptTokenizer tokenizer;
         // ========
 
-        private bool ParseGZDBComment(string text)
+        internal static bool ParseGZDBComment(Dictionary<string, List<string>> props, string text)
         {
             text = text.Trim();
             // check if it's a GZDB comment
@@ -31,7 +31,7 @@ namespace CodeImp.DoomBuilder.ZDoom
                 propertyvalue = text.Substring(nextWhitespace + 1).Trim();
             }
 
-            props[propertyname] = new List<string> { propertyvalue };
+            props[propertyname.ToLowerInvariant()] = new List<string> { propertyvalue };
             return true;
         }
 
@@ -72,7 +72,7 @@ namespace CodeImp.DoomBuilder.ZDoom
                         break;
 
                     case ZScriptTokenType.LineComment:
-                        ParseGZDBComment(token.Value);
+                        ParseGZDBComment(props, token.Value);
                         break;
 
                     // flag definition (+/-)
@@ -361,7 +361,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 
                     // apparently we can have a struct inside a class, but not another class.
                     case "struct":
-                        if (!parser.ParseClassOrStruct(true, false))
+                        if (!parser.ParseClassOrStruct(true, false, null))
                             return;
                         continue;
 

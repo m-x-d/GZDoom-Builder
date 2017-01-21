@@ -20,6 +20,7 @@ namespace CodeImp.DoomBuilder.ZDoom
             public string ReplacementName { get; internal set; }
             public string ParentName { get; internal set; }
             public ZScriptActorStructure Actor { get; internal set; }
+            internal DecorateCategoryInfo Region;
 
             // these are used for parsing and error reporting
             public ZScriptParser Parser { get; internal set; }
@@ -32,7 +33,7 @@ namespace CodeImp.DoomBuilder.ZDoom
             // textresourcepath
             public string TextResourcePath { get; internal set; }
 
-            public ZScriptClassStructure(ZScriptParser parser, string classname, string replacesname, string parentname)
+            internal ZScriptClassStructure(ZScriptParser parser, string classname, string replacesname, string parentname, DecorateCategoryInfo region)
             {
                 Parser = parser;
 
@@ -47,6 +48,7 @@ namespace CodeImp.DoomBuilder.ZDoom
                 ReplacementName = replacesname;
                 ParentName = parentname;
                 Actor = null;
+                Region = region;
             }
 
             internal void RestoreStreamData()
@@ -59,7 +61,7 @@ namespace CodeImp.DoomBuilder.ZDoom
                 Parser.prevstreamposition = -1;
             }
 
-            public bool Process()
+            internal bool Process()
             {
                 RestoreStreamData();
 
@@ -87,7 +89,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 
                 if (isactor)
                 {
-                    Actor = new ZScriptActorStructure(Parser, null, ClassName, ReplacementName, ParentName);
+                    Actor = new ZScriptActorStructure(Parser, Region, ClassName, ReplacementName, ParentName);
                     if (Parser.HasError)
                     {
                         Actor = null;
@@ -569,7 +571,7 @@ namespace CodeImp.DoomBuilder.ZDoom
             return name;
         }
 
-        internal bool ParseClassOrStruct(bool isstruct, bool extend)
+        internal bool ParseClassOrStruct(bool isstruct, bool extend, DecorateCategoryInfo region)
         {
             // 'class' keyword is already parsed
             tokenizer.SkipWhitespace();
@@ -679,7 +681,7 @@ namespace CodeImp.DoomBuilder.ZDoom
             // now if we are a class, and we inherit actor, parse this entry as an actor. don't process extensions.
             if (!isstruct && !extend)
             {
-                ZScriptClassStructure cls = new ZScriptClassStructure(this, tok_classname.Value, (tok_replacename != null) ? tok_replacename.Value : null, (tok_parentname != null) ? tok_parentname.Value : null);
+                ZScriptClassStructure cls = new ZScriptClassStructure(this, tok_classname.Value, (tok_replacename != null) ? tok_replacename.Value : null, (tok_parentname != null) ? tok_parentname.Value : null, region);
                 cls.Position = cpos;
                 string clskey = cls.ClassName.ToLowerInvariant();
                 if (allclasses.ContainsKey(clskey))
@@ -717,6 +719,9 @@ namespace CodeImp.DoomBuilder.ZDoom
             prevstreamposition = -1;
             tokenizer = new ZScriptTokenizer(datareader);
 
+            // region-as-category, ZScript ver
+            List<DecorateCategoryInfo> regions = new List<DecorateCategoryInfo>();
+
             while (true)
             {
                 ZScriptToken token = tokenizer.ExpectToken(ZScriptTokenType.Identifier, // const, enum, class, etc
@@ -743,9 +748,17 @@ namespace CodeImp.DoomBuilder.ZDoom
                         break;
 
                     case ZScriptTokenType.LineComment:
-                        // check for $GZDB_SKIP
-                        if (token.Value.Trim().ToLowerInvariant() == "$gzdb_skip")
-                            return true;
+                        {
+                            string cmtval = token.Value.TrimStart();
+                            if (cmtval.Length <= 0 || cmtval[0] != '$')
+                                break;
+                            // check for $GZDB_SKIP
+                            if (cmtval.Trim().ToLowerInvariant() == "$gzdb_skip")
+                                return true;
+                            // if we are in a region, read property using function from ZScriptActorStructure
+                            if (regions.Count > 0)
+                                ZScriptActorStructure.ParseGZDBComment(regions.Last().Properties, cmtval);
+                        }
                         break;
 
                     case ZScriptTokenType.Preprocessor:
@@ -758,7 +771,8 @@ namespace CodeImp.DoomBuilder.ZDoom
                                 return false;
                             }
 
-                            if (directive.Value.ToLowerInvariant() == "include")
+                            string d_value = directive.Value.ToLowerInvariant();
+                            if (d_value == "include")
                             {
                                 tokenizer.SkipWhitespace();
                                 ZScriptToken include_name = tokenizer.ExpectToken(ZScriptTokenType.Identifier, ZScriptTokenType.String, ZScriptTokenType.Name);
@@ -770,6 +784,38 @@ namespace CodeImp.DoomBuilder.ZDoom
 
                                 if (!ParseInclude(include_name.Value))
                                     return false;
+                            }
+                            else if (d_value == "region")
+                            {
+                                // just read everything until newline.
+                                string region_name = "";
+                                while (true)
+                                {
+                                    token = tokenizer.ReadToken();
+                                    if (token == null || token.Type == ZScriptTokenType.Newline)
+                                        break;
+                                    region_name += token.Value;
+                                }
+                                DecorateCategoryInfo region = new DecorateCategoryInfo();
+                                string[] cattitle = region_name.Split(DataManager.CATEGORY_SPLITTER, StringSplitOptions.RemoveEmptyEntries);
+                                if (regions.Count > 0)
+                                {
+                                    region.Category.AddRange(regions.Last().Category);
+                                    region.Properties = new Dictionary<string, List<string>>(regions.Last().Properties, StringComparer.OrdinalIgnoreCase);
+                                }
+                                region.Category.AddRange(cattitle);
+                                regions.Add(region);
+                            }
+                            else if (d_value == "endregion")
+                            {
+                                // read everything until newline too?
+                                // - only if it causes problems
+                                if (regions.Count > 0)
+                                    regions.RemoveAt(regions.Count - 1); // remove last region from the list
+                                else
+                                {
+                                    LogWarning("Superfluous #endregion found without corresponding #region");
+                                }
                             }
                             else
                             {
@@ -793,17 +839,17 @@ namespace CodeImp.DoomBuilder.ZDoom
                                         ReportError("Expected class or struct, got " + ((Object)token ?? "<null>").ToString());
                                         return false;
                                     }
-                                    if (!ParseClassOrStruct((token.Value.ToLowerInvariant() == "struct"), true))
+                                    if (!ParseClassOrStruct((token.Value.ToLowerInvariant() == "struct"), true, (regions.Count > 0 ? regions.Last() : null)))
                                         return false;
                                     break;
                                 case "class":
                                     // todo parse class
-                                    if (!ParseClassOrStruct(false, false))
+                                    if (!ParseClassOrStruct(false, false, (regions.Count > 0 ? regions.Last() : null)))
                                         return false;
                                     break;
                                 case "struct":
                                     // todo parse struct
-                                    if (!ParseClassOrStruct(true, false))
+                                    if (!ParseClassOrStruct(true, false, null))
                                         return false;
                                     break;
                                 case "const":

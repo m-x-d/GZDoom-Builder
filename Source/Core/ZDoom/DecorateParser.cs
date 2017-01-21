@@ -313,7 +313,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 								{
 									// Preserve nesting
 									info.Category.AddRange(regions[regions.Count - 1].Category);
-									info.Properties = new Dictionary<string, List<string>>(regions[regions.Count - 1].Properties);
+									info.Properties = new Dictionary<string, List<string>>(regions[regions.Count - 1].Properties, StringComparer.OrdinalIgnoreCase);
 								}
 								info.Category.AddRange(parts);
 
