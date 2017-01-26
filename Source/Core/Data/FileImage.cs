@@ -30,6 +30,8 @@ namespace CodeImp.DoomBuilder.Data
 		#region ================== Variables
 
 		private readonly int probableformat;
+        private readonly string _c_name;
+        private readonly string _c_filepathname;
 		
 		#endregion
 
@@ -38,9 +40,10 @@ namespace CodeImp.DoomBuilder.Data
 		// Constructor
 		public FileImage(string name, string filepathname, bool asflat)
 		{
-			// Initialize
+            // Initialize
+            _c_name = name; // this is used to call SetName later
+            _c_filepathname = filepathname; // this is used to call SetName later
 			this.isFlat = asflat; //mxd
-			SetName(name, filepathname);
 
 			if(asflat)
 			{
@@ -54,36 +57,44 @@ namespace CodeImp.DoomBuilder.Data
 				this.scale.x = General.Map.Config.DefaultTextureScale;
 				this.scale.y = General.Map.Config.DefaultTextureScale;
 			}
-			
-			// We have no destructor
-			GC.SuppressFinalize(this);
+
+            SetName(name, filepathname);
+
+            // We have no destructor
+            GC.SuppressFinalize(this);
 		}
 
 		// Constructor
 		public FileImage(string name, string filepathname, bool asflat, float scalex, float scaley)
 		{
-			// Initialize
-			this.scale.x = scalex;
+            // Initialize
+            _c_name = name; // this is used to call SetName later
+            _c_filepathname = filepathname; // this is used to call SetName later
+            this.scale.x = scalex;
 			this.scale.y = scaley;
 			this.isFlat = asflat; //mxd
-			SetName(name, filepathname);
 
 			probableformat = (asflat ? ImageDataFormat.DOOMFLAT : ImageDataFormat.DOOMPICTURE);
 
-			// We have no destructor
-			GC.SuppressFinalize(this);
+            SetName(name, filepathname);
+
+            // We have no destructor
+            GC.SuppressFinalize(this);
 		}
 
 		//mxd. Constructor for loading internal images
 		internal FileImage(string name, string filepathname)
 		{
-			// Initialize
-			SetName(name, filepathname, true, true);
+            // Initialize
+            _c_name = name; // this is used to call SetName later
+            _c_filepathname = filepathname; // this is used to call SetName later
 
 			probableformat = ImageDataFormat.DOOMPICTURE;
 
-			// We have no destructor
-			GC.SuppressFinalize(this);
+            SetName(name, filepathname, true, 1);
+
+            // We have no destructor
+            GC.SuppressFinalize(this);
 		}
 
 		#endregion
@@ -94,16 +105,18 @@ namespace CodeImp.DoomBuilder.Data
 		//mxd: filepathname is absolute path to the image ("D:\Doom\MyCoolProject\Textures\sometexture.png")
 		//mxd: also, zdoom uses '/' as directory separator char.
 		//mxd: and doesn't recognize long texture names in a root folder / pk3/7 root
+        //[ZZ] and doesn't work with flats in Doom format (added SetName call to post-load to validate this)
 		private void SetName(string name, string filepathname)
 		{
-			SetName(name, filepathname, General.Map.Config.UseLongTextureNames, false);
+			SetName(name, filepathname, General.Map.Config.UseLongTextureNames, (probableformat == ImageDataFormat.DOOMFLAT) ? -1 : 0);
 		}
 
-		private void SetName(string name, string filepathname, bool uselongtexturenames, bool forcelongtexturename)
+        // prevent long texture names by forcelongtexturename=-1
+        private void SetName(string name, string filepathname, bool uselongtexturenames, int forcelongtexturename)
 		{
 			name = name.Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
 
-			if(!uselongtexturenames || (!forcelongtexturename && string.IsNullOrEmpty(Path.GetDirectoryName(name))))
+            if (forcelongtexturename < 0 || !uselongtexturenames || (forcelongtexturename == 0 && string.IsNullOrEmpty(Path.GetDirectoryName(name))))
 			{
 				this.name = Path.GetFileNameWithoutExtension(name.ToUpperInvariant());
 				if(this.name.Length > DataManager.CLASIC_IMAGE_NAME_LENGTH)
@@ -113,6 +126,7 @@ namespace CodeImp.DoomBuilder.Data
 				this.virtualname = Path.Combine(Path.GetDirectoryName(name), this.name).Replace(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
 				this.displayname = this.name;
 				this.shortname = this.name;
+                hasLongName = false;
 			}
 			else
 			{
@@ -142,6 +156,8 @@ namespace CodeImp.DoomBuilder.Data
 				// Load file data
 				if(bitmap != null) bitmap.Dispose(); bitmap = null;
 
+                bool isBadForLongTextureNames = false;
+
                 MemoryStream filedata = null;
                 try
                 {
@@ -159,6 +175,9 @@ namespace CodeImp.DoomBuilder.Data
                     IImageReader reader = ImageDataFormat.GetImageReader(filedata, probableformat, General.Map.Data.Palette);
                     if (!(reader is UnknownImageReader))
                     {
+                        // [ZZ] check for doom flat, always short name for these
+                        if (reader is DoomFlatReader)
+                            isBadForLongTextureNames = true;
                         // Load the image
                         filedata.Seek(0, SeekOrigin.Begin);
                         try { bitmap = reader.ReadAsBitmap(filedata); }
@@ -184,6 +203,9 @@ namespace CodeImp.DoomBuilder.Data
 
                     filedata.Dispose();
                 }
+
+                // [ZZ] validate disabled long texture names for flats. (and enabled for everything else, if our guessed format was wrong)
+                SetName(_c_name, _c_filepathname, General.Map.Config.UseLongTextureNames, isBadForLongTextureNames?-1:0);
 
                 // Pass on to base
                 base.LocalLoadImage();

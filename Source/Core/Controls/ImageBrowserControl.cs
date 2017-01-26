@@ -470,14 +470,11 @@ namespace CodeImp.DoomBuilder.Controls
 		}
 		
 		// This adds an item
-		public void AddItem(ImageData image, string tooltip)
+        // [ZZ] having nice string.Empty does not justify having two functions doing the same thing, with one parameter difference.
+        //      C# not Java.
+		public void AddItem(ImageData image, string tooltip = "")
 		{
 			items.Add(new ImageBrowserItem(image, tooltip, uselongtexturenames));
-		}
-
-		public void AddItem(ImageData image)
-		{
-			items.Add(new ImageBrowserItem(image, string.Empty, uselongtexturenames));
 		}
 
 		// This fills the list based on the objectname filter
