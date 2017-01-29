@@ -1037,7 +1037,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 							// Limit the alignment to selection only
 							General.Map.Map.ClearMarkedSidedefs(true);
 							List<Sidedef> sides = mode.GetSelectedSidedefs();
-							foreach(Sidedef sd in sides) sd.Marked = false;
+                            foreach (Sidedef sd in sides)
+                            {
+                                sd.Marked = false;
+                                if (sd.Other != null)
+                                    sd.Other.Marked = false;
+                            }
 						}
 
 						//mxd. We potentially need to deal with 2 textures (because of long and short texture names)...
@@ -1107,7 +1112,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				// Limit the alignment to selection only
 				General.Map.Map.ClearMarkedSidedefs(true);
 				List<Sidedef> sides = mode.GetSelectedSidedefs();
-				foreach(Sidedef sd in sides) sd.Marked = false;
+                foreach (Sidedef sd in sides)
+                {
+                    sd.Marked = false;
+                    if (sd.Other != null)
+                        sd.Other.Marked = false;
+                }
 			}
 			
 			// Do the alignment
