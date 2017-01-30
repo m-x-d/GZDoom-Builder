@@ -286,7 +286,7 @@ namespace CodeImp.DoomBuilder.Controls
 					cy = rectangles[index].Y;
 					newindex = int.MaxValue;
 
-					while(index > 0 && rectangles[index].Y == cy)
+					while(index >= 0 && rectangles[index].Y == cy)
 					{
 						int ccx = Math.Abs(rectangles[index].X + rectangles[index].Width / 2 - tx);
 						if(ccx < cx)
@@ -317,7 +317,7 @@ namespace CodeImp.DoomBuilder.Controls
 					cy = rectangles[index].Y;
 					newindex = int.MaxValue;
 
-					while(index < rectangles.Count - 1 && rectangles[index].Y == cy)
+					while(index < rectangles.Count && rectangles[index].Y == cy)
 					{
 						int ccx = Math.Abs(rectangles[index].X + rectangles[index].Width / 2 - tx);
 						if(ccx < cx)
