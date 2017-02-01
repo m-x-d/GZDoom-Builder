@@ -234,12 +234,12 @@ float4 ps_vertex_color(PixelData pd) : COLOR
 }
 
 //mxd. dynamic light pixel shader pass, dood!
-float4 ps_lightpass(LitPixelData pd) : COLOR 
+float4 ps_lightpass(LitPixelData pd) : COLOR
 {
 	//is face facing away from light source?
 	// [ZZ] oddly enough pd.normal is not a proper normal, so using dot on it returns rather unexpected results. wrapped in normalize().
 	float diffuseContribution = dot(normalize(pd.normal), normalize(lightPosAndRadius.xyz - pd.pos_w));
-	if (diffuseContribution < -0.1f) // (lightPosAndRadius.xyz - pd.pos_w) == direction from light to current pixel
+	if (diffuseContribution < 0)
 		clip(-1);
 	diffuseContribution = max(diffuseContribution, 0); // to make sure
 
