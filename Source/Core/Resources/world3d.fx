@@ -238,7 +238,8 @@ float4 ps_lightpass(LitPixelData pd) : COLOR
 {
 	//is face facing away from light source?
 	// [ZZ] oddly enough pd.normal is not a proper normal, so using dot on it returns rather unexpected results. wrapped in normalize().
-	float diffuseContribution = dot(normalize(pd.normal), normalize(lightPosAndRadius.xyz - pd.pos_w));
+	//      update 01.02.2017: offset the equation by 3px back to try to emulate GZDoom's broken visibility check.
+	float diffuseContribution = dot(normalize(pd.normal), normalize(lightPosAndRadius.xyz - pd.pos_w + normalize(pd.normal)*3));
 	if (diffuseContribution < 0)
 		clip(-1);
 	diffuseContribution = max(diffuseContribution, 0); // to make sure
