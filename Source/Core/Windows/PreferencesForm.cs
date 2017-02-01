@@ -88,6 +88,7 @@ namespace CodeImp.DoomBuilder.Windows
 			toolbar_geometry.Checked = General.Settings.ToolbarGeometry;
 			toolbar_testing.Checked = General.Settings.ToolbarTesting;
 			showtexturesizes.Checked = General.Settings.ShowTextureSizes;
+            texturesizesbelow.Checked = General.Settings.TextureSizesBelow;
 
 			//mxd
 			locatetexturegroup.Checked = General.Settings.LocateTextureGroup;
@@ -318,6 +319,7 @@ namespace CodeImp.DoomBuilder.Windows
 			General.Settings.ToolbarTesting = toolbar_testing.Checked;
 			General.Settings.GZToolbarGZDoom = toolbar_gzdoom.Checked; //mxd
 			General.Settings.ShowTextureSizes = showtexturesizes.Checked;
+            General.Settings.TextureSizesBelow = texturesizesbelow.Checked; // [ZZ]
 			General.Settings.StoreSelectedEditTab = cbStoreEditTab.Checked; //mxd
 			General.Settings.CheckForUpdates = checkforupdates.Checked; //mxd
 			General.Settings.LocateTextureGroup = locatetexturegroup.Checked; //mxd
@@ -1255,8 +1257,8 @@ namespace CodeImp.DoomBuilder.Windows
 				hlpevent.Handled = true;
 			}
 		}
-		
-		/*
+
+        /*
 		// This writes all action help files using a template and some basic info from the actions.
 		// Also writes actioncontents.txt with all files to be inserted into Contents.hhc.
 		// Only used during development. Actual button to call this has been removed.
@@ -1288,5 +1290,5 @@ namespace CodeImp.DoomBuilder.Windows
 			File.WriteAllText(filename, contents.ToString());
 		}
 		*/
-	}
+    }
 }
