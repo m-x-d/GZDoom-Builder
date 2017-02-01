@@ -278,13 +278,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
 			//mxd. Interpolate vertex colors?
-			if(sd.CeilingGlow != null || sd.FloorGlow != null) 
+			for(int i = 0; i < verts.Count; i++)
 			{
-				for(int i = 0; i < verts.Count; i++)
-				{
-					if(verts[i].c == PixelColor.INT_WHITE) continue; // Fullbright verts are not affected by glows.
-					verts[i] = InterpolateVertexColor(verts[i], sd);
-				}
+				//if(verts[i].c == PixelColor.INT_WHITE) continue; // Fullbright verts are not affected by glows.
+				verts[i] = InterpolateVertexColor(verts[i], sd);
 			}
 			
 			return verts;
@@ -293,6 +290,22 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd
 		private static WorldVertex InterpolateVertexColor(WorldVertex v, SectorData data) 
 		{
+            // [ZZ] process sector top and bottom colors.
+            // block
+            {
+                float cz = data.Ceiling.plane.GetZ(v.x, v.y);
+                float cgz = data.Floor.plane.GetZ(v.x, v.y);
+                float delta = 1.0f - (((v.z - cgz) / (cz - cgz)) * 0.9f);
+                PixelColor vertexcolor = PixelColor.FromInt(v.c);
+                PixelColor topcolor = PixelColor.Modulate(vertexcolor, data.ColorWallTop);
+                PixelColor bottomcolor = PixelColor.Modulate(vertexcolor, data.ColorWallBottom);
+                v.c = InterpolationTools.InterpolateColor(topcolor, bottomcolor, delta).WithAlpha(255).ToInt();
+            }
+
+            // don't process glows if fullbright.
+            if (v.c == PixelColor.INT_WHITE)
+                return v;
+
 			// Apply ceiling glow?
 			if(data.CeilingGlow != null)
 			{
