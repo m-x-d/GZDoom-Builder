@@ -290,21 +290,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		//mxd
 		private static WorldVertex InterpolateVertexColor(WorldVertex v, SectorData data) 
 		{
-            // [ZZ] process sector top and bottom colors.
-            // block
-            {
-                float cz = data.Ceiling.plane.GetZ(v.x, v.y);
-                float cgz = data.Floor.plane.GetZ(v.x, v.y);
-                float delta = 1.0f - (((v.z - cgz) / (cz - cgz)) * 0.9f);
-                PixelColor vertexcolor = PixelColor.FromInt(v.c);
-                PixelColor topcolor = PixelColor.Modulate(vertexcolor, data.ColorWallTop);
-                PixelColor bottomcolor = PixelColor.Modulate(vertexcolor, data.ColorWallBottom);
-                v.c = InterpolationTools.InterpolateColor(topcolor, bottomcolor, delta).WithAlpha(255).ToInt();
-            }
-
             // don't process glows if fullbright.
-            if (v.c == PixelColor.INT_WHITE)
-                return v;
+            //if (v.c == PixelColor.INT_WHITE)
+            //    return v;
 
 			// Apply ceiling glow?
 			if(data.CeilingGlow != null)
@@ -338,7 +326,19 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				}
 			}
 
-			return v;
+            // [ZZ] process sector top and bottom colors.
+            // block
+            {
+                float cz = data.Ceiling.plane.GetZ(v.x, v.y);
+                float cgz = data.Floor.plane.GetZ(v.x, v.y);
+                float delta = 1.0f - (((v.z - cgz) / (cz - cgz)) * 0.9f);
+                PixelColor vertexcolor = PixelColor.FromInt(v.c);
+                PixelColor topcolor = PixelColor.Modulate(vertexcolor, data.ColorWallTop);
+                PixelColor bottomcolor = PixelColor.Modulate(vertexcolor, data.ColorWallBottom);
+                v.c = InterpolationTools.InterpolateColor(topcolor, bottomcolor, delta).WithAlpha(255).ToInt();
+            }
+
+            return v;
 		}
 		
 		// This splits a polygon with a plane and returns the other part as a new polygon
