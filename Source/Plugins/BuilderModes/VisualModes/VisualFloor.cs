@@ -137,7 +137,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			}
 
             // [ZZ] Apply Doom 64 lighting here (for extrafloor)
-            if (extrafloor != null) color = PixelColor.Modulate(PixelColor.FromInt(color), extrafloor.VavoomType ? extrafloor.ColorFloor : extrafloor.ColorCeiling).WithAlpha(alpha).ToInt();
+            if (extrafloor != null) color = PixelColor.Modulate(PixelColor.FromInt(color), extrafloor.ColorFloor).WithAlpha(alpha).ToInt();
 
             //mxd. Determine fog density
             fogfactor = CalculateFogFactor(targetbrightness);

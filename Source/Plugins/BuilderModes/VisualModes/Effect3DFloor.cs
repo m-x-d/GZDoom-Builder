@@ -202,13 +202,14 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
             if (VavoomType)
             {
-                ColorFloor = sd.ColorFloor;
-                ColorCeiling = sd.ColorCeiling;
+                ColorFloor = sd.ColorCeiling;
+                ColorCeiling = sd.ColorFloor;
+                
             }
             else
             {
-                ColorFloor = sd.ColorCeiling;
-                ColorCeiling = sd.ColorFloor;
+                ColorFloor = sd.ColorFloor;
+                ColorCeiling = sd.ColorCeiling;
             }
 		}
 	}

@@ -46,7 +46,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
         internal PixelColor ColorWallBottom;
         internal PixelColor ColorWallTop;
         internal PixelColor ColorSprites;
-        internal bool Doom64Absolute;
 		
 		// Sectors that must be updated when this sector is changed
 		// The boolean value is the 'includeneighbours' of the UpdateSectorGeometry function which
@@ -318,7 +317,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
             ColorSprites = PixelColor.FromInt(sector.Fields.GetValue("color_sprites", PixelColor.INT_WHITE));
             ColorWallTop = PixelColor.FromInt(sector.Fields.GetValue("color_walltop", PixelColor.INT_WHITE));
             ColorWallBottom = PixelColor.FromInt(sector.Fields.GetValue("color_wallbottom", PixelColor.INT_WHITE));
-            Doom64Absolute = sector.Fields.GetValue("color_absolute", false);
 
             PixelColor floorbrightness = PixelColor.FromInt(mode.CalculateBrightness(lightfloor));
             PixelColor ceilingbrightness = PixelColor.FromInt(mode.CalculateBrightness(lightceiling));
