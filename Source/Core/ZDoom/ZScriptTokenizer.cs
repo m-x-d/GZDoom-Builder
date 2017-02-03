@@ -512,9 +512,17 @@ namespace CodeImp.DoomBuilder.ZDoom
                     }
                 }
             }
-            catch (IOException)
+            catch (Exception ex)
             {
-                reader.BaseStream.Position = cpos;
+                try
+                {
+                    reader.BaseStream.Position = cpos;
+                }
+                catch (Exception ex2)
+                {
+                    /* ... */
+                }
+
                 return null;
             }
 
@@ -562,7 +570,7 @@ namespace CodeImp.DoomBuilder.ZDoom
                 tok.IsValid = false;
                 return tok;
             }
-            catch (IOException)
+            catch (Exception ex)
             {
                 return null;
             }

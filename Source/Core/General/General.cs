@@ -2053,6 +2053,13 @@ namespace CodeImp.DoomBuilder
 		// This opens a URL in the default browser
 		public static void OpenWebsite(string url)
 		{
+            // [ZZ] note: it may break. no idea why it was done like it was done.
+            string url2 = url.ToLowerInvariant();
+            if (!url2.StartsWith("http://") && !url2.StartsWith("https://") && !url2.StartsWith("ftp://") && !url2.StartsWith("mailto:"))
+                return;
+            System.Diagnostics.Process.Start(url);
+            /*
+
 			RegistryKey key = null;
 			Process p = null;
 			string browser;
@@ -2089,8 +2096,8 @@ namespace CodeImp.DoomBuilder
 			catch(Exception) { }
 
 			// Clean up
-			if(p != null) p.Dispose();
-		}
+			if(p != null) p.Dispose();*/
+        }
 		
 		// This returns the short path name for a file
 		public static string GetShortFilePath(string longpath)
