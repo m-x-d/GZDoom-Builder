@@ -118,9 +118,9 @@ namespace CodeImp.DoomBuilder.ZDoom
     internal class ZScriptTokenizer
     {
         private BinaryReader reader;
-        private Dictionary<string, ZScriptTokenType> namedtokentypes; // these are tokens that have precise equivalent in the enum (like operators)
-        private Dictionary<ZScriptTokenType, string> namedtokentypesreverse; // these are tokens that have precise equivalent in the enum (like operators)
-        private List<string> namedtokentypesorder; // this is the list of said tokens ordered by length.
+        private static Dictionary<string, ZScriptTokenType> namedtokentypes; // these are tokens that have precise equivalent in the enum (like operators)
+        private static Dictionary<ZScriptTokenType, string> namedtokentypesreverse; // these are tokens that have precise equivalent in the enum (like operators)
+        private static List<string> namedtokentypesorder; // this is the list of said tokens ordered by length.
 
         public BinaryReader Reader { get { return reader; } }
         public long LastPosition { get; private set; }
@@ -128,31 +128,35 @@ namespace CodeImp.DoomBuilder.ZDoom
         public ZScriptTokenizer(BinaryReader br)
         {
             reader = br;
-            namedtokentypes = new Dictionary<string, ZScriptTokenType>();
-            namedtokentypesreverse = new Dictionary<ZScriptTokenType, string>();
-            namedtokentypesorder = new List<string>();
-            // initialize the token type list.
-            IEnumerable<ZScriptTokenType> tokentypes = Enum.GetValues(typeof(ZScriptTokenType)).Cast<ZScriptTokenType>();
-            foreach (ZScriptTokenType tokentype in tokentypes)
-            {
-                // 
-                FieldInfo fi = typeof(ZScriptTokenType).GetField(tokentype.ToString());
-                ZScriptTokenString[] attrs = (ZScriptTokenString[])fi.GetCustomAttributes(typeof(ZScriptTokenString), false);
-                if (attrs.Length == 0) continue;
-                // 
-                namedtokentypes.Add(attrs[0].Value, tokentype);
-                namedtokentypesreverse.Add(tokentype, attrs[0].Value);
-                namedtokentypesorder.Add(attrs[0].Value);
-            }
 
-            namedtokentypesorder.Sort(delegate (string a, string b)
+            if (namedtokentypes == null || namedtokentypesreverse == null || namedtokentypesorder == null)
             {
-                if (a.Length > b.Length)
-                    return -1;
-                if (a.Length < b.Length)
-                    return 1;
-                return 0;
-            });
+                namedtokentypes = new Dictionary<string, ZScriptTokenType>();
+                namedtokentypesreverse = new Dictionary<ZScriptTokenType, string>();
+                namedtokentypesorder = new List<string>();
+                // initialize the token type list.
+                IEnumerable<ZScriptTokenType> tokentypes = Enum.GetValues(typeof(ZScriptTokenType)).Cast<ZScriptTokenType>();
+                foreach (ZScriptTokenType tokentype in tokentypes)
+                {
+                    // 
+                    FieldInfo fi = typeof(ZScriptTokenType).GetField(tokentype.ToString());
+                    ZScriptTokenString[] attrs = (ZScriptTokenString[])fi.GetCustomAttributes(typeof(ZScriptTokenString), false);
+                    if (attrs.Length == 0) continue;
+                    // 
+                    namedtokentypes.Add(attrs[0].Value, tokentype);
+                    namedtokentypesreverse.Add(tokentype, attrs[0].Value);
+                    namedtokentypesorder.Add(attrs[0].Value);
+                }
+
+                namedtokentypesorder.Sort(delegate (string a, string b)
+                {
+                    if (a.Length > b.Length)
+                        return -1;
+                    if (a.Length < b.Length)
+                        return 1;
+                    return 0;
+                });
+            }
         }
 
         public void SkipWhitespace() // note that this skips both whitespace, newlines AND comments
@@ -512,13 +516,13 @@ namespace CodeImp.DoomBuilder.ZDoom
                     }
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 try
                 {
                     reader.BaseStream.Position = cpos;
                 }
-                catch (Exception ex2)
+                catch (Exception)
                 {
                     /* ... */
                 }
@@ -570,7 +574,7 @@ namespace CodeImp.DoomBuilder.ZDoom
                 tok.IsValid = false;
                 return tok;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return null;
             }
