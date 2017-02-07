@@ -131,10 +131,22 @@ namespace CodeImp.DoomBuilder.Windows
 
 		#region ================== Constructor
 
-		public LinedefEditFormUDMF()
+		public LinedefEditFormUDMF(bool selectfront, bool selectback)
 		{
 			// Initialize
 			InitializeComponent();
+
+			// Widow setup
+			if(General.Settings.StoreSelectedEditTab)
+			{
+				int activetab = General.Settings.ReadSetting("windows." + configname + ".activetab", 0);
+				
+				// When front or back tab was previously selected, switch to appropriate side (selectfront/selectback are set in BaseVisualGeometrySidedef.OnEditEnd)
+				if((selectfront || selectback) && (activetab == 1 || activetab == 2))
+					tabs.SelectTab(selectfront ? 1 : 2);
+				else
+					tabs.SelectTab(activetab);
+			}
 			
 			// Fill flags lists
 			foreach(KeyValuePair<string, string> lf in General.Map.Config.LinedefFlags)
@@ -231,22 +243,9 @@ namespace CodeImp.DoomBuilder.Windows
 		#region ================== Methods
 
 		// This sets up the form to edit the given lines
-		public void Setup(ICollection<Linedef> lines, bool selectfront, bool selectback)
+		public void Setup(ICollection<Linedef> lines)
 		{
-            // Window setup
-            // ano - moved this here because we don't reinstantiate the thing every time anymore
-            if (General.Settings.StoreSelectedEditTab)
-            {
-                int activetab = General.Settings.ReadSetting("windows." + configname + ".activetab", 0);
-
-                // When front or back tab was previously selected, switch to appropriate side (selectfront/selectback are set in BaseVisualGeometrySidedef.OnEditEnd)
-                if ((selectfront || selectback) && (activetab == 1 || activetab == 2))
-                    tabs.SelectTab(selectfront ? 1 : 2);
-                else
-                    tabs.SelectTab(activetab);
-            }
-
-            preventchanges = true;
+			preventchanges = true;
 			
 			// Keep this list
 			this.lines = lines;

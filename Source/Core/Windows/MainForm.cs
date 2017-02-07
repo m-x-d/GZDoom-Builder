@@ -176,17 +176,12 @@ namespace CodeImp.DoomBuilder.Windows
 
 		//mxd. Misc drawing
 		private Graphics graphics;
+		
+		#endregion
 
-        //ano, pool for windows
-        private DelayedForm sectorEditWindow;
-        private DelayedForm linedefEditWindow;
-        private DelayedForm thingEditWindow;
+		#region ================== Properties
 
-        #endregion
-
-        #region ================== Properties
-
-        public bool ShiftState { get { return shift; } }
+		public bool ShiftState { get { return shift; } }
 		public bool CtrlState { get { return ctrl; } }
 		public bool AltState { get { return alt; } }
 		new public MouseButtons MouseButtons { get { return mousebuttons; } }
@@ -402,50 +397,7 @@ namespace CodeImp.DoomBuilder.Windows
 				if(General.Settings.CollapseDockers) dockerspanel.Collapse();
 
 				UnlockUpdate();
-
-                // ano - create windows on level load instead of whenever you click on something
-                if (sectorEditWindow != null)
-                {
-                    sectorEditWindow.Dispose();
-                }
-                if (linedefEditWindow != null)
-                {
-                    linedefEditWindow.Dispose();
-                }
-                if (thingEditWindow != null)
-                {
-                    thingEditWindow.Dispose();
-                }
-                if (General.Map.UDMF)
-                {
-                    
-                    SectorEditFormUDMF s = new SectorEditFormUDMF();
-                    s.OnValuesChanged += EditForm_OnValuesChanged;
-                    sectorEditWindow = s;
-
-                    LinedefEditFormUDMF l = new LinedefEditFormUDMF();
-                    l.OnValuesChanged += EditForm_OnValuesChanged;
-                    linedefEditWindow = l;
-
-                    ThingEditFormUDMF t = new ThingEditFormUDMF();
-                    t.OnValuesChanged += EditForm_OnValuesChanged;
-                    thingEditWindow = t;
-                }
-                else
-                {
-                    SectorEditForm s = new SectorEditForm();
-                    s.OnValuesChanged += EditForm_OnValuesChanged;
-                    sectorEditWindow = s;
-
-                    LinedefEditForm l = new LinedefEditForm();
-                    l.OnValuesChanged += EditForm_OnValuesChanged;
-                    linedefEditWindow = l;
-
-                    ThingEditForm t = new ThingEditForm();
-                    t.OnValuesChanged += EditForm_OnValuesChanged;
-                    thingEditWindow = t;
-                }
-            }
+			}
 			else
 			{
 				dockerspanel.Visible = false;
@@ -480,7 +432,7 @@ namespace CodeImp.DoomBuilder.Windows
 			UpdatePrefabsMenu();
 			UpdateToolsMenu();
 			UpdateToolbar();
-		    //UpdateSkills(); // ano - moved to places where level is loaded and etc
+			UpdateSkills();
 			UpdateHelpMenu();
 		}
 
@@ -1263,9 +1215,9 @@ namespace CodeImp.DoomBuilder.Windows
 				case MouseButtons.XButton1: key = (int)Keys.XButton1; break;
 				case MouseButtons.XButton2: key = (int)Keys.XButton2; break;
 			}
-
+			
 			// Invoke any actions associated with this key
-		    General.Actions.KeyReleased(key | mod);
+			General.Actions.KeyReleased(key | mod);
 
 			// Invoke on editing mode
 			if((General.Map != null) && (General.Editing.Mode != null))
@@ -1526,25 +1478,20 @@ namespace CodeImp.DoomBuilder.Windows
 		#region ================== Toolbar
 		
 		// This updates the skills list
-        // ano - made public in order to only call when map/prefs/gameconfigs are changed
-        // previously was called by undomanager which caused sluggishness
-		public void UpdateSkills()
+		private void UpdateSkills()
 		{
-            // Clear list
-            buttontest.DropDownItems.Clear();
+			// Clear list
+			buttontest.DropDownItems.Clear();
 			
 			// Map loaded?
 			if(General.Map != null)
 			{
-                toolbar.SuspendLayout();
 				// Make the new items list
 				List<ToolStripItem> items = new List<ToolStripItem>(General.Map.Config.Skills.Count * 2 + General.Map.ConfigSettings.TestEngines.Count + 2);
-
-                // Positive skills are with monsters
-                int skillCount = General.Map.Config.Skills.Count;
-                for (int i = 0; i < skillCount; i++)
+				
+				// Positive skills are with monsters
+				foreach(SkillInfo si in General.Map.Config.Skills)
 				{
-                    SkillInfo si = General.Map.Config.Skills[i];
 					ToolStripMenuItem menuitem = new ToolStripMenuItem(si.ToString());
 					menuitem.Image = Resources.Monster2;
 					menuitem.Click += TestSkill_Click;
@@ -1556,11 +1503,10 @@ namespace CodeImp.DoomBuilder.Windows
 				// Add seperator
 				items.Add(new ToolStripSeparator { Padding = new Padding(0, 3, 0, 3) });
 
-                // Negative skills are without monsters
-                for (int i = 0; i < skillCount; i++)
-                {
-                    SkillInfo si = General.Map.Config.Skills[i];
-                    ToolStripMenuItem menuitem = new ToolStripMenuItem(si.ToString());
+				// Negative skills are without monsters
+				foreach(SkillInfo si in General.Map.Config.Skills)
+				{
+					ToolStripMenuItem menuitem = new ToolStripMenuItem(si.ToString());
 					menuitem.Image = Resources.Monster3;
 					menuitem.Click += TestSkill_Click;
 					menuitem.Tag = -si.Index;
@@ -1585,8 +1531,7 @@ namespace CodeImp.DoomBuilder.Windows
 				
 				// Add to list
 				buttontest.DropDownItems.AddRange(items.ToArray());
-                toolbar.ResumeLayout(false);
-            }
+			}
 		}
 
 		//mxd
@@ -3371,9 +3316,7 @@ namespace CodeImp.DoomBuilder.Windows
 				// Update stuff
 				SetupInterface();
 				UpdateInterface();
-                UpdateSkills();
-
-                General.Editing.UpdateCurrentEditModes();
+				General.Editing.UpdateCurrentEditModes();
 				General.Plugins.ProgramReconfigure();
 				
 				// Reload resources if a map is open
@@ -3398,8 +3341,7 @@ namespace CodeImp.DoomBuilder.Windows
 				// Update stuff
 				SetupInterface();
 				UpdateInterface();
-                UpdateSkills();
-                ApplyShortcutKeys();
+				ApplyShortcutKeys();
 				General.Colors.CreateCorrectionTable();
 				General.Plugins.ProgramReconfigure();
 				
@@ -3982,27 +3924,27 @@ namespace CodeImp.DoomBuilder.Windows
 			// Show line edit dialog
 			if(General.Map.UDMF) //mxd
 			{
-				LinedefEditFormUDMF f = (LinedefEditFormUDMF)linedefEditWindow;
-                f.OnValuesChanged -= EditForm_OnValuesChanged;
-                DisableProcessing(); //mxd
-				f.Setup(lines, selectfront, selectback);
-				EnableProcessing(); //mxd
-				f.OnValuesChanged += EditForm_OnValuesChanged;
-				editformopen = true; //mxd
-				result = f.ShowDialog(this);
-				editformopen = false; //mxd
-			}
-			else
-			{
-                LinedefEditForm f = (LinedefEditForm)linedefEditWindow;
-                f.OnValuesChanged -= EditForm_OnValuesChanged;
-                DisableProcessing(); //mxd
+				LinedefEditFormUDMF f = new LinedefEditFormUDMF(selectfront, selectback);
+				DisableProcessing(); //mxd
 				f.Setup(lines);
 				EnableProcessing(); //mxd
 				f.OnValuesChanged += EditForm_OnValuesChanged;
 				editformopen = true; //mxd
 				result = f.ShowDialog(this);
 				editformopen = false; //mxd
+				f.Dispose();
+			}
+			else
+			{
+				LinedefEditForm f = new LinedefEditForm();
+				DisableProcessing(); //mxd
+				f.Setup(lines);
+				EnableProcessing(); //mxd
+				f.OnValuesChanged += EditForm_OnValuesChanged;
+				editformopen = true; //mxd
+				result = f.ShowDialog(this);
+				editformopen = false; //mxd
+				f.Dispose();
 			}
 
 			return result;
@@ -4016,30 +3958,27 @@ namespace CodeImp.DoomBuilder.Windows
 			// Show sector edit dialog
 			if(General.Map.UDMF) //mxd
 			{ 
-                // ano - preinit sector edit windows to save time
-				SectorEditFormUDMF f = (SectorEditFormUDMF)sectorEditWindow;
-                f.OnValuesChanged -= EditForm_OnValuesChanged;
-                DisableProcessing(); //mxd
+				SectorEditFormUDMF f = new SectorEditFormUDMF();
+				DisableProcessing(); //mxd
 				f.Setup(sectors);
 				EnableProcessing(); //mxd
 				f.OnValuesChanged += EditForm_OnValuesChanged;
 				editformopen = true; //mxd
 				result = f.ShowDialog(this);
 				editformopen = false; //mxd
-				//f.Dispose();
+				f.Dispose();
 			}
 			else
 			{
-                SectorEditForm f = (SectorEditForm)sectorEditWindow;
-                f.OnValuesChanged -= EditForm_OnValuesChanged;
-                DisableProcessing(); //mxd
+				SectorEditForm f = new SectorEditForm();
+				DisableProcessing(); //mxd
 				f.Setup(sectors);
 				EnableProcessing(); //mxd
 				f.OnValuesChanged += EditForm_OnValuesChanged;
 				editformopen = true; //mxd
 				result = f.ShowDialog(this);
 				editformopen = false; //mxd
-				//f.Dispose();
+				f.Dispose();
 			}
 
 			return result;
@@ -4053,28 +3992,27 @@ namespace CodeImp.DoomBuilder.Windows
 			// Show thing edit dialog
 			if(General.Map.UDMF) 
 			{
-				ThingEditFormUDMF f = (ThingEditFormUDMF)thingEditWindow;
-                f.OnValuesChanged -= EditForm_OnValuesChanged;
-                DisableProcessing(); //mxd
+				ThingEditFormUDMF f = new ThingEditFormUDMF();
+				DisableProcessing(); //mxd
 				f.Setup(things);
 				EnableProcessing(); //mxd
 				f.OnValuesChanged += EditForm_OnValuesChanged;
 				editformopen = true; //mxd
 				result = f.ShowDialog(this);
 				editformopen = false; //mxd
+				f.Dispose();
 			} 
 			else 
 			{
-				ThingEditForm f = (ThingEditForm)thingEditWindow;
-
-                f.OnValuesChanged -= EditForm_OnValuesChanged;
-                DisableProcessing(); //mxd
+				ThingEditForm f = new ThingEditForm();
+				DisableProcessing(); //mxd
 				f.Setup(things);
 				EnableProcessing(); //mxd
 				f.OnValuesChanged += EditForm_OnValuesChanged;
 				editformopen = true; //mxd
 				result = f.ShowDialog(this);
 				editformopen = false; //mxd
+				f.Dispose();
 			}
 
 			return result;

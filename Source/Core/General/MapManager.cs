@@ -2393,10 +2393,9 @@ namespace CodeImp.DoomBuilder
 				General.MainWindow.UpdateThingsFilters();
 				General.MainWindow.UpdateLinedefColorPresets(); //mxd
 				General.MainWindow.UpdateInterface();
-                General.MainWindow.UpdateSkills(); // ano
 
-                // Done
-                General.MainWindow.DisplayReady();
+				// Done
+				General.MainWindow.DisplayReady();
 				General.MainWindow.RedrawDisplay(); //mxd
 			}
 

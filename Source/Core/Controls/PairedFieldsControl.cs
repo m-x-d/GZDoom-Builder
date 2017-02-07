@@ -108,18 +108,11 @@ namespace CodeImp.DoomBuilder.Controls
 
 		private void CheckValues() 
 		{
-            if (blockUpdate)
-            {
-                changed = string.IsNullOrEmpty(value1.Text) || string.IsNullOrEmpty(value2.Text);
-                bReset.Visible = changed;
-            }
-            else
-            {
-                changed = string.IsNullOrEmpty(value1.Text) || string.IsNullOrEmpty(value2.Text)
-                    || value1.GetResultFloat(defaultValue, 0) != defaultValue || value2.GetResultFloat(defaultValue, 0) != defaultValue;
-                bReset.Visible = changed;
-                if (OnValuesChanged != null) OnValuesChanged(this, EventArgs.Empty);
-            }
+			changed = string.IsNullOrEmpty(value1.Text) || string.IsNullOrEmpty(value2.Text)
+				|| value1.GetResultFloat(defaultValue, 0) != defaultValue || value2.GetResultFloat(defaultValue, 0) != defaultValue;
+			bReset.Visible = changed;
+
+			if(!blockUpdate && OnValuesChanged != null)	OnValuesChanged(this, EventArgs.Empty);
 		}
 
 		private void UpdateButtons() 
