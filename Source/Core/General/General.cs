@@ -627,7 +627,8 @@ namespace CodeImp.DoomBuilder
 				mainwindow = new MainForm();
 				mainwindow.SetupInterface();
 				mainwindow.UpdateInterface();
-				mainwindow.UpdateThingsFilters();
+                mainwindow.UpdateSkills(); // ano
+                mainwindow.UpdateThingsFilters();
 
 				if(!delaymainwindow)
 				{
@@ -1102,7 +1103,8 @@ namespace CodeImp.DoomBuilder
 						mainwindow.UpdateThingsFilters();
 						mainwindow.UpdateLinedefColorPresets(); //mxd
 						mainwindow.UpdateInterface();
-						mainwindow.AddHintsDocker(); //mxd
+                        mainwindow.UpdateSkills(); // ano
+                        mainwindow.AddHintsDocker(); //mxd
 						mainwindow.UpdateGZDoomPanel(); //mxd
 						mainwindow.HideInfo(); //mxd
 					}
@@ -1176,7 +1178,8 @@ namespace CodeImp.DoomBuilder
 				mainwindow.RemoveHintsDocker();
 				mainwindow.UpdateGZDoomPanel();
 				mainwindow.UpdateInterface();
-				mainwindow.DisplayReady();
+                mainwindow.UpdateSkills(); // ano
+                mainwindow.DisplayReady();
 				WriteLogLine("Map unload done");
 				return true;
 			}
@@ -1279,7 +1282,8 @@ namespace CodeImp.DoomBuilder
 			mainwindow.UpdateThingsFilters();
 			mainwindow.UpdateLinedefColorPresets(); //mxd
 			mainwindow.UpdateInterface();
-			mainwindow.HideInfo();
+            mainwindow.UpdateSkills(); // ano
+            mainwindow.HideInfo();
 			mainwindow.AddHintsDocker(); //mxd
 			mainwindow.UpdateGZDoomPanel(); //mxd
 
@@ -1355,7 +1359,8 @@ namespace CodeImp.DoomBuilder
 				mainwindow.UpdateThingsFilters();
 				mainwindow.UpdateLinedefColorPresets(); //mxd
 				mainwindow.UpdateInterface();
-				mainwindow.HideInfo();
+                mainwindow.UpdateSkills(); // ano
+                mainwindow.HideInfo();
 				mainwindow.AddHintsDocker(); //mxd
 
 				//mxd. Center map in screen or on stored coordinates. Done here to avoid the view jerking around when updating the interface.
@@ -1423,7 +1428,8 @@ namespace CodeImp.DoomBuilder
 
 					// All done
 					mainwindow.UpdateInterface();
-					return result;
+                    mainwindow.UpdateSkills(); // ano
+                    return result;
 				}
 				
 				// Display status
@@ -1445,8 +1451,9 @@ namespace CodeImp.DoomBuilder
 
 				// All done
 				mainwindow.UpdateInterface();
+                mainwindow.UpdateSkills(); // ano
 
-				if(errorlogger.IsErrorAdded)
+                if (errorlogger.IsErrorAdded)
 				{
 					// Show any errors if preferred
 					mainwindow.DisplayStatus(StatusType.Warning, "There were errors during saving!");
@@ -1530,8 +1537,9 @@ namespace CodeImp.DoomBuilder
 					
 					// All done
 					mainwindow.UpdateInterface();
-					
-					if(errorlogger.IsErrorAdded)
+                    mainwindow.UpdateSkills(); // ano
+
+                    if (errorlogger.IsErrorAdded)
 					{
 						// Show any errors if preferred
 						mainwindow.DisplayStatus(StatusType.Warning, "There were errors during saving!");
@@ -1600,8 +1608,9 @@ namespace CodeImp.DoomBuilder
 
 				// All done
 				mainwindow.UpdateInterface();
+                mainwindow.UpdateSkills(); // ano
 
-				if(errorlogger.IsErrorAdded)
+                if (errorlogger.IsErrorAdded)
 				{
 					// Show any errors if preferred
 					mainwindow.DisplayStatus(StatusType.Warning, "There were errors during saving!");
