@@ -3932,7 +3932,7 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				LinedefEditFormUDMF f = new LinedefEditFormUDMF(selectfront, selectback);
 				DisableProcessing(); //mxd
-				f.Setup(lines);
+				f.Setup(lines, selectfront, selectback);
 				EnableProcessing(); //mxd
 				f.OnValuesChanged += EditForm_OnValuesChanged;
 				editformopen = true; //mxd

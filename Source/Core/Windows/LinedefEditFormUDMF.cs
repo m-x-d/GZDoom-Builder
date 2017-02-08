@@ -243,7 +243,7 @@ namespace CodeImp.DoomBuilder.Windows
 		#region ================== Methods
 
 		// This sets up the form to edit the given lines
-		public void Setup(ICollection<Linedef> lines)
+		public void Setup(ICollection<Linedef> lines, bool selectfront, bool selectback)
 		{
             // Window setup
             // ano - moved this here because we don't reinstantiate the thing every time anymore
