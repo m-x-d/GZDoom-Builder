@@ -883,6 +883,10 @@ namespace CodeImp.DoomBuilder.ZDoom
                     return false;
             }
 
+            // set datastream to null so that log messages aren't output using incorrect line numbers
+            Stream odatastream = datastream;
+            datastream = null;
+
             // inject superclasses, since everything is parsed by now
             Dictionary<int, ThingTypeInfo> things = General.Map.Config.GetThingTypes();
             foreach (ZScriptClassStructure cls in allclasseslist)
@@ -930,6 +934,30 @@ namespace CodeImp.DoomBuilder.ZDoom
                 }
             }
 
+            // validate user variables (no variables should shadow parent variables)
+            foreach (ZScriptClassStructure cls in allclasseslist)
+            {
+                ActorStructure actor = cls.Actor;
+                if (actor == null)
+                    continue;
+                ActorStructure actorbase = actor.baseclass;
+                while (actorbase != null)
+                {
+                    foreach (string uservar in actor.uservars.Keys)
+                    {
+                        if (actorbase.uservars.ContainsKey(uservar))
+                        {
+                            actor.uservars.Clear();
+                            ReportError("Variable \"" + uservar + "\" in class \"" + actor.classname + "\" shadows variable \"" + uservar + "\" in base class \"" + actorbase.classname + "\". This is not supported");
+                            goto stopValidatingCompletely;
+                        }
+                    }
+
+                    actorbase = actorbase.baseclass;
+                }
+            }
+        stopValidatingCompletely:
+            datastream = odatastream;
             return true;
         }
 

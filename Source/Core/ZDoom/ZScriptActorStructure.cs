@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CodeImp.DoomBuilder.Types;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -443,7 +444,7 @@ namespace CodeImp.DoomBuilder.ZDoom
                 while (true)
                 {
                     string name = null;
-                    int arraylen = 0;
+                    int arraylen = -1;
 
                     // read in the method/field name
                     tokenizer.SkipWhitespace();
@@ -586,9 +587,53 @@ namespace CodeImp.DoomBuilder.ZDoom
 
                     string _args = "";
                     if (args != null) _args = " (" + ZScriptTokenizer.TokensToString(args) + ")";
-                    else if (arraylen != 0) _args = " [" + arraylen.ToString() + "]";
+                    else if (arraylen != -1) _args = " [" + arraylen.ToString() + "]";
                     parser.LogWarning(string.Format("{0} {1} {2}{3}", string.Join(" ", modifiers.ToArray()), string.Join(", ", types.ToArray()), name, _args));
                 }*/
+                
+                // update 08.02.17: add user variables from ZScript actors.
+                if (args == null && types.Count == 1) // it's a field
+                {
+                    // we support:
+                    //  - float
+                    //  - int
+                    //  - double
+                    //  - bool
+                    string type = types[0];
+                    UniversalType utype;
+                    switch (type)
+                    {
+                        case "int":
+                            utype = UniversalType.Integer;
+                            break;
+                        /*case "float":
+                        case "double":
+                            utype = UniversalType.Float;
+                            break;
+                        case "bool":
+                            utype = UniversalType.Integer;
+                            break;
+                        case "string":
+                            utype = UniversalType.String;
+                            break;
+                            // todo test if class names and colors will work*/
+                            // [ZZ] currently only integer variable works.
+                        default:
+                            continue; // go read next field
+                    }
+
+                    for (int i = 0; i < names.Count; i++)
+                    {
+                        string name = names[i];
+                        int arraylen = arraylens[i];
+                        if (arraylen != -1)
+                            continue; // we don't process arrays
+                        if (!name.StartsWith("user_"))
+                            continue; // we don't process non-user_ fields (because ZScript won't pick them up anyway)
+                        // parent class is not guaranteed to be loaded already, so handle collisions later
+                        uservars.Add(name, utype);
+                    }
+                }
             }
         }
     }
