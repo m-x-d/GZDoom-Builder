@@ -53,34 +53,41 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			InitializeComponent();
 
-			// Only when running (this.DesignMode won't do when not this, but one of parent controls is in design mode)
-			if(LicenseManager.UsageMode != LicenseUsageMode.Designtime)
-			{
-				//mxd. Setup script numbers
-				scriptnumbers.Location = new Point(arg0.Location.X, arg0.Location.Y + 2);
-				foreach(ScriptItem si in General.Map.NumberedScripts.Values)
-					scriptnumbers.Items.Add(new ColoredComboBoxItem(si, si.IsInclude ? SystemColors.HotTrack : SystemColors.WindowText));
-				scriptnumbers.DropDownWidth = Tools.GetDropDownWidth(scriptnumbers);
-
-				//mxd. Setup script names
-				if(General.Map.UDMF)
-				{
-					scriptnames.Location = scriptnumbers.Location;
-					foreach(ScriptItem nsi in General.Map.NamedScripts.Values)
-						scriptnames.Items.Add(new ColoredComboBoxItem(nsi, nsi.IsInclude ? SystemColors.HotTrack : SystemColors.WindowText));
-					scriptnames.DropDownWidth = Tools.GetDropDownWidth(scriptnames);
-				}
-				else
-				{
-					scriptnames.Visible = false;
-					cbuseargstr.Visible = false;
-				}
-			}
+            Reset();
 		}
 
-		#endregion
+        #endregion
 
-		#region ================== Setup
+        #region ================== Setup
+
+        public void Reset()
+        {
+            // Only when running (this.DesignMode won't do when not this, but one of parent controls is in design mode)
+            if (LicenseManager.UsageMode != LicenseUsageMode.Designtime)
+            {
+                //mxd. Setup script numbers
+                scriptnumbers.Location = new Point(arg0.Location.X, arg0.Location.Y + 2);
+                scriptnumbers.Items.Clear();
+                foreach (ScriptItem si in General.Map.NumberedScripts.Values)
+                    scriptnumbers.Items.Add(new ColoredComboBoxItem(si, si.IsInclude ? SystemColors.HotTrack : SystemColors.WindowText));
+                scriptnumbers.DropDownWidth = Tools.GetDropDownWidth(scriptnumbers);
+
+                //mxd. Setup script names
+                if (General.Map.UDMF)
+                {
+                    scriptnames.Items.Clear();
+                    scriptnames.Location = scriptnumbers.Location;
+                    foreach (ScriptItem nsi in General.Map.NamedScripts.Values)
+                        scriptnames.Items.Add(new ColoredComboBoxItem(nsi, nsi.IsInclude ? SystemColors.HotTrack : SystemColors.WindowText));
+                    scriptnames.DropDownWidth = Tools.GetDropDownWidth(scriptnames);
+                }
+                else
+                {
+                    scriptnames.Visible = false;
+                    cbuseargstr.Visible = false;
+                }
+            }
+        }
 
 		public void SetValue(Linedef l, bool first)
 		{

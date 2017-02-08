@@ -2194,12 +2194,16 @@ namespace CodeImp.DoomBuilder.Map
 			//DebugConsole.Clear();
 			//DebugConsole.WriteLine("CorrectSectorReferences for " + lines.Count + " lines");
 			
+            // ano - set a bunch of foreaches to be for()s because they're faster
+
 			// Create a list of sidedefs to perform sector creation with
 			List<LinedefSide> edges = new List<LinedefSide>();
 			if(existing_only)
 			{
-				foreach(Linedef l in lines)
+                int lineCount = lines.Count;
+				for(int i = 0; i < lineCount; i++)
 				{
+                    Linedef l = lines[i];
 					// Add only existing sides as edges (or front side if line has none)
 					if(l.Front != null || l.Back == null)
 						edges.Add(new LinedefSide(l, true));
@@ -2209,10 +2213,12 @@ namespace CodeImp.DoomBuilder.Map
 			}
 			else
 			{
-				foreach(Linedef l in lines)
-				{
-					// Add front side
-					edges.Add(new LinedefSide(l, true));
+                int lineCount = lines.Count;
+                for (int i = 0; i < lineCount; i++)
+                {
+                    Linedef l = lines[i];
+                    // Add front side
+                    edges.Add(new LinedefSide(l, true));
 
 					// Add back side if there's a sector
 					if(General.Map.Map.GetSectorByCoordinates(l.GetSidePoint(false)) != null)
@@ -2221,9 +2227,11 @@ namespace CodeImp.DoomBuilder.Map
 			}
 
 			HashSet<Sidedef> sides_correct = new HashSet<Sidedef>();
-			foreach(LinedefSide ls in edges)
-			{
-				if(ls.Front && ls.Line.Front != null)
+            int edgeCount = edges.Count;
+            for (int i = 0; i < edgeCount; i++)
+            {
+                LinedefSide ls = edges[i];
+                if (ls.Front && ls.Line.Front != null)
 					sides_correct.Add(ls.Line.Front);
 				else if(!ls.Front && ls.Line.Back != null)
 					sides_correct.Add(ls.Line.Back);
@@ -2241,11 +2249,12 @@ namespace CodeImp.DoomBuilder.Map
 			SectorBuilder builder = new SectorBuilder();
 			List<Sector> sectors_reused = new List<Sector>();
 
-			foreach(LinedefSide ls in edges)
-			{
-				// Skip if edge is ignored
-				//DebugConsole.WriteLine((ls.Ignore ? "Ignoring line " : "Processing line ") + ls.Line.Index);
-				if(ls.Ignore) continue;
+            for (int i = 0; i < edgeCount; i++)
+            {
+                LinedefSide ls = edges[i];
+                // Skip if edge is ignored
+                //DebugConsole.WriteLine((ls.Ignore ? "Ignoring line " : "Processing line ") + ls.Line.Index);
+                if (ls.Ignore) continue;
 
 				// Run sector builder on current edge
 				if(!builder.TraceSector(ls.Line, ls.Front)) continue; // Don't create sector if trace failed
@@ -2263,9 +2272,10 @@ namespace CodeImp.DoomBuilder.Map
 					if(side_exists && sectorsides.Contains(edge.Front ? edge.Line.Front : edge.Line.Back))
 						has_dragged_sides = true; //mxd
 
-					foreach(LinedefSide ls2 in edges)
-					{
-						if(ls2.Line == edge.Line)
+                    for (int k = 0; k < edgeCount; k++)
+                    {
+                        LinedefSide ls2 = edges[k];
+                        if (ls2.Line == edge.Line)
 						{
 							line_is_ours = true;
 							if(ls2.Front == edge.Front)
@@ -2276,12 +2286,16 @@ namespace CodeImp.DoomBuilder.Map
 						}
 					}
 
-					if(line_is_ours)
+                    // ano - so this inner part was already commented out
+                    // so i just put the /* */ around it
+					/*if(line_is_ours)
 					{
 						//if(edge.Line.Front == null && edge.Line.Back == null)
 							//has_zero_sided_lines = true;
 					}
-					else
+					else*/
+
+                    if(!line_is_ours)
 					{
 						has_existing_lines = true;
 						has_existing_sides |= side_exists; //mxd
@@ -2330,10 +2344,11 @@ namespace CodeImp.DoomBuilder.Map
 				builder.CreateSector(sector, null);
 			}
 
-			// Remove any sides that weren't part of a sector
-			foreach(LinedefSide ls in edges)
-			{
-				if(ls.Ignore || ls.Line == null) continue;
+            // Remove any sides that weren't part of a sector
+            for (int i = 0; i < edgeCount; i++)
+            {
+                LinedefSide ls = edges[i];
+                if (ls.Ignore || ls.Line == null) continue;
 
 				if(ls.Front)
 				{

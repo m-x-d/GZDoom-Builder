@@ -585,10 +585,10 @@ namespace CodeImp.DoomBuilder.Controls
 
 			// Show the whole thing
 			this.Show();
-			this.Update();
-		}
+            //this.Update(); // ano - don't think this is needed, and is slow
+        }
 
-		private static void UpdateTexturePanel(Panel panel, string texturename, Label texturenamelabel, Label sizelabel, int maxlabelright, Panel image, int sizeref, bool extendedinfoshown, bool required)
+        private static void UpdateTexturePanel(Panel panel, string texturename, Label texturenamelabel, Label sizelabel, int maxlabelright, Panel image, int sizeref, bool extendedinfoshown, bool required)
 		{
 			// Set texture name
 			texturenamelabel.Text = (texturename.Length > DataManager.CLASIC_IMAGE_NAME_LENGTH ? texturename : texturename.ToUpperInvariant());

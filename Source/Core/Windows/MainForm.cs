@@ -850,7 +850,7 @@ namespace CodeImp.DoomBuilder.Windows
 			
 			// Refresh
 			statusbar.Invalidate();
-			this.Update();
+			//this.Update(); // ano - this is unneeded afaict and slow
 		}
 		
 		// This changes status text to Ready
@@ -2115,19 +2115,22 @@ namespace CodeImp.DoomBuilder.Windows
 		// This checks one of the edit mode items (and unchecks all others)
 		internal void CheckEditModeButton(string modeclassname)
 		{
-			// Go for all items
-			foreach(ToolStripItem i in editmodeitems)
+            // Go for all items
+            //foreach(ToolStripItem item in editmodeitems)
+            int itemCount = editmodeitems.Count;
+            for(int i = 0; i < itemCount; i++)
 			{
+                ToolStripItem item = editmodeitems[i];
 				// Check what type it is
-				if(i is ToolStripMenuItem)
+				if(item is ToolStripMenuItem)
 				{
 					// Check if mode type matches with given name
-					(i as ToolStripMenuItem).Checked = ((i.Tag as EditModeInfo).Type.Name == modeclassname);
+					(item as ToolStripMenuItem).Checked = ((item.Tag as EditModeInfo).Type.Name == modeclassname);
 				}
-				else if(i is ToolStripButton)
+				else if(item is ToolStripButton)
 				{
 					// Check if mode type matches with given name
-					(i as ToolStripButton).Checked = ((i.Tag as EditModeInfo).Type.Name == modeclassname);
+					(item as ToolStripButton).Checked = ((item.Tag as EditModeInfo).Type.Name == modeclassname);
 				}
 			}
 		}
@@ -2135,12 +2138,15 @@ namespace CodeImp.DoomBuilder.Windows
 		// This removes the config-specific editing mode buttons
 		internal void RemoveEditModeButtons()
 		{
-			// Go for all items
-			foreach(ToolStripItem i in editmodeitems)
-			{
-				// Remove it and restart
-				menumode.DropDownItems.Remove(i);
-				i.Dispose();
+            // Go for all items
+            //foreach(ToolStripItem item in editmodeitems)
+            int itemCount = editmodeitems.Count;
+            for (int i = 0; i < itemCount; i++)
+            {
+                ToolStripItem item = editmodeitems[i];
+                // Remove it and restart
+                menumode.DropDownItems.Remove(item);
+				item.Dispose();
 			}
 			
 			// Done
