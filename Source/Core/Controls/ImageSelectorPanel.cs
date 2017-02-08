@@ -530,7 +530,7 @@ namespace CodeImp.DoomBuilder.Controls
 				int wid = Math.Max((imagesize > 0 ? imagesize : preview.Width), ti.TextureNameWidth) + padhorz + padhorz;
 				int hei = (imagesize > 0 ? imagesize : preview.Height) + padvert + padvert + font;
                 // if we draw height below, add another font
-                if (General.Settings.TextureSizesBelow && ti.ItemType == ImageBrowserItemType.IMAGE)
+                if (General.Settings.ShowTextureSizes && General.Settings.TextureSizesBelow && ti.ItemType == ImageBrowserItemType.IMAGE)
                     hei += font;
 				
 				if(rw < wid)

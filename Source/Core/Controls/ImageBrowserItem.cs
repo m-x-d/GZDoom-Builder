@@ -157,7 +157,7 @@ namespace CodeImp.DoomBuilder.Controls
 
             int fontH = 4 + SystemFonts.MessageBoxFont.Height;
             int h2 = h;
-            if (General.Settings.TextureSizesBelow && ItemType == ImageBrowserItemType.IMAGE)
+            if (General.Settings.ShowTextureSizes && General.Settings.TextureSizesBelow && ItemType == ImageBrowserItemType.IMAGE)
                 h2 -= fontH;
 
             var iw = bmp.Width;
