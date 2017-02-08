@@ -105,11 +105,9 @@ namespace CodeImp.DoomBuilder.Controls
                 }
                 else
                 {
-                    Color topselected = Color.FromArgb(255, 37, 67, 151);
-                    Color bottomselected = Color.FromArgb(255, 1, 20, 83);
                     // FIXME - ano - okay this is a bit off
-                    selectedbgbrush = new LinearGradientBrush(new Point(x - 2, y - 3), new Point(x - 2, y + h + 4 + SystemFonts.MessageBoxFont.Height), topselected, bottomselected);
-                    ((LinearGradientBrush)selectedbgbrush).WrapMode = WrapMode.Tile;
+                    // [ZZ] this is not "a bit" off. this is completely off. especially when items have different sizes.
+                    //      moved to item drawing.
                 }
 
                 frame_used = Pens.Orange;
@@ -131,11 +129,7 @@ namespace CodeImp.DoomBuilder.Controls
                 }
                 else
                 {
-                    Color topselected = Color.FromArgb(255, 37, 67, 151);
-                    Color bottomselected = Color.FromArgb(255, 1, 20, 83);
-
-                    selectedbgbrush = new LinearGradientBrush(new Point(x - 2, y - 3), new Point(x - 2, y + h + 4 + SystemFonts.MessageBoxFont.Height), topselected, bottomselected);
-                    ((LinearGradientBrush)selectedbgbrush).WrapMode = WrapMode.Tile;
+                    selectedbgbrush = null;
                 }
 
                 frame_used = SystemPens.HotTrack;
@@ -195,6 +189,11 @@ namespace CodeImp.DoomBuilder.Controls
                 }
                 else
                 {
+                    // calculate selectedbgbrush here. once.
+                    Color topselected = Color.FromArgb(255, 37, 67, 151);
+                    Color bottomselected = Color.FromArgb(255, 1, 20, 83);
+                    selectedbgbrush = new LinearGradientBrush(new Point(x - 2, y - 3), new Point(x - 2, y + h + fontH), topselected, bottomselected);
+
                     g.FillRectangle(selectedbgbrush, x - 13, y - 2, w + 26, h + fontH);
                 }
             }
@@ -217,7 +216,7 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 
             // Image name
-            float textureNameX = classicview ? (x + (float)w / 2 - g.MeasureString(TextureName, SystemFonts.MessageBoxFont).Width / 2) : (x - 2);
+            float textureNameX = classicview ? (x + (float)w / 2 - TextureNameWidth / 2) : (x - 2);
             g.DrawString(TextureName, SystemFonts.MessageBoxFont, (selected ? selectiontextbrush : (used ? fgbrush_used : fgbrush_unused)), textureNameX, y + h2 + 1);
 
 			// Image size
