@@ -4,7 +4,7 @@ using System;
 using System.Drawing;
 using CodeImp.DoomBuilder.Data;
 using System.Drawing.Drawing2D;
-
+using System.Text;
 #endregion
 
 namespace CodeImp.DoomBuilder.Controls
@@ -33,11 +33,17 @@ namespace CodeImp.DoomBuilder.Controls
 		private int namewidth;
 		private int shortnamewidth;
 
-		#endregion
+        private static Brush bgbrush, fgbrush_used, fgbrush_unused, selectedbgbrush, selectionbrush, selectiontextbrush, bgbrush_alpha;
+        private static Color bgcolor;
+        private static Pen selection, frame_used, frame_unused;
+        private static StringBuilder size_builder;
+        private static Font pixelSizeFont;
 
-		#region ================== Properties
+        #endregion
 
-		public ImageData Icon { get { return icon; } }
+        #region ================== Properties
+
+        public ImageData Icon { get { return icon; } }
 		public ImageBrowserItemType ItemType { get { return itemtype; } }
 		public virtual bool IsPreviewLoaded { get { return icon.IsPreviewLoaded; } }
 		public bool ShowFullName { set { showfullname = value; } }
@@ -59,7 +65,7 @@ namespace CodeImp.DoomBuilder.Controls
 			this.showfullname = showfullname; //mxd
 			this.imageloaded = icon.IsPreviewLoaded; //mxd
 			this.tooltip = tooltip; //mxd
-
+            
 			//mxd. Calculate names width
 			this.namewidth = (int)Math.Ceiling(General.Interface.MeasureString(icon.Name, SystemFonts.MessageBoxFont, 10000, StringFormat.GenericTypographic).Width);
 			this.shortnamewidth = (int)Math.Ceiling(General.Interface.MeasureString(icon.ShortName, SystemFonts.MessageBoxFont, 10000, StringFormat.GenericTypographic).Width);
@@ -79,14 +85,86 @@ namespace CodeImp.DoomBuilder.Controls
 			return false;
 		}
 
+        internal static void SetBrushes(bool classicview, int x, int y, int w, int h)
+        {
+            if (size_builder == null)
+            {
+                size_builder = new StringBuilder(11); // 11 for 2 parens + 1 'x' + 4 * 2 numbers
+            }
+            // Pick colors and brushes
+            if (General.Settings.BlackBrowsers)
+            {
+                bgcolor = Color.Black;
+                bgbrush = Brushes.Black;
+                fgbrush_used = Brushes.Orange;
+                fgbrush_unused = Brushes.White;
+
+                if (!classicview)
+                {
+                    selectedbgbrush = Brushes.Gray;
+                }
+                else
+                {
+                    Color topselected = Color.FromArgb(255, 37, 67, 151);
+                    Color bottomselected = Color.FromArgb(255, 1, 20, 83);
+                    // FIXME - ano - okay this is a bit off
+                    selectedbgbrush = new LinearGradientBrush(new Point(x - 2, y - 3), new Point(x - 2, y + h + 4 + SystemFonts.MessageBoxFont.Height), topselected, bottomselected);
+                    ((LinearGradientBrush)selectedbgbrush).WrapMode = WrapMode.Tile;
+                }
+
+                frame_used = Pens.Orange;
+                frame_unused = Pens.Gray;
+                selection = Pens.Red;
+                selectionbrush = Brushes.Red;
+                selectiontextbrush = Brushes.White;
+            }
+            else
+            {
+                bgcolor = SystemColors.Window;
+                bgbrush = SystemBrushes.Window;
+                fgbrush_used = SystemBrushes.HotTrack;
+                fgbrush_unused = SystemBrushes.ControlText;
+
+                if (!classicview)
+                {
+                    selectedbgbrush = SystemBrushes.Highlight;
+                }
+                else
+                {
+                    Color topselected = Color.FromArgb(255, 37, 67, 151);
+                    Color bottomselected = Color.FromArgb(255, 1, 20, 83);
+
+                    selectedbgbrush = new LinearGradientBrush(new Point(x - 2, y - 3), new Point(x - 2, y + h + 4 + SystemFonts.MessageBoxFont.Height), topselected, bottomselected);
+                    ((LinearGradientBrush)selectedbgbrush).WrapMode = WrapMode.Tile;
+                }
+
+                frame_used = SystemPens.HotTrack;
+                frame_unused = SystemPens.ActiveBorder;
+                selection = SystemPens.HotTrack;
+                selectionbrush = SystemBrushes.HotTrack;
+                selectiontextbrush = SystemBrushes.Window;
+            }
+
+            bgbrush_alpha = new SolidBrush(Color.FromArgb(192, bgcolor));
+
+            if (General.Settings.TextureSizesBelow)
+            {
+                pixelSizeFont = new Font(SystemFonts.MessageBoxFont.FontFamily, SystemFonts.MessageBoxFont.Size * 0.8f, FontStyle.Regular);
+            }
+            else
+            {
+                pixelSizeFont = SystemFonts.MessageBoxFont;
+            }
+        }
+
 		internal void Draw(Graphics g, Image bmp, int x, int y, int w, int h, bool selected, bool used, bool classicview)
 		{
 			if(bmp == null) return;
 
-            int font = 4 + SystemFonts.MessageBoxFont.Height;
+            int fontH = 4 + SystemFonts.MessageBoxFont.Height;
             int h2 = h;
             if (General.Settings.TextureSizesBelow && ItemType == ImageBrowserItemType.IMAGE)
-                h2 -= font;
+                h2 -= fontH;
 
             var iw = bmp.Width;
 			var ih = bmp.Height;
@@ -105,55 +183,6 @@ namespace CodeImp.DoomBuilder.Controls
             int ix = (iw < w ? x + (w - iw) / 2 : x);
 			int iy = (ih < h2 ? y + (h2 - ih) / 2 : y);
 
-            // Pick colors and brushes
-            Brush bgbrush, fgbrush, selectedbgbrush, selectionbrush, selectiontextbrush;
-			Color bgcolor;
-			Pen selection, frame;
-			if(General.Settings.BlackBrowsers)
-			{
-				bgcolor = Color.Black;
-				bgbrush = Brushes.Black;
-				fgbrush = (used ? Brushes.Orange : Brushes.White);
-
-                if (!classicview)
-                {
-                    selectedbgbrush = Brushes.Gray;
-                }
-                else
-                {
-                    Color topselected = Color.FromArgb(255, 37, 67, 151);
-                    Color bottomselected = Color.FromArgb(255, 1, 20, 83);
-                    selectedbgbrush = new LinearGradientBrush(new Point(x - 2, y - 3), new Point(x - 2, y + h + 4 + SystemFonts.MessageBoxFont.Height), topselected, bottomselected);
-                }
-
-                frame = (used ? Pens.Orange : Pens.Gray);
-				selection = Pens.Red;
-				selectionbrush = Brushes.Red;
-				selectiontextbrush = Brushes.White;
-			}
-			else
-			{
-				bgcolor = SystemColors.Window;
-				bgbrush = SystemBrushes.Window;
-				fgbrush = (used ? SystemBrushes.HotTrack : SystemBrushes.ControlText);
-
-                if (!classicview)
-                {
-                    selectedbgbrush = SystemBrushes.Highlight;
-                }
-                else
-                {
-                    Color topselected = Color.FromArgb(255, 37, 67, 151);
-                    Color bottomselected = Color.FromArgb(255, 1, 20, 83);
-                    selectedbgbrush = new LinearGradientBrush(new Point(x - 2, y - 3), new Point(x - 2, y + h + 4 + SystemFonts.MessageBoxFont.Height), topselected, bottomselected);
-                }
-
-                frame = (used ? SystemPens.HotTrack : SystemPens.ActiveBorder);
-				selection = SystemPens.HotTrack;
-				selectionbrush = SystemBrushes.HotTrack;
-				selectiontextbrush = SystemBrushes.Window;
-			}
-
 			// Item bg
 			g.FillRectangle(bgbrush, x - 2, y - 2, w + 3, h + 8 + SystemFonts.MessageBoxFont.Height);
 
@@ -166,7 +195,7 @@ namespace CodeImp.DoomBuilder.Controls
                 }
                 else
                 {
-                    g.FillRectangle(selectedbgbrush, x - 13, y - 2, w + 26, h + font);
+                    g.FillRectangle(selectedbgbrush, x - 13, y - 2, w + 26, h + fontH);
                 }
             }
 
@@ -180,24 +209,31 @@ namespace CodeImp.DoomBuilder.Controls
 				g.DrawRectangle(selection, x - 2, y - 2, w + 3, h2 + 3);
 
 				// Image name bg
-				g.FillRectangle(selectionbrush, x - 2, y + h2 + 2, w + 4, SystemFonts.MessageBoxFont.Height + (General.Settings.TextureSizesBelow ? font : 0));
+				g.FillRectangle(selectionbrush, x - 2, y + h2 + 2, w + 4, SystemFonts.MessageBoxFont.Height + (General.Settings.TextureSizesBelow ? fontH : 0));
 			}
 			else if (!classicview)
 			{
-				g.DrawRectangle(frame, x - 1, y - 1, w + 1, h2 + 1);
+                g.DrawRectangle(used ? frame_used : frame_unused , x - 1, y - 1, w + 1, h2 + 1);
 			}
 
             // Image name
             float textureNameX = classicview ? (x + (float)w / 2 - g.MeasureString(TextureName, SystemFonts.MessageBoxFont).Width / 2) : (x - 2);
-            g.DrawString(TextureName, SystemFonts.MessageBoxFont, (selected ? selectiontextbrush : fgbrush), textureNameX, y + h2 + 1);
+            g.DrawString(TextureName, SystemFonts.MessageBoxFont, (selected ? selectiontextbrush : (used ? fgbrush_used : fgbrush_unused)), textureNameX, y + h2 + 1);
 
 			// Image size
 			if(General.Settings.ShowTextureSizes && icon.IsPreviewLoaded && itemtype == ImageBrowserItemType.IMAGE)
 			{
                 if (!General.Settings.TextureSizesBelow)
                 {
-                    string imagesize = Math.Abs(icon.ScaledWidth) + "x" + Math.Abs(icon.ScaledHeight);
-                    SizeF textsize = g.MeasureString(imagesize, SystemFonts.MessageBoxFont);
+                    //string imagesize = Math.Abs(icon.ScaledWidth) + "x" + Math.Abs(icon.ScaledHeight);
+                    //ano - let's do this with a stringbuilder instead
+                    size_builder.Length = 0;
+                    size_builder.Append(Math.Abs(icon.ScaledWidth));
+                    size_builder.Append('x');
+                    size_builder.Append(Math.Abs(icon.ScaledHeight));
+
+                    string imagesize = size_builder.ToString();
+                    SizeF textsize = g.MeasureString(imagesize, pixelSizeFont);
 
                     textsize.Width += 2;
                     textsize.Height -= 3;
@@ -209,29 +245,34 @@ namespace CodeImp.DoomBuilder.Controls
                     }
                     else
                     {
-                        using (Brush bg = new SolidBrush(Color.FromArgb(192, bgcolor)))
-                        {
-                            g.FillRectangle(bg, x, y, textsize.Width, textsize.Height);
-                        }
+                         g.FillRectangle(bgbrush_alpha, x, y, textsize.Width, textsize.Height);
                     }
 
-                    g.DrawString(imagesize, SystemFonts.MessageBoxFont, (selected ? selectiontextbrush : fgbrush), x, y - 1);
+                    g.DrawString(imagesize, pixelSizeFont, (selected ? selectiontextbrush : (used ? fgbrush_used : fgbrush_unused)), x, y - 1);
                 }
                 else
                 {
-                    string imagesize = "(" + Math.Abs(icon.ScaledWidth) + "x" + Math.Abs(icon.ScaledHeight) + ")";
+                    //string imagesize = "(" + Math.Abs(icon.ScaledWidth) + "x" + Math.Abs(icon.ScaledHeight) + ")";
+                    //ano - let's do this with a stringbuilder instead
+                    size_builder.Length = 0;
+                    size_builder.Append("(");
+                    size_builder.Append(Math.Abs(icon.ScaledWidth));
+                    size_builder.Append('x');
+                    size_builder.Append(Math.Abs(icon.ScaledHeight));
+                    size_builder.Append(")");
+
+                    string imagesize = size_builder.ToString();
 
                     // [ZZ] we can't draw it with the regular font: it blends in with the texture name.
-                    SolidBrush brush = new SolidBrush(((SolidBrush)(selected ? selectiontextbrush : fgbrush)).Color);
+                    SolidBrush brush = new SolidBrush(((SolidBrush)(selected ? selectiontextbrush : (used ? fgbrush_used : fgbrush_unused))).Color);
                     brush.Color = Color.FromArgb((int)(brush.Color.A/* * 0.75f*/), brush.Color.R, brush.Color.G, brush.Color.B);
                     
-                    Font f = new Font(SystemFonts.MessageBoxFont.FontFamily, SystemFonts.MessageBoxFont.Size * 0.8f, FontStyle.Regular);
-                    SizeF textsize = g.MeasureString(imagesize, f);
+                    SizeF textsize = g.MeasureString(imagesize, pixelSizeFont);
 
                     float szx = classicview ? (x + (float)w / 2 - textsize.Width / 2) : x;
                     float szy = (float)y + h;
 
-                    g.DrawString(imagesize, f, brush, szx, szy);
+                    g.DrawString(imagesize, pixelSizeFont, brush, szx, szy);
                 }
 			}
 		}

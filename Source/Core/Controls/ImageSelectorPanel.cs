@@ -616,6 +616,7 @@ namespace CodeImp.DoomBuilder.Controls
                 ImageBrowserItemType currentType = ImageBrowserItemType.IMAGE; // initialized to random value
                 bool currentUsedInMap = false;
 
+                ImageBrowserItem.SetBrushes(classicview, rectangles[0].X, rectangles[0].Y - y, rectangles[0].Width, rectangles[0].Height);
                 for (var i = 0; i < items.Count; i++)
 				{
                     if (classicview && (i == 0 || ((currentType == ImageBrowserItemType.IMAGE) != (items[i].ItemType == ImageBrowserItemType.IMAGE)) || (usedtexturesfirst && currentUsedInMap != items[i].Icon.UsedInMap)))
