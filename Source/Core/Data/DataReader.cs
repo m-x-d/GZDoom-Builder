@@ -94,6 +94,7 @@ namespace CodeImp.DoomBuilder.Data
 		protected bool issuspended;
 		protected bool isdisposed;
 		protected bool isreadonly; //mxd
+        protected bool wasreadonly; // [ZZ]
 		protected ResourceTextureSet textureset;
 
 		#endregion
@@ -103,7 +104,7 @@ namespace CodeImp.DoomBuilder.Data
 		public DataLocation Location { get { return location; } }
 		public bool IsDisposed { get { return isdisposed; } }
 		public bool IsSuspended { get { return issuspended; } }
-		public bool IsReadOnly { get { return isreadonly; } } //mxd
+		public bool IsReadOnly { get { return (issuspended?wasreadonly:isreadonly); } } //mxd, [ZZ]
 		public ResourceTextureSet TextureSet { get { return textureset; } }
 
 		#endregion
@@ -144,6 +145,7 @@ namespace CodeImp.DoomBuilder.Data
             // [ZZ] validate
             if (issuspended) throw new Exception("Tried to suspend already suspended resource!");
 			issuspended = true;
+            wasreadonly = isreadonly;
             isreadonly = true;
 		}
 
@@ -153,7 +155,7 @@ namespace CodeImp.DoomBuilder.Data
             // [ZZ] validate
             if (!issuspended) throw new Exception("Tried to resume already resumed resource!");
             issuspended = false;
-            isreadonly = false;
+            isreadonly = wasreadonly;
 		}
 
         // This reloads the resource (possibly as readonly).

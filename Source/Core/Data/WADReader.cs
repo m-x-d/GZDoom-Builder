@@ -218,7 +218,7 @@ namespace CodeImp.DoomBuilder.Data
 		// This resumes use of this resource
 		public override void Resume()
 		{
-            Reload(true);
+            Reload(IsReadOnly);
 			base.Resume();
 		}
 
