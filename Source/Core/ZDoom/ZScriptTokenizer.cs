@@ -121,6 +121,7 @@ namespace CodeImp.DoomBuilder.ZDoom
         private static Dictionary<string, ZScriptTokenType> namedtokentypes; // these are tokens that have precise equivalent in the enum (like operators)
         private static Dictionary<ZScriptTokenType, string> namedtokentypesreverse; // these are tokens that have precise equivalent in the enum (like operators)
         private static List<string> namedtokentypesorder; // this is the list of said tokens ordered by length.
+        private static StringBuilder SB;
 
         public BinaryReader Reader { get { return reader; } }
         public long LastPosition { get; private set; }
@@ -128,6 +129,9 @@ namespace CodeImp.DoomBuilder.ZDoom
         public ZScriptTokenizer(BinaryReader br)
         {
             reader = br;
+
+            if (SB == null)
+                SB = new StringBuilder();
 
             if (namedtokentypes == null || namedtokentypesreverse == null || namedtokentypesorder == null)
             {
@@ -179,14 +183,15 @@ namespace CodeImp.DoomBuilder.ZDoom
             // check whitespace
             if (whitespace.Contains(c))
             {
-                string ws_content = "";
-                ws_content += c;
+                //string ws_content = "";
+                SB.Length = 0;
+                SB.Append(c);
                 while (true)
                 {
                     char cnext = reader.ReadChar();
                     if (whitespace.Contains(cnext))
                     {
-                        ws_content += cnext;
+                        SB.Append(cnext);
                         continue;
                     }
 
@@ -196,7 +201,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 
                 ZScriptToken tok = new ZScriptToken();
                 tok.Type = ZScriptTokenType.Whitespace;
-                tok.Value = ws_content;
+                tok.Value = SB.ToString();
                 return tok;
             }
 
@@ -214,8 +219,8 @@ namespace CodeImp.DoomBuilder.ZDoom
                 (c >= 'A' && c <= 'Z') ||
                 (c == '_'))
             {
-                string id_content = "";
-                id_content += c;
+                SB.Length = 0;
+                SB.Append(c);
                 while (true)
                 {
                     char cnext = reader.ReadChar();
@@ -224,7 +229,7 @@ namespace CodeImp.DoomBuilder.ZDoom
                         (cnext == '_') ||
                         (cnext >= '0' && cnext <= '9'))
                     {
-                        id_content += cnext;
+                        SB.Append(cnext);
                         continue;
                     }
 
@@ -234,7 +239,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 
                 ZScriptToken tok = new ZScriptToken();
                 tok.Type = ZScriptTokenType.Identifier;
-                tok.Value = id_content;
+                tok.Value = SB.ToString();
                 return tok;
             }
 
@@ -267,12 +272,12 @@ namespace CodeImp.DoomBuilder.ZDoom
                 {
                     bool isoctal = (c == '0');
                     bool ishex = false;
-                    string i_content = "";
-                    i_content += c;
+                    SB.Length = 0;
+                    SB.Append(c);
                     while (true)
                     {
                         char cnext = reader.ReadChar();
-                        if (!isdouble && (cnext == 'x') && i_content.Length == 1)
+                        if (!isdouble && (cnext == 'x') && SB.Length == 1)
                         {
                             isoctal = false;
                             ishex = true;
@@ -281,21 +286,21 @@ namespace CodeImp.DoomBuilder.ZDoom
                                  (!isoctal && cnext >= '8' && cnext <= '9') ||
                                  (ishex && ((cnext >= 'a' && cnext <= 'f') || (cnext >= 'A' && cnext <= 'F'))))
                         {
-                            i_content += cnext;
+                            SB.Append(cnext);
                         }
                         else if (!ishex && !isdouble && !isexponent && cnext == '.')
                         {
                             isdouble = true;
                             isoctal = false;
-                            i_content += '.';
+                            SB.Append('.');
                         }
                         else if (!isoctal && !ishex && !isexponent && (cnext == 'e' || cnext == 'E'))
                         {
                             isexponent = true;
                             isdouble = true;
-                            i_content += 'e';
+                            SB.Append('e');
                             cnext = reader.ReadChar();
-                            if (cnext == '-') i_content += '-';
+                            if (cnext == '-') SB.Append('-');
                             else reader.BaseStream.Position--;
                         }
                         else
@@ -307,7 +312,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 
                     ZScriptToken tok = new ZScriptToken();
                     tok.Type = (isdouble ? ZScriptTokenType.Double : ZScriptTokenType.Integer);
-                    tok.Value = i_content;
+                    tok.Value = SB.ToString();
                     try
                     {
                         if (ishex || isoctal || !isdouble)
@@ -354,7 +359,7 @@ namespace CodeImp.DoomBuilder.ZDoom
                         {
                             if (!allowline) break;
                             // line comment: read until newline but not including it
-                            string cmt = "";
+                            SB.Length = 0;
                             while (true)
                             {
                                 cnext = reader.ReadChar();
@@ -364,19 +369,19 @@ namespace CodeImp.DoomBuilder.ZDoom
                                     break;
                                 }
 
-                                cmt += cnext;
+                                SB.Append(cnext);
                             }
 
                             ZScriptToken tok = new ZScriptToken();
                             tok.Type = ZScriptTokenType.LineComment;
-                            tok.Value = cmt;
+                            tok.Value = SB.ToString();
                             return tok;
                         }
                         else if (cnext == '*')
                         {
                             if (!allowblock) break;
                             // block comment: read until closing sequence
-                            string cmt = "";
+                            SB.Length = 0;
                             while (true)
                             {
                                 cnext = reader.ReadChar();
@@ -389,12 +394,12 @@ namespace CodeImp.DoomBuilder.ZDoom
                                     reader.BaseStream.Position--;
                                 }
 
-                                cmt += cnext;
+                                SB.Append(cnext);
                             }
 
                             ZScriptToken tok = new ZScriptToken();
                             tok.Type = ZScriptTokenType.BlockComment;
-                            tok.Value = cmt;
+                            tok.Value = SB.ToString();
                             return tok;
                         }
                         break;
@@ -405,7 +410,7 @@ namespace CodeImp.DoomBuilder.ZDoom
                     {
                         if ((c == '"' && !allowstring) || (c == '\'' && !allowname)) break;
                         ZScriptTokenType type = (c == '"' ? ZScriptTokenType.String : ZScriptTokenType.Name);
-                        string s = "";
+                        SB.Length = 0;
                         while (true)
                         {
                             // todo: parse escape sequences properly
@@ -413,16 +418,16 @@ namespace CodeImp.DoomBuilder.ZDoom
                             if (cnext == '\\') // escape sequence. right now, do nothing
                             {
                                 cnext = reader.ReadChar();
-                                s += cnext;
+                                SB.Append(cnext);
                             }
                             else if (cnext == c)
                             {
                                 ZScriptToken tok = new ZScriptToken();
                                 tok.Type = type;
-                                tok.Value = s;
+                                tok.Value = SB.ToString();
                                 return tok;
                             }
-                            else s += cnext;
+                            else SB.Append(cnext);
                         }
                     }
 
