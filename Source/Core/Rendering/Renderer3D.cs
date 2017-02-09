@@ -56,6 +56,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		private Matrix view2d;
 		private Matrix world;
 		private Vector3D cameraposition;
+        private Vector3D cameravector;
 		private int shaderpass;
 		
 		// Window size
@@ -257,8 +258,9 @@ namespace CodeImp.DoomBuilder.Rendering
 		{
 			// Calculate delta vector
 			cameraposition = pos;
-			Vector3D delta = lookat - pos;
-			float anglexy = delta.GetAngleXY();
+            Vector3D delta = lookat - pos;
+            cameravector = delta.GetNormal();
+            float anglexy = delta.GetAngleXY();
 			float anglez = delta.GetAngleZ();
 
 			// Create frustum
@@ -504,22 +506,45 @@ namespace CodeImp.DoomBuilder.Rendering
 			visualvertices = null;
 		}
 
-		//mxd
-		private void UpdateLights()
-		{
-			if(lightthings.Count > General.Settings.GZMaxDynamicLights) 
-			{
-				// Calculate distance to camera
-				foreach(VisualThing t in lightthings) t.CalculateCameraDistance(cameraposition);
+        // [ZZ] black renderer magic here.
+        //      todo maybe implement proper frustum culling eventually?
+        //      Frustum2D.IntersectCircle doesn't seem to work here.
+        private bool CullLight(VisualThing t)
+        {
+            Vector3D lightToCamera = (cameraposition - t.CenterV3D).GetNormal();
+            double angdiff = Vector3D.DotProduct(lightToCamera, cameravector);
+            if (angdiff <= 0)
+                return true; // light in front of the camera. it's not negative because I don't want to calculate things twice and need the vector to point at camera.
+            // otherwise check light size: large lights might have center on the back, but radius in front of the camera.
+            Vector3D lightToCameraWithRadius = (cameraposition - (t.CenterV3D + lightToCamera * t.LightRadius)).GetNormal();
+            double angdiffWithRadius = Vector3D.DotProduct(lightToCameraWithRadius, cameravector);
+            if (angdiffWithRadius <= 0)
+                return true; // light's radius extension is in front of the camera.
+            return false;
+        }
 
-				// Sort by it, closer ones first
-				lightthings.Sort((t1, t2) => Math.Sign(t1.CameraDistance - t2.CameraDistance));
-				
-				// Gather the closest
-				List<VisualThing> tl = new List<VisualThing>(General.Settings.GZMaxDynamicLights);
-				for(int i = 0; i < General.Settings.GZMaxDynamicLights; i++) tl.Add(lightthings[i]);
-				lightthings = tl;
-			}
+        //mxd
+        private void UpdateLights()
+		{
+			// Calculate distance to camera
+			foreach(VisualThing t in lightthings) t.CalculateCameraDistance(cameraposition);
+
+			// Sort by it, closer ones first
+			lightthings.Sort((t1, t2) => Math.Sign(t1.CameraDistance - t2.CameraDistance));
+
+            // Gather the closest
+            List<VisualThing> tl = new List<VisualThing>(lightthings.Count);
+            // Break on either end of things of max dynamic lights reached
+            for (int i = 0; i < lightthings.Count && tl.Count < General.Settings.GZMaxDynamicLights; i++)
+            {
+                // Make sure we can see this light at all
+                if (!CullLight(lightthings[i]))
+                    continue;
+                tl.Add(lightthings[i]);
+            }
+
+            // Update the array
+			lightthings = tl;
 
 			// Sort things by light render style
 			lightthings.Sort((t1, t2) => Math.Sign(t1.LightRenderStyle - t2.LightRenderStyle));
@@ -1374,7 +1399,7 @@ namespace CodeImp.DoomBuilder.Rendering
 					}
 
 					//negative lights
-					if(lightOffsets[3] > 0) 
+					if(lightOffsets[3] > 0)
 					{
 						count += lightOffsets[3];
 						graphics.Device.SetRenderState(RenderState.BlendOperation, BlendOperation.ReverseSubtract);
@@ -1728,13 +1753,13 @@ namespace CodeImp.DoomBuilder.Rendering
 		public void AddThingGeometry(VisualThing t)
 		{
 			//mxd. Gather lights
-			if(General.Settings.GZDrawLightsMode != LightRenderMode.NONE && !fullbrightness && t.LightType != DynamicLightType.NONE) 
+			if (General.Settings.GZDrawLightsMode != LightRenderMode.NONE && !fullbrightness && t.LightType != DynamicLightType.NONE) 
 			{
 				t.UpdateLightRadius();
-				if(t.LightRadius > 0)
+                if (t.LightRadius > 0)
 				{
-					if(Array.IndexOf(GZBuilder.GZGeneral.GZ_ANIMATED_LIGHT_TYPES, t.LightType) != -1)
-						t.UpdateBoundingBox();
+                    if (Array.IndexOf(GZBuilder.GZGeneral.GZ_ANIMATED_LIGHT_TYPES, t.LightType) != -1)
+                        t.UpdateBoundingBox();
 					lightthings.Add(t);
 				}
 			}
