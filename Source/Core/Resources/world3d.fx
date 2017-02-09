@@ -257,7 +257,7 @@ float4 ps_lightpass(LitPixelData pd) : COLOR
 	//if it is - calculate color at current pixel
 	float4 lightColorMod = float4(0.0f, 0.0f, 0.0f, 0.0f);
 
-	lightColorMod.rgb = lightColor.rgb * max(lightPosAndRadius.w - dist, 0.0f) / lightPosAndRadius.w;
+	lightColorMod.rgb = lightColor.rgb * tcolor.a * max(lightPosAndRadius.w - dist, 0.0f) / lightPosAndRadius.w;
 	if (lightColor.a > 0.979f && lightColor.a < 0.981f) // attenuated light 98%
 		lightColorMod.rgb *= diffuseContribution;
 	if(lightColorMod.r > 0.0f || lightColorMod.g > 0.0f || lightColorMod.b > 0.0f)
