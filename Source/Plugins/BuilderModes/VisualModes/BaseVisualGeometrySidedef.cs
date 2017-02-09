@@ -1477,8 +1477,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				Tools.UpdateLightFogFlag(Sidedef);
 				mode.SetActionResult("Changed wall brightness to " + newlight + ".");
 
-				// Update this part only
-				this.Setup();
+                // Update this part only
+                //this.Setup();
+                // [ZZ] why the hell was maxed updating only this part? sidedef change is global per sidedef, not only upper/lower/middle part.
+                //      find this sidedef in sector, update all parts.
+                VisualSidedefParts parts = Sector.GetSidedefParts(Sidedef);
+                parts.SetupAllParts();
 			}
 			else if(!Sector.Changed)
 			{
