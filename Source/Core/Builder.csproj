@@ -141,6 +141,7 @@
     <Compile Include="Data\FileImage.cs" />
     <Compile Include="Data\FlatImage.cs" />
     <Compile Include="Data\ImageLoadState.cs" />
+    <Compile Include="Data\Scripting\ZScriptScriptHandler.cs" />
     <Compile Include="Data\UnknownImage.cs" />
     <Compile Include="Data\PatchNames.cs" />
     <Compile Include="Data\PK3Reader.cs" />
@@ -523,6 +524,7 @@
     <Compile Include="ZDoom\DecorateActorStructure.cs" />
     <Compile Include="ZDoom\DecorateStateGoto.cs" />
     <Compile Include="ZDoom\DecorateStateStructure.cs" />
+    <Compile Include="ZDoom\Scripting\ZScriptParserSE.cs" />
     <Compile Include="ZDoom\ZScriptActorStructure.cs" />
     <Compile Include="ZDoom\ZScriptParser.cs" />
     <Compile Include="ZDoom\ZScriptStateGoto.cs" />
