@@ -532,9 +532,9 @@ namespace CodeImp.DoomBuilder.Rendering
 				{
 					case DynamicLightRenderStyle.NORMAL:
 					case DynamicLightRenderStyle.VAVOOM: lightOffsets[0]++; break;
-					case DynamicLightRenderStyle.ADDITIVE: lightOffsets[1]++; break;
-                    case DynamicLightRenderStyle.NEGATIVE: lightOffsets[2]++; break;
-					default: lightOffsets[3]++; break;
+					case DynamicLightRenderStyle.ADDITIVE: lightOffsets[2]++; break;
+                    case DynamicLightRenderStyle.NEGATIVE: lightOffsets[3]++; break;
+					default: lightOffsets[1]++; break; // attenuated
 				}
 			}
 		}
@@ -1333,13 +1333,33 @@ namespace CodeImp.DoomBuilder.Rendering
 						}
 					}
 
+                    //attenuated lights
+                    if (lightOffsets[1] > 0)
+                    {
+                        count += lightOffsets[1];
+                        graphics.Device.SetRenderState(RenderState.BlendOperation, BlendOperation.Add);
+
+                        for (int i = lightOffsets[0]; i < count; i++)
+                        {
+                            if (BoundingBoxesIntersect(g.BoundingBox, lights[i].BoundingBox))
+                            {
+                                lpr = new Vector4(lights[i].Center, lights[i].LightRadius);
+                                if (lpr.W == 0) continue;
+                                graphics.Shaders.World3D.LightColor = lights[i].LightColor;
+                                graphics.Shaders.World3D.LightPositionAndRadius = lpr;
+                                graphics.Shaders.World3D.ApplySettings();
+                                graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, g.VertexOffset, g.Triangles);
+                            }
+                        }
+                    }
+
                     //additive lights
-                    if (lightOffsets[1] > 0) 
+                    if (lightOffsets[2] > 0) 
 					{
-						count += lightOffsets[1];
+						count += lightOffsets[2];
 						graphics.Device.SetRenderState(RenderState.BlendOperation, BlendOperation.Add);
 
-						for(int i = lightOffsets[0]; i < count; i++) 
+						for(int i = lightOffsets[0] + lightOffsets[1]; i < count; i++) 
 						{
 							if(BoundingBoxesIntersect(g.BoundingBox, lights[i].BoundingBox)) 
 							{
@@ -1354,12 +1374,12 @@ namespace CodeImp.DoomBuilder.Rendering
 					}
 
 					//negative lights
-					if(lightOffsets[2] > 0) 
+					if(lightOffsets[3] > 0) 
 					{
-						count += lightOffsets[2];
+						count += lightOffsets[3];
 						graphics.Device.SetRenderState(RenderState.BlendOperation, BlendOperation.ReverseSubtract);
 
-						for(int i = lightOffsets[0] + lightOffsets[1]; i < count; i++) 
+						for(int i = lightOffsets[0] + lightOffsets[1] + lightOffsets[2]; i < count; i++) 
 						{
 							if(BoundingBoxesIntersect(g.BoundingBox, lights[i].BoundingBox)) 
 							{
@@ -1373,26 +1393,6 @@ namespace CodeImp.DoomBuilder.Rendering
 							}
 						}
 					}
-
-                    //attenuated lights
-                    if (lightOffsets[3] > 0)
-                    {
-                        count += lightOffsets[3];
-                        graphics.Device.SetRenderState(RenderState.BlendOperation, BlendOperation.Add);
-
-                        for (int i = lightOffsets[0] + lightOffsets[1] + lightOffsets[2]; i < count; i++)
-                        {
-                            if (BoundingBoxesIntersect(g.BoundingBox, lights[i].BoundingBox))
-                            {
-                                lpr = new Vector4(lights[i].Center, lights[i].LightRadius);
-                                if (lpr.W == 0) continue;
-                                graphics.Shaders.World3D.LightColor = lights[i].LightColor;
-                                graphics.Shaders.World3D.LightPositionAndRadius = lpr;
-                                graphics.Shaders.World3D.ApplySettings();
-                                graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, g.VertexOffset, g.Triangles);
-                            }
-                        }
-                    }
                 }
 			}
 

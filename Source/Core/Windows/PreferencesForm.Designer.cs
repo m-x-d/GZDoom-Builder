@@ -1725,7 +1725,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.tbDynLightCount.BackColor = System.Drawing.SystemColors.Window;
             this.tbDynLightCount.LargeChange = 1;
             this.tbDynLightCount.Location = new System.Drawing.Point(199, 237);
-            this.tbDynLightCount.Maximum = 8;
+            this.tbDynLightCount.Maximum = 16;
             this.tbDynLightCount.Minimum = 1;
             this.tbDynLightCount.Name = "tbDynLightCount";
             this.tbDynLightCount.Size = new System.Drawing.Size(154, 42);
