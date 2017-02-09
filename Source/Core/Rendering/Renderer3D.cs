@@ -969,7 +969,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			if(General.Map.VisualCamera.Sector != null)
 			{
 				// If the camera is inside a sector, compare z coordinates
-				translucentgeo.Sort(delegate(VisualGeometry vg1, VisualGeometry vg2)
+				geopass.Sort(delegate(VisualGeometry vg1, VisualGeometry vg2)
 				{
 					if(vg1 == vg2) return 0;
 					float camdist1, camdist2;
@@ -999,7 +999,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			}
 			else
 			{
-				translucentgeo.Sort(delegate(VisualGeometry vg1, VisualGeometry vg2)
+                geopass.Sort(delegate(VisualGeometry vg1, VisualGeometry vg2)
 				{
 					if(vg1 == vg2) return 0;
 					return (int)((General.Map.VisualCamera.Position - vg2.BoundingBox[0]).GetLengthSq()

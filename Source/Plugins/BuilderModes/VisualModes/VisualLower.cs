@@ -112,10 +112,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					base.Texture = General.Map.Data.UnknownTexture3D;
 					setuponloadedtexture = Sidedef.LongLowTexture;
 				}
-				else
-				{
-					if(!base.Texture.IsImageLoaded)
-						setuponloadedtexture = Sidedef.LongLowTexture;
+				else if (!base.Texture.IsImageLoaded)
+                {
+					setuponloadedtexture = Sidedef.LongLowTexture;
 				}
 			}
 			else

@@ -115,7 +115,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				else if(!base.Texture.IsImageLoaded) 
 				{
 					setuponloadedtexture = Sidedef.LongMiddleTexture;
-				}
+                }
 			} 
 			else 
 			{
