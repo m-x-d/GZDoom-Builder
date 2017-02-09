@@ -1334,6 +1334,10 @@ namespace CodeImp.DoomBuilder.Rendering
 
                 if (sector == null) continue;
 
+                // note: additive geometry doesn't receive lighting
+                if (g.RenderPass == RenderPass.Additive)
+                    continue;
+
                 if (settexture)
                     graphics.Shaders.World3D.Texture1 = g.Texture.Texture;
 
