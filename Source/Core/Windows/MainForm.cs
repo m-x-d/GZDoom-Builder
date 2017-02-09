@@ -3632,7 +3632,9 @@ namespace CodeImp.DoomBuilder.Windows
 		// This hides all info panels
 		public void HideInfo()
 		{
-			// Hide them all
+            // Hide them all
+            // [ZZ]
+            panelinfo.SuspendLayout();
 			bool showModeName = ((General.Map != null) && IsInfoPanelExpanded); //mxd
 			lastinfoobject = null;
 			if(linedefinfo.Visible) linedefinfo.Hide();
@@ -3651,6 +3653,8 @@ namespace CodeImp.DoomBuilder.Windows
 
 			//mxd. Let the plugins know
 			General.Plugins.OnHighlightLost();
+            // [ZZ]
+            panelinfo.ResumeLayout();
 		}
 		
 		// This refreshes info
@@ -3661,8 +3665,11 @@ namespace CodeImp.DoomBuilder.Windows
 			else if(lastinfoobject is Sector) ShowSectorInfo((Sector)lastinfoobject);
 			else if(lastinfoobject is Thing) ShowThingInfo((Thing)lastinfoobject);
 
-			//mxd. Let the plugins know
+            //mxd. Let the plugins know
+            // [ZZ]
+            panelinfo.SuspendLayout();
 			General.Plugins.OnHighlightRefreshed(lastinfoobject);
+            panelinfo.ResumeLayout();
 		}
 
 		//mxd
@@ -3710,8 +3717,10 @@ namespace CodeImp.DoomBuilder.Windows
 				HideInfo();
 				return;
 			}
-			
-			lastinfoobject = l;
+
+            // [ZZ]
+            panelinfo.SuspendLayout();
+            lastinfoobject = l;
 			modename.Visible = false;
 #if DEBUG
 			console.Visible = console.AlwaysOnTop; //mxd
@@ -3736,12 +3745,13 @@ namespace CodeImp.DoomBuilder.Windows
 			{
 				labelcollapsedinfo.Text = l.Action + " - Unknown";
 			}
-
 			labelcollapsedinfo.Refresh();
 
-			//mxd. let the plugins know
-			General.Plugins.OnHighlightLinedef(l);
-		}
+            //mxd. let the plugins know
+            General.Plugins.OnHighlightLinedef(l);
+            // [ZZ]
+            panelinfo.ResumeLayout();
+        }
 
 		// Show vertex info
 		public void ShowVertexInfo(Vertex v) 
@@ -3751,8 +3761,10 @@ namespace CodeImp.DoomBuilder.Windows
 				HideInfo();
 				return;
 			}
-
-			lastinfoobject = v;
+            
+            // [ZZ]
+            panelinfo.SuspendLayout();
+            lastinfoobject = v;
 			modename.Visible = false;
 #if DEBUG
 			console.Visible = console.AlwaysOnTop; //mxd
@@ -3769,10 +3781,12 @@ namespace CodeImp.DoomBuilder.Windows
 
 			//mxd. let the plugins know
 			General.Plugins.OnHighlightVertex(v);
-		}
+            // [ZZ]
+            panelinfo.ResumeLayout();
+        }
 
-		//mxd. Show sector info
-		public void ShowSectorInfo(Sector s) 
+        //mxd. Show sector info
+        public void ShowSectorInfo(Sector s) 
 		{
 			ShowSectorInfo(s, false, false);
 		}
@@ -3786,7 +3800,9 @@ namespace CodeImp.DoomBuilder.Windows
 				return;
 			}
 
-			lastinfoobject = s;
+            // [ZZ]
+            panelinfo.SuspendLayout();
+            lastinfoobject = s;
 			modename.Visible = false;
 #if DEBUG
 			console.Visible = console.AlwaysOnTop; //mxd
@@ -3807,12 +3823,14 @@ namespace CodeImp.DoomBuilder.Windows
 
 			labelcollapsedinfo.Refresh();
 
-			//mxd. let the plugins know
-			General.Plugins.OnHighlightSector(s);
-		}
+            //mxd. let the plugins know
+            General.Plugins.OnHighlightSector(s);
+            // [ZZ]
+            panelinfo.ResumeLayout();
+        }
 
-		// Show thing info
-		public void ShowThingInfo(Thing t)
+        // Show thing info
+        public void ShowThingInfo(Thing t)
 		{
 			if(t.IsDisposed)
 			{
@@ -3820,7 +3838,9 @@ namespace CodeImp.DoomBuilder.Windows
 				return;
 			}
 
-			lastinfoobject = t;
+            // [ZZ]
+            panelinfo.SuspendLayout();
+            lastinfoobject = t;
 			modename.Visible = false;
 #if DEBUG
 			console.Visible = console.AlwaysOnTop; //mxd
@@ -3836,17 +3856,19 @@ namespace CodeImp.DoomBuilder.Windows
 			labelcollapsedinfo.Text = t.Type + " - " + ti.Title;
 			labelcollapsedinfo.Refresh();
 
-			//mxd. let the plugins know
-			General.Plugins.OnHighlightThing(t);
-		}
+            //mxd. let the plugins know
+            General.Plugins.OnHighlightThing(t);
+            // [ZZ]
+            panelinfo.ResumeLayout();
+        }
 
-		#endregion
+        #endregion
 
-		#region ================== Dialogs
+        #region ================== Dialogs
 
-		// This browses for a texture
-		// Returns the new texture name or the same texture name when cancelled
-		public string BrowseTexture(IWin32Window owner, string initialvalue)
+        // This browses for a texture
+        // Returns the new texture name or the same texture name when cancelled
+        public string BrowseTexture(IWin32Window owner, string initialvalue)
 		{
 			return TextureBrowserForm.Browse(owner, initialvalue, false);//mxd
 		}
