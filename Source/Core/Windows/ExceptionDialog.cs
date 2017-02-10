@@ -132,6 +132,7 @@ namespace CodeImp.DoomBuilder.Windows
 				"WARNING: PROGRAMMING BUG IN GZDB!",
 				"Something happened",
 				"The Device is Error",
+                "Worship me, and I may yet be merciful... then again, maybe not."
 			};
 
 			this.Text = titles[new Random().Next(0, titles.Length - 1)];
