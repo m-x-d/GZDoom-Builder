@@ -250,6 +250,41 @@ namespace CodeImp.DoomBuilder.ZDoom
             }
         }
 
+        private List<int> ParseArrayDimensions()
+        {
+            List<int> dimensions = new List<int>();
+            while (true)
+            {
+                tokenizer.SkipWhitespace();
+                ZScriptToken token = tokenizer.ExpectToken(ZScriptTokenType.OpenSquare);
+                if (token == null || !token.IsValid) // array dimensions ended.
+                    return dimensions;
+
+                // parse identifier or int (identifier is a constant, we don't parse this yet)
+                tokenizer.SkipWhitespace();
+                token = tokenizer.ExpectToken(ZScriptTokenType.Integer, ZScriptTokenType.Identifier);
+                if (token == null || !token.IsValid)
+                {
+                    parser.ReportError("Expected integer or const, got " + ((Object)token ?? "<null>").ToString());
+                    return null;
+                }
+
+                int arraylen = -1;
+                if (token.Type == ZScriptTokenType.Integer)
+                    arraylen = token.ValueInt;
+                dimensions.Add(arraylen);
+
+                // closing square
+                tokenizer.SkipWhitespace();
+                token = tokenizer.ExpectToken(ZScriptTokenType.CloseSquare);
+                if (token == null || !token.IsValid)
+                {
+                    parser.ReportError("Expected ], got " + ((Object)token ?? "<null>").ToString());
+                    return null;
+                }
+            }
+        }
+
         private bool ParseProperty()
         {
             // property identifier: identifier, identifier, identifier, ...;
@@ -383,8 +418,9 @@ namespace CodeImp.DoomBuilder.ZDoom
                 string[] methodmodifiers = new string[] { "action", "virtual", "override", "final" };
                 HashSet<string> modifiers = new HashSet<string>();
                 List<string> types = new List<string>();
+                List<List<int>> typearraylens = new List<List<int>>();
                 List<string> names = new List<string>();
-                List<int> arraylens = new List<int>();
+                List<List<int>> arraylens = new List<List<int>>();
                 List<ZScriptToken> args = null; // this is for the future
                 //List<ZScriptToken> body = null;
 
@@ -430,13 +466,29 @@ namespace CodeImp.DoomBuilder.ZDoom
                     string typename = ParseTypeName();
                     if (typename == null)
                         return;
+
                     types.Add(typename.ToLowerInvariant());
+                    typearraylens.Add(null);
                     long cpos = stream.Position;
                     tokenizer.SkipWhitespace();
-                    token = tokenizer.ReadToken();
+                    token = tokenizer.ExpectToken(ZScriptTokenType.Comma, ZScriptTokenType.Identifier, ZScriptTokenType.OpenSquare);
+
+                    if (token != null && !token.IsValid)
+                    {
+                        parser.ReportError("Expected comma, identifier or array dimensions, got " + ((Object)token ?? "<null>").ToString());
+                        return;
+                    }
+
                     if (token == null || token.Type != ZScriptTokenType.Comma)
                     {
                         stream.Position = cpos;
+                        if (token.Type == ZScriptTokenType.OpenSquare)
+                        {
+                            List<int> typelens = ParseArrayDimensions();
+                            if (typelens == null) // error
+                                return;
+                            typearraylens[typearraylens.Count - 1] = typelens;
+                        }
                         break;
                     }
                 }
@@ -444,7 +496,7 @@ namespace CodeImp.DoomBuilder.ZDoom
                 while (true)
                 {
                     string name = null;
-                    int arraylen = -1;
+                    List<int> lens = null;
 
                     // read in the method/field name
                     tokenizer.SkipWhitespace();
@@ -459,6 +511,7 @@ namespace CodeImp.DoomBuilder.ZDoom
                     // check the token. if it's a (, then it's a method. if it's a ;, then it's a field, if it's a [ it's an array field.
                     // if it's a field and bmethod=true, report error.
                     tokenizer.SkipWhitespace();
+                    long cpos = stream.Position;
                     token = tokenizer.ExpectToken(ZScriptTokenType.Comma, ZScriptTokenType.OpenParen, ZScriptTokenType.OpenSquare, ZScriptTokenType.Semicolon);
                     if (token == null || !token.IsValid)
                     {
@@ -469,7 +522,7 @@ namespace CodeImp.DoomBuilder.ZDoom
                     if (token.Type == ZScriptTokenType.OpenParen)
                     {
                         // if we have multiple names
-                        if (names.Count > 1)
+                        if (names.Count > 0)
                         {
                             parser.ReportError("Cannot have multiple names in a method");
                             return;
@@ -487,7 +540,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 
                         // also get the body block, if any.
                         tokenizer.SkipWhitespace();
-                        long cpos = stream.Position;
+                        cpos = stream.Position;
                         token = tokenizer.ExpectToken(ZScriptTokenType.Semicolon, ZScriptTokenType.OpenCurly);
                         if (token == null || !token.IsValid)
                         {
@@ -502,6 +555,8 @@ namespace CodeImp.DoomBuilder.ZDoom
                             parser.SkipBlock();
                             //body = parser.ParseBlock(false);
                         }
+
+                        break; // end method parsing
                     }
                     else
                     {
@@ -514,40 +569,24 @@ namespace CodeImp.DoomBuilder.ZDoom
                         // array
                         if (token.Type == ZScriptTokenType.OpenSquare)
                         {
-                            // read in the size or a constant.
-                            tokenizer.SkipWhitespace();
-                            token = tokenizer.ExpectToken(ZScriptTokenType.Integer, ZScriptTokenType.Identifier);
-                            if (token == null || !token.IsValid)
-                            {
-                                parser.ReportError("Expected integer or constant, got " + ((Object)token ?? "<null>").ToString());
+                            stream.Position = cpos;
+                            lens = ParseArrayDimensions();
+                            if (lens == null) // error
                                 return;
-                            }
 
-                            // 
-                            if (token.Type == ZScriptTokenType.Integer)
-                                arraylen = token.ValueInt;
-                            else arraylen = -1;
-
-                            tokenizer.SkipWhitespace();
-                            token = tokenizer.ExpectToken(ZScriptTokenType.CloseSquare);
-                            if (token == null || !token.IsValid)
-                            {
-                                parser.ReportError("Expected ], got " + ((Object)token ?? "<null>").ToString());
-                                return;
-                            }
 
                             tokenizer.SkipWhitespace();
                             token = tokenizer.ExpectToken(ZScriptTokenType.Semicolon, ZScriptTokenType.Comma);
                             if (token == null || !token.IsValid)
                             {
-                                parser.ReportError("Expected ;, got " + ((Object)token ?? "<null>").ToString());
+                                parser.ReportError("Expected ; or comma, got " + ((Object)token ?? "<null>").ToString());
                                 return;
                             }
                         }
                     }
 
                     names.Add(name);
-                    arraylens.Add(arraylen);
+                    arraylens.Add(lens);
 
                     if (token.Type != ZScriptTokenType.Comma) // next name
                         break;
@@ -625,8 +664,7 @@ namespace CodeImp.DoomBuilder.ZDoom
                     for (int i = 0; i < names.Count; i++)
                     {
                         string name = names[i];
-                        int arraylen = arraylens[i];
-                        if (arraylen != -1)
+                        if (arraylens[i] != null || typearraylens[0] != null)
                             continue; // we don't process arrays
                         if (!name.StartsWith("user_"))
                             continue; // we don't process non-user_ fields (because ZScript won't pick them up anyway)
