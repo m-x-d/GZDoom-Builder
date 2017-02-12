@@ -122,6 +122,9 @@
     <Compile Include="Controls\ArgumentBox.Designer.cs">
       <DependentUpon>ArgumentBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="Controls\TransparentTrackBar.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Controls\Scripting\ScriptDocumentTab.cs">
       <SubType>Component</SubType>
     </Compile>
