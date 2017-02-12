@@ -24,6 +24,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SoundPropagation", "Source\Plugins\SoundPropagationMode\SoundPropagation.csproj", "{F59B344C-DD50-4DB7-ADDD-56AAD66450AF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StairSectorBuilder", "Source\Plugins\StairSectorBuilder\StairSectorBuilder.csproj", "{3F365121-906B-409D-BB1E-37E0A78056C2}"
+	ProjectSection(ProjectDependencies) = postProject
+		{818B3D10-F791-4C3F-9AF5-BB2D0079B63C} = {818B3D10-F791-4C3F-9AF5-BB2D0079B63C}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutomapMode", "Source\Plugins\AutomapMode\AutomapMode.csproj", "{B33F68D5-1335-400C-A1D7-7F5602A030EF}"
 EndProject
