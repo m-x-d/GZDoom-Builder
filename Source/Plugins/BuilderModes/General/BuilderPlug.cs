@@ -348,7 +348,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 					else
 					{
-						color = s.Fields.GetValue("lightcolor", -1);
+                        color = PixelColor.Modulate(PixelColor.FromInt(s.Fields.GetValue("lightcolor", -1)), PixelColor.FromInt(s.Fields.GetValue("color_floor", -1))).ToInt();
 						light = s.Fields.GetValue("lightfloor", 0);
 						absolute = s.Fields.GetValue("lightfloorabsolute", false);
 					}
@@ -400,8 +400,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					} 
 					else 
 					{
-						color = s.Fields.GetValue("lightcolor", -1);
-						light = s.Fields.GetValue("lightceiling", 0);
+                        color = PixelColor.Modulate(PixelColor.FromInt(s.Fields.GetValue("lightcolor", -1)), PixelColor.FromInt(s.Fields.GetValue("color_ceiling", -1))).ToInt();
+                        light = s.Fields.GetValue("lightceiling", 0);
 						absolute = s.Fields.GetValue("lightceilingabsolute", false);
 					}
 
@@ -553,7 +553,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			PixelColor lightcolor = PixelColor.FromInt(color);
 			PixelColor brightness = PixelColor.FromInt(General.Map.Renderer2D.CalculateBrightness(light));
 			PixelColor finalcolor = PixelColor.Modulate(lightcolor, brightness);
-			color = finalcolor.WithAlpha(255).ToInt();
+            color = finalcolor.WithAlpha(255).ToInt();
 
 			// Do the math for all vertices
 			for(int i = 0; i < vertices.Length; i++) 
