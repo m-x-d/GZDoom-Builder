@@ -908,7 +908,7 @@ namespace CodeImp.DoomBuilder
 					if(purpose == SavePurpose.IntoFile) 
 					{
 						WAD wad = new WAD(newfilepathname, true);
-						int mapindex = wad.FindLumpIndex(origmapname);
+                        int mapindex = FindAndRemoveMap(wad, origmapname, false);
 						wad.Dispose();
 
 						if(mapindex != -1 && MessageBox.Show(General.MainWindow, "Target file already contains map \"" + origmapname + "\"\nDo you want to replace it?", "Map already exists!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No) 
