@@ -412,7 +412,7 @@ namespace CodeImp.DoomBuilder
 
 			// Copy the map lumps to the temp file
 			General.WriteLogLine("Copying map lumps to temporary file...");
-			CopyLumpsByType(mapwad, options.CurrentName, tempwadreader.WadFile, TEMP_MAP_HEADER, REPLACE_TARGET_MAP, true, true, true, true);
+			CopyLumpsByType(mapwad, options.CurrentName, tempwadreader.WadFile, TEMP_MAP_HEADER, true, true, true, true);
 
 			// Close the map file
 			mapwad.Dispose();
@@ -512,7 +512,7 @@ namespace CodeImp.DoomBuilder
 
 			// Copy the map lumps to the temp file
 			General.WriteLogLine("Copying map lumps to temporary file...");
-			CopyLumpsByType(mapwad, options.CurrentName, tempwadreader.WadFile, TEMP_MAP_HEADER, REPLACE_TARGET_MAP, true, true, true, true);
+			CopyLumpsByType(mapwad, options.CurrentName, tempwadreader.WadFile, TEMP_MAP_HEADER, true, true, true, true);
 
 			// Close the map file
 			mapwad.Dispose();
@@ -897,7 +897,6 @@ namespace CodeImp.DoomBuilder
 			// Determine original map name
 			string origmapname = (!string.IsNullOrEmpty(options.PreviousName) && purpose != SavePurpose.IntoFile) ? options.PreviousName : options.CurrentName;
 			string origwadfile = string.Empty; //mxd
-			int mapheaderindex = REPLACE_TARGET_MAP; //mxd. Lump index of the map file header in the source WAD
 
 			try 
 			{
@@ -977,7 +976,7 @@ namespace CodeImp.DoomBuilder
 			}
 
 			// Copy map lumps to target file
-			CopyLumpsByType(tempwadreader.WadFile, TEMP_MAP_HEADER, targetwad, origmapname, mapheaderindex, true, true, includenodes, true);
+			CopyLumpsByType(tempwadreader.WadFile, TEMP_MAP_HEADER, targetwad, origmapname, true, true, includenodes, true);
 
 			// mxd. Was the map renamed?
 			if(options.LevelNameChanged) 
@@ -1190,7 +1189,7 @@ namespace CodeImp.DoomBuilder
 
 				// Copy lumps to buildwad
 				General.WriteLogLine("Copying map lumps to temporary build file...");
-				CopyLumpsByType(tempwadreader.WadFile, TEMP_MAP_HEADER, buildwad, BUILD_MAP_HEADER, REPLACE_TARGET_MAP, true, false, false, true);
+				CopyLumpsByType(tempwadreader.WadFile, TEMP_MAP_HEADER, buildwad, BUILD_MAP_HEADER, true, false, false, true);
 
 				// Close buildwad
 				buildwad.Dispose();
@@ -1235,7 +1234,7 @@ namespace CodeImp.DoomBuilder
 					{
 						// Copy nodebuilder lumps to temp file
 						General.WriteLogLine("Copying nodebuilder lumps to temporary file...");
-						CopyLumpsByType(buildwad, BUILD_MAP_HEADER, tempwadreader.WadFile, TEMP_MAP_HEADER, REPLACE_TARGET_MAP, false, false, true, false);
+						CopyLumpsByType(buildwad, BUILD_MAP_HEADER, tempwadreader.WadFile, TEMP_MAP_HEADER, false, false, true, false);
 					}
 					else 
 					{
@@ -1432,13 +1431,11 @@ namespace CodeImp.DoomBuilder
 		// This copies specific map lumps from one WAD to another
 		private void CopyLumpsByType(WAD source, string sourcemapname,
 									 WAD target, string targetmapname,
-									 int targetheaderinsertindex, //mxd
 									 bool copyrequired, bool copyblindcopy,
 									 bool copynodebuild, bool copyscript) 
 		{
 			// Find the map header in target (mxd. Or use the provided one)
-			bool replacetargetmap = (targetheaderinsertindex == REPLACE_TARGET_MAP); //mxd
-			int tgtheaderindex = (replacetargetmap ? target.FindLumpIndex(targetmapname) : targetheaderinsertindex); //mxd
+            int tgtheaderindex = target.FindLumpIndex(targetmapname);
 			if(tgtheaderindex == -1) 
 			{
 				// If this header doesnt exists in the target
@@ -1469,16 +1466,13 @@ namespace CodeImp.DoomBuilder
 						if(sourceindex > -1) 
 						{
 							//mxd. Don't do this when inserting a map (SaveMap() removes the old version of the map before calling CopyLumpsByType())
-							if(replacetargetmap)
-							{
-								// Remove lump at target
-								int lumpindex = RemoveSpecificLump(target, tgtlumpname, tgtheaderindex, targetmapname, config.MapLumps);
+							// Remove lump at target
+							int lumpindex = RemoveSpecificLump(target, tgtlumpname, tgtheaderindex, targetmapname, config.MapLumps);
 
-								// Determine target index
-								// When original lump was found and removed then insert at that position
-								// otherwise insert after last insertion position
-								if(lumpindex > -1) targetindex = lumpindex; else targetindex++;
-							}
+							// Determine target index
+							// When original lump was found and removed then insert at that position
+							// otherwise insert after last insertion position
+							if(lumpindex > -1) targetindex = lumpindex; else targetindex++;
 							if(targetindex > target.Lumps.Count) targetindex = target.Lumps.Count;
 
 							// Copy the lump to the target
@@ -1486,9 +1480,6 @@ namespace CodeImp.DoomBuilder
 							Lump lump = source.Lumps[sourceindex];
 							Lump newlump = target.Insert(tgtlumpname, targetindex, lump.Length, false);
 							lump.CopyTo(newlump);
-
-							//mxd. We still need to increment targetindex...
-							if(!replacetargetmap) targetindex++;
 						}
 						else 
 						{
