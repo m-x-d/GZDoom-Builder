@@ -937,52 +937,20 @@ namespace CodeImp.DoomBuilder
 					if(File.Exists(settingsfile)) File.Delete(settingsfile);
 				}
 
+                // [ZZ] We really want to tell apart saving into current archive from saving into a new one.
+                //      Treat "save as" into the current archive as normal save.
+                bool isSaveAs = (purpose == SavePurpose.AsNewFile) && (newfilepathname != filepathname);
 				// On Save AS we have to copy the previous file to the new file
-				if((purpose == SavePurpose.AsNewFile) && (filepathname != string.Empty)) 
+				if(isSaveAs) 
 				{
 					// Copy if original file still exists
 					if(File.Exists(filepathname)) File.Copy(filepathname, newfilepathname, true);
 				}
 
 				// If the target file exists, we need to rebuild it
-				if(File.Exists(newfilepathname)) 
-				{
-					// Move the target file aside
-					origwadfile = newfilepathname + ".temp";
-					File.Move(newfilepathname, origwadfile);
-
-					// Open original file
-					WAD origwad = new WAD(origwadfile, true);
-
-					// Create new target file
-					targetwad = new WAD(newfilepathname) { IsIWAD = origwad.IsIWAD }; //mxd. Let's preserve wad type
-
-					// Copy all lumps, except the original map
-					GameConfiguration origcfg; //mxd
-					if(origmapconfigname == configinfo.Filename) 
-					{
-						origcfg = config;
-					} 
-					else 
-					{
-						ConfigurationInfo ci = General.GetConfigurationInfo(origmapconfigname);
-						origcfg = new GameConfiguration(ci.Configuration);
-
-						// Needed only once!
-						origmapconfigname = configinfo.Filename;
-					}
-
-					mapheaderindex = CopyAllLumpsExceptMap(origwad, targetwad, origcfg, origmapname);
-
-					// Close original file and delete it
-					origwad.Dispose();
-					File.Delete(origwadfile);
-				}
-				else 
-				{
-					// Create new target file
-					targetwad = new WAD(newfilepathname);
-				}
+                // [ZZ] The original code here would do some weird trickery with tempfiles.
+                //      I'm just finding the map lumps and deleting them on later stages.
+				targetwad = new WAD(newfilepathname);
 			} 
 			catch(Exception e) 
 			{
@@ -1006,7 +974,7 @@ namespace CodeImp.DoomBuilder
 				data.Resume();
 				General.WriteLogLine("Map saving failed: " + e.Message);
 				return false;
-			} 
+			}
 
 			// Copy map lumps to target file
 			CopyLumpsByType(tempwadreader.WadFile, TEMP_MAP_HEADER, targetwad, origmapname, mapheaderindex, true, true, includenodes, true);
@@ -1582,6 +1550,7 @@ namespace CodeImp.DoomBuilder
 				}
 
 				target.WriteHeaders(); //mxd
+                target.Compress(); // [ZZ]
 			}
 		}
 
