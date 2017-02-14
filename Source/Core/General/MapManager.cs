@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Actions;
 using CodeImp.DoomBuilder.Compilers;
@@ -36,6 +37,7 @@ using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.VisualModes;
 using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.ZDoom.Scripting;
+using System.Collections;
 
 #endregion
 
@@ -976,7 +978,7 @@ namespace CodeImp.DoomBuilder
 			}
 
 			// Copy map lumps to target file
-			CopyLumpsByType(tempwadreader.WadFile, TEMP_MAP_HEADER, targetwad, origmapname, true, true, includenodes, true);
+			CopyLumpsByType(tempwadreader.WadFile, TEMP_MAP_HEADER, targetwad, origmapname, true, true, includenodes, true, true);
 
 			// mxd. Was the map renamed?
 			if(options.LevelNameChanged) 
@@ -1428,23 +1430,121 @@ namespace CodeImp.DoomBuilder
 			foreach(Lump lump in toRemove) target.Remove(lump);
 		}
 
+        // [ZZ] this is the more specific case of MatchConfiguration from OpenMapOptionsForm.
+        //      that code is not possible to reuse for this purpose though.
+        private int RemoveAllMapLumps(WAD target, string targetmapname)
+        {
+            int tgtheaderindex = -1;
+            
+            bool writeheaders = false;
+            // [ZZ] Detect and delete target map from the target archive. Note that it can be in different format compared to current one, and there can be multiple maps with the same name as well.
+            //
+            while (true)
+            {
+                int nextindex = target.FindLumpIndex(targetmapname, tgtheaderindex + 1);
+                // note that this (and the original algorithm too) would break if you have a patch or a texture named MAP01 for example...
+                // this is the case for multiple megawads that have level selection screen (Duel40-style), but luckily most of them are using the PK3 format.
+                if (nextindex < 0) break; // next lump not found
+                // remove the header lump
+                target.RemoveAt(nextindex, false);
+                writeheaders = true;
+                //
+                tgtheaderindex = nextindex;
+                // try to detect the format used for this map.
+                // if more than one format matches, do... idk what actually.
+                // todo: move this code out and call it something like DetectMapConfiguration
+                List<List<string>> trylists = new List<List<string>>();
+                foreach (ConfigurationInfo cinfo in General.Configs)
+                {
+                    List<string> maplumps = new List<string>();
+                    // parse only the map lumps section of the config.
+                    Configuration cfg = cinfo.Configuration;
+                    IDictionary dic = cfg.ReadSetting("maplumpnames", new Hashtable());
+                    foreach (string k in dic.Keys)
+                        maplumps.Add(k);
+
+                    // check if we already have this lump list. don't duplicate.
+                    bool found = false;
+                    foreach (List<string> ctrylist in trylists)
+                    {
+                        if (ctrylist.Count == maplumps.Count &&
+                            ctrylist.SequenceEqual(maplumps))
+                        {
+                            found = true;
+                            break;
+                        }
+                    }
+
+                    if (!found)
+                        trylists.Add(maplumps);
+                }
+
+                // currently outputs 6 in 43. seems to work correctly.
+                General.WriteLogLine(string.Format("Found {0} different map lump lists in the {1} registered game configurations", trylists.Count, General.Configs.Count));
+
+                // find the most probable lump list.
+                int maxmatches = 0;
+                List<string> trylist = null;
+                foreach (List<string> lst in trylists)
+                {
+                    int matches = 0;
+                    int maxcnt = lst.Count;
+                    int checkindex = nextindex;
+                    foreach (string lmp in lst)
+                    {
+                        if (checkindex >= target.Lumps.Count)
+                            break;
+                        bool match = lst.Contains(target.Lumps[checkindex].Name);
+                        if (match) matches++;
+                        else break; // stop matching on first non-matching lump
+                        checkindex++;
+                    }
+
+                    if (matches > maxmatches)
+                    {
+                        trylist = lst;
+                        maxmatches = matches;
+                    }
+                }
+
+                // if we didn't find anything it's weird...
+                if (trylist != null)
+                {
+                    int checkindex = nextindex;
+                    foreach (string lmp in trylist)
+                    {
+                        if (checkindex >= target.Lumps.Count)
+                            break;
+                        bool match = trylist.Contains(target.Lumps[checkindex].Name);
+                        if (match) target.RemoveAt(checkindex);
+                        else break; // stop deleting on first non-matching lump
+                    }
+                }
+            }
+
+            if (writeheaders) target.WriteHeaders();
+            return tgtheaderindex;
+        }
+
 		// This copies specific map lumps from one WAD to another
 		private void CopyLumpsByType(WAD source, string sourcemapname,
 									 WAD target, string targetmapname,
 									 bool copyrequired, bool copyblindcopy,
-									 bool copynodebuild, bool copyscript) 
+									 bool copynodebuild, bool copyscript,
+                                     bool deleteold = false) // [ZZ] deleteold=true means we need to delete the old map in-place. we only call this in SaveMap()
 		{
-			// Find the map header in target (mxd. Or use the provided one)
-            int tgtheaderindex = target.FindLumpIndex(targetmapname);
-			if(tgtheaderindex == -1) 
-			{
-				// If this header doesnt exists in the target
-				// then insert at the end of the target
-				tgtheaderindex = target.Lumps.Count;
-			}
+            int tgtheaderindex = deleteold ? RemoveAllMapLumps(target, targetmapname) : target.FindLumpIndex(targetmapname);
+            bool replacetargetmap = !(deleteold && (tgtheaderindex > -1)); // this is unobvious, but we set replacetargetmap to false when we are completely overwriting it
 
-			// Begin inserting at target header index
-			int targetindex = tgtheaderindex;
+            if (tgtheaderindex == -1)
+            {
+                // If this header doesnt exists in the target
+                // then insert at the end of the target
+                tgtheaderindex = target.Lumps.Count;
+            }
+
+            // Begin inserting at target header index
+            int targetindex = tgtheaderindex;
 
 			// Find the map header in source
 			int srcheaderindex = source.FindLumpIndex(sourcemapname);
@@ -1465,22 +1565,28 @@ namespace CodeImp.DoomBuilder
 						int sourceindex = FindSpecificLump(source, srclumpname, srcheaderindex, sourcemapname, config.MapLumps);
 						if(sourceindex > -1) 
 						{
-							//mxd. Don't do this when inserting a map (SaveMap() removes the old version of the map before calling CopyLumpsByType())
-							// Remove lump at target
-							int lumpindex = RemoveSpecificLump(target, tgtlumpname, tgtheaderindex, targetmapname, config.MapLumps);
+                            //mxd. Don't do this when inserting a map (SaveMap() removes the old version of the map before calling CopyLumpsByType())
+                            if (replacetargetmap)
+                            {
+                                // Remove lump at target
+                                int lumpindex = RemoveSpecificLump(target, tgtlumpname, tgtheaderindex, targetmapname, config.MapLumps);
 
-							// Determine target index
-							// When original lump was found and removed then insert at that position
-							// otherwise insert after last insertion position
-							if(lumpindex > -1) targetindex = lumpindex; else targetindex++;
-							if(targetindex > target.Lumps.Count) targetindex = target.Lumps.Count;
+                                // Determine target index
+                                // When original lump was found and removed then insert at that position
+                                // otherwise insert after last insertion position
+                                if (lumpindex > -1) targetindex = lumpindex; else targetindex++;
+                            }
+                            if (targetindex > target.Lumps.Count) targetindex = target.Lumps.Count;
 
-							// Copy the lump to the target
-							//General.WriteLogLine(srclumpname + " copying as " + tgtlumpname);
-							Lump lump = source.Lumps[sourceindex];
-							Lump newlump = target.Insert(tgtlumpname, targetindex, lump.Length, false);
-							lump.CopyTo(newlump);
-						}
+                            // Copy the lump to the target
+                            //General.WriteLogLine(srclumpname + " copying as " + tgtlumpname);
+                            Lump lump = source.Lumps[sourceindex];
+                            Lump newlump = target.Insert(tgtlumpname, targetindex, lump.Length, false);
+                            lump.CopyTo(newlump);
+
+                            //mxd. We still need to increment targetindex...
+                            if (!replacetargetmap) targetindex++;
+                        }
 						else 
 						{
 							// We don't want to bother the user with this. There are a lot of lumps in

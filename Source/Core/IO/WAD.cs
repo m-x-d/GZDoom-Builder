@@ -425,8 +425,7 @@ namespace CodeImp.DoomBuilder.IO
 		#region ================== Lumps
 
 		// This creates a new lump in the WAD file
-		public Lump Insert(string name, int position, int datalength) { return Insert(name, position, datalength, true); } //mxd
-		public Lump Insert(string name, int position, int datalength, bool writeheaders)
+        public Lump Insert(string name, int position, int datalength, bool writeheaders = true)
 		{
             // [ZZ] don't allow any edit actions on readonly archive
             if (isreadonly) return null;
@@ -452,7 +451,7 @@ namespace CodeImp.DoomBuilder.IO
 		}
 
 		// This removes a lump from the WAD file by index
-		public void RemoveAt(int index)
+		public void RemoveAt(int index, bool writeheaders = true)
 		{
             // [ZZ] don't allow any edit actions on readonly archive
             if (isreadonly) return;
@@ -464,7 +463,7 @@ namespace CodeImp.DoomBuilder.IO
 			numlumps--;
 			
 			// Write the new headers
-			WriteHeaders();
+			if (writeheaders) WriteHeaders();
 		}
 		
 		// This removes a lump from the WAD file
