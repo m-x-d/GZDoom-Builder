@@ -87,6 +87,7 @@ namespace CodeImp.DoomBuilder.Config
 		private bool obsolete; //mxd
 		private string obsoletemessage; //mxd
 		private Dictionary<string, Dictionary<string, string>> flagsrename; //mxd. <MapSetIOName, <flag, title>>
+		private int thinglink;
 
 		//mxd. GZDoom rendering properties
 		private ThingRenderMode rendermode;
@@ -137,6 +138,8 @@ namespace CodeImp.DoomBuilder.Config
 		public bool RollSprite { get { return rollsprite; } }
 		public bool RollCenter { get { return rollcenter; } }
 
+		public int ThingLink { get { return thinglink; } }
+
 		//mxd. Ambinent sound info
 		public AmbientSoundInfo AmbientSound { get { return ambientsound; } internal set { ambientsound = value; } }
 
@@ -176,6 +179,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.xybillboard = false;
 			this.locksprite = false; //mxd
 			this.flagsrename = new Dictionary<string, Dictionary<string, string>>(StringComparer.OrdinalIgnoreCase); //mxd
+			this.thinglink = 0;
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -215,6 +219,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.spritescale = new SizeF(sscale, sscale);
 			this.locksprite = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".locksprite", false); //mxd
 			this.classname = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".class", String.Empty); //mxd
+			this.thinglink = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".thinglink", 0);
 
 			//mxd. Read flagsrename
 			this.flagsrename = new Dictionary<string, Dictionary<string, string>>(StringComparer.OrdinalIgnoreCase);
