@@ -1452,19 +1452,19 @@ namespace CodeImp.DoomBuilder
                 // try to detect the format used for this map.
                 // if more than one format matches, do... idk what actually.
                 // todo: move this code out and call it something like DetectMapConfiguration
-                List<List<string>> trylists = new List<List<string>>();
+                List<List<MapLumpInfo>> trylists = new List<List<MapLumpInfo>>();
                 foreach (ConfigurationInfo cinfo in General.Configs)
                 {
-                    List<string> maplumps = new List<string>();
+                    List<MapLumpInfo> maplumps = new List<MapLumpInfo>();
                     // parse only the map lumps section of the config.
                     Configuration cfg = cinfo.Configuration;
                     IDictionary dic = cfg.ReadSetting("maplumpnames", new Hashtable());
                     foreach (string k in dic.Keys)
-                        maplumps.Add(k);
+                        maplumps.Add(new MapLumpInfo(k, cfg));
 
                     // check if we already have this lump list. don't duplicate.
                     bool found = false;
-                    foreach (List<string> ctrylist in trylists)
+                    foreach (List<MapLumpInfo> ctrylist in trylists)
                     {
                         if (ctrylist.Count == maplumps.Count &&
                             ctrylist.SequenceEqual(maplumps))
@@ -1483,19 +1483,26 @@ namespace CodeImp.DoomBuilder
 
                 // find the most probable lump list.
                 int maxmatches = 0;
-                List<string> trylist = null;
-                foreach (List<string> lst in trylists)
+                List<MapLumpInfo> trylist = null;
+                foreach (List<MapLumpInfo> lst in trylists)
                 {
                     int matches = 0;
                     int maxcnt = lst.Count;
                     int checkindex = nextindex+1;
-                    foreach (string lmp in lst)
+                    for (int i = 0; i < lst.Count; i++)
                     {
                         if (checkindex >= target.Lumps.Count)
                             break;
-                        bool match = lst.Contains(target.Lumps[checkindex].Name);
-                        if (match) matches++;
-                        else break; // stop matching on first non-matching lump
+                        int mliIdx = lst.FindIndex(e => e.Name == target.Lumps[checkindex].Name);
+                        if (mliIdx < 0) break; // stop matching on first non-matching lump
+                        MapLumpInfo mli = lst[mliIdx];
+                        if (mli.Forbidden)
+                        {
+                            matches = 0;
+                            break; // completely stop matching on first forbidden lump - definitely not this configuration
+                        }
+
+                        matches++;
                         checkindex++;
                     }
 
@@ -1512,11 +1519,11 @@ namespace CodeImp.DoomBuilder
                     if (reallyremove)
                     {
                         int checkindex = nextindex + 1;
-                        foreach (string lmp in trylist)
+                        for (int i = 0; i < trylist.Count; i++)
                         {
                             if (checkindex >= target.Lumps.Count)
                                 break;
-                            bool match = trylist.Contains(target.Lumps[checkindex].Name);
+                            bool match = (trylist.FindIndex(e => e.Name == target.Lumps[checkindex].Name) >= 0);
                             if (match) target.RemoveAt(checkindex);
                             else break; // stop deleting on first non-matching lump
                         }
