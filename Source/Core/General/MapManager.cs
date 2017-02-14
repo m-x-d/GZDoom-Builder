@@ -1432,19 +1432,22 @@ namespace CodeImp.DoomBuilder
 
         // [ZZ] this is the more specific case of MatchConfiguration from OpenMapOptionsForm.
         //      that code is not possible to reuse for this purpose though.
-        private int RemoveAllMapLumps(WAD target, string targetmapname)
+        private int FindAndRemoveMap(WAD target, string targetmapname, bool reallyremove)
         {
             int tgtheaderindex = -1;
+            int lastindex = -1;
             
             bool writeheaders = false;
             // [ZZ] Detect and delete target map from the target archive. Note that it can be in different format compared to current one, and there can be multiple maps with the same name as well.
             //
             while (true)
             {
-                int nextindex = target.FindLumpIndex(targetmapname, tgtheaderindex);
-                // note that this (and the original algorithm too) would break if you have a patch or a texture named MAP01 for example...
+                int nextindex = target.FindLumpIndex(targetmapname, lastindex+1);
+                // note that the original algorithm would break if you have a patch or a texture named MAP01 for example...
                 // this is the case for multiple megawads that have level selection screen (Duel40-style), but luckily most of them are using the PK3 format.
+                // we are trying to detect if this is a valid map and shouldn't try to open or save over something that uses the map name as well.
                 if (nextindex < 0) break; // next lump not found
+                lastindex = nextindex;
 
                 // try to detect the format used for this map.
                 // if more than one format matches, do... idk what actually.
@@ -1506,21 +1509,26 @@ namespace CodeImp.DoomBuilder
                 // if we didn't find anything it's weird...
                 if (trylist != null)
                 {
-                    int checkindex = nextindex+1;
-                    foreach (string lmp in trylist)
+                    if (reallyremove)
                     {
-                        if (checkindex >= target.Lumps.Count)
-                            break;
-                        bool match = trylist.Contains(target.Lumps[checkindex].Name);
-                        if (match) target.RemoveAt(checkindex);
-                        else break; // stop deleting on first non-matching lump
-                    }
-                }
+                        int checkindex = nextindex + 1;
+                        foreach (string lmp in trylist)
+                        {
+                            if (checkindex >= target.Lumps.Count)
+                                break;
+                            bool match = trylist.Contains(target.Lumps[checkindex].Name);
+                            if (match) target.RemoveAt(checkindex);
+                            else break; // stop deleting on first non-matching lump
+                        }
 
-                // how if trylist was not null, we need to remove the header as well.
-                target.RemoveAt(nextindex, false);
-                writeheaders = true;
-                tgtheaderindex = nextindex;
+                        // now if trylist was not null, we need to remove the header as well.
+                        target.RemoveAt(nextindex, false);
+                        writeheaders = true;
+                        lastindex--;
+                    }
+
+                    tgtheaderindex = nextindex;
+                }
             }
 
             if (writeheaders) target.WriteHeaders();
@@ -1534,7 +1542,7 @@ namespace CodeImp.DoomBuilder
 									 bool copynodebuild, bool copyscript,
                                      bool deleteold = false) // [ZZ] deleteold=true means we need to delete the old map in-place. we only call this in SaveMap()
 		{
-            int tgtheaderindex = deleteold ? RemoveAllMapLumps(target, targetmapname) : target.FindLumpIndex(targetmapname);
+            int tgtheaderindex = FindAndRemoveMap(target, targetmapname, deleteold); // this is unobvious, but this function also performs search, not just deletion :)
             bool replacetargetmap = !(deleteold && (tgtheaderindex > -1)); // this is unobvious, but we set replacetargetmap to false when we are completely overwriting it
 
             if (tgtheaderindex == -1)
@@ -1547,8 +1555,8 @@ namespace CodeImp.DoomBuilder
             // Begin inserting at target header index
             int targetindex = tgtheaderindex;
 
-			// Find the map header in source
-			int srcheaderindex = source.FindLumpIndex(sourcemapname);
+            // Find the map header in source
+            int srcheaderindex = FindAndRemoveMap(source, sourcemapname, false);
 			if(srcheaderindex > -1) 
 			{
 				// Go for all the map lump names
