@@ -1441,15 +1441,11 @@ namespace CodeImp.DoomBuilder
             //
             while (true)
             {
-                int nextindex = target.FindLumpIndex(targetmapname, tgtheaderindex + 1);
+                int nextindex = target.FindLumpIndex(targetmapname, tgtheaderindex);
                 // note that this (and the original algorithm too) would break if you have a patch or a texture named MAP01 for example...
                 // this is the case for multiple megawads that have level selection screen (Duel40-style), but luckily most of them are using the PK3 format.
                 if (nextindex < 0) break; // next lump not found
-                // remove the header lump
-                target.RemoveAt(nextindex, false);
-                writeheaders = true;
-                //
-                tgtheaderindex = nextindex;
+
                 // try to detect the format used for this map.
                 // if more than one format matches, do... idk what actually.
                 // todo: move this code out and call it something like DetectMapConfiguration
@@ -1489,7 +1485,7 @@ namespace CodeImp.DoomBuilder
                 {
                     int matches = 0;
                     int maxcnt = lst.Count;
-                    int checkindex = nextindex;
+                    int checkindex = nextindex+1;
                     foreach (string lmp in lst)
                     {
                         if (checkindex >= target.Lumps.Count)
@@ -1510,7 +1506,7 @@ namespace CodeImp.DoomBuilder
                 // if we didn't find anything it's weird...
                 if (trylist != null)
                 {
-                    int checkindex = nextindex;
+                    int checkindex = nextindex+1;
                     foreach (string lmp in trylist)
                     {
                         if (checkindex >= target.Lumps.Count)
@@ -1520,6 +1516,11 @@ namespace CodeImp.DoomBuilder
                         else break; // stop deleting on first non-matching lump
                     }
                 }
+
+                // how if trylist was not null, we need to remove the header as well.
+                target.RemoveAt(nextindex, false);
+                writeheaders = true;
+                tgtheaderindex = nextindex;
             }
 
             if (writeheaders) target.WriteHeaders();
