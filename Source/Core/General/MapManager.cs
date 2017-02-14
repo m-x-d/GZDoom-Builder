@@ -1429,53 +1429,6 @@ namespace CodeImp.DoomBuilder
 			foreach(Lump lump in toRemove) target.Remove(lump);
 		}
 
-		// This copies all lumps, except those of a specific map. mxd. Returns the index of skipped map's header lump
-		private static int CopyAllLumpsExceptMap(WAD source, WAD target, GameConfiguration mapconfig, string sourcemapname) 
-		{
-			// Go for all lumps
-			bool skipping = false;
-			int headerpos = REPLACE_TARGET_MAP; //mxd
-			for(int i = 0; i < source.Lumps.Count; i++)
-			{
-				Lump srclump = source.Lumps[i];
-				
-				// Check if we should stop skipping lumps here
-				if(skipping) 
-				{
-					//mxd
-					string srclumpname = srclump.Name;
-					if(srclumpname.Contains(sourcemapname)) srclumpname = srclumpname.Replace(sourcemapname, CONFIG_MAP_HEADER);
-
-					if(!mapconfig.MapLumps.ContainsKey(srclumpname)) 
-					{
-						// Stop skipping
-						skipping = false;
-					}
-				}
-
-				// Check if we should start skipping lumps here
-				//TODO: I see a big, but kinda esoteric problem here if the source has several maps with the same name (mxd)
-				if(!skipping && headerpos == REPLACE_TARGET_MAP && srclump.Name == sourcemapname) 
-				{
-					// We have encountered the map header, start skipping!
-					skipping = true;
-					headerpos = i;
-				}
-
-				// Not skipping this lump?
-				if(!skipping) 
-				{
-					// Copy lump over!
-					Lump tgtlump = target.Insert(srclump.Name, target.Lumps.Count, srclump.Length, false);
-					srclump.CopyTo(tgtlump);
-				}
-			}
-
-			target.WriteHeaders(); //mxd
-
-			return headerpos;
-		}
-
 		// This copies specific map lumps from one WAD to another
 		private void CopyLumpsByType(WAD source, string sourcemapname,
 									 WAD target, string targetmapname,
