@@ -237,7 +237,7 @@ namespace CodeImp.DoomBuilder.Config
 
 		//mxd. Constructor for an argument info defined in DECORATE
 		internal ArgumentInfo(string actorname, string argtitle, string tooltip, string renderstyle, string rendercolor,
-			string minrange, string minrangecolor, string maxrange, string maxrangecolor,
+			string minrange, string minrangecolor, string maxrange, string maxrangecolor, string targetclasses,
 			int type, int defaultvalue, string enumstr, IDictionary<string, EnumList> enums)
 		{
 			this.used = true;
@@ -303,6 +303,17 @@ namespace CodeImp.DoomBuilder.Config
 						this.tooltip += "Minimum: " + this.minrange;
 					else
 						this.tooltip += "Maximum: " + this.maxrange;
+				}
+			}
+
+			//Check for TargetClass
+			this.targetclasses = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
+			if(type == (int)UniversalType.ThingTag)
+			{
+				if(!string.IsNullOrEmpty(targetclasses))
+				{
+					foreach(string tclass in targetclasses.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries)) 
+						this.targetclasses.Add(tclass.Trim());
 				}
 			}
 
