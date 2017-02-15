@@ -479,6 +479,7 @@ namespace CodeImp.DoomBuilder.Config
 				string argtitle = ZDTextParser.StripQuotes(actor.GetPropertyAllValues("$arg" + i));
 				string argtooltip = ZDTextParser.StripQuotes(actor.GetPropertyAllValues("$arg" + i + "tooltip").Replace("\\n", Environment.NewLine));
 				int argtype = actor.GetPropertyValueInt("$arg" + i + "type", 0);
+				string targetclasses = ZDTextParser.StripQuotes(actor.GetPropertyAllValues("$arg" + i + "targetclasses"));
 				int defaultvalue = actor.GetPropertyValueInt("$arg" + i + "default", 0);
 				string argenum = ZDTextParser.StripQuotes(actor.GetPropertyAllValues("$arg" + i + "enum"));
 				string argrenderstyle = ZDTextParser.StripQuotes(actor.GetPropertyAllValues("$arg" + i + "renderstyle"));
@@ -497,7 +498,7 @@ namespace CodeImp.DoomBuilder.Config
 				}
 				
 				args[i] = new ArgumentInfo(title, argtitle, argtooltip, argrenderstyle, argrendercolor, 
-					minrange, minrangecolor, maxrange, maxrangecolor, 
+					minrange, minrangecolor, maxrange, maxrangecolor, targetclasses,
 					argtype, defaultvalue, argenum, General.Map.Config.Enums);
 			}
 
