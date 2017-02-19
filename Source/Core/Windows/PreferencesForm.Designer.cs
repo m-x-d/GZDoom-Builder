@@ -341,13 +341,13 @@ namespace CodeImp.DoomBuilder.Windows
             // 
             // recentFiles
             // 
-            this.recentFiles.BackColor = System.Drawing.Color.Transparent;
+            this.recentFiles.BackColor = System.Drawing.SystemColors.Control;
             this.recentFiles.LargeChange = 1;
             this.recentFiles.Location = new System.Drawing.Point(127, 156);
             this.recentFiles.Maximum = 25;
             this.recentFiles.Minimum = 8;
             this.recentFiles.Name = "recentFiles";
-            this.recentFiles.Size = new System.Drawing.Size(116, 45);
+            this.recentFiles.Size = new System.Drawing.Size(116, 42);
             this.recentFiles.TabIndex = 5;
             this.recentFiles.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
             this.recentFiles.Value = 8;
@@ -393,12 +393,12 @@ namespace CodeImp.DoomBuilder.Windows
             // 
             // vertexScale
             // 
-            this.vertexScale.BackColor = System.Drawing.Color.Transparent;
+            this.vertexScale.BackColor = System.Drawing.SystemColors.Control;
             this.vertexScale.LargeChange = 1;
             this.vertexScale.Location = new System.Drawing.Point(127, 119);
             this.vertexScale.Minimum = 1;
             this.vertexScale.Name = "vertexScale";
-            this.vertexScale.Size = new System.Drawing.Size(116, 45);
+            this.vertexScale.Size = new System.Drawing.Size(116, 42);
             this.vertexScale.TabIndex = 4;
             this.vertexScale.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
             this.vertexScale.Value = 1;
@@ -436,12 +436,12 @@ namespace CodeImp.DoomBuilder.Windows
             // 
             // zoomfactor
             // 
-            this.zoomfactor.BackColor = System.Drawing.Color.Transparent;
+            this.zoomfactor.BackColor = System.Drawing.SystemColors.Control;
             this.zoomfactor.LargeChange = 1;
             this.zoomfactor.Location = new System.Drawing.Point(127, 82);
             this.zoomfactor.Minimum = 1;
             this.zoomfactor.Name = "zoomfactor";
-            this.zoomfactor.Size = new System.Drawing.Size(116, 45);
+            this.zoomfactor.Size = new System.Drawing.Size(116, 42);
             this.zoomfactor.TabIndex = 3;
             this.zoomfactor.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
             this.zoomfactor.Value = 3;
@@ -467,12 +467,12 @@ namespace CodeImp.DoomBuilder.Windows
             // 
             // autoscrollspeed
             // 
-            this.autoscrollspeed.BackColor = System.Drawing.Color.Transparent;
+            this.autoscrollspeed.BackColor = System.Drawing.SystemColors.Control;
             this.autoscrollspeed.LargeChange = 1;
             this.autoscrollspeed.Location = new System.Drawing.Point(127, 45);
             this.autoscrollspeed.Maximum = 5;
             this.autoscrollspeed.Name = "autoscrollspeed";
-            this.autoscrollspeed.Size = new System.Drawing.Size(116, 45);
+            this.autoscrollspeed.Size = new System.Drawing.Size(116, 42);
             this.autoscrollspeed.TabIndex = 2;
             this.autoscrollspeed.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
             this.autoscrollspeed.ValueChanged += new System.EventHandler(this.autoscrollspeed_ValueChanged);
@@ -709,7 +709,7 @@ namespace CodeImp.DoomBuilder.Windows
             // apply
             // 
             this.apply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.apply.Location = new System.Drawing.Point(449, 531);
+            this.apply.Location = new System.Drawing.Point(467, 548);
             this.apply.Name = "apply";
             this.apply.Size = new System.Drawing.Size(112, 25);
             this.apply.TabIndex = 0;
@@ -721,7 +721,7 @@ namespace CodeImp.DoomBuilder.Windows
             // 
             this.cancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cancel.Location = new System.Drawing.Point(567, 531);
+            this.cancel.Location = new System.Drawing.Point(585, 548);
             this.cancel.Name = "cancel";
             this.cancel.Size = new System.Drawing.Size(112, 25);
             this.cancel.TabIndex = 1;
@@ -744,7 +744,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.tabs.Name = "tabs";
             this.tabs.Padding = new System.Drawing.Point(24, 3);
             this.tabs.SelectedIndex = 0;
-            this.tabs.Size = new System.Drawing.Size(670, 510);
+            this.tabs.Size = new System.Drawing.Size(688, 527);
             this.tabs.TabIndex = 0;
             this.tabs.SelectedIndexChanged += new System.EventHandler(this.tabs_SelectedIndexChanged);
             // 
@@ -760,7 +760,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.tabinterface.Location = new System.Drawing.Point(4, 22);
             this.tabinterface.Name = "tabinterface";
             this.tabinterface.Padding = new System.Windows.Forms.Padding(5);
-            this.tabinterface.Size = new System.Drawing.Size(662, 484);
+            this.tabinterface.Size = new System.Drawing.Size(680, 501);
             this.tabinterface.TabIndex = 0;
             this.tabinterface.Text = "Interface";
             this.tabinterface.UseVisualStyleBackColor = true;
@@ -1052,13 +1052,13 @@ namespace CodeImp.DoomBuilder.Windows
             // 
             // vertexScale3D
             // 
-            this.vertexScale3D.BackColor = System.Drawing.Color.Transparent;
+            this.vertexScale3D.BackColor = System.Drawing.SystemColors.Control;
             this.vertexScale3D.LargeChange = 1;
             this.vertexScale3D.Location = new System.Drawing.Point(116, 133);
             this.vertexScale3D.Maximum = 15;
             this.vertexScale3D.Minimum = 2;
             this.vertexScale3D.Name = "vertexScale3D";
-            this.vertexScale3D.Size = new System.Drawing.Size(150, 45);
+            this.vertexScale3D.Size = new System.Drawing.Size(150, 42);
             this.vertexScale3D.TabIndex = 3;
             this.vertexScale3D.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
             this.vertexScale3D.Value = 10;
@@ -1075,13 +1075,13 @@ namespace CodeImp.DoomBuilder.Windows
             // 
             // viewdistance
             // 
-            this.viewdistance.BackColor = System.Drawing.Color.Transparent;
+            this.viewdistance.BackColor = System.Drawing.SystemColors.Control;
             this.viewdistance.LargeChange = 2;
             this.viewdistance.Location = new System.Drawing.Point(116, 169);
             this.viewdistance.Maximum = 45;
             this.viewdistance.Minimum = 1;
             this.viewdistance.Name = "viewdistance";
-            this.viewdistance.Size = new System.Drawing.Size(150, 45);
+            this.viewdistance.Size = new System.Drawing.Size(150, 42);
             this.viewdistance.TabIndex = 4;
             this.viewdistance.TickFrequency = 2;
             this.viewdistance.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
@@ -1090,12 +1090,12 @@ namespace CodeImp.DoomBuilder.Windows
             // 
             // movespeed
             // 
-            this.movespeed.BackColor = System.Drawing.Color.Transparent;
+            this.movespeed.BackColor = System.Drawing.SystemColors.Control;
             this.movespeed.Location = new System.Drawing.Point(116, 96);
             this.movespeed.Maximum = 20;
             this.movespeed.Minimum = 1;
             this.movespeed.Name = "movespeed";
-            this.movespeed.Size = new System.Drawing.Size(150, 45);
+            this.movespeed.Size = new System.Drawing.Size(150, 42);
             this.movespeed.TabIndex = 2;
             this.movespeed.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
             this.movespeed.Value = 1;
@@ -1103,12 +1103,12 @@ namespace CodeImp.DoomBuilder.Windows
             // 
             // mousespeed
             // 
-            this.mousespeed.BackColor = System.Drawing.Color.Transparent;
+            this.mousespeed.BackColor = System.Drawing.SystemColors.Control;
             this.mousespeed.Location = new System.Drawing.Point(116, 57);
             this.mousespeed.Maximum = 20;
             this.mousespeed.Minimum = 1;
             this.mousespeed.Name = "mousespeed";
-            this.mousespeed.Size = new System.Drawing.Size(150, 45);
+            this.mousespeed.Size = new System.Drawing.Size(150, 42);
             this.mousespeed.TabIndex = 1;
             this.mousespeed.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
             this.mousespeed.Value = 1;
@@ -1116,13 +1116,13 @@ namespace CodeImp.DoomBuilder.Windows
             // 
             // fieldofview
             // 
-            this.fieldofview.BackColor = System.Drawing.Color.Transparent;
+            this.fieldofview.BackColor = System.Drawing.SystemColors.Control;
             this.fieldofview.LargeChange = 1;
             this.fieldofview.Location = new System.Drawing.Point(116, 20);
             this.fieldofview.Maximum = 17;
             this.fieldofview.Minimum = 5;
             this.fieldofview.Name = "fieldofview";
-            this.fieldofview.Size = new System.Drawing.Size(150, 45);
+            this.fieldofview.Size = new System.Drawing.Size(150, 42);
             this.fieldofview.TabIndex = 0;
             this.fieldofview.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
             this.fieldofview.Value = 5;
@@ -1222,7 +1222,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.tabkeys.Location = new System.Drawing.Point(4, 22);
             this.tabkeys.Name = "tabkeys";
             this.tabkeys.Padding = new System.Windows.Forms.Padding(3);
-            this.tabkeys.Size = new System.Drawing.Size(662, 484);
+            this.tabkeys.Size = new System.Drawing.Size(680, 501);
             this.tabkeys.TabIndex = 1;
             this.tabkeys.Text = "Controls";
             this.tabkeys.UseVisualStyleBackColor = true;
@@ -1271,7 +1271,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.listactions.Margin = new System.Windows.Forms.Padding(8, 9, 8, 9);
             this.listactions.MultiSelect = false;
             this.listactions.Name = "listactions";
-            this.listactions.Size = new System.Drawing.Size(352, 458);
+            this.listactions.Size = new System.Drawing.Size(370, 475);
             this.listactions.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.listactions.TabIndex = 0;
             this.listactions.TabStop = false;
@@ -1306,10 +1306,10 @@ namespace CodeImp.DoomBuilder.Windows
             this.actioncontrolpanel.Controls.Add(this.actionkey);
             this.actioncontrolpanel.Controls.Add(label5);
             this.actioncontrolpanel.Enabled = false;
-            this.actioncontrolpanel.Location = new System.Drawing.Point(377, 12);
+            this.actioncontrolpanel.Location = new System.Drawing.Point(395, 12);
             this.actioncontrolpanel.Margin = new System.Windows.Forms.Padding(6);
             this.actioncontrolpanel.Name = "actioncontrolpanel";
-            this.actioncontrolpanel.Size = new System.Drawing.Size(296, 488);
+            this.actioncontrolpanel.Size = new System.Drawing.Size(296, 505);
             this.actioncontrolpanel.TabIndex = 9;
             this.actioncontrolpanel.TabStop = false;
             this.actioncontrolpanel.Text = " Action control ";
@@ -1412,7 +1412,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.tabcolors.Location = new System.Drawing.Point(4, 22);
             this.tabcolors.Name = "tabcolors";
             this.tabcolors.Padding = new System.Windows.Forms.Padding(5);
-            this.tabcolors.Size = new System.Drawing.Size(662, 484);
+            this.tabcolors.Size = new System.Drawing.Size(680, 501);
             this.tabcolors.TabIndex = 2;
             this.tabcolors.Text = "Appearance";
             this.tabcolors.UseVisualStyleBackColor = true;
@@ -1455,7 +1455,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.appearancegroup1.Controls.Add(this.imagebrightnesslabel);
             this.appearancegroup1.Location = new System.Drawing.Point(217, 8);
             this.appearancegroup1.Name = "appearancegroup1";
-            this.appearancegroup1.Size = new System.Drawing.Size(457, 493);
+            this.appearancegroup1.Size = new System.Drawing.Size(475, 510);
             this.appearancegroup1.TabIndex = 2;
             this.appearancegroup1.TabStop = false;
             this.appearancegroup1.Text = " Rendering ";
@@ -1471,11 +1471,11 @@ namespace CodeImp.DoomBuilder.Windows
             // 
             // activethingsalpha
             // 
-            this.activethingsalpha.BackColor = System.Drawing.Color.Transparent;
+            this.activethingsalpha.BackColor = System.Drawing.SystemColors.Control;
             this.activethingsalpha.LargeChange = 3;
             this.activethingsalpha.Location = new System.Drawing.Point(199, 57);
             this.activethingsalpha.Name = "activethingsalpha";
-            this.activethingsalpha.Size = new System.Drawing.Size(154, 45);
+            this.activethingsalpha.Size = new System.Drawing.Size(154, 42);
             this.activethingsalpha.TabIndex = 1;
             this.activethingsalpha.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
             this.activethingsalpha.ValueChanged += new System.EventHandler(this.activethingsalpha_ValueChanged);
@@ -1509,12 +1509,12 @@ namespace CodeImp.DoomBuilder.Windows
             // 
             // antialiasing
             // 
-            this.antialiasing.BackColor = System.Drawing.Color.Transparent;
+            this.antialiasing.BackColor = System.Drawing.SystemColors.Control;
             this.antialiasing.LargeChange = 1;
             this.antialiasing.Location = new System.Drawing.Point(199, 327);
             this.antialiasing.Maximum = 3;
             this.antialiasing.Name = "antialiasing";
-            this.antialiasing.Size = new System.Drawing.Size(154, 45);
+            this.antialiasing.Size = new System.Drawing.Size(154, 42);
             this.antialiasing.TabIndex = 9;
             this.antialiasing.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
             this.antialiasing.Value = 3;
@@ -1531,12 +1531,12 @@ namespace CodeImp.DoomBuilder.Windows
             // 
             // anisotropicfiltering
             // 
-            this.anisotropicfiltering.BackColor = System.Drawing.Color.Transparent;
+            this.anisotropicfiltering.BackColor = System.Drawing.SystemColors.Control;
             this.anisotropicfiltering.LargeChange = 1;
             this.anisotropicfiltering.Location = new System.Drawing.Point(199, 282);
             this.anisotropicfiltering.Maximum = 4;
             this.anisotropicfiltering.Name = "anisotropicfiltering";
-            this.anisotropicfiltering.Size = new System.Drawing.Size(154, 45);
+            this.anisotropicfiltering.Size = new System.Drawing.Size(154, 42);
             this.anisotropicfiltering.TabIndex = 8;
             this.anisotropicfiltering.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
             this.anisotropicfiltering.Value = 4;
@@ -1582,13 +1582,13 @@ namespace CodeImp.DoomBuilder.Windows
             // 
             // tbDynLightCount
             // 
-            this.tbDynLightCount.BackColor = System.Drawing.Color.Transparent;
+            this.tbDynLightCount.BackColor = System.Drawing.SystemColors.Control;
             this.tbDynLightCount.LargeChange = 1;
             this.tbDynLightCount.Location = new System.Drawing.Point(199, 237);
             this.tbDynLightCount.Maximum = 16;
             this.tbDynLightCount.Minimum = 1;
             this.tbDynLightCount.Name = "tbDynLightCount";
-            this.tbDynLightCount.Size = new System.Drawing.Size(154, 45);
+            this.tbDynLightCount.Size = new System.Drawing.Size(154, 42);
             this.tbDynLightCount.TabIndex = 5;
             this.tbDynLightCount.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
             this.tbDynLightCount.Value = 1;
@@ -1596,11 +1596,11 @@ namespace CodeImp.DoomBuilder.Windows
             // 
             // imagebrightness
             // 
-            this.imagebrightness.BackColor = System.Drawing.Color.Transparent;
+            this.imagebrightness.BackColor = System.Drawing.SystemColors.Control;
             this.imagebrightness.LargeChange = 3;
             this.imagebrightness.Location = new System.Drawing.Point(199, 192);
             this.imagebrightness.Name = "imagebrightness";
-            this.imagebrightness.Size = new System.Drawing.Size(154, 45);
+            this.imagebrightness.Size = new System.Drawing.Size(154, 42);
             this.imagebrightness.TabIndex = 4;
             this.imagebrightness.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
             this.imagebrightness.ValueChanged += new System.EventHandler(this.imagebrightness_ValueChanged);
@@ -1617,33 +1617,33 @@ namespace CodeImp.DoomBuilder.Windows
             // 
             // hiddenthingsalpha
             // 
-            this.hiddenthingsalpha.BackColor = System.Drawing.Color.Transparent;
+            this.hiddenthingsalpha.BackColor = System.Drawing.SystemColors.Control;
             this.hiddenthingsalpha.LargeChange = 3;
             this.hiddenthingsalpha.Location = new System.Drawing.Point(199, 147);
             this.hiddenthingsalpha.Name = "hiddenthingsalpha";
-            this.hiddenthingsalpha.Size = new System.Drawing.Size(154, 45);
+            this.hiddenthingsalpha.Size = new System.Drawing.Size(154, 42);
             this.hiddenthingsalpha.TabIndex = 3;
             this.hiddenthingsalpha.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
             this.hiddenthingsalpha.ValueChanged += new System.EventHandler(this.hiddenthingsalpha_ValueChanged);
             // 
             // inactivethingsalpha
             // 
-            this.inactivethingsalpha.BackColor = System.Drawing.Color.Transparent;
+            this.inactivethingsalpha.BackColor = System.Drawing.SystemColors.Control;
             this.inactivethingsalpha.LargeChange = 3;
             this.inactivethingsalpha.Location = new System.Drawing.Point(199, 102);
             this.inactivethingsalpha.Name = "inactivethingsalpha";
-            this.inactivethingsalpha.Size = new System.Drawing.Size(154, 45);
+            this.inactivethingsalpha.Size = new System.Drawing.Size(154, 42);
             this.inactivethingsalpha.TabIndex = 2;
             this.inactivethingsalpha.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
             this.inactivethingsalpha.ValueChanged += new System.EventHandler(this.inactivethingsalpha_ValueChanged);
             // 
             // doublesidedalpha
             // 
-            this.doublesidedalpha.BackColor = System.Drawing.Color.Transparent;
+            this.doublesidedalpha.BackColor = System.Drawing.SystemColors.Control;
             this.doublesidedalpha.LargeChange = 3;
             this.doublesidedalpha.Location = new System.Drawing.Point(199, 12);
             this.doublesidedalpha.Name = "doublesidedalpha";
-            this.doublesidedalpha.Size = new System.Drawing.Size(154, 45);
+            this.doublesidedalpha.Size = new System.Drawing.Size(154, 42);
             this.doublesidedalpha.TabIndex = 0;
             this.doublesidedalpha.TickStyle = System.Windows.Forms.TickStyle.TopLeft;
             this.doublesidedalpha.ValueChanged += new System.EventHandler(this.doublesidedalpha_ValueChanged);
@@ -1695,7 +1695,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.colorsgroup1.Controls.Add(this.colorlinedefs);
             this.colorsgroup1.Location = new System.Drawing.Point(8, 8);
             this.colorsgroup1.Name = "colorsgroup1";
-            this.colorsgroup1.Size = new System.Drawing.Size(203, 493);
+            this.colorsgroup1.Size = new System.Drawing.Size(203, 510);
             this.colorsgroup1.TabIndex = 0;
             this.colorsgroup1.TabStop = false;
             this.colorsgroup1.Text = " Colors ";
@@ -2369,7 +2369,7 @@ namespace CodeImp.DoomBuilder.Windows
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.CancelButton = this.cancel;
-            this.ClientSize = new System.Drawing.Size(691, 568);
+            this.ClientSize = new System.Drawing.Size(709, 585);
             this.Controls.Add(this.cancel);
             this.Controls.Add(this.apply);
             this.Controls.Add(this.tabs);
