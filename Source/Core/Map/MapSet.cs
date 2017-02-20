@@ -2104,9 +2104,9 @@ namespace CodeImp.DoomBuilder.Map
 			ICollection<Vertex> nearbyfixedverts = FilterByArea(fixedverts, ref editarea);
 			if(!SplitLinesByVertices(movinglines, nearbyfixedverts, STITCH_DISTANCE, movinglines, mergemode))
 				return false;
-			
-			// Split non-moving lines with selected vertices
-			fixedlines = FilterByArea(fixedlines, ref editarea);
+
+            // Split non-moving lines with selected vertices
+            fixedlines = new HashSet<Linedef>(fixedlines.Where(fixedline => !fixedline.IsDisposed));
 			if(!SplitLinesByVertices(fixedlines, movingverts, STITCH_DISTANCE, movinglines, mergemode))
 				return false;
 
@@ -2357,6 +2357,8 @@ namespace CodeImp.DoomBuilder.Map
             {
                 LinedefSide ls = edges[i];
                 if (ls.Ignore || ls.Line == null) continue;
+                if (ls.Line.Start == null || ls.Line.End == null)
+                    throw new Exception("ls line is null");
 
 				if(ls.Front)
 				{
@@ -3073,8 +3075,8 @@ namespace CodeImp.DoomBuilder.Map
 
 											// Trash vertex
 											v.Dispose();
-										}
-									}
+                                        }
+                                    }
 								}
 
 								break;
@@ -3083,12 +3085,20 @@ namespace CodeImp.DoomBuilder.Map
 					}
 				}
 			}
-			
-			return true;
+
+            // [ZZ] note: disposing a vertex means also disposing all attached linedefs!
+            //      we need to iterate through our lines collection and make sure no disposed linedefs exist there.
+            //      also, just in case, do it for vertices as well, because vertices can be chain-disposed.
+            foreach (Linedef line in lines.Where(line => line.IsDisposed).ToList())
+                while (lines.Remove(line));
+            foreach (Vertex vert in verts.Where(vert => vert.IsDisposed).ToList())
+                while (verts.Remove(vert));
+
+            return true;
 		}
 
 		/// <summary>Splits lines by lines. Adds new lines to the second collection. Returns false when the operation failed.</summary>
-		public static bool SplitLinesByLines(HashSet<Linedef> lines, HashSet<Linedef> changedlines, MergeGeometryMode mergemode) //mxd
+		public static bool SplitLinesByLines(ICollection<Linedef> lines, HashSet<Linedef> changedlines, MergeGeometryMode mergemode) //mxd
 		{
 			if(lines.Count == 0 || changedlines.Count == 0 || mergemode == MergeGeometryMode.CLASSIC) return true;
 			
