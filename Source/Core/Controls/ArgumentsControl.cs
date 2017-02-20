@@ -424,11 +424,11 @@ namespace CodeImp.DoomBuilder.Controls
 			
 			for(int i = 0; i < info1.Length; i++)
 			{
-				if(info1[i].Used != info1[2].Used || info1[i].Type != info1[2].Type 
+				if(info1[i].Used != info1[i].Used || info1[i].Type != info1[i].Type 
 					|| info1[i].Title.ToUpperInvariant() != info2[i].Title.ToUpperInvariant())
 					return false;
 
-				haveusedargs |= (info1[i].Used || info1[2].Used);
+				haveusedargs |= (info1[i].Used || info1[i].Used);
 			}
 
 			return haveusedargs;
