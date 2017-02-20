@@ -95,8 +95,11 @@ namespace CodeImp.DoomBuilder.Controls
 		{
 			if(source.IsReadOnly) return false;
 
-			// Find lump, check it's hash
-			bool dosave = true;
+            // [ZZ] remove trailing whitespace
+            RemoveTrailingWhitespace();
+
+            // Find lump, check it's hash
+            bool dosave = true;
 			DataReader reader = source.Resource;
             // reload the reader
             bool wasReadOnly = reader.IsReadOnly;
