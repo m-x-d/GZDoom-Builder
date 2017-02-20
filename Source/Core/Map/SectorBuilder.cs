@@ -21,9 +21,6 @@ namespace CodeImp.DoomBuilder.Map
 
 		// Current outline
 		private List<LinedefSide> o_edges;
-		private bool o_clockwise;
-		private RectangleF o_bbox;
-		private Vertex vertex_right;
 
 		#endregion
 

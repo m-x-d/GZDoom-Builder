@@ -2262,10 +2262,10 @@ namespace CodeImp.DoomBuilder.Map
                 watch.Start();
                 if (!builder.TraceSector(ls.Line, ls.Front))
                 {
-                    General.ErrorLogger.Add(ErrorType.Warning, string.Format("TraceSector: took {0}ms, failed!", watch.ElapsedMilliseconds));
+                    //General.ErrorLogger.Add(ErrorType.Warning, string.Format("TraceSector: took {0}ms, failed!", watch.ElapsedMilliseconds));
                     continue; // Don't create sector if trace failed
                 }
-                General.ErrorLogger.Add(ErrorType.Warning, string.Format("TraceSector: took {0}ms", watch.ElapsedMilliseconds));
+                //General.ErrorLogger.Add(ErrorType.Warning, string.Format("TraceSector: took {0}ms", watch.ElapsedMilliseconds));
 
                 // Find any subsequent edges that were part of the sector created
                 bool has_existing_lines = false;
