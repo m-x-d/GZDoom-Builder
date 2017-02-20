@@ -30,6 +30,7 @@ using CodeImp.DoomBuilder.Rendering;
 using CodeImp.DoomBuilder.Types;
 using CodeImp.DoomBuilder.Windows;
 using CodeImp.DoomBuilder.VisualModes;
+using System.Diagnostics;
 
 #endregion
 
@@ -2256,11 +2257,18 @@ namespace CodeImp.DoomBuilder.Map
                 //DebugConsole.WriteLine((ls.Ignore ? "Ignoring line " : "Processing line ") + ls.Line.Index);
                 if (ls.Ignore) continue;
 
-				// Run sector builder on current edge
-				if(!builder.TraceSector(ls.Line, ls.Front)) continue; // Don't create sector if trace failed
+                // Run sector builder on current edge
+                Stopwatch watch = new Stopwatch();
+                watch.Start();
+                if (!builder.TraceSector(ls.Line, ls.Front))
+                {
+                    General.ErrorLogger.Add(ErrorType.Warning, string.Format("TraceSector: took {0}ms, failed!", watch.ElapsedMilliseconds));
+                    continue; // Don't create sector if trace failed
+                }
+                General.ErrorLogger.Add(ErrorType.Warning, string.Format("TraceSector: took {0}ms", watch.ElapsedMilliseconds));
 
-				// Find any subsequent edges that were part of the sector created
-				bool has_existing_lines = false;
+                // Find any subsequent edges that were part of the sector created
+                bool has_existing_lines = false;
 				bool has_existing_sides = false;
 				//bool has_zero_sided_lines = false;
 				bool has_dragged_sides = false; //mxd
