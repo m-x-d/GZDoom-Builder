@@ -75,36 +75,7 @@ namespace CodeImp.DoomBuilder.Controls
             // Only when running (this.DesignMode won't do when not this, but one of parent controls is in design mode)
             if (LicenseManager.UsageMode != LicenseUsageMode.Designtime)
             {
-                bool isacs = (Array.IndexOf(GZGeneral.ACS_SPECIALS, action) != -1);
-                //mxd. Setup script numbers
-                arg0int.Location = new Point(arg0.Location.X, arg0.Location.Y + 2);
-                arg0int.Items.Clear();
-                // [ZZ] note: only do this if our action is acs.
-                if (isacs)
-                {
-                    foreach (ScriptItem si in General.Map.NumberedScripts.Values)
-                        arg0int.Items.Add(new ColoredComboBoxItem(si, si.IsInclude ? SystemColors.HotTrack : SystemColors.WindowText));
-                    arg0int.DropDownWidth = Tools.GetDropDownWidth(arg0int);
-                }
-
-                //mxd. Setup script names
-                if (General.Map.UDMF)
-                {
-                    arg0str.Items.Clear();
-                    arg0str.Location = arg0int.Location;
-                    // [ZZ] note: only do this if our action is acs.
-                    if (isacs)
-                    {
-                        foreach (ScriptItem nsi in General.Map.NamedScripts.Values)
-                            arg0str.Items.Add(new ColoredComboBoxItem(nsi, nsi.IsInclude ? SystemColors.HotTrack : SystemColors.WindowText));
-                        arg0str.DropDownWidth = Tools.GetDropDownWidth(arg0str);
-                    }
-                }
-                else
-                {
-                    arg0str.Visible = false;
-                    cbuseargstr.Visible = false;
-                }
+                // do nothing.
             }
         }
 
@@ -161,9 +132,10 @@ namespace CodeImp.DoomBuilder.Controls
 
 		public void Apply(Linedef l, int step)
 		{
-			//mxd. Script name/number handling
-			// We can't rely on control visibility here, because all controlls will be invisible if ArgumentsControl is invisible
-			// (for example, when a different tab is selected)
+            //mxd. Script name/number handling
+            // We can't rely on control visibility here, because all controlls will be invisible if ArgumentsControl is invisible
+            // (for example, when a different tab is selected)
+            bool isacs = (Array.IndexOf(GZGeneral.ACS_SPECIALS, action) != -1);
 			switch(Arg0Mode)
 			{
 				// Apply arg0str
@@ -174,6 +146,9 @@ namespace CodeImp.DoomBuilder.Controls
 
 				// Apply script number
 				case ArgZeroMode.INT:
+                    if (!isacs)
+                        goto case ArgZeroMode.DEFAULT;
+                    //
 					if(!string.IsNullOrEmpty(arg0int.Text))
 					{
 						if(arg0int.SelectedItem != null)
@@ -286,7 +261,7 @@ namespace CodeImp.DoomBuilder.Controls
 				if(showaction != 0 || info != null)
 				{
 					arg0.SetDefaultValue();
-					arg1.SetDefaultValue();
+                    arg1.SetDefaultValue();
 					arg2.SetDefaultValue();
 					arg3.SetDefaultValue();
 					arg4.SetDefaultValue();
@@ -294,12 +269,14 @@ namespace CodeImp.DoomBuilder.Controls
 				else //or set them to 0
 				{
 					arg0.SetValue(0);
-					arg1.SetValue(0);
+                    arg1.SetValue(0);
 					arg2.SetValue(0);
 					arg3.SetValue(0);
 					arg4.SetValue(0);
 				}
-			}
+                // arg0str currently can't have any default
+                arg0str.Text = arg0strval = " ";
+            }
 
 			// Store current action
 			this.action = showaction;
@@ -313,6 +290,38 @@ namespace CodeImp.DoomBuilder.Controls
             if (arginfo[0].Str)
 			{
                 bool isacs = (Array.IndexOf(GZGeneral.ACS_SPECIALS, action) != -1);
+
+                //mxd. Setup script numbers
+                arg0int.Location = new Point(arg0.Location.X, arg0.Location.Y + 2);
+                arg0int.Items.Clear();
+                // [ZZ] note: only do this if our action is acs.
+                if (isacs)
+                {
+                    foreach (ScriptItem si in General.Map.NumberedScripts.Values)
+                        arg0int.Items.Add(new ColoredComboBoxItem(si, si.IsInclude ? SystemColors.HotTrack : SystemColors.WindowText));
+                    arg0int.DropDownWidth = Tools.GetDropDownWidth(arg0int);
+                }
+
+                //mxd. Setup script names
+                if (General.Map.UDMF)
+                {
+                    arg0str.Items.Clear();
+                    arg0str.Location = arg0int.Location;
+                    // [ZZ] note: only do this if our action is acs.
+                    if (isacs)
+                    {
+                        foreach (ScriptItem nsi in General.Map.NamedScripts.Values)
+                            arg0str.Items.Add(new ColoredComboBoxItem(nsi, nsi.IsInclude ? SystemColors.HotTrack : SystemColors.WindowText));
+                        arg0str.DropDownWidth = Tools.GetDropDownWidth(arg0str);
+                    }
+                }
+                else
+                {
+                    arg0str.Visible = false;
+                    cbuseargstr.Visible = false;
+                }
+                //
+
                 arg0str.DropDownStyle = isacs ? ComboBoxStyle.DropDown : ComboBoxStyle.Simple;
                 // Update script controls visibility
                 bool showarg0str = (General.Map.UDMF && havearg0str);
