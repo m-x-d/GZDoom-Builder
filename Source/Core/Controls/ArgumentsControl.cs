@@ -10,6 +10,7 @@ using CodeImp.DoomBuilder.GZBuilder.Data;
 using CodeImp.DoomBuilder.Geometry;
 using CodeImp.DoomBuilder.Map;
 using CodeImp.DoomBuilder.Types;
+using CodeImp.DoomBuilder.GZBuilder;
 
 #endregion
 
@@ -31,19 +32,28 @@ namespace CodeImp.DoomBuilder.Controls
 		private enum ArgZeroMode
 		{
 			DEFAULT,
-			SCRIPT_NUMBER,
-			SCRIPT_NAME,
+			INT,
+			STRING,
 		}
 
 		#endregion
 
 		#region ================== Variables
 
-		private string arg0str;
+		private string arg0strval;
 		private bool havearg0str;
 		private int action;
 		private ArgumentInfo[] arginfo;
 		private ArgZeroMode argzeromode;
+        private ArgZeroMode Arg0Mode
+        {
+            get { return argzeromode; }
+            set
+            {
+                arg0label.Text = (value == ArgZeroMode.STRING ? arginfo[0].TitleStr : arginfo[0].Title) + ":";
+                argzeromode = value;
+            }
+        }
 
 		#endregion
 
@@ -66,24 +76,24 @@ namespace CodeImp.DoomBuilder.Controls
             if (LicenseManager.UsageMode != LicenseUsageMode.Designtime)
             {
                 //mxd. Setup script numbers
-                scriptnumbers.Location = new Point(arg0.Location.X, arg0.Location.Y + 2);
-                scriptnumbers.Items.Clear();
+                arg0int.Location = new Point(arg0.Location.X, arg0.Location.Y + 2);
+                arg0int.Items.Clear();
                 foreach (ScriptItem si in General.Map.NumberedScripts.Values)
-                    scriptnumbers.Items.Add(new ColoredComboBoxItem(si, si.IsInclude ? SystemColors.HotTrack : SystemColors.WindowText));
-                scriptnumbers.DropDownWidth = Tools.GetDropDownWidth(scriptnumbers);
+                    arg0int.Items.Add(new ColoredComboBoxItem(si, si.IsInclude ? SystemColors.HotTrack : SystemColors.WindowText));
+                arg0int.DropDownWidth = Tools.GetDropDownWidth(arg0int);
 
                 //mxd. Setup script names
                 if (General.Map.UDMF)
                 {
-                    scriptnames.Items.Clear();
-                    scriptnames.Location = scriptnumbers.Location;
+                    arg0str.Items.Clear();
+                    arg0str.Location = arg0int.Location;
                     foreach (ScriptItem nsi in General.Map.NamedScripts.Values)
-                        scriptnames.Items.Add(new ColoredComboBoxItem(nsi, nsi.IsInclude ? SystemColors.HotTrack : SystemColors.WindowText));
-                    scriptnames.DropDownWidth = Tools.GetDropDownWidth(scriptnames);
+                        arg0str.Items.Add(new ColoredComboBoxItem(nsi, nsi.IsInclude ? SystemColors.HotTrack : SystemColors.WindowText));
+                    arg0str.DropDownWidth = Tools.GetDropDownWidth(arg0str);
                 }
                 else
                 {
-                    scriptnames.Visible = false;
+                    arg0str.Visible = false;
                     cbuseargstr.Visible = false;
                 }
             }
@@ -105,8 +115,8 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				if(General.Map.UDMF)
 				{
-					arg0str = fields.GetValue("arg0str", string.Empty);
-					havearg0str = !string.IsNullOrEmpty(arg0str);
+					arg0strval = fields.GetValue("arg0str", string.Empty);
+					havearg0str = !string.IsNullOrEmpty(arg0strval);
 				}
 
 				// Update arguments
@@ -120,10 +130,10 @@ namespace CodeImp.DoomBuilder.Controls
 			{
 				if(General.Map.UDMF)
 				{
-					if(arg0str != fields.GetValue("arg0str", string.Empty))
+					if(arg0strval != fields.GetValue("arg0str", string.Empty))
 					{
 						havearg0str = true;
-						arg0str = string.Empty;
+                        arg0strval = string.Empty;
 					}
 				}
 
@@ -145,21 +155,21 @@ namespace CodeImp.DoomBuilder.Controls
 			//mxd. Script name/number handling
 			// We can't rely on control visibility here, because all controlls will be invisible if ArgumentsControl is invisible
 			// (for example, when a different tab is selected)
-			switch(argzeromode)
+			switch(Arg0Mode)
 			{
 				// Apply arg0str
-				case ArgZeroMode.SCRIPT_NAME:
-					if(!string.IsNullOrEmpty(scriptnames.Text))
-						l.Fields["arg0str"] = new UniValue(UniversalType.String, scriptnames.Text);
+				case ArgZeroMode.STRING:
+					if(!string.IsNullOrEmpty(arg0str.Text))
+						l.Fields["arg0str"] = new UniValue(UniversalType.String, arg0str.Text);
 					break;
 
 				// Apply script number
-				case ArgZeroMode.SCRIPT_NUMBER:
-					if(!string.IsNullOrEmpty(scriptnumbers.Text))
+				case ArgZeroMode.INT:
+					if(!string.IsNullOrEmpty(arg0int.Text))
 					{
-						if(scriptnumbers.SelectedItem != null)
-							l.Args[0] = ((ScriptItem)((ColoredComboBoxItem)scriptnumbers.SelectedItem).Value).Index;
-						else if(!int.TryParse(scriptnumbers.Text.Trim(), out l.Args[0]))
+						if(arg0int.SelectedItem != null)
+							l.Args[0] = ((ScriptItem)((ColoredComboBoxItem)arg0int.SelectedItem).Value).Index;
+						else if(!int.TryParse(arg0int.Text.Trim(), out l.Args[0]))
 							l.Args[0] = 0;
 
 						if(l.Fields.ContainsKey("arg0str")) l.Fields.Remove("arg0str");
@@ -187,21 +197,21 @@ namespace CodeImp.DoomBuilder.Controls
 			//mxd. Script name/number handling
 			// We can't rely on control visibility here, because all controlls will be invisible if ArgumentsControl is invisible
 			// (for example, when a different tab is selected)
-			switch(argzeromode)
+			switch(Arg0Mode)
 			{
 				// Apply arg0str
-				case ArgZeroMode.SCRIPT_NAME:
-					if(!string.IsNullOrEmpty(scriptnames.Text))
-						t.Fields["arg0str"] = new UniValue(UniversalType.String, scriptnames.Text);
+				case ArgZeroMode.STRING:
+					if(!string.IsNullOrEmpty(arg0str.Text))
+						t.Fields["arg0str"] = new UniValue(UniversalType.String, arg0str.Text);
 					break;
 
 				// Apply script number
-				case ArgZeroMode.SCRIPT_NUMBER:
-					if(!string.IsNullOrEmpty(scriptnumbers.Text))
+				case ArgZeroMode.INT:
+					if(!string.IsNullOrEmpty(arg0int.Text))
 					{
-						if(scriptnumbers.SelectedItem != null)
-							t.Args[0] = ((ScriptItem)((ColoredComboBoxItem)scriptnumbers.SelectedItem).Value).Index;
-						else if(!int.TryParse(scriptnumbers.Text.Trim(), out t.Args[0]))
+						if(arg0int.SelectedItem != null)
+							t.Args[0] = ((ScriptItem)((ColoredComboBoxItem)arg0int.SelectedItem).Value).Index;
+						else if(!int.TryParse(arg0int.Text.Trim(), out t.Args[0]))
 							t.Args[0] = 0;
 
 						if(t.Fields.ContainsKey("arg0str")) t.Fields.Remove("arg0str");
@@ -291,39 +301,38 @@ namespace CodeImp.DoomBuilder.Controls
 		public void UpdateScriptControls()
 		{
 			// Update script-specific stuff
-			if(Array.IndexOf(GZBuilder.GZGeneral.ACS_SPECIALS, action) != -1)
+            if (arginfo[0].Str)
 			{
+                bool isacs = (Array.IndexOf(GZGeneral.ACS_SPECIALS, action) != -1);
 				// Update script controls visibility
-				bool shownamedscripts = (General.Map.UDMF && havearg0str);
+				bool showarg0str = (General.Map.UDMF && havearg0str);
 				cbuseargstr.Visible = General.Map.UDMF;
-				cbuseargstr.Checked = shownamedscripts;
-				scriptnames.Visible = shownamedscripts;
-				scriptnumbers.Visible = !shownamedscripts;
+				cbuseargstr.Checked = showarg0str;
+				arg0str.Visible = showarg0str;
+				arg0int.Visible = !showarg0str;
 
 				// Update named script name
-				if(shownamedscripts)
+				if(showarg0str)
 				{
-					argzeromode = ArgZeroMode.SCRIPT_NAME;
-					scriptnames.Text = arg0str;
-					
-					if(General.Map.NamedScripts.ContainsKey(arg0str))
-						UpdateScriptArguments(General.Map.NamedScripts[arg0str]);
-					else
-						arg0label.Text = "Script Name:"; // Unknown script name
-				}
+					Arg0Mode = ArgZeroMode.STRING;
+					arg0str.Text = arg0strval;
+
+                    if (isacs && General.Map.NamedScripts.ContainsKey(arg0strval))
+                        UpdateScriptArguments(General.Map.NamedScripts[arg0strval]);
+                }
 				// Update numbered script name
 				else
 				{
-					argzeromode = ArgZeroMode.SCRIPT_NUMBER;
+                    Arg0Mode = ArgZeroMode.INT;
 					int a0 = arg0.GetResult(0);
-					if(General.Map.NumberedScripts.ContainsKey(a0))
+					if(isacs && General.Map.NumberedScripts.ContainsKey(a0))
 					{
 						int i = 0;
 						foreach(ScriptItem item in General.Map.NumberedScripts.Values)
 						{
 							if(item.Index == a0)
 							{
-								scriptnumbers.SelectedIndex = i;
+								arg0int.SelectedIndex = i;
 								UpdateScriptArguments(item);
 								break;
 							}
@@ -334,20 +343,20 @@ namespace CodeImp.DoomBuilder.Controls
 					else
 					{
 						// Unknown script number...
-						scriptnumbers.Text = a0.ToString();
+						arg0int.Text = a0.ToString();
 					}
 				}
 			}
 			else
 			{
 				cbuseargstr.Visible = false;
-				scriptnames.Visible = false;
-				scriptnumbers.Visible = false;
+				arg0str.Visible = false;
+				arg0int.Visible = false;
 				cbuseargstr.Checked = false;
-				argzeromode = ArgZeroMode.DEFAULT;
+                Arg0Mode = ArgZeroMode.DEFAULT;
 			}
 
-			arg0.Visible = (argzeromode == ArgZeroMode.DEFAULT);
+			arg0.Visible = (Arg0Mode == ArgZeroMode.DEFAULT);
 		}
 
 		private void UpdateArgument(ArgumentBox arg, Label label, ArgumentInfo info)
@@ -384,8 +393,9 @@ namespace CodeImp.DoomBuilder.Controls
 			ArgumentBox[] args = { arg0, arg1, arg2, arg3, arg4 };
 			if(item != null)
 			{
-				string[] argnames = item.GetArgumentsDescriptions(action);
-				for(int i = 0; i < labels.Length; i++)
+                int first;
+				string[] argnames = item.GetArgumentsDescriptions(action, out first);
+				for(int i = first; i < labels.Length; i++)
 				{
 					if(!string.IsNullOrEmpty(argnames[i]))
 					{
@@ -406,7 +416,7 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 			else
 			{
-				for(int i = 0; i < labels.Length; i++)
+				for(int i = 1; i < labels.Length; i++)
 				{
 					labels[i].Text = arginfo[i].Title + ":";
 					labels[i].Enabled = arginfo[i].Used;
@@ -456,24 +466,23 @@ namespace CodeImp.DoomBuilder.Controls
 		private void cbuseargstr_CheckedChanged(object sender, EventArgs e)
 		{
 			if(!cbuseargstr.Visible) return;
-			scriptnames.Visible = cbuseargstr.Checked;
-			scriptnumbers.Visible = !cbuseargstr.Checked;
-			arg0label.Text = (cbuseargstr.Checked ? "Script Name:" : "Script Number:");
-			argzeromode = (cbuseargstr.Checked ? ArgZeroMode.SCRIPT_NAME : ArgZeroMode.SCRIPT_NUMBER);
+			arg0str.Visible = cbuseargstr.Checked;
+			arg0int.Visible = !cbuseargstr.Checked;
+            Arg0Mode = (cbuseargstr.Checked ? ArgZeroMode.STRING : ArgZeroMode.INT);
 		}
 
 		private void scriptnumbers_TextChanged(object sender, EventArgs e)
 		{
-			if(string.IsNullOrEmpty(scriptnumbers.Text)) return;
+			if(string.IsNullOrEmpty(arg0int.Text)) return;
 			ScriptItem item = null;
-			if(scriptnumbers.SelectedIndex != -1)
+			if(arg0int.SelectedIndex != -1)
 			{
-				item = ((ScriptItem)((ColoredComboBoxItem)scriptnumbers.SelectedItem).Value);
+				item = ((ScriptItem)((ColoredComboBoxItem)arg0int.SelectedItem).Value);
 			}
 			else
 			{
 				int scriptindex;
-				if(int.TryParse(scriptnumbers.Text, out scriptindex) && General.Map.NumberedScripts.ContainsKey(scriptindex))
+				if(int.TryParse(arg0int.Text, out scriptindex) && General.Map.NumberedScripts.ContainsKey(scriptindex))
 					item = General.Map.NumberedScripts[scriptindex];
 			}
 
@@ -482,15 +491,15 @@ namespace CodeImp.DoomBuilder.Controls
 
 		private void scriptnames_TextChanged(object sender, EventArgs e)
 		{
-			if(string.IsNullOrEmpty(scriptnames.Text)) return;
+			if(string.IsNullOrEmpty(arg0str.Text)) return;
 			ScriptItem item = null;
-			if(scriptnames.SelectedIndex != -1)
+			if(arg0str.SelectedIndex != -1)
 			{
-				item = ((ScriptItem)((ColoredComboBoxItem)scriptnames.SelectedItem).Value);
+				item = ((ScriptItem)((ColoredComboBoxItem)arg0str.SelectedItem).Value);
 			}
 			else
 			{
-				string scriptname = scriptnames.Text.Trim().ToLowerInvariant();
+				string scriptname = arg0str.Text.Trim().ToLowerInvariant();
 				if(General.Map.NamedScripts.ContainsKey(scriptname))
 					item = General.Map.NamedScripts[scriptname];
 			}

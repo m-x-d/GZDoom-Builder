@@ -65,6 +65,8 @@ namespace CodeImp.DoomBuilder.Config
 		private readonly PixelColor maxrangecolor; //mxd
 		private readonly int minrange; //mxd
 		private readonly int maxrange; //mxd
+        private readonly bool str; // [ZZ]
+        private readonly string titlestr; // [ZZ]
 
 		#endregion
 
@@ -84,6 +86,8 @@ namespace CodeImp.DoomBuilder.Config
 		public PixelColor MaxRangeColor { get { return maxrangecolor; } } //mxd
 		public int MinRange { get { return minrange; } } //mxd
 		public int MaxRange { get { return maxrange; } } //mxd
+        public bool Str { get { return str; } } // [ZZ]
+        public string TitleStr { get { return titlestr; } } // [ZZ]
 
 		#endregion
 
@@ -99,6 +103,8 @@ namespace CodeImp.DoomBuilder.Config
 			this.tooltip = cfg.ReadSetting(argspath + ".arg" + istr + ".tooltip", string.Empty); //mxd
 			this.type = cfg.ReadSetting(argspath + ".arg" + istr + ".type", 0);
 			this.defaultvalue = cfg.ReadSetting(argspath + ".arg" + istr + ".default", 0); //mxd
+            this.str = cfg.ReadSetting(argspath + ".arg" + istr + ".str", false);
+            this.titlestr = cfg.ReadSetting(argspath + ".arg" + istr + ".titlestr", this.title);
 
 			//mxd. Get rendering hint settings
 			string renderstyle = cfg.ReadSetting(argspath + ".arg" + istr + ".renderstyle", string.Empty);
