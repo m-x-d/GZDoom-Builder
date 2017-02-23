@@ -227,7 +227,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						}
 
 						// Process arg0str...
-						if(Array.IndexOf(GZGeneral.ACS_SPECIALS, t.Action) != -1)
+						//if(Array.IndexOf(GZGeneral.ACS_SPECIALS, t.Action) != -1)
 						{
 							string s = t.Fields.GetValue("arg0str", string.Empty);
 							if(!string.IsNullOrEmpty(s))
