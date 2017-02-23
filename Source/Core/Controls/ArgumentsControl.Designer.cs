@@ -99,7 +99,7 @@
             this.arg0str.Name = "arg0str";
             this.arg0str.Size = new System.Drawing.Size(110, 21);
             this.arg0str.TabIndex = 41;
-            this.arg0str.TextChanged += new System.EventHandler(this.scriptnames_TextChanged);
+            this.arg0str.TextChanged += new System.EventHandler(this.arg0str_TextChanged);
             // 
             // arg0int
             // 
@@ -113,7 +113,7 @@
             this.arg0int.Name = "arg0int";
             this.arg0int.Size = new System.Drawing.Size(110, 21);
             this.arg0int.TabIndex = 40;
-            this.arg0int.TextChanged += new System.EventHandler(this.scriptnumbers_TextChanged);
+            this.arg0int.TextChanged += new System.EventHandler(this.arg0int_TextChanged);
             // 
             // arg0label
             // 

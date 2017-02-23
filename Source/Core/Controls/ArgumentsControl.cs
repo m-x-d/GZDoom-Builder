@@ -75,21 +75,30 @@ namespace CodeImp.DoomBuilder.Controls
             // Only when running (this.DesignMode won't do when not this, but one of parent controls is in design mode)
             if (LicenseManager.UsageMode != LicenseUsageMode.Designtime)
             {
+                bool isacs = (Array.IndexOf(GZGeneral.ACS_SPECIALS, action) != -1);
                 //mxd. Setup script numbers
                 arg0int.Location = new Point(arg0.Location.X, arg0.Location.Y + 2);
                 arg0int.Items.Clear();
-                foreach (ScriptItem si in General.Map.NumberedScripts.Values)
-                    arg0int.Items.Add(new ColoredComboBoxItem(si, si.IsInclude ? SystemColors.HotTrack : SystemColors.WindowText));
-                arg0int.DropDownWidth = Tools.GetDropDownWidth(arg0int);
+                // [ZZ] note: only do this if our action is acs.
+                if (isacs)
+                {
+                    foreach (ScriptItem si in General.Map.NumberedScripts.Values)
+                        arg0int.Items.Add(new ColoredComboBoxItem(si, si.IsInclude ? SystemColors.HotTrack : SystemColors.WindowText));
+                    arg0int.DropDownWidth = Tools.GetDropDownWidth(arg0int);
+                }
 
                 //mxd. Setup script names
                 if (General.Map.UDMF)
                 {
                     arg0str.Items.Clear();
                     arg0str.Location = arg0int.Location;
-                    foreach (ScriptItem nsi in General.Map.NamedScripts.Values)
-                        arg0str.Items.Add(new ColoredComboBoxItem(nsi, nsi.IsInclude ? SystemColors.HotTrack : SystemColors.WindowText));
-                    arg0str.DropDownWidth = Tools.GetDropDownWidth(arg0str);
+                    // [ZZ] note: only do this if our action is acs.
+                    if (isacs)
+                    {
+                        foreach (ScriptItem nsi in General.Map.NamedScripts.Values)
+                            arg0str.Items.Add(new ColoredComboBoxItem(nsi, nsi.IsInclude ? SystemColors.HotTrack : SystemColors.WindowText));
+                        arg0str.DropDownWidth = Tools.GetDropDownWidth(arg0str);
+                    }
                 }
                 else
                 {
@@ -304,12 +313,14 @@ namespace CodeImp.DoomBuilder.Controls
             if (arginfo[0].Str)
 			{
                 bool isacs = (Array.IndexOf(GZGeneral.ACS_SPECIALS, action) != -1);
-				// Update script controls visibility
-				bool showarg0str = (General.Map.UDMF && havearg0str);
+                arg0str.DropDownStyle = isacs ? ComboBoxStyle.DropDown : ComboBoxStyle.Simple;
+                // Update script controls visibility
+                bool showarg0str = (General.Map.UDMF && havearg0str);
 				cbuseargstr.Visible = General.Map.UDMF;
 				cbuseargstr.Checked = showarg0str;
 				arg0str.Visible = showarg0str;
-				arg0int.Visible = !showarg0str;
+				arg0int.Visible = (!showarg0str && isacs);
+                arg0.Visible = (!showarg0str && !isacs);
 
 				// Update named script name
 				if(showarg0str)
@@ -321,11 +332,11 @@ namespace CodeImp.DoomBuilder.Controls
                         UpdateScriptArguments(General.Map.NamedScripts[arg0strval]);
                 }
 				// Update numbered script name
-				else
+				else if (isacs)
 				{
                     Arg0Mode = ArgZeroMode.INT;
 					int a0 = arg0.GetResult(0);
-					if(isacs && General.Map.NumberedScripts.ContainsKey(a0))
+					if(General.Map.NumberedScripts.ContainsKey(a0))
 					{
 						int i = 0;
 						foreach(ScriptItem item in General.Map.NumberedScripts.Values)
@@ -349,14 +360,13 @@ namespace CodeImp.DoomBuilder.Controls
 			}
 			else
 			{
-				cbuseargstr.Visible = false;
+                arg0.Visible = true;
+                cbuseargstr.Visible = false;
 				arg0str.Visible = false;
 				arg0int.Visible = false;
 				cbuseargstr.Checked = false;
                 Arg0Mode = ArgZeroMode.DEFAULT;
 			}
-
-			arg0.Visible = (Arg0Mode == ArgZeroMode.DEFAULT);
 		}
 
 		private void UpdateArgument(ArgumentBox arg, Label label, ArgumentInfo info)
@@ -466,12 +476,14 @@ namespace CodeImp.DoomBuilder.Controls
 		private void cbuseargstr_CheckedChanged(object sender, EventArgs e)
 		{
 			if(!cbuseargstr.Visible) return;
-			arg0str.Visible = cbuseargstr.Checked;
-			arg0int.Visible = !cbuseargstr.Checked;
+            bool isacs = (Array.IndexOf(GZGeneral.ACS_SPECIALS, action) != -1);
+            arg0str.Visible = cbuseargstr.Checked;
+            arg0int.Visible = (!cbuseargstr.Checked && isacs);
+            arg0.Visible = (!cbuseargstr.Checked && !isacs);
             Arg0Mode = (cbuseargstr.Checked ? ArgZeroMode.STRING : ArgZeroMode.INT);
 		}
 
-		private void scriptnumbers_TextChanged(object sender, EventArgs e)
+		private void arg0int_TextChanged(object sender, EventArgs e)
 		{
 			if(string.IsNullOrEmpty(arg0int.Text)) return;
 			ScriptItem item = null;
@@ -489,7 +501,7 @@ namespace CodeImp.DoomBuilder.Controls
 			UpdateScriptArguments(item);
 		}
 
-		private void scriptnames_TextChanged(object sender, EventArgs e)
+		private void arg0str_TextChanged(object sender, EventArgs e)
 		{
 			if(string.IsNullOrEmpty(arg0str.Text)) return;
 			ScriptItem item = null;
