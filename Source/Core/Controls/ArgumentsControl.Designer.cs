@@ -27,8 +27,9 @@
 		private void InitializeComponent() {
             this.components = new System.ComponentModel.Container();
             this.splitcontainer = new System.Windows.Forms.SplitContainer();
+            this.arg0str = new System.Windows.Forms.TextBox();
             this.cbuseargstr = new System.Windows.Forms.CheckBox();
-            this.arg0str = new CodeImp.DoomBuilder.Controls.ColoredComboBox();
+            this.arg0named = new CodeImp.DoomBuilder.Controls.ColoredComboBox();
             this.arg0int = new CodeImp.DoomBuilder.Controls.ColoredComboBox();
             this.arg0label = new System.Windows.Forms.Label();
             this.arg1label = new System.Windows.Forms.Label();
@@ -55,8 +56,9 @@
             // 
             // splitcontainer.Panel1
             // 
-            this.splitcontainer.Panel1.Controls.Add(this.cbuseargstr);
             this.splitcontainer.Panel1.Controls.Add(this.arg0str);
+            this.splitcontainer.Panel1.Controls.Add(this.cbuseargstr);
+            this.splitcontainer.Panel1.Controls.Add(this.arg0named);
             this.splitcontainer.Panel1.Controls.Add(this.arg0int);
             this.splitcontainer.Panel1.Controls.Add(this.arg0label);
             this.splitcontainer.Panel1.Controls.Add(this.arg1label);
@@ -77,6 +79,14 @@
             this.splitcontainer.TabIndex = 0;
             this.splitcontainer.TabStop = false;
             // 
+            // arg0str
+            // 
+            this.arg0str.Location = new System.Drawing.Point(237, 131);
+            this.arg0str.Name = "arg0str";
+            this.arg0str.Size = new System.Drawing.Size(110, 20);
+            this.arg0str.TabIndex = 45;
+            this.arg0str.Visible = false;
+            // 
             // cbuseargstr
             // 
             this.cbuseargstr.Location = new System.Drawing.Point(3, -5);
@@ -87,19 +97,19 @@
             this.cbuseargstr.UseVisualStyleBackColor = true;
             this.cbuseargstr.CheckedChanged += new System.EventHandler(this.cbuseargstr_CheckedChanged);
             // 
-            // arg0str
+            // arg0named
             // 
-            this.arg0str.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.arg0str.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
-            this.arg0str.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
-            this.arg0str.BackColor = System.Drawing.Color.Honeydew;
-            this.arg0str.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
-            this.arg0str.FormattingEnabled = true;
-            this.arg0str.Location = new System.Drawing.Point(237, 104);
-            this.arg0str.Name = "arg0str";
-            this.arg0str.Size = new System.Drawing.Size(110, 21);
-            this.arg0str.TabIndex = 41;
-            this.arg0str.TextChanged += new System.EventHandler(this.arg0str_TextChanged);
+            this.arg0named.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.arg0named.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+            this.arg0named.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
+            this.arg0named.BackColor = System.Drawing.Color.Honeydew;
+            this.arg0named.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.arg0named.FormattingEnabled = true;
+            this.arg0named.Location = new System.Drawing.Point(237, 104);
+            this.arg0named.Name = "arg0named";
+            this.arg0named.Size = new System.Drawing.Size(110, 21);
+            this.arg0named.TabIndex = 41;
+            this.arg0named.TextChanged += new System.EventHandler(this.arg0str_TextChanged);
             // 
             // arg0int
             // 
@@ -218,6 +228,7 @@
             this.Name = "ArgumentsControl";
             this.Size = new System.Drawing.Size(700, 140);
             this.splitcontainer.Panel1.ResumeLayout(false);
+            this.splitcontainer.Panel1.PerformLayout();
             this.splitcontainer.Panel2.ResumeLayout(false);
             this.splitcontainer.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -233,7 +244,7 @@
 		private ColoredComboBox arg0int;
 		private System.Windows.Forms.Label arg2label;
 		private System.Windows.Forms.Label arg1label;
-		private ColoredComboBox arg0str;
+		private ColoredComboBox arg0named;
 		private System.Windows.Forms.Label arg3label;
 		private System.Windows.Forms.Label arg4label;
 		private ArgumentBox arg3;
@@ -241,5 +252,6 @@
 		private System.Windows.Forms.CheckBox cbuseargstr;
 		private System.Windows.Forms.ToolTip tooltip;
 		private ArgumentBox arg2;
-	}
+        private System.Windows.Forms.TextBox arg0str;
+    }
 }
