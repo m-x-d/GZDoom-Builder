@@ -81,6 +81,7 @@
             // 
             // arg0str
             // 
+            this.arg0str.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.arg0str.Location = new System.Drawing.Point(237, 131);
             this.arg0str.Name = "arg0str";
             this.arg0str.Size = new System.Drawing.Size(110, 20);
