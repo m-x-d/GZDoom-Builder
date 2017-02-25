@@ -244,13 +244,15 @@ namespace CodeImp.DoomBuilder.Config
 		//mxd. Constructor for an argument info defined in DECORATE
 		internal ArgumentInfo(string actorname, string argtitle, string tooltip, string renderstyle, string rendercolor,
 			string minrange, string minrangecolor, string maxrange, string maxrangecolor, string targetclasses,
-			int type, int defaultvalue, string enumstr, IDictionary<string, EnumList> enums)
+			int type, int defaultvalue, string enumstr, IDictionary<string, EnumList> enums, bool str, string argtitlestr)
 		{
 			this.used = true;
 			this.title = argtitle;
 			this.tooltip = tooltip;
 			this.defaultvalue = defaultvalue;
 			this.flagslist = new EnumList(); //mxd
+            this.str = str;
+            this.titlestr = argtitlestr;
 
 			// Get rendering hint settings
 			switch(renderstyle.ToLowerInvariant())

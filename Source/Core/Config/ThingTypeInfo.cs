@@ -484,7 +484,10 @@ namespace CodeImp.DoomBuilder.Config
 				string argenum = ZDTextParser.StripQuotes(actor.GetPropertyAllValues("$arg" + i + "enum"));
 				string argrenderstyle = ZDTextParser.StripQuotes(actor.GetPropertyAllValues("$arg" + i + "renderstyle"));
 				string argrendercolor, minrange, maxrange, minrangecolor, maxrangecolor;
-				if(!string.IsNullOrEmpty(argrenderstyle))
+                bool argstr = actor.HasProperty("$arg" + i + "allowstr");
+                string argtitlestr = ZDTextParser.StripQuotes(actor.GetPropertyAllValues("$arg" + i + "str"));
+                if (string.IsNullOrEmpty(argtitlestr)) argtitlestr = argtitle;
+				if (!string.IsNullOrEmpty(argrenderstyle))
 				{
 					argrendercolor = ZDTextParser.StripQuotes(actor.GetPropertyAllValues("$arg" + i + "rendercolor"));
 					minrange = ZDTextParser.StripQuotes(actor.GetPropertyAllValues("$arg" + i + "minrange"));
@@ -499,7 +502,7 @@ namespace CodeImp.DoomBuilder.Config
 				
 				args[i] = new ArgumentInfo(title, argtitle, argtooltip, argrenderstyle, argrendercolor, 
 					minrange, minrangecolor, maxrange, maxrangecolor, targetclasses,
-					argtype, defaultvalue, argenum, General.Map.Config.Enums);
+					argtype, defaultvalue, argenum, General.Map.Config.Enums, argstr, argtitlestr);
 			}
 
 			//mxd. Some SLADE compatibility
