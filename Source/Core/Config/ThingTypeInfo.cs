@@ -484,7 +484,7 @@ namespace CodeImp.DoomBuilder.Config
 				string argenum = ZDTextParser.StripQuotes(actor.GetPropertyAllValues("$arg" + i + "enum"));
 				string argrenderstyle = ZDTextParser.StripQuotes(actor.GetPropertyAllValues("$arg" + i + "renderstyle"));
 				string argrendercolor, minrange, maxrange, minrangecolor, maxrangecolor;
-                bool argstr = actor.HasProperty("$arg" + i + "allowstr");
+                bool argstr = (actor.HasProperty("$arg" + i + "str"));
                 string argtitlestr = ZDTextParser.StripQuotes(actor.GetPropertyAllValues("$arg" + i + "str"));
                 if (string.IsNullOrEmpty(argtitlestr)) argtitlestr = argtitle;
 				if (!string.IsNullOrEmpty(argrenderstyle))
