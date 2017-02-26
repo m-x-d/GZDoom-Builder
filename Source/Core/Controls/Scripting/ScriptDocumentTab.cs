@@ -208,6 +208,7 @@ namespace CodeImp.DoomBuilder.Controls
         protected void RemoveTrailingWhitespace()
         {
             // after changing the contents, selection should stay on the same line, and just move to the end of that line if it was on the trailing space.
+            int vscroll = editor.Scintilla.FirstVisibleLine;
             int selectionStart = editor.SelectionStart;
             int selectionEnd = editor.SelectionEnd;
 
@@ -240,6 +241,7 @@ namespace CodeImp.DoomBuilder.Controls
             editor.Text = string.Join("\n", atext);
             editor.SelectionStart = selectionStart;
             editor.SelectionEnd = selectionEnd;
+            editor.Scintilla.FirstVisibleLine = vscroll;
         }
 
 		// This saves the document (used for both explicit and implicit)
