@@ -673,6 +673,9 @@ namespace CodeImp.DoomBuilder.ZDoom
                     }
                 }
             }
+
+            // parsing done, process thing arguments
+            ParseCustomArguments();
         }
     }
 }

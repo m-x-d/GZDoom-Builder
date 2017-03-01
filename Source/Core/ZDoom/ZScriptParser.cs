@@ -896,20 +896,32 @@ namespace CodeImp.DoomBuilder.ZDoom
                 {
                     actor.baseclass = GetArchivedActorByName(cls.ParentName, true);
                     string inheritclass = cls.ParentName;
-                    if (actor.baseclass == null)
+
+                    //check if this class inherits from a class defined in game configuration
+                    string inheritclasscheck = inheritclass.ToLowerInvariant();
+
+                    // inherit args from base class
+                    if (actor.baseclass != null)
                     {
-                        //check if this class inherits from a class defined in game configuration
-                        string inheritclasscheck = inheritclass.ToLowerInvariant();
-
-                        bool thingfound = false;
-                        foreach (KeyValuePair<int, ThingTypeInfo> ti in things)
+                        for (int i = 0; i < 5; i++)
                         {
-                            if (!string.IsNullOrEmpty(ti.Value.ClassName) && ti.Value.ClassName.ToLowerInvariant() == inheritclasscheck)
-                            {
-                                //states
-                                if (actor.states.Count == 0 && !string.IsNullOrEmpty(ti.Value.Sprite))
-                                    actor.states.Add("spawn", new StateStructure(ti.Value.Sprite.Substring(0, 5)));
+                            if (actor.args[i] == null)
+                                actor.args[i] = actor.baseclass.args[i];
+                        }
+                    }
 
+                    bool thingfound = false;
+                    foreach (KeyValuePair<int, ThingTypeInfo> ti in things)
+                    {
+                        if (!string.IsNullOrEmpty(ti.Value.ClassName) && ti.Value.ClassName.ToLowerInvariant() == inheritclasscheck)
+                        {
+                            //states
+                            // [ZZ] allow internal prefix here. it can inherit MapSpot, light, or other internal stuff.
+                            if (actor.states.Count == 0 && !string.IsNullOrEmpty(ti.Value.Sprite))
+                                actor.states.Add("spawn", new StateStructure(ti.Value.Sprite.StartsWith(DataManager.INTERNAL_PREFIX) ? ti.Value.Sprite : ti.Value.Sprite.Substring(0, 5)));
+
+                            if (actor.baseclass == null)
+                            {
                                 //flags
                                 if (ti.Value.Hangs && !actor.flags.ContainsKey("spawnceiling"))
                                     actor.flags["spawnceiling"] = true;
@@ -923,13 +935,29 @@ namespace CodeImp.DoomBuilder.ZDoom
 
                                 if (!actor.props.ContainsKey("radius"))
                                     actor.props["radius"] = new List<string> { ti.Value.Radius.ToString() };
-
-                                thingfound = true;
-                                break;
                             }
+
+                            // [ZZ] inherit arguments from game configuration
+                            //      
+                            if (!actor.props.ContainsKey("$clearargs"))
+                            {
+                                for (int i = 0; i < 5; i++)
+                                {
+                                    if (actor.args[i] != null)
+                                        continue; // don't touch it if we already have overrides
+
+                                    ArgumentInfo arg = ti.Value.Args[i];
+                                    if (arg != null && arg.Used)
+                                        actor.args[i] = arg;
+                                }
+                            }
+
+                            thingfound = true;
+                            break;
                         }
 
-                        if (!thingfound) LogWarning("Unable to find \"" + inheritclass + "\" class to inherit from, while parsing \"" + cls.ClassName + "\"");
+                        if (actor.baseclass == null && !thingfound)
+                            LogWarning("Unable to find \"" + inheritclass + "\" class to inherit from, while parsing \"" + cls.ClassName + "\"");
                     }
                 }
             }

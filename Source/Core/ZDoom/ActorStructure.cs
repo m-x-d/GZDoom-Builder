@@ -58,6 +58,9 @@ namespace CodeImp.DoomBuilder.ZDoom
         //mxd. Categories
         internal DecorateCategoryInfo catinfo;
 
+        // [ZZ] direct ArgumentInfos (from game configuration), or own ArgumentInfos (from props)
+        internal ArgumentInfo[] args = new ArgumentInfo[5];
+
         // States
         internal Dictionary<string, StateStructure> states;
 		
@@ -300,6 +303,31 @@ namespace CodeImp.DoomBuilder.ZDoom
 			//mxd. No dice...
 			return null;
 		}
+
+        /// <summary>
+        /// This method parses $argN into argumentinfos.
+        /// </summary>
+        public void ParseCustomArguments()
+        {
+            for (int i = 0; i < 5; i++)
+            {
+                if (HasProperty("$arg" + i))
+                    args[i] = new ArgumentInfo(this, i);
+                else args[i] = null;
+            }
+        }
+
+        public ArgumentInfo GetArgumentInfo(int idx)
+        {
+            if (args[idx] != null)
+                return args[idx];
+            // if we have $clearargs, don't inherit anything!
+            if (props.ContainsKey("$clearargs"))
+                return null;
+            if (baseclass != null)
+                return baseclass.GetArgumentInfo(idx);
+            return null;
+        }
 		
 		#endregion
 	}

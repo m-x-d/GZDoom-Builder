@@ -895,7 +895,7 @@ namespace CodeImp.DoomBuilder.Rendering
 							world = CreateThingPositionMatrix(t);
 
 							//mxd. If current thing is light - set it's color to light color
-							if(Array.IndexOf(GZBuilder.GZGeneral.GZ_LIGHTS, t.Thing.Type) != -1 && !fullbrightness) 
+							if(GZBuilder.GZGeneral.GetGZLightTypeByThing(t.Thing) != -1 && !fullbrightness) 
 							{
 								wantedshaderpass += 4; // Render using one of passes, which uses World3D.VertexColor
 								vertexcolor = t.LightColor;
@@ -1205,7 +1205,7 @@ namespace CodeImp.DoomBuilder.Rendering
 						world = CreateThingPositionMatrix(t);
 
 						//mxd. If current thing is light - set it's color to light color
-						if(Array.IndexOf(GZBuilder.GZGeneral.GZ_LIGHTS, t.Thing.Type) != -1 && !fullbrightness)
+						if(GZBuilder.GZGeneral.GetGZLightTypeByThing(t.Thing) != -1 && !fullbrightness)
 						{
 							wantedshaderpass += 4; // Render using one of passes, which uses World3D.VertexColor
 							vertexcolor = t.LightColor;

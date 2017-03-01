@@ -1,6 +1,9 @@
 ﻿#region ================== Namespaces
 
+using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.GZBuilder.Data;
+using CodeImp.DoomBuilder.Map;
+using System;
 
 #endregion
 
@@ -8,7 +11,7 @@ namespace CodeImp.DoomBuilder.GZBuilder
 {
 	//mxd. should get rid of this class one day...
 	public static class GZGeneral
-	{
+    {
 		#region ================== Properties
 
 		//gzdoom light types
@@ -28,7 +31,35 @@ namespace CodeImp.DoomBuilder.GZBuilder
 		private static readonly int[] acsSpecials = { 80, 81, 82, 83, 84, 85, 226 };
 		public static int[] ACS_SPECIALS { get { return acsSpecials; } }
 
-		#endregion
+        // [ZZ] this is for proper inheritance of lights.
+        //      technically this can be found by parsing gzdoom.pk3/mapinfo/common.txt, but I wouldn't do that without a good reason for now.
+        private static readonly string[] gzLightClasses =
+        {
+            /* normal lights */ "pointlight", "pointlightpulse", "pointlightflicker", "sectorpointlight", "pointlightflickerrandom",
+            /* additive lights */ "pointlightadditive", "pointlightpulseadditive", "pointlightflickeradditive", "sectorpointlightadditive", "pointlightflickerrandomadditive",
+            /* subtractive lights */ "pointlightsubtractive", "pointlightpulsesubtractive", "pointlightflickersubtractive", "sectorpointlightsubtractive", "pointlightflickerrandomsubtractive",
+            /* attenuated lights */ "pointlightattenuated", "pointlightpulseattenuated", "pointlightflickerattenuated", "sectorpointlightattenuated", "pointlightflickerrandomattenuated",
+            /* vavoom lights */ "vavoomlightwhite", "vavoomlightcolor"
+        };
 
-	}
+        public static int GetGZLightTypeByClass(string classname)
+        {
+            int idx = Array.IndexOf(gzLightClasses, classname.ToLowerInvariant());
+            if (idx >= 0)
+                return gzLights[idx];
+            return 0;
+        }
+
+        public static int GetGZLightTypeByThing(Thing t)
+        {
+            int type = Array.IndexOf(gzLights, t.DynamicLightType);
+            if (type >= 0)
+                return type;
+
+            return -1;
+        }
+
+        #endregion
+
+    }
 }
