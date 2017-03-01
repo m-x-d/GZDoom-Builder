@@ -592,11 +592,11 @@ namespace CodeImp.DoomBuilder.Config
 			if(blocking > THING_BLOCKING_NONE) errorcheck = THING_ERROR_INSIDE_STUCK;
 
             // [ZZ]
-            DynamicLightType = GZGeneral.GetGZLightTypeByClass(actor);
-		}
+            dynamiclighttype = GZGeneral.GetGZLightTypeByClass(actor);
+        }
 
-		//mxd. This tries to find all possible sprite rotations. Returns true when voxel substitute exists
-		internal bool SetupSpriteFrame(HashSet<string> allspritenames, HashSet<string> allvoxelnames)
+        //mxd. This tries to find all possible sprite rotations. Returns true when voxel substitute exists
+        internal bool SetupSpriteFrame(HashSet<string> allspritenames, HashSet<string> allvoxelnames)
 		{
 			// Empty, invalid or internal sprites don't have rotations
 			// Info: we can have either partial 5-char sprite name from DECORATE parser,

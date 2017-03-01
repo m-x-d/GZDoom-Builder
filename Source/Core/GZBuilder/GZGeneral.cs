@@ -50,17 +50,17 @@ namespace CodeImp.DoomBuilder.GZBuilder
             while (p != null)
             {
                 idx = Array.IndexOf(gzLightClasses, p.ClassName.ToLowerInvariant());
-
                 if (idx != -1)
                 {
                     // found dynamic light type. alter it by actor flags.
                     // +MISSILEMORE makes it additive.
                     // +MISSILEEVENMORE makes it subtractive.
                     // +INCOMBAT makes it attenuated.
+                    int light = gzLights[idx];
                     if (idx < GZ_LIGHT_TYPES[3])
                     {
-                        int baseType = idx % 10;
-                        int dispType = idx - 9800 - baseType;
+                        int baseType = light % 10;
+                        int dispType = light - baseType;
                         if (actor.GetFlagValue("MISSILEMORE", false))
                             dispType = 9810;
                         else if (actor.GetFlagValue("MISSILEEVENMORE", false))
@@ -69,7 +69,7 @@ namespace CodeImp.DoomBuilder.GZBuilder
                             dispType = 9830;
                         return dispType + baseType;
                     }
-                    else return gzLights[idx];
+                    else return light;
                 }
 
                 p = p.BaseClass;
