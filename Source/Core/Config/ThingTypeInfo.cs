@@ -100,7 +100,6 @@ namespace CodeImp.DoomBuilder.Config
 
         // [ZZ] GZDoom inheritance data (DECORATE and ZScript). used for dynamic lighting.
         private int dynamiclighttype = -1;
-        private List<ActorStructure> actorstructures = new List<ActorStructure>();
 		
 		#endregion
 
@@ -150,7 +149,6 @@ namespace CodeImp.DoomBuilder.Config
 
         // [ZZ] GZDoom inheritance data
         public int DynamicLightType { get { return dynamiclighttype; } set { if (dynamiclighttype < 0) dynamiclighttype = value; } }
-        public List<ActorStructure> ActorStructures { get { return actorstructures; } internal set { actorstructures = value; } }
 
         #endregion
 
@@ -449,7 +447,6 @@ namespace CodeImp.DoomBuilder.Config
 
             //
             this.dynamiclighttype = other.dynamiclighttype;
-            this.actorstructures = other.actorstructures;
 
             // We have no destructor
             GC.SuppressFinalize(this);
@@ -594,19 +591,8 @@ namespace CodeImp.DoomBuilder.Config
 			//mxd
 			if(blocking > THING_BLOCKING_NONE) errorcheck = THING_ERROR_INSIDE_STUCK;
 
-            // [ZZ] add parent doomednums if any. (and this one as well)
-            actorstructures.Clear();
-            ActorStructure p = actor;
-            while (p != null)
-            {
-                actorstructures.Add(p);
-
-                int light_doomednumtype = GZGeneral.GetGZLightTypeByClass(p.ClassName);
-                if (light_doomednumtype != 0)
-                    DynamicLightType = light_doomednumtype;
-
-                p = p.BaseClass;
-            }
+            // [ZZ]
+            DynamicLightType = GZGeneral.GetGZLightTypeByClass(actor);
 		}
 
 		//mxd. This tries to find all possible sprite rotations. Returns true when voxel substitute exists

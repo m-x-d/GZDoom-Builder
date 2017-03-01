@@ -3,6 +3,7 @@
 using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.GZBuilder.Data;
 using CodeImp.DoomBuilder.Map;
+using CodeImp.DoomBuilder.ZDoom;
 using System;
 
 #endregion
@@ -42,11 +43,38 @@ namespace CodeImp.DoomBuilder.GZBuilder
             /* vavoom lights */ "vavoomlightwhite", "vavoomlightcolor"
         };
 
-        public static int GetGZLightTypeByClass(string classname)
+        public static int GetGZLightTypeByClass(ActorStructure actor)
         {
-            int idx = Array.IndexOf(gzLightClasses, classname.ToLowerInvariant());
-            if (idx >= 0)
-                return gzLights[idx];
+            int idx = -1;
+            ActorStructure p = actor;
+            while (p != null)
+            {
+                idx = Array.IndexOf(gzLightClasses, p.ClassName.ToLowerInvariant());
+
+                if (idx != -1)
+                {
+                    // found dynamic light type. alter it by actor flags.
+                    // +MISSILEMORE makes it additive.
+                    // +MISSILEEVENMORE makes it subtractive.
+                    // +INCOMBAT makes it attenuated.
+                    if (idx < GZ_LIGHT_TYPES[3])
+                    {
+                        int baseType = idx % 10;
+                        int dispType = idx - 9800 - baseType;
+                        if (actor.GetFlagValue("MISSILEMORE", false))
+                            dispType = 9810;
+                        else if (actor.GetFlagValue("MISSILEEVENMORE", false))
+                            dispType = 9820;
+                        else if (actor.GetFlagValue("INCOMBAT", false))
+                            dispType = 9830;
+                        return dispType + baseType;
+                    }
+                    else return gzLights[idx];
+                }
+
+                p = p.BaseClass;
+            }
+
             return 0;
         }
 
