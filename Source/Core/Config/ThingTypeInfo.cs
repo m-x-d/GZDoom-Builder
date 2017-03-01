@@ -669,7 +669,8 @@ namespace CodeImp.DoomBuilder.Config
 			HashSet<string> spritenames = new HashSet<string>();
 			foreach(string s in allspritenames)
 			{
-				if(s.StartsWith(sourcename)) spritenames.Add(s);
+                if (s.StartsWith(sourcename))
+                    spritenames.Add(s);
 			}
 
 			// Find a sprite, which matches baseframe

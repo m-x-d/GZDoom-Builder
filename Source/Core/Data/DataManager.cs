@@ -1533,11 +1533,22 @@ namespace CodeImp.DoomBuilder.Data
 		{
 			//mxd. Get all sprite names
 			HashSet<string> spritenames = new HashSet<string>(StringComparer.Ordinal);
-			foreach(DataReader dr in containers)
-			{
-				IEnumerable<string> result = dr.GetSpriteNames();
-				if(result != null) spritenames.UnionWith(result);
-			}
+            // [ZZ] in order to properly replace different rotation count, we need more complex processing here.
+            HashSet<string> loadedspritenames = new HashSet<string>(StringComparer.Ordinal);
+            for (int i = containers.Count-1; i >= 0; i--)
+            {
+                IEnumerable<string> result = containers[i].GetSpriteNames();
+                if (result != null)
+                {
+                    // remove old sprites with this name
+                    result = result.Where(str => !loadedspritenames.Contains(str.Substring(0, 4))); // only sprites that we still don't have. remember, reverse iteration!
+                    // add new sprites with this name
+                    spritenames.UnionWith(result);
+                    // remember
+                    foreach (string spr in result)
+                        loadedspritenames.Add(spr.Substring(0, 4));
+                }
+            }
 
 			//mxd. Add sprites from sprites collection (because GetSpriteNames() doesn't return TEXTURES sprites)
 			foreach(ImageData data in sprites.Values) spritenames.Add(data.Name);
@@ -1637,7 +1648,8 @@ namespace CodeImp.DoomBuilder.Data
 				{
 					// This container provides this sprite?
 					Stream spritedata = containers[i].GetSpriteData(pname, ref spritelocation);
-					if(spritedata != null) return spritedata;
+					if(spritedata != null)
+                        return spritedata;
 				}
 			}
 			
