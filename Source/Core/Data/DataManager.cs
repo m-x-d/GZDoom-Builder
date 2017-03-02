@@ -39,6 +39,7 @@ using CodeImp.DoomBuilder.ZDoom;
 using SlimDX;
 using SlimDX.Direct3D9;
 using Matrix = SlimDX.Matrix;
+using CodeImp.DoomBuilder.Controls;
 
 #endregion
 
@@ -588,6 +589,9 @@ namespace CodeImp.DoomBuilder.Data
 
 			//mxd. Create skybox texture(s)
 			SetupSkybox();
+
+            // [ZZ] clear texture/flat cache in ImageSelectorPanel
+            ImageSelectorPanel.ClearCachedPreviews();
 			
 			// Start background loading
 			StartBackgroundLoader();
