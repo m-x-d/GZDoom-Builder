@@ -570,7 +570,12 @@ namespace CodeImp.DoomBuilder.Map
 				ModelData md = General.Map.Data.ModeldefEntries[type];
 				if((md.LoadState == ModelLoadState.None && General.Map.Data.ProcessModel(type)) || md.LoadState != ModelLoadState.None)
 					rendermode = (General.Map.Data.ModeldefEntries[type].IsVoxel ? ThingRenderMode.VOXEL : ThingRenderMode.MODEL);
-			}
+			} 
+            else // reset rendermode if we SUDDENLY became a sprite out of a model. otherwise it crashes violently.
+            {
+                ThingTypeInfo ti = General.Map.Data.GetThingInfo(Type);
+                rendermode = (ti != null) ? ti.RenderMode : ThingRenderMode.NORMAL;
+            }
 
 			// Update radian versions of pitch and roll
 			switch(rendermode)

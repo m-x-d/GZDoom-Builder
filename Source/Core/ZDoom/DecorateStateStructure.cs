@@ -119,6 +119,19 @@ namespace CodeImp.DoomBuilder.ZDoom
                             if (/*!realspritename.StartsWith("TNT1") && */!spritename.StartsWith("----") && !spritename.Contains("#")) // [ZZ] some actors have only TNT1 state and receive a random image because of this
                             {
                                 info.Sprite = spritename; //mxd
+                                int duration = -1;
+                                parser.SkipWhitespace(false);
+                                string durationstr = parser.ReadToken();
+                                if (durationstr == "-")
+                                    durationstr += parser.ReadToken();
+                                if (string.IsNullOrEmpty(durationstr) || durationstr == "\n")
+                                {
+                                    parser.ReportError("Expected frame duration");
+                                    return;
+                                }
+                                if (!int.TryParse(durationstr.Trim(), out duration))
+                                    parser.DataStream.Seek(-(durationstr.Length), SeekOrigin.Current);
+                                info.Duration = duration;
                                 sprites.Add(info);
                             }
                         }

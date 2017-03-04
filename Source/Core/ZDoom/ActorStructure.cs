@@ -282,23 +282,45 @@ namespace CodeImp.DoomBuilder.ZDoom
 				General.ErrorLogger.Add(ErrorType.Warning, "DECORATE warning in " + classname + ":" + doomednum + ". The sprite \"" + sprite + "\" assigned by the \"$sprite\" property does not exist.");
 			}
 
-			//mxd. Try to get a suitable sprite from our hardcoded states list
-			foreach(string state in SPRITE_CHECK_STATES)
+            StateStructure.FrameInfo firstNonTntInfo = null;
+            StateStructure.FrameInfo firstInfo = null;
+            // Pick the first we can find (including and not including TNT1)
+            Dictionary<string, StateStructure> list = GetAllStates();
+            foreach (StateStructure s in list.Values)
+            {
+                StateStructure.FrameInfo info = s.GetSprite(0);
+                if (string.IsNullOrEmpty(info.Sprite)) continue;
+
+                if (!info.IsEmpty()) firstNonTntInfo = info;
+                if (firstInfo == null) firstInfo = info;
+
+                if (firstNonTntInfo != null)
+                    break;
+            }
+
+            //mxd. Try to get a suitable sprite from our hardcoded states list
+            StateStructure.FrameInfo lastNonTntInfo = null;
+            StateStructure.FrameInfo lastInfo = null;
+            foreach (string state in SPRITE_CHECK_STATES)
 			{
 				if(!HasState(state)) continue;
 
 				StateStructure s = GetState(state);
 				StateStructure.FrameInfo info = s.GetSprite(0);
-				if(!string.IsNullOrEmpty(info.Sprite)) return info;
+                //if(!string.IsNullOrEmpty(info.Sprite)) return info;
+                if (string.IsNullOrEmpty(info.Sprite)) continue;
+
+                if (!info.IsEmpty()) lastNonTntInfo = info;
+                if (lastInfo == null) lastInfo = info;
+
+                if (lastNonTntInfo != null)
+                    break;
 			}
-			
-			// Still no sprite found? then just pick the first we can find
-			Dictionary<string, StateStructure> list = GetAllStates();
-			foreach(StateStructure s in list.Values)
-			{
-				StateStructure.FrameInfo info = s.GetSprite(0);
-				if(!string.IsNullOrEmpty(info.Sprite)) return info;
-			}
+
+            // [ZZ] return whatever is there by priority. try to pick non-TNT1 frames.
+            StateStructure.FrameInfo[] infos = new StateStructure.FrameInfo[] { lastNonTntInfo, firstNonTntInfo, lastInfo, firstInfo };
+            foreach (StateStructure.FrameInfo info in infos)
+                if (info != null) return info;
 			
 			//mxd. No dice...
 			return null;
