@@ -338,7 +338,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			}
 
             // [ZZ] return whatever is there by priority. try to pick non-TNT1 frames.
-            StateStructure.FrameInfo[] infos = new StateStructure.FrameInfo[] { lastNonTntInfo, firstNonTntInfo, lastInfo, firstInfo };
+            StateStructure.FrameInfo[] infos = new StateStructure.FrameInfo[] { lastNonTntInfo, lastInfo, firstNonTntInfo, firstInfo };
             foreach (StateStructure.FrameInfo info in infos)
                 if (info != null) return info;
 			
