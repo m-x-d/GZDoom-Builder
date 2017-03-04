@@ -217,6 +217,11 @@ namespace CodeImp.DoomBuilder.ZDoom
 		/// </summary>
 		public bool HasState(string statename)
 		{
+            // [ZZ] we should NOT pick up any states from Actor. (except Spawn, as the very default state)
+            //      for the greater good. (otherwise POL5 from GenericCrush is displayed for actors without frames, preferred before TNT1)
+            if (classname.ToLowerInvariant() == "actor" && statename.ToLowerInvariant() != "spawn")
+                return false;
+
 			if(states.ContainsKey(statename)) return true;
 			if(!skipsuper && (baseclass != null)) return baseclass.HasState(statename);
 			return false;
@@ -227,7 +232,12 @@ namespace CodeImp.DoomBuilder.ZDoom
 		/// </summary>
 		public StateStructure GetState(string statename)
 		{
-			if(states.ContainsKey(statename)) return states[statename];
+            // [ZZ] we should NOT pick up any states from Actor. (except Spawn, as the very default state)
+            //      for the greater good. (otherwise POL5 from GenericCrush is displayed for actors without frames, preferred before TNT1)
+            if (classname.ToLowerInvariant() == "actor" && statename.ToLowerInvariant() != "spawn")
+                return null;
+
+            if (states.ContainsKey(statename)) return states[statename];
 			if(!skipsuper && (baseclass != null)) return baseclass.GetState(statename);
 			return null;
 		}
@@ -237,9 +247,19 @@ namespace CodeImp.DoomBuilder.ZDoom
 		/// </summary>
 		public Dictionary<string, StateStructure> GetAllStates()
 		{
-			Dictionary<string, StateStructure> list = new Dictionary<string, StateStructure>(states, StringComparer.OrdinalIgnoreCase);
-			
-			if(!skipsuper && (baseclass != null))
+            // [ZZ] we should NOT pick up any states from Actor. (except Spawn, as the very default state)
+            //      for the greater good. (otherwise POL5 from GenericCrush is displayed for actors without frames, preferred before TNT1)
+            if (classname.ToLowerInvariant() == "actor")
+            {
+                Dictionary<string, StateStructure> list2 = new Dictionary<string, StateStructure>(StringComparer.OrdinalIgnoreCase);
+                if (states.ContainsKey("spawn"))
+                    list2.Add("spawn", states["spawn"]);
+                return list2;
+            }
+
+            Dictionary<string, StateStructure> list = new Dictionary<string, StateStructure>(states, StringComparer.OrdinalIgnoreCase);
+
+            if (!skipsuper && (baseclass != null))
 			{
 				Dictionary<string, StateStructure> baselist = baseclass.GetAllStates();
 				foreach(KeyValuePair<string, StateStructure> s in baselist)
