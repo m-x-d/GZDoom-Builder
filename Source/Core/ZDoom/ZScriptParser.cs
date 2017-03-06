@@ -586,8 +586,10 @@ namespace CodeImp.DoomBuilder.ZDoom
             ZScriptToken tok_replacename = null;
             ZScriptToken tok_parentname = null;
             ZScriptToken tok_native = null;
-            int tokens = 0;
-            while (tokens++ < 4)
+            ZScriptToken tok_scope = null;
+            ZScriptToken tok_version = null;
+            string[] class_scope_modifiers = new string[] { "clearscope", "ui", "play" };
+            while (true)
             {
                 tokenizer.SkipWhitespace();
                 ZScriptToken token = tokenizer.ReadToken();
@@ -631,6 +633,50 @@ namespace CodeImp.DoomBuilder.ZDoom
                         }
 
                         tok_native = token;
+                    }
+                    else if (Array.IndexOf(class_scope_modifiers, token.Value.ToLowerInvariant()) >= 0)
+                    {
+                        if (tok_scope != null)
+                        {
+                            ReportError("Cannot have two scope qualifiers");
+                            return false;
+                        }
+
+                        tok_scope = token;
+                    }
+                    else if (token.Value.ToLowerInvariant() == "version")
+                    {
+                        if (tok_version != null)
+                        {
+                            ReportError("Cannot have two versions");
+                            return false;
+                        }
+
+                        // read in the version.
+                        tokenizer.SkipWhitespace();
+                        token = tokenizer.ExpectToken(ZScriptTokenType.OpenParen);
+                        if (token == null || !token.IsValid)
+                        {
+                            ReportError("Expected (, got " + ((Object)token ?? "<null>").ToString());
+                            return false;
+                        }
+
+                        tokenizer.SkipWhitespace();
+                        token = tokenizer.ExpectToken(ZScriptTokenType.String);
+                        if (token == null || !token.IsValid)
+                        {
+                            ReportError("Expected version, got " + ((Object)token ?? "<null>").ToString());
+                            return false;
+                        }
+
+                        tok_version = token;
+                        tokenizer.SkipWhitespace();
+                        token = tokenizer.ExpectToken(ZScriptTokenType.CloseParen);
+                        if (token == null || !token.IsValid)
+                        {
+                            ReportError("Expected ), got " + ((Object)token ?? "<null>").ToString());
+                            return false;
+                        }
                     }
                     else
                     {
@@ -859,6 +905,16 @@ namespace CodeImp.DoomBuilder.ZDoom
                                 case "enum":
                                     if (!ParseEnum())
                                         return false;
+                                    break;
+                                case "version":
+                                    // expect a string. do nothing about it.
+                                    tokenizer.SkipWhitespace();
+                                    token = tokenizer.ExpectToken(ZScriptTokenType.String);
+                                    if (token == null || !token.IsValid)
+                                    {
+                                        ReportError("Expected version string, got " + ((Object)token ?? "<null>").ToString());
+                                        return false;
+                                    }
                                     break;
                                 default:
                                     ReportError("Expected preprocessor statement, const, enum or class declaraction, got " + token);
