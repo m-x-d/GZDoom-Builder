@@ -761,7 +761,7 @@
             this.groupBox11.Size = new System.Drawing.Size(281, 85);
             this.groupBox11.TabIndex = 20;
             this.groupBox11.TabStop = false;
-            this.groupBox11.Text = "                      ";
+            this.groupBox11.Text = "                       ";
             // 
             // floorGlowEnabled
             // 
@@ -947,7 +947,7 @@
             // thingsColor
             // 
             this.thingsColor.DefaultValue = 16777215;
-            this.thingsColor.Field = "color_things";
+            this.thingsColor.Field = "color_sprites";
             this.thingsColor.Label = "Things:";
             this.thingsColor.Location = new System.Drawing.Point(6, 89);
             this.thingsColor.Name = "thingsColor";
@@ -1214,7 +1214,7 @@
             // 
             // floorAngleControl
             // 
-            this.floorAngleControl.Angle = -1440;
+            this.floorAngleControl.Angle = -1530;
             this.floorAngleControl.AngleOffset = 90;
             this.floorAngleControl.DoomAngleClamping = false;
             this.floorAngleControl.Location = new System.Drawing.Point(6, 156);
@@ -1511,7 +1511,7 @@
             // 
             // ceilAngleControl
             // 
-            this.ceilAngleControl.Angle = -1440;
+            this.ceilAngleControl.Angle = -1530;
             this.ceilAngleControl.AngleOffset = 90;
             this.ceilAngleControl.DoomAngleClamping = false;
             this.ceilAngleControl.Location = new System.Drawing.Point(6, 156);

@@ -171,7 +171,7 @@ namespace CodeImp.DoomBuilder.Windows
 
                 D64ColorCeiling = s.Fields.GetValue("color_ceiling", PixelColor.INT_WHITE_NO_ALPHA);
                 D64ColorWallTop = s.Fields.GetValue("color_walltop", PixelColor.INT_WHITE_NO_ALPHA);
-                D64ColorThings = s.Fields.GetValue("color_things", PixelColor.INT_WHITE_NO_ALPHA);
+                D64ColorThings = s.Fields.GetValue("color_sprites", PixelColor.INT_WHITE_NO_ALPHA);
                 D64ColorWallBottom = s.Fields.GetValue("color_wallbottom", PixelColor.INT_WHITE_NO_ALPHA);
                 D64ColorFloor = s.Fields.GetValue("color_floor", PixelColor.INT_WHITE_NO_ALPHA);
             }
@@ -2084,7 +2084,7 @@ namespace CodeImp.DoomBuilder.Windows
                     case "color_walltop":
                         prevv = props.D64ColorWallTop;
                         break;
-                    case "color_things":
+                    case "color_sprites":
                         prevv = props.D64ColorThings;
                         break;
                     case "color_wallbottom":
