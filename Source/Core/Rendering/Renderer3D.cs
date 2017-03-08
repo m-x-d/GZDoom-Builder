@@ -877,8 +877,15 @@ namespace CodeImp.DoomBuilder.Rendering
 						// Update buffer if needed
 						t.Update();
 
-						//mxd. Check 3D distance
-						if(t.Info.DistanceCheckSq < int.MaxValue && (t.Thing.Position - cameraposition).GetLengthSq() > t.Info.DistanceCheckSq)
+                        // [ZZ] apparently either t.Thing or t.Info is null here.
+                        // CodeImp.DoomBuilder.Rendering.Renderer3D.RenderSinglePass(Dictionary2 geopass, Dictionary2 thingspass) at w:\dev\GZDoom-Builder\Source\Core\Rendering\Renderer3D.cs:line 881
+                        // this is the mxd's expression right below.
+                        GZBuilder.GZGeneral.AssertNotNull(t, "t");
+                        GZBuilder.GZGeneral.AssertNotNull(t.Info, "t.Info");
+                        GZBuilder.GZGeneral.AssertNotNull(t.Thing, "t.Thing");
+
+                        //mxd. Check 3D distance
+                        if (t.Info.DistanceCheckSq < int.MaxValue && (t.Thing.Position - cameraposition).GetLengthSq() > t.Info.DistanceCheckSq)
 							continue;
 
 						// Only do this sector when a vertexbuffer is created

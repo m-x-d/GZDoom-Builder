@@ -87,6 +87,15 @@ namespace CodeImp.DoomBuilder.GZBuilder
             return -1;
         }
 
+        // this is here so that I can see all dirty patches by listing references to this method.
+        public static void AssertNotNull(object o, string whatisit)
+        {
+            if (o == null)
+            {
+                throw new NullReferenceException(whatisit + " is null");
+            }
+        }
+
         #endregion
 
     }
