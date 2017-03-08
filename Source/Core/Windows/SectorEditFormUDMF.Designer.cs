@@ -832,7 +832,7 @@
             // 
             this.floorglowcolor.DefaultValue = 0;
             this.floorglowcolor.Field = "floorglowcolor";
-            this.floorglowcolor.Label = "Glow:";
+            this.floorglowcolor.Label = "Glow color:";
             this.floorglowcolor.Location = new System.Drawing.Point(28, 19);
             this.floorglowcolor.Name = "floorglowcolor";
             this.floorglowcolor.Size = new System.Drawing.Size(210, 29);
@@ -1214,7 +1214,7 @@
             // 
             // floorAngleControl
             // 
-            this.floorAngleControl.Angle = -1530;
+            this.floorAngleControl.Angle = -1620;
             this.floorAngleControl.AngleOffset = 90;
             this.floorAngleControl.DoomAngleClamping = false;
             this.floorAngleControl.Location = new System.Drawing.Point(6, 156);
@@ -1511,7 +1511,7 @@
             // 
             // ceilAngleControl
             // 
-            this.ceilAngleControl.Angle = -1530;
+            this.ceilAngleControl.Angle = -1620;
             this.ceilAngleControl.AngleOffset = 90;
             this.ceilAngleControl.DoomAngleClamping = false;
             this.ceilAngleControl.Location = new System.Drawing.Point(6, 156);
