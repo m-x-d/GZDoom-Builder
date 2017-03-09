@@ -175,7 +175,6 @@
     <Compile Include="Controls\PairedFloatControl.Designer.cs">
       <DependentUpon>PairedFloatControl.cs</DependentUpon>
     </Compile>
-    <Compile Include="GZBuilder\ActorClass.cs" />
     <Compile Include="Windows\ThingStatisticsForm.cs">
       <SubType>Form</SubType>
     </Compile>
