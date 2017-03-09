@@ -100,6 +100,9 @@ namespace CodeImp.DoomBuilder.Config
 
         // [ZZ] GZDoom inheritance data (DECORATE and ZScript). used for dynamic lighting.
         private int dynamiclighttype = -1;
+
+        // [ZZ] optional thing is a thing that can have nonexistent sprite. this is currently only used for Skulltag things.
+        private bool optional;
 		
 		#endregion
 
@@ -149,6 +152,9 @@ namespace CodeImp.DoomBuilder.Config
 
         // [ZZ] GZDoom inheritance data
         public int DynamicLightType { get { return dynamiclighttype; } set { if (dynamiclighttype < 0) dynamiclighttype = value; } }
+        
+        // [ZZ]
+        public bool Optional {  get { return optional; } }
 
         #endregion
 
@@ -187,6 +193,7 @@ namespace CodeImp.DoomBuilder.Config
 			this.locksprite = false; //mxd
 			this.flagsrename = new Dictionary<string, Dictionary<string, string>>(StringComparer.OrdinalIgnoreCase); //mxd
 			this.thinglink = 0;
+            this.optional = false; // [ZZ]
 			
 			// We have no destructor
 			GC.SuppressFinalize(this);
@@ -261,6 +268,9 @@ namespace CodeImp.DoomBuilder.Config
 			//mxd. Create sprite frame
 			this.spriteframe = new[] { new SpriteFrameInfo { Sprite = sprite, SpriteLongName = Lump.MakeLongName(sprite, true) } };
 
+            // [ZZ] optional thing sprite.
+            this.optional = cfg.ReadSetting("thingtypes." + cat.Name + "." + key + ".optional", cat.Optional);
+
             // We have no destructor
             GC.SuppressFinalize(this);
 		}
@@ -305,6 +315,8 @@ namespace CodeImp.DoomBuilder.Config
 
 			//mxd. Create sprite frame
 			this.spriteframe = new[] { new SpriteFrameInfo { Sprite = sprite, SpriteLongName = Lump.MakeLongName(sprite, true) } };
+
+            this.optional = false; // [ZZ]
 
             // We have no destructor
             GC.SuppressFinalize(this);
@@ -352,6 +364,9 @@ namespace CodeImp.DoomBuilder.Config
 			//mxd. Create sprite frame
 			this.spriteframe = new[] { new SpriteFrameInfo { Sprite = sprite, SpriteLongName = Lump.MakeLongName(sprite, true) } };
 
+            //
+            this.optional = false; // [ZZ]
+
             // We have no destructor
             GC.SuppressFinalize(this);
 		}
@@ -398,6 +413,9 @@ namespace CodeImp.DoomBuilder.Config
 
 			//mxd. Create sprite frame
 			this.spriteframe = new[] { new SpriteFrameInfo { Sprite = sprite, SpriteLongName = Lump.MakeLongName(sprite, true) } };
+
+            //
+            this.optional = false; // [ZZ]
 
             // We have no destructor
             GC.SuppressFinalize(this);
@@ -447,6 +465,9 @@ namespace CodeImp.DoomBuilder.Config
 
             //
             this.dynamiclighttype = other.dynamiclighttype;
+
+            //
+            this.optional = other.optional;
 
             // We have no destructor
             GC.SuppressFinalize(this);
