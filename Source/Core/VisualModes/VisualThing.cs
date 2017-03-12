@@ -611,9 +611,9 @@ namespace CodeImp.DoomBuilder.VisualModes
 		//mxd
 		protected void CheckLightState() 
 		{
-			//mxd. Check if thing is light
-			int light_id = Array.IndexOf(GZBuilder.GZGeneral.GZ_LIGHTS, thing.Type);
-			if(light_id != -1) 
+            //mxd. Check if thing is light
+            int light_id = GZBuilder.GZGeneral.GetGZLightTypeByThing(thing);
+            if (light_id != -1) 
 			{
 				isGldefsLight = false;
 				lightInterval = -1;
@@ -644,8 +644,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 		//mxd. Used in ColorPicker to update light 
 		public void UpdateLight() 
 		{
-			int light_id = Array.IndexOf(GZBuilder.GZGeneral.GZ_LIGHTS, thing.Type);
-			if(light_id != -1) 
+			int light_id = GZBuilder.GZGeneral.GetGZLightTypeByThing(thing);
+            if (light_id != -1) 
 			{
 				UpdateLight(light_id);
 				UpdateBoundingBox(lightRadius, lightRadius * 2);
@@ -655,10 +655,10 @@ namespace CodeImp.DoomBuilder.VisualModes
 		//mxd. Update light info
 		private void UpdateLight(int lightId) 
 		{
-			if(lightId < GZBuilder.GZGeneral.GZ_LIGHT_TYPES[2]) //if it's gzdoom light
+			if(lightId < GZBuilder.GZGeneral.GZ_LIGHT_TYPES[3]) //if it's gzdoom light
 			{ 
 				int n;
-				if(lightId < GZBuilder.GZGeneral.GZ_LIGHT_TYPES[0]) 
+				if(lightId < GZBuilder.GZGeneral.GZ_LIGHT_TYPES[0]) // normal
 				{
 					n = 0;
 					lightRenderStyle = DynamicLightRenderStyle.NORMAL;
@@ -668,7 +668,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 						thing.Args[1] / DYNLIGHT_INTENSITY_SCALER,
 						thing.Args[2] / DYNLIGHT_INTENSITY_SCALER);
 				} 
-				else if(lightId < GZBuilder.GZGeneral.GZ_LIGHT_TYPES[1]) 
+				else if(lightId < GZBuilder.GZGeneral.GZ_LIGHT_TYPES[1]) // additive
 				{
 					n = 10;
 					lightRenderStyle = DynamicLightRenderStyle.ADDITIVE;
@@ -677,7 +677,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 						thing.Args[1] / DYNLIGHT_INTENSITY_SCALER,
 						thing.Args[2] / DYNLIGHT_INTENSITY_SCALER);
 				} 
-				else 
+				else if (lightId < GZBuilder.GZGeneral.GZ_LIGHT_TYPES[2]) // negative
 				{
 					n = 20;
 					lightRenderStyle = DynamicLightRenderStyle.NEGATIVE;
@@ -686,7 +686,16 @@ namespace CodeImp.DoomBuilder.VisualModes
 						thing.Args[1] / SUBLIGHT_INTENSITY_SCALER,
 						thing.Args[2] / SUBLIGHT_INTENSITY_SCALER);
 				}
-				lightType = (DynamicLightType)(thing.Type - 9800 - n);
+                else
+                {
+                    n = 30;
+                    lightRenderStyle = DynamicLightRenderStyle.ATTENUATED;
+                    lightColor = new Color4((float)lightRenderStyle / 100.0f,
+                        thing.Args[0] / DYNLIGHT_INTENSITY_SCALER,
+                        thing.Args[1] / DYNLIGHT_INTENSITY_SCALER,
+                        thing.Args[2] / DYNLIGHT_INTENSITY_SCALER);
+                }
+				lightType = (DynamicLightType)(thing.DynamicLightType - 9800 - n);
 
 				if(lightType == DynamicLightType.SECTOR) 
 				{
@@ -703,7 +712,7 @@ namespace CodeImp.DoomBuilder.VisualModes
 			else //it's one of vavoom lights
 			{ 
 				lightRenderStyle = DynamicLightRenderStyle.VAVOOM;
-				lightType = (DynamicLightType)thing.Type;
+				lightType = (DynamicLightType)thing.DynamicLightType;
 				if(lightType == DynamicLightType.VAVOOM_COLORED)
 				{
 					lightColor = new Color4((float)lightRenderStyle / 100.0f, 
@@ -727,8 +736,8 @@ namespace CodeImp.DoomBuilder.VisualModes
 		{
 			DynamicLightData light = General.Map.Data.GldefsEntries[thing.Type];
 
-			//apply settings
-			lightRenderStyle = light.Subtractive ? DynamicLightRenderStyle.NEGATIVE : DynamicLightRenderStyle.NORMAL;
+            //apply settings
+            lightRenderStyle = light.Style;
 			lightColor = new Color4((float)lightRenderStyle / 100.0f, light.Color.Red, light.Color.Green, light.Color.Blue);
 			Vector2D o = new Vector2D(light.Offset.X, light.Offset.Y).GetRotated(thing.Angle - Angle2D.PIHALF);
 			lightOffset = new Vector3(o.x, o.y, light.Offset.Z);

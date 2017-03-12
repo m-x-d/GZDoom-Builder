@@ -262,7 +262,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 
 						PixelColor areabrightness = PixelColor.FromInt(mode.CalculateBrightness(brightness));
 						PixelColor areacolor = PixelColor.Modulate(level.colorbelow, areabrightness);
-						sectorcolor = areacolor.WithAlpha(alpha).ToInt();
+
+                        // [ZZ] if sector is using Doom64 lighting, apply thing color here.
+                        sectorcolor = PixelColor.Modulate(sd.ColorSprites, areacolor).WithAlpha(alpha).ToInt();
 
 						//mxd. Calculate fogfactor
 						fogfactor = VisualGeometry.CalculateFogFactor(level.sector, brightness);
@@ -280,10 +282,10 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						fogfactor = VisualGeometry.CalculateFogFactor(level.sector, level.brightnessbelow);
 					}
 				}
-			}
+            }
 
-			//mxd. Create verts for all sprite angles
-			WorldVertex[][] allverts = new WorldVertex[info.SpriteFrame.Length][];
+            //mxd. Create verts for all sprite angles
+            WorldVertex[][] allverts = new WorldVertex[info.SpriteFrame.Length][];
 			Vector2D[] alloffsets = new Vector2D[info.SpriteFrame.Length];
 			base.textures = new ImageData[info.SpriteFrame.Length];
 			isloaded = true;

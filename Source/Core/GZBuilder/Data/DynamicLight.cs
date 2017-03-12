@@ -10,11 +10,12 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 		public int SecondaryRadius;
 		public int Interval;
 		public Vector3 Offset;
-		public bool Subtractive;
-		public bool DontLightSelf;
+        public DynamicLightRenderStyle Style;
+        public bool DontLightSelf;
 
 		public DynamicLightData() 
 		{
+            Style = DynamicLightRenderStyle.NORMAL;
 			Color = new Color3();
 			Offset = new Vector3();
 		}
@@ -35,10 +36,11 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 	//divide these by 100 to get light color alpha
 	public enum DynamicLightRenderStyle
 	{
-		NONE = 0,
-		NORMAL = 99,
-		VAVOOM = 50,
+        NEGATIVE = 100,
+        NORMAL = 99,
+        ATTENUATED = 98,
+        VAVOOM = 50,
 		ADDITIVE = 25,
-		NEGATIVE = 100,
-	}
+        NONE = 0,
+    }
 }

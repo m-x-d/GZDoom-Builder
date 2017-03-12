@@ -303,11 +303,28 @@ namespace CodeImp.DoomBuilder.ZDoom
 							return false;
 						}
 
-						light.Subtractive = (i == 1);
-					}
+                            light.Style = (i == 1) ? DynamicLightRenderStyle.NEGATIVE : DynamicLightRenderStyle.NORMAL;
+                        }
 					break;
 
-					case "dontlightself":
+                    case "attenuate":
+                    {
+                        SkipWhitespace(true);
+
+                        token = ReadToken();
+                        int i;
+                        if (!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out i))
+                        {
+                            // Not numeric!
+                            ReportError("expected Attenuate value, but got \"" + token + "\"");
+                            return false;
+                        }
+
+                        light.Style = (i == 1) ? DynamicLightRenderStyle.ATTENUATED : DynamicLightRenderStyle.NORMAL;
+                    }
+                    break;
+
+                    case "dontlightself":
 					{
 						SkipWhitespace(true);
 
@@ -499,7 +516,7 @@ namespace CodeImp.DoomBuilder.ZDoom
 			}
 
 			// Check if actor exists
-			if(!General.Map.Data.Decorate.ActorsByClass.ContainsKey(objectclass))
+			if(General.Map.Data.GetZDoomActor(objectclass) == null)
 				LogWarning("DECORATE class \"" + objectclass + "\" does not exist");
 
 			// Now find opening brace

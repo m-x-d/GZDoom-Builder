@@ -19,7 +19,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 		private class SpecialThings 
 		{
 			public readonly Dictionary<int, List<Thing>> PatrolPoints; // PatrolPoint tag, list of PatrolPoints
+			public readonly List<Thing> PatrolSpecials;
 			public readonly Dictionary<int, List<PathNode>> InterpolationPoints; // InterpolationPoint tag, list of InterpolationPoints
+			public readonly List<Thing> InterpolationSpecials;
 			public readonly List<Thing> ThingsWithGoal;
 			public readonly List<Thing> Cameras;
 			public readonly Dictionary<int, List<Thing>> ActorMovers; // ActorMover target tag, list of ActorMovers
@@ -30,7 +32,9 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 			public SpecialThings()
 			{
 				PatrolPoints = new Dictionary<int, List<Thing>>();
+				PatrolSpecials = new List<Thing>();
 				InterpolationPoints = new Dictionary<int, List<PathNode>>();
+				InterpolationSpecials = new List<Thing>();
 				ThingsWithGoal = new List<Thing>();
 				Cameras = new List<Thing>();
 				ActorMovers = new Dictionary<int, List<Thing>>();
@@ -158,6 +162,10 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 						}
 						break;
 
+					case "patrolspecial":
+						result.PatrolSpecials.Add(t);
+						break;
+
 					case "$polyanchor":
 						if(!result.PolyobjectAnchors.ContainsKey(t.AngleDoom)) result.PolyobjectAnchors[t.AngleDoom] = new List<Thing>();
 						result.PolyobjectAnchors[t.AngleDoom].Add(t);
@@ -192,6 +200,10 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 					case "interpolationpoint":
 						if(!result.InterpolationPoints.ContainsKey(t.Tag)) result.InterpolationPoints.Add(t.Tag, new List<PathNode>());
 						result.InterpolationPoints[t.Tag].Add(new PathNode(t, blockmap));
+						break;
+
+					case "interpolationspecial":
+						result.InterpolationSpecials.Add(t);
 						break;
 
 					case "movingcamera":
@@ -261,6 +273,23 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 				start.z += GetCorrectHeight(t, blockmap, true);
 
 				foreach(Thing tt in result.PatrolPoints[t.Args[1]]) 
+				{
+					end = tt.Position;
+					end.z += GetCorrectHeight(tt, blockmap, true);
+
+					lines.Add(new Line3D(start, end, General.Colors.Selection));
+				}
+			}
+
+			// Process patrol specials
+			foreach (Thing t in result.PatrolSpecials)
+			{
+				if (!result.PatrolPoints.ContainsKey(t.Tag)) continue;
+
+				start = t.Position;
+				start.z += GetCorrectHeight(t, blockmap, true);
+
+				foreach (Thing tt in result.PatrolPoints[t.Tag])
 				{
 					end = tt.Position;
 					end.z += GetCorrectHeight(tt, blockmap, true);
@@ -382,6 +411,24 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 				foreach(PathNode node in group.Value) node.PropagateCurvedFlag();
 			}
 
+			// Process interpolation specials
+			foreach (Thing t in result.InterpolationSpecials)
+			{
+				int targettag = t.Tag;
+				if (targettag == 0 || !result.InterpolationPoints.ContainsKey(targettag)) continue; //no target / target doesn't exist
+
+				start = t.Position;
+				start.z += GetCorrectHeight(t, blockmap, true);
+
+				foreach (PathNode node in result.InterpolationPoints[targettag])
+				{
+					//Do not connect specials to the first or last node of a curved path, since those are used as spline control points only
+					if (node.IsCurved && (node.PreviousNodes.Count == 0 || node.NextNodes.Count == 0))
+						continue;
+					lines.Add(new Line3D(start, node.Position, General.Colors.Selection));
+				}
+			}
+
 			// 3. Make lines
 			HashSet<int> processedindices = new HashSet<int>();
 			foreach(KeyValuePair<int, List<PathNode>> group in result.InterpolationPoints)
@@ -492,7 +539,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 			const int linealpha = 128;
 			foreach(Thing t in things)
 			{
-				int lightid = Array.IndexOf(GZGeneral.GZ_LIGHTS, t.Type);
+                int lightid = GZGeneral.GetGZLightTypeByThing(t);
 				if(lightid == -1) continue;
 
 				// TODO: this basically duplicates VisualThing.UpdateLight()...
@@ -500,13 +547,14 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 				int primaryradius;
 				int secondaryradius = 0;
 
-				if(lightid < GZGeneral.GZ_LIGHT_TYPES[2]) //if it's gzdoom light
+				if(lightid < GZGeneral.GZ_LIGHT_TYPES[3]) //if it's gzdoom light
 				{
 					int n;
-					if(lightid < GZGeneral.GZ_LIGHT_TYPES[0]) n = 0;
-					else if(lightid < GZGeneral.GZ_LIGHT_TYPES[1]) n = 10;
-					else n = 20;
-					DynamicLightType lightType = (DynamicLightType)(t.Type - 9800 - n);
+                    if (lightid < GZGeneral.GZ_LIGHT_TYPES[0]) n = 0;
+                    else if (lightid < GZGeneral.GZ_LIGHT_TYPES[1]) n = 10;
+                    else if (lightid < GZGeneral.GZ_LIGHT_TYPES[2]) n = 20;
+                    else n = 30;
+					DynamicLightType lightType = (DynamicLightType)(t.DynamicLightType - 9800 - n);
 
 					if(lightType == DynamicLightType.SECTOR)
 					{
@@ -536,7 +584,7 @@ namespace CodeImp.DoomBuilder.GZBuilder.Data
 				}
 				else
 				{
-					switch(t.Type)
+					switch(t.DynamicLightType)
 					{
 						case 1502: // Vavoom light
 							color = new PixelColor(linealpha, 255, 255, 255);

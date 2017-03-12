@@ -56,6 +56,7 @@ namespace CodeImp.DoomBuilder.Rendering
 		private Matrix view2d;
 		private Matrix world;
 		private Vector3D cameraposition;
+        private Vector3D cameravector;
 		private int shaderpass;
 		
 		// Window size
@@ -257,8 +258,9 @@ namespace CodeImp.DoomBuilder.Rendering
 		{
 			// Calculate delta vector
 			cameraposition = pos;
-			Vector3D delta = lookat - pos;
-			float anglexy = delta.GetAngleXY();
+            Vector3D delta = lookat - pos;
+            cameravector = delta.GetNormal();
+            float anglexy = delta.GetAngleXY();
 			float anglez = delta.GetAngleZ();
 
 			// Create frustum
@@ -456,6 +458,19 @@ namespace CodeImp.DoomBuilder.Rendering
 				RenderTranslucentPass(translucentgeo, translucentthings);
 			}
 
+            // [ZZ] LIGHT PASS on ALPHA GEOMETRY (GZDoom does this)
+            if(General.Settings.GZDrawLightsMode != LightRenderMode.NONE && !fullbrightness && lightthings.Count > 0 && translucentgeo.Count > 0)
+            {
+                world = Matrix.Identity;
+                ApplyMatrices3D();
+                graphics.Device.SetRenderState(RenderState.AlphaBlendEnable, true);
+                graphics.Device.SetRenderState(RenderState.AlphaTestEnable, false);
+                graphics.Device.SetRenderState(RenderState.ZWriteEnable, false);
+                graphics.Device.SetRenderState(RenderState.DestinationBlend, Blend.One);
+
+                RenderTranslucentLights(translucentgeo, lightthings);
+            }
+
 			//mxd. Render translucent models, with backface culling
 			if(translucentmodelthings.Count > 0)
 			{
@@ -504,26 +519,49 @@ namespace CodeImp.DoomBuilder.Rendering
 			visualvertices = null;
 		}
 
-		//mxd
-		private void UpdateLights()
-		{
-			if(lightthings.Count > General.Settings.GZMaxDynamicLights) 
-			{
-				// Calculate distance to camera
-				foreach(VisualThing t in lightthings) t.CalculateCameraDistance(cameraposition);
+        // [ZZ] black renderer magic here.
+        //      todo maybe implement proper frustum culling eventually?
+        //      Frustum2D.IntersectCircle doesn't seem to work here.
+        private bool CullLight(VisualThing t)
+        {
+            Vector3D lightToCamera = (cameraposition - t.CenterV3D).GetNormal();
+            double angdiff = Vector3D.DotProduct(lightToCamera, cameravector);
+            if (angdiff <= 0)
+                return true; // light in front of the camera. it's not negative because I don't want to calculate things twice and need the vector to point at camera.
+            // otherwise check light size: large lights might have center on the back, but radius in front of the camera.
+            Vector3D lightToCameraWithRadius = (cameraposition - (t.CenterV3D + lightToCamera * t.LightRadius)).GetNormal();
+            double angdiffWithRadius = Vector3D.DotProduct(lightToCameraWithRadius, cameravector);
+            if (angdiffWithRadius <= 0)
+                return true; // light's radius extension is in front of the camera.
+            return false;
+        }
 
-				// Sort by it, closer ones first
-				lightthings.Sort((t1, t2) => Math.Sign(t1.CameraDistance - t2.CameraDistance));
-				
-				// Gather the closest
-				List<VisualThing> tl = new List<VisualThing>(General.Settings.GZMaxDynamicLights);
-				for(int i = 0; i < General.Settings.GZMaxDynamicLights; i++) tl.Add(lightthings[i]);
-				lightthings = tl;
-			}
+        //mxd
+        private void UpdateLights()
+		{
+			// Calculate distance to camera
+			foreach(VisualThing t in lightthings) t.CalculateCameraDistance(cameraposition);
+
+			// Sort by it, closer ones first
+			lightthings.Sort((t1, t2) => Math.Sign(t1.CameraDistance - t2.CameraDistance));
+
+            // Gather the closest
+            List<VisualThing> tl = new List<VisualThing>(lightthings.Count);
+            // Break on either end of things of max dynamic lights reached
+            for (int i = 0; i < lightthings.Count && tl.Count < General.Settings.GZMaxDynamicLights; i++)
+            {
+                // Make sure we can see this light at all
+                if (!CullLight(lightthings[i]))
+                    continue;
+                tl.Add(lightthings[i]);
+            }
+
+            // Update the array
+			lightthings = tl;
 
 			// Sort things by light render style
 			lightthings.Sort((t1, t2) => Math.Sign(t1.LightRenderStyle - t2.LightRenderStyle));
-			lightOffsets = new int[3];
+			lightOffsets = new int[4];
 
 			foreach(VisualThing t in lightthings) 
 			{
@@ -532,8 +570,9 @@ namespace CodeImp.DoomBuilder.Rendering
 				{
 					case DynamicLightRenderStyle.NORMAL:
 					case DynamicLightRenderStyle.VAVOOM: lightOffsets[0]++; break;
-					case DynamicLightRenderStyle.ADDITIVE: lightOffsets[1]++; break;
-					default: lightOffsets[2]++; break;
+					case DynamicLightRenderStyle.ADDITIVE: lightOffsets[2]++; break;
+                    case DynamicLightRenderStyle.NEGATIVE: lightOffsets[3]++; break;
+					default: lightOffsets[1]++; break; // attenuated
 				}
 			}
 		}
@@ -838,8 +877,15 @@ namespace CodeImp.DoomBuilder.Rendering
 						// Update buffer if needed
 						t.Update();
 
-						//mxd. Check 3D distance
-						if(t.Info.DistanceCheckSq < int.MaxValue && (t.Thing.Position - cameraposition).GetLengthSq() > t.Info.DistanceCheckSq)
+                        // [ZZ] apparently either t.Thing or t.Info is null here.
+                        // CodeImp.DoomBuilder.Rendering.Renderer3D.RenderSinglePass(Dictionary2 geopass, Dictionary2 thingspass) at w:\dev\GZDoom-Builder\Source\Core\Rendering\Renderer3D.cs:line 881
+                        // this is the mxd's expression right below.
+                        GZBuilder.GZGeneral.AssertNotNull(t, "t");
+                        GZBuilder.GZGeneral.AssertNotNull(t.Info, "t.Info");
+                        GZBuilder.GZGeneral.AssertNotNull(t.Thing, "t.Thing");
+
+                        //mxd. Check 3D distance
+                        if (t.Info.DistanceCheckSq < int.MaxValue && (t.Thing.Position - cameraposition).GetLengthSq() > t.Info.DistanceCheckSq)
 							continue;
 
 						// Only do this sector when a vertexbuffer is created
@@ -856,7 +902,7 @@ namespace CodeImp.DoomBuilder.Rendering
 							world = CreateThingPositionMatrix(t);
 
 							//mxd. If current thing is light - set it's color to light color
-							if(Array.IndexOf(GZBuilder.GZGeneral.GZ_LIGHTS, t.Thing.Type) != -1 && !fullbrightness) 
+							if(GZBuilder.GZGeneral.GetGZLightTypeByThing(t.Thing) != -1 && !fullbrightness) 
 							{
 								wantedshaderpass += 4; // Render using one of passes, which uses World3D.VertexColor
 								vertexcolor = t.LightColor;
@@ -930,7 +976,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			if(General.Map.VisualCamera.Sector != null)
 			{
 				// If the camera is inside a sector, compare z coordinates
-				translucentgeo.Sort(delegate(VisualGeometry vg1, VisualGeometry vg2)
+				geopass.Sort(delegate(VisualGeometry vg1, VisualGeometry vg2)
 				{
 					if(vg1 == vg2) return 0;
 					float camdist1, camdist2;
@@ -960,7 +1006,7 @@ namespace CodeImp.DoomBuilder.Rendering
 			}
 			else
 			{
-				translucentgeo.Sort(delegate(VisualGeometry vg1, VisualGeometry vg2)
+                geopass.Sort(delegate(VisualGeometry vg1, VisualGeometry vg2)
 				{
 					if(vg1 == vg2) return 0;
 					return (int)((General.Map.VisualCamera.Position - vg2.BoundingBox[0]).GetLengthSq()
@@ -1166,7 +1212,7 @@ namespace CodeImp.DoomBuilder.Rendering
 						world = CreateThingPositionMatrix(t);
 
 						//mxd. If current thing is light - set it's color to light color
-						if(Array.IndexOf(GZBuilder.GZGeneral.GZ_LIGHTS, t.Thing.Type) != -1 && !fullbrightness)
+						if(GZBuilder.GZGeneral.GetGZLightTypeByThing(t.Thing) != -1 && !fullbrightness)
 						{
 							wantedshaderpass += 4; // Render using one of passes, which uses World3D.VertexColor
 							vertexcolor = t.LightColor;
@@ -1269,118 +1315,174 @@ namespace CodeImp.DoomBuilder.Rendering
 			}
 		}
 
-		//mxd. Dynamic lights pass!
-		private void RenderLights(Dictionary<ImageData, List<VisualGeometry>> geometrytolit, List<VisualThing> lights)
-		{
-			// Anything to do?
-			if(geometrytolit.Count == 0) return;
-			
-			graphics.Shaders.World3D.World = Matrix.Identity;
-			graphics.Shaders.World3D.BeginPass(SHADERPASS_LIGHT);
+        //mxd. Dynamic lights pass!
+        private VisualSector RenderLightsFromGeometryList(List<VisualGeometry> geometrytolit, List<VisualThing> lights, VisualSector sector, bool settexture)
+        {
+            foreach (VisualGeometry g in geometrytolit)
+            {
+                // Changing sector?
+                if (!object.ReferenceEquals(g.Sector, sector))
+                {
+                    // Only do this sector when a vertexbuffer is created
+                    // mxd. no Map means that sector was deleted recently, I suppose
+                    if (g.Sector.GeometryBuffer != null && g.Sector.Sector.Map != null)
+                    {
+                        // Change current sector
+                        sector = g.Sector;
 
-			VisualSector sector = null;
+                        // Set stream source
+                        graphics.Device.SetStreamSource(0, sector.GeometryBuffer, 0, WorldVertex.Stride);
+                    }
+                    else
+                    {
+                        sector = null;
+                    }
+                }
 
-			graphics.Device.SetRenderState(RenderState.SourceBlend, Blend.One);
-			graphics.Device.SetRenderState(RenderState.DestinationBlend, Blend.BlendFactor);
+                if (sector == null) continue;
 
-			foreach(KeyValuePair<ImageData, List<VisualGeometry>> group in geometrytolit) 
-			{
-				if(group.Key.Texture == null) continue;
-				graphics.Shaders.World3D.Texture1 = group.Key.Texture;
+                // note: additive geometry doesn't receive lighting
+                if (g.RenderPass == RenderPass.Additive)
+                    continue;
 
-				foreach(VisualGeometry g in group.Value) 
-				{
-					// Changing sector?
-					if(!object.ReferenceEquals(g.Sector, sector))
-					{
-						// Only do this sector when a vertexbuffer is created
-						// mxd. no Map means that sector was deleted recently, I suppose
-						if(g.Sector.GeometryBuffer != null && g.Sector.Sector.Map != null)
-						{
-							// Change current sector
-							sector = g.Sector;
+                if (settexture)
+                    graphics.Shaders.World3D.Texture1 = g.Texture.Texture;
 
-							// Set stream source
-							graphics.Device.SetStreamSource(0, sector.GeometryBuffer, 0, WorldVertex.Stride);
-						}
-						else
-						{
-							sector = null;
-						}
-					}
+                //normal lights
+                int count = lightOffsets[0];
+                Vector4 lpr;
+                if (lightOffsets[0] > 0)
+                {
+                    graphics.Device.SetRenderState(RenderState.BlendOperation, BlendOperation.Add);
 
-					if(sector == null) continue;
+                    for (int i = 0; i < count; i++)
+                    {
+                        if (BoundingBoxesIntersect(g.BoundingBox, lights[i].BoundingBox))
+                        {
+                            lpr = new Vector4(lights[i].Center, lights[i].LightRadius);
+                            if (lpr.W == 0) continue;
+                            graphics.Shaders.World3D.LightColor = lights[i].LightColor;
+                            graphics.Shaders.World3D.LightPositionAndRadius = lpr;
+                            graphics.Shaders.World3D.ApplySettings();
+                            graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, g.VertexOffset, g.Triangles);
+                        }
+                    }
+                }
 
-					//normal lights
-					int count = lightOffsets[0];
-					Vector4 lpr;
-					if(lightOffsets[0] > 0) 
-					{
-						graphics.Device.SetRenderState(RenderState.BlendOperation, BlendOperation.Add);
+                //attenuated lights
+                if (lightOffsets[1] > 0)
+                {
+                    count += lightOffsets[1];
+                    graphics.Device.SetRenderState(RenderState.BlendOperation, BlendOperation.Add);
 
-						for(int i = 0; i < count; i++) 
-						{
-							if(BoundingBoxesIntersect(g.BoundingBox, lights[i].BoundingBox)) 
-							{
-								lpr = new Vector4(lights[i].Center, lights[i].LightRadius);
-								if(lpr.W == 0) continue;
-								graphics.Shaders.World3D.LightColor = lights[i].LightColor;
-								graphics.Shaders.World3D.LightPositionAndRadius = lpr;
-								graphics.Shaders.World3D.ApplySettings();
-								graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, g.VertexOffset, g.Triangles);
-							}
-						}
-					}
+                    for (int i = lightOffsets[0]; i < count; i++)
+                    {
+                        if (BoundingBoxesIntersect(g.BoundingBox, lights[i].BoundingBox))
+                        {
+                            lpr = new Vector4(lights[i].Center, lights[i].LightRadius);
+                            if (lpr.W == 0) continue;
+                            graphics.Shaders.World3D.LightColor = lights[i].LightColor;
+                            graphics.Shaders.World3D.LightPositionAndRadius = lpr;
+                            graphics.Shaders.World3D.ApplySettings();
+                            graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, g.VertexOffset, g.Triangles);
+                        }
+                    }
+                }
 
-					//additive lights
-					if(lightOffsets[1] > 0) 
-					{
-						count += lightOffsets[1];
-						graphics.Device.SetRenderState(RenderState.BlendOperation, BlendOperation.Add);
+                //additive lights
+                if (lightOffsets[2] > 0)
+                {
+                    count += lightOffsets[2];
+                    graphics.Device.SetRenderState(RenderState.BlendOperation, BlendOperation.Add);
 
-						for(int i = lightOffsets[0]; i < count; i++) 
-						{
-							if(BoundingBoxesIntersect(g.BoundingBox, lights[i].BoundingBox)) 
-							{
-								lpr = new Vector4(lights[i].Center, lights[i].LightRadius);
-								if(lpr.W == 0) continue;
-								graphics.Shaders.World3D.LightColor = lights[i].LightColor;
-								graphics.Shaders.World3D.LightPositionAndRadius = lpr;
-								graphics.Shaders.World3D.ApplySettings();
-								graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, g.VertexOffset, g.Triangles);
-						   }
-						}
-					}
+                    for (int i = lightOffsets[0] + lightOffsets[1]; i < count; i++)
+                    {
+                        if (BoundingBoxesIntersect(g.BoundingBox, lights[i].BoundingBox))
+                        {
+                            lpr = new Vector4(lights[i].Center, lights[i].LightRadius);
+                            if (lpr.W == 0) continue;
+                            graphics.Shaders.World3D.LightColor = lights[i].LightColor;
+                            graphics.Shaders.World3D.LightPositionAndRadius = lpr;
+                            graphics.Shaders.World3D.ApplySettings();
+                            graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, g.VertexOffset, g.Triangles);
+                        }
+                    }
+                }
 
-					//negative lights
-					if(lightOffsets[2] > 0) 
-					{
-						count += lightOffsets[2];
-						graphics.Device.SetRenderState(RenderState.BlendOperation, BlendOperation.ReverseSubtract);
+                //negative lights
+                if (lightOffsets[3] > 0)
+                {
+                    count += lightOffsets[3];
+                    graphics.Device.SetRenderState(RenderState.BlendOperation, BlendOperation.ReverseSubtract);
 
-						for(int i = lightOffsets[0] + lightOffsets[1]; i < count; i++) 
-						{
-							if(BoundingBoxesIntersect(g.BoundingBox, lights[i].BoundingBox)) 
-							{
-								lpr = new Vector4(lights[i].Center, lights[i].LightRadius);
-								if(lpr.W == 0) continue;
-								Color4 lc = lights[i].LightColor;
-								graphics.Shaders.World3D.LightColor = new Color4(lc.Alpha, (lc.Green + lc.Blue) / 2, (lc.Red + lc.Blue) / 2, (lc.Green + lc.Red) / 2);
-								graphics.Shaders.World3D.LightPositionAndRadius = lpr;
-								graphics.Shaders.World3D.ApplySettings();
-								graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, g.VertexOffset, g.Triangles);
-							}
-						}
-					}
-				}
-			}
+                    for (int i = lightOffsets[0] + lightOffsets[1] + lightOffsets[2]; i < count; i++)
+                    {
+                        if (BoundingBoxesIntersect(g.BoundingBox, lights[i].BoundingBox))
+                        {
+                            lpr = new Vector4(lights[i].Center, lights[i].LightRadius);
+                            if (lpr.W == 0) continue;
+                            Color4 lc = lights[i].LightColor;
+                            graphics.Shaders.World3D.LightColor = new Color4(lc.Alpha, (lc.Green + lc.Blue) / 2, (lc.Red + lc.Blue) / 2, (lc.Green + lc.Red) / 2);
+                            graphics.Shaders.World3D.LightPositionAndRadius = lpr;
+                            graphics.Shaders.World3D.ApplySettings();
+                            graphics.Device.DrawPrimitives(PrimitiveType.TriangleList, g.VertexOffset, g.Triangles);
+                        }
+                    }
+                }
+            }
 
-			graphics.Shaders.World3D.EndPass();
-			graphics.Device.SetRenderState(RenderState.BlendOperation, BlendOperation.Add);
-		}
+            return sector;
+        }
 
-		//mxd. Render models
-		private void RenderModels() 
+        // [ZZ] split into RenderLights and RenderTranslucentLights
+        private void RenderTranslucentLights(List<VisualGeometry> geometrytolit, List<VisualThing> lights)
+        {
+            if (geometrytolit.Count == 0) return;
+
+            graphics.Shaders.World3D.World = Matrix.Identity;
+            graphics.Shaders.World3D.BeginPass(SHADERPASS_LIGHT);
+
+            VisualSector sector = null;
+
+            graphics.Device.SetRenderState(RenderState.SourceBlend, Blend.One);
+            graphics.Device.SetRenderState(RenderState.DestinationBlend, Blend.BlendFactor);
+
+            //
+            RenderLightsFromGeometryList(geometrytolit, lights, sector, true);
+
+            //
+            graphics.Shaders.World3D.EndPass();
+            graphics.Device.SetRenderState(RenderState.BlendOperation, BlendOperation.Add);
+        }
+
+        //
+        private void RenderLights(Dictionary<ImageData, List<VisualGeometry>> geometrytolit, List<VisualThing> lights)
+        {
+            // Anything to do?
+            if (geometrytolit.Count == 0) return;
+
+            graphics.Shaders.World3D.World = Matrix.Identity;
+            graphics.Shaders.World3D.BeginPass(SHADERPASS_LIGHT);
+
+            VisualSector sector = null;
+
+            graphics.Device.SetRenderState(RenderState.SourceBlend, Blend.One);
+            graphics.Device.SetRenderState(RenderState.DestinationBlend, Blend.BlendFactor);
+
+            foreach (KeyValuePair<ImageData, List<VisualGeometry>> group in geometrytolit)
+            {
+                if (group.Key.Texture == null) continue;
+                graphics.Shaders.World3D.Texture1 = group.Key.Texture;
+
+                sector = RenderLightsFromGeometryList(group.Value, lights, sector, false);
+            }
+
+            graphics.Shaders.World3D.EndPass();
+            graphics.Device.SetRenderState(RenderState.BlendOperation, BlendOperation.Add);
+        }
+
+        //mxd. Render models
+        private void RenderModels() 
 		{
 			int shaderpass = (fullbrightness ? 1 : 4);
 			int currentshaderpass = shaderpass;
@@ -1707,13 +1809,13 @@ namespace CodeImp.DoomBuilder.Rendering
 		public void AddThingGeometry(VisualThing t)
 		{
 			//mxd. Gather lights
-			if(General.Settings.GZDrawLightsMode != LightRenderMode.NONE && !fullbrightness && t.LightType != DynamicLightType.NONE) 
+			if (General.Settings.GZDrawLightsMode != LightRenderMode.NONE && !fullbrightness && t.LightType != DynamicLightType.NONE) 
 			{
 				t.UpdateLightRadius();
-				if(t.LightRadius > 0)
+                if (t.LightRadius > 0)
 				{
-					if(Array.IndexOf(GZBuilder.GZGeneral.GZ_ANIMATED_LIGHT_TYPES, t.LightType) != -1)
-						t.UpdateBoundingBox();
+                    if (Array.IndexOf(GZBuilder.GZGeneral.GZ_ANIMATED_LIGHT_TYPES, t.LightType) != -1)
+                        t.UpdateBoundingBox();
 					lightthings.Add(t);
 				}
 			}

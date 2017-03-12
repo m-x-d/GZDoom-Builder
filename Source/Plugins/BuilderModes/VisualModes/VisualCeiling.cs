@@ -115,13 +115,13 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			byte alpha = (byte)General.Clamp(level.alpha, 0, 255);
 			int color = PixelColor.FromInt(level.color).WithAlpha(alpha).ToInt();
 			int targetbrightness;
-			if(extrafloor != null && !extrafloor.VavoomType && !level.disablelighting)
+            SectorData sd = mode.GetSectorData(this.Sector.Sector);
+            if (extrafloor != null && !extrafloor.VavoomType && !level.disablelighting)
 			{
 				//mxd. Top extrafloor level should calculate fogdensity from the brightness of the level above it
 				if(!innerside)
 				{
 					targetbrightness = 0;
-					SectorData sd = mode.GetSectorData(this.Sector.Sector);
 					for(int i = 0; i < sd.LightLevels.Count - 1; i++)
 					{
 						if(sd.LightLevels[i] == level)
@@ -135,7 +135,6 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				else
 				{
 					targetbrightness = level.brightnessbelow;
-					SectorData sd = mode.GetSectorData(this.Sector.Sector);
 					for(int i = 0; i < sd.LightLevels.Count; i++)
 					{
 						if(sd.LightLevels[i] == level)
@@ -150,6 +149,9 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			{
 				targetbrightness = level.brightnessbelow;
 			}
+
+            // [ZZ] Apply Doom 64 lighting here (for extrafloor)
+            if (extrafloor != null) color = PixelColor.Modulate(PixelColor.FromInt(color), extrafloor.ColorCeiling).WithAlpha(alpha).ToInt();
 
 			//mxd. Determine fog density
 			fogfactor = CalculateFogFactor(targetbrightness);

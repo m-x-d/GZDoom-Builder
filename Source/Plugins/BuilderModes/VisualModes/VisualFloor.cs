@@ -111,16 +111,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			else
 				texscale = new Vector2D(1.0f / 64.0f, 1.0f / 64.0f);
 
-			// Determine brightness
-			int color = PixelColor.FromInt(level.color).WithAlpha((byte)General.Clamp(level.alpha, 0, 255)).ToInt();
+            // Determine brightness
+            byte alpha = (byte)General.Clamp(level.alpha, 0, 255);
+            int color = PixelColor.FromInt(level.color).WithAlpha(alpha).ToInt();
 
-			//mxd. Top extrafloor level should calculate fogdensity
-			//from the brightness of the level above it
-			int targetbrightness;
+            //mxd. Top extrafloor level should calculate fogdensity
+            //from the brightness of the level above it
+            SectorData sd = mode.GetSectorData(this.Sector.Sector);
+            int targetbrightness;
 			if(extrafloor != null && extrafloor.VavoomType && !level.disablelighting)
 			{
 				targetbrightness = 0;
-				SectorData sd = mode.GetSectorData(this.Sector.Sector);
 				for(int i = 0; i < sd.LightLevels.Count - 1; i++)
 				{
 					if(sd.LightLevels[i] == level)
@@ -135,8 +136,11 @@ namespace CodeImp.DoomBuilder.BuilderModes
 				targetbrightness = level.brightnessbelow;
 			}
 
-			//mxd. Determine fog density
-			fogfactor = CalculateFogFactor(targetbrightness);
+            // [ZZ] Apply Doom 64 lighting here (for extrafloor)
+            if (extrafloor != null) color = PixelColor.Modulate(PixelColor.FromInt(color), extrafloor.ColorFloor).WithAlpha(alpha).ToInt();
+
+            //mxd. Determine fog density
+            fogfactor = CalculateFogFactor(targetbrightness);
 
 			// Make vertices
 			ReadOnlyCollection<Vector2D> triverts = Sector.Sector.Triangles.Vertices;

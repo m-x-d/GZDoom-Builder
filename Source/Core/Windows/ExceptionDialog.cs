@@ -132,6 +132,7 @@ namespace CodeImp.DoomBuilder.Windows
 				"WARNING: PROGRAMMING BUG IN GZDB!",
 				"Something happened",
 				"The Device is Error",
+                "Worship me, and I may yet be merciful... then again, maybe not."
 			};
 
 			this.Text = titles[new Random().Next(0, titles.Length - 1)];
@@ -203,7 +204,7 @@ namespace CodeImp.DoomBuilder.Windows
 
 		private void newissue_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) 
 		{
-			try { System.Diagnostics.Process.Start("https://github.com/m-x-d/GZDoom-Builder/issues"); } 
+			try { System.Diagnostics.Process.Start("https://github.com/jewalky/GZDoom-Builder-Bugfix/issues"); } 
 			catch { MessageBox.Show("Unable to open URL..."); }
 			newissue.LinkVisited = true;
 		}
