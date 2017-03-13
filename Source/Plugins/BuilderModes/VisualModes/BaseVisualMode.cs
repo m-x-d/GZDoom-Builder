@@ -4220,10 +4220,15 @@ namespace CodeImp.DoomBuilder.BuilderModes
 		// This adds the matching, unmarked sidedefs from a vertex for texture alignment
 		private void AddSidedefsForAlignment(Stack<SidedefAlignJob> stack, Vertex v, bool forward, float offsetx, float scaleY, HashSet<long> texturelongnames, bool udmf) 
 		{
-			foreach(Linedef ld in v.Linedefs) 
+			foreach(Linedef ld in v.Linedefs)
 			{
 				Sidedef side1 = forward ? ld.Front : ld.Back;
 				Sidedef side2 = forward ? ld.Back : ld.Front;
+
+                // [ZZ] I don't know what logic here is.
+                //      I'm going to check if any side is marked, and if so, don't add.
+                if ((side1 != null && side1.Marked) ||
+                    (side2 != null && side2.Marked)) continue;
 
 				if((ld.Start == v) && (side1 != null) && !side1.Marked) 
 				{

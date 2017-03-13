@@ -28,6 +28,7 @@ using CodeImp.DoomBuilder.Config;
 using CodeImp.DoomBuilder.Compilers;
 using CodeImp.DoomBuilder.ZDoom.Scripting;
 using ScintillaNET;
+using System.Text;
 
 #endregion
 
@@ -202,6 +203,46 @@ namespace CodeImp.DoomBuilder.Controls
 
 		// This compiles the script
 		public virtual void Compile() { }
+
+        // [ZZ] this removes trailing whitespace from every line
+        protected void RemoveTrailingWhitespace()
+        {
+            // after changing the contents, selection should stay on the same line, and just move to the end of that line if it was on the trailing space.
+            int vscroll = editor.Scintilla.FirstVisibleLine;
+            int selectionStart = editor.SelectionStart;
+            int selectionEnd = editor.SelectionEnd;
+
+            int offset = 0;
+            string text = editor.Text;
+            string[] atext = text.Split(new char[] { '\n' });
+            for (int i = 0; i < atext.Length; i++)
+            {
+                string oldtext = atext[i];
+                string newtext = oldtext.TrimEnd();
+                int lendiff = oldtext.Length - newtext.Length;
+
+                bool selectioninline1 = selectionStart >= offset && selectionStart < offset + oldtext.Length;
+                bool selectioninline2 = selectionEnd >= offset && selectionEnd < offset + oldtext.Length;
+
+                if (selectioninline1 && selectionStart > offset + newtext.Length)
+                    selectionStart = offset + newtext.Length;
+
+                if (selectioninline2 && selectionEnd > offset + newtext.Length)
+                    selectionEnd = offset + newtext.Length;
+
+                atext[i] = newtext;
+                offset += newtext.Length + 1; // include \n
+                if (selectionStart > offset)
+                    selectionStart -= lendiff;
+                if (selectionEnd > offset)
+                    selectionEnd -= lendiff;
+            }
+
+            editor.Text = string.Join("\n", atext);
+            editor.SelectionStart = selectionStart;
+            editor.SelectionEnd = selectionEnd;
+            editor.Scintilla.FirstVisibleLine = vscroll;
+        }
 
 		// This saves the document (used for both explicit and implicit)
 		// Return true when successfully saved

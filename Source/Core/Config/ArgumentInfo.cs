@@ -65,6 +65,8 @@ namespace CodeImp.DoomBuilder.Config
 		private readonly PixelColor maxrangecolor; //mxd
 		private readonly int minrange; //mxd
 		private readonly int maxrange; //mxd
+        private readonly bool str; // [ZZ]
+        private readonly string titlestr; // [ZZ]
 
 		#endregion
 
@@ -84,6 +86,8 @@ namespace CodeImp.DoomBuilder.Config
 		public PixelColor MaxRangeColor { get { return maxrangecolor; } } //mxd
 		public int MinRange { get { return minrange; } } //mxd
 		public int MaxRange { get { return maxrange; } } //mxd
+        public bool Str { get { return str; } } // [ZZ]
+        public string TitleStr { get { return titlestr; } } // [ZZ]
 
 		#endregion
 
@@ -99,6 +103,8 @@ namespace CodeImp.DoomBuilder.Config
 			this.tooltip = cfg.ReadSetting(argspath + ".arg" + istr + ".tooltip", string.Empty); //mxd
 			this.type = cfg.ReadSetting(argspath + ".arg" + istr + ".type", 0);
 			this.defaultvalue = cfg.ReadSetting(argspath + ".arg" + istr + ".default", 0); //mxd
+            this.str = cfg.ReadSetting(argspath + ".arg" + istr + ".str", false);
+            this.titlestr = cfg.ReadSetting(argspath + ".arg" + istr + ".titlestr", this.title);
 
 			//mxd. Get rendering hint settings
 			string renderstyle = cfg.ReadSetting(argspath + ".arg" + istr + ".renderstyle", string.Empty);
@@ -236,15 +242,49 @@ namespace CodeImp.DoomBuilder.Config
 		}
 
 		//mxd. Constructor for an argument info defined in DECORATE
-		internal ArgumentInfo(string actorname, string argtitle, string tooltip, string renderstyle, string rendercolor,
-			string minrange, string minrangecolor, string maxrange, string maxrangecolor,
-			int type, int defaultvalue, string enumstr, IDictionary<string, EnumList> enums)
-		{
+        // [ZZ] Constructor for an argument info defined in DECORATE/ZScript. reworked.
+        internal ArgumentInfo(ActorStructure actor, int i)
+        {
+            if(!actor.HasPropertyWithValue("$arg" + i))
+            {
+                used = false;
+                return;
+            }
+
+			string argtitle = ZDTextParser.StripQuotes(actor.GetPropertyAllValues("$arg" + i));
+			string tooltip = ZDTextParser.StripQuotes(actor.GetPropertyAllValues("$arg" + i + "tooltip").Replace("\\n", Environment.NewLine));
+			int type = actor.GetPropertyValueInt("$arg" + i + "type", 0);
+			string targetclasses = ZDTextParser.StripQuotes(actor.GetPropertyAllValues("$arg" + i + "targetclasses"));
+			int defaultvalue = actor.GetPropertyValueInt("$arg" + i + "default", 0);
+			string enumstr = ZDTextParser.StripQuotes(actor.GetPropertyAllValues("$arg" + i + "enum"));
+			string renderstyle = ZDTextParser.StripQuotes(actor.GetPropertyAllValues("$arg" + i + "renderstyle"));
+			string rendercolor, minrange, maxrange, minrangecolor, maxrangecolor;
+            bool str = (actor.HasProperty("$arg" + i + "str"));
+            string argtitlestr = ZDTextParser.StripQuotes(actor.GetPropertyAllValues("$arg" + i + "str"));
+            if (string.IsNullOrEmpty(argtitlestr)) argtitlestr = argtitle;
+			if (!string.IsNullOrEmpty(renderstyle))
+			{
+                rendercolor = ZDTextParser.StripQuotes(actor.GetPropertyAllValues("$arg" + i + "rendercolor"));
+				minrange = ZDTextParser.StripQuotes(actor.GetPropertyAllValues("$arg" + i + "minrange"));
+				minrangecolor = ZDTextParser.StripQuotes(actor.GetPropertyAllValues("$arg" + i + "minrangecolor"));
+				maxrange = ZDTextParser.StripQuotes(actor.GetPropertyAllValues("$arg" + i + "maxrange"));
+				maxrangecolor = ZDTextParser.StripQuotes(actor.GetPropertyAllValues("$arg" + i + "maxrangecolor"));
+			}
+			else
+			{
+                rendercolor = string.Empty; minrange = string.Empty; maxrange = string.Empty; minrangecolor = string.Empty; maxrangecolor = string.Empty;
+			}
+
+            string actorname = actor.ClassName;
+            IDictionary<string, EnumList> enums = General.Map.Config.Enums;
+            
 			this.used = true;
 			this.title = argtitle;
 			this.tooltip = tooltip;
 			this.defaultvalue = defaultvalue;
 			this.flagslist = new EnumList(); //mxd
+            this.str = str;
+            this.titlestr = argtitlestr;
 
 			// Get rendering hint settings
 			switch(renderstyle.ToLowerInvariant())
@@ -303,6 +343,17 @@ namespace CodeImp.DoomBuilder.Config
 						this.tooltip += "Minimum: " + this.minrange;
 					else
 						this.tooltip += "Maximum: " + this.maxrange;
+				}
+			}
+
+			//Check for TargetClass
+			this.targetclasses = new HashSet<string>(StringComparer.InvariantCultureIgnoreCase);
+			if(type == (int)UniversalType.ThingTag)
+			{
+				if(!string.IsNullOrEmpty(targetclasses))
+				{
+					foreach(string tclass in targetclasses.Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries)) 
+						this.targetclasses.Add(tclass.Trim());
 				}
 			}
 

@@ -131,7 +131,7 @@ namespace CodeImp.DoomBuilder.Map
 			
 			if(map == General.Map.Map)
 				General.Map.UndoRedo.RecAddLinedef(this);
-			
+            
 			// We have no destructor
 			GC.SuppressFinalize(this);
 		}
@@ -986,14 +986,21 @@ namespace CodeImp.DoomBuilder.Map
 			// Limit intersection offset to the line
 			if(bounded) if(u < lengthinv) u = lengthinv; else if(u > (1f - lengthinv)) u = 1f - lengthinv;
 
-			// Calculate intersection point
-			Vector2D i = v1 + u * (v2 - v1);
+            /*
+            // Calculate intersection point
+            Vector2D i = v1 + u * (v2 - v1);
 
 			// Return distance between intersection and point
 			// which is the shortest distance to the line
 			float ldx = p.x - i.x;
 			float ldy = p.y - i.y;
-			return ldx * ldx + ldy * ldy;
+            */
+
+            // ano - let's check to see if we can do the previous faster without using operator overloading and etc
+            // the answer: running it  int.MaxValue / 64 times it tended to be around 100ms faster
+            float ldx = p.x - (v1.x + u * (v2.x - v1.x));
+            float ldy = p.y - (v1.y + u * (v2.y - v1.y));
+            return ldx * ldx + ldy * ldy;
 		}
 
 		// This returns the shortest distance from given coordinates to line

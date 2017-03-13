@@ -685,9 +685,9 @@ namespace CodeImp.DoomBuilder.ZDoom
 			SkipWhitespace(true);
 			if(!NextTokenIs("=")) return false; // New format only
 			SkipWhitespace(true);
-			string token = ReadToken();
+			string token = StripQuotes(ReadToken());
 
-			int val;
+            int val;
 			if(!int.TryParse(token, NumberStyles.Integer, CultureInfo.InvariantCulture, out val))
 			{
 				// Not numeric!

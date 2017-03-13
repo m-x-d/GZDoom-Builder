@@ -348,7 +348,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					}
 					else
 					{
-						color = s.Fields.GetValue("lightcolor", -1);
+                        color = PixelColor.Modulate(PixelColor.FromInt(s.Fields.GetValue("lightcolor", -1)), PixelColor.FromInt(s.Fields.GetValue("color_floor", -1))).ToInt();
 						light = s.Fields.GetValue("lightfloor", 0);
 						absolute = s.Fields.GetValue("lightfloorabsolute", false);
 					}
@@ -400,8 +400,8 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					} 
 					else 
 					{
-						color = s.Fields.GetValue("lightcolor", -1);
-						light = s.Fields.GetValue("lightceiling", 0);
+                        color = PixelColor.Modulate(PixelColor.FromInt(s.Fields.GetValue("lightcolor", -1)), PixelColor.FromInt(s.Fields.GetValue("color_ceiling", -1))).ToInt();
+                        light = s.Fields.GetValue("lightceiling", 0);
 						absolute = s.Fields.GetValue("lightceilingabsolute", false);
 					}
 
@@ -553,7 +553,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			PixelColor lightcolor = PixelColor.FromInt(color);
 			PixelColor brightness = PixelColor.FromInt(General.Map.Renderer2D.CalculateBrightness(light));
 			PixelColor finalcolor = PixelColor.Modulate(lightcolor, brightness);
-			color = finalcolor.WithAlpha(255).ToInt();
+            color = finalcolor.WithAlpha(255).ToInt();
 
 			// Do the math for all vertices
 			for(int i = 0; i < vertices.Length; i++) 
@@ -632,6 +632,12 @@ namespace CodeImp.DoomBuilder.BuilderModes
 					foreach(Thing t in General.Map.Map.Things)
 					{
 						if(!asso.Tags.Contains(t.Tag)) continue;
+
+						//Do not draw the association if the user is hovering over a child link
+						ThingTypeInfo ti = General.Map.Data.GetThingInfoEx(t.Type);
+						if (ti != null && ti.ThingLink < 0)
+							continue;
+
 						renderer.RenderThing(t, General.Colors.Indication, General.Settings.ActiveThingsAlpha);
 						if(General.Settings.GZShowEventLines) eventlines.Add(new Line3D(asso.Center, t.Position)); //mxd
 					}
@@ -699,9 +705,17 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			// Things
 			foreach(Thing t in General.Map.Map.Things)
 			{
+				// Get the thing type info
+				ThingTypeInfo ti = General.Map.Data.GetThingInfoEx(t.Type);
+
 				// Known action on this thing?
 				if((t.Action > 0) && General.Map.Config.LinedefActions.ContainsKey(t.Action))
 				{
+					//Do not draw the association if this is a child link.
+					//  This prevents a reverse link to a thing via an argument, when it should be a direct tag-to-tag link instead.
+					if(ti != null && asso.DirectLinkType < 0 && asso.DirectLinkType != -t.Type)
+						continue;
+
 					LinedefActionInfo action = General.Map.Config.LinedefActions[t.Action];
 					if(  ((action.Args[0].Type == (int)asso.Type) && (asso.Tags.Contains(t.Args[0]))) ||
 						 ((action.Args[1].Type == (int)asso.Type) && (asso.Tags.Contains(t.Args[1]))) ||
@@ -712,12 +726,20 @@ namespace CodeImp.DoomBuilder.BuilderModes
 						renderer.RenderThing(t, General.Colors.Indication, General.Settings.ActiveThingsAlpha);
 						if(General.Settings.GZShowEventLines) eventlines.Add(new Line3D(t.Position, asso.Center)); //mxd
 					}
+
+					//If there is a link setup on this thing, and it matches the association, then draw a direct link to any matching tag
+					if(ti != null && asso.DirectLinkType == t.Type && asso.Tags.Contains(t.Tag))
+					{
+						renderer.RenderThing(t, General.Colors.Indication, General.Settings.ActiveThingsAlpha);
+						if (General.Settings.GZShowEventLines) eventlines.Add(new Line3D(t.Position, asso.Center));
+					}
 				}
 				//mxd. Thing action on this thing?
 				else if(t.Action == 0)
 				{
-					ThingTypeInfo ti = General.Map.Data.GetThingInfoEx(t.Type);
-					if(ti != null)
+					//Draw the association, unless it is a child link.
+					//  This prevents a reverse link to a thing via an argument, when it should be a direct tag-to-tag link instead.
+					if(ti != null && asso.DirectLinkType >= 0 && Math.Abs(asso.DirectLinkType) != t.Type)
 					{
 						if(  ((ti.Args[0].Type == (int)asso.Type) && (asso.Tags.Contains(t.Args[0]))) ||
 						     ((ti.Args[1].Type == (int)asso.Type) && (asso.Tags.Contains(t.Args[1]))) ||

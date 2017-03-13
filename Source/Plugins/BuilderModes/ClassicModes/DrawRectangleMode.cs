@@ -237,7 +237,7 @@ namespace CodeImp.DoomBuilder.BuilderModes
 			if(bevelwidth == 0) 
 			{
 				currentbevelwidth = 0;
-				return new[] { pStart, new Vector2D((int)pStart.x, (int)pEnd.y), pEnd, new Vector2D((int)pEnd.x, (int)pStart.y), pStart };
+				return new[] { pStart, new Vector2D(pStart.x, pEnd.y), pEnd, new Vector2D(pEnd.x, pStart.y), pStart };
 			}
 
 			//got corners. TODO: check point order

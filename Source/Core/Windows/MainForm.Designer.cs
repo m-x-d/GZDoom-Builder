@@ -1,6 +1,7 @@
 using System;
 using System.Windows.Forms;
 using CodeImp.DoomBuilder.Controls;
+using System.Reflection;
 
 namespace CodeImp.DoomBuilder.Windows
 {
@@ -2799,8 +2800,8 @@ namespace CodeImp.DoomBuilder.Windows
 			this.MainMenuStrip = this.menumain;
 			this.Name = "MainForm";
 			this.StartPosition = System.Windows.Forms.FormStartPosition.Manual;
-			this.Text = "GZDoom Builder";
-			this.Deactivate += new System.EventHandler(this.MainForm_Deactivate);
+            this.Text = Application.ProductName + " R" + General.ThisAssembly.GetName().Version.Revision;
+            this.Deactivate += new System.EventHandler(this.MainForm_Deactivate);
 			this.Load += new System.EventHandler(this.MainForm_Load);
 			this.Shown += new System.EventHandler(this.MainForm_Shown);
 			this.Activated += new System.EventHandler(this.MainForm_Activated);
